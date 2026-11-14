@@ -4,7 +4,7 @@ source: https://docs.expo.dev/push-notifications/sending-notifications-custom/
 
 # Send notifications with FCM and APNs
 
-Communicate directly with FCM and APNs for finer-grained control. The `expo-notifications` API is push-service agnostic and does not lock you into Expo Application Services.
+Communicate directly with FCM and APNs for finer-grained control. The `expo-notifications` API is push-service agnostic and does not lock you into Expo Services.
 
 ## Signature / Usage
 
@@ -171,6 +171,7 @@ request.end();
 - APNs endpoints: `api.sandbox.push.apple.com` in development, `api.push.apple.com` in production. The example is minimal with no error handling or connection pooling; a `sendNotificationToAPNS` example exists in the expo/expo repository under `docs/public/static/examples/`. `node-apn` is mentioned as a library that wraps this functionality.
 - The upstream snippet annotates `key` as `string`, but it is used as the parsed service-account JSON object (`require(process.env.FCM_SERVER_KEY)`) with `client_email` and `private_key` fields; type it as an object (or `JSON.parse` a string) in real code.
 - The JWT snippet is verbatim from the source and is missing a comma after the `iss` value; add one when using it.
+- Source: https://docs.expo.dev/push-notifications/sending-notifications-custom/ (docs/pages/push-notifications/sending-notifications-custom.mdx at tag expo@58.0.25); the official docs now say Expo Services / Expo Build / Expo dashboard where they previously said EAS / EAS Build / EAS Dashboard.
 - Page modificationDate: July 28, 2026 (unversioned guide, fetched 2026-10-17).
 - Distance line: FCM HTTP v1 and APNs provider API semantics are covered by `android-platform-core` and `apple-app-services`.
 

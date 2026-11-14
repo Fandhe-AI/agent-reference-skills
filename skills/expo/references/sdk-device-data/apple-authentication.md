@@ -116,10 +116,11 @@ Error codes: `ERR_INVALID_OPERATION`, `ERR_INVALID_RESPONSE`, `ERR_INVALID_SCOPE
 - Credentials (name, email) are only delivered the first time a user signs in; store them server-side or with `expo-secure-store`.
 - `signOutAsync` is not recommended as it works counterintuitively; clear the user's data collected from `signInAsync` / `refreshAsync` instead.
 - Verify the response by checking the signed JWT against Apple's public keys at https://appleid.apple.com/auth/keys (not Expo-specific).
-- Without EAS Build, manually configure the Apple Sign In capability: add entitlement `com.apple.developer.applesignin` (`Default`) and set `CFBundleAllowMixedLocalizations` to `true` in Info.plist so the button uses the device locale.
+- Without Expo Build, manually configure the Apple Sign In capability: add entitlement `com.apple.developer.applesignin` (`Default`) and set `CFBundleAllowMixedLocalizations` to `true` in Info.plist so the button uses the device locale.
 - Works in Expo Go on iOS (identifiers differ from standalone apps); limited testing on the iOS Simulator, prefer a real device.
 - This is a client-side native Sign in with Apple API, not a backend auth library; for auth backends see better-auth and supabase.
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-apple-authentication
+- Source: https://docs.expo.dev/versions/v58.0.0/sdk/apple-authentication/ (docs/pages/versions/v58.0.0/sdk/apple-authentication.mdx at tag expo@58.0.25); the docs now say "Expo Build" (formerly "EAS Build").
 
 ## Related
 

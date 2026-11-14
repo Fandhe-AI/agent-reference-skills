@@ -57,7 +57,7 @@ registerRootComponent(App);
 | `expo/fetch` `fetch` | WinterCG-compliant Fetch API that works across web and mobile. On Android and iOS it is also installed as the global `fetch`; set `EXPO_PUBLIC_USE_RN_FETCH=1` to keep React Native's built-in `fetch` as the global. Named imports from `expo/fetch` work regardless of this flag. |
 | `TextEncoder` / `TextDecoder` | Available on all platforms. `TextEncoder` and, starting with SDK 58 and React Native 0.88, `TextDecoder` are provided by Hermes. `TextDecoder` supports UTF-8, UTF-16, and legacy single-byte encodings such as `windows-1252` (`latin1`). A custom JavaScript runtime must provide `TextDecoder` before Expo initializes. |
 | `TextEncoderStream` / `TextDecoderStream` | Streaming equivalents, available on all platforms. |
-| `ReadableStream` / `WritableStream` / `TransformStream` | Global standard web streams on native platforms. EAS Hosting server runtime also supports them. |
+| `ReadableStream` / `WritableStream` / `TransformStream` | Global standard web streams on native platforms. Expo Hosting server runtime also supports them. |
 | `URL` / `URLSearchParams` | Built-in implementations replace the shims in `react-native`. Native platforms do not support non-ASCII characters in the hostname (`new URL('http://🥓').toString()` is `http://🥓/` on Android/iOS but `http://xn--pr9h/` on Web/Node.js). |
 | `structuredClone` | Deep copy including `Map`, `Set`, `ArrayBuffer`. The `transfer` option for `ArrayBuffer` and `TypedArray`s is not implemented. Remove custom polyfills. |
 
@@ -167,6 +167,7 @@ export function PlayerStatus({ videoPlayer }: { videoPlayer: VideoPlayer }) {
 - `registerRootComponent` in an existing (bare) React Native project: on Android, update `MainActivity` `getMainComponentName()` to return `"main"`; on iOS, use the moduleName `main` in `createRootViewWithBridge:bridge moduleName:@"main" initialProperties:initProps` within `application:didFinishLaunchingWithOptions:`.
 - Projects without Expo Router can set `"main"` in `package.json` to any entry file, but must then call `registerRootComponent`; `export default` does not make the component the root with a custom entry file. For Expo Router projects, see the Expo Router installation guide (custom entry point) and the src directory reference.
 - Source: `sdk-58` branch `packages/expo`; modificationDate October 02, 2026.
+- Source: https://docs.expo.dev/versions/v58.0.0/sdk/expo/ (docs/pages/versions/v58.0.0/sdk/expo.mdx at tag expo@58.0.25); the docs now say "Expo Hosting" (formerly "EAS Hosting").
 
 ## Related
 

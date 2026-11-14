@@ -2,9 +2,9 @@
 source: https://docs.expo.dev/eas/metadata/schema/
 ---
 
-# Schema for EAS Metadata
+# Schema for Expo Metadata
 
-Structure of the store config object in `store.config.json` (EAS Metadata currently supports the Apple App Store only).
+Structure of the store config object in `store.config.json` (Expo Metadata currently supports the Apple App Store only).
 
 ## Signature / Usage
 
@@ -28,7 +28,7 @@ Structure of the store config object in `store.config.json` (EAS Metadata curren
 
 | Property | Type | Description |
 | --- | --- | --- |
-| `configVersion` | `number`, enum: 0 | The EAS Metadata store configuration schema version. Versions changes that are not backward compatible |
+| `configVersion` | `number`, enum: 0 | The Expo Metadata store configuration schema version. Versions changes that are not backward compatible |
 | `apple` | `object` | All configurable properties for the App Store |
 | `apple.version` | `string` | App version to use when syncing metadata. Defaults to the latest available version in the app stores |
 | `apple.copyright` | `string` | Owner of the exclusive rights, preceded by the year (for example "2008 Acme Inc.") |
@@ -40,7 +40,7 @@ Structure of the store config object in `store.config.json` (EAS Metadata curren
 
 ### Apple advisory
 
-EAS Metadata uses the least restrictive answer for each question by default.
+Expo Metadata uses the least restrictive answer for each question by default.
 
 | Property | Type | Description |
 | --- | --- | --- |
@@ -155,8 +155,9 @@ Language codes: `ar-SA`, `ca`, `zh-Hans`, `zh-Hant`, `hr`, `cs`, `da`, `nl-NL`, 
 - Only the Apple App Store is supported; there is no Google Play section in the schema.
 - The VS Code Expo Tools extension provides auto-complete, suggestions, and warnings for this schema.
 - Source modificationDate not recorded in the saved original; fetched 2026-10-17.
+- Source: https://docs.expo.dev/eas/metadata/schema/ (docs/pages/eas/metadata/schema.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [EAS Metadata](./eas-metadata.md)
+- [Expo Metadata](./eas-metadata.md)
 - [EAS CLI reference](./eas-cli.md)

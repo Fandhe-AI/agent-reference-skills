@@ -35,8 +35,8 @@ it('my-test', async () => {
 
 - `renderRouter(mock: Record<string, ReactComponent>, options: RenderOptions)` - inline file system. Keys are mock filesystem paths; do not use leading `./` or `/` and exclude file extensions.
 - `renderRouter(mock: string[], options: RenderOptions)` - inline file system with `null` components (`{ default: () => null }`).
-- `renderRouter(fixturePath: string, options: RenderOptions)` - path to a fixture directory, relative to the current test file.
-- `renderRouter({ appDir: string, overrides: Record<string, ReactComponent>}, options: RenderOptions)` - fixture directory plus inline overrides.
+- `renderRouter(fixturePath: string, options: RenderOptions)` - path to a fixture directory, relative to the directory where you run Jest (usually the project root).
+- `renderRouter({ appDir: string, overrides: Record<string, ReactComponent>}, options: RenderOptions)` - fixture directory (`appDir`, relative to the directory where you run Jest) plus inline overrides.
 
 ```tsx
 await renderRouter(['index', 'directory/a', '(group)/b'], {
@@ -87,8 +87,9 @@ Jest matchers added to `expect` for `screen`:
 - Set up `jest-expo` per the Unit testing with Jest guide and `@testing-library/react-native` first. `expo-router/testing-library` requires `@testing-library/react-native` version 14 or newer.
 - Do not put test files inside the **app** directory; everything there must be a route or layout file. Use `__tests__` or a separate directory.
 - Await `renderRouter` and the `testRouter` methods `navigate`, `push`, `replace`, `back`, `setParams`, and `dismissAll` before asserting. `testRouter.canGoBack()` remains synchronous.
-- The official page lists these matchers as `useLocalSearchParams()` / `useGlobalSearchParams()`, but expo-router 58.0.23 (`build/testing-library/expect.js`) registers only `toHavePathname`, `toHavePathnameWithParams`, `toHaveSegments`, `toHaveSearchParams`, and `toHaveRouterState`; there is no separate global-params matcher.
-- Source: https://docs.expo.dev/router/reference/testing/ (unversioned guide, fetched 2026-10-17, modificationDate October 13, 2026).
+- The previous official page listed these matchers as `useLocalSearchParams()` / `useGlobalSearchParams()`; the current page lists `toHaveSearchParams()` (asserting the `useGlobalSearchParams` value on the current `screen`). expo-router 58.0.23 (`build/testing-library/expect.js`) registers only `toHavePathname`, `toHavePathnameWithParams`, `toHaveSegments`, `toHaveSearchParams`, and `toHaveRouterState`; there is no separate global-params matcher.
+- In SDK 57, `expo-router/testing-library` works only with `@testing-library/react-native` version 13.
+- Source: https://docs.expo.dev/router/reference/testing/ (docs/pages/router/reference/testing.mdx at tag expo@58.0.25).
 
 ## Related
 

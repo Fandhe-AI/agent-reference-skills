@@ -2,9 +2,9 @@
 source: https://docs.expo.dev/eas-update/how-it-works/
 ---
 
-# How EAS Update works
+# How Expo Update works
 
-A conceptual overview of how EAS Update works.
+A conceptual overview of how Expo Update works.
 
 ## Signature / Usage
 
@@ -26,11 +26,11 @@ eas channel:edit production --branch version-2.0
 
 #### Publishing an update
 
-`eas update --auto --environment [environment-name]` creates a local update bundle inside the **dist** directory, then uploads it to EAS servers into a _branch_. A branch has a name and contains a list of updates, where the most recent update is the active update on the branch. EAS branches are like Git branches: Git branches contain commits, EAS branches contain updates.
+`eas update --auto --environment [environment-name]` creates a local update bundle inside the **dist** directory, then uploads it to Expo servers into a _branch_. A branch has a name and contains a list of updates, where the most recent update is the active update on the branch. Expo Update branches are like Git branches: Git branches contain commits, Expo Update branches contain updates.
 
 #### Matching updates and builds
 
-Every update on a branch includes a target runtime version and target platform. EAS' update policy:
+Every update on a branch includes a target runtime version and target platform. The update policy of Expo Update:
 
 - The platform of the build and the target platform of an update must match exactly.
 - The runtime version of the build and the target runtime version of an update must match exactly.
@@ -55,7 +55,7 @@ eas channel:edit staging --branch version-3.0
 
 - The official guide examples omit `--environment`; it is required for SDK 55+ (EAS CLI reference). Added here as an adaptation.
 - A build's runtime version, platform, and channel together determine which updates it can receive.
-- Source modificationDate: February 18, 2025 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas-update/how-it-works/ (docs/pages/eas-update/how-it-works.mdx at tag expo@58.0.25).
 
 ## Related
 

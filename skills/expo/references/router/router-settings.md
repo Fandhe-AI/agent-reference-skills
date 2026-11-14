@@ -54,6 +54,8 @@ router.push('/route', { withAnchor: true });
 
 - `unstable_settings` currently do not work with async routes (development-only); this is why the feature is designated unstable.
 - `anchor` is only used when deep-linking to a route. During app navigation, the route being navigated to is the anchor route; use `withAnchor` (on `<Link />` or imperative APIs) to also load the anchor below the target.
+- Tabs, native tabs, drawer, and top tabs go back to the `anchor` only when `backBehavior` is `initialRoute`. If the layout sets `anchor` with a different `backBehavior`, the navigator logs a warning.
+- Source: https://docs.expo.dev/router/advanced/router-settings/ (docs/pages/router/advanced/router-settings.mdx at tag expo@58.0.25)
 - Expo Router is file-based and built on React Navigation; `Link` here is not the react-router or tanstack-router `Link`.
 - Page modification date: September 14, 2026. Source fetched 2026-10-17.
 

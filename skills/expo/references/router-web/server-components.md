@@ -67,8 +67,9 @@ export default function Index() {
 - Server Functions can render components and stream an RSC payload; Suspense streams partial UI.
 - Library compatibility: wrap unoptimized libraries in a `'use client'` module with explicit re-exports (avoid `export * from`). `StyleSheet.create` and `Platform.OS` do not work on the server; use plain objects and `process.env.EXPO_OS`. Check the server with `typeof window === 'undefined'`.
 - `<meta>` tags can be placed anywhere (web only) thanks to the React canary build used by Expo CLI.
-- Deployment: `npx expo export -p web`, `npx expo serve`, or EAS Hosting; native follows the API Routes native deployment guide.
-- Known limitations: Expo Snack unsupported; EAS Update unsupported; DOM components cannot use Server Functions in production; production not recommended; server-rendering RSC payloads to HTML unsupported (static / server output not fully working); `generateStaticParams` partial; HTML `form` integration unsupported; Server Functions invoking Server Functions unsupported on Hermes. Full RSC mode: no stack routing (`Stack`, `Tabs`, `Drawer` unsupported) and most `Link` props unsupported; CSS and CSS modules are supported.
+- Deployment: `npx expo export -p web`, `npx expo serve`, or Expo Hosting; native follows the API Routes native deployment guide.
+- Known limitations: Expo Snack unsupported; Expo Update unsupported; DOM components cannot use Server Functions in production; production not recommended; server-rendering RSC payloads to HTML unsupported (static / server output not fully working); `generateStaticParams` partial; HTML `form` integration unsupported; Server Functions invoking Server Functions unsupported on Hermes. Full RSC mode: no stack routing (`Stack`, `Tabs`, `Drawer` unsupported) and most `Link` props unsupported; CSS and CSS modules are supported.
+- Source: https://docs.expo.dev/guides/server-components/ (docs/pages/guides/server-components.mdx at tag expo@58.0.25); the official docs now name the services Expo Hosting / Expo Update / Expo Build (previously EAS Hosting / EAS Update / EAS Build).
 - Pinned: documentation fetched 2026-10-17, Expo SDK 58.
 
 ## Related

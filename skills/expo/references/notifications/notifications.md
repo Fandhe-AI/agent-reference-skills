@@ -175,7 +175,7 @@ await Notifications.scheduleNotificationAsync({
 
 Credentials: follow the push notifications setup guide ([push-notifications-setup.md](./push-notifications-setup.md)).
 
-Use the built-in config plugin in the app config (for EAS Build or `npx expo run:[android|ios]`). These properties cannot be set at runtime and require a new app binary.
+Use the built-in config plugin in the app config (for Expo Build or `npx expo run:[android|ios]`). These properties cannot be set at runtime and require a new app binary.
 
 | Name | Default | Description |
 | --- | --- | --- |

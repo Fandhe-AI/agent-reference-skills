@@ -2,7 +2,7 @@
 source: https://docs.expo.dev/eas/workflows/custom-functions/
 ---
 
-# Custom functions in EAS Workflows
+# Custom functions in Expo Workflows
 
 Custom functions define reusable step sequences for custom jobs and hooks, called with a relative path through `uses`.
 
@@ -64,17 +64,19 @@ jobs:
 
 ## Notes
 
-- Layout: a directory containing `function.yml` (or `function.yaml`), for example `.eas/functions/<name>/function.yml` next to `.eas/workflows/`. The `uses` value must start with `./` or `../` and is resolved relative to the EAS project directory; a `../` path may point outside the project directory but must remain within the repository. The `function.yml` schema is in the Custom functions section of the workflow syntax reference.
+- Layout: a directory containing `function.yml` (or `function.yaml`), for example `.eas/functions/<name>/function.yml` next to `.eas/workflows/`. The `uses` value must start with `./` or `../` and is resolved relative to the Expo Services project directory; a `../` path may point outside the project directory but must remain within the repository. The `function.yml` schema is in the Custom functions section of the workflow syntax reference.
 - Steps live under `runs.steps` and use the same format as custom job steps. A relative `working_directory` on a step inside the function resolves from the job's default working directory, not the directory containing `function.yml`.
 - Usable in custom job `steps`, build job `steps`, job `hooks`, and `defaults.hooks`.
 - Inputs are passed with `with:` and read as `${{ inputs.<name> }}`. Outputs are defined with `outputs` in `function.yml`, exposed as strings, and read as `${{ steps.<call_id>.outputs.<name> }}` using the `id` of the call step; the caller cannot reference the function's internal step identifiers. Do not interpolate `${{ inputs.* }}` or `${{ steps.*.outputs.* }}` directly into `run`; pass them via `env` and reference quoted shell variables.
 - Scopes: `steps.*` inside the function resolve against its own steps; the call step's `with`, `env`, and `if` are evaluated in the caller's scope; every step inherits the call step's `env` (inner values override outer on nested calls); input defaults and expressions inside the function use the function's scope; the call step's `if` gates the whole function.
-- Nesting: custom functions can call other custom functions and built-in `eas/*` functions. Currently they cannot call `eas/build` or `eas/maestro_test`. Nested paths resolve relative to the EAS project directory. Up to 10 levels deep; a function cannot call itself directly or indirectly.
-- Distinct from GitHub Actions: these are EAS Workflows custom functions (`function.yml`), not GitHub Actions composite actions. See github-docs for GitHub Actions.
-- Source modificationDate: August 10, 2026 (fetched 2026-10-17).
+- Nesting: custom functions can call other custom functions and built-in `eas/*` functions. Currently they cannot call `eas/build` or `eas/maestro_test`. Nested paths resolve relative to the Expo Services project directory. Up to 10 levels deep; a function cannot call itself directly or indirectly.
+- Distinct from GitHub Actions: these are Expo Workflows custom functions (`function.yml`), not GitHub Actions composite actions. See github-docs for GitHub Actions.
+- To reuse whole jobs instead of steps, use reusable workflows (`on.workflow_call` and `jobs.<job_id>.uses`).
+- Source: https://docs.expo.dev/eas/workflows/custom-functions/ (docs/pages/eas/workflows/custom-functions.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [Syntax for EAS Workflows](./workflows-syntax.md)
-- [EAS Workflows limitations](./workflows-limitations.md)
-- [Pre-packaged jobs in EAS Workflows](./workflows-pre-packaged-jobs.md)
+- [Syntax for Expo Workflows](./workflows-syntax.md)
+- [Expo Workflows limitations](./workflows-limitations.md)
+- [Reusable workflows in Expo Workflows](./workflows-reusable-workflows.md)
+- [Pre-packaged jobs in Expo Workflows](./workflows-pre-packaged-jobs.md)

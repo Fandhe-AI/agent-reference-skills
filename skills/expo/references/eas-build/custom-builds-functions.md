@@ -4,11 +4,11 @@ source: https://docs.expo.dev/custom-builds/functions/
 
 # TypeScript functions
 
-Learn how to create and use EAS Build functions in your custom build configurations.
+Learn how to create and use Expo Build functions in your custom build configurations.
 
 ## Signature / Usage
 
-EAS Build functions extend custom builds with reusable steps written in JavaScript, TypeScript, or Bash. Create a module from the directory containing **eas.json**:
+Expo Build functions extend custom builds with reusable steps written in JavaScript, TypeScript, or Bash. Create a module from the directory containing **eas.json**:
 
 ```sh
 npx create-eas-build-function@latest ./.eas/build/myFunction
@@ -91,7 +91,7 @@ outputs.sum.set(sum.toString()); // Currently, outputs must be strings.
 - The input type is written `type: number` here, while the schema reference lists `string`, `num` or `json` (example uses `type: num`); the official docs are inconsistent and which spelling is accepted is not confirmed here.
 - Assumes a custom build workflow is already configured in **eas.json**.
 - Most built-in functions are open-source and can be used as references; an example repository (expo/eas-custom-builds-example) shows functions, env vars and artifact uploads.
-- Source modificationDate: July 28, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/custom-builds/functions/ (docs/pages/custom-builds/functions.mdx at tag expo@58.0.25).
 
 ## Related
 

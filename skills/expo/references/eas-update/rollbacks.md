@@ -22,7 +22,7 @@ In the terminal, an interactive guide helps you select the type of rollback and 
 ## Notes
 
 - Upon publishing again after a rollback, all clients receive the new update.
-- Source modificationDate: March 03, 2025 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas-update/rollbacks/ (docs/pages/eas-update/rollbacks.mdx at tag expo@58.0.25).
 
 ## Related
 

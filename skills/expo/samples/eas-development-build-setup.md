@@ -2,9 +2,9 @@
 source: https://docs.expo.dev/tutorial/eas/configure-development-build/
 ---
 
-# Configure a Development Build with EAS
+# Configure a Development Build with Expo Build
 
-Install `expo-dev-client`, link the project to EAS, and generate `eas.json` with development, preview and production build profiles.
+Install `expo-dev-client`, link the project to Expo Services, and generate `eas.json` with development, preview and production build profiles.
 
 ```sh
 npx expo install expo-dev-client
@@ -59,4 +59,4 @@ eas build:configure
 - `eas init` writes `extra.eas.projectId` and `owner` into **app.json**, and uploads the app `icon` as the project icon if none exists.
 - After installing a new library, stop the dev server, run the install command, then start it again with `npx expo start`.
 - The tutorial installs EAS CLI globally; the package manager tabs (yarn / pnpm / bun) are available on the source page.
-- Source: https://docs.expo.dev/tutorial/eas/configure-development-build/ (fetched 2026-10-17). Next chapter: https://docs.expo.dev/tutorial/eas/android-development-build/
+- Source: https://docs.expo.dev/tutorial/eas/configure-development-build/ (docs/pages/tutorial/eas/configure-development-build.mdx at tag expo@58.0.25). Next chapter: https://docs.expo.dev/tutorial/eas/android-development-build/

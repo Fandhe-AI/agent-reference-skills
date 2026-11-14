@@ -27,7 +27,7 @@ await Updates.reloadAsync();
 
 ### Previewing in development builds
 
-Development builds can preview updates from pull requests, directly from the EAS dashboard, or from the built-in UI provided by the `expo-dev-client` library. Related approaches: GitHub Actions to automate publishing updates, and Expo Orbit (macOS, Windows, Linux desktop app) to launch preview updates from the EAS dashboard.
+Development builds can preview updates from pull requests, directly from the Expo dashboard, or from the built-in UI provided by the `expo-dev-client` library. Related approaches: GitHub Actions to automate publishing updates, and Expo Orbit (macOS, Windows, Linux desktop app) to launch preview updates from the Expo dashboard.
 
 ### Previewing in preview builds
 
@@ -40,7 +40,7 @@ Teams may first roll out an update to a small set of internal users in productio
 ## Notes
 
 - This page contains no fenced code in the official source; the snippet above is quoted verbatim from the official override page (https://docs.expo.dev/eas-update/override/); see also [Override update configuration at runtime](./override.md).
-- Source modificationDate: September 17, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas-update/preview/ (docs/pages/eas-update/preview.mdx at tag expo@58.0.25).
 
 ## Related
 

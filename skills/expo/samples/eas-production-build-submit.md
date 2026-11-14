@@ -50,4 +50,4 @@ eas build --platform ios --auto-submit
 - For iOS, `eas submit` uploads to TestFlight; `--auto-submit` does not submit for App Store review, so promote the build manually.
 - The first iOS build may prompt about encryption and adds `ios.infoPlist.ITSAppUsesNonExemptEncryption: false` to app config if the app only uses standard/exempt encryption.
 - Production profile is the default, so `--profile production` is not required.
-- Sources (fetched 2026-10-17): https://docs.expo.dev/tutorial/eas/android-production-build/ , https://docs.expo.dev/tutorial/eas/ios-production-build/ , https://docs.expo.dev/tutorial/eas/manage-app-versions/
+- Sources (docs/pages/tutorial/eas/android-production-build.mdx at tag expo@58.0.25): https://docs.expo.dev/tutorial/eas/android-production-build/ , https://docs.expo.dev/tutorial/eas/ios-production-build/ , https://docs.expo.dev/tutorial/eas/manage-app-versions/

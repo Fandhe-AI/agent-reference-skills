@@ -4,7 +4,7 @@ source: https://docs.expo.dev/eas/workflows/automating-eas-cli/
 
 # Automating EAS CLI commands
 
-Automate sequences of EAS CLI commands (build, submit, update) with EAS Workflows.
+Automate sequences of EAS CLI commands (build, submit, update) with Expo Workflows.
 
 ## Signature / Usage
 
@@ -78,11 +78,12 @@ eas workflow:run .eas/workflows/build-ios-production.yml
 - A linked GitHub repository is optional; the guide assumes one is linked (project GitHub settings: install the GitHub app, select the matching repository) so workflows trigger on pushes to specific branches.
 - To submit an existing build, pass its `build_id` directly to the submit job, or use the `get-build` job to look one up and pass its `build_id` output.
 - Parameters select Android builds, other build or submit profiles, specific update branches or channels, and the update message; see the build, submit, and update job parameters in the syntax reference.
-- Distinct from GitHub Actions: EAS Workflows YAML is not GitHub Actions syntax. See github-docs for GitHub Actions.
+- Distinct from GitHub Actions: Expo Workflows YAML is not GitHub Actions syntax. See github-docs for GitHub Actions.
 - Source modificationDate: July 13, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas/workflows/automating-eas-cli/ (docs/pages/eas/workflows/automating-eas-cli.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [Syntax for EAS Workflows](./workflows-syntax.md)
-- [Pre-packaged jobs in EAS Workflows](./workflows-pre-packaged-jobs.md)
+- [Syntax for Expo Workflows](./workflows-syntax.md)
+- [Pre-packaged jobs in Expo Workflows](./workflows-pre-packaged-jobs.md)
 - [EAS CLI reference](./eas-cli.md)

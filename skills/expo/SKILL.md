@@ -14,12 +14,13 @@ Expo SDK 58 と EAS のリファレンススキル。references は公式ドキ�
 
 ## 対象バージョン
 
-- Expo SDK 58（npm `expo` latest 58.0.12、2026-10-16）。`bundledNativeModules.json`（タグ `expo@58.0.12`、commit `1fe7733a076cc7448f2728a764436307fe440cfa`）基準で expo-router 58.0.21 / @expo/cli 58.1.10 / expo-updates 58.0.17 / React Native 0.88.0 / React 19.3.0
+- Expo SDK 58（npm `expo` latest 58.0.25、2026-11-12）。公開済み tarball の `bundledNativeModules.json` 基準で expo-router ~58.0.31 / @expo/cli ^58.1.20 / expo-updates ~58.0.22 / expo-notifications ~58.1.9 / React Native 0.88.1 / React 19.3.0
 - SDK / config ページは URL `/versions/v58.0.0/` で pin（本文は `/versions/latest/` と同一、camera で差分確認済み）
-- バージョン無し URL のガイドページ（router / eas / build / eas-update / modules / config-plugins）は取得日 2026-10-17 で pin（2026-10-16 の policy run 内）。各ソースに `modificationDate` frontmatter あり
-- eas-cli 25.0.0（Expo SDK とは別バージョニング、npm latest 2026-10-15）
-- GitHub 照合ソースは https://github.com/expo/expo/tree/expo@58.0.12/docs/pages（タグ pin。raw パスは `raw.githubusercontent.com/expo/expo/expo@58.0.12/docs/pages/**.mdx`、`main` は使用不可）
-- npm 版: https://www.npmjs.com/package/expo/v/58.0.12
+- バージョン無し URL のガイドページ（router / eas / build / eas-update / modules / config-plugins）は取得日 2026-10-17 で pin（以後 `expo@58.0.25` タグの docs で再照合済みのページは各 Notes の Source に tag 併記）。各ソースに `modificationDate` frontmatter あり
+- eas-cli 27.10.0（Expo SDK とは別バージョニング、npm latest 2026-11-13。25.0.0 → 27.x の破壊的変更は 27.0.0 の「失敗理由を stderr へ出力」と 26.0.0 の内部 artifact 型の削除。`scripts/eas-cli.md` はコマンド一覧データが 27.7.2 時点のため 27.8 以降は changelog のみ照合）
+- GitHub 照合ソースは https://github.com/expo/expo/tree/expo@58.0.25/docs/pages（タグ pin、commit `4697afa4df85f0f908016c415c084fa667ad747a`。raw パスは `raw.githubusercontent.com/expo/expo/expo@58.0.25/docs/pages/**.mdx`、`main` は使用不可）。注意: このタグは main 上のコミットで、`packages/expo/package.json` が 58.0.19、`bundledNativeModules.json` が react-native 0.89.0-rc.0 / expo-router ~58.0.26 と公開 tarball とずれているため、版数は npm tarball、docs 本文のみタグを根拠にする
+- npm 版: https://www.npmjs.com/package/expo/v/58.0.25
+- 未収録（タグ時点で新設・移設された製品領域）: Expo Simulators（`eas/simulators/`）・Expo Observe・Agentic workflows・Expo Hosting の個別ページ。公式は EAS Build / Update / Hosting を Expo Build / Update / Hosting に改称済みで、更新したページは新名称に追従（`eas` コマンド名・`EAS_*` 環境変数は不変）
 - canary / next dist-tag と v55〜v57 のバージョン別ドキュメントは対象外
 
 ## ディレクトリ構成

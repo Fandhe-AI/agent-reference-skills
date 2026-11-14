@@ -48,14 +48,15 @@ Templates:
 
 - During the SDK 58 transition period, `create-expo-app@latest` without `--template` creates an SDK 57 project. For Expo Go on a physical device use an SDK 57 project; otherwise use `--template default@sdk-58`.
 - The app name entered at the prompt is also used as the app config `name`.
-- Package managers: npm (EAS default if **package-lock.json**), Yarn 1 (**yarn.lock**), Yarn 2+ (uses `nodeLinker: node-modules` in **.yarnrc.yml**; on EAS set `corepack: true` in the build profile of **eas.json** and pin `packageManager` in **package.json**), pnpm (`nodeLinker: hoisted` by default in **pnpm-workspace.yaml**; SDK 54 and later support isolated installations, so the setting can be deleted), Bun (see the Using Bun guide).
-- Migrating between package managers requires manually carrying out the extra configuration, including for EAS.
+- Package managers: npm (Expo Build default if **package-lock.json**), Yarn 1 (**yarn.lock**), Yarn 2+ (uses `nodeLinker: node-modules` in **.yarnrc.yml**; on Expo Build set `corepack: true` in the build profile of **eas.json** and pin `packageManager` in **package.json**), pnpm (`nodeLinker: hoisted` by default in **pnpm-workspace.yaml**; SDK 54 and later support isolated installations, so the setting can be deleted), Bun (see the Using Bun guide).
+- Migrating between package managers requires manually carrying out the extra configuration, including for Expo Services.
 - Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: October 16, 2026); `create-expo-app` 5.0.0.
 
 ```yaml
 nodeLinker: node-modules
 ```
+- Source: https://docs.expo.dev/more/create-expo/ (docs/pages/more/create-expo.mdx at tag expo@58.0.25); the docs now say "Expo Build" / "Expo Services" (formerly "EAS"). The `--template default@sdk-58` commands and the SDK 58 transition note are unchanged.
 
 ## Related
 

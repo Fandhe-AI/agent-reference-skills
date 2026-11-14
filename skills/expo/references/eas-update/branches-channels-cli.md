@@ -8,7 +8,7 @@ Learn how to link a branch to a channel and publish updates with EAS CLI.
 
 ## Signature / Usage
 
-EAS Update links _branches_ to _channels_. Channels are specified at build time and exist inside a build's native code. Branches are an ordered list of updates. Any channel can be linked to any branch.
+Expo Update links _branches_ to _channels_. Channels are specified at build time and exist inside a build's native code. Branches are an ordered list of updates. Any channel can be linked to any branch.
 
 ```sh
 eas channel:list
@@ -55,7 +55,7 @@ eas update:republish --branch version-1.0
 
 #### Pause updates on a channel
 
-Pausing stops EAS Update from serving updates to builds that check for updates on that channel. It is reversible; the channel's updates and any rollout in progress resume when unpaused.
+Pausing stops Expo Update from serving updates to builds that check for updates on that channel. It is reversible; the channel's updates and any rollout in progress resume when unpaused.
 
 ```sh
 eas channel:pause production
@@ -65,7 +65,7 @@ Run without a channel name to pick from a list. In CI, pass the channel name wit
 
 While a channel is paused:
 
-- Each client still checks for updates but does not receive new ones. EAS typically responds with a bodyless HTTP 204 response for paused channels.
+- Each client still checks for updates but does not receive new ones. Expo Update typically responds with a bodyless HTTP 204 response for paused channels.
 - Each client keeps running the newest update it already has (possibly the code shipped with the build).
 - No client downloads an update, so the number of monthly active users does not increase.
 - `eas channel:view` and `eas channel:list` show the status as **Paused**.
@@ -93,10 +93,10 @@ Only members with the Release Manager, Admin, or Owner role can publish updates 
 ## Notes
 
 - The official guide examples omit `--environment`; it is required for SDK 55+ (EAS CLI reference). Added in the command table as an adaptation.
-- Source modificationDate: October 13, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas-update/eas-cli/ (docs/pages/eas-update/eas-cli.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [How EAS Update works](./how-it-works.md)
+- [How Expo Update works](./how-it-works.md)
 - [Rollbacks](./rollbacks.md)
 - [Rollouts](./rollouts.md)

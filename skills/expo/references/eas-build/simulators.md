@@ -4,7 +4,7 @@ source: https://docs.expo.dev/build-reference/simulators/
 
 # Build for iOS Simulators
 
-Learn how to configure and install build for iOS simulators when using EAS Build.
+Learn how to configure and install build for iOS simulators when using Expo Build.
 
 ## Signature / Usage
 
@@ -47,9 +47,9 @@ eas build:run -p ios --latest
 
 - Profile names are arbitrary (`preview`, `local`, `simulator`, ...).
 - If you haven't run the iOS Simulator before, follow the iOS Simulator guide first.
-- Source modificationDate: July 01, 2024 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/build-reference/simulators/ (docs/pages/build-reference/simulators.mdx at tag expo@58.0.25).
 
 ## Related
 
 - [Build APKs for Android Emulators and devices](./apk.md)
-- [Configure EAS Build with eas.json](./build-eas-json.md)
+- [Configure Expo Build with eas.json](./build-eas-json.md)

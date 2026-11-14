@@ -8,7 +8,7 @@ Learn about what app credentials Android and iOS require.
 
 ## Signature / Usage
 
-Expo automates signing for Android and iOS, and you can provide your own overrides. EAS Build can generate signed or unsigned applications, but to distribute through the stores the application **must** be signed. Inspect and manage all credentials with:
+Expo automates signing for Android and iOS, and you can provide your own overrides. Expo Build can generate signed or unsigned applications, but to distribute through the stores the application **must** be signed. Inspect and manage all credentials with:
 
 ```sh
 eas credentials
@@ -56,9 +56,10 @@ Codesigns an existing **.ipa** with a new ad hoc provisioning profile (for examp
 - Never check the Android keystore into the repository (debug keystores are the only exception).
 - Google sets the validity start date of a new upload certificate 72 hours in the future after a key reset.
 - Provisioning profiles expire after 12 months, without affecting production apps; create a new one with `eas build -p ios` or `eas credentials`.
+- A push key stored in your account is used only by the apps it's assigned to. To assign an existing key to an app, run `eas credentials`, select `iOS` and a build profile, then `Push Notifications: Manage your Apple Push Notifications Key`, and then `Use an existing push key`.
 - Uploading a new APN key does not change users' Expo Push Tokens; push notification keys do not expire.
 - `eas credentials` deletion only removes credentials from Expo's servers, not from Apple's.
-- Source modificationDate: July 29, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/app-signing/app-credentials/ (docs/pages/app-signing/app-credentials.mdx at tag expo@58.0.25).
 
 ## Related
 

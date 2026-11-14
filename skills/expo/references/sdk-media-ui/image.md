@@ -309,6 +309,41 @@ Reference to a native image instance (`Drawable` on Android, `UIImage` on iOS); 
 - iOS SVG caveat: the system SVG decoder can render distorted or not render elliptical arc commands (`A` / `a`) when `large-arc-flag` and `sweep-flag` are packed (common in minified SVG, e.g. `a6 6 0 0111.573-2.226`). Separate the flags with spaces or give each arc its own command; `react-native-svg` renders these correctly.
 - This is `expo-image`'s `Image`, distinct from React Native core `Image` and from `ImageManipulator` / `ImagePicker`. Core React Native components are out of scope for this skill.
 - The official page also has a "Generating a blurhash on a server" guide (multer + sharp + the `blurhash` package with Express.js); it is not reproduced here.
+- Source: https://docs.expo.dev/versions/v58.0.0/sdk/image/ (docs/pages/versions/v58.0.0/sdk/image.mdx at tag expo@58.0.25).
+
+### Using React Native's asset catalog
+
+On iOS, React Native can compile the PNG and JPEG images you `require()` into an asset catalog instead of copying them into the app as individual files. Apple's app thinning then removes the scales a device does not need. To enable it, set the `RCTUseAssetCatalog` key under `ios.infoPlist` in the app config and make a clean build. Incremental builds keep the files from a previous build, so clean the build folder after you change the key.
+
+```json
+{
+  "expo": {
+    "ios": {
+      "infoPlist": {
+        "RCTUseAssetCatalog": true
+      }
+    }
+  }
+}
+```
+
+The `Image` component loads catalog images the same way it loads other bundled images, with a few limitations:
+
+- `Image.prefetch`, `Image.generateBlurhashAsync`, `Image.generateThumbhashAsync`, and `Image.writeToCacheAsync` read the file at the source path, which does not exist in the app, so they fail for catalog images.
+- `Image.loadAsync` ignores the `maxWidth` and `maxHeight` options and returns the image at the bundled size.
+- Animated PNGs render as a single frame, since asset catalogs do not support animation.
+
+### Caching images
+
+With the default `cachePolicy` of `'disk'`, `Image` stores each image it loads from a URL in a disk cache. On Android and iOS, the disk cache does not follow the `Cache-Control` or `Expires` headers of the image response. How long an image stays in the cache depends on the platform:
+
+- **Android**: Glide keeps up to 250 MB of images in the app's cache directory. When the cache grows past 250 MB, Glide removes the least recently used images until the cache is under that limit. Cached images do not expire.
+- **iOS**: SDWebImage removes an image that the app has not read from the disk cache for one week. This cleanup runs when the app moves to the background or terminates. The disk cache has no size limit by default. To set one, pass `maxDiskSize` to `Image.configureCache()`. If the cache is still larger than the limit, SDWebImage removes the least recently used images until the cache is under half the limit.
+- **Web**: The browser's HTTP cache stores the image and follows the response's cache headers.
+
+The memory cache, which the `'memory'` and `'memory-disk'` cache policies use, lasts only while the app runs. Android and iOS can also delete files in the app's cache directory when the device needs storage space.
+
+To remove cached images on Android and iOS, call `Image.clearDiskCache()` or `Image.clearMemoryCache()`. To load an updated image from the same URL, add a version query parameter to the URL, or set a new `cacheKey` on the source. On Android and iOS, you can also set `cachePolicy` to `'none'`.
 
 ## Related
 

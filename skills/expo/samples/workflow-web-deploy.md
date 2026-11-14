@@ -2,7 +2,7 @@
 source: https://docs.expo.dev/tutorial/cicd/web-deployments/
 ---
 
-# Web Deployment Job (EAS Hosting)
+# Web Deployment Job (Expo Hosting)
 
 Export a static web build and deploy it from a workflow, as a preview or to the production URL.
 
@@ -57,4 +57,5 @@ git push origin v0.2.0
 - `web.output: "static"` produces static HTML, JS and asset files; `single` and `server` outputs also exist.
 - Without `needs`, `deploy_web` runs in parallel with the build jobs. Each preview deployment gets a unique URL; production serves at the project URL.
 - Workflow files are read from the default branch, so commit and push to `main`.
-- Source: https://docs.expo.dev/tutorial/cicd/web-deployments/ (fetched 2026-10-17).
+- Naming: the docs at tag `expo@58.0.25` call this product "Expo Workflows" (previously "EAS Workflows"); the `eas workflow:*` CLI commands and `.eas/workflows/` paths are unchanged.
+- Source: https://docs.expo.dev/tutorial/cicd/web-deployments/ (docs/pages/tutorial/cicd/web-deployments.mdx at tag expo@58.0.25).

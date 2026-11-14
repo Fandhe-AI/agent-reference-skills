@@ -4,7 +4,7 @@ source: https://docs.expo.dev/guides/publishing-websites/
 
 # Publish websites
 
-Export an Expo web app, serve it locally, and deploy it to EAS Hosting or third-party hosts.
+Export an Expo web app, serve it locally, and deploy it to Expo Hosting or third-party hosts.
 
 ## Signature / Usage
 
@@ -32,7 +32,7 @@ npx expo serve
 | `server` | Yes | Enabled by default | **client** and **server** directories. SDK 58 and later: HTML rendered on each request. Requires a deployed server. |
 | `static` | Yes | Opt-in | Separate HTML file for every route in the **app** directory. |
 
-The `server` config shown under Signature / Usage is for SSR-capable hosts such as EAS Hosting. For the static hosts below (Vercel, Netlify, GitHub Pages), set `web.output` to `"single"` (SPA) or `"static"` before running `npx expo export -p web`.
+The `server` config shown under Signature / Usage is for SSR-capable hosts such as Expo Hosting. For the static hosts below (Vercel, Netlify, GitHub Pages), set `web.output` to `"single"` (SPA) or `"static"` before running `npx expo export -p web`.
 
 Vercel configuration for a single-page application (**vercel.json**, `web.output: "single"`):
 
@@ -54,12 +54,13 @@ Netlify SPA redirect (**public/_redirects**, for `web.output: "single"`; not nee
 ## Notes
 
 - Default and tabs templates configure `web.output: "server"` in SDK 58 and later. If `web.output` is omitted the fallback remains `single`; choose `static` explicitly for static hosts. API routes with `static` need `apiRoutes: true` in the `expo-router` plugin; `apiRoutes: false` disables them in either mode.
-- For server output deploy both client assets and server code to a host that supports Expo Router server rendering (such as EAS Hosting); uploading only **client** to a static host gives no server rendering.
+- For server output deploy both client assets and server code to a host that supports Expo Router server rendering (such as Expo Hosting); uploading only **client** to a static host gives no server rendering.
 - `npx expo export -p web` writes to **dist**; **public** is copied into it. Avoid reserved paths such as `public/assets/`. `npx expo serve` serves at `http://localhost:8081` over HTTP only (camera, location, permissions may not work).
 - Global HTTP headers for `static` and `server` output are configured through the `expo-router` plugin.
-- Hosts covered in the source: EAS Hosting (recommended), Netlify, Vercel, AWS Amplify Console, Firebase Hosting, GitHub Pages. SDK 49 and earlier webpack builds use an archived guide.
+- Hosts covered in the source: Expo Hosting (recommended), Netlify, Vercel, AWS Amplify Console, Firebase Hosting, GitHub Pages. SDK 49 and earlier webpack builds use an archived guide.
 - Vercel here is a static / SPA deployment of an Expo export; see the vercel skill for the Vercel platform itself, and the API Routes page for the `expo-server/adapter/vercel` server setup.
 - The source labels the Vercel `rewrites` as single-page application redirects; the static-output guidance (omit `rewrites`) is an editorial clarification.
+- Source: https://docs.expo.dev/guides/publishing-websites/ (docs/pages/guides/publishing-websites.mdx at tag expo@58.0.25); the official docs now name the service Expo Hosting (previously EAS Hosting).
 - Pinned: documentation fetched 2026-10-17, Expo SDK 58.
 
 ## Related

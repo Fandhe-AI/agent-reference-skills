@@ -84,9 +84,10 @@ Throwing a `Response` (for example `throw Response.redirect('https://expo.dev', 
 - Errors thrown during a request return `500: Internal server error`.
 - Bundled with Expo CLI and Metro; server routes can read all environment variables (not only `EXPO_PUBLIC_`). Secret stripping from the client bundle requires `expo/metro-config` in **metro.config.js**. Client code importing a secret includes it in the client bundle for all files in **src/app** other than `+api.ts` files.
 - Production requires a deployed server. Export with `npx expo export --platform web` (add `--no-ssg` to export only server code); test locally with `npx expo serve`.
-- Native deployment is alpha. Set `origin` in the `expo-router` plugin, or use `EXPO_UNSTABLE_DEPLOY_SERVER=1` for automatic versioned deployment during EAS Build (not supported with **app.config.js** / **app.config.ts**; skip with `EXPO_NO_DEPLOY=1`; logs in `.expo/logs/deploy.log`; does not run in `EXPO_OFFLINE` mode).
+- Native deployment is alpha. Set `origin` in the `expo-router` plugin, or use `EXPO_UNSTABLE_DEPLOY_SERVER=1` for automatic versioned deployment during Expo Build (not supported with **app.config.js** / **app.config.ts**; skip with `EXPO_NO_DEPLOY=1`; logs in `.expo/logs/deploy.log`; does not run in `EXPO_OFFLINE` mode).
 - Third-party hosting adapters (`expo-server/adapter/bun`, `express`, `netlify`, `vercel`, ...) export `createRequestHandler({ build })`. Third-party adapters are subject to breaking changes with no continuous tests. `expo-server` does not inflate **.env** files. Older SDKs use `@expo/server`.
 - Known limitations: no dynamic imports (everything but Node.js built-ins is bundled into one file, so libraries with multiple platform binaries such as `sharp` cannot be used); ESM is not supported at runtime (code is transpiled to CommonJS).
+- Source: https://docs.expo.dev/router/web/api-routes/ (docs/pages/router/web/api-routes.mdx at tag expo@58.0.25); the official docs now name the services Expo Hosting / Expo Update / Expo Build (previously EAS Hosting / EAS Update / EAS Build).
 - Pinned: documentation fetched 2026-10-17 (page modificationDate September 16, 2026), Expo SDK 58.
 
 Express adapter example:

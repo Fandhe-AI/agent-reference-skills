@@ -16,7 +16,7 @@ npx expo install expo-updates
 import * as Updates from 'expo-updates';
 ```
 
-The library can be configured automatically using EAS Update, or manually when a different remote update service is required or configuration is only specified in native files. The remote service must implement the Expo Updates protocol. Minimum app config: `updates.url` and `runtimeVersion`.
+Expo Update is the hosted update service from Expo, and `expo-updates` is the library that your app uses to get updates from it or from another update service. The library can be configured automatically using Expo Update, or manually when a different remote update service is required or configuration is only specified in native files. The remote service must implement the Expo Updates protocol. Minimum app config: `updates.url` and `runtimeVersion`.
 
 By default, `expo-updates` checks for updates when the app launches and applies a downloaded update the next time the app is restarted. Tune this with `checkAutomatically` and `fallbackToCacheTimeout`.
 
@@ -109,7 +109,7 @@ All constants: Android, iOS, tvOS.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `Updates.channel` | `string \| null` | Channel name of the current build if configured for EAS Update, `null` otherwise. Always `null` in Expo Go and development builds. |
+| `Updates.channel` | `string \| null` | Channel name of the current build if configured for Expo Update, `null` otherwise. Always `null` in Expo Go and development builds. |
 | `Updates.checkAutomatically` | `UpdatesCheckAutomaticallyValue \| null` | Determines if and when `expo-updates` checks for and downloads updates automatically on startup. |
 | `Updates.createdAt` | `Date \| null` | Creation time of the currently running update (embedded or downloaded). `null` when `expo-updates` is disabled. |
 | `Updates.emergencyLaunchReason` | `string \| null` | If `isEmergencyLaunch` is true, an error message describing what failed during initialization. |
@@ -239,11 +239,11 @@ All methods: Android, iOS, tvOS.
 - In a development build or Expo Go, `eas update` content can be browsed to simulate an update, but most of the Updates API is unavailable. Expo Go supports only updates using Expo Go-compatible libraries. The full API is available in a release build (`.apk`, simulator build, `npx expo run:android --variant release`, or `npx expo run:ios --configuration Release`).
 - The `UpdatesModuleInterface` interface (common interface for native module implementations on android, ios, web) and `UpdatesEvents` (`Expo.nativeUpdatesStateChangeEvent`) are documented in the source but not reproduced here.
 - A rollback directive is returned from `checkForUpdateAsync()` with `isAvailable: false` and `isRollBackToEmbedded: true` (`UpdateCheckResultRollBack`). `fetchUpdateAsync()` returns `UpdateFetchResultRollBackToEmbedded`, and `reloadAsync()` then applies the rollback. The official example checks only `isAvailable`.
-- Source modificationDate: October 02, 2026 (SDK 58, `/versions/v58.0.0/`; fetched 2026-10-17).
+- Source: https://docs.expo.dev/versions/v58.0.0/sdk/updates/ (docs/pages/versions/v58.0.0/sdk/updates.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [Get started with EAS Update](./getting-started.md)
+- [Get started with Expo Update](./getting-started.md)
 - [Runtime versions and updates](./runtime-versions.md)
 - [Downloading updates](./download-updates.md)
 - [Override update configuration at runtime](./override.md)

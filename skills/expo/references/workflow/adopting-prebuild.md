@@ -4,7 +4,7 @@ source: https://docs.expo.dev/guides/adopting-prebuild/
 
 # Adopt Prebuild
 
-Adopt Expo Prebuild in a project that was bootstrapped with React Native CLI (`npx @react-native-community/cli@latest init`).
+Adopt Expo Prebuild in a project that was created with React Native CLI (`npx @react-native-community/cli@latest init`). To learn what Expo Prebuild does and when to use it, see the Continuous Native Generation (CNG) guide.
 
 ## Signature / Usage
 
@@ -35,9 +35,10 @@ npx expo run:ios
 - Not all `react-native` versions are explicitly supported; use a `react-native` version that has a corresponding Expo SDK version.
 - Optional extras: add **.expo** to **.gitignore**; remove all fields outside the top-level `expo` object in **app.json**; see Customizing Metro for **metro.config.js**; change `package.json` scripts to Expo CLI `run` commands (better logging, auto code signing, better simulator handling).
 - Migrating native customizations: map overlapping changes to built-in app config fields (for example `expo.icon`); check whether packages need an Expo config plugin (`npx expo install` can add some automatically; community plugins live in `expo/config-plugins`); inspect output with the VS Code Expo extension ("Expo: Preview Modifier"); write local config plugins if needed.
-- Next features to adopt: EAS Build, EAS Update, Expo for web, Expo Dev Client, Expo native module API.
+- Next features to adopt: Expo Build, Expo Update, Expo for web, Expo Dev Client, Expo native module API.
 - Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: July 28, 2026). Docs describe Expo SDK 58.
+- Source: https://docs.expo.dev/guides/adopting-prebuild/ (docs/pages/guides/adopting-prebuild.mdx at tag expo@58.0.25); the official page title is now "Adopt Prebuild in an existing React Native project", and the docs now say "Expo Build" / "Expo Update" (formerly "EAS Build" / "EAS Update").
 
 ## Related
 

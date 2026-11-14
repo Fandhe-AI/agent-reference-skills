@@ -4,42 +4,38 @@ source: https://docs.expo.dev/tutorial/screenshot/
 
 # Capture a View and Save It to the Media Library
 
-Request media library permission, capture a `View` with `react-native-view-shot`, and save the result with `expo-media-library`.
+Request media library write permission, capture a `View` with `react-native-view-shot`, save the result with `expo-media-library` on Android and iOS, and download it as a JPEG on web.
 
 ```sh
 npx expo install react-native-view-shot expo-media-library
 ```
 
 ```tsx src/app/(tabs)/index.tsx
+import { useEffect, useRef, useState, type ComponentRef } from 'react';
+import { Platform, View, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
-import * as MediaLibrary from 'expo-media-library/legacy';
-import { useEffect, useRef, useState } from 'react';
-import { ImageSourcePropType, StyleSheet, View } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import * as MediaLibrary from 'expo-media-library';
 import { captureRef } from 'react-native-view-shot';
+import type { ImageSource } from 'expo-image';
 
 import Button from '@/components/button';
-import CircleButton from '@/components/circle-button';
-import EmojiList from '@/components/emoji-list';
-import EmojiPicker from '@/components/emoji-picker';
-import IconButton from '@/components/icon-button';
 import ImageViewer from '@/components/image-viewer';
-
+import IconButton from '@/components/icon-button';
+import CircleButton from '@/components/circle-button';
+import EmojiPicker from '@/components/emoji-picker';
+import EmojiList from '@/components/emoji-list';
 import EmojiSticker from '@/components/emoji-sticker';
 
 const PlaceholderImage = require('@/assets/images/background-image.png');
 
 export default function Index() {
-  const [selectedImage, setSelectedImage] = useState<string | undefined>(
-    undefined
-  );
+  const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined);
   const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [pickedEmoji, setPickedEmoji] = useState<
-    ImageSourcePropType | undefined
-  >(undefined);
-  const [permissionResponse, requestPermission] = ImagePicker.useMediaLibraryPermissions();
-  const imageRef = useRef<View>(null);
+  const [pickedEmoji, setPickedEmoji] = useState<ImageSource | undefined>(undefined);
+  const [permissionResponse, requestPermission] = MediaLibrary.usePermissions({ writeOnly: true });
+  const imageRef = useRef<ComponentRef<typeof View>>(null);
 
   useEffect(() => {
     if (!permissionResponse?.granted) {
@@ -48,7 +44,7 @@ export default function Index() {
   }, []);
 
   const pickImageAsync = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
       quality: 1,
@@ -75,24 +71,38 @@ export default function Index() {
   };
 
   const onSaveImageAsync = async () => {
-    try {
-      const localUri = await captureRef(imageRef, {
-        height: 440,
-        quality: 1,
-      });
+    if (Platform.OS !== 'web') {
+      try {
+        const localUri = await captureRef(imageRef, {
+          height: 440,
+          quality: 1,
+        });
 
-      await MediaLibrary.saveToLibraryAsync(localUri);
-      if (localUri) {
+        await MediaLibrary.Asset.create(localUri);
         alert('Saved!');
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.error(e);
-      alert('Failed to save the image.');
+    } else {
+      try {
+        const dataUrl = await captureRef(imageRef, {
+          format: 'jpg',
+          quality: 0.95,
+          result: 'data-uri',
+        });
+
+        const link = document.createElement('a');
+        link.download = 'sticker-smash.jpeg';
+        link.href = dataUrl;
+        link.click();
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
         <View ref={imageRef} collapsable={false}>
           <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
@@ -100,11 +110,27 @@ export default function Index() {
         </View>
       </View>
       {showAppOptions ? (
-        <View style={styles.optionsContainer}>
+        <View style={styles.footerContainer}>
           <View style={styles.optionsRow}>
-            <IconButton icon="refresh" label="Reset" onPress={onReset} />
+            <IconButton
+              icon={{
+                android: require('@expo/material-symbols/refresh.xml'),
+                ios: 'arrow.counterclockwise',
+                web: 'refresh',
+              }}
+              label="Reset"
+              onPress={onReset}
+            />
             <CircleButton onPress={onAddSticker} />
-            <IconButton icon="save-alt" label="Save" onPress={onSaveImageAsync} />
+            <IconButton
+              icon={{
+                android: require('@expo/material-symbols/download.xml'),
+                ios: 'square.and.arrow.down',
+                web: 'download',
+              }}
+              label="Save"
+              onPress={onSaveImageAsync}
+            />
           </View>
         </View>
       ) : (
@@ -116,7 +142,7 @@ export default function Index() {
       <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
         <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
       </EmojiPicker>
-    </GestureHandlerRootView>
+    </SafeAreaView>
   );
 }
 
@@ -128,14 +154,11 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
+    paddingTop: Platform.select({ web: 96, default: 20 }),
   },
   footerContainer: {
     flex: 1 / 3,
     alignItems: 'center',
-  },
-  optionsContainer: {
-    position: 'absolute',
-    bottom: 80,
   },
   optionsRow: {
     alignItems: 'center',
@@ -146,9 +169,10 @@ const styles = StyleSheet.create({
 
 ## Notes
 
-- `ImagePicker.useMediaLibraryPermissions()` returns `[permissionResponse, requestPermission]`; `permissionResponse` is `null` until the user has answered. The tutorial states this hook requests both read and write permissions.
-- `captureRef()` returns a promise resolving to the captured file URI, which is passed to `MediaLibrary.saveToLibraryAsync()` (imported from `expo-media-library/legacy` in this sample).
+- `MediaLibrary.usePermissions({ writeOnly: true })` returns `[permissionResponse, requestPermission]`; the app only saves images, so it asks for write access without read access. `permissionResponse` is `null` until the user has answered.
+- `captureRef()` returns a promise resolving to the captured file URI, which is passed to `MediaLibrary.Asset.create()` on Android and iOS. On web, `result: 'data-uri'` returns a data URL that is downloaded through a link element, because `expo-media-library` works only on Android and iOS.
 - `collapsable={false}` on the captured `View` keeps it from being flattened so only the background image and sticker are captured.
-- The page shows the result on Android and iOS; its next chapter (platform differences) handles the web, which this sample does not cover.
-- Deviation from source: the tutorial targets SDK 57 and imports from `expo-media-library`; the SDK 58 reference marks `MediaLibrary.saveToLibraryAsync` as deprecated ("import this method from `expo-media-library/legacy`. This method will throw in runtime."), so this sample imports `expo-media-library/legacy`. The catch block also surfaces the error instead of only logging it.
-- Source: https://docs.expo.dev/tutorial/screenshot/ (fetched 2026-10-17, modificationDate September 03, 2026).
+- Error handling: the official tutorial at this tag logs failures with `console.log(e)` in both `catch` blocks and has no failure alert; production apps should surface a save failure to the user (for example with `alert`).
+- `MediaLibrary.usePermissions()` and its `useEffect` run on web in the official tutorial at this tag, which is kept verbatim; if the permission hook is unsupported on web in your SDK build, guard the hook-driven request with `Platform.OS !== 'web'`.
+- Migration: the previous version of this sample used `MediaLibrary.saveToLibraryAsync()` imported from `expo-media-library/legacy` and `ImagePicker.useMediaLibraryPermissions()`; the tutorial at tag `expo@58.0.25` uses `MediaLibrary.Asset.create()` and `MediaLibrary.usePermissions({ writeOnly: true })` from `expo-media-library`.
+- Source: https://docs.expo.dev/tutorial/screenshot/ (docs/pages/tutorial/screenshot.mdx at tag expo@58.0.25).

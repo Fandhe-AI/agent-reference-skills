@@ -4,7 +4,7 @@ source: https://docs.expo.dev/build/setup/
 
 # Create your first build
 
-Learn how to create a build for your app with EAS Build.
+Learn how to create a build for your app with Expo Build.
 
 ## Signature / Usage
 
@@ -41,12 +41,12 @@ npx create-expo-app@latest my-app --template default@sdk-58
 - Attach a note to a build with `--message`, e.g. `eas build --platform ios --message "Some message"`.
 - `eas build` waits for completion by default (interruptible); list builds with `eas build:list`.
 - Additional configuration: environment variables, monorepos (build-with-monorepos.md), private npm packages, specific tool versions (build-eas-json.md).
-- Install directly to an Android device/iOS Simulator only if built for that purpose; store builds go through the stores (TestFlight etc.). Submit with EAS Submit.
-- Source modificationDate: October 16, 2026 (fetched 2026-10-17).
+- Install directly to an Android device/iOS Simulator only if built for that purpose; store builds go through the stores (TestFlight etc.). Submit with Expo Submit.
+- Source: https://docs.expo.dev/build/setup/ (docs/pages/build/setup.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [EAS Build](./build-introduction.md)
-- [Configure EAS Build with eas.json](./build-eas-json.md)
+- [Expo Build](./build-introduction.md)
+- [Configure Expo Build with eas.json](./build-eas-json.md)
 - [App credentials](./app-credentials.md)
 - [Trigger builds from CI](./building-on-ci.md)

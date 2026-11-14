@@ -4,11 +4,11 @@ source: https://docs.expo.dev/app-signing/managed-credentials/
 
 # Using automatically managed credentials
 
-Learn how to automatically manage your app credentials with EAS.
+Learn how to automatically manage your app credentials with Expo Services.
 
 ## Signature / Usage
 
-For an app to be distributed in a store it must be signed with credentials such as a keystore or a distribution certificate. When you run `eas build`, you are prompted to generate credentials if you have not done so already; they are stored on EAS servers where needed and re-used on subsequent builds unless you specify otherwise.
+For an app to be distributed in a store it must be signed with credentials such as a keystore or a distribution certificate. When you run `eas build`, you are prompted to generate credentials if you have not done so already; they are stored on Expo servers where needed and re-used on subsequent builds unless you specify otherwise.
 
 ```sh
 eas credentials
@@ -26,7 +26,7 @@ eas credentials
 - Team sharing: once the project is configured for collaboration (organization account), teammates with sufficient permissions can run `eas build`. After iOS credentials are generated, collaborators can start iOS builds with only their Expo accounts, without access to the Apple Developer team.
 - Security concerns: see the Security guide (not included in this skill) or use local credentials instead.
 - Credentials can be synced to a local machine or existing credentials migrated to be automatically managed (see the Syncing credentials and Existing credentials guides, not included in this skill).
-- Source modificationDate: May 21, 2025 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/app-signing/managed-credentials/ (docs/pages/app-signing/managed-credentials.mdx at tag expo@58.0.25).
 
 ## Related
 

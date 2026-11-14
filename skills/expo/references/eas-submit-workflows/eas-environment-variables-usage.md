@@ -2,13 +2,13 @@
 source: https://docs.expo.dev/eas/environment-variables/usage/
 ---
 
-# Using environment variables in EAS
+# Using environment variables in Expo Services
 
-Learn how to use environment variables in EAS builds, updates, hosting, and workflow jobs.
+Learn how to use environment variables builds, updates, hosting, and workflow jobs with Expo Services.
 
 ## Signature / Usage
 
-Select the EAS environment for a build profile in `eas.json`:
+Select the Expo Services environment for a build profile in `eas.json`:
 
 ```json
 {
@@ -50,7 +50,7 @@ jobs:
       branch: preview
 ```
 
-Set a variable dynamically in a build job (for example from an EAS Build hook):
+Set a variable dynamically in a build job (for example from an Expo Build hook):
 
 ```sh
 set-env EXAMPLE_ENV "example value"
@@ -58,19 +58,19 @@ set-env EXAMPLE_ENV "example value"
 
 ## Options / Props
 
-### Built-in EAS Build environment variables
+### Built-in Expo Build environment variables
 
 Exposed to each job; not part of any project environment and not available when evaluating app.config.js locally.
 
 | Name | Description |
 | --- | --- |
 | `CI=1` | Indicates this is a CI environment |
-| `EAS_BUILD=true` | Indicates this is an EAS Build environment |
+| `EAS_BUILD=true` | Indicates this is an Expo Build environment |
 | `EAS_BUILD_PLATFORM` | `android` or `ios` |
 | `EAS_BUILD_RUNNER` | `eas-build` for cloud builds, `local-build-plugin` for local builds |
 | `EAS_BUILD_ID` | The build ID |
 | `EAS_BUILD_PROFILE` | Name of the build profile from eas.json |
-| `EAS_BUILD_PROJECT_ID` | The EAS project ID |
+| `EAS_BUILD_PROJECT_ID` | The Expo Services project ID |
 | `EAS_BUILD_GIT_COMMIT_HASH` | Hash of the Git commit |
 | `EAS_BUILD_NPM_CACHE_URL` | URL of the npm cache |
 | `EAS_BUILD_MAVEN_CACHE_URL` | URL of the Maven cache |
@@ -95,15 +95,16 @@ Exposed to each job; not part of any project environment and not available when 
 
 - If `environment` is not set on a build profile: `production` when `distribution` is `store`, `development` when `developmentClient` is `true`, `preview` for everything else.
 - Secret variables are not available during build configuration resolution in EAS CLI, nor during the update process.
-- EAS Update: in SDK 55 or later the `--environment` flag is required for `eas update`; for SDK 54 or earlier it falls back to local `.env` files when omitted. With the flag, only the specified EAS environment is used and project `.env` files are not.
-- EAS Hosting: only plain text and sensitive variables can be used; secrets cannot be deployed. Client-side `EXPO_PUBLIC_*` values are inlined by `npx expo export`; server-side values (API routes, `+api.ts`) are uploaded with `eas deploy`. Variables loaded with `--environment` take precedence over `.env` / `.env.local`. Deployments are immutable, so re-export and re-deploy after changing a variable.
-- Read variables on later EAS Build jobs with `process.env.VARIABLE_NAME` (Node.js) or `$VARIABLE_NAME` (shell). `set-env` is available in `PATH` on EAS Build workers.
+- Expo Update: in SDK 55 or later the `--environment` flag is required for `eas update`; for SDK 54 or earlier it falls back to local `.env` files when omitted. With the flag, only the specified Expo Services environment is used and project `.env` files are not.
+- Expo Hosting: only plain text and sensitive variables can be used; secrets cannot be deployed. Client-side `EXPO_PUBLIC_*` values are inlined by `npx expo export`; server-side values (API routes, `+api.ts`) are uploaded with `eas deploy`. Variables loaded with `--environment` take precedence over `.env` / `.env.local`. Deployments are immutable, so re-export and re-deploy after changing a variable.
+- Read variables on later Expo Build jobs with `process.env.VARIABLE_NAME` (Node.js) or `$VARIABLE_NAME` (shell). `set-env` is available in `PATH` on Expo Build workers.
 - Keep the job environment in sync with the build profile to avoid mismatched secrets.
 - Source modificationDate: July 29, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas/environment-variables/usage/ (docs/pages/eas/environment-variables/usage.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [Environment variables in EAS](./eas-environment-variables.md)
-- [Create and manage environment variables in EAS](./eas-environment-variables-manage.md)
-- [Environment variables in EAS Workflows](./workflows-environment.md)
-- [Syntax for EAS Workflows](./workflows-syntax.md)
+- [Environment variables in Expo Services](./eas-environment-variables.md)
+- [Create and manage environment variables in Expo Services](./eas-environment-variables-manage.md)
+- [Environment variables in Expo Workflows](./workflows-environment.md)
+- [Syntax for Expo Workflows](./workflows-syntax.md)

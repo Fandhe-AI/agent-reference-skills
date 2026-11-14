@@ -14,7 +14,7 @@ Adapted (not in the official docs): adds `--environment`, which the EAS CLI refe
 eas update --rollout-percentage=10 --environment production
 ```
 
-In this example the update is only available to 10% of your end users when published. EAS provides per-update and branch-based rollout mechanisms.
+In this example the update is only available to 10% of your end users when published. Expo Update provides per-update and branch-based rollout mechanisms.
 
 ### Per-update rollouts
 
@@ -22,17 +22,37 @@ Specify a percentage of users that should receive a new update on publish, then 
 
 - **Starting**: add `--rollout-percentage` to `eas update`.
 - **Progressing**: `eas update:edit` guides you through selecting the update and entering the new percentage.
-- **Ending**: roll out fully by setting the percentage to 100, or revert with `eas update:revert-update-rollout`.
+- **Ending**: three options:
+  - Finish the rollout: use `eas update:edit` to increase the rollout percentage to 100.
+  - Revert the rollout: use `eas update:revert-update-rollout` to restore the control update.
+  - Replace the rollout: publish a new update or roll back to the update embedded in the build (see "Publishing while a rollout is in progress" below).
 
 ```sh
 eas update:edit
 eas update:revert-update-rollout
 ```
 
+#### Publishing while a rollout is in progress
+
+You can replace an active rollout if you need to publish a fix or roll back before the rollout finishes. When you publish to the same branch, platform, and runtime version, EAS CLI shows the active rollout and stops without publishing. To end the rollout and publish, add `--force-end-active-rollout`:
+
+```sh
+eas update --branch production --environment production --message "Fix a crash" --force-end-active-rollout
+```
+
+To roll back to the update embedded in the build instead:
+
+```sh
+eas update:roll-back-to-embedded --force-end-active-rollout
+```
+
+The flag works with `eas update`, `eas update:republish`, `eas update:roll-back-to-embedded`, and `eas update:rollback`, and requires EAS CLI 24.9.0 or later. The active rollout continues until the new update is ready; with code signing, it ends after EAS CLI signs the new update. When the rollout ends, the new update becomes available to all users on the matching branch, platform, and runtime version, and each app downloads and launches it according to its update behavior (a rollback to embedded returns each app to the update embedded in its build). Replacing a rollout keeps the rollout update group and its dashboard links; reverting with `eas update:revert-update-rollout` deletes the rollout update group.
+
+You cannot replace an active rollout with another rollout. To publish a new update with `--rollout-percentage`, first finish the active rollout with `eas update:edit` or revert it with `eas update:revert-update-rollout`.
+
 Additional notes:
 
-- Only one update can be rolled out on a branch at one time.
-- While a rollout is in progress it must be ended before a new update (with the same runtime version) can be published.
+- Only one rollout can be in progress for a given branch, platform, and runtime version.
 - Check the state of the rollout with `eas update:list` or `eas update:view`.
 - Reverting a rollout created on a branch with an existing update republishes the control update.
 - A rollout can be started on a branch with no current update; when reverted, a rollback-to-embedded update is created.
@@ -59,8 +79,8 @@ Additional notes:
 
 ## Notes
 
-- The official guide examples omit `--environment`; it is required for SDK 55+ (EAS CLI reference). Added here as an adaptation.
-- Source modificationDate: July 07, 2025 (fetched 2026-10-17).
+- The official guide examples for `eas update --rollout-percentage` omit `--environment`; it is required for SDK 55+ (EAS CLI reference). Added here as an adaptation. The `--force-end-active-rollout` example in the official guide already includes `--environment production`.
+- Source: https://docs.expo.dev/eas-update/rollouts/ (docs/pages/eas-update/rollouts.mdx at tag expo@58.0.25).
 
 ## Related
 

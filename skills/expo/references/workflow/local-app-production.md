@@ -34,7 +34,7 @@ MYAPP_UPLOAD_KEY_PASSWORD=*****
 
 - Deviation from source: the official page prefixes keytool with sudo; it is omitted here because generating a keystore in the project directory needs no elevated privileges (and sudo would create a root-owned file).
 - Android prerequisites: an OpenJDK distribution (for `keytool`) and the **android** directory (`npx expo prebuild` if you use CNG).
-- If you already built with EAS Build, download credentials: `eas credentials -p android`, select the build profile, then **credentials.json** > **Download credentials from EAS to credentials.json**; move **keystore.jks** to **android/app** and copy the password, alias, and key password values.
+- If you already built with Expo Build, download credentials: `eas credentials -p android`, select the build profile, then **credentials.json** > **Download credentials from EAS to credentials.json**; move **keystore.jks** to **android/app** and copy the password, alias, and key password values.
 - Move the generated keystore to **android/app**. Do not commit the keystore or the gradle variables if **android** is committed; put the variables in **~/.gradle/gradle.properties** instead.
 - The "Add signing config to build.gradle" step (edit **android/app/build.gradle**) has no code block in the saved source; consult the official page for the snippet.
 - The output is generated at **android/app/build/outputs/bundle/release** (app-release.aab).
@@ -42,6 +42,7 @@ MYAPP_UPLOAD_KEY_PASSWORD=*****
 - iOS: use Xcode (configure signing, archive, upload to App Store Connect); see the manual submission guide.
 - Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: July 17, 2026).
+- Source: https://docs.expo.dev/guides/local-app-production/ (docs/pages/guides/local-app-production.mdx at tag expo@58.0.25); the docs now say "Expo Build" / "Expo Submit" (formerly "EAS Build" / "EAS Submit"); the `eas credentials` / `eas submit` commands are unchanged.
 
 ## Related
 

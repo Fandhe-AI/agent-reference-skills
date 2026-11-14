@@ -103,6 +103,28 @@ Badges and labels in header placements:
 </Stack.Toolbar>
 ```
 
+Android header button container color (`buttonContainerColor`, header placements only):
+
+```tsx
+<Stack.Screen options={{ headerTransparent: true }} />
+<Stack.Toolbar placement="right" buttonContainerColor="#000000b3" tintColor="white">
+  <Stack.Toolbar.Button icon={layersIcon} onPress={() => Alert.alert('Layers')} />
+</Stack.Toolbar>
+```
+
+Keep an icon item in the horizontal bar on iPhone Duo (`axisBehavior`, iOS 27.1 and later; not in a published `expo-router` release yet):
+
+```tsx
+<Stack.Toolbar placement="bottom">
+  <Stack.Toolbar.Button icon="questionmark.circle" axisBehavior="horizontalOnly" onPress={showHelp}>
+    Help
+  </Stack.Toolbar.Button>
+  <Stack.Toolbar.Button icon="square.grid.2x2" onPress={toggleLayout}>
+    Grid
+  </Stack.Toolbar.Button>
+</Stack.Toolbar>
+```
+
 Custom view and dynamic visibility:
 
 ```tsx
@@ -122,6 +144,8 @@ Custom view and dynamic visibility:
 | Component / prop | Description |
 | --- | --- |
 | `Stack.Toolbar` `placement` | `"left"`, `"right"` or omitted (`"bottom"`) |
+| `Stack.Toolbar` `buttonContainerColor` | Android only, header placements (`left` / `right`) only: draws each button and menu button on a round Material icon button container in that color. Does not change the back button. On iOS 26 and later header buttons already have a Liquid Glass background |
+| `Stack.Toolbar.Button` / `Stack.Toolbar.Menu` `axisBehavior` | `"automatic"` (default, system decides), `"horizontalOnly"` (keep an item with an icon in the horizontal bar), `"verticalPreferred"`. iPhone Duo, requires iOS 27.1 or later and an app built with Xcode 27.1 or later; Android ignores it |
 | `Stack.Toolbar.Button` | Toolbar button; `icon` (SF Symbol name on iOS, `ImageSourcePropType` on Android), `image` (iOS bottom toolbar, from `useImage`), `iconRenderingMode` (`'template'` default, or `"original"`), `hidden`, `onPress` |
 | `Stack.Toolbar.Menu` | Dropdown menu; `icon`, `title`, `inline` for inline submenus |
 | `Stack.Toolbar.MenuAction` | Menu item; `icon`, `isOn`, `destructive`, `onPress` |
@@ -137,6 +161,8 @@ Custom view and dynamic visibility:
 - iOS custom images inside submenus (`Stack.Toolbar.Menu`) in header placements need `react-native-screens` 4.24.0 or later (SDK 55 bundles `~4.23.0`; SDK 56 bundles a compatible version).
 - The `useImage` + `image` pattern for bottom toolbar custom images is iOS-only and a temporary API that may change.
 - Limitations: native only (no web toolbar); Android icons must be image sources; bottom toolbar only in page components, not layout files; toolbars cannot be nested; badges only in header placements; `Stack.Toolbar.Label` children are dropped on Android; `SearchBarSlot` unsupported on Android.
+- `axisBehavior`: on iPhone Duo, iOS 27.1 can move a header or toolbar item with an icon into the vertical bar; a titled item with no icon stays in the horizontal bar. `horizontalOnly` on one item in a bottom toolbar keeps the whole toolbar horizontal, and iOS hides a `horizontalOnly` item when no horizontal bar is present. For header items (`placement="left"` / `"right"`) Expo Router passes `axisBehavior` to `react-native-screens`; until a release of that library reads it, header items stay on `automatic`, while the bottom toolbar applies it without that release.
+- Source: https://docs.expo.dev/router/advanced/stack-toolbar/ (docs/pages/router/advanced/stack-toolbar.mdx at tag expo@58.0.25)
 - Liquid glass flicker / white background flash: wrap the root layout in `ThemeProvider` from `expo-router` with `DarkTheme` / `DefaultTheme`. Large title not collapsing: make the `ScrollView` the first child, or set `collapsable={false}` on its wrapper.
 - Expo Router is file-based and built on React Navigation; its `Stack` differs from same-named APIs in react-router and tanstack-router.
 - The later code fragments are condensed excerpts; their imports and state declarations are described in prose rather than repeated.

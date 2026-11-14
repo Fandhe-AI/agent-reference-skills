@@ -7,7 +7,7 @@
 | Link preview | Learn how to add a preview to your link on iOS when using Expo Router. | [link-preview.md](./link-preview.md) |
 | Migrate from React Navigation | Learn how to migrate a project using React Navigation to Expo Router. | [migrate-from-react-navigation.md](./migrate-from-react-navigation.md) |
 | Migrate Expo Router from SDK 57 to SDK 58 | Learn how to migrate your Expo Router application from SDK 57 to SDK 58. | [migrate-sdk-57-to-58.md](./migrate-sdk-57-to-58.md) |
-| Redirects | Learn how to redirect URLs in Expo Router. | [redirects.md](./redirects.md) |
+| Redirects and rewrites | Learn how to redirect URLs in Expo Router. | [redirects.md](./redirects.md) |
 | Reserved paths | URL paths reserved by Metro and Expo Router that you should avoid using for routes or static files. | [reserved-paths.md](./reserved-paths.md) |
 | Router | A file-based routing library for React Native and web applications. | [router-api.md](./router-api.md) |
 | Router Color | The Color API of Expo Router provides access to platform-specific native colors. | [router-color.md](./router-color.md) |

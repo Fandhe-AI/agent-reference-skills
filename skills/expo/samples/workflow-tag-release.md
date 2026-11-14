@@ -86,4 +86,5 @@ git push origin main --tags
 - `['v*.*.*']` matches strict three-part versions (recommended); `['v*']` matches any tag starting with `v`. The glob also matches pre-release tags such as `v1.0.0-rc.1`, hence the `!v*.*.*-rc.*` exclusion.
 - Run release candidates in a separate workflow with `tags: ['v*.*.*-rc.*']` that reuses `fingerprint`, `get-build` and `build` but omits `update` and `submit`.
 - Pushing the workflow change to `main` does not trigger it once the trigger is tag-only.
-- Source: https://docs.expo.dev/tutorial/cicd/tag-based-releases/ (fetched 2026-10-17).
+- Naming: the docs at tag `expo@58.0.25` call this product "Expo Workflows" (previously "EAS Workflows"); the `eas workflow:*` CLI commands and `.eas/workflows/` paths are unchanged.
+- Source: https://docs.expo.dev/tutorial/cicd/tag-based-releases/ (docs/pages/tutorial/cicd/tag-based-releases.mdx at tag expo@58.0.25).

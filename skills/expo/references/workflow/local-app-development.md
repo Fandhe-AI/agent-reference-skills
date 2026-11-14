@@ -42,9 +42,10 @@ npx expo run:android --variant freeDebug --app-id dev.expo.myapp.free
 - The compile commands run `npx expo prebuild` first if **android** / **ios** directories do not exist. Re-running prebuild layers changes on existing files; use `npx expo prebuild --clean` (native directories are in **.gitignore** for new projects).
 - Installing `expo-dev-client` makes the debug build a development build.
 - Customizing the Android build type away from `release` breaks Expo's assumption that `release` is used for production.
-- Run EAS Build locally with the `--local` flag (see local builds in EAS Build).
+- Run Expo Build locally with the `--local` flag (see local builds in Expo Build).
 - Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: September 17, 2026).
+- Source: https://docs.expo.dev/guides/local-app-development/ (docs/pages/guides/local-app-development.mdx at tag expo@58.0.25); the docs now say "Expo Build" (formerly "EAS Build").
 
 ## Related
 

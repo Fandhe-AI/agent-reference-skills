@@ -4,11 +4,11 @@ source: https://docs.expo.dev/build-reference/ios-capabilities/
 
 # iOS capabilities
 
-Learn about built-in iOS capabilities supported in EAS Build and how to enable or disable them.
+Learn about built-in iOS capabilities supported in Expo Build and how to enable or disable them.
 
 ## Signature / Usage
 
-EAS Build automatically synchronizes capabilities on the Apple Developer Console with your local entitlements configuration when you run `eas build`. Capabilities are web services provided by Apple. In an Expo app, entitlements are read from the introspected app config (`ios.entitlements`). Inspect it with:
+Expo Build automatically synchronizes capabilities on the Apple Developer Console with your local entitlements configuration when you run `eas build`. Capabilities are web services provided by Apple. In an Expo app, entitlements are read from the introspected app config (`ios.entitlements`). Inspect it with:
 
 ```sh
 npx expo config --type introspect
@@ -36,7 +36,7 @@ Broadcast push notifications (an option inside Push Notifications, no entitlemen
 
 ## Options / Props
 
-Supported capabilities (EAS Build only enables capabilities it has built-in support for; unsupported entitlements must be enabled manually in Apple Developer Console):
+Supported capabilities (Expo Build only enables capabilities it has built-in support for; unsupported entitlements must be enabled manually in Apple Developer Console):
 
 | Support | Capability | Entitlement string |
 | --- | --- | --- |
@@ -109,10 +109,10 @@ Supported capabilities (EAS Build only enables capabilities it has built-in supp
 
 - In an existing React Native project, entitlements are read from **ios/\*\*/\*.entitlements**.
 - Enabling: if a supported entitlement is present, `eas build` enables it on Apple Developer Console (skipped if already enabled). Disabling: if a capability is enabled remotely but missing from the native entitlements file, `eas build` disables it automatically.
-- Broadcast: EAS Build sets the Broadcast option only when it enables the Push Notifications capability, so entitlements also need `aps-environment`. Apple limits broadcast push notifications to Live Activities on iOS 18 and later. If Broadcast is enabled only in Apple Developer Console, the next `eas build` resets Push Notifications to defaults and turns Broadcast off; APNs then rejects channel management requests with a `FeatureNotEnabled` error.
+- Broadcast: Expo Build sets the Broadcast option only when it enables the Push Notifications capability, so entitlements also need `aps-environment`. Apple limits broadcast push notifications to Live Activities on iOS 18 and later. If Broadcast is enabled only in Apple Developer Console, the next `eas build` resets Push Notifications to defaults and turns Broadcast off; APNs then rejects channel management requests with a `FeatureNotEnabled` error.
 - Merchant IDs, App Groups, and CloudKit Containers can be automatically registered and assigned; these require Apple cookies authentication (running locally) because the official App Store Connect API does not support these operations.
 - Manual setup (Xcode or Apple Developer Console) requires regenerating existing provisioning profiles. A missing capability produces errors such as `Provisioning profile "..." doesn't support the Associated Domains capability.`
-- Source modificationDate: July 28, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/build-reference/ios-capabilities/ (docs/pages/build-reference/ios-capabilities.mdx at tag expo@58.0.25).
 
 ## Related
 

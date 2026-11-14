@@ -2,13 +2,13 @@
 source: https://docs.expo.dev/eas-update/code-signing/
 ---
 
-# End-to-end code signing with EAS Update
+# End-to-end code signing with Expo Update
 
-Learn how code signing and key rotation work in EAS Update.
+Learn how code signing and key rotation work in Expo Update.
 
 ## Signature / Usage
 
-The `expo-updates` library supports end-to-end code signing using public-key cryptography. Updates are signed with your own keys and the signature is verified on the client before the update is applied, so ISPs, CDNs, cloud providers, and even EAS itself cannot tamper with updates.
+The `expo-updates` library supports end-to-end code signing using public-key cryptography. Updates are signed with your own keys and the signature is verified on the client before the update is applied, so ISPs, CDNs, cloud providers, and even Expo Update itself cannot tamper with updates.
 
 ```sh
 npx expo-updates codesigning:generate \
@@ -86,7 +86,7 @@ Adapted (not in the official docs): adds `--environment`, which the EAS CLI refe
 eas update --private-key-path ../keys/private-key.pem --environment production
 ```
 
-EAS CLI detects that code signing is configured, verifies the update's integrity, and creates a digital signature with your private key locally (the key never leaves your machine). The signature is sent to EAS and stored alongside the update.
+EAS CLI detects that code signing is configured, verifies the update's integrity, and creates a digital signature with your private key locally (the key never leaves your machine). The signature is sent to Expo Update and stored alongside the update.
 
 #### 4. Verify that the update is loaded
 
@@ -108,10 +108,10 @@ Treat as key rotation to a `null` key: back up the old key and certificate, remo
 ## Notes
 
 - The official procedure only mentions removing `updates.codeSigningMetadata`; per the app config reference, `updates.codeSigningCertificate` also makes all updates require a signature, so remove it as well (and the corresponding native config in non-CNG projects) before building the new runtime version.
-- XML entity form (`&quot;`) in the AndroidManifest.xml JSON follows docs/pages/eas-update/*.mdx at expo@58.0.12.
+- XML entity form (`&quot;`) in the AndroidManifest.xml JSON follows docs/pages/eas-update/*.mdx at expo@58.0.25.
 - The official guide example omits `--environment`; it is required for SDK 55+ (EAS CLI reference).
-- EAS Update Code Signing is only available to accounts subscribed to the EAS Production or Enterprise plans.
-- Source modificationDate: July 21, 2026 (fetched 2026-10-17).
+- Expo Update Code Signing is only available to accounts subscribed to the Production or Enterprise plans.
+- Source: https://docs.expo.dev/eas-update/code-signing/ (docs/pages/eas-update/code-signing.mdx at tag expo@58.0.25).
 
 ## Related
 

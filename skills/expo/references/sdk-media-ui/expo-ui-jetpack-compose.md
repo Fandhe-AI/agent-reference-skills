@@ -170,6 +170,7 @@ Components exported from `@expo/ui/jetpack-compose` (modifiers from `@expo/ui/je
 | `Checkbox` | Selection controls. |
 | `Chip` | Compact elements. |
 | `Column` | Place children vertically. |
+| `CompositionLocalProvider` | Provides composition local values to all children (for example `minimumInteractiveComponentSize`). |
 | `DateTimePicker` | Select dates and times. |
 | `Divider` | Visual separators. |
 | `DockedSearchBar` | Inline search input. |
@@ -202,12 +203,14 @@ Components exported from `@expo/ui/jetpack-compose` (modifiers from `@expo/ui/je
 | `Slider` | Select values from a range. |
 | `Snackbar` | Brief notification at the bottom of the screen. |
 | `Spacer` | Flexible space between elements. |
+| `SplitButtonLayout` | A primary action button next to a trailing button that opens related actions. |
 | `Surface` | Styled content containers. |
 | `Switch` | Toggle controls. |
 | `Text` | Styled text. |
 | `TextField` | Native Material3 text input. |
 | `ToggleButton` | Native Material3 toggle buttons. |
 | `Tooltip` | Contextual information on long-press. |
+| `TopAppBar` | A title, a navigation icon, and actions at the top of a screen. |
 | `useNativeState` | Hook creating observable state shared between JavaScript and native Jetpack Compose views. |
 
 ## Notes
@@ -215,6 +218,7 @@ Components exported from `@expo/ui/jetpack-compose` (modifiers from `@expo/ui/je
 - Platforms: Android, included in Expo Go. Package `@expo/ui`, source `https://github.com/expo/expo/tree/sdk-58/packages/expo-ui`. Pinned to Expo SDK 58 docs (modificationDate September 23, 2026). The official section has 52 pages; per-component pages (`/versions/v58.0.0/sdk/ui/jetpack-compose/<name>/`) and the "Extending with Jetpack Compose" page (custom components and modifiers) are not collected here.
 - Using a component requires wrapping it in `Host` (a container for Jetpack Compose views). Flexbox applies to `Host` only; inside, use `Row` and `Column`.
 - Distinct from native Jetpack Compose: these are `@expo/ui` React wrappers (`Host`, `Button` with `onClick`, `modifiers` arrays), not `androidx.compose.*`. See the android-compose-ui and android-compose-components skills for the native Compose APIs, and apple-swiftui for the iOS counterpart; Expo UI SwiftUI wrappers are in swift-ui here.
+- Source: https://docs.expo.dev/versions/v58.0.0/sdk/ui/jetpack-compose/compositionlocalprovider/ , https://docs.expo.dev/versions/v58.0.0/sdk/ui/jetpack-compose/splitbuttonlayout/ and https://docs.expo.dev/versions/v58.0.0/sdk/ui/jetpack-compose/topappbar/ (the matching `.mdx` files under docs/pages/versions/v58.0.0/sdk/ui/jetpack-compose/ at tag expo@58.0.25); rows added from those pages' descriptions.
 
 ## Related
 

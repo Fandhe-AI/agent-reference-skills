@@ -2,13 +2,13 @@
 source: https://docs.expo.dev/eas-update/debug/
 ---
 
-# EAS Update debugging
+# Expo Update debugging
 
 Learn how to use basic debugging techniques to fix an update issue.
 
 ## Signature / Usage
 
-Verify which updates run on which builds, starting at the EAS website Deployments page (a _deployment_ is a group of builds and their corresponding updates). If you do not use EAS Build, the Deployments page is empty; see "Configuration without EAS Build" below.
+Verify which updates run on which builds, starting at the Expo website Deployments page (a _deployment_ is a group of builds and their corresponding updates). If you do not use Expo Build, the Deployments page is empty; see "Configuration without Expo Build" below.
 
 Adapted (not in the official docs): adds `--environment`, which the EAS CLI reference marks as required for Expo SDK 55 or greater.
 
@@ -27,15 +27,15 @@ After publishing, the output displays the branch and the runtime version.
 | Unexpected branch | Map the channel to the correct branch |
 | Missing updates | Publish an update to the branch; if already published, check the Updates page for a runtime version matching the build |
 | Missing branch | Channel is correct but not linked; map it to the branch |
-| Missing deployment | Build is not configured for EAS Update; configure channel and runtime version, verify general configuration, and rebuild |
+| Missing deployment | Build is not configured for Expo Update; configure channel and runtime version, verify general configuration, and rebuild |
 
 #### Automatic roll back when an update crashes
 
-If everything looks correct but the app shows the previous update or embedded code, the new update may crash before the root component renders. EAS Update automatically rolls back to the previous update when it detects such a crash (see [Error recovery](./error-recovery.md)). Identify the error, then publish a fixing update. A common cause is a missing environment variable.
+If everything looks correct but the app shows the previous update or embedded code, the new update may crash before the root component renders. Expo Update automatically rolls back to the previous update when it detects such a crash (see [Error recovery](./error-recovery.md)). Identify the error, then publish a fixing update. A common cause is a missing environment variable.
 
 #### Failed to load all assets
 
-The app downloaded the manifest but not all assets (those not present in the original build). Common reasons: many large assets added, poor connection, or the user is in a country that blocks or throttles Cloudflare IP addresses (used by EAS Update to serve assets). Inspect the asset list, reproduce on your own device and examine `expo-updates` log entries, and check the IP of affected users in error services such as Sentry.
+The app downloaded the manifest but not all assets (those not present in the original build). Common reasons: many large assets added, poor connection, or the user is in a country that blocks or throttles Cloudflare IP addresses (used by Expo Update to serve assets). Inspect the asset list, reproduce on your own device and examine `expo-updates` log entries, and check the IP of affected users in error services such as Sentry.
 
 ### Solutions
 
@@ -67,7 +67,7 @@ Configure the runtime version in app config (default `{ "policy": "appVersion" }
 }
 ```
 
-Map a channel to a branch (create a branch with `eas branch:create` if needed), or create a channel on EAS servers:
+Map a channel to a branch (create a branch with `eas branch:create` if needed), or create a channel on Expo servers:
 
 ```sh
 eas channel:edit production --branch release-1.0
@@ -88,18 +88,18 @@ Fields expected after `eas update:configure`:
 - `updates.enabled` not `false` (default `true`).
 - `expo-updates` in **package.json** (`npx expo install expo-updates`).
 
-`eas build` runs `npx expo prebuild` on EAS servers. If your project has no native directories, commit changes and run `npx expo prebuild` to inspect **android/app/src/main/AndroidManifest.xml** and **ios/your-project-name/Supporting/Expo.plist**:
+`eas build` runs `npx expo prebuild` on Expo servers. If your project has no native directories, commit changes and run `npx expo prebuild` to inspect **android/app/src/main/AndroidManifest.xml** and **ios/your-project-name/Supporting/Expo.plist**:
 
 ```xml
 <meta-data android:name="expo.modules.updates.EXPO_RUNTIME_VERSION" android:value="your-runtime-version-here"/>
 <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="https://u.expo.dev/your-project-id-here"/>
 ```
 
-#### Configuration without EAS Build
+#### Configuration without Expo Build
 
-Configure the channel and runtime version manually (see [Using EAS Update without other EAS services](./standalone-service.md)). Verify on the website: the Channels page shows channel names and channel-branch mapping; the Branches page lists each branch's updates with runtime versions and platforms. A build and an update are compatible when they share the same runtime version and platform, and the most recent compatible update on the linked branch is served.
+Configure the channel and runtime version manually (see [Using Expo Update without other Expo Services](./standalone-service.md)). Verify on the website: the Channels page shows channel names and channel-branch mapping; the Branches page lists each branch's updates with runtime versions and platforms. A build and an update are compatible when they share the same runtime version and platform, and the most recent compatible update on the linked branch is served.
 
-### Debugging EAS Update
+### Debugging Expo Update
 
 #### Inspecting a build manually
 
@@ -142,7 +142,7 @@ By default a release build is required for `expo-updates` to be enabled; debug b
 sed -i '' 's/SKIP_BUNDLING/FORCE_BUNDLING/g;' ios/<project name>.xcodeproj/project.pbxproj
 ```
 
-- EAS Build: set the variable in **eas.json**:
+- Expo Build: set the variable in **eas.json**:
 
 ```json
 {
@@ -183,11 +183,11 @@ This creates "update 3" (a re-publish of update 1) as the most recent update on 
 
 ## Notes
 
-- Source modificationDate: July 29, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas-update/debug/ (docs/pages/eas-update/debug.mdx at tag expo@58.0.25).
 
 ## Related
 
 - [Error recovery](./error-recovery.md)
 - [Manage branches and channels with EAS CLI](./branches-channels-cli.md)
-- [Using EAS Update without other EAS services](./standalone-service.md)
+- [Using Expo Update without other Expo Services](./standalone-service.md)
 - [Updates](./updates.md)

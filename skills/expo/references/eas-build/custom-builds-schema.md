@@ -4,7 +4,7 @@ source: https://docs.expo.dev/custom-builds/schema/
 
 # Custom build configuration schema
 
-A reference of configuration options for custom builds with EAS Build.
+A reference of configuration options for custom builds with Expo Build.
 
 ## Signature / Usage
 
@@ -109,13 +109,13 @@ build:
         working_directory: /a/b/c
 ```
 
-### Built-in EAS functions
+### Built-in `eas/` functions
 
 Built-in functions must start with the `eas/` prefix.
 
 | Function | Platform | Purpose and inputs (as documented) |
 | --- | --- | --- |
-| `eas/build` | both | All-in-one function encapsulating the whole EAS Build process, resolved from the build profile in eas.json. Accepts no inputs and is not configurable. |
+| `eas/build` | both | All-in-one function encapsulating the whole Expo Build process, resolved from the build profile in eas.json. Accepts no inputs and is not configurable. |
 | `eas/maestro_test` | both | Installs Maestro, prepares an emulator/simulator and tests the app. Inputs: `flow_path` (required), `app_path` (default `android/app/build/outputs/**/*.apk` or `ios/build/Build/Products/*simulator/*.app`). Android Emulator requires the old Build Infrastructure (project settings). |
 | `eas/checkout` | both | Checks out project source files. Input `ref`: Git branch, tag (`refs/tags/v1.2.3`) or full commit SHA; works only with Git-based project sources; place before `eas/build`. |
 | `eas/use_npm_token` | both | Configures package managers for private packages by writing **.npmrc** from the `NPM_TOKEN` secret. |
@@ -126,7 +126,7 @@ Built-in functions must start with the `eas/` prefix.
 | `eas/get_credentials_for_build_triggered_by_github_integration` | both | Deprecated. Replace with `eas/resolve_build_config`. |
 | `eas/resolve_apple_team_id_from_credentials` | iOS | Input `credentials` (json, default `${ eas.job.secrets.buildCredentials }`). Output `apple_team_id`. |
 | `eas/prebuild` | both | Runs `expo prebuild`. Inputs: `clean` (boolean, default false), `apple_team_id`. |
-| `eas/configure_eas_update` | both | Requires EAS Update. Inputs: `runtime_version`, `channel`. |
+| `eas/configure_eas_update` | both | Requires Expo Update. Inputs: `runtime_version`, `channel`. |
 | `eas/inject_android_credentials` | Android | Configures the keystore and injects the signing config into Gradle. Input `credentials`. |
 | `eas/configure_ios_credentials` | iOS | Assigns provisioning profiles to Xcode targets. Inputs: `build_configuration`, `credentials`. |
 | `eas/configure_android_version` | Android | Sets version for remote app version management. Inputs: `version_code`, `version_name`. |
@@ -135,9 +135,9 @@ Built-in functions must start with the `eas/` prefix.
 | `eas/generate_gymfile_from_template` | iOS | Generates a Fastlane `Gymfile` from a template. Inputs: `template`, `credentials`, `build_configuration`, `scheme`, `clean` (default true), `extra`. |
 | `eas/run_fastlane` | iOS | Runs `fastlane gym` against the Gymfile in the `ios` directory. |
 | `eas/find_and_upload_build_artifacts` | both | Finds and uploads the application archive, additional artifacts (via `buildArtifactPaths`) and Xcode logs. |
-| `eas/upload_embedded_bundle` | both | Uploads the embedded bundle for EAS Update patches. Input `ignore_error` (default false). Skipped when EAS Update is not configured, for development builds, and for iOS Simulator builds. |
+| `eas/upload_embedded_bundle` | both | Uploads the embedded bundle for Expo Update patches. Input `ignore_error` (default false). Skipped when Expo Update is not configured, for development builds, and for iOS Simulator builds. |
 | `eas/upload_artifact` | both | Inputs: `path` (required), `type` (default `other` in custom jobs, `application-archive` in build jobs), `name`, `metadata`, `ignore_error`. Output `artifact_id`. |
-| `eas/install_maestro` | both | Input `maestro_version`. |
+| `eas/install_maestro` | both | Input `maestro_version` (string, optional): Maestro version to install (for example, 1.35.0). If not provided, uses a Maestro it finds on the image, or installs the latest version otherwise. Set to `latest` to always install the newest version. |
 | `eas/start_android_emulator` | Android | Inputs: `device_name`, `system_image_package` (for example `system-images;android-30;default;x86_64`). |
 | `eas/start_ios_simulator` | iOS | Input `device_identifier`. |
 | `eas/send_slack_message` | both | Inputs: `message` or `payload` (Slack Block Kit; exactly one), `slack_hook_url` (or the `SLACK_HOOK_URL` environment variable). |
@@ -175,14 +175,14 @@ build:
 - `eas/build` steps differ by platform and credentials (for example Android with `withoutCredentials`, and iOS with `simulator`, omit credential-injection and version steps). Do not add `eas/upload_embedded_bundle` to a config that uses `eas/build` while the upload is enabled; a second upload of the same bundle fails the step.
 - iOS Gymfile template placeholders: `CLEAN`, `SCHEME`, `BUILD_CONFIGURATION`, `EXPORT_METHOD`, `PROFILES`, `ICLOUD_CONTAINER_ENVIRONMENT`, `KEYCHAIN_PATH`, `LOGS_DIRECTORY`, `OUTPUT_DIRECTORY`, `DERIVED_DATA_PATH`, `SCHEME_SIMULATOR_DESTINATION`.
 - The schema reference lists input types as `string`, `num` or `json` (example uses `type: num`), while the custom-builds functions guide example uses `type: number`; the official docs are inconsistent and which spelling is accepted is not confirmed here.
-- The schema reference marks `inputs.key` and `inputs.path` of `eas/restore_build_cache` / `eas/save_build_cache` as required, while the build caching guide calls them without inputs (key derived from a hash of the package manager lock file). For a custom key/path in EAS Workflows, the caching guide uses `eas/restore_cache` / `eas/save_cache` instead.
+- The schema reference marks `inputs.key` and `inputs.path` of `eas/restore_build_cache` / `eas/save_build_cache` as required, while the build caching guide calls them without inputs (key derived from a hash of the package manager lock file). For a custom key/path in Expo Workflows, the caching guide uses `eas/restore_cache` / `eas/save_cache` instead.
 - Maestro tests often time out on images with Xcode 15.0 or 15.2; use the `latest` image.
 - PostHog functions read variables set by `eas integrations:posthog:connect`. `eas/posthog_upload_sourcemaps` with `ignore_error: true` also hides authentication and scope errors.
 - This page documents the built-in functions in condensed form; the full per-function source links are in the official page (github.com/expo/eas-cli, packages/build-tools).
-- Source modificationDate: October 07, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/custom-builds/schema/ (docs/pages/custom-builds/schema.mdx at tag expo@58.0.25).
 
 ## Related
 
 - [TypeScript functions](./custom-builds-functions.md)
-- [Configure EAS Build with eas.json](./build-eas-json.md)
+- [Configure Expo Build with eas.json](./build-eas-json.md)
 - [App version management](./app-versions.md)

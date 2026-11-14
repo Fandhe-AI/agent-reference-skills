@@ -8,7 +8,7 @@ Specify that only certain assets should be included in updates, reducing the ass
 
 ## Signature / Usage
 
-The asset selection feature works with the EAS Update server or any custom server that complies with the `expo-updates` protocol. It launched to general availability in SDK 52.
+The asset selection feature works with the Expo Update server or any custom server that complies with the `expo-updates` protocol. It launched to general availability in SDK 52.
 
 In SDK 52 and later, include `updates.assetPatternsToBeBundled` in your app config with one or more file-matching patterns:
 
@@ -60,10 +60,10 @@ npx expo-updates assets:verify <dir>
 - The page describes the feature as an experimental asset selection feature that reached general availability in SDK 52.
 - Asset selection controls which assets are eligible for over-the-air updates. It does not change which assets are bundled into the native binary, so it does not reduce app startup time.
 - `assets:verify` is part of the `expo-updates` CLI (which also supports code signing), not Expo CLI or EAS CLI. Only available for `expo-updates` >= 0.24.10.
-- Source modificationDate: September 25, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas-update/asset-selection/ (docs/pages/eas-update/asset-selection.mdx at tag expo@58.0.25).
 
 ## Related
 
 - [Runtime versions and updates](./runtime-versions.md)
-- [End-to-end code signing with EAS Update](./code-signing.md)
+- [End-to-end code signing with Expo Update](./code-signing.md)
 - [Updates](./updates.md)

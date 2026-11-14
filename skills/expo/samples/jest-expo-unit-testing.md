@@ -85,4 +85,4 @@ npm run test
 - `@testing-library/react-native` replaces the deprecated `react-test-renderer`, which does not support React 19 and above.
 - SDK 58 and later: `jest-expo` requires Jest 30, so update `jest` and `@types/jest` with it; Expo Router tests also need `@testing-library/react-native` 14 or later (see the Router testing migration guide).
 - For UI testing the page recommends end-to-end tests (Maestro) over snapshot tests. `transformIgnorePatterns`, coverage options and extra Jest scripts are on the source page.
-- Source: https://docs.expo.dev/develop/unit-testing/ (fetched 2026-10-17, modificationDate October 13, 2026).
+- Source: https://docs.expo.dev/develop/unit-testing/ (docs/pages/develop/unit-testing.mdx at tag expo@58.0.25).

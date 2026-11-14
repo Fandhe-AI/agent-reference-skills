@@ -68,6 +68,8 @@ import Constants from 'expo-constants';
 - Platforms: android, ios, tvos, web, expo-go.
 - Deprecated members and their replacements are as listed above (`appOwnership`, `deviceYearClass`, `AndroidManifest.versionCode`, `IOSManifest.*`).
 - Source: `sdk-58` branch `packages/expo-constants`; modificationDate September 15, 2026.
+- `Constants.expoConfig` contains most of the app config; platform-specific values are in `Constants.platform` (for example `Constants.platform.ios.buildNumber`, `null` in Expo Go). Pass custom values through the app config `extra` field and read them from `Constants.expoConfig.extra`. Other device and app details: `expo-device` and `expo-application`.
+- Source: https://docs.expo.dev/versions/v58.0.0/sdk/constants/ (docs/pages/versions/v58.0.0/sdk/constants.mdx at tag expo@58.0.25).
 
 ## Related
 
