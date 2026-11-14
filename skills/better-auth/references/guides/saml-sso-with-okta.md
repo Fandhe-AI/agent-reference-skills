@@ -49,6 +49,8 @@ const ssoConfig = {
 - プロダクションでは本番グレードの IdP と適切な URL を使用する（開発用証明書をライブデプロイに使わない）
 - 1.7 での変更: Okta の Single Sign-on URL（ACS）は `/api/auth/sso/saml2/callback/{providerId}` から `/api/auth/sso/saml2/sp/acs/{providerId}` へ。`samlConfig.callbackUrl` の設定は不要になった。ACS URL は `{baseURL}/sso/saml2/sp/acs/{providerId}` から自動的に導出され、サインイン後の遷移先は `signIn.sso()` の `callbackURL` で制御する。動的登録の例では `issuer` が SP 識別子（`https://yourapp.com/saml/acme-corp` 形式）になった。
 - 1.7.23 ドキュメントでの変更: SP メタデータは `issuer` と ACS URL から Better Auth が生成するため、設定例から `spMetadata` を削除（独自の `spMetadata.metadata` を渡す場合はその entityID が SP エンティティ ID と既定の audience になる）。IdP-initiated SSO は `saml: { allowIdpInitiated: true }` が必要で既定は無効（全 SAML プロバイダーに適用）。SAML の全オプションは SSO プラグインの SAML providers ページ（plugins/sso-saml.md）と SSO reference を参照。
+- The official Okta example sets `defaultSSO[].domain` to `localhost:3000`, but the SSO reference (v1.7.23 docs) requires a bare email domain such as `example.com` (several separated by commas) for `defaultSSO[].domain`, which is matched against users' email domains at sign-in. The example is kept verbatim; use your users' email domain in real setups. Existing users are also linked by email only when the provider's domain is verified (a `defaultSSO` provider counts as verified only with `domainVerification.enabled`) or when `resolveUser` is set; with `secondaryStorage`, SAML also needs `verification.storeInDatabase: true`.
+- Source: https://www.better-auth.com/docs/plugins/sso/reference (better-auth v1.7.23 docs)
 - Source: https://www.better-auth.com/docs/guides/saml-sso-with-okta (better-auth v1.7.23 docs)
 
 ## Related
