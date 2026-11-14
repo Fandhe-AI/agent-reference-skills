@@ -100,14 +100,16 @@ Sideband events:
 - Deprecated `live.call.incoming` (no `data.type`) may still be delivered; handle both names during migration. The same pending call can also emit a Realtime webhook; assign one handler to accept/reject.
 - GPT-Live SIP support must be enabled for the project and the provider trunk routed to it. SIP signaling uses TLS and call audio requires SRTP. SIP negotiates the audio format, so omit `audio.format`.
 - Assign one handler per side effect so duplicate webhook deliveries or events seen on multiple connections do not run tools twice.
-- Outbound calling must be enabled for the organization and is available through the Live API, not the Realtime API call-creation endpoint. Trunk must support TLS signaling, Opus, and SDES-SRTP. Provider URL must use `sips:` with no credentials, paths, URI headers, or other URI parameters (`;transport=tcp` is the only optional parameter); local hostnames and private/local IPs are rejected.
+- Outbound SIP calling is available to all organizations through the Live API (Nov 2, 2026 changelog), not the Realtime API call-creation endpoint. Trunk must support TLS signaling, Opus, and SDES-SRTP. Provider URL must use `sips:` with no credentials, paths, URI headers, or other URI parameters (`;transport=tcp` is the only optional parameter); local hostnames and private/local IPs are rejected.
 - Attach the sideband immediately after creation: it replays only the preceding 3 seconds of events; deduplicate by `event_id`. This replay is specific to SIP call-progress events; a general sideband attach does not replay earlier events (see events.md; sources: sideband-websocket API reference and the voice-sip guide).
-- Limits: 1 MiB request body; ringing 3 minutes; connected call 2 hours (not configurable). `403 outbound_sip_not_enabled`; transport setup failures can return `502`; initialization timeouts `504`.
-- Each creation request places a new call; `X-Client-Request-Id` does not deduplicate. Do not auto-retry after an ambiguous timeout.
+- Limits: 1 MiB request body; ringing 3 minutes; connected call 2 hours (not configurable). Invalid session configuration is returned on the creation request; transport setup failures can return `502`; initialization timeouts `504`.
 - Keep the sideband open until `session.closed` supplies final usage.
 - Server audio bridge: WebRTC recommended; WebSocket supports raw G.711 mu-law / A-law at 8 kHz, forwardable without PCM conversion when codec, rate, and channel count match. Keep the provider's call/room ID alongside the OpenAI session ID.
+- Inbound SIP endpoints: global `sip:$PROJECT_ID@sip.api.openai.com;transport=tls`; European data residency `sip-eu.api.openai.com`; SIP hosts physically in India `sip-in.api.openai.com`. `sip.api.openai.com` and `sip-eu.api.openai.com` are GeoIP-routed; `sip-in.api.openai.com` routes to hosts in India. Allow outbound TCP/TLS to the DNS-returned addresses on port `5061`, and bidirectional SRTP over UDP to and from `13.79.45.80/28`, `20.204.17.112/28`, `23.98.140.64/28`, `40.67.149.176/28`, `40.83.204.240/28`.
+- Changed since the 2026-10-17 pin: the guide no longer states that outbound calling must be enabled per organization (it is available to all organizations) and no longer lists `403 outbound_sip_not_enabled`. It also no longer mentions `X-Client-Request-Id` or request deduplication, so the earlier "each creation request places a new call; do not auto-retry after an ambiguous timeout" advice was removed as unconfirmed.
 - Distinct from the Realtime API SIP (`/v1/realtime/calls`).
-- Source: https://developers.openai.com/api/docs/guides/voice-sip
+- Source: https://developers.openai.com/api/docs/guides/voice-sip (Markdown twin, fetched 2026-11-14)
+- Source: https://developers.openai.com/api/docs/changelog (Nov 2, 2026 entry, fetched 2026-11-14)
 
 ## Related
 
