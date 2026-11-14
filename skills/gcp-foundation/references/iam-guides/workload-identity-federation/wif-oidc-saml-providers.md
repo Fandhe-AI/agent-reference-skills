@@ -232,7 +232,7 @@ gcloud auth login --cred-file=FILEPATH.json
 | IdP type | Requirements |
 |---|---|
 | OIDC | OpenID Connect 1.0; issuer URI; JWKS reachable via HTTPS discovery (`/.well-known/openid-configuration` appended to issuer, or custom `--discovery-uri`) or uploaded with `--jwk-json-path` (max 8 keys). Tokens signed `RS256` or `ES256`; `aud` equals the provider audience (or custom allowed audience); `exp` in the future, `iat` in the past, `exp - iat` at most 24 hours. |
-| SAML | SAML 2.0; SP metadata document with signing certificate (ECDSA or RSA in X.509 v3; recommended ECDSAwithSHA256 or RSAwithSHA256 with 2048/3072/4096-bit keys; `notBefore` at most 7 days in the future, `notAfter` at most 25 years in the future). Max 3 signing certificates per provider. Either the assertion, the response, or both must be signed. |
+| SAML | SAML 2.0; IdP metadata document (the `--idp-metadata-path` file) containing the IdP's signing certificate (ECDSA or RSA in X.509 v3; recommended ECDSAwithSHA256 or RSAwithSHA256 with 2048/3072/4096-bit keys; `notBefore` at most 7 days in the future, `notAfter` at most 25 years in the future). Max 3 signing certificates per provider. Either the assertion, the response, or both must be signed. |
 
 Custom discovery URI (Preview): starts with `https://`, max 2,000 characters, scheme/host/port match the issuer, path contains `/.well-known/<suffix>` either inserted before or appended under the issuer path.
 

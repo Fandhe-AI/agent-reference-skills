@@ -234,15 +234,17 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 Query for denials in the last seven days:
 
+Adapted (not in the official docs): the wildcard table path is backtick-quoted without braces, and the time filter compares the TIMESTAMP column with `TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)` (the official sample compares it with a DATE).
+
 ```sql
 SELECT protopayload_auditlog.serviceName as serviceName,
     protopayload_auditlog.methodName as methodName,
     JSON_EXTRACT_SCALAR(protopayload_auditlog.metadataJson, '$.constraint') as constraint,
     JSON_EXTRACT_SCALAR(protopayload_auditlog.metadataJson, '$.dryRunResult') as dryRunResult,
     JSON_EXTRACT_SCALAR(protopayload_auditlog.metadataJson, '$.liveResult') as liveResult
-FROM {PROJECT_ID}.{DATASET_ID}.cloudaudit_googleapis_com_policy_*
+FROM `PROJECT_ID.DATASET_ID.cloudaudit_googleapis_com_policy_*`
 WHERE JSON_EXTRACT_SCALAR(protopayload_auditlog.metadataJson, '$.dryRunResult') = "DENIED"
-AND `timestamp` > DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+AND `timestamp` > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)
 LIMIT 1000
 ```
 
@@ -275,6 +277,7 @@ Required roles on the organization: `roles/orgpolicy.policyAdmin`; for aggregate
 
 - Adapted from the official docs: the `gcloud logging read` filter is quoted as a single argument (the official sample is unquoted), and the live + dry-run example uses `enforce` / `parameters.allowedSchemes` for the managed constraint.
 - Adapted from the official docs: the aggregated sink filter uses `log_id("cloudaudit.googleapis.com/policy")` (organization-wide) and `sinks describe` passes `--organization=ORGANIZATION_ID`.
+- Adapted from the official docs: the BigQuery denial query quotes the wildcard table path in backticks and uses `TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)` for the 7-day window.
 - Dry-run changes still affect audit-log volume; the aggregated sink grants `roles/bigquery.dataEditor` to the sink writer identity, so scope it to the destination project only.
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/dry-run-policy
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.

@@ -48,10 +48,13 @@ gcloud essential-contacts create --email="EMAIL" \
 
 Update a contact:
 
+Adapted (not in the official docs): `--RESOURCE_TYPE="RESOURCE_ID"` is added so the contact is updated under the intended parent (the official sample omits it, unlike the other examples).
+
 ```bash
 gcloud essential-contacts update CONTACT_ID \
     --notification-categories="NOTIFICATION_CATEGORY" \
-    --language="LANGUAGE"
+    --language="LANGUAGE" \
+    --RESOURCE_TYPE="RESOURCE_ID"
 ```
 
 Delete a contact:
@@ -120,6 +123,7 @@ Roles: Essential Contacts Viewer (`roles/essentialcontacts.viewer`) to view; Ess
 - Each contact has a preferred language (set automatically from the creator's console language; set manually via API with a language code).
 - Limit contact domains with the organization policy constraints `constraints/essentialcontacts.allowedContactDomains` (legacy) or `essentialcontacts.managed.allowedContactDomains` (managed); existing contacts are unaffected. A custom-constraint variant is documented under Essential Contacts custom organization policies.
 - Resource Manager audit logs exist for Essential Contacts under `essentialcontacts.googleapis.com`.
+- Adapted from the official docs: the `essential-contacts update` example specifies the parent (`--RESOURCE_TYPE="RESOURCE_ID"`), since `CONTACT_ID` is only unique per parent.
 - Source: https://docs.cloud.google.com/resource-manager/docs/managing-notification-contacts
 - Source: https://docs.cloud.google.com/resource-manager/docs/manage-essential-contacts
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.
