@@ -2,7 +2,6 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Accelerate AI models with Windows ML | Windows ML accelerates inference across NPUs, GPUs, and CPUs by pairing ONNX Runtime with… | [accelerate-ai-models.md](./accelerate-ai-models.md) |
 | Windows ML APIs | Overview of the API surface behind Windows ML, shipped in… | [api-reference.md](./api-reference.md) |
 | Bring your own execution providers | An alternative to Windows ML's ExecutionProviderCatalog… | [bring-your-own-eps.md](./bring-your-own-eps.md) |
 | Check execution provider versions in Windows ML | Check which version of an execution provider is installed… | [check-ep-versions.md](./check-ep-versions.md) |
@@ -11,7 +10,7 @@
 | Windows ML EPs vs. bring your own | Comparison of the two ways to obtain execution providers… | [eps-vs-bring-your-own.md](./eps-vs-bring-your-own.md) |
 | ExecutionProviderCatalog | Provides methods to discover, acquire, and register AI EPs… | [execution-provider-catalog.md](./execution-provider-catalog.md) |
 | Troubleshoot execution provider download issues with Windows ML | Common causes and fixes for errors downloading/registering EPs… | [execution-provider-errors.md](./execution-provider-errors.md) |
-| Accelerate AI models with Windows ML | Windows ML accelerates inference across NPUs, GPUs, and CPUs… | [execution-providers-overview.md](./execution-providers-overview.md) |
+| Accelerate AI models with Windows ML | Windows ML accelerates inference across NPUs, GPUs, and CPUs by pairing ONNX Runtime with hardware-tuned… | [execution-providers-overview.md](./execution-providers-overview.md) |
 | Get started with Windows ML | The minimal path to running an ONNX model with Windows ML… | [get-started.md](./get-started.md) |
 | Install Windows ML execution providers | How to download, install, and track readiness of Windows ML EPs… | [install-execution-providers.md](./install-execution-providers.md) |
 | LearningModelBinding | Bind values to a LearningModel's named input and output features… | [learning-model-binding.md](./learning-model-binding.md) |

@@ -43,4 +43,4 @@ Llama.cpp and GGML component licenses:
 ## Related
 
 - [Windows ML execution providers](./supported-execution-providers.md)
-- [Accelerate AI models with Windows ML](./accelerate-ai-models.md)
+- [Accelerate AI models with Windows ML](./execution-providers-overview.md)

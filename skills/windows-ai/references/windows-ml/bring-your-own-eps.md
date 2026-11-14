@@ -44,5 +44,5 @@ Known EP packages:
 
 - [Windows ML EPs vs. bring your own](./eps-vs-bring-your-own.md)
 - [Windows ML execution providers](./supported-execution-providers.md)
-- [Execution providers overview](./execution-providers-overview.md)
+- [Accelerate AI models with Windows ML](./execution-providers-overview.md)
 - [Register execution providers](./register-execution-providers.md)

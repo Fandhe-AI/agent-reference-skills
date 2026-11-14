@@ -21,7 +21,7 @@ using Microsoft.Windows.AI.MachineLearning; // ExecutionProviderCatalog
 - Model conversion to ONNX: use the Windows ML CLI workflow (convert / analyze / optimize / compile); see [Windows ML CLI](./winml-cli.md). The ONNX Runtime Tutorials cover converting PyTorch, TensorFlow, and Hugging Face models.
 - Model distribution options: "Distribute models for Windows ML" (include the model in the app package or download it separately; see [Distribute models](./model-distribution.md)), and "Share models across apps" (Model Catalog; for library and SDK authors who download a model from a CDN and share it across every app using the library).
 - Requires a Windows version supported by Windows App SDK, x64 or ARM64. Hardware-optimized NPU/GPU execution providers additionally require Windows 11 version 24H2 (build 26100) or greater.
-- Support for CPU and GPU (via DirectML) is available on all supported Windows versions; CPU and DirectML (legacy) are included with Windows ML, while vendor EPs (AMD GPU, NvTensorRtRtx, OpenVINO, QNN, VitisAI; MIGraphX deprecated in 2.x) are downloaded on demand. See [Windows ML execution providers](./supported-execution-providers.md) and [Accelerate AI models with Windows ML](./accelerate-ai-models.md).
+- Support for CPU and GPU (via DirectML) is available on all supported Windows versions; CPU and DirectML (legacy) are included with Windows ML, while vendor EPs (AMD GPU, NvTensorRtRtx, OpenVINO, QNN, VitisAI; MIGraphX deprecated in 2.x) are downloaded on demand. See [Windows ML execution providers](./supported-execution-providers.md) and [Accelerate AI models with Windows ML](./execution-providers-overview.md).
 - Windows ML is the Windows-supported and maintained copy of ONNX Runtime (ORT): same ONNX APIs (no changes to existing ORT code), available as a system-wide copy (framework-dependent, smaller app, evergreen updates) or self-contained.
 - Performance: Windows ML works directly with dedicated GPU/NPU execution providers for to-the-metal performance on par with dedicated SDKs such as TensorRT for RTX or Qualcomm's AI Engine Direct; results vary by hardware configuration and model.
 - Integration with the Windows AI ecosystem: Windows AI APIs (built-in models), Foundry Local (ready-to-use AI models), and custom models via Windows ML APIs.
@@ -31,8 +31,7 @@ using Microsoft.Windows.AI.MachineLearning; // ExecutionProviderCatalog
 ## Related
 
 - [Get started with Windows ML](./get-started.md)
-- [Execution providers overview](./execution-providers-overview.md)
-- [Accelerate AI models with Windows ML](./accelerate-ai-models.md)
+- [Accelerate AI models with Windows ML](./execution-providers-overview.md)
 - [ONNX Runtime inference APIs](./onnx-runtime-inference.md)
 - [Windows ML Model Catalog](./model-catalog.md)
 - [Legacy Windows Machine Learning](./legacy-windows-machine-learning.md)

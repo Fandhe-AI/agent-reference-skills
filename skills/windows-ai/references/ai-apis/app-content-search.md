@@ -25,6 +25,8 @@ using AppContentIndexer indexer = result.Indexer;
 - Privacy: indexes are generated on behalf of your app and stored in its local app data folder. Index only non-sensitive application content; don't use it for data that may contain personal, confidential, or sensitive information.
 - Responsible AI: semantic indexing and search apply no content moderation and don't detect or mitigate semantic bias from the underlying models; developers evaluate and manage the risks.
 - The AI Dev Gallery app offers an interactive AppContentIndexer sample.
+- Prerequisites not stated on the overview page: the quickstart requires package identity (packaged apps, including those with external locations), and semantic indexing and Text Recognition (OCR) additionally require the `systemAIModels` capability (with the `systemai` namespace declared in the manifest); see [Semantic Search quickstart (App Content Search)](./app-content-search-tutorial.md).
+- Source: https://learn.microsoft.com/en-us/windows/ai/apis/app-content-search-tutorial (retrieved 2026-11-14)
 - Source: https://learn.microsoft.com/en-us/windows/ai/apis/app-content-search (retrieved 2026-11-14)
 
 ## Related

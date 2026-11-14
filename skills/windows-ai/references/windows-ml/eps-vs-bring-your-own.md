@@ -41,4 +41,4 @@ run inference with the same inference code
 - [Windows ML execution providers](./supported-execution-providers.md)
 - [Bring your own execution providers](./bring-your-own-eps.md)
 - [Select execution providers](./select-execution-providers.md)
-- [Accelerate AI models with Windows ML](./accelerate-ai-models.md)
+- [Accelerate AI models with Windows ML](./execution-providers-overview.md)

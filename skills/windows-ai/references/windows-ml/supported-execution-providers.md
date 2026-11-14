@@ -93,9 +93,9 @@ Windows ML 1.8.x (`Microsoft.WindowsAppSDK.ML` version `1.8.x`):
 
 ## Related
 
-- [Accelerate AI models with Windows ML](./accelerate-ai-models.md)
+- [Accelerate AI models with Windows ML](./execution-providers-overview.md)
 - [Windows ML third-party notices](./third-party-notices.md)
-- [Execution providers overview](./execution-providers-overview.md)
+- [Accelerate AI models with Windows ML](./execution-providers-overview.md)
 - [Install execution providers](./install-execution-providers.md)
 - [Register execution providers](./register-execution-providers.md)
 - [Bring your own execution providers](./bring-your-own-eps.md)
