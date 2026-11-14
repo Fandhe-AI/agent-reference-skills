@@ -32,7 +32,6 @@ skills/gcp-foundation/
 
 段階投入中の暫定版: 現時点で収録しているのは上記 2 カテゴリのみ。残り（gcloud / rest / rest-schemas / iam / iam-guides / resource-hierarchy / billing / samples / scripts と auth-mcp の残りカテゴリ）は後続 PR で追加され、最終 PR で本ファイルが完全版に置き換わる。
 
-
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
