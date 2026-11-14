@@ -52,12 +52,17 @@ Console.WriteLine(result.Text);
 - Aion Instruct needs no LAF token. A standalone sideloadable package for testing and LoRA training is available at https://aka.ms/tryaion; re-train LoRAs using Foundry Toolkit.
 - Phi Silica on GPU requires Developer Mode, Windows Insider Experimental Channel build 26300.8553 or later, and Windows App SDK 2.2.2-experimental9 (June 2026 Experimental) or later. The GPU model is not preinstalled: the first `EnsureReadyAsync` downloads it (shown in Settings > System > AI Components as "AI LanguageModel"). Show a consent dialog before calling `EnsureReadyAsync`.
 - Phi Silica is not available in China.
+- Supported GPUs: NVIDIA GeForce RTX 30 series and newer, and AMD Radeon RX 9060 series and newer, each with 6+ GB vRAM. GPU inference requires the latest driver installed directly from the GPU manufacturer (the docs list NVIDIA GeForce 615.21 driver (beta) and AMD Software: Adrenalin Edition 26.10.2); OEM drivers delivered through Windows Update can overwrite them, so reinstall if Phi Silica stops working on GPU after a system update. Phi Silica is not supported on CPU.
+- Starting in October 2026, output from some `Microsoft.Windows.AI.Text` APIs (for example `GenerateResponseAsync`, `GenerateResponseFromEmbeddingsAsync`, `TextRewriter`, `TextSummarizer`) includes an invisible watermark marking the text as AI-generated; parsing code must tolerate it. See Watermarking in Windows AI text APIs.
+- In user-facing strings, refer to the model as the "language model" or "optional AI model" rather than "Phi Silica".
 - On NPU, speculative decoding and prompt compression accelerate generation; both are unavailable when running on GPU.
 - Text Intelligence Skills (`TextSummarizer`, `TextRewriter`, `TextToTableConverter`) wrap a `LanguageModel` instance for summarizing, rewriting (with `TextRewriteTone`), and formatting text-to-table.
 - Use `LanguageModelContext` to preserve conversation state across multiple `GenerateResponseAsync` calls; use `LanguageModelOptions` to tune `Temperature`, `TopK`, `TopP`, `ContentFilterOptions`, and `LowRankAdapter`.
+- Source: https://learn.microsoft.com/en-us/windows/ai/apis/phi-silica (retrieved 2026-11-14)
 
 ## Related
 
+- [Watermarking in Windows AI text APIs](./text-watermarking.md)
 - [LanguageModelOptions and ContentFilterOptions](./language-model-options.md)
 - [LanguageModelContext](./language-model-context.md)
 - [Phi Silica LoRA fine-tuning](./phi-silica-lora.md)

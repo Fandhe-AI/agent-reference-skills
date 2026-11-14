@@ -59,10 +59,12 @@ IReadOnlyList<ImageQueryMatch> imageMatches = query.GetNextMatches(5);
 - `AppContentIndexer` is agile (not thread-affine) but some calls are slow; avoid calling it on the UI thread.
 - It implements `IClosable` (`IDisposable` in C#, so `using` works). Each open instance must be closed; opening and closing an index is expensive, so keep a single instance for the app lifetime.
 - Distinct from Windows Search / keyword indexing: this is a semantic and lexical index local to the app.
-- Source: https://learn.microsoft.com/en-us/windows/ai/apis/app-content-search-tutorial (retrieved 2026-10-16)
+- Stable releases require a Limited Access Feature token (stable channel since Windows App SDK 2.5.1); experimental examples don't remove that requirement. See [App Content Search](./app-content-search.md) for channel selection and token guidance.
+- Source: https://learn.microsoft.com/en-us/windows/ai/apis/app-content-search-tutorial (retrieved 2026-11-14)
 
 ## Related
 
+- [App Content Search](./app-content-search.md)
 - [Semantic Search](./semantic-search.md)
 - [TextRecognizer](./text-recognizer.md)
 - [Get started building an app with Windows AI APIs](./get-started.md)

@@ -1,8 +1,8 @@
 # Install
 
-Install commands for the Windows AI development environment, Foundry Local, and Windows ML (Python).
+Install commands for the Windows AI development environment, Foundry Local, Windows ML (Python), and the Windows ML CLI (winml-cli).
 
-Source: https://learn.microsoft.com/en-us/windows/ai/apis/get-started, https://learn.microsoft.com/en-us/windows/ai/foundry-local/get-started, https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/distributing-your-app (retrieved 2026-10-16)
+Source: https://learn.microsoft.com/en-us/windows/ai/apis/get-started, https://learn.microsoft.com/en-us/windows/ai/foundry-local/get-started, https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/distributing-your-app (retrieved 2026-10-16), https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/command-line/getting-started/installation (retrieved 2026-11-14)
 
 ## Automatically install Windows AI APIs dependencies
 
@@ -74,3 +74,22 @@ pip install wasdk-Microsoft.Windows.AI.MachineLearning[all] wasdk-Microsoft.Wind
 ```
 
 Separately install the Windows App SDK Runtime that matches the version of the `wasdk-` packages (from new-windows-ml/distributing-your-app).
+
+## Install the Windows ML CLI (winml-cli)
+
+```powershell
+uv python install cpython-3.11-windows-x86_64-none
+uv venv --python cpython-3.11-windows-x86_64-none
+uv pip install winml-cli
+```
+
+Requires `uv` and x64 Python 3.11 (the commands select an x64 interpreter, which runs under emulation on Windows on Arm). Run from the directory where the environment should be created; use `uv run winml` from that directory without activating the environment (from new-windows-ml/command-line/getting-started/installation).
+
+## Verify the Windows ML CLI installation
+
+```powershell
+uv run winml --version
+uv run winml sys --list-device --list-ep
+```
+
+The device / execution provider inventory depends on the hardware and installed providers (from new-windows-ml/command-line/getting-started/installation).
