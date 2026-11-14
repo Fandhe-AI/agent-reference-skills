@@ -4,6 +4,8 @@ Subscribes to `formState` changes and value updates outside the render cycle (Si
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the commented alternative return adds `formState: { values: true }` so it subscribes to value changes.
+
 ```tsx
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
@@ -30,7 +32,7 @@ export default function App() {
     return () => callback()
 
     // You can also just return the subscribe
-    // return subscribe({ callback: ({ values }) => console.log(values) });
+    // return subscribe({ formState: { values: true }, callback: ({ values }) => console.log(values) });
   }, [subscribe])
 
   return (
@@ -64,6 +66,7 @@ Return:
 ## Notes
 
 - Source: https://react-hook-form.com/docs/useform/subscribe (documentation master c0511c9, fetched 2026-11-14)
+- Adapted from the official docs: the commented `return subscribe(...)` alternative includes `formState: { values: true }`.
 - To be notified of value changes, pick `formState: { values: true }`; a subscription that omits it is not notified when only values change. The `subscribe({ callback })` form in the first row is written with `values: true` here for that reason.
 
 - Shares the same functionality as `createFormControl.subscribe`; the key difference is that `createFormControl` can be initialized outside of a React component.
