@@ -151,7 +151,7 @@ Playwright provider options:
 - `browser.trace` is Playwright only and `'on'` is performance heavy; `'retain-on-failure'` deletes traces of passing tests.
 - `browser.dependencySourcemaps: false` speeds up runs if you do not debug into dependencies; reported test errors are unaffected.
 - Custom commands run in the Vitest Node process and must validate browser-provided input themselves.
-- Source: https://vitest.dev/config/browser/enabled and sibling pages `instances`, `headless`, `provider`, `playwright`, `webdriverio`, `preview`, `locators`, `viewport`, `screenshotdirectory`, `screenshotfailures`, `expect`, `trace`, `traceview`, `ui`, `commands`, `connecttimeout`, `dependencysourcemaps`, `detailspanelposition`, `orchestratorscripts`, `testerhtmlpath`, `trackunhandlederrors` (Vitest v5.1.0)
+- Source: https://vitest.dev/config/browser/enabled and sibling pages `instances`, `headless`, `provider`, `playwright`, `webdriverio`, `preview`, `locators`, `viewport`, `screenshotdirectory`, `screenshotfailures`, `expect`, `trace`, `traceview`, `importmapmocks`, `ui`, `commands`, `connecttimeout`, `dependencysourcemaps`, `detailspanelposition`, `orchestratorscripts`, `testerhtmlpath`, `trackunhandlederrors` (Vitest v5.1.0)
 
 ## Related
 

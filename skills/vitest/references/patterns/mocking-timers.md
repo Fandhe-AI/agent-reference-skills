@@ -4,6 +4,8 @@ Speed up tests of timeouts and intervals with fake timers that mock `setTimeout`
 
 ## Signature / Usage
 
+Adapted (not in the official docs): `afterEach` also calls `vi.useRealTimers()` so pending fake timers do not leak into later tests.
+
 ```js
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -23,6 +25,7 @@ describe('delayed execution', () => {
   })
   afterEach(() => {
     vi.clearAllMocks()
+    vi.useRealTimers()
   })
   it('should execute the function', () => {
     executeAfterTwoHours(mock)
@@ -71,6 +74,7 @@ Methods that do not take an element, such as `userEvent.keyboard` and `userEvent
 
 ## Notes
 
+- Adapted from the official docs: the official example calls only `vi.clearAllMocks()` in `afterEach`, which does not restore real timers; `vi.useRealTimers()` was added.
 - Automatic Advancing and Tick Modes sections are documented in v5.1.0 (the underlying `vi.setTimerTickMode` exists since v4.1.0).
 - `fakeTimers.fakeNodeBuiltins` (v5.1.0, default `false`) also fakes `node:timers` and `node:timers/promises`.
 - The API reference for `vi.waitFor` / `vi.waitUntil` words the same behavior as "in every check callback"; the Timers guide says "before every check".

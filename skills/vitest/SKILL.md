@@ -1,12 +1,11 @@
 ---
 name: vitest
 description: >
-  Vitest 5 (Vite ネイティブテストフレームワーク) リファレンス。
-  test, describe, it, expect, vi.fn, vi.mock, vi.spyOn, vi.when、
+  Vitest 5.1 (Vite ネイティブテストフレームワーク) リファレンス。test, describe, it, expect,
+  vi.fn, vi.mock, vi.spyOn, vi.when、--since-last-run / --last-failed、fake timers、
+  Browser Mode (trace view, locators, expect.element, vitest-browser-react)、
   beforeEach / afterEach、test.extend fixtures、test tags / annotations、
-  coverage (v8 / istanbul)、snapshot、vitest.config.ts、projects (old workspace)、
-  Vitest Browser Mode (vitest-browser-react, locators, expect.element, trace view)、
-  UI モード、bench fixture、--since-last-run / --last-failed、fake timers。
+  coverage (v8 / istanbul)、snapshot、vitest.config.ts、projects (old workspace)、UI モード、bench fixture。
 user-invocable: false
 ---
 
