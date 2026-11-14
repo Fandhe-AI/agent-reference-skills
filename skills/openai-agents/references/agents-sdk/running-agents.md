@@ -61,7 +61,6 @@ agent = Agent(
     instructions="Reply very concisely.",
 )
 
-
 async def main() -> None:
     first = await Runner.run(
         agent,
@@ -75,7 +74,6 @@ async def main() -> None:
         previous_response_id=first.last_response_id,
     )
     print(second.final_output)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -122,7 +120,6 @@ agent = Agent(
     instructions="Answer with short facts.",
 )
 
-
 async def main() -> None:
     stream = Runner.run_streamed(
         agent,
@@ -136,7 +133,6 @@ async def main() -> None:
             print(event.data.delta, end="", flush=True)
 
     print(f"\nFinal: {stream.final_output}")
-
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -168,7 +164,6 @@ Tools, handoffs, approvals, and streaming all build on top of this loop rather t
 | `previousResponseId` (TS) / `previous_response_id` (Python) | OpenAI Responses API | Lightest server-managed continuation | The last response ID and only the new turn |
 
 Pick one strategy per conversation; mixing local replay with server-managed state can duplicate context.
-
 
 - Source: https://developers.openai.com/api/docs/guides/agents/running-agents (fetched 2026-11-14).
 - In the official snippets the TypeScript example uses `conversationId` (created via `client.conversations.create({})`) while the Python example for the same section uses `previous_response_id`.

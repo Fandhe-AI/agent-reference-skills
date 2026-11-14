@@ -3,9 +3,9 @@ name: openai-agents
 description: >
   OpenAI API (developers.openai.com) の Agents SDK (Python / TypeScript)・Agents API (beta)。
   Agent, Runner, handoffs, guardrails, tracing, SandboxAgent、
-  client.beta.agents の sessions / environments / vaults / automations / review (auto_review)、Databricks・E2B 等 sandbox provider、
+  client.beta.agents の sessions / environments / vaults / automations / auto_review、
   built-in tools（web search, file search, computer use, code interpreter, image generation）、
-  function tools, vector stores, MCP connectors, multi-agent orchestration。
+  function tools, vector stores, MCP connectors, multi-agent, sandbox provider。
 user-invocable: false
 ---
 
