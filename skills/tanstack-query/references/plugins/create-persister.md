@@ -57,6 +57,8 @@ useQuery({
 - Respects `staleTime` and refetches immediately if restored data is stale
 - Defaults `networkMode` to `'offlineFirst'` so restoration works without network connectivity
 - `queryClient.setQueryData()` writes are not persisted — optimistic updates are lost if the page refreshes before invalidation
+- Persisted entries must have a string `queryHash`, an array `queryKey`, and a `state` object with a finite numeric `dataUpdatedAt`; entries that do not are removed during retrieval, garbage collection, restoration, and filtered removal without interrupting other entries. `null` remains valid query data
+- Source: https://raw.githubusercontent.com/TanStack/query/release-2026-11-06-2304/docs/framework/react/plugins/createPersister.md (tag `release-2026-11-06-2304`, fetched 2026-11-14)
 
 ## Related
 

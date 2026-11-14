@@ -50,7 +50,7 @@ new Query<TQueryFnData, TError, TData, TQueryKey>(config: QueryConfig<TQueryFnDa
 | `isFetched(): boolean` | `true` if resolved with data or error at least once |
 | `isStale(): boolean` | With observers: any observer result reports `isStale`. Without: no data or invalidated |
 | `isStaleByTime(staleTime?: number \| "static"): boolean` | Stale relative to `staleTime` (default `0`). No data is always stale; `'static'` is never stale; invalidated is always stale |
-| `isStatic(): boolean` | `true` if at least one observer has `staleTime: 'static'` |
+| `isStatic(): boolean` | `true` if the query has data and at least one observer has `staleTime: 'static'` |
 | `reset(): void` | Resets to initial state (e.g. `initialData`), destroying first to cancel any fetch |
 | `setState(state: Partial<QueryState<TData, TError>>): void` | Merges partial state and notifies observers. Used by persistence/broadcast plugins and devtools |
 
@@ -58,6 +58,7 @@ new Query<TQueryFnData, TError, TData, TQueryKey>(config: QueryConfig<TQueryFnDa
 
 - Instances are created and managed internally by `QueryCache`; application code normally uses `QueryClient` or hooks like `useQuery`. Direct access is via `queryCache.find()` / `findAll()`.
 - Defined in `packages/query-core/src/query.ts`.
+- Source: https://raw.githubusercontent.com/TanStack/query/release-2026-11-06-2304/docs/framework/react/reference/classes/Query.md (tag `release-2026-11-06-2304`, fetched 2026-11-14)
 
 ## Related
 

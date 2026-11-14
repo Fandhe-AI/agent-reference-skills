@@ -31,7 +31,7 @@ const result = useQuery({
 | `retryDelay` | `(attempt: number, error) => number` | Returns millisecond delay for a given retry attempt |
 | `staleTime` | `number \| 'static' \| (query) => number` | Milliseconds until data considered stale (default `0`) |
 | `gcTime` | `number` | Milliseconds inactive cache persists in memory (default 5 minutes) |
-| `initialData` | `TData \| () => TData` | Sets initial cache value; considered stale unless `staleTime` specified |
+| `initialData` | `TData \| () => TData` | Sets initial cache value; considered stale unless `staleTime` specified. `data` is typed as never `undefined` only when `initialData` is known to be defined; an omitted value, a value that may be `undefined`, or a function that may return `undefined` keeps `data` possibly `undefined` |
 | `initialDataUpdatedAt` | `number \| () => number` | Timestamp for when `initialData` was last updated |
 | `refetchInterval` | `number \| false \| (query) => number \| false` | Continuous refetch frequency in milliseconds |
 | `refetchIntervalInBackground` | `boolean` | Continues refetching when tab is inactive |

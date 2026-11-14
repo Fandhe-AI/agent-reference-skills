@@ -28,6 +28,8 @@ function App() {
 - Module-level declaration (outside the component) is also acceptable
 - Creating a new instance inside an async Server Component is permitted since the function executes only once on the server
 - Recommended and automatically fixable
+- Checks function declarations, function expressions, and arrow functions used as React components or custom hooks, and also reports clients created directly in JSX; automatic fixes are available when the client is assigned to a variable
+- Source: https://raw.githubusercontent.com/TanStack/query/release-2026-11-06-2304/docs/eslint/stable-query-client.md (tag `release-2026-11-06-2304`, fetched 2026-11-14)
 
 ## Related
 

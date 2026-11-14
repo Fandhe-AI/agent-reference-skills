@@ -15,7 +15,7 @@ user-invocable: false
 TanStack Query (`@tanstack/react-query`) v5 の公式ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象 @tanstack/react-query 5.104.3（TanStack/query release-2026-10-15-0754 で docs を pin、取得日 2026-10-17）。
+対象 @tanstack/react-query 5.107.1（TanStack/query release-2026-11-06-2304 で docs を pin、取得日 2026-11-14）。
 
 ## ディレクトリ構成
 

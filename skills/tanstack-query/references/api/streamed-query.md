@@ -32,6 +32,8 @@ const query = queryOptions({
 
 - Currently marked experimental (`experimental_streamedQuery`); community feedback is encouraged
 - See the [examples/react/chat directory](https://github.com/TanStack/query/tree/main/examples/react/chat) for a practical implementation
+- Explicit cancellation stops further cache updates even if `streamFn` does not read `signal`; if `streamFn` does not read `signal`, the stream continues after the last observer unsubscribes
+- Source: https://raw.githubusercontent.com/TanStack/query/release-2026-11-06-2304/docs/framework/react/reference/functions/experimental_streamedQuery.md (tag `release-2026-11-06-2304`, fetched 2026-11-14)
 
 ## Related
 

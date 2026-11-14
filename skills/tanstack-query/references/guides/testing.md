@@ -58,11 +58,11 @@ expect(result.current.data).toEqual({ answer: 42 })
 
 ## Notes
 
-- For React 17 and earlier: `npm install @testing-library/react-hooks react-test-renderer --save-dev`.
-- React 18+: `renderHook`/`waitFor` come from `@testing-library/react` directly; `@testing-library/react-hooks` is not required.
+- Install with `npm install @testing-library/react @testing-library/dom --save-dev`; `@testing-library/react` provides `renderHook` and re-exports `@testing-library/dom` helpers such as `waitFor`.
 - Set `retry: false` in the test `QueryClient` defaults to avoid slow/timing-out tests when asserting failure states (default retry is 3 with backoff).
 - Set `gcTime: Infinity` in Jest to avoid the "Jest did not exit one second after the test run completed" warning.
-- For infinite queries, `nock`'s `.persist()` + `.query(true)` can differentiate responses per page based on the request's query string.
+- For infinite queries, `nock`'s `.persist()` + `.query(true)` can differentiate responses per page based on the request's query string; each page is one element of `data.pages`.
+- Source: https://raw.githubusercontent.com/TanStack/query/release-2026-11-06-2304/docs/framework/react/guides/testing.md (tag `release-2026-11-06-2304`, fetched 2026-11-14)
 
 ## Related
 

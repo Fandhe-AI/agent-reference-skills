@@ -31,6 +31,8 @@ queryClient.prefetchQuery(todosOptions)
 
 - Options can be shared across multiple hooks and imperative query methods
 - Recommended reading: "The Query Options API" by TkDodo, for the design and implementation background of this pattern
+- The `initialData`-defined overload is selected only when `initialData` is known to be defined; when it is omitted, may be `undefined`, or is a function that may return `undefined`, `data` may be `undefined` while the query is `pending`
+- Source: https://raw.githubusercontent.com/TanStack/query/release-2026-11-06-2304/docs/framework/react/reference/functions/queryOptions.md (tag `release-2026-11-06-2304`, fetched 2026-11-14)
 
 ## Related
 
