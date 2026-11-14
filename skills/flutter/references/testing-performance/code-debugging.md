@@ -500,7 +500,7 @@ To add an overlay to a Material Design baseline grid on your app to help verify 
 - Corrected from the official page: it says every `debug...` function only works in debug mode, and lists print() as part of dart:io; debugPrint still prints in release mode, and print() is in dart:core.
 - Use the dump functions only in debug mode; the `debugPaint*`/`debugRepaint*` flags and dump functions don't work in other modes (`debugPrint` is the exception). `debugDumpApp()` cannot be called inside `build()` while the app is building, and `debugDumpRenderTree()` cannot be called during a layout or paint phase.
 - The full widget, render, focus, and layer tree dumps are long; only excerpts of the widget, render, and focus trees are reproduced here. See the official page for the full output.
-- The snippets import `package:material_ui/material_ui.dart` as written in the official page. Per the Flutter 3.47 notes, `material_ui` / `cupertino_ui` are standalone packages you can opt in to; the in-framework `package:flutter/material.dart` is not yet deprecated in 3.47.7.
+- The snippets import `package:material_ui/material_ui.dart` as written in the official page. `material_ui` / `cupertino_ui` are the standalone packages (opt-in since 3.47); the in-framework `package:flutter/material.dart` is formally deprecated in Flutter 3.50.
 - Distance line: `Timeline`, `debugger()`, and the dumps here are Dart / Flutter tooling. The `showPerformanceOverlay` and `MaterialApp` entries are Flutter widgets, not Compose or SwiftUI components of the same name.
 
 ## Related

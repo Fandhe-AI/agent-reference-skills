@@ -4,7 +4,7 @@ source: https://docs.flutter.dev/release/breaking-changes/material-ui-and-cupert
 
 # Migrate to standalone material_ui and cupertino_ui packages
 
-The Material and Cupertino design libraries are available as standalone packages, `package:material_ui` and `package:cupertino_ui`, decoupling design systems from the Flutter SDK. In Flutter 3.47, developers can opt in ahead of the formal deprecation of the in-framework libraries.
+The Material and Cupertino design libraries are available as standalone packages, `package:material_ui` and `package:cupertino_ui`, decoupling design systems from the Flutter SDK. Starting in Flutter 3.47, developers could opt in to these packages ahead of the formal deprecation of the in-framework design libraries in Flutter 3.50.
 
 ## Signature / Usage
 
@@ -64,7 +64,9 @@ Decoupled localizations: `localizationsDelegates: GlobalMaterialLocalizations.de
 
 ## Notes
 
-- Opt-in only in 3.47. The in-framework design libraries (`package:flutter/material.dart`, `package:flutter/cupertino.dart`) are "scheduled for formal deprecation in an upcoming stable release" and are not deprecated in 3.47.7. This page appears under "Not yet released to stable" in the breaking changes index.
+- Formally deprecated in Flutter 3.50. The in-framework design libraries (`package:flutter/material.dart`, `package:flutter/cupertino.dart`) were opt-in only in 3.47 (3.47.7 did not deprecate them); the 3.50 page states "The in-framework design libraries are formally deprecated in Flutter 3.50." The breaking changes index lists this page under "Released in Flutter 3.50". Timeline: landed in 3.49.0-1.0.pre-295, in stable release 3.50.
+- Related 3.50 change in `package:material_ui` 1.8.0: `DropdownButtonFormField` gained `enabled` and `onChanged` became optional (`dropdownbuttonformfield-enabled-parameter`).
+- Updated against the docs.flutter.dev Markdown twin on 2026-11-14 (site built from flutter/website main; pinned SHA `acea4202cfbaa99aa520a154b34603cd420776ae`).
 - Starting in Flutter 3.47, version 1.0 of `material_ui` and `cupertino_ui` is published on pub.dev. Contributions to Material and Cupertino inside the core SDK were frozen starting in Flutter 3.44; the initial 1.0.0 versions match the frozen framework code. Future releases use semantic versioning; releases are planned weekly.
 - If `dart fix` doesn't add the packages to `pubspec.yaml`, run `flutter pub add material_ui` / `flutter pub add cupertino_ui`, then run `dart fix` once more for remaining migrations and lint warnings such as import sorting.
 - `MaterialUiCompatibilityBridge` injects theme and localization data downward so unmigrated children reading `Theme.of(context)` or `MaterialLocalizations.of(context)` keep working. It cannot resolve type mismatches when a dependency exposes, accepts, or returns in-framework SDK types in its public API (for example `FloatingActionButtonLocation`, `ColorScheme`, `TextTheme`); such dependencies must migrate first.

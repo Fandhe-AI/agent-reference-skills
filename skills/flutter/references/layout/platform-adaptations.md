@@ -164,7 +164,7 @@ Text editing: both Material and Cupertino text fields support spellcheck configu
 - The source page describes only the Android glow indicator (`GlowingOverscrollIndicator`); with Material 3, the default since Flutter 3.16, `MaterialScrollBehavior` uses `StretchingOverscrollIndicator` instead, so the Overscroll row was updated here.
 - The code snippets are verbatim from the page and partly abbreviated with `...`.
 - This is Flutter's cross-platform adaptation layer (Dart); native iOS and Android behavior is documented in apple-uikit / apple-swiftui and the android-* skills. Flutter's Material / Cupertino widget libraries are distinct from Compose Material3 (android-compose-components) and UIKit / SwiftUI components.
-- Flutter 3.47 allows opting in to the standalone material_ui / cupertino_ui packages (the page's API links point at them); in-framework Material and Cupertino are not yet deprecated in 3.47.7. See the release category.
+- Flutter 3.47 allowed opting in to the standalone material_ui / cupertino_ui packages (the page's API links point at them); in-framework Material and Cupertino are formally deprecated in Flutter 3.50. See the release category.
 
 ## Related
 

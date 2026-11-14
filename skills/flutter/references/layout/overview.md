@@ -391,7 +391,7 @@ Widget _buildCard() {
 - The Material library and the Cupertino library can be mixed with the standard widgets library.
 - Images added to the project must be declared in `pubspec.yaml` (`Image.asset`); `Image.network` needs no asset declaration.
 - Screenshots in the original page use `debugPaintSizeEnabled = true` to show visual layout. The widgets library, Material (`Scaffold`, `AppBar`, `Card`, `ListTile`), and Cupertino widgets listed here are referenced on the original page through api.flutter.dev, material_ui, and cupertino_ui.
-- Flutter 3.47 allows opting in to the standalone material_ui / cupertino_ui packages; in-framework Material and Cupertino are not yet deprecated in 3.47.7 (see the release category).
+- Flutter 3.47 allowed opting in to the standalone material_ui / cupertino_ui packages; in-framework Material and Cupertino are formally deprecated in Flutter 3.50 (see the release category).
 
 ## Related
 

@@ -329,7 +329,7 @@ Global keys uniquely identify child widgets, must be globally unique across the 
 
 ## Notes
 
-- The Material and Cupertino design systems are shown on this page as the standalone `material_ui` / `cupertino_ui` pub.dev packages; the code samples still import `package:flutter/material.dart`. The 3.47 opt-in to the standalone packages is described in the release category (material-ui-and-cupertino-ui); in-framework Material / Cupertino is not yet deprecated at 3.47.7.
+- The Material and Cupertino design systems are shown on this page as the standalone `material_ui` / `cupertino_ui` pub.dev packages; the code samples still import `package:flutter/material.dart`. The migration to the standalone packages (opt-in since 3.47) is described in the release category (material-ui-and-cupertino-ui); in-framework Material / Cupertino is formally deprecated in Flutter 3.50.
 - Flutter widgets (Dart) are distinct from same-named components in Jetpack Compose (android-compose-ui / android-compose-components), SwiftUI (apple-swiftui), WinUI (windows-winui-controls), Ark UI / Chakra UI (ark-ui / chakra-ui) and the Rust fandhe-frontend; names like `Text`, `Row`, `Column`, `Stack` are not interchangeable across them.
 
 ## Related

@@ -141,7 +141,7 @@ void main() {
 ## Notes
 
 - You can customize these behaviors, typically by setting them to values in your `void main()` function.
-- The snippets import `package:material_ui/material_ui.dart` as written in the official page. Per the Flutter 3.47 notes, `material_ui` / `cupertino_ui` are standalone packages you can opt in to; the in-framework `package:flutter/material.dart` is not yet deprecated in 3.47.7.
+- The snippets import `package:material_ui/material_ui.dart` as written in the official page. `material_ui` / `cupertino_ui` are the standalone packages (opt-in since 3.47); the in-framework `package:flutter/material.dart` is formally deprecated in Flutter 3.50.
 - Correction to the official snippet: the official `MaterialApp` examples set only `builder`, so `widget` is null (no Navigator is built) and the `StateError` is thrown on every normal launch; a minimal `home` was added here — keep your app's existing `home`/`routes` in real code.
 - `myErrorsHandler`, `myBackend`, and `MyBackend` are placeholders in the official snippets, not Flutter APIs.
 
