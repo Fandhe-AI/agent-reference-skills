@@ -4,6 +4,7 @@
 |------|-------------|------|
 | AppEntity | An interface for making a custom type or app-specific concept discoverable by Apple Intelligence and experiences like Siri or the Shortcuts app. | [appentity.md](./appentity.md) |
 | AppEntityAnnotatable | An interface that system types adopt and use to manage their relationship to app entities. | [appentityannotatable.md](./appentityannotatable.md) |
+| AppEntityCollectionValue | An intent value that holds multiple app entities of the same type. | [appentitycollectionvalue.md](./appentitycollectionvalue.md) |
 | AppEnum | An interface to express that a custom type has a predefined, static set of values. | [appenum.md](./appenum.md) |
 | AppValue / AnyIntentValue | `AppValue` is an interface that describes conceptual types you use in app intents. `AnyIntentValue` is a type the system uses to access a parameter or property value. | [appvalue.md](./appvalue.md) |
 | ComputedProperty() macro (6 overloads) | A macro that adds a computed app entity property with a get accessor and an optional set accessor. | [computedproperty.md](./computedproperty.md) |

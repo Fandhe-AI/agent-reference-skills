@@ -40,6 +40,7 @@ struct PlayAudioIntent: AudioStartingIntent {
 - `playAudio` itself is marked iOS / iPadOS / Mac Catalyst / macOS / visionOS 27.0+ on its page. Introduction versions of individual schemas vary by schema, so check the member page before relying on one.
 - Companion macros: `AppEntity(schema:)` and `AppEnum(schema:)`. The earlier `AssistantIntent(schema:)` macro is deprecated (see assistant-schemas-legacy).
 - App Intents macros are unrelated to the Foundation Models framework (`LanguageModelSession` / `Tool`); this macro declares schemas for Apple Intelligence and Siri to discover your app's actions, it does not call a model.
+- iOS 27.3 beta: `AppIntent(_:schema:)` (traits plus schema, adds `ToolIntent` so Siri can call the intent) is described in siri-ai-preview. Source: https://developer.apple.com/documentation/appintents/appintent(_:schema:) (fetched 2026-11-14)
 
 ## Related
 
@@ -48,3 +49,4 @@ struct PlayAudioIntent: AudioStartingIntent {
 - [App schema base types](./app-schema-base-types.md)
 - [Previous schema types](./assistant-schemas-legacy.md)
 - [AppIntent](../intents/appintent.md)
+- [AppIntent(_:) / AppIntent(_:schema:) / AppIntentTraits](../siri-ai-preview/appintent-tool-macros.md)

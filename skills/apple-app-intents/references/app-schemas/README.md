@@ -20,3 +20,4 @@
 | Photos domain | Make your photo and video app's actions available to Apple Intelligence and Siri by adopting schemas for common photo and video actions. | [domain-photos.md](./domain-photos.md) |
 | Reminders domain | Make your reminder app's actions available to Apple Intelligence and Siri by adopting schemas for common reminder actions. | [domain-reminders.md](./domain-reminders.md) |
 | System and in-app search domain | Make your app's actions available to Apple Intelligence and Siri by adopting schemas for in-app search and content access. | [domain-system-and-in-app-search.md](./domain-system-and-in-app-search.md) |
+| Video domain | Make your video app's actions available to Apple Intelligence and Siri by adopting schemas for common video playback and watchlist actions. | [domain-video.md](./domain-video.md) |

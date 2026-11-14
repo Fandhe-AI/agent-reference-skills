@@ -71,6 +71,7 @@ extension TrailEntity: URLRepresentableEntity {
 - Conforming to `AppEntity` directly on app data models is optional; in many cases create models specific to app intents that shadow the app data models.
 - Inherited by: `AssistantEntity`, `AssistantSchemaEntity`, `FileEntity`, `IndexedEntity`, `OwnershipProvidingEntity`, `SyncableEntity`, `TransientAppEntity`, `URLRepresentableEntity`, `UniqueAppEntity`.
 - Sample code: Accelerating app interactions with App Intents. Articles: Defining app entities for your custom data types; Making app entities available in Spotlight; Adding parameters to an app intent; Providing contextual cues to Apple Intelligence and Siri; Getting started with the App Intents framework.
+- iOS 27.3 beta: `static var authenticationPolicy: IntentAuthenticationPolicy { get }` is the minimum authentication policy for each of the entity's properties (default `IntentAuthenticationPolicy.alwaysAllowed`); see AppEntity(_:) in siri-ai-preview. Source: https://developer.apple.com/documentation/appintents/appentity/authenticationpolicy (fetched 2026-11-14)
 
 ## Related
 
@@ -83,3 +84,4 @@ extension TrailEntity: URLRepresentableEntity {
 - [URLRepresentableEntity](./urlrepresentableentity.md)
 - [EntityIdentifierConvertible](./entityidentifierconvertible.md)
 - [DisplayRepresentable protocols](./display-representable-protocols.md)
+- [AppEntity(_:) / AppEntity(_:schema:) / AppEntityTraits](../siri-ai-preview/appentity-generable-macros.md)

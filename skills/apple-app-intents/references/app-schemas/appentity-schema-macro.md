@@ -25,6 +25,7 @@ A Swift macro you use to make sure your app entity conforms to a schema.
 - The official page carries no code listing. The usage form is the one shown for intents on the domain pages (`@AppIntent(schema: .<domain>.<schema>)`); the entity form is not shown verbatim in the documentation pinned here, so it is not reproduced.
 - Mentioned by the articles "Making actions and content discoverable by Apple Intelligence" and "Getting started with the App Intents framework".
 - Not related to the Foundation Models framework (`LanguageModelSession` / `Tool`).
+- iOS 27.3 beta: `AppEntity(_:schema:)` (traits plus schema, adds `GenerableEntity`) is described in siri-ai-preview. Source: https://developer.apple.com/documentation/appintents/appentity(_:schema:) (fetched 2026-11-14)
 
 ## Related
 
@@ -32,3 +33,4 @@ A Swift macro you use to make sure your app entity conforms to a schema.
 - [AppEnum(schema:)](./appenum-schema-macro.md)
 - [App schema base types](./app-schema-base-types.md)
 - [AppEntity](../entities/appentity.md)
+- [AppEntity(_:) / AppEntity(_:schema:) / AppEntityTraits](../siri-ai-preview/appentity-generable-macros.md)

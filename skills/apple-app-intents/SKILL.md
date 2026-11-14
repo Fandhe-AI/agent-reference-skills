@@ -2,9 +2,10 @@
 name: apple-app-intents
 description: >
   Apple App Intents (Swift, Siri / Shortcuts / Apple Intelligence 連携フレームワーク) の
-  リファレンス。AppIntent, AppEntity, AppEnum, EntityQuery, IntentParameter, AppShortcutsProvider,
-  App Schemas (AppIntent マクロ), IndexedEntity (Spotlight), SnippetIntent, Visual Intelligence,
-  IntentValueQuery, App Intents Testing, SiriKit (INIntent) 移行。
+  リファレンス。Siri AI Developer Preview (ToolIntent, GenerableEntity, app skills), AppIntent,
+  AppEntity, AppEnum, EntityQuery, IntentParameter, AppShortcutsProvider, App Schemas (AppIntent マクロ),
+  IndexedEntity (Spotlight), SnippetIntent, Visual Intelligence, IntentValueQuery,
+  App Intents Testing, SiriKit (INIntent) 移行。
 user-invocable: false
 ---
 
@@ -14,8 +15,10 @@ Apple の App Intents フレームワーク（アプリの機能とデータを 
 
 ## 対象バージョン
 
-- 出典: developer.apple.com の DocC JSON（`/tutorials/data/documentation/<path>.json`）。URL に版がないため取得日 2026-10-16 で pin
-- 対象 SDK: iOS / iPadOS / macOS / tvOS / visionOS / watchOS 27.0（Xcode 27.0）。`updates/appintents` の最新節は June 2026。取得した 1258 JSON に beta フラグは 0 件
+- 出典: developer.apple.com の DocC JSON（`/tutorials/data/documentation/<path>.json`）。URL に版がないため取得日で pin（既存ページは 2026-10-16、`references/siri-ai-preview/` と 27.3 beta 追加分は 2026-11-14）
+- 対象 SDK: iOS / iPadOS / macOS / tvOS / visionOS / watchOS 27.0（Xcode 27.0）が基準。`updates/appintents` の最新節は June 2026（2026-11-14 時点も同じ）
+- 27.3 beta（2026-11-14 取得、各ページの `platforms[].beta` が true）: Siri AI Developer Preview（ToolIntent / `@AppIntent(.tool)` / GenerableEntity / `@AppEntity(.generable)` / IntentVisibility / `visibility:` 付き `@Property` `@ComputedProperty` `@DeferredProperty` / app skills）、CardSnippet 系、AppEntityCollectionValue、`DeleteIntent.target`、video スキーマドメイン。Apple は Siri AI Developer Preview 中に API が変わりうると明記しているため、該当ページは beta として扱う
+- 27.2（beta なし）: `IntentParameter` の `inputConnectionBehavior:` 付き初期化子、`IntentValueRepresentation.init(importing:)`。27.2 リリースノートに App Intents 項目なし（27.1 は推測 URL が 404 で未確認）
 - フレームワーク導入版
   - App Intents: iOS 16.0 / macOS 13.0 / watchOS 9.0 / visionOS 1.0
   - Visual Intelligence: iOS 26.0 / macOS 27.0
@@ -89,6 +92,11 @@ skills/apple-app-intents/
       widgetconfigurationintent.md
       setfocusfilterintent.md
       ...
+    siri-ai-preview/            # Siri AI Developer Preview (27.3 beta): ToolIntent・GenerableEntity・IntentVisibility・app skills
+      README.md
+      toolintent.md
+      generableentity.md
+      ...
     visual-intelligence/        # Visual Intelligence 検索連携
       README.md
       intentvaluequery.md
@@ -137,8 +145,10 @@ skills/apple-app-intents/
 | メール・写真・メッセージ・メモ等のドメイン別 schema を確認する | app-schemas | [references/app-schemas/README.md](references/app-schemas/README.md) |
 | ブラウザー・ドキュメント・表計算・ホワイトボード等 Shortcuts 向け schema ドメインを確認する | shortcuts-schema-domains | [references/shortcuts-schema-domains/README.md](references/shortcuts-schema-domains/README.md) |
 | Intent の donation、関連 Intent の提案、画面上 Entity の共有、スニペット表示 | system-integration | [references/system-integration/README.md](references/system-integration/README.md) |
+| Entity をカード (CardSnippet / SnippetRepresentableEntity) で表示する | system-integration | [references/system-integration/README.md](references/system-integration/README.md) |
 | Intent を特定のシーンへ誘導する、UIKit / AppKit のデータソースを連携する | system-integration | [references/system-integration/README.md](references/system-integration/README.md) |
 | Widget / Control / Live Activity / Focus Filter / Workout の Intent を実装する | feature-integrations | [references/feature-integrations/README.md](references/feature-integrations/README.md) |
+| Siri AI にカスタム Intent をツールとして公開する (`@AppIntent(.tool)`)、Siri が生成できる Entity (`@AppEntity(.generable)`) や app skills (Skills.skillsbundle) を定義する [27.3 beta] | siri-ai-preview | [references/siri-ai-preview/README.md](references/siri-ai-preview/README.md) |
 | Visual Intelligence の検索結果にアプリのコンテンツを表示する | visual-intelligence | [references/visual-intelligence/README.md](references/visual-intelligence/README.md) |
 | App Intents・Entity・Query をテストする | testing | [references/testing/README.md](references/testing/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
