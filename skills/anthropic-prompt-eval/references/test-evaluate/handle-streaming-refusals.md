@@ -78,6 +78,8 @@ except Exception as e:
 - A refused request in a Message Batch is returned as a **succeeded** result with `stop_reason: "refusal"`, not an errored result.
 - Centralize handling on `stop_reason: "refusal"` rather than on model-specific behavior. For every `stop_reason` value, see handling-stop-reasons in anthropic-api-core.
 - Fallback-credit / refusals-and-fallback mechanics are anthropic-api-core topics.
+- The official page's `supportedModels` list includes `claude-fable-5-2`, `claude-mythos-5-2`, `claude-fable-5-1`, `claude-mythos-5-1`, `claude-fable-5`, `claude-mythos-5`, `claude-mythos-preview`, `claude-opus-5-5`, `claude-opus-5`, `claude-haiku-5-5`, and `claude-haiku-4-5-20251001`; the implementation-guide example still uses `claude-opus-5-5`.
+- Source: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals (retrieved 2026-11-14; headings and key statements compared with this page, not line-diffed).
 
 ## Related
 

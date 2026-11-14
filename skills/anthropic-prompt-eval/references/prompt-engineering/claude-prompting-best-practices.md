@@ -1,10 +1,10 @@
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices / last verified: 2026-11-14 (Claude Fable 5.2 / Mythos 5.2 mentions synced) -->
 
 # Prompting best practices
 
 Comprehensive guide to prompt engineering techniques for Claude's latest models, covering clarity, examples, XML structuring, thinking, and agentic systems.
 
-The living reference for Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Opus 4.6, Claude Sonnet 5.5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Haiku 5.5, and Claude Haiku 4.5. Organized as: model-specific guidance → techniques for all current models → migration considerations.
+The living reference for Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Opus 4.6, Claude Sonnet 5.5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Haiku 5.5, and Claude Haiku 4.5. Organized as: model-specific guidance → techniques for all current models → migration considerations.
 
 ## Model-specific guidance
 
@@ -12,6 +12,7 @@ Each of these models has its own prompting page. Read the one for your model fir
 
 | Model | Guide | What's different |
 | --- | --- | --- |
+| Claude Fable 5.2 and Claude Mythos 5.2 | [prompting-claude-fable-5-2](./prompting-claude-fable-5-2.md) | Differences from earlier models: effort calibration, finishing long tasks, approvals, code ownership, user-facing progress updates, subagent delegation, caution that builds up, prompts and harnesses designed for earlier models, final reports, and safeguard refusals. |
 | Claude Fable 5.1 and Claude Mythos 5.1 | [prompting-claude-fable-5-1](./prompting-claude-fable-5-1.md) | Differences from Claude Fable 5: effort levels, finishing long tasks, user-facing progress updates, passing thinking blocks back unchanged, tool-call batching in agent loops, search triggering at low effort, formatting, and writing density. |
 | Claude Fable 5 and Claude Mythos 5 | [prompting-claude-fable-5](./prompting-claude-fable-5.md) | Differences from Claude Opus 4.8: effort levels, instruction following, long-run progress claims, memory systems, and the `reasoning_extraction` refusal category. |
 | Claude Sonnet 5.5 | [prompting-claude-sonnet-5-5](./prompting-claude-sonnet-5-5.md) | Differences from Claude Sonnet 5: effort calibration, initiative and scope, running without up-front thinking, JSON output on reasoning tasks, user-facing progress updates, tool use in chat, mid-turn user messages, verification on coding tasks, tool-call handling, complex visual inputs, and safeguard refusals. |
@@ -66,7 +67,7 @@ To have Claude identify itself correctly: `"The assistant is Claude, created by 
 
 ### Communication style and verbosity
 
-Claude's latest models are more direct, conversational, and less verbose by default — may skip post-tool-call summaries. To restore visibility: `"After completing a task that involves tool use, provide a quick summary of the work you've done."` Claude Opus 5 is an exception: its default responses run longer and `effort` does not reliably shorten them — prompt explicitly for conciseness instead (see `prompting-claude-opus-5.md`). Claude Fable 5.1 has the opposite tendency during agentic work: it writes fewer user-facing updates between tool calls. Ask for progress text explicitly, and remove any instruction telling it to keep that text brief (see `prompting-claude-fable-5-1.md`).
+Claude's latest models are more direct, conversational, and less verbose by default — may skip post-tool-call summaries. To restore visibility: `"After completing a task that involves tool use, provide a quick summary of the work you've done."` Claude Opus 5 is an exception: its default responses run longer and `effort` does not reliably shorten them — prompt explicitly for conciseness instead (see `prompting-claude-opus-5.md`). Claude Fable 5.1 has the opposite tendency during agentic work: it writes fewer user-facing updates between tool calls. Ask for progress text explicitly, and remove any instruction telling it to keep that text brief (see `prompting-claude-fable-5-1.md`). For Claude Fable 5.2, see "Keep users informed during long turns" in `prompting-claude-fable-5-2.md`.
 
 ### Control the format of responses
 
@@ -113,7 +114,7 @@ Claude Opus 4.6 does more upfront exploration, especially at higher [effort](htt
 
 ### Leverage thinking and interleaved thinking
 
-Claude 4.6+ and Claude Mythos Preview use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) (`thinking: {type: "adaptive"}`), calibrated by the `effort` parameter and query complexity. On Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, and Claude Opus 5.5, thinking is always on and adaptive thinking is the only mode. Older models use manual [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking) with `budget_tokens` (deprecated on Opus 4.6/Sonnet 4.6, a 400 error on Claude 4.7+). Migration example:
+Claude 4.6+ and Claude Mythos Preview use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) (`thinking: {type: "adaptive"}`), calibrated by the `effort` parameter and query complexity. On Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, and Claude Opus 5.5, thinking is always on and adaptive thinking is the only mode. Claude Fable 5.2 and Claude Mythos 5.2 think before almost every reply at `high` effort and above. Older models use manual [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking) with `budget_tokens` (deprecated on Opus 4.6/Sonnet 4.6, a 400 error on Claude 4.7+). Migration example:
 
 ```python
 # Before: manual budget (older models)
@@ -138,9 +139,9 @@ If you are not using extended thinking, you don't need to add a `thinking` param
 - Claude Opus 5, Claude Sonnet 5.5, Claude Sonnet 5, and Claude Haiku 5.5: thinking is on by default, so a response can begin with `thinking` blocks. Select content blocks by `type` rather than by position, and leave room in `max_tokens` for thinking.
 - Claude Opus 5 and Claude Haiku 5.5: can disable thinking only at effort `high` or lower.
 - Claude Sonnet 5.5: the lowest thinking setting is `between_tools`, accepted at effort `high` or lower.
-- Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, and Claude Opus 5.5: thinking is always on, regardless of whether you set the `thinking` parameter.
+- Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, and Claude Opus 5.5: thinking is always on, regardless of whether you set the `thinking` parameter.
 
-Notes: thinking triggering is promptable (steer down with a "thinking adds latency, respond directly when in doubt" instruction). Prefer general instructions ("think thoroughly") over prescriptive step-by-step plans. Multishot examples can include `<thinking>` tags to demonstrate reasoning style. When thinking is off, manual chain-of-thought prompting (think through the problem, put the final answer in `<answer>` tags) is a fallback; on Claude Fable 5.1, Claude Fable 5, Claude Opus 5.5, Claude Opus 5, and Claude Sonnet 5.5, rely on thinking instead (at a lower `effort` if cost or latency matters), because a prompt that asks the model to write out its reasoning, for example in `<thinking>` tags, may be declined (`reasoning_extraction` refusal category; see "Keep reasoning in thinking blocks" in the official refusals-and-fallback page). Ask Claude to self-check against test criteria before finishing — except on Claude Opus 5, where this is unnecessary and can cause over-verification (see `prompting-claude-opus-5.md`). Structured outputs and adaptive thinking are covered further in anthropic-api-core.
+Notes: thinking triggering is promptable (steer down with a "thinking adds latency, respond directly when in doubt" instruction); on Claude Fable 5.2 lower the effort level instead, because such an instruction did not stop thinking at `medium` effort and above (see "Calibrate effort" in `prompting-claude-fable-5-2.md`). Prefer general instructions ("think thoroughly") over prescriptive step-by-step plans. Multishot examples can include `<thinking>` tags to demonstrate reasoning style. When thinking is off, manual chain-of-thought prompting (think through the problem, put the final answer in `<answer>` tags) is a fallback; on Claude Fable 5.2, Claude Fable 5.1, Claude Fable 5, Claude Opus 5.5, Claude Opus 5, and Claude Sonnet 5.5, rely on thinking instead (at a lower `effort` if cost or latency matters), because a prompt that asks the model to write out its reasoning, for example in `<thinking>` tags, may be declined (`reasoning_extraction` refusal category; see "Keep reasoning in thinking blocks" in the official refusals-and-fallback page). Ask Claude to self-check against test criteria before finishing — except on Claude Opus 5, where this is unnecessary and can cause over-verification (see `prompting-claude-opus-5.md`). Structured outputs and adaptive thinking are covered further in anthropic-api-core.
 
 ### Note on effort and thinking parameters
 
@@ -228,7 +229,7 @@ When migrating to current Claude models from earlier generations:
 4. **Update thinking configuration:** Claude 4.6 and later models use adaptive thinking (`thinking: {type: "adaptive"}`) instead of manual thinking with `budget_tokens`. On Claude 4.7 and later models, setting `budget_tokens` returns a 400 error. Use the [effort parameter](https://platform.claude.com/docs/en/build-with-claude/effort) (an anthropic-api-core topic) to control thinking depth.
 5. **Migrate away from prefilled responses:** prefilled responses on the last assistant turn are no longer supported starting with Claude 4.6 models and Claude Mythos Preview (see above).
 6. **Tune anti-laziness prompting:** if your prompts previously encouraged more thoroughness or more aggressive tool use, dial back that guidance. Claude 4.6 models are more proactive and may overtrigger on instructions that were needed for previous models.
-7. **Pass thinking blocks back unchanged and keep history append-only:** append each assistant turn exactly as the API returned it, thinking blocks included. On Claude Fable 5.1, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5, modifying the conversation before a thinking block results in an error, or in the block being dropped if you opt into that: editing earlier messages, rebuilding `system` or `tools`, or summarizing older turns in place between requests invalidates every later thinking block, so move those changes to mid-conversation system messages and server-side context management (see "Keep the conversation history append-only" in `prompting-claude-fable-5-1.md`).
+7. **Pass thinking blocks back unchanged and keep history append-only:** append each assistant turn exactly as the API returned it, thinking blocks included. On Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5, modifying the conversation before a thinking block results in an error, or in the block being dropped if you opt into that: editing earlier messages, rebuilding `system` or `tools`, or summarizing older turns in place between requests invalidates every later thinking block, so move those changes to mid-conversation system messages and server-side context management (see "Keep the conversation history append-only" in `prompting-claude-fable-5-1.md`).
 
 For detailed migration steps, see the Migration guide (`/docs/en/about-claude/models/migration-guide`).
 
@@ -239,9 +240,11 @@ See the Claude Sonnet 5.5 migration guide (`/docs/en/models/sonnet-5-5/migration
 ## Notes
 
 - Parameter-level detail for `thinking`, `effort`, and `output_config` (schemas, request/response shapes) belongs to anthropic-api-core; this page covers prompting technique only.
+- Source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices (Claude Fable 5.2 / Mythos 5.2 additions synced 2026-11-14; remaining body last compared 2026-10-17).
 
 ## Related
 
+- [prompting-claude-fable-5-2](./prompting-claude-fable-5-2.md)
 - [prompting-claude-fable-5-1](./prompting-claude-fable-5-1.md)
 - [prompting-claude-fable-5](./prompting-claude-fable-5.md)
 - [prompting-claude-sonnet-5-5](./prompting-claude-sonnet-5-5.md)
