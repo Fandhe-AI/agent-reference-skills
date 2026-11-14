@@ -59,6 +59,7 @@ export default defineConfig({
 - Deploy with `pnpm run deploy`.
 - A full example is available at `TanStack/router` `examples/react/start-basic-cloudflare`.
 - Source: https://github.com/TanStack/router/blob/release-2026-11-08-0104/docs/start/framework/react/guide/hosting.md (tag `release-2026-11-08-0104`, `@tanstack/react-start` 1.169.5, fetched 2026-11-14) (section: Cloudflare Workers)
+- Adapted from the official docs: e2e fixture links in the troubleshooting text point to tag `release-2026-11-08-0104` instead of `main`, so they match the pinned snapshot.
 
 ### Deployment fails even though the Vite build succeeds
 
@@ -84,7 +85,7 @@ pnpm exec wrangler deploy --dry-run
 
 The plugin resolves the environment into the generated config. A later `wrangler deploy --env staging` does not select a different built environment. See [Cloudflare environments](https://developers.cloudflare.com/workers/vite-plugin/reference/cloudflare-environments/).
 
-The [Cloudflare fixture tests](https://github.com/TanStack/router/blob/main/e2e/react-start/basic-cloudflare/tests/app.spec.ts) exercise a generated-config dry run and preview the built app locally. A dry run validates packaging, it does not verify account permissions, a live domain, or deployed bindings.
+The [Cloudflare fixture tests](https://github.com/TanStack/router/blob/release-2026-11-08-0104/e2e/react-start/basic-cloudflare/tests/app.spec.ts) exercise a generated-config dry run and preview the built app locally. A dry run validates packaging, it does not verify account permissions, a live domain, or deployed bindings.
 
 ## Related
 
