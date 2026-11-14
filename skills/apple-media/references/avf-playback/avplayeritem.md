@@ -72,6 +72,8 @@ NotificationCenter.default.addObserver(
 - Key notifications: `.AVPlayerItemDidPlayToEndTime`, `.AVPlayerItemFailedToPlayToEndTime`, `.AVPlayerItemPlaybackStalled`.
 - `AVPlayerItemRenderedLegibleOutput` (iOS 18.0+, macOS 15.0+) provides rendered captions.
 - Prefer `AVPlayerItem(asset:automaticallyLoadedAssetKeys:)` to control which asset keys are preloaded before status becomes `.readyToPlay`.
+- `AVMetrics` (iOS 18.0+, macOS 15.0+) captures performance and playback metrics (June 2024 Updates).
+- Source: https://developer.apple.com/documentation/avfoundation/avmetrics (DocC JSON, fetched 2026-11-14)
 
 ## Related
 

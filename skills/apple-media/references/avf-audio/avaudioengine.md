@@ -36,6 +36,9 @@ playerNode.play()
 - `start()` throws; always call inside a `do-catch` block
 - Removing nodes with differing channel counts during runtime can break the graph; prefer reconnecting only upstream of a mixer
 - Enable `enableManualRenderingMode(_:format:maximumFrameCount:)` for offline or faster-than-real-time rendering
+- `AVAudioEnvironmentNode.isListenerHeadTrackingEnabled` (iOS 18.0+, macOS 15.0+) matches the listener orientation to the head pose via compatible AirPods; the app needs the `com.apple.developer.coremotion.head-pose` entitlement to observe it. Add the `com.apple.developer.spatial-audio.profile-access` entitlement to tailor output to the person's personalized spatial audio profile, and set the `AVGameBypassSystemSpatialAudio` Info.plist key to ignore the system spatial audio toggle in Control Center (June 2024 Updates).
+- Source: https://developer.apple.com/documentation/avfaudio/avaudioenvironmentnode/islistenerheadtrackingenabled (DocC JSON, fetched 2026-11-14)
+- Source: https://developer.apple.com/documentation/avfaudio/updates (June 2024, fetched 2026-11-14)
 
 ## Related
 

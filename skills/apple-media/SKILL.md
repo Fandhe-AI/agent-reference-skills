@@ -73,6 +73,10 @@ skills/apple-media/
       photospickeritem.md
 ```
 
+## 対象バージョン
+
+出典は developer.apple.com の DocC JSON（URL に版が無いため取得日 2026-11-14 で pin）と iOS & iPadOS 27 / 27.2 / 27.3 リリースノート。iOS 27.1+ の Duo カメラ API は `avf-capture`、June 2024 の Updates 追補（AVMetrics / dynamicRangePolicy / export(to:as:isolation:) / head tracking 等）は各ページの `## Notes` に記載。
+
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:

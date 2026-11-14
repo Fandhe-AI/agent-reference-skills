@@ -49,6 +49,8 @@ device?.unlockForConfiguration()
 - `AVCaptureDevice.RotationCoordinator` (iOS 17.0+, macOS 14.0+) reports `videoRotationAngleForHorizonLevelPreview` / `videoRotationAngleForHorizonLevelCapture`. Each coordinator is bound to one device, so create a new one when switching cameras; one created with a nil preview layer never reports a preview angle (from the iOS 27 sample "Supporting device rotation in your camera app").
 - On iPhone Duo, `position` is a fixed hardware property and does not tell you which way a camera faces; use `AVCaptureDeviceDirectionCoordinator` (AVKit, iOS 27.1+).
 - New device types `builtInInnerUltraWideCamera` / `builtInOuterUltraWideCamera` (iOS 27.1+).
+- `AVCaptureVideoStabilizationMode.cinematicExtendedEnhanced` (iOS 18.0+) supports enhanced video stabilization (June 2024 Updates).
+- Source: https://developer.apple.com/documentation/avfoundation/avcapturevideostabilizationmode/cinematicextendedenhanced (DocC JSON, fetched 2026-11-14)
 
 ## Related
 

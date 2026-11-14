@@ -58,6 +58,11 @@ let player = AVPlayer(playerItem: playerItem)
 - Audio and video tracks must be inserted separately; one `insertTimeRange` call only inserts tracks of the same media type on a single `AVMutableCompositionTrack`.
 - For export, wrap the composition in `AVAssetExportSession`; for playback, wrap in `AVPlayerItem`.
 - Call `composition.copy() as? AVComposition` to get an immutable snapshot for export or playback.
+- The synchronous `AVMutableComposition.insertTimeRange(_:of:at:)` and the `completionHandler:` variant are deprecated in iOS 18.0 / macOS 15.0 (introduced in iOS 16.0); the `async` `insertTimeRange(_:of:at:isolation:)` in the table above is the replacement. `AVMutableCompositionTrack.insertTimeRange(_:of:at:)`, used in the snippet, is not marked deprecated.
+- Export asynchronously with `AVAssetExportSession.export(to:as:isolation:)` (listed under June 2024 in the AVFoundation Updates; declared `@backDeployed(before: iOS 26.0, macOS 26.0, tvOS 26.0, visionOS 26.0)`, symbol metadata `introducedAt` iOS 13.0). Observe progress by awaiting `states(updateInterval:)`.
+- Source: https://developer.apple.com/documentation/avfoundation/avmutablecomposition/inserttimerange(_:of:at:) (DocC JSON, fetched 2026-11-14)
+- Source: https://developer.apple.com/documentation/avfoundation/avassetexportsession/export(to:as:isolation:) (DocC JSON, fetched 2026-11-14)
+- Source: https://developer.apple.com/documentation/avfoundation/updates (June 2024, fetched 2026-11-14)
 
 ## Related
 
