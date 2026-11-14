@@ -2,14 +2,14 @@
 name: dgx-spark
 description: >
   NVIDIA DGX Spark User Guide リファレンス。GB10 Grace Blackwell Superchip 仕様、
-  first-boot / UEFI、ConnectX-7 Networking、複数 Spark 接続、
-  NVIDIA Sync Cluster Assistant、DGX OS / NGC / container runtime、
-  Release Notes (DGX OS 7.5.0)、known issues、PXE / cloud-init、fleet 運用、recovery、
+  Release Notes (DGX OS 7.6.0)、
+  first-boot / UEFI、ConnectX-7 Networking、複数 Spark 接続、NVIDIA Sync Cluster Assistant / DGX Spark Skills、DGX OS / NGC / container runtime、known issues、
+  PXE / cloud-init、fleet 運用、recovery / Repair、
   build.nvidia.com/spark playbook (vLLM / TensorRT-LLM / Ollama / ComfyUI / NIM / NeMo / NCCL)、Tailscale。
 user-invocable: false
 ---
 
-対象: DGX Spark User Guide（docs.nvidia.com/dgx/dgx-spark/、2026-10-17 取得。DGX OS 7.5.0 / July 2026 Release 時点）、playbooks は NVIDIA/dgx-spark-playbooks main @ c035e0a（2026-10-15、タグなし）
+対象: DGX Spark User Guide（docs.nvidia.com/dgx/dgx-spark/、2026-11-14 取得。DGX OS 7.6.0 / October 2026 Release 時点。前版は 7.5.0 / July 2026 Release）、playbooks は NVIDIA/dgx-spark-playbooks main @ 3088315（2026-10-23、タグなし。`nvidia/playbook-<name>/README.md` が原本）。一部 playbook ページは変更が無かったため旧 pin c035e0a の取得内容のまま
 
 ## ディレクトリ構成
 
@@ -30,6 +30,7 @@ skills/dgx-spark/
     system-config/
       README.md
       system-config-and-operation.md
+      system-overview.md
       uefi-settings.md
       spark-stacking.md        # (ConnectX-7 Networking)
     software/
@@ -53,6 +54,7 @@ skills/dgx-spark/
     system-update/
       README.md
       os-and-component-update.md
+      boot-repair.md           # System Repair
       system-recovery.md
     support/
       README.md
@@ -109,13 +111,15 @@ skills/dgx-spark/
 | GPU/CPU/メモリ/ストレージ/ネットワークの仕様を知りたい | hardware | [references/hardware/README.md](references/hardware/README.md) |
 | 筐体寸法・環境要件・電源/放熱を確認したい | hardware | [references/hardware/README.md](references/hardware/README.md) |
 | 初回起動・セットアップウィザードの手順を知りたい | setup | [references/setup/README.md](references/setup/README.md) |
-| UEFI 設定・Secure Boot・PXE boot を設定したい | system-config | [references/system-config/README.md](references/system-config/README.md) |
+| システム概要（アクセス方法・主要機能・アーキテクチャ）を知りたい | system-config | [references/system-config/README.md](references/system-config/README.md) |
+| UEFI 設定（Display Reserved Memory 含む）・Secure Boot・PXE boot を設定したい | system-config | [references/system-config/README.md](references/system-config/README.md) |
 | ConnectX-7 Networking (旧 Spark Stacking)・NVIDIA Sync Cluster Assistant でクラスタ化したい | system-config / playbooks | [references/system-config/README.md](references/system-config/README.md) / [references/playbooks/README.md](references/playbooks/README.md) |
-| DGX OS / DGX Dashboard / NVIDIA Sync の使い方を知りたい | software | [references/software/README.md](references/software/README.md) |
+| DGX OS / DGX Dashboard（管理者ポリシー・Wi-Fi Assistant）/ NVIDIA Sync（DGX Spark Skills）の使い方を知りたい | software | [references/software/README.md](references/software/README.md) |
 | Nsight でプロファイリングしたい、NGC / container runtime を使いたい | software | [references/software/README.md](references/software/README.md) |
 | PXE boot によるネットワークインストールを構築したい | provisioning | [references/provisioning/README.md](references/provisioning/README.md) |
-| fleet 規模のライフサイクル管理・air-gapped/cloud-init カスタムインストールをしたい | enterprise | [references/enterprise/README.md](references/enterprise/README.md) |
+| fleet 規模のライフサイクル管理・air-gapped / ネイティブ cloud-init（OEMDATA ボリューム）カスタムインストールをしたい | enterprise | [references/enterprise/README.md](references/enterprise/README.md) |
 | apt / fwupdmgr で OS・コンポーネントを更新したい | system-update | [references/system-update/README.md](references/system-update/README.md) |
+| 起動しない DGX Spark を SSD を消さずに修復したい（前のカーネル / live USB / initramfs / 署名済み NVIDIA ドライバー） | system-update | [references/system-update/README.md](references/system-update/README.md) |
 | リカバリー USB で工場出荷状態に戻したい | system-update | [references/system-update/README.md](references/system-update/README.md) |
 | サポート窓口・PSIRT・field diagnostic を確認したい | support | [references/support/README.md](references/support/README.md) |
 | 特定モデル/フレームワーク（vLLM, TRT-LLM, Ollama, ComfyUI, NIM, NeMo 等）を DGX Spark 上で動かす手順を知りたい | playbooks | [references/playbooks/README.md](references/playbooks/README.md) |

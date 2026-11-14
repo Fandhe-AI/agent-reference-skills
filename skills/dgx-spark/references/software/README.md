@@ -3,8 +3,8 @@
 | Name | Description | Path |
 | --- | --- | --- |
 | Software Overview | Overview of the DGX Spark software stack | [software-overview.md](./software-overview.md) |
-| DGX Dashboard | Built-in dashboard for metrics, updates, config, and JupyterLab | [dgx-dashboard.md](./dgx-dashboard.md) |
-| NVIDIA Sync | System tray utility to manage DGX Spark remotely | [nvidia-sync.md](./nvidia-sync.md) |
+| DGX Dashboard | Built-in dashboard for metrics, updates, config, JupyterLab, and administrator policy settings | [dgx-dashboard.md](./dgx-dashboard.md) |
+| NVIDIA Sync | System tray utility to manage DGX Spark remotely, plus DGX Spark Skills for agents | [nvidia-sync.md](./nvidia-sync.md) |
 | DGX OS | Customized Ubuntu-based Linux distribution for DGX systems | [dgx-os.md](./dgx-os.md) |
 | NVIDIA Nsight | GPU profiling, debugging, and analysis tools | [nsight.md](./nsight.md) |
 | NVIDIA Container Runtime for Docker | GPU access for Docker containers | [container-runtime-docker.md](./container-runtime-docker.md) |
