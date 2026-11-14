@@ -43,6 +43,9 @@ val dataSourceFactory =
 - To cache streamed bytes on top of any of these stacks, wrap the chosen `DataSource.Factory` as `upstreamDataSourceFactory` in a `CacheDataSource.Factory`; use Media3's dedicated download APIs for permanent offline downloads instead of ad hoc caching.
 - Artifact: `androidx.media3:media3-datasource` (`DefaultDataSource`, `DefaultHttpDataSource`); Cronet support is `androidx.media3:media3-datasource-cronet` (`androidx.media3.datasource.cronet.CronetDataSource`); OkHttp support is `androidx.media3:media3-datasource-okhttp`.
 
+- Media3 1.11.0 added a `media3-datasource-ktor` extension module providing `KtorDataSource`, backed by the Ktor HTTP stack (wrapped in `DefaultDataSource.Factory` like the other stacks). The official stack-comparison page does not list it.
+- Source: https://developer.android.com/jetpack/androidx/releases/media3 (1.11.0 release notes, retrieved 2026-11-14)
+
 ## Related
 
 - [DataSource.Factory and Caching](./data-source-cache.md)

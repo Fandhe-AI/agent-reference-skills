@@ -50,6 +50,7 @@ private inner class MyCallback : MediaSession.Callback {
 ## Notes
 
 - Package/artifact: `androidx.media3:media3-session`.
+- Media3 1.11.0 added `MediaSession.Callback.onConnectAsync()`, which processes a controller's connection attempt asynchronously; returning `Futures.immediateFuture(ConnectionResult)` gives the previous behavior. Source: https://developer.android.com/jetpack/androidx/releases/media3 (retrieved 2026-11-14).
 - Commands not granted in `onConnect()` are silently unavailable to that controller (buttons render disabled in system UI).
 - `onAddMediaItems` is the standard place to resolve playable `Uri`s from opaque `mediaId`s sent by Android Auto / Assistant.
 
