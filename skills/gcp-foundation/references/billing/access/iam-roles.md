@@ -20,7 +20,7 @@ Cost-view scope:
 - `billing.accounts.getSpendingInformation` on the billing account: view costs of all projects under the account.
 - `billing.resourceCosts.get` (plus `resourcemanager.projects.get`) on a project: view costs for that project only.
 
-Snippet taken from https://docs.cloud.google.com/billing/docs/how-to/custom-roles : permissions needed to edit budgets and billing export, which the predefined roles only bundle inside Billing Account Administrator:
+Snippet taken from https://docs.cloud.google.com/billing/docs/how-to/custom-roles : permissions needed to edit budgets and billing export, which the predefined roles bundle in Billing Account Administrator and, with the narrower Billing Account Costs Manager (`roles/billing.costsManager`), also cover (see the role table below):
 
 ```text
 billing.budgets.create

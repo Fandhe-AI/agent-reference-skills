@@ -62,7 +62,7 @@ curl -X POST \
 
 Update a budget (`PATCH .../budgets/budget-id`, body is the Budget resource itself):
 
-Adapted (not in the official docs): the official example wraps the body in a `budget` object; the PATCH body is the Budget itself, so the wrapper is removed.
+Adapted (not in the official docs): the official example wraps the body in a `budget` object; the PATCH body is the Budget itself, so the wrapper is removed. `currencyCode` is also added to `specifiedAmount` (set it to the billing account's currency, for example `USD`; the official sample omits it).
 
 ```json
 {
@@ -75,6 +75,7 @@ Adapted (not in the official docs): the official example wraps the body in a `bu
   },
   "amount": {
     "specifiedAmount": {
+      "currencyCode": "CURRENCY_CODE",
       "units": 500
     }
   },
