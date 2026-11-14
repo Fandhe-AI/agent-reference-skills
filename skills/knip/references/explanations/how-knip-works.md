@@ -30,7 +30,10 @@ The analysis queries the constructed graph to identify unused elements:
 - The graph contains only what's reachable from an entry file. Miss one entry, and everything reachable solely from it appears unused
 - Plugins automatically detect framework-specific entry points to maximize graph completeness
 - Unused results form cascading chains — one missing entry can generate dozens of related findings
+- Some chains only show up one run at a time: an export counts as used when another file imports it, even if the importing code is unused. Remove that code, and the next run may report the export. Unused exports that import each other across files are never reported
 - Recommended workflow: read the output from the root down, examining unused files first, since fixing root causes typically resolves downstream issues
+
+- Source: https://knip.dev/explanations/how-knip-works (knip@6.45.1 docs, retrieved 2026-11-14)
 
 ## Related
 

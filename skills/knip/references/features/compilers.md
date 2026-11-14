@@ -8,18 +8,20 @@ Projects may have non-JS/TS source files requiring compilation. Knip uses compil
 
 ## Built-in Compilers
 
-| Extension | Note |
-|-----------|------|
-| `.astro` | Built-in |
-| `.css` | Enabled via `tailwindcss` |
-| `.mdx` | Built-in |
-| `.prisma` | Built-in |
-| `.sass`, `.scss` | Built-in |
-| `.less` | Built-in |
-| `.styl`, `.stylus` | Built-in |
-| `.svelte` | Built-in |
-| `.tsrx` | Enabled when a `@tsrx/*` package is installed |
-| `.vue` | Built-in |
+| Extension | Enabled by |
+|-----------|------------|
+| `.astro` | Astro |
+| `.css` | Tailwind |
+| `.less` | `less` |
+| `.marko` | Marko |
+| `.md` | unplugin-vue-markdown |
+| `.mdx` | `@mdx-js/*`, `remark-mdx`, Astro, Fumadocs, Qwik, Storybook |
+| `.prisma` | Prisma |
+| `.sass`, `.scss` | `sass`, `sass-embedded`, `node-sass`, Stencil |
+| `.styl`, `.stylus` | `stylus` |
+| `.svelte` | Svelte |
+| `.tsrx` | `@tsrx/*` |
+| `.vue` | Nuxt, unplugin-auto-import, unplugin-vue-components, Vue |
 
 Built-in compilers use regex extraction to collect `import` statements (fast, no dependencies required). Tradeoff: unused exports inside these files go unreported. Override a built-in with the framework's own compiler when that fidelity is needed (see Svelte / Vue examples).
 
@@ -92,3 +94,7 @@ export default {
 ### Vue Example
 
 Uses `vue/compiler-sfc` to parse script blocks, script setup blocks, and style blocks.
+
+## Notes
+
+- Source: https://knip.dev/features/compilers (knip@6.45.1 docs, retrieved 2026-11-14)

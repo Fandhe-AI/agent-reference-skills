@@ -15,6 +15,7 @@ Source: https://knip.dev/reference/issue-types
 | Unused catalog entries | `catalog` | No reference to catalog entry | Yes |
 | Unresolved catalog references | `catalogReferences` | Catalog does not contain the referenced package | - |
 | Unresolved imports | `unresolved` | Cannot resolve specifier | - |
+| Unused subpaths | `subpaths` | Unable to find a reference to this package.json subpath | - |
 
 ## Export Issues
 
@@ -36,4 +37,6 @@ Source: https://knip.dev/reference/issue-types
 - Including or excluding `dependencies` (via CLI or configuration) automatically includes or excludes `devDependencies` and `optionalPeerDependencies`. In rules, each key can be set individually.
 - In strict production mode, `devDependencies` are not included.
 - The `types` issue type includes `enum`, `interface` and `type` exports.
+- Unused subpaths: keys of the `imports` field are always reported; the `exports` field only with `includeSubpathExports` / `--include-subpath-exports`. They are not reported in production mode.
 - `cycles` defaults to the `warn` rule (reported, but not counted as an error). Set `rules.cycles` to `error` to fail on circular dependencies.
+- Source: https://knip.dev/reference/issue-types (knip@6.45.1 docs, retrieved 2026-11-14)

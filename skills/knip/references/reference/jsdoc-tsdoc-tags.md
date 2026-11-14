@@ -10,7 +10,12 @@ JSDoc/TSDoc tags create exceptions for unused/duplicate exports without new synt
 
 ## Format
 
-JSDoc comments must start with `/**` (not `//`).
+JSDoc comments start with `/**`. Tags also work in regular block comments (`/* ... */`) and standalone line comments (`// ...`) before a declaration. These comments keep suppression tags out of JSDoc hover information. Tags in consecutive comments are combined. Trailing `//` comments are ignored.
+
+```ts
+// @lintignore
+import Unresolved from './generated/lib.js';
+```
 
 ## Tags
 
@@ -45,3 +50,8 @@ export default Component;
 ### @beta
 
 Functions identically to `@public`.
+
+## Notes
+
+- The snippet is verbatim from the upstream Tags section of the 6.45.1 docs
+- Source: https://knip.dev/reference/jsdoc-tsdoc-tags (knip@6.45.1 docs, retrieved 2026-11-14)

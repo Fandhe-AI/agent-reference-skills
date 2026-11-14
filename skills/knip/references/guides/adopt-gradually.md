@@ -52,7 +52,7 @@ Rules set a severity per issue type. Start by setting all types to `"warn"`, the
 - Add Knip to CI as soon as you have a baseline, so new clutter is caught in review. Marking cleaned types `"error"` and the rest `"warn"` makes CI fail only on finished types.
 - Other ways to stage CI: workspace by workspace in a monorepo (`--workspace`), production first (`--production`), a budget (`--max-issues`), or report-only (`--no-exit-code`).
 - Prefer a specific, documented signal over a blanket `ignore`.
-- Source pinned to knip@6.41.0 docs (`packages/docs/src/content/docs/guides/adopt-gradually.md`).
+- Source: https://knip.dev/guides/adopt-gradually (page unchanged between knip@6.41.0 and knip@6.45.1 docs; `packages/docs/src/content/docs/guides/adopt-gradually.md`).
 
 ## Related
 

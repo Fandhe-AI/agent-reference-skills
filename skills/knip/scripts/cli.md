@@ -158,6 +158,14 @@ knip --watch
 knip --include-entry-exports
 ```
 
+## 未使用 subpaths を報告（package.json の exports、6.45.0 以降）
+
+```sh
+knip --include-subpath-exports
+```
+
+リポジトリ内でのみ使われるパッケージ向け。`imports` フィールドの subpath は常に報告される。
+
 ## .gitignore を無視
 
 ```sh
@@ -189,5 +197,7 @@ knip --reporter cycles
 `cycles` レポーターは循環依存をツリー表示する。`knip --cycles --reporter cycles` の形で使う。
 
 ```sh
-knip --reporter json --reporter-options '{"path":"knip-report.json"}'
+knip --reporter json --output-file knip-report.json
 ```
+
+`--output-file [reporter=]path` はレポーターの出力をファイルへ書き出す（6.44.0 以降）。複数レポーター併用時は `--output-file json=knip.json` のようにレポーター名を前置する。
