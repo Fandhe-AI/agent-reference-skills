@@ -2,7 +2,7 @@
 
 Playwright automatically waits for elements to pass actionability checks before performing actions. If the checks do not pass within the configured `timeout`, the action fails with a `TimeoutError`.
 
-## The Five Actionability Checks
+## The Actionability Checks
 
 ### Visible
 
@@ -26,32 +26,36 @@ The element is not disabled. Applies to form elements (`<button>`, `<select>`, `
 
 The element is both enabled and not read-only. Read-only elements have the `readonly` attribute or `aria-readonly="true"` on supported ARIA roles.
 
+### Not Inert
+
+Since v1.65 actions also wait for the element to be not inert. An element is inert when it has the `inert` attribute or is a descendant of such an element; inert elements cannot be focused, clicked or otherwise interacted with. An action on an inert element times out if the element stays inert. Applies to `click`, `dblclick`, `check`, `uncheck`, `setChecked`, `tap`, `fill`, `clear` and `selectOption`.
+
 ## Action-to-Check Matrix
 
 Each action requires a different subset of actionability checks to pass before it executes:
 
-| Action                     | Visible | Stable | Receives Events | Enabled | Editable |
-| -------------------------- | :-----: | :----: | :-------------: | :-----: | :------: |
-| `click()`                  |    +    |   +    |        +        |    +    |          |
-| `dblclick()`               |    +    |   +    |        +        |    +    |          |
-| `check()`                  |    +    |   +    |        +        |    +    |          |
-| `uncheck()`                |    +    |   +    |        +        |    +    |          |
-| `setChecked()`             |    +    |   +    |        +        |    +    |          |
-| `tap()`                    |    +    |   +    |        +        |    +    |          |
-| `hover()`                  |    +    |   +    |        +        |         |          |
-| `dragTo()`                 |    +    |   +    |        +        |         |          |
-| `screenshot()`             |    +    |   +    |                 |         |          |
-| `fill()`                   |    +    |        |                 |    +    |    +     |
-| `clear()`                  |    +    |        |                 |    +    |    +     |
-| `selectOption()`           |    +    |        |                 |    +    |          |
-| `selectText()`             |    +    |        |                 |         |          |
-| `scrollIntoViewIfNeeded()` |         |   +    |                 |         |          |
-| `blur()`                   |         |        |                 |         |          |
-| `dispatchEvent()`          |         |        |                 |         |          |
-| `focus()`                  |         |        |                 |         |          |
-| `press()`                  |         |        |                 |         |          |
-| `pressSequentially()`      |         |        |                 |         |          |
-| `setInputFiles()`          |         |        |                 |         |          |
+| Action                     | Visible | Stable | Receives Events | Enabled | Editable | Not Inert |
+| -------------------------- | :-----: | :----: | :-------------: | :-----: | :------: | :-------: |
+| `click()`                  |    +    |   +    |        +        |    +    |          |    +    |
+| `dblclick()`               |    +    |   +    |        +        |    +    |          |    +    |
+| `check()`                  |    +    |   +    |        +        |    +    |          |    +    |
+| `uncheck()`                |    +    |   +    |        +        |    +    |          |    +    |
+| `setChecked()`             |    +    |   +    |        +        |    +    |          |    +    |
+| `tap()`                    |    +    |   +    |        +        |    +    |          |    +    |
+| `hover()`                  |    +    |   +    |        +        |         |          |         |
+| `dragTo()`                 |    +    |   +    |        +        |         |          |         |
+| `screenshot()`             |    +    |   +    |                 |         |          |         |
+| `fill()`                   |    +    |        |                 |    +    |    +     |    +    |
+| `clear()`                  |    +    |        |                 |    +    |    +     |    +    |
+| `selectOption()`           |    +    |        |                 |    +    |          |    +    |
+| `selectText()`             |    +    |        |                 |         |          |         |
+| `scrollIntoViewIfNeeded()` |         |   +    |                 |         |          |         |
+| `blur()`                   |         |        |                 |         |          |         |
+| `dispatchEvent()`          |         |        |                 |         |          |         |
+| `focus()`                  |         |        |                 |         |          |         |
+| `press()`                  |         |        |                 |         |          |         |
+| `pressSequentially()`      |         |        |                 |         |          |         |
+| `setInputFiles()`          |         |        |                 |         |          |         |
 
 ## Key Observations
 
@@ -62,6 +66,7 @@ Each action requires a different subset of actionability checks to pass before i
 - **Keyboard actions** (`press`, `pressSequentially`) and **dispatchEvent** have no actionability checks at all.
 - **focus** and **blur** also have no actionability checks.
 - **setInputFiles** has no actionability checks.
+- Since v1.65, the actions that check Not Inert are the click-family actions plus `fill`, `clear` and `selectOption`.
 
 ## Forcing Actions
 
@@ -100,3 +105,7 @@ test("assertions auto-retry", async ({ page }) => {
   await expect(page).toHaveURL(/dashboard/);
 });
 ```
+
+## Notes
+
+- Source: https://playwright.dev/docs/actionability (microsoft/playwright v1.65.1 `docs/src/actionability.md`)

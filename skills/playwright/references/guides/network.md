@@ -163,6 +163,8 @@ export default defineConfig({
 });
 ```
 
+Since v1.65 proxy credentials answer only proxy challenges and are no longer sent to websites. To authenticate on a website, use `httpCredentials` (see HTTP Credentials above). Source: https://playwright.dev/docs/release-notes (microsoft/playwright v1.65.1 `docs/src/release-notes-js.md`)
+
 ## Network Events
 
 ### Listening to Requests and Responses

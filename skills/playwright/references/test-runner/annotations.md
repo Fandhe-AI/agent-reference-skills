@@ -21,6 +21,14 @@ test('skip in WebKit', async ({ page, browserName }) => {
 });
 ```
 
+Since v1.65 `test.skip()` also accepts only a description inside the test body:
+
+```typescript
+test('upload a file', async ({ page }) => {
+  test.skip('Not implemented yet');
+});
+```
+
 ## test.fail()
 
 Marks a test as expected to fail. Playwright runs the test and verifies it actually fails. If the test passes, Playwright reports an error.
@@ -148,6 +156,14 @@ test.describe('settings', () => {
 });
 ```
 
+Since v1.65 the built-in `-exclusive-` lock runs the test only when no other tests are running:
+
+```typescript
+test('restart the server', { lock: '-exclusive-' }, async () => {
+  // No other test runs while this one is running.
+});
+```
+
 See also the Test locks section in `parallelism.md`.
 
 Related:
@@ -267,3 +283,10 @@ test('dynamic annotation', async ({ page, browser }) => {
 ```
 
 Runtime annotations appear in the same way as static annotations in HTML reports.
+
+## Notes
+
+- Since v1.65, `test.skip()`, `test.fixme()`, `test.fail()` and `test.slow()` called inside a test body also accept only a `description` (for example `test.skip('Not implemented yet')`); it is recorded in the test annotation. The `(condition, description)` forms are unchanged.
+- Since v1.65 the built-in lock name `-exclusive-` runs a test only when no other tests are running (see `parallelism.md`).
+- Source: https://playwright.dev/docs/release-notes (microsoft/playwright v1.65.1 `docs/src/release-notes-js.md`)
+- Source: https://playwright.dev/docs/api/class-test (microsoft/playwright v1.65.1 `docs/src/test-api/class-test.md`)

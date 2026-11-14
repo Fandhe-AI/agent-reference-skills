@@ -1,11 +1,12 @@
 ---
 name: playwright
 description: >
-  Playwright v1.64 (E2E / コンポーネントテストフレームワーク) リファレンス。
+  Playwright v1.65 (E2E / コンポーネントテストフレームワーク) リファレンス。
   test, expect, page, locator, getByRole / getByText / getByLabel / getByTestId / getByRef、
   toBeVisible, click, fill, route, mock, fixtures、playwright.config.ts、
   auth 永続化、Credentials (passkeys / WebAuthn)、WebStorage、WebMCP、
-  Playwright MCP / playwright-cli、trace viewer、screencast、test locks、codegen、UI モード。
+  Playwright MCP / playwright-cli、trace viewer、screencast、test locks (-exclusive-)、
+  failures reporter、codegen、UI モード。
 user-invocable: false
 ---
 
@@ -14,7 +15,7 @@ user-invocable: false
 Playwright の全 API ドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象: Playwright v1.64.1（出典 microsoft/playwright v1.64.1 タグの docs/src、取得 2026-10-16）。
+対象: Playwright v1.65.1（出典 microsoft/playwright v1.65.1 タグの docs/src、取得 2026-11-14）。v1.65 で変更のあったページ（reporters / annotations / parallelism / sharding / cli / typescript / auto-waiting / browser-context / request / api-testing / network / aria-snapshots / authentication / navigations / assertions / timeouts / ui-mode / clock / ci / browsers / mcp）のみ v1.65.1 で再取得した。他のページの `Source:` 行は v1.64.1 のまま（v1.64.1 と v1.65.1 の docs/src を `diff -r` し、API 型注記の書式変更など内容に影響しない差分は反映していない）。未追従: samples の各ファイルは v1.64 前提のまま（v1.65 の差分は references の Notes に記載）。
 
 ## ディレクトリ構成
 

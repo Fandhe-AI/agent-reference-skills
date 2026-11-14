@@ -47,6 +47,8 @@ Use quoted strings for exact names:
 - button "Sign In"
 ```
 
+Since v1.65, text that the browser does not render, such as text that is not assigned to a slot or text directly inside a closed `<details>`, is no longer part of accessible names and aria snapshots. This can change the results of `page.getByRole()` with a name, `locator.ariaSnapshot()` and `expect(locator).toMatchAriaSnapshot()`. An AI-optimized snapshot (`locator.ariaSnapshot({ mode: 'ai' })`) can also omit names that repeat printed descendants, such as a heading containing a link; names that identify dialogs, landmarks, groups, tables and table headers are retained. Source: https://playwright.dev/docs/release-notes (microsoft/playwright v1.65.1 `docs/src/release-notes-js.md`) and https://playwright.dev/docs/api/class-locator (microsoft/playwright v1.65.1 `docs/src/api/class-locator.md`)
+
 ### Text Content
 
 Use colon syntax for text content:

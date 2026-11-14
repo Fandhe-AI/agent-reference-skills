@@ -52,7 +52,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps
       - run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: blob-report-${{ matrix.shardIndex }}
@@ -71,6 +71,10 @@ jobs:
           merge-multiple: true
       - run: npx playwright merge-reports --reporter html ./all-blob-reports
 ```
+- Since v1.65 a sharded run fails with "No tests found" when no tests match across all shards. Pass `--pass-with-no-tests` to allow this. An empty shard still passes when other shards have tests.
+- Since v1.65 the blob reporter deletes the content of its output directory before it writes the report; v1.64 kept reports with other names.
+- Source: https://playwright.dev/docs/release-notes (microsoft/playwright v1.65.1 `docs/src/release-notes-js.md`)
+- Source: https://playwright.dev/docs/test-sharding (microsoft/playwright v1.65.1 `docs/src/test-sharding-js.md`, `upload-artifact@v5`)
 
 ## Related
 
