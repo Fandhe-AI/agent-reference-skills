@@ -1,9 +1,10 @@
 ---
 name: android-build-gradle
 description: >
-  Android アプリ開発 (Kotlin) の Gradle ビルドシステムリファレンス。
+  Android アプリ開発 (Kotlin) の Gradle ビルドシステムリファレンス (AGP 9.5)。
   Android Gradle Plugin (AGP), Kotlin DSL (build.gradle.kts),
-  version catalog, KSP, R8/ProGuard, App Bundle, baseline profile。
+  version catalog, KSP, R8/ProGuard, App Bundle, baseline profile,
+  backupTests (バックアップ/復元テスト)。
 user-invocable: false
 ---
 
@@ -12,7 +13,7 @@ user-invocable: false
 Android Gradle Plugin (AGP) 公式ドキュメントの主要トピックを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象: Android Gradle Plugin 9.4（docs のスニペットは "9.4.0"、Google Maven の最新安定版は 9.4.1、9.5.0-alpha10 はプレビュー）/ Gradle 9.6.0 / JDK 17 / SDK Build Tools 36.0.0 / 最大 API 37。developer.android.com/build 取得日 2026-10-16（版付き URL なし）。
+対象: Android Gradle Plugin 9.5（9.5.0 / 9.5.1 が Google Maven の最新安定版、9.6.0-alpha 系はプレビューで追跡対象外。docs のコード例中のプラグイン版は "9.4.0" のまま未追従で、各ページは 9.4 時点の記述）/ Gradle 9.6.0 / JDK 17 / SDK Build Tools 36.0.0 / 最大 API 37（9.4 から不変）。developer.android.com/build 取得日 2026-11-14（版付き URL なし。9.5 以前のページは 2026-10-16 取得のまま）。
 
 ## ディレクトリ構成
 
@@ -46,6 +47,7 @@ skills/android-build-gradle/
       gradle-properties.md
       local-properties.md
       multidex.md
+      backup-tests.md
       native-16kb-page-size.md
       native-dependencies-prefab.md
       native-build-cmake.md
@@ -111,6 +113,7 @@ skills/android-build-gradle/
       agp-kotlin-d8-r8-compatibility.md
     releases/
       README.md
+      agp-9-5-release-notes.md
       agp-9-4-release-notes.md
       agp-9-3-release-notes.md
       gradle-plugin-api-updates.md
@@ -135,6 +138,7 @@ skills/android-build-gradle/
 | settings plugin (com.android.settings) を設定したい | build-config | [references/build-config/README.md](references/build-config/README.md) |
 | android {} ブロック・defaultConfig・buildTypes・productFlavors を設定したい | build-config | [references/build-config/README.md](references/build-config/README.md) |
 | buildFeatures（Compose/ViewBinding）・sourceSets・signingConfigs を設定したい | build-config | [references/build-config/README.md](references/build-config/README.md) |
+| 自動バックアップ・復元テスト（`testOptions.backupTests`、実験的）を設定したい | build-config | [references/build-config/README.md](references/build-config/README.md) |
 | gradle.properties / local.properties / lint 設定を確認したい | build-config | [references/build-config/README.md](references/build-config/README.md) |
 | ネイティブビルド（CMake / Ninja / Prefab / 16KB ページサイズ）を設定したい | build-config | [references/build-config/README.md](references/build-config/README.md) |
 | implementation / api / ksp / kapt などの dependency configuration を使いたい | dependencies | [references/dependencies/README.md](references/dependencies/README.md) |
@@ -152,7 +156,7 @@ skills/android-build-gradle/
 | gradle-profiler でビルドをプロファイルしたい | migrate-troubleshoot | [references/migrate-troubleshoot/README.md](references/migrate-troubleshoot/README.md) |
 | kapt から KSP へ、Groovy から Kotlin DSL へ移行したい | migrate-troubleshoot | [references/migrate-troubleshoot/README.md](references/migrate-troubleshoot/README.md) |
 | AGP アップグレード（戦略・Upgrade Assistant・互換表）やマニフェストマージ・依存関係解決エラーに対処したい | migrate-troubleshoot | [references/migrate-troubleshoot/README.md](references/migrate-troubleshoot/README.md) |
-| AGP 9.4 / 9.3 の新機能を知りたい | releases | [references/releases/README.md](references/releases/README.md) |
+| AGP 9.5 / 9.4 / 9.3 の新機能を知りたい | releases | [references/releases/README.md](references/releases/README.md) |
 | AGP API の非推奨・削除を確認したい | releases | [references/releases/README.md](references/releases/README.md) |
 
 テストの書き方は `android-testing`、マニフェストとリソースの仕様は `android-platform-core` の担当。
