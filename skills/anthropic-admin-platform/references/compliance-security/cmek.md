@@ -1,36 +1,48 @@
-<!-- source: https://platform.claude.com/docs/en/manage-claude/cmek / last verified: 2026-10-16 -->
+<!-- source: https://platform.claude.com/docs/en/manage-claude/cmek / last verified: 2026-11-14 -->
 
 # Customer-managed encryption keys (CMEK)
 
-Encrypt Claude workspace data at rest with a key you control, provisioned in AWS KMS, Google Cloud KMS, or Azure Key Vault. Optional opt-in; contact your Anthropic account team to activate. Only Organization Admins (Claude Platform) or Owners/Primary Owner (Claude Enterprise) can configure it.
+Use a key you hold in your own AWS KMS, Google Cloud KMS, or Azure Key Vault to encrypt certain data Claude stores at rest. The key stays under your control: you can rotate it, audit its use, and remove Anthropic's access. CMEK is optional; contact your Anthropic account team to turn it on for an eligible organization.
 
 ## Signature / Usage
 
-CMEK is configured per workspace (Claude Platform, via Admin API) or per organization (Claude Enterprise, via claude.ai > Organization settings > Data and privacy). It protects only data written after the key is enabled; existing data stays under Anthropic-managed keys.
+```text
+/claude-api tell me about customer-managed encryption keys
+```
 
 ## Options / Props
 
-| Aspect | Claude Platform | Claude Enterprise |
-| --- | --- | --- |
-| Scope | Per workspace | Per organization |
-| Configuration | Admin API (`external_keys`) | claude.ai Organization settings > Data and privacy |
-| Regions | US only (`us-east-2`, `us-central1`/`us-east5`, `northcentralus`/`eastus2`) | US only |
+| Setup page | For |
+| --- | --- |
+| [cmek-aws-kms.md](./cmek-aws-kms.md) | Claude Platform and Claude Enterprise |
+| [cmek-google-cloud-kms.md](./cmek-google-cloud-kms.md) | Claude Platform and Claude Enterprise |
+| [cmek-azure-key-vault.md](./cmek-azure-key-vault.md) | Claude Platform and Claude Enterprise |
+| [cmek-claude-platform-on-aws.md](./cmek-claude-platform-on-aws.md) | organizations whose Claude Console sidebar shows Account managed by AWS |
+
+| Product | Role needed for setup |
+| --- | --- |
+| Claude Platform | Organization Admin |
+| Claude Platform on AWS | Admin |
+| Claude Enterprise | Owner or Primary Owner |
 
 ## Notes
 
-- Enabling CMEK is **permanent and irreversible**: once attached, a key cannot be detached or swapped; a new workspace is required to change key or return to zero data retention. Revoking/disabling the key makes all CMEK-protected data permanently inaccessible.
-- Encrypted: message content, files/attachments, MCP/tool config (Claude Platform); chat content including skills/plugins/artifacts, attachments, Claude Code CLI, Cowork in Claude Desktop, Office agents, Claude in Chrome (Claude Enterprise). Backups/snapshots inherit the key.
-- Compliance API local session transcripts (captured from sessions on users' machines) are encrypted under the key: if the key cannot be used, the local session messages endpoint returns 503 instead of transcript content, while session metadata is still listed.
-- Disabled/modified under CMEK: Workbench, raw-content Compliance API endpoints, some beta features (Claude Platform); conversation search, audit log export, signed URLs, personal preferences (Claude Enterprise).
-- Not encrypted regardless: Activity Feed, audit logs, OTEL telemetry (so compliance is maintained even if key is revoked); account data (names, emails, profile pictures).
-- CMEK is allowed with Zero Data Retention (ZDR) on both products.
-- Limited preservation outside your key can occur for legal requirements, exigent risk of harm, or Commercial Terms Section D.4 violations; each generates a `cmek_preserve` Activity Feed event.
-- Key revocation can take up to 1 hour (cache TTL); in-flight requests may still succeed during that window.
+- On Claude Platform you can also add and attach your key with the Admin API ([cmek-admin-api.md](./cmek-admin-api.md)).
+- What you commit to: once you attach a key you can't remove or replace it; the key protects only data written after it takes effect; if the key is deleted Anthropic can't recover the data it protects (while it is disabled Claude can't read that data, and re-enabling restores access); on Claude Platform a workspace with a key must retain data.
+- What the key encrypts, what stays under Anthropic's key and which features turn off or change depends on the product; see the coverage pages. Compliance API local session transcripts are covered on Claude Enterprise (the messages endpoint returns 503 instead of transcript content if the key can't be used).
+- Limited preservation outside your key can occur in three narrow cases (legal requirement, exigent risk of serious harm, Commercial Terms Section D.4 violations); each generates a Compliance API Activity Feed `cmek_preserve` event (see the access-transparency page for the reason codes).
+- Disabling the key or removing Anthropic's access can take up to 1 hour to apply; in-flight requests during that hour might still succeed.
+- Source: https://platform.claude.com/docs/en/manage-claude/cmek (retrieved 2026-11-14)
 
 ## Related
 
-- [cmek-aws-kms.md](./cmek-aws-kms.md)
-- [cmek-azure-key-vault.md](./cmek-azure-key-vault.md)
-- [cmek-google-cloud-kms.md](./cmek-google-cloud-kms.md)
+- [cmek-how-it-works.md](./cmek-how-it-works.md)
+- [cmek-data-retention.md](./cmek-data-retention.md)
+- [cmek-coverage-claude-platform.md](./cmek-coverage-claude-platform.md)
+- [cmek-coverage-claude-enterprise.md](./cmek-coverage-claude-enterprise.md)
+- [cmek-key-lifecycle.md](./cmek-key-lifecycle.md)
+- [cmek-troubleshooting.md](./cmek-troubleshooting.md)
+- [cmek-admin-api.md](./cmek-admin-api.md)
+- [cmek-aws-kms-workspaces.md](./cmek-aws-kms-workspaces.md)
 - [access-transparency.md](./access-transparency.md)
 - [api-and-data-retention.md](./api-and-data-retention.md)

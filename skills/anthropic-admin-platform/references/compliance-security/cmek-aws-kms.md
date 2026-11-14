@@ -1,51 +1,88 @@
-<!-- source: https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms / last verified: 2026-11-14 -->
 
-# Configure AWS KMS for CMEK
+# Set up CMEK with AWS KMS
 
-Configure an AWS KMS key as a customer-managed encryption key (CMEK) for your Anthropic organization. Requires `kms:CreateKey`/`kms:PutKeyPolicy` permissions, an Anthropic Admin API key, and the AWS CLI.
+Create an AWS KMS key, give Anthropic's IAM role access to it, and put it to use in Claude Platform or Claude Enterprise. If your Claude Console sidebar shows Account managed by AWS, follow the Claude Platform on AWS setup page instead.
 
 ## Signature / Usage
 
-```bash
-# Register the external key (Claude Platform)
-curl -sS https://api.anthropic.com/v1/organizations/external_keys \
-  -H "x-api-key: <anthropic-admin-api-key>" \
-  -H "anthropic-version: 2023-06-01" \
-  -H "content-type: application/json" \
-  -d '{
-    "display_name": "<friendly-name>",
-    "geo": "us",
-    "provider_config": {
-      "type": "aws",
-      "kms_arn": "<key-arn>",
-      "role_arn": "arn:aws:iam::915198916910:role/anthropic-cmek-client-us"
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AccountRootAdmin",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::<AWS_ACCOUNT_ID>:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAnthropicCMEKCrypto",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::915198916910:role/anthropic-cmek-client-us"
+      },
+      "Action": ["kms:Encrypt", "kms:Decrypt"],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:EncryptionContext:anthropic:org_uuid": ["<ORGANIZATION_UUID>"]
+        }
+      }
+    },
+    {
+      "Sid": "AllowAnthropicCMEKDescribe",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::915198916910:role/anthropic-cmek-client-us"
+      },
+      "Action": "kms:DescribeKey",
+      "Resource": "*"
     }
-  }'
+  ]
+}
+```
 
-# Validate, then attach to a workspace
-curl -sS -X POST https://api.anthropic.com/v1/organizations/external_keys/ekey_<id>/validate ...
-curl -sS -X POST https://api.anthropic.com/v1/organizations/workspaces/<workspace-id> \
-  -d '{"external_key_id": "ekey_<id>"}' ...
+```bash
+aws kms create-key \
+  --region <REGION> \
+  --description "Anthropic CMEK" \
+  --key-usage ENCRYPT_DECRYPT \
+  --policy file://key-policy.json
 ```
 
 ## Options / Props
 
-| Field | Value |
+| Item | Value |
 | --- | --- |
-| Anthropic IAM role ARN | `arn:aws:iam::915198916910:role/anthropic-cmek-client-us` |
-| Key policy statements | Account root admin; Anthropic `kms:Encrypt`/`kms:Decrypt` (scoped by `EncryptionContext:anthropic:compartment_uuid`); Anthropic `kms:DescribeKey` (no `EncryptionContext` condition possible) |
+| Anthropic IAM role | `arn:aws:iam::915198916910:role/anthropic-cmek-client-us` (use only the ARN published on the page, never one sent by email or chat) |
+| `<AWS_ACCOUNT_ID>` | your AWS account ID |
+| `<ORGANIZATION_UUID>` | your Anthropic organization ID, the UUID without the `org_` prefix (Claude Console Organization page, or claude.ai Organization settings > Organization and access) |
+| Key options | Key type Symmetric; Key usage Encrypt and decrypt; Key material origin KMS; Regionality Single-Region key |
+| Region | any AWS commercial region; lowest latency `us-east-2` |
+| AWS permissions | `kms:CreateKey` and `kms:PutKeyPolicy` |
+| Claude role | Organization Admin (Claude Platform); Owner or Primary Owner (Claude Enterprise) |
 
 ## Notes
 
-- Use only the published ARN; never trust an identifier from email/chat/onboarding channels.
-- The AWS Console "Create key" wizard's usage-permissions step produces an over-permissive policy if you add Anthropic's account ID there; finish with admin-only permissions and replace the key policy JSON manually with the role-scoped statements.
-- `EncryptionContext` condition is optional (defense-in-depth); ciphertext is bound to your compartment ID regardless. On Claude Platform, validation always sends the all-zeros compartment UUID (`00000000-0000-0000-0000-000000000000`), so any condition must allow both the all-zeros value and each attached workspace's compartment ID.
-- Claude Platform: find compartment ID under Workspace > Security > Encryption keys or via `GET` Workspace. Claude Enterprise: CMEK applies org-wide (one key, no per-workspace attach step); compartment ID shown in the Add-key flow.
-- Claude Platform on AWS: external key endpoints not yet available; register/validate/attach in Claude Console instead.
-- Validation failure causes: encryption-context mismatch, AWS Resource Control Policies (RCPs) blocking the cross-account role, access granted via IAM instead of the key policy, region mismatch.
+- Keep the `kms:EncryptionContext:anthropic:org_uuid` condition, or verification fails. You can also limit the key to specific workspaces by listing compartment IDs (see the workspaces page). If you replace the policy on a key that already protects Claude data, add one more statement (see the troubleshooting page).
+- Any IP restriction on AWS KMS access must allow Anthropic's outbound IP addresses. To use a key you already have, replace its key policy.
+- Console wizard: Create key; leave key administrators and key users empty and add nothing under Other AWS accounts (the key policy already grants access); Edit and replace the whole policy; Finish; copy the key ARN.
+- Each check of the key adds four expected access-denied errors to CloudTrail; the troubleshooting page shows how to filter them.
+- In Claude on Claude Platform: Encryption keys on the Data retention page > Add key, Display name, select AWS KMS, Continue; paste the KMS key ARN after checking your policy contains the Organization ID for the key policy shown; Verify (Connected, or Connection failed); select the workspace, under Encryption key select the key, Save, confirm the checkbox and Confirm (Workspace settings updated). In a ZDR organization select Standard data retention first and Accept the data retention terms after Save.
+- In Claude on Claude Enterprise: CMEK applies to the whole organization and you can add only one key. Go to claude.ai > Organization settings > Data and privacy, Encryption keys > Add key, Display name, select AWS KMS, tick the checkbox, Continue, paste the key ARN, Add. The check can take up to 30 seconds; Encryption key configured. then Done. Adding the key turns off or changes some features for every user; to try CMEK first use a separate organization.
+- Adding or attaching can't be undone; the key can't be removed or replaced, and if it is deleted Anthropic can't recover the data. To script this on Claude Platform use the Admin API (the Claude Platform on AWS endpoints are described on its own setup page).
+- Source: https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms (retrieved 2026-11-14)
 
 ## Related
 
 - [cmek.md](./cmek.md)
+- [cmek-aws-kms-workspaces.md](./cmek-aws-kms-workspaces.md)
+- [cmek-claude-platform-on-aws.md](./cmek-claude-platform-on-aws.md)
+- [cmek-admin-api.md](./cmek-admin-api.md)
+- [cmek-troubleshooting.md](./cmek-troubleshooting.md)
 - [cmek-azure-key-vault.md](./cmek-azure-key-vault.md)
 - [cmek-google-cloud-kms.md](./cmek-google-cloud-kms.md)

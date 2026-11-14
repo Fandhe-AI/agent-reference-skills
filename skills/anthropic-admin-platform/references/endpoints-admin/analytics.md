@@ -58,8 +58,10 @@ Two families of endpoints:
 - Requires an API key with the `read:analytics` scope (not necessarily the full Admin API key).
 - Most endpoints (all except `artifacts`) require a Claude Enterprise plan.
 - `product` values include `"chat"`, `"claude_code"`, `"cowork"`, `"office_agent"`, `"claude_in_chrome"`, `"claude_design"`, `"claude-in-slack"` (Claude Tag; a legacy underscore-spelled value identifies the retiring v1 Slack bot).
+- Per the Analytics APIs guide (retrieved 2026-11-14), the `usage_report`, `cost_report`, `user_usage_report` and `user_cost_report` endpoints under `/v1/organizations/analytics/` are legacy and remain supported; for new integrations use `GET /v1/organizations/analytics/usage` and `/cost` (see the Usage and Cost Analytics API page). Other analytics endpoints are not legacy. Freshness for cost/usage per the same guide: typically within 4 hours (up to 24 hours), revisable until about 7 days after the end of the calendar month, which supersedes the "~30 days" figure below. Most activity of Chat and Cowork unified uses the `chat_cowork_unified` product value. Per-endpoint reference pages could not be re-verified (not available in the saved sources).
 - `cost_report`/`user_cost_report` report post-discount, pre-credit `amount` plus pre-discount `list_amount`; neither is final until ~30 days after the usage date (`data_refreshed_at` marks the export watermark).
 - This is distinct from `cost-report.md` (`/v1/organizations/cost_report`) and `usage-report.md` (`/v1/organizations/usage_report/*`), which are the plain Admin API cost/usage endpoints without the per-day/per-entity analytics cube, group_by/filter dimensions, or Enterprise gating.
+- Source: https://platform.claude.com/docs/en/manage-claude/analytics-api (retrieved 2026-11-14 (legacy-status note))
 
 ## Related
 
