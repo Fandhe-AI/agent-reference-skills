@@ -46,7 +46,7 @@ gcloud iam workload-identity-pools update TRUST_DOMAIN_NAME \
 
 Custom CA through Certificate Authority Service (charged separately): create an Enterprise-tier root CA pool and root CA, a subordinate CA pool and subordinate CA (`gcloud privateca pools create`, `roots create`, `subordinates create`), then bind the subordinate CA pool with an issuance config:
 
-Adapted (not in the official docs): the official sample is flat; nested to match the structure shown in the GKE page's `describe` output.
+Adapted (not in the official docs): indentation restored (the official Compute Engine YAML sample lost its nesting). The `inlineCertificateIssuanceConfig` wrapper is kept as in the official page (the GKE page's `cic.json` sample also wraps the config in it).
 
 ```yaml
 inlineCertificateIssuanceConfig:
@@ -118,7 +118,7 @@ gcloud iam workload-identity-pools managed-identities add-attestation-rule MANAG
 
 Optional trust federation between pools:
 
-Adapted (not in the official docs): `additionalTrustBundles` nested under `inlineTrustConfig` (the official YAML sample is flat; the GKE page's JSON sample nests it).
+Adapted (not in the official docs): indentation restored so `additionalTrustBundles` is nested under `inlineTrustConfig`, as in the GKE page's JSON sample (the official Compute Engine YAML sample lost its nesting).
 
 ```yaml
 inlineTrustConfig:
@@ -198,7 +198,7 @@ Self-managed pool:   spiffe://POOL_NAME.global.POOL_HOST_PROJECT_NUMBER.workload
 - Resources (clusters, root CA, subordinate CAs) may live in separate projects; pass `--project` for each.
 - For Autopilot clusters, omit `--enable-workload-identity` and the `nodeSelector` in the PodSpec.
 - The self-managed Pod's Kubernetes namespace must match the fleet namespace in the team scope.
-- Corrected from the official docs: the issuance-config and trust-config YAML samples were flat (invalid nesting) and are nested here; the `principalSet` member paths had a stray `/name` segment, which is removed.
+- Corrected from the official docs: the issuance-config and trust-config YAML samples on the Compute Engine page lost their indentation and are re-indented here (the `inlineCertificateIssuanceConfig` / `inlineTrustConfig` wrappers are kept, as in the official pages); the `principalSet` member paths had a stray `/name` segment, which is removed.
 - Source: https://docs.cloud.google.com/iam/docs/create-managed-workload-identities (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/iam/docs/create-managed-workload-identities-gke (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 

@@ -15,7 +15,7 @@ user:alex@example.com
 principal://iam.googleapis.com/locations/global/workforcePools/altostrat-contractors/subject/raha@altostrat.com
 ```
 
-### Options
+## Options / Props
 
 | Option | How it works |
 |---|---|

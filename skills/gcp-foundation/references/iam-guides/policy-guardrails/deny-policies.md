@@ -60,6 +60,8 @@ Adapted (not in the official docs): corrected the official sample's typo `googel
 
 Deny custom role management to everyone except `custom-role-admins`; attach to the organization.
 
+Adapted (not in the official docs): removed the trailing comma after the last `deniedPermissions` entry so the JSON is valid.
+
 ```json
 {
   "deniedPrincipals": [

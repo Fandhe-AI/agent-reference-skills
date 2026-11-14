@@ -51,7 +51,8 @@ gcloud org-policies set-policy POLICY_PATH --update-mask=spec
 
 ```yaml
 name: organizations/ORG_ID/customConstraints/custom.denyProjectIAMAdmin
-resourceTypes: iam.googleapis.com/AllowPolicy
+resourceTypes:
+- iam.googleapis.com/AllowPolicy
 methodTypes:
   - CREATE
   - UPDATE
@@ -107,7 +108,8 @@ Block granting a specific role:
 
 ```yaml
 name: organizations/ORG_ID/customConstraints/custom.denyRole
-resourceTypes: iam.googleapis.com/AllowPolicy
+resourceTypes:
+- iam.googleapis.com/AllowPolicy
 methodTypes:
   - CREATE
   - UPDATE
@@ -123,7 +125,8 @@ Only allow specific roles:
 
 ```yaml
 name: organizations/ORG_ID/customConstraints/custom.specificRolesOnly
-resourceTypes: iam.googleapis.com/AllowPolicy
+resourceTypes:
+- iam.googleapis.com/AllowPolicy
 methodTypes:
   - CREATE
   - UPDATE
@@ -139,7 +142,8 @@ Prevent revocation of roles with `admin` in the name (`REMOVE_GRANT`):
 
 ```yaml
 name: organizations/ORG_ID/customConstraints/custom.dontRevokeAdminRoles
-resourceTypes: iam.googleapis.com/AllowPolicy
+resourceTypes:
+- iam.googleapis.com/AllowPolicy
 methodTypes:
   - REMOVE_GRANT
 condition: "resource.bindings.exists(
@@ -154,7 +158,8 @@ Deny `@gmail.com` principals:
 
 ```yaml
 name: organizations/ORG_ID/customConstraints/custom.dontGrantToGmail
-resourceTypes: iam.googleapis.com/AllowPolicy
+resourceTypes:
+- iam.googleapis.com/AllowPolicy
 methodTypes:
   - CREATE
   - UPDATE
@@ -172,7 +177,8 @@ Deny Storage roles for `allUsers` / `allAuthenticatedUsers`:
 
 ```yaml
 name: organizations/ORG_ID/customConstraints/custom.denyStorageRolesForPrincipalAllUsers
-resourceTypes: iam.googleapis.com/AllowPolicy
+resourceTypes:
+- iam.googleapis.com/AllowPolicy
 methodTypes:
   - CREATE
   - UPDATE
@@ -191,7 +197,8 @@ Only organization members can be granted roles:
 
 ```yaml
 name: organizations/ORG_ID/customConstraints/custom.allowInternaldentitiesOnly
-resourceTypes: iam.googleapis.com/AllowPolicy
+resourceTypes:
+- iam.googleapis.com/AllowPolicy
 methodTypes:
   - CREATE
   - UPDATE
@@ -209,7 +216,8 @@ Only service accounts can be granted roles:
 
 ```yaml
 name: organizations/ORG_ID/customConstraints/custom.allowServiceAccountsOnly
-resourceTypes: iam.googleapis.com/AllowPolicy
+resourceTypes:
+- iam.googleapis.com/AllowPolicy
 methodTypes:
   - CREATE
   - UPDATE

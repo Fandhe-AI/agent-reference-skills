@@ -103,12 +103,14 @@ POST https://cloudresourcemanager.googleapis.com/v1/projects/PROJECT_ID:setIamPo
 }
 ```
 
+Adapted (not in the official docs): the curl targets `:setIamPolicy` (the official sample calls `:getIamPolicy`, which would not write the policy).
+
 ```
 curl -X POST \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
      -H "Content-Type: application/json; charset=utf-8" \
      -d @request.json \
-     "https://cloudresourcemanager.googleapis.com/v1/projects/PROJECT_ID:getIamPolicy"
+     "https://cloudresourcemanager.googleapis.com/v1/projects/PROJECT_ID:setIamPolicy"
 ```
 
 ### Weekday working hours
