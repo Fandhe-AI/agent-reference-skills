@@ -4,7 +4,7 @@ KMP web storage options added in DataStore 1.3.0 for Kotlin/Wasm and JS targets.
 
 ## Signature / Usage
 
-Adapted (not in the official docs): the signatures below are the class declarations from the androidx source at commit `07d39ac` (androidx-main, 2026-09-21; bodies and KDoc elided); the usage line is composed from those constructors and the `Builder` example. The release notes themselves have no code sample.
+Adapted (not in the official docs): the signatures below are the class declarations from the DataStore 1.3.0 sources jar (`datastore-core-okio-1.3.0-sources.jar`, `webMain/androidx/datastore/core/okio/WebStorage.web.kt`; bodies and KDoc elided); the usage is composed from those constructors and the `DataStore.Builder` signature. The release notes themselves have no code sample.
 
 ```kotlin
 package androidx.datastore.core.okio
@@ -34,7 +34,7 @@ val dataStore = DataStore.Builder<Settings>(
 - 1.3.0-alpha05 added WASM/JS support via localStorage (cross-tab notifications, unlike the existing sessionStorage implementation). 1.3.0-alpha08 added OPFS and the explicit `WebLocalStorage` / `WebSessionStorage` APIs.
 - 1.3.0-alpha04 fixed malformed binary data on Web by replacing UTF-8 string handling with Base64 encoding.
 - Android-only DataStore pages in this category do not apply to web targets.
-- Signature source (androidx-main at `07d39ac`, not a release tag): https://github.com/androidx/androidx/blob/07d39ac8361d28a4504479aa7eb897ba825aeec3/datastore/datastore-core-okio/src/webMain/kotlin/androidx/datastore/core/okio/WebStorage.web.kt
+- Signature source (release artifact, not a branch): https://dl.google.com/android/maven2/androidx/datastore/datastore-core-okio/1.3.0/datastore-core-okio-1.3.0-sources.jar (retrieved 2026-11-14)
 - Source: https://developer.android.com/jetpack/androidx/releases/datastore (1.3.0, alpha04, alpha05, alpha08 sections, retrieved 2026-11-14)
 
 ## Related

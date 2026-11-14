@@ -4,22 +4,24 @@
 
 ## Signature / Usage
 
-Adapted (not in the official docs): the signature below is taken from the androidx source at commit `07d39ac` (androidx-main, 2026-09-21; KDoc stripped); the usage example is the KDoc example in that source. The release notes themselves have no code sample.
+Adapted (not in the official docs): the signature below is taken from the DataStore 1.3.0 sources jar (`datastore-core-android-1.3.0-sources.jar`, `commonMain/androidx/datastore/core/DataStore.kt`; KDoc stripped, `Builder` is nested in `DataStore`); the usage example is the KDoc example in that source. The release notes themselves have no code sample.
 
 ```kotlin
 package androidx.datastore.core
 
-public class Builder<T>(storage: Storage<T>, context: CoroutineContext) {
-    public fun setCorruptionHandler(handler: CorruptionHandler<T>): Builder<T>
-    public fun addMigrations(migrations: List<DataMigration<T>>): Builder<T>
-    public fun build(): DataStore<T>
+public expect interface DataStore<T> {
+    public class Builder<T>(storage: Storage<T>, context: CoroutineContext) {
+        public fun setCorruptionHandler(handler: CorruptionHandler<T>): Builder<T>
+        public fun addMigrations(migrations: List<DataMigration<T>>): Builder<T>
+        public fun build(): DataStore<T>
+    }
 }
 ```
 
 ```kotlin
-val dataStore = Builder<Settings>(MyStorage(), Dispatchers.IO + SupervisorJob())
-.setCorruptionHandler(MyCorruptionHandler())
-.build()
+val dataStore = DataStore.Builder<Settings>(MyStorage(), Dispatchers.IO + SupervisorJob())
+    .setCorruptionHandler(MyCorruptionHandler())
+    .build()
 ```
 
 ## Options / Props
@@ -37,7 +39,7 @@ val dataStore = Builder<Settings>(MyStorage(), Dispatchers.IO + SupervisorJob())
 - The release notes recommend migrating from `DataStoreFactory` to `DataStore.Builder`: requiring a `CoroutineContext` keeps DataStore operations from being bound to short-lived UI lifecycles (e.g. `viewModelScope`), preventing premature cancellation and potential data loss.
 - `DataStore.Builder`, `ReThrowCorruptionHandler` and `InterProcessCoordinator` were made public in 1.3.0.
 - 1.3.0-alpha04 added a utility `copy` function for updating data in Preferences DataStore.
-- Signature source (androidx-main at `07d39ac`, not a release tag, so it may differ from 1.3.0 stable): https://github.com/androidx/androidx/blob/07d39ac8361d28a4504479aa7eb897ba825aeec3/datastore/datastore-core/src/commonMain/kotlin/androidx/datastore/core/DataStore.kt
+- Signature source (release artifact, not a branch): https://dl.google.com/android/maven2/androidx/datastore/datastore-core-android/1.3.0/datastore-core-android-1.3.0-sources.jar (retrieved 2026-11-14); the Android actual `DataStore.android.kt` adds tracing internals not shown here.
 - Source: https://developer.android.com/jetpack/androidx/releases/datastore (1.3.0 and 1.3.0-alpha07 sections, retrieved 2026-11-14)
 
 ## Related
