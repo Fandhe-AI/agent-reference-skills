@@ -10,6 +10,13 @@ description: >
 user-invocable: false
 ---
 
+## 対象バージョン
+
+- `@theatre/core` / `@theatre/studio` / `@theatre/dataverse` / `@theatre/react` / `@theatre/r3f` 0.7.2（npm latest、取得日 2026-11-14）
+- 公式 docs（theatrejs.com/docs/latest）は 0.7.0 までの記載。0.7.1 / 0.7.2 は GitHub タグ 0.7.1 との diff と npm パッケージの `dist/index.d.ts` を一次情報とした（0.7.2 は GitHub にタグ無し）
+- 0.7.1: `sheet.__experimental_getExistingObject`、0.7.2: `sequence.pointer.subUnitsPerUnit` を追加。他パッケージの 0.7.0 → 0.7.2 は依存版の更新のみ
+- 追跡トリガー: npm `@theatre/core` latest が 0.8.0 以降になった時点で `/update-skill theatrejs check`
+
 ## ディレクトリ構成
 
 ```text

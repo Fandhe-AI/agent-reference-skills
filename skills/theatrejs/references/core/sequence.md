@@ -39,7 +39,7 @@ Returns `Promise<void>` that resolves when playback ends (or is paused).
 | --- | --- | --- |
 | `sequence.pause()` | `() => void` | Stops playback at current position |
 | `sequence.position` | `number` | Current playhead position in seconds (readable and writable) |
-| `sequence.pointer` | `Pointer<SequenceState>` | Reactive pointer to sequence state (position, playing, length) |
+| `sequence.pointer` | `Pointer<SequenceState>` | Reactive pointer to sequence state (position, playing, length, subUnitsPerUnit) |
 | `sequence.attachAudio(opts)` | `(AttachAudioOpts) => Promise<AudioGraph>` | Attaches an audio source synced to the sequence |
 
 ### `sequence.attachAudio(opts)` options
@@ -57,6 +57,20 @@ Returns `Promise<void>` that resolves when playback ends (or is paused).
 - Setting `sequence.position` directly seeks the playhead without triggering playback
 - `attachAudio()` automatically handles browser autoplay restrictions by waiting for a user gesture
 - `sequence.__experimental_getKeyframes(pointer)` returns the keyframe array for a given prop pointer (v0.6.1+, unstable API)
+- `sequence.pointer` also exposes `subUnitsPerUnit` (the sequence's sub-unit grid resolution) as of `@theatre/core` 0.7.2
+
+### `sequence.pointer` type (0.7.2)
+
+```ts
+pointer: Pointer<{
+    playing: boolean;
+    length: number;
+    position: number;
+    subUnitsPerUnit: number;
+}>;
+```
+
+- Source: https://unpkg.com/@theatre/core@0.7.2/dist/index.d.ts (fetched 2026-11-14); `subUnitsPerUnit` is absent from the 0.7.1 declaration
 
 ## Related
 

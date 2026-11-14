@@ -23,12 +23,22 @@ sheet.sequence.play()
 | `sheet.address` | `{ projectId, sheetId, sheetInstanceId }` | Unique identifier for this sheet instance |
 | `sheet.object(key, config, opts?)` | `(string, Props, ObjectOpts?) => Object` | Creates or returns a Sheet Object |
 | `sheet.detachObject(key)` | `(string) => void` | Removes a child Object (v0.5.1+) |
+| `sheet.__experimental_getExistingObject(key)` | `(string) => Object \| undefined` | Returns the already-created child Object for `key`, or `undefined` (v0.7.1+, experimental) |
 
 ## Notes
 
 - Use `instanceId` in `project.sheet(name, instanceId)` to create multiple independent timeline instances of the same sheet (e.g., multiple animated cards)
 - `detachObject()` does not automatically unsubscribe any `onValuesChange` listeners; unsubscribe manually before detaching
 - All objects on a sheet share the same sequence timeline
+- `__experimental_getExistingObject(key)` was added in v0.7.1; unlike `sheet.object()`, it never creates an object
+
+### `__experimental_getExistingObject` declaration
+
+```ts
+__experimental_getExistingObject<Props extends UnknownShorthandCompoundProps>(key: string): ISheetObject<Props> | undefined;
+```
+
+- Source: https://github.com/theatre-js/theatre/compare/0.7.0...0.7.1 (commit 368aa3f "Implement sheet.__experimental_getExistingObject()") and https://unpkg.com/@theatre/core@0.7.2/dist/index.d.ts (fetched 2026-11-14)
 
 ## Related
 
