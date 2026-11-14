@@ -45,7 +45,7 @@ Create a `.appinstaller` XML file, either with the Visual Studio Create App Pack
 | `OptionalPackages` (`Package` / `Bundle`) | Optional packages of a related set. |
 | `Dependencies` (`Package`) | Required framework packages for the main or optional packages. |
 | Name / Publisher / Version / ProcessorArchitecture / Uri | Must match the `Package/Identity` element of the package or bundle manifest. Find values with `$(Get-AppxPackage [AppName]).Name` / `.Publisher` / `.Version`. |
-| `UpdateSettings` / `OnLaunch` | Optional. `HoursBetweenUpdateChecks` (default 24 hours if not specified), `UpdateBlocksActivation`, `ShowPrompt`; also `AutomaticBackgroundTask` and `ForceUpdateFromAnyVersion` (default False: only newer versions installed). |
+| `UpdateSettings` / `OnLaunch` | Optional. `HoursBetweenUpdateChecks` (default 24 hours if not specified), `UpdateBlocksActivation`, `ShowPrompt`; also `AutomaticBackgroundTask` and `ForceUpdateFromAnyVersion` (if `true`, allows updates to a higher or lower package version; if `false`, the default, only updates to a higher version are allowed). |
 | `UpdateUris` / `UpdateUri` | Fallback URIs if the original App Installer URI is inaccessible. Maximum 10. Must target App Installer files. |
 | `RepairUris` / `RepairUri` | Repair sources if the App Installer URI is inaccessible. Maximum 10. Can target apps or App Installer files; the app need not have been installed via an App Installer file. |
 
@@ -59,7 +59,7 @@ Visual Studio wizard steps: right-click the project, **Store** > **Create App Pa
 - App Installer files are supported from Windows 10 version 1709; `HoursBetweenUpdateChecks` from version 1803. Visual Studio: sideloaded auto-update requires Windows 10 version 1803 and Visual Studio 2017 update 15.7; the file is only generated when `TargetPlatformMinVersion` is Windows 10 version 1803 or greater.
 - The `.appinstaller` file can be hosted on an HTTP endpoint or UNC share. For HTTP hosting, configure MIME types, e.g. in IIS `web.config`: `.appx` and `.appxbundle` as `application/vns.ms-appx`, `.appinstaller` as `application/xml` (spelling as in source).
 - Using the `ms-appinstaller` protocol can be controlled by an administrator via the `EnableMSAppInstallerProtocol` policy (Policy CSP - DesktopAppInstaller).
-- Sources: https://learn.microsoft.com/en-us/windows/msix/app-installer/how-to-create-appinstaller-file, last updated 07/04/2026 (ms.date); https://learn.microsoft.com/en-us/windows/msix/app-installer/create-appinstallerfile-vs, last updated 5/2/2018 (ms.date).
+- Sources: https://learn.microsoft.com/en-us/windows/msix/app-installer/how-to-create-appinstaller-file, last updated 07/04/2026 (ms.date), `ForceUpdateFromAnyVersion` wording per MicrosoftDocs/msix-docs `01b8c55` (2026-11-14); https://learn.microsoft.com/en-us/windows/msix/app-installer/create-appinstallerfile-vs, last updated 5/2/2018 (ms.date).
 
 ## Related
 

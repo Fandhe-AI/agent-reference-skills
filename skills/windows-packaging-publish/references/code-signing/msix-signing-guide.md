@@ -95,7 +95,7 @@ MSBuild properties for build-time signing (Windows Application Packaging Project
 
 ## Related
 
-- [Azure Trusted Signing](./azure-trusted-signing.md)
+- [Azure Artifact Signing (formerly Azure Trusted Signing)](./azure-trusted-signing.md)
 - [CI/CD Pipeline Signing](./cicd-signing.md)
 - [Self-Signed Certificate](./self-signed-certificate.md)
 - [SignTool Sign Command](./signtool-sign.md)

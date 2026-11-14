@@ -33,11 +33,11 @@ Applications and Services Logs > Microsoft > Windows > AppxPackagingOM > Microso
 - The `Publisher` mismatch (Event ID 150) is the most common real-world cause of `SignerSign()` failures — always verify manifest `Publisher` against certificate `Subject` first.
 - The 4 GB PE signing limit applies to all tools, not just SignTool; it stems from a `ULONG` image-size field in the PE header and affects all supported Windows versions equally (32-bit and 64-bit SignTool are equally affected).
 - For Azure Artifact Signing specifically, a region/endpoint mismatch in `metadata.json` commonly manifests as a 403 Forbidden and an internal `SignerSign()` failure — verify the `Endpoint` matches the region where the signing account and certificate profile were created.
-- For ongoing certificate management pain (renewal, hardware tokens, expiry), Microsoft recommends moving to Azure Trusted Signing or Azure Key Vault-based signing rather than continuing to manage a local PFX/hardware token workflow.
+- For ongoing certificate management pain (renewal, hardware tokens, expiry), Microsoft recommends moving to Azure Artifact Signing (formerly Trusted Signing) or Azure Key Vault-based signing rather than continuing to manage a local PFX/hardware token workflow.
 
 ## Related
 
 - [SignTool Sign Command](./signtool-sign.md)
 - [SignTool Verify](./signtool-verify.md)
 - [Self-Signed Certificate Creation](./self-signed-certificate.md)
-- [Azure Trusted Signing](./azure-trusted-signing.md)
+- [Azure Artifact Signing (formerly Azure Trusted Signing)](./azure-trusted-signing.md)
