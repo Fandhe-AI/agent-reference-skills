@@ -250,6 +250,8 @@ enabled = true
 
 Default hooks file `hooks/hooks.json`:
 
+Adapted (not in the official docs): the hook command quotes `${PLUGIN_ROOT}` so install paths containing spaces are not split into several arguments.
+
 ```json
 {
   "hooks": {
@@ -258,7 +260,7 @@ Default hooks file `hooks/hooks.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/session_start.py",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/session_start.py\"",
             "statusMessage": "Loading plugin context"
           }
         ]
@@ -398,6 +400,7 @@ API-key `auth` (`type: "api_key"`):
 - Publish to workspace (workspace admins only): ChatGPT Plugins, **Personal**, plugin three-dot menu, **Publish**, choose the roles with access. This does not publish to the universal public directory; accounts not signed in to that workspace cannot access it.
 - Installed plugins live at `~/.codex/plugins/cache/$MARKETPLACE_NAME/$PLUGIN_NAME/$VERSION/`; local plugins use `$VERSION = local`.
 - Workspace sharing (Share button on a plugin's detail page) is separate from marketplace/public publishing and stays within the workspace boundary; admins can disable via `features.plugin_sharing = false` in `requirements.toml`.
+- Adapted from the official docs: the `SessionStart` hook command quotes `${PLUGIN_ROOT}` (the official example leaves it unquoted).
 - Source: https://developers.openai.com/plugins/build/plugins (local .md twin copy, fetched 2026-11-14).
 
 ## Related

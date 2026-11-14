@@ -195,4 +195,4 @@ export async function sendEvent(subscription, event, webhookFetch) {
 - Retry transient failures with exponential backoff and bounded attempts, preserving `eventId` and re-signing with a fresh timestamp. Do not retry `410` or `413`.
 - Distinct from platform webhooks of the OpenAI API (see the `openai-api-core` skill) and from the event/webhook vocabulary of `inngest`; this is the MCP server side of ChatGPT event subscriptions.
 
-Source: https://developers.openai.com/plugins/build/mcp-events
+Source: https://developers.openai.com/plugins/build/mcp-events (local .md twin copy, fetched 2026-11-14)
