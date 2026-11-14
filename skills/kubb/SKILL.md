@@ -15,7 +15,7 @@ user-invocable: false
 Kubb（kubb.dev）の `/docs/5.x` と `/extensions/kubb-labs/*` のドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象 Kubb v5 stable — kubb / @kubb/core / adapter-oas / parser-ts / parser-md / plugin-barrel / unplugin-kubb / @kubb/mcp 5.11.0（kubb-labs/kubb タグ `kubb@5.11.0`）。プラグインは kubb-labs/plugins からパッケージ単位で pin（plugin-ts 5.0.14、client 5.5.15、fetch 5.6.5、axios 5.6.5、zod 5.4.12、faker 5.1.9、msw 5.1.3、react-query 5.5.3、vue-query 5.5.3、swr 5.4.3、mcp 5.2.3、cypress 5.0.14、redoc 5.0.12）。取得日 2026-10-16。plugin-solid-query / plugin-svelte-query / plugin-oas は v4 系（4.39.3）のままで v5 リリースなし。
+対象 Kubb v5 stable — コア（kubb / @kubb/core / adapter-oas / parser-ts / parser-md / plugin-barrel / unplugin-kubb / @kubb/mcp）は 5.11.0（kubb-labs/kubb タグ `kubb@5.11.0`、取得日 2026-10-16。5.20.0 への追従は後続 PR で実施予定）。プラグインは kubb-labs/plugins からパッケージ単位で pin（plugin-ts 5.5.1、client 6.0.1、fetch 6.0.1、axios 6.0.1、zod 5.9.1、faker 5.4.1、msw 6.2.1、react-query 5.10.1、vue-query 5.10.1、swr 5.9.1、mcp 5.5.1、cypress 5.3.1、redoc 5.2.2、取得日 2026-11-14）。client / fetch / axios 6 系は Kubb 5.18.4 以降が必要。examples はタグ `@kubb/plugin-client@6.0.1`（commit `8e70d90`）。plugin-solid-query / plugin-svelte-query / plugin-oas は v4 系（4.39.3）のままで v5 リリースなし。
 
 ## ディレクトリ構成
 
@@ -48,11 +48,11 @@ skills/kubb/
       plugin-ts.md
       plugin-vue-query.md
       plugin-zod.md
-    plugin-guides/            # 27 ページ（プラグイン別 how-to）
+    plugin-guides/            # 30 ページ（プラグイン別 how-to）
       README.md
-      fetch-*.md              # authentication / base-url / calling-operations / error-handling / interceptors / serialization / server-sent-events / transport
-      axios-*.md              # 同上 8 ページ
-      client-*.md             # authentication / calling-operations / validate-requests-and-responses / write-your-client
+      fetch-*.md              # authentication / base-url / calling-operations / error-handling / interceptors / migrate-to-v6 / serialization / server-sent-events / transport
+      axios-*.md              # 同上 9 ページ
+      client-*.md             # authentication / calling-operations / migrate-to-v6 / validate-requests-and-responses / write-your-client
       react-query-calling-operations.md
       vue-query-calling-operations.md
       swr-calling-operations.md
@@ -136,6 +136,7 @@ skills/kubb/
       solid-query.md     # v4 専用（v5 で削除）
       swr.md
       zod.md
+      zod-codec.md
       faker.md
       msw.md
       mcp.md

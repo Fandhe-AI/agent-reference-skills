@@ -2,7 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| @kubb/core | Kubb のコアエンジン（プラグインドライバー・ファイルマネージャー・ビルド制御層）。Kubb 5.20.0 の… | [core.md](./core.md) |
+| @kubb/core | Kubb のコアエンジン（プラグインドライバー・ファイルマネージャー・ビルド制御層）。Kubb 5.11.0 の… | [core.md](./core.md) |
 | プラグイン概要 | Kubb の拡張モデル（adapter / plugin / macro / resolver / printer…… | [overview.md](./overview.md) |
 | @kubb/plugin-axios | OpenAPI 仕様から type-safe な Axios クライアントを生成するプラグイン。operation ごとに 1 つの async 関数を… | [plugin-axios.md](./plugin-axios.md) |
 | @kubb/plugin-barrel | Kubb が生成したコードの `index.ts` バレルファイルを書き出すプラグイン。Kubb（`kubb` パッケージ）に標準同梱され… | [plugin-barrel.md](./plugin-barrel.md) |
