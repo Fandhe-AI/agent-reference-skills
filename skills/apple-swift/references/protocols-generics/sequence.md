@@ -31,8 +31,11 @@ for n in Countdown(count: 3) { print(n) }
 - Only required method: `makeIterator() -> Iterator`; a type may conform to both `Sequence` and `IteratorProtocol` simultaneously
 - Provides default implementations for `map`, `filter`, `reduce`, `contains`, `first(where:)`, `prefix`, `suffix`, `sorted`, `forEach`, `enumerated`, and more
 - Sequences are not guaranteed to be traversed more than once (use `Collection` for multi-pass)
+- iOS 27.0+: `func makeBorrowingIterator() -> BorrowingIteratorAdapter<Self.Iterator>` adapts the iterator to the borrowing iteration interface of `Iterable`. Source: https://developer.apple.com/documentation/swift/sequence/makeborrowingiterator() (fetched 2026-11-14)
 
 ## Related
 
 - [Collection](./collection.md)
 - [IteratorProtocol](./iteratorprotocol.md)
+- [Iterable](./iterable.md)
+- [BorrowingIteratorProtocol](./borrowingiteratorprotocol.md)

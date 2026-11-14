@@ -14,6 +14,8 @@
 | Sequence | Sequential, single-pass iteration; foundation for `map`, `filter`, `reduce` | [sequence.md](./sequence.md) |
 | Collection | Multi-pass, index-based sequence; foundation for `Array`, `Set`, `Dictionary` | [collection.md](./collection.md) |
 | IteratorProtocol | One-at-a-time element supply via `next() -> Element?` | [iteratorprotocol.md](./iteratorprotocol.md) |
+| Iterable | Sequential, borrowing access to elements via `makeBorrowingIterator()` (iOS 27.0+) | [iterable.md](./iterable.md) |
+| BorrowingIteratorProtocol | Borrowed access to elements in spans via `nextSpan(maxCount:)` / `skip(by:)` (iOS 27.0+) | [borrowingiteratorprotocol.md](./borrowingiteratorprotocol.md) |
 | CustomStringConvertible | Custom `description` string used by `print` and `String(describing:)` | [customstringconvertible.md](./customstringconvertible.md) |
 | Error | Marker protocol for throwable error values; pairs with `throw`/`catch` | [error.md](./error.md) |
 | ExpressibleByLiteral | Family of protocols enabling literal initialization (`42`, `"str"`, `[…]`) | [expressiblebyliteral.md](./expressiblebyliteral.md) |

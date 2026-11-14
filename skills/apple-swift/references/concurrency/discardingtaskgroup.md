@@ -17,6 +17,7 @@ Use `withDiscardingTaskGroup(returning:isolation:body:)` to obtain an instance.
 - Best applied where the child task's purpose is a side effect rather than a value to collect.
 - Becomes cancelled when `cancelAll()` is invoked or the enclosing `Task` is cancelled; cancellation propagates to all child tasks.
 - Use `addTaskUnlessCancelled(...)` to avoid adding new tasks once the group is already cancelled.
+- `addImmediateTaskUnlessCancelled(...)` starts the child task on the calling context and does not suspend; it returns `false` when the task was not added. Source: https://developer.apple.com/documentation/swift/discardingtaskgroup/addimmediatetaskunlesscancelled(name:priority:executorpreference:operation:) (fetched 2026-11-14)
 
 ### Adding tasks
 
@@ -27,6 +28,7 @@ Use `withDiscardingTaskGroup(returning:isolation:body:)` to obtain an instance.
 | `addTask(executorPreference:priority:operation:)` | Adds a task with executor preference |
 | `addTaskUnlessCancelled(priority:operation:)` | Adds a task only if not cancelled (returns `Bool`) |
 | `addImmediateTask(name:priority:executorPreference:operation:)` | Adds a task that runs immediately in the calling context |
+| `addImmediateTaskUnlessCancelled(name:priority:executorPreference:operation:)` | Same, but only if the group is not cancelled (returns `Bool`; iOS 26.0+) |
 
 ### State
 
