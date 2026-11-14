@@ -40,8 +40,10 @@ curl "https://api.anthropic.com/v1/organizations/cost_report?starting_at=2025-08
 
 ## Notes
 
+- Legacy: per the Usage and Cost API guide (retrieved 2026-11-14), `/v1/organizations/cost_report` is a legacy API that remains supported; for new integrations use the Usage and Cost Analytics API (`GET /v1/organizations/analytics/cost`). Endpoint reference fields below could not be re-verified (page not in the saved sources).
 - Requires an Admin API key (`sk-ant-admin...`).
 - Fields marked "`null` if not grouping by description/workspace" only populate when the corresponding `group_by` value is set.
+- Source: https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api (retrieved 2026-11-14 (legacy-status note))
 
 ## Related
 

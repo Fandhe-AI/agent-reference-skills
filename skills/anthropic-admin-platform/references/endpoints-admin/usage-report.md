@@ -70,8 +70,10 @@ curl "https://api.anthropic.com/v1/organizations/usage_report/messages?starting_
 
 ## Notes
 
+- Legacy: per the Usage and Cost API guide (retrieved 2026-11-14), `/v1/organizations/usage_report/messages` is a legacy API that remains supported; for new integrations use the Usage and Cost Analytics API (`GET /v1/organizations/analytics/usage`). Endpoint reference fields below could not be re-verified (page not in the saved sources).
 - Requires an Admin API key (`sk-ant-admin...`).
 - For cost (not usage volume) reporting, see `cost-report.md`.
+- Source: https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api (retrieved 2026-11-14 (legacy-status note))
 
 ## Related
 

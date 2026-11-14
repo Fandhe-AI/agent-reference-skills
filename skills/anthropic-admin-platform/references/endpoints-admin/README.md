@@ -4,6 +4,7 @@
 |------|-------------|------|
 | Analytics Admin API | Organization-wide activity, cost, and usage analytics (mostly Claude Enterprise). | [analytics.md](./analytics.md) |
 | API Keys Admin API | Manage regular API keys within an organization (list, view, update status). | [api-keys.md](./api-keys.md) |
+| Claude Tag Admin API (beta) | Endpoints of the organization API for Claude Tag (Claude in Slack) for Claude Enterprise organizations:... | [claude-tag.md](./claude-tag.md) |
 | Compliance Settings Admin API | Get and update the organization's Compliance Settings singleton. | [compliance-settings.md](./compliance-settings.md) |
 | Cost Report Admin API | Retrieve time-bucketed cost data for an organization. | [cost-report.md](./cost-report.md) |
 | External Keys Admin API | Manage CMEK configs (AWS KMS / GCP Cloud KMS / Azure Key Vault) referenced by Workspaces. | [external-keys.md](./external-keys.md) |
@@ -21,5 +22,7 @@
 | Spend Limits Admin API | List and set spend limits, and manage spend limit increase requests. | [spend-limits.md](./spend-limits.md) |
 | Telemetry Destinations Admin API (Beta) | Register OpenTelemetry (OTLP/HTTP) destinations and choose the workspaces they cover. | [telemetry-destinations.md](./telemetry-destinations.md) |
 | Usage Report Admin API | Retrieve aggregated usage metrics for Claude Code and the Messages API. | [usage-report.md](./usage-report.md) |
+| User Profiles API (beta) | Create, list, retrieve, update and delete user profiles (records of end-users or reselled companies that a... | [user-profiles.md](./user-profiles.md) |
 | Users Admin API | Manage the Users in an organization. | [users.md](./users.md) |
+| Organization Webhook Endpoints Admin API (beta) | Manage organization-level webhook endpoints (endpoints that belong to the organization rather than to one... | [webhooks.md](./webhooks.md) |
 | Workspaces Admin API | Manage Workspaces, their Members, rate-limit overrides, and Service Account memberships. | [workspaces.md](./workspaces.md) |
