@@ -30,7 +30,12 @@ functions.cloudEvent('stopBilling', async cloudEvent => {
   const pubsubData = JSON.parse(
     Buffer.from(message.data, 'base64').toString()
   );
-  if (pubsubData.costAmount <= pubsubData.budgetAmount) {
+  const cost = Number(pubsubData.costAmount);
+  const budget = Number(pubsubData.budgetAmount);
+  if (!Number.isFinite(cost) || !Number.isFinite(budget)) {
+    return 'Ignored: notification without valid costAmount / budgetAmount';
+  }
+  if (cost <= budget) {
     return `No action necessary. (Current cost: ${pubsubData.costAmount})`;
   }
 
@@ -185,6 +190,7 @@ def __stop_instances(project_id, zone, instance_names, instances):
 
 - Warning: disabling billing terminates all Google Cloud services in the project (including Free Tier services); resources may be irretrievably deleted. Re-enabling needs manual configuration with no guarantee of recovery. Use only in disposable or capped projects.
 - Warning: the official script grants `roles/billing.admin` to the function's service account, which is very broad (it can manage all billing account settings and IAM). Consider a narrower custom role limited to the permissions needed to unlink a project (see the project-billing-link and managing-access pages), and restrict who can publish to or invoke the function.
+- Adapted from the official docs: the handler converts `costAmount` / `budgetAmount` with `Number()` and returns without disabling billing unless both are finite numbers (an empty or malformed notification must not trigger the shutdown); the Adapted line before the first snippet applies to this check as well.
 - Adapted from the official docs: `GOOGLE_CLOUD_PROJECT` is a reserved variable that `--set-env-vars` rejects, so the target project uses the custom variable `TARGET_PROJECT_ID`; the budget filter uses the project number (`projects/<PROJECT_NUMBER>`).
 - Adapted from the official docs: the official sample uses the 1st-gen `pubsubEvent.data` signature and `resource:` with `--gen2`; corrected to a CloudEvent handler (`cloudEvent.data.message.data`) and `projectBillingInfo`, and the budget is scoped to one project with `--filter-projects` plus a `budgetId` check, so spend in other projects cannot disable this project's billing.
 - Doc comments and docstrings of the official samples are omitted for brevity; the code otherwise matches the official text.

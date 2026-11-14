@@ -147,11 +147,11 @@ A list response has this shape (budget ID is the last segment of `name`):
 |-------|-------------|
 | `displayName` | Budget name |
 | `budgetFilter.projects` / `services` | Scope; entries like `projects/123456789`, `services/A1E8-BE35-7EBC` |
-| `budgetFilter.calendarPeriod` (`calendar_period` in samples) / `usage_period` | `CalendarPeriod` (MONTH default, QUARTER, YEAR) or `CustomPeriod` |
+| `budgetFilter.calendarPeriod` (`calendar_period` in samples) / `budgetFilter.customPeriod` | Period oneof: `CalendarPeriod` (MONTH default, QUARTER, YEAR) or a custom period |
 | `budgetFilter.creditTypesTreatment` | For example `INCLUDE_ALL_CREDITS`, `EXCLUDE_ALL_CREDITS` |
 | `amount.specifiedAmount` / `amount.lastPeriodAmount` | Fixed amount (`units`) or previous-period spend |
 | `thresholdRules[]` | `thresholdPercent` (0.8 = 80%) and `spendBasis` (`CURRENT_SPEND`, `FORECASTED_SPEND`) |
-| `notificationsRule` / `allUpdatesRule` | Email recipients and Pub/Sub topic for programmatic notifications |
+| `allUpdatesRule` | Email recipients and Pub/Sub topic for programmatic notifications |
 | `ownershipScope` | Lets billing-account users make single-project budgets that project users cannot modify |
 | `etag` | Concurrency token |
 

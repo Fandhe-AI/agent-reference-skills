@@ -47,7 +47,7 @@ billing.accounts.updateUsageExportSpec
 | View prices for SKUs with usage, custom contract prices | `billing.accounts.getPricing` | Billing account |
 | View project associations | `billing.resourceAssociations.list` (account) + `resourcemanager.projects.get` (project) | Both |
 | Associate project with billing account | `billing.resourceAssociations.create` (account); `serviceusage.services.list`, `serviceusage.effectivepolicy.get`, `resourcemanager.projects.createBillingAssignment` (project) | Both |
-| Remove project from billing account | `billing.resourceAssociations.delete` (account) + `resourcemanager.projects.deleteBillingAssignment` (project) | Both |
+| Remove project from billing account | `billing.resourceAssociations.delete` (account) OR `resourcemanager.projects.deleteBillingAssignment` (project); either one suffices | Billing account or project |
 | Budgets on an account: get/list/update/create/delete | `billing.budgets.get`, `.list`, `.update`, `.create`, `.delete` | Billing account |
 | Configure, edit, lift a spend cap budget on a project in an account | `billing.budgets.configureSpendCap` | Billing account |
 | Project-scoped budget: view | `resourcemanager.projects.get`, `billing.resourceCosts.get`, `billing.resourcebudgets.read` | Project |

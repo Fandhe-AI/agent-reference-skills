@@ -91,7 +91,7 @@ These services can automatically include an ID token with the right `aud` when t
 Steps:
 
 1. Identify or create the privilege-bearing service account.
-2. Grant it the roles required to invoke the target service: Cloud Run Invoker (`roles/run.invoker`) for Cloud Run services; Cloud Functions Invoker (`roles/cloudfunctions.invoker`) for Cloud Run functions; for other services see the product docs.
+2. Grant it the roles required to invoke the target service: Cloud Run Invoker (`roles/run.invoker`) for Cloud Run services; for Cloud Run functions, Cloud Functions Invoker (`roles/cloudfunctions.invoker`) for 1st gen and Cloud Run Invoker (`roles/run.invoker`) for 2nd gen HTTP functions; for other services see the product docs.
 3. Identify the impersonating principal and set up ADC to use its credentials (in development, usually the user account provided to ADC via gcloud; on a resource with an attached service account, that service account).
 4. Grant the principal the Service Account OpenID Connect Identity Token Creator role (`roles/iam.serviceAccountOpenIdTokenCreator`).
 5. Use the IAM Credentials API to generate the ID token (`AUDIENCE` = URI of the target service; `SERVICE_ACCOUNT_EMAIL` = privilege-bearing service account):
