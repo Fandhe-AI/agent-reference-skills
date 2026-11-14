@@ -102,6 +102,7 @@ Each validated model is tested against available EPs:
 - Task recognition alone does not establish that every model has a validated export, inference, and evaluation path; some tasks have dedicated inference classes while others use a generic task fallback.
 - The model table above is a condensed subset of the official validated catalog. For the full list use `winml catalog`, or see the official page at the Source URL.
 - For truly custom architectures, `--trust-remote-code` allows execution of model code from the Hugging Face Hub; enable it only for repositories you trust.
+- The EP table reproduces the official CLI page, which lists QNN as "bundled in ORT". For Windows ML apps, only CPU and DirectML are included with Windows ML's ONNX Runtime; QNN and other vendor EPs are acquired and registered separately (see [Windows ML execution providers](./supported-execution-providers.md) and [Install execution providers](./install-execution-providers.md)).
 - Source: https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/command-line/reference/supported-models (retrieved 2026-11-14)
 
 ## Related
