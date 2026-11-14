@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/navigation
+source: https://reactnative.dev/docs/0.88/navigation
 ---
 
 # Navigating Between Screens

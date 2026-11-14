@@ -1,7 +1,7 @@
 ---
 name: stripe
 description: >
-  Stripe 決済プラットフォームリファレンス (API 2026-09-30.endive)。
+  Stripe 決済プラットフォームリファレンス (API 2026-10-28.endive)。
   PaymentIntents, Checkout, Payment Links, Elements, Link, Managed Payments,
   Subscriptions, Invoices, Connect (Accounts v2), Radar, Terminal, Tax,
   Issuing, Treasury, Capital, Financial Connections, Climate,
@@ -10,7 +10,9 @@ description: >
 user-invocable: false
 ---
 
-対象 API バージョン 2026-09-30.endive（docs.stripe.com 取得日 2026-10-16）。v2 系（Accounts v2 等）の公式例は `Stripe-Version: 2026-09-30.preview` を使用。
+対象 API バージョン 2026-10-28.endive（docs.stripe.com 取得日 2026-11-14。2026-10-28.endive の変更はすべて非 breaking）。v2 系（Accounts v2 等）の公式例は `Stripe-Version: 2026-10-28.preview` を使用。
+
+未追従: 2026-10-28.preview 限定の変更（Wero・Balance Settings の精算通貨・Plaid processor token・Queries and Reports API・v2 money management の breaking 変更）は `references/api-core/api-versioning.md` の Notes に一覧のみ。samples / scripts は Stripe-Version 例を含まず変更なし。
 
 ## ディレクトリ構成
 
@@ -129,6 +131,8 @@ skills/stripe/
       financial-accounts.md
       transactions.md
       money-movement.md
+      money-management-v2.md
+      payout-intents.md
     capital/
       README.md
       financing-offers.md
@@ -234,6 +238,8 @@ skills/stripe/
 | 物理カード・デジタルウォレット・Issuing Elements・不正対策を実装したい | issuing | [references/issuing/README.md](references/issuing/README.md) |
 | Treasury FinancialAccount を作成・資金移動したい | treasury | [references/treasury/README.md](references/treasury/README.md) |
 | InboundTransfer / OutboundPayment / ReceivedCredit を管理したい | treasury | [references/treasury/README.md](references/treasury/README.md) |
+| API v2 の Financial Addresses / Received Credits / Payout Methods を使いたい | treasury | [references/treasury/README.md](references/treasury/README.md) |
+| Global Payouts（PayoutIntent・Recipient Verification）で送金したい | treasury | [references/treasury/README.md](references/treasury/README.md) |
 | Connect サブアカウントへの Capital ファイナンシングオファーを管理したい | capital | [references/capital/README.md](references/capital/README.md) |
 | ファイナンシング取引・残高サマリーを取得したい | capital | [references/capital/README.md](references/capital/README.md) |
 | プラットフォーム向け Capital を API で統合・サービシングしたい | capital | [references/capital/README.md](references/capital/README.md) |

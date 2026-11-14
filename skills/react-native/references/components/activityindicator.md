@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/activityindicator
+source: https://reactnative.dev/docs/0.88/activityindicator
 ---
 
 # ActivityIndicator

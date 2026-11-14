@@ -109,6 +109,14 @@ Use full package names with `npx` (e.g., `npx @commitlint/cli` not `npx commitli
 
 An unused dependency and an unlisted binary with the same name indicate `node_modules` not containing the relevant package (package manager install layout, or Knip not run from the repo root). Solution: run Knip from the project root; if needed, lint workspaces individually. Binaries installed on the OS (likely not meant to come from npm) are not reported as unlisted; see also `ignoreGlobalBinaries` in the configuration reference.
 
+## Unused Subpaths
+
+A key in the `imports` field of `package.json` (a subpath import) is reported when no file imports it. The targets of such a key are not entry files either, so they are reported as unused files when nothing else imports them.
+
+Remove the key from `package.json`. If the subpath is imported from a file that Knip does not analyze, add that file to the `entry` or `project` patterns.
+
+With `includeSubpathExports` enabled for a workspace, the subpaths of its `exports` field are reported the same way. This fits workspaces that are only consumed within the repository. An unreferenced `.` subpath means no other workspace imports the package at all.
+
 ## Unresolved Imports
 
 ### Template Strings
@@ -168,3 +176,7 @@ Types used only in signatures of used exports are not reported either: TypeScrip
 ### Enum/Namespace Members
 
 Reported by default. Disable: `--exclude enumMembers` or JSDoc tags.
+
+## Notes
+
+- Source: https://knip.dev/guides/handling-issues (knip@6.45.1 docs, retrieved 2026-11-14)

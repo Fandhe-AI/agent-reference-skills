@@ -83,6 +83,8 @@ import { Steps } from "@chakra-ui/react"
 - `Steps.CompletedContent` is shown only after all steps are complete (index equals count)
 - Use `Steps.Trigger` to make step indicators clickable for non-linear navigation
 - Use `useSteps()` hook with `Steps.RootProvider` for external state control
+- 3.38.0 (Ark UI 5.40.0): the item gained `data-current`, `data-complete` and `data-incomplete` attributes, and `aria-current="step"` moved to the trigger.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

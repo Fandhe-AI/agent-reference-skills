@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/document-nodes
+source: https://reactnative.dev/docs/0.88/document-nodes
 ---
 
 # Document nodes

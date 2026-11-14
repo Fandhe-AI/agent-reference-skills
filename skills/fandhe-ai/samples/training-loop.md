@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.11.0/crates/facade/examples/training_loop.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/facade/examples/training_loop.rs
 ---
 
 # Training Loop
@@ -117,7 +117,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 実行: `cargo run -p fandhe-ai --example training_loop`
 
-**Tape の再利用（reset）**: 上記の例はステップごとに `fandhe_ai::tape()` を新規生成・破棄する運用。ステップ内で `Tape` を再利用したい場合（reuse GEMM・tape 構築コストが問題になる学習ループ）は、`Tape::reset`（イシュー #1048）でノード列を葉プレフィックス（最初の演算より前に登録した葉）まで切り詰め、同一 `Tape` を使い回せる（`site/examples/training-loop.md` v0.11.0 の節、verbatim）。
+**Tape の再利用（reset）**: 上記の例はステップごとに `fandhe_ai::tape()` を新規生成・破棄する運用。ステップ内で `Tape` を再利用したい場合（reuse GEMM・tape 構築コストが問題になる学習ループ）は、`Tape::reset`（イシュー #1048）でノード列を葉プレフィックス（最初の演算より前に登録した葉）まで切り詰め、同一 `Tape` を使い回せる（`site/examples/training-loop.md` の節、verbatim。v0.14.0 でも差分なし）。
 
 ```rust
 let mut tape = fandhe_ai::tape();
@@ -141,6 +141,7 @@ for _ in 0..STEPS {
 ## Notes
 
 - **workspace 内部専用の例**: 乱数生成に内部クレート `bench_harness::rng::Xorshift64Star` を直接 import している（`crates/facade/examples/training_loop.rs` の verbatim。`bench-harness` は未公開 crate で facade の dev-dependency）。`fandhe-ai` だけを依存に追加した外部プロジェクトではこの行はコンパイルできないため、`rand` 等の任意の固定シード RNG に置き換える。学習ループ本体（モデル構築・forward・backward・パラメータ更新）は公開 API のみで構成されている
-- この例は `compat::Sequential` と `Tape` / `Var` / `Tensor` の公開 API で `param - lr * grad` を自前計算する手動 SGD。0.11.0 の facade は `fandhe_ai::optim::Sgd` / `AdamW` を公開面として再エクスポートしているため、実運用ではそちらを使う
+- この例は `compat::Sequential` と `Tape` / `Var` / `Tensor` の公開 API で `param - lr * grad` を自前計算する手動 SGD。0.14.0 の facade は `fandhe_ai::optim::Sgd` / `AdamW` を公開面として再エクスポートしているため、実運用ではそちらを使う
 - `Sequential::bind` が返す `SequentialVars` は `&model` / `&tape` を借用するため、`apply_parameters`（`&mut model`）を呼ぶ前に必ずスコープを抜けて借用を解放する
 - 重み初期化・データ生成はいずれも固定シードで駆動し再現可能にする
+- Source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/facade/examples/training_loop.rs（v0.14.0, 取得日 2026-11-14。0.11.0 から example の差分なし）

@@ -31,9 +31,9 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          setValue("lastName", "luo") // ✅
-          setValue("firstName", true) // ❌: true is not string
-          errors.bill // ❌: property bill does not exist
+          setValue("lastName", "luo") // ✅ accepts a string
+          // setValue("firstName", true) // TypeScript error: expected string
+          // errors.bill // TypeScript error: field does not exist
         }}
       >
         SetValue
@@ -45,7 +45,7 @@ export default function App() {
 
 ## Notes
 
-- Source: https://react-hook-form.com/get-started#TypeScript
+- Source: https://react-hook-form.com/get-started#TypeScript (documentation master c0511c9, fetched 2026-11-14)
 
 ## Related
 

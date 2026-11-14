@@ -1,6 +1,6 @@
 # Schema Validation
 
-Schema-based form validation: pass a resolver for your `schema` to `useForm` as an optional config. It validates input data against the schema and returns either errors or a valid result.
+Schema validation is supported through the `resolver` option. A resolver runs your schema against the complete form data and returns typed values or validation errors.
 
 ## Signature / Usage
 
@@ -47,7 +47,8 @@ export default function App() {
 ## Notes
 
 - Supported libraries include Yup, Zod, Superstruct, Joi, Vest, Class Validator, io-ts, Nope, computed-types, typanion, Ajv, TypeBox, ArkType, Valibot, TypeSchema, effect-ts, VineJS, fluentvalidation-ts, ata-validator, and any library that implements Standard Schema. See the up-to-date list in the `@hookform/resolvers` repo.
-- Source: https://react-hook-form.com/get-started#SchemaValidation
+- For complete TypeScript examples with Zod and Yup, see the React Hook Form integration guides (https://react-hook-form.com/integrations).
+- Source: https://react-hook-form.com/get-started#SchemaValidation (documentation master c0511c9, fetched 2026-11-14)
 
 ## Related
 

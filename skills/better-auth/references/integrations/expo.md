@@ -70,6 +70,8 @@ const headers = { "Cookie": cookies };
 - `exp://` trusts any host of the exp:// scheme (host-less entries trust every host of the scheme); `exp://**` and `exp://192.168.*.*:*/**` are wildcard patterns.
 - When upgrading your auth backend to purpose-prefixed verification identifiers or purpose-specific state-cookie keys, restart pending redirect-based social sign-ins (see reference/options.md); this needs no new Expo client configuration and does not affect native ID-token sign-in.
 - Changed in 1.7: secure storage access is asynchronous. The Expo client uses the asynchronous SecureStore APIs for cookie and session-cache access; `authClient.getCookie()` returns a promise, so await it (`const cookie = await authClient.getCookie();`) and make callbacks that read cookies asynchronous. Passing `expo-secure-store` directly continues to work without a wrapper. A custom storage implementation must provide `getItem`, `getItemAsync`, `setItem`, and `setItemAsync`. The exported `storageAdapter.setItem()` is synchronous; use `setItemAsync()` when the caller must wait for persistence.
+- The authorization proxy only redirects to the authorization endpoint of a configured social or generic OAuth provider, or of an SSO provider on a trusted origin. To sign in through an SSO identity provider, add its origin to `trustedOrigins`
+- Source: https://www.better-auth.com/docs/integrations/expo (better-auth v1.7.23 docs)
 - `cookiePrefix` prevents infinite refetching caused by third-party cookies
 - Authenticated requests: retrieve cookies from `SecureStore` and pass in headers with `"credentials": "omit"` to avoid interference
 

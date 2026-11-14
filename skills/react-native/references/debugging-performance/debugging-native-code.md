@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/debugging-native-code
+source: https://reactnative.dev/docs/0.88/debugging-native-code
 ---
 
 # Debugging Native Code

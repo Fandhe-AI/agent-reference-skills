@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/facade/examples/backend_switching.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/facade/examples/backend_switching.rs
 ---
 
 # Backend Switching
@@ -46,3 +46,5 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 - バックエンド切替は feature フラグなしの cfg ベース。`Device::Cuda(_)` / `Device::Metal` は実行時にドライバ・デバイスの存在検証を行い、不在なら `BackendError` を返す fail-fast 設計
 - `fandhe_ai::tape_for` 自体は自動デバイス選択を行わない（利用側が失敗時のフォールバック方針を決める）
 - CUDA / Metal のカーネル実装・最適化そのものは `nvidia-cuda` / `apple-silicon` スキルの領分。本スキルは `Device` 抽象を通じた選択・フォールバックの利用側コードのみを扱う
+- Source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/facade/examples/backend_switching.rs（v0.14.0, 取得日 2026-11-14。0.11.0 から example の差分なし）
+- `Device::Rocm(0)`（0.14.0 で追加。条件付き・実験的）も `tape_for` に渡せる。ROCm が列挙されないホストでは `Err`（`available_devices()` で確認できる）。この example 自体は CUDA → CPU のフォールバックのみを示す

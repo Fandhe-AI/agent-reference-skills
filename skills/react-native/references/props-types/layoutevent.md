@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/layoutevent
+source: https://reactnative.dev/docs/0.88/layoutevent
 ---
 
 # LayoutEvent Object Type

@@ -38,7 +38,7 @@ $ docker buildx build --push -t <user>/<image> \
 
 - Not supported with the default `docker` driver; create a new builder using a different driver.
 - Authentication: Buildx can reuse existing AWS credentials configured via a credentials file or environment variables. Alternatively set `access_key_id`, `secret_access_key` and `session_token` on the CLI. See the AWS Go SDK "Specifying Credentials" documentation.
-- The overview page labels the `s3` backend "(unreleased)".
+- The overview page labels the `s3` backend "(experimental)".
 
 ## Related
 

@@ -48,7 +48,7 @@ Known error codes and symptoms:
 
 - Best practices during repackaging: send a desktop shortcut for ClickOnce installers and the main executable; declare the parent package Name (identity name) when creating modification packages; run Prepare computer steps; sign and timestamp; make the declared installation location match the installer's.
 - Test the converted MSIX on a clean machine that never had the previous installer (new VM, or revert a checkpoint).
-- Device Guard Signing Service v2 became unavailable with the retirement of Microsoft Store for Business/Education (March 31, 2023); use Azure Artifact Signing (Azure Trusted Signing) or a certificate (.pfx) instead (see the code-signing device-guard-signing page).
+- Device Guard Signing Service v2 became unavailable with the retirement of Microsoft Store for Business/Education (March 31, 2023); use Azure Artifact Signing (formerly Azure Trusted Signing) or a certificate (.pfx) instead (see the code-signing device-guard-signing page).
 - SHA1 certificates are not supported for signing MSIX packages.
 - MSIX with services: the tool sets the minimum version to 10.0.19025.0, so it cannot install below Windows 10 2004 (it can be created on Windows 10 1809+). Lowering the minimum version means services will not work.
 - Packages from tool versions earlier than 1.2019.701.0 with Store versioning enforced may fail on Windows 10 1709+; set `MinVersion` to `10.0.16299.0` in Package Editor.

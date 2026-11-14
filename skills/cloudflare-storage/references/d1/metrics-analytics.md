@@ -99,8 +99,10 @@ Metrics:
 - Per-query row counts are returned in the Workers Binding API return object (`meta.rows_read`, `meta.rows_written`) and are precise.
 - Insights capture query strings but not bound parameters. `queryEfficiency` = rows returned / rows read; aim for close to `1`.
 - Account-wide insights include a `databaseId` per result; resolve the name with `npx wrangler d1 info <database_id>`.
+- Analytics coverage: `queryBatchTimeMs` measures SQL execution time inside the D1 database only; it does not include time spent routing the request to the database, establishing a connection, or waiting in a queue before SQL begins. During a platform-side incident, `queryBatchTimeMs` can show near-zero values while actual end-to-end D1 call duration is tens of seconds. `d1AnalyticsAdaptiveGroups` records a data point only when a request successfully reaches SQL execution; requests that fail before SQL begins (for example during a storage restart or an overload event) are not recorded. If your D1 calls are timing out but analytics show no activity, this does not rule out a platform event.
 - `wrangler d1 insights` is experimental (options and output may change); tokens need Account Analytics Read.
 - Docs inconsistency: the second GraphQL example declares `$accountTag` but filters with `$accountId`, and its description mentions an average that the query does not select (only `queryBatchTimeMsP90`).
+- Source: https://developers.cloudflare.com/d1/observability/metrics-analytics/ (production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

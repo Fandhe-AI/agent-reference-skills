@@ -49,7 +49,7 @@ vi.mock(import('../components/UserCard'), () => ({
 - Debugging: set `headless: false` temporarily to use browser dev tools; `page.getByRole('button').all()` with `.element()` exposes native DOM nodes; `.or()` chains locators with auto-retry; Vitest has no `page.locator()`, use the `getBy*` methods.
 - Official packages: `vitest-browser-vue`, `vitest-browser-react`, `vitest-browser-svelte`. Alternatives: `@solidjs/testing-library`, `@marko/testing-library`, `@testing-library/svelte`, `@testing-library/vue`.
 - The official component-testing page writes `@testing-library/solid`, while the guide/browser index page lists `@solidjs/testing-library` (the published npm package); this page uses `@solidjs/testing-library`.
-- Source: https://vitest.dev/guide/browser/component-testing (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/browser/component-testing (Vitest v5.1.0)
 
 ## Related
 

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/touchableopacity
+source: https://reactnative.dev/docs/0.88/touchableopacity
 ---
 
 # TouchableOpacity

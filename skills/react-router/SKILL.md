@@ -12,7 +12,7 @@ user-invocable: false
 # React Router v8 リファレンス
 
 React Router v8 の全 API ドキュメントを網羅したスキル。Declarative / Data / Framework の3モードを扱うが、`start/` 配下の導入手順は Framework Mode を中心に記述している。
-対象: react-router 8.4.0（GitHub タグ `react-router@8.4.0` の docs/ 原本）、`@react-router/dev` 8.4.0。
+対象: react-router 8.5.1（GitHub タグ `react-router@8.5.1` の docs/ 原本）、`@react-router/dev` 8.5.1。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
@@ -99,6 +99,7 @@ skills/react-router/
       usePrompt.md
       useResolvedPath.md
       useRevalidator.md
+      useRouteDiscovery.md
       useRouteError.md
       useRouteLoaderData.md
       useRouterState.md
@@ -153,6 +154,7 @@ skills/react-router/
       README.md
       accessibility.md
       client-data.md
+      custom-fetch.md
       data-strategy.md
       error-boundary.md
       error-reporting.md
@@ -169,6 +171,7 @@ skills/react-router/
       presets.md
       react-server-components.md
       resource-routes.md
+      route-discovery.md
       route-module-type-safety.md
       security.md
       server-bundles.md
@@ -257,6 +260,8 @@ skills/react-router/
 | ミドルウェア・ファイルアップロード・SPA モード・プリレンダリング | how-to | [references/how-to/README.md](references/how-to/README.md) |
 | フォームバリデーション・エラーバウンダリ・セキュリティ | how-to | [references/how-to/README.md](references/how-to/README.md) |
 | RSC・サーバーバンドル・リソースルート・型安全性 | how-to | [references/how-to/README.md](references/how-to/README.md) |
+| 実験的機能（API-only Mode `ssr: "unstable_api-only"` / `unstable_fetch` カスタム fetch / `unstable_useRouteDiscovery` ルート探索 / `<Await unstable_promise>`、8.5 系） | start, how-to, hooks | [references/how-to/README.md](references/how-to/README.md) |
+| React 標準 `<ViewTransition>` への移行（`viewTransition` 系 API は 8.5.0 で deprecated） | how-to | [references/how-to/README.md](references/how-to/README.md) |
 | data strategy（loader/action 実行制御のカスタマイズ） | how-to | [references/how-to/README.md](references/how-to/README.md) |
 | 再検証の制御（shouldRevalidate / defaultShouldRevalidate） | how-to | [references/how-to/README.md](references/how-to/README.md) |
 | コード分割・状態管理・BFF・プログレッシブエンハンスメント等の概念 | explanation | [references/explanation/README.md](references/explanation/README.md) |

@@ -28,6 +28,7 @@ cudaLaunchKernelEx(&config, myKernel, kernelArg1, kernelArg2);
 
 - Ordering or synchronization between distinct domains on the same GPU requires system-scope fencing — code cannot assume device-scope fences alone provide cross-domain ordering.
 - This feature is primarily intended to isolate fence-heavy communication libraries (e.g. NCCL-style remote/network operations) from compute kernels sharing the same GPU, so one workload's fences don't add latency to the other's.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/memory-sync-domains.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

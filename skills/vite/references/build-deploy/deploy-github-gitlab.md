@@ -44,7 +44,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Set up Node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: lts/*
           cache: 'npm'
@@ -92,7 +92,7 @@ pages:
 
 - GitHub Pages step 1: set the correct `base` in `vite.config.js`. For `https://<USERNAME>.github.io/` or a custom domain (e.g. `www.example.com`), set `base` to `'/'` (or remove it, default is `'/'`). For `https://<USERNAME>.github.io/<REPO>/`, set `base` to `'/<REPO>/'`.
 - GitHub Pages step 2: in the repository go to Settings → Pages; under Build and deployment, set Source to GitHub Actions. A workflow is necessary because Vite requires a build step.
-- GitHub Pages step 3: create `.github/workflows/deploy.yml` (or click "create your own" in the previous step to generate a starter workflow). The workflow above is extracted from `docs/guide/static-deploy-github-pages.yaml` (region `content`) at tag v8.3.4; action pins are as published there.
+- GitHub Pages step 3: create `.github/workflows/deploy.yml` (or click "create your own" in the previous step to generate a starter workflow). The workflow above is extracted from `docs/guide/static-deploy-github-pages.yaml` (region `content`) at tag v8.3.8; action pins are as published there.
 - GitLab Pages: if deploying to `https://<USERNAME or GROUP>.gitlab.io/`, omit `base`. For `https://<USERNAME or GROUP>.gitlab.io/<REPO>/` set `base` to `'/<REPO>/'`. The `.gitlab-ci.yml` at the project root builds and deploys whenever content changes.
 - Platform-side GitHub Actions / GitLab CI behavior is outside this skill's scope (see github-docs for GitHub).
 

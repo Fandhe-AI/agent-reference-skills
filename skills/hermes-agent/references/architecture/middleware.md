@@ -50,7 +50,8 @@ Execution order:
 
 ## Notes
 
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/middleware (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/middleware (pinned to v0.23.1)
+- As with hooks, a middleware callback without `**kwargs` receives only the fields its signature names, so a field added to the payload later does not break it.
 - Middleware only runs for enabled plugins: `hermes plugins enable <plugin-name>`. For isolated testing use one `HERMES_HOME` for enablement and the run:
 
 ```bash

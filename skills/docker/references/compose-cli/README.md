@@ -22,6 +22,7 @@
 | docker compose run | Run a one-off command on a service. | [compose-run.md](./compose-run.md) |
 | docker compose scale | Scale services. | [compose-scale.md](./compose-scale.md) |
 | docker compose start | Start services. Starts existing containers for a service. | [compose-start.md](./compose-start.md) |
+| docker compose stats | Display a live stream of container(s) resource usage statistics. | [compose-stats.md](./compose-stats.md) |
 | docker compose stop | Stop services. | [compose-stop.md](./compose-stop.md) |
 | docker compose up | Create and start containers: builds, (re)creates, starts, and attaches to containers for a service. | [compose-up.md](./compose-up.md) |
 | docker compose wait | Block until containers of all (or specified) services stop. | [compose-wait.md](./compose-wait.md) |

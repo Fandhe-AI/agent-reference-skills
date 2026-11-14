@@ -93,7 +93,7 @@ utils.configurePrettyDOM({
 - `frameLocator` is supported only by the `playwright` provider. Interactive methods work in iframes, but `expect.element()` needs same-origin; for cross-origin pass `args: ["--disable-web-security"]` in `launchOptions` or use a custom browser command.
 - `cdp()` works only with `playwright` + `chromium`, and only when `api.allowWrite` and `api.allowExec` are enabled.
 - `utils.aria` is experimental (5.0.0). The source's usage example calls `utils.aria.renderAriaNode(tree)` while the signature block lists `renderAriaTree`; the signature block is reproduced above.
-- Source: https://vitest.dev/api/browser/context (Vitest v5.0.5)
+- Source: https://vitest.dev/api/browser/context (Vitest v5.1.0)
 
 ## Related
 

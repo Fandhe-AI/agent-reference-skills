@@ -117,7 +117,7 @@ Segments appear only when relevant and drop off first on narrow terminals.
 
 ## Notes
 
-- Source: https://hermes-agent.nousresearch.com/docs/reference/cli-symbols (v0.22.2).
+- Source: https://hermes-agent.nousresearch.com/docs/reference/cli-symbols (pinned to v0.23.1).
 
 ## Related
 

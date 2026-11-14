@@ -56,6 +56,14 @@ import "driver.js/dist/driver.css";
 import "driver.js/dist/checklist.css";
 ```
 
+## Headless のインポート
+
+UI を描画しない Headless ツアー（1.13.0 以降）用の独立エントリ。スタイルシートは不要。
+
+```js
+import { driver } from "driver.js/headless";
+```
+
 ## CDN による読み込み（バンドラー不要）
 
 ```html
@@ -71,7 +79,7 @@ const driverObj = window.driver.js.driver();
 
 ## CDN による Hints / Checklist の読み込み
 
-公式ドキュメントの記載。Hints を使う場合のみ hints 版、Checklist を使う場合のみ checklist 版を追加する。
+公式ドキュメントの記載。Hints を使う場合のみ hints 版、Checklist を使う場合のみ checklist 版、Headless ツアーを使う場合のみ headless 版（メインスクリプトの代わりに読み込む）を追加する。
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js"></script>
@@ -81,9 +89,12 @@ const driverObj = window.driver.js.driver();
 <script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/hints.iife.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/hints.css" />
 
-<!-- Only if you use checklists -->
+<!-- Only if you use checklists. Load it after the main script. -->
 <script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/checklist.iife.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/checklist.css" />
+
+<!-- Only if you run headless tours. It replaces the main script. -->
+<script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/headless.iife.js"></script>
 ```
 
 Hints ビルドは専用のグローバルを公開する。
@@ -96,4 +107,10 @@ Checklist ビルドも専用のグローバルを公開する。ツアー実行�
 
 ```js
 const checklist = window.driverChecklist.checklist;
+```
+
+Headless ビルドもグローバルを公開する。
+
+```js
+const headless = window.driverHeadless.driver;
 ```

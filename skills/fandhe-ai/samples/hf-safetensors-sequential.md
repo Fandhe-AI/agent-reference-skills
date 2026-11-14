@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-ai/0.11.0/source/examples/hf_safetensors_sequential/main.rs
+source: https://docs.rs/crate/fandhe-ai/0.14.0/source/examples/hf_safetensors_sequential/main.rs
 ---
 
 # HF Safetensors into Sequential
@@ -104,6 +104,6 @@ fn tensors_bit_exact(a: &Tensor<f32>, b: &Tensor<f32>) -> bool {
 
 - 上のコードは原本 `main.rs`（214 行）から例 3（batch decode）と一部の `println!` を省いた抜粋で、省略箇所は原本どおりではない。完全版は出典の `main.rs` を参照
 - `convert.rs`（780 行。`to_pytorch_layout` / `from_pytorch_layout` / `TempDirGuard`）は省略した。`convert` は example 同梱のモジュールで `fandhe-ai` の公開 API ではないため、外部プロジェクトでは `#[path]` 取り込み用に `convert.rs` ごとコピーする必要がある
-- 実 HF ハブからのダウンロードは行わず、オフライン・決定的（`manual_seed` 固定）。F32 以外（bf16 / f16 等）のチェックポイントは Python 側で事前に F32 変換する必要がある（原本コメントの案内）
+- 実 HF ハブからのダウンロードは行わず、オフライン・決定的（`manual_seed` 固定）。F32 以外（bf16 / f16 等）のチェックポイントは Python 側で事前に F32 変換する必要がある（原本コメントの案内）。0.14.0 では `interop::safetensors` の typed API（`load_safetensors_typed` と `SafetensorsTensor::to_f32`）で Rust 側から F32 へ昇格することもできる（`safetensors-save-load.md` を参照）
 - `add_transformer_encoder` は非 causal・mask なしの self-attention のため、例 3 の decode は機構の例示で causal LM としての確率は与えない（原本コメント）
 - この環境では `cargo check` を実行できなかったため、省略後の抜粋のコンパイル検証は未実施

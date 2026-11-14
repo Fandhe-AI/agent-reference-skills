@@ -9,7 +9,7 @@
 | カスタムプラグインの作成 | `listPets.ts` に 1 つの API operation の method と path を書き出すプラグインを作成し… | [creating-plugins.md](./creating-plugins.md) |
 | Generators（概念） | Generator は Plugin がコードを生成する場所。Plugin がオプション・ライフサイクル・配線を… | [generators.md](./generators.md) |
 | Macro の作成 | Macro は Kubb の AST に対する、名前付きで合成可能な変換。Adapter が生成する schema・… | [macros.md](./macros.md) |
-| マイグレーションガイド | Kubb 5.11.0 / docs 5.x how-to/migration（"Upgrade from v4 to v5"）に準拠。 | [migration-guide.md](./migration-guide.md) |
+| マイグレーションガイド | docs 5.x how-to/migration（"Upgrade from v4 to v5"）に準拠。 | [migration-guide.md](./migration-guide.md) |
 | Printer の上書き | Printer はパイプラインの終端ではなく、Plugin の Generator 内部で動作する。 | [printers.md](./printers.md) |
 | Publish a plugin | Plugin を npm へ publish し、Kubb registry に登録すると、ユーザーは `kubb add` で… | [publish-a-plugin.md](./publish-a-plugin.md) |
 | Configure generation (recipes) | Kubb をインストール済みで OpenAPI 仕様があるプロジェクトで使う設定例。 | [recipes.md](./recipes.md) |

@@ -89,6 +89,7 @@ Boolean options accept: `y` / `yes` / `on` / `true` to enable, `n` / `no` / `off
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `profile-generate` | path | — | Emit instrumented binary; outputs `.profraw` files to path |
+| `profile-sample-use` | path | — | Use a `.prof` sample profile for sample-based PGO (SPGO); stable since 1.100 |
 | `profile-use` | path | — | Use `.profdata` file for PGO optimizations |
 
 ### Coverage

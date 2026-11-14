@@ -4,16 +4,16 @@ BullMQ は Rust クレートとして提供されており、フル async/await 
 
 ## Signature / Usage
 
+```bash
+cargo add bullmq-official --rename bullmq
+```
+
 ```toml
 [dependencies]
-bullmq = "0.1"
+bullmq = { version = "1.2", package = "bullmq-official" }
 ```
 
-```bash
-cargo add bullmq
-```
-
-Requirements: Rust 1.85+, Tokio runtime, Redis 6.2+
+Requirements: Rust 1.85+, Tokio runtime, Redis 6.2+ (or a compatible server such as Valkey or Dragonfly)
 
 ## キューへのジョブ追加
 
@@ -67,11 +67,40 @@ async fn main() -> bullmq::Result<()> {
 
 ## Notes
 
-- Node.js / Python 版と同じ Lua スクリプトおよび Redis データ構造を使用するため、言語間で完全に互換性がある
-- 並行数は `worker.set_concurrency(n)` でランタイムに変更可能
-- イベントは EventEmitter ではなく `mpsc::UnboundedReceiver<WorkerEvent>` で受け取る
-- エラーハンドリングは例外ではなく `Result<T, Error>` 型で行う
-- Tokio マルチスレッドランタイムにより、Node.js と異なり全 CPU コアを活用できる
+- Install: the crate is published as `bullmq-official` and imported in code as `bullmq` (`use bullmq::{Queue, Worker};`); the `bullmq`, `bullmq-rust` and `bullmq-rs` names on crates.io belong to unrelated third-party crates (official page, v6.7.6). A previous version of this page showed `bullmq = "0.1"` / `cargo add bullmq`, which would install an unrelated crate.
+- It uses the same Lua scripts and Redis data structures as the Node.js, Python, Elixir, .NET and PHP SDKs, so the SDKs are fully interoperable (also on Redis Cluster, as long as they use the same prefix).
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/rust/introduction.md (tag v6.7.6, fetched 2026-11-14)
+- Concurrency can be changed at runtime with `worker.set_concurrency(n)`.
+- Events are received through `mpsc::UnboundedReceiver<WorkerEvent>` instead of an EventEmitter.
+- Errors are handled with the `Result<T, Error>` type instead of exceptions.
+- The multi-threaded Tokio runtime can use all CPU cores, unlike Node.js.
+
+### Redis Cluster
+
+To connect to a Redis Cluster, set `cluster_nodes` to one or more seed node URLs; the rest of the topology is discovered automatically. In cluster mode `url`, `host`, `port` and `db` are ignored, while `username`, `password`, `tls` and `tls_certs` apply to every node. BullMQ's Lua scripts access several keys of a queue at once, so all of them must live in the same hash slot: as with the Node.js and Python versions, use a hash tag in the prefix (or in the queue name). Flows spanning several queues require the hash tag in the shared prefix.
+
+```rust
+use bullmq::{Queue, QueueOptions, Worker, WorkerOptions};
+use bullmq::options::RedisConnectionOptions;
+
+let conn = RedisConnectionOptions::new().cluster_nodes([
+    "redis://10.0.0.1:7000",
+    "redis://10.0.0.2:7000",
+    "redis://10.0.0.3:7000",
+]);
+
+let queue = Queue::with_options("my-queue", QueueOptions {
+    connection: conn.clone(),
+    prefix: "{bull}".to_string(),
+    ..Default::default()
+}).await?;
+
+let worker = Worker::with_options("my-queue", processor, WorkerOptions {
+    connection: conn,
+    prefix: "{bull}".to_string(),
+    ..Default::default()
+}).await?;
+```
 
 ## Node.js との主な違い
 

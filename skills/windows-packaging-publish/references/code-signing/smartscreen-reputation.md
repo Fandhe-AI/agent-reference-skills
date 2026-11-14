@@ -17,7 +17,7 @@ signtool sign /fd SHA256 /a /f cert.pfx /p password MyApp.exe
 | --- | --- |
 | Microsoft Store | No warning — Store re-signs with Microsoft's certificate, immune to SmartScreen download checks. |
 | OV/EV certificate (non-Store) | Warning until reputation accumulates; verified publisher name is shown in the prompt. |
-| Azure Artifact Signing (Trusted Signing) | Same reputation-building model as OV — no instant trust. |
+| Azure Artifact Signing (formerly Trusted Signing) | Same reputation-building model as OV — no instant trust. |
 | Self-signed certificate | Same warning behavior as unsigned. |
 | No signature | Strongest warning ("Windows protected your PC"); enterprise policy may block continuation entirely. |
 
@@ -34,5 +34,5 @@ signtool sign /fd SHA256 /a /f cert.pfx /p password MyApp.exe
 ## Related
 
 - [Certificate Types](./certificate-types.md)
-- [Azure Trusted Signing (Azure Artifact Signing)](./azure-trusted-signing.md)
+- [Azure Artifact Signing (formerly Azure Trusted Signing)](./azure-trusted-signing.md)
 - [Signing with a Certificate in Azure Key Vault](./azure-key-vault-signing.md)

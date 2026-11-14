@@ -31,7 +31,7 @@ export const legacyExport = 'kept for compatibility';
 
 ## Notes
 
-- JSDoc comments must start with `/**` (not `//` or `/*`) for knip to recognize the tags
+- Tags are recognized in `/** ... */` JSDoc comments, and (per the 6.45.1 docs) also in regular block comments (`/* ... */`) and standalone line comments (`// @lintignore`) before a declaration; tags in consecutive comments are combined and trailing `//` comments are ignored
 - `@public` and `@beta` are functionally identical: both prevent unused export reporting and work with `--include-entry-exports`
 - Use the `tags` config option to define custom tag behavior persistently: `{ "tags": ["-lintignore"] }`
 - When a tag exclusion becomes unnecessary (the export is no longer unused), knip reports a "tag hint" to clean it up

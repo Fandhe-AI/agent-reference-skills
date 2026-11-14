@@ -25,9 +25,11 @@ npx wrangler r2 bucket create my-bucket
 
 - Requires a Cloudflare account with an R2 subscription: in the dashboard select **Storage & databases > R2 > Overview** and complete the checkout flow.
 - R2 is free to get started with included free monthly usage. You are billed monthly for usage.
+- To develop and test against R2 on your local machine, see Local development (`local-development.md`).
 
 ## Related
 
+- [Local development](./local-development.md)
 - [Workers API](./get-started-workers-api.md)
 - [S3](./get-started-s3.md)
 - [CLI](./get-started-cli.md)

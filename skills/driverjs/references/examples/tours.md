@@ -1,86 +1,112 @@
 # Tours
 
-Examples of multi-step tour configurations in Driver.js.
+Examples of multi-step tour configurations in Driver.js: animated and static tours, animation speed and the step counter.
 
-## Animated Tour (Default)
+## Signature / Usage
 
-By default, Driver.js animates transitions between tour steps.
+A tour is a list of steps. Each step highlights an element and describes it in a popover. Pass the steps to `driver()` and call `drive()`.
 
-```javascript
+### Animated Tour
+
+The highlight glides from one step to the next by default. Users move with the buttons or the arrow keys, and close with `Escape`.
+
+```js
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 
 const driverObj = driver({
   showProgress: true,
   steps: [
-    { element: '#element1', popover: { title: 'Step 1', description: 'First step', side: 'left', align: 'start' }},
-    { element: '#element2', popover: { title: 'Step 2', description: 'Second step', side: 'bottom', align: 'start' }},
-    { element: '#element3', popover: { title: 'Step 3', description: 'Third step', side: 'right', align: 'start' }},
-  ]
+    {
+      element: ".page-header",
+      popover: {
+        title: "Header",
+        description: "Search lives here.",
+        side: "bottom",
+      },
+    },
+    {
+      element: ".sidebar",
+      popover: { title: "Sidebar", side: "right" },
+    },
+    { popover: { title: "Happy Coding" } },
+  ],
 });
 
 driverObj.drive();
 ```
 
-## Static Tour
+A step without an `element` is centered on the screen. `drive()` starts at the first step; pass an index to start elsewhere.
 
-Set `animate` to `false` for instant transitions without animation.
+### Animation Duration
 
-```javascript
+`duration` sets how long the move between steps and the fade-in take, in milliseconds. The default is `400`. It only applies when `animate` is `true`.
+
+```js
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
+
+const driverObj = driver({
+  duration: 150,
+  steps: [
+    // ...
+  ],
+});
+
+driverObj.drive();
+```
+
+### Static Tour
+
+`animate: false` turns the animation off. The highlight jumps straight to each step, with no gliding and no fade-in.
+
+```js
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
+
 const driverObj = driver({
   animate: false,
-  showProgress: false,
-  showButtons: ['next', 'previous', 'close'],
   steps: [
-    { element: '#element1', popover: { title: 'Step 1', description: 'Description', side: 'bottom', align: 'start' }},
-    { element: '#element2', popover: { title: 'Step 2', description: 'Description', side: 'top', align: 'start' }},
-  ]
+    // ...
+  ],
 });
 
 driverObj.drive();
 ```
 
-## Tour Progress
+### Tour Progress
 
-Enable the built-in progress indicator with `showProgress` and customize with `progressText`.
+`showProgress: true` shows the step count in the popover's bottom left corner, as `{{current}} of {{total}}`. Change the text with `progressText`. Both can be set per step in its `popover` as well.
 
-```javascript
+```js
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
+
 const driverObj = driver({
   showProgress: true,
-  progressText: '{{current}} / {{total}}',
-  steps: [/* ... */]
+  progressText: "Step {{current}} of {{total}}",
+  steps: [
+    // ...
+  ],
 });
+
+driverObj.drive();
 ```
+
+## Options / Props
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| showProgress | boolean | false | Show progress text in popover |
-| progressText | string | '{{current}} of {{total}}' | Template with {{current}} and {{total}} placeholders |
-
-## Animation Duration
-
-Use the `duration` option to control how long the transition animation takes, in milliseconds. It controls both the speed at which the highlight moves between steps and the overlay/popover fade-in. It only applies when `animate` is `true` and defaults to `400`. Lower it for a snappier tour, or raise it for a more relaxed one.
-
-```javascript
-import { driver } from "driver.js";
-import "driver.js/dist/driver.css";
-
-const driverObj = driver({
-  // Speed the whole transition up to 150ms (default is 400ms)
-  duration: 150,
-  showProgress: true,
-  steps: [
-    { element: '#some-element', popover: { title: 'Import the Library', description: 'Notice how quickly the highlight snaps over to this line.' }},
-    { element: '#another-element', popover: { title: 'Create Driver', description: 'The popover fades in almost instantly at this speed.' }},
-  ]
-});
-
-driverObj.drive();
-```
+| animate | boolean | true | Glide between steps and fade the popover in |
+| duration | number | 400 | Animation time in milliseconds; only used when `animate` is `true` |
+| showProgress | boolean | false | Show progress text in the popover |
+| progressText | string | `'{{current}} of {{total}}'` | Template with `{{current}}` and `{{total}}` placeholders |
 
 ## Notes
 
-- The official docs page for these examples is now `/docs/tour-basics`.
+- Since 1.14.0 the official page is `/docs/tour-basics` (group "Tours"); the 1.10.1 page put the same examples in the "Examples" group. The default tour is `animate: true`, and the page's live demos pass `animate: true` explicitly.
+- The 1.14.0 page also demonstrates a 1200 ms (slow) tour next to the 150 ms one; both are the same `duration` option and the page shows no separate code for the slow one.
+- Source: https://driverjs.com/docs/tour-basics (driver.js 1.14.0 docs source, apps/docs/src/content/guides/tour-basics.mdx at tag 1.14.0).
 
 ## Related
 

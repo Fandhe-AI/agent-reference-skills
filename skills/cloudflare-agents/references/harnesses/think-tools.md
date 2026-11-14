@@ -81,6 +81,7 @@ export class MyAgent extends Think<Env> {
 
 ## Notes
 
+- Naming note: the newer Cloudflare Computer page (see [filesystem.md](../tools/filesystem.md)) renames the JavaScript backend to `CodemodeBackend` (`@cloudflare/computer/backends/codemode`, default id `"codemode"`) and the host module namespace from `ws:` to `codemode:`. This Think page still shows `WorkerJavaScriptBackend` and `ws:` in its snippets as of cloudflare-docs production 34d908a (fetched 2026-11-14); use the newer names for current `@cloudflare/computer`.
 - Paths are absolute; Computer's tools treat `/workspace` as working root. Return a tool with the same name from `getTools()` to replace a built-in; hide tools for a turn with `activeTools` from `beforeTurn`.
 - Adapted from the official docs: the weather example interpolated `city` directly into the URL query string, allowing a model-supplied value to inject query parameters; it now uses `URL.searchParams` and throws when `WEATHER_KEY` is unset instead of sending `key=undefined` (matching think-getting-started.md). Placeholder `getModel() { /* ... */ }` bodies are omitted in the snippets below and assume the model is defined as in the quick start.
 - Upgrade from `@cloudflare/shell` (deprecated): `list` is now `ls`; the in-process `bash` tool is gone (add a backend to get `exec`); `workspaceBash`, `createWorkspaceTools`, and `@cloudflare/think/tools/workspace` are removed. Think does not move your data: copy files with the script at https://github.com/cloudflare/agents/blob/main/docs/shell/migrating-to-computer.md.

@@ -133,6 +133,80 @@ Options (`RegisterOptions`). Rules `required`, `maxLength`, `minLength`, `max`, 
   ```
 
 - For controlled components, use `useController` / `Controller`.
+- If you also need the input's ref yourself, see [FAQs](../faqs/faqs.md) (How to share ref usage).
+- Source: https://react-hook-form.com/docs/useform/register (documentation master c0511c9, fetched 2026-11-14)
+
+### File input
+
+A file input's value is a `FileList`, not a string. `required` works as usual, use `validate` to check things like file size, and build a `FormData` from the files when you submit.
+
+```tsx
+import { useForm } from "react-hook-form"
+
+type FormValues = { avatar: FileList }
+
+export default function App() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>()
+
+  const onSubmit = async ({ avatar }: FormValues) => {
+    const body = new FormData()
+    body.append("avatar", avatar[0])
+    await fetch("/api/avatar", { method: "POST", body })
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input
+        type="file"
+        accept="image/*"
+        {...register("avatar", {
+          required: "Choose a file",
+          validate: (files) =>
+            !files?.[0] || files[0].size < 2_000_000 || "Max size is 2 MB",
+        })}
+      />
+      {errors.avatar && <p>{errors.avatar.message}</p>}
+      <input type="submit" />
+    </form>
+  )
+}
+```
+
+### Troubleshooting
+
+#### A number input is submitted as a string
+
+- Why: Input values in the DOM are always strings, so `<input type="number">` gives you `"5"`, not `5`.
+- Fix: Add `valueAsNumber`, or `setValueAs` for your own conversion:
+
+```javascript
+<input type="number" {...register("age", { valueAsNumber: true })} />
+```
+
+#### A field in a custom input component is missing from the submitted data
+
+- Why: `register` reads the value through the `ref` of the actual `<input>`. If your component takes the props but does not pass `ref` on to the `<input>`, the field has no value and cannot be focused on errors.
+- Fix: Pass all props, including `ref`, to the `<input>`. If the component uses a different prop name such as `inputRef`, see the `innerRef` / `inputRef` note above.
+
+#### A field registered with `disabled: true` is missing from the submitted data
+
+- Why: Disabling a field through `register` excludes its value from the data passed to `handleSubmit`.
+- Fix: If the user should see the value but not change it, and you still need it in the submitted data, use `readOnly` instead: `<input readOnly {...register("id")} />`.
+
+### Changes since v7.90
+
+From the v7.91.0 release notes:
+
+- "Fix progressive required attributes (#13924)"
+- "Fix numeric zero `maxLength` validation (#13851)"
+
+From the v7.92.0 release notes:
+
+- "Fix `register` overwriting untouched range and color input defaults (#14007)"
 
 ## Related
 

@@ -58,6 +58,11 @@ The defaults match what the arrow keys already did, so existing inputs behave th
 - **sizes**: `xs`, `sm`, `md`, `lg`
 - **variants**: `outline`, `subtle`, `flushed`
 
+## Notes
+
+- 3.38.0: `NumberInput.Control` no longer overflows into the label when `NumberInput.Label` is used inside `NumberInput.Root`. The control is now anchored to the bottom of the root and sized to the input height.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
+
 ## Related
 
 - [input.md](./input.md)

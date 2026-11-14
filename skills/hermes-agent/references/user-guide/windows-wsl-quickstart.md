@@ -76,7 +76,7 @@ New-NetFirewallRule -DisplayName "Hermes WSL 8080" `
 - Pitfalls: clock drift after sleep (`sudo hwclock -s`); DNS broken in mirrored mode or on VPN (set `generateResolvConf=false` in `/etc/wsl.conf` and write your own `/etc/resolv.conf`); `hermes` not found after install (`source ~/.bashrc`); VHDX does not auto-shrink (`wsl --shutdown`, then `Optimize-VHD -Path <ext4.vhdx> -Mode Full`); Defender slows access to `\\wsl$\...`.
 - Adapted: the official guide overwrites /etc/wsl.conf with `sudo tee`; this version backs up and edits only the listed keys so existing [user]/[network]/[automount] settings are preserved.
 - Adapted: official docs pipe the installer straight into the shell; this page downloads and reviews it first.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/windows-wsl-quickstart (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/windows-wsl-quickstart (pinned to v0.23.1)
 
 ## Related
 

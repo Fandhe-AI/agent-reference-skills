@@ -46,6 +46,9 @@ scene.add( group );
 ## Notes
 
 - `SVGLoader.createShapes()` is deprecated in r185; use `shapePath.toShapes()` instead (https://github.com/mrdoob/three.js/pull/33503).
+- Migration (r186 → r187): `Loader` gained `priority` and `cache` (HTTP cache mode) with `setPriority()` / `setCache()`; `SVGLoader` forwards them to its internal `FileLoader` (https://github.com/mrdoob/three.js/pull/34936)
+- r187: `href` is also read without the `xlink` namespace, and path commands following a closing `Z` without `M` start a new subpath at the initial point.
+- Source: https://threejs.org/docs/pages/SVGLoader.html (three.js r187, `examples/jsm/loaders/SVGLoader.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

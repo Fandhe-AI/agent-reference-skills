@@ -24,6 +24,7 @@ echo.BindHeaders(c, &payload)
 
 - Use these functions when you need to bind from a single source explicitly instead of the combined precedence order applied by `Context#Bind`.
 - `echo.DefaultBinder` is assigned to `Echo#Binder` by default; a custom binder can wrap it to add or replace behavior.
+- Since v5.4.5, `BindHeaders` no longer panics on nil or empty header value slices. Since v5.4.1, binding supports OpenAPI date formats. Source: https://github.com/labstack/echo/releases/tag/v5.4.5 and https://github.com/labstack/echo/releases/tag/v5.4.1 (fetched 2026-11-14).
 
 ## Related
 

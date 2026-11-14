@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/optimizing-flatlist-configuration
+source: https://reactnative.dev/docs/0.88/optimizing-flatlist-configuration
 ---
 
 # Optimizing FlatList Configuration

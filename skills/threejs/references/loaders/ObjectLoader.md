@@ -23,6 +23,8 @@ scene.add( obj );
 ## Notes
 
 - Can be used to load individual objects or full scenes including lights, cameras, and materials.
+- r187: the loader passes its `priority` and `cache` settings to the `FileLoader` / `ImageLoader` instances it creates; it restores `SpotLight.map` (https://github.com/mrdoob/three.js/pull/35128), `Sprite.center`, `Texture.mipmapsAutoUpdate` and the available BatchedMesh ids (https://github.com/mrdoob/three.js/pull/34652) from JSON.
+- Source: https://threejs.org/docs/pages/ObjectLoader.html (three.js r187, `src/loaders/ObjectLoader.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

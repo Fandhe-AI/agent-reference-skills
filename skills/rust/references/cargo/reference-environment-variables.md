@@ -154,6 +154,8 @@ Cargo sets these so tests and examples can find shared libraries:
 - Do NOT use `cfg!()` or `#[cfg()]` in build scripts — they reflect the **host**, not the target. Use `CARGO_CFG_*` variables instead.
 - `RUSTFLAGS` is applied to all crates; use `CARGO_ENCODED_RUSTFLAGS` when flags contain spaces.
 - Build script variables like `TARGET` are NOT available in regular crate compilation.
+- Rust 1.100 added `CARGO_RESOLVER_INCOMPATIBLE_PUBLISH_AGE` (see `resolver.incompatible-publish-age`), `CARGO_REGISTRY_GLOBAL_MIN_PUBLISH_AGE` and `CARGO_REGISTRIES_<name>_MIN_PUBLISH_AGE` to the Cargo environment variable reference.
+- Source: https://doc.rust-lang.org/cargo/reference/environment-variables.html (pinned: https://raw.githubusercontent.com/rust-lang/cargo/3acc79c0c841844675bc53a605922dbfc441e750/doc/book/src/reference/environment-variables.md, cargo@3acc79c, retrieved 2026-11-14)
 
 ## Related
 

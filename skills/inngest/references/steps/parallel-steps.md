@@ -33,6 +33,7 @@ const summaries = await Promise.all(
 - Total data returned across all steps must not exceed 4 MB
 - Maximum 1,000 steps per function run
 - **Parallel steps vs. fan-out**: use parallel steps when you need to access return values within the same function; use `step.sendEvent()` fan-out for unlimited independent functions without needing their output
+- SDK 4.25.0 fixed a v4 regression: functions with `optimizeParallelism: false` again complete the run when the function returns (as in v3) instead of waiting for steps that were started but never awaited. Source: https://github.com/inngest/inngest-js/releases/tag/inngest@4.25.0 (retrieved 2026-11-14)
 
 ## Related
 

@@ -14,7 +14,15 @@ npm install @better-auth/scim
 
 ### Enable database transactions
 
-SCIM resource requests require a database adapter with native interactive transaction support (Kysely `transaction: true`, Drizzle `transaction: true`, Prisma `transaction: true`). Cloudflare D1 does not support the interactive transactions required.
+SCIM resource requests require a database adapter with native interactive transaction support (Kysely `transaction: true`, Drizzle `transaction: true`, Prisma `transaction: true`). Cloudflare D1 does not support interactive transactions, so SCIM cannot provision users or groups on D1.
+
+When the adapter has no native transactions, Better Auth still starts and logs an error. SCIM then refuses every request that needs a transaction:
+
+- Every `/scim/v2` request returns 501 Not Implemented, reads included. A directory's connection test fails at setup instead of passing and then failing on the first change.
+- Server calls that create, rotate, revoke, reconcile, or decommission a SCIM connection return 501 with code `SCIM_REQUIRES_NATIVE_TRANSACTIONS`.
+- Server calls that list or read SCIM connections keep working.
+
+Do not set `transaction: true` on a D1 database: D1 then rejects the transaction on every SCIM request with a server error.
 
 ```typescript
 const auth = betterAuth({
@@ -161,6 +169,7 @@ If a directory re-creates a user with the same `externalId` through the same con
 - Changed in 1.7: SCIM supports three connection modes. Every request resolves an immutable connection ID, credential identity, scopes, and provisioning domain; the plugin no longer depends on the Organization or SSO plugins. Modes: static code-defined (`scim({ connections })`), application-owned runtime (`authentication.verifyBearerToken`), plugin-managed runtime (`managedConnections` plus trusted server APIs).
 - Removed in 1.7: the legacy runtime connection-management endpoints, the SCIM client plugin, CLI scaffolding, `defaultSCIM`, `staticProviders`, `trustedDomains`, `providerOwnership`, and organization-scoped provider configuration. The 1.6 token-generation flow (`generateToken`, provider-connection endpoints, `storeSCIMToken`, token hooks) is not documented in the 1.7 page. Provisioned identities no longer create authentication accounts; use `identity` callbacks to link Users and apply lifecycle state, and `projection` callbacks to map Groups to roles.
 - Changed in 1.7 (full reprovisioning required): the new SCIM models do not read or convert the 1.6 SCIM tables. Seven provisioning models (`scimConnectionBinding`, `scimIdentityTombstone`, `scimSubject`, `scimUser`, `scimGroup`, `scimGroupMember`, `scimProjectionGrant`) plus three optional managed-catalog models (`scimManagedConnection`, `scimManagedCredential`, `scimManagedConnectionEvent`) replace the legacy `scimProvider` model. Use a maintenance window: pause provisioning, stop every instance running the old plugin, back up legacy SCIM tables, inventory SCIM-created `account` / `user` rows, clear and then drop or rename incompatible legacy tables, enable native interactive transactions, apply the 1.7 schema, deploy the selected mode, and trigger a complete User and Group provisioning cycle before resuming. Never import a legacy token hash or accept the legacy bearer syntax. Retained legacy Users cause `409 Conflict` during reprovisioning unless `identity.resolveUser` returns an explicit link decision.
+- Source: https://www.better-auth.com/docs/plugins/scim (better-auth v1.7.23 docs)
 - Groups, custom roles, and role projection are in scim-groups-and-roles.md; options, endpoints, attributes, filters, PATCH paths, limits, and schema are in scim-reference.md.
 
 ## Related

@@ -31,3 +31,4 @@ app.delete('/posts', (c) => c.text('Deleted'))
 ## Notes
 
 - Only one source (`form`, `header`, or `query`) should be configured at a time.
+- Source: https://hono.dev/docs/middleware/builtin/method-override (honojs/website@20aab4e0, retrieved 2026-11-14)

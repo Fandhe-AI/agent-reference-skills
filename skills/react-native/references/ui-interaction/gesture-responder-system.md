@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/gesture-responder-system
+source: https://reactnative.dev/docs/0.88/gesture-responder-system
 ---
 
 # Gesture Responder System

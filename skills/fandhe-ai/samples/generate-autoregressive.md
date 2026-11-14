@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-ai/0.11.0/source/src/inference/mod.rs
+source: https://docs.rs/crate/fandhe-ai/0.14.0/source/src/inference/mod.rs
 ---
 
 # Autoregressive Generate
@@ -46,7 +46,8 @@ fn main() {
 
 ## Notes
 
-- コードは `src/inference/mod.rs`（0.11.0）のモジュール doc 例（上流では doctest）。上流の doc 例は `main` を持たない文の列で、本ページでは `fn main` で包んだ
+- コードは `src/inference/mod.rs`（0.14.0）のモジュール doc 例（上流では doctest）。上流の doc 例は `main` を持たない文の列で、本ページでは `fn main` で包んだ
 - 入出力は token id 列（`Tensor<i32>`）のみでトークナイザは対象外。EOS による早期停止はなく、常に `max_length` まで生成する。`top_k > vocab` は拒否される
 - 乱数は独立した `Generator`（xorshift64*）のみで非暗号。生成 token をセキュリティ用途に使わない
-- facade のみでは `KvCache` へ書き込む手段がなく、KV キャッシュを使うモデルを組む経路は公開面にない（原文の「既知の制限」）。`BatchScheduler` / `generate_speculative` の例は `generate-scheduler.md` を参照
+- KV キャッシュを使うモデルは `Tape::stateful_attention_forward_with_cache` で `caches[i]` を進める形に組める（0.14.0。`generate-scheduler.md` の KV 付き speculative の例を参照）。`BatchScheduler` / `generate_speculative` の例は `generate-scheduler.md`、隠れ状態を持つモデルは `generate-stateful.md` を参照
+- `fandhe-ai =0.14.0` に対し、本ページのコードを `cargo check` で確認し、実行して `assert` が通ることも確認済み（2026-11-14）

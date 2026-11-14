@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.11.0/crates/facade/examples/getting_started.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/facade/examples/getting_started.rs
 ---
 
 # クイックスタート
@@ -32,7 +32,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ## Notes
 
 - `add_linear(in_features, out_features, seed)` の `seed` は決定的な重み初期化のために指定する
-- CPU/CUDA/Metal のデバイス選択や `tape_for(Device)` によるバックエンド切替は guides カテゴリを参照
+- Source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/facade/examples/getting_started.rs（v0.14.0, 取得日 2026-11-14。0.11.0 から example の差分なし）
+- CPU/CUDA/Metal/ROCm のデバイス選択や `tape_for(Device)` によるバックエンド切替は guides カテゴリを参照
 
 ## Related
 

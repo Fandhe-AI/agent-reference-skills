@@ -32,9 +32,9 @@ Kinds: **Core** (one group of related tools, e.g. `file`), **Composite** (combin
 
 | Toolset | Kind | Contents |
 |---------|------|----------|
-| `browser` | core | Browser automation tools incl. `browser_cdp` / `browser_dialog` (runtime-gated on a CDP endpoint), `browser_exec`, `browser_vault`. `web_search` is deliberately not a member |
+| `browser` | core | Core browser automation: `browser_cdp`, `browser_dialog`, `browser_exec`, `browser_vault`. `browser_exec` drives the browser by running Python with pre-imported helpers (offered only to sessions that also have `terminal`); `browser_vault` is deferred behind tool search by default. Disabling this toolset turns browsing off. `web_search` is deliberately not a member |
 | `clarify`, `code_execution`, `cronjob`, `delegation`, `memory`, `session_search`, `skills`, `terminal`, `todo`, `tts`, `vision`, `web`, `image_gen`, `video_gen`, `x_search`, `file` | core | One-to-one with the tools of the same area (see Tools Reference) |
-| `connections`, `computer_use`, `discord`, `discord_admin`, `feishu_doc`, `feishu_drive`, `kanban`, `desktop_ui`, `project`, `catalog`, `yuanbao`, `video`, `search`, `context_engine` | core | Specialized sets; `search` is `web_search` only; `context_engine` is populated by the active context-engine plugin |
+| `connections`, `computer_use`, `discord`, `discord_admin`, `feishu_doc`, `feishu_drive`, `kanban`, `desktop_ui`, `project`, `catalog`, `video`, `search`, `context_engine` | core | Specialized sets; `search` is `web_search` only; `context_engine` is populated by the active context-engine plugin |
 | `coding` | composite | `file` + `terminal` + `search` + `web` + `skills` + `browser` + `todo` + `memory` + `session_search` + `clarify` + `code_execution` + `delegation` + `vision` |
 | `debugging` | composite | `file` + `terminal` + `web` |
 | `safe` | composite | `image_generate`, `vision_analyze`, `web_extract`, `web_search`; no file writes, terminal, or code execution |
@@ -48,7 +48,6 @@ Platform toolsets:
 | `hermes-api-server` | Drops `clarify`, `text_to_speech`, `computer_use`, kanban tools |
 | `hermes-discord` | Adds `discord` and `discord_admin` |
 | `hermes-feishu` | Adds the five `feishu_doc_*` / `feishu_drive_*` tools |
-| `hermes-yuanbao` | Adds the five `yb_*` tools |
 | `hermes-webhook` | Restricted: only `web_search`, `web_extract`, `vision_analyze`, `clarify` |
 | `hermes-gateway` | Internal union of every `hermes-<platform>` toolset |
 | `hermes-cron`, `-telegram`, `-slack`, `-whatsapp`, `-signal`, `-matrix`, `-mattermost`, `-email`, `-sms`, `-bluebubbles`, `-dingtalk`, `-qqbot`, `-wecom`, `-wecom-callback`, `-weixin` | Same as `hermes-cli` |
@@ -66,8 +65,12 @@ Dynamic toolsets:
 
 - `all` / `*` does not enable capability-gated tools unless their backend or credential is configured, and does not enable `kanban` (list it explicitly or be a dispatcher-spawned worker) or `catalog`.
 - `hermes tools` works at tool level (finer than toolsets), persists to `config.yaml`, and disabled tools are filtered out even when their toolset is enabled.
-- Plugin-provided platforms get an implicit `hermes-<platform>` bundle that is not part of `hermes-gateway` (e.g. `hermes-homeassistant` after installing the `homeassistant` plugin).
-- Source: https://hermes-agent.nousresearch.com/docs/reference/toolsets-reference (pinned to v0.22.2)
+- Plugin-provided platforms get an implicit `hermes-<platform>` bundle that is not part of `hermes-gateway` (e.g. `hermes-homeassistant` and `hermes-yuanbao` after installing the `homeassistant` / `yuanbao` catalog plugin; neither is a built-in toolset any more).
+- Source: https://hermes-agent.nousresearch.com/docs/reference/toolsets-reference (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+Migration (v0.22 -> v0.23): the built-in `yuanbao` toolset and the `hermes-yuanbao` platform toolset (which added the five `yb_*` tools) are removed from core; they resolve only once the `yuanbao` catalog plugin is installed. The `browser` toolset no longer lists the per-action `browser_*` tools of v0.22.
 
 ## Related
 

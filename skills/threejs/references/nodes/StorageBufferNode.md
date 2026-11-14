@@ -51,6 +51,9 @@ class StorageBufferNode extends BufferNode {
 
 - Typically created via the convenience functions `attributeArray()` or `instancedArray()` rather than the constructor directly.
 - Convert to an attribute node with `.toAttribute()` before assigning to a material's `positionNode`/etc. for rendering.
+- Source: https://threejs.org/docs/pages/StorageBufferNode.html (three.js r187, `src/nodes/accessors/StorageBufferNode.js`; JSDoc from tag r187 / commit 7e89746)
+- Migration (r186 → r187): TSL always treats struct storage buffers as arrays, even when they hold a single element. Replace direct member access such as `storage.get( 'member' )` with `storage.element( 0 ).get( 'member' )` when using `storage( buffer, StructType )` (https://github.com/mrdoob/three.js/pull/34807).
+- The node type is inferred from the struct type if one is present; otherwise it follows the buffer attribute.
 
 ## Related
 

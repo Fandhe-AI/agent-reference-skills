@@ -67,6 +67,8 @@ import { Flex, HStack, VStack, Spacer } from "@chakra-ui/react"
 
 - All standard flexbox values are supported for `align`, `justify`, `direction`, `wrap`
 - Supports responsive values for all props
+- 3.38.0: `Flex`, `Square` and `Circle` no longer ignore the array form of the `css` prop.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

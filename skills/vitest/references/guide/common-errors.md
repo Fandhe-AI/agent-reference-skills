@@ -42,7 +42,7 @@ export default defineConfig({
 })
 ```
 - The upstream page writes this option as `ssr.resolve.noExternal`; Vite's documented option is `ssr.noExternal` (https://vite.dev/config/ssr-options#ssr-noexternal).
-- Source: https://vitest.dev/guide/common-errors (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/common-errors (Vitest v5.1.0)
 
 ## Related
 

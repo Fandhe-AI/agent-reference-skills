@@ -377,3 +377,9 @@ await page.route("**/api/**", async (route) => {
   }
 });
 ```
+
+## Notes
+
+- Since v1.65, string and `URLSearchParams` values of the `params` option are appended to the query that the URL already has, instead of replacing it.
+- Since v1.65, cookie matching follows RFC 6265 (see `browser-context.md` Notes): `cookies(urls)` no longer returns host-only cookies for subdomains or `Path=/api` cookies for `/apiv2`.
+- Source: https://playwright.dev/docs/release-notes (microsoft/playwright v1.65.1 `docs/src/release-notes-js.md`)

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/the-new-architecture/create-module-library
+source: https://reactnative.dev/docs/0.88/the-new-architecture/create-module-library
 ---
 
 # Create a Library for Your Module

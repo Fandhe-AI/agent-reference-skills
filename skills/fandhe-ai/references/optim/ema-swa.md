@@ -1,10 +1,10 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/optim/struct.ExponentialMovingAverage.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/optim/struct.ExponentialMovingAverage.html
 ---
 
 # EMA / SWA（ExponentialMovingAverage / AveragedModel / SwaLr）
 
-重みの指数移動平均 `ExponentialMovingAverage`（EMA）と、等重み平均 `AveragedModel`（SWA）、SWA 用の学習率 `SwaLr` / `SwaAnneal`。EMA と `AveragedModel` は facade 独自の薄いラッパー（内部の `nn::Module` を公開シグネチャへ出さないため）、`SwaLr` / `SwaAnneal` は内部クレートからの素の再エクスポート。`compat::Sequential::fit` へは SWA を結線せず、手動ループで `update_named` を呼ぶ。
+重みの指数移動平均 `ExponentialMovingAverage`（EMA）と、等重み平均 `AveragedModel`（SWA）、SWA 用の学習率 `SwaLr` / `SwaAnneal`。EMA と `AveragedModel` は facade 独自の薄いラッパー（内部の `nn::Module` を公開シグネチャへ出さないため）、`SwaLr` / `SwaAnneal` は内部クレートからの素の再エクスポート。`compat::Sequential::fit_with_callbacks` へは `Callback::Ema` / `Callback::Swa` で結線でき（`compat-callbacks.md`）、手動ループでは `update_named` を呼ぶ。
 
 ## Signature / Usage
 
@@ -23,6 +23,23 @@ assert_eq!(ema.num_updates(), 1);
 
 // decay は有限かつ [0, 1]。範囲外は型付きエラー。
 assert!(ExponentialMovingAverage::new(1.5, &[&w0]).is_err());
+```
+
+減衰率ウォームアップ（`ExponentialMovingAverage::with_warmup` の rustdoc。fandhe-ai 0.14.0 以降）:
+
+```rust
+use fandhe_ai::Tensor;
+use fandhe_ai::optim::ExponentialMovingAverage;
+
+let w0 = Tensor::new(vec![1.0f32], &[1])?;
+let mut ema = ExponentialMovingAverage::new(0.999, &[&w0])?.with_warmup(true);
+let w1 = Tensor::new(vec![3.0f32], &[1])?;
+ema.update(&[&w1])?;
+// 初回は n = 0 なので実効 decay は 0.1。
+let expected = f32::mul_add(0.1, 1.0, 0.9 * 3.0);
+let shadow = ema.shadow_parameters()[0].contiguous();
+assert_eq!(shadow.as_slice().unwrap()[0].to_bits(), expected.to_bits());
+assert!(ema.warmup());
 ```
 
 モデルへの結線（手動ループ）:
@@ -69,6 +86,8 @@ model.load_state_dict(backup)?;
 | `from_named(decay, named: Vec<(String, &Tensor<f32>)>)` | `Result<Self, AutodiffError>` | 名前付きパラメータ列から構築（`Sequential::named_parameters()` の戻り値をそのまま渡せる）。名前重複は `InvalidArgument` |
 | `from_module(decay, module: &dyn Module)` | `Result<Self, AutodiffError>` | facade の `Module` の `named_parameters()` から構築 |
 | `decay(&self)` | `f32` | 構築時に検証済みの `decay` |
+| `with_warmup(self, enabled: bool)` | `Self` | 減衰率ウォームアップ（TensorFlow 方式 `min(decay, (1 + n) / (10 + n))`。`n` は更新前の `num_updates`）を有効・無効にする。既定 OFF。途中で切り替えた場合は次の更新から効き、`n` は続く |
+| `warmup(&self)` | `bool` | 減衰率ウォームアップが有効か |
 | `num_updates(&self)` | `u64` | これまでの `update` 系の成功回数 |
 | `update(&mut self, params: &[&Tensor<f32>])` | `Result<(), AutodiffError>` | 位置対応で shadow を更新。個数不一致は `InvalidArgument`、shape 不一致は `Shape`。いずれも shadow を変更しない |
 | `update_named(&mut self, named)` | `Result<(), AutodiffError>` | 名前付きで更新。名前集合の不一致は `InvalidArgument` |
@@ -110,12 +129,15 @@ pub fn SwaLr::new(base_lr: f32, swa_lr: f32, anneal_epochs: usize, anneal: SwaAn
 
 ## Notes
 
-- EMA の更新式は `shadow = f32::mul_add(decay, shadow, (1 - decay) * param)`。PyTorch `AveragedModel` の `lerp` 形とは丸めが異なり bit 一致は主張しない。非有限値は伝播する
+- EMA の更新式は `shadow = f32::mul_add(decay, shadow, (1 - decay) * param)`。PyTorch `AveragedModel` の `lerp` 形とは丸めが異なり bit 一致は主張しない。非有限値は伝播する。ウォームアップ ON のとき実効 decay は `min(decay, ((1 + n) as f64 / (10 + n) as f64) as f32)` で、OFF の経路は従来と bit 同一
 - `AveragedModel` は `n_averaged == 0` の最初の `update` で構築時の重みとは平均せず更新値を複製し、以降は `f32::mul_add` の lerp 形。PyTorch との bit 一致は主張しない
 - 対象は学習可能パラメータのみ（`BatchNorm` の running buffer は対象外）。ホスト `Tensor<f32>` のみを扱い、GPU 固有の数値経路は持たない
 - EMA はデバイス常駐経路（`DeviceParamStore`）の重みに追従しない（併用すると shadow が stale 化する）
 - `compat::Sequential::fit_with_callbacks` への結線は `compat::Callback::Ema`（`compat::EmaCallback`）が担う。手動ループでは `named_parameters()` から構築し step ごとに `update_named` を呼ぶ
-- `FitConfig` に SWA 項目は無く、SWA の `fit` への結線は存在しない
+- `FitConfig` に SWA 項目は無い。`fit` への結線は `compat::Callback::Swa`（`compat::SwaCallback`。`compat-callbacks.md`）が担い、epoch 末の等重み平均・`SwaLr` による学習率アニール・fit 終了時の平均化重みでの上書きを行う
+- `AveragedModel` は `Clone` を実装する（0.14.0 で追加）
+- `compat::EmaCallback::with_warmup` は本ページの `with_warmup` を `Callback::Ema` へ結線する（`compat-callbacks.md`）
+- Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/optim/struct.AveragedModel.html（0.14.0, 取得日 2026-11-14）
 - `SwaLr` は PyTorch `SWALR` の再帰形ではなく固定 `base_lr` に対する閉形式。`swa_lr <= 0` を拒否する（PyTorch は検査しない）。param group ごとの `swa_lr` リストは対象外
 - 主スケジューラとの連結は `SequentialLr::new` で行い、SWA 段の `base_lr` には主スケジューラの切替時点の値（`main.lr_at(切替 step)`）を渡す
 - `SwaAnneal` は `OneCycleAnneal` とは別型（OneCycle は上昇・下降各フェーズの補間、SWA は固定 `swa_lr` への単一アニーリング）

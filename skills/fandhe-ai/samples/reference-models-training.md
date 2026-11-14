@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-ai/0.11.0/source/examples/main.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/facade/examples/main.rs
 ---
 
 # Reference Models Training
@@ -18,10 +18,12 @@ mod transformer;
 
 use fandhe_ai::Tensor;
 use fandhe_ai::optim::{Adam, AdamConfig};
-use reference_module::{ReferenceModule, accuracy, fit_epochs, predict_in_eval, sub_tensor_f32};
+use reference_module::{
+    ReferenceModule, accuracy, fit_epochs, heldout_loss, predict_in_eval, sub_tensor_f32,
+};
 use resnet::ResNet;
 use synthetic_cifar::{IMG_C, IMG_H, IMG_W, NUM_CLASSES, synthetic_cifar10, to_row_tokens};
-use transformer::{Transformer, TransformerConfig};
+use transformer::{TransformerClassifier, TransformerClassifierConfig};
 
 const EPOCHS: usize = 10;
 const BATCH_SIZE: usize = 16;
@@ -29,7 +31,10 @@ const N_TRAIN: usize = 64;
 const N_TEST: usize = 32;
 const LR: f32 = 5e-3;
 
-/// 依存追加なしの局所 PRNG（SplitMix64）。
+/// 依存追加なしの局所 PRNG（SplitMix64。テスト側の
+/// `bench_harness::rng::Xorshift64Star` の代わりに使う。`main.rs` は
+/// examples 同梱であり `bench_harness`〈非公開クレート〉を import
+/// できないため）。
 struct SplitMix64(u64);
 
 impl SplitMix64 {
@@ -47,7 +52,10 @@ impl SplitMix64 {
 
 ## Notes
 
-- 上のコードは原本 `examples/main.rs`（338 行）の L15-L51 のみの抜粋で、単体ではコンパイルできない（`models/*.rs` の参照実装 MLP / LeNet / ResNet / Transformer が必要）。学習本体は原本の `run_resnet` / `run_transformer`（`Adam::new(AdamConfig { lr: LR, ..AdamConfig::default() })` → `fit_epochs` → `accuracy`）を参照
+- 上のコードは原本 `examples/main.rs`（344 行）の L15-L53 のみの抜粋で、単体ではコンパイルできない（`examples/models/*.rs` の `resnet.rs` / `transformer.rs` / `reference_module.rs` / `synthetic_cifar.rs` が必要）。学習本体は原本の `run_resnet` / `run_transformer`（`Adam::new(AdamConfig { lr: LR, ..AdamConfig::default() })` → `fit_epochs` → `accuracy` → `heldout_loss`）を参照
+- 0.14.0 では `fandhe_ai::models::{ResNet, TransformerClassifier, TransformerClassifierConfig}` が公開型になったが、この example は `examples/models/resnet.rs` / `transformer.rs`（`#[path]` 取り込み）のローカル定義を使い続ける。公開型を直接使う最小例は `models/` カテゴリの `resnet.md` / `transformer-classifier.md`
 - 引数は `resnet` / `transformer` / `all`（完全一致 allowlist、引数なしは `all`）。それ以外・余分な引数は usage を出して終了コード 1
 - 合格判定は全 epoch の loss が有限・最終 epoch の loss が初回より小さい・held-out 精度 0.50 以上。debug ビルドでは学習に数分かかる（原本ドキュメント）
+- 0.11.0 からの変更: Transformer の型名が `Transformer` / `TransformerConfig` から `TransformerClassifier` / `TransformerClassifierConfig` に変わり、`heldout_loss` による held-out loss の出力が追加された
 - `models/` 配下の参照実装（`reference_models.rs` 経由の集約）は本ページでは未収録
+- Source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/facade/examples/main.rs（0.14.0, 取得日 2026-11-14）

@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/docs/guardrail-self-repair-cli.md, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/guardrail/src/cli.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/docs/guardrail-self-repair-cli.md, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/guardrail/src/cli.rs
 ---
 
 # guardrail / self-repair 設定ファイル
@@ -19,7 +19,17 @@ guardrail check --config guardrail.toml --preset strict
 | `guardrail.toml` | 判定しきい値 | 変更行数 ≤200 行、bench 中央値劣化 ≤5%、全ゲート pass、public API 破壊なし、gaming 疑いなし |
 | `policy-exclusion.toml` | REQ-5 除外ルール | `arch-hyperparameter-change`, `test-tolerance-loosening`, dependency-change カテゴリ |
 
-`--preset` は実装上は未検証の `String`（既定値 `"default"`）で固定選択肢の検証は行われない。設計ドキュメントは `strict` / `default` / `loose` の 3 段階を想定しているが、これはプリセット設定側の命名規約であり CLI パーサ自体が強制するものではない。
+`--preset` は `strict` / `default` / `loose` の 3 段階（既定値 `"default"`）。`PresetName::parse` がこれ以外の値を usage エラー（exit code `2`）で拒否する。`guardrail.toml` はテーブル `[preset.<name>]` に `lines_max` / `bench_median_max_pct` / `bench_runs_min` の 3 キーだけを書け（未知キーは拒否）、該当プリセットのテーブルが無ければ組み込み既定値を使う。設定ファイルの解決順は `--config` → `--repo` 直下の `guardrail.toml` → 組み込み既定値。
+
+### 組み込みプリセット
+
+| Preset | `lines_max` | `bench_median_max_pct` | `bench_runs_min` |
+| --- | --- | --- | --- |
+| `strict` | `100` | `2.5` | `5` |
+| `default` | `200` | `5.0` | `5` |
+| `loose` | `400` | `10.0` | `5` |
+
+`bench_runs_min` が 5 未満、`lines_max` が 0、`bench_median_max_pct` が負または非有限の設定は値域検証で拒否される。
 
 ### Judgment Report JSON（`guardrail check --output`）
 
@@ -61,6 +71,9 @@ guardrail check --config guardrail.toml --preset strict
 - `guardrail.toml` / `policy-exclusion.toml` は `deny_unknown_fields` を適用（ユーザー承認済み設定のため、除外ルール ID の typo を早期に型エラー化）。`--signals` / `--dataset`（一時的な入力データ）は必須フィールドのみ検証し前方互換を許容する
 - しきい値・除外ルールの変更は committed config の編集のみで行い、CLI 引数単体では変更できない
 - 出力 JSON はシェル展開や文字列連結を避け `serde_json` でエスケープする（インジェクション対策）
+
+- Corrected from the previous version of this page: `--preset` is validated (strict / default / loose only) by `PresetName::parse` in `crates/guardrail/src/config.rs`; the built-in preset values above are from `Thresholds::builtin` (v0.14.0; the crate is unchanged from v0.11.0)
+- Source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/guardrail/src/config.rs（v0.14.0, 取得日 2026-11-14）
 
 ## Related
 

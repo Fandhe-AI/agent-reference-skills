@@ -1,9 +1,9 @@
 ---
 name: chakra-ui
 description: >
-  Chakra UI v3 (React コンポーネントライブラリ) リファレンス。
+  Chakra UI v3 (3.38, React コンポーネントライブラリ) リファレンス。
   別名: Chakra, chakra, chakra-ui。
-  コンポーネント (Button, Input, Modal, Drawer, Toast, Menu, Tabs, Tooltip 等)、
+  コンポーネント (Button, Input, Modal, Drawer, Toast, Menu, Tabs, Tooltip, Command, Kbd 等)、
   レイアウト、フォーム、オーバーレイ、チャート、テーマ、レシピ、
   スタイルプロップ、レスポンシブ、ダークモード、Chakra UI Pro ブロック。
 user-invocable: false
@@ -11,7 +11,7 @@ user-invocable: false
 
 # Chakra UI v3 リファレンス
 
-Chakra UI v3 公式ドキュメントを網羅したスキル。
+Chakra UI v3 公式ドキュメントを網羅したスキル。対象版は `@chakra-ui/react` 3.38.0（タグ `@chakra-ui/react@3.38.0`）。Command（コマンドメニュー）は `references/components/overlays/command.md`。
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定すること。
 
 ## ディレクトリ構成

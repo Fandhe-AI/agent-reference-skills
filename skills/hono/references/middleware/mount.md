@@ -57,6 +57,8 @@ app.all(
 - By default the mounted application receives a new `Request` with the matched path prefix removed from its URL (`/itty-router/hello` reaches itty-router as `/hello`).
 - The mounted application is called as `handler(request, c.env, c.executionCtx)`, the same arguments as a Cloudflare Workers `fetch` handler.
 - Source: https://hono.dev/docs/middleware/builtin/mount (honojs/website@7838d779); implementation: https://github.com/honojs/hono/blob/v4.13.13/src/middleware/mount/index.ts
+- Security (v4.13.16): a dynamic prefix such as `/api/:tenant/*` was removed by the length of the route pattern and the forwarded path was re-normalized, which could skip middleware scoped inside the mount prefix (GHSA-4m76-xfj5-7975). Security (v4.13.18): with a custom `getPath` that adds a prefix, one segment too many was removed (GHSA-h25j-2p75-qj33); paths that would change meaning when forwarded now get 400. Upgrade to v4.13.18 or later. Source: https://github.com/honojs/hono/releases/tag/v4.13.16, https://github.com/honojs/hono/releases/tag/v4.13.18
+- v5 (release candidate): `app.mount()` is removed; use `app.all('/itty-router/*', mount(ittyRouter.handle))`. See guides/migrating-to-v5.md.
 
 ## Related
 

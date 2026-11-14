@@ -203,6 +203,23 @@ fn private_fn() {}  // default: private
 - Items declared inside a function block have restricted scopes — they cannot capture the enclosing function's generic parameters or local variables.
 - Associated items (in `impl` and `trait`) are not directly scoped; they must be accessed via paths.
 
+### Enum discriminant types
+
+Enums without a primitive representation have discriminants of type `isize` (the compiler may still use a smaller type in the actual memory layout). Enums with a primitive representation have discriminants of the type named by the representation.
+
+```rust
+#[repr(u8)]
+enum E {
+    V = 0u8, // OK: `u8` is the discriminant type.
+}
+```
+
+### Extern "custom" functions
+
+`unsafe extern "custom"` functions (stable in 1.100) are described in abi.md.
+
+- Source: https://doc.rust-lang.org/reference/items/enumerations.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/e24eecf97b0c9a6dbac67191098204dc8a190aaa/src/items/enumerations.md, reference@e24eecf, retrieved 2026-11-14)
+
 ## Related
 
 - [attributes.md](./attributes.md)

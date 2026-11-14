@@ -63,6 +63,7 @@ Type-specific hashes (e.g., `card`, `us_bank_account`, `sepa_debit`) contain fie
 - Breaking (`2025-09-30.clover`): the set of decline codes changed for Alma, Amazon Pay, Billie, Satispay and South Korean payment methods, with more granular reasons in `last_payment_error.decline_code`. (Source: https://docs.stripe.com/changelog/clover/2025-09-30/lpm-descriptive-decline-codes)
 - BLIK recurring off-session payments in Poland (`2026-09-30.endive`): create Mandates with customers; PaymentIntents, SetupIntents and Checkout Sessions gain `payment_method_options.blik.mandate_options`, and Accounts gain the `blik_recurring_payments` capability. (Source: https://docs.stripe.com/changelog/endive/2026-09-30/blik-recurring-off-session-payments)
 - PayPay (`2026-09-30.endive`): one-time online payments for eligible Japan-based accounts, via Payment Intents, Checkout, Payment Element, Payment Links and the iOS / Android Payment Sheets. Redirect authorization; full and partial refunds. Recurring, subscriptions and Terminal are not supported in this release. (Source: https://docs.stripe.com/changelog/endive/2026-09-30/paypay-payments-japan)
+- Customer cash balance (`2026-10-28.endive`, non-breaking): `funded.bank_transfer.us_bank_transfer.network` on Cash Balance Transactions can now be `rtp` or `fednow` in addition to `ach`, `domestic_wire_us` and `swift`. It is an open enum, so handle unknown values. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/rtp-fednow-support-us-bank-transfer-network-types, retrieved 2026-11-14)
 
 ## Related
 

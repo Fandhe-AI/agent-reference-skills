@@ -72,18 +72,19 @@ export default defineConfig({
 | `playwright` browsers | `firefox`, `webkit`, `chromium` |
 | Minimum browsers | Chrome >=87, Firefox >=79, Safari >=15.4, Edge >=88 |
 | CLI | `npx vitest --browser=chromium`, `npx vitest --browser.headless` |
-| Default port | `63315` (change with the `api` option) |
+| Default port | `23315` since v5.1.0 (`63315` in v5.0.x docs; change with the `api` option) |
 | Renderers | `vitest-browser-vue`, `vitest-browser-svelte`, `vitest-browser-react`, `vitest-browser-angular`; community: `vitest-browser-lit`, `vitest-browser-preact`, `vitest-browser-qwik` |
 
 ## Notes
 
 - The `preview` provider is for previewing only; to run tests in CI install `playwright` or `webdriverio`. Playwright is recommended because it supports parallel execution. `preview` simulates events instead of using Chrome DevTools Protocol.
 - Since Vitest 3.2, passing `--browser` without a `browser` option in the config fails.
-- Headless mode requires the `playwright` or `webdriverio` provider. With headless, the UI is not opened automatically; install `@vitest/ui` and pass `--ui` to keep it.
+- Headless mode requires the `playwright` or `webdriverio` provider. With headless, the browser UI is not opened automatically; install `@vitest/ui` and pass `--ui` to keep using a UI.
+- Headless mode and UI (v5.1.0): `browser.headless` controls whether the test browser has a visible window (default `true` in CI); `browser.ui` controls whether the browser UI is rendered inside that browser (default `true` when headed and not in CI); the top-level `--ui` flag serves Vitest UI in your default browser, separately. Common setups: `vitest` (defaults) shows the browser UI in the window; `--browser.ui=false` shows only the test iframe; `--ui --browser.headless` shows results in Vitest UI with a headless browser; `--ui --browser.ui=false` shows results in Vitest UI with a separate plain browser window. `--ui` alone keeps the browser UI in the headed window.
 - Do not use `@testing-library/user-event` directly (it simulates events); use `userEvent` from `vitest/browser`. For Solid / Marko use `@solidjs/testing-library` / `@marko/testing-library`.
 - Thread-blocking dialogs (`alert`, `confirm`, `print`) cannot be used natively; Vitest provides default mocks so execution does not hang.
 - `vi.spyOn` on an imported module namespace throws (sealed ESM namespace). Use `vi.mock('./module.js', { spy: true })` then `vi.mocked(module.method)`. Exported variables can only be changed via an exported function.
-- Source: https://vitest.dev/guide/browser/ (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/browser/ (Vitest v5.1.0)
 
 ## Related
 

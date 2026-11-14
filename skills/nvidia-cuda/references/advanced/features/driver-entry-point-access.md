@@ -30,6 +30,7 @@ cuGetProcAddress("cuStreamBeginCapture", &pfn_cuStreamBeginCapture_v2,
 - Requesting a specific API version via `cuGetProcAddress` lets an application built against an older CUDA Toolkit still opt into a newer driver entry point's behavior at runtime, without recompiling against the newer header.
 - `_ptsz` (per-thread default stream) suffixed variants (e.g. `cuLaunchKernel_ptsz`) are retrievable through this mechanism and are relevant when an application is compiled with `--default-stream per-thread`.
 - Check `CUdriverProcAddressQueryResult` to distinguish an exact-version match from a fallback to an older/newer compatible version, or an outright failure (e.g. driver too old for the requested version).
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/driver-entry-point-access.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

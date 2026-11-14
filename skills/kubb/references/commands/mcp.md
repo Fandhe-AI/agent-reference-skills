@@ -33,7 +33,7 @@ stdio transport を使うため、クライアントがローカルプロセス�
 
 - 開発中の機能。破壊的変更が起こりうる（公式 WARNING）。
 - 同名の MCP でも、このコマンドは Kubb の生成を AI クライアントに公開するサーバー。`mcp` プラグイン（plugin-mcp）が OpenAPI から生成する MCP サーバーコードとは別物。
-- 出典: https://kubb.dev/docs/5.x/reference/commands/mcp （kubb@5.11.0 の docs/5.x/reference/commands/mcp.md）
+- Source: https://kubb.dev/docs/5.x/reference/commands/mcp （kubb@5.20.0 の docs/5.x/reference/commands/mcp.md、取得日 2026-11-14）
 
 ## Related
 

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/running-on-device
+source: https://reactnative.dev/docs/0.88/running-on-device
 ---
 
 # Running On Device

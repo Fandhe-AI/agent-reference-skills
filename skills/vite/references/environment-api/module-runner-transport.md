@@ -180,7 +180,7 @@ server.onRequest(async (request: Request) => {
 - For HMR support, `send` and `connect` are required. `send` is usually called when a custom event is triggered (like `import.meta.hot.send("my-event")`).
 - `skipFsCheck: true` on the `HotChannel` bypasses `server.fs` restrictions for transports not exposed over the network.
 - The `server.onRequest` and `serialize` style helpers in the examples are illustrative, not Vite APIs.
-- Upstream v8.3.4 snippets differ from the code above: the `server.js` example imports only `BroadcastChannel` (`Worker` must be imported from `node:worker_threads`) and uses a TypeScript annotation `send(payload: HotPayload)` in a `js` block; the HTTP handler example uses a non-async `server.onRequest` callback that awaits `request.json()` and does not await `handleInvoke`.
+- Upstream v8.3.8 snippets differ from the code above: the `server.js` example imports only `BroadcastChannel` (`Worker` must be imported from `node:worker_threads`) and uses a TypeScript annotation `send(payload: HotPayload)` in a `js` block; the HTTP handler example uses a non-async `server.onRequest` callback that awaits `request.json()` and does not await `handleInvoke`.
 - Release Candidate: the Environment API is generally in the release candidate phase.
 
 ## Related

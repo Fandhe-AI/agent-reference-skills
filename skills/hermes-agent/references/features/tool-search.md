@@ -59,8 +59,12 @@ The budget is `min(threshold_pct% of context, listing_max_tokens)`, re-evaluated
 - Connectors (remote tools served by the managed tool gateway) are named `connectors__<connector>__<tool>`, discovered by `tool_search` (30-second gateway bound), and need a Nous identity; a missing link returns `CONNECTION_REQUIRED`. The `manage_connections` tool lists connectors and starts authorization; the model cannot disconnect an account.
 - Trade-offs: one extra round trip for cold tools, no system-prompt cache benefit for deferred schemas, local argument validation instead of provider-native validation, dependence on model query quality, and toolset edits invalidate the prompt cache.
 - The catalog is scoped to the session's granted toolsets, so subagents and restricted sessions cannot discover or call outside them.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-search (pinned to v0.22.2)
+- Nous identity for connectors: with no Nous account, the first `manage_connections` action (or connecting an app from the desktop Connectors page) creates a free Nous identity on every surface. Merely opening the Connectors page creates none; until an identity exists it lists the hosted apps from the Nous Portal's public catalog, which needs no sign-in. It does not change your model provider. Until it exists, `tool_search` sends nothing to the gateway and its result says hosted connectors are not set up yet. Opt out with `nous.guest: false`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-search (pinned to v0.23.1)
 
+### Migration (v0.22 -> v0.23)
+
+- Opening the desktop Connectors page no longer creates the free Nous identity (v0.22.2 said it did); connecting an app does.
 ## Related
 
 - [MCP](./mcp.md)

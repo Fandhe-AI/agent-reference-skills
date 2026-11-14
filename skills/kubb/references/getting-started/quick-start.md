@@ -1,10 +1,10 @@
 # Quick Start
 
-Generate TypeScript types and an Axios client from an OpenAPI specification (Kubb 5.11.0 / docs 5.x tutorials/quickstart).
+Generate TypeScript types and an Axios client from an OpenAPI specification (Kubb 5.20.0 / docs 5.x tutorials/quickstart).
 
 ## Prerequisites
 
-- Node.js 22.12 or higher
+- Node.js 22.22 or higher
 - npm (or another package manager)
 - A valid OpenAPI 2.0, 3.0, or 3.1 file (YAML or JSON)
 
@@ -98,6 +98,8 @@ const { files, diagnostics } = await kubb.safeBuild()
 
 ## Notes
 
+- Source: https://kubb.dev/docs/5.x/tutorials/quickstart （kubb@5.20.0 の docs/5.x/tutorials/quickstart.md、取得日 2026-11-14）
+- Migration (5.11 → 5.20): the Node.js requirement is 22.22+ (was 22.12+; 5.13.0 changelog, #4426). The tutorial title is now "Your first TypeScript client from an API spec".
 - `input` takes the path, URL, spec string, or parsed object directly. The v4 wrapper `input: { path }` fails with `KUBB_LEGACY_INPUT`
 - `defineConfig` is imported from `kubb/config` (not `@kubb/core`)
 - `pluginOas()` is no longer needed. `defineConfig` supplies `adapterOas()`, the parsers, and a barrel plugin

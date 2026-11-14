@@ -40,7 +40,7 @@ Client without a secret (browser, mobile, desktop, CLI):
 ```ts
 cloudflare: {
     clientId: process.env.CLOUDFLARE_CLIENT_ID as string,
-    tokenEndpointAuthMethod: "none",
+    tokenEndpointAuth: { method: "none" },
 },
 ```
 
@@ -75,7 +75,7 @@ cloudflare: {
 | `clientId` | string | — | `CLOUDFLARE_CLIENT_ID`, from an OAuth client created in the Cloudflare dashboard (Manage Account > OAuth clients) |
 | `clientSecret` | string | — | `CLOUDFLARE_CLIENT_SECRET`. Omit for clients that cannot store a secret |
 | `scope` | string[] | `user-details.read` | Exact Cloudflare scope IDs configured on the OAuth client. Better Auth does not limit which scopes you can request |
-| `tokenEndpointAuthMethod` | `"client_secret_basic"` \| `"client_secret_post"` \| `"none"` | `client_secret_basic` (when `clientSecret` is configured) | Must match the Token Authentication Method of the Cloudflare OAuth client |
+| `tokenEndpointAuth` | `{ method: "client_secret_basic" }` \| `{ method: "client_secret_post" }` \| `{ method: "none" }` | `client_secret_basic` (when `clientSecret` is configured) | Must match the Token Authentication Method of the Cloudflare OAuth client |
 | `mapProfileToUser` | (profile) => object | — | Map the Cloudflare profile to user fields, e.g. set `emailVerified` |
 
 ## Notes
@@ -89,7 +89,8 @@ cloudflare: {
 - Refresh tokens: configure the OAuth client with both `authorization_code` and `refresh_token` grant types, then request `offline_access` explicitly. Keep it opt-in when Cloudflare access is only needed during sign-in
 - Profile: `/user` returns `id` and `email`, with optional `first_name` and `last_name`. The name is composed from the available name fields and falls back to the email. No profile picture is provided, so `image` is empty
 - `/user` does not expose an email-verification status, so `emailVerified` is `false` by default
-- Source: https://www.better-auth.com/docs/authentication/cloudflare (better-auth v1.7.10 docs)
+- Token endpoint authentication is configured with `tokenEndpointAuth: { method: "..." }` (default `client_secret_basic` when `clientSecret` is set). Replace the older `tokenEndpointAuthMethod: "..."` with `tokenEndpointAuth: { method: "..." }`. For `client_secret_post`, set `tokenEndpointAuth: { method: "client_secret_post" }`
+- Source: https://www.better-auth.com/docs/authentication/cloudflare (better-auth v1.7.23 docs)
 
 ## Related
 

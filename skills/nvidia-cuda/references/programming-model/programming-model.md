@@ -99,6 +99,8 @@ A locality domain is a subset of a GPU's memory and streaming multiprocessors (S
 
 Explicitly allocated CPU or GPU memory is only accessible to code running on that respective device; CUDA APIs are used to explicitly copy data between them at the right time. Unified memory instead allows allocations accessible from both CPU and GPU — the CUDA runtime or hardware relocates or enables access to the data as needed. Even with unified memory, optimal performance still comes from minimizing migration and accessing data from the processor directly attached to where it resides.
 
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/01-introduction/programming-model.html (CPG v13.5, retrieved 2026-11-14)
+
 ## Related
 
 - [Introduction](./introduction.md)

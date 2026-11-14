@@ -80,7 +80,7 @@ beforeAll(async () => {
 ```
 
 - Use projects instead of tags when categories need different runner settings (isolation, pool, environment).
-- Source: https://vitest.dev/guide/test-tags (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/test-tags (Vitest v5.1.0)
 
 ## Related
 

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/testing-overview
+source: https://reactnative.dev/docs/0.88/testing-overview
 ---
 
 # Testing

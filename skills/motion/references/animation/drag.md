@@ -73,6 +73,8 @@ function Scrubber() {
 - Snap-to-grid: use `dragTransition={{ power: 0, modifyTarget: t => Math.round(t / 50) * 50 }}`.
 - Set `draggable={false}` on child `<img>` elements to avoid the browser ghost image.
 - Pair `dragControls` with `dragListener={false}` to start drag from a separate handle.
+- A framework-free `drag()` function (with `constraints`, `elastic`, `momentum` and headless `x` / `y` motion values) is available in vanilla JS since motion 14.4.0; see `vanilla-js/drag.md`. Its `elastic` default is documented as `0.35`, while `dragElastic` here is documented as `0.5`.
+- Source: https://motion.dev/docs/react-drag (fetched 2026-11-14).
 
 ## Related
 

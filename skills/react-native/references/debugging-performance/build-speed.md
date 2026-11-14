@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/build-speed
+source: https://reactnative.dev/docs/0.88/build-speed
 ---
 
 # Speeding up your Build phase

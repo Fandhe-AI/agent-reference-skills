@@ -11,14 +11,14 @@ query フックは operation のグループ化リクエスト設定（`path` / 
 ```typescript
 import { useGetPetById } from './gen/hooks/useGetPetById'
 
-const { data, error, isLoading } = useGetPetById({ path: { petId: 1n } })
+const { data, error, isLoading } = useGetPetById({ path: { petId: 1 } })
 ```
 
 第 2 引数は 2 つの任意グループ。`query` は任意の TanStack Query オプション、`query.client` は使う `QueryClient`。トップレベルの `client` はこの呼び出し用のリクエスト設定（`baseURL` / `signal` 等）:
 
 ```typescript
 useGetPetById(
-  { path: { petId: 1n } },
+  { path: { petId: 1 } },
   {
     query: { staleTime: 60_000 },
     client: { baseURL: 'https://api.example.com/v1' },
@@ -36,8 +36,8 @@ import { getPetByIdQueryKey, getPetByIdQueryOptions } from './gen/hooks/useGetPe
 
 const queryClient = useQueryClient()
 
-await queryClient.prefetchQuery(getPetByIdQueryOptions({ path: { petId: 1n } }))
-queryClient.invalidateQueries({ queryKey: getPetByIdQueryKey({ path: { petId: 1n } }) })
+await queryClient.prefetchQuery(getPetByIdQueryOptions({ path: { petId: 1 } }))
+queryClient.invalidateQueries({ queryKey: getPetByIdQueryKey({ path: { petId: 1 } }) })
 ```
 
 ### Mutations
@@ -51,7 +51,7 @@ const { mutate } = useDeletePet({
   mutation: { onSuccess: () => queryClient.invalidateQueries() },
 })
 
-mutate({ path: { petId: 1n } })
+mutate({ path: { petId: 1 } })
 ```
 
 ### Customize cache keys
@@ -101,7 +101,7 @@ pluginReactQuery({ hooks: true, suspense: {} })
 ```typescript
 import { useGetPetByIdSuspense } from './gen/hooks/useGetPetByIdSuspense'
 
-const { data } = useGetPetByIdSuspense({ path: { petId: 1n } })
+const { data } = useGetPetByIdSuspense({ path: { petId: 1 } })
 ```
 
 ### Share hook options
@@ -148,9 +148,11 @@ export function useCustomHookOptions(
 - 既定ではフックは生成されず factory ヘルパーのみ。`use*` フックが必要なら `hooks: true`（原文 IMPORTANT）
 - 各生成フックは client 関数を `throwOnError: true` で呼ぶ。失敗は TanStack Query の `error` に入り、型は spec のエラーレスポンスから付く。base URL・認証・interceptor・serialization・検証は client プラグイン側で設定する（plugin-client の場合は自前 client モジュール）
 - `queryKey` の例は全呼び出しに同一キー（例 `['getUserByName']`）を与える。path / query の値で取得データが変わる場合はキーに加える（原文 WARNING）
-- `nextParam` はドット記法またはキー配列。API のレスポンスに合わせて変える。`getNextPageParam` / `nextParam` / `cursorParam` がなければ、空配列を返すまでページ番号を増やす
+- `nextParam` はドット記法またはキー配列。API のレスポンスに合わせて変え、`initialPageParam` は query パラメーターと同じ型にする。`getNextPageParam` / `nextParam` / `cursorParam` がなければ、空配列を返すまでページ番号を増やす
 - フック単位の query オプションは共有 options を上書きする
-- Source: https://kubb.dev/extensions/kubb-labs/plugin-react-query/guides/calling-operations （`@kubb/plugin-react-query@5.5.3`）
+- 例は adapter に `integerType: 'number'` を設定しているため `int64` の `petId` は `number`（既定では `bigint` で `1n` を渡す）
+- Migration (5.5 → 5.10): 例の `petId` が `1n` から `1` に変わったのは docs 側の前提変更（`integerType: 'number'`）で、API の変更ではない
+- Source: https://kubb.dev/extensions/kubb-labs/plugin-react-query/guides/calling-operations （`@kubb/plugin-react-query@5.10.1`、取得日 2026-11-14）
 
 ## Related
 

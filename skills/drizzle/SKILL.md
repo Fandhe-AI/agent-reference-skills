@@ -2,7 +2,7 @@
 name: drizzle
 description: >
   Drizzle ORM (TypeScript ORM, drizzle-orm / drizzle-kit) の API リファレンス。
-  pgTable / mysqlTable / sqliteTable, `drizzle()`, `$inferSelect` / `$inferInsert`,
+  pgTable / mysqlTable / sqliteTable, `drizzle()`, Drizzle Pulse, `drizzle-kit mcp`, `$inferSelect` / `$inferInsert`,
   RQB (Relational Queries) / `db.query`, `defineRelations`, magic `sql` operator,
   `drizzle-kit generate` / `push`, `drizzle.config.ts`,
   drizzle-zod, drizzle-seed, Drizzle Studio。SQL Server の低レベルドライバーは別スキル mssql。
@@ -12,12 +12,12 @@ user-invocable: false
 # Drizzle ORM API リファレンス
 
 Drizzle ORM / Drizzle Kit — TypeScript の headless ORM（対象バージョン
-`drizzle-orm` / `drizzle-kit` **1.0.0-rc.4**（npm dist-tag `rc`、2026-10-16 実測）。npm dist-tag `latest` の
+`drizzle-orm` / `drizzle-kit` **1.0.0-rc.5**（npm dist-tag `rc`、2026-11-14 実測）。npm dist-tag `latest` の
 `drizzle-orm` `0.45.4` / `drizzle-kit` `0.31.11` は非対象、
 `npm i drizzle-orm@rc` / `npm i -D drizzle-kit@rc` でインストールする。`drizzle-kit` は `drizzle-orm` と
-独立バージョニングだが、本スキル対象時点では両者とも `1.0.0-rc.4`。`1.0.0-rc.5` は registry に存在せず、
-dist-tag `rc5` はプレビュービルド `1.0.0-rc.5-5935859` のみ。docs 原本は
-`drizzle-team/drizzle-orm-docs` の commit `6659ce0acdfad9b67d89813cc34ac738674390e9`（2026-10-10）に pin）。
+独立バージョニングだが、本スキル対象時点では両者とも `1.0.0-rc.5`（旧 pin は `1.0.0-rc.4` / docs commit
+`6659ce0`、rc.4 → rc.5 の差分は各ページの `Migration (rc.4 → rc.5)` Notes に記載）。docs 原本は
+`drizzle-team/drizzle-orm-docs` の commit `55f7f9e`（2026-11-12 push、取得日 2026-11-14）に pin）。
 `pgTable` / `mysqlTable` / `sqliteTable` によるスキーマ宣言、SQL-like クエリビルダーと
 RQB (Relational Queries, `db.query`) の2系統のクエリ API、`drizzle-kit` CLI によるマイグレーション
 （generate / migrate / push / pull）を中核とする API 設計・実装時に参照する。
@@ -26,6 +26,12 @@ SQL Server への低レベル接続（`tedious` / `msnodesqlv8` ドライバー�
 （`references/column-types/mssql.md` / `references/connect/mssql.md` に距離線あり）。同様に
 Supabase 本体の機能は `supabase`、zod 本体の API は `zod`、Upstash Redis クライアント本体は
 `upstash` を参照する。
+
+rc.5 の主な挙動変更（relational filter の `undefined` が throw・`EmptyFilter`、`withReplicas` は primary 既定で
+`db.$replica`、`DrizzleQueryError` の `paramsInErrors`、PostgreSQL の `--fix-conflicts`）は
+`references/migration/v0-v1-changes.md` と `references/getting-started/latest-releases.md` に集約している。
+公式の `read-replicas` ページ本文は rc.5 の挙動と食い違うため verbatim のまま残し、Notes で補足している。
+`references/realtime/`（Drizzle Pulse）は公式ページが `drizzle-orm` `^1.0.0-rc.6` を要求するが npm には rc.6 が未公開（`drizzle-pulse@0.5.0` の peer は `^1.0.0-rc.5`）のため、本スキル対象の rc.5 では未検証。詳細は `realtime-overview.md` の Notes。
 
 v0.x → v1.0 の破壊的変更は `references/migration/v0-v1-changes.md` に一覧があり、影響を受ける
 個別ページ（`drizzle-kit/` の各コマンド、`relational-queries/rqb.md` / `relations.md`、
@@ -151,6 +157,18 @@ skills/drizzle/
       README.md
       upgrade-v1.md
       v0-v1-changes.md
+    agents/
+      README.md
+      agents.md
+      drizzle-kit-mcp.md
+      drizzle-kit-skills.md
+      agent-setup-prompt.md
+    realtime/
+      README.md
+      realtime-overview.md
+      realtime-queries.md
+      realtime-server-setup.md
+      realtime-live-collections.md
     seeding/
       README.md
       seed-overview.md
@@ -207,6 +225,8 @@ skills/drizzle/
 | drizzle-zod / valibot / typebox / arktype / effect-schema によるスキーマ生成 | validations | [references/validations/README.md](references/validations/README.md) |
 | eslint-plugin-drizzle、drizzle-graphql | extensions | [references/extensions/README.md](references/extensions/README.md) |
 | v0.x → v1.0 の破壊的変更・アップグレード手順 | migration | [references/migration/README.md](references/migration/README.md) |
+| Drizzle Kit の MCP サーバー (`drizzle-kit mcp`)・同梱 Agent Skill (`drizzle-kit skills`)・コーディングエージェント設定プロンプト | agents | [references/agents/README.md](references/agents/README.md) |
+| Drizzle Pulse (PostgreSQL realtime、`createRuntime`、live collections、CDC イベント) | realtime | [references/realtime/README.md](references/realtime/README.md) |
 | drizzle-seed による決定的なフェイクデータ投入 | seeding | [references/seeding/README.md](references/seeding/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

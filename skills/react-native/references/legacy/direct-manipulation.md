@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/legacy/direct-manipulation
+source: https://reactnative.dev/docs/0.88/legacy/direct-manipulation
 ---
 
 # Direct Manipulation

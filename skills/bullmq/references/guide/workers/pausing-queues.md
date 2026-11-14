@@ -24,9 +24,9 @@ await myQueue.resume();
 await myWorker.pause();
 ```
 
-上記の呼び出しは、Worker が現在処理中のすべてのジョブが完了（または失敗）するまで待機する。
+The call above (TypeScript and Python) waits for all the jobs currently being processed by this worker to complete (or fail). Rust and Elixir pause calls return immediately while active jobs continue running; Rust has no `force` option, and Elixir's `force` option currently has no effect.
 
-処理中のジョブを待たずに即座に一時停止する場合:
+In TypeScript and Python, to return immediately while current jobs continue running:
 
 ```typescript
 await myWorker.pause(true);
@@ -45,13 +45,14 @@ myWorker.resume();
 | グローバル一時停止 | 全 Worker | 完了まで処理を継続 | 取得しない |
 | ローカル一時停止 | 該当 Worker のみ | 完了まで処理を継続（`true` で即時停止） | 取得しない |
 
-## 注意点
+## Notes
 
-- グローバル一時停止は Queue インスタンスの `pause()` メソッドを使用し、ローカル一時停止は Worker インスタンスの `pause()` メソッドを使用する
-- 一時停止中の Worker はアイドル状態となり、再開されるまで新しいジョブを処理しない
-- 処理中のジョブが完了するまで待機するデフォルトの動作は、graceful shutdown と同様の考え方に基づく
+- Global pause uses the `pause()` method of the Queue instance; local pause uses the `pause()` method of the Worker instance.
+- A paused worker is idle and does not process new jobs until it is resumed.
+- The default behavior of waiting for in-flight jobs (TypeScript and Python) follows the same idea as graceful shutdown.
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/workers/pausing-queues.md and https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/workers/graceful-shutdown.md (tag v6.7.6, fetched 2026-11-14).
 
-## 関連
+## Related
 
 - [Graceful Shutdown](./graceful-shutdown.md)
 - [Workers](./workers.md)

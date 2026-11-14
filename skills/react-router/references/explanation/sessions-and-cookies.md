@@ -59,6 +59,10 @@ export const cookie = createCookie("user-prefs", {
 - Nested routes mean multiple loaders can run per page — using `session.flash()`/`session.unset()` from more than one loader risks race conditions; have a single loader read a given flash key
 - Custom storage backends implement `createData` / `readData` / `updateData` / `deleteData` via `createSessionStorage()`, keyed by a session ID stored in the cookie
 - Built-in storage helpers: `createCookieSessionStorage`, `createMemorySessionStorage` (dev/testing), `createFileSessionStorage` (node), `createWorkersKVSessionStorage` (Cloudflare Workers), `createArcTableSessionStorage` (Architect/DynamoDB)
+- Session API (8.5.1 docs): `session.has(key)` returns `true` for a value or an unread flash value and does not consume flash values; `session.set(key, value)` sets a value for subsequent requests; `session.flash(key, value)` sets a value valid only until the next `session.get()` for that key; `session.get(key)` reads a value (reading a flash value removes it, so `commitSession()` is still required afterward); `session.unset(key)` removes a value but not pending flash values
+- Every time you modify session data you must `commitSession()` or the changes are lost; with cookie session storage you must also send the returned `Set-Cookie` header. Avoid using the same key for both `session.set()` and `session.flash()`: `session.get()` returns the regular value first, so the flash value would never be read or removed
+- 8.5.1 ([CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md), [PR #15639](https://github.com/remix-run/react-router/pull/15639)): `destroySession` skips `deleteData` when the session has no ID, avoiding failures on storage that rejects an empty key
+- Source: https://reactrouter.com/explanation/sessions-and-cookies (docs/explanation/sessions-and-cookies.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/explanation/sessions-and-cookies.md)
 
 ## Related
 

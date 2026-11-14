@@ -1,6 +1,6 @@
 # @kubb/plugin-redoc
 
-OpenAPI 仕様を Redoc で文書化する単一 HTML ページを生成するプラグイン（plugin-redoc 5.0.12 の docs に準拠）。
+OpenAPI 仕様を Redoc で文書化する単一 HTML ページを生成するプラグイン（plugin-redoc 5.2.2 の docs に準拠）。
 
 仕様全体がページに埋め込まれるため、ビルド不要で任意の静的ホストに公開できる。表示にはネットワークが必要（jsDelivr から SRI ハッシュ検証付きの固定 Redoc バンドル、Google Fonts からフォントを読み込む）。
 
@@ -41,6 +41,7 @@ export default defineConfig({
 ## Notes
 
 - `output.path` はグローバル `output.path` に対して解決される（上の例では `src/gen/docs.html`）。旧版の例のようにルートからの `./docs/index.html` ではない
+- Source: https://kubb.dev/extensions/kubb-labs/plugin-redoc/options （`@kubb/plugin-redoc@5.2.2`、取得日 2026-11-14）。docs の内容は旧版から差分なし（版のみ更新）
 
 ## Related
 

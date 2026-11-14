@@ -207,6 +207,7 @@ Limits:
 | State size | limit | 10 MB | Per workflow |
 | Event wait time | limit | 1 year | Maximum |
 | Step execution time | limit | 30 minutes | Per step |
+| Concurrent instances | limit | Account limit by default | Configurable [per workflow](https://developers.cloudflare.com/workflows/build/concurrency-limits/#per-workflow-concurrency-limits) |
 
 ## Notes
 

@@ -35,6 +35,8 @@ scene.add(points);
 - Points have no faces or edges; only vertex positions are rendered.
 - `PointsMaterial.sizeAttenuation` controls whether point size scales with camera distance.
 - For large point counts with per-point color or size variation, add `color` or `size` buffer attributes to the geometry and enable `vertexColors` / `sizeAttenuation` in the material.
+- Migration (r186 → r187): `copy()` also copies `morphTargetInfluences` and `morphTargetDictionary` when the source has them (https://github.com/mrdoob/three.js/pull/35147).
+- Source: https://threejs.org/docs/pages/Points.html (three.js r187, `src/objects/Points.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

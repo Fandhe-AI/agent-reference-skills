@@ -183,6 +183,14 @@ await db.select({
 - `sql.raw()` bypasses escaping/parameterization — only use it with trusted, non-user-controlled input
 - Converting `sql` to a query string requires the dialect-specific class for your target database (the source shows `PgDialect` for PostgreSQL)
 
+### rc.5 changes
+
+- Migration (rc.4 → rc.5): `db.execute` types were reworked. Plain `db.execute(sql)` returns the union of every possible response type by driver; `db.execute<never>(sql)` returns a rowless response type (for example an `insert` without `returning`); `db.execute<ReturnedObject>(sql)` returns the driver response with rows typed as `ReturnedObject[]`. `objects` / `arrays` modes were added to `db.execute` (`db.all`, `db.get` in `sqlite`).
+- Migration (rc.4 → rc.5): `StringChunk` and `commonStringChunks` moved from `drizzle-orm/sql/sql` to `drizzle-orm/sql/common-chunks` (still exported from `drizzle-orm/sql`). Chunk arrays embedded into `sql` directly are rendered as value lists; wrap them in `new SQL(chunks)` to use them as query parts.
+- Migration (rc.4 → rc.5): for `postgres-js`, JSON parameters are serialized by the driver itself. Remove manual `JSON.stringify(jsonValue)` workarounds in raw `sql` to prevent double stringification, and use `sql.param(jsonArrayValue)` for array-type JSON params so they are not parsed as a value list.
+- Migration (rc.4 → rc.5): `db.get(sql)` in `sqlite` now includes `| undefined` in its return type for queries without returned rows.
+- Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
+
 ## Related
 
 - [select](./select.md)

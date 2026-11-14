@@ -1,6 +1,6 @@
 # @kubb/mcp
 
-Kubb のコード生成機能を AI アシスタント（Claude、Cursor 等）に公開する MCP（Model Context Protocol）サーバー（Kubb 5.11.0 の `packages/mcp/README.md` と docs 5.x reference/commands/mcp に準拠）。
+Kubb のコード生成機能を AI アシスタント（Claude、Cursor 等）に公開する MCP（Model Context Protocol）サーバー（Kubb 5.20.0 の `packages/mcp/README.md` と docs 5.x reference/commands/mcp に準拠）。
 
 サーバーは 3 つのツールを持つ。`generate` は `kubb.config.ts` から完全なビルドを実行し、成功時にビルドイベントを、失敗時に診断を返す。`validate` は OpenAPI 仕様を検証し、`init` は `kubb.config.ts` を作成する。
 
@@ -101,8 +101,9 @@ export default defineConfig({
 ## Notes
 
 - パッケージは `kubb`（旧 `@kubb/cli` ではない）。README の例は `import { defineConfig } from 'kubb'` と `adapter: adapterOas()` を使うが、docs 5.x では `kubb/config` から import し adapter は既定で供給される
-- 旧版ページにあった `@kubb/plugin-mcp` の `startServer` API の記述は、5.11.0 の `@kubb/mcp` README に記載がない（`@kubb/plugin-mcp` が生成する `server.ts` が `startServer()` を export する。plugin-mcp.md 参照）
-- 旧版の `logLevel` 値 `error` / `warn` / `debug` は 5.11.0 の README・docs に記載がない
+- 旧版ページにあった `@kubb/plugin-mcp` の `startServer` API の記述は、5.20.0 の `@kubb/mcp` README に記載がない（`@kubb/plugin-mcp` が生成する `server.ts` が `startServer()` を export する。plugin-mcp.md 参照）
+- Source: https://kubb.dev/docs/5.x/reference/commands/mcp （kubb@5.20.0 の docs/5.x/reference/commands/mcp.md と `packages/mcp/README.md`、取得日 2026-11-14）
+- 旧版の `logLevel` 値 `error` / `warn` / `debug` は 5.20.0 の README・docs に記載がない
 
 ## Related
 

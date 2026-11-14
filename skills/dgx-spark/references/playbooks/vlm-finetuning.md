@@ -34,7 +34,7 @@ streamlit run Image_VLM.py
 
 ## Notes
 
-- Requires DGX Spark (DGX OS, 128 GB Unified Memory), NVIDIA Container Toolkit, Hugging Face access token (used with `hf auth login`); Weights & Biases optional
+- Requires DGX Spark (DGX OS, 64 GB or 128 GB Unified Memory), NVIDIA Container Toolkit, Hugging Face access token (used with `hf auth login`); Weights & Biases optional
 - The same `vlm_demo` Docker image serves both image and video recipes; stop Streamlit or Jupyter and free memory before switching workloads
 - The official playbook passes HF_TOKEN via `--build-arg` at build time (`docker build --build-arg HF_TOKEN=$HF_TOKEN -t vlm_demo .`); this page instead authenticates at runtime with `hf auth login` inside the container (also listed in the playbook's troubleshooting table), because build arguments can persist in image history/provenance.
 - Image recipe: first access starts vLLM servers for the base model (up to about 15 minutes); LoRA weights are merged into the base model after training (about 5 minutes). **Stop Finetuning** does not guarantee checkpoints are stored or adapters merged
@@ -43,7 +43,7 @@ streamlit run Image_VLM.py
 - Last Updated 10/09/2026: `peft` pinned in the Dockerfile (`peft==0.17.1`) so GRPO no longer fails with `ImportError: Found an incompatible version of torchao`; rebuild the image if you hit it
 - UMA: flush buffer cache with `sudo sh -c 'sync; echo 3 > /proc/sys/vm/drop_caches'` if memory pressure appears within capacity
 - Duration: ~2 hours setup plus short image run; Risk: Medium. Rollback: stop and remove the Docker containers (exit the container; `docker stop` / `docker rm` for a running one), then remove the image if no longer needed (`docker rmi vlm_demo`, Step 7 Cleanup); delete downloaded models, datasets, and checkpoints under the mounted assets directory if needed
-- Source: https://build.nvidia.com/spark/vlm-finetuning (dgx-spark-playbooks commit c035e0ac7d21)
+- Source: https://github.com/NVIDIA/dgx-spark-playbooks/blob/3088315/nvidia/playbook-vlm-finetuning/README.md (commit 3088315, 2026-10-23)
 
 ## Related
 

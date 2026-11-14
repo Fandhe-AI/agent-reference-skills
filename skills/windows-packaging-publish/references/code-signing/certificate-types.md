@@ -55,4 +55,4 @@ Comparison of the certificate options available for signing Windows apps distrib
 
 - [MSIX Signing Requirements](./msix-signing-requirements.md)
 - [Self-Signed Certificate Creation](./self-signed-certificate.md)
-- [Azure Trusted Signing](./azure-trusted-signing.md)
+- [Azure Artifact Signing (formerly Azure Trusted Signing)](./azure-trusted-signing.md)

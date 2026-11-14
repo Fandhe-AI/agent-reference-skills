@@ -79,6 +79,7 @@ int main()
 - Asynchronous errors: because kernel launches are asynchronous, an error occurring during kernel execution is not necessarily visible immediately after the launch call. Checking `cudaGetLastError()` right after launch catches launch-configuration errors; a subsequent `CUDA_CHECK(cudaDeviceSynchronize())` also surfaces errors that occurred during the kernel's execution.
 - `CUDA_LOG_FILE` lets CUDA errors be identified even without explicit checking in the code, and also supports callback registration for runtime error handling.
 - Thread block clusters (compute capability 9.0+): an optional grouping level above thread blocks, specified either at compile time via the `__cluster_dims__` kernel attribute or at launch time; the grid dimension in the launch is still expressed in units of thread blocks and must be a multiple of the cluster size.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/intro-to-cuda-cpp.html (CPG v13.5, retrieved 2026-11-14)
 
 ## Related
 

@@ -27,6 +27,8 @@ function AutoSaveForm() {
 - The submitted form data causes a navigation (unlike `useFetcher().submit`)
 - Not available in Declarative mode
 - `defaultShouldRevalidate: false` is accepted as an option to skip loader revalidation for one submission. See [Revalidation Optimization](../how-to/optimize-revalidation.md)
+- The `viewTransition` submission option is deprecated in favor of React's `<ViewTransition>` component; see [View Transitions](../how-to/view-transitions.md)
+- Source: https://reactrouter.com/api/hooks/useSubmit (docs/api/hooks/useSubmit.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/api/hooks/useSubmit.md)
 
 ## Related
 

@@ -52,8 +52,8 @@ Implemented object-level operations (none support `x-amz-request-payer` or `x-am
 | DeleteObject | | x-amz-mfa, x-amz-bypass-governance-retention |
 | DeleteObjects | | x-amz-mfa, x-amz-bypass-governance-retention |
 | ListMultipartUploads | delimiter, encoding-type, key-marker, max-uploads, prefix, upload-id-marker | |
-| CreateMultipartUpload | Content-Type, Cache-Control, Content-Disposition, Content-Encoding, Content-Language, Expires, Content-MD5; x-amz-storage-class (STANDARD, STANDARD_IA); SSE-C | website redirect, SSE, tagging, Object Locking headers, ACL headers |
-| CompleteMultipartUpload | | |
+| CreateMultipartUpload | If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since; Content-Type, Cache-Control, Content-Disposition, Content-Encoding, Content-Language, Expires, Content-MD5; x-amz-storage-class (STANDARD, STANDARD_IA); SSE-C | website redirect, SSE, tagging, Object Locking headers, ACL headers |
+| CompleteMultipartUpload | If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since | |
 | AbortMultipartUpload | | |
 | CopyObject | x-amz-metadata-directive; Content-Type, Cache-Control, Content-Disposition, Content-Encoding, Content-Language, Expires; x-amz-copy-source and x-amz-copy-source-if-match / -if-modified-since / -if-none-match / -if-unmodified-since; x-amz-storage-class (STANDARD, STANDARD_IA); SSE-C (including copy-source SSE-C headers) | ACL headers, website redirect, SSE, x-amz-tagging, x-amz-tagging-directive, Object Locking headers, x-amz-source-expected-bucket-owner, x-amz-checksum-algorithm |
 | UploadPart | Content-MD5; SSE-C | x-amz-server-side-encryption |
@@ -67,7 +67,8 @@ Unimplemented object-level operations: GetObjectTagging, PutObjectTagging, Delet
 ## Notes
 
 - Behavior: uploading to the same part number replaces the previous part; if a subsequent upload to that part fails, the original part is lost and must be re-uploaded.
-- Conditional headers on `PutObject` (`If-Match`, `If-None-Match`) are evaluated atomically against committed bucket state. With concurrent `PutObject` and `If-None-Match: *` for an absent key, at most one write succeeds and the rest fail with `412 PreconditionFailed`.
+- Conditional headers on `PutObject` (`If-Match`, `If-None-Match`) are evaluated atomically against committed bucket state. With concurrent `PutObject` and `If-None-Match: *` for a previously absent key, at most one write succeeds while its object exists, and every other write evaluated while that object exists fails with `412 PreconditionFailed`. The same atomic guarantees apply to the conditional headers on `CompleteMultipartUpload`; to create a multipart object only if its key does not exist, send `If-None-Match: *` on `CompleteMultipartUpload`. Conditional headers on `CreateMultipartUpload` are not retained with the upload and are not re-evaluated at completion. See Conditional operations (`s3-conditional-operations.md`).
+- Source: https://developers.cloudflare.com/r2/api/s3/api/ (production `34d908a`, fetched 2026-11-14)
 - Use `ListObjectsV2` instead of `ListObjects` when developing applications.
 - Note from source comparison: the source table lists `GetBucketEncryption` as implemented and `PutBucketEncryption` as not implemented. This page condenses the upstream per-feature tables; consult the official page for exact per-header status.
 - R2 is Cloudflare's S3-compatible object storage; for Supabase Storage see the supabase skill, for Vercel Blob see the vercel skill.

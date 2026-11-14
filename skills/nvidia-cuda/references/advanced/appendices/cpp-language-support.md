@@ -34,7 +34,10 @@ __global__ void single_thread_allocation_kernel() {
 - `printf()` in device code has a fixed 32-argument limit, unlike host `printf`.
 - Lambda expressions used as `__global__` function parameters and "extended lambdas" (lambdas usable across host/device boundaries) have restrictions distinct from ordinary host-only C++ lambdas — see Extended Lambda Restrictions before capturing by reference or using in constexpr contexts.
 - C++23 (CPG 13.4): the C++23 feature table's version column is headed "NVCC/CUDA Toolkit ≥ 13.3". "Extended floating-point types and standard names (P1467R9)" is now marked unsupported (❌), and the C++23 device-code restrictions state that the fixed-width floating-point types `float16_t`, `float32_t`, `float64_t`, `float128_t`, and `bfloat16_t` are not supported in device code.
-- Restrictions in Tile code (CPG 13.4, section 5.3.10.8): switch statements as a whole are no longer listed as unsupported. Instead the restrictions are: return statements inside `do` / `while` / `for` loops or inside switch statements; `continue` statements inside switch statements when the `continue` is not enclosed in a loop under the switch; and case/default labels inside a nested `if` or loop block of the switch body.
+- Restrictions in Tile code (CPG 13.4, section 5.3.10.8): switch statements as a whole are no longer listed as unsupported. Instead the restrictions are: `continue` statements inside switch statements when the `continue` is not enclosed in a loop under the switch; and case/default labels inside a nested `if` or loop block of the switch body.
+- Tile-code restrictions (CPG 13.5): the CPG 13.4 restriction on return statements inside `do` / `while` / `for` loops or inside switch statements is no longer listed in the 13.5 text.
+- `long double` (CPG 13.5): the 13.5 text states that `long double` is treated as `double` in device code (the 13.4.2 text said it is not supported in device code).
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/cpp-language-support.html (CPG v13.5, retrieved 2026-11-14)
 
 ## Related
 

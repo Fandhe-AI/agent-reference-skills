@@ -1,6 +1,6 @@
 # Architecture Overview
 
-High-level structure and major subsystems of the Hermes Agent framework (v0.22.2 developer guide).
+High-level structure and major subsystems of the Hermes Agent framework (v0.23.1 developer guide).
 
 ## System Overview
 
@@ -15,7 +15,7 @@ AIAgent (run_agent.py)
                                                                                     Tool Registry (registry.py): 70+ tools, 28 toolsets
         |                                              |
         v                                              v
-Session Storage (SQLite + FTS5)          Tool Backends: Terminal (7 backends), Browser (5), Web (4), MCP (dynamic), File, Vision, etc.
+Session Storage (SQLite + FTS5)          Tool Backends: Terminal (6 built-in backends + plugins), Browser (5), Web (4), MCP (dynamic), File, Vision, etc.
 hermes_state.py, gateway/session.py
 ```
 
@@ -31,9 +31,9 @@ hermes_state.py, gateway/session.py
 | `batch_runner.py` | Batch trajectory generation |
 | `agent/` | Internals: `prompt_builder.py`, `context_engine.py` (pluggable ABC), `context_compressor.py`, `prompt_caching.py`, `auxiliary_client.py`, `model_metadata.py`, `models_dev.py`, `anthropic_adapter.py`, `display.py`, `skill_commands.py`, `memory_manager.py`, `memory_provider.py`, `trajectory.py` |
 | `hermes_cli/` | CLI subcommands and setup: `main.py`, `config.py` (`DEFAULT_CONFIG`), `commands.py` (`COMMAND_REGISTRY`), `auth.py`, `runtime_provider.py`, `models.py`, `model_switch.py`, `setup.py`, `skin_engine.py`, `skills_config.py`, `skills_hub.py`, `tools_config.py`, `plugins.py` (`PluginManager`), `callbacks.py`, `gateway.py` |
-| `tools/` | One file per tool: `registry.py`, `approval.py`, `terminal_tool.py`, `process_registry.py`, `file_tools.py`, `web_tools.py`, `browser_tool.py`, `code_execution_tool.py`, `delegate_tool.py`, `mcp_tool.py`, `credential_files.py`, `env_passthrough.py`, `ansi_strip.py`, `environments/` (terminal backends) |
-| `gateway/` | `run.py` (`GatewayRunner` facade, + `run_*.py` siblings), `session.py`, `delivery.py`, `pairing.py`, `hooks.py`, `mirror.py`, `status.py`, `builtin_hooks/`, `platforms/` (built-in adapters: signal, weixin, bluebubbles, qqbot, whatsapp_cloud, yuanbao, webhook, api_server) |
-| `plugins/platforms/` | Bundled platform plugins: telegram, discord, slack, whatsapp, matrix, mattermost, email, sms, dingtalk, feishu, wecom, irc, line, teams, google_chat, buzz, ntfy, photon, raft, simplex (Home Assistant is the `homeassistant` catalog plugin) |
+| `tools/` | One file per tool: `registry.py`, `approval.py`, `terminal_tool.py`, `process_registry.py`, `file_tools.py`, `web_tools.py`, `browser_use_cli.py` (`browser_exec`, Python over CDP via browser-harness), `browser_session.py` (per-task browser sessions, + `browser_session_*.py` siblings), `browser_launcher.py` (local Chromium launch, reuse and orphan reaping), `code_execution_tool.py`, `delegate_tool.py`, `mcp_tool.py`, `credential_files.py`, `env_passthrough.py`, `ansi_strip.py`, `environments/` (terminal backends: local, docker, ssh, modal, daytona, vercel_sandbox) |
+| `gateway/` | `run.py` (`GatewayRunner` facade, + `run_*.py` siblings), `session.py`, `delivery.py`, `pairing.py`, `hooks.py`, `mirror.py`, `status.py`, `platforms/` (core ingress adapters: api_server, webhook, msgraph_webhook) |
+| `plugins/platforms/` | Bundled platform plugins: telegram, discord, slack, whatsapp, matrix, mattermost, email, sms, dingtalk, feishu, wecom, irc, line, teams, google_chat, buzz, ntfy, photon, raft, simplex, whatsapp_cloud, signal, weixin, bluebubbles, qqbot (Home Assistant is the `homeassistant` catalog plugin; Yuanbao is the `yuanbao` Hermes Labs plugin) |
 | `acp_adapter/`, `cron/`, `plugins/memory/`, `plugins/context_engine/` | ACP server (VS Code / Zed / JetBrains), scheduler (`jobs.py`, `scheduler.py`), memory provider plugins, context engine plugins |
 | `skills/`, `optional-skills/`, `website/`, `tests/` | Bundled skills, official optional skills, Docusaurus docs site, Pytest suite (~25,000 tests across ~1,250 files) |
 
@@ -55,7 +55,7 @@ A shared runtime resolver used by CLI, gateway, cron, ACP, and auxiliary calls m
 
 ### Tool System
 
-Central registry (`tools/registry.py`) with 70+ registered tools across ~28 toolsets; each tool file self-registers at import time. The registry handles schema collection, dispatch, availability checking, and error wrapping. Terminal tools support 7 backends (local, Docker, SSH, Daytona, Modal, Singularity, Vercel Sandbox).
+Central registry (`tools/registry.py`) with 70+ registered tools across ~28 toolsets; each tool file self-registers at import time. The registry handles schema collection, dispatch, availability checking, and error wrapping. Terminal tools support 6 built-in backends (local, Docker, SSH, Daytona, Modal, Vercel Sandbox) plus plugin backends (e.g. Singularity).
 
 ### Session Persistence
 
@@ -125,11 +125,15 @@ Tool registration happens at import time, before any agent instance exists; any 
 
 ## Notes
 
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/architecture (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/architecture (pinned to v0.23.1)
 - Release notes: https://github.com/NousResearch/hermes-agent/releases/tag/v0.22.0
 - v0.22.0 simplified the codebase with no behavior change (source about 1.06M to 698K lines; `gateway/run.py` 34,847 to 5,512 lines, per the v0.22.0 release notes linked above), which is why `run_agent.py`, `cli.py`, `gateway/run.py`, `hermes_state.py`, and tool modules are now facades with sibling modules.
 - Counts such as "70+ tools across ~28 toolsets" are as printed on this page; the Built-in Tools Reference lists ~100 tools.
 - Messaging platform adapters mostly live as bundled plugins under `plugins/platforms/` rather than `gateway/platforms/`.
+
+### Migration (v0.22 -> v0.23)
+
+- `tools/browser_tool.py` (browser facade) is replaced by `browser_use_cli.py` / `browser_session.py` / `browser_launcher.py`; `gateway/builtin_hooks/` is no longer listed; Singularity moved from a built-in terminal backend to a plugin backend; signal / weixin / bluebubbles / qqbot / whatsapp_cloud moved from `gateway/platforms/` to bundled plugins under `plugins/platforms/`, and Yuanbao is now the `yuanbao` Hermes Labs plugin (`gateway/platforms/` keeps api_server, webhook, msgraph_webhook).
 
 ## Related
 

@@ -25,7 +25,7 @@ Use https://kubb.dev/llms.txt to find relevant pages, then read them.
 
 ## Notes
 
-- 出典: https://kubb.dev/docs/5.x/ai/llmstxt
+- Source: https://kubb.dev/docs/5.x/ai/llmstxt （kubb@5.20.0 の docs/5.x/ai/llmstxt.md、取得日 2026-11-14）
 
 ## Related
 

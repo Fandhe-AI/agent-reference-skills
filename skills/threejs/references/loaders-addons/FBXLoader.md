@@ -31,6 +31,8 @@ scene.add( object );
 - Supports ASCII FBX version 7.0+ and binary FBX version 6400+. Lower versions may partially load with errors.
 - Since r184, `FBXLoader` automatically converts +Z-up models into +Y-up; manual rotations at application level can be removed.
 - Morph normals / blend shape normals are not yet supported.
+- Migration (r186 → r187): `Loader` gained `priority` and `cache` (HTTP cache mode) with `setPriority()` / `setCache()`; `FBXLoader` forwards them to its internal file and texture loaders (https://github.com/mrdoob/three.js/pull/34936)
+- Source: https://threejs.org/docs/pages/FBXLoader.html (three.js r187, `examples/jsm/loaders/FBXLoader.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

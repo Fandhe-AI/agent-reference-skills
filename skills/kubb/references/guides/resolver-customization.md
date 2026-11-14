@@ -57,7 +57,7 @@ pluginFaker({
 })
 ```
 
-`file.path` はファイルのフルパスを返し、`output.path` と `group` によるレイアウトを迂回する。つまり Resolver がファイルの配置場所を所有する。この上書きは全ての Faker ファイルを `mocks/` フォルダへ移動する。返すパスはプロジェクトルートを外れてはならない。
+`file.path` は Plugin の `output.path` と `group` によるレイアウトを置き換える。つまり Resolver がファイルの配置場所を所有する。Kubb は返されたパスを root の `output.path` ディレクトリ基準で解決し、そのディレクトリの内側に収まる必要がある。この上書きは全ての Faker ファイルを `mocks/` から `fixtures/` へ移動する。Plugin の barrel は自身の `output.path` フォルダを対象とするため、移動したファイルに `index.ts` は付かない。
 
 ```typescript
 import { pluginFaker } from '@kubb/plugin-faker'
@@ -65,8 +65,8 @@ import { pluginFaker } from '@kubb/plugin-faker'
 pluginFaker({
   resolver: {
     file: {
-      path({ baseName, output }) {
-        return `${output.path}/mocks/${baseName}`
+      path({ baseName }) {
+        return `fixtures/${baseName}`
       },
     },
   },
@@ -109,8 +109,9 @@ pluginTs({
 
 ## Notes
 
-- Synced with docs 5.x how-to/resolvers ("Customize names and paths", Kubb 5.11.0). The `this` rules and signatures for overrides are in the Kit reference ([resolvers.md](../kit/resolvers.md), "Resolver overrides")
-- The returned `file.path` may not escape the project root (`KUBB_PATH_TRAVERSAL`)
+- Source: https://kubb.dev/docs/5.x/how-to/resolvers (docs/5.x/how-to/resolvers.md of kubb@5.20.0, retrieved 2026-11-14). The `this` rules and signatures for overrides are in the Kit reference ([resolvers.md](../kit/resolvers.md), "Resolver overrides")
+- The returned `file.path` is resolved against the root `output.path` directory and may not escape it (`KUBB_PATH_TRAVERSAL`)
+- Migration (5.11 → 5.20): the 5.11 docs said a returned `file.path` may not escape the project root and showed `path({ baseName, output })` returning `${output.path}/mocks/${baseName}`; the 5.20 docs resolve it against the root `output.path` directory, which it must stay inside (docs diff 5.11 → 5.20; the `KUBB_PATH_TRAVERSAL` catalog entry changed the same way)
 - Resolver の概念的な役割は [resolvers.md](./resolvers.md) を参照
 - Resolver 自体の実装（`createResolver`）は [creating-plugins.md](./creating-plugins.md) の「Resolvers」セクションを参照
 

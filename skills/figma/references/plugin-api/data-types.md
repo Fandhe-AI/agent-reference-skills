@@ -303,6 +303,53 @@ Accepted by `figma.loadFontAsync`, `setRangeFontName`, and `fontName` assignment
 
 ---
 
+### Transform3d / TransformOrigin / Scene3d (Update 142, beta)
+
+```ts
+type Transform3d =
+  | { readonly type: 'NONE' }
+  | {
+      readonly type: 'FIXED_ORDER'
+      readonly translateZ: number
+      readonly rotateX: number
+      readonly rotateY: number
+      readonly rotateZ: number
+      readonly backfaceVisible?: boolean
+      readonly visible?: boolean
+    }
+  | {
+      readonly type: 'FREEFORM'
+      readonly backfaceVisible: boolean
+      readonly visible?: boolean
+    }
+```
+
+- `FIXED_ORDER`: editable transform matching CSS `translateZ() rotateX() rotateY() rotateZ()` in that order; all four numbers required and finite; `translateZ` in pixels, rotations in degrees. `backfaceVisible` and `visible` default to `true`. The returned object is not editable in place: copy it and assign it back.
+- `FREEFORM`: imported transform that plugins can read; assigning it throws. `NONE`: assign to remove a transform.
+- `TransformOrigin`: `{ readonly x: TransformOriginAxis; readonly y: TransformOriginAxis }`, where `TransformOriginAxis` is `{ readonly unit: 'PERCENT' | 'PIXELS'; readonly value: number }`. Default `{ x: { unit: 'PERCENT', value: 50 }, y: { unit: 'PERCENT', value: 50 } }`; `PERCENT` is relative to width (x) / height (y), `PIXELS` is an offset from the top-left corner.
+- `Scene3d`: `{ perspective: number; preserve3d: boolean; visible?: boolean }`. `perspective` is in pixels (CSS `perspective`); negative disables it, `-1` is the default. `preserve3d: true` makes children share a 3D rendering context (CSS `transform-style: preserve-3d`). `visible: false` keeps the stored perspective but turns the effect off. Avoid opacity, blend modes, effects, or `clipsContent` on a container whose `preserve3d` is `true`: they have no visual effect there (stored values are retained).
+
+Adapted (not in the official docs): the official `transform3d` example, with line breaks restored from the rendered page.
+
+```ts
+const card = figma.createRectangle()
+card.resize(160, 100)
+card.transform3d = {
+  type: 'FIXED_ORDER',
+  translateZ: 40,
+  rotateX: 0,
+  rotateY: 30,
+  rotateZ: 0,
+  backfaceVisible: false,
+}
+// Preserve the other settings when changing one rotation.
+if (card.transform3d.type === 'FIXED_ORDER') {
+  card.transform3d = { ...card.transform3d, rotateY: 45 }
+}
+// Remove the transform.
+card.transform3d = { type: 'NONE' }
+```
+
 ### Guide
 
 ```ts
@@ -336,7 +383,9 @@ Document change events deliver typed change descriptors:
 
 - `figma.mixed` (unique symbol) is returned for node-level properties that differ across a mixed selection.
 - All numeric color channels are 0–1, not 0–255 (for RGB / RGBA; `sourceColor` components use the ranges of their color space).
-- Checked against `@figma/plugin-typings` v1.142.0 (Plugin API Update 141, 2026-10-15). `TextCase` in the typings also includes `'SMALL_CAPS_FORCED'`.
+- Checked against `@figma/plugin-typings` v1.142.0 (npm latest as of 2026-11-14, published 2026-10-16; matches Plugin API Update 141, 2026-10-15). `TextCase` in the typings also includes `'SMALL_CAPS_FORCED'`.
+- The `transform3d` example under Transform3d is adapted only in line breaks (restored from the rendered page); the code is otherwise the official example.
+- Plugin API Update 142 (2026-11-12) documents `Transform3d` / `TransformOrigin` / `Scene3d` (beta) on developers.figma.com, but `@figma/plugin-typings` 1.142.0 does not yet contain them (no `transform3d` / `scene3d` in `plugin-api.d.ts`); the types above come from the docs pages. Source: https://developers.figma.com/docs/plugins/api/Transform3d/ , https://developers.figma.com/docs/plugins/api/TransformOrigin/ , https://developers.figma.com/docs/plugins/api/Scene3d/ (fetched 2026-11-14)
 - Use `figma.util.rgb()` / `figma.util.rgba()` / `figma.util.solidPaint()` for converting CSS color strings.
 
 ## Related

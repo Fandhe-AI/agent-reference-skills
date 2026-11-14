@@ -45,21 +45,24 @@ export class AgentComputer extends DurableObject {
 
 ### Custom instance types
 
+Minimums for custom instance types using the `durable_object` scheduling policy. Maximum resources per instance are subject to the account limits below.
+
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| Minimum vCPU | — | — | 1 |
-| Maximum vCPU | — | — | 4 |
-| Maximum memory | — | — | 12 GiB |
-| Maximum disk | — | — | 20 GB |
-| Memory to vCPU ratio | — | — | Minimum 3 GiB memory per vCPU |
+| Minimum vCPU | — | — | 1/16 (`0.0625`) |
+| Minimum memory | — | — | 256 MiB |
+| Minimum disk | — | — | 2 GB (`2000` MB) |
 
 ### Account limits (per account)
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| Concurrent memory | — | — | 6 TiB |
-| Concurrent vCPU | — | — | 1,500 |
-| Concurrent disk | — | — | 30 TB |
+| vCPU per instance | — | — | 4 |
+| Memory per instance | — | — | 12 GiB |
+| Disk per instance | — | — | 20 GB |
+| Concurrent memory | — | — | 60 TiB |
+| Concurrent vCPU | — | — | 15,000 |
+| Concurrent disk | — | — | 300 TB |
 | Image size | — | — | Same as the instance disk space |
 | Total image storage per account | — | — | 50 GB |
 
@@ -74,8 +77,10 @@ export class AgentComputer extends DurableObject {
 ## Notes
 
 - `default` policy: set size with `instance_type` in Wrangler. `durable_object` policy: pass the named size or a custom object to `ctx.container.start()` as `instance`. `dev` and `standard` are backward-compatible aliases for `lite` and `standard-1`.
-- Field names differ by place: Wrangler (`default` policy) uses `vcpu`, `memory_mib`, `disk_mb`; `ctx.container.start()` (`durable_object` policy) uses `vcpu`, `memoryMib`, `diskMb`. For less than 1 vCPU use `lite` or `basic`.
-- Derived (not stated in the source): with the account limits above, the binding constraint on concurrent instances of one type is the smallest of memory, vCPU and disk. For `standard-4` (4 vCPU, 12 GiB, 20 GB): memory 6144 GiB / 12 = 512, vCPU 1500 / 4 = 375, disk 30,000 GB / 20 = 1,500, so about 375 instances (vCPU-bound). For `standard-1`: memory 6144 / 4 = 1,536, vCPU 1500 / 0.5 = 3,000, disk 30,000 / 8 = 3,750, so about 1,536 (memory-bound). For `lite`: memory 6144 / 0.25 = 24,576, vCPU 1500 / 0.0625 = 24,000, disk 30,000 / 2 = 15,000, so about 15,000 (disk-bound). This assumes 1 TiB = 1,024 GiB and 1 TB = 1,000 GB and a single instance type.
+- Field names differ by place: Wrangler (`default` policy) uses `vcpu`, `memory_mib`, `disk_mb`; `ctx.container.start()` (`durable_object` policy) uses `vcpu`, `memoryMib`, `diskMb`.
+- Derived (not stated in the source): with the account limits above, the binding constraint on concurrent instances of one type is the smallest of memory, vCPU and disk. For `standard-4` (4 vCPU, 12 GiB, 20 GB): memory 61,440 GiB / 12 = 5,120, vCPU 15,000 / 4 = 3,750, disk 300,000 GB / 20 = 15,000, so about 3,750 instances (vCPU-bound). For `standard-1`: memory 61,440 / 4 = 15,360, vCPU 15,000 / 0.5 = 30,000, disk 300,000 / 8 = 37,500, so about 15,360 (memory-bound). For `lite`: memory 61,440 / 0.25 = 245,760, vCPU 15,000 / 0.0625 = 240,000, disk 300,000 / 2 = 150,000, so about 150,000 (disk-bound). This assumes 1 TiB = 1,024 GiB and 1 TB = 1,000 GB and a single instance type.
+- Custom instance minimums above apply to the `durable_object` policy. If you see different constraints, the application may be using the legacy `default` policy; migrating to `durable_object` is required to get these minimums. Before 2026-11-10 the page listed custom-type constraints of 1 to 4 vCPU, at most 12 GiB memory, at most 20 GB disk and at least 3 GiB memory per vCPU; the 2026-11-10 docs update replaced them (Source: cloudflare-docs commit `8f44ded`). The account limits were raised from 6 TiB / 1,500 vCPU / 30 TB to the figures above on 2026-11-12 (commit `efdd5a3`).
+- Source: https://developers.cloudflare.com/containers/platform/limits/ (cloudflare-docs production `34d908a`, fetched 2026-11-14).
 - The 100 MiB outbound limit applies per request body (including encoding and multipart fields), not to total uploaded size. Streaming, chunked transfer encoding and `multipart/form-data` do not bypass it, and the custom-domain "Maximum Upload Size" setting does not control it. To request an increase, contact support stating it concerns outbound HTTP uploads from Containers or Durable Objects, and include account ID and Worker name, the container instance ID or Durable Object namespace and ID, destination hostname, failing body size in bytes and requested limit, failure timestamp, logs and a minimal reproduction.
 - Image storage: delete a tagged image with `wrangler containers images delete IMAGE:TAG` to free space; if you delete an image and then roll back the Worker, that version may stop working.
 - Restoring a snapshot refreshes its 30-day TTL.

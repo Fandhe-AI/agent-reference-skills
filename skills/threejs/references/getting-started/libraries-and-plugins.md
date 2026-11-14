@@ -5,6 +5,7 @@ Community-maintained list of compatible external libraries and plugins for three
 ## Notes
 
 - This list is not guaranteed to be up to date; always check the linked projects for current compatibility.
+- Migration (r186 → r187): the manual's Wrappers and Frameworks list gained `three-player-controller` (https://github.com/hh-hang/three-player-controller). Source: https://threejs.org/manual/#en/libraries-and-plugins (three.js r187, `manual/pages/libraries-and-plugins.html`).
 
 ## Categories
 
@@ -59,6 +60,7 @@ Community-maintained list of compatible external libraries and plugins for three
 - **Needle Engine** — Integrated 3D framework
 - **Giro3D** — Geospatial data visualization
 - **Mattercraft** — Browser-based AR/WebXR visual editor
+- **three-player-controller** — First-person and third-person character controller
 
 ## Related
 

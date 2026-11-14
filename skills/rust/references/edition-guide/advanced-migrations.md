@@ -27,7 +27,7 @@ edition = "2018"
 ## Notes
 
 - The Edition Guide source writes `--force-warns`; the actual rustc flag is `--force-warn` (see rustc lints / command-line-arguments).
-- Source: https://doc.rust-lang.org/edition-guide/editions/advanced-migrations.html (pinned: https://raw.githubusercontent.com/rust-lang/edition-guide/5a14f7276ebc0bd100974f02b918f30472c782fc/src/editions/advanced-migrations.md)
+- Source: https://doc.rust-lang.org/edition-guide/editions/advanced-migrations.html (pinned: https://raw.githubusercontent.com/rust-lang/edition-guide/ab8544aeed7b792984366aa122ac19bd47ad9a2f/src/editions/advanced-migrations.md)
 - The idiom lints are known to have problems and may make incorrect suggestions that fail to compile. Current idiom lints: Edition 2018 has `unused-extern-crates` and `explicit-outlives-requirements`; Edition 2021 has none. If problems occur, combine with `--broken-code` and resolve the rest manually.
 
 ### How migrations work

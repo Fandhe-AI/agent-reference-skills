@@ -32,7 +32,7 @@ The first block above is an ASCII summary of the official lifecycle diagram; the
 
 ### Instance lifecycle and routing
 
-- A container is only reachable through its Durable Object. An inactivity timeout, `signal()`, `destroy()`, a rollout, or a process exit stops the instance; failed startup or early exit returns it to stopped.
+- A container is only reachable through its Durable Object, which controls it through `ctx.container`; manage the lifecycle through the Durable Object Container API, which lets the Durable Object coordinate container compute with persistent state and alarms. An inactivity timeout, `signal()`, `destroy()`, a rollout, or a process exit stops the instance; failed startup or early exit returns it to stopped.
 - `ctx.container.running` becomes `true` before the process is ready; check port readiness before sending the first request.
 - Requests go client to Worker (usually nearest datacenter; Smart Placement may pick another) to Durable Object to container. Because all requests pass through a Worker, end users cannot send non-HTTP TCP or UDP to a container.
 - Durable Objects and their containers are not guaranteed to run in the same location. Container placement is optimized for request routing and startup speed. You are billed only for running instances, not prepared images.
@@ -42,9 +42,13 @@ The first block above is an ASCII summary of the official lifecycle diagram; the
 
 ### Shutdown
 
-- Durable Object Container API: `setInactivityTimeout()`, `signal()`, `destroy()`. `Container` class: `sleepAfter` defaults to 10 minutes and `onActivityExpired()` calls `stop()`.
+- Call `setInactivityTimeout()` to let the runtime stop the container after the Durable Object becomes inactive (it stops receiving requests); the timeout can keep the container available while the Durable Object sleeps. You can also stop a container with `signal()` or `destroy()`.
 - When the platform stops an instance (also during rollouts) it sends `SIGTERM` to the main process, waits up to 15 minutes for exit, then sends `SIGKILL`. Handle `SIGTERM` in your image for cleanup.
-- Events: `monitor()` (Durable Object Container API); `onStart`, `onStop`, `onActivityExpired`, `onError` (`Container` class).
+- Events: the Durable Object runs its own code when the container changes state. Startup work runs after `start()` and a successful port readiness check. Exit work runs when the `monitor()` promise settles: it resolves when the main process exits with code `0` and rejects with an error that has an `exitCode` property for any other code. Scheduled work runs from an alarm, whether or not the container is running.
+
+- Example routing: a Worker calls `env.MY_CONTAINER.getByName("session-1337")`, which brings up a Durable Object that calls `this.ctx.container.start()`. A later request for the same name routes to the original location if the instance is still running; otherwise Cloudflare finds the nearest free instance again.
+- Migration: the deprecated `Container` class from `@cloudflare/containers` (with `sleepAfter`, `onStart`, `onStop`, `onError`) is replaced by application code around `ctx.container`. See api-comparison.md.
+- Source: https://developers.cloudflare.com/containers/concepts/architecture/ (cloudflare-docs production 34d908a, fetched 2026-11-14).
 
 ### State
 

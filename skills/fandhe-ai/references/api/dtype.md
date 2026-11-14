@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/trait.Scalar.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/trait.Scalar.html
 ---
 
 # dtype 抽象（Scalar / CastDType / TypedOps / TapeF64）
@@ -57,6 +57,13 @@ f64 専用の独立自動微分グラフ:
 | `var(&self, value: &Tensor<f64>) -> VarF64<'_, 't>` | メソッド | 勾配追跡ありの f64 葉ノードを登録 |
 | `var_no_grad(&self, value: &Tensor<f64>) -> VarF64<'_, 't>` | メソッド | 勾配追跡なしの f64 葉ノード（`GradientsF64::get` は `GradientTrackingDisabled`） |
 | `backward(&self, loss: &VarF64<'_, 't>) -> Result<GradientsF64, AutodiffError>` | メソッド | 別テープの変数は `TapeMismatch`、勾配追跡対象を持たない loss は `Backward`。非スカラー loss は全要素 1 のシードで逆伝播 |
+| `backward_create_graph<'c>(&self, loss: &VarF64<'_, 't>, child: &'c TapeF64<'t>) -> Result<CreateGraphResultF64<'c, 't>, AutodiffError>` | メソッド | f32 の `Tape::backward_create_graph` の f64 版。対象 Op は `add` / `mul` / `div` / `pow` / `matmul`（rank 2）/ `sum` / `mean`。`max` は対象外で、追跡対象の祖先にあれば子テープへ何も書かず `Backward`。入口検査の順序: `loss` が別テープは `TapeMismatch`、`child` が自身は `Backward`、デバイス不一致は `DeviceMismatch`、`child` が空でなければ `Backward`、対象外 Op は `Backward`。構築途中で失敗しても `child` は空へ戻る。祖先を子テープへ複製する（full mirror）ためメモリは祖先数に比例 |
+| `jvp(&self, output: &VarF64<'_, 't>, input: &VarF64<'_, 't>, tangent: &Tensor<f64>, child: &TapeF64<'t>) -> Result<Tensor<f64>, AutodiffError>` | メソッド | f32 の `Tape::jvp` の f64 版（double-VJP 法）。戻り値は shape が `output.shape()` の非微分値。`child` は空の子テープで、呼び出し後は再利用しない。入口検査（失敗時は親・子とも無変更）: 別テープは `TapeMismatch`、追跡なしの入力は `GradientTrackingDisabled`、接ベクトルの shape 不一致・要素数・バイト数の溢れは `Shape`。要素数 0・追跡なし出力は全ゼロ。前段以降の失敗でも親へちょうど 2 ノードが残る |
+| `jacfwd(&self, output: &VarF64<'_, 't>, input: &VarF64<'_, 't>, child: &TapeF64<'t>) -> Result<Tensor<f64>, AutodiffError>` | メソッド | ヤコビアン全体を double-VJP 法で列ごとに求める。戻り値の shape は `output.shape ++ input.shape`。契約は `jvp` と同じ（接ベクトル検査を除く）。確保前に要素数・バイト数を検査し `Shape` で拒否 |
+| `jvp_multi(&self, output: &VarF64<'_, 't>, inputs: &[&VarF64<'_, 't>], tangents: &[&Tensor<f64>], child: &TapeF64<'t>) -> Result<Tensor<f64>, AutodiffError>` | メソッド | 複数入力の `Σ_i J_i·v_i`（f32 の `Tape::jvp_multi` の f64 版） |
+| `jvp_create_graph<'g>(&self, output: &VarF64<'_, 't>, input: &VarF64<'_, 't>, tangent: &Tensor<f64>, child: &TapeF64<'t>, grandchild: &'g TapeF64<'t>) -> Result<JvpCreateGraphResultF64<'g, 't>, AutodiffError>` | メソッド | 追跡された `J·v` を孫テープ上の値として返す微分可能な `jvp`。テープ関係の検査: 子が親と同一・孫が親か子と同一は `Backward`、デバイス不一致は `DeviceMismatch`、子か孫が空でなければ `Backward`。追跡なし出力・要素数 0 は孫へ全ゼロの葉を 1 個置いて返す（写しは空） |
+| `CreateGraphResultF64<'c, 't>` | 不透明 struct（ルートから再エクスポート） | `first_order(&self) -> &GradientsF64`（素の `TapeF64::backward` と bit 同一の 1 階勾配）、`grad(&self, var: &VarF64<'_, 't>) -> Result<Option<VarF64<'c, 't>>, AutodiffError>`（子テープ上の 1 階勾配。1 階勾配と REQ-2 の統一複合判定の範囲で一致し、bit 一致は契約にしない）、`child_var(&self, var: &VarF64<'_, 't>) -> Result<Option<VarF64<'c, 't>>, AutodiffError>`（`var` の子テープ上の写し） |
+| `JvpCreateGraphResultF64<'g, 't>` | 不透明 struct（ルートから再エクスポート） | `output(&self) -> VarF64<'g, 't>`（`J·v`。孫テープ上の追跡対象値）、`child_var(&self, var: &VarF64<'_, 't>) -> Result<Option<VarF64<'g, 't>>, AutodiffError>`（親の `var` に対応する孫テープ上の写し） |
 | `VarF64<'g, 't>` | `#[derive(Clone, Copy)] pub struct` | `value(&self) -> Tensor<f64>`、`shape(&self) -> Vec<usize>`、`add` / `mul`（ブロードキャストあり）、`div` / `pow`（常にホスト計算）、`matmul`（rank 2 限定）、`sum(dim: Option<usize>)` / `mean(dim: Option<usize>)` / `max(dim: Option<usize>)`（`keepdim` なし）。演算は `(&self, other: &Self) -> Result<Self, AutodiffError>` |
 | `GradientsF64` | `pub struct` | `get(&self, var: &VarF64<'_, '_>) -> Result<Option<&Tensor<f64>>, AutodiffError>`。loss から未到達なら `Ok(None)`、別テープは `TapeMismatch`、`var_no_grad` の葉は `GradientTrackingDisabled` |
 
@@ -65,6 +72,8 @@ f64 専用の独立自動微分グラフ:
 - `TapeF64` は f32 グラフとは独立で、f32 の `Var` から勾配は流れない。f32 側の値は `Var::cast::<f64>()` が返す勾配の切れた `Tensor<f64>` を `TapeF64::var` へ渡す経路のみで取り込む
 - f64 グラフの制約: `matmul` は rank 2 限定、縮約は `dim: Option<usize>` のみ。全軸 `sum` の CPU ネイティブとホストの bit 一致は 4096 要素以下。Metal は常にホスト計算、`div` / `pow` は常にホスト計算。CUDA / Metal 実機 parity は未実測
 - `typed_ops_*` が `Some` を返しても、個々の演算が `BackendError::Unsupported` を返す場合がある（例: CUDA の `TypedOps<f64>` は 8 演算すべて `Unsupported`）。`Some` / `None` は型としての対応可否のみを表す
+- f64 の高階微分系は f32 の `Tape` 版（`autodiff-transforms.md`）と同じ二段・三段のテープ構成で、数値は REQ-2 の統一複合判定の範囲で一致する（bit 同一は契約にしない）。f64 版は `max` を含むグラフを `backward_create_graph` / `jvp*` で拒否する
+- Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/struct.TapeF64.html（0.14.0, 取得日 2026-11-14）
 - `Var` の低精度 forward（`add_low_precision` 等）は `var-elementwise.md` を参照
 
 ## Related

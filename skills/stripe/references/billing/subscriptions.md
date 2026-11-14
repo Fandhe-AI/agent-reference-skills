@@ -85,6 +85,7 @@ curl https://api.stripe.com/v1/subscriptions \
 | `customer.subscription.trial_will_end` | 3 days before trial ends |
 | `invoice.paid` | Successful payment; provision access |
 | `invoice.payment_failed` | Payment failure; begin dunning |
+- Error code (`2026-10-28.endive`, non-breaking): `subscription_update_trial_after_billing_cycle_anchor` is returned in `error.code` when `billing_cycle_anchor` is set earlier than `trial_end` on update Subscription or create invoice preview; end the trial first. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/error-code-billing-cycle-trial-end-validation-subscriptions, retrieved 2026-11-14)
 
 ## Related
 

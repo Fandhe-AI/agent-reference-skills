@@ -218,6 +218,8 @@ emailOTP({
 - Exceeding the maximum attempts returns a `TOO_MANY_ATTEMPTS` error code
 - The stored OTP method does not affect the OTP that is sent (it only affects persistence)
 - Password reset: if the new password is rejected (for example by the Have I Been Pwned plugin), the OTP is not consumed and can be used again. If a later step of the reset fails (revoking sessions, saving the password), the OTP stays usable only when transactions are enabled for your database adapter and verification values are stored in the database. That is the default without secondary storage; with secondary storage, set `verification.storeInDatabase: true`. A wrong OTP still counts toward `allowedAttempts`.
+- `checkVerificationOtp`: a wrong OTP counts toward `allowedAttempts`, and a correct one stays usable for the matching sign-in, email verification, or password reset call
+- Source: https://www.better-auth.com/docs/plugins/email-otp (better-auth v1.7.23 docs)
 - Changed in 1.7: email-OTP (and magic-link) sign-in treats proven mailbox control as the source of truth for an account whose email had never been confirmed. If that account had an unproven password or other linked accounts, Better Auth removes all of them and revokes existing sessions before signing the user in; such a user should set a new password through password reset.
 
 ## Related

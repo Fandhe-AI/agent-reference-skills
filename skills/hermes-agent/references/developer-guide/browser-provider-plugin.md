@@ -1,6 +1,6 @@
 # Browser Provider Plugins
 
-Browser provider plugins register a cloud browser backend that services cloud-mode `browser_*` tool calls. A provider implements session lifecycle only (create a remote session, return a CDP websocket URL, tear down); Hermes' browser stack (`agent-browser` + `tools/browser_tool.py`) drives the page.
+Browser provider plugins register a cloud browser backend: when `browser.cloud_provider` selects it, `browser_exec` (and the CDP tools `browser_cdp`, `browser_dialog`, `browser_vault`) drive a remote browser session it creates instead of a local Chromium. A provider implements session lifecycle only (create a remote session, return a CDP websocket URL, tear down); Hermes hands the returned CDP URL to `browser_exec`, which drives the page.
 
 ## Signature / Usage
 
@@ -65,22 +65,22 @@ browser:
 
 | Key | Description |
 |-----|-------------|
-| `session_name` | Unique agent-browser session name |
-| `bb_session_id` | Provider session ID (legacy key name kept for `tools/browser_tool.py`; do not rename) |
+| `session_name` | Unique session name |
+| `bb_session_id` | Provider session ID (legacy key name kept for backward compatibility with the browser session code; do not rename) |
 | `cdp_url` | CDP websocket URL |
 | `features` | Feature flags enabled |
 | `external_call_id` | Optional; managed-gateway billing |
 
-`get_setup_schema()` returns `{"name", "badge", "tag", "env_vars": [{"key", "prompt", "url"}], "post_setup": "agent_browser"}` for the `hermes tools` Browser Automation picker.
+`get_setup_schema()` returns `{"name", "badge", "tag", "env_vars": [{"key", "prompt", "url"}]}` for the `hermes tools` Browser Automation picker; an optional `post_setup` key names an install hook to run after selection (the v0.22.2 example set `"post_setup": "agent_browser"`; v0.23.1's example omits it).
 
 ## Notes
 
-- Discovery: bundled `plugins/browser/<name>/` (auto-loaded, `kind: backend`), user `~/.hermes/plugins/browser/<name>/` (opt-in via `plugins.enabled` or `hermes plugins enable <name>`), pip entry point `hermes_agent.plugins`. The registry is `agent/browser_registry.py`; the dispatcher is a pure registry lookup.
+- Discovery: bundled `plugins/browser/<name>/` (auto-loaded, `kind: backend`), user `~/.hermes/plugins/browser/<name>/` (opt-in via `plugins.enabled` or `hermes plugins enable <name>`), pip entry point `hermes_agent.plugins`. The registry is `agent/browser_registry.py`; the resolver in `tools/browser_session_cloud.py` (formerly the dispatcher in `tools/browser_tool.py`) is a pure registry lookup.
 - `create_session()` may raise (`ValueError` for missing credentials, `RuntimeError` for network/API failures); `close_session()` and `emergency_cleanup()` must never raise.
 - `name` must be lowercase and stable (it is a user-written config value). `is_available()` runs at tool registration and on every `hermes tools` paint.
 - A backend that cannot be selected and configured through `hermes tools` is not done.
 - Reference implementations under `plugins/browser/`: `firecrawl` (simplest), `browser_use`, `browserbase` (stealth/proxy/keep-alive flags).
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/browser-provider-plugin (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/browser-provider-plugin (pinned to v0.23.1)
 
 ## Related
 

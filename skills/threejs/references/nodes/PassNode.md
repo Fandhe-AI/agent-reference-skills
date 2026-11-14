@@ -11,7 +11,7 @@ postProcessing.outputNode = scenePass;
 ```
 
 ```js
-class PassNode extends TempNode {
+class PassNode extends Node {
 	constructor( scope, scene, camera, options ) {}
 }
 ```
@@ -29,10 +29,10 @@ class PassNode extends TempNode {
 | `autoClearDepth` | `boolean` | `true` | Whether the depth buffer should be cleared |
 | `autoClearStencil` | `boolean` | `true` | Whether the stencil buffer should be cleared |
 | `contextNode` | `ContextNode \| null` | — | An optional global context for the pass |
-| `global` | `boolean` | `true` | Flag used for global cache (overrides `TempNode#global`) |
+| `global` | `boolean` | `true` | Flag used for global cache (overrides `Node#global`) |
 | `isPassNode` | `boolean` (readonly) | `true` | Type-testing flag |
 | `opaque` | `boolean` | `true` | Whether the pass is opaque |
-| `transparent` | `boolean` | `false` | Whether the pass is transparent |
+| `transparent` | `boolean` | `true` | Whether the pass is transparent |
 | `overrideMaterial` | `Material \| null` | — | An optional override material for the pass |
 | `renderTarget` | `RenderTarget` | — | The pass's render target |
 | `updateBeforeType` | `string` | `'frame'` | `NodeUpdateType.FRAME`; the scene is rendered once per frame in `updateBefore` |
@@ -65,9 +65,12 @@ class PassNode extends TempNode {
 
 ## Notes
 
-- Source: https://threejs.org/docs/pages/PassNode.html (three.js r186, `src/nodes/display/PassNode.js`)
-- Inheritance: EventDispatcher > Node > TempNode > PassNode.
+- Source: https://threejs.org/docs/pages/PassNode.html (three.js r187, `src/nodes/display/PassNode.js`; JSDoc from tag r187 / commit 7e89746)
+- Inheritance: EventDispatcher > Node > PassNode.
 - `getResolution()` / `setResolution()` are deprecated since r181.
+- Migration (r186 → r187): extends `Node` instead of `TempNode`; `TempNode` is deprecated in r187 ("Extend Node instead").
+- Migration (r186 → r187): the documented default of `transparent` is `true` (r186 JSDoc said `false`; the constructor already set `true`). If the render target has a stencil buffer and no `options.depthTexture` is given, the internal depth texture uses `DepthStencilFormat` / `UnsignedInt248Type`.
+- `compileAsync()` now compiles with the same render configuration as the render (samples, size, context node) (https://github.com/mrdoob/three.js/pull/35168).
 
 ## Related
 

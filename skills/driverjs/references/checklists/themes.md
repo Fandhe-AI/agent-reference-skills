@@ -98,9 +98,9 @@ checklist({
 
 ## Notes
 
-- Source: https://driverjs.com/docs/checklist-themes (driver.js 1.10.1 docs source, `apps/docs/src/content/guides/checklist-themes.mdx`).
+- Source: https://driverjs.com/docs/checklist-themes (driver.js 1.14.0 docs source, `apps/docs/src/content/guides/checklist-themes.mdx` at tag 1.14.0).
 - The theme CSS bodies live in separate stylesheet files (`apps/docs/src/styles/checklist-themes/*.css`); only the `checklist-ring` CSS is reproduced above. Copy the other themes from the official page.
-- Themes only change appearance, so rules can be mixed or used as a starting point. For every targetable class name see the Styling docs (`/docs/styling#class-names`).
+- Themes only change appearance, so rules can be mixed or used as a starting point. Every class name is listed in Theming (`/docs/theming#checklist-classes`).
 - Compact example uses `title: "Setup"`, `launcherProgressText: "{{remaining}} left"`; the GIF Banner example passes `description: '<img src="/welcome.gif" alt="" /><p>Four quick steps to get you going.</p>'`.
 
 ## Related

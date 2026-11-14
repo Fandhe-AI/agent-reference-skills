@@ -53,6 +53,14 @@ const db = withReplicas(primaryDb, [read1, read2], (replicas) => {
 ## Notes
 
 - Transcribed from `pg/read-replicas.mdx` (pg is the canonical dialect)
+- Migration (rc.4 → rc.5): the page body above is verbatim and still says that `SELECT` queries are routed to replicas. The rc.5 release notes and the v0 → v1 changes page state otherwise: with `withReplicas(primary, replicas)` every query goes to the primary database by default, and reads must opt in to a replica with `db.$replica`. The two official pages disagree at docs commit 55f7f9e; for `drizzle-orm@rc` (1.0.0-rc.5) follow the rc.5 behavior below.
+- Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 and https://orm.drizzle.team/docs/v0-v1-changes (docs repo commit 55f7f9e, retrieved 2026-11-14)
+
+```ts
+// After: drizzle-orm@rc, with db created by withReplicas()
+await db.select().from(users); // primary
+await db.$replica.select().from(users); // replica
+```
 
 ## Related
 

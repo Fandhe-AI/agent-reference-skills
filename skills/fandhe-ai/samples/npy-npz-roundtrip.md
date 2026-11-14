@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-ai/0.11.0/source/src/interop/npy.rs
+source: https://docs.rs/crate/fandhe-ai/0.14.0/source/src/interop/npy.rs
 ---
 
 # NumPy npy / npz Roundtrip
@@ -35,6 +35,7 @@ fn main() {
 
 ## Notes
 
-- コードは `src/interop/npy.rs`（0.11.0）のモジュール doc 例（上流では doctest）を `fn main` で包んだもの。`Sequential::state_dict` の `HashMap<String, Tensor<f32>>` はそのまま `save_npz` に渡せる
+- コードは `src/interop/npy.rs`（0.14.0）のモジュール doc 例（上流では doctest）を `fn main` で包んだもの。`Sequential::state_dict` の `HashMap<String, Tensor<f32>>` はそのまま `save_npz` に渡せる
 - 対象は `Tensor<f32>`（`<f4` / `>f4`）のみ。他 dtype は `NpyError::UnsupportedDtype`。`NpyError` は `#[non_exhaustive]` のため `match` にはワイルドカード腕が必要
 - 書き込みは原子的ではない（`std::fs::write`）。一時ファイル + rename の `save_safetensors_f32` とは異なる。読み込みは symlink を辿り、ファイルサイズ上限は 1 GiB
+- `fandhe-ai =0.14.0` に対し、本ページのコードを `cargo check` で確認し、実行して `assert` が通ることも確認済み（2026-11-14）

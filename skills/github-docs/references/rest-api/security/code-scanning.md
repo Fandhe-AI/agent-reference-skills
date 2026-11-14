@@ -2,6 +2,8 @@
 
 コードスキャンのアラート・解析結果・CodeQL データベース・SARIF アップロードを管理するエンドポイント。
 
+公式ドキュメント: https://docs.github.com/en/rest/code-scanning/code-scanning
+
 ## エンドポイント
 
 ### アラート
@@ -58,6 +60,31 @@
 
 - classic PAT は `security_events` スコープ（public リポジトリのみなら `public_repo` スコープでも可）が必要
 - SARIF アップロードは非同期処理。`GET /sarifs/{sarif_id}` でステータスをポーリングする
+- Source: https://docs.github.com/en/rest/code-scanning/code-scanning (Article Body API, fetched 2026-11-14)
+
+### AI Scan (public preview)
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/orgs/{org}/code-scanning/ai-scan` | Get the AI Scan setting for an organization (`pr_scan` / `repository_scan`) |
+| PATCH | `/orgs/{org}/code-scanning/ai-scan` | Update the AI Scan setting for an organization |
+| GET | `/repos/{owner}/{repo}/code-scanning/ai-scan` | Get AI Scan enablement for a repository |
+| PATCH | `/repos/{owner}/{repo}/code-scanning/ai-scan` | Update AI Scan enablement for a repository |
+
+```curl
+curl -L \
+  -X PATCH \
+  https://api.github.com/orgs/ORG/code-scanning/ai-scan \
+  -d '{
+  "pr_scan": "enabled",
+  "repository_scan": "enabled"
+}'
+```
+
+- `pr_scan` covers AI Scan for pull requests; `repository_scan` (added 2026-11-13) covers AI Scan for repositories. Values are `enabled` / `disabled`. A disabled organization prevents its repositories from enabling it; an enabled organization lets repositories inherit it and opt out individually
+- When an enterprise policy does not allow AI Scan, enabling returns `422`. Both settings can be updated in one request; if either change is blocked, neither changes
+- Permissions: organization endpoints need an owner or security manager (`admin:org`, `repo` or `write:org`; security managers need `write:org`); repository endpoints need `repo` (or `public_repo` for public-only)
+- Source: https://github.blog/changelog/2026-11-13-manage-ai-scan-for-repositories-using-the-rest-api (fetched 2026-11-14)
 
 ## Related
 

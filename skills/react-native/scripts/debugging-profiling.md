@@ -1,10 +1,10 @@
 ---
-source: https://reactnative.dev/docs/0.87/debugging
+source: https://reactnative.dev/docs/0.88/debugging
 ---
 
 # Debugging and Profiling
 
-Commands for debugging and Hermes release runs. Other sources: https://reactnative.dev/docs/0.87/hermes, https://reactnative.dev/docs/0.87/debugging-release-builds.
+Commands for debugging and Hermes release runs. Other sources: https://reactnative.dev/docs/0.88/hermes, https://reactnative.dev/docs/0.88/debugging-release-builds.
 
 The docs pages react-native-devtools, profiling and other-debugging-methods contain no runnable shell commands (they describe UI and shortcuts), so none are collected from them.
 

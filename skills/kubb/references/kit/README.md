@@ -14,4 +14,3 @@
 | Kit: Plugins | Plugins are the main extension point in Kubb… | [plugins.md](./plugins.md) |
 | Kit: Resolvers | `createResolver` builds a plugin resolver for names… | [resolvers.md](./resolvers.md) |
 | Kit: Storage | Storage backends persist generated files in the… | [storage.md](./storage.md) |
-| Kit: Testing | `kubb/kit/testing` is a separate subpath for the… | [testing.md](./testing.md) |

@@ -20,7 +20,7 @@ npx playwright test
 ## Docker イメージでの実行
 
 ```sh
-docker run -it --rm --ipc=host mcr.microsoft.com/playwright:v1.64.1-noble /bin/bash
+docker run -it --rm --ipc=host mcr.microsoft.com/playwright:v1.65.1-noble /bin/bash
 ```
 
 > **警告**: `--ipc=host` は必須。省略すると Chromium が共有メモリ不足でクラッシュする場合がある。
@@ -33,7 +33,7 @@ docker run -it --rm --ipc=host mcr.microsoft.com/playwright:v1.64.1-noble /bin/b
 docker run -it --rm --ipc=host \
   --user pwuser \
   --security-opt seccomp=seccomp_profile.json \
-  mcr.microsoft.com/playwright:v1.64.1-noble /bin/bash
+  mcr.microsoft.com/playwright:v1.65.1-noble /bin/bash
 ```
 
 > **警告**: 信頼できないサイトのスクレイピングやテストを行う場合は必ずセキュリティ制限を付与する。
@@ -43,8 +43,8 @@ docker run -it --rm --ipc=host \
 ```sh
 docker run -p 3000:3000 --rm --init -it \
   --workdir /home/pwuser --user pwuser \
-  mcr.microsoft.com/playwright:v1.64.1-noble \
-  /bin/sh -c "npx -y playwright@1.64.1 run-server --port 3000 --host 0.0.0.0"
+  mcr.microsoft.com/playwright:v1.65.1-noble \
+  /bin/sh -c "npx -y playwright@1.65.1 run-server --port 3000 --host 0.0.0.0"
 ```
 
 ## リモートサーバーへの接続

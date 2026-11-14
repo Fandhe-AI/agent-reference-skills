@@ -61,6 +61,13 @@ export default inngest.createFunction(
 - `step.score()` requires `scoreMiddleware()` (from `inngest/experimental`) registered on the client, and is memoized — a retry or replay does not double-record.
 - Use direct scoring (`inngest.score()` / `step.score()`) for outcomes known before the function finishes; use deferred scoring for signals that arrive later.
 - When scoring an experiment variant from a different run than the one that served it, pass that run's `runId` or the score won't appear under the experiment.
+- Source: https://github.com/inngest/inngest-js/releases/tag/inngest@4.26.0 (retrieved 2026-11-14)
+### Changes in SDK 4.26.0
+
+- `inngest.score.experiment()` no longer accepts `stepId`; experiment scores must be run-scoped (the REST API already enforces this). `createScorer()` ignores, and warns about, a returned `stepId` when the parent was deferred with an experiment, so the score lands on the run where the experiment view reads it.
+- Scores are sent as one `inngest.score.<name>` metadata kind per score name (values `{ value }`), and SDK warnings as one `inngest.warning.<code>` kind per warning code, both sent as `set`.
+- This requires an Inngest server (self-hosted or Dev Server) that accepts per-name score and warning kinds (inngest/inngest#4992). Older servers reject these kinds with a 400 when sent through the API, or with a checkpointed step, so those scores and warnings are lost.
+- The official Agent Evals reference page (https://www.inngest.com/docs-markdown/agent-evals/reference, retrieved 2026-11-14) still lists `stepId?` for `inngest.score.experiment()`; this page follows the 4.26.0 release notes.
 
 ## Related
 

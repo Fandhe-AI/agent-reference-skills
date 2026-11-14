@@ -34,9 +34,12 @@ if (tid < 8) {
 - TMA tensor map swizzle patterns (`CU_TENSOR_MAP_SWIZZLE_128B` / `_64B` / `_32B`) trade shared-memory bank-conflict avoidance against alignment constraints — both shared and global memory alignment must satisfy the pattern's requirement (128 bytes for all three listed patterns).
 - A `CUtensorMap` can be created once on the host via `cuTensorMapEncodeTiled` or built/modified on the device via `tensormap_replace_*`, but any device-side modification must be followed by `tensormap_cp_fenceproxy`/`fence_proxy_tensormap_generic` before the modified map is used for a copy.
 - TMA multicast performance (CPG 13.4): a bulk-asynchronous tensor operation within a cluster can be multicast, transferring data from global memory to the shared memory of multiple blocks in the cluster. The multicast feature is optimized for global memory accesses on the current device (not for accesses over NVLink from peer devices) and for certain data-center GPU target architectures documented in the PTX multicast Target ISA notes. It may have significantly reduced performance on other targets, so use it only for access to global memory on the local GPU and only on GPUs with the recommended compute capabilities from those notes. (The 13.3 text singled out `sm_90a`.)
+- On devices of compute capability 10.7, a bulk-asynchronous copy from global to shared memory can check the copied data for a sentinel value and report the outcome through the shared memory barrier; see Fine-Grained Synchronization.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/async-copies.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 
 - [Asynchronous Barriers](./async-barriers.md)
 - [Pipelines](./pipelines.md)
 - [Cooperative Groups](./cooperative-groups.md)
+- [Fine-Grained Synchronization](./fine-grained-synchronization.md)

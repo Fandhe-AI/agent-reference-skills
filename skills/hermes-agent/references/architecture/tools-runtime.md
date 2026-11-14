@@ -55,13 +55,14 @@ Return result string (or JSON error)
 | `disabled_toolsets` given | All toolsets minus the disabled ones |
 | Neither | All known toolsets |
 
-After resolution, `registry.get_definitions()` applies `check_fn` filtering; `execute_code` and `browser_navigate` schemas are then patched to reference only tools that passed filtering.
+After resolution, `registry.get_definitions()` applies `check_fn` filtering; schemas such as `execute_code`, `browser_cdp` and `delegate_task` are then patched to reference only tools that passed filtering.
 
-Terminal backends: local, docker, ssh, singularity, modal, daytona, vercel_sandbox. Also per-task cwd overrides, background process management, PTY mode, approval callbacks.
+Terminal backends: local, docker, ssh, modal, daytona, vercel_sandbox, plus plugin backends registered through `ctx.register_terminal_environment_provider` (e.g. `singularity`). Also per-task cwd overrides, background process management, PTY mode, approval callbacks.
 
 ## Notes
 
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/tools-runtime (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/tools-runtime (pinned to v0.23.1)
+- `check_fn` examples: API key present, service running, dependency installed (e.g. `browser-harness` importable for `browser_exec`, replacing the former `playwright` binary check).
 - Discovery: `discover_builtin_tools()` scans `tools/*.py` with AST parsing for top-level `registry.register()` calls (skipping `__init__.py`, `registry.py`, `mcp_tool.py`) and imports them. MCP tools (`discover_mcp_tools()`) and plugin tools (`hermes_cli.plugins.discover_plugins()`) are discovered afterwards.
 - A registration shadowing a tool from a different toolset is rejected unless `override=True`; plugin overrides of built-ins also need `plugins.entries.<plugin_id>.allow_tool_override: true`.
 - `schema["description"]` is the authoritative model-facing description; `description=` only populates `ToolEntry.description`.
@@ -71,6 +72,10 @@ Terminal backends: local, docker, ssh, singularity, modal, daytona, vercel_sandb
 - Async bridging via `_run_async()`: persistent loop on CLI, disposable thread with `asyncio.run()` on gateway, per-thread persistent loops in worker threads.
 - Dangerous-command approval (`tools/approval.py`): `DANGEROUS_PATTERNS` list of `(regex, description)`, `detect_dangerous_command(command)`, CLI interactive prompt, gateway async callback, optional smart approval via auxiliary LLM, per-session approvals, permanent allowlist in `config.yaml` `command_allowlist`.
 - Process results: `tools/process_registry_checkpoint.py` owns running-process checkpoints; `tools/process_registry_results.py` writes one atomic, redacted receipt per process under the profile's `logs/process-results/`; reads require the commissioning durable session.
+
+### Migration (v0.22 -> v0.23)
+
+- `singularity` is no longer a built-in terminal backend; it is a plugin backend. The `execute_code` / `browser_navigate` schema-patching pair became `execute_code` / `browser_cdp` / `delegate_task`.
 
 ## Related
 

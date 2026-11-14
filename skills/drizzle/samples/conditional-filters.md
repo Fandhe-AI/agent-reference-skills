@@ -28,6 +28,7 @@ await searchPosts('AI', ['Tech', 'Art', 'Science'], 200);
 
 ## Notes
 
+- Migration (rc.4 → rc.5): this applies to the SQL query builder only. In relational queries (`db.query`) an explicit `undefined` inside `where` now throws; use `EmptyFilter` from `drizzle-orm/relations` instead (see `references/relational-queries/rqb.md`).
 - `and()`/`or()` silently drop `undefined` arguments, so ternaries like `condition ? eq(...) : undefined` compose cleanly without a manual "build an array and filter falsy" step.
 - Filters can also be accumulated into an `SQL[]` array across different parts of a codebase and combined later with `and(...filters)`.
 - Custom filter operators are just `sql` template expressions returning a boolean condition (e.g. ``sql`length(${column}) < ${value}` ``), so any operator you're missing can be hand-rolled the same way built-ins like `lt` are implemented internally.

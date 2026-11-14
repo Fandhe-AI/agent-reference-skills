@@ -29,6 +29,7 @@ e.Use(middleware.CSRF())
 
 - Two-layer defense: modern browsers are checked via `Sec-Fetch-Site` (`same-origin`/`none` allowed, `same-site` falls back to token check, `cross-site` blocked with `403` for unsafe methods); older browsers fall back to token validation only.
 - The token is available server-side via context under `ContextKey`, and client-side via the CSRF cookie.
+- Since v5.4.2, empty cookie tokens and empty client tokens are rejected in CSRF validation (defense in depth; no new security advisory). Source: https://github.com/labstack/echo/releases/tag/v5.4.2 (fetched 2026-11-14).
 
 ## Related
 

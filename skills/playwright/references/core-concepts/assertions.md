@@ -389,6 +389,35 @@ import { expect as a11yExpect } from "a11y-test-utils";
 export const expect = mergeExpects(dbExpect, a11yExpect);
 ```
 
+### Generic custom matchers
+
+TypeScript cannot carry a type parameter from the matcher implementation to the call site. If the matcher is generic over the received value, its type parameter becomes `unknown` when you call the matcher on `expect`. To get the type of the received value in the matcher arguments, declare the matcher signature in the `PlaywrightTest.Matchers` interface, whose second type parameter `T` is the type of the value passed to `expect`. A generic matcher also needs an explicit `this` parameter type to access `this.utils` and other matcher state.
+
+```typescript
+import { expect as baseExpect } from '@playwright/test';
+import type { ExpectMatcherState } from '@playwright/test';
+
+export const expect = baseExpect.extend({
+  toSatisfy<T>(this: ExpectMatcherState, received: T, predicate: (value: T) => boolean) {
+    const pass = predicate(received);
+    return {
+      message: () => `expected ${this.utils.printReceived(received)} to satisfy the predicate`,
+      pass,
+    };
+  },
+});
+
+declare global {
+  namespace PlaywrightTest {
+    interface Matchers<R, T = unknown> {
+      toSatisfy(predicate: (value: T) => boolean): R;
+    }
+  }
+}
+```
+
+Source: https://playwright.dev/docs/test-assertions (microsoft/playwright v1.65.1 `docs/src/test-assertions-js.md`)
+
 ## Non-Retrying Generic Assertions
 
 These are synchronous, do not auto-retry, and do not require `await`.

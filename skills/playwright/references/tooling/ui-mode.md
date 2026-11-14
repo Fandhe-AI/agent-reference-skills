@@ -190,3 +190,5 @@ A fixed port is useful for port forwarding and firewall rules in remote setups.
 ### Security Warning
 
 When using `--ui-host=0.0.0.0`, the UI Mode interface -- including traces, test content, passwords, and secrets visible in snapshots -- is accessible from any machine on the network. Use only in trusted environments or behind a VPN.
+
+Since v1.65 the docs state this for any `--ui-host` value: UI Mode, with your traces, passwords and secrets, is accessible to anyone who can reach that address and port; with `--ui-host=0.0.0.0` this includes other machines inside your network. When you specify `--ui-port`, other users on your machine can connect to UI Mode on that port; they can run your tests and read your project files and traces. In GitHub Codespaces the ports are only accessible from your account by default. Source: https://playwright.dev/docs/test-ui-mode (microsoft/playwright v1.65.1 `docs/src/test-ui-mode-js.md`)

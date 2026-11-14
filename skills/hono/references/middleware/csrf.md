@@ -26,3 +26,4 @@ app.use(csrf({ origin: 'https://example.com' }))
 - A request passes if either the `Origin` check or the `Sec-Fetch-Site` check succeeds.
 - Old browsers that do not send `Origin` headers, or reverse proxies that strip them, may bypass this middleware. In such cases use CSRF token methods instead.
 - For dynamic origin functions, always verify the protocol; never use forward (prefix) matching.
+- Since v4.13.16 requests with content type `text/ping` (sent by Chromium's `<a ping>`) are checked against `Origin` and `Sec-Fetch-Site` as well (GHSA-46wx-v44x-9hh2). Source: https://github.com/honojs/hono/releases/tag/v4.13.16

@@ -1,75 +1,199 @@
-# Custom Hook with Resolver
+# Custom resolver
 
-Advanced Usage: https://react-hook-form.com/advanced-usage#CustomHookwithResolver
+Advanced Usage: https://react-hook-form.com/advanced-usage/custom-hook-with-resolver
 
-You can build a custom hook as a resolver. A custom hook can easily integrate with Yup/Joi/Superstruct as a validation method to be used inside a validation resolver.
+Write a resolver to plug any validation library into the form. A resolver is a function that validates the whole form at once. React Hook Form calls it instead of running the built-in `register` rules, then shows the errors it returns. The official `@hookform/resolvers` package (https://react-hook-form.com/integrations/resolvers) already covers Zod, Yup, Valibot, and many other libraries, so check it before writing your own. Write a custom resolver when you need to:
 
-- Define a memoized validation schema (or define it outside your component if you don't have any dependencies)
-- Use the custom hook, by passing the validation schema
-- Pass the validation resolver to the useForm hook
+- validate with an in-house or unsupported library,
+- express cross-field rules in plain TypeScript, or
+- adapt a validation API that your server also uses.
 
 ## Signature / Usage
 
-```javascript
-import { useCallback } from "react"
-import { useForm } from "react-hook-form"
-import * as yup from "yup"
+### The contract
 
-const useYupValidationResolver = (validationSchema) =>
-  useCallback(
-    async (data) => {
-      try {
-        const values = await validationSchema.validate(data, {
-          abortEarly: false,
-        })
+```tsx
+type Resolver<TFieldValues, TContext> = (
+  values: TFieldValues,
+  context: TContext | undefined,
+  options: ResolverOptions<TFieldValues>
+) => ResolverResult | Promise<ResolverResult>
+```
 
-        return {
-          values,
-          errors: {},
-        }
-      } catch (errors) {
-        return {
-          values: {},
-          errors: errors.inner.reduce(
-            (allErrors, currentError) => ({
-              ...allErrors,
-              [currentError.path]: {
-                type: currentError.type ?? "validation",
-                message: currentError.message,
-              },
-            }),
-            {}
-          ),
-        }
-      }
+- **`values`**: the current form values.
+- **`context`**: whatever you pass to `useForm({ context })`. Use it for data the rules depend on, such as a list of taken usernames.
+- **`options`**: includes `criteriaMode` and `names`, the fields being validated when `trigger` runs for specific fields.
+
+Return `{ values, errors: {} }` when the form is valid, or `{ values: {}, errors }` when it is not. The `values` you return on success are what `handleSubmit` passes to your submit handler, so a resolver can also parse or transform values.
+
+Errors must be **nested** to match the field paths. An error for `address.city` must be `{ address: { city: { type, message } } }`. A flat key such as `{ "address.city": ... }` is never shown, because React Hook Form looks errors up by walking the path.
+
+### A hand-written resolver
+
+This resolver checks a work email against a list passed through `context`, compares two password fields, and returns a nested error for the city:
+
+```tsx
+import { useForm, type FieldErrors, type Resolver } from "react-hook-form"
+
+type SignupValues = {
+  email: string
+  password: string
+  confirmPassword: string
+  address: { city: string }
+}
+
+type SignupContext = { blockedDomains: string[] }
+
+export const signupResolver: Resolver<SignupValues, SignupContext> = async (
+  values,
+  context
+) => {
+  const errors: FieldErrors<SignupValues> = {}
+
+  if (!/^\S+@\S+\.\S+$/.test(values.email)) {
+    errors.email = { type: "pattern", message: "Enter a valid email address." }
+  } else if (context?.blockedDomains.some((d) => values.email.endsWith(d))) {
+    errors.email = { type: "domain", message: "Use your work email address." }
+  }
+  if (values.password.length < 8) {
+    errors.password = {
+      type: "minLength",
+      message: "Use at least 8 characters.",
+    }
+  }
+  if (values.confirmPassword !== values.password) {
+    errors.confirmPassword = {
+      type: "match",
+      message: "Passwords don't match.",
+    }
+  }
+  if (!values.address.city.trim()) {
+    // Nested fields need nested error objects.
+    errors.address = { city: { type: "required", message: "Enter a city." } }
+  }
+
+  return Object.keys(errors).length
+    ? { values: {}, errors }
+    : { values, errors: {} }
+}
+
+export default function SignupForm({
+  onSubmit,
+}: {
+  onSubmit: (values: SignupValues) => void
+}) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupValues, SignupContext>({
+    resolver: signupResolver,
+    context: { blockedDomains: ["@gmail.com", "@yahoo.com"] },
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      address: { city: "" },
     },
-    [validationSchema]
-  )
-
-const validationSchema = yup.object({
-  firstName: yup.string().required("Required"),
-  lastName: yup.string().required("Required"),
-})
-
-export default function App() {
-  const resolver = useYupValidationResolver(validationSchema)
-  const { handleSubmit, register } = useForm({ resolver })
+  })
 
   return (
-    <form onSubmit={handleSubmit((data) => console.log(data))}>
-      <input {...register("firstName")} />
-      <input {...register("lastName")} />
-      <input type="submit" />
+    <form noValidate onSubmit={handleSubmit(onSubmit)}>
+      <label htmlFor="email">Work email</label>
+      <input id="email" type="email" {...register("email")} />
+      {errors.email && <p role="alert">{errors.email.message}</p>}
+
+      <label htmlFor="password">Password</label>
+      <input id="password" type="password" {...register("password")} />
+      {errors.password && <p role="alert">{errors.password.message}</p>}
+
+      <label htmlFor="confirmPassword">Confirm password</label>
+      <input
+        id="confirmPassword"
+        type="password"
+        {...register("confirmPassword")}
+      />
+      {errors.confirmPassword && (
+        <p role="alert">{errors.confirmPassword.message}</p>
+      )}
+
+      <label htmlFor="city">City</label>
+      <input id="city" {...register("address.city")} />
+      {errors.address?.city && (
+        <p role="alert">{errors.address.city.message}</p>
+      )}
+
+      <button type="submit">Create account</button>
     </form>
   )
 }
 ```
 
+The resolver always validates the whole form. When `trigger("email")` runs, React Hook Form still calls the resolver with all values, but only updates the errors for `email`. Other fields stay quiet until they are validated.
+
+### An adapter for any validator
+
+Most validators report a list of issues with a dotted path and a message. This generic adapter turns that list into a resolver. `set` and `get` are exported by `react-hook-form`, and `set` builds the nested error object from a dotted path:
+
+```tsx
+import {
+  get,
+  set,
+  type FieldErrors,
+  type FieldValues,
+  type Resolver,
+} from "react-hook-form"
+
+export type Issue = { path: string; message: string; type?: string }
+
+export function issuesResolver<T extends FieldValues>(
+  validate: (values: T) => Issue[] | Promise<Issue[]>
+): Resolver<T> {
+  return async (values) => {
+    const issues = await validate(values)
+    if (issues.length === 0) return { values, errors: {} }
+
+    const errors: FieldErrors<T> = {}
+    for (const issue of issues) {
+      // Keep the first issue for each field. set() nests dotted paths,
+      // so "address.city" becomes { address: { city: ... } }.
+      if (!get(errors, issue.path)) {
+        set(errors, issue.path, {
+          type: issue.type ?? "validation",
+          message: issue.message,
+        })
+      }
+    }
+    return { values: {}, errors }
+  }
+}
+```
+
+Use it with any validation function, including one shared with your server:
+
+```tsx
+const resolver = issuesResolver<SignupValues>((values) =>
+  validateSignup(values).map((issue) => ({
+    path: issue.field,
+    message: issue.text,
+  }))
+)
+
+const form = useForm<SignupValues>({ resolver })
+```
+
+Define the resolver outside the component, or memoize it with `useMemo`, so it keeps the same identity across renders.
+
 ## Notes
 
-- This hook uses `currentError.path` (e.g. `"user.name"`) as a flat key, so it is intended for flat schemas only. With nested schemas (objects / arrays) `errors` is not hierarchical, which does not satisfy the `useForm` resolver contract (errors keys must be hierarchical).
-- For nested schemas use `yupResolver` from `@hookform/resolvers/yup`, or convert flat errors into a hierarchy with `toNestErrors` from `@hookform/resolvers`.
+- Source: https://react-hook-form.com/advanced-usage/custom-hook-with-resolver (documentation master c0511c9, fetched 2026-11-14)
+- **Built-in rules are ignored.** With a resolver, rules passed to `register`, such as `required`, do not run. Put every rule in the resolver.
+- **Keep one error per field.** If your validator reports several issues for a field, keep the first, as the adapter does, unless you use `criteriaMode: "all"`. In that mode, add every message under `types`, for example `{ type: "minLength", message, types: { minLength: message, pattern: otherMessage } }`.
+- **Async validation.** Resolvers can be async, for example to check a username on the server. They run on every validation, so debounce or cache network checks, or run them only on submit.
+- **Types.** Annotate the resolver as `Resolver<FormValues>`, or `Resolver<FormValues, Context>`, so `values` and the returned errors are checked against your form type.
 
 ## Related
 
 - [useform](../api/useform.md)
+- [useform-trigger](../api/useform-trigger.md)
+- [useform-handlesubmit](../api/useform-handlesubmit.md)

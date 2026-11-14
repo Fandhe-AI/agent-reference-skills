@@ -59,6 +59,7 @@ Per-network attributes:
 | `ipv4_address`, `ipv6_address` | Static IP address on join. The top-level network must have an `ipam` attribute with subnet configurations covering each static address. |
 | `link_local_ips` | List of link-local IPs. |
 | `mac_address` | MAC address used by the service container when connecting to this network. |
+| `use_service_name_alias` | Whether the service name is registered as an alias of the service's containers on the network. Defaults to `true`; requires the long syntax of `networks`. See `use_service_name_alias` below. |
 | `driver_opts` | Driver-dependent key-value options passed to the driver. |
 | `gw_priority` | The network with the highest `gw_priority` is the default gateway for the container. Default 0. |
 | `priority` | Order in which Compose connects the service's containers to networks. Default 0. Does not affect default gateway selection (use `gw_priority`) and cannot determine device names (`eth0` etc.). |
@@ -87,6 +88,46 @@ networks:
 ```
 
 Note: the snippet above combines per-network attributes documented one at a time on the official page; each is shown there in its own example.
+
+#### `use_service_name_alias`
+
+`use_service_name_alias` controls whether the service name is registered as an alias of the service's containers
+on the network. It defaults to `true`. It requires the long syntax of `networks`.
+
+When set to `false`, the service name is not an alias on this network. The values listed in
+`aliases` are not affected, and neither are the other networks of the service.
+
+You must distinguish an unset value from `false`, so that a Compose file merged on top of another
+can set the attribute back to `true`.
+
+This is useful when a network is shared by several Compose applications that each define a service with the
+same name: the name would otherwise resolve to a container of any of them. Give each service a distinct
+alias instead:
+
+```yml
+networks:
+  shared:
+    external: true
+
+services:
+  database:
+    networks:
+      shared:
+        aliases:
+          - project1-database
+        use_service_name_alias: false
+```
+
+If the service is attached to no other network where its name is registered, other services can no longer
+reach it by service name. Use `aliases` to give it a name on that network. `links`
+are not affected.
+
+> [!NOTE]
+>
+> `use_service_name_alias` only affects name resolution. It does not isolate the network. Containers attached
+> to it can still reach the service by IP address or by any of its aliases.
+
+- Source: https://docs.docker.com/reference/compose-file/services/#use_service_name_alias (docker/docs @ 553482c, retrieved 2026-11-14 JST)
 
 ### `network_mode`
 

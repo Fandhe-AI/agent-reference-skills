@@ -66,6 +66,8 @@ await authClient.signIn.social({
 })
 ```
 
+The ID token must include `email` unless a custom `getUserInfo` provides it. An `accessToken` or `refreshToken` sent with it is ignored.
+
 Providers configured with explicit endpoints instead of `discoveryUrl` return `ID_TOKEN_NOT_SUPPORTED`.
 
 ### Link Account
@@ -200,12 +202,13 @@ interface GenericOAuthConfig {
 | `accessType` | string | `"offline"` to request a refresh token |
 | `accessTokenExpiresIn` | number | Fallback lifetime (seconds) when the token response omits `expires_in` |
 | `getToken` | function | Custom code-to-token exchange |
-| `getUserInfo` | function | Custom user info retrieval |
+| `getUserInfo` | function | Custom user info retrieval. When the discovery document has a `jwks_uri`, the default fetch requires the UserInfo `sub` to match the `sub` of the `id_token`, or sign-in fails; a custom profile must match too when it includes `sub`. For sign-in or linking with a client-submitted `idToken`, it receives only that `idToken`, and the default fetch reads the profile from its claims, which must include `email` |
 | `mapProfileToUser` | function | Map provider profile to mutable user fields |
 | `authorizationUrlParams` | Record<string, string> | Extra authorization query params; reserved keys (`state`, `client_id`, `redirect_uri`, `response_type`, `code_challenge`, `code_challenge_method`, `nonce`, `scope`) are ignored |
 | `tokenUrlParams` | Record<string, string> | Extra token URL params; parameters set by Better Auth are preserved |
 | `refreshTokenParams` | object \| function | Extra body params on refresh (function form receives request headers / cookies; validate derived values); `grant_type`, `refresh_token`, `client_id` cannot be overridden |
-| `discoveryHeaders` / `authorizationHeaders` | Record<string, string> | Custom headers |
+| `discoveryHeaders` | Record<string, string> | Custom headers for the discovery request. Sent only to the origin (scheme, host, port) of `discoveryUrl`: discovery follows redirects only within that origin (a redirect to another origin fails discovery and logs an error; set `discoveryUrl` to the final URL), and the `jwks_uri` request gets the headers only when `jwks_uri` is on that origin |
+| `authorizationHeaders` | Record<string, string> | Custom headers for requests to the token endpoint, both the authorization code exchange and token refresh. A custom `getToken` replaces the default code exchange, so it must add these headers itself |
 | `overrideUserInfo` | boolean | Update user info on every sign-in (default `false`) |
 | `disableImplicitSignUp` | boolean | Require explicit sign-up intent |
 | `disableSignUp` | boolean | Only existing users can sign in |
@@ -223,6 +226,8 @@ For `private_key_jwt`, supply `getClientAssertion` or use `createPrivateKeyJwtCl
 - Renamed in 1.7: the OAuth callback redirect error `email_doesn't_match` is now `email_does_not_match`.
 - Changed in 1.7: a discovery-URL provider verifies its identity token; a token that fails verification is rejected. Confirm the provider's published keys, issuer, and audience.
 - Changed in 1.7: signed-assertion (`private_key_jwt`) setups are validated at creation (unsupported algorithm, key with no material, algorithm/key mismatch fail immediately). `createAuthorizationCodeRequest`, `createRefreshAccessTokenRequest`, and `createClientCredentialsTokenRequest` are replaced by the async `authorizationCodeRequest`, `refreshAccessTokenRequest`, and `clientCredentialsTokenRequest`.
+- Use the SSO plugin instead when each organization brings its own identity provider or needs SAML; to let other apps sign in with your app, use the OAuth Provider plugin
+- Source: https://www.better-auth.com/docs/plugins/generic-oauth (better-auth v1.7.23 docs)
 - The Microsoft Entra ID helper requires a concrete tenant GUID (`common` / `organizations` / `consumers` should use the built-in Microsoft social provider) and its account identifier moves to the `oid` claim (see social-microsoft.md).
 
 ## Related

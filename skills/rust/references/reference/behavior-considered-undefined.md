@@ -12,7 +12,7 @@ Concurrent access to shared mutable data without synchronization. Use `Mutex`, `
 
 Accessing memory through a pointer/reference that does not point to a live allocation. A pointer is "dangling" if any byte it covers is not part of the same live allocation.
 
-**Exception**: Zero-sized pointers/references are never considered dangling (even if null).
+**Consequences**: Zero-sized pointers/references are never considered dangling (even if null). The dynamic size of a Rust value (as determined by `size_of_val`) must never exceed `isize::MAX`, since a single allocation cannot be larger than that.
 
 ### 3. Misaligned Pointer Access
 
@@ -112,6 +112,8 @@ const _: usize = unsafe { (&raw const ptr as *const usize).read() };
 - **Sound unsafe code**: safe callers cannot trigger UB through the safe API.
 - Run programs under [`miri`](https://github.com/rust-lang/miri) to detect many forms of UB dynamically.
 - Read [The Rustonomicon](https://doc.rust-lang.org/nomicon/) before writing `unsafe` Rust.
+- In the Reference at 1.100 the zero-size and `isize::MAX` points are stated as notes implied by the dangling definition (earlier versions stated them as separate rules).
+- Source: https://doc.rust-lang.org/reference/behavior-considered-undefined.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/e24eecf97b0c9a6dbac67191098204dc8a190aaa/src/behavior-considered-undefined.md, reference@e24eecf, retrieved 2026-11-14)
 
 ## Related
 

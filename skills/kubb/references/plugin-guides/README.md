@@ -7,11 +7,13 @@
 | plugin-axios: Calling operations | 生成クライアントは各 operation でグループ化されたリクエストオプションを受け取り、既定で型付き… | [axios-calling-operations.md](./axios-calling-operations.md) |
 | plugin-axios: Error handling | 生成クライアントの失敗を扱う。`ResponseError` を catch する、`throwOnError` でエラー結果の… | [axios-error-handling.md](./axios-error-handling.md) |
 | plugin-axios: Interceptors | `client.interceptors.request` / `.response` / `.error` にハンドラーを登録し、呼び出し全体に… | [axios-interceptors.md](./axios-interceptors.md) |
+| plugin-axios: Migrate to v6 | `@kubb/plugin-axios` 6 の共有クライアント core への移行。再生成・`tsc --noEmit`・template import / media type / stream /… | [axios-migrate-to-v6.md](./axios-migrate-to-v6.md) |
 | plugin-axios: Serialization | 生成クライアントは OpenAPI の `style` / `explode` でパラメーターをエンコードし、content type… | [axios-serialization.md](./axios-serialization.md) |
 | plugin-axios: Server-sent events | `text/event-stream` を返す operation は `RequestResult` ではなく型付きストリームを返す。 | [axios-server-sent-events.md](./axios-server-sent-events.md) |
 | plugin-axios: Transport | 実行時に transport を設定して、ネットワーク送信を置き換える。クライアントは引き続き URL 構築… | [axios-transport.md](./axios-transport.md) |
 | plugin-client: Authentication | 認証は自前の `client` 内にある。`@kubb/plugin-client` は資格情報を送らず、各 operation が… | [client-authentication.md](./client-authentication.md) |
 | plugin-client: Calling operations | 各生成関数はグループ化された 1 つのオプションオブジェクトを受け取り、client の promise を返す。 | [client-calling-operations.md](./client-calling-operations.md) |
+| plugin-client: Migrate to v6 | `@kubb/plugin-client` 6 の移行。自前 client のジェネリック化・`stream` メソッド・新しい `RequestConfig` フィールドなど。 | [client-migrate-to-v6.md](./client-migrate-to-v6.md) |
 | plugin-client: Validate requests and responses | `@kubb/plugin-client` 自体は検証しない。`validator` を設定すると schema を自前 client に渡し… | [client-validate-requests-and-responses.md](./client-validate-requests-and-responses.md) |
 | plugin-client: Write your client | 生成関数は `importPath` 経由で自前モジュールを import する。そのモジュールが生成関数の呼ぶ唯一の… | [client-write-your-client.md](./client-write-your-client.md) |
 | plugin-fetch: Authentication | 生成クライアントに `auth` resolver を設定する。operation は OpenAPI の security scheme を使い… | [fetch-authentication.md](./fetch-authentication.md) |
@@ -19,6 +21,7 @@
 | plugin-fetch: Calling operations | 生成クライアントは各 operation でグループ化されたリクエストオプションを受け取り、既定で型付き… | [fetch-calling-operations.md](./fetch-calling-operations.md) |
 | plugin-fetch: Error handling | 生成クライアントの失敗を扱う。`ResponseError` を catch する、`throwOnError` でエラー結果の… | [fetch-error-handling.md](./fetch-error-handling.md) |
 | plugin-fetch: Interceptors | `client.interceptors.request` / `.response` / `.error` にハンドラーを登録し、呼び出し全体に… | [fetch-interceptors.md](./fetch-interceptors.md) |
+| plugin-fetch: Migrate to v6 | `@kubb/plugin-fetch` 6 の共有クライアント core への移行。再生成・`tsc --noEmit`・template import / media type / stream /… | [fetch-migrate-to-v6.md](./fetch-migrate-to-v6.md) |
 | plugin-fetch: Serialization | 生成クライアントは OpenAPI の `style` / `explode` でパラメーターをエンコードし、content type… | [fetch-serialization.md](./fetch-serialization.md) |
 | plugin-fetch: Server-sent events | `text/event-stream` を返す operation は `RequestResult` ではなく型付きストリームを返す。 | [fetch-server-sent-events.md](./fetch-server-sent-events.md) |
 | plugin-fetch: Transport | 実行時に transport を設定して、ネットワーク送信を置き換える。クライアントは引き続き URL 構築… | [fetch-transport.md](./fetch-transport.md) |

@@ -49,7 +49,7 @@ new KeyframeTrack(name, times, values, interpolation)
 | optimize() | KeyframeTrack | Removes redundant sequential keys |
 | scale(timeScale) | KeyframeTrack | Multiplies all keyframe times by `timeScale` |
 | setInterpolation(interpolation) | KeyframeTrack | Changes the interpolation method |
-| shift(timeOffset) | KeyframeTrack | Shifts all keyframe times by `timeOffset` seconds |
+| shift(timeOffset) | KeyframeTrack | Shifts all keyframe times by `timeOffset` seconds, including the times of `settings.inTangents` / `settings.outTangents` when present |
 | trim(startTime, endTime) | KeyframeTrack | Removes keyframes outside the specified time range |
 | validate() | boolean | Returns true if track data is valid |
 | InterpolantFactoryMethodLinear(result) | LinearInterpolant | Creates a linear interpolant |
@@ -68,6 +68,8 @@ new KeyframeTrack(name, times, values, interpolation)
 - `trim()` does not shift remaining keys to time 0; this would alter interpolated values.
 - For Bezier interpolation, set `settings.inTangents` and `settings.outTangents` on the track before creating the interpolant.
 - Use concrete subclasses (`VectorKeyframeTrack`, `QuaternionKeyframeTrack`, etc.) rather than this base class directly.
+- Migration (r186 → r187): `shift()` also shifts the tangent times (every second entry of the `[ time, value ]` tangent pairs) (https://github.com/mrdoob/three.js/pull/34951).
+- Source: https://threejs.org/docs/pages/KeyframeTrack.html (three.js r187, `src/animation/KeyframeTrack.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

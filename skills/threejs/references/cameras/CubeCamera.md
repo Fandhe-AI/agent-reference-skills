@@ -45,6 +45,8 @@ object.visible = true;
 
 - Inherits from `Object3D`, not from the `Camera` base class.
 - Typically the reflective object should be hidden before calling `update()` to avoid self-reflection artifacts.
+- Migration (r186 → r187): while rendering the cube faces `update()` temporarily sets `renderTarget.texture.mipmapsAutoUpdate = false` (instead of toggling `generateMipmaps`) and restores it before the last face, so mipmaps are generated once after all sides are defined (https://github.com/mrdoob/three.js/pull/34630).
+- Source: https://threejs.org/docs/pages/CubeCamera.html (three.js r187, `src/cameras/CubeCamera.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

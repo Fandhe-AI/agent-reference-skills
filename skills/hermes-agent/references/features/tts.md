@@ -148,7 +148,18 @@ STT command providers (`stt.providers.<name>`, `type: command`) keys:
 - Speech toggles (`/voice tts`, Desktop **Read replies aloud**) hold leases that warm and later unload local engines (Piper, KittenTTS); Desktop uses `POST /api/audio/tts-lease` with `{"lease": "<name>", "active": true|false}`.
 - STT: local Whisper (default; models `tiny`/`base`/`small`/`medium`/`large-v3`/`turbo`), Groq (`GROQ_API_KEY`), OpenAI (`VOICE_TOOLS_OPENAI_KEY` or `OPENAI_API_KEY`; `whisper-1`, `gpt-4o-mini-transcribe`, `gpt-4o-transcribe`, `gpt-transcribe`), Mistral (`voxtral-mini-latest`), xAI (`grok-voice-transcribe-2.0`). `HERMES_LOCAL_STT_COMMAND` runs a local CLI tokenized into argv without a shell. An explicit `stt.provider` is honored strictly (no silent fallback); with none selected, Hermes auto-detects.
 - Voice messages on Telegram, Discord, WhatsApp, Slack and Signal are transcribed automatically and injected as text.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/tts (pinned to v0.22.2)
+- STT language resolution (changed in v0.23): `stt.language` is a global hint (default `"en"`; set `""` to auto-detect). A blank `stt.<provider>.language` (local / groq / xai) inherits `stt.language`, then `HERMES_LOCAL_STT_LANGUAGE`; blank provider settings do not select auto-detection. Groq Whisper auto-detects only when no hint remains after resolution. Command STT providers' `language` follows the same resolution with a final `en` fallback. Plugin `transcribe()` receives `model` (public `model=` arg, else `stt.<provider>.model`) and the resolved `language` hint; other plugin-specific keys are read by the plugin itself. Details: https://hermes-agent.nousresearch.com/docs/user-guide/configuration (Speech-to-Text section).
+- A TUI attached to the shared gateway refuses `/voice tts`, because the gateway cannot play speech in that terminal.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/tts (pinned to v0.23.1)
+
+### ElevenLabs: agent-selected voices
+
+With `tts.provider: elevenlabs` and `ELEVENLABS_API_KEY` set, the agent can pick a voice per `text_to_speech` call (e.g. one voice per character). Only the ElevenLabs version of `text_to_speech` has the two extra fields; other providers keep the configured voice.
+
+- `voice_id`: voice for this call; omitted = `tts.elevenlabs.voice_id` (config never rewritten).
+- `find_voices`: search instead of speaking; 20 voices per page by default (up to 100), `next_page` for more. `source: library` (default) searches the public Voice Library (most-used first; usable directly by `voice_id`; API use needs a paid ElevenLabs plan; some carry a higher `credit_rate`); `source: account` lists premade plus saved / cloned / designed voices. Filters: `query`, `gender`, `age`, `accent`, `language` (ISO code like `en`), and for the library `use_case` (e.g. `characters_animation`) and `sort` (`usage_character_count_1y`, `trending`, `cloned_by_count`, `created_date`).
+- Library search matches words in names and descriptions literally ("orc" finds orc voices, "dwarf" finds none), so describe the sound instead. Every result carries a `preview_url`; the agent cannot listen.
+- The API key needs the **Text to Speech** permission to speak and **Voices: Read** to search.
 
 ## Related
 

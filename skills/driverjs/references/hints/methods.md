@@ -58,8 +58,9 @@ productHints.refresh();
 
 ## Notes
 
-- Like `driver()`, each `hints()` call is independent: its hints, dismissals, and overlay never affect another instance or a running tour.
-- Source: driver.js 1.10.1 docs (https://driverjs.com/docs/api#hints).
+- `hints()` returns its own object, independent of other `hints()` instances.
+- Hints inside an open `<dialog>` render inside it (since 1.10.1).
+- Source: https://driverjs.com/docs/api#hints (driver.js 1.14.0 docs source, `apps/docs/src/content/guides/api.mdx` at tag 1.14.0).
 
 ## Related
 

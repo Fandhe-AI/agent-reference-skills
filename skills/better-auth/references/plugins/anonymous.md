@@ -111,6 +111,8 @@ Must return a unique, valid email.
 - `disableDeleteAnonymousUser` prevents endpoint access but does not affect automatic deletion on linking
 - Ensuring uniqueness of custom email generation is the developer's responsibility
 - No PII is required or stored during anonymous sign-up
+- With the two-factor plugin, a sign-in that still waits for a second factor does not link: `onLinkAccount` is not called and the anonymous user is kept
+- Source: https://www.better-auth.com/docs/plugins/anonymous (better-auth v1.7.23 docs)
 - Changed in 1.7 docs: with `emailDomainName` omitted the generated email is `{id}@anonymous.placeholder.invalid` (1.6 docs: `temp@{id}.com`).
 
 ### DB schema

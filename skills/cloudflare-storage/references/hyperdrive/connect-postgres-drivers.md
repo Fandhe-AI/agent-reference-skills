@@ -176,65 +176,66 @@ npx drizzle-kit generate
 npx drizzle-kit migrate
 ```
 
-Prisma ORM (`npm i -D prisma`; `npm i "pg@>=8.16.3" @prisma/adapter-pg`; `npx prisma init`):
+Prisma ORM 8 (initialize in the Worker project; installs `@prisma/orm-postgres`, which includes the `pg` driver, and the Prisma CLI, and creates `src/prisma/contract.prisma`, `prisma.config.ts`, and a `.env` with a placeholder `DATABASE_URL`):
+
+```sh
+npx prisma@latest orm init --yes --target postgres --authoring psl --write-env
+```
 
 ```prisma
-generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
+// use prisma-8
 
 model User {
   id        Int      @id @default(autoincrement())
   name      String
   email     String   @unique
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @onCreate(now())
 }
 ```
 
-```json
-"scripts": {
-  "migrate": "npx prisma migrate dev",
-  "generate": "npx prisma generate --no-engine",
-  "studio": "npx prisma studio"
-}
+Replace the placeholder `DATABASE_URL` in `.env` with your database connection string (the Prisma CLI connects to the database directly, not through Hyperdrive), then emit the contract files and create the tables:
+
+```txt
+DATABASE_URL="postgres://user:password@host:port/database"
+```
+
+```sh
+npx prisma contract emit
+npx prisma db init
 ```
 
 Adapted (not in the official docs): the sample email uses `crypto.randomUUID()` instead of `Date.now()` so requests in the same millisecond do not collide on a unique email; see Notes.
 
 ```ts
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
+import postgres from "@prisma/orm-postgres/runtime";
+import { contractFromJson } from "@prisma/orm-postgres/static";
+import type { Contract } from "./prisma/contract.d";
+import contractJson from "./prisma/contract.json" with { type: "json" };
 
-export interface Env {
-	HYPERDRIVE: Hyperdrive;
-}
+const contract = contractFromJson<Contract>(contractJson);
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		// Create Prisma client using driver adapter with Hyperdrive connection string
-		const adapter = new PrismaPg({ connectionString: env.HYPERDRIVE.connectionString });
-		const prisma = new PrismaClient({ adapter });
+		// Create a Prisma ORM client with the Hyperdrive connection string
+		const db = postgres({ contract, url: env.HYPERDRIVE.connectionString });
 
-		// Sample query to create and fetch users
-		const user = await prisma.user.create({
-			data: {
+		try {
+			// Sample query to create and fetch users
+			const user = await db.orm.public.User.create({
 				name: "John Doe",
 				email: `john.doe.${crypto.randomUUID()}@example.com`,
-			},
-		});
+			});
 
-		const allUsers = await prisma.user.findMany();
+			const allUsers = await db.orm.public.User.all();
 
-		return Response.json({
-			newUser: user,
-			allUsers: allUsers,
-		});
+			return Response.json({
+				newUser: user,
+				allUsers: allUsers,
+			});
+		} finally {
+			// Close the connection after the response is sent
+			ctx.waitUntil(db.close());
+		}
 	},
 } satisfies ExportedHandler<Env>;
 ```
@@ -268,14 +269,15 @@ const sql = postgres(env.HYPERDRIVE.connectionString, {
 - node-postgres (`pg`) is the recommended driver: best compatibility with Hyperdrive caching and widely available in ORMs. Postgres.js is also supported.
 - Do not use `prepare: false` with Postgres.js: it disables prepared statements, so Postgres.js sends extra protocol messages to discover parameter types, which transaction pooling mode does not reliably support (queries can hang or fail intermittently).
 - Drizzle ORM with the Postgres.js driver over Hyperdrive is not currently supported; use node-postgres. Drizzle ORM API itself: see the drizzle skill.
-- Prisma ORM requires driver adapters (`@prisma/adapter-pg`) to use the Hyperdrive connection string; connection pooling is provided by Hyperdrive, so Prisma Accelerate is not needed.
+- Prisma ORM 8 (official page updated 2026-11-10, #34891): the example now uses `npx prisma@latest orm init`, the `@prisma/orm-postgres` runtime (`postgres({ contract, url })`) and a `contract.prisma` data model; the earlier `@prisma/adapter-pg` driver-adapter flow (`PrismaPg` + `PrismaClient`, `npx prisma migrate dev` / `generate --no-engine`) is no longer shown on the official page. Run `npx wrangler types` so the generated `Env` type includes the `HYPERDRIVE` binding. The client is created inside `fetch` and closed with `ctx.waitUntil(db.close())`: Workers do not allow a socket opened during one request to be reused by another, so do not share a module-level client across requests. Hyperdrive pools connections at the network level, so no Prisma-specific pooling is needed. For `wrangler dev`, set a `localConnectionString` for the binding (see `local-development.md`).
+- Source: https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/prisma-orm/ (production `34d908a`, fetched 2026-11-14)
 - Hyperdrive's connections show `Cloudflare Hyperdrive` as `application_name` in `pg_stat_activity` only when the driver does not send its own (Postgres.js sends `postgres.js`); that does not mean it bypasses Hyperdrive. Query: `SELECT DISTINCT usename, application_name FROM pg_stat_activity WHERE application_name = 'Cloudflare Hyperdrive'`.
 - Node.js compatibility: dates `2026-08-04`+ enable `nodejs_compat` and `nodejs_compat_v2` by default; earlier dates need `nodejs_compat` (see [get-started](./get-started.md)).
 - Consolidated from: https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/node-postgres/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/postgres-js/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/drizzle-orm/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/prisma-orm/
 - Adapted from the official docs: install commands are quoted with `>=` (the official `pg@>8.16.3` form is a shell redirection when unquoted and would exclude the stated minimum 8.16.3; same for `postgres@>3.4.5`).
-- Adapted from the official docs: the Prisma sample's `john.doe.${Date.now()}@example.com` is replaced with a `crypto.randomUUID()` suffix, because two requests in the same millisecond would produce the same email (a unique-constraint failure if the schema has `@unique`).
+- Adapted from the official docs: the Prisma ORM 8 sample's `john.doe.${Date.now()}@example.com` is replaced with a `crypto.randomUUID()` suffix, because two requests in the same millisecond would produce the same email (a unique-constraint failure if the schema has `@unique`).
 - Adapted from the official docs: the official Postgres.js catch block returns `Response.error()` (a network-error response with no status or body); it is replaced with the same 500 response the node-postgres example uses.
-- Clients are created per request and not closed explicitly: Hyperdrive cleans up the client connection when the request ends (see [connection-lifecycle](./connection-lifecycle.md)); do not add `client.end()` or module-level clients.
+- Clients are created per request. For the node-postgres, Postgres.js, Drizzle and Kysely examples they are not closed explicitly (the Prisma ORM 8 example is the exception: it closes the client with `ctx.waitUntil(db.close())`, as shown above): Hyperdrive cleans up the client connection when the request ends (see [connection-lifecycle](./connection-lifecycle.md)); do not add `client.end()` to those drivers, and do not share module-level clients.
 - Wrangler config and bindings in general: see the cloudflare-wrangler and cloudflare-workers skills.
 
 ## Related

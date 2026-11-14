@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/layoutanimation
+source: https://reactnative.dev/docs/0.88/layoutanimation
 ---
 
 # LayoutAnimation
@@ -67,8 +67,9 @@ Presets:
 
 ## Notes
 
-- Only needed on the Legacy Architecture: on the New Architecture (the only runtime since 0.82) layout animations are enabled automatically and `setLayoutAnimationEnabledExperimental` is a no-op (react-native@0.87.1 `BridgelessUIManager` only logs a dev warning); the 0.87 docs page still states the Android flag is required (the next docs state it is unnecessary).
+- Only needed on the Legacy Architecture: on the New Architecture (the only runtime since 0.82) layout animations are enabled automatically and `setLayoutAnimationEnabledExperimental` is a no-op (react-native@0.87.1 `BridgelessUIManager` only logs a dev warning); the 0.88 docs page states that on Android the `UIManager` flag is needed only on the Legacy Architecture (called once, for example in the root entry file `index.js` or root component, before any layout animation) and that on the New Architecture layout animations are enabled automatically and the call is a no-op.
 - This is the React Native `LayoutAnimation` API; distinct from Motion for React (motion), Jetpack Compose animation (android-compose-graphics-animation) and SwiftUI animation (apple-swiftui).
+- Source: https://reactnative.dev/docs/0.88/layoutanimation (react-native-website commit a459a29, retrieved 2026-11-14)
 
 ## Related
 

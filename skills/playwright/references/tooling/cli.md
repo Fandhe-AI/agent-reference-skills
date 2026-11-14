@@ -111,6 +111,7 @@ npx playwright test --global-timeout 600000
 npx playwright test --reporter list
 npx playwright test --reporter dot
 npx playwright test --reporter line
+npx playwright test --reporter failures   # v1.65: failures and successful retries only, no progress output
 npx playwright test --reporter json
 npx playwright test --reporter junit
 npx playwright test --reporter html
@@ -306,6 +307,8 @@ npx playwright show-trace --browser chromium trace.zip
 npx playwright show-trace --host 0.0.0.0 --port 8080 trace.zip
 ```
 
+When you pass `--port`, other users on your machine can open the trace on that port. When you pass `--host`, anyone who can reach this address and port can open the trace, for example other machines in your network with `--host=0.0.0.0`.
+
 ## Merge Reports
 
 Merges multiple blob reports from sharded test runs into a single report.
@@ -348,6 +351,12 @@ Removes cached browser binaries and other Playwright artifacts.
 npx playwright clear-cache
 ```
 
+Playwright keeps transpiled test files in the system temporary directory. To keep them in another directory, for example on a Linux machine shared with other users, set the `PLAYWRIGHT_TRANSFORM_CACHE_DIR` environment variable (v1.65):
+
+```bash
+PLAYWRIGHT_TRANSFORM_CACHE_DIR=~/.cache/playwright-transform npx playwright test
+```
+
 ## MCP Server and playwright-cli
 
 Since v1.62 Playwright bundles the Playwright MCP server and `playwright-cli` (a command-line interface for browser automation designed for coding agents), runnable via `npx playwright mcp` and `npx playwright cli`.
@@ -376,3 +385,8 @@ npx playwright test --help
 npx playwright codegen --help
 npx playwright install --help
 ```
+
+## Notes
+
+- `failures` is a built-in reporter name for `--reporter` since v1.65.
+- Source: https://playwright.dev/docs/test-cli (microsoft/playwright v1.65.1 `docs/src/test-cli-js.md`)

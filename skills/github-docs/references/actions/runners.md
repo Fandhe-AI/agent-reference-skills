@@ -197,3 +197,12 @@ runs-on:
 ## ネットワーク要件
 
 GitHub ホステッドランナーの使用には、最低 70 kbps のアップロード/ダウンロード速度のネットワーク接続が必要。
+
+---
+
+## Notes
+
+### ARM32 job execution retirement
+
+- GitHub-hosted runners end support for ARM32 job execution on Windows and Linux by December 8, 2026. This includes removing support for native AArch32 user-space execution, and follows the end of support for node20 (Node 24 does not support ARM32)
+- Source: https://github.blog/changelog/2026-11-12-actions-for-arm32-linux-windows-retirement (fetched 2026-11-14)

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/the-new-architecture/native-modules-lifecycle
+source: https://reactnative.dev/docs/0.88/the-new-architecture/native-modules-lifecycle
 ---
 
 # Native Modules Lifecycle

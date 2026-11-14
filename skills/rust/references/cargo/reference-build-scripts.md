@@ -30,6 +30,11 @@ cc = "1.0"
 
 Output is saved to `target/debug/build/<pkg>/output`. View it with `cargo build -vv`.
 
+As of 1.100 Cargo uses a new layout for intermediate build artifacts: `<build-dir>/debug/build/` holds build step results, including compilation artifacts and build script output, while the build-cache chapter no longer lists `<build-dir>/debug/deps/`. The layout is not a stable interface; tools that inspect the build directory should use Cargo's JSON messages to locate build artifacts. The exact path above may differ from the pre-1.100 layout (the official docs do not spell out per-package output paths).
+
+- Source: https://doc.rust-lang.org/cargo/reference/build-cache.html (pinned: https://raw.githubusercontent.com/rust-lang/cargo/3acc79c0c841844675bc53a605922dbfc441e750/doc/book/src/reference/build-cache.md, cargo@3acc79c, retrieved 2026-11-14)
+- Source: https://github.com/rust-lang/rust/blob/1.100.0/RELEASES.md (Cargo section)
+
 ## Cargo Instructions (stdout)
 
 Instructions use the format `cargo::KEY=VALUE` (Rust 1.77+; older syntax: `cargo:KEY=VALUE`).

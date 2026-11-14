@@ -1,0 +1,455 @@
+# Action-Driven Tours
+
+Build tours that only move on when the user performs the real action: type a value, pick an option, click, right-click. Block clicks elsewhere, give feedback on wrong actions and recover when the UI changes.
+
+## Signature / Usage
+
+An action-driven tour waits for the user to do each step: type the email, pick the role, open the menu. There is no Next button to skip it, and a wrong action gets a hint.
+
+The tour below walks through inviting a teammate. Try doing the wrong thing too: click elsewhere, or pick the wrong role.
+
+```js
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
+
+const driverObj = driver({
+  showButtons: ["next", "close"],
+  steps: [
+    {
+      element: "#invite-email",
+      advanceOn: {
+        event: "keydown",
+        when: (element, step, { event, driver }) => {
+          if (event.key !== "Enter") {
+            return false;
+          }
+
+          if (element.value && element.checkValidity()) {
+            return true;
+          }
+
+          driver.nudge("That doesn't look like an email address yet.");
+          return false;
+        },
+      },
+      popover: {
+        title: "Who are you inviting?",
+        instruction: "Type an email and press <b>Enter</b>.",
+      },
+    },
+    {
+      element: "#invite-role",
+      advanceOn: {
+        event: "change",
+        when: (element, step, { driver }) => {
+          if (element.value === "editor") {
+            return true;
+          }
+
+          driver.nudge("Only editors can edit. Choose <b>Editor</b>.");
+          return false;
+        },
+      },
+      popover: {
+        title: "Pick a role",
+        instruction: "Choose <b>Editor</b>.",
+      },
+    },
+    {
+      element: "#invite-send",
+      advanceOn: "click",
+      popover: {
+        title: "Send it",
+        instruction: "Click <b>Send invite</b>.",
+      },
+    },
+    {
+      element: "#invite-sent",
+      waitForElement: 3000,
+      popover: { title: "Invite sent", showButtons: ["next"] },
+    },
+  ],
+});
+
+driverObj.drive();
+```
+
+### What You Can Build
+
+| You want to... | Use |
+| --- | --- |
+| [Move on when the user does something](#move-on-when-something-happens) | `advanceOn: "change"` |
+| [Make the user act, not press Next](#make-the-user-act) | `popover.instruction` |
+| [Accept only the right gesture](#accept-only-the-right-gesture) | `advanceOn: { event, strict: true }` |
+| [Show success before moving on](#show-success-before-moving-on) | `advanceDelay` |
+| [Move on only when it's done right](#only-move-on-when-its-right) | `advanceOn: { event, when }` |
+| [Move on when your app finishes something](https://driverjs.com/docs/wait-for-a-save) | `onHighlighted` + `advance()` |
+| [Say what was wrong about a click](#give-a-specific-hint) | `onInteraction` + `nudge()` |
+| [Let the user hover an element but not click it](#let-the-user-hover-not-click) | `disableActiveInteraction: "clicks"` |
+| [Let the user use a menu the step opens](#let-the-user-use-a-menu) | `allowedElements` |
+| [Go back when the element disappears](#let-the-user-use-a-menu) | `onElementMissing: "previousAction"` |
+| [Retry after a slow load](#recover-from-a-slow-load) | `onElementMissing` function |
+
+The reference for each option is in [Configuration](https://driverjs.com/docs/configuration#interaction).
+
+Recipes that teach a whole task this way:
+
+- [Teach a Form](https://driverjs.com/docs/teach-a-form): steps that move on once a field is valid
+- [Walk Through a Menu](https://driverjs.com/docs/walk-through-a-menu): open a dropdown and pick an item
+- [Steps Inside a Dialog](https://driverjs.com/docs/steps-inside-a-dialog): a task that happens in a modal
+- [Wait for a Save](https://driverjs.com/docs/wait-for-a-save): move on when your app is done
+- [Right-Click and Double-Click Steps](https://driverjs.com/docs/right-click-and-double-click): teach a gesture
+
+### Move On When Something Happens
+
+`advanceOn` takes an event name. The step completes when that event happens on the highlighted element, as if Next was pressed. Your own handlers run first.
+
+```js
+const driverObj = driver({
+  showButtons: ["close"],
+  steps: [
+    {
+      element: "#notifications",
+      advanceOn: "change",
+      popover: {
+        title: "Turn on notifications",
+        description: "Flip the switch.",
+      },
+    },
+    {
+      element: "#notifications",
+      popover: { title: "Notifications on", showButtons: ["next"] },
+    },
+  ],
+});
+
+driverObj.drive();
+```
+
+Any DOM event works: `"click"`, `"input"`, `"change"`, `"dblclick"`, `"contextmenu"`. Pass a list to accept any of them: `advanceOn: ["dblclick", "contextmenu"]`. Set it on the driver to apply it to every step.
+
+### Make the User Act
+
+A step with only `advanceOn` still has a Next button. Put the instruction in `popover.instruction` and the step becomes an action step: the instruction gets its own row with a pulsing dot at its end, the Next button looks disabled, and the step only moves on when the user does it. Try clicking Calendar, or the dimmed page.
+
+```js
+const driverObj = driver({
+  steps: [
+    {
+      element: "#toolbar",
+      popover: {
+        title: "The toolbar",
+        description: "Everything you use daily is one click away.",
+      },
+    },
+    {
+      element: "#inbox",
+      advanceOn: "click",
+      popover: {
+        title: "Open your inbox",
+        description: "New messages land here first.",
+        instruction: "Click <b>Inbox</b> on the toolbar to open it.",
+      },
+    },
+    {
+      element: "#inbox-panel",
+      waitForElement: 1000,
+      popover: {
+        title: "Your inbox",
+        description: "The tour moved on as soon as you clicked.",
+      },
+    },
+  ],
+});
+
+driverObj.drive();
+```
+
+On an action step:
+
+- Next stays where it is but looks disabled. Pressing it, the right arrow key or the dimmed page shakes the popover and points at the instruction instead of moving on or closing the tour. `onNextClick` doesn't run for those presses.
+- Previous, the close button and Escape work as usual.
+- Without `"next"` in `showButtons` there is no disabled button, only the row and its dot. See [Theming](https://driverjs.com/docs/theming#action-steps) to restyle both.
+- It completes through `advanceOn`, `driverObj.advance()` or `driverObj.moveNext()`.
+
+#### Accept Only the Right Gesture
+
+On an action step the highlighted element stays fully usable: on a double-click step, a right-click still opens your app's context menu. Add `strict: true` and the element takes only the gesture the step waits for. Anything else is blocked and shakes the popover. Right-click the file below.
+
+```js
+const driverObj = driver({
+  showButtons: ["close"],
+  steps: [
+    {
+      element: "#file",
+      advanceOn: { event: "dblclick", strict: true },
+      popover: {
+        title: "Open the file",
+        instruction: "Double-click <b>report.pdf</b>.",
+      },
+    },
+    {
+      element: "#opened",
+      waitForElement: 1000,
+      popover: { title: "Opened", showButtons: ["next"] },
+    },
+  ],
+});
+
+driverObj.drive();
+```
+
+`strict` only applies when every event in `advanceOn` is a click, double-click, right-click or pointer press. With `"input"` or `"change"` it blocks nothing, so the user can still click a field to type in it.
+
+#### Show Success Before Moving On
+
+With `advanceDelay`, a completed step pauses before moving on. On an action step the instruction row turns green for the pause, its dot becomes a check mark, and Next turns green too. Click Star below.
+
+```js
+const driverObj = driver({
+  showButtons: ["next", "close"],
+  steps: [
+    {
+      element: "#star",
+      advanceOn: "click",
+      advanceDelay: 1200,
+      popover: {
+        title: "Star the project",
+        instruction: "Click <b>Star</b>.",
+      },
+    },
+    {
+      element: "#starred",
+      waitForElement: 1000,
+      popover: { title: "Starred", showButtons: ["next"] },
+    },
+  ],
+});
+
+driverObj.drive();
+```
+
+Repeated clicks during the pause are ignored, and leaving the step cancels it. `moveNext()` doesn't pause. To restyle the done state, see [Theming](https://driverjs.com/docs/theming#action-steps).
+
+#### Going Back After an Action
+
+Previous takes the user back to an action they already did, while the page stays as it is now. Where that would confuse, hide Previous on the step after the action:
+
+```js
+{
+  element: "#inbox-panel",
+  popover: { title: "Your inbox", showButtons: ["next", "close"] },
+}
+```
+
+### Only Move On When It's Right
+
+An event says something happened, not that it was right. `when` checks the result: it runs after your app has handled the event, and the step completes only when it returns `true`. Pick Team first.
+
+```js
+const driverObj = driver({
+  showButtons: ["close"],
+  steps: [
+    {
+      element: "#plan",
+      advanceOn: {
+        event: "change",
+        when: (element, step, { driver }) => {
+          if (element.querySelector("input:checked").value === "pro") {
+            return true;
+          }
+
+          driver.nudge({
+          description: "That plan has no reports. Pick <b>Pro</b>.",
+        });
+          return false;
+        },
+      },
+      popover: {
+        title: "Pick a plan",
+        description: "Choose <b>Pro</b> to get reports.",
+      },
+    },
+    {
+      element: "#plan",
+      popover: { title: "Pro it is", showButtons: ["next"] },
+    },
+  ],
+});
+
+driverObj.drive();
+```
+
+`when` gets the highlighted element, the step and `{ event, driver, ... }`, so it can check a field's value, which key was pressed or what the app shows now.
+
+When a click starts something that takes time, like a save, call `driverObj.advance()` once your app is done. See [Wait for a Save](https://driverjs.com/docs/wait-for-a-save).
+
+### Give a Specific Hint
+
+`onInteraction` sees every click, right-click and double-click during a step, before your app does. `region` says where it happened: `"element"`, `"allowed"` or `"outside"`. Return `false` to block it. `nudge("...")` shakes the popover and shows a line of feedback, which goes away with the next nudge or step. Right-click the file.
+
+```js
+const driverObj = driver({
+  showButtons: ["close"],
+  onInteraction: (element, step, { event, region, driver }) => {
+    if (region === "element" && event.type === "contextmenu") {
+      driver.nudge("That was a right-click. <b>Double-click</b> instead.");
+      return false;
+    }
+  },
+  steps: [
+    {
+      element: "#file",
+      advanceOn: "dblclick",
+      popover: {
+        title: "Open the file",
+        instruction: "Double-click <b>report.pdf</b>.",
+      },
+    },
+    {
+      element: "#opened",
+      waitForElement: 1000,
+      popover: { title: "Opened", showButtons: ["next"] },
+    },
+  ],
+});
+
+driverObj.drive();
+```
+
+Good to know:
+
+- A double-click arrives as `click`, `click`, `dblclick`. Don't block clicks on a double-click step.
+- `onInteraction` only sees the click. On the highlighted element and allowed elements, `pointerdown` has already reached your app, so returning `false` can't undo what it did, like closing a menu.
+- Clicks on the popover are not reported, but they reach your app. Ignore them in a "click outside" handler with `event.target.closest(".driver-popover")`.
+- Key presses are not reported, so typing always works.
+- `nudge({ description })` changes the popover's own text instead of adding a line. `updatePopover()` does the same without the shake.
+
+Clicks outside the highlighted element never reach your app. [How Clicks Are Handled](https://driverjs.com/docs/configuration#how-clicks-are-handled) has the details.
+
+### Let the User Hover, Not Click
+
+`disableActiveInteraction: true` turns off every pointer event on the element, so its tooltips stop working too. `"clicks"` keeps hover and blocks clicks, right-clicks and double-clicks. Hover the appointment, then click it.
+
+```js
+const driverObj = driver({
+  steps: [
+    {
+      element: "#appointment",
+      disableActiveInteraction: "clicks",
+      popover: {
+        title: "Appointment details",
+        description: "Rest your mouse on it to see the details.",
+      },
+    },
+  ],
+});
+
+driverObj.drive();
+```
+
+`onInteraction` still sees the blocked clicks with region `"element"`, so you can point the user to the Next button. Don't combine it with an `advanceOn` that waits for a click: the step could never complete, and driver.js warns about it in the console.
+
+### Let the User Use a Menu
+
+When a step opens something outside the highlighted element, like a menu, list it in `allowedElements` so the user can use it. Below, the menu works, Delete is blocked, and closing the menu with Escape or a second click on More sends you back to the step that opens it.
+
+```js
+const driverObj = driver({
+  showButtons: ["next", "close"],
+  onElementMissing: "previousAction",
+  onInteraction: (element, step, { event, driver }) => {
+    if (event.target.closest("[data-action=delete]")) {
+      driver.nudge("Not Delete. Choose <b>Archive</b>.");
+      return false;
+    }
+  },
+  steps: [
+    {
+      element: "#more",
+      advanceOn: "click",
+      allowedElements: ".menu",
+      popover: {
+        title: "Open the menu",
+        instruction: "Click <b>More</b>.",
+      },
+    },
+    {
+      element: ".menu [data-action=archive]",
+      waitForElement: 500,
+      advanceOn: "click",
+      allowedElements: [".menu", "#more"],
+      popover: {
+        title: "Archive it",
+        instruction: "Choose <b>Archive</b>.",
+      },
+    },
+    {
+      element: "#archived",
+      waitForElement: 1000,
+      popover: { title: "Archived", showButtons: ["next"] },
+    },
+  ],
+});
+
+driverObj.drive();
+```
+
+Allowed elements are raised above the overlay so they stay clickable. When one holds the highlighted element, like the menu around Archive, the element gets a ring instead of a cutout. Restyle it with the [raised highlight variables](https://driverjs.com/docs/theming#css-variables).
+
+When the highlighted element leaves the page, `onElementMissing` decides what happens. `"previousAction"` goes back to the last action step whose element is still there, here the one that opens the menu. The other choices are in [Missing Elements](https://driverjs.com/docs/configuration#missing-elements).
+
+### Recover From a Slow Load
+
+When a step's `waitForElement` runs out, the tour shows that step without its element. Pass a function to `onElementMissing` to handle it: it runs with `cause: "timeout"`, and returning `false` keeps the user on the current step. The first load below is slow on purpose.
+
+```js
+const driverObj = driver({
+  showButtons: ["close"],
+  onElementMissing: (element, step, { cause, driver }) => {
+    if (cause === "timeout") {
+      driver.nudge({
+      description: "Still loading. Click <b>Load report</b> again.",
+    });
+      return false;
+    }
+  },
+  steps: [
+    {
+      element: "#load",
+      advanceOn: "click",
+      popover: {
+        title: "Load the report",
+        description: "Click <b>Load report</b>.",
+      },
+    },
+    {
+      element: "#report",
+      waitForElement: 1500,
+      popover: { title: "Loaded", showButtons: ["next"] },
+    },
+  ],
+});
+
+driverObj.drive();
+```
+
+`onElementMissing: "previous"` does the same without the message.
+
+> **Tip**: Always leave a way out, like the close button. iOS Safari never fires `contextmenu`, so a step that waits for a right-click should accept another event too.
+
+## Notes
+
+- Version gates: `advanceOn`, `onInteraction` and the function form of `onElementMissing` since 1.11.0; `popover.instruction`, `advanceOn: { event, strict: true }`, `advanceDelay`, `advance()`, `nudge("message")`, the string values of `onElementMissing` (`"stay"`, `"previous"`, `"previousAction"`) and `disableActiveInteraction: "clicks"` since 1.12.0 (see the changelog).
+- The official page renders each example as a live demo. Only the code shown beside each demo is reproduced here; the demo markup, element ids (`#invite-email`, `#file`, ...) and sample page are not part of the library.
+- The `nudge({ description })` calls in "Only Move On When It's Right" and "Recover From a Slow Load" are indented inconsistently in the official source and are kept as written.
+- Per-option reference: the Interaction and Missing Elements sections of Configuration, and Theming for the action-step classes and CSS variables.
+- Source: https://driverjs.com/docs/action-driven-tours (driver.js 1.14.0 docs source, apps/docs/src/content/guides/action-driven-tours.mdx at tag 1.14.0).
+
+## Related
+
+- [Interactive Tours](./interactive-tours.md)
+- [Async Tour & Lifecycle Control](./async-and-lifecycle.md)
+- [Highlight & Popover](./highlight-and-popover.md)
+- [Configuration](../api/configuration.md)
+- [Theming](../api/theming.md)

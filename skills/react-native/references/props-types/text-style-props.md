@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/text-style-props
+source: https://reactnative.dev/docs/0.88/text-style-props
 ---
 
 # Text Style Props
@@ -52,6 +52,7 @@ Excerpt from the official example (the values come from `useState` hooks driven 
 | `fontWeight` | enum(`'normal'`, `'bold'`, `'100'`, `'200'`, `'300'`, `'400'`, `'500'`, `'600'`, `'700'`, `'800'`, `'900'`) or number | `'normal'` | | The values `'normal'` and `'bold'` are supported for most fonts. Not all fonts have a variant for each of the numeric values, in that case the closest one is chosen. |
 | `includeFontPadding` | bool | `true` | Android | Set to `false` to remove extra font padding intended to make space for certain ascenders / descenders. With some fonts, this padding can make text look slightly misaligned when centered vertically. For best results also set `textAlignVertical` to `center`. |
 | `fontVariant` | array of enum(`'small-caps'`, `'oldstyle-nums'`, `'lining-nums'`, `'tabular-nums'`, `'proportional-nums'`) or string | `[]` | | Allows you to set all the font variants for a font. Can be set by using an array of enums or a space-separated string e.g. `'small-caps common-ligatures'`. |
+| `fontVariationSettings` | string or object: `{[axis: string]: number}` | | | Configures variation axes for a variable font. Each axis is identified by a four-character OpenType tag, such as `wght` for weight, `wdth` for width, `opsz` for optical size, or a custom axis supported by the font. Settings can be provided as an object or as a CSS-compatible string. |
 | `letterSpacing` | number | | | Increase or decrease the spacing between characters. By default there is no extra letter spacing. |
 | `lineHeight` | number | | | Controls the vertical spacing between lines of text within a text element. It specifies the distance between the baselines of consecutive lines of text. |
 | `textAlign` | enum(`'auto'`, `'left'`, `'right'`, `'center'`, `'justify'`) | `'auto'` | | On Android, the value 'justify' is only supported on Oreo (8.0) or above (API level >= 26). The value will fall back to `left` on lower Android versions. |
@@ -69,14 +70,30 @@ Excerpt from the official example (the values come from `useState` hooks driven 
 
 ## Notes
 
-- 0.88: `fontVariationSettings` is now supported on both `Text` and `TextInput`, on Android and iOS, per the 0.88 release blog. It is not listed on the 0.87 docs page. Both the CSS string form and an object form are accepted; object keys are four-character axis tags with finite numeric values:
+- 0.88: `fontVariationSettings` is now supported on both `Text` and `TextInput`, on Android and iOS, per the 0.88 release blog. It is documented on the 0.88 docs page (not on the 0.87 page). Both the CSS string form and an object form are accepted; object keys are four-character axis tags with finite numeric values:
+
+The 0.88 docs page example (the object and string forms are equivalent; both set the wght axis to 500):
+
+Adapted (not in the official docs): the official example sets `fontVariationSettings` twice in one style object; it is split into two separate snippets.
+
+```tsx
+<Text style={{fontVariationSettings: {wght: 500}}}>Variable font</Text>
+```
+
+```tsx
+<Text style={{fontVariationSettings: "'wght' 500"}}>Variable font</Text>
+```
+
+Further examples (from the 0.88 release blog):
 
 ```tsx
 <Text style={{fontVariationSettings: {wght: 700, slnt: -10}}}>Object form</Text>
 <Text style={{fontVariationSettings: "'wght' 700, 'slnt' -10"}}>String form</Text>
 ```
 
+- Adapted from the official docs: the 0.88 docs example sets the `fontVariationSettings` key twice in one style object (object form plus a comment-introduced string form); it is split into separate snippets above because a duplicate key is rejected by TypeScript.
 - Style objects are interpreted by React Native, not by a CSS engine. `Text`'s `style` prop accepts these Text Style Props plus View Style Props (see the Text component page).
+- Source: https://reactnative.dev/docs/0.88/text-style-props (react-native-website commit a459a29, retrieved 2026-11-14)
 
 ## Related
 

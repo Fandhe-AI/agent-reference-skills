@@ -1,6 +1,6 @@
 # @kubb/core
 
-Kubb のコアエンジン（プラグインドライバー・ファイルマネージャー・ビルド制御層）。Kubb 5.11.0 の `packages/core/README.md` と docs 5.x reference/kit/engine に準拠。
+Kubb のコアエンジン（プラグインドライバー・ファイルマネージャー・ビルド制御層）。`packages/core/README.md` と docs 5.x reference/kit/engine に準拠。
 
 ## Usage
 
@@ -23,8 +23,11 @@ import { createKubb } from '@kubb/core'
 ## Notes
 
 - `defineConfig` is imported from `kubb/config` in v5, not from `@kubb/core`
-- The v4 `build({ config })` function and its `{ error, files, driver }` result are not documented in the 5.11.0 README. Use `createKubb(...).safeBuild()` which returns `{ files, storage, driver, diagnostics }` (see samples/programmatic-build.md and kit-api.md)
-- The previous page listed the storage helpers (`defineStorage`, `fsStorage`, `memoryStorage`) and `URLPath` as `@kubb/core` exports (v4.36.0+ / v4.36.1+). The 5.11.0 core README does not list them; in v5 storage helpers are imported from `kubb/kit` (migration guide: "Move to top-level `storage` and import helpers from `kubb/kit`")
+- The v4 `build({ config })` function and its `{ error, files, driver }` result are not documented in the 5.20.0 README. Use `createKubb(...).safeBuild()` which returns `{ files, storage, driver, diagnostics, input }` (see samples/programmatic-build.md and kit-api.md)
+- The previous page listed the storage helpers (`defineStorage`, `fsStorage`, `memoryStorage`) and `URLPath` as `@kubb/core` exports (v4.36.0+ / v4.36.1+). The 5.20.0 core README does not list them; in v5 storage helpers are imported from `kubb/kit` (migration guide: "Move to top-level `storage` and import helpers from `kubb/kit`")
+- `createKubb` takes an optional second argument with `hooks` (a shared `Hookable<KubbHooks>`), `signal` (an `AbortSignal`), and `fileRefs` (the only folders a `$ref` in the input may read local files from). To build every config of a `defineConfig([...])` array, use the static `Kubb.generate(configs)` from `@kubb/core`, which `kubb generate` runs; it yields one result per config and a failed config does not stop the others (docs 5.x reference/kit/engine)
+- Source: https://kubb.dev/docs/5.x/reference/kit/engine and packages/core/README.md of kubb@5.20.0 (retrieved 2026-11-14)
+- Migration (5.11 → 5.20): `BuildOutput` and `GenerateResult` gained `input` (the parsed `InputNode`, or `null`), and `kubb.storage` is now the configured storage backend available right after `createKubb` (docs diff 5.11 → 5.20)
 
 ## Related
 

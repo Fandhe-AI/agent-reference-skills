@@ -47,3 +47,8 @@ productHints.show();
 - Driver.js keeps dismissals in memory only; give every hint a stable `id` and store the dismissed ids yourself
 - A hint whose element is missing is skipped and picked up again on the next `show()`
 - `overlay: true` dims the page while a hint is open; `hide()` removes the beacons and `show()` brings them back
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

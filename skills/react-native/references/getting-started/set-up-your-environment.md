@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/set-up-your-environment
+source: https://reactnative.dev/docs/0.88/set-up-your-environment
 ---
 
 # Set Up Your Environment

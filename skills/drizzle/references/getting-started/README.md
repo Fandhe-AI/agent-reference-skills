@@ -8,4 +8,4 @@
 | gotchas | Placeholder gotchas page (no entries published yet) | [gotchas.md](./gotchas.md) |
 | faq | `generate` vs `push`, PostgreSQL index naming/limitations | [faq.md](./faq.md) |
 | sustainability | Project funding model, core team, revenue streams | [sustainability.md](./sustainability.md) |
-| latest-releases | Latest release notes: v1.0.0-rc.4 highlights (GitHub Releases); docs-site page is a dynamic component only | [latest-releases.md](./latest-releases.md) |
+| latest-releases | Latest release notes: v1.0.0-rc.5 and v1.0.0-rc.4 highlights | [latest-releases.md](./latest-releases.md) |

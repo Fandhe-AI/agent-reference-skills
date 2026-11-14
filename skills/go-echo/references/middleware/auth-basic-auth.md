@@ -35,6 +35,7 @@ type BasicAuthValidator func(c *echo.Context, user string, password string) (boo
 
 - Always compare credentials with `subtle.ConstantTimeCompare` to prevent timing attacks.
 - Import path: `github.com/labstack/echo/v5/middleware`.
+- Since v5.4.2, the case-insensitive `Basic` scheme must be followed by a space; malformed schemes such as `BasicX` no longer reach credential validation or consume `AllowedCheckLimit`. Source: https://github.com/labstack/echo/releases/tag/v5.4.2 (fetched 2026-11-14).
 
 ## Related
 

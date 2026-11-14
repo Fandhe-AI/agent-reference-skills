@@ -42,6 +42,9 @@ export class MyDurableObject extends DurableObject {
 - The returned handle is a plain data object: store it (for example in Durable Object storage) and restore it later, including from another Durable Object. The Worker API has no list method.
 - Retention: implicit 30-day time-to-live, refreshed by each restore; no custom TTL yet. Maximum snapshot size 20 GB (see limits.md). `image` and `containerSnapshot` cannot be passed together.
 - `default`-policy applications cannot create or restore snapshots.
+- Container snapshots are in public beta.
+- Managing snapshots: snapshots are not listed in the Cloudflare dashboard. The Container binding supports creating and restoring snapshots, but provides no methods to list or delete them; they expire per the retention rules above. Snapshots do not support jurisdiction selection.
+- Source: https://developers.cloudflare.com/containers/guides/snapshots/ (cloudflare-docs production `34d908a`, fetched 2026-11-14).
 
 ## Related
 

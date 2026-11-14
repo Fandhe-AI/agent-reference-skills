@@ -48,7 +48,7 @@ $ docker buildx
 
 - Override the configured builder instance (`--builder`): the `BUILDX_BUILDER` environment variable can also be used.
 - Enable the default policy: set `BUILDX_DEFAULT_POLICY=1` to enable Buildx's built-in source policy. The policy verifies signed tags for images managed by Docker, including BuildKit builder images and Dockerfile frontends. Untagged digest references and images outside the managed repositories are allowed unchanged. Tagged references that also contain a digest still have their release identity verified.
-- This skill documents Buildx v0.38.0 (as vendored by docs.docker.com). The `dap`, `debug`, `dial-stdio`, `policy` and `replay` subcommands and `history inspect attachment` are not covered by separate pages.
+- This skill documents Buildx v0.39.0 (as vendored by docs.docker.com). The `dap`, `debug`, `dial-stdio`, `policy` and `replay` subcommands and `history inspect attachment` are not covered by separate pages.
 
 ## Related
 

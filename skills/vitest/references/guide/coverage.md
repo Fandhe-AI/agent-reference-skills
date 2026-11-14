@@ -63,7 +63,7 @@ coverage: {
 
 ## Notes
 
-- Vitest 5 (docs at tag `v5.0.5`):
+- Vitest 5 (docs at tag `v5.1.0`):
   - `include` / `exclude` are globs matched against paths relative to the project root (no looser `contains` matching). A pattern with no glob wildcard is treated as a directory (`include: ['src']` equals `['src/**']`); including file extensions is recommended. Review existing patterns, since some files may no longer be included. Default `include`: files imported during the test run; default `exclude`: `[]`.
   - Glob entries in `thresholds` no longer inherit the top-level `perFile`; set `perFile: true` on each glob that needs per-file checking. Glob-matched files still count toward the global thresholds.
   - `coverage.autoAttachSubprocess` (Version 5.0.0): type `boolean`, default `false`, providers `'v8'`, CLI `--coverage.autoAttachSubprocess`. "Track coverage of the `node:child_process` and `node:worker_threads` spawned during test run." It has some performance overhead as it uses `NODE_V8_COVERAGE` internally, which makes Node write many files on the file system.
@@ -75,6 +75,25 @@ coverage: {
   instrumenter: options => createInstrumenter(options),
 }
 ```
+
+- Vitest 5.1 (docs at tag `v5.1.0`):
+  - `coverage.ignoreNode` (5.1.0): type `(node: Node, type: 'function' | 'statement' | 'branch') => boolean | 'ignore-this-and-nested-nodes' | void`, providers `'v8'`. Filters code out of coverage by AST node, for code that is not in the source file and cannot carry an ignore hint (for example code that compilers or plugins generate). Vitest calls it for each node of the transformed code; return `true` to ignore the node or `'ignore-this-and-nested-nodes'` to also ignore all nodes inside it. Vitest's built-in filters run first.
+  - The Istanbul provider uses Vitest's own `@vitest/istanbuljs`, a fork of `istanbuljs/istanbuljs`; instrumentation happens on the JavaScript side (the 5.0 docs said "Pre-instrumentation with Babel").
+  - HTML report theme: the HTML reporter takes `theme: 'light' | 'dark' | 'legacy'`, set via `coverage.reporter: [['html', { theme: 'light' }]]`. Without the option, the theme follows your previous selection in the theme picker, then the OS color preference; viewed through Vitest UI it inherits the UI's theme. `'legacy'` forces the original Istanbul-styled report.
+
+```ts
+coverage: {
+  provider: 'v8',
+  ignoreNode: (node, type) =>
+    type === 'statement'
+    && node.type === 'ExpressionStatement'
+    && node.expression.type === 'CallExpression'
+    && node.expression.callee.type === 'Identifier'
+    && node.expression.callee.name === '__generatedHelper',
+}
+```
+
+- Source: https://vitest.dev/config/coverage and https://vitest.dev/guide/coverage (Vitest v5.1.0)
 
 - `coverage.all` and `coverage.extensions` were removed in v4.0. By default only covered files are in the report; define `coverage.include` (then `coverage.exclude` if needed) to include uncovered files (source: Migrating to Vitest 4.0 § "Removed Options `coverage.all` and `coverage.extensions`", tag `v4.1.12`).
 

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/the-new-architecture/fabric-component-native-commands
+source: https://reactnative.dev/docs/0.88/the-new-architecture/fabric-component-native-commands
 ---
 
 # Invoking native functions on your native component

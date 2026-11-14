@@ -79,6 +79,11 @@ head_sampling_rate = 0.6
   - Some attributes (e.g. `service.name`, `faas.name`) only apply to some spans; when filtering or grouping by Worker name across traces and logs, use `$metadata.service`.
   - While a trace is in progress the root span shows `Trace in Progress`; wait a few moments for the full trace.
 
+### Data location
+
+Cloudflare-stored Workers traces follow your account's Customer Metadata Boundary setting when one is configured. If no boundary is configured, they may be stored in Cloudflare's core data centers globally. Viewing availability is subject to the Customer Metadata Boundary limitations in Data Localization compatibility.
+- Source: https://developers.cloudflare.com/workers/observability/traces/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
+
 ## Related
 
 - [custom-spans.md](./custom-spans.md)

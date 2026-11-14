@@ -45,4 +45,5 @@ These commands, in order: refresh package lists, upgrade installed packages and 
 
 ## Related
 
+- [System Repair](./boot-repair.md)
 - [System Recovery](./system-recovery.md)

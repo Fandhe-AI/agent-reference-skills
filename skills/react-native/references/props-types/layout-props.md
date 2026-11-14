@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/layout-props
+source: https://reactnative.dev/docs/0.88/layout-props
 ---
 
 # Layout Props

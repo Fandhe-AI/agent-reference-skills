@@ -45,7 +45,7 @@ export const auth = betterAuth({
 
 Register the CLI as a public native client linked to the API resource (`token_endpoint_auth_method: "none"`):
 
-Adapted (not in the official docs): the official v1.7.10 example passes `type: "native"`; 1.7 removed `type`, so this snippet uses `application_type: "native"`.
+Adapted (not in the official docs): the official v1.7.23 example passes `type: "native"`; 1.7 removed `type`, so this snippet uses `application_type: "native"`.
 
 ```typescript
 import { DEVICE_CODE_GRANT_TYPE } from "@better-auth/oauth-provider";
@@ -202,13 +202,98 @@ deviceAuthorization({
 
 ### Client validation example
 
+Check the ID against a list of known clients:
+
 ```typescript
+import { deviceAuthorization } from "better-auth/plugins";
+
+const knownClientIds = new Set(["my-cli", "my-tv-app"]);
+
 deviceAuthorization({
-    validateClient: async (clientId) => {
-        const client = await db.oauth_clients.findOne({ id: clientId })
-        return client && client.allowDeviceFlow
-    },
-})
+  validateClient: (clientId) => knownClientIds.has(clientId),
+});
+```
+
+### Example approval page
+
+```tsx
+// app/device/approve/page.tsx
+// Client IDs you accept in `validateClient`, mapped to names your users recognize.
+const knownClients = new Map([
+  ["my-cli", "My CLI"],
+  ["my-tv-app", "My TV App"],
+]);
+
+type DeviceRequest = {
+  user_code: string;
+  client_id?: string;
+  scope?: string;
+  resource?: string | string[];
+};
+
+export default function DeviceApprovalPage() {
+  const { user } = useAuth(); // Must be authenticated
+  const userCode = useSearchParams().get("user_code") ?? "";
+  const [request, setRequest] = useState<DeviceRequest | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    if (!user || !userCode) return;
+    authClient.device({ query: { user_code: userCode } }).then(({ data }) => {
+      // Client details are missing when another session claimed the code.
+      if (data?.client_id) setRequest(data);
+    });
+  }, [user, userCode]);
+
+  // Ignore details that belong to an earlier code.
+  const details = request?.user_code === userCode ? request : null;
+  const clientName = details?.client_id
+    ? knownClients.get(details.client_id)
+    : undefined;
+
+  const decide = async (action: "approve" | "deny") => {
+    setIsProcessing(true);
+    const { error } = await authClient.device[action]({ userCode });
+    setIsProcessing(false);
+    if (error) {
+      alert(`Failed to ${action} device`);
+      return;
+    }
+    window.location.href = "/";
+  };
+
+  if (!user) {
+    const verificationPath = `/device?user_code=${encodeURIComponent(userCode)}`;
+    window.location.href = `/login?redirect=${encodeURIComponent(verificationPath)}`;
+    return null;
+  }
+
+  return (
+    <div>
+      <h2>Device Authorization Request</h2>
+      <p>
+        Client: {details?.client_id
+          ? clientName ?? `Unrecognized client (${details.client_id})`
+          : "Loading..."}
+      </p>
+      <p>Scopes: {details?.scope || "None"}</p>
+      <p>
+        Resources: {Array.isArray(details?.resource)
+          ? details.resource.join(", ")
+          : details?.resource || "None"}
+      </p>
+      <p>Code: {userCode}</p>
+      <p>Approve only if this code is showing right now on a device you have.</p>
+
+      <button onClick={() => decide("approve")} disabled={isProcessing || !clientName}>
+        Approve
+      </button>
+      <button onClick={() => decide("deny")} disabled={isProcessing}>
+        Deny
+      </button>
+    </div>
+  );
+}
 ```
 
 ## Options / Props
@@ -222,7 +307,7 @@ deviceAuthorization({
 | `deviceCodeLength` | number | `40` | Length of the device verification code (max 191) |
 | `generateDeviceCode` | function | - | Custom device code generation (string, at most 191 characters) |
 | `generateUserCode` | function | - | Custom user code generation (string, at most 191 characters) |
-| `validateClient` | function | - | Client ID validation |
+| `validateClient` | function | - | Optional `(clientId: string) => boolean \| Promise<boolean>` callback for custom client ID validation in the first-party session flow |
 | `onDeviceAuthRequest` | function | - | Hook fired on authorization request |
 
 ## Notes
@@ -238,7 +323,11 @@ deviceAuthorization({
 - With the OAuth Provider integration, `GET /device` also returns the approved resource context to the owning authenticated user, and an unknown OAuth client ID reaches the standalone flow only when `validateClient` accepts it (otherwise `invalid_client`). Standalone Device Authorization does not expose the RFC 8707 `resource` parameter.
 - Changed in 1.7: `deviceCode` and `userCode` have unique indexes and values are limited to 191 characters. Resolve duplicate values on every adapter before migrating; MySQL and SQL Server must also convert both columns to bounded strings and clean up values longer than 191 characters. Custom generators must stay within 191 characters.
 - Changed in 1.7: the OAuth device grant is opt-in. `oauthDeviceAuthorization` is provided by `@better-auth/oauth-provider`; it adds nullable `oauthClientId` and `resources` fields to `deviceCode`, validates the OAuth client, scopes and resources at creation, advertises the device authorization endpoint in discovery, and exchanges approved codes at `/oauth2/token`. Existing 1.6 rows need no backfill and stay on the session-token path; let pending 1.6 clients finish polling `/device/token` or expire before moving them to the OAuth flow. The client type exposes the RFC 8707 `resource` field only with `oauthDeviceAuthorizationClient()` from `@better-auth/oauth-provider/client`.
-- The official v1.7.10 device-authorization example still shows `type: "native"`; 1.7 removed `type` (see oauth-provider: removed `type` and `public` fields are not accepted), so the snippet here uses `application_type`.
+- The official v1.7.23 device-authorization example still shows `type: "native"`; 1.7 removed `type` (see oauth-provider: removed `type` and `public` fields are not accepted), so the snippet here uses `application_type`.
+- Verifying the OAuth access token at the API: verify its signature, issuer, audience, expiry, and required scopes (see the "Protect your API" section of the oauth-provider resource-server docs). Client IDs not registered with OAuth Provider can use the first-party flow without OAuth client credentials only when `validateClient` explicitly accepts them.
+- Approval page: the `client_id` the approval UI receives is the identifier the device sent, not a verified name. Show a name from your own client registry, accept only registered IDs in `validateClient`, keep Approve disabled until `GET /device` returns the client and scopes, and enable Approve only when that `client_id` is also in your own list of known clients.
+- `validateClient` runs on both `/device/code` and `/device/token` in the standalone session flow. Return `true` to accept the client ID or `false` to reject with `invalid_client`. If omitted, the standalone flow skips this custom validation.
+- Source: https://www.better-auth.com/docs/plugins/device-authorization (better-auth v1.7.23 docs)
 
 ### Error codes
 
@@ -248,7 +337,8 @@ deviceAuthorization({
 | `slow_down` | Polling too frequently (increase interval) |
 | `expired_token` | Device code has expired |
 | `access_denied` | User denied authorization |
-| `invalid_grant` | Invalid device code or client ID |
+| `invalid_client` | Client ID is not accepted |
+| `invalid_grant` | Device code is invalid or belongs to another client |
 
 ### DB schema
 

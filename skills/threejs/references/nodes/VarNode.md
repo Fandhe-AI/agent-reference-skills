@@ -22,7 +22,7 @@ class VarNode extends Node {
 | `name` | `string` | `null` | Variable name in the shader; auto-generated if not defined |
 | `readOnly` | `boolean` | `false` | The read-only flag |
 | `global` | `boolean` | `true` | Overrides `Node#global` |
-| `intent` | `boolean` | `false` | Indicates the node is used for intent |
+| `assignable` | `boolean` | `false` | Whether this node can be generated as an expression until it is assigned, at which point it is declared as a variable |
 | `parents` | `boolean` | `true` | Indicates this node requires parents (overrides `Node#parents`) |
 | `isVarNode` | `boolean` (readonly) | `true` | Type-testing flag |
 
@@ -30,13 +30,13 @@ class VarNode extends Node {
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `getIntent()` | `boolean` | Returns the intent flag |
-| `isIntent(builder)` | `boolean` | Checks if this node is used for intent |
-| `setIntent(value)` | `VarNode` | Marks the node as a variable intent: it is not built directly and is useful for assigning variables without creating a new variable node |
+| `getAssignable()` | `boolean` | Returns the assignable flag |
+| `setAssignable(value)` | `VarNode` | Sets the assignable flag: an assignable node is generated as an expression until it is assigned, then declared as a variable |
 
 ## Notes
 
-- Source: https://threejs.org/docs/pages/VarNode.html (three.js r186, `src/nodes/core/VarNode.js`)
+- Source: https://threejs.org/docs/pages/VarNode.html (three.js r187, `src/nodes/core/VarNode.js`; JSDoc from tag r187 / commit 7e89746)
+- Migration (r186 → r187): `intent` / `getIntent()` / `isIntent()` / `setIntent()`, the `VarIntent()` TSL function and the `toVarIntent()` chaining method were removed; use `assignable` / `getAssignable()` / `setAssignable()` (https://github.com/mrdoob/three.js/pull/34815).
 
 ## Related
 

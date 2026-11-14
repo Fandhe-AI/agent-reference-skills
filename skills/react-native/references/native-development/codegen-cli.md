@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/the-new-architecture/codegen-cli
+source: https://reactnative.dev/docs/0.88/the-new-architecture/codegen-cli
 ---
 
 # The Codegen CLI

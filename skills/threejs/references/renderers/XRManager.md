@@ -27,7 +27,7 @@ new XRManager( renderer: Renderer, multiview: boolean )
 | `.foveateBoundTexture( renderTarget: RenderTarget )` | Applies WebXR fixed foveation to the internal post-processing render target used by the first XR render pass before compositing into a projection layer. Browser-side `XRWebGLBinding.foveateBoundTexture()` failures are non-fatal. |
 | `.getBaseLayer() : XRWebGLLayer \| XRProjectionLayer` | `XRProjectionLayer` when the device supports the WebXR Layers API, else `XRWebGLLayer`. |
 | `.getBinding() : XRWebGLBinding` | Creates a new binding if needed and possible; `null` if one cannot be created. |
-| `.getCamera() : ArrayCamera` | Returns the XR camera. |
+| `.getCamera() : ArrayCamera` | Returns the XR camera. Its transformation and projection matrix are derived from the first sub camera (e.g. the left eye in a stereo setup). |
 | `.getController( index: number ) : Group` | Group for the controller in target ray space. |
 | `.getControllerGrip( index: number ) : Group` | Group for the controller in grip space. |
 | `.getHand( index: number ) : Group` | Group for the controller in hand space. |
@@ -45,13 +45,14 @@ new XRManager( renderer: Renderer, multiview: boolean )
 | `.setReferenceSpace( space: XRReferenceSpace )` | Sets a custom XR reference space. |
 | `.setReferenceSpaceType( type: XRReferenceSpaceType )` | Cannot be used during an XR session. |
 | `.setSession( session: XRSession ) : Promise` | (async) Injects a requested XR session (usually from a `*Button` module) into the renderer and starts XR rendering. |
-| `.updateCamera( camera: PerspectiveCamera )` | Called by the renderer per frame; updates the XR camera and its sub cameras from the given user camera. |
+| `.updateCamera( camera: PerspectiveCamera )` | Called by the renderer per frame; updates the XR camera and its sub cameras from the given user camera. The XR camera's transformation and projection matrix are derived from the first sub camera. |
 | `.useMultiview() : boolean` | Whether the engine renders to a multiview target. |
 
 ## Notes
 
 - Inherits from `EventDispatcher`.
-- Source: https://threejs.org/docs/pages/XRManager.html (three.js r186, `src/renderers/common/XRManager.js`)
+- Source: https://threejs.org/docs/pages/XRManager.html (three.js r187, `src/renderers/common/XRManager.js`; JSDoc from tag r187 / commit 7e89746)
+- Migration (r186 → r187): the XR camera's transformation and projection matrix are derived from the first sub camera instead of being computed from the left and right cameras (https://github.com/mrdoob/three.js/pull/34275).
 
 ## Related
 

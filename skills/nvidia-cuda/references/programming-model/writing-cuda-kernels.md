@@ -30,6 +30,68 @@ __shared__ float sharedArray[1024];
 
 The SIMT model lets each thread maintain independent state and control flow; performance improves when threads within the same warp minimize divergent code paths.
 
+### Distributed shared memory (CPG 13.5)
+
+Thread Block Clusters, introduced in compute capability 9.0 and facilitated by Cooperative Groups, let threads in a cluster access the shared memory of all participating thread blocks (Distributed Shared Memory). Support for thread block clusters is reported by the `cluster_supported` field of `cuda::arch_traits`. The shared memory size specification, static or dynamic, is still per thread block; the size of distributed shared memory is the number of thread blocks per cluster multiplied by the size of shared memory per thread block.
+
+The official histogram example gains a second launch tab that uses `cuda::arch_traits` from the CUDA C++ Standard Library to verify that the architecture supports thread block clusters (`cluster_supported`) and that the shared memory required by each block is supported (`max_shared_memory_per_block_optin`). It uses `cudaFuncSetAttribute` to opt in to dynamic shared memory above 48 KB and `cudaLaunchKernelEx` to launch the kernel with the cluster dimension attribute (`clusterHist_kernel` is the kernel defined in the same official example):
+
+Adapted (not in the official docs): an input check is added so `nbins` and the block count are non-zero multiples of `cluster_size`, which the cluster launch requires.
+
+```cpp
+#include <cuda/devices>
+#include <cuda_runtime.h>
+// Launch via the CUDA Runtime API after checking architecture traits.
+cudaError_t launch_cluster_histogram(int* bins, int nbins, const int* input,
+                                    size_t array_size, int threads_per_block)
+{
+    int device_id;
+    cudaError_t status = cudaGetDevice(&device_id);
+    if (status != cudaSuccess) {
+        return status;
+    }
+    auto compute_capability = cuda::device_attributes::compute_capability(device_id);
+    auto traits             = cuda::arch_traits_for(compute_capability);
+    if (!traits.cluster_supported) {
+        return cudaErrorNotSupported;
+    }
+    // cluster_size depends on the histogram size.
+    // ( cluster_size == 1 ) implies no distributed shared memory, just thread block
+    // local shared memory
+    int cluster_size    = 2; // size 2 is an example here
+    if (threads_per_block <= 0 || nbins <= 0 || nbins % cluster_size != 0 ||
+        array_size / threads_per_block == 0 ||
+        (array_size / threads_per_block) % cluster_size != 0) {
+        return cudaErrorInvalidValue;
+    }
+    int nbins_per_block = nbins / cluster_size;
+    cudaLaunchConfig_t config = {};
+    // The grid dimension is the number of blocks, a multiple of cluster_size.
+    config.gridDim  = array_size / threads_per_block;
+    config.blockDim = threads_per_block;
+    // Dynamic shared memory size is per block.
+    config.dynamicSmemBytes = nbins_per_block * sizeof(int);
+    if (config.dynamicSmemBytes > traits.max_shared_memory_per_block_optin) {
+        return cudaErrorInvalidValue;
+    }
+    // Explicitly opt in to dynamic shared memory above 48 KB per block.
+    status = cudaFuncSetAttribute(clusterHist_kernel, cudaFuncAttributeMaxDynamicSharedMemorySize,
+                                  static_cast<int>(config.dynamicSmemBytes));
+    if (status != cudaSuccess) {
+        return status;
+    }
+    cudaLaunchAttribute attribute = {};
+    attribute.id = cudaLaunchAttributeClusterDimension;
+    attribute.val.clusterDim.x = cluster_size;
+    attribute.val.clusterDim.y = 1;
+    attribute.val.clusterDim.z = 1;
+    config.numAttrs = 1;
+    config.attrs = &attribute;
+    return cudaLaunchKernelEx(&config, clusterHist_kernel, bins, nbins, nbins_per_block,
+                              input, array_size);
+}
+```
+
 ### Thread hierarchy
 
 Threads organize into thread blocks, which form grids (1D, 2D, or 3D). Built-in variables (`gridDim`, `blockDim`, `blockIdx`, `threadIdx`) let a kernel compute a thread's unique global index. Thread linearization follows x-fastest ordering, which affects warp assignment.
@@ -53,6 +115,25 @@ A software tool that enables thread-group synchronization across thread blocks, 
 ### Kernel launch and occupancy
 
 The scheduler assigns thread blocks to SMs based on available hardware resources. Occupancy is the ratio of active warps to the maximum number of warps an SM supports; device properties determine the resource limits (registers, shared memory) that bound occupancy for a given kernel.
+
+### Architecture limits with cuda::arch_traits (CPG 13.5)
+
+The limits of a GPU architecture can also be obtained with `cuda::arch_traits` from the CUDA C++ Standard Library, both at compile time and at run time. The same values as the device-properties table are provided at compile time by `cuda::arch_traits`:
+
+```cpp
+#include <cuda/devices>
+constexpr auto traits = cuda::arch_traits<cuda::arch_id::sm_100>();
+static_assert(traits.max_blocks_per_multiprocessor == 32);
+static_assert(traits.max_shared_memory_per_multiprocessor == 233472);
+static_assert(traits.max_registers_per_multiprocessor == 65536);
+static_assert(traits.max_threads_per_multiprocessor == 2048);
+static_assert(traits.max_shared_memory_per_block == 49152);
+static_assert(traits.max_registers_per_block == 65536);
+static_assert(traits.max_threads_per_block == 1024);
+```
+
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/writing-cuda-kernels.html (CPG v13.5, retrieved 2026-11-14)
+- Adapted from the official docs: `launch_cluster_histogram` rejects `nbins` and block counts that are not non-zero multiples of `cluster_size` (the official example assumes this silently).
 
 ## Related
 

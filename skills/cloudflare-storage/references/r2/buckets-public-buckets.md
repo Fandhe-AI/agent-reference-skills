@@ -25,9 +25,12 @@ Public development URL (non-production): bucket Settings > Public Development UR
 - **Disable domain** turns off access via that domain but keeps it connected; **Remove domain** disconnects it and removes the CNAME record.
 - `r2.dev` is rate-limited and for development only. Do not CNAME to the `r2.dev` subdomain (unsupported access path). Disable with **Public Development URL** > **Disable** > type `disallow`.
 - Public buckets do not list bucket contents at the root of the (sub)domain.
+- To test public object access on your machine, use the local public bucket endpoint (`/cdn-cgi/local/r2/public/<BUCKET_ID>/<KEY>`, see `local-development.md`). It does not require enabling public access on a deployed bucket.
+- Source: https://developers.cloudflare.com/r2/buckets/public-buckets/ (production `34d908a`, fetched 2026-11-14)
 
 ## Related
 
+- [Local development](./local-development.md)
 - [CORS](./buckets-cors.md)
 - [Create new buckets](./buckets-create.md)
 - [Data Access Logs](./buckets-data-access-logs.md)

@@ -1,6 +1,6 @@
 # BullMQ — Adding Jobs in Bulk
 
-`addBulk` メソッドを使用して、複数のジョブをアトミックに一括追加する。すべてのジョブがキューに投入されるか、1 つも投入されないかのどちらかが保証される。
+Adding jobs in bulk with `addBulk` can be faster because it reduces roundtrips to the backend. Whether a bulk add is atomic depends on the SDK and backend (see Notes).
 
 ## 基本的な使い方
 
@@ -27,17 +27,15 @@ const jobs = await queue.addBulk([
 | `data` | `object` | ジョブデータ |
 | `opts` | `JobsOptions` | ジョブオプション（任意） |
 
-## 利点
+## Notes
 
-- **原子性（Atomicity）**: すべてのジョブが投入されるか、1 つも投入されないかのどちらか
-- **パフォーマンス**: Redis へのラウンドトリップが削減され、複数ジョブの同時追加時に効率的
+- Bulk-add atomicity depends on the SDK and backend (v6.7.6 official page):
+  - PostgreSQL: the TypeScript, Python, and .NET SDKs add a batch in a single database transaction, so a failed batch is rolled back. Elixir does this for standard jobs when `pipeline: true` (the default), but adds delayed or prioritized jobs individually. Setting `pipeline: false` also adds all jobs individually. If a later Elixir addition fails in these cases, earlier jobs may remain committed; check the queue before retrying.
+  - Redis: do not assume that a failed bulk call added no jobs. TypeScript, Rust, and .NET pipeline individual job additions; Elixir may split standard jobs across transactions and adds delayed or prioritized jobs sequentially. Python and PHP group additions in a Redis transaction, but Redis does not roll back commands that fail during execution. A failure can therefore leave some jobs added; check the queue before retrying.
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/queues/adding-bulks.md (tag v6.7.6, fetched 2026-11-14). The v6.3.15 page said the call can only succeed or fail with all or none of the jobs added.
+- Per-job options (`delay`, `priority`, etc.) can be set on each job.
 
-## 注意点
-
-- 一括追加はトランザクション的に動作するため、部分的な結果は発生しない
-- 各ジョブに個別のオプション（`delay`, `priority` 等）を設定可能
-
-## 関連
+## Related
 
 - [Queues](./queues.md)
 - [Add Bulk API Reference](https://api.docs.bullmq.io/classes/v5.Queue.html#addbulk)

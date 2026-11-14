@@ -27,6 +27,8 @@ flag.store(1, cuda::memory_order_release);
 - System-scope tensor reductions (CPG 13.4 footnote): system-scope tensor reduction operations are only atomic at system scope (for objects in system-allocated memory with `pageableMemoryAccess` 1, managed memory with `concurrentManagedAccess` 1, and the peer-access case) if `hostNativeAtomicSupported` is 1. They include the PTX `{multimem.}cp.reduce.async.bulk.tensor.relaxed.sys` instruction families and APIs exposing them such as `cuda::ptx::cp_reduce_async_bulk_tensor`.
 - A data race occurs when two conflicting concurrent operations on the same memory location lack synchronization at a scope inclusive of both threads — the standard requires such conflicting operations to be synchronized "as if they were atomic operations," or the behavior is undefined.
 - The message-passing pattern (one thread writes data then releases a flag; another acquires the flag then reads the data) is the canonical example motivating scoped atomics: the flag's release/acquire pair establishes the happens-before relationship needed to avoid a data race on `x`.
+- Section numbering: since CPG 13.5 this appendix is Section 5.8 (Device-Callable APIs and Intrinsics is 5.7, CUDA C++ Execution model is 5.9).
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/cuda-cpp-memory-model.html (CPG v13.5, retrieved 2026-11-14)
 
 ## Related
 

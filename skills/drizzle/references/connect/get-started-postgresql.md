@@ -48,6 +48,13 @@ const result = await db.execute('select 1');
 - `postgres.js` uses prepared statements by default; this may need to be disabled (e.g. in AWS environments).
 - `drizzle(process.env.DATABASE_URL)` accepts any property from the underlying driver's connection options via `{ connection: { ... } }`.
 
+### rc.5 changes
+
+- Migration (rc.4 → rc.5): `postgres-js` transparent parsers set by `drizzle()` constructors no longer override the driver's own serializers for `timestamptz`, `timestamp`, `date`, `time`, `json`, `jsonb`. Remove any manual `JSON.stringify(jsonValue)` workaround in raw `sql` or raw driver calls to avoid double stringification.
+- Migration (rc.4 → rc.5): Aurora DSQL adapters were added: `drizzle-orm/postgres-js/dsql` (with `@aws/aurora-dsql-postgresjs-connector`) and `drizzle-orm/node-postgres/dsql` (with `@aws/aurora-dsql-node-postgres-connector`). The release notes show no usage example; see the connectors' own documentation.
+- Migration (rc.4 → rc.5): `node-postgres` transactions no longer leak the pool client on a rejected `BEGIN` or crash the process when the connection drops mid-transaction, and a failed `rollback` no longer replaces the original error. Transaction snapshot support was added for the `pg` dialect.
+- Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
+
 ## Related
 
 - [Database connection overview](./connect-overview.md)

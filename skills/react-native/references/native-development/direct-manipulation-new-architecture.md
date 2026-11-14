@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/the-new-architecture/direct-manipulation-new-architecture
+source: https://reactnative.dev/docs/0.88/the-new-architecture/direct-manipulation-new-architecture
 ---
 
 # Direct Manipulation

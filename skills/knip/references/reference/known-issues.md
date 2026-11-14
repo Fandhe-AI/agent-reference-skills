@@ -17,6 +17,18 @@ Knip exits with code `2` when a plugin config file fails to load; `--no-exit-cod
 - Disable the plugin entirely
 - Ignore the workspace as last resort
 
+### Unhandled Rejections from Config Files
+
+A configuration file may start asynchronous work that fails without a `catch` or `await`. Knip reports the rejection, still prints its results and exits with code `2`. `--no-exit-code` does not suppress this error.
+
+```sh
+$ knip
+ERROR: Unhandled rejection, likely from apps/docs/next.config.mjs (Build failed with 1 error:)
+ERROR: Please fix or visit https://knip.dev/reference/known-issues
+```
+
+The named file is the one Knip was loading or whose work was still running. When a dependency shared between config files causes the rejection, another file may be named. Sometimes updating the dependency that causes the rejection helps (upgrading `fumadocs-mdx` to v15.2.1 or later resolved the reported case). See the workarounds above for more.
+
 ## 2. Path Aliases in Config Files
 
 TypeScript path aliases may fail with "Cannot find module".
@@ -47,3 +59,7 @@ KNIP_DISABLE_RAW_TRANSFER=1 knip
 With `--cache`, configuration or path alias changes may leave results stale (e.g. an import still reported as unresolved after the missing file is added). Newly added `.gitignore` files are also not detected automatically.
 
 **Workaround:** run without `--cache`, or delete the cache directory (`node_modules/.cache/knip` by default, configurable with `--cache-location`) before running with `--cache` again.
+
+## Notes
+
+- Source: https://knip.dev/reference/known-issues (knip@6.45.1 docs, retrieved 2026-11-14)

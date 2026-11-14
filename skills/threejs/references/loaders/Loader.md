@@ -19,6 +19,8 @@ loader.setPath( '/assets/' ).load( 'model.glb', onLoad, onProgress, onError );
 | `resourcePath` | string | — | Base path for dependent resources (e.g., textures referenced by a model) |
 | `requestHeader` | Object | — | HTTP headers sent with fetch requests |
 | `withCredentials` | boolean | `false` | Whether XMLHttpRequest sends credentials |
+| `priority` | `'high' \| 'low' \| 'auto'` | `'auto'` | Request priority hint; image loaders use `HTMLImageElement.fetchPriority` |
+| `cache` | `'default' \| 'no-store' \| 'reload' \| 'no-cache' \| 'force-cache'` | `'default'` | HTTP cache mode passed to `fetch()`; does not affect `Cache` or loaders using `HTMLImageElement` |
 
 ## Methods
 
@@ -33,12 +35,16 @@ loader.setPath( '/assets/' ).load( 'model.glb', onLoad, onProgress, onError );
 | `setCrossOrigin(value)` | Loader | Set CORS string |
 | `setRequestHeader(headers)` | Loader | Set HTTP request headers |
 | `setWithCredentials(value)` | Loader | Set credentials flag |
+| `setPriority(value)` | Loader | Set a browser scheduling hint (`'high'`, `'low'`, `'auto'`); browsers may ignore it. Internally created loaders inherit it, loaders supplied by the application keep their own settings |
+| `setCache(value)` | Loader | Set the HTTP cache mode for fetch requests: `'no-cache'` revalidates cached responses, `'no-store'` bypasses the HTTP cache |
 
 ## Notes
 
 - All setter methods return the loader instance for chaining.
 - `withCredentials` has no effect on local files or same-domain requests.
 - `load()` and `parse()` are abstract and must be implemented by subclasses.
+- `priority`, `cache`, `setPriority()` and `setCache()` are new in r187 (no PR listed in the r187 release notes).
+- Source: https://threejs.org/docs/pages/Loader.html (three.js r187, `src/loaders/Loader.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

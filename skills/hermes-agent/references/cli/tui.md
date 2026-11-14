@@ -42,6 +42,7 @@ The status line also shows the working directory with git branch, per-prompt ela
 | Command | TUI behavior |
 |---------|--------------|
 | `/help` | Overlay with categorized commands |
+| `/rewind` | Transcript browsing (no prime step): `←`/`→` pick an earlier prompt, `Enter` puts it in the composer to edit and resend (everything from it on is removed when you send), `f` forks a new session from just before it, `Esc` goes back. Also `Esc`, `Esc` on an empty composer |
 | `/sessions` (alias `/switch`) | Live session switcher |
 | `/model` | Modal model picker grouped by provider, with cost hints |
 | `/skin` | Live-preview theme |
@@ -60,7 +61,9 @@ The status line also shows the working directory with git branch, per-prompt ela
 |-----|--------|
 | `Ctrl+T` | Expand the live-work dock into the full-height `/agents` roster (Enter or `t` transcript, `d` details, `e` steer, `x` stop) |
 | `Ctrl+R` / `F7` | Toggle the live dock between preview and one summary line |
-| `Ctrl+X` | Open the live session switcher (deletes a highlighted queued message instead) |
+| `Ctrl+P` | Expand a collapsed paste (`[[ … [60 lines] … ]]`) back into editable text; press again (or send) to fold it back into a chip. On an empty composer it opens/closes every sent paste |
+| `Esc`, `Esc` | On an idle, empty composer: backtrack to an earlier prompt (same as `/rewind`); the first `Esc` shows `esc again to edit previous message`. With a draft it still discards the draft; mid-turn it still interrupts |
+| `Ctrl+X` | Open the live session switcher (deletes a highlighted queued message instead; for a gateway-queued row this cancels it on the gateway via `prompt.cancel`, so it disappears for every viewer) |
 | `Ctrl+G` / `Ctrl+X Ctrl+E` | Edit the input buffer in `$EDITOR` |
 | `Cmd+V` / `Ctrl+V` | Text paste, then OSC52/native clipboard, then image attach |
 | Mouse drag | Highlight text with a uniform selection background |
@@ -79,6 +82,7 @@ display:
     activity: collapsed
   mouse_tracking: all        # off | wheel | buttons | all
   tui_status_indicator: kaomoji   # kaomoji | emoji | unicode | ascii
+  inline_images: auto        # auto | kitty | iterm | unicode | off — see the CLI guide's "Inline Images"
 ```
 
 Per-section defaults: `thinking` expanded, `tools` expanded, `subagents` follows `details_mode`, `activity` hidden. Runtime: `/details [hidden|collapsed|expanded|cycle]` and `/details <section> [hidden|collapsed|expanded|reset]` (sections: `thinking`, `tools`, `subagents`, `activity`).
@@ -102,9 +106,17 @@ Per-section defaults: `thinking` expanded, `tools` expanded, `subagents` follows
 - Light-terminal detection order: `HERMES_TUI_THEME`, then `COLORFGBG`, then an OSC 11 background probe.
 - On macOS, `F7` is the physical function key (use Fn / globe, or enable standard function keys); `Ctrl+R` is the equivalent binding.
 - `wheel` mouse tracking is recommended inside tmux to avoid hover-event "No image in clipboard" spam.
-- If the spawned gateway dies, the TUI restarts it (bounded attempts per minute) and reopens the same saved session; the in-flight reply is lost. For an attached dashboard gateway, only the WebSocket drops and the TUI reconnects with backoff, reattaching to the same session.
 - If the TUI fails to launch (no Node, missing bundle, TTY issue), Hermes prints a diagnostic and falls back.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/tui (v0.22.2).
+- Typing while the agent is busy (`display.busy_input_mode: queue`, the TUI default) submits the message to the gateway immediately; the gateway's durable session queue orders it behind the running turn, survives a gateway crash or restart, and shows as `[queued] …` in the `queued (N)` panel of every client attached to the session (Desktop included).
+- Approval prompts offer "No, and tell Hermes what to do instead" after Deny: the typed instruction is steered into the running turn and the command is denied; if the turn already ended it is queued as the next prompt.
+- A standing `/goal` row shows e.g. `⊙ goal · 3/20 turns · 2 subgoals · …` and repaints as soon as anything changes the goal.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/tui (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+Migration (v0.22 -> v0.23): the TUI no longer spawns its own in-process gateway. By default it attaches to the profile's shared gateway (the same process behind `hermes chat`, Desktop and messaging), starting one when none is running (a gateway started this way stops itself after it has been idle for a while). It connects over a local WebSocket (`/api/ws`, protocol `hermes-gateway-v1`) with a single-use ticket from the attach step; other local programs attach the same way with `hermes gateway attach --json`. There is still no general "point any TUI at any gateway port" mode: `/api/ws` admits only a loopback client holding a ticket, the OpenAI-compatible API server does not serve it, and `HERMES_TUI_GATEWAY_URL` stays an internal wiring detail of the dashboard's embedded chat.
+
+Connection drops: if the WebSocket drops, the TUI says "Connection to Hermes lost — reconnecting and reopening your chat…", reconnects with growing backoff and reattaches to the same session (including a reply still streaming on the gateway). If the gateway is gone (crash, idle exit, `hermes gateway stop`), the TUI starts it again, at most a few times per minute, and reopens the same saved session; a reply in flight at a crash is lost.
 
 ## Related
 

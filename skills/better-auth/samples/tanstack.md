@@ -45,6 +45,6 @@ export const Route = createFileRoute("/dashboard")({
 ## Notes
 
 - `npm create @tanstack/start` scaffolds a project with Better Auth already wired in via its add-on prompt
-- Add `tanstackStartCookies()` (React) or `tanstackStartCookies` from `better-auth/tanstack-start/solid` (Solid) as the last plugin so `auth.api.signInEmail`/`signUpEmail` set cookies correctly
+- Add `tanstackStartCookies()` (React) or `tanstackStartCookies` from `better-auth/tanstack-start/solid` (Solid) as the last plugin so server-side `auth.api` calls that set cookies (like `signOut`) set them correctly
 - `beforeLoad` re-runs on every navigation including client-side `<Link>`, unlike a one-time server check
 - Prefer the `authClient` SDK for sign-in/sign-up flows; use `auth.api` mainly inside server functions

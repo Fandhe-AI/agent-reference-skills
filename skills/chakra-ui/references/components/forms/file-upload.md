@@ -59,6 +59,8 @@ import { FileUpload } from "@chakra-ui/react"
 - Use `FileUpload.Dropzone` as an alternative to `FileUpload.Trigger` for drag-and-drop UI.
 - File validation errors are available in the `onFileReject` callback.
 - 3.35.0 (Ark UI 5.36.0): duplicate files are rejected with the `FILE_EXISTS` error code.
+- 3.38.0: disabled delete triggers no longer show an active cursor and full-opacity icon. `Field.Root readOnly` now makes the file upload read-only (Ark UI 5.40.0).
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

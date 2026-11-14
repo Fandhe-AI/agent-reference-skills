@@ -38,6 +38,8 @@ renderer.copyFramebufferToTexture(texture, position);
 
 - Must be used with `renderer.copyFramebufferToTexture()` to populate with data.
 - Filters default to `NearestFilter` to avoid interpolation artifacts.
+- Migration (r186 → r187): `copy()` / `clone()` now give the copy its own `TextureSource` instead of sharing the source's (https://github.com/mrdoob/three.js/pull/34636).
+- Source: https://threejs.org/docs/pages/FramebufferTexture.html (three.js r187, `src/textures/FramebufferTexture.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

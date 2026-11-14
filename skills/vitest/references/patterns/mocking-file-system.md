@@ -77,7 +77,7 @@ it('can return a value multiple times', () => {
 
 ## Notes
 
-- Source: https://vitest.dev/guide/mocking/file-system (docs at tag `v5.0.5`).
+- Source: https://vitest.dev/guide/mocking/file-system (docs at tag `v5.1.0`).
 - `memfs` is a third-party package (not part of Vitest).
 - `vi.mock` must be at the top level of the file in Vitest 5.
 

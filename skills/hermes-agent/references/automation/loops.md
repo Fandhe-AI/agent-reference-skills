@@ -49,7 +49,8 @@ loops:
 
 ## Notes
 
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/loops (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/loops (pinned to v0.23.1)
+- Live countdown (new in v0.23): while a loop stands, every surface shows the time to the next wakeup. Classic CLI: a row in the live-work dock above the prompt (`↻ loop · every 5m · 2 runs · next in 4m · <prompt>`; `running now` during a wakeup; the pause reason when paused; collapsed with Ctrl+R it shrinks to `↻ loop next in 4m`). TUI: the same row under the goal bar. Desktop: the loop card above the composer (`Loop active · 2 runs · next 00:04:12`, counting every second).
 - Works on the CLI, TUI (`hermes --tui`), web dashboard chat, desktop app and every gateway platform. On messaging platforms the gateway fires wakeups between your messages.
 - Desktop/dashboard: a session with an active `/loop` (or `/heartbeat`) is exempt from the disconnected-session reaper; the backend process itself must keep running.
 - An active `/goal` owns the session: loop wakeups defer while a goal is driving, and resume when the goal finishes, pauses, or parks on a wait barrier. A real user message always wins.

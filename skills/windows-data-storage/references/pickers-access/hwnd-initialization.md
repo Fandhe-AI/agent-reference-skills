@@ -42,6 +42,7 @@ var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this); // `this` is the Wi
 
 - Required for classes implementing `IInitializeWithWindow`: `FileOpenPicker`, `FileSavePicker`, `FolderPicker` (`Windows.Storage.Pickers`), `GraphicsCapturePicker`, `MessageDialog`, `PopupMenu`, `StoreContext`, `SecondaryTile`, and others. If you skip this step in a desktop app, the picker throws or silently fails to appear.
 - `WinRT.Interop.InitializeWithWindow` and `WinRT.Interop.WindowNative` are C# interop classes; usable in WPF/WinForms projects targeting .NET 6+ as well as WinUI 3.
+- The official pickers tutorial states that projects targeting Windows App SDK 1.7 or earlier, or using the legacy `Windows.Storage.Pickers` APIs (for example when migrating from UWP), must initialize the picker with an HWND before showing it; without this the picker throws an exception or fails silently in desktop (WinUI 3) apps. Source: https://learn.microsoft.com/en-us/windows/apps/develop/files/using-file-folder-pickers (retrieved 2026-11-14).
 - **Not required** when using `Microsoft.Windows.Storage.Pickers` (Windows App SDK 1.8+) pickers — those take a `WindowId` in their constructor instead and don't depend on `CoreWindow`.
 - A related but separate interop path exists for `DataTransferManager` (`IDataTransferManagerInterop.GetForWindow` / `ShowShareUIForWindow`) and `UserConsentVerifier` (`IUserConsentVerifierInterop`), which use `XxxForWindow` methods rather than `IInitializeWithWindow.Initialize`.
 
@@ -51,3 +52,4 @@ var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this); // `this` is the Wi
 - [FileSavePicker](./file-save-picker.md)
 - [FolderPicker](./folder-picker.md)
 - [Microsoft.Windows.Storage.Pickers (Windows App SDK)](./windows-app-sdk-pickers.md)
+- [Save a file with a Windows App SDK picker](./windows-app-sdk-save-picker.md)

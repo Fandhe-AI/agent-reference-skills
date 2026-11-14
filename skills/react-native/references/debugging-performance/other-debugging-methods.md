@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/other-debugging-methods
+source: https://reactnative.dev/docs/0.88/other-debugging-methods
 ---
 
 # Other Debugging Methods

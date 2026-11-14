@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/view
+source: https://reactnative.dev/docs/0.88/view
 ---
 
 # View
@@ -105,7 +105,7 @@ For `View` responder props (e.g., `onResponderMove`), the synthetic touch event 
 - `View`s are designed to be used with StyleSheet for clarity and performance, although inline styles are also supported.
 - The `hitSlop` touch area never extends past the parent view bounds, and the Z-index of sibling views always takes precedence if a touch hits two overlapping views.
 - `experimental_accessibilityOrder` is experimental: "Experimental APIs may contain bugs and are likely to change in a future version of React Native. Don't use them in production."
-- The official 0.87 type table lists `onResponderTerminationRequest` as `=> void`, but its description and the Gesture Responder System page (`evt => true`) show it returns a boolean; the boolean form is used here.
+- The official 0.88 type table lists `onResponderTerminationRequest` as `=> void`, but its description and the Gesture Responder System page (`evt => true`) show it returns a boolean; the boolean form is used here.
 - This is the React Native core `View` (imported from `react-native`, rendered as a native view). It is distinct from same-named parts in apple-swiftui / apple-uikit (`UIView`), android-compose-components / android-compose-ui, windows-winui-controls, and the web UI libraries ark-ui / chakra-ui / fandhe-frontend.
 
 ## Related

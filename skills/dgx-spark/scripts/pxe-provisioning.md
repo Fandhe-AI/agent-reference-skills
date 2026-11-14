@@ -2,6 +2,8 @@
 
 PXE boot server setup (TFTP / HTTP / DHCP), GRUB netboot configuration, and cloud-init based custom install (mirror repos, ISO repack, FastOS repack, OEMDATA USB provisioning) for DGX Spark. Source: pxe.html, enterprise-custom-install.html
 
+Revision note: the "Repack" sections below follow the July 2026 revision of the official custom-installation page. The October 2026 revision (retrieved 2026-11-14) uses native cloud-init with a FAT32 `OEMDATA` volume (`nvidia-spark-cloud-init`, October 2026 Release or later) and no longer mentions `repack_baseos.sh` / `repack_fastos.sh`; see the enterprise-custom-install reference page. The OEMDATA partition commands below use the October 2026 FAT32 procedure.
+
 ## Mount and extract the BaseOS ISO
 
 ```sh
@@ -114,20 +116,36 @@ sudo dd if=/path/to/repacked.iso of="$USB" bs=4M status=progress conv=fsync
 
 ## Create and format an OEMDATA partition on USB
 
-> **Warning**: Partitioning with `parted` and formatting with `mkfs.ext4` erase data on the target device. Double-check `$USB` before running.
+> **Warning**: Partitioning and formatting erase data on the target. Verify the device with `lsblk` before every command; selecting the wrong device or an existing boot partition can erase data.
+
+Adapted (not in the official docs): the official script that adds OEMDATA to recovery media creates partition number 2, which is only valid when that number is free. For an ISO written with `dd`, inspect the partition table first and create the partition in the free space with the lowest unused number; format only the partition you just created.
 
 ```sh
-USB=/dev/sdX
-sudo parted "$USB" print
-sudo parted -s "$USB" mkpart primary 14GiB 100%
-sudo mkfs.ext4 -L OEMDATA "${USB}3"
+DISK=/dev/<USB-device>
+lsblk -o NAME,SIZE,FSTYPE,LABEL,PARTLABEL,TRAN "$DISK"
+sudo sgdisk -p "$DISK"          # list used partition numbers and free space
+N=<unused-partition-number>     # for example 3 if partitions 1 and 2 exist
+sudo sgdisk -n "${N}:0:0" -t "${N}:0700" -c "${N}:OEMDATA" "$DISK"   # fails if N is in use or there is no free space; stop then
+sudo partprobe "$DISK"
+lsblk -o NAME,SIZE,FSTYPE,LABEL,PARTLABEL "$DISK"   # identify the new OEMDATA partition
 ```
 
-## Populate OEMDATA partition (debs, firmware, hook script)
+Official format commands (use only the new partition identified above, for example `${DISK}${N}` or `${DISK}p${N}` for NVMe-style names):
+
+```sh
+sudo wipefs -a /dev/<partition>
+sudo mkfs.vfat -F 32 -n OEMDATA /dev/<partition>
+```
+
+## Populate OEMDATA partition (seed, debs, firmware, hook script)
+
+`meta-data` and `user-data` are both required in the partition root; `hook.sh`, `debs/`, and `firmware/` are optional.
 
 ```sh
 sudo mkdir -p /tmp/usb-data
-sudo mount "${USB}3" /tmp/usb-data
+sudo mount /dev/<partition> /tmp/usb-data
+sudo install -m 0644 <seed-directory>/meta-data /tmp/usb-data/meta-data
+sudo install -m 0644 <seed-directory>/user-data /tmp/usb-data/user-data
 sudo mkdir -p /tmp/usb-data/debs /tmp/usb-data/firmware
 sudo cp /path/to/*.deb /tmp/usb-data/debs/
 sudo cp /path/to/*.cab /path/to/*.cap /tmp/usb-data/firmware/
@@ -229,6 +247,8 @@ python3 -m http.server 8080 --bind 0.0.0.0
 
 ## Repack a BaseOS ISO with cloud-init / custom debs
 
+July 2026 revision of the official page; not present in the October 2026 revision.
+
 ```sh
 cd $work_dir
 ./repack_baseos.sh -iso <ISO_FILE> -iso-root <ISO_ROOT_DIR>
@@ -242,6 +262,8 @@ cd $work_dir
 ```
 
 ## Repack a FastOS recovery image with cloud-init
+
+July 2026 revision of the official page; not present in the October 2026 revision.
 
 > **Warning**: Reflashing with the FastOS recovery image is destructive. It erases the target system's local storage (user data, software, configuration, logs). Back up first and verify the image and the target system before running.
 

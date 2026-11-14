@@ -27,7 +27,7 @@ expect({ a: 1, b: 2 }).toMatchInlineSnapshot(`
 await expect(htmlOutput).toMatchFileSnapshot('./snapshots/output.html')
 ```
 
-  Vitest 5: an unawaited `toMatchFileSnapshot` now fails the test instead of logging a warning (source: Migrating to Vitest 5.0, docs at tag `v5.0.5`).
+  Vitest 5: an unawaited `toMatchFileSnapshot` now fails the test instead of logging a warning (source: Migrating to Vitest 5.0, docs at tag `v5.1.0`).
 
 - Updating snapshots:
 
@@ -37,6 +37,8 @@ vitest run -u
 
 # in watch mode, press 'u'
 ```
+
+  Vitest 5.1.0: in watch mode, press `i` to review failed snapshots one at a time (`a` accepts, `r` keeps the old snapshot) instead of updating all at once; it covers inline, `.snap`, file, and Browser Mode ARIA snapshots (source: https://vitest.dev/blog/vitest-5-1).
 
 - CI behavior: when `process.env.CI` is truthy, snapshot writing is disabled. Mismatches, missing snapshots, and obsolete snapshots all fail the test.
 - Custom serializers:

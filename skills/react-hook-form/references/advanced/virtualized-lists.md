@@ -1,111 +1,125 @@
-# Working with virtualized lists
+# Virtualized lists
 
-Advanced Usage: https://react-hook-form.com/advanced-usage#Workingwithvirtualizedlists
+Advanced Usage: https://react-hook-form.com/advanced-usage/virtualized-lists
 
-Imagine a scenario where you have a table of data. This table might contain hundreds or thousands of rows, and each row will have inputs. A common practice is to only render the items in the viewport; however, this causes issues as items are removed from the DOM when they are out of view and then re-added. This will cause items to reset to their default values when they re-enter the viewport.
+Keep values and validation for rows that are not mounted.
 
-An example is shown below using [react-window](https://github.com/bvaughn/react-window).
+A table with hundreds or thousands of editable rows is too slow to render in full. Virtualization renders only the rows in view and unmounts the rest as the user scrolls. React Hook Form works with this, as long as you account for what happens to rows that are not mounted.
 
 ## Signature / Usage
 
-Form (`FormProvider` + `useFormContext`):
+This example uses [react-window](https://github.com/bvaughn/react-window) 2 and [`useFieldArray`](https://react-hook-form.com/docs/usefieldarray), with Zod for validation:
 
-```javascript
-import { memo } from "react"
-import { FormProvider, useForm, useFormContext } from "react-hook-form"
-import { VariableSizeList as List } from "react-window"
-import AutoSizer from "react-virtualized-auto-sizer"
-
-const items = Array.from(Array(1000).keys()).map((i) => ({
-  title: `List ${i}`,
-  quantity: Math.floor(Math.random() * 10),
-}))
-
-const WindowedRow = memo(({ index, style, data }) => {
-  const { register } = useFormContext()
-
-  return (
-    <div style={style}>
-      <label>{data[index].title}</label>
-      <input {...register(`${index}.quantity`)} />
-    </div>
-  )
-})
-
-export const App = () => {
-  const onSubmit = (data) => console.log(data)
-  const methods = useForm({ defaultValues: items })
-
-  return (
-    <form onSubmit={methods.handleSubmit(onSubmit)}>
-      <FormProvider {...methods}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <List
-              height={height}
-              itemCount={items.length}
-              itemSize={() => 100}
-              width={width}
-              itemData={items}
-            >
-              {WindowedRow}
-            </List>
-          )}
-        </AutoSizer>
-      </FormProvider>
-      <button type="submit">Submit</button>
-    </form>
-  )
-}
+```bash
+npm install react-window zod @hookform/resolvers
 ```
 
-Field Array (`useFieldArray` + `Controller`):
+```tsx
+import { useState } from "react"
+import {
+  useFieldArray,
+  useForm,
+  useFormState,
+  type Control,
+  type FieldArrayWithId,
+  type FieldErrors,
+  type UseFormRegister,
+} from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { List, useListRef, type RowComponentProps } from "react-window"
+import { z } from "zod"
 
-```javascript
-import { FixedSizeList } from "react-window"
-import { Controller, useFieldArray, useForm } from "react-hook-form"
+const schema = z.object({
+  items: z.array(
+    z.object({
+      sku: z.string(),
+      title: z.string(),
+      quantity: z
+        .number({ message: "Enter a quantity." })
+        .int("Use a whole number.")
+        .min(0, "Use 0 or more."),
+    })
+  ),
+})
 
-const items = Array.from(Array(1000).keys()).map((i) => ({
-  title: `List ${i}`,
-  quantity: Math.floor(Math.random() * 10),
-}))
+type InventoryValues = z.infer<typeof schema>
 
-function App() {
-  const { control, getValues, handleSubmit } = useForm({
-    defaultValues: {
-      test: items,
-    },
-  })
-  const { fields } = useFieldArray({ control, name: "test" })
-  const onSubmit = (data) => console.log(data)
+type RowProps = {
+  fields: FieldArrayWithId<InventoryValues, "items">[]
+  register: UseFormRegister<InventoryValues>
+  control: Control<InventoryValues>
+}
+
+function Row({
+  index,
+  style,
+  ariaAttributes,
+  fields,
+  register,
+  control,
+}: RowComponentProps<RowProps>) {
+  const name = `items.${index}.quantity` as const
+  // Each row subscribes to its own error only.
+  const { errors } = useFormState({ control, name })
+  const error = errors.items?.[index]?.quantity
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <FixedSizeList
-        width={400}
-        height={500}
-        itemSize={40}
-        itemCount={fields.length}
-        itemData={fields}
-        itemKey={(i) => fields[i].id}
-      >
-        {({ style, index, data }) => {
-          const defaultValue =
-            getValues()["test"][index].quantity ?? data[index].quantity
+    <div style={style} {...ariaAttributes}>
+      <label htmlFor={name}>{fields[index].title}</label>
+      <input
+        id={name}
+        type="number"
+        aria-invalid={!!error}
+        {...register(name, { valueAsNumber: true })}
+      />
+      {error && <span role="alert">{error.message}</span>}
+    </div>
+  )
+}
 
-          return (
-            <div style={style}>
-              <Controller
-                render={({ field }) => <input {...field} />}
-                name={`test[${index}].quantity`}
-                defaultValue={defaultValue}
-                control={control}
-              />
-            </div>
-          )
-        }}
-      </FixedSizeList>
-      <button type="submit">Submit</button>
+function firstErrorIndex(errors: FieldErrors<InventoryValues>) {
+  const items = errors.items
+  if (!Array.isArray(items)) return -1
+  return items.findIndex(Boolean)
+}
+
+export default function InventoryForm({
+  items,
+  onSubmit,
+}: {
+  items: InventoryValues["items"]
+  onSubmit: (values: InventoryValues) => void
+}) {
+  const listRef = useListRef(null)
+  const [summary, setSummary] = useState("")
+  const { register, control, handleSubmit } = useForm<InventoryValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { items },
+  })
+  const { fields } = useFieldArray({ control, name: "items" })
+
+  const onInvalid = (errors: FieldErrors<InventoryValues>) => {
+    const index = firstErrorIndex(errors)
+    const count = Array.isArray(errors.items)
+      ? errors.items.filter(Boolean).length
+      : 0
+    setSummary(`${count} rows need attention.`)
+    // The row may be off screen, so scroll to it before the user fixes it.
+    if (index !== -1) listRef.current?.scrollToRow({ index, align: "center" })
+  }
+
+  return (
+    <form noValidate onSubmit={handleSubmit(onSubmit, onInvalid)}>
+      <List
+        listRef={listRef}
+        rowComponent={Row}
+        rowCount={fields.length}
+        rowHeight={48}
+        rowProps={{ fields, register, control }}
+        style={{ height: 480 }}
+      />
+      {summary && <p role="alert">{summary}</p>}
+      <button type="submit">Save inventory</button>
     </form>
   )
 }
@@ -113,9 +127,33 @@ function App() {
 
 ## Notes
 
-- Both examples use the react-window v1 API (`VariableSizeList` / `FixedSizeList`), which is not available in react-window v2; install `react-window@1` (plus `react-virtualized-auto-sizer` for the first example) to run them as written.
+- Source: https://react-hook-form.com/advanced-usage/virtualized-lists (documentation master c0511c9, fetched 2026-11-14)
+
+### What happens to unmounted rows
+
+- **Values are kept.** With the default `shouldUnregister: false`, a row's value stays in the form when its input unmounts, and the input shows it again when it scrolls back into view. Don't set `shouldUnregister: true` in a virtualized form, or every value scrolled out of view is lost.
+- **Built-in rules don't run.** Rules passed to `register`, such as `required` or `min`, only run for mounted inputs. An invalid row the user never scrolled to would pass validation.
+- **Focus can't reach them.** `shouldFocusError` cannot focus an input that is not in the DOM.
+
+So validate the **values** with a [schema resolver](https://react-hook-form.com/integrations/resolvers), which checks every row whether it is mounted or not, and scroll to the first invalid row yourself.
+
+### How it fits together
+
+- `useFieldArray` provides a stable `field.id` and the `title` for each row. The input itself is registered by path, so the value lives in the form, not in the row component.
+- Each row calls [`useFormState`](https://react-hook-form.com/docs/useformstate) for its own field, so a new error re-renders only that row, and only while it is mounted.
+- On a failed submit, `onInvalid` receives the errors for every row, including unmounted ones. It announces how many rows need attention and scrolls the first one into view.
+- On a valid submit, `handleSubmit` receives all 1,000 rows, with the edited values.
+
+### Things to watch
+
+- **Use dot paths.** Register `items.0.quantity`, not `items[0].quantity`. The root of `defaultValues` must be an object, so wrap the array in a field such as `items`.
+- **Keep rows light.** Pass `register` and `control` to rows rather than reading `formState` in the form component, so scrolling and typing don't re-render the whole list. See [Isolating form subscriptions](https://react-hook-form.com/advanced-usage/isolating-subscriptions).
+- **Controlled inputs.** A [`Controller`](https://react-hook-form.com/docs/usecontroller/controller) in a row also keeps its value after unmounting. Don't pass a per-row `defaultValue` that would override what the user typed. Put the initial data in `useForm`'s `defaultValues` instead.
+- **Adding and removing rows.** Use the field array methods (`append`, `remove`, and so on), and pass `fields.length` as the row count so the list stays in sync.
 
 ## Related
 
 - [usefieldarray](../api/usefieldarray.md)
-- [formprovider](../api/formprovider.md)
+- [useform-formstate](../api/useform-formstate.md)
+- [useformstate](../api/useformstate.md)
+- [controller](../api/controller.md)

@@ -68,6 +68,8 @@ import { Tabs } from "@chakra-ui/react"
 - `Tabs.Indicator` adds an animated sliding indicator line (use with `variant="plain"`)
 - `activationMode="manual"` requires pressing Enter to activate a focused tab
 - Use `useTabs()` hook with `Tabs.RootProvider` for external state control
+- 3.38.0 (Ark UI 5.39.3): programmatic tab selection no longer triggers link navigation.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

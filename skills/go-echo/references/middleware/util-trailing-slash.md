@@ -28,6 +28,7 @@ e.Pre(middleware.AddTrailingSlashWithConfig(middleware.AddTrailingSlashConfig{
 
 - Both middlewares are registered via `Echo#Pre()`, applying before routing.
 - Since v5.4.0, when configured to redirect, the trailing slash middlewares percent-encode control characters in the path before constructing the `Location` header (GHSA-v753-g4cw-jm48).
+- Since v5.4.5, `AddTrailingSlash` and `RemoveTrailingSlash` keep escaped path segments such as `%2F` in redirect and forward targets, so the request still matches its original route. Source: https://github.com/labstack/echo/releases/tag/v5.4.5 (fetched 2026-11-14).
 
 ## Related
 

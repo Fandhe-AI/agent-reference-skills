@@ -82,7 +82,7 @@ const modules = import.meta.glob('./dir/module*.js', {
 
 ## Options / Props
 
-From `ImportGlobOptions` in `packages/vite/types/importGlob.d.ts` (v8.3.4):
+From `ImportGlobOptions` in `packages/vite/types/importGlob.d.ts` (v8.3.8):
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|

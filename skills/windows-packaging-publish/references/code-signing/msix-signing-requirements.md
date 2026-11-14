@@ -57,4 +57,4 @@ Windows 10 lets users choose a device mode in Settings that affects which signed
 
 - [Certificate Types](./certificate-types.md)
 - [SignTool Sign Command](./signtool-sign.md)
-- [Azure Trusted Signing](./azure-trusted-signing.md)
+- [Azure Artifact Signing (formerly Azure Trusted Signing)](./azure-trusted-signing.md)

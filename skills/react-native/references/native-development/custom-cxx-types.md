@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/the-new-architecture/custom-cxx-types
+source: https://reactnative.dev/docs/0.88/the-new-architecture/custom-cxx-types
 ---
 
 # Advanced: Custom C++ Types
@@ -328,7 +328,7 @@ return (
 
 ## Notes
 
-- `SafeAreaView` from react-native used in this sample is deprecated in the 0.87 docs; use react-native-safe-area-context in real apps.
+- `SafeAreaView` from react-native used in this sample is deprecated in the 0.88 docs; use react-native-safe-area-context in real apps.
 - This guide builds on the Pure C++ Turbo Native Modules guide.
 - Key components of a custom bridging header: an explicit specialization of the `Bridging` struct for the custom type (here `int64_t`), a `fromJs` function (JS to C++) and a `toJs` function (C++ to JS). On iOS, remember to add the `Int64.h` file to the Xcode project.
 - From the `Address` type, Codegen generates two helper types: `NativeSampleModuleAddress` and `NativeSampleModuleAddressBridging`. The first is the definition of `Address`; the second holds the infrastructure to bridge it. The only extra step is a `Bridging` structure extending `NativeSampleModuleAddressBridging`.

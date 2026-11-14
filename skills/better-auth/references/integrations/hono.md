@@ -29,13 +29,7 @@ app.all("/auth/*", (c) => auth.handler(c.req.raw));
 
 #### Cloudflare Workers
 
-Better Auth uses `AsyncLocalStorage`. Add the `nodejs_compat` compatibility flag to your Wrangler configuration (use `nodejs_als` if you only need AsyncLocalStorage):
-
-```jsonc
-{
-  "compatibility_flags": ["nodejs_compat"],
-}
-```
+See the Cloudflare guide (guides/cloudflare.md) for the Workers configuration Better Auth needs.
 
 ### CORS
 
@@ -142,6 +136,8 @@ This configuration is only required for cross-origin requests. For more informat
 ## Notes
 
 - Changed in the 1.7 docs: the page was restructured (Setup / CORS / Middleware / Hono RPC). The 1.6 "Cross-Domain Cookies" and "Client-Side Configuration" sections no longer appear; see cookies.md for cross-subdomain and cross-origin cookie settings (`crossSubDomainCookies`, `SameSite=None` + `Secure`).
+- Changed in the 1.7.23 docs: the Cloudflare Workers section no longer inlines the `nodejs_compat` Wrangler snippet and points to the Cloudflare guide instead.
+- Source: https://www.better-auth.com/docs/integrations/hono (better-auth v1.7.23 docs)
 - CORS middleware must be registered before the auth route.
 - The CORS example above only covers `/api/auth/*`. For cross-origin Hono RPC calls with `credentials: "include"`, the RPC target routes (e.g. `/hello`) also need the `cors()` middleware with the same explicit `origin` and `credentials: true` (for example by registering it on a broader path such as `"*"`); otherwise the browser cannot read the response. This is not stated in the upstream page.
 

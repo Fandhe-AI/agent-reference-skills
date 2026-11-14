@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/upgrading
+source: https://reactnative.dev/docs/0.88/upgrading
 ---
 
 # Upgrading to New Versions

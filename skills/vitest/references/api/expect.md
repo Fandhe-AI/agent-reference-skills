@@ -168,6 +168,15 @@ await expect.poll(() => fetchStatus()).toBe('ready')
 await expect.poll(() => count, { interval: 100, timeout: 5000 }).toBeGreaterThan(10)
 ```
 
+The `message` option describes what the poll waits for. If the poll fails, Vitest adds the message to the start of the error; the message also names the step in the trace timeline (`experimental.traceTimeline`).
+
+```ts
+await expect.poll(() => queue.count(), { message: 'queue drained' }).toBe(0)
+// AssertionError: queue drained: expected 3 to be 0 // Object.is equality
+```
+
+If `vi.useFakeTimers` is used, `expect.poll` automatically calls `vi.advanceTimersByTime(interval)` after every failed attempt. (Source: https://vitest.dev/api/expect, Vitest v5.1.0)
+
 ## Asymmetric Matchers
 
 Usable inside `toEqual` / `toMatchObject`.
@@ -192,7 +201,7 @@ expect({ id: 1, name: 'Alice', createdAt: new Date() }).toEqual({
 expect([1, 2, 3, 4]).toEqual(expect.arrayContaining([1, 3]))
 ```
 
-## Additional Matchers (docs at tag v5.0.5)
+## Additional Matchers (docs at tag v5.1.0)
 
 Value matchers:
 
@@ -261,7 +270,7 @@ expect({ foo: 'foo' }).toEqual({ foo: expect.toBeFoo() })
 
 ## Notes
 
-Vitest 5 changes (source: Migrating to Vitest 5.0, vitest.dev/guide/migration; docs at tag `v5.0.5`):
+Vitest 5 changes (source: Migrating to Vitest 5.0, vitest.dev/guide/migration; docs at tag `v5.1.0`):
 
 - `expect.poll`: if the callback or assertion does not settle within `timeout`, the poll now fails (rejects). The callback receives an `AbortSignal` that is aborted when the timeout elapses, and `timeout` applies to the whole polling operation including a pending callback and async matcher. Raise `timeout` for polls that need more time. `.resolves` / `.rejects` and `toThrow` are not supported with `expect.poll`.
 - Unawaited `resolves`, `rejects`, and `toMatchFileSnapshot` assertions now fail the test instead of logging a warning.

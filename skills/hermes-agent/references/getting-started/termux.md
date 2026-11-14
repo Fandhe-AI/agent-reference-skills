@@ -57,18 +57,19 @@ nohup hermes gateway run >> "${HERMES_HOME:-$HOME/.hermes}/logs/gateway.log" 2>&
 
 ## Notes
 
-- The source page carries a danger banner: the Termux package "does not work right now"; a fix is in progress, and the steps may fail or install a package that does not run (docs v0.22.2).
+- The source page carries a danger banner: the Termux package "does not work right now"; a fix is in progress, and the steps may fail or install a package that does not run (docs v0.22.2; the banner is still present in v0.23.1).
 - Requires the standard Termux app with prefix `/data/data/com.termux/files/usr`. Other architectures and renamed Termux packages are unsupported. Wheels target Android API 24 (`android_24_arm64_v8a`). Do not use the desktop/server `install.sh` or a glibc Linux archive here.
 - The package bundles Python (3.14, bionic interpreter pin), Node.js, npm, uv, ripgrep, ffmpeg and runtime libraries; wheel closure is core plus `acp`, not all desktop extras. The commands do not need Termux's `python` / `nodejs` packages.
 - To follow prereleases, replace `stable` with `canary` and `hermes-stable` with `hermes-canary` in the repository entry. Both channels use the same signing key. Canary sorts before the corresponding stable version. To switch channels, edit the channel path and suite in `hermes-agent.list`, then `pkg update && pkg upgrade hermes-agent`.
 - If the fingerprint differs, stop; do not disable signature verification.
 - Update with `pkg update` then `pkg upgrade hermes-agent`. `hermes update` refuses to modify an APT-owned install and prints the package-manager command.
 - Uninstall: `pkg uninstall hermes-agent` removes the package and symlinks but preserves configuration, sessions, skills and memories.
-- Limits: no `nemo-relay` exporter; no Electron, local Chromium or desktop computer-use tools; no local Docker daemon; no Termux:API microphone/clipboard adapters (local voice / wake-word not implied). On this target `sys.platform == "android"`, so dependencies gated only to `linux` are not automatically available.
+- The first `hermes dashboard` downloads pnpm and installs the web UI's JavaScript dependencies.
+- Limits: no `nemo-relay` exporter; no Electron, bundled Chromium or desktop computer-use tools (the browser tool launches a system `chromium` when one is on `PATH`, e.g. `pkg install chromium` where your repository provides it; otherwise browsing is unavailable); no local Docker daemon; no Termux:API microphone/clipboard adapters (local voice / wake-word not implied). On this target `sys.platform == "android"`, so dependencies gated only to `linux` are not automatically available.
 - Android can suspend or terminate background Termux processes; battery-optimization exemptions and `termux-wake-lock` help but do not guarantee persistence.
 - Troubleshooting: package not found, verify the repository entry and run `pkg update`; missing command, check `$PREFIX/bin` is on `PATH` or reinstall; for general diagnostics run `hermes doctor`.
 - Android/Termux is a Tier 2 platform (see platform-support.md).
-- Source: https://hermes-agent.nousresearch.com/docs/getting-started/termux (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/getting-started/termux (pinned to v0.23.1)
 
 ## Related
 

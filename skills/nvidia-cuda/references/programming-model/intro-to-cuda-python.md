@@ -35,6 +35,7 @@ Launch syntax: `kernel_name[num_thread_blocks, threads_per_block](args)`.
 - CuPy arrays remain on their respective device (host or GPU) unless explicitly copied with `cp.array()` (host → device) or `cp.asnumpy()` (device → host).
 - Error checking in CUDA Python follows Python's standard exception mechanism, layered on top of the same underlying `cudaError_t` semantics as CUDA C++.
 - This page's full worked example (input validation plus a complete vector-add kernel with error handling) is in source section 2.2.5 "Putting it All Together"; only the minimal kernel-definition and launch syntax are reproduced above per this skill's one-example convention.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/intro-to-cuda-python.html (CPG v13.5, retrieved 2026-11-14; text identical to v13.4.2 apart from chapter renumbering)
 
 ## Related
 

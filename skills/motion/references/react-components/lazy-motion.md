@@ -29,6 +29,8 @@ Use the `m` component (`motion/react-m`) instead of `motion` inside `LazyMotion`
 - Always use `m` inside `LazyMotion`; mixing standard `motion` components undermines the optimization.
 - Synchronous feature loading suits smaller subsets; async loading defers initialization until after site hydration.
 - `domAnimation` provides a core feature set; larger feature bundles exist for more capabilities.
+- `pinchFeatures` (`import { LazyMotion, motion, pinchFeatures } from "motion/react"`) loads the `pinch` / `whilePinch` props, which aren't part of the default `motion` bundle (https://motion.dev/docs/react-gestures, fetched 2026-11-14).
+- 14.14.0 fixed an async-features hydration blink in `LazyMotion` (CHANGELOG: https://github.com/motiondivision/motion/blob/v14.14.0/CHANGELOG.md).
 
 ## Related
 

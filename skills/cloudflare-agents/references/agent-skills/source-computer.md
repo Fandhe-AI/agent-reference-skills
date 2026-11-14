@@ -83,14 +83,14 @@ Run skill scripts by giving the Workspace a backend; the model then uses the `ex
 
 ```ts
 import { Workspace } from "@cloudflare/computer";
-import { WorkerJavaScriptBackend } from "@cloudflare/computer/backends/worker-javascript";
+import { CodemodeBackend } from "@cloudflare/computer/backends/codemode";
 import { Think, skills } from "@cloudflare/think";
 
 export class MyAgent extends Think<Env> {
 	workspace = new Workspace({
 		storage: this.ctx.storage,
 		backends: [
-			new WorkerJavaScriptBackend({
+			new CodemodeBackend({
 				id: "js",
 				loader: this.env.LOADER,
 				access: "read-write",

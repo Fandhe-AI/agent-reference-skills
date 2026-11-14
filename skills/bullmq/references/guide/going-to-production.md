@@ -117,6 +117,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 ## Notes
 
+- The Persistence, Max memory policy and Automatic reconnections sections apply to the Redis backend (and compatible servers such as Valkey or Dragonfly). With PostgreSQL, check the migrations and tuning tips of the PostgreSQL backend instead; the rest of the recommendations apply to both backends (v6.7.6 official page).
 - Persistence has some effect on performance; run benchmarks to be sure it is acceptable.
 - Setting `maxRetriesPerRequest` to anything other than `null` on a Worker can let Redis command exceptions break the worker.
 - Graceful shutdown does not guarantee jobs are never stalled, as a job may take longer than the grace period for the server to restart.

@@ -24,7 +24,7 @@ betterAuth({
 | `trustedOrigins` | `string[] \| async function` | — | Origins allowed to prevent CSRF and open redirects; supports wildcard patterns and custom schemes |
 | `advanced.disableCSRFCheck` | `boolean` | `false` | Disable all CSRF protection, including origin validation and Fetch Metadata checks |
 | `advanced.disableOriginCheck` | `boolean` | `false` | Disable `trustedOrigins` validation for `callbackURL`, `redirectTo`, `errorCallbackURL`, `newUserCallbackURL`; also disables CSRF protection for backward compatibility |
-| `advanced.ipAddress.ipAddressHeaders` | `string[]` | `X-Forwarded-For` | Custom headers used for IP address detection |
+| `advanced.ipAddress.ipAddressHeaders` | `string[]` | `["x-forwarded-for"]` | Header names to read the client IP address from; list only headers that your proxy or server code sets on every request (replacing any client-sent value) |
 | `advanced.trustedProxyHeaders` | `boolean` | — | Derive base URL from `X-Forwarded-Host` / `X-Forwarded-Proto` headers, supporting multi-domain deployments |
 | `advanced.crossSubDomainCookies` | `object` | — | Configure cookie sharing across subdomains |
 | `emailAndPassword.password` | `object` | `scrypt` | Custom `hash`/`verify` functions for password hashing |
@@ -40,12 +40,28 @@ betterAuth({
 - **Cookie security**: HTTPS does not encrypt cookie contents by itself: the `Secure` attribute (applied automatically for HTTPS base URLs / production) only restricts sending the cookie to HTTPS; the session token cookie is signed with the secret to prevent tampering, and the optional `session_data` cache cookie is signed (`compact`/`jwt`) or encrypted only with the `jwe` strategy (see cookies.md); `HttpOnly` prevents client-side JS access; `SameSite=lax` by default; cross-subdomain sharing configurable via `crossSubDomainCookies`; cookie names are customizable to minimize fingerprinting risk.
 - The custom password hashing option is documented as `emailAndPassword.password` (not a top-level `password`), matching email-password.md and options.md (Adapted from the official docs).
 - **Rate limiting**: built-in protection against brute-force attacks across all routes, with stricter limits on high-risk endpoints.
-- **IP address & proxy headers**: IP detection defaults to `X-Forwarded-For`, configurable via `ipAddress.ipAddressHeaders`, with a `127.0.0.1` fallback in dev/test — ensure proxies can't be spoofed by end users. Behind a proxy chain, list your proxies in `advanced.ipAddress.trustedProxies` (addresses or CIDRs, e.g. `['192.0.2.10', '10.0.0.0/24']`, not a broad private range that also covers clients) so the real client is resolved instead of the spoofable leftmost `X-Forwarded-For` token. When `trustedProxyHeaders` is enabled, the base URL is derived from `X-Forwarded-Host`/`X-Forwarded-Proto` (for dynamic `baseURL` with `allowedHosts` these headers are ignored unless it is enabled — changed in 1.7); resolution priority is static `baseURL` > env vars (`BETTER_AUTH_URL`, `NEXT_PUBLIC_BETTER_AUTH_URL`) > proxy headers (when enabled) > request URL origin fallback. Only enable when proxy headers are trustworthy and reverse proxies are configured correctly.
+- **IP address & proxy headers**: IP detection defaults to the `X-Forwarded-For` header, which clients can set themselves. Per-client limits only work when (a) your proxy or server code sets the address in a header on every request and replaces any value the client sent (list it in `ipAddress.ipAddressHeaders`), or (b) your proxies append to `X-Forwarded-For` and you list them in `advanced.ipAddress.trustedProxies`. See concepts/rate-limit.md ("Connecting IP Address") for how to configure each setup. When `trustedProxyHeaders` is enabled, the base URL is derived from `X-Forwarded-Host`/`X-Forwarded-Proto` (for dynamic `baseURL` with `allowedHosts` these headers are ignored unless it is enabled — changed in 1.7); resolution priority is static `baseURL` > env vars (`BETTER_AUTH_URL`, `NEXT_PUBLIC_BETTER_AUTH_URL`) > proxy headers (when enabled) > request URL origin fallback. Only enable when proxy headers are trustworthy and reverse proxies are configured correctly.
 - **Trusted origins**: prevent CSRF attacks and open redirects. Remove `localhost` from production instances. Supports wildcard patterns (`*.example.com`, `https://*.example.com`, `http://*.dev.example.com`) and custom schemes for mobile/extensions (`myapp://`, `chrome-extension://EXTENSION_ID`, `exp://**`, `exp://10.0.0.*:*/**`). Can also be an async function evaluated per request — this has performance implications for dynamic fetching. Relative callback and redirect URLs support standard path, query, and fragment syntax but must begin with a single `/`; protocol-relative URLs (`//...`), backslashes, control characters, and encoded path separators in the path are rejected.
 - **Email enumeration protection**: when `requireEmailVerification` is enabled or `autoSignIn` is `false`, sign-up endpoints return identical `200` responses regardless of email registration status (OWASP best practice); timing attacks are mitigated through password hash simulation on duplicate attempts.
 - **Security reporting**: discovered vulnerabilities should be reported to `security@better-auth.com` for prompt remediation, with credit given for validated discoveries.
 - Better Auth implements defense-in-depth through multiple layers — encryption, origin validation, state management, rate limiting, and Fetch Metadata protection — requiring careful configuration of `trustedOrigins` and proxy headers for production deployments.
 - Cookie security bullet corrected: HTTPS/`Secure` does not encrypt cookies; the session token cookie is signed, and only the optional `session_data` cache cookie with the `jwe` strategy is encrypted. The official summary said encryption is enabled by default for HTTPS (Adapted from the official docs)
+
+### Your own routes that call `auth.api`
+
+These checks (CSRF, origin) run only for requests that reach `auth.handler`. A direct `auth.api` call skips them, even when you pass the browser's headers. It also skips the `trustedOrigins` check on `callbackURL`, `errorCallbackURL`, `newUserCallbackURL`, and `redirectTo`, so validate any of those your route takes from the request. If your own route changes state for a cookie-authenticated browser request, reject it unless its `Origin` is trusted:
+
+```typescript
+const origin = request.headers.get("origin");
+const context = await auth.$context;
+if (!origin || !context.isTrustedOrigin(origin)) {
+  return new Response(null, { status: 403 });
+}
+```
+
+`isTrustedOrigin` checks the origins resolved at startup. If your `trustedOrigins` function adds origins based on the request, include those in the check, or forward the request to `auth.handler` when the endpoint has an HTTP route.
+
+- Source: https://www.better-auth.com/docs/reference/security (better-auth v1.7.23 docs)
 
 ## Related
 

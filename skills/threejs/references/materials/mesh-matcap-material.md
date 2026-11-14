@@ -24,7 +24,7 @@ const mesh = new THREE.Mesh(geometry, material);
 | `normalMapType` | Constant | `TangentSpaceNormalMap` | `TangentSpaceNormalMap` or `ObjectSpaceNormalMap` |
 | `normalScale` | Vector2 | `(1,1)` | Normal map influence `[0,1]` |
 | `displacementMap` | Texture | `null` | Vertex displacement texture |
-| `displacementScale` | number | `0` | Displacement intensity |
+| `displacementScale` | number | `1` | Displacement intensity |
 | `displacementBias` | number | `0` | Displacement offset |
 | `flatShading` | boolean | `false` | Enable flat shading |
 | `fog` | boolean | `true` | Affected by fog |
@@ -40,6 +40,8 @@ const mesh = new THREE.Mesh(geometry, material);
 - Does not self-shadow or receive shadows (though it can cast them onto other shadow-receiving surfaces)
 - No dynamic lights needed — all shading is baked into the matcap texture
 - Inherits all properties from [Material](./material.md)
+- Corrected from the JSDoc: `displacementScale` default is `1` (the r186 JSDoc said `0`; the constructor has always set `1`).
+- Source: https://threejs.org/docs/pages/MeshMatcapMaterial.html (three.js r187, `src/materials/MeshMatcapMaterial.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

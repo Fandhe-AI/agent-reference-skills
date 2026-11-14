@@ -30,6 +30,8 @@ app.use('/api/*', bearerAuth({ token: 'honoiscool' }))
 
 - Token must match the regex `/[A-Za-z0-9._~+/-]+=*/`; tokens failing this pattern trigger a `400` error.
 - Base64-encoded JWTs are supported but JWT format is not required.
+- Since v4.13.14 a `MessageFunction` may return a `Response`; since v4.13.15 backslashes in the `WWW-Authenticate` realm are escaped. Source: https://github.com/honojs/hono/releases/tag/v4.13.14, https://github.com/honojs/hono/releases/tag/v4.13.15
+- v5 (release candidate): `noAuthenticationHeaderMessage`, `invalidAuthenticationHeaderMessage`, and `invalidTokenMessage` are removed; use `noAuthenticationHeader.message`, `invalidAuthenticationHeader.message`, and `invalidToken.message`. See guides/migrating-to-v5.md.
 
 ## Related
 

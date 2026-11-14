@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/the-new-architecture/advanced-topics-components
+source: https://reactnative.dev/docs/0.88/the-new-architecture/advanced-topics-components
 ---
 
 # Advanced Topics on Native Modules Development

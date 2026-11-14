@@ -14,6 +14,6 @@
 | Browser Mode (Getting Started) | Run tests natively in the browser, with access to browser globals like `window` and `document`. | [overview.md](./overview.md) |
 | Playwright Traces | Generate Playwright trace files (`.trace.zip`) for browser tests by setting `browser.trace`. Playwright provider only. | [playwright-traces.md](./playwright-traces.md) |
 | Render Function (vitest-browser-react / vue / svelte) | Community packages that render framework components in Browser Mode and return locators scoped to the rendered `baseElement`. | [render-function.md](./render-function.md) |
-| Trace View | Experimental (Vitest 5.0.0+). `browser.traceView` records browser interactions as DOM snapshots (rrweb) and replays them step by step in the browser UI, Vitest UI or HTML reporter. | [trace-view.md](./trace-view.md) |
+| Trace View | `browser.traceView` (Vitest 5.0.0+; default `failure-only` mode since 5.1.0) records browser test steps with DOM snapshots (rrweb) and replays them step by step in the browser UI, Vitest UI or HTML reporter. | [trace-view.md](./trace-view.md) |
 | Visual Regression Testing | Capture screenshots of components or pages and compare them with reference images using the `toMatchScreenshot` assertion. | [visual-regression-testing.md](./visual-regression-testing.md) |
 | Why Browser Mode | Motivation and drawbacks of running Vitest tests in a real browser instead of a simulated one (jsdom / happy-dom). | [why.md](./why.md) |

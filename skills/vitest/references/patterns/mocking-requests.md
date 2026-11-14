@@ -79,7 +79,7 @@ const server = setupServer(...wsHandlers)
 
 ## Notes
 
-- Source: https://vitest.dev/guide/mocking/requests (docs at tag `v5.0.5`).
+- Source: https://vitest.dev/guide/mocking/requests (docs at tag `v5.1.0`).
 - `onUnhandledRequest: 'error'` makes the server throw whenever a request has no corresponding handler.
 - The GraphQL and WebSocket snippets above abbreviate the shared imports (`afterAll`, `afterEach`, `beforeAll`, `setupServer`) and the `beforeAll` / `afterAll` / `afterEach` lifecycle lines from the HTTP setup; the official page repeats them in full.
 - MSW can also handle cookies, query parameters and mock error responses; see the MSW documentation (https://mswjs.io/docs).

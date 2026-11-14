@@ -294,6 +294,8 @@ Configure `user.additionalFields` to set additional user fields.
 - Renamed in 1.7: the OAuth callback redirect error `email_doesn't_match` is now `email_does_not_match`.
 - Changed in 1.7: signed-assertion (`private_key_jwt`) login is validated at startup (unsupported algorithm, key with no material, algorithm/key mismatch fail immediately); `createAuthorizationCodeRequest`, `createRefreshAccessTokenRequest`, `createClientCredentialsTokenRequest` are replaced by async `authorizationCodeRequest`, `refreshAccessTokenRequest`, `clientCredentialsTokenRequest`. Identity tokens go through one verifier: custom provider implementations replace their `verifyIdToken` method with an `idToken` config (keys, issuer, audience), while the per-provider `verifyIdToken` option documented above remains; `generateState(c, options)` takes an options object.
 - Changed in 1.7: Microsoft account identifiers use the stable `oid` claim instead of `sub` (data migration required; see social-microsoft.md).
+- This page covers signing users in with another provider. To connect each organization to its own OIDC or SAML identity provider, use the SSO plugin; to let other apps sign in with your app, use the OAuth Provider plugin.
+- Source: https://www.better-auth.com/docs/concepts/oauth (better-auth v1.7.23 docs)
 
 ### Security
 

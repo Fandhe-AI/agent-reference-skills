@@ -49,6 +49,11 @@ import { RadioCard } from "@chakra-ui/react"
 - **sizes**: `sm`, `md`, `lg`
 - **variants**: `surface`, `subtle`, `outline`, `solid`
 
+## Notes
+
+- 3.38.0: `cursor` token overrides in the theme are no longer ignored, and disabled elements use `tokens.cursor.disabled` instead of a hardcoded `not-allowed`.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
+
 ## Related
 
 - [radio.md](./radio.md)

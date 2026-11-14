@@ -31,11 +31,11 @@ export default defineConfig(({ watch, logLevel }) => ({
 
 | Name | Type | Description |
 |------|------|-------------|
-| `input` | `string` | `kubb generate <input>` の位置引数。指定時は `config.input` を上書き |
+| `input` | `string \| undefined` | `kubb generate <input>` の位置引数。指定時は `config.input` を上書き |
 | `watch` | `boolean` | watch モードで `true` |
 | `logLevel` | `'silent' \| 'info' \| 'verbose'` | 現在のログレベル |
-| `config` | `string` | 使用中の config ファイルのパス |
-| `reporters` | `Array<ReporterName>` | `--reporter` で選択した reporter（`config.reporters` を上書き） |
+| `reporters` | `Array<ReporterName> \| undefined` | `--reporter` の reporter 名（例 `['json']`）。フラグなしでは `undefined` |
+| `config` | `string \| undefined` | `--config` フラグの値。CLI が config ファイルを自動検出した場合は `undefined` |
 
 - 配列: 複数 spec を 1 コマンドで生成する。関数が配列を返してもよい
 
@@ -48,22 +48,22 @@ export default defineConfig([
 
 ## Defaults
 
-`kubb/config` の `defineConfig` と `kubb` の `createKubb` が省略時に補う値。素の `@kubb/core` エンジンは何も補わない。
+`kubb/config` の `defineConfig` と `kubb` の `createKubb` が省略時に補う値。素の `@kubb/core` エンジンが補うのは `root` / `storage` / `output.format` / `output.lint` / `output.defaultBanner` のみ。
 
 | Field | Default |
 |-------|---------|
-| `root` | `process.cwd()` |
+| `root` | config ファイルのフォルダー。`createKubb` を自前で呼ぶ場合は `process.cwd()` |
 | `adapter` | `adapterOas()`（同梱 OpenAPI adapter） |
 | `parsers` | `[parserTs(), parserTsx(), parserMd()]` |
 | `reporters` | `[cli, json, file, html]` |
 | `plugins` | 未指定時に `pluginBarrel()` を末尾に追加 |
 | `storage` | `fsStorage()` |
-| `output.barrel` | `false`（opt-in するまで `pluginBarrel` は何も生成しない） |
+| `output.barrel` | `false`（root の `index.ts` は書かれない。各 plugin は自身の既定 `output.barrel` で自前の barrel を書く） |
 | `output.format` | `false` |
 | `output.lint` | `false` |
 | `output.defaultBanner` | `'simple'` |
 
-bundler 連携はより小さい既定セットを適用する（`parserMd` と reporter なし）。
+bundler 連携は `defineConfig` と同じ既定を適用する。実行サマリーは出力するが `json` / `file` / `html` reporter は実行しない。
 
 ## Options / Props
 
@@ -71,17 +71,28 @@ bundler 連携はより小さい既定セットを適用する（`parserMd` と 
 
 | Name | Type | Description |
 |------|------|-------------|
-| `name` | `string` | この config の名前。CLI が `Generating <name>...` と表示 |
-| `input` | `string \| Record<string, unknown>` | spec の場所: ローカルパス / URL / インライン OpenAPI（JSON・YAML 文字列）/ パース済みオブジェクト。adapter 設定時は必須、`adapter` なしの plugin-only モードでは省略可 |
+| `name` | `string` | この config の名前。CLI が実行の見出しとして入力とともに表示（例 `petStore ./petStore.yaml`）。未指定は `kubb` と表示 |
+| `input` | `string \| Record<string, unknown>` | spec の場所: ローカルパス / URL / git リポジトリ内のファイル / インライン OpenAPI（JSON・YAML 文字列）/ パース済みオブジェクト。adapter 設定時は必須。`defineConfig` は常に adapter を設定するため `input` なしは `KUBB_INPUT_REQUIRED` で停止。`adapter` なしの plugin-only モードは `@kubb/core` の `createKubb` のみ |
 | `output` | `object` | 出力先と書き込み方法（下表） |
 | `plugins` | `Array<Plugin>` | プラグイン配列。依存先が先に実行される。必須の依存が欠けると `KUBB_MISSING_DEPENDENCY` で失敗 |
-| `adapter` | `Adapter` | 入力を universal AST に変換する。既定 `adapterOas()` |
+| `adapter` | `Adapter` | 入力を universal AST に変換する（例 `adapterOas()`）。`defineConfig` の既定は `adapterOas()` |
 | `parsers` | `Array<Parser>` | ファイル表現をソースコードに変換する。各 parser は `extNames` で担当拡張子を宣言 |
 | `storage` | `Storage` | 生成ファイルの永続化先。既定 `fsStorage()` |
-| `root` | `string` | プロジェクトルート（絶対、または config ファイル基準の相対）。既定 `process.cwd()` |
-| `reporters` | `Array<Reporter>` | 利用可能な reporter。既定 `[cli, json, file, html]`。HTML は `--reporter html` で選択する opt-in。CLI の `--reporter` は名前で選択し既定は `cli` |
+| `root` | `string` | プロジェクトルート（絶対、または config ファイル基準の相対）。`input` と `output.path` はこれを基準に解決。既定は config ファイルのフォルダー（`.config/` や `configs/` 内の config ならその 1 つ上） |
+| `reporters` | `Array<Reporter>` | 利用可能な reporter。既定 `[cli, json, file, html]`。HTML は `--reporter html` で選択したときのみ実行。CLI の `--reporter` は名前で選択し既定は `cli` |
 
-入力文字列が `{` / `[` で始まる、複数行、または YAML の `openapi:` / `swagger:` で始まる場合はインライン内容として扱う。それ以外はファイルパスまたは URL（相対パスは config ファイル基準）。
+入力文字列が `{` / `[` で始まる、複数行、または YAML の `openapi:` / `swagger:` で始まる場合はインライン内容として扱う。`git+` で始まる文字列は git 入力。それ以外はファイルパスまたは URL（相対パスは `root` 基準で、インライン内容・パース済みオブジェクト内の相対 `$ref` ファイルも `root` 基準。URL 入力の `$ref` はローカルファイルを読まない）。
+
+git 入力は `git+<repo>#<ref>:<path>` 形式。`<ref>` はブランチ・タグ、またはホストが SHA 指定 fetch を許す場合は完全なコミット SHA（GitHub / GitLab は可）。`<ref>:` を省略すると既定ブランチ。Kubb は一時フォルダーへ shallow `git fetch` するため `PATH` 上の `git` が必要で、private リポジトリは自身の git 認証情報を使う。
+
+```typescript
+import { defineConfig } from 'kubb/config'
+
+export default defineConfig({
+  input: 'git+https://github.com/org/api.git#v2:specs/openapi.yaml',
+  output: { path: './src/gen' },
+})
+```
 
 ### output
 
@@ -92,8 +103,8 @@ bundler 連携はより小さい既定セットを適用する（`parserMd` と 
 | `output.clean` | `boolean` | `false` | 再生成前に `output.path` を削除 |
 | `output.format` | `'auto' \| 'prettier' \| 'biome' \| 'oxfmt' \| false` | `false` | 各生成ファイルに適用する formatter。`'auto'` は oxfmt → Biome → Prettier の順に検出 |
 | `output.lint` | `'auto' \| 'eslint' \| 'biome' \| 'oxlint' \| false` | `false` | 生成後の linter。`'auto'` は oxlint → Biome → ESLint の順に検出 |
-| `output.postGenerate` | `Array<string \| { name?: string; command: string }>` | — | format / lint 後に `root` から順に実行するシェルコマンド |
-| `output.barrel` | `{ type: 'all' \| 'named' } \| false` | `false` | `output.path` の root `index.ts` と各 plugin が継承する既定 |
+| `output.postGenerate` | `Array<string \| { name?: string; command: string }>` | — | format / lint 後に `root` から順に実行するコマンド |
+| `output.barrel` | `{ type: 'all' \| 'named' } \| false` | `false` | `output.path` の root `index.ts`。plugin は自身の `output` に `barrel` が無いときのみこの値を継承 |
 | `output.defaultBanner` | `'simple' \| 'full' \| false` | `'simple'` | 各ファイル先頭の自動生成バナー。`'full'` は `Source` / `Title` / `OpenAPI spec version` を追加 |
 | `output.banner` | `string \| ((meta: BannerMeta) => string)` | — | 個別 plugin に設定。root の `output` は `defaultBanner` のみ |
 | `output.footer` | `string \| ((meta: BannerMeta) => string)` | — | `banner` と同型で末尾に追加 |
@@ -122,10 +133,12 @@ output: {
 ## Notes
 
 - `clean: true` は出力ディレクトリ全体を削除する。専用の出力フォルダでのみ使うこと
-- `mode` は通常指定不要（拡張子ありのパス = 単一ファイル、なし = ディレクトリ）。`group` は推論されたディレクトリモードで動く。明示的な `mode: 'file'` と `group` の併用は `KUBB_INVALID_PLUGIN_OPTIONS` でビルド停止
+- `mode` は通常指定不要（拡張子ありのパス = 単一ファイル、なし = ディレクトリ）。generator plugin の既定は拡張子なし（例 `'types'`）だが `@kubb/plugin-redoc` のみ単一ファイル `'docs.html'`。`group` は推論されたディレクトリモードで動く。ファイルモード（明示・拡張子からの推論とも）と `group` の併用は `KUBB_INVALID_PLUGIN_OPTIONS` でビルド停止
 - barrel の `index.ts` はデフォルトでは banner なし。plugin が `output.banner` を設定すると `isBarrel: true` で関数が実行される
 - adapter / parser / storage をカスタムする例: `adapterOas({ validate: true })`、`parsers: [parserTs(), parserTsx()]`、`storage: memoryStorage()`（`kubb/kit` から import）
-- 出典: https://kubb.dev/docs/5.x/reference/configuration （kubb@5.11.0 の docs/5.x/reference/configuration.md）
+- Source: https://kubb.dev/docs/5.x/reference/configuration (docs/5.x/reference/configuration.md of kubb@5.20.0, retrieved 2026-11-14)
+- Migration (5.11 → 5.20): the default `root` changed from `process.cwd()` to the folder of the config file; `input` accepts git inputs (`git+<repo>#<ref>:<path>`); the bare `@kubb/core` engine now applies `root`, `storage`, `output.format`, `output.lint`, and `output.defaultBanner`; bundler integrations apply the same defaults as `defineConfig` (docs diff 5.11 → 5.20, see also the Kubb changelog)
+- The `input` requirement above is stated for `kubb generate` / `createKubb`. The import integrations say a config without `input` only serves `*.openapi.yaml` imports (integrations/overview "Import a spec", openapi-import: "Leave `input` out to import specs only"). Both statements are kept as published; omit `input` only for import-only configs and keep it for `kubb generate` (Source: https://kubb.dev/docs/5.x/integrations/openapi-import, kubb@5.20.0, retrieved 2026-11-14)
 
 ## Related
 

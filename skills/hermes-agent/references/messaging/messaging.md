@@ -14,7 +14,7 @@ hermes gateway start/stop/status       # Manage running service
 
 ## Supported Platforms
 
-Per the v0.22.2 Platform Comparison table: Telegram, Discord, Slack, Google Chat, WhatsApp, WhatsApp Cloud API, Signal, SMS, Email, Home Assistant (plugin), Mattermost, Matrix, DingTalk, Feishu/Lark, WeCom, WeCom Callback, Weixin, BlueBubbles, Photon (iMessage), QQ, Yuanbao, Microsoft Teams, LINE, ntfy, Raft, IRC, Buzz, SimpleX; plus API Server (OpenAI-compatible), Webhooks, and your browser. Hermes Relay (experimental) is a connector system that fronts Discord, Telegram, Slack, and WhatsApp through an external connector that owns the credentials; its capabilities are negotiated per connector at handshake.
+Per the v0.23.1 Platform Comparison table: Telegram, Discord, Slack, Google Chat, WhatsApp, WhatsApp Cloud API, Signal, SMS, Email, Home Assistant (plugin), Mattermost, Matrix, DingTalk, Feishu/Lark, WeCom, WeCom Callback, Weixin, BlueBubbles, Photon (iMessage), QQ, Yuanbao (Labs plugin in v0.23; its `hermes-yuanbao` toolset adds the `yb_*` group/DM/sticker tools), Microsoft Teams, LINE, ntfy, Raft, IRC, Buzz, SimpleX; plus API Server (OpenAI-compatible), Webhooks, and your browser. Hermes Relay (experimental) is a connector system that fronts Discord, Telegram, Slack, and WhatsApp through an external connector that owns the credentials; its capabilities are negotiated per connector at handshake.
 
 Home Assistant moved to a catalog plugin in v0.22.0 (toolset `hermes-homeassistant` with `ha_list_entities`, `ha_get_state`, `ha_call_service`, `ha_list_services` comes from the `homeassistant` plugin). One multiplexed gateway per machine serving all profiles is the default in v0.22.0; `hermes update` folds per-profile gateways into it when nothing conflicts (the "one profile per workspace / one gateway per profile" guidance below describes the earlier model; a bot token still cannot be opened by two gateways).
 
@@ -24,13 +24,23 @@ Status belongs to the selected profile on the selected machine. Credentials save
 
 ### Intentional Silence Tokens
 
-If the agent's final response is exactly one supported token (`[SILENT]`, `SILENT`, `NO_REPLY`, `NO REPLY`, or the Chinese renderings `[静默]` / `静默` / `[沉默]` / `沉默`; whitespace and case normalized), the gateway sends nothing. The silence turn stays in the transcript; failed turns still surface as errors. On a message from a person a bare token is replaced by a short notice.
+If the agent's final response is exactly one supported token (`[SILENT]`, `SILENT`, `NO_REPLY`, `NO REPLY`, or the Chinese renderings `[静默]` / `静默` / `[沉默]` / `沉默`; whitespace and case normalized), the gateway sends nothing. The silence turn stays in the transcript; failed turns still surface as errors. On a message from a person a bare token is replaced by a short notice. A platform adapter may report a message as not addressed to the bot so the token can stand: Slack (messages opening by @mentioning someone else, unmentioned top-level messages starting a thread in a free-response channel, and with `slack.thread_followup_silence: true` unaddressed thread replies) and, new in v0.23, Telegram (group messages not addressed to the bot); other platforms always get the notice.
+
+Per-room opt-in (v0.23): `platforms.<name>.channel_overrides.<chat-or-thread-id>.allow_silence: true` lets a successful marker-only turn stay silent even when Hermes was mentioned or addressed. Omitted, `null` or `false` keeps the visible warning; internal notifications, heartbeats and known-unaddressed messages keep their exemptions. Lookup is chat id, thread id, then parent id, first match wins (including an explicit `false`; an entry setting only other keys also matches first, so repeat `allow_silence` there). Restart the gateway after editing. A reply written beside a housekeeping-only tool call (memory, todo, skill management, session search) before a bare marker is delivered as the final answer even in opted-in rooms.
+
+```yaml
+platforms:
+  matrix:
+    channel_overrides:
+      "!exampleTeamRoom:example.org":
+        allow_silence: true
+```
 
 ### Gateway diagnostics
 
 - `kill -USR2 <gateway pid>` (Linux/macOS) appends all thread stacks to `~/.hermes/logs/gateway_faulthandler.log`.
 - An event-loop watchdog (`gateway.loop_watchdog_probe_interval_s` default 30, `gateway.loop_watchdog_max_strikes` default 3; `gateway.loop_watchdog: false` disables) dumps stacks, marks `gateway_state.json` degraded, and exits with code 75 so the supervisor restarts it. `hermes gateway status` reports degraded and stale-heartbeat states.
-- Linux/systemd only: `gateway.systemd_watchdog_seconds: 120` makes the generated unit `Type=notify` with `WatchdogSec` (regenerate with `hermes gateway install --force`).
+- Linux/systemd only: `gateway.systemd_watchdog_seconds: 120` makes the generated unit `Type=notify` with `WatchdogSec` (regenerate with `hermes gateway install --force`). Under `Type=notify` the gateway reports ready only after every served profile's adapters connect (one profile at a time) and sends `EXTEND_TIMEOUT_USEC` before each secondary profile's connect, so a large multi-profile boot can run past systemd's default 90 s start timeout while a stalled boot is still killed.
 
 ## Slack Setup (Socket Mode)
 
@@ -157,14 +167,25 @@ Sessions persist conversation context across messages until you reset explicitly
 **Session continuity (retired in v0.22.0: idle/daily reset policies):** gateway conversations no longer reset after inactivity or at a daily boundary (the earlier `daily` 4:00 AM / `idle` 1440-minute defaults and `reset_by_platform` overrides are gone). Use `/new` or `/reset` for a new conversation; context compression stays automatic. Core ignores legacy `session_reset` settings, reset-policy overrides, and reset-timer environment variables; gateway startup and `hermes doctor` warn if `session_reset.mode` is still `idle`, `daily`, or `both`. To keep time-based resets, install the catalog plugin: `hermes plugins install hermes-session-reset-policy`.
 
 - `/sessions` lists previous sessions for the current chat; `/sessions search <query>` filters by title or id.
-- A `/model` switch persists across gateway restarts (credentials are re-resolved, never written); `/new` clears it; `/model <name> --global` writes through to `config.yaml`; `/model <name> --once` applies for one turn.
+- A `/model` switch persists across gateway restarts (credentials are re-resolved, never written); `/model reset` clears it and keeps the conversation (new in v0.23); `/new` clears it with a fresh conversation; `/model <name> --global` writes through to `config.yaml`; `/model <name> --once` applies for one turn.
 - Delivery reliability: final responses are recorded in a durable delivery ledger (`state.db`) and redelivered after a crash (at-least-once; mid-send replies get a "Recovered reply" prefix; 3 attempts, 24-hour freshness, delivered rows pruned after 7 days). Disable with `gateway.delivery_ledger: false`.
 
-**Per-channel overrides** (`platforms.<name>.channel_overrides.<channel-or-thread-id>` with optional `model`, `provider`, `system_prompt`): lookup is exact id then parent channel; model priority is session `/model` override, then `channel_overrides`, then global config.
+**Per-channel overrides** (`platforms.<name>.channel_overrides.<channel-or-thread-id>` with optional `model`, `provider`, `system_prompt`, and from v0.23 `allow_silence`): lookup is exact id then parent channel; model priority is session `/model` override, then `channel_overrides`, then global config.
 
 **Admins vs regular users** (per platform and per scope via `extra`): `allow_admin_from` admins run every slash command; `user_allowed_commands` lists what non-admins may run (floor: `/help`, `/whoami`); `group_allow_admin_from` / `group_user_allowed_commands` for group scope. If `allow_admin_from` is unset the split is disabled for that scope.
 
 ## Security
+
+### Other bots in a chat (new in v0.23)
+
+Hermes treats a sender as a bot when the platform says so (Discord, Slack, Telegram, Feishu, QQ guild, Mattermost bot accounts). On platforms whose events carry no bot flag (Matrix, Signal, IRC, Mattermost personal-access-token bots, ...), list the peer's user ids under that platform's `bot_users` in `config.yaml`:
+
+```yaml
+mattermost:
+  bot_users: ["peer_bot_user_id"]
+```
+
+A bot sender is admitted only through that platform's `*_ALLOW_BOTS` setting. Hermes never sends it runtime notices (busy/interrupt acknowledgements, progress, "not processed" and retry hints, model-fallback and inactivity warnings, failed-delegation notices), only the model's reply. `gateway.bot_loop_guard` ends the exchange: `max_hops` (default 4) bot messages after your last message, a repeated message counted once, and no answer to a bot answering a reply Hermes delivered to it unless `bot_replies_expect_reply: true`; `enabled: false` turns the rules off.
 
 ### Authorization
 
@@ -230,7 +251,7 @@ hermes gateway install                      # Install as launchd agent
 tail -f ~/.hermes/logs/gateway.log          # Stream logs
 ```
 
-The plist is written to `~/Library/LaunchAgents/ai.hermes.gateway.plist` and includes `PATH`, `VIRTUAL_ENV`, and `HERMES_HOME` variables.
+The plist is written to `~/Library/LaunchAgents/ai.hermes.gateway.plist` and includes `PATH`, `VIRTUAL_ENV`, and `HERMES_HOME` variables. The plist runs the gateway through `/usr/bin/osascript` so macOS Local Network Privacy treats it as an Apple platform binary (otherwise LAN hosts fail with `errno 65 No route to host`); `ps` shows `osascript → stderr_timestamp → gateway run`. New in v0.23: without an installed service, a gateway Hermes starts for you (Desktop, a chat or TUI client, the restart after `hermes update`) runs the same way as a one-off launchd job labelled `com.nousresearch.hermes.runtime.<id>` (never in `~/Library/LaunchAgents`, never at login, never restarted by launchd); macOS file-access prompts for that gateway name osascript, not Hermes.
 
 ### Windows (Task Scheduler)
 
@@ -262,7 +283,7 @@ The task runs `wscript.exe` on a generated `.vbs` launcher under `%USERPROFILE%\
 - Background tasks inherit the model/provider of the session that spawned them but run in fully isolated storage.
 - On macOS, `hermes gateway install` writes a launchd plist; on Linux without `--system` it installs a systemd user unit.
 - Circuit breakers automatically pause platform adapters during sustained outages and resume when the platform recovers.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging (pinned to v0.23.1)
 
 ## Related
 

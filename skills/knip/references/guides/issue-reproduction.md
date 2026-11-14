@@ -15,6 +15,8 @@ Create minimal source code and configuration to reproduce issues:
 - Establishes a contract for fixing
 - Creates fixtures for testing
 
+Share the files themselves, ready to review, copy or clone. A script that generates them only adds steps on both ends.
+
 Useful supplements: screenshots, videos, code snippets, log output, repo links.
 
 ## Before Opening an Issue
@@ -35,3 +37,7 @@ CodeSandbox and StackBlitz templates available for:
 
 - Public GitHub/GitLab repositories
 - Pull requests with test fixtures in the Knip repo
+
+## Notes
+
+- Source: https://knip.dev/guides/issue-reproduction (knip@6.45.1 docs, retrieved 2026-11-14)

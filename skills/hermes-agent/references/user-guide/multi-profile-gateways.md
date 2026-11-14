@@ -40,7 +40,7 @@ hermes -p coder gateway restart  # reconnect coder with its current configuratio
 |------|-------------|
 | `gateway.multiplex_profiles` | Unset = the default gateway decides at boot via the migration preflight; `true` multiplexes regardless; `false` is retired (rewritten to `true`). Env override: `GATEWAY_MULTIPLEX_PROFILES` |
 | `gateway.standalone: true` (in a named profile's own `config.yaml`) | Temporary compatibility shim: the host does not serve that profile and it runs its own gateway; ignored with a warning on the default profile; no env var |
-| `gateway.auto_multiplex_migration` | `false` on the default profile stops `hermes update` from folding per-profile gateways automatically |
+| `gateway.auto_multiplex_migration` | `false` on the default profile stops `hermes update` from folding per-profile gateways automatically, and also stops a gateway that booted with only the default profile from serving a newly created second profile in place (the new profile is refused with that reason until `hermes gateway migrate --multiplex` or the key is set back to `true`; the key is re-read on every rescan, about 30 s, no restart) |
 | `gateway.parked` (marker file in a profile home) | Written by `gateway stop`; excludes the profile from serving and from cron ticks |
 | `gateway.profile_routes` | Route users/guilds/channels/threads sharing one bot token to different profiles |
 | `--force` (on `run`, `start`, `install`, `restart`) | Starts a separate per-profile gateway where a real boundary blocks the fold |
@@ -84,11 +84,18 @@ done | sort
 - Adapted: the official audit (`grep -H`) prints raw token values; this version compares hashes and prints only variable and file names.
 - Session keys are namespaced `agent:<profile>:...` (default keeps `agent:main:...`); each profile's rows go to its own `state.db`. Credentials, authorization, MCP connections, terminal settings, outbound identity, and hooks are resolved per profile; shared by design: the process, PID/lock, `gateway_state.json`, the HTTP listener, and the `profile_routes` table.
 - The served set is live: a profile created, deleted, or renamed while the multiplexer runs is served/unserved without restart; the host also rescans every 30 seconds.
+- Hot-serving a new profile also grows the multiplexer's profile reservation: the new profile's `gateway.lock` is taken and its own session authority built, so `hermes -p <name>` finds the multiplexer as its owner and the next `hermes gateway restart` reserves the whole set. A profile whose `state.db` cannot be opened is parked (logged `Profile '<name>' not served`, left out of `served_profiles`) while every other profile keeps booting; fix the store and re-run `hermes profile create` or wait for the periodic rescan.
+- Per-profile resolution tables (v0.23.1): auto-designated home channels (no longer only Yuanbao) are resolved per profile; the Camofox VNC address and the `sessions.cjk_fts` knob are no longer listed; "Copilot context limits" became "plugin-provider context limits".
 - Migration: `hermes update` auto-folds per-profile gateways when nothing blocks it (same UNIX user, service domain, `profiles/` tree); blockers include duplicate credentials and port-binding platforms without `/p/<profile>/` ingress. Migration is transactional with resume via `~/.hermes/gateway_migration.json`; there is no `--standalone` reverse. In the s6 Docker image, `hermes gateway migrate --multiplex` parks named slots and folds intent into the root slot.
 - Service files: macOS `~/Library/LaunchAgents/ai.hermes.gateway-<profile>.plist`, Linux `~/.config/systemd/user/hermes-gateway-<profile>.service` (default profile keeps `ai.hermes.gateway.plist` / `hermes-gateway.service`). Logs: `~/.hermes/profiles/<name>/logs/gateway.log`; `hermes logs -f`, `hermes -p coder logs -f`.
 - Keep the host awake: macOS `caffeinate -dis` (lid-close still sleeps); Linux `systemd-inhibit` and `sudo loginctl enable-linger "$USER"`.
 - Troubleshooting: launchd "Could not find service in domain for user gui: 501" after `stop` is auto-handled; stale PID: inspect `gateway.pid`, `kill -TERM`; health check `hermes doctor` / `hermes -p <profile> doctor`.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/multi-profile-gateways (pinned to v0.22.2)
+- In the official Docker image every profile has an s6 slot at `/run/hermes-service/gateway-<profile>` (v0.22.2: `/run/service/gateway-<profile>`).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/multi-profile-gateways (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- Migration (v0.22 -> v0.23): the s6 gateway slot path moved from `/run/service/gateway-<profile>` to `/run/hermes-service/gateway-<profile>`.
 
 ## Related
 

@@ -11,5 +11,5 @@
 | Issue Types | Every issue type Knip reports, from unused files and dependencies to unused exports, enum and namespace members, with their filter keys | [issue-types.md](./issue-types.md) |
 | JSDoc & TSDoc Tags | Use JSDoc and TSDoc tags like `@public`, `@internal`, `@alias` and custom tags to include or exclude exports from Knip's report | [jsdoc-tsdoc-tags.md](./jsdoc-tsdoc-tags.md) |
 | Known Issues | Known limitations and workarounds for caching, config file errors, path aliases in config files, and the Nx daemon | [known-issues.md](./known-issues.md) |
-| Plugins (155) | The full list of Knip plugins for frameworks, build tools, test runners and linters, each linking to its reference page | [plugins.md](./plugins.md) |
+| Plugins (207) | The full list of Knip plugins for frameworks, build tools, test runners and linters, each linking to its reference page | [plugins.md](./plugins.md) |
 | Related Tooling | Tools that complement Knip for things it does not cover, like unused imports and variables, and unused properties of objects and types | [related-tooling.md](./related-tooling.md) |

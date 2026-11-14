@@ -31,10 +31,10 @@ PR 上にインラインアノテーションを表示する。
 ## SARIF 出力
 
 ```sh
-knip --reporter sarif > knip.sarif
+knip --reporter sarif --output-file knip.sarif
 ```
 
-SARIF 2.1.0 を出力する。code scanning 連携用。
+SARIF 2.1.0 を出力する。code scanning 連携用。`--output-file` でファイルへ書き出す（6.44.0 以降）。
 
 ## 本番モードとの二重実行
 
@@ -61,6 +61,8 @@ knip --treat-tag-hints-as-errors
 
 ## GitHub Actions ワークフロー例
 
+Adapted (not in the official docs): third-party actions are pinned to commit SHAs instead of the mutable tags used upstream.
+
 ```yaml
 name: Lint project
 on: push
@@ -77,6 +79,8 @@ jobs:
 ```
 
 ## GitHub Actions でキャッシュと本番モードを組み合わせた例
+
+Adapted (not in the official docs): third-party actions are pinned to commit SHAs instead of the mutable tags used upstream.
 
 ```yaml
 name: Lint project

@@ -37,3 +37,5 @@ app.get('/', (c) => c.text(`Language: ${c.get('language')}`))
 - `fallbackLanguage` must exist in `supportedLanguages` or initialization fails.
 - Progressive locale matching is applied: `ja-JP` matches `ja` when an exact match is unavailable.
 - Failed detections silently use `fallbackLanguage`.
+- With `debug: true` the log line reads `Language detected from querystring: ar`. The official client examples no longer show a path-based `curl` example.
+- Source: https://hono.dev/docs/middleware/builtin/language (honojs/website@20aab4e0, retrieved 2026-11-14)

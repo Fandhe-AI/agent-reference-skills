@@ -11,14 +11,14 @@ query フックは operation のグループ化リクエスト設定（`path` / 
 ```typescript
 import { useGetPetById } from './gen/hooks/useGetPetById'
 
-const { data, error, isLoading } = useGetPetById({ path: { petId: 1n } })
+const { data, error, isLoading } = useGetPetById({ path: { petId: 1 } })
 ```
 
 第 2 引数は `query`（任意の `SWRConfiguration`）、`client`（この呼び出し用のリクエスト設定、`baseURL` 等）、Kubb オプションの `shouldFetch` と `immutable`:
 
 ```typescript
 useGetPetById(
-  { path: { petId: 1n } },
+  { path: { petId: 1 } },
   {
     query: { refreshInterval: 30_000 },
     client: { baseURL: 'https://api.example.com/v1' },
@@ -46,14 +46,14 @@ await trigger({ body: { name: 'Fluffy' } })
 
 ### Skip requests until ready
 
-`shouldFetch: false` で SWR に `null` キーを与えリクエストをスキップする。必要なパラメーターが揃ったら有効にする。mutation フックも同じスイッチを受け付け、`null` キーは `trigger` の発火を止める:
+`shouldFetch: false` で SWR に `null` キーを与えリクエストをスキップする。必要なパラメーターが揃ったら `true` を渡す。mutation フックも同じオプションを受け付け、`null` キーのとき `trigger` を呼ぶと missing-key エラーを投げる:
 
 ```typescript
 import { useGetPetById } from './gen/hooks/useGetPetById'
 
-export function useSelectedPet(petId: bigint | undefined) {
+export function useSelectedPet(petId: number | undefined) {
   return useGetPetById(
-    { path: { petId: petId ?? 0n } },
+    { path: { petId: petId ?? 0 } },
     { shouldFetch: petId != null },
   )
 }
@@ -65,7 +65,7 @@ export function useSelectedPet(petId: bigint | undefined) {
 
 ```typescript
 const { data, error } = useGetPetById(
-  { path: { petId: 1n } },
+  { path: { petId: 1 } },
   { immutable: true },
 )
 ```
@@ -83,7 +83,9 @@ const { data, error } = useGetPetById(
 
 - 各生成フックは client 関数を `throwOnError: true` で呼ぶ。失敗は SWR の `error` に入り、型は spec のエラーレスポンスから付く。base URL・認証・interceptor・serialization・検証は client プラグイン側で設定する（plugin-client の場合は自前 client モジュール）
 - `query` 内のオプションは `immutable` の再検証既定を上書きする
-- Source: https://kubb.dev/extensions/kubb-labs/plugin-swr/guides/calling-operations （`@kubb/plugin-swr@5.4.3`）
+- 例は adapter に `integerType: 'number'` を設定しているため `int64` の `petId` は `number`（既定では `bigint` で `1n` を渡す）
+- Migration (5.4 → 5.9): with `shouldFetch: false` (`null` key), calling a mutation's `trigger` now throws a missing-key error (the earlier docs said a `null` key only stops `trigger` from firing); the page's `petId` examples changed from `bigint` to `number` because the docs now set `integerType: 'number'`
+- Source: https://kubb.dev/extensions/kubb-labs/plugin-swr/guides/calling-operations （`@kubb/plugin-swr@5.9.1`、取得日 2026-11-14）
 
 ## Related
 

@@ -3,7 +3,7 @@ name: cloudflare-storage
 description: >
   Cloudflare 開発者プラットフォームのストレージ (Workers KV / D1 SQLite / R2 S3 互換 / Hyperdrive) の
   リファレンス。KVNamespace、D1Database prepare / batch / withSession、read replication、Time Travel、
-  R2Bucket multipart、S3 互換 API、presigned URL、event notifications、
+  R2Bucket multipart、S3 互換 API、条件付き書き込み (If-None-Match)、ローカル開発 (local S3 endpoint)、presigned URL、event notifications、
   Hyperdrive 接続プール・クエリキャッシュ。
   ランタイムは cloudflare-workers、Wrangler は cloudflare-wrangler、Upstash Redis・Supabase とは別。
 user-invocable: false
@@ -15,8 +15,10 @@ Cloudflare 開発者プラットフォームのストレージ 4 製品 — Work
 
 ## 対象バージョン
 
-- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `d0995b91312add6db730afec4f4944cee834abc6` と取得日 2026-11-03 で pin
-- 参考: wrangler 4.156.2（`wrangler kv` / `d1` / `r2` / `hyperdrive` コマンドの確認バージョン）
+- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `34d908abc615fdf22eeb386b171b9657b9abcf38` と取得日 2026-11-14 で pin（2026-11-03 の `d0995b91312add6db730afec4f4944cee834abc6` からの更新。この間に KV / D1 / R2 / Hyperdrive 配下で変更のあったページのみ再取得し、未変更ページは旧 pin の内容がそのまま有効）
+- 2026-11-14 追従: D1 `PRAGMA defer_foreign_keys = off` の説明訂正・API error codes・analytics 範囲、R2 local development / Conditional operations（新規）・長さ既知ストリーム要件、Hyperdrive の advisory lock・Prisma ORM 8 例。KV は内容差なし（Wrangler / `cf` 切替表示のみ）
+- 参考: wrangler 4.156.2（`wrangler kv` / `d1` / `r2` / `hyperdrive` コマンドの確認バージョン。npm latest 4.162.0 とのコマンド差分は未確認）
+- 未追従: `local_dev.experimental_s3_credentials` を含む Wrangler 設定キー仕様（`workers/wrangler/configuration` の担当は cloudflare-wrangler）
 
 ## 他スキルとの使い分け
 
@@ -104,6 +106,7 @@ skills/cloudflare-storage/
       get-started-cli.md
       get-started-s3.md
       get-started-workers-api.md
+      local-development.md
       buckets-create.md
       buckets-delete.md
       buckets-bucket-locks.md
@@ -122,6 +125,7 @@ skills/cloudflare-storage/
       api-error-codes.md
       api-tokens.md
       s3-api-compatibility.md
+      s3-conditional-operations.md
       s3-extensions.md
       s3-presigned-urls.md
       s3-temporary-credentials.md
@@ -235,6 +239,8 @@ skills/cloudflare-storage/
 | D1 の read replication・リトライ・ローカル / リモート開発を設定したい | d1 | [references/d1/README.md](references/d1/README.md) |
 | D1 の制限・料金・遅いクエリ調査を確認したい | d1 | [references/d1/README.md](references/d1/README.md) |
 | R2 バケットの作成・CORS・lifecycle・公開設定・bucket locks を扱いたい | r2 | [references/r2/README.md](references/r2/README.md) |
+| R2 をローカルで開発したい（local bucket / remote binding / ローカル S3 エンドポイント） | r2 | [references/r2/README.md](references/r2/README.md) |
+| R2 の条件付き書き込み（If-None-Match / create-only / multipart 完了）を扱いたい | r2 | [references/r2/README.md](references/r2/README.md) |
 | R2Bucket の get / put / list / multipart など Workers API を調べたい | r2 | [references/r2/README.md](references/r2/README.md) |
 | R2 の S3 互換 API・presigned URL・一時認証情報・API トークンを扱いたい | r2 | [references/r2/README.md](references/r2/README.md) |
 | R2 event notifications・Sippy / Super Slurper によるデータ移行を知りたい | r2 | [references/r2/README.md](references/r2/README.md) |

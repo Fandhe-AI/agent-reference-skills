@@ -59,5 +59,5 @@ signtool sign /fd SHA256 /sha1 <SHA1 hash> package.msix
 - [SignTool Timestamp Options](./signtool-timestamp.md)
 - [SignTool Verify](./signtool-verify.md)
 - [Certificate Types](./certificate-types.md)
-- [Azure Trusted Signing](./azure-trusted-signing.md)
+- [Azure Artifact Signing (formerly Azure Trusted Signing)](./azure-trusted-signing.md)
 - [Signing Troubleshooting](./signing-troubleshooting.md)

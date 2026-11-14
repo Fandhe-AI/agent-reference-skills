@@ -24,5 +24,5 @@ git clone https://github.com/NVIDIA/TensorRT
 
 ## Related
 
-- [FLUX.1 Dreambooth LoRA Fine-tuning](./flux-finetuning.md)
+- [Fine-Tune FLUX.2 Klein for Custom Image Generation](./flux-finetuning.md)
 - [TRT-LLM for Inference](./trt-llm.md)

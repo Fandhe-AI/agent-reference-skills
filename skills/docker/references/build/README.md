@@ -16,6 +16,7 @@
 | Docker container driver | Managed BuildKit in a dedicated Docker container | [driver-docker-container.md](./driver-docker-container.md) |
 | Docker driver | Default driver using the BuildKit built into Docker Engine | [driver-docker.md](./driver-docker.md) |
 | Kubernetes driver | BuildKit builders running as Kubernetes pods | [driver-kubernetes.md](./driver-kubernetes.md) |
+| Registry authentication | Registry credentials by repository and scope | [registry-auth.md](./registry-auth.md) |
 | Remote driver | Connect Buildx to an externally managed BuildKit daemon | [driver-remote.md](./driver-remote.md) |
 | Build drivers | How and where the BuildKit backend runs | [drivers.md](./drivers.md) |
 | Export binaries | Export build results as files instead of images | [export.md](./export.md) |

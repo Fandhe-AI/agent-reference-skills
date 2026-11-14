@@ -1,6 +1,6 @@
 # 基本チュートリアル
 
-OpenAPI 仕様から TypeScript 型と Axios クライアントを生成するステップバイステップガイド（Kubb 5.11.0 / docs 5.x tutorials/quickstart "Generate your first client" に準拠）。Node.js 22.12 以上と npm が必要。
+OpenAPI 仕様から TypeScript 型と Axios クライアントを生成するステップバイステップガイド（Kubb 5.20.0 / docs 5.x tutorials/quickstart "Your first TypeScript client from an API spec" に準拠）。Node.js 22.22 以上と npm が必要。
 
 ## 1. プロジェクトを作成する
 
@@ -96,9 +96,11 @@ npx kubb generate
 
 ## Notes
 
-- The official tutorial is now named "quickstart" (docs 5.x tutorials/quickstart, "Generate your first client"). The same content is summarized in [quick-start.md](../getting-started/quick-start.md)
+- The official tutorial is now named "quickstart" (docs 5.x tutorials/quickstart, "Your first TypeScript client from an API spec"; titled "Generate your first client" in 5.11). The same content is summarized in [quick-start.md](../getting-started/quick-start.md)
 - v5: `input` takes the path directly (`input: { path }` fails with `KUBB_LEGACY_INPUT`), `defineConfig` is imported from `kubb/config`, and `pluginOas()` is no longer used. The tutorial generates an Axios client with `@kubb/plugin-axios` rather than types only
 - 旧版チュートリアルの `@kubb/cli` / `@kubb/core` / `@kubb/plugin-oas` を使う設定は v5 では不要
+- Source: https://kubb.dev/docs/5.x/tutorials/quickstart （kubb@5.20.0 の docs/5.x/tutorials/quickstart.md、取得日 2026-11-14）
+- Migration (5.11 → 5.20): the Node.js requirement is 22.22+ (was 22.12+; 5.13.0 changelog, #4426)
 
 ## Related
 

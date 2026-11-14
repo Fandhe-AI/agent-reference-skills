@@ -37,6 +37,8 @@ scene.add(line);
 - Vertex order: 0→1→2→3→…→n (all connected). For disconnected pairs, use `LineSegments`. For a closed loop, use `LineLoop`.
 - `linewidth` in `LineBasicMaterial` is not reliably supported across WebGL implementations; it is effectively fixed at 1 on most platforms.
 - For variable-width lines, use `Line2` from the `three/addons` module.
+- Migration (r186 → r187): `copy()` also copies `morphTargetInfluences` and `morphTargetDictionary` when the source has them (https://github.com/mrdoob/three.js/pull/35147).
+- Source: https://threejs.org/docs/pages/Line.html (three.js r187, `src/objects/Line.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

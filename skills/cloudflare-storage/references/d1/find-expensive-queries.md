@@ -52,7 +52,7 @@ npx cf sql query --scope-account <account_id> "
 "
 ```
 
-Fix flow: create a migration, add the `CREATE INDEX`, apply, verify with `EXPLAIN QUERY PLAN`:
+Fix flow: if you use D1 migrations to manage your schema, create a migration, add the `CREATE INDEX`, apply it, then verify with `EXPLAIN QUERY PLAN`:
 
 ```sh
 npx wrangler d1 migrations create <database_name> add_orderdetail_orderid_index
@@ -135,6 +135,8 @@ await env.DB.batch(
 - Cache step: store results in Workers KV or the Cache API with an expiration matching data volatility; do not cache queries that must always return the newest data.
 - Batch step: statements in `batch()` run in one SQL transaction (all roll back if one fails); `batch()` reduces round trips, not rows read or written. Statements in a batch remain separate queries in analytics. `avgRowsWritten` includes index rows (one insert into a table with two indexes = 3).
 - The `cf` CLI is Cloudflare's CLI; `wrangler d1 insights` is experimental.
+- The migration steps are optional: the official page now begins the index fix with "If you use D1 migrations to manage your database schema, add the index with a migration" (earlier revision: unconditional "Create a migration"). Without migrations, create the index with another method (for example `wrangler d1 execute`), then verify with `EXPLAIN QUERY PLAN`.
+- Source: https://developers.cloudflare.com/d1/observability/find-expensive-queries/ (production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

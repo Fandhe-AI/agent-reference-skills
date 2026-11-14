@@ -23,6 +23,7 @@ Returns a `PathMatch` object if the pattern matches, or `null` otherwise.
 ## Notes
 
 - Available in **Framework Mode**, **Data Mode**, and **Declarative Mode** (all three modes)
+- 8.5.0 ([CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md), [PR #15425](https://github.com/remix-run/react-router/pull/15425)): fixed `matchPath` not treating a static segment as optional when it contains characters outside `[\w-]`
 
 ## Related
 

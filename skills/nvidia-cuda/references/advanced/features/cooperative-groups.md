@@ -34,6 +34,8 @@ my_subgroup.sync();
 - `this_grid()` requires the kernel be launched with `cudaLaunchCooperativeKernel`, not the `<<<>>>` syntax, because grid-wide synchronization requires all blocks to be co-resident on the device.
 - Create implicit group handles (`this_thread_block()`, etc.) as early as possible in the kernel and pass group handles by reference to avoid redundant group-creation overhead.
 - `coalesced_threads()` captures whichever threads are active at the point of the call, which can vary across warps/branches — it is not equivalent to a full warp unless divergence is known to be absent.
+- Compute capability requirements in CPG 13.5: `this_cluster()` requires compute capability 9.0 or greater, reported by the `cluster_supported` field of `cuda::arch_traits`; hardware-accelerated reductions require compute capability 8.0 or greater, reported by the `redux_intrinsic` field of `cuda::arch_traits`.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/cooperative-groups.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

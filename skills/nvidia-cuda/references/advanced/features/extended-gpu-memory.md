@@ -29,6 +29,7 @@ cuMemGetAllocationGranularity(&granularity, &prop, MEM_ALLOC_GRANULARITY_MINIMUM
 - EGM support and behavior are tied to specific NVLink-C2C-based hardware platforms; consult the dgx-spark skill's hardware category for platform-level topology and NVLink-C2C details rather than duplicating hardware specifics here.
 - Allocation granularity for EGM memory should be queried via `cuMemGetAllocationGranularity` with the `CU_MEM_LOCATION_TYPE_HOST_NUMA` location filled in, since NUMA-backed granularity can differ from device-local granularity.
 - Note (CPG 13.4): the cross-node sharing described here is address-centric: the imported allocation is mapped into the local virtual address space and accessed with ordinary loads and stores. For GPUs connected by an NVLink fabric, compute fabric transport is a resource-centric alternative that moves data with asynchronous fabric operations against a named logical endpoint rather than a mapped address, with an explicit per-operation completion status; it suits large fabrics where fabric-error recovery is a concern.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/extended-gpu-memory.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

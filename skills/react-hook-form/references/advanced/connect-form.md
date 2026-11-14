@@ -1,40 +1,129 @@
 # Connect Form
 
-Advanced Usage: https://react-hook-form.com/advanced-usage#ConnectForm
+Advanced Usage: https://react-hook-form.com/advanced-usage/connect-form
 
-When we are building forms, there are times when our input lives inside deeply nested component trees; that's when FormContext comes in handy. However, we can further improve the developer experience by creating a `ConnectForm` component and leveraging React's [renderProps](https://legacy.reactjs.org/docs/render-props.html). The benefit is that you can connect your inputs to React Hook Form much more easily.
+When inputs live deep in a component tree, passing `register`, `control`, and `formState` through every level gets noisy. Wrap the form in [`FormProvider`](../api/formprovider.md) and read the methods anywhere below it with [`useFormContext`](../api/useformcontext.md).
 
 ## Signature / Usage
 
-```javascript
-import { FormProvider, useForm, useFormContext } from "react-hook-form"
+### A typed hook per form
 
-export const ConnectForm = ({ children }) => {
-  const methods = useFormContext()
+`useFormContext` needs your form's type as a generic. Instead of repeating `useFormContext<CheckoutValues>()` in every component, wrap it in a hook named after the form. The hook is also a good place to fail loudly: outside a `FormProvider`, `useFormContext` returns `null`, and the first `register` call would otherwise throw a confusing error.
 
-  return children(methods)
+### A render-prop connector
+
+A `ConnectForm` component passes the methods to a function child. It is handy for one-off inputs inside JSX, or in code that cannot call hooks directly, such as a class component's `render` method.
+
+```tsx
+import type { ReactNode } from "react"
+import {
+  FormProvider,
+  useForm,
+  useFormContext,
+  type FieldValues,
+  type UseFormReturn,
+} from "react-hook-form"
+
+type CheckoutValues = {
+  email: string
+  shipping: { street: string; city: string }
 }
 
-export const DeepNest = () => (
-  <ConnectForm>
-    {({ register }) => <input {...register("deepNestedInput")} />}
-  </ConnectForm>
-)
+// A typed hook for this form, so components don't repeat the generic.
+export function useCheckoutForm() {
+  const methods = useFormContext<CheckoutValues>()
+  if (!methods) {
+    throw new Error("useCheckoutForm must be used inside <FormProvider>.")
+  }
+  return methods
+}
 
-export const App = () => {
-  const methods = useForm()
+// A render-prop version for places where you can't call a hook.
+export function ConnectForm<T extends FieldValues>({
+  children,
+}: {
+  children: (methods: UseFormReturn<T>) => ReactNode
+}) {
+  return children(useFormContext<T>())
+}
+
+function ShippingAddress() {
+  const {
+    register,
+    formState: { errors },
+  } = useCheckoutForm()
+
+  return (
+    <fieldset>
+      <legend>Shipping address</legend>
+      <label htmlFor="street">Street</label>
+      <input
+        id="street"
+        {...register("shipping.street", { required: "Enter a street." })}
+      />
+      {errors.shipping?.street && (
+        <p role="alert">{errors.shipping.street.message}</p>
+      )}
+      <label htmlFor="city">City</label>
+      <input
+        id="city"
+        {...register("shipping.city", { required: "Enter a city." })}
+      />
+    </fieldset>
+  )
+}
+
+export default function Checkout({
+  onSubmit,
+}: {
+  onSubmit: (values: CheckoutValues) => void
+}) {
+  const methods = useForm<CheckoutValues>({
+    defaultValues: { email: "", shipping: { street: "", city: "" } },
+  })
 
   return (
     <FormProvider {...methods}>
-      <form>
-        <DeepNest />
+      <form noValidate onSubmit={methods.handleSubmit(onSubmit)}>
+        <ConnectForm<CheckoutValues>>
+          {({ register }) => (
+            <>
+              <label htmlFor="email">Email</label>
+              <input id="email" type="email" {...register("email")} />
+            </>
+          )}
+        </ConnectForm>
+        <ShippingAddress />
+        <button type="submit">Place order</button>
       </form>
     </FormProvider>
   )
 }
 ```
 
+`ShippingAddress` uses the typed hook, so `register("shipping.street")` is checked against `CheckoutValues`, and a typo is a type error. The email input uses the render-prop connector inline.
+
+### When to use which
+
+| Situation                                            | Use                                                                                                                  |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| A component inside one known form                    | A typed hook such as `useCheckoutForm`                                                                               |
+| Inline JSX, or a component that cannot call hooks    | `ConnectForm`                                                                                                        |
+| A reusable input used in many different forms        | Pass `control` and `name` as props and call [`useController`](../api/usecontroller.md)                                   |
+| A component that only displays a value or form state | [`useWatch`](../api/usewatch.md) or [`useFormState`](../api/useformstate.md), which accept `control` or read it from context |
+
+Reading `formState` from context subscribes the component the same way reading it from `useForm` does. To keep re-renders low, read only what the component renders. See [FormProvider performance](./formprovider-performance.md).
+
+### Nested providers
+
+Each `useFormContext` reads the nearest `FormProvider` above it. If you nest two forms, for example a dialog form inside a page form, components inside the dialog read the inner one. Render the inner form outside the outer `<form>` element, such as in a portal, because HTML does not allow nested `<form>` elements.
+
+## Notes
+
+- Source: https://react-hook-form.com/advanced-usage/connect-form (documentation master c0511c9, fetched 2026-11-14)
+
 ## Related
 
 - [formprovider](../api/formprovider.md)
 - [useformcontext](../api/useformcontext.md)
+- [smart-form-component](./smart-form-component.md)

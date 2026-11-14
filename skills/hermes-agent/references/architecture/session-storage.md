@@ -47,12 +47,15 @@ Tables in `state.db`:
 | `session_model_usage` | Per-model/per-task usage attribution |
 | `messages_fts` | FTS5 (content + tool_name + tool_calls) |
 | `messages_fts_trigram` | FTS5 trigram tokenizer (CJK / substring) |
-| `messages_fts_cjk` | FTS5 `cjk_unicode61` tokenizer |
 | `state_meta` | Key/value metadata |
 | `gateway_routing` | Gateway routing metadata |
 | `compression_locks` | Cross-process compression locking |
 | `async_delegations` | Async delegation bookkeeping |
 | `delivery_obligations` | Gateway outbox (lazily created) |
+| `runtime_epoch` | Session authority's owner epoch + instance id (one row) |
+| `session_admissions` | Durable per-session input FIFO (queued -> started -> terminal; `unknown` on owner loss) |
+| `worker_executions` | Managed worker/child/cron/kanban executions bound to a session and epoch |
+| `worker_receipts` | Ordered, digest-checked results a managed worker reported |
 | `schema_version` | Single-row migration state (current version 31) |
 
 FTS5 query syntax for `search_messages()`:
@@ -78,8 +81,12 @@ _CHECKPOINT_EVERY_N_WRITES = 50
 
 ## Notes
 
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/session-storage (pinned to v0.22.2)
-- Path: `get_hermes_home() / "state.db"` (context override, then `HERMES_HOME`, then `~/.hermes` / `%LOCALAPPDATA%/hermes`). Named profiles use `<root>/profiles/<name>/state.db`. Subprocess spawners must pass `HERMES_HOME` explicitly; changing `HOME` does not select a profile. Use `display_hermes_home()` only for user-facing text.
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/session-storage (pinned to v0.23.1)
+- The profile's gateway is the only writer of canonical sessions: `hermes chat`, the TUI, Desktop (local), the API server, ACP, cron, Bot Chat and Kanban workers are clients that admit input to its session authority over `/api/ws`; out-of-process managed workers write through that owner (`RuntimeSessionStore` RPC) and never open `state.db` for transcript writes. Several processes still open the file: the gateway, read-only browsers (dashboard, `hermes sessions list`), maintenance commands, and writers of non-session tables.
+- `session_admissions`, `worker_executions` and `worker_receipts` reference `sessions` with `ON DELETE RESTRICT`: deleting or pruning a session retires its terminal ledger rows in the same transaction and refuses while work is live or `unknown`. An input that was `started` when its owner died becomes `unknown` at the next owner start and is never replayed; its later inputs wait until it is resolved (`prompt.resolve_unknown`).
+- `hermes sessions recover` inventories and reports the four runtime-ledger tables (`runtime_epoch`, `session_admissions`, `worker_executions`, `worker_receipts`) as excluded, not copied (a partial ledger could replay started effects or adopt another owner's workers); a full `hermes backup` restore keeps the complete ledger. It also copies the lazily-created `delivery_obligations` ledger when present, with row count verified.
+- Dashboard browsing opens `state.db` read-only: GET listing, search, details, messages, statistics and export never create an absent database, quarantine a zero-byte file, reconcile a stale schema, or trigger auto-archive; uninitialized or incompatible stores return HTTP 503 with owner-start/recovery guidance (profile aggregation lists schema failures in a per-profile `errors` list). The profile's gateway initializes and reconciles the store at startup; the standalone `serve` backend keeps its startup reconciliation worker; `sessions.auto_archive` stays active through gateway housekeeping or the standalone maintenance ticker. SQLite WAL readers may still create empty WAL/SHM sidecars or update SHM read marks (`mode=ro` forbids schema/data writes, repair and checkpointing, not live coordination files).
+- Each named profile stores its transcript in its own `$HERMES_HOME/state.db`, including when one process (the multiplex gateway, or a `hermes serve`) serves several profiles.- Path: `get_hermes_home() / "state.db"` (context override, then `HERMES_HOME`, then `~/.hermes` / `%LOCALAPPDATA%/hermes`). Named profiles use `<root>/profiles/<name>/state.db`. Subprocess spawners must pass `HERMES_HOME` explicitly; changing `HOME` does not select a profile. Use `display_hermes_home()` only for user-facing text.
 - Test isolation guard raises before tests open a production `state.db`; `HERMES_STATE_DB_GUARD_BYPASS=1` / `@pytest.mark.live_system_guard_bypass` are test-only escape hatches.
 - In-place compaction archives old rows `active=0` and inserts retained context `active=1`; do not delete archive rows as duplicates.
 - Session lineage via `parent_session_id` chains (compression splits); recursive CTEs query ancestors/descendants. Batch runner and RL trajectories are not stored here.
@@ -88,7 +95,10 @@ _CHECKPOINT_EVERY_N_WRITES = 50
 - Migrations: simple column additions are declarative (`_reconcile_columns()`); version-gated chain handles data/FTS changes (e.g. v10 trigram table, v23 FTS redesign, v29/v30 trigram scope reduction, v31 message uids).
 - Write contention: 1 s SQLite timeout, time-budgeted retry with jitter, `BEGIN IMMEDIATE`, PASSIVE WAL checkpoint every 50 writes. Exhausted budget ends the turn with `session_persistence_failed:locked`; check `~/.hermes/logs/errors.log` for the lock-owner line. Lock detection is by SQLite result code.
 - Gateway exception-path inputs get an owner marker in `display_metadata`; this is failure-writer arbitration, not exactly-once delivery.
-- `hermes sessions recover` copies the row-bearing tables (FTS and `schema_version` regenerated).
+
+### Migration (v0.22 -> v0.23)
+
+- `messages_fts_cjk` (FTS5 `cjk_unicode61` tokenizer) is no longer listed in the table inventory.
 
 ## Related
 

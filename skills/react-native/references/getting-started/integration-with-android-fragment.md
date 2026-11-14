@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/integration-with-android-fragment
+source: https://reactnative.dev/docs/0.88/integration-with-android-fragment
 ---
 
 # Integration with an Android Fragment

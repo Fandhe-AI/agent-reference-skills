@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/handling-text-input
+source: https://reactnative.dev/docs/0.88/handling-text-input
 ---
 
 # Handling Text Input

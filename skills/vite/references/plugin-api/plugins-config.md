@@ -20,12 +20,11 @@ export default defineConfig({
 Presets (one element made of several plugins), flattened internally:
 
 ```js
-import frameworkDevtools from 'vite-plugin-framework-devtools'
-// framework-plugin
+import frameworkDevTools from 'vite-plugin-framework-devtools'
 import frameworkRefresh from 'vite-plugin-framework-refresh'
 
 export default function framework(config) {
-  return [frameworkRefresh(config), frameworkDevtools(config)]
+  return [frameworkRefresh(config), frameworkDevTools(config)]
 }
 ```
 
@@ -42,8 +41,6 @@ export default defineConfig({
 
 - Falsy plugins are ignored, which makes it easy to activate or deactivate plugins.
 - `plugins` accepts presets including several plugins as a single element; useful for complex features such as framework integration. The array is flattened internally.
-
-- The upstream example calls `frameworkDevTools` (case mismatch with the import); unified to `frameworkDevtools`.
 
 ## Related
 

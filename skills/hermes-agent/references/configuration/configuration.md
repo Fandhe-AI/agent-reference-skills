@@ -185,7 +185,11 @@ Required: `DAYTONA_API_KEY`. Sandboxes follow naming pattern `hermes-{task_id}`.
 
 ### Singularity / Apptainer
 
-HPC-friendly containerization.
+HPC-friendly containerization. In v0.23.1 it is the official `singularity` plugin (formerly built into core; `hermes update` installs it for profiles that already use it):
+
+```bash
+hermes plugins install singularity
+```
 
 ```yaml
 terminal:
@@ -196,15 +200,31 @@ terminal:
   container_persistent: true  # Writable overlay persists
 ```
 
-Required: `apptainer` or `singularity` binary in `$PATH`.
+Required: the `singularity` plugin and an `apptainer` or `singularity` binary in `$PATH`.
 
-Scratch directory resolution order:
+Scratch directory resolution order (v0.23.1):
 1. `TERMINAL_SCRATCH_DIR`
-2. `TERMINAL_SANDBOX_DIR/singularity`
-3. `/scratch/$USER/hermes-agent`
-4. `~/.hermes/sandboxes/singularity`
+2. `/scratch/$USER/hermes-agent` when `/scratch` is writable (HPC convention)
+3. `TERMINAL_SANDBOX_DIR/singularity` (default `~/.hermes/sandboxes/singularity`)
 
 Full namespace isolation with `--containall --no-home`.
+
+### Sprites (plugin)
+
+A [Sprite](https://fly.io/sprites) is a stateful cloud sandbox on Fly.io with checkpoint and restore, provided by the `sprites` plugin (NousResearch/hermes-plugin-sprites):
+
+```bash
+hermes plugins install NousResearch/hermes-plugin-sprites --enable
+hermes config set terminal.backend sprites
+```
+
+```yaml
+terminal:
+  backend: sprites
+  container_persistent: true       # Keep the Sprite between sessions (default)
+```
+
+Required: `SPRITES_TOKEN` in `~/.hermes/.env` (created in the organization's Sprites settings in the Fly.io dashboard; `sprite login` alone gives Hermes no token). A persistent Sprite is resumed by name (`hermes-{task_id}` on the default profile, `hermes-{profile}-{task_id}-{digest}` on named profiles); with `container_persistent: false` each run gets a uniquely named Sprite deleted on cleanup. Optional settings under `plugins.entries.sprites.settings`: `name_prefix`, `scope` (`session` or `instance`), `image`, `max_cpus`, `max_ram_gb`, `max_disk_gb`; an invalid value stops the backend from starting and `hermes doctor` names it. Gateway and WebUI sessions each get their own Sprite, `delegate_task` subagents share their parent's, and CLI / cron share the profile's default Sprite. Nothing is synced back to the host.
 
 ## Persistent Shell
 
@@ -260,7 +280,10 @@ compression:
   summary_model: "google/gemini-3-flash-preview"
   summary_provider: "auto"                           # auto, openrouter, nous, codex, main, etc.
   summary_base_url: null                             # Custom OpenAI-compatible endpoint
+  prepare_ahead: false                               # Opt-in (v0.23.1): prepare the next summary in the background near the trigger
 ```
+
+`prepare_ahead` writes the next compaction summary in the background once the session is close to the trigger; if the summarized messages still match when compaction fires, the prepared summary is used (compaction waits for one still being written). It spends an auxiliary call that may go unused, does not apply to manual `/compress`, plugin context engines or native compaction, and switches itself off after the first compaction when a memory provider adds context to summaries.
 
 | `summary_provider` | `summary_base_url` | Result |
 |--------------------|--------------------|--------|
@@ -346,13 +369,6 @@ auxiliary:
     api_key: ""
     timeout: 30
 
-  skills_hub:      # Skill matching and search
-    provider: "auto"
-    model: ""
-    base_url: ""
-    api_key: ""
-    timeout: 30
-
   mcp:             # MCP tool dispatch
     provider: "auto"
     model: ""
@@ -368,7 +384,7 @@ auxiliary:
     timeout: 30
 ```
 
-Provider hierarchy: `base_url` (if set) overrides `provider`. `"auto"` selects best available. Supported providers: `auto`, `openrouter`, `nous`, `codex`, `copilot`, `anthropic`, `main`, `zai`, `kimi-coding`, `minimax`.
+Provider hierarchy: `base_url` (if set) overrides `provider`. `"auto"` selects best available. Supported providers: `auto`, `openrouter`, `nous`, `codex`, `anthropic`, `main`, `zai`, `kimi-coding`, `minimax` (v0.23.1 removes `copilot` / `copilot-acp` from the documented provider list), plus any named custom provider from the `providers:` dict. `fallback_chain` is available on any auxiliary task (`compression`, `vision`, `approval`, `mcp`, ...). Tasks the dashboard does not list are configured here; dashboard slots include `review` and voice chat (see configuring-models.md).
 
 ## Reasoning Effort
 
@@ -466,6 +482,18 @@ STT_OPENAI_BASE_URL=https://api.openai.com/v1
 ```
 
 Fallback chain: `local` → `groq` → `openai` if requested provider is unavailable.
+
+Language hint: the first nonempty of `stt.<provider>.language` -> `stt.language` -> `HERMES_LOCAL_STT_LANGUAGE` wins; a blank value means "continue to the next source", not "force auto-detection". The global default is `stt.language: "en"`, so a blank provider language still resolves to `en`. For auto-detection with local faster-whisper set both blank and remove any `HERMES_LOCAL_STT_LANGUAGE`:
+
+```yaml
+stt:
+  provider: local
+  language: ""
+  local:
+    language: ""
+```
+
+ElevenLabs also accepts `stt.elevenlabs.language_code`. Command backends fall back to `en` for the `{language}` placeholder when nothing resolves, so blank settings do not guarantee auto-detection on a Whisper CLI fallback.
 
 ## Voice Mode (CLI)
 
@@ -584,14 +612,33 @@ Backend is auto-detected from available API keys. Additional options:
 
 ## Browser
 
+Every browser key lives under `browser:` (v0.23.1; see the Browser feature page for browser sources):
+
 ```yaml
 browser:
-  inactivity_timeout: 120     # Seconds before browser context closes
-  command_timeout: 30         # Seconds per browser command
-  record_sessions: false      # Auto-record sessions as WebM
-  camofox:
-    managed_persistence: false
+  inactivity_timeout: 120        # Seconds before an idle browser is closed
+  command_timeout: 30            # Chromium launch timeout floor (seconds)
+  headed: false                  # true = visible Chromium window (local); keeps the browser open between turns
+  engine: auto                   # auto (Chromium) | lightpanda ("chrome" is accepted as auto)
+  # Local Chromium launched by Hermes
+  executable_path: ""            # Chromium binary override; "" = the packaged Chromium
+  user_data_dir: ""              # Persistent profile shared by every session; "" = fresh profile per session
+  chromium_args: []              # Extra Chromium command-line flags, e.g. ["--lang=de-DE"]
+  # Cloud browser selection (written by `hermes tools` -> Browser Automation)
+  cloud_provider: local          # local | browserbase | browser-use | firecrawl | nous | <provider plugin>; unset = autodetect from credentials
+  auto_local_for_private_urls: true  # With a cloud provider, open LAN/localhost URLs in a local Chromium
+                                     # (ignores allow_private_urls; false = refuse them instead)
+  allow_private_urls: false      # Legacy alias of security.allow_private_urls (guards cloud/CDP browsers, not the local Chromium)
+  # Optional CDP override — when set, the browser tools attach to your own
+  # Chromium-family browser (as /browser connect does) instead of launching one.
+  cdp_url: ""
+  use_real_profile: false        # Browse on a managed copy of your real browser profile (opt-in)
+  # Dialog supervisor — how native JS dialogs (alert / confirm / prompt / beforeunload) are handled
+  dialog_policy: must_respond    # must_respond | auto_dismiss | auto_accept
+  dialog_timeout_s: 300          # Safety auto-dismiss under must_respond (seconds)
 ```
+
+Executable resolution: `browser.executable_path` -> the Chromium installed by `hermes pm install chromium` -> `/etc/hermes/chromium-executable-path` (official Docker image) -> a system `chromium` / `chromium-browser` on `PATH`. There is no browser config switch to turn browsing off: disable the `browser` toolset with `hermes tools` (or `hermes tools disable browser [--platform NAME]`). Dialog policies: `must_respond` (default, waits for `browser_dialog(action=...)`, auto-dismissed after `dialog_timeout_s`), `auto_dismiss`, `auto_accept`.
 
 ## Timezone
 
@@ -642,11 +689,11 @@ prompt_caching:
 
 ```yaml
 sessions:
-  auto_prune: true       # default true since v0.22.0; false keeps all history
+  auto_prune: true       # default false in v0.23.1 (opt in); true deletes ended sessions past retention_days
   retention_days: 90     # whole number >= 0
 ```
 
-- Ended sessions inactive for `retention_days` (default 90) are pruned at CLI / gateway / cron startup; pinned and open sessions are never touched. A negative or missing `retention_days` skips the sweep with a warning.
+- With `auto_prune: true`, ended sessions inactive for `retention_days` (default 90) are pruned at CLI / gateway / cron startup; pinned and open sessions are never touched. While `config.yaml` has no `sessions.auto_prune` key, a low-disk prompt (`/autoprune on|off|later`) asks once (see sessions.md). A negative or missing `retention_days` skips the sweep with a warning.
 - Retired in v0.22.0: `session_reset` idle / daily modes. Core ignores legacy `session_reset` settings, reset-policy overrides, and reset-timer environment variables (a config that still sets them logs a warning); `/new` or `/reset` starts a fresh session explicitly. To keep time-based resets, install the catalog plugin that reads the same block: `hermes plugins install hermes-session-reset-policy`.
 - One multiplexed messaging gateway and desktop backend per machine serves all profiles by default; `hermes update` folds existing per-profile gateways into it when nothing conflicts.
 
@@ -677,22 +724,25 @@ Automatic filesystem snapshots before destructive file operations.
 
 ```yaml
 delegation:
+  backend: default   # "default" = the keys below, or a plugin strategy (model_map, profile_routes, ...); settings under delegation.backends.<name>
   model: ""       # Override model for subagents (empty = inherit parent)
   provider: ""    # Override provider (empty = inherit parent)
   base_url: ""    # Direct OpenAI-compatible endpoint (highest precedence)
   api_key: ""     # API key for base_url (falls back to OPENAI_API_KEY)
+  prefix_stagger_seconds: 0   # Prompt-cache warm-up for batches; N (max 60) only caps the wait for the first child's first streamed response; 0 = off
+  gateway_mode: auto          # Gateway sessions: auto | inline | background
 ```
 
-Precedence: `delegation.base_url` → `delegation.provider` → parent provider. Setting only `model` changes the model within the same provider credentials.
+Precedence: `delegation.base_url` → `delegation.provider` → parent provider. Setting only `model` changes the model within the same provider credentials. A strategy backend whose plugin is missing or disabled fails closed: `delegate_task` returns a tool error naming it and the fix (`/delegation default`, or `hermes config set delegation.backend default`). One-shot runs (`hermes chat -q` / `--oneshot`) also run without the `clarify` tool and with a `delegate_task` schema that omits `action` / `subagent_id` / `message`; `skill_manage` stays available there (v0.22.2 docs said it was not offered).
 
 ## Clarify
 
 ```yaml
-clarify:
-  timeout: 120  # Seconds to wait for user clarification response
+agent:
+  clarify_timeout: 90   # Seconds to wait for user clarification response (0 or less = unlimited)
 ```
 
-Controls how long Hermes waits for clarification when ambiguity requires user input.
+Controls how long Hermes waits for clarification when ambiguity requires user input. Canonical key is `agent.clarify_timeout` (v0.23.1 default `90`; v0.22.2 docs said `3600`); a legacy top-level `clarify.timeout` is still honored if set. On timeout the agent continues with `"outcome": "timed_out"`; on a messaging platform, sending any other message instead of an answer cancels the question at once.
 
 ## Context Files (SOUL.md, AGENTS.md)
 
@@ -718,6 +768,69 @@ Defaults:
 - CLI: directory where the command runs
 - Messaging gateway: home directory `~`
 - Docker / Singularity / Modal / SSH: user's home inside container/remote
+
+## Notes
+
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/configuration (pinned to v0.23.1)
+- This page is a condensed digest; the v0.23.1 source is much larger. Only the changes from v0.22.2 are folded in above and below.
+
+### Webapp
+
+The gateway can serve the Desktop workspace in a browser on its own listener (see desktop.md). Off until enabled; restart the gateway after changing (`hermes gateway restart`).
+
+```yaml
+webapp:
+  enabled: false     # true: the gateway serves the Webapp
+  host: 127.0.0.1    # 127.0.0.1, ::1 or localhost; or 0.0.0.0 / :: for other machines (dashboard sign-in required)
+  port: 9120         # fixed, so the browser's address stays the same across gateway restarts
+  public_url: ""     # the https:// address a reverse proxy or tunnel serves the Webapp at (sign-in required)
+```
+
+- `host`: `0.0.0.0` / `::` require a dashboard sign-in provider (without one the gateway serves native clients only and `hermes webapp --status` says why); any other value, another loopback address such as `127.0.0.2` included, keeps the Webapp off. In a container use `0.0.0.0`.
+- `port`: a standalone profile's gateway needs a port other than the default gateway's; Settings -> Web Access -> Start picks the first free port above 9120 no other profile uses and saves it, never replacing a port you set.
+- `public_url`: must be an `http://` or `https://` address with no credentials, query or fragment, else the Webapp stays off; turns on sign-in even on a loopback host. `dashboard.public_url` never applies to the Webapp, but `dashboard.trusted_proxies` does (the Webapp takes `X-Forwarded-*` only from loopback and listed addresses; `*` and `/0` networks are rejected).
+- Native clients (CLI, TUI, Desktop) never sign in to the gateway's own listener.
+
+### Gateway restart drain
+
+```yaml
+agent:
+  restart_drain_timeout: 0          # default: interrupt in-flight chat turns at once
+  cron_drain_timeout: 30            # floor for cron jobs and api_server (/v1) runs
+  restart_after_turn_timeout: 1800  # /restart and `gateway restart`: wait for turns BEFORE stopping
+```
+
+With `0` a restart interrupts a running turn immediately (it settles as interrupted, is never rerun; queued messages behind it run in order on the new gateway). `HERMES_RESTART_DRAIN_TIMEOUT` overrides the config value. The generated systemd unit sizes `TimeoutStopSec` from this value (the larger of `restart_drain_timeout` and `cron_drain_timeout` + 10 s, plus 30 s headroom, at least 60 s): after raising `restart_drain_timeout`, re-run `hermes gateway install`, otherwise systemd SIGKILLs the gateway mid-drain. launchd caps its stop timeout at 60 s.
+
+### Native hosted-room discussion limits
+
+```yaml
+hosted_rooms:
+  discussion:
+    max_rounds: 3      # Default maximum scheduling rounds per discussion
+    max_messages: 10   # Default total visible bot replies across all members
+```
+
+Positive integers only; an invalid value is ignored with a gateway-log warning and the defaults apply. Set in the `config.yaml` of the root Hermes home that holds the room store (beside `shared-state.db`), read once at startup (restart every process sharing the store). Reaching a ceiling pauses the discussion; **Continue** (`groups.continue`) grants one more budget, at most 5 times. Rooms with `routing: auto` make one short JSON model call per unaddressed message via `auxiliary.group_router` (default timeout 20 s).
+
+### Other v0.23 changes
+
+- `runtime.malloc_arena_max: 4` (Linux glibc): the gateway, `hermes serve` and `hermes dashboard` cap malloc arenas at startup; an explicit `MALLOC_ARENA_MAX` or `GLIBC_TUNABLES=glibc.malloc.arena_max=...` takes precedence; `0`, `false` or `null` keeps glibc's default; other platforms ignore it.
+- `terminal.client_env_passthrough: []`: extra non-secret toolchain names (e.g. `GEM_HOME`) a local CLI/TUI session's tools take from the launching shell. The terminal backend list is six built-in backends (`local`, `docker`, `ssh`, `modal`, `daytona`, `vercel_sandbox`) plus plugin backends (`singularity`, `sprites`).
+- Docker backend: with `container_persistent: true` and `docker_mount_cwd_to_workspace: false` (the defaults), sessions in the same profile share its original sandbox, and Desktop working-directory selection creates no separate workspace sandbox; with mounting on, containers are keyed by profile and selected workspace. A named profile's gateway, Desktop, cron and Kanban all use the profile's one sandbox (`profile_<name>-*` under `TERMINAL_SANDBOX_DIR/docker`); older `*_ws_*` and per-profile `default` sandbox directories are kept but unused. On Linux, removing a root container first hands its own sandbox bind-mount files (`/root`, `/workspace`) back to your user and strips setuid/setgid bits and file capabilities there.
+- Scratch directory pruning runs in a background process after startup, ignores hardlinked files when judging idleness, never stops processes Hermes tracks (or the shell that started it), logs to `~/.hermes/logs/scratch-prune.log`, and skips (once, with the removal command logged) entries holding files your user cannot delete.
+- `hermes update` auto-stashes dirty tracked files plus untracked files at paths the update adds; interactive updates ask whether to keep changes before stashing (answering no deletes them); only WhatsApp bridge and Photon sidecar `package-lock.json` diffs are auto-restored.
+- Provider timeouts on AWS Bedrock: the resolved request timeout is the socket read timeout of the boto3 Converse client and the AnthropicBedrock client (connect timeout fixed at botocore's 60 s on Converse, 10 s on AnthropicBedrock; unset keeps a 60 s read on Converse, 900 s on AnthropicBedrock). `agent.stream_max_lifetime` (seconds, default `0` = off) is an opt-in cap on one streaming response's total wall-clock time for Chat Completions and Anthropic Messages streams (not Codex/Responses or Bedrock).
+- `agent.daybreak: false`: on `openai-codex`, `true` requests OpenAI Daybreak (Trusted Access for Cyber) `access_programs.cyber: daybreak_blue` only when the account and model are listed in the Codex catalog; only your own CLI/TUI/Desktop chat turns use it, not messaging, rooms, A2A, ACP, cron or subagents. Desktop shows a **Daybreak** switch next to **Fast** on listed models.
+- `vision.replay_recent_images` (default `3`, `0` = off) re-sends the newest user images on turns rebuilt from the session database. A local `hermes chat` / TUI session served by the gateway resolves `${VAR}` references, `provider_routing` and `prefill_messages_file` when the gateway creates the session. A spill file in `$HERMES_HOME/cache/spillover/` is kept while any session transcript points at it.
+- Tool disabling by toolset is per tool: a listed toolset (e.g. `search`) also removes its tools from an enabled toolset sharing them (`web_search` from `web`); `hermes tools list` and `hermes doctor` flag the loss.
+- Copilot is no longer named in the v0.23.1 docs for the provider setup pointer, auxiliary provider list, delegation provider list or the fast-mode "never receive" list; the page does not say why. The `same_tool_failure` warn-only tool list names `browser_exec` instead of `browser_navigate`.
+
+### Migration (v0.22 -> v0.23)
+
+- Migration (v0.22 -> v0.23): `browser.backend` is removed (`browser_exec` is the only browser path). `backend: off` becomes a notice to disable the `browser` toolset; other values are removed with a note (`camofox` -> the Camofox plugin, `local` -> the packaged Chromium, a cloud name -> `browser.cloud_provider`). `snapshot_threshold`, `record_sessions`, `allow_unsafe_evaluate` and `restrict_evaluate` no longer have any effect; `browser.camofox.*` is read by the Camofox plugin (`hermes plugins install camofox`). `AGENT_BROWSER_*` environment variables are no longer read; on update their values are copied from `.env` into unset keys (`AGENT_BROWSER_EXECUTABLE_PATH` -> `executable_path`, `AGENT_BROWSER_PROFILE` -> `user_data_dir`, `AGENT_BROWSER_ARGS` -> `chromium_args`, `AGENT_BROWSER_HEADED` -> `headed`, `AGENT_BROWSER_ENGINE` -> `engine`; a relative profile path is written as an absolute path with a notice).
+- Migration (v0.22 -> v0.23): the `auxiliary.skills_hub` block is removed from the documented auxiliary config (and from the `fallback_chain` task list); Singularity/Apptainer moved from core to the `singularity` plugin and `terminal.singularity_image` is no longer in the documented `terminal:` block; `sessions.auto_prune` default flipped to `false`; `agent.clarify_timeout` default is `90`.
+- Migration (v0.22 -> v0.23): STT language resolution is documented as "first nonempty string wins" (blank no longer means force auto-detect); v0.22.2 described `stt.language: ""` as restoring auto-detection.
 
 ## Related
 

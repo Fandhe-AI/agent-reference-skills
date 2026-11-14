@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/flexbox
+source: https://reactnative.dev/docs/0.88/flexbox
 ---
 
 # Layout with Flexbox
@@ -69,7 +69,7 @@ export default Flex;
 - Gap properties accept numeric values (in points) or percentage strings (e.g. `'10%'` on the New Architecture). Use `flexWrap` and `alignContent` along with `gap` to add consistent spacing between items.
 - `position: relative`: the element is positioned according to the normal flow of the layout, then offset based on `top`, `right`, `bottom`, `left`; the offset does not affect the position of any sibling or parent elements. `position: absolute`: the element doesn't take part in the normal layout flow and is positioned relative to its containing block.
 - Containing block: if the element has a `position` type of `relative` or `static`, its containing block is its parent. If `absolute`, it is the nearest ancestor with a `position` type other than `static` or with a `transform`. Percentage lengths applied to absolutely positioned elements are calculated relative to the containing block.
-- The 0.87 flexbox page writes LTR/RTL in prose and describes LTR as the default layout direction; the `direction` style values are lowercase `'inherit'` (default, root follows the locale) | `'ltr'` | `'rtl'` (see Layout Props for the full enums).
+- The 0.88 flexbox page writes LTR/RTL in prose and describes LTR as the default layout direction; the `direction` style values are lowercase `'inherit'` (default, root follows the locale) | `'ltr'` | `'rtl'` (see Layout Props for the full enums).
 - Yoga playground for experimenting: https://www.yogalayout.dev/playground. The full list of props that control layout is documented in layout-props.
 
 ## Related

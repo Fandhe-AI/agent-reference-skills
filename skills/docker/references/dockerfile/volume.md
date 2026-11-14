@@ -29,6 +29,29 @@ This results in an image that causes `docker run` to create a new mount point at
 - Changing the volume from within the Dockerfile: if build steps change the data within the volume after it has been declared, those changes are discarded with the legacy builder; with BuildKit the changes are kept.
 - JSON formatting: use double quotes (`"`), not single quotes (`'`).
 - The host directory is declared at container run-time to preserve image portability. You can't mount a host directory from within the Dockerfile; `VOLUME` doesn't support a `host-dir` parameter. Specify the mountpoint when you create or run the container.
+- Source: https://docs.docker.com/reference/dockerfile/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
+
+### VOLUME --unset
+
+> [!NOTE]
+> Not yet available in stable syntax, use [`docker/dockerfile:1-labs`](./parser-directives.md)
+> version.
+
+```dockerfile
+VOLUME --unset ["/data"]
+VOLUME --unset /var/log /var/db
+```
+
+The `--unset` flag removes volumes from the image configuration, including
+volumes inherited from the base image. Trailing and duplicate slashes are
+ignored when comparing paths, so `/data/` matches a volume defined as `/data`.
+Removing a volume that isn't defined is not an error.
+
+```dockerfile
+# syntax=docker/dockerfile:1-labs
+FROM postgres
+VOLUME --unset /var/lib/postgresql/data
+```
 
 ## Related
 

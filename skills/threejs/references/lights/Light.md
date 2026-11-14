@@ -29,6 +29,7 @@ scene.add(light);
 
 | Name | Description |
 |------|-------------|
+| `Light.registerNode( lightNodeClass )` | Static. Registers the node class (`AnalyticLightNode` subclass) that `WebGPURenderer` uses to shade lights of this type |
 | `.dispose()` | Inherited from `Object3D` (r186). Frees GPU-related resources. Call when the light is no longer needed |
 
 ## Notes
@@ -37,6 +38,8 @@ scene.add(light);
 - As of r186, `Light` no longer documents its own `.dispose()`; it is inherited from `Object3D#dispose()` (see [Object3D](../core/Object3D.md)).
 - Always call `.dispose()` when removing a light from the scene to prevent memory leaks.
 - Inherits from `Object3D` — supports `.position`, `.rotation`, `.add()`, etc.
+- Migration (r186 → r187): in `WebGPURenderer`, custom lights are registered with `CustomLight.registerNode( CustomLightNode )` instead of `renderer.library.addLight( CustomLightNode, CustomLight )` (https://github.com/mrdoob/three.js/pull/34622).
+- Source: https://threejs.org/docs/pages/Light.html (three.js r187, `src/lights/Light.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

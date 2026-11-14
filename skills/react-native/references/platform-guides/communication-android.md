@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/communication-android
+source: https://reactnative.dev/docs/0.88/communication-android
 ---
 
 # Communication between native and React Native

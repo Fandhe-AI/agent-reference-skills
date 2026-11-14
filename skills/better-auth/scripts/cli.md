@@ -101,3 +101,11 @@ npx auth@latest info --config ./config/auth.ts
 ```sh
 npx auth@latest secret
 ```
+
+## Run a command without a terminal (CI)
+
+Without an interactive terminal the CLI cannot prompt; pass the answers as flags, such as `--yes` to confirm (source: https://www.better-auth.com/docs/concepts/cli, v1.7.23 docs). When a command cannot continue, it fails and names what it needs.
+
+```sh
+npx auth@latest migrate --yes
+```

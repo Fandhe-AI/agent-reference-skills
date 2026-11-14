@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/strict-typescript-api
+source: https://reactnative.dev/docs/0.88/strict-typescript-api
 ---
 
 # Strict TypeScript API

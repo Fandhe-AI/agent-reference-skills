@@ -225,6 +225,9 @@ export function getUser() {
 - Sharing context between `action` and `loader` only works reliably for document POST requests (SPA submissions use separate POST/GET requests); it always works in `clientMiddleware`/`clientLoader`/`clientAction`
 - Do not rely on route middleware to provide access control for React Server Functions (8.4.0 docs-warning). Server Functions are not inherently associated with a route, and a client can call the same Server Function through a URL with different middleware, so each Server Function must perform all of its own access control checks. Use a route `action` when you want middleware-driven access control
 - `AsyncLocalStorage` is not 100% cross-platform (Node API, though Cloudflare/Bun/Deno support it); React Router's `context` API is the runtime-agnostic alternative
+- Middleware on a protected route or a common ancestor can authenticate and authorize a request before the matched loaders and actions run. Loaders run in parallel and can be requested independently, so parent loaders cannot "protect" child route loaders or actions; each protected loader and action must perform its own checks unless appropriate server middleware enforces them first
+- Attach authorization middleware to the protected route or layout instead of gating checks with literal pathname-prefix comparisons such as `url.pathname.startsWith("/admin")`; literal checks may miss URL encodings that React Router route matching would cover (8.5.1 docs-warning)
+- Source: https://reactrouter.com/how-to/middleware (docs/how-to/middleware.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/how-to/middleware.md)
 
 ## Related
 

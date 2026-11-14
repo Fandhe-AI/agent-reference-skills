@@ -1,6 +1,6 @@
 # アーキテクチャ
 
-Kubb は入力仕様・生成内容・出力構文・出力先を分離した多層パイプラインで API 仕様をコードへ変換する（Kubb 5.11.0 / docs 5.x explanation/architecture に準拠。旧パスから `/docs/5.x/explanation/architecture` へ移動）。
+Kubb は入力仕様・生成内容・出力構文・出力先を分離した多層パイプラインで API 仕様をコードへ変換する（docs 5.x explanation/architecture に準拠。旧パスから `/docs/5.x/explanation/architecture` へ移動）。
 
 ## レイヤー
 
@@ -39,7 +39,7 @@ export default defineConfig({
 
 ## Adapters
 
-adapter は入力固有の詳細（参照・null 許容性・discriminator・format）を解決する。既定の OpenAPI adapter（`@kubb/adapter-oas`）は OpenAPI 2.0 / 3.0 / 3.1 に対応する。カスタム adapter は別の入力形式を同じ AST に変換するため、下流のプラグインはその形式を直接読まない。
+adapter は入力固有の詳細（参照・null 許容性・discriminator・format）を解決する。既定の OpenAPI adapter（`@kubb/adapter-oas`）は OpenAPI 2.0 / 3.0 / 3.1 / 3.2 を読む。3.2 のドキュメントはまだ検証しない。カスタム adapter は別の入力形式を同じ AST に変換するため、下流のプラグインはその形式を直接読まない。
 
 ## AST
 
@@ -55,9 +55,9 @@ Generator は `FileNode` を手動構築するか、コンポーネントとし�
 
 ## Parsers
 
-各 parser は担当する拡張子を持ち、Kubb は emit されたファイルに応じて選択し、生成中にノードを出力して `parse` で最終ソースを組み立てる。既定の parser は `.ts` / `.tsx` / `.md` を扱う。TypeScript parser は `FileNode` の banner・imports・各 source ノードをファイルテキストに出力する。
+各 parser は担当する拡張子を持ち、Kubb は emit されたファイルに応じて選択し、生成中にノードを出力して `parse` で最終ソースを組み立てる。既定の parser は `.ts` / `.js` / `.tsx` / `.jsx` / `.md` / `.markdown` を扱う。TypeScript parser は `FileNode` の banner・imports・各 source ノードをファイルテキストに出力する。
 
-責務の違い: プラグインが emit するファイルと宣言を選び、printer が個々の schema の出力方法を選び、parser がファイルのソーステキストを組み立てる。
+プラグイン・printer・parser はそれぞれ固有の責務を持つ。プラグインが emit するファイルと宣言を選び、printer が個々の schema の出力方法を選び、parser がファイルのソーステキストを組み立てる。
 
 ## Storage
 
@@ -70,6 +70,8 @@ Generator は `FileNode` を手動構築するか、コンポーネントとし�
 ## Notes
 
 - 各レイヤーの詳細は個別ページを参照（Adapter は [adapter-oas.md](../adapters/adapter-oas.md)、Parser は [parser-ts.md](../parsers/parser-ts.md) 等）
+- Source: https://kubb.dev/docs/5.x/explanation/architecture (docs/5.x/explanation/architecture.md of kubb@5.20.0, retrieved 2026-11-14)
+- Migration (5.11 → 5.20): the default parsers now claim `.js` / `.jsx` / `.markdown` in addition to `.ts` / `.tsx` / `.md`, and the OpenAPI adapter reads OpenAPI 3.2 without validating it (docs diff 5.11 → 5.20)
 - 旧版にあった「Integrations and AI」節（`unplugin-kubb` / `kubb mcp`）は 5.x の architecture ページに無い。[unplugin.md](../helpers/unplugin.md) と [cli.md](../helpers/cli.md) を参照
 
 ## Related

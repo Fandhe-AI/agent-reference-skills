@@ -38,7 +38,9 @@ Recovery process overview:
 - Creating the bootable USB drive completely erases its existing contents; back up data beforehand.
 - Use wired USB keyboards for UEFI navigation; some Bluetooth keyboards do not function during this phase.
 - Applies only to Founders Edition hardware.
+- Recovery restores factory state and erases the internal SSD. To repair the installed system or back up files without erasing the SSD, see [System Repair](./boot-repair.md).
 
 ## Related
 
+- [System Repair](./boot-repair.md)
 - [OS and Component Update](./os-and-component-update.md)

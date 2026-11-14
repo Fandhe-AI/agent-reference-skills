@@ -53,7 +53,7 @@ AzureSignTool sign -fd sha256 -kvu https://my-vault.vault.azure.net -kvm -kvc my
 
 ## Related
 
-- [Azure Trusted Signing (Azure Artifact Signing)](./azure-trusted-signing.md)
+- [Azure Artifact Signing (formerly Azure Trusted Signing)](./azure-trusted-signing.md)
 - [SmartScreen Reputation](./smartscreen-reputation.md)
 - [SignTool Sign Command](./signtool-sign.md)
 - [Certificate Types](./certificate-types.md)

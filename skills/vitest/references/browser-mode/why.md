@@ -21,7 +21,7 @@ export default defineConfig({
 - jsdom / happy-dom only simulate a browser environment, which may cause discrepancies with the real one and so false positives or negatives. Browser mode runs tests natively for higher confidence.
 - Drawback, not a drop-in replacement: it does not fully replace standalone end-to-end runners; augment it with WebdriverIO, Cypress or Playwright.
 - Drawback, longer initialization: the provider and browser must be started.
-- Source: https://vitest.dev/guide/browser/why (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/browser/why (Vitest v5.1.0)
 
 ## Related
 

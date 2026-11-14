@@ -76,3 +76,8 @@ sudo usermod -aG sudo <username>
 ```
 
 Run on each node.
+
+## Notes
+
+- The netplan, `ip`, and `ping` commands are from https://docs.nvidia.com/sync/latest/cluster-network-inspection.html (NVIDIA Sync 0.148.0-153, retrieved 2026-11-14).
+- The "Unify user information" commands were taken from an earlier version of the Sync docs (0.117.3-9, retrieved 2026-10-17); the current 0.148.0-153 pages do not list them, so they are not re-verified against the current docs.

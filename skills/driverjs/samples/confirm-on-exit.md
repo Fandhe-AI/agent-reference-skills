@@ -30,3 +30,8 @@ driverObj.drive();
 - `reason` (since 1.10.0) is one of `"done"` (moved past the last step), `"close"` / `"escape"` / `"overlay"` (left early), `"replaced"` (another tour or highlight started), `"api"` (your code called `destroy()`)
 - A `destroy()` called from a hook keeps the reason of the user action that started it (1.10.0), so `onDestroyed` receives `"close"` here, not `"api"`
 - Set `allowClose: false` instead to completely prevent closing until the tour is done
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

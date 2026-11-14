@@ -11,7 +11,7 @@ Capture CPU and allocation profiles for deployed Workers and Durable Objects usi
 CLI (see all options with `cf workers versions profile --help`). Worker CPU profile for 5 seconds:
 
 ```bash
-cf workers versions profile latest \
+cf workers versions profile latest-deployed \
   --worker-id "$WORKER_ID" \
   --duration-ms 5000 \
   --profile-type cpu > worker-cpu.pprof
@@ -20,7 +20,7 @@ cf workers versions profile latest \
 Durable Object heap profile:
 
 ```bash
-cf workers versions profile latest \
+cf workers versions profile latest-deployed \
   --worker-id "$WORKER_ID" \
   --duration-ms 5000 \
   --profile-type heap \
@@ -32,7 +32,7 @@ API, Worker CPU profile:
 
 ```bash
 curl --fail --silent --show-error --request POST \
-  "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/workers/$WORKER_ID/versions/latest/profile" \
+  "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/workers/$WORKER_ID/versions/latest-deployed/profile" \
   --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
   --header "Content-Type: application/json" \
   --data '{
@@ -45,7 +45,7 @@ API, Durable Object heap profile:
 
 ```bash
 curl --fail --silent --show-error --request POST \
-  "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/workers/$WORKER_ID/versions/latest/profile" \
+  "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/workers/$WORKER_ID/versions/latest-deployed/profile" \
   --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
   --header "Content-Type: application/json" \
   --data "{
@@ -92,10 +92,12 @@ API error messages:
 - Traffic is needed before and during capture: capture targets a recently active, already-loaded isolate and does not invoke your code. Log time range and filters do not control capture.
 - Enable source maps first (uploaded by default from Wrangler 4.150.0; earlier set `upload_source_maps` to `true`), otherwise frames reference the minified bundle.
 - Dashboard (Worker): **Workers & Pages** > your Worker > **Observability** > view dropdown *Flamegraph* > **Profile type** CPU or Heap > **Duration (ms)** 1000 to 50000 (default 10000) > **Version** *Latest* or an active-deployment version > **Capture profile**. Durable Object: **Durable Objects** > namespace > instance > **Observability** > *Flamegraph*, same fields.
-- CLI: requires a positional version identifier (`latest`, a UUID, or UUID prefix of at least eight characters) and `--worker-id`. `latest` selects the most recently created version, not necessarily a deployed one. Output is raw binary pprof on stdout. For Durable Objects, `$WORKER_ID` is the Worker that owns the namespace, not a Worker that only calls it through a binding; pass both `--namespace-id` and `--actor-id`.
+- CLI: requires a positional version identifier (`latest-deployed`, a UUID, or UUID prefix of at least eight characters) and `--worker-id`. `latest-deployed` profiles a version in the active deployment; when traffic is split, versions are tried in traffic-share order until one has a loaded isolate. To profile a specific version, use that version's identifier. (The previous revision used `latest`, which selected the most recently created version, not necessarily a deployed one.) Output is raw binary pprof on stdout. For Durable Objects, `$WORKER_ID` is the Worker that owns the namespace, not a Worker that only calls it through a binding; pass both `--namespace-id` and `--actor-id`.
 - API token needs **Workers Scripts Read** permission or the **Content Read-Only** Workers role. The API returns a gzip-compressed pprof profile. The selected version must be loaded and running, with traffic during capture.
 - Flamegraph: callers appear above callees; frame width is proportional to CPU time or allocated memory; not a timeline. Select a frame to focus on its subtree; percentages stay relative to the whole capture. **Download profile** gives the raw pprof file.
 - Capture requests are rate limited; the API returns HTTP `429`. Follow the `Retry-After` header.
+
+- Source: https://developers.cloudflare.com/workers/observability/profiling-in-production/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

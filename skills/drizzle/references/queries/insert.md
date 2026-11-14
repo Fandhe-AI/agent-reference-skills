@@ -104,6 +104,16 @@ const insertedEmployees = await db
 - `on conflict do update` supports a `where` clause both on the conflict target (`targetWhere`) and on the update clause (`setWhere`)
 - `insert ... select` is supported for all dialects via query builder, callback, or `sql` template tag
 
+### rc.5 changes
+
+- Migration (rc.4 → rc.5): `db.insert` accepts an optional explicit column list as trailing arguments (the release notes list it as a workaround for upstream issues #5001 and #5309).
+- Migration (rc.4 → rc.5): in `mssql`, `lateral` (`apply`) and `cross` joins, `insert ... select` and `db.$count` were added, and inserting multiple default-only rows throws an explicit error.
+
+```ts
+db.insert(users, 'name', 'email').values([{ name: 'First', email: 'first@example.com' }, { name: 'Second', email: 'second@example.com' }])
+```
+- Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
+
 ## Related
 
 - [select](./select.md)

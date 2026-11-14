@@ -48,7 +48,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Set up Node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: lts/*
           cache: 'npm'
@@ -72,4 +72,4 @@ jobs:
 
 - For `https://<USERNAME>.github.io/` or a custom domain, `base` is `'/'` (the default, so it can be omitted).
 - In the repository, set Settings -> Pages -> Build and deployment -> Source to GitHub Actions.
-- The workflow is the docs' file `static-deploy-github-pages.yaml` at the v8.3.4 tag; action versions are pinned by commit SHA there.
+- The workflow is the docs' file `static-deploy-github-pages.yaml` at the v8.3.8 tag; action versions are pinned by commit SHA there.

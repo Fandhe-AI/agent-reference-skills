@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/getting-started
+source: https://reactnative.dev/docs/0.88/getting-started
 ---
 
 # Introduction

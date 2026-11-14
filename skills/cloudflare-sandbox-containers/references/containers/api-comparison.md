@@ -2,13 +2,13 @@
 source: https://developers.cloudflare.com/containers/api/, https://developers.cloudflare.com/containers/guides/migrate-to-durable-object-container-api/
 ---
 
-# Choose an API and migrate from the Container class
+# Migrate from the Container class to the Durable Object Container API
 
-Two APIs address the same container runtime: the Durable Object Container API (`ctx.container`, recommended for new applications) and the `Container` class from `@cloudflare/containers` (documented for existing applications).
+A Durable Object controls its container through `ctx.container`. The `@cloudflare/containers` package and its `Container` class are deprecated; this page maps each `Container` helper to the Durable Object Container API and lists the migration steps.
 
 ## Signature / Usage
 
-Starting structure of each API:
+Starting structure of the Durable Object Container API (TypeScript, from the previous version of the official API page, cloudflare-docs `d0995b9`):
 
 ```ts
 import { DurableObject } from "cloudflare:workers";
@@ -30,6 +30,8 @@ export class MyContainer extends DurableObject<Env> {
 }
 ```
 
+The deprecated class-field style it replaces (see container-class.md):
+
 ```ts
 import { Container } from "@cloudflare/containers";
 
@@ -43,26 +45,30 @@ export class MyContainer extends Container {
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| Start and stop | — | — | Direct API: `start()`, `signal()`, `destroy()`. Container class: `start()`, `stop()`, `destroy()`. |
-| Send and proxy traffic | — | — | Direct API: `getTcpPort(port).fetch()` and `.connect()`. Container class: `fetch()` and `containerFetch()`. |
-| Execute another process | — | — | Direct API: `exec()`. Container class: `ctx.container.exec()`. |
-| Check port readiness | — | — | Direct API: `getTcpPort()` in application code. Container class: `startAndWaitForPorts()` and `waitForPort()`. |
-| Handle concurrent starts | — | — | Direct API: coordinate calls to `start()` yourself. Container class: handled by `start()` and `startAndWaitForPorts()`. |
-| Run lifecycle hooks | — | — | Direct API: `monitor()` and application code. Container class: `onStart()`, `onStop()`, `onError()`, `onActivityExpired()`. |
-| Stop inactive containers | — | — | Direct API: `setInactivityTimeout()`. Container class: `sleepAfter` and `onActivityExpired()`. |
-| Schedule callbacks | — | — | Direct API: Durable Object `ctx.storage.setAlarm()`. Container class: `schedule()`. |
+| `start()`, `stop()`, `destroy()` | Container class | — | Replace with `start()`, `signal()` and `destroy()` on `ctx.container`. |
+| `defaultPort`, `fetch()`, `containerFetch()` | Container class | — | Replace with `getTcpPort(port).fetch()` and your own request routing. |
+| `startAndWaitForPorts()`, `waitForPort()` | Container class | — | Replace with a readiness check with `getTcpPort()` in application code. |
+| Concurrent start handling | Container class | — | Use one shared startup promise in the Durable Object. |
+| `envVars`, `entrypoint` | Container class | — | Replace with the `env` and `entrypoint` options of `start()`. |
+| `sleepAfter`, `onActivityExpired()` | Container class | — | Replace with `setInactivityTimeout()`. |
+| `onStart()`, `onStop()`, `onError()` | Container class | — | Replace with application code around `start()` and `monitor()`. |
+| `schedule()` | Container class | — | Replace with Durable Object alarms. |
+| `enableInternet` | Container class | — | Replace with the `enableInternet` option of `start()`. The `Container` class allows Internet access by default. `start()` does not. Pass `enableInternet: true` to keep the old behavior. |
+| `outbound`, `outboundByHost`, `allowedHosts`, `deniedHosts`, `interceptHttps` | Container class | — | Replace with `interceptOutboundHttp()`, `interceptAllOutboundHttp()` and `interceptOutboundHttps()` with a `WorkerEntrypoint` (see outbound-traffic.md). |
+| `getContainer(binding, name)` | Container class | — | Replace with `binding.getByName(name)`. Without a name, `getContainer(binding)` used the name `cf-singleton-container`. |
+| `getRandom(binding, count)` | Container class | — | Replace with ``binding.getByName(`instance-${Math.floor(Math.random() * count)}`)``. Keep the `instance-` prefix to reach the same Durable Objects (see scaling-and-routing.md). |
 
 ## Notes
 
-- Starting a container with the direct API does not mean its ports are ready; use `getTcpPort()` after checking port readiness. The direct API also supports latency-sensitive workloads and applications needing a smaller storage footprint.
-- Migration (Container class to direct API): the implementation can change without replacing the Durable Object. Keep the Worker name, exported class name, binding, image and existing migration tags; changing the base class needs no new Durable Object migration. Keep the same `containers` image unless you intend to change the application.
-- Steps: (1) extend `DurableObject` from `cloudflare:workers`, keeping the class name; (2) replace `start()` with `ctx.container.start()` and `stop()` with `signal()` or `destroy()` (start does not wait for a port); (3) replace `defaultPort`, `containerFetch()` and automatic `fetch()` routing with `getTcpPort(port).fetch()` plus your own routing, checking readiness first; (4) replace `sleepAfter` with `setInactivityTimeout()`, and hooks and `schedule()` with application code, `monitor()` and alarms; (5) test startup, concurrent requests, readiness, idle shutdown, alarm delivery, storage continuity and restart recovery. A container can be briefly unavailable after `stop()` or `destroy()`: retry allocation before checking port readiness. Remove `@cloudflare/containers` only if nothing else imports it.
-- The `Container` class does not support the `durable_object` scheduling policy.
-- The first snippet is TypeScript from the official page; the second shows the class-field style (see container-class.md).
+- Migration (Container class to direct API): the implementation can change without replacing the Durable Object. Keep the Worker name, exported class name, binding, container image and existing migration tags unchanged; changing the TypeScript base class does not require a new Durable Object migration. Keep the same image in the `containers` section of your Wrangler configuration unless you intend to change the container application itself.
+- Steps: (1) change the class to extend `DurableObject` from `cloudflare:workers`, keeping the exported class name; (2) replace `start()` with `ctx.container.start()` (pass `enableInternet: true` if the container needs Internet access) and `stop()` with `signal()` or `destroy()`; do not assume `start()` waits for a port to become ready; (3) replace `defaultPort`, `containerFetch()` and automatic `fetch()` routing with `getTcpPort(port).fetch()` and your own routing, checking port readiness before forwarding; (4) replace `sleepAfter` with `setInactivityTimeout()`, and lifecycle hooks and `schedule()` with application code, `monitor()` and alarms; (5) replace outbound properties and handlers with intercepts that you register each time the container starts; (6) replace `getContainer()` and `getRandom()` with `getByName()` using the same names, so requests reach the existing Durable Objects and their storage; (7) test startup, concurrent requests, readiness, idle shutdown, alarm delivery, storage continuity and recovery after a container restart. A container can be temporarily unavailable after `signal()` or `destroy()`: retry allocation before checking port readiness. Then remove the `ContainerProxy` export and any other imports of `@cloudflare/containers`, and remove the package from your dependencies.
+- The `Container` class does not support the `durable_object` scheduling policy; the policy's own migration is in scheduling-policy.md.
+- The official API overview page now lists only the Durable Object Container API; the former Container class reference page was removed on 2026-11-09. The comparison table of the earlier API overview page (direct API versus class) is superseded by the helper mapping above.
+- Source: https://developers.cloudflare.com/containers/guides/migrate-to-durable-object-container-api/ and https://developers.cloudflare.com/containers/api/ (cloudflare-docs production `34d908a`, fetched 2026-11-14).
 
 ## Related
 
 - [Durable Object Container API](./durable-object-container.md)
-- [Container class](./container-class.md)
+- [Container class (deprecated)](./container-class.md)
 - [Scheduling policy](./scheduling-policy.md)
 - [Execute commands](./execute-commands.md)

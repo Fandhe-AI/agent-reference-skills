@@ -37,7 +37,6 @@ Core variables by group (the source page lists several hundred; per-platform all
 | `XAI_API_KEY` | xAI (Grok) key for chat + TTS + web search |
 | `NVIDIA_API_KEY` | NVIDIA NIM key; `NVIDIA_BASE_URL` can point at a local NIM |
 | `HF_TOKEN` | Hugging Face Inference Providers token |
-| `COPILOT_GITHUB_TOKEN` | GitHub token for Copilot, first priority (then `GH_TOKEN`, then `GITHUB_TOKEN`). Classic `ghp_*` PATs not supported |
 | `AZURE_FOUNDRY_API_KEY` / `AZURE_FOUNDRY_BASE_URL` | Microsoft Foundry / Azure OpenAI. Key not needed when `model.auth_mode: entra_id` |
 | `AWS_REGION` / `AWS_PROFILE` | AWS region / named profile for Bedrock (read by boto3) |
 | `HERMES_MODEL` | Override model at process level (used by the cron scheduler; prefer `config.yaml`) |
@@ -50,6 +49,9 @@ Each provider also has a `<PROVIDER>_BASE_URL` override (for example `GLM_BASE_U
 | Variable | Description |
 |----------|-------------|
 | `HERMES_HOME` | Configuration and user-data home. `~` and `$VAR` are expanded. Defaults to `~/.hermes` (POSIX) or `%LOCALAPPDATA%\hermes` (Windows); official Docker image uses `/opt/data` |
+| `HERMES_CONFIG_BACKEND` | Where the profile's `config.yaml` user layer is read and written: `file` (default, local `config.yaml`) or `remote` (Remote Config). Any other value, or a remote backend that cannot serve config, stops Hermes at startup. Read from the launch environment and `.env`, never from `config.yaml` |
+| `HERMES_CONFIG_REMOTE_URL` | Base URL of the Remote Config plane (default `https://config-config.nousresearch.com`; `https://` only, plain `http://` only to loopback) |
+| `HERMES_CONFIG_INSTANCE_ID` | This agent's id in the Remote Config plane; required with `HERMES_CONFIG_BACKEND=remote` |
 | `HERMES_TIMEZONE` | IANA timezone override (also exported as `TZ` to `execute_code` children on Linux/macOS) |
 | `HERMES_DUMP_REQUESTS` | Dump API request payloads to log files (`true`/`false`) |
 | `HERMES_PREFILL_MESSAGES_FILE` | JSON file of ephemeral prefill messages injected at API-call time |
@@ -62,21 +64,23 @@ Each provider also has a `<PROVIDER>_BASE_URL` override (for example `GLM_BASE_U
 | `SEARXNG_URL` | SearXNG instance URL (keyless self-hosted search) |
 | `BROWSERBASE_API_KEY` / `BROWSERBASE_PROJECT_ID` | Browserbase browser automation |
 | `BROWSER_USE_API_KEY` | Browser Use cloud browser |
-| `BROWSER_CDP_URL` | Chrome DevTools Protocol URL for a local browser (set by `/browser connect`) |
-| `CAMOFOX_URL` | Camofox server address (default `http://localhost:9377`); does not select Camofox as backend |
-| `AGENT_BROWSER_ENGINE` | `auto` (default), `lightpanda`, or `chrome` (same as `browser.engine`) |
+| `BROWSER_CDP_URL` | Chrome DevTools Protocol endpoint the browser tools attach to instead of launching Chromium (set by `/browser connect`; same as `browser.cdp_url`) |
+| `CAMOFOX_*` | Read only by the Camofox plugin (`hermes plugins install camofox`); core Hermes ignores them |
+| `AGENT_BROWSER_*` | No longer read. On update, values in the profile's `.env` are copied into config when the key is unset: `AGENT_BROWSER_EXECUTABLE_PATH` -> `browser.executable_path`, `AGENT_BROWSER_PROFILE` -> `browser.user_data_dir`, `AGENT_BROWSER_ARGS` -> `browser.chromium_args`, `AGENT_BROWSER_HEADED` -> `browser.headed`, `AGENT_BROWSER_ENGINE` -> `browser.engine` |
 | `FAL_KEY` | FAL.ai image generation |
+| `KREA_API_KEY` | Krea API key for Krea 3 and Krea 2 image generation |
 | `GROQ_API_KEY` | Groq Whisper STT |
 | `ELEVENLABS_API_KEY` | ElevenLabs TTS |
 | `GITHUB_TOKEN` | Skills Hub (higher rate limits, publish) and desktop update check (`GH_TOKEN` honoured too) |
 | `HONCHO_API_KEY`, `MEM0_API_KEY`, `HINDSIGHT_API_KEY`, `RETAINDB_API_KEY`, `SUPERMEMORY_API_KEY` | Memory provider keys |
 | `DAYTONA_API_KEY`, `VERCEL_TOKEN` (+ `VERCEL_PROJECT_ID`, `VERCEL_TEAM_ID`) | Cloud sandbox backends |
+| `SPRITES_TOKEN` | Sprites cloud sandboxes, read by the `sprites` plugin |
 
 ### Terminal backend
 
 | Variable | Description |
 |----------|-------------|
-| `TERMINAL_ENV` | Backend: `local`, `docker`, `ssh`, `singularity`, `modal`, `daytona`, `vercel_sandbox` |
+| `TERMINAL_ENV` | Backend: `local`, `docker`, `ssh`, `modal`, `daytona`, `vercel_sandbox`, or a plugin backend (`singularity`, `sprites`) |
 | `TERMINAL_DOCKER_IMAGE` | Docker image (default `nousresearch/hermes-sandbox:desktop`) |
 | `HERMES_DOCKER_BINARY` | Container binary override (e.g. `podman`) |
 | `TERMINAL_DOCKER_VOLUMES` | Extra volume mounts (comma-separated `host:container`) |
@@ -94,7 +98,10 @@ Each platform follows the pattern `<PLATFORM>_*` for credentials, `*_ALLOWED_USE
 |----------|-------------|
 | `TELEGRAM_BOT_TOKEN` | Telegram bot token (from @BotFather) |
 | `TELEGRAM_WEBHOOK_URL` | Public HTTPS URL for webhook mode; `TELEGRAM_WEBHOOK_SECRET` is required whenever it is set (gateway refuses to start without it) |
+| `TELEGRAM_ALLOWED_TOPICS` | Comma-separated forum topic/thread IDs the bot handles; messages from any other group/forum topic are ignored (DMs never filtered; General topic is ID `1`; applied before `TELEGRAM_IGNORED_THREADS`). Same as `telegram.allowed_topics` |
+| `TELEGRAM_FREE_RESPONSE_CHATS` / `TELEGRAM_FREE_RESPONSE_TOPICS` | Chat IDs / `<chat_id>:<thread_id>` pairs where `require_mention` is bypassed (same as `telegram.free_response_chats` / `telegram.free_response_topics`) |
 | `DISCORD_BOT_TOKEN` | Discord bot token |
+| `SLACK_THREAD_FOLLOWUP_SILENCE` | Let a bare silence marker stand on unaddressed Slack channel-thread replies instead of posting the unexpected-silence notice (default `false`) |
 | `SLACK_BOT_TOKEN` / `SLACK_APP_TOKEN` | Slack `xoxb-` / `xapp-` (app token required for Socket Mode) |
 | `WHATSAPP_ENABLED` / `WHATSAPP_MODE` | WhatsApp bridge; mode `bot` or `self-chat` |
 | `SIGNAL_HTTP_URL` / `SIGNAL_ACCOUNT` | signal-cli daemon endpoint / bot number (E.164) |
@@ -118,7 +125,9 @@ Other platform families documented on the page: Google Chat, Twilio SMS, DingTal
 | `HERMES_ACCEPT_HOOKS` | Auto-approve unseen shell hooks (equals `--accept-hooks`) |
 | `HERMES_IGNORE_USER_CONFIG` | Skip `~/.hermes/config.yaml` (equals `--ignore-user-config`) |
 | `HERMES_IGNORE_RULES` | Skip auto-injection of `AGENTS.md`, `SOUL.md`, `.cursorrules`, memory, preloaded skills |
-| `HERMES_SAFE_MODE` | Disable plugin discovery, MCP server loading, shell-hook registration (set by `--safe-mode`) |
+| `HERMES_SAFE_MODE` | Legacy in-process troubleshooting switch: skips plugin discovery, MCP server loading and shell-hook registration for that process. `hermes chat --safe-mode` no longer sets it (the gateway freezes the safe policy into the session and runs it in an isolated worker) |
+| `HERMES_RESTART_DRAIN_TIMEOUT` | Overrides `agent.restart_drain_timeout`: seconds in-flight chat turns may keep running once the gateway stops or restarts before they are interrupted (default `0`, interrupt at once) |
+| `HERMES_ACP_SKIP_CONFIGURED_MCP` | Obsolete: no longer read. `hermes acp` is a viewer of the gateway daemon and never starts `config.yaml` MCP servers itself |
 | `HERMES_API_TIMEOUT` | LLM API call timeout in seconds (default 1800) |
 | `HERMES_STREAM_READ_TIMEOUT` | Streaming socket read timeout (default 120) |
 | `HERMES_STREAM_STALE_TIMEOUT` | Stale stream detection timeout (default 180) |
@@ -156,7 +165,14 @@ Other platform families documented on the page: Google Chat, Twilio SMS, DingTal
 - `AUXILIARY_WEB_EXTRACT_*` variables are obsolete. `HERMES_TOOL_PROGRESS` is ignored (use `display.tool_progress`); `HERMES_HUMAN_DELAY_*` are no longer read (use the `human_delay` config section).
 - `TERMINAL_CWD` and `MESSAGING_CWD` are deprecated in favour of `terminal.cwd` in `config.yaml`.
 - Names on the env writer's denylist (`HERMES_HOME`, `HERMES_YOLO_MODE`, `PATH`, ...) are refused by `hermes config set`.
-- Source: https://hermes-agent.nousresearch.com/docs/reference/environment-variables (pinned to v0.22.2)
+- `HERMES_LOCAL_STT_LANGUAGE` is now only a fallback STT language hint, used when both the provider's own `language` and the global `stt.language` are empty; command backends may apply their own default (`en`).
+- `HERMES_TELEGRAM_TEXT_BATCH_DELAY_SECONDS` is the grace window before flushing Telegram text over 1,024 characters (default `1.5`; shorter text keeps the adaptive 0.18/0.24-second fast paths).
+- `AUXILIARY_WEB_EXTRACT_*`: `web_extract` no longer uses an auxiliary LLM (long pages are truncated deterministically). `HERMES_DESKTOP_DEV_SERVER` / `HERMES_DESKTOP_CDP_PORT` are set by `pnpm run dev` in v0.23 (was `npm run dev`); `HERMES_TUI_DIR` skips the first-launch `pnpm install`. `NOTION_API_KEY` is now listed under the Teams meeting pipeline's Notion sink, not a `notion` skill.
+- Source: https://hermes-agent.nousresearch.com/docs/reference/environment-variables (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+Migration (v0.22 -> v0.23): the GitHub Copilot variables (`COPILOT_GITHUB_TOKEN`, `HERMES_COPILOT_ACP_COMMAND`, `COPILOT_CLI_PATH`, `HERMES_COPILOT_ACP_ARGS`, `COPILOT_ACP_BASE_URL`, `COPILOT_API_BASE_URL`) are no longer in the environment-variable reference; `GH_TOKEN` / `GITHUB_TOKEN` remain as GitHub tokens for Skills Hub, git credentials and update checks. The `CAMOFOX_*` variables are read only by the Camofox plugin, and `AGENT_BROWSER_*` are no longer read (copied into `browser.*` config on update). `HERMES_ACP_SKIP_CONFIGURED_MCP` is obsolete. `singularity` is now a plugin terminal backend.
 
 ## Related
 

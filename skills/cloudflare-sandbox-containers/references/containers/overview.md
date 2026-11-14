@@ -121,7 +121,9 @@ Wrangler configuration (`wrangler.jsonc`; `compatibility_date` is the date the d
 - The Worker snippet is `Adapted from the official docs`: the original did `const { "session-id": sessionId } = await request.json()` and used it as the instance name, which trusts an unverified identity. If you need per-session instances, authenticate the caller first and validate or sign the session ID.
 - `startAndWaitForPort` calls `container.start()` without options, which is valid only with the `default` scheduling policy; with `durable_object` pass `image` and `enableInternet` (see durable-object-container.md).
 - Wrangler `containers` config keys are summarized in wrangler-configuration.md; the cloudflare-wrangler skill owns the full key table.
-- Two APIs exist: the Durable Object Container API (recommended for new applications) and the `Container` class (existing applications). See api-comparison.md.
+- Control containers from a Durable Object with `ctx.container` (the Durable Object Container API).
+- Migration: the `@cloudflare/containers` package and its `Container` class are deprecated; see api-comparison.md.
+- Source: https://developers.cloudflare.com/containers/ and https://developers.cloudflare.com/containers/concepts/ (cloudflare-docs production 34d908a, fetched 2026-11-14).
 
 ## Related
 

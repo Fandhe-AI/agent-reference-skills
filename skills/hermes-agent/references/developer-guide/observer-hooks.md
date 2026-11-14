@@ -25,7 +25,7 @@ Behavior-affecting hooks (other hook returns are ignored):
 
 | Hook | Return behavior |
 |------|-----------------|
-| `pre_llm_call` | String or `{"context": "..."}` injects ephemeral context into the current user message |
+| `pre_llm_call` | String or `{"context": "..."}` injects ephemeral context into the current user message, or `{"action": "block", "message": "..."}` ends the turn before any inference request (the message becomes the reply and the prompt is stored as a withheld placeholder). A callback that raises or times out is skipped, so it never blocks |
 | `pre_tool_call` | `{"action": "block", "message": "..."}` blocks; `{"action": "approve", "message": "...", "rule_key": "..."}` escalates to the human-approval gate; `{"action": "modify", "args": {...}}` shallow-merges into the input arguments (block wins over approve) |
 | `transform_tool_result` | Replacement tool result string after `post_tool_call` |
 | `transform_llm_output` | Replacement final assistant text string |
@@ -48,7 +48,7 @@ Event families:
 
 | Family | Hooks |
 |--------|-------|
-| Session lifecycle | `on_session_start`, `on_session_end` (turn/run scoped), `on_session_finalize`, `on_session_reset` |
+| Session lifecycle | `on_session_start`, `on_session_end` (turn/run scoped), `on_session_finalize`, `on_session_reset`, `on_session_delete` (a session delete or deliberate archive committed; `reason` says which) |
 | Turn-scoped LLM | `pre_llm_call`, `post_llm_call` |
 | Request-scoped API | `pre_api_request`, `post_api_request`, `api_request_error`, `pre_auxiliary_call`, `post_auxiliary_call` |
 | Tool lifecycle | `pre_tool_call`, `post_tool_call`, `transform_tool_result` |
@@ -71,7 +71,7 @@ Event families:
 - Expensive payload construction is gated behind `has_hook(...)`: register only hooks you consume, keep callbacks fast, offload network export.
 - Behavior-changing request/execution wrappers are middleware, not observers. A first-party NeMo Relay shared-metrics path exists that does not need an observability plugin; the official Langfuse catalog plugin is an example consumer.
 - `pre_tool_call` full return contract: https://hermes-agent.nousresearch.com/docs/user-guide/features/hooks#pre_tool_call.
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/observer-hooks (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/observer-hooks (pinned to v0.23.1)
 
 ## Related
 

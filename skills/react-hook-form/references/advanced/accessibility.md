@@ -1,53 +1,208 @@
 # Accessibility (A11y)
 
-Advanced Usage: https://react-hook-form.com/advanced-usage#AccessibilityA11y
+Advanced Usage: https://react-hook-form.com/advanced-usage/accessibility
 
-React Hook Form has support for native form validation, which allows you to validate inputs with your own rules. Since most of us have to build forms with custom designs and layouts, it is our responsibility to make sure those are accessible (A11y). The following example leverages [ARIA](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA).
+React Hook Form validates and tracks errors. Making those errors usable with a keyboard, a screen reader, or magnification is up to your markup. This page covers the patterns that matter most: labels, error descriptions, focus after a failed submission, and testing.
 
 ## Signature / Usage
 
-```javascript
-import { useForm } from "react-hook-form"
+### The essentials for every field
 
-export default function App() {
+```tsx
+<label htmlFor="email">Email</label>
+<p id="email-hint">We only use this to reply to you.</p>
+<input
+  id="email"
+  type="email"
+  autoComplete="email"
+  aria-invalid={!!errors.email}
+  aria-describedby={errors.email ? "email-hint email-error" : "email-hint"}
+  {...register("email", { required: "Enter your email address." })}
+/>
+{errors.email && <p id="email-error">{errors.email.message}</p>}
+```
+
+- **A visible label** connected with `htmlFor` and `id`. Placeholders are not labels.
+- **`aria-invalid`** tells assistive technology the value was rejected.
+- **`aria-describedby`** links hints and the error message, so they are read when the field gets focus. List the hint first, and include the error only while it exists.
+- **`autoComplete`** lets browsers and password managers fill known fields.
+- **Specific messages.** "Enter an email address like name@example.com" helps more than "Invalid email". Don't rely on color alone to show an error.
+- **`noValidate`** on the `<form>` turns off the browser's own error bubbles, so users get one consistent set of messages. React Hook Form still validates.
+
+### Focus after a failed submission
+
+By default, `shouldFocusError: true` moves focus to the first invalid field when `handleSubmit` fails. This works well for short forms. The registered `ref` must reach the focusable element, so forward `field.ref` in [`Controller`](https://react-hook-form.com/docs/usecontroller/controller) components and keep custom inputs' refs attached.
+
+For long forms, an **error summary** at the top is easier to recover from: it tells the user how many problems there are and links to each one. Turn off `shouldFocusError` and move focus to the summary instead.
+
+```tsx
+import { useEffect, useRef } from "react"
+import { useForm, type FieldErrors } from "react-hook-form"
+
+type FormValues = {
+  fullName: string
+  email: string
+  contact: "email" | "phone" | ""
+}
+
+const labels: Record<keyof FormValues, string> = {
+  fullName: "Full name",
+  email: "Email",
+  contact: "Preferred contact",
+}
+
+function ErrorSummary({
+  errors,
+  submitCount,
+}: {
+  errors: FieldErrors<FormValues>
+  submitCount: number
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const entries = (Object.keys(labels) as (keyof FormValues)[]).filter(
+    (name) => errors[name]
+  )
+
+  // Move focus to the summary after each failed submission, but not while
+  // the user is correcting a field.
+  const hasErrors = entries.length > 0
+  useEffect(() => {
+    if (hasErrors) ref.current?.focus()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [submitCount])
+
+  if (!entries.length) return null
+
+  return (
+    <div ref={ref} tabIndex={-1} aria-labelledby="error-summary-title">
+      <h2 id="error-summary-title">There is a problem</h2>
+      <ul>
+        {entries.map((name) => (
+          <li key={name}>
+            <a href={`#${name}`}>{errors[name]?.message}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+export default function ContactForm({
+  onSubmit,
+}: {
+  onSubmit: (values: FormValues) => void
+}) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm()
-  const onSubmit = (data) => console.log(data)
+    formState: { errors, submitCount },
+  } = useForm<FormValues>({
+    defaultValues: { fullName: "", email: "", contact: "" },
+    // The summary takes focus instead of the first invalid field.
+    shouldFocusError: false,
+  })
+
+  // Register every radio in a group with the same rules.
+  const contact = register("contact", {
+    required: "Choose how to contact you.",
+  })
+
+  const describedBy = (name: keyof FormValues, hint?: string) =>
+    [hint, errors[name] && `${name}-error`].filter(Boolean).join(" ") ||
+    undefined
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="name">Name</label>
+    <form noValidate onSubmit={handleSubmit(onSubmit)}>
+      <ErrorSummary errors={errors} submitCount={submitCount} />
 
-      {/* use aria-invalid to indicate that the field contains an error */}
+      <label htmlFor="fullName">{labels.fullName}</label>
       <input
-        id="name"
-        aria-invalid={errors.name ? "true" : "false"}
-        {...register("name", { required: true, maxLength: 30 })}
+        id="fullName"
+        autoComplete="name"
+        aria-invalid={!!errors.fullName}
+        aria-describedby={describedBy("fullName")}
+        {...register("fullName", { required: "Enter your full name." })}
       />
+      {errors.fullName && <p id="fullName-error">{errors.fullName.message}</p>}
 
-      {/* use role="alert" to announce the error message */}
-      {errors.name && errors.name.type === "required" && (
-        <span role="alert">This is required</span>
-      )}
-      {errors.name && errors.name.type === "maxLength" && (
-        <span role="alert">Max length exceeded</span>
-      )}
+      <label htmlFor="email">{labels.email}</label>
+      <p id="email-hint">We only use this to reply to you.</p>
+      <input
+        id="email"
+        type="email"
+        autoComplete="email"
+        aria-invalid={!!errors.email}
+        aria-describedby={describedBy("email", "email-hint")}
+        {...register("email", {
+          required: "Enter your email address.",
+          pattern: {
+            value: /^\S+@\S+\.\S+$/,
+            message: "Enter an email address like name@example.com.",
+          },
+        })}
+      />
+      {errors.email && <p id="email-error">{errors.email.message}</p>}
 
-      <input type="submit" />
+      <fieldset
+        aria-invalid={!!errors.contact}
+        aria-describedby={describedBy("contact")}
+      >
+        <legend>{labels.contact}</legend>
+        <label>
+          <input id="contact" type="radio" value="email" {...contact} />
+          Email
+        </label>
+        <label>
+          <input type="radio" value="phone" {...contact} />
+          Phone
+        </label>
+      </fieldset>
+      {errors.contact && <p id="contact-error">{errors.contact.message}</p>}
+
+      <button type="submit">Send</button>
     </form>
   )
 }
 ```
 
+How it fits together:
+
+- The summary receives focus only when `submitCount` changes, after a failed submission. It does not take focus while the user corrects a field, which would interrupt typing.
+- Each link points at the field's `id`, so activating it moves focus to the field.
+- The summary has `tabIndex={-1}` so it can receive focus from script without becoming a tab stop.
+- Because focus moves to the summary, which is read when it receives focus, the inline messages don't need `role="alert"`. Without a summary, use `role="alert"` on inline messages so each one is announced when it appears.
+
+### Groups of inputs
+
+Wrap radio buttons and related checkboxes in a `<fieldset>` with a `<legend>`. The legend names the group, and screen readers read it with each option. Register every input in the group with the same rules. Rules passed to a later `register` call for the same name replace earlier ones, so a `required` rule on only the first radio is lost. Store the result of one `register` call and spread it onto each input, as the example does.
+
+### Announcing errors
+
+- `role="alert"` announces new content immediately. Use it for a message that appears in response to the user's action, not for every message on the page at once. Ten alerts on submit are hard to follow, which is another reason to use a summary in long forms.
+- Errors from [`mode: "onChange"`](https://react-hook-form.com/docs/useform#mode) appear while the user is still typing. If they are announced as alerts, users hear interruptions. `onBlur` or `onTouched` usually works better for screen reader users.
+- Show server and request errors in an element with `role="alert"`. See [Handling server errors](https://react-hook-form.com/advanced-usage/server-errors).
+
+### Test it
+
+- Query by role and accessible name, such as `getByRole("textbox", { name: "Email" })`, in [your tests](./testing-form.md). If the query fails, the label is missing or not connected.
+- Assert `aria-invalid` and `aria-describedby` after a failed submission, and check `document.activeElement` to verify focus.
+- Use the keyboard only: tab through the form, submit with Enter, and follow the summary links.
+- Try a screen reader, such as VoiceOver on macOS or NVDA on Windows. Announcements vary by browser and screen reader.
+- Run an automated checker, such as axe, to catch missing labels and contrast problems. It cannot judge whether your messages make sense.
+
+### Further reading
+
+- [WAI forms tutorial](https://www.w3.org/WAI/tutorials/forms/)
+- [GOV.UK error summary pattern](https://design-system.service.gov.uk/components/error-summary/)
+- [Error messages](./error-messages.md) for rendering multiple errors per field
+
 ## Notes
 
-- Use `aria-invalid` to indicate that the field contains an error, and `role="alert"` to announce the error message.
-- After this improvement, the screen reader will say: "Name, edit, invalid entry, This is required."
+- Source: https://react-hook-form.com/advanced-usage/accessibility (documentation master c0511c9, fetched 2026-11-14)
+- Discrepancy in the official docs: the radio-group paragraph says rules passed to a later `register` call for the same name replace earlier ones, while `useform-register.md` documents that options for the same field name are merged and omitted rules are kept. The text above is verbatim; prefer the merge behavior documented in `useform-register.md` and, as the page recommends, spread a single `register` result onto every input of the group.
 
 ## Related
 
 - [useform-register](../api/useform-register.md)
+- [error-messages](./error-messages.md)
 - [faqs](../faqs/faqs.md)

@@ -20,3 +20,4 @@
 | TypeScript Example | OpenAPI 仕様から TypeScript 型を生成する設定例。複数の enum スタイル・optional 表記・出力形式を配列形式の config で示す。 | [typescript.md](./typescript.md) |
 | Vue Query Example | OpenAPI 仕様から Vue Query（TanStack Query）のヘルパーを生成する設定例。Fetch クライアントを自動検出し、composables が生成関数を呼ぶ。 | [vue-query.md](./vue-query.md) |
 | Zod Example | OpenAPI 仕様から Zod バリデーションスキーマを生成する設定例。通常の Zod、Zod Mini、ユニオン + readOnly の 3 生成を定義する。 | [zod.md](./zod.md) |
+| Zod Codec Example | OpenAPI 仕様から Zod codec（`inferred: 'codec'` + カスタム `printer.nodes`）を生成し、`@kubb/plugin-fetch` の `validator` で `Date` / `bigint` / `URL` のドメイン値と wire 値を相互変換する設定例。 | [zod-codec.md](./zod-codec.md) |

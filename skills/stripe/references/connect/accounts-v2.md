@@ -7,7 +7,7 @@ Create connected accounts with a unified identity across Stripe. v2 `Account` ob
 ```bash
 curl -X POST https://api.stripe.com/v2/core/accounts \
   -H "Authorization: Bearer <<YOUR_SECRET_KEY>>" \
-  -H "Stripe-Version: 2026-09-30.preview" \
+  -H "Stripe-Version: 2026-10-28.preview" \
   --json '{
     "contact_email": "jenny.rosen@example.com",
     "display_name": "Jenny Rosen",
@@ -80,6 +80,8 @@ Common configurations:
 - Use Global payouts for cross-border payouts.
 - The official example omits `payment_method`; confirming a SetupIntent with `confirm=true` requires one (`pm_card_visa` above is a test PaymentMethod). Alternatively omit `confirm=true` and collect and confirm the payment method on the client.
 - Source: https://docs.stripe.com/connect/accounts-v2 (retrieved 2026-10).
+- Alternative requirements (`2026-10-28.endive`, non-breaking): `requirements.alternatives` and `future_requirements.alternatives` list `options`, each a set of `entries` that can satisfy the `original_entries`; complete any one option in full. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/alternative-requirements-accounts-v2-api, retrieved 2026-11-14)
+- Global Payouts (`2026-10-28.endive`, non-breaking): `configuration.recipient.capabilities.bank_accounts`, `bank_accounts.local` and `cards`, plus `defaults.payout_methods` (a per-currency map to a Payout Method ID). Migrate from `default_outbound_destination` to `defaults.payout_methods`. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/global-payouts-capabilities-accounts-api-v2, retrieved 2026-11-14)
 
 ## Related
 

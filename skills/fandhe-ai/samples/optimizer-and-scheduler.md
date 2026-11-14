@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-ai/0.11.0/source/src/optim.rs
+source: https://docs.rs/crate/fandhe-ai/0.14.0/source/src/optim.rs
 ---
 
 # Optimizer and LR Scheduler
@@ -54,7 +54,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ## Notes
 
-- コードは `src/optim.rs`（0.11.0）の doc-comment 例 3 件を 1 つの `main` にまとめたもの（上流では doctest としてコンパイル検査される）。手動 SGD のループは `training-loop.md` を参照
-- `Rprop` / `Asgd` / `Adafactor` / `Lion` は `compat::Optimizer` enum には結線されておらず、手動ループで `step` を呼ぶ。`ParamGroupStep` を持たない
-- `ExponentialMovingAverage` の `fit_with_callbacks` への結線は `Callback::Ema`。SWA（`AveragedModel` / `SwaLr`）は `Sequential::fit` に結線されず手動ループで `update_named` を呼ぶ
-- この環境では `cargo check` を実行できなかったため、本ページのコンパイル検証は未実施（上流 doctest に依拠）
+- コードは `src/optim.rs`（0.14.0。0.11.0 から doc-comment 例は変わらない）の doc-comment 例 3 件を 1 つの `main` にまとめたもの（上流では doctest としてコンパイル検査される）。手動 SGD のループは `training-loop.md` を参照
+- `Rprop` / `Asgd` / `Adafactor` / `Lion` は `compat::Optimizer` enum には結線されておらず、手動ループで `step` を呼ぶ。`ParamGroupStep` を持たない。0.14.0 の `Optimizer` enum は `Sgd` / `AdamW` / `Adam` / `RmsProp` / `Adagrad` / `Lamb` / `Lbfgs` に加えて `Adadelta` / `Adamax` / `NAdam` / `RAdam` を持つ（後者 4 種は `fandhe_ai::optim` の同名型・`*Config` と対応し、`compile()` に渡せる）
+- `ExponentialMovingAverage` の `fit_with_callbacks` への結線は `Callback::Ema`（`EmaCallback::with_warmup` で減衰率ウォームアップを opt-in できる。`compat-fit-callbacks.md` 参照）。SWA は `Callback::Swa`（`SwaCallback`）で `fit_with_callbacks` に結線される（0.11.0 の `callbacks.rs` には無く、0.14.0 にある）。`AveragedModel` / `SwaLr` を直接使う場合は手動ループで `update_named` を呼ぶ
+- Source: https://docs.rs/crate/fandhe-ai/0.14.0/source/src/optim.rs（0.14.0, 取得日 2026-11-14）

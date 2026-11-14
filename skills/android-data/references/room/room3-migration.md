@@ -82,6 +82,8 @@ val supportDb = roomDatabase.getSupportWrapper()
 - Room 3.0.2 ([Room 3.0.2 release notes](https://developer.android.com/jetpack/androidx/releases/room3#3.0.2), 2026-08-26): suspending queries and `InvalidationTracker` operations throw `IllegalStateException` when called after the database is closed. Fixed a deadlock in `@Transaction` DAO wrapper suspend functions that context-switch when `AndroidSQLiteDriver` is configured.
 - Room 3.0.3 ([Room 3.0.3 release notes](https://developer.android.com/jetpack/androidx/releases/room3#3.0.3), 2026-09-09): fixed an `IllegalMonitorStateException` regression with `@Transaction` wrapper DAO functions. Fixed a corrupted database/connection state when a coroutine is cancelled during a transaction on web and suspending drivers.
 - Room 3.1.0-alpha01 (alpha, not covered by this page) adds `setConnectionPoolTimeout(Duration)` and `AnnotationTarget.PROPERTY` support; see the [Room 3.1.0-alpha01 release notes](https://developer.android.com/jetpack/androidx/releases/room3#3.1.0-alpha01).
+- Room 3.1.0-alpha03 (alpha, 2026-10-21; stable is still 3.0.3): adds `setPreparedStatementCacheSize(maxCacheSize: Int)` (Android) and `allowDataLossOnRecovery()` to `RoomDatabase.Builder`; libraries now target Kotlin 2.2 and require kotlinc 2.2; fixes `@Relation` DAO queries with non-deterministic clauses (e.g. `ORDER BY RANDOM() LIMIT :count`) being re-executed on statement reset. See the [Room 3.1.0-alpha03 release notes](https://developer.android.com/jetpack/androidx/releases/room3#3.1.0-alpha03).
+- Source: https://developer.android.com/jetpack/androidx/releases/room3 (retrieved 2026-11-14)
 - Room 2.x is now in maintenance mode (bug-fix patch releases only); Room 3.0 is where new feature development happens.
 
 ## Related

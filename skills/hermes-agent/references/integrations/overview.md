@@ -15,10 +15,10 @@ If `web.backend` is not set, the backend is auto-detected from whichever API key
 
 | Area | What it covers |
 |------|----------------|
-| AI Providers & Routing | OpenRouter, Anthropic, OpenAI, Google, any OpenAI-compatible endpoint. Provider Routing (OpenRouter sub-provider control) and Fallback Providers (automatic failover, primary and auxiliary) |
+| AI Providers & Routing | OpenRouter, Anthropic, OpenAI, Google, any OpenAI-compatible endpoint. Provider Routing (OpenRouter sub-provider control) and Fallback Providers (automatic failover, primary and independent fallback for auxiliary tasks such as vision, compression, title generation) |
 | Tool Servers (MCP) | Connect external tool servers via Model Context Protocol; stdio and SSE transports, per-server tool filtering |
 | Web Search Backends | `web_search` / `web_extract` backends configured via `config.yaml` or `hermes tools` |
-| Browser Automation | Browser Use Cloud, Browserbase, local Chromium-family CDP (`/browser connect`), local Chromium via the `agent-browser` CLI |
+| Browser Automation | Browser Use Cloud, Browserbase, local Chromium-family CDP (`/browser connect`), headless local Chromium that Hermes launches itself (default); all driven through `browser_exec` (Python over CDP). The Camofox anti-detection browser is a catalog plugin (`hermes plugins install camofox`) |
 | Voice & TTS | Text-to-speech and speech-to-text across all messaging platforms |
 | IDE & Editor | ACP server for VS Code, Zed, JetBrains |
 | Programmatic Access | OpenAI-compatible API Server (Open WebUI, LobeChat, LibreChat, NextChat, ChatBox) |
@@ -69,7 +69,11 @@ Speech-to-text supports eight providers: local faster-whisper (free, on-device),
 - The page recommends Nous Portal first: a single OAuth login covers 300+ models plus the four Tool Gateway tools (web search, image generation, TTS, browser automation).
 - The Web Search table lists seven backends while the prose says eight; the `config.yaml` comment enumerates `firecrawl | searxng | brave-free | ddgs | tavily | perplexity | keenable | exa | parallel | xai`. Treat the comment line as the accepted values.
 - Messaging platforms listed: Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Mattermost, Email, SMS, DingTalk, Feishu/Lark, WeCom, WeCom Callback, Weixin, BlueBubbles, Buzz, QQ Bot, Yuanbao, Home Assistant (plugin), Microsoft Teams, Microsoft Teams Meetings, Microsoft Graph Webhook, Google Chat, LINE, ntfy, SimpleX, Open WebUI, Webhooks.
-- Source: https://hermes-agent.nousresearch.com/docs/integrations (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/integrations (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- Browser Automation: the `agent-browser` CLI backend is replaced by Hermes-launched local Chromium; automation goes through `browser_exec` over CDP.
 
 ## Related
 

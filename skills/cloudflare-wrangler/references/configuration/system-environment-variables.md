@@ -39,9 +39,10 @@ CLOUDFLARE_CF_FETCH_ENABLED=false
 | `WRANGLER_SEND_ERROR_REPORTS` | `boolean` | Default `undefined`. Whether Wrangler may send non-user error reports; if undefined, Wrangler asks each time. |
 | `CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_<BINDING_NAME>` | `string` | Local connection string for Hyperdrive in local development, e.g. `CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_PROD_DB="postgres://user:password@127.0.0.1:5432/testdb"`. |
 | `CLOUDFLARE_API_BASE_URL` | `string` | Default `"https://api.cloudflare.com/client/v4"`. |
+| `CLOUDFLARE_API_HEADERS` | `string` | A JSON object of custom HTTP headers for Cloudflare API requests. Configured values override existing request headers. See Notes. |
 | `WRANGLER_LOG` | `string` | `"none"`, `"error"`, `"warn"`, `"info"`, `"log"`, `"debug"`; case-insensitive; default `"log"`; invalid falls back to default. |
 | `WRANGLER_LOG_PATH` | `string` | File or directory path for debug logs. Ending in `.log` means a single file; otherwise a directory with timestamped files. |
-| `WRANGLER_LOG_SANITIZE` | `boolean` | Default `true`. Sanitize sensitive information (API tokens, emails, account IDs) from console/file logs. |
+| `WRANGLER_LOG_SANITIZE` | `boolean` | Default `true`. Sanitize sensitive information (API tokens, emails, account IDs) from console/file logs. Header values outside the diagnostic allowlist remain redacted, regardless of this setting. |
 | `FORCE_COLOR` | `string` | Set to `0` to disable colorised output. |
 | `WRANGLER_HTTPS_KEY_PATH` | `string` | Custom HTTPS certificate key path for `wrangler dev`, used with `WRANGLER_HTTPS_CERT_PATH`. |
 | `WRANGLER_HTTPS_CERT_PATH` | `string` | Custom HTTPS certificate path for `wrangler dev`, used with `WRANGLER_HTTPS_KEY_PATH`. |
@@ -71,6 +72,17 @@ Other types: `version-upload`, `version-deploy`, `pages-deploy`, `command-failed
 - Adapted from the official docs: the example values above are placeholders; `.env` files can hold real credentials (`CLOUDFLARE_API_TOKEN`), so add `.env*` to `.gitignore` and do not commit them.
 - During local development, `.env` values are also loaded into the Worker's `env` object (e.g. `env.API_HOST`).
 - Deprecated variables: `CF_ACCOUNT_ID`, `CF_API_TOKEN`, `CF_API_KEY`, `CF_EMAIL`, `CF_API_BASE_URL`; use the `CLOUDFLARE_*` equivalents.
+
+### Custom API headers
+
+Set `CLOUDFLARE_API_HEADERS` to a JSON object of HTTP header names and string values, for example `export CLOUDFLARE_API_HEADERS='{"X-Custom-Header":"value"}'` (PowerShell: `$env:CLOUDFLARE_API_HEADERS = '{"X-Custom-Header":"value"}'`), then run your Wrangler or `cf` command. The headers apply to Cloudflare API requests, not to local emulation or OAuth requests. Configured values override existing request headers, including authentication headers. Header names are case-insensitive. Protected headers that cannot be set: `Host`, `Content-Type`, `Content-Encoding`, `Content-Length`, `Connection`, `Transfer-Encoding`, `Upgrade`, `TE`, `Trailer`.
+
+- Source: https://developers.cloudflare.com/workers/wrangler/system-environment-variables/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
+
+### Release-note-only variables (not yet in the official docs page)
+
+- `CLOUDFLARE_AUTH_PROFILE` (wrangler 4.159.0): selects a shared authentication profile; explicit profile arguments take precedence over the variable, followed by directory bindings and the default profile. Source: https://github.com/cloudflare/workers-sdk/releases/tag/wrangler%404.159.0
+- `WRANGLER_CONTAINER_IMAGE_COMPRESSION=zstd` (wrangler 4.157.0): opt in to zstd compression for Wrangler-built container image layers; Docker must use the containerd image store (per the `@cloudflare/vite-plugin` 1.68.0 release note). Source: https://github.com/cloudflare/workers-sdk/releases/tag/wrangler%404.157.0
 
 ## Related
 

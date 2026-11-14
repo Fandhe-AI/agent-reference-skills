@@ -55,10 +55,10 @@ export default defineConfig(() => {
     "@kubb/plugin-mcp": "workspace:*",
     "@kubb/plugin-ts": "workspace:*",
     "@kubb/plugin-zod": "workspace:*",
-    "@modelcontextprotocol/server": "^2.3.1",
-    "axios": "^1.20.0",
+    "@modelcontextprotocol/server": "^2.4.0",
+    "axios": "^1.21.1",
     "kubb": "catalog:",
-    "zod": "^4.6.6"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "typescript": "catalog:"
@@ -68,10 +68,10 @@ export default defineConfig(() => {
 
 ## Notes
 
-- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@5.5.15/examples/mcp — `examples/mcp` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.ts`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
-- Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14, `@kubb/plugin-axios` 5.6.5, `@kubb/plugin-mcp` 5.2.3, `@kubb/plugin-zod` 5.4.12; `@kubb/parser-ts` (no pinned version recorded) and `typescript`: use your project's version
+- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@6.0.1/examples/mcp — `examples/mcp` of kubb-labs/plugins at tag `@kubb/plugin-client@6.0.1` (commit 8e70d907e7bb968e612990f1c8c31347257ac9ee, fetched 2026-11-14) (`kubb.config.ts`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Versions outside the monorepo (the releases published with the pinned tags): `kubb` 5.20.0, `@kubb/adapter-oas` 5.20.0, `@kubb/plugin-ts` 5.5.1, `@kubb/plugin-axios` 6.0.1, `@kubb/plugin-mcp` 5.5.1, `@kubb/plugin-zod` 5.9.1; `@kubb/parser-ts` (no pinned version recorded) and `typescript`: use your project's version
 - The example passes `parsers: [parserTs(), parserTsx()]` explicitly (a custom `parsers` array replaces the default set) and registers `pluginAxios` instead of the v4 `pluginClient({ client: 'fetch' })`. `baseURL` is set on the client plugin, not on `pluginMcp`
-- The package declares `node >=22.12`
+- The package declares `node >=22.22`
 
 ## Related
 

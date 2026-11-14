@@ -19,6 +19,22 @@ Source: https://knip.dev/features/reporters
 
 Usage: `knip --reporter compact`
 
+### Writing to a file
+
+Reporters write to `stdout` by default. Use `--output-file` to write the output of a reporter to a file instead:
+
+```sh
+knip --reporter sarif --output-file knip.sarif
+```
+
+Combine multiple reporters and prefix each path with the reporter name, for example to keep the default report in the terminal while writing a JSON report for other tools:
+
+```sh
+knip --reporter symbols --reporter json --output-file json=knip.json
+```
+
+Reporters without an `--output-file` keep writing to `stdout`. Files are written without ANSI color codes. Parent directories are created if they don't exist.
+
 ### JSON Reporter
 
 ```sh
@@ -67,13 +83,15 @@ knip --cycles --reporter cycles
 ### SARIF Reporter
 
 ```sh
-knip --reporter sarif > knip.sarif
+knip --reporter sarif --output-file knip.sarif
 ```
 
-Upload to GitHub Code Scanning (runs even when Knip exits non-zero):
+Upload to GitHub Code Scanning (runs even when Knip exits non-zero).
+
+Adapted (not in the official docs): `codeql-action/upload-sarif` is pinned to a commit SHA instead of the mutable tag (`@v4`) used upstream.
 
 ```yaml
-- run: pnpm exec knip --reporter sarif > knip.sarif
+- run: pnpm exec knip --reporter sarif --output-file knip.sarif
 - if: always()
   uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee  # v4.39.0
   with:
@@ -108,7 +126,19 @@ Generates Code Climate Report JSON format with `type`, `check_name`, `descriptio
 type Reporter = async (options: ReporterOptions) => void;
 ```
 
-`ReporterOptions` includes: `report`, `issues`, `counters`, `configurationHints`, `cwd`, `isProduction`, `options`.
+`ReporterOptions` includes: `report`, `issues`, `counters`, `configurationHints`, `cwd`, `isProduction`, `isShowProgress`, `options`, `write?`.
+
+Use `options.write` instead of `console.log` to support `--output-file`. It writes to `stdout` by default, and to the file when one is configured. Output from `console.log` is not redirected. Knip always passes `write` to reporters; it is optional in the type so existing code that builds a `ReporterOptions` object keeps compiling:
+
+```typescript
+import type { Reporter } from 'knip';
+
+const reporter: Reporter = function (options) {
+  options.write?.(JSON.stringify(options.counters));
+};
+
+export default reporter;
+```
 
 ```sh
 knip --reporter ./my-reporter.ts
@@ -143,3 +173,4 @@ Supports local files and npm packages. Can be repeated. Can also be set in the K
 ## Notes
 
 - Actions are pinned to full commit SHAs here; the upstream docs reference mutable tags (`@v4`)
+- Source: https://knip.dev/features/reporters (knip@6.45.1 docs, retrieved 2026-11-14)

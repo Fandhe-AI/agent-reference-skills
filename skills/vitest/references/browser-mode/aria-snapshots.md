@@ -63,7 +63,7 @@ Pseudo-attributes: `/url:` (links), `/placeholder:` (only when different from th
 - Hand-edited regex patterns (`/pattern/`) survive `--update`; only mismatched literals are overwritten. Backslashes must be doubled when hand-editing (`/item \\d+/`).
 - Templates use a subset of YAML (scalars, mappings, sequences). Text is whitespace-normalized to a single line. Elements hidden from the accessibility tree (`aria-hidden="true"`, `display: none`) do not appear.
 - `utils.aria` from `vitest/browser` generates / inspects the ARIA tree (see Context API).
-- Source: https://vitest.dev/guide/browser/aria-snapshots (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/browser/aria-snapshots (Vitest v5.1.0)
 
 ## Related
 

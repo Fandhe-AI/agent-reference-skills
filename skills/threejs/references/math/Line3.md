@@ -29,7 +29,7 @@ line.closestPointToPoint(somePoint, true, closest);
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `set(start, end)` | Line3 | Sets start and end |
-| `at(t, target)` | Vector3 | Returns point at `t` (0 = start, 1 = end) |
+| `at(t, target)` | Vector3 | Returns the point along the segment at `t` (0 = start, 1 = end) |
 | `getCenter(target)` | Vector3 | Returns the midpoint |
 | `delta(target)` | Vector3 | Returns `end - start` vector |
 | `distance()` | number | Euclidean length of the segment |

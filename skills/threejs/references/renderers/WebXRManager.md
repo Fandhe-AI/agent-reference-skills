@@ -42,9 +42,9 @@ renderer.xr.getCamera(); // returns ArrayCamera with per-eye views
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `getCamera()` | `ArrayCamera` | Returns the XR camera with per-view sub-cameras for each eye. |
+| `getCamera()` | `ArrayCamera` | Returns the XR camera with per-view sub-cameras for each eye. Its transformation and projection matrix are derived from the first sub camera (e.g. the left eye in a stereo setup). |
 | `getFrame()` | `XRFrame` | Returns the current XR frame (valid only inside animation loop). |
-| `updateCamera(camera)` | void | Manually update XR camera state. Use when `cameraAutoUpdate` is `false`. |
+| `updateCamera(camera)` | void | Manually update XR camera state. Use when `cameraAutoUpdate` is `false`. The XR camera's transformation and projection matrix are derived from the first sub camera. |
 
 ### Controllers
 
@@ -85,6 +85,8 @@ renderer.xr.getCamera(); // returns ArrayCamera with per-eye views
 - Set `renderer.xr.enabled = true` before starting an XR session.
 - Always use `renderer.setAnimationLoop(callback)` instead of `requestAnimationFrame` when XR is enabled.
 - `getController(0)` / `getController(1)` return target-ray spaces; use `getControllerGrip` for attaching virtual objects.
+- Source: https://threejs.org/docs/pages/WebXRManager.html (three.js r187, `src/renderers/webxr/WebXRManager.js`; JSDoc from tag r187 / commit 7e89746)
+- Migration (r186 → r187): the XR camera's transformation and projection matrix are derived from the first sub camera instead of being computed from the left and right cameras (https://github.com/mrdoob/three.js/pull/34275).
 
 ## Related
 

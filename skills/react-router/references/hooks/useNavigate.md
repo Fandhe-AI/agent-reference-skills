@@ -32,7 +32,7 @@ function SomeComponent() {
 | `relative` | `"route" \| "path"` | Control relative routing logic |
 | `preventScrollReset` | `boolean` | Do not scroll to top after navigation (Framework/Data only) |
 | `flushSync` | `boolean` | Wrap DOM updates in `ReactDOM.flushSync` (Framework/Data only) |
-| `viewTransition` | `boolean` | Enable `document.startViewTransition` (Framework/Data only) |
+| `viewTransition` | `boolean` | **Deprecated** (8.5.0). Enable `document.startViewTransition` (Framework/Data only). Use React's `<ViewTransition>` component instead |
 
 ## Notes
 
@@ -41,6 +41,8 @@ function SomeComponent() {
 - In Declarative mode the function returns `void`; in Framework/Data modes it returns `Promise<void>`
 - Available in all modes: Framework, Data, and Declarative
 - `defaultShouldRevalidate` is accepted as a navigate option to skip loader revalidation for one navigation. See [Revalidation Optimization](../how-to/optimize-revalidation.md)
+- The `viewTransition` option is deprecated in favor of React's `<ViewTransition>` component; see [View Transitions](../how-to/view-transitions.md)
+- Source: https://reactrouter.com/api/hooks/useNavigate (docs/api/hooks/useNavigate.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/api/hooks/useNavigate.md)
 
 ## Related
 

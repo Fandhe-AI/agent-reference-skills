@@ -54,6 +54,7 @@ e.File("/", "public/index.html")
 - `echo.MustSubFS` roots an `fs.FS` (e.g. an `embed.FS`) at the correct subdirectory before passing it to `StaticFS`.
 - Since v5.4.0 (v4.16.0): paths with `.`, `..`, or empty segments (such as `/assets//app.js`) return 404. File names with non-default escaping (such as `%2C`, `%40`, or lowercase hex) need `Config.EnablePathUnescapingStaticFiles` (v5) for `Echo#Static` / `Echo#StaticFS`, or `StaticConfig.EnablePathUnescaping` for the middleware. These options decode encoded slashes as well, so do not combine them with route-based access control for subdirectories.
 - A dedicated Static middleware is also available for more advanced serving scenarios (e.g. index files, browsing).
+- Since v5.4.3, a static route-guard bypass involving encoded empty path segments (non-default path-matching or unescaping configurations) is fixed: raw and decoded request paths and wildcard boundaries are validated, and correctly escaped filenames and static prefixes such as `/assets*` are preserved (GHSA-v97q-3xf5-rj74). Source: https://github.com/labstack/echo/releases/tag/v5.4.3 (fetched 2026-11-14).
 
 ## Related
 

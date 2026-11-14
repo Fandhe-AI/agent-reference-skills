@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/statusbar
+source: https://reactnative.dev/docs/0.88/statusbar
 ---
 
 # StatusBar

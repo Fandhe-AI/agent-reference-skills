@@ -38,6 +38,8 @@ class CubeTextureNode extends TextureNode {
 ## Notes
 
 - The UV transform matrix is not applied to cube textures.
+- Source: https://threejs.org/docs/pages/CubeTextureNode.html (three.js r187, `src/nodes/accessors/CubeTextureNode.js`; JSDoc from tag r187 / commit 7e89746)
+- Migration (r186 → r187): `uniformCubeTexture()` creates a non-mergeable uniform cube texture node (https://github.com/mrdoob/three.js/pull/34450).
 
 ## Related
 

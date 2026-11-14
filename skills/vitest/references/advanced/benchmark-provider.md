@@ -79,7 +79,7 @@ Argument (`group`) passed to `provider.run(group)`:
 - Registrations created by `bench.from()` are loaded by Vitest and not passed to the provider.
 - Lifetime: the provider module is imported on first use and its default export cached for the worker lifetime. No separate setup/teardown hooks exist; keep worker-scoped state on the provider object.
 - If using Tinybench in your provider, add it as a direct dependency.
-- Source: Vitest v5.0.5 docs, https://vitest.dev/guide/advanced/benchmark-provider
+- Source: Vitest v5.1.0 docs, https://vitest.dev/guide/advanced/benchmark-provider
 
 ## Related
 

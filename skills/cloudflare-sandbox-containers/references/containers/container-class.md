@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/containers/api/container-class/
 
 # Container class
 
-The `Container` class from `@cloudflare/containers` extends `DurableObject` and wraps the container runtime with routing, readiness checks, lifecycle hooks, and scheduling. It is available only with the `default` scheduling policy.
+DEPRECATED. The `Container` class from `@cloudflare/containers` extends `DurableObject` and wraps the container runtime with routing, readiness checks, lifecycle hooks, and scheduling. It is available only with the `default` scheduling policy.
 
 ## Signature / Usage
 
@@ -277,6 +277,7 @@ export default {
 
 ## Notes
 
+- Deprecated: the `@cloudflare/containers` package is deprecated, and the official Container class reference page (https://developers.cloudflare.com/containers/api/container-class/) was removed from the docs on 2026-11-09 (cloudflare-docs commit `b3a1f52`, "Replace @cloudflare/containers with ctx.container"); the URL no longer serves a docs page. This page is kept as a historical reference for existing code and reflects the official page as of cloudflare-docs `d0995b9` (fetched 2026-11-03). New code and migrations use the Durable Object Container API (durable-object-container.md); the mapping is in api-comparison.md.
 - `Container` does not support applications that use the `durable_object` scheduling policy. For those, use the Durable Object Container API (see durable-object-container.md). Moving an existing application to direct control: replace the `Container` subclass with a plain `DurableObject` and drive `this.ctx.container` yourself (readiness via `getTcpPort()`, hooks via `monitor()`, idle stop via `setInactivityTimeout()`, scheduling via alarms); see [api-comparison.md](./api-comparison.md) for the method mapping and [durable-object-container.md](./durable-object-container.md) for the API.
 - Do not override `alarm()`: the class uses the alarm handler for lifecycle management. Use `schedule()`.
 - If you override `onActivityExpired()` you must call `await this.stop()` or `await this.destroy()`; otherwise the timer renews and the hook fires again on the next expiry and the container never sleeps.

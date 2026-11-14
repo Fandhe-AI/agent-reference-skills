@@ -1,10 +1,10 @@
 ---
-source: https://reactnative.dev/docs/0.87/the-new-architecture/codegen-cli
+source: https://reactnative.dev/docs/0.88/the-new-architecture/codegen-cli
 ---
 
 # Codegen
 
-Commands for running Codegen. Other source: https://reactnative.dev/docs/0.87/the-new-architecture/using-codegen.
+Commands for running Codegen. Other source: https://reactnative.dev/docs/0.88/the-new-architecture/using-codegen.
 
 ## Show Codegen CLI options
 

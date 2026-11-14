@@ -1,12 +1,12 @@
 ---
-source: https://docs.rs/fandhe-ai-backend-cuda/0.11.0/fandhe_ai_backend_cuda/
+source: https://docs.rs/fandhe-ai-backend-cuda/0.14.0/fandhe_ai_backend_cuda/
 ---
 
 # backend-cuda
 
 `tensor-core` の計算グラフノードを NVRTC 経由でコンパイルした CUDA カーネルとして実行するバックエンド。
 
-- crate 名: `fandhe-ai-backend-cuda`（docs.rs `fandhe-ai-backend-cuda/0.11.0`）
+- crate 名: `fandhe-ai-backend-cuda`（docs.rs `fandhe-ai-backend-cuda/0.14.0`）
 - `cudarc` を dynamic-loading 方式の無条件依存として使用し、CUDA toolkit 未インストール環境でもビルドが通る（実行時のみ toolkit を要求）
 
 ## Signature / Usage
@@ -31,6 +31,8 @@ let ops: &dyn BackendOps = &CudaBackendOps;
 | `precision` | GEMM 精度の設定（`CudaGemmPrecision`・TF32 opt-in。facade の `set_cuda_gemm_precision` / `set_cuda_tf32_gemm_enabled` の実体。0.3.0 には無かった） |
 | `placement` | 0.3.0 には無かった公開モジュール |
 | `fused_elementwise` / `fused_elementwise_model` | 融合 elementwise の実行とそのモデル（0.3.0 には無かった） |
+| `linalg` | 0.11.0 → 0.14.0 で追加。GPU 線形代数の内部 opt-in ゲート（`set_gpu_linalg_enabled` / `gpu_linalg_enabled`。既定 OFF で、OFF のときは `BackendError::Unsupported` を返し `Var` 側がホスト f64 参照実装へフォールバックする）と入力検証・ホスト後処理・NVRTC ハンドル（`CudaLinalg`: `solve` / `inv` / `det`、`CudaLinalgFactor`: `cholesky` / `qr` / `eigh`）。facade の `set_cuda_gpu_linalg_enabled` / `cuda_gpu_linalg_enabled` の実体 |
+| `gemm_device_model` / `relu_mask_model` | 0.11.0 → 0.14.0 で追加。`BackendOps::gemm_fp32_strict_into_device` / `gemm_resident_lhs_device`、`relu_backward_mask_device` の GPU 非依存な純関数群（形状・rank・layout の検証、カーネルのホストモデル）。CUDA ドライバに触れないため GPU なしの CI で単体テストが回る |
 
 主要な型・関数:
 
@@ -56,6 +58,7 @@ let ops: &dyn BackendOps = &CudaBackendOps;
 
 ## Notes
 
+- Source: https://docs.rs/fandhe-ai-backend-cuda/0.14.0/fandhe_ai_backend_cuda/（0.14.0, 取得日 2026-11-14）
 - 公式が非サポートと明言する内部 crate。アプリケーションからは `fandhe-ai` 公開 API を使う
 - CUDA C++ / PTX / CUTLASS のプログラミングモデル自体は nvidia-cuda スキルが担当。本ページは fandhe-ai の Rust バックエンド実装（`cudarc` 経由の呼び出し構造）のみを扱う
 - `internal-diagnostics` feature でゲートされた項目（`diagnostics` モジュール・`gemm_variant_selection`・タイル／TMA／stream-K 系の診断型）は公開面に含めず記載しない

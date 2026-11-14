@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/animations
+source: https://reactnative.dev/docs/0.88/animations
 ---
 
 # Animations Basics
@@ -128,5 +128,5 @@ const styles = StyleSheet.create({
 
 - `Animated` exports animatable `View`, `Text`, `Image`, `ScrollView`, `FlatList`, `SectionList`; wrap others with `Animated.createAnimatedComponent()`.
 - Animated updates run without `setState` re-rendering; `useNativeDriver: true` is set in the example.
-- `LayoutAnimation` gives less control than `Animated`. The guarded `setLayoutAnimationEnabledExperimental(true)` call is kept from the 0.87 docs, but it is a no-op on the New Architecture (the only runtime since 0.82); the 0.87 page still says it is required on Android.
+- `LayoutAnimation` gives less control than `Animated`. The guarded `setLayoutAnimationEnabledExperimental(true)` call is kept from the 0.88 docs, but it is a no-op on the New Architecture (the only runtime since 0.82); the 0.88 page still says it is required on Android.
 - This is the React Native `Animated` API, not Motion for React, Jetpack Compose, or SwiftUI animation APIs.

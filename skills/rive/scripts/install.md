@@ -120,4 +120,4 @@ HTML に直接 `<script>` タグで読み込む場合。ビルドツールを使
 <script src="https://unpkg.com/@rive-app/webgl2@2.40.1"></script>
 ```
 
-公式ドキュメントの例は 2.40.1。npm の `latest` は 2026-10-16 時点で 2.44.2。バージョン番号は npm で最新版を確認して置き換える（`npm show @rive-app/webgl2 version`）。GPU Canvas を使う場合は 2.42.0 以降を指定する。samples で使う `stateMachine`（単数形）は 2.41.0 以降が必要で、公式例の 2.40.1 のままでは使えない。
+公式ドキュメントの例は 2.40.1。npm の `latest` は 2026-11-14 時点で 2.50.0（`@rive-app/react-webgl2` は 4.39.0）。バージョン番号は npm で最新版を確認して置き換える（`npm show @rive-app/webgl2 version`）。GPU Canvas を使う場合は 2.42.0 以降を指定する。samples で使う `stateMachine`（単数形）は 2.41.0 以降が必要で、公式例の 2.40.1 のままでは使えない。

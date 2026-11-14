@@ -72,10 +72,10 @@ export default defineConfig([
     "@kubb/plugin-cypress": "workspace:*",
     "@kubb/plugin-ts": "workspace:*",
     "kubb": "catalog:",
-    "react": "^19.3.0"
+    "react": "^19.3.1"
   },
   "devDependencies": {
-    "cypress": "^16.1.1",
+    "cypress": "^16.2.1",
     "typescript": "catalog:"
   }
 }
@@ -83,9 +83,9 @@ export default defineConfig([
 
 ## Notes
 
-- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@5.5.15/examples/cypress — `examples/cypress` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.js`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
-- Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14, `@kubb/plugin-cypress` 5.0.14; `typescript`: use your project's version
-- The package declares `node >=22.12`. `generate` runs `KUBB_DISABLE_TELEMETRY=1 kubb generate`
+- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@6.0.1/examples/cypress — `examples/cypress` of kubb-labs/plugins at tag `@kubb/plugin-client@6.0.1` (commit 8e70d907e7bb968e612990f1c8c31347257ac9ee, fetched 2026-11-14) (`kubb.config.js`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Versions outside the monorepo (the releases published with the pinned tags): `kubb` 5.20.0, `@kubb/adapter-oas` 5.20.0, `@kubb/plugin-ts` 5.5.1, `@kubb/plugin-cypress` 5.3.1; `typescript`: use your project's version
+- The package declares `node >=22.22`. `generate` runs `KUBB_DISABLE_TELEMETRY=1 kubb generate`
 - Replaces the v3/v4 shape (`@kubb/core`, `pluginOas`, `input: { path }`)
 
 ## Related

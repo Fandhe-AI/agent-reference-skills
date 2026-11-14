@@ -83,6 +83,7 @@ const productHints = hints({
 | --- | --- | --- |
 | --driver-hint-color | CSS variable | Beacon color; set on `.driver-hint` or a beacon `className` |
 | --driver-hint-size | CSS variable | Beacon size; set on `.driver-hint` or a beacon `className` |
+| --driver-hint-animation-duration | CSS variable | Duration of one pulse (default `2s`) |
 | beacon.side / align | string | Anchor point on the element's box |
 | beacon.offsetX / offsetY | number | Pixel nudge from the anchor point |
 | beacon.animate | boolean | Pulse on/off |
@@ -93,8 +94,9 @@ const productHints = hints({
 
 ## Notes
 
+- Beacon classes: `.driver-hint` (the `<button>`), `.driver-hint-dot`, `.driver-hint-pulse`, `.driver-hint-hidden` (while its element is scrolled out of view); `.driver-hint-popover` on the popover and `.driver-hint-overlay` on the dimmed page. Defaults: `--driver-hint-size: 24px`, `--driver-hint-color: #818cf8`.
 - Users who prefer reduced motion get the still dot automatically.
-- Source: driver.js 1.10.1 docs (https://driverjs.com/docs/hints#styling).
+- Source: https://driverjs.com/docs/hints#styling (driver.js 1.14.0 docs source, `apps/docs/src/content/guides/hints.mdx` at tag 1.14.0).
 
 ## Related
 

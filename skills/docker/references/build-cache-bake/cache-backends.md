@@ -24,8 +24,8 @@ Backends supported by Buildx:
 | `registry` | Embeds the build cache into a separate image, pushed to a dedicated location separate from the main output. |
 | `local` | Writes the build cache to a local directory on the filesystem. |
 | `gha` | Uploads the build cache to GitHub Actions cache (beta). |
-| `s3` | Uploads the build cache to an AWS S3 bucket (unreleased). |
-| `azblob` | Uploads the build cache to Azure Blob Storage (unreleased). |
+| `s3` | Uploads the build cache to an AWS S3 bucket (experimental). |
+| `azblob` | Uploads the build cache to Azure Blob Storage (experimental). |
 
 Common configuration parameters:
 
@@ -53,6 +53,7 @@ $ docker buildx build --push -t <registry>/<image> \
 ```
 
 - Mode example: `--cache-to type=registry,ref=<registry>/<cache-image>,mode=max`. Compression example: `...,compression=zstd`. OCI example: `...,oci-mediatypes=true,image-manifest=true`.
+- Source: https://docs.docker.com/build/cache/backends/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
 
 ## Related
 

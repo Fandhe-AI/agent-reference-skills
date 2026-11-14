@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/typescript
+source: https://reactnative.dev/docs/0.88/typescript
 ---
 
 # Using TypeScript

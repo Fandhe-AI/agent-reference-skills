@@ -106,6 +106,7 @@ class PrismaMiddleware extends Middleware.BaseMiddleware {
 - Execution order: client middleware (registration order) → function middleware (registration order).
 - `wrapStepHandler` runs on every failed attempt; `wrapStep` runs only after retries are exhausted.
 - Steps inserted via `wrapStep` do not re-trigger the same middleware's `wrapStep` (prevents infinite loops).
+- Experimental (SDK 4.26.0): a middleware class can have a static `functions({ client })` hook that returns functions; `serve()` and `connect()` add them to the app's own unless the app already serves a function with the same ID. Without the middleware registered on the client, nothing is added. `sandboxMiddleware()` uses it to serve the sandbox cleanup function. Source: https://github.com/inngest/inngest-js/releases/tag/inngest@4.26.0 (retrieved 2026-11-14)
 
 ## Related
 

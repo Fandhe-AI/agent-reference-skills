@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | Harnesses overview | What a harness is, how it sits on the Agents SDK runtime, and which harness to choose | [overview.md](./overview.md) |
 | Pi harness | PiHarness: Pi Durable in a Durable Object, sessions, recovery, and Pi extensions (tools, prompt sections, skills) | [pi.md](./pi.md) |
-| OpenCode harness | OpenCodeHarness (experimental): OpenCode 2.0 in a Durable Object with Workers AI, plugins, MCP, and skills | [opencode.md](./opencode.md) |
+| OpenCode harness | OpenCodeHarness: OpenCode 2.0 in a Durable Object with Workers AI, plugins, MCP, and skills | [opencode.md](./opencode.md) |
 | Think overview | @cloudflare/think quick start, runTurn modes, addMessages, Think vs AIChatAgent | [think-overview.md](./think-overview.md) |
 | Think getting started | Step-by-step tutorial: React chat UI, persistent memory, custom tools, hooks | [think-getting-started.md](./think-getting-started.md) |
 | Think configuration | Overridable methods and properties, dynamic configuration, package exports and dependencies | [think-configuration.md](./think-configuration.md) |
@@ -16,3 +16,9 @@
 | Think scheduled tasks and Workflows | getScheduledTasks() DSL and ThinkWorkflow step.prompt() | [think-scheduled-tasks-workflows.md](./think-scheduled-tasks-workflows.md) |
 | Think sub-agent RPC and submissions | chat() streaming, saveMessages, continueLastTurn, abort, and durable submitMessages | [think-sub-agents-submissions.md](./think-sub-agents-submissions.md) |
 | Think durable recovery | chatRecovery budgets, onChatRecovery, interrupted tool repair, context-overflow recovery, stability detection | [think-recovery.md](./think-recovery.md) |
+| Claude Code harness | ContainerHarness (experimental): Claude Code CLI in a Cloudflare Container driven by a Durable Object, `claudeCode()` options, setup, recovery | [claude-code.md](./claude-code.md) |
+| Codex harness | ContainerHarness (experimental): OpenAI Codex CLI in a Cloudflare Container driven by a Durable Object, `codex()` options, setup, recovery | [codex.md](./codex.md) |
+| Build your own harness | Experimental: write a harness as a Lifecycle capability with Sessions / Streams / Tasks or HarnessStore | [build-your-own.md](./build-your-own.md) |
+| Exo | Experimental: Exo runtime Cloudflare adapter (Rust/Wasm in Workers and Durable Objects, Sandboxes), recovery boundaries | [exo.md](./exo.md) |
+| Nanocode | Nanocode SDK (Codex and Claude agents) on Workers: AgentSession Durable Object, submit a turn, recovery, workspaces | [nanocode.md](./nanocode.md) |
+| Self-modifying | Experimental example: an agent edits its own TypeScript loop and tools via Workspace, Worker Bundler and Dynamic Workers | [self-modifying.md](./self-modifying.md) |

@@ -69,6 +69,7 @@ new Raycaster(origin?, direction?, near?, far?)
   uv1: Vector2,            // Secondary UV
   normal: Vector3,         // Interpolated normal
   instanceId?: number      // InstancedMesh instance index
+  batchId?: number         // BatchedMesh instance index
 }
 ```
 

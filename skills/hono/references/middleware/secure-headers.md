@@ -40,6 +40,8 @@ Each option accepts `true` (enable default), `false` (suppress header), or a cus
 - The `NONCE` constant (imported from `hono/secure-headers`) generates a unique per-request value for CSP nonces.
 - Import `SecureHeadersVariables` for type-safe nonce access via `c.get('secureHeadersNonce')`.
 - Be cautious about middleware ordering: later middleware overrides earlier header values for the same header name.
+- `permissionsPolicy` is the option name (the official table previously showed `permissionPolicy`). Serialization examples: `fullscreen: ['self']` gives `fullscreen=(self)`, `bluetooth: ['none']` gives `bluetooth=()`, `camera: false` gives `camera=()`, `microphone: true` gives `microphone=*`, `syncXhr: []` gives `sync-xhr=()`.
+- Source: https://hono.dev/docs/middleware/builtin/secure-headers (honojs/website@20aab4e0, retrieved 2026-11-14)
 
 ## Related
 

@@ -31,7 +31,7 @@ Invocation statuses (**Workers & Pages** > your Worker > **Summary** graph in **
 | Invocation status | Definition | Workers error code | GraphQL field |
 | --- | --- | --- | --- |
 | Success | Worker executed successfully |  | `success` |
-| Client disconnected | HTTP client (that is, the browser) disconnected before the request completed |  | `clientDisconnected` |
+| Client disconnected | The client disconnected or canceled the request before the Worker finished responding. The client can be any application or service, including another Worker or a Pages Function. |  | `clientDisconnected` |
 | Worker threw exception | Worker threw an unhandled JavaScript exception | 1101 | `scriptThrewException` |
 | Exceeded resources | Worker exceeded runtime limits | 1102, 1027 | `exceededResources` |
 | Internal error | Workers runtime encountered an error |  | `internalError` |
@@ -52,6 +52,9 @@ Invocation statuses (**Workers & Pages** > your Worker > **Summary** graph in **
 - Zone analytics aggregate request data for all Workers on routes defined for a zone (dashboard: zone **Workers Analytics** page; last 30 days): Subrequests by cache status, Bandwidth by cache status, Status codes, Total requests (200-level successful, 400 to 500-level failed).
 - GraphQL: see the "Querying Workers Metrics with GraphQL" tutorial (https://developers.cloudflare.com/analytics/graphql-api/tutorials/querying-workers-metrics/).
 - Custom analytics: use Workers Analytics Engine (https://developers.cloudflare.com/analytics/analytics-engine/) for custom business metrics, per-customer analytics, usage-based billing and performance tracking. Writes are non-blocking; query via the SQL API or Grafana. Example: https://developers.cloudflare.com/workers/examples/analytics-engine/.
+- The **Success** request count includes requests that returned a Success or Client Disconnected invocation status, including requests canceled before the client received the full response.
+- A Worker can return HTTP `200` headers and then have its response body canceled; check whether the body finished as well as the HTTP status. When a client disconnects, the runtime may cancel pending subrequests and open streams or connections tied to that request; a Worker called by a subrequest may also report Client Disconnected. This status alone does not tell you which Worker canceled first or whether an exception or resource limit caused it; the official page points to service bindings docs (request cancellation, "Find out why a request was canceled"; see cloudflare-workers).
+- Source: https://developers.cloudflare.com/workers/observability/metrics-and-analytics/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

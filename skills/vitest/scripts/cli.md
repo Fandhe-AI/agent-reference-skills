@@ -132,6 +132,24 @@ vitest run --changed
 vitest run --changed HEAD~1
 ```
 
+## 前回の実行から変更されたファイルに関連するテストのみ実行（v5.1.0、experimental）
+
+```sh
+vitest run --since-last-run
+```
+
+## 前回の実行で失敗したテストのみ実行（v5.1.0）
+
+```sh
+vitest run --last-failed
+```
+
+名前フィルタとの併用:
+
+```sh
+vitest run --last-failed -t login
+```
+
 ## スナップショットの更新
 
 ```sh

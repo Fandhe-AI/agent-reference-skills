@@ -28,8 +28,11 @@ This generates PTX for the virtual architecture `compute_80` and compiles it to 
 - Architecture flags: `-arch`/`-gencode`/`-gpu-code` select the virtual and real architectures to target, with options to emit PTX-only, cubin-only, or both.
 - Separate compilation (`-dc` / `-rdc=true`) enables device code linking across multiple translation units; variables shared across files need `extern` declarations, as in host-side C/C++ separate compilation.
 - Other option categories exposed by `nvcc`: language features, debugging, optimization, link-time optimization (LTO), profiling, fatbin compression, and compiler performance controls (e.g. parallel compilation).
+- Section 5.5 of the CPG (Improving CUDA Compilation Time) is an in-depth guide to strategies and techniques for improving the compile time of CUDA code; see the Improving CUDA Compilation Time page.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/nvcc.html (CPG v13.5, retrieved 2026-11-14)
 
 ## Related
 
 - [The CUDA platform](./cuda-platform.md)
 - [Intro to CUDA C++](./intro-to-cuda-cpp.md)
+- [Improving CUDA Compilation Time](../advanced/appendices/compile-time.md)

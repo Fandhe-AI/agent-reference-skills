@@ -59,6 +59,27 @@ export default defineConfig({
 Options and environment variables:
 - `omitTags` / `PLAYWRIGHT_DOT_OMIT_TAGS` -- whether to omit test tags that are automatically appended to test titles (default `false`)
 
+### Failures Reporter
+
+Prints failures and successful retries as they occur, followed by a summary, without progress output (v1.65).
+
+```bash
+npx playwright test --reporter=failures
+```
+
+```typescript
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  reporter: 'failures',
+});
+```
+
+Use `TestConfig.quiet` to suppress test stdout and stderr. Options and environment variables:
+- `omitTags` / `PLAYWRIGHT_FAILURES_OMIT_TAGS` -- whether to omit test tags appended to test titles (default `false`)
+- `PLAYWRIGHT_FORCE_TTY` -- whether to produce output suitable for a live terminal (default `true` in TTY mode)
+- `FORCE_COLOR` / `NO_COLOR` -- force or disable colored output
+
 ### HTML Reporter
 
 Generates a self-contained web-based report with filtering and drill-down.
@@ -94,6 +115,7 @@ Environment variables:
 - `PLAYWRIGHT_HTML_OPEN` -- override `open` option
 - `PLAYWRIGHT_HTML_OUTPUT_DIR` -- override `outputFolder`
 - `PLAYWRIGHT_HTML_TITLE` -- set report title
+- `PLAYWRIGHT_HTML_ONLY_FAILURES` -- `onlyFailures` (v1.65): see [Report only failures](#report-only-failures)
 - `PLAYWRIGHT_HTML_MERGE_FILES` -- `mergeFiles` (v1.62): if true, tests are grouped by their top-level `test.describe()` title instead of the file they belong to. Supports `true`, `1`, `false`, and `0` (default `false`)
 
 ### Blob Reporter
@@ -122,6 +144,8 @@ Environment variables:
 - `PLAYWRIGHT_BLOB_OUTPUT_DIR`
 - `PLAYWRIGHT_BLOB_OUTPUT_NAME`
 
+Since v1.65 the blob reporter again deletes the content of its output directory before it writes the report (v1.64 kept reports with other names).
+
 ### JSON Reporter
 
 Outputs structured JSON with complete test execution data.
@@ -134,6 +158,7 @@ export default defineConfig({
 
 Environment variables:
 - `PLAYWRIGHT_JSON_OUTPUT_NAME` or `PLAYWRIGHT_JSON_OUTPUT_FILE`
+- `PLAYWRIGHT_JSON_ONLY_FAILURES` -- `onlyFailures` (v1.65): see [Report only failures](#report-only-failures)
 
 ```bash
 PLAYWRIGHT_JSON_OUTPUT_NAME=results.json npx playwright test --reporter=json
@@ -170,6 +195,24 @@ Environment variables:
 - `PLAYWRIGHT_JUNIT_OUTPUT_NAME`
 - `PLAYWRIGHT_JUNIT_STRIP_ANSI`
 - `PLAYWRIGHT_JUNIT_OMIT_TAGS` -- `omitTags`
+- `PLAYWRIGHT_JUNIT_ONLY_FAILURES` -- `onlyFailures` (v1.65): see [Report only failures](#report-only-failures); retains every attempt regardless of `includeRetries`
+
+### Report only failures
+
+Since v1.65 the HTML, JSON and JUnit reporters accept `onlyFailures`. It keeps only tests with unexpected outcomes (including unexpected passes), flaky tests (included even when they pass on retry) and interrupted tests. Every attempt of an included test is retained, including successful retries.
+
+```typescript
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  reporter: [
+    ['failures'],
+    ['html', { onlyFailures: true }],
+  ],
+});
+```
+
+Configure `onlyFailures` independently for each reporter. To use it when merging blob reports, pass the configuration file: `npx playwright merge-reports --config=playwright.config.ts ./blob-report`.
 
 ### Perfetto Reporter
 
@@ -306,6 +349,7 @@ export default MyReporter;
 | `skip(test, reason?)` | Skips a test or every test in a suite. Bodies are not executed and the tests are reported as skipped. |
 | `fixme(test, reason?)` | Marks a test or every test in a suite as fixme. Bodies are not executed and the tests are reported as skipped. |
 | `fail(test, reason?)` | Marks a test or every test in a suite as "should fail"; Playwright runs the tests and ensures they are actually failing. |
+| `mode(suite)` | (v1.65) Returns the execution mode (`"serial"`, `"parallel"` or `"default"`) configured for a suite with `test.describe.configure()`, `test.describe.serial()` or `test.describe.parallel()`. A suite without an explicit mode inherits its parent's mode; project suites use `"parallel"` when `fullyParallel` is enabled and `"default"` otherwise; the root suite uses `"default"`. An explicit `"default"` suite does not inherit `"parallel"`. Can only be called during `preprocess`, and can inspect setup and teardown projects. |
 | `skipSharding()` | Disables Playwright's built-in shard filter for this run, leaving sharding to the reporter (typically by calling `exclude` on out-of-shard tests). |
 
 `reason` is an optional explanation surfaced as the annotation description.
@@ -356,3 +400,10 @@ class MyReporter implements Reporter {
 
 export default MyReporter;
 ```
+
+## Notes
+
+- Since v1.65 the HTML reporter writes to `playwright-report` in the package.json directory, or the current working directory when no package.json is found.
+- Source: https://playwright.dev/docs/release-notes (microsoft/playwright v1.65.1 `docs/src/release-notes-js.md`)
+- Source: https://playwright.dev/docs/test-reporters (microsoft/playwright v1.65.1 `docs/src/test-reporters-js.md`)
+- Source: https://playwright.dev/docs/api/class-testrun (microsoft/playwright v1.65.1 `docs/src/test-reporter-api/class-testrun.md`)

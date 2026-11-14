@@ -16,7 +16,7 @@ hermes [global-options] <command> [subcommand/options]
 | `--profile <name>` | `-p <name>` | Choose an alternate Hermes profile |
 | `--resume <session>` | `-r <session>` | Restore previous session by ID or title |
 | `--continue [name]` | `-c [name]` | Resume most recent matching session |
-| `--worktree` | `-w` | Initialize isolated git worktree for parallel workflows |
+| `--worktree` | `-w` | Initialize isolated git worktree for parallel workflows (v0.23: the classic CLI is a gateway client and refuses it; use `hermes --tui -w`) |
 | `--yolo` | | Suppress dangerous-command approval requests |
 | `--pass-session-id` | | Embed session ID in system prompt |
 | `--tui` | | Launch terminal UI mode |
@@ -64,8 +64,10 @@ Exit codes: `0` turn completed; `2` failed or stopped partway (also usage errors
 | `hermes project` | Named multi-folder workspaces (projects) |
 | `hermes connectors` | List, connect, rename, disconnect hosted connector accounts |
 | `hermes pets` | Browse, install, select petdex animated pets |
-| `hermes import-agent` | Import a Claude Code or Codex CLI setup |
+| `hermes import-agent` | Import an OpenClaw, Claude Code, Codex CLI or Cursor setup (from the `agent-importers` plugin) |
+| `hermes clipboard image` | Write this machine's clipboard image to a file (`--json` for scripts) |
 | `hermes serve` | Headless Hermes backend server (powers desktop and remote backends) |
+| `hermes webapp` | Open the Desktop workspace in a browser, served by the gateway |
 | `hermes pm` | Manage pinned tools, Python environments, diagnostics |
 | `hermes desktop` (alias `gui`) | Build and launch the native Electron desktop app |
 | `hermes auth` | Credential pool administration |
@@ -79,12 +81,12 @@ Exit codes: `0` turn completed; `2` failed or stopped partway (also usage errors
 | `hermes honcho` | Cross-session memory integration |
 | `hermes memory` | External memory provider setup |
 | `hermes acp` | ACP stdio server startup |
-| `hermes mcp` | MCP server configuration/operation |
+| `hermes mcp` | MCP server configuration (running Hermes as an MCP server is the `mcp-serve` plugin) |
 | `hermes plugins` | Plugin management |
 | `hermes tools` | Per-platform tool configuration |
 | `hermes sessions` | Session browsing/export/management |
 | `hermes insights` | Token/cost/activity analytics |
-| `hermes claw` | OpenClaw migration utilities |
+| `hermes claw` | OpenClaw migration (`migrate`, `cleanup`), from the `agent-importers` plugin |
 | `hermes profile` | Multi-instance profile management |
 | `hermes completion` | Shell completion script generation |
 | `hermes version` | Version details display |
@@ -109,7 +111,7 @@ Exit codes: `0` turn completed; `2` failed or stopped partway (also usage errors
 | `hermes hooks` | Shell-script hook inspection and management |
 | `hermes portal` | Nous Portal auth/subscription status |
 | `hermes secrets` | External secret manager integration |
-| `hermes migrate` | Config rewriting for deprecated settings |
+| `hermes migrate` | Import another agent's setup (`migrate grok-bot`, `migrate claude-code`, ... or bare to detect), or rewrite config for retired models and deprecated settings (`migrate xai`) |
 | `hermes slack` | Slack app manifest generation |
 | `hermes computer-use` | Computer Use backend management (macOS) |
 
@@ -128,18 +130,20 @@ hermes chat [options]
 | `--toolsets <csv>` | `-t` | Enable comma-separated toolsets |
 | `--provider <provider>` | | Force specific provider (see values below) |
 | `--skills <name>` | `-s` | Preload skills (repeatable or comma-separated) |
-| `--verbose` | `-v` | Extended output |
+| `--verbose` | `-v` | Extended output (v0.23: refused by the gateway-client classic CLI) |
 | `--quiet` | `-Q` | Suppress UI elements |
 | `--resume <session>` | | Session restoration by ID or title |
-| `--continue [name]` | | Resume most recent matching session |
-| `--worktree` | | Isolated git worktree creation |
+| `--continue [name]` | | Resume most recent matching session; `-c <title> --create-if-missing` creates the titled session when none exists |
+| `--worktree` | | Isolated git worktree creation (v0.23: refused by the gateway-client classic CLI; use `hermes --tui -w`) |
+| `--safe-mode` | | Troubleshooting mode: disable user config, rules/memory injection, plugins, shell hooks, and MCP servers; runs in an isolated worker and needs an explicit `--model` |
+| `--base-url <url>` / `--api-key <key>` | | Explicit OpenAI-compatible endpoint and launch-only key for `--provider custom` (key held in the gateway's memory only, never written to disk) |
 | `--checkpoints` | | Enable filesystem checkpoints |
 | `--yolo` | | Skip approval dialogs |
 | `--pass-session-id` | | Include session ID in prompt |
 | `--source <tag>` | | Session source tag (default: `cli`) |
-| `--max-turns <N>` | | Tool iteration limit (default: 90) |
+| `--max-turns <N>` | | Tool iteration limit (default: 500, or `agent.max_turns` in config; corrected from 90 per the v0.23.1 CLI reference) |
 
-**`--provider` values:** `auto` `openrouter` `nous` `openai-codex` `copilot-acp` `copilot` `anthropic` `huggingface` `zai` `kimi-coding` `minimax` `minimax-cn` `deepseek` `ai-gateway` `opencode-zen` `opencode-go` `kilocode` `alibaba` (and others — run `hermes model` for the full current list)
+**`--provider` values:** `auto` `openrouter` `nous` `openai-codex` `anthropic` `huggingface` `zai` `kimi-coding` `minimax` `minimax-cn` `deepseek` `ai-gateway` `opencode-zen` `opencode-go` `kilocode` `alibaba` (and others — run `hermes model` for the full current list)
 
 ---
 
@@ -170,6 +174,8 @@ hermes gateway <subcommand>
 | Subcommand | Description |
 |------------|-------------|
 | `run` | Execute gateway in foreground |
+| `ensure` | Discover or request a local session runtime without installing a service or replacing an existing owner; emits JSON (see below) |
+| `attach` | Give a local client the gateway's WebSocket URL and one single-use session ticket for this profile; emits JSON (see below) |
 | `start` | Launch installed service |
 | `stop` | Halt service |
 | `restart` | Reload service |
@@ -177,6 +183,17 @@ hermes gateway <subcommand>
 | `install` | Register as user service (systemd/launchd) |
 | `uninstall` | Deregister service |
 | `setup` | Interactive messaging platform configuration |
+
+| Option | Description |
+|--------|-------------|
+| `-y`, `--yes` | On `stop` / `restart`: when the gateway is running chat turns, cron jobs or background delegations, the command lists them and asks `y/N` before interrupting them; `--yes` skips the question, and without a terminal it refuses unless `--yes` is passed (`--interrupt` is an alias) |
+| `--detach` | On `restart`: when no gateway service is installed, start the replacement in the background (as `hermes gateway ensure` does) instead of in the current terminal |
+
+### Local runtime discovery and startup
+
+`hermes gateway ensure [--json] [--timeout 60]` discovers or starts the active profile's session runtime and prints one JSON object (`state`, `reason_code`, and an `endpoint` only once authenticated discovery reports compatible readiness; never tickets or credentials). It waits for an existing or starting owner instead of replacing it and never installs a service. Exit `0` means ready; any other code is a refusal or a deadline, never permission to start a replacement.
+
+`hermes gateway attach [--json] [--start] [--recover] [--timeout 60]` is the attach step for a local client that dials the gateway itself. It prints `ensure`'s JSON plus, once the gateway is attachable, `url` (`ws://127.0.0.1:<port>/api/ws`), `protocol` (`hermes-gateway-v1`), `protocols` and `ticket`. The ticket is single-use, bound to the active profile, and expires 30 seconds after it is minted. A plain call only discovers the gateway; `--start` starts it when none serves the profile; `--recover` discovers first and starts (or replaces an older Hermes's gateway) only when it is not ready.
 
 ---
 
@@ -471,7 +488,7 @@ cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['acp'], explici
 hermes mcp <subcommand>
 ```
 
-MCP (Model Context Protocol) server management and operation.
+MCP (Model Context Protocol) server management. Running Hermes itself as an MCP server moved to the `mcp-serve` plugin (`hermes plugins install mcp-serve`, then `hermes mcp-serve`); `hermes mcp serve` prints that new spelling.
 
 | Subcommand | Alias | Description |
 |------------|-------|-------------|
@@ -479,7 +496,6 @@ MCP (Model Context Protocol) server management and operation.
 | `catalog` | | List Nous-approved MCPs (plain text) |
 | `install <name>` | | Install a catalog entry (e.g. `hermes mcp install deepwiki`) |
 | `login <name>` | | Force re-authentication for an OAuth-based MCP server |
-| `serve [-v]` | | Operate as MCP server |
 | `add <name>` | | Register MCP server (`--url`, `--command`, `--args`, `--auth oauth|header`) |
 | `remove <name>` | `rm` | Deregister server |
 | `list` | `ls` | Display servers |
@@ -499,6 +515,7 @@ hermes plugins [subcommand]
 | (none) | | Interactive curses toggle interface |
 | `install <identifier> [--force]` | | Add plugin (Git URL, owner/repo) |
 | `update <name>` | | Pull latest changes |
+| `update [--yes]` | | With no name: list every installed plugin that has an update, ask `Update all N? [Y/n]`, then update each through the single-plugin path; one failure does not stop the rest (exits 1 if any failed). Without a terminal nothing is updated unless `--yes` is passed |
 | `remove <name>` | `rm`, `uninstall` | Delete plugin |
 | `enable <name>` | | Reactivate disabled plugin |
 | `disable <name>` | | Deactivate without removal |
@@ -535,6 +552,7 @@ hermes sessions <subcommand>
 | `prune` | Delete old sessions |
 | `stats` | Store statistics |
 | `rename <session-id> <title>` | Title assignment |
+| `refresh-prompts [--session ID] [--json]` | Make continuing sessions rebuild their stored system prompt from the current `SOUL.md`, skills and context files on their next turn, keeping history and session ids (`-p/--profile` targets another profile; works with the gateway running; each refreshed session pays one prompt-cache miss) |
 
 ---
 
@@ -554,10 +572,12 @@ hermes insights [--days N] [--source platform]
 ## `hermes claw`
 
 ```bash
-hermes claw migrate [options]
+hermes plugins install agent-importers   # once; the command comes from this official plugin
+hermes claw migrate [options]            # same as: hermes import-agent openclaw [options]
+hermes claw cleanup [--source <path>] [--dry-run] [--yes]
 ```
 
-OpenClaw-to-Hermes migration utility. Reads from `~/.openclaw`, writes to `~/.hermes`.
+OpenClaw-to-Hermes migration utility (from the `agent-importers` plugin). Reads from `~/.openclaw`, writes to `~/.hermes`. `hermes claw cleanup` renames leftover OpenClaw directories to `*.pre-migration` once you have migrated.
 
 | Flag | Description |
 |------|-------------|
@@ -947,10 +967,14 @@ External secret manager integration (Bitwarden currently supported). Pulls API k
 ## `hermes migrate`
 
 ```bash
+hermes migrate                 # find another agent's setup here and offer to import it
+hermes migrate <agent>         # openclaw, claude-code, codex, cursor, grok-bot or openbot
 hermes migrate xai [--apply] [--no-backup]
 ```
 
-Rewrites config for retired models or deprecated settings.
+Bare `hermes migrate` looks for OpenClaw, Claude Code, Codex CLI, Cursor, Grok Bot and OpenBot on this computer and offers to import what it finds. `hermes migrate <agent>` imports from that agent even when nothing is detected: it installs the `agent-importers` plugin from the catalog when missing, then runs `hermes import-agent <agent>` (preview, then confirmation). It takes `--source`, `--dry-run`, `--overwrite` and `-y`; `grok-bot` and `openbot` also take `--activate-routines` and `--bot <name>`; `openclaw` takes `--migrate-secrets`.
+
+The `xai` and `relay` types rewrite config for retired models or deprecated settings (`xai` scans for xAI models retired on May 15, 2026).
 
 | Flag | Description |
 |------|-------------|
@@ -1043,7 +1067,7 @@ Wraps the iron-proxy daemon, a TLS-intercepting proxy that swaps opaque proxy to
 hermes project <create|list|show|add-folder|remove-folder|rename|set-primary|use|archive|restore|bind-board>
 ```
 
-Human-named workspaces spanning multiple folders/repos; anchors desktop session grouping and, bound to a kanban board, gives tasks a worktree + branch convention. State is per-profile.
+Human-named workspaces spanning multiple folders/repos; anchors desktop session grouping, and a kanban task linked to a project (`hermes kanban create --project <slug>`) defaults to a deterministic worktree + branch under the project's primary folder (when it has one). `bind-board` records a kanban board on the project and, when the board exists and the project has a primary folder, points the board's default workdir at it; it does not link the board's tasks to the project. State is per-profile.
 
 ## `hermes import`
 
@@ -1082,10 +1106,42 @@ Petdex animated pets shown in the CLI, TUI, and desktop app; `/hatch` generates 
 ## `hermes import-agent`
 
 ```bash
-hermes import-agent [claude-code|codex] [--source <path>] [--dry-run] [--overwrite] [--yes] [--sync]
+hermes plugins install agent-importers   # once; the command comes from this official plugin
+hermes import-agent [openclaw|claude-code|codex|cursor] [--source <path>] [--dry-run] [--overwrite] [--yes] [--sync]
 ```
 
-Imports a Claude Code (`~/.claude`) or Codex CLI (`~/.codex`) setup: instructions to memory entries, `Bash(...)` rules to `command_allowlist` / `approvals.deny`, MCP servers to `mcp_servers`, skills to `~/.hermes/skills/`. Previews first; credentials are never imported. Each import registers its source in `~/.hermes/import-sync.json`; `--sync` re-imports changed sources.
+Imports an OpenClaw (`~/.openclaw`), Claude Code (`~/.claude`), Codex CLI (`~/.codex`) or Cursor (`~/.cursor`) setup: instructions and rules to memory entries, `Bash(...)` rules to `command_allowlist` / `approvals.deny`, MCP servers to `mcp_servers`, skills to `~/.hermes/skills/`. Previews first; credentials are never imported, except OpenClaw's allowlisted keys with `--migrate-secrets`. Each Claude Code / Codex / Cursor import registers its source in `~/.hermes/import-sync.json`; `--sync` re-imports changed sources. Without the plugin, `hermes import-agent` and `hermes claw` print the install line.
+
+## `hermes webapp`
+
+```bash
+hermes webapp [options]
+```
+
+Opens the Hermes Desktop workspace in a normal browser; the gateway serves it on its own listener when `webapp.enabled` is `true` in the config. The command builds the Webapp bundle when it is out of date, starts the gateway if it is not running, and opens a one-use sign-in link (valid 60 seconds, works once).
+
+| Flag | Description |
+|------|-------------|
+| `--no-open` | Print the one-use link (or, behind the sign-in gate, the address) instead of opening a browser |
+| `--skip-build` | Use the existing `apps/desktop/dist-webapp` as is |
+| `--force-build` | Rebuild the bundle even when its build receipt is current |
+| `--build-only` | Build the bundle and stop |
+| `--status` | Show whether the running gateway serves the Webapp, and at which address |
+| `--sign-out` | Sign out every browser; native apps that signed in on their own stay signed in |
+
+```bash
+hermes config set webapp.enabled true
+hermes gateway restart
+hermes webapp
+```
+
+## `hermes clipboard`
+
+```bash
+hermes clipboard image --out PATH [--json]
+```
+
+Writes the clipboard image to `PATH` using the same extractor as CLI/TUI image paste. It reads only this machine's clipboard and needs no running gateway. Exit codes: `0` written, `1` `no_image`, `3` `no_tool` (no clipboard tool installed), `4` `write_failed`, `2` usage error.
 
 ## `hermes pm`
 
@@ -1093,7 +1149,7 @@ Imports a Claude Code (`~/.claude`) or Codex CLI (`~/.codex`) setup: instruction
 hermes pm doctor | status | repair | install [name] | lock | gc
 ```
 
-Manages pinned tools, Python dependency environments, and diagnostics; does not update the Hermes application itself (see reference/package-management).
+Manages pinned tools, Python dependency environments, and diagnostics; does not update the Hermes application itself (see reference/package-management). v0.23 additions: `pm doctor --repair` removes corrupt uv-cache entries, `pm install --without NAME` / `--extra EXTRA` opt out of or back into optional packages and extras, and `pm environment NAME --extra EXTRA` prepares an isolated side environment and prints its Python path.
 
 ---
 
@@ -1123,6 +1179,20 @@ hermes update [--gateway] [--check] [--plan] [--no-backup] [--backup] [--yes]
 | `--yes`, `-y` | Assume yes for prompts |
 
 Source checkouts of the official repo default to `stable`; forks and mirrors default to `main`. Desktop bundles, Docker, Nix, and Termux packages keep their external update owner. Exit codes: 0 success, 1 pull/install errors, 2 unexpected working-tree changes.
+
+## Notes
+
+- Source: https://hermes-agent.nousresearch.com/docs/reference/cli-commands (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- Migration (v0.22 -> v0.23): `hermes import-agent` and `hermes claw` moved out of core into the official `agent-importers` plugin (`hermes plugins install agent-importers`). `hermes import-agent` now accepts `openclaw` and `cursor` besides `claude-code` / `codex`; `hermes claw migrate` equals `hermes import-agent openclaw`; `hermes claw cleanup` is new.
+- Migration (v0.22 -> v0.23): `hermes mcp serve` was removed; use the `mcp-serve` plugin (`hermes plugins install mcp-serve`, then `hermes mcp-serve`).
+- Migration (v0.22 -> v0.23): the `copilot` and `copilot-acp` values of `--provider` are no longer listed in the CLI reference.
+- Migration (v0.22 -> v0.23): the classic `hermes chat` CLI is a gateway client; options that need an in-process agent (`--image`, `--worktree`/`-w`, `--no-restore-cwd`, `--run-budget`, `--verbose`/`-v`, `--compact`) are refused up front (`Unsupported gateway CLI options: ...`, exit 2). Use `hermes --tui -w` for worktrees.
+- Migration (v0.22 -> v0.23): `hermes chat --safe-mode` runs in an isolated gateway worker, requires an explicit `--model`, and no longer sets `HERMES_SAFE_MODE`.
+- `hermes -z --usage-file`: auxiliary `web_extract` calls are no longer listed among the auxiliary LLM calls reported under `auxiliary`.
+- `hermes pause` / `hermes resume` now also hold interactive CLI, TUI and Desktop turns (they are gateway turns); turns already running finish.
 
 ## Related
 

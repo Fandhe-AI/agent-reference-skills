@@ -11,8 +11,8 @@ user-invocable: false
 
 # Vite
 
-対象バージョン Vite v8.3.4 (GitHub tag `vitejs/vite` `v8.3.4` = npm latest, published 2026-10-08; fetched 2026-10-16)。
-本文の出典は `raw.githubusercontent.com/vitejs/vite/v8.3.4/docs/**`。`main` は 33 commits 先行し docs 8 ファイルが変更されているため使用しない。vite.dev のページと `.md` twin は `main` からデプロイされるため、source URL とアンカー実測にのみ使用している。
+対象バージョン Vite v8.3.8 (GitHub tag `vitejs/vite` `v8.3.8` = npm latest, published 2026-11-11; fetched 2026-11-14)。v8.3.4 から 8.3.5〜8.3.8 は patch のみで、docs の差分 9 ファイルを反映済み。
+本文の出典は `raw.githubusercontent.com/vitejs/vite/v8.3.8/docs/**`。`main` は使用しない（タグ後の docs 変更が混入するため）。vite.dev のページと `.md` twin は `main` からデプロイされるため、source URL とアンカー実測にのみ使用している。
 
 ## ディレクトリ構成
 

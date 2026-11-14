@@ -27,7 +27,7 @@ export const parserText = defineExtension({
 })
 ```
 
-Wire it into the config:
+Add the parser to the config. A `parsers` array replaces the default parsers, so list `parserTs()` and `parserTsx()` again to keep TypeScript output:
 
 ```typescript
 import { defineConfig } from 'kubb/config'
@@ -45,14 +45,15 @@ export default defineConfig({
 
 ## Parser anatomy
 
-`build` returns every field except `name` and `meta`.
+`build` returns every field except `name`, `meta`, and `options`, which the factory fills.
 
 | Property | Type | Required | When called | Purpose |
 | --- | --- | --- | --- | --- |
 | `name` | `string` | Yes | | Unique parser identifier, filled from `meta.name`. Use the output language or format, such as `'typescript'`. |
-| `extNames` | `Array<FileNode['extname']> \| undefined` | Yes | | File extensions this parser handles. `undefined` registers a catch-all fallback. |
+| `extNames` | `Array<FileNode['extname']> \| undefined` | Yes | | File extensions this parser handles. Kubb registers the parser for each one. A parser with `undefined` here is registered for no extension, so `parse` is never called for it. |
 | `parse` | `(file: FileNode) => string` | Yes | After all plugins run | Serializes the file's sources into the final output string. Must return synchronously. |
 | `print` | `(...nodes: TNode[]) => string` | Yes | By plugins, while they generate files | Renders compiler AST nodes to source text. Node type is parser-specific (`ts.Node` for `parserTs`). |
+| `inline` | `InlineLanguage` | No | Before barrels, for inline sources | Finds the names in this language (`replaceIdentifiers`) and makes a definition safe to put where a name was (`wrap`). Files of this parser's extensions can then absorb inline sources. `parserTs` supports it. |
 | `copy` | `(file: FileNode, source: string) => UserFileNode` | No | For each `copy` file | Describes a copied template's raw content as nodes. Kubb prints the result with `parse`. Omit it to write copied files verbatim. |
 
 ## Parser naming convention
@@ -65,8 +66,9 @@ export default defineConfig({
 
 ## Notes
 
-- 出典: https://kubb.dev/docs/5.x/reference/kit/parsers （kubb@5.11.0 の docs/5.x/reference/kit/parsers.md）
-- For TypeScript and JavaScript output use the built-in `@kubb/parser-ts`, added by default when `defineConfig` is imported from the `kubb` package. Build a custom parser only for other languages.
+- Source: https://kubb.dev/docs/5.x/reference/kit/parsers (docs/5.x/reference/kit/parsers.md at kubb@5.20.0, retrieved 2026-11-14)
+- Migration (5.11 → 5.20): `Parser` gains the optional `inline` member, added with inline sources in v5.14.0 (changelog: "Add inline sources ... The parser for the file's extension supplies the language rules through the new `inline` member"). A parser whose `extNames` is `undefined` no longer acts as a catch-all fallback: it is registered for no extension (docs diff 5.11 → 5.20).
+- For TypeScript and JavaScript output use the built-in `@kubb/parser-ts`, added by `defineConfig` from the `kubb` package when the config sets no `parsers`. Build a custom parser only for other languages.
 - `defineParser` is deprecated. Use `defineExtension` with `kind: 'parser'`: rename the call and add `kind: 'parser'`.
 - If two parsers register the same extension, the last one in the `parsers` array wins.
 - When no parser matches a file's extension, Kubb writes the file's source strings joined together.

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/getting-started-without-a-framework
+source: https://reactnative.dev/docs/0.88/getting-started-without-a-framework
 ---
 
 # Get Started Without a Framework

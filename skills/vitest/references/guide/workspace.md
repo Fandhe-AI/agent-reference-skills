@@ -86,7 +86,7 @@ npm run test -- --project e2e
 npm run test -- --project e2e --project unit
 ```
 
-- Vitest 5 (docs at tag `v5.0.5`):
+- Vitest 5 (docs at tag `v5.1.0`):
   - A referenced config file that declares its own `projects` provides those nested projects. Merging a root config that defines `projects` into a project config can fail at startup; merge a shared config instead (as in the `mergeConfig` example above).
   - `sharedViteServer` (default `true`; CLI `--sharedViteServer=false`): inline projects that do not change the Vite config reuse the declaring config's Vite server and transform cache. A project gets its own server when it defines Vite options such as `plugins` or `resolve`, has an `extends` that does not point to the declaring config, or sets test options like `alias`, `browser`, `css`, `deps.moduleDirectories`, `deps.optimizer`, `mode`, or `root`. Referenced config files / directories always get their own server. Plugins in a shared config are instantiated once, so their `config` hooks do not see per-project test options. Debug with `DEBUG=vitest:projects`.
   - The `projects` option is not supported inside an inline project configuration.

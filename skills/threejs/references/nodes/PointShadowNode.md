@@ -29,8 +29,9 @@ class PointShadowNode extends ShadowNode {
 
 ## Notes
 
-- Source: https://threejs.org/docs/pages/PointShadowNode.html (three.js r186, `src/nodes/lighting/PointShadowNode.js`)
+- Source: https://threejs.org/docs/pages/PointShadowNode.html (three.js r187, `src/nodes/lighting/PointShadowNode.js`; JSDoc from tag r187 / commit 7e89746)
 - Inheritance: EventDispatcher > Node > ShadowBaseNode > ShadowNode > PointShadowNode.
+- Migration (r186 → r187): the `PointShadowFilter` TSL function takes `{ depthTexture, bd3D, distance, shadow }` (the distance from the light to the fragment) instead of `dp` (the depth value to compare against) and is called with the builder; the cube shadow depth is derived from the largest absolute component of the direction.
 
 ## Related
 

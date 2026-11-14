@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/network
+source: https://reactnative.dev/docs/0.88/network
 ---
 
 # Networking
@@ -84,11 +84,34 @@ ws.onclose = e => {
 };
 ```
 
-Custom `NSURLSessionConfiguration` on iOS (call early in the application life cycle):
+Custom `NSURLSessionConfiguration` on iOS:
 
 ```objectivec
 #import <React/RCTHTTPRequestHandler.h>
+```
 
+`RCTSetCustomNSURLSessionConfigurationProvider` should be called early in the application life cycle such that it is readily available when needed by React.
+
+For apps using the UIScene lifecycle, call it from `scene:willConnectToSession:options:` before starting React Native:
+
+```objectivec
+- (void)scene:(UIScene *)scene
+    willConnectToSession:(UISceneSession *)session
+                 options:(UISceneConnectionOptions *)connectionOptions
+{
+  RCTSetCustomNSURLSessionConfigurationProvider(^NSURLSessionConfiguration *{
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    // configure the session
+    return configuration;
+  });
+
+  // set up React Native
+}
+```
+
+For apps without the UIScene lifecycle, call it from `application:didFinishLaunchingWithOptions:` before starting React Native:
+
+```objectivec
 -(void)application:(__unused UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
   // set RCTSetCustomNSURLSessionConfigurationProvider
@@ -111,9 +134,10 @@ Custom `NSURLSessionConfiguration` on iOS (call early in the application life cy
 - `XMLHttpRequest` is built into React Native, so third party libraries such as frisbee or axios that depend on it can be used. Caution: the security model for XMLHttpRequest is different than on web as there is no concept of CORS in native apps.
 - Known issues with `fetch` and cookie based authentication: the options `redirect:manual` and `credentials:omit` are currently not working with `fetch`. Having same name headers on Android will result in only the latest one being present. Cookie based authentication is currently unstable. As a minimum on iOS, when redirected through a `302`, if a `Set-Cookie` header is present, the cookie is not set properly; since the redirect cannot be handled manually this might cause infinite requests if the redirect is the result of an expired session.
 - `RCTSetCustomNSURLSessionConfigurationProvider` allows, for example, setting a custom user agent string for all network requests or supplying an ephemeral `NSURLSessionConfiguration`.
-- The 0.87 docs snippet is a legacy-bridge example (`-(void)` delegate method, `_bridge = [[RCTBridge alloc] ...]`); current templates return BOOL from `application:didFinishLaunchingWithOptions:` and start React Native via `RCTReactNativeFactory`, so only the `RCTSetCustomNSURLSessionConfigurationProvider` call (made early, before starting React Native) is the relevant part. The `_bridge` line is kept verbatim from the official page.
-- 0.88: iOS SceneDelegate lifecycle support is added (UIScene lifecycle); with it the startup code moves to a SceneDelegate (the next docs call it from `scene:willConnectToSession:options:`). See the 0.88 release blog. On Android, `fetch` needs `android.permission.INTERNET`, which the community template manifest already declares.
+- The `AppDelegate` snippet (unchanged in the 0.88 docs) is a legacy-bridge example (`-(void)` delegate method, `_bridge = [[RCTBridge alloc] ...]`); current templates return BOOL from `application:didFinishLaunchingWithOptions:` and start React Native via `RCTReactNativeFactory`, so only the `RCTSetCustomNSURLSessionConfigurationProvider` call (made early, before starting React Native) is the relevant part. The `_bridge` line is kept verbatim from the official page.
+- 0.88: iOS SceneDelegate lifecycle support is added (UIScene lifecycle); with it the startup code moves to a SceneDelegate (see the `scene:willConnectToSession:options:` snippet above). See the 0.88 release blog. On Android, `fetch` needs `android.permission.INTERNET`, which the community template manifest already declares.
 - The WebSocket example uses cleartext `ws://` as on the official page; per the ATS / Android API 28 cleartext rules above, use `wss://` in production.
+- Source: https://reactnative.dev/docs/0.88/network (react-native-website commit a459a29, retrieved 2026-11-14)
 
 ## Related
 

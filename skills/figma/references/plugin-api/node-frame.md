@@ -44,6 +44,7 @@ frame.appendChild(rect);
 | `paddingTop/Bottom/Left/Right` | `number` | Inner padding |
 | `clipsContent` | `boolean` | Clip children to frame bounds |
 | `overflowDirection` | `OverflowDirection` | Scrolling direction |
+| `scene3d` | `Scene3d \| null` | (beta, Update 142) Shared 3D rendering context for the children (perspective / `preserve3d`); `null` when none is configured, assign `null` to clear. Also on ComponentNode and InstanceNode (instances inherit the main component's scene until overridden). See [data-types](./data-types.md) |
 
 ### Grid Layout
 

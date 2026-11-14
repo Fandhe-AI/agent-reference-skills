@@ -87,7 +87,19 @@ scroll(controls)
 - `animateLayout` is async and returns `AnimationPlaybackControls` like `animate`.
 - In React, one can crossfade back by removing the new element with `<AnimatePresence>`; there is not yet an equivalent for vanilla JS, so this is not yet possible.
 - Upstream example performs the DOM mutation outside animateLayout(); wrapped here so the shared element transition actually runs.
-- Source: https://motion.dev/docs/layout-animations (fetched 2026-10).
+- Set `mass: "auto"` and a layout spring takes its mass from each element's size, so big elements move with more weight and small ones feel light (added in motion 14.13.0; CHANGELOG: https://github.com/motiondivision/motion/blob/v14.14.0/CHANGELOG.md).
+- Source: https://motion.dev/docs/layout-animations (fetched 2026-11-14).
+
+### Mass from size
+
+```javascript
+animateLayout(update, {
+  type: "spring",
+  visualDuration: 0.4,
+  bounce: 0.2,
+  mass: "auto"
+})
+```
 
 ## Related
 

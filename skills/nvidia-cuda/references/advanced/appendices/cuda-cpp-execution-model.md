@@ -25,6 +25,7 @@ int main() {
 
 - Dependencies created through CUDA streams, events, and kernel launch ordering are what let host code rely on device threads eventually completing — `cudaDeviceSynchronize()` in the example above guarantees the launched kernel's threads (and their `__syncthreads()`) have progressed to completion before returning.
 - Because device threads' progress guarantee is scoped to the thread-block cluster, code must not assume a thread in one block progresses independently of threads in other blocks within the same cluster — this interacts with cluster-scoped synchronization primitives (`cuda::barrier` at cluster scope, cluster launch control).
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/cuda-cpp-execution-model.html (CPG v13.5, retrieved 2026-11-14; text identical to v13.4.2 apart from chapter renumbering)
 
 ## Related
 

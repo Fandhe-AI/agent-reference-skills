@@ -45,7 +45,7 @@ Offset can also be set in CSS with `--driver-checklist-offset-x` and `--driver-c
 
 ## Notes
 
-- Source: https://driverjs.com/docs/checklists#customizing (driver.js 1.10.1 docs source, `apps/docs/src/content/guides/checklists.mdx`).
+- Source: https://driverjs.com/docs/checklists#customizing (driver.js 1.14.0 docs source, `apps/docs/src/content/guides/checklists.mdx` at tag 1.14.0).
 - The font comes from the popover's `--driver-popover-font-family` variable.
 - On screens narrower than 480 pixels, the panel spans the width of the screen with even margins and the launcher stays in its corner. The widget keeps clear of the notch and home bar on phones.
 - A launcher label too long for the screen is cut off with an ellipsis; the full text shows as a tooltip.

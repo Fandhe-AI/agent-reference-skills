@@ -7,7 +7,7 @@ Low-level API for controlling how `action`/`loader` functions execute, overridin
 
 ## Signature / Usage
 
-Pass a `dataStrategy` function when creating the router. It receives `matches`, `request`, `params`, `context`, `runClientMiddleware`, and (for fetcher requests) `fetcherKey`, and must return `Record<string, DataStrategyResult>`:
+Pass a `dataStrategy` function when creating the router. It receives `matches`, `request`, `params`, `context`, `runClientMiddleware`, and `fetcherKey`, and must return `Record<string, DataStrategyResult>`:
 
 ```tsx
 interface DataStrategyResult {
@@ -151,7 +151,9 @@ let router = createBrowserRouter(routes, {
 | `params` | `Params` | Route params |
 | `context` | `unknown` | Router context |
 | `runClientMiddleware` | `(fn) => Promise<Record<string, DataStrategyResult>>` | Runs route `middleware` around the handlers executed inside `fn` |
-| `fetcherKey` | `string \| undefined` | Present for fetcher requests, absent for navigations |
+| `fetcherKey` | `string \| null` | The key of the fetcher targeted by this execution, or `null` for route loader/action executions. Fetchers reloaded by a navigation or explicit revalidation also provide their key |
+| `unstable_initiator` | `"initialization" \| "navigation" \| "fetcher" \| "revalidation" \| "static"` | Experimental (8.5.0). The operation that initiated this execution (see Request Metadata below) |
+| `unstable_navigationType` | `"PUSH" \| "REPLACE" \| "POP" \| null` | Experimental (8.5.0). The history action for a navigation-initiated execution, or `null` for other executions |
 | `match.shouldCallHandler(defaultShouldRevalidate?)` | `(boolean?) => boolean` | Whether this route's handler should run for the request |
 | `match.shouldRevalidateArgs` | `object` | Arguments that would be passed to the route's own `shouldRevalidate` |
 | `match.resolve((handler) => ...)` | `(fn?) => Promise<DataStrategyResult>` | Calls through to the route handler; calling it always invokes the handler |
@@ -161,6 +163,20 @@ let router = createBrowserRouter(routes, {
 - `match.shouldLoad` (boolean) is **deprecated** in favor of `match.shouldCallHandler()` / `match.shouldRevalidateArgs`. Key difference: with `shouldLoad`, calling `resolve()` on all matches was safe (it internally checked `shouldLoad`); with `shouldCallHandler`, you must pre-filter matches yourself before calling `resolve()`, since `resolve()` unconditionally invokes the handler
 - Default behavior executes all `loader`s in parallel; `dataStrategy` exists precisely to override this for advanced use cases
 - Incorrect implementations can desynchronize UI state from the server — test thoroughly
+
+### Request Metadata (unstable)
+
+`unstable_initiator` and `unstable_navigationType` are experimental and may change in minor or patch releases. `unstable_initiator` identifies why the data strategy is running:
+
+- `"initialization"`: Initial router data loading
+- `"navigation"`: A navigation, including action submissions and subsequent loader revalidation
+- `"fetcher"`: A fetcher operation, including loader revalidation after a fetcher action
+- `"revalidation"`: Explicit revalidation, such as `useRevalidator().revalidate()`
+- `"static"`: Execution by `createStaticHandler` on the server
+
+Requests that reload fetchers during a navigation or explicit revalidation retain that initiator while providing the targeted `fetcherKey`; don't use `fetcherKey` alone to determine what initiated the execution. `unstable_navigationType` is `"PUSH"`, `"REPLACE"`, or `"POP"` for navigation-initiated executions, including fetchers reloaded by that navigation; it is `null` for initialization, standalone fetcher operations, explicit revalidation, and static handler executions, and it describes the in-flight navigation rather than the previously committed location. For example, a Data Mode `dataStrategy` can distinguish back/forward navigations with `unstable_initiator === "navigation" && unstable_navigationType === "POP"`. Framework Mode exposes equivalent request metadata through `unstable_fetch` (see [Custom Fetch](./custom-fetch.md)).
+
+- Source: https://reactrouter.com/how-to/data-strategy (docs/how-to/data-strategy.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/how-to/data-strategy.md)
 
 ## Related
 

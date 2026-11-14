@@ -65,6 +65,8 @@ persist = false
 - Redeploy after updating the Wrangler configuration. Events may take several minutes to reach the destination.
 - Beginning December 1, 2026, persisted data contributes to Cloudflare Observability ingestion and storage usage (https://developers.cloudflare.com/observability/pricing/). Set `persist` to `false` if you only need data in your external destination.
 - Known limitation: Workers infrastructure metrics and custom metrics cannot be exported through OpenTelemetry.
+- When `persist` is enabled, the Cloudflare-stored copy of your logs and traces follows your account's Customer Metadata Boundary setting when one is configured. Exported data is sent to the destination you configure. Viewing availability for the Cloudflare-stored copy is subject to the Customer Metadata Boundary limitations in Data Localization compatibility.
+- Source: https://developers.cloudflare.com/workers/observability/opentelemetry-export/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

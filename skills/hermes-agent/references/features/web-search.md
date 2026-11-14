@@ -51,13 +51,17 @@ SEARXNG_URL=http://localhost:8888
 ## Notes
 
 - Fresh installs with no credentials get working tools through a keyless round-robin ring (Exa, Parallel, Firecrawl, Keenable) with automatic failover; any configured backend or key wins.
-- `web_extract` is deterministic (no LLM): pages over the budget get a head+tail window (~75% / ~25%) plus a `[TRUNCATED]` footer pointing at the full text stored under `~/.hermes/cache/web/` and a `read_file` call; stored text is capped at 2 MB. For live DOM use `browser_navigate` + `browser_snapshot`.
+- `web_extract` is deterministic (no LLM): pages over the budget get a head+tail window (~75% / ~25%) plus a `[TRUNCATED]` footer pointing at the full text stored under `~/.hermes/cache/web/` and a `read_file` call; stored text is capped at 2 MB. For the live, rendered DOM use `browser_exec` (`new_tab(url)` + `wait_for_load()`, then `page_info()` or a `js()` extraction).
 - Caching: `web_search` is memoized per process (identical concurrent searches coalesce); `web_extract` text is shared across processes. Only successes are cached; local development URLs and `security.website_blocklist` matches are never cached.
 - Priority per capability: `web.search_backend` / `web.extract_backend`, then `web.backend`, then auto-detect (only when no shared selection has ever been written): Tavily, Perplexity, Exa, Parallel, Firecrawl, Nous Tool Gateway, SearXNG, Brave, DDGS, Nous identity, keyless ring. xAI is never auto-detected.
 - SearXNG: enable JSON output (`search.formats: [html, json]` in `settings.yml`; HTTP 403 means JSON is still disabled) and pair with an extract provider. Self-host with `searxng/searxng:latest` on port 8888; public instances at searx.space may disable JSON.
 - xAI results are LLM-generated, so validate returned URLs before fetching. OpenAI Native swaps the client-side `web_search` for the provider-executed built-in only on the Codex Responses endpoint.
-- Nous subscribers get managed search through the Tool Gateway; install the optional `searxng-search` skill with `hermes skills install official/research/searxng-search`.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/web-search (pinned to v0.22.2)
+- Nous subscribers get managed search through the Tool Gateway.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/web-search (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- The "Optional skill: `searxng-search`" section (`hermes skills install official/research/searxng-search`) is gone from the v0.23.1 page; it is not confirmed whether the skill itself was removed.
 
 ## Related
 

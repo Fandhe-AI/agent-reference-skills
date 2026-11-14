@@ -52,6 +52,16 @@ pnpm dlx knip
 bunx knip
 ```
 
+## Coding Agents
+
+Let your coding agent configure Knip using the Knip MCP Server (`@knip/mcp`). Paste this into your agent session:
+
+```text
+Install the Knip MCP Server (@knip/mcp) and use it to configure Knip in this project.
+```
+
+You may need to restart the session to pick up the new MCP server. The Knip Editor Extension has the same MCP Server built in.
+
 ## Managing Output
 
 For large codebases, limit displayed issues:
@@ -61,3 +71,8 @@ knip --max-show-issues 5
 ```
 
 Do not use the `ignore` option to suppress output. Instead, refer to Configuring Project Files for proper setup.
+
+## Notes
+
+- Knip does not provide a hosted playground link in the 6.45.1 getting-started page; the 6.41.0 "try without installation" sentence was removed upstream
+- Source: https://knip.dev/overview/getting-started (knip@6.45.1 docs, retrieved 2026-11-14)

@@ -82,6 +82,8 @@ Lists all registrations. Accepts optional `status` filter: `active`, `expired`, 
 - EU `ioss` type is for non-EU sellers registering for the Import One-Stop Shop scheme.
 - Use `oss_union` for EU sellers reporting VAT across EU member states via One-Stop Shop.
 - Threshold monitoring in Stripe Tax is independent of registrations; it tracks whether you need to register.
+- New countries (`2026-10-28.endive`, non-breaking): `country_options.bw`, `gh`, `ci` and `mu` (Botswana, Ghana, Ivory Coast, Mauritius) use the `simplified` type for digital services. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/tax-registration-support-ghana-botswana-mauritius-ivory-coast, retrieved 2026-11-14)
+- US registration types (`2026-10-28.endive`, non-breaking): `digital_excise_tax` (Utah) and `utility_users_tax` (California; also pass a `utility_users_tax` object with a `jurisdiction`). (Source: https://docs.stripe.com/changelog/endive/2026-10-28/digital-excise-tax-utility-users-tax-registration-types, retrieved 2026-11-14)
 
 ## Related
 

@@ -49,6 +49,7 @@ cuModuleGetFunction(&myKernel, cuModule, "MyKernel");
 
 - The Driver API and Runtime API share the same underlying context/module concepts; `cuCtxGetCurrent` lets driver-API code and `cudaMalloc`-style runtime-API code interoperate within the same process.
 - Kernels launched via `cuLaunchKernel` must first be loaded as PTX/cubin through `cuModuleLoad`, unlike the Runtime API's `<<<>>>` syntax which compiles against a statically linked kernel.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/03-advanced/driver-api.html (CPG v13.5, retrieved 2026-11-14)
 
 ## Related
 

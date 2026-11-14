@@ -8,12 +8,14 @@ MCP（Model Context Protocol）サーバーの設定・接続・管理。
 cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['mcp'], explicit=True)"
 ```
 
-## MCP サーバーとして Hermes を起動
+## MCP サーバーとして Hermes を起動（mcp-serve プラグイン）
 
 ```bash
-hermes mcp serve
-hermes mcp serve -v
+hermes plugins install mcp-serve
+hermes mcp-serve
 ```
+
+v0.23 で `hermes mcp serve` はコアから公式 `mcp-serve` プラグインへ移動した（`hermes mcp serve` は新しい綴りとインストール手順を表示する）。MCP クライアント側設定の `"args": ["mcp", "serve"]` は `["mcp-serve"]` に変える。`-v` 等のオプションはプラグインの README を参照する（v0.23.1 のドキュメントには記載がない）。
 
 ## MCP サーバーの登録（stdio）
 
@@ -109,3 +111,10 @@ hermes acp
 hermes-acp
 python -m acp_adapter
 ```
+
+## 注記
+
+v0.23 の変更: `hermes mcp serve` は `mcp-serve` プラグインへ移動。`hermes mcp` の残りのサブコマンド（`add` / `list` / `test` / `configure` / `remove` 等）は変更なし。`hermes acp` は gateway デーモンのビューアになり、`config.yaml` の MCP サーバーを自分では起動しない（`HERMES_ACP_SKIP_CONFIGURED_MCP` は廃止）。サーバーエントリには `events` / `tool_costs` / `spend_limit` / `cost_unit` が追加された（`reference/mcp-config-reference` 参照）。
+
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp (pinned to v0.23.1)
+- Source: https://hermes-agent.nousresearch.com/docs/reference/cli-commands (pinned to v0.23.1)

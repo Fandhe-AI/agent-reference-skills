@@ -28,10 +28,11 @@ Type `/` in the CLI to open the autocomplete menu. Built-in commands are case-in
 | `/new [name]` (alias `/reset`) | Start a new session. Optional name sets the title. `now` / `--yes` / `-y` skips the confirmation modal. |
 | `/clear` | Clear screen and start a new session |
 | `/history` | Show conversation history (respects `/timestamps`) |
-| `/save` | Save the current conversation |
+| `/save <json\|md\|html> [filename] [redact]` | Export the current session as a JSON snapshot, a Markdown transcript, or a standalone HTML page (`markdown` and `snapshot` are accepted aliases). `redact` scrubs API keys, tokens and credentials, and always comes last, after the optional filename (`/save md notes.md redact`). CLI and TUI: `filename` resolves against the current directory, otherwise the file is auto-named under `~/.hermes/sessions/saved/`; Desktop opens a save dialog. A bare `/save` prints usage in the classic CLI and saves JSON in the TUI and Desktop |
 | `/prompt` (alias `/compose`) | Compose the next prompt in `$EDITOR` |
 | `/retry` | Resend the last message |
 | `/undo` | Remove the last user/assistant exchange |
+| `/rewind [N \| fork N]` | Backtrack (classic CLI; also `Esc`, `Esc` on an idle, empty prompt). Opens a transcript browser with the latest prompt selected: `←`/`→` (`h`/`l`) pick a prompt, `Enter` puts it back in the composer so sending the edit cuts the session back to just before it, `f` forks a new branched session holding only the history before that prompt, `Esc`/`q` closes. `/rewind N` edits prompt N directly and `/rewind fork N` forks before it |
 | `/title` | Set a title for the current session |
 | `/compress [here [N] \| focus topic]` | Manually compress context. `here [N]` keeps the most recent N exchanges (default 2) verbatim. |
 | `/rollback` | List or restore filesystem checkpoints (`/rollback [number]`) |
@@ -66,7 +67,7 @@ Type `/` in the CLI to open the autocomplete menu. Built-in commands are case-in
 | Command | Description |
 |---------|-------------|
 | `/config` | Show current configuration |
-| `/model [model-name]` | Show or change the model. Forms: `provider:model`, `custom:model`, `custom:name:model`, `custom`, `@preset/<slug>`, user aliases. Flags: `--global`, `--session`, `--once`, `--refresh`, `--provider <name>`, `--reasoning <level>`. No args opens the interactive picker. |
+| `/model [model-name]` | Show or change the model. Forms: `provider:model`, `custom:model`, `custom:name:model`, `custom`, `@preset/<slug>`, user aliases. Flags: `--global`, `--session`, `--once`, `--refresh`, `--provider <name>`, `--reasoning <level>`. `/model reset` (no flags) drops this session's pick and goes back to `config.yaml`'s model without losing the conversation. No args opens the interactive picker. |
 | `/codex-runtime [auto\|codex_app_server\|on\|off]` | Toggle the optional Codex app-server runtime |
 | `/personality` | Set a predefined personality (`none` / `default` / `neutral` clears) |
 | `/verbose` | Cycle tool progress display: off, new, all, verbose |
@@ -83,6 +84,7 @@ Type `/` in the CLI to open the autocomplete menu. Built-in commands are case-in
 | `/approvals [manual\|smart\|off]` | Show or set the persistent approval mode |
 | `/footer [on\|off\|status]` | Runtime-metadata footer on final replies |
 | `/busy [queue\|steer\|interrupt\|status]` | Behavior when messaging while Hermes is working |
+| `/autoprune [on\|off\|later\|status]` | Decide automatic pruning of old ended sessions (off by default). Hermes asks once when the disk holding `state.db` runs low; `on`/`off` save `sessions.auto_prune`, `later` reminds you in a week. Works in the CLI, TUI, Desktop and messaging gateway (Slack: `/hermes autoprune`) |
 | `/indicator [kaomoji\|emoji\|unicode\|ascii]` | CLI-only: busy-indicator style |
 | `/timestamps [on\|off\|status]` | CLI-only: `[HH:MM]` timestamps |
 | `/wake [on\|off\|status]` | CLI-only: "Hey Hermes" wake word |
@@ -109,7 +111,7 @@ Type `/` in the CLI to open the autocomplete menu. Built-in commands are case-in
 | `/connectors` | TUI-only. Connector accounts list (keys: up/down, `r`, `a`, `c`, `x`, Tab, Esc/`q`) |
 | `/reload-skills` (alias `/reload_skills`) | Re-scan `~/.hermes/skills/` |
 | `/reload` | Reload `.env` into the running session |
-| `/plugins` | List installed plugins and status |
+| `/plugins [update\|auto-update [on\|off]]` | List installed plugins and status; `update` updates every plugin that has an update, `auto-update` shows or sets unattended plugin updates |
 | `/pet [list\|<slug>]` | Toggle or adopt a petdex mascot |
 | `/hatch <description>` (alias `/generate-pet`) | Generate a new petdex pet from a description |
 
@@ -139,7 +141,7 @@ Type `/` in the CLI to open the autocomplete menu. Built-in commands are case-in
 
 | Command | Description |
 |---------|-------------|
-| `/<skill-name>` | Load an installed skill on demand (e.g. `/gif-search`) |
+| `/<skill-name>` | Load an installed skill on demand (e.g. `/youtube-content`) |
 | `/skills ...` | Search, browse, inspect, install, audit, publish, configure skills |
 
 ### Messaging commands
@@ -151,6 +153,8 @@ Supported inside Telegram, Discord, Slack, WhatsApp, Signal, Email, Home Assista
 | `/start` | Platform handshake; acknowledged silently |
 | `/new [name]` (alias `/reset`), `/status`, `/stop`, `/retry`, `/undo`, `/title`, `/resume`, `/sessions [all] [search <query>]` | Session control (`/sessions all` is admin only) |
 | `/pause [reason \| off]` | Global emergency stop for new cron, kanban and gateway work |
+| `/discard` | Drop a turn Hermes lost in a restart so this chat's queued messages run again; the lost turn is not re-run (recorded as interrupted). On Slack use `/hermes discard` |
+| `/save <json\|md\|html> [filename] [redact]` | Export the current session as JSON, Markdown, or HTML and send the file into the chat as a document; bare `/save` shows usage, `redact` scrubs secrets first |
 | `/model`, `/codex-runtime`, `/personality`, `/fast`, `/reasoning`, `/voice [... join\|channel\|leave]`, `/footer`, `/verbose`, `/yolo` | Configuration (`/verbose` off by default; needs `display.tool_progress_command: true`) |
 | `/sethome` (alias `/set-home`) | Mark the chat as the platform home channel |
 | `/compress`, `/rollback`, `/diff`, `/context`, `/egress`, `/agents` | Context and state inspection |
@@ -188,11 +192,16 @@ Use with `/model fav`, `/model grok --global`, or `hermes chat --model <alias>`.
 - Admin/user split: platforms with a per-user allowlist give admins every command; regular users get only `user_allowed_commands` plus the always-allowed `/help` and `/whoami`. Configure `allow_admin_from` / `user_allowed_commands` (and `group_allow_admin_from` / `group_user_allowed_commands`) in the platform's `extra:` block of `~/.hermes/config.yaml`. If `allow_admin_from` is unset, all allowed users can run every command.
 - A skill whose name matches a built-in command or alias never gets its own `/<name>`; use `/skill <name>`.
 - Quick commands are resolved at dispatch time and may not appear in autocomplete/help. String-only prompt shortcuts are not supported.
-- CLI-only: `/skin`, `/snapshot`, `/export`, `/import`, `/reload`, `/tools`, `/toolsets`, `/browser`, `/config`, `/cron`, `/platforms`, `/paste`, `/image`, `/statusbar`, `/battery`, `/focus`, `/plugins`, `/indicator`, `/wake`, `/journey`, `/redraw`, `/clear`, `/history`, `/save`, `/copy`, `/handoff`, `/prompt`, `/pet`, `/hatch`, `/timestamps`, `/subscription`, `/quit`.
-- Messaging-only: `/sethome`, `/restart`, `/approve`, `/deny`, `/topic`, `/platform`, `/pause`, `/commands`. TUI-only: `/connectors`.
+- CLI-only: `/skin`, `/snapshot`, `/export`, `/import`, `/reload`, `/tools`, `/toolsets`, `/browser`, `/config`, `/cron`, `/platforms`, `/paste`, `/image`, `/statusbar`, `/battery`, `/focus`, `/plugins`, `/indicator`, `/wake`, `/journey`, `/redraw`, `/clear`, `/history`, `/copy`, `/handoff`, `/prompt`, `/pet`, `/hatch`, `/timestamps`, `/subscription`, `/quit`.
+- Messaging-only: `/sethome`, `/restart`, `/approve`, `/deny`, `/topic`, `/platform`, `/pause`, `/discard`, `/commands`. TUI-only: `/connectors`.
 - Switching models mid-conversation resets the prompt cache.
 - Destructive commands (`/clear`, `/new` / `/reset`, `/undo`, `/exit --delete` / `/quit --delete`) open a modal: Approve Once, Always Approve (persists `approvals.destructive_slash_confirm: false`), or Cancel. Append `now`, `--yes`, or `-y` to skip once; set `approvals.destructive_slash_confirm: false` to disable globally.
-- This page is condensed; the official page (https://hermes-agent.nousresearch.com/docs/reference/slash-commands, v0.22.2) carries the full per-command descriptions.
+- On the gateway's session, prompts queued mid-run with `/queue` live in the gateway's shared queue: `list`/`rm`/`edit`/`clear` act on every prompt queued there (other windows' too), and `move` is refused for prompts the gateway holds. In classic `hermes chat`, `/snapshot restore` closes the local readers and drains the local gateway before restoring offline, then reconnects with the restored history. `/worktree` on exit asks keep / archive / remove for a dirty or unpushed tree. In messaging, `/model reset` clears this chat's session override (memory, persisted copy, any pending `--once` restore) so `channel_overrides` / `config.yaml` decide again. `/refine` works on an idle chat and posts its result in the same chat.
+- Source: https://hermes-agent.nousresearch.com/docs/reference/slash-commands (pinned to v0.23.1). This page is condensed; the official page carries the full per-command descriptions.
+
+### Migration (v0.22 -> v0.23)
+
+Migration (v0.22 -> v0.23): `/save` is no longer CLI-only. It now takes `<json|md|html> [filename] [redact]` and also works on messaging platforms, where it sends the exported file into the chat; it was a bare "save the current conversation" command in v0.22.
 
 ## Related
 

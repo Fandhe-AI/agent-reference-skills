@@ -26,3 +26,8 @@ driverObj.highlight({
 - Fixed in 1.6.0: the close button on a `highlight()` popover did nothing before; it now closes the popover, respecting `allowClose` and any custom `onCloseClick`
 - Omit `element` to show the popover as a centered modal with no backdrop cutout
 - Use `stagePadding` to control the space between the element edge and the cutout border
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

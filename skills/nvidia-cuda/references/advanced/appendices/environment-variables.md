@@ -28,10 +28,13 @@ export CUDA_LAUNCH_BLOCKING=1
 | `CUDA_PREFER_SPINLOCKS_ON_HOST` | Execution | Hint (CPG 13.4) to prefer spin-based locking for certain internal host-side synchronization paths. `0`: default; `1`: prefer spinlocks. Can reduce latency for short-held locks under low to moderate contention, but provides no scheduler-assisted fairness or priority inheritance and may increase the risk of priority inversion, starvation, or reduced responsiveness under preemption or oversubscription. |
 | `CUDA_DEVICE_WAITS_ON_EXCEPTION` | Execution | Makes the device wait on an unhandled exception rather than terminating immediately (debugging aid). |
 | `CUDA_DEVICE_DEFAULT_PERSISTING_L2_CACHE_PERCENTAGE_LIMIT` | Execution | Default cap on the percentage of L2 cache reservable for persisting accesses. |
+| `CUDA_NSIGHT_PERF_FORCE_DISABLE_CUDA_TRACING` | Execution | (CPG 13.5) Forcibly prevents the Nsight Perf CUDA Provider in the driver from tracing a CUDA program by preventing the driver from opening a connection to the `nvidia-nsight-perf` daemon during driver initialization. `0`: default behavior, during driver initialization attempt to open a connection to the `nvidia-nsight-perf` daemon and proceed with tracing initialization if the daemon is present. `1`: do not try opening a connection to the `nvidia-nsight-perf` daemon during driver initialization. Example: `CUDA_NSIGHT_PERF_FORCE_DISABLE_CUDA_TRACING=1`. |
 | `CUDA_DISABLE_PERF_BOOST` / `CUDA_AUTO_BOOST` | Execution | Control automatic clock-boost behavior. |
-| `CUDA_MODULE_LOADING` | Module Loading | Selects `LAZY` (default on modern toolkits) or `EAGER` module/kernel loading at startup. |
+| `CUDA_MODULE_LOADING` | Module Loading | Selects `LAZY` (default on modern toolkits) or `EAGER` module/kernel loading at startup. Eager module loading also disables Lazy Function Finalization (LFF) unless `CUDA_ENABLE_FUNCTION_LAZY_FINALIZATION` is set to `1` (CPG 13.5). |
 | `CUDA_MODULE_DATA_LOADING` | Module Loading | Controls lazy loading of module data specifically (as distinct from kernel/function loading). |
-| `CUDA_BINARY_LOADER_THREAD_COUNT` | Module Loading | Number of threads used for binary loading. |
+| `CUDA_BINARY_LOADER_THREAD_COUNT` | Module Loading | Number of threads used for binary loading. Parallel finalization is available only with eager finalization; this setting does not affect Lazy Function Finalization (LFF) (CPG 13.5). |
+| `CUDA_ENABLE_FUNCTION_LAZY_FINALIZATION` | Module Loading | (CPG 13.5) Forces Lazy Function Finalization (LFF) on; LFF is enabled by default. `0` or unset: uses the default LFF behavior. `1`: enables LFF, including when `CUDA_MODULE_LOADING` is set to `EAGER`; parallel finalization is not used while LFF is active. Setting this variable to `0` does not disable LFF; to disable LFF, set `CUDA_DISABLE_FUNCTION_LAZY_FINALIZATION` to `1`. Example: `CUDA_ENABLE_FUNCTION_LAZY_FINALIZATION=1`. |
+| `CUDA_DISABLE_FUNCTION_LAZY_FINALIZATION` | Module Loading | (CPG 13.5) Disables LFF and restores eager, whole-module finalization. `0` or unset: uses the default LFF behavior. `1`: disables LFF; eager finalization can use multiple CPU threads and its results are eligible for the compute cache. Example: `CUDA_DISABLE_FUNCTION_LAZY_FINALIZATION=1`. |
 | `CUDA_DEVICE_DEFAULT_STACK_SIZE_MAX` | Module Loading | `1`: the driver pre-allocates the worst-case per-thread stack memory during the `cuModuleLoad*` call, based on the maximum requirement across all functions in that module (CPG 13.4). `0` or unset (default): stack memory is expanded on demand at kernel launch. |
 | `CUDA_LOG_FILE` | Error Log Management | Directs internal CUDA error/warning log output to `stdout`, `stderr`, or a file path. |
 
@@ -39,9 +42,11 @@ export CUDA_LAUNCH_BLOCKING=1
 
 - `CUDA_MODULE_LOADING=LAZY` and `CUDA_LOG_FILE` are the two variables also referenced directly from feature pages in this guide (see Lazy Loading and Error Log Management).
 - `CUDA_VISIBLE_DEVICES` is the most commonly used variable for restricting a process to a subset of GPUs in a multi-GPU host, and combines with `cudaSetDevice`'s device indices which are re-numbered relative to the visible set.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/environment-variables.html (CPG v13.5, retrieved 2026-11-14)
 
 ## Related
 
+- [Improving CUDA Compilation Time](./compile-time.md)
 - [Lazy Loading](../features/lazy-loading.md)
 - [Error Log Management](../features/error-log-management.md)
 - [Advanced CUDA APIs and Features](../core/advanced-host-programming.md)

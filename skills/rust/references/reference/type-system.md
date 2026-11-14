@@ -14,7 +14,7 @@ Every value in Rust has a type that defines how memory is interpreted and which 
 | `u8`, `u16`, `u32`, `u64`, `u128`, `usize` | Unsigned integers |
 | `f32`, `f64` | IEEE 754 floating-point |
 | `str` | UTF-8 string slice (DST) |
-| `!` | Never type — no values; for diverging expressions |
+| `!` | Never type — no values; for diverging computations; stable since 1.100 (`Infallible` is now an alias for `!`) |
 
 ### Sequence Types
 
@@ -172,6 +172,21 @@ Rust infers types from context. Use `_` to ask the compiler to infer a specific 
 let v: Vec<_> = iter.collect();
 let x = "hello".parse::<i32>();
 ```
+
+## Notes
+
+### Never type (stable in 1.100)
+
+The never type `!` can be used in any type position (before 1.100 it could only appear as a function return type). Expressions of type `!` can be coerced into any type. The standard library type `Infallible` is a type alias for `!`. The never type fallback is `!` on all editions.
+
+```rust
+fn always_ok() -> Result<u32, !> {
+    Ok(42)
+}
+```
+
+- Source: https://doc.rust-lang.org/reference/types/never.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/e24eecf97b0c9a6dbac67191098204dc8a190aaa/src/types/never.md, reference@e24eecf, retrieved 2026-11-14)
+- Release note: https://github.com/rust-lang/rust/blob/1.100.0/RELEASES.md ("Stabilize never type", `Infallible` is now a type alias to `!`, never type fallback changed to `!` on all editions)
 
 ## Related
 

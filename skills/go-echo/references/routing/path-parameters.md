@@ -34,6 +34,7 @@ e.GET("/files/*", func(c *echo.Context) error {
 - `ParamOr` provides a default value fallback when the parameter is absent.
 - `PathValues()` returns all path parameters for the matched route as a structured collection, replacing the older `ParamNames()`/`ParamValues()` pair.
 - The wildcard segment (`*`) captures the remainder of the path and is retrieved with `c.Param("*")`.
+- Since v5.4.3, when `RouterConfig.UnescapePathParamValues` is enabled, path parameters are decoded only once, so literal percent-containing values are preserved; the `RouterConfig.UseEscapedPathForMatching` documentation was corrected without changing behavior (`true` selects the decoded `req.URL.Path`; the default prefers `req.URL.RawPath` when present). Source: https://github.com/labstack/echo/releases/tag/v5.4.3 (fetched 2026-11-14); `router.go` at tag v5.4.5.
 
 ## Related
 

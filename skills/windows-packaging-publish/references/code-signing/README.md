@@ -3,7 +3,7 @@
 | Name | Description | Path |
 | --- | --- | --- |
 | Signing with a Certificate in Azure Key Vault | Signs an app package with a certificate whose private key never leaves the vault | [azure-key-vault-signing.md](./azure-key-vault-signing.md) |
-| Azure Trusted Signing (Azure Artifact Signing) | Microsoft's managed code signing service for MSIX packages outside the Store | [azure-trusted-signing.md](./azure-trusted-signing.md) |
+| Azure Artifact Signing (formerly Azure Trusted Signing) | Microsoft's managed code signing service for MSIX packages outside the Store | [azure-trusted-signing.md](./azure-trusted-signing.md) |
 | Certificate Types for Code Signing | Comparison of certificate options for signing Windows apps | [certificate-types.md](./certificate-types.md) |
 | CI/CD Pipeline Signing (GitHub Actions, Azure Pipelines) | Signs MSIX packages in a build pipeline using Azure Artifact Signing | [cicd-signing.md](./cicd-signing.md) |
 | Device Guard Signing (DGSS v2) | Retired enterprise code signing service; historical reference | [device-guard-signing.md](./device-guard-signing.md) |
