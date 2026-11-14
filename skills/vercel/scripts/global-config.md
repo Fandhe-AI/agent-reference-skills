@@ -2,22 +2,22 @@
 
 Global Config（旧 Edge Config）ストアの作成・アイテム管理・トークン・バックアップ
 
-`vercel edge-config` は `vercel global-config` のエイリアスとして引き続き動作する。
+> **注記**: `vercel edge-config` エイリアスは現行の公式ページでは未確認。`add` / `get` は互換エイリアスとして動作するが非推奨警告が出る（新規には `create` / `inspect` を使う）。
 
 ## ストアの一覧表示
 
 デフォルトサブコマンド（`vercel global-config` のみでも同じ）。
 
 ```sh
-vercel global-config ls
+vercel global-config list
 ```
 
 ## ストアの作成
 
-初期アイテムを指定して作成。
+スラッグと初期アイテム（任意）を指定して作成。
 
 ```sh
-vercel global-config add flags --items '{"betaUiEnabled":true,"region":"sfo1"}'
+vercel global-config create flags --items '{"betaUiEnabled":true,"region":"sfo1"}'
 ```
 
 ## ストアの詳細確認
@@ -25,7 +25,7 @@ vercel global-config add flags --items '{"betaUiEnabled":true,"region":"sfo1"}'
 ID またはスラッグで指定。
 
 ```sh
-vercel global-config get flags
+vercel global-config inspect flags
 ```
 
 ## ストアの更新
@@ -47,7 +47,7 @@ vercel global-config update flags --patch '{"items":[{"operation":"upsert","key"
 > **警告**: ストアを削除するとアイテムも含めて完全に削除される。
 
 ```sh
-vercel global-config remove flags --yes
+vercel global-config delete flags --yes
 ```
 
 ## アイテムの参照

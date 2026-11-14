@@ -4,7 +4,7 @@ Vercel Connect コネクタの作成・接続・トークン取得
 
 ## コネクタの作成
 
-サービス名（`slack`, `github` 等）または MCP サービス URL を指定して作成。
+サービス名（`slack`, `notion`, `okta` 等）または OAuth / MCP サーバーの URL（例: `mcp.linear.app`）を指定して作成。サービス名は `vercel connect discover` で探せる。
 
 ```sh
 vercel connect create slack
@@ -84,16 +84,16 @@ vercel connect update scl_abc123 --icon ./logo.png --background-color '#1A2B3C'
 
 ## コネクタの削除
 
-> **警告**: `remove` は取り消しできない。プロジェクトが接続中の場合は `--disconnect-all` で先に全プロジェクトを切断する必要がある。
+> **警告**: `delete` は取り消しできない。プロジェクトが接続中の場合は `--disconnect-all` で先に全プロジェクトを切断する必要がある。
 
 ```sh
-vercel connect remove scl_abc123
+vercel connect delete scl_abc123
 ```
 
 接続中の全プロジェクトを切断してから確認なしで削除。
 
 ```sh
-vercel connect remove scl_abc123 --disconnect-all --yes
+vercel connect delete scl_abc123 --disconnect-all --yes
 ```
 
 ## ダッシュボードで開く

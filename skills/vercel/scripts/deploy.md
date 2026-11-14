@@ -47,7 +47,7 @@ vercel build --prod
 ## カスタム環境にデプロイ
 
 ```sh
-vercel deploy --target=staging
+vercel deploy --environment=staging
 ```
 
 ## ビルドキャッシュを使わずに強制デプロイ

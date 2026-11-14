@@ -208,19 +208,24 @@ skills/vercel/
     README.md
     ai-gateway.md
     auth.md
+    billing.md
+    ci.md
     connect.md
     crons.md
     deploy-hooks.md
     deploy.md
     domains.md
+    drains.md
     env.md
     global-config.md
     install.md
     logs.md
+    monitors.md
     oauth-apps.md
     ops.md
     promote-rollback.md
     setup.md
+    templates.md
     tokens.md
     upgrade.md
 ```
