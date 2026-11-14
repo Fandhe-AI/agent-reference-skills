@@ -78,7 +78,7 @@ hermes gateway attach --json --start
 hermes gateway attach --json --recover
 ```
 
-`ensure` は既存または起動中のオーナーを待つだけで、サービスの導入も置換もしない（終了コード `0` が ready、それ以外は拒否またはタイムアウト）。`attach` は `ensure` の JSON に加え、attach 可能になると `url`（`ws://127.0.0.1:<port>/api/ws`）・`protocol`（`hermes-gateway-v1`）・`protocols`・単回使用の `ticket`（30 秒で失効）を出力する。`--start` は gateway が無ければ起動、`--recover` は ready でない場合のみ起動または旧版の gateway を置換する。
+`ensure` はプロファイルのセッションランタイムを検出し、無ければ起動する（既存サービスがあればそれを優先し、無ければ detached プロセスを要求する）。既存または起動中のオーナーは待つだけで置換せず、サービスの導入もしない（終了コード `0` が ready、それ以外は拒否またはタイムアウト）。`attach` は `ensure` の JSON に加え、attach 可能になると `url`（`ws://127.0.0.1:<port>/api/ws`）・`protocol`（`hermes-gateway-v1`）・`protocols`・単回使用の `ticket`（30 秒で失効）を出力する。`--start` は gateway が無ければ起動、`--recover` は ready でない場合のみ起動または旧版の gateway を置換する。
 
 ## 全プロファイルの gateway を対象にした操作
 
