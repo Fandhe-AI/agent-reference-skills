@@ -113,6 +113,7 @@ Other variables mentioned: `API_SERVER_ENABLED`, `API_SERVER_HOST`, `API_SERVER_
 
 ## Notes
 
+- The `$(openssl rand -hex 16)` password in the official `docker run` example is generated inline and never displayed; to sign in, set `HERMES_DASHBOARD_BASIC_AUTH_PASSWORD` to a value you keep (for example from your shell or an `.env` file) instead of relying on the generated one.
 - Adapted from the official docs: the Compose example gained `HERMES_DASHBOARD_BASIC_AUTH_USERNAME` / `HERMES_DASHBOARD_BASIC_AUTH_PASSWORD` for the `hermes` service, because a non-loopback Webapp refuses to start without an auth provider.
 - Inside the image `gateway run` is supervised by s6-overlay (auto-restart; dashboard supervised alongside). Each profile gets an s6 slot `gateway-<name>` under `/run/hermes-service/`; one container hosting all profiles is the recommended layout. State is restored from each profile's `gateway_state.json`; only an explicit `hermes gateway stop` keeps a gateway down across restarts.
 - Per-profile lifecycle:
