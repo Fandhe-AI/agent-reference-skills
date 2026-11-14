@@ -20,6 +20,8 @@ adb shell device_config put activity_manager media_processing_fgs_timeout_durati
 - The 6-hour timer resets whenever the user brings the app to the foreground; it does not reset merely by stopping and restarting the service in the background.
 - Starting a `dataSync` service after its budget is exhausted (without the user reopening the app) throws `ForegroundServiceStartNotAllowedException` with message "Time limit already exhausted for foreground service type dataSync".
 - Prefer starting `dataSync`/`mediaProcessing` foreground services as a direct result of user interaction so the full 6-hour window is available once the app backgrounds; consider `WorkManager` as an alternative for data sync work.
+- `Service.onTimeout(int, int)` was introduced in Android 15 and the `mediaProcessing` type was added in Android 15; the 6-hour limit is tracked separately for `dataSync` and `mediaProcessing` (one hour of `dataSync` leaves five hours of `dataSync` but a full six for `mediaProcessing`). Once the system calls `onTimeout()`, the service is no longer considered a foreground service.
+- Source: https://developer.android.com/develop/background-work/services/fgs/timeout (fetched 2026-11-14)
 
 ## Related
 
