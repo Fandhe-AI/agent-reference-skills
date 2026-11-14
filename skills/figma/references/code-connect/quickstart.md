@@ -103,6 +103,7 @@ The Simple Design System (SDS) community file and `sds` repository can optionall
 - Adjust `label` and `language` in `figma.config.json` to match your framework (e.g., `"Swift"` / `"swift"` for SwiftUI)
 - Template files use the `.figma.ts` (or `.figma.js`) extension by convention
 - Each file requires a metadata comment `// url=https://www.figma.com/...` pointing to the Figma component node
+- Since v2.1.0 (2026-10-26), the interactive setup wizard is removed and `figma connect` with no command shows the available commands; use `figma connect create` (below) or the `figma-code-connect` skill instead. Source: https://github.com/figma/code-connect/blob/v2.1.0/CHANGELOG.md (fetched 2026-11-14)
 - Since v2.0.2 (2026-10-14), `figma connect create` always generates a parserless template file (`.figma.ts` / `.figma.js`), even in projects configured for a framework-specific parser; other output filenames are rejected
 - React Integration (Related) covers the legacy framework-specific parser
 - Code Connect collects minimal data: component paths, repository URL, and properties and code in the `.figma` files; basic usage events (publish / unpublish and Figma data calls)

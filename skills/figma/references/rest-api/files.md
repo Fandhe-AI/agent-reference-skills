@@ -1,6 +1,6 @@
 # Files
 
-Endpoints for reading Figma file content, nodes, rendered images, image fills, and file metadata.
+Endpoints for reading Figma file content, nodes, rendered images, image fills, file metadata, and (Enterprise, private OAuth apps) file duplication.
 
 ## Signature / Usage
 
@@ -92,15 +92,43 @@ X-Figma-Token: <token>
 **Response fields:** `creator`, `last_touched_by`, `thumbnail_url`, sharing access level  
 **Scope:** `file_metadata:read` | **Rate Limit:** Tier 3
 
+### POST duplicate file
+
+`POST /v1/files/:file_key/duplicate` — Duplicates a main file or branch into a folder as a new standalone file. The source file and destination folder must belong to the Enterprise plan associated with the private OAuth app. The authenticated user must be able to export the source file, edit the destination folder, and create files of the source editor type. The copy uses the source file's latest saved checkpoint and may not include recent unsaved changes. Supports Figma Design, FigJam, Figma Slides, Figma Buzz, and Figma Make files.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `file_key` | String (path) | The key of the main file or branch to duplicate |
+| `folder_id` | String (body) | The ID of the folder in which to create the duplicated file |
+
+**Scope:** `file_duplicate:write` | **Rate Limit:** Tier 2. Available only to private OAuth apps associated with an Enterprise plan.
+
+**Return value:** `editor_type` is one of `figma`, `figjam`, `slides`, `buzz`, or `make`; `created_at` is a UTC ISO 8601 timestamp.
+
+```json
+{
+  "file_key": String,
+  "name": String,
+  "folder_id": String,
+  "editor_type": String,
+  "created_at": String
+}
+```
+
+**Error Codes:** 400 (invalid body, or this file type cannot be duplicated), 401, 403, 404 (source file or destination folder not found, or endpoint not enabled), 429, 500
+
 ## Notes
 
 - File keys can be found in the Figma file URL: `figma.com/file/:key/...`
 - Branch keys are obtainable via `GET /v1/files/:key?branch_data=true`
 - Very large files may return 400 or 500 errors; reduce `depth` or request fewer node IDs
+- `POST /v1/files/:file_key/duplicate` was added 2026-10-22.
+- Source: https://developers.figma.com/docs/rest-api/file-endpoints/ (duplicate section fetched 2026-11-14)
 
 ## Related
 
 - [File Versions](./file-versions.md)
 - [Components](./components.md)
 - [Variables](./variables.md)
+- [Teams](./teams.md)
 - [Rate Limits](./rate-limits.md)

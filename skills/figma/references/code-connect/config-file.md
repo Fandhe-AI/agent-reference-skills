@@ -27,7 +27,7 @@ Project-level configuration file placed at the repository root that controls how
 | `parser` | `string` | Override auto-detection: `react`, `html`, `swift`, `compose`, `custom` |
 | `label` | `string` | Label shown in Figma Dev Mode for code snippets |
 | `language` | `string` | Syntax highlighting language (see supported values below) |
-| `interactiveSetupFigmaFileUrl` | `string` | Figma file URL used during interactive setup |
+| `interactiveSetupFigmaFileUrl` | `string` | Figma file URL used during interactive setup (the interactive setup wizard was removed in v2.1.0; not listed on the current official configuration page) |
 | `documentUrlSubstitutions` | `object` | Key-value substitutions run on Figma node URLs (useful for multiple files) |
 | `defaultBranch` | `string` | Default branch name for source code link generation |
 | `apiUrl` | `string` | Figma API base URL replacing the default `https://api.figma.com/v1` in full, including `/v1` (for environments with their own API host, such as Figma for Government). The `-a, --api-url` flag takes precedence |

@@ -9,7 +9,7 @@ description: >
 user-invocable: false
 ---
 
-対象: developers.figma.com（2026-10-17 取得）/ Code Connect CLI `@figma/code-connect` v2.0.2 / Plugin API typings `@figma/plugin-typings` v1.142.0（docs の Update 141）/ REST API OpenAPI `figma/rest-api-spec` v0.44.0
+対象: developers.figma.com（2026-11-14 取得。一部ページは 2026-10-17 取得のまま）/ Code Connect CLI `@figma/code-connect` v2.1.0 / Plugin API typings `@figma/plugin-typings` v1.142.0（npm latest。docs は Update 142 まで記載し、3D transform は beta で typings 1.142.0 に未収録）/ REST API OpenAPI `figma/rest-api-spec` v0.44.0（npm の `@figma/rest-api-spec` は 0.47.0 だが未照合のため pin は据え置き）
 
 ## ディレクトリ構成
 
@@ -32,6 +32,7 @@ skills/figma/
       users.md
       projects.md
       folders.md
+      teams.md
       components.md
       variables.md
       dev-resources.md
@@ -124,6 +125,7 @@ skills/figma/
       overview.md
       manifest.md
       setup-guide.md
+      making-network-requests.md
       how-widgets-run.md
       widget-state-and-multiplayer.md
       figma-figjam-widgets.md
@@ -184,6 +186,7 @@ skills/figma/
 | SCIM・activity-logs・library-analytics (Enterprise) を使いたい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
 | folders（旧 projects）を REST API で一覧したい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
 | AI credit usage を日次・ユーザー単位で取得したい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
+| Teams（作成・取得・招待）・top-level folder 作成・file duplicate (Enterprise, private OAuth app) を使いたい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
 | Plugin を開発したい（manifest・figma グローバル・node 操作） | plugin-api | [references/plugin-api/README.md](references/plugin-api/README.md) |
 | figma.variables / figma.codegen / figma.ui を使いたい | plugin-api | [references/plugin-api/README.md](references/plugin-api/README.md) |
 | FrameNode・TextNode・ComponentNode などのノード型を調べたい | plugin-api | [references/plugin-api/README.md](references/plugin-api/README.md) |
@@ -202,6 +205,7 @@ skills/figma/
 | Template API・カスタムパーサーを実装したい | code-connect | [references/code-connect/README.md](references/code-connect/README.md) |
 | Widget を開発したい（manifest・セットアップ・実行モデル） | widget-api | [references/widget-api/README.md](references/widget-api/README.md) |
 | useSyncedState / useSyncedMap でマルチプレイヤー状態を管理したい | widget-api | [references/widget-api/README.md](references/widget-api/README.md) |
+| Widget から fetch したい・networkAccess の allowedDomains を設定したい | widget-api | [references/widget-api/README.md](references/widget-api/README.md) |
 | Widget の UI コンポーネント (AutoLayout, Text, Input 等) を使いたい | widget-api | [references/widget-api/README.md](references/widget-api/README.md) |
 | usePropertyMenu・useEffect・useWidgetId を調べたい | widget-api | [references/widget-api/README.md](references/widget-api/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |

@@ -4,6 +4,14 @@ Code Connect CLI (@figma/code-connect) のインストール・接続ファイ�
 
 > **注記（v2）**: v2.0.0 以降、フレームワーク固有の parser ファイルは `migrate` と `unpublish` でのみ使用できる。他のコマンドは template ファイルへの移行を促して終了する。v1 を使い続ける場合は `npm install --save-dev @figma/code-connect@1` を実行する。
 
+## 利用可能なコマンドの一覧
+
+Adapted (not in the official docs): 引数なしの実行例。v2.1.0 で対話式セットアップ wizard が削除され、コマンド一覧が表示される（出典: https://github.com/figma/code-connect/blob/v2.1.0/CHANGELOG.md の Removed 節、取得 2026-11-14）。
+
+```sh
+npx figma connect
+```
+
 ## グローバルインストール
 
 ```sh

@@ -147,6 +147,7 @@ The original Template API is still documented; the API above has nicer ergonomic
 
 - The official `/template-v2-api/` page was reported identical to this page's source (`/template-api/`) in the update check (same content under a different URL); it was not re-compared in this pass
 - Slots need the latest Code Connect CLI
+- v2.1.0 (2026-10-26) fixes: `findConnectedInstances` and `findLayers` with `traverseInstances: true` now return layers in layer order (previously sibling layers were returned in reverse order); when more than one layer matches, `findInstance`, `findText` and `findConnectedInstance` with `traverseInstances: true`, and `figma.nestedProps`, now return the first match in layer order. v2.0.2 fixed `findLayers` crashing when filtering text layers by parent path. Source: https://github.com/figma/code-connect/blob/v2.1.0/CHANGELOG.md (fetched 2026-11-14)
 - Always use `figma.code` tagged template literal instead of plain string concatenation to preserve pill rendering in Dev Mode
 - `figma.batch` is only available inside `.figma.batch.ts` template files
 

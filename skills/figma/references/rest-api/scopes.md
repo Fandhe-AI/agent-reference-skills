@@ -28,10 +28,15 @@ scope=file_content:read file_comments:read
 | `library_assets:read` | Read individual published components/styles | Any |
 | `library_analytics:read` | Design system analytics | Enterprise |
 | `team_library_content:read` | Team-level library access | Any |
+| `folders:write` | Create folders (POST team folder); private OAuth apps in an Enterprise plan only | Enterprise |
 | `folders:read` | List folders and files in folders (folders endpoints); not usable with public OAuth apps | Any |
 | `folder_metadata:read` | Read folder metadata (GET folder metadata); available to all OAuth apps | Any |
 | `projects:read` | Deprecated in favor of `folders:read`. List projects (now "folders") and files; existing tokens continue to work | Any |
 | `project_metadata:read` | Deprecated in favor of `folder_metadata:read`. Read project metadata; existing tokens continue to work | Any |
+| `file_duplicate:write` | Duplicate files into folders; private OAuth apps in an Enterprise plan only | Enterprise |
+| `teams:read` | Read team metadata; private OAuth apps in Professional, Organization, and Enterprise plans | Professional+ |
+| `teams:write` | Create teams; private OAuth apps in an Enterprise plan only | Enterprise |
+| `team_members:write` | Invite members to teams; private OAuth apps in an Enterprise plan only | Enterprise |
 | `webhooks:read` | Read webhook metadata | Any |
 | `webhooks:write` | Create and manage webhooks | Any |
 | `selections:read` | Read most recent selection in files | Any |
@@ -47,8 +52,11 @@ scope=file_content:read file_comments:read
 - `files:read` is deprecated; prefer specific read scopes instead
 - Enterprise-only scopes require the user to be a full seat member or administrator
 
+- Source: https://developers.figma.com/docs/rest-api/scopes/ (fetched 2026-11-14)
+
 ## Related
 
 - [Authentication](./authentication.md)
 - [OAuth Apps](./oauth-apps.md)
 - [Personal Access Tokens](./personal-access-tokens.md)
+- [Teams](./teams.md)
