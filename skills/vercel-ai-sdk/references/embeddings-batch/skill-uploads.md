@@ -21,7 +21,7 @@ const { providerReference } = await uploadSkill({
   files: [
     {
       path: 'my-skill/SKILL.md',
-      content: readFileSync('./SKILL.md'),
+      data: readFileSync('./SKILL.md'),
     },
   ],
   displayTitle: 'My Skill',
@@ -48,14 +48,16 @@ Shorthand: pass a provider instance directly to `api` instead of calling `.skill
 ```ts
 const { providerReference } = await uploadSkill({
   api: anthropic, // shorthand for anthropic.skills()
-  files: [{ path: 'my-skill/SKILL.md', content: readFileSync('./SKILL.md') }],
+  files: [{ path: 'my-skill/SKILL.md', data: readFileSync('./SKILL.md') }],
   displayTitle: 'My Skill',
 });
 ```
 
 ### Skill files
 
-A skill is composed of one or more files, each with a relative `path` and `content`. Content can be a `Uint8Array` (e.g. from `fs.readFileSync`) or a base64-encoded string:
+A skill is composed of one or more files, each with a relative `path` and `data`.
+
+File content can be provided as a `Uint8Array` (for example, from `fs.readFileSync`) or as a base64-encoded string. Alternatively, `data` can be provided as a tagged object with either `type: 'text'` or `type: 'data'` to explicitly specify the content format:
 
 ```ts
 const { providerReference } = await uploadSkill({
@@ -63,11 +65,25 @@ const { providerReference } = await uploadSkill({
   files: [
     {
       path: 'my-skill/SKILL.md',
-      content: readFileSync('./SKILL.md'), // Uint8Array
+      data: readFileSync('./SKILL.md'), // Uint8Array
     },
     {
       path: 'my-skill/helper.py',
-      content: readFileSync('./helper.py'),
+      data: readFileSync('./helper.py'),
+    },
+    {
+      path: 'my-skill/data.json',
+      data: {
+        type: 'data',
+        data: Buffer.from(JSON.stringify({ foo: 'bar' })).toString('base64'),
+      },
+    },
+    {
+      path: 'my-skill/README.txt',
+      data: {
+        type: 'text',
+        text: 'This is a skill for demonstrating skill uploads.',
+      },
     },
   ],
 });
@@ -106,11 +122,11 @@ Upload the skill to each provider and merge the references:
 const [openaiUpload, anthropicUpload] = await Promise.all([
   uploadSkill({
     api: openai.skills(),
-    files: [{ path: 'my-skill/SKILL.md', content: skillSource }],
+    files: [{ path: 'my-skill/SKILL.md', data: skillSource }],
   }),
   uploadSkill({
     api: anthropic.skills(),
-    files: [{ path: 'my-skill/SKILL.md', content: skillSource }],
+    files: [{ path: 'my-skill/SKILL.md', data: skillSource }],
     displayTitle: 'My Skill',
   }),
 ]);

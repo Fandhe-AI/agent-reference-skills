@@ -2,7 +2,7 @@
 source: https://ai-sdk.dev/docs/reference/ai-sdk-ui/mcp-app-renderer
 ---
 
-# experimental_MCPAppRenderer
+# MCPAppRenderer
 
 Renders an MCP App for an AI SDK tool UI part. Detects MCP App metadata on the tool part, loads the app resource, renders the app in a sandbox proxy iframe, and bridges MCP Apps JSON-RPC messages between the iframe and your host application. For tool parts without MCP App metadata, it renders `fallback`.
 
@@ -12,7 +12,7 @@ Renders an MCP App for an AI SDK tool UI part. Detects MCP App metadata on the t
 'use client';
 
 import {
-  experimental_MCPAppRenderer as MCPAppRenderer,
+  MCPAppRenderer,
   type MCPAppBridgeHandlers,
   type MCPAppMetadata,
   type MCPAppResource,
@@ -113,7 +113,7 @@ export function MessagePart({ part }: { part: unknown }) {
 
 ## Notes
 
-- `experimental_MCPAppRenderer` is experimental and may change in a future release. React only (`@ai-sdk/react`); other frameworks do not support MCP Apps.
+- `MCPAppRenderer` is no longer experimental in ai@7.0.173 (previously `experimental_MCPAppRenderer`; the `experimental_` import alias and the experimental warning were removed from the official page). React only (`@ai-sdk/react`); other frameworks do not support MCP Apps.
 - In production, server-backed handlers should validate authorization and MCP Apps tool visibility before calling the MCP server.
 - Distinct from MCP in other skills: this is the host-side renderer for MCP Apps in an AI SDK UI (the AI SDK acts as an MCP client / app host). Connecting to MCP servers from Claude Code or the Claude API is covered by anthropic-claude-code-extend and anthropic-api-tools-mcp; MCP in the OpenAI Agents SDK (consumer side) by openai-agents; publishing apps as MCP servers inside ChatGPT (publisher side) by openai-apps-sdk.
 

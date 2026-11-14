@@ -101,6 +101,7 @@ Uses Server-Sent Events (SSE) format. Custom backends must set the `x-vercel-ai-
 | Tool approval response | `data: {"type":"tool-approval-response","approvalId":"approval_123","approved":false,"reason":"User denied the request"}` |
 | Tool output available | `data: {"type":"tool-output-available","toolCallId":"call_fJdQDqnXeGxTmr4E3YPSR7Ar","output":{"city":"San Francisco","weather":"sunny"}}` |
 | Tool output denied | `data: {"type":"tool-output-denied","toolCallId":"call_fJdQDqnXeGxTmr4E3YPSR7Ar"}` |
+| Steering message (experimental) | `data: {"type":"steering-message","id":"steer-1","parts":[{"type":"text","text":"I meant Paris, Texas."}]}` |
 | Start step | `data: {"type":"start-step"}` |
 | Finish step | `data: {"type":"finish-step"}` |
 | Reset step | `data: {"type":"reset-step"}` |
@@ -114,6 +115,8 @@ Uses Server-Sent Events (SSE) format. Custom backends must set the `x-vercel-ai-
 - Custom parts: the `kind` field identifies provider-specific content in the format `{provider}.{provider-type}`.
 - `tool-input-start` has an optional `inputEncoding`: omitted or `'json'` parses accumulated text as partial JSON; `'text'` uses the accumulated text directly as the string input (for raw custom-tool input such as code or HTML). The encoding is retained on persisted `input-streaming` tool parts.
 - `tool-approval-request`: when `isAutomatic` is omitted the request expects an explicit approval response from the client. `reason` is optional; `approvalDescriptor` is optional opaque metadata, available as `part.approval.descriptor` after processing into UI messages. For provider-executed tools the approval response can include `providerExecuted: true`.
+- `steering-message` (experimental): a user message that was added to the run with steering (see the agents loop-control page). It is sent before the `start-step` part of the step that received it, and `useChat` adds it to the assistant message as a `steering-message` part.
+- Source: https://ai-sdk.dev/docs/ai-sdk-ui/stream-protocol (ai@7.0.173)
 - `finish-step` marks one LLM API call in the backend; it is needed to process stitched assistant calls correctly (backend tools plus multi-step `useChat`).
 - `reset-step` removes all message parts received since the most recent `start-step` (or all parts of the current message if no step boundary), to invalidate partial output of a retried step.
 - Distinct from the HTTP frameworks: this is the wire format of the AI SDK UI message stream. Serving it from hono, fastify, nextjs-app, or tanstack-start is covered by those skills; this page only defines the protocol and the `createUIMessageStreamResponse` / `createTextStreamResponse` helpers.

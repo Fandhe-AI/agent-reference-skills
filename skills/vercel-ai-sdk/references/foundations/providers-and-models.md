@@ -36,8 +36,7 @@ Capabilities of popular models (excerpt; Check = supported, Cross = not supporte
 | Anthropic | `claude-opus-4-0` | Check | Check | Check | Check |
 | Google | `gemini-3.8-flash` | Check | Check | Check | Check |
 | Google | `gemini-2.5-pro` | Check | Check | Check | Check |
-| Mistral | `pixtral-large-latest` | Check | Check | Check | Check |
-| Mistral | `mistral-large-latest` | Cross | Check | Check | Check |
+| Mistral | `mistral-large-latest` | Check | Check | Check | Check |
 | DeepSeek | `deepseek-v4-flash` | Cross | Check | Check | Check |
 | Cerebras | `gpt-oss-120b` | Cross | Check | Check | Check |
 | Cerebras | `gemma-4-31b` | Check | Check | Check | Check |
@@ -49,7 +48,9 @@ Capabilities of popular models (excerpt; Check = supported, Cross = not supporte
 - The official page still links the v3 specification; at ai 7 / @ai-sdk/provider 4 the current contract is `LanguageModelV4` (packages/provider/src/language-model/v4/language-model-v4.ts), as referenced by the middleware and testing pages.
 - The table above is an excerpt of the model list on the official page; the full table (xAI, OpenAI, Anthropic, Google, Mistral, DeepSeek, Cerebras, Groq rows) is on the source page and is not exhaustive. Model IDs are transcribed as published and not normalized.
 - Self-hosted models: Ollama provider (community), LM Studio (OpenAI-compatible), Baseten, Browser AI; any self-hosted provider supporting the OpenAI specification works with the OpenAI Compatible Provider.
-- Community providers listed on the page include Ollama (`ollama-ai-provider`), OpenRouter (`@openrouter/ai-sdk-provider`), Cloudflare Workers AI (`workers-ai-provider`), Portkey, Mem0, Letta, Claude Code Provider (`ai-sdk-provider-claude-code`), Codex CLI Provider (`ai-sdk-provider-codex-cli`), Gemini CLI, OpenCode, A2A, ACP, MCP Sampling and others; see the source page for the full list.
+- Community providers listed on the page include Ollama (`ollama-ai-provider`), Redis Agent Memory (`@redis/vercel-ai-sdk`), ZeroGPU (`@zerogpu/ai-sdk-provider`), OpenRouter (`@openrouter/ai-sdk-provider`), Cloudflare Workers AI (`workers-ai-provider`), Portkey, Mem0, Letta, Claude Code Provider (`ai-sdk-provider-claude-code`), Codex CLI Provider (`ai-sdk-provider-codex-cli`), Gemini CLI, OpenCode, A2A, ACP, MCP Sampling and others; see the source page for the full list.
+- Model capability rows for OpenAI, Anthropic and Google are generated from provider model catalogs on the official page (`pnpm generate:model-capabilities-docs`); at ai@7.0.173 the Mistral `pixtral-large-latest` row is gone and `mistral-large-latest` supports image input.
+- Source: https://ai-sdk.dev/docs/foundations/providers-and-models (ai@7.0.173)
 - The language model specification is published as an open-source package and can be used to create custom providers.
 
 ## Related

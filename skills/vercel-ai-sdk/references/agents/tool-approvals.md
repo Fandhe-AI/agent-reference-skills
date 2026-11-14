@@ -259,12 +259,16 @@ Every serverless instance that might handle a request needs the same secret. Whe
 - `toolApproval` applies to tools executed by the AI SDK. Provider-executed tools run provider-side and do not use AI SDK tool approvals.
 - When a tool execution is denied, consider adding an instruction such as "When a tool execution is not approved, do not retry it" to prevent repeated approval requests for the same action.
 - `experimental_toolApprovalSecret` is experimental and can change in patch releases. `WorkflowAgent` also supports it; it signs in a workflow step before writing the durable approval request. Pass an environment variable reference, such as `{ environmentVariable: 'TOOL_APPROVAL_SECRET' }`, so the raw secret is read only inside signing and verification steps.
-- `toolApproval` is used with `ToolLoopAgent`, `generateText`, and `streamText`. `needsApproval` is used only with `WorkflowAgent`, where approvals suspend and resume durable workflow execution. The Subagents page refers to `needsApproval` as deprecated. On `ToolLoopAgent`, `toolApproval` takes precedence over a tool's `needsApproval` default.
+- `toolApproval` is used with `ToolLoopAgent`, `generateText`, and `streamText`. `WorkflowAgent` supports `toolApproval` and `needsApproval`; approvals suspend and resume durable workflow execution. The Subagents page refers to `needsApproval` as deprecated. On `ToolLoopAgent`, `toolApproval` takes precedence over a tool's `needsApproval` default.
 - Subagent tools cannot use `toolApproval`.
+- During re-validation of approvals reconstructed from history, `toolCall.toolMetadata` and `toolCall.dynamic` come from the current server-side tool definition. The deprecated `toolCall.title` field is also restored from that definition. A server-side policy denial prevents execution even when the client supplies an approved response with a valid signature.
+- Chat SDK's `createChatTools` marks its write tools and `getUser` as needing approval. A `toolApproval` rule overrides those defaults; see the Chat Platforms page.
+- Source: https://ai-sdk.dev/docs/agents/tool-approvals (ai@7.0.173)
 
 ## Related
 
 - [Policy-Based Tool Approvals](./policy-tool-approvals.md)
 - [Subagents](./subagents.md)
+- [Chat Platforms](./chat-platforms.md)
 - [ToolLoopAgent](./tool-loop-agent.md)
 - [Building Agents](./building-agents.md)

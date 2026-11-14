@@ -114,7 +114,7 @@ const result = streamText({
 });
 ```
 
-`onChunk` receives all stream part types from `stream`: `start`, `start-step`, `text-start`, `text-delta`, `text-end`, `reasoning-start`, `reasoning-delta`, `reasoning-end`, `custom`, `source`, `file`, `reasoning-file`, `tool-call`, `tool-input-start`, `tool-input-delta`, `tool-input-end`, `tool-result`, `tool-error`, `tool-output-denied`, `tool-approval-request`, `tool-approval-response`, `finish-step`, `finish`, `abort`, `error`, `raw`.
+`onChunk` receives all stream part types from `stream`: `start`, `steering-message`, `start-step`, `text-start`, `text-delta`, `text-end`, `reasoning-start`, `reasoning-delta`, `reasoning-end`, `custom`, `source`, `file`, `reasoning-file`, `tool-call`, `tool-input-start`, `tool-input-delta`, `tool-input-end`, `tool-result`, `tool-error`, `tool-output-denied`, `tool-approval-request`, `tool-approval-response`, `finish-step`, `finish`, `abort`, `error`, `raw`.
 
 #### Lifecycle callbacks (experimental)
 
@@ -230,6 +230,7 @@ For `streamText`, citations are available on `text-end` events (associated with 
 
 ## Notes
 
+- Source: https://ai-sdk.dev/docs/ai-sdk-core/generating-text (ai@7.0.173); `steering-message` was added to the stream part types listed for `onChunk`.
 - `streamText` immediately starts streaming and suppresses errors to prevent server crashes. Use the `onError` callback to log errors.
 - `result.textStream` is both a `ReadableStream` and an `AsyncIterable`.
 - `streamText` uses backpressure and only generates tokens as they are requested. You need to consume the stream in order for it to finish.

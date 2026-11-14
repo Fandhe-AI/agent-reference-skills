@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   } = await request.json();
 
   if (!body.id) {
-    throw new Error('Missing chat id');
+    return new Response('Missing chat ID', { status: 400 });
   }
 
   const chatId = body.id;
@@ -79,6 +79,8 @@ Then use `useChat<HarnessMessage>()` on the client.
 - Stability: harness packages are experimental.
 - Use durable storage instead of an in-memory map in production. The creator always creates a new sandbox and fails on a conflicting `sandboxId`; only the resume function reattaches an existing one. If no stable `sandboxId` is derived, persist `sandboxSession.id` separately.
 - Creating the UI message stream before acquiring the session ensures sandbox, bootstrap, and harness startup failures are sent as UI error parts instead of generic HTTP errors. `getHarnessErrorMessage` preserves reviewed client-safe harness messages and masks unknown server errors.
+- Because the route passes `onError`, it also formats the errors of failed host tool calls that the harness reports itself. Set `redactToolErrors: false` to send those error texts unchanged.
+- Source: https://ai-sdk.dev/docs/ai-sdk-harnesses/ui (ai@7.0.173)
 - Do not use `createAgentUIStreamResponse` directly with `HarnessAgent` unless you wrap the agent to inject the required session; `HarnessAgent.stream()` requires `session` on every call.
 - `session.detach()` parks the runtime and keeps the sandbox warm for the next request (includes continuation state if the turn is unfinished). `session.stop()` saves resume state and stops the runtime but not a supplied sandbox; the caller calls the network session's `destroy()` when the chat ends, not while a later request needs to reattach.
 - Rendered parts: `text` and `reasoning`; typed tool parts (`tool-bash`, `tool-read`, host tools like `tool-weather`); `dynamic-tool` parts for `fileChange` and `compaction`. Check `part.state` for `input-streaming`, `input-available`, `output-available`.

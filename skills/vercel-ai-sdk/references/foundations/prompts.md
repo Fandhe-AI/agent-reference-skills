@@ -12,7 +12,7 @@ The AI SDK supports text, message, and system prompts through `prompt`, `message
 const result = await generateText({
   model: __MODEL__,
   instructions:
-    `You help planning travel itineraries. ` +
+    `You help plan travel itineraries. ` +
     `Respond to the users' request with a list ` +
     `of the best stops to make in their destination.`,
   prompt:
@@ -95,7 +95,7 @@ File part (MIME type required):
 
 ```ts
 const result = await generateText({
-  model: google('gemini-3.8-flash'),
+  model: google('gemini-4-hydrogen'),
   messages: [
     {
       role: 'user',
@@ -120,7 +120,7 @@ const result = await generateText({
   model: __MODEL__,
   allowSystemInMessages: true,
   messages: [
-    { role: 'system', content: 'You help planning travel itineraries.' },
+    { role: 'system', content: 'You help plan travel itineraries.' },
     { role: 'user', content: 'I am planning a trip to Berlin for 3 days.' },
   ],
 });
@@ -165,7 +165,7 @@ const messages: ModelMessage[] = [
 | `instructions` | string or system message | — | System prompt; works with both `prompt` and `messages` |
 | `allowSystemInMessages` | boolean | — | Set `true` to send existing message histories that contain system messages |
 | `providerOptions` | object | — | Provider-specific metadata at function call, message, or message-part level |
-| `experimental_download` | function | — | Custom download function `(requestedDownloads: Array<{ url: URL; isUrlSupportedByModel: boolean }>) => PromiseLike<Array<{ data: Uint8Array; mediaType: string | undefined } | null>>` |
+| `experimental_download` | function | — | Custom download function `(requestedDownloads: Array<{ url: URL; isUrlSupportedByModel: boolean; abortSignal?: AbortSignal }>) => PromiseLike<Array<{ data: Uint8Array; mediaType: string \| undefined } \| null>>` |
 
 ## Notes
 
@@ -177,7 +177,11 @@ const messages: ModelMessage[] = [
 - File parts: only a few providers and models support them (Google Generative AI, Google Vertex AI, OpenAI for `wav` and `mp3` audio with `gpt-4o-audio-preview`, Anthropic, OpenAI for `pdf`).
 - Assistant messages can contain text, reasoning, tool call parts, and model-generated file parts (only few models, only for file types they can generate). One assistant message can call multiple tools and one tool message can hold multiple results.
 - Tool results can be multi-part and multi-modal via `output: { type: 'content', value: [...] }` (text and `file-data` parts); for models that do not support them, use a regular `json` output part.
+- The default download only validates the URL itself; it does not check what a hostname resolves to. When your server downloads URLs supplied by users, models, or tools on Node.js (untrusted image URLs, remote file parts), pass a `guarded-fetch` transport via `experimental_download: createDownload({fetch})`. See Secure URL Fetching (`../operations/secure-url-fetching.md`).
+- Each requested download now carries an optional `abortSignal`; forward it to your fetch implementation and return the downloaded files in the same order.
 - `experimental_download` is experimental and may change in future releases; the default implementation downloads files in parallel when they are not supported by the model.
+
+- Source: https://ai-sdk.dev/docs/foundations/prompts (ai@7.0.173)
 
 ## Related
 

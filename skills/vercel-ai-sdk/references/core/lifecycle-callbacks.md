@@ -44,6 +44,7 @@ Callbacks can be synchronous or asynchronous. If a callback throws, the error is
 | onToolExecutionStart | `(event: ToolExecutionStartEvent) => void \| Promise<void>` | Called before a local tool's `execute` function runs. |
 | onToolExecutionEnd | `(event: ToolExecutionEndEvent) => void \| Promise<void>` | Called after a local tool's `execute` function completes or errors. |
 | onStepEnd | `(event: GenerateTextStepEndEvent) => void \| Promise<void>` | Called after each generation step completes. Receives the step result, including usage and performance. |
+| onStepError | `(event: GenerateTextStepErrorEvent) => void \| Promise<void>` | Called when a step that started fails before it produces a step result: the provider call throws or rejects, or the model stream ends without output. Receives the `onStepStart` event of the failed step plus `error`. In `generateText`, also called on abort or timeout. In `streamText`, aborts and timeouts call `onAbort` instead. |
 | onEnd | `(event: GenerateTextEndEvent) => void \| Promise<void>` | Called once when the full generation completes. Receives final output and aggregated usage across all steps. |
 
 `embed` / `embedMany`: `onStart(EmbedStartEvent)` (before the embedding model is called), `onEnd(EmbedEndEvent)` (after it returns).
@@ -57,6 +58,10 @@ Single-step: `onStart`, `onStepStart`, `onLanguageModelCallStart`, `onLanguageMo
 Multi-step with local tool execution: `onStart`, `onStepStart`, `onLanguageModelCallStart`, `onLanguageModelCallEnd`, `onToolExecutionStart`, `onToolExecutionEnd`, `onStepEnd`, repeat step callbacks until the stop condition is met, `onEnd`.
 
 `onStepStart` / `onStepEnd` describe the full step; `onLanguageModelCallStart` / `onLanguageModelCallEnd` describe only the model call inside it, so step duration can be longer than model response duration when local tools run.
+
+When a step that started fails before it produces a step result, `onStepError` is called instead of `onStepEnd`. This happens when the provider call throws or rejects, or when the model stream ends without output. A provider `error` chunk does not fail the step: the step still ends with `onStepEnd` and `finishReason: 'error'`.
+
+Aborts and timeouts end the step differently in each function. In `generateText` and `agent.generate()`, they end the step with `onStepError`. Its `error` is the abort or timeout error, or a provider error that has it as its `cause`. In `streamText` and `agent.stream()`, they end the step with `onAbort`.
 
 ### Event data (text generation)
 
@@ -127,6 +132,7 @@ const result = await generateText({
 
 ## Notes
 
+- Source: https://ai-sdk.dev/docs/ai-sdk-core/lifecycle-callbacks (ai@7.0.173)
 - `onStepFinish` is deprecated. Use `onStepEnd` for new code.
 - Decision callbacks are experimental; exported types are `Experimental_DecideStartEvent` and `Experimental_DecideEndEvent`.
 - Telemetry integrations can filter `runtimeContext` and `toolsContext` before exporting them. Generation and step callbacks receive the full context objects; tool-execution callbacks receive scoped tool context. Do not log secrets or sensitive user data from callbacks.

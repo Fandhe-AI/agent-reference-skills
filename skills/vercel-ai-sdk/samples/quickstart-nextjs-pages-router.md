@@ -4,11 +4,9 @@ source: https://ai-sdk.dev/docs/getting-started/nextjs-pages-router
 
 # Quickstart: Next.js Pages Router
 
-Chat page for the Pages Router (`pages/index.tsx`) backed by an App Router route handler at `/api/chat`.
+Adds a streaming chat to an existing Next.js Pages Router application. Chat page for the Pages Router (`pages/index.tsx`) backed by an App Router route handler at `/api/chat`.
 
 ```bash
-pnpm create next-app@latest my-ai-app
-cd my-ai-app
 npm i ai @ai-sdk/react zod
 ```
 
@@ -79,6 +77,7 @@ export default function Chat() {
 
 ## Notes
 
-- On Next.js 13+ the official page recommends Route Handlers (App Router) alongside the Pages Router for Web API signatures and better streaming support; answer "no" to the App Router prompt of `create-next-app`.
+- On Next.js 13+ the official page recommends Route Handlers (App Router) alongside the Pages Router for Web API signatures and better streaming support; the official page is now a guide for an existing Pages Router application (13+) and no longer walks through `create-next-app`; for new applications it recommends the Next.js App Router quickstart (`quickstart-nextjs-app-router.md`).
+- Source: https://ai-sdk.dev/docs/getting-started/nextjs-pages-router (ai@7.0.173; the docs file was renamed from `03-nextjs-pages-router` to `10-nextjs-pages-router`).
 - Tools and `stopWhen: isStepCount(5)` are added to the route handler exactly as in the App Router quickstart (`quickstart-nextjs-app-router.md`); only the page file path differs.
 - Server framework behavior itself belongs to the nextjs-app skill; this sample covers only the AI SDK calls.

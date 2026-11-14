@@ -214,6 +214,10 @@ const { video } = await generateVideo({
 });
 ```
 
+### URL download protection
+
+Provider polling requests use the provider's `fetch` option; the final video download uses the `download` option. For untrusted URLs on Node.js, pass a `guarded-fetch` transport to both (`download: createDownload({ fetch })`). See the Secure URL Fetching page (core file downloads section).
+
 ### Polling
 
 Video generation is an asynchronous process that can take several minutes to complete. The SDK automatically polls the provider to check if the video is ready. Configure the polling behavior:

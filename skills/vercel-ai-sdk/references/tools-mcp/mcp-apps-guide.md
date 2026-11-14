@@ -65,7 +65,7 @@ Render with React:
 
 ```tsx
 import {
-  experimental_MCPAppRenderer as MCPAppRenderer,
+  MCPAppRenderer,
   useChat,
   type MCPAppBridgeHandlers,
   type MCPAppMetadata,
@@ -99,7 +99,7 @@ where `handlers: MCPAppBridgeHandlers` supplies `callTool` (POST to your call-to
 
 ## Notes
 
-- `experimental_MCPAppRenderer` is experimental and may change in a future release.
+- Source: https://ai-sdk.dev/docs/ai-sdk-core/mcp-apps (ai@7.0.173): `MCPAppRenderer` is imported without the `experimental_` prefix and is no longer marked experimental.
 - Distinct from other skills: the AI SDK is the **host side** (it renders MCP App UIs inside your app). Publishing an MCP server whose UI runs inside ChatGPT is covered by openai-apps-sdk; MCP in Claude Code by anthropic-claude-code-extend; the Claude API MCP connector by anthropic-api-tools-mcp; MCP consumption from the Agents SDK by openai-agents.
 - Only advertise `mcpAppClientCapabilities` if the host can fetch and render MCP App resources safely. When a model calls an app-backed tool, the MCP client preserves app metadata on the tool UI part. For ordinary tools the renderer shows `fallback` (or nothing).
 - Best practices: treat MCP App HTML as untrusted (sandboxed iframe, ideally a sandbox proxy route on a separate origin); never pass app-only tools to the model; validate every iframe request server-side; cache resources by `resourceUri`; keep tool `content` / `structuredContent` useful without the UI; close short-lived clients.

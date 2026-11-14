@@ -4,7 +4,7 @@ source: https://ai-sdk.dev/docs/ai-sdk-core/generating-structured-data
 
 # Generating Structured Data
 
-The AI SDK standardises structured object generation across model providers using the `output` property on `generateText` and `streamText`. Zod schemas, Valibot, or JSON schemas specify the shape of the data; the schema is also used to validate the generated data.
+The AI SDK standardizes structured object generation across model providers using the `output` property on `generateText` and `streamText`. Zod schemas, Valibot, or JSON schemas specify the shape of the data; the schema is also used to validate the generated data.
 
 ## Signature / Usage
 

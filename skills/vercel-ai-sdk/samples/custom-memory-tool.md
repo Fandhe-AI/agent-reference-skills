@@ -114,3 +114,4 @@ console.log(result.text);
 - The page also shows a bash-backed route (`just-bash` with an AST-based command allowlist guard); it is more flexible but needs careful command validation against prompt injection. The structured-actions route only runs the four predefined actions.
 - The official example returns error.message in the memory tool result, which can leak filesystem or internal details to the model; here the error is logged server-side and a fixed message is returned.
 - This is an AI SDK `ToolLoopAgent` pattern. Agent-memory features of other SDKs belong to openai-agents, anthropic-agent-sdk or anthropic-managed-agents; Claude Code memory files belong to anthropic-claude-code.
+- Managed alternative (ai@7.0.173): the official memory guide now lists Redis Agent Memory under memory providers; see `redis-agent-memory.md`.

@@ -92,6 +92,9 @@ Time slices: omit `stopWhen` on the agent and call `runHarnessAgentTimeSlice({ a
 - Workflow state `sessionId` identifies the harness session and `sandboxId` is derived from it; the state does not serialize a live sandbox. Otherwise persist `sandboxSession.id` separately.
 - `destroyOnFinish` destroys the harness session, never the supplied sandbox. Never destroy the sandbox at a time-slice boundary where a subsequent step must resume it.
 - Resume persistence: workflow persists `HarnessWorkflowState` (incl. `continueFrom`) for the current run. To continue the native session across separate user-turn runs, persist the opaque `resumeFrom` (type `HarnessV1ResumeSessionState` from `@ai-sdk/harness`) by `sessionId` in your own durable storage (the official example uses local files via `'use step'` functions; use durable storage in production), load it before `createHarnessWorkflowState({ ...input, resumeFrom })` and persist `state.resumeFrom` after the loop.
+- For sandbox bridge adapters, `resumeFrom` and `continueFrom` contain the private key that authorizes reconnecting to the running bridge. Workflow stores this key with the step state, so treat your Workflow storage and any resume storage as sensitive.
+- If you use Next.js, wrap your config with `withWorkflow()` (from `workflow/next`, in `next.config.js`) so the Workflow SDK transforms `'use workflow'` and `'use step'` modules. Other frameworks have their own Workflow SDK setup.
+- Source: https://ai-sdk.dev/docs/ai-sdk-harnesses/workflow-utilities (ai@7.0.173)
 - Distance: Workflow DevKit / Vercel platform details are covered by the vercel skill; other durable engines (inngest) are separate skills.
 
 ## Related

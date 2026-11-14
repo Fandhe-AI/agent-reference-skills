@@ -95,7 +95,7 @@ const result = await runCodeMode({
 | toolDiscovery | `'conversation'` | Keeps the provider-visible `code_mode` tool definition stable and supplies the current host-tool catalog (TypeScript signatures and call examples) in a user message; a changed tool set adds a new catalog replacing earlier ones. Can improve prompt-cache reuse (provider dependent). |
 | executionPolicy | object | Overrides execution limits (below). |
 
-`executionPolicy` limits: `timeoutMs` (total execution time), `memoryLimitBytes` (QuickJS memory), `maxStackSizeBytes`, `maxSourceBytes`, `maxResultBytes`, `maxConsoleOutputBytes`, `maxToolInputBytes`, `maxToolOutputBytes`, `maxBridgeRequests` (total tool calls), `maxInFlightBridgeRequests` (concurrent tool calls).
+`executionPolicy` limits: `timeoutMs` (total execution time, including time spent waiting on tools), `cpuTimeoutMs` (CPU time spent running sandboxed code, excluding tool waits), `memoryLimitBytes` (QuickJS memory), `maxStackSizeBytes`, `maxSourceBytes`, `maxResultBytes`, `maxConsoleOutputBytes`, `maxToolInputBytes`, `maxToolOutputBytes`, `maxBridgeRequests` (total tool calls), `maxInFlightBridgeRequests` (concurrent tool calls).
 
 ```ts
 import { experimental_setMaxWorkers as setMaxWorkers } from '@ai-sdk/code-mode';
@@ -105,6 +105,7 @@ setMaxWorkers(4); // process-wide cap on concurrent workers
 
 ## Notes
 
+- Source: https://ai-sdk.dev/docs/ai-sdk-core/code-mode (ai@7.0.173): added the `cpuTimeoutMs` execution limit.
 - Experimental: APIs may change. Requires Node.js 22 or newer; not available in browser or edge runtimes.
 - Generated programs support JavaScript and type-stripped TypeScript (no type checking), top-level `await` / `return`, `Promise.all`, `JSON.parse` / `JSON.stringify`, `console.log` / `info` / `debug` / `error`. Tool calls are async and must be awaited; returning with detached calls fails the invocation. Inputs/outputs cross the sandbox boundary as JSON.
 - Tool approval is not integrated: do not expose approval-requiring tools to code mode; a nested tool that requires approval is rejected rather than executed.

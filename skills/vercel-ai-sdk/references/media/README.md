@@ -9,6 +9,7 @@
 | Image Generation | The AI SDK provides the `generateImage` function to generate images based on a given prompt using an image model. | [image-generation.md](./image-generation.md) |
 | Realtime | Realtime is an experimental feature. | [realtime.md](./realtime.md) |
 | Speech | The AI SDK provides the `generateSpeech` function to generate speech from text using a speech model. | [speech.md](./speech.md) |
+| experimental_streamSpeech | Streams speech audio from text, or from an array or stream of text deltas and text parts, using a speech model with streaming support. | [stream-speech.md](./stream-speech.md) |
 | experimental_streamTranscribe | Streams a transcript from live raw audio using a transcription model with streaming support. | [stream-transcribe.md](./stream-transcribe.md) |
 | experimental_streamTranslate | Streams a speech-to-speech translation from live raw audio. Models translate live source audio into target-language audio and text. | [stream-translate.md](./stream-translate.md) |
 | transcribe | Generates a transcript from an audio file. | [transcribe.md](./transcribe.md) |

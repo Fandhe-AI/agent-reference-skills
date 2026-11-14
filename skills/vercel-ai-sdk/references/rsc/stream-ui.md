@@ -79,12 +79,13 @@ const { value: stream } = await streamUI({
 | warnings | `Warning[] \| undefined` | Warnings from the model provider (e.g. unsupported settings). |
 | stream | `AsyncIterable<StreamPart> & ReadableStream<StreamPart>` | All events (text deltas, tool calls, errors, finish). Throws when an error occurs. |
 
-`StreamPart` variants as documented: `{ type: 'text-delta', textDelta }`, `{ type: 'tool-call', toolCallId, toolName, args }`, `{ type: 'error', error }`, `{ type: 'finish', finishReason: 'stop' | 'length' | 'content-filter' | 'tool-calls' | 'error' | 'other', usage }`.
+`StreamPart` variants as documented: `{ type: 'text-delta', textDelta }`, `{ type: 'tool-call', toolCallId, toolName, args }`, `{ type: 'error', error }`, `{ type: 'finish', finishReason: 'stop' | 'length' | 'content-filter' | 'tool-calls' | 'error' | 'interrupted' | 'other', usage }`.
 
 ## Notes
 
 - AI SDK RSC is currently experimental; AI SDK UI is recommended for production.
 - `streamUI` does not support parallel or multi-step tool calls; see the migration page.
+- `finishReason` of the `finish` stream part now also includes `'interrupted'` (ai@7.0.173). Source: https://ai-sdk.dev/docs/reference/ai-sdk-rsc/stream-ui
 - In the migration guide, `streamUI` combines generating text and rendering UI in one server action; AI SDK UI separates them into `streamText` and `useChat`.
 
 ## Related

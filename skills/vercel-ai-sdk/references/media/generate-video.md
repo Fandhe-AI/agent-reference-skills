@@ -49,7 +49,7 @@ import { experimental_generateVideo } from 'ai';
 | maxRetries | `number` | 2 | Optional. Maximum number of retries. |
 | abortSignal | `AbortSignal` | Optional | An optional abort signal to cancel the call. |
 | headers | `Record<string, string>` | Optional | Additional HTTP headers for the request. |
-| download | `(options: { url: URL; abortSignal?: AbortSignal }) => Promise<{ data: Uint8Array; mediaType: string \| undefined }>` | built-in download with 2 GiB limit | Optional. Custom download function for fetching videos from URLs. Use `createDownload()` from `ai` to create a download function with custom size limits, e.g. `createDownload({ maxBytes: 50 * 1024 * 1024 })`. |
+| download | `(options: { url: URL; abortSignal?: AbortSignal }) => Promise<{ data: Uint8Array; mediaType: string \| undefined }>` | built-in download with 2 GiB limit | Optional. Custom download function for fetching videos from URLs. Use `createDownload()` from `ai` to create a download function with a custom size limit (e.g. `createDownload({ maxBytes: 50 * 1024 * 1024 })`) or fetch transport (e.g. `createDownload({ fetch })` with `guarded-fetch` on Node.js for untrusted URLs). |
 | poll | `object` | Optional | Polling configuration for the asynchronous start/status flow. |
 | poll.intervalMs | `number` | 5000 | Optional. Interval between status checks in milliseconds. |
 | poll.timeoutMs | `number` | 600000 (10 minutes) | Optional. Maximum time to wait for completion in milliseconds, including while waiting for a webhook notification. |
@@ -60,8 +60,9 @@ import { experimental_generateVideo } from 'ai';
 
 | Name | Type | Description |
 | --- | --- | --- |
-| video | `GeneratedFile` | The first video that was generated. Properties: `base64: string` (video as a base64 encoded string), `uint8Array: Uint8Array`, `mediaType: string` (the IANA media type of the video, e.g., video/mp4). |
+| video | `GeneratedFile` | The first video available to the SDK. For upload-only results, accessing this property throws NoVideoGeneratedError; use uploadedVideos instead. Properties: `base64: string` (video as a base64 encoded string), `uint8Array: Uint8Array`, `mediaType: string` (the IANA media type of the video, e.g., video/mp4). |
 | videos | `Array<GeneratedFile>` | All videos that were generated (same `GeneratedFile` properties). |
+| uploadedVideos | `number` | Number of videos delivered directly to caller-managed storage by the provider. These are not downloaded and are not included in videos. |
 | warnings | `Warning[]` | Warnings from the model provider (e.g. unsupported settings). |
 | providerMetadata | `VideoModelProviderMetadata` (optional) | Optional metadata from the provider. The outer key is the provider name. The inner values are the metadata. A `videos` key is typically present in the metadata and is an array with the same length as the top level `videos` key. Details depend on the provider. |
 | responses | `Array<VideoModelResponseMetadata>` | Response metadata from the provider. There may be multiple responses if we made multiple calls to the model. Properties: `timestamp: Date`, `modelId: string`, `headers?: Record<string, string>`, `providerMetadata?: VideoModelProviderMetadata` (provider-specific metadata for this individual API call; useful when multiple calls are made). |

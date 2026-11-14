@@ -9,7 +9,7 @@ Filters a tool set to only the string tool names listed in `activeTools`. Useful
 ## Signature / Usage
 
 ```ts
-import { experimental_filterActiveTools as filterActiveTools, tool } from 'ai';
+import { filterActiveTools, tool } from 'ai';
 import { z } from 'zod';
 
 const tools = {
@@ -31,7 +31,7 @@ const filteredTools = filterActiveTools({
 });
 ```
 
-Import: `import { experimental_filterActiveTools as filterActiveTools } from "ai"`.
+Import: `import { filterActiveTools } from "ai"`.
 
 ```ts
 type ActiveTools<TOOLS extends ToolSet> =
@@ -50,7 +50,7 @@ Returns the filtered tool set, or `undefined` when `tools` is `undefined`. With 
 
 ## Notes
 
-- Experimental: `filterActiveTools` is an experimental feature (imported with the `experimental_` prefix).
+- Source: https://ai-sdk.dev/docs/reference/ai-sdk-core/filter-active-tools (ai@7.0.173): `filterActiveTools` is now imported from `ai` without the `experimental_` prefix and is no longer marked experimental.
 - `ActiveTools` only accepts string keys of the tool set because tool names are strings at runtime.
 
 ## Related

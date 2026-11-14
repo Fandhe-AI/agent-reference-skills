@@ -18,7 +18,7 @@ const { providerReference } = await uploadSkill({
   files: [
     {
       path: 'my-skill/SKILL.md',
-      content: readFileSync('./SKILL.md'),
+      data: readFileSync('./SKILL.md'),
     },
   ],
   displayTitle: 'My Skill',
@@ -30,7 +30,7 @@ const { providerReference } = await uploadSkill({
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `api` | SkillsV4 \| ProviderV4 | — | The skills API interface to use for uploading. Can be a `SkillsV4` instance (e.g. `anthropic.skills()`) or a provider instance directly (e.g. `anthropic`), in which case `.skills()` is called automatically. |
-| `files` | SkillsV4File[] | — | The files that make up the skill. Each file has a relative `path` and `content` (either a `Uint8Array` or a base64-encoded string). |
+| `files` | UploadSkillFile[] | — | The files that make up the skill. Each file must have a relative `path` and `data`. The `data` can be a string, a `Uint8Array`, or an object with `type: 'text'` and a string `text` value, or `type: 'data'` and a string `data` value. |
 | `displayTitle` | string (Optional) | — | Human-readable title for the skill. |
 | `providerOptions` | ProviderOptions (Optional) | — | Additional provider-specific options. |
 

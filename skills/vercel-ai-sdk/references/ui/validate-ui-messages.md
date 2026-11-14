@@ -63,6 +63,8 @@ const validatedMessages = await validateUIMessages({
 
 ## Notes
 
+- Structural validation stops at the first invalid element in message and part arrays. Part types and tool states select the applicable schema before its fields are validated. The error retains the failing element's path without accumulating errors for every malformed element. Valid message and part arrays have no SDK-imposed count limit; apply request size and message history limits appropriate for your application.
+- Source: https://ai-sdk.dev/docs/reference/ai-sdk-core/validate-ui-messages (ai@7.0.173)
 - Deprecated `rawInput`: validation still accepts `rawInput` on tool parts in the `output-error` state and emits an AI SDK deprecation warning through `AI_SDK_LOG_WARNINGS` when a defined value is found. Migrate persisted messages to store arguments in `input`; conversion uses `rawInput` as a fallback when `input` is `null` or `undefined`. `rawInput` will be removed in the next major version.
 - `experimental_refineToolInput` is an experimental option (patch releases may change it).
 - Schemas shown with zod; schema definition itself is covered by the zod skill.

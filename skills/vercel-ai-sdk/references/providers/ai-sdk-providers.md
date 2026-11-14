@@ -25,13 +25,17 @@ Excerpt of the official capability table (Image Input / Object Generation / Tool
 | Provider | Model | Image Input | Object Generation | Tool Usage | Tool Streaming |
 | --- | --- | --- | --- | --- | --- |
 | OpenAI | `gpt-6-astra` | yes | yes | yes | yes |
+| OpenAI | `gpt-6.1-terra` | yes | yes | yes | yes |
 | OpenAI | `gpt-5.5` | yes | yes | yes | yes |
 | OpenAI | `gpt-4o` | yes | yes | yes | yes |
 | Anthropic | `claude-opus-5-5` | yes | yes | yes | yes |
 | Anthropic | `claude-sonnet-5-5` | yes | yes | yes | yes |
 | Anthropic | `claude-haiku-5-5` | yes | yes | yes | yes |
+| Anthropic | `claude-fable-5-2` | yes | yes | yes | yes |
+| Google | `gemini-4-hydrogen` | yes | yes | yes | yes |
 | Google | `gemini-3.8-flash` | yes | yes | yes | yes |
 | Google | `gemini-2.5-pro` | yes | yes | yes | yes |
+| Google Vertex | `gemini-4-hydrogen` | yes | yes | yes | yes |
 | Google Vertex | `gemini-3.8-flash` | yes | yes | yes | yes |
 | Mistral | `mistral-large-latest` | no | yes | yes | yes |
 | Cohere | `command-a-03-2025` | no | yes | yes | yes |
@@ -48,6 +52,8 @@ The full page also lists xAI Grok, Moonshot AI, Alibaba, Cerebras, Hugging Face,
 - First-party provider pages listed in the site's provider cards but not covered by this skill's references: xAI, Azure, Groq, Mistral, Google Vertex, Cohere, DeepSeek, and others (only AI Gateway, OpenAI, Anthropic, Google, Amazon Bedrock and OpenAI-compatible are recorded here).
 - Community providers are created with the Language Model Specification (see `custom-providers` in the community section of the official site).
 - Provider packages here are AI SDK adapters; the underlying provider APIs are covered by openai-api-core, anthropic-api-core and other provider-specific skills.
+
+- Source: https://ai-sdk.dev/providers/ai-sdk-providers (ai@7.0.173)
 
 ## Related
 

@@ -101,7 +101,7 @@ registerTelemetry(new OpenTelemetry());
 | `rename-experimental-on-tool-call-start-to-on-tool-execution-start` | `experimental_onToolCallStart` -> `onToolExecutionStart` |
 | `rename-experimental-on-tool-call-finish-to-on-tool-execution-end` | `experimental_onToolCallFinish` -> `onToolExecutionEnd` |
 | `rename-experimental-context-to-context` | tool callback `experimental_context` -> `context` |
-| `rename-google-generative-ai-to-google` | Google provider names containing `GoogleGenerativeAI` -> `Google` |
+| `rename-google-generative-ai-to-google` | Migrates named Google imports and re-exports to the new API names while preserving local and exported names as aliases |
 | `replace-image-message-part-with-file` | image message parts -> file parts with `mediaType: 'image'` |
 
 ### Core API renames and removals
@@ -224,7 +224,7 @@ return createUIMessageStreamResponse({
 | `@ai-sdk/vue` | `Chat` class deprecated in favor of the new `useChat` composable (reactive `messages`, `status`, `error`; recreates the chat when its init object changes; pass a getter or ref to make the init reactive). `Chat` still works as deprecated export. |
 | OpenAI (Responses) | Setting `reasoning` or `providerOptions.openai.reasoningEffort` to a value other than `'none'` now defaults `providerOptions.openai.reasoningSummary` to `'detailed'`. Set it to `null` to keep summaries disabled. |
 | Anthropic | `providerMetadata.anthropic.cacheCreationInputTokens` removed (also in `@ai-sdk/google-vertex/anthropic`). Use `result.usage.inputTokenDetails.cacheWriteTokens` / `cacheReadTokens`. Raw payload still at `result.finalStep.providerMetadata?.anthropic?.usage`. |
-| Google | Every type, class and function containing `GoogleGenerativeAI` renamed to `Google` (e.g. `createGoogleGenerativeAI` -> `createGoogle`, `GoogleGenerativeAIProvider` -> `GoogleProvider`). Old names work as deprecated aliases; the `google` constant is unchanged. |
+| Google | Every type, class and function containing `GoogleGenerativeAI` renamed to `Google` (e.g. `createGoogleGenerativeAI` -> `createGoogle`, `GoogleGenerativeAIProvider` -> `GoogleProvider`). Old names work as deprecated aliases; the `google` constant is unchanged. The `rename-google-generative-ai-to-google` codemod updates named imports and direct re-exports to the new API names; it preserves local binding names and application export names as aliases, so wrappers, property names, and shadowed variables keep working. Namespace member access remains unchanged. |
 | xAI | `xai(modelId)` / `xai.languageModel(modelId)` now use the xAI Responses API by default instead of Chat Completions. Use `xai.chat(modelId)` for Chat Completions. |
 
 ## Notes
@@ -233,7 +233,8 @@ return createUIMessageStreamResponse({
 - `experimental_context` removal has several potential breakages (split `runtimeContext` vs `toolsContext`, TypeScript errors for undeclared context fields, helper types must accept a generic `CONTEXT`); see the official page for the full list.
 - Codemods are a help, not complete coverage; manual changes may still be needed.
 - The `npx skills add vercel/ai --skill migrate-ai-sdk-v6-to-v7` skill is the official agent-facing distribution path and is separate from this skill (see the `coding-agents` page in foundations).
-- Pinned `ai` 7.0.142: this guide describes the 6.x -> 7.0 changes as published at tag `ai@7.0.142`.
+- Pinned `ai` 7.0.173: this guide describes the 6.x -> 7.0 changes as published at tag `ai@7.0.173`.
+- Source: https://ai-sdk.dev/docs/migration-guides/migration-guide-7-0 (ai@7.0.173)
 
 ## Related
 

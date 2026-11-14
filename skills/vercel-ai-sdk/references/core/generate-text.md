@@ -4,7 +4,7 @@ source: https://ai-sdk.dev/docs/reference/ai-sdk-core/generate-text
 
 # generateText
 
-Generates text and calls tools for a given prompt using a language model. Ideal for non-interactive use cases such as automation tasks (drafting email, summarizing web pages) and for agents that use tools.
+Generates text and calls tools for a given prompt using a language model. Ideal for non-interactive use cases such as automation tasks (drafting emails, summarizing web pages) and for agents that use tools.
 
 ## Signature / Usage
 
@@ -58,7 +58,8 @@ Top-level parameters (nested message-part and tool-definition schemas are summar
 | runtimeContext | `CONTEXT` (Optional) | User-defined shared runtime context passed to `prepareStep` and lifecycle callbacks. |
 | toolsContext | `InferToolSetContext<TOOLS>` | Per-tool context map keyed by tool name. Required when at least one tool defines `contextSchema`; not accepted when no tools need context. |
 | experimental_sandbox | `Experimental_SandboxSession` (Optional) | Experimental sandbox passed through to `prepareStep`, tool description functions, and tool execution. |
-| experimental_download | `(requestedDownloads: Array<{ url: URL; isUrlSupportedByModel: boolean }>) => Promise<Array<null \| { data: Uint8Array; mediaType?: string }>>` (Optional) | Custom download function for URLs in prompts. Return `null` to pass the URL directly to the model (when supported). Experimental. |
+| experimental_steering | `Experimental_Steering` (Optional) | Experimental steering object created with `experimental_createSteering()`. Messages sent with `steering.steer()` are added as user messages at the next step boundary, after the current step and its tool calls are done. Messages sent with `steering.queue()` wait until the model finishes its current task and are added one per task. A waiting message keeps the loop going for another step unless a stop condition is met. `steer()` and `queue()` resolve with `{ type: 'delivered', id, message, stepNumber }` or `{ type: 'not-delivered', id, message, reason }`. |
+| experimental_download | `(requestedDownloads: Array<{ url: URL; isUrlSupportedByModel: boolean; abortSignal?: AbortSignal }>) => Promise<Array<null \| { data: Uint8Array; mediaType?: string }>>` (Optional) | Custom download function for URLs in prompts. Return `null` to pass the URL directly to the model (when supported). Use `createDownload({ fetch, maxBytes })` from `ai` to keep the default behavior with a custom fetch transport (e.g. `guarded-fetch` on Node.js) or size limit. Experimental. |
 | include | `{ requestBody?: boolean; requestMessages?: boolean; responseBody?: boolean }` (Optional) | Request bodies, request messages, and response bodies are excluded from step results by default to reduce memory usage; set to `true` to include. |
 | repairToolCall | `(options: ToolCallRepairOptions) => Promise<LanguageModelV4ToolCall \| null>` (Optional) | Attempt to repair a tool call that failed to parse. Options: `instructions`, `system` (deprecated, use `instructions`), `messages`, `toolCall`, `tools`, `inputSchema({ toolName })`, `error` (`NoSuchToolError \| InvalidToolInputError`), `abortSignal`. Return a repaired tool call or `null`. |
 | output | `Output` (Optional) | Specification for parsing structured outputs: `Output.text()` (default), `Output.object({ schema, name?, description? })`, `Output.array({ element, minItems?, maxItems?, name?, description? })` (`maxItems` must be >= `minItems`), `Output.choice({ options, name?, description? })`, `Output.json({ name?, description? })`. |
@@ -71,13 +72,14 @@ Top-level parameters (nested message-part and tool-definition schemas are summar
 | experimental_onToolCallStart | `(event: ToolExecutionStartEvent) => ...` (Optional) | Deprecated. Use `onToolExecutionStart`. Fallback only when `onToolExecutionStart` is not provided. |
 | experimental_onToolCallFinish | `(event: ToolExecutionEndEvent) => ...` (Optional) | Deprecated. Use `onToolExecutionEnd`. Fallback only when `onToolExecutionEnd` is not provided. |
 | onStepEnd | `(stepResult: StepResult<TOOLS>) => Promise<void> \| void` (Optional) | Called when a step ends. Receives a `StepResult`. |
+| onStepError | `(event: GenerateTextStepErrorEvent) => Promise<void> \| void` (Optional) | Called when a step that started fails before it produces a step result, i.e. when the provider call throws or rejects, or when the call is aborted or times out. `onStepEnd` is not called for such a step. For aborts and timeouts, `error` is the abort or timeout error, or a provider error that has it as its `cause`. The event contains all properties of the `onStepStart` event of the failed step (such as `callId`, `stepNumber`, `steps`, `messages`, `runtimeContext`, `toolsContext`) plus `error: unknown`. |
 | onStepFinish | `GenerateTextOnStepFinishCallback<TOOLS>` (Optional) | Deprecated. Use `onStepEnd`. Fallback only when `onStepEnd` is not provided. |
 | onEnd | `(event: GenerateTextEndEvent<TOOLS>) => PromiseLike<void> \| void` (Optional) | Called when the entire generation completes. Includes the final step result properties (excluding direct `performance`) plus aggregated data; use `event.steps` for per-step performance. |
 | onFinish | callback (Optional) | Deprecated alias for `onEnd`. |
 
 #### prepareStep
 
-`PrepareStepOptions`: `steps` (executed so far), `stepNumber`, `model`, `instructions` (an instructions override carries forward to later steps), `initialInstructions`, `messages` (a messages override carries forward), `runtimeContext`, `toolsContext`, `experimental_sandbox`.
+`PrepareStepOptions`: `steps` (executed so far), `stepNumber`, `model`, `instructions` (an instructions override carries forward to later steps), `initialInstructions`, `messages` (a messages override carries forward), `runtimeContext`, `toolsContext`, `experimental_sandbox`, `experimental_steeringMessages` (user messages sent with `experimental_steering` and added to `messages` for the current step; undefined when none; `messages` already contains them. If you return a `messages` override rebuilt from other fields, add them back together with the steering messages of previous steps from `steps`).
 
 `PrepareStepResult<TOOLS>` (all optional; omitted values use the top-level value): `model`, `maxOutputTokens`, `temperature`, `topP`, `topK`, `presencePenalty`, `frequencyPenalty`, `stopSequences`, `seed`, `reasoning`, `toolChoice`, `activeTools`, `toolOrder`, `instructions`, `messages`, `runtimeContext` (affects this step and all subsequent steps), `toolsContext` (affects this and subsequent steps), `experimental_sandbox` (this step only), `providerOptions` (e.g. container IDs for Anthropic code execution).
 
@@ -95,11 +97,11 @@ Top-level parameters (nested message-part and tool-definition schemas are summar
 | toolResults | `ToolResultArray<TOOLS>` | Results of the tool calls from all steps. |
 | staticToolCalls / dynamicToolCalls | `Array<StaticToolCall<TOOLS>>` / `Array<DynamicToolCall>` | Static / dynamic tool calls executed in all steps. |
 | staticToolResults / dynamicToolResults | `Array<StaticToolResult<TOOLS>>` / `Array<DynamicToolResult>` | Static / dynamic tool results generated in all steps. |
-| finishReason | `'stop' \| 'length' \| 'content-filter' \| 'tool-calls' \| 'error' \| 'other'` | Why the model finished. |
+| finishReason | `'stop' \| 'length' \| 'content-filter' \| 'tool-calls' \| 'error' \| 'interrupted' \| 'other'` | Why the model finished. |
 | rawFinishReason | `string \| undefined` | Raw finish reason from the provider. |
 | usage | `LanguageModelUsage` | Total token usage of all steps: `inputTokens`, `inputTokenDetails` (`noCacheTokens`, `cacheReadTokens`, `cacheWriteTokens`), `outputTokens`, `outputTokenDetails` (`textTokens`, `reasoningTokens`), `totalTokens`, `raw`. |
 | totalUsage | `LanguageModelUsage` | Deprecated. Use `usage`. |
-| request | `LanguageModelRequestMetadata` | Deprecated. Use `finalStep.request` (`messages?` undefined unless `requestMessages` is true, `body?`). |
+| request | `LanguageModelRequestMetadata` | Deprecated. Use `finalStep.request` (`url?` HTTP origin reported by the provider without credentials, path, query or fragment; `messages?` undefined unless `requestMessages` is true, `body?`). |
 | response | `LanguageModelResponseMetadata` | Deprecated. Use `finalStep.response` (`id`, `modelId`, `timestamp`, `headers?`, `body?`, `messages`). |
 | warnings | `Warning[] \| undefined` | Warnings from the model provider in all steps. |
 | responseMessages | `Array<ResponseMessage>` | Accumulated response messages of all steps. |
@@ -122,6 +124,8 @@ type ActiveTools<TOOLS extends ToolSet> =
 
 - The official generateText reference describes `messages` as automatically converting useChat UI messages, but the parameter type is `ModelMessage[]`; per the [convertToModelMessages reference](https://ai-sdk.dev/docs/reference/ai-sdk-ui/convert-to-model-messages), UI messages must be converted explicitly.
 - Several result properties (`reasoning`, `reasoningText`, `request`, `response`, `providerMetadata`, `totalUsage`) and callbacks (`onStepFinish`, `onFinish`, `experimental_onToolCallStart`, `experimental_onToolCallFinish`) are deprecated; replacements are listed above.
+- Source: https://ai-sdk.dev/docs/reference/ai-sdk-core/generate-text (ai@7.0.173)
+- 7.0.173 additions: finish reason `'interrupted'`, `onStepError`, `experimental_steering` / `experimental_steeringMessages`, `createDownload` and `abortSignal` for `experimental_download`, and `request.url` (provider-reported HTTP origin) on request metadata. The steering guide is at https://ai-sdk.dev/docs/agents/loop-control#steering.
 - `experimental_*` options (`experimental_toolCallers`, `experimental_refineToolInput`, `experimental_sandbox`, `experimental_download`) are experimental and may change in incremental package releases.
 - For `runtimeContext`, `toolsContext`, tool `context`, and sensitive context filtering, see the Runtime and Tool Context guide.
 

@@ -65,6 +65,8 @@ const stream = createUIMessageStream({
 
 ## Notes
 
+- Source: https://ai-sdk.dev/docs/reference/ai-sdk-ui/create-ui-message-stream (ai@7.0.173)
+- `onEnd` `finishReason` is one of 'stop', 'length', 'content-filter', 'tool-calls', 'error', 'interrupted', or 'other' (`'interrupted'` added in ai@7.0.173).
 - `setOutcome` records the composer's policy without writing a chunk or closing the stream. Individual `error` chunks do not change the outcome by themselves. When merging multiple child streams, aggregate their outcomes and call `setOutcome` once.
 - `outcome` is separate from model finish reasons and individual error chunks. It remains 'unknown' when the consumer cancels before an outcome is declared; check `isCancelled` to distinguish.
 - `onFinish` is deprecated; use `onEnd`.

@@ -4,7 +4,7 @@ source: https://ai-sdk.dev/docs/getting-started/nextjs-app-router
 
 # install
 
-Package installation commands for `ai` (7.0.142) and the companion `@ai-sdk/*` packages. Only packages that appear in the official docs are listed.
+Package installation commands for `ai` (7.0.173) and the companion `@ai-sdk/*` packages. Only packages that appear in the official docs are listed.
 
 ## Core and UI packages
 
@@ -90,4 +90,4 @@ pnpm add ai @ai-sdk/code-mode zod
 ## Notes
 
 - The official docs mostly use `pnpm`; `npm i` for entries written with `<InstallPackages>` is the equivalent form (the component renders per-package-manager tabs). Entries written as `pnpm` or `npm install` in the source are kept as in the source.
-- Version ranges are not pinned in the quickstarts; companion package versions at the `ai@7.0.142` tag are listed in `SKILL.md`.
+- Version ranges are not pinned in the quickstarts; companion package versions at the `ai@7.0.173` tag are listed in `SKILL.md`.

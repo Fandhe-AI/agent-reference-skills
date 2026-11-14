@@ -307,4 +307,47 @@ export default function Chat() {
 - Modified from the official example: useChat is typed with a shared UIMessage type built from InferUITools so tool part input/output are typed (see references/ui/infer-ui-tools.md). The tools move to `ai/tools.ts` (wrapped in `tool()`); the client-side tools `askForConfirmation` and `getLocation` have no `execute`, so they declare `outputSchema: z.string()` to give `part.output` and `addToolOutput` a type.
 - Always check `if (toolCall.dynamic)` first in `onToolCall`, and call `addToolOutput` without `await` to avoid deadlocks. The last block is an excerpt of the page's error-handling example (`getLocation` is an application function there).
 - Tool parts are named `tool-{toolName}`; dynamic tools use a generic `dynamic-tool` part. `sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls` re-submits once all results are present.
-- Server-side multi-step is `stopWhen: isStepCount(5)` when every tool has `execute`. Tool errors are masked by default ("An error occurred"); customize with `onError` on `toUIMessageStream`. Approval flows are in `chatbot-tool-execution-approval.md`.
+- Server-side multi-step is `stopWhen: isStepCount(5)` when every tool has `execute`. Failed tool calls are no longer masked by default (ai@7.0.173): the client receives the same error text as the model (see Tool errors below). Stream errors not tied to a tool call stay masked ("An error occurred.") and can be customized with `onError` on `toUIMessageStream`. Approval flows are in `chatbot-tool-execution-approval.md`.
+
+### Tool errors
+
+- Source: https://ai-sdk.dev/docs/ai-sdk-ui/chatbot-tool-usage#errors (ai@7.0.173)
+- By default the client receives the same error text for a failed tool call as the model (tool execution errors and invalid tool calls), because the UI messages are sent back to the model on the next request. The error text can contain server details (host names, file paths) that the model may repeat; to keep them away from the model and the client, catch the error in `execute` and throw an error with a safe message.
+- `execute` does not run for an invalid tool call; its error text contains the model's input, schema validation messages or available tool names, and only `redactToolErrors` replaces it.
+- `providerExecuted: true` tool execution errors are sent unchanged (strings as-is, other values via `JSON.stringify`) and are never redacted; invalid tool calls of provider-executed tools always use `onError`.
+- Redacting changes message history: with `redactToolErrors: true` the UI text differs from what the model received, and some models reject later requests (e.g. Anthropic with preserved thinking returns a 400). Avoid with `sendReasoning: false`, or for Anthropic adaptive thinking set `thinking.blockBinding.prefixMismatchBehavior` to `drop_block`. The SDK logs a warning when the texts differ and later reasoning is sent.
+- A custom `onError` also handles failed tool calls unless `redactToolErrors` is `false`; the official `errorHandler` now returns `error.toString()` (was `error.message`) to match the model's error text.
+
+Safe error message in `execute` (official example):
+
+```tsx
+const weatherTool = tool({
+  description: 'Get the weather in a location',
+  inputSchema: z.object({ location: z.string() }),
+  execute: async ({ location }) => {
+    try {
+      return await getWeather(location);
+    } catch (error) {
+      console.error(error); // the details stay on the server
+
+      // the model and the client receive this message:
+      throw new Error('The weather service is unavailable.');
+    }
+  },
+});
+```
+
+Redacting tool errors (official example):
+
+```tsx
+const result = streamText({
+  // ...
+});
+
+return createUIMessageStreamResponse({
+  stream: toUIMessageStream({
+    stream: result.stream,
+    redactToolErrors: true,
+  }),
+});
+```

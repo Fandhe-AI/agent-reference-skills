@@ -1,0 +1,100 @@
+---
+source: https://ai-sdk.dev/docs/agents/eve
+---
+
+# eve
+
+[eve](https://eve.dev) is an open-source agent framework for durable, long-running work. Build, govern, and evolve enterprise-grade agents that scale — with channels, durable runs, approvals, and testing built in.
+
+eve is built on the AI SDK:
+
+- `defineTool` uses the same shape as [`tool()`](/docs/ai-sdk-core/tools-and-tool-calling): a `description`, an `inputSchema` (Zod, any Standard Schema, or a JSON Schema object), and an `execute` function.
+- `defineAgent` accepts an [AI Gateway](https://vercel.com/ai-gateway) model ID such as `openai/gpt-6-luna-fast`, or any AI SDK `LanguageModel` from a [provider package](/providers).
+- Options like `reasoning` map to the AI SDK's model settings.
+- A [Chat SDK](/docs/agents/chat-platforms) channel connects any Chat SDK adapter to your agent.
+
+## Signature / Usage
+
+### Built for Production
+
+- **Channels** — Multiplayer and single-player chat across Slack, Teams, iMessage, WhatsApp, and the web. Channels are a framework primitive.
+- **Durable runs** — Checkpoints every step. Survives crashes, restarts, and days-long waits. Runs on crons, too.
+- **Agentic or deterministic** — Fully agentic loops, deterministic workflows, or both in one run. You choose per task.
+- **Human in the loop** — Pause for approval. Resume durably when it arrives.
+- **Any provider** — Swap models with a one-line edit. Provider fallback included. Route different models to different tasks.
+- **Per-user capabilities** — Skills, schedules, memory, and tools resolved per user at runtime.
+- **MCP, OpenAPI, and subagents** — Connect to services over MCP and OpenAPI, or delegate to focused subagents. Credentials stay in the runtime.
+- **Testing** — Test agent behavior before and after every change.
+
+### Quick Start
+
+Create a new agent project:
+
+```bash
+npx eve@latest init my-agent
+```
+
+This creates a `my-agent` directory, installs its dependencies, initializes Git, and starts the interactive terminal UI. To add an agent to an existing project, pass a path:
+
+```bash
+cd myapp
+npx eve@latest init .
+```
+
+**Note:** Like the `ai` package, `eve` bundles its full documentation, so coding agents can read it locally from `node_modules/eve/docs`. See [Coding Agents](/docs/getting-started/coding-agents) for the same workflow with the AI SDK.
+
+### A Minimal Example
+
+An eve agent lives in an `agent/` directory. Replace the system prompt in `agent/instructions.md`:
+
+```md
+You are a concise weather demo assistant. Tell users that the weather data is mocked.
+```
+
+Add a tool at `agent/tools/get_weather.ts`. The filename is the tool name the model sees:
+
+```ts
+import { defineTool } from 'eve/tools';
+import { z } from 'zod';
+
+export default defineTool({
+  description: 'Return mock weather data for a city.',
+  inputSchema: z.object({ city: z.string().min(1) }),
+  async execute({ city }) {
+    return { city, condition: 'Sunny', temperatureF: 72 };
+  },
+});
+```
+
+Choose the model in `agent/agent.ts`:
+
+```ts
+import { defineAgent } from 'eve';
+
+export default defineAgent({
+  model: 'openai/gpt-6-luna-fast',
+  reasoning: 'high',
+});
+```
+
+### When to Choose eve
+
+The AI SDK gives you the primitives; eve is the production framework around them.
+
+- Use eve when you want a complete production agent — durable, long-running work across channels, schedules, and approvals — without assembling those pieces yourself.
+- Use [`ToolLoopAgent`](/docs/agents/building-agents) when you are assembling your own model-and-tools loop inside an application.
+- Use [`WorkflowAgent`](/docs/agents/workflow-agent) from `@ai-sdk/workflow` when you need durable, resumable execution with explicit workflow steps.
+- Use [Chat SDK](/docs/agents/chat-platforms) when you are adding an agent to chat platforms.
+
+## Notes
+
+- eve (`eve` npm package, https://eve.dev) is a separate open-source framework built on the AI SDK; the AI SDK itself provides the primitives (`ToolLoopAgent`, `WorkflowAgent`).
+- Code block filenames shown on the official page are omitted from the fences: `agent/instructions.md`, `agent/tools/get_weather.ts`, `agent/agent.ts`.
+- Next steps on the official page: eve documentation (https://eve.dev/docs) and eve on GitHub (https://github.com/vercel/eve).
+- Source: https://ai-sdk.dev/docs/agents/eve (ai@7.0.173)
+
+## Related
+
+- [Chat Platforms](./chat-platforms.md)
+- [Building Agents](./building-agents.md)
+- [Agents](./overview.md)
