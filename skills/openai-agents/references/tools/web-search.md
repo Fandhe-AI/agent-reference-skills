@@ -81,13 +81,20 @@ const response = await openai.responses.create({
 
 ## Notes
 
-- Three search approaches: non-reasoning web search (direct query passthrough), agentic search with reasoning models (model manages searches and decides whether to continue), and deep research (extended investigation, potentially hundreds of sources over several minutes).
-- Responses include a `web_search_call` item documenting the search action and a `message` item with inline citations. Inline citations must be made clearly visible and clickable in your UI.
-- For new integrations use `web_search`, not the deprecated `web_search_preview` tool type or deprecated search-specific models (e.g. `gpt-4o-search-preview`).
+- Workflows: for a quick lookup ask the model to search a specific fact and cite its source; for a question needing several sources use a reasoning model such as `gpt-6-astra` (it refines searches as it reads) and use background mode (`background: true`) for requests that may take several minutes. Integration choice: new integrations use Responses `web_search` with `gpt-6-astra`; keep Chat Completions with `gpt-5-search-api` only to preserve an existing integration; multi-step research uses `gpt-6-astra` with `high` or `xhigh` reasoning.
+- Responses include a `web_search_call` item (with `action` of `search` (usually with `queries`; incurs a tool call cost), `open_page`, or `find_in_page`; the latter two are supported in reasoning models) and a `message` item whose `message.content[0].annotations` hold `url_citation` annotations (URL, title, location). When your interface displays web results you must show inline citations as prominent, clickable links.
+- `sources` (via `include: ["web_search_call.action.sources"]`) lists all URLs consulted, often more than the citations; real-time third-party feeds are labeled `oai-sports`, `oai-weather`, `oai-finance`. Available with both `web_search` and `web_search_preview`.
+- `search_context_size`: `low` for a lookup needing few details, `medium` balanced default, `high` for more detail; it does not set an exact token count or guarantee a number of sources or citations.
+- Domain filters: omit the HTTP/HTTPS prefix (use `openai.com`); this includes subdomains; only in the Responses API with `web_search`.
+- `external_web_access` defaults to `true`; `web_search_preview` ignores it.
+- When research also uses private records, run public web search and private MCP lookups in separate requests. For long runs use background mode.
+- For new integrations use `web_search`, not the legacy `web_search_preview` tool type (still accepted in Responses for legacy integrations).
+- Source: https://developers.openai.com/api/docs/guides/tools-web-search (fetched 2026-11-14).
 
 - Image search results: include `web_search_call.results` in `include` and read `web_search_call.results[]`; image results are returned separately from the assistant message. Each `image_result` has `image_url`, `source_website_url`, `thumbnail_url` (when available), and `caption` (when available).
 - Migrating from legacy web search: `web_search_preview` in Responses -> migrate to `web_search` (newer controls such as `filters`, `external_web_access`, `return_token_budget`). `gpt-4o-search-preview` / `gpt-4o-mini-search-preview` are deprecated and shut down on 2026-07-23 -> migrate to Responses `web_search`, or use `gpt-5-search-api` if you must stay on Chat Completions. Chat Completions search models always search before responding; Responses search is a tool.
-- Limitations: Responses web search context is limited to 128k even when the model context window is larger (for a larger model context window the guide points to `gpt-5.5`). `o4-mini` is deprecated with shutdown 2026-10-23. `web_search_preview` does not support `filters` or `return_token_budget`, and ignores `external_web_access`. With `tool_choice: "auto"` search is optional; use `"required"` or a specific web search tool choice when search must run.
+- For integrations still using `gpt-5`, web search requires reasoning effort above `minimal`. `o4-mini` in Responses: shut down on October 23, 2026 (migrate to a supported reasoning model with `web_search`).
+- Limitations: Chat Completions supports only specialized search models (`gpt-5-search-api`, 200k context), which do not support `filters`, complete source lists, live-access control, or returned-token budget control. Responses web search context is limited to 128k even when the model context window is larger (check the model page, e.g. for `gpt-6-astra`). `gpt-5.4` with reasoning effort `none` may produce lower-quality results. Rate limits follow the underlying model's tiers; usage table lists Responses, Chat Completions, and Assistants. `web_search_preview` does not support `filters` or `return_token_budget`, and ignores `external_web_access`. With `tool_choice: "auto"` search is optional; use `"required"` or a specific web search tool choice when search must run.
 
 ## Related
 

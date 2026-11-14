@@ -15,7 +15,7 @@ Nous Research の `hermes-agent`（サードパーティ AI CLI）とは別物�
 
 Agents API（OpenAI が Codex harness をホストする beta の managed agent サービス。`client.beta.agents.*`、ヘッダー `OpenAI-Beta: agents=v1`）も本スキルで扱う（`references/agents-api/`）。名前と概念（sessions / environments / vaults / managed agents）が衝突する `anthropic-managed-agents`（Claude Managed Agents）とは別物。Codex CLI / cloud 自体は `openai-codex` スキルの担当。Agents API の Session webhooks と Responses API の汎用 webhooks（`openai-api-core`）も別物。
 
-出典は developers.openai.com/api/docs の .md twin（取得日 2026-10-17）。Agents API は beta。docs 例の既定モデルは gpt-6-astra、multi-agent / computer use の例は gpt-6.1-sol。
+出典は developers.openai.com/api/docs の .md twin（取得日 2026-11-14（references 全体を再照合））。Agents API は beta。docs 例の既定モデルは gpt-6-astra、multi-agent / computer use の例は gpt-6.1-sol。
 
 ## ディレクトリ構成
 
@@ -39,6 +39,8 @@ skills/openai-agents/
       vaults.md
       web-search.md
       computer-use.md
+      approvals.md
+      automations.md
       multi-agent.md
       observability.md
       tracing.md
@@ -52,6 +54,7 @@ skills/openai-agents/
       provider-aws.md
       provider-blaxel.md
       provider-cloudflare.md
+      provider-databricks.md
       provider-daytona.md
       provider-digitalocean.md
       provider-e2b.md
@@ -76,6 +79,8 @@ skills/openai-agents/
       vector-stores.md
       code-interpreter.md
       computer-use.md
+      computer-use-sdk-drivers.md
+      computer-use-integration.md
       image-generation.md
       shell.md
       local-shell.md
@@ -133,10 +138,10 @@ skills/openai-agents/
 | SandboxAgent でファイルシステム/shell 等の隔離実行環境を使いたい | agents-sdk | [references/agents-sdk/README.md](references/agents-sdk/README.md) |
 | Agents API / Agents SDK / Responses API のどれを使うか決めたい | agents-sdk | [references/agents-sdk/README.md](references/agents-sdk/README.md) |
 | Agents API でセッションを作成・継続・ストリーム・webhook 処理したい | agents-api | [references/agents-api/README.md](references/agents-api/README.md) |
-| Agents API の sandbox（OpenAI-hosted / self-hosted / pre-warm / 外部 provider: AWS・Cloudflare・Daytona・DigitalOcean・E2B・Modal・OCI・Runloop・Vercel・Blaxel）を設定したい | agents-api | [references/agents-api/README.md](references/agents-api/README.md) |
-| Agents API の functions / MCP / plugins / vaults / web search / computer use を使いたい | agents-api | [references/agents-api/README.md](references/agents-api/README.md) |
+| Agents API の sandbox（OpenAI-hosted / self-hosted / pre-warm / 外部 provider: AWS・Cloudflare・Daytona・DigitalOcean・Databricks・E2B・Modal・OCI・Vercel・Blaxel。Runloop は公式一覧から消えており provider-runloop.md は旧版情報で未検証）を設定したい | agents-api | [references/agents-api/README.md](references/agents-api/README.md) |
+| Agents API の functions / MCP / plugins / vaults / web search / computer use / automatic review（`review`）/ scheduled automations を使いたい | agents-api | [references/agents-api/README.md](references/agents-api/README.md) |
 | Agents API の tracing・observability・エラー復旧を知りたい | agents-api | [references/agents-api/README.md](references/agents-api/README.md) |
-| web search / file search / code interpreter / computer use 等の built-in tool を使いたい | tools | [references/tools/README.md](references/tools/README.md) |
+| web search / file search / code interpreter / computer use（SDK drivers・integration recipes）等の built-in tool（local_shell は retired） を使いたい | tools | [references/tools/README.md](references/tools/README.md) |
 | function tool の定義や vector store の作成・検索を知りたい | tools | [references/tools/README.md](references/tools/README.md) |
 | shell tool に Agent Skills（SKILL.md バンドル）をアタッチしたい | tools | [references/tools/README.md](references/tools/README.md) |
 | remote MCP server / connectors への接続・認証を知りたい | mcp | [references/mcp/README.md](references/mcp/README.md) |

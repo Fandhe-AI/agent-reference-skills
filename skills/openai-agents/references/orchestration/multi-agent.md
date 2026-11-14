@@ -9,19 +9,34 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-const response = await client.beta.responses.create({
-  model: "gpt-6.1-sol",
-  input:
-    "Review the pull-request diff below with three agents: one for " +
-    "correctness, one for security, and one for missing tests. " +
-    "Reconcile duplicate or conflicting findings, then return a " +
-    "prioritized review with file and line references.",
-  multi_agent: {
-    enabled: true,
-    max_concurrent_subagents: 3,
-  },
-  betas: ["responses_multi_agent=v1"],
-});
+async function reviewPullRequest(diff: string) {
+  const response = await client.beta.responses.create({
+    model: "gpt-6.1-sol",
+    input:
+      "Review the pull-request diff below with three agents: one for " +
+      "correctness, one for security, and one for missing tests. " +
+      "Reconcile duplicate or conflicting findings, then return a " +
+      "prioritized review with file and line references.\n\n" +
+      `<diff>\n${diff}\n</diff>`,
+    multi_agent: {
+      enabled: true,
+      max_concurrent_subagents: 3,
+    },
+    betas: ["responses_multi_agent=v1"],
+  });
+
+  return response.output
+    .flatMap((item) =>
+      item.type === "message" &&
+      item.agent?.agent_name === "/root" &&
+      item.phase === "final_answer"
+        ? item.content
+        : []
+    )
+    .filter((part) => part.type === "output_text")
+    .map((part) => part.text)
+    .join("");
+}
 ```
 
 ```python
@@ -29,15 +44,52 @@ from openai import OpenAI
 
 client = OpenAI()
 
-response = client.beta.responses.create(
-    model="gpt-6.1-sol",
-    input="Review the pull-request diff with three agents in parallel...",
-    multi_agent={
-        "enabled": True,
-        "max_concurrent_subagents": 3,
-    },
-    betas=["responses_multi_agent=v1"],
-)
+
+def review_pull_request(diff: str) -> str:
+    response = client.beta.responses.create(
+        model="gpt-6.1-sol",
+        input=(
+            "Review the pull-request diff below with three agents: one for "
+            "correctness, one for security, and one for missing tests. "
+            "Reconcile duplicate or conflicting findings, then return a "
+            "prioritized review with file and line references.\n\n"
+            f"<diff>\n{diff}\n</diff>"
+        ),
+        multi_agent={
+            "enabled": True,
+            "max_concurrent_subagents": 3,
+        },
+        betas=["responses_multi_agent=v1"],
+    )
+
+    return "".join(
+        part.text
+        for item in response.output
+        if (
+            item.type == "message"
+            and item.agent is not None
+            and item.agent.agent_name == "/root"
+            and item.phase == "final_answer"
+        )
+        for part in item.content
+        if part.type == "output_text"
+    )
+```
+
+WebSocket mode: send a `response.inject` event to add a function output to the active response.
+
+```json
+{
+  "type": "response.inject",
+  "response_id": "resp_123",
+  "input": [
+    {
+      "type": "function_call_output",
+      "call_id": "call_123",
+      "output": "{\"temperature\":72}"
+    }
+  ]
+}
 ```
 
 ## Options / Props
@@ -48,7 +100,7 @@ response = client.beta.responses.create(
 | `multi_agent.max_concurrent_subagents` | number | Limits simultaneously active subagents across the entire tree (default: 3). No fixed upper bound on total subagents or tree depth. |
 | `betas` | string[] | Must include `"responses_multi_agent=v1"` to opt in to the beta. |
 
-## Orchestration actions
+### Orchestration actions
 
 | Action | Purpose |
 |--------|---------|
@@ -59,7 +111,7 @@ response = client.beta.responses.create(
 | `interrupt_agent` | Interrupt another agent's active turn without deleting its context. |
 | `list_agents` | Return the current agent tree, statuses, and each agent's `last_task_message`. |
 
-## When to use Multi-agent
+### When to use Multi-agent
 
 | Use Multi-agent when | Prefer one agent when |
 |-----------------------|------------------------|
@@ -70,6 +122,13 @@ response = client.beta.responses.create(
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/responses-multi-agent (fetched 2026-11-14).
+- After `response.inject`, the server replies `response.inject.created` (input validated and accepted) or `response.inject.failed` (inspect `error.code`). Keep reading the WebSocket until the response has completed and every injection has produced one of these two events. Save the response ID from `response.created` and include it in every `response.inject`.
+- Add a developer message to tune when the root model should spawn subagents (additive to the injected instructions). Official examples: "Do not spawn subagents unless the user explicitly asks for subagents, delegation, or parallel agent work." / "Proactive Multi-agent delegation is active. Use subagents when parallel work would materially improve speed or quality."
+- When enabled, the system appends fixed instructions to the root agent (`/root`) and subagents as a developer message; they cannot be edited or removed, so frame your developer instructions as additive. The root prompt states `{max_concurrent_subagents + 1}` concurrency slots (including the root).
+- `max_concurrent_subagents` counts all descendants (children, grandchildren, deeper) but excludes the root. Subagents share the request's model and tools; any agent in the tree may emit a `function_call`, which your application must execute and answer with a matching `function_call_output`.
+- With HTTP, the official example loops: stream, collect pending `function_call` items, append `function_call_output` items, and call again until no calls remain (WebSocket instead injects outputs into the active response).
+- Related official guides: Function calling, WebSocket mode, Compaction.
 - Distinct from the `hermes-agent` skill and from generic "agent" terminology elsewhere in this repository — this page is the OpenAI Responses API's hosted `multi_agent` orchestration feature (`spawn_agent` / `send_message` / `followup_task` / `wait_agent` / `interrupt_agent` / `list_agents`), not a general multi-agent framework.
 - Agents are addressed with hierarchical names, e.g. `/root/researcher/tester`.
 - WebSocket is recommended for tool-heavy or long-running workflows because the persistent connection reduces latency; with HTTP, the response completes once all active agents finish or pause for a function call, and the application submits tool results in a new request.

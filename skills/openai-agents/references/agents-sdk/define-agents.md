@@ -56,7 +56,7 @@ agent = Agent(
 | Guardrails and approvals | Validation, blocking, and review flows |
 | MCP servers / hosted MCP tools | Attaching MCP-backed capabilities |
 
-## Structured output example
+### Structured output example
 
 ```typescript
 import { Agent, run } from "@openai/agents";
@@ -91,35 +91,89 @@ agent = Agent(
 )
 ```
 
-## Local context vs. conversation history
+### Local context vs. conversation history
 
 The SDK lets you pass application state and dependencies into a run without sending them to the model (e.g. authenticated user info, database clients, loggers). Boundary:
 
 - Conversation history is what the model sees.
 - Run context is what your code sees (accessed via `RunContext` in TS / `RunContextWrapper` in Python inside tools).
 
+If the model needs a fact, put it in instructions, input, retrieval, or a tool. If only your runtime needs it, keep it in local context.
+
 ```typescript
-const agent = new Agent<UserInfo>({ name: "Assistant", tools: [fetchUserAge] });
+import { Agent, run, tool, type RunContext } from "@openai/agents";
+import { z } from "zod";
+
+const fetchUserAge = tool({
+  name: "fetch_user_age",
+  description: "Return the age of the current user.",
+  parameters: z.object({}),
+  async execute(
+    _args: unknown,
+    runContext: RunContext<{ name: string; uid: number }> | undefined
+  ) {
+    return `User ${runContext?.context.name} is 47 years old`;
+  },
+});
+
+const agent = new Agent({
+  name: "Assistant",
+  tools: [fetchUserAge],
+});
+
 const result = await run(agent, "What is the age of the user?", {
   context: { name: "John", uid: 123 },
 });
+
+console.log(result.finalOutput);
 ```
 
 ```python
-agent = Agent[UserInfo](name="Assistant", tools=[fetch_user_age])
-result = await Runner.run(
-    agent,
-    "What is the age of the user?",
-    context=UserInfo(name="John", uid=123),
+import asyncio
+from dataclasses import dataclass
+
+from agents import Agent, RunContextWrapper, Runner, function_tool
+
+
+@dataclass
+class UserInfo:
+    name: str
+    uid: int
+
+
+@function_tool
+async def fetch_user_age(wrapper: RunContextWrapper[UserInfo]) -> str:
+    """Fetch the age of the current user."""
+    return f"The user {wrapper.context.name} is 47 years old."
+
+
+agent = Agent[UserInfo](
+    name="Assistant",
+    tools=[fetch_user_age],
 )
+
+
+async def main() -> None:
+    result = await Runner.run(
+        agent,
+        "What is the age of the user?",
+        context=UserInfo(name="John", uid=123),
+    )
+    print(result.final_output)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
-## When to split one agent into several
+### When to split one agent into several
 
 Split when a specialist needs a different tool/MCP surface, a different approval policy or guardrail, a different model or output style, or when explicit routing in traces is preferred over a single large prompt.
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/agents/define-agents (fetched 2026-11-14).
+- Start with static `instructions`; switch to a dynamic instructions callback when guidance depends on the current user, tenant, or runtime context. Keep `handoffDescription` / `handoff_description` short and concrete so routing agents know when to pick the specialist. Use `prompt` to reference a stored prompt configuration from the Responses API instead of embedding the whole system prompt in code.
 - Start with the smallest single agent that owns a clear task; add agents only when ownership, instructions, tools, or approval policy genuinely diverge.
 - Handoff/orchestration mechanics belong to this skill's `orchestration` scope; tool semantics belong to `tools`.
 - This is the official OpenAI `Agent` class (developers.openai.com), distinct from the third-party `hermes-agent` CLI.

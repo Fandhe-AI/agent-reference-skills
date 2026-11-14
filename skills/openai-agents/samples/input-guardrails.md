@@ -25,7 +25,8 @@ guardrail_agent = Agent(
     output_type=MathHomeworkOutput,
 )
 
-@input_guardrail
+# Validate input before starting the support agent.
+@input_guardrail(run_in_parallel=False)
 async def math_guardrail(
     ctx: RunContextWrapper[None],
     agent: Agent,
@@ -58,4 +59,5 @@ if __name__ == "__main__":
 - A guardrail is itself backed by an Agent with a structured `output_type`, so its verdict can be checked programmatically.
 - `tripwire_triggered=True` raises `InputGuardrailTripwireTriggered` and stops the main Agent from running.
 - The same pattern applies to `output_guardrails` for checking the main Agent's final output before it is returned.
-- Guardrails run concurrently with (or before) the main Agent depending on configuration, so keep the checker Agent fast and cheap.
+- `run_in_parallel=False` (TypeScript: `runInParallel: false`) makes the guardrail blocking: it finishes before the main agent starts. Use it when the cost or risk of starting the main agent is too high; use parallel guardrails when lower latency matters more than avoiding speculative work. Keep the checker Agent fast and cheap.
+- Input guardrails run only for the first agent in the chain.

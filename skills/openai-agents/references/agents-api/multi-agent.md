@@ -47,9 +47,9 @@ print(turn.subagent_id)
 - To disable delegation omit `multi_agent`, or set `enabled: false` and omit the limit. Settings apply at session creation; stored-agent changes apply to new sessions.
 - With `environment.type: "none"`, include the initial `input` in the create request. The coordinator and subagents share one environment filesystem; creating a subagent does not create another environment.
 - Subagents inherit configured MCP tools, their credentials and allowed tools, and web search settings, and can use the environment's files and command-line tools. Subagents do not support function tools (nor browser authentication in computer use).
-- Observing delegation: `agent.session.subagent.created` gives the new subagent's ID; `agent.session.turn.item.added` / `.done` report coordination items `create_subagent_call`, `send_subagent_input_call`, `wait_for_subagents_call`, `interrupt_subagent_call`. A completed create or wait action does not mean the subagent finished. Coordination items can omit message content; `agent_message` items carry inter-agent text when available, but the stream is not a full transcript. Read the main agent's response for the combined result; use saved items and turns for each subagent's history.
+- Observing delegation: `agent.session.subagent.created` gives the new subagent's ID; `agent.session.turn.item.added` / `.done` report coordination items `create_subagent_call`, `send_subagent_input_call`, `wait_for_subagents_call`, `interrupt_subagent_call`. A completed create or wait action does not mean the subagent finished; the harness executes these actions, and on a create item `agent_id` identifies the agent that requested the subagent. Coordination items can omit message content; `agent_message` items carry inter-agent text when available, but the stream is not a full transcript. Read the main agent's response for the combined result; use saved items and turns for each subagent's history.
 - Distinct from handoffs and agents-as-tools in the Agents SDK (this skill's `orchestration` category).
-- Source: https://developers.openai.com/api/docs/guides/agents-api/multi-agent (fetched 2026-10).
+- Source: https://developers.openai.com/api/docs/guides/agents-api/multi-agent (fetched 2026-11-14).
 
 ## Related
 

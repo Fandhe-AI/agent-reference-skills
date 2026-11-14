@@ -4,19 +4,10 @@ Blaxel as a self-hosted sandbox provider for the Agents API, using application-m
 
 ## Signature / Usage
 
-Application / provisioning side (outside the sandbox):
+Set `BL_API_KEY` and `BL_WORKSPACE`, use `OPENAI_API_KEY` for application requests, and set `OPENAI_EXECUTOR_API_KEY` to an environment key. The official provider page has no code; the executor command below is taken verbatim from the Self-hosted sandboxes guide (https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted, fetched 2026-11-14). Run it inside the sandbox with the environment key configured as `CODEX_API_KEY`:
 
 ```bash
-export BL_API_KEY=...
-export BL_WORKSPACE=...
-export OPENAI_API_KEY=...
-export OPENAI_EXECUTOR_API_KEY=...   # environment key
-```
-
-Inside the sandbox (executor process only):
-
-```bash
-CODEX_API_KEY="<environment key (value of OPENAI_EXECUTOR_API_KEY)>" codex exec-server \
+codex exec-server \
   --remote "<session.environment.remote_url>" \
   --environment-id "<session.environment.id>"
 ```
@@ -29,8 +20,8 @@ CODEX_API_KEY="<environment key (value of OPENAI_EXECUTOR_API_KEY)>" codex exec-
 - Choose the sandbox region in your provisioning code; use `us-was-1` for the Agent Drive persistence option.
 - Start the sandbox before submitting input; the turn waits for the environment to connect (`agent.session.environment.connected`). Use `agent.session.turn.completed` to identify success; a failed or cancelled turn can also be followed by `agent.session.idle`.
 - Optional persistence: Blaxel Agent Drive preserves files across sandboxes and sessions (mount the same drive; requires `us-was-1`; does not transfer conversation history or session state).
-- A webhook-managed mode is described in the Sandbox Lifecycle guide; Cookbook examples exist for both modes (`examples/agents_api/sandboxes/blaxel`).
-- Source: https://developers.openai.com/api/docs/guides/agents-api/environments/providers/blaxel (fetched 2026-10).
+- A webhook-managed mode is described in the Sandbox Lifecycle guide; Cookbook examples exist for both modes (`examples/agents_api/sandboxes/blaxel/application_managed` and `webhook_managed`).
+- Source: https://developers.openai.com/api/docs/guides/agents-api/environments/providers/blaxel (fetched 2026-11-14).
 
 ## Related
 

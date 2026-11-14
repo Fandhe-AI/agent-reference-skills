@@ -59,7 +59,7 @@ Raw endpoint: `POST https://api.openai.com/v1/agents/sessions` with header `Open
 - Data handling: session state is retained so work can continue across turns; sessions and published artifacts can be deleted. Data residency is supported only in the United States, and Zero Data Retention (ZDR) is not supported. Choosing a self-hosted sandbox does not make the Agents API ZDR-eligible.
 - Distinct from the Agents SDK (`@openai/agents` / `openai-agents`) covered in this skill's `agents-sdk` category; the Agents API is the OpenAI-managed `beta.agents` endpoint family.
 - Official sample apps (OpenAI Cookbook): incident response agent, Slack bot, data analyst, GitHub issue investigator, document reviewer.
-- Source: https://developers.openai.com/api/docs/guides/agents-api/overview (Beta; fetched 2026-10).
+- Source: https://developers.openai.com/api/docs/guides/agents-api/overview (fetched 2026-11-14).
 
 ### Bedrock Managed Agents
 
@@ -76,7 +76,7 @@ Amazon Bedrock Managed Agents, powered by OpenAI, adapts the Agents API for AWS.
 - Choosing a self-hosted sandbox with the OpenAI Agents API changes only where commands and tools run; the managed harness and model inference still use the OpenAI service.
 - Shared concepts do not imply identical API contracts or feature availability. Before adapting OpenAI Agents API examples, check AWS guidance for the current Bedrock Managed Agents endpoint, supported models, tools, and environment configuration. Check AWS documentation for access requirements, Regions, permissions, limits, pricing, and data handling.
 - The OpenAI docs page carries no code examples. For Responses and other OpenAI platform APIs on Bedrock see the separate OpenAI-on-Amazon-Bedrock guide.
-- Source: https://developers.openai.com/api/docs/guides/agents-api/bedrock-managed-agents (fetched 2026-10).
+- Source: https://developers.openai.com/api/docs/guides/agents-api/bedrock-managed-agents (fetched 2026-11-14).
 
 ## Related
 

@@ -56,6 +56,14 @@ export OPENAI_ORG_ID="org_..."
 export OPENAI_PROJECT_ID="proj_..."
 ```
 
+## TypeScript の Unix-local sandbox 用 Python パス指定
+
+```sh
+export OPENAI_AGENTS_PYTHON="/path/to/python3"
+```
+
+TypeScript SDK の `UnixLocalSandboxClient` はホストの信頼できる Python 3 を保護されたローカルファイルアクセスに使う。`/usr/bin/python3` / `/usr/local/bin/python3` / `/opt/homebrew/bin/python3` 以外にある場合に、Node.js 起動前に絶対パスを指定する（出典: https://developers.openai.com/api/docs/guides/agents/sandboxes、2026-11-14 取得）。
+
 ## トレースに含めるデータの制御
 
 ```sh

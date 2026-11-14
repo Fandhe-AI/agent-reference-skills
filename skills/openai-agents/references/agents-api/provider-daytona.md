@@ -4,18 +4,10 @@ Daytona as a self-hosted sandbox provider for the Agents API, with application-m
 
 ## Signature / Usage
 
-Application / provisioning side (outside the sandbox):
+Set `DAYTONA_API_KEY`, use `OPENAI_API_KEY` for application requests, and set `OPENAI_EXECUTOR_API_KEY` to an environment key. The official provider page has no code; the executor command below is taken verbatim from the Self-hosted sandboxes guide (https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted, fetched 2026-11-14). Run it inside the sandbox with the environment key configured as `CODEX_API_KEY`:
 
 ```bash
-export DAYTONA_API_KEY=...
-export OPENAI_API_KEY=...
-export OPENAI_EXECUTOR_API_KEY=...   # environment key
-```
-
-Inside the sandbox (executor process only):
-
-```bash
-CODEX_API_KEY="<environment key (value of OPENAI_EXECUTOR_API_KEY)>" codex exec-server \
+codex exec-server \
   --remote "<session.environment.remote_url>" \
   --environment-id "<session.environment.id>"
 ```
@@ -32,7 +24,7 @@ CODEX_API_KEY="<environment key (value of OPENAI_EXECUTOR_API_KEY)>" codex exec-
 - Application-managed: create a self-hosted session and save its environment ID; use the Daytona SDK or API to create an isolated sandbox with the configured working directory; install the Codex CLI; start the executor; run the session; delete the session and stop the provider sandbox separately. Configure a lifetime limit so interrupted runs do not leave compute running. For regular use put Codex and `ripgrep` in a Daytona snapshot.
 - Webhook-managed: a controller verifies webhook deliveries and queues provisioning, kept separate from the worker sandbox that runs each session's executor. Handle `environment_connection` requests by starting or reconnecting the worker and release it when the session fails; configure worker and controller timeouts explicitly. Stopping compute on idle requires a policy coordinated with incoming work.
 - Start the Sandbox before submitting input; the turn waits for connection (`agent.session.environment.connected`). Use `agent.session.turn.completed` to identify success; an idle session is not proof. A session retrieval right after an event can briefly return the prior status.
-- Source: https://developers.openai.com/api/docs/guides/agents-api/environments/providers/daytona (fetched 2026-10). Cookbook: `examples/agents_api/sandboxes/daytona`.
+- Source: https://developers.openai.com/api/docs/guides/agents-api/environments/providers/daytona (fetched 2026-11-14). Cookbook: `examples/agents_api/sandboxes/daytona/application_managed` and `webhook_managed`.
 
 ## Related
 

@@ -16,13 +16,15 @@ Executor key (CODEX_API_KEY):      environment key; only permits connecting envi
 
 - Isolate workloads: run in isolated compute such as virtual machines; use separate environments for users or workloads that must not share data; create a dedicated OpenAI project for your application or workload.
 - Restrict network: allow outbound traffic only to approved endpoints, including the executor's required hosts. Executor MCPs connect from your environment (allow the servers they need); remote MCPs connect from OpenAI's service (endpoints must be reachable from it).
+- Review agent actions: enable [automatic review](./approvals.md) with the session-level `review: "auto_review"` setting to automatically approve or deny supported approval requests. Keep network restrictions and credential controls in place; it does not replace them. It applies a permission profile with a workspace-write baseline and restricted network access; the standard executor's container must support sandboxing and permit Codex to create a sandbox. Browser origin approvals and sign-in still require your application's existing handlers (see computer use).
 - Separate credentials: agent-generated code can read the environment key; keep the application API key outside the environment. Do not embed keys in images, source code, or logs; rotate or revoke when needed.
 - Broker third-party access: keep third-party credentials outside the environment. For OpenAI-hosted sandboxes use vault secrets as environment variables (sandbox code uses a placeholder; a network proxy supplies the real secret for approved hosts). For self-hosted environments configure a trusted proxy or server (infrastructure you provide). For function tools keep credentials in the application handling the call and return only the result.
 - Store long-lived credentials in a secrets manager; injecting a stored secret into the environment still exposes it to agent-generated code. Rotate regularly and revoke on suspected exposure.
-- Source: https://developers.openai.com/api/docs/guides/agents-api/environments/security (fetched 2026-10).
+- Source: https://developers.openai.com/api/docs/guides/agents-api/environments/security (fetched 2026-11-14).
 
 ## Related
 
+- [Automatic review](./approvals.md)
 - [Self-hosted Sandboxes](./self-hosted-sandboxes.md)
 - [Vaults](./vaults.md)
 - [MCP Connections](./mcp-connections.md)

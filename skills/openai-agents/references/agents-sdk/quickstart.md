@@ -45,18 +45,18 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-## Carry state into the next turn
+### Carry state into the next turn
 
 | If you want | Start with |
 |---|---|
 | Keep the full history in your application | `result.history` (TS) / `result.to_input_list()` (Python) |
 | Let the SDK load and save history for you | A session |
-| Let OpenAI manage continuation state | A server-managed continuation ID (`conversationId` / `previousResponseId`) |
+| Let OpenAI manage continuation state | A server-managed continuation ID |
 | Resume a run that paused for approval or interruption | `result.state` (TS) / `result.to_state()` (Python), with `interruptions` |
 
 After handoffs, reuse `lastAgent` (TS) / `last_agent` (Python) for the next turn when that specialist should stay in control.
 
-## Add a function tool
+### Add a function tool
 
 ```typescript
 import { Agent, run, tool } from "@openai/agents";
@@ -93,7 +93,7 @@ agent = Agent(
 )
 ```
 
-## Add specialist agents (handoffs)
+### Add specialist agents (handoffs)
 
 ```typescript
 const triageAgent = Agent.create({
@@ -119,7 +119,9 @@ print(result.last_agent.name)
 
 ## Notes
 
-- The normal server-side SDK path includes tracing (Traces dashboard at platform.openai.com/traces).
+- Source: https://developers.openai.com/api/docs/guides/agents/quickstart (fetched 2026-11-14).
+- The normal server-side SDK path includes tracing. As soon as the first run works, open the Traces dashboard (https://platform.openai.com/traces) to inspect model calls, tool calls, handoffs, and guardrails before tuning prompts.
+- The Python specialist agents in the official example also set `handoff_description` (for example `"Specialist for history questions."`).
 - Handoffs, agents-as-tools, and multi-agent orchestration detail live in this skill's `orchestration` scope; hosted/function tools live in the `tools` scope.
 - This is the official OpenAI Agents SDK, unrelated to the third-party `hermes-agent` CLI.
 

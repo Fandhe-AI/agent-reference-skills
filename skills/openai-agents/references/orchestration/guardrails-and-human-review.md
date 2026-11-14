@@ -67,13 +67,14 @@ class MathHomeworkOutput(BaseModel):
 
 
 guardrail_agent = Agent(
-    name="Guardrail check",
-    instructions="Check if the user is asking you to do their math homework.",
+    name="Homework check",
+    instructions="Detect whether the user is asking for math homework help.",
     output_type=MathHomeworkOutput,
 )
 
 
-@input_guardrail
+# Validate input before starting the support agent.
+@input_guardrail(run_in_parallel=False)
 async def math_guardrail(
     ctx: RunContextWrapper[None],
     agent: Agent,
@@ -103,7 +104,6 @@ Human review / approvals:
 ```typescript
 import { Agent, run, tool } from "@openai/agents";
 import { z } from "zod";
-import * as readline from "readline";
 
 const cancelOrder = tool({
   name: "cancel_order",
@@ -117,13 +117,8 @@ const cancelOrder = tool({
 
 const agent = new Agent({
   name: "Support agent",
-  instructions: "Handle support requests and ask for approval when needed.",
+  instructions: "Use cancel_order to handle cancellation requests.",
   tools: [cancelOrder],
-});
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
 });
 
 let result = await run(agent, "Cancel order 123.");
@@ -131,23 +126,13 @@ let result = await run(agent, "Cancel order 123.");
 if (result.interruptions?.length) {
   const state = result.state;
   for (const interruption of result.interruptions) {
-    const approved = await new Promise<boolean>((resolve) => {
-      rl.question(
-        `Approve action: ${interruption.name}? (y/n): `,
-        (answer) => {
-          resolve(answer.toLowerCase() === "y");
-        }
-      );
-    });
-    if (approved) {
-      state.approve(interruption);
-    } else {
-      state.reject(interruption);
-    }
+    console.log(`Approval required: ${interruption.name}`);
+    state.approve(interruption);
   }
   result = await run(agent, state);
 }
-rl.close();
+
+console.log(result.finalOutput);
 ```
 
 ```python
@@ -161,7 +146,7 @@ async def cancel_order(order_id: int) -> str:
 
 agent = Agent(
     name="Support agent",
-    instructions="Handle support requests and ask for approval when needed.",
+    instructions="Use cancel_order to handle cancellation requests.",
     tools=[cancel_order],
 )
 
@@ -170,16 +155,12 @@ result = await Runner.run(agent, "Cancel order 123.")
 if result.interruptions:
     state = result.to_state()
     for interruption in result.interruptions:
-        response = input(f"Approve {interruption.name}? (y/n): ")
-        if response.lower() == "y":
-            state.approve(interruption)
-        else:
-            state.reject(interruption)
+        print("Approval required:", interruption.name)
+        state.approve(interruption)
     result = await Runner.run(agent, state)
 
 print(result.final_output)
 ```
-
 ## Options / Props
 
 | Use case | Start with |
@@ -191,13 +172,17 @@ print(result.final_output)
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/agents/guardrails-approvals (fetched 2026-11-14).
+- Use blocking execution (`runInParallel: false` / `run_in_parallel=False`) when the cost or risk of starting the main agent is too high; use parallel guardrails when lower latency matters more than avoiding speculative work.
+- If the review might take time, serialize `state`, store it, and resume later; that is still the same run.
 - Use input guardrails when you want a fast validation step to run before the expensive or side-effecting part of the workflow starts.
 - Approval lifecycle: (1) the run records an approval interruption instead of executing the tool; (2) the result returns `interruptions` plus a resumable `state`; (3) the application approves or rejects the pending items; (4) the run resumes from `state` instead of starting a new user turn.
 - Agent-level guardrails don't run everywhere: input checks only apply to the first agent, output checks only to the final agent, and tool checks only to attached functions. For manager-style workflows with multiple custom tools, put validation directly on the tools creating side effects rather than relying solely on agent-level controls.
 - The same interruption pattern applies when the approving tool lives deeper in the workflow, such as after a handoff or inside a nested `agent.asTool()` (TypeScript) / `agent.as_tool()` (Python) call.
 - Review cybersecurity actions before execution: for authorized cybersecurity workflows, use tool guardrails and approval interruptions to enforce the written engagement scope where side effects occur. (1) Check the proposed target, action, tool arguments, calling identity, and engagement window against the approved scope. (2) Give a separate policy component or reviewer the exact proposed action and only the context needed to evaluate it. (3) Deny out-of-scope hosts, credential theft, persistence, data exfiltration, destructive changes, production access, and policy-bypass attempts. (4) Pause ambiguous or high-risk actions for explicit human approval before the tool runs. (5) Enforce independent filesystem, network, identity, and project boundaries, record decisions and outcomes, and fail closed if review times out or becomes unavailable.
 - Responses API and Agents SDK applications do not automatically inherit Codex Auto-review; add review and enforcement to your own harness.
-- Streaming and delayed review use the same state model as the synchronous flow above.
+- Streaming and delayed review use the same state model as the synchronous flow above: if a streamed run pauses, wait for it to settle, inspect `interruptions`, resolve the approvals, and resume from the same `state`.
+- Official references on the page: Codex Auto-review (https://developers.openai.com/codex/sandboxing/auto-review), the open-source Codex reviewer policy (https://github.com/openai/codex/blob/rust-v0.167.0/codex-rs/prompts/templates/guardian/policy.md), Models and Trusted Access (https://developers.openai.com/codex/cyber-safety), and Recommended configuration (https://developers.openai.com/codex/cyber-safety/recommended-configuration).
 
 ## Related
 

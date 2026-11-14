@@ -72,7 +72,7 @@ Submit sign-in input (omit `turn_id`):
 
 ## Notes
 
-- The browser requires user approval before accessing each new website origin, including public sites. Enabling network access does not approve these requests. On `agent.session.requires_action`, retrieve the session and inspect `required_actions`; show `origin` and `reason`.
+- The browser requires user approval before accessing each new website origin, including public sites. Enabling network access does not approve these requests. Enabling automatic review of approvals also preserves browser origin approvals and sign-in requests; keep handling them in your application. On `agent.session.requires_action`, retrieve the session and inspect `required_actions`; show `origin` and `reason`.
 - Origin approval does not enforce confirmation before individual actions (purchases, destructive changes). For such guarantees restrict the hosted browser or use a browser runtime you control. Treat website content as untrusted.
 - Sign-in: only the main agent (not subagents) can request browser authentication. Supports email addresses, passwords, and verification codes; not passkeys or QR-code sign-in. Render the UI from `request.reason`, `credential_origin`, `fields` (`id`, `label`, `type`, `required`), and `options` (`id`, `label`, `field_ids`). Only enter credentials for a verifiable destination; otherwise cancel. Send sign-in values only through the dedicated event; they stay out of model input and are omitted from history. Mask values, keep them out of logs, and do not send credentials in ordinary messages or function-tool results.
 - A `202` with empty body means accepted, not that sign-in succeeded. Disable automatic HTTP/SDK retries for credential submissions. Auth submission limits: up to six field values (each once), each up to 16,384 characters, serialized fields plus selected option within 120 KiB; include at least one field when the request lists fields.
@@ -82,7 +82,8 @@ Submit sign-in input (omit `turn_id`):
 - Asking the user questions: define a function tool (e.g. `request_user_response`) and answer via `agent.session.input.tool_result`; function-tool results are visible to the model, so collect passwords and codes through browser authentication instead.
 - Network: the environment `network` config controls outbound access; allow the destination site and domains for resources or redirects. Origin approval does not override the network policy.
 - Reuse the same session for follow-ups that need browser state; login cookies can expire and recycling the environment clears state. Delete the session to request cleanup.
-- Source: https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use (fetched 2026-10). Distinct from the Responses API computer use tool in this skill's `tools` category.
+- Origin approval is a separate user decision and does not override the network policy. A `202` for an origin decision means it was accepted, not that navigation has completed. Retry the same decision if delivery fails; changing an accepted decision returns `409`.
+- Source: https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use (fetched 2026-11-14). Distinct from the Responses API computer use tool in this skill's `tools` category (`../tools/computer-use.md`, plus SDK drivers and integration recipes pages there).
 
 ## Related
 

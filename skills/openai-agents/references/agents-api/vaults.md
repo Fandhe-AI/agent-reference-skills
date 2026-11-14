@@ -86,9 +86,9 @@ OAuth grant: `auth.type: "mcp_oauth"` with `mcp_server_url`, `access_token`, `ex
 - Environment credentials require an `openai_hosted` environment; they are not supplied to self-hosted environments or application-run function tools. Use exact host names in `allowed_hosts` (no scheme, path, port, wildcard); the proxy supplies secrets only to HTTPS on port 443 or 8443. `allowed_domains` (sandbox network) and `allowed_hosts` (proxy secret injection) are separate; with restricted access include every credential host in `allowed_domains`; do not set `network.access` to `disabled`. Each environment credential needs a unique `secret_name`, not also defined in `environment.env`.
 - The placeholder is passed unchanged in the HTTPS request header; it cannot supply the real secret for local computation such as signing. Keep such credentials in your application behind a function tool.
 - OAuth: your application handles the provider's authorization flow; include `refresh` to let the Agents API refresh the token. If an expired token cannot be refreshed, supply a replacement; expiry does not delete the credential or vault.
-- Rotate: update a credential to replace its secret without changing its ID, type, or (for MCP) server URL. Supplying a new access token without `expires_at` clears the stored expiry; explicit `null` also clears it. Environment credentials rotate via `POST /v1/vaults/{vault_id}/credentials/{credential_id}` and need a new session; changing `secret_name` or `networking` requires a new credential.
+- Rotate: update a credential to replace its secret without changing its ID, type, or (for MCP) server URL. Supplying a new access token without `expires_at` clears the stored expiry; explicit `null` also clears it. Environment credentials rotate via `POST /v1/vaults/{vault_id}/credentials/{credential_id}` and need a new session (updating the vault does not change the credential already configured in an existing sandbox); changing `secret_name` or `networking` requires a new credential.
 - Deleting credentials does not revoke tokens at providers or stop a running session. Deleting a vault removes all its credentials.
-- Source: https://developers.openai.com/api/docs/guides/agents-api/tools/vaults (fetched 2026-10).
+- Source: https://developers.openai.com/api/docs/guides/agents-api/tools/vaults (fetched 2026-11-14).
 
 ## Related
 

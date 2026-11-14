@@ -19,6 +19,25 @@ tunnel-client run --profile local-stdio
 
 For HTTP servers, use `--mcp-server-url https://mcp.internal.example.com/mcp` instead of `--mcp-command`.
 
+Connect from the Responses API by passing `tunnel_id` in the MCP tool definition (do not pass the OpenAI-hosted tunnel endpoint as `server_url`):
+
+```bash
+curl https://api.openai.com/v1/responses \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -d '{
+    "model": "gpt-6-astra",
+    "input": "Use the private MCP server to answer my request.",
+    "tools": [
+      {
+        "type": "mcp",
+        "server_label": "private_mcp",
+        "tunnel_id": "tunnel_0123456789abcdef0123456789abcdef"
+      }
+    ]
+  }'
+```
+
 ## Options / Props
 
 | Name | Type | Description |
@@ -31,6 +50,16 @@ For HTTP servers, use `--mcp-server-url https://mcp.internal.example.com/mcp` in
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/secure-mcp-tunnels (fetched 2026-11-14).
+- Scope: supports private MCP connections, including custom MCP server testing; it does not support public plugin submission or distribution (public plugins need a stable, publicly reachable HTTPS MCP endpoint, e.g. a public HTTPS proxy).
+- Prerequisites: a `tunnel_id` from Platform tunnel settings, a runtime API key for `tunnel-client`, and an MCP server reachable over stdio or HTTP from inside your network. Download the latest release from openai/tunnel-client (keep runbooks on the latest-release URL); start with `tunnel-client help quickstart`. Keep `tunnel-client run` healthy: app discovery and tool calls depend on it. It exposes `/healthz`, `/readyz`, `/metrics`, and a loopback-only (by default) admin UI at `/ui`; raw HTTP logging is off by default and support exports are redacted.
+- A tunnel can be associated with one or more Platform organizations or ChatGPT workspaces; use the same `tunnel_id` for `tunnel-client`. A tunnel associated only with a personal Platform organization does not automatically appear in an Enterprise/Edu workspace; if automatic linking fails contact your OpenAI account team for a reviewed manual association override.
+- Default limits: 1,000 tunnels per ChatGPT workspace and per Platform organization; 600 MCP requests per minute (10/s sustained) per tunnel ID + calling application ID (more `tunnel-client` processes do not multiply it); 10 MiB (10,485,760 bytes) per serialized request or response envelope; 120 seconds absolute request deadline including queue time; 1,000 pending queued requests per tunnel. These are service protections, not throughput or latency guarantees.
+- ChatGPT: in ChatGPT Plugins use Add custom MCP server with Connection set to Tunnel; the tunnel must be associated with the target workspace and the creator needs Tunnels Read + Use.
+- Troubleshooting: "Tunnels access required" means missing organization-level permission (Read to view, Read + Manage to create/edit/delete, Use to run the client or select a tunnel; allow up to 30 minutes for role propagation). If discovery or calls fail, confirm `tunnel-client run` is running and re-run `tunnel-client doctor --profile <name> --explain`; if the client is disconnected, requests fail until it reconnects.
+- OAuth: discovery can travel through the tunnel, but the authorization server itself is not tunneled; it must be reachable from the public internet and the `tunnel-client` host.
+- Security: supports outbound proxies, custom CA bundles, control-plane client certificates, and MCP-side mTLS. Tunnel transport requests are not emitted as ChatGPT Compliance Platform app events; normal app-level compliance logging still applies.
+- Common deployments: Kubernetes sidecar, dedicated Kubernetes deployment, or a VM / systemd service in the same trust boundary as the MCP server.
 - Run `tunnel-client` inside the network that can already reach the MCP server; it opens an outbound HTTPS path to OpenAI, so the server itself is never publicly exposed.
 - The client polls for work, forwards JSON-RPC requests locally, and returns responses; the MCP server address stays private and is only used from inside the environment where `tunnel-client` runs.
 - Supported products: ChatGPT (developer mode), Codex, Responses API, and other OpenAI surfaces that support MCP connectors.

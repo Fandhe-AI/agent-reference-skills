@@ -60,12 +60,12 @@ codex exec-server \
 ## Notes
 
 - Setup: follow the shared webhook setup guide to create an endpoint and select Agents API events; store the signing secret for signature verification. OpenAI sends a signed HTTP POST per subscribed event (payload: `id`, `object: "event"`, `created_at`, `type`, `data`).
-- `agent.session.action_required` includes the session ID and `required_action.type` of `function_call`, `environment_connection`, or `computer_use_approval_request`. The webhook omits call IDs, arguments, environment IDs, and approval details; retrieve the session and inspect `required_actions`.
+- `agent.session.action_required` includes the session ID and `required_action.type` of `function_call`, `environment_connection`, or `computer_use_approval_request`. The webhook omits call IDs, arguments, environment IDs, and approval details; retrieve the session and inspect `required_actions`. For computer use, the nested `request.type` identifies browser origin access or authentication; show the current request to the user, then return the response through the session events endpoint.
 - For self-hosted sessions, `agent.session.created` carries `data.environment_id` and `data.connect.remote_url` (same URL as `environment.remote_url` on the session); save and reuse both on reconnect. Use an environment key as `CODEX_API_KEY`; keep your application API key outside the environment.
 - Retrieve the session's current state before provisioning a sandbox. In production, queue slower work.
 - Environment connection events: when input needs a disconnected self-hosted executor, an `environment_connection` required action is added and `agent.session.action_required` is emitted before waiting. That webhook does not include `connect.remote_url`; start the executor with `session.environment.id` and `session.environment.remote_url`. The API waits up to five minutes (configure client and proxy timeouts). If the wait expires the submission fails; initial input can fail asynchronously leaving the session `failed`. There is no durable input queue.
 - `agent.session.idle` means ready for more input, not that the last turn succeeded; check turn status or stream events. `agent.session.failed` reports a failed session, not every failed turn. Session deletion has no webhook and does not stop provider compute.
-- Source: https://developers.openai.com/api/docs/guides/agents-api/sessions/webhooks (fetched 2026-10).
+- Source: https://developers.openai.com/api/docs/guides/agents-api/sessions/webhooks (fetched 2026-11-14).
 
 ## Related
 

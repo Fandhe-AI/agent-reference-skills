@@ -70,6 +70,8 @@ main_agent = Agent(
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/agents/orchestration (fetched 2026-11-14).
+- At the advanced end, handoffs can also carry structured metadata or filtered history; those exact APIs stay in the language-specific SDK docs because the wiring differs by language. Splitting too early creates more prompts, traces, and approval surfaces without necessarily improving the workflow.
 - Choose handoffs when "a specialist should take over the conversation for that branch of the work". Choose agents-as-tools when "the main agent should stay responsible for the final answer".
 - Start with a single agent. Add specialists only when they materially improve capability isolation, policy isolation, prompt clarity, or trace legibility.
 - Keep the routing surface legible: give each specialist a narrow job, and keep `handoffDescription` (TypeScript) / `handoff_description` (Python) short and concrete.

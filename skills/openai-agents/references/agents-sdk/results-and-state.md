@@ -7,24 +7,38 @@ The result of an agent run is more than the final answer: it's also the handoff 
 ```typescript
 import { Agent, run } from "@openai/agents";
 
-const agent = new Agent({ name: "Tour guide", instructions: "Answer with compact travel facts." });
-const result = await run(agent, "What city is the Golden Gate Bridge in?");
+const agent = new Agent({
+  name: "History tutor",
+  instructions: "You answer history questions clearly and concisely.",
+  model: "gpt-6-astra",
+});
 
+const result = await run(agent, "When did the Roman Empire fall?");
 console.log(result.finalOutput);
-console.log(result.lastAgent);
-console.log(result.history);
 ```
 
 ```python
+import asyncio
+
 from agents import Agent, Runner
 
-agent = Agent(name="Tour guide", instructions="Answer with compact travel facts.")
-result = await Runner.run(agent, "What city is the Golden Gate Bridge in?")
+agent = Agent(
+    name="History tutor",
+    instructions="You answer history questions clearly and concisely.",
+    model="gpt-6-astra",
+)
 
-print(result.final_output)
-print(result.last_agent)
-print(result.to_input_list())
+
+async def main() -> None:
+    result = await Runner.run(agent, "When did the Roman Empire fall?")
+    print(result.final_output)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
+
+The results page has no code of its own; the snippet above is taken from the Agents SDK quickstart (https://developers.openai.com/api/docs/guides/agents/quickstart) and shows reading `finalOutput` / `final_output` from a run result.
 
 ## Options / Props
 
@@ -38,14 +52,14 @@ print(result.to_input_list())
 
 Richer run items, raw model responses, and detailed diagnostics belong to the SDK's deeper reference material (item-level tool/handoff records, guardrail results, usage details) — useful for audits and debugging, not the first thing to learn.
 
-## What to carry into the next turn
+### What to carry into the next turn
 
 - If your application owns full local history: reuse `history` (TS) / `to_input_list()` (Python).
 - If using a session: keep passing the same session; the SDK loads/persists history for you.
 - If using server-managed continuation: pass only the new user input and reuse the stored ID instead of replaying the full transcript.
 - After handoffs: reuse `lastAgent` / `last_agent` when that specialist should stay in control for the next turn.
 
-## Interrupted runs return state, not a final answer
+### Interrupted runs return state, not a final answer
 
 Approval flows are the main case where a result is intentionally incomplete.
 
@@ -57,6 +71,7 @@ That same `state` surface is what you serialize when a review might happen later
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/agents/results (fetched 2026-11-14).
 - The SDK also exposes richer run items and diagnostics (item-level tool/handoff records, raw model responses, guardrail results, usage) for audits and custom interfaces — not required for basic usage.
 - Guardrail/approval workflow design belongs to this skill's `orchestration` scope; this page covers only the result/state surfaces produced by a run.
 
