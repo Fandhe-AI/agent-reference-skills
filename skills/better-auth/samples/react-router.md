@@ -15,15 +15,25 @@ export const auth = betterAuth({
 ```ts
 // app/routes/api.auth.$.ts
 import { auth } from "~/lib/auth.server";
-import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
+import type { Route } from "./+types/api.auth.$";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return auth.handler(request);
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   return auth.handler(request);
 }
+```
+
+```ts
+// app/routes.ts — needed when it does not use flatRoutes()
+import { type RouteConfig, index, route } from "@react-router/dev/routes"
+
+export default [
+    index("routes/home.tsx"),
+    route("api/auth/*", "routes/api.auth.$.ts"),
+] satisfies RouteConfig
 ```
 
 ```ts
@@ -34,7 +44,8 @@ export const authClient = createAuthClient();
 
 ## Notes
 
-- Remix v2 works identically; only the import changes from `react-router` to `@remix-run/node` / `@remix-run/react`
+- Remix v2 works identically; import the argument types (`LoaderFunctionArgs` / `ActionFunctionArgs`) from `@remix-run/node` instead of using `Route` types
+- Files in `app/routes/` only become routes when `app/routes.ts` uses `flatRoutes()`; otherwise register the resource route there (1.7.23 docs)
 - The auth instance file must export `auth` as a named or default export, and is conventionally placed at `app/lib/auth.server.ts` (or project root / `utils/`)
 - Recommended mount path is `app/routes/api.auth.$.ts` (resolves to `/api/auth/*`)
 - Official example: github.com/better-auth/examples/tree/main/react-router-example — Email & Password, Google sign-in, Passkeys, Email Verification, Password Reset, Two Factor Authentication, Profile Update, Session Management

@@ -19,7 +19,7 @@ export async function handle({ event, resolve }) {
 ```
 
 ```ts
-// lib/auth.ts — required so signInEmail/signUpEmail in server actions actually set cookies
+// lib/auth.ts — required so functions that set cookies (like signOut) in server actions actually set them
 import { betterAuth } from "better-auth";
 import { sveltekitCookies } from "better-auth/svelte-kit";
 import { getRequestEvent } from "$app/server";

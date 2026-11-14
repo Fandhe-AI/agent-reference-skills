@@ -4,7 +4,7 @@ Email is a required field for all Better Auth users regardless of the auth metho
 
 ## Signature / Usage
 
-Better Auth works with any transactional email provider; bring your own. Providers with Better Auth guides include Resend, SuperSend TX, Mailtrap, Wraps, and eusend.
+Better Auth works with any transactional email provider; bring your own. Providers with Better Auth guides include Resend, Groundmail, Mailtrap, Wraps, and eusend.
 
 Token-based email verification (OTP-based verification is available via the Email OTP plugin). Requires implementing the `sendVerificationEmail` function. Setting `emailAndPassword.requireEmailVerification` to `true` blocks unverified logins (returns HTTP 403).
 
@@ -137,6 +137,9 @@ export const auth = betterAuth({
 - **Timing attack prevention**: do not await email sending inside verification/reset handlers
 - **Serverless platforms**: use platform-specific mechanisms such as Vercel (`waitUntil`) or Firebase (`onFinish`) to ensure delivery without blocking the response
 - If `requireEmailVerification` is enabled and an SSO user's email is unverified, a verification email is sent but SSO login is not blocked
+- During a sign-up, `sendVerificationEmail` is called after the new account is saved, so a sign-up that rolls back sends no email. A request can still fail after the email is sent if the account stays saved (for example on an adapter without transactions, or when a `session` `after` hook throws). If the function throws, the sign-up still succeeds and the error is logged. To reject a sign-up, use a `user.create.before` database hook
+- `onExistingUserSignUp` (called when someone signs up with an existing email; only with `emailAndPassword.requireEmailVerification: true`, which returns the generic duplicate response) runs after the sign-up request's database work completes. If it throws, the error is logged and the request still returns the generic response
+- Source: https://www.better-auth.com/docs/concepts/email (better-auth v1.7.23 docs)
 
 ### Security
 

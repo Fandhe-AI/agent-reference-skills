@@ -41,9 +41,24 @@ apiKey({
 
 Defers non-critical updates (rate limit counters, timestamps, remaining count) to improve response time.
 
-Requirement: `backgroundTasks.handler` must be set in the auth options.
+Requirement: a `backgroundTasks` handler (`advanced.backgroundTasks.handler`), such as your platform's `waitUntil`, must be set in the auth options.
 
 Trade-off: introduces eventual consistency by returning optimistic data before the DB update completes.
+
+```typescript
+export const auth = betterAuth({
+  advanced: {
+    backgroundTasks: {
+      handler: waitUntil,
+    },
+  },
+  plugins: [
+    apiKey({
+      deferUpdates: true,
+    }),
+  ],
+});
+```
 
 ### Migrating from earlier versions
 
@@ -116,6 +131,8 @@ CREATE INDEX idx_apikey_config_id ON apikey(config_id);
 
 - Storing API keys in plaintext is vulnerable in the event of a database breach. Hashing is enabled by default and strongly recommended
 - Adding an underscore to prefixes is recommended (e.g. `hello_`)
+- `keyExpiration.defaultExpiresIn` is a number of seconds (the v1.7.10 docs said milliseconds); `null` means no expiration (default `null`)
+- Source: https://www.better-auth.com/docs/plugins/api-key/reference (better-auth v1.7.23 docs)
 
 ### DB schema
 

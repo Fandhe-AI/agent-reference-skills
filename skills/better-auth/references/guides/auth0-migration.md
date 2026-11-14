@@ -17,6 +17,8 @@ Auth0 から Better Auth へ移行するためのガイド。ユーザーデー�
 - パスワードハッシュのエクスポートは Auth0 Enterprise ユーザーのみ可能（無料プランはサポートに連絡が必要）
 - ロールマッピングやカスタムパスワードアルゴリズムには追加の設定が必要な場合がある
 - 1.7 ドキュメントでの変更: アカウントの `providerId` は `getAccountProviderId(identity)`（`identity.provider === "auth0"` なら `"credential"`、それ以外は `identity.provider.split("-")[0] ?? identity.provider`）で決める。`accountId` は `providerId === "credential"` なら移行後のユーザー ID、それ以外は `identity.user_id`（旧: 常に `identity.user_id`）。サインインコンポーネントは `import { authClient } from "@/lib/auth-client"`（旧: `better-auth/client`）。
+- 1.7.23 ドキュメントでの変更: TOTP シークレットは Management API では取得できず、Auth0 のサポートリクエスト経由でのみ提供される。移行スクリプトの 2FA 処理は `generateBackupCodes(key: string | SecretConfig)`（`better-auth/crypto` の `SecretConfig` 型）になり、TOTP シークレットは Base32 のため `symmetricEncrypt({ key: ctx.secretConfig, data: \`base32:${factor.totp.secret}\` })` で暗号化して `twoFactor` に保存し、バックアップコードも `ctx.secretConfig` で生成する。MFA 移行の try/catch は削除。`two-factor` プラグインが有効な場合のみ `twoFactorEnabled`（TOTP シークレットを持つ factor があるか）をユーザーに設定し、`migrateMFAFactors(auth0User, createdUser.id, ctx)` を呼ぶ。
+- Source: https://www.better-auth.com/docs/guides/auth0-migration-guide (better-auth v1.7.23 docs)
 
 ## Related
 

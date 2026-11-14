@@ -335,6 +335,9 @@ A user must satisfy one of the following:
 - Account linking is enabled by default
 - OAuth tokens are not encrypted by default. Enable `account.encryptOAuthTokens`; do not encrypt them yourself in a database hook
 - `unlinkAccount` in 1.7 takes the local account row `id` from `listAccounts` as `accountId` and no `providerId`; the official sample passes `providerId` plus a made-up `accountId` (Adapted from the official docs)
+- A change-email link only works for the account that requested it and does not sign the user in; the new email is marked verified only if the current email was verified
+- When sessions are stored server-side, the session must still be active when social account linking starts and when the provider redirects back
+- Source: https://www.better-auth.com/docs/concepts/users-accounts (better-auth v1.7.23 docs)
 - The change-email verification sample includes the verification `url` in the email body; without it the user cannot complete verification (Adapted from the official docs)
 
 ## Related

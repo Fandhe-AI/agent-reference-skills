@@ -184,3 +184,6 @@ signUpOnVerification: {
 - Do not `await` the `sendOTP` function during request processing. On serverless, use `waitUntil`
 - When `requireVerification` is enabled, sign-in attempts by unverified users return a 401 error (PHONE_NUMBER_NOT_VERIFIED) and automatically send an OTP
 - On exceeding the attempt limit, the OTP code is automatically deleted and a 403 status is returned
+- A phone number is only set by verifying it: non-null updates through `updateUser` and a `phoneNumber` sent to a sign-up or sign-in route are rejected, and a number mapped from a social profile is not stored (including on account linking). Changing to a different number always requires OTP verification via `verify` with `updatePhoneNumber: true`
+- Password reset also needs a verified number: no reset code is sent to an unverified number, and `resetPassword` returns a 400 error (PHONE_NUMBER_PENDING_VERIFICATION) without adding or changing a password
+- Source: https://www.better-auth.com/docs/plugins/phone-number (better-auth v1.7.23 docs)

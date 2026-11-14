@@ -148,6 +148,8 @@ Generates a secret key for the Better Auth instance.
 - **Data protection:** in `info`, secrets, API keys, and database URLs are replaced with `[REDACTED]`.
 - **Module resolution:** the CLI resolves `tsconfig.json` path aliases, `package.json` subpath imports (including SvelteKit 3's `#lib`), and stubbed framework virtual modules (`$env/*`, `$app/*`, `cloudflare:workers`, Vite assets like `?raw`). On SvelteKit 2 run `svelte-kit sync` first so `$lib` resolves. Module types that cannot load outside their bundler (`.svelte` components, `import.meta.glob`) must stay out of the config's import graph.
 - **PostgreSQL non-default schema:** set `database.schemaName`; otherwise `migrate` uses the connection's `search_path`.
+- **Scripts and CI:** without an interactive terminal the CLI cannot prompt, so pass answers as flags such as `--yes` (for example `npx auth@latest migrate --yes`). When a command cannot continue it fails and names what it needs, such as a flag or a terminal.
+- Source: https://www.better-auth.com/docs/concepts/cli (better-auth v1.7.23 docs)
 
 ## Related
 

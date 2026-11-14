@@ -159,7 +159,7 @@ trustedOrigins: [
 ]
 ```
 
-For `http://` and `https://` URLs, patterns match the full origin (paths and query strings ignored). For custom schemes (like `exp://` or `myapp://`), wildcard patterns match against the full URL including paths. A non-wildcard pattern matches by scheme and authority: a host-less entry such as `myapp://` or `exp://` trusts every host of that scheme, while a host-bearing entry such as `myapp://callback` must match that host exactly (not `myapp://callback.attacker.tld`). The separator is `/`, so `http://*.example.com` matches both `http://api.example.com` and `http://api.app.example.com` (changed in 1.7).
+For `http://` and `https://` URLs, patterns match the full origin (paths and query strings ignored). For custom schemes (like `exp://` or `myapp://`), a wildcard pattern matches the host and path separately, and a URL with user info never matches; `myapp://*` trusts every host and path of `myapp://`, and a scheme wildcard such as `*://example.com` does not match custom schemes. A wildcard host made only of digits, dots, and wildcards, such as `192.168.*.*`, matches only IPv4 addresses in that range. A non-wildcard pattern matches by scheme and authority: a host-less entry such as `myapp://` or `exp://` trusts every host of that scheme, while a host-bearing entry such as `myapp://callback` must match that host exactly (not `myapp://callback.attacker.tld`). The separator is `/`, so `http://*.example.com` matches both `http://api.example.com` and `http://api.app.example.com` (changed in 1.7).
 
 ### `user`
 
@@ -191,8 +191,9 @@ For `http://` and `https://` URLs, patterns match the full origin (paths and que
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `ipAddress.ipAddressHeaders` | `string[]` | — | Custom headers for IP detection |
-| `ipAddress.disableIpTracking` | `boolean` | — | Disable IP address tracking |
+| `ipAddress.ipAddressHeaders` | `string[]` | `["x-forwarded-for"]` | Header names to read the client IP address from; the first header with a valid address is used. List only headers that your proxy or server code sets on every request and replaces any client-sent value. If your proxies append to the header instead, list them in `trustedProxies` (see concepts/rate-limit.md) |
+| `ipAddress.trustedProxies` | `string[]` | — | IP addresses or CIDR ranges of your reverse proxies. Forwarded addresses are read from right to left; these proxies are skipped and the first other address is used as the client IP |
+| `ipAddress.disableIpTracking` | `boolean` | — | Disable IP address tracking. This also turns off the built-in rate limiter for HTTP requests |
 | `useSecureCookies` | `boolean` | — | Force secure cookies |
 | `disableCSRFCheck` | `boolean` | — | Disable all CSRF protection |
 | `disableOriginCheck` | `boolean` | — | Disable origin validation (open redirect risk) |
@@ -277,6 +278,8 @@ plugins: [myPlugin(), anotherPlugin()]
 - For `baseURL`, always set explicitly rather than relying on request inference
 - The official example uses `*.vercel.app`; this page substitutes a self-owned domain pattern because shared-suffix wildcards also trust third-party deployments.
 - Background tasks enable optimistic responses in serverless environments
+- `trustedOrigins` as a function: `request` is `undefined` at initialization (the function is called once when Better Auth starts), on a direct `auth.api` call with a static `baseURL` (string or unset; these calls use the origins resolved at initialization), and on a direct `auth.api` call with a dynamic `baseURL` that passes neither `request` nor `headers` with `Host` / `X-Forwarded-Host` (the call then uses `fallback`, and throws without it). Return your default trusted origins when `request` is `undefined`. The function receives a `Request` for requests to the auth handler, for direct `auth.api` calls with a dynamic `baseURL` (the `request` you pass, or one built from `headers`, which must include `Host`, or `X-Forwarded-Host` when `advanced.trustedProxyHeaders` is enabled), and for endpoints with their own CSRF check on a static `baseURL` (such as email sign-in and sign-up), where that check can call the function again with the `request` you pass
+- Source: https://www.better-auth.com/docs/reference/options (better-auth v1.7.23 docs)
 - `database.validateSchema` defaults to `true` in every environment, including production (the official options table says "true outside production", which contradicts the database docs and the v1.7.10 source, where validation runs unless the option is `false`) (Adapted from the official docs).
 
 ## Related

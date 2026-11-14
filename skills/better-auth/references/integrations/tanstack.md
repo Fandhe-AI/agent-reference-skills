@@ -25,8 +25,42 @@ export const auth = betterAuth({
 });
 ```
 
+Solid (TanStack Start with Solid) imports the plugin from `better-auth/tanstack-start/solid`.
+
+Server function that sets cookies through `tanstackStartCookies()` (React):
+
+```typescript
+// src/lib/auth.functions.ts
+import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeaders } from "@tanstack/react-start/server";
+import { auth } from "@/lib/auth"
+
+export const signOut = createServerFn({ method: "POST" }).handler(async () => {
+    await auth.api.signOut({
+        headers: getRequestHeaders()
+    })
+})
+```
+
+Solid:
+
+```typescript
+// src/lib/auth.functions.ts
+import { createServerFn } from "@tanstack/solid-start";
+import { getRequestHeaders } from "@tanstack/solid-start/server";
+import { auth } from "@/lib/auth"
+
+export const signOut = createServerFn({ method: "POST" }).handler(async () => {
+    await auth.api.signOut({
+        headers: getRequestHeaders()
+    })
+})
+```
+
 ## Notes
 
+- Functions that need to set cookies (like `signOut`) on the server require `tanstackStartCookies` (the last plugin in the array); the client SDK / `authClient` is recommended over server actions with `auth.api`
+- Source: https://www.better-auth.com/docs/integrations/tanstack (better-auth v1.7.23 docs)
 - Three protection strategies: `beforeLoad` with a server function to verify sessions before rendering a route; a pathless `_protected` layout route to protect multiple child routes at once; or calling `ensureSession()` inside a server function before sensitive operations
 - Quick start: `npm create @tanstack/start` and select the Better Auth add-on to scaffold a pre-configured project
 

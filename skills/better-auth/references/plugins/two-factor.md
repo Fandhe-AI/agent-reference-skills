@@ -123,6 +123,22 @@ Parameters:
 
 Accepts codes from the current time window plus one period on either side.
 
+#### Importing Existing TOTP Secrets
+
+To import TOTP secrets from another provider, prefix each Base32 secret with `base32:`, encrypt it with your auth secret, and store it in the `twoFactor` table. Then set `twoFactorEnabled: true` on the user.
+
+```typescript
+import { symmetricEncrypt } from "better-auth/crypto";
+
+const ctx = await auth.$context;
+const secret = await symmetricEncrypt({
+    key: ctx.secretConfig,
+    data: `base32:${importedSecret}`,
+});
+```
+
+Remove any spaces from the secret before storing it. Imported secrets must use SHA-1 and the same `digits` and `period` as your TOTP options.
+
 ### Send OTP
 
 ```typescript
@@ -310,3 +326,5 @@ twoFactorClient({
 - OTP methods require implementing the `sendOTP` callback in the plugin configuration
 - Trusted devices are remembered for exactly 30 days, and the window resets on each successful login within it
 - Using the `twoFactorPage` setting triggers a full browser reload. `onTwoFactorRedirect` is recommended for programmatic handling
+- `viewBackupCodes` (server only): `userId` is a required string (the ID of the user whose backup codes to return); v1.7.10 docs typed it optional/nullable
+- Source: https://www.better-auth.com/docs/plugins/2fa (better-auth v1.7.23 docs)

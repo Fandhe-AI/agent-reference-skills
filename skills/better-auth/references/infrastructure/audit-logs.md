@@ -59,16 +59,17 @@ Tracked events:
 
 | Group | Events |
 | --- | --- |
-| User | `user_signed_up`, `user_profile_updated`, `user_profile_image_updated`, `user_email_verified`, `user_banned`, `user_unbanned`, `user_deleted` |
-| Session | `user_signed_in`, `user_signed_out`, `session_created`, `session_revoked`, `sessions_revoked_all`, `user_impersonated`, `user_impersonation_stopped` |
+| User | `user_created`, `profile_updated`, `profile_image_updated`, `email_verified`, `email_changed`, `user_banned`, `user_unbanned`, `user_role_updated`, `user_deleted`, `anonymous_user_converted`, `two_factor_enabled`, `two_factor_disabled`, `two_factor_verified` |
+| Session | `user_signed_in`, `user_signed_out`, `user_sign_in_failed`, `session_created`, `session_revoked`, `all_sessions_revoked`, `user_impersonated`, `user_impersonated_stopped` |
 | Account | `account_linked`, `account_unlinked`, `password_changed` |
 | Verification | `password_reset_requested`, `password_reset_completed`, `email_verification_sent` |
-| Organization (organization plugin) | `organization_created`, `organization_updated`, `member_added`, `member_removed`, `member_role_updated`, `member_invited`, `invite_accepted`, `invite_rejected`, `invite_cancelled`, `team_created`, `team_updated`, `team_deleted`, `team_member_added`, `team_member_removed` |
-| Security (Sentinel plugin) | `security_blocked`, `security_allowed`, `security_credential_stuffing`, `security_impossible_travel`, `security_geo_blocked`, `security_bot_blocked`, `security_suspicious_ip`, `security_velocity_exceeded`, `security_free_trial_abuse`, `security_compromised_password`, `security_stale_account` |
+| Organization (organization plugin) | `organization_created`, `organization_updated`, `organization_deleted`, `organization_member_added`, `organization_member_removed`, `organization_member_role_updated`, `organization_member_invited`, `organization_member_invite_accepted`, `organization_member_invite_rejected`, `organization_member_invite_canceled`, `organization_team_created`, `organization_team_updated`, `organization_team_deleted`, `organization_team_member_added`, `organization_team_member_removed` |
+| Security (Sentinel plugin) | `security_check`, `security_signal` |
 
 ## Notes
 
 - No manual instrumentation is needed; the `dash()` plugin hooks into the Better Auth instance.
+- Event names changed in the 1.7.23 docs: organization events are prefixed `organization_` (e.g. filter with `eventType: "organization_member_invited"`, formerly `member_invited`), and the Sentinel security events are consolidated into `security_check` (one event per protected user action; `eventData.outcome` is `passed`, `challenged`, or `blocked`; includes `evaluatedChecks`, `triggeredBy`, and `reason`) and `security_signal` (informational detection detail for the Security dashboard; does not count toward security usage).
 - An identifier is a unique value for an event, for example an email address or username.
 - `getAllAuditLogs` requires the organization plugin so membership roles can be evaluated.
 - Pagination example: loop with `limit` / `offset` until `events.length < limit`.
@@ -98,7 +99,7 @@ async function fetchAllAuditLogs() {
   return allEvents;
 }
 ```
-- Source: https://www.better-auth.com/docs/infrastructure/plugins/audit-logs (better-auth v1.7.10 docs)
+- Source: https://www.better-auth.com/docs/infrastructure/plugins/audit-logs (better-auth v1.7.23 docs)
 
 ## Related
 

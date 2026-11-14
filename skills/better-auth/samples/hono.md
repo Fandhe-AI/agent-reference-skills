@@ -80,10 +80,9 @@ const response = await client.hello.$get();
 ```
 
 ```jsonc
-// wrangler.jsonc — Cloudflare Workers only
+// wrangler.jsonc — Cloudflare Workers only (compatibility date before 2026-08-04)
 {
-  // Use "nodejs_als" instead if you only need AsyncLocalStorage.
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": ["nodejs_compat"]
 }
 ```
 
@@ -94,5 +93,5 @@ const response = await client.hello.$get();
 - RPC-target routes (e.g. `/hello`) also need the same explicit origin and `credentials: true` CORS; the official page does not state this (Adapted: `cors()` registered on `"*"` instead of `"/api/auth/*"`)
 - Chain the routes on the `Hono` instance and `export type AppType = typeof app` so the RPC client can infer route types (Adapted: the official page chains a single route; here the CORS, auth, and `/hello` routes are chained in one app)
 - `sessionMiddleware` sets `session` to `{ user, session }` or `null`; read it with `c.get("session")` and access `session.user` (Adapted: official middleware and route examples combined into one app)
-- Cloudflare Workers: Better Auth uses `AsyncLocalStorage`, so enable the `nodejs_compat` (or `nodejs_als`) compatibility flag
+- Cloudflare Workers: Better Auth uses `node:crypto` and `AsyncLocalStorage`; Workers enable Node.js compatibility by default from compatibility date `2026-08-04`, so for an earlier date add the `nodejs_compat` flag (the 1.7.23 Hono page now points to the Cloudflare guide, see references/guides/cloudflare.md; Adapted: the `nodejs_compat` snippet is from that guide)
 - The Better Auth client uses `credentials: "include"` by default; Hono RPC clients need `init: { credentials: "include" }` only for cross-origin requests

@@ -188,7 +188,7 @@ jwt({
 })
 ```
 
-Default: BASE_URL is used for issuer and audience. Default expiration is 15 minutes.
+Default: BASE_URL is used for issuer and audience. Default expiration is 15 minutes. Without a configured `baseURL`, direct `auth.api` calls have no issuer or audience to use and the plugin logs a warning; set `baseURL`, or set `issuer` and `audience` here.
 
 ### Custom JWKS path
 
@@ -198,6 +198,26 @@ jwt({ jwks: { jwksPath: "/.well-known/jwks.json" } })
 
 // Client (must match the server)
 jwtClient({ jwks: { jwksPath: "/.well-known/jwks.json" } })
+```
+
+### OAuth Provider Mode
+
+When you use the OAuth Provider or MCP plugin, disable both ways the JWT plugin hands session JWTs to the browser: the `/token` endpoint and the `set-auth-jwt` header. OAuth clients get tokens from `/oauth2/token` and claims from `/oauth2/userinfo`, so they need neither.
+
+Session JWTs are signed with the same keys as OAuth access tokens, and by default carry the auth server's URL as both `iss` and `aud`. A resource server that checks only signature, issuer, and audience can therefore accept a signed-in user's session JWT as an access token, without any client, consent, or scope. Disabling both paths removes that token from the browser. Resource servers should also reject tokens that are not OAuth access tokens (see the OAuth Provider resource-server docs, "Protect your API").
+
+```typescript
+import { betterAuth } from "better-auth";
+import { jwt } from "better-auth/plugins";
+
+betterAuth({
+  disabledPaths: [
+    "/token",
+  ],
+  plugins: [jwt({
+    disableSettingJwtHeader: true,
+  })]
+})
 ```
 
 ### Remote JWKS URL
@@ -255,7 +275,8 @@ jwt({
 
 - The private key is encrypted with AES256 GCM by default. Keeping encryption enabled is recommended for security
 - JWKS is cached indefinitely and only refreshed when the key ID (kid) differs
-- When used with OAuth Provider mode, disable the `/token` endpoint and set `disableSettingJwtHeader: true`
+- When used with the OAuth Provider or MCP plugin, disable the `/token` endpoint (`disabledPaths: ["/token"]`) and set `disableSettingJwtHeader: true`; otherwise a session JWT can be accepted by a resource server as an access token (see OAuth Provider Mode)
+- Source: https://www.better-auth.com/docs/plugins/jwt (better-auth v1.7.23 docs)
 
 ### DB schema
 

@@ -33,7 +33,7 @@ npx auth@latest generate   # Generate schema
 
 ### Schema Validation
 
-During initialization Better Auth compares the schema with the tables it writes and reports missing tables, missing columns, and required columns it never fills, with fixes. Errors appear through your configured logger without waiting for a request; requests await the same check and fail if the schema does not match (validation does not stop your server or build). Run `npx auth@latest check schema` to check explicitly. Validation is on by default, including production, and caches a clean result or mismatch per adapter instance; programmatic migrations invalidate cached checks. Kysely reads live database metadata; Drizzle checks the configured schema object and Prisma the generated client's data model without querying the database (they cannot detect unapplied migrations). Custom adapters without a registered check are not validated.
+When the auth instance is first used, Better Auth checks that your database has the tables and columns it needs. If they do not match, requests fail with an error that explains how to fix it. To check ahead of time, run `npx auth@latest check schema`. Drizzle and Prisma are checked against your schema definitions, so the check cannot tell whether migrations were applied. To disable runtime validation, set `advanced.database.validateSchema` to `false`.
 
 ```typescript
 export const auth = betterAuth({
@@ -44,8 +44,6 @@ export const auth = betterAuth({
   },
 });
 ```
-
-`auth migrate` and `auth generate` keep their own schema diagnostics.
 
 ### Secondary storage
 
@@ -204,6 +202,8 @@ Joins perform multiple queries in a single request (50+ endpoints). When disable
 - Before hooks can run more than once on MongoDB with transactions (the adapter retries when MongoDB aborts for a concurrent write); send emails and call other services from an after hook. After hooks in a transaction run after commit and are skipped on rollback; without adapter transactions they also run when a later step of the same request fails.
 - Additional configuration is required for client-side type inference of custom fields
 - The additional-field `role` example sets `input: false` so users cannot set their own role at sign-up (security) (Adapted from the official docs)
+- Schema Validation (condensed in v1.7.23 docs): the check runs when the auth instance is first used and requests fail with a fix-it error on mismatch; the longer v1.7.10 text on caching, logger output, and warnings for adapters without validation was dropped from the official page
+- Source: https://www.better-auth.com/docs/concepts/database (better-auth v1.7.23 docs)
 
 ## Related
 

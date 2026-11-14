@@ -7,7 +7,7 @@ A plugin that integrates Stripe's payment and subscription features with Better 
 ### Installation
 
 ```bash
-npm install @better-auth/stripe stripe@^22.0.0
+npm install @better-auth/stripe stripe@^23.0.0
 ```
 
 ### Setup (server side)
@@ -17,7 +17,9 @@ import { betterAuth } from "better-auth"
 import { stripe } from "@better-auth/stripe"
 import Stripe from "stripe"
 
-const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!)
+const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2026-09-30.endive", // Latest API version as of Stripe SDK v23.0.0
+})
 
 export const auth = betterAuth({
     plugins: [
@@ -120,6 +122,10 @@ Creates a new `subscription` table:
 - **Scheduled changes**: `scheduleAtPeriodEnd: true` defers plan changes to the end of the period (uses Stripe's Subscription Schedules API)
 - Changed in 1.7: `referenceMiddleware` rejects organization-scoped subscriptions unless `organization: { enabled: true }` is set in the `stripe()` options. The organization plugin is still needed separately to resolve the active organization.
 - Changed in 1.7: the `event` parameter of the `onSubscriptionCancel` callback is now required (non-optional).
+- Stripe SDK: the docs now install `stripe@^23.0.0` and pin `apiVersion: "2026-09-30.endive"` (v1.7.10 docs: `stripe@^22.0.0`, `2026-06-24.dahlia`). Upgrading from Stripe v18 needs no code changes (async webhook signature verification is handled internally)
+- Upgrading to Stripe v23: API version `2026-09-30.endive` rejects `payment_method_types` when creating a Checkout Session. If you pass it through `getCheckoutSessionParams`, use `allowed_payment_method_types` or `excluded_payment_method_types` instead, or remove it to manage payment methods from the Stripe Dashboard
+- `stripeCustomerId` (on `user`, and on `organization` when the organization plugin is used) is set by the server
+- Source: https://www.better-auth.com/docs/plugins/stripe (better-auth v1.7.23 docs)
 
 ## Related
 
