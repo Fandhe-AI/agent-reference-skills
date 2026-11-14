@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool / last verified: 2026-11-14 -->
 
 # Text editor tool
 
@@ -31,6 +31,11 @@ Client tool named `str_replace_based_edit_tool`: Claude views and edits text fil
 - Pricing: additional input tokens beyond base token pricing for `text_editor_20250728`: 974 tokens on Claude 4.7 and later models and Claude Mythos Preview; 745 tokens on Claude 4.6 and earlier models.
 - Change log: `text_editor_20250728` (2025-07-28) adds optional `max_characters`, otherwise identical to `_20250429`; `text_editor_20250429` (2025-04-29) is the Claude 4 version and removes `undo_edit`; `text_editor_20250124` (2025-03-13) is optimized for Claude Sonnet 3.7; `text_editor_20241022` (2024-10-22) is the initial release with Claude Sonnet 3.5 (retired) and includes `undo_edit`.
 - When combining with other tools (bash, computer use), match the tool version to the model and account for each tool's separate token overhead.
+- Availability: no model restriction (available on every model) and eligible for zero data retention (excludes Covered Models) and HIPAA readiness; it is a client-side tool run in your environment. Stable on the Claude API, Amazon Bedrock (including bedrock-runtime), Claude Platform on AWS, Claude Models on Google Cloud (Google managed) and Microsoft Foundry. Endpoint: `/v1/messages`.
+- `max_characters`: when set, truncate the file contents you return for `view` to that length.
+- Errors: return failures as a `tool_result` with `is_error: true` and a plain message (for example `Error: File not found`, `Error: Found 3 matches for replacement text. Please provide more context to make a unique match.`, `Error: No match found for replacement. Please check your text and try again.`, `Error: Permission denied. Cannot write to file.`).
+- Implementation advice: keep backups of files before applying edits, and give Claude explicit file paths in the prompt.
+- Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool (fetched 2026-11-14)
 
 ## Related
 

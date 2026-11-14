@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner / last verified: 2026-11-14 -->
 
 # Tool Runner (SDK) Agentic Loop
 
@@ -34,7 +34,7 @@ def calculate_sum(a: int, b: int) -> str:
 
 
 runner = client.beta.messages.tool_runner(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     tools=[get_weather, calculate_sum],
     messages=[
@@ -70,7 +70,7 @@ const getWeatherTool = betaZodTool({
 });
 
 const finalMessage = await client.beta.messages.toolRunner({
-  model: "claude-opus-5",
+  model: "claude-opus-5-5",
   max_tokens: 1024,
   tools: [getWeatherTool],
   messages: [{ role: "user", content: "What's the weather like in Paris?" }]
@@ -88,4 +88,5 @@ for (const block of finalMessage.content) {
 - The Python `@beta_tool` decorator derives the JSON Schema from function type hints and the docstring's `Args:` section.
 - TypeScript's `betaZodTool()` (Zod-validated) and `betaTool()` (JSON Schema, unvalidated) are the two ways to define runner tools; use `client.beta.messages.toolRunner()` with either.
 - `runner.until_done()` (Python) / `await runner` (TypeScript) returns the final message after all tool calls resolve; iterate the runner directly (`for message in runner`) to observe each turn.
+- Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner (fetched 2026-11-14); the official examples use `claude-opus-5-5`.
 - Tool exceptions are caught automatically and returned to Claude as `is_error: true` results; use the manual loop (`handle-tool-calls`) instead when you need human-in-the-loop approval or custom logging.

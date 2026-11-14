@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/skills/retrieve / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/api/skills/retrieve / last verified: 2026-11-14 -->
 
 # Get Skill
 
@@ -10,9 +10,11 @@ Fetches a single Skill by ID. GA endpoint (no beta header).
 GET /v1/skills/{skill_id}
 ```
 
+Adapted (not in the official docs): the official example sends `-H "Authorization: Bearer $ANTHROPIC_API_KEY"`; this page keeps `X-Api-Key`.
+
 ```bash
 curl https://api.anthropic.com/v1/skills/$SKILL_ID \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -40,6 +42,8 @@ curl https://api.anthropic.com/v1/skills/$SKILL_ID \
 
 - A Skill whose versions were all deleted under the beta has no current version to return: this call returns a 400 error and the Skill is omitted from list responses until a version is uploaded. It can still be deleted.
 - With the beta header `skills-2025-10-02` the response keeps the beta shape (`display_title`, `latest_version`, string `source`).
+- Adapted from the official docs: the example authenticates with `X-Api-Key: $ANTHROPIC_API_KEY` instead of the official `Authorization: Bearer $ANTHROPIC_API_KEY` header.
+- Source: https://platform.claude.com/docs/en/api/skills/retrieve (fetched 2026-11-14)
 - This is the Claude API Skills API (management of SKILL.md packages), distinct from this repository's own skills concept and from Claude Code Skills.
 
 ## Related

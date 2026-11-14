@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise / last verified: 2026-11-14 -->
 
 # Skills for enterprise
 
@@ -36,6 +36,9 @@ Skill lifecycle: Plan → Create and review → Test → Deploy → Monitor → 
 - Custom Skills do not sync across surfaces (claude.ai / Claude API / Claude Code) — maintain Git as the source of truth and synchronize manually.
 - Skill content scanning: Claude Enterprise organizations can turn on "Skill and plugin security scanning" (claude.ai Organization settings > Skills) for custom Skills uploaded or edited in claude.ai and Claude Cowork. A Skill that fails the scan, or whose scan has not finished, is blocked; one that passes with a warning stays usable behind a caution notice. It complements, but does not replace, the review checklist.
 - Scanning does not cover the Claude API: Skills uploaded through the Skills API (`/v1/skills`), including from the Claude Console, are not scanned, so rely on the review checklist and version pinning. It also does not apply to Skills already in the organization when scanning was turned on, or to organizations with certain data handling configurations such as CMEK, ZDR, or HIPAA readiness.
+- Versioning: pin Skills to specific versions in production; if `version` is omitted, requests use the latest version, so a new version uploaded by anyone in the workspace immediately changes what production agents run. Use latest only in development, keep the previous version as a rollback, and verify checksums / signed commits for reviewed Skills.
+- Evaluation requirement: suites of 3-5 representative queries (should trigger, should not trigger, ambiguous), tested across the models in use; authors should not review their own Skills.
+- Source: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise (fetched 2026-11-14)
 - Usage analytics are not currently available through the Skills API; implement application-level logging to track which Skills are included in requests.
 - Treat installing an unvetted Skill with the same rigor as installing production software.
 - This is enterprise governance for Claude API Agent Skills; Claude Code Skills distribution/plugins are covered by `anthropic-claude-code-extend`.

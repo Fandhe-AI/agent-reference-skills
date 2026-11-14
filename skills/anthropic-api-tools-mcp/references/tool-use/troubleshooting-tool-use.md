@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/troubleshooting-tool-use / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/troubleshooting-tool-use / last verified: 2026-11-14 -->
 
 # Troubleshooting tool use
 
@@ -22,18 +22,19 @@ Fix: return one tool_result per tool_use block, tool_result blocks before any te
 | Parameter values outside enum | Missing strict mode or too-large enum | Shrink enum or add `input_examples` |
 | Sequential calls when parallel expected | tool_result sent one per message instead of together | Send all `tool_result` blocks in ONE user message |
 | `disable_parallel_tool_use` seems ignored | Set on a later request | Must be set on the request that returns `tool_use` |
-| Every request is a cache miss | `tool_choice`/thinking config/`output_config.effort` varying | Keep stable, or place `cache_control` before the variation point |
+| Every request is a cache miss | `tool_choice`/thinking config/`output_config.effort` varying | Keep `tool_choice` stable or place `cache_control` before the variation point; hold thinking config and effort constant for the life of a cached conversation |
 | Adding tool mid-conversation breaks cache | Tool prepended to array | Use `defer_loading: true` with tool search instead |
 
 ## Notes
 
 - `tool_use ids were found without tool_result blocks immediately after`: missing `tool_result` for some ids, or `tool_result` not first in content array — return one per `tool_use`, before any text.
-- `was found without a corresponding <name>_tool_result block`: a `server_tool_use` block has no result yet (often called alongside a client tool) and either the next user message ended the turn early or the resume request dropped that server tool from `tools` — send a user message containing only the pending `tool_result` blocks and keep the same `tools` array.
+- `was found without a corresponding <name>_tool_result block`: a `server_tool_use` block has no result yet (often called alongside a client tool) and either the next user message ended the turn early or the resume request dropped that server tool from `tools` (the message then ends with `but no <name> tool was provided`) — send a user message containing only the pending `tool_result` blocks and keep the same `tools` array.
 - `Unsupported regex feature in pattern field: ...`: a `pattern` in a strict tool's `input_schema` uses a regex feature strict mode cannot compile, such as a backreference, a lookaround, a word boundary, or a large `{n,m}` range. Simplify the pattern; anchored patterns with basic quantifiers, character classes, and groups are supported. `pattern` itself is usable in strict mode. (Removed: the earlier error `Input schema is not compatible with strict mode: string patterns are not supported` no longer appears in the official page.)
 - `All tools have defer_loading: true`: at least one tool must load immediately; the tool search tool itself must never have `defer_loading: true`.
 - 400 with "`thinking` or `redacted_thinking` blocks in the latest assistant message cannot be modified": don't alter the assistant's thinking blocks before resending — pass the whole assistant message back unchanged, then append `tool_result`.
 - Claude refuses to act on / asks confirmation for instructions embedded in a tool result: Claude treats instructions inside `tool_result` content as untrusted third-party data by design — move your own instructions to a `user` turn after the `tool_result` (or a mid-conversation system message on supported models), keep the tool result to just data.
-- Opus 4.6+: string comparison on tool inputs can fail due to differing Unicode/forward-slash JSON escaping between model versions — always parse with `json.loads()`/`JSON.parse()`, never raw string-match serialized input.
+- Newer models: string comparison on tool inputs can fail due to differing Unicode/forward-slash JSON escaping between model versions — always parse with `json.loads()`/`JSON.parse()`, never raw string-match serialized input.
+- Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/troubleshooting-tool-use (fetched 2026-11-14)
 
 ## Related
 

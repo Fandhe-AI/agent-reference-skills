@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/skills/versions/retrieve / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/api/skills/versions/retrieve / last verified: 2026-11-14 -->
 
 # Get Skill Version
 
@@ -10,9 +10,11 @@ Fetches a single Skill version by skill ID and version identifier. GA endpoint (
 GET /v1/skills/{skill_id}/versions/{version}
 ```
 
+Adapted (not in the official docs): the official example sends `-H "Authorization: Bearer $ANTHROPIC_API_KEY"`; this page keeps `X-Api-Key`.
+
 ```bash
 curl https://api.anthropic.com/v1/skills/$SKILL_ID/versions/$VERSION \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -33,6 +35,8 @@ SkillVersion object: `type` (`"skill_version"`), `id` (addresses the version in 
 
 - `GET /v1/skills/{skill_id}/versions/latest` resolves the newest version in one call.
 - IDs captured under the beta with the `skill_version_` prefix are accepted as input. Requests carrying the `skills-2025-10-02` beta header address versions by their Unix epoch timestamp instead (e.g. `"1759178010641129"`).
+- Adapted from the official docs: the example authenticates with `X-Api-Key: $ANTHROPIC_API_KEY` instead of the official `Authorization: Bearer $ANTHROPIC_API_KEY` header.
+- Source: https://platform.claude.com/docs/en/api/skills/versions/retrieve (fetched 2026-11-14)
 - This is the Claude API Skills API (management of SKILL.md packages), distinct from this repository's own skills concept and from Claude Code Skills.
 
 ## Related

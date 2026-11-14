@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/skills/versions/create / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/api/skills/versions/create / last verified: 2026-11-14 -->
 
 # Create Skill Version
 
@@ -10,10 +10,12 @@ Creates a new version of an existing Skill from an uploaded package. GA endpoint
 POST /v1/skills/{skill_id}/versions
 ```
 
+Adapted (not in the official docs): the official example sends `-H "Authorization: Bearer $ANTHROPIC_API_KEY"`; this page keeps `X-Api-Key`.
+
 ```bash
 curl https://api.anthropic.com/v1/skills/$SKILL_ID/versions \
     -H 'Content-Type: multipart/form-data' \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -F 'files[]=@/path/to/file'
 ```
@@ -44,6 +46,8 @@ SkillVersion object (no `directory` field):
 
 - A new version is a complete snapshot, not a delta: upload the Skill's full file set each time. Files you omit are not carried over, and the `name` in the new version's `SKILL.md` must match the Skill's existing name.
 - Under the beta header `skills-2025-10-02` the version object also has `directory` and `version` (a Unix epoch string such as `"1759178010641129"`), and files must sit inside a top-level directory matching the Skill `name`. In GA the version identifier is the `id` (`skver_...`).
+- Adapted from the official docs: the example authenticates with `X-Api-Key: $ANTHROPIC_API_KEY` instead of the official `Authorization: Bearer $ANTHROPIC_API_KEY` header.
+- Source: https://platform.claude.com/docs/en/api/skills/versions/create (fetched 2026-11-14)
 - This is the Claude API Skills API (management of SKILL.md packages), distinct from this repository's own skills concept and from Claude Code Skills.
 
 ## Related

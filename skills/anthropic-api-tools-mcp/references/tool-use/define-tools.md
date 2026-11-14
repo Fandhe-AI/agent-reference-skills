@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools / last verified: 2026-11-14 -->
 
 # Define tools
 
@@ -28,10 +28,10 @@ Specify tool schemas, write effective descriptions, and control when Claude call
 
 | Name | Type | Description |
 | --- | --- | --- |
-| name | string | Tool name; must match `^[a-zA-Z0-9_-]{1,64}$` |
+| name | string | Tool name; must match `^[a-zA-Z0-9_-]{1,128}$` |
 | description | string | Detailed plaintext description of what the tool does, when to use it, and how it behaves |
 | input_schema | object | JSON Schema defining expected parameters |
-| input_examples | array (optional) | Example input objects, schema-validated; not supported for server tools; adds ~20-200 tokens each |
+| input_examples | array (optional) | Example input objects, schema-validated (invalid examples return 400); not supported for server tools or the computer / browser toolsets; adds ~20-50 tokens (simple) to ~100-200 tokens (nested) each |
 | tool_choice.type: auto | — | Default when `tools` provided; Claude decides whether to call a tool |
 | tool_choice.type: any | — | Claude must use one of the provided tools, no particular one forced |
 | tool_choice.type: tool | — | Forces a specific named tool |
@@ -43,10 +43,13 @@ Specify tool schemas, write effective descriptions, and control when Claude call
 - With `tool_choice: any` or `tool`, the API prefills the assistant turn, so Claude emits no natural-language text before the `tool_use` block, even if asked to explain.
 - Changing `tool_choice` invalidates cached message blocks (prompt caching); tool definitions and system prompt remain cached.
 - Forced tool use is not supported everywhere; where it is not, `any` and `tool` fail while `auto` and `none` still work. Manual extended thinking (`thinking: {type: "enabled"}`) is incompatible with `any` / `tool` (use `auto` or `none`). Adaptive thinking itself does not block forced tool use (models with thinking on by default, such as Claude Opus 5 and Claude Haiku 5.5, accept it).
-- Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1, and Claude Mythos 5.1 reject `tool_choice` `any` and `tool` with a 400 error regardless of thinking settings. Use `auto` with strict tool use to guarantee schema-valid tool inputs, or structured outputs when you need a response in a fixed JSON shape; prompting still influences which tool `auto` picks. `none` is also supported.
+- Claude Fable 5.2, Claude Mythos 5.2, Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1, and Claude Mythos 5.1 reject `tool_choice` `any` and `tool` with a 400 error regardless of thinking settings. Use `auto` with strict tool use to guarantee schema-valid tool inputs, or structured outputs when you need a response in a fixed JSON shape; prompting still influences which tool `auto` picks. `none` is also supported.
 - A forced call skips thinking on every model that accepts forced tool use: the response starts with the `tool_use` block and has no `thinking` block. To let the model think first, use `auto` with a prompt instruction.
 - On models that support forced tool use, combine `tool_choice: any` with `strict: true` (Strict tool use) to guarantee both a tool call and schema-conforming input.
+- Parameters that ask Claude for its reasoning or step-by-step thinking can trigger a `reasoning_extraction` refusal; ask for a short explanation or supporting evidence instead.
+- Custom tools are available on every model and platform. In Claude Managed Agents, declare them on the agent with `type` `"custom"`; calls arrive as `agent.custom_tool_use` events and you reply with `user.custom_tool_result` events.
 - For the full set of optional tool-definition properties (`cache_control`, `strict`, `defer_loading`, `allowed_callers`), see Tool reference.
+- Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools (fetched 2026-11-14)
 
 ## Related
 

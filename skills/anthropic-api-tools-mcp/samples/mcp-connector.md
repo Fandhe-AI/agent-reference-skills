@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/mcp-connector / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/mcp-connector / last verified: 2026-11-14 -->
 
 # MCP Connector: Connect to a Remote MCP Server
 
@@ -8,10 +8,10 @@ Connect the Messages API directly to a remote Model Context Protocol server via 
 curl https://api.anthropic.com/v1/messages \
   -H "Content-Type: application/json" \
   -H "X-API-Key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-version: 2026-10-21" \
   -H "anthropic-beta: mcp-client-2025-11-20" \
   -d '{
-    "model": "claude-opus-5",
+    "model": "claude-opus-5-5",
     "max_tokens": 1000,
     "messages": [{"role": "user", "content": "What tools do you have available?"}],
     "mcp_servers": [
@@ -35,7 +35,7 @@ curl https://api.anthropic.com/v1/messages \
 client = anthropic.Anthropic()
 
 response = client.beta.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1000,
     messages=[{"role": "user", "content": "What tools do you have available?"}],
     mcp_servers=[
@@ -58,5 +58,5 @@ print(response)
 - `mcp_servers` defines connection details (`type: "url"`, `url` must start with `https://`, `name`, optional `authorization_token`); `tools` carries an `MCPToolset` (`type: "mcp_toolset"`) per server, referenced by `mcp_server_name`.
 - Every server in `mcp_servers` must be referenced by exactly one `MCPToolset`; allowlist/denylist individual tools via `default_config`/`configs` with `enabled`/`defer_loading`.
 - Only `tools` calls from the MCP spec are supported (no prompts/resources); the server must be publicly exposed via Streamable HTTP or SSE — local STDIO servers need the client-side helpers instead.
-- Requires beta header `mcp-client-2025-11-20`; not covered by Zero Data Retention (ZDR).
+- Requires beta header `mcp-client-2025-11-20` (`mcp-client-2026-09-15` on the Claude API adds tool-list pinning); not covered by Zero Data Retention (ZDR).
 - This is the API's consumption-side MCP connector (Claude connects out to remote servers) — distinct from configuring Claude Code's own MCP servers, covered by `anthropic-claude-code-extend`.

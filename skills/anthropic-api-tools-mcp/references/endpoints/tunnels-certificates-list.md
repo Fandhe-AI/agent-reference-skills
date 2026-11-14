@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/beta/tunnels/certificates/list / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/beta/tunnels/certificates/list / last verified: 2026-11-14 -->
 
 # List Tunnel Certificates
 
@@ -12,9 +12,9 @@ GET /v1/tunnels/{tunnel_id}/certificates
 
 ```http
 curl https://api.anthropic.com/v1/tunnels/$TUNNEL_ID/certificates \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H 'anthropic-beta: mcp-tunnels-2026-06-22' \
-    -H "X-Api-Key: $ANTHROPIC_API_KEY"
+    -H "Authorization: Bearer $ANTHROPIC_API_KEY"
 ```
 
 ## Options / Props
@@ -26,16 +26,19 @@ curl https://api.anthropic.com/v1/tunnels/$TUNNEL_ID/certificates \
 | `limit` (query) | optional number | Max results per page. Default 20, max 1000. |
 | `page` (query) | optional string | Opaque pagination cursor from a previous response. |
 | `anthropic-beta` (header) | optional array of AnthropicBeta | Requires `mcp-tunnels-2026-06-22` for this endpoint. |
+| `anthropic-workspace-id` (header) | optional string | Workspace ID (e.g. `wrkspc_...`) to act on; only needed for credentials that can act on more than one Workspace, and must match if the credential belongs to a specific Workspace. |
 
 ### Returns
 
 | Name | Type | Description |
 |------|------|-------------|
 | `data` | array of `BetaTunnelCertificate` | Certificates, ordered by `created_at` descending. |
-| `next_page` | string | Pagination cursor for the next page, or null if no more results. |
+| `next_page` | string or null | Pagination cursor for the next page, or null if no more results. |
 
 ## Notes
 
+- Source: https://platform.claude.com/docs/en/api/beta/tunnels/certificates/list (fetched 2026-11-14)
+- Official example (2026-11-14) uses `anthropic-version: 2026-10-21` and `Authorization: Bearer $ANTHROPIC_API_KEY`; the MCP tunnels reference page says all tunnel endpoints need a bearer token with the `workspace:manage_tunnels` scope obtained via Workload Identity Federation (Admin API keys not accepted), so use a WIF-exchanged token in practice.
 - Beta / research preview: requires the `anthropic-beta: mcp-tunnels-2026-06-22` header and may change without a deprecation period.
 - Supersedes the Admin API endpoints at `/v1/organizations/tunnels`, which remain available during a migration window.
 

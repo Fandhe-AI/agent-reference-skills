@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool / last verified: 2026-11-14 -->
 
 # Code execution tool
 
@@ -20,7 +20,7 @@ Server tool: Claude runs Python/Bash and edits files in a secure sandboxed conta
 
 ## Notes
 
-- Platforms: GA on the Claude API and Claude Platform on AWS; on Microsoft Foundry GA only with a Hosted on Anthropic deployment. Claude Mythos Preview: supported on the Claude API and Microsoft Foundry.
+- Platforms: stable on the Claude API, Claude Platform on AWS, Claude Models on Google Cloud (Anthropic managed), and Microsoft Foundry (hosted on Anthropic). Claude Mythos Preview: supported on the Claude API and Microsoft Foundry.
 - Tool versions: all three versions need no beta header, and every supported model accepts all three. `code_execution_20260521` is the same runtime as `_20260120`; its tool description tells Claude about the 90-second wall-clock limit on each Python cell in programmatic tool calling. A cell that exceeds it returns a normal result with a non-zero `return_code` and a `detection_timeout` status message in its output, which is separate from the `execution_time_exceeded` error code (whole invocation exceeded the maximum execution time). On Claude Haiku 4.5, `_20260120` and later behave like `_20250825`: programmatic tool calling and the REPL state persistence that depends on it are not available.
 - To check support from code, read `capabilities.server_tools.code_execution.supported` from the Models API; the top-level `capabilities.code_execution` means something else (whether code in this tool can call your request's other tools, as in programmatic tool calling).
 - Content Credentials: on the Claude API, supported image, video, and audio files Claude produces in the sandbox carry C2PA Content Credentials (a signed manifest in file metadata, issuer Anthropic) when downloaded through the Files API. Formats include PNG, JPEG, GIF, WebP, TIFF, HEIC, AVIF, SVG, MP4, MOV, MP3, WAV, FLAC, M4A. The manifest adds a few kilobytes, so the downloaded size and checksum differ from the file inside the container. Text files, PDFs, and office documents are not signed. Re-encoding, conversion, screenshots, and metadata stripping remove the credential.
@@ -29,7 +29,14 @@ Server tool: Claude runs Python/Bash and edits files in a secure sandboxed conta
 - Response blocks: `bash_code_execution_tool_result` (`stdout`, `stderr`, `return_code`, `content` list of created-file references with `file_id` for the Files API) and `text_editor_code_execution_tool_result` (view/create/str_replace variants with their own fields, e.g. diff `lines` for str_replace).
 - Error codes: `unavailable`, `execution_time_exceeded`, `invalid_tool_input`, `too_many_requests` (all tools); `output_file_too_large` (bash); `file_not_found` (text_editor).
 - Pricing: **free when combined with `web_search_20260209`+/`web_fetch_20260209`+** in the same request (covers dynamic-filtering code execution and direct code execution) beyond standard token costs. Standalone: billed by execution time, 5-minute minimum, 1,550 free org-hours/month, then $0.05/hour/container; files included in the request bill execution time even if the tool isn't called (preloaded onto the container).
-- A response may end with `stop_reason: "pause_turn"` on a long-running turn — resend as-is to continue, same as other server tools.
+- A response may end with `stop_reason: "pause_turn"` on a long-running turn — resend as-is to continue, same as other server tools, and send the response's container ID back too (otherwise a new container is used and earlier files are lost).
+- Generated files: each `bash_code_execution` call gets a fresh `$OUTPUT_DIR`; only top-level files in it are captured as `file_id` entries in the result `content`. Claude is told to copy files there, so prompt it to `cp` the file into `$OUTPUT_DIR` and `ls` it in the same command. Files written elsewhere stay in the container (reuse the container and ask Claude to copy them).
+- An expired container can't be reused: a request referencing it returns an error; resend without `container`.
+- Client tools alongside code execution: if Claude calls one of your client tools in the same turn, the API returns the code execution call without its result; the result arrives in a later response after you send your `tool_result` blocks. Web search/fetch automatically enable code execution, so with your own shell tool, add a system-prompt note that environments don't share state.
+- Programmatic tool calling: each REPL cell has a 90-second wall-clock limit.
+- Current `web_search_20260209`/`web_fetch_20260209`+ require `code_execution_20260120` or later as their code execution version.
+- Data retention: not eligible for zero data retention or HIPAA; container data is retained up to 30 days (Files API files persist until deleted).
+- Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool (fetched 2026-11-14)
 - Powers dynamic filtering in web search/fetch `_20260209`+ automatically (no need to add `code_execution` yourself for that).
 - Messages API general mechanics: see anthropic-api-core skill.
 

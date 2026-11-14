@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/deploy-compose / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/deploy-compose / last verified: 2026-11-14 -->
 
 # Deploy MCP tunnels with Docker Compose
 
@@ -34,6 +34,13 @@ docker compose up -d
 | `mcp-proxy`, `cloudflared`, `setup` | Non-root UID `65532`, `read_only: true`, `no-new-privileges`, `cap_drop: [ALL]`, images pinned by SHA-256 digest |
 
 ## Notes
+
+- Source: https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/deploy-compose (fetched 2026-11-14)
+- Programmatic flow: `sudo chown 65532:65532 data` first (containers run as UID `65532`); leave `TUNNEL_ID` unset to let setup create a tunnel (set `ANTHROPIC_WORKSPACE_ID=wrkspc_...` if the rule is scoped to a non-default workspace; an auto-created tunnel lands there). `setup init` writes `data/tunnel-domain` and `data/tunnel-token`; then `export TUNNEL_DOMAIN=$(sudo cat data/tunnel-domain)` and `export TUNNEL_TOKEN=$(sudo cat data/tunnel-token)`. `ANTHROPIC_IDENTITY_TOKEN` is an OIDC JWT whose audience must match the federation rule; WIF tokens last 1 hour by default, nothing to revoke. Needs an OIDC identity provider on the host (e.g. cloud VM metadata server, SPIFFE).
+- Manual flow: no `setup` service. `--url http://localhost:8080` on cloudflared is required (no ingress rules are pushed in the manual flow; without it cloudflared returns 503). The proxy listens on plain WebSocket `:8080`; inner TLS happens inside it. `chmod 644 data/tls.key` lets the non-root container read the bind-mounted key.
+- `routes` is a flat map subdomain -> upstream URL, not a list. `TUNNEL_TOKEN` has no default in the compose file: re-export in every fresh shell and after reboot. Multi-VM: copy `mcp-tunnel/` to each host; the same token and certs work on all replicas.
+- Token rotation (programmatic): edit the integer in the setup service's `--token-version` (setup refuses to rotate if unchanged), re-mint the identity token, `docker compose run --rm setup`, re-export `TUNNEL_TOKEN`, `docker compose up -d cloudflared`.
+- Renewal: `--renew-before=720h` makes `renew-cert` a no-op when more than 30 days remain (safe on a schedule). Manual renewal re-signs with the existing CA using `data/tls.ext`. The proxy polls and reloads `tls.cert_file` in either flow.
 
 - `setup init` is idempotent over `data/`: re-running reuses the stored tunnel ID/CA and never creates a second tunnel; a new CA is generated only when `data/` is empty or `TUNNEL_ID` changed (subject to the 2-certificate cap).
 - `tunnel_domain` in `mcp-proxy.yaml` is required — the proxy strips this suffix to resolve bare-subdomain `routes` keys.

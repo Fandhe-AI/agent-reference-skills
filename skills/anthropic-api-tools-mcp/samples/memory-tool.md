@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool / last verified: 2026-11-14 -->
 
 # Memory Tool: Persistent Files Across Conversations
 
@@ -12,7 +12,7 @@ Give Claude a client-side `/memories` file store that survives across turns and 
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     tools=[{"type": "memory_20250818", "name": "memory"}],
     messages=[{"role": "user", "content": "Continue where we left off on the migration plan."}],
@@ -26,7 +26,7 @@ command = tool_use_block.input["command"]  # "view" | "create" | "str_replace" |
 # Your application executes the command against real storage scoped to
 # a prefix under /memories, then returns a tool_result:
 follow_up = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     tools=[{"type": "memory_20250818", "name": "memory"}],
     messages=[
@@ -48,7 +48,8 @@ follow_up = client.messages.create(
 
 ## Notes
 
-- Client-side/schema-less tool (no `input_schema`); GA on all Claude 4+ models, no beta header required.
+- Client-side/schema-less tool (no `input_schema`); GA on all Claude 4+ models, no beta header required; the `view` command accepts `view_range: [start, -1]` for "to end of file".
+- Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool (fetched 2026-11-14)
 - The API auto-injects a memory protocol system-prompt instruction whenever this tool is present, telling Claude to `view` `/memories` before starting work — you don't send that instruction yourself.
 - Commands: `view` (path, optional `view_range`), `create` (path, `file_text`), `str_replace` (path, `old_str`, optional `new_str`), `insert` (path, `insert_line`, `insert_text`), `delete` (path), `rename` (`old_path`, `new_path`). Your application must restrict every operation to the `/memories` prefix and reject path traversal (`../`, URL-encoded variants).
 - On failure, return `is_error: true` with a message string in `content` (e.g. `"Error: The path {path} does not exist"`), the same pattern as the text editor tool.

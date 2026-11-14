@@ -1,6 +1,6 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use / last verified: 2026-08-07 -->
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use / last verified: 2026-08-07 -->
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use / last verified: 2026-11-14 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use / last verified: 2026-11-14 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling / last verified: 2026-11-14 -->
 
 # Strict, Parallel, and Programmatic Tool Use
 
@@ -43,7 +43,7 @@ Guarantee schema-conforming tool input with `strict: true`, let Claude batch sev
 
 ## Notes
 
-- `strict: true` guarantees `input` conforms exactly to `input_schema` (correct types, all required fields) and that `name` is always valid — no need to validate and retry; combine with `tool_choice: {"type": "any"}` to also guarantee a call happens.
+- `strict: true` guarantees `input` conforms exactly to `input_schema` (correct types, all required fields) and that `name` is always valid — no need to validate and retry; combine with `tool_choice: {"type": "any"}` to also guarantee a call happens (not on models that reject forced tool use, e.g. Fable 5.2, Mythos 5.2, Opus 5.5, Sonnet 5.5, Fable 5.1, Mythos 5.1: 400).
 - By default Claude may return several `tool_use` blocks in one turn (Claude 4+ do this automatically when beneficial); set `tool_choice.disable_parallel_tool_use: true` to force at most one call. Always return all `tool_result` blocks together in the next user message, matched by `tool_use_id`.
 - Programmatic tool calling requires `code_execution_20260120`+: Claude writes code that calls your tools as async functions inside the sandbox; the API pauses with `stop_reason: "tool_use"` and a `caller` field naming the code-execution run, and only the final code output (not intermediate results) enters Claude's context.
 - `strict: true` tools cannot be set `allowed_callers: ["code_execution_20260120"]`, and `disable_parallel_tool_use: true` is incompatible with programmatic tool calling — the three features have mutual exclusions, not a single combined mode.

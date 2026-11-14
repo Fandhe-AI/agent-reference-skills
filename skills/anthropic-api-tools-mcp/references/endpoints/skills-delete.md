@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/skills/delete / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/api/skills/delete / last verified: 2026-11-14 -->
 
 # Delete Skill
 
@@ -10,10 +10,12 @@ Deletes a Skill together with all of its versions. GA endpoint (no beta header).
 DELETE /v1/skills/{skill_id}
 ```
 
+Adapted (not in the official docs): the official example sends `-H "Authorization: Bearer $ANTHROPIC_API_KEY"`; this page keeps `X-Api-Key`.
+
 ```bash
 curl https://api.anthropic.com/v1/skills/$SKILL_ID \
     -X DELETE \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -35,6 +37,8 @@ curl https://api.anthropic.com/v1/skills/$SKILL_ID \
 ## Notes
 
 - Behavior change from the beta: in GA, `DELETE /v1/skills/{skill_id}` removes every version along with the Skill. Under `skills-2025-10-02` it returned a 400 error while any version existed. If you relied on that refusal as a safeguard, add your own check. After migrating, `client.skills.delete(skill_id)` and `client.beta.skills.delete(skill_id)` both delete the Skill and all its versions in one call.
+- Adapted from the official docs: the example authenticates with `X-Api-Key: $ANTHROPIC_API_KEY` instead of the official `Authorization: Bearer $ANTHROPIC_API_KEY` header.
+- Source: https://platform.claude.com/docs/en/api/skills/delete (fetched 2026-11-14)
 - This is the Claude API Skills API (management of SKILL.md packages), distinct from this repository's own skills concept and from Claude Code Skills.
 
 ## Related

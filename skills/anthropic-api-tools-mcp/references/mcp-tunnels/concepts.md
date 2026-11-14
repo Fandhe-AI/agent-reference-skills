@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/concepts / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/concepts / last verified: 2026-11-14 -->
 
 # Architecture and components
 
@@ -34,10 +34,15 @@ sequenceDiagram
 
 | Provisioning mode | How credentials arrive | Helm chart name |
 | --- | --- | --- |
-| Programmatic access | Setup component authenticates via Workload Identity Federation, generates/registers CA automatically | Managed mode (`setup.enabled: true`) |
+| Programmatic access | Setup component authenticates via Workload Identity Federation, generates/registers CA automatically | Managed mode (`setup.enabled: true`, the default) |
 | Manual | You copy the tunnel token and register a self-generated CA by hand | External mode (`setup.enabled: false`) |
 
 ## Notes
+
+- Source: https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/concepts (fetched 2026-11-14)
+- One tunnel stack serves one tunnel and can be replicated across hosts for availability. cloudflared is unrelated to a Managed Agent.
+- The setup component also provides `renew-cert`. The proxy also appears as `mcp-gateway` (`/etc/mcp-gateway/config.yaml`, Helm `gateway.config.*` values prefix).
+- Two runtime credentials: the tunnel token (authenticates cloudflared's outbound connection) and a server certificate signed by a CA registered on the tunnel (presented by the proxy in the inner TLS handshake). Deploy guides call the modes "the programmatic flow" / "the manual flow" (tab labels: With / Without programmatic access). Programmatic access needs a federation rule with the `workspace:manage_tunnels` scope.
 
 - Connection direction (cloudflared dials outbound) and request direction (MCP requests flow Anthropic → your network) point opposite ways; "outbound-only" describes the connection, not the requests.
 - cloudflared and the tunnel edge see only ciphertext; the proxy is the first point inside your network where MCP payloads are readable.

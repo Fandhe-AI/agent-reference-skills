@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool / last verified: 2026-11-14 -->
 
 # Code Execution Tool
 
@@ -7,10 +7,10 @@ Give Claude a sandboxed container that runs Python/Bash so it can perform calcul
 ```bash
 curl --fail-with-body -sS https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-version: 2026-10-21" \
   -H "content-type: application/json" \
   -d '{
-    "model": "claude-opus-5",
+    "model": "claude-opus-5-5",
     "max_tokens": 4096,
     "messages": [
       {
@@ -31,7 +31,7 @@ curl --fail-with-body -sS https://api.anthropic.com/v1/messages \
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=4096,
     messages=[
         {
