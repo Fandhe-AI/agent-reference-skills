@@ -2,7 +2,7 @@
 source: https://kotlinlang.org/docs/collection-grouping.html
 ---
 
-# Grouping
+# Group collections
 
 Extension functions for grouping collection elements: `groupBy()` returns a `Map`; `groupingBy()` returns a lazy `Grouping` for applying operations to all groups.
 

@@ -2,7 +2,7 @@
 source: https://kotlinlang.org/docs/collection-ordering.html
 ---
 
-# Ordering
+# Order collections
 
 Natural and custom orders (`Comparable`, `Comparator`, `compareBy()`, `thenBy()`) and the functions that sort, check order, reverse, and shuffle read-only collections (results are new collections).
 

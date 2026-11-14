@@ -17,15 +17,15 @@ user-invocable: false
 | Kotlin | 2.4.21（2026-10-08、languageVersion / apiVersion 2.4） | `docs/v.list` で確認 |
 | kotlinx.coroutines | 1.11.0 | |
 | kotlinx.serialization | 1.11.0 | |
-| KSP | 2.3.10 | |
+| KSP | 2.3.12 | 公式 docs/v.list の kspVersion。Maven Central の最新は 2.3.14（2026-11-13、docs 未追従） |
 
-- 取得日: 2026-10-16
+- 取得日: 2026-11-14（kotlin-web-site 2f28ab9 へ更新。coroutines / serialization は 2026-10-16 のまま）
 - 本文の一次ソース: [kotlinlang.org/docs/llms.txt](https://kotlinlang.org/docs/llms.txt) が列挙する Markdown twin `https://kotlinlang.org/docs/_llms/<slug>.txt`（例: [basic-syntax.txt](https://kotlinlang.org/docs/_llms/basic-syntax.txt)）。URL に版が無いため取得日を記録
 - 照合用の原本
-  - Kotlin 本体ドキュメント: `JetBrains/kotlin-web-site` commit [`0b10373a150997e9fbcd730a7e00ae8444cc8606`](https://github.com/JetBrains/kotlin-web-site/tree/0b10373a150997e9fbcd730a7e00ae8444cc8606)（リリースタグが無いため SHA で pin）
+  - Kotlin 本体ドキュメント: `JetBrains/kotlin-web-site` commit [`2f28ab992747048746aa20a3971b1334228bfa7e`](https://github.com/JetBrains/kotlin-web-site/tree/2f28ab992747048746aa20a3971b1334228bfa7e)（リリースタグが無いため SHA で pin）
   - kotlinx.coroutines: `Kotlin/kotlinx.coroutines` commit [`7e0d1b3e9ca83652427ae00dda7d1673f058a743`](https://github.com/Kotlin/kotlinx.coroutines/tree/7e0d1b3e9ca83652427ae00dda7d1673f058a743)（サイトは master から生成され、タグ 1.11.0 の docs は古い構成のため。保存した 14 件に 1.12 / EAP の記述は 0 件）
   - kotlinx.serialization: Writerside ソースが公開されていないため twin のみ。補助として GitHub ガイドをタグ [`v1.11.0`](https://github.com/Kotlin/kotlinx.serialization/tree/v1.11.0/docs) で保存
-- 除外した版: Kotlin 2.5.0-Beta1、kotlinx.serialization 1.12.0-RC
+- 除外した版: Kotlin 2.5.0-RC（EAP）、kotlinx.serialization 1.12.0-RC
 
 ## ディレクトリ構成
 
@@ -67,7 +67,7 @@ skills/kotlin/
     build-tools/            # Gradle・Maven・Kotlin daemon（14 ページ）
       README.md
       gradle-configure-project.md  gradle-compiler-options.md  maven-configure-project.md ...
-    compiler/               # コンパイラ・K2・コンパイラプラグイン・KSP・kapt（23 ページ）
+    compiler/               # コンパイラ・K2・コンパイラプラグイン・KSP・kapt（25 ページ）
       README.md
       compiler-reference.md  k2-compiler-migration-guide.md  ksp-overview.md  ksp-quickstart.md  kapt.md ...
     releases/               # リリース・互換性・What's new（10 ページ）
@@ -106,7 +106,7 @@ skills/kotlin/
 | suspend 関数・launch / async・Flow・Channel・キャンセル・例外 | coroutines | [references/coroutines/README.md](references/coroutines/README.md) |
 | JSON / ProtoBuf / CBOR シリアライズ・カスタムシリアライザ・ポリモーフィズム | serialization | [references/serialization/README.md](references/serialization/README.md) |
 | Gradle / Maven 設定・コンパイラオプション・Kotlin daemon | build-tools | [references/build-tools/README.md](references/build-tools/README.md) |
-| コンパイラオプション・K2 移行・KSP・kapt・all-open / no-arg 等のプラグイン | compiler | [references/compiler/README.md](references/compiler/README.md) |
+| コンパイラオプション・K2 移行・KSP・kapt・all-open / no-arg / kotlin-jpa / kotlin-spring 等のプラグイン | compiler | [references/compiler/README.md](references/compiler/README.md) |
 | 新バージョンの変更点・互換性ガイド・コンポーネント安定性 | releases | [references/releases/README.md](references/releases/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

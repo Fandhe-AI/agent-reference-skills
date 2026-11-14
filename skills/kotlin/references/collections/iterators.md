@@ -2,7 +2,7 @@
 source: https://kotlinlang.org/docs/iterators.html
 ---
 
-# Iterators
+# Iterate collections
 
 Iterators give sequential access to collection elements without exposing the underlying structure. Obtained from `Iterable<T>` inheritors (including `Set` and `List`) with `iterator()`.
 

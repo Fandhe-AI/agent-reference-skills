@@ -2,7 +2,7 @@
 source: https://kotlinlang.org/docs/constructing-collections.html
 ---
 
-# Constructing collections
+# Create collections
 
 Ways to create collections: from elements, builder functions, empty collections, list initializer functions, concrete constructors, copies, and results of other operations.
 

@@ -24,12 +24,12 @@ interface SymbolProcessor {
 
 ## Options / Props
 
-Requirements of KSP 2.3.10:
+Requirements of KSP 2.3.12:
 
 | Dependency | Min and max versions |
 | --- | --- |
-| Kotlin Gradle plugin (KGP) | 2.2.10-2.3.x |
-| Android Gradle Plugin (AGP) | 8.12.0 or later |
+| Kotlin Gradle plugin (KGP) | 2.3.20-2.4.x |
+| Android Gradle Plugin (AGP) | 8.13.0 or later |
 | Gradle | 8.13 or later. For AGP 9.0 or later, use Gradle 9.x. |
 | JDK | 17 or later |
 
@@ -45,10 +45,11 @@ Supported libraries (status):
 
 ## Notes
 
-- The official pages render kotlinVersion 2.4.21 with kspVersion 2.3.10 while the KSP requirements table lists KGP 2.2.10–2.3.x; the google/ksp 2.3.10 release notes include a fix so that KSP works with Kotlin 2.4.0 (#2964); this page keeps the official table and follows the rendered versions.
+- Source: https://kotlinlang.org/docs/ksp-overview.html (kotlin-web-site 2f28ab9, fetched 2026-11-14): the official pages render kotlinVersion 2.4.21 with kspVersion 2.3.12, and the requirements table (KGP 2.3.20–2.4.x, AGP 8.13.0 or later) now matches that Kotlin version.
+- Maven Central's latest `symbol-processing-api` is 2.3.14 (2026-11-13), but the official docs still render 2.3.12. Source: https://repo1.maven.org/maven2/com/google/devtools/ksp/symbol-processing-api/maven-metadata.xml (fetched 2026-11-14).
 - KSP hides compiler changes behind a well-defined API, so processors need less maintenance; trade-off: KSP-based processors can't examine expressions or statements, and can't modify source code. KSP models declarations and type information, not function bodies.
 - Compilation flow: processors analyze source code and resources, generate source files or other outputs, then the Kotlin compiler compiles the original source together with the generated code.
-- The official page (kotlin-web-site 0b10373) lists Dagger as Alpha and Hilt as In progress; dagger.dev/dev-guide/ksp states Dagger's KSP support (including hilt-compiler) is stable as of Dagger 2.60+ and KSP 2.3.9+, so this page follows dagger.dev.
+- The official page (kotlin-web-site 2f28ab9) lists Dagger as Alpha and Hilt as In progress; dagger.dev/dev-guide/ksp states Dagger's KSP support (including hilt-compiler) is stable as of Dagger 2.60+ and KSP 2.3.9+, so this page follows dagger.dev.
 - Typical use cases: dependency injection (Dagger), serialization (Moshi), database management (Room).
 - Distinction from kapt: use KSP for Gradle projects whose processors support KSP and for writing your own processors (see `kapt`).
 - This page covers the KSP API in general. Android-specific KSP / Room / Hilt configuration is in android-build-gradle, android-data and android-architecture.

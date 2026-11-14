@@ -93,4 +93,4 @@ fun main() {
 
 - [Filtering collections](./collection-filtering.md)
 - [Collection write operations](./collection-write.md)
-- [Plus and minus operators](./collection-plus-minus.md)
+- [Combine collections](./collection-combine.md)

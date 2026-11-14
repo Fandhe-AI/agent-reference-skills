@@ -2,7 +2,7 @@
 source: https://kotlinlang.org/docs/collection-filtering.html
 ---
 
-# Filtering collections
+# Filter collections
 
 Extension functions that filter collections by predicates (lambdas returning a boolean). They leave the original collection unchanged, so they work on both mutable and read-only collections.
 

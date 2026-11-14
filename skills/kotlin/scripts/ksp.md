@@ -4,7 +4,7 @@ source: https://kotlinlang.org/docs/ksp-command-line.html
 
 # KSP
 
-Commands and related options for running Kotlin Symbol Processing (KSP 2.3.10) from the command line. KSP is normally used through the Gradle plugin; the CLI is for other build-system integrations, processor development, testing, and debugging.
+Commands and related options for running Kotlin Symbol Processing (KSP 2.3.12) from the command line. KSP is normally used through the Gradle plugin; the CLI is for other build-system integrations, processor development, testing, and debugging.
 
 ## Basic invocation
 
@@ -26,7 +26,7 @@ Entry points: `KSPJvmMain` (Kotlin/JVM and Android), `KSPJsMain` (Kotlin/JS), `K
 
 ```sh
 java -cp \
-symbol-processing-aa-2.3.10.jar:symbol-processing-common-deps-2.3.10.jar:symbol-processing-api-2.3.10.jar:kotlin-stdlib-2.3.20.jar:kotlinx-coroutines-core-jvm-1.10.2.jar \
+symbol-processing-aa-2.3.12.jar:symbol-processing-common-deps-2.3.12.jar:symbol-processing-api-2.3.12.jar:kotlin-stdlib-2.4.21.jar:kotlinx-coroutines-core-jvm-1.11.0.jar \
 com.google.devtools.ksp.cmdline.KSPJvmMain \
 -language-version=2.0 \
 -api-version=2.0 \
@@ -43,7 +43,7 @@ com.google.devtools.ksp.cmdline.KSPJvmMain \
 path/to/processor.jar
 ```
 
-The example is verbatim from the official page. The dependency list on the same page names kotlin-stdlib-2.4.21.jar and kotlinx-coroutines-core-jvm-1.11.0.jar, but the example still uses the file names kotlin-stdlib-2.3.20.jar and kotlinx-coroutines-core-jvm-1.10.2.jar (an inconsistency within the official page). In practice, use the versions the page lists. Get `artifacts.zip` from https://github.com/google/ksp/releases/tag/2.3.10.
+The example is verbatim from the official page with the version macros expanded (kspVersion 2.3.12, kotlinVersion 2.4.21, coroutinesVersion 1.11.0), consistent with the dependency list on the same page. Get `artifacts.zip` from https://github.com/google/ksp/releases/tag/2.3.12. Source: https://kotlinlang.org/docs/ksp-command-line.html (kotlin-web-site 2f28ab9, fetched 2026-11-14).
 
 ## Show available options
 

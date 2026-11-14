@@ -2,7 +2,7 @@
 source: https://kotlinlang.org/docs/collection-aggregate.html
 ---
 
-# Aggregate operations
+# Aggregate collections
 
 Functions returning a single value based on the collection content: min / max, average, sum, count, and fold / reduce.
 
