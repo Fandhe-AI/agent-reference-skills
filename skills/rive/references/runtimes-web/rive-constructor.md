@@ -62,10 +62,12 @@ const r = new Rive({
 |------|------|---------|-------------|
 | `enableMultiTouch` | `boolean` | `false` | Support multiple simultaneous touch points |
 | `dispatchPointerExit` | `boolean` | `true` | Fire pointer-exit event when pointer leaves canvas |
-| `tabIndex` | `number` | — | Canvas tab index for keyboard focus |
+| `tabIndex` | `number` | `0` | Tab index set on the `<canvas>` when the graphic has focus nodes and the canvas has no `tabindex` of its own (or `-1`). See [focus.md](./focus.md) |
 | `shouldDisableRiveListeners` | `boolean` | `false` | Disable Rive's implicit state machine listener/detector setup on the canvas |
 | `isTouchScrollEnabled` | `boolean` | `false` | Allow page scroll behavior during touch/drag interactions on the canvas |
-| `focusOptions` | `RiveFocusOptions` | — | Focus behavior configuration object |
+| `focusOptions` | `RiveFocusOptions` | — | Keyboard focus options; `focusOptions.allowFocusInterrupt` (`boolean`, default `false`) lets the canvas take browser focus when the graphic gains a focused node. See [focus.md](./focus.md) |
+| `gamepadOptions` | `RiveGamepadOptions` | — | Game controller options; `gamepadOptions.requireFocus` (`boolean`, default `false`) sends controller input only while the canvas has browser focus. See [gamepad.md](./gamepad.md) |
+| `shouldDisableGamepad` | `boolean` | `false` | Stop the instance reading game controllers; its state machine receives no gamepad events |
 
 ### Rendering (additional)
 
@@ -110,6 +112,8 @@ const r = new Rive({
 - If no `stateMachine` (or deprecated `stateMachines` / `animations`) is passed, the runtime plays the first linear animation it finds on the artboard. In the next major version (v3) it will play the artboard's default state machine when one exists.
 - `semanticsMode` / `semanticsOptions` / `enableGPUCanvas` are experimental and may change in a breaking way without a major version bump.
 - Rive Listeners are not set up on the canvas when there is no playing state machine, or when the state machine has no listeners.
+- `shouldDisableRiveListeners: true` also turns off gamepad input and prevents Rive from receiving browser focus.
+- Source: https://rive.app/docs/runtimes/web/rive-parameters.md (fetched 2026-11-14)
 
 - Call `r.resizeDrawingSurfaceToCanvas()` inside `onLoad` to match the canvas's device pixel ratio. It accepts an optional `customDevicePixelRatio?: number` argument (e.g. `r.resizeDrawingSurfaceToCanvas(customDevicePixelRatio)`) that overrides the device pixel ratio used to size the canvas; see rive-methods.md.
 - Call `r.cleanup()` when the instance is no longer needed to free WASM memory.
@@ -123,4 +127,7 @@ const r = new Rive({
 - [state-machine-playback.md](./state-machine-playback.md)
 - [data-binding.md](./data-binding.md)
 - [loading-assets.md](./loading-assets.md)
+- [focus.md](./focus.md)
+- [gamepad.md](./gamepad.md)
+- [text-and-key-input.md](./text-and-key-input.md)
 - [rive-methods.md](./rive-methods.md)

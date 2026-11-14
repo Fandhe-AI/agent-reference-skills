@@ -9,7 +9,9 @@
 | Data Binding | Connect JavaScript code to animated properties through View Models and View Model Instances (VMI). | [data-binding.md](./data-binding.md) |
 | Events | Subscribe to Rive runtime lifecycle events and Rive-defined custom events from animations and state machines. | [events.md](./events.md) |
 | Web Runtime FAQ | Common issues and answers for the web runtime. | [faq.md](./faq.md) |
+| Focus (Web) | Keyboard focus navigation (Tab / arrow keys), `tabIndex`, `focusOptions.allowFocusInterrupt` and `clearFocus()` for Rive graphics with focus nodes. | [focus.md](./focus.md) |
 | Fonts | Dynamic font loading and fallback font configuration for the Rive web runtime. | [fonts.md](./fonts.md) |
+| Gamepad Input (Web) | Game controller input for Rive graphics: `gamepadOptions.requireFocus` and `shouldDisableGamepad` (`2.48.0+`). | [gamepad.md](./gamepad.md) |
 | GPU Canvas (Web) | Opt a Rive instance into GPU Canvas to render 3D and shader content on the web. Opt-in per Rive instance; available in `@rive-app/webgl2` `2.42.0+`. | [gpu-canvas.md](./gpu-canvas.md) |
 | Layout / Fit / Alignment | Controls how Rive content is scaled and positioned within the canvas. | [layout.md](./layout.md) |
 | Loading Assets | Three strategies for supplying image, font, and audio assets to a Rive file at runtime. | [loading-assets.md](./loading-assets.md) |
@@ -22,3 +24,4 @@
 | Rive Instance Methods | Methods available on a `Rive` instance for playback control, rendering, data access, and resource management. | [rive-methods.md](./rive-methods.md) |
 | Semantics (Web) | Make Rive graphics accessible to screen readers by enabling semantics in the Web (JS) runtime. The runtime builds an invisible DOM tree next to the `<canvas>` from the semantics defined in the editor and keeps it in sync with the state machine. | [semantics.md](./semantics.md) |
 | State Machine Playback | Control state machine playback and interact with inputs (booleans, numbers, triggers) from JavaScript. | [state-machine-playback.md](./state-machine-playback.md) |
+| Text and key input (Web) | Key and text input delivery to focused nodes via a hidden `<input>`, IME and on-screen keyboard behavior (`v2.44.0+`). | [text-and-key-input.md](./text-and-key-input.md) |

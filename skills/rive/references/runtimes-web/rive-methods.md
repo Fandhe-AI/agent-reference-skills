@@ -110,6 +110,12 @@ r.cleanup();
 
 Set `enablePerfMarks: true` in the constructor to emit `performance.mark` / `performance.measure` entries (WASM fetch, renderer instantiation, `.riv` parse/load, first frames); view them in the Chrome DevTools Performance panel. `enablePerfMarks` is also available on `RuntimeLoader` and `RiveFile`.
 
+### Focus
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `clearFocus` | `() => void` | Clears focus from the focus nodes of every playing state machine that has them; does not move browser focus off the `<canvas>` |
+
 ### Deprecated
 
 | Method | Signature | Description |
@@ -125,7 +131,7 @@ Set `enablePerfMarks: true` in the constructor to emit `performance.mark` / `per
 
 | Export | Members | Description |
 |--------|---------|-------------|
-| `RuntimeLoader` | `getInstance(cb)`, `awaitInstance()`, `setWasmUrl(url)` / `getWasmUrl()`, `setWasmFallbackUrl(url \| null)` / `getWasmFallbackUrl()`, `setWasmBinary(buf \| null)` / `getWasmBinary()`, `enablePerfMarks` | Singleton managing loading/caching of the WASM binary. Call setters before any `Rive` / `RiveFile` is constructed. Default URL is UNPKG for the installed version, fallback is jsdelivr |
+| `RuntimeLoader` | `getInstance(cb)`, `awaitInstance()`, `setWasmUrl(url)` / `getWasmUrl()`, `setWasmFallbackUrl(url \| null)` / `getWasmFallbackUrl()`, `setWasmBinary(buf \| null)` / `getWasmBinary()`, `setScriptFetch(options \| boolean)` / `getScriptFetch()`, `enablePerfMarks` | Singleton managing loading/caching of the WASM binary. Call setters before any `Rive` / `RiveFile` is constructed. Script fetch (off by default) works only in `@rive-app/webgl2-threads` on a cross-origin isolated page; options `allowedHosts`, `proxyUrl`, `maxRequestsPerMinute` (default 60), `maxResponseBytes` (default 16 MiB); see the scripting `security.md` page. Default URL is UNPKG for the installed version, fallback is jsdelivr |
 | `RiveFont` | `setFallbackFontCallback(cb \| null)` | Static-only fallback fonts utility |
 | `decodeImage` / `decodeFont` / `decodeAudio` | `(bytes: Uint8Array) => Promise<ImageWrapper \| FontWrapper \| AudioWrapper>` | Decode raw bytes into asset wrappers for `assetLoader` |
 
@@ -135,6 +141,7 @@ Set `enablePerfMarks: true` in the constructor to emit `performance.mark` / `per
 - `on()` is not deprecated, but subscribing with `EventType.RiveEvent`, `EventType.StateChange` or `EventType.Loop` is (one-time console warning). `off()` never warns. `removeAllRiveEventListeners(type?)` removes all listeners for a type, or all types.
 - `reset()` recreates instances from scratch; any bound ViewModelInstance must be rebound afterward.
 - Always call `cleanup()` when removing a Rive component to prevent WASM memory leaks.
+- Source: https://rive.app/docs/runtimes/web/rive-parameters.md (fetched 2026-11-14)
 
 ## Related
 
