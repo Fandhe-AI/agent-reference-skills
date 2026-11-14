@@ -75,14 +75,6 @@ agent:
 - MCP servers from `mcp_servers`: by default ACP gets every enabled server; listing server names in `platform_toolsets.acp` restricts to those; `no_mcp` drops them all. `hermes tools` has no ACP entry, so edit `config.yaml` directly.
 - MCP servers sent by the editor via `session/new` are separate and always added.
 
-## Editor-provided MCP servers
-
-On gateways advertising `acp-session-mcp-v1`, editor `mcpServers` belong to the canonical session, not the ACP viewer process; registry namespaces are separate even when two editors supply the same server name, and closing an editor does not cancel another session's MCP execution. Discovery is eager and bounded before the first model turn; selected tool schemas stay frozen for the conversation (server tool-list changes need a new session). MCP transports are released after each execution without stopping sibling sessions or the shared MCP loop. The editor transport specification (command arguments, environment values, HTTP headers) is kept only in gateway memory; durable session policy holds a fingerprint plus the selected schemas. After a gateway restart the editor must supply the same `mcpServers` on load/resume: missing credentials refuse execution, a changed specification or secret refuses reattachment. Start a new session when changing server configuration. Commands and paths run on the gateway host.
-
-## Service-tier picker
-
-ACP clients that render `configOptions` can select **Service tier** for a supported model route: **Normal**, **Fast**, **Auto**, **Cold**, and **Ultrafast** when model and account eligibility checks permit. The gateway supplies and validates the choices; unsupported routes show no picker. The selection applies to that session's next turn (not every session), does not write `config.yaml`, survives editor reload while the gateway session lives, and changes from another attached client update the picker. See the `/fast` slash-command reference for the bounded Auto and Cold modes.
-
 ## Browser tools (optional)
 
 ```bash
@@ -129,6 +121,14 @@ On timeout or error the approval bridge denies the request. The wait is `approva
 
 - `HERMES_ACP_SKIP_CONFIGURED_MCP=1` no longer has any effect (ACP no longer starts configured MCP servers itself).
 - `hermes acp --setup-browser` no longer installs Node.js 26, `agent-browser` or `@askjo/camofox-browser`; it installs the pinned `chromium` package only. The old `browser_navigate` / `browser_click` tool names are replaced by `browser_exec` plus `browser_cdp` / `browser_dialog` / `browser_vault`.
+
+### Editor-provided MCP servers
+
+On gateways advertising `acp-session-mcp-v1`, editor `mcpServers` belong to the canonical session, not the ACP viewer process; registry namespaces are separate even when two editors supply the same server name, and closing an editor does not cancel another session's MCP execution. Discovery is eager and bounded before the first model turn; selected tool schemas stay frozen for the conversation (server tool-list changes need a new session). MCP transports are released after each execution without stopping sibling sessions or the shared MCP loop. The editor transport specification (command arguments, environment values, HTTP headers) is kept only in gateway memory; durable session policy holds a fingerprint plus the selected schemas. After a gateway restart the editor must supply the same `mcpServers` on load/resume: missing credentials refuse execution, a changed specification or secret refuses reattachment. Start a new session when changing server configuration. Commands and paths run on the gateway host.
+
+### Service-tier picker
+
+ACP clients that render `configOptions` can select **Service tier** for a supported model route: **Normal**, **Fast**, **Auto**, **Cold**, and **Ultrafast** when model and account eligibility checks permit. The gateway supplies and validates the choices; unsupported routes show no picker. The selection applies to that session's next turn (not every session), does not write `config.yaml`, survives editor reload while the gateway session lives, and changes from another attached client update the picker. See the `/fast` slash-command reference for the bounded Auto and Cold modes.
 
 ## Related
 
