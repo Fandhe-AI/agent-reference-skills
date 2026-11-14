@@ -37,7 +37,7 @@ Servers declared in the spec:
 - For self-hosted implementations, the token format and validation logic is up to the implementer (static tokens, JWT, OAuth2 are named as common approaches).
 - Optional endpoints per the spec: `POST /artifacts` and `POST /artifacts/events`.
 - The full OpenAPI specification is served at `/api/remote-cache-spec` on the Turborepo docs site.
-- Source: https://turborepo.dev/docs/openapi (vercel/turborepo tag v2.11.8, `apps/docs/content/openapi/index.mdx`).
+- Source: https://turborepo.dev/docs/openapi (vercel/turborepo tag v2.11.11, `apps/docs/content/openapi/index.mdx`).
 
 ## Related
 

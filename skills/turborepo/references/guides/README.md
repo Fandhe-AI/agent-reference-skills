@@ -7,7 +7,7 @@
 | Handling Platforms | Detect Node.js version and handle OS/architecture-specific build caching. | [handling-platforms.md](./handling-platforms.md) |
 | Microfrontends | Built-in local development proxy server unifying multiple applications behind a single entry point. | [microfrontends.md](./microfrontends.md) |
 | Migrating from Nx | Step-by-step migration from Nx to Turborepo with configuration field mapping and command equivalence. | [migrating-from-nx.md](./migrating-from-nx.md) |
-| Multi-Language Support | Integrate non-JavaScript toolchains like Rust and Go into Turborepo workspaces. | [multi-language.md](./multi-language.md) |
+| Multi-Language Support | Run other language toolchains (for example .NET) through package scripts alongside JavaScript packages; native workspaces are covered in the Rust, Python, and Go guides. | [multi-language.md](./multi-language.md) |
 | Publishing Libraries | Build and publish TypeScript libraries with semantic versioning using Changesets. | [publishing-libraries.md](./publishing-libraries.md) |
 | Single-Package Workspaces | Use Turborepo with single-application structures from create-next-app or npm create vite. | [single-package-workspaces.md](./single-package-workspaces.md) |
 | Skipping Tasks | Skip CI tasks for workspaces with no code changes using turbo query affected. | [skipping-tasks.md](./skipping-tasks.md) |

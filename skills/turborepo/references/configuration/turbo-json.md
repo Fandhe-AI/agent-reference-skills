@@ -72,6 +72,7 @@
 | `filterUsingTasks` | `false` | Resolves `--filter` at the task level (Git ranges match task `inputs`; `...` follows the Task Graph) |
 | `strictTaskEntrypointSelection` | `false` | Selects requested tasks by whether they resolve a command: packages without a command do not become entrypoints. Scriptless tasks stay available for graph-only orchestration; independent of `filterUsingTasks` |
 | `globalConfiguration` | `false` | Moves global options under the `global` namespace (old top-level keys then hard-error with a rename hint) |
+| `hashFilePermissions` | `false` | Includes executable permissions in file hashes for task inputs and `globalDependencies`: flipping a file between non-executable and executable changes the task hash even if content is unchanged. Unix: executable if any owner / group / other executable bit is set; Windows: regular files are non-executable; symlink permissions and read / write bits are ignored. Enabling it changes all task hashes (existing cache entries are not reused) |
 | `experimentalObservability` | `false` | Honors the `experimentalObservability.otel` block |
 
 ### globalConfiguration renames
