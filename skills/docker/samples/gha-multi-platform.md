@@ -4,7 +4,55 @@ source: https://docs.docker.com/build/ci/github-actions/multi-platform/
 
 # Multi-platform image with GitHub Actions
 
-Build and push a `linux/amd64` + `linux/arm64` image with QEMU and Buildx.
+Build multi-platform images with Docker GitHub Builder (native runners) or with individual actions using QEMU.
+
+## Signature / Usage
+
+### Distribute build across multiple runners
+
+Building multiple platforms on the same runner can significantly extend build times, particularly when dealing with complex Dockerfiles or a high number of target platforms. If you want to split platform builds across multiple runners without maintaining a custom matrix and merge job, use the Docker GitHub Builder. The reusable workflows compute the per-platform matrix, run each platform on its own runner, and create the final manifest for you.
+
+The following workflow uses the `build.yml` reusable workflow to distribute a multi-platform Dockerfile build:
+
+```yaml
+name: ci
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: docker/github-builder/.github/workflows/build.yml@v1
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      output: image
+      push: true
+      platforms: linux/amd64,linux/arm64
+      meta-images: user/app
+      meta-tags: |
+        type=ref,event=branch
+        type=ref,event=pr
+        type=semver,pattern={{version}}
+        type=semver,pattern={{major}}.{{minor}}
+    secrets:
+      registry-auths: |
+        - registry: docker.io
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+```
+
+With `distribute: true`, which is the default, the workflow splits the build into one platform per runner and assembles the final multi-platform image in its finalize phase. The default `runner` mapping selects native GitHub-hosted Linux runners for Arm and other platforms.
+
+For builds defined in a Bake file, use the Bake reusable workflow. It distributes the target's platforms and publishes the combined manifest.
+
+### Build with individual actions and QEMU
+
+Use individual actions when you need to configure the job's Docker Engine or run other steps alongside the build. The following example uses QEMU to build both platforms on one runner.
 
 ```yaml
 name: ci
@@ -78,7 +126,10 @@ jobs:
 
 ## Notes
 
+- Source: https://docs.docker.com/build/ci/github-actions/multi-platform/ (docker/docs @ 553482c, retrieved 2026-11-14 JST).
+- The official page now leads with Docker GitHub Builder reusable workflows (`docker/github-builder`, [build.yml docs](https://docs.docker.com/build/ci/github-actions/build-workflow/)) and keeps the individual-action examples as the second style; both are shown here. The official example references the reusable workflow by major tag (`@v1`); it is not pinned to a commit SHA here.
+- Runner selection (custom `runner` mapping): https://docs.docker.com/build/ci/github-actions/github-builder-architecture/#runner-selection. Bake workflow: https://docs.docker.com/build/ci/github-actions/bake-workflow/#build-and-push-a-bake-target
+- The earlier version of this page showed a full Bake example (`bake.yml`, `target: image-all`); the current page only links to the Bake workflow page, so it is no longer reproduced here.
 - GitHub Actions workflow syntax is covered by the github-docs skill; this sample covers only the Docker build inputs.
 - The default runner Docker setup can push multi-platform images but cannot `load` them into the local image store; enable the containerd image store with `docker/setup-docker-action`.
-- To spread platforms across runners, the page recommends the `docker/github-builder` reusable workflows (`build.yml` / `bake.yml`), not reproduced here.
 - Adapted: the official example references actions by major tag (`@vN`); third-party actions are pinned to the commit SHA of the current release here (tag in the trailing comment).

@@ -14,7 +14,32 @@ FROM alpine
 RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN ...
 ```
 
-Workflow (inline value from the workflow):
+Pass secret values to Docker GitHub Builder using the `build-secrets` workflow secret. Its value is a YAML mapping from secret IDs to values, rather than the action's `id=value` list:
+
+```yaml
+name: ci
+
+on:
+  push:
+
+jobs:
+  build:
+    uses: docker/github-builder/.github/workflows/build.yml@v1
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      output: image
+      platforms: linux/amd64,linux/arm64
+      meta-images: user/app
+    secrets:
+      build-secrets: |
+        github_token: ${{ toJSON(secrets.GITHUB_TOKEN) }}
+```
+
+The Dockerfile consumes the `github_token` secret in the same way with either workflow. `toJSON` quotes the value for the YAML mapping. For files, environment variables, or SSH agents prepared by earlier steps, use the individual-action examples below. The reusable build runs in separate jobs and doesn't share the caller's filesystem or SSH agent.
+
+Workflow with individual actions (inline value from the workflow):
 
 ```yaml
 name: ci
@@ -91,10 +116,12 @@ The `Build` step needs a preceding Checkout step (as above) so that `./.npmrc` a
 
 ## Notes
 
+- Source: https://docs.docker.com/build/ci/github-actions/secrets/ (docker/docs @ 553482c, retrieved 2026-11-14 JST).
+- The official page now leads with Docker GitHub Builder reusable workflows (`docker/github-builder`, [build.yml docs](https://docs.docker.com/build/ci/github-actions/build-workflow/)) and keeps the individual-action examples as the second style; both are shown here. The official example references the reusable workflow by major tag (`@v1`); it is not pinned to a commit SHA here.
 - GitHub Actions workflow syntax and the `secrets` context are covered by the github-docs skill; this sample covers only the Docker build inputs.
 - Sources: `secrets` (inline value) maps to `--secret id=...,src=<temp-file>`, `secret-envs` to `--secret id=...,env=...`, `secret-files` to `--secret id=...,src=...`.
 - Secrets mount as files at `/run/secrets/<id>` by default; use `env` to expose as an environment variable or `target` to change the path.
-- Multi-line values must be wrapped in quotes (`"MYSECRET=..."`), with doubled quotes for literal quote signs.
+- With individual actions, multi-line key-value pairs must be wrapped in quotes (`"MYSECRET=..."`), with doubled quotes for literal quote signs.
 - The page also covers SSH mounts (`ssh: default` with a private-key setup step), not reproduced here.
 - Adapted: the official example references actions by major tag (`@vN`); third-party actions are pinned to the commit SHA of the current release here (tag in the trailing comment).
 - Adapted: the `secret-envs` example is expanded into a full workflow with an `actions/checkout` step, because `context: .` and `./.npmrc` cannot be resolved without a checked-out repository.

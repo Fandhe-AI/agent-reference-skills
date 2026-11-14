@@ -44,6 +44,36 @@ ENV MY_NAME="John Doe" MY_DOG=Rex\ The\ Dog \
   ```
 
 - Alternative syntax `ENV <key> <value>` (no `=`) is supported for backward compatibility but discouraged and may be removed in a future release. It can't set multiple variables in one instruction and can be confusing: `ENV ONE TWO= THREE=world` sets a single variable `ONE` with value `"TWO= THREE=world"`. The `LegacyKeyValueFormat` build check reports it.
+- Source: https://docs.docker.com/reference/dockerfile/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
+
+### ENV --unset
+
+> [!NOTE]
+> Not yet available in stable syntax, use [`docker/dockerfile:1-labs`](./parser-directives.md)
+> version.
+
+```dockerfile
+ENV --unset <key> [<key>...]
+```
+
+The `--unset` flag removes environment variables, including variables inherited
+from the base image. The variables are removed from the image configuration and
+from the environment of subsequent build steps. A build argument with the same
+name is removed as well. Declare the build argument again with [`ARG`](./arg.md) to
+make it available to later build steps. Removing a variable that isn't set is
+not an error. Values set by earlier instructions remain in the image history.
+
+When `PATH` is removed, `RUN` instructions on Linux use the default `PATH`, and
+stages based on this stage add the default `PATH` back to their image
+configuration.
+
+```dockerfile
+# syntax=docker/dockerfile:1-labs
+FROM busybox
+ENV TEMP_TOKEN_PATH=/tmp/token
+RUN ./setup.sh
+ENV --unset TEMP_TOKEN_PATH
+```
 
 ## Related
 

@@ -45,7 +45,9 @@ BuildKit built-in build args:
 | `BUILDKIT_BUILD_NAME` | String | Override the build name shown in `buildx history` and the Docker Desktop Builds view. |
 | `BUILDKIT_CACHE_MOUNT_NS` | String | Set optional cache ID namespace. |
 | `BUILDKIT_CONTEXT_KEEP_GIT_DIR` | Bool | Trigger Git context to keep the `.git` directory. |
+| `BUILDKIT_DISABLE_ONBUILD` | Bool | Skip the [`ONBUILD`](./onbuild.md) triggers of all base images and stages. This is not a security boundary: a custom frontend selected with `# syntax=` can ignore it. |
 | `BUILDKIT_GIT_ADVICE` | Bool | Show Git advice messages from BuildKit-managed Git operations. Defaults to `false`. |
+| `BUILDKIT_GIT_DEBUG_COMMANDS` | Bool | Print executed Git commands for Git contexts and `ADD` sources in the build log. Defaults to `false`. |
 | `BUILDKIT_INLINE_CACHE` | Bool | Inline cache metadata to image config or not. |
 | `BUILDKIT_MULTI_PLATFORM` | Bool | Opt into deterministic output regardless of multi-platform output or not. |
 | `BUILDKIT_SANDBOX_HOSTNAME` | String | Set the hostname (default `buildkitsandbox`). |
@@ -78,6 +80,7 @@ BuildKit built-in build args:
   ```
 
 - Build caching: a different `ARG` value causes a cache miss upon its first usage, not its definition. All `RUN` instructions after an `ARG` use it implicitly as an environment variable. An `ENV` that references the `ARG` persists the value in the image (cache miss at the `ENV` line). An `ENV` that overrides the `ARG` with a constant causes no cache miss. All predefined ARGs are exempt from caching unless there is a matching `ARG` statement.
+- Source: https://docs.docker.com/reference/dockerfile/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
 
 ## Related
 

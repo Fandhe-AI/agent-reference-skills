@@ -234,11 +234,14 @@ provenanceEnvDir = "/etc/buildkit/provenance.d"
 #
 # [cache.gha.verify.policy]
 #   timestampThreshold = 1
+#   # If omitted, require all distinct transparency logs present in the bundle.
+#   # Zero skips log verification and requires a verified TSA timestamp instead.
 #   tlogThreshold = 1
 #   # certificate properties that need to match. Simple wildcards (*) are supported.
 #   certificateIssuer = ""
 #   subjectAlternativeName = ""
 #   buildSignerURI = ""
+#   command = ""
 ```
 
 ## Notes
@@ -246,6 +249,7 @@ provenanceEnvDir = "/etc/buildkit/provenance.d"
 - The upstream example uses `debugAddress = "0.0.0.0:6060"`; this listener is separate from the gRPC address and is not protected by `[grpc.tls]`, so bind it to loopback (or omit it) unless the debug endpoint must be reachable.
 - The official full example also sets `http = true` and `insecure = true` on `docker.io` for illustration; they are mutually exclusive and both disable TLS protection — trust self-signed certificates with `ca` instead, and use `http = true` only for local mirrors.
 - Comments in the code block above were shortened where they repeated an earlier comment (e.g. the `reservedSpace` / `maxUsedSpace` / `minFreeSpace` explanations in `[worker.containerd]` and `[[worker.oci.gcpolicy]]`); keys and values are unchanged. See the official page for full comments.
+- Source: https://docs.docker.com/build/buildkit/toml-configuration/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
 - Disk space parameters accept an integer number of bytes, a string with a unit (e.g. `"512MB"`), or a percentage of total disk space (e.g. `"10%"`).
 
 ## Related

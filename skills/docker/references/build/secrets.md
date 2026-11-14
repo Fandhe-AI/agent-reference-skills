@@ -108,7 +108,9 @@ Create `HTTP_AUTH_TOKEN_<host>` or `HTTP_AUTH_HEADER_<host>` secrets. For exampl
 
 ### Other notes
 
+- `GIT_AUTH_TOKEN` and `GIT_AUTH_HEADER` are not compatible with GitLab's `CI_JOB_TOKEN`. GitLab CI job tokens require Basic authentication with the username `gitlab-ci-token`, but BuildKit always uses `x-access-token` as the username for Basic auth. Use a Personal Access Token instead. (The official page still shows the `GIT_AUTH_HEADER` example with `CI_JOB_TOKEN` above; the two statements disagree and are both kept as published.)
 - Bake equivalents: `target.secret` / `target.ssh` in the Bake file reference.
+- Source: https://docs.docker.com/build/building/secrets/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
 
 ## Related
 

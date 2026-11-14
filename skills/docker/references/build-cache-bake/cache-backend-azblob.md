@@ -28,7 +28,7 @@ $ docker buildx build --push -t <registry>/<image> \
 
 - Not supported with the default `docker` driver; create a new builder using a different driver.
 - Authentication: if `secret_access_key` is unspecified it is read from environment variables on the BuildKit server following the Azure Go SDK scheme. The variables are read from the server, not the Buildx client.
-- The overview page labels the `azblob` backend "(unreleased)".
+- The overview page labels the `azblob` backend "(experimental)".
 
 ## Related
 

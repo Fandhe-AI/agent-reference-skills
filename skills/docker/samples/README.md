@@ -31,7 +31,7 @@
 | Export to Docker with GitHub Actions | Load the build result into the runner's Docker image store. | [gha-export-docker.md](./gha-export-docker.md) |
 | Local registry with GitHub Actions | Push to a throwaway `registry:3` service container for testing. | [gha-local-registry.md](./gha-local-registry.md) |
 | Manage tags and labels with GitHub Actions | Generate image tags and OCI labels with `docker/metadata-action`. | [gha-manage-tags-labels.md](./gha-manage-tags-labels.md) |
-| Multi-platform image with GitHub Actions | Build and push `linux/amd64` and `linux/arm64` images with QEMU and Buildx. | [gha-multi-platform.md](./gha-multi-platform.md) |
+| Multi-platform image with GitHub Actions | Build and push `linux/amd64` and `linux/arm64` images with Docker GitHub Builder or with QEMU and Buildx. | [gha-multi-platform.md](./gha-multi-platform.md) |
 | Push to multiple registries with GitHub Actions | Log in to Docker Hub and GitHub Container Registry and push one build to both. | [gha-push-multi-registries.md](./gha-push-multi-registries.md) |
 | Using secrets with GitHub Actions | Pass build secrets to `docker/build-push-action` and consume them with `RUN --mount=type=secret`. | [gha-secrets.md](./gha-secrets.md) |
 | Test before push with GitHub Actions | Build and load the image, test it, then build for multiple platforms and push. | [gha-test-before-push.md](./gha-test-before-push.md) |

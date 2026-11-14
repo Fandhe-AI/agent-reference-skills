@@ -29,6 +29,7 @@ $ docker compose run --rm web python manage.py db upgrade
 | `-l`, `--label` |  | Add or override a label |
 | `--name` |  | Assign a name to the container |
 | `--no-deps` |  | Don't start linked services |
+| `--no-recreate` |  | If dependent containers already exist, don't recreate them, even if their configuration diverged |
 | `-T`, `--no-tty` | `true` | Disable pseudo-TTY allocation (default: auto-detected) |
 | `-p`, `--publish` |  | Publish a container's port(s) to the host |
 | `--pull` | `policy` | Pull image before running ("always"\|"missing"\|"never") |
@@ -55,6 +56,7 @@ $ docker compose run --rm web python manage.py db upgrade
 - If the service has links, `run` first starts the linked services if stopped (e.g. `docker compose run db psql -h db -U docker`). Use `--no-deps` to prevent this.
 - `--rm` removes the container after the command finishes, even if a restart policy is specified in the service configuration.
 - `docker compose run -e` has the highest precedence among environment variable sources (see envvars-precedence).
+- Source: https://docs.docker.com/reference/cli/docker/compose/run/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
 - Docker Compose (container orchestration) is unrelated to Jetpack Compose; see android-compose-ui, android-compose-components, and android-compose-graphics-animation for Jetpack Compose.
 
 ## Related
