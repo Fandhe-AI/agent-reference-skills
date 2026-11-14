@@ -34,7 +34,7 @@ pam-noreply@google.com
 | ... folder | `roles/privilegedaccessmanager.admin` + `roles/resourcemanager.folderAdmin` |
 | ... project | `roles/privilegedaccessmanager.admin` + `roles/resourcemanager.projectIamAdmin` |
 | View entitlements and grants | `roles/privilegedaccessmanager.viewer` |
-| View audit logs | `roles/logs.viewer` (`logging.logEntries.list`) |
+| View audit logs | `roles/logging.viewer` (`logging.logEntries.list`) (corrected from the official page, which lists `roles/logs.viewer`) |
 
 Key permissions: `privilegedaccessmanager.locations.checkOnboardingStatus`, `serviceusage.services.enable` (enable), `privilegedaccessmanager.entitlements.{create,delete,get,list,setIamPolicy}`, `privilegedaccessmanager.grants.{get,list,revoke}`, `privilegedaccessmanager.operations.{delete,get,list}`, plus `resourcemanager.{organizations,folders,projects}.{get,getIamPolicy,setIamPolicy}`. Requesters and approvers need no PAM-specific permissions.
 

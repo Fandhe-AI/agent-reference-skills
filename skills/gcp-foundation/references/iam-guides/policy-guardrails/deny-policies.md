@@ -18,6 +18,8 @@ Attachment point formats (for the REST API, URL-encode the entire value):
 
 Example deny policy: all principals are denied project deletion unless they are in `project-admins` or the project has tag value `test`.
 
+Adapted (not in the official docs): corrected the official sample's typo `googelapis.com` to `googleapis.com` in the `exceptionPermissions` entry.
+
 ```json
 {
   "name": "policies/cloudresourcemanager.googleapis.com%2Fprojects%2F253519172624/denypolicies/limit-project-deletion",
@@ -42,7 +44,7 @@ Example deny policy: all principals are denied project deletion unless they are 
         ],
         "exceptionPermissions": [
           "cloudresourcemanager.googleapis.com/folders.list",
-          "cloudresourcemanager.googelapis.com/folders.get"
+          "cloudresourcemanager.googleapis.com/folders.get"
         ],
         "denialCondition": {
           "title":  "Only for non-test projects",
@@ -69,7 +71,7 @@ Deny custom role management to everyone except `custom-role-admins`; attach to t
   "deniedPermissions": [
     "iam.googleapis.com/roles.create",
     "iam.googleapis.com/roles.delete",
-    "iam.googleapis.com/roles.update",
+    "iam.googleapis.com/roles.update"
   ]
 }
 ```
@@ -179,7 +181,7 @@ Deny policies require the IAM `v2` permission format `SERVICE_FQDN/RESOURCE.ACTI
 - Permission groups include all current and future matching permissions. Wildcards work only in supported permission groups.
 - Access changes are eventually consistent.
 - Deny rules using `principalSet://goog/public:all` with exceptions can lock out administrators; always include an exception group for break-glass administrators.
-- Source documents contain a typo in the example (`cloudresourcemanager.googelapis.com/folders.get`) which is reproduced verbatim.
+- Corrected from the official docs: the example contains the typo `cloudresourcemanager.googelapis.com/folders.get`; fixed to `googleapis.com`.
 - Source: https://docs.cloud.google.com/iam/docs/deny-overview
 - Source: https://docs.cloud.google.com/iam/docs/deny-permissions-support
 - Retrieved 2026-11-14. Content CC BY 4.0; code samples Apache 2.0.

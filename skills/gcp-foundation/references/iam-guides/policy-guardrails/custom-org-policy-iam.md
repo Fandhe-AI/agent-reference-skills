@@ -67,8 +67,10 @@ actionType: DENY
 displayName: Do not allow EMAIL_ADDRESS to be granted the Project IAM Admin role.
 ```
 
+Adapted (not in the official docs): policy name changed to `custom.denyProjectIAMAdmin` to match the constraint created above (the official sample differs in case).
+
 ```yaml
-name: projects/PROJECT_ID/policies/custom.denyProjectIamAdmin
+name: projects/PROJECT_ID/policies/custom.denyProjectIAMAdmin
 spec:
   rules:
   - enforce: true
@@ -239,20 +241,22 @@ Other documented variants combine the same functions: only specific principals (
 
 ### `resource.bindings` shape
 
+Adapted (not in the official docs): `bindings` and `members` are arrays, and the missing comma after `role` is added.
+
 ```json
 {
-  "bindings": {
-    BINDINGS
-  }
+  "bindings": [
+    BINDING
+  ]
 }
 ```
 
 ```json
 {
-  "role": "ROLE"
-  "members": {
-    MEMBERS
-  }
+  "role": "ROLE",
+  "members": [
+    MEMBER
+  ]
 }
 ```
 
@@ -294,6 +298,7 @@ Macros: `list.all(item, expr)` (typically with `ALLOW`) and `list.exists(item, e
 
 ## Notes
 
+- Corrected from the official docs: the policy name in the test example is `custom.denyProjectIAMAdmin` (the official sample used `denyProjectIamAdmin`, which does not match the constraint); the `resource.bindings` shape uses arrays for `bindings` and `members`.
 - Nested lists: use the same macro at every level. Mixing `all` over bindings with `exists` over members makes a condition that passes if any one member is in the organization, so outside principals can be granted alongside an internal one. Use `all` + `all` for `ALLOW` and `exists` + `exists` for `DENY`.
 - Limitations: dry-run audit logs for `setIamPolicy` violations may lack `resourceName`, `serviceName`, `methodName`; no audit log is produced if a custom policy makes `setIamPolicy` on the organization fail.
 - These policies do not affect Cloud Storage default ACL grants, convenience values, BigQuery default dataset access, or roles from default allow policies (e.g. project creator getting Owner).

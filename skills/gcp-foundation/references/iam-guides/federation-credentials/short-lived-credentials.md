@@ -91,9 +91,15 @@ POST https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/PRIV_SA
 }
 ```
 
+`JWT_PAYLOAD` is a JSON object serialized as a string, so its quotes are escaped. Adapted (not in the official docs): shown embedded in the full `signJwt` request body so the JSON is valid.
+
 ```json
-{ \"iss\": \"PRIV_SA\", \"sub\": \"PRIV_SA\", \"aud\": \"https://firestore.googleapis.com/\", \"iat\": 1529350000, \"exp\": EXP }
+{
+  "payload": "{ \"iss\": \"PRIV_SA\", \"sub\": \"PRIV_SA\", \"aud\": \"https://firestore.googleapis.com/\", \"iat\": 1529350000, \"exp\": EXP }"
+}
 ```
+
+Replace `EXP` with the numeric expiry (Unix time) before sending.
 
 ```
 POST https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/PRIV_SA:signBlob
@@ -105,11 +111,11 @@ POST https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/PRIV_SA
 }
 ```
 
-signJwt response includes `keyId` and `signedBlob`.
+signJwt response includes `keyId` and `signedJwt`; signBlob response includes `keyId` and `signedBlob`.
 
 ### Delegated request flow
 
-`SA_1` (caller) is granted Token Creator on `SA_2` (intermediary), and `SA_2` is granted Token Creator on `SA_3` (the target). List intermediaries in order in `delegates`, excluding the caller and the target:
+Example chain `SA_1` (caller) -> `SA_2` (delegated) -> `SA_3` (delegated) -> `SA_4` (the target). List intermediaries in order in `delegates`, excluding the caller and the target (`SA_4` is the service account named in the request URL):
 
 ```json
 {

@@ -10,8 +10,10 @@ When to use Workload Identity Federation (WIF) and how to configure workload ide
 
 ### Regional STS endpoint (data residency)
 
+Adapted (not in the official docs): command group corrected to `workload-identity-pools`.
+
 ```text
-gcloud iam workload-identity create-cred-config ... --sts-location=REGION
+gcloud iam workload-identity-pools create-cred-config ... --sts-location=REGION
 ```
 
 For an existing credential configuration file, replace in `token_url`:
@@ -49,13 +51,16 @@ constraints/iam.workloadIdentityPoolProviders   (rule: Deny All at the organizat
 | Subject collisions | One provider per pool; do not federate with the same IdP twice within a pool (or at all, if avoidable). |
 | OIDC metadata | Protect the IdP's OIDC metadata / JWKS endpoint against MITM when behind a TLS-terminating proxy. |
 | Audience | Keep the provider URL as the audience to reduce confused-deputy risk. |
-| Attribute mappings | Use immutable, non-reusable, stable, authoritative attributes (for example a unique user ID, not email/username); restrict `iam.googleapis.com/workloadIdentityPoolProviders.update` (Owner, `roles/iam.workloadIdentityPoolAdmin`). |
+| Attribute mappings | Use immutable, non-reusable, stable, authoritative attributes (for example a unique user ID, not email/username); restrict `iam.workloadIdentityPoolProviders.update` (Owner, `roles/iam.workloadIdentityPoolAdmin`). |
 | External credential configs | Validate credential configuration JSON from external sources before use. |
 | Audit | Enable Data Access logs for the Security Token Service API and Identity and Access Management API in all projects holding pools or federated service accounts; make the `google.subject` mapping unique and reversible (one external identity to exactly one subject value and back). |
 | Privilege | Use service accounts in the same project as the resources; one service account per application; grant `roles/iam.workloadIdentityUser` to specific external identities, never to all pool members. |
 
 ## Notes
 
+- Corrected from the official docs: the permission is `iam.workloadIdentityPoolProviders.update` (no `iam.googleapis.com/` prefix).
+
+- Corrected from the official docs: the page names `gcloud iam workload-identity create-cred-config`; the actual command group is `gcloud iam workload-identity-pools create-cred-config`.
 - A workload identity pool contains no identities; it is a view over external IdP identities, so ambiguous mappings enable spoofing.
 - Audit logs attribute actions to the impersonated service account; some services include `serviceAccountDelegationInfo` with the federated subject, not all do.
 - If the same external identity maps to multiple IAM principals in different pools, revoking one binding may leave another.

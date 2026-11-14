@@ -23,7 +23,7 @@ Edit a policy (REST):
 PATCH https://iam.googleapis.com/v3/organizations/ORG_ID/locations/global/principalAccessBoundaryPolicies/PAB_POLICY_ID?updateMask=FIELDS_TO_UPDATE
 ```
 
-Request JSON body:
+Request JSON body. Adapted (not in the official docs): the trailing comma after `enforcementVersion` is removed so the JSON is valid.
 
 ```
 {
@@ -32,7 +32,7 @@ Request JSON body:
     "rules": [
       PAB_RULES
     ],
-    "enforcementVersion": "ENFORCEMENT_VERSION",
+    "enforcementVersion": "ENFORCEMENT_VERSION"
   }
 }
 ```

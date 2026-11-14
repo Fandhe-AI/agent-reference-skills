@@ -72,8 +72,10 @@ gcloud iam principal-access-boundary-policies create PAB_POLICY_ID \
     --details-enforcement-version=ENFORCEMENT_VERSION
 ```
 
+Adapted (not in the official docs): added the missing `principalAccessBoundaryPolicies` collection segment to the create URL.
+
 ```text
-POST https://iam.googleapis.com/v3/organizations/ORG_ID/locations/global?principalAccessBoundaryPolicyId=PAB_POLICY_ID
+POST https://iam.googleapis.com/v3/organizations/ORG_ID/locations/global/principalAccessBoundaryPolicies?principalAccessBoundaryPolicyId=PAB_POLICY_ID
 ```
 
 ```json
@@ -88,12 +90,14 @@ POST https://iam.googleapis.com/v3/organizations/ORG_ID/locations/global?princip
 }
 ```
 
+Adapted (not in the official docs): same collection segment added to the curl URL.
+
 ```bash
 curl -X POST \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
      -H "Content-Type: application/json; charset=utf-8" \
      -d @request.json \
-     "https://iam.googleapis.com/v3/organizations/ORG_ID/locations/global?principalAccessBoundaryPolicyId=PAB_POLICY_ID"
+     "https://iam.googleapis.com/v3/organizations/ORG_ID/locations/global/principalAccessBoundaryPolicies?principalAccessBoundaryPolicyId=PAB_POLICY_ID"
 ```
 
 Apply it to a principal set with a policy binding (`RESOURCE_TYPE` is `project`, `folder` or `organization`; `CONDITION_DETAILS` optional):
@@ -156,6 +160,7 @@ principal.subject != 'special-admin@example.com'
 - PAB policies are not inherited through the resource hierarchy, but folder and organization principal sets include all descendants' principals. Publicly cached resources (for example public Cloud Storage objects) may remain viewable; modification and deletion are still blocked.
 - Cross-organization bindings cannot be created; bindings created when a project moves between organizations are deleted automatically. Bindings for deleted policies fail or have no effect and are cleaned up. The policy and the principal set binding values cannot be changed after creation.
 - Create and bind operations return long-running operations; poll them with `GET https://iam.googleapis.com/v3/OPERATION_NAME`. Permissions needed to apply a policy depend on the principal set.
+- Corrected from the official docs: the create URL omitted the `principalAccessBoundaryPolicies` collection segment; added.
 - Source: https://docs.cloud.google.com/iam/docs/principal-access-boundary-policies
 - Source: https://docs.cloud.google.com/iam/docs/principal-access-boundary-policies-create
 - Retrieved 2026-11-14. Content CC BY 4.0; code samples Apache 2.0.

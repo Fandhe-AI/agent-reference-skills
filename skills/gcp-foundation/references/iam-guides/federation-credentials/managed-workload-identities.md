@@ -46,13 +46,15 @@ gcloud iam workload-identity-pools update TRUST_DOMAIN_NAME \
 
 Custom CA through Certificate Authority Service (charged separately): create an Enterprise-tier root CA pool and root CA, a subordinate CA pool and subordinate CA (`gcloud privateca pools create`, `roots create`, `subordinates create`), then bind the subordinate CA pool with an issuance config:
 
+Adapted (not in the official docs): the official sample is flat; nested to match the structure shown in the GKE page's `describe` output.
+
 ```yaml
 inlineCertificateIssuanceConfig:
-caPools:
-REGION: projects/PROJECT_ID/locations/REGION/caPools/SUBORDINATE_CA_POOL_ID
-keyAlgorithm: RSA_2048
-lifetime: 86400s
-rotationWindowPercentage: 50
+  caPools:
+    REGION: projects/PROJECT_ID/locations/REGION/caPools/SUBORDINATE_CA_POOL_ID
+  keyAlgorithm: RSA_2048
+  lifetime: 86400s
+  rotationWindowPercentage: 50
 ```
 
 ```
@@ -61,20 +63,22 @@ gcloud iam workload-identity-pools update POOL_ID \
    --inline-certificate-issuance-config-file=ISSUANCE_CONFIG_FILE
 ```
 
-Authorize the pool's identities on each subordinate CA pool:
+Authorize the pool's identities on each subordinate CA pool.
+
+Adapted (not in the official docs): removed the stray `/name` segment from the `principalSet` path.
 
 ```
 gcloud privateca pools add-iam-policy-binding SUBORDINATE_CA_POOL_ID \
   --location=REGION \
   --role=roles/privateca.workloadCertificateRequester \
-  --member="principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/name/locations/global/workloadIdentityPools/POOL_ID/*"
+  --member="principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/*"
 ```
 
 ```
 gcloud privateca pools add-iam-policy-binding SUBORDINATE_CA_POOL_ID \
   --location=REGION \
   --role=roles/privateca.poolReader \
-  --member="principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/name/locations/global/workloadIdentityPools/POOL_ID/*"
+  --member="principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/*"
 ```
 
 Namespace and managed identity (IDs: 2-63 chars, lowercase alphanumeric and dashes, immutable):
@@ -114,12 +118,14 @@ gcloud iam workload-identity-pools managed-identities add-attestation-rule MANAG
 
 Optional trust federation between pools:
 
+Adapted (not in the official docs): `additionalTrustBundles` nested under `inlineTrustConfig` (the official YAML sample is flat; the GKE page's JSON sample nests it).
+
 ```yaml
 inlineTrustConfig:
-additionalTrustBundles:
-  POOL_ID.global.PROJECT_NUMBER.workload.id.goog:
-     trustAnchors:
-     - pemCertificate: "---BEGIN CERTIFICATE---\nPEM_ENCODED_CERTIFICATE\n---END CERTIFICATE---"
+  additionalTrustBundles:
+    POOL_ID.global.PROJECT_NUMBER.workload.id.goog:
+      trustAnchors:
+      - pemCertificate: "---BEGIN CERTIFICATE---\nPEM_ENCODED_CERTIFICATE\n---END CERTIFICATE---"
 ```
 
 ```
@@ -192,7 +198,7 @@ Self-managed pool:   spiffe://POOL_NAME.global.POOL_HOST_PROJECT_NUMBER.workload
 - Resources (clusters, root CA, subordinate CAs) may live in separate projects; pass `--project` for each.
 - For Autopilot clusters, omit `--enable-workload-identity` and the `nodeSelector` in the PodSpec.
 - The self-managed Pod's Kubernetes namespace must match the fleet namespace in the team scope.
-- The issuance-config YAML sample above is verbatim from the official page, including its flat indentation; follow the official CA Service reference for the nested structure if gcloud rejects it.
+- Corrected from the official docs: the issuance-config and trust-config YAML samples were flat (invalid nesting) and are nested here; the `principalSet` member paths had a stray `/name` segment, which is removed.
 - Source: https://docs.cloud.google.com/iam/docs/create-managed-workload-identities (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/iam/docs/create-managed-workload-identities-gke (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 

@@ -98,7 +98,7 @@ principal.type == 'iam.googleapis.com/ServiceAccount'
 principal.subject != 'super-admin@example.com'
 ```
 
-Request attributes:
+Request attributes. Adapted (not in the official docs): the working-hours example's truncated last line is completed as `<= 5` (Monday to Friday), matching the same example on the official temporary-access page.
 
 ```text
 'accessPolicies/199923665455/accessLevels/CorpNet' in
@@ -113,7 +113,7 @@ request.time.getHours('Europe/Berlin') >= 9 &&
 request.time.getHours('Europe/Berlin') <= 17 &&
 // Days of the week range from 0 to 6, where 0 == Sunday and 6 == Saturday.
 request.time.getDayOfWeek('Europe/Berlin') >= 1 &&
-request.time.getDayOfWeek('Europe/Berlin') <= '
+request.time.getDayOfWeek('Europe/Berlin') <= 5
 
 request.time.getFullYear('Europe/Berlin') == 2020
 request.time.getMonth('Europe/Berlin') < 6
@@ -172,7 +172,7 @@ request.path.startsWith('/admin')
 - Best practice: no more than 100 conditional role bindings per allow policy, to stay under the policy size limit.
 - The access levels attribute is available only with IAP (tunnel instances, or web apps on App Engine or Compute Engine backend services).
 - Timestamps use RFC 3339; time zones use IANA identifiers.
-- The official working-hours example for `getDayOfWeek` ends with a truncated `<= '` literal; the sample above is verbatim from the source. Use a numeric upper bound (the Saturday value is 6) when writing a real expression.
+- Corrected from the official docs: the working-hours example for `getDayOfWeek` ends with a truncated `<= '` literal on the source page; completed as `<= 5` (Friday; Sunday is 0, Saturday is 6).
 - Source: https://docs.cloud.google.com/iam/docs/conditions-overview (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

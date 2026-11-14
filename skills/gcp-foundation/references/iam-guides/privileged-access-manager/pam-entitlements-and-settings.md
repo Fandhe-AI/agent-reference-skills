@@ -84,6 +84,8 @@ Terraform: `google_privileged_access_manager_entitlement`. Config Connector: `Pr
 
 ### Settings: allow service accounts / agent identities as approvers and tune notifications
 
+Adapted (not in the official docs): added the missing space after `etag:` so it parses as a YAML mapping entry.
+
 ```yaml
 emailNotificationSettings:
   customNotificationBehavior:
@@ -99,7 +101,7 @@ emailNotificationSettings:
       grantActivated: ENABLED
       grantExpired: NOTIFICATION_MODE_3
       grantRevoked: ENABLED
-etag:'"ZjlkNWZlMWUtNDlhYS00YjJjAYlzNWYtZWFkNGVjOWU3NWMkBwYRsottW5Md"'
+etag: '"ZjlkNWZlMWUtNDlhYS00YjJjAYlzNWYtZWFkNGVjOWU3NWMkBwYRsottW5Md"'
 name: RESOURCE_TYPE/RESOURCE_ID/locations/global/settings
 serviceAccountApproverSettings:
   enabled: SA_AS_APPROVER
@@ -112,13 +114,13 @@ gcloud alpha pam settings update \
     --settings-file FILENAME.yaml
 ```
 
-Export current settings (needed for the `etag`):
+Export current settings (needed for the `etag`). Adapted (not in the official docs): `-- RESOURCE_TYPE=RESOURCE_ID` changed to `--RESOURCE_TYPE=RESOURCE_ID` (a bare `--` ends option parsing).
 
 ```bash
 gcloud alpha pam settings export \
     --destination=FILENAME.yaml \
     --location=global \
-    -- RESOURCE_TYPE=RESOURCE_ID
+    --RESOURCE_TYPE=RESOURCE_ID
 ```
 
 REST: `PATCH https://privilegedaccessmanager.googleapis.com/v1beta/SCOPE/locations/global/settings?updateMask=UPDATED_FIELDS` (for example `emailNotificationSettings,serviceAccountApproverSettings`; `*` updates all).
