@@ -22,7 +22,7 @@ custom_metadata: [
 |------|------|---------|-------------|
 | `filename` | built-in | — | File name, e.g. `docs/getting-started/guide.pdf`. |
 | `folder` | built-in | — | Prefix, e.g. `docs/getting-started/`. |
-| `timestamp` | built-in | — | Unix milliseconds of last modification; comparisons round down to seconds. |
+| `timestamp` | built-in | — | Unix milliseconds of last modification, truncated to the minute. |
 | `text` | data type | — | String values. |
 | `number` | data type | — | Parsed as float. |
 | `boolean` | data type | — | `true`, `false`, `1`, `0`, `yes`, `no`. |
@@ -30,10 +30,12 @@ custom_metadata: [
 
 ## Notes
 
-- Constraints: max 5 custom fields per instance; names case-insensitive, stored lowercase; reserved names `timestamp`, `folder`, `filename`.
+- Constraints: max 5 custom fields per instance; names case-insensitive, stored lowercase; reserved names `timestamp`, `folder`, `filename`, `file`.
 - Changing the schema triggers a full reindex (added fields indexed, removed fields deleted).
-- Attach metadata per source: R2 via `x-amz-meta-*` headers, websites via `<meta>` tags, built-in storage via the Items API `metadata` option.
+- Attach metadata per source: R2 via `x-amz-meta-*` headers, websites via `<meta>` tags, D1 via `meta_<name>` columns of the source query (see data-source-d1.md), built-in storage via the Items API `metadata` option.
+- The `timestamp` filter value is in Unix milliseconds (for example `{ "timestamp": { "$gte": 1735689600000 } }`); see filtering.md.
 - Storage: each vector holds a shared 10 KiB compact JSON envelope (field names, JSON syntax, system metadata, customer metadata). Only the first 64 UTF-8 bytes of each indexed string are filterable.
+- Source: https://developers.cloudflare.com/ai-search/configuration/indexing/metadata/ (pin 34d908a / fetched 2026-11-14)
 - Vectorize details: Vectorize metadata filtering (see the sibling category).
 
 ## Related
@@ -41,4 +43,5 @@ custom_metadata: [
 - [Filtering](./filtering.md)
 - [Result controls and boosting](./result-controls-and-boosting.md)
 - [R2 data source](./data-source-r2.md)
+- [D1 data source](./data-source-d1.md)
 - [Vectorize](../vectorize/README.md)

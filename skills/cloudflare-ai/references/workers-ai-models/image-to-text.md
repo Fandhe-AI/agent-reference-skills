@@ -34,7 +34,7 @@ print(data["description"])
 
 | Model ID | Provider | Properties as stated | Unit pricing |
 |----------|----------|----------------------|--------------|
-| `@cf/llava-hf/llava-1.5-7b-hf` | llava-hf | Beta; open-source chatbot fine-tuned from LLaMA/Vicuna on multimodal instruction data; Zero data retention | — |
+| `@cf/llava-hf/llava-1.5-7b-hf` | llava-hf | Beta; open-source chatbot fine-tuned from LLaMA/Vicuna on multimodal instruction data; Zero data retention; Planned deprecation 2026-11-20 | — |
 | `@cf/moondream/moondream3.1-9B-A2B` | moondream | Vision; 9B mixture-of-experts (2B active); Zero data retention | $0.30 per M input tokens, $1.00 per M output tokens |
 
 ### Input parameters
@@ -60,6 +60,7 @@ Moondream output fields: `finish_reason`, `metrics`, `answer` (query), `caption`
 ## Notes
 
 - Neither page documents a usage snippet; moondream's request is described only by its parameter list above.
+- Planned deprecation: `@cf/llava-hf/llava-1.5-7b-hf` is flagged for deprecation on 2026-11-20; after that date requests fail with HTTP `410` / error code `5028`. Source: https://developers.cloudflare.com/changelog/post/2026-11-05-planned-model-deprecations/ (pin 34d908a / fetched 2026-11-14).
 - The llava tutorial call uses the Python SDK's keyword arguments, not the `env.AI.run` binding form.
 
 ## Related

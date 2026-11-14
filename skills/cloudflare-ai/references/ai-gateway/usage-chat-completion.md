@@ -79,7 +79,7 @@ curl -X POST https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/comp
 | `anthropic/claude-sonnet-4-5` | Anthropic |
 | `grok/grok-4.7` | xAI |
 | `workers-ai/@cf/meta/llama-3.3-70b-instruct-fp8-fast` | Workers AI |
-| `dynamic/customer-support` | A Dynamic Routing route |
+| `dynamic/customer-support` | A dynamic route |
 | `custom-{slug}/{model-name}` | A custom provider |
 
 ### Supported providers

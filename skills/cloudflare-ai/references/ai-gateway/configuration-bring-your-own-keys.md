@@ -35,13 +35,14 @@ curl https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/openai/chat/
 
 ## Notes
 
+- Key activity (2026-11-06 changelog, https://developers.cloudflare.com/changelog/ai-gateway/2026-11-06-provider-key-security/; pin 34d908a / fetched 2026-11-14): **Provider Keys** groups keys by provider with masked previews, aliases, and last-used and last-updated dates. A **Key security** section highlights keys whose recorded activity is older than 90 days, for review and deletion after checking dependencies. Usage tracking starts November 2026.
 - Prerequisites: the gateway is authenticated; you have permission to create and deploy secrets in Secrets Store.
 - Dashboard: AI > AI Gateway > gateway > **Provider Keys** > **Add API Key** (provider, key, optional description). AI Gateway creates and names the secret automatically.
 - API setup: create the Secrets Store secret first using the naming format above, then create the provider configuration with the same `provider_slug` and `alias`. The returned `secret_id` is not used for runtime lookup, so the naming convention is required.
 - Remove provider authorization headers from requests: the stored key is substituted only when the provider authorization header is absent. A header you send is forwarded as-is, and placeholder values cause a provider authentication error. `cf-aig-authorization` is still required.
 - Multiple keys per provider with aliases; unspecified requests use alias `default`. On Unified Billing endpoints (e.g. `env.AI.run()` or `/ai/v1/chat/completions`) only the `default` alias is consulted; if missing, the request falls through to Unified Billing.
 - Rotation: edit the key entry in the dashboard; applications switch immediately. Deleting a key immediately stops requests that depend on it.
-- Stored keys enable rate/budget limits via Dynamic Routing. Because AI Gateway tokens are account-scoped, any token with `Run` can consume stored keys of every gateway in the account.
+- Stored keys enable rate/budget limits via dynamic routes. Because AI Gateway tokens are account-scoped, any token with `Run` can consume stored keys of every gateway in the account.
 - The "traditional" approach of sending `Authorization: Bearer <provider key>` per request still works; keep that key in a secret binding or environment variable, not in code.
 
 ## Related

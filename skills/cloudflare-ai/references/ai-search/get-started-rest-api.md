@@ -48,14 +48,36 @@ Connect a data source at creation time:
 { "id": "my-instance", "type": "r2", "source": "<R2_BUCKET_NAME>", "token_id": "<SERVICE_TOKEN_ID>" }
 ```
 
+Index the rows returned by a read-only query against a D1 database (the `token_id` of a service API token is always required):
+
+```bash
+curl -X POST "https://api.cloudflare.com/client/v4/accounts/<ACCOUNT_ID>/ai-search/namespaces/default/instances" \
+  -H "Authorization: Bearer <API_TOKEN>" \
+  -H "Content-Type: application/json" \
+  --data '{
+    "id": "my-instance",
+    "type": "d1",
+    "source": "<D1_DATABASE_ID>",
+    "token_id": "<SERVICE_TOKEN_ID>",
+    "source_params": {
+      "d1": {
+        "query": "SELECT article_id AS id, title, content\nFROM articles"
+      }
+    }
+  }'
+```
+
 ## Notes
 
 - Adapted from the official docs: the source uses `<ACCOUNT_ID>` / `<API_TOKEN>` placeholders inline; this page uses environment variables so the token is not typed into argv literals. Endpoints and payloads are unchanged.
-- The first R2-backed instance on an account needs `token_id`; see service-api-token.md.
+- R2: `token_id` is needed if your account has no service API token registered yet; if you omit it, AI Search uses the most recently registered service API token for your account. D1: `token_id` is always required. See service-api-token.md.
+- Skip the upload step if you connected a website, R2 bucket, or D1 database.
+- Source: https://developers.cloudflare.com/ai-search/get-started/api/ (pin 34d908a / fetched 2026-11-14)
 - Search before indexing finishes can return no chunks; poll `stats`.
 
 ## Related
 
+- [D1 data source](./data-source-d1.md)
 - [REST API: instances and items](./rest-api-instances-items.md)
 - [REST API: search and chat](./rest-api-search.md)
 - [Service API token](./service-api-token.md)

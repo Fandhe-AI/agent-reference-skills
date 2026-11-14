@@ -82,7 +82,7 @@ const ai = createAI({ binding: env.AI, id: "my-gateway" });
 
 ## Notes
 
-- Requires `@earendil-works/pi-ai@~1.4.0`, the `agents` package, and the `AI` binding in the Wrangler config.
+- Requires `@earendil-works/pi-ai@~1.5.0` (docs at pin 34d908a; the 2026-11-03 pin said ~1.4.0), the `agents` package, and the `AI` binding in the Wrangler config.
 - A Workers AI id that Pi AI does not list resolves with a 128,000 token context window, 8,192 output tokens, and zero cost.
 - `ai.streamSimple()` and `ai.completeSimple()` take Pi AI's simple options (`reasoning`, `maxTokens`).
 - Gateway options, catalog models, fallback: the cloudflare-agents skill (models: pi-ai; harnesses: pi; https://developers.cloudflare.com/agents/). The Agents SDK is outside this category.

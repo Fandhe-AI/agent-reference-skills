@@ -44,7 +44,7 @@ async function transcribeChunk(
 |----------|----------|----------------------|--------------|
 | `@cf/openai/whisper` | OpenAI | General-purpose speech recognition; multilingual recognition, speech translation, language identification; Zero data retention | $0.000453 per audio minute |
 | `@cf/openai/whisper-large-v3-turbo` | OpenAI | ASR and speech translation; Batch; Zero data retention | $0.000513 per audio minute |
-| `@cf/openai/whisper-tiny-en` | OpenAI | Beta; English-only Whisper Tiny; Zero data retention | — |
+| `@cf/openai/whisper-tiny-en` | OpenAI | Beta; English-only Whisper Tiny; Zero data retention; Planned deprecation 2026-11-20 | — |
 | `@cf/deepgram/nova-3` | Deepgram | Batch, Partner, Real-time, Zero data retention | $0.0052 per audio minute, $0.0092 per audio minute (websocket) |
 | `@cf/deepgram/flux` | Deepgram | Conversational speech recognition for voice agents; Partner, Real-time, Zero data retention | $0.0077 per audio minute (websocket) |
 | `@cf/pipecat-ai/smart-turn-v2` | Pipecat | Open-source native audio turn detection (task "Dumb Pipe"); Batch, Real-time, Zero data retention | $0.000338 per audio minute |
@@ -139,7 +139,7 @@ Input is an object (not expanded in the source). Output: `is_complete` (boolean,
 - Nova 3 pricing depends on transport: WebSocket $0.0092 per audio minute output (836.36 neurons per audio minute output); regular HTTP $0.0052 per audio minute output (472.73 neurons per audio minute output).
 - Adapted from the official docs: the tutorial snippet uses Node's `Buffer` (and `Buffer.from(arrayBuffer, "binary")`, where the encoding argument is ignored for ArrayBuffers), which requires Node.js compatibility in the Worker. The snippet uses `btoa` over the bytes instead. The tutorial slices a file into 1 MB chunks, so the string-building loop stays small; it is a pattern, not a model-page example.
 - Corrected from the official docs: the tutorial's commented option `vad_filter: "false"` is a string while the schema type is boolean; the snippet comment uses `false`.
-- Whisper-family pages mark `whisper-tiny-en` as Beta; no page in this group carries a deprecation flag.
+- Whisper-family pages mark `whisper-tiny-en` as Beta; `whisper-tiny-en` is flagged for planned deprecation on 2026-11-20 (suggested replacement `@cf/deepgram/nova-3`; after that date requests fail with HTTP `410` / error code `5028`). Source: https://developers.cloudflare.com/changelog/post/2026-11-05-planned-model-deprecations/ (pin 34d908a / fetched 2026-11-14).
 
 ## Related
 

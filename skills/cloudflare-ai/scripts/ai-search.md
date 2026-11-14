@@ -1,5 +1,5 @@
 ---
-source: https://developers.cloudflare.com/ai-search/get-started/wrangler/, https://developers.cloudflare.com/ai-search/wrangler-commands/, https://developers.cloudflare.com/ai-search/get-started/api/
+source: https://developers.cloudflare.com/ai-search/get-started/wrangler/, https://developers.cloudflare.com/ai-search/wrangler-commands/, https://developers.cloudflare.com/ai-search/get-started/api/, https://developers.cloudflare.com/ai-search/api/namespaces/rest-api/, https://developers.cloudflare.com/ai-search/configuration/data-source/d1/
 ---
 
 # AI Search
@@ -42,6 +42,14 @@ Adapted (not in the official docs): run with `npx` (local Wrangler install); see
 
 ```sh
 npx wrangler ai-search create my-instance --type r2 --source my-bucket
+```
+
+### Create an instance in another namespace
+
+Adapted (not in the official docs): run with `npx` (local Wrangler install); see Notes.
+
+```sh
+npx wrangler ai-search create my-instance --namespace my-namespace
 ```
 
 ### Check indexing status
@@ -223,7 +231,30 @@ curl -X POST "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT
   }'
 ```
 
-R2 sources require a service API token; the `token_id` field is needed if you have never created an R2-backed instance before.
+R2 sources require a service API token; the `token_id` field is needed if your account has no service API token registered yet (if you omit it, AI Search uses the most recently registered service API token for your account).
+
+### Create an instance with a D1 database as the data source (REST API, beta)
+
+Adapted (not in the official docs): uses the environment variables above instead of the official `<ACCOUNT_ID>` / `<API_TOKEN>` placeholders. See Notes.
+
+```bash
+curl -X POST "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai-search/namespaces/default/instances" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+  -H "Content-Type: application/json" \
+  --data '{
+    "id": "my-instance",
+    "type": "d1",
+    "source": "<D1_DATABASE_ID>",
+    "token_id": "<SERVICE_TOKEN_ID>",
+    "source_params": {
+      "d1": {
+        "query": "SELECT article_id AS id, title, content\nFROM articles"
+      }
+    }
+  }'
+```
+
+D1 sources always require `token_id`; the query must be a read-only `SELECT` / `WITH` statement that returns an `id` column.
 
 ### Upload a file (REST API)
 
@@ -235,7 +266,7 @@ curl -X POST "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT
   -F "file=@/path/to/your/file.pdf"
 ```
 
-Not needed when a website or R2 bucket is connected.
+Not needed when a website, R2 bucket, or D1 database is connected.
 
 ### Check indexing status (REST API)
 
@@ -264,8 +295,23 @@ curl "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai-
   }'
 ```
 
+### Create a namespace (REST API)
+
+Adapted (not in the official docs): uses the environment variables above instead of the official `<ACCOUNT_ID>` / `<API_TOKEN>` placeholders. See Notes.
+
+```bash
+curl -X POST "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai-search/namespaces" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "support",
+    "description": "Customer support content"
+  }'
+```
+
 ## Notes
 
+- Source: https://developers.cloudflare.com/ai-search/get-started/wrangler/, https://developers.cloudflare.com/ai-search/api/namespaces/rest-api/, and https://developers.cloudflare.com/ai-search/configuration/data-source/d1/ (pin 34d908a / fetched 2026-11-14)
 - Corrected from the official docs: Wrangler is installed locally with `npm install wrangler`, so bare `wrangler` is not on `PATH` unless also installed globally; every command uses `npx wrangler`.
 - Corrected from the official docs: the Wrangler web-crawler example uses `--source developers.cloudflare.com`, but the website data source page states that only domains onboarded onto the same Cloudflare account can be crawled; `example.com` (as in the REST example) stands in for your own domain.
 - Adapted from the official docs: REST examples read `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN` from the environment. The token needs the Account permissions `AI Search:Edit` and `AI Search:Run`.

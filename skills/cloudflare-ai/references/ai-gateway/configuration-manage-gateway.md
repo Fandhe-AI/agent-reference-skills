@@ -59,7 +59,7 @@ curl -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_
 - Auto-creation applies only to gateway ID `default`; any other ID requires creating the gateway first. The triggering request must be authenticated (REST: `Authorization`; `gateway.ai.cloudflare.com`: `cf-aig-authorization`; Workers AI binding: account identity). If you delete the default gateway, a new authenticated request re-creates it.
 - Manual creation: AI > AI Gateway > Create Gateway; name limit 64 characters; choose Workers AI Billing (Standard charges at cycle end; Unified deducts prepaid credits in real time). API creation needs a token with `AI Gateway - Read` and `AI Gateway - Edit`.
 - To switch Workers AI to prepaid credits: load credits, then Settings > Workers AI Billing > Unified billing > Save. To prevent Unified Billing fallback for BYOK third-party providers, turn on **Require provider credentials**.
-- Gateway-level retries suit cases where you control neither the client nor its backoff; per-request `cf-aig-*` headers override them. For cross-provider failover use Dynamic Routing.
+- Gateway-level retries suit cases where you control neither the client nor its backoff; per-request `cf-aig-*` headers override them. For cross-provider failover use dynamic routes.
 - Deleting a gateway is permanent.
 
 ## Related

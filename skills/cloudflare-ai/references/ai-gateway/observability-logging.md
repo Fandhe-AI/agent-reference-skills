@@ -46,10 +46,11 @@ curl -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_
 ## Notes
 
 - Default: dashboard AI Gateway > **Settings** > **Logs**. Turn off collection for privacy or compliance.
-- If `cf-aig-collect-log` is `false`, the whole entry (including metadata) is skipped regardless of `cf-aig-collect-log-payload`. Use the payload header alone to keep metadata while suppressing prompts and completions.
+- If `cf-aig-collect-log` is `false`, AI Gateway does not store the request and response bodies, regardless of `cf-aig-collect-log-payload`, and skips the rest of the log entry. For Unified Billing requests AI Gateway always logs the request billing details, so with the collect-log headers set to `false` the entry is logged without request and response bodies. Use the payload header alone to keep metadata while suppressing prompts and completions.
+- Source: https://developers.cloudflare.com/ai-gateway/observability/logging/ (pin 34d908a / fetched 2026-11-14).
 - These headers control only what AI Gateway stores; they do not change what Logpush exports.
 - Eligibility: customers whose first gateway was created on or after September 24, 2026 follow Workers Logs pricing and retention (https://developers.cloudflare.com/workers/observability/logs/workers-logs/#pricing); customers with a gateway created before that date use Legacy Logs.
-- Use an authenticated gateway to prevent unauthorized access and avoid invalid requests inflating log volume. Guardrails evaluation calls are also logged.
+- New gateways require authentication; for an existing gateway with authentication off, turn it on to prevent unauthorized access and avoid invalid requests inflating log volume. Guardrails evaluation calls are also logged.
 
 ## Related
 

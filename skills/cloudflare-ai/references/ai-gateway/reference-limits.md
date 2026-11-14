@@ -8,7 +8,7 @@ Limits for gateways, logs, Logpush, and DLP.
 
 ## Signature / Usage
 
-Exceeding the Unified Billing rate limit returns `429`; a client can back off and retry. Example of per-request retry settings:
+Exceeding the Unified Billing rate limit returns HTTP `429` with error code `2018` (see [reference-troubleshooting.md](./reference-troubleshooting.md)); a client can back off and retry. Example of per-request retry settings:
 
 Snippet taken from https://developers.cloudflare.com/ai-gateway/usage/universal/
 
@@ -63,6 +63,7 @@ config:{
 
 ## Notes
 
+- Source: https://developers.cloudflare.com/ai-gateway/reference/limits/ (pin 34d908a / fetched 2026-11-14).
 - No separate limit on the number of DLP policies per gateway; profiles can be reused across gateways.
 - Limit increases are requested through a form linked from the official page; Cloudflare contacts you if one can be granted.
 

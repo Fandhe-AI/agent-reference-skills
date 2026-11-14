@@ -20,7 +20,7 @@ curl -X PUT "https://api.cloudflare.com/client/v4/accounts/<ACCOUNT_ID>/ai-searc
   }'
 ```
 
-Search a subset:
+Search the allowlist (every request searches all allowlisted instances and merges the results):
 
 ```bash
 curl https://ns-<NAMESPACE_ENDPOINT_ID>.search.ai.cloudflare.com/search \
@@ -31,10 +31,7 @@ curl https://ns-<NAMESPACE_ENDPOINT_ID>.search.ai.cloudflare.com/search \
         "content": "How do I configure AI Search?",
         "role": "user"
       }
-    ],
-    "ai_search_options": {
-      "instance_ids": ["docs", "support"]
-    }
+    ]
   }'
 ```
 
@@ -54,9 +51,9 @@ curl -X PUT "https://api.cloudflare.com/client/v4/accounts/<ACCOUNT_ID>/ai-searc
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `instances_allowed` | string[] | `[]` | Up to 10 existing instances in the namespace; empty means nothing is searchable. |
-| `ai_search_options.instance_ids` | string[] | whole allowlist | Narrow a request; every value must be allowlisted. |
+| `ai_search_options.instance_ids` | — | — | Not supported on the namespace endpoint: if present, the endpoint replaces it with the full allowlist. You cannot narrow a request to a subset. |
 
-Errors: `7097` unknown instance (400), `7099` concurrent modification (409, retry), `60012` malformed `instance_ids` (400), `60013` no searchable instance (404, identical for unknown, outside allowlist, or empty), `60014` unsupported path (404), `60015` body not a JSON object (400).
+Errors: `7097` unknown instance (400), `7099` concurrent modification (409, retry), `60013` allowlist is empty, so no instance is searchable (404), `60014` unsupported path (404), `60015` body not a JSON object (400; an empty body is treated as an empty JSON object).
 
 ## Notes
 
@@ -64,6 +61,9 @@ Errors: `7097` unknown instance (400), `7099` concurrent modification (409, retr
 - `public_endpoint_params` is replaced in full on every update; omitting `instances_allowed` resets it to empty and every request then returns `404`.
 - Deleting or moving an instance removes it from the allowlist. Enabling a namespace endpoint does not change instance endpoints.
 - Disabling with `null` keeps the identifier so the URL is reused.
+- To search a different set of instances, update `instances_allowed`, or query the instances from a Workers binding or the REST API (see search.md and samples/search-multiple-instances.md).
+- Migration (2026-11-03 pin to 2026-11-14 pin): per-request narrowing with `ai_search_options.instance_ids` and error `60012` were removed; `60013` now only means an empty allowlist.
+- Source: https://developers.cloudflare.com/ai-search/configuration/retrieval/public-endpoint/namespace/ (pin 34d908a / fetched 2026-11-14)
 
 ## Related
 

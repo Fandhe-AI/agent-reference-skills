@@ -95,7 +95,7 @@ export default {
 - Only the first five entries are saved; extras are ignored.
 - Keys starting with `cf.` are reserved; AI Gateway removes customer-supplied `cf.*` keys. `cf.user_id` is guaranteed to be saved when a valid Access user ID exists, and may displace the last custom entry when five are already present. Service-token requests get no `cf.user_id`.
 - Treat metadata sent from clients as untrusted when using it for authorization or budgets; set identifiers server-side.
-- Metadata shows in logs, can drive spend limits, Dynamic Routing conditions, and OpenTelemetry span attributes.
+- Metadata shows in logs, can drive spend limits, dynamic route conditions, and OpenTelemetry span attributes.
 
 ## Related
 

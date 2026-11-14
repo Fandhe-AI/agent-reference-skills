@@ -34,6 +34,7 @@ Workers AI generation models (context tokens): `@cf/meta/llama-3.3-70b-instruct-
 ## Notes
 
 - External providers (OpenAI, Anthropic, ...): add provider keys to AI Gateway (bring your own keys), connect that gateway on creation or under **Settings** > **Resources**. Embedding and reranking models must be in the supported list; generation and rewriting accept any AI Gateway model ID compatible with OpenAI Chat Completions.
+- `@cf/meta/llama-3.1-8b-instruct-fp8` and `@cf/deepseek-ai/deepseek-v4-flash-0731` are on the Workers AI planned-deprecation list (2026-11-20; requests then fail with HTTP 410, error 5028); this page's list is not updated for that. Source: https://developers.cloudflare.com/changelog/post/2026-11-05-planned-model-deprecations/ (pin 34d908a / fetched 2026-11-14).
 - Smart Default picks a Cloudflare-recommended model and upgrades it over time. No models are currently marked for end-of-life; deprecated models return a clear error after their end-of-life date.
 - Workers AI embedding and reranking run under AI Search (not in AI Gateway logs, not billed as Workers AI). Rewriting, generation, external calls go through the gateway; you can use Guardrails, DLP, retries/fallbacks.
 - Do not enable AI Gateway caching (stale embeddings degrade the index) or rate limiting (interrupts indexing) on the connected gateway.

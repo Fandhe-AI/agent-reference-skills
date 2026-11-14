@@ -41,7 +41,7 @@ const instance = await env.AI_SEARCH.create({
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `match_threshold` | number | `0.4` | 0 to 1; filters on the vector similarity score, not the fused score. |
+| `match_threshold` | number | `0.4` | 0 to 1; filters on the vector similarity score, not the fused score. On the instance this setting is named `score_threshold`; in a search or chat completions request set `match_threshold` in `ai_search_options.retrieval` to override the instance value. |
 | `max_num_results` | integer | `10` | Max 50. |
 | `reranking.match_threshold` | number | `0.4` | Separate threshold on reranking score. |
 | `boost_by[].field` | string | — | Metadata field or built-in `timestamp`; case-insensitive; max 64 chars; unique per request. |
@@ -54,6 +54,8 @@ Directions by field type: `datetime` and `number` support all four; `text` and `
 - Pipeline order: retrieve up to 50 candidates, boost (additive to retrieval score), rerank if enabled, return top `max_num_results`. Boosting cannot promote a chunk that retrieval did not return.
 - Max 3 boost fields; `asc`/`desc` on text or boolean errors. Per-request `boost_by` fully replaces the instance default; an empty array disables boosting (also removes instance-level boosting when passed to `update`).
 - If no result meets the threshold, no response is generated.
+- Instance level: `score_threshold` and `max_num_results`; per request: `match_threshold` and `max_num_results`.
+- Source: https://developers.cloudflare.com/ai-search/configuration/retrieval/result-controls/ (pin 34d908a / fetched 2026-11-14)
 - Larger `max_num_results` increases latency and cost.
 
 ## Related

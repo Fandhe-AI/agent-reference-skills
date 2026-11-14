@@ -1,5 +1,5 @@
 ---
-source: https://developers.cloudflare.com/ai-gateway/features/dynamic-routing/, https://developers.cloudflare.com/ai-gateway/features/dynamic-routing/json-configuration/, https://developers.cloudflare.com/ai-gateway/features/dynamic-routing/usage/
+source: https://developers.cloudflare.com/ai-gateway/features/routing/dynamic-routing/, https://developers.cloudflare.com/ai-gateway/features/routing/dynamic-routing/json-configuration/, https://developers.cloudflare.com/ai-gateway/features/routing/dynamic-routing/usage/
 ---
 
 # Dynamic routing
@@ -132,14 +132,16 @@ export default {
 ## Notes
 
 - Concepts: Route (named, versioned; used as the model name `dynamic/<name>`), Nodes (Start, Conditional, Percentage, Model, Rate Limit, Budget Limit, End), Metadata (key-value context from your app, referenced in rules), Versions (each change makes a draft; deploy to go live; instant rollback).
-- Setup: gateway > **Dynamic Routes** > **Add Route** > Editor > define nodes > **Save** a version > deploy. Prerequisites: gateway authentication on and upstream provider keys stored with BYOK.
-- Dynamic routes accept only the OpenAI chat completions request shape (via `/ai/v1/chat/completions`, the AI binding, or `/compat/chat/completions`); other formats such as Anthropic Messages return `400`.
+- Setup: gateway > **Routing** > **Create dynamic route** > Editor > define nodes > **Save** a version > deploy. Prerequisites: gateway authentication on and upstream provider keys stored with BYOK.
+- Dynamic routes accept only the OpenAI chat completions request shape (via `/ai/v1/chat/completions`, the AI binding, or `/compat/chat/completions`); other formats such as Anthropic Messages return `400`. The `/ai/run` REST endpoint does not support dynamic routes; requests to it return `400` with error code `7003` (see [reference-troubleshooting.md](./reference-troubleshooting.md)).
 - Routes are scoped to the gateway they were created on. On the REST API and AI binding, name that gateway explicitly (`cf-aig-gateway-id` / `gateway.id`); otherwise the request resolves against the default gateway and returns `404`.
 - Adapted from the official docs: token read from `process.env.CF_AIG_TOKEN` instead of a literal; never commit real tokens.
+- Source: https://developers.cloudflare.com/ai-gateway/features/routing/dynamic-routing/ (pin 34d908a / fetched 2026-11-14). The pages moved from `/ai-gateway/features/dynamic-routing/` into the Routing section and the product wording changed from "Dynamic Routing" to "dynamic routes"; the dashboard entry point is now the gateway's **Routing** page, shared with model aliases (see [features-model-aliases.md](./features-model-aliases.md)).
 - Routes can also be defined via the REST API using the JSON structure above instead of the dashboard editor.
 
 ## Related
 
+- [features-model-aliases.md](./features-model-aliases.md)
 - [usage-chat-completion.md](./usage-chat-completion.md)
 - [usage-worker-binding-methods.md](./usage-worker-binding-methods.md)
 - [configuration-bring-your-own-keys.md](./configuration-bring-your-own-keys.md)

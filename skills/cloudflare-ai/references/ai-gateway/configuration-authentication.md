@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/ai-gateway/configuration/authenticatio
 
 # Authenticated Gateway
 
-Require a valid Cloudflare API token on every request to a gateway, preventing unauthorized access and log-storage inflation from invalid requests.
+Require a valid Cloudflare API token on every request to a gateway, preventing unauthorized access and log-storage inflation from invalid requests. New gateways require authentication; existing gateways with it off can continue without it or turn it on, and once on it cannot be turned off.
 
 ## Signature / Usage
 
@@ -37,9 +37,21 @@ curl -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_
 | Off | present | Unauthenticated | Succeeds |
 | Off | absent | Unauthenticated | Succeeds |
 
+### Configure through the API
+
+| Operation | `authentication` field | Result |
+|-----------|------------------------|--------|
+| Create gateway | omitted | Defaults to `true` |
+| Create gateway | `false` | HTTP `400` |
+| Update gateway | omitted | Current setting preserved |
+| Update gateway | `true` | Turned on permanently |
+| Update gateway (authentication already on) | `false` | HTTP `400` with `Authentication cannot be disabled once enabled.` |
+| Update gateway (existing unauthenticated gateway) | `false` | Accepted; does not allow turning authentication off after it is on |
+
 ## Notes
 
-- Dashboard setup: gateway Settings > **Create authentication token** (generates a token with `Run` permission; shown once, store it securely) > include it in requests > toggle on Authenticated Gateway.
+- Source: https://developers.cloudflare.com/ai-gateway/configuration/authentication/ and https://developers.cloudflare.com/changelog/ai-gateway/2026-11-03-required-authentication/ (pin 34d908a / fetched 2026-11-14). The **Off** row of the behavior matrix applies only to existing gateways that have not enabled authentication. Before turning authentication on for an existing gateway, configure HTTP clients to send a valid Cloudflare API token.
+- Dashboard setup: gateway **Settings** (authentication is already required for new gateways) > **Create authentication token** (generates a token with `Run` permission; shown once, store it securely) > include it in requests > for an existing gateway with authentication off, turn on **Authenticated Gateway** (it cannot be turned off again).
 - `gateway.ai.cloudflare.com` endpoints continue to work; for new integrations the REST API at `api.cloudflare.com` is recommended.
 - Account-scoped tokens: `AI Gateway Read`, `Run`, and `Edit` cannot be restricted to a single gateway. Any token with `AI Gateway Run` can send requests through every gateway in the account, including gateways with stored BYOK provider keys. For isolation between gateways or tenants, use separate Cloudflare accounts or a Worker-side AI Gateway binding.
 - Requests made through a Workers binding are pre-authenticated within the account; `cf-aig-authorization` need not be added.

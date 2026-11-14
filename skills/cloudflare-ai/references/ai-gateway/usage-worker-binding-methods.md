@@ -91,10 +91,13 @@ const openaiUrl = await gateway.getUrl("openai");
 - Run `wrangler types` after changing the Wrangler configuration to regenerate `env` types.
 - `getUrl()` lets OpenAI / Vercel AI SDK clients point at the gateway: `new OpenAI({ baseURL: await env.AI.gateway("my-gateway").getUrl("openai") })` (provide the API key from a secret binding, e.g. `env.OPENAI_API_KEY`, not a literal). The same applies to `createOpenAI` / `createAnthropic` from the vercel-ai-sdk skill's packages.
 - Binding requests are pre-authenticated within the account.
+- Third-party models: pass the model's input object directly as the second argument to `env.AI.run()`; do not wrap it in an `input` field (AI Gateway rejects fields the model does not accept). Binding errors may only show `7003: User Input Error`; see the 7003 entry in [reference-troubleshooting.md](./reference-troubleshooting.md).
+- Source: https://developers.cloudflare.com/ai-gateway/usage/worker-binding-methods/ (pin 34d908a / fetched 2026-11-14).
 
 ## Related
 
 - [integrations-workers-ai-binding.md](./integrations-workers-ai-binding.md)
 - [features-dynamic-routing.md](./features-dynamic-routing.md)
+- [reference-troubleshooting.md](./reference-troubleshooting.md)
 - [evaluations-human-feedback.md](./evaluations-human-feedback.md)
 - [usage-rest-api.md](./usage-rest-api.md)

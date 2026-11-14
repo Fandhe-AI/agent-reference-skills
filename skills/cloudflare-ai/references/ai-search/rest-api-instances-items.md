@@ -64,6 +64,8 @@ Items (`.../items`):
 - Auth: API token with AI Search:Edit and AI Search:Run, sent as `Authorization: Bearer <API_TOKEN>`. Keep the token in an environment variable or secret store, never in source control.
 - Keys are unique per data source; combine `key` with `source` (e.g. `source=builtin`) to disambiguate.
 - Items upload to built-in storage; content download is unavailable for external-source items (error `7059`).
+- Creating an instance accepts `type` `r2`, `web-crawler`, or `d1` (see data-source-d1.md); `source` cannot be changed after creation.
+- Namespaces themselves (create, list, update, delete, move an instance) are managed with the namespaces REST API (namespaces-rest-api.md) or Terraform (instances-terraform.md, namespaces-terraform.md).
 - `public_endpoint_params` on `PUT` is replaced in full on each update (see custom-domains-and-access.md).
 
 ## Related
@@ -71,3 +73,5 @@ Items (`.../items`):
 - [Get started: REST API](./get-started-rest-api.md)
 - [REST API: search and chat](./rest-api-search.md)
 - [Instance methods](./instance-methods.md)
+- [Namespaces REST API](./namespaces-rest-api.md)
+- [Instances with Terraform](./instances-terraform.md)

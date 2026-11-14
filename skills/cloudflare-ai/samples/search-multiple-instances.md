@@ -125,8 +125,6 @@ export default {
 
 To return one written answer grounded in both instances, use `chatCompletions` with the same `instance_ids` (inside the same handler, after `tenantId` and `query` are resolved):
 
-Adapted (not in the official docs): the official snippet passes `query`, but `chatCompletions()` takes a `messages` array (the binding reference and `AiSearchMultiChatCompletionsRequest` both require it); the query is wrapped in a user message. See Notes.
-
 ```ts
 const completion = await env.AI_SEARCH.chatCompletions({
 	messages: [{ role: "user", content: query }],
@@ -142,7 +140,7 @@ const answer = completion.choices[0]?.message.content;
 ## Notes
 
 - Adapted from the official docs: tenant identity comes from a verified token rather than a client-supplied header, and the on-request `ensureInstance()` (create + seed, with a catch that swallowed every error) was removed; provision `general-knowledge` and `tenant-<id>` instances beforehand (for example with `env.AI_SEARCH.create({ id })` from an admin script).
-- Corrected from the official docs: the guide's `chatCompletions({ query, ... })` example does not match the binding, whose namespace-level `chatCompletions()` requires `messages` (only `search()` accepts a plain `query`); the example sends `messages: [{ role: "user", content: query }]`.
+- The guide's `chatCompletions` example now passes the query as a user message in `messages` (older revisions passed `query`, which the namespace-level `chatCompletions()` does not accept; only `search()` accepts a plain `query`). Source: https://developers.cloudflare.com/ai-search/how-to/search-multiple-sources/ (pin 34d908a / fetched 2026-11-14)
 - Instance IDs must match `^[a-z0-9_]+(?:-[a-z0-9_]+)*$`. The instances binding page allows 1-64 characters while the `@cloudflare/workers-types` JSDoc says 1-32, so tenant IDs are capped at 25 characters to keep `tenant-<id>` within the stricter limit.
 - `env.AI_SEARCH.search()` is the namespace-level search; `env.AI_SEARCH.get(id).search()` searches a single instance.
 - A missing or failing instance yields a partial result and an `errors` array instead of throwing.

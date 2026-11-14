@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/ai-search/configuration/indexing/synci
 
 # Syncing
 
-External data sources (website, R2) are synced by scheduled jobs; built-in storage is indexed per file immediately.
+External data sources (website, R2, D1) are synced by scheduled jobs; built-in storage is indexed per file immediately.
 
 ## Signature / Usage
 
@@ -24,11 +24,12 @@ npx wrangler ai-search jobs create <INSTANCE_NAME>
 
 ## Notes
 
-- Inconsistency in the source: this page lists `900`-`86400` with default 24 hours, while the instance binding page lists `3600`-`86400` with default `21600` (6 hours). Check the instance via `info()` for its actual value.
+- The instance create parameters now agree with this page: `900`-`86400`, default `86400` (24 hours). Check the instance via `info()` for its actual value.
 - Trigger syncs from CI/CD, a CMS webhook, or a Worker using the Create job REST API (see rest-api-instances-items.md).
-- An instance with no search request for 31 days has its scheduled syncs paused (external sources only). It stays searchable and resumes when traffic returns or via **Resume indexing**.
+- An instance with no search request for 31 days has its scheduled syncs paused (external sources only: website, R2, or D1). It stays searchable and resumes when traffic returns or via **Resume indexing**.
 - Indexing time depends on file count, sizes, formats (images are slower), and Workers AI latency.
-- Keep files within size limits and supported formats, keep the service API token valid for R2, and clean up stale content.
+- Keep files within size limits and supported formats, keep the service API token valid for R2 and D1, and clean up stale content.
+- Source: https://developers.cloudflare.com/ai-search/configuration/indexing/syncing/ (pin 34d908a / fetched 2026-11-14)
 
 ## Related
 

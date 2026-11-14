@@ -65,7 +65,7 @@ await generateText({
 });
 ```
 
-Pi AI (needs `@earendil-works/pi-ai@~1.4.0`; install with `npm i agents @earendil-works/pi-ai`):
+Pi AI (needs `@earendil-works/pi-ai@~1.5.0`; install with `npm i agents @earendil-works/pi-ai`):
 
 ```ts
 import { createAI } from "agents/models/pi-ai";

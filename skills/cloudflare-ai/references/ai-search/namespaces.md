@@ -66,11 +66,17 @@ Bind individual instances of the `default` namespace with `ai_search`:
 - The `ai_search` binding offers `search()`, `chatCompletions()`, `info()`, `stats()`, and `items`, but not `list()`, `create()`, or `delete()`.
 - Several namespace bindings can be declared in one Worker; each maps to a different namespace.
 - A namespace can expose its own public `/search`, `/chat/completions`, and `/mcp` endpoints; see namespace-public-endpoints.md.
+- The binding manages instances inside its namespace only. To create, update, or delete namespaces themselves, use the REST API, Terraform, or Wrangler (see namespaces-rest-api.md, namespaces-terraform.md).
+- Terraform: from Cloudflare Terraform provider v5.29.0, use `cloudflare_ai_search_namespace` to create a namespace and set `namespace` on `cloudflare_ai_search_instance`; if omitted the instance is created in `default`. Changing `namespace` on an existing instance replaces it (see instances-terraform.md).
+- Source: https://developers.cloudflare.com/ai-search/concepts/namespaces/ (pin 34d908a / fetched 2026-11-14)
 - Binding mechanics (`env`, `wrangler.jsonc`) are covered by the cloudflare-workers and cloudflare-wrangler skills.
 
 ## Related
 
 - [Bindings configuration](./bindings-configuration.md)
 - [Namespace methods](./namespace-methods.md)
+- [Namespaces REST API](./namespaces-rest-api.md)
+- [Namespaces with Terraform](./namespaces-terraform.md)
+- [Instances with Terraform](./instances-terraform.md)
 - [Multitenancy](./multitenancy.md)
 - [Namespace public endpoints](./namespace-public-endpoints.md)

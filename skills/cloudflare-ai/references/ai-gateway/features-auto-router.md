@@ -1,5 +1,5 @@
 ---
-source: https://developers.cloudflare.com/ai-gateway/features/auto-router/
+source: https://developers.cloudflare.com/ai-gateway/features/routing/auto-router/
 ---
 
 # Auto Router
@@ -61,6 +61,13 @@ const response = await env.AI.run(
 | cf-aig-session-id | string | — | Session the request belongs to; enables session affinity (same model for a whole turn, enabling prompt caching) |
 | cf-aig-turn-id | string | — | Turn the request belongs to; overrides turn detection from message history |
 | cf-aig-no-session-affinity | `true` | — | Select a model per request instead of pinning per turn |
+
+### Restrict models per request (collapsed section "Restrict models with request headers")
+
+To limit the models `cloudflare/auto` selects from for a single request. For a reusable set of models, use a model alias (see [features-model-aliases.md](./features-model-aliases.md)).
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
 | cf-aig-allowed-models | comma-separated string | — | Models Auto Router may choose from; supports `*` wildcard (e.g. `anthropic/*`) |
 | cf-aig-allowed-providers | comma-separated string | — | Providers to choose from, e.g. `openai,anthropic` |
 
@@ -101,6 +108,8 @@ const response = await env.AI.run(
 
 ## Notes
 
+- Source: https://developers.cloudflare.com/ai-gateway/features/routing/auto-router/ (pin 34d908a / fetched 2026-11-14). The page moved from `/ai-gateway/features/auto-router/` to the Routing section; the request-header table now lists only the three session headers, and `cf-aig-allowed-models` / `cf-aig-allowed-providers` moved into a collapsed "Restrict models with request headers" section.
+- To route between a set of models you choose, create a model alias and select **Smart routing** as its routing algorithm; the alias stores the models and algorithm on the gateway so they can change without updating the application. The Auto Router pool is managed by Cloudflare and may change.
 - Selection: builds a pool of eligible models (excludes models that do not support the request format or inputs such as images; accounts for credentials, billing, spend limits; unhealthy providers are excluded and restored on recovery), classifies the task, scores quality vs cost, tries the top-ranked model and falls back to the next if a provider cannot serve.
 - Supports Chat Completions and Responses API formats; the WebSockets API is not yet supported.
 - `cf-aig-allowed-models` replaces the default models; entries may match "additional models" (a larger list on the official page, e.g. Anthropic, OpenAI, xAI, Fireworks, Alibaba, MiniMax, Google and further Workers AI models). `*` does not match `/`, so use `anthropic/*`, not `*`. An entry that matches nothing returns `400`. If both allow-list headers are sent, a model must match both.
@@ -113,4 +122,5 @@ const response = await env.AI.run(
 - [usage-chat-completion.md](./usage-chat-completion.md)
 - [usage-worker-binding-methods.md](./usage-worker-binding-methods.md)
 - [features-dynamic-routing.md](./features-dynamic-routing.md)
+- [features-model-aliases.md](./features-model-aliases.md)
 - [integrations-coding-agents.md](./integrations-coding-agents.md)
