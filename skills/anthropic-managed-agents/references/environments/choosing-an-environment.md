@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/managed-agents/choosing-an-environment / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/managed-agents/choosing-an-environment / last verified: 2026-11-14 -->
 
 # Choosing an agent environment
 
@@ -35,6 +35,8 @@ ant beta:worker poll --workdir /workspace
 - What carries over when switching: agent definition, API key or AWS credentials, skills, MCP servers, memory stores. New: a `self_hosted` environment, an environment key from the Claude Console, and a worker.
 - Claude Platform on AWS: a self-hosted sandbox cannot use memory stores, workers do not use an environment key, and MCP tunnels are not available.
 - Status: beta (`managed-agents-2026-04-01`).
+- Self-hosted Claude Managed Agents (you run the whole service and store agents, sessions, and session history on your own infrastructure; by default each model request still sends conversation history and tool results to Anthropic; access via your Anthropic account team) is separate from a self-hosted sandbox. See the self-hosted category.
+- Source: https://platform.claude.com/docs/en/managed-agents/choosing-an-environment.md (fetched 2026-11-14).
 
 ## Related
 
@@ -43,3 +45,4 @@ ant beta:worker poll --workdir /workspace
 - [Self-hosted sandboxes](./self-hosted-sandboxes.md)
 - [Security model](./self-hosted-sandboxes-security.md)
 - [Vaults](./vaults.md)
+- [Self-hosted Claude Managed Agents](../self-hosted/overview.md)

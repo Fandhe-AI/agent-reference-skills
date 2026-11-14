@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/managed-agents/overview / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/managed-agents/overview / last verified: 2026-11-14 -->
 
 # Claude Managed Agents overview
 
@@ -33,6 +33,7 @@ Pre-built, configurable agent harness that runs in Anthropic-managed infrastruct
 - Long-running execution: tasks that run for minutes or hours with multiple tool calls
 - Cloud infrastructure: secure sandboxes with pre-installed packages and network access
 - Self-hosted execution: sandboxes on infrastructure you control for compliance or data-residency requirements
+- Self-hosted service: the whole Managed Agents service on your own infrastructure (self-hosted Claude Managed Agents; access via your Anthropic account team)
 - Minimal infrastructure: no need to build your own agent loop, sandbox, or tool execution layer
 - Stateful sessions: persistent filesystems and conversation history across multiple interactions
 - Scheduled execution: recurring agent runs on a cron schedule through scheduled deployments
@@ -50,8 +51,11 @@ Claude Managed Agents is in beta. All Managed Agents endpoints require the `mana
 
 ## Notes
 
-- Claude Managed Agents is stateful by design (persisted conversation history, sandbox state, and outputs server-side), so it is not currently eligible for Zero Data Retention (ZDR) or HIPAA BAA coverage.
-- Also available on Claude Platform on AWS, with some differences in feature availability and session behavior.
+- Claude Managed Agents is stateful by design (persisted conversation history, sandbox state, and outputs server-side), so it is not currently eligible for Zero Data Retention (ZDR) or HIPAA BAA coverage. The ZDR exception is self-hosted Claude Managed Agents, where you store that data yourself (see the self-hosted data-and-access page).
+- Also available on Claude Platform on AWS and Claude Models on Google Cloud (Anthropic managed), with some differences in feature availability and session behavior.
+- Supported models listed in the page metadata (2026-11-14): `claude-fable-5-2`, `claude-mythos-5-2`, `claude-fable-5-1`, `claude-mythos-5-1`, `claude-fable-5`, `claude-mythos-5`, `claude-mythos-preview`, `claude-opus-5-5`, `claude-opus-5`, `claude-sonnet-5-5`, `claude-sonnet-5`, `claude-haiku-5-5`, `claude-haiku-4-5-20251001`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-opus-4-6`, `claude-sonnet-4-6`, `claude-opus-4-5-20251101`, `claude-sonnet-4-5-20250929`.
+- Self-hosted Claude Managed Agents (you host the whole service) is distinct from self-hosted sandboxes (Anthropic hosts the service; you host only the tool-execution worker). See the self-hosted category for the former.
+- Source: https://platform.claude.com/docs/en/managed-agents/overview.md (fetched 2026-11-14).
 - For direct Messages API calls, see anthropic-api-core. For the self-hosted Claude Agent SDK, see anthropic-agent-sdk.
 
 ## Related
@@ -60,4 +64,5 @@ Claude Managed Agents is in beta. All Managed Agents endpoints require the `mana
 - [Define your agent](./agent-setup.md)
 - [Migration](./migration.md)
 - [Choosing an environment](../environments/choosing-an-environment.md)
+- [Self-hosted Claude Managed Agents](../self-hosted/overview.md)
 - [Reference](../sessions/reference.md) — event types, rate limits, CLI flags, and other lookup tables
