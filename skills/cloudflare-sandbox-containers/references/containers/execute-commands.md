@@ -4,20 +4,48 @@ source: https://developers.cloudflare.com/containers/guides/execute-commands/
 
 # Execute commands
 
-Use `exec()` to start another process inside a running container. The official examples call `this.ctx.container.exec()` inside a class extending `Container`; the same method exists on the Durable Object Container API.
+Use `exec()` to start another process inside a running container. The examples call `exec()` on `this.ctx.container` inside a class that extends `DurableObject`.
 
 ## Signature / Usage
 
-```js
-import { Container } from "@cloudflare/containers";
+`exec()` does not start a stopped container; it waits for a container that is still starting. The examples below call a `startContainer()` method that starts the container when it is not running:
 
-export class MyContainer extends Container {
-	async onStart() {
-		// Runs inside the container, never on the host.
-		const process = await this.ctx.container.exec([
-			"node",
-			"scripts/prepare.js",
-		]);
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export class MyContainer extends DurableObject {
+	startContainer() {
+		const container = this.ctx.container;
+		if (!container.running) {
+			// With the `default` scheduling policy, call `container.start()` without options.
+			container.start({
+				image: container.images.base,
+				enableInternet: false,
+			});
+		}
+		return container;
+	}
+}
+```
+
+Run a process after startup (`output()` buffers standard output and standard error as separate `ArrayBuffer` values):
+
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export class MyContainer extends DurableObject {
+	async startAndPrepare() {
+		const container = this.ctx.container;
+		if (container.running) {
+			return;
+		}
+
+		container.start({
+			image: container.images.base,
+			enableInternet: false,
+		});
+
+		const process = await container.exec(["node", "scripts/prepare.js"]);
 		const output = await process.output();
 		const decoder = new TextDecoder();
 
@@ -32,10 +60,197 @@ export class MyContainer extends Container {
 }
 ```
 
-Streaming large output (drain stdout and stderr concurrently):
+Read standard output as a stream in an RPC method:
 
 ```js
-import { Container } from "@cloudflare/containers";
+import { DurableObject } from "cloudflare:workers";
+
+export class MyContainer extends DurableObject {
+	async readVersion() {
+		const container = this.startContainer();
+
+		const process = await container.exec(["node", "--version"]);
+		const stdout = process.stdout
+			? await new Response(process.stdout).text()
+			: "";
+		const exitCode = await process.exitCode;
+
+		return { pid: process.pid, stdout, exitCode };
+	}
+}
+```
+
+Send standard input from a `ReadableStream`; `stdout: "ignore"` discards output:
+
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export class MyContainer extends DurableObject {
+	async importData(data) {
+		const container = this.startContainer();
+
+		const stdin = new ReadableStream({
+			start(controller) {
+				controller.enqueue(new TextEncoder().encode(data));
+				controller.close();
+			},
+		});
+		const process = await container.exec(["cat"], {
+			stdin,
+			stdout: "ignore",
+		});
+		const output = await process.output();
+
+		return {
+			stdoutBytes: output.stdout.byteLength,
+			exitCode: output.exitCode,
+		};
+	}
+}
+```
+
+Write standard input over time with `stdin: "pipe"` (close the writer to send EOF):
+
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export class MyContainer extends DurableObject {
+	async concatenateInput() {
+		const container = this.startContainer();
+
+		const process = await container.exec(["cat"], {
+			stdin: "pipe",
+		});
+		const writer = process.stdin?.getWriter();
+
+		if (!writer) {
+			throw new Error("Standard input is unavailable");
+		}
+
+		const encoder = new TextEncoder();
+		await writer.write(encoder.encode("first\n"));
+		await writer.write(encoder.encode("second\n"));
+		await writer.close();
+
+		const output = await process.output();
+		return new TextDecoder().decode(output.stdout);
+	}
+}
+```
+
+Omitting `stdin` closes it immediately, so `cat` exits:
+
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export class MyContainer extends DurableObject {
+	async verifyEndOfFile() {
+		const container = this.startContainer();
+
+		const process = await container.exec(["cat"]);
+		const output = await process.output();
+
+		return {
+			stdoutBytes: output.stdout.byteLength,
+			exitCode: output.exitCode,
+		};
+	}
+}
+```
+
+Set the process context with `cwd` and `env`:
+
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export class MyContainer extends DurableObject {
+	async inspectWorkspace() {
+		const container = this.startContainer();
+
+		const process = await container.exec(
+			[
+				"sh",
+				"-c",
+				'printf "%s:%s:%s" "$PWD" "$MODE" "$EXTRA_VALUE"; printf "diagnostic" >&2',
+			],
+			{
+				cwd: "/workspace",
+				env: {
+					MODE: "inspection",
+					EXTRA_VALUE: "added",
+				},
+			},
+		);
+		const output = await process.output();
+		const decoder = new TextDecoder();
+
+		return {
+			stdout: decoder.decode(output.stdout),
+			stderr: decoder.decode(output.stderr),
+		};
+	}
+}
+```
+
+Combine standard error into standard output:
+
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export class MyContainer extends DurableObject {
+	async readCombinedOutput() {
+		const container = this.startContainer();
+
+		const process = await container.exec(
+			[
+				"bash",
+				"-lc",
+				'printf "standard output\n"; printf "standard error\n" >&2',
+			],
+			{
+				stdout: "pipe",
+				stderr: "combined",
+			},
+		);
+		const output = await process.output();
+
+		return new TextDecoder().decode(output.stdout);
+	}
+}
+```
+
+Nonzero exit codes resolve `exitCode` and do not reject:
+
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export class MyContainer extends DurableObject {
+	async runCheck() {
+		const container = this.startContainer();
+
+		const process = await container.exec(
+			[
+				"sh",
+				"-c",
+				'printf "not captured"; printf "check failed\n" >&2; exit 7',
+			],
+			{ stdout: "ignore" },
+		);
+		const output = await process.output();
+
+		return {
+			exitCode: output.exitCode,
+			stdoutBytes: output.stdout.byteLength,
+			stderr: new TextDecoder().decode(output.stderr),
+		};
+	}
+}
+```
+
+Stream large output (drain `stdout` and `stderr` concurrently):
+
+```js
+import { DurableObject } from "cloudflare:workers";
 
 async function countBytes(stream) {
 	if (!stream) {
@@ -49,14 +264,11 @@ async function countBytes(stream) {
 	return bytes;
 }
 
-export class MyContainer extends Container {
+export class MyContainer extends DurableObject {
 	async generateLargeOutput() {
-		if (!this.ctx.container.running) {
-			await this.start();
-		}
+		const container = this.startContainer();
 
-		// Runs inside the container, never on the host.
-		const process = await this.ctx.container.exec([
+		const process = await container.exec([
 			"sh",
 			"-c",
 			'i=0; while [ "$i" -lt 100000 ]; do printf "output %s\n" "$i"; printf "error %s\n" "$i" >&2; i=$((i + 1)); done',
@@ -73,19 +285,35 @@ export class MyContainer extends Container {
 }
 ```
 
-Timeout with `kill()`:
+Return standard output over RPC:
 
 ```js
-import { Container } from "@cloudflare/containers";
+import { DurableObject } from "cloudflare:workers";
 
-export class MyContainer extends Container {
+export class MyContainer extends DurableObject {
+	async streamCommandOutput() {
+		const container = this.startContainer();
+
+		const process = await container.exec(
+			["sh", "-c", 'printf "starting\n"; run-report'],
+			{ stderr: "combined" },
+		);
+
+		return process.stdout;
+	}
+}
+```
+
+Request termination after a delay with `kill()`:
+
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export class MyContainer extends DurableObject {
 	async runWithTimeout() {
-		if (!this.ctx.container.running) {
-			await this.start();
-		}
+		const container = this.startContainer();
 
-		// Runs inside the container, never on the host.
-		const process = await this.ctx.container.exec(["sleep", "120"]);
+		const process = await container.exec(["sleep", "120"]);
 		const timer = setTimeout(() => process.kill(), 30_000);
 
 		try {
@@ -97,31 +325,85 @@ export class MyContainer extends Container {
 }
 ```
 
+Stop a command together with the processes it starts (the image must include GNU coreutils `timeout`):
+
+```js
+const process = await container.exec([
+	"timeout",
+	"--kill-after=5",
+	"30",
+	"bash",
+	"-c",
+	"npm test",
+]);
+const output = await process.output();
+
+// 124 when the command times out, or 137 if timeout also sends SIGKILL.
+console.log(output.exitCode);
+```
+
+Run several `exec()` operations in one RPC method:
+
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export class MyContainer extends DurableObject {
+	async runDiagnostics() {
+		const container = this.startContainer();
+
+		const commands = [
+			["uname", "-a"],
+			["node", "--version"],
+		];
+		const decoder = new TextDecoder();
+		const results = [];
+
+		for (const command of commands) {
+			const process = await container.exec(command);
+			const output = await process.output();
+			results.push({
+				command,
+				exitCode: output.exitCode,
+				stdout: decoder.decode(output.stdout),
+				stderr: decoder.decode(output.stderr),
+			});
+		}
+
+		return results;
+	}
+}
+```
+
 ## Options / Props
 
-Topic index of option usage shown on this page (full option table in durable-object-container.md):
+Options of `exec()` shown on this page (full contract in durable-object-container.md):
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| stdin | ReadableStream \| "pipe" | closed (EOF) | A stream sends existing data; `"pipe"` plus `process.stdin.getWriter()` writes over time; close the writer to send EOF. |
-| stdout | "pipe" \| "ignore" | `"pipe"` | `"ignore"` discards output; `output()` then returns an empty buffer. |
-| stderr | "pipe" \| "ignore" \| "combined" | `"pipe"` | `"combined"` needs `stdout: "pipe"`; `process.stderr` is then `undefined` and `output.stderr` empty. |
-| cwd | string | — | Working directory. |
-| env | Record<string, string> | — | Only these variables, plus `PATH`, reach the process; pass values from `envVars` here explicitly. `PATH` comes from `envVars` or else the image. |
-| user | string | image user | Numeric `uid:gid`. See the `exec()` caution before using it to restrict a process. |
+| `stdin` | `ReadableStream` \| `"pipe"` | closed (EOF) | A stream sends existing data; `"pipe"` with `process.stdin.getWriter()` writes over time; close the writer to send EOF. |
+| `stdout` | `"pipe"` \| `"ignore"` | `"pipe"` | `"ignore"` discards output; `output()` then returns an empty buffer. |
+| `stderr` | `"pipe"` \| `"ignore"` \| `"combined"` | `"pipe"` | `"combined"` requires `stdout: "pipe"`; `process.stderr` is then `undefined` and `output.stderr` is an empty `ArrayBuffer`. |
+| `cwd` | string | — | Working directory. |
+| `env` | Record<string, string> | — | The process receives only these variables plus `PATH`; it does not inherit the `env` option of `start()` or image variables. `PATH` comes from the `env` option of `start()`, or from the image when `start()` does not set it. |
+| `user` | string | image user | Numeric Linux user and group IDs as `uid:gid`. Read the `exec()` section of the API reference before relying on it to restrict a process. |
 
 ## Notes
 
-- Runs inside the container, never on the host: every command array and shell string on this page executes in the container, and the leading comments in the snippets above were added for that reason (not in the official docs).
-- `exec()` does not start a stopped container; in RPC methods check `this.ctx.container.running` and call `await this.start()` (the `Container` class helper). The `onStart()` hook is the place to run startup commands.
-- Arguments go directly to the executable with no shell. Use `["bash", "-lc", "<COMMAND>"]` (Bash in the image) or `["sh", "-c", "<COMMAND>"]` for pipes, redirects, globbing or expansion. Pass untrusted values as separate arguments, never interpolated into a shell string.
-- A nonzero exit code resolves `exitCode` normally and does not reject. Combined output has no ordering guarantee between source streams.
-- `output()` buffers both streams in memory; streaming and `output()` are alternatives, and a second `output()` call or one after consumption started throws `TypeError`. Returning `process.stdout` from an RPC method transfers ownership to the caller, which must consume or cancel it (otherwise backpressure can pause the process); it transfers output only, not the `ExecProcess` handle. Pass a byte-oriented `ReadableStream` (for example a `Request` body) over RPC as `stdin` to avoid buffering; the calling Worker cannot read it afterwards.
-- `kill()` queues `SIGTERM` (15) and does not enforce a deadline. It signals only the started process, not its children (`output()` waits for them). To stop a command with the processes it starts, run it under GNU coreutils `timeout` (must exist in the image): `["timeout", "--kill-after=5", "30", "bash", "-c", "npm test"]`. After 30 seconds `timeout` sends `SIGTERM` to its process group (unless a child moved to its own group, for example with `setsid`) and `SIGKILL` five seconds later; the exit code is 124 on timeout, or 137 if `SIGKILL` was also sent.
-- Keep `exec()` calls in the Durable Object that controls the container; one RPC method can perform several `exec()` operations to cut round trips.
-- Omitted from the official page: the unauthenticated upload example that wrote the request body to `/tmp/upload.bin` through `tee` (anyone reaching the Worker could write into the container). If you build one, authenticate the caller first.
+- Source: https://developers.cloudflare.com/containers/guides/execute-commands/ (cloudflare-docs production 34d908a, fetched 2026-11-14).
+- Commands run inside the container, never on the host.
+- `exec()` does not start a stopped container, but waits for one that is still starting. In RPC methods ensure the container is running before calling `exec()`.
+- Arguments go directly to the executable with no shell and no implicit pipes, redirects, globbing or expansion. Use `["bash", "-lc", "<COMMAND>"]` if Bash exists in the image, or `["sh", "-c", "<COMMAND>"]` for a POSIX shell. Pass untrusted values as separate arguments, never interpolated into a shell string.
+- A nonzero exit code resolves `exitCode` normally and does not reject. The merged stream of `stderr: "combined"` has no ordering guarantee between source streams.
+- `output()` buffers both streams in memory. Streaming and `output()` are alternatives: `output()` throws `TypeError` if either stream has started being consumed, and a second `output()` call also throws `TypeError`. The returned `pid` identifies the new process and `exitCode` resolves when it exits.
+- Passing a byte-oriented `ReadableStream` (underlying source `type: "bytes"`, for example a `Request` body) over RPC as `stdin` avoids buffering; RPC transfers ownership, so the calling Worker cannot read it afterwards. See Streams over RPC in the Workers docs.
+- Returning `process.stdout` over RPC transfers ownership to the caller, preserves flow control, and requires the caller to consume or cancel it; otherwise backpressure can pause a process that keeps writing. It transfers output, not the `ExecProcess` handle; define a separate protocol for completion metadata or process control.
+- `exec()` has no built-in timeout. `kill()` without an argument queues `SIGTERM` (15); another signal can be passed. A process can handle or ignore a signal, so this is not a hard deadline: observe completion through `exitCode` and do not infer a specific exit code from a signal.
+- `kill()` signals only the process `exec()` started; its children (for example commands in a `bash -c` script) keep running after `exitCode` resolves, and `output()` waits for them. Under `timeout --kill-after=5 30`, `timeout` sends `SIGTERM` to its process group after 30 seconds (unless a process moved to its own group, for example with `setsid`) and `SIGKILL` five seconds later; the exit code is 124 on timeout, or 137 if `SIGKILL` was also sent.
+- Keep `exec()` calls in the Durable Object that controls the container. One RPC method can perform several `exec()` operations to reduce caller-to-Durable Object round trips.
+- Omitted from the official page: the "Pass an RPC stream to standard input" example that writes an unauthenticated request body to `/tmp/upload.bin` through `tee` (anyone reaching the Worker could write into the container). If you build one, authenticate the caller first. The official page also shows each example in TypeScript; only the JavaScript versions are kept here.
+- Migration: the deprecated `Container` class from `@cloudflare/containers` is replaced by `this.ctx.container` in a `DurableObject`; see api-comparison.md.
 
 ## Related
 
 - [Durable Object Container API](./durable-object-container.md)
-- [Container class](./container-class.md)
+- [Get started](./get-started.md)

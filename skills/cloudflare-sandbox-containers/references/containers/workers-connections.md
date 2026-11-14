@@ -4,54 +4,132 @@ source: https://developers.cloudflare.com/containers/configuration/workers-conne
 
 # Connect to Workers and bindings
 
-Containers reach Workers bindings (KV, R2, D1, Durable Objects) through outbound handlers: the container makes a plain HTTP request to a virtual hostname such as `http://my.kv/some-key`, and a handler running in the Workers runtime resolves it. No SDK is needed in the container.
+Containers reach Workers bindings (KV, R2, D1, Durable Objects, and others) through outbound intercepts: the container makes a plain HTTP request to a virtual hostname such as `http://my.kv/some-key`, and a `WorkerEntrypoint` running in the Workers runtime resolves it. No SDK or client library is required inside the container.
 
 ## Signature / Usage
 
-Adapted (not in the official docs): `Container` and `ContainerProxy` import and the `ContainerProxy` export added so the snippet is self-contained (without the export, outbound interception does not work); the `my.kv` handler scopes keys to this container's ID (the official version let the container read any key in the namespace) and returns 404 for a missing key; see Notes.
+Define a `WorkerEntrypoint` for each virtual hostname. `this.env` gives you access to every binding declared in your Wrangler configuration. Pass per-instance values, such as the Durable Object ID, in `props`. `ctx.exports` requires a compatibility date of `2025-11-17` or later, or the `enable_ctx_exports` compatibility flag.
 
 ```js
-import { Container, ContainerProxy } from "@cloudflare/containers";
-export { ContainerProxy };
+import { DurableObject, WorkerEntrypoint } from "cloudflare:workers";
 
-export class MyContainer extends Container {}
+export class KvGateway extends WorkerEntrypoint {
+	async fetch(request) {
+		const key = new URL(request.url).pathname.slice(1);
+		const value = await this.env.KV.get(key);
+		return new Response(value);
+	}
+}
 
-MyContainer.outboundByHost = {
-	"my.kv": async (request, env, ctx) => {
+export class R2Gateway extends WorkerEntrypoint {
+	async fetch(request) {
 		const url = new URL(request.url);
 		// Scope access to this container's ID
-		const key = `${ctx.containerId}${url.pathname}`;
-		const value = await env.KV.get(key);
-		return new Response(value, { status: value === null ? 404 : 200 });
-	},
-	"my.r2": async (request, env, ctx) => {
-		const url = new URL(request.url);
-		// Scope access to this container's ID
-		const path = `${ctx.containerId}${url.pathname}`;
-		const object = await env.R2.get(path);
+		const path = `${this.ctx.props.containerId}${url.pathname}`;
+		const object = await this.env.R2.get(path);
 		return new Response(object?.body ?? null, { status: object ? 200 : 404 });
-	},
-};
+	}
+}
+
+export class MyContainer extends DurableObject {
+	async startContainer() {
+		const container = this.ctx.container;
+		if (container.running) return;
+
+		const props = { containerId: this.ctx.id.toString() };
+		await container.interceptOutboundHttp(
+			"my.kv",
+			this.ctx.exports.KvGateway({ props }),
+		);
+		await container.interceptOutboundHttp(
+			"my.r2",
+			this.ctx.exports.R2Gateway({ props }),
+		);
+
+		container.start({ image: container.images.base, enableInternet: false });
+	}
+}
+```
+
+```ts
+import { DurableObject, WorkerEntrypoint } from "cloudflare:workers";
+
+type Props = { containerId: string };
+
+export class KvGateway extends WorkerEntrypoint<Env, Props> {
+	async fetch(request: Request): Promise<Response> {
+		const key = new URL(request.url).pathname.slice(1);
+		const value = await this.env.KV.get(key);
+		return new Response(value);
+	}
+}
+
+export class R2Gateway extends WorkerEntrypoint<Env, Props> {
+	async fetch(request: Request): Promise<Response> {
+		const url = new URL(request.url);
+		// Scope access to this container's ID
+		const path = `${this.ctx.props.containerId}${url.pathname}`;
+		const object = await this.env.R2.get(path);
+		return new Response(object?.body ?? null, { status: object ? 200 : 404 });
+	}
+}
+
+export class MyContainer extends DurableObject<Env> {
+	async startContainer(): Promise<void> {
+		const container = this.ctx.container!;
+		if (container.running) return;
+
+		const props = { containerId: this.ctx.id.toString() };
+		await container.interceptOutboundHttp(
+			"my.kv",
+			this.ctx.exports.KvGateway({ props }),
+		);
+		await container.interceptOutboundHttp(
+			"my.r2",
+			this.ctx.exports.R2Gateway({ props }),
+		);
+
+		container.start({ image: container.images.base, enableInternet: false });
+	}
+}
 ```
 
 ## Options / Props
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| request | Request | — | The container's outbound HTTP request. |
-| env | object | — | Every binding declared in the Wrangler configuration. |
-| ctx.containerId | string | — | The container's Durable Object ID; use it to scope access or apply per-instance rules. |
+| this.env | object | — | Every binding declared in your Wrangler configuration, available inside the entrypoint. |
+| this.ctx.props | object | — | Per-instance values passed with `this.ctx.exports.<Entrypoint>({ props })`, such as the Durable Object ID. |
+| interceptOutboundHttp(hostname, entrypoint) | method | — | Maps a virtual hostname such as `my.kv` to the entrypoint. |
 
 ## Notes
 
-- `outboundByHost` handlers key on a virtual hostname. `ctx.containerId` also lets a handler reach the container's own Durable Object, for example `env.MY_CONTAINER.idFromString(ctx.containerId)` then `env.MY_CONTAINER.get(id)`.
-- Adapted from the official docs: a handler is exposed to anything running in the container, so each virtual host should scope what it can read or write. The official `my.kv` handler used the raw path as the key (any key in the namespace was readable) and returned `new Response(null)` with status 200 for missing keys; the snippet prefixes keys with `ctx.containerId` like `my.r2` and returns 404 when the key is absent. Writes to the KV namespace must then use the same `<containerId>/<key>` layout.
-- Adapted from the official docs: the snippet also imports and exports `ContainerProxy` from the Worker entry point, which outbound interception requires (see outbound-traffic.md).
-- The official Durable Object example is a fragment relying on an undefined `getStateForKey` method and is omitted.
-- Full outbound mechanics: outbound-traffic.md.
+- Source: https://developers.cloudflare.com/containers/configuration/workers-connections/ (cloudflare-docs production 34d908a, fetched 2026-11-14).
+- The container calls `http://my.kv/some-key` and the entrypoint resolves it using the KV binding. A call to `http://my.r2/file.png` reads from R2, scoped to the current container instance.
+- An intercept lasts until the container stops. Register intercepts each time you start the container.
+- Use `props` to apply different rules per container instance, for example to look up per-instance configuration from KV.
+- Migration: the deprecated `Container` class from `@cloudflare/containers` and its options (`outbound`, `outboundByHost`, `allowedHosts`, `deniedHosts`, `interceptHttps`) are replaced by `interceptOutboundHttp()`, `interceptAllOutboundHttp()` and `interceptOutboundHttps()` with a `WorkerEntrypoint`; see api-comparison.md.
+
+### Access Durable Object state
+
+Pass the Durable Object ID in `props` to call the container's own Durable Object from an entrypoint.
+
+```ts
+export class StateGateway extends WorkerEntrypoint<Env, Props> {
+	async fetch(request: Request): Promise<Response> {
+		const id = this.env.MY_CONTAINER.idFromString(this.ctx.props.containerId);
+		const stub = this.env.MY_CONTAINER.get(id);
+		// Assumes getStateForKey is defined on your Durable Object
+		return Response.json(await stub.getStateForKey(await request.text()));
+	}
+}
+```
+
+The twin comments that `getStateForKey` is assumed to be defined on your Durable Object.
 
 ## Related
 
 - [Outbound traffic](./outbound-traffic.md)
 - [Environment variables](./environment-variables.md)
 - [Durable Object Container API](./durable-object-container.md)
+- [Container class to Durable Object Container API](./api-comparison.md)

@@ -2,8 +2,8 @@
 name: cloudflare-sandbox-containers
 description: >
   Cloudflare Sandbox SDK 1.0 / Containers (Durable Object から起動するコンテナ) の
-  リファレンス。@cloudflare/sandbox、exec / processes / files / preview URLs / terminals / code interpreter、
-  Container class (defaultPort / sleepAfter / getContainer)、
+  リファレンス。@cloudflare/sandbox、ctx.container、exec / processes / files / preview URLs / terminals / code interpreter、
+  旧 Container class (defaultPort / sleepAfter / getContainer)、
   instance types、wrangler containers、Sandbox SDK 0.x → 1.0 migration。
   Durable Objects は cloudflare-stateful、Wrangler は cloudflare-wrangler、Docker 本体は docker。
 user-invocable: false
@@ -18,8 +18,8 @@ Cloudflare 開発者プラットフォームの Sandbox SDK（`@cloudflare/sandb
 ## 対象バージョン
 
 - `@cloudflare/sandbox` 1.0.3（0.x 系の本体は対象外、移行のみ `references/sandbox-migration/` に収録）
-- `@cloudflare/containers` 0.3.7
-- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `d0995b91312add6db730afec4f4944cee834abc6` と取得日 2026-11-03 で pin
+- `@cloudflare/containers` 0.3.7（公式 docs で非推奨。Container class のリファレンスページは 2026-11-09 に公式から削除され、本スキルでは `references/containers/container-class.md` に 2026-11-03 時点の内容を歴史的資料として残す。新規コードと移行先は `ctx.container` の Durable Object Container API）
+- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `34d908abc615fdf22eeb386b171b9657b9abcf38` と取得日 2026-11-14 で pin（Sandbox 側ページは 2026-11-03 の `d0995b9` から変更なし。`container-class.md` のみ `d0995b9` / 2026-11-03 のまま）
 
 ## 他スキルとの使い分け
 
@@ -145,7 +145,7 @@ skills/cloudflare-sandbox-containers/
 | ファイル操作・R2 マウント・ディレクトリのバックアップ / 復元をしたい | sandbox | [references/sandbox/README.md](references/sandbox/README.md) |
 | プレビュー URL・ブラウザーターミナル・コードインタープリターを構築したい | sandbox | [references/sandbox/README.md](references/sandbox/README.md) |
 | Claude Code / Codex / OpenCode / Pi などをサンドボックス内で動かしたい | sandbox | [references/sandbox/README.md](references/sandbox/README.md) |
-| Container class（defaultPort / sleepAfter / getContainer）で Durable Object からコンテナを起動したい | containers | [references/containers/README.md](references/containers/README.md) |
+| Durable Object から `ctx.container` でコンテナを起動・制御したい（Container class からの移行含む。旧 Container class の資料は歴史的扱い） | containers | [references/containers/README.md](references/containers/README.md) |
 | Containers のデプロイ・イメージ管理・instance types・スケーリングを設定したい | containers | [references/containers/README.md](references/containers/README.md) |
 | コンテナの環境変数・外向き通信・ローカル開発・SSH・スナップショットを扱いたい | containers | [references/containers/README.md](references/containers/README.md) |
 | Containers の制限・料金・FAQ を確認したい | containers | [references/containers/README.md](references/containers/README.md) |

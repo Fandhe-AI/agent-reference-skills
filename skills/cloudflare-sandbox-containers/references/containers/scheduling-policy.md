@@ -122,13 +122,15 @@ Migration mapping from `default` to `durable_object`:
 | image (Dockerfile path) | — | — | becomes `dockerfile` on a named `images` entry, selected in `start()`. |
 | image (registry reference) | — | — | becomes `image` on a named entry; must be digest-pinned in the Cloudflare managed registry. |
 | image_build_context, image_vars | — | — | become `build_context`, `build_vars` on the named image. |
-| instance_type | — | — | becomes the `instance` start option. `dev` maps to `lite`, `standard` to `standard-1`, `basic` to `lite` or `standard-1`. |
+| instance_type | — | — | becomes the `instance` start option. `dev` maps to `lite` and `standard` to `standard-1`. |
 | max_instances | — | — | Not supported; enforce any cap in application code. Instances count toward account limits. |
 | observability, unsafe.configuration.experimental_flags, ssh, authorized_keys | — | — | Keep in Wrangler configuration. |
 | Placement constraints, rollout settings, wrangler_ssh, trusted_user_ca_keys | — | — | Not supported on the replacement application. |
 
 ## Notes
 
+- The `default` policy is deprecated, including applications that omit `scheduling_policy` (which selects `default` automatically). Migrate to `durable_object`: existing applications need code changes and a replacement application, and changing the setting alone does not migrate them.
+- Official pages disagree on `basic`: the scheduling policy page says the runtime does not accept `basic` or the legacy `dev` / `standard` aliases for `instance`, while the migration guide (updated 2026-11-14, cloudflare-docs commit `34d908a`) says `instance` accepts `lite`, `basic`, `standard-1`, `standard-2`, `standard-3` and `standard-4`, and no longer lists a `basic` replacement (`dev` becomes `lite`, `standard` becomes `standard-1`). Both statements are kept as published; prefer the migration guide's list and test `basic` before relying on it. Custom instance minimums are in limits.md.
 - One Wrangler configuration can contain applications with both policies. The `durable_object` policy does not support `max_instances`.
 - `ctx.container.start()` returns before the container is ready; add a readiness check before sending traffic or calling `exec()`. The runtime accepts neither `basic` nor the legacy `dev` / `standard` aliases for `instance`; the runtime camel case (`memoryMib`, `diskMb`) differs from Wrangler's snake case (`memory_mib`, `disk_mb`) which only applies to the `default` policy.
 - Direct references to Docker Hub, Amazon ECR or Google Artifact Registry are not supported for named images; push to the Cloudflare managed registry first (see image-management.md). `cloudflare/debian-trixie` includes Node.js 24.20.0 on Debian Trixie slim.
@@ -138,6 +140,7 @@ Migration mapping from `default` to `durable_object`:
 - Migration procedure (the policy cannot be changed in place): add a new SQLite-backed Durable Object class, binding and a Container entry with `"scheduling_policy": "durable_object"`, a different `name`, and the new `class_name`; keep the old entry, class and binding unchanged. Do not flip `scheduling_policy` on the existing entry: `wrangler deploy` ships the new Worker version before configuring the application and would fail with the new code live. Instances and Durable Object storage do not transfer and `default` has no snapshots, so design any data transfer yourself. Namespaces differ, so choose the binding per logical container (record which namespace each sandbox uses) rather than per request; mixing can run two diverging containers for one name. Replace a `Container` subclass with the Durable Object Container API, and set `enableInternet` explicitly (the `Container` class allowed Internet unless disabled). Keep the old application during an observation period; rolling back routes to the old binding, but writes made after cutover stay in the new namespace.
 - Cleaning up: removing the entry from Wrangler does not delete the old application. Run `npx wrangler containers list`, then `npx wrangler containers delete <OLD_APPLICATION_ID>` (deletes its instances). Delete the old Durable Object class only when its data is no longer needed; that permanently deletes the namespace.
 - Routing sketch from the official page (isMigrated is application code): `const binding = (await isMigrated(sandboxName)) ? env.DURABLE_SANDBOX : env.SANDBOX; const sandbox = binding.getByName(sandboxName);`.
+- Source: https://developers.cloudflare.com/containers/configuration/scheduling-policy/ and https://developers.cloudflare.com/containers/guides/migrate-to-durable-object-scheduling-policy/ (cloudflare-docs production `34d908a`, fetched 2026-11-14).
 - Corrected from the official docs: the two `start()` fragments are wrapped in Durable Object methods because the source used `this` at top level; only one of them runs per container start.
 
 ## Related
