@@ -5,7 +5,7 @@ description: >
   useForm, register, handleSubmit, watch, setValue, getValues, getErrors, reset、
   Controller, useFieldArray / FieldArray, formState / FormState, ErrorMessage、
   resolver (Zod / Yup / Joi)、バリデーション、Server Actions / useActionState、
-  DevTools (@hookform/devtools)、TypeScript 型。
+  DevTools (@hookform/devtools)、TypeScript 型、v7→v8 移行 (beta)、React Compiler。
 user-invocable: false
 ---
 
@@ -122,6 +122,9 @@ skills/react-hook-form/
       shadcn-ui.md
       yup.md
       zod.md
+    migration/
+      README.md
+      migrate-v7-to-v8.md
     faqs/
       README.md
       faqs.md
@@ -168,6 +171,7 @@ skills/react-hook-form/
 | アクセシビリティ、ウィザードフォーム、テスト、仮想リスト | advanced | [references/advanced/README.md](references/advanced/README.md) |
 | 保存済みデータの編集 (dirtyFields)、サーバーエラー処理、条件付きフィールド、購読の分離 (isolating subscriptions) | advanced | [references/advanced/README.md](references/advanced/README.md) |
 | Zod / Yup resolver、shadcn/ui、Next.js、React 19 との統合 | integrations | [references/integrations/README.md](references/integrations/README.md) |
+| v7 → v8 (beta) 移行、破壊的変更、React Compiler 対応 | migration | [references/migration/README.md](references/migration/README.md) |
 | パフォーマンス、クラスコンポーネント、watch vs getValues、条件付きレンダリング | faqs | [references/faqs/README.md](references/faqs/README.md) |
 | DevTools のインストール・デバッグ | dev-tools | [references/dev-tools/README.md](references/dev-tools/README.md) |
 | 典型的な使い方を知りたい、実装例を参照したい | samples | [samples/README.md](samples/README.md) |

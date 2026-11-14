@@ -66,6 +66,78 @@ Return (`FormState`):
 ## Notes
 
 - Returned `formState` is wrapped with a Proxy; destructure or read it before rendering to enable the subscription: `const { isDirty } = useFormState()` works, `const formState = useFormState()` does not (should destructure).
+- Put `useFormState` in the leaf component that shows the state, such as a submit button or an error summary. Only that component re-renders:
+
+  Adapted (not in the official docs): the ellipsis character in the button label is replaced with ASCII `...`.
+
+```javascript
+  function SubmitButton({ control }) {
+    const { isDirty, isSubmitting } = useFormState({ control })
+    return <button disabled={!isDirty || isSubmitting}>Save</button>
+  }
+  ```
+
+- Pass `name` to scope the subscription to one field or one section. Use it with [`getFieldState`](./useform-getfieldstate.md) to read that field's `error`, `isDirty`, and `isTouched`.
+- You can call `useFormState` more than once in the same component. Each call has its own subscription and does not affect the others.
+- Source: https://react-hook-form.com/docs/useformstate (documentation master c0511c9, fetched 2026-11-14)
+- Adapted from the official docs: `Saving…` is written as `Saving...` in the `SubmitButton` example.
+
+### Submit button in a `FormProvider`
+
+A shared submit button can read `isSubmitting` and `isValid` with `useFormState`. Only the button re-renders when they change. Reading `formState` from `useFormContext()` here instead is a common source of buttons that don't update (see the rules on [`useFormContext`](./useformcontext.md)).
+
+```tsx
+import {
+  useForm,
+  FormProvider,
+  useFormState,
+  useFormContext,
+} from "react-hook-form"
+
+function SubmitButton() {
+  const { isSubmitting, isValid } = useFormState()
+
+  return (
+    <button type="submit" disabled={isSubmitting || !isValid}>
+      {isSubmitting ? "Saving..." : "Save"}
+    </button>
+  )
+}
+
+function NameInput() {
+  const { register } = useFormContext<{ name: string }>()
+  return <input {...register("name", { required: true })} />
+}
+
+export default function App() {
+  const methods = useForm<{ name: string }>({ defaultValues: { name: "" } })
+
+  return (
+    <FormProvider {...methods}>
+      <form
+        onSubmit={methods.handleSubmit(async (data) => {
+          await fetch("/api", { method: "POST", body: JSON.stringify(data) })
+        })}
+      >
+        <NameInput />
+        <SubmitButton />
+      </form>
+    </FormProvider>
+  )
+}
+```
+
+### Troubleshooting
+
+#### `Cannot read properties of null (reading '_formState')`
+
+- Why: `useFormState` could not find a form: no `control` was passed and the component is not inside a [`FormProvider`](./formprovider.md).
+- Fix: Pass `control` from `useForm`, or render the component inside `<FormProvider {...methods}>`.
+
+### Changes since v7.90
+
+- v7.91.0: "Fix form state subscriptions and validity updates (#13866, #13877, #13906)"
+- v7.92.0: "Fix `useFormState` and `Controller` unnecessarily cloning form state during mount and unmount (#13945)"
 
 ## Related
 
