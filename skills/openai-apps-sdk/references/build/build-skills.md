@@ -58,9 +58,13 @@ dependencies:
 - One plugin can contain one skill or a group of related skills; keep each skill focused on one recognizable user goal from the use-case inventory.
 - The `description` determines activation; put detailed procedure/format/safety instructions in the body.
 - A dependency declaration in `agents/openai.yaml` makes a tool available but does not replace clear workflow instructions (order, fallback handling).
-- Skills can be imported from the MCP server itself (via `io.modelcontextprotocol/skills` capability and **Scan Tools** during submission) instead of uploaded as packaged files — see [MCP server § Import skills from the MCP server](./mcp-server.md).
+- The official MCP server page (fetched 2026-11-14) no longer documents importing skills from the MCP server; package skills with the plugin instead.
+- When writing or importing skills for GPT-6 Astra, review the instruction-following guidance (https://developers.openai.com/api/docs/guides/latest-model#gpt-6-astra-instruction-following): audit skills and supporting files for unclear or conflicting instructions, and make the priority of explicit user instructions over skill guidelines clear.
 - Test with direct requests, indirect requests (same goal, different phrasing), incomplete inputs (should trigger follow-up), requests that should NOT activate the skill, and edge cases where the skill must avoid inventing info.
+- Instruction boundary: make clear what input the workflow expects, the steps, the expected output, which facts must not be inferred, when to ask / stop / decline, and which supporting files to consult. Split workflows with different triggers, inputs, or success criteria.
 - Packaging: portable packages (root `plugin.json`) discover skills from the root `skills/` directory automatically, so no `skills` field is needed. Only the Codex compatibility manifest (`.codex-plugin/plugin.json`) points at the skills directory with `"skills": "./skills/"` — see [Package your plugin](./package-plugin.md).
+
+- Source: https://developers.openai.com/plugins/build/skills (local .md twin copy, fetched 2026-11-14).
 
 ## Related
 

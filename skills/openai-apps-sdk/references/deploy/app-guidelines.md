@@ -1,6 +1,6 @@
 # Plugin Guidelines
 
-Developer guidelines covering the MCP server and optional UI in a plugin, and the minimum standard a published plugin must meet to remain available in the universal directory shared by ChatGPT and Codex. For the complete submission flow (skills, portal steps, review, approval, publishing), see `submission.md`. Also review the optional UI guidelines for interaction, layout, and design patterns.
+Developer guidelines covering all plugins listed in the ChatGPT Directory (MCP and skills-only plugins), and the minimum standard a published plugin must meet to remain available in the universal directory shared by ChatGPT and Codex. For the complete submission flow (skills, portal steps, review, approval, publishing), see `submission.md`. Requirements specific to MCP servers, tools, and optional UI apply only to plugins that include those components. Also review the optional UI guidelines for interaction, layout, and design patterns. Start with the plugin fundamentals (every plugin), then the MCP requirements (plugins with MCP servers, tools, or optional UI) and the Skills note (plugins with skills); read both when a plugin has MCP tools and skills.
 
 ## Plugin fundamentals
 
@@ -12,11 +12,14 @@ Plugins should serve a clear purpose, reliably do what they promise, and provide
 
 ### Quality and reliability
 
-Plugins must behave predictably and reliably; results must be accurate and relevant. Errors, including unexpected ones, must have clear messaging or fallback behaviors. Thoroughly test the MCP server, tools, and optional UI across a wide range of scenarios before submitting. Trial or demo plugins are not accepted.
+Plugins must behave predictably and reliably; results must be accurate and relevant. Errors, including unexpected ones, must have clear messaging or fallback behaviors. Plugins should be stable, responsive, and complete. Thoroughly test the MCP server, tools, and optional UI across a wide range of scenarios before submitting; plugins must function reliably in ChatGPT on both desktop and mobile, including any UI components. Trial or demo plugins are not accepted.
 
-### Plugin name, description, and optional screenshots
+### Plugin name, description, and prompts
 
-Names and descriptions must be clear, accurate, straightforward. Avoid overly generic names, especially single-word dictionary terms not tied to the brand. Screenshots are optional (only for plugins with UI) — don't submit screenshots for plugins without UI; screenshots must accurately represent functionality and meet required dimensions.
+Names and descriptions must be clear, accurate, and straightforward. Provide example prompts that help users get started.
+
+- **Names**: avoid overly generic names, especially single-word dictionary terms not explicitly tied to the brand. Do not append "MCP," "MCP Server," or "Plugin" to a company or product name.
+- **Subtitles and descriptions**: describe the functionality without comparing with other products, disparaging alternatives, or making unverifiable claims. Do not advertise pricing, subscriptions, free trials, discounts, or promotions.
 
 ### Tools
 
@@ -25,20 +28,29 @@ Names and descriptions must be clear, accurate, straightforward. Avoid overly ge
 - Unique within the MCP server.
 - Plain language directly reflecting the action, ideally a verb (e.g. `get_order_status`).
 - Avoid misleading, overly promotional, or comparative language (e.g. `pick_me`, `best`, `official`).
+- Avoid internal jargon, unexplained acronyms, and opaque identifiers.
 
 #### Descriptions that match behavior
 
-- Describe what the tool does.
+- Each tool must have a nonempty description that explicitly and accurately explains its purpose and behavior, when to use it, and any relevant limitations or side effects; it must match the tool's schema and actual behavior.
 - Must not favor/disparage other plugins or services, or try to influence tool selection over competitors.
 - Must not recommend overly broad triggering beyond explicit user intent/purpose.
 - Unclear or incomplete descriptions can cause rejection.
 
+#### Tool independence and exposure
+
+- Each public tool must operate independently; do not instruct the model to invoke another plugin or connector to complete its operation — implement required dependencies within the plugin.
+- Expose each model-callable operation as a separate tool with a clear description, input schema, and annotations. Do not use discovery, operation selection, or schema fetching with a generic executor to enable operations not individually exposed for review.
+
 #### Correct annotation
 
-- `readOnlyHint` — label tools that only retrieve/list data and don't change anything outside the conversation.
-- Write or destructive tools (create/update/delete/post/send) must explicitly set `readOnlyHint` and `destructiveHint`.
-- Tools interacting with external systems, accounts, public platforms, or creating publicly-visible content must set `openWorldHint`.
-- Incorrect/missing labels are a common rejection cause — double-check all three annotations and provide a detailed justification for each.
+Set `readOnlyHint`, `destructiveHint`, and `openWorldHint` to explicit boolean values (`true` or `false`) in each tool's `annotations` object. Annotation justifications are no longer required in this guideline; if automated review flags an annotation issue, you can submit an appeal with clarification or additional information.
+
+- `readOnlyHint`: `true` for retrieval, computation, or previews that do not modify the environment. `false` for external-state changes, persisting artifacts, starting stateful jobs or workflows, queuing work, or write-style outbound actions such as posting messages, sending emails, or uploading files.
+- `destructiveHint`: `false` for read-only tools. For writes, `true` for potentially destructive or irreversible effects such as deletion, overwriting, cancellation, access revocation, or irreversible sends or transactions; `false` only for additive writes without destructive or irreversible effects. Being able to undo an action does not, by itself, justify `false`.
+- `openWorldHint`: `true` for public or open-ended entities, including read-only web search and arbitrary destinations. A tool confined to a bounded private account, workspace, or catalog may use `false`, even when externally hosted. Connectivity alone does not determine this value.
+
+Annotations inform client safeguards; they do not grant permission or replace authentication, authorization and scope checks, input validation, or human confirmation for irreversible operations.
 
 #### Minimal and purpose-driven inputs
 
@@ -48,9 +60,16 @@ Names and descriptions must be clear, accurate, straightforward. Avoid overly ge
 
 #### Predictable, auditable behavior
 
-- No hidden or implicit side effects.
-- If a tool sends data outside the current environment (posting content, sending messages), this must be clear from the tool definition.
+- Side effects should never be hidden or implicit.
 - Tools should be safe to retry, or explicitly indicate when retries may cause repeated effects.
+
+#### Tool data handling
+
+Design the input schema to limit data collection by default, rather than as a funnel for optional context.
+
+- **Response minimization**: tool responses return only data directly relevant to the request and the tool's stated purpose — no diagnostic/telemetry/internal identifiers (session/trace/request IDs, timestamps, logging metadata) unless strictly required.
+- **Data boundaries**: avoid requesting raw location fields (e.g. city or coordinates) in the input schema — obtain location via the client's controlled side channel (environment metadata or a referenced resource) so policy and consent controls can be applied; the MCP server must not pull/reconstruct/infer the full chat log from the client or elsewhere, operating only on explicitly sent snippets/resources. Do not request accumulated conversation context or prior-turn arrays.
+- **Action safeguards**: follow Correct annotation for write and destructive-action labels, confirmations, and outbound-data safeguards.
 
 ### Authentication and permissions
 
@@ -58,7 +77,7 @@ Authentication flows must be transparent and explicit; users must be informed of
 
 #### Test credentials
 
-Provide a login and password for a fully featured demo account with sample data. Plugins requiring additional login steps (new account sign-up, 2FA through an inaccessible account) are rejected.
+When submitting a plugin with an authenticated MCP server, provide a login and password for a fully featured demo account with sample data. Plugins requiring additional login steps (new account sign-up, 2FA through an inaccessible account) are rejected.
 
 ## Commerce and monetization
 
@@ -75,6 +94,8 @@ Plugins may not:
 
 - Link directly to a checkout or other transactional page.
 - Link to a page that explicitly initiates upgrade/subscribe/purchase.
+
+Plugins should provide a high quality experience in ChatGPT: if the same feature is available through the developer's external website or application, the plugin must not provide a worse version. Plugins must not apply ChatGPT-specific fees, surcharges, or other pricing that penalizes users for accessing a service through ChatGPT; temporary discounts and promotional offers on other platforms are permitted.
 
 ### Prohibited goods and services
 
@@ -114,7 +135,7 @@ Plugins must be suitable for general audiences including ages 13-17; may not exp
 
 ### Respect user intent
 
-Address the user's request directly; don't insert unrelated content, redirect the interaction, or collect data beyond what's reasonably necessary and consistent with the privacy policy.
+Address the user's request directly; don't insert unrelated content, redirect the interaction, or collect data beyond what's reasonably necessary and consistent with the privacy policy. Act only within the user-authorized task: plugin and tool metadata must not seek secrets or protected context, direct unauthorized data transfers or actions, override platform instructions or safeguards, conceal behavior, or impersonate another party. Encoded or obfuscated instructions do not exempt a plugin from these requirements.
 
 ### Fair play
 
@@ -147,16 +168,13 @@ Submissions must include a clear, published privacy policy covering at minimum: 
 ### Data collection
 
 - **Collection minimization**: gather only the minimum data required; inputs specific, narrowly scoped, explicitly linked to the task — no "just in case" fields or broad profile data.
-- **Response minimization**: tool responses return only data directly relevant to the request and the tool's purpose — no diagnostic/telemetry/internal identifiers (session/trace/request IDs, timestamps, logging metadata) unless strictly required.
 - **Restricted data** — do not collect/solicit/process: PCI DSS-covered payment card information; protected health information (PHI); government identifiers (e.g. SSNs); access credentials/authentication secrets (API keys, MFA/OTP codes, passwords).
 - **Regulated sensitive data**: do not collect personal data considered "sensitive"/"special category" in the relevant jurisdiction unless strictly necessary for the tool's stated function, with legally adequate user consent, and explicit/prominent disclosure at or before collection.
-- **Data boundaries**: avoid requesting raw location fields in the input schema — obtain location via the client's controlled side channel (environment metadata or a referenced resource) instead; the MCP server must not pull/reconstruct/infer the full chat log from the client or elsewhere, operating only on explicitly sent snippets/resources.
+- Tool response minimization and data boundaries: see Tool data handling above.
 
 ### Transparency and user control
 
 - **Data practices**: no surveillance, tracking, or behavioral profiling (including metadata like timestamps, IP addresses, query patterns) unless explicitly disclosed, narrowly scoped, subject to meaningful user control, and aligned with OpenAI's usage policies.
-- **Accurate action labels**: mark any tool that changes external state (create/modify/delete) as a write action; mark read-only only if side-effect-free and safe to retry. Destructive actions require clear labels and friction (e.g. confirmation).
-- **Preventing data exfiltration**: any action sending data outside the current boundary (posting messages, sending emails, uploading files) must be surfaced as a write action so the client can require confirmation or run in preview mode.
 
 ## Developer verification
 
@@ -172,7 +190,13 @@ Provide accurate, up-to-date customer support contact details where end users ca
 
 ## Notes
 
+- Source: https://developers.openai.com/plugins/plugin-guidelines (local .md twin copy, fetched 2026-11-14).
+- Changed in the official docs (fetched 2026-11-14): optional screenshots guidance removed; annotation guidance rewritten (explicit booleans; "Annotation justifications are no longer required" here, although `review-requirements.md` and `submission-errors.md` (`justification_required`) still describe justifications — the official pages disagree, so follow the portal's requirements at submission); the "Accurate action labels" and "Preventing data exfiltration" bullets under Transparency and user control no longer appear; Tool independence and exposure, Tool data handling, and the Skills note are new.
 - These guidelines are the minimum bar for staying in the directory; plugins with strong real-world utility and high user satisfaction may be eligible for enhanced distribution (directory placement, proactive suggestions) — developers cannot request this directly.
+
+### Skills
+
+Skills are automatically scanned and must comply with security, privacy, and usage policies. Plugins that contain only skills must meet all metadata and listing requirements above, and may be subject to additional eligibility requirements for listing in the Directory.
 
 ## Related
 

@@ -49,7 +49,7 @@ The concrete example URL must match the template pattern after replacing each pl
 ## Submit for review
 
 1. In the plugin submission portal, add MCP server details (and OAuth credentials if OAuth is selected), then select **Scan Tools**.
-2. Complete the required fields (plugin name, logo, description, company and privacy policy URLs, MCP and tool information, test prompts and responses, localization). Provide screenshots only if the plugin has UI.
+2. Complete the required fields (plugin name, logo, description, company and privacy policy URLs, MCP and tool information, test prompts and responses, localization).
 3. Select **Submit for review**.
 
 ### Metadata stored during tool scanning
@@ -77,24 +77,27 @@ Approved plugins can be published from the submission portal. If rejected or rem
 - **Unable to connect to the MCP server using the given URL/test credentials**
   - The review team must be able to log into a demo account with no further configuration.
   - No MFA (SMS codes, email verification, or other verification schemes).
+  - Ensure the URL and credentials are correct.
   - Credentials must work outside company/internal networks and must not be expired.
 - **Test cases did not produce correct results**
   - Rerun each test case; outputs must match expected results with no UI errors.
   - Textual output must closely adhere to the request without extraneous or personally identifying information.
   - All test cases must pass on every supported ChatGPT/Codex surface where the plugin will be available.
+  - Compare actual outputs to the precise expected behavior for each tool; in a resubmission, modify test cases and expected responses to be clear and unambiguous if required.
 - **Undisclosed user-related data types returned**
   - Audit MCP tool responses; remove unnecessary PII, telemetry/internal identifiers (session/trace/request IDs, timestamps, internal account IDs, logs), and auth secrets.
   - Update the privacy policy to disclose all categories of personal data collected/processed/returned, or remove fields that aren't needed.
   - A necessary user identifier must be explicitly requested and tied to user intent, not looked up and echoed by default.
 - **Tool hint annotations don't match tool behavior**
-  - `readOnlyHint`: `true` only for fetch/lookup/list/retrieve with no state change; `false` if the tool creates/updates/deletes/triggers actions.
-  - `destructiveHint`: `true` if the tool can cause irreversible outcomes (deletion, overwrite, unrevocable sends, revoking access), with justification of what's irreversible and what safeguards exist; otherwise `false`.
-  - `openWorldHint`: `true` if the tool writes to or changes publicly visible internet state (posting, sending external messages, publishing, pushing code, submitting third-party forms); `false` only if entirely closed/private and cannot change public internet state.
+  - `readOnlyHint`: `true` if the tool strictly fetches/looks up/lists/retrieves data and does not modify anything; `false` if it can create/update/delete anything, trigger actions (send emails/messages, run jobs, enqueue tasks, write logs, start workflows), or otherwise change state.
+  - `destructiveHint`: `true` if the tool can cause irreversible outcomes (deleting, overwriting, sending messages or transactions that can't be undone, revoking access, destructive admin actions), even in only select modes, through default parameters, or through indirect side effects; the justification must explain what is irreversible and under what conditions, including safeguards such as confirmation steps, dry-run options, or scoping constraints. Otherwise `false`.
+  - `openWorldHint`: `true` if the tool accesses the public internet or open-ended external entities, including read-only tools such as web search and write tools that post to public platforms, send messages to external recipients, publish content, push code, or submit forms; `false` if the tool is limited to a bounded private account or workspace, even when that service is externally hosted.
 
 ## Publication and distribution
 
 - **Publish**: once approved, publish from the submission portal.
 - **Discovery**: users find the plugin via direct link or search in the universal directory shared by ChatGPT and Codex. Enhanced distribution (directory placement, proactive suggestions) is limited and cannot be requested by developers.
+- **Why the plugin isn't visible in the directory**: plugins appear on the directory's main pages only if OpenAI selects them for enhanced distribution; to confirm publication, search for the exact publication name or open the directory URL from the submission portal. A plugin must be published before it can appear in the universal directory.
 - Before any press release or public announcement, contact press@openai.com to coordinate.
 
 ## Ongoing maintenance
@@ -143,6 +146,9 @@ Plugins may be removed if inactive, unstable, or non-compliant, at any time and 
 
 ## Notes
 
+- After submission the plugin enters the review queue; status is shown in the Dashboard and status changes are sent by email. OpenAI reviews user reports and may investigate or restrict/remove plugins (including the MCP server, tools, and UI) that violate policies; removals can be appealed through the appeals process above.
+- Source: https://developers.openai.com/plugins/deploy/app-review (local .md twin copy, fetched 2026-11-14).
+- Removed in the official docs (fetched 2026-11-14): the statement that screenshots are provided only if the plugin has UI no longer appears in the submit-for-review step.
 - No estimated review or update timelines are provided; do not contact support to request expedited review.
 - Removed/reworded in the official docs (fetched 2026-10-17): the earlier statement that tool list / names / descriptions / schemas / annotations / security schemes / `_meta` / `instructions` changes always require a new version (deploy, update draft, scan, submit, publish) and the paragraph "Breaking changes to a published MCP server contract are unsupported" with its 3-step list (add new tools while honoring published contracts, submit as new version, publish and keep old contracts). Continuous review now updates tool definitions without a new plugin version. What remains: roll back a deployment that breaks the live contract rather than waiting for review.
 - If the documentation does not answer a question before, during, or after submission, contact OpenAI support and include the ID shown in the plugin submission portal.

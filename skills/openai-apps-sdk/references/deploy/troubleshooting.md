@@ -4,7 +4,7 @@ How to triage plugin issues — components failing to render, discovery missing 
 
 ## Server-side issues
 
-- **No tools listed**: confirm the server is running and connecting to the `/mcp` endpoint. If ports changed, update the connector URL and restart MCP Inspector.
+- **No tools listed**: confirm the server is running and connecting to the `/mcp` endpoint. If ports changed, update the MCP server URL and restart MCP Inspector.
 - **Structured content only, no component**: confirm the tool descriptor sets `_meta.ui.resourceUri` to a registered HTML resource with `mimeType: "text/html;profile=mcp-app"` (ChatGPT also honors `_meta["openai/outputTemplate"]` as an optional compatibility alias), and that the resource loads without CSP errors.
 - **Schema mismatch errors**: ensure Python/TypeScript models match the schema advertised in `outputSchema`; regenerate types after changes.
 - **Slow responses**: components feel sluggish when tool calls exceed a few hundred milliseconds; profile server calls and cache results.
@@ -25,7 +25,7 @@ How to triage plugin issues — components failing to render, discovery missing 
 
 - **401 errors**: include a `WWW-Authenticate` header in the error response so ChatGPT restarts the OAuth flow; double-check issuer URLs and audience claims.
 - **Client registration fails**: for CIMD, confirm the authorization server metadata includes `client_id_metadata_document_supported: true` and can fetch ChatGPT's client metadata document; for `private_key_jwt`, confirm the authorization server can fetch ChatGPT's public JWKS and validate the signed client assertion; for DCR, confirm the authorization server exposes `registration_endpoint` and newly created clients have at least one login connection enabled.
-- **An existing connector returns `invalid_client`**: confirm the dynamically registered OAuth client still exists and the authorization server accepts its client secret (if any) — ChatGPT reuses these credentials, so restore rather than recreate. An expired access token requires a different fix.
+- **An existing MCP server connection returns `invalid_client`**: confirm the dynamically registered OAuth client still exists and the authorization server accepts its client secret (if any) — ChatGPT reuses these credentials, so restore rather than recreate. An expired access token requires a different fix.
 
 ## Deployment problems
 
@@ -42,7 +42,8 @@ If the above checks don't resolve the issue:
 
 ## Notes
 
-- A crisp troubleshooting log shortens turnaround time and keeps the connector reliable for users.
+- A crisp troubleshooting log shortens turnaround time and keeps your MCP server reliable for users.
+- Source: https://developers.openai.com/plugins/deploy/troubleshooting (local .md twin copy, fetched 2026-11-14).
 
 ## Related
 

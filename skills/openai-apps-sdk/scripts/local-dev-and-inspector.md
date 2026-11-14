@@ -5,8 +5,10 @@ Run the MCP server locally, inspect it with MCP Inspector, and expose it to Chat
 ## Start the MCP server
 
 ```bash
-node server.js
+node --experimental-strip-types server.ts
 ```
+
+Requires Node.js 22.6 or later for `--experimental-strip-types` (per the official quickstart).
 
 Run this from the directory that contains `server.js` (or `server.ts`). The quickstart server listens on `http://localhost:<port>/mcp`, defaulting to port `8787` when no `PORT` environment variable is set, and prints `Todo MCP server listening on http://localhost:8787/mcp` once ready.
 

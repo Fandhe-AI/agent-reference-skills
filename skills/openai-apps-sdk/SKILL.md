@@ -9,6 +9,10 @@ description: >
 user-invocable: false
 ---
 
+## 対象バージョン
+
+出典 developers.openai.com/plugins の `.md` twin（URL に版が無いため取得日 2026-11-14 で pin）。変換仕様 3 件（product-checkout / restaurant-reservation / local-services-request-quote）は未収録。
+
 ## ディレクトリ構成
 
 ```text

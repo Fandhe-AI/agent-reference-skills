@@ -4,7 +4,27 @@ MCP Events lets ChatGPT subscribe to updates from your MCP server, such as new m
 
 ## Signature / Usage
 
-Advertise support in the `server/discover` response:
+For MCP versions that use initialization, advertise support in the `initialize` response:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2025-03-26",
+    "capabilities": {
+      "tools": {},
+      "events": {}
+    },
+    "serverInfo": {
+      "name": "example-server",
+      "version": "1.0.0"
+    }
+  }
+}
+```
+
+For MCP 2.0 (protocol version `2026-07-28`), advertise support in the `server/discover` response:
 
 ```json
 {
@@ -180,7 +200,7 @@ Subscription result fields:
 ## Notes
 
 - Availability: Work chats on ChatGPT web, Work chats in the desktop app with **Cloud** selected, and dots. Workspace controls for plugins and event-triggered tasks apply.
-- Requires MCP 2.0 (protocol version `2026-07-28`), persistent subscription storage, and outbound HTTPS access to callback URLs.
+- Transport: Streamable HTTP using `initialize` (advertise `events` in the `initialize` capabilities), or MCP 2.0 HTTP (protocol version `2026-07-28`, advertise `events` in `server/discover`). Requires persistent subscription storage and outbound HTTPS access to callback URLs.
 - Supported: webhook delivery and callback verification from the draft MCP Events specification. Not supported: polling, streaming, and the draft's `gap` and `terminated` control notifications.
 - `inputSchema` describes subscribe arguments; `payloadSchema` describes the `data` object in each delivered event. Apply filters on the server before delivery and return only events the account may discover.
 - Before accepting a subscription: authorize the user, validate name and arguments, require a `whsec_` secret whose base64 value decodes to 24-64 bytes, verify the callback URL, and store owner / filters / URL / secret / expiration.
@@ -191,9 +211,9 @@ Subscription result fields:
 - `2xx` acknowledges receipt; ChatGPT processes asynchronously. Retry transient failures with exponential backoff and bounded attempts, preserving the event ID and re-signing each attempt. Do not retry `410` or `413`. Events can arrive out of order; make write tools idempotent.
 - Refresh: ChatGPT calls `events/subscribe` before `refreshBefore` with the same identity and last saved cursor. `ttlMs` omitted means server default; `ttlMs: null` requests no expiration. On secret rotation, sign with both old and new keys (space-separated Standard Webhooks signatures) for a short window.
 - Distinct from the webhooks in the OpenAI API (openai-api-core) and from MCP tools; this is the plugin-side MCP Events extension.
-- Rescan your MCP server whenever tools or events change; events appear on the plugin page alongside tools.
+- Testing: confirm the server advertises `events` through `initialize` or `server/discover`, then receives `events/list`. Rescan your MCP server whenever tools or events change; events appear on the plugin page alongside tools.
 - Protocol reference: https://github.com/modelcontextprotocol/experimental-ext-triggers-events/blob/main/docs/design-sketch-proposal.md (linked as-is from the official docs page; not used as a content source)
-- Source: https://developers.openai.com/plugins/build/mcp-events (local .md twin copy, fetched 2026-10-17).
+- Source: https://developers.openai.com/plugins/build/mcp-events (local .md twin copy, fetched 2026-11-14).
 
 ## Related
 

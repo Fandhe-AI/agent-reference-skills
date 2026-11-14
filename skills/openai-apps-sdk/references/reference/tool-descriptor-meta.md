@@ -21,10 +21,6 @@ registerAppTool(
         })
       ),
     },
-    securitySchemes: [
-      { type: "noauth" },
-      { type: "oauth2", scopes: ["search.read"] },
-    ],
     _meta: {
       securitySchemes: [
         { type: "noauth" },
@@ -65,6 +61,8 @@ registerAppTool(
 
 ## Notes
 
+- Source: https://developers.openai.com/plugins/reference#tool-descriptor-parameters (local .md twin copy, fetched 2026-11-14).
+- The official example sets `securitySchemes` only under `_meta` (no top-level `securitySchemes` key).
 - Declare `outputSchema` for any tool that returns `structuredContent`. The schema should describe the exact object your tool returns so clients can validate results and the model can reason about follow-up tool calls.
 - Prefer the MCP Apps standard key `_meta.ui.resourceUri` for linking a tool to a UI template; `_meta["openai/outputTemplate"]` is an OpenAI-specific compatibility alias.
 - This page describes the tool definition surface for a server that **publishes** an MCP server as a ChatGPT app (plugin). It is distinct from the tools surface consumed by an MCP client, which the `openai-agents` skill covers (Agents SDK tool calling / MCP client integration).

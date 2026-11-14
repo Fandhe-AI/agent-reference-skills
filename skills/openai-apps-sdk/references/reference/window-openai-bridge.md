@@ -6,14 +6,25 @@ If your tool requires confirmation, treat missing initial `toolInput` as expecte
 
 ## Signature / Usage
 
-```ts
+```typescript
+import { useSyncExternalStore } from "react";
+
+type WebplusGlobals = {
+  widgetState: { selectedId?: string | null; [key: string]: unknown } | null;
+  toolInput: Record<string, unknown>;
+  toolOutput: Record<string, unknown> | null;
+  theme: "light" | "dark";
+};
+const SET_GLOBALS_EVENT_TYPE = "openai:set_globals";
+
 export function useOpenAiGlobal<K extends keyof WebplusGlobals>(
   key: K
 ): WebplusGlobals[K] {
   return useSyncExternalStore(
     (onChange) => {
-      const handleSetGlobal = (event: SetGlobalsEvent) => {
-        const value = event.detail.globals[key];
+      const handleSetGlobal = (event: Event) => {
+        if (!(event instanceof CustomEvent)) return;
+        const value = event.detail?.globals?.[key];
         if (value === undefined) {
           return;
         }
@@ -29,7 +40,11 @@ export function useOpenAiGlobal<K extends keyof WebplusGlobals>(
         window.removeEventListener(SET_GLOBALS_EVENT_TYPE, handleSetGlobal);
       };
     },
-    () => window.openai[key]
+    () => {
+      const globals = (window as Window & { openai?: WebplusGlobals }).openai;
+      if (!globals) throw new Error("This hook requires a ChatGPT app host.");
+      return globals[key];
+    }
   );
 }
 ```
@@ -41,7 +56,7 @@ await window.openai?.requestDisplayMode({ mode: "fullscreen" });
 
 // Modal
 await window.openai.requestModal({
-  template: "ui://widget/checkout.html",
+  template: "ui://widget/details.html",
 });
 ```
 
@@ -55,7 +70,7 @@ await window.openai.requestModal({
 | `window.openai.widgetState` | any | Snapshot of UI state persisted between renders. |
 | `window.openai.setWidgetState(state)` | function | Stores a new snapshot synchronously; call it after every meaningful UI interaction. |
 | `window.openai.callTool(name, args)` | function | Invoke another MCP tool from the widget (mirrors model-initiated calls). |
-| `window.openai.sendFollowUpMessage({ prompt, scrollToBottom })` | function | Ask ChatGPT to post a message authored by the component. `scrollToBottom` optional, defaults to `true`. |
+| `window.openai.sendFollowUpMessage({ prompt, scrollToBottom })` | function | Ask ChatGPT to post a message authored by the component. `scrollToBottom` is optional, defaults to `true`, and can be set to `false` to prevent automatic scrolling. |
 | `window.openai.uploadFile(file, { library?: boolean })` | function | Upload a user-selected file and receive a `fileId`. Pass `{ library: true }` to also save to the user's ChatGPT file library. |
 | `window.openai.selectFiles()` | function | Open ChatGPT's file library picker and return plugin-authorized files as `{ fileId, fileName, mimeType }[]`. Feature-detect this helper. |
 | `window.openai.getFileDownloadUrl({ fileId })` | function | Retrieve a temporary download URL for a file uploaded by the widget, selected from the file library, passed via file params, or returned by tool file references. |
@@ -69,6 +84,8 @@ await window.openai.requestModal({
 
 ## Notes
 
+- Source: https://developers.openai.com/plugins/reference#windowopenai-component-bridge (local .md twin copy, fetched 2026-11-14).
+- `window.openai.requestModal` opens a host-controlled modal; provide the URI of another UI template registered by the same MCP server, or omit `template` to open the current template. `requestDisplayMode` requests inline, picture-in-picture, or fullscreen presentation.
 - Call `window.openai.requestClose()` to ask ChatGPT to close the current UI.
 - The sandbox runtime mirrors iframe navigation history into ChatGPT's UI (see host-backed-navigation).
 

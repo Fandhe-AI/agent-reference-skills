@@ -175,6 +175,7 @@ export default server;
 - The Re-roll button starts `disabled` and only becomes clickable after `initializeBridge()` completes the `ui/initialize` request / `ui/notifications/initialized` notification handshake described in `references/build/app-quickstart.md` — hosts that enforce bridge lifecycle reject `tools/call` sent before that handshake finishes.
 - The widget listens for `ui/notifications/tool-result` / `ui/notifications/tool-input` over `postMessage` and calls `tools/call` directly for re-rolls.
 - `_meta["openai/toolInvocation/invoking"]` / `invoked` control the status text ChatGPT shows while the tool runs.
+- The official `chatgpt-ui` page implements the same decoupled dice example with the widget bundled from `dice-widget.ts` via `esbuild` and the `App` class from `@modelcontextprotocol/ext-apps` (`app.ontoolinput`, `app.ontoolresult`, `app.callServerTool`, `await app.connect()`); the inline widget above talks to the MCP Apps bridge directly. The `"2026-01-26"` `protocolVersion` for `ui/initialize` matches the official quickstart.
 - This is the ChatGPT-app (server/publisher) side of MCP; consuming MCP servers from the Agents SDK is covered by the `openai-agents` skill.
 
-Source: https://developers.openai.com/plugins/build/chatgpt-ui
+Source: https://developers.openai.com/plugins/build/chatgpt-ui (local .md twin copy, fetched 2026-11-14).

@@ -18,13 +18,13 @@ A package can pass upload validation and still fail final directory submission. 
 | Developer name | Required; one line; at most 80 characters |
 | Category | Required; a supported category (see Listing and interface errors) |
 | Capabilities | At most 20; each non-empty, one line, at most 120 characters |
-| Starter prompts | At most 3; each non-empty, unique after Unicode/whitespace normalization, one line, at most 128 characters, no app `@mention` |
+| Starter prompts | At most 3; each non-empty, unique after Unicode/whitespace normalization, one line, at most 128 characters, no MCP server `@mention` |
 | URLs | Required for MCP-backed submissions, optional for skills-only. Website/support/privacy/terms must be HTTPS, at most 1,024 characters |
 | Brand colors | Optional six-digit hex; light color ≥2:1 contrast against white, dark color ≥2:1 contrast against `#212121` |
 
 Every submission also requires passing safety/security scans for every bundled skill (can take up to 2 hours) and a verified identity plus all required policy attestations.
 
-MCP-backed plugins additionally require: valid listing URLs; a demo-recording URL showing main use cases/tools across supported platforms; exactly five positive and three negative test cases plus release notes; a production HTTPS MCP server URL with completed domain verification and a successful current tool scan; explicit `readOnlyHint`/`openWorldHint`/`destructiveHint` values with justification for every tool; reviewer-ready demo credentials for OAuth servers; and screenshots only when the server provides custom UI (one PNG/JPEG per starter prompt, exactly 706px wide, 400-860px tall).
+MCP-backed plugins additionally require: valid listing URLs; a demo-recording URL showing main use cases/tools across supported platforms; exactly five positive and three negative test cases plus release notes; a production HTTPS MCP server URL with completed domain verification and a successful current tool scan; explicit `readOnlyHint`/`openWorldHint`/`destructiveHint` values with justification for every tool; and reviewer-ready demo credentials for OAuth servers.
 
 ### Final metadata errors
 
@@ -45,7 +45,7 @@ MCP-backed plugins additionally require: valid listing URLs; a demo-recording UR
 | `submission_developer_name_too_long` | ≤80 characters |
 | `submission_developer_name_character_unsupported` | Supported text, single line |
 | `plugin_capability_invalid` | Non-empty, supported text, single line, ≤120 characters |
-| `plugin_default_prompt_mention` | No app `@mentions` in starter prompts |
+| `plugin_default_prompt_mention` | No MCP server `@mentions` in starter prompts |
 | `plugin_default_prompt_duplicate` | Starter prompts unique after normalization |
 
 ### MCP and review errors
@@ -56,8 +56,7 @@ MCP-backed plugins additionally require: valid listing URLs; a demo-recording UR
 | `justification_required` | Every annotation needs a justification for its read-only/open-world/destructive behavior |
 | `scan_required` | Successful, current scan of the production MCP server |
 | `domain_verification_required` | Token hosted at `/.well-known/openai-apps-challenge` on the MCP host or allowed parent host; **Verify Domain** must pass |
-| `frame_domain_explanation_required` | Every external frame domain reported by the tool scan needs an explanation of why the UI needs it |
-| `screenshots_not_allowed` | Screenshots allowed only when the current tool scan reports a UI output template |
+| `frame_domain_explanation_required` | Every external frame domain reported by the tool scan needs an explanation of why the UI needs it and what content it provides |
 
 ## Archive errors
 
@@ -73,7 +72,6 @@ The portal's **Skills only** path accepts skill ZIP packages and approved local 
 | `plugin_version_unchanged` | A new release needs a different manifest `version`; reusing the published version requires confirmation |
 | `mcp_configuration_excluded` | MCP configuration is excluded unless the organization is approved for local MCP submissions (for a local MCP plugin, ask your OpenAI representative to confirm the organization is allowlisted); submit remote MCP servers through **With MCP** |
 | `app_configuration_excluded` | ZIP uploads must not include `apps` or `.app.json`; submit remote MCP servers through **With MCP**; for local MCP servers follow the desktop-only submission instructions |
-| `screenshot_configuration_excluded` | Skills-only ZIPs must not include `interface.screenshots`; requires **With MCP** and custom UI |
 | `claude_format_normalized` | `.claude-plugin/plugin.json` is converted to `.codex-plugin/plugin.json` with missing interface defaults and normalized text fields |
 | `manifest_normalized` | Portal saves the normalized manifest as `.codex-plugin/plugin.json`; changed fields require confirmation |
 | `developer_name_defaulted` | The listing's developer name is set automatically from the selected verified developer identity, regardless of the name in the ZIP |
@@ -360,7 +358,7 @@ interface:
 
 ## Image errors
 
-Directory branding images must use a supported file type and meet size/dimension limits (starter-prompt screenshots use the separate portal limits above).
+Directory branding images must use a supported file type and meet size/dimension limits.
 
 | Name | Requirement |
 |---|---|
@@ -393,12 +391,12 @@ Directory branding images must use a supported file type and meet size/dimension
 | `app_manifest_wrong_type` | Must contain a JSON object at the top level |
 | `app_entries_missing` | `apps` is required |
 | `app_entries_wrong_type` | `apps` must be an object |
-| `app_entry_wrong_type` | Each app entry must be an object |
-| `app_id_missing` | Each entry's `id` is required |
-| `app_id_wrong_type` | `id` must be a string |
-| `app_id_format` | `id` must begin with `asdk_app_`, `connector_`, or `templated_apps_`, followed by a letter/digit then only letters, digits, `_`, `-` |
-| `app_entry_optional_wrong_type` | `optional` must be `true`/`false` when provided |
-| `app_entry_required_wrong_type` | `required` must be `true`/`false` when provided |
+| `app_entry_wrong_type` | Each server entry must be an object |
+| `app_id_missing` | Each server entry's `id` is required |
+| `app_id_wrong_type` | Each server entry's `id` must be a string |
+| `app_id_format` | Each server entry's `id` must begin with `asdk_app_`, `connector_`, or `templated_apps_`, followed by a letter/digit then only letters, digits, `_`, `-` |
+| `app_entry_optional_wrong_type` | Each server entry's `optional` value must be `true`/`false` when provided |
+| `app_entry_required_wrong_type` | Each server entry's `required` value must be `true`/`false` when provided |
 | `app_not_eligible` | A local or workspace package must reference an eligible, available MCP server; directory submissions must use **With MCP** and submit the MCP server directly |
 
 ## Package warnings
@@ -407,9 +405,9 @@ These identify package content that validation ignores or normalizes; they don't
 
 | Name | Requirement |
 |---|---|
-| `duplicate_app_reference` | Each app ID in `.app.json` referenced once; duplicates treated as one app |
-| `undeclared_app_manifest_ignored` | Root `.app.json` imported only when the manifest's `apps` field is set to `./.app.json` |
-| `undeclared_mcp_manifest_ignored` | Root `.mcp.json` imported only when the manifest's `mcpServers` field is set to `./.mcp.json` |
+| `duplicate_app_reference` | Each server ID in `.app.json` must be referenced once; duplicate references are treated as one server |
+| `undeclared_app_manifest_ignored` | Root `.app.json` imported only when the plugin-manifest `apps` field is set to `./.app.json` |
+| `undeclared_mcp_manifest_ignored` | Root `.mcp.json` imported only when the plugin-manifest `mcpServers` field is set to `./.mcp.json` |
 | `skill_file_ignored` | Files directly under `skills/` aren't imported as skills; each skill must be in a directory containing `SKILL.md` |
 | `skill_symlink_ignored` | Symlinks directly under `skills/` aren't imported as skills; each skill must be a real directory containing `SKILL.md` |
 | `skill_frontmatter_adjusted` | Skill `name`/`description` normalized during import (trimmed/collapsed whitespace) |
@@ -418,6 +416,8 @@ These identify package content that validation ignores or normalizes; they don't
 ## Notes
 
 - After resolving all validation errors, return to `submission.md` to complete the submission.
+- Source: https://developers.openai.com/plugins/deploy/submission-errors (local .md twin copy, fetched 2026-11-14).
+- Removed in the official docs (fetched 2026-11-14): the screenshot requirements and error codes `screenshots_not_allowed` / `screenshot_configuration_excluded` no longer appear.
 
 ## Related
 

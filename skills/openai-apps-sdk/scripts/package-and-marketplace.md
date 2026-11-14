@@ -97,6 +97,17 @@ codex plugin marketplace remove marketplace-name
 
 Source: https://developers.openai.com/plugins/build/plugins
 
+## Enable or disable a local-marketplace plugin for a repo
+
+Add to the repo's `.codex/config.toml` (loaded only for trusted projects). The key is `plugin-name@marketplace-name`, where `local-repo` is the marketplace's top-level `name`; set `enabled = false` to disable the plugin for the project without uninstalling it.
+
+```toml
+[plugins."my-plugin@local-repo"]
+enabled = true
+```
+
+Source: https://developers.openai.com/plugins/build/plugins
+
 ## Disable plugin sharing workspace-wide
 
 > **Warning**: This setting is organization-wide and disables plugin sharing for every member of the workspace, not just the current user.
