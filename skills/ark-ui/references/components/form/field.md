@@ -44,6 +44,8 @@ import { Field } from '@ark-ui/react/field'
 - Works with `Fieldset` and most form components (Checkbox, Radio Group, etc.) for enhanced form handling
 - 5.39.3: `Field.ErrorText` is linked via `aria-describedby` instead of `aria-errormessage`, since screen reader support (VoiceOver, Narrator) for `aria-errormessage` is still incomplete. In tests, assert `expect(input).toHaveAccessibleDescription(expect.stringContaining('Error Info'))` instead of `toHaveAccessibleErrorMessage`.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
+- 5.40.0: helper and error text are now announced in Select, TagsInput, ColorPicker, FileUpload, SignaturePad, RatingGroup and PinInput; `ids.root` is no longer ignored and `ids.control` is applied to the control instead of the root.
+- Source: https://github.com/chakra-ui/ark/blob/9a3f857e79d5e891afb928781c2c8a0559f49181/packages/react/CHANGELOG.md (@ark-ui/react 5.40.0, fetched 2026-11-14)
 
 ## Related
 

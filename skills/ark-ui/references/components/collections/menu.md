@@ -55,6 +55,19 @@ const App = () => (
 - Data attributes: `[data-state="open"|"closed"]`, `[data-highlighted]`, `[data-disabled]`, `[data-value]`.
 - Items can render as links via `asChild`; `Menu.ContextTrigger` enables right-click context menus; `Menu.TriggerItem` nests submenus.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
+- 5.40.0: pressing Enter on a link item calls `onSelect` and closes the menu. The `onSelect` and `navigate` details include `modifiers`, so Cmd/Ctrl + Enter can be left to the browser:
+
+  ```tsx
+  <Menu.Root
+    onSelect={(details) => {
+      if (details.modifiers.metaKey || details.modifiers.ctrlKey) return
+      // ...
+    }}
+  />
+  ```
+
+- Source: https://ark-ui.com/react/docs/components/menu (Ark UI @ark-ui/react 5.40.0, fetched 2026-11-14)
+- Source: https://github.com/chakra-ui/ark/blob/9a3f857e79d5e891afb928781c2c8a0559f49181/packages/react/CHANGELOG.md (@ark-ui/react 5.40.0, fetched 2026-11-14)
 
 ## Related
 

@@ -59,6 +59,7 @@ const App = () => (
 | `openOnChange` / `openOnClick` / `openOnKeyPress` | `boolean` | Opening triggers |
 | `hideMode` | `HideMode` (default: `'display-none'`) | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ (5.38.0) |
 | `onValueChange` / `onInputValueChange` / `onHighlightChange` / `onOpenChange` | `function` | State change callbacks |
+| `loading` | `boolean` | Whether results are being loaded. Sets `aria-busy` on the list and holds back the "No results" announcement until loading ends (5.40.0) |
 
 ## Notes
 
@@ -67,6 +68,22 @@ const App = () => (
 - Uses `createListCollection` (via `useListCollection`) for item management, supporting `itemToString` / `itemToValue` for custom objects, `groupBy`, and `limit` for performance.
 - Supports async search, virtualized rendering, and creatable options for new values.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
+- 5.40.0: the `onSelect` and `navigate` details include `modifiers` (`metaKey`, `ctrlKey`, `shiftKey`, `altKey`); a modifier-click on a link item opens the link as the browser would and still calls `onSelect`, so skip your own navigation while a modifier is held.
+- 5.40.0: after typing, the result count is announced to screen readers. Customize via the `resultsCount`, `noResults` and `loading` translations; set one to `""` to turn that announcement off.
+- Minimal example from the official Modifier Keys section (trimmed):
+
+  ```tsx
+  <Combobox.Root
+    onSelect={(details) => {
+      const { metaKey, ctrlKey, shiftKey, altKey } = details.modifiers
+      if (metaKey || ctrlKey || shiftKey || altKey) return
+      router.push(`/docs/${details.itemValue}`)
+    }}
+  />
+  ```
+
+- Source: https://ark-ui.com/react/docs/components/combobox (Ark UI @ark-ui/react 5.40.0, fetched 2026-11-14)
+- Source: https://github.com/chakra-ui/ark/blob/9a3f857e79d5e891afb928781c2c8a0559f49181/packages/react/CHANGELOG.md (@ark-ui/react 5.40.0, fetched 2026-11-14)
 
 ## Related
 

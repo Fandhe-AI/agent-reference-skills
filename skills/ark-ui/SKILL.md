@@ -13,7 +13,7 @@ user-invocable: false
 
 Ark UI は Zag.js を基盤とする headless / unstyled コンポーネントライブラリで、Chakra UI v3 のヘッドレス実装基盤でもある。React / Solid / Vue / Svelte に対応する。
 
-対象: `@ark-ui/react` 5.39.3 (2026-10-05)。6.0.0-next.0 はプレリリースのため対象外。
+対象: `@ark-ui/react` 5.40.0 (2026-10-29。5.39.3 は 2026-10-05 の旧 pin で、各ページ Notes に 5.39.3 の記述が残る)。6.0.0-next.0 はプレリリースのため対象外。
 
 **Ark UI と Chakra UI の使い分け** — Ark UI はスタイル無しの振る舞い・アクセシビリティのみを提供するプリミティブ（`asChild` で任意の要素・デザインシステムに接続する）、Chakra UI v3 は同じ Zag.js 基盤の上に構築された styled 実装。既存デザインシステムに手動でスタイルを当て込みたい場合は本スキル、Chakra のスタイルシステムをそのまま使いたい場合は `skills/chakra-ui/` を参照。
 

@@ -57,6 +57,8 @@ import { FileUpload } from '@ark-ui/react/file-upload'
 - Validation errors include `TOO_MANY_FILES`, `FILE_INVALID_TYPE`, `FILE_TOO_LARGE`, `FILE_EXISTS`
 - Access clipboard files via `setClipboardFiles()`
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
+- 5.40.0: `Field.Root readOnly` now makes the file upload read-only; `Field` helper and error text are now announced.
+- Source: https://github.com/chakra-ui/ark/blob/9a3f857e79d5e891afb928781c2c8a0559f49181/packages/react/CHANGELOG.md (@ark-ui/react 5.40.0, fetched 2026-11-14)
 
 ## Related
 

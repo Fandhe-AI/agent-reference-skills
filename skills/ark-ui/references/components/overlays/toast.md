@@ -49,6 +49,9 @@ toaster.success({
 - Supports promise handling via `toaster.promise()` for async operations.
 - 5.39.3: `Toaster` now forwards `dir` and `getRootNode` to the group machine, and the toast region's `aria-label` is settable through a `label` prop (forwarded to `getGroupProps`).
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
+- 5.40.0: `Toast.Root` honors `asChild`; the store accepts functional updates and references title and description only when they render; focus moves to the next toast when a focused toast is dismissed; toasts no longer stay paused or collapsed.
+- Source: https://ark-ui.com/react/docs/components/toast (Ark UI @ark-ui/react 5.40.0, fetched 2026-11-14)
+- Source: https://github.com/chakra-ui/ark/blob/9a3f857e79d5e891afb928781c2c8a0559f49181/packages/react/CHANGELOG.md (@ark-ui/react 5.40.0, fetched 2026-11-14)
 
 ## Related
 

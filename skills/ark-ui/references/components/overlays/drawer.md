@@ -60,6 +60,14 @@ import { Drawer } from '@ark-ui/react'
 - `initialFocusEl` may return `false` to open without moving focus; returning `null` still uses the default (5.39.3).
 - `data-autofocus` / `data-no-autofocus` (5.38.0, Dialog and Drawer): focus goes to `initialFocusEl`, then `[data-autofocus]`, then the first tabbable element without `[data-no-autofocus]`, then the content root.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
+- 5.40.0: `api.modal` is exposed on the Drawer API. `data-no-drag` accepts an axis (`x` or `y`) to block drags only along that axis, for example horizontally scrolling content inside a bottom drawer:
+
+  ```html
+  <div data-no-drag="x">Horizontally scrolling content</div>
+  ```
+
+- Source: https://ark-ui.com/react/docs/components/drawer (Ark UI @ark-ui/react 5.40.0, fetched 2026-11-14)
+- Source: https://github.com/chakra-ui/ark/blob/9a3f857e79d5e891afb928781c2c8a0559f49181/packages/react/CHANGELOG.md (@ark-ui/react 5.40.0, fetched 2026-11-14)
 
 ## Related
 

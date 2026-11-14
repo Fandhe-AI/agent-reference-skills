@@ -43,6 +43,8 @@ import { PinInput } from '@ark-ui/react/pin-input'
 - Auto-focus transfer between fields, paste support (Ctrl+V), and keyboard navigation (Arrow keys, Backspace)
 - Form integration via the `Field` component or `RootProvider`
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
+- 5.40.0: Ctrl/Cmd + arrow and Up/Down keys navigate between fields, Enter runs native form validation, and `PinInput.Control` renders as a labelled group so helper and error text from `Field` are announced.
+- Source: https://github.com/chakra-ui/ark/blob/9a3f857e79d5e891afb928781c2c8a0559f49181/packages/react/CHANGELOG.md (@ark-ui/react 5.40.0, fetched 2026-11-14)
 
 ## Related
 
