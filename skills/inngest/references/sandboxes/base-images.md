@@ -88,7 +88,7 @@ Fresh Sandboxes accept 1, 2, or 4 vCPU with 1, 2, or 4 GiB of memory per vCPU. `
 - A snapshot clone keeps its source image and cannot select another and inherits CPU and memory.
 - `inngest.sandboxes.create()` takes the same `from`, or a plain `image` string such as `"my-image:v1"`. With REST, set `"image": "my-image:v1"` on `POST /v2/sandboxes`; to pin an artifact use `my-image@sha256:<digest>` (64-character lowercase hex).
 - A nonzero command exit code appears in the result and does not throw an SDK error.
-- Installed packages change only that Sandbox, not the base image. They persist across pause and resume, a snapshot captures them, and destroying the Sandbox removes them. User snapshots expire; for files shared across Sandboxes use S3-backed persistent mounts.
+- Installed packages change only that Sandbox, not the base image. They persist across pause and resume, a snapshot captures them, and destroying the Sandbox removes them. User snapshots expire; S3-backed persistent mounts for files shared across Sandboxes are planned, not in the current beta.
 - Other sizes are not available and no size profile name is accepted. Missing capacity returns `503 compute_unavailable`.
 - Source: https://www.inngest.com/docs-markdown/sandboxes/features/base-images (retrieved 2026-11-14)
 

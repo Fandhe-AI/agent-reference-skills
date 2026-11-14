@@ -44,7 +44,7 @@ const clone = await snapshot.clone("clone", { name: "demo-clone" });
 ## Notes
 
 - Sandboxes are experimental (imported from `inngest/experimental`; TypeScript SDK 4.25.0+).
-- Pages for Secrets, Managed lifecycle, Commands, Tools, Isolation and security, and Traces are listed in the official index but are not part of this reference set.
+- Pages for Secrets, Managed lifecycle, Commands, Tools, Isolation and security, and Traces are included in this reference set (see the category README).
 - For deployment previews, see Inngest branch deploys (a different concept).
 - Source: https://www.inngest.com/docs-markdown/sandboxes/features (retrieved 2026-11-14)
 

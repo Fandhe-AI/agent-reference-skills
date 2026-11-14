@@ -1,6 +1,6 @@
 # Durable filesystems
 
-A Sandbox keeps its local files through pause and resume, and a snapshot copies them into clones. Use an S3-backed persistent filesystem mount when different Sandboxes need the same backing files.
+A Sandbox keeps its local files through pause and resume, and a snapshot copies them into clones. S3-backed persistent filesystem mounts for files shared across Sandboxes are planned for launch and are not available in the current beta.
 
 ## Signature / Usage
 
@@ -19,12 +19,12 @@ const clone = await snapshot.clone("clone", { name: "clone-with-files" });
 | Need | Use | What it gives you |
 |------|-----|-------------------|
 | Keep a sandbox's own files as its work continues | The sandbox filesystem | Pause and resume keep the same files. A snapshot captures disk state, and a clone starts with that captured state. |
-| Let different sandboxes use the same files | An S3-backed persistent filesystem mount | A filesystem that spans sandbox boundaries. |
+| Let different sandboxes use the same files | An S3-backed persistent filesystem mount (planned, not in the current beta) | A filesystem that spans sandbox boundaries. |
 
 ## Notes
 
 - Sandboxes are experimental (imported from `inngest/experimental`; TypeScript SDK 4.25.0+).
-- Use the sandbox filesystem for work belonging to one sandbox (generated code, installed dependencies, a working directory). Use an S3-backed persistent mount for shared inputs or artifacts across sandboxes; for example one sandbox prepares a dataset and others use it in separate tasks.
+- Use the sandbox filesystem for work belonging to one sandbox (generated code, installed dependencies, a working directory). Once S3-backed persistent mounts launch (planned; not in the current beta), use one for shared inputs or artifacts across sandboxes; for example one sandbox prepares a dataset and others use it in separate tasks.
 - Pause and resume: files remain available when the sandbox resumes. Snapshot and clone: a user snapshot captures the filesystem and the original sandbox keeps running. Later writes to the original do not change the snapshot.
 - Source: https://www.inngest.com/docs-markdown/sandboxes/features/durable-filesystems (retrieved 2026-11-14)
 

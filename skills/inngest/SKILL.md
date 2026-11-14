@@ -1,13 +1,12 @@
 ---
 name: inngest
 description: >
-  Inngest Durable Execution (TypeScript SDK)。バックグラウンドジョブ。
+  Inngest イベント駆動 Durable Execution。バックグラウンドジョブ、長時間ワークフロー。
   createFunction, step.run, step.sleep, step.waitForEvent, step.invoke,
   step.sendEvent, step.ai.infer, inngest.send, serve, checkpointing, Inngest CLI。
   concurrency, throttle, debounce, rate-limit, batching, idempotency, singleton。
-  Realtime (useRealtime)、
-  Sandboxes (step.sandbox)、Agent Evals、MCP。
-  デプロイ先 Next.js, Hono, Cloudflare Workers。
+  Realtime (channels, topics, useRealtime)、Sandboxes、Agent Evals、MCP。
+  Next.js, Hono, Cloudflare Workers。
 user-invocable: false
 ---
 
