@@ -23,7 +23,7 @@ for await (const textPart of textStream) {
 
 ## Options / Props
 
-`streamText` accepts the same parameters as `generateText` (see [generateText](./generate-text.md) for `model`, `instructions`, `prompt`, `messages`, `allowSystemInMessages`, `tools`, `toolChoice`, `maxOutputTokens`, `temperature`, `topP`, `topK`, `presencePenalty`, `frequencyPenalty`, `stopSequences`, `seed`, `reasoning`, `maxRetries`, `headers`, `telemetry`, `providerOptions`, `activeTools`, `toolOrder`, `toolCallConcurrency`, `toolApproval`, `experimental_toolCallers`, `experimental_refineToolInput`, `stopWhen`, `prepareStep`, `runtimeContext`, `toolsContext`, `experimental_sandbox`, `experimental_download`, `repairToolCall`, `output`, lifecycle callbacks) with the differences and additions below.
+`streamText` accepts the same parameters as `generateText` (see [generateText](./generate-text.md) for `model`, `instructions`, `prompt`, `messages`, `allowSystemInMessages`, `tools`, `toolChoice`, `maxOutputTokens`, `temperature`, `topP`, `topK`, `presencePenalty`, `frequencyPenalty`, `stopSequences`, `seed`, `reasoning`, `maxRetries`, `headers`, `telemetry`, `providerOptions`, `activeTools`, `toolOrder`, `toolCallConcurrency`, `toolApproval`, `experimental_toolCallers`, `experimental_refineToolInput`, `stopWhen`, `prepareStep`, `runtimeContext`, `toolsContext`, `experimental_sandbox`, `experimental_steering`, `experimental_download`, `repairToolCall`, `output`, lifecycle callbacks) with the differences and additions below.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -33,12 +33,13 @@ for await (const textPart of textStream) {
 | experimental_transform | `StreamTextTransform \| Array<StreamTextTransform>` (Optional) | Stream transformations, applied in the order provided. They must maintain the stream structure for `streamText` to work correctly. A transform is `(options: { stopStream: () => void; tools: TOOLS }) => TransformStream<TextStreamPart<TOOLS>, TextStreamPart<TOOLS>>`. |
 | includeRawChunks | `boolean` (Optional) | Deprecated. Use `include.rawChunks`. Defaults to false. |
 | include | `{ requestBody?: boolean; requestMessages?: boolean; rawChunks?: boolean }` (Optional) | Request body and request messages in step results, and raw provider chunks in the stream (`type: "raw"`), are excluded by default to reduce memory usage. |
-| onChunk | `(event: OnChunkResult) => Promise<void> \| void` (Optional) | Called for each stream part; stream processing pauses until the callback promise is resolved. `chunk` is a `TextStreamPart<TOOLS>` (same union as `stream`: `start`, `start-step`, `text-start`, `text-delta`, `text-end`, `reasoning-start`, `reasoning-delta`, `reasoning-end`, `custom`, `source`, `file`, `reasoning-file`, `tool-call`, `tool-input-start`, `tool-input-delta`, `tool-input-end`, `tool-result`, `tool-error`, `tool-output-denied`, `tool-approval-request`, `tool-approval-response`, `finish-step`, `finish`, `abort`, `error`, `raw`). |
+| onChunk | `(event: OnChunkResult) => Promise<void> \| void` (Optional) | Called for each stream part; stream processing pauses until the callback promise is resolved. `chunk` is a `TextStreamPart<TOOLS>` (same union as `stream`: `start`, `steering-message`, `start-step`, `text-start`, `text-delta`, `text-end`, `reasoning-start`, `reasoning-delta`, `reasoning-end`, `custom`, `source`, `file`, `reasoning-file`, `tool-call`, `tool-input-start`, `tool-input-delta`, `tool-input-end`, `tool-result`, `tool-error`, `tool-output-denied`, `tool-approval-request`, `tool-approval-response`, `finish-step`, `finish`, `abort`, `error`, `raw`, `ping`). |
 | onError | `StreamTextOnErrorCallback \| StreamTextOnErrorRetryCallback` (Optional) | Called when an error occurs during streaming. Receives `{ error: unknown }`. Well-formed mid-stream provider error events are exposed as `StreamProviderError` instances (use `StreamProviderError.isInstance`). When `streamRetries` is explicitly configured, return `{ retry: true }` to request one callback-directed retry for the current model step after automatic retries are exhausted. |
 | onAbort | `(event: OnAbortResult) => Promise<void> \| void` (Optional) | Called when a stream is aborted via `AbortSignal`. Receives `callId`, `steps` (previously finished steps), `reason?` (raw abort reason), and the final runtime context state. |
 | onEnd | `(result: OnEndResult) => Promise<void> \| void` (Optional) | Called when the stream finishes. |
 | onFinish | `(result: OnEndResult) => Promise<void> \| void` (Optional) | Deprecated alias for `onEnd`. |
 | onStepEnd / onStepFinish | callback (Optional) | Called when a step ends (`onStepFinish` is deprecated; use `onStepEnd`). |
+| onStepError | `(event: GenerateTextStepErrorEvent) => Promise<void> \| void` (Optional) | Called when a step that started fails before it produces a step result, i.e. when the provider call throws or rejects, or when the model stream ends without output. `onStepEnd` is not called for such a step. A provider `error` chunk does not fail the step: it still ends with `onStepEnd` and `finishReason: 'error'`. Aborts and timeouts end the step with `onAbort` instead. The event contains all properties of the `onStepStart` event of the failed step plus `error: unknown`. |
 | onStart, onStepStart, onLanguageModelCallStart, onLanguageModelCallEnd, onToolExecutionStart, onToolExecutionEnd | callbacks (Optional) | As in `generateText` (see Lifecycle Callbacks). `experimental_onToolCallStart` / `experimental_onToolCallFinish` are deprecated aliases. |
 | output | `Output` (Optional) | Specification for parsing structured outputs; see Output. |
 
@@ -50,7 +51,7 @@ Result values on the result object (promises resolve when the stream finishes; m
 | --- | --- | --- |
 | content | `Promise<Array<ContentPart<TOOLS>>>` | Content generated in all steps. Text parts can include optional `citations`. Automatically consumes the stream. |
 | text | `Promise<string>` | Generated text from the final step. |
-| finishReason | `PromiseLike<'stop' \| 'length' \| 'content-filter' \| 'tool-calls' \| 'error' \| 'other'>` | Why the generation finished. Automatically consumes the stream. |
+| finishReason | `PromiseLike<'stop' \| 'length' \| 'content-filter' \| 'tool-calls' \| 'error' \| 'interrupted' \| 'other'>` | Why the generation finished. A stream that ends cleanly without its provider completion signal can report `'interrupted'`. Partial output is preserved; interruption alone does not emit an error. Streams that produce no output and no finish chunk still reject with `NoOutputGeneratedError`. OpenAI-compatible retains its existing error behavior. Automatically consumes the stream. |
 | rawFinishReason | `PromiseLike<string \| undefined>` | Raw finish reason from the provider. |
 | usage | `Promise<LanguageModelUsage>` | Total token usage across all steps. Automatically consumes the stream. |
 | totalUsage | `Promise<LanguageModelUsage>` | Deprecated. Use `usage`. |
@@ -82,11 +83,12 @@ Result values on the result object (promises resolve when the stream finishes; m
 | onStepEnd | `(event: { messages: UIMessage[]; isContinuation: boolean; responseMessage: UIMessage }) => PromiseLike<void> \| void` (Optional) | Called after each step is converted to UI message parts; separate from the generation callback passed to `streamText`. `onStepFinish` is a deprecated alias. |
 | onEnd | `(options: { messages; isContinuation; responseMessage; isAborted: boolean; isCancelled?: true; outcome: UIMessageStreamOutcome; finishReason?: FinishReason }) => PromiseLike<void> \| void` (Optional) | Called when the stream ends. `onFinish` is a deprecated alias. |
 | messageMetadata | `(options: { part }) => unknown` (Optional) | Extracts message metadata sent to the client; called on start and finish events. |
-| sendReasoning | `boolean` (Optional) | Send reasoning parts to the client. Defaults to false. |
+| sendReasoning | `boolean` (Optional) | Send reasoning parts to the client. Defaults to true. |
 | sendSources | `boolean` (Optional) | Send source parts to the client. Defaults to false. |
 | sendFinish | `boolean` (Optional) | Send the finish event. Defaults to true. |
 | sendStart | `boolean` (Optional) | Send the message start event; set false when using additional `streamText` calls and the start event has already been sent. Defaults to true. |
-| onError | `(error: unknown) => string` (Optional) | Process an error and return the message to include in the data stream. Defaults to `() => "An error occurred."`. Tool execution errors marked `providerExecuted: true` bypass this callback (strings pass through unchanged, other values JSON-stringified). Stream errors and invalid tool calls still use it. |
+| onError | `(error: unknown) => string` (Optional) | Process an error and return the message to include in the data stream. Defaults to `() => "An error occurred."`. Tool execution errors marked `providerExecuted: true` bypass this callback (strings pass through unchanged, other values JSON-stringified). Handles stream errors. Also handles failed tool calls (tool execution errors and invalid tool calls) when `redactToolErrors` is enabled, which is the default when this callback is provided. Invalid tool calls of provider-executed tools always use this callback. |
+| redactToolErrors | `boolean` (Optional) | Replace the error text of failed tool calls (tool execution errors and invalid tool calls) with the result of `onError`. By default, the client receives the same error text as the model, because the UI messages are sent back to the model on the next request and a different text changes the message history. Defaults to true when `onError` is provided, and to false otherwise. |
 | consumeSseStream | `(options: { stream: ReadableStream<string> }) => PromiseLike<void> \| void` (Optional) | Consume the SSE stream. Required for proper abort handling in UI message streams; use the AI SDK `consumeStream` function. |
 
 `ResponseInit` fields for the response helpers: `status`, `statusText`, `headers`.
@@ -101,9 +103,12 @@ type ActiveTools<TOOLS extends ToolSet> =
 
 ## Notes
 
+- Source: https://ai-sdk.dev/docs/reference/ai-sdk-core/stream-text (ai@7.0.173)
+- 7.0.173 changes: `sendReasoning` for UI message streams now defaults to true (was false); new `redactToolErrors` option; finish reason `'interrupted'`; `onStepError`; `ping` and experimental `steering-message` stream parts (`ping` is a transient provider heartbeat with no generated content, does not reset model-output timeouts, and is omitted from text and UI message streams; `steering-message` carries `id`, `message`, `stepNumber` and is streamed before the `start-step` part of the step that received it); `experimental_steering`; `request.url`.
+- For outputs consumed once, see [streamText low memory](./stream-text-low-memory.md): same execution engine with one stream consumer and no replay buffer.
 - `streamText` starts streaming immediately; errors become part of the stream and are not thrown. Use `onError` to log them.
 - Deprecated: `fullStream` (use `stream`), `includeRawChunks` (use `include.rawChunks`), `totalUsage`, `onFinish`, `onStepFinish`, `experimental_onToolCallStart`, `experimental_onToolCallFinish`.
-- The official streamText reference types `consumeSseStream` as `(stream: ReadableStream) => Promise<void>`, but the published type at ai@7.0.142 takes an object argument `{ stream }`, same as createAgentUIStreamResponse. See [ui-message-stream-response-init.ts](https://github.com/vercel/ai/blob/ai@7.0.142/packages/ai/src/ui-message-stream/ui-message-stream-response-init.ts).
+- The official streamText reference types `consumeSseStream` as `(stream: ReadableStream) => Promise<void>`, but the published type at ai@7.0.173 takes an object argument `{ stream }`, same as createAgentUIStreamResponse. See [ui-message-stream-response-init.ts](https://github.com/vercel/ai/blob/ai@7.0.142/packages/ai/src/ui-message-stream/ui-message-stream-response-init.ts).
 - `experimental_*` options may change in incremental package releases.
 - `result.toUIMessageStreamResponse` / `pipeUIMessageStreamToResponse` produce HTTP responses; this page covers the AI SDK helper. Server-framework specifics (Hono, Fastify, Next.js route handlers, TanStack Start) are covered by the hono, fastify, nextjs-app and tanstack-start skills.
 

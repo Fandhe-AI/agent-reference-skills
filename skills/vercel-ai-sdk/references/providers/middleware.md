@@ -124,7 +124,7 @@ export const yourLogMiddleware: LanguageModelV4Middleware = {
 };
 ```
 
-Caching example (`wrapGenerate` with `JSON.stringify(params)` as key):
+Caching example (`wrapGenerate`; the cache key includes the provider, model ID, and call parameters so responses are only reused for the same model and request):
 
 ```ts
 const cache = new Map<string, any>();
@@ -132,8 +132,12 @@ const cache = new Map<string, any>();
 export const yourCacheMiddleware: LanguageModelV4Middleware = {
   specificationVersion: 'v4',
 
-  wrapGenerate: async ({ doGenerate, params }) => {
-    const cacheKey = JSON.stringify(params);
+  wrapGenerate: async ({ doGenerate, params, model }) => {
+    const cacheKey = JSON.stringify({
+      provider: model.provider,
+      modelId: model.modelId,
+      params,
+    });
 
     if (cache.has(cacheKey)) {
       return cache.get(cacheKey);

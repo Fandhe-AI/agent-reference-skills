@@ -131,6 +131,10 @@ repairToolCall: async ({ toolCall, tools, inputSchema, error }) => {
 
 ## Notes
 
+- Source: https://ai-sdk.dev/docs/ai-sdk-core/tools-and-tool-calling (ai@7.0.173)
+- With OpenAI Responses models, editing earlier history can cause subsequent reasoning to be dropped. Pruning earlier messages or tool results (for example with `pruneMessages` in `prepareStep`) changes that history. Prefer provider compaction when supported, and preserve positioned configuration updates, including empty system messages. See https://ai-sdk.dev/providers/ai-sdk-providers/openai#preserving-reasoning-across-turns.
+- When `toolChoice` is `'none'`, the SDK prevents local tool execution even if the model returns a tool call. Such responses produce a `ToolChoiceViolationError` (https://ai-sdk.dev/docs/reference/ai-sdk-errors/ai-tool-choice-violation-error). With `streamText`, tool parts are withheld from the stream, so client-side tools are not invoked either. Tool call repair and input refinement are skipped for rejected tool calls.
+- File URLs returned by tools in multi-modal tool results are untrusted input. To validate DNS results when the provider downloads them on Node.js, pass a `guarded-fetch` transport as the provider's `fetch` option. See https://ai-sdk.dev/docs/advanced/secure-url-fetching.
 - The upstream `dynamicTool` example uses an empty `inputSchema: z.object({})` while `execute` reads `action` / `parameters`; corrected here to `z.object({ action: z.string(), parameters: z.unknown() })` (same as the dynamicTool page) so the model is told about those fields.
 - Tool errors: `NoSuchToolError`, `InvalidToolInputError`, `ToolCallRepairError`, `ToolChoiceViolationError` are thrown by `generateText`; errors thrown inside `execute` become `tool-error` content parts. `streamText` sends them in the stream (`tool-error` / `error` parts).
 - Errors thrown inside `onToolExecutionStart` / `onToolExecutionEnd` are silently caught.

@@ -86,7 +86,7 @@ Base class: `AISDKError` is the base class and broad type guard for AI SDK error
 | `APICallError` | `url`; `requestBodyValues`; `statusCode` (optional); `responseHeaders` (optional); `responseBody` (optional); `isRetryable`; `data` (optional); `cause` (optional) | An API call fails. For an AI SDK UI chat transport or completion request, `requestBodyValues` is `undefined` so prompts and messages are not copied into the client-facing error object. |
 | `DownloadError` | `url`; `statusCode` (optional); `statusText` (optional); `cause` (optional); `message` (optional, auto-generated) | A download fails. |
 | `EmptyResponseBodyError` | `message` | The server returns an empty response body. |
-| `InvalidPromptError` | `prompt`; `message` (required in constructor); `cause` (optional) | The prompt provided is invalid. |
+| `InvalidPromptError` | `prompt`; `message` (required in constructor); `cause` (optional) | The prompt provided is invalid. Causes: system messages in `prompt` or `messages` (rejected by default to reduce prompt-injection risk; pass `instructions` instead, or set `allowSystemInMessages: true` for a trusted source); an empty `messages` array (or a `prompt` array) with no message; provider-specific prompt requirements that cannot be expressed for the provider's API (for example an assistant prefix message that is not the final message, or a part combining unsupported options). AI SDK functions do not validate the shape of `ModelMessage` objects at runtime, so validate messages from untrusted sources first. |
 | `InvalidResponseDataError` | `data`; `message` | The server returns a response with invalid data content. |
 | `JSONParseError` | `text`; `cause` (required in constructor) | JSON fails to parse. |
 | `LoadAPIKeyError` | `message` | The API key is not loaded successfully. |
@@ -140,7 +140,7 @@ Base class: `AISDKError` is the base class and broad type guard for AI SDK error
 | `NoSuchToolError` | `toolName`; `availableTools` (optional); `message` (optional, auto-generated from `toolName` and `availableTools`) | A model tries to call an unavailable tool. |
 | `ToolCallNotFoundForApprovalError` | `toolCallId`; `approvalId` | A tool approval request references a tool call that was not found, for example when processing provider-emitted approval requests (MCP flows) where the referenced tool call ID does not exist. |
 | `ToolCallRepairError` | `originalError` (either `NoSuchToolError` or `InvalidToolInputError`); `message`; `cause` | A failure while attempting to repair an invalid tool call. |
-| `ToolChoiceViolationError` | `toolChoice`; `finishReason`; `provider`; `modelId`; `content`; `message` | A `generateText` response does not satisfy an enforced tool choice: `toolChoice` is `'required'` but the response contains no structured tool call, or a specifically selected tool was not called. The error does not interpret text or reasoning as an executable tool call; inspect `content` for opt-in recovery and validate the schema before executing any recovered call. |
+| `ToolChoiceViolationError` | `toolChoice`; `finishReason`; `provider`; `modelId`; `content`; `message` | A `generateText` or `streamText` response does not satisfy an enforced tool choice: `toolChoice` is `'none'` but the response contains a tool call, `'required'` produces no structured tool call, or a specifically selected tool was not called. With `streamText` the error is emitted in the stream; tool calls returned while `'none'` is selected are not executed. The error does not interpret text or reasoning as an executable tool call; when tool calls are allowed (`error.toolChoice.type !== 'none'`), inspect `content` for opt-in recovery and validate the schema before executing any recovered call. |
 
 #### Decision errors (experimental)
 
@@ -157,6 +157,8 @@ Exported from `ai` and `@ai-sdk/provider` with an `Experimental_` prefix; the of
 - Aliased import for the experimental decision errors: `import { Experimental_DecisionRefusalError as DecisionRefusalError } from 'ai';`.
 - Common solutions for `UIMessageStreamError`: always send a `*-start` chunk before any `*-delta` or `*-end` chunk for the same ID; make the `id` of `*-delta` / `*-end` chunks match the `*-start` chunk; on error paths in custom transports emit the full start / delta / end sequence; review stream producer logic when operations are concurrent or streams are merged.
 - Experimental: the decision errors belong to `experimental_decide`, whose API may change in patch releases.
+
+- Source: https://ai-sdk.dev/docs/reference/ai-sdk-errors/ai-invalid-prompt-error and https://ai-sdk.dev/docs/reference/ai-sdk-errors/ai-tool-choice-violation-error (ai@7.0.173)
 
 ## Related
 

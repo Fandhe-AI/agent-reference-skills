@@ -93,6 +93,10 @@ await runAgentTUI({
 });
 ```
 
+### Agent Frameworks
+
+The agent classes in this section are primitives you assemble inside your own application. When you want a production framework for durable, long-running agents — with channels, schedules, approvals, and testing included — [eve](https://eve.dev) is an open-source framework built on the AI SDK. It uses the same `tool()` shape and model settings, and runs agents durably on Vercel or self-hosted. See the eve page.
+
 ### Structured Workflows
 
 Agents are flexible and powerful, but non-deterministic. When you need reliable, repeatable outcomes with explicit control flow, use core functions with structured workflow patterns combining:
@@ -106,6 +110,7 @@ Agents are flexible and powerful, but non-deterministic. When you need reliable,
 
 - `model` in the snippets stands for any provider model (the official page uses a model/provider placeholder).
 - Distinct from other skills: this page describes the AI SDK `ToolLoopAgent` abstraction (`ai` package, provider-agnostic). The OpenAI Agents SDK is covered by openai-agents, the Claude Agent SDK by anthropic-agent-sdk, hosted Managed Agents by anthropic-managed-agents, Hermes by hermes-agent, and Claude Code subagents / skills by anthropic-claude-code-extend.
+- Source: https://ai-sdk.dev/docs/agents/overview (ai@7.0.173). The official Next Steps list now also links Chat Platforms and eve.
 - `HarnessAgent` and `@ai-sdk/tui` belong to separate packages; see the workflow-harnesses category.
 
 ## Related
@@ -114,3 +119,5 @@ Agents are flexible and powerful, but non-deterministic. When you need reliable,
 - [Workflow Patterns](./workflows.md)
 - [Loop Control](./loop-control.md)
 - [ToolLoopAgent](./tool-loop-agent.md)
+- [Chat Platforms](./chat-platforms.md)
+- [eve](./eve.md)

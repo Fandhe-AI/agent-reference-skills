@@ -121,7 +121,7 @@ Provider changes:
 
 ## Notes
 
-- The published page at tag `ai@7.0.142` shows `isStepCount` in its AI SDK 5 / 6 example snippets; the 7.0 guide states `stepCountIs` -> `isStepCount` is a 7.0 rename, so this page uses the 6.x name `stepCountIs`.
+- The published page at tag `ai@7.0.173` shows `isStepCount` in its AI SDK 5 / 6 example snippets; the 7.0 guide states `stepCountIs` -> `isStepCount` is a 7.0 rename, so this page uses the 6.x name `stepCountIs`.
 - The page's snippets use the placeholders `__PROVIDER_IMPORT__` and `__MODEL__`.
 - `generateObject` / `streamObject` are deprecated in 6.0; their later status is covered by `migration-guide-7-0.md` (still listed there for `system` -> `instructions`).
 - Codemods may not cover all changes; manual edits may be required.

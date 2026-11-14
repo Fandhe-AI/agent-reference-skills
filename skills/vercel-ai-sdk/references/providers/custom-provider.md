@@ -68,7 +68,7 @@ Returns a `Provider` instance with:
 
 - Experimental decision models: pass `decisionModels: Record<string, Experimental_DecisionModel>` to define aliases for decision model instances or string IDs. The returned provider adds `decisionModel(alias): Experimental_DecisionModelV4`. String aliases resolve through Gateway by default, or an explicitly configured default provider with a `decisionModel` method. Unknown aliases use the fallback provider's decision factory when available; model failures and unsupported questions do not trigger substitution.
 - Unavailable decision capabilities or models throw `NoSuchModelError` with `modelType: 'decisionModel'`; these are structural extensions, not added to the stable `ProviderV4` contract.
-- The official reference page still shows `EmbeddingModel<string>`; the generic was removed in AI SDK 6 (see migration guide 6.0), and in ai@7.0.142 `EmbeddingModel` is non-generic (the custom provider / registry return `EmbeddingModelV4`).
+- The official reference page still shows `EmbeddingModel<string>`; the generic was removed in AI SDK 6 (see migration guide 6.0), and in ai@7.0.173 `EmbeddingModel` is non-generic (the custom provider / registry return `EmbeddingModelV4`).
 - The official example omits the imports of `wrapLanguageModel` / `defaultSettingsMiddleware` (both exported from `ai`).
 
 ## Related

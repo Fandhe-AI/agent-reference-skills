@@ -31,6 +31,8 @@ Import: `import { pruneMessages } from "ai"`. Returns `ModelMessage[]`.
 
 ## Notes
 
+- OpenAI Responses models may drop reasoning items after edits to their preceding context. Pruning earlier history can therefore increase reasoning work. Also preserve empty system messages carrying positioned configuration updates; `emptyMessages: 'remove'` removes them. See the OpenAI provider page (preserving reasoning across turns).
+- Source: https://ai-sdk.dev/docs/reference/ai-sdk-ui/prune-messages (ai@7.0.173)
 - `reasoning`: `'all'` removes all reasoning parts, `'before-last-message'` keeps reasoning in the last message, `'none'` retains all.
 - `toolCalls` prunes tool-call, tool-result, and tool-approval chunks from assistant/tool messages. `'before-last-N-messages'` prunes except in the last N messages. Per-tool example: `[{ type: 'before-last-message', tools: ['search', 'calculator'] }]` prunes only those tools.
 - Typically used before sending a context window to an LLM, especially after a series of tool calls and approvals. Implementation: `packages/ai/src/generate-text/prune-messages.ts` in `vercel/ai`.

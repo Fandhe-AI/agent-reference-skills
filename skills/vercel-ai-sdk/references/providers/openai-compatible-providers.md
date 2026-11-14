@@ -4,7 +4,7 @@ source: https://ai-sdk.dev/providers/openai-compatible-providers
 
 # OpenAI Compatible Providers
 
-The `@ai-sdk/openai-compatible` package (`createOpenAICompatible`) lets the AI SDK use language model providers that implement the OpenAI API. Detailed docs exist for LM Studio, NIM, ModelRush, Cheaper Inference, Heroku, Clarifai, NEAR AI Cloud and TopxAI (not recorded here).
+The `@ai-sdk/openai-compatible` package (`createOpenAICompatible`) lets the AI SDK use language model providers that implement the OpenAI API. Detailed docs exist for LM Studio, NIM, ModelRush, Cheaper Inference, Heroku, Clarifai, NEAR AI Cloud, TopxAI, Synthorai and Meta (Muse) (not recorded here).
 
 ## Signature / Usage
 
@@ -38,10 +38,10 @@ Provider settings (all optional except as the examples use `name`):
 | Name | Type | Description |
 | --- | --- | --- |
 | baseURL | string | URL prefix for API calls. |
-| apiKey | string | Adds an `Authorization: Bearer <apiKey>` header, added before any headers in `headers`. |
+| apiKey | `string \| PromiseLike<string> \| (() => string \| PromiseLike<string>)` | Adds an `Authorization: Bearer <apiKey>` header, added before any headers in `headers`. A function is called before each request and may return a promise; use it to supply refreshed credentials (a promise value resolves to the same key each time). |
 | headers | `Record<string,string>` | Custom headers, added after headers from `apiKey`. |
 | queryParams | `Record<string,string>` | Custom URL query parameters for request URLs. |
-| fetch | `(input: RequestInfo, init?: RequestInit) => Promise<Response>` | Custom fetch implementation. Defaults to global `fetch`; can intercept requests or be used for testing. |
+| fetch | `(input: RequestInfo, init?: RequestInit) => Promise<Response>` | Custom fetch implementation. Defaults to global `fetch`; can intercept requests or be used for testing. The same fetch is used to download remote input images for image editing. |
 | includeUsage | boolean | Include usage information in streaming responses. Defaults to `undefined` (`false`). |
 | supportsStructuredOutputs | boolean | Set to true if the provider supports structured outputs. Only relevant for `provider()`, `provider.chatModel()`, `provider.languageModel()`. |
 | supportsMultiPartToolContent | boolean | Provider supports multi-part content arrays in tool results (`type: 'content'` outputs with text, images, video, audio, PDF parts). Defaults to `false`. Only relevant for chat models. |
@@ -49,7 +49,7 @@ Provider settings (all optional except as the examples use `name`):
 | transformRequestBody | `(args: Record<string, any>, warnings?: SharedV4Warning[]) => Record<string, any>` | Transforms the request body before sending; optional second argument is the call's warning collection (returned by `doGenerate`, included in `stream-start` for `doStream`). |
 | metadataExtractor | `MetadataExtractor` | Captures provider-specific metadata from API responses. |
 
-Chat model `providerOptions` (under the camelCase provider name key): `user` (string), `reasoningEffort` (string, values depend on provider), `textVerbosity` (string), `strictJsonSchema` (boolean, default `true`, only used when structured outputs are supported and a schema is provided).
+Chat model `providerOptions` (under the camelCase provider name key): `user` (string), `reasoningEffort` (string, values depend on provider; defaults to `medium`; `null` sends `"reasoning_effort": null` for providers that treat an explicit `null` differently from an omitted field), `textVerbosity` (string), `strictJsonSchema` (boolean, default `true`, only used when structured outputs are supported and a schema is provided).
 
 Embedding model options: `dimensions` (number), `user` (string). Completion model options: `echo` (boolean), `logitBias` (`Record<string, number>`, -100 to 100), `suffix` (string), `user` (string). Image model options: `size`, `quality`, `output_format`, `output_compression` (0 to 100), `background`; `OpenAICompatibleImageModelOptions` also accepts additional provider-specific options passed through unchanged.
 
@@ -115,7 +115,22 @@ Custom metadata extraction (`extractMetadata({ parsedBody })`, `createStreamExtr
 - Only enable `supportsMultiPartToolContent` when the provider accepts content arrays for `tool` role messages; the default stringifies multi-part tool results.
 - Image responses with URLs are downloaded automatically so `image.base64` and `image.uint8Array` stay available; base64 takes precedence when both are present.
 - Model ID auto-completion: `createOpenAICompatible<ChatIds, CompletionIds, EmbeddingIds, ImageIds>(...)` with ids typed as `'...' | (string & {})`.
-- Package version at the pinned tag: `@ai-sdk/openai-compatible` 3.0.70.
+- Package version at the pinned tag: `@ai-sdk/openai-compatible` 3.0.92.
+- When passing a `guarded-fetch` transport as `fetch` for untrusted image URLs, a `baseURL` on a private or local network (e.g. `http://localhost:11434/v1` for a self-hosted server) is rejected as well, since the transport checks every request it sends. Add that origin to its `trustedOrigins` option (see Secure URL Fetching in the official docs).
+- Refusals: some OpenAI-compatible providers, including OpenAI itself, can return a `refusal` instead of content when the model declines a request. The refusal explanation is surfaced as text in both `generateText` and `streamText`. When a non-empty refusal is received and the provider reports a `stop` finish reason, the finish reason is `content-filter`. When a response contains both content and a refusal, the content text is emitted first, followed by the refusal text.
+
+```ts
+const { text, finishReason } = await generateText({
+  model: provider('model-id'),
+  prompt: '...',
+});
+
+if (finishReason === 'content-filter') {
+  // `text` contains the model's refusal explanation
+}
+```
+
+- Source: https://ai-sdk.dev/providers/openai-compatible-providers (ai@7.0.173)
 
 ## Related
 

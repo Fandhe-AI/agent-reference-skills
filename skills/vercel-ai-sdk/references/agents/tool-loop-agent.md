@@ -56,6 +56,9 @@ Constructor parameters:
 | `onToolExecutionStart` | `OnToolExecutionStartCallback` | — | Optional. Called right before a tool's execute function runs. |
 | `onToolExecutionEnd` | `OnToolExecutionEndCallback` | — | Optional. Called right after a tool's execute function completes (or errors). `toolOutput` is a discriminated union: `'tool-result'` with `output`, or `'tool-error'` with `error`. |
 | `onStepEnd` | `GenerateTextOnStepEndCallback` | — | Optional. Called after each agent step (LLM/tool call) completes. |
+| `onStepError` | `(event: GenerateTextStepErrorEvent) => Promise<void> \| void` | — | Optional. Called when an agent step that started fails before it produces a step result, i.e. when the provider call throws or rejects, or when the model stream ends without output. `onStepEnd` is not called for such a step. A provider `error` chunk does not fail the step: it still ends with `onStepEnd` and `finishReason: 'error'`. The event contains all properties of the `onStepStart` event of the step that failed, plus `error`. In `generate()`, aborts and timeouts also end the step here. In `stream()`, they end the step with `onAbort` instead. Only available in the constructor. |
+| `onError` | `(event: { error: unknown }) => Promise<void> \| void` | — | Optional. Called when an error occurs. For `stream()` it receives the errors of the stream, for `generate()` it receives the error before it is thrown. Aborts and timeouts are not reported. When not set, `stream()` logs errors to the console. Only available in the constructor. |
+| `onAbort` | `(event: GenerateTextAbortEvent) => Promise<void> \| void` | — | Optional. Called when `stream()` is aborted or times out. Receives the steps that finished before the abort and the abort reason. `generate()` does not call it: an aborted or timed out `generate()` call rejects, and its step ends with `onStepError`. Only available in the constructor. |
 | `onStepFinish` | `GenerateTextOnStepFinishCallback` | — | Deprecated. Use `onStepEnd`. Only used as a fallback when `onStepEnd` is not provided. |
 | `onEnd` | `GenerateTextOnEndCallback` | — | Optional. Called when all agent steps are finished and the response is complete. Receives step results, total usage, shared `runtimeContext`, and `toolsContext`. |
 | `onFinish` | `GenerateTextOnEndCallback` | — | Deprecated alias for `onEnd`. |
@@ -64,7 +67,7 @@ Constructor parameters:
 | `telemetry` | `TelemetryOptions` | — | Optional. Telemetry configuration. |
 | `telemetry.includeRuntimeContext` | `{ [KEY in keyof CONTEXT]?: boolean }` | — | Optional. Top-level runtime context properties to include in telemetry. Excluded unless explicitly set to `true`. Lifecycle callbacks and results still receive the full `runtimeContext`. |
 | `telemetry.includeToolsContext` | `{ [TOOL_NAME in keyof InferToolSetContext<TOOLS>]?: { [KEY in keyof ...]?: boolean } }` | — | Optional. Top-level tool context properties to include in telemetry, per tool. Excluded unless explicitly set to `true`. |
-| `experimental_download` | `DownloadFunction \| undefined` | — | Optional. Experimental custom download function for fetching files/URLs for tool or model use. By default, files are downloaded if the model does not support the URL for a given media type. |
+| `experimental_download` | `DownloadFunction \| undefined` | — | Optional. Experimental custom download function for fetching files/URLs for tool or model use. By default, files are downloaded if the model does not support the URL for a given media type. Use `createDownload({ fetch, maxBytes })` from `ai` to keep the default behavior with a custom fetch transport or size limit. For untrusted URLs, see Secure URL Fetching (`/docs/advanced/secure-url-fetching#core-file-downloads`). |
 | `maxOutputTokens` | `number` | — | Optional. Maximum number of tokens the model is allowed to generate. |
 | `temperature` | `number` | — | Optional. Sampling temperature, controls randomness. Passed through to the model. |
 | `topP` | `number` | — | Optional. Top-p (nucleus) sampling parameter. |
@@ -115,6 +118,7 @@ const result = await agent.generate({
 | `abortSignal` | `AbortSignal` | — | Optional. Cancel the call. |
 | `timeout` | `number \| { totalMs?: number; stepMs?: number; firstChunkMs?: number; chunkMs?: number }` | — | Optional. `stepMs` limits each complete step, including model generation, retries, and local tool execution. `firstChunkMs` and `chunkMs` have no effect on `generate()`; they are streaming-only and are enforced by `stream()`. Can be used alongside `abortSignal`. |
 | `experimental_sandbox` | `Experimental_SandboxSession` | — | Optional. Passed through to `prepareStep`, tool description functions, and tool execution. |
+| `experimental_steering` | `Experimental_Steering` | — | Optional. Experimental steering object created with `experimental_createSteering()`. Messages sent with `steering.steer()` are added as user messages at the next step boundary, after the current step and its tool calls are done. Messages sent with `steering.queue()` wait until the model finishes its current task and are added one per task. A waiting message keeps the loop going for another step unless a stop condition is met. `steer()` and `queue()` resolve with `{ type: 'delivered', id, message, stepNumber }` or `{ type: 'not-delivered', id, message, reason }`. See Loop Control. |
 | `options` | `CALL_OPTIONS` | — | Optional. Custom call options when the agent is configured with a `callOptionsSchema`. |
 | `onStart`, `onStepStart`, `onToolExecutionStart`, `onToolExecutionEnd`, `onStepEnd`, `onEnd` | callbacks | — | Optional. If also specified in the constructor, both are called (constructor first). |
 | `onStepFinish`, `onFinish` | callbacks | — | Deprecated aliases for `onStepEnd` and `onEnd`. |
@@ -240,6 +244,7 @@ const analysisAgent = new ToolLoopAgent({
 
 ## Notes
 
+- Source (onStepError / onError / onAbort / experimental_steering / createDownload): https://ai-sdk.dev/docs/reference/ai-sdk-core/tool-loop-agent (ai@7.0.173)
 - `generate()` returns a `GenerateTextResult` and `stream()` a `StreamTextResult`; see generateText / streamText in the core category.
 - `experimental_` options (`experimental_toolCallers`, `experimental_refineToolInput`, `experimental_download`, `experimental_sandbox`, `experimental_transform`) can change in patch releases.
 - The official page's example passes a plain `{ schema }` object; this page uses `Output.object({ schema })` as in Building Agents and the Output reference.

@@ -150,8 +150,95 @@ export default function Chat() {
 - `initialStartIndex` controls where the initial reconnection begins (page refresh recovery). Negative values can fetch only the tail when the durable server stream already stores `UIMessageChunk` objects; for raw `WorkflowAgent` streams, use a non-negative cursor.
 - `maxConsecutiveErrors` controls how many consecutive reconnection failures to tolerate; `onChatSendMessage` and `onChatEnd` are lifecycle callbacks.
 
+### Chat SDK Web Adapter
+
+The Chat SDK (chat-sdk.dev) Web adapter (`@chat-adapter/web`) serves a `useChat` endpoint from a Chat SDK bot. It speaks the UI message stream protocol, so the default transport works without changes. Use it when the same bot also runs on Slack, Microsoft Teams, Discord, or other chat platforms, and you want one set of handlers for all of them.
+
+Install: `ai @ai-sdk/react chat @chat-adapter/web @chat-adapter/state-redis`
+
+On the server, register the Web adapter and handle messages with `onDirectMessage`. Each browser conversation is a direct message thread:
+
+```ts filename="lib/bot.ts"
+import { Chat } from 'chat';
+import { toAiMessages } from 'chat/ai';
+import { createWebAdapter } from '@chat-adapter/web';
+import { createRedisState } from '@chat-adapter/state-redis';
+import { ToolLoopAgent } from 'ai';
+import { getSession } from './session'; // your app's auth
+
+const agent = new ToolLoopAgent({
+  model: 'anthropic/claude-sonnet-5.5',
+  instructions: 'You are a helpful assistant.',
+});
+
+export const bot = new Chat({
+  userName: 'mybot',
+  adapters: {
+    web: createWebAdapter({
+      userName: 'mybot',
+      // Identify the caller from your app's session. Returning null responds with 401.
+      getUser: async () => {
+        const session = await getSession();
+        return session ? { id: session.userId } : null;
+      },
+    }),
+  },
+  state: createRedisState(),
+});
+
+bot.onDirectMessage(async thread => {
+  const { messages } = await bot.history.thread.list(thread.id, {
+    limit: 20,
+  });
+
+  const result = await agent.stream({
+    messages: await toAiMessages(messages),
+    abortSignal: thread.signal,
+  });
+
+  await thread.post(result.fullStream);
+});
+```
+
+```ts filename="app/api/chat/route.ts"
+import { after } from 'next/server';
+import { bot } from '@/lib/bot';
+
+export async function POST(request: Request): Promise<Response> {
+  return bot.webhooks.web(request, {
+    waitUntil: task => after(() => task),
+  });
+}
+```
+
+On the client, point the default transport at the route:
+
+```tsx filename="app/page.tsx"
+'use client';
+
+import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
+
+export default function Chat() {
+  const { messages, sendMessage } = useChat({
+    transport: new DefaultChatTransport({ api: '/api/chat' }),
+  });
+
+  // ... render chat UI
+}
+```
+
+Things to know:
+
+- **Authentication**: browser requests have no platform signature, so `getUser` is the security boundary. Resolve the user from your app's session and return `null` to reject the request.
+- **Conversation history**: the adapter ignores the message history in the request body. It stores each conversation's messages in the state adapter, and `bot.history.thread.list()` reads them back. The chat `id` from `useChat` identifies the conversation.
+- **Stopping**: the adapter honors the request's abort signal, so calling `stop()` in `useChat` stops the handler's stream.
+
+For all options, including the `ag-ui` protocol and `useChat` wrappers for React, Vue, and Svelte, see the Web adapter docs at https://chat-sdk.dev/adapters/official/web.
+
 ## Notes
 
+- Source: https://ai-sdk.dev/docs/ai-sdk-ui/transport (ai@7.0.173)
 - Browser WebSocket APIs cannot set arbitrary handshake headers. The `headers` option is included inside each application-level request frame. Authenticate the handshake with secure cookies, a short-lived query parameter, or a subprotocol, and validate the connection origin and every frame on the server.
 - `DirectChatTransport` does not support stream reconnection; `reconnectToStream()` always returns `null`.
 - To build a custom transport, see the sources `packages/ai/src/ui/default-chat-transport.ts`, `http-chat-transport.ts`, and the `ChatTransport` interface in `chat-transport.ts` in `vercel/ai`.

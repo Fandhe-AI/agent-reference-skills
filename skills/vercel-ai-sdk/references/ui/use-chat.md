@@ -31,14 +31,15 @@ const { messages, sendMessage, status } = useChat();
 | transport (DefaultChatTransport).fetch | `FetchFunction` | Optional. Custom fetch implementation. Use it as middleware to intercept requests, or to provide a custom fetch for e.g. testing. |
 | transport (DefaultChatTransport).prepareSendMessagesRequest | `PrepareSendMessagesRequest` | Optional. A function to customize the request before chat API calls. Receives `options` (`PrepareSendMessageRequestOptions`) with `id` (chat ID), `messages` (`UIMessage[]`), `requestMetadata` (`unknown`), `body`, `credentials`, `headers`, `api` (defaults to the transport's `/api/chat`), `trigger` (`'submit-message' \| 'regenerate-message'`), `messageId` (`string \| undefined`). |
 | transport (DefaultChatTransport).prepareReconnectToStreamRequest | `PrepareReconnectToStreamRequest` | Optional. A function to customize the request before the reconnect API call. Receives `options` (`PrepareReconnectToStreamRequestOptions`) with `id`, `requestMetadata`, `body`, `credentials`, `headers`, `api` (defaults to the transport's API endpoint combined with the chat ID: `/api/chat/{chatId}/stream`). |
-| id | `string` | Optional. A unique identifier for the chat. If not provided, a random one will be generated. |
+| id | `string` | Optional. A unique identifier for the chat. If not provided, a random one will be generated on first access, including when sending a message or resuming a stream. |
 | messages | `UIMessage[]` | Optional. Initial chat messages to populate the conversation with. |
 | messageMetadataSchema | `FlexibleSchema` | Optional. Schema for validating message metadata. |
 | dataPartSchemas | `UIDataTypesToSchemas` | Optional. Schemas for validating data parts in messages. |
 | generateId | `IdGenerator` | Optional. A function to generate unique IDs for messages and the chat. If not provided, the default AI SDK `generateId` is used. |
 | onToolCall | `({toolCall: ToolCall}) => void \| Promise<void>` | Optional. Invoked when a tool call is received. You must call `addToolOutput` to provide the tool result. |
 | sendAutomaticallyWhen | `(options: { messages: UIMessage[] }) => boolean \| PromiseLike<boolean>` | Optional. Called when the stream is finished or a tool call is added to determine if the current messages should be resubmitted. The `lastAssistantMessageIsCompleteWithToolCalls` helper covers common scenarios. |
-| onFinish | `(options: OnFinishOptions) => void` | Optional. Called when the assistant response has finished streaming. `OnFinishOptions`: `message` (`UIMessage`, the response), `messages` (`UIMessage[]`, all including the response), `isAbort` (aborted by client), `isDisconnect` (server disconnected, e.g. network error), `isError` (errors during streaming stopped the response early), `finishReason` (optional `'stop' \| 'length' \| 'content-filter' \| 'tool-calls' \| 'error' \| 'other'`, undefined if not provided by the model). |
+| experimental_queue | `boolean` | Optional. Experimental. When true, messages sent while a response is in progress, or while the assistant waits for a tool result or approval, are queued and sent one at a time after each response finishes. Stopping, an error or an interrupted response pauses the queue until the next message is sent. Editing a message or regenerating clears the queue. Defaults to false. |
+| onFinish | `(options: OnFinishOptions) => void` | Optional. Called when the assistant response has finished streaming. `OnFinishOptions`: `message` (`UIMessage`, the response), `messages` (`UIMessage[]`, all including the response), `isAbort` (aborted by client), `isDisconnect` (server disconnected, e.g. network error), `isError` (errors during streaming stopped the response early), `finishReason` (optional `'stop' \| 'length' \| 'content-filter' \| 'tool-calls' \| 'error' \| 'interrupted' \| 'other'`, undefined if not provided by the model). |
 | onError | `(error: Error) => void` | Optional. Called when an error is encountered. |
 | onData | `(dataPart: DataUIPart) => void` | Optional. Called when a data part is received. |
 | throttle | `number` | Optional. React and Vue only. Custom throttle wait time in milliseconds for reactive chat message updates. Positive values reduce UI update frequency without delaying stream processing or callbacks, and the latest messages are published before a ready or error status. Default is undefined, which disables throttling. |
@@ -56,6 +57,9 @@ const { messages, sendMessage, status } = useChat();
 | regenerate | `(options?: { messageId?: string } & ChatRequestOptions) => Promise<void>` | Regenerates the last assistant message or a specific message. |
 | stop | `() => void` | Aborts the current streaming response from the assistant. |
 | clearError | `() => void` | Clears the error state. |
+| experimental_queuedMessages | `UIMessage[]` | Experimental. Messages that wait to be sent when `experimental_queue` is enabled, in the order they will be sent. |
+| experimental_removeQueuedMessage | `(id: string) => void` | Experimental. Removes a queued message so it is not sent. |
+| experimental_sendQueuedMessageNow | `(id: string) => Promise<void>` | Experimental. Stops the response in progress and sends the queued message with the given id next. The rest of the queue is sent after it. |
 | resumeStream | `() => void` | Resumes an interrupted streaming response. Useful when a network error occurs during streaming. |
 | addToolOutput | `(options: { tool: string; toolCallId: string; output: unknown } \| { tool: string; toolCallId: string; state: "output-error", errorText: string }) => void` | Adds a tool result to the chat. If `sendAutomaticallyWhen` is configured, it may trigger an automatic submission. |
 | addToolApprovalResponse | `(options: { id: string; approved: boolean; reason?: string }) => void \| PromiseLike<void>` | Responds to a tool approval request. The `id` should match the approval id from the tool call. If `sendAutomaticallyWhen` is configured, it may trigger an automatic submission. |
@@ -64,6 +68,8 @@ const { messages, sendMessage, status } = useChat();
 
 ## Notes
 
+- Source: https://ai-sdk.dev/docs/reference/ai-sdk-ui/use-chat (ai@7.0.173)
+- Queueing (experimental): with `experimental_queue`, messages sent during a response are queued in `experimental_queuedMessages` and sent one at a time.
 - `useChat` was significantly updated in AI SDK 5.0: it uses a transport-based architecture and no longer manages input state internally (see the 5.0 migration guide).
 - `addToolResult` is deprecated; use `addToolOutput`.
 - React: `messages`, `status`, and `error` describe the snapshot for the current render. The underlying `Chat` updates as stream chunks are processed; React may batch updates, and `throttle` can delay message rendering without delaying stream processing or callbacks. Status and error updates include the latest messages.

@@ -66,6 +66,7 @@ interface UIMessage<
 | `SourceDocumentUIPart` | `{ type: 'source-document'; sourceId: string; mediaType: string; title: string; filename?: string; providerMetadata?: Record<string, any> }` |
 | `FileUIPart` | `{ type: 'file'; mediaType: string; filename?: string; url: string }` (url: hosted file or Data URL; mediaType: IANA media type) |
 | `DataUIPart<DATA_TYPES>` | `{ type: \`data-${NAME}\`; id?: string; data: DATA_TYPES[NAME] }` |
+| `SteeringMessageUIPart` | `{ type: 'steering-message'; id: string; parts: Array<TextUIPart \| FileUIPart> }` (experimental, exported as `Experimental_SteeringMessageUIPart`) |
 | `StepStartUIPart` | `{ type: 'step-start' }` |
 
 `ToolUIPart` states (each variant also has `input`, optional `providerExecuted` where noted):
@@ -96,6 +97,8 @@ function ToolError({ part }: { part: UIMessage['parts'][number] }) {
 
 ## Notes
 
+- `SteeringMessageUIPart` (experimental, exported as `Experimental_SteeringMessageUIPart`): a user message that was added to the run with steering while the assistant message was generated. It is placed before the `step-start` part of the step that received it. `id` is the id of the steering message; `parts` is the content of the user message.
+- Source: https://ai-sdk.dev/docs/reference/ai-sdk-core/ui-message (ai@7.0.173)
 - The upstream type example uses `tool({})`; here `tool({ inputSchema: z.object({}) })` is used because `inputSchema` is required by `tool()`.
 - The tool part type is based on the tool name (`tool-someTool` for a tool named `someTool`); the data part type is based on the data part name (`data-someDataPart`).
 - `approval.descriptor` is optional opaque metadata supplied as `approvalDescriptor` on the approval request stream chunk. It is preserved from `approval-requested` to `approval-responded` and in later approval-bearing output states.

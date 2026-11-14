@@ -24,9 +24,34 @@ The `audio` property can be a `Uint8Array`, `ArrayBuffer`, `Buffer`, `string` (b
 ```ts
 const text = transcript.text; // transcript text e.g. "Hello, world!"
 const segments = transcript.segments; // array of segments with start and end times, if available
+const words = transcript.words; // word timings, when the provider returns them separately from segments
 const language = transcript.language; // language of the transcript e.g. "en", if available
 const durationInSeconds = transcript.durationInSeconds; // duration of the transcript in seconds, if available
 ```
+
+### Word and segment timings
+
+Request word timings for highlighting and segment timings for captions with `timestampGranularities`:
+
+```ts
+const transcript = await transcribe({
+  model: openai.transcription('whisper-1'),
+  audio: await readFile('audio.mp3'),
+  timestampGranularities: ['word', 'segment'],
+});
+
+console.log(transcript.words);
+console.log(transcript.segments);
+console.log(transcript.warnings);
+```
+
+The OpenAI, Azure Speech, Vertex Gemini, and xAI adapters support this option. Explicit provider settings take precedence over the shared request. These adapters warn when a requested granularity is unavailable or disabled by a provider setting. Other adapters can be updated independently; use their provider options for timing controls until they support the shared option.
+
+`words` is optional and contains timings only when exposed by the adapter. Timings can also be returned by default, without an explicit request. `segments` keeps its existing provider-specific behavior: Vertex Gemini and xAI return words there, and OpenAI falls back to words when no segments are returned. The SDK does not construct caption segments from word timings.
+
+Omitting `timestampGranularities` keeps provider defaults. An empty array requests no additional timing detail; it does not suppress timings returned by default. Older V2 and V3 model adapters warn that they do not support the shared option.
+
+AI Gateway currently warns that it does not forward this shared timing option. Use provider-specific timing controls in `providerOptions`, or use a direct provider model instance. Gateway exposes `words` when its response includes normalized word timings.
 
 ### Telemetry
 
@@ -44,7 +69,7 @@ const transcript = await transcribe({
 
 Raw audio is not included in telemetry events. For streaming transcription, the final byte length is emitted only after the input stream is consumed and the transcription finishes. Use `recordInputs: false` or `recordOutputs: false` to prevent integrations from recording sensitive input or output fields.
 
-For URL audio, the downloaded media type is passed to the provider and reported on successful telemetry events. If downloading or decoding input audio fails, the start event is still emitted before the correlated error event, but its audio byte length and media type can be undefined because preparation did not complete.
+For URL audio downloaded by the SDK, the downloaded media type is passed to the provider and reported on successful telemetry events. When a provider fetches a URL natively, audio byte length and media type are undefined because the SDK does not inspect the audio. If downloading or decoding input audio fails, the start event is still emitted before the correlated error event, but its audio byte length and media type can be undefined because preparation did not complete.
 
 ### Streaming Transcription
 
@@ -100,6 +125,8 @@ The `audio` stream must contain raw audio chunks. `Uint8Array` chunks are raw by
 
 String model IDs resolve through the global provider (AI Gateway by default). AI Gateway supports streaming transcription for supported models (e.g. `openai/gpt-realtime-whisper`, `elevenlabs/eleven-scribe-2-realtime`, `xai/grok-stt`), so string IDs work: `experimental_streamTranscribe({ model: 'openai/gpt-realtime-whisper', ... })`. You can also pass a provider model instance (e.g. `openai.transcription('gpt-realtime-whisper')`) to stream directly against the provider.
 
+Deepgram Nova models support streaming through `deepgram.transcription('nova-3')`; see the Deepgram provider page (streaming transcription section) for audio formats and provider options.
+
 OpenAI streaming transcription uses `openai.transcription('gpt-realtime-whisper')`. Cartesia uses `cartesia.transcription('ink-2')` for streaming-only Ink 2 transcription. ElevenLabs uses `elevenLabs.transcription('scribe_v2_realtime')` for Scribe v2 Realtime. Azure uses `azure.transcription('mai-transcribe-2-streaming')` for streaming-only MAI-Transcribe-2-Streaming. xAI uses the same `xai.transcription()` model for request/response and streaming transcription; `experimental_streamTranscribe` selects the provider's WebSocket STT transport.
 
 ```ts
@@ -150,7 +177,9 @@ const transcript = await transcribe({
 
 ### Download Size Limits
 
-When `audio` is a URL, the SDK downloads the file with a default **2 GiB** size limit. Customize it using `createDownload`:
+When `audio` is an HTTP(S) URL and the model supports native URL transcription (such as Groq), the provider fetches it directly. Provider size limits apply; the SDK does not download or inspect the audio. The URL must be accessible to the provider. Providers can decline unsupported URLs and fall back to local downloading.
+
+Otherwise, the SDK downloads the file with a default **2 GiB** size limit. You can customize this using `createDownload`. Supplying `download` always uses local downloading, including for models with native URL support:
 
 ```ts
 import { transcribe, createDownload } from 'ai';
@@ -180,6 +209,10 @@ const transcript = await transcribe({
 ```
 
 If a download exceeds the size limit, a `DownloadError` is thrown (`DownloadError.isInstance(error)`).
+
+### DNS protection for audio downloads
+
+The audio download uses the `download` option, not the provider's `fetch`. For untrusted audio URLs on Node.js, pass a `guarded-fetch` transport via `download: createDownload({ fetch })`. See the Secure URL Fetching page (core file downloads section).
 
 ### Abort Signals and Timeouts
 
@@ -246,7 +279,8 @@ A small subset of the transcription models supported by the AI SDK providers (se
 | ElevenLabs (streaming) | `scribe_v2_realtime` |
 | Groq | `whisper-large-v3-turbo` |
 | Groq | `whisper-large-v3` |
-| Mistral | `voxtral-mini-latest` |
+| Mistral | `voxtral-mini-transcribe-3-0` |
+| Mistral | `voxtral-small-transcribe-3-0` |
 | Azure OpenAI | `whisper-1` |
 | Azure Speech | `mai-transcribe-2` |
 | Azure Speech | `mai-transcribe-1.5` |
@@ -276,6 +310,7 @@ A small subset of the transcription models supported by the AI SDK providers (se
 
 ### General notes
 
+- Source: https://ai-sdk.dev/docs/ai-sdk-core/transcription (ai@7.0.173)
 - Stability: `transcribe` is stable; `experimental_streamTranscribe` is experimental and may change in patch releases (versioning rule: `experimental_` prefix).
 - This page covers the AI SDK function via provider packages, not the raw provider speech APIs. For OpenAI realtime / STT / TTS raw APIs see openai-realtime-audio and openai-api-core.
 

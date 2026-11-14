@@ -24,7 +24,7 @@ Streaming works the same way:
 import { streamText } from 'ai';
 
 const result = streamText({
-  model: 'google/gemini-3.8-flash',
+  model: 'google/gemini-4-hydrogen',
   reasoning: 'high',
   prompt: 'Explain the Riemann hypothesis in simple terms.',
 });
@@ -43,7 +43,7 @@ for await (const part of result.stream) {
 | Value | Behavior |
 | --- | --- |
 | `'provider-default'` | Use the provider's default reasoning behavior (default when omitted) |
-| `'none'` | Disable reasoning |
+| `'none'` | Disable reasoning (lowest reasoning level if it cannot be disabled) |
 | `'minimal'` | Bare-minimum reasoning |
 | `'low'` | Fast, concise reasoning |
 | `'medium'` | Balanced reasoning |
@@ -92,12 +92,23 @@ Older Anthropic model: `thinking: { type: 'enabled', budgetTokens: 12000 }` beco
 ## Notes
 
 - Supported by providers including OpenAI, Anthropic, Google, xAI, Groq, DeepSeek, Moonshot AI, Fireworks, Amazon Bedrock, Mistral, Cohere, Alibaba, Open Responses, OpenAI Compatible, and Perplexity. Each provider translates the value to its native reasoning API.
+- Source: https://ai-sdk.dev/docs/ai-sdk-core/reasoning (ai@7.0.173)
 - Providers with a distinct native maximum tier (supported OpenAI, Anthropic, DeepSeek, Moonshot AI models) receive `'max'` directly. Amazon Bedrock preserves `'max'` for its Anthropic and OpenAI effort mappings, while Amazon Nova 2 maps `'xhigh'` and `'max'` to `'high'` with a compatibility warning. Providers whose highest native tier is lower coerce `'max'` to their closest supported tier and emit a compatibility warning when their adapter supports warning propagation. OpenAI-compatible and Open Responses endpoints receive `'max'` directly.
 - Some providers use a numeric token budget instead of an enum. In those cases `'max'` maps to 95% of the model's maximum output tokens by default, subject to the provider's minimum and maximum reasoning budget limits.
 - Maximum reasoning can substantially increase token usage, latency, cost, and the chance of reaching request or output limits.
 - Providers and models that do not support reasoning configuration emit an `unsupported` warning and ignore the parameter.
 - To enforce an exact token budget (e.g. exactly 12000 tokens), keep using `providerOptions` instead of the top-level `reasoning` parameter.
 - The official Reasoning page's streaming example uses the pre-v5 `part.type === 'reasoning'` / `part.textDelta`; this page follows the v7 stream part shape (`reasoning-delta` / `text-delta` with `part.text`) shown in Generating Text and the v7 migration guide.
+
+### How values are mapped
+
+When a model does not support the requested value, the provider uses the closest supported value, rounding down. The values are ordered `none` < `minimal` < `low` < `medium` < `high` < `xhigh` < `max`, so `'xhigh'` becomes `'high'` on a model without an `xhigh` level. If there is no lower value, the next higher one is used.
+
+Rounding never turns reasoning off: other values never map to `'none'`, and `'none'` on a model that cannot disable reasoning maps to the model's lowest level. Providers emit a `compatibility` warning whenever the value they send differs from the requested value. Values set in `providerOptions` are sent unchanged (see Precedence rules).
+
+Providers only round values for models and model families they recognize by model ID, so newer versions of a known family use that family's levels. Unrecognized model IDs, such as fine-tuned or custom models, and OpenAI-compatible and Open Responses endpoints receive the value directly and the API decides whether it is supported.
+
+For providers that use a token budget, the value maps to a percentage of the model's maximum output tokens (`'max'` maps to 95% by default), within the provider's budget limits.
 
 ## Related
 

@@ -207,3 +207,52 @@ export default function Chat() {
 - `__PROVIDER_IMPORT__` and `__MODEL__` are placeholders on the official page; replace them with your provider import and model (a plain model id string also works through AI Gateway).
 - `status` is one of `submitted`, `streaming`, `ready`, `error`. `Spinner` is a placeholder component, not part of the SDK. Render messages through `parts`, not `content`.
 - Show a generic error message (such as "Something went wrong.") to avoid leaking server information. Other controls on the page: `setMessages` (state/setState pair for deleting messages) and `throttle: 50` to throttle reactive updates in React and Vue.
+- Error masking (ai@7.0.173): the default masked message ("An error occurred.") applies to stream errors; failed tool calls now send the model's error text to the client (see `chatbot-tool-usage.md`, Tool errors). A custom `onError` that returns `error.message` in the official page now returns `error.toString()`.
+
+### Queueing messages (experimental)
+
+- Source: https://ai-sdk.dev/docs/ai-sdk-ui/chatbot (ai@7.0.173). Message queueing is experimental.
+- By default the input is disabled while a response is in progress. With `experimental_queue`, messages sent meanwhile wait in `experimental_queuedMessages` and are sent one at a time after each response finishes, in order.
+- The queue also waits while the assistant waits for the user (tool approval or client-side tool result); automatic follow-ups from `sendAutomaticallyWhen` go first, and an answered approval reaches the model before the next queued message.
+- Stopping, an error or an interrupted response pauses the queue; it resumes on the next sent message or `experimental_sendQueuedMessageNow`. Editing a message or regenerating clears the queue. To edit a queued message, remove it and send new text. The queue lives in memory and is lost on reload. `sendMessage` resolves once the message is queued. To add to the response in progress, use steering on the server (`references/agents/loop-control.md`).
+
+```tsx
+const {
+  messages,
+  experimental_queuedMessages,
+  sendMessage,
+  experimental_removeQueuedMessage,
+  experimental_sendQueuedMessageNow,
+} = useChat({
+  experimental_queue: true,
+});
+
+return (
+  <>
+    {/* messages */}
+
+    {experimental_queuedMessages.map(message => (
+      <div key={message.id}>
+        {message.parts.map(part => (part.type === 'text' ? part.text : ''))}
+        <button onClick={() => experimental_sendQueuedMessageNow(message.id)}>
+          Send now
+        </button>
+        <button onClick={() => experimental_removeQueuedMessage(message.id)}>
+          Remove
+        </button>
+      </div>
+    ))}
+
+    <form
+      onSubmit={e => {
+        e.preventDefault();
+        sendMessage({ text: input });
+        setInput('');
+      }}
+    >
+      {/* the input stays enabled while a response is in progress */}
+      <input value={input} onChange={e => setInput(e.target.value)} />
+    </form>
+  </>
+);
+```

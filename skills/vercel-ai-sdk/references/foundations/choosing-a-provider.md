@@ -65,7 +65,8 @@ const { text } = await generateText({
 
 - AI Gateway access to models from OpenAI, Anthropic, Google and others; authenticate with OIDC or an AI Gateway API key. It is the default global provider, so string model references like `'anthropic/claude-sonnet-5.5'` work.
 - The default global provider can be changed so string model references use a preferred provider (see provider management).
-- The AI SDK provides a Language Model Specification that ensures compatibility across providers for custom providers.
+- The AI SDK provides a Language Model Specification that ensures compatibility across providers for custom providers (`packages/provider/src/language-model/v4` in `vercel/ai`; the page links v4 as of ai@7.0.173).
+- Source: https://ai-sdk.dev/docs/getting-started/choosing-a-provider (ai@7.0.173)
 - AI Gateway is Vercel's product; platform-side setup (API keys, dashboard) belongs to the vercel skill.
 
 ## Related

@@ -169,3 +169,4 @@ export default function Page() {
 - With `FileList`, `useChat` converts files to data URLs automatically; only `image/*` and `text/*` content types are converted into multi-modal content parts automatically, other types must be handled manually.
 - `url` may be a remote URL or a data URL (the base64 value in the second block is truncated on the official page).
 - Files generated as part of model reasoning arrive as `reasoning-file` parts (`ReasoningFileUIPart`) with the same `mediaType` and `url`.
+- Attachment URLs received from the client are untrusted input, even from authenticated users (ai@7.0.173). If the server downloads them on Node.js, pass a `guarded-fetch` transport via `experimental_download: createDownload({fetch})` on `streamText`. See https://ai-sdk.dev/docs/advanced/secure-url-fetching#core-file-downloads

@@ -27,8 +27,13 @@ export const createCacheMiddleware = (
   modelId: string,
 ): LanguageModelV4Middleware => ({
   specificationVersion: 'v4',
-  wrapGenerate: async ({ doGenerate, params }) => {
-    const cacheKey = JSON.stringify({ mode: 'generate', model: modelId, params });
+  wrapGenerate: async ({ doGenerate, params, model }) => {
+    const cacheKey = JSON.stringify({
+      mode: 'generate',
+      provider: model.provider,
+      model: modelId,
+      params,
+    });
 
     const cached = (await redis.get(cacheKey)) as Awaited<
       ReturnType<LanguageModelV4['doGenerate']>
@@ -56,8 +61,13 @@ export const createCacheMiddleware = (
 
     return result;
   },
-  wrapStream: async ({ doStream, params }) => {
-    const cacheKey = JSON.stringify({ mode: 'stream', model: modelId, params });
+  wrapStream: async ({ doStream, params, model }) => {
+    const cacheKey = JSON.stringify({
+      mode: 'stream',
+      provider: model.provider,
+      model: modelId,
+      params,
+    });
 
     // Check if the result is in the cache
     const cached = await redis.get(cacheKey);
@@ -165,8 +175,9 @@ export async function POST(req: Request) {
 - Official warning on this cookbook page: "This example is not yet updated to v5" (its client snippet still uses the old `input` / `handleSubmit` / `m.content` `useChat` shape, so it is omitted here). Verify the middleware types against the installed version; language model middleware is experimental per the versioning policy.
 - This is a language model middleware that wraps the model (`wrapGenerate` for `generateText`, `wrapStream` for `streamText`), not HTTP middleware in hono / fastify / nextjs-app / go-echo.
 - Streams are cached as an array of stream parts and replayed with `simulateReadableStream` (`initialDelayInMs`, `chunkDelayInMs`). The page uses `@upstash/redis`, but any KV store works; Upstash itself is covered by the upstash skill.
-- Modified from the official example: the cookbook keys both `wrapGenerate` and `wrapStream` on `JSON.stringify(params)`, so the stored shapes (result object vs. chunk array) can collide and the model is not part of the key. This version keys on `{ mode, model, params }` via a factory taking the model identifier. It also awaits `redis.set` inside `try` / `catch` with a one-hour TTL, caches a stream only when it reached `finish` without an `error` part (same as `references/operations/caching.md`), and passes `convertToModelMessages(messages)` to `streamText`.
+- Modified from the official example: the cookbook keys both `wrapGenerate` and `wrapStream` on `JSON.stringify(params)`, so the stored shapes (result object vs. chunk array) can collide and the model is not part of the key. This version keys on `{ mode, provider, model, params }` via a factory taking the model identifier (`provider` comes from the `model` argument of `wrapGenerate` / `wrapStream`). It also awaits `redis.set` inside `try` / `catch` with a one-hour TTL, caches a stream only when it reached `finish` without an `error` part (same as `references/operations/caching.md`), and passes `convertToModelMessages(messages)` to `streamText`.
 - The cookbook page omits `specificationVersion: 'v4'` from the middleware object, but the type definition and `docs/advanced/caching` require it (`references/providers/language-model-middleware.md`).
 - The official cookbook passes a model string to `wrapLanguageModel`, but its `model` is a `LanguageModelV4`, so this instantiates it with `gateway()` (`references/providers/wrap-language-model.md`).
+- ai@7.0.173 cookbook: include the provider and model ID in the cache key alongside the call parameters so cached responses stay separate across models and providers (the official page now keys on `{ provider: model.provider, modelId: model.modelId, params }`).
 - In serverless environments, let the cache write run to completion with `waitUntil` (or an equivalent mechanism).
 - References: `references/providers/language-model-middleware.md`, `references/providers/wrap-language-model.md`, `references/core/simulate-readable-stream.md`.

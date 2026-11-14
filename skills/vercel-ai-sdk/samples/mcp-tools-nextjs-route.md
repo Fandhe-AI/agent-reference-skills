@@ -15,12 +15,12 @@ import {
   streamText,
   toUIMessageStream,
 } from 'ai';
-import { Experimental_StdioMCPTransport } from '@ai-sdk/mcp/mcp-stdio';
+import { StdioMCPTransport } from '@ai-sdk/mcp/mcp-stdio';
 import { openai } from '@ai-sdk/openai';
 // Optional: Official transports if you prefer them
-// import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio';
-// import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse';
-// import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp';
+// import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+// import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
+// import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 
 export async function POST(req: Request) {
   const { prompt }: { prompt: string } = await req.json();
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
   try {
     // Initialize an MCP client to connect to a `stdio` MCP server (local only):
-    const transport = new Experimental_StdioMCPTransport({
+    const transport = new StdioMCPTransport({
       command: 'node',
       args: ['src/stdio/dist/server.js'],
     });
@@ -148,7 +148,7 @@ export default function Page() {
 ## Notes
 
 - The AI SDK is an MCP client here (tools come from `client.tools()`). Related skills: anthropic-api-tools-mcp (MCP connector), anthropic-claude-code-extend (Claude Code MCP), openai-agents (MCP consumption from the Agents SDK), openai-apps-sdk (publishing MCP servers to ChatGPT).
-- `Experimental_StdioMCPTransport` is experimental and local only; the optional official transports come from `@modelcontextprotocol/sdk` (`pnpm install @modelcontextprotocol/sdk`).
+- `StdioMCPTransport` (renamed from `Experimental_StdioMCPTransport` in ai@7.0.173) is local only; the optional official transports come from `@modelcontextprotocol/sdk` (`pnpm install @modelcontextprotocol/sdk`).
 - Always close clients after use (`onEnd`, optionally `onError`); later tool sets override earlier tools with the same name when spread together.
 - The default is a single step, so `stopWhen: isStepCount(5)` is needed for tool results to be returned to the model for a final answer (omitted in the official page's example).
 - API details: `references/tools-mcp/create-mcp-client.md`, `references/tools-mcp/mcp-tools.md`.

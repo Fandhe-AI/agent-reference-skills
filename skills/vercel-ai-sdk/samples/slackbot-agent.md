@@ -4,145 +4,173 @@ source: https://ai-sdk.dev/cookbook/guides/slackbot
 
 # Slackbot Agent
 
-Answer Slack mentions and DMs with `generateText`, tools and a multi-step stop condition, running the model call in `waitUntil` so the Slack request is acknowledged immediately.
+Answer Slack mentions and direct messages with an AI SDK `ToolLoopAgent` and a weather tool, connected to Slack through Chat SDK (`chat`, `@chat-adapter/slack`, `@chat-adapter/state-redis`) in a Next.js webhook route; replies stream into the thread.
 
-```typescript
-// api/events.ts
-import type { SlackEvent } from '@slack/web-api';
-import {
-  assistantThreadMessage,
-  handleNewAssistantMessage,
-} from '../lib/handle-messages';
-import { waitUntil } from '@vercel/functions';
-import { handleNewAppMention } from '../lib/handle-app-mention';
-import { verifyRequest, getBotId } from '../lib/slack-utils';
-
-export async function POST(request: Request) {
-  const rawBody = await request.text();
-  const payload = JSON.parse(rawBody);
-  const requestType = payload.type as 'url_verification' | 'event_callback';
-
-  // See https://api.slack.com/events/url_verification
-  if (requestType === 'url_verification') {
-    return new Response(payload.challenge, { status: 200 });
-  }
-
-  await verifyRequest({ requestType, request, rawBody });
-
-  try {
-    const botUserId = await getBotId();
-
-    const event = payload.event as SlackEvent;
-
-    if (event.type === 'app_mention') {
-      waitUntil(handleNewAppMention(event, botUserId));
-    }
-
-    if (event.type === 'assistant_thread_started') {
-      waitUntil(assistantThreadMessage(event));
-    }
-
-    if (
-      event.type === 'message' &&
-      !event.subtype &&
-      event.channel_type === 'im' &&
-      !event.bot_id &&
-      !event.bot_profile &&
-      event.bot_id !== botUserId
-    ) {
-      waitUntil(handleNewAssistantMessage(event, botUserId));
-    }
-
-    return new Response('Success!', { status: 200 });
-  } catch (error) {
-    console.error('Error generating response', error);
-    return new Response('Error generating response', { status: 500 });
-  }
-}
+```bash
+pnpm create next-app@latest my-slackbot
+cd my-slackbot
+pnpm add ai chat @chat-adapter/slack @chat-adapter/state-redis zod
 ```
 
-```typescript
-// lib/generate-response.ts
-import { generateText, tool, ModelMessage, isStepCount } from 'ai';
+```yaml
+# manifest.yaml (Slack app, created "From a manifest")
+display_information:
+  name: My Bot
+  description: A bot built with the AI SDK and Chat SDK
+
+features:
+  agent_view:
+    agent_description: A bot built with the AI SDK and Chat SDK
+  bot_user:
+    display_name: My Bot
+    always_online: true
+
+oauth_config:
+  scopes:
+    bot:
+      - app_mentions:read
+      - assistant:write
+      - channels:history
+      - channels:read
+      - chat:write
+      - groups:history
+      - groups:read
+      - im:history
+      - im:read
+      - mpim:history
+      - mpim:read
+      - reactions:read
+      - reactions:write
+      - users:read
+
+settings:
+  event_subscriptions:
+    request_url: https://your-domain.com/api/webhooks/slack
+    bot_events:
+      - app_mention
+      - message.channels
+      - message.groups
+      - message.im
+      - message.mpim
+      - member_joined_channel
+      - app_home_opened
+      - app_context_changed
+      - agent_session_stopped
+      - agent_session_title_changed
+  interactivity:
+    is_enabled: true
+    request_url: https://your-domain.com/api/webhooks/slack
+```
+
+```env
+# .env.local
+SLACK_BOT_TOKEN=your_slack_bot_token
+SLACK_SIGNING_SECRET=your_slack_signing_secret
+REDIS_URL=your_redis_url
+AI_GATEWAY_API_KEY=your_ai_gateway_api_key
+```
+
+```ts
+// lib/agent.ts
+import { ToolLoopAgent, tool } from 'ai';
 __PROVIDER_IMPORT__;
 import { z } from 'zod';
-import { exa } from './utils';
 
-export const generateResponse = async (
-  messages: ModelMessage[],
-  updateStatus?: (status: string) => void,
-) => {
-  const { text } = await generateText({
-    model: __MODEL__,
-    instructions: `You are a Slack bot assistant. Keep your responses concise and to the point.
-    - Do not tag users.
-    - Current date is: ${new Date().toISOString().split('T')[0]}
-    - Always include sources in your final response if you use web search.`,
-    messages,
-    stopWhen: isStepCount(10),
-    tools: {
-      getWeather: tool({
-        description: 'Get the current weather at a location',
-        inputSchema: z.object({
-          latitude: z.number(),
-          longitude: z.number(),
-          city: z.string(),
-        }),
-        execute: async ({ latitude, longitude, city }) => {
-          updateStatus?.(`is getting weather for ${city}...`);
-
-          const response = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode,relativehumidity_2m&timezone=auto`,
-          );
-
-          const weatherData = await response.json();
-          return {
-            temperature: weatherData.current.temperature_2m,
-            weatherCode: weatherData.current.weathercode,
-            humidity: weatherData.current.relativehumidity_2m,
-            city,
-          };
-        },
+export const agent = new ToolLoopAgent({
+  model: __MODEL__,
+  instructions: `You are a Slack bot assistant. Keep your responses concise and to the point.
+  - Do not tag users.
+  - Current date is: ${new Date().toISOString().split('T')[0]}`,
+  tools: {
+    getWeather: tool({
+      description: 'Get the current weather at a location',
+      inputSchema: z.object({
+        latitude: z.number(),
+        longitude: z.number(),
+        city: z.string(),
       }),
-      searchWeb: tool({
-        description: 'Use this to search the web for information',
-        inputSchema: z.object({
-          query: z.string(),
-          specificDomain: z
-            .string()
-            .nullable()
-            .describe(
-              'a domain to search if the user specifies e.g. bbc.com. Should be only the domain name without the protocol',
-            ),
-        }),
-        execute: async ({ query, specificDomain }) => {
-          updateStatus?.(`is searching the web for ${query}...`);
-          const { results } = await exa.searchAndContents(query, {
-            livecrawl: 'always',
-            numResults: 3,
-            includeDomains: specificDomain ? [specificDomain] : undefined,
-          });
+      execute: async ({ latitude, longitude, city }) => {
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode,relativehumidity_2m&timezone=auto`,
+        );
 
-          return {
-            results: results.map(result => ({
-              title: result.title,
-              url: result.url,
-              snippet: result.text.slice(0, 1000),
-            })),
-          };
-        },
-      }),
-    },
+        const weatherData = await response.json();
+        return {
+          temperature: weatherData.current.temperature_2m,
+          weatherCode: weatherData.current.weathercode,
+          humidity: weatherData.current.relativehumidity_2m,
+          city,
+        };
+      },
+    }),
+  },
+});
+```
+
+```ts
+// lib/bot.ts
+import { Chat, type Thread } from 'chat';
+import { toAiMessages } from 'chat/ai';
+import { createSlackAdapter } from '@chat-adapter/slack';
+import { createRedisState } from '@chat-adapter/state-redis';
+import { agent } from './agent';
+
+export const bot = new Chat({
+  userName: 'mybot',
+  adapters: {
+    // Match the manifest's `agent_view` (Slack's Agent messaging experience).
+    slack: createSlackAdapter({ agentView: true }),
+  },
+  state: createRedisState(),
+});
+
+async function respond(thread: Thread) {
+  await thread.startTyping();
+
+  // Load recent messages and convert them to AI SDK messages.
+  const { messages } = await bot.history.thread.list(thread.id, {
+    limit: 20,
   });
 
-  // Convert markdown to Slack mrkdwn format
-  return text.replace(/\[(.*?)\]\((.*?)\)/g, '<$2|$1>').replace(/\*\*/g, '*');
-};
+  const result = await agent.stream({
+    messages: await toAiMessages(messages),
+    abortSignal: thread.signal,
+  });
+
+  // Stream the reply into the Slack thread.
+  await thread.post(result.fullStream);
+}
+
+// A mention or a new direct message starts a conversation.
+bot.onNewMention(async thread => {
+  await thread.subscribe();
+  await respond(thread);
+});
+
+// Later messages in a subscribed thread continue it.
+bot.onSubscribedMessage(async thread => {
+  await respond(thread);
+});
+```
+
+```ts
+// app/api/webhooks/slack/route.ts
+import { after } from 'next/server';
+import { bot } from '@/lib/bot';
+
+export async function POST(request: Request): Promise<Response> {
+  return bot.webhooks.slack(request, {
+    waitUntil: task => after(() => task),
+  });
+}
 ```
 
 ## Notes
 
-- Slack expects a response within 3 seconds; wrapping each handler in `waitUntil` acknowledges first and runs the LLM call afterwards, so Slack does not retry and trigger duplicate calls.
-- `__PROVIDER_IMPORT__` and `__MODEL__` are placeholders from the official page (replaced by the site with a provider import and model); substitute your own provider import and model.
-- The starter files (`lib/slack-utils.ts`, `lib/handle-messages.ts`, `lib/handle-app-mention.ts`, `lib/utils.ts` with the Exa client) come from `vercel-labs/ai-sdk-slackbot` (`starter` branch); the official page recommends a queueing system for production.
-- Required env vars on the page: `SLACK_BOT_TOKEN`, `SLACK_SIGNING_SECRET`, `OPENAI_API_KEY`, `EXA_API_KEY`. Deployment on Vercel (`vercel deploy`) is a platform task covered by the vercel skill.
+- Rewritten in ai@7.0.173: the cookbook guide now uses Chat SDK (`chat`) with the Slack adapter and a Redis state adapter instead of the `vercel-labs/ai-sdk-slackbot` starter (`@slack/web-api` handlers, `generateText`, Exa, `OPENAI_API_KEY`). Source: https://ai-sdk.dev/cookbook/guides/slackbot (ai@7.0.173).
+- `__PROVIDER_IMPORT__` and `__MODEL__` are placeholders on the official page; substitute your own provider import and model (or a plain model id string through AI Gateway, with `AI_GATEWAY_API_KEY`).
+- Slack app: create it from the manifest above, install it to the workspace, then replace `your-domain.com` in both `request_url` fields with the deployment URL (`https://<your-vercel-url>/api/webhooks/slack`) after deploying. Env vars: `SLACK_BOT_TOKEN` (Bot User OAuth Token), `SLACK_SIGNING_SECRET`, `REDIS_URL` (e.g. a Redis integration on the Vercel Marketplace), `AI_GATEWAY_API_KEY`; the Slack and Redis adapters read them automatically. Add the same variables in the Vercel project settings and redeploy (`vercel deploy` is a platform task covered by the vercel skill).
+- `agentView: true` must match `agent_view` in the manifest (Slack's Agent messaging experience; each top-level DM starts its own thread). Without it the adapter uses the older `assistant_view` mapping and top-level DMs fail to load history.
+- `onNewMention` fires for mentions in unsubscribed threads (DMs count as mentions); `thread.subscribe()` routes later messages to `onSubscribedMessage`. `bot.history.thread.list()` + `toAiMessages` convert the thread to `ModelMessage[]` (bot messages become `assistant`). `thread.post(result.fullStream)` streams the reply (step boundaries become paragraph breaks, markdown is converted to Slack formatting); `thread.signal` aborts generation on Slack's stop button.
+- Slack expects a response within three seconds; the route returns right away and `waitUntil: task => after(() => task)` (`next/server`) keeps the function alive until the reply finishes.
+- `ToolLoopAgent` feeds tool results back and keeps calling tools until a final answer (up to 20 steps by default). Extensions on the page: Chat SDK tools to read the channel or react (`/docs/agents/chat-platforms#give-the-agent-chat-tools`), more platforms via adapters, more tools.

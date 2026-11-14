@@ -36,22 +36,23 @@ Coming soon: Amp (`@ai-sdk/harness-amp`), Goose (`@ai-sdk/harness-goose`), Mastr
 
 Adapter capabilities:
 
-| Adapter | Runtime location | Custom tools | Custom skills | Structured output | Built-in tool approval | Built-in tool filtering | History access |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Claude Code | Sandbox bridge | Yes | Yes | Yes | Yes | Yes | No |
-| Cline | Host process | Yes | Yes | Yes | Yes | Yes | No |
-| Codex | Sandbox bridge | Yes | Yes | Yes | No | No | No |
-| Cursor | Sandbox via ACP | Yes | Yes | No | No | No | No |
-| Deep Agents | Sandbox bridge | Yes | Yes | Yes | Yes | Yes (via auto-rejection) | No |
-| fx | Sandbox via ACP | Yes | Yes | No | Yes | No | No |
-| GitHub Copilot | Sandbox via ACP | Yes | Yes | No | No | No | No |
-| Grok Build | Sandbox via ACP | Yes | Yes | Yes | No | No | No |
-| OpenCode | Sandbox bridge | Yes | Yes | Yes | Yes | Yes | No |
-| Pi | Host process | Yes | Yes | No | Yes | Yes | No |
+| Adapter | Runtime location | Custom tools | Custom skills | Structured output | Built-in tool approval | Built-in tool filtering | Image input | History access |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Claude Code | Sandbox bridge | Yes | Yes | Yes | Yes | Yes | Yes | No |
+| Cline | Host process | Yes | Yes | Yes | Yes | Yes | Yes | No |
+| Codex | Sandbox bridge | Yes | Yes | Yes | No | No | Yes | No |
+| Cursor | Sandbox via ACP | Yes | Yes | No | No | No | Yes | No |
+| Deep Agents | Sandbox bridge | Yes | Yes | Yes | Yes | Yes (via auto-rejection) | Yes | No |
+| fx | Host process | Yes | Yes | Yes | Yes | Yes | Yes | No |
+| GitHub Copilot | Sandbox via ACP | Yes | Yes | No | No | No | Yes | No |
+| Grok Build | Sandbox via ACP | Yes | Yes | Yes | No | No | Yes | No |
+| OpenCode | Sandbox bridge | Yes | Yes | Yes | Yes | Yes | Yes | No |
+| Pi | Host process | Yes | Yes | No | Yes | Yes | Yes | No |
 
 ## Notes
 
 - Stability: harness packages are experimental.
+- Source: https://ai-sdk.dev/docs/ai-sdk-harnesses/harness-adapters (ai@7.0.173). Changes since ai@7.0.142: new "Image input" column (Yes for all adapters); fx is now listed as a host-process runtime with structured output and built-in tool filtering.
 - The capability table above renders check / cross marks from the official page as Yes / No.
 - The Codex row's "Built-in tool filtering: No" follows the official table; the Codex adapter page itself describes activeTools / inactiveTools filtering for bash, webSearch, apply_patch and view_image (see [codex-harness.md](./codex-harness.md)).
 - Only Claude Code and Codex have dedicated pages in this skill (`claude-code-harness.md`, `codex-harness.md`); other adapter pages on ai-sdk.dev are not captured here.

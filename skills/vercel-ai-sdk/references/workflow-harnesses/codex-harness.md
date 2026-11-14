@@ -66,8 +66,9 @@ try {
 | webSearch | boolean | Allow live web search. |
 | port | number | Bridge port override. |
 | startupTimeoutMs | number | Maximum time to wait for the bridge to start. |
+| hostDisconnectTimeoutMs | number | Aborts a running turn when the host disconnects and no host reconnects within this many milliseconds. A suspended turn is not aborted. When unset, a turn keeps running in the sandbox after its host disconnects, including when the host process is gone for good, until the turn finishes or the sandbox stops. |
 | reconnect | `{ maxElapsedMs, initialDelayMs, maxDelayMs }` | Reconnect timing after the bridge WebSocket drops. Defaults: 30 seconds / 50 ms / 2 seconds; exponential backoff, separate from `startupTimeoutMs`. |
-| mintBridgeToken | (sandboxId) => string | Synchronous; returns the bridge authentication token. Default: random 32-byte token. |
+| mintBridgeToken | (sandboxId) => string | Deprecated and ignored. Passing it logs a warning. The adapter generates a key pair for each bridge, passes only the public key into the sandbox, and keeps the private key in host-side resume state. |
 
 Supported credential environment variables: `VERCEL_OIDC_TOKEN`, `AI_GATEWAY_API_KEY`, `AI_GATEWAY_BASE_URL`, `OPENAI_API_KEY`, `CODEX_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_ORGANIZATION`, `OPENAI_PROJECT`.
 
@@ -79,7 +80,8 @@ Supported credential environment variables: `VERCEL_OIDC_TOKEN`, `AI_GATEWAY_API
 - Structured output: schema-backed; the JSON Schema is passed via the app-server's `turn/start` `outputSchema` parameter.
 - Requires a network sandbox with at least one exposed port.
 - Built-ins in `agent.tools`: `bash` and `webSearch` (common names), `apply_patch` (freeform patch string), `view_image` (local image `path`, optional `detail` and `environment_id`). Some file mutations appear as dynamic `fileChange` tool parts.
-- Known limitations: no built-in tool approval requests; use `permissionMode: 'allow-all'` (host-executed AI SDK tool approvals still work). When the app-server must cold-resume a thread, Codex provides no raw events for `apply_patch` and `view_image`, so those calls cannot be surfaced for that resumed thread.
+- Known limitations: no built-in tool approval requests; use `permissionMode: 'allow-all'` (host-executed AI SDK tool approvals still work). When the app-server must cold-resume a thread, Codex provides no raw events for `apply_patch` and `view_image`, so those calls cannot be surfaced for that resumed thread. The Codex app-server cannot disable loading repository-owned configuration such as `.codex/config.toml`. Repository hooks still require separate per-hook trust before execution, so it is an acceptable limitation.
+- Source: https://ai-sdk.dev/providers/ai-sdk-harnesses/codex (ai@7.0.173)
 - Distance: this is the AI SDK adapter around Codex, not the Codex CLI / config.toml / AGENTS.md reference (see openai-codex) nor the OpenAI API itself (see openai-api-core, openai-agents).
 
 ## Related

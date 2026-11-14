@@ -45,7 +45,8 @@ Constructor parameters:
 | sendSources | `boolean` | Optional. Send source parts to the client. Defaults to false. |
 | sendFinish | `boolean` | Optional. Send the finish event to the client. Set to false when using additional `streamText` calls that send additional data. Defaults to true. |
 | sendStart | `boolean` | Optional. Send the message start event. Set to false when the start event has already been sent. Defaults to true. |
-| onError | `(error: unknown) => string` | Optional. Process an error, e.g. to log it. Defaults to `() => 'An error occurred.'`. Return the error message to include in the data stream. |
+| onError | `(error: unknown) => string` | Optional. Process an error, e.g. to log it. Defaults to `() => 'An error occurred.'`. Return the error message to include in the data stream. Handles stream errors. Also handles failed tool calls (tool execution errors and invalid tool calls) when `redactToolErrors` is enabled, which is the default when this callback is provided. |
+| redactToolErrors | `boolean` | Optional. Replace the error text of failed tool calls (tool execution errors and invalid tool calls) with the result of onError. By default, the client receives the same error text as the model, because the UI messages are sent back to the model on the next request and a different text changes the message history. Defaults to true when onError is provided, and to false otherwise. |
 
 ### `sendMessages()`
 
@@ -77,6 +78,7 @@ Always returns `Promise<null>`; direct transport does not support reconnection s
 
 ## Notes
 
+- Source: https://ai-sdk.dev/docs/reference/ai-sdk-ui/direct-chat-transport (ai@7.0.173)
 - `onStepFinish` is a deprecated alias for `onStepEnd`.
 - Agent here means the AI SDK `Agent` interface (`ToolLoopAgent`). For other agent frameworks see openai-agents, anthropic-agent-sdk, anthropic-managed-agents, and hermes-agent.
 

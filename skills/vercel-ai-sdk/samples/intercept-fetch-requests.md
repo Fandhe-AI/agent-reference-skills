@@ -34,4 +34,5 @@ const { text } = await generateText({
 
 - Many providers accept a `fetch` argument in their factory function. Uses on the page: logging requests and responses, adding authentication headers, modifying request bodies, caching responses, and using a custom HTTP client.
 - Modified from the official example: the official wrapper logs all request headers, which include credentials (e.g. the AI Gateway `authorization` header). This version excludes `authorization` and `x-api-key` before logging.
+- Preserving URL download protection (ai@7.0.173): a fetch wrapper that logs requests, adds authentication, or retries failures does not provide SSRF protection. If the wrapped fetch downloads untrusted URLs on Node.js, wrap a `guarded-fetch` transport instead of the global fetch and preserve the request's abort signal and redirect mode. See https://ai-sdk.dev/docs/advanced/secure-url-fetching
 - Provider setup: `references/providers/ai-gateway.md`.

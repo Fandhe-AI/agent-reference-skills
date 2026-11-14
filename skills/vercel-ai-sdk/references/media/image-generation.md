@@ -200,6 +200,10 @@ try {
 }
 ```
 
+### URL download protection
+
+Some image providers return URLs that the SDK downloads, and image editing can download URL inputs. These downloads use the provider's `fetch` option; on Node.js, pass a `guarded-fetch` transport there to validate DNS results. See the Secure URL Fetching page (opt-in DNS protection on Node.js).
+
 ### Image Middleware
 
 Enhance image models (e.g. set default values or implement logging) using `wrapImageModel` and `ImageModelV4Middleware`. This example sets a default size when none is provided:
@@ -321,7 +325,7 @@ A small subset of the image models supported by the AI SDK providers (see the re
 
 - This page covers `generateImage` through AI SDK provider packages (`@ai-sdk/openai`, `@ai-sdk/google`, etc.), not the raw provider image APIs. For the raw OpenAI image APIs (gpt-image / vision / Sora) see openai-images-video and openai-api-core; for Gemini and Anthropic native APIs see the corresponding provider skills (anthropic-api-core).
 - The original guide comment labels `file.base64` as "data URL format", but the `GeneratedFile` reference defines `base64` as a plain base64 encoded string without a `data:` prefix; build a data URL as `` `data:${file.mediaType};base64,${file.base64}` `` when one is needed.
-- Stability: `generateImage` has no `experimental_` prefix (stable). Model IDs and supported sizes are copied verbatim from the official page as of ai 7.0.142 and are provider-dependent.
+- Stability: `generateImage` has no `experimental_` prefix (stable). Model IDs and supported sizes are copied verbatim from the official page as of ai 7.0.173 and are provider-dependent.
 
 ## Related
 

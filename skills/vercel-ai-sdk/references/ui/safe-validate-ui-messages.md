@@ -43,6 +43,8 @@ const result = await safeValidateUIMessages({
 
 ## Notes
 
+- Structural validation stops at the first invalid element in message and part arrays, retaining its path in the returned error.
+- Source: https://ai-sdk.dev/docs/reference/ai-sdk-core/safe-validate-ui-messages (ai@7.0.173)
 - Accepts the same options as `validateUIMessages` (`messages`, `metadataSchema`, `dataSchemas`, `tools`).
 - Deprecated `rawInput`: validation still accepts `rawInput` on tool parts in the `output-error` state and emits an AI SDK deprecation warning through `AI_SDK_LOG_WARNINGS` when a defined value is found. Migrate persisted messages to `input`; conversion uses `rawInput` as a fallback when `input` is `null` or `undefined`. `rawInput` will be removed in the next major version.
 

@@ -58,6 +58,7 @@ Providers that wrap an external memory service and expose it through the AI SDK'
 | Mem0 | `@mem0/vercel-ai-provider` | Memory layer over any supported LLM provider. `createMem0({ provider, mem0ApiKey, apiKey })`; explicit `addMemories` / `retrieveMemories`. |
 | Supermemory | `@supermemory/tools` | `supermemoryTools(apiKey)` from `@supermemory/tools/ai-sdk`; gives the model `addMemory` and `searchMemories`. Works with any AI SDK provider. |
 | Hindsight | `@vectorize-io/hindsight-ai-sdk`, `@vectorize-io/hindsight-client` | Five tools: `retain`, `recall`, `reflect`, `getMentalModel`, `getDocument`. `createHindsightTools({ client, bankId })`. Self-hosted with Docker or cloud. |
+| Redis Agent Memory | `ai-sdk-redis-agent-memory` (import `@redis/vercel-ai-sdk`) | Managed memory layer combining session history with long-term memories. `createRedisAgentMemory({ serverUrl, storeId, apiKey, model })`; `memory.model({ scope, assistantId })` wraps a configured model, `memory.tools({ scope })` exposes memory tools such as `search_memories` and `create_memories`. |
 | MongoDB | `@mongodb-developer/vercel-ai-memory` | MongoDB Atlas-backed memory with five tiers: Session, Semantic, Procedural, Episodic, Scratchpad. `createMongoDBMemory({ uri, embedder })`. |
 
 ```ts
@@ -98,6 +99,32 @@ const agent = new ToolLoopAgent({
 });
 ```
 
+```ts
+import { anthropic } from '@ai-sdk/anthropic';
+import { createRedisAgentMemory } from '@redis/vercel-ai-sdk';
+import { ToolLoopAgent } from 'ai';
+
+// Create the memory factory once at module/server level
+const memory = createRedisAgentMemory({
+  serverUrl: process.env.AGENT_MEMORY_URL,
+  storeId: process.env.AGENT_MEMORY_STORE_ID,
+  apiKey: process.env.AGENT_MEMORY_API_KEY,
+  model: anthropic('claude-sonnet-4-5'),
+});
+
+// Create a new memory model for each request, scoped to a user and session
+const agent = new ToolLoopAgent({
+  model: memory.model({
+    scope: { userId: 'user-123', sessionId: 'session-456' },
+    assistantId: 'assistant',
+  }),
+});
+
+const result = await agent.generate({
+  prompt: 'Remember that my favorite editor is Neovim',
+});
+```
+
 #### Custom Tool
 
 Building your own memory tool from scratch is the most flexible approach: you control the storage format, the interface, and the retrieval logic, with no provider lock-in and no external dependencies. Two common patterns:
@@ -107,6 +134,7 @@ Building your own memory tool from scratch is the most flexible approach: you co
 
 ## Notes
 
+- Redis Agent Memory: the official page installs the package with `pnpm add @redis/vercel-ai-sdk` and describes it as the `ai-sdk-redis-agent-memory` package. The package wraps a model you have already configured, restores the user's session and recalls relevant long-term memories before each call, and records the conversation afterwards. Recalled memories and restored history are injected as bounded, untrusted context. Set `historyMode: 'application'` if your application already manages conversation history and you only want long-term recall. It requires AI SDK 7 and accepts configured model objects, not model-name strings. Writes are best effort, so use collision-resistant session IDs tied to your authenticated user and serialize requests for the same session. Source: https://ai-sdk.dev/docs/agents/memory (ai@7.0.173)
 - Memory providers: the provider controls memory behavior, so you have less visibility into what gets stored and how it is retrieved, and you take on a dependency on an external service.
 - The MongoDB integration targets AI SDK v6 (peer dependency `ai: ^6.0.0`) because it relies on v6 APIs such as `ModelMessage`, `ToolLoopAgent`, and `isLoopFinished()`. Session memory supports tool-driven and hook-driven (`prepareCall` + `onEnd`, recommended for production) modes.
 - Memory service packages above are third-party / community packages; their APIs are documented only at the level shown on the official page.
