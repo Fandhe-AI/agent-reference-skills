@@ -103,6 +103,126 @@ export default defineConfig({
 });
 ```
 
+Replace `tsconfig.json` to configure Remix JSX and browser types:
+
+```json
+{
+  "compilerOptions": {
+    "target": "es2024",
+    "lib": ["es2024"],
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "types": ["vite/client"],
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "remix/component"
+  },
+  "include": [
+    "src",
+    "cloudflare.config.ts",
+    "vite.config.ts",
+    ".cloudflare/types"
+  ]
+}
+```
+
+Create `src/assets.ts` to resolve browser modules and stylesheets:
+
+```ts
+import { createAssetResolver } from "@pitlane/assets";
+import manifest from "@pitlane/assets/manifest";
+
+export const assets = createAssetResolver(manifest);
+export const scriptEntry = await assets.getScriptEntry("src/entry.browser.ts");
+export const stylesheets = await assets.getStylesheets("src/index.ts");
+```
+
+Create `src/entry.browser.ts` to start Remix in the browser:
+
+```ts
+import { run } from "remix/component";
+
+export const app = run({
+  async loadModule(moduleUrl, exportName) {
+    const module = await import(/* @vite-ignore */ moduleUrl);
+    const component = module[exportName];
+    if (typeof component !== "function") {
+      throw new Error(`Missing client entry: ${moduleUrl}#${exportName}`);
+    }
+    return component;
+  },
+});
+
+app.addEventListener("error", (event) => console.error(event.error));
+await app.ready();
+
+if (import.meta.hot) {
+  const { revalidate } = await import("@pitlane/vite-plugin-remix/hmr");
+  import.meta.hot.on("server:update", () => revalidate(app));
+}
+```
+
+Create `src/document.tsx` to load the entry, import map, and stylesheets:
+
+```tsx
+import type { Handle, RemixNode } from "remix/component";
+import { ImportMap } from "remix/component/server";
+import { scriptEntry, stylesheets } from "./assets.ts";
+
+export function Document(handle: Handle<{ children?: RemixNode }>) {
+  return () => (
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1"
+        />
+        <title>Remix on Cloudflare</title>
+        {stylesheets.map((href) => (
+          <link key={href} rel="stylesheet" href={href} />
+        ))}
+        <ImportMap value={scriptEntry.importMap} />
+        {scriptEntry.preloads.map((href) => (
+          <link key={href} rel="modulepreload" href={href} />
+        ))}
+        <script type="module" src={scriptEntry.href} />
+      </head>
+      <body>{handle.props.children}</body>
+    </html>
+  );
+}
+```
+
+Create `src/public/counter.tsx`. Keep browser components and their local dependencies in a `public/` directory:
+
+```tsx
+import { clientEntry, on, type Handle } from "remix/component";
+
+export const Counter = clientEntry(
+  import.meta.url,
+  function Counter(handle: Handle) {
+    let count = 0;
+    return () => (
+      <button
+        type="button"
+        mix={on("click", async () => {
+          count++;
+          await handle.update();
+        })}
+      >
+        Count: {count}
+      </button>
+    );
+  },
+);
+```
+
 Create `src/router.tsx`. Pass the asset resolver to `render()`:
 
 ```tsx
