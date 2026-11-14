@@ -50,6 +50,7 @@ variable "PORT" {
 
 ## Notes
 
+- Adapted from the official docs: the official `--var` example passes `TAG=docker.io/username/webapp:dev`, which would produce `docker.io/username/webapp:docker.io/username/webapp:dev` with the `tags` definition shown on this page; `TAG=dev` is used instead.
 - Use the `${}` syntax to interpolate a variable into a value; `--print` shows the resolved configuration.
 - Values are coerced into the expected type before validation, so environment variable overrides work as expected.
 - Multiple conditions: define multiple `validation` blocks; all must be `true`. Conditions may reference other variables (for example `condition = FOO != ""` inside variable `BAR`).
@@ -73,8 +74,10 @@ target "webapp" {
 
 Use `--var NAME=value` to override a declared variable for one Bake invocation without changing your shell's environment:
 
+Adapted (not in the official docs): the example passes only the tag part, because the `webapp` target above already prefixes `docker.io/username/webapp:`.
+
 ```console
-$ docker buildx bake --var TAG=docker.io/username/webapp:dev webapp
+$ docker buildx bake --var TAG=dev webapp
 ```
 
 Repeat the flag to set multiple variables. If you repeat a name, the last value wins. Explicit `--var` values take precedence over environment variables with the same name and over defaults in the Bake file. Values are converted to the declared variable type.

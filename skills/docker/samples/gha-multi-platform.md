@@ -14,6 +14,8 @@ Building multiple platforms on the same runner can significantly extend build ti
 
 The following workflow uses the `build.yml` reusable workflow to distribute a multi-platform Dockerfile build:
 
+Adapted (not in the official docs): the reusable workflow is pinned to the commit SHA of tag `v1` (`a31d231`, resolved 2026-11-14 via the GitHub API) instead of the mutable tag `@v1` used in the official example.
+
 ```yaml
 name: ci
 
@@ -25,7 +27,7 @@ permissions:
 
 jobs:
   build:
-    uses: docker/github-builder/.github/workflows/build.yml@v1
+    uses: docker/github-builder/.github/workflows/build.yml@a31d2311da4d55e21b978c1c52bab82ba97d51ee
     permissions:
       contents: read
       id-token: write
@@ -127,7 +129,7 @@ jobs:
 ## Notes
 
 - Source: https://docs.docker.com/build/ci/github-actions/multi-platform/ (docker/docs @ 553482c, retrieved 2026-11-14 JST).
-- The official page now leads with Docker GitHub Builder reusable workflows (`docker/github-builder`, [build.yml docs](https://docs.docker.com/build/ci/github-actions/build-workflow/)) and keeps the individual-action examples as the second style; both are shown here. The official example references the reusable workflow by major tag (`@v1`); it is not pinned to a commit SHA here.
+- The official page now leads with Docker GitHub Builder reusable workflows (`docker/github-builder`, [build.yml docs](https://docs.docker.com/build/ci/github-actions/build-workflow/)) and keeps the individual-action examples as the second style; both are shown here. The official example references the reusable workflow by major tag (`@v1`); it is pinned to a commit SHA here (see the Adapted line above the example).
 - Runner selection (custom `runner` mapping): https://docs.docker.com/build/ci/github-actions/github-builder-architecture/#runner-selection. Bake workflow: https://docs.docker.com/build/ci/github-actions/bake-workflow/#build-and-push-a-bake-target
 - The earlier version of this page showed a full Bake example (`bake.yml`, `target: image-all`); the current page only links to the Bake workflow page, so it is no longer reproduced here.
 - GitHub Actions workflow syntax is covered by the github-docs skill; this sample covers only the Docker build inputs.

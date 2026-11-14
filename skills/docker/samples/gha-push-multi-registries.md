@@ -12,6 +12,8 @@ Push one build to Docker Hub and GitHub Container Registry with Docker GitHub Bu
 
 List the image names in `meta-images` and credentials in the `registry-auths` secret. This example publishes `latest` and `1.0.0` tags to Docker Hub and GitHub Container Registry:
 
+Adapted (not in the official docs): the reusable workflow is pinned to the commit SHA of tag `v1` (`a31d231`, resolved 2026-11-14 via the GitHub API) instead of the mutable tag `@v1` used in the official example.
+
 ```yaml
 name: ci
 
@@ -20,7 +22,7 @@ on:
 
 jobs:
   build:
-    uses: docker/github-builder/.github/workflows/build.yml@v1
+    uses: docker/github-builder/.github/workflows/build.yml@a31d2311da4d55e21b978c1c52bab82ba97d51ee
     permissions:
       contents: read
       id-token: write
@@ -96,7 +98,7 @@ jobs:
 ## Notes
 
 - Source: https://docs.docker.com/build/ci/github-actions/push-multi-registries/ (docker/docs @ 553482c, retrieved 2026-11-14 JST).
-- The official page now leads with Docker GitHub Builder reusable workflows (`docker/github-builder`, [build.yml docs](https://docs.docker.com/build/ci/github-actions/build-workflow/)) and keeps the individual-action examples as the second style; both are shown here. The official example references the reusable workflow by major tag (`@v1`); it is not pinned to a commit SHA here.
+- The official page now leads with Docker GitHub Builder reusable workflows (`docker/github-builder`, [build.yml docs](https://docs.docker.com/build/ci/github-actions/build-workflow/)) and keeps the individual-action examples as the second style; both are shown here. The official example references the reusable workflow by major tag (`@v1`); it is pinned to a commit SHA here (see the Adapted line above the example).
 - GitHub Actions workflow syntax and `secrets` / `vars` contexts are covered by the github-docs skill.
 - Each registry needs its own `docker/login-action` step; the `tags` list can mix both registries' names.
 - Adapted: the official example references actions by major tag (`@vN`); third-party actions are pinned to the commit SHA of the current release here (tag in the trailing comment).

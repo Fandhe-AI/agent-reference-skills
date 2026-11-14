@@ -14,6 +14,8 @@ Docker GitHub Builder manages provenance and signing in the reusable workflow. I
 
 Set `sbom: true` to add an SBOM. With the default `sign: auto`, GitHub Builder signs attestation manifests when pushing an image, using the job's `id-token: write` permission:
 
+Adapted (not in the official docs): the reusable workflow is pinned to the commit SHA of tag `v1` (`a31d231`, resolved 2026-11-14 via the GitHub API) instead of the mutable tag `@v1` used in the official example.
+
 ```yaml
 name: ci
 
@@ -22,7 +24,7 @@ on:
 
 jobs:
   build:
-    uses: docker/github-builder/.github/workflows/build.yml@v1
+    uses: docker/github-builder/.github/workflows/build.yml@a31d2311da4d55e21b978c1c52bab82ba97d51ee
     permissions:
       contents: read
       id-token: write
@@ -84,7 +86,7 @@ jobs:
 ## Notes
 
 - Source: https://docs.docker.com/build/ci/github-actions/attestations/ (docker/docs @ 553482c, retrieved 2026-11-14 JST).
-- The official page now leads with Docker GitHub Builder reusable workflows (`docker/github-builder`, [build.yml docs](https://docs.docker.com/build/ci/github-actions/build-workflow/)) and keeps the individual-action examples as the second style; both are shown here. The official example references the reusable workflow by major tag (`@v1`); it is not pinned to a commit SHA here.
+- The official page now leads with Docker GitHub Builder reusable workflows (`docker/github-builder`, [build.yml docs](https://docs.docker.com/build/ci/github-actions/build-workflow/)) and keeps the individual-action examples as the second style; both are shown here. The official example references the reusable workflow by major tag (`@v1`); it is pinned to a commit SHA here (see the Adapted line above the example).
 - The page shows `provenance: mode=max` and `sbom: true` in two separate workflows; they are combined here as two inputs of the same step.
 - GitHub Actions workflow syntax is covered by the github-docs skill; this sample covers only the Docker build inputs.
 - Attestations need `docker/build-push-action` v4 or later and a direct push to a registry; `load: true` or the `docker` exporter cannot carry attestations.

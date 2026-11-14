@@ -16,6 +16,8 @@ RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN ...
 
 Pass secret values to Docker GitHub Builder using the `build-secrets` workflow secret. Its value is a YAML mapping from secret IDs to values, rather than the action's `id=value` list:
 
+Adapted (not in the official docs): the reusable workflow is pinned to the commit SHA of tag `v1` (`a31d231`, resolved 2026-11-14 via the GitHub API) instead of the mutable tag `@v1` used in the official example.
+
 ```yaml
 name: ci
 
@@ -24,7 +26,7 @@ on:
 
 jobs:
   build:
-    uses: docker/github-builder/.github/workflows/build.yml@v1
+    uses: docker/github-builder/.github/workflows/build.yml@a31d2311da4d55e21b978c1c52bab82ba97d51ee
     permissions:
       contents: read
       id-token: write
@@ -117,7 +119,7 @@ The `Build` step needs a preceding Checkout step (as above) so that `./.npmrc` a
 ## Notes
 
 - Source: https://docs.docker.com/build/ci/github-actions/secrets/ (docker/docs @ 553482c, retrieved 2026-11-14 JST).
-- The official page now leads with Docker GitHub Builder reusable workflows (`docker/github-builder`, [build.yml docs](https://docs.docker.com/build/ci/github-actions/build-workflow/)) and keeps the individual-action examples as the second style; both are shown here. The official example references the reusable workflow by major tag (`@v1`); it is not pinned to a commit SHA here.
+- The official page now leads with Docker GitHub Builder reusable workflows (`docker/github-builder`, [build.yml docs](https://docs.docker.com/build/ci/github-actions/build-workflow/)) and keeps the individual-action examples as the second style; both are shown here. The official example references the reusable workflow by major tag (`@v1`); it is pinned to a commit SHA here (see the Adapted line above the example).
 - GitHub Actions workflow syntax and the `secrets` context are covered by the github-docs skill; this sample covers only the Docker build inputs.
 - Sources: `secrets` (inline value) maps to `--secret id=...,src=<temp-file>`, `secret-envs` to `--secret id=...,env=...`, `secret-files` to `--secret id=...,src=...`.
 - Secrets mount as files at `/run/secrets/<id>` by default; use `env` to expose as an environment variable or `target` to change the path.
