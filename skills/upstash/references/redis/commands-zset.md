@@ -47,6 +47,8 @@ const highest = await redis.zpopmax<string>("leaderboard")
 const range = await redis.zrangebyscore("leaderboard", 100, 200)
 ```
 
+Adapted (not in the official docs): lexicographic range bounds in the `zlexcount` / `zremrangebylex` calls carry the required `[` (inclusive) prefix; the official examples pass bare `"two"`, `"alpha"` and `"omega"`.
+
 ```ts
 const values = await redis.zdiffstore("destination", 2, "key1", "key2");
 const res = await redis.zinterstore("destination", 2, ["key1", "key2"]);
@@ -57,9 +59,9 @@ const res = await redis.zinterstore(
     { weights: [2, 3] },
 );
 const res = await redis.zunionstore("destination", 2, ["key1", "key2"]);
-const elements = await redis.zlexcount("key", "two", "+");
+const elements = await redis.zlexcount("key", "[two", "+");
 const scores = await redis.zmscore("key", ["m2", "m4"])
-await redis.zremrangebylex("key", "alpha", "omega")
+await redis.zremrangebylex("key", "[alpha", "[omega")
 await redis.zremrangebyrank("key", 4, 20)
 await redis.zremrangebyscore("key", 2, 5)
 const [newCursor, members] = await redis.zscan("key", 0, { match: "a*", count: 1});
@@ -78,6 +80,7 @@ const [newCursor, members] = await redis.zscan("key", 0, { match: "a*", count: 1
 
 ## Notes
 
+- Adapted from the official docs: lexicographic bounds must start with `[` (inclusive) or `(` (exclusive), or be `-` / `+`; the official `zlexcount` / `zremrangebylex` examples omit the prefix and would be rejected by Redis
 - Members are sorted from lowest to highest score by default
 - `ZRANGE` with `REV` flag (Redis 6.2+) returns members in reverse order
 - Use sorted sets for leaderboards, priority queues, and time-series indexing by timestamp

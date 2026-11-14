@@ -6,44 +6,32 @@ Upstash Box gives AI its own computer: a full, isolated cloud environment an age
 
 Multi-agent orchestration: fan out to parallel boxes, then synthesize in a final box.
 
-Adapted (not in the official docs): the boxes the example creates are tracked and deleted in a `finally` block, so they are not left behind after a success or a partial failure.
-
 ```typescript
 const pr = "https://github.com/acme/app/pull/42"
-const created: Box[] = []
-const createBox = async () => {
-  const box = await Box.create({ runtime: "node", agent: { harness: Agent.ClaudeCode, model: "anthropic/claude-sonnet-4-6" } })
-  created.push(box)
-  return box
-}
+const [security, quality, architecture] = await Promise.all([
+  Box.create({ runtime: "node", agent: { harness: Agent.ClaudeCode, model: "anthropic/claude-sonnet-4-6" } }),
+  Box.create({ runtime: "node", agent: { harness: Agent.ClaudeCode, model: "anthropic/claude-sonnet-4-6" } }),
+  Box.create({ runtime: "node", agent: { harness: Agent.ClaudeCode, model: "anthropic/claude-sonnet-4-6" } }),
+])
 
-try {
-  const [security, quality, architecture] = await Promise.all([createBox(), createBox(), createBox()])
+const reviews = await Promise.all([
+  security.agent.run({ prompt: `Security review for ${pr}` }),
+  quality.agent.run({ prompt: `Code quality review for ${pr}` }),
+  architecture.agent.run({ prompt: `Architecture review for ${pr}` }),
+])
 
-  const reviews = await Promise.all([
-    security.agent.run({ prompt: `Security review for ${pr}` }),
-    quality.agent.run({ prompt: `Code quality review for ${pr}` }),
-    architecture.agent.run({ prompt: `Architecture review for ${pr}` }),
-  ])
+const jury = await Box.create({
+  runtime: "node",
+  agent: { harness: Agent.ClaudeCode, model: "anthropic/claude-sonnet-4-6" },
+  git: { token: process.env.GITHUB_TOKEN },
+})
 
-  const jury = await Box.create({
-    runtime: "node",
-    agent: { harness: Agent.ClaudeCode, model: "anthropic/claude-sonnet-4-6" },
-    git: { token: process.env.GITHUB_TOKEN },
-  })
-  created.push(jury)
-
-  await jury.agent.run({
-    prompt: `Summarize these reviews and post a comment on ${pr}:\n${reviews.map((r) => r.result).join("\n\n")}`,
-  })
-} finally {
-  await Promise.allSettled(created.map((box) => box.delete()))
-}
+await jury.agent.run({
+  prompt: `Summarize these reviews and post a comment on ${pr}:\n${reviews.map((r) => r.result).join("\n\n")}`,
+})
 ```
 
 Parallel testing and comparison: each model is paired with the harness that runs it.
-
-Adapted (not in the official docs): the boxes the example creates are tracked and deleted in a `finally` block, so they are not left behind after a success or a partial failure.
 
 ```typescript
 const agents = [
@@ -55,19 +43,11 @@ const agents = [
 const docs = await fs.readFile("./documentation.md", "utf-8")
 const prompt = `Extract all API endpoints from this documentation:\n${docs}`
 
-const boxes: (Box | undefined)[] = []
-let results
-try {
-  await Promise.all(
-    agents.map(async (agent, i) => {
-      boxes[i] = await Box.create({ runtime: "node", agent })
-    }),
-  )
+const boxes = await Promise.all(
+  agents.map((agent) => Box.create({ runtime: "node", agent })),
+)
 
-  results = await Promise.all(boxes.map((box) => box!.agent.run({ prompt })))
-} finally {
-  await Promise.allSettled(boxes.map((box) => box?.delete()))
-}
+const results = await Promise.all(boxes.map((box) => box.agent.run({ prompt })))
 
 const evaluation = results.map((r, i) => ({
   model: agents[i].model,
@@ -81,7 +61,7 @@ const bestModel = evaluation.sort((a, b) => a.hallucinationPct - b.hallucination
 
 ## Notes
 
-- Adapted from the official docs: both examples add box tracking and `delete()` in `finally` (the official snippets leave the boxes running until they auto-pause)
+- The official snippets do not delete the boxes they create (idle boxes auto-pause, which is not deletion); call `box.delete()` on every created box when done, including after a failure, so storage and box quota are released (see ephemeral-box.md for auto-deleting boxes)
 - Source: https://upstash.com/docs/box/overall/use-cases (fetched 2026-11-14; no version pin on the site).
 - Agent Server: a long-running per-tenant agent that keeps history, context, and learned preferences across sessions; each user gets a dedicated box, idle boxes auto-pause so idle tenants use no compute, and a returning user's box resumes with installed packages and file history intact. The agent can contribute back to a shared knowledge base
 - Multi-agent orchestration: the async SDK spins up boxes in parallel (Python: `AsyncBox` with `asyncio.gather`); each box is isolated, orchestration logic stays in your code. Example pipeline: three boxes for security, code quality, and architecture review feed a fourth box that summarizes and comments on the PR
