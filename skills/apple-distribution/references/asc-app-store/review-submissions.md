@@ -76,6 +76,8 @@ DELETE https://api.appstoreconnect.apple.com/v1/reviewSubmissionItems/{id}
 
 ## Notes
 
+- 4.6: a retention message version is submitted for review with `POST /v1/reviewSubmissionItems` carrying the `reviewSubmission` and `retentionMessageVersion` relationships; see the Retention Messaging page in the ASC TestFlight & In-App Purchases category. Source: https://developer.apple.com/documentation/appstoreconnectapi/setting-up-retention-messaging (fetched 2026-11-14)
+
 - The `platform` attribute is no longer required for `POST /v1/reviewSubmissions`. You can optionally add `platform` with `PATCH /v1/reviewSubmissions/{id}`.
 - Deprecated: the `appStoreVersionSubmissions` resource (`AppStoreVersionSubmission`, `DELETE /v1/appStoreVersionSubmissions/{id}`), the older equivalent of clicking Submit for Review. Use `reviewSubmissions` and `reviewSubmissionItems` instead.
 - Incomplete submissions (missing required information) return an error when submitted to App Review.

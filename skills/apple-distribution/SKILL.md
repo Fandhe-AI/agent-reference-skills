@@ -1,7 +1,7 @@
 ---
 name: apple-distribution
 description: >
-  App Store Connect API 4.5.1 (REST) アプリ配布リファレンス。JWT 認証, Apps, Builds, Bundle IDs,
+  App Store Connect API 4.6 (REST) アプリ配布リファレンス。JWT 認証, Retention Messaging, Apps, Builds, Bundle IDs,
   Certificates, Devices, Provisioning Profiles, TestFlight (Beta Groups / Testers), Sandbox Testers,
   App Review, In-App Purchases, Subscriptions, Promotional Offers, Sales Reports, Webhooks,
   Xcode Cloud, Alternative Distribution, Game Center, Custom Product Pages, Phased Release, Analytics。
@@ -10,7 +10,7 @@ user-invocable: false
 
 本スキルは **App Store Connect API (REST)** を中心としたアプリ配布・収益化のリファレンスです。JWT 認証から TestFlight ベータ配布、In-App Purchases・Subscriptions の管理、売上レポートの取得まで網羅しています。
 
-対象バージョン: App Store Connect API 4.5.1（2026-10-16 取得、Apple DocC JSON 出典: https://developer.apple.com/documentation/appstoreconnectapi ）。
+対象バージョン: App Store Connect API 4.6（2026-11-14 取得。4.5.1 以前のページは 2026-10-16 取得のまま、Apple DocC JSON 出典: https://developer.apple.com/documentation/appstoreconnectapi ）。
 
 ## ディレクトリ構成
 
@@ -51,6 +51,7 @@ skills/apple-distribution/
       app-price-points.md
       sales-finance-reports.md
       win-back-offers.md
+      retention-messaging.md
       promoted-purchases.md
       iap-subscription-versions.md
     asc-app-store/
@@ -149,7 +150,7 @@ skills/apple-distribution/
 | Beta App Review の提出、Beta Build Localizations の管理 | asc-testflight-iap | [references/asc-testflight-iap/README.md](references/asc-testflight-iap/README.md) |
 | In-App Purchases・Subscriptions・Subscription Groups の設定 | asc-testflight-iap | [references/asc-testflight-iap/README.md](references/asc-testflight-iap/README.md) |
 | Promotional Offers・App Price Points の設定、Sales/Finance Reports の取得 | asc-testflight-iap | [references/asc-testflight-iap/README.md](references/asc-testflight-iap/README.md) |
-| Win-back Offers・Promoted Purchases の設定、IAP / Subscription のバージョン管理 | asc-testflight-iap | [references/asc-testflight-iap/README.md](references/asc-testflight-iap/README.md) |
+| Retention Messaging (解約時メッセージ・Retention Offers) の設定・審査提出、Win-back Offers・Promoted Purchases の設定、IAP / Subscription のバージョン管理 | asc-testflight-iap | [references/asc-testflight-iap/README.md](references/asc-testflight-iap/README.md) |
 | カスタマーレビューの取得・レビューへの返信、Custom Product Pages・In-App Events の管理 | asc-app-store | [references/asc-app-store/README.md](references/asc-app-store/README.md) |
 | Review Submissions の提出、App Store Review Details、段階的リリース (Phased Release)・手動リリース | asc-app-store | [references/asc-app-store/README.md](references/asc-app-store/README.md) |
 | 提供地域・予約注文 (Pre-Orders) の設定、製品ページ最適化 (Experiments)、Territories の取得 | asc-app-store | [references/asc-app-store/README.md](references/asc-app-store/README.md) |

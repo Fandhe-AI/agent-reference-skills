@@ -1,6 +1,6 @@
 # App Store Connect API Release Notes
 
-Learn about new features, deprecations, and breaking changes across App Store Connect API versions (1.0 through 4.5.1 as of this writing).
+Learn about new features, deprecations, and breaking changes across App Store Connect API versions (1.0 through 4.6 as of this writing).
 
 ## Signature / Usage
 
@@ -10,7 +10,17 @@ GET https://developer.apple.com/documentation/appstoreconnectapi/app-store-conne
 
 ## Options / Props
 
-### Latest Version Highlights (4.5.1)
+### Latest Version Highlights (4.6)
+
+| Area | Change |
+|------|--------|
+| Retention Messaging | `POST /v1/retentionMessages`, `POST /v1/retentionMessageLocalizations`, `POST /v1/retentionOffers`, `PATCH /v1/subscriptions/{id}/relationships/retentionMessage` (a message shown when people start to cancel an auto-renewable subscription, with localized text and optional retention offers) |
+
+### Deprecated in 4.6
+
+- The `INSTALLS` report type for `GET /v1/salesReports` is deprecated. As of November 4, 2026, Apple no longer generates new reports of this type, but you can still download historical reports.
+
+### 4.5.1 Highlights
 
 | Area | Change |
 |------|--------|
@@ -67,10 +77,12 @@ GET https://developer.apple.com/documentation/appstoreconnectapi/app-store-conne
 
 ## Notes
 
+- Retention Messaging (4.6) is covered in the ASC TestFlight & In-App Purchases category (`retention-messaging.md`).
 - To move an existing integration from the deprecated 4.5.1 media resources, see the "Migrating to the App Asset Library" article.
 - Each version's release notes page recommends updating server-side code to use new features and re-testing against API changes
 - The full OpenAPI specification for the current API version is downloadable from the release notes page
-- Individual version pages (e.g. App Store Connect API 4.4, 4.3.1, 3.0, 1.0; 4.5.1 / 4.5 / 4.4.1 are summarized above) are not mirrored here; consult https://developer.apple.com/documentation/appstoreconnectapi/app-store-connect-api-release-notes (per-version pages follow the `app-store-connect-api-<version>-release-notes` slug pattern, e.g. https://developer.apple.com/documentation/appstoreconnectapi/app-store-connect-api-4-5-1-release-notes) for a specific version's changelog
+- Individual version pages (e.g. App Store Connect API 4.4, 4.3.1, 3.0, 1.0; 4.6 / 4.5.1 / 4.5 / 4.4.1 are summarized above) are not mirrored here; consult https://developer.apple.com/documentation/appstoreconnectapi/app-store-connect-api-release-notes (per-version pages follow the `app-store-connect-api-<version>-release-notes` slug pattern, e.g. https://developer.apple.com/documentation/appstoreconnectapi/app-store-connect-api-4-6-release-notes) for a specific version's changelog
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/app-store-connect-api-4-6-release-notes (fetched 2026-11-14)
 
 ## Related
 

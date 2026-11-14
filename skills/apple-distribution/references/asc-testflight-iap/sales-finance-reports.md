@@ -18,7 +18,7 @@ GET /v1/financeReports
 | Parameter | Required | Type | Description |
 |-----------|----------|------|-------------|
 | `filter[frequency]` | Yes | string | `DAILY`, `WEEKLY`, `MONTHLY`, `YEARLY` |
-| `filter[reportType]` | Yes | string | `SALES`, `SUBSCRIPTION`, `SUBSCRIPTION_EVENT`, `SUBSCRIBER`, `INSTALLS`, `FIRST_ANNUAL`, `WIN_BACK_ELIGIBILITY`, `PRE_ORDER`, `NEWSSTAND`, `SUBSCRIPTION_OFFER_CODE_REDEMPTION` |
+| `filter[reportType]` | Yes | string | `SALES`, `SUBSCRIPTION`, `SUBSCRIPTION_EVENT`, `SUBSCRIBER`, `INSTALLS` (deprecated in 4.6), `FIRST_ANNUAL`, `WIN_BACK_ELIGIBILITY`, `PRE_ORDER`, `NEWSSTAND`, `SUBSCRIPTION_OFFER_CODE_REDEMPTION` |
 | `filter[reportSubType]` | Yes | string | `SUMMARY`, `DETAILED`, `SUMMARY_INSTALL_TYPE`, `SUMMARY_TERRITORY`, `SUMMARY_CHANNEL` |
 | `filter[vendorNumber]` | Yes | string | Your vendor number from App Store Connect |
 | `filter[reportDate]` | No | string | Date in `YYYY-MM-DD` format |
@@ -41,6 +41,8 @@ GET /v1/financeReports
 - Require a **Team API key** — Individual API keys are not accepted.
 - Finance report dates follow the [Apple Fiscal Calendar](https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/wa/jumpTo?page=fiscalcalendar), not calendar months.
 - Subscription report version `1_2` is no longer available.
+- Deprecated in 4.6: the `INSTALLS` report type, including its `SUMMARY_CHANNEL`, `SUMMARY_INSTALL_TYPE`, and `SUMMARY_TERRITORY` sub types (which no other report type uses). As of November 4, 2026, Apple no longer generates new `INSTALLS` reports, but you can still download historical reports. There is no replacement report type.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/get-v1-salesreports , https://developer.apple.com/documentation/appstoreconnectapi/app-store-connect-api-4-6-release-notes (fetched 2026-11-14)
 
 ## Related
 

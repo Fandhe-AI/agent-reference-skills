@@ -15,7 +15,7 @@
 | Pagination | Retrieve large data sets using cursor-based paging on list endpoints. | [pagination.md](./pagination.md) |
 | Profiles | Create, download, and delete provisioning profiles for development and distribution. | [profiles.md](./profiles.md) |
 | Identifying Rate Limits | The App Store Connect API limits request volume per API key per rolling hour window. | [rate-limits.md](./rate-limits.md) |
-| App Store Connect API Release Notes | Learn about new features, deprecations, and breaking changes across App Store Connect API versions (1.0 through 4.5.1 as of this writing). | [release-notes.md](./release-notes.md) |
+| App Store Connect API Release Notes | Learn about new features, deprecations, and breaking changes across App Store Connect API versions (1.0 through 4.6 as of this writing). | [release-notes.md](./release-notes.md) |
 | Revoking API Keys | Immediately revoke an API key when it becomes inactive, lost, or compromised. | [revoking-api-keys.md](./revoking-api-keys.md) |
 | Uploading Assets to App Store Connect | Upload screenshots, app previews, App Review attachments, and routing app coverage files to App Store Connect using a four-step reservation-and-upload workflow. | [uploading-assets.md](./uploading-assets.md) |
 | Users | List and manage team members in App Store Connect, including their roles and app visibility. | [users.md](./users.md) |
