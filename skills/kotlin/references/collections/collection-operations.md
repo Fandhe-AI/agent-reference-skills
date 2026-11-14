@@ -52,18 +52,18 @@ fun main() {
 
 - Member functions define operations essential for a collection type (e.g. `Collection.isEmpty()`, `List.get()`). Custom collection implementations must implement them; skeletal implementations `AbstractCollection`, `AbstractList`, `AbstractSet`, `AbstractMap` (and mutable counterparts) make this easier.
 - Other operations (filtering, transformation, ordering, ...) are extension functions.
-- Common operation groups: transformations, filtering, plus and minus operators, grouping, retrieving collection parts, retrieving single elements, ordering, aggregate operations. Write operations are covered in Write operations, List-specific operations, and Map-specific operations.
+- Common operation groups (the combine group is `plus` / `minus` operators, now documented in Combine collections): transformations, filtering, plus and minus operators, grouping, retrieving collection parts, retrieving single elements, ordering, aggregate operations. Write operations are covered in Write operations, List-specific operations, and Map-specific operations.
 - Functions with destination exist for filtering, association, grouping, flattening, and other operations (see the Kotlin collections reference for the full list).
 
 ## Related
 
-- [Collection transformation operations](./collection-transformations.md)
-- [Filtering collections](./collection-filtering.md)
-- [Plus and minus operators](./collection-plus-minus.md)
-- [Grouping](./collection-grouping.md)
+- [Transform collections](./collection-transformations.md)
+- [Filter collections](./collection-filtering.md)
+- [Combine collections](./collection-combine.md)
+- [Group collections](./collection-grouping.md)
 - [Retrieve collection parts](./collection-parts.md)
 - [Retrieve single elements](./collection-elements.md)
-- [Ordering](./collection-ordering.md)
-- [Aggregate operations](./collection-aggregate.md)
-- [Collection write operations](./collection-write.md)
+- [Order collections](./collection-ordering.md)
+- [Aggregate collections](./collection-aggregate.md)
+- [Change collections](./collection-write.md)
 - [Extensions](../classes-objects/extensions.md)

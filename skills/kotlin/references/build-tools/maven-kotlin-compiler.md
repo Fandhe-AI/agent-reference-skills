@@ -86,6 +86,15 @@ Attributes specific to JVM:
 | `jdkToolchain` | `kotlin.compiler.jdkToolchain` | JDK version from the toolchain; only affects Kotlin compilation | | |
 | `-Xadd-modules` | | (Experimental) Resolve the specified root modules in addition to the initial modules; `ALL-MODULE-PATH` resolves all modules on the module path. Passed via `<arg>` | Comma-separated module names or `ALL-MODULE-PATH` | |
 
+## Notes
+
+### How the JVM-specific options interact
+
+- If you don't set `jvmTarget` explicitly, the Kotlin Maven plugin uses the `jdkRelease` value, or the default `1.8` if `jdkRelease` isn't set either.
+- The JDK that the compiler uses is defined by the `jdkHome` option. If you don't set `jdkHome` explicitly, the Kotlin Maven plugin passes the toolchain's JDK to the compiler as `jdkHome`. You can specify the toolchain's JDK in the `maven-toolchains-plugin` or the `jdkToolchain` option. An explicit `jdkHome` value always takes precedence over the toolchain.
+- Neither the `jdkHome` option nor the toolchain affects the `jvmTarget` option.
+- Source: https://kotlinlang.org/docs/maven-kotlin-compiler.html (kotlin-web-site 2f28ab9, fetched 2026-11-14)
+
 ## Related
 
 - [Maven](./maven.md)

@@ -14,7 +14,7 @@ java -cp <classpath> <mainclass> <options> <processor>
 
 ```bash
 java -cp \
-symbol-processing-aa-2.3.10.jar:symbol-processing-common-deps-2.3.10.jar:symbol-processing-api-2.3.10.jar:kotlin-stdlib-2.3.20.jar:kotlinx-coroutines-core-jvm-1.10.2.jar \
+symbol-processing-aa-2.3.12.jar:symbol-processing-common-deps-2.3.12.jar:symbol-processing-api-2.3.12.jar:kotlin-stdlib-2.4.21.jar:kotlinx-coroutines-core-jvm-1.11.0.jar \
 com.google.devtools.ksp.cmdline.KSPJvmMain \
 -language-version=2.0 \
 -api-version=2.0 \
@@ -64,8 +64,8 @@ Other useful options: `-libraries=<path>` (classpath for dependencies referenced
 
 ## Notes
 
-- Unlike the Gradle plugin, `java` doesn't resolve dependencies: put the KSP runtime JARs and dependencies on the classpath. Download `artifacts.zip` from the KSP release page (tag 2.3.10); it contains `symbol-processing-aa-2.3.10.jar`, `symbol-processing-common-deps-2.3.10.jar`, `symbol-processing-api-2.3.10.jar`. Also required from Maven: `kotlin-stdlib-2.4.21.jar` and `kotlinx-coroutines-core-jvm-1.11.0.jar`.
-- The source's example command line uses `kotlin-stdlib-2.3.20.jar` and `kotlinx-coroutines-core-jvm-1.10.2.jar` (not updated to the versions listed above); use the versions listed above.
+- Unlike the Gradle plugin, `java` doesn't resolve dependencies: put the KSP runtime JARs and dependencies on the classpath. Download `artifacts.zip` from the KSP release page (tag 2.3.12); it contains `symbol-processing-aa-2.3.12.jar`, `symbol-processing-common-deps-2.3.12.jar`, `symbol-processing-api-2.3.12.jar`. Also required from Maven: `kotlin-stdlib-2.4.21.jar` and `kotlinx-coroutines-core-jvm-1.11.0.jar`.
+- Source: https://kotlinlang.org/docs/ksp-command-line.html (kotlin-web-site 2f28ab9, fetched 2026-11-14): the example command line's classpath now uses `kotlin-stdlib-%kotlinVersion%` and `kotlinx-coroutines-core-jvm-%coroutinesVersion%` (2.4.21 / 1.11.0), consistent with the dependency list.
 - `-Dksp.logging` JVM system property sets the logging level: `error`, `warn` or `warning`, `info`, `debug` (default `warn`; unsupported values are treated as `warn`).
 - Run `java -cp <classpath> <mainclass> -h` for the full option list.
 

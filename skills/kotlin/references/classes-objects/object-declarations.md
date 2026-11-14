@@ -27,6 +27,48 @@ DataProviderManager.registerDataProvider(exampleProvider)
 
 Object declarations can have supertypes (`object DefaultListener : MouseAdapter() { ... }`).
 
+### Nested object declarations
+
+```kotlin
+// Declares an object nested inside another object declaration
+object Outer {
+    val name = "Outer"
+
+    object Nested {
+        val name = "Nested in Outer"
+    }
+}
+
+// Declares an object nested inside a class
+class Server {
+    object Config {
+        const val port = 8080
+    }
+}
+
+fun main() {
+    // To access a nested object, refer to it
+    // using the name of its enclosing object
+    println(Outer.Nested.name)
+    // Nested in Outer
+
+    println(Server.Config.port)
+    // 8080
+
+    // An object expression can be nested inside a function
+    val local = object {
+        val name = "Nested in main()"
+    }
+    println(local.name)
+    // Nested in main()
+
+    // An object declaration can't be nested inside a function
+    // object Local {
+    //     val name = "Nested in main()"
+    // }
+}
+```
+
 ### Data objects
 
 ```kotlin
@@ -123,6 +165,8 @@ Anonymous objects returned from a local or `private` function or property expose
 
 - Object declaration initialization is thread-safe and done on first access.
 - Object declarations are not expressions (`val myObject = object MySingleton { ... }` is a syntax error) and can't be local (nested directly inside a function); they can be nested in other object declarations or non-inner classes.
+- A nested object declaration is still a singleton, and you access it through the name of its enclosing object or class. Since object declarations can't be nested directly inside a function, use an object expression instead: it is anonymous, so you can assign it to a local variable but can't give the `object` keyword a name.
+- Source: https://kotlinlang.org/docs/object-declarations.html (kotlin-web-site 2f28ab9, fetched 2026-11-14)
 - Compare `data object` instances only with `==` (structural), never `===`: a second instance can appear through platform reflection or a JVM serialization library.
 - Initialization differences: object expressions are executed (initialized) immediately where used; object declarations are initialized lazily on first access; a companion object is initialized when the corresponding class is loaded (resolved), matching the semantics of a Java static initializer.
 - Companion object members look like statics but are instance members of the companion object. On the JVM, `@JvmStatic` generates real static methods (for properties, static getters/setters); static fields come from `@JvmField`, `lateinit`, or `const` (see Java to Kotlin interop).

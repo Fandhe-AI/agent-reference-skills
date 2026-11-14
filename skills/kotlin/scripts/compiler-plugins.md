@@ -44,6 +44,8 @@ All valid Kotlin compiler options can also be passed (see `kotlinc -help`).
 
 Option fragments passed as `kotlinc` arguments. Source: https://kotlinlang.org/docs/all-open-plugin.html
 
+The command-line section was commented out in the official `all-open-plugin` page source as of kotlin-web-site 2f28ab9 (2026-11-14, was published in 0b10373); the fragment above is kept from the earlier official text.
+
 ## Specify the no-arg plugin
 
 ```sh
@@ -53,6 +55,8 @@ Option fragments passed as `kotlinc` arguments. Source: https://kotlinlang.org/d
 ```
 
 Option fragments passed as `kotlinc` arguments. Source: https://kotlinlang.org/docs/no-arg-plugin.html
+
+The command-line section was commented out in the official `no-arg-plugin` page source as of kotlin-web-site 2f28ab9 (2026-11-14, was published in 0b10373); the fragment above is kept from the earlier official text.
 
 ## Specify the SAM with receiver plugin
 

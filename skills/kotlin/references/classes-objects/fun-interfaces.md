@@ -92,6 +92,8 @@ val isEven: IntPredicate = { it % 2 == 0 }
 - Type aliases only name existing types; functional interfaces create a new type, so extensions can be specific to one functional interface. Type aliases have one member; functional interfaces can have multiple non-abstract members plus one abstract member, and can implement or extend other interfaces.
 - Functional interfaces are more flexible but can cost more syntactically and at runtime (conversion to a specific interface). If an API accepts any function with given parameter/return types, use a functional type or a type alias; if it accepts a richer entity with non-trivial contracts, declare a functional interface.
 - SAM conversions also apply to Java interfaces (see Java interop).
+- Replacing an object expression with a SAM conversion can change object identity. An object expression creates a new instance each time it's evaluated, while a SAM conversion may create a new instance or reuse an existing one. If you need a distinct instance each time, for example for each registration, use an object expression or create an instance of a class explicitly. If you need to refer to the same instance later, for example to remove a listener, store it in a variable.
+- Source: https://kotlinlang.org/docs/fun-interfaces.html (kotlin-web-site 2f28ab9, fetched 2026-11-14)
 
 ## Related
 

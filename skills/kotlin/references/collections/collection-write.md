@@ -2,7 +2,7 @@
 source: https://kotlinlang.org/docs/collection-write.html
 ---
 
-# Collection write operations
+# Change collections
 
 Write operations available for all implementations of `MutableCollection`: adding, removing, and (for lists and maps) updating elements.
 
@@ -64,6 +64,6 @@ fun main() {
 
 ## Related
 
-- [Collection plus and minus operators](./collection-plus-minus.md)
+- [Combine collections](./collection-combine.md)
 - [List-specific operations](./list-operations.md)
 - [Map-specific operations](./map-operations.md)

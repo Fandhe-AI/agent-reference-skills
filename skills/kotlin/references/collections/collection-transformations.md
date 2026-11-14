@@ -2,7 +2,7 @@
 source: https://kotlinlang.org/docs/collection-transformations.html
 ---
 
-# Collection transformation operations
+# Transform collections
 
 Extension functions that build new collections from existing ones: map, zip, associate, flatten, and string representation.
 

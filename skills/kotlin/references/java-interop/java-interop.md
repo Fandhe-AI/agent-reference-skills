@@ -18,7 +18,7 @@ fun demo(source: List<Int>) {
         list.add(item)
     }
     // Operator conventions work as well:
-    for (i in 0..source.size - 1) {
+    for (i in 0..<source.size) {
         list[i] = source[i] // get and set are called
     }
 }
@@ -33,48 +33,72 @@ import java.util.Calendar
 
 fun calendarDemo() {
     val calendar = Calendar.getInstance()
-    if (calendar.firstDayOfWeek == Calendar.SUNDAY) { // call getFirstDayOfWeek()
-        calendar.firstDayOfWeek = Calendar.MONDAY // call setFirstDayOfWeek()
+    if (calendar.firstDayOfWeek == Calendar.SUNDAY) { // Calls getFirstDayOfWeek()
+        calendar.firstDayOfWeek = Calendar.MONDAY     // Calls setFirstDayOfWeek()
     }
-    if (!calendar.isLenient) { // call isLenient()
-        calendar.isLenient = true // call setLenient()
+    if (!calendar.isLenient) {    // Calls isLenient()
+        calendar.isLenient = true // Calls setLenient()
     }
 }
 ```
 
-### Java synthetic property references
+Only no-argument getters are represented as synthetic properties. If the getter has an overload that takes arguments, that overload isn't exposed as a property and in most cases you call it using its full method name:
 
-Kotlin 1.8.20 introduced (as Experimental) references such as `Person::age` and `person::age` to Java synthetic properties.
+```java
+// Java
+public class Greeting {
+    public String getMessage() {
+        return "Hello!";
+    }
 
-```kotlin
-val persons = listOf(Person("Jack", 11), Person("Sofie", 12), Person("Peter", 11))
-    persons
-         // Call a reference to Java synthetic property:
-        .sortedBy(Person::age)
-         // Call Java getter via the Kotlin property syntax:
-        .forEach { person -> println(person.name) }
+    public String getMessage(String name) {
+        return "Hello, " + name + "!";
+    }
+}
 ```
 
-The official page quotes the following enable step (outdated; see Notes):
+The no-argument `getMessage()` is available through the synthetic `message` property. To use the overloaded `getMessage(String)`, call it as a function:
 
 ```kotlin
-tasks
-    .withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>()
-    .configureEach {
-        compilerOptions
-            .languageVersion
-            .set(
-                org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1
-            )
+// Kotlin
+fun main() {
+    val greeting = Greeting()
+    println(greeting.message)              // Accesses getMessage() through the synthetic property
+    println(greeting.getMessage("Kotlin")) // Calls the overloaded getMessage(String) method
+}
+```
+
+Calling `greeting.message("Kotlin")` doesn't compile (unresolved reference, receiver type mismatch) because the `message` property doesn't accept arguments.
+
+In some cases, when a Java method with parameters overrides the getter of a Kotlin member extension property, Kotlin treats the method as a property. You can then only call it as a property within the receiver's scope, not by its method name:
+
+```java
+// Java
+public class Greeter implements Message {
+    public String getText(String name) {
+        return "Hello, " + name + "!";
     }
+}
+```
+
+```kotlin
+// Kotlin
+interface Message {
+    val String.text: String
+}
+
+fun demo(greeter: Greeter) {
+    greeter.getText("Kotlin")       // Error: unresolved reference
+    with(greeter) { "Kotlin".text } // Accesses getText(String) through the member extension property
+}
 ```
 
 ### Methods returning void and keyword identifiers
 
-A Java `void` method returns `Unit` in Kotlin. Java identifiers that are Kotlin keywords (`in`, `object`, `is`, ...) are escaped with backticks:
+A Java `void` method returns `Unit` in Kotlin; if the return value is used, the compiler assigns `Unit` at the call site. Java identifiers that are Kotlin keywords (`in`, `object`, `is`, ...) are escaped with backticks:
 
 ```kotlin
-foo.`is`(bar)
+matcher.`is`(expected)
 ```
 
 ### Null-safety and platform types
@@ -105,7 +129,7 @@ If you choose a non-nullable type, the compiler emits an assertion upon assignme
 
 #### Nullability annotations
 
-Java types with nullability annotations are represented as actual nullable / non-nullable Kotlin types, not platform types. Supported flavors include: JetBrains (`org.jetbrains.annotations`), JSpecify (`org.jspecify.annotations`), Android (`com.android.annotations`, `android.support.annotations`), JSR-305 (`javax.annotation`), FindBugs (`edu.umd.cs.findbugs.annotations`), Eclipse (`org.eclipse.jdt.annotation`), Lombok (`lombok.NonNull`), RxJava 3 (`io.reactivex.rxjava3.annotations`), Vert.x (`io.vertx.codegen.annotations`).
+Java types with nullability annotations are represented as actual nullable / non-nullable Kotlin types, not platform types. Supported flavors include: JetBrains (`org.jetbrains.annotations`), JSpecify (`org.jspecify.annotations`), Android (`com.android.annotations`, `android.support.annotation`, `androidx.annotation`, `android.annotation`), JSR-305 (`javax.annotation`), FindBugs (`edu.umd.cs.findbugs.annotations`), Eclipse (`org.eclipse.jdt.annotation`), Lombok (`lombok.NonNull`), RxJava 3 (`io.reactivex.rxjava3.annotations`), Vert.x (`io.vertx.codegen.annotations`).
 
 Report level per annotation package:
 
@@ -298,7 +322,29 @@ javaObj.removeIndicesVarArg(*array)
 
 ### Operators
 
-Any Java method with the right name and signature can be used as an operator overload and other conventions (`invoke()` etc.). Calling Java methods using infix call syntax is not allowed.
+Any Java method with the right name and signature can be used as an operator overload and other conventions (`invoke()` etc.). Calling Java methods using infix call syntax is not allowed. For example, a Java class that declares `get(int)` and `set(int, T)` methods works with the indexed access operator:
+
+```java
+public class IntContainer {
+    private final int[] values = new int[10];
+
+    public int get(int index) {
+        return values[index];
+    }
+
+    public void set(int index, int value) {
+        values[index] = value;
+    }
+}
+```
+
+```kotlin
+fun main() {
+    val container = IntContainer()
+    container[0] = 42     // Calls set(0, 42)
+    println(container[0]) // Calls get(0)
+}
+```
 
 ### Checked exceptions
 
@@ -320,17 +366,17 @@ References of type `java.lang.Object` become `Any`, which declares only `toStrin
 
 ```kotlin
 @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-(foo as java.lang.Object).wait()
+(instance as java.lang.Object).wait()
 ```
 
 - `getClass()`: `foo::class.java` (bound class reference) or `foo.javaClass`.
 - `clone()`: the class must extend `kotlin.Cloneable`.
-- `finalize()`: declare it without `override`; it must not be `private`.
+- `finalize()`: declare it without `override`; it must not be `private`. `finalize()` is deprecated in modern Java versions; consider `java.lang.ref.Cleaner` or try-with-resources instead.
 
 ```kotlin
 class C {
     protected fun finalize() {
-        // finalization logic
+        // Finalization logic
     }
 }
 ```
@@ -343,7 +389,27 @@ At most one Java class (and any number of Java interfaces) can be a supertype of
 if (Character.isLetter(a)) { ... }
 ```
 
-For Java types mapped to Kotlin types use the fully qualified name: `java.lang.Integer.bitCount(foo)`.
+To call a static method of an imported Java class, use the class name directly, just like in Java:
+
+```java
+package org.example;
+
+public class MathUtils {
+    public static int triple(int value) {
+        return value * 3;
+    }
+}
+```
+
+```kotlin
+import org.example.MathUtils
+
+fun main() {
+    println(MathUtils.triple(5)) // Calls the static triple() method
+}
+```
+
+For Java types mapped to Kotlin types use the fully qualified name: `java.lang.Integer.bitCount(5)`.
 
 ### Java reflection
 
@@ -372,7 +438,7 @@ executor.shutdown()
 Mark natively implemented functions `external`; property accessors can be `external` too (creating `getMyProperty` / `setMyProperty`).
 
 ```kotlin
-external fun foo(x: Int): Double
+external fun calculateSum(x: Int): Double
 
 var myProperty: String
     external get
@@ -382,10 +448,10 @@ var myProperty: String
 ## Notes
 
 - The official docs claim JSpecify is the only flavor that is `strict` by default; most other supported flavors (e.g. JetBrains, Android) also report mismatches as errors by default, while JSR-305 defaults to warn.
-- Java synthetic property references (`Person::age`) were introduced as Experimental. Prior to Kotlin 1.9.0 the option was `-language-version 1.9`.
-- The official page still says to enable this with -language-version 2.1, but kotlin-language-features-and-proposals lists Java synthetic property references as Revoked, and in the Kotlin 2.4.21 compiler the ReferencesToSyntheticJavaProperties feature has no since-version, so no -language-version value enables it.
+- The official page no longer has the "Java synthetic property references" section (`Person::age` / `person::age`, Experimental since Kotlin 1.8.20, enabled with `-language-version 2.1`) that earlier versions of this page carried. kotlin-language-features-and-proposals lists the feature as Revoked, and in the Kotlin 2.4.21 compiler the ReferencesToSyntheticJavaProperties feature has no since-version, so no -language-version value enables it. Don't rely on such references.
 - SAM conversions work only for interfaces, not abstract classes.
-- The official SAM conversion example uses ThreadPoolExecutor(), which has no no-arg constructor; replaced with Executors.newSingleThreadExecutor() and added shutdown().
+- The official SAM conversion example now uses Executors.newSingleThreadExecutor(); the import and the final `executor.shutdown()` call in the snippet above were added here and are not in the official docs.
+- Source: https://kotlinlang.org/docs/java-interop.html (kotlin-web-site 2f28ab9, fetched 2026-11-14)
 - Lombok-generated declarations: usable in Kotlin code; to generate and use them in the same mixed Java/Kotlin module see the Lombok compiler plugin page (`../compiler/lombok.md`). Calling them from another module needs no plugin.
 - Full lists of supported nullability / mutability annotations are in the Kotlin compiler source (`JvmAnnotationNames.kt`).
 
