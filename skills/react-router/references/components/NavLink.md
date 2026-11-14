@@ -52,7 +52,7 @@ import { NavLink } from "react-router";
 - When using `prefetch`, `<link rel="prefetch">` tags are inserted after the element — use `nav :last-of-type` instead of `nav :last-child` in CSS.
 - `viewTransition`, the `isTransitioning` render prop and the `transitioning` class are deprecated and only track React Router's legacy view transitions. Use React's `<ViewTransition>` component instead; see [View Transitions](../how-to/view-transitions.md)
 - Source: https://reactrouter.com/api/components/NavLink (docs/api/components/NavLink.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/api/components/NavLink.md)
-- Source: https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md (8.5.0 deprecation of view transition APIs, PR #15493)
+- Source: https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md (8.5.0 deprecation of view transition APIs, [PR #15493](https://github.com/remix-run/react-router/pull/15493))
 
 ## Related
 

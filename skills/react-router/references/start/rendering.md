@@ -76,7 +76,7 @@ export default {
 - Deploy both `build/client` and the runtime server build. Serve assets, prerendered documents, and the SPA fallback from the client build; send `.data` and route discovery requests (`/__manifest` by default) to the React Router request handler. The production API-only handler returns `404` for document requests; `react-router-serve` handles this routing automatically
 - `unstable_apiServerOrigin` applies to loader, action, and route discovery requests only in API-only Mode. Use an origin without a path, query, or hash. Configure CORS on the API server and allow the client origin via `allowedActionOrigins` for cross-origin action submissions. To customize JavaScript-issued requests with authentication headers or cross-origin credentials, see [Custom Fetch](../how-to/custom-fetch.md); native data prefetches bypass custom fetch
 - Source: https://reactrouter.com/start/framework/rendering (docs/start/framework/rendering.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/start/framework/rendering.md)
-- Source: https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router-dev/CHANGELOG.md (8.5.0: `ssr: "unstable_api-only"` and `unstable_apiServerOrigin`, PR #15601)
+- Source: https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router-dev/CHANGELOG.md (8.5.0: `ssr: "unstable_api-only"` and `unstable_apiServerOrigin`, [PR #15601](https://github.com/remix-run/react-router/pull/15601))
 
 ## Related
 

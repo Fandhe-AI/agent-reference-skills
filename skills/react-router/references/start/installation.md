@@ -42,7 +42,7 @@ For manual project configuration, use the [default template on GitHub](https://g
 - Framework Mode is configured via `react-router.config.ts`
 - Three modes exist: Framework Mode / Data Mode / Declarative Mode — see [modes](./modes.md)
 - No breaking changes to the installation flow between v7 and v8; the package major version moved to v8
-- 8.5.0 ([CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md), PR #15528): `@types/react` and `@types/react-dom` are declared as optional peer dependencies of `react-router` so the shipped type definitions resolve React types under strict (non-hoisted) `node_modules` layouts
+- 8.5.0 ([CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md), [PR #15528](https://github.com/remix-run/react-router/pull/15528)): `@types/react` and `@types/react-dom` are declared as optional peer dependencies of `react-router` so the shipped type definitions resolve React types under strict (non-hoisted) `node_modules` layouts
 
 ## Related
 

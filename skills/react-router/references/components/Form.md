@@ -46,8 +46,8 @@ function NewEvent() {
 - `defaultShouldRevalidate={false}` skips loader revalidation for this submission. Routes without a `shouldRevalidate` export use the value directly; routes that export one receive it as `defaultShouldRevalidate` and still decide. See [Revalidation Optimization](../how-to/optimize-revalidation.md).
 - `viewTransition` is deprecated in favor of React's `<ViewTransition>` component (React 19.3+); see [View Transitions](../how-to/view-transitions.md)
 - Source: https://reactrouter.com/api/components/Form (docs/api/components/Form.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/api/components/Form.md)
-- Source: https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md (8.5.0 deprecation of view transition APIs, PR #15493)
-- 8.5.1 ([CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md), PR #15679): posting a `<Form>` to the current URL with an encoded `action` no longer adds duplicate history entries; the current entry is replaced when the `action` contains characters that get percent-encoded, such as spaces or non-ASCII characters
+- Source: https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md (8.5.0 deprecation of view transition APIs, [PR #15493](https://github.com/remix-run/react-router/pull/15493))
+- 8.5.1 ([CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md), [PR #15679](https://github.com/remix-run/react-router/pull/15679)): posting a `<Form>` to the current URL with an encoded `action` no longer adds duplicate history entries; the current entry is replaced when the `action` contains characters that get percent-encoded, such as spaces or non-ASCII characters
 
 ## Related
 

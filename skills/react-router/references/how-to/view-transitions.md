@@ -78,7 +78,7 @@ navigate("/about", { viewTransition: true });
 - `useViewTransitionState(href)` returns `true` when a transition to that href is in progress
 
 - Source: https://reactrouter.com/how-to/view-transitions (docs/how-to/view-transitions.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/how-to/view-transitions.md)
-- Source: https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md (8.5.0 deprecation of view transition APIs, PR #15493)
+- Source: https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md (8.5.0 deprecation of view transition APIs, [PR #15493](https://github.com/remix-run/react-router/pull/15493))
 
 ## Related
 
