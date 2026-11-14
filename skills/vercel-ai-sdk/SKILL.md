@@ -4,7 +4,7 @@ description: >
   Vercel AI SDK (TypeScript LLM ツールキット, ai / @ai-sdk/*, v7)。
   generateText, streamText, Output, ToolLoopAgent, createMCPClient, useChat, UIMessage,
   embed, generateImage, wrapLanguageModel, WorkflowAgent, HarnessAgent, AI Gateway, @ai-sdk/rsc、
-  v4 から v7 への移行。
+  experimental_extract, streamSpeech, steering, Chat SDK (chat-platforms), eve、v4 から v7 への移行。
 user-invocable: false
 ---
 

@@ -108,7 +108,7 @@ type ActiveTools<TOOLS extends ToolSet> =
 - For outputs consumed once, see [streamText low memory](./stream-text-low-memory.md): same execution engine with one stream consumer and no replay buffer.
 - `streamText` starts streaming immediately; errors become part of the stream and are not thrown. Use `onError` to log them.
 - Deprecated: `fullStream` (use `stream`), `includeRawChunks` (use `include.rawChunks`), `totalUsage`, `onFinish`, `onStepFinish`, `experimental_onToolCallStart`, `experimental_onToolCallFinish`.
-- The official streamText reference types `consumeSseStream` as `(stream: ReadableStream) => Promise<void>`, but the published type at ai@7.0.173 takes an object argument `{ stream }`, same as createAgentUIStreamResponse. See [ui-message-stream-response-init.ts](https://github.com/vercel/ai/blob/ai@7.0.142/packages/ai/src/ui-message-stream/ui-message-stream-response-init.ts).
+- The official streamText reference types `consumeSseStream` as `(stream: ReadableStream) => Promise<void>`, but the published type at ai@7.0.173 takes an object argument `{ stream }`, same as createAgentUIStreamResponse. See [ui-message-stream-response-init.ts](https://github.com/vercel/ai/blob/ai@7.0.173/packages/ai/src/ui-message-stream/ui-message-stream-response-init.ts).
 - `experimental_*` options may change in incremental package releases.
 - `result.toUIMessageStreamResponse` / `pipeUIMessageStreamToResponse` produce HTTP responses; this page covers the AI SDK helper. Server-framework specifics (Hono, Fastify, Next.js route handlers, TanStack Start) are covered by the hono, fastify, nextjs-app and tanstack-start skills.
 
