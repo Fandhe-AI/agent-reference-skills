@@ -25,14 +25,25 @@ rn(rn(x^2) - 1) = 1.6000e-4        (two roundings, separate multiply then add)
 | Floating-Point Manipulation | `frexp`, `ldexp`, `modf`, `scalbn`, `ilogb`, `logb`, `nextafter`, `copysign` | 0 |
 | Classification and Comparison | `isfinite`, `isinf`, `isnan`, `signbit` | 0 |
 
+### Single-precision-only intrinsics added in CPG 13.5
+
+| Function | Computes | Error |
+| --- | --- | --- |
+| `__sin2pif(x)` | sin(2πx) | 2^-20 abs error for x in [-1, 1]; larger otherwise |
+| `__cos2pif(x)` | cos(2πx) | 2^-19.9 abs error for x in [-1, 1]; larger otherwise |
+| `__sincos2pif(x, sptr, cptr)` | sin(2πx), cos(2πx) | Component-wise, the same as `__sin2pif(x)` and `__cos2pif(x)` |
+
 ## Notes
 
 - CUDA supports five floating-point types with varying IEEE-754 compliance and hardware requirements: bfloat16, half precision (`__half`), single precision (`float`), double precision (`double`), and quad precision (`__float128`/`_Float128`).
 - FMA (fused multiply-add) computes `a*b+c` with a single rounding step instead of two, improving accuracy for expressions like `x^2 - 1` — see the worked example above.
 - Device-only intrinsic math functions (e.g. `__expf`, `__sinf`) trade accuracy for a single-instruction, lower-latency implementation compared to the standard CUDA Math API functions (`exp`, `sin`, etc.), which are available on both host and device with documented ULP error bounds.
-- The ULP error bounds above are representative examples per category; consult the official page's full per-function tables (Table 47-55) for exact bounds on a specific function and precision.
+- The ULP error bounds above are representative examples per category; consult the official page's full per-function tables (Tables 53-61 in CPG v13.5) for exact bounds on a specific function and precision.
+- Section numbering: since CPG 13.5 this appendix is Section 5.6 (Section 5.5 is Improving CUDA Compilation Time).
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/mathematical-functions.html (CPG v13.5, retrieved 2026-11-14)
 
 ## Related
 
 - [C++ Language Support](./cpp-language-support.md)
 - [Advanced Kernel Programming](../core/advanced-kernel-programming.md)
+- [Improving CUDA Compilation Time](./compile-time.md)

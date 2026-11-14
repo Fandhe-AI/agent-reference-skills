@@ -48,6 +48,7 @@ cudaExecutionCtxStreamCreate(&strm1, my_green_ctx1, cudaStreamDefault, 0);
 - `coscheduledSmCount` rule (CPG 13.4 wording): a resulting group's SM count must be a multiple of `groupParams[i].coscheduledSmCount` when `cudaDevSmResourceGroupBackfill` is not set, or greater than or equal to it when backfill is set. A failed split with a non-null `result` may report generic errors such as `cudaErrorInvalidResourceConfiguration`; use `CUDA_LOG_FILE` for details during development.
 - Work is launched onto a green context the same way as any other context: create a stream bound to it via `cudaExecutionCtxStreamCreate`, then launch kernels on that stream.
 - Green contexts are a spatial-partitioning tool for latency isolation; they do not change a kernel's own parallelism, only which SMs it is allowed to run on.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/green-contexts.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

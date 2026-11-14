@@ -44,6 +44,7 @@ export CUDA_LOG_FILE=stderr
 - `cuLogsDumpToMemory` / `cudaLogsDumpToMemory`: the buffer is null-terminated and entries are newline-separated; a 25,600-byte buffer is sufficient for all retained log data; on success `size` is the number of bytes written excluding the terminating null; with no messages to dump the call succeeds and sets `size` to 0; if only some messages fit, a truncation notice is prepended, the oldest messages that do not fit are omitted, and the most recent message is kept; if the buffer cannot hold any message, the call returns `CUDA_ERROR_INVALID_VALUE` / `cudaErrorInvalidValue` and sets `size` to 0.
 - The callback receives message text and explicit byte length, without the timestamp / thread ID / source / severity prefix added to file and dump output. Do not rely on a particular callback thread or invocation timing unless the API reference guarantees it.
 - Not all CUDA APIs generate descriptive messages yet; messages are not localized (US English).
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/error-log-management.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

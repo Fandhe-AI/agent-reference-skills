@@ -1,6 +1,6 @@
 # Data Movement, Conversion, and Fabric Instructions
 
-Register/memory data movement, address-space conversion, and fabric (multi-GPU NVLink-fabric) instructions (PTX ISA 9.4 §9.7.10–9.7.11).
+Register/memory data movement, address-space conversion, and fabric (multi-GPU NVLink-fabric) instructions (PTX ISA 9.5 §9.7.10–9.7.11).
 
 ## Signature / Usage
 
@@ -12,20 +12,26 @@ cvta.to.global.u32  p,gptr;  // convert generic address to global address
 
 // PTX ISA 9.4 additions
 applypriority.async.bulk.global.bulk_group.L2::evict_normal [ptr], 128;
-spcompress.b8.b2.sp::2:4.x4 {mdata_0}, ...;   // dense -> 2:4 structured sparse (see 9.7.10.30)
+spcompress.b8.b2.sp::2:4.x4 {mdata_0}, ...;   // dense -> 2:4 structured sparse (see 9.7.10.31)
 createpolicy.range.fabric.L2::evict_last.L2::evict_first.b64 policy, [leid, off], 0x100000, 0x200000;
+
+// PTX ISA 9.5 additions
+cp.async.bulk.wait_group.sync_restrict::proxy::async  3;
+tensormap.query.alloc_class_large.shared::cta.b1024  p, [addr];
+fabric.submit.commit_group;
+fabric.wait.sync_restrict::read 0;
 ```
 
 ## Options / Props
 
 | Category | Mnemonics |
 | --- | --- |
-| Data movement and conversion (9.7.10) | `mov`, `shfl` (deprecated), `shfl.sync`, `prmt`, `ld`, `ld.global.nc`, `ldu`, `st`, `st.async`, `st.bulk`, `multimem.ld_reduce`, `multimem.st`, `multimem.st.async`, `multimem.red`, `prefetch`, `prefetchu`, `applypriority`, `applypriority.async.bulk`, `applypriority.async.bulk.tensor`, `discard`, `createpolicy` (incl. `createpolicy.range.fabric`), `isspacep`, `cvta`, `cvt`, `cvt.pack`, `mapa`, `getctarank`, `cp.async`, `cp.async.bulk`, `cp.reduce.async.bulk`, `tensormap.replace`, `spcompress`, `spdecompress` |
-| Fabric instructions (9.7.11) | `fabric.try_get`, `fabric.try_put`, `fabric.try_red`, `fabric.try_pullred`, `fabric.submit`, `fabric.wait`, `fabric.try_get.async.tensor`, `fabric.try_put.async.tensor`, `fabric.try_red.async.tensor`, `fabric.try_atom` |
+| Data movement and conversion (9.7.10) | `mov`, `shfl` (deprecated), `shfl.sync`, `prmt`, `ld`, `ld.global.nc`, `ldu`, `st`, `st.async`, `st.bulk`, `multimem.ld_reduce`, `multimem.st`, `multimem.st.async`, `multimem.red`, `prefetch`, `prefetchu`, `applypriority`, `applypriority.async.bulk`, `applypriority.async.bulk.tensor`, `discard`, `createpolicy` (incl. `createpolicy.range.fabric`), `isspacep`, `cvta`, `cvt`, `cvt.pack`, `mapa`, `getctarank`, `cp.async`, `cp.async.bulk`, `cp.reduce.async.bulk`, `tensormap.replace` (with `.alloc_class`), `tensormap.query.alloc_class_large`, `spcompress`, `spdecompress` |
+| Fabric instructions (9.7.11) | `fabric.try_get`, `fabric.try_put`, `fabric.try_red`, `fabric.try_pullred`, `fabric.submit`, `fabric.wait`, `fabric.try_get.async.tensor`, `fabric.try_put.async.tensor`, `fabric.try_red.async.tensor`, `fabric.try_atom`, `fabric.submit.commit_group`, `fabric.wait.sync_restrict::read` |
 
 ## Notes
 
-- PTX ISA 9.4 — Chapter 9.7.10–9.7.11 (section numbers shifted by one from 9.3 because 9.4 inserted Alternate Floating-Point as 9.7.6)
+- PTX ISA 9.5 — Chapter 9.7.10–9.7.11 (section numbers shifted by one from 9.3 because 9.4 inserted Alternate Floating-Point as 9.7.6)
 - `mov` transfers data between registers or from a constant into a register; `ld`/`st` load and store to/from memory across state spaces and addressing modes.
 - `cvta.space` converts a `.const`/`.global`/`.local`/`.shared`/`.param` address into a generic address; `cvta.to.space` performs the reverse conversion (generic → state-space address).
 - Fabric instructions (9.7.11): pointer-address-based memory operations treat NVLink failures as fatal to the application; the CUDA Compute Fabric Transport (CFT) model introduces fabric operations that report failures to the application so it can abort, tear down, or retry. A CFT handle is `leId` (32-bit logical endpoint id) plus `off` (64-bit resource offset within the endpoint). All fabric operations are asynchronous, may fail with a reported status, and access handle resources via the fabric-proxy. Lifecycle: issue operations tracked by an `mbarrier.layout::v1`, submit them before the mbarrier phase completes, arrive/expect-tx, wait, then inspect the report predicate (the `mbarrier::report::fabric` mechanism; the opaque report value can be decoded with `cudaFabricOpErrorStatusGet/Count`). Partial completion mechanisms: fabric-read (reuse shared memory read by an operation) and counted (`.counted::bytes`, 8-byte 256B-aligned global counter incremented per byte accessed, system-scope atomic; incompatible with `.cp_mask`).
@@ -34,6 +40,12 @@ createpolicy.range.fabric.L2::evict_last.L2::evict_first.b64 policy, [leid, off]
 - `applypriority.async.bulk{.src}.completion_mechanism.level::eviction_priority [a], size;` (9.4): applies the cache eviction priority to the address range `[a..a+size)` (`.level::eviction_priority = { .L2::evict_normal }`, `.src = { .global }`, `.completion_mechanism = { .bulk_group }`); `size` is a multiple of 16 and `a` is 128-byte aligned; weak memory operation. `applypriority.async.bulk.tensor` is the tensor variant (`.dim = { .1d .. .5d }`). Both: PTX ISA 9.4, `sm_107f` or higher in the same family.
 - `spcompress.elemsize.idxsize.spfactor.num mdata, cdata, data, spdesc;` (9.4): compresses a dense vector to a 2:4 structured sparse vector (`.elemsize = { .b8, .b16 }`, `.idxsize = { .b2, .b4 }`, `.spfactor = { .sp::2:4 }`, `.num = { .x1 .. .x64 }`); `mdata` holds the indices of the 2 selected elements per group of 4. `spdecompress.elemsize.idxsize.spfactor.num data, mdata, cdata;` is the inverse, with `.spfactor` also allowing `.sp::1:2`, `.sp::1:4`, `.sp::1:8`, `.sp::1:16` (see the official page for the complete list). Both: PTX ISA 9.4, `sm_107a`.
 - `createpolicy.range.fabric.level::primary_priority{.level::secondary_priority}.b64 cache_policy, [aLe, aOff], primary-size, total-size;` (9.4, `sm_100` or higher): range-based eviction policy over address ranges within a fabric handle (primary range starting at `aOff`, plus trailing and preceding secondary ranges); maximum `total-size` 4 GB; default secondary priority `.L2::evict_unchanged`.
+- PTX ISA 9.5 additions (verbatim syntax from the official text):
+  - `tensormap.replace.mode.field4{.alloc_class}{.ss}.b1024.type  [addr], new_val;` and `tensormap.replace.mode.alloc_class{.ss}.b1024  [addr];` with `.alloc_class = { .alloc_small, .alloc_large, .alloc_same }`. `.alloc_class` may accompany the `.global_address` field (all three values valid) or be used without any field (`.alloc_small`, `.alloc_large` only), representing the underlying tensor allocation size as small, large, or unchanged. Semantic clarification: when the field is `.global_address` and `.alloc_class` is not specified, the Tensor Allocation Size of the descriptor is set to Small. `.alloc_class` is supported on `sm_90a` and on `sm_100f` / `sm_110f` / `sm_120f` or higher in the same family.
+  - `tensormap.query.alloc_class_large{.ss}.b1024  p, [addr];` with `.ss = { .global, .shared::cta, .const, .param{::entry} }` (9.7.10.30): sets predicate `p` to True only if the allocation class of the tensor-map object at `addr` has been set to large (see `tensormap.replace`). Same target support as `.alloc_class`.
+  - `cp.async.bulk.wait_group.sync_restrict::proxy::async N;` (requires `sm_100` or higher): only orders async-proxy global and shared memory accesses before subsequent async-proxy accesses, not before subsequent generic-proxy accesses. The base `cp.async.bulk.wait_group{.read} N;` requires `sm_90` or higher.
+  - `fabric.submit.commit_group;` starts a new fabric submit group tracking the submit of all prior fabric operations issued by the current thread; `fabric.wait.sync_restrict::read N;` waits until only `N` or fewer of the most recent fabric submit groups are pending, so the local `.shared::cta` memory read by those groups can be overwritten before the operations complete. Programs must create submit groups with `fabric.submit.commit_group` in order to use `fabric.wait.sync_restrict::read` before arriving at the mbarrier that tracks completion; otherwise the behavior is undefined. Both require `sm_100` or higher.
+  - `fabric.wait.sync_restrict::reads;` is deprecated in 9.5 in favor of `fabric.wait.sync_restrict::read N;` used together with `fabric.submit.commit_group`, and will be removed in a future PTX ISA version; it has no effect and does not wait for submit groups created by `fabric.submit.commit_group`.
 - Qualifiers added in 9.4 whose only source here is the Release Notes (wording verbatim, no semantics asserted): `cvt` `.pzo`; `cvt` `.rz` rounding mode with `.e4m3x2`, `.e5m2x2`, `.e2m3x2`, `.e3m2x2`, `.e2m1x2` destination types; `cvt` `.ue5m3x2` instruction type; `cvt` `.scaled::n1::ue8m0`; `prefetch` `.valid_addr` and `.L1::32B`; `ld` `.proxy::readonly`; `cp.async.bulk` / `cp.async.bulk.tensor` `.report_mechanism`, `.multicast::cluster::32b`; `cp.async.bulk.prefetch` / `.prefetch.tensor` `.level::eviction_priority`; `cp.async.bulk.tensor`, `cp.reduce.async.bulk.tensor`, `cp.async.bulk.prefetch.tensor` `.override::global_address` and `.override_attribute`; `cp.async.bulk.tensor` / `cp.reduce.async.bulk.tensor` `.im2col_no_offs::w`; `ldmatrix` `.s8.s4` types for the `.m8n16` shape.
 
 ## Related

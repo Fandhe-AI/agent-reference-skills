@@ -1,6 +1,6 @@
 # Parallel Synchronization and Communication Instructions
 
-Barrier, memory fence, atomic/reduction, warp-vote, and asynchronous mbarrier instructions for cross-thread synchronization and communication (PTX ISA 9.4 §9.7.15).
+Barrier, memory fence, atomic/reduction, warp-vote, and asynchronous mbarrier instructions for cross-thread synchronization and communication (PTX ISA 9.5 §9.7.15).
 
 ## Signature / Usage
 
@@ -10,6 +10,7 @@ membar.gl;
 atom.global.add.s32  d,[a],1;
 vote.sync.all.pred    p,q,0xffffffff;
 mbarrier.init{.layout}{.shared{::cta}}.b64 [addr], count;
+fence.alias.sync_restrict::read.release.sys;
 ```
 
 ## Options / Props
@@ -26,7 +27,8 @@ mbarrier.init{.layout}{.shared{::cta}}.b64 [addr], count;
 
 ## Notes
 
-- PTX ISA 9.4 — Chapter 9.7.15 (section number shifted by one from 9.3)
+- PTX ISA 9.5 — Chapter 9.7.15 (section number shifted by one from 9.3)
+- PTX ISA 9.5 addition: `fence.alias.sync_restrict::read.release.sys;` (generic-proxy to generic-proxy alias fence; requires `sm_90` or higher). The qualifier `sync_restrict::read` builds a release pattern that only releases prior reads. Example comment in the official text: "Release prior reads via generic-proxy to generic-proxy alias fence."
 - PTX ISA 9.4 additions (Release Notes wording): `.multicast::cluster::32b` qualifier for `mbarrier.expect_tx`, `mbarrier.complete_tx`, `mbarrier.arrive`, `mbarrier.arrive_drop`; `.sync_restrict::shared::cluster::read` qualifier for `fence.proxy.async::generic`; `.acquire` and `.release` qualifiers with `.alias` for `fence.proxy`; `.noftz` qualifier with `.f32` type for `atom` and `red`.
 - `bar.sync` synchronizes all threads of a CTA at a barrier; `barrier.cluster` extends this to cluster scope (sm_90+).
 - `mbarrier` provides an asynchronous barrier object (initialized in shared memory) used to track completion of async-copy and other asynchronous operations without a blocking `bar.sync`.

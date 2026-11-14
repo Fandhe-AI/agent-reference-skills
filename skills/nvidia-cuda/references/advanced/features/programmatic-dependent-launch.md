@@ -29,6 +29,8 @@ __global__ void secondary_kernel() {
 - PDL overlaps the "tail" of the primary kernel (after its GPU-visible effects are done but before all its threads have exited) with the "head" of the secondary kernel's independent work, improving latency versus a hard kernel boundary.
 - If the primary kernel never calls `cudaTriggerProgrammaticLaunchCompletion()`, the secondary kernel's `cudaGridDependencySynchronize()` waits for ordinary launch completion instead — PDL degrades gracefully.
 - In CUDA Graphs, PDL is expressed by attaching `cudaGraphDependencyTypeProgrammatic` edges with the corresponding port, rather than by relying on stream capture attributes.
+- Fine-grained synchronization (CPG 13.5): the secondary kernel is still launched with Programmatic Dependent Launch and still calls `cudaGridDependencySynchronize`, but it checks the produced data for a sentinel value before that call. It can therefore consume each part of the data as soon as that part is written, instead of waiting for the entire primary grid.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/programmatic-dependent-launch.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

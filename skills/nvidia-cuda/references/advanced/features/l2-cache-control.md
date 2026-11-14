@@ -32,6 +32,7 @@ cudaStreamSetAttribute(stream, cudaStreamAttributeAccessPolicyWindow, &stream_at
 - The set-aside persisting cache is shared across concurrent kernels/streams competing for the same set-aside region — over-subscribing it with too many overlapping persisting windows can cause thrashing; `hitRatio` is one tool to manage this.
 - Call `cudaCtxResetPersistingL2Cache()` when persisting data is no longer needed, otherwise the set-aside region continues occupying L2 capacity.
 - Persisting access policy can be set at stream granularity (all kernels on that stream) or per kernel-node granularity within a CUDA Graph.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/l2-cache-control.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

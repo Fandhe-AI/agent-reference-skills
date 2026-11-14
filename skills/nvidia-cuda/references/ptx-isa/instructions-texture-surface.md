@@ -1,6 +1,6 @@
 # Texture and Surface Instructions
 
-Texture-fetch and surface load/store/reduce instructions operating on the `.tex` and surface state spaces (PTX ISA 9.4 §9.7.12–9.7.13).
+Texture-fetch and surface load/store/reduce instructions operating on the `.tex` and surface state spaces (PTX ISA 9.5 §9.7.12–9.7.13).
 
 ## Signature / Usage
 
@@ -18,7 +18,7 @@ suld.b.1d.v4.b32.trap  {s1,s2,s3,s4}, [surf_B, {x}];
 
 ## Notes
 
-- PTX ISA 9.4 — Chapter 9.7.12–9.7.13
+- PTX ISA 9.5 — Chapter 9.7.12–9.7.13
 - `tex` performs a filtered texture fetch with addressing modes and filtering options configured on the texture reference; `tld4` fetches four texels for a single filtering component.
 - `suld`/`sust`/`sured` load, store, and atomically reduce surface memory using coordinates; `suq` queries surface properties (e.g. width/height/depth).
 - These instruction families provide specialized memory access patterns (caching, addressing, filtering) beyond standard global-memory load/store.

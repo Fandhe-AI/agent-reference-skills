@@ -45,6 +45,7 @@ void usingMallocHost() {
   - Windows and Tegra systems have limited unified-memory support: migration happens at larger granularity, allocations must be explicitly CUDA-allocated, and oversubscription is not permitted.
 - `cudaMemAdvise` and `cudaMemPrefetchAsync` let a program optimize unified-memory placement and asynchronously migrate data ahead of a kernel launch, rather than relying solely on on-demand migration.
 - Mapped memory (a form of page-locked host memory) makes CPU memory directly accessible from kernels without unified memory, on systems that lack HMM/ATS; it has higher latency and lower bandwidth than GPU memory, so it is not a general substitute for placing data in the appropriate memory space.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/understanding-memory.html (CPG v13.5, retrieved 2026-11-14; text identical to v13.4.2 apart from chapter renumbering)
 
 ## Related
 

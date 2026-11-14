@@ -3,7 +3,8 @@ name: nvidia-cuda
 description: >
   NVIDIA CUDA GPU 並列コンピューティングリファレンス。
   CUDA C++ / CUDA Python, nvcc, Unified Memory, CUDA Graphs,
-  Cooperative Groups, Green Contexts, Driver API, マルチ GPU。
+  Cooperative Groups, Green Contexts, Locality Domains,
+  Fine-Grained Synchronization, Driver API, マルチ GPU。
   PTX ISA 命令セット, MMA 命令。
   Blackwell チューニング, Streaming Multiprocessor, NVLink。
   CUTLASS / CuTe DSL / CuTe C++, Tensor Core, tcgen05,
@@ -16,6 +17,13 @@ user-invocable: false
 NVIDIA CUDA — GPU 上で汎用並列計算を行うためのプログラミングモデル・ツールチェーン・ライブラリ群。
 CUDA C++/Python によるカーネル記述、PTX ISA 命令セット、Blackwell アーキテクチャ向けチューニング、
 CUTLASS/CuTe による高性能 GEMM 実装をカバーする。
+
+## 対象バージョン
+
+- CUDA Programming Guide / Blackwell Tuning Guide: v13.5（取得日 2026-11-14、CPG 最終更新 2026-10-31）
+- PTX ISA: 9.5
+- CUTLASS / CuTe: v4.8.1（`media/docs` は v4.8.0 と同一のため、ページ本文の一部は v4.8.0 docs 基準。差分は CHANGELOG 4.8.1 を各ページ Notes に記載）
+- scripts/install.md: cuda-installation-guide-linux 13.5、samples: NVIDIA/cuda-samples タグ v13.5（採用ファイルは v13.4 と同一）
 
 ## ディレクトリ構成
 
@@ -53,6 +61,7 @@ skills/nvidia-cuda/
         programmatic-dependent-launch.md
         green-contexts.md
         locality-domains.md
+        fine-grained-synchronization.md
         compute-fabric-transport.md
         lazy-loading.md
         error-log-management.md
@@ -73,6 +82,7 @@ skills/nvidia-cuda/
         compute-capabilities.md
         environment-variables.md
         cpp-language-support.md
+        compile-time.md
         cpp-language-extensions.md
         mathematical-functions.md
         device-callable-apis.md

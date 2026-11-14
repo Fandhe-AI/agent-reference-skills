@@ -34,6 +34,8 @@ __global__ void kernel(int *globalInput) {
 
 - These are the primitives that `cuda::barrier`, `cuda::pipeline`, and `cooperative_groups::memcpy_async` compile down to — most code should prefer the higher-level libcu++/Cooperative Groups APIs and reach for these only when building custom synchronization primitives.
 - The Device Runtime subset listed here is the same API family used by CUDA Dynamic Parallelism for device-side kernel launches and memory operations; `cudaLimitDevRuntimePendingLaunchCount` and `cudaLimitStackSize` are configured via `cudaDeviceSetLimit` before launching kernels that use it.
+- Section numbering: since CPG 13.5 this appendix is Section 5.7 (Floating-Point Computation is 5.6, CUDA C++ Memory Model is 5.8); tables are renumbered (for example the Device Runtime launch tables are Tables 67 and 68). No content change besides numbering.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/device-callable-apis.html (CPG v13.5, retrieved 2026-11-14)
 
 ## Related
 

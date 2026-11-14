@@ -39,6 +39,8 @@ __global__ void init_barrier()
 - A barrier has phases: arrival/countdown, completion, then automatic reset for the next phase — `wait()` targets a specific phase's token, so a stale token from a completed phase must not be reused.
 - Warp entanglement: threads in the same warp that call `arrive()`/`wait()` at different points can affect each other's progress due to SIMT execution; see the official page's warp entanglement section before mixing barrier calls with warp-divergent control flow.
 - `barrier_arrive_tx` extends the arrival count with asynchronous-operation "transactions" (e.g. TMA bulk copies), letting a barrier track both thread arrivals and in-flight async copies in one synchronization point — this is the mechanism `cp_async_bulk` (TMA) uses to signal completion.
+- The phase described above is the primary phase of the PTX mbarrier object, which also has a conditional phase. For barriers initialized with the `layout::v1` format, the conditional phase advances together with the primary phase only if no asynchronous operation tracked by that phase performed a report-on operation. This is used by TMA data validity reporting (see Fine-Grained Synchronization) and by compute fabric transport operations.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/async-barriers.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

@@ -34,6 +34,7 @@ MyKernel<<<1000, 128>>>(p0);
 - Host IOMMU hardware and PCI Access Control Services can restrict P2P transfers, particularly inside VMs; behavior differs between Linux bare-metal and Windows/virtualized environments.
 - Compute Fabric Transport (CPG 13.4): peer-to-peer access reaches a peer allocation through a virtual address that the issuing process has reserved and mapped. For large NVLink fabrics, compute fabric transport is an alternative that names the peer by a logical endpoint id and the resource accessed by an offset rather than a mapped address, using explicit asynchronous fabric operations. It is intended for communication libraries and advanced applications; see the Compute Fabric Transport page.
 - For hardware topology specific to NVLink-connected multi-GPU systems (e.g. NVLink-C2C), see the dgx-spark skill's hardware category.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/03-advanced/multi-gpu-systems.html (CPG v13.5, retrieved 2026-11-14; text identical to v13.4.2 apart from chapter renumbering)
 
 ## Related
 

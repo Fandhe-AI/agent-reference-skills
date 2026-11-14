@@ -57,6 +57,7 @@ cudaGraphAddNode(&node, graph, deps, /*dependencyData=*/NULL, numDeps, &nodePara
 - CPG 13.4 node-adding API: the per-type functions (`cudaGraphAddKernelNode()`, `cudaGraphAddMemcpyNode()`, ...) were replaced by the single polymorphic `cudaGraphAddNode(&node, graph, deps, dependencyData, n, &cudaGraphNodeParams)`, which reads `.type` to pick the node kind; the guide states the non-polymorphic APIs "will be deprecated in the future". `cudaGraphNodeParams` has reserved fields that must be zero, so it is re-zeroed with `= {}` before each node. For a memcpy node the `cudaMemcpy3DParms` goes in `nodeParams.memcpy.copyParams`; the `.host` member is `cudaHostNodeParamsV2`.
 - CPG 13.4 examples call `cudaGraphInstantiate(&graphExec, graph, 0)` (three arguments). Earlier text and the `cuda-samples` v13.4 `simpleCudaGraphs` samples still use the five-argument form `cudaGraphInstantiate(&graphExec, graph, NULL, NULL, 0)`; this page does not assert which form is deprecated.
 - In the 13.4 guide, graph memory-node examples allocate from a pool with `cudaMallocFromPoolAsync` (previously shown as `cudaMallocAsync` with a pool argument).
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/cuda-graphs.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

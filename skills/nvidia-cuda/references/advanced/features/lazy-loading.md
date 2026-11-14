@@ -23,7 +23,7 @@ int main() {
 
 | Name | Description |
 | --- | --- |
-| `CUDA_MODULE_LOADING` | Environment variable controlling loading mode (`LAZY` or `EAGER`) at process startup. |
+| `CUDA_MODULE_LOADING` | Environment variable controlling loading mode (`LAZY` or `EAGER`) at process startup. Setting it to `EAGER` also disables Lazy Function Finalization (LFF) unless `CUDA_ENABLE_FUNCTION_LAZY_FINALIZATION` is set to `1`. |
 | `cuModuleGetLoadingMode` | Driver API query returning the active `CUmoduleLoadingMode` (`CU_MODULE_LAZY_LOADING` or eager). |
 | `cuModuleLoad` / `cuModuleGetFunction` | Driver API module/kernel loading calls whose actual work is deferred until first use under lazy loading. |
 | `cudaFuncGetAttributes` | Runtime API call that forces a kernel to be loaded (since it needs the kernel's compiled attributes), usable to force eager loading of a specific kernel under lazy loading. |
@@ -33,6 +33,8 @@ int main() {
 - Lazy loading requires a minimum CUDA Runtime and Driver version and specific compiler/kernel requirements — check the official page's requirements section before assuming it is active on a given toolkit/driver combination.
 - Because kernels load on first use rather than at module load, the first launch of each kernel bears additional latency; this can distort naive performance measurements that don't account for one-time load cost.
 - Lazy loading can affect concurrent kernel execution and large memory allocation timing since module loading itself consumes device memory and time at first-use rather than upfront.
+- To load all kernels and module data eagerly, run the application with `CUDA_MODULE_LOADING=EAGER`.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/lazy-loading.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

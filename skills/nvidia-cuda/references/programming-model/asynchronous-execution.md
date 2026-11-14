@@ -32,6 +32,7 @@ cudaStreamDestroy(stream);  // Destroy the stream
 - For memory copies involving CPU memory to be carried out asynchronously, the host buffers must be pinned and page-locked (allocated via `cudaMallocHost()`).
 - The legacy default stream is a blocking stream that synchronizes with all other blocking streams; compiling with `--default-stream per-thread` gives each host thread its own default stream instead, removing this cross-stream synchronization.
 - Explicit synchronization is achieved via `cudaStreamSynchronize()` / `cudaEventSynchronize()` / `cudaDeviceSynchronize()`; implicit synchronization can also occur as a side effect of certain other CUDA API calls.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/asynchronous-execution.html (CPG v13.5, retrieved 2026-11-14; text identical to v13.4.2 apart from chapter renumbering)
 
 ## Related
 
