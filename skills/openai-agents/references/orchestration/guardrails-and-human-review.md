@@ -101,6 +101,8 @@ except InputGuardrailTripwireTriggered:
 
 Human review / approvals:
 
+Adapted (not in the official docs): the official snippet approves every interruption unconditionally; here the decision comes from a human via the placeholder helper `askHuman` / `ask_human` (define it in your application; if no decision is available yet, serialize `state` and stop instead of resuming) and rejected calls use `state.reject`.
+
 ```typescript
 import { Agent, run, tool } from "@openai/agents";
 import { z } from "zod";
@@ -127,7 +129,12 @@ if (result.interruptions?.length) {
   const state = result.state;
   for (const interruption of result.interruptions) {
     console.log(`Approval required: ${interruption.name}`);
-    state.approve(interruption);
+    const approved = await askHuman(interruption);
+    if (approved) {
+      state.approve(interruption);
+    } else {
+      state.reject(interruption);
+    }
   }
   result = await run(agent, state);
 }
@@ -156,7 +163,10 @@ if result.interruptions:
     state = result.to_state()
     for interruption in result.interruptions:
         print("Approval required:", interruption.name)
-        state.approve(interruption)
+        if await ask_human(interruption):
+            state.approve(interruption)
+        else:
+            state.reject(interruption)
     result = await Runner.run(agent, state)
 
 print(result.final_output)
@@ -173,6 +183,7 @@ print(result.final_output)
 ## Notes
 
 - Source: https://developers.openai.com/api/docs/guides/agents/guardrails-approvals (fetched 2026-11-14).
+- Adapted from the official docs: the human-review snippets add an explicit approve/reject decision (the official ones call `state.approve` for every interruption). `state.reject(interruption)` is not shown on the official page but exists as `RunState.reject` in openai-agents-js (`packages/agents-core/src/runState.ts`) and `RunState.reject` in openai-agents-python (`src/agents/run_state.py`), checked 2026-11-14; the official page says the application "approves or rejects the pending items".
 - Use blocking execution (`runInParallel: false` / `run_in_parallel=False`) when the cost or risk of starting the main agent is too high; use parallel guardrails when lower latency matters more than avoiding speculative work.
 - If the review might take time, serialize `state`, store it, and resume later; that is still the same run.
 - Use input guardrails when you want a fast validation step to run before the expensive or side-effecting part of the workflow starts.

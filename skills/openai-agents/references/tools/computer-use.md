@@ -33,6 +33,8 @@ try:
         before_action=driver.allowed,
         max_steps=6,
     )
+finally:
+    tools.close()
 ```
 
 Hosted environment partners (follow each partner's guide for setup and package versions): Browserbase (Stagehand browser driver), Browser Use (library driver or Cloud integration; Python), Daytona (`ComputerToolset` with a desktop sandbox; Python), E2B Desktop (computer actions or code execution in a desktop sandbox). Set a session timeout, close or release the session even if the run fails, and restrict reachable sites with provider network rules.

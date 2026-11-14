@@ -2,29 +2,6 @@
 
 Defining an agent is the setup step; running it is the runtime question. One SDK run is one application-level turn, driven by the agent loop.
 
-### The agent loop
-
-The runner keeps looping until it reaches a real stopping point:
-
-1. Call the current agent's model with the prepared input.
-2. Inspect the model output.
-3. If the model produced tool calls, execute them and continue.
-4. If the model handed off to another specialist, switch agents and continue.
-5. If the model produced a final answer with no more tool work, return a result.
-
-Tools, handoffs, approvals, and streaming all build on top of this loop rather than replacing it.
-
-### Choose one conversation strategy
-
-| Strategy | Where state lives | Best for | What you pass on the next turn |
-|---|---|---|---|
-| `result.history` (TS) / `result.to_input_list()` (Python) | Your application | Small chat loops, maximum control | The replay-ready history |
-| `session` | Your storage + the SDK | Persistent chat state, resumable runs, storage you control | The same session |
-| `conversationId` | OpenAI Conversations API | Shared server-managed state across workers/services | The same conversation ID and only the new turn |
-| `previousResponseId` (TS) / `previous_response_id` (Python) | OpenAI Responses API | Lightest server-managed continuation | The last response ID and only the new turn |
-
-Pick one strategy per conversation; mixing local replay with server-managed state can duplicate context.
-
 ## Signature / Usage
 
 ### Sessions
@@ -168,6 +145,30 @@ if __name__ == "__main__":
 Streaming uses the same agent loop and state strategies; you just consume events while the run is happening.
 
 ## Notes
+
+### The agent loop
+
+The runner keeps looping until it reaches a real stopping point:
+
+1. Call the current agent's model with the prepared input.
+2. Inspect the model output.
+3. If the model produced tool calls, execute them and continue.
+4. If the model handed off to another specialist, switch agents and continue.
+5. If the model produced a final answer with no more tool work, return a result.
+
+Tools, handoffs, approvals, and streaming all build on top of this loop rather than replacing it.
+
+### Choose one conversation strategy
+
+| Strategy | Where state lives | Best for | What you pass on the next turn |
+|---|---|---|---|
+| `result.history` (TS) / `result.to_input_list()` (Python) | Your application | Small chat loops, maximum control | The replay-ready history |
+| `session` | Your storage + the SDK | Persistent chat state, resumable runs, storage you control | The same session |
+| `conversationId` | OpenAI Conversations API | Shared server-managed state across workers/services | The same conversation ID and only the new turn |
+| `previousResponseId` (TS) / `previous_response_id` (Python) | OpenAI Responses API | Lightest server-managed continuation | The last response ID and only the new turn |
+
+Pick one strategy per conversation; mixing local replay with server-managed state can duplicate context.
+
 
 - Source: https://developers.openai.com/api/docs/guides/agents/running-agents (fetched 2026-11-14).
 - In the official snippets the TypeScript example uses `conversationId` (created via `client.conversations.create({})`) while the Python example for the same section uses `previous_response_id`.

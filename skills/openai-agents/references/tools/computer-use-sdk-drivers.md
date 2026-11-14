@@ -4,7 +4,7 @@ A driver translates allowed tool calls from the Python/Node SDK (`BrowserToolset
 
 ## Signature / Usage
 
-Snippet taken from the computer-use guide ("Run your first task", Python) showing a computer driver run with a per-action approval callback and a step bound:
+Snippet taken from the computer-use guide ("Run your first task", Python) showing a computer driver run with a per-action approval callback and a step bound (the `try` / `finally` is shortened to `tools.close()` cleanup; the rest of the example is omitted):
 
 ```python
 tools = AsyncComputerToolset(driver)
@@ -19,6 +19,8 @@ try:
         before_action=driver.allowed,
         max_steps=6,
     )
+finally:
+    tools.close()
 ```
 
 Python also provides synchronous `BrowserToolset` and `ResponsesToolRunner` classes for synchronous drivers. Node uses `computerOptions` in the run options; Python takes `approve_safety_checks` and `before_action` as `run` keyword arguments.
