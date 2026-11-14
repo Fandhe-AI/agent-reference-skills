@@ -108,7 +108,7 @@ async function writeClipboard() {
     new ClipboardItem({
       'text/plain': 'hello',
       'text/html': '<b>hello</b>',
-      'image/png': new Blob([png], { type: 'image/png' }),
+      'image/png': new Blob([new Uint8Array(png)], { type: 'image/png' }),
       'electron application/bookmark': {
         title: 'Electron',
         url: 'https://electronjs.org'
@@ -160,6 +160,7 @@ A `ClipboardBookmark` is the payload used by the `electron application/bookmark`
 ## Notes
 
 * Removed (v44): the clipboard module is no longer exposed to renderer processes (previously deprecated; see the breaking-changes category, "Removed: clipboard module is no longer available in the renderer process"). Renderers should use navigator.clipboard, or expose only the necessary helpers from a preload script via contextBridge without exposing the clipboard API to untrusted content.
+* v45: the official image example wraps the PNG buffer as `new Blob([new Uint8Array(png)], ...)` (v44.8.0: `new Blob([png], ...)`); docs-only change in the example, no API change is listed in the v45 breaking changes. Source: https://github.com/electron/electron/blob/v45.3.2/docs/api/clipboard.md
 * The `selection` clipboard does not support the W3C web custom format.
 * Structure page: https://www.electronjs.org/docs/latest/api/structures/clipboard-bookmark
 * Distinction: this is the Electron main-process module for the OS clipboard. Web UI components are in ark-ui / chakra-ui / fandhe-frontend; native clipboard APIs of other platforms are in apple-appkit, windows-winui-controls and android-compose-components.

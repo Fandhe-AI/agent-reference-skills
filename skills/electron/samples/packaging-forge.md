@@ -7,8 +7,13 @@ source: https://www.electronjs.org/docs/latest/tutorial/tutorial-packaging
 Import an existing app into Electron Forge and build a distributable with `make`.
 
 ```sh
-npm install --save-dev @electron-forge/cli
-npx electron-forge import
+npx create-electron-app@latest import
+```
+
+With Yarn:
+
+```sh
+yarn create electron-app import
 ```
 
 ```json
@@ -63,7 +68,7 @@ module.exports = {
 
 ## Notes
 
-- This page follows the v44.8.0 tag text. The `44-x-y` branch has unreleased wording changes to the Forge import steps of this tutorial.
+- This page follows the v45.3.2 tag text. v45 imports with `create-electron-app` (which also installs Forge's CLI into `devDependencies`); v44.8.0 used `npm install --save-dev @electron-forge/cli` followed by `npx electron-forge import`. Source: https://github.com/electron/electron/blob/v45.3.2/docs/tutorial/tutorial-5-packaging.md
 - `make` runs `electron-forge package` first, then one maker per configured target; output goes to `out/` (distributables under `out/make`).
 - Code signing is highly recommended and mandatory for the auto-update step in the final tutorial part. On macOS signing happens at the app packaging level; on Windows the installers are signed.
 - Keep credentials in environment variables as in the snippets; never commit certificates or passwords.

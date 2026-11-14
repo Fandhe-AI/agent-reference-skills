@@ -11,4 +11,5 @@
 | app.getPath / setPath / getName / getLocale | Methods of `app` for application directories, name, version, Linux desktop name and locale / language. Process: Main. | [app-paths-name-locale.md](./app-paths-name-locale.md) |
 | app Properties | Properties of the `app` object. Process: Main. | [app-properties.md](./app-properties.md) |
 | app Recent Documents and Default Protocol Client | Methods of `app` for the OS recent documents list and for registering the app as the default handler of a protocol (URI scheme). Process: Main. | [app-recent-documents-protocol-client.md](./app-recent-documents-protocol-client.md) |
+| AppShimHost | Show windows under a separate app with its own Dock icon. Class; macOS, Experimental (v45). Process: Main. | [app-shim-host.md](./app-shim-host.md) |
 | app User Activity, AppUserModelId, Activation Policy, importCertificate | macOS Handoff user activity methods, Windows AppUserModelId / toast activator CLSID, macOS activation policy and Linux certificate import. Process: Main. | [app-user-activity-platform-ids.md](./app-user-activity-platform-ids.md) |

@@ -22,7 +22,6 @@ const template = [
       {
         label: 'Learn More',
         click: async () => {
-          const { shell } = require('electron')
           await shell.openExternal('https://electronjs.org')
         }
       }
@@ -51,6 +50,7 @@ win.setMenu(menu)
 
 ## Notes
 
+- v45: the Learn More `click` handler no longer re-requires `shell` inside the handler (v44.8.0 had `const { shell } = require('electron')` there); `shell` comes from the top-level `require('electron/common')`. Source: https://github.com/electron/electron/blob/v45.3.2/docs/tutorial/application-menu.md
 - Each top-level item of an application menu must be a submenu. If `Menu.setApplicationMenu` is never called, Electron sets a default menu.
 - On macOS the first submenu always has the app name as its label (use the `appMenu` role); the menu lives in the system menu bar. On Windows and Linux it appears at the top of each BaseWindow.
 - `win.setMenu` / `win.removeMenu` apply only to Linux and Windows.

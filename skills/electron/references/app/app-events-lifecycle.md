@@ -47,7 +47,7 @@ app.on('window-all-closed', () => {
   * If application quit was initiated by `autoUpdater.quitAndInstall()`, then `before-quit` is emitted _after_ emitting `close` event on all windows and closing them.
   * On Windows, this event will not be emitted if the app is closed due to a shutdown/restart of the system or a user logout.
 * `continue-activity`: a user activity can be continued only in an app that has the same developer Team ID as the activity's source app and that supports the activity's type. Supported activity types are specified in the app's `Info.plist` under the `NSUserActivityTypes` key.
-* v45: `app-shim-connected` and `app-shim-version-mismatch` are new (macOS, Experimental). The `AppShimHost` class (`app-shim-host.md` in the v45 docs) has no page in this skill yet.
+* v45: `app-shim-connected` and `app-shim-version-mismatch` are new (macOS, Experimental). The `AppShimHost` class is on [app-shim-host.md](./app-shim-host.md).
 * `app-shim-version-mismatch` example from the official page:
 
   ```js

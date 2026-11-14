@@ -22,7 +22,7 @@ clipboard.write([
   new ClipboardItem({
     'text/plain': 'hello',
     'text/html': '<b>hello</b>',
-    'image/png': new Blob([png], { type: 'image/png' }),
+    'image/png': new Blob([new Uint8Array(png)], { type: 'image/png' }),
     'electron application/bookmark': {
       title: 'Electron',
       url: 'https://electronjs.org'
@@ -132,6 +132,7 @@ async function dumpClipboard() {
 
 ## Notes
 
+* v45: the official image example wraps the PNG buffer as `new Blob([new Uint8Array(png)], ...)` (v44.8.0: `new Blob([png], ...)`); docs-only change in the example, no API change is listed in the v45 breaking changes. Source: https://github.com/electron/electron/blob/v45.3.2/docs/api/clipboard-item.md
 * The official `readFiles()` sample omits the empty-clipboard guard; `item?.` is added here.
 * Distinction: Electron's main-process clipboard entry class modeled on the W3C `ClipboardItem`; not a Web UI component (ark-ui / chakra-ui / fandhe-frontend).
 

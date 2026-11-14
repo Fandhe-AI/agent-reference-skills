@@ -35,13 +35,13 @@ module.exports = {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "publish": "electron-forge publish"
+    "release": "electron-forge release"
   },
   //...
 ```
 
 ```sh
-npm run publish
+npm run release
 ```
 
 ```sh
@@ -58,9 +58,9 @@ updateElectronApp()
 ## Notes
 
 - Unlike the official tutorial, which calls the legacy default export `require('update-electron-app')()`, this sample uses the named export `updateElectronApp` exposed by current versions of update-electron-app.
-- This page follows the v44.8.0 tag text. The `44-x-y` branch has unreleased wording changes to the Forge import steps in the packaging/publishing tutorials.
+- This page follows the v45.3.2 tag text. v45 renamed the Forge command used in the tutorial from `electron-forge publish` / `npm run publish` (v44.8.0) to `electron-forge release` / `npm run release`. Source: https://github.com/electron/electron/blob/v45.3.2/docs/tutorial/tutorial-6-publishing-updating.md
 - update.electronjs.org requires: macOS or Windows, a public GitHub repository, builds published to GitHub releases, and (macOS only) code-signed builds.
 - The publisher reads the token from the `GITHUB_TOKEN` environment variable by default (a PAT with `public_repo` scope); keep it secret and never commit it.
-- `publish` builds only for the host OS and architecture unless `--arch` is passed; use CI for cross-platform releases.
+- `release` builds only for the host OS and architecture unless `--arch` is passed; use CI for cross-platform releases.
 - `update-electron-app` finds the feed from the `repository` field of `package.json`. For private repositories or other hosts, run your own update server and configure `autoUpdater` yourself.
 - Distance: store-based distribution and signing identities belong to apple-distribution and windows-packaging-publish.

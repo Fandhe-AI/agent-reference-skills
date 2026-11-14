@@ -20,3 +20,4 @@
 | Breaking API Changes (42.0) | All breaking changes listed for Electron 42.0. | [breaking-changes-v42.md](./breaking-changes-v42.md) |
 | Breaking API Changes (43.0) | All breaking changes listed for Electron 43.0. | [breaking-changes-v43.md](./breaking-changes-v43.md) |
 | Breaking API Changes (44.0) | All breaking changes listed for Electron 44.0. | [breaking-changes-v44.md](./breaking-changes-v44.md) |
+| Breaking API Changes (45.0) | All breaking changes listed for Electron 45.0. | [breaking-changes-v45.md](./breaking-changes-v45.md) |

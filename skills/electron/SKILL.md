@@ -2,10 +2,10 @@
 name: electron
 description: >
   Electron (Chromium + Node.js 製クロスプラットフォームデスクトップアプリフレームワーク, v45) の
-  リファレンス。main / renderer / preload / utilityProcess, ipcMain / ipcRenderer / contextBridge,
-  BrowserWindow / BaseWindow / WebContentsView / webContents, Electron Forge, autoUpdater, safeStorage, fuses, ASAR,
-  contextIsolation / sandbox, code signing, MAS, crashReporter, contentTracing, debugging, E2E testing,
-  breaking changes。
+  リファレンス。main/renderer/preload/utilityProcess, ipcMain/ipcRenderer/contextBridge,
+  BrowserWindow/BaseWindow/WebContentsView/webContents, Electron Forge, autoUpdater, safeStorage, fuses, ASAR,
+  contextIsolation/sandbox, code signing, MAS, crashReporter, contentTracing, debugging, E2E testing,
+  breaking changes, Prompt API, AppShimHost。
 user-invocable: false
 ---
 
@@ -35,6 +35,7 @@ skills/electron/
       app-lifecycle-methods.md
       app-paths-name-locale.md
       app-properties.md
+      app-shim-host.md
     windows/                # BaseWindow / BrowserWindow / View / WebContentsView / WebPreferences
       README.md
       browser-window-overview.md
@@ -57,6 +58,9 @@ skills/electron/
       context-bridge.md
       context-isolation.md
       utility-process.md
+      local-ai-handler.md
+      language-model-utility.md
+      local-ai-handler-guide.md
     menus-tray/             # Menu / MenuItem / Tray / Dock / globalShortcut / TouchBar
       README.md
       menu.md
@@ -101,9 +105,10 @@ skills/electron/
       crash-reporter.md
       automated-testing.md
       testing-on-headless-ci.md
-    breaking-changes/       # v2 から v44 までの breaking changes
+    breaking-changes/       # v2 から v45 までの breaking changes
       README.md
       breaking-changes-overview.md
+      breaking-changes-v45.md
       breaking-changes-v44.md
       breaking-changes-v43.md
   samples/                  # 実例（1 ユースケース 1 ファイル）
@@ -146,10 +151,10 @@ skills/electron/
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | Electron の概要・プロセスモデル・ESM・バージョン方針・環境変数を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
-| app の起動・終了・single instance・パス・ログイン項目・Jump List を扱いたい | app | [references/app/README.md](references/app/README.md) |
+| app の起動・終了・single instance・パス・ログイン項目・Jump List・app shim (AppShimHost) を扱いたい | app | [references/app/README.md](references/app/README.md) |
 | ウィンドウ生成・オプション・WebPreferences・WebContentsView・window.open を制御したい | windows | [references/windows/README.md](references/windows/README.md) |
 | ページのロード・ナビゲーション・print・executeJavaScript・webview を扱いたい | web-contents | [references/web-contents/README.md](references/web-contents/README.md) |
-| main / renderer 間 IPC・contextBridge・MessagePort・utilityProcess を実装したい | ipc-preload | [references/ipc-preload/README.md](references/ipc-preload/README.md) |
+| main / renderer 間 IPC・contextBridge・MessagePort・utilityProcess・Prompt API (localAIHandler / LanguageModelUtility) を実装したい | ipc-preload | [references/ipc-preload/README.md](references/ipc-preload/README.md) |
 | アプリメニュー・コンテキストメニュー・Tray・Dock・グローバルショートカットを作りたい | menus-tray | [references/menus-tray/README.md](references/menus-tray/README.md) |
 | ネイティブダイアログ・クリップボード・通知・ダークモード・safeStorage・shell を使いたい | system | [references/system/README.md](references/system/README.md) |
 | session・cookies・net・protocol・webRequest・権限ハンドラを設定したい | session-network | [references/session-network/README.md](references/session-network/README.md) |
