@@ -3,7 +3,7 @@
 | Name | Description | Path |
 |------|-------------|------|
 | Code execution | The code execution tool lets the model generate and run… | [code-execution.md](./code-execution.md) |
-| Computer use | Preview. The Computer Use tool lets you build browser… | [computer-use.md](./computer-use.md) |
+| Computer use | GA. The Computer Use tool lets you build browser… | [computer-use.md](./computer-use.md) |
 | File search | The File Search tool provides Retrieval Augmented… | [file-search.md](./file-search.md) |
 | Function calling (incl. Remote MCP) | Function calling lets the model decide when to call your… | [function-calling.md](./function-calling.md) |
 | Grounding with Google Search | Grounding with Google Search connects the Gemini model to… | [google-search.md](./google-search.md) |

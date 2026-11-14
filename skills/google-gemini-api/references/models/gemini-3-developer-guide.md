@@ -71,7 +71,7 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
 ## Notes
 
 - `gemini-3.1-flash-image-preview` and `gemini-3-pro-image-preview` were shut down June 25, 2026 (use `gemini-nano-banana-2.1` / `gemini-3-pro-image`) per the deprecations page.
-- Deprecated page: the source states "This page is deprecated and will be removed" and points to the latest-model guide for current guidance (see `whats-new-gemini-4-argon.md`). Prices and "All Gemini 3 models are currently in preview" reflect this older page; use the model cards for current status.
+- Deprecated page: the source states "This page is deprecated and will be removed" and points to the latest-model guide for current guidance (see `whats-new-gemini-4-hydrogen.md`). Prices and "All Gemini 3 models are currently in preview" reflect this older page; use the model cards for current status.
 - `thinking_level` controls the maximum depth of reasoning; treated as relative allowances, not strict token guarantees. Default is `high` when unspecified (per this page). You cannot use both `thinking_level` and legacy `thinking_budget` in the same request (400 error).
 - Temperature: keep the default `1.0` for Gemini 3 models; lower values may cause looping or degraded performance.
 - Thought signatures: stateful mode (Interactions API with `previous_interaction_id`) manages history and signatures server-side; stateless mode requires including thought blocks with signatures in subsequent requests.
@@ -79,6 +79,7 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
 - Migration from Gemini 2.5: try `thinking_level: "high"` with simplified prompts instead of chain-of-thought prompting; remove explicit low temperature; test `media_resolution_high` for dense PDFs; token usage may increase for PDFs and decrease for video; image segmentation is not supported (use Gemini 2.5 Flash with thinking off); Computer Use is supported without a separate model; combining built-in tools with function calling and Maps grounding are supported for Gemini 3.
 - OpenAI compatibility layer: OpenAI's `reasoning_effort` is mapped to Gemini `thinking_level`.
 - FAQ: free tier exists for `gemini-3-flash-preview` but not `gemini-3.1-pro-preview` in the Gemini API; Batch API and Context Caching supported; `gemini-3.1-pro-preview-customtools` is suggested if `gemini-3.1-pro-preview` ignores custom tools in favor of bash commands.
+- As of 2026-11-14 the `latest-model` landing page recommends `gemini-4-hydrogen` first, with `gemini-4-carbon` / `gemini-4-argon` for deep frontier reasoning (see `whats-new-gemini-4-hydrogen.md`, `whats-new-gemini-4-carbon.md`, `whats-new-gemini-4-argon.md`). The `docs/gemini-3` page itself was not part of the 2026-11-14 fetch set, so its content here is unchanged from the 2026-10-16 fetch.
 - Docs fetched 2026-10-16. API surface: Interactions API (this tree; the generateContent variant lives in the generate-content category).
 - Distance: structured outputs / thinking concepts resemble openai-api-core (Responses API) and anthropic-api-core (Messages API) but use Gemini-specific parameters.
 

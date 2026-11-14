@@ -84,7 +84,7 @@ curl --request "DELETE" "https://generativelanguage.googleapis.com/v1beta/${name
 ## Notes
 
 - `// empty` and the `:?` guard are added here (not in the official sample) so a failed first request stops the chain instead of sending `"null"`.
-- All examples target `v1beta` (the SDK default). For `v1`, see `api-version.md`.
+- All examples target `v1beta` explicitly (needed for `v1beta`-only features; the latest SDKs default to `v1`, see `api-version.md`).
 - Model ID `gemini-3.8-flash` is copied as written in the official pages.
 - Upload (`upload/v1beta/files`), batch, and background-execution curl sequences are multi-step; see `references/multimodal-input/files-api.md`, `references/platform-ops/batch-api.md`, and `references/interactions-core/background-execution.md`.
 - The delete example defines `name` and quotes the URL (`"${name}"`), aborting if it is unset; the original expands an undefined `$name` unquoted.

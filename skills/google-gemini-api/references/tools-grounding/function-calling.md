@@ -42,7 +42,7 @@ import json
 client = genai.Client()
 
 interaction = client.interactions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     input="Turn the lights down to a romantic level",
     tools=[set_light_values_declaration],
 )
@@ -56,7 +56,7 @@ Send the result back (Step 4):
 
 ```python
 final_interaction = client.interactions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     input=[
         {
             "type": "function_result",
@@ -92,7 +92,7 @@ function setLightValues(brightness, color_temp) {
 }
 
 const interaction = await client.interactions.create({
-  model: 'gemini-3.8-flash',
+  model: 'gemini-4-hydrogen',
   input: 'Turn the lights down to a romantic level',
   tools: [setLightValuesTool],
 });
@@ -106,7 +106,7 @@ if (fcStep.name === 'set_light_values') {
 }
 
 const finalInteraction = await client.interactions.create({
-  model: 'gemini-3.8-flash',
+  model: 'gemini-4-hydrogen',
   input: [{
     type: 'function_result',
     name: fcStep.name,
@@ -125,7 +125,7 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
-    "model": "gemini-3.8-flash",
+    "model": "gemini-4-hydrogen",
     "previous_interaction_id": "INTERACTION_ID",
     "input": [
       {
@@ -156,7 +156,7 @@ history = [
 ]
 
 interaction = client.interactions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     store=False,
     input=history,
     tools=[set_light_values_declaration],
@@ -177,7 +177,7 @@ history.append({
 })
 
 final_interaction = client.interactions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     store=False,
     input=history,
     tools=[set_light_values_declaration],
@@ -188,7 +188,7 @@ Parallel calls and function calling modes:
 
 ```python
 interaction = client.interactions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     input="Turn this place into a party!",
     tools=[power_disco_ball, start_music, dim_lights],
     generation_config={"tool_choice": "any"},
@@ -231,7 +231,7 @@ tools = [
 ]
 
 interaction = client.interactions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     input="What is the northernmost city in the United States? What's the weather like there today?",
     tools=tools
 )
@@ -241,7 +241,7 @@ Remote MCP:
 
 ```python
 interaction = client.interactions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     input="Check the weather in San Francisco.",
     tools=[
         {
@@ -255,7 +255,7 @@ interaction = client.interactions.create(
 
 ```javascript
 const interaction = await client.interactions.create({
-    model: 'gemini-3.8-flash',
+    model: 'gemini-4-hydrogen',
     input: 'Check the weather in San Francisco.',
     tools: [
         {
@@ -272,7 +272,7 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
   -H "Content-Type: application/json" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
 -d '{
-    "model": "gemini-3.8-flash",
+    "model": "gemini-4-hydrogen",
     "input": "Check the weather in San Francisco.",
     "tools": [
         {
@@ -291,7 +291,7 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions?alt=
   -H "Content-Type: application/json" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
 -d '{
-    "model": "gemini-3.8-flash",
+    "model": "gemini-4-hydrogen",
     "input": "What is the weather in Paris?",
     "tools": [{
         "type": "function",
@@ -339,6 +339,20 @@ Remote MCP tool fields:
 | `headers` | `object` | No | Key-value pairs sent as HTTP headers with every request to the server (for example, authentication tokens). |
 | `allowed_tools` | `array` | No | Restrict which tools from the server the agent may call. |
 
+### Multimodal function result content blocks
+
+Include multimodal data as one or more content blocks in the `result` field of the `function_result` step. Each block must specify its `type`:
+
+| Type | Supported content |
+|---|---|
+| `text` | Plain text |
+| `image` | `image/png`, `image/jpeg`, `image/webp` |
+| `document` | `application/pdf`, `text/csv`, and Office and OpenDocument files (DOCX, DOC, DOTX, ODT, PPTX, PPT, ODP, XLSX, XLS, ODS) |
+| `audio` | Supported audio formats (see the audio guide) |
+| `video` | Supported video formats (available in `v1beta` and `v1alpha`) |
+
+Each media block accepts either base64-encoded `data` or a `uri`, such as a Files API URI. Files in function results are processed the same way as the same file in a regular input. An unsupported MIME type returns a `400 INVALID_ARGUMENT` error that names the field and lists the accepted types.
+
 ## Notes
 
 - `import json` was added to the first Python block; the source imports it in a later section. The JS declaration and execution snippets are copied from the source's earlier steps.
@@ -346,7 +360,8 @@ Remote MCP tool fields:
 - The model does not execute the function; extract the name and args and execute in your application. The process can repeat over turns; the model supports parallel function calling (multiple independent functions in one turn) and compositional function calling (in sequence).
 - Stateless mode: set `store=false` and pass the full history in `input` each request: the initial `user_input` step, all model-generated steps from Turn 1 (including `thought` and `function_call` steps) exactly as received, and the `function_result` step.
 - Thinking models: Gemini 3 series models use an internal thinking process; the SDKs automatically handle thought signatures.
-- Multimodal function responses (Gemini 3 series): include content blocks in the `result` field of the `function_result` step; each block must specify its `type` (e.g. `"text"`, `"image"`).
+- Multimodal function responses (Gemini 3 series and later): include content blocks in the `result` field of the `function_result` step; each block must specify its `type` (`text`, `image`, `document`, `audio`, `video`; see the table above). Since 2026-11-05, `function_result` steps accept `document`, `audio`, and `video` blocks (inline `data` or `uri`) in addition to `text` and `image`; `video` blocks are available in `v1beta` and `v1alpha` and accept `processing` (`"static"` or `"agentic"`; if unset, the same default as for an input video applies).
+- Return files by URI: inline data counts toward the request size limit, so for large files (videos, long audio, multi-page documents) upload with the Files API and return its `uri` instead of inline `data`. The next example is the source's `view_file` tool returning an Excel spreadsheet and a video by their Files API URIs.
 - Function calling with structured output: Gemini 3 series models can combine function calling with structured output.
 - Remote MCP constraints: only Streamable HTTP servers work; SSE servers are not supported. MCP server names should not include the `-` character; use `snake_case`.
 - Streaming: function calls arrive as a sequence of `step.delta` events; tool arguments can stream as partial `arguments`. Aggregate the deltas to rebuild complete tool calls before executing them.
@@ -356,7 +371,50 @@ Remote MCP tool fields:
 - Migration (May 2026 breaking changes): the request structure is unchanged, but the response replaces the flat `outputs` content with structured `steps`; find `function_call` steps in the `steps` array (legacy code read `interaction.outputs` with `output.type == "function_call"`). Server-side tools now yield tool-specific steps (e.g. `google_search_call`, `google_search_result`).
 - Remote MCP here is the consuming side (Gemini API connects to your MCP server); distinct from `anthropic-api-tools-mcp` (Claude API tool use / MCP connector) and `openai-agents` (OpenAI built-in tools / MCP).
 - API version (api-versions table): function calling is available in v1 and v1beta; the MCP Servers Tool is v1beta only.
-- API surface: Interactions API (`client.interactions.create`, v1beta in the examples); the generateContent version is under `generate-content/`. Docs fetched 2026-10-16.
+- API surface: Interactions API (`client.interactions.create`, v1beta in the examples); the generateContent version is under `generate-content/`. Docs fetched 2026-11-14 (https://aistudio.google.com/docs/function-calling); the source examples now use `gemini-4-hydrogen`.
+
+```python
+from google import genai
+
+client = genai.Client()
+
+tool_call = next(s for s in interaction.steps if s.type == "function_call")
+
+# Your tool uploads the files and returns their URIs.
+sheet = client.files.upload(
+    file="q3_sales.xlsx",
+    config={"mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+)
+clip = client.files.upload(file="store_walkthrough.mp4")
+
+final_interaction = client.interactions.create(
+    model="gemini-4-hydrogen",
+    previous_interaction_id=interaction.id,
+    input=[
+        {
+            "type": "function_result",
+            "name": tool_call.name,
+            "call_id": tool_call.id,
+            "result": [
+                {"type": "text", "text": "{\"status\": \"ok\"}"},
+                {
+                    "type": "document",
+                    "uri": sheet.uri,
+                    "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                },
+                {
+                    "type": "video",
+                    "uri": clip.uri,
+                    "mime_type": "video/mp4",
+                    "processing": "agentic",
+                },
+            ],
+        }
+    ],
+)
+
+print(final_interaction.output_text)
+```
 
 ## Related
 

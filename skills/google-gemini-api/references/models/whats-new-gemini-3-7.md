@@ -69,11 +69,12 @@ interaction = client.interactions.create(
 - Supports a 1M token context window, 64k max output tokens, tunable thinking levels, and the same suite of built-in tools as 3.6 Flash.
 - What's new: higher quality on real-world software engineering and agentic benchmarks; higher-fidelity desktop/web code from design mocks.
 - Introduced support for powering the Antigravity agent in Gemini Managed Agents and the Google Antigravity SDK.
-- The source links `whats-new-gemini-3.8`, which is not among the saved pages; current agent samples are on the Antigravity agent guide.
-- Docs fetched 2026-10-16. API surface: Interactions API.
+- The source links the Gemini 3.8 Flash guide (saved as `whats-new-gemini-3-8.md`) for multi-language code examples and reasoning levels; current agent samples are on the Antigravity agent guide (the default Antigravity model is now `gemini-4-hydrogen`).
+- Source: https://aistudio.google.com/docs/whats-new-gemini-3.7 (fetched 2026-11-14; content re-checked, deprecation date 2026-10-08 per changelog). API surface: Interactions API.
 
 ## Related
 
-- [What's new in Gemini 4 Argon](./whats-new-gemini-4-argon.md)
+- [What's new in Gemini 3.8 Flash](./whats-new-gemini-3-8.md)
+- [What's new in Gemini 4 Hydrogen](./whats-new-gemini-4-hydrogen.md)
 - [What's new in Gemini 3.6 Flash and 3.5 Flash-Lite](./whats-new-gemini-3-6.md)
 - [Gemini 4 / 3.x model cards](./gemini-4-3-models.md)

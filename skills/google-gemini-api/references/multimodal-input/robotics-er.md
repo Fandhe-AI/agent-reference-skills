@@ -415,12 +415,19 @@ Return a JSON object with the progress bracket:
 ## Notes
 
 - Added a files.get polling loop (wait for ACTIVE, abort on FAILED) that the source video-progress example omits; uploaded videos may still be PROCESSING (see video-understanding).
-- Preview models: API behavior and model IDs may change; model IDs are transcribed verbatim from the docs fetched 2026-10-16.
+- Preview models: API behavior and model IDs may change; model IDs are transcribed verbatim from the docs fetched 2026-11-14.
 - Page also has Java, Go and REST variants for the overview example; the REST example on the page uses a `parts` / `inlineData` body shape; not reproduced here.
 - This skill treats Robotics ER as multimodal input and function-calling use of the Interactions API (`client.interactions.create`); the streaming endpoint uses the Live API (v1beta only, see the live-realtime category).
 - Distinct from the Gemini Live API voice sessions and Realtime audio products of other vendors (openai-realtime-audio skill); not a robot SDK.
 - Full runnable code for all sub-guides is in the Robotics cookbook (google-gemini/robotics-samples on GitHub); the generate-content mirror (`generate-content/robotics-overview` and siblings) is covered in the generate-content category.
-- API availability: Interactions API (standard ER 2); Live API (streaming ER 2). Docs fetched 2026-10-16.
+- API availability: Interactions API (standard ER 2); Live API (streaming ER 2). Docs fetched 2026-11-14.
+- Overview guidance (robotics-overview, fetched 2026-11-14): the models take image, video, or audio input with natural-language prompts, identify objects, reason about scene context and spatial relationships, and return structured output such as coordinates or bounding boxes. The model is agentic: it breaks complex tasks into sub-tasks and executes them by calling your robot functions or running generated code (for example "put the apple in the bowl" becomes locate, grasp, and place steps). Model cards: `gemini-robotics-er-2-preview` and `gemini-robotics-er-2-streaming-preview` each list text, images, video, and audio input, text output, input token limit 131,072 and output token limit 65,536; the standard endpoint lists code execution, computer use, Live API (not supported), Batch API supported, Flex and Priority not supported, while the streaming endpoint lists code execution as not supported (see the models category for the full cards).
+- Safety: you are responsible for maintaining a safe environment around the robot; generative models can make mistakes and physical robots can cause damage. The overview points to the Gemini Robotics safety page at deepmind.google.
+- Best practices (overview): use plain natural language; optimize visual input (crop or zoom into small or unclear objects, mind lighting and low color contrast); break complex tasks into steps and send each as a separate prompt; query multiple times and average results for high-precision tasks.
+- Limitations (overview): unrestricted API keys are rejected with `403 Forbidden` (add key restrictions in AI Studio); complex queries, high-resolution inputs, or high thinking levels increase latency, and medium is suggested for a balance; models can hallucinate, especially for ambiguous or out-of-distribution inputs; output quality depends on prompt clarity; video input or a high thinking budget raises compute cost; the page links the per-mode input limits for images, video, and audio.
+- Privacy notice (overview): the Robotics Models use video and audio data and may collect Personal Data of identifiable persons; do not permit identifiable persons to interact with or be present around the robot unless they were notified of and consented to collection and use as described in the Gemini API Additional Terms of Service, and minimize collection (for example face blurring, operating in areas without identifiable persons).
+- Pricing is on the pricing page (`gemini-robotics-er-2` section, free tier free of charge; paid $1.00 input / $5.00 output through December 31, 2026, then $2.00 / $10.00).
+- Source: https://aistudio.google.com/docs/robotics-overview and the sibling robotics-spatial / -agentic / -orchestration / -streaming / -video-progress pages (fetched 2026-11-14; no changes found to the guide content beyond the notes above).
 
 ## Related
 

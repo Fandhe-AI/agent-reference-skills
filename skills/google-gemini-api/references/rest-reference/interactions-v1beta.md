@@ -4,7 +4,7 @@ source: https://ai.google.dev/api/interactions-api
 
 # Interactions API (v1beta)
 
-Beta REST reference for the Gemini Interactions API (endpoints under `/v1beta/`); the SDKs default to `v1beta` (see the api-versions table).
+Beta REST reference for the Gemini Interactions API (endpoints under `/v1beta/`); SDK 2.x and earlier defaulted to `v1beta`, while SDK 3.x defaults to `v1` (see the api-versions table).
 
 ## Signature / Usage
 

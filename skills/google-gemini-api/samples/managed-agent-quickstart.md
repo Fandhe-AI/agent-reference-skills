@@ -71,6 +71,7 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
 
 ## Notes
 
+- Migration (SDK 2.x to 3.x): this sample uses Agents API / managed agents, which the API-versions table marks `v1beta` only, and the code does not set an API version. SDK 3.x defaults to `v1`, so construct the client with `http_options={"api_version": "v1beta"}` (Python) or `httpOptions: { apiVersion: "v1beta" }` (JS), or set `GOOGLE_GENAI_API_VERSION=v1beta`. Source: https://aistudio.google.com/api-reference/api-versions (fetched 2026-11-14).
 - `environment="remote"` provisions a fresh Linux sandbox; store `interaction.environment_id` to resume the same sandbox.
 - Two independent state dimensions: conversation context (`previous_interaction_id`) and environment state (`environment`); pass both to resume.
 - Agent ID `antigravity-preview-09-2026` is kept as written in the original.

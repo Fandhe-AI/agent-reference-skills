@@ -26,9 +26,9 @@ In `generateContent` the corresponding enum values are `AUDIO_L16`, `AUDIO_MULAW
 | `gemini-2.5-flash-preview-tts` | Text / Audio | 8,192 / 16,384 | Preview | December 2025 |
 | `gemini-2.5-pro-preview-tts` | Text / Audio | 8,192 / 16,384 | Preview | December 2025 |
 | `gemini-2.5-flash-native-audio-preview-12-2025` | Audio, video, text / Audio and text | 131,072 / 8,192 | Preview | September 2025 |
-| `gemini-3.1-flash-live-preview` | Text, images, audio, video / Text and audio | 131,072 / 65,536 | Legacy preview; update to Gemini 3.8 Live | March 2026 |
-| `gemini-3.8-live` | Text, images, audio, video / Text and audio | 131,072 / 65,536 | Stable | September 2026 |
-| `gemini-3.8-live-extended-thinking` | Text, images, audio, video / Text and audio | 131,072 / 65,536 | Stable | September 2026 |
+| `gemini-3.1-flash-live-preview` | Text, images, audio / Text and audio | 131,072 / 65,536 | Legacy preview; update to Gemini 3.8 Live | March 2026 |
+| `gemini-3.8-live` | Text, images, audio / Text and audio | 131,072 / 65,536 | Stable | September 2026 |
+| `gemini-3.8-live-extended-thinking` | Text, images, audio / Text and audio | 131,072 / 65,536 | Stable | September 2026 |
 | `gemini-3.5-live-translate-preview` | Audio (speech) / Audio (translated speech) and Text (transcript) | 131,072 / 65,536 | Preview | June 2026 |
 | `gemini-3.5-transcribe` (unary) / `gemini-3.5-transcribe-live` (Live API) | Audio (up to 1 hour) / Text, Word annotations | Unary audio limit up to 1 hour (30 minutes with diarization or word timestamps); live 10 minutes per session | not listed (the card's Versions row names the unary and Live IDs) | August 2026 |
 
@@ -57,9 +57,9 @@ Capabilities:
 - Migrating `gemini-3.1-flash-live-preview` to `gemini-3.8-live`: omit `thinking_level` / `thinking_config`; async function calling (`behavior: NON_BLOCKING`) is the default, `BLOCKING` available, scheduling `SILENT` / `WHEN_IDLE` / `INTERRUPT` supported; proactive audio permanently enabled (`proactive_audio: false` returns an error); affective dialogue removed (`enable_affective_dialog`); audio is the supported response modality (enable output audio transcription for text).
 - `gemini-3.8-live-extended-thinking`: `turnComplete: true` no longer indicates the model is idle; monitor `interaction_status` (`IN_PROGRESS` / `IDLE`); only `NON_BLOCKING` function calls (blocking returns a hard error); set `thinking_config` `thinking_level` `low`, `medium` or `high` (`MINIMAL` not supported).
 - The source model page spells the scheduling value `INTERRUPTED`; the FunctionResponse API reference and the live-tools examples use `INTERRUPT`, so this page uses `INTERRUPT`.
-- Per the deprecations page, `gemini-3.1-flash-tts-preview`, `gemini-2.5-flash-preview-tts`, `gemini-2.5-pro-preview-tts`, `gemini-3.1-flash-live-preview` and `gemini-2.5-flash-native-audio-preview-12-2025` shut down on November 17, 2026 (replacements: `gemini-3.8-flash-tts` / `gemini-3.8-flash-lite-tts` or `gemini-3.8-live`); the model cards do not show this.
+- Per the deprecations page (fetched 2026-11-14), `gemini-3.1-flash-tts-preview`, `gemini-2.5-flash-preview-tts` and `gemini-2.5-pro-preview-tts` shut down on December 18, 2026 (replacements: `gemini-3.8-flash-tts` or `gemini-3.8-flash-lite-tts`); `gemini-2.5-flash-native-audio-preview-12-2025` shuts down on March 31, 2027 (replacement: `gemini-3.8-live`); `gemini-3.1-flash-live-preview` is deprecated (March 11, 2026) with no shutdown date announced (replacement: `gemini-3.8-live`). The model cards do not show these dates. An earlier version of this page gave November 17, 2026 for all five; the current deprecations page no longer says so.
 - Live API is v1beta only per the api-versions table; Live models are not available through the Batch API.
-- Docs fetched 2026-10-16. Supported-language tables (130 languages for Flash TTS, 101 for Flash-Lite TTS, BCP-47 table for Transcribe) are on the source pages and not reproduced here.
+- Docs fetched 2026-10-16; the Gemini 3.8 Flash TTS, 3.8 Flash-Lite TTS, 3.8 Live, 3.8 Live Extended Thinking and 3.1 Flash Live cards (and the deprecation dates above) were re-checked on 2026-11-14 with no other changes; the Voice remixing guide was added to the voice ecosystem on 2026-11-04 (changelog). Supported-language tables (130 languages for Flash TTS, 101 for Flash-Lite TTS, BCP-47 table for Transcribe) are on the source pages and not reproduced here.
 - Distance: Gemini Live / TTS differ from the Realtime API and TTS in openai-realtime-audio.
 
 ## Related

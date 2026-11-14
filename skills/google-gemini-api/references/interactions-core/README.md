@@ -4,6 +4,7 @@
 |------|-------------|------|
 | Background execution | Set `background: true` on `interactions.create` to run long tasks asynchronously on the server and poll the interaction ID. | [background-execution.md](./background-execution.md) |
 | Context caching (implicit) | Implicit caching is enabled by default for Gemini 2.5 and newer models; cost savings apply automatically on cache hits. | [implicit-caching.md](./implicit-caching.md) |
+| Decisions API (Gemini Decision 1) | `client.decisions.create` evaluates yes/no (`noul`), choice, and score questions over text, PDF, audio, image, and video and returns calibrated probabilities with zero output tokens. | [decisions-api.md](./decisions-api.md) |
 | Long decode | Long decode lets Gemini 4 Argon generate past 64K tokens, up to the 1M-token unified context window, via background execution. | [long-decode.md](./long-decode.md) |
 | Optimization and inference | Mechanisms for balancing speed, cost, and reliability: standard, Flex, Priority, Batch, and caching, plus agentic video processing. | [optimization.md](./optimization.md) |
 | Prompt design strategies | Basic concepts, strategies, and best practices for designing prompts for Gemini models, including Gemini 3 and agentic-workflow guidance. | [prompting-strategies.md](./prompting-strategies.md) |

@@ -71,10 +71,11 @@ interaction = client.interactions.create(
 - 3.6 Flash reduces output price ($7.50/1M versus $9.00/1M for 3.5 Flash); input remains $1.50/1M.
 - Gemini 3.6 Flash introduced support for the Antigravity agent in Gemini Managed Agents.
 - The source describes a coding-agent migration shortcut using an externally distributed `gemini-interactions-api` skill (`npx skills add google-gemini/gemini-skills ...`). That is a Gemini-side coding-agent artifact, not a skill of this repository and not a Claude Code Agent Skill (anthropic-claude-code-extend).
-- Docs fetched 2026-10-16. API surface: Interactions API; the generateContent prefill example is shown in the source only to illustrate the disallowed form.
+- Source: https://aistudio.google.com/docs/whats-new-gemini-3.6 (fetched 2026-11-14; content re-checked). The page now calls the 3.6 / 3.5 Flash-Lite pair previous-generation releases that remain available for production use and points to Gemini 3.8 Flash for the newest Flash model. API surface: Interactions API; the generateContent prefill example is shown in the source only to illustrate the disallowed form.
 
 ## Related
 
+- [What's new in Gemini 3.8 Flash](./whats-new-gemini-3-8.md)
 - [What's new in Gemini 3.5 Flash](./whats-new-gemini-3-5.md)
 - [What's new in Gemini 3.7 Flash](./whats-new-gemini-3-7.md)
 - [Gemini 4 / 3.x model cards](./gemini-4-3-models.md)

@@ -18,7 +18,7 @@ client = OpenAI(
 )
 
 response = client.chat.completions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     messages=[
         {   "role": "system",
             "content": "You are a helpful assistant."
@@ -47,7 +47,7 @@ curl "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions" 
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $GEMINI_API_KEY" \
   -d '{
-    "model": "gemini-3.8-flash",
+    "model": "gemini-4-hydrogen",
     "messages": [
       {
         "role": "user",
@@ -61,7 +61,7 @@ Thinking via `reasoning_effort`:
 
 ```python
 response = client.chat.completions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     reasoning_effort="low",
     messages=[
         {   "role": "system",
@@ -79,7 +79,7 @@ Gemini-specific fields via `extra_body`:
 
 ```python
 response = client.chat.completions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     messages=[{"role": "user", "content": "Explain to me how AI works"}],
     extra_body={
       'extra_body': {
@@ -101,7 +101,7 @@ Embeddings example:
 ```python
 response = client.embeddings.create(
     input="Your text string goes here",
-    model="gemini-embedding-2-preview"
+    model="gemini-embedding-2"
 )
 
 print(response.data[0].embedding)
@@ -113,12 +113,13 @@ REST endpoints shown on the page: `https://generativelanguage.googleapis.com/v1b
 
 Thinking mapping (`reasoning_effort` -> Gemini):
 
-| `reasoning_effort` (OpenAI) | `thinking_level` (Gemini 4 Argon) | `thinking_level` (Gemini 3.1 Flash-Lite) | `thinking_level` (Gemini 3 Flash) | `thinking_budget` (Gemini 2.5) |
+| `reasoning_effort` (OpenAI) | `thinking_level` (Gemini 4) | `thinking_level` (Gemini 3.1 Flash-Lite) | `thinking_level` (Gemini 3 Flash) | `thinking_budget` (Gemini 2.5) |
 |---|---|---|---|---|
 | `minimal` | `low` | `minimal` | `minimal` | `1,024` |
 | `low` | `low` | `low` | `low` | `1,024` |
 | `medium` | `medium` | `medium` | `medium` | `8,192` |
 | `high` | `high` | `high` | `high` | `24,576` |
+| `xhigh` | `xhigh` (`gemini-4-hydrogen` only) | Not supported | Not supported | Not supported |
 
 `extra_body` parameters (enable Gemini features not available on OpenAI models):
 
@@ -148,18 +149,20 @@ Thinking mapping (`reasoning_effort` -> Gemini):
 
 - Availability: OpenAI-compatible endpoint under `v1beta` (`/v1beta/openai/`). This page is an OpenAI SDK compatibility layer for Gemini models, not the Gemini-native API.
 - Distance: the OpenAI SDK itself, Responses API, and OpenAI Chat Completions / Realtime / image / Sora APIs are covered by openai-api-core (and openai-images-video / openai-realtime-audio). This page only shows how to point those clients at the Gemini endpoint.
-- If no `reasoning_effort` is specified, Gemini uses the model's default level or budget. Set `reasoning_effort` to `"none"` to disable thinking for 2.5 models; reasoning cannot be turned off for Gemini 2.5 Pro or 3 models.
+- If no `reasoning_effort` is specified, Gemini uses the model's default level or budget. Set `reasoning_effort` to `"none"` to disable thinking for 2.5 models; reasoning cannot be turned off for Gemini 2.5 Pro, Gemini 3, or Gemini 4 models.
 - `reasoning_effort` and `thinking_level` / `thinking_budget` overlap and cannot be used at the same time.
 - Gemini 3 supports OpenAI compatibility for thought signatures in chat completion APIs (see the thought signatures page of the Gemini docs).
 - Image generation: models `gemini-2.5-flash-image` or `gemini-3-pro-image-preview`; supported parameters are `prompt`, `model`, `n`, `size`, and `response_format`; other parameters not listed here or in `extra_body` are silently ignored. Grounding with Google Search is only available on Gemini 3 and newer models.
-- Video generation: `veo-3.1-generate-preview` via the Sora-compatible `/v1/videos` endpoint; top-level parameters are `prompt` and `model`; others go in `extra_body`.
-- Embeddings: `gemini-embedding-2-preview` for multimodal embeddings, `gemini-embedding-001` for text-only.
+- Video generation: the source warns that Veo 3.1 Preview (`veo-3.1-generate-preview`, `veo-3.1-fast-generate-preview`, `veo-3.1-lite-generate-preview`) was shut down on October 22, 2026; migrate to Gemini Omni Flash (`gemini-omni-1.2-flash`) via the native Google GenAI SDK (Interactions API) or the GA models on the Gemini Enterprise Agent Platform. Video generation with `gemini-omni-1.2-flash` is not supported on the OpenAI-compatible `/v1/videos` endpoint. The page's `/v1/videos` section previously documented `veo-3.1-generate-preview` with top-level parameters `prompt` and `model` (others in `extra_body`).
+- Embeddings: `gemini-embedding-2` for multimodal embeddings, `gemini-embedding-001` for text-only.
 - The source passes the literal string `"GEMINI_API_KEY"` as the API key; it is read from the `GEMINI_API_KEY` environment variable here.
-- Per the deprecations page (fetched 2026-10-16): `gemini-3-pro-image-preview` shut down June 25, 2026 (use `gemini-3-pro-image`); the `embedding-2-preview` row (released March 10, 2026; the ID spelling differs from the card) shut down August 10, 2026 (use `gemini-embedding-2`); `veo-3.1-generate-preview` shuts down October 22, 2026 (replacement `gemini-omni-1.1-flash`). Whether the compatibility layer accepts the replacements is not stated.
+- Per the deprecations page (fetched 2026-11-14): `gemini-3-pro-image-preview` shut down June 25, 2026 (use `gemini-3-pro-image`); `gemini-embedding-2-preview` is deprecated and, effective November 6, 2026, requests route to `gemini-embedding-2` (same schema, pricing, and embedding space); the `veo-3.1-*-preview` IDs shut down October 22, 2026 (replacement `gemini-omni-1.2-flash`); `gemini-omni-1.1-flash` auto-routes to `gemini-omni-1.2-flash` effective December 3, 2026.
 - Batch API: OpenAI compatibility supports creating a batch, monitoring status, and viewing results; upload / download compatibility is not supported, so the regular `genai` client handles file upload / download. JSONL uses OpenAI input format; for embeddings switch the `create` `endpoint` and the JSONL `url` / `model` keys.
 - `service_tier` (`priority` / `flex`) matches OpenAI's parameter in name and logic; default is `standard` (equivalent to `default` for OpenAI).
 - Source typos transcribed as written: the extra_body `cached_content` example sets `base_url="https://generativelanguage.googleapis.com/v1beta/"` (without `/openai/`); the thinking table repeats its header row; the batch embeddings JSONL comment shows `"ggemini-embedding-001"` in one line.
 - Support for the OpenAI libraries is stated to be in beta while feature support is extended.
+
+- Source: https://aistudio.google.com/docs/openai (fetched 2026-11-14); chat examples now use `gemini-4-hydrogen`.
 
 ## Related
 

@@ -4,15 +4,15 @@ source: https://ai.google.dev/gemini-api/docs/models/gemini-2.5-pro
 
 # Gemini 2.5 / 2.0 model cards
 
-Aggregated model cards for Gemini 2.5 Pro, 2.5 Flash, 2.5 Flash-Lite (stable and 09-2025 previews) and Gemini 2.0 Flash / Flash-Lite. One section per source page.
+Aggregated model cards for Gemini 2.5 Pro, 2.5 Flash, 2.5 Flash-Lite (2.5 Pro and 2.5 Flash deprecated; 09-2025 previews shut down) and Gemini 2.0 Flash / Flash-Lite. One section per source page.
 
 ## Signature / Usage
 
 The cards contain no code; model codes and version rows as listed on the pages:
 
 ```text
-gemini-2.5-pro   Versions: Stable: gemini-2.5-pro
-gemini-2.5-flash   Versions: Stable: gemini-2.5-flash; Shut down: gemini-2.5-flash-preview-09-2025
+gemini-2.5-pro   Versions: Deprecated: gemini-2.5-pro (effective December 1, 2026, automatically routed to gemini-3.8-flash)
+gemini-2.5-flash   Versions: Deprecated: gemini-2.5-flash (effective December 1, 2026, automatically routed to gemini-3.5-flash-lite); Shut down: gemini-2.5-flash-preview-09-2025
 gemini-2.5-flash-lite   Versions: Stable: gemini-2.5-flash-lite; Shut down: gemini-2.5-flash-lite-preview-09-2025
 gemini-2.0-flash   Versions: Shut down: gemini-2.0-flash, gemini-2.0-flash-001, gemini-2.0-flash-exp
 gemini-2.0-flash-lite   Versions: Shut down: gemini-2.0-flash-lite, gemini-2.0-flash-lite-001
@@ -22,8 +22,8 @@ gemini-2.0-flash-lite   Versions: Shut down: gemini-2.0-flash-lite, gemini-2.0-f
 
 | Model code | Inputs / Output | Input / output token limit | Status | Latest update | Knowledge cutoff |
 | --- | --- | --- | --- | --- | --- |
-| `gemini-2.5-pro` | Audio, images, video, text, and PDF / Text | 1,048,576 / 65,536 | Stable | June 2025 | January 2025 |
-| `gemini-2.5-flash` | Text, images, video, audio / Text | 1,048,576 / 65,536 | Stable | June 2025 | January 2025 |
+| `gemini-2.5-pro` | Audio, images, video, text, and PDF / Text | 1,048,576 / 65,536 | Deprecated; no longer selectable in Google AI Studio; routes to `gemini-3.8-flash` on December 1, 2026 | June 2025 | January 2025 |
+| `gemini-2.5-flash` | Text, images, video, audio / Text | 1,048,576 / 65,536 | Deprecated; no longer selectable in Google AI Studio; routes to `gemini-3.5-flash-lite` on December 1, 2026 | June 2025 | January 2025 |
 | `gemini-2.5-flash-preview-09-2025` | Text, images, video, audio / Text | 1,048,576 / 65,536 | Shut down (as of February 17, 2026; migrate to Gemini 2.5 Flash) | September 2025 | January 2025 |
 | `gemini-2.5-flash-lite` | Text, image, video, audio, PDF / Text | 1,048,576 / 65,536 | Stable | July 2025 | January 2025 |
 | `gemini-2.5-flash-lite-preview-09-2025` | Text, image, video, audio, PDF / Text | 1,048,576 / 65,536 | Shut down (as of March 31, 2026; migrate to Gemini 3.1 Flash-Lite) | September 2025 | January 2025 |
@@ -45,14 +45,17 @@ On every card: Audio generation, Image generation and Live API are Not supported
 
 - Source pages (one per section): https://ai.google.dev/gemini-api/docs/models/gemini-2.5-pro, https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash, https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-preview-09-2025, https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-lite, https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-lite-preview-09-2025, https://ai.google.dev/gemini-api/docs/models/gemini-2.0-flash, https://ai.google.dev/gemini-api/docs/models/gemini-2.0-flash-lite
 - The deprecations table lists `gemini-3.6-flash` as the replacement for both `gemini-2.0-flash` and the 2.5 Flash 09 preview, while the cards recommend Gemini 3.8 Flash and Gemini 2.5 Flash respectively (see migration/deprecations.md).
-- Source note on stable 2.5 models: "we are limiting access to the 2.5 models to users who have actively used them in the past. These models are not deprecated and will continue to be served until further notice through the API. For any new projects, use our latest models: 3.5 Flash-Lite or 3.8 Flash."
+- Deprecation (changelog November 2, 2026; model cards): `gemini-2.5-pro` is deprecated and no longer available to select in Google AI Studio (API access is limited to existing users until December 1, 2026). Effective December 1, 2026, all API requests to `gemini-2.5-pro` automatically route to `gemini-3.8-flash` and are billed at Gemini 3.8 Flash rates; update the model string before then and review the Gemini 3.8 Flash migration guide (breaking changes: function calling and `thought_signature` validation, `thinking_level` replacing `thinking_budget`, removed sampling parameters and prefilled model turns). `gemini-2.5-flash` is deprecated likewise; from December 1, 2026 requests route to `gemini-3.5-flash-lite` and are billed at Gemini 3.5 Flash-Lite rates (migration guide: What's new in Gemini 3.6, Flash-Lite section). `gemini-2.5-flash-lite` is not deprecated.
+- Source note on `gemini-2.5-flash-lite` (card callout): "we are limiting access to the 2.5 models to users who have actively used them in the past. `gemini-2.5-flash-lite` is not deprecated and will continue to be served until further notice through the API. For any new projects, use our latest models: 3.5 Flash-Lite or 3.8 Flash." (The models catalog callout says "Gemini 4 Hydrogen or 3.5 Flash-Lite".)
+- Earlier source note on the 2.5 models (September 18, 2026 changelog, now only accurate for Flash-Lite): "we are limiting access to the 2.5 models to users who have actively used them in the past. These models are not deprecated and will continue to be served until further notice through the API. For any new projects, use our latest models: 3.5 Flash-Lite or 3.8 Flash."
 - Gemini 2.0 Flash and 2.0 Flash-Lite warnings: "deprecated and has been shut down June 1, 2026."
 - Descriptions: 2.5 Pro is the state-of-the-art thinking model for complex problems in code, math, and STEM and long-context analysis; 2.5 Flash is the best price-performance model for large scale, low-latency, high volume tasks that require thinking and agentic use cases; 2.5 Flash-Lite is the most cost-efficient multimodal model for high-volume classification, simple data extraction and extremely low-latency applications.
 - Gemini 3 guides recommend Gemini 2.5 Flash with thinking off for image segmentation, which Gemini 3.x does not support.
-- Docs fetched 2026-10-16. API surface: model cards apply to both the Interactions API and generateContent.
+- Docs fetched 2026-11-14 (all seven cards re-checked; only the 2.5 Pro / 2.5 Flash status changed). API surface: model cards apply to both the Interactions API and generateContent.
 
 ## Related
 
 - [Models](./models-catalog.md)
+- [What's new in Gemini 3.8 Flash](./whats-new-gemini-3-8.md)
 - [Gemini 4 / 3.x model cards](./gemini-4-3-models.md)
 - [TTS / native audio / Live / transcribe model cards](./audio-live-models.md)

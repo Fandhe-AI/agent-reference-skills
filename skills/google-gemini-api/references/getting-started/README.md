@@ -4,6 +4,7 @@
 |------|-------------|------|
 | Using Gemini API keys | Authenticate Gemini API requests with a standard or authorization API key from AI Studio or Google Cloud console. | [api-key.md](./api-key.md) |
 | Available regions | Lists the countries and territories where the Gemini API and Google AI Studio are available. | [available-regions.md](./available-regions.md) |
+| Gemini API CLI (`gemini-api`) | Stateless zero-dependency CLI (beta) for agents, scripts, and CI: generate text and media, analyze files, and run managed agents on the Interactions API. | [cli.md](./cli.md) |
 | Coding agent setup & developer resources | Give an AI coding agent access to current Gemini API docs: agent skills, Docs MCP server, and project rules. | [coding-agents.md](./coding-agents.md) |
 | Getting started (Interactions API) | Quickstart for the Gemini API using the Interactions API: first call, streaming, tools, and managed agents. | [get-started.md](./get-started.md) |
 | Interactions API | The recommended way to build with Gemini models and agents; the core resource is the Interaction session record. | [interactions-overview.md](./interactions-overview.md) |

@@ -193,7 +193,56 @@ print(file_info.model_dump_json(indent=4))
 | `type` | `"document"` | Document content item |
 | `data` | string | Base64 PDF bytes (inline; 50MB limit for PDFs) |
 | `uri` | string | Files API file URI |
-| `mime_type` | string | `application/pdf` (other types are extracted as plain text) |
+| `mime_type` | string | `application/pdf`, or an Office / OpenDocument MIME type (see below); other types (TXT, Markdown, HTML, ...) are extracted as plain text |
+
+### Office and OpenDocument files
+
+Pass Microsoft Office and OpenDocument files the same way as PDFs (inline or with the Files API) using a `document` content block and one of these MIME types:
+
+| File type | Extension | MIME type |
+| --- | --- | --- |
+| Documents | `.docx` | `application/vnd.openxmlformats-officedocument.wordprocessingml.document` |
+|  | `.doc` | `application/msword` |
+|  | `.dotx` | `application/vnd.openxmlformats-officedocument.wordprocessingml.template` |
+|  | `.odt` | `application/vnd.oasis.opendocument.text` |
+| Presentations | `.pptx` | `application/vnd.openxmlformats-officedocument.presentationml.presentation` |
+|  | `.ppt` | `application/vnd.ms-powerpoint` |
+|  | `.odp` | `application/vnd.oasis.opendocument.presentation` |
+| Spreadsheets | `.xlsx` | `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` |
+|  | `.xls` | `application/vnd.ms-excel` |
+|  | `.ods` | `application/vnd.oasis.opendocument.spreadsheet` |
+
+Processing by format:
+
+- **DOCX, DOTX, ODT, and PPTX files**: The model receives the text of the whole file, plus embedded images for DOCX and PPTX files. Pages and slides aren't rendered as images, so page layout and visual elements such as charts might not be preserved.
+- **DOC, PPT, and ODP files**: Each page or slide is rendered as an image, so the model can interpret layouts, charts, and images. The whole file is processed.
+- **XLSX and XLS files**: Only the **first sheet** is read. Its contents are converted to CSV, so the model receives the cell values but not formulas or formatting.
+- **ODS files**: Only the **first sheet** is read. The model receives its cell data and formulas.
+
+Other sheets in a workbook are ignored. To analyze a different sheet, move it to the first position or save it as a separate file. Files are processed the same way whether you pass them in a request or a tool returns them in a function response. The existing file size and page limits apply to the whole file.
+
+```python
+from google import genai
+
+client = genai.Client()
+
+deck = client.files.upload(
+    file="quarterly_review.pptx",
+    config={
+        "mime_type": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    },
+)
+
+interaction = client.interactions.create(
+    model="gemini-4-hydrogen",
+    input=[
+        {"type": "document", "uri": deck.uri, "mime_type": deck.mime_type},
+        {"type": "text", "text": "Summarize the key takeaways from each slide."},
+    ],
+)
+
+print(interaction.output_text)
+```
 
 ## Notes
 
@@ -202,12 +251,12 @@ print(file_info.model_dump_json(indent=4))
 - Technical details: PDF files up to 50MB or 1000 pages (applies to inline data and Files API uploads); each document page is equivalent to 258 tokens. Larger pages are scaled down to a maximum resolution of 3072 x 3072 preserving aspect ratio; smaller pages are scaled up to 768 x 768. No cost reduction for lower-size pages.
 - Multiple PDFs (up to 1000 pages) can be sent in one request as long as the combined size and text prompt stay within the model's context window.
 - The source page says that for Gemini 3 models the resolution can be set to low, medium or high; the Interactions OpenAPI `DocumentContent` has no `resolution` field (only `data`, `mime_type`, `type`, `uri`), and only image and video content items carry `resolution`. In the Interactions API the per-item field is named `resolution` (the setting is called `media_resolution`). Natively embedded PDF text is extracted and provided to the model; you are not charged for tokens from the extracted native text; in `usage_metadata`, tokens from PDF pages processed as images are counted under the `IMAGE` modality, not a separate `DOCUMENT` modality as in some earlier versions.
-- Other MIME types (TXT, Markdown, HTML, XML, ...) can be passed, but document vision only meaningfully understands PDFs; other types are extracted as pure text and charts, diagrams, HTML tags and Markdown formatting are lost.
+- Other MIME types (TXT, Markdown, HTML, XML, ...) can be passed, but document vision only meaningfully understands PDFs and DOC, PPT, and ODP files (rendered as page images); DOCX, DOTX, ODT, and PPTX files are converted to text, and spreadsheets are read as tabular data. Release notes 2026-11-05: PowerPoint 97-2003 (PPT), OpenDocument Presentation (ODP), and OpenDocument Spreadsheet (ODS) are newly accepted and Word 97-2003 (DOC) gains page-image processing; processing for DOCX, DOTX, ODT, PPTX, XLSX, and XLS is unchanged. Other types are extracted as pure text and charts, diagrams, HTML tags and Markdown formatting are lost.
 - Best practices: rotate pages to the correct orientation; avoid blurry pages; when using a single page, place the text prompt after the page.
 - The source REST sample inlines the base64 PDF in a single `-d` argument with unquoted variables; this page builds the body with `jq --rawfile` and sends it with `--data-binary @request.json`.
 - The pricing page says PDF page tokens appear under the DOCUMENT modality in `promptTokensDetails`, while this page says Gemini 3 reports them under IMAGE; the source pages disagree. The fixed 258 tokens per page differs from the media-resolution Gemini 3 table (560 for PDF).
 - Page also has Java and Go examples; not reproduced here.
-- API availability: Interactions API. Docs fetched 2026-10-16.
+- API availability: Interactions API. Docs fetched 2026-11-14 (https://aistudio.google.com/docs/document-processing).
 
 ## Related
 

@@ -108,5 +108,5 @@ jq -r '.steps[] | select(.type == "model_output") | .content[] | select(.type ==
 - The original's final jq filter reads `.outputs[]`, which the Interaction resource no longer has; this sample reads `.steps[]` (model_output text blocks) as in the get-started REST example.
 - Variable expansions are quoted (`"${var}"`) and `jq -r` is used for `file_uri`, unlike the original snippet; the official snippet also writes `$GEMINI_API_KEY`.
 - The metadata body uses double-quoted JSON keys and an empty upload URL check is added; the original sends single-quoted keys.
-- The official JS snippet passes `mime_type`; `UploadFileConfig` in @google/genai 2.30.0 uses `mimeType`, so the sample uses `mimeType`.
+- The official JS snippet passes `mime_type`; `UploadFileConfig` in @google/genai 2.30.0 (checked 2026-10-16) uses `mimeType`, so the sample uses `mimeType`.
 - The same page documents get-metadata, list, and delete operations.

@@ -11,6 +11,9 @@ Catalog of all models available through the Gemini API, grouped by generation an
 ```text
 | Model | Endpoint |
 |---|---|
+| Gemini 4 Carbon | gemini-4-carbon |
+| Gemini 4 Argon | gemini-4-argon |
+| Gemini 4 Hydrogen | gemini-4-hydrogen |
 | Gemini 3.8 Flash | gemini-3.8-flash |
 | Gemini 3.8 Live | gemini-3.8-live |
 | Gemini 3.8 Live Extended Thinking | gemini-3.8-live-extended-thinking |
@@ -28,22 +31,32 @@ Catalog of all models available through the Gemini API, grouped by generation an
 | Gemini 3.5 Live Translate | gemini-3.5-live-translate-preview |
 | Gemini 3.1 Flash Live | gemini-3.1-flash-live-preview |
 | Gemini 3.1 Flash TTS | gemini-3.1-flash-tts-preview |
-| Gemini Omni Flash | gemini-omni-1.1-flash |
+| Gemini Omni Flash | gemini-omni-1.2-flash gemini-omni-1.1-flash |
 | Gemini 3.5 Transcribe | gemini-3.5-transcribe gemini-3.5-transcribe-live |
 ```
 
 ## Options / Props
 
+Gemini 4 group on the page (card description; all three: context 1M tokens, max output 64K / 1M tokens, modalities Text, Image, Audio, Video, PDF):
+
+| Model | Endpoint | Card description |
+| --- | --- | --- |
+| Gemini 4 Carbon | `gemini-4-carbon` | Our strongest reasoning model, built for complex software engineering, multimodal knowledge work, scientific reasoning, and cybersecurity defense. |
+| Gemini 4 Argon | `gemini-4-argon` | Our efficient Gemini 4 frontier reasoning model, delivering faster responses and lower token spend per turn compared to Gemini 4 Carbon across complex coding, agentic, math, and science tasks. |
+| Gemini 4 Hydrogen | `gemini-4-hydrogen` | Brings cutting-edge intelligence to everyone, with speed and efficiency for everyday coding and agentic workflows, featuring a shared 1M context window and long decodes up to 1M tokens. |
+
+Gemini Decision 1 (`gemini-decision-1`, Specialized task models): fast, calibrated multimodal yes/no, choice, and score decisions with zero output tokens using the Decisions API (see the Decisions API pages for the model card details).
+
 Other model groups on the page (model name to endpoint string):
 
 | Group | Model | Endpoint |
 | --- | --- | --- |
-| Gemini 2.5 Flash | Gemini 2.5 Flash | `gemini-2.5-flash` |
+| Gemini 2.5 Flash | Gemini 2.5 Flash (deprecated) | `gemini-2.5-flash` |
 | Gemini 2.5 Flash | Nano Banana | `gemini-2.5-flash-image` |
 | Gemini 2.5 Flash | Gemini 2.5 Flash Live | `gemini-2.5-flash-native-audio-preview-12-2025` |
 | Gemini 2.5 Flash | Gemini 2.5 Flash TTS | `gemini-2.5-flash-preview-tts` |
 | Gemini 2.5 Flash-Lite | Gemini 2.5 Flash-Lite | `gemini-2.5-flash-lite` |
-| Gemini 2.5 Pro | Gemini 2.5 Pro | `gemini-2.5-pro` |
+| Gemini 2.5 Pro | Gemini 2.5 Pro (deprecated) | `gemini-2.5-pro` |
 | Gemini 2.5 Pro | Gemini 2.5 Pro TTS | `gemini-2.5-pro-preview-tts` |
 | Generative media | Veo 3.1 | `veo-3.1-generate-preview` |
 | Generative media | Veo 3.1 Lite | `veo-3.1-lite-generate-preview` |
@@ -55,7 +68,8 @@ Other model groups on the page (model name to endpoint string):
 | Tool and agent | Gemini Deep Research | `deep-research-preview-04-2026` |
 | Tool and agent | Gemini Deep Research Max | `deep-research-max-preview-04-2026` |
 | Tool and agent | Antigravity Agent | `antigravity-preview-09-2026` |
-| Specialized task | Gemini Embedding 2 | `gemini-embedding-2-preview` |
+| Specialized task | Gemini Decision 1 | `gemini-decision-1` |
+| Specialized task | Gemini Embedding 2 | `gemini-embedding-2` |
 | Specialized task | Gemini Embedding | `gemini-embedding-001` |
 | Specialized task | Gemini Robotics ER 2 | `gemini-robotics-er-2-preview` |
 | Specialized task | Gemini Robotics ER 1.6 | `gemini-robotics-er-1.6-preview` |
@@ -78,14 +92,19 @@ Model version name patterns:
 
 - The catalog row for Gemini Robotics ER 1.6 (`gemini-robotics-er-1.6-preview`) is past its August 31, 2026 shutdown date on the deprecations page (see migration/deprecations.md).
 - The naming convention list is stated "as of September, 2025"; models released earlier may have different naming conventions.
+- Gemini 3.8 Flash is described on the catalog page as "Our previous-generation Flash model" (and Gemini 3.6 Flash likewise); Gemini 4 Hydrogen, Argon, and Carbon head the catalog.
+- Gemini 2.5 deprecation callouts (changelog November 2, 2026): `gemini-2.5-flash` is deprecated, no longer selectable in Google AI Studio, and from December 1, 2026 requests route to `gemini-3.5-flash-lite` (billed at Gemini 3.5 Flash-Lite rates); `gemini-2.5-pro` is deprecated and from December 1, 2026 requests route to `gemini-3.8-flash` (billed at Gemini 3.8 Flash rates). `gemini-2.5-flash-lite` is not deprecated; for new projects use Gemini 4 Hydrogen or 3.5 Flash-Lite.
+- Embedding: the catalog now lists `gemini-embedding-2` (the former `gemini-embedding-2-preview` is deprecated and routed there since 2026-11-06). Omni: the catalog lists both `gemini-omni-1.2-flash` and `gemini-omni-1.1-flash`; requests to 1.1 route to 1.2 from December 3, 2026 (changelog 2026-11-05).
 - Source note for Gemini 2.5 models: access is limited to users who have actively used them in the past. "These models are not deprecated and will continue to be served until further notice through the API. For any new projects, use our latest models: 3.5 Flash-Lite or 3.8 Flash."
 - Source note under "Previous models": "These models are deprecated and will be shut down soon; migrate to newer models to prevent service interruptions." Entries marked "(Shut down)" are listed in the table.
-- Docs fetched 2026-10-16. The catalog page does not list `gemini-4-argon` (it is documented on the latest-model page); see `whats-new-gemini-4-argon.md`.
+- Source: https://aistudio.google.com/docs/models (fetched 2026-11-14). The catalog now lists the Gemini 4 models (Carbon, Argon, Hydrogen); see `whats-new-gemini-4-carbon.md`, `whats-new-gemini-4-argon.md`, `whats-new-gemini-4-hydrogen.md`.
 - Per-model specs are aggregated in `gemini-4-3-models.md`, `gemini-2-models.md`, `audio-live-models.md`, `image-video-models.md`, `music-models.md`, `embedding-models.md`, `agent-models.md`, `specialized-models.md`.
 - API surface: model catalog applies to both the Interactions API and generateContent; the Interactions API is the recommended surface for new projects.
 
 ## Related
 
 - [Gemini 3 developer guide](./gemini-3-developer-guide.md)
+- [What's new in Gemini 4 Carbon](./whats-new-gemini-4-carbon.md)
 - [What's new in Gemini 4 Argon](./whats-new-gemini-4-argon.md)
+- [What's new in Gemini 4 Hydrogen](./whats-new-gemini-4-hydrogen.md)
 - [Gemini 4 / 3.x model cards](./gemini-4-3-models.md)

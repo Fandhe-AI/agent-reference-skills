@@ -236,6 +236,8 @@ print(response.text)
 - Official Python samples pass the class `types.ToolCodeExecution` (not an instance); the google-genai SDK coerces it to `ToolCodeExecution()` (verified with google-genai 2.31.0).
 - Full runnable code is referenced to the Robotics cookbook (google-gemini/robotics-samples) in the source. Robotics streaming (`robotics-streaming`) is covered in the live-realtime and Interactions-side robotics pages, not here.
 
+- Overview additions from the current Interactions-side robotics-overview page (fetched 2026-11-14), which the generateContent mirror is expected to share: Gemini Robotics ER 1.6 was deprecated on August 31, 2026 (replace `gemini-robotics-er-1.6-preview` with `gemini-robotics-er-2-preview`); `gs://` Cloud Storage URIs are not accessible through the Gemini Developer API (load images locally or use the Files API); unrestricted API keys return `403 Forbidden`; see the Interactions-tree page for the safety, best-practices, limitations, and privacy notes. The generateContent mirror pages themselves were not re-fetched.
+
 ## Related
 
 - [Function calling (generateContent)](./function-calling.md)
