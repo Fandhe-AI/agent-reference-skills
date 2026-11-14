@@ -12,6 +12,12 @@ user-invocable: false
 Android アプリ (Kotlin) のテストに関する公式ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
+## 対象バージョン
+
+- 本文は developer.android.com/training/testing の各ガイド（取得日 2026-11 時点）に従い、依存関係スニペットはガイド記載の版（例: espresso-core 3.6.1、orchestrator 1.1.0）を原文のまま収録
+- AndroidX Test の最新安定版（2026-11-14 確認）: core / runner / rules 1.7.0、monitor 1.8.0、orchestrator 1.6.1、espresso 3.7.0（minSdkVersion 24）、espresso-device 1.1.0、ext:junit 1.3.0。差分は該当ページの `## Notes` に記載
+- Compose UI 1.13 系は RC のため未追従
+
 ## ディレクトリ構成
 
 ```text
