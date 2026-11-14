@@ -1,8 +1,14 @@
+---
+source: https://editorconfig.org/
+---
+
 # EditorConfig ベストプラクティス
 
 `.editorconfig` の設定例、FAQ、よくあるパターン。
 
-## 基本的な設定例
+## Signature / Usage
+
+### 基本的な設定例
 
 ```ini
 # プロジェクトルート
@@ -18,9 +24,9 @@ indent_style = space
 indent_size = 2
 ```
 
-## 言語別の設定パターン
+### 言語別の設定パターン
 
-### Web 開発（JavaScript / TypeScript）
+#### Web 開発（JavaScript / TypeScript）
 
 ```ini
 root = true
@@ -40,7 +46,7 @@ trim_trailing_whitespace = false
 indent_style = tab
 ```
 
-### Python
+#### Python
 
 ```ini
 root = true
@@ -63,7 +69,7 @@ indent_size = 2
 indent_style = tab
 ```
 
-### Go
+#### Go
 
 ```ini
 root = true
@@ -86,7 +92,7 @@ indent_size = 2
 indent_style = tab
 ```
 
-### Java / Kotlin
+#### Java / Kotlin
 
 ```ini
 root = true
@@ -109,9 +115,9 @@ indent_size = 2
 indent_style = tab
 ```
 
-## よくあるパターン
+### よくあるパターン
 
-### Markdown の末尾空白を保持
+#### Markdown の末尾空白を保持
 
 Markdown では行末の2つのスペースが改行を意味するため、`trim_trailing_whitespace` を無効にする。
 
@@ -120,7 +126,7 @@ Markdown では行末の2つのスペースが改行を意味するため、`tri
 trim_trailing_whitespace = false
 ```
 
-### Makefile はタブ必須
+#### Makefile はタブ必須
 
 Makefile のレシピ行はハードタブが必須。
 
@@ -129,7 +135,7 @@ Makefile のレシピ行はハードタブが必須。
 indent_style = tab
 ```
 
-### 特定プロパティの無効化
+#### 特定プロパティの無効化
 
 `unset` を使ってプロパティの効果を打ち消し、エディタのデフォルトに戻す。
 
@@ -139,7 +145,7 @@ indent_size = unset
 indent_style = unset
 ```
 
-### 複数ファイルタイプをまとめて設定
+#### 複数ファイルタイプをまとめて設定
 
 波括弧で複数の拡張子をグループ化できる。
 
@@ -153,34 +159,48 @@ indent_style = space
 indent_size = 2
 ```
 
-## FAQ
+## Notes
 
-### Q: EditorConfig は既存ファイルを自動リフォーマットする？
+### FAQ
+
+#### Q: EditorConfig は既存ファイルを自動リフォーマットする？
 
 **A: しない。** EditorConfig プラグインは新しく入力された行にのみ設定を適用する。既存コードのリフォーマットには別ツール（eclint, editorconfig-checker 等）が必要。
 
-### Q: EditorConfig とフォーマッター（Prettier, Biome 等）は競合する？
+#### Q: EditorConfig とフォーマッター（Prettier, Biome 等）の関係は？
 
-**A: 通常は競合しない。** 多くのフォーマッターは `.editorconfig` を自動で読み取る。Prettier は `indent_style`, `indent_size`, `end_of_line` を `.editorconfig` から取得する。設定が異なる場合はフォーマッター側の設定が優先されることがある。
+**A:** 公式ドキュメントはフォーマッターとの連携を規定していない。各フォーマッターが `.editorconfig` を読むかどうか・どのプロパティを使うか・設定が異なる場合の優先順位は、各ツールのドキュメントで確認する（本スキルでは未確認）。
 
-### Q: `.editorconfig` を CI で検証するには？
+#### Q: `.editorconfig` を CI で検証するには？
 
 **A:** 以下のツールが利用可能:
 
-- **editorconfig-checker** — 最も広く使われている検証ツール
+- **editorconfig-checker**
 - **eclint** — EditorConfig ルールに基づくリンター
+- **editorconfig-tools**
+- **editorconfig-cf**
 - **editorconfig-maven-plugin** — Maven プロジェクト向け
 - **editorconfig-gradle-plugin** — Gradle プロジェクト向け
+- **editorconfig-action**（GitHub Action、eclint を使い最上位の `.editorconfig` でスタイルを検査）
 
-### Q: Windows で `.editorconfig` ファイルを作成するには？
+公式 FAQ は、これらのツールは現時点でいずれも完全ではないと注記している。
+
+#### Q: Windows で `.editorconfig` ファイルを作成するには？
 
 **A:** エクスプローラーで `.editorconfig.`（末尾にドット）を入力すると、自動的に `.editorconfig` にリネームされる。
 
-### Q: `indent_size = tab` とは？
+#### Q: `indent_size = tab` とは？
 
 **A:** `indent_size` を `tab_width` の値と同じにする特殊値。`tab_width` が未指定の場合はエディタのデフォルトタブ幅が使用される。
 
-## 関連
+### 版の扱い
+
+- 設定例は spec.editorconfig.org の仕様（取得日 2026-11-14）と editorconfig.org トップページに沿う。Windows の `.editorconfig.` の手順は editorconfig.org トップページの記述。
+- Source: https://editorconfig.org/ （取得日 2026-11-14）
+- Source: https://github.com/editorconfig/editorconfig/wiki/FAQ （取得日 2026-11-14）
+- Source: https://spec.editorconfig.org/ （取得日 2026-11-14）
+
+## Related
 
 - [specification](./specification.md) — 正式仕様
 - [properties](./properties.md) — 全プロパティ詳細
