@@ -116,6 +116,10 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 
 - `.claude/` 配下を編集する場合は `.claude/rules/dotclaude-via-temp.md` に従い `_/dotclaude/` 経由で行う
 - main 自身は公式ドキュメントを直接読み込まず、必ず専門 Agent に委譲する
+- `reference-updater` / `reference-researcher` 等のサブエージェントは Bash を持たず `curl` / `gh` が使えない。大きな docs は main（または Bash を持つ `general-purpose`）が scratchpad へ共有 DL し、エージェントには Read / Grep で読ませる（旧版・新版を `diff -rq` した変更一覧も渡す）。WebFetch の要約は verbatim 転記の根拠にしない
+- AI レビュー（Codex / Cursor Bugbot）が繰り返し指摘する型（H2 構成・出典の置き場所・Adapted 表記・未検証主張・例の安全性）と PR 運用（レビュースレッド全解決必須・push ごとの CI 再実行）は `.claude/rules/skill-update-pitfalls.md` に従う。エージェントへの指示に最初から含める
+- 複数スキルを並行更新するときは、各エージェントに専用の浅い clone で作業させる（共有作業ツリーでブランチを切り替えない。CLAUDE.md の更新は全スキルの後に 1 本の PR にまとめる）
+- check レポートの「変更なし」を鵜呑みにしない。版 pin が無い・弱いスキル（非バージョン docs 等）は、本文を公式と突き合わせて確認する
 
 ## 関連
 
