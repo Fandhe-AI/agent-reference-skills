@@ -61,6 +61,8 @@ skills/apple-silicon/
       mpsgraph-tensor.md
       mpsgraph-executable.md
       mpsgraph-operations.md
+      mpsgraph-attention.md
+      mpsf-color-conversion.md
       ray-tracing.md
     mlx/
       README.md
@@ -118,6 +120,12 @@ skills/apple-silicon/
     mlx-distributed.md
 ```
 
+## 対象バージョン
+
+- MSL: Metal Shading Language Specification 4.1（2026-06-04 版、383 ページ）。
+- Metal / MPS / MPSGraph: developer.apple.com の DocC JSON（既存ページは 2026-10-16 取得。SDK 27.0 の追加 API を 2026-11-14 に追補、beta フラグなし）。
+- MLX: 0.32.4（ドキュメントはタグ pin、PyPI latest と一致）。
+
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
@@ -139,12 +147,12 @@ MLX のみ出典が developer.apple.com ではなく、Apple 研究チームが�
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | compute pass のエンコーディング・threadgroup/grid サイズ計算・compute pipeline 設定を知りたい | metal-compute | [references/metal-compute/README.md](references/metal-compute/README.md) |
-| argument buffer・indirect command buffer・GPU counter・unified memory (storage mode) を調べたい | metal-compute | [references/metal-compute/README.md](references/metal-compute/README.md) |
+| argument buffer・indirect command buffer・GPU counter・unified memory (storage mode)・forward progress / persistent kernel (27.0+) を調べたい | metal-compute | [references/metal-compute/README.md](references/metal-compute/README.md) |
 | MSL のデータ型・address space・kernel 関数属性・引数バインディング属性を調べたい | msl | [references/msl/README.md](references/msl/README.md) |
 | MSL の atomic 関数・SIMD-group/quad-group 関数・数学関数・数値精度 (IEEE 754) 準拠を調べたい | msl | [references/msl/README.md](references/msl/README.md) |
 | MPSKernel/MPSImage/MPSMatrix/MPSNDArray による画像フィルタ・行列演算・分解を調べたい | mps | [references/mps/README.md](references/mps/README.md) |
-| MPSGraph/MPSNNGraph によるグラフ構築・実行・CNN 推論・ray tracing を調べたい | mps | [references/mps/README.md](references/mps/README.md) |
-| Metal 4 の MTLTensor 作成・ML pass (MTL4MachineLearningCommandEncoder) のエンコードを調べたい | metal-compute | [references/metal-compute/README.md](references/metal-compute/README.md) |
+| MPSGraph/MPSNNGraph によるグラフ構築・実行 (MTL4CommandQueue 版 run を含む)・SDPA (`scaledDotProductAttention`)・CNN 推論・ray tracing・MPSFColorConversion を調べたい | mps | [references/mps/README.md](references/mps/README.md) |
+| Metal 4 の MTLTensor 作成 (auxiliary planes / multi-plane、27.0+)・ML pass (MTL4MachineLearningCommandEncoder) のエンコードを調べたい | metal-compute | [references/metal-compute/README.md](references/metal-compute/README.md) |
 | MSL の tensor / cooperative_tensor / TensorOps (matmul2d, convolution, execution scope) を調べたい | msl | [references/msl/README.md](references/msl/README.md) |
 | MLX の array/dtype・lazy evaluation・indexing・保存/読み込みを調べたい | mlx | [references/mlx/README.md](references/mlx/README.md) |
 | MLX の dtype 一覧・演算一覧・FFT (stft)・関数 export (.mlxfn) を調べたい | mlx | [references/mlx/README.md](references/mlx/README.md) |
