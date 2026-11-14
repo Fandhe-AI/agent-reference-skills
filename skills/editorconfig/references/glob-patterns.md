@@ -1,132 +1,95 @@
-# EditorConfig グロブパターン
+---
+source: https://spec.editorconfig.org/#glob-expressions
+---
 
-`.editorconfig` のセクション名で使用するグロブ（ワイルドカード）パターンの仕様。
+# EditorConfig Glob Patterns
 
-## 特殊文字一覧
+Glob (wildcard) patterns used in `.editorconfig` section names.
 
-| 文字 | 説明 |
-|------|------|
-| `*` | パス区切り（`/`）**以外** の任意の文字列にマッチ |
-| `**` | パス区切りを **含む** 任意の文字列にマッチ |
-| `?` | パス区切り（`/`）**以外** の任意の1文字にマッチ |
-| `[seq]` | `seq` 内の任意の1文字にマッチ |
-| `[!seq]` | `seq` 内に **含まれない** 任意の1文字にマッチ |
-| `{s1,s2,s3}` | 列挙された文字列のいずれかにマッチ（ネスト可能） |
-| `{num1..num2}` | `num1` 〜 `num2` の範囲の整数にマッチ（正負両対応） |
-| `\` | 次の文字のエスケープ（特殊文字を文字通りに扱う） |
-
-## パス区切りルール
-
-### `/` を含まないパターン
-
-`.editorconfig` が配置されたディレクトリ **およびその全サブディレクトリ** でマッチする。
+## Signature / Usage
 
 ```ini
-# *.js → 全サブディレクトリの .js ファイルにマッチ
+# .js files in all subdirectories
 [*.js]
 indent_size = 2
-```
 
-### `/` を含むパターン
-
-`.editorconfig` が配置されたディレクトリを基準とした **相対パス** としてマッチする。
-
-```ini
-# src/ 直下の .ts ファイルのみ
+# .ts files directly under src/ only
 [src/*.ts]
 indent_size = 2
 
-# src/ 配下の全 .ts ファイル（サブディレクトリ含む）
+# all .ts files under src/ (including subdirectories)
 [src/**.ts]
+indent_size = 2
+
+# .ts and .tsx
+[*.{ts,tsx}]
+indent_size = 2
+
+# a specific file without extension
+[Makefile]
+indent_style = tab
+
+# several specific files
+[{package.json,tsconfig.json,.prettierrc}]
+indent_size = 2
+
+# file1.txt to file12.txt
+[file{1..12}.txt]
+indent_size = 2
+
+# files starting with a, b or c
+[[abc]*.txt]
+indent_size = 2
+
+# files starting with a character other than a, b, c
+[[!abc]*.txt]
+indent_size = 2
+
+# nested braces
+[{*.{js,ts},Makefile}]
 indent_size = 2
 ```
 
-### 先頭の `/`
+## Options / Props
 
-パターン中間に既に `/` がある場合、先頭の `/` は冗長。以下は同じ結果になる:
+| Character | Matches |
+|-----------|---------|
+| `*` | Any string of characters, except path separators (`/`) |
+| `**` | Any string of characters |
+| `?` | Any single character, except path separators (`/`) |
+| `[seq]` | Any single character in `seq`. Any character inside the brackets is considered literally: `[ab*c{1..2}]` matches one of `a`, `b`, `*`, `c`, `{`, `1`, `.`, `2`, `}` |
+| `[!seq]` | Any single character not in `seq`. Characters inside the brackets are considered literally as well |
+| `{s1,s2,s3}` | Any of the strings given (separated by commas, can be nested). `{s1}` matches `{s1}` literally |
+| `{num1..num2}` | Any integer between `num1` and `num2`, which can be positive or negative. `num1` must be less than `num2` |
+| `\` | Escapes the next character so it is not interpreted as special |
 
-```ini
-[subdir/*.c]
-[/subdir/*.c]
-```
+## Notes
 
-### 末尾の `/`
+### Path separators
 
-末尾が `/` で終わるセクション名は **どのファイルにもマッチしない**。
+- A glob without a path separator (a `/` not inside square brackets) can match at any level below the `.editorconfig`: `*.c` matches `.c` files in the directory of the `.editorconfig` and in directories below it.
+- A glob containing a path separator is relative to the directory of the `.editorconfig`: `subdir/*.c` matches only `.c` files directly in `subdir`.
+- A leading slash is not relevant if there is already a slash in the middle of the pattern: `/subdir/*.c` and `subdir/*.c` must yield the same result.
+- A section name ending with `/` does not match any file.
 
-## 実用例
+### Numeric ranges
 
-### ファイル拡張子でマッチ
+- `{1..3}` and `{-1..4}` are valid; `{-4..-5}` and `{3..1}` are not, because `num1` must be less than `num2`.
 
-```ini
-# すべての JavaScript ファイル
-[*.js]
+### Length
 
-# すべての TypeScript ファイル（.ts と .tsx）
-[*.{ts,tsx}]
+- Cores must accept section names up to and including 1024 characters; beyond that each implementation may define its own limit.
 
-# すべての画像ファイル
-[*.{png,jpg,gif,svg}]
-```
+### Version caveat
 
-### 特定ファイル名でマッチ
+- The literal treatment of characters inside `[seq]` / `[!seq]`, the `num1 < num2` requirement and the leading-slash rule are in the specification as rendered by spec.editorconfig.org on 2026-11-14 (master `f580513`) but not in `index.rst` of the latest tag v0.17.2 (`329077a`). The tag has the trailing-slash corollary, the literal `{s1}`, `\` escaping and the 1024-character minimum.
+- The editorconfig.org front page describes `?` as "any single character" without the path-separator exception, and marks `{s1,s2,s3}` as available since EditorConfig Core 0.11.0; the specification above is more precise.
+- Source: https://spec.editorconfig.org/#glob-expressions (fetched 2026-11-14, master `f580513`)
+- Source: https://github.com/editorconfig/specification/blob/v0.17.2/index.rst (latest tag v0.17.2 / `329077a`, fetched 2026-11-14)
+- Source: https://editorconfig.org/ (fetched 2026-11-14)
 
-```ini
-# Makefile（拡張子なし）
-[Makefile]
+## Related
 
-# package.json
-[package.json]
-
-# 複数の特定ファイル
-[{package.json,tsconfig.json,.prettierrc}]
-```
-
-### ディレクトリでマッチ
-
-```ini
-# lib ディレクトリ直下のファイル
-[lib/*]
-
-# lib 配下の全ファイル（再帰）
-[lib/**]
-
-# src 配下の全 .ts ファイル（再帰）
-[src/**.ts]
-```
-
-### 数値範囲でマッチ
-
-```ini
-# 数字付きファイル（01〜12）
-[file{1..12}.txt]
-```
-
-### 文字クラスでマッチ
-
-```ini
-# a, b, c のいずれかで始まるファイル
-[[abc]*.txt]
-
-# 数字で始まらないファイル
-[[!0-9]*.txt]
-```
-
-### 波括弧の注意点
-
-- `{s1}` （要素1つ）はリテラルとしてマッチ（展開されない）
-- `{num1..num2}` では `num1 < num2` が必要（正負両対応）
-  - 有効例: `{1..3}`, `{-1..4}`
-  - 無効例: `{-4..-5}`（降順のため無効）, `{3..1}`（降順のため無効）
-- ネスト可能: `{*.{js,ts},Makefile}`
-
-## セクション名の長さ制約
-
-- EditorConfig コアは **1024 文字** までのセクション名を受理する必要がある
-- それ以上は実装依存
-
-## 関連
-
-- [specification](./specification.md) — ファイルフォーマット仕様
-- [properties](./properties.md) — 全プロパティ詳細
-- [best-practices](./best-practices.md) — 設定例
+- [specification](./specification.md) — File format
+- [properties](./properties.md) — All properties
+- [best-practices](./best-practices.md) — Examples

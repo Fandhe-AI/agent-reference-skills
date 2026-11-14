@@ -1,14 +1,20 @@
-# EditorConfig ベストプラクティス
+---
+source: https://editorconfig.org/
+---
 
-`.editorconfig` の設定例、FAQ、よくあるパターン。
+# EditorConfig Best Practices
 
-## 基本的な設定例
+Example `.editorconfig` files, FAQ and common patterns.
+
+## Signature / Usage
+
+### Basic setup
 
 ```ini
-# プロジェクトルート
+# Project root
 root = true
 
-# デフォルト設定（全ファイル）
+# Defaults (all files)
 [*]
 end_of_line = lf
 insert_final_newline = true
@@ -18,9 +24,9 @@ indent_style = space
 indent_size = 2
 ```
 
-## 言語別の設定パターン
+### Per-language patterns
 
-### Web 開発（JavaScript / TypeScript）
+#### Web (JavaScript / TypeScript)
 
 ```ini
 root = true
@@ -40,7 +46,7 @@ trim_trailing_whitespace = false
 indent_style = tab
 ```
 
-### Python
+#### Python
 
 ```ini
 root = true
@@ -63,7 +69,7 @@ indent_size = 2
 indent_style = tab
 ```
 
-### Go
+#### Go
 
 ```ini
 root = true
@@ -86,7 +92,7 @@ indent_size = 2
 indent_style = tab
 ```
 
-### Java / Kotlin
+#### Java / Kotlin
 
 ```ini
 root = true
@@ -109,29 +115,29 @@ indent_size = 2
 indent_style = tab
 ```
 
-## よくあるパターン
+### Common patterns
 
-### Markdown の末尾空白を保持
+#### Keep trailing whitespace in Markdown
 
-Markdown では行末の2つのスペースが改行を意味するため、`trim_trailing_whitespace` を無効にする。
+Two trailing spaces mean a line break in Markdown, so disable `trim_trailing_whitespace`.
 
 ```ini
 [*.md]
 trim_trailing_whitespace = false
 ```
 
-### Makefile はタブ必須
+#### Makefile requires tabs
 
-Makefile のレシピ行はハードタブが必須。
+Makefile recipe lines require hard tabs.
 
 ```ini
 [Makefile]
 indent_style = tab
 ```
 
-### 特定プロパティの無効化
+#### Disable specific properties
 
-`unset` を使ってプロパティの効果を打ち消し、エディタのデフォルトに戻す。
+Use `unset` to cancel a property and fall back to the editor default.
 
 ```ini
 [*.generated.*]
@@ -139,9 +145,9 @@ indent_size = unset
 indent_style = unset
 ```
 
-### 複数ファイルタイプをまとめて設定
+#### Configure several file types together
 
-波括弧で複数の拡張子をグループ化できる。
+Group extensions with braces.
 
 ```ini
 [*.{json,yml,yaml,toml}]
@@ -153,35 +159,47 @@ indent_style = space
 indent_size = 2
 ```
 
-## FAQ
+## Notes
 
-### Q: EditorConfig は既存ファイルを自動リフォーマットする？
+### FAQ
 
-**A: しない。** EditorConfig プラグインは新しく入力された行にのみ設定を適用する。既存コードのリフォーマットには別ツール（eclint, editorconfig-checker 等）が必要。
+#### Q: Does EditorConfig automatically reformat existing files?
 
-### Q: EditorConfig とフォーマッター（Prettier, Biome 等）は競合する？
+**A: No.** EditorConfig plugins apply the settings only to newly input lines. To reformat existing files, use a separate tool.
 
-**A: 通常は競合しない。** 多くのフォーマッターは `.editorconfig` を自動で読み取る。Prettier は `indent_style`, `indent_size`, `end_of_line` を `.editorconfig` から取得する。設定が異なる場合はフォーマッター側の設定が優先されることがある。
+#### Q: How do EditorConfig and formatters (Prettier, Biome, etc.) interact?
 
-### Q: `.editorconfig` を CI で検証するには？
+**A:** The official documentation does not define the interaction with formatters. Whether a formatter reads `.editorconfig`, which properties it uses and which settings win when they differ are documented by each tool (not verified in this skill).
 
-**A:** 以下のツールが利用可能:
+#### Q: How can `.editorconfig` be checked in CI?
 
-- **editorconfig-checker** — 最も広く使われている検証ツール
-- **eclint** — EditorConfig ルールに基づくリンター
-- **editorconfig-maven-plugin** — Maven プロジェクト向け
-- **editorconfig-gradle-plugin** — Gradle プロジェクト向け
+**A:** The official FAQ lists these tools (and notes that none of them works perfectly at the moment):
 
-### Q: Windows で `.editorconfig` ファイルを作成するには？
+- **editorconfig-checker**
+- **eclint**
+- **editorconfig-tools**
+- **editorconfig-cf**
+- **editorconfig-maven-plugin** (Maven)
+- **editorconfig-gradle-plugin** (Gradle)
+- **editorconfig-action** (a GitHub Action that uses eclint to check a top-level `.editorconfig`)
 
-**A:** エクスプローラーで `.editorconfig.`（末尾にドット）を入力すると、自動的に `.editorconfig` にリネームされる。
+#### Q: How do I create `.editorconfig` in Windows Explorer?
 
-### Q: `indent_size = tab` とは？
+**A:** Create a file named `.editorconfig.` (note the trailing dot); Windows Explorer renames it to `.editorconfig` automatically.
 
-**A:** `indent_size` を `tab_width` の値と同じにする特殊値。`tab_width` が未指定の場合はエディタのデフォルトタブ幅が使用される。
+#### Q: What does `indent_size = tab` mean?
 
-## 関連
+**A:** It sets `indent_size` to the tab size: `tab_width` if specified, otherwise the tab size set by the editor.
 
-- [specification](./specification.md) — 正式仕様
-- [properties](./properties.md) — 全プロパティ詳細
-- [glob-patterns](./glob-patterns.md) — グロブパターン
+### Sources
+
+- Examples follow the specification (fetched 2026-11-14) and the editorconfig.org front page.
+- Source: https://editorconfig.org/ (fetched 2026-11-14)
+- Source: https://github.com/editorconfig/editorconfig/wiki/FAQ (fetched 2026-11-14)
+- Source: https://spec.editorconfig.org/ (fetched 2026-11-14)
+
+## Related
+
+- [specification](./specification.md) — Specification
+- [properties](./properties.md) — All properties
+- [glob-patterns](./glob-patterns.md) — Glob patterns

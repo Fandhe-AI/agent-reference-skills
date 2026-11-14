@@ -2,7 +2,8 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| EditorConfig ベストプラクティス | `.editorconfig` の設定例、FAQ、よくあるパターン。 | [best-practices.md](./best-practices.md) |
-| EditorConfig グロブパターン | `.editorconfig` のセクション名で使用するグロブ（ワイルドカード）パターンの仕様。 | [glob-patterns.md](./glob-patterns.md) |
-| EditorConfig Properties | 仕様 v0.17.2 の Supported Pairs と wiki の limited support プロパティ max_line_length。 | [properties.md](./properties.md) |
-| EditorConfig 仕様 | EditorConfig ファイルフォーマットの正式仕様（v0.17.2）。 | [specification.md](./specification.md) |
+| EditorConfig Best Practices | Example `.editorconfig` files, FAQ and common patterns. | [best-practices.md](./best-practices.md) |
+| EditorConfig Glob Patterns | Glob (wildcard) patterns used in `.editorconfig` section names. | [glob-patterns.md](./glob-patterns.md) |
+| EditorConfig Indentation | How `indent_style`, `indent_size` and `tab_width` combine to determine indentation (non-normative section of the specification). | [indentation.md](./indentation.md) |
+| EditorConfig Properties | Supported Pairs of the specification plus the wiki's limited-support property `max_line_length`. | [properties.md](./properties.md) |
+| EditorConfig Specification | EditorConfig file format: file discovery, line types, key-value parsing, empty files. | [specification.md](./specification.md) |
