@@ -55,7 +55,7 @@ curl -X POST \
 
 ### Update (`PATCH .../budgets/budget-id`)
 
-Adapted (not in the official docs): the PATCH body is the Budget resource itself, so the `budget` wrapper object is removed, and `thresholdRules` is an array.
+Adapted (not in the official docs): the PATCH body is the Budget resource itself, so the `budget` wrapper object is removed, `thresholdRules` is an array, and `currencyCode` is added to `specifiedAmount` (set it to the billing account's currency, for example `USD`; the official sample omits it).
 
 ```json
 {
@@ -68,6 +68,7 @@ Adapted (not in the official docs): the PATCH body is the Budget resource itself
   },
   "amount": {
     "specifiedAmount": {
+      "currencyCode": "CURRENCY_CODE",
       "units": 500
     }
   },
@@ -124,7 +125,7 @@ curl -X DELETE \
 ## Notes
 
 - Adapted from the official docs: `budgetFilter.projects` takes `projects/<PROJECT_NUMBER>` (project number, not ID).
-- Adapted from the official docs: `thresholdRules` is a repeated field, so the rule is wrapped in an array; the PATCH body is the Budget itself (no `budget` wrapper).
+- Adapted from the official docs: `thresholdRules` is a repeated field, so the rule is wrapped in an array; the PATCH body is the Budget itself (no `budget` wrapper). The update example adds `currencyCode` to the fixed amount (match the billing account's currency); whether the API requires it when omitted is not confirmed in the official page (公式未確認).
 - An alerts-only budget does not cap spend; it only notifies. Defaults in the console are 50%, 90%, 100% of actual spend.
 - The official samples use `calendar_period` in request bodies and `calendarPeriod` in responses; verify against the REST reference before relying on either.
 - Delete is destructive; run it only against a test budget.
