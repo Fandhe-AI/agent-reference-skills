@@ -26,7 +26,8 @@ export const authClient = createAuthClient();
 ## Notes
 
 - The handler does not automatically populate `event.locals.user` / `event.locals.session`; fetch the session yourself with `auth.api.getSession()` and assign it to `event.locals` if needed server-side
-- For form/server actions that sign users in or up, add the `sveltekitCookies` plugin so `Set-Cookie` headers are applied automatically (requires SvelteKit >= 2.20.0)
+- For form/server actions that call functions setting cookies (like `signOut`), add the `sveltekitCookies` plugin so `Set-Cookie` headers are applied automatically (requires SvelteKit >= 2.20.0)
+- Source: https://www.better-auth.com/docs/integrations/svelte-kit (better-auth v1.7.23 docs)
 - SvelteKit 2: use `$lib/...` and `building` from `$app/environment` (the 1.6 page's imports); SvelteKit 3: `#lib/...` and `$app/env`. The client import in the docs is `#lib/client.js` on SvelteKit 3.
 - The client is built on nano-store; `useSession()` is reactive and updates the UI on sign-in/sign-out without manual refetching
 

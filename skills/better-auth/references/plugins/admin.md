@@ -430,7 +430,7 @@ export const auth = betterAuth({
 - **admin**: full control over all resources and actions
 - **user**: no admin actions
 - Users can hold multiple roles as a comma-separated string
-- **user resource**: `create`, `list`, `set-role`, `ban`, `impersonate`, `impersonate-admins`, `delete`, `set-password`
+- **user resource**: `create`, `list`, `set-role`, `ban`, `impersonate`, `impersonate-admins`, `delete`, `set-password`, `set-email`, `set-phone`, `get`, `update`
 - **session resource**: `list`, `revoke`, `delete`
 
 ### DB schema
@@ -449,6 +449,11 @@ Additional fields on the session table:
 | Field | Type | Description |
 |---|---|---|
 | `impersonatedBy` | string | ID of the admin who initiated impersonation |
+
+### Notes (v1.7.23)
+
+- The default `user` resource permissions include `set-phone` (added since the v1.7.10 docs), alongside `set-email`, `get`, and `update`
+- Source: https://www.better-auth.com/docs/plugins/admin (better-auth v1.7.23 docs)
 - `authClient.admin.listUsers` returns `{ data, error }`; the pagination sample reads `data.total` after an error check instead of `users.total` (Adapted from the official docs)
 
 ## Related

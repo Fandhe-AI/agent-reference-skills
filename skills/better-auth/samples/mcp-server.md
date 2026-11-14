@@ -11,8 +11,9 @@ import { mcp } from "@better-auth/mcp";
 import { fetchClientMetadataResource } from "@better-auth/cimd/node";
 
 export const auth = betterAuth({
+    disabledPaths: ["/token"],
     plugins: [
-        jwt(),
+        jwt({ disableSettingJwtHeader: true }),
         mcp({
             loginPage: "/sign-in", // path to your login page
             consentPage: "/consent", // path to your consent page
@@ -79,8 +80,8 @@ npx auth migrate
 
 ## Notes
 
-- Install `@better-auth/mcp @better-auth/cimd @modelcontextprotocol/server zod`; the `jwt()` plugin is required
+- Install `@better-auth/mcp @better-auth/cimd @modelcontextprotocol/server zod`; the `jwt()` plugin is required, with its `/token` route (`disabledPaths: ["/token"]`) and `set-auth-jwt` header (`disableSettingJwtHeader: true`) disabled so a session JWT cannot be accepted as an access token
 - `mcp()` is the OAuth provider itself; do not also register a separate `oauthProvider()` plugin
 - DCR is never enabled implicitly; opt in with `allowDynamicClientRegistration` and `allowUnauthenticatedClientRegistration` only for older clients
 - Pass `requiredScopes` to `requireMcpAuth` to return a `403` `insufficient_scope` challenge for tokens missing scopes
-- Source: https://better-auth.com/docs/plugins/mcp (docs: GitHub tag v1.7.10, https://github.com/better-auth/better-auth/blob/v1.7.10/docs/content/docs/plugins/mcp.mdx)
+- Source: https://better-auth.com/docs/plugins/mcp (docs: GitHub tag v1.7.23, https://github.com/better-auth/better-auth/blob/v1.7.23/docs/content/docs/plugins/mcp.mdx)

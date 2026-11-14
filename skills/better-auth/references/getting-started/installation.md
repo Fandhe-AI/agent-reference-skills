@@ -163,7 +163,8 @@ type User = { id: string; name: string; email: string; image?: string };
 
 - On Express, mount the auth handler **before** `app.use(express.json())`
 - Express v5+ uses the `/{*any}` route syntax instead of `*`
-- Cloudflare Workers require the `nodejs_compat` flag (for `AsyncLocalStorage` support)
+- Cloudflare Workers: Better Auth uses `AsyncLocalStorage` and `node:crypto`. The installation page now defers to the Cloudflare guide (`/docs/guides/cloudflare`): Node.js compatibility is on by default from compatibility date `2026-08-04`; for an earlier date add the `nodejs_compat` flag to the Wrangler configuration
+- Source: https://www.better-auth.com/docs/guides/cloudflare (better-auth v1.7.23 docs)
 - A database is optional for stateless session management but required by most plugins
 - Use `BETTER_AUTH_SECRETS` (plural, array) for key rotation without invalidating existing sessions
 - The secret key should be "generated with high entropy" and at least 32 characters long

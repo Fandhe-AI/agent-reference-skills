@@ -223,7 +223,7 @@ If `cookiePrefix` doesn't match the `webAuthnChallengeCookie` prefix, passkey au
 |---|---|---|---|
 | `rpID` | string | Yes | The website's unique identifier (domain-based) |
 | `rpName` | string | Yes | Human-readable site name |
-| `origin` | string | Yes | The Better Auth server's origin URL (no trailing slash) |
+| `origin` | string \| string[] | No | The origin, or list of origins, where passkey registration and authentication run, without a trailing `/`. Defaults to the origin of `baseURL`, plus a frontend origin listed exactly in `trustedOrigins` |
 | `authenticatorSelection` | object | No | Customizes WebAuthn authenticator selection criteria |
 | `advanced.webAuthnChallengeCookie` | string | No | Challenge cookie name (default: `"better-auth-passkey"`) |
 
@@ -231,7 +231,38 @@ If `cookiePrefix` doesn't match the `webAuthnChallengeCookie` prefix, passkey au
 
 - `authenticatorAttachment`: "platform" (device-bound) | "cross-platform" (security key) | unset (both allowed, platform preferred)
 - `residentKey`: "required" (highest security) | "preferred" (recommended) | "discouraged" (fastest)
-- `userVerification`: "required" (highest security) | "preferred" | "discouraged" (fastest)
+- `userVerification`: controls biometric/PIN verification during registration and authentication. "required" (highest security; responses without user verification are rejected) | "preferred" | "discouraged" (fastest)
+
+### origin
+
+```typescript
+passkey({
+  origin: ["https://app.example.com", "https://admin.example.com"],
+});
+```
+
+When `rpID` is set and a wildcard in `baseURL.allowedHosts` covers it, the default changes. Every host under that wildcard can create passkey responses for the shared `rpID`, and the client picks the host it sends, so the plugin ignores the request host. It accepts the origin the passkey reports only when that exact origin is trusted:
+
+- an exact entry in `baseURL.allowedHosts`, such as `example.com`
+- the `baseURL.fallback` origin
+- an origin listed exactly in `trustedOrigins`
+
+A wildcard entry in either list does not count. For tenants created at runtime, pass a function as `trustedOrigins` and return the origin only for tenants your app knows:
+
+```typescript
+betterAuth({
+  baseURL: { allowedHosts: ["example.com", "*.example.com"] },
+  trustedOrigins: async (request) => {
+    const origin = request?.headers.get("origin");
+    if (!origin) return [];
+    // Look the origin up in your own tenant records.
+    return (await isKnownTenantOrigin(origin)) ? [origin] : [];
+  },
+  plugins: [passkey({ rpID: "example.com" })],
+});
+```
+
+An origin that `trustedOrigins` returns is trusted beyond passkeys (for example CSRF checks and redirect URLs). Return only origins your app serves, never an origin copied from the request without a lookup, and compare the full origin including scheme and port. Better Auth calls this function on every request, so cache the lookup. If you call the passkey verify endpoints through `auth.api`, pass the browser request's headers, including `Host` and `Origin`; otherwise `request` is undefined and the tenant origin is not trusted.
 
 ### DB schema (passkey table)
 
@@ -251,6 +282,9 @@ If `cookiePrefix` doesn't match the `webAuthnChallengeCookie` prefix, passkey au
 
 ## Notes
 
+- With `registration.requireSession: false`, a registration started with a session must be verified with that same active session; a registration started without a session uses `resolveUser`
+- `origin` is optional in v1.7.23 docs (defaults to the origin of `baseURL`); the v1.7.10 docs described it as the Better Auth server's origin URL, localhost forms allowed
+- Source: https://www.better-auth.com/docs/plugins/passkey (better-auth v1.7.23 docs)
 - Use the "Emulated Authenticator" in Chrome DevTools' WebAuthn tab when debugging
 - Some browsers require user interaction with the input field before the autofill prompt appears
 - `addPasskey` is shown as client-only (the server `auth.api.addPasskey` snippet and endpoint line were removed) because registration needs the browser WebAuthn ceremony (Adapted from the official docs)

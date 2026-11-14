@@ -22,6 +22,8 @@ export const auth = betterAuth({
 - Not collected: email addresses, usernames, tokens, secrets, client ID/secret, DB URLs.
 - Disable via environment variable: `BETTER_AUTH_TELEMETRY=0`.
 - Automatically disabled during tests unless explicitly overridden.
+- Sent on `betterAuth` initialization (`type: "init"`) and on CLI actions `generate` and `migrate`. If the anonymous project ID cannot be generated at initialization, such as when the instance is created at module scope on Cloudflare Workers, no `init` event is sent for that instance.
+- Source: https://www.better-auth.com/docs/reference/telemetry (better-auth v1.7.23 docs)
 
 ## Related
 

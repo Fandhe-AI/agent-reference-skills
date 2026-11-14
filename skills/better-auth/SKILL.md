@@ -12,7 +12,7 @@ user-invocable: false
 # Better Auth API リファレンス
 
 Better Auth — TypeScript 向けフレームワーク非依存の認証・認可フレームワーク。
-対象 Better Auth v1.7.10（docs: GitHub tag v1.7.10、取得 2026-10-17）。1.6 からの移行は `references/guides/1-7-upgrade-guide.md`。
+対象 Better Auth v1.7.23（docs: GitHub tag v1.7.23、取得 2026-11-14。一部ページは v1.7.10 取得のまま）。1.6 からの移行は `references/guides/1-7-upgrade-guide.md`。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
@@ -151,6 +151,12 @@ skills/better-auth/
       mcp.md
       multi-session.md
       oauth-provider.md
+      oauth-provider-sign-in-flow.md
+      oauth-provider-clients.md
+      oauth-provider-tokens.md
+      oauth-provider-resource-server.md
+      oauth-provider-openid-connect.md
+      oauth-provider-reference.md
       oauth-proxy.md
       oidc-provider.md
       one-tap.md
@@ -165,6 +171,12 @@ skills/better-auth/
       scim-reference.md
       siwe.md
       sso.md
+      sso-oidc.md
+      sso-saml.md
+      sso-saml-security.md
+      sso-provisioning.md
+      sso-domain-verification.md
+      sso-reference.md
       stripe.md
       test-utils.md
       two-factor.md
@@ -213,6 +225,7 @@ skills/better-auth/
       auth0-migration.md
       browser-extension.md
       clerk-migration.md
+      cloudflare.md
       create-a-db-adapter.md
       dynamic-base-url.md
       next-auth-migration.md
@@ -285,11 +298,11 @@ skills/better-auth/
 | Email/Password 認証・ソーシャルログイン (GitHub, Google, Apple 等) | authentication | [references/authentication/README.md](references/authentication/README.md) |
 | 特定ソーシャルプロバイダー (Discord, Microsoft, LINE, Twitter 等) の設定 | authentication | [references/authentication/README.md](references/authentication/README.md) |
 | 2FA (TOTP)・パスキー・マジックリンク・SMS OTP・匿名認証 | plugins | [references/plugins/README.md](references/plugins/README.md) |
-| Organization・Admin・SSO・SCIM・API Key・JWT・Bearer トークン | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| Organization・Admin・SSO（OIDC / SAML / provisioning / domain verification / reference に分割）・SCIM・API Key・JWT・Bearer トークン | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | Stripe / Chargebee / Polar / Autumn 等の課金・サブスクリプション統合 | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | MCP 認証・エージェント認証・SIWE・キャプチャ・パスワード漏洩チェック | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | コミュニティ製プラグイン一覧を確認したい | plugins | [references/plugins/README.md](references/plugins/README.md) |
-| OAuth 2.1 / OIDC プロバイダー構築・CIMD・DPoP | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| OAuth 2.1 / OIDC プロバイダー構築（sign-in-flow / clients / tokens / resource-server / openid-connect / reference に分割）・CIMD・DPoP | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | SCIM の groups・roles・reference | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | Effect HTTP server 統合 | integrations | [references/integrations/README.md](references/integrations/README.md) |
 | Better Auth Infrastructure（有料。@better-auth/infra の dash / sentinel、audit logs、managed email / SMS） | infrastructure | [references/infrastructure/README.md](references/infrastructure/README.md) |
@@ -299,6 +312,6 @@ skills/better-auth/
 | 1.6 → 1.7 アップグレード・破壊的変更（npx auth upgrade） | guides | [references/guides/README.md](references/guides/README.md) |
 | Auth.js (NextAuth) / Auth0 / Clerk / Supabase / WorkOS からの移行 | guides | [references/guides/README.md](references/guides/README.md) |
 | カスタムプラグイン作成・カスタム DB アダプター作成・パフォーマンス最適化 | guides | [references/guides/README.md](references/guides/README.md) |
-| SAML SSO (Okta)・ブラウザ拡張機能統合・動的ベース URL 詳細 | guides | [references/guides/README.md](references/guides/README.md) |
+| SAML SSO (Okta)・Cloudflare Workers ガイド・ブラウザ拡張機能統合・動的ベース URL 詳細 | guides | [references/guides/README.md](references/guides/README.md) |
 | 典型的な使い方・動作するコード例・フレームワーク別セットアップ断片 | samples | [samples/README.md](samples/README.md) |
 | インストールコマンド・CLI コマンド・スキーマ生成を知りたい | scripts | [scripts/README.md](scripts/README.md) |

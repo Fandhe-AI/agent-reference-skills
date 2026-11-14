@@ -184,7 +184,8 @@ await authClient.twoFactor.verifyTotp({ code: "123456", trustDevice: true });
 - Always use HTTPS in production
 - Secure cookies are applied to session management
 - Email verification can be required before sign-in
-- The client method is `twoFactor.verifyTotp`, not `verifyTOTP`; the official sample used the wrong casing (Adapted from the official docs)
+- The client method is `twoFactor.verifyTotp` (the v1.7.10 official sample used `verifyTOTP`; corrected upstream in v1.7.23)
+- Source: https://www.better-auth.com/docs/basic-usage (better-auth v1.7.23 docs)
 
 ## Related
 

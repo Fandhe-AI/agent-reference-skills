@@ -6,6 +6,7 @@
 | Migrating from Auth0 | Auth0 から Better Auth へ移行するためのガイド。ユーザーデータ移行・認証方法の移植・アプリケーションコードの更新を含む。 | [auth0-migration.md](./auth0-migration.md) |
 | Browser Extension Guide | ブラウザ拡張機能での Better Auth の使用方法。Plasmo フレームワークを使用して Better Auth と統合するブラウザ拡張機能の作成ガイド。 | [browser-extension.md](./browser-extension.md) |
 | Migrating from Clerk | Clerk から Better Auth へ移行するためのガイド。ユーザーデータ移行・認証方法の移植・コンポーネントの更新を含む。 | [clerk-migration.md](./clerk-migration.md) |
+| Cloudflare Guide | What Better Auth needs on Cloudflare Workers: Node.js compatibility, environment variables, client IP for rate limiting, background tasks, database connections, and the limits of Workers KV as secondary storage. | [cloudflare.md](./cloudflare.md) |
 | Create a DB Adapter | Better Auth のカスタム DB アダプター作成ガイド。`createAdapterFactory` でスキーマ・ID 生成・JSON 解析・キー変換・join を処理する。 | [create-a-db-adapter.md](./create-a-db-adapter.md) |
 | Dynamic Base URL | 許可リストベースのアプローチで複数ドメイン・プレビューデプロイメントに対応した動的ベース URL 解決ガイド。 | [dynamic-base-url.md](./dynamic-base-url.md) |
 | Migrating from Auth.js (NextAuth) | Auth.js (NextAuth.js) から Better Auth へ移行するためのガイド。 | [next-auth-migration.md](./next-auth-migration.md) |

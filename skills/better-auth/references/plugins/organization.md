@@ -572,3 +572,6 @@ organizationHooks: {
 - Dynamic roles cannot be checked client-side; use the `hasPermission` API for verification
 - `addMember` is shown as a server-only `auth.api.addMember({ body })` call because it is not exposed on the client (Adapted from the official docs)
 - `updateTeam` data no longer passes `createdAt` / `updatedAt`, which are managed by the server and not client-settable (Adapted from the official docs)
+- Changed since v1.7.10 docs: only members whose role has the `invitation` `create` permission can list invitations; other members get a `403`, and invitations for the creator role are listed only for members who hold it. The `invitations` array of `getFullOrganization` follows the same rule and is empty for members who cannot list them
+- Changed since v1.7.10 docs: `update` `data.metadata` is `Record<string, any>` (no longer nullable); `addMember` `userId` is a required string (the ID of the user to add; the v1.7.10 docs allowed `null` with session headers)
+- Source: https://www.better-auth.com/docs/plugins/organization (better-auth v1.7.23 docs)
