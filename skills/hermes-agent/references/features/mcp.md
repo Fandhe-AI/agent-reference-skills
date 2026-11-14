@@ -165,7 +165,7 @@ hermes plugins install mcp-serve
 }
 ```
 
-It used to be built in as `hermes mcp serve`. A client configured with `"args": ["mcp", "serve"]` changes them to `["mcp-serve"]`; tool names and parameters are unchanged, and `hermes mcp serve` now prints the new spelling and the install line. Tools, the `--tools` mode and safety limits are documented in the plugin's README: https://github.com/NousResearch/hermes-official-plugins/tree/main/mcp-serve
+It used to be built in as `hermes mcp serve`. A client configured with `"args": ["mcp", "serve"]` changes them to `["mcp-serve"]`; tool names and parameters are unchanged, and `hermes mcp serve` now prints the new spelling and the install line. Tools, the `--tools` mode and safety limits are documented in the plugin's README: the `mcp-serve` directory of the NousResearch/hermes-official-plugins repository (the official page links it at `tree/main`; not pinned to v0.23.1)
 
 ## Notes
 

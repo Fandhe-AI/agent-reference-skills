@@ -60,12 +60,17 @@ dashboard:
     - "172.30.0.0/24"                        # a network only the proxy and Hermes are on
 ```
 
+Adapted (not in the official docs): the `environment:` block on the `hermes` service supplies the dashboard Basic-auth provider that a non-loopback Webapp requires; set both variables in the shell or an `.env` file next to the Compose file.
+
 ```yaml
 services:
   hermes:
     image: nousresearch/hermes-agent
     command: gateway run
     restart: unless-stopped
+    environment:
+      - HERMES_DASHBOARD_BASIC_AUTH_USERNAME=${HERMES_DASHBOARD_BASIC_AUTH_USERNAME}
+      - HERMES_DASHBOARD_BASIC_AUTH_PASSWORD=${HERMES_DASHBOARD_BASIC_AUTH_PASSWORD}
     volumes:
       - ~/.hermes:/opt/data
     networks: [tunnel]
@@ -108,6 +113,7 @@ Other variables mentioned: `API_SERVER_ENABLED`, `API_SERVER_HOST`, `API_SERVER_
 
 ## Notes
 
+- Adapted from the official docs: the Compose example gained `HERMES_DASHBOARD_BASIC_AUTH_USERNAME` / `HERMES_DASHBOARD_BASIC_AUTH_PASSWORD` for the `hermes` service, because a non-loopback Webapp refuses to start without an auth provider.
 - Inside the image `gateway run` is supervised by s6-overlay (auto-restart; dashboard supervised alongside). Each profile gets an s6 slot `gateway-<name>` under `/run/hermes-service/`; one container hosting all profiles is the recommended layout. State is restored from each profile's `gateway_state.json`; only an explicit `hermes gateway stop` keeps a gateway down across restarts.
 - Per-profile lifecycle:
 
