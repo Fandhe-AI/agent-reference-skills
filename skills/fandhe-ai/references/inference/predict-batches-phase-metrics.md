@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/inference/fn.get_phase_metrics.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/inference/fn.get_phase_metrics.html
 ---
 
 # predict_batches / PredictBatchInput / 推論フェーズ計測（PhaseMetrics）

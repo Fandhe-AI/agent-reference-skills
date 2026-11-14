@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/facade/examples/array_shapes.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/facade/examples/array_shapes.rs
 ---
 
 # Array Shapes
@@ -28,3 +28,4 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 - `compat::array` は numpy `np.array` 慣習でテンソルを組み立てる薄いラッパーで、shape 検査は `fandhe_ai_tensor_core::Tensor::new` へ委譲される
 - 2-D 入力（`Vec<Vec<f32>>`）は行優先（row-major）で平坦化される
+- Source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/facade/examples/array_shapes.rs（v0.14.0, 取得日 2026-11-14。0.11.0 から example の差分なし）

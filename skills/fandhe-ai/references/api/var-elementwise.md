@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/struct.Var.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/struct.Var.html
 ---
 
 # Var: elementwise / activation / comparison
@@ -76,6 +76,7 @@ let z = Var::where_cond(&mask, &y, &other)?; // where_cond は関連関数（con
 | `softmin(&self, dim: usize)` | `Result<Var<'t>, AutodiffError>` | Softmin |
 | `threshold(&self, threshold: f32, value: f32)` | `Result<Var<'t>, AutodiffError>` | `torch.nn.functional.threshold` 相当 |
 | `rrelu(&self, lower: f32, upper: f32, training: bool)` | `Result<Var<'t>, AutodiffError>` | RReLU |
+| `hardshrink(&self, lambd: f32)` / `softshrink(&self, lambd: f32)` | `Result<Var<'t>, AutodiffError>` | Hardshrink（`-lambd <= x <= lambd` の要素を 0 にし、それ以外は素通し）/ Softshrink（`x - clamp(x, -lambd, lambd)`）。`lambd` は有限かつ `>= 0`（違反は `InvalidArgument`）。PyTorch の既定値は 0.5 で、本 API は明示指定。`compat::Sequential::add_hardshrink` / `add_softshrink` の本体 |
 
 比較（`f32` の `0.0` / `1.0` マスクを `Var` で返す版）と bool 出力版:
 
@@ -108,6 +109,7 @@ let z = Var::where_cond(&mask, &y, &other)?; // where_cond は関連関数（con
 - `add` / `mul` / `relu` / `exp` / `tanh` は連鎖長上限（fan-in 事前実体化・自己実体化）に達すると `Ok` が「バックエンド実行成功」まで意味を拡張する
 - `hardtanh` / `relu6` の forward は `clamp` と bit 一致で境界勾配は 0。`mish` の softplus 閾値は 20、`glu` は負の軸番号非対応（PyTorch との差異）
 - `rrelu_with_noise` は公開されない
+- Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/struct.Var.html（0.14.0, 取得日 2026-11-14。`hardshrink` / `softshrink` の追加を確認）
 - 他の線形代数・FFT・損失関数は `var-linalg.md` / `var-signal.md` / `var-losses.md` を参照
 
 ## Related

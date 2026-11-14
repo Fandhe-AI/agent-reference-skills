@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/facade/examples/getting_started.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/facade/examples/getting_started.rs
 ---
 
 # Getting Started
@@ -40,3 +40,5 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 - `Sequential::add_linear` は `in_features == 0` を拒否するため `Result` を返す（`?` で連鎖する）
 - `Sequential::predict` は内部で `fandhe_ai::tape()` を構築して forward するだけの薄い入口
 - 本番コードでは `unwrap()` / `expect()` を避け、`main` は `Result` を返し `?` で伝播する
+- Source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/facade/examples/getting_started.rs（v0.14.0, 取得日 2026-11-14。0.11.0 から example の差分なし）
+- コード内コメントの「Linear・ReLU/Sigmoid/Tanh の 4 種限定」は example の記述。0.14.0 の `Sequential` は他の層の `add_*` も持つ（`api/` カテゴリ参照）

@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/self-repair/src/cli.rs, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/docs/guardrail-self-repair-cli.md
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/self-repair/src/cli.rs, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/docs/guardrail-self-repair-cli.md
 ---
 
 # self-repair CLI
@@ -79,6 +79,8 @@ self-repair verify-log --log repair.jsonl
 - JSON Lines ログは 1 レコード 1 行・UTF-8・末尾改行・append-only。フィールドは `seq` / `recorded_at_unix_ms` / `stage` / `payload` / `prev_hash` / `hash`。ステージは `loop_start → detection → attempt ×n → loop_outcome`（成功時）または `attempt ×n → loop_failure`（失敗時）で SHA-256 ハッシュチェーンにより改ざん検出する
 - `--log` の値自体は UTF-8 検証されない（`std::env::args_os()` を使用し非 UTF-8 パスでもパニックしない）。UTF-8 検証はサブコマンド名・フラグ名のみに限定される
 - 引数パーサは clap ではなく自前実装（依存ポリシー上、subcommand・flag の解析に外部クレートを使わない方針）
+
+- Source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/self-repair/src/cli.rs（v0.14.0, 取得日 2026-11-14。`crates/self-repair/` と `docs/guardrail-self-repair-cli.md` は v0.11.0 から差分なし）
 
 ## Related
 

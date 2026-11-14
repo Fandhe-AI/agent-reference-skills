@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/nn/struct.Sequential.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/nn/struct.Sequential.html
 ---
 
 # nn::Sequential / ModuleList / ModuleDict

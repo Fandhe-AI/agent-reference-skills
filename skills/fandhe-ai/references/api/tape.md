@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/struct.Tape.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/struct.Tape.html
 ---
 
 # Tape / tape() / tape_for() / TapeRef
@@ -39,8 +39,8 @@ let tape = match tape_for(Device::Cuda(0)) {
 | Name | Type | Description |
 | --- | --- | --- |
 | `tape()` | 関数 | デフォルトバックエンド（CPU）で `Tape` を構築する。CPU は常に利用可能なため infallible。fused elementwise 最適化が有効な状態で構築される |
-| `tape_for(device: Device)` | 関数 | 指定した `Device` に接続した `Tape` を構築する。デバイス不在・ordinal 範囲外・ドライバ欠如時は `BackendError` を返す（fail-fast、panic しない） |
-| `available_devices() -> Vec<Device>` | 関数 | 実行時に利用可能な `Device` を列挙する。順序は `Device::Cpu` → `Device::Cuda(0..n)`（ordinal 昇順、CUDA driver 不在なら 0 件）→ `Device::Metal`（`cfg(target_os = "macos")` 限定、検出 0 件なら含まれない）。個別バックエンドの列挙失敗は panic せず除外する |
+| `tape_for(device: Device)` | 関数 | 指定した `Device` に接続した `Tape` を構築する。デバイス不在・ordinal 範囲外・ドライバ欠如時は `BackendError` を返す（fail-fast、panic しない）。`Device::Rocm(0)` は HIP・HIPRTC・gfx942 のロードがそろう ROCm 搭載ホストでだけ `Ok` で、`Rocm(n >= 1)` は常に `DeviceUnavailable`（条件付き・実験的） |
+| `available_devices() -> Vec<Device>` | 関数 | 実行時に利用可能な `Device` を列挙する。順序は `Device::Cpu` → `Device::Cuda(0..n)`（ordinal 昇順、CUDA driver 不在なら 0 件）→ `Device::Metal`（`cfg(target_os = "macos")` 限定、検出 0 件なら含まれない）→ `Device::Rocm(0)`（HIP・HIPRTC・gfx942 の code object のロードがそろうときだけ 1 件。条件付き・実験的）。個別バックエンドの列挙失敗は panic せず除外する |
 
 ### 葉ノード登録・逆伝播
 
@@ -70,7 +70,10 @@ let tape = match tape_for(Device::Cuda(0)) {
 | `hvp(&self, loss: &Var<'_>, input: &Var<'_>, vector: &Tensor<f32>, child: &Tape) -> Result<Tensor<f32>, AutodiffError>` | メソッド | ヘッセ・ベクトル積 |
 | `jvp(&self, output: &Var<'_>, input: &Var<'_>, tangent: &Tensor<f32>, child: &Tape) -> Result<Tensor<f32>, AutodiffError>` | メソッド | ヤコビアン・ベクトル積（double-VJP 法） |
 | `jacfwd(&self, output: &Var<'_>, input: &Var<'_>, child: &Tape) -> Result<Tensor<f32>, AutodiffError>` | メソッド | 入力要素数に比例する前向きヤコビアン |
+| `jvp_multi(&self, output: &Var<'_>, inputs: &[&Var<'_>], tangents: &[&Tensor<f32>], child: &Tape) -> Result<Tensor<f32>, AutodiffError>` | メソッド | 複数入力のヤコビアン・ベクトル積 `Σ_i J_i·v_i` |
+| `jvp_create_graph<'g>(&self, output: &Var<'_>, input: &Var<'_>, tangent: &Tensor<f32>, child: &Tape, grandchild: &'g Tape) -> Result<JvpCreateGraphResult<'g>, AutodiffError>` | メソッド | 微分可能な `jvp`。結果は孫テープ `grandchild` 上の `Var` |
 | `vmap<'t, F>(&'t self, input: &Var<'t>, in_dim: usize, f: F) -> Result<Var<'t>, AutodiffError>` | メソッド | バッチ軸 `in_dim` に沿って `f` を各スライスへ適用し dim 0 に積む（ループ版） |
+| `Tape::vmap_grad<F>(input: &Tensor<f32>, in_dim: usize, child: &mut Tape, f: F) -> Result<Tensor<f32>, AutodiffError>` | 関連関数 | サンプルごとの勾配（`vmap(grad(f))` 相当のループ版）。`&self` は取らず、`child` は空の `Tape` を `&mut` で渡す。`F: for<'c> FnMut(TapeRef<'c>, &Var<'c>) -> Result<Var<'c>, AutodiffError>` |
 | `backward_detect_anomaly(&self, loss: &Var<'_>) -> Result<Gradients, AutodiffError>` | メソッド | 非有限値（NaN / ±inf）を最初に生んだノードを検出する逆伝播 |
 | `gradcheck<F>(device: Device, f: F, inputs: &[Tensor<f32>], options: &GradcheckOptions) -> Result<GradcheckReport, AutodiffError>` | 関連関数 | 解析勾配と中心差分の数値勾配を突合する。`&self` を取らず `tape_for(device)` を都度生成する |
 | `custom<'t>(&'t self, func: Arc<dyn CustomFunction>, inputs: &[Var<'t>]) -> Result<Var<'t>, AutodiffError>` | メソッド | ユーザー定義 forward / backward（カスタム VJP）を 1 ノードとして記録する |
@@ -88,6 +91,9 @@ let tape = match tape_for(Device::Cuda(0)) {
 | `rnn_forward_seq` / `lstm_forward_seq` / `gru_forward_seq` | メソッド | `nn::rnn::{Rnn, Lstm, Gru}` の Sequence レベル forward。`h0`（LSTM は `c0` も）省略時はゼロ初期化 |
 | `stacked_rnn_forward_seq` / `stacked_lstm_forward_seq` / `stacked_gru_forward_seq` | メソッド | 多層・双方向・層間 dropout 付き版。`h0` / `c0` の長さは `num_layers * num_directions` |
 | `stateful_attention_forward(&'t self, sa: &mut nn::kv_cache::StatefulAttention, x_new: &Var<'t>) -> Result<Var<'t>, AutodiffError>` | メソッド | KV キャッシュ付き self-attention の forward。`x_new` は `[B, L_new, E]` |
+| `stateful_attention_forward_with_cache<'t>(&'t self, sa: &nn::kv_cache::StatefulAttention, x_new: &Var<'t>, cache: &mut nn::kv_cache::KvCache) -> Result<Var<'t>, AutodiffError>` | メソッド | 外部キャッシュ版。`sa` の内部キャッシュではなく渡した `cache` を使う。`Err` のとき `cache` は不変 |
+| `new_paged_kv_cache(&self, config: nn::kv_cache::PagedKvCacheConfig) -> Result<nn::kv_cache::PagedKvCache, AutodiffError>` | メソッド | デバイス常駐ページ化 KV キャッシュを、この `Tape` のバックエンドへ構築する。バックエンドが `MemoryOps` を持たない場合は `Unsupported` |
+| `paged_attention_forward(&self, sa: &nn::kv_cache::StatefulAttention, x_new: &Tensor<f32>, cache: &mut nn::kv_cache::PagedKvCache) -> Result<Tensor<f32>, AutodiffError>` | メソッド | ページ化 KV キャッシュを使う self-attention。推論専用（入出力は非追跡の `Tensor`）。`Err` のとき `cache` の論理状態は不変。バックエンドが `Unsupported` でも暗黙のフォールバックはしない |
 
 ### デバイス常駐パラメータ更新
 
@@ -100,6 +106,9 @@ let tape = match tape_for(Device::Cuda(0)) {
 | `backward_device_param_store(&self, loss, store) -> Result<Gradients, AutodiffError>` | メソッド | `Op::LinearResident` を含むグラフ用の backward |
 | `sync_device_param_store_to_host(&self, store) -> Result<Vec<Tensor<f32>>, BackendError>` | メソッド | デバイス常駐パラメータをホストへ同期する |
 | `resident_grads_to_host` / `param_grads_to_host` | メソッド | resident 経由で充填済みの勾配のみ / 全パラメータの勾配をホストへ読み出す |
+| `upload_resident(&self, store: &DeviceParamStore, x: &Tensor<f32>) -> Result<ResidentTensor, AutodiffError>` | メソッド | `x` を `store` のデバイスへ 1 回だけ upload し、常駐入力ハンドル `ResidentTensor` を返す（計測窓の外で呼ぶ想定）。別デバイスは `BackendError::DeviceMismatch`、poison 済み `store` は `StorePoisoned` |
+| `matmul_resident(&self, a: &ResidentTensor, b: &ResidentTensor) -> Result<Tensor<f32>, AutodiffError>` | メソッド | 常駐した `a: [m, k]`・`b: [k, n]` の行列積を計算し、D2H 1 回でホストへ返す。未対応なら `BackendError::Unsupported`（ホスト経路へは落とさない） |
+| `wait_device_param_store(&self, store: &DeviceParamStore) -> Result<(), AutodiffError>` | メソッド | `store` のデバイスに積まれた仕事の完了を D2H なしで待つ。D2H なしの待機を持たないバックエンドは `Unsupported`（`store` は変わらない） |
 
 ### dtype capability
 
@@ -128,10 +137,14 @@ impl<'t> TapeRef<'t> {
 - `Tape` の構築は `tape()` または `tape_for(Device)` 経由のみ。フィールドへの直接アクセスは不可
 - `Tape` は `Debug`, `Send` を実装するが `Sync` は実装しない
 - `reset` 後に、`reset` 前に得た `Gradients` を読むと `Gradients::get` が `AutodiffError::TapeMismatch` を返す（世代番号による実行時検査。`site/examples/training-loop.md`）。`reset` は `&mut self` のため、reset 前の `Var` を持ち越すとコンパイルエラーになる
-- `lib.rs` 冒頭の module doc は「`Tape` は `var` / `backward` の 2 メソッドのみを再委譲する」「デバイス列挙の集約入口はスコープ外」と書くが、0.11.0 では古い文面。item 側の doc とシグネチャ（本ページの表）が正しく、`available_devices()` も存在する
+- `lib.rs` 冒頭の module doc は「`Tape` は `var` / `backward` の 2 メソッドのみを再委譲する」「デバイス列挙の集約入口はスコープ外」と書くが、0.14.0 でも古い文面のまま（0.11.0 から変わらない）。item 側の doc とシグネチャ（本ページの表）が正しく、`available_devices()` も存在する
 - 各イテレーションで新しい `Tape` を作るか、`reset` で再利用するかを選べる（`gemm_bench.rs` は前者の例）
 - `model.predict()` は内部で `tape()` を呼ぶ。明示的にグラフのライフサイクルを制御したい場合は `Tape` を作って `model.forward()` を呼ぶ
+- `Tape::backward_device_param_store` は、入力が `var_no_grad` 等で勾配不要な層の d_input の GEMM を省く。その入力の `Gradients::get` は `Err(GradientTrackingDisabled)`
+- `resident_grads_to_host` の bias slot は Metal・CUDA が resident 経由で `Some`、CPU は `None`
 - `gradcheck` の不一致は `Ok` の `GradcheckReport::passed()` が `false`（`Err` ではない）。テープ生成の失敗は `Err(AutodiffError::Backend(_))`
+
+- Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/struct.Tape.html（0.14.0, 取得日 2026-11-14）
 
 ## Related
 

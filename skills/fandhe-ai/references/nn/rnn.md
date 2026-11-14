@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/nn/rnn/index.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/nn/rnn/index.html
 ---
 
 # nn::rnn（Rnn / Lstm / Gru / Stacked* / RnnConfig / PackedSequence）

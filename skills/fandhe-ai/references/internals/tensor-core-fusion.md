@@ -1,12 +1,12 @@
 ---
-source: https://docs.rs/fandhe-ai-tensor-core/0.11.0/fandhe_ai_tensor_core/
+source: https://docs.rs/fandhe-ai-tensor-core/0.14.0/fandhe_ai_tensor_core/
 ---
 
 # tensor-core-fusion
 
 `tensor-core` 内の kernel fusion（複数演算を 1 カーネルに融合する）ためのグラフ表現。`BackendOps` を非破壊拡張する `run_fused` に渡すオペークハンドル。
 
-- crate 名: `fandhe-ai-tensor-core`（docs.rs `fandhe-ai-tensor-core/0.11.0`、`FusionPlan` は `struct.FusionPlan.html`）
+- crate 名: `fandhe-ai-tensor-core`（docs.rs `fandhe-ai-tensor-core/0.14.0`、`FusionPlan` は `struct.FusionPlan.html`）
 
 ## Signature / Usage
 
@@ -49,7 +49,8 @@ let shape = plan.output_shape();
 
 - 公式が非サポートと明言する内部 crate。アプリケーションからは `fandhe-ai` 公開 API を使う
 - `FusionPlan` はプライベートフィールドのみを持つオパークハンドルで、`Clone` / `Debug` を実装するが分解不可
-- 0.3.0 と 0.11.0 の `fusion/` ディレクトリ（`plan.rs` の `FusedOpKind` / `FusionPlanError` の variant 数、公開アイテム数）に差分はない。`Activation` は `backend_ops` に定義され、`#[non_exhaustive]` の `None` / `Relu` を持つ（crate ルートから再エクスポート）
+- 0.3.0 と 0.11.0 の `fusion/` ディレクトリ（`plan.rs` の `FusedOpKind` / `FusionPlanError` の variant 数、公開アイテム数）に差分はなく、0.14.0 の `fusion/` も 0.11.0 と同一。`Activation` は `backend_ops` に定義され、`#[non_exhaustive]` の `None` / `Relu` を持つ（crate ルートから再エクスポート）
+- Source: https://docs.rs/fandhe-ai-tensor-core/0.14.0/fandhe_ai_tensor_core/（0.14.0, 取得日 2026-11-14）
 - 性能上の考え方（kernel fusion の目的・設計）は guides カテゴリの performance ページを参照（本ページは型定義のみを扱う）
 
 ## Related

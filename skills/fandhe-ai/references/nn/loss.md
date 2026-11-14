@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/nn/loss/index.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/nn/loss/index.html
 ---
 
 # nn::loss（損失構造体 14 種 + Reduction / オプション型）

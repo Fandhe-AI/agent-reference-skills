@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/optim/struct.GradScaler.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/optim/struct.GradScaler.html
 ---
 
 # GradScaler（AMP 損失スケーリング）と gradient clipping

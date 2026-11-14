@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/data/trait.Dataset.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/data/trait.Dataset.html
 ---
 
 # Dataset / TensorDataset / Subset / ConcatDataset / random_split / collate

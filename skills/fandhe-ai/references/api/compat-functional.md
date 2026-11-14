@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/compat/struct.FunctionalBuilder.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/compat/struct.FunctionalBuilder.html
 ---
 
 # compat: Functional API（FunctionalBuilder / FunctionalModel）
@@ -27,7 +27,7 @@ let outputs = model.predict(&[&xa, &xc])?; // Vec<Tensor<f32>>
 
 ## Options / Props
 
-`FunctionalBuilder`（構築。ビルダー ID はプロセス内で一意で、他ビルダーが発行した `Node` は `apply` / `build` が拒否する）:
+`FunctionalBuilder`（構築。MaxPool の索引を後段の MaxUnpool へ渡す `max_pool*_with_indices` / `max_unpool*` は `Sequential` には載せず本ビルダー限定。ビルダー ID はプロセス内で一意で、他ビルダーが発行した `Node` は `apply` / `build` が拒否する）:
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -36,6 +36,10 @@ let outputs = model.predict(&[&xa, &xc])?; // Vec<Tensor<f32>>
 | `apply(&mut self, block: Sequential, input: Node) -> Result<Node, AutodiffError>` | メソッド | `block` を `input` へ適用するノードを追加（Keras の層呼び出し）。拒否: 他ビルダーのハンドル・範囲外添字・`compile()` 済みブロック（compile は Functional モデル側で行う）・層 0 個のブロック。fan-out（1 ノードを複数ブロックが消費）は可 |
 | `concatenate(&mut self, inputs: &[Node], dim: usize) -> Result<Node, AutodiffError>` | メソッド | 軸 `dim` で連結する結合ノード（Keras `Concatenate`） |
 | `add(&mut self, inputs: &[Node])` / `multiply(&mut self, inputs: &[Node])` / `average(&mut self, inputs: &[Node])` | メソッド | 要素ごとの加算 / 乗算 / 平均の結合ノード（Keras `Add` / `Multiply` / `Average`）。戻り値は `Result<Node, AutodiffError>`。結合ノードは `concatenate` を含め、入力 2 件未満・他ビルダー / 範囲外ハンドル・同一ノードの重複指定を拒否する。shape の検査（rank・`dim` 範囲・非連結軸の一致）は構築時には行わず forward 時に型付きエラーで検出する。結合ノードは層を持たないため通し番号キーに影響しない |
+| `max_pool1d_with_indices(&mut self, input: Node, kernel_size: usize, stride: Option<usize>, padding: usize, dilation: usize) -> Result<Node, AutodiffError>` | メソッド | 1D MaxPool ノードを追加する。値は通常のノード値、索引は `max_unpool1d` の `indices_from` から参照できる（`ceil_mode=false` 固定。引数は `Var::max_pool1d` と同じ）。入力 `[N, C, L]` |
+| `max_pool2d_with_indices(&mut self, input: Node, kernel_size: [usize; 2], stride: Option<[usize; 2]>, padding: [usize; 2], dilation: [usize; 2]) -> Result<Node, AutodiffError>` / `max_pool3d_with_indices(&mut self, input: Node, kernel_size: [usize; 3], stride: Option<[usize; 3]>, padding: [usize; 3], dilation: [usize; 3]) -> Result<Node, AutodiffError>` | メソッド | 2D（入力 `[N, C, H, W]`）/ 3D（入力 `[N, C, D, H, W]`）版 |
+| `max_unpool1d(&mut self, input: Node, indices_from: Node, kernel_size: usize, stride: Option<usize>, padding: usize, output_size: Option<usize>) -> Result<Node, AutodiffError>` | メソッド | 1D MaxUnpool ノードを追加する。`input` は復元する特徴量ノード、`indices_from` は索引を提供する `max_pool1d_with_indices` ノード（同次元のみ）。索引は消費されないため 1 つの pool を複数の unpool が参照できる。拒否: 他ビルダーのハンドル・`indices_from` が同次元の pool ノードでない・0 次元・`padding` の 2 倍のオーバーフロー。索引の範囲・shape の検査は forward 時に `Var` 側が行う |
+| `max_unpool2d(&mut self, input: Node, indices_from: Node, kernel_size: [usize; 2], stride: Option<[usize; 2]>, padding: [usize; 2], output_size: Option<[usize; 2]>) -> Result<Node, AutodiffError>` / `max_unpool3d(&mut self, input: Node, indices_from: Node, kernel_size: [usize; 3], stride: Option<[usize; 3]>, padding: [usize; 3], output_size: Option<[usize; 3]>) -> Result<Node, AutodiffError>` | メソッド | 2D / 3D 版 |
 | `build(self, inputs: &[Node], outputs: &[Node]) -> Result<FunctionalModel, AutodiffError>` | メソッド | グラフを検証して確定する（Keras `Model(inputs, outputs)`）。拒否: `inputs` / `outputs` が空・他ビルダーのハンドル・範囲外・重複・`inputs` に入力ノード以外・`inputs` に載らない入力ノード（未束縛）・どの出力にも寄与しないノード。入力ノードを出力へそのまま指定すること（素通し）は許可 |
 | `Node` | `#[derive(Debug, Clone, Copy, PartialEq, Eq)] pub struct` | ノードハンドル（Keras のシンボリックテンソル相当）。発行元ビルダー ID と添字だけを持つ `Copy` 値 |
 
@@ -61,8 +65,9 @@ let outputs = model.predict(&[&xa, &xc])?; // Vec<Tensor<f32>>
 - 数値は既存 `Var` 演算（`Sequential::forward`）の合成のみで、新規 `Op` / `BackendOps` メソッド / VJP を追加しない。GPU は `tape_for` で構築した tape 上でそのまま到達できる
 - shape の構築時推論は行わない（層側に推論 API が無い）。不整合は forward 時に型付きエラーで検出する。`build` / `forward` は反復のみで再帰しない
 - `FunctionalModel::fit` / `evaluate` は `Sequential` 版にある `validation` / callbacks / metrics を持たない
-- 保存・復元は `save_functional_model` / `load_functional_model`（`compat-model-io.md`）。`add_module` の利用者定義層・ブロック間でモードが食い違うモデルは `UnsupportedModel`
+- 保存・復元は `save_functional_model` / `load_functional_model`（`compat-model-io.md`）。`max_pool{1,2,3}d_with_indices` / `max_unpool{1,2,3}d` ノードも保存・復元できる（manifest の op 6 種。`format_version` は 1 のまま）。`add_module` の利用者定義層・ブロック間でモードが食い違うモデルは `UnsupportedModel`
 - `Callback` / `FitWeights` / `compile_with_amp` 等 `Sequential` 側の学習 API は `compat-training.md` を参照
+- Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/compat/struct.FunctionalBuilder.html（0.14.0, 取得日 2026-11-14）
 
 ## Related
 

@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/inference/fn.generate.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/inference/fn.generate.html
 ---
 
 # inference::generate（自己回帰生成ループ）
@@ -95,8 +95,9 @@ pub trait AutoregressiveModel {
 - `GenerateConfig` の検証（`validate`）は非公開だが `generate` の入口で必ず呼ばれる。pub フィールドを書き換えて矛盾させた設定は `Err`。
 - 乱数は独立した `Generator`（xorshift64*）のみを使い、グローバル RNG は消費しない。暗号学的に安全ではないため、生成 token をセキュリティ用途に使わないこと。
 - エラー型は既存の `AutodiffError` を流用する。`model.forward_step` が返すエラーはそのまま伝播する。
-- 既知の制限（未決事項）: `forward_step` へ渡される `caches: &mut [KvCache]` へ facade のみで書き込む手段はない（`KvCache` に外部からテンソルを入れるセッターは無く、`MultiheadAttention::forward_with_cache` は非公開）。KV キャッシュを使うモデルは `RefCell<nn::kv_cache::StatefulAttention>` を内部に持ち、`tape()` で作った `Tape` の `stateful_attention_forward` を呼ぶ形になる（渡された `caches` は使わず `num_kv_layers()` は 0 を返す）。prefill 前のキャッシュ reset は利用者の責務。
-- 実体は fandhe-ai-autodiff 0.11.0 の `generate` モジュール。
+- KV 付きモデルの組み方（0.14.0）: `forward_step` の `caches[i]` は、`tape()` で作った `Tape` の `stateful_attention_forward_with_cache` で進める。`nn::kv_cache::StatefulAttention` を層ごとに持ち（`num_kv_layers()` は層数を返す）、`forward_step` では `tape.stateful_attention_forward_with_cache(&sa, &x, &mut caches[i])` を呼ぶ。この形ならキャッシュの reset・巻き戻しを `generate` 系が担い、1 つのモデルを複数要求で共有しても状態は混ざらない。`RefCell<StatefulAttention>` を内部に持つ旧来の形（`stateful_attention_forward`。渡された `caches` を使わず `num_kv_layers()` は 0）も動作するが推奨されない（prefill 前の reset が利用者の責務になる）。隠れ状態を `caches` の外に持つモデルは `StatefulAutoregressiveModel`（stateful.md）を使う
+- 実体は fandhe-ai-autodiff 0.14.0 の `generate` モジュール。
+- Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/inference/index.html（0.14.0, 取得日 2026-11-14）。`generate` 本体のシグネチャは 0.11.0 から不変で、KV 付きモデルの組み方の記述はタグ v0.14.0 の `src/inference/mod.rs` rustdoc
 
 ## Related
 

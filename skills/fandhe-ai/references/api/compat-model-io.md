@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/compat/fn.save_model.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/compat/fn.save_model.html
 ---
 
 # compat: save_model / load_model
@@ -39,8 +39,11 @@ let restored = load_model("ckpt/run1")?;     // 重みは bit のまま復元
 
 ## Notes
 
-- 対応範囲: 層が `add_*` 53 種（`add_linear`・活性化・`add_softmax` 系・`add_flatten`・`add_dropout`・conv・正規化・embedding・MHA・TE・pooling 等）だけのモデル。`kind` は文字列 allowlist で、`add_*` の引数（`seed` を除く）を記録し、load が同じ `add_*` を呼んで再構築する
-- `compile` / `compile_with_amp` 済みのモデルは、loss 種別・optimizer 種別と現在の config・optimizer 内部状態（safetensors の `optimizer.` 接頭辞）・AMP の GradScaler 状態を manifest の `compiled` 節へ記録し、bit 一致で復元する（対象は `Sgd` / `AdamW` / `Adam` / `RmsProp` / `Adagrad` / `Lamb`、および AMP を伴わない `Lbfgs`）。groups が空でない param groups の compile 状態は保存できない
+- 対応範囲: 層が `add_*` 82 種（`add_linear`・活性化・`add_softmax` 系・`add_flatten`・`add_dropout`・conv・正規化・embedding・MHA・TE・pooling 等）だけのモデル。0.14.0 は、0.11.0 では `UnsupportedModel` だった `selu` / `softsign` / `hardsigmoid` / `log_sigmoid` / `tanhshrink` / `celu` / `softmin` / `threshold` / `rrelu` / `conv_transpose1d` / `unflatten` に加え、3D 系（`conv_transpose3d` / `max_pool3d` / `avg_pool3d` / `adaptive_avg_pool3d` / `adaptive_max_pool3d` / `batch_norm3d`）・`lp_pool1d`〜`3d`・`fractional_max_pool2d` / `3d`・`unfold` / `fold` / `local_response_norm`・`hardshrink` / `softshrink`・`upsample_scale_factor`・`channel_shuffle` などの kind を持つ。`kind` は文字列 allowlist で、`add_*` の引数（`seed` を除く）を記録し、load が同じ `add_*` を呼んで再構築する
+- `compile` / `compile_with_amp` 済みのモデルは、loss 種別・optimizer 種別と現在の config・optimizer 内部状態（safetensors の `optimizer.` 接頭辞）・AMP の GradScaler 状態を manifest の `compiled` 節へ記録し、bit 一致で復元する（対象は `Sgd` / `AdamW` / `Adam` / `RmsProp` / `Adagrad` / `Lamb` / `Adadelta` / `Adamax` / `NAdam` / `RAdam`、および AMP を伴わない `Lbfgs`）。param groups（`compile_with_param_groups` 系。groups が空でない compile 状態）は manifest の `compiled.param_groups`（任意キー。groups が空ならキーなし・`format_version` 据え置き）で往復する。`Callback::LrSchedule` で lr が compile 時から変わった後の保存は `UnsupportedModel`（groups は絶対値で保存され、読込後に倍率が 1 へ戻って学習率が黙って変わるため）。groups 付きファイルは 0.13.0 以前のリーダーでは読めない（fail-closed。rustdoc が参照する `docs/migration/0.14.0.md`）。読み込み時の拒否: 形式違反・負値・非有限・重複・`offsets` の不整合は `Manifest`、スロットが訓練対象パラメータ数以上なら `Mismatch`、`Lbfgs` との組み合わせは `UnsupportedModel`、`format_version` 1 に groups があれば `Manifest`
+- `parametrize_weight_norm` / `parametrize_spectral_norm` で再パラメータ化した `Linear`・Conv 6 種は、14 kind（`{linear,conv1d,conv2d,conv3d,conv_transpose1d,conv_transpose2d,conv_transpose3d}_{weight_norm,spectral_norm}`）で保存・復元する。`params` は基底層の固定キーに weight_norm は `dim`、spectral_norm は `spectral`（`"<n>:<eps>"`。`n` は 1〜4096）を足した集合で、load は基底を `add_*` で組み直して同じ `parametrize_*` を再適用する。spectral_norm の `u` / `v` は buffer（`{i}.parametrizations.weight.0._u` / `._v`）として保存し、再正規化せず bit のまま復元する。旧形式（`format_version` 1）の manifest に再パラメータ化層が含まれていれば拒否する
+- `save_functional_model` / `load_functional_model` は `FunctionalBuilder` の `max_pool{1,2,3}d_with_indices` / `max_unpool{1,2,3}d` ノード（manifest の op 6 種）を往復する。unpool の `inputs` は `[特徴量, 索引元 pool]` の 2 件で、索引元は同次元の pool ノードでなければならない（safetensors を開く前に検証）。`format_version` は 1 のまま（旧リーダーは未知 op を `UnsupportedModel` で fail-closed に拒否する）
+- Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/compat/fn.load_model.html（0.14.0, 取得日 2026-11-14）
 - 保存を拒否する（`UnsupportedModel` / `TooLarge`）もの: `add_module` の利用者定義層、dropout・BatchNorm の層モードがモデル全体と食い違うモデル、f32 引数が非有限の層、manifest が固定上限（配列長・サイズ等）を超えるモデル（パラメータ数の多いモデルは `optimizer_state_keys` も配列長上限に数えられる）
 - BatchNorm1d / 2d の running stats は `{i}.running_mean` / `{i}.running_var` として保存（manifest の `buffer_keys`）。`num_batches_tracked` は保存も復元もしない（load 後は 0 から再開。forward の数値には影響しない）。現行の `format_version` は 2。旧形式（`format_version` 1）に限り `buffer_keys` の欠落を初期 running stats で補って読み込む。現行版で期待 buffer が欠落した manifest は `Mismatch`
 - 書き込みの契約（世代コミット）: `model.<gen>.safetensors`（`<gen>` は 32 桁 16 進）は `create_new` で最終名へ直接書き、`manifest.json` は `create_new` の一時ファイルへ書いて `rename` する。この `rename` が唯一のコミット点で、途中で失敗しても既存の manifest は無傷

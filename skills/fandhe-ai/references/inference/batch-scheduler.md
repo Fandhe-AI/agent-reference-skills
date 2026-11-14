@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/inference/struct.BatchScheduler.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/inference/struct.BatchScheduler.html
 ---
 
 # inference::BatchScheduler / SchedulerLimits / RequestId
@@ -65,6 +65,34 @@ for (id, out) in &finished {
 }
 ```
 
+束ねる経路（`step_batched`）の利用例（rustdoc の例。`Table` は上と同じ表引きモデル。状態なしのモデルでは単独 `generate` と token 列が一致する）。
+
+```rust
+let limits = SchedulerLimits::new(2, 4, 8).unwrap();
+let mut scheduler = BatchScheduler::new(limits);
+let cfg = GenerateConfig::new(5, SamplingStrategy::Greedy);
+let p0 = Tensor::<i32>::new(vec![0], &[1]).unwrap();
+let p1 = Tensor::<i32>::new(vec![2], &[1]).unwrap();
+let id0 = scheduler.submit(&p0, &cfg).unwrap();
+let _id1 = scheduler.submit(&p1, &cfg).unwrap();
+
+let mut finished = Vec::new();
+for _ in 0..16 {
+    scheduler.step_batched(&Table).unwrap();
+    finished.extend(scheduler.take_finished());
+    if scheduler.queued_len() + scheduler.active_len() == 0 {
+        break;
+    }
+}
+assert!(scheduler.take_failed().is_empty());
+assert_eq!(finished.len(), 2);
+for (id, out) in &finished {
+    let prompt = if *id == id0 { &p0 } else { &p1 };
+    let alone = generate(&Table, prompt, &cfg).unwrap();
+    assert_eq!(out.as_slice().unwrap(), alone.as_slice().unwrap());
+}
+```
+
 ## Options / Props
 
 `SchedulerLimits`（`#[non_exhaustive]`、`Debug, Clone, Copy, PartialEq, Eq`。フィールド非公開）:
@@ -85,6 +113,8 @@ for (id, out) in &finished {
 | `active_len(&self) -> usize` | メソッド | 進行中の要求数 |
 | `submit(&mut self, input_ids: &Tensor<i32>, config: &GenerateConfig) -> Result<RequestId, AutodiffError>` | メソッド | 要求を待ち行列へ積む（forward は呼ばない）。`input_ids` は `[T]` または `[1, T]`。いずれの `Err` でも状態は変わらない |
 | `step<M: AutoregressiveModel + ?Sized>(&mut self, model: &M) -> Result<usize, AutodiffError>` | メソッド | 待ち行列から空きの分だけ参加させ、進行中の各要求を 1 トークン進める。戻り値はこの呼び出しで成功完了した要求数 |
+| `step_batched<M: AutoregressiveModel + ?Sized>(&mut self, model: &M) -> Result<usize, AutodiffError>` | メソッド | `step` の opt-in 版。decode 中の要求が 2 件以上のとき 1 回の `forward_step`（`[B, 1]`・左詰め padding の `KvCache`）で束ねて進める。戻り値は `step` と同じ |
+| `step_stateful<M>(&mut self, model: &M) -> Result<usize, AutodiffError>` | メソッド | `step` の内部状態モデル版。`M: StatefulAutoregressiveModel + ?Sized`、`M::State: Send + Sync + 'static`。要求ごとに `init_state` を 1 回呼ぶ（prompt だけの要求では呼ばない） |
 | `take_finished(&mut self) -> Vec<(RequestId, Tensor<i32>)>` | メソッド | 完了した要求を完了順に取り出す（drain） |
 | `take_failed(&mut self) -> Vec<(RequestId, AutodiffError)>` | メソッド | 失敗として切り離された要求を取り出す（drain） |
 
@@ -95,11 +125,16 @@ for (id, out) in &finished {
 - `SchedulerLimits` の 3 上限は必須で 0 は拒否する。`submit` は上限超過（`max_length` が上限超、待ち行列が満杯）、`B != 1`、prompt 空、`max_length < prompt 長` を `Err` にする。
 - 要求単位の失敗は `step` の `Err` にせず `take_failed` に積まれ、他の要求から切り離される。`step` の `Err` はスケジューラ全体の不変条件破れに予約されている（第 1 段階では返す経路はない）。
 - 完了条件は `max_length` 到達のみ（EOS 停止なし）。呼び出しスレッド上で同期実行し、スレッドも I/O も持たない。`model` は保持せず `step` ごとに借用する。
-- 対象モデルの契約: 生成状態を渡された `caches` だけに持つモデルと、状態を持たないモデルが対象。内部状態保持型（`RefCell<StatefulAttention>` 等）は要求間で状態が混ざるため対象外で、出力を保証しない。
+- 対象モデルの契約: 生成状態を渡された `caches` だけに持つモデル（`stateful_attention_forward_with_cache` で `caches[i]` を進める形を含む）と、状態を持たないモデルが対象。内部状態保持型（`RefCell<StatefulAttention>` 等）は要求間で状態が混ざるため `step` / `step_batched` では対象外で、出力を保証しない。
+- `step_batched`: `step` は束ねず token 列の完全一致のまま。判定は単独 `generate` と統一複合判定（相対誤差 1e-3 未満または絶対誤差 1e-5 未満）で、token 列の一致は Greedy かつ margin が十分な入力に限る（TopK / Temperature では契約にしない）。束ねの失敗はその step に限り B = 1 へフォールバックして要求単位で切り離す（forward が 1 回余分にかかる）。`step` と交互に呼べる。性能保証はない。対象モデルは、attention をすべて `forward_with_cache` 系の入口で通し、行ごとの位置を `KvCache::valid_len` から決め、attention 以外を行ごとに独立な演算に限る形（型でも実行時でも検出できないため利用者が保証する）
+- `step_stateful`: 要求の種類（KV 形か内部状態形か）は参加時に決まり、`step` / `step_batched` と混ぜて進めるとその要求だけが `take_failed` に積まれる（fail-closed）。`State` のサイズは利用者の責任。モデルの定義は stateful.md
+- Migration (v0.11 → v0.14): 0.11.0 の本ページは `step` のみだった。0.14.0 で `step_batched` と `step_stateful` が追加された
 - `Debug` 出力は token 列を出さず件数のみ。
 - AutoregressiveModel を実装したローカルモデル上のスケジューラであり、LLM API（openai-api-core / anthropic-api-core / hermes-agent）とは無関係。
+- Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/inference/struct.BatchScheduler.html（0.14.0, 取得日 2026-11-14）。`step_batched` / `step_stateful` は `fandhe-ai-autodiff` 0.14.0 の `generate/scheduler.rs` rustdoc とタグ v0.14.0 の `src/inference/mod.rs`
 
 ## Related
 
 - [generate.md](./generate.md)
 - [speculative.md](./speculative.md)
+- [stateful.md](./stateful.md)

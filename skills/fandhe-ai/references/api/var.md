@@ -1,10 +1,10 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/struct.Var.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/struct.Var.html
 ---
 
 # Var
 
-テープ上の 1 ノードを表す型。値そのものではなく `NodeId` と共有された `Tape` への参照を保持し、演算のたびにテープへ新しいノードを追加する。`Clone`, `Copy`, `Debug` を実装するが `Send` / `Sync` は実装しない。0.11.0 の `Var` は inherent メソッドを 273 個持つため、本ページは値の取り出し・テープ間の移動・基本四則を扱う概要ページとし、系統別の演算は下表の 7 ページに分割している。
+テープ上の 1 ノードを表す型。値そのものではなく `NodeId` と共有された `Tape` への参照を保持し、演算のたびにテープへ新しいノードを追加する。`Clone`, `Copy`, `Debug` を実装するが `Send` / `Sync` は実装しない。0.14.0 の `Var` は inherent メソッドを 286 個持つため、本ページは値の取り出し・テープ間の移動・基本四則を扱う概要ページとし、系統別の演算は下表の 7 ページに分割している。
 
 ## Signature / Usage
 
@@ -52,11 +52,11 @@ let loss = output.mse_loss(&target_var)?;
 
 | Page | 内容 |
 | --- | --- |
-| `var-elementwise.md` | 算術・数学関数・三角関数・活性化・比較・非有限値処理・低精度 forward（`activation_ops` / `activation_scalar_ops` / `scalar_unary_ops` / `trig_ops` / `bool_ops` / `nonfinite_ops` / `low_precision_ops` / `softmin_threshold_ops`） |
+| `var-elementwise.md` | 算術・数学関数・三角関数・活性化（`hardshrink` / `softshrink` を含む）・比較・非有限値処理・低精度 forward（`activation_ops` / `activation_scalar_ops` / `scalar_unary_ops` / `trig_ops` / `bool_ops` / `nonfinite_ops` / `low_precision_ops` / `softmin_threshold_ops` / `shrink_ops`） |
 | `var-reduction.md` | 縮約・統計・累積・ソート・top-k・unique・ビニング（`reduce_ops` / `extremum_ops` / `stat_reduce_ops` / `cumulative_ops` / `topk_unique_ops` / `binning_ops`） |
 | `var-shape-indexing.md` | reshape・転置・結合・分割・インデックス・scatter / gather・pad・fold・rearrange（`shape_view_ops` / `rearrange_ops` / `indexing_ops` / `indexed_update_ops` / `pad_ops` / `fold_ops`） |
 | `var-linalg.md` | 行列・線形代数・テンソル積（`matrix_ops` / `linalg_ops` / `tensor_product_ops` / `einsum`、`qr` / `svd` / `solve` / `det` / `inv` など） |
-| `var-nn-ops.md` | conv・pool・norm・dropout・embedding・attention・RNN セル・interpolate・pixel_shuffle（`conv3d_ops` / `conv_transpose3d_ops` / `pool3d_ops` / `max_unpool_ops` / `lrn_ops` / `weight_reparam_ops`） |
+| `var-nn-ops.md` | conv・pool（adaptive 3D・fractional・Lp を含む）・norm・dropout・embedding・attention・RNN セル・interpolate・pixel_shuffle・channel_shuffle・bilinear・cosine_similarity・pairwise_distance（`conv3d_ops` / `conv_transpose3d_ops` / `pool3d_ops` / `adaptive_pool3d_ops` / `fractional_max_pool_ops` / `lp_pool_ops` / `bilinear_ops` / `similarity_ops` / `max_unpool_ops` / `lrn_ops` / `weight_reparam_ops`） |
 | `var-losses.md` | 損失関数（`loss_ops` / `elementwise_loss_ops` / `margin_focal_loss_ops`、`huber_loss` / `kl_div_loss` / `nll_loss` / `ctc_loss` など） |
 | `var-signal.md` | FFT / STFT 系（`fft_ops`: `fft` / `ifft` / `rfft` / `irfft` / `stft` / `istft`） |
 
@@ -66,11 +66,12 @@ let loss = output.mse_loss(&target_var)?;
 
 ## Notes
 
-- 0.11.0 では `Var::shape()` は `pub(crate)` で公開 API ではない。形状は `to_tensor().shape()` などで取得する
+- `Var::shape()` は 0.11.0 から 0.14.0 まで `pub(crate)` で公開 API ではない（0.14.0 の docs.rs の inherent メソッド一覧にも `shape` は無い）。形状は `to_tensor().shape()` などで取得する
 - ライフタイム `'t` だけでは同一テープ由来であることを保証しない（1 スコープに複数テープが共存し得る）。二項演算は実行時に `tape.id` を検証し、不一致時は `AutodiffError::TapeMismatch` を返す
 - elementwise 演算は materialize 境界まで計算を遅延する。fan-in の事前 materialize やチェイン長上限による自己 materialize が自動的に働く
 - `unwrap()` / `panic!()` ではなく `Result` を明示的に使うのがライブラリの規約
-- 系統別の分類は `autodiff` クレートの `*_ops.rs` ファイル単位（`var.rs` 本体に 135 メソッド、残りは上記 ops モジュール）に対応する
+- 系統別の分類は `autodiff` クレートの `*_ops.rs` ファイル単位に対応する（0.14.0 の `autodiff` クレート `var.rs` は字下げ 4 の `pub fn` を 286 個持ち、docs.rs の inherent メソッド数と一致する。0.11.0 は 273 個）
+- Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/struct.Var.html（0.14.0, 取得日 2026-11-14。docs.rs の inherent メソッド数 273 → 286 を確認）
 
 ## Related
 
