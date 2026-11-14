@@ -55,12 +55,15 @@ client.beta.agents.sessions.events.create(
 | `stream` | boolean | On session create, `true` streams events from the first turn in the same request |
 | `agent.session.input.message` | event | Message to the session; steers an active turn or starts a new turn if idle |
 | `agent.session.input.cancel` | event | Cancels the current turn; session and prior work remain |
+| `review` | `"auto_review"` | Session setting for [automatic review](./approvals.md); set at create for an eligible session in a project with automatic review enabled |
 | `Idempotency-Key` | header | One key per logical message submission; reuse on retries |
 | `items.list` `order` / `limit` | `"asc"` / number | Pagination for saved items |
 
 ## Notes
 
-- A turn is one cycle of work. A message sent to an idle session starts a new turn; a message during an active turn steers it. Turns run asynchronously (stream or webhooks).
+- A turn is one cycle of work. A message sent to an idle session starts a new turn; a message during an active turn steers it. Turns run asynchronously (stream or webhooks). To start work at a future time or on a recurring schedule, use [scheduled automations](./automations.md); a run can create a new session or continue an existing conversation.
+- Automatic review: set `review` to `"auto_review"` when creating an eligible session in a project with automatic review enabled; it can be changed while the main task is idle and input submission has settled. See [Automatic review](./approvals.md).
+- Saved-agent updates apply only to new sessions; to change model, reasoning effort, or service tier for later turns of an existing session, update its settings (see [Configuring Agents](./configuration.md)).
 - Store the `session_id` with your application's conversation state.
 - Sessions with `environment.type: "none"` require initial input.
 - Input size: requests up to 4 MiB (4,194,304 bytes); `input` plus output schema (`agent.text.format.schema`) must stay below, with room for added metadata. Same limit for follow-ups.
@@ -70,10 +73,12 @@ client.beta.agents.sessions.events.create(
 - Subscribe to the event stream before sending a message to receive early events. Streams do not replay missed events; after a disconnect retrieve the session and saved items.
 - Use a different idempotency key for each distinct submission, even when message text is identical; on retry reuse the same key, session ID, and message.
 - Events show live progress; items are saved messages and tool calls.
-- Source: https://developers.openai.com/api/docs/guides/agents-api/sessions (fetched 2026-10).
+- Source: https://developers.openai.com/api/docs/guides/agents-api/sessions (fetched 2026-11-14).
 
 ## Related
 
+- [Automatic review](./approvals.md)
+- [Scheduled automations](./automations.md)
 - [Events and Items](./session-events.md)
 - [Manage Sessions](./manage-sessions.md)
 - [Session Webhooks](./session-webhooks.md)

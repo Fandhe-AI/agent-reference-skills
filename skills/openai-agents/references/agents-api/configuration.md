@@ -47,6 +47,7 @@ Update settings on an existing session (`POST /v1/agents/sessions/{session_id}`)
 | `agent.service_tier` | string \| null | Service tier; `null` restores automatic selection |
 | `agent.multi_agent` | object | Subagent delegation settings |
 | `agent_id` | string | ID of a saved agent whose configuration the session copies |
+| `review` | `none` \| `auto_review` | Session-level (outside `agent`); `auto_review` automatically reviews supported approval requests; default `none` |
 | `environment.type` | `none` \| `openai_hosted` \| `self_hosted` | Where the agent runs commands and works with files |
 
 ## Notes
@@ -55,10 +56,13 @@ Update settings on an existing session (`POST /v1/agents/sessions/{session_id}`)
 - Saved-agent updates apply only to new sessions; each session copies the saved configuration at creation and keeps it.
 - Saved-agent update semantics: omitted fields keep saved values; supplied objects replace the whole field (supplying `reasoning` with only `effort` clears the saved `summary`); `null` resets fields that accept it. Change or reset settings the new model does not support in the same request.
 - Per-session overrides: supplied objects and arrays replace the entire field (supplying `tools` replaces the saved tool list); other settings are copied from the saved agent at creation. They do not change the saved agent or other sessions.
-- Existing-session update: only `model`, `reasoning.effort`, `service_tier` (plus `metadata`) can change. Changes apply to new turns started by messages sent after the update completes; an active turn keeps its settings, including when steered. The `agent` and `reasoning` objects merge supplied fields; `reasoning.effort: null` resets to the model default; `model` cannot be `null`; `metadata` replaces the full map (omit to preserve, `null` or `{}` to clear). Cannot update `reasoning.summary`, `text`, `tools`, `instructions`, or `multi_agent`; create a new session for those.
+- Existing-session update: only `tools`, `model`, `reasoning.effort`, `service_tier` (plus `metadata`) can change; these are available in the beta and GA API contracts. Model, effort, and tier changes apply to new turns started by messages sent after the update completes; messages already in flight can use the previous settings, and an active turn keeps its settings, including when steered. The selected model must support the resulting settings or the update fails. The `agent` and `reasoning` objects merge supplied fields (omitted fields, including reasoning summary, stay unchanged) and reject `null`; `reasoning.effort: null` resets to the model default; `model` cannot be `null`; `metadata` replaces the full map (omit to preserve, `null` or `{}` to clear).
+- Existing-session `tools` replaces the full tool list. Functions and MCP servers change on the next model call; built-in tools change by the next turn. Omit `tools` to preserve, or pass `null` or `[]` to clear.
+- Cannot update `reasoning.summary`, `text`, `instructions`, or `multi_agent`; create a new session for those.
+- Automatic action review: set the session-level `review` field to `"auto_review"` (alongside `agent` or `agent_id`, not inside the agent configuration) to automatically review supported approval requests; defaults to `"none"`. It also changes execution permissions, so check the environment prerequisites on the approvals page first. `review` can be updated only when the main task is idle and input submission has settled; otherwise the request returns `409 Conflict` and applies no changes. Requires a project with automatic review enabled and a session that supports it.
 - Credentials stay in vaults, separate from the saved configuration.
 - Environment: choose `none`, `openai_hosted`, or `self_hosted`. For OpenAI-hosted, choose a container size and configure packages, initial files, network access; environment templates can be reused across sessions.
-- Source: https://developers.openai.com/api/docs/guides/agents-api/configuration (fetched 2026-10).
+- Source: https://developers.openai.com/api/docs/guides/agents-api/configuration (fetched 2026-11-14).
 
 ## Related
 

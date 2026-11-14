@@ -45,7 +45,7 @@ result = await Runner.run(
 )
 ```
 
-## Choose the simplest default strategy
+### Choose the simplest default strategy
 
 | If you need | Start with | Why |
 |---|---|---|
@@ -56,7 +56,7 @@ result = await Runner.run(
 
 For most new SDK workflows, start with `gpt-6-astra` and move to a smaller variant only when latency or cost matters enough to justify it.
 
-## Providers and transport
+### Providers and transport
 
 | Need | Start with |
 |---|---|
@@ -67,7 +67,7 @@ For most new SDK workflows, start with `gpt-6-astra` and move to a smaller varia
 - The Responses WebSocket transport still uses the normal text-and-tools agent loop; it is separate from the voice session path.
 - Live audio sessions over WebRTC/WebSocket are for low-latency voice/image interactions (see Voice agents / realtime API guides, out of this skill's scope).
 
-## Model settings, prompts, and feature support
+### Model settings, prompts, and feature support
 
 - Use `modelSettings` (TS) / `model_settings` (Python) for tuning: reasoning effort, verbosity, tool behavior.
 - Use `prompt` to reference a stored prompt configuration instead of embedding the full system prompt in code.
@@ -75,6 +75,8 @@ For most new SDK workflows, start with `gpt-6-astra` and move to a smaller varia
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/agents/models (fetched 2026-11-14).
+- In production, prefer explicit model choice over whichever runtime default your SDK release ships with; if the exact default matters, set it yourself rather than relying on the SDK fallback.
 - Current guidance: for most new SDK workflows, start with `gpt-6-astra`; the platform-wide "Model guidance" page has current model-selection advice.
 - Keep the model contract close to the agent definition when intrinsic to that specialist; move it to a workflow-level default only when a group of agents should share the same runtime choice.
 - Provider/transport detail beyond the OpenAI default path is language-specific SDK material, not duplicated here.

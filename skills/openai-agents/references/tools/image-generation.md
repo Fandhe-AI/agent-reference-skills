@@ -1,6 +1,6 @@
 # Image Generation
 
-Hosted `image_generation` tool: generates or edits images from a text prompt (and optional image inputs) using GPT Image models: `gpt-image-2.5-sunburst` (precise editing), `gpt-image-2.5-flare` (fast, high-quality generation), `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`, and `gpt-image-1-mini`. The model automatically optimizes text inputs for improved performance. Set the `image_generation` tool's `model` to pick the GPT Image model; use a supported mainline model in the top-level Responses `model` field.
+Hosted `image_generation` tool: generates or edits images from a text prompt (and optional image inputs) using GPT Image models: `gpt-image-2.5-sunburst` (precise editing), `gpt-image-2.5-flare` (fast, high-quality generation), `gpt-image-2`, `gpt-image-1.5`, and `gpt-image-1-mini`. The model automatically optimizes text inputs for improved performance. Set the `image_generation` tool's `model` to pick the GPT Image model; use a supported mainline model in the top-level Responses `model` field.
 
 ## Signature / Usage
 
@@ -55,7 +55,12 @@ for await (const event of stream) {
 - The `image_generation_call` output includes a base64-encoded `result` and, when the mainline model revises the prompt, a `revised_prompt` field.
 - Multi-turn editing: reference `previous_response_id` or pass back the prior `image_generation_call` item (by `id`) as input to iteratively refine an image.
 - Prompting tip: use `draw` / `edit` verbs; to combine images say "edit the first image by adding this element from the second image" rather than "combine"/"merge".
-- Supported mainline models include `gpt-5.5`, `gpt-5.4-mini`, `gpt-5.4-nano`, `gpt-5.2`, `gpt-5`, `gpt-5-nano`, `o3`, `gpt-4.1` family, `gpt-4o` family — the GPT Image model itself is not a valid `model` field value.
+- `gpt-image-1` was shut down on October 23, 2026 (see the official deprecations page, entry `2026-04-22-legacy-gpt-model-snapshots`).
+- `size`, `quality`, and `background` support `auto`. `gpt-image-2` supports flexible `size` values that meet its resolution constraints.
+- If the application serves individual end users, send a stable, privacy-preserving `safety_identifier` on each top-level Responses request, including later edits; it is a request parameter, not an `image_generation` tool option.
+- Input images can be provided via file IDs or base64 data.
+- Non-deprecated mainline models with documented support (use in the top-level `model` field): `chat-latest`, `gpt-5.2`, `gpt-5.2-pro`, `gpt-5.4`, `gpt-5.4-mini`, `gpt-5.4-pro`, `gpt-5.5`, `gpt-5.5-pro`, `gpt-5.6-cyber`, `gpt-5.6-luna`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-6-astra`, `gpt-6-cyber`, `gpt-6-luna`, `gpt-6-sol`, `gpt-6.1-sol`, `gpt-6.1-terra`. The GPT Image model itself is not a valid top-level `model` value; check Deprecations for availability and shutdown dates.
+- Source: https://developers.openai.com/api/docs/guides/tools-image-generation (fetched 2026-11-14).
 
 ## Related
 

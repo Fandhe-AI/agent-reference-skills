@@ -47,17 +47,18 @@ codex exec-server \
 | `agent.session.environment.connected` | event | Environment ready |
 | `agent.session.environment.failed` | event | Connection failed; check environment error and executor logs |
 
-Sandbox providers (each has a setup guide in this category): Modal, Cloudflare, Vercel, Daytona, Blaxel, E2B, Runloop, DigitalOcean, AWS Lambda MicroVMs, Oracle Cloud Infrastructure (OCI).
+Sandbox providers (each has a setup guide in this category): AWS Lambda MicroVMs, Blaxel, Cloudflare, Databricks Sandbox, Daytona, DigitalOcean, E2B, Modal, Oracle Cloud Infrastructure (OCI), Vercel.
 
 ## Notes
 
 - The executor registers with the API using an environment ID and a restricted API key, then connects over WebSocket to receive commands and return results. All connections are outbound; the executor reconnects if dropped. It runs shell commands, reads/writes files, and uses local MCP servers at the harness's request.
 - Isolate environments by user or workload; agents sharing an environment can access the same files and credentials.
+- Automatic review (`review: "auto_review"`) requires the standard executor to run in a container that supports sandboxing and permits Codex to create a sandbox; it applies a permission profile with a workspace-write baseline and restricted network access. See [Automatic review](./approvals.md).
 - Network: allow outbound `https://api.openai.com` (registration) and `wss://codex-cloud-environments.chatgpt.com` (commands and results).
 - Authentication: `OPENAI_API_KEY` for the application with `api.agents.read`, `api.agents.write`, `api.responses.write` (plus `api.vaults.read` / `api.vaults.write` for vaults). Create a separate environment key on the Agents tab of the platform dashboard (same organization, project, and user/service account as the session; every other permission **None**); set it as `OPENAI_EXECUTOR_API_KEY` in your application and pass it into the sandbox as `CODEX_API_KEY`. Agent-generated code can read the environment key, which only permits connecting environments. Keep `OPENAI_API_KEY` outside the sandbox.
 - Pass `session.environment.id` and `session.environment.remote_url` to the executor; use the remote URL unchanged, including on reconnect. Each session has its own environment ID and needs its own executor. The image, `workspace_directory`, and `capability_directories` can be reused; API environment templates apply only to OpenAI-hosted environments.
 - The agent needs both a connected environment and user input to start work. Keep the event stream open.
-- Source: https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted (fetched 2026-10).
+- Source: https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted (fetched 2026-11-14).
 
 ## Related
 

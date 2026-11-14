@@ -14,7 +14,7 @@ Agent Skills let you upload and reuse versioned bundles of files in hosted and l
         "type": "container_auto",
         "skills": [
           { "type": "skill_reference", "skill_id": "<skill_id>" },
-          { "type": "skill_reference", "skill_id": "<skill_id>", "version": 2 }
+          { "type": "skill_reference", "skill_id": "<skill_id>", "version": "2" }
         ]
       }
     }
@@ -42,20 +42,30 @@ curl -X POST 'https://api.openai.com/v1/skills' \
 |------|------|-------------|
 | `environment.type: "container_auto"` (hosted shell) | string | Enables `skill_reference` attachments for uploaded skills |
 | `skill_reference.skill_id` | string | ID of an uploaded or curated skill (e.g. `openai-spreadsheets`) |
-| `skill_reference.version` | integer \| `"latest"` | Version to mount; defaults to the skill's `default_version` |
+| `skill_reference.version` | string (e.g. `"2"`) \| `"latest"` | Version to mount; defaults to the skill's `default_version` |
 | `environment.type: "local"` (local shell) | string | Uses local file paths instead of `skill_reference`; not interchangeable with hosted attachments |
 | local `skills[].name` / `description` / `path` | string | Skill metadata and local folder path for local shell mode |
-| `default_version` | integer | Version used when a `skill_reference` omits `version` |
-| `latest_version` | integer | Tracks the newest uploaded version |
+| `default_version` | string | Version used when a `skill_reference` omits `version`; set with `POST /v1/skills/<skill_id>` and `{"default_version": "2"}` (must be a string) |
+| `latest_version` | string | Tracks the newest upload |
 | inline skill `source.type: "base64"` | object | Inlines a zip bundle (base64) instead of creating a hosted skill, attached via a container's `skills` array |
 
-## Limits and validation
+Create a new version (`POST /v1/skills/<skill_id>/versions`):
+
+```bash
+curl -X POST 'https://api.openai.com/v1/skills/<skill_id>/versions' \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -F 'files=@./geometry.zip;type=application/zip'
+```
+
+### Limits and validation
 
 - `SKILL.md` matching is case-insensitive; exactly one `skill.md`/`SKILL.md` file per bundle.
 - Front matter validation follows the Agent Skills specification.
 - Max zip upload size 50 MB, max 500 files per version, max 25 MB uncompressed file size.
+- A newly uploaded version can briefly return `404`; before attaching it to a container or Live session, retrieve it with `GET /v1/skills/{skill_id}/versions/{version}` (retry with short backoff and timeout) and use the returned version string.
+- Delete rules: you can't delete the default version (set another default first); deleting the last remaining version deletes the skill; deleting a skill removes all versions.
 
-## Agents API
+### Agents API
 
 Agents API sessions do not use the hosted shell's `skill_reference` attachment format. Put the skill directories in the sandbox and register their parent directories in `environment.capability_directories` when creating the session; the harness discovers skills there.
 
@@ -78,6 +88,9 @@ Agents API sessions do not use the hosted shell's `skill_reference` attachment f
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/tools-skills (fetched 2026-11-14).
+- Write the skill `description` to say both what it does and when to use it; during discovery the model sees only name and description. `references/` for background, `scripts/` for repeatable actions, `assets/` for templates.
+- Local shell does not support `skill_reference`; provide skill files from local paths in the runtime you control.
 - Hosted shell (`container_auto`) and local shell do **not** accept the same skill attachment formats — hosted uses `skill_reference` (uploaded/curated, versioned), local uses inline `name`/`description`/`path` pointing at a runtime-controlled directory.
 - Once mounted, the platform adds each skill's `name`, `description`, and `path` to user prompt context; the model decides whether to invoke it. For deterministic behavior, explicitly instruct the model to "use the `<skill name>` skill."
 - Skill instructions load as **user prompt input**, not system prompt input.

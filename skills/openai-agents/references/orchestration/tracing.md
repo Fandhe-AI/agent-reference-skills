@@ -15,6 +15,8 @@ const agent = new Agent({
 await withTrace("Joke workflow", async () => {
   const first = await run(agent, "Tell me a joke");
   const second = await run(agent, `Rate this joke: ${first.finalOutput}`);
+  console.log(first.finalOutput);
+  console.log(second.finalOutput);
 });
 ```
 
@@ -46,6 +48,8 @@ if __name__ == "__main__":
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/agents/integrations-observability (fetched 2026-11-14).
+- Inspect traces in the Traces dashboard (https://platform.openai.com/traces). Use traces to debug one workflow run, and to feed higher-signal examples into agent workflow evaluation (`/api/docs/guides/agent-evals`) once you are ready to score behavior systematically.
 - Distinct from the `pino` logging skill and from generic "trace"/"tracing" terminology used elsewhere in this repository — this page is the Agents SDK's built-in run-tracing feature (`withTrace` / `trace`), not a logging library.
 - Tracing is enabled by default in the server-side SDK; no separate opt-in is required to get a basic trace per run.
 - A trace covers: the overall run/workflow, each individual model call, tool execution and outputs, handoffs, guardrails, and any custom spans wrapped explicitly (as with `withTrace` / `trace`).

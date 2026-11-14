@@ -1,6 +1,6 @@
 # Code Interpreter
 
-Hosted `code_interpreter` tool: lets the model write and run Python in a sandboxed container to solve data analysis, coding, and math problems, and to boost visual intelligence for reasoning models by cropping/zooming/rotating images. Internally the model refers to this as the "python tool".
+Hosted `code_interpreter` tool: lets the model write and run Python in a sandboxed container to solve data analysis, coding, and math problems, to process and generate files, and to inspect images with `gpt-6-astra` (crop, zoom, rotate, or read individual pixels using Python). Internally the model refers to this as the "python tool".
 
 ## Signature / Usage
 
@@ -54,7 +54,12 @@ curl https://api.openai.com/v1/containers \
 - Model-generated files (plots, CSVs) appear as `container_file_citation` annotations (`container_id`, `file_id`, `filename`) on the next message; download via the container files content endpoint.
 - Files included in model input are auto-uploaded to the container.
 - Supports 30+ file formats (`.py`, `.csv`, `.json`, `.pdf`, `.xlsx`, images, `.zip`, etc.) with documented MIME types.
-- Available via Responses, Chat Completions, and Assistants (legacy) APIs; rate limit 100 RPM per org.
+- Auto mode creates a new container or reuses an active one used by a previous `code_interpreter_call` item in the model's context; find the `container_id` in that item. Containers created in auto mode are also accessible through `/v1/containers`.
+- Any container operation (retrieve, add or delete files) refreshes `last_active_at`. Python objects in an expired container's memory are lost.
+- Container files: create (multipart upload or JSON body with `file_id`), list, and retrieve content via the containers files endpoints.
+- The model knows the tool as the "python tool"; the most explicit way to invoke it is to ask for "the python tool" in prompts.
+- Available via Responses, Chat Completions, and Assistants APIs; rate limit 100 RPM per org.
+- Source: https://developers.openai.com/api/docs/guides/tools-code-interpreter (fetched 2026-11-14).
 
 ## Related
 

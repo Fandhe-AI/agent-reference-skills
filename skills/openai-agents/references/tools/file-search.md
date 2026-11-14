@@ -48,17 +48,24 @@ console.log(response);
 | `filters` | object | Metadata-based comparison filter (e.g. `{type: "in", key, value}`) |
 | `include` | `string[]` | Add `"file_search_call.results"` to obtain actual search results alongside the model response |
 
-## Setup Process
-
-1. Upload files to the File API
-2. Create a vector store and add files to it — see [Vector Stores](./vector-stores.md)
-3. Add files to the vector store and monitor processing status
-
 ## Notes
 
-- Supports 24 file formats (PDFs, documents, code files, plain text). Text files must be UTF-8, UTF-16, or ASCII encoded.
-- Available in the Responses API and the Assistants (legacy) API; not available via Chat Completions. Rate limits range 100–1000 RPM depending on account tier.
-- Vector store creation, file upload/chunking, and attribute filtering are covered in [Vector Stores](./vector-stores.md).
+### Setup process
+
+A knowledge base in a vector store must exist before use. This is a hosted tool: when the model decides to use it, OpenAI calls it, retrieves from your files, and returns output.
+
+1. Upload the file to the File API.
+2. Create a vector store — see [Vector Stores](./vector-stores.md).
+3. Add the file to the vector store and check status until it is `completed` (`openai.vectorStores.files.list(vectorStore.id)`).
+
+### Behavior
+
+- Search results are not returned by default (only annotations in the output text); pass `include: ["file_search_call.results"]`.
+- Limiting `max_num_results` reduces token usage and latency but may reduce answer quality.
+- Attributes and attribute filters are defined in the retrieval guide — see [Vector Stores](./vector-stores.md).
+- Supported files (`text/` MIME types must be `utf-8`, `utf-16`, or `ascii`): `.c`, `.cpp`, `.cs`, `.css`, `.doc`, `.docx`, `.go`, `.html`, `.java`, `.js`, `.json`, `.md`, `.pdf`, `.php`, `.pptx`, `.py`, `.rb`, `.sh`, `.tex`, `.ts`, `.txt`.
+- The usage table lists Responses, Chat Completions, and Assistants as API availability (the guide intro describes file search as a tool of the Responses API). Rate limits: Build 500 RPM; Launch and Grow 1000 RPM.
+- Source: https://developers.openai.com/api/docs/guides/tools-file-search (fetched 2026-11-14).
 
 ## Related
 
