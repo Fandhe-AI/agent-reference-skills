@@ -5,7 +5,7 @@ description: >
   Windows.Storage の StorageFile, StorageFolder, FileIO,
   CachedFileManager, DataWriter。ApplicationData,
   ApplicationDataContainer のローカル・ローミング設定。
-  FileOpenPicker, FileSavePicker, FolderPicker, KnownFolders,
+  FileOpenPicker, FileSavePicker, FolderPicker (Microsoft.Windows.Storage.Pickers), KnownFolders,
   StorageApplicationPermissions。
   JsonObject, SQLite, EF Core,
   Microsoft.Data.SqlClient, MongoDB 接続。
@@ -43,6 +43,7 @@ skills/windows-data-storage/
       streamed-file-content.md
       access-sd-card.md
       system-io-vs-windows-storage.md
+      windows-app-sdk-file-management.md
       file-properties.md
     app-data-settings/
       README.md
@@ -60,6 +61,7 @@ skills/windows-data-storage/
       folder-picker.md
       hwnd-initialization.md
       windows-app-sdk-pickers.md
+      windows-app-sdk-save-picker.md
       storage-application-permissions.md
       known-folders.md
       file-access-permissions.md
@@ -110,11 +112,12 @@ skills/windows-data-storage/
 | StorageFile / StorageFolder でファイル・フォルダーの取得・作成・削除・列挙をしたい | storage-files | [references/storage-files/README.md](references/storage-files/README.md) |
 | FileIO / PathIO / DataReader / DataWriter でテキスト・バイナリの読み書きをしたい | storage-files | [references/storage-files/README.md](references/storage-files/README.md) |
 | CachedFileManager / IRandomAccessStream / StorageStreamTransaction でストリームの整合性を扱いたい | storage-files | [references/storage-files/README.md](references/storage-files/README.md) |
-| System.IO と Windows.Storage のどちらを使うか判断したい | storage-files | [references/storage-files/README.md](references/storage-files/README.md) |
+| System.IO と Windows.Storage のどちらを使うか判断したい、Windows App SDK のファイル管理 API 全体像を知りたい | storage-files | [references/storage-files/README.md](references/storage-files/README.md) |
 | ApplicationData / ApplicationDataContainer でローカル・ローミング設定を保存したい | app-data-settings | [references/app-data-settings/README.md](references/app-data-settings/README.md) |
 | パッケージ化・非パッケージ化アプリでの ApplicationData の違いを知りたい | app-data-settings | [references/app-data-settings/README.md](references/app-data-settings/README.md) |
 | アプリデータのバージョニング・移行・サイズ制限を扱いたい | app-data-settings | [references/app-data-settings/README.md](references/app-data-settings/README.md) |
 | FileOpenPicker / FileSavePicker / FolderPicker でユーザーにファイル・フォルダーを選択させたい | pickers-access | [references/pickers-access/README.md](references/pickers-access/README.md) |
+| Windows App SDK 1.8+ の Microsoft.Windows.Storage.Pickers（FileOpenPicker / FileSavePicker / FolderPicker、WindowId、昇格プロセス対応）を使いたい | pickers-access | [references/pickers-access/README.md](references/pickers-access/README.md) |
 | デスクトップアプリでピッカーの HWND 初期化・WindowId 設定をしたい | pickers-access | [references/pickers-access/README.md](references/pickers-access/README.md) |
 | KnownFolders / StorageApplicationPermissions でアクセス許可・既知フォルダーを扱いたい | pickers-access | [references/pickers-access/README.md](references/pickers-access/README.md) |
 | JsonObject / JsonArray / JsonValue / XmlDocument で構造化データをパース・生成したい | data-serialization | [references/data-serialization/README.md](references/data-serialization/README.md) |
@@ -127,6 +130,6 @@ skills/windows-data-storage/
 | 動作する実装例を見たい | samples | [samples/README.md](samples/README.md) |
 | NuGet パッケージの導入コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
 
-出典: learn.microsoft.com (en-us) Windows apps docs、2026-10-16 取得。
+出典: learn.microsoft.com (en-us) Windows apps docs、2026-10-16 取得（`pickers-access` の Windows App SDK ピッカー 2 ページと `storage-files` の概要ページは 2026-11-14 に再取得、公式 ms.date 2026-11-10）。
 
 このスキルは Windows App SDK / WinRT のファイル・設定・データ保存 API のみを扱う。コントロール UI は windows-winui-controls、ライフサイクル・ウィンドウ・通知は windows-app-sdk が担当し、いずれもここでは扱わない。共有業務データの認証付きサービス層（ID / API 呼び出し）もこのスキルの範囲外。
