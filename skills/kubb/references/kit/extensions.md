@@ -72,17 +72,17 @@ export const pluginExample = defineExtension({
 | `version` | `string` | Semver range the dependency's `meta.version` must satisfy. Skipped when the dependency has no `meta.version`. |
 | `optional` | `boolean` | When `true`, a missing plugin is skipped. An installed one still has its `version` checked. |
 
-A function form `dependencies: (options) => ({ ... })` receives the user's options and returns the record.
+A function form `dependencies: (options, { config }) => ({ ... })` receives the user's options and `{ config }`, and returns the record.
 
 ## Notes
 
-- 出典: https://kubb.dev/docs/5.x/reference/kit/extensions （kubb@5.11.0 の docs/5.x/reference/kit/extensions.md）
+- Source: https://kubb.dev/docs/5.x/reference/kit/extensions (docs/5.x/reference/kit/extensions.md at kubb@5.20.0, retrieved 2026-11-14)
 - `definePlugin`, `defineParser`, and `createAdapter` are deprecated. Each takes the same definition object as `defineExtension`, without `kind`; pass it to `defineExtension` and add `kind: 'plugin'`, `'parser'`, or `'adapter'`.
-- Read `version` from `package.json` (`import { version } from '../package.json'`). A package shipping `kubb-extension.json` imports `compatibility` from it.
-- Before any plugin runs, Kubb checks each plugin's and parser's `meta.compatibility` against the running `@kubb/core` and Node.js versions. A mismatch fails with `KUBB_INCOMPATIBLE_EXTENSION`. Prerelease versions are compared like regular ones.
+- Read `version` from `package.json` (`import { version } from '../package.json'`). A named import from JSON needs a bundler, such as tsdown, that inlines it; with plain `tsc` and `"module": "NodeNext"`, write the version in `meta` instead. A package shipping `kubb-extension.json` imports `compatibility` from it.
+- Before any plugin runs, Kubb checks the `meta.compatibility` of the adapter and of each parser and plugin against the running `@kubb/core` and Node.js versions. A mismatch fails with `KUBB_INCOMPATIBLE_EXTENSION`. Prerelease versions are compared like regular ones.
 - A missing required dependency fails with `KUBB_MISSING_DEPENDENCY`; a `meta.version` outside the range fails with `KUBB_INCOMPATIBLE_DEPENDENCY`.
 - An array such as `dependencies: ['plugin-ts']` still works but only orders plugins; a missing one is skipped and versions are not checked.
-- Every factory carries `kind` and `meta` statics (`pluginExample.kind`, `pluginExample.meta.name`). A factory built from a deprecated factory function has no `meta` on it; the returned plugin or parser still has `meta`, falling back to `{ name }`.
+- Every factory carries `kind` and `meta` statics (`pluginExample.kind`, `pluginExample.meta.name`). Factories from the deprecated `definePlugin`, `defineParser`, and `createAdapter` carry the same `kind` and `meta`. A hand-written plugin or parser object that sets only the deprecated `name` gets `meta: { name }` at runtime.
 
 ## Related
 

@@ -1,6 +1,6 @@
 # Kit: Extension docs
 
-An extension ships its docs in a `docs/` folder at the package root, next to `kubb-extension.json`. The registry reads the folder from the npm tarball of the pinned version, and kubb.dev renders it under `/extensions/<owner>/<slug>`.
+An extension ships its docs in a `docs/` folder at the package root, next to `kubb-extension.json`. The registry reads the folder from the npm tarball or the GitHub release of the pinned version, and kubb.dev renders it under `/extensions/<owner>/<slug>`.
 
 ## Signature / Usage
 
@@ -15,15 +15,15 @@ List `docs` in `files` in `package.json` so npm ships it.
 
 | File | Page on kubb.dev | Required |
 | --- | --- | --- |
-| `docs/overview.md` | `/extensions/<owner>/<slug>`, also the summary in Studio | Yes |
+| `docs/overview.md` | `/extensions/<owner>/<slug>` | Yes |
 | `docs/options.md` | `/extensions/<owner>/<slug>/options` | No |
 | `docs/guides/<id>.md` | `/extensions/<owner>/<slug>/guides/<id>` | No |
 
 ## Notes
 
-- 出典: https://kubb.dev/docs/5.x/reference/kit/extension-docs （kubb@5.11.0 の docs/5.x/reference/kit/extension-docs.md）
+- Source: https://kubb.dev/docs/5.x/reference/kit/extension-docs (docs/5.x/reference/kit/extension-docs.md at kubb@5.20.0, retrieved 2026-11-14)
 - The registry ignores other files in `docs/`. It skips a file larger than 256 KiB and reports it.
-- Start each file with a `#` title on its first line. The first paragraph after the title is the description (guide cards, search, meta description). Files have no frontmatter.
+- Start each file with a `#` title on its first line. The first paragraph after the title is the description. For a guide, kubb.dev shows it on the guide's card, in the guide filter, and as the meta description. Files have no frontmatter.
 - Name each guide file in kebab case, such as `base-url.md`; the id is the file name without `.md`. Guides appear in file name order, at most 50. A guide without a title, a description, or a kebab-case id is not listed.
 - Write plain Markdown with absolute `https://` URLs for links and images. A code fence can carry a title, such as ` ```typescript [kubb.config.ts] `.
 - Rendered extras: callouts `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`; components `::code-group`, `::field-group` with `:::field`, `::steps`, `::code-collapse`, `::tabs` with `:::tabs-item`.

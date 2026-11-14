@@ -27,7 +27,7 @@ export const pluginExample = defineExtension<PluginExample>({
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
 | `kind` | `'plugin'` | Yes | Tells `defineExtension` to define a plugin. |
-| `meta` | `ExtensionMeta` | Yes | Name, version, and compatibility. `meta.name` follows `plugin-<feature>`. |
+| `meta` | `ExtensionMeta` | Yes | Name, version, and compatibility. `meta.name` follows `plugin-<feature>`. The returned `Plugin` takes its `name` from `meta.name`. |
 | `setup` | `(options, kubb: KubbPluginSetupContext) => TResolvedOptions` | No | Main plugin logic. Returns the resolved options. Can be `async`. |
 | `dependencies` | `ExtensionDependencies` | No | Plugins this one builds on. They run first; a missing required one fails the run. |
 | `enforce` | `'pre' \| 'post'` | No | Run before or after the normal plugins. Dependency order still wins. |
@@ -64,13 +64,17 @@ export const pluginExample = defineExtension({
 | `setOptions` | `setOptions()` | `(options: ResolvedOptions) => void` | Set the resolved options used by generators. In `setup`, return them instead |
 | `injectFile` | `injectFile()` | `(file: UserFileNode) => void` | Inject a raw file into the build output, bypassing generation |
 | `requirePlugin` | `requirePlugin()` | `(name: string) => Plugin` | Return another plugin, or fail the run with `KUBB_PLUGIN_NOT_FOUND` |
+| `memo` | `memo()` | `(key: string, compute: () => T) => T` | Return a value computed once per build and shared by every plugin |
 | `config` | `useConfig()` | `Config` | The resolved build configuration at setup time |
 | `options` | `useOptions()` | `TOptions` | The plugin's own options as passed by the user |
 
+The `memo` export also caches in a store you own, anywhere: `memo(store, key, compute)` takes a `Map` or `WeakMap`, or a store from `memo.create()`. Its options each change one thing: `weak: true` frees an entry with its key, and `max` empties the store when it is full (`max: 1` keeps only the last entry).
+
 ## Notes
 
-- 出典: https://kubb.dev/docs/5.x/reference/kit/plugins （kubb@5.11.0 の docs/5.x/reference/kit/plugins.md）
-- `definePlugin` is deprecated. Use `defineExtension` with `kind: 'plugin'`: rename the call and add `kind: 'plugin'`. The plugin's own `name` is deprecated in favor of `meta.name`.
+- Source: https://kubb.dev/docs/5.x/reference/kit/plugins (docs/5.x/reference/kit/plugins.md at kubb@5.20.0, retrieved 2026-11-14)
+- Migration (5.11 → 5.20): the `memo()` composable was added in v5.15.0 (#4501); `ctx.cache` was removed in v5.15.2 (#4510) in favor of `ctx.memo`. The official 5.20 docs no longer describe the plugin's own `name` as deprecated; the returned `Plugin` takes its `name` from `meta.name`.
+- `definePlugin` is deprecated. Use `defineExtension` with `kind: 'plugin'`: rename the call and add `kind: 'plugin'`.
 - The `Plugin` the factory returns keeps the user's raw options in `plugin.options`.
 - `useKubb()` returns the whole setup context; `tryUseKubb()` returns `undefined` outside setup instead of throwing.
 - Composables read the context of the plugin whose setup is running, also after an `await`. Outside `setup` and `kubb:plugin:setup` (including generators and later hooks, which receive their own `ctx`) they throw `KUBB_NO_CONTEXT`. Both styles can be mixed in one setup.
@@ -84,4 +88,3 @@ export const pluginExample = defineExtension({
 - [Resolvers](./resolvers.md)
 - [Lifecycle hooks](./hooks.md)
 - [Manifest](./manifest.md)
-- [Testing](./testing.md)

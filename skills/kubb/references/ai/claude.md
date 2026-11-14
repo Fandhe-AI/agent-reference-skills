@@ -1,6 +1,6 @@
 # Claude Code プラグイン
 
-Kubb 公式の Claude Code プラグイン。スラッシュコマンドと Agent を追加し、OpenAPI 仕様からコード生成を行う。コマンドは `kubb` CLI を実行するため、チャットでのビルドとターミナルでのビルドが一致する（Kubb 5.11.0 の docs 5.x ai/claude と `tools/claude/` に準拠）。
+Kubb 公式の Claude Code プラグイン。スラッシュコマンドと Agent を追加し、OpenAPI 仕様からコード生成を行う。コマンドは `kubb` CLI を実行するため、チャットでのビルドとターミナルでのビルドが一致する（Kubb 5.20.0 の docs 5.x ai/claude と `tools/claude/` に準拠）。
 
 ## インストール
 

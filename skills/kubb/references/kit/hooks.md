@@ -1,6 +1,6 @@
 # Kit: Lifecycle hooks
 
-Kubb runs on one shared, typed hook emitter, and every phase of a build fires a `kubb:*` hook on it. Plugins listen through their `hooks` map; outside code listens through `kubb.hooks`.
+Kubb runs on one shared, typed hook emitter, and every phase of a build fires a `kubb:*` hook on it. Plugins listen through their `hooks` map; outside code listens through `kubb.hooks`. The exception is `kubb:plugin:setup`, which only a plugin's own `hooks` map receives.
 
 ## Signature / Usage
 
@@ -27,26 +27,26 @@ Every hook name and payload lives in the `KubbHooks` type. Handlers can be async
 
 ## Generation run
 
-These wrap a full run. A direct `.build()` or `.safeBuild()` does not fire them.
+These hooks wrap a full run. `.generate()` fires the `generation` and `setup` hooks, and the CLI adds the `lifecycle` pair around all configs. A direct `.build()` or `.safeBuild()` fires none of them.
 
 | Hook | Payload | When it fires |
 | --- | --- | --- |
-| `kubb:lifecycle:start` | `{ version }` | The bundler plugin starts, before anything else |
+| `kubb:lifecycle:start` | `{ version }` | The CLI starts `kubb generate`, before the first config runs. `.generate()` and the bundler plugin do not fire it |
 | `kubb:generation:start` | `{ config }` | A run begins, before setup |
 | `kubb:setup:start` | none | Before the driver and storage are initialized |
 | `kubb:setup:end` | none | After setup, before the build pipeline |
 | `kubb:generation:end` | `{ config, storage, status, diagnostics, filesCreated, hrStart }` | The run finishes, after the output passes |
-| `kubb:generation:summary` | `KubbGenerationSummaryContext` | After the run, with the summary the reporters render |
-| `kubb:lifecycle:end` | none | The bundler plugin is done |
+| `kubb:generation:summary` | `{ duration, fileCount, failedPlugins, status }` | Right after `kubb:generation:end`, with the run's totals. `duration` is in milliseconds |
+| `kubb:lifecycle:end` | none | The CLI is done, after the last config |
 
 ## Build pipeline
 
-Fired by `.build()` and `.safeBuild()` too.
+The pipeline fires these hooks, so `.build()` and `.safeBuild()` fire them too.
 
 | Hook | Payload | When it fires |
 | --- | --- | --- |
-| `kubb:plugin:setup` | `KubbPluginSetupContext` | Once per plugin during setup, to register generators, resolvers, macros, and options |
-| `kubb:build:start` | `{ config, adapter, meta, getPlugin, files, upsertFile }` | The AST is ready, before plugins run. Skipped when no adapter parsed input |
+| `kubb:plugin:setup` | `KubbPluginSetupContext` | Once per plugin, after its `setup` and before `kubb:build:start`, to register generators, resolvers, macros, and options. Kubb calls the handler in the plugin's `hooks` map directly, so a `kubb.hooks` listener never receives it |
+| `kubb:build:start` | `{ config, adapter, meta, nodeCounts, getPlugin, files, upsertFile }` | The AST is ready, before plugins run. Skipped when no adapter parsed input |
 | `kubb:plugin:start` | `{ plugin }` | Before a plugin's generators run |
 | `kubb:generate:schema` | `(node, ctx)` | For each schema node the adapter produced |
 | `kubb:generate:operation` | `(node, ctx)` | For each operation node |
@@ -54,13 +54,14 @@ Fired by `.build()` and `.safeBuild()` too.
 | `kubb:plugin:end` | `{ plugin, duration, success, error, config, files, upsertFile }` | After a plugin finishes, with its timing and a file snapshot |
 | `kubb:plugins:end` | `{ config, files, upsertFile }` | After every plugin has generated, before files hit disk. The spot to add aggregate files like a barrel |
 | `kubb:files:processing:start` | `{ files }` | Before the batch of generated files is written |
-| `kubb:files:processing:update` | `{ files }` | As files are written. `files` holds progress records (`{ processed, total, percentage, source?, file, config }`), not the `FileNode` array |
-| `kubb:files:processing:end` | `{ files }` | After the batch is written |
+| `kubb:files:processing:update` | `{ files }` | As files are written. `files` holds progress records (`{ processed, total, percentage, file, config }`), not the `FileNode` array the `:start` and `:end` variants carry. The source is on `kubb:file:processed` |
+| `kubb:file:processed` | `{ file, source, stored }` | After each file is parsed and handed to the storage, with the source before any output pass rewrites it. `stored` is what the storage held at that path before the write, or `null` when the path was missing or `output.clean` emptied its folder |
+| `kubb:files:processing:end` | `{ files, unchanged }` | After the batch is written. `unchanged` lists the paths the storage already held with the same content |
 | `kubb:build:end` | `{ files, config, outputDir }` | After every file is written |
 
 ## Output passes
 
-Run after a successful build, only during a full generation run.
+These hooks fire after a build without errors, only during a full generation run with the `fsStorage` backend. Each group fires only when the config sets `output.format`, `output.lint`, or `output.postGenerate`.
 
 | Hook | Payload | When it fires |
 | --- | --- | --- |
@@ -76,19 +77,20 @@ Run after a successful build, only during a full generation run.
 
 ## Messaging
 
-Carry log messages and diagnostics; can fire at any point.
+These hooks carry log messages and diagnostics, and can fire at any point.
 
 | Hook | Payload | When it fires |
 | --- | --- | --- |
 | `kubb:info` | `{ message, info }` | An informational message |
 | `kubb:success` | `{ message, info }` | A step completed successfully |
 | `kubb:warn` | `{ message, info }` | A non-fatal problem |
-| `kubb:error` | `{ error, meta }` | An unstructured error, so its stack survives |
-| `kubb:diagnostic` | `{ diagnostic }` | A structured diagnostic (warning, info, or an update notice) |
+| `kubb:error` | `{ error, meta }` | An error without a diagnostic code, so its stack survives |
+| `kubb:diagnostic` | `{ diagnostic }` | A structured diagnostic: a coded error, warning, or info, or an update notice |
 
 ## Notes
 
-- 出典: https://kubb.dev/docs/5.x/reference/kit/hooks （kubb@5.11.0 の docs/5.x/reference/kit/hooks.md）
+- Source: https://kubb.dev/docs/5.x/reference/kit/hooks (docs/5.x/reference/kit/hooks.md at kubb@5.20.0, retrieved 2026-11-14)
+- Migration (5.11 → 5.20): the `kubb:file:processed` hook was added in v5.15.3 (#4517), which also prints only the start and end of the write in plain output; `kubb:files:processing:update` records no longer carry `source`, and `kubb:files:processing:end` carries `unchanged` (docs diff 5.11 → 5.20).
 
 ## Related
 

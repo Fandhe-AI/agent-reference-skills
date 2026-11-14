@@ -35,7 +35,7 @@
 | Name | Type | Description |
 | --- | --- | --- |
 | `$schema` | `string` | `https://kubb.dev/schemas/kubb-extension.json`. Only editors read it. |
-| `kind` (required) | `'plugin' \| 'adapter' \| 'parser'` | What the package extends. `kubb add` adds a `plugin` to the config and prints the code for an `adapter` or `parser`. |
+| `kind` (required) | `'plugin' \| 'adapter' \| 'parser'` | What the package extends. `kubb add` adds a `plugin` or `parser` to the config and prints the code for an `adapter`. |
 | `name` (required) | `string` | The extension's `meta.name`. Skipped when not shaped like an npm package name (lowercase letters, digits, `.`, `_`, `~`, `-`, optional `@scope/`). |
 | `export` (required) | `string` | Factory export users call in `kubb.config.ts`, such as `pluginZod`. Must be a JavaScript identifier. |
 | `displayName` (required) | `string` | Human-readable name. |
@@ -56,7 +56,7 @@
 
 | Reader | Checks | On failure |
 | --- | --- | --- |
-| `kubb add`, `kubb init`, `kubb update`, `kubb list`, Studio agent | Required fields set and well formed; each `maintainers` entry has a `name`; `dependencies` entries are extension names; `role` is `client` or `consumer`; `compatibility` holds only `kubb` and `node` string ranges; `options` is an array. | The manifest is skipped. |
+| `kubb add`, `kubb init`, `kubb update`, `kubb list`, Studio agent | Required fields set and well formed; each `maintainers` entry has a `name`; `dependencies` entries are extension names; `role` is `client` or `consumer`; `compatibility` holds only `kubb` and `node` string ranges; each `options` entry has a `key`, a `label`, a known `type`, and a non-empty `path` without `__proto__`, `constructor`, or `prototype`; option keys are unique, every `select` has `choices`, and a `select` default equals one of them. | The manifest is skipped. |
 | The registry | JSON Schema, unique option keys, `choices` on every `select`, and a `select` default equal to one of its choices. | The review pull request lists the problem, and the weekly bump keeps the previous pin. |
 
 ## Import `compatibility` into `meta`
@@ -79,7 +79,7 @@ export const pluginExample = defineExtension({
 
 ## Notes
 
-- 出典: https://kubb.dev/docs/5.x/reference/kit/manifest （kubb@5.11.0 の docs/5.x/reference/kit/manifest.md）
+- Source: https://kubb.dev/docs/5.x/reference/kit/manifest (docs/5.x/reference/kit/manifest.md at kubb@5.20.0, retrieved 2026-11-14)
 - Readers ignore unknown top-level keys.
 - Generation does not read the manifest; at runtime Kubb reads the extension's `meta`. Import only `compatibility` so a bundler leaves the rest (including `options`) out of your build.
 - `kubb add` and `kubb update` check `compatibility` before installing.

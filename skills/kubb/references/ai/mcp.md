@@ -1,6 +1,6 @@
 # MCP サーバーのセットアップ
 
-Kubb が同梱する MCP（Model Context Protocol）サーバー。任意の MCP 対応クライアントにコード生成ツール（`generate` / `validate` / `init`）を公開する。接続後はエディタや Agent がチャットから Kubb の生成・スキーマ検証・設定のスキャフォールドを実行できる（Kubb 5.11.0 / docs 5.x ai/mcp に準拠）。
+Kubb が同梱する MCP（Model Context Protocol）サーバー。任意の MCP 対応クライアントにコード生成ツール（`generate` / `validate` / `init`）を公開する。接続後はエディタや Agent がチャットから Kubb の生成・スキーマ検証・設定のスキャフォールドを実行できる（Kubb 5.20.0 / docs 5.x ai/mcp に準拠）。
 
 ## Signature / Usage
 
@@ -54,7 +54,7 @@ VS Code は `servers` キーを使う。ワークスペースの `.vscode/mcp.js
 
 ## 作業ディレクトリ
 
-サーバーはクライアントが起動したフォルダー、続いて親フォルダーで `kubb.config.*` または `.kubbrc.*` を探し、そのフォルダー外を指す `config` パスを拒否する。Claude Code は `claude` を実行したフォルダーで起動する。`generate` が `No config file found` を返す場合は別フォルダーで起動されている。Claude Code などは `cwd` キーを無視するため、コマンド内でプロジェクトへ移動する（macOS / Linux）:
+サーバーはクライアントが起動したフォルダー、続いて親フォルダーで `kubb.config.*` または `.kubbrc.*` を探し、サーバーは起動したフォルダー外を指す `config` パスを拒否する。Claude Code は `claude` を実行したフォルダーで起動する。`generate` が `No config file found` を返す場合は別フォルダーで起動されている。Claude Code などは `cwd` キーを無視するため、コマンド内でプロジェクトへ移動する（macOS / Linux）:
 
 ```json
 {
@@ -69,6 +69,7 @@ VS Code は `servers` キーを使う。ワークスペースの `.vscode/mcp.js
 
 ## Notes
 
+- Source: https://kubb.dev/docs/5.x/ai/mcp （kubb@5.20.0 の docs/5.x/ai/mcp.md、取得日 2026-11-14）
 - 組み込み MCP サーバーには Kubb v5 以降が必要
 - 本ページはエディタ / Agent から Kubb ツールを MCP 経由で利用する手順。OpenAPI 仕様から MCP サーバーを**生成する**場合は `@kubb/plugin-mcp` を使う（[plugin-mcp.md](../plugins/plugin-mcp.md)）
 - 既存の `helpers/mcp.md`（`@kubb/mcp` パッケージ）とは別物ではなく、同じ `kubb mcp` サーバーの単体パッケージ版。ここは docs 5.x のクライアント設定手順

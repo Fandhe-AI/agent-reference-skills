@@ -1,6 +1,6 @@
 # Printer の上書き
 
-Printer はパイプラインの終端ではなく、Plugin の Generator 内部で動作する。[Adapter](../adapters/adapter-oas.md) が仕様を [AST](./ast.md) に変換し、[Macro](./macros.md) がノードを書き換え、Printer が各 schema ノードを 1 つの出力対象向けのコードへ変換する。`@kubb/plugin-ts` は TypeScript の型ノードを印字し、`@kubb/plugin-zod` は Zod 式を印字し、`@kubb/plugin-faker` は Faker 式を印字する。組み立てられたファイルをソーステキストへ変換するのは依然として Parser の役目で、その後 Storage がディスクへ書き込み、CLI の formatter・linter・`postGenerate` コマンドが続く。
+Printer はパイプラインの終端ではなく、Plugin の Generator 内部で動作する。[Adapter](../adapters/adapter-oas.md) が仕様を [AST](./ast.md) に変換し、[Macro](./macros.md) がノードを書き換え、Printer が各 schema ノードを 1 つの出力対象向けのコードへ変換する。`@kubb/plugin-ts` は TypeScript の型文字列を印字し、`@kubb/plugin-zod` は Zod 式を印字し、`@kubb/plugin-faker` は Faker 式を印字する。組み立てられたファイルをソーステキストへ変換するのは依然として Parser の役目で、その後 Storage がディスクへ書き込み、CLI の formatter・linter・`postGenerate` コマンドが続く。
 
 これら 3 つの Plugin は `printer.nodes` オプションとして、schema 型からハンドラーへの部分マップを公開する。ハンドラーは 1 つの schema 型についての標準出力を置き換えるため、`date` schema を JavaScript の `Date` オブジェクトとして印字したり、Plugin をフォークせずに全ての Zod object へ `.openapi(...)` を追加したりできる。
 
@@ -18,22 +18,23 @@ type PrinterNodes = Partial<{
 
 ## TypeScript の型
 
-`@kubb/plugin-ts` は TypeScript の AST ノードを構築するため、ハンドラーはコンパイラのファクトリで作成した `ts.TypeNode` を返す。この例は `date` schema を `string` の代わりに JavaScript の `Date` オブジェクトとして印字する。
+`@kubb/plugin-ts` は型文字列を印字するため、ハンドラーは TypeScript の型を文字列で返す。この例は `date` schema を `string` の代わりに JavaScript の `Date` オブジェクトとして印字する。
 
 ```typescript
-import ts from 'typescript'
 import { pluginTs } from '@kubb/plugin-ts'
 
 pluginTs({
   printer: {
     nodes: {
       date() {
-        return ts.factory.createTypeReferenceNode('Date', [])
+        return 'Date'
       },
     },
   },
 })
 ```
+
+ハンドラー内では `this.transform(node)` がネストした schema の印字済みの型を文字列で返す。その結果を `ts.factory` に渡していたハンドラーは動かなくなるため、型を文字列として組み立てる。`typescript` 5 / 6 や `@typescript/typescript6` のコンパイラノードを返すハンドラーは引き続き動くが、その形式は非推奨で次のメジャーで削除される。
 
 ## Zod schema
 
@@ -69,7 +70,7 @@ pluginZod({
 })
 ```
 
-Zod のハンドラーは `this.options.direction` も読める。レスポンス schema の印字中は `'decode'`、リクエストボディとパラメーターの印字中は `'encode'`。方向ごとに異なる式を返すと、Plugin はそのノードを双方向変換として扱い、リクエストボディが解決する `${name}InputSchema` バリアントも出力する。
+Zod のハンドラーは `this.options.direction` も読める。レスポンス schema の印字中は `'decode'`、リクエストボディとパラメーターの印字中は `'encode'`。方向ごとに異なる式を返すと、Plugin はそのノードを双方向変換として扱い、リクエストボディが解決する `${name}InputSchema` バリアントも出力する。handlers オブジェクトは `@kubb/plugin-zod` の `PrinterZodNodes` で型付けする（inline の `printer.nodes` 型は `direction` を持たない Zod Mini も含むため）。詳細は plugin-zod の guides/customization「Encode a custom type on requests」。
 
 ## Faker モック
 
@@ -99,7 +100,8 @@ Macro はノードそのものを、印字される前に書き換える。Macro
 
 ## Notes
 
-- Synced with docs 5.x how-to/printers ("Customize generated code with printers", Kubb 5.11.0). Printer handler context and signatures are in the AST reference ([ast.md](../kit/ast.md), "Printer handlers and context")
+- Source: https://kubb.dev/docs/5.x/how-to/printers (docs/5.x/how-to/printers.md of kubb@5.20.0, retrieved 2026-11-14). Printer handler context and signatures are in the AST reference ([ast.md](../kit/ast.md), "Printer handlers and context")
+- Migration (5.11 → 5.20): `@kubb/plugin-ts` printer handlers now return the type as a string (for example `return 'Date'`) instead of a `ts.TypeNode`. Returning compiler nodes is deprecated and needs `typescript` installed (kubb changelog v5.13.0), emits a `DeprecationWarning` since v5.15.2, and is removed in the next major; handlers that pass `this.transform(node)` into `ts.factory` break because it now returns a string (docs diff 5.11 → 5.20)
 - Pass overrides through `createPrinter`'s `overrides` field rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler (AST reference)
 - Macro との使い分けは上記「Printer の上書きか Macro か」を参照。命名・パスの変更は [resolver-customization.md](./resolver-customization.md) を使う
 

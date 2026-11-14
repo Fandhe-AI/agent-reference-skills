@@ -4,7 +4,7 @@ description: >
   Kubb (OpenAPI / Swagger コードジェネレーター) リファレンス。
   kubb.config.ts、TypeScript 型・TanStack Query フック・Zod・Faker・MSW モック生成プラグイン、
   Fetch / Axios / SWR / React Query クライアント、plugin-client (自前クライアント)。
-  CLI 8 コマンド、拡張レジストリ (kubb add)、Kubb Studio、Kit (kubb/kit)、
+  CLI 9 コマンド、拡張レジストリ (kubb add)、Kubb Studio、Kit (kubb/kit)、
   parser-ts / parser-md、adapter-oas、diagnostics、プラグインベース、モノレポ対応。
   TanStack Query 本体の API は tanstack-query スキル。
 user-invocable: false
@@ -15,7 +15,7 @@ user-invocable: false
 Kubb（kubb.dev）の `/docs/5.x` と `/extensions/kubb-labs/*` のドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象 Kubb v5 stable — コア（kubb / @kubb/core / adapter-oas / parser-ts / parser-md / plugin-barrel / unplugin-kubb / @kubb/mcp）は 5.11.0（kubb-labs/kubb タグ `kubb@5.11.0`、取得日 2026-10-16。5.20.0 への追従は後続 PR で実施予定）。プラグインは kubb-labs/plugins からパッケージ単位で pin（plugin-ts 5.5.1、client 6.0.1、fetch 6.0.1、axios 6.0.1、zod 5.9.1、faker 5.4.1、msw 6.2.1、react-query 5.10.1、vue-query 5.10.1、swr 5.9.1、mcp 5.5.1、cypress 5.3.1、redoc 5.2.2、取得日 2026-11-14）。client / fetch / axios 6 系は Kubb 5.18.4 以降が必要。examples はタグ `@kubb/plugin-client@6.0.1`（commit `8e70d90`）。plugin-solid-query / plugin-svelte-query / plugin-oas は v4 系（4.39.3）のままで v5 リリースなし。
+対象 Kubb v5 stable — kubb / @kubb/core / adapter-oas / parser-ts / parser-md / plugin-barrel / unplugin-kubb / @kubb/mcp 5.20.0（kubb-labs/kubb タグ `kubb@5.20.0`、commit `b11fbf7`）。プラグインは kubb-labs/plugins からパッケージ単位で pin（plugin-ts 5.5.1、client 6.0.1、fetch 6.0.1、axios 6.0.1、zod 5.9.1、faker 5.4.1、msw 6.2.1、react-query 5.10.1、vue-query 5.10.1、swr 5.9.1、mcp 5.5.1、cypress 5.3.1、redoc 5.2.2）。取得日 2026-11-14。examples はタグ `@kubb/plugin-client@6.0.1`（commit `8e70d90`）。plugin-solid-query / plugin-svelte-query / plugin-oas は v4 系（4.39.3）のままで v5 リリースなし。
 
 ## ディレクトリ構成
 
@@ -67,7 +67,7 @@ skills/kubb/
       README.md
       parser-md.md
       parser-ts.md
-    kit/                      # 13 ページ（kubb/kit API 概念別）
+    kit/                      # 12 ページ（kubb/kit API 概念別）
       README.md
       adapters.md
       ast.md
@@ -81,8 +81,7 @@ skills/kubb/
       plugins.md
       resolvers.md
       storage.md
-      testing.md
-    commands/                 # CLI 8 コマンド
+    commands/                 # CLI 9 コマンド
       README.md
       init.md
       generate.md
@@ -92,6 +91,7 @@ skills/kubb/
       add.md
       update.md
       list.md
+      remove.md
     integrations/
       README.md
       overview.md
@@ -99,6 +99,7 @@ skills/kubb/
       ci.md
       github-actions.md
       gitlab.md
+      openapi-import.md
     reference/
       README.md
       configuration.md
@@ -106,7 +107,6 @@ skills/kubb/
       diagnostics.md
       kit-api.md
       jsx.md
-      serialization.md
       registry.md
       github-actions.md
     helpers/
@@ -202,10 +202,10 @@ skills/kubb/
 | プラグイン別 how-to（認証・baseURL・interceptors・SSE・transport・エラー処理・シリアライズ・バリデーション） | plugin-guides | [references/plugin-guides/README.md](references/plugin-guides/README.md) |
 | OpenAPI 仕様のパース・アダプター（@kubb/adapter-oas） | adapters | [references/adapters/README.md](references/adapters/README.md) |
 | Kubb の AST から TypeScript / Markdown ソースへの変換（parser-ts / parser-md） | parsers | [references/parsers/README.md](references/parsers/README.md) |
-| Kit API（`kubb/kit`）の概念別リファレンス（plugins / generators / resolvers / hooks / storage / testing） | kit | [references/kit/README.md](references/kit/README.md) |
-| ビルド失敗時の診断メッセージ、JSX・シリアライズ仕様 | reference | [references/reference/README.md](references/reference/README.md) |
-| CLI 各コマンド（init / generate / validate / mcp / studio / add / update / list） | commands | [references/commands/README.md](references/commands/README.md) |
-| Kubb Studio、CI スナップショット、GitHub Actions / GitLab 連携 | integrations | [references/integrations/README.md](references/integrations/README.md) |
+| Kit API（`kubb/kit`）の概念別リファレンス（plugins / generators / resolvers / hooks / storage） | kit | [references/kit/README.md](references/kit/README.md) |
+| ビルド失敗時の診断メッセージ、JSX 仕様（シリアライズ契約は plugin-guides の fetch- / axios-serialization） | reference | [references/reference/README.md](references/reference/README.md) |
+| CLI 各コマンド（init / generate / validate / mcp / studio / add / update / list / remove） | commands | [references/commands/README.md](references/commands/README.md) |
+| Kubb Studio、CI スナップショット、GitHub Actions / GitLab 連携、`*.openapi.yaml` の import（openapi-import） | integrations | [references/integrations/README.md](references/integrations/README.md) |
 | 拡張レジストリ（`kubb add`）の利用・拡張の登録申請 | reference / guides | [references/reference/README.md](references/reference/README.md)（registry）、[references/guides/README.md](references/guides/README.md)（submit-to-the-registry） |
 | CLI ヘルパー概要、MCP サーバー統合、Vite / webpack / Rollup / esbuild / Rolldown / Rspack / Farm / Nuxt / Astro 統合 | helpers | [references/helpers/README.md](references/helpers/README.md) |
 | Claude Code / Claude Desktop 連携、Context7、llms.txt、AI アシスタントからの MCP サーバー利用 | ai | [references/ai/README.md](references/ai/README.md) |

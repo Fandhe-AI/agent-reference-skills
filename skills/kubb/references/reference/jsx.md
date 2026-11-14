@@ -89,10 +89,17 @@ const files = renderer.files
 | Prop | Type | Description |
 |------|------|-------------|
 | `name?` | `string \| null` | 重複排除と barrel 生成のための識別子 |
-| `isExportable?` | `boolean \| null` | `export` キーワードを付ける |
+| `isExportable?` | `boolean \| null` | source を export 宣言として扱う。source テキスト自体には `export` キーワードが別途必要 |
 | `isIndexable?` | `boolean \| null` | barrel / index 生成に含める |
 | `isTypeOnly?` | `boolean \| null` | type-only export として扱う |
+| `inline?` | `{ expression: string } \| null` | import 側のファイルが source を import せず取り込む |
 | `children?` | `KubbReactNode` | ブロックの source テキスト |
+
+```tsx
+<File.Source name="AddPetStatus200" isTypeOnly isExportable inline={{ expression: 'Pet' }}>
+  {`export type AddPetStatus200 = Pet`}
+</File.Source>
+```
 
 ### File.Import
 
@@ -254,9 +261,10 @@ await renderer.render(
 - 設定後、plugin 内の `.tsx` は `jsx-runtime` / `jsx-dev-runtime` を `kubb/jsx` から自動解決する
 - `Type` の `name` が大文字で始まらないとコンポーネントが throw する
 - JavaScript コンポーネントは `File.Source` 内にネストして `.ts` ファイルへ書き出す
-- 出典: https://kubb.dev/docs/5.x/reference/jsx （kubb@5.11.0 の docs/5.x/reference/jsx.md）
+- `inline.expression` は宣言の右辺。全 source が inline のファイルは書き出されず、import 側のファイルは名前の代わりに式と必要な import を受け取る。取り込み方は parser の `inline` メンバーが決める
+- Source: https://kubb.dev/docs/5.x/reference/jsx (docs/5.x/reference/jsx.md of kubb@5.20.0, retrieved 2026-11-14)
+- Added since 5.11: `File.Source` gained the `inline` prop (inline sources, changelog v5.14.0); the official `isExportable` description now states that the source text still needs its own `export` keyword (docs diff 5.11 → 5.20)
 
 ## Related
 
 - [kit-api](./kit-api.md)
-- [serialization](./serialization.md)

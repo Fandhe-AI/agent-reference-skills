@@ -23,7 +23,7 @@ pluginTs({
 | `output` | `Output` | plugin ごとに設定（例: `@kubb/plugin-ts` は `{ path: 'types', barrel: { type: 'named' } }`） | ファイルの出力先とエクスポート方法。渡した `output` は plugin 既定を丸ごと置換 |
 | `output.path` | `string` | plugin ごと | 出力フォルダ（global の `output.path` 基準）。`output` 設定時は必須。単一ファイルは拡張子付き名（`'types.ts'`） |
 | `output.mode` | `'directory' \| 'file'` | `output.path` に拡張子があれば `'file'`、なければ `'directory'` | ファイルへの集約方法 |
-| `output.barrel` | `{ type: 'all' \| 'named', nested?: boolean } \| false` | plugin 既定の `{ type: 'named' }`、`barrel` なしで独自 `output` を渡すと `false` | `index.ts` の re-export 方式 |
+| `output.barrel` | `{ type: 'all' \| 'named', nested?: boolean, namespace?: boolean } \| false` | plugin 既定の `{ type: 'named' }`、`barrel` なしで独自 `output` を渡すと `false` | `index.ts` の re-export 方式 |
 | `output.banner` | `string \| ((meta: BannerMeta) => string)` | — | 各生成ファイルの先頭テキスト |
 | `output.footer` | `string \| ((meta: BannerMeta) => string)` | — | 各生成ファイルの末尾テキスト |
 | `group` | `{ type: 'tag' \| 'path', name?: (context: { group: string }) => string }` | グルーピングなし | `{output.path}/{groupName}/` のサブフォルダに分割 |
@@ -47,6 +47,7 @@ pluginTs({
 - `'all'`: `export *`
 - `false`: この plugin の barrel 生成をスキップし、root barrel からも除外
 - `nested: true`（例 `{ type: 'named', nested: true }`）: 各サブディレクトリに直下のみ re-export する `index.ts` を書く。`defineConfig` の root `output.barrel` に `nested` はない
+- `namespace: true`: 直下の各 group を名前付き namespace として、個別の export に加えて公開する（nested barrel を有効にする）。tag で group 化した fetch client は `group.name` で `PetService` のような名前を作り、client barrel から `import { PetService }` できる。query hooks / options を生成するときは fetch の `sdk` を未設定にする。詳細は `@kubb/plugin-barrel` の options ページ（`plugin-barrel.md`）
 - 解決順: plugin の `output.barrel` → `config.output.barrel` → `false`
 
 ```typescript
@@ -70,6 +71,8 @@ pluginFetch({
 
 ### group
 
+tag の group 化は `output.barrel.namespace` と組み合わせると、各 group を名前付き service として公開しつつ個別の operation import も残せる。
+
 ```typescript
 pluginTs({ group: { type: 'tag' } }) // src/gen/types/pet/, src/gen/types/store/, ...
 ```
@@ -85,13 +88,17 @@ pluginTs({
 
 ### include / exclude
 
-各エントリは `tag` / `operationId` / `path` / `method` / `contentType` / `schemaName` を `pattern`（string または `RegExp`）で絞る。string は `new RegExp(pattern)` でコンパイルされ完全一致ではない（`'pet'` は `'petType'` / `'superpet'` にも一致。完全一致は `'^pet$'`）。`type: 'method'` の string は大文字の HTTP メソッド（`'GET'`）。`extension` エントリは source operation の vendor extension（`x-*` キー、任意の `value` は厳密等価）で operation を選ぶ。schema には適用されない。
+各エントリは `tag` / `operationId` / `path` / `method` / `contentType` / `schemaName` を `pattern`（string または `RegExp`）で絞る。string は `new RegExp(pattern)` でコンパイルされ完全一致ではない（`'pet'` は `'petType'` / `'superpet'` にも一致。完全一致は `'^pet$'`）。`type: 'method'` は大文字・小文字どちらでも書け、Kubb は両形に対して照合する（`'GET'` / `'get'` / `/GET/` / `/get/` はいずれも GET operation に一致）。`extension` エントリは source operation の vendor extension（`x-*` キー、任意の `value` は厳密等価）で operation を選ぶ。schema には適用されない。
 
 ```typescript
 export type Include =
   | {
-      type: 'tag' | 'operationId' | 'path' | 'method' | 'contentType' | 'schemaName'
+      type: 'tag' | 'operationId' | 'path' | 'contentType' | 'schemaName'
       pattern: string | RegExp
+    }
+  | {
+      type: 'method'
+      pattern: HttpMethod | RegExp
     }
   | {
       type: 'extension'
@@ -121,11 +128,11 @@ pluginTs({
 
 ### override
 
-各エントリは `include` と同じフィールドに加え、`override` 以外の任意の plugin オプションを受ける `options` を持つ（ネスト不可）。上から順に評価し、最初の一致が plugin 既定にマージされる。後続は積み重ならない。
+各エントリは `include` と同じフィールドに加え、`override` 以外の任意の plugin オプションを受ける `options` を持つ（ネスト不可）。上から順に評価し、最初の一致が plugin 既定にマージされる。後続は積み重ならない。マージは浅く、`options` は解決済みの値を持つため、オブジェクト型オプションは plugin の値を丸ごと置換する。`mode` なしの `output` は plugin 自身の `output` と同様に `output.path` から決まる。`enum` など他のオブジェクトは全フィールドを指定する。
 
 ```typescript
 export type Override = Include & {
-  options: Omit<Partial<Options>, 'override'>
+  options: Omit<Partial<ResolvedOptions>, 'override'>
 }
 ```
 
@@ -135,7 +142,10 @@ pluginTs({
     {
       type: 'tag',
       pattern: 'admin',
-      options: { output: { path: 'admin' }, enum: { type: 'enum' } },
+      options: {
+        output: { path: 'admin' },
+        enum: { type: 'enum', constCasing: 'camelCase', typeSuffix: 'Key', keyCasing: 'none' },
+      },
     },
   ],
 })
@@ -160,6 +170,7 @@ type ResolverPatch = {
 pluginTs({
   resolver: {
     name(name) {
+      // the default camelCases, so `Pet` becomes `petModel`
       return `${this.default.name(name)}Model`
     },
   },
@@ -168,13 +179,13 @@ pluginTs({
 
 ### macros
 
-各 macro のコールバック（`schema` / `operation` 等）はノードとコンテキストを受け取り、置換ノードか、そのままにする `undefined` を返す。macro は順に実行され後続は先行の出力を見る。client plugin（`@kubb/plugin-fetch` / `@kubb/plugin-axios` / `@kubb/plugin-client`）は組み込み macro を先に、ユーザー macro を後に実行する。組み込み `macroDiscriminatorEnum` / `macroEnumName` / `macroRenameSchema` / `macroSimplifyUnion` は `kubb/kit` から export される。
+各 macro のコールバック（`schema` / `operation` 等）はノードとコンテキストを受け取り、置換ノードか、そのままにする `undefined` を返す。macro は順に実行され後続は先行の出力を見る。client plugin（`@kubb/plugin-fetch` / `@kubb/plugin-axios` / `@kubb/plugin-client`）は組み込み macro を先に、ユーザー macro を後に実行する。組み込み `macroDedupeUnion` / `macroDiscriminatorEnum` / `macroEnumName` は `kubb/kit` から export される。
 
 ```typescript
-import { ast } from 'kubb/kit'
+import { defineMacro } from 'kubb/kit'
 import { pluginTs } from '@kubb/plugin-ts'
 
-const macroUntagged = ast.defineMacro({
+const macroUntagged = defineMacro({
   name: 'untagged',
   operation(node) {
     return node.tags?.length ? undefined : { ...node, tags: ['untagged'] }
@@ -189,8 +200,9 @@ pluginTs({ macros: [macroUntagged] })
 - `@kubb/plugin-barrel` は例外で引数を取らず、`output.barrel` で設定する。`@kubb/plugin-redoc` は `output.path` のみ受け付ける
 - `output` を自前で渡すときは `barrel` も再指定する。省略すると `config.output.barrel` にフォールバックする
 - `group` はディレクトリ出力が前提。`output.mode: 'file'` との併用は `KUBB_INVALID_PLUGIN_OPTIONS` でビルド停止
-- client plugin（`@kubb/plugin-fetch` / `@kubb/plugin-axios`）が operation を `exclude` すると、それを土台とする plugin（`@kubb/plugin-react-query` / `@kubb/plugin-vue-query` / `@kubb/plugin-swr` / `@kubb/plugin-mcp`）も同じ operation をスキップする。`returnType` / `output` / `group` の `override` も同様に追従する
-- 出典: https://kubb.dev/docs/5.x/reference/plugin-options （kubb@5.11.0 の docs/5.x/reference/plugin-options.md）
+- client plugin（`@kubb/plugin-fetch` / `@kubb/plugin-axios` / `@kubb/plugin-client`）が operation を `exclude` すると、それを土台とする plugin（`@kubb/plugin-react-query` / `@kubb/plugin-vue-query` / `@kubb/plugin-swr` / `@kubb/plugin-mcp`）も同じ operation をスキップする。`returnType` / `output` / `group` の `override` も同様に追従する
+- Source: https://kubb.dev/docs/5.x/reference/plugin-options (docs/5.x/reference/plugin-options.md of kubb@5.20.0, retrieved 2026-11-14)
+- Migration (5.11 → 5.20): `macroSimplifyUnion` was renamed to `macroDedupeUnion` in 5.16.0 and the old name stays as a deprecated alias until the next major (changelog v5.16.0 / v5.16.1); `macroRenameSchema` was removed from `kubb/kit` in 5.15.2 (copy its source from the macros guide); `ast.defineMacro` is deprecated in 5.18.6 in favor of `defineMacro` from `kubb/kit` (changelog v5.18.6); `output.barrel.namespace` was added in 5.15.0 (changelog v5.15.0)
 
 ## Related
 

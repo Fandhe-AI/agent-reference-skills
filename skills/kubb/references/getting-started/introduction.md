@@ -1,6 +1,6 @@
 # Introduction
 
-Kubb は API 仕様から TypeScript の型・API クライアント・クエリフック・バリデーター・モックを生成するプラグインベースのコードジェネレーター（Kubb 5.11.0 / docs 5.x に準拠）。
+Kubb は API 仕様から TypeScript の型・API クライアント・クエリフック・バリデーター・モックを生成するプラグインベースのコードジェネレーター（Kubb 5.20.0 / docs 5.x に準拠）。
 
 ## 概要
 
@@ -20,11 +20,11 @@ Kubb generates code from API specifications: TypeScript types, API clients, quer
 
 ## 対応 OpenAPI バージョン
 
-デフォルトの OpenAPI アダプター（`adapterOas`）は OpenAPI 2.0 / 3.0 / 3.1 に対応。
+デフォルトの OpenAPI アダプター（`adapterOas`）は OpenAPI 2.0 / 3.0 / 3.1 / 3.2 を読み込む。3.2 のドキュメントはまだ検証しない。
 
 ## システム要件
 
-- **Node.js:** 22.12 以上
+- **Node.js:** 22.22 以上
 
 ## クイックスタート
 
@@ -78,6 +78,8 @@ npx kubb generate
 
 ## Notes
 
+- Source: https://kubb.dev/docs/5.x/introduction （kubb@5.20.0 の docs/5.x/introduction.md、取得日 2026-11-14）
+- Migration (5.11 → 5.20): the OpenAPI adapter reads OpenAPI 3.2 in addition to 2.0 / 3.0 / 3.1 and does not validate a 3.2 document yet; the changelog records 3.2 `query` operations (#4285), 3.2 streamed-response fields (#4541) and 3.0 / 3.1 / 3.2 fields previously skipped (#4561). The Node.js requirement is 22.22+ (5.13.0, #4426).
 - v5 で `@kubb/plugin-solid-query` と `@kubb/plugin-svelte-query` は削除され、代替は無い（最終版は 4.39.3）
 - `@kubb/plugin-oas` は `adapterOas`（`defineConfig` が既定で供給）に置き換えられた
 - `@kubb/plugin-client` の役割が変わり、ユーザーが書いたクライアントモジュールを呼ぶ型付き関数のジェネレーターになった。Axios / Fetch クライアントは `@kubb/plugin-axios` / `@kubb/plugin-fetch`

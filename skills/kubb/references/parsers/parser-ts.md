@@ -1,10 +1,10 @@
 # @kubb/parser-ts
 
-Kubb の AST（`FileNode`）を公式 TypeScript コンパイラで TypeScript ソースコードに変換するパーサー。全プラグインが実際の `.ts` / `.tsx` / `.js` / `.jsx` ファイルを書き出すための出力層。
+Kubb の AST（`FileNode`）を TypeScript ソースコードに変換するパーサー。全プラグインが実際の `.ts` / `.tsx` / `.js` / `.jsx` ファイルを書き出すための出力層。
 
 ## インストール
 
-`kubb` に同梱され、`kubb/config` の `defineConfig` が `parserTs` / `parserTsx` / `parserMd` を既定で登録するため追加インストールは不要。単体では次のとおり（安定版 5.11.0、`@beta` は不要）。
+`kubb` に同梱され、`kubb/config` の `defineConfig` が `parserTs` / `parserTsx` / `parserMd` を既定で登録するため追加インストールは不要。単体では次のとおり（`@beta` は不要）。
 
 ```bash
 npm install --save-dev @kubb/parser-ts
@@ -28,7 +28,7 @@ export default defineConfig({
 - `parserTs()` — `.ts` / `.js` ファイルを処理
 - `parserTsx()` — `.tsx` / `.jsx` ファイルを処理（同じオプション。`extension` マップは各自で読むため `.tsx` キーも設定する）
 
-`defineConfig` は既定で `parserTs` / `parserTsx` / `parserMd` を登録する（バンドラー連携は `parserTs` / `parserTsx` のみ）。`parsers` 配列を独自定義すると既定セットが丸ごと置き換わるため、プラグインが必要とするパーサーをすべて明示する。どのパーサーにも処理されないファイルは、import / export / banner / footer なしのソーステキストのみで書かれる。
+`defineConfig` もバンドラー連携も既定で `parserTs` / `parserTsx` / `parserMd` を登録する。`parsers` 配列を独自定義すると既定セットが丸ごと置き換わるため、プラグインが必要とするパーサーをすべて明示する。どのパーサーにも処理されないファイルは、import / export / banner / footer なしのソーステキストのみで書かれる。
 
 ## Options / Props
 
@@ -49,7 +49,9 @@ parserTsx({ extension: { '.tsx': '.js' } }) // parserTsx は独自の extension 
 - import パスの解決、import/export 文の記述、JSDoc の出力、`extension` オプションに基づく拡張子の書き換えを行う
 - プラグイン依存を持たないスタンドアロンパーサー。`defineConfig` が既定で登録する
 - `extension` は import 文中の相対モジュール指定子の文字列だけを変更する。実際のディスク上のファイル名には影響しない
-- 同じ `extension` マップがプラグインが出力にコピーするランタイムテンプレート（`@kubb/plugin-fetch` の `.kubb/` ファイルなど）にも適用され、出力全体が 1 つの規約に従う
+- 同じ `extension` マップがプラグインが出力にコピーするランタイムテンプレート（`@kubb/plugin-fetch` の `.kubb/` ファイルなど）にも適用される。それらの最上位 `import` / `export … from` 文も同じ規則で書き換えられ、出力全体が 1 つの規約に従う
+- Source: https://kubb.dev/extensions/kubb-labs/parser-ts (packages/parser-ts/docs/{overview,options}.md of kubb@5.20.0, retrieved 2026-11-14)
+- Migration (5.11 → 5.20): the 5.20 docs no longer say that `print` uses the official TypeScript printer, and bundler integrations now register `parserMd` as well (docs diff 5.11 → 5.20). Kubb dropped the TypeScript compiler dependency in 5.13.0: printing compiler nodes is deprecated and needs `typescript` installed (changelog v5.13.0)
 
 ## Related
 

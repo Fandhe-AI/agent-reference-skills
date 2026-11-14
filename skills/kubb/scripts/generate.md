@@ -1,6 +1,6 @@
 # generate
 
-OpenAPI 仕様からコードを生成するコマンド集（kubb 5.11.0 基準）。
+OpenAPI 仕様からコードを生成するコマンド集（kubb 5.20.0 基準）。
 
 ## 基本的なコード生成
 
@@ -32,7 +32,7 @@ npm run generate
 kubb generate ./petStore.yaml
 ```
 
-`[input]` にパスまたは URL を渡すと config の `input` を上書きする。
+`[input]` にパス・URL・git 入力（`git+<repo>#<ref>:<path>`）を渡すと config の `input` を上書きする。
 
 ## カスタム設定ファイルを使って生成
 
@@ -90,13 +90,13 @@ kubb generate --reporter cli,file
 
 | オプション | 短縮形 | デフォルト | 説明 |
 | --- | --- | --- | --- |
-| `[input]` | — | — | 仕様のパスまたは URL（config の `input` を上書き） |
+| `[input]` | — | — | 仕様のパス・URL・git 入力（config の `input` を上書き） |
 | `--config=<path>` | `-c` | — | config ファイルのパス |
 | `--log-level=<silent\|info\|verbose>` | `-l` | `info` | ログレベル |
 | `--silent` | `-s` | `false` | ログレベルを `silent` に固定 |
 | `--verbose` | — | `false` | ログレベルを `verbose` に固定 |
 | `--reporter=<cli\|json\|file\|html>` | — | `cli` | 使用するレポーター（カンマ区切り、短縮形なし） |
-| `--watch` | `-w` | `false` | 入力仕様の変更で再実行 |
+| `--watch` | `-w` | `false` | ローカルの入力ファイルの変更で再実行（URL / git 入力は 1 回のみ） |
 | `--dry-run` | — | `false` | 書き込み等を行わずプレビュー |
 
 v4 の camelCase 表記（`--logLevel` / `--dryRun`）は動作するが非推奨警告が出る。

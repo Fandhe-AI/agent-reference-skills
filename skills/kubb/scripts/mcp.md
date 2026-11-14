@@ -1,6 +1,6 @@
 # mcp
 
-AI アシスタント連携用の MCP（Model Context Protocol）サーバー操作コマンド（kubb 5.11.0 基準）。
+AI アシスタント連携用の MCP（Model Context Protocol）サーバー操作コマンド（kubb 5.20.0 基準）。
 
 > 公式ドキュメントは MCP 機能を「開発中のため破壊的変更あり」と注記している。
 
@@ -89,4 +89,4 @@ MCP クライアントの設定（例: `claude_desktop_config.json`）に追加�
 
 > `@kubb/mcp` の README は `init` に `plugins` パラメーターを挙げているが、公式 `kubb mcp` リファレンスの `init` 表には無い。差異があるため要確認。
 
-> `kubb agent start` は 5.11.0 のコマンド一覧に存在しないため収録しない。Studio 連携は `cli.md` の `kubb studio` を参照。
+> `kubb agent start` は 5.20.0 のコマンド一覧に存在しないため収録しない。Studio 連携は `cli.md` の `kubb studio` を参照。

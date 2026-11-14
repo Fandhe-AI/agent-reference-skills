@@ -14,7 +14,7 @@ const kubb = createKubb({
   plugins: [pluginTs(), pluginAxios()],
 })
 
-const { files, storage, diagnostics } = await kubb.safeBuild()
+const { files, diagnostics } = await kubb.safeBuild()
 
 if (Diagnostics.hasError(diagnostics)) {
   for (const diagnostic of diagnostics.filter(Diagnostics.isProblem)) {
@@ -29,13 +29,13 @@ for (const { plugin, duration } of diagnostics.filter(Diagnostics.isPerformance)
   console.log(`${plugin}: ${duration}ms`)
 }
 console.log(`Generated ${files.length} files`)
-const paths = await storage.readKeys()
-paths.forEach((path) => console.log(`  ${path}`))
+files.forEach((file) => console.log(`  ${file.path}`))
 ```
 
 ## Notes
 
 - `createKubb()` は `UserConfig` を受け取り `Kubb` インスタンスを返す。`defineConfig` と同じデフォルトが適用されるため、CLI とスクリプトで同じファイルが生成される。デフォルトなしの素のエンジンが必要な場合は `@kubb/core` から import する
-- `.safeBuild()` は例外を投げず、問題を `BuildOutput.diagnostics` に集めて返す（`BuildOutput` は `files` / `storage` / `driver` / `diagnostics`）。`.build()` は error 診断があると `AggregateError` を投げる
+- `.safeBuild()` は例外を投げず、問題を `BuildOutput.diagnostics` に集めて返す（`BuildOutput` は `files` / `storage` / `driver` / `diagnostics` / `input`）。`.build()` は error 診断があると `AggregateError` を投げる
 - プラグインは `safeBuild()` が例外を投げなくても失敗しうるため、ファイル処理の前に `Diagnostics.hasError(diagnostics)`（`kubb/kit`）で確認する
 - `using kubb = createKubb(config)` で `Symbol.dispose` による解放ができる。`kubb.hooks.hook(name, handler)` はビルド前に登録する
+- `kubb.storage` は設定済みの storage バックエンド（`config.storage`）で、`createKubb` 直後から参照できる。生成ファイルのパス一覧は `BuildOutput.files` から取る（Source: https://kubb.dev/docs/5.x/reference/kit/engine、kubb@5.20.0 の docs/5.x/reference/kit/engine.md、取得日 2026-11-14）

@@ -24,7 +24,7 @@ from ./petStore.yaml. Use Context7 library /kubb-labs/kubb.
 ## Notes
 
 - アシスタントの指示にルールを書けば、Kubb に関する質問すべてで Context7 を使わせられる
-- 出典: https://kubb.dev/docs/5.x/ai/context7
+- Source: https://kubb.dev/docs/5.x/ai/context7 （kubb@5.20.0 の docs/5.x/ai/context7.md、取得日 2026-11-14）
 
 ## Related
 

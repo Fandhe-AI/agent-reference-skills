@@ -1,6 +1,6 @@
 # install
 
-Kubb および関連パッケージのインストール（kubb 5.11.0 基準）。
+Kubb および関連パッケージのインストール（kubb 5.20.0 基準）。
 
 ## インタラクティブセットアップ（推奨）
 
@@ -8,7 +8,7 @@ Kubb および関連パッケージのインストール（kubb 5.11.0 基準）
 npx kubb init
 ```
 
-ウィザードが `package.json` の検出または作成、OpenAPI 仕様のパス・出力ディレクトリの確認、プラグイン選択（Kubb registry の一覧）、依存パッケージのインストール、`kubb.config.ts` の生成を行う。`kubb` は実行中の CLI と同一バージョンでインストールされる。
+ウィザードがパッケージマネージャーと spec ファイルの検出、OpenAPI 仕様・プラグイン（Kubb registry の一覧）・出力ディレクトリの確認、依存パッケージのインストール、`kubb.config.ts` の生成、最初の生成の実行を行う。`kubb` は実行中の CLI と同一バージョンでインストールされる。
 
 ## kubb パッケージのインストール（npm）
 
@@ -16,7 +16,7 @@ npx kubb init
 npm install -D kubb @kubb/plugin-ts typescript
 ```
 
-`kubb` は CLI・core ランタイム・OpenAPI adapter・TypeScript / TSX / Markdown parser を同梱する。出力ごとに別プラグインパッケージが必要。前提は Node.js 22.12 以上。
+`kubb` は CLI・core ランタイム・OpenAPI adapter・TypeScript / TSX / Markdown parser を同梱する。出力ごとに別プラグインパッケージが必要。前提は Node.js 22.22 以上。
 
 ## kubb パッケージのインストール（pnpm）
 
@@ -42,7 +42,7 @@ bun add -d kubb @kubb/plugin-ts typescript
 npx kubb add plugin-zod
 ```
 
-Kubb registry が pin したバージョンでインストールし、プラグインは `kubb.config.ts` にも追記する。詳細は `cli.md` の `kubb add` を参照。
+Kubb registry が pin したバージョンでインストールし、プラグインと parser は `kubb.config.ts` にも追記する。詳細は `cli.md` の `kubb add` を参照。
 
 ## プラグインのインストール: TypeScript 型生成
 
@@ -67,7 +67,7 @@ npm install --save-dev @kubb/plugin-vue-query
 npm install --save-dev @kubb/plugin-swr
 ```
 
-> `@kubb/plugin-solid-query` と `@kubb/plugin-svelte-query` は v5 で削除済みで、後継は無い（公式 migration ガイド。最終版は 4.39.3）。`@kubb/plugin-swr` は v5 でも提供される（plugin-swr 5.4.3）。
+> `@kubb/plugin-solid-query` と `@kubb/plugin-svelte-query` は v5 で削除済みで、後継は無い（公式 migration ガイド。最終版は 4.39.3）。`@kubb/plugin-swr` は v5 でも提供される（plugin-swr 5.9.1）。
 
 ## プラグインのインストール: バリデーション・テスト系
 

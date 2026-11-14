@@ -7,3 +7,4 @@
 | GitLab CI | GitLab CI からインストール可能な Kubb Studio スナップショットを公開し、ターゲットブラン… | [gitlab.md](./gitlab.md) |
 | Integrations overview | Kubb を Studio・CI・ビルド中のいずれかから実行する。各連携は共有の `kubb.config.ts` を使う。 | [overview.md](./overview.md) |
 | Kubb Studio | Kubb Studio（https://kubb.studio）に `kubb.config.ts` のあるローカルプロジェクトを接続し、… | [studio.md](./studio.md) |
+| openapi-import | `*.openapi.yaml` を TypeScript モジュールのように import し、`kubb.config.ts` の全 plugin の出力を… | [openapi-import.md](./openapi-import.md) |

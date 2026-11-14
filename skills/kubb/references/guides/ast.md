@@ -1,6 +1,6 @@
 # AST（概念）
 
-Kubb の共通 Abstract Syntax Tree はパイプラインの 2 つの半分をつなぐ契約。[Adapter](../adapters/adapter-oas.md) が仕様（既定の adapter は OpenAPI 2.0 / 3.0 / 3.1。カスタム adapter で他形式も可）から AST を生成し、[Plugin](./concepts-plugins.md) がそれを読み取ってファイルを出力する。すべての Plugin が同じツリーを読むため、1 つの Plugin がカスタム Adapter を含むどの仕様に対しても動作する。
+Kubb の共通 Abstract Syntax Tree はパイプラインの 2 つの半分をつなぐ契約。[Adapter](../adapters/adapter-oas.md) が仕様（既定の adapter は OpenAPI 2.0 / 3.0 / 3.1 / 3.2。カスタム adapter で他形式も可）から AST を生成し、[Plugin](./concepts-plugins.md) がそれを読み取ってファイルを出力する。すべての Plugin が同じツリーを読むため、1 つの Plugin がカスタム Adapter を含むどの仕様に対しても動作する。
 
 ## ツリーの形
 
@@ -15,7 +15,7 @@ Request body と response はコンテンツタイプ（例: `application/json`�
 
 ## 仕様非依存な設計
 
-Plugin は OpenAPI を直接見ることはない。Adapter が生成したツリーを読むだけなので、同じ Plugin が OpenAPI 2.0・3.0・3.1、そして任意のカスタム Adapter に対して動作する。
+Plugin は OpenAPI を直接見ることはない。Adapter が生成したツリーを読むだけなので、同じ Plugin が OpenAPI 2.0・3.0・3.1・3.2、そして任意のカスタム Adapter に対して動作する。
 
 ## AST がパイプラインをつなぐ仕組み
 
