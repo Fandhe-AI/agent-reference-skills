@@ -15,7 +15,7 @@ user-invocable: false
 WinUI 3 の XAML UI 基盤に関する公式ドキュメントの主要 API を蒸留したリファレンス。
 レイアウト構築・XAML マークアップ構文・スタイル/テーマ・データバインディング・アニメーションという、コントロール個別 API とは独立した UI 基盤レイヤーを扱う。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
-出典は MS Learn en-us（2026-10-16 取得）、Windows App SDK 2.x（stable 2.5.1 時点）。SystemBackdropElement は 2.0 以降、XamlOptionalChanges は 2.3.1 以降が必要。
+出典は MS Learn en-us（2026-10-16 取得、リリースノートは 2026-11-14 取得）、Windows App SDK 2.x（stable 2.6.5 時点）。SystemBackdropElement は 2.0 以降、XamlOptionalChanges は 2.3.1 以降が必要。
 
 ## ディレクトリ構成
 
