@@ -137,6 +137,22 @@ egress:
       - 203.0.113.10/32        # the cluster's API endpoint
 ```
 
+Kubernetes: create the certificate authority and the gateway key (run from the archive's top directory, OpenSSL 3.0 or later), then delete `egress-ca.key`:
+
+```bash
+(umask 077 && openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:P-256 -nodes -days 825 \
+  -subj "/CN=cma-server egress gateway" \
+  -addext "basicConstraints=critical,CA:TRUE,pathlen:0" \
+  -addext "keyUsage=critical,keyCertSign,cRLSign" \
+  -keyout egress-ca.key -out egress-ca.crt)
+kubectl -n cma create secret tls cma-egress-ca --cert=egress-ca.crt --key=egress-ca.key
+kubectl -n cma-server create configmap cma-egress-ca --from-file=ca.crt=egress-ca.crt
+GATEWAY_KEY=$(openssl rand -hex 32)
+printf %s "$GATEWAY_KEY" | kubectl -n cma create secret generic cma-egress-gateway-key --from-file=gateway-key=/dev/stdin
+printf %s "$GATEWAY_KEY" | kubectl -n cma-server create secret generic cma-egress-gateway-key --from-file=gateway-key=/dev/stdin
+unset GATEWAY_KEY
+```
+
 ```bash
 docker buildx build --platform "$PLATFORM" -f kubernetes/egress/Dockerfile -t "$REGISTRY/cma-egress:$TAG" --push .
 helm upgrade cma-server kubernetes/server/chart --namespace cma-server -f cma-server-values.yaml --wait
@@ -209,7 +225,7 @@ HashiCorp Vault login methods: `approle` for Compose, a host, or the server Helm
 - Gateway on Kubernetes: build and push the gateway image, create the certificate authority and gateway key (delete `egress-ca.key` afterward; the certificate is valid 825 days), remove sandboxes of earlier sessions, then upgrade the server chart and the sandbox chart. The sandbox chart does not offer the gateway on AKS. The server chart upgrade adds a network policy: port 9464 (metrics) is closed (set `server.telemetry.prometheus.scraper.namespace` if Prometheus scrapes it) and port 8400 admits every source.
 - After adding a host to the server's list: Compose `docker compose up -d`; Kubernetes the server `helm upgrade` plus `kubectl -n cma-server rollout restart deployment -l anthropic.com/role=server`.
 - Expected check result: `printenv` prints a placeholder starting with `cma_ph_`; the `curl` returns the token's GitHub profile; a host not on the list gets a `403`. On Kubernetes, `503` on every request probably means the cluster rewrites pod addresses (e.g. kube-proxy `--masquerade-all`), since the gateway identifies sandboxes by pod address.
-- Renewing the CA on Kubernetes: repeat the whole certificate/key step while no session runs, appending `--dry-run=client -o yaml | kubectl apply -f -` to each of the four `kubectl create` lines, then run `kubectl -n cma-server rollout restart deployment -l anthropic.com/role=server` and `kubectl -n cma rollout restart deployment/cma-egress`.
+- Renewing the CA on Kubernetes: repeat the whole certificate/key step (the certificate authority block under Usage) while no session runs, appending `--dry-run=client -o yaml | kubectl apply -f -` to each of the four `kubectl create` lines, then run `kubectl -n cma-server rollout restart deployment -l anthropic.com/role=server` and `kubectl -n cma rollout restart deployment/cma-egress`.
 - Gateway limits: values go only into request headers (never URL or body). Java tools such as Maven and Gradle ignore `HTTPS_PROXY` and related variables, so they reach nothing. Custom sandbox images must start the worker through `cma-with-egress`.
 - The hosted guides say environment variable credentials are not supported with self-hosted sandboxes; that describes the hosted service, not your own server.
 - Source: https://platform.claude.com/docs/en/managed-agents/self-hosted/agent-identity.md (fetched 2026-11-14)
