@@ -228,3 +228,4 @@ skills/windows-platform-integration/
 コントロール・レイアウト・XAML UI は windows-winui-controls / windows-winui-ui / windows-design、グラフィックス・メディア描画は windows-graphics-media、パッケージング・配布は windows-packaging-publish が担当する。
 Smart App Control の署名手順も windows-packaging-publish が担当し、本スキルは動作・挙動の確認のみを扱う。
 リファレンス本文は learn.microsoft.com en-us を 2026-10-16 に取得した内容に準拠する。
+ただし `security-identity/age-signals.md`・`windows-integration/widget-providers.md`・`windows-integration/connected-experiences-overview.md` は 2026-11-14 に再取得して追従した。Windows App SDK の版は各ページの記述に従い、スキル全体では特定の版に pin していない。

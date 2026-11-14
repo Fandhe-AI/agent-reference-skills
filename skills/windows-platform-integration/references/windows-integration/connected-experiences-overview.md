@@ -15,8 +15,8 @@ The three pillars of Connected Experiences:
 
 | Name | Type | Description |
 |------|------|-------------|
-| Windows Share | contract | Send content via `DataTransferManager`/`IDataTransferManagerInterop`; receive content by registering as a Share Target. |
-| People on Windows | contract | Donate app contacts via `UserDataAccount`/`ContactStore` so they surface as Share Sheet suggestions and in the People Widget. |
+| Windows Share | contract | Integrate with the Share Sheet and Drop Tray. Send content via `DataTransferManager`/`IDataTransferManagerInterop`; receive content by registering as a Share Target. |
+| People on Windows | contract | Donate app contacts via `UserDataAccount`/`ContactStore` so they surface as Share Sheet suggestions (currently supported for People contacts) and in the People Widget. |
 | Windows Resume | contract | Publish activity context via WNS raw notifications so a task can be resumed on the user's Windows PC through the taskbar Resume badge; a Limited Access Feature requiring Microsoft approval. |
 
 ## Notes
@@ -25,6 +25,7 @@ The three pillars of Connected Experiences:
 - This page is intentionally thin — it is the TOC parent/hub for [share-sheet-send](./share-sheet-send.md), [share-sheet-receive](./share-sheet-receive.md), [cross-device-people-api](./cross-device-people-api.md), and [cross-device-resume-overview](./cross-device-resume-overview.md), which carry the actual implementation detail.
 
 - The current Windows apps develop toc also lists Phone Link notifications as a Connected Experiences entry next to Windows Share, People and Resume; see [phone-link-notifications](./phone-link-notifications.md). The Android-only "Resume with promoted install" guide is covered in [cross-device-resume-promoted-install](./cross-device-resume-promoted-install.md).
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/windows-integration/connected-experiences-overview (ms.date 2026-10-19; fetched 2026-11-14). The Share Sheet section hub (`integrate-sharesheet-overview`, same date) only routes to Send / Receive / suggestions-row / Windows People / DataFormat pages and adds no API detail beyond them.
 
 ## Related
 
