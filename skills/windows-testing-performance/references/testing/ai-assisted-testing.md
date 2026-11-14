@@ -80,6 +80,7 @@ jobs:
 - The generated tests use `winapp ui` commands as the interaction layer, so they run without a separate UI automation framework.
 - `winapp ui` commands interact with the live accessibility tree of a running process. Tests must launch the app as part of the test setup (or in a `TestInitialize` step) and close it in teardown.
 - The CI tests require a graphical session; use a Windows runner with `runs-on: windows-latest`.
+- Caveat (from the winapp CLI: UI Automation page, not stated on this official page): `winapp ui click`, `hover`, `drag`, `touch`, `pen`, `scroll --wheel` and `send-keys --via send-input` inject real OS-level input and fail with `no_interactive_desktop` on a locked or non-interactive desktop. A `windows-latest` runner alone does not guarantee an unlocked interactive desktop, so for such commands use a runner configured with an interactive session, and for ordinary CI prefer the UIA-based commands (`invoke`, `wait-for`, `search`, `set-value`, `inspect`).
 - Adapted from the official docs: the CI example pins `actions/checkout` and `actions/setup-dotnet` to the commit SHAs of the v4 tags (resolved 2026-11-14) instead of the mutable `@v4` tags.
 - The WinGet ID in the official CI example is `Microsoft.WinAppCli`.
 - The inspect output works as a first-pass accessibility review before running a formal audit tool.
