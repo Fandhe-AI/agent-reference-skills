@@ -34,11 +34,11 @@ tarball URL を別ステップに渡すには action に `id: snapshot` を付�
 
 ## Notes
 
-- 出典: https://kubb.dev/docs/5.x/integrations/github-actions （kubb@5.11.0 の docs/5.x/integrations/github-actions.md）
+- Source: https://kubb.dev/docs/5.x/integrations/github-actions （kubb@5.20.0 の docs/5.x/integrations/github-actions.md、取得日 2026-11-14）
 - The official docs use the mutable tags `actions/checkout@v5` and `kubb-labs/action@v0`; pinned to commit SHAs here (confirmed via the GitHub API at the time of writing). Check the tags again when updating
 - 前提: Kubb 5.6.2 以降の `kubb.config.ts`、Kubb Studio 組織と組織 CI API キー（`KUBB_TOKEN`）。インストール用は別の registry キー（詳細は [ci.md](./ci.md)）
 - `pull-requests: write` でスナップショットコメントを投稿できる。`contents: write` は、リポジトリに Kubb 設定がない場合に action が初期化用プルリクエストを開くために必要。そのプルリクエストのため Settings > Actions > General の Allow GitHub Actions to create and approve pull requests を有効にする
-- ベースブランチおよび前回実行に対する生成変更はプルリクエストコメントで確認する
+- ベースブランチおよび前回実行に対する生成変更はプルリクエストコメントで確認する。Studio にスナップショットの diff ビューは無く、Action は変更された生成ファイルをコメントに列挙する
 - スナップショットは 7 日で失効する。デフォルトブランチ実行のスケジュールを検討する
 - action の全 inputs / outputs / 実行時挙動は [reference/github-actions](../reference/github-actions.md) を参照
 

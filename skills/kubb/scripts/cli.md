@@ -1,6 +1,6 @@
 # cli
 
-Kubb CLI の全コマンドとオプション一覧（kubb 5.11.0 基準）。
+Kubb CLI の全コマンドとオプション一覧（kubb 5.20.0 基準）。
 
 ## バージョン確認
 
@@ -23,20 +23,20 @@ kubb add --help
 npx kubb init
 ```
 
-インタラクティブウィザードで OpenAPI 仕様のパス・出力ディレクトリ・プラグインを選び、`kubb.config.ts` を生成する。
+インタラクティブウィザードがパッケージマネージャーと spec ファイルを検出し、OpenAPI 仕様・プラグイン・出力ディレクトリを選んで確認後、`kubb.config.ts` を生成して最初の生成まで実行する。
 
 ```sh
 npx kubb init --yes
-npx kubb init --input ./openapi.yaml --output ./src/gen --plugins plugin-ts,plugin-zod
+npx kubb init --yes --input ./openapi.yaml --plugins ts,zod --output src/api
 ```
 
 | オプション | 短縮形 | デフォルト | 説明 |
 | --- | --- | --- | --- |
-| `--yes` | `-y` | `false` | 全プロンプトをスキップして既定値を使う |
+| `--yes` | `-y` | `false` | 全プロンプトと確認表示をスキップして既定値を使う |
 | `--input` | `-i` | — | OpenAPI 仕様のパス（ローカルまたは URL） |
 | `--output` | `-o` | — | 生成ファイルの出力ディレクトリ |
-| `--plugins` | — | — | 追加するプラグインの registry id（カンマ区切り。例: `plugin-ts,plugin-zod`） |
-| `--dry-run` | — | `false` | パッケージのインストールと `kubb.config.ts` の書き込みなしでプレビュー |
+| `--plugins` | — | — | 追加するプラグインの registry id（カンマ区切り。例: `plugin-ts,plugin-zod`、短縮名 `ts,zod` も可） |
+| `--dry-run` | — | `false` | パッケージのインストール・ファイル書き込み・最初の生成なしでプレビュー |
 
 ## `kubb generate`: コード生成
 
@@ -45,15 +45,15 @@ kubb generate
 kubb generate ./petStore.yaml
 ```
 
-`[input]` に OpenAPI ファイルのパスまたは URL を渡すと config の `input` を上書きする。詳細は `generate.md` を参照。
+`[input]` に OpenAPI ファイルのパス・URL・git 入力（`git+<repo>#<ref>:<path>`）を渡すと config の `input` を上書きする。詳細は `generate.md` を参照。
 
-## `kubb validate`: OpenAPI ファイルの検証
+## `kubb validate`: spec の検証
 
 ```sh
 kubb validate ./petStore.yaml
 ```
 
-`<input>`（必須）にパスまたは URL を渡す。仕様が不正な場合は非ゼロ終了コードを返す。
+`<input>`（必須）にパス・URL・git 入力を渡す。config のアダプターで検証し（config が無ければ `@kubb/adapter-oas`）、`--config` / `-c` で config を指定できる。仕様が不正な場合は非ゼロ終了コードを返す。
 
 ## `kubb add`: レジストリからの拡張追加
 
@@ -62,15 +62,17 @@ kubb add
 kubb add plugin-zod
 kubb add acme/plugin-graphql --yes
 kubb add plugin-zod --no-install
+kubb add plugin-zod --dry-run
 ```
 
-Kubb registry の plugin / adapter / parser を pin されたバージョンで dev dependency としてインストールする。plugin は `kubb.config.ts` の `plugins` 配列にも追記する。id なしの場合は選択プロンプトが開く。
+Kubb registry の plugin / adapter / parser を pin されたバージョンで dev dependency としてインストールする。plugin は `kubb.config.ts` の `plugins` 配列、parser は `parsers` 配列にも追記する（adapter は追加すべきコードを表示する）。id なしの場合は registry を検索して選ぶ。
 
 | オプション | 短縮形 | デフォルト | 説明 |
 | --- | --- | --- | --- |
-| `--config=<path>` | `-c` | — | 編集する Kubb config のパス（plugin のみ） |
+| `--config=<path>` | `-c` | — | 編集する Kubb config のパス（plugin / parser） |
 | `--yes` | `-y` | `false` | 確認をスキップ（id が必要）。スクリプト・CI 向け |
-| `--no-install` | — | — | パッケージをインストールしない（plugin の config 追記は行う） |
+| `--no-install` | — | — | パッケージをインストールしない（plugin / parser の config 追記は行う） |
+| `--dry-run` | — | `false` | 追加されるパッケージと config 行を表示するだけ（インストールも書き込みもしない） |
 
 環境変数 `KUBB_REGISTRY` で registry の Base URL を変更できる（既定 `https://kubb.dev/registry`）。
 
@@ -78,16 +80,16 @@ Kubb registry の plugin / adapter / parser を pin されたバージョンで 
 
 ```sh
 kubb update
-kubb update --check
+kubb update --dry-run
 kubb update plugin-zod plugin-ts --yes
 ```
 
-インストール済み拡張を registry が pin するバージョンに更新する。`kubb.config.ts` は変更しない。
+インストール済み拡張を registry が pin するバージョンに更新し、続けて再生成するか尋ねる。`kubb.config.ts` は変更しない。
 
 | オプション | 短縮形 | デフォルト | 説明 |
 | --- | --- | --- | --- |
-| `--check` | — | `false` | 更新を一覧するのみでインストールしない |
-| `--yes` | `-y` | `false` | 確認なしで全更新をインストール |
+| `--dry-run` | — | `false` | 更新を一覧するのみでインストールしない |
+| `--yes` | `-y` | `false` | 確認なしで更新をインストール（major は id を名前指定した場合のみ） |
 
 ## `kubb list`: インストール済み拡張の一覧
 
@@ -97,17 +99,35 @@ kubb list
 
 引数・オプションなし。registry id・パッケージ名・インストール済み版・registry の pin 版・更新有無を表示する。
 
+## `kubb remove`: 拡張の削除
+
+```sh
+kubb remove plugin-zod
+kubb remove plugin-zod --no-uninstall
+kubb remove plugin-zod --dry-run
+```
+
+plugin / parser を `kubb.config.ts` から削除し、そのパッケージをアンインストールする。adapter・最後の parser・他の extension が依存している extension は削除しない。
+
+| オプション | 短縮形 | デフォルト | 説明 |
+| --- | --- | --- | --- |
+| `--config=<path>` | `-c` | — | 編集する Kubb config のパス |
+| `--yes` | `-y` | `false` | 確認なしで削除 |
+| `--no-uninstall` | — | — | config のみ編集しパッケージはインストールしたままにする |
+| `--dry-run` | — | `false` | 削除する config 行とパッケージを表示するだけ |
+
 ## `kubb studio`: Kubb Studio への接続
 
 ```sh
 kubb studio
 ```
 
-初回はペアリングコードを Studio で承認する。位置引数でアクションを選ぶ（既定 `connect`）。
+初回はペアリングページで CLI が表示するコードを承認する。位置引数でアクションを選ぶ（既定 `connect`）。
 
 ```sh
 kubb studio start
 kubb studio status
+kubb studio permissions
 kubb studio stop
 kubb studio login
 kubb studio logout
@@ -121,7 +141,8 @@ kubb studio snapshot
 | `stop` | バックグラウンド worker を停止（ペアリングは保持） |
 | `login` | 生成セッションを開かずに再ペアリング（保存済み権限はリセット） |
 | `logout` | worker を停止し、このプロジェクトのトークンを破棄 |
-| `status` | worker 状態・ログパス・ペアリング・保存済み権限を表示 |
+| `status` | ペアリング・worker 状態・保存済み権限・ログパスを表示 |
+| `permissions` | ペアリングし直さず、このプロジェクトの保存済み権限を変更 |
 | `snapshot` | ローカルで生成・パックしてアップロードし終了（CI 向け） |
 
 | オプション | 短縮形 | デフォルト | 説明 |
@@ -132,11 +153,16 @@ kubb studio snapshot
 | `--allow-read-ast` | — | `false` | パース済み仕様（Kubb AST）の読み取りを許可 |
 | `--allow-write` | — | `false` | 生成ファイルをディスクへ書き込む |
 | `--allow-config-edit` | — | `false` | Studio による `kubb.config.ts` のプラグインオプション変更を許可 |
+| `--allow-install` | — | `false` | Studio による registry からの extension インストール（`kubb add`）を許可（`--allow-config-edit` も必要） |
+| `--allow-update` | — | `false` | Studio による `kubb update` を許可 |
+| `--allow-remove` | — | `false` | Studio による `kubb remove` を許可（`--allow-config-edit` も必要） |
+| `--allow-save-input` | — | `false` | Studio が送る spec の保存を許可（`--allow-config-edit` も必要） |
+| `--allow-file-refs` | — | `false` | spec の `$ref` にプロジェクト外のローカルファイル読み取りを許可 |
 | `--allow-exec` | — | `false` | formatter・linter・`output.postGenerate` の実行を許可 |
 | `--no-open` | — | — | 承認ページをブラウザで開かない |
 | `--log-level=<silent\|info\|verbose>` | `-l` | `info` | ログレベル |
 
-> **警告**: `--allow-write` / `--allow-config-edit` / `--allow-exec` は Studio にローカルのファイル書き込み・設定変更・コマンド実行を許可する。信頼できるプロジェクトでのみ付与すること。
+> **警告**: `--allow-write` / `--allow-config-edit` / `--allow-install` / `--allow-update` / `--allow-remove` / `--allow-save-input` / `--allow-file-refs` / `--allow-exec` は Studio にローカルのファイル書き込み・設定変更・パッケージ操作・コマンド実行を許可する。信頼できるプロジェクトでのみ付与すること。
 
 `snapshot` 専用のオプション（`--allow-*` は取らない）:
 
@@ -149,11 +175,13 @@ kubb studio snapshot
 | `--package-version=<version>` | tarball のパッケージ版。既定は直近の `package.json` の version |
 | `--json` | 結果を 1 つの JSON オブジェクトで出力 |
 
+`snapshot` はパッケージの `dist` を `tsdown` でビルドするため、プロジェクトに `npm i -D tsdown` でインストールしておく。
+
 ```sh
 kubb studio snapshot --json
 ```
 
-環境変数: `KUBB_HOME`（Studio 状態の保存先、既定 `~/.kubb`）、`KUBB_TOKEN`（snapshot 用 CI API キー）。`KUBB_AGENT_MAX_GENERATIONS` 等の上限設定は公式の `kubb studio` リファレンスを参照。
+環境変数: `KUBB_HOME`（Studio 状態と更新チェックの保存先、既定 `~/.kubb`）、`KUBB_TOKEN`（snapshot 用 CI API キー）、`KUBB_DEBUG`（ソースマップを有効化）。`KUBB_AGENT_MAX_GENERATIONS` 等の上限設定は公式の `kubb studio` リファレンスを参照。
 
 ## `kubb mcp`: MCP サーバーの起動
 
@@ -163,4 +191,4 @@ npx kubb mcp
 
 AI クライアント向けの MCP（Model Context Protocol）サーバーを stdio で起動する。詳細は `mcp.md` を参照。
 
-> 旧版にあった `kubb start` / `kubb agent start` は 5.11.0 のコマンド一覧（`init` / `generate` / `validate` / `mcp` / `studio` / `add` / `update` / `list`）に存在しないため収録しない。Studio 連携は `kubb studio start` を使う。
+> 旧版にあった `kubb start` / `kubb agent start` は 5.20.0 のコマンド一覧（`init` / `generate` / `validate` / `mcp` / `studio` / `add` / `update` / `list` / `remove`）に存在しないため収録しない。Studio 連携は `kubb studio start` を使う。

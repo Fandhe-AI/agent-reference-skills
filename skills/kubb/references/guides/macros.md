@@ -1,34 +1,17 @@
 # Macro の作成
 
-Macro は Kubb の [AST](./ast.md) に対する、名前付きで合成可能な変換。Adapter が生成する schema・operation ノードを Generator がコードを印字する前に書き換える。これにより Adapter や Generator をフォークせずに、シンボルのリネーム・フィールドの型変更・メタデータの削除・形状の正規化ができる。Macro は共有された AST 上で動作するため、同じ Macro が全ての入力 Adapter と全ての出力対象（TypeScript、Zod、任意の [Printer](./printers.md)）で動作する。
+Macro は Kubb の [AST](./ast.md) に対する、名前付きで合成可能な変換。Adapter が生成する schema・operation ノードを Generator がコードを印字する前に書き換える。シンボルのリネーム・フィールドの型変更・メタデータの削除を、出力対象をまたいで行える。Macro は共有された AST 上で動作するため、同じ Macro が全ての入力 Adapter と全ての出力対象（TypeScript、Zod、任意の [Printer](./printers.md)）で動作する。
 
-エンジン（`defineMacro`、`composeMacros`、`applyMacros`、`Macro` 型）は `kubb/kit` の `ast` namespace に、変換対象のノードツリーと並んで含まれる。標準搭載の Macro プリセットは `kubb/kit` 自体の named export。
+`defineMacro` は `kubb/kit` から import する。Macro を適用するエンジン `ast.macro.apply` は同じパッケージの `ast` にある。コールバックのシグネチャとコンテキストの各プロパティは AST リファレンス（`reference/kit/ast` の Macros）を参照。
 
-## 形
+## Signature / Usage
 
-Macro は visitor のノード種別ごとのコールバックに加え、`name`・任意の `enforce` 順序・任意の `match` 述語を持つ。
-
-```typescript
-type Macro = {
-  name: string
-  enforce?: 'pre' | 'post'
-  match?: (node: Node) => boolean
-  schema?(node: SchemaNode, context): SchemaNode | null | undefined
-  operation?(node: OperationNode, context): OperationNode | null | undefined
-  // input, output, property, parameter, response
-}
-```
-
-各コールバックは置き換え後のノードを返すか、ノードに変更を加えない場合は `undefined` を返す。何も変更しない Macro は元の参照をそのまま返すため、変更のないツリーは再構築されず再利用される。
-
-## Macro を書く
-
-`defineMacro` は Macro に型を付け、定義を 1 箇所にまとめる。
+Macro は `name` とノード種別ごとのコールバック（`schema` / `operation` 等）を持つ。コールバックは置き換え後のノードを返すか、そのままにする場合は `undefined` を返す。
 
 ```typescript
-import { ast } from 'kubb/kit'
+import { defineMacro } from 'kubb/kit'
 
-const macroIntegerToString = ast.defineMacro({
+const macroIntegerToString = defineMacro({
   name: 'integer-to-string',
   schema(node) {
     return node.type === 'integer' ? { ...node, type: 'string' } : undefined
@@ -39,9 +22,9 @@ const macroIntegerToString = ast.defineMacro({
 `match` 述語は関心のないノードに対して Macro をスキップし、`enforce` は無指定の Macro より前・後に配置する。
 
 ```typescript
-import { ast } from 'kubb/kit'
+import { defineMacro } from 'kubb/kit'
 
-const macroUntagged = ast.defineMacro({
+const macroUntagged = defineMacro({
   name: 'untagged',
   enforce: 'post',
   match: (node) => node.kind === 'Operation',
@@ -51,39 +34,14 @@ const macroUntagged = ast.defineMacro({
 })
 ```
 
-## Macro の合成
-
-Plugin は Macro のリストを実行する。順に適用されるため、後の Macro は前の Macro の出力を見る。`composeMacros` はリストを 1 つの visitor に畳み込み、`applyMacros` はそのリストをツリーに対して実行する。
-
-```typescript
-import { ast } from 'kubb/kit'
-
-const macroDto = ast.defineMacro({
-  name: 'dto',
-  schema(node) {
-    return node.type === 'object' ? { ...node, name: node.name ? `${node.name}Dto` : node.name } : undefined
-  },
-})
-
-const macroFetchPrefix = ast.defineMacro({
-  name: 'fetch-prefix',
-  operation(node) {
-    return { ...node, operationId: node.operationId.replace(/^get/, 'fetch') }
-  },
-})
-
-const root = ast.factory.createInput({ schemas: [], operations: [] })
-const next = ast.applyMacros(root, [macroDto, macroFetchPrefix])
-```
-
-## Plugin での Macro 利用
+### Plugin での Macro 利用
 
 Plugin の `macros` オプション経由で渡すか、`setup` から `addMacro`・`setMacros` で登録する。Macro は Plugin ごとに実行されるため、ある Plugin の Macro が他の Plugin が見るノードを変えることはない。
 
 ```typescript
-import { ast, defineExtension } from 'kubb/kit'
+import { defineExtension, defineMacro } from 'kubb/kit'
 
-const macroDropDescriptions = ast.defineMacro({
+const macroDropDescriptions = defineMacro({
   name: 'drop-descriptions',
   schema(node) {
     return 'description' in node && node.description ? { ...node, description: undefined } : undefined
@@ -100,41 +58,80 @@ export const pluginRename = defineExtension({
 })
 ```
 
-Macro は Resolver のオプションが計算される前に実行される。したがってリネームされた `operationId` や `SchemaNode.name` は `resolveOptions`・`resolvePath`・`resolveFile` に反映される。
+Macro は Resolver が何かを命名する前に実行される。したがってリネームされた `operationId` や `SchemaNode.name` は生成される名前・パス・ファイルに反映される。
 
-Macro は純粋に保つこと。AST は参照共有されるため、入力を mutate せず新しいノードを構築して返す。
+Macro は純粋に保つこと。全 Plugin が同じ AST ノードを共有するため、入力を mutate せず新しいノードを構築して返す。
 
-schema をリネームする際、宣言の `name` だけを変更してはいけない。それを指す全ての `$ref` は旧名を解決したままになり、import と印字済み参照が Plugin がもう出力しないファイルを指してしまう。`macroRenameSchema` を使えば、宣言のリネームと ref の retarget を 1 回のパスで行える。
+### schema のリネーム
 
-## 標準搭載 Macro
+宣言の `name` だけを変更してはいけない。そのスキーマを指す全ての `$ref` は旧名を解決したままになり、import と印字済み参照が Plugin がもう出力しないファイルを指してしまう。宣言のリネームと、それを指す全 ref への `targetName` 設定を 1 つの Macro で行い、その schema を読む全 Plugin に登録する。
 
-Kubb はどの Adapter でも適用できる共通の schema 正規化用 Macro を標準搭載する。通常の Macro と同様に import し、自作のものと合成できる。
-
-- `macroSimplifyUnion` — より広いメンバーが既にカバーしている union メンバーを削除する（例: 複数値の string enum の隣にある plain `string`）。単一値 enum は型を絞り込むため残る
-- `macroDiscriminatorEnum` — discriminator プロパティを許可値の string enum へ書き換える。オプションを読むため、呼び出して Macro を構築する
-- `macroEnumName` — inline enum に、それが属する schema とプロパティから名前を付ける。オプションを読むため、呼び出して Macro を構築する
-- `macroRenameSchema` — schema を一貫してリネームする。宣言の `name` を変更し、旧名を指すすべての ref に `targetName` を刻印するため、`resolveRefName` と `resolver.imports` がどこでも新名を出力する
+次の Macro をプロジェクトへコピーして使う。宣言と、それを指す全 ref を 1 回のパスでリネームする。
 
 ```typescript
-import { ast, macroSimplifyUnion, macroDiscriminatorEnum, macroRenameSchema } from 'kubb/kit'
+import { ast, defineMacro } from 'kubb/kit'
 
-const root = ast.factory.createInput({ schemas: [], operations: [] })
-const next = ast.applyMacros(root, [
-  macroSimplifyUnion,
-  macroDiscriminatorEnum({ propertyName: 'kind', values: ['cat', 'dog'] }),
-  macroRenameSchema({ from: 'Order', to: 'StoreOrder' }),
-])
+export function macroRenameSchema({ from, to }: { from: string; to: string }) {
+  return defineMacro({
+    name: 'rename-schema',
+    schema(node) {
+      const refNode = ast.schema.narrow(node, 'ref')
+
+      if (!refNode) {
+        return node.name === from ? { ...node, name: to } : undefined
+      }
+
+      // A ref node can be the renamed schema's own declaration, a pointer to it, or both at once.
+      const renamesDeclaration = refNode.name === from
+      const renamesTarget = ast.ref.getName(refNode) === from
+      if (!renamesDeclaration && !renamesTarget) return undefined
+
+      return {
+        ...refNode,
+        ...(renamesDeclaration ? { name: to } : {}),
+        ...(renamesTarget ? { targetName: to } : {}),
+      }
+    },
+  })
+}
 ```
 
-他の Plugin の出力を import する Plugin は、自分が見るノードから名前を計算する。そのため schema に触れる全ての Plugin に対して rename を登録する必要がある（例: 1 つの共有 `macros` 配列を各 Plugin のオプションに渡す）。
+Plugin 間で名前と import を一致させるため、その schema を読む全 Plugin へ共有の `macros` 配列を 1 つ渡す。
 
-## Macro の共有
+```typescript
+import { defineConfig } from 'kubb/config'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginZod } from '@kubb/plugin-zod'
+import { macroRenameSchema } from './macroRenameSchema.ts'
 
-Macro はただの値なので、export して必要な場所で import できる。関連する Macro を 1 つのモジュールにまとめ、Plugin と同様に任意の Plugin・プロジェクトへ取り込める。
+const macros = [macroRenameSchema({ from: 'Order', to: 'StoreOrder' })]
+
+export default defineConfig({
+  input: './petStore.yaml',
+  output: { path: './src/gen' },
+  plugins: [pluginTs({ macros }), pluginZod({ macros })],
+})
+```
+
+### 標準搭載 Macro
+
+`kubb/kit` は一般的な正規化用の Macro を export する。Plugin の `macros` オプションで自作のものと組み合わせる。各 Macro の内容は AST リファレンスの built-in macros 表を参照。
+
+```typescript
+import { ast, macroDedupeUnion, macroDiscriminatorEnum } from 'kubb/kit'
+
+const root = ast.factory.createInput({ schemas: [], operations: [] })
+const next = ast.macro.apply(root, [macroDedupeUnion, macroDiscriminatorEnum({ propertyName: 'kind', values: ['cat', 'dog'] })])
+```
+
+Macro を共有モジュールから export すれば、Plugin・プロジェクト間で再利用できる。
 
 ## Notes
 
-- Synced with docs 5.x how-to/macros ("Transform schemas with macros", Kubb 5.11.0). The 5.x page's plugin example uses `defineExtension({ kind: 'plugin' })` with `kubb.addMacro(...)` in `setup`; `definePlugin` is deprecated. The `match` / `enforce` shape of a macro is documented in [ast.md](../kit/ast.md) (Macro options and callbacks)
+- Source: https://kubb.dev/docs/5.x/how-to/macros (docs/5.x/how-to/macros.md of kubb@5.20.0, retrieved 2026-11-14)
+- Migration (5.11 → 5.20): `ast.defineMacro` is deprecated in favor of `defineMacro` from `kubb/kit`, and the macro engine `ast.applyMacros` moved to `ast.macro.apply` (deprecated in 5.18.6; Kubb v6 removes the old names). `ast.composeMacros` was removed in 5.15.2 (changelog v5.18.6 / v5.15.2)
+- Migration (5.11 → 5.20): `macroSimplifyUnion` was renamed to `macroDedupeUnion` (5.16.0; the old name stays as a deprecated alias until the next major), and `macroRenameSchema` was removed from `kubb/kit` in 5.15.2, so copy the source shown above into the project (changelog v5.16.0 / v5.15.2)
+- The plugin example uses `defineExtension({ kind: 'plugin' })` with `kubb.addMacro(...)` in `setup`; `definePlugin` is deprecated. The `match` / `enforce` shape and the callback context are documented in [ast.md](../kit/ast.md)
 - Macro と [Printer](./printers.md) の使い分けは printers.md の「Printer override or macro」セクションを参照
 - Macro は AST の 2 回目のパスとして [architecture.md](./architecture.md) のパイプラインに位置づけられる
 

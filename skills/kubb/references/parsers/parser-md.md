@@ -4,7 +4,7 @@ Kubb の AST から `.md` / `.markdown` ファイルを生成するパーサー�
 
 ## インストール
 
-`kubb` に同梱され、`kubb/config` の `defineConfig` が既定で登録するため追加インストールは不要。単体では次のとおり（安定版 5.11.0、`@beta` は不要）。
+`kubb` に同梱され、`kubb/config` の `defineConfig` が既定で登録するため追加インストールは不要。単体では次のとおり（`@beta` は不要）。
 
 ```bash
 npm install --save-dev @kubb/parser-md
@@ -55,9 +55,11 @@ layout: doc
 ## Notes
 
 - `parserMd()` はオプションを取らない（設定不要のゼロコンフィグパーサー）
-- プラグイン依存を持たないスタンドアロンパーサー。`defineConfig` では `parserTs` / `parserTsx` と並んで既定登録される（バンドラー連携では登録されない）。独自の `parsers` 配列は既定セットを置き換えるため、必要なパーサーをすべて列挙する
-- ファイルのソースブロックを空行区切りのプレーン Markdown として連結する。`meta.frontmatter` は banner がある場合その後ろ、本文の前に YAML として出力され、空オブジェクトでは何も書かれない
-- `parserMd().print` はオブジェクトと Markdown 文字列を受け取り、空行で連結する（例: `parserMd().print({ title: 'Pets', layout: 'doc' })` は `---\ntitle: Pets\nlayout: doc\n---` を返す）
+- プラグイン依存を持たないスタンドアロンパーサー。`defineConfig` でもバンドラー連携でも `parserTs` / `parserTsx` と並んで既定登録される。独自の `parsers` 配列は既定セットを置き換えるため、必要なパーサーをすべて列挙する
+- ファイルのソースブロックを空行区切りのプレーン Markdown として連結する。`meta.frontmatter` は banner がある場合その後ろ、本文の前に YAML として出力され、空オブジェクトまたは `null` では何も書かれない。file banner を設定した場合は frontmatter の上に置かれる
+- `parserMd().print(...parts)` は Markdown 文字列を空行で連結し、空のものは飛ばす。文字列のみを受け取るため、frontmatter は常に `meta.frontmatter` から出力される
+- Source: https://kubb.dev/extensions/kubb-labs/parser-md (packages/parser-md/docs/{overview,options}.md of kubb@5.20.0, retrieved 2026-11-14)
+- Migration (5.11 → 5.20): `parserMd().print` no longer accepts objects (the 5.11 docs showed `parserMd().print({ title: 'Pets', layout: 'doc' })` returning frontmatter); it takes Markdown strings only, and the parser is now registered by the bundler integrations too (docs diff 5.11 → 5.20)
 
 ## Related
 

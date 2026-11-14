@@ -1,6 +1,6 @@
 # GitLab CI
 
-GitLab CI からインストール可能な Kubb Studio スナップショットを公開し、ターゲットブランチや前回パイプラインと生成ファイルを比較できるようにする。`KUBB_TOKEN` は masked CI/CD variable に保存し、npm lockfile をコミットし、`npm ci` が CLI を入れられるよう `kubb` を開発依存に置く。
+GitLab CI からインストール可能な Kubb Studio スナップショットを公開し、ターゲットブランチや前回パイプラインと生成ファイルを比較できるようにする。`KUBB_TOKEN` は masked CI/CD variable に保存し、npm lockfile をコミットする。`npm ci` が CLI を入れられるよう `kubb` と `tsdown` を開発依存に置く。
 
 ## Signature / Usage
 
@@ -17,7 +17,7 @@ snapshot:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-`kubb` が Studio ランタイムを同梱するため、セットアップは `npm ci` のみ。`rules` によりマージリクエストパイプラインとデフォルトブランチで実行され、マージリクエストが比較対象のターゲットブランチのスナップショットを持てる。
+`kubb` と `tsdown` が開発依存にあれば、セットアップは `npm ci` のみ。`rules` によりマージリクエストパイプラインとデフォルトブランチで実行され、マージリクエストが比較対象のターゲットブランチのスナップショットを持てる。
 
 ## 結果をノートとして投稿
 
@@ -62,7 +62,8 @@ if (!response.ok) throw new Error(`GitLab answered ${response.status}`)
 
 ## Notes
 
-- 出典: https://kubb.dev/docs/5.x/integrations/gitlab （kubb@5.11.0 の docs/5.x/integrations/gitlab.md）
+- Source: https://kubb.dev/docs/5.x/integrations/gitlab （kubb@5.20.0 の docs/5.x/integrations/gitlab.md、取得日 2026-11-14）
+- Studio にスナップショットの diff ビューは無く、変更ファイルは `--json` の `changes` / `branchChanges` で得る
 - 前提: Kubb 5.6.2 以降の `kubb.config.ts`、Kubb Studio 組織と組織 CI API キー（`KUBB_TOKEN`）。インストール用は別の registry キー（詳細は [ci.md](./ci.md)）
 - ノートの書き込みには `api` スコープ付きのプロジェクトアクセストークンを `GITLAB_API_TOKEN` として保存する。`CI_JOB_TOKEN` にはそのスコープがない
 - スナップショットは 7 日で失効する。デフォルトブランチ実行のスケジュールを検討する

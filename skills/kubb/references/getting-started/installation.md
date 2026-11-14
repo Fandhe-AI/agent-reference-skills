@@ -1,10 +1,10 @@
 # Installation
 
-Kubb のインストール方法とシステム要件（Kubb 5.11.0 / docs 5.x の how-to/installation に準拠）。
+Kubb のインストール方法とシステム要件（Kubb 5.20.0 / docs 5.x の how-to/installation に準拠）。
 
 ## システム要件
 
-- **Node.js:** 22.12 以上（必須）
+- **Node.js:** 22.22 以上（必須）
 - **TypeScript:** 5 以上（TypeScript の config を使う場合、または生成された型を import する場合）
 - パッケージマネージャー: npm / pnpm / yarn / bun いずれも対応
 
@@ -12,7 +12,7 @@ Kubb のインストール方法とシステム要件（Kubb 5.11.0 / docs 5.x �
 
 ### 1. Kubb と必要なプラグインをインストール
 
-`kubb` パッケージに CLI・コアランタイム・OpenAPI アダプター・TypeScript / TSX / Markdown パーサーが同梱される。各出力は個別のプラグインパッケージから生成されるため、必要なプラグインだけを追加する。以下は TypeScript プラグインの例:
+各出力は個別のプラグインパッケージから生成されるため、`kubb` と必要なプラグインだけをインストールする。以下は TypeScript プラグインの例:
 
 ```bash
 pnpm add -D kubb @kubb/plugin-ts typescript
@@ -66,6 +66,8 @@ npx kubb add plugin-zod
 
 ## Notes
 
+- Source: https://kubb.dev/docs/5.x/how-to/installation （kubb@5.20.0 の docs/5.x/how-to/installation.md、取得日 2026-11-14）
+- Migration (5.11 → 5.20): the Node.js requirement is 22.22+ (was 22.12+); the 5.13.0 changelog records "Require Node.js 22.22+" for `@kubb/adapter-oas` (#4426). The 5.20.0 installation page no longer lists what the `kubb` package ships, while the 5.20.0 `kubb remove` page states that `@kubb/adapter-oas`, `@kubb/parser-ts`, `@kubb/parser-md` and `@kubb/plugin-barrel` ship with `kubb`.
 - 安定版 5.x では `@beta` タグは不要（`kubb init` / `npx kubb init` も同様）
 - 旧 `@kubb/cli` + `@kubb/core` の手動インストールは不要。CLI パッケージは `kubb`
 - グローバルインストールよりプロジェクトごとのインストールを推奨

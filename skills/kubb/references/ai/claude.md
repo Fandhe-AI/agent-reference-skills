@@ -1,6 +1,6 @@
 # Claude Code プラグイン
 
-Kubb 公式の Claude Code プラグイン。スラッシュコマンドと Agent を追加し、OpenAPI 仕様からコード生成を行う。コマンドは `kubb` CLI を実行するため、チャットでのビルドとターミナルでのビルドが一致する（Kubb 5.11.0 の docs 5.x ai/claude と `tools/claude/` に準拠）。
+Kubb 公式の Claude Code プラグイン。スラッシュコマンドと Agent を追加し、OpenAPI 仕様からコード生成を行う。コマンドは `kubb` CLI を実行するため、チャットでのビルドとターミナルでのビルドが一致する（Kubb 5.20.0 の docs 5.x ai/claude と `tools/claude/` に準拠）。
 
 ## インストール
 
@@ -68,6 +68,7 @@ Kubb CLI のコマンドを `kubb:` 名前空間でミラーする。
 - 旧版ページの `npm install -D kubb@beta` は不要（安定版 5.x は `kubb`）
 - 本ページは Claude Code プラグイン（スラッシュコマンド・Agent）の説明。Claude Desktop から MCP サーバーへ接続する手順は [claude-desktop.md](./claude-desktop.md) / [mcp.md](./mcp.md) を参照
 - OpenAPI 仕様から MCP サーバー自体を**生成する**プラグインは別物（[plugin-mcp.md](../plugins/plugin-mcp.md)）
+- Source: https://kubb.dev/docs/5.x/ai/claude (kubb@5.20.0, docs/5.x/ai/claude.md, no changes since 5.11.0, retrieved 2026-11-14)
 
 ## Related
 

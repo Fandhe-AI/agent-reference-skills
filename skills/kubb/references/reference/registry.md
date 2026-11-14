@@ -1,10 +1,10 @@
 # Extension registry
 
-レビュー済みの plugin / adapter / parser を列挙する Kubb extension registry のプロトコル。各エントリは npm の 1 バージョンまたは GitHub release を pin する。`kubb add` / `kubb update` / `kubb list`、kubb.dev、Kubb Studio が参照する。
+レビュー済みの plugin / adapter / parser を列挙する Kubb extension registry のプロトコル。各エントリは npm の 1 バージョンまたは GitHub release を pin する。CLI、kubb.dev、Kubb Studio が参照する。CLI では `kubb init` / `kubb add` / `kubb update` / `kubb list` / `kubb remove` が使う。
 
 ## Signature / Usage
 
-ベース URL は `https://kubb.dev/registry`。プレーンな静的 JSON ドキュメントで、`application/json`、CORS 許可、リダイレクトなしで直接応答、10 分キャッシュ（`cache-control: public, max-age=600`）。
+ベース URL は `https://kubb.dev/registry`。プレーンな静的 JSON ドキュメントで、`application/json`、CORS 許可、リダイレクトなしで直接応答、10 分キャッシュ（`cache-control: max-age=600`）。
 
 ```typescript
 // GET <base>/index.json
@@ -107,23 +107,25 @@ detail ドキュメントのフィールドは package の `docs/` フォルダ�
 
 ### Host your own registry
 
-同じ 2 つのドキュメントを任意の静的ホストで配信し、`KUBB_REGISTRY` で CLI を向ける。自前レコードから build するには `kubb-labs/registry` を fork し `extensions/` を差し替えて `pnpm build`（`dist/` が registry 全体）。
+`index.json` を任意の静的ホストで配信し、`KUBB_REGISTRY` で CLI を向ける。CLI は他のドキュメントを必要としない。別のツールが registry から extension docs を読む場合は detail ドキュメントも配信する。自前レコードから全ドキュメントを build するには `kubb-labs/registry` を fork し `extensions/` を差し替えて `pnpm build`（`dist/` が registry 全体）。
 
 ```shell
 KUBB_REGISTRY=https://registry.example.com kubb add acme/plugin-graphql
 ```
 
-この場合 CLI は `https://registry.example.com/index.json` と `https://registry.example.com/acme/plugin-graphql.json` を読む。
+この場合 CLI は `https://registry.example.com/index.json` を読み、その中から `acme/plugin-graphql` を探す。
 
 ## Notes
 
 - CLI は `version` が `1` でない index を拒否する。検証に失敗したエントリはスキップし残りを保持する
-- CLI がエントリをスキップする条件: `id` が完全な `<owner>/<slug>` でない、`artifact` が正確な semver の npm / GitHub pin でない、`manifest` が entry の `kind` に対し無効。detail ドキュメントの `id` は CLI が要求した id と一致必須
-- `options` 欠落は `null`、`guides` 欠落は `[]` として読む。未知の id は 404 を返し、`kubb add` は `"<id>" is not in the registry at <registry>.` と報告する
+- CLI がエントリをスキップする条件: `id` が完全な `<owner>/<slug>` でない、`artifact` が正確な semver の npm / GitHub pin でない、`manifest` が entry の `kind` に対し無効
+- `options` 欠落は `null`、`guides` 欠落は `[]` として読む。未知の id は 404 を返す。`kubb add` は index から id を探し、index に無ければ `No extension named <id>` と出力する
 - 公式 version のうち manifest 導入前のものは manifest を持たず、manifest 付きバージョンが pin されるまで index から除外される
-- `KUBB_REGISTRY` は `http://` または `https://` で始まる必要があり、末尾スラッシュは除去される。独自 index は `version: 1` を設定し未知 id に 404 を返す。Studio は常に kubb.dev の index を読むため、private registry は CLI の install 先のみ変える
+- `KUBB_REGISTRY` は `http://` または `https://` で始まる必要があり、末尾スラッシュは除去される。独自 index は `version: 1` を設定し、未知 id の detail ドキュメントに 404 を返す。kubb.dev と Studio は常に kubb.dev の registry を読むため、private registry は CLI の install 先のみ変え、kubb.dev や Studio の掲載は変えない
+- index は CLI が読む唯一のドキュメントで、Kubb Studio もプラグイン一覧のために読む。detail ドキュメントは kubb.dev が extension ページの生成に使い、CLI は読まない
 - タイムスタンプは UTC・秒単位（例 `2026-10-12T20:00:00Z`）
-- 出典: https://kubb.dev/docs/5.x/reference/registry （kubb@5.11.0 の docs/5.x/reference/registry.md）
+- Source: https://kubb.dev/docs/5.x/reference/registry (docs/5.x/reference/registry.md of kubb@5.20.0, retrieved 2026-11-14)
+- Migration (5.11 → 5.20): the CLI now reads only `index.json` and no longer requires a detail document's `id` to match; `kubb add` reports `No extension named <id>` instead of `"<id>" is not in the registry at <registry>.` (docs diff 5.11 → 5.20)
 
 ## Related
 

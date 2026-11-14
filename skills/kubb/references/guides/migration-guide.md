@@ -2,13 +2,13 @@
 
 ## Upgrade from v4 to v5
 
-Kubb 5.11.0 / docs 5.x how-to/migration（"Upgrade from v4 to v5"）に準拠。Update packages, migrate the config, regenerate, and fix generated-code imports. Kubb v5 separates specification parsing, code generation, source printing, and storage.
+docs 5.x how-to/migration（"Upgrade from v4 to v5"）に準拠。Update packages, migrate the config, regenerate, and fix generated-code imports. Kubb v5 separates specification parsing, code generation, source printing, and storage.
 
 ### Before you start
 
-Use Node.js 22.12 or higher in development, CI, and Docker. Update `kubb` and the plugins you use to v5. Plugin package names remain unchanged, although their source now lives in kubb-labs/plugins.
+Use Node.js 22.22 or higher in development, CI, and Docker. Update `kubb` and the plugins you use to v5. Plugin package names remain unchanged, although their source now lives in kubb-labs/plugins.
 
-> Remove `@kubb/plugin-solid-query` and `@kubb/plugin-svelte-query`. They have no v5 replacement (last release 4.39.3). Replace `@kubb/plugin-client` with Axios or Fetch and `@kubb/plugin-oas` with the adapter, as described below.
+> Remove `@kubb/plugin-solid-query` and `@kubb/plugin-svelte-query`. They have no v5 replacement (last release 4.39.3). Replace `@kubb/plugin-oas` with the adapter and `pluginClient({ client })` with Axios or Fetch, as described below. Keep `@kubb/plugin-client` only when you use your own client module.
 
 ### Defaults that changed
 
@@ -19,7 +19,7 @@ Use Node.js 22.12 or higher in development, CI, and Docker. Update `kubb` and th
 | Root barrel | `'named'` | `false` |
 | Tag folder | `<tag>Controller` | `<tag>` |
 | React/Vue Query `hooks` | `true` | `false` |
-| Client error handling | Errors returned | `throwOnError: true` |
+| Client error handling | Errors returned | `throwOnErrorDefault: true` |
 | OpenAPI `int64` mapping | `number` | `bigint` |
 | SWR mutation arguments | Trigger shape opt-in | Passed through `trigger()` |
 
@@ -72,7 +72,7 @@ Replace `output.barrelType` at the root and on plugins:
 | `'propagate'` (plugin only) | `{ type: 'named', nested: true }` |
 | `false` | `false` |
 
-Barrels, formatting, and linting now default to off. Automatic formatter/linter selection prefers the oxc tools.
+The root barrel, formatting, and linting now default to off. Plugins still write a named barrel by default. An `output` you pass replaces that default, so repeat `barrel` there. Automatic formatter/linter selection prefers the oxc tools.
 
 `output.mode` remains a plugin-level option inferred from `output.path`: an extension means one file, otherwise a directory. `group` works with inferred directory mode. Combining `group` with file mode fails with `KUBB_INVALID_PLUGIN_OPTIONS`.
 
@@ -86,7 +86,7 @@ Tag folders no longer add `Controller` (or `Requests` for Cypress/MCP). To retai
 | `transformers.schema` | `macros`. |
 | `mapper` | Schema macros or a `printer.nodes` override. |
 | `generators` | A custom plugin. |
-| `paramsType`, `pathParamsType`, `paramsCasing` | One grouped `{ body, path, query, headers }` object, with names from the spec. |
+| `paramsType`, `pathParamsType`, `paramsCasing` | One grouped `{ body, path, query, headers }` object, with names from the spec. For camelCase path params, set `pathParamsCasing: 'camelcase'` on the adapter (adapter-oas options). |
 
 Required parameters make their group required. Unused groups are typed `never`. Update positional call sites:
 
@@ -103,10 +103,11 @@ After moving a name transformer, check identifiers because resolver inputs may h
 Replace `pluginClient({ client: 'axios' })` with `pluginAxios()`, or `client: 'fetch'` with `pluginFetch()`.
 
 - `clientType` and `wrapper` become `sdk`. `sdk.mode: 'tag'` is the default. `sdk.name` adds a root class. Use `mode: 'flat'` for one class. Leave `sdk` unset for standalone functions used by query plugins.
-- `dataReturnType` is removed. Clients return `{ data, error, request, response }`. Read `data` for the body. Set `throwOnError: false` to inspect errors without throwing.
+- `dataReturnType` becomes `returnType`. The default `'full'` returns `{ status, data, error, contentType, headers, request, response }`. Read `data` for the body, call `.unwrap()`, or set `returnType: 'data'` to get the body directly. Set `throwOnError: false` on a call to inspect errors without throwing. Set `throwOnErrorDefault: false` on the plugin to change the default.
 - `parser: 'zod'` becomes `validator: 'zod'`. The old `'client'` parser becomes the default `false` validator.
 - Authentication uses OpenAPI security schemes and the bundled client's `auth` resolver.
-- Remove `operations`, `clientType: 'staticClass'`, `importPath`, `bundle`, and `urlType`. The client is bundled into `.kubb/client.ts`. URL-only helpers require a custom plugin.
+- Remove `operations`, `clientType: 'staticClass'`, `bundle`, and `urlType`. The Axios and Fetch plugins write their client to `.kubb/client.ts`. URL-only helpers require a custom plugin.
+- If you set `importPath` to your own client module, keep `@kubb/plugin-client` and pass `pluginClient({ importPath })`. Its `sdk` and `baseURL` options are not available, because your module owns the client.
 
 ```typescript
 const { data: pet } = await getPet({ path: { petId: 1 } })
@@ -134,7 +135,7 @@ Upgrade `zod` to v4 and remove `version`.
 
 ### React Query (`@kubb/plugin-react-query`)
 
-Register an Axios or Fetch client plugin. `client` is now `'axios' | 'fetch'`, auto-detected when exactly one client is registered. Move `baseURL` and validation to that client. Remove the query plugin's `parser`.
+Register a client plugin: Axios, Fetch, or `@kubb/plugin-client`. `client` is now `'axios' | 'fetch' | 'client'`, auto-detected when exactly one client plugin is registered. Move `baseURL` and validation to that client. Remove the query plugin's `parser`.
 
 Set `hooks: true` to keep `use*` hooks. The default `false` still emits keys and option factories.
 
@@ -158,11 +159,11 @@ SWR drops the parameter-presence guard and keys requests off `shouldFetch`. Set 
 
 ### Faker (`@kubb/plugin-faker`)
 
-Remove `paramsCasing` and `mapper`. Use macros or printers, keeping mock values compatible with the TypeScript output. `createPet` keeps its name but accepts generic `TData`, preserving the types of override fields in its return value.
+Remove `paramsCasing` and `mapper`. Use macros or printers, keeping mock values compatible with the TypeScript output. `createPet` keeps its name but accepts a generic `TData`, so its return value keeps the types of the override fields.
 
 ### MSW (`@kubb/plugin-msw`)
 
-The `parser`, `handlers`, and `baseURL` options retain their v4 behavior. Generated handlers use `HttpResponseResolver` typed against request bodies and headers. Apply the shared resolver, adapter `contentType`, and generator-option migrations.
+The `parser`, `handlers`, and `baseURL` options retain their v4 behavior. A handler for an operation with a request body accepts an `HttpResponseResolver` typed against that body. Apply the shared resolver, adapter `contentType`, and generator-option migrations.
 
 ### Cypress (`@kubb/plugin-cypress`)
 
@@ -174,7 +175,7 @@ Register TypeScript, Zod, and an Axios or Fetch client. `client` selects the reg
 
 ### Verify the upgrade
 
-Run `kubb generate`, review generated-file changes, and type-check your application. Update response imports for `Status<code>` names, Zod inferred-type imports for `Type`, and imports from renamed tag folders. Enable formatting, linting, and barrels explicitly if needed.
+Run `kubb generate`, review generated-file changes, and type-check your application. Update response imports for `Status<code>` names, Zod inferred-type imports for `Type`, and imports from renamed tag folders. Enable formatting, linting, and the root barrel explicitly if you need them.
 
 ---
 
@@ -249,3 +250,8 @@ MSW v1 のサポートは廃止。v2 が必須。
 ### Node.js サポート
 
 v3 の最小要件は Node.js 20（v18 サポート廃止）。
+
+## Notes
+
+- Source: https://kubb.dev/docs/5.x/how-to/migration (docs/5.x/how-to/migration.md of kubb@5.20.0, retrieved 2026-11-14)
+- Migration (5.11 → 5.20): the v4 → v5 guide now requires Node.js 22.22 or higher (changelog v5.13.0 "Require Node.js 22.22+"), uses `throwOnErrorDefault: true` for the client error-handling default, and maps `dataReturnType` to `returnType`; `@kubb/plugin-client` stays for projects that use their own client module (`pluginClient({ importPath })`) and the query plugins accept `client: 'client'` (docs diff 5.11 → 5.20)

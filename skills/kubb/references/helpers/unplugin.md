@@ -1,6 +1,6 @@
 # unplugin-kubb
 
-Kubb コード生成を複数のビルドツールに統合するユニバーサルプラグイン（unplugin ベース）。Vite、webpack、Rollup、Rolldown、Rspack、esbuild、Farm、Nuxt、Astro に対応（Kubb 5.11.0 の `packages/unplugin-kubb/README.md` と docs 5.x integrations/* に準拠）。`unplugin-kubb` は `kubb` に同梱され、docs は `kubb/<bundler>` から import する。
+Kubb コード生成を複数のビルドツールに統合するユニバーサルプラグイン（unplugin ベース）。Vite、webpack、Rollup、Rolldown、Rspack、esbuild、Farm、Nuxt、Astro に対応（kubb@5.20.0 の `packages/unplugin-kubb/README.md` と docs 5.x integrations/* に準拠）。`unplugin-kubb` は `kubb` に同梱され、docs は `kubb/<bundler>` から import する。
 
 Kubb generates once, when the first build starts. Watch rebuilds and later builds that share the plugin reuse that output, so restart the build after you change your spec. Vite, Nuxt, and Astro generate during builds only, not in their development servers. A missing `config` or a failed generation fails the build.
 
@@ -48,7 +48,7 @@ npm install -D unplugin-kubb @kubb/core
 // vite.config.ts
 import kubb from 'kubb/vite'
 import { defineConfig } from 'vite'
-import config from './kubb.config'
+import config from './kubb.config.ts'
 
 export default defineConfig({
   plugins: [kubb({ config })],
@@ -60,7 +60,7 @@ export default defineConfig({
 ```typescript
 // rollup.config.ts（Rolldown は 'kubb/rolldown' と defineConfig from 'rolldown'）
 import kubb from 'kubb/rollup'
-import config from './kubb.config'
+import config from './kubb.config.ts'
 
 export default {
   input: 'src/index.ts',
@@ -85,7 +85,7 @@ export default {
 ```typescript
 import { build } from 'esbuild'
 import kubb from 'kubb/esbuild'
-import config from './kubb.config'
+import config from './kubb.config.ts'
 
 await build({
   entryPoints: ['src/index.ts'],
@@ -150,9 +150,10 @@ module.exports = {
 ## Notes
 
 - Vite / Nuxt / Astro の統合は**ビルド時のみ**生成する。開発サーバーを起動する前に `kubb generate` を実行する
-- Bundler integrations apply fewer defaults than the CLI: no Markdown parser, no reporters, and no `output.postGenerate` commands. それらが必要なら CLI を使う（Prettier / ESLint など生成後の処理も CLI で行う）
-- 旧版の `hook` オプションは unplugin では動作しない制限事項の記述だった。5.x では上記のとおり `output.postGenerate` が bundler 統合で適用されない
-- Vue CLI の節は 5.11.0 の README と docs 5.x のどちらにも記載がない（旧版ページ由来で残している）。Vue CLI は webpack ベースのため `webpack` 統合と同じ書き方になる想定
+- バンドラー連携は `defineConfig` と同じ既定値を適用し、ビルド中に `output.format` / `output.lint` / `output.postGenerate` を実行する。サマリーは表示するが `json` / `file` / `html` reporter は実行しない（それらのレポートが必要なら CLI を使う）。`config` を省略すると連携は CLI と同様に `kubb.config.ts` を読み込み、`*.openapi.yaml` の import も使える（overview の "Import a spec" と integrations の openapi-import ページを参照）
+- Migration (5.11 → 5.20): the 5.11.0 docs said bundler integrations apply fewer defaults than the CLI and run no `output.postGenerate`; the 5.20.0 docs state the opposite as above. The changelog records `unplugin-kubb` honoring `output.format`, `output.lint` and `output.postGenerate` (#4196) and applying the `defineConfig` defaults with a printed summary (5.9.4, #4293); it also records `kubb()` without a `config` option loading `kubb.config.ts` (5.12.6, #4402). Official bundler pages now import the config as `./kubb.config.ts` for Vite / Rollup / Rolldown / esbuild; the webpack / Rspack / Farm / Nuxt / Astro pages still say `./kubb.config` (kept verbatim)
+- Source: https://kubb.dev/docs/5.x/integrations/overview （kubb@5.20.0 の docs/5.x/integrations/overview.md と各ビルドツールページ、取得日 2026-11-14）
+- Vue CLI の節は 5.20.0 の README と docs 5.x のどちらにも記載がない（旧版ページ由来で残している）。Vue CLI は webpack ベースのため `webpack` 統合と同じ書き方になる想定
 - Rolldown と Farm は v5 で追加された統合
 - v5 では config は `kubb/config` の `defineConfig`、`input` は直接指定（`input: { path }` は `KUBB_LEGACY_INPUT`）
 

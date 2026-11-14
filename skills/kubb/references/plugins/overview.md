@@ -1,6 +1,6 @@
 # プラグイン概要
 
-Kubb の拡張モデル（adapter / plugin / macro / resolver / printer / parser / storage）とプラグイン一覧（Kubb 5.11.0 / docs 5.x explanation/extensions に準拠）。
+Kubb の拡張モデル（adapter / plugin / macro / resolver / printer / parser / storage）とプラグイン一覧（docs 5.x explanation/extensions に準拠）。
 
 ## 拡張の選び方
 
@@ -65,6 +65,7 @@ export default defineConfig({
 - v5: `@kubb/plugin-solid-query` and `@kubb/plugin-svelte-query` are removed with no replacement (last 4.39.3)
 - v5: `@kubb/plugin-oas` is replaced by `adapterOas`, which `defineConfig` supplies by default together with the TypeScript/TSX/Markdown parsers and a barrel plugin
 - v5: `@kubb/plugin-client` role changed; use `pluginAxios()` / `pluginFetch()` for Axios / Fetch clients
+- Source: https://kubb.dev/docs/5.x/explanation/extensions (docs/5.x/explanation/extensions.md of kubb@5.20.0, retrieved 2026-11-14); the 5.11 → 5.20 docs diff only restructures paragraphs and changes no content
 - Extensions are also installable from the Kubb registry via `kubb add <extension>`
 
 ## Related

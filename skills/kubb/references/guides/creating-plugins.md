@@ -1,6 +1,6 @@
 # カスタムプラグインの作成
 
-`listPets.ts` に 1 つの API operation の method と path を書き出すプラグインを作成し、テストする（Kubb 5.11.0 / docs 5.x tutorials/creating-plugins に準拠。旧パスから `/docs/5.x/tutorials/creating-plugins` へ移動）。Node.js 22.12 以上・npm・TypeScript の知識が必要。すべての作成 API は `kubb` に含まれる `kubb/kit` から利用する。
+`listPets.ts` に 1 つの API operation の method と path を書き出すプラグインを作成し、テストする（docs 5.x tutorials/creating-plugins "Create a Kubb plugin" に準拠。旧パスから `/docs/5.x/tutorials/creating-plugins` へ移動）。Node.js 22.22 以上・npm・TypeScript の知識が必要。すべての作成 API は `kubb` に含まれる `kubb/kit` から利用する。
 
 ## 手順
 
@@ -123,8 +123,10 @@ npx vitest run src/plugin.test.ts
 
 ## Notes
 
-- 5.11.0 のチュートリアルは `defineExtension` と composable（`setResolver` / `addGenerator`）を使う。旧版ページの `definePlugin(() => ({ name, hooks: { 'kubb:plugin:setup'(ctx) { ... } } }))` 形式は動作するが非推奨（`@kubb/kit` README）。setup context の詳細は [plugins.md](../kit/plugins.md) を参照
-- 旧版ページの命名規則（公式 `@kubb/plugin-<name>`、コミュニティ `kubb-plugin-<name>`、ランタイム名 `plugin-<name>`）・プロジェクトレイアウト・依存宣言（`dependencies`）の記述は 5.11.0 のチュートリアルに無い。依存は plugin 名をキーとするレコードで宣言し、必須の依存が欠けると `KUBB_MISSING_DEPENDENCY` でビルドが失敗する（[overview.md](../plugins/overview.md)）
+- Source: https://kubb.dev/docs/5.x/tutorials/creating-plugins (docs/5.x/tutorials/creating-plugins.md of kubb@5.20.0, retrieved 2026-11-14)
+- Migration (5.11 → 5.20): the tutorial requires Node.js 22.22 or higher (was 22.12) and no longer adds a configurable prefix; it ends with testing the output in memory with `createKubb` and Vitest (docs diff 5.11 → 5.20)
+- 5.20 のチュートリアルは `defineExtension` と composable（`setResolver` / `addGenerator`）を使う。旧版ページの `definePlugin(() => ({ name, hooks: { 'kubb:plugin:setup'(ctx) { ... } } }))` 形式は動作するが非推奨（`@kubb/kit` README）。setup context の詳細は [plugins.md](../kit/plugins.md) を参照
+- 旧版ページの命名規則（公式 `@kubb/plugin-<name>`、コミュニティ `kubb-plugin-<name>`、ランタイム名 `plugin-<name>`）・プロジェクトレイアウト・依存宣言（`dependencies`）の記述は 5.20 のチュートリアルに無い。依存は plugin 名をキーとするレコードで宣言し、必須の依存が欠けると `KUBB_MISSING_DEPENDENCY` でビルドが失敗する（[overview.md](../plugins/overview.md)）
 - 公開は [publish-a-plugin.md](./publish-a-plugin.md)、レジストリへの申請は [submit-to-the-registry.md](./submit-to-the-registry.md) を参照
 - Generator・Resolver の概念的な役割は [generators.md](./generators.md)・[resolvers.md](./resolvers.md) を参照
 - 命名・パスのカスタマイズだけが目的なら、独自プラグインではなく [resolver-customization.md](./resolver-customization.md) を使う方が簡潔

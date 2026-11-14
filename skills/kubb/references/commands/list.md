@@ -37,7 +37,7 @@ kubb-labs/plugin-zod  @kubb/plugin-zod           5.4.4      5.4.4     no
 - `kubb` に同梱される extension（`@kubb/adapter-oas`、`@kubb/plugin-barrel` 等）は `package.json` に直接記載されている場合のみ表示される。
 - registry が読めない場合は `Showing installed extensions only: <reason>` を表示し、manifest を同梱するパッケージのみ一覧する。何も見つからなければ `No installed extensions found.`
 - 終了コード 1: `KUBB_REGISTRY` が `http://` / `https://` URL でない場合。registry に到達できなくてもコマンドは失敗しない。
-- 出典: https://kubb.dev/docs/5.x/reference/commands/list （kubb@5.11.0 の docs/5.x/reference/commands/list.md）
+- Source: https://kubb.dev/docs/5.x/reference/commands/list （kubb@5.20.0 の docs/5.x/reference/commands/list.md、取得日 2026-11-14）
 
 ## Related
 

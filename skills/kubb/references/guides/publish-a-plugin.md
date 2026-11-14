@@ -1,6 +1,8 @@
 # Publish a plugin
 
-Plugin を npm へ publish し、Kubb registry に登録すると、ユーザーは `kubb add` でインストールでき Studio からも見つけられる。テスト付きの動く Plugin（Create and extend a plugin で作ったもの等）から始める。Adapter と parser も同じ手順。
+Plugin を npm へ publish し、Kubb registry に登録する。ユーザーは `kubb add` でインストールでき、Studio からも見つけられる。テスト付きの動く Plugin（Create a plugin で作ったもの等）から始める。Adapter と parser も同じ手順。
+
+npm に既にある package は、既存 package から始める submit-to-the-registry.md へ進んでよい。
 
 ## Build the package
 
@@ -69,24 +71,15 @@ package ルートに `kubb-extension.json` を作る。registry・`kubb add`・S
   "displayName": "Example",
   "description": "Writes a comment with the HTTP method and path of every operation.",
   "maintainers": [{ "name": "Acme", "github": "acme" }],
-  "compatibility": { "kubb": ">=5.8.3", "node": ">=22" },
-  "options": [
-    {
-      "key": "prefix",
-      "path": ["prefix"],
-      "label": "Prefix",
-      "description": "Text written at the start of every comment.",
-      "type": "text"
-    }
-  ]
+  "compatibility": { "kubb": ">=5.8.3", "node": ">=22" }
 }
 ```
 
-`name` は Plugin の `meta.name`、`export` は `src/index.ts` が export する factory に合わせる。Studio で編集させたい option ごとに `options` エントリを追加する。`src/plugin.ts` の `meta.compatibility` にも同じ範囲 `{ kubb: '>=5.8.3', node: '>=22' }` を与えると、Kubb が実行時にも検査する。bundler 使用時は manifest から `compatibility` を import する（Extension manifest の "Import compatibility into meta" 参照）。`maintainers` / `dependencies` を含む全フィールドは Extension manifest リファレンスを参照。
+`name` は Plugin の `meta.name`、`export` は `src/index.ts` が export する factory に合わせる。Plugin が option を取る場合は、Studio でユーザーに編集させたい option ごとに Extension manifest リファレンスの `options` エントリを追加する。`src/plugin.ts` の `meta.compatibility` にも同じ範囲 `{ kubb: '>=5.8.3', node: '>=22' }` を与えると、Kubb が実行時にも検査する。bundler 使用時は manifest から `compatibility` を import する（Extension manifest の "Import compatibility into meta" 参照）。`options` / `dependencies` を含む全フィールドは Extension manifest リファレンスを参照。
 
 ## Write the docs
 
-manifest の隣に `docs/` フォルダーを作る。kubb.dev がこれを extension のページとして描画し、Studio は overview を要約として表示する。
+manifest の隣に `docs/` フォルダーを作る。kubb.dev がこれを extension のページとして描画する。Studio は代わりに manifest の `description` を表示する。
 
 ```text
 docs/
@@ -108,7 +101,7 @@ npm pack --dry-run
 npm pack
 ```
 
-dry run には `dist/` のファイル、`kubb-extension.json`、`docs/` のファイル、`package.json` が並び、fixture・tests・生成 client ファイルは含まれないこと。`prepack` が先にビルドと両テストを実行する。
+dry run には `dist/` のファイル、`kubb-extension.json`、`docs/` のファイル、`package.json` が並び、fixture・tests・生成 client ファイルは含まれないこと。`prepack` が先にビルドとテストを実行する。
 
 ## Publish to npm
 
@@ -125,7 +118,8 @@ npm publish --access public
 
 ## Notes
 
-- 出典: https://kubb.dev/docs/5.x/how-to/publish-a-plugin（kubb@5.11.0）
+- Source: https://kubb.dev/docs/5.x/how-to/publish-a-plugin (docs/5.x/how-to/publish-a-plugin.md of kubb@5.20.0, retrieved 2026-11-14)
+- The 5.20 example manifest no longer carries `options` or an `options` entry for `prefix`, and its `docs/` text says Studio shows the manifest `description` rather than the overview (docs diff 5.11 → 5.20)
 
 ## Related
 
