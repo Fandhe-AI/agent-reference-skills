@@ -28,7 +28,7 @@ gcloud asset export \
     --project=my-project \
     --billing-project=my-project \
     --content-type=resource \
-    --snapshot-time="2024-01-30" \
+    --snapshot-time="SNAPSHOT_TIME" \
     --output-path="gs://my-bucket/my-file.txt"
 ```
 
@@ -48,7 +48,7 @@ curl -X POST \
      -H "Content-Type: application/json; charset=utf-8" \
      -d '{
             "contentType": "RESOURCE",
-            "readTime": "2024-01-30T00:00:00Z",
+            "readTime": "READ_TIME",
             "outputConfig": {
               "gcsDestination": {
                 "uri": "gs://my-bucket/my-file"
@@ -106,6 +106,7 @@ View the snapshot: in the Cloud Storage Buckets page open the bucket, click the 
 
 ## Notes
 
+- Adapted from the official docs: request examples use `SNAPSHOT_TIME` / `READ_TIME` placeholders instead of the fixed `2024-01-30`; use a time within the last 35 days.
 - Limitations: buckets encrypted with customer-managed Cloud KMS keys are not supported; the bucket cannot have a retention policy; temporary files may appear in the output folder during export and must not be removed until it completes; `ACCESS_POLICY` can only be exported at the organization level; exporting to a file already being exported to returns `400`; an empty test file is created first, causing an extra `google.cloud.storage.object.v1.finalized` event.
 - New export requests to the same destination are accepted only after the previous request finished or more than 15 minutes elapsed.
 - Operation IDs are UUIDs that need no extra permission to query; share them only with trusted users.

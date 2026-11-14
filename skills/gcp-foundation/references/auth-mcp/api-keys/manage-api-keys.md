@@ -94,7 +94,7 @@ curl -X POST \
               },
               {
                 "service" : "SERVICE_2"
-              },
+              }
             ]
           }
         }' \
@@ -116,7 +116,7 @@ curl -X POST \
               },
               {
                 "service" : "SERVICE_2"
-              },
+              }
             ]
           },
           "serviceAccountEmail" : "SERVICE_ACCOUNT_EMAIL_ADDRESS"

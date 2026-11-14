@@ -30,7 +30,7 @@ Example:
 gcloud asset export \
     --project=my-project \
     --content-type=resource \
-    --snapshot-time="2024-01-30" \
+    --snapshot-time="SNAPSHOT_TIME" \
     --bigquery-table=projects/my-project/datasets/my-dataset/tables/my-table \
     --output-bigquery-force
 ```
@@ -44,7 +44,7 @@ curl -X POST \
      -H "Content-Type: application/json; charset=utf-8" \
      -d '{
             "contentType": "RESOURCE",
-            "readTime": "2024-01-30T00:00:00Z",
+            "readTime": "READ_TIME",
             "outputConfig": {
               "bigqueryDestination": {
                 "dataset": "projects/my-project/datasets/my-dataset",
@@ -62,7 +62,7 @@ curl -X POST \
 gcloud asset export \
     --project=my-project \
     --content-type=resource \
-    --snapshot-time="2024-01-30" \
+    --snapshot-time="SNAPSHOT_TIME" \
     --bigquery-table=projects/my-project/datasets/my-dataset/tables/my-table \
     --per-asset-type \
     --output-bigquery-force
@@ -74,11 +74,11 @@ REST: add `"separateTablesPerAssetType": true` inside `bigqueryDestination` (nex
 
 ```bash
 gcloud asset export \
-    --project=projects/my-project \
+    --project=my-project \
     --content-type=resource \
-    --snapshot-time="2024-01-30" \
+    --snapshot-time="SNAPSHOT_TIME" \
     --bigquery-table=projects/my-project/datasets/my-dataset/tables/my-table \
-    --partition-key=my-partition-key \
+    --partition-key=read-time \
     --output-bigquery-force
 ```
 
@@ -89,7 +89,7 @@ REST:
   "dataset": "projects/my-project/datasets/my-dataset",
   "table": "my-table",
   "partitionSpec": {
-    "partitionKey": "my-partition-key"
+    "partitionKey": "READ_TIME"
   },
   "force": true
 }
@@ -166,23 +166,23 @@ JOIN UNNEST(firewall.resource.data.sourceRanges) AS sourceRanges
 WHERE sourceRanges = "0.0.0.0/0";
 ```
 
-Subnetworks with no VM attached (per-asset-type tables):
+Subnetworks with no VM attached (per-asset-type tables).
+
+Adapted (not in the official docs): the outer `IS NULL` was removed (it excluded the unattached subnetworks) and the subquery filters `networkInterface.subnetwork IS NOT NULL` so `NOT IN` never yields UNKNOWN.
 
 ```sql
 SELECT name, subnetwork.resource.data.selfLink
 FROM `PROJECT_ID.DATASET_ID.STRUCTURED_SUBNETWORK_TABLE_NAME` AS subnetwork
 WHERE
-  (
-    subnetwork.resource.data.selfLink
-      NOT IN (
-        SELECT DISTINCT networkInterface.subnetwork
-        FROM `PROJECT_ID.DATASET_ID.STRUCTURED_INSTANCE_TABLE_NAME` as instance
-        JOIN
-          UNNEST(instance.resource.data.networkInterfaces) AS networkInterface
-        WHERE
-          networkInterface IS NOT NULL
-      )
-  ) IS NULL;
+  subnetwork.resource.data.selfLink
+    NOT IN (
+      SELECT DISTINCT networkInterface.subnetwork
+      FROM `PROJECT_ID.DATASET_ID.STRUCTURED_INSTANCE_TABLE_NAME` as instance
+      JOIN
+        UNNEST(instance.resource.data.networkInterfaces) AS networkInterface
+      WHERE
+        networkInterface.subnetwork IS NOT NULL
+    );
 ```
 
 ## Options / Props
@@ -203,6 +203,7 @@ Casing: for `RESOURCE` content type exported per asset type, field names are cam
 
 ## Notes
 
+- Adapted from the official docs: request examples use `SNAPSHOT_TIME` / `READ_TIME` placeholders instead of the fixed `2024-01-30`; use a time within the last 35 days.
 - Limitations: not all BigQuery table fields are exported; frequently changing fields (`numBytes`, `numLongTermBytes`, `numPhysicalBytes`, `numRows`) can be `null`; clustered tables are unsupported; appending to an existing table is unsupported unless partitioned (otherwise the table must be empty or overwritten with force); GKE resource types other than `container.googleapis.com/Cluster` and `NodePool` are unsupported in per-asset-type mode; `ACCESS_POLICY` exports only at organization level; a `400` is returned if the table is currently being exported to.
 - A new export to the same destination is rejected if the previous one started less than 15 minutes ago and is still running; after 15 minutes the earlier export is marked done.
 - Per-asset-type exports fail entirely on the first error (earlier successful tables persist). Proto3 types `Timestamp`, `Duration`, `FieldMask`, `ListValue`, `Value`, `Struct`, and `google.api.*` are packed as JSON strings.

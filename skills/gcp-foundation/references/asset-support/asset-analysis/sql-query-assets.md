@@ -53,12 +53,7 @@ curl -X POST \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
      -H "Content-Type: application/json; charset=utf-8" \
      -d '{
-            "statement": "
-              SELECT
-                name, assetType
-              FROM
-                compute_googleapis_com_Instance
-              LIMIT 2"
+            "statement": "SELECT name, assetType FROM compute_googleapis_com_Instance LIMIT 2"
           }' \
      https://cloudasset.googleapis.com/v1/projects/my-project:queryAssets
 ```
@@ -103,12 +98,7 @@ curl -X POST \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
      -H "Content-Type: application/json; charset=utf-8" \
      -d '{
-            "statement": "
-              SELECT
-                name, assetType
-              FROM
-                compute_googleapis_com_Instance
-              LIMIT 2",
+            "statement": "SELECT name, assetType FROM compute_googleapis_com_Instance LIMIT 2",
             "outputConfig": {
               "bigqueryDestination": {
                 "dataset": "projects/my-project/datasets/my-dataset",

@@ -41,7 +41,7 @@ curl -X PATCH \
   },
   {
     "service" : "SERVICE_2"
-  },
+  }
 ]
 }
 }' \
@@ -136,7 +136,7 @@ curl -X PATCH \
     {
       "sha1Fingerprint": "SHA1_FINGERPRINT_1",
       "packageName": "PACKAGE_NAME_1"
-    },
+    }
  ]
 }
 }

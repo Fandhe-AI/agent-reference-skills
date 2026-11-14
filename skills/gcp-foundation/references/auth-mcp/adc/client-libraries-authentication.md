@@ -242,7 +242,7 @@ async function authenticateWithAPIKey(apiKey) {
   console.log('Successfully authenticated using the API key');
 }
 
-authenticateWithAPIKey();
+authenticateWithAPIKey(process.env.API_KEY);
 ```
 
 ### Security requirements for credential configurations from an external source
@@ -264,9 +264,12 @@ ServiceAccountCredentials credentials =
       ServiceAccountCredentials.fromStream(credentialsStream);
 ```
 
+Adapted (not in the official docs): `fromJSON` is an instance method, so a `JWT` instance is created first.
+
 ```javascript
 const keys = JSON.parse(json_input)
-const authClient = JWT.fromJSON(keys);
+const authClient = new JWT();
+authClient.fromJSON(keys);
 ```
 
 ```php
@@ -285,6 +288,8 @@ If you can't use a type-specific loader, confirm the `type` field is `service_ac
 
 If your application accepts any other credential configuration type (ADC credential files, Workload Identity Federation credential files, Workforce Identity Federation login configuration files), validate these fields when present. If any value does not conform, don't use the credential.
 
+Adapted (not in the official docs): the three AWS rows are listed as `credential_source.url`, `credential_source.region_url`, `credential_source.imdsv2_session_token_url` (the official table shows them under `credential_source.aws.*`, but in AWS external account configs they sit directly under `credential_source`).
+
 | Field | Purpose | Expected value |
 |---|---|---|
 | `service_account_impersonation_url` | Endpoint to generate an access token for the impersonated service account. | `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/service account email:generateAccessToken` |
@@ -292,12 +297,13 @@ If your application accepts any other credential configuration type (ADC credent
 | `credential_source.file` | File from which the library reads an external token and sends it to `token_url`. | The path for a file containing an external token. You should recognize this path. |
 | `credential_source.url` | Endpoint returning an external token; the response goes to `token_url`. | A well-known endpoint provided by your cloud provider, or an endpoint you explicitly set up to provide tokens. |
 | `credential_source.executable.command` | Command run if `GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES` is `1`. | An executable file or command that returns an external token. You should recognize it and validate that it is safe. |
-| `credential_source.aws.url` | URL to retrieve an AWS security token. | `http://169.254.169.254/latest/meta-data/iam/security-credentials` or `http://[fd00:ec2::254]/latest/meta-data/iam/security-credentials` |
-| `credential_source.aws.region_url` | URL to retrieve the active AWS region. | `http://169.254.169.254/latest/meta-data/placement/availability-zone` or `http://[fd00:ec2::254]/latest/meta-data/placement/availability-zone` |
-| `credential_source.aws.imdsv2_session_token_url` | URL to retrieve the AWS session token. | `http://169.254.169.254/latest/api/token` or `http://[fd00:ec2::254]/latest/api/token` |
+| `credential_source.url` (AWS: security token URL) | URL to retrieve an AWS security token. | `http://169.254.169.254/latest/meta-data/iam/security-credentials` or `http://[fd00:ec2::254]/latest/meta-data/iam/security-credentials` |
+| `credential_source.region_url` | URL to retrieve the active AWS region. | `http://169.254.169.254/latest/meta-data/placement/availability-zone` or `http://[fd00:ec2::254]/latest/meta-data/placement/availability-zone` |
+| `credential_source.imdsv2_session_token_url` | URL to retrieve the AWS session token. | `http://169.254.169.254/latest/api/token` or `http://[fd00:ec2::254]/latest/api/token` |
 
 ## Notes
 
+- Adapted from the official docs: AWS `url` / `region_url` / `imdsv2_session_token_url` are validated at `credential_source.*` (not `credential_source.aws.*`); the Node.js `JWT.fromJSON` sample calls the instance method (`new JWT().fromJSON(keys)`); the Node.js API key sample passes the key (here from `process.env.API_KEY`).
 - Keep API keys secure in storage and transmission; publicly exposing them can lead to unexpected charges. API keys passed as plaintext strings in code should be avoided; prefer keyless ADC where the API supports it.
 - Service account keys are a security risk; prefer keyless auth.
 - The source page also provides the ADC client creation sample for Java, PHP, Ruby and the API key sample for C#, C++, Ruby; those are not reproduced here. Per-language ADC code belongs to the `gcp-client-libraries` skill.

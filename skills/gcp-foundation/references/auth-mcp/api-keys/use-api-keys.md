@@ -163,7 +163,7 @@ async function authenticateWithAPIKey(apiKey) {
   console.log('Successfully authenticated using the API key');
 }
 
-authenticateWithAPIKey();
+authenticateWithAPIKey(process.env.API_KEY);
 ```
 
 Ruby (reads the key from a variable; the sample notes an env var option):
