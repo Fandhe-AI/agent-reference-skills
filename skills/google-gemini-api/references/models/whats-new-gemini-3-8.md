@@ -143,6 +143,7 @@ print(interaction.output_text)
 - Deprecation routing (changelog): `gemini-3.7-flash` routes to `gemini-3.8-flash` (2026-10-08); `gemini-2.5-pro` routes to `gemini-3.8-flash` from December 1, 2026 (2026-11-02).
 - The source page also shows Java and Go examples; only Python, JavaScript, and REST are reproduced here.
 - Distance: Managed Agents with Antigravity are distinct from anthropic-managed-agents, anthropic-agent-sdk, openai-agents and hermes-agent.
+- Source inconsistency kept verbatim: the migration checklist says every generateContent `FunctionResponse` needs `call_id` and `name`. In the generateContent API the matching field is `id` (see `references/generate-content/function-calling.md`); `call_id` is the field name on the Interactions API `function_result` step. Use `id` and `name` with generateContent.
 
 ## Related
 

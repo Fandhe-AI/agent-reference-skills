@@ -250,7 +250,7 @@ Each table lists Model (or Agent), Release date, Shutdown date, Recommended repl
 
 | Model | Release date | Shutdown date | Recommended replacement |
 |---|---|---|---|
-| [`gemini-decision-1`](/docs/models/gemini-decision-1) | November 11, 2026 | No shutdown date announced |  |
+| [`gemini-decision-1`](https://aistudio.google.com/docs/models/gemini-decision-1) | November 11, 2026 | No shutdown date announced |  |
 
 ### Managed agents
 

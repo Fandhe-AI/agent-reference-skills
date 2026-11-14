@@ -370,7 +370,7 @@ Each media block accepts either base64-encoded `data` or a `uri`, such as a File
 - Limitations: only a subset of the OpenAPI schema is supported; for `any` mode the API may reject very large or deeply nested schemas; supported parameter types in Python are limited.
 - Migration (May 2026 breaking changes): the request structure is unchanged, but the response replaces the flat `outputs` content with structured `steps`; find `function_call` steps in the `steps` array (legacy code read `interaction.outputs` with `output.type == "function_call"`). Server-side tools now yield tool-specific steps (e.g. `google_search_call`, `google_search_result`).
 - Remote MCP here is the consuming side (Gemini API connects to your MCP server); distinct from `anthropic-api-tools-mcp` (Claude API tool use / MCP connector) and `openai-agents` (OpenAI built-in tools / MCP).
-- API version (api-versions table): function calling is available in v1 and v1beta; the MCP Servers Tool is v1beta only.
+- API version (api-versions table): function calling and the MCP Servers Tool are available in v1 and v1beta (fetched 2026-11-14); video blocks in `function_result` are `v1beta` / `v1alpha` only.
 - API surface: Interactions API (`client.interactions.create`, v1beta in the examples); the generateContent version is under `generate-content/`. Docs fetched 2026-11-14 (https://aistudio.google.com/docs/function-calling); the source examples now use `gemini-4-hydrogen`.
 
 ```python
