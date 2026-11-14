@@ -1,12 +1,10 @@
 ---
 name: anthropic-managed-agents
 description: >
-  Claude Managed Agents (platform.claude.com) リファレンス。Agents / Sessions / Environments API,
-  SSE event streaming, session threads, session budgets,
-  multiagent orchestration (subagents, dynamic workflows, advisor),
-  deployments (cron), dreams, vaults, memory stores, self-hosted sandboxes, webhooks,
-  web search / fetch ドメイン制限, permission policies,
-  Agent Skills, MCP connector, user profiles。
+  Claude Managed Agents (platform.claude.com) リファレンス。Agents / Sessions / Environments API, SSE streaming,
+  session threads / budgets, multiagent (subagents, workflows, advisor), deployments (cron), dreams, vaults, memory stores,
+  self-hosted sandboxes, self-hosted Managed Agents (Kubernetes / SSO), webhooks,
+  web search / fetch ドメイン制限, permission policies, Agent Skills, MCP connector, user profiles。
 user-invocable: false
 ---
 
@@ -17,6 +15,8 @@ Claude Managed Agents (platform.claude.com/docs/en/managed-agents) — Anthropic
 session ライフサイクル・SSE イベントストリーミング・deployment（cron スケジュール）・dreams（メモリ統合）・
 vaults（credentials）・memory stores・webhooks・multiagent orchestration（subagents / dynamic workflows = workflow runs / advisor）・
 session budgets・session threads・event deltas・web tool のドメイン制限・secure deployment をカバーする公式リファレンス。
+サービス全体を自前インフラで運用する self-hosted Claude Managed Agents（`self-hosted/`）は、
+ワーカーのみ自前で動かす self-hosted sandboxes（`environments/self-hosted-sandboxes*.md`）とは別物。
 
 Messages API 直接呼び出しは `anthropic-api-core`、自前ホストの Agent SDK は `anthropic-agent-sdk`、
 tool use / Agent Skills / MCP の API 本体は `anthropic-api-tools-mcp`、Admin API は `anthropic-admin-platform`
@@ -74,6 +74,20 @@ skills/anthropic-managed-agents/
       session-threads.md
       webhooks.md
       workflow-runs.md
+    self-hosted/
+      README.md
+      agent-identity.md
+      call-the-api.md
+      configuration-reference.md
+      console.md
+      data-and-access.md
+      differences.md
+      inference-provider.md
+      kubernetes.md
+      overview.md
+      quickstart.md
+      single-sign-on.md
+      upgrade.md
     security/
       README.md
       secure-deployment.md
@@ -124,7 +138,8 @@ skills/anthropic-managed-agents/
 | agent 定義（model / system prompt / tools / skills / MCP servers）・outcome 設計・Messages API/Agent SDK からの移行・Console でのプロトタイピングを知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | session の作成・操作（取得・一覧・更新・archive・削除）・files・GitHub 連携・memory・MCP connector・permission policies・tools・web tool（web search / fetch）のドメイン制限・session budgets（予算）・usage の確認（observability）を知りたい | sessions | [references/sessions/README.md](references/sessions/README.md) |
 | environment の選び方（choosing an environment）・cloud sandbox の構成とプリインストール内容・self-hosted sandbox の worker デプロイ / custom tools / memory / 運用 / リファレンス / security model・vaults 認証を知りたい | environments | [references/environments/README.md](references/environments/README.md) |
-| SSE event streaming・event deltas（応答テキストのプレビュー）・deployment の cron スケジュール・dreams によるメモリ統合・multiagent orchestration（subagents / dynamic workflows / advisor）・session threads・workflow runs・webhooks 購読を知りたい | orchestration | [references/orchestration/README.md](references/orchestration/README.md) |
+| SSE streaming・event deltas（応答テキストのプレビュー）・deployment の cron スケジュール・dreams によるメモリ統合・multiagent orchestration（subagents / dynamic workflows / advisor）・session threads・workflow runs・webhooks 購読を知りたい | orchestration | [references/orchestration/README.md](references/orchestration/README.md) |
+| self-hosted Claude Managed Agents（サービス全体の自前運用: Docker Compose / Kubernetes へのデプロイ・設定リファレンス・API 呼び出し・agent identity・SSO・inference provider（Bedrock / Google Cloud / Foundry / gateway）・upgrade / backup / rollback・data and access・hosted との差分・console）を知りたい（ワーカーのみ自前の self_hosted sandbox は environments） | self-hosted | [references/self-hosted/README.md](references/self-hosted/README.md) |
 | デプロイのセキュリティ強化（ネットワーク制限・vaults・web ドメイン制限・承認・最小 tools・信頼できない入力・limits と停止経路）・session のレビューと監視・リスクと sandbox 境界を知りたい | security | [references/security/README.md](references/security/README.md) |
 | Agents / Sessions / Environments / Deployments / Dreams / Vaults / Memory Stores / User Profiles / Webhooks の各リソースのエンドポイント仕様（リクエスト・レスポンス表）を確認したい | endpoints | [references/endpoints/README.md](references/endpoints/README.md) |
 | 典型的な使い方を知りたい（agent 作成〜session 起動, event streaming, custom tool/permission, session files, scheduled deployment, multiagent, self-hosted worker, workflow runs, session budget, vault credentials） | samples | [samples/README.md](samples/README.md) |
