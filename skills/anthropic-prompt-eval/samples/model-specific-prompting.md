@@ -1,6 +1,6 @@
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5, https://platform.claude.com/docs/en/about-claude/model-deprecations / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5, https://platform.claude.com/docs/en/about-claude/model-deprecations / last verified: 2026-11-14 -->
 
-# Model-specific prompt adjustments: Fable 5 / 5.1 vs. Opus 5 / 5.5 vs. Sonnet 5 / 5.5 vs. Haiku 5.5
+# Model-specific prompt adjustments: Fable 5 / 5.1 / 5.2 vs. Opus 5 / 5.5 vs. Sonnet 5 / 5.5 vs. Haiku 5.5
 
 Contrast the conciseness, scope, and effort-tuning instructions recommended for each current Claude model on the same underlying task.
 
@@ -62,6 +62,19 @@ fable51_response = client.messages.create(
     messages=[{"role": "user", "content": "Review this pull request diff for bugs."}],
 )
 
+# Claude Fable 5.2: default effort is "high"; it may end a turn early (more at low / medium)
+# or stop at ordinary obstacles. The first paragraph of the official "Finishing work" text:
+fable52_system = """# Finishing work
+Please avoid stopping while you still owe work the user asked for. Be persistent and do not stop unless needed."""
+
+fable52_response = client.messages.create(
+    model="claude-fable-5-2",
+    max_tokens=16000,
+    system=fable52_system,
+    output_config={"effort": "high"},
+    messages=[{"role": "user", "content": "Review this pull request diff for bugs."}],
+)
+
 # Claude Opus 5.5: default effort is "medium" (Opus 5 defaults to "high"); set it explicitly.
 # Early stops and scope are steered by naming the behavior; thinking is always on.
 opus55_system = """Before taking any action, explore broadly with tool calls: list and open the emails, documents, spreadsheet tabs and records across the available apps that could be relevant to this task, including ones the task does not explicitly mention, and use what you find."""
@@ -106,6 +119,7 @@ haiku55_response = client.messages.create(
 
 ## Notes
 
+- Claude Fable 5.2: an instruction to answer without deliberating does not stop thinking at `medium` effort and above; lower `effort` instead. The full "Finishing work" text and the code-ownership sentence are in `prompting-claude-fable-5-2.md`. Source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2 (retrieved 2026-11-14). The other snippets were last verified 2026-10-17.
 - `effort` and `thinking` request-body mechanics (schema, allowed values, `max_tokens` interaction) are an anthropic-api-core topic; this sample shows only the prompting-level tuning. Effort level names do not map to the same amount of thinking across models (Fable 5.1, Opus 5.5, and Sonnet 5.5 pages all say to re-sweep on your own evals).
 - Non-default `temperature` / `top_p` / `top_k` returns a 400 error on Claude 4.7 and later models and Claude Mythos Preview (model-deprecations page); this includes Sonnet 5, Sonnet 5.5, Opus 5 / 5.5, Fable, and Haiku 5.5. Do not port `temperature` from Haiku 4.5 samples.
 - Manual extended thinking (`budget_tokens`) returns a 400 error on Claude 4.7 and later models; use `effort` (and adaptive thinking where the model supports it) instead. Haiku 5.5 effort replaces the Haiku 4.5 thinking budget.

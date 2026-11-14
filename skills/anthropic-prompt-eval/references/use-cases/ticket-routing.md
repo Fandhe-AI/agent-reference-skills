@@ -47,7 +47,7 @@ def classify_support_request(ticket_contents):
 ## Notes
 
 - Define a clear, well-scoped list of user intent categories (e.g. Technical issue, Account management, Product information, Feedback, Order-related) — routing accuracy is directly proportional to how well-defined categories are.
-- This prompt is written for Claude Haiku 5.5, which runs here at `low` effort. On Claude Fable 5.1, Claude Fable 5, Claude Opus 5.5, Claude Opus 5, and Claude Sonnet 5.5, ask for the intent and a one-sentence summary of the request instead of `<reasoning>` (see "Keep reasoning in thinking blocks" in the official Refusals and fallback page).
+- This prompt is written for Claude Haiku 5.5, which runs here at `low` effort. On Claude Fable 5.2, Claude Fable 5.1, Claude Fable 5, Claude Opus 5.5, Claude Opus 5, and Claude Sonnet 5.5, ask for the intent and a one-sentence summary of the request instead of `<reasoning>` (see "Keep reasoning in thinking blocks" in the official Refusals and fallback page).
 - Claude Haiku 5.5 can decline a request with `stop_reason: "refusal"` (`stop_details.category` names the category) and has no server-side fallback; check `stop_reason` before parsing. The snippet returns `(None, None)` for a declined ticket so callers can route it to a human or a needs-review queue (see Prompting Claude Haiku 5.5 > Safeguard refusals); the refusal check is added on top of the official snippet, which omits it.
 - Splitting the response into `<reasoning>` and `<intent>` tags lets you parse each independently with regex for downstream routing logic.
 - For 20+ intent categories, use a taxonomic hierarchy with cascading classifiers per tree level (improves nuance/accuracy, increases latency — use with Haiku).

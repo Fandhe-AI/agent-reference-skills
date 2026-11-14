@@ -3,7 +3,7 @@ name: anthropic-prompt-eval
 description: >
   Claude API (platform.claude.com) のプロンプトエンジニアリング・評価リファレンス。
   prompt engineering, XML タグ, few-shot, system prompts,
-  モデル別プロンプティング（Fable 5.1 / Fable 5 / Opus 5.5 / Opus 5 / Sonnet 5.5 / Sonnet 5 / Haiku 5.5）。
+  モデル別プロンプティング（Fable 5.2 / Fable 5.1 / Fable 5 / Opus 5.5 / Opus 5 / Sonnet 5.5 / Sonnet 5 / Haiku 5.5）。
   evals, grading（LLM-graded 等）, jailbreak・prompt leak 対策, hallucination 低減,
   classification, ticket routing, commerce agent 等ユースケース実装。
 user-invocable: false
@@ -13,6 +13,8 @@ user-invocable: false
 
 Claude API (platform.claude.com) — プロンプトエンジニアリング技法とモデル別プロンプティング差異、
 評価設計・グレーディング・ガードレール、代表的なユースケース実装ガイドをカバーする公式リファレンス。
+
+対象: 取得日 2026-11-14 時点の platform.claude.com/docs（Claude Fable 5.2 / Mythos 5.2 追従済み。モデル別ガイドは Fable 5.2 〜 Haiku 5.5、system prompts は Fable 5.2（2026-11-09）まで）。`claude-prompting-best-practices` の Fable 5.2 以外の本文と他カテゴリは 2026-10-17 の取得内容のまま（再差分未実施）。
 
 Messages API・structured outputs・streaming など API 呼び出し自体の詳細は `anthropic-api-core` の領域。
 
@@ -26,6 +28,7 @@ skills/anthropic-prompt-eval/
       README.md
       overview.md
       claude-prompting-best-practices.md
+      prompting-claude-fable-5-2.md
       prompting-claude-fable-5-1.md
       prompting-claude-fable-5.md
       prompting-claude-opus-5-5.md
@@ -76,7 +79,7 @@ skills/anthropic-prompt-eval/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | プロンプト設計の基本技法（明確さ・例示・XML タグ・thinking・agentic systems）を知りたい | prompt-engineering | [references/prompt-engineering/README.md](references/prompt-engineering/README.md) |
-| Fable 5.1 / Fable 5 / Opus 5.5 / Opus 5 / Opus 4.8 / Sonnet 5.5 / Sonnet 5 / Haiku 5.5 のモデル別プロンプティング差異・移行方法を知りたい | prompt-engineering | [references/prompt-engineering/README.md](references/prompt-engineering/README.md) |
+| Fable 5.2 / Fable 5.1 / Fable 5 / Opus 5.5 / Opus 5 / Opus 4.8 / Sonnet 5.5 / Sonnet 5 / Haiku 5.5 のモデル別プロンプティング差異・移行方法を知りたい | prompt-engineering | [references/prompt-engineering/README.md](references/prompt-engineering/README.md) |
 | 成功基準の定義・評価（evals）の構築・code-graded / LLM-graded の使い分けを知りたい | test-evaluate | [references/test-evaluate/README.md](references/test-evaluate/README.md) |
 | streaming refusals の検知（stop_details・Haiku 5.5 の fallback 制約を含む）・出力一貫性の向上・jailbreak / prompt injection / hallucination / prompt leak / latency への対策を知りたい | test-evaluate | [references/test-evaluate/README.md](references/test-evaluate/README.md) |
 | classification・content moderation・customer support chat・legal summarization・ticket routing の実装ガイドを知りたい。commerce agent（shopping / merchant agent の blueprint）を知りたい | use-cases | [references/use-cases/README.md](references/use-cases/README.md) |
