@@ -30,7 +30,7 @@ Snippet taken from https://platform.claude.com/docs/en/manage-claude/cmek-aws-km
 | Aspect | Claude Platform / Claude Platform on AWS | Claude Enterprise |
 | --- | --- | --- |
 | What one key protects | a workspace (one key can serve several) | the whole organization (only one key) |
-| Key location | AWS KMS, Google Cloud KMS or Azure Key Vault; provider may charge | same |
+| Key location | Claude Platform: AWS KMS, Google Cloud KMS or Azure Key Vault (provider may charge). Claude Platform on AWS: an AWS KMS key in the AWS account that hosts your organization, in the same region as the workspace (see cmek-claude-platform-on-aws.md) | AWS KMS, Google Cloud KMS or Azure Key Vault |
 | Encryption operations (Claude Platform and Claude Enterprise) | processed in US regions; key can be outside the US at some latency cost | same |
 
 ## Notes

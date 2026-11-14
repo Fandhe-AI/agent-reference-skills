@@ -39,7 +39,7 @@ Decision table (newest stored activity / response entry -> verdict):
 
 | # | Newest stored activity | Entry in the response | Verdict |
 | --- | --- | --- | --- |
-| 1 | `attested`, `changed`, `renewed` | `attested_at` equals `created_at`; `state` `in_force`; `status` pairs | Match |
+| 1 | `attested`, `changed`, `renewed` | `attested_at` equals `created_at`; `state` `in_force` (or `null` on a manual control where end dates do not apply, which means in effect); `status` pairs | Match |
 | 2 | `cleared` | `attestation` `null` (except row 11) | Match |
 | 3 | `lapsed` with `accepted_risk` | `attestation` `null`, or earlier time with `state` `check_passing` / `setting_changed` | Match |
 | 4 | `lapsed` with `completed` or `control_failed` | `attestation` `null` | Match |
@@ -52,7 +52,7 @@ Decision table (newest stored activity / response entry -> verdict):
 | 11 | none, or value not `control_failed` | `current_value` `null` and `status` `failed` | Look into (placeholder; act once when `status` leaves `failed`) |
 | 12 | `attested`/`changed`/`renewed`/`cleared` newer than `attested_at`, with another activity at almost the same time | `attestation` present | Expected (either order possible) |
 | 13 | same, no such second activity | `attestation` present | Look into (contact Anthropic support once) |
-| 14 | `attested`/`changed`/`renewed` | `in_force` but `status` does not pair | Look into (contact support once) |
+| 14 | `attested`/`changed`/`renewed` | `in_force` (or `null`) but `status` does not pair | Look into (contact support once) |
 | 15 | as 14, no earlier row fits | `attestation` `null` | Look into (most likely cleared: placeholder, flag once) |
 | 16 | none | `attestation` `null`, row 11 does not fit | Match |
 | 17 | any other | any other | Look into (flag once) |
