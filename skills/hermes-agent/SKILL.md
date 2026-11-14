@@ -15,7 +15,7 @@ Hermes Agent — Nous Research が開発したオープンソース AI CLI エ�
 マルチ LLM プロバイダー対応、メッセージングプラットフォーム統合、MCP 連携、音声モード、スキルシステムを備える。
 CLI 操作・設定カスタマイズ・機能活用・デプロイ時に参照する。
 
-対象: Hermes Agent v0.23.1（2026-11-10、GitHub タグ v0.23.1 の website/docs/）。v0.22.2（2026-10-15）から追従済み。ただし `samples/` のうち v0.22.2 のまま pin を残す 6 件（skills-install / memory-management / docker-terminal / voice-mode / basic-chat / messaging-gateway）は差分がコマンド・設定に影響しないことのみ確認済み。v0.23.1 で改名・削除された機能は各ページ Notes の `Migration (v0.22 -> v0.23)` に記載。v0.23.1 で新設の Packaging & Releases 系 developer-guide ページ（contributing / stable-releases 等）は未収録。
+対象: Hermes Agent v0.23.1（2026-11-10、GitHub タグ v0.23.1 の website/docs/）。v0.22.2（2026-10-15）から追従済み（旧版の記述は各ページ Notes の `Migration (v0.22 -> v0.23)` と履歴言及としてのみ残す）。ただし `samples/` のうち v0.22.2 のまま pin を残す 6 件（skills-install / memory-management / docker-terminal / voice-mode / basic-chat / messaging-gateway）は差分がコマンド・設定に影響しないことのみ確認済み。v0.23.1 で改名・削除された機能は各ページ Notes の `Migration (v0.22 -> v0.23)` に記載。v0.23.1 で新設の Packaging & Releases 系 developer-guide ページ（contributing / stable-releases 等）は未収録。
 
 ## ディレクトリ構成
 
