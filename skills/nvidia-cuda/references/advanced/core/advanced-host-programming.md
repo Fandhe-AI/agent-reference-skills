@@ -40,6 +40,7 @@ cudaLaunchKernelEx(&config, cluster_kernel, input, output);
 - Stream/event synchronization has three tiers: wait-for-stream (`cudaStreamSynchronize`), wait-for-event (`cudaEventSynchronize`), wait-for-device (`cudaDeviceSynchronize`). Prefer the narrowest scope to avoid unnecessary serialization.
 - `CUDA_DEVICE_MAX_CONNECTIONS` and `CUDA_MODULE_LOADING=EAGER` are environment variables that affect concurrency and module loading behavior at process startup.
 - Batched memory transfers (`cudaMemcpyBatchAsync`) reduce API call overhead for workloads issuing many small transfers.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/03-advanced/advanced-host-programming.html (CPG v13.5, retrieved 2026-11-14)
 
 ## Related
 

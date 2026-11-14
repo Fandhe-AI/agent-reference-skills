@@ -26,6 +26,8 @@ CUTLASS (CUDA Templates for Linear Algebra Subroutines and Solvers) is a collect
 - Codebase layout: header-only template library (`include/cutlass/`), CuTe core (`include/cute/`), `examples/`, profiling tools, and unit tests.
 - 4.8.0 (CHANGELOG): optimal code generation with CUDA Toolkit 13.4. Executing SM107 (Rubin) kernels requires the R615 driver released with CUDA Toolkit 13.4 GA; R610 from the CUDA Toolkit 13.4 Developer Preview is not sufficient.
 - This page corresponds to `latest/overview.html` (outside the `media/docs/cpp/` URL prefix that the rest of this category follows).
+- 4.8.1 (CHANGELOG, Oct. 2026): patch release; the CHANGELOG lists CuTe DSL bug fixes and known issues only, and no C++ header change. `media/docs` is byte-identical between the v4.8.0 and v4.8.1 tags, so the pages of this category remain verified against v4.8.0 docs.
+- Source: https://github.com/NVIDIA/cutlass/blob/v4.8.1/CHANGELOG.md (tag v4.8.1, retrieved 2026-11-14)
 
 ## Related
 

@@ -60,6 +60,10 @@ int main() {
 - Built-in atomics (`__nv_atomic_*`, CUDA 12.8+) generalize legacy atomics (`atomicAdd`, `atomicCAS`) with explicit memory order and thread scope, mirroring `cuda::atomic`'s semantics at the intrinsic level.
 - Built-in functions (CPG 13.4): always available in SIMT device code, but not supported in Tile code (the 13.3 text said "always available in the device code").
 - This page is large (~560 KB) on the official site; the summary above covers execution/memory qualifiers, built-in variables, launch bounds, warp intrinsics, and atomics — consult the official page directly for the full list of vector types, tile (`__tile__`) specifiers, and every warp reduce/match function.
+- `__trap()` (CPG 13.5): declared as `__device__ __tile__ void __trap();`; calling `__trap()` from `__tile__` functions is supported since CUDA 13.5. Execution of the kernel is aborted, raising an interrupt in the host program, and the CUDA context is corrupted so subsequent CUDA calls and kernel invocations fail. The guide suggests `cuda::std::terminate()` from libcu++ as a portable alternative.
+- Execution-configuration example (CPG 13.5): the page now also shows choosing `threadsPerBlock` on the host with the CUDA C++ Standard Library, `int major = cuda::device_attributes::compute_capability_major(device);` (header `<cuda/devices>`), alongside the CUDA Runtime API tab.
+- Section numbering: in CPG 13.5 this appendix is Section 5.4 and is followed by Section 5.5 (Improving CUDA Compilation Time).
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/cpp-language-extensions.html (CPG v13.5, retrieved 2026-11-14)
 
 ## Related
 

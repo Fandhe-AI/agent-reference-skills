@@ -34,6 +34,7 @@ pipeline.consumer_release();
 - Thread-scoped pipelines (`cuda::thread_scope_thread`) are for a single thread managing its own multi-buffer overlap; block-scoped pipelines require a `cuda::pipeline_shared_state` and coordinate across threads.
 - Pair `producer_acquire`/`producer_commit` around each `cuda::memcpy_async` call that targets a stage; `consumer_wait`/`consumer_release` on the other end signals it is safe to consume the data and reuse the buffer.
 - Warp entanglement and early-exit constraints mirror those of `cuda::barrier` — see the official page before using pipelines with warp-divergent control flow.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/pipelines.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

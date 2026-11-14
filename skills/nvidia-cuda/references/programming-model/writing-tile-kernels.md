@@ -59,6 +59,7 @@ __tile_global__ void vec_add(float* __restrict__ a, float* __restrict__ b, float
 - Atomics (CPG 13.4): in Python the `TiledView` reduction-style atomics use an `atomic_store_` prefix (e.g. `TiledView.atomic_store_add(index, update)`, previously `atomic_add`); the example kernel uses `out.tiled_view((1,)).atomic_store_add((0,), partial)`. In C++, the `ct::partition_view` / `ct::strided_view` member forms instead take the value tile first and the index last, as `.store()` does (Python `TiledView` takes the index first). Exchange is spelled `atomic_xchg` (earlier text said `atomic_xchng`).
 - Explicit rounding / subnormal control is available both for element-wise arithmetic (`ct.add`, `ct::add`) and for transcendentals (e.g. `exp`, `tanh`).
 - See the "Tile Programming in CUDA" section of the Programming Model page for the conceptual relationship between tile programming and SIMT programming, and for the array/tile data-model distinction.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/writing-tile-kernels.html (CPG v13.5, retrieved 2026-11-14; text identical to v13.4.2 apart from chapter renumbering)
 
 ## Related
 

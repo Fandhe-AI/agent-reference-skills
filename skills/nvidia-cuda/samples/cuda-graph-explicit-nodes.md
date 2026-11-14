@@ -198,4 +198,4 @@ int main()
 - A node waits for every node in its dependency array; an empty array (`NULL, 0`) makes it a root that can start as soon as the graph launches.
 - Host-callback state: `myHostNodeCallback` resets `*result` to `0.0` after printing, and the host input is refilled before each `cudaGraphLaunch`, so one instantiated graph processes new data on every launch.
 - In v13.4 the original `simpleCudaGraphs.cu` is split into `simpleCudaGraphs_capture.cu` and `simpleCudaGraphs_explicit.cu`, sharing the kernels, callback and `THREADS_PER_BLOCK` via `simpleCudaGraphs.cuh`; this page inlines the shared pieces to stay self-contained. The upstream explicit sample also demonstrates `cudaGraphClone` (omitted here).
-- Derived from the official NVIDIA/cuda-samples sample "simpleCudaGraphs_explicit.cu" (`cudaGraphsManual`, cpp/3_CUDA_Features), tag `v13.4`.
+- Derived from the official NVIDIA/cuda-samples sample "simpleCudaGraphs_explicit.cu" (`cudaGraphsManual`, cpp/3_CUDA_Features), tag `v13.5` (this file is identical to v13.4).

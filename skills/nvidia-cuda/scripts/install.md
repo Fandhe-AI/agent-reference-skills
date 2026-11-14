@@ -1,6 +1,6 @@
 # install
 
-CUDA Toolkit installation, PATH/LD_LIBRARY_PATH setup, and verification on Linux. Source: cuda-installation-guide-linux (CUDA 13.4.2), cuda-toolkit-release-notes
+CUDA Toolkit installation, PATH/LD_LIBRARY_PATH setup, and verification on Linux. Source: cuda-installation-guide-linux (CUDA 13.5, 取得日 2026-11-14), cuda-toolkit-release-notes
 
 ## 事前確認
 
@@ -16,13 +16,16 @@ CUDA 対応 GPU の有無、ディストリビューション、ホストコン�
 
 | CUDA Toolkit | ドライバーブランチ |
 | --- | --- |
+| CUDA 13.5 | R620 |
 | CUDA 13.4 | R615 |
 | CUDA 13.3 | R610 |
 | CUDA 13.2 | R595 |
 | CUDA 13.1 | R590 |
 | CUDA 13.0 | R580 |
 
-CUDA 13.4 から Linux でも NVIDIA ドライバーは toolkit に同梱されない（Windows は 13.1 から）。toolkit とドライバーは独立してインストール・バージョン管理される。既存の CUDA 13.x アプリケーションは minor version compatibility によりドライバー >=580 で動作する。CUDA 13.4 の新機能・新規対応プラットフォームには R615 以降のドライバーが必要。
+CUDA 13.4 から Linux でも NVIDIA ドライバーは toolkit に同梱されない（Windows は 13.1 から）。toolkit とドライバーは独立してインストール・バージョン管理される。既存の CUDA 13.x アプリケーションは minor version compatibility によりドライバー >=580 で動作する。CUDA 13.5 の新機能・新規対応プラットフォームには R620 以降のドライバーが必要（CUDA 13.4 は R615 以降）。
+
+CUDA 13.5 のインストールガイドでは、Debian 12 と openSUSE Leap 15.6 が非推奨（次の CUDA リリースでサポート終了。Debian 13 / openSUSE Leap 16 へ移行）、Oracle Linux は RHCK と UEK の両カーネルで検証と記載されている（出典: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html、取得日 2026-11-14）。
 
 ## ドライバーの別途インストール
 
@@ -47,16 +50,16 @@ x86_64 の場合はリポジトリパスを `ubuntu2404/x86_64` に読み替え�
 sudo sh cuda_<version>_linux.run
 ```
 
-ファイル名は `cuda_<version>_linux.run` の形式。ダウンロードした runfile の実際のファイル名に読み替える。toolkit の既定のインストール先は `/usr/local/cuda-13.4`。
+ファイル名は `cuda_<version>_linux.run` の形式。ダウンロードした runfile の実際のファイル名に読み替える。toolkit の既定のインストール先は `/usr/local/cuda-13.5`。
 
 ## PATH / LD_LIBRARY_PATH の設定
 
 ```sh
-export PATH=/usr/local/cuda-13.4/bin${PATH:+:${PATH}}
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda-13.4/lib64
+export PATH=/usr/local/cuda-13.5/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda-13.5/lib64
 ```
 
-`/usr/local/cuda-13.4` はインストールしたバージョンに応じて読み替える。`LD_LIBRARY_PATH` の設定は runfile インストールの場合に必要。runfile でカスタムインストール先を指定した場合はパスも変わる。`/usr/local/cuda` は最後にインストールした toolkit を指す symlink。
+`/usr/local/cuda-13.5` はインストールしたバージョンに応じて読み替える。`LD_LIBRARY_PATH` の設定は runfile インストールの場合に必要。runfile でカスタムインストール先を指定した場合はパスも変わる。`/usr/local/cuda` は最後にインストールした toolkit を指す symlink。
 
 ## インストール検証
 

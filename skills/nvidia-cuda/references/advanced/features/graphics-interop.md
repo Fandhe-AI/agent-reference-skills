@@ -38,6 +38,7 @@ void createVBO(GLuint *vbo, struct cudaGraphicsResource **vbo_res,
 - Legacy graphics interop (`cudaGraphicsResource`-based, OpenGL/Direct3D 11) is the simpler path for buffers/textures shared with a rendering API; the external-memory/semaphore API is the generic path needed for Vulkan, Direct3D 12, and NVSCI, and for cross-API synchronization primitives.
 - A resource must be mapped (`cudaGraphicsMapResources`) before CUDA accesses it and unmapped before the originating graphics API accesses it again — concurrent access from both sides is not supported.
 - Vulkan and Direct3D 12 interop requires matching the CUDA device to the correct graphics device via UUID (Vulkan) or LUID (Direct3D), since a system may have multiple GPUs.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/graphics-interop.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

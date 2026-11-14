@@ -30,6 +30,7 @@ cudaIpcOpenMemHandle(&devPtr, handle, cudaIpcMemLazyEnablePeerAccess);
 - Allocations made by `cudaMalloc()` may be sub-allocated from a larger block for performance reasons; using 2 MiB-aligned allocation sizes is recommended to avoid unintentionally sharing memory beyond what was allocated.
 - On embedded Tegra (L4T, compute capability 7.x+), only event-handle IPC sharing is supported, not memory-handle sharing.
 - The official page provides no verbatim code example; the snippet above reflects the standard `cudaIpcGetMemHandle`/`cudaIpcOpenMemHandle` handshake pattern described in its text.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/inter-process-communication.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

@@ -12,6 +12,7 @@
 | CUDA Dynamic Parallelism | Kernels running on the GPU launch child grids. | [dynamic-parallelism.md](./dynamic-parallelism.md) |
 | Error Log Management | Captures CUDA-internal error and warning logs to a file or through a callback. | [error-log-management.md](./error-log-management.md) |
 | Extended GPU Memory | GPU access to all memory over NVLink-C2C, including host-NUMA memory of other nodes, as if local. | [extended-gpu-memory.md](./extended-gpu-memory.md) |
+| Fine-Grained Synchronization | Per-tile producer/consumer handoff via a sentinel value checked by TMA data validity reporting (CC 10.7). | [fine-grained-synchronization.md](./fine-grained-synchronization.md) |
 | CUDA Interoperability with APIs | Shares buffers and semaphores with OpenGL, Direct3D, Vulkan, and NVSCI. | [graphics-interop.md](./graphics-interop.md) |
 | Green Contexts | Contexts restricted to a reserved subset of SMs, to isolate work on one GPU. | [green-contexts.md](./green-contexts.md) |
 | Interprocess Communication | Shares GPU buffers between processes on the same host, via legacy IPC or VMM. | [inter-process-communication.md](./inter-process-communication.md) |

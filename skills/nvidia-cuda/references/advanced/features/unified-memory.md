@@ -35,6 +35,7 @@ void test_managed() {
 - Windows, WSL, and Tegra have distinct Unified Memory support characteristics from Linux with full hardware coherency support — consult the official page for the current per-platform capability matrix before relying on demand paging behavior.
 - GPU memory oversubscription (allocating more managed memory than physical GPU memory) is supported on devices with full Unified Memory support, relying on migration/eviction rather than failing the allocation.
 - Locality Domains and Unified Memory (CPG 13.4): localizing managed memory allocations is not supported. Locality domains are not a unified memory migration destination; `cudaMemAllocationTypeManaged` cannot be combined with a localized allocation. Applications that require locality domain placement should use a localized pinned-memory pool or a localized VMM allocation instead.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/unified-memory.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

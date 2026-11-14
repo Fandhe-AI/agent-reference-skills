@@ -30,6 +30,7 @@ cudaFreeAsync(ptr, cudaStreamPerThread);
 - Reuse of freed memory follows pool policies (see `cudaMemPoolSetAttribute`) and physical page caching behavior — memory is not necessarily returned to the OS immediately after `cudaFreeAsync`.
 - Multi-GPU accessibility of a pool is opt-in via `cudaMemPoolSetAccess`, mirroring peer-access semantics for `cudaMalloc`-based memory.
 - For IPC of pool-backed memory, the pool itself must have been created with IPC enabled at `cudaMemPoolCreate` time.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/stream-ordered-memory-allocation.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

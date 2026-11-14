@@ -26,6 +26,7 @@ __syncthreads();
 - Cluster launch control is available only on compute capability 10.0+ (Blackwell); attempting to use it on earlier architectures is unsupported.
 - The typical pattern: a thread block/cluster nearing completion calls `try_cancel` on a not-yet-scheduled block; if canceled, it queries the first CTA ID of the canceled block and takes over that work item itself, achieving work stealing without host intervention.
 - Constraints on which blocks are eligible for cancellation (e.g. must not have started, cluster-mode restrictions) are documented on the official page and should be checked before relying on cancellation ordering.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/cluster-launch-control.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

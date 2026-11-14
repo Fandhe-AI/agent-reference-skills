@@ -54,6 +54,7 @@ if (deviceSupportsVmm != 0) {
   ```
 
 - The returned handle is used with the same reserve, map, access-control, and release APIs as other VMM allocations. On a device with one locality domain, requesting domain 0 is equivalent to a full-device allocation created with `CU_MEM_LOCATION_TYPE_DEVICE`; the allocation reports its location type as `CU_MEM_LOCATION_TYPE_DEVICE`.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/virtual-memory-management.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 

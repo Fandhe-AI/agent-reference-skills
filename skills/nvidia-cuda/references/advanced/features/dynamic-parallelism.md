@@ -42,6 +42,7 @@ int main(int argc, char *argv[]) {
 - `cudaDeviceSynchronize()` from device code was part of legacy CDP1 and is removed in CDP2 — use `cudaStreamTailLaunch` for the "wait for child to finish before continuing" pattern instead.
 - `cudaSetDevice()` is not supported in the device runtime; a kernel cannot change which device it is running on.
 - Nested-launch overhead and pending-launch-count limits (`cudaLimitDevRuntimePendingLaunchCount`) should be considered for kernels that launch large numbers of children, since the device runtime buffers pending launches up to that limit before blocking.
+- Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/dynamic-parallelism.html (CUDA Programming Guide v13.5, retrieved 2026-11-14)
 
 ## Related
 
