@@ -65,7 +65,8 @@ interface LogOptions {
 - `attachConsole()` writes log entries to the console as they come in (`Trace` uses `console.log`, `Debug` uses `console.debug`, `Info` `console.info`, `Warn` `console.warn`, `Error` `console.error`).
 - Tauri plugin that routes logs through the Rust `log` crate. It is not a standalone logger library (see the pino skill for pino).
 - Tauri plugin guest-js binding (Rust core + system WebView). Not Electron's API; see the electron skill for Electron.
-- Source: `plugins-workspace@log-v2.10.1` `plugins/log/guest-js/index.ts`
+- Source: `plugins-workspace@log-v2.10.2` `plugins/log/guest-js/index.ts`
+- `guest-js/index.ts` is identical at log-v2.10.1 and log-v2.10.2.
 
 ## Related
 

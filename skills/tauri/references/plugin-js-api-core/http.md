@@ -96,7 +96,9 @@ interface DangerousSettings {   // @since 2.3.0
 - The returned `Response` exposes `set-cookie` via `response.headers`, which is not Fetch-spec compliant for network responses in browsers (source comment).
 - Tauri plugin (Rust-backed `fetch`), not an HTTP client library or server framework (see the fastify / hono skills for server frameworks).
 - Tauri plugin guest-js binding (Rust core + system WebView). Not Electron's API; see the electron skill for Electron.
-- Source: `plugins-workspace@http-v2.8.3` `plugins/http/guest-js/index.ts`
+- Source: `plugins-workspace@http-v2.9.0` `plugins/http/guest-js/index.ts`
+- At http-v2.9.0 the public `fetch` signature and `ClientOptions` are unchanged; only the request transport changed (the body is sent as a raw IPC payload and the client config travels in the `client-config` header).
+- Source: https://github.com/tauri-apps/plugins-workspace/blob/http-v2.9.0/plugins/http/CHANGELOG.md (fetched 2026-11-14)
 
 ## Related
 

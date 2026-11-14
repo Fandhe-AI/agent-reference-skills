@@ -13,10 +13,10 @@ user-invocable: false
 
 Tauri v2。版 pin は次のとおり。
 
-- tauri crate 2.12.4
-- @tauri-apps/api 2.12.4
-- @tauri-apps/cli 2.12.3
-- 公式ドキュメント: tauri-docs の v2 ブランチ、commit 32f68c5
+- tauri crate 2.12.5（`crates/tauri` のソース差分は 2.12.4 → 2.12.5 で `path/desktop.rs` の rustdoc のみ。config スキーマは `$id` のみの差で、config / js-api / rust-api の各ページは 2.12.4 時点の内容を維持）
+- @tauri-apps/api 2.12.4（2.12.5 のタグで `packages/api/src` に変更なし）
+- @tauri-apps/cli 2.12.4
+- 公式ドキュメント: tauri-docs の v2 ブランチ、commit ed0786e（取得日 2026-11-14）。en の変更があったページ（`learn/window-menu`・`plugin/upload`・`distribute/Sign/windows`・`distribute/windows-installer`）のみ ed0786e で再取得し、他ページの `docs @ 32f68c5` 表記は据え置き（en の差分はタイポ修正のみ）
 - 公式プラグイン: plugins-workspace の各 v2 タグ（プラグインごとに最新タグ。タグは各ページの `## Notes` の Source 行を参照）
 
 除外: Tauri v3 alpha と Tauri v1。

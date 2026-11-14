@@ -4,7 +4,7 @@ source: https://v2.tauri.app/plugin/single-instance/
 
 # Single Instance
 
-Ensure that a single instance of your Tauri app is running at a time. Plugin `tauri-plugin-single-instance` 2.5.4 (Rust only; no JavaScript API; tag `single-instance-v2.5.4`).
+Ensure that a single instance of your Tauri app is running at a time. Plugin `tauri-plugin-single-instance` 2.5.5 (Rust only; no JavaScript API; tag `single-instance-v2.5.5`).
 
 ## Signature / Usage
 
@@ -150,7 +150,9 @@ Because this plugin currently does not have JavaScript APIs you do not have to c
 - Manual setup snippet differs from the official page (which registers inside `setup()`); it uses `Builder::plugin` as in the plugin README so the plugin is registered first. `setup()` runs after all `Builder::plugin` registrations.
 - The Single Instance plugin must be the first one to be registered to work well. This assures that it runs before other plugins can interfere.
 - Tauri plugin (Rust core + system WebView). Not Electron's API; see the electron skill for Electron's `app.requestSingleInstanceLock()`.
-- Source: `plugins-workspace@single-instance-v2.5.4` `plugins/single-instance/Cargo.toml`.
+- Source: `plugins-workspace@single-instance-v2.5.5` `plugins/single-instance/Cargo.toml`.
+- single-instance-v2.5.5: the lock is released in `AppHandle::cleanup_before_exit`, right before the process exits or restarts, instead of on `RunEvent::Exit`, so the app remains the single instance while your own `RunEvent::Exit` handler runs; `destroy` can still release the lock earlier. Also fixed a Windows race where a secondary instance failed to exit if `FindWindowW` missed the target event window during startup.
+- Source: https://github.com/tauri-apps/plugins-workspace/blob/single-instance-v2.5.5/plugins/single-instance/CHANGELOG.md (fetched 2026-11-14)
 
 ## Related
 

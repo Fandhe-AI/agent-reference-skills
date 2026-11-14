@@ -67,7 +67,7 @@ type DownloadEvent =
 - `download` callback: `Started` when the first chunk is received, `Progress` for every downloaded chunk, `Finished` when the download completes.
 - `available` is marked `@deprecated` in the source (a TODO notes removal in v3).
 - Tauri plugin (Rust core + system WebView). Not Electron's `autoUpdater`; see the electron skill for Electron.
-- Source: `tauri-apps/plugins-workspace@updater-v2.14.0` `plugins/updater/guest-js/index.ts`.
+- Source: `tauri-apps/plugins-workspace@updater-v2.14.1` `plugins/updater/guest-js/index.ts`.
 
 ```typescript
 import { check } from '@tauri-apps/plugin-updater';
@@ -84,6 +84,7 @@ if (update) {
   await update.install();
 }
 ```
+- `guest-js/index.ts` is identical at updater-v2.14.0 and updater-v2.14.1.
 
 ## Related
 

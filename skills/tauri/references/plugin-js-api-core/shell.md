@@ -126,7 +126,8 @@ Command.create('run-git-commit', ['commit', '-m', 'the commit message'])
 - Executing any API with a program not configured on the scope results in a promise rejection due to denied access.
 - `EventEmitter.emit` is marked `@ignore` in the source (internal).
 - Tauri plugin guest-js binding (Rust core + system WebView). Not Electron's API; see the electron skill for Electron.
-- Source: `plugins-workspace@shell-v2.5.0` `plugins/shell/guest-js/index.ts`; scope validator behavior from `plugins/shell/src/scope.rs` and `scope_entry.rs` (shell-v2.5.0)
+- Source: `plugins-workspace@shell-v2.6.0` `plugins/shell/guest-js/index.ts`; scope validator behavior from `plugins/shell/src/scope.rs` and `scope_entry.rs` (shell-v2.6.0)
+- `guest-js/index.ts` is identical at shell-v2.5.0 and shell-v2.6.0; the new `Command::kill_on_drop` is Rust only (see the Shell plugin page).
 
 ## Related
 

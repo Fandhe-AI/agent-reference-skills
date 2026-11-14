@@ -875,7 +875,7 @@ To enable permissions for your app, create capability files inside the `src-taur
 - Plugin snippets in the source page register the plugin in Rust and add the npm package.
 - Differs from the source so the snippets compile on v2: the clipboard example uses `tauri_plugin_clipboard_manager::ClipboardExt` / `write_text` (the source shows a nonexistent `tauri_plugin_clipboard` / `ClipKind` API), `SubmenuBuilder::text` / `check` take `(id, text)`, `fn main()` examples end with `.run(tauri::generate_context!())`, and `updater()` (which returns a `Result`) is unwrapped before `check()`.
 - Also differs from the source: the summary lines name `tauri-plugin-clipboard-manager` / `@tauri-apps/plugin-clipboard-manager` (the source summary says `tauri-plugin-clipboard` / `@tauri-apps/plugin-clipboard`, contradicting its own detailed section); `PredefinedMenuItem::copy` takes `(app, None)`; `global_shortcut::Builder::with_handler` takes `(app, shortcut, event)`.
-- The source checks `update?.available`; `Update.available` is deprecated and always `true` (updater 2.14.0), so the example checks `check()`'s return value for `null` instead.
+- The source checks `update?.available`; `Update.available` is deprecated and always `true` (updater 2.14.1), so the example checks `check()`'s return value for `null` instead.
 
 ## Related
 

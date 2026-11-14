@@ -37,7 +37,9 @@ function onOpenUrl(handler: (urls: string[]) => void): Promise<UnlistenFn>  // s
 - `isRegistered`: macOS / Android / iOS unsupported.
 - `onOpenUrl` is a helper for the `deep-link://new-url` event. On Windows / Linux it is unsupported without the single-instance plugin; the OS spawns a new app instance passing the URL as a CLI argument. Resolves to a function that unregisters the event listener.
 - Tauri plugin (Rust core + system WebView). Not Electron's `app.setAsDefaultProtocolClient` / `open-url`; see the electron skill for Electron.
-- Source: `tauri-apps/plugins-workspace@deep-link-v2.6.2` `plugins/deep-link/guest-js/index.ts`.
+- Source: `tauri-apps/plugins-workspace@deep-link-v2.6.3` `plugins/deep-link/guest-js/index.ts`.
+- The `guest-js/index.ts` doc comment above (Linux `unregister` requires `update-desktop-database`) is unchanged at deep-link-v2.6.3, while the Rust `unregister` / `register` docs in the same tag no longer require it (a missing binary only logs a warning); see the Deep Linking plugin page.
+- Source: https://github.com/tauri-apps/plugins-workspace/blob/deep-link-v2.6.3/plugins/deep-link/src/lib.rs (fetched 2026-11-14)
 
 ## Related
 

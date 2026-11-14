@@ -4,7 +4,7 @@ source: https://v2.tauri.app/distribute/sign/windows/
 
 # Windows Code Signing
 
-Code signing is required on Windows to list your app in the Microsoft Store and to prevent a SmartScreen warning when downloaded from the browser. It is not required to execute the app. This guide covers OV (Organization Validated) certificates, Azure Key Vault and Azure Artifact Signing; for other mechanisms (e.g. EV certificates) use your issuer's documentation and the custom sign command.
+Code signing is required on Windows to list your app in the Microsoft Store and to prevent a SmartScreen warning when downloaded from the browser. It is not required to execute the app, as long as your end user is okay with ignoring the SmartScreen warning or your user does not download via the browser. The exception is Windows 11 with Smart App Control turned on: it blocks unknown unsigned apps even if they were not downloaded from the browser, and users cannot allow a single app, only turn Smart App Control off entirely. This guide covers OV (Organization Validated) certificates, Azure Key Vault and Azure Artifact Signing; for other mechanisms (e.g. EV certificates) use your issuer's documentation and the custom sign command.
 
 ## Signature / Usage
 
@@ -138,6 +138,8 @@ Set `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET` and `AZURE_TENANT_ID` (from your Ap
 - The source's `Remove-Item -path certificate -include tempCert.txt` deletes nothing (`-Include` only applies to a path's contents); replaced with explicit paths, and the decoded `.pfx` is removed after import.
 - The source places the step above an "install app dependencies and build it" step of its old template; that step name does not exist in the current workflow.
 - Tauri bundler side only; Windows signing and Microsoft Store procedures belong to the windows-packaging-publish skill.
+- Smart App Control: Windows 11 with Smart App Control turned on blocks unknown unsigned apps even if they were not downloaded from the browser, and users cannot allow a single app, only turn Smart App Control off entirely. See https://learn.microsoft.com/en-us/windows/apps/develop/smart-app-control/overview.
+- Source: https://github.com/tauri-apps/tauri-docs/blob/ed0786ec86699e4ffd08f3234e37aa125becb9eb/src/content/docs/distribute/Sign/windows.mdx (tauri-docs@ed0786e, fetched 2026-11-14)
 
 ## Related
 
