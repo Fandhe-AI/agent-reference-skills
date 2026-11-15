@@ -10,7 +10,7 @@ Predefined roles of `cloudhub` (role ID, description, included permissions) and,
 
 ### Roles
 
-### Cloud Hub Operator (`roles/cloudhub.operator`)
+#### Cloud Hub Operator (`roles/cloudhub.operator`)
 
 - Launch stage: Beta
 - Allows users to view and interact with Cloud Hub.

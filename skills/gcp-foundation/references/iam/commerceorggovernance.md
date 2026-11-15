@@ -10,19 +10,19 @@ Predefined roles of `commerceorggovernance` (role ID, description, included perm
 
 ### Roles
 
-### Commerce Organization Governance Admin (`roles/commerceorggovernance.admin`)
+#### Commerce Organization Governance Admin (`roles/commerceorggovernance.admin`)
 
 - Launch stage: Beta
 - Full access to Organization Governance APIs
 - Permissions (22): `commerceorggovernance.collectionRequestApprovals.list`, `commerceorggovernance.collectionRequestApprovals.review`, `commerceorggovernance.collections.create`, `commerceorggovernance.collections.delete`, `commerceorggovernance.collections.get`, `commerceorggovernance.collections.list`, `commerceorggovernance.collections.update`, `commerceorggovernance.consumerSharingPolicies.get`, `commerceorggovernance.consumerSharingPolicies.update`, `commerceorggovernance.organizationSettings.get`, `commerceorggovernance.organizationSettings.update`, `commerceorggovernance.populateCollectionJobs.create`, `commerceorggovernance.populateCollectionJobs.list`, `commerceorggovernance.populateCollectionJobs.run`, `commerceorggovernance.populateCollectionJobs.update`, `commerceorggovernance.services.get`, `commerceorggovernance.services.list`, `commerceorggovernance.services.request`, `consumerprocurement.entitlements.get`, `consumerprocurement.entitlements.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Commerce Organization Governance Viewer (`roles/commerceorggovernance.viewer`)
+#### Commerce Organization Governance Viewer (`roles/commerceorggovernance.viewer`)
 
 - Launch stage: Beta
 - Full access to Organization Governance read-only APIs.
 - Permissions (11): `commerceorggovernance.collections.get`, `commerceorggovernance.collections.list`, `commerceorggovernance.consumerSharingPolicies.get`, `commerceorggovernance.organizationSettings.get`, `commerceorggovernance.populateCollectionJobs.list`, `commerceorggovernance.services.get`, `commerceorggovernance.services.list`, `consumerprocurement.entitlements.get`, `consumerprocurement.entitlements.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Governed Marketplace User (`roles/commerceorggovernance.user`)
+#### Governed Marketplace User (`roles/commerceorggovernance.user`)
 
 - Launch stage: Beta
 - Full access to Governed Marketplace features.

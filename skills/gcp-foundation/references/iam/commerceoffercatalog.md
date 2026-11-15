@@ -10,13 +10,13 @@ Predefined roles of `commerceoffercatalog` (role ID, description, included permi
 
 ### Roles
 
-### Commerce Offer Catalog Admin (`roles/commerceoffercatalog.admin`)
+#### Commerce Offer Catalog Admin (`roles/commerceoffercatalog.admin`)
 
 - Launch stage: Beta
 - Admin role for Commerce Offer Catalog
 - Permissions (7): `commerceoffercatalog.agreements.get`, `commerceoffercatalog.agreements.list`, `commerceoffercatalog.documents.get`, `commerceoffercatalog.documents.list`, `commerceoffercatalog.offers.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Commerce Offer Catalog Offers Viewer (`roles/commerceoffercatalog.offersViewer`)
+#### Commerce Offer Catalog Offers Viewer (`roles/commerceoffercatalog.offersViewer`)
 
 - Launch stage: Beta
 - Allows viewing offers

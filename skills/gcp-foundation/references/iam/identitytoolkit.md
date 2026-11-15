@@ -10,22 +10,22 @@ Predefined roles of `identitytoolkit` (role ID, description, included permission
 
 ### Roles
 
-### Identity Toolkit Admin (`roles/identitytoolkit.admin`)
+#### Identity Toolkit Admin (`roles/identitytoolkit.admin`)
 
 - Full access to Identity Toolkit resources.
 - Permissions (18): `firebaseauth.configs.create`, `firebaseauth.configs.get`, `firebaseauth.configs.getHashConfig`, `firebaseauth.configs.getSecret`, `firebaseauth.configs.update`, `firebaseauth.users.create`, `firebaseauth.users.createSession`, `firebaseauth.users.delete`, `firebaseauth.users.get`, `firebaseauth.users.sendEmail`, `firebaseauth.users.update`, `identitytoolkit.tenants.create`, `identitytoolkit.tenants.delete`, `identitytoolkit.tenants.get`, `identitytoolkit.tenants.getIamPolicy`, `identitytoolkit.tenants.list`, `identitytoolkit.tenants.setIamPolicy`, `identitytoolkit.tenants.update`
 
-### Identity Toolkit editor (`roles/identitytoolkit.editor`)
+#### Identity Toolkit editor (`roles/identitytoolkit.editor`)
 
 - Write access to Identity Toolkit resources.
 - Permissions (22): `firebase.clients.get`, `firebase.clients.list`, `firebase.projects.get`, `firebaseauth.configs.create`, `firebaseauth.configs.get`, `firebaseauth.configs.getHashConfig`, `firebaseauth.configs.getSecret`, `firebaseauth.configs.update`, `firebaseauth.users.create`, `firebaseauth.users.createSession`, `firebaseauth.users.delete`, `firebaseauth.users.get`, `firebaseauth.users.sendEmail`, `firebaseauth.users.update`, `identitytoolkit.tenants.create`, `identitytoolkit.tenants.delete`, `identitytoolkit.tenants.get`, `identitytoolkit.tenants.getIamPolicy`, `identitytoolkit.tenants.list`, `identitytoolkit.tenants.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Identity Toolkit Viewer (`roles/identitytoolkit.viewer`)
+#### Identity Toolkit Viewer (`roles/identitytoolkit.viewer`)
 
 - Read access to Identity Toolkit resources.
 - Permissions (5): `firebaseauth.configs.get`, `firebaseauth.users.get`, `identitytoolkit.tenants.get`, `identitytoolkit.tenants.getIamPolicy`, `identitytoolkit.tenants.list`
 
-### Identity Platform Service Agent (`roles/identitytoolkit.serviceAgent`)
+#### Identity Platform Service Agent (`roles/identitytoolkit.serviceAgent`)
 
 - Gives Identity Platform service account access to customer project resources. > \[!WARNING\] > \*\*Warning:\*\* Do not grant service agent roles to any principals except service agents (https://docs.cloud.google.com/iam/docs/service-agents).
 - Permissions (5): `cloudfunctions.functions.invoke`, `recaptchaenterprise.assessments.create`, `recaptchaenterprise.keys.create`, `recaptchaenterprise.keys.delete`, `recaptchaenterprise.keys.get`

@@ -10,13 +10,13 @@ Predefined roles of `commerceproducer` (role ID, description, included permissio
 
 ### Roles
 
-### Commerce Producer Admin (`roles/commerceproducer.admin`)
+#### Commerce Producer Admin (`roles/commerceproducer.admin`)
 
 - Launch stage: Beta
 - Grants full access to all resources in Cloud Commerce Producer API.
 - Permissions (47): `commercebusinessenablement.partnerInfo.get`, `commerceproducer.analyticsHubListingProductConfigs.create`, `commerceproducer.analyticsHubListingProductConfigs.delete`, `commerceproducer.analyticsHubListingProductConfigs.get`, `commerceproducer.analyticsHubListingProductConfigs.list`, `commerceproducer.analyticsHubListingProductConfigs.update`, `commerceproducer.consumerEnforcementActions.create`, `commerceproducer.consumerEnforcementActions.delete`, `commerceproducer.consumerEnforcementActions.get`, `commerceproducer.consumerEnforcementActions.list`, `commerceproducer.consumerEnforcementActions.update`, `commerceproducer.locations.get`, `commerceproducer.locations.list`, `commerceproducer.privateOfferDocuments.create`, `commerceproducer.privateOfferDocuments.delete`, `commerceproducer.privateOfferDocuments.get`, `commerceproducer.privateOfferDocuments.list`, `commerceproducer.privateOfferDocuments.update`, `commerceproducer.privateOffers.cancel`, `commerceproducer.privateOffers.create`, `commerceproducer.privateOffers.delete`, `commerceproducer.privateOffers.get`, `commerceproducer.privateOffers.list`, `commerceproducer.privateOffers.publish`, `commerceproducer.privateOffers.update`, `commerceproducer.products.create`, `commerceproducer.products.delete`, `commerceproducer.products.get`, `commerceproducer.products.list`, `commerceproducer.products.update`, `commerceproducer.releases.create`, `commerceproducer.releases.delete`, `commerceproducer.releases.get`, `commerceproducer.releases.list`, `commerceproducer.releases.publish`, `commerceproducer.releases.update`, `commerceproducer.releases.verify`, `commerceproducer.services.get`, `commerceproducer.services.list`, `commerceproducer.skuGroups.get`, `commerceproducer.skuGroups.list`, `commerceproducer.skus.get`, `commerceproducer.skus.list`, `commerceproducer.standardOffers.get`, `commerceproducer.standardOffers.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Commerce Producer Viewer (`roles/commerceproducer.viewer`)
+#### Commerce Producer Viewer (`roles/commerceproducer.viewer`)
 
 - Launch stage: Beta
 - Grants read access to all resources in Cloud Commerce Producer API.

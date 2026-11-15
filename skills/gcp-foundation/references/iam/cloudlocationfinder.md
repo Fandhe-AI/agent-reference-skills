@@ -10,13 +10,13 @@ Predefined roles of `cloudlocationfinder` (role ID, description, included permis
 
 ### Roles
 
-### Cloud Location Finder Admin (`roles/cloudlocationfinder.admin`)
+#### Cloud Location Finder Admin (`roles/cloudlocationfinder.admin`)
 
 - Launch stage: Beta
 - Full access to Cloud Location Finder resources.
 - Permissions (10): `cloudlocationfinder.cloudLocations.create`, `cloudlocationfinder.cloudLocations.delete`, `cloudlocationfinder.cloudLocations.get`, `cloudlocationfinder.cloudLocations.list`, `cloudlocationfinder.cloudLocations.search`, `cloudlocationfinder.cloudLocations.update`, `cloudlocationfinder.locations.get`, `cloudlocationfinder.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Cloud Location Finder Viewer (`roles/cloudlocationfinder.viewer`)
+#### Cloud Location Finder Viewer (`roles/cloudlocationfinder.viewer`)
 
 - Launch stage: Beta
 - Readonly access to Cloud Location Finder resources.

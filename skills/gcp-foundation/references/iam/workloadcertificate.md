@@ -10,31 +10,31 @@ Predefined roles of `workloadcertificate` (role ID, description, included permis
 
 ### Roles
 
-### Workload Certificate Admin (`roles/workloadcertificate.admin`)
+#### Workload Certificate Admin (`roles/workloadcertificate.admin`)
 
 - Launch stage: Beta
 - Full access to all Workload Certificate API resources.
 - Permissions (15): `resourcemanager.projects.get`, `resourcemanager.projects.list`, `workloadcertificate.locations.get`, `workloadcertificate.locations.list`, `workloadcertificate.operations.cancel`, `workloadcertificate.operations.delete`, `workloadcertificate.operations.get`, `workloadcertificate.operations.list`, `workloadcertificate.workloadCertificateFeature.get`, `workloadcertificate.workloadCertificateFeature.update`, `workloadcertificate.workloadRegistrations.create`, `workloadcertificate.workloadRegistrations.delete`, `workloadcertificate.workloadRegistrations.get`, `workloadcertificate.workloadRegistrations.list`, `workloadcertificate.workloadRegistrations.update`
 
-### Workload Certificate Viewer (`roles/workloadcertificate.viewer`)
+#### Workload Certificate Viewer (`roles/workloadcertificate.viewer`)
 
 - Launch stage: Beta
 - Read-only access to Workload Certificate all resources.
 - Permissions (9): `resourcemanager.projects.get`, `resourcemanager.projects.list`, `workloadcertificate.locations.get`, `workloadcertificate.locations.list`, `workloadcertificate.operations.get`, `workloadcertificate.operations.list`, `workloadcertificate.workloadCertificateFeature.get`, `workloadcertificate.workloadRegistrations.get`, `workloadcertificate.workloadRegistrations.list`
 
-### Workload Certificate Registration Admin (`roles/workloadcertificate.registrationAdmin`)
+#### Workload Certificate Registration Admin (`roles/workloadcertificate.registrationAdmin`)
 
 - Launch stage: Beta
 - Full access to WorkloadRegistration resources.
 - Permissions (13): `resourcemanager.projects.get`, `resourcemanager.projects.list`, `workloadcertificate.locations.get`, `workloadcertificate.locations.list`, `workloadcertificate.operations.cancel`, `workloadcertificate.operations.delete`, `workloadcertificate.operations.get`, `workloadcertificate.operations.list`, `workloadcertificate.workloadRegistrations.create`, `workloadcertificate.workloadRegistrations.delete`, `workloadcertificate.workloadRegistrations.get`, `workloadcertificate.workloadRegistrations.list`, `workloadcertificate.workloadRegistrations.update`
 
-### Workload Certificate Registration Viewer (`roles/workloadcertificate.registrationViewer`)
+#### Workload Certificate Registration Viewer (`roles/workloadcertificate.registrationViewer`)
 
 - Launch stage: Beta
 - Read-only access to WorkloadRegistration resources.
 - Permissions (8): `resourcemanager.projects.get`, `resourcemanager.projects.list`, `workloadcertificate.locations.get`, `workloadcertificate.locations.list`, `workloadcertificate.operations.get`, `workloadcertificate.operations.list`, `workloadcertificate.workloadRegistrations.get`, `workloadcertificate.workloadRegistrations.list`
 
-### Workload Certificate Service Agent (`roles/workloadcertificate.serviceAgent`)
+#### Workload Certificate Service Agent (`roles/workloadcertificate.serviceAgent`)
 
 - Gives the Workload Certificate service agent access to Cloud Platform resources. > \[!WARNING\] > \*\*Warning:\*\* Do not grant service agent roles to any principals except service agents (https://docs.cloud.google.com/iam/docs/service-agents).
 - Permissions (24): `container.clusterRoleBindings.get`, `container.clusterRoleBindings.list`, `container.clusters.get`, `container.clusters.update`, `container.customResourceDefinitions.create`, `container.customResourceDefinitions.get`, `container.customResourceDefinitions.list`, `container.operations.get`, `container.thirdPartyObjects.update`, `gkehub.features.get`, `gkehub.fleet.create`, `gkehub.fleet.get`, `gkehub.locations.get`, `gkehub.locations.list`, `gkehub.memberships.get`, `gkehub.memberships.list`, `gkehub.operations.get`, `serviceconsumermanagement.tenancyu.addResource`, `serviceconsumermanagement.tenancyu.create`, `serviceconsumermanagement.tenancyu.delete`, `serviceconsumermanagement.tenancyu.removeResource`, `serviceusage.services.use`, `workloadcertificate.workloadCertificateFeature.get`, `workloadcertificate.workloadRegistrations.list`

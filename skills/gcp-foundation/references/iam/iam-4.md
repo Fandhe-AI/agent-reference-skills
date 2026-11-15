@@ -10,151 +10,151 @@ Predefined roles of `iam` (role ID, description, included permissions) and, for 
 
 ### Roles
 
-### Service Account Admin (`roles/iam.serviceAccountAdmin`)
+#### Service Account Admin (`roles/iam.serviceAccountAdmin`)
 
 - Create and manage service accounts. Lowest-level resources where you can grant this role: - Service Account
 - Permissions (19): `iam.serviceAccountApiKeyBindings.create`, `iam.serviceAccountApiKeyBindings.delete`, `iam.serviceAccountApiKeyBindings.undelete`, `iam.serviceAccounts.create`, `iam.serviceAccounts.createTagBinding`, `iam.serviceAccounts.delete`, `iam.serviceAccounts.deleteTagBinding`, `iam.serviceAccounts.disable`, `iam.serviceAccounts.enable`, `iam.serviceAccounts.get`, `iam.serviceAccounts.getIamPolicy`, `iam.serviceAccounts.list`, `iam.serviceAccounts.listEffectiveTags`, `iam.serviceAccounts.listTagBindings`, `iam.serviceAccounts.setIamPolicy`, `iam.serviceAccounts.undelete`, `iam.serviceAccounts.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Create Service Accounts (`roles/iam.serviceAccountCreator`)
+#### Create Service Accounts (`roles/iam.serviceAccountCreator`)
 
 - Access to create service accounts.
 - Permissions (5): `iam.serviceAccounts.create`, `iam.serviceAccounts.get`, `iam.serviceAccounts.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Service Account Key Admin (`roles/iam.serviceAccountKeyAdmin`)
+#### Service Account Key Admin (`roles/iam.serviceAccountKeyAdmin`)
 
 - Create and manage (and rotate) service account keys. Lowest-level resources where you can grant this role: - Service Account
 - Permissions (10): `iam.serviceAccountKeys.create`, `iam.serviceAccountKeys.delete`, `iam.serviceAccountKeys.disable`, `iam.serviceAccountKeys.enable`, `iam.serviceAccountKeys.get`, `iam.serviceAccountKeys.list`, `iam.serviceAccounts.get`, `iam.serviceAccounts.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Service Account Token Creator (`roles/iam.serviceAccountTokenCreator`)
+#### Service Account Token Creator (`roles/iam.serviceAccountTokenCreator`)
 
 - Impersonate service accounts (create OAuth2 access tokens, sign blobs or JWTs, etc). Lowest-level resources where you can grant this role: - Service Account
 - Permissions (9): `iam.serviceAccounts.get`, `iam.serviceAccounts.getAccessToken`, `iam.serviceAccounts.getOpenIdToken`, `iam.serviceAccounts.implicitDelegation`, `iam.serviceAccounts.list`, `iam.serviceAccounts.signBlob`, `iam.serviceAccounts.signJwt`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Service Account User (`roles/iam.serviceAccountUser`)
+#### Service Account User (`roles/iam.serviceAccountUser`)
 
 - Run operations as the service account. Lowest-level resources where you can grant this role: - Service Account
 - Permissions (5): `iam.serviceAccounts.actAs`, `iam.serviceAccounts.get`, `iam.serviceAccounts.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### View Service Accounts (`roles/iam.serviceAccountViewer`)
+#### View Service Accounts (`roles/iam.serviceAccountViewer`)
 
 - Read access to service accounts, metadata, and keys.
 - Permissions (9): `iam.serviceAccountKeys.get`, `iam.serviceAccountKeys.list`, `iam.serviceAccounts.get`, `iam.serviceAccounts.getIamPolicy`, `iam.serviceAccounts.list`, `iam.serviceAccounts.listEffectiveTags`, `iam.serviceAccounts.listTagBindings`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### IAM Viewer (`roles/iam.viewer`)
+#### IAM Viewer (`roles/iam.viewer`)
 
 - Read-only access to all IAM resources
 - Permissions (55): `iam.accesspolicies.get`, `iam.accesspolicies.list`, `iam.accesspolicies.searchPolicyBindings`, `iam.denypolicies.get`, `iam.denypolicies.list`, `iam.googleapis.com/oauthClientCredentials.get`, `iam.googleapis.com/oauthClientCredentials.list`, `iam.googleapis.com/oauthClients.get`, `iam.googleapis.com/oauthClients.list`, `iam.googleapis.com/workforcePoolProviderKeys.get`, `iam.googleapis.com/workforcePoolProviderKeys.list`, `iam.googleapis.com/workforcePoolProviderScimGroups.get`, `iam.googleapis.com/workforcePoolProviderScimGroups.list`, `iam.googleapis.com/workforcePoolProviderScimUsers.get`, `iam.googleapis.com/workforcePoolProviderScimUsers.list`, `iam.googleapis.com/workforcePoolProviders.computeUserAttributes`, `iam.googleapis.com/workforcePoolProviders.get`, `iam.googleapis.com/workforcePoolProviders.list`, `iam.googleapis.com/workforcePools.get`, `iam.googleapis.com/workforcePools.getIamPolicy`, `iam.googleapis.com/workforcePools.list`, `iam.googleapis.com/workforcePools.searchPolicyBindings`, `iam.googleapis.com/workloadIdentityPoolManagedIdentities.get`, `iam.googleapis.com/workloadIdentityPoolManagedIdentities.getAttestationRules`, `iam.googleapis.com/workloadIdentityPoolManagedIdentities.list`, `iam.googleapis.com/workloadIdentityPoolNamespaces.get`, `iam.googleapis.com/workloadIdentityPoolNamespaces.list`, `iam.googleapis.com/workloadIdentityPoolProviderKeys.get`, `iam.googleapis.com/workloadIdentityPoolProviderKeys.list`, `iam.googleapis.com/workloadIdentityPoolProviders.get`, `iam.googleapis.com/workloadIdentityPoolProviders.list`, `iam.googleapis.com/workloadIdentityPools.get`, `iam.googleapis.com/workloadIdentityPools.getAttestationRules`, `iam.googleapis.com/workloadIdentityPools.getIamPolicy`, `iam.googleapis.com/workloadIdentityPools.list`, `iam.googleapis.com/workspacePools.searchPolicyBindings`, `iam.policybindings.get`, `iam.policybindings.list`, `iam.principalaccessboundarypolicies.get`, `iam.principalaccessboundarypolicies.list`, `iam.principalaccessboundarypolicies.searchPolicyBindings`, `iam.roles.get`, `iam.roles.list`, `iam.roles.listEffectiveTags`, `iam.roles.listTagBindings`, `iam.serviceAccountKeys.get`, `iam.serviceAccountKeys.list`, `iam.serviceAccounts.get`, `iam.serviceAccounts.getIamPolicy`, `iam.serviceAccounts.list`, `iam.serviceAccounts.listEffectiveTags`, `iam.serviceAccounts.listTagBindings`, `iam.workloadIdentityPools.searchPolicyBindings`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Workload Identity User (`roles/iam.workloadIdentityUser`)
+#### Workload Identity User (`roles/iam.workloadIdentityUser`)
 
 - Impersonate service accounts from federated workloads.
 - Permissions (4): `iam.serviceAccounts.get`, `iam.serviceAccounts.getAccessToken`, `iam.serviceAccounts.getOpenIdToken`, `iam.serviceAccounts.list`
 
-### Access Policy User (`roles/iam.accessPolicyUser`)
+#### Access Policy User (`roles/iam.accessPolicyUser`)
 
 - Launch stage: Beta
 - Access Policies user role, with permissions to view access policies, and to bind and unbind access policies to targets.
 - Permissions (4): `iam.accesspolicies.bind`, `iam.accesspolicies.get`, `iam.accesspolicies.list`, `iam.accesspolicies.unbind`
 
-### Access Policy Viewer (`roles/iam.accessPolicyViewer`)
+#### Access Policy Viewer (`roles/iam.accessPolicyViewer`)
 
 - Launch stage: Beta
 - Access Policy Viewer role, with permissions to read access policies and view associated policy bindings.
 - Permissions (3): `iam.accesspolicies.get`, `iam.accesspolicies.list`, `iam.accesspolicies.searchPolicyBindings`
 
-### Deny Admin (`roles/iam.denyAdmin`)
+#### Deny Admin (`roles/iam.denyAdmin`)
 
 - Deny admin role, with permissions to read and modify deny policies Lowest-level resources where you can grant this role: - Organization
 - Permissions (11): `cloudasset.assets.listResource`, `iam.denypolicies.create`, `iam.denypolicies.delete`, `iam.denypolicies.get`, `iam.denypolicies.list`, `iam.denypolicies.update`, `policyanalyzer.resourceAuthorizationActivities.query`, `policysimulator.accessPolicySimulationResults.list`, `policysimulator.accessPolicySimulations.create`, `policysimulator.accessPolicySimulations.get`, `policysimulator.accessPolicySimulations.list`
 
-### Deny Reviewer (`roles/iam.denyReviewer`)
+#### Deny Reviewer (`roles/iam.denyReviewer`)
 
 - Deny Reviewer role, with permissions to read deny policies Lowest-level resources where you can grant this role: - Organization
 - Permissions (2): `iam.denypolicies.get`, `iam.denypolicies.list`
 
-### IAM OAuth Client Admin (`roles/iam.oauthClientAdmin`)
+#### IAM OAuth Client Admin (`roles/iam.oauthClientAdmin`)
 
 - Full rights to create and manage OAuth clients.
 - Permissions (13): `iam.googleapis.com/oauthClientCredentials.create`, `iam.googleapis.com/oauthClientCredentials.delete`, `iam.googleapis.com/oauthClientCredentials.get`, `iam.googleapis.com/oauthClientCredentials.list`, `iam.googleapis.com/oauthClientCredentials.update`, `iam.googleapis.com/oauthClients.create`, `iam.googleapis.com/oauthClients.delete`, `iam.googleapis.com/oauthClients.get`, `iam.googleapis.com/oauthClients.list`, `iam.googleapis.com/oauthClients.undelete`, `iam.googleapis.com/oauthClients.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### IAM OAuth Client Viewer (`roles/iam.oauthClientViewer`)
+#### IAM OAuth Client Viewer (`roles/iam.oauthClientViewer`)
 
 - Read access to a particular instance of an OAuth client.
 - Permissions (6): `iam.googleapis.com/oauthClientCredentials.get`, `iam.googleapis.com/oauthClientCredentials.list`, `iam.googleapis.com/oauthClients.get`, `iam.googleapis.com/oauthClients.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### IAM Operation Viewer (`roles/iam.operationViewer`)
+#### IAM Operation Viewer (`roles/iam.operationViewer`)
 
 - Operation user role, with permissions to view and list operations in IAM v3
 - Permissions (1): `iam.operations.get`
 
-### Organization Role Administrator (`roles/iam.organizationRoleAdmin`)
+#### Organization Role Administrator (`roles/iam.organizationRoleAdmin`)
 
 - Provides access to administer all custom roles in the organization and the projects below it. Lowest-level resources where you can grant this role: - Organization
 - Permissions (15): `iam.roles.create`, `iam.roles.createTagBinding`, `iam.roles.delete`, `iam.roles.deleteTagBinding`, `iam.roles.get`, `iam.roles.list`, `iam.roles.listEffectiveTags`, `iam.roles.listTagBindings`, `iam.roles.undelete`, `iam.roles.update`, `resourcemanager.organizations.get`, `resourcemanager.organizations.getIamPolicy`, `resourcemanager.projects.get`, `resourcemanager.projects.getIamPolicy`, `resourcemanager.projects.list`
 
-### Organization Role Viewer (`roles/iam.organizationRoleViewer`)
+#### Organization Role Viewer (`roles/iam.organizationRoleViewer`)
 
 - Provides read access to all custom roles in the organization and the projects below it. Lowest-level resources where you can grant this role: - Organization
 - Permissions (9): `iam.roles.get`, `iam.roles.list`, `iam.roles.listEffectiveTags`, `iam.roles.listTagBindings`, `resourcemanager.organizations.get`, `resourcemanager.organizations.getIamPolicy`, `resourcemanager.projects.get`, `resourcemanager.projects.getIamPolicy`, `resourcemanager.projects.list`
 
-### Principal Access Boundary Policy Admin (`roles/iam.principalAccessBoundaryAdmin`)
+#### Principal Access Boundary Policy Admin (`roles/iam.principalAccessBoundaryAdmin`)
 
 - Full management of Principal Access Boundary policies and their bindings to principal sets, including the ability to simulate policy impacts.
 - Permissions (10): `cloudasset.assets.listResource`, `cloudasset.assets.searchAllResources`, `iam.principalaccessboundarypolicies.bind`, `iam.principalaccessboundarypolicies.create`, `iam.principalaccessboundarypolicies.delete`, `iam.principalaccessboundarypolicies.get`, `iam.principalaccessboundarypolicies.list`, `iam.principalaccessboundarypolicies.searchPolicyBindings`, `iam.principalaccessboundarypolicies.unbind`, `iam.principalaccessboundarypolicies.update`
 
-### Principal Access Boundary Policy User (`roles/iam.principalAccessBoundaryUser`)
+#### Principal Access Boundary Policy User (`roles/iam.principalAccessBoundaryUser`)
 
 - View Principal Access Boundary policies and manage policy bindings to associate them with principal sets.
 - Permissions (4): `iam.principalaccessboundarypolicies.bind`, `iam.principalaccessboundarypolicies.get`, `iam.principalaccessboundarypolicies.list`, `iam.principalaccessboundarypolicies.unbind`
 
-### SCIM Data Syncer (`roles/iam.scimSyncer`)
+#### SCIM Data Syncer (`roles/iam.scimSyncer`)
 
 - Rights to sync users and groups from external identity providers.
 - Permissions (12): `iam.googleapis.com/workforcePoolProviderScimGroups.create`, `iam.googleapis.com/workforcePoolProviderScimGroups.delete`, `iam.googleapis.com/workforcePoolProviderScimGroups.get`, `iam.googleapis.com/workforcePoolProviderScimGroups.list`, `iam.googleapis.com/workforcePoolProviderScimGroups.patch`, `iam.googleapis.com/workforcePoolProviderScimGroups.put`, `iam.googleapis.com/workforcePoolProviderScimUsers.create`, `iam.googleapis.com/workforcePoolProviderScimUsers.delete`, `iam.googleapis.com/workforcePoolProviderScimUsers.get`, `iam.googleapis.com/workforcePoolProviderScimUsers.list`, `iam.googleapis.com/workforcePoolProviderScimUsers.patch`, `iam.googleapis.com/workforcePoolProviderScimUsers.put`
 
-### Service Account API Key Binding Admin (`roles/iam.serviceAccountApiKeyBindingAdmin`)
+#### Service Account API Key Binding Admin (`roles/iam.serviceAccountApiKeyBindingAdmin`)
 
 - Create and delete service account API Key bindings
 - Permissions (3): `iam.serviceAccountApiKeyBindings.create`, `iam.serviceAccountApiKeyBindings.delete`, `iam.serviceAccountApiKeyBindings.undelete`
 
-### Delete Service Accounts (`roles/iam.serviceAccountDeleter`)
+#### Delete Service Accounts (`roles/iam.serviceAccountDeleter`)
 
 - Access to delete service accounts.
 - Permissions (5): `iam.serviceAccounts.delete`, `iam.serviceAccounts.get`, `iam.serviceAccounts.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Service Account OpenID Connect Identity Token Creator (`roles/iam.serviceAccountOpenIdTokenCreator`)
+#### Service Account OpenID Connect Identity Token Creator (`roles/iam.serviceAccountOpenIdTokenCreator`)
 
 - Create OpenID Connect (OIDC) identity tokens
 - Permissions (1): `iam.serviceAccounts.getOpenIdToken`
 
-### IAM Workforce Pool Admin (`roles/iam.workforcePoolAdmin`)
+#### IAM Workforce Pool Admin (`roles/iam.workforcePoolAdmin`)
 
 - Full rights to create and manage all workforce pools in the org, along with the ability to delegate permissions to other admins.
 - Permissions (39): `iam.googleapis.com/workforcePoolProviderKeys.create`, `iam.googleapis.com/workforcePoolProviderKeys.delete`, `iam.googleapis.com/workforcePoolProviderKeys.get`, `iam.googleapis.com/workforcePoolProviderKeys.list`, `iam.googleapis.com/workforcePoolProviderKeys.undelete`, `iam.googleapis.com/workforcePoolProviderScimGroups.create`, `iam.googleapis.com/workforcePoolProviderScimGroups.delete`, `iam.googleapis.com/workforcePoolProviderScimGroups.get`, `iam.googleapis.com/workforcePoolProviderScimGroups.list`, `iam.googleapis.com/workforcePoolProviderScimGroups.patch`, `iam.googleapis.com/workforcePoolProviderScimGroups.put`, `iam.googleapis.com/workforcePoolProviderScimUsers.create`, `iam.googleapis.com/workforcePoolProviderScimUsers.delete`, `iam.googleapis.com/workforcePoolProviderScimUsers.get`, `iam.googleapis.com/workforcePoolProviderScimUsers.list`, `iam.googleapis.com/workforcePoolProviderScimUsers.patch`, `iam.googleapis.com/workforcePoolProviderScimUsers.put`, `iam.googleapis.com/workforcePoolProviders.computeUserAttributes`, `iam.googleapis.com/workforcePoolProviders.create`, `iam.googleapis.com/workforcePoolProviders.delete`, `iam.googleapis.com/workforcePoolProviders.get`, `iam.googleapis.com/workforcePoolProviders.list`, `iam.googleapis.com/workforcePoolProviders.undelete`, `iam.googleapis.com/workforcePoolProviders.update`, `iam.googleapis.com/workforcePoolSubjects.delete`, `iam.googleapis.com/workforcePoolSubjects.revokeSessions`, `iam.googleapis.com/workforcePoolSubjects.undelete`, `iam.googleapis.com/workforcePools.create`, `iam.googleapis.com/workforcePools.createPolicyBinding`, `iam.googleapis.com/workforcePools.delete`, `iam.googleapis.com/workforcePools.deletePolicyBinding`, `iam.googleapis.com/workforcePools.get`, `iam.googleapis.com/workforcePools.getIamPolicy`, `iam.googleapis.com/workforcePools.list`, `iam.googleapis.com/workforcePools.searchPolicyBindings`, `iam.googleapis.com/workforcePools.setIamPolicy`, `iam.googleapis.com/workforcePools.undelete`, `iam.googleapis.com/workforcePools.update`, `iam.googleapis.com/workforcePools.updatePolicyBinding`
 
-### IAM Workforce Pool Editor (`roles/iam.workforcePoolEditor`)
+#### IAM Workforce Pool Editor (`roles/iam.workforcePoolEditor`)
 
 - Gives permission to edit workforce pools. Lowest-level resources where you can grant this role: - Workforce pool
 - Permissions (12): `iam.googleapis.com/workforcePoolProviderKeys.get`, `iam.googleapis.com/workforcePoolProviderKeys.list`, `iam.googleapis.com/workforcePools.get`, `iam.googleapis.com/workforcePools.list`, `iam.googleapis.com/workforcePools.update`, `iam.googleapis.com/workforcePoolProviders.computeUserAttributes`, `iam.googleapis.com/workforcePoolProviders.create`, `iam.googleapis.com/workforcePoolProviders.delete`, `iam.googleapis.com/workforcePoolProviders.get`, `iam.googleapis.com/workforcePoolProviders.list`, `iam.googleapis.com/workforcePoolProviders.undelete`, `iam.googleapis.com/workforcePoolProviders.update`
 
-### IAM Workforce Pool Viewer (`roles/iam.workforcePoolViewer`)
+#### IAM Workforce Pool Viewer (`roles/iam.workforcePoolViewer`)
 
 - Rights to read workforce pool.
 - Permissions (7): `iam.googleapis.com/workforcePoolProviderKeys.get`, `iam.googleapis.com/workforcePoolProviderKeys.list`, `iam.googleapis.com/workforcePoolProviders.computeUserAttributes`, `iam.googleapis.com/workforcePoolProviders.get`, `iam.googleapis.com/workforcePoolProviders.list`, `iam.googleapis.com/workforcePools.get`, `iam.googleapis.com/workforcePools.list`
 
-### IAM Workload Identity Pool Admin (`roles/iam.workloadIdentityPoolAdmin`)
+#### IAM Workload Identity Pool Admin (`roles/iam.workloadIdentityPoolAdmin`)
 
 - Launch stage: Beta
 - Full rights to create and manage workload identity pools.
 - Permissions (41): `iam.googleapis.com/workloadIdentityPoolManagedIdentities.create`, `iam.googleapis.com/workloadIdentityPoolManagedIdentities.delete`, `iam.googleapis.com/workloadIdentityPoolManagedIdentities.get`, `iam.googleapis.com/workloadIdentityPoolManagedIdentities.getAttestationRules`, `iam.googleapis.com/workloadIdentityPoolManagedIdentities.list`, `iam.googleapis.com/workloadIdentityPoolManagedIdentities.setAttestationRules`, `iam.googleapis.com/workloadIdentityPoolManagedIdentities.undelete`, `iam.googleapis.com/workloadIdentityPoolManagedIdentities.update`, `iam.googleapis.com/workloadIdentityPoolNamespaces.create`, `iam.googleapis.com/workloadIdentityPoolNamespaces.delete`, `iam.googleapis.com/workloadIdentityPoolNamespaces.get`, `iam.googleapis.com/workloadIdentityPoolNamespaces.list`, `iam.googleapis.com/workloadIdentityPoolNamespaces.undelete`, `iam.googleapis.com/workloadIdentityPoolNamespaces.update`, `iam.googleapis.com/workloadIdentityPoolProviderKeys.create`, `iam.googleapis.com/workloadIdentityPoolProviderKeys.delete`, `iam.googleapis.com/workloadIdentityPoolProviderKeys.get`, `iam.googleapis.com/workloadIdentityPoolProviderKeys.list`, `iam.googleapis.com/workloadIdentityPoolProviderKeys.undelete`, `iam.googleapis.com/workloadIdentityPoolProviders.create`, `iam.googleapis.com/workloadIdentityPoolProviders.delete`, `iam.googleapis.com/workloadIdentityPoolProviders.get`, `iam.googleapis.com/workloadIdentityPoolProviders.list`, `iam.googleapis.com/workloadIdentityPoolProviders.undelete`, `iam.googleapis.com/workloadIdentityPoolProviders.update`, `iam.googleapis.com/workloadIdentityPools.create`, `iam.googleapis.com/workloadIdentityPools.delete`, `iam.googleapis.com/workloadIdentityPools.get`, `iam.googleapis.com/workloadIdentityPools.getAttestationRules`, `iam.googleapis.com/workloadIdentityPools.getIamPolicy`, `iam.googleapis.com/workloadIdentityPools.list`, `iam.googleapis.com/workloadIdentityPools.setAttestationRules`, `iam.googleapis.com/workloadIdentityPools.setIamPolicy`, `iam.googleapis.com/workloadIdentityPools.undelete`, `iam.googleapis.com/workloadIdentityPools.update`, `iam.workloadIdentityPools.createPolicyBinding`, `iam.workloadIdentityPools.deletePolicyBinding`, `iam.workloadIdentityPools.searchPolicyBindings`, `iam.workloadIdentityPools.updatePolicyBinding`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### IAM Workload Identity Pool Viewer (`roles/iam.workloadIdentityPoolViewer`)
+#### IAM Workload Identity Pool Viewer (`roles/iam.workloadIdentityPoolViewer`)
 
 - Launch stage: Beta
 - Read access to workload identity pools.
 - Permissions (15): `iam.googleapis.com/workloadIdentityPoolManagedIdentities.get`, `iam.googleapis.com/workloadIdentityPoolManagedIdentities.getAttestationRules`, `iam.googleapis.com/workloadIdentityPoolManagedIdentities.list`, `iam.googleapis.com/workloadIdentityPoolNamespaces.get`, `iam.googleapis.com/workloadIdentityPoolNamespaces.list`, `iam.googleapis.com/workloadIdentityPoolProviderKeys.get`, `iam.googleapis.com/workloadIdentityPoolProviderKeys.list`, `iam.googleapis.com/workloadIdentityPoolProviders.get`, `iam.googleapis.com/workloadIdentityPoolProviders.list`, `iam.googleapis.com/workloadIdentityPools.get`, `iam.googleapis.com/workloadIdentityPools.getAttestationRules`, `iam.googleapis.com/workloadIdentityPools.getIamPolicy`, `iam.googleapis.com/workloadIdentityPools.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Workspace Pool IAM Admin (`roles/iam.workspacePoolAdmin`)
+#### Workspace Pool IAM Admin (`roles/iam.workspacePoolAdmin`)
 
 - IAM workspace pool admin able to bind IAM policies to Dasher accounts.
 - Permissions (4): `iam.googleapis.com/workspacePools.createPolicyBinding`, `iam.googleapis.com/workspacePools.deletePolicyBinding`, `iam.googleapis.com/workspacePools.searchPolicyBindings`, `iam.googleapis.com/workspacePools.updatePolicyBinding`

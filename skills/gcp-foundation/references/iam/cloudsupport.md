@@ -10,42 +10,42 @@ Predefined roles of `cloudsupport` (role ID, description, included permissions) 
 
 ### Roles
 
-### Support Administrator (`roles/cloudsupport.admin`)
+#### Support Administrator (`roles/cloudsupport.admin`)
 
 - Allows management of a support account and support cases. See the Cloud Support documentation (https://docs.cloud.google.com/support/docs/access-control#support_account_admin) for more information. Lowest-level resources where you can grant this role: - Organization
 - Permissions (18): `cloudsupport.accounts.create`, `cloudsupport.accounts.delete`, `cloudsupport.accounts.get`, `cloudsupport.accounts.getIamPolicy`, `cloudsupport.accounts.getUserRoles`, `cloudsupport.accounts.list`, `cloudsupport.accounts.purchase`, `cloudsupport.accounts.setIamPolicy`, `cloudsupport.accounts.update`, `cloudsupport.accounts.updateUserRoles`, `cloudsupport.operations.get`, `cloudsupport.properties.get`, `cloudsupport.techCases.create`, `cloudsupport.techCases.escalate`, `cloudsupport.techCases.get`, `cloudsupport.techCases.list`, `cloudsupport.techCases.update`, `resourcemanager.organizations.get`
 
-### Support Viewer (`roles/cloudsupport.viewer`)
+#### Support Viewer (`roles/cloudsupport.viewer`)
 
 - Read-only access to details of a support account. This does not allow viewing cases. See the Cloud Support documentation (https://docs.cloud.google.com/support/docs/access-control#support_account_viewer) for more information. Lowest-level resources where you can grant this role: - Organization
 - Permissions (8): `cloudsupport.accounts.get`, `cloudsupport.accounts.getIamPolicy`, `cloudsupport.accounts.getUserRoles`, `cloudsupport.accounts.list`, `cloudsupport.operations.get`, `cloudsupport.properties.get`, `cloudsupport.techCases.get`, `cloudsupport.techCases.list`
 
-### Advisory Support Editor (`roles/cloudsupport.advisorySupportEditor`)
+#### Advisory Support Editor (`roles/cloudsupport.advisorySupportEditor`)
 
 - Full read-write access to advisory support cases applicable for Cloud Customer Care.
 - Permissions (4): `cloudasset.assets.searchAllResources`, `cloudsupport.properties.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Advisory Support Viewer (`roles/cloudsupport.advisorySupportViewer`)
+#### Advisory Support Viewer (`roles/cloudsupport.advisorySupportViewer`)
 
 - Read-only access to advisory support cases applicable for Cloud Customer Care.
 - Permissions (3): `cloudsupport.properties.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Support Subscription Editor (`roles/cloudsupport.supportSubscriptionEditor`)
+#### Support Subscription Editor (`roles/cloudsupport.supportSubscriptionEditor`)
 
 - Full read-write access to support event subscriptions.
 - Permissions (1): `resourcemanager.organizations.get`
 
-### Support Subscription Viewer (`roles/cloudsupport.supportSubscriptionViewer`)
+#### Support Subscription Viewer (`roles/cloudsupport.supportSubscriptionViewer`)
 
 - Read-only access to support event subscriptions.
 - Permissions (1): `resourcemanager.organizations.get`
 
-### Tech Support Editor (`roles/cloudsupport.techSupportEditor`)
+#### Tech Support Editor (`roles/cloudsupport.techSupportEditor`)
 
 - Full read-write access to technical support cases (applicable for Cloud Customer Care and Maps support). See the Cloud Support documentation (https://docs.cloud.google.com/support/docs/access-control#tech_support_editor) for more information.
 - Permissions (10): `billing.resourceAssociations.list`, `cloudasset.assets.searchAllResources`, `cloudsupport.properties.get`, `cloudsupport.techCases.create`, `cloudsupport.techCases.escalate`, `cloudsupport.techCases.get`, `cloudsupport.techCases.list`, `cloudsupport.techCases.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Tech Support Viewer (`roles/cloudsupport.techSupportViewer`)
+#### Tech Support Viewer (`roles/cloudsupport.techSupportViewer`)
 
 - Read-only access to technical support cases (applicable for Cloud Customer Care and Maps support). See the Cloud Support documentation (https://docs.cloud.google.com/support/docs/access-control#tech_support_viewer) for more information.
 - Permissions (5): `cloudsupport.properties.get`, `cloudsupport.techCases.get`, `cloudsupport.techCases.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`

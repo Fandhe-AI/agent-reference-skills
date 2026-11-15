@@ -10,25 +10,25 @@ Predefined roles of `commercepricemanagement` (role ID, description, included pe
 
 ### Roles
 
-### Commercepricemanagement Editor (`roles/commercepricemanagement.editor`)
+#### Commercepricemanagement Editor (`roles/commercepricemanagement.editor`)
 
 - Launch stage: Beta
 - Editor role for commercepricemanagement
 - Permissions (36): `commerceagreementpublishing.agreements.get`, `commerceagreementpublishing.agreements.list`, `commerceagreementpublishing.documents.get`, `commerceagreementpublishing.documents.list`, `commerceprice.privateoffers.cancel`, `commerceprice.privateoffers.create`, `commerceprice.privateoffers.delete`, `commerceprice.privateoffers.get`, `commerceprice.privateoffers.list`, `commerceprice.privateoffers.publish`, `commerceprice.privateoffers.sendEmail`, `commerceprice.privateoffers.update`, `commerceproducer.privateOfferDocuments.get`, `commerceproducer.privateOfferDocuments.list`, `commerceproducer.privateOffers.get`, `commerceproducer.privateOffers.list`, `commerceproducer.skuGroups.get`, `commerceproducer.skuGroups.list`, `commerceproducer.skus.get`, `commerceproducer.skus.list`, `commerceproducer.standardOffers.get`, `commerceproducer.standardOffers.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`, `serviceusage.catalogs.listMembers`, `serviceusage.consumerpolicy.analyze`, `serviceusage.consumerpolicy.get`, `serviceusage.effectivepolicy.get`, `serviceusage.groups.list`, `serviceusage.groups.listExpandedMembers`, `serviceusage.groups.listMembers`, `serviceusage.services.get`, `serviceusage.services.list`, `serviceusage.services.listApis`, `serviceusage.services.listDependentServices`, `serviceusage.values.test`
 
-### Commerce Price Management Viewer (`roles/commercepricemanagement.viewer`)
+#### Commerce Price Management Viewer (`roles/commercepricemanagement.viewer`)
 
 - Launch stage: Beta
 - Allows viewing offers, free trials, skus
 - Permissions (30): `commerceagreementpublishing.agreements.get`, `commerceagreementpublishing.agreements.list`, `commerceagreementpublishing.documents.get`, `commerceagreementpublishing.documents.list`, `commerceprice.privateoffers.get`, `commerceprice.privateoffers.list`, `commerceproducer.privateOfferDocuments.get`, `commerceproducer.privateOfferDocuments.list`, `commerceproducer.privateOffers.get`, `commerceproducer.privateOffers.list`, `commerceproducer.skuGroups.get`, `commerceproducer.skuGroups.list`, `commerceproducer.skus.get`, `commerceproducer.skus.list`, `commerceproducer.standardOffers.get`, `commerceproducer.standardOffers.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`, `serviceusage.catalogs.listMembers`, `serviceusage.consumerpolicy.analyze`, `serviceusage.consumerpolicy.get`, `serviceusage.effectivepolicy.get`, `serviceusage.groups.list`, `serviceusage.groups.listExpandedMembers`, `serviceusage.groups.listMembers`, `serviceusage.services.get`, `serviceusage.services.list`, `serviceusage.services.listApis`, `serviceusage.services.listDependentServices`, `serviceusage.values.test`
 
-### Commerce Price Management Events Viewer (`roles/commercepricemanagement.eventsViewer`)
+#### Commerce Price Management Events Viewer (`roles/commercepricemanagement.eventsViewer`)
 
 - Launch stage: Beta
 - Allows viewing key events for an offer
 - Permissions (4): `commerceprice.events.get`, `commerceprice.events.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Commerce Price Management Private Offers Admin (`roles/commercepricemanagement.privateOffersAdmin`)
+#### Commerce Price Management Private Offers Admin (`roles/commercepricemanagement.privateOffersAdmin`)
 
 - Launch stage: Beta
 - Allows managing private offers

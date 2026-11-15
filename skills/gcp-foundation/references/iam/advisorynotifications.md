@@ -10,12 +10,12 @@ Predefined roles of `advisorynotifications` (role ID, description, included perm
 
 ### Roles
 
-### Advisory Notifications Admin (`roles/advisorynotifications.admin`)
+#### Advisory Notifications Admin (`roles/advisorynotifications.admin`)
 
 - Grants write access to settings in Advisory Notifications
 - Permissions (6): `advisorynotifications.notifications.get`, `advisorynotifications.notifications.list`, `advisorynotifications.settings.get`, `advisorynotifications.settings.update`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`
 
-### Advisory Notifications Viewer (`roles/advisorynotifications.viewer`)
+#### Advisory Notifications Viewer (`roles/advisorynotifications.viewer`)
 
 - Grants view access in Advisory Notifications
 - Permissions (5): `advisorynotifications.notifications.get`, `advisorynotifications.notifications.list`, `advisorynotifications.settings.get`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`

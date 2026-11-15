@@ -10,19 +10,19 @@ Predefined roles of `capacityplanner` (role ID, description, included permission
 
 ### Roles
 
-### Capacityplanner Admin (`roles/capacityplanner.admin`)
+#### Capacityplanner Admin (`roles/capacityplanner.admin`)
 
 - Launch stage: Beta
 - Admin role for capacityplanner
 - Permissions (34): `capacityplanner.capacityPlans.create`, `capacityplanner.capacityPlans.delete`, `capacityplanner.capacityPlans.get`, `capacityplanner.capacityPlans.list`, `capacityplanner.capacityPlans.update`, `capacityplanner.forecasts.list`, `capacityplanner.messages.generate`, `capacityplanner.operations.get`, `capacityplanner.planAlertInsights.list`, `capacityplanner.usageAlertInsights.list`, `capacityplanner.usageHistories.list`, `capacityplanner.usageHistories.summarize`, `cloudquotas.quotas.get`, `compute.futureReservations.get`, `compute.futureReservations.list`, `compute.reservations.get`, `compute.reservations.list`, `monitoring.timeSeries.list`, `resourcemanager.folders.get`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`, `serviceusage.catalogs.listMembers`, `serviceusage.consumerpolicy.analyze`, `serviceusage.consumerpolicy.get`, `serviceusage.effectivepolicy.get`, `serviceusage.groups.list`, `serviceusage.groups.listExpandedMembers`, `serviceusage.groups.listMembers`, `serviceusage.quotas.get`, `serviceusage.services.get`, `serviceusage.services.listApis`, `serviceusage.services.listDependentServices`, `serviceusage.values.test`
 
-### Capacity Planner Viewer (`roles/capacityplanner.viewer`)
+#### Capacity Planner Viewer (`roles/capacityplanner.viewer`)
 
 - Launch stage: Beta
 - Read-only access to Capacity Planner resources
 - Permissions (31): `capacityplanner.capacityPlans.get`, `capacityplanner.capacityPlans.list`, `capacityplanner.forecasts.list`, `capacityplanner.messages.generate`, `capacityplanner.operations.get`, `capacityplanner.planAlertInsights.list`, `capacityplanner.usageAlertInsights.list`, `capacityplanner.usageHistories.list`, `capacityplanner.usageHistories.summarize`, `cloudquotas.quotas.get`, `compute.futureReservations.get`, `compute.futureReservations.list`, `compute.reservations.get`, `compute.reservations.list`, `monitoring.timeSeries.list`, `resourcemanager.folders.get`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`, `serviceusage.catalogs.listMembers`, `serviceusage.consumerpolicy.analyze`, `serviceusage.consumerpolicy.get`, `serviceusage.effectivepolicy.get`, `serviceusage.groups.list`, `serviceusage.groups.listExpandedMembers`, `serviceusage.groups.listMembers`, `serviceusage.quotas.get`, `serviceusage.services.get`, `serviceusage.services.listApis`, `serviceusage.services.listDependentServices`, `serviceusage.values.test`
 
-### Capacity Planner (`roles/capacityplanner.planner`)
+#### Capacity Planner (`roles/capacityplanner.planner`)
 
 - Launch stage: Beta
 - Role that enables capacity planning

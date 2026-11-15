@@ -48,11 +48,11 @@
 | Policy Remediator Manager | 4 roles, 9 permissions | [policyremediatormanager.md](./policyremediatormanager.md) |
 | Policy Simulator | 3 roles, 13 permissions | [policysimulator.md](./policysimulator.md) |
 | Recommender part 1 | 2 roles | [recommender-1.md](./recommender-1.md) |
-| Recommender part 2 | 54 roles | [recommender-2.md](./recommender-2.md) |
-| Recommender part 3 | 45 roles, 67 permissions | [recommender-3.md](./recommender-3.md) |
-| Recommender part 4 | 137 permissions | [recommender-4.md](./recommender-4.md) |
+| Recommender part 2 | 53 roles | [recommender-2.md](./recommender-2.md) |
+| Recommender part 3 | 46 roles, 66 permissions | [recommender-3.md](./recommender-3.md) |
+| Recommender part 4 | 136 permissions | [recommender-4.md](./recommender-4.md) |
 | Recommender part 5 | 127 permissions | [recommender-5.md](./recommender-5.md) |
-| Recommender part 6 | 118 permissions | [recommender-6.md](./recommender-6.md) |
+| Recommender part 6 | 120 permissions | [recommender-6.md](./recommender-6.md) |
 | Resource Manager part 1 | 10 roles | [resourcemanager-1.md](./resourcemanager-1.md) |
 | Resource Manager part 2 | 9 roles, 46 permissions | [resourcemanager-2.md](./resourcemanager-2.md) |
 | Resource Manager part 3 | 2 permissions | [resourcemanager-3.md](./resourcemanager-3.md) |

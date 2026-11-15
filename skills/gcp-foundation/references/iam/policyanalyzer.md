@@ -10,19 +10,19 @@ Predefined roles of `policyanalyzer` (role ID, description, included permissions
 
 ### Roles
 
-### Policyanalyzer Admin (`roles/policyanalyzer.admin`)
+#### Policyanalyzer Admin (`roles/policyanalyzer.admin`)
 
 - Launch stage: Beta
 - Admin role for policyanalyzer
 - Permissions (5): `policyanalyzer.resourceAuthorizationActivities.query`, `policyanalyzer.serviceAccountKeyLastAuthenticationActivities.query`, `policyanalyzer.serviceAccountLastAuthenticationActivities.query`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Policyanalyzer Viewer (`roles/policyanalyzer.viewer`)
+#### Policyanalyzer Viewer (`roles/policyanalyzer.viewer`)
 
 - Launch stage: Beta
 - Viewer role for policyanalyzer
 - Permissions (5): `policyanalyzer.resourceAuthorizationActivities.query`, `policyanalyzer.serviceAccountKeyLastAuthenticationActivities.query`, `policyanalyzer.serviceAccountLastAuthenticationActivities.query`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Activity Analysis Viewer (`roles/policyanalyzer.activityAnalysisViewer`)
+#### Activity Analysis Viewer (`roles/policyanalyzer.activityAnalysisViewer`)
 
 - Launch stage: Beta
 - Viewer user that can read all activity analysis.
