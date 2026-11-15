@@ -15,3 +15,6 @@
 | gcloud workstations ssh | 3 commands (alpha, beta, ga); workstations ssh … | [workstations-ssh.md](./workstations-ssh.md) |
 | gcloud workstations start | 3 commands (alpha, beta, ga); workstations start … | [workstations-start.md](./workstations-start.md) |
 | gcloud workstations start-tcp-tunnel | 3 commands (alpha, beta, ga); workstations start-tcp-tunnel … | [workstations-start-tcp-tunnel.md](./workstations-start-tcp-tunnel.md) |
+| gcloud workstations stop | 3 commands (alpha, beta, ga); workstations stop … | [workstations-stop.md](./workstations-stop.md) |
+| gcloud workstations suspend | 2 commands (alpha, beta); beta workstations suspend … | [workstations-suspend.md](./workstations-suspend.md) |
+| gcloud workstations update | 3 commands (alpha, beta, ga); workstations update … | [workstations-update.md](./workstations-update.md) |
