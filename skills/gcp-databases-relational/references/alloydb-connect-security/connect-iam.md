@@ -28,14 +28,16 @@ gcloud auth application-default print-access-token --scopes=https://www.googleap
 
 The token is requested, used as the password and discarded in a single command:
 
+Adapted (not in the official docs): `-h` points at a locally running Auth Proxy (`127.0.0.1`) instead of the instance IP, so the token is not sent over an unverified TLS connection.
+
 ```bash
 PGPASSWORD=$(gcloud auth print-access-token) psql \
-  -h INSTANCE_ADDRESS \
+  -h 127.0.0.1 \
   -U USERNAME \
   -d DATABASE
 ```
 
-Replace `INSTANCE_ADDRESS` (IP address of the instance), `USERNAME` and `DATABASE`.
+Replace `USERNAME` and `DATABASE`. Start the Auth Proxy first (startup commands are in [auth-proxy-connect.md](./auth-proxy-connect.md)); without `--auto-iam-authn` it passes the token through as the password.
 
 ### Automatic authentication
 
@@ -76,7 +78,7 @@ Language Connectors: enable IAM authentication in code, for example the Python c
 
 - Caution from the source: there is a per-minute sign-in quota for each instance, covering both successful and unsuccessful sign-ins. When exceeded, sign-ins are temporarily unavailable. Avoid frequent sign-ins and restrict sign-ins by using authorized networks.
 - Caution from the source: treat the OAuth 2.0 token as sensitive (same level as a password); store it securely or do not store it. The `PGPASSWORD=$(...)` form keeps it out of a stored file but a value exported in the environment or visible to other local processes is still exposed.
-- The `psql` command connects directly to the instance IP; libpq's default `sslmode=prefer` does not verify the server. For IAM sign-in prefer the Auth Proxy or Language Connectors with automatic IAM authentication (Automatic authentication above), which use mTLS.
+- Adapted from the official docs: the source's `psql` example uses `-h INSTANCE_ADDRESS` (the instance IP). Connecting directly sends the access token over libpq's default `sslmode=prefer`, which does not verify the server, so the example above connects through the Auth Proxy on `127.0.0.1` (mTLS to the instance). Automatic IAM authentication through the Auth Proxy or Language Connectors (above) avoids handling the token at all.
 - Preparation of the project, cluster, instances and IAM users (`alloydb.iam_authentication` flag, `roles/alloydb.databaseUser`, `gcloud alloydb users create --type=IAM_BASED`, `GRANT`) is in [manage-iam-auth.md](./manage-iam-auth.md); troubleshooting in https://docs.cloud.google.com/alloydb/docs/troubleshoot/troubleshoot-iam-auth.
 - Auth Proxy: the instance URI is `projects/PROJECT_ID/locations/REGION_ID/clusters/CLUSTER_ID/instances/INSTANCE_ID`.
 - The ADC login command above authenticates your user for local development; IAM concepts, service accounts and ADC are in `gcp-foundation`, and `gcloud auth` setup in `gcp-cli`.
