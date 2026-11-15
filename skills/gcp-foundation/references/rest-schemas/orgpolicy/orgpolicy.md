@@ -26,7 +26,7 @@ Message types referenced by the methods listed under `references/rest/orgpolicy/
 | Field | Type | Description |
 |---|---|---|
 | `booleanConstraint` | GoogleCloudOrgpolicyV2ConstraintBooleanConstraint | Defines this constraint as being a boolean constraint. |
-| `constraintDefault` | string enum | The evaluation behavior of this constraint in the absence of a policy. |
+| `constraintDefault` | string enum | The evaluation behavior of this constraint in the absence of a policy. Values: `CONSTRAINT_DEFAULT_UNSPECIFIED`, `ALLOW`, `DENY`. |
 | `description` | string | Detailed description of what this constraint controls as well as how and where it is enforced. Mutable. |
 | `displayName` | string | The human readable name. Mutable. |
 | `equivalentConstraint` | string | Defines the equivalent constraint name, if it exists. Managed constraints can have an equivalent legacy managed constraint, and legacy managed constraints can have an equivalent managed constraint. For example, "constraints/iam.disableServiceAccountKeyUpload" is equivalent to "constraints/iam.managed.disableServiceAccountKeyUpload". |
@@ -51,9 +51,9 @@ Message types referenced by the methods listed under `references/rest/orgpolicy/
 
 | Field | Type | Description |
 |---|---|---|
-| `actionType` | string enum | Allow or deny type. |
+| `actionType` | string enum | Allow or deny type. Values: `ACTION_TYPE_UNSPECIFIED`, `ALLOW`, `DENY`. |
 | `condition` | string | Org policy condition/expression. For example: `resource.instanceName.matches("(production\|test)_(.+_)?[\d]+")` or, `resource.management.auto_upgrade == true` The max length of the condition is 1000 characters. |
-| `methodTypes` | array<string> | All the operations being applied for this constraint. |
+| `methodTypes` | array<string> | All the operations being applied for this constraint. Values: `METHOD_TYPE_UNSPECIFIED`, `CREATE`, `UPDATE`, `DELETE`, `REMOVE_GRANT`, `GOVERN_TAGS`. |
 | `parameters` | object | Stores the structure of `Parameters` used by the constraint condition. The key of `map` represents the name of the parameter. |
 | `resourceTypes` | array<string> | The resource instance type that this policy applies to, in the format `/`. Example: \* `compute.googleapis.com/Instance`. |
 
@@ -65,9 +65,9 @@ Message types referenced by the methods listed under `references/rest/orgpolicy/
 | Field | Type | Description |
 |---|---|---|
 | `defaultValue` | any | Sets the value of the parameter in an assignment if no value is given. |
-| `item` | string enum | Determines the parameter's value structure. For example, `LIST` can be specified by defining `type: LIST`, and `item: STRING`. |
+| `item` | string enum | Determines the parameter's value structure. For example, `LIST` can be specified by defining `type: LIST`, and `item: STRING`. Values: `TYPE_UNSPECIFIED`, `LIST`, `STRING`, `BOOLEAN`. |
 | `metadata` | GoogleCloudOrgpolicyV2ConstraintCustomConstraintDefinitionParameterMetadata | Defines subproperties primarily used by the UI to display user-friendly information. |
-| `type` | string enum | Type of the parameter. |
+| `type` | string enum | Type of the parameter. Values: `TYPE_UNSPECIFIED`, `LIST`, `STRING`, `BOOLEAN`. |
 | `validValuesExpr` | string | Provides a CEL expression to specify the acceptable parameter values during assignment. For example, parameterName in ("parameterValue1", "parameterValue2"). |
 
 ### `GoogleCloudOrgpolicyV2ConstraintCustomConstraintDefinitionParameterMetadata`
@@ -96,11 +96,11 @@ Message types referenced by the methods listed under `references/rest/orgpolicy/
 
 | Field | Type | Description |
 |---|---|---|
-| `actionType` | string enum | Allow or deny type. |
+| `actionType` | string enum | Allow or deny type. Values: `ACTION_TYPE_UNSPECIFIED`, `ALLOW`, `DENY`. |
 | `condition` | string | A Common Expression Language (CEL) condition which is used in the evaluation of the constraint. For example: `resource.instanceName.matches("(production\|test)_(.+_)?[\d]+")` or, `resource.management.auto_upgrade == true` The max length of the condition is 1000 characters. |
 | `description` | string | Detailed information about this custom policy constraint. The max length of the description is 2000 characters. |
 | `displayName` | string | One line display name for the UI. The max length of the display_name is 200 characters. |
-| `methodTypes` | array<string> | All the operations being applied for this constraint. |
+| `methodTypes` | array<string> | All the operations being applied for this constraint. Values: `METHOD_TYPE_UNSPECIFIED`, `CREATE`, `UPDATE`, `DELETE`, `REMOVE_GRANT`, `GOVERN_TAGS`. |
 | `name` | string | Immutable. Name of the constraint. This is unique within the organization. The name must be of the form: \* `organizations/{organization_id}/customConstraints/{custom_constraint_id}` Example: `organizations/123/customConstraints/custom.createOnlyE2TypeVms` The max length is 71 characters and the minimum length is 1. Note that the prefix `organizations/{organization_id}/customConstraints/custom.` is not counted. |
 | `resourceTypes` | array<string> | Immutable. The resource instance type on which this policy applies. Format will be of the form : `/` Example: \* `compute.googleapis.com/Instance`. |
 | `updateTime` | string (google-datetime) | Output only. The last time this custom constraint was updated. This represents the last time that the `CreateCustomConstraint` or `UpdateCustomConstraint` methods were called. |

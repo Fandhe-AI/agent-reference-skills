@@ -25,11 +25,11 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `actionType` | string enum | Allow or deny type. |
+| `actionType` | string enum | Allow or deny type. Values: `ACTION_TYPE_UNSPECIFIED`, `ALLOW`, `DENY`. |
 | `condition` | string | A Common Expression Language (CEL) condition which is used in the evaluation of the constraint. For example: `resource.instanceName.matches("(production\|test)_(.+_)?[\d]+")` or, `resource.management.auto_upgrade == true` The max length of the condition is 1000 characters. |
 | `description` | string | Detailed information about this custom policy constraint. The max length of the description is 2000 characters. |
 | `displayName` | string | One line display name for the UI. The max length of the display_name is 200 characters. |
-| `methodTypes` | array<string> | All the operations being applied for this constraint. |
+| `methodTypes` | array<string> | All the operations being applied for this constraint. Values: `METHOD_TYPE_UNSPECIFIED`, `CREATE`, `UPDATE`, `DELETE`, `REMOVE_GRANT`, `GOVERN_TAGS`. |
 | `name` | string | Immutable. Name of the constraint. This is unique within the organization. The name must be of the form: \* `organizations/{organization_id}/customConstraints/{custom_constraint_id}` Example: `organizations/123/customConstraints/custom.createOnlyE2TypeVms` The max length is 71 characters and the minimum length is 1. Note that the prefix `organizations/{organization_id}/customConstraints/custom.` is not counted. |
 | `resourceTypes` | array<string> | Immutable. The resource instance type on which this policy applies. Format will be of the form : `/` Example: \* `compute.googleapis.com/Instance`. |
 | `updateTime` | string (google-datetime) | Output only. The last time this custom constraint was updated. This represents the last time that the `CreateCustomConstraint` or `UpdateCustomConstraint` methods were called. |
@@ -91,7 +91,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `accessChange` | string enum | How the principal's access, specified in the AccessState field, changed between the current (baseline) policies and proposed (simulated) policies. |
+| `accessChange` | string enum | How the principal's access, specified in the AccessState field, changed between the current (baseline) policies and proposed (simulated) policies. Values: `ACCESS_CHANGE_TYPE_UNSPECIFIED`, `NO_CHANGE`, `UNKNOWN_CHANGE`, `ACCESS_REVOKED`, `ACCESS_GAINED`, `ACCESS_MAYBE_REVOKED`, `ACCESS_MAYBE_GAINED`. |
 | `baseline` | GoogleCloudPolicysimulatorV1ExplainedAccess | The results of evaluating the access tuple under the current (baseline) policies. If the AccessState couldn't be fully evaluated, this field explains why. |
 | `simulated` | GoogleCloudPolicysimulatorV1ExplainedAccess | The results of evaluating the access tuple under the proposed (simulated) policies. If the AccessState couldn't be fully evaluated, this field explains why. |
 
@@ -113,13 +113,13 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `access` | string enum | Required. Indicates whether \_this binding\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another binding that overrides this binding. To determine whether the principal actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. |
+| `access` | string enum | Required. Indicates whether \_this binding\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another binding that overrides this binding. To determine whether the principal actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. Values: `ACCESS_STATE_UNSPECIFIED`, `GRANTED`, `NOT_GRANTED`, `UNKNOWN_CONDITIONAL`, `UNKNOWN_INFO_DENIED`. |
 | `condition` | GoogleTypeExpr | A condition expression that prevents this binding from granting access unless the expression evaluates to `true`. To learn about IAM Conditions, see https://cloud.google.com/iam/docs/conditions-overview. |
 | `memberships` | object | Indicates whether each principal in the binding includes the principal specified in the request, either directly or indirectly. Each key identifies a principal in the binding, and each value indicates whether the principal in the binding includes the principal in the request. For example, suppose that a binding includes the following principals: \* `user:alice@example.com` \* `group:product-eng@example.com` The principal in the replayed access tuple is `user:bob@example.com`. This user is a principal of the group `group:product-eng@example.com`. For the first principal in the binding, the key is `user:alice@example.com`, and the `membership` field in the value is set to `MEMBERSHIP_NOT_INCLUDED`. For the second principal in the binding, the key is `group:product-eng@example.com`, and the `membership` field in the value is set to `MEMBERSHIP_INCLUDED`. |
-| `relevance` | string enum | The relevance of this binding to the overall determination for the entire policy. |
+| `relevance` | string enum | The relevance of this binding to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 | `role` | string | The role that this binding grants. For example, `roles/compute.serviceAgent`. For a complete list of predefined IAM roles, as well as the permissions in each role, see https://cloud.google.com/iam/help/roles/reference. |
-| `rolePermission` | string enum | Indicates whether the role granted by this binding contains the specified permission. |
-| `rolePermissionRelevance` | string enum | The relevance of the permission's existence, or nonexistence, in the role to the overall determination for the entire policy. |
+| `rolePermission` | string enum | Indicates whether the role granted by this binding contains the specified permission. Values: `ROLE_PERMISSION_UNSPECIFIED`, `ROLE_PERMISSION_INCLUDED`, `ROLE_PERMISSION_NOT_INCLUDED`, `ROLE_PERMISSION_UNKNOWN_INFO_DENIED`. |
+| `rolePermissionRelevance` | string enum | The relevance of the permission's existence, or nonexistence, in the role to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 
 ### `GoogleCloudPolicysimulatorV1BindingExplanationAnnotatedMembership`
 
@@ -128,8 +128,8 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `membership` | string enum | Indicates whether the binding includes the principal. |
-| `relevance` | string enum | The relevance of the principal's status to the overall determination for the binding. |
+| `membership` | string enum | Indicates whether the binding includes the principal. Values: `MEMBERSHIP_UNSPECIFIED`, `MEMBERSHIP_INCLUDED`, `MEMBERSHIP_NOT_INCLUDED`, `MEMBERSHIP_UNKNOWN_INFO_DENIED`, `MEMBERSHIP_UNKNOWN_UNSUPPORTED`. |
+| `relevance` | string enum | The relevance of the principal's status to the overall determination for the binding. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 
 ### `GoogleCloudPolicysimulatorV1ExplainedAccess`
 
@@ -138,7 +138,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `accessState` | string enum | Whether the principal in the access tuple has permission to access the resource in the access tuple under the given policies. |
+| `accessState` | string enum | Whether the principal in the access tuple has permission to access the resource in the access tuple under the given policies. Values: `ACCESS_STATE_UNSPECIFIED`, `GRANTED`, `NOT_GRANTED`, `UNKNOWN_CONDITIONAL`, `UNKNOWN_INFO_DENIED`. |
 | `errors` | array<GoogleRpcStatus> | If the AccessState is `UNKNOWN`, this field contains a list of errors explaining why the result is `UNKNOWN`. If the `AccessState` is `GRANTED` or `NOT_GRANTED`, this field is omitted. |
 | `policies` | array<GoogleCloudPolicysimulatorV1ExplainedPolicy> | If the AccessState is `UNKNOWN`, this field contains the policies that led to that result. If the `AccessState` is `GRANTED` or `NOT_GRANTED`, this field is omitted. |
 
@@ -149,11 +149,11 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `access` | string enum | Indicates whether \_this policy\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. |
+| `access` | string enum | Indicates whether \_this policy\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. Values: `ACCESS_STATE_UNSPECIFIED`, `GRANTED`, `NOT_GRANTED`, `UNKNOWN_CONDITIONAL`, `UNKNOWN_INFO_DENIED`. |
 | `bindingExplanations` | array<GoogleCloudPolicysimulatorV1BindingExplanation> | Details about how each binding in the policy affects the principal's ability, or inability, to use the permission for the resource. If the user who created the Replay does not have access to the policy, this field is omitted. |
 | `fullResourceName` | string | The full resource name that identifies the resource. For example, `//compute.googleapis.com/projects/my-project/zones/us-central1-a/instances/my-instance`. If the user who created the Replay does not have access to the policy, this field is omitted. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names. |
 | `policy` | GoogleIamV1Policy | The IAM policy attached to the resource. If the user who created the Replay does not have access to the policy, this field is empty. |
-| `relevance` | string enum | The relevance of this policy to the overall determination in the TroubleshootIamPolicyResponse. If the user who created the Replay does not have access to the policy, this field is omitted. |
+| `relevance` | string enum | The relevance of this policy to the overall determination in the TroubleshootIamPolicyResponse. If the user who created the Replay does not have access to the policy, this field is omitted. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 
 ### `GoogleCloudPolicysimulatorV1ListOrgPolicyViolationsPreviewsResponse`
 
@@ -239,7 +239,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 | `name` | string | Output only. The resource name of the `OrgPolicyViolationsPreview`. It has the following format: `organizations/{organization}/locations/{location}/orgPolicyViolationsPreviews/{orgPolicyViolationsPreview}` Example: `organizations/my-example-org/locations/global/orgPolicyViolationsPreviews/506a5f7f` |
 | `overlay` | GoogleCloudPolicysimulatorV1OrgPolicyOverlay | Required. The proposed changes we are previewing violations for. |
 | `resourceCounts` | GoogleCloudPolicysimulatorV1OrgPolicyViolationsPreviewResourceCounts | Output only. A summary of the state of all resources scanned for compliance with the changed OrgPolicy. |
-| `state` | string enum | Output only. The state of the `OrgPolicyViolationsPreview`. |
+| `state` | string enum | Output only. The state of the `OrgPolicyViolationsPreview`. Values: `PREVIEW_STATE_UNSPECIFIED`, `PREVIEW_PENDING`, `PREVIEW_RUNNING`, `PREVIEW_SUCCEEDED`, `PREVIEW_FAILED`. |
 | `violationsCount` | integer (int32) | Output only. The number of OrgPolicyViolations in this `OrgPolicyViolationsPreview`. This count may differ from `resource_summary.noncompliant_count` because each OrgPolicyViolation is specific to a resource \*\*and\*\* constraint. If there are multiple constraints being evaluated (i.e. multiple policies in the overlay), a single resource may violate multiple constraints. |
 
 ### `GoogleCloudPolicysimulatorV1OrgPolicyViolationsPreviewResourceCounts`
@@ -265,7 +265,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 | `config` | GoogleCloudPolicysimulatorV1ReplayConfig | Required. The configuration used for the `Replay`. |
 | `name` | string | Output only. The resource name of the `Replay`, which has the following format: `{projects\|folders\|organizations}/{resource-id}/locations/global/replays/{replay-id}`, where `{resource-id}` is the ID of the project, folder, or organization that owns the Replay. Example: `projects/my-example-project/locations/global/replays/506a5f7f-38ce-4d7d-8e03-479ce1833c36` |
 | `resultsSummary` | GoogleCloudPolicysimulatorV1ReplayResultsSummary | Output only. Summary statistics about the replayed log entries. |
-| `state` | string enum | Output only. The current state of the `Replay`. |
+| `state` | string enum | Output only. The current state of the `Replay`. Values: `STATE_UNSPECIFIED`, `PENDING`, `RUNNING`, `SUCCEEDED`, `FAILED`. |
 
 ### `GoogleCloudPolicysimulatorV1ReplayConfig`
 
@@ -274,7 +274,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `logSource` | string enum | The logs to use as input for the Replay. |
+| `logSource` | string enum | The logs to use as input for the Replay. Values: `LOG_SOURCE_UNSPECIFIED`, `RECENT_ACCESSES`. |
 | `policyOverlay` | object | A mapping of the resources that you want to simulate policies for and the policies that you want to simulate. Keys are the full resource names for the resources. For example, `//cloudresourcemanager.googleapis.com/projects/my-project`. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names. Values are Policy objects representing the policies that you want to simulate. Replays automatically take into account any IAM policies inherited through the resource hierarchy, and any policies set on descendant resources. You do not need to include these policies in the policy overlay. |
 
 ### `GoogleCloudPolicysimulatorV1ReplayDiff`
@@ -341,7 +341,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `accessChange` | string enum | How the principal's access, specified in the AccessState field, changed between the current (baseline) policies and proposed (simulated) policies. |
+| `accessChange` | string enum | How the principal's access, specified in the AccessState field, changed between the current (baseline) policies and proposed (simulated) policies. Values: `ACCESS_CHANGE_TYPE_UNSPECIFIED`, `NO_CHANGE`, `UNKNOWN_CHANGE`, `ACCESS_REVOKED`, `ACCESS_GAINED`, `ACCESS_MAYBE_REVOKED`, `ACCESS_MAYBE_GAINED`. |
 | `baseline` | GoogleCloudPolicysimulatorV1betaExplainedAccess | The results of evaluating the access tuple under the current (baseline) policies. If the AccessState couldn't be fully evaluated, this field explains why. |
 | `simulated` | GoogleCloudPolicysimulatorV1betaExplainedAccess | The results of evaluating the access tuple under the proposed (simulated) policies. If the AccessState couldn't be fully evaluated, this field explains why. |
 
@@ -363,13 +363,13 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `access` | string enum | Required. Indicates whether \_this binding\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another binding that overrides this binding. To determine whether the principal actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. |
+| `access` | string enum | Required. Indicates whether \_this binding\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another binding that overrides this binding. To determine whether the principal actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. Values: `ACCESS_STATE_UNSPECIFIED`, `GRANTED`, `NOT_GRANTED`, `UNKNOWN_CONDITIONAL`, `UNKNOWN_INFO_DENIED`. |
 | `condition` | GoogleTypeExpr | A condition expression that prevents this binding from granting access unless the expression evaluates to `true`. To learn about IAM Conditions, see https://cloud.google.com/iam/docs/conditions-overview. |
 | `memberships` | object | Indicates whether each principal in the binding includes the principal specified in the request, either directly or indirectly. Each key identifies a principal in the binding, and each value indicates whether the principal in the binding includes the principal in the request. For example, suppose that a binding includes the following principals: \* `user:alice@example.com` \* `group:product-eng@example.com` The principal in the replayed access tuple is `user:bob@example.com`. This user is a principal of the group `group:product-eng@example.com`. For the first principal in the binding, the key is `user:alice@example.com`, and the `membership` field in the value is set to `MEMBERSHIP_NOT_INCLUDED`. For the second principal in the binding, the key is `group:product-eng@example.com`, and the `membership` field in the value is set to `MEMBERSHIP_INCLUDED`. |
-| `relevance` | string enum | The relevance of this binding to the overall determination for the entire policy. |
+| `relevance` | string enum | The relevance of this binding to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 | `role` | string | The role that this binding grants. For example, `roles/compute.serviceAgent`. For a complete list of predefined IAM roles, as well as the permissions in each role, see https://cloud.google.com/iam/help/roles/reference. |
-| `rolePermission` | string enum | Indicates whether the role granted by this binding contains the specified permission. |
-| `rolePermissionRelevance` | string enum | The relevance of the permission's existence, or nonexistence, in the role to the overall determination for the entire policy. |
+| `rolePermission` | string enum | Indicates whether the role granted by this binding contains the specified permission. Values: `ROLE_PERMISSION_UNSPECIFIED`, `ROLE_PERMISSION_INCLUDED`, `ROLE_PERMISSION_NOT_INCLUDED`, `ROLE_PERMISSION_UNKNOWN_INFO_DENIED`. |
+| `rolePermissionRelevance` | string enum | The relevance of the permission's existence, or nonexistence, in the role to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 
 ### `GoogleCloudPolicysimulatorV1betaBindingExplanationAnnotatedMembership`
 
@@ -378,8 +378,8 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `membership` | string enum | Indicates whether the binding includes the principal. |
-| `relevance` | string enum | The relevance of the principal's status to the overall determination for the binding. |
+| `membership` | string enum | Indicates whether the binding includes the principal. Values: `MEMBERSHIP_UNSPECIFIED`, `MEMBERSHIP_INCLUDED`, `MEMBERSHIP_NOT_INCLUDED`, `MEMBERSHIP_UNKNOWN_INFO_DENIED`, `MEMBERSHIP_UNKNOWN_UNSUPPORTED`. |
+| `relevance` | string enum | The relevance of the principal's status to the overall determination for the binding. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 
 ### `GoogleCloudPolicysimulatorV1betaCreateOrgPolicyViolationsPreviewOperationMetadata`
 
@@ -393,7 +393,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 | `resourcesPending` | integer (int32) | Number of resources still to scan. |
 | `resourcesScanned` | integer (int32) | Number of resources already scanned. |
 | `startTime` | string (google-datetime) | Time when the request started processing, i.e., when the state was set to RUNNING. |
-| `state` | string enum | Output only. The current state of the operation. |
+| `state` | string enum | Output only. The current state of the operation. Values: `PREVIEW_STATE_UNSPECIFIED`, `PREVIEW_PENDING`, `PREVIEW_RUNNING`, `PREVIEW_SUCCEEDED`, `PREVIEW_FAILED`. |
 
 ### `GoogleCloudPolicysimulatorV1betaExplainedAccess`
 
@@ -402,7 +402,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `accessState` | string enum | Whether the principal in the access tuple has permission to access the resource in the access tuple under the given policies. |
+| `accessState` | string enum | Whether the principal in the access tuple has permission to access the resource in the access tuple under the given policies. Values: `ACCESS_STATE_UNSPECIFIED`, `GRANTED`, `NOT_GRANTED`, `UNKNOWN_CONDITIONAL`, `UNKNOWN_INFO_DENIED`. |
 | `errors` | array<GoogleRpcStatus> | If the AccessState is `UNKNOWN`, this field contains a list of errors explaining why the result is `UNKNOWN`. If the `AccessState` is `GRANTED` or `NOT_GRANTED`, this field is omitted. |
 | `policies` | array<GoogleCloudPolicysimulatorV1betaExplainedPolicy> | If the AccessState is `UNKNOWN`, this field contains the policies that led to that result. If the `AccessState` is `GRANTED` or `NOT_GRANTED`, this field is omitted. |
 
@@ -413,11 +413,11 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `access` | string enum | Indicates whether \_this policy\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. |
+| `access` | string enum | Indicates whether \_this policy\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. Values: `ACCESS_STATE_UNSPECIFIED`, `GRANTED`, `NOT_GRANTED`, `UNKNOWN_CONDITIONAL`, `UNKNOWN_INFO_DENIED`. |
 | `bindingExplanations` | array<GoogleCloudPolicysimulatorV1betaBindingExplanation> | Details about how each binding in the policy affects the principal's ability, or inability, to use the permission for the resource. If the user who created the Replay does not have access to the policy, this field is omitted. |
 | `fullResourceName` | string | The full resource name that identifies the resource. For example, `//compute.googleapis.com/projects/my-project/zones/us-central1-a/instances/my-instance`. If the user who created the Replay does not have access to the policy, this field is omitted. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names. |
 | `policy` | GoogleIamV1Policy | The IAM policy attached to the resource. If the user who created the Replay does not have access to the policy, this field is empty. |
-| `relevance` | string enum | The relevance of this policy to the overall determination in the TroubleshootIamPolicyResponse. If the user who created the Replay does not have access to the policy, this field is omitted. |
+| `relevance` | string enum | The relevance of this policy to the overall determination in the TroubleshootIamPolicyResponse. If the user who created the Replay does not have access to the policy, this field is omitted. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 
 ### `GoogleCloudPolicysimulatorV1betaGenerateOrgPolicyViolationsPreviewOperationMetadata`
 
@@ -431,7 +431,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 | `resourcesPending` | integer (int32) | Number of resources still to scan. |
 | `resourcesScanned` | integer (int32) | Number of resources already scanned. |
 | `startTime` | string (google-datetime) | Time when the request started processing, i.e. when the state was set to RUNNING. |
-| `state` | string enum | The current state of the operation. |
+| `state` | string enum | The current state of the operation. Values: `PREVIEW_STATE_UNSPECIFIED`, `PREVIEW_PENDING`, `PREVIEW_RUNNING`, `PREVIEW_SUCCEEDED`, `PREVIEW_FAILED`. |
 
 ### `GoogleCloudPolicysimulatorV1betaListOrgPolicyViolationsPreviewsResponse`
 
@@ -527,7 +527,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 | `name` | string | Output only. The resource name of the `OrgPolicyViolationsPreview`. It has the following format: `organizations/{organization}/locations/{location}/orgPolicyViolationsPreviews/{orgPolicyViolationsPreview}` Example: `organizations/my-example-org/locations/global/orgPolicyViolationsPreviews/506a5f7f` |
 | `overlay` | GoogleCloudPolicysimulatorV1betaOrgPolicyOverlay | Required. The proposed changes we are previewing violations for. |
 | `resourceCounts` | GoogleCloudPolicysimulatorV1betaOrgPolicyViolationsPreviewResourceCounts | Output only. A summary of the state of all resources scanned for compliance with the changed OrgPolicy. |
-| `state` | string enum | Output only. The state of the `OrgPolicyViolationsPreview`. |
+| `state` | string enum | Output only. The state of the `OrgPolicyViolationsPreview`. Values: `PREVIEW_STATE_UNSPECIFIED`, `PREVIEW_PENDING`, `PREVIEW_RUNNING`, `PREVIEW_SUCCEEDED`, `PREVIEW_FAILED`. |
 | `violationsCount` | integer (int32) | Output only. The number of OrgPolicyViolations in this `OrgPolicyViolationsPreview`. This count may differ from `resource_summary.noncompliant_count` because each OrgPolicyViolation is specific to a resource \*\*and\*\* constraint. If there are multiple constraints being evaluated (i.e. multiple policies in the overlay), a single resource may violate multiple constraints. |
 
 ### `GoogleCloudPolicysimulatorV1betaOrgPolicyViolationsPreviewResourceCounts`
@@ -553,7 +553,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 | `config` | GoogleCloudPolicysimulatorV1betaReplayConfig | Required. The configuration used for the `Replay`. |
 | `name` | string | Output only. The resource name of the `Replay`, which has the following format: `{projects\|folders\|organizations}/{resource-id}/locations/global/replays/{replay-id}`, where `{resource-id}` is the ID of the project, folder, or organization that owns the Replay. Example: `projects/my-example-project/locations/global/replays/506a5f7f-38ce-4d7d-8e03-479ce1833c36` |
 | `resultsSummary` | GoogleCloudPolicysimulatorV1betaReplayResultsSummary | Output only. Summary statistics about the replayed log entries. |
-| `state` | string enum | Output only. The current state of the `Replay`. |
+| `state` | string enum | Output only. The current state of the `Replay`. Values: `STATE_UNSPECIFIED`, `PENDING`, `RUNNING`, `SUCCEEDED`, `FAILED`. |
 
 ### `GoogleCloudPolicysimulatorV1betaReplayConfig`
 
@@ -562,7 +562,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 
 | Field | Type | Description |
 |---|---|---|
-| `logSource` | string enum | The logs to use as input for the Replay. |
+| `logSource` | string enum | The logs to use as input for the Replay. Values: `LOG_SOURCE_UNSPECIFIED`, `RECENT_ACCESSES`. |
 | `policyOverlay` | object | A mapping of the resources that you want to simulate policies for and the policies that you want to simulate. Keys are the full resource names for the resources. For example, `//cloudresourcemanager.googleapis.com/projects/my-project`. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names. Values are Policy objects representing the policies that you want to simulate. Replays automatically take into account any IAM policies inherited through the resource hierarchy, and any policies set on descendant resources. You do not need to include these policies in the policy overlay. |
 
 ### `GoogleCloudPolicysimulatorV1betaReplayDiff`
@@ -631,7 +631,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 | Field | Type | Description |
 |---|---|---|
 | `exemptedMembers` | array<string> | Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members. |
-| `logType` | string enum | The log type that this config enables. |
+| `logType` | string enum | The log type that this config enables. Values: `LOG_TYPE_UNSPECIFIED`, `ADMIN_READ`, `DATA_WRITE`, `DATA_READ`. |
 
 ### `GoogleIamV1Binding`
 

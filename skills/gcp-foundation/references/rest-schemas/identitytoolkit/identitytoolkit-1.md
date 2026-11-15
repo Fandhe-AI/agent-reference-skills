@@ -218,7 +218,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `recaptchaConfig` | GoogleCloudIdentitytoolkitAdminV2RecaptchaConfig | The project-level reCAPTCHA config. |
 | `signIn` | GoogleCloudIdentitytoolkitAdminV2SignInConfig | Configuration related to local sign in methods. |
 | `smsRegionConfig` | GoogleCloudIdentitytoolkitAdminV2SmsRegionConfig | Configures which regions are enabled for SMS verification code sending. |
-| `subtype` | string enum | Output only. The subtype of this config. |
+| `subtype` | string enum | Output only. The subtype of this config. Values: `SUBTYPE_UNSPECIFIED`, `IDENTITY_PLATFORM`, `FIREBASE_AUTH`. |
 
 ### `GoogleCloudIdentitytoolkitAdminV2CustomStrengthOptions`
 
@@ -265,7 +265,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | Field | Type | Description |
 |---|---|---|
 | `customDomain` | string | Output only. The applied verified custom domain. |
-| `customDomainState` | string enum | Output only. The current verification state of the custom domain. The custom domain will only be used once the domain verification is successful. |
+| `customDomainState` | string enum | Output only. The current verification state of the custom domain. The custom domain will only be used once the domain verification is successful. Values: `VERIFICATION_STATE_UNSPECIFIED`, `NOT_STARTED`, `IN_PROGRESS`, `FAILED`, `SUCCEEDED`. |
 | `domainVerificationRequestTime` | string (google-datetime) | Output only. The timestamp of initial request for the current domain verification. |
 | `pendingCustomDomain` | string | Output only. The custom domain that's to be verified. |
 | `useCustomDomain` | boolean | Whether to use custom domain. |
@@ -297,7 +297,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | Field | Type | Description |
 |---|---|---|
 | `body` | string | Email body |
-| `bodyFormat` | string enum | Email body format |
+| `bodyFormat` | string enum | Email body format Values: `BODY_FORMAT_UNSPECIFIED`, `PLAIN_TEXT`, `HTML`. |
 | `customized` | boolean | Output only. Whether the body or subject of the email is customized. |
 | `replyTo` | string | Reply-to address |
 | `senderDisplayName` | string | Sender display name |
@@ -322,7 +322,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 
 | Field | Type | Description |
 |---|---|---|
-| `algorithm` | string enum | Output only. Different password hash algorithms used in Identity Toolkit. |
+| `algorithm` | string enum | Output only. Different password hash algorithms used in Identity Toolkit. Values: `HASH_ALGORITHM_UNSPECIFIED`, `HMAC_SHA256`, `HMAC_SHA1`, `HMAC_MD5`, `SCRYPT`, `PBKDF_SHA1`, `MD5`, `HMAC_SHA512`, `SHA1`, `BCRYPT`, `PBKDF2_SHA256`, `SHA256`, `SHA512`, `STANDARD_SCRYPT`. |
 | `memoryCost` | integer (int32) | Output only. Memory cost for hash calculation. Used by scrypt and other similar password derivation algorithms. See https://tools.ietf.org/html/rfc7914 for explanation of field. |
 | `rounds` | integer (int32) | Output only. How many rounds for hash calculation. Used by scrypt and other similar password derivation algorithms. |
 | `saltSeparator` | string | Output only. Non-printable character to be inserted between the salt and plain text password in base64. |
@@ -438,7 +438,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 
 | Field | Type | Description |
 |---|---|---|
-| `domain` | string enum | Open code in app domain to use for app links and universal links. |
+| `domain` | string enum | Open code in app domain to use for app links and universal links. Values: `DOMAIN_UNSPECIFIED`, `FIREBASE_DYNAMIC_LINK_DOMAIN`, `HOSTING_DOMAIN`. |
 
 ### `GoogleCloudIdentitytoolkitAdminV2MonitoringConfig`
 
@@ -456,9 +456,9 @@ Message types referenced by the methods listed under `references/rest/identityto
 
 | Field | Type | Description |
 |---|---|---|
-| `enabledProviders` | array<string> | A list of usable second factors for this project. |
+| `enabledProviders` | array<string> | A list of usable second factors for this project. Values: `PROVIDER_UNSPECIFIED`, `PHONE_SMS`. |
 | `providerConfigs` | array<GoogleCloudIdentitytoolkitAdminV2ProviderConfig> | A list of usable second factors for this project along with their configurations. This field does not support phone based MFA, for that use the 'enabled_providers' field. |
-| `state` | string enum | Whether MultiFactor Authentication has been enabled for this project. |
+| `state` | string enum | Whether MultiFactor Authentication has been enabled for this project. Values: `STATE_UNSPECIFIED`, `DISABLED`, `ENABLED`, `MANDATORY`. |
 
 ### `GoogleCloudIdentitytoolkitAdminV2MultiTenantConfig`
 
@@ -516,7 +516,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 |---|---|---|
 | `forceUpgradeOnSignin` | boolean | Users must have a password compliant with the password policy to sign-in. |
 | `lastUpdateTime` | string (google-datetime) | Output only. The last time the password policy on the project was updated. |
-| `passwordPolicyEnforcementState` | string enum | Which enforcement mode to use for the password policy. |
+| `passwordPolicyEnforcementState` | string enum | Which enforcement mode to use for the password policy. Values: `PASSWORD_POLICY_ENFORCEMENT_STATE_UNSPECIFIED`, `OFF`, `ENFORCE`. |
 | `passwordPolicyVersions` | array<GoogleCloudIdentitytoolkitAdminV2PasswordPolicyVersion> | Must be of length 1. Contains the strength attributes for the password policy. |
 
 ### `GoogleCloudIdentitytoolkitAdminV2PasswordPolicyVersion`
@@ -556,7 +556,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 
 | Field | Type | Description |
 |---|---|---|
-| `state` | string enum | Describes the state of the MultiFactor Authentication type. |
+| `state` | string enum | Describes the state of the MultiFactor Authentication type. Values: `MFA_STATE_UNSPECIFIED`, `DISABLED`, `ENABLED`, `MANDATORY`. |
 | `totpProviderConfig` | GoogleCloudIdentitytoolkitAdminV2TotpMfaProviderConfig | TOTP MFA provider config for this project. |
 
 ### `GoogleCloudIdentitytoolkitAdminV2QuotaConfig`
@@ -575,9 +575,9 @@ Message types referenced by the methods listed under `references/rest/identityto
 
 | Field | Type | Description |
 |---|---|---|
-| `emailPasswordEnforcementState` | string enum | The reCAPTCHA config for email/password provider, containing the enforcement status. The email/password provider contains all email related user flows protected by reCAPTCHA. |
+| `emailPasswordEnforcementState` | string enum | The reCAPTCHA config for email/password provider, containing the enforcement status. The email/password provider contains all email related user flows protected by reCAPTCHA. Values: `RECAPTCHA_PROVIDER_ENFORCEMENT_STATE_UNSPECIFIED`, `OFF`, `AUDIT`, `ENFORCE`. |
 | `managedRules` | array<GoogleCloudIdentitytoolkitAdminV2RecaptchaManagedRule> | The managed rules for authentication action based on reCAPTCHA scores. The rules are shared across providers for a given tenant project. |
-| `phoneEnforcementState` | string enum | The reCAPTCHA config for phone provider, containing the enforcement status. The phone provider contains all SMS related user flows protected by reCAPTCHA. |
+| `phoneEnforcementState` | string enum | The reCAPTCHA config for phone provider, containing the enforcement status. The phone provider contains all SMS related user flows protected by reCAPTCHA. Values: `RECAPTCHA_PROVIDER_ENFORCEMENT_STATE_UNSPECIFIED`, `OFF`, `AUDIT`, `ENFORCE`. |
 | `recaptchaKeys` | array<GoogleCloudIdentitytoolkitAdminV2RecaptchaKey> | The reCAPTCHA keys. |
 | `tollFraudManagedRules` | array<GoogleCloudIdentitytoolkitAdminV2RecaptchaTollFraudManagedRule> | The managed rules for the authentication action based on reCAPTCHA toll fraud risk scores. Toll fraud managed rules will only take effect when the phone_enforcement_state is AUDIT or ENFORCE and use_sms_toll_fraud_protection is true. |
 | `useAccountDefender` | boolean | Whether to use the account defender for reCAPTCHA assessment. Defaults to `false`. |
@@ -592,7 +592,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | Field | Type | Description |
 |---|---|---|
 | `key` | string | The reCAPTCHA Enterprise key resource name, e.g. "projects/{project}/keys/{key}" |
-| `type` | string enum | The client's platform type. |
+| `type` | string enum | The client's platform type. Values: `CLIENT_TYPE_UNSPECIFIED`, `WEB`, `IOS`, `ANDROID`. |
 
 ### `GoogleCloudIdentitytoolkitAdminV2RecaptchaManagedRule`
 
@@ -601,7 +601,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 
 | Field | Type | Description |
 |---|---|---|
-| `action` | string enum | The action taken if the reCAPTCHA score of a request is within the interval \[start_score, end_score\]. |
+| `action` | string enum | The action taken if the reCAPTCHA score of a request is within the interval \[start_score, end_score\]. Values: `RECAPTCHA_ACTION_UNSPECIFIED`, `BLOCK`. |
 | `endScore` | number (float) | The end score (inclusive) of the score range for an action. Must be a value between 0.0 and 1.0, at 11 discrete values; e.g. 0, 0.1, 0.2, 0.3, ... 0.9, 1.0. A score of 0.0 indicates the riskiest request (likely a bot), whereas 1.0 indicates the safest request (likely a human). See https://cloud.google.com/recaptcha-enterprise/docs/interpret-assessment. |
 
 ### `GoogleCloudIdentitytoolkitAdminV2RecaptchaTollFraudManagedRule`
@@ -611,7 +611,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 
 | Field | Type | Description |
 |---|---|---|
-| `action` | string enum | The action taken if the reCAPTCHA score of a request is within the interval \[start_score, end_score\]. |
+| `action` | string enum | The action taken if the reCAPTCHA score of a request is within the interval \[start_score, end_score\]. Values: `RECAPTCHA_ACTION_UNSPECIFIED`, `BLOCK`. |
 | `startScore` | number (float) | The start score (inclusive) for an action. Must be a value between 0.0 and 1.0, at 11 discrete values; e.g. 0, 0.1, 0.2, 0.3, ... 0.9, 1.0. A score of 0.0 indicates the safest request (likely legitimate), whereas 1.0 indicates the riskiest request (likely toll fraud). See https://cloud.google.com/recaptcha-enterprise/docs/sms-fraud-detection#create-assessment-sms. |
 
 ### `GoogleCloudIdentitytoolkitAdminV2RequestLogging`
@@ -634,7 +634,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `changeEmailTemplate` | GoogleCloudIdentitytoolkitAdminV2EmailTemplate | Email template for change email |
 | `dnsInfo` | GoogleCloudIdentitytoolkitAdminV2DnsInfo | Information of custom domain DNS verification. |
 | `legacyResetPasswordTemplate` | GoogleCloudIdentitytoolkitAdminV2EmailTemplate | Reset password email template for legacy Firebase V1 app. |
-| `method` | string enum | The method used for sending an email. |
+| `method` | string enum | The method used for sending an email. Values: `METHOD_UNSPECIFIED`, `DEFAULT`, `CUSTOM_SMTP`. |
 | `resetPasswordTemplate` | GoogleCloudIdentitytoolkitAdminV2EmailTemplate | Email template for reset password |
 | `revertSecondFactorAdditionTemplate` | GoogleCloudIdentitytoolkitAdminV2EmailTemplate | Email template for reverting second factor addition emails |
 | `smtp` | GoogleCloudIdentitytoolkitAdminV2Smtp | Use a custom SMTP relay |
@@ -692,7 +692,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `host` | string | SMTP relay host |
 | `password` | string | SMTP relay password |
 | `port` | integer (int32) | SMTP relay port |
-| `securityMode` | string enum | SMTP security mode. |
+| `securityMode` | string enum | SMTP security mode. Values: `SECURITY_MODE_UNSPECIFIED`, `SSL`, `START_TLS`. |
 | `senderEmail` | string | Sender email for the SMTP relay |
 | `username` | string | SMTP relay username |
 
@@ -782,11 +782,11 @@ Message types referenced by the methods listed under `references/rest/identityto
 |---|---|---|
 | `associatedData` | string (byte) | The additional associated data, if provided, is appended to the hash value to provide an additional layer of security. A base64-encoded string if specified via JSON. |
 | `hashLengthBytes` | integer (int32) | Required. The desired hash length in bytes. Minimum is 4 and maximum is 1024. |
-| `hashType` | string enum | Required. Must not be HASH_TYPE_UNSPECIFIED. |
+| `hashType` | string enum | Required. Must not be HASH_TYPE_UNSPECIFIED. Values: `HASH_TYPE_UNSPECIFIED`, `ARGON2_D`, `ARGON2_ID`, `ARGON2_I`. |
 | `iterations` | integer (int32) | Required. The number of iterations to perform. Minimum is 1, maximum is 16. |
 | `memoryCostKib` | integer (int32) | Required. The memory cost in kibibytes. Maximum is 32768. |
 | `parallelism` | integer (int32) | Required. The degree of parallelism, also called threads or lanes. Minimum is 1, maximum is 16. |
-| `version` | string enum | The version of the Argon2 algorithm. This defaults to VERSION_13 if not specified. |
+| `version` | string enum | The version of the Argon2 algorithm. This defaults to VERSION_13 if not specified. Values: `VERSION_UNSPECIFIED`, `VERSION_10`, `VERSION_13`. |
 
 ### `GoogleCloudIdentitytoolkitV1AutoRetrievalInfo`
 
@@ -939,7 +939,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `body` | string | Email body |
 | `customized` | boolean | Whether the body or subject of the email is customized. |
 | `disabled` | boolean | Whether the template is disabled. If true, a default template will be used. |
-| `format` | string enum | Email body format |
+| `format` | string enum | Email body format Values: `EMAIL_BODY_FORMAT_UNSPECIFIED`, `PLAINTEXT`, `HTML`. |
 | `from` | string | From address of the email |
 | `fromDisplayName` | string | From display name |
 | `fromLocalPart` | string | Local part of From address |
@@ -1007,7 +1007,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `canHandleCodeInApp` | boolean | When set to true, the OOB code link will be be sent as a Universal Link or an Android App Link and will be opened by the corresponding app if installed. If not set, or set to false, the OOB code will be sent to the web widget first and then on continue will redirect to the app if installed. |
 | `captchaResp` | string | For a PASSWORD_RESET request, a reCaptcha response is required when the system detects possible abuse activity. In those cases, this is the response from the reCaptcha challenge used to verify the caller. |
 | `challenge` | string | — |
-| `clientType` | string enum | The client type: web, Android or iOS. Required when reCAPTCHA Enterprise protection is enabled. |
+| `clientType` | string enum | The client type: web, Android or iOS. Required when reCAPTCHA Enterprise protection is enabled. Values: `CLIENT_TYPE_UNSPECIFIED`, `CLIENT_TYPE_WEB`, `CLIENT_TYPE_ANDROID`, `CLIENT_TYPE_IOS`. |
 | `continueUrl` | string | The Url to continue after user clicks the link sent in email. This is the url that will allow the web widget to handle the OOB code. |
 | `dynamicLinkDomain` | string | In order to ensure that the url used can be easily opened up in iOS or android, we create a Firebase Dynamic Link (https://firebase.google.com/docs/dynamic-links). Most Identity Platform projects will only have one Dynamic Link domain enabled, and can leave this field blank. This field contains a specified Dynamic Link domain for projects that have multiple enabled. |
 | `email` | string | The account's email address to send the OOB code to, and generally the email address of the account that needs to be updated. Required for PASSWORD_RESET, EMAIL_SIGNIN, and VERIFY_EMAIL. Only required for VERIFY_AND_CHANGE_EMAIL requests when return_oob_link is set to true. In this case, it is the original email of the user. |
@@ -1016,8 +1016,8 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `idToken` | string | An ID token for the account. It is required for VERIFY_AND_CHANGE_EMAIL and VERIFY_EMAIL requests unless return_oob_link is set to true. |
 | `linkDomain` | string | Optional. In order to ensure that the url used can be easily opened in iOS or Android, we create a Hosting link '/\_\_/auth/links'. This optional field contains the domain to use when constructing a Hosting link. If not set, '.firebaseapp.com' domain will be used. |
 | `newEmail` | string | The email address the account is being updated to. Required only for VERIFY_AND_CHANGE_EMAIL requests. |
-| `recaptchaVersion` | string enum | The reCAPTCHA version of the reCAPTCHA token in the captcha_response. |
-| `requestType` | string enum | Required. The type of out-of-band (OOB) code to send. Depending on this value, other fields in this request will be required and/or have different meanings. There are 4 different OOB codes that can be sent: \* PASSWORD_RESET \* EMAIL_SIGNIN \* VERIFY_EMAIL \* VERIFY_AND_CHANGE_EMAIL |
+| `recaptchaVersion` | string enum | The reCAPTCHA version of the reCAPTCHA token in the captcha_response. Values: `RECAPTCHA_VERSION_UNSPECIFIED`, `RECAPTCHA_ENTERPRISE`. |
+| `requestType` | string enum | Required. The type of out-of-band (OOB) code to send. Depending on this value, other fields in this request will be required and/or have different meanings. There are 4 different OOB codes that can be sent: \* PASSWORD_RESET \* EMAIL_SIGNIN \* VERIFY_EMAIL \* VERIFY_AND_CHANGE_EMAIL Values: `OOB_REQ_TYPE_UNSPECIFIED`, `PASSWORD_RESET`, `OLD_EMAIL_AGREE`, `NEW_EMAIL_ACCEPT`, `VERIFY_EMAIL`, `RECOVER_EMAIL`, `EMAIL_SIGNIN`, `VERIFY_AND_CHANGE_EMAIL`, `REVERT_SECOND_FACTOR_ADDITION`. |
 | `returnOobLink` | boolean | Whether the confirmation link containing the OOB code should be returned in the response (no email is sent). Used when a developer wants to construct the email template and send it on their own. By default this is false; to specify this field, and to set it to true, it requires a Google OAuth 2.0 credential with proper permissions (https://cloud.google.com/identity-platform/docs/access-control) |
 | `targetProjectId` | string | The Project ID of the Identity Platform project which the account belongs to. To specify this field, it requires a Google OAuth 2.0 credential with proper permissions (https://cloud.google.com/identity-platform/docs/access-control). |
 | `tenantId` | string | The tenant ID of the Identity Platform tenant the account belongs to. |
@@ -1087,7 +1087,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `clientId` | string | OAuth2 client ID. |
 | `enabled` | boolean | True if allows the user to sign in with the provider. |
 | `experimentPercent` | integer (int32) | Percent of users who will be prompted/redirected federated login for this IdP |
-| `provider` | string enum | — |
+| `provider` | string enum | — Values: `PROVIDER_UNSPECIFIED`, `MSLIVE`, `GOOGLE`, `FACEBOOK`, `PAYPAL`, `TWITTER`, `YAHOO`, `AOL`, `GITHUB`, `GOOGLE_PLAY_GAMES`, `LINKEDIN`, `IOS_GAME_CENTER`. |
 | `secret` | string | OAuth2 client secret. |
 | `whitelistedAudiences` | array<string> | Whitelisted client IDs for audience check. |
 
@@ -1191,9 +1191,9 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `expression` | array<GoogleCloudIdentitytoolkitV1SqlExpression> | Query conditions used to filter results. If more than one is passed, only the first SqlExpression is evaluated. |
 | `limit` | string (int64) | The maximum number of accounts to return with an upper limit of \__500_\_. Defaults to \_500\_. Only valid when `return_user_info` is set to `true`. |
 | `offset` | string (int64) | The number of accounts to skip from the beginning of matching records. Only valid when `return_user_info` is set to `true`. |
-| `order` | string enum | The order for sorting query result. Defaults to \__ascending_\_ order. Only valid when `return_user_info` is set to `true`. |
+| `order` | string enum | The order for sorting query result. Defaults to \__ascending_\_ order. Only valid when `return_user_info` is set to `true`. Values: `ORDER_UNSPECIFIED`, `ASC`, `DESC`. |
 | `returnUserInfo` | boolean | If `true`, this request will return the accounts matching the query. If `false`, only the \__count_\_ of accounts matching the query will be returned. Defaults to `true`. |
-| `sortBy` | string enum | The field to use for sorting user accounts. Defaults to `USER_ID`. Note: when `phone_number` is specified in `expression`, the result ignores the sorting. Only valid when `return_user_info` is set to `true`. |
+| `sortBy` | string enum | The field to use for sorting user accounts. Defaults to `USER_ID`. Note: when `phone_number` is specified in `expression`, the result ignores the sorting. Only valid when `return_user_info` is set to `true`. Values: `SORT_BY_FIELD_UNSPECIFIED`, `USER_ID`, `NAME`, `CREATED_AT`, `LAST_LOGIN_AT`, `USER_EMAIL`. |
 | `tenantId` | string | The ID of the tenant to which the result is scoped. |
 
 ### `GoogleCloudIdentitytoolkitV1QueryUserInfoResponse`
@@ -1230,7 +1230,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `kind` | string | — |
 | `mfaInfo` | GoogleCloudIdentitytoolkitV1MfaEnrollment | — |
 | `newEmail` | string | — |
-| `requestType` | string enum | — |
+| `requestType` | string enum | — Values: `OOB_REQ_TYPE_UNSPECIFIED`, `PASSWORD_RESET`, `OLD_EMAIL_AGREE`, `NEW_EMAIL_ACCEPT`, `VERIFY_EMAIL`, `RECOVER_EMAIL`, `EMAIL_SIGNIN`, `VERIFY_AND_CHANGE_EMAIL`, `REVERT_SECOND_FACTOR_ADDITION`. |
 
 ### `GoogleCloudIdentitytoolkitV1SendVerificationCodeRequest`
 
@@ -1241,13 +1241,13 @@ Message types referenced by the methods listed under `references/rest/identityto
 |---|---|---|
 | `autoRetrievalInfo` | GoogleCloudIdentitytoolkitV1AutoRetrievalInfo | Android only. Used by Google Play Services to identify the app for auto-retrieval. |
 | `captchaResponse` | string | Optional. The reCAPTCHA Enterprise token provided by the reCAPTCHA client-side integration. Required when reCAPTCHA enterprise is enabled. |
-| `clientType` | string enum | Optional. The client type, web, android or ios. Required when reCAPTCHA Enterprise is enabled. |
+| `clientType` | string enum | Optional. The client type, web, android or ios. Required when reCAPTCHA Enterprise is enabled. Values: `CLIENT_TYPE_UNSPECIFIED`, `CLIENT_TYPE_WEB`, `CLIENT_TYPE_ANDROID`, `CLIENT_TYPE_IOS`. |
 | `iosReceipt` | string | Receipt of successful iOS app token validation. At least one of (`ios_receipt` and `ios_secret`), `recaptcha_token`, or `play_integrity_token` must be specified to verify the verification code is being sent on behalf of a real app and not an emulator, if 'captcha_response' is not used (reCAPTCHA enterprise is not enabled). This should come from the response of verifyIosClient. If present, the caller should also provide the `ios_secret`, as well as a bundle ID in the `x-ios-bundle-identifier` header, which must match the bundle ID from the verifyIosClient request. |
 | `iosSecret` | string | Secret delivered to iOS app as a push notification. Should be passed with an `ios_receipt` as well as the `x-ios-bundle-identifier` header. |
 | `phoneNumber` | string | The phone number to send the verification code to in E.164 format. |
 | `playIntegrityToken` | string | Android only. Used to assert application identity in place of a recaptcha token (and safety_net_token). At least one of (`ios_receipt` and `ios_secret`), `recaptcha_token`, , or `play_integrity_token` must be specified to verify the verification code is being sent on behalf of a real app and not an emulator, if 'captcha_response' is not used (reCAPTCHA enterprise is not enabled). A Play Integrity Token can be generated via the PlayIntegrity API (https://developer.android.com/google/play/integrity) with applying SHA256 to the `phone_number` field as the nonce. |
 | `recaptchaToken` | string | Recaptcha token for app verification. At least one of (`ios_receipt` and `ios_secret`), `recaptcha_token`, or `play_integrity_token` must be specified to verify the verification code is being sent on behalf of a real app and not an emulator, if 'captcha_response' is not used (reCAPTCHA enterprise is not enabled). The recaptcha should be generated by calling getRecaptchaParams and the recaptcha token will be generated on user completion of the recaptcha challenge. |
-| `recaptchaVersion` | string enum | Optional. The reCAPTCHA version of the reCAPTCHA token in the captcha_response. Required when reCAPTCHA Enterprise is enabled. |
+| `recaptchaVersion` | string enum | Optional. The reCAPTCHA version of the reCAPTCHA token in the captcha_response. Required when reCAPTCHA Enterprise is enabled. Values: `RECAPTCHA_VERSION_UNSPECIFIED`, `RECAPTCHA_ENTERPRISE`. |
 | `safetyNetToken` | string | Android only. Safety Net has been deprecated. Use play_integrity_token instead. |
 | `tenantId` | string | Tenant ID of the Identity Platform tenant the user is signing in to. |
 
@@ -1272,7 +1272,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `createdAt` | string (int64) | The timestamp in milliseconds when the account was created. |
 | `customAttributes` | string | JSON formatted custom attributes to be stored in the Identity Platform ID token. Specifying this field requires a Google OAuth 2.0 credential with proper \[permissions\] (https://cloud.google.com/identity-platform/docs/access-control). |
 | `delegatedProjectNumber` | string (int64) | — |
-| `deleteAttribute` | array<string> | The account's attributes to be deleted. |
+| `deleteAttribute` | array<string> | The account's attributes to be deleted. Values: `USER_ATTRIBUTE_NAME_UNSPECIFIED`, `EMAIL`, `DISPLAY_NAME`, `PROVIDER`, `PHOTO_URL`, `PASSWORD`, `RAW_USER_INFO`. |
 | `deleteProvider` | array<string> | The Identity Providers to unlink from the user's account. |
 | `disableUser` | boolean | If true, marks the account as disabled, meaning the user will no longer be able to sign-in. |
 | `displayName` | string | The user's new display name to be updated in the account's attributes. The length of the display name must be less than or equal to 256 characters. |
@@ -1481,14 +1481,14 @@ Message types referenced by the methods listed under `references/rest/identityto
 |---|---|---|
 | `captchaChallenge` | string | — |
 | `captchaResponse` | string | The reCAPTCHA token provided by the reCAPTCHA client-side integration. reCAPTCHA Enterprise uses it for risk assessment. Required when reCAPTCHA Enterprise is enabled. |
-| `clientType` | string enum | The client type, web, android or ios. Required when reCAPTCHA Enterprise is enabled. |
+| `clientType` | string enum | The client type, web, android or ios. Required when reCAPTCHA Enterprise is enabled. Values: `CLIENT_TYPE_UNSPECIFIED`, `CLIENT_TYPE_WEB`, `CLIENT_TYPE_ANDROID`, `CLIENT_TYPE_IOS`. |
 | `delegatedProjectNumber` | string (int64) | — |
 | `email` | string | Required. The email the user is signing in with. The length of email should be less than 256 characters and in the format of `name@domain.tld`. The email should also match the RFC 822 (https://tools.ietf.org/html/rfc822) addr-spec production. |
 | `idToken` | string | — |
 | `instanceId` | string | — |
 | `password` | string | Required. The password the user provides to sign in to the account. |
 | `pendingIdToken` | string | — |
-| `recaptchaVersion` | string enum | The reCAPTCHA version of the reCAPTCHA token in the captcha_response. |
+| `recaptchaVersion` | string enum | The reCAPTCHA version of the reCAPTCHA token in the captcha_response. Values: `RECAPTCHA_VERSION_UNSPECIFIED`, `RECAPTCHA_ENTERPRISE`. |
 | `returnSecureToken` | boolean | Should always be true. |
 | `tenantId` | string | The ID of the Identity Platform tenant the user is signing in to. If not set, the user will sign in to the default Identity Platform instance in the project. |
 
@@ -1524,7 +1524,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 |---|---|---|
 | `code` | string | User-entered verification code from an SMS sent to the user's phone. |
 | `idToken` | string | A valid ID token for an Identity Platform account. If passed, this request will link the phone number to the user represented by this ID token if the phone number is not in use, or will reauthenticate the user if the phone number is already linked to the user. |
-| `operation` | string enum | — |
+| `operation` | string enum | — Values: `VERIFY_OP_UNSPECIFIED`, `SIGN_UP_OR_IN`, `REAUTH`, `UPDATE`, `LINK`. |
 | `phoneNumber` | string | The user's phone number to sign in with. This is necessary in the case of uing a temporary proof, in which case it must match the phone number that was authenticated in the request that generated the temporary proof. This field is ignored if a session info is passed. |
 | `sessionInfo` | string | Encrypted session information from the response of sendVerificationCode. In the case of authenticating with an SMS code this must be specified, but in the case of using a temporary proof it can be unspecified. |
 | `temporaryProof` | string | A proof of the phone number verification, provided from a previous signInWithPhoneNumber request. If this is passed, the caller must also pass in the phone_number field the phone number that was verified in the previous request. |
@@ -1558,7 +1558,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 |---|---|---|
 | `captchaChallenge` | string | — |
 | `captchaResponse` | string | The reCAPTCHA token provided by the reCAPTCHA client-side integration. reCAPTCHA Enterprise uses it for assessment. Required when reCAPTCHA enterprise is enabled. |
-| `clientType` | string enum | The client type: web, Android or iOS. Required when enabling reCAPTCHA enterprise protection. |
+| `clientType` | string enum | The client type: web, Android or iOS. Required when enabling reCAPTCHA enterprise protection. Values: `CLIENT_TYPE_UNSPECIFIED`, `CLIENT_TYPE_WEB`, `CLIENT_TYPE_ANDROID`, `CLIENT_TYPE_IOS`. |
 | `disabled` | boolean | Whether the user will be disabled upon creation. Disabled accounts are inaccessible except for requests bearing a Google OAuth2 credential with proper permissions (https://cloud.google.com/identity-platform/docs/access-control). |
 | `displayName` | string | The display name of the user to be created. |
 | `email` | string | The email to assign to the created user. The length of the email should be less than 256 characters and in the format of `name@domain.tld`. The email should also match the RFC 822 (https://tools.ietf.org/html/rfc822) addr-spec production. An anonymous user will be created if not provided. |
@@ -1570,7 +1570,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `password` | string | The password to assign to the created user. The password must be be at least 6 characters long. If set, the `email` field must also be set. |
 | `phoneNumber` | string | The phone number of the user to create. Specifying this field requires a Google OAuth 2.0 credential with the proper permissions (https://cloud.google.com/identity-platform/docs/access-control). |
 | `photoUrl` | string | The profile photo url of the user to create. |
-| `recaptchaVersion` | string enum | The reCAPTCHA version of the reCAPTCHA token in the captcha_response. |
+| `recaptchaVersion` | string enum | The reCAPTCHA version of the reCAPTCHA token in the captcha_response. Values: `RECAPTCHA_VERSION_UNSPECIFIED`, `RECAPTCHA_ENTERPRISE`. |
 | `targetProjectId` | string | The project ID of the project which the user should belong to. Specifying this field requires a Google OAuth 2.0 credential with the proper permissions (https://cloud.google.com/identity-platform/docs/access-control). If this is not set, the target project is inferred from the scope associated to the Bearer access token. |
 | `tenantId` | string | The ID of the Identity Platform tenant to create a user under. If not set, the user will be created under the default Identity Platform project. |
 
@@ -1621,7 +1621,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `hashAlgorithm` | string | Required. The hashing function used to hash the account passwords. Must be one of the following: \* HMAC_SHA256 \* HMAC_SHA1 \* HMAC_MD5 \* SCRYPT \* PBKDF_SHA1 \* MD5 \* HMAC_SHA512 \* SHA1 \* BCRYPT \* PBKDF2_SHA256 \* SHA256 \* SHA512 \* STANDARD_SCRYPT \* ARGON2 |
 | `memoryCost` | integer (int32) | Memory cost for hash calculation. Only required when the hashing function is SCRYPT. |
 | `parallelization` | integer (int32) | The parallelization cost parameter to be used by the STANDARD_SCRYPT hashing function. This parameter, along with block_size and cpu_mem_cost help tune the resources needed to hash a password, and should be tuned as processor speeds and memory technologies advance. |
-| `passwordHashOrder` | string enum | Password and salt order when verify password. |
+| `passwordHashOrder` | string enum | Password and salt order when verify password. Values: `UNSPECIFIED_ORDER`, `SALT_AND_PASSWORD`, `PASSWORD_AND_SALT`. |
 | `rounds` | integer (int32) | The number of rounds used for hash calculation. Only required for the following hashing functions: \* MD5 \* SHA1 \* SHA256 \* SHA512 \* PBKDF_SHA1 \* PBKDF2_SHA256 \* SCRYPT |
 | `saltSeparator` | string (byte) | One or more bytes to be inserted between the salt and plain text password. For stronger security, this should be a single non-printable character. |
 | `sanityCheck` | boolean | If true, the service will do the following list of checks before an account is uploaded: \* Duplicate emails \* Duplicate federated IDs \* Federated ID provider validation If the duplication exists within the list of accounts to be uploaded, it will prevent the entire list from being uploaded. If the email or federated ID is a duplicate of a user already within the project/tenant, the account will not be uploaded, but the rest of the accounts will be unaffected. If false, these checks will be skipped. |
