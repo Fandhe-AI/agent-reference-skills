@@ -69,17 +69,18 @@ Base URL: `https://kmsinventory.googleapis.com`. Methods are listed by `id`; the
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `kmsinventory.organizations.protectedResources.search` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `kmsinventory.organizations.protectedResources.search` (not in the official docs); replace the `{...}` path variables and required query parameters (URL-encode query values):
 
 ```bash
 curl -X GET \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-  "https://kmsinventory.googleapis.com/v1/{+scope}/protectedResources:search"
+  "https://kmsinventory.googleapis.com/v1/{+scope}/protectedResources:search?cryptoKey={cryptoKey}"
 ```
 
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `kmsinventory` (retrieved 2026-11-14). Resources on this page: organizations, projects.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/kmsinventory/`.
 - Source: https://kmsinventory.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 

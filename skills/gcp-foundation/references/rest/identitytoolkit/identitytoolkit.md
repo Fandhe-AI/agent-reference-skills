@@ -132,7 +132,7 @@ Base URL: `https://www.googleapis.com/identitytoolkit/v3/relyingparty`. Methods 
 
 - Versions: v1
 - `POST https://identitytoolkit.googleapis.com/v1/accounts:signInWithGameCenter`
-- Signs in or signs up a user with iOS Game Center credentials. If the sign-in succeeds, a new Identity Platform ID token and refresh token are issued for the authenticated user. The bundle ID is required in the request header as `x-ios-bundle-identifier`. An API key (https://cloud.google.com/docs/authentication/api-keys) is required in the request in order to identify the Google Cloud project. Apple has deprecated the `playerID` field (https://developer.apple.com/documentation/gamekit/gkplayer/1521127-playerid/). The Apple platform Firebase SDK will use `gamePlayerID` and `teamPlayerID` from version 10.5.0 and onwards. Upgrading to SDK version 10.5.0 or later updates existing integrations that use `playerID` to instead use `gamePlayerID` and `teamPlayerID`. When making calls to `signInWithGameCenter`, you must include `playerID` along with the new fields `gamePlayerID` and `teamPlayerID` to successfully identify all existing users. Upgrading existing Game Center sign in integrations to SDK version 10.5.0 or later is irreversible.
+- Signs in or signs up a user with iOS Game Center credentials. If the sign-in succeeds, a new Identity Platform ID token and refresh token are issued for the authenticated user. The bundle ID is required in the request header as `x-ios-bundle-identifier`. An API key (https://cloud.google.com/docs/authentication/api-keys) is required in the request in order to identify the Google Cloud project. Apple has \[deprecated the `playerID` field\](https://developer.apple.com/documentation/gamekit/gkplayer/1521127-playerid/). The Apple platform Firebase SDK will use `gamePlayerID` and `teamPlayerID` from version 10.5.0 and onwards. Upgrading to SDK version 10.5.0 or later updates existing integrations that use `playerID` to instead use `gamePlayerID` and `teamPlayerID`. When making calls to `signInWithGameCenter`, you must include `playerID` along with the new fields `gamePlayerID` and `teamPlayerID` to successfully identify all existing users. Upgrading existing Game Center sign in integrations to SDK version 10.5.0 or later is irreversible.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
 - Request: `GoogleCloudIdentitytoolkitV1SignInWithGameCenterRequest`; Response: `GoogleCloudIdentitytoolkitV1SignInWithGameCenterResponse`
 
@@ -1220,7 +1220,7 @@ Base URL: `https://www.googleapis.com/identitytoolkit/v3/relyingparty`. Methods 
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `identitytoolkit.defaultSupportedIdps.list` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `identitytoolkit.defaultSupportedIdps.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
 
 ```bash
 curl -X GET \
@@ -1231,8 +1231,9 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v3, v2, v1 of `identitytoolkit` (retrieved 2026-11-14). Resources on this page: accounts, defaultSupportedIdps, projects, relyingparty, v1, v2.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/identitytoolkit/`.
-- Source: https://identitytoolkit.googleapis.com/$discovery/rest?version=v3 (https://developers.google.com/discovery)
+- Source: https://identitytoolkit.googleapis.com/$discovery/rest?version=v3, https://identitytoolkit.googleapis.com/$discovery/rest?version=v2, https://identitytoolkit.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
 ## Related
 

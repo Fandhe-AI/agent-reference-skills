@@ -380,7 +380,7 @@ Base URL: `https://iam.googleapis.com`. Methods are listed by `id`; the `Version
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `parent` | path | string | yes | Required. Gemini Enterprise only. The parent tenant to create SCIM token. Format: 'locations/{location}/workforcePools/{workforce_pool}/providers/{provider}/scimTenants/{scim_tenant}' |
-| `workforcePoolProviderScimTokenId` | query | string | yes | Required. Gemini Enterprise only. The ID to use for the SCIM token, which becomes the final component of the resource name. This value should be 4-32 characters and follow the pattern: `(a-z)` |
+| `workforcePoolProviderScimTokenId` | query | string | yes | Required. Gemini Enterprise only. The ID to use for the SCIM token, which becomes the final component of the resource name. This value should be 4-32 characters and follow the pattern: `([a-z]([a-z0-9\\-]{2,30}[a-z0-9]))` |
 
 ### `iam.locations.workforcePools.providers.scimTenants.tokens.delete`
 
@@ -1639,7 +1639,7 @@ Base URL: `https://iam.googleapis.com`. Methods are listed by `id`; the `Version
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `iam.locations.workforcePools.get` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `iam.locations.workforcePools.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
 
 ```bash
 curl -X GET \
@@ -1650,8 +1650,9 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v2, v1, v2beta of `iam` (retrieved 2026-11-14). Resources on this page: iamPolicies, locations, organizations, permissions, policies, projects.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/iam/`.
-- Source: https://iam.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
+- Source: https://iam.googleapis.com/$discovery/rest?version=v2, https://iam.googleapis.com/$discovery/rest?version=v1, https://iam.googleapis.com/$discovery/rest?version=v2beta (https://developers.google.com/discovery)
 
 ## Related
 

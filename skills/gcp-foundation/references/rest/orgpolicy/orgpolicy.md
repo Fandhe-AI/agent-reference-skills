@@ -342,7 +342,7 @@ Base URL: `https://orgpolicy.googleapis.com`. Methods are listed by `id`; the `V
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `orgpolicy.folders.constraints.list` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `orgpolicy.folders.constraints.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
 
 ```bash
 curl -X GET \
@@ -353,6 +353,7 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v2 of `orgpolicy` (retrieved 2026-11-14). Resources on this page: folders, organizations, projects.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/orgpolicy/`.
 - Source: https://orgpolicy.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
 

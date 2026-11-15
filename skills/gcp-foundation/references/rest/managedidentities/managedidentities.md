@@ -474,7 +474,7 @@ Base URL: `https://managedidentities.googleapis.com`. Methods are listed by `id`
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `parent` | path | string | yes | Required. Resource project name and location using the form: `projects/{project_id}/locations/global` |
-| `peeringId` | query | string | yes | Required. Peering Id, unique name to identify peering. It should follow the regex format "^(?:a-z?)$" |
+| `peeringId` | query | string | yes | Required. Peering Id, unique name to identify peering. It should follow the regex format "^(?:\[a-z\](?:\[-a-z0-9\]{0,61}\[a-z0-9\])?)$" |
 
 ### `managedidentities.projects.locations.global.peerings.delete`
 
@@ -584,7 +584,7 @@ Base URL: `https://managedidentities.googleapis.com`. Methods are listed by `id`
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `managedidentities.projects.locations.get` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `managedidentities.projects.locations.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
 
 ```bash
 curl -X GET \
@@ -595,8 +595,9 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta1, v1alpha1 of `managedidentities` (retrieved 2026-11-14). Resources on this page: projects.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/managedidentities/`.
-- Source: https://managedidentities.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Source: https://managedidentities.googleapis.com/$discovery/rest?version=v1, https://managedidentities.googleapis.com/$discovery/rest?version=v1beta1, https://managedidentities.googleapis.com/$discovery/rest?version=v1alpha1 (https://developers.google.com/discovery)
 
 ## Related
 
