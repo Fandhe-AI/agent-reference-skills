@@ -1,5 +1,5 @@
 ---
-source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1
+source: https://cloudasset.googleapis.com/$discovery/rest?version=v1
 ---
 
 # Cloud Asset API message schemas (cloudasset) (part 1/2)
@@ -21,7 +21,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `AnalyzeIamPolicyLongrunningMetadata`
 
 - Represents the metadata of the longrunning operation for the AnalyzeIamPolicyLongrunning RPC.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -41,7 +41,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `AnalyzeIamPolicyLongrunningResponse`
 
 - A response message for AssetService.AnalyzeIamPolicyLongrunning.
-- Version: v1p1beta1
+- Version: v1
 
 ### `AnalyzeIamPolicyResponse`
 
@@ -206,7 +206,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `AuditConfig`
 
 - Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": \[ { "service": "allServices", "audit_log_configs": \[ { "log_type": "DATA_READ", "exempted_members": \[ "user:jose@example.com" \] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } \] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": \[ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": \[ "user:aliya@example.com" \] } \] } \] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -216,7 +216,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `AuditLogConfig`
 
 - Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": \[ { "log_type": "DATA_READ", "exempted_members": \[ "user:jose@example.com" \] }, { "log_type": "DATA_WRITE" } \] } This enables 'DATA_READ' and 'DATA_WRITE' logging, while exempting jose@example.com from DATA_READ logging.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -257,7 +257,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `Binding`
 
 - Associates `members`, or principals, with a `role`.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -332,11 +332,11 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `Explanation`
 
 - Explanation about the IAM policy search result.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
-| `matchedPermissions` | object | The map from roles to their included permission matching the permission query (e.g. containing `policy.role.permissions:`). Example role string: "roles/compute.instanceAdmin". The roles can also be found in the returned `policy` bindings. Note that the map is populated only if requesting with a permission query. |
+| `matchedPermissions` | object | The map from roles to their included permissions that match the permission query (i.e., a query containing `policy.role.permissions:`). Example: if query `policy.role.permissions:compute.disk.get` matches a policy binding that contains owner role, the matched_permissions will be `{"roles/owner": ["compute.disk.get"]}`. The roles can also be found in the returned `policy` bindings. Note that the map is populated only for requests with permission queries. |
 
 ### `ExportAssetsRequest`
 
@@ -366,7 +366,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `Expr`
 
 - Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != 'private' && document.type != 'internal'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "'New message received at ' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -632,7 +632,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleCloudAssetV1p7beta1Asset`
 
 - An asset in Google Cloud. An asset can be any resource in the Google Cloud resource hierarchy (https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy), a resource outside the Google Cloud resource hierarchy (such as Google Kubernetes Engine clusters and objects), or a policy (e.g. IAM policy). See Supported asset types (https://cloud.google.com/asset-inventory/docs/supported-asset-types) for more information.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -706,7 +706,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleCloudAssetV1p7beta1RelatedAsset`
 
 - An asset identify in Google Cloud which contains its name, type and ancestors. An asset can be any resource in the Google Cloud resource hierarchy (https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy), a resource outside the Google Cloud resource hierarchy (such as Google Kubernetes Engine clusters and objects), or a policy (e.g. IAM policy). See Supported asset types (https://cloud.google.com/asset-inventory/docs/supported-asset-types) for more information.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -717,7 +717,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleCloudAssetV1p7beta1RelatedAssets`
 
 - The detailed related assets with the `relationship_type`.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -727,7 +727,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleCloudAssetV1p7beta1RelationshipAttributes`
 
 - The relationship attributes which include `type`, `source_resource_type`, `target_resource_type` and `action`.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -739,7 +739,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleCloudAssetV1p7beta1Resource`
 
 - A representation of a Google Cloud resource.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -754,7 +754,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleCloudOrgpolicyV1BooleanPolicy`
 
 - Used in `policy_type` to specify how `boolean_policy` will behave at this resource.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -763,7 +763,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleCloudOrgpolicyV1ListPolicy`
 
 - Used in `policy_type` to specify how `list_policy` behaves at this resource. `ListPolicy` can define specific values and subtrees of Cloud Resource Manager resource hierarchy (`Organizations`, `Folders`, `Projects`) that are allowed or denied by setting the `allowed_values` and `denied_values` fields. This is achieved by using the `under:` and optional `is:` prefixes. The `under:` prefix is used to denote resource subtree values. The `is:` prefix is used to denote specific values, and is required only if the value contains a ":". Values prefixed with "is:" are treated the same as values with no prefix. Ancestry subtrees must be in one of the following formats: - "projects/", e.g. "projects/tokyo-rain-123" - "folders/", e.g. "folders/1234" - "organizations/", e.g. "organizations/1234" The `supports_under` field of the associated `Constraint` defines whether ancestry prefixes can be used. You can set `allowed_values` and `denied_values` in the same `Policy` if `all_values` is `ALL_VALUES_UNSPECIFIED`. `ALLOW` or `DENY` are used to allow or deny all values. If `all_values` is set to either `ALLOW` or `DENY`, `allowed_values` and `denied_values` must be unset.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -776,7 +776,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleCloudOrgpolicyV1Policy`
 
 - Defines a Cloud Organization `Policy` which is used to specify `Constraints` for configurations of Cloud Platform resources.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -791,12 +791,12 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleCloudOrgpolicyV1RestoreDefault`
 
 - Ignores policies set above this resource and restores the `constraint_default` enforcement behavior of the specific `Constraint` at this resource. Suppose that `constraint_default` is set to `ALLOW` for the `Constraint` `constraints/serviceuser.services`. Suppose that organization foo.com sets a `Policy` at their Organization resource node that restricts the allowed service activations to deny all service activations. They could then set a `Policy` with the `policy_type` `restore_default` on several experimental projects, restoring the `constraint_default` enforcement of the `Constraint` for only those projects, allowing those projects to have all services activated.
-- Version: v1p1beta1
+- Version: v1
 
 ### `GoogleIdentityAccesscontextmanagerV1AccessLevel`
 
 - An `AccessLevel` is a label that can be applied to requests to Google Cloud services, along with a list of requirements necessary for the label to be applied.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -809,7 +809,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1AccessPolicy`
 
 - `AccessPolicy` is a container for `AccessLevels` (which define the necessary attributes to use Google Cloud services) and `ServicePerimeters` (which define regions of services able to freely pass data within a perimeter). An access policy is globally visible within an organization, and the restrictions it specifies apply to all projects within an organization.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -822,7 +822,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1AddRequestHeader`
 
 - Adds a request header to the API.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -832,7 +832,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1ApiOperation`
 
 - Identification for an API Operation.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -842,7 +842,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1BasicLevel`
 
 - `BasicLevel` is an `AccessLevel` using a set of recommended features.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -852,7 +852,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1Condition`
 
 - A condition necessary for an `AccessLevel` to be granted. The `Condition` is an AND over its fields. A `Condition` is true if: 1) the request IP is from one of the listed subnetworks, AND 2) the originating device complies with the listed device policy, AND 3) all listed access levels are granted, AND 4) the request was sent at a time allowed by the `DateTimeRestriction`.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -867,7 +867,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1CustomLevel`
 
 - `CustomLevel` is an `AccessLevel` using the Cloud Common Expression Language to represent the necessary conditions for the level to apply to a request. See CEL spec at: https://github.com/google/cel-spec
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -876,7 +876,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1DevicePolicy`
 
 - `DevicePolicy` specifies device-specific restrictions necessary to acquire a given access level. A `DevicePolicy` specifies requirements for requests from devices to be granted access levels; it does not do any enforcement on the device. `DevicePolicy` acts as an AND over all specified fields, and each repeated field is an OR over its elements. Any unset fields are ignored. For example, if the proto is `{ os_type : DESKTOP_WINDOWS, os_type : DESKTOP_LINUX, encryption_status: ENCRYPTED}`, then the `DevicePolicy` will be true for requests originating from encrypted Linux desktops and encrypted Windows desktops.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -890,7 +890,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1EgressFrom`
 
 - Defines the conditions under which an EgressPolicy matches a request. Conditions are based on information about the source of the request. Note that if the destination of the request is also protected by a ServicePerimeter, then that ServicePerimeter must have an IngressPolicy which allows access in order for this request to succeed.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -902,7 +902,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1EgressPolicy`
 
 - Policy for egress from perimeter. EgressPolicies match requests based on `egress_from` and `egress_to` stanzas. For an EgressPolicy to match, both `egress_from` and `egress_to` stanzas must be matched. If an EgressPolicy matches a request, the request is allowed to span the ServicePerimeter boundary. For example, an EgressPolicy can be used to allow VMs on networks within the ServicePerimeter to access a defined set of projects outside the perimeter in certain contexts (e.g. to read data from a Cloud Storage bucket or query against a BigQuery dataset). EgressPolicies are concerned with the \*resources\* that a request relates to, as well as the API services and API actions being used. They do not relate to the direction of data movement. More detailed documentation for this concept can be found in the descriptions of EgressFrom and EgressTo.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -913,7 +913,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1EgressSource`
 
 - The source that EgressPolicy authorizes access from inside the ServicePerimeter to somewhere outside the ServicePerimeter boundaries.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -924,7 +924,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1EgressTo`
 
 - Defines the conditions under which an EgressPolicy matches a request. Conditions are based on information about the ApiOperation intended to be performed on the `resources` specified. Note that if the destination of the request is also protected by a ServicePerimeter, then that ServicePerimeter must have an IngressPolicy which allows access in order for this request to succeed. The request must match `operations` AND `resources` fields in order to be allowed egress out of the perimeter.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -936,7 +936,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1IngressFrom`
 
 - Defines the conditions under which an IngressPolicy matches a request. Conditions are based on information about the source of the request. The request must satisfy what is defined in `sources` AND identity related fields in order to match.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -947,7 +947,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1IngressPolicy`
 
 - Policy for ingress into ServicePerimeter. IngressPolicies match requests based on `ingress_from` and `ingress_to` stanzas. For an ingress policy to match, both the `ingress_from` and `ingress_to` stanzas must be matched. If an IngressPolicy matches a request, the request is allowed through the perimeter boundary from outside the perimeter. For example, access from the internet can be allowed either based on an AccessLevel or, for traffic hosted on Google Cloud, the project of the source network. For access from private networks, using the project of the hosting network is required. Individual ingress policies can be limited by restricting which services and/or actions they match using the `ingress_to` field.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -958,7 +958,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1IngressSource`
 
 - The source that IngressPolicy authorizes access from.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -969,7 +969,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1IngressTo`
 
 - Defines the conditions under which an IngressPolicy matches a request. Conditions are based on information about the ApiOperation intended to be performed on the target resource of the request. The request must satisfy what is defined in `operations` AND `resources` in order to match.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -980,7 +980,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1MethodSelector`
 
 - An allowed method or permission of a service specified in ApiOperation.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -990,7 +990,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1Modifier`
 
 - Modifier to apply to the API requests.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -999,7 +999,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1OsConstraint`
 
 - A restriction on the OS type and version of devices making requests.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -1010,7 +1010,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1PrivateServiceConnectEndpoint`
 
 - Specifies the Private Service Connect endpoint that an API call refers to.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -1019,7 +1019,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1ServicePattern`
 
 - Service patterns used to allow access.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -1030,7 +1030,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1ServicePerimeter`
 
 - `ServicePerimeter` describes a set of Google Cloud resources which can freely import and export data amongst themselves, but not export outside of the `ServicePerimeter`. If a request with a source within this `ServicePerimeter` has a target outside of the `ServicePerimeter`, the request will be blocked. Otherwise the request is allowed. There are two types of Service Perimeter - Regular and Bridge. Regular Service Perimeters cannot overlap, a single Google Cloud project or VPC network can only belong to a single regular Service Perimeter. Service Perimeter Bridges can contain only Google Cloud projects as members, a single Google Cloud project may belong to multiple Service Perimeter Bridges.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -1046,7 +1046,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfig`
 
 - `ServicePerimeterConfig` specifies a set of Google Cloud resources that describe specific Service Perimeter configuration.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -1060,7 +1060,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1VpcAccessibleServices`
 
 - Specifies how APIs are allowed to communicate within the Service Perimeter.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -1072,7 +1072,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1VpcNetworkSource`
 
 - The originating network source in Google Cloud.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -1081,7 +1081,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `GoogleIdentityAccesscontextmanagerV1VpcSubNetwork`
 
 - Sub-segment ranges inside of a VPC network.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -1149,18 +1149,6 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 
 ### `IamPolicySearchResult`
 
-- The result for an IAM policy search.
-- Version: v1p1beta1
-
-| Field | Type | Description |
-|---|---|---|
-| `explanation` | Explanation | Explanation about the IAM policy search result. It contains additional information that explains why the search result matches the query. |
-| `policy` | Policy | The IAM policy attached to the specified resource. Note that the original IAM policy can contain multiple bindings. This only contains the bindings that match the given query. For queries that don't contain a constraint on policies (e.g. an empty query), this contains all the bindings. |
-| `project` | string | The project that the associated Google Cloud resource belongs to, in the form of `projects/{project_number}`. If an IAM policy is set on a resource -- such as a Compute Engine instance or a Cloud Storage bucket -- the project field will indicate the project that contains the resource. If an IAM policy is set on a folder or organization, the project field will be empty. |
-| `resource` | string | The full resource name (https://cloud.google.com/apis/design/resource_names#full_resource_name) of the resource associated with this IAM policy. |
-
-### `IamPolicySearchResult` (v1)
-
 - A result of IAM Policy search, containing information of an IAM policy.
 - Version: v1
 
@@ -1173,6 +1161,18 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `policy` | Policy | The IAM policy directly set on the given resource. Note that the original IAM policy can contain multiple bindings. This only contains the bindings that match the given query. For queries that don't contain a constrain on policies (e.g., an empty query), this contains all the bindings. To search against the `policy` bindings: \* use a field query: - query by the policy contained members. Example: `policy:amy@gmail.com` - query by the policy contained roles. Example: `policy:roles/compute.admin` - query by the policy contained roles' included permissions. Example: `policy.role.permissions:compute.instances.create` |
 | `project` | string | The project that the associated Google Cloud resource belongs to, in the form of projects/{PROJECT_NUMBER}. If an IAM policy is set on a resource (like VM instance, Cloud Storage bucket), the project field will indicate the project that contains the resource. If an IAM policy is set on a folder or organization, this field will be empty. To search against the `project`: \* specify the `scope` field as this project in your search request. |
 | `resource` | string | The full resource name of the resource associated with this IAM policy. Example: `//compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1`. See Cloud Asset Inventory Resource Name Format (https://cloud.google.com/asset-inventory/docs/resource-name-format) for more information. To search against the `resource`: \* use a field query. Example: `resource:organizations/123` |
+
+### `IamPolicySearchResult` (v1p1beta1)
+
+- The result for an IAM policy search.
+- Version: v1p1beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `explanation` | Explanation | Explanation about the IAM policy search result. It contains additional information that explains why the search result matches the query. |
+| `policy` | Policy | The IAM policy attached to the specified resource. Note that the original IAM policy can contain multiple bindings. This only contains the bindings that match the given query. For queries that don't contain a constraint on policies (e.g. an empty query), this contains all the bindings. |
+| `project` | string | The project that the associated Google Cloud resource belongs to, in the form of `projects/{project_number}`. If an IAM policy is set on a resource -- such as a Compute Engine instance or a Cloud Storage bucket -- the project field will indicate the project that contains the resource. If an IAM policy is set on a folder or organization, the project field will be empty. |
+| `resource` | string | The full resource name (https://cloud.google.com/apis/design/resource_names#full_resource_name) of the resource associated with this IAM policy. |
 
 ### `IdentitySelector`
 
@@ -1273,7 +1273,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `Operation`
 
 - This resource represents a long-running operation that is the result of a network API call.
-- Version: v1p7beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -1356,17 +1356,17 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 
 ### `Permissions`
 
-- IAM permissions.
-- Version: v1p1beta1
+- IAM permissions
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
-| `permissions` | array<string> | A list of permissions. Example permission string: "compute.disk.get". |
+| `permissions` | array<string> | A list of permissions. A sample permission string: `compute.disk.get`. |
 
 ### `Policy`
 
 - An Identity and Access Management (IAM) policy, which specifies access controls for Google Cloud resources. A `Policy` is a collection of `bindings`. A `binding` binds one or more `members`, or principals, to a single `role`. Principals can be user accounts, service accounts, Google groups, and domains (such as G Suite). A `role` is a named list of permissions; each `role` can be an IAM predefined role or a user-created custom role. For some types of Google Cloud resources, a `binding` can also specify a `condition`, which is a logical expression that allows access to a resource only if the expression evaluates to `true`. A condition can add constraints based on attributes of the request, the resource, or both. To learn which resources support conditions in their IAM policies, see the IAM documentation (https://cloud.google.com/iam/help/conditions/resource-policies). \*\*JSON example:\*\* { "bindings": \[ { "role": "roles/resourcemanager.organizationAdmin", "members": \[ "user:mike@example.com", "group:admins@example.com", "domain:google.com", "serviceAccount:my-project-id@appspot.gserviceaccount.com" \] }, { "role": "roles/resourcemanager.organizationViewer", "members": \[ "user:eve@example.com" \], "condition": { "title": "expirable access", "description": "Does not grant access after Sep 2020", "expression": "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag": "BwWWja0YfJA=", "version": 3 } \*\*YAML example:\*\* bindings: - members: - user:mike@example.com - group:admins@example.com - domain:google.com - serviceAccount:my-project-id@appspot.gserviceaccount.com role: roles/resourcemanager.organizationAdmin - members: - user:eve@example.com role: roles/resourcemanager.organizationViewer condition: title: expirable access description: Does not grant access after Sep 2020 expression: request.time < timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA= version: 3 For a description of IAM and its features, see the IAM documentation (https://cloud.google.com/iam/docs/).
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -1608,7 +1608,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `SearchAllIamPoliciesResponse`
 
 - Search all IAM policies response.
-- Version: v1p1beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -1618,22 +1618,22 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `SearchAllResourcesResponse`
 
 - Search all resources response.
-- Version: v1p1beta1
-
-| Field | Type | Description |
-|---|---|---|
-| `nextPageToken` | string | If there are more results than those appearing in this response, then `next_page_token` is included. To get the next set of results, call this method again using the value of `next_page_token` as `page_token`. |
-| `results` | array<StandardResourceMetadata> | A list of resource that match the search query. |
-
-### `SearchAllResourcesResponse` (v1)
-
-- Search all resources response.
 - Version: v1
 
 | Field | Type | Description |
 |---|---|---|
 | `nextPageToken` | string | If there are more results than those appearing in this response, then `next_page_token` is included. To get the next set of results, call this method again using the value of `next_page_token` as `page_token`. |
 | `results` | array<ResourceSearchResult> | A list of Resources that match the search query. It contains the resource standard metadata information. |
+
+### `SearchAllResourcesResponse` (v1p1beta1)
+
+- Search all resources response.
+- Version: v1p1beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `nextPageToken` | string | If there are more results than those appearing in this response, then `next_page_token` is included. To get the next set of results, call this method again using the value of `next_page_token` as `page_token`. |
+| `results` | array<StandardResourceMetadata> | A list of resource that match the search query. |
 
 ### Shape of `AccessSelector`
 
@@ -1648,9 +1648,9 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) v1p7beta1, v1p1beta1, v1p5beta1, v1, v1beta1 of `cloudasset` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Generated from the Discovery document(s) v1, v1p7beta1, v1p5beta1, v1p1beta1, v1beta1 of `cloudasset` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
 - Descriptions are verbatim from Discovery, which drops angle-bracket placeholders of the source comments: a format such as `projects//locations/global` stands for `projects/{project}/locations/global` (likewise `"@.iam.gserviceaccount.com"` lost the account ID before `@`, and a name format ending in a collection such as `projects/*/locations/*/registrations/` lost its last ID), and an expression such as `... && in labels` lost its left operand (for example `'label_value' in labels`). Check the method or field in the product's REST reference before relying on such a format.
-- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p5beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1, https://cloudasset.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
+- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p5beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
 
