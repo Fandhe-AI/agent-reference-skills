@@ -17,3 +17,7 @@
 | gcloud topic formats | 3 commands (alpha, beta, ga); topic formats … | [topic-formats.md](./topic-formats.md) |
 | gcloud topic gcloudignore | 3 commands (alpha, beta, ga); topic gcloudignore … | [topic-gcloudignore.md](./topic-gcloudignore.md) |
 | gcloud topic offline-help | 3 commands (alpha, beta, ga); topic offline-help … | [topic-offline-help.md](./topic-offline-help.md) |
+| gcloud topic projections | 3 commands (alpha, beta, ga); topic projections … | [topic-projections.md](./topic-projections.md) |
+| gcloud topic resource-keys | 3 commands (alpha, beta, ga); topic resource-keys … | [topic-resource-keys.md](./topic-resource-keys.md) |
+| gcloud topic startup | 3 commands (alpha, beta, ga); topic startup … | [topic-startup.md](./topic-startup.md) |
+| gcloud topic uninstall | 3 commands (alpha, beta, ga); topic uninstall … | [topic-uninstall.md](./topic-uninstall.md) |
