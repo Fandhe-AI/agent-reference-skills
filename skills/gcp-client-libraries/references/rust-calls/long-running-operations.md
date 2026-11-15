@@ -51,6 +51,8 @@ pub async fn automatic(bucket: &str, folder: &str, dest: &str) -> anyhow::Result
 
 `until_done` omits intermediate metadata. To see progress, call `poll` in a loop; the loop controls the delay between polling attempts, so choose one suited to the expected duration.
 
+Adapted (not in the official docs): the completed result is propagated with `?` so a failed operation is returned to the caller instead of ending in `Ok(())`.
+
 ```rust
 pub async fn polling(bucket: &str, folder: &str, dest: &str) -> anyhow::Result<()> {
     use google_cloud_lro::{Poller, PollingResult};
@@ -66,7 +68,8 @@ pub async fn polling(bucket: &str, folder: &str, dest: &str) -> anyhow::Result<(
     while let Some(p) = poller.poll().await {
         match p {
             PollingResult::Completed(r) => {
-                println!("LRO completed, response={r:?}");
+                let response = r?;
+                println!("LRO completed, response={response:?}");
             }
             PollingResult::InProgress(m) => {
                 println!("LRO in progress, metadata={m:?}");
@@ -87,6 +90,8 @@ pub async fn polling(bucket: &str, folder: &str, dest: &str) -> anyhow::Result<(
 Start the LRO with `send` to obtain the initial `Operation`, then loop: check `operation.done`; inspect `operation.result` (an `Option`, because some operations such as deletions return no payload); handle `longrunning::model::operation::Result::Error(Status)`; unpack `Response(any)` with `any.to_msg::<Folder>()`; add a wildcard arm because enums are `#[non_exhaustive]`; while not done, optionally unpack `operation.metadata`; sleep; refresh with `get_operation().set_name(&operation.name)`.
 
 For brevity, the source's loop sleeps a fixed 500 ms and ignores `get_operation` errors. In production code, use truncated exponential backoff, distinguish unrecoverable errors from transient ones, and enforce a maximum attempt or time limit (the source's own note).
+
+Adapted (not in the official docs): the loop's `anyhow::Result<Folder>` is propagated with `?` so a failed operation is returned to the caller instead of ending in `Ok(())`.
 
 ```rust
 pub async fn manual(bucket: &str, folder: &str, dest: &str) -> anyhow::Result<()> {
@@ -138,6 +143,7 @@ pub async fn manual(bucket: &str, folder: &str, dest: &str) -> anyhow::Result<()
             operation = attempt;
         }
     };
+    let response = response?;
     println!("LRO completed, response={response:?}");
 
     Ok(())
@@ -158,6 +164,7 @@ pub async fn manual(bucket: &str, folder: &str, dest: &str) -> anyhow::Result<()
 ## Notes
 
 - Prerequisites in the source: a billing-enabled project, a Cloud Storage bucket with hierarchical namespace enabled, a source folder, and a role such as Storage Admin (`roles/storage.admin`). Product specifics belong to `gcp-storage`.
+- Corrected from the official docs: in the polling example the source's `PollingResult::Completed(r)` arm only runs `println!("LRO completed, response={r:?}");`, and the manual example prints `response` and then returns `Ok(())`; both report success to the caller even when the operation failed.
 - The `Status` in `operation::Result::Error` can be converted to a client error with `Error::service` (`google_cloud_gax::error::Error`).
 - Fragments: the function blocks rely on the declarations block above (`anyhow::anyhow`, `longrunning`, `StorageControl`).
 - `Poller::into_stream` is gated on the `unstable-stream` feature declared in the `google-cloud-lro` 1.12.0 `Cargo.toml` (it enables the optional `futures` and `pin-project` dependencies); the `cargo add … --features unstable-stream` command is derived from that `Cargo.toml`, not stated in the docs.

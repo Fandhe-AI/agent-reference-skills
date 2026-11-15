@@ -18,9 +18,12 @@ cargo add google-cloud-secretmanager-v1
 
 Grants `member` the `roles/secretmanager.secretAccessor` role.
 
+Adapted (not in the official docs): the read requests policy version 3 so conditional bindings come back intact, the member is added only to the unconditional binding for the role, and the update mask is `["bindings", "etag"]` so the write is checked against the etag that was read.
+
 ```rust
 use google_cloud_gax::error::rpc::Code;
 use google_cloud_iam_v1::model::Binding;
+use google_cloud_iam_v1::model::GetPolicyOptions;
 use google_cloud_iam_v1::model::Policy;
 use google_cloud_secretmanager_v1::client::SecretManagerService;
 use google_cloud_wkt::FieldMask;
@@ -47,10 +50,11 @@ pub async fn sample(project_id: &str, secret_id: &str, member: &str) -> anyhow::
         let mut current = client
             .get_iam_policy()
             .set_resource(&secret_name)
+            .set_options(GetPolicyOptions::new().set_requested_policy_version(3))
             .send()
             .await?;
 
-        match current.bindings.iter_mut().find(|b| b.role == ROLE) {
+        match current.bindings.iter_mut().find(|b| b.role == ROLE && b.condition.is_none()) {
             None => current
                 .bindings
                 .push(Binding::new().set_role(ROLE).set_members([member])),
@@ -65,7 +69,7 @@ pub async fn sample(project_id: &str, secret_id: &str, member: &str) -> anyhow::
             .set_iam_policy()
             .set_resource(&secret_name)
             .set_policy(current)
-            .set_update_mask(FieldMask::default().set_paths(["bindings"]))
+            .set_update_mask(FieldMask::default().set_paths(["bindings", "etag"]))
             .send()
             .await;
         match updated {
@@ -91,11 +95,13 @@ pub async fn sample(project_id: &str, secret_id: &str, member: &str) -> anyhow::
 - Bound the loop (the example uses `ATTEMPTS = 5`) to avoid infinite loops under high contention.
 - The same pattern applies to any service that implements versioned updates, not only Secret Manager / IAM.
 - The page also shows the loop body as a bare fragment and a step table with inline snippets; both duplicate the complete function above and are omitted.
+- Corrected from the official docs: the source reads the policy with `.get_iam_policy().set_resource(&secret_name).send()` (no requested policy version), matches the binding with `.find(|b| b.role == ROLE)`, and writes with `.set_update_mask(FieldMask::default().set_paths(["bindings"]))`. A mask without `etag` drops the etag check that the OCC loop relies on (`SetIamPolicyRequest.update_mask` defaults to `paths: "bindings, etag"`), and `Policy.version` says any operation on conditional role bindings must use version `3` and that `etag` must be included with IAM Conditions (`google-cloud-iam-v1` 1.13.0 `model.rs`).
 - Source inconsistency: the doc comment describes `secret_id` as "The Google Cloud Project ID (e.g., "my-secret")"; it is the secret ID. Kept verbatim.
 - The source's `cargo add` lists only `google-cloud-secretmanager-v1`; the sample's imports also need `google-cloud-gax`, `google-cloud-iam-v1`, `google-cloud-wkt` and `anyhow` (derived from the `use` lines, not stated in the source).
 - Applies to `google-cloud-gax` 1.15.0 / `google-cloud-wkt` 1.11.0 (`rust_version` 1.91.0). The `google-cloud-iam-v1` and `google-cloud-secretmanager-v1` versions are not pinned in the page.
 - This is the Google Cloud client library for Rust (`google-cloud-*` crates), distinct from the `google-genai` Gemini SDK (the `google-gemini-api` skill).
 - Source: https://docs.cloud.google.com/rust/docs/optimistic-concurrency-control (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.rs/crate/google-cloud-iam-v1/1.13.0/source/src/model.rs (retrieved 2026-11-16; pinned at google-cloud-iam-v1 1.13.0)
 
 ## Related
 
