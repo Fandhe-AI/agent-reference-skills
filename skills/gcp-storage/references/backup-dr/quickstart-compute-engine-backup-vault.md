@@ -29,16 +29,20 @@ gcloud backup-dr backup-plans create BACKUP_PLAN_NAME \
 
 ### Schedule and trigger backups
 
+Adapted (not in the official docs): added `--project=VM_PROJECT_ID` so the lookup targets the project that owns the VM, not the gcloud default project.
+
 ```bash
 gcloud compute instances describe VM_NAME \
+    --project=VM_PROJECT_ID \
     --zone=VM_ZONE \
     --format="value(id)"
 ```
 
-Adapted (not in the official docs): added the required `--resource-type` flag (gcloud 593.0.0).
+Adapted (not in the official docs): added the required `--resource-type` flag (gcloud 593.0.0); added `--project=PROJECT_ID` so the association is created in the backup plan project, not the gcloud default project.
 
 ```bash
 gcloud backup-dr backup-plan-associations create BACKUP_PLAN_ASSOCIATION_NAME \
+    --project=PROJECT_ID \
     --location=VM_REGION \
     --resource=projects/VM_PROJECT_ID/zones/VM_ZONE/instances/VM_ID \
     --resource-type=compute.googleapis.com/Instance \
@@ -84,8 +88,10 @@ gcloud backup-dr backups restore compute BACKUP_ID \
 
 ### Clean up
 
+Adapted (not in the official docs): added `--project=TARGET_PROJECT_ID` to `gcloud compute instances delete` so cleanup deletes the restored VM in the restore target project, not a same-named VM in the gcloud default project.
+
 ```bash
-gcloud compute instances delete RESTORED_VM_NAME --zone=TARGET_ZONE
+gcloud compute instances delete RESTORED_VM_NAME --zone=TARGET_ZONE --project=TARGET_PROJECT_ID
 gcloud backup-dr backup-plan-associations delete BACKUP_PLAN_ASSOCIATION_NAME \
     --project=PROJECT_ID \
     --location=REGION
@@ -118,6 +124,7 @@ gcloud backup-dr backup-vaults delete BACKUPVAULT_NAME \
 - The source also shows Console steps.
 - `--backup-min-enforced-retention` takes a relative duration with a unit (gcloud 593.0.0 help: "relative time format (e.g. p1d, p1m, p1m1d)"), for example `1d`, `p30d` or `2w1d`; a bare number is read as seconds, so the source's example value `1` for `RETENTION_PERIOD_IN_DAYS` sets a 1-second minimum. Use `1d` for one day.
 - Corrected from the official docs: `gcloud backup-dr backup-plan-associations create BACKUP_PLAN_ASSOCIATION_NAME --location=VM_REGION --resource=... --backup-plan=...` omits `--resource-type`, which gcloud 593.0.0 requires (`argument --resource-type: Must be specified`); `--resource-type=compute.googleapis.com/Instance` was added.
+- Corrected from the official docs: the source runs `gcloud compute instances describe VM_NAME --zone=VM_ZONE ...`, `gcloud backup-dr backup-plan-associations create ...` and `gcloud compute instances delete RESTORED_VM_NAME --zone=TARGET_ZONE` without `--project`, so they act on the gcloud default project; `--project=VM_PROJECT_ID`, `--project=PROJECT_ID` (the backup plan project) and `--project=TARGET_PROJECT_ID` (the restore target) were added. Deleting by name in the wrong project can remove an unrelated VM.
 - Source: https://docs.cloud.google.com/backup-disaster-recovery/docs/quickstarts/gce-instances-backup-vault (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/backup-dr/backup-plans/create (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
