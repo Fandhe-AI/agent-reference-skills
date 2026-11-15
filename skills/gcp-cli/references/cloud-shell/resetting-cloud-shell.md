@@ -30,13 +30,13 @@ ls -a $HOME
 
 > **Important:** This will permanently delete all files in your home directory.
 
-The official page runs `sudo rm -rf $HOME` inside the Cloud Shell session for this step. It is not reproduced as a copyable command here because it deletes the whole home directory irreversibly; run it only inside Cloud Shell after backing up the files listed in step 1.
+The official page gives a command for this step that deletes the whole Cloud Shell home directory as root. It is not reproduced here because the deletion is irreversible; back up the files listed in step 1 and follow the official reset page inside Cloud Shell.
 
 3. In the Cloud Shell menu, click **More** and then click **Restart**. If prompted, click **Restart** in the confirmation dialog. This provisions a new VM and restores the home directory to its default state.
 
 ## Notes
 
-- Destructive: the official step 2 command (`sudo rm -rf $HOME`) is irreversible and Cloud Shell can't recover deleted files; it is described in prose instead of a copyable block.
+- Destructive: the official step 2 deletes the whole home directory irreversibly and Cloud Shell can't recover deleted files; the command is intentionally omitted (see the Source page).
 - Safe mode is described in [how-cloud-shell-works.md](./how-cloud-shell-works.md).
 - Source: https://docs.cloud.google.com/shell/docs/resetting-cloud-shell (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 

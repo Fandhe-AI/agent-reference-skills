@@ -127,6 +127,23 @@ do
 done
 ```
 
+Adapted (not in the official docs): the official loop expands command output and variables unquoted, so values are word-split, and a failed listing is ignored; this copy quotes every variable, reads line by line, and stops on the first error.
+
+```bash
+#!/bin/bash
+set -euo pipefail
+projects="$(gcloud projects list --format="value(projectId)")"
+while IFS= read -r project; do
+  echo "ProjectId:  ${project}"
+  robots="$(gcloud iam service-accounts list --project "${project}" --format="value(email)")"
+  while IFS= read -r robot; do
+    [ -n "${robot}" ] || continue
+    echo "    -> Robot ${robot}"
+    gcloud iam service-accounts keys list --iam-account "${robot}" --project "${project}" --format="value(name.basename())"
+  done <<< "${robots}"
+done <<< "${projects}"
+```
+
 Windows PowerShell:
 
 ```
@@ -184,6 +201,7 @@ done
 
 ## Notes
 
+- Adapted from the official docs: the Bash key-listing loop is also shown with quoted variables, line-by-line reads, and `set -euo pipefail`.
 - Parallel execution of multiple gcloud CLI commands is not supported.
 - The service account key-file command `gcloud auth activate-service-account --key-file [KEY_FILE]` is the older form used here; the Authorize page uses `gcloud auth login --cred-file=KEY_FILE` (see authorizing-service-accounts.md). Service account keys are a security risk; key lifecycle and keyless alternatives belong to the `gcp-foundation` skill.
 - The Bash loops above expand command output unquoted, as in the official sample.

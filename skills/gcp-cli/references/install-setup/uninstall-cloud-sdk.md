@@ -29,8 +29,15 @@ How to remove the gcloud CLI. For OS-package installs (such as `apt-get` or `yum
    find ~/Library/Caches/ -type d -name "google-cloud-sdk" | xargs -I {} rm -r "{}"
    ```
 
+   Adapted (not in the official docs): `find -exec` passes each path intact (no pipe to `xargs`), and `-prune` stops `find` from descending into a directory it is about to delete.
+
+   ```bash
+   find ~/Library/Caches/ -type d -name "google-cloud-sdk" -prune -exec rm -r {} +
+   ```
+
 ## Notes
 
+- Adapted from the official docs: the macOS cache cleanup is also shown with `find ... -prune -exec rm -r {} +`, which does not depend on how `xargs` splits paths.
 - On Windows, if you uninstalled the gcloud CLI, reboot before reinstalling (see install-sdk).
 - Source: https://docs.cloud.google.com/sdk/docs/uninstall-cloud-sdk (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
