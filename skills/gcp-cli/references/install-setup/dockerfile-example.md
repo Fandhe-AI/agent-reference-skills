@@ -12,8 +12,11 @@ Example Dockerfiles that extend the official gcloud CLI images with `docker` / `
 
 For the `:alpine` image (the same pattern applies to `:debian_component_based`, `:latest`, and `:slim` by changing the final `FROM` tag):
 
+Adapted (not in the official docs): Dockerfile comments must start the line, so the official trailing `# get latest docker` on the first `FROM` line (which makes the build fail with extra `FROM` arguments) is moved to its own line.
+
 ```docker
-FROM docker:28.2.2 as static-docker-source # get latest docker
+# get latest docker
+FROM docker:28.2.2 as static-docker-source
 FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine
 # Comment the line below if you don't want `docker`
 COPY --from=static-docker-source /usr/local/bin/docker /usr/local/bin/docker
@@ -34,14 +37,18 @@ RUN apt-get update -qqy && apt-get -qqy upgrade && apt-get install -qqy make
 
 For the `:latest` image (same lines work for `:emulators` and `:debian_component_based`):
 
+Adapted (not in the official docs): the official `apt install` has no `-y` and stops at the confirmation prompt during `docker build`; the package index is refreshed and `apt-get install -y` is used.
+
 ```docker
 FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:latest
 RUN curl -O https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.deb && \
-apt install ./jdk-21_linux-x64_bin.deb
+apt-get update -qqy && apt-get install -y ./jdk-21_linux-x64_bin.deb
 ```
 
 ## Notes
 
+- Corrected from the official docs: the first `FROM` line ended with `# get latest docker`; Dockerfile treats `#` as a comment only at the start of a line, so the comment is moved to the line above.
+- Corrected from the official docs: the Java 21 `RUN` line used `apt install ./jdk-21_linux-x64_bin.deb` without `-y`, which waits for confirmation and fails in a non-interactive `docker build`; it is shown as `apt-get update -qqy && apt-get install -y ./jdk-21_linux-x64_bin.deb`.
 - The source lists a separate Dockerfile per image tag; the tags are `:alpine`, `:debian_component_based`, `:latest`, `:slim` (docker / docker-buildx), `:latest` and `:debian_component_based` (make), and `:latest`, `:emulators`, `:debian_component_based` (Java 21). Only the tag in the final `FROM` line differs.
 - The `make` examples use `apt-get`, so they apply to Debian-based images, matching the tags the source lists.
 - The `:stable` image is the recommended migration target for the other tags; see migrate-docker-images.

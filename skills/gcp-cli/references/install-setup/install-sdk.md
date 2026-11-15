@@ -152,7 +152,7 @@ Packages exist for Red Hat Enterprise Linux 7, 8, 9, and 10; Fedora 41 and 42; a
 
    For ARM64 (aarch64), use `https://packages.cloud.google.com/yum/repos/cloud-sdk-el9-aarch64` (RHEL 7, 8, or 9-compatible) or `https://packages.cloud.google.com/yum/repos/cloud-sdk-el10-aarch64` (RHEL 10-compatible) as the `baseurl` value.
 
-2. Install `libxcrypt-compat.x86_64`:
+2. On x86_64, install `libxcrypt-compat.x86_64` (the source gives only this x86_64 package and names no aarch64 equivalent):
 
    ```bash
    sudo dnf install libxcrypt-compat.x86_64
@@ -280,6 +280,7 @@ gcloud help compute instances create
 
 ## Notes
 
+- The `libxcrypt-compat.x86_64` step applies to x86_64 hosts; the source page shows no aarch64 package for this step (not verified on aarch64).
 - The SHA256 checksums are those the official page showed on the retrieval date for the versionless file names (`google-cloud-cli-<platform>.tar.gz`), which always serve the latest release; after a new release they no longer match. Compare against the checksum currently shown on the official page, or use the pinned 593.0.0 archives and checksums listed in [downloads-versioned-archives.md](./downloads-versioned-archives.md).
 - Windows troubleshooting: if installation fails because `find` is not recognized, include the folder containing `find` (usually `C:\WINDOWS\system32;`) in `PATH`; if you uninstalled the gcloud CLI, reboot before reinstalling; if unzipping fails, run the installer as an administrator.
 - If you use Compute Engine, the gcloud CLI may already be installed on some OS images; if you run a modern Ubuntu with Snap and want automatic updates, see downloads-snap.
