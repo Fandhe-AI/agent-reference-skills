@@ -57,7 +57,7 @@ curl -X POST \
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta, v1alpha of `agentidentitycredentials` (retrieved 2026-11-14). Resources on this page: projects.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
 - Message schemas are listed under `references/rest-schemas/agentidentitycredentials/`.
 - Source: https://agentidentitycredentials.googleapis.com/$discovery/rest?version=v1, https://agentidentitycredentials.googleapis.com/$discovery/rest?version=v1beta, https://agentidentitycredentials.googleapis.com/$discovery/rest?version=v1alpha (https://developers.google.com/discovery)
 

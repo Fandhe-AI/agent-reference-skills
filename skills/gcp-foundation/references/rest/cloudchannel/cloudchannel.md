@@ -498,10 +498,10 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 |---|---|---|---|---|
 | `customer` | path | string | yes | Required. The resource name of the customer to list Offers for. Format: accounts/{account_id}/customers/{customer_id}. |
 | `changeOfferPurchase.billingAccount` | query | string | no | Optional. Resource name of the new target Billing Account. Provide this Billing Account when setting up billing for a trial subscription. Format: accounts/{account_id}/billingAccounts/{billing_account_id}. This field is only relevant for multi-currency accounts. It should be left empty for single currency accounts. |
-| `changeOfferPurchase.entitlement` | query | string | yes | Required. Resource name of the entitlement. Format: accounts/{account_id}/customers/{customer_id}/entitlements/{entitlement_id} |
+| `changeOfferPurchase.entitlement` | query | string | conditional | Required. Resource name of the entitlement. Format: accounts/{account_id}/customers/{customer_id}/entitlements/{entitlement_id} |
 | `changeOfferPurchase.newSku` | query | string | no | Optional. Resource name of the new target SKU. Provide this SKU when upgrading or downgrading an entitlement. Format: products/{product_id}/skus/{sku_id} |
 | `createEntitlementPurchase.billingAccount` | query | string | no | Optional. Billing account that the result should be restricted to. Format: accounts/{account_id}/billingAccounts/{billing_account_id}. |
-| `createEntitlementPurchase.sku` | query | string | yes | Required. SKU that the result should be restricted to. Format: products/{product_id}/skus/{sku_id}. |
+| `createEntitlementPurchase.sku` | query | string | conditional | Required. SKU that the result should be restricted to. Format: products/{product_id}/skus/{sku_id}. |
 | `languageCode` | query | string | no | Optional. The BCP-47 language code. For example, "en-US". The response will localize in the corresponding language code, if specified. The default value is "en-US". |
 | `pageSize` | query | integer (int32) | no | Optional. Requested page size. Server might return fewer results than requested. If unspecified, returns at most 100 Offers. The maximum value is 1000; the server will coerce values above 1000. |
 | `pageToken` | query | string | no | Optional. A token for a page of results other than the first page. |
@@ -517,9 +517,9 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `customer` | path | string | yes | Required. The resource name of the customer to list SKUs for. Format: accounts/{account_id}/customers/{customer_id}. |
-| `changeOfferPurchase.changeType` | query | string enum | yes | Required. Change Type for the entitlement. |
-| `changeOfferPurchase.entitlement` | query | string | yes | Required. Resource name of the entitlement. Format: accounts/{account_id}/customers/{customer_id}/entitlements/{entitlement_id} |
-| `createEntitlementPurchase.product` | query | string | yes | Required. List SKUs belonging to this Product. Format: products/{product_id}. Supports products/- to retrieve SKUs for all products. |
+| `changeOfferPurchase.changeType` | query | string enum | conditional | Required. Change Type for the entitlement. |
+| `changeOfferPurchase.entitlement` | query | string | conditional | Required. Resource name of the entitlement. Format: accounts/{account_id}/customers/{customer_id}/entitlements/{entitlement_id} |
+| `createEntitlementPurchase.product` | query | string | conditional | Required. List SKUs belonging to this Product. Format: products/{product_id}. Supports products/- to retrieve SKUs for all products. |
 | `languageCode` | query | string | no | Optional. The BCP-47 language code. For example, "en-US". The response will localize in the corresponding language code, if specified. The default value is "en-US". |
 | `pageSize` | query | integer (int32) | no | Optional. Requested page size. Server might return fewer results than requested. If unspecified, returns at most 100 SKUs. The maximum value is 1000; the server will coerce values above 1000. |
 | `pageToken` | query | string | no | Optional. A token for a page of results other than the first page. |
@@ -868,7 +868,7 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `cloudchannel` (retrieved 2026-11-14). Resources on this page: accounts, integrators, operations, products.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
 - Message schemas are listed under `references/rest-schemas/cloudchannel/`.
 - Source: https://cloudchannel.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
