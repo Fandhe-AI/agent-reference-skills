@@ -867,6 +867,13 @@ NOTES
         $ gcloud beta tasks queues set-iam-policy
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud tasks queues set-iam-policy my-queue policy-file.json \
+    --location=us-central1
+```
+
 ### gcloud tasks queues update
 
 ```text
@@ -1529,7 +1536,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
-- Corrected from the official docs (runnable form only; the help text above is verbatim): the `get-iam-policy` example passes only `my-queue`; the queue resource takes its location from a fully specified name or `--location` (no property sets it), and gcloud 593.0.0 fails with "Error parsing [queue]" without it, so the runnable form adds `--location=us-central1`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `get-iam-policy` and `set-iam-policy` examples pass only `my-queue` (and the policy file); the queue resource of these IAM commands takes its location from a fully specified name or `--location` (no property sets it), and gcloud 593.0.0 fails with "Error parsing [queue]" without it, so the runnable forms add `--location=us-central1`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
