@@ -96,8 +96,10 @@ apt-get -y install erlang
 
 ### Open a repository in Cloud Shell
 
+Adapted (not in the official docs): the official snippet uses the placeholder `http://path-to-repo/sample.git`; it is written as `https://path-to-repo/sample.git` so the clone is not fetched over plain HTTP.
+
 ```text
-https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=http://path-to-repo/sample.git
+https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://path-to-repo/sample.git
 ```
 
 ### Reset the home directory
@@ -112,6 +114,7 @@ The official reset procedure then deletes every file in the Cloud Shell home dir
 
 ## Notes
 
+- Adapted from the official docs: the `cloudshell_git_repo` placeholder `http://path-to-repo/sample.git` is written with `https://`.
 - Corrected from the official docs: the `gcloud cloud-shell scp cloudshell:~/REMOTE-DIR localhost:~/LOCAL-DIR` help example copies a directory, so `--recurse` is added (see `gcloud cloud-shell scp --help`).
 - Other flags, see `gcloud cloud-shell ssh --help` and `gcloud cloud-shell scp --help`: `--authorize-session` (send OAuth credentials to the session), `--dry-run` (print the command instead of running it), `--recurse` (scp directories), `--ssh-key-file`, `--force-key-file-overwrite`.
 - Reset and disable: Cloud Shell cannot recover deleted home-directory files. Consider Safe mode to sign in as root and fix file issues before resetting. Disabling Cloud Shell for managed Google Workspace or Cloud Identity users is done in the Google Admin console, not from the command line.

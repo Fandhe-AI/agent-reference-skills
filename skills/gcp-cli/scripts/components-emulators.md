@@ -68,8 +68,10 @@ gcloud components reinstall
 gcloud components repositories list
 ```
 
+Adapted (not in the official docs): the help example registers `http://repo.location.com` over plain HTTP; a component repository serves code that `gcloud components install` / `update` runs, so the example uses an HTTPS placeholder. Add only repositories you trust.
+
 ```bash
-gcloud components repositories add http://repo.location.com
+gcloud components repositories add https://REPOSITORY_URL
 ```
 
 ```bash
@@ -90,8 +92,10 @@ Install the `beta` component first (see above).
 gcloud emulators firestore start
 ```
 
+Adapted (not in the official docs): the help example binds the Firestore emulator to `0.0.0.0:8080`, which exposes the unauthenticated emulator to every network interface; the example binds to `localhost:8080`. Bind to `0.0.0.0` only on an isolated network or behind a firewall that limits access.
+
 ```bash
-gcloud emulators firestore start --host-port=0.0.0.0:8080
+gcloud emulators firestore start --host-port=localhost:8080
 ```
 
 ```bash
@@ -173,6 +177,8 @@ gcloud beta emulators datastore env-unset
 
 ## Notes
 
+- Adapted from the official docs: the help example `gcloud emulators firestore start --host-port=0.0.0.0:8080` is shown with `localhost:8080`; the emulator has no authentication, so `0.0.0.0` makes its data readable and writable from other hosts.
+- Adapted from the official docs: `gcloud components repositories add http://repo.location.com` (help example) is shown with an HTTPS placeholder `https://REPOSITORY_URL`, since components fetched over plain HTTP can be altered in transit.
 - Flags worth knowing, see each command's `--help`: `gcloud components list --only-local-state` and `--show-platform`; `gcloud components repositories remove --all` (removes every registered Trusted Tester repository; run `gcloud components update` afterwards to revert to standard component versions); `gcloud beta emulators pubsub start --host-port --data-dir`; `gcloud beta emulators bigtable start --host-port`; `gcloud beta emulators datastore start --data-dir --host-port --no-store-on-disk`, with `--consistency` (default 0.9) and `--use-firestore-in-datastore-mode` mutually exclusive.
 - `gcloud emulators firestore` and `gcloud emulators spanner` are GA in the 593.0.0 reference; `pubsub`, `bigtable`, and `datastore` appear there as alpha and beta only, so they are written as `gcloud beta emulators ...`.
 - `env-init` prints the commands that export the emulator's environment variables; `env-unset` (Datastore) prints the commands that unset them. Neither sets variables by itself.

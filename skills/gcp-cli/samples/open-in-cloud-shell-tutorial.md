@@ -53,8 +53,10 @@ teachme hello.md
 
 Open in Cloud Shell page (clones a repository; add `cloudshell_git_branch` and other parameters as needed):
 
+Adapted (not in the official docs): the official snippet uses the placeholder `http://path-to-repo/sample.git`; it is written as `https://path-to-repo/sample.git` so the clone is not fetched over plain HTTP.
+
 ```markdown
-[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=http://path-to-repo/sample.git)
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://path-to-repo/sample.git)
 ```
 
 Tutorials page (adds `cloudshell_tutorial`; the `\&` is as rendered in the source, a literal `&` between the two parameters):
@@ -78,6 +80,7 @@ Tutorials page (adds `cloudshell_tutorial`; the `\&` is as rendered in the sourc
 
 ## Notes
 
+- Adapted from the official docs: the `cloudshell_git_repo` placeholder `http://path-to-repo/sample.git` is written with `https://`.
 - Only allow-listed repositories owned by Google open in the default Cloud Shell environment with access to the user's credentials; all other repositories use a temporary environment without access to them.
 - `cloudshell_working_dir` is deprecated; use `cloudshell_workspace`.
 - The two official buttons differ in host and path (`shell.cloud.google.com/cloudshell/editor` vs `ssh.cloud.google.com/cloudshell/open`) and image format; keep each URL exactly as shown for its example.
