@@ -48,16 +48,24 @@ gcloud run services add-iam-policy-binding SERVICE_NAME \
 
 ### Restrict invocation to specific principals
 
-Adapted (not in the official docs): replaced the literal `...` (which gcloud would reject as an extra positional argument) with `--image=IMAGE_URL`.
+Adapted (not in the official docs): replaced the literal `...` (which gcloud would reject as an extra positional argument) with `--image=IMAGE_URL`, and added `--invoker-iam-check` so a service previously made public by disabling the Invoker IAM check stops accepting unauthenticated requests.
 
 ```bash
-gcloud run deploy SERVICE_NAME --image=IMAGE_URL --no-allow-unauthenticated
+gcloud run deploy SERVICE_NAME --image=IMAGE_URL --no-allow-unauthenticated --invoker-iam-check
 gcloud run services add-iam-policy-binding SERVICE_NAME \
 --member=MEMBER_TYPE \
 --role="roles/run.invoker"
 ```
 
 `MEMBER_TYPE` is the principal type, for example `user:email@domain.com`.
+
+To restrict an existing service that was made public, close both public-access mechanisms: re-enable the Invoker IAM check (`--invoker-iam-check`) and remove any `allUsers` binding (`--no-allow-unauthenticated`, or the command below with `PRINCIPAL` set to `allUsers` and `ROLE` to `roles/run.invoker`). Snippet taken from https://docs.cloud.google.com/run/docs/securing/managing-access:
+
+```bash
+gcloud run services remove-iam-policy-binding SERVICE_NAME \
+  --member=PRINCIPAL \
+  --role=ROLE
+```
 
 ## Options / Props
 
@@ -150,14 +158,20 @@ Reconstructed from the source's flattened summary table.
 - Resource model: Cloud Run has no top-level Application or `default` service; services in a project can be in different regions; revisions are immutable and named `SERVICE_NAME-REVISION_SUFFIX` (`--revision-suffix`); only service URLs are exposed by default (use traffic tags for revisions).
 - Configuration semantics differ: every App Engine deploy resets unspecified `app.yaml` settings to defaults; on Cloud Run unspecified settings keep their existing values (first revision uses defaults). `service.yaml` (Knative-style) cannot be used when deploying from source.
 - Entrypoint: Cloud Run source deploys use buildpacks; Python needs a `Procfile` or `GOOGLE_ENTRYPOINT`; with `gcloud run deploy --source` only the `Procfile` method works for the entrypoint.
+- Source inconsistency: the Python quickstart (https://docs.cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-python-service) deploys with `gcloud run deploy --source .` and no `Procfile`, using the buildpack's default entrypoint, and https://docs.cloud.google.com/run/docs/troubleshooting sets `GOOGLE_ENTRYPOINT` with `--set-build-env-vars` on `gcloud run deploy --source` (a flag `gcloud run deploy` accepts). The statement above is kept verbatim from this page.
 - CPU: Cloud Run allocates CPU only during request processing by default; use instance-based billing for background work (App Engine keeps CPU available). Idle instances can stay alive up to 15 minutes under request-based billing but CPU is throttled.
 - Static content: Cloud Run has no static handlers; serve from the service or from Cloud Storage.
 - Makes the service publicly accessible when `--allow-unauthenticated` or `allUsers` + `roles/run.invoker` is used; use only for intentionally public content. Cloud Run services are private by default.
 - Corrected from the official docs: `gcloud run deploy SERVICE_NAME ... --allow-unauthenticated` and `gcloud run deploy SERVICE_NAME ... --no-allow-unauthenticated` contain a literal `...`; `gcloud run deploy` takes one positional argument, so `...` was replaced with `--image=IMAGE_URL` (use `--source .` instead to deploy from source).
+- Adapted from the official docs: `--invoker-iam-check` was added to `gcloud run deploy SERVICE_NAME ... --no-allow-unauthenticated`. A service can be public in two independent ways (https://docs.cloud.google.com/run/docs/authenticating/public): the Invoker IAM check disabled (`--no-invoker-iam-check`), or `roles/run.invoker` granted to `allUsers` (what `--allow-unauthenticated` does). `--no-allow-unauthenticated` alone does not re-enable a disabled check, so anonymous requests would keep succeeding; set `--invoker-iam-check` explicitly and remove the `allUsers` binding. The source says enabling the check in the console removes existing `allUsers` bindings; the gcloud flag is not documented to do so.
 - Source inconsistency: this page lists the App Engine standard maximum-instances default as "None"; https://docs.cloud.google.com/appengine/docs/standard/reference/app-yaml says that starting from March 2025 the default for new apps is 20 (existing apps unaffected). "None" predates that change; plan capacity for new standard apps with `max_instances: 20` (see the app-engine `standard-app-yaml.md` page).
 - The feature-comparison table was flattened in the retrieved source and is reconstructed here; pricing figures from the source are omitted.
 - Distance: Cloud Run is Google Cloud's serverless container platform, distinct from Cloudflare Workers (`cloudflare-workers`) and Vercel Functions (`vercel`).
 - Source: https://docs.cloud.google.com/appengine/migration-center/run/compare-gae-with-run (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/authenticating/public (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/securing/managing-access (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-python-service (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/troubleshooting (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

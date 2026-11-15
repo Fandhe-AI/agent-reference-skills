@@ -116,7 +116,7 @@ gcloud projects delete PROJECT_ID
 
 - Answering `y` to "allow public access" makes the service publicly accessible; use only for intentionally public content.
 - The service delete and project delete commands are destructive; try them on a disposable resource first. Deleting a project deletes everything in it. Artifact Registry images may still incur storage charges.
-- The `roles/run.builder` grant goes to the Cloud Build service account (by default the Compute Engine default service account). Where practical, use a dedicated user-managed service account instead of the default one.
+- The `roles/run.builder` grant goes to the Cloud Build service account (by default the Compute Engine default service account, "unless you override this behavior"). To use a dedicated user-managed service account instead, pass `--build-service-account=BUILD_SERVICE_ACCOUNT` to `gcloud run deploy --source` (the flag applies only to source deploy builds) and grant `roles/run.builder` to that account rather than to the default one; see https://docs.cloud.google.com/run/docs/configuring/services/build-service-account.
 - The source also lists the full region table and Console cleanup steps.
 - Source: https://docs.cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 

@@ -77,7 +77,7 @@ gcloud functions deploy YOUR_FUNCTION_NAME \
 - Source inconsistency (corrected in the table above): the source's IAM cell lists the Service Usage Consumer role as `roles/run.serviceusage.serviceUsageConsumer`, which does not exist; the linked role page (https://docs.cloud.google.com/iam/docs/roles-permissions/serviceusage#serviceusage.serviceUsageConsumer) names it `roles/serviceusage.serviceUsageConsumer`, which the table above uses.
 - Source inconsistency: this page gives the Cloud Run functions instance size as up to 16 GiB RAM with 4 vCPU; the Cloud Run functions quotas page (https://docs.cloud.google.com/functions/quotas) gives max function memory of 32GiB for Cloud Run functions (2nd gen).
 - The source's Terraform cell shows the 1st gen resource as `cloudfunctions_function` (link text without the provider prefix); the Terraform resource type is `google_cloudfunctions_function`.
-- Container Registry is deprecated (shut down March 18, 2025); use Artifact Registry.
+- Container Registry is deprecated; effective March 18, 2025, it is shut down and writing images to it is unavailable (App Engine standard quotas page, https://docs.cloud.google.com/appengine/docs/standard/quotas); use Artifact Registry.
 - Upgrade path for 1st gen: https://docs.cloud.google.com/functions/1stgendocs/migrating/upgrade-gen1-functions.
 - Source: https://docs.cloud.google.com/run/docs/functions/comparison (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 

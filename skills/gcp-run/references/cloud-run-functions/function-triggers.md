@@ -45,12 +45,16 @@ gcloud eventarc triggers create EVENTARC_TRIGGER_NAME \
 
 - Every function on Cloud Run is a source-deployed service with an HTTP endpoint (`run.app` URL). Functions created with `gcloud functions` or the Cloud Functions v2 API have a `cloudfunctions.net` endpoint by default.
 - You specify triggers when deploying in the console, or after deployment with the gcloud CLI.
-- A function cannot be bound to more than one trigger at a time; deploy multiple functions with the same trigger settings to run several functions on the same event.
+- The source says: "You cannot bind the same function to more than one trigger at a time, but you can have the same event cause multiple functions to execute by deploying multiple functions with the same trigger settings."
+- Source inconsistency: the one-trigger statement above is not qualified by API, but other Cloud Run pages treat triggers of functions created with the Cloud Run Admin API as separate Eventarc trigger resources added after deployment (`gcloud eventarc triggers create ... --destination-run-service=FUNCTION`, https://docs.cloud.google.com/run/docs/deploy-functions), and https://docs.cloud.google.com/run/docs/managing/services refers to deleting "a service with one or more Eventarc triggers". The comparison page (https://docs.cloud.google.com/run/docs/functions/comparison) says that for functions created with the Cloud Functions v2 API "you specify the trigger when deploying your function". Read the one-trigger limit as applying to the deploy-time trigger of Cloud Functions v2 API (`gcloud functions`) functions; for Cloud Run Admin API functions, check the Eventarc documentation rather than relying on this sentence.
 - Trigger binding is not instantaneous; it may take several minutes for a deployed function to start triggering on events.
 - All event-driven functions use Eventarc for delivery; Pub/Sub and Cloud Storage triggers are particular Eventarc trigger types. Pub/Sub messages can also be routed directly over HTTP.
 - Eventarc does not support direct events from Google Analytics for Firebase or Firebase Authentication.
 - Integrations: Cloud Logging routes logs to a Pub/Sub topic (sinks) consumed by functions; Cloud Scheduler can call an HTTP function or publish to a Pub/Sub topic for an event-driven function; Cloud Tasks HTTP Target tasks can call an HTTP function and can throttle or rate-limit invocations; Gmail push notifications go to a Pub/Sub topic.
 - Source: https://docs.cloud.google.com/run/docs/function-triggers (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/deploy-functions (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/managing/services (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/functions/comparison (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

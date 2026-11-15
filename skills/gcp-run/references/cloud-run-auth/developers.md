@@ -45,13 +45,14 @@ curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" SERVICE_URL
 | Role for developers | `roles/run.invoker` (or Cloud Run Admin) on the service |
 | Permission needed by the token's identity | `run.routes.invoke` |
 | gcloud-generated ID tokens | Usable in any project where the account has `run.routes.invoke`; lack an audience claim, so they are susceptible to replay attacks |
-| Production | Use ID tokens issued for a service account with the appropriate audience; for non-user accounts use Workforce Identity Federation (as named in the source) so you don't download a service account key |
+| Production | Use ID tokens issued for a service account with the appropriate audience; for non-user accounts use Workload Identity Federation so you don't download a service account key (see Notes) |
 
 ## Notes
 
 - For development use gcloud CLI-generated ID tokens; in production use ID tokens issued for a service account with the intended audience, which restricts token use to the intended service.
 - Keep IAM policies on services limited to the minimum number of users and service accounts, with the minimum set of permissions.
 - "User account" means a Google Account or a user account managed by your identity provider and federated with Workforce Identity Federation.
+- Source inconsistency: for non-user accounts the source's link text says "Workforce Identity Federation" but the link goes to https://docs.cloud.google.com/iam/docs/workload-identity-federation; for non-user (workload) accounts Workload Identity Federation is meant. Workforce Identity Federation (https://docs.cloud.google.com/iam/docs/workforce-identity-federation) is the user-account case in the line above. Workload Identity Federation is covered by the `gcp-foundation` skill.
 - On Windows, `curl` and the proxy commands may need WSL (preferred) or cygwin.
 - The source also shows Console and Terraform forms (not reproduced).
 - Source: https://docs.cloud.google.com/run/docs/authenticating/developers (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)

@@ -51,7 +51,7 @@ gcloud run deploy FUNCTION \
 
 Replace `FUNCTION` (name; prompted if omitted), `FUNCTION_ENTRYPOINT` (function name or fully-qualified class name in your source), `BASE_IMAGE` (e.g. `nodejs24`, `python314`, `go127`, `java25`, `dotnet10`, `ruby40`, `php85`), and `REGION` (e.g. `europe-west1`).
 
-Optional: `--allow-unauthenticated` for a public HTTP function such as a webhook (assigns the Cloud Run Invoker role to the special identifier `allUser`, as written in the source). Omit it for event-triggered or authenticated services.
+Optional: `--allow-unauthenticated` for a public HTTP function such as a webhook (assigns the Cloud Run Invoker role to the special identifier `allUsers`). Omit it for event-triggered or authenticated services.
 
 ### Add an Eventarc trigger
 
@@ -114,7 +114,7 @@ Package sources into a gzipped archive (`.tar.gz`), upload it to your bucket, an
 | `roles/serviceusage.serviceUsageConsumer` | Deployer, on project | Build and deploy from source |
 | `roles/iam.serviceAccountUser` | Deployer, on the Cloud Run service identity | Deploy as the service identity |
 | `roles/run.builder` | Cloud Build service account (Compute Engine default SA unless overridden) | Build sources |
-| Eventarc (optional): `roles/cloudbuild.builds.editor`, `roles/run.admin`, `roles/iam.serviceAccountCreator`, `roles/run.invoker`, `roles/eventarc.admin`, `roles/resourcemanager.projectIamAdmin`, `roles/serviceusage.serviceUsageConsumer`, `roles/storage.admin` | Service account when using Eventarc | Event triggers |
+| Eventarc (optional): `roles/cloudbuild.builds.editor`, `roles/run.admin`, `roles/iam.serviceAccountCreator`, `roles/run.invoker`, `roles/eventarc.admin`, `roles/resourcemanager.projectIamAdmin`, `roles/serviceusage.serviceUsageConsumer`, `roles/storage.admin` | The service account the source calls "your service account" when using Eventarc: a setup / deployer-level set, not the trigger's service account (see Notes) | Event triggers |
 
 | Optional deploy flag area | Purpose |
 | --- | --- |
@@ -129,7 +129,8 @@ Cross-project / cross-region Artifact Registry repository: grant `roles/artifact
 
 - Console service names: begin with a letter, up to 49 characters (letters, numbers, hyphens), cannot end with a hyphen, unique per region and project; cannot be changed later and are publicly visible. The console flow also covers Eventarc trigger setup (trigger types Google Sources / Custom / Third-party), authentication, and optional settings; those Console steps are omitted here.
 - `--allow-unauthenticated` and Terraform `allUsers` + `roles/run.invoker` make the service publicly accessible; use only for intentionally public content (webhooks).
-- The default compute service account is used for builds and Eventarc triggers unless overridden; prefer dedicated service accounts (`gcp-foundation`). The `iam.automaticIamGrantsForDefaultServiceAccounts` constraint prevents automatic Editor grants (enforced by default for organizations created after May 3, 2024); the source strongly recommends enforcing it and replacing Editor with less permissive roles (check with Policy Simulator).
+- Source inconsistency: the Console and gcloud steps say the public option assigns the Invoker role to the special identifier `allUser`; the principal identifier is `allUsers`, as in the source's own Terraform sample (`google_cloud_run_v2_service_iam_member` with `member = "allUsers"`). This page writes `allUsers`.
+- The default compute service account is used for builds and Eventarc triggers unless overridden; prefer dedicated service accounts (`gcp-foundation`): for builds, pass `--build-service-account=BUILD_SERVICE_ACCOUNT` to `gcloud run deploy --source` (the flag applies only to source deploy builds) and grant `roles/run.builder` to that account; for Eventarc triggers, pass `--service-account` to `gcloud eventarc triggers create`. The `iam.automaticIamGrantsForDefaultServiceAccounts` constraint prevents automatic Editor grants (enforced by default for organizations created after May 3, 2024); the source strongly recommends enforcing it and replacing Editor with less permissive roles (check with Policy Simulator).
 - The source gives the `IMAGE_URL` example as `projects/PROJECT_NAME/locations/LOCATION/repositories/REPOSITORY_NAME/FUNCTION` (the resource-name form); the `gcloud run deploy` help says that with `--source` the image must be an Artifact Registry Docker URI, `$REGION-docker.pkg.dev/$PROJECT/$REPOSITORY` or `$REGION-docker.pkg.dev/$PROJECT/$REPOSITORY/$IMAGE_NAME`, so this page uses the Docker form with the project ID.
 - The source says to package the custom-bucket source "into an archive (such as a ZIP file)"; the `gcloud run deploy --source` help documents "a gzipped archive file (.tar.gz) in Google Cloud Storage", so this page says `.tar.gz` (ZIP archives belong to `gcloud functions deploy`).
 - The Eventarc role list (including `roles/resourcemanager.projectIamAdmin`, `roles/run.admin`, `roles/iam.serviceAccountCreator`, `roles/storage.admin`) is a broad, setup / deployer-level set; `projectIamAdmin` lets its holder grant itself any role. Do not grant it to a workload or trigger identity; give the trigger's service account only the roles listed in "Roles and permissions for Cloud Run targets" (https://docs.cloud.google.com/eventarc/docs/roles-permissions, linked from the source), with `roles/run.invoker` granted on the target function rather than the project.
@@ -139,7 +140,11 @@ Cross-project / cross-region Artifact Registry repository: grant `roles/artifact
 - Terraform: build the function into a container image ("building a function on scratch") and define `google_cloud_run_v2_service` with `build_config` (`function_target`, `image_uri`, `base_image`, `enable_automatic_updates = true`); the source's sample also adds a `google_cloud_run_v2_service_iam_member` granting `allUsers` invoker (remove it for a private service). Terraform sample omitted.
 - Cloud Run is regional; the source lists Tier 1 and Tier 2 pricing regions (e.g. `us-central1`, `europe-west1`, `asia-northeast1` in Tier 1) — see https://docs.cloud.google.com/run/docs/locations. Multi-location use of Google Cloud products affects latency and cost.
 - For `gcloud functions deploy`, the Cloud Functions v2 API and `google_cloudfunctions2_function`, see https://docs.cloud.google.com/functions/docs/deploy.
+- Source inconsistency: this page adds triggers after deployment as separate Eventarc triggers whose destination is the function's Cloud Run service (`--destination-run-service=FUNCTION`), and https://docs.cloud.google.com/run/docs/managing/services refers to "a service with one or more Eventarc triggers"; https://docs.cloud.google.com/run/docs/function-triggers says "You cannot bind the same function to more than one trigger at a time" without saying which API it applies to. The comparison page (https://docs.cloud.google.com/run/docs/functions/comparison) ties deploy-time triggers to functions created with the Cloud Functions v2 API, so the one-trigger statement is best read as applying there.
 - Source: https://docs.cloud.google.com/run/docs/deploy-functions (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/managing/services (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/function-triggers (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/functions/comparison (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

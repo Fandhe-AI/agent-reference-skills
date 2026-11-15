@@ -36,10 +36,13 @@ Custom or other predefined roles that provide the same permissions also work.
 
 ## Notes
 
-- "Allow public access" makes the service publicly accessible (invoker role to `allUsers`); use only for intentionally public content.
+- "Allow public access" makes the service publicly accessible (it either disables the Invoker IAM check or grants `roles/run.invoker` to `allUsers`); use only for intentionally public content. To make the service private again, re-enable the check (`gcloud run services update SERVICE_NAME --invoker-iam-check`) and remove any `allUsers` binding for `roles/run.invoker`; see https://docs.cloud.google.com/run/docs/authenticating/public (the cloud-run-auth `public.md` page).
+- Source inconsistency: https://docs.cloud.google.com/run/docs/authenticating/public lists the Console **Allow public access** choice for a new service (Deploy container) under the "disable the Invoker IAM check" method, and also under the "grant Invoker to `allUsers`" method; it does not say which mechanism the Console applies. https://docs.cloud.google.com/run/docs/securing/security equates **Allow public access** with `--no-invoker-iam-check`.
 - Deleting the service is destructive (all revisions); try it on a disposable resource first. You can also be charged for the image stored in Artifact Registry; delete the repository too. Deleting a project deletes everything in it and loses custom project IDs.
 - The source also shows the full region list (see the cloud-run-overview `locations.md` page) and Console steps for cleanup.
 - Source: https://docs.cloud.google.com/run/docs/quickstarts/deploy-container (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/authenticating/public (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/securing/security (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

@@ -83,7 +83,8 @@ The service is private by default, so opening its URL returns `403 Forbidden`. T
 
 - Preview: pre-GA features are offered "as is" with limited support.
 - Cloud Run services are private by default (App Engine services are public by default); services use the `run.app` domain.
-- The Cloud Build service account defaults to the Compute Engine default service account; the source allows a new or the same user-managed service account for Cloud Run, and recommends enforcing the `iam.automaticIamGrantsForDefaultServiceAccounts` organization policy constraint and replacing the Editor role with narrower roles on default service accounts. Prefer a dedicated user-managed service account.
+- Cloud Run service identity: the source lets you create a new service account or use the same user-managed service account in Cloud Run that you use for the App Engine flexible environment.
+- Cloud Build service account: it defaults to the Compute Engine default service account, and `gcloud beta app migrate-to-run` has no flag to choose another build service account (see https://docs.cloud.google.com/sdk/gcloud/reference/beta/app/migrate-to-run). Restrict that account's roles instead: the source recommends enforcing the `iam.automaticIamGrantsForDefaultServiceAccounts` organization policy constraint and replacing the Editor role with narrower roles on default service accounts.
 - Unlike the standard guide there is no previously-built-image strategy for flexible apps.
 - The source also shows Console (Migration hub) steps; not reproduced.
 - Source: https://docs.cloud.google.com/appengine/migration-center/run/migrate-app-engine-flexible-to-run (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)

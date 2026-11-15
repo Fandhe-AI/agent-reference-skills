@@ -113,13 +113,16 @@ Project-level rule: the `allUsers` and `allAuthenticatedUsers` principal types c
 
 - Making a service public (disabling the Invoker IAM check with `--no-invoker-iam-check`, or granting `roles/run.invoker` to `allUsers`) makes it publicly accessible; use only for intentionally public content. The source recommends disabling the Invoker IAM check over `allUsers`. Full commands, required permissions (`run.services.create`, `run.services.update`, `run.services.setIamPolicy`), and the domain restricted sharing caveat are on [public.md](./public.md); this page repeats them.
 - Source inconsistency: this page calls `constraints/run.managed.requireInvokerIam` the managed constraint (not enforced by default) and mentions an invitation-only `constraints/run.requireInvokerIam`; the security overview calls `run.managed.requireInvokerIam` legacy.
-- In the Console, enabling the Invoker IAM check removes existing `roles/run.invoker` bindings for `allUsers`.
+- In the Console, enabling the Invoker IAM check removes existing `roles/run.invoker` bindings for `allUsers`. With gcloud (`--invoker-iam-check`) or YAML this is not documented, so check the policy and remove any `allUsers` / `allAuthenticatedUsers` binding for `roles/run.invoker` with `gcloud run services remove-iam-policy-binding` as well (see "Re-enable the Invoker IAM check" in [public.md](./public.md)).
 - Functions created with `gcloud functions` or the Cloud Functions v2 APIs for backward compatibility: see https://docs.cloud.google.com/functions/docs/concepts/iam
 - Prefer granting roles per resource over project-wide, with the minimum set of permissions.
 - Adapted from the official docs: the source's bulk policy JSON shows `"role": ROLE` and `PRINCIPAL` unquoted; quoted here so the JSON is valid.
-- The source also shows Console steps for each resource and a Terraform `google_cloud_run_service_iam_binding` form (authoritative only for the given role); not reproduced.
-- Source inconsistency: this page lists "cancel job executions" under Cloud Run Invoker; https://docs.cloud.google.com/run/docs/execute/jobs requires Cloud Run Developer to cancel job executions and says the required permission is `run.executions.cancel` since September 16, 2024.
+- The source also shows Console steps for each resource and a Terraform `google_cloud_run_service_iam_binding` form (authoritative only for the given role); not reproduced. Being authoritative for a role, it replaces all members of that role (for `roles/run.invoker`, existing grants to service accounts such as Cloud Scheduler, Cloud Tasks, Pub/Sub or other callers are removed); a non-authoritative `google_cloud_run_v2_service_iam_member` resource adds one member without touching the others.
+- Source inconsistency: this page lists "cancel job executions" under Cloud Run Invoker; https://docs.cloud.google.com/run/docs/execute/jobs requires Cloud Run Developer to cancel job executions and says the required permission is `run.executions.cancel` since September 16, 2024. The IAM roles reference (https://docs.cloud.google.com/iam/docs/roles-permissions/run) lists no `run.executions.cancel` in `roles/run.invoker`; its permissions are `run.instances.invoke`, `run.jobs.run` and `run.routes.invoke`.
 - Source: https://docs.cloud.google.com/run/docs/securing/managing-access (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/execute/jobs (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/iam/docs/roles-permissions/run (IAM roles and permissions reference)
+- Source: https://docs.cloud.google.com/run/docs/deploying (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

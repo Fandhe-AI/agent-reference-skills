@@ -14,7 +14,7 @@ Deploy a container image as a new service or a new revision. Cloud Run imports t
 gcloud run deploy SERVICE --image IMAGE_URL
 ```
 
-For a public API or website add `--allow-unauthenticated` (assigns Cloud Run Invoker to `allUsers`); `--no-allow-unauthenticated` disallows public access. If neither flag is given you are prompted. If `--image` is omitted the command tries to deploy from source. To deploy to a region other than the `run/region` property:
+For a public API or website add `--allow-unauthenticated` (assigns Cloud Run Invoker to `allUsers`); `--no-allow-unauthenticated` disallows public access through that binding. It does not re-enable the Invoker IAM check: if an existing service was made public with `--no-invoker-iam-check`, also pass `--invoker-iam-check` (and remove any `allUsers` binding), or anonymous requests keep succeeding. If neither flag is given you are prompted. If `--image` is omitted the command tries to deploy from source. To deploy to a region other than the `run/region` property:
 
 ```bash
 gcloud run deploy SERVICE --region REGION
@@ -152,9 +152,11 @@ Move mounts to Cloud Run configuration (init scripts must assume mounts exist); 
 ## Notes
 
 - `--allow-unauthenticated` / `allUsers` makes the service publicly accessible; use only for intentionally public content.
+- Public access has two independent mechanisms (https://docs.cloud.google.com/run/docs/authenticating/public): disabling the Invoker IAM check (`--no-invoker-iam-check`, re-enabled with `--invoker-iam-check`) and granting `roles/run.invoker` to `allUsers`. The source's "disallow public access" for `--no-allow-unauthenticated` covers only the `allUsers` binding; to make a service private again, close both.
 - Corrected from the official docs: the REST body `'{template: {containers: [{image: "IMAGE_URL"}]}}'` has unquoted keys (not valid JSON); the keys are quoted, and the URL `https://run.googleapis.com/v2/projects/PROJECT_ID/locations/REGION/services?serviceId=SERVICE` is wrapped in double quotes.
 - The source also shows Console, Terraform, Cloud Code, MCP (`deploy_service_from_image`, `/deploy` prompt) and client library forms.
 - Source: https://docs.cloud.google.com/run/docs/deploying (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/authenticating/public (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

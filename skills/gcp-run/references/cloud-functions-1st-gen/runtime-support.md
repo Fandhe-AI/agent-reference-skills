@@ -59,11 +59,11 @@ Differences from the Cloud Run runtime page: the Generation column, updates tied
 
 | Language | Run functions only | 1st gen and Run functions |
 | --- | --- | --- |
-| Go | `go127`, `go126`, `go125`, `go124`, `go123`, `go122` | `go121`, `go120`, `go119`, `go118`, `go116`, `go113`; `go111` (Decommissioned) |
+| Go | `go127`, `go126`, `go125` (deprecated), `go124` (deprecated), `go123` (decommissioned), `go122` (decommissioned) | `go121`, `go120`, `go119`, `go118`, `go116`, `go113`; `go111` (Decommissioned) |
 | Java | `java25`, `java21` | `java17`, `java11` |
 | Ruby | `ruby40`, `ruby34` | `ruby33`, `ruby32`, `ruby30`, `ruby27`, `ruby26` |
 | PHP | `php85`, `php84`, `php83` | `php82`, `php81`, `php74` |
-| .NET | `dotnet10`, `dotnet8` | `dotnet6`, `dotnet3` |
+| .NET | `dotnet10`, `dotnet8` (deprecated) | `dotnet6`, `dotnet3` |
 
 Deprecation / decommission dates for these runtime IDs are identical to the Cloud Run runtime support page.
 
@@ -71,6 +71,7 @@ Deprecation / decommission dates for these runtime IDs are identical to the Clou
 
 - Newest runtime available to 1st gen per language: `nodejs22`, `python312`, `go121` (decommissioned 2026-03-03), `java17`, `ruby33`, `php82`, `dotnet6` (decommissioned 2025-11-12).
 - As of 2026-11-15, 1st gen runtimes already past decommission include `nodejs20` and older, `python39` and older, `go121` and older, `java11`, `ruby32` and older, `php81` and older, `dotnet6` and older; after the decommission date you cannot create or update workloads with the runtime and existing workloads may be disabled. For new work use the Cloud Run page's `nodejs24` / `python314` (Run functions only).
+- Run-functions-only runtimes in the table above, as of 2026-11-15: `go122` (decommissioned 2026-07-28) and `go123` (decommissioned 2026-08-21) are past decommission; `go124` (deprecated 2026-09-02, decommission 2027-03-02), `go125` (deprecated 2026-10-01, decommission 2027-04-01) and `dotnet8` (deprecated 2026-11-10, decommission 2027-05-10) are deprecated.
 - A blank deprecation or decommission date means the phase is not scheduled yet. Go dates may be postponed (Go releases are supported until two newer majors exist).
 - Source inconsistency: the `nodejs12` base image link points to `nodejs14` and the `go118` google-22-full link points to `go120`; IDs and dates copied as written.
 - Base image path form: `us-central1-docker.pkg.dev/serverless-runtimes/<stack>/runtimes/<runtime-id>` (stacks google-18-full, google-22, google-22-full, google-24, google-24-full).
