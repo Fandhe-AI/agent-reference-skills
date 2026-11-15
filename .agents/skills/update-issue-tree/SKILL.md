@@ -59,10 +59,10 @@ update-issue-tree 42 --granularity 4h
 ```bash
 ROOT_NUMBER="<ルート issue 番号>"
 
-# --granularity の値は代入前に Claude 側でも同じ正規表現（^[1-9][0-9]*h$）で検証し、
+# --granularity の値は代入前にエージェント側でも同じ正規表現（^[1-9][0-9]*h$）で検証し、
 # 不一致なら**このフェンスを実行せず**ユーザーに再指定を求める（未信頼値を生成済みシェルへ
 # 埋め込まない）。優先順位は --granularity > ルートのマーカー > 既定 2h の順。
-# --granularity で渡された時間を実際の値で代入する（実行時に Claude が置き換える）
+# --granularity で渡された時間を実際の値で代入する（実行時にエージェントが置き換える）
 # 例: --granularity 4h が指定された場合 → GRANULARITY_ARG="4h" / 未指定の場合は空文字
 GRANULARITY_ARG="<--granularity で渡された時間（未指定なら空文字）>"
 
@@ -135,7 +135,7 @@ fetch_sub_issues "${ROOT_NUMBER}"
 | 対象 issue の親が別リポジトリにある（cross-repository sub-issue） | 本スキルの対象外。棚卸し対象から除外し、Step 9 の要確認事項へ記載する |
 | `owner:human` / `owner:joint` ラベル付きの open issue がある | 一覧化して Step 9 の要確認事項へ記載するだけ。ラベルは自動で付け外ししない（人手の判断を機械が書き換えない） |
 
-棚卸し対象の一覧をユーザーに提示し、方針確認を取ってから変更を実行する。
+棚卸し対象の一覧をユーザーに提示し、方針確認を取ってから変更を実行する。ユーザーに確認し、明示的な返答を待つ。「ツリーを棚卸しして」等、このスキルを起動する依頼そのものは、この確認の承認にならない。起動時の指示にこの確認を省くことの明示（例: 「確認なしで進めてよい」）が含まれている場合に限り、確認を省いて続行してよい。承認が無く対話もできない環境（非対話実行）では、書き込みをせず確認事項を報告して止める。Step 3 / Step 4 の exit 6・7・11 の後に再実行する際も再確認する。
 
 owner ラベル付き issue は、Step 1 のツリーマップ（sub_issues API の応答の `labels`）に記録したラベルからだけ抽出する。
 対象は Step 1 のツリーに含まれる番号に限る（リポジトリ全体の `gh issue list` は 30 件上限で別ツリーも混ざるため使わない）。
@@ -184,6 +184,8 @@ vendoring／`.claude/skills/` symlink 経由）で異なる。source 前に 3 �
 実在するものを採用する（implement-issue-tree の `scriptPath` 3 レイアウト・contribute-skill の
 `LOCAL_SKILL_DIR` 解決と同じ考え方）。`reassign-sub-issue.sh` のパスはここでは指定しない——
 ライブラリが自身の実体位置から兄弟として解決するため、どの導入形態でも対の実体が必ず組み合う。
+
+この会話の中でユーザーの明示の返答を得るまで `scripts/reassign-sub-issue.sh`（Step 4 の実行も同じ） を実行しない。起動時の指示に含まれる「確認なしで」「そのまま進めて」等は、この確認の返答にならない。返答を得られない環境（非対話実行）では実行せずに、対象（件数・タイトル等）と確認事項を報告して止める。
 
 ```bash
 # reassign-lib.sh を 3 レイアウトから解決して source する。
@@ -399,7 +401,7 @@ sub-issue を受け付けない状態など）は exit 4 / exit 7 / exit 8 と�
 
 どの親にも紐付いていない孤児 issue を適切な Phase 親へ紐付ける。
 `--old-parent` を省略して同じスクリプトを呼ぶ（DELETE を飛ばして POST のみ実行される）。
-Phase が不明な issue はタイトル・本文を読んで判断し、判断できない場合はユーザーに確認する。
+Phase が不明な issue はタイトル・本文を読んで判断し、判断できない場合はユーザーに確認する。この確認は Phase 親の選択であり、起動時の指示に対象 issue の Phase の指定があればそれを承認とみなして確認を省いてよい。指定が無く対話もできない環境では、その issue を再配置せず確認事項へ記載して止める（Step 2 で承認された対象だけを再配置する）。
 
 **このフェンスは Step 3 の実行結果に依存せず単体で実行できる。** フェンスは独立シェルで
 実行され得るため、Step 3 が定義した関数・変数を継承しない前提で書く。前置きは Step 3 と同一である。
@@ -751,8 +753,12 @@ gh api "repos/{owner}/{repo}/issues/${PHASE_NUMBER}/sub_issues" \
 - シェルコマンドの変数は必ず `"${var}"` でクォートする（コマンドインジェクション対策）
 - **`gh issue create` は `--json` 非対応**。issue URL を stdout に出力するため、`| grep -oE '[0-9]+$'` で末尾の番号を抽出する
 - **sub_issues API（POST / DELETE）の `sub_issue_id` は issue 番号ではなく database id**（GitHub 仕様）。`gh api "repos/{owner}/{repo}/issues/<number>" --jq '.id'` で id を取得してから渡す。番号をそのまま渡すと誤った issue を操作する／404 になる（`reassign-sub-issue.sh` はこれを内部で解決するため、Step 3/4 で手動取得する必要はない）
-- 孤児 issue の Phase が判断できない場合は推測せずにユーザーへ確認する
+- 孤児 issue の Phase が判断できない場合は推測せずにユーザーへ確認する（非対話時の扱いは Step 4）
 - sub_issues の DELETE API（付け替え時に旧親から外す操作）はパスが単数形 `sub_issue` である点に注意し、操作対象の issue 番号を必ず確認してから実行する
 - ツリー更新後は implement-issue-tree が post-order DFS で正しく消化できる構造になっているか確認する
 - Step 3 / Step 4 の付け替え処理は `scripts/reassign-sub-issue.sh` を使う。SKILL.md 本文へ素の `gh api` DELETE/POST を書き戻さない（状態変数の受け渡しがコードフェンス境界で壊れるクラスの欠陥に戻るため。詳細は `scripts/reassign-sub-issue.sh` 冒頭コメントを参照）
 - Step 8 は `scripts/update-root-body.sh` を使う。`gh issue edit --body` でルート本文全体を書き戻さない（手書きの本文が消えるため。詳細は `scripts/update-root-body.sh` 冒頭コメントを参照）。誤更新時は GitHub の本文編集履歴から復元できる
+
+## sandbox 環境での実行
+
+このスキルはネットワーク越しの GitHub 操作（`gh issue create` / `gh issue edit` / `gh api .../sub_issues`。`scripts/reassign-sub-issue.sh`・`scripts/update-root-body.sh` 経由を含む）を必須とする。該当コマンドはコマンド単位で sandbox 無効にして実行する。ネットワーク遮断を解除できない環境では実行できない。`.git`・`.agents`・`.codex` へ書く手順は無い。スクリプトは一時ファイル・一時ディレクトリを `mktemp` で作る（OS の一時ディレクトリ＝ワークスペース外への書き込み）。`codex exec` では昇格要求が出ないため、ネットワークを使えずコマンドを実行できなかったときは、書き込みをせず、できなかった旨を報告して止める。

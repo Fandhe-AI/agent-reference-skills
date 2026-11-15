@@ -27,8 +27,12 @@ model: sonnet
 
 ### Step 1: 引数を検証する
 
+起動時に渡された文字列を引数（スキル名）とする。空のときは下の候補一覧を示してユーザーに確認する（非対話で得られなければ書き込まずに報告して止める）。シェルの状態は呼び出しごとに消えることがあるため、後続の Step で `SKILL_NAME` を使うときは再代入する。
+
+引数はシェルへ埋め込む前に、エージェント側で `^[a-z0-9]+(-[a-z0-9]+)*$`（kebab-case のスキル名）に一致するか確かめる。一致しなければ下のフェンスを実行せず、引数の誤りとして報告して止める。空のときだけ空文字を入れる（`$(...)` や引用符を含む値を、検証より前にシェルへ入れない）。
+
 ```bash
-SKILL_NAME="$ARGUMENTS"
+SKILL_NAME='<引数のスキル名。無ければ空文字>'
 
 # 空判定ガード: パス解決の前に SKILL_NAME を確定させる
 if [[ -z "${SKILL_NAME}" ]]; then
@@ -117,7 +121,7 @@ else
 fi
 ```
 
-引数が空の場合はパス解決に進まず、`skills/`・`.agents/skills/`・`.claude/skills/`（実ディレクトリのみ。symlink は実体側の候補に現れるため除外）の候補一覧を表示して終了します。Claude はその一覧をユーザーに提示し、スキル名を選んでもらってから再実行を促してください。後続の Step では `${LOCAL_SKILL_DIR}/` を使ってローカルパスを参照します。
+引数が空の場合はパス解決に進まず、`skills/`・`.agents/skills/`・`.claude/skills/`（実ディレクトリのみ。symlink は実体側の候補に現れるため除外）の候補一覧を表示して終了します。エージェントはその一覧をユーザーに提示し、スキル名を選んでもらってから再実行を促してください。後続の Step では `${LOCAL_SKILL_DIR}/` を使ってローカルパスを参照します。
 `skills/`・`.agents/skills/`・`.claude/skills/`（実ディレクトリのみ。symlink は実体側でカウント）の**複数にディレクトリが存在する場合は中止**し、環境変数 `LOCAL_SKILL_DIR` に改修対象のパス（`skills/<name>`・`.agents/skills/<name>`・`.claude/skills/<name>` のいずれか）を指定して再実行するよう案内します（silently に `skills/` を優先しません）。環境変数 `LOCAL_SKILL_DIR` が設定済みの場合は、許可された3パスのいずれかであること・経路の全要素（中間の親ディレクトリ含む）が symlink でないこと・実在することを検証してから採用し、自動解決をスキップします。いずれにも存在しなければエラーで中止します。
 
 ### Step 2: upstream を特定する
@@ -202,9 +206,9 @@ else
 fi
 ```
 
-検査で中止した場合、Claude は自動で stash・削除・コミットをしません。列挙されたパスをユーザーへ提示し、対応（コミットする／取り除く）を選んでもらってから再実行します。
+検査で中止した場合、エージェントは自動で stash・削除・コミットをしません。列挙されたパスをユーザーへ提示し、対応（コミットする／取り除く）を選んでもらってから再実行します。
 
-ユーザーに「この改修内容で upstream に PR を作ってよいか」を確認します。
+ユーザーに「この改修内容で upstream に PR を作ってよいか」を確認します（確認の扱いは「ユーザーへの確認と承認」節）。
 
 ### Step 4: セキュリティチェック（必須）
 
@@ -226,7 +230,7 @@ fi
 
 `skills-contribute.sh` は upstream 側でスキルがどのパス構造に置かれているか（`UPSTREAM_SKILL_PATH`。`skills-lock.json` の `skillPath` はローカル install パスであり upstream 内の配置ではないため使用しません）の判定と、`cp -R` の delete-then-copy 反映を内部で行う自己完結型スクリプトです。判定・反映のロジックは後述の参考コードのとおりです。
 
-`LOCAL_SKILL_DIR` は Step 1 で解決した**貢献対象スキル**（`$ARGUMENTS`）のパスであり、本スキル（contribute-skill）自身の配置とは無関係です。スクリプトの実行パスに `LOCAL_SKILL_DIR` を流用すると、貢献対象が contribute-skill 以外の場合に存在しないパスを参照してしまいます。実行するスクリプト自身の配置は別変数 `CONTRIBUTE_SKILL_DIR` として、本スキル（contribute-skill）自身のインストール場所から解決してください。
+`LOCAL_SKILL_DIR` は Step 1 で解決した**貢献対象スキル**（引数のスキル名）のパスであり、本スキル（contribute-skill）自身の配置とは無関係です。スクリプトの実行パスに `LOCAL_SKILL_DIR` を流用すると、貢献対象が contribute-skill 以外の場合に存在しないパスを参照してしまいます。実行するスクリプト自身の配置は別変数 `CONTRIBUTE_SKILL_DIR` として、本スキル（contribute-skill）自身のインストール場所から解決してください。
 
 `skills-contribute.sh` は呼び出し時のカレントディレクトリを貢献元リポジトリのルートとして `LOCAL_SKILL_DIR`・`skills-lock.json` を探索し、内部で自分自身の `gh repo clone` と `WORKDIR`（clone 先）を新規作成します。実行直前にこの Step 内で `ORIG_DIR`（貢献元ローカルリポジトリのルート）を捕捉しておいてください。スクリプトの標準出力最終行群が返す `CONTRIBUTE_SKILL_WORKDIR=<path>` と `CONTRIBUTE_SKILL_UPSTREAM_PATH=<path>` を捕捉し、`WORKDIR` および（後述の参考コードで示す判定ロジックの）`UPSTREAM_SKILL_PATH` はこれらの値のみを唯一の正として採用します（参考コードを個別実行して得た値は使用しません）。これにより Step 6 以降が参照する `${WORKDIR}/upstream` と `${UPSTREAM_SKILL_PATH}` は、スクリプトが実際に使った clone・実際に反映したパスと一致します。
 
@@ -417,7 +421,7 @@ git status
 git diff
 ```
 
-ユーザーに差分を見せ、内容が意図通りか確認します。
+ユーザーに差分を見せ、内容が意図通りか確認します（確認の扱いは「ユーザーへの確認と承認」節）。
 
 ### Step 7: ブランチ作成・コミット
 
@@ -461,11 +465,11 @@ gh pr create \
 
 ## Source
 
-ローカルの <SRC_REPO> 側で改修後、`/contribute-skill <SKILL_NAME>` により投稿。
+ローカルの <SRC_REPO> 側で改修後、contribute-skill スキル（対象: <SKILL_NAME>）により投稿。
 
 ## Test plan
 
-- [ ] SKILL.md を実際に Claude Code で実行
+- [ ] SKILL.md を実際に 1 つ以上のエージェントで実行
 - [ ] Conventional Commits に沿ったメッセージ生成を確認
 - [ ] エッジケース確認
 
@@ -475,14 +479,14 @@ EOF
 
 `--repo` には Step 2 で正規化した `${REPO_SLUG}`（`OWNER/REPO` 形式）を渡します。URL 形式から `OWNER/REPO` への変換は Step 2 の case 文で完了しています。
 
-body の `<SRC_REPO>` は上で取得した貢献元リポジトリの `OWNER/REPO`（origin 未設定時はディレクトリ名）に置き換えます（heredoc はクォート済みのため Claude が実値で埋める。特定リポジトリ名のハードコード禁止）。
+body の `<SRC_REPO>` は上で取得した貢献元リポジトリの `OWNER/REPO`（origin 未設定時はディレクトリ名）に置き換えます（heredoc はクォート済みのため、実値はエージェントが埋める。特定リポジトリ名のハードコード禁止）。
 
 Draft PR を作成する場合は `--draft` を付けます（デフォルトはユーザー確認の上で決定）。
 
 ### Step 9: PR URL を返す & 後処理案内
 
 - PR URL をユーザーに返す
-- 「マージされたら `/sync-skills-lock` を実行して `skills-lock.json` の `computedHash` を更新してください」と案内
+- 「マージされたら sync-skills-lock スキルを実行して `skills-lock.json` の `computedHash` を更新してください」と案内
 - 作業用ディレクトリ `$WORKDIR` は残したまま（成否が確定するまで）
 
 ## 注意事項
@@ -497,9 +501,25 @@ Draft PR を作成する場合は `--draft` を付けます（デフォルトは
 - **コピー元は HEAD と一致している場合のみ反映する**：事前レビューはコミット済み差分しか見せない一方、`cp -R` は作業ツリーの現物をコピーするため、未コミット・未追跡・ignore 対象のファイルが無レビューで upstream PR へ混入し得る。スクリプトは `${LOCAL_SKILL_DIR}` 配下を `git status --porcelain=v1 --untracked-files=all --ignored` で検査し、出力が非空なら中止する。`--untracked-files=all` を外すとユーザー設定 `status.showUntrackedFiles=no` で未追跡が隠れ、`--ignored` を外すと `.env` 等がコピーされる。非ゼロ終了（git リポジトリ外など）も clean と扱わない。`git update-index --assume-unchanged` / `--skip-worktree` を付けたファイルの変更は `git status` でも検出できず対象外
 - **既に同名の branch がある場合**：秒単位スラッグで通常は衝突しないが、万一の場合はユーザーに確認
 
+## ユーザーへの確認と承認
+
+ユーザーに確認し、明示的な返答を待つ。選択肢は番号付きで示す。「上流に貢献して」等、このスキルを起動する依頼そのものは、この確認の承認にならない。起動時の指示にこの確認を省くことの明示（例: 「確認なしで PR 作成まで進めて」）が含まれている場合に限り、確認を省いて続行してよい。承認が無く対話もできない環境（非対話実行）では、書き込み・実装をせず確認事項を報告して止める。
+
+| Step | 確認内容 | 起動時の承認で省略 |
+|------|---------|------------------|
+| Step 1 | 引数が空のときのスキル名の選択 | 可（引数で指定済みなら発生しない） |
+| Step 3 | HEAD と一致しない・未コミット・未追跡の検出時の対応（コミットする／取り除く）の選択 | 不可（安全上の中止） |
+| Step 3 | 「この改修内容で upstream に PR を作ってよいか」 | 可（取り消せる操作。起動時の指示に PR 作成の承認があれば従う） |
+| Step 4 | セキュリティ問題が見つかったときの中止と警告 | 不可（セキュリティチェックでの中止） |
+| Step 6 | upstream 側の差分が意図どおりか | 可（承認の指示が差分の内容を含む場合） |
+| Step 8 | Draft PR にするか | 可（起動時の指示に Draft の指定があれば従う） |
+| 注意事項 | Fandhe-AI 以外の source・lock 不在・複数配置・同名 branch の検出時の中止・確認 | 不可（安全弁による中止） |
+
+安全上の確認は起動時の承認でも省けない。検出時は必ず止めて報告する。
+
 ## sandbox 環境での実行
 
-このスキルはネットワーク越しの GitHub 操作（`gh repo clone`・`git push`・PR 作成）を必須とする。該当コマンドはコマンド単位で sandbox 無効にして実行する。ネットワーク遮断を解除できない環境では実行できない。
+このスキルはネットワーク越しの GitHub 操作（`gh repo clone`・`git push`・PR 作成）を必須とする。該当コマンドはコマンド単位で sandbox 無効にして実行する。ネットワーク遮断を解除できない環境では実行できない。clone 先（ワークスペース外の一時ディレクトリ。`scripts/skills-contribute.sh` が `mktemp -d` で作る）の `.git` へ commit・push する。貢献元の `.git` には書かない。ワークスペース外への書き込みなので Codex の既定 sandbox では書けない可能性がある。Codex の対話セッションでは承認による昇格を求める。`codex exec` では昇格要求が出ないため、書けなかったことを報告して止める。その場合は「`.git` を書き込み可にした permissions プロファイルで実行し直す」か「ユーザーが自分で実行する」を案内する。
 
 ## 検証
 

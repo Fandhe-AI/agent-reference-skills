@@ -145,7 +145,9 @@ enum / `sanitizeRepoRelPath` はいずれも「値の形式」しか検証せず
 | `gh api .../pulls/<n>/merge`（REST merge） | deny |
 | `gh api repos/<o>/<r>/merges`（REST ブランチマージ） | deny |
 | `gh api graphql`（`mergePullRequest` / `enablePullRequestAutoMerge` / `mergeBranch`） | deny（`mergeBranch` は PR を経由せず head ref を base へ直接マージする迂回経路のため含める） |
-| `gh pr review --approve` | deny |
+| `gh pr review --approve` / 短縮 `-a`（`-ab` 等の束ね書きを含む。`-b` / `-F` の値は本文） | deny |
+| `gh api .../pulls/<n>/reviews`（`.../reviews/<id>/events` を含む）の `event=APPROVE`（`-f` / `-F` / `--field` / `--raw-field`）、判定できない `--input`・`@file`・変数・`COMMENT` / `REQUEST_CHANGES` 以外の event | deny（`--jq` 等の値は対象外。明示の GET でも event を検査する） |
+| `gh api`（`/graphql`・URL 形を含む）の `addPullRequestReview` / `submitPullRequestReview`（event が `COMMENT` / `REQUEST_CHANGES` のリテラルでない形・`APPROVE`・変数・`@file`）、query の `@file` / `$` 始まり / `--input` | deny（`addPullRequestReviewThreadReply` は許可） |
 | `gh alias`（set / import 等すべて）・`gh extension` | deny（別名・拡張経由の迂回封じ） |
 | 上記以外（`gh pr comment` の催促・読み取り系等） | 許可 |
 | main スレッド（`agent_id` なし）の全コマンド | 制限対象外（人間の監督下の対話コンテキスト。`jq` 不在時もロックアウトされない） |
