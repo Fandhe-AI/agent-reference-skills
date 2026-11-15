@@ -71,4 +71,4 @@ constraints/iam.workloadIdentityPoolProviders   (rule: Deny All at the organizat
 
 - [authentication-methods-and-sts-audit.md](./authentication-methods-and-sts-audit.md)
 - [workforce-identity-federation.md](./workforce-identity-federation.md)
-- [service-account-best-practices.md](../service-accounts/service-account-best-practices.md)
+- service-account-best-practices.md (`references/iam-guides/service-accounts/service-account-best-practices.md`, added in a follow-up PR)

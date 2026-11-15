@@ -61,5 +61,5 @@ Conceptually staged (IAM actually evaluates all types simultaneously):
 
 ## Related
 
-- [roles-overview.md](../role-types/roles-overview.md)
+- roles-overview.md (`references/iam-guides/role-types/roles-overview.md`, added in a follow-up PR)
 - gcp-security (deny policies, PAB policies in depth)

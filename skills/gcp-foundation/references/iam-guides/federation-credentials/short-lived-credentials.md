@@ -115,7 +115,19 @@ signJwt response includes `keyId` and `signedJwt`; signBlob response includes `k
 
 ### Delegated request flow
 
-Example chain `SA_1` (caller) -> `SA_2` (delegated) -> `SA_3` (delegated) -> `SA_4` (the target). List intermediaries in order in `delegates`, excluding the caller and the target (`SA_4` is the service account named in the request URL):
+Example chain `SA_1` (caller) -> `SA_2` (delegated) -> `SA_3` (delegated) -> `SA_4` (the target). List intermediaries in order in `delegates`, excluding the caller and the target (`SA_4` is the service account named in the request URL).
+
+Each account in the chain must grant the Service Account Token Creator role (`roles/iam.serviceAccountTokenCreator`) to the previous account in the chain. For this chain, grant `SA_1` the role on `SA_2`, `SA_2` on `SA_3`, and `SA_3` on `SA_4`; the direct-request setup alone is not enough, and the `delegates` request fails without these grants.
+
+Adapted (not in the official docs): gcloud form of the per-hop grant (the official page uses REST `setIamPolicy`); repeat for each hop.
+
+```bash
+gcloud iam service-accounts add-iam-policy-binding SA_2@PROJECT_ID.iam.gserviceaccount.com \
+    --member=serviceAccount:SA_1@PROJECT_ID.iam.gserviceaccount.com \
+    --role=roles/iam.serviceAccountTokenCreator
+```
+
+List intermediaries in order in `delegates`, excluding the caller and the target (`SA_4` is the service account named in the request URL):
 
 ```json
 {
@@ -221,6 +233,7 @@ Response: `access_token`, `expires_in` (only if the original token represents a 
 
 ## Notes
 
+- Delegation chain permissions follow https://docs.cloud.google.com/iam/docs/create-short-lived-credentials-delegated (section "Provide required permissions"; each account grants `roles/iam.serviceAccountTokenCreator` to the previous account). Adapted from the official docs: the per-hop grant is shown with `gcloud iam service-accounts add-iam-policy-binding` instead of the REST `setIamPolicy` flow.
 - Extend access token lifetime to 12 hours (43,200 s) by adding the service account to an organization policy with the `constraints/iam.allowServiceAccountCredentialLifetimeExtension` list constraint. The gcloud CLI cannot set a lifetime.
 - In most cases the caller and privilege-bearing service accounts cannot be the same (see self-impersonation).
 - Delegation intermediaries only pass the request; they confer no additional access on the caller or target. The resulting credential represents only the final service account.
@@ -236,6 +249,6 @@ Response: `access_token`, `expires_in` (only if the original token represents a 
 
 ## Related
 
-- [service-account-best-practices.md](../service-accounts/service-account-best-practices.md)
+- service-account-best-practices.md (`references/iam-guides/service-accounts/service-account-best-practices.md`, added in a follow-up PR)
 - [authentication-methods-and-sts-audit.md](./authentication-methods-and-sts-audit.md)
 - Other skill: gcp-client-libraries (ADC code)

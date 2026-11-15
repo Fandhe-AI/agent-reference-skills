@@ -42,5 +42,5 @@ Outside Google Cloud:
 ## Related
 
 - [groups-best-practices.md](./groups-best-practices.md)
-- [../workload-and-workforce-federation/workload-identity-federation-pools.md](../workload-and-workforce-federation/workload-identity-federation-pools.md)
-- [../workload-and-workforce-federation/managed-workload-identity.md](../workload-and-workforce-federation/managed-workload-identity.md)
+- [workload-identity-federation-best-practices.md](../federation-credentials/workload-identity-federation-best-practices.md)
+- [managed-workload-identities.md](../federation-credentials/managed-workload-identities.md)

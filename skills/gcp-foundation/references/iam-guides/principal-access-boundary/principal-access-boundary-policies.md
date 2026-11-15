@@ -169,5 +169,5 @@ principal.subject != 'special-admin@example.com'
 
 ## Related
 
-- [service-accounts-overview-types.md](../service-account-concepts/service-accounts-overview-types.md)
+- service-accounts-overview-types.md (`references/iam-guides/service-account-concepts/service-accounts-overview-types.md`, added in a follow-up PR)
 - gcp-security covers VPC Service Controls.
