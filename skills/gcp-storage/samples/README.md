@@ -1,0 +1,18 @@
+# samples
+
+| Name | Description | Path |
+| --- | --- | --- |
+| Create a Bucket with Uniform Access and Grant a Principal a Role | Create a bucket with uniform bucket-level access, understand public access prevention, then grant a principal an upload-only role on that bucket. | [create-secure-bucket.md](./create-secure-bucket.md) |
+| Upload and Download Objects with Python and Node.js (with Preconditions) | Upload a local file with a generation-match precondition so the write cannot silently overwrite or race, then download the object again. | [upload-download-with-preconditions.md](./upload-download-with-preconditions.md) |
+| Create V4 Signed URLs for Download and Upload | Create time-limited V4 signed URLs with `gcloud storage sign-url`, Node.js or Python so a client without an account can read or write one object. | [v4-signed-urls.md](./v4-signed-urls.md) |
+| Upload Large Files and Directories with gcloud | Upload files and directories with `gcloud storage cp` and `rsync`, which use resumable uploads automatically, and resume an interrupted transfer by re-running the command. | [upload-large-files.md](./upload-large-files.md) |
+| Delete Objects with a Generation Precondition | Delete a single object, delete by prefix, and delete from Python only if the object has not changed since you read it. | [delete-objects-safely.md](./delete-objects-safely.md) |
+| Set and Check a Bucket Soft Delete Policy | Set the soft delete retention duration on a bucket and check the policy, with notes on how it interacts with Object Versioning. | [soft-delete-policy.md](./soft-delete-policy.md) |
+| Install Cloud Storage FUSE, Mount a Bucket and Enable the File Cache | Install `gcsfuse` on Debian or Ubuntu, authenticate, mount a bucket, and cache reads of selected files locally. | [mount-bucket-with-cloud-storage-fuse.md](./mount-bucket-with-cloud-storage-fuse.md) |
+| Create and Update an Anywhere Cache | Create an SSD-backed zonal read cache for a bucket in the zone where your workload runs, and change its time-to-live. | [anywhere-cache-create.md](./anywhere-cache-create.md) |
+| Create and Link a Storage Insights Dataset | Create a dataset configuration that collects object metadata from source projects, link it to BigQuery, and query it with SQL. | [storage-insights-dataset.md](./storage-insights-dataset.md) |
+| Create a Scheduled Storage Transfer Service Job | Create a Storage Transfer Service job with gcloud, and define a scheduled bucket-to-bucket job through the REST API. | [storage-transfer-bucket-to-bucket.md](./storage-transfer-bucket-to-bucket.md) |
+| Create a Filestore Instance with Deletion Protection and Mount It on a VM | Create a regional Filestore instance with IP-based access rules and deletion protection, then mount the NFS file share on a Compute Engine VM. | [filestore-create-and-mount.md](./filestore-create-and-mount.md) |
+| Create a Managed Lustre Instance and Connect from Compute Engine | Create a Managed Lustre file system, check its creation status, and mount it on an Ubuntu 22.04 LTS Compute Engine client. | [managed-lustre-create-and-connect.md](./managed-lustre-create-and-connect.md) |
+| Prepare NetApp Volumes Networking, Restrict Access and Mount a Volume | Set up private services access for NetApp Volumes, restrict a volume's export policy, install the NFS client and look up the mount command. | [netapp-volumes-network-and-mount.md](./netapp-volumes-network-and-mount.md) |
+| Back Up and Restore a Compute Engine VM with a Backup Vault | Create a backup vault and backup plan, associate a VM, trigger a backup, restore it, and clean up. | [backup-dr-compute-engine-vault.md](./backup-dr-compute-engine-vault.md) |
