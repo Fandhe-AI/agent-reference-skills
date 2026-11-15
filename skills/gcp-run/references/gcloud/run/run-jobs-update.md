@@ -1,0 +1,594 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/run/jobs/update
+---
+
+# gcloud run jobs update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud run jobs update
+
+```text
+NAME
+    gcloud run jobs update - update a Cloud Run Job
+
+SYNOPSIS
+    gcloud run jobs update [JOB] [--breakglass=JUSTIFICATION]
+        [--clear-vpc-connector] [--container=CONTAINER] [--gpu-type=GPU_TYPE]
+        [--[no-]gpu-zonal-redundancy] [--key=KEY] [--max-retries=MAX_RETRIES]
+        [--parallelism=PARALLELISM] [--region=REGION]
+        [--remove-containers=[CONTAINER,...]]
+        [--service-account=SERVICE_ACCOUNT] [--task-timeout=TASK_TIMEOUT]
+        [--tasks=TASKS; default=1] [--vpc-connector=VPC_CONNECTOR]
+        [--vpc-egress=VPC_EGRESS]
+        [--add-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          | --clear-cloudsql-instances
+          | --remove-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          | --set-cloudsql-instances=[CLOUDSQL-INSTANCES,...]]
+        [--add-volume=[KEY=VALUE,...]
+          --clear-volumes --remove-volume=[VOLUME,...]]
+        [--add-volume-mount=[volume=NAME,mount-path=MOUNT_PATH,...]
+          --args=[ARG,...] --clear-volume-mounts --command=[COMMAND,...]
+          --cpu=CPU --depends-on=[CONTAINER,...] --gpu=GPU --image=IMAGE
+          --memory=MEMORY --remove-volume-mount=[MOUNT_PATH,...]
+          --startup-probe=[KEY=VALUE,...] --workdir=WORKDIR --clear-env-vars
+          | --env-vars-file=FILE_PATH | --set-env-vars=[KEY=VALUE,...]
+          | --remove-env-vars=[KEY,...]
+          --update-env-vars=[KEY=VALUE,...] --clear-secrets
+          | --set-secrets=[KEY=VALUE,...]
+          | --remove-secrets=[KEY,...] --update-secrets=[KEY=VALUE,...]]
+        [--async | --execute-now --wait]
+        [--binary-authorization=POLICY | --clear-binary-authorization]
+        [--clear-labels | --remove-labels=[KEY,...] --labels=[KEY=VALUE,...]
+          | --update-labels=[KEY=VALUE,...]]
+        [--clear-network
+          | --network=NETWORK --subnet=SUBNET --clear-network-tags
+          | --network-tags=[TAG,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Updates a Cloud Run job.
+
+EXAMPLES
+    To update the container image of Cloud Run job my-job:
+
+        $ gcloud run jobs update my-job \
+          --image=us-docker.pkg.dev/project/image
+
+POSITIONAL ARGUMENTS
+     Job resource - Job to update. This represents a Cloud resource. (NOTE)
+     Some attributes are not given arguments in this group but can be set in
+     other ways.
+
+     To set the project attribute:
+      * provide the argument JOB on the command line with a fully specified
+        name;
+      * specify the job name from an interactive prompt with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     [JOB]
+        ID of the Job or fully qualified identifier for the Job.
+
+        To set the jobs attribute:
+        * provide the argument JOB on the command line;
+        * specify the job name from an interactive prompt.
+
+FLAGS
+     --breakglass=JUSTIFICATION
+        Justification to bypass Binary Authorization policy constraints and
+        allow the operation. See
+        https://cloud.google.com/binary-authorization/docs/using-breakglass for
+        more information. Next update or deploy command will automatically
+        clear existing breakglass justification.
+
+     --clear-vpc-connector
+        Remove the VPC connector for this resource.
+
+     --container=CONTAINER
+        Specifies a container by name. Flags following --container will apply
+        to the specified container.
+
+        Flags that are not container-specific must be specified before
+        --container.
+
+     --gpu-type=GPU_TYPE
+        The GPU type to use.
+
+     --[no-]gpu-zonal-redundancy
+        Set GPU zonal redundancy. Use --gpu-zonal-redundancy to enable and
+        --no-gpu-zonal-redundancy to disable.
+
+     --key=KEY
+        CMEK key reference to encrypt the container with.
+
+     --max-retries=MAX_RETRIES
+        Number of times a task is allowed to restart in case of failure before
+        being failed permanently. This applies per-task, not per-job. If set to
+        0, tasks will only run once and never be retried on failure.
+
+     --parallelism=PARALLELISM
+        Number of tasks that may run concurrently. Must be less than or equal
+        to the number of tasks. Set to 0 to unset.
+
+     --region=REGION
+        Region in which the resource can be found. Alternatively, set the
+        property [run/region].
+
+     --remove-containers=[CONTAINER,...]
+        List of containers to remove.
+
+     --service-account=SERVICE_ACCOUNT
+        the email address of an IAM service account associated with the
+        revision of the service. The service account represents the identity of
+        the running revision, and determines what permissions the revision has.
+
+     --task-timeout=TASK_TIMEOUT
+        Set the maximum time (deadline) a job task attempt can run for. In the
+        case of retries, this deadline applies to each attempt of a task. If
+        the task attempt does not complete within this time, it will be killed.
+        It is specified as a duration; for example, "10m5s" is ten minutes, and
+        five seconds. If you don't specify a unit, seconds is assumed. For
+        example, "10" is 10 seconds.
+
+     --tasks=TASKS; default=1
+        Number of tasks that must run to completion for the execution to be
+        considered done.
+
+     --vpc-connector=VPC_CONNECTOR
+        Set a VPC connector for this resource.
+
+     --vpc-egress=VPC_EGRESS
+        Specify which of the outbound traffic to send through Direct VPC egress
+        or the VPC connector for this resource. This resource must have Direct
+        VPC egress enabled or a VPC connector to set this flag. VPC_EGRESS must
+        be one of:
+
+         all
+            (DEPRECATED) Sends all outbound traffic through Direct VPC egress
+            or the VPC connector. Provides the same functionality as
+            'all-traffic'. Prefer to use 'all-traffic' instead.
+         all-traffic
+            Sends all outbound traffic through Direct VPC egress or the VPC
+            connector.
+         private-ranges-only
+            Default option. Sends outbound traffic to private IP addresses (RFC
+            1918 and Private Google Access IPs) through Direct VPC egress or
+            the VPC connector.
+
+            Traffic to other Cloud Run services might require additional
+            configuration. See
+            https://cloud.google.com/run/docs/securing/private-networking#send_requests_to_other_services_and_services
+            for more information.
+
+     These flags modify the Cloud SQL instances this Service connects to. You
+     can specify a name of a Cloud SQL instance if it's in the same project and
+     region as your Cloud Run service; otherwise specify
+     <project>:<region>:<instance> for the instance.
+
+     At most one of these can be specified:
+
+       --add-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          Append the given values to the current Cloud SQL instances.
+
+       --clear-cloudsql-instances
+          Empty the current Cloud SQL instances.
+
+       --remove-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          Remove the given values from the current Cloud SQL instances.
+
+       --set-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          Completely replace the current Cloud SQL instances with the given
+          values.
+
+     --add-volume=[KEY=VALUE,...]
+        Adds a volume to the Cloud Run resource. To add more than one volume,
+        specify this flag multiple times. Volumes must have a type key. Volumes
+        must have a name key if mount-path is not specified. A name key is
+        optional if mount-path is specified.Only certain values are supported
+        for type. Depending on the provided type, other keys will be required.
+        The following types are supported with the specified additional keys:
+
+        cloud-storage: A volume representing a Cloud Storage bucket. This
+        volume type is mounted using Cloud Storage FUSE. See
+        https://cloud.google.com/storage/docs/gcs-fuse for the details and
+        limitations of this filesystem. Additional keys:
+        * bucket: (required) the name of the bucket to use as the source of
+          this volume
+        * readonly: (optional) A boolean. If true, this volume will be
+          read-only from all mounts.
+        * mount-options: (optional) A list of flags to pass to GCSFuse. Flags
+          should be specified without leading dashes and separated by
+          semicolons.
+        * mount-path: (optional) The path at which the volume should be
+          mounted. The mount-path parameter is only supported for single
+          container services which do not make use of the --container flag. For
+          multi-container services, specify the mount-path parameter under the
+          --add-volume-mount flag.
+
+        ephemeral-disk: A volume that stores data on a temporary disk. With
+        this type of volume, data is not shared between instances and all data
+        will be lost when the instance it is on is terminated. Additional keys:
+        * mount-path: (optional) The path at which the volume should be
+          mounted. The mount-path parameter is only supported for single
+          container services which do not make use of the --container flag. For
+          multi-container services, specify the mount-path parameter under the
+          --add-volume-mount flag.
+        * size: (optional) A quantity representing the amount of disk space
+          allocated to this volume, such as "10Gi" or "100G".
+
+        in-memory: An ephemeral volume that stores data in the instance's
+        memory. With this type of volume, data is not shared between instances
+        and all data will be lost when the instance it is on is terminated.
+        Additional keys:
+        * mount-path: (optional) The path at which the volume should be
+          mounted. The mount-path parameter is only supported for single
+          container services which do not make use of the --container flag. For
+          multi-container services, specify the mount-path parameter under the
+          --add-volume-mount flag.
+        * size-limit: (optional) A quantity representing the maximum amount
+          of memory allocated to this volume, such as "512Mi" or "3G". Data
+          stored in an in-memory volume consumes the memory allocation of the
+          container that wrote the data. If size-limit is not specified, the
+          maximum size will be half the total memory limit of all containers.
+
+        nfs: Represents a volume backed by an NFS server. Additional keys:
+        * location: (required) The location of the NFS Server, in the form
+          SERVER:/PATH
+        * mount-path: (optional) The path at which the volume should be
+          mounted. The mount-path parameter is only supported for single
+          container services which do not make use of the --container flag. For
+          multi-container services, specify the mount-path parameter under the
+          --add-volume-mount flag.
+        * readonly: (optional) A boolean. If true, this volume will be
+          read-only from all mounts.
+
+     --clear-volumes
+        Remove all existing volumes from the Cloud Run resource, including
+        volumes mounted as secrets
+
+     --remove-volume=[VOLUME,...]
+        Removes volumes from the Cloud Run resource.
+
+    Container Flags
+
+        If the --container or --remove-containers flag is specified the following
+        arguments may only be specified after a --container flag.
+
+     --add-volume-mount=[volume=NAME,mount-path=MOUNT_PATH,...]
+        Adds a mount to the current container. Must contain the keys
+        volume=NAME and mount-path=/PATH where NAME is the name of a volume on
+        this resource and PATH is the path within the container's filesystem to
+        mount this volume.
+
+     --args=[ARG,...]
+        Comma-separated arguments passed to the command run by the container
+        image. If not specified and no '--command' is provided, the container
+        image's default Cmd is used. Otherwise, if not specified, no arguments
+        are passed. To reset this field to its default, pass an empty string.
+
+     --clear-volume-mounts
+        Remove all existing mounts from the current container.
+
+     --command=[COMMAND,...]
+        Entrypoint for the container image. If not specified, the container
+        image's default Entrypoint is run. To reset this field to its default,
+        pass an empty string.
+
+     --cpu=CPU
+        Set a CPU limit in Kubernetes cpu units.
+
+        Cloud Run supports values fractional values below 1, 1, 2, 4, and 8.
+        Some CPU values requires a minimum Memory --memory value.
+
+     --depends-on=[CONTAINER,...]
+        List of container dependencies to add to the current container.
+
+     --gpu=GPU
+        Cloud Run supports values 0 or 1. 1 gpu also requires a minimum 4 --cpu
+        value and a minimum 16Gi --memory value.
+
+     --image=IMAGE
+        Name of the container image to deploy (e.g.
+        us-docker.pkg.dev/cloudrun/container/job:latest).
+
+     --memory=MEMORY
+        Set a memory limit. Ex: 1024Mi, 4Gi.
+
+     --remove-volume-mount=[MOUNT_PATH,...]
+        Removes the volume mounted at the specified path from the current
+        container.
+
+     --startup-probe=[KEY=VALUE,...]
+        Comma separated settings for startup probe in the form KEY=VALUE. Each
+        key stands for a field of the probe described in
+        https://cloud.google.com/run/docs/reference/rest/v1/Container#Probe.
+        Currently supported keys are: initialDelaySeconds, timeoutSeconds,
+        periodSeconds, failureThreshold, httpGet.port, httpGet.path, grpc.port,
+        grpc.service, tcpSocket.port.
+
+        For example, to set a probe with 10s timeout and HTTP probe requests
+        sent to 8080 port of the container:
+
+            $ --startup-probe=timeoutSeconds=10,httpGet.port=8080
+
+        To remove existing probe:
+
+            $ --startup-probe=""
+
+     --workdir=WORKDIR
+        Working directory of the container process. If not specified, the
+        container image's default working directory is used. To reset this
+        field to its default, pass an empty string.
+
+     At most one of these can be specified:
+
+       --clear-env-vars
+          Remove all environment variables.
+
+       --env-vars-file=FILE_PATH
+          Path to a local YAML or ENV file with definitions for all environment
+          variables. All existing environment variables will be removed before
+          the new environment variables are added. Example YAML content:
+
+              KEY_1: "value1"
+              KEY_2: "value 2"
+
+          Example ENV content:
+
+              KEY_1="value1"
+              KEY_2="value 2"
+
+       --set-env-vars=[KEY=VALUE,...]
+          List of key-value pairs to set as environment variables. All existing
+          environment variables will be removed first.
+
+       Or at least one of these can be specified:
+
+         Only --update-env-vars and --remove-env-vars can be used together. If
+         both are specified, --remove-env-vars will be applied first.
+
+         --remove-env-vars=[KEY,...]
+            List of environment variables to be removed.
+
+         --update-env-vars=[KEY=VALUE,...]
+            List of key-value pairs to set as environment variables.
+
+     Specify secrets to mount or provide as environment variables. Keys
+     starting with a forward slash '/' are mount paths. All other keys
+     correspond to environment variables. Values should be in the form
+     SECRET_NAME:SECRET_VERSION. For example:
+     '--update-secrets=/secrets/api/key=mysecret:latest,ENV=othersecret:1' will
+     mount a volume at '/secrets/api' containing a file 'key' with the latest
+     version of secret 'mysecret'. An environment variable named ENV will also
+     be created whose value is version 1 of secret 'othersecret'.
+
+     At most one of these can be specified:
+
+       --clear-secrets
+          Remove all secrets.
+
+       --set-secrets=[KEY=VALUE,...]
+          List of key-value pairs to set as secrets. All existing secrets will
+          be removed first.
+
+       Or at least one of these can be specified:
+
+         Only --update-secrets and --remove-secrets can be used together. If
+         both are specified, --remove-secrets will be applied first.
+
+         --remove-secrets=[KEY,...]
+            List of secrets to be removed.
+
+         --update-secrets=[KEY=VALUE,...]
+            List of key-value pairs to set as secrets.
+
+     At most one of these can be specified:
+
+       --async
+          Return immediately, without waiting for the operation in progress to
+          complete.
+
+       Or at least one of these can be specified:
+
+         --async cannot be used if executing the job after the update.
+
+         --execute-now
+            Execute the job immediately after the creation or update completes.
+            gcloud exits once the job has started unless the --wait flag is
+            set.
+
+         --wait
+            Wait until the execution has completed running before exiting. If
+            not set, gcloud exits successfully when the execution has started.
+            Implies --execute-now.
+
+     At most one of these can be specified:
+
+       --binary-authorization=POLICY
+          Binary Authorization policy to check against. This must be set to
+          "default".
+
+       --clear-binary-authorization
+          Remove any previously set Binary Authorization policy.
+
+     At most one of these can be specified:
+
+       --clear-labels
+          Remove all labels. If --update-labels is also specified then
+          --clear-labels is applied first.
+
+          For example, to remove all labels:
+
+              $ gcloud run jobs update --clear-labels
+
+          To remove all existing labels and create two new labels, foo and baz:
+
+              $ gcloud run jobs update --clear-labels \
+                --update-labels foo=bar,baz=qux
+
+       --remove-labels=[KEY,...]
+          List of label keys to remove. If a label does not exist it is
+          silently ignored. If --update-labels is also specified then
+          --update-labels is applied first.
+
+     At most one of these can be specified:
+
+       --labels=[KEY=VALUE,...]
+          List of label KEY=VALUE pairs to add.
+
+          An alias to --update-labels.
+
+       --update-labels=[KEY=VALUE,...]
+          List of label KEY=VALUE pairs to update. If a label exists, its value
+          is modified. Otherwise, a new label is created.
+
+     At most one of these can be specified:
+
+       --clear-network
+          Disconnect this Cloud Run job from the VPC network it is connected
+          to.
+
+       Or at least one of these can be specified:
+
+         Direct VPC egress setting flags group.
+
+         --network=NETWORK
+            The VPC network that the Cloud Run job will be able to send traffic
+            to. If --subnet is also specified, subnet must be a subnetwork of
+            the network specified by this --network flag. To clear existing VPC
+            network settings, use --clear-network.
+
+         --subnet=SUBNET
+            The VPC subnetwork that the Cloud Run job will get IPs from. The
+            subnetwork must be /26 or larger. If --network is also specified,
+            subnet must be a subnetwork of the network specified by the
+            --network flag. If --network is not specified, network will be
+            looked up from this subnetwork. To clear existing VPC network
+            settings, use --clear-network.
+
+         At most one of these can be specified:
+
+           --clear-network-tags
+              Clears all existing network tags from the Cloud Run job.
+
+           --network-tags=[TAG,...]
+              Applies the given network tags (comma separated) to the Cloud Run
+              job. To clear existing tags, use --clear-network-tags.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha run jobs update
+
+        $ gcloud beta run jobs update
+```
+
+### gcloud beta run jobs update
+
+```text
+NAME
+    gcloud beta run jobs update - update a Cloud Run Job
+
+SYNOPSIS
+    gcloud beta run jobs update [JOB] [--breakglass=JUSTIFICATION]
+        [--clear-vpc-connector] [--container=CONTAINER]
+        [--[no-]delay-execution] [--endpoint-mode=ENDPOINT_MODE]
+        [--functional-type=FUNCTIONAL_TYPE] [--gpu-type=GPU_TYPE]
+        [--[no-]gpu-zonal-redundancy] [--[no-]identity-certificate]
+        [--identity-type=IDENTITY_TYPE] [--key=KEY] [--max-retries=MAX_RETRIES]
+        [--parallelism=PARALLELISM] [--region=REGION]
+        [--remove-containers=[CONTAINER,...]]
+        [--service-account=SERVICE_ACCOUNT] [--task-timeout=TASK_TIMEOUT]
+        [--tasks=TASKS; default=1] [--vpc-connector=VPC_CONNECTOR]
+        [--vpc-egress=VPC_EGRESS]
+        [--add-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          | --clear-cloudsql-instances
+          | --remove-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          | --set-cloudsql-instances=[CLOUDSQL-INSTANCES,...]]
+        [--add-volume=[KEY=VALUE,...]
+          --clear-volumes --remove-volume=[VOLUME,...]]
+        [--add-volume-mount=[volume=NAME,mount-path=MOUNT_PATH,...]
+          --args=[ARG,...] --clear-volume-mounts --command=[COMMAND,...]
+          --cpu=CPU --depends-on=[CONTAINER,...] --gpu=GPU --image=IMAGE
+          --memory=MEMORY --remove-volume-mount=[MOUNT_PATH,...]
+          --[no-]sandbox-launcher
+          --startup-probe=[KEY=VALUE,...] --workdir=WORKDIR --clear-env-vars
+          | --env-vars-file=FILE_PATH | --set-env-vars=[KEY=VALUE,...]
+          | --remove-env-vars=[KEY,...]
+          --update-env-vars=[KEY=VALUE,...] --clear-secrets
+          | --set-secrets=[KEY=VALUE,...]
+          | --remove-secrets=[KEY,...] --update-secrets=[KEY=VALUE,...]]
+        [--async | --execute-now --wait]
+        [--binary-authorization=POLICY | --clear-binary-authorization]
+        [--clear-labels | --remove-labels=[KEY,...] --labels=[KEY=VALUE,...]
+          | --update-labels=[KEY=VALUE,...]]
+        [--clear-network
+          | --network=NETWORK --subnet=SUBNET --clear-network-tags
+          | --network-tags=[TAG,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha run jobs update
+
+```text
+NAME
+    gcloud alpha run jobs update - update a Cloud Run Job
+
+SYNOPSIS
+    gcloud alpha run jobs update [JOB] [--breakglass=JUSTIFICATION]
+        [--clear-vpc-connector] [--container=CONTAINER]
+        [--[no-]delay-execution] [--endpoint-mode=ENDPOINT_MODE]
+        [--functional-type=FUNCTIONAL_TYPE] [--gpu-type=GPU_TYPE]
+        [--[no-]gpu-zonal-redundancy] [--grace-period=GRACE_PERIOD]
+        [--[no-]identity-certificate] [--identity-type=IDENTITY_TYPE]
+        [--key=KEY] [--max-retries=MAX_RETRIES] [--parallelism=PARALLELISM]
+        [--region=REGION] [--remove-containers=[CONTAINER,...]]
+        [--service-account=SERVICE_ACCOUNT] [--task-timeout=TASK_TIMEOUT]
+        [--tasks=TASKS; default=1] [--vpc-connector=VPC_CONNECTOR]
+        [--vpc-egress=VPC_EGRESS]
+        [--add-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          | --clear-cloudsql-instances
+          | --remove-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          | --set-cloudsql-instances=[CLOUDSQL-INSTANCES,...]]
+        [--add-volume=[KEY=VALUE,...]
+          --clear-volumes --remove-volume=[VOLUME,...]]
+        [--add-volume-mount=[volume=NAME,mount-path=MOUNT_PATH,...]
+          --args=[ARG,...] --clear-volume-mounts --command=[COMMAND,...]
+          --cpu=CPU --depends-on=[CONTAINER,...] --gpu=GPU --image=IMAGE
+          --memory=MEMORY --remove-volume-mount=[MOUNT_PATH,...]
+          --[no-]sandbox-launcher
+          --startup-probe=[KEY=VALUE,...] --workdir=WORKDIR --clear-env-vars
+          | --env-vars-file=FILE_PATH | --set-env-vars=[KEY=VALUE,...]
+          | --remove-env-vars=[KEY,...]
+          --update-env-vars=[KEY=VALUE,...] --clear-secrets
+          | --set-secrets=[KEY=VALUE,...]
+          | --remove-secrets=[KEY,...] --update-secrets=[KEY=VALUE,...]]
+        [--async | --execute-now --wait]
+        [--binary-authorization=POLICY | --clear-binary-authorization]
+        [--clear-labels | --remove-labels=[KEY,...] --labels=[KEY=VALUE,...]
+          | --update-labels=[KEY=VALUE,...]]
+        [--clear-network
+          | --network=NETWORK --subnet=SUBNET --clear-network-tags
+          | --network-tags=[TAG,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/run/jobs/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
