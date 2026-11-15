@@ -1,0 +1,215 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/workstations/ssh
+---
+
+# gcloud workstations ssh
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud workstations ssh
+
+```text
+NAME
+    gcloud workstations ssh - SSH into a running workstation
+
+SYNOPSIS
+    gcloud workstations ssh
+        (WORKSTATION : --cluster=CLUSTER --config=CONFIG --region=REGION)
+        [--command=COMMAND] [--endpoint-mode=ENDPOINT_MODE]
+        [--local-host-port=LOCAL_HOST_PORT; default="localhost:0"]
+        [--port=PORT; default=22] [--ssh-flag=SSH_FLAG] [--start-workstation]
+        [--user=USER; default="user"] [GCLOUD_WIDE_FLAG ...] [-- SSH_ARGS ...]
+
+DESCRIPTION
+    SSH into a running workstation.
+
+    Note that arguments for the NO_PROXY environment variable must be FQDNs.
+
+EXAMPLES
+    To ssh into a running workstation, run:
+
+        $ gcloud workstations ssh WORKSTATION
+
+    To specify the workstation port, run:
+
+        $ gcloud workstations ssh WORKSTATION --port=22
+
+    To ssh into a running workstation with a username, run:
+
+        $ gcloud workstations ssh WORKSTATION --user=my-user
+
+    To run a command on the workstation, such as getting a snapshot of the
+    guest's process tree, run:        $ gcloud workstations ssh WORKSTATION --command="ps -ejH"
+
+POSITIONAL ARGUMENTS
+     Workstation resource - The group of arguments defining a workstation The
+     arguments in this group can be used to specify the attributes of this
+     resource. (NOTE) Some attributes are not given arguments in this group but
+     can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument workstation on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       WORKSTATION
+          ID of the workstation or fully qualified identifier for the
+          workstation.
+
+          To set the workstation attribute:
+          + provide the argument workstation on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --cluster=CLUSTER
+          The cluster for the workstation.
+
+          To set the cluster attribute:
+          + provide the argument workstation on the command line with a fully
+            specified name;
+          + provide the argument --cluster on the command line;
+          + set the property workstations/cluster.
+
+       --config=CONFIG
+          The config for the workstation.
+
+          To set the config attribute:
+          + provide the argument workstation on the command line with a fully
+            specified name;
+          + provide the argument --config on the command line;
+          + set the property workstations/config.
+
+       --region=REGION
+          The region for the workstation.
+
+          To set the region attribute:
+          + provide the argument workstation on the command line with a fully
+            specified name;
+          + provide the argument --region on the command line;
+          + set the property workstations/region.
+
+     [-- SSH_ARGS ...]
+        Flags and positionals passed to the underlying ssh implementation.
+
+        The '--' argument must be specified between gcloud specific args on the
+        left and SSH_ARGS on the right.
+
+FLAGS
+     --command=COMMAND
+        A command to run on the workstation.
+
+        Runs the command on the target workstation and then exits.
+
+     --endpoint-mode=ENDPOINT_MODE
+        Specifies endpoint mode for a given command. Regional endpoints provide
+        enhanced data residency and reliability by ensuring your request is
+        handled entirely within the specified Google Cloud region. This differs
+        from global endpoints, which may process parts of the request outside
+        the target region. Overrides the default regional/endpoint_mode
+        property value for this command invocation. ENDPOINT_MODE must be one
+        of:
+
+         global
+            (Default) Use global rather than regional endpoints.
+         regional
+            Only use regional endpoints. An error will be raised if a regional
+            endpoint is not available for a given command.
+         regional-preferred
+            Use regional endpoints when available, otherwise use global
+            endpoints. Recommended for most users.
+
+     --local-host-port=LOCAL_HOST_PORT; default="localhost:0"
+        LOCAL_HOST:LOCAL_PORT on which gcloud should bind and listen for
+        connections that should be tunneled.
+
+        LOCAL_PORT may be omitted, in which case it is treated as 0 and an
+        arbitrary unused local port is chosen. The colon also may be omitted in
+        that case.
+
+        If LOCAL_PORT is 0, an arbitrary unused local port is chosen.
+
+     --port=PORT; default=22
+        The port on the workstation to which traffic should be sent.
+
+     --ssh-flag=SSH_FLAG
+        Additional flags to be passed to ssh(1). It is recommended that flags
+        be passed using an assignment operator and quotes. Example:
+
+            $ gcloud workstations ssh --ssh-flag="-vvv" \
+                --ssh-flag="-L 80:localhost:80"
+
+     --start-workstation
+        If set, automatically starts the workstation if it is currently
+        stopped.
+
+     --user=USER; default="user"
+        The username with which to SSH.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+REGIONAL ENDPOINTS
+    This command supports regional endpoints. To use regional endpoints for
+    this command, use the --endpoint-mode=regional-preferred flag. To use
+    regional endpoints by default, run $ gcloud config set
+    regional/endpoint_mode regional-preferred.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha workstations ssh
+
+        $ gcloud beta workstations ssh
+```
+
+### gcloud beta workstations ssh
+
+```text
+NAME
+    gcloud beta workstations ssh - SSH into a running workstation
+
+SYNOPSIS
+    gcloud beta workstations ssh
+        (WORKSTATION : --cluster=CLUSTER --config=CONFIG --region=REGION)
+        [--command=COMMAND] [--endpoint-mode=ENDPOINT_MODE]
+        [--local-host-port=LOCAL_HOST_PORT; default="localhost:0"]
+        [--port=PORT; default=22] [--ssh-flag=SSH_FLAG] [--start-workstation]
+        [--user=USER; default="user"] [GCLOUD_WIDE_FLAG ...] [-- SSH_ARGS ...]
+```
+
+### gcloud alpha workstations ssh
+
+```text
+NAME
+    gcloud alpha workstations ssh - SSH into a running workstation
+
+SYNOPSIS
+    gcloud alpha workstations ssh
+        (WORKSTATION : --cluster=CLUSTER --config=CONFIG --region=REGION)
+        [--command=COMMAND] [--endpoint-mode=ENDPOINT_MODE]
+        [--local-host-port=LOCAL_HOST_PORT; default="localhost:0"]
+        [--port=PORT; default=22] [--ssh-flag=SSH_FLAG] [--start-workstation]
+        [--user=USER; default="user"] [GCLOUD_WIDE_FLAG ...] [-- SSH_ARGS ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/workstations/ssh (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
