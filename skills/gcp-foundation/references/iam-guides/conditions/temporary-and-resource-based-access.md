@@ -152,11 +152,14 @@ resource.name.startsWith('projects/PROJECT_ID/zones/ZONE_1_ID/instances/devAcces
 
 ### Extract values from resource names
 
-Cloud Storage objects from the last 30 days (object name looks like `projects/_/buckets/acme-orders-aaa/objects/data_lake/orders/order_date=2019-11-03/aef87g87ae0876`):
+Cloud Storage objects whose name carries an `order_date` within the last 30 days (object name looks like `projects/_/buckets/acme-orders-aaa/objects/data_lake/orders/order_date=2019-11-03/aef87g87ae0876`). The condition checks the date embedded in the object name, not the object's creation time.
+
+Adapted (not in the official docs): an upper bound (`<= request.time`) is added so that names with a future `order_date` (for example `order_date=2099-01-01`) do not match; the official example checks only the lower bound.
 
 ```text
 resource.type == 'storage.googleapis.com/Object' &&
-  request.time - duration('2592000s') < date(resource.name.extract('/order_date={date_str}/'))
+  request.time - duration('2592000s') < date(resource.name.extract('/order_date={date_str}/')) &&
+  date(resource.name.extract('/order_date={date_str}/')) <= request.time
 ```
 
 Compute Engine VMs named `dev-*` in any location, plus all other resource types:
@@ -198,6 +201,7 @@ Check both disks and instances (other types not granted):
 
 ## Notes
 
+- Adapted from the official docs: the "last 30 days" `extract()` example adds an upper bound (`date(...) <= request.time`); the official condition has only the lower bound, so object names with a future date would also match. The date comes from the object name, not from the object's creation time.
 - Adapted from the official docs: the official expiry `2020-07-01T00:00:00.000Z` is already in the past, so the expiry examples use `EXPIRY_DATE` / `EXPIRY_TIMESTAMP` placeholders (future RFC 3339 time).
 - Conditional bindings do not override unconditional ones; conditions are not allowed with legacy basic roles (Owner, Editor, Viewer) or `allUsers` / `allAuthenticatedUsers`.
 - The console (condition builder) offers **Expiring Access** with operator **by**; use the Condition editor for expressions; `extract()` is available only in the editor, not the builder. **Run Linter** validates CEL.
