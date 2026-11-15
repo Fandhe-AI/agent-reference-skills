@@ -64,6 +64,15 @@ NOTES
         $ gcloud beta iam policies create
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud iam policies create my-deny-policy \
+    --attachment-point=cloudresourcemanager.googleapis.com/projects/123 \
+    --kind=denypolicies \
+    --policy-file=policy.json
+```
+
 ### gcloud iam policies delete
 
 ```text
@@ -123,6 +132,15 @@ NOTES
         $ gcloud beta iam policies delete
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud iam policies delete my-deny-policy \
+    --attachment-point=cloudresourcemanager.googleapis.com/projects/123 \
+    --kind=denypolicies \
+    --etag=abc
+```
+
 ### gcloud iam policies get
 
 ```text
@@ -172,6 +190,14 @@ NOTES
         $ gcloud alpha iam policies get
 
         $ gcloud beta iam policies get
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud iam policies get my-deny-policy \
+    --attachment-point=cloudresourcemanager.googleapis.com/projects/123 \
+    --kind=denypolicies
 ```
 
 ### gcloud iam policies list
@@ -251,6 +277,14 @@ NOTES
         $ gcloud beta iam policies list
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud iam policies list \
+    --attachment-point=cloudresourcemanager.googleapis.com/projects/123 \
+    --kind=denypolicies
+```
+
 ### gcloud iam policies update
 
 ```text
@@ -314,6 +348,16 @@ NOTES
         $ gcloud alpha iam policies update
 
         $ gcloud beta iam policies update
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud iam policies update my-deny-policy \
+    --attachment-point=cloudresourcemanager.googleapis.com/projects/123 \
+    --kind=denypolicies \
+    --policy-file=policy.json \
+    --etag=abc
 ```
 
 ### gcloud beta iam policies create
@@ -462,6 +506,7 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

@@ -134,6 +134,20 @@ NOTES
         $ gcloud alpha iam oauth-clients create
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud iam oauth-clients create my-oauth-client \
+    --location="global" \
+    --client-type="confidential-client" \
+    --display-name="My oauth client" \
+    --description="My oauth client description" \
+    --disabled \
+    --allowed-grant-types="authorization-code-grant,refresh-token-grant" \
+    --allowed-scopes="https://www.googleapis.com/auth/cloud-platform,openid" \
+    --allowed-redirect-uris="https://example.com"
+```
+
 ### gcloud iam oauth-clients credentials create
 
 ```text
@@ -997,6 +1011,19 @@ NOTES
         $ gcloud alpha iam oauth-clients update
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud iam oauth-clients update my-oauth-client \
+    --location="global" \
+    --display-name="My oauth client" \
+    --description="My oauth client description" \
+    --disabled \
+    --allowed-grant-types="authorization-code-grant,refresh-token-grant" \
+    --allowed-scopes="https://www.googleapis.com/auth/cloud-platform,openid" \
+    --allowed-redirect-uris="http://localhost/"
+```
+
 ### gcloud alpha iam oauth-clients create
 
 ```text
@@ -1139,6 +1166,7 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
