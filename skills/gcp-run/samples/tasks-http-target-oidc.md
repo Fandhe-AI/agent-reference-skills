@@ -36,9 +36,11 @@ gcloud run services add-iam-policy-binding SERVICE \
 
 The code that creates tasks needs permission to enqueue (Cloud Tasks Enqueuer) and `iam.serviceAccounts.actAs` (for example Service Account User) on `SERVICE_ACCOUNT_NAME`, the account named in the OIDC token.
 
-```python
-from typing import Optional
+Pass `url` as the Cloud Run service URL plus the handler path, and `audience` as the service URL without a path (or a configured custom audience). If `audience` is omitted, Cloud Tasks uses the full task URL, and Cloud Run rejects the token when that URL has a path.
 
+Adapted (not in the official docs): `audience` is a required argument instead of `Optional[str] = None`, and the unused `Optional` import is removed, so the token audience is always the Cloud Run service URL.
+
+```python
 from google.cloud import tasks_v2
 
 
@@ -49,7 +51,7 @@ def create_http_task_with_token(
     url: str,
     payload: bytes,
     service_account_email: str,
-    audience: Optional[str] = None,
+    audience: str,
 ) -> tasks_v2.Task:
     """Create an HTTP POST task with an OIDC token and an arbitrary payload.
     Args:
@@ -97,6 +99,8 @@ google-cloud-tasks==2.18.0
 
 ### 3b. Or enqueue with Node.js
 
+Adapted (not in the official docs): added `audience` (the Cloud Run service URL, no path) to `oidcToken` and a Cloud Run URL with a handler path as the example `url`; the source's `oidcToken` has only `serviceAccountEmail`.
+
 ```javascript
 // Imports the Google Cloud Tasks library.
 const {CloudTasksClient} = require('@google-cloud/tasks');
@@ -109,7 +113,8 @@ async function createHttpTaskWithToken() {
   // const project = 'my-project-id';
   // const queue = 'my-queue';
   // const location = 'us-central1';
-  // const url = 'https://example.com/taskhandler';
+  // const url = 'https://my-cloud-run-service.run.app/taskhandler';
+  // const audience = 'https://my-cloud-run-service.run.app/';
   // const serviceAccountEmail = 'client@<project-id>.iam.gserviceaccount.com';
   // const payload = 'Hello, World!';
 
@@ -125,6 +130,7 @@ async function createHttpTaskWithToken() {
       url,
       oidcToken: {
         serviceAccountEmail,
+        audience,
       },
     },
   };
@@ -158,6 +164,7 @@ gcloud tasks queues describe QUEUE_ID \
 | Handler timeout | Default 10 minutes, maximum 30 minutes; use Cloud Run jobs for longer work |
 | Payload requests | Tasks with a payload must use `POST` or `PUT` |
 | Service account | Must be in the same project as the queue; the Cloud Tasks service agent needs `roles/iam.serviceAccountUser` on it |
+| OIDC `audience` | The Cloud Run service URL (no path) or a configured custom audience; if omitted, Cloud Tasks uses the task's target URL |
 | Queue defaults | `maxDispatchesPerSecond` 500, `maxBurstSize` 100, `maxConcurrentDispatches` 1000, `maxAttempts` 100, `minBackoff` 0.100s, `maxBackoff` 3600s, `maxDoublings` 16 |
 
 ## Notes
@@ -170,6 +177,9 @@ gcloud tasks queues describe QUEUE_ID \
 - A new queue can take a few minutes to become available. Tasks created with a name are deduplicated at some latency cost.
 - Cloud Run / Cloud Run functions are Google Cloud's serverless containers/functions, distinct from Cloudflare Workers (`cloudflare-workers`), Vercel Functions (`vercel`), and HTTP frameworks (`hono`, `fastify`) that only run inside the container. Client libraries in general: the `gcp-client-libraries` skill (planned).
 - The `gcloud run` commands that omit `--region` follow the source; pass `--region=REGION` or set the `run/region` property (for example `gcloud config set run/region REGION`), otherwise gcloud prompts for a region or, in non-interactive runs, fails.
+- Corrected from the official docs: the Python sample declares `audience: Optional[str] = None` (with `from typing import Optional`), so the audience can be omitted. When `audience` is omitted, "the URI specified in target will be used" (Cloud Tasks v2 `OidcToken.audience`, https://docs.cloud.google.com/tasks/docs/reference/rest/v2/OidcToken), but Cloud Run requires the `aud` claim to be "the URL of the receiving service or a configured custom audience" (https://docs.cloud.google.com/run/docs/authenticating/service-to-service), so a token whose audience is a URL with a handler path is rejected. `audience` is now a required argument, passed separately from the request `url`.
+- Corrected from the official docs: the Node.js sample sends `oidcToken: {serviceAccountEmail}` (no `audience`) with `url` `'https://example.com/taskhandler'`, so the token audience defaults to the full task URL including `/taskhandler`. `oidcToken` now also carries `audience` (the service URL), and the example values are `https://my-cloud-run-service.run.app/taskhandler` / `https://my-cloud-run-service.run.app/`; that URL form is taken from the service-to-service page.
+- Source: https://docs.cloud.google.com/run/docs/authenticating/service-to-service (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/run/docs/triggering/using-tasks (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/tasks/docs/creating-queues (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/tasks/docs/creating-http-target-tasks (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)

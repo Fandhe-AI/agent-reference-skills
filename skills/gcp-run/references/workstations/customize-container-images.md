@@ -20,14 +20,23 @@ RUN sudo apt-get update && sudo apt-get install -y emacs
 
 ### User customization script
 
-Create `011_customize-user.sh` (runs after `010_add-user.sh`); replace `$GROUP` and `$USERNAME`:
+Create `011_customize-user.sh` (runs after `010_add-user.sh`); set `GROUP` to the new group name and `USERNAME` to the user's username (the upper-case placeholder values fail the name check until you replace them):
+
+Adapted (not in the official docs): the source's replace-me `$GROUP` / `$USERNAME` become variables set at the top, validated, quoted and passed after `--`, because the script runs as root.
 
 ```bash
 #!/bin/bash
+GROUP="NEW_GROUP_NAME"
+USERNAME="USER_NAME"
+for name in "${GROUP}" "${USERNAME}"; do
+  case "${name}" in
+    ''|-*|*[!a-z0-9_-]*) echo "invalid group or user name: ${name}" >&2; exit 1 ;;
+  esac
+done
 # Create new group
-groupadd $GROUP
+groupadd -- "${GROUP}"
 # Add the user to a new group
-usermod -a -G $GROUP $USERNAME
+usermod -a -G "${GROUP}" -- "${USERNAME}"
 ```
 
 ```dockerfile
@@ -149,6 +158,7 @@ docker push TARGET_IMAGE
 - Extend three ways: add static assets in the Dockerfile; add executables under `/etc/workstation-startup.d/`; override `ENTRYPOINT`. All user modifications must happen at runtime, not in the Dockerfile, because `/home` is mounted at startup. The base-image structure (startup scripts, `/home` caveats, APT keys, sudo, `customize_environment`, keep-alive) is in [preconfigured-base-images.md](./preconfigured-base-images.md).
 - Host custom images in Artifact Registry (recommended and supported); other repositories (for example GitHub) may not work as expected. A private image requires a service account with pull permission in the workstation configuration.
 - `docker run --privileged` is for local testing only; do not use it on shared hosts.
+- Corrected from the official docs: the user customization script `groupadd $GROUP` / `usermod -a -G $GROUP $USERNAME` uses unquoted placeholders in a script that runs as root, so an empty, space-containing or `-`-prefixed value is split or parsed as an option. The rewrite sets `GROUP` / `USERNAME` explicitly, rejects empty values, values starting with `-` and characters outside `a-z0-9_-` (a conservative lower-case rule; widen the pattern if your names need other characters), quotes every expansion and ends options with `--` before the name operands.
 - Adapted from the official docs: the emacs Dockerfile's two layers `RUN sudo apt update` / `RUN sudo apt install -y emacs` are written as one `RUN sudo apt-get update && sudo apt-get install -y emacs`.
 - Adapted from the official docs: the color-theme script `cat <<< $(jq '. += {"workbench.colorTheme": "Default Dark Modern"}' settings.json) > settings.json` empties `settings.json` when jq fails (missing file, or JSONC comments); it is rewritten to write a temp file and `mv` it on success. The command still uses the source's relative `settings.json`, and startup scripts run as root by default (the source says to use `runuser` to run as another user), so the script must change to `$HOME/.codeoss-cloudworkstations/data/Machine/` of the workstation user before running it; the source's Dockerfile for this script is not shown, so add a shebang and `chmod +x` as in the other startup-script examples.
 - The X11 forwarding Dockerfile uses a heredoc in `RUN` (`RUN cat >> /etc/ssh/sshd_config <<-EOF`), which needs a builder that supports Dockerfile heredocs (BuildKit); the legacy builder parses the following lines as instructions. See the `docker` skill.
