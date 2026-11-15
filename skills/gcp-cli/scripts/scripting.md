@@ -85,7 +85,7 @@ while IFS= read -r scopesInfo; do
   echo "NAME: ${NAME}, ID: ${ID}, EMAIL: ${EMAIL}"
   echo ""
   IFS=';' read -r -a scopeListArray <<< "${SCOPES_LIST}"
-  for SCOPE in "${scopeListArray[@]}"; do
+  for SCOPE in ${scopeListArray[@]+"${scopeListArray[@]}"}; do
     echo "  SCOPE: ${SCOPE}"
   done
 done <<< "${scopes_info}"
