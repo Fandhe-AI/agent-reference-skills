@@ -28,12 +28,12 @@ skills/gcp-foundation/
       README.md
       <api>/
         README.md
-        <api>.md
+        <api>[-<N>].md            # 大きい API は分割（例: rest/iam/iam-1.md・iam-2.md）
     rest-schemas/                 # 機械生成: Discovery 由来のメッセージスキーマ、取得 2026-11-14
       README.md
       <api>/
         README.md
-        <api>.md
+        <api>[-<N>].md            # 大きい API は分割（例: rest/iam/iam-1.md・iam-2.md）
     iam/                          # 機械生成: IAM roles-permissions reference、取得 2026-11-14
       README.md
       <service>[-<N>].md          # 大きいサービスは分割: 例 orgpolicy.md / billing.md / iam-1.md〜iam-4.md / resourcemanager-1.md〜
@@ -128,7 +128,7 @@ skills/gcp-foundation/
 1. gcloud コマンド → 下記マッピング表で `gcloud` を選び、`references/gcloud/<group>/README.md` からページ（GA は全文）を引く
 2. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`
 3. IAM ロール・権限 → `references/iam/<service>.md`（大きいサービスは `<service>-<N>.md` に分割。README の索引で担当ページを確認する。ロール ID・権限名のサービス接頭辞で引く。例: `roles/orgpolicy.*` → `orgpolicy.md`）
-4. 概念・手順 → 各ガイド（`iam-guides` / `resource-hierarchy` / `billing` / `asset-support` / `auth-mcp`）の README.md から個別ページを特定して Read する
+4. 概念・手順 → 各ガイド（`iam-guides` / `resource-hierarchy` / `billing` / `asset-support` / `auth-mcp`）配下のカテゴリ（サブディレクトリ）を下記マッピング表で選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無い）
 5. 作業例 → `samples/README.md`、コマンド集 → `scripts/README.md`
 
 ## タスク → カテゴリ マッピング
