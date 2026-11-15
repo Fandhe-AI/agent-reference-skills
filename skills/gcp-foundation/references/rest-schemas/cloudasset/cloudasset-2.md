@@ -1,5 +1,5 @@
 ---
-source: https://cloudasset.googleapis.com/$discovery/rest?version=v1
+source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1
 ---
 
 # Cloud Asset API message schemas (cloudasset) (part 2/2)
@@ -7,6 +7,101 @@ source: https://cloudasset.googleapis.com/$discovery/rest?version=v1
 ## Signature / Usage
 
 Message types referenced by the methods listed under `references/rest/cloudasset/`.
+
+### `StandardResourceMetadata`
+
+- The standard metadata of a cloud resource.
+- Version: v1p1beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `additionalAttributes` | array<string> | Additional searchable attributes of this resource. Informational only. The exact set of attributes is subject to change. For example: project id, DNS name etc. |
+| `assetType` | string | The type of this resource. For example: "compute.googleapis.com/Disk". |
+| `description` | string | One or more paragraphs of text description of this resource. Maximum length could be up to 1M bytes. |
+| `displayName` | string | The display name of this resource. |
+| `labels` | object | Labels associated with this resource. See Labelling and grouping Google Cloud resources (https://cloud.google.com/blog/products/gcp/labelling-and-grouping-your-google-cloud-platform-resources) for more information. |
+| `location` | string | Location can be "global", regional like "us-east1", or zonal like "us-west1-b". |
+| `name` | string | The full resource name. For example: `//compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1`. See Resource Names (https://cloud.google.com/apis/design/resource_names#full_resource_name) for more information. |
+| `networkTags` | array<string> | Network tags associated with this resource. Like labels, network tags are a type of annotations used to group Google Cloud resources. See \[Labelling Google Cloud resources\](lhttps://cloud.google.com/blog/products/gcp/labelling-and-grouping-your-google-cloud-platform-resources) for more information. |
+| `project` | string | The project that this resource belongs to, in the form of `projects/{project_number}`. |
+
+### `Status`
+
+- The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by gRPC (https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the API Design Guide (https://cloud.google.com/apis/design/errors).
+- Version: v1p7beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `code` | integer (int32) | The status code, which should be an enum value of google.rpc.Code. |
+| `details` | array<object> | A list of messages that carry the error details. There is a common set of message types for APIs to use. |
+| `message` | string | A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client. |
+
+### `TableFieldSchema`
+
+- A field in TableSchema.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `field` | string | The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (\_), and must start with a letter or underscore. The maximum length is 128 characters. |
+| `fields` | array<TableFieldSchema> | Describes the nested schema fields if the type property is set to RECORD. |
+| `mode` | string | The field mode. Possible values include NULLABLE, REQUIRED and REPEATED. The default value is NULLABLE. |
+| `type` | string | The field data type. Possible values include \* STRING \* BYTES \* INTEGER \* FLOAT \* BOOLEAN \* TIMESTAMP \* DATE \* TIME \* DATETIME \* GEOGRAPHY, \* NUMERIC, \* BIGNUMERIC, \* RECORD (where RECORD indicates that the field contains a nested schema). |
+
+### `TableSchema`
+
+- BigQuery Compatible table schema.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `fields` | array<TableFieldSchema> | Describes the fields in a table. |
+
+### `Tag`
+
+- The key and value for a tag (https://cloud.google.com/resource-manager/docs/tags/tags-overview).
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `tagKey` | string | TagKey namespaced name, in the format of {ORG_ID}/{TAG_KEY_SHORT_NAME}. |
+| `tagKeyId` | string | TagKey ID, in the format of tagKeys/{TAG_KEY_ID}. |
+| `tagValue` | string | TagValue namespaced name, in the format of {ORG_ID}/{TAG_KEY_SHORT_NAME}/{TAG_VALUE_SHORT_NAME}. |
+| `tagValueId` | string | TagValue ID, in the format of tagValues/{TAG_VALUE_ID}. |
+
+### `TemporalAsset`
+
+- An asset in Google Cloud and its temporal metadata, including the time window when it was observed and its status during that window.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `asset` | Asset | An asset in Google Cloud. |
+| `deleted` | boolean | Whether the asset has been deleted or not. |
+| `priorAsset` | Asset | Prior copy of the asset. Populated if prior_asset_state is PRESENT. Currently this is only set for responses in Real-Time Feed. |
+| `priorAssetState` | string enum | State of prior_asset. |
+| `window` | TimeWindow | The time window when the asset data and state was observed. |
+
+### `TemporalAsset` (v1beta1)
+
+- An asset in Google Cloud and its temporal metadata, including the time window when it was observed and its status during that window.
+- Version: v1beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `asset` | Asset | An asset in Google Cloud. |
+| `deleted` | boolean | Whether the asset has been deleted or not. |
+| `window` | TimeWindow | The time window when the asset data and state was observed. |
+
+### `TimeWindow`
+
+- A time window specified by its `start_time` and `end_time`.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `endTime` | string (google-datetime) | End time of the time window (inclusive). If not specified, the current timestamp is used instead. |
+| `startTime` | string (google-datetime) | Start time of the time window (exclusive). |
 
 ### `UpdateFeedRequest`
 
@@ -104,21 +199,28 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `severity` | string | The severity specified for this patch |
 | `summary` | string | Any summary information provided about this patch. |
 
-### Shape of `UpdateFeedRequest`
+### Shape of `StandardResourceMetadata`
 
 Generated from the Discovery schema (not in the official docs); values show each field type:
 
 ```json
 {
-  "feed": "Feed",
-  "updateMask": "string (google-fieldmask)"
+  "additionalAttributes": "array<string>",
+  "assetType": "string",
+  "description": "string",
+  "displayName": "string",
+  "labels": "object",
+  "location": "string",
+  "name": "string",
+  "networkTags": "array<string>",
+  "project": "string"
 }
 ```
 
 ## Notes
 
-- Generated from the Discovery document(s) v1 of `cloudasset` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
-- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1p7beta1, v1p1beta1, v1, v1beta1 of `cloudasset` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1, https://cloudasset.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
 

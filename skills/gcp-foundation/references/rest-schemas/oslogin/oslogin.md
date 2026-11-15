@@ -78,6 +78,18 @@ Message types referenced by the methods listed under `references/rest/oslogin/`.
 | `posixAccounts` | array<PosixAccount> | The list of POSIX accounts associated with the user. |
 | `sshPublicKeys` | object | A map from SSH public key fingerprint to the associated key object. |
 
+### `LoginProfile` (v1beta)
+
+- The user profile information used for logging in to a virtual machine on Google Compute Engine.
+- Version: v1beta
+
+| Field | Type | Description |
+|---|---|---|
+| `name` | string | Required. A unique user ID. |
+| `posixAccounts` | array<PosixAccount> | The list of POSIX accounts associated with the user. |
+| `securityKeys` | array<SecurityKey> | The registered security key credentials for a user. |
+| `sshPublicKeys` | object | A map from SSH public key fingerprint to the associated key object. |
+
 ### `PosixAccount`
 
 - The POSIX account information associated with a Google account.
@@ -130,6 +142,15 @@ Message types referenced by the methods listed under `references/rest/oslogin/`.
 | `cloudRunResource` | string | Optional. The Cloud Run resource to sign the SSH public key for. Expected formats: - `projects/{project}/locations/{location}/services/{service}` - `projects/{project}/locations/{location}/workerPools/{worker_pool}` - `projects/{project}/locations/{location}/jobs/{job}` - `projects/{project}/locations/{location}/instances/{instance}` |
 | `computeInstance` | string | The Compute instance to sign the SSH public key for. Expected format: projects/{project}/zones/{zone}/instances/{numeric_instance_id} |
 | `serviceAccount` | string | Optional. The service account for the instance. If the instance in question does not have a service account, this field should be left empty. If the wrong service account is provided, this operation will return a signed certificate that will not be accepted by the VM. |
+| `sshPublicKey` | string | Required. The SSH public key to sign. |
+
+### `SignSshPublicKeyRequest` (v1beta)
+
+-
+- Version: v1beta
+
+| Field | Type | Description |
+|---|---|---|
 | `sshPublicKey` | string | Required. The SSH public key to sign. |
 
 ### `SignSshPublicKeyResponse`
@@ -187,7 +208,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) v1, v1beta, v1alpha of `oslogin` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Generated from the Discovery document(s) v1, v1beta, v1alpha of `oslogin` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
 - Source: https://oslogin.googleapis.com/$discovery/rest?version=v1, https://oslogin.googleapis.com/$discovery/rest?version=v1beta, https://oslogin.googleapis.com/$discovery/rest?version=v1alpha (https://developers.google.com/discovery)
 
 ## Related
