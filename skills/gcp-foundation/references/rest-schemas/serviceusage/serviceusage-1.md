@@ -45,7 +45,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | Field | Type | Description |
 |---|---|---|
 | `analysisResult` | AnalysisResult | Output only. Analysis result of updating a policy. |
-| `analysisType` | string enum | Output only. The type of analysis. |
+| `analysisType` | string enum | Output only. The type of analysis. Values: `ANALYSIS_TYPE_UNSPECIFIED`, `ANALYSIS_TYPE_DEPENDENCY`, `ANALYSIS_TYPE_RESOURCE_USAGE`. |
 | `displayName` | string | Output only. The user friendly display name of the analysis type. E.g. service dependency analysis, service resource usage analysis, etc. |
 | `service` | string | The names of the service that has analysis result of warnings or blockers. Example: `services/storage.googleapis.com`. |
 
@@ -86,7 +86,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `name` | string | The fully qualified name of this interface, including package name followed by the interface's simple name. |
 | `options` | array<Option> | Any metadata attached to the interface. |
 | `sourceContext` | SourceContext | Source context for the protocol buffer service represented by this message. |
-| `syntax` | string enum | The source syntax of the service. |
+| `syntax` | string enum | The source syntax of the service. Values: `SYNTAX_PROTO2`, `SYNTAX_PROTO3`, `SYNTAX_EDITIONS`. |
 | `version` | string | A version string for this interface. If specified, must have the form `major-version.minor-version`, as in `1.10`. If the minor version is omitted, it defaults to zero. If the entire version field is empty, the major version is derived from the package name, as outlined below. If the field is not empty, the version in the package name will be verified to be consistent with what is provided here. The versioning schema uses semantic versioning (http://semver.org) where the major version number indicates a breaking change and the minor version an additive, non-breaking change. Both version numbers are signals to users what to expect from different versions, and should be carefully chosen based on the product plan. The major version is also reflected in the package name of the interface, which must end in `v`, as in `google.feature.v1`. For major versions 0 and 1, the suffix can be omitted. Zero major versions must only be used for experimental, non-GA interfaces. |
 
 ### `Aspect`
@@ -180,7 +180,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `minDeadline` | number (double) | Deprecated, do not use. |
 | `operationDeadline` | number (double) | The number of seconds to wait for the completion of a long running operation. The default is no deadline. |
 | `overridesByRequestProtocol` | object | The map between request protocol and the backend address. |
-| `pathTranslation` | string enum | Path translation specifies how to combine the backend address with the request path in order to produce the appropriate forwarding URL for the request. See PathTranslation for more details. |
+| `pathTranslation` | string enum | Path translation specifies how to combine the backend address with the request path in order to produce the appropriate forwarding URL for the request. See PathTranslation for more details. Values: `PATH_TRANSLATION_UNSPECIFIED`, `CONSTANT_ADDRESS`, `APPEND_PATH_TO_ADDRESS`. |
 | `protocol` | string | The protocol used for sending a request to the backend. The supported values are "http/1.1" and "h2". The default value is inferred from the scheme in the address field: SCHEME PROTOCOL http:// http/1.1 https:// http/1.1 grpc:// h2 grpcs:// h2 For secure HTTP backends (https://) that support HTTP/2, set this field to "h2" for improved performance. Configuring this field to non-default values is only supported for secure HTTP backends. This field will be ignored for all other backends. See https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#alpn-protocol-ids for more details on the supported values. |
 | `selector` | string | Selects the methods to which this rule applies. Refer to selector for syntax details. |
 
@@ -263,7 +263,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `elementCountThreshold` | integer (int32) | The number of elements of a field collected into a batch which, if exceeded, causes the batch to be sent. |
 | `flowControlByteLimit` | integer (int32) | The maximum size of data allowed by flow control. |
 | `flowControlElementLimit` | integer (int32) | The maximum number of elements allowed by flow control. |
-| `flowControlLimitExceededBehavior` | string enum | The behavior to take when the flow control limit is exceeded. |
+| `flowControlLimitExceededBehavior` | string enum | The behavior to take when the flow control limit is exceeded. Values: `UNSET_BEHAVIOR`, `THROW_EXCEPTION`, `BLOCK`, `IGNORE`. |
 | `requestByteLimit` | integer (int32) | The maximum size of the request that could be accepted by server. |
 | `requestByteThreshold` | string (int64) | The aggregated size of the batched field which, if exceeded, causes the batch to be sent. This size is computed by aggregating the sizes of the request field to be batched, not of the entire request message. |
 
@@ -302,7 +302,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `dotnetSettings` | DotnetSettings | Settings for .NET client libraries. |
 | `goSettings` | GoSettings | Settings for Go client libraries. |
 | `javaSettings` | JavaSettings | Settings for legacy Java features, supported in the Service YAML. |
-| `launchStage` | string enum | Launch stage of this version of the API. |
+| `launchStage` | string enum | Launch stage of this version of the API. Values: `LAUNCH_STAGE_UNSPECIFIED`, `UNIMPLEMENTED`, `PRELAUNCH`, `EARLY_ACCESS`, `ALPHA`, `BETA`, `GA`, `DEPRECATED`. |
 | `nodeSettings` | NodeSettings | Settings for Node client libraries. |
 | `phpSettings` | PhpSettings | Settings for PHP client libraries. |
 | `pythonSettings` | PythonSettings | Settings for Python client libraries. |
@@ -317,7 +317,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 
 | Field | Type | Description |
 |---|---|---|
-| `destinations` | array<string> | The destination where API teams want this client library to be published. |
+| `destinations` | array<string> | The destination where API teams want this client library to be published. Values: `CLIENT_LIBRARY_DESTINATION_UNSPECIFIED`, `GITHUB`, `PACKAGE_MANAGER`. |
 | `referenceDocsUri` | string | Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest |
 | `selectiveGapicGeneration` | SelectiveGapicGeneration | Configuration for which RPCs should be generated in the GAPIC client. Note: This field should not be used in most cases. |
 
@@ -347,7 +347,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `name` | string | The resource name of the quota limit. An example name would be: `projects/123/services/compute.googleapis.com/consumerQuotaMetrics/compute.googleapis.com%2Fcpus/limits/%2Fproject%2Fregion` The resource name is intended to be opaque and should not be parsed for its component strings, since its representation could change in the future. |
 | `quotaBuckets` | array<QuotaBucket> | Summary of the enforced quota buckets, organized by quota dimension, ordered from least specific to most specific (for example, the global default bucket, with no quota dimensions, will always appear first). |
 | `supportedLocations` | array<string> | List of all supported locations. This field is present only if the limit has a {region} or {zone} dimension. |
-| `trafficSource` | string enum | Indicates the traffic type attribution for this quota limit (e.g. agentic). This is an informational field used to categorize and filter the quota limits. |
+| `trafficSource` | string enum | Indicates the traffic type attribution for this quota limit (e.g. agentic). This is an informational field used to categorize and filter the quota limits. Values: `TRAFFIC_SOURCE_UNSPECIFIED`, `TRAFFIC_SOURCE_NONAGENTIC`, `TRAFFIC_SOURCE_AGENTIC`. |
 | `unit` | string | The limit unit. An example unit would be `1/{project}/{region}` Note that `{project}` and `{region}` are not placeholders in this example; the literal characters `{` and `}` occur in the string. |
 
 ### `ConsumerQuotaMetric`
@@ -480,7 +480,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 
 | Field | Type | Description |
 |---|---|---|
-| `checkIfServiceHasUsage` | string enum | Defines the behavior for checking service usage when disabling a service. |
+| `checkIfServiceHasUsage` | string enum | Defines the behavior for checking service usage when disabling a service. Values: `CHECK_IF_SERVICE_HAS_USAGE_UNSPECIFIED`, `SKIP`, `CHECK`. |
 | `disableDependentServices` | boolean | Indicates if services that are enabled and which depend on this service should also be disabled. If not set, an error will be generated if any enabled services depend on the service to be disabled. When set, the service, and any enabled services that depend on it, will be disabled together. |
 
 ### `DisableServiceRequest` (v1beta1)
@@ -603,7 +603,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `name` | string | Enum type name. |
 | `options` | array<Option> | Protocol buffer options. |
 | `sourceContext` | SourceContext | The source context. |
-| `syntax` | string enum | The source syntax. |
+| `syntax` | string enum | The source syntax. Values: `SYNTAX_PROTO2`, `SYNTAX_PROTO3`, `SYNTAX_EDITIONS`. |
 
 ### `EnumValue`
 
@@ -634,10 +634,10 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 
 | Field | Type | Description |
 |---|---|---|
-| `cardinality` | string enum | The field cardinality. |
+| `cardinality` | string enum | The field cardinality. Values: `CARDINALITY_UNKNOWN`, `CARDINALITY_OPTIONAL`, `CARDINALITY_REQUIRED`, `CARDINALITY_REPEATED`. |
 | `defaultValue` | string | The string value of the default value of this field. Proto2 syntax only. |
 | `jsonName` | string | The field JSON name. |
-| `kind` | string enum | The field type. |
+| `kind` | string enum | The field type. Values: `TYPE_UNKNOWN`, `TYPE_DOUBLE`, `TYPE_FLOAT`, `TYPE_INT64`, `TYPE_UINT64`, `TYPE_INT32`, `TYPE_FIXED64`, `TYPE_FIXED32`, `TYPE_BOOL`, `TYPE_STRING`, `TYPE_GROUP`, `TYPE_MESSAGE`, `TYPE_BYTES`, `TYPE_UINT32`, `TYPE_ENUM`, `TYPE_SFIXED32`, `TYPE_SFIXED64`, `TYPE_SINT32`, `TYPE_SINT64`. |
 | `name` | string | The field name. |
 | `number` | integer (int32) | The field number. |
 | `oneofIndex` | integer (int32) | The index of the field type in `Type.oneofs`, for message or enumeration types. The first type has index 1; zero means the type is not in the list. |
@@ -669,7 +669,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | Field | Type | Description |
 |---|---|---|
 | `identity` | ServiceIdentity | Service identity that service producer can use to access consumer resources. If exists is true, it contains email and unique_id. If exists is false, it contains pre-constructed email and empty unique_id. |
-| `state` | string enum | Service identity state. |
+| `state` | string enum | Service identity state. Values: `IDENTITY_STATE_UNSPECIFIED`, `ACTIVE`. |
 
 ### `GoSettings`
 
@@ -737,7 +737,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `config` | GoogleApiServiceusageV1ServiceConfig | The service configuration of the available service. Some fields may be filtered out of the configuration in responses to the `ListServices` method. These fields are present only in responses to the `GetService` method. |
 | `name` | string | The resource name of the consumer and service. A valid name would be: - projects/123/services/serviceusage.googleapis.com |
 | `parent` | string | The resource name of the consumer. A valid name would be: - projects/123 |
-| `state` | string enum | Whether or not the service has been enabled for use by the consumer. |
+| `state` | string enum | Whether or not the service has been enabled for use by the consumer. Values: `STATE_UNSPECIFIED`, `DISABLED`, `ENABLED`. |
 
 ### `GoogleApiServiceusageV1ServiceConfig`
 
@@ -765,7 +765,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | Field | Type | Description |
 |---|---|---|
 | `identity` | GoogleApiServiceusageV1beta1ServiceIdentity | Service identity that service producer can use to access consumer resources. If exists is true, it contains email and unique_id. If exists is false, it contains pre-constructed email and empty unique_id. |
-| `state` | string enum | Service identity state. |
+| `state` | string enum | Service identity state. Values: `IDENTITY_STATE_UNSPECIFIED`, `ACTIVE`. |
 
 ### `GoogleApiServiceusageV1beta1ServiceIdentity`
 
@@ -785,7 +785,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | Field | Type | Description |
 |---|---|---|
 | `analysisResult` | GoogleApiServiceusageV2alphaAnalysisResult | Output only. Analysis result of updating a policy. |
-| `analysisType` | string enum | Output only. The type of analysis. |
+| `analysisType` | string enum | Output only. The type of analysis. Values: `ANALYSIS_TYPE_UNSPECIFIED`, `ANALYSIS_TYPE_DEPENDENCY`, `ANALYSIS_TYPE_RESOURCE_USAGE`, `ANALYSIS_TYPE_RESOURCE_EXISTENCE`. |
 | `displayName` | string | Output only. The user friendly display name of the analysis type. E.g. service dependency analysis, service resource usage analysis, etc. |
 | `service` | string | The names of the service that has analysis result of warnings or blockers. Example: `services/storage.googleapis.com`. |
 
@@ -844,7 +844,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | Field | Type | Description |
 |---|---|---|
 | `detail` | string | Output only. User friendly impact detail in a free form message. |
-| `impactType` | string enum | Output only. The type of impact. |
+| `impactType` | string enum | Output only. The type of impact. Values: `IMPACT_TYPE_UNSPECIFIED`, `DEPENDENCY_MISSING_DEPENDENCIES`, `RESOURCE_EXISTENCE_PROJECT`. |
 | `parent` | string | The parent resource that the analysis is based on and the service name that the analysis is for. Example: `projects/100/services/compute.googleapis.com`, folders/101/services/compute.googleapis.com` and `organizations/102/services/compute.googleapis.com\`. Usually, the parent resource here is same as the parent resource of the analyzed policy. However, for some analysis types, the parent can be different. For example, for resource existence analysis, if the parent resource of the analyzed policy is a folder or an organization, the parent resource here can still be the project that contains the resources. |
 
 ### `GoogleApiServiceusageV2alphaUpdateConsumerPolicyMetadata`
@@ -860,7 +860,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | Field | Type | Description |
 |---|---|---|
 | `analysisResult` | GoogleApiServiceusageV2betaAnalysisResult | Output only. Analysis result of updating a policy. |
-| `analysisType` | string enum | Output only. The type of analysis. |
+| `analysisType` | string enum | Output only. The type of analysis. Values: `ANALYSIS_TYPE_UNSPECIFIED`, `ANALYSIS_TYPE_DEPENDENCY`, `ANALYSIS_TYPE_RESOURCE_USAGE`. |
 | `displayName` | string | Output only. The user friendly display name of the analysis type. E.g. service dependency analysis, service resource usage analysis, etc. |
 | `service` | string | The names of the service that has analysis result of warnings or blockers. Example: `services/storage.googleapis.com`. |
 
@@ -919,7 +919,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | Field | Type | Description |
 |---|---|---|
 | `detail` | string | Output only. User friendly impact detail in a free form message. |
-| `impactType` | string enum | Output only. The type of impact. |
+| `impactType` | string enum | Output only. The type of impact. Values: `IMPACT_TYPE_UNSPECIFIED`, `DEPENDENCY_MISSING_DEPENDENCIES`. |
 | `missingDependency` | string | Output only. This field will be populated only for the `DEPENDENCY_MISSING_DEPENDENCIES` impact type. Example: `services/compute.googleapis.com`. Impact.detail will be in format : `missing service dependency: {missing_dependency}.` |
 
 ### `GoogleApiServiceusageV2betaMcpEnableRule`
@@ -999,7 +999,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | Field | Type | Description |
 |---|---|---|
 | `detail` | string | Output only. User friendly impact detail in a free form message. |
-| `impactType` | string enum | Output only. The type of impact. |
+| `impactType` | string enum | Output only. The type of impact. Values: `IMPACT_TYPE_UNSPECIFIED`, `DEPENDENCY_MISSING_DEPENDENCIES`. |
 | `missingDependency` | string | Output only. This field will be populated only for the `DEPENDENCY_MISSING_DEPENDENCIES` impact type. Example: `services/compute.googleapis.com`. Impact.detail will be in format : `missing service dependency: {missing_dependency}.` |
 
 ### `ImportAdminOverridesMetadata`
@@ -1015,7 +1015,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | Field | Type | Description |
 |---|---|---|
 | `force` | boolean | Whether to force the creation of the quota overrides. Setting the force parameter to 'true' ignores all quota safety checks that would fail the request. QuotaSafetyCheck lists all such validations. If force is set to true, it is recommended to include a case id in "X-Goog-Request-Reason" header when sending the request. |
-| `forceOnly` | array<string> | The list of quota safety checks to ignore before the override mutation. Unlike 'force' field that ignores all the quota safety checks, the 'force_only' field ignores only the specified checks; other checks are still enforced. The 'force' and 'force_only' fields cannot both be set. If force_only is specified, it is recommended to include a case id in "X-Goog-Request-Reason" header when sending the request. |
+| `forceOnly` | array<string> | The list of quota safety checks to ignore before the override mutation. Unlike 'force' field that ignores all the quota safety checks, the 'force_only' field ignores only the specified checks; other checks are still enforced. The 'force' and 'force_only' fields cannot both be set. If force_only is specified, it is recommended to include a case id in "X-Goog-Request-Reason" header when sending the request. Values: `QUOTA_SAFETY_CHECK_UNSPECIFIED`, `LIMIT_DECREASE_BELOW_USAGE`, `LIMIT_DECREASE_PERCENTAGE_TOO_HIGH`. |
 | `inlineSource` | OverrideInlineSource | The import data is specified in the request message itself |
 
 ### `ImportAdminOverridesResponse`
@@ -1054,7 +1054,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | Field | Type | Description |
 |---|---|---|
 | `force` | boolean | Whether to force the creation of the quota overrides. Setting the force parameter to 'true' ignores all quota safety checks that would fail the request. QuotaSafetyCheck lists all such validations. If force is set to true, it is recommended to include a case id in "X-Goog-Request-Reason" header when sending the request. |
-| `forceOnly` | array<string> | The list of quota safety checks to ignore before the override mutation. Unlike 'force' field that ignores all the quota safety checks, the 'force_only' field ignores only the specified checks; other checks are still enforced. The 'force' and 'force_only' fields cannot both be set. If force_only is specified, it is recommended to include a case id in "X-Goog-Request-Reason" header when sending the request. |
+| `forceOnly` | array<string> | The list of quota safety checks to ignore before the override mutation. Unlike 'force' field that ignores all the quota safety checks, the 'force_only' field ignores only the specified checks; other checks are still enforced. The 'force' and 'force_only' fields cannot both be set. If force_only is specified, it is recommended to include a case id in "X-Goog-Request-Reason" header when sending the request. Values: `QUOTA_SAFETY_CHECK_UNSPECIFIED`, `LIMIT_DECREASE_BELOW_USAGE`, `LIMIT_DECREASE_PERCENTAGE_TOO_HIGH`. |
 | `inlineSource` | OverrideInlineSource | The import data is specified in the request message itself |
 
 ### `ImportConsumerOverridesResponse`
@@ -1098,7 +1098,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 |---|---|---|
 | `description` | string | A human-readable description for the label. |
 | `key` | string | The label key. |
-| `valueType` | string enum | The type of data that can be assigned to the label. |
+| `valueType` | string enum | The type of data that can be assigned to the label. Values: `STRING`, `BOOL`, `INT64`. |
 
 ### `ListAdminOverridesResponse`
 
@@ -1219,7 +1219,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `requestTypeUrl` | string | A URL of the input message type. |
 | `responseStreaming` | boolean | If true, the response is streamed. |
 | `responseTypeUrl` | string | The URL of the output message type. |
-| `syntax` | string enum | The source syntax of this method. This field should be ignored, instead the syntax should be inherited from Api. This is similar to Field and EnumValue. |
+| `syntax` | string enum | The source syntax of this method. This field should be ignored, instead the syntax should be inherited from Api. This is similar to Field and EnumValue. Values: `SYNTAX_PROTO2`, `SYNTAX_PROTO3`, `SYNTAX_EDITIONS`. |
 
 ### `MethodPolicy`
 
@@ -1253,14 +1253,14 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `description` | string | A detailed description of the metric, which can be used in documentation. |
 | `displayName` | string | A concise name for the metric, which can be displayed in user interfaces. Use sentence case without an ending period, for example "Request count". This field is optional but it is recommended to be set for any metrics associated with user-visible concepts, such as Quota. |
 | `labels` | array<LabelDescriptor> | The set of labels that can be used to describe a specific instance of this metric type. For example, the `appengine.googleapis.com/http/server/response_latencies` metric type has a label for the HTTP response code, `response_code`, so you can look at latencies for successful responses or just for responses that failed. |
-| `launchStage` | string enum | Optional. The launch stage of the metric definition. |
+| `launchStage` | string enum | Optional. The launch stage of the metric definition. Values: `LAUNCH_STAGE_UNSPECIFIED`, `UNIMPLEMENTED`, `PRELAUNCH`, `EARLY_ACCESS`, `ALPHA`, `BETA`, `GA`, `DEPRECATED`. |
 | `metadata` | MetricDescriptorMetadata | Optional. Metadata which can be used to guide usage of the metric. |
-| `metricKind` | string enum | Whether the metric records instantaneous values, changes to a value, etc. Some combinations of `metric_kind` and `value_type` might not be supported. |
+| `metricKind` | string enum | Whether the metric records instantaneous values, changes to a value, etc. Some combinations of `metric_kind` and `value_type` might not be supported. Values: `METRIC_KIND_UNSPECIFIED`, `GAUGE`, `DELTA`, `CUMULATIVE`. |
 | `monitoredResourceTypes` | array<string> | Read-only. If present, then a time series, which is identified partially by a metric type and a MonitoredResourceDescriptor, that is associated with this metric type can only be associated with one of the monitored resource types listed here. |
 | `name` | string | The resource name of the metric descriptor. |
 | `type` | string | The metric type, including its DNS name prefix. The type is not URL-encoded. All user-defined metric types have the DNS name `custom.googleapis.com` or `external.googleapis.com`. Metric types should use a natural hierarchical grouping. For example: "custom.googleapis.com/invoice/paid/amount" "external.googleapis.com/prometheus/up" "appengine.googleapis.com/http/server/response_latencies" |
 | `unit` | string | The units in which the metric value is reported. It is only applicable if the `value_type` is `INT64`, `DOUBLE`, or `DISTRIBUTION`. The `unit` defines the representation of the stored metric values. Different systems might scale the values to be more easily displayed (so a value of `0.02kBy` \_might\_ be displayed as `20By`, and a value of `3523kBy` \_might\_ be displayed as `3.5MBy`). However, if the `unit` is `kBy`, then the value of the metric is always in thousands of bytes, no matter how it might be displayed. If you want a custom metric to record the exact number of CPU-seconds used by a job, you can create an `INT64 CUMULATIVE` metric whose `unit` is `s{CPU}` (or equivalently `1s{CPU}` or just `s`). If the job uses 12,005 CPU-seconds, then the value is written as `12005`. Alternatively, if you want a custom metric to record data in a more granular way, you can create a `DOUBLE CUMULATIVE` metric whose `unit` is `ks{CPU}`, and then write the value `12.005` (which is `12005/1000`), or use `Kis{CPU}` and write `11.723` (which is `12005/1024`). The supported units are a subset of The Unified Code for Units of Measure (https://unitsofmeasure.org/ucum.html) standard: \*\*Basic units (UNIT)\*\* \* `bit` bit \* `By` byte \* `s` second \* `min` minute \* `h` hour \* `d` day \* `1` dimensionless \*\*Prefixes (PREFIX)\*\* \* `k` kilo (10^3) \* `M` mega (10^6) \* `G` giga (10^9) \* `T` tera (10^12) \* `P` peta (10^15) \* `E` exa (10^18) \* `Z` zetta (10^21) \* `Y` yotta (10^24) \* `m` milli (10^-3) \* `u` micro (10^-6) \* `n` nano (10^-9) \* `p` pico (10^-12) \* `f` femto (10^-15) \* `a` atto (10^-18) \* `z` zepto (10^-21) \* `y` yocto (10^-24) \* `Ki` kibi (2^10) \* `Mi` mebi (2^20) \* `Gi` gibi (2^30) \* `Ti` tebi (2^40) \* `Pi` pebi (2^50) \*\*Grammar\*\* The grammar also includes these connectors: \* `/` division or ratio (as an infix operator). For examples, `kBy/{email}` or `MiBy/10ms` (although you should almost never have `/s` in a metric `unit`; rates should always be computed at query time from the underlying cumulative or delta value). \* `.` multiplication or composition (as an infix operator). For examples, `GBy.d` or `k{watt}.h`. The grammar for a unit is as follows: Expression = Component { "." Component } { "/" Component } ; Component = ( \[ PREFIX \] UNIT \| "%" ) \[ Annotation \] \| Annotation \| "1" ; Annotation = "{" NAME "}" ; Notes: \* `Annotation` is just a comment if it follows a `UNIT`. If the annotation is used alone, then the unit is equivalent to `1`. For examples, `{request}/s == 1/s`, `By{transmitted}/s == By/s`. \* `NAME` is a sequence of non-blank printable ASCII characters not containing `{` or `}`. \* `1` represents a unitary dimensionless unit (https://en.wikipedia.org/wiki/Dimensionless_quantity) of 1, such as in `1/s`. It is typically used when none of the basic units are appropriate. For example, "new users per day" can be represented as `1/d` or `{new-users}/d` (and a metric value `5` would mean "5 new users). Alternatively, "thousands of page views per day" would be represented as `1000/d` or `k1/d` or `k{page_views}/d` (and a metric value of `5.3` would mean "5300 page views per day"). \* `%` represents dimensionless value of 1/100, and annotates values giving a percentage (so the metric values are typically in the range of 0..100, and a metric value `3` means "3 percent"). \* `10^2.%` indicates a metric contains a ratio, typically in the range 0..1, that will be multiplied by 100 and displayed as a percentage (so a metric value `0.03` means "3 percent"). |
-| `valueType` | string enum | Whether the measurement is an integer, a floating-point number, etc. Some combinations of `metric_kind` and `value_type` might not be supported. |
+| `valueType` | string enum | Whether the measurement is an integer, a floating-point number, etc. Some combinations of `metric_kind` and `value_type` might not be supported. Values: `VALUE_TYPE_UNSPECIFIED`, `BOOL`, `INT64`, `DOUBLE`, `STRING`, `DISTRIBUTION`, `MONEY`. |
 
 ### `MetricDescriptorMetadata`
 
@@ -1270,9 +1270,9 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | Field | Type | Description |
 |---|---|---|
 | `ingestDelay` | string (google-duration) | The delay of data points caused by ingestion. Data points older than this age are guaranteed to be ingested and available to be read, excluding data loss due to errors. |
-| `launchStage` | string enum | Deprecated. Must use the MetricDescriptor.launch_stage instead. |
+| `launchStage` | string enum | Deprecated. Must use the MetricDescriptor.launch_stage instead. Values: `LAUNCH_STAGE_UNSPECIFIED`, `UNIMPLEMENTED`, `PRELAUNCH`, `EARLY_ACCESS`, `ALPHA`, `BETA`, `GA`, `DEPRECATED`. |
 | `samplePeriod` | string (google-duration) | The sampling period of metric data points. For metrics which are written periodically, consecutive data points are stored at this time interval, excluding data loss due to errors. Metrics with a higher granularity have a smaller sampling period. |
-| `timeSeriesResourceHierarchyLevel` | array<string> | The scope of the timeseries data of the metric. |
+| `timeSeriesResourceHierarchyLevel` | array<string> | The scope of the timeseries data of the metric. Values: `TIME_SERIES_RESOURCE_HIERARCHY_LEVEL_UNSPECIFIED`, `PROJECT`, `ORGANIZATION`, `FOLDER`. |
 
 ### `MetricRule`
 
@@ -1306,7 +1306,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `description` | string | Optional. A detailed description of the monitored resource type that might be used in documentation. |
 | `displayName` | string | Optional. A concise name for the monitored resource type that might be displayed in user interfaces. It should be a Title Cased Noun Phrase, without any article or other determiners. For example, `"Google Cloud SQL Database"`. |
 | `labels` | array<LabelDescriptor> | Required. A set of labels used to describe instances of this monitored resource type. For example, an individual Google Cloud SQL database is identified by values for the labels `"database_id"` and `"zone"`. |
-| `launchStage` | string enum | Optional. The launch stage of the monitored resource definition. |
+| `launchStage` | string enum | Optional. The launch stage of the monitored resource definition. Values: `LAUNCH_STAGE_UNSPECIFIED`, `UNIMPLEMENTED`, `PRELAUNCH`, `EARLY_ACCESS`, `ALPHA`, `BETA`, `GA`, `DEPRECATED`. |
 | `name` | string | Optional. The resource name of the monitored resource descriptor: `"projects/{project_id}/monitoredResourceDescriptors/{type}"` where {type} is the value of the `type` field in this object and {project_id} is a project ID that provides API-specific context for accessing the type. APIs that do not use project information can use the resource name format `"monitoredResourceDescriptors/{type}"`. |
 | `type` | string | Required. The monitored resource type. For example, the type `"cloudsql_database"` represents databases in Google Cloud SQL. For a list of types, see Monitored resource types (https://cloud.google.com/monitoring/api/resources) and Logging resource types (https://cloud.google.com/logging/docs/api/v2/resource-list). |
 
@@ -1439,7 +1439,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `librarySettings` | array<ClientLibrarySettings> | Client library settings. If the same version string appears multiple times in this list, then the last one wins. Settings from earlier settings with the same version string are discarded. |
 | `methodSettings` | array<MethodSettings> | A list of API method settings, e.g. the behavior for methods that use the long-running operation pattern. |
 | `newIssueUri` | string | Link to a \*public\* URI where users can report issues. Example: https://issuetracker.google.com/issues/new?component=190865&template=1161103 |
-| `organization` | string enum | For whom the client library is being published. |
+| `organization` | string enum | For whom the client library is being published. Values: `CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED`, `CLOUD`, `ADS`, `PHOTOS`, `STREET_VIEW`, `SHOPPING`, `GEO`, `GENERATIVE_AI`, `HEALTH`. |
 | `protoReferenceDocumentationUri` | string | Optional link to proto reference documentation. Example: https://cloud.google.com/pubsub/lite/docs/reference/rpc |
 | `restReferenceDocumentationUri` | string | Optional link to REST reference documentation. Example: https://cloud.google.com/pubsub/lite/docs/reference/rest |
 
@@ -1494,7 +1494,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `maxLimit` | string (int64) | Maximum number of tokens that can be consumed during the specified duration. Client application developers can override the default limit up to this maximum. If specified, this value cannot be set to a value less than the default limit. If not specified, it is set to the default limit. To allow clients to apply overrides with no upper bound, set this to -1, indicating unlimited maximum quota. Used by group-based quotas only. |
 | `metric` | string | The name of the metric this quota limit applies to. The quota limits with the same metric will be checked together during runtime. The metric must be defined within the service config. |
 | `name` | string | Name of the quota limit. The name must be provided, and it must be unique within the service. The name can only include alphanumeric characters as well as '-'. The maximum length of the limit name is 64 characters. |
-| `trafficSource` | string enum | Optional. This is only informational, the logic to allocate the quota to the correct metric (such as in `metric_rules`) should identify which quota metrics to allocate to. |
+| `trafficSource` | string enum | Optional. This is only informational, the logic to allocate the quota to the correct metric (such as in `metric_rules`) should identify which quota metrics to allocate to. Values: `TRAFFIC_SOURCE_UNSPECIFIED`, `TRAFFIC_SOURCE_NONAGENTIC`, `TRAFFIC_SOURCE_AGENTIC`. |
 | `unit` | string | Specify the unit of the quota limit. It uses the same syntax as MetricDescriptor.unit. The supported unit kinds are determined by the quota backend system. Here are some examples: \* "1/min/{project}" for quota per minute per project. Note: the order of unit components is insignificant. The "1" at the beginning is required to follow the metric unit syntax. |
 | `values` | object | Tiered limit values. You must specify this as a key:value pair, with an integer value that is the maximum number of requests allowed for the specified unit. Currently only STANDARD is supported. |
 
@@ -1565,7 +1565,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `config` | ServiceConfig | The service configuration of the available service. Some fields may be filtered out of the configuration in responses to the `ListServices` method. These fields are present only in responses to the `GetService` method. |
 | `name` | string | The resource name of the consumer and service. A valid name would be: - `projects/123/services/serviceusage.googleapis.com` |
 | `parent` | string | The resource name of the consumer. A valid name would be: - `projects/123` |
-| `state` | string enum | Whether or not the service has been enabled for use by the consumer. |
+| `state` | string enum | Whether or not the service has been enabled for use by the consumer. Values: `STATE_UNSPECIFIED`, `DISABLED`, `ENABLED`. |
 
 ### `ServiceConfig`
 

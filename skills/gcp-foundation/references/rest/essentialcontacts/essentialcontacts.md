@@ -19,7 +19,7 @@ Base URL: `https://essentialcontacts.googleapis.com`. Methods are listed by `id`
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `parent` | path | string | yes | Required. The name of the resource to compute contacts for. Format: organizations/{organization}, folders/{folder} or projects/{project} (where {project} is the project number) |
-| `notificationCategories` | query | repeated string enum | no | The categories of notifications to compute contacts for. If ALL is included in this list, contacts subscribed to any notification category will be returned. |
+| `notificationCategories` | query | repeated string enum | no | The categories of notifications to compute contacts for. If ALL is included in this list, contacts subscribed to any notification category will be returned. Values: `NOTIFICATION_CATEGORY_UNSPECIFIED`, `ALL`, `SUSPENSION`, `SECURITY`, `TECHNICAL`, `BILLING`, `LEGAL`, `PRODUCT_UPDATES`, `TECHNICAL_INCIDENTS`. |
 | `pageSize` | query | integer (int32) | no | Optional. The maximum number of results to return from this request. Non-positive values are ignored. The presence of `next_page_token` in the response indicates that more results might be available. If not specified, the default page_size is 100. |
 | `pageToken` | query | string | no | Optional. If present, retrieves the next batch of results from the preceding call to this method. `page_token` must be the value of `next_page_token` from the previous response. The values of other method parameters should be identical to those in the previous call. |
 
@@ -109,7 +109,7 @@ Base URL: `https://essentialcontacts.googleapis.com`. Methods are listed by `id`
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `parent` | path | string | yes | Required. The name of the resource to compute contacts for. Format: organizations/{organization}, folders/{folder} or projects/{project} (where {project} is the project number) |
-| `notificationCategories` | query | repeated string enum | no | The categories of notifications to compute contacts for. If ALL is included in this list, contacts subscribed to any notification category will be returned. |
+| `notificationCategories` | query | repeated string enum | no | The categories of notifications to compute contacts for. If ALL is included in this list, contacts subscribed to any notification category will be returned. Values: `NOTIFICATION_CATEGORY_UNSPECIFIED`, `ALL`, `SUSPENSION`, `SECURITY`, `TECHNICAL`, `BILLING`, `LEGAL`, `PRODUCT_UPDATES`, `TECHNICAL_INCIDENTS`. |
 | `pageSize` | query | integer (int32) | no | Optional. The maximum number of results to return from this request. Non-positive values are ignored. The presence of `next_page_token` in the response indicates that more results might be available. If not specified, the default page_size is 100. |
 | `pageToken` | query | string | no | Optional. If present, retrieves the next batch of results from the preceding call to this method. `page_token` must be the value of `next_page_token` from the previous response. The values of other method parameters should be identical to those in the previous call. |
 
@@ -199,7 +199,7 @@ Base URL: `https://essentialcontacts.googleapis.com`. Methods are listed by `id`
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `parent` | path | string | yes | Required. The name of the resource to compute contacts for. Format: organizations/{organization}, folders/{folder} or projects/{project} (where {project} is the project number) |
-| `notificationCategories` | query | repeated string enum | no | The categories of notifications to compute contacts for. If ALL is included in this list, contacts subscribed to any notification category will be returned. |
+| `notificationCategories` | query | repeated string enum | no | The categories of notifications to compute contacts for. If ALL is included in this list, contacts subscribed to any notification category will be returned. Values: `NOTIFICATION_CATEGORY_UNSPECIFIED`, `ALL`, `SUSPENSION`, `SECURITY`, `TECHNICAL`, `BILLING`, `LEGAL`, `PRODUCT_UPDATES`, `TECHNICAL_INCIDENTS`. |
 | `pageSize` | query | integer (int32) | no | Optional. The maximum number of results to return from this request. Non-positive values are ignored. The presence of `next_page_token` in the response indicates that more results might be available. If not specified, the default page_size is 100. |
 | `pageToken` | query | string | no | Optional. If present, retrieves the next batch of results from the preceding call to this method. `page_token` must be the value of `next_page_token` from the previous response. The values of other method parameters should be identical to those in the previous call. |
 

@@ -1214,9 +1214,9 @@ Base URL: `https://www.googleapis.com/identitytoolkit/v3/relyingparty`. Methods 
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `clientType` | query | string enum | no | reCAPTCHA Enterprise uses separate site keys for different client types. Specify the client type to get the corresponding key. |
+| `clientType` | query | string enum | no | reCAPTCHA Enterprise uses separate site keys for different client types. Specify the client type to get the corresponding key. Values: `CLIENT_TYPE_UNSPECIFIED`, `CLIENT_TYPE_WEB`, `CLIENT_TYPE_ANDROID`, `CLIENT_TYPE_IOS`. |
 | `tenantId` | query | string | no | The id of a tenant. |
-| `version` | query | string enum | no | The reCAPTCHA version. |
+| `version` | query | string enum | no | The reCAPTCHA version. Values: `RECAPTCHA_VERSION_UNSPECIFIED`, `RECAPTCHA_ENTERPRISE`. |
 
 ### Example request skeleton
 

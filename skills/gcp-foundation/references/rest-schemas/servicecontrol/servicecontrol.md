@@ -165,7 +165,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 |---|---|---|
 | `granted` | boolean | Whether or not authorization for `resource` and `permission` was granted. |
 | `permission` | string | The required IAM permission. |
-| `permissionType` | string enum | The type of the permission that was checked. For data access audit logs this corresponds with the permission type that must be enabled in the project/folder/organization IAM policy in order for the log to be written. |
+| `permissionType` | string enum | The type of the permission that was checked. For data access audit logs this corresponds with the permission type that must be enabled in the project/folder/organization IAM policy in order for the log to be written. Values: `PERMISSION_TYPE_UNSPECIFIED`, `ADMIN_READ`, `ADMIN_WRITE`, `DATA_READ`, `DATA_WRITE`. |
 | `privilegedAccessManagerMetadata` | PrivilegedAccessManagerMetadata | Output only. Metadata about the Privileged Access Manager (PAM) backed authorization decisions. This field is populated if the access is granted via an IAM policy with a binding which is managed by Privileged Access Manager. |
 | `resource` | string | The resource being accessed, as a REST-style or cloud resource string. For example: bigquery.googleapis.com/projects/PROJECTID/datasets/DATASETID or projects/PROJECTID/datasets/DATASETID |
 | `resourceAttributes` | Resource | Resource attributes used in IAM condition evaluation. This field contains resource attributes like resource type and resource name. To get the whole view of the attributes used in IAM condition evaluation, the user must also look into `AuditLog.request_metadata.request_attributes`. |
@@ -177,7 +177,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 
 | Field | Type | Description |
 |---|---|---|
-| `authority` | string enum | The type of authority for the caller agent. |
+| `authority` | string enum | The type of authority for the caller agent. Values: `AUTHORITY_TYPE_UNSPECIFIED`, `SELF`, `ON_BEHALF_OF`. |
 | `id` | string | The agent identifier of the caller agent. This is a globally unique, immutable name in Uniform Resource Name (URN) format. Example: 'urn:agent:projects-123456789:projects:123456789:locations:us-central1:aiplatform:reasoningEngines:987654321' |
 
 ### `CheckError`
@@ -187,7 +187,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 
 | Field | Type | Description |
 |---|---|---|
-| `code` | string enum | The error code. |
+| `code` | string enum | The error code. Values: `ERROR_CODE_UNSPECIFIED`, `NOT_FOUND`, `PERMISSION_DENIED`, `RESOURCE_EXHAUSTED`, `BUDGET_EXCEEDED`, `DENIAL_OF_SERVICE_DETECTED`, `LOAD_SHEDDING`, `ABUSER_DETECTED`, `SERVICE_NOT_ACTIVATED`, `VISIBILITY_DENIED`, `BILLING_DISABLED`, `PROJECT_DELETED`, `PROJECT_INVALID`, `CONSUMER_INVALID`, `IP_ADDRESS_BLOCKED`, `REFERER_BLOCKED`, `CLIENT_APP_BLOCKED`, `API_TARGET_BLOCKED`, `API_KEY_INVALID`, `API_KEY_EXPIRED`, `API_KEY_NOT_FOUND`, `SPATULA_HEADER_INVALID`, `LOAS_ROLE_INVALID`, `NO_LOAS_PROJECT`, `LOAS_PROJECT_DISABLED`, `SECURITY_POLICY_VIOLATED`, `INVALID_CREDENTIAL`, `LOCATION_POLICY_VIOLATED`, `NAMESPACE_LOOKUP_UNAVAILABLE`, `SERVICE_STATUS_UNAVAILABLE`, `BILLING_STATUS_UNAVAILABLE`, `QUOTA_CHECK_UNAVAILABLE`, `LOAS_PROJECT_LOOKUP_UNAVAILABLE`, `CLOUD_RESOURCE_MANAGER_BACKEND_UNAVAILABLE`, `SECURITY_POLICY_BACKEND_UNAVAILABLE`, `LOCATION_POLICY_BACKEND_UNAVAILABLE`, `INJECTED_ERROR`. |
 | `detail` | string | Free-form text providing details on the error cause of the error. |
 | `status` | Status | Contains public information about the check error. If available, `status.code` will be non zero and client can propagate it out as public error. |
 | `subject` | string | Subject to whom this error applies. See the specific code enum for more details on this field. For example: - "project:" - "folder:" - "organization:" |
@@ -262,7 +262,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 |---|---|---|
 | `consumerNumber` | string (int64) | The consumer identity number, can be Google cloud project number, folder number or organization number e.g. 1234567890. A value of 0 indicates no consumer number is found. |
 | `projectNumber` | string (int64) | The Google cloud project number, e.g. 1234567890. A value of 0 indicates no project number is found. NOTE: This field is deprecated after Chemist support flexible consumer id. New code should not depend on this field anymore. |
-| `type` | string enum | The type of the consumer which should have been defined in Google Resource Manager (https://cloud.google.com/resource-manager/). |
+| `type` | string enum | The type of the consumer which should have been defined in Google Resource Manager (https://cloud.google.com/resource-manager/). Values: `CONSUMER_TYPE_UNSPECIFIED`, `PROJECT`, `FOLDER`, `ORGANIZATION`, `SERVICE_SPECIFIC`. |
 
 ### `Distribution`
 
@@ -370,7 +370,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `name` | string | Required. The log to which this log entry belongs. Examples: `"syslog"`, `"book_log"`. |
 | `operation` | LogEntryOperation | Optional. Information about an operation associated with the log entry, if applicable. |
 | `protoPayload` | object | The log entry payload, represented as a protocol buffer that is expressed as a JSON object. The only accepted type currently is AuditLog. |
-| `severity` | string enum | The severity of the log entry. The default value is `LogSeverity.DEFAULT`. |
+| `severity` | string enum | The severity of the log entry. The default value is `LogSeverity.DEFAULT`. Values: `DEFAULT`, `DEBUG`, `INFO`, `NOTICE`, `WARNING`, `ERROR`, `CRITICAL`, `ALERT`, `EMERGENCY`. |
 | `sourceLocation` | LogEntrySourceLocation | Optional. Source code location information associated with the log entry, if any. |
 | `structPayload` | object | The log entry payload, represented as a structure that is expressed as a JSON object. |
 | `textPayload` | string | The log entry payload, represented as a Unicode string (UTF-8). |
@@ -465,7 +465,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 |---|---|---|
 | `consumerId` | string | Identity of the consumer who is using the service. This field should be filled in for the operations initiated by a consumer, but not for service-initiated operations that are not related to a specific consumer. - This can be in one of the following formats: - project:PROJECT_ID, - project`_`number:PROJECT_NUMBER, - projects/PROJECT_ID or PROJECT_NUMBER, - folders/FOLDER_NUMBER, - organizations/ORGANIZATION_NUMBER, - api`_`key:API_KEY. |
 | `endTime` | string (google-datetime) | End time of the operation. Required when the operation is used in ServiceController.Report, but optional when the operation is used in ServiceController.Check. |
-| `importance` | string enum | DO NOT USE. This is an experimental field. |
+| `importance` | string enum | DO NOT USE. This is an experimental field. Values: `LOW`, `HIGH`, `DEBUG`, `PROMOTED`. |
 | `labels` | object | Labels describing the operation. Only the following labels are allowed: - Labels describing monitored resources as defined in the service configuration. - Default labels of metric values. When specified, labels defined in the metric value override these default. - The following labels defined by Google Cloud Platform: - `cloud.googleapis.com/location` describing the location where the operation happened, - `servicecontrol.googleapis.com/user_agent` describing the user agent of the API request, - `servicecontrol.googleapis.com/service_agent` describing the service used to handle the API request (e.g. ESP), - `servicecontrol.googleapis.com/platform` describing the platform where the API is served, such as App Engine, Compute Engine, or Kubernetes Engine. |
 | `logEntries` | array<LogEntry> | Represents information to be logged. |
 | `metricValueSets` | array<MetricValueSet> | Represents information about this operation. Each MetricValueSet corresponds to a metric defined in the service configuration. The data type used in the MetricValueSet must agree with the data type specified in the metric definition. Within a single operation, it is not allowed to have more than one MetricValue instances that have the same metric names and identical label value combinations. If a request has such duplicated MetricValue instances, the entire request is rejected with an invalid argument error. |
@@ -527,7 +527,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 
 | Field | Type | Description |
 |---|---|---|
-| `code` | string enum | Error code. |
+| `code` | string enum | Error code. Values: `UNSPECIFIED`, `RESOURCE_EXHAUSTED`, `OUT_OF_RANGE`, `BILLING_NOT_ACTIVE`, `PROJECT_DELETED`, `API_KEY_INVALID`, `API_KEY_EXPIRED`, `SPATULA_HEADER_INVALID`, `LOAS_ROLE_INVALID`, `NO_LOAS_PROJECT`, `PROJECT_STATUS_UNAVAILABLE`, `SERVICE_STATUS_UNAVAILABLE`, `BILLING_STATUS_UNAVAILABLE`, `QUOTA_SYSTEM_UNAVAILABLE`. |
 | `description` | string | Free-form text that provides details on the cause of the error. |
 | `status` | Status | Contains additional information about the quota error. If available, `status.code` will be non zero. |
 | `subject` | string | Subject to whom this error applies. See the specific enum for more details on this field. For example, "clientip:" or "project:". |
@@ -541,7 +541,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 |---|---|---|
 | `limitExceeded` | array<string> | Quota Metrics that have exceeded quota limits. For QuotaGroup-based quota, this is QuotaGroup.name For QuotaLimit-based quota, this is QuotaLimit.name See: google.api.Quota Deprecated: Use quota_metrics to get per quota group limit exceeded status. |
 | `quotaConsumed` | object | Map of quota group name to the actual number of tokens consumed. If the quota check was not successful, then this will not be populated due to no quota consumption. We are not merging this field with 'quota_metrics' field because of the complexity of scaling in Chemist client code base. For simplicity, we will keep this field for Castor (that scales quota usage) and 'quota_metrics' for SuperQuota (that doesn't scale quota usage). |
-| `quotaExtractionState` | string enum | Output only. Indicates the state of the quota extraction. |
+| `quotaExtractionState` | string enum | Output only. Indicates the state of the quota extraction. Values: `QUOTA_EXTRACTION_STATE_UNSPECIFIED`, `QUOTA_EXTRACTION_STATE_DARK_LAUNCH`, `QUOTA_EXTRACTION_STATE_TRAFFIC_MIGRATION`. |
 | `quotaMetrics` | array<MetricValueSet> | Quota metrics to indicate the usage. Depending on the check request, one or more of the following metrics will be included: 1. For rate quota, per quota group or per quota metric incremental usage will be specified using the following delta metric: "serviceruntime.googleapis.com/api/consumer/quota_used_count" 2. For allocation quota, per quota metric total usage will be specified using the following gauge metric: "serviceruntime.googleapis.com/allocation/consumer/quota_used_count" 3. For both rate quota and allocation quota, the quota limit reached condition will be specified using the following boolean metric: "serviceruntime.googleapis.com/quota/exceeded" |
 
 ### `QuotaOperation`
@@ -556,7 +556,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `methodName` | string | Fully qualified name of the API method for which this quota operation is requested. This name is used for matching quota rules or metric rules and billing status rules defined in service configuration. This field should not be set if any of the following is true: (1) the quota operation is performed on non-API resources. (2) quota_metrics is set because the caller is doing quota override. Example of an RPC method name: google.example.library.v1.LibraryService.CreateShelf |
 | `operationId` | string | Identity of the operation. For Allocation Quota, this is expected to be unique within the scope of the service that generated the operation, and guarantees idempotency in case of retries. In order to ensure best performance and latency in the Quota backends, operation_ids are optimally associated with time, so that related operations can be accessed fast in storage. For this reason, the recommended token for services that intend to operate at a high QPS is Unix time in nanos + UUID |
 | `quotaMetrics` | array<MetricValueSet> | Represents information about this operation. Each MetricValueSet corresponds to a metric defined in the service configuration. The data type used in the MetricValueSet must agree with the data type specified in the metric definition. Within a single operation, it is not allowed to have more than one MetricValue instances that have the same metric names and identical label value combinations. If a request has such duplicated MetricValue instances, the entire request is rejected with an invalid argument error. This field is mutually exclusive with method_name. |
-| `quotaMode` | string enum | Quota mode for this operation. |
+| `quotaMode` | string enum | Quota mode for this operation. Values: `UNSPECIFIED`, `NORMAL`, `BEST_EFFORT`, `CHECK_ONLY`, `ADJUST_ONLY`. |
 
 ### `QuotaProperties`
 
@@ -565,7 +565,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 
 | Field | Type | Description |
 |---|---|---|
-| `quotaMode` | string enum | Quota mode for this operation. |
+| `quotaMode` | string enum | Quota mode for this operation. Values: `ACQUIRE`, `ACQUIRE_BEST_EFFORT`, `CHECK`. |
 
 ### `ReportError`
 
@@ -795,7 +795,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `parentSpanId` | string | The \[SPAN_ID\] of this span's parent span. If this is a root span, then this field must be empty. |
 | `sameProcessAsParentSpan` | boolean | (Optional) Set this parameter to indicate whether this span is in the same process as its parent. If you do not set this parameter, Stackdriver Trace is unable to take advantage of this helpful information. |
 | `spanId` | string | The \[SPAN_ID\] portion of the span's resource name. |
-| `spanKind` | string enum | Distinguishes between spans generated in a particular context. For example, two spans with the same name may be distinguished using `CLIENT` (caller) and `SERVER` (callee) to identify an RPC call. |
+| `spanKind` | string enum | Distinguishes between spans generated in a particular context. For example, two spans with the same name may be distinguished using `CLIENT` (caller) and `SERVER` (callee) to identify an RPC call. Values: `SPAN_KIND_UNSPECIFIED`, `INTERNAL`, `SERVER`, `CLIENT`, `PRODUCER`, `CONSUMER`. |
 | `startTime` | string (google-datetime) | The start time of the span. On the client side, this is the time kept by the local machine where the span execution starts. On the server side, this is the time when the server's application handler starts running. |
 | `status` | Status | An optional final status for this span. |
 
@@ -846,7 +846,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `name` | string | Required. The log to which this log entry belongs. Examples: `"syslog"`, `"book_log"`. |
 | `operation` | V1LogEntryOperation | Optional. Information about an operation associated with the log entry, if applicable. |
 | `protoPayload` | object | The log entry payload, represented as a protocol buffer that is expressed as a JSON object. The only accepted type currently is AuditLog. |
-| `severity` | string enum | The severity of the log entry. The default value is `LogSeverity.DEFAULT`. |
+| `severity` | string enum | The severity of the log entry. The default value is `LogSeverity.DEFAULT`. Values: `DEFAULT`, `DEBUG`, `INFO`, `NOTICE`, `WARNING`, `ERROR`, `CRITICAL`, `ALERT`, `EMERGENCY`. |
 | `sourceLocation` | V1LogEntrySourceLocation | Optional. Source code location information associated with the log entry, if any. |
 | `structPayload` | object | The log entry payload, represented as a structure that is expressed as a JSON object. |
 | `textPayload` | string | The log entry payload, represented as a Unicode string (UTF-8). |
@@ -886,10 +886,10 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `contextId` | string (int64) | The ESF unique context id of the api request, from which this resource event originated. This field is only needed for CAIS integration via api annotation. See (internal link) for more details. |
 | `destinations` | string | The destinations field determines which backend services should handle the event. This should be specified as a comma-delimited string. |
 | `parent` | Resource | The parent resource for the resource. |
-| `path` | string enum | The api path the resource event was created in. This should match the source of the `payload` field. For direct integrations with Chemist, this should generally be the RESPONSE. (internal link) |
+| `path` | string enum | The api path the resource event was created in. This should match the source of the `payload` field. For direct integrations with Chemist, this should generally be the RESPONSE. (internal link) Values: `API_PATH_UNSPECIFIED`, `REQUEST`, `RESPONSE`. |
 | `payload` | object | The payload contains metadata associated with the resource event. A ResourceEventPayloadStatus is provided instead if the original payload cannot be returned due to a limitation (e.g. size limit). |
 | `resource` | Resource | The resource associated with the event. |
-| `type` | string enum | The resource event type determines how the backend service should process the event. |
+| `type` | string enum | The resource event type determines how the backend service should process the event. Values: `TYPE_UNSPECIFIED`, `CREATE`, `UPDATE`, `DELETE`, `UNDELETE`. |
 
 ### `V2HttpRequest`
 
@@ -928,7 +928,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `name` | string | Required. The log to which this log entry belongs. Examples: `"syslog"`, `"book_log"`. |
 | `operation` | V2LogEntryOperation | Optional. Information about an operation associated with the log entry, if applicable. |
 | `protoPayload` | object | The log entry payload, represented as a protocol buffer that is expressed as a JSON object. The only accepted type currently is AuditLog. |
-| `severity` | string enum | The severity of the log entry. The default value is `LogSeverity.DEFAULT`. |
+| `severity` | string enum | The severity of the log entry. The default value is `LogSeverity.DEFAULT`. Values: `DEFAULT`, `DEBUG`, `INFO`, `NOTICE`, `WARNING`, `ERROR`, `CRITICAL`, `ALERT`, `EMERGENCY`. |
 | `sourceLocation` | V2LogEntrySourceLocation | Optional. Source code location information associated with the log entry, if any. |
 | `structPayload` | object | The log entry payload, represented as a structure that is expressed as a JSON object. |
 | `textPayload` | string | The log entry payload, represented as a Unicode string (UTF-8). |
@@ -968,10 +968,10 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `contextId` | string (int64) | The ESF unique context id of the api request, from which this resource event originated. This field is only needed for CAIS integration via api annotation. See (internal link) for more details. |
 | `destinations` | string | The destinations field determines which backend services should handle the event. This should be specified as a comma-delimited string. |
 | `parent` | Resource | The parent resource for the resource. |
-| `path` | string enum | The api path the resource event was created in. This should match the source of the `payload` field. For direct integrations with Chemist, this should generally be the RESPONSE. (internal link) |
+| `path` | string enum | The api path the resource event was created in. This should match the source of the `payload` field. For direct integrations with Chemist, this should generally be the RESPONSE. (internal link) Values: `API_PATH_UNSPECIFIED`, `REQUEST`, `RESPONSE`. |
 | `payload` | object | The payload contains metadata associated with the resource event. A ResourceEventPayloadStatus is provided instead if the original payload cannot be returned due to a limitation (e.g. size limit). |
 | `resource` | Resource | The resource associated with the event. |
-| `type` | string enum | The resource event type determines how the backend service should process the event. |
+| `type` | string enum | The resource event type determines how the backend service should process the event. Values: `TYPE_UNSPECIFIED`, `CREATE`, `UPDATE`, `DELETE`, `UNDELETE`. |
 
 ### `ViolationInfo`
 
@@ -984,7 +984,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `constraint` | string | Optional. Constraint name |
 | `constraintViolationInfo` | object | Optional. Provides extra information for the specific violated constraint. See the constraint's documentation to determine if this field is populated and what the structure of the message should be. |
 | `errorMessage` | string | Optional. Error message that policy is indicating. |
-| `policyType` | string enum | Optional. Indicates the type of the policy. |
+| `policyType` | string enum | Optional. Indicates the type of the policy. Values: `POLICY_TYPE_UNSPECIFIED`, `BOOLEAN_CONSTRAINT`, `LIST_CONSTRAINT`, `CUSTOM_CONSTRAINT`. |
 
 ### Shape of `AllocateInfo`
 
