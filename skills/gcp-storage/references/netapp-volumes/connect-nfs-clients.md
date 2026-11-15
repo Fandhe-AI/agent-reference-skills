@@ -14,7 +14,7 @@ Prepare Linux NFS clients, control access with volume export policies (up to 20 
 sudo yum install -y nfs-utils
 ```
 
-Red Hat and SuSE use the command above (as published); Debian and Ubuntu:
+Red Hat uses the command above (SUSE: see Notes); Debian and Ubuntu:
 
 ```bash
 sudo apt-get install nfs-common
@@ -86,6 +86,7 @@ Best-practice export table from the source: rule 1 admin clients 10.10.5.3, 10.1
 - ID mapping: `domain = defaultv4iddomain.com` when LDAP is not enabled, otherwise the FQDN of the Windows domain; Active Directory is the only supported RFC2307bis LDAP server.
 - Also in the source: ONTAP-mode mount path (`IP:junction-path`) and Linux LDAP client guides.
 - Export rules are IP-based; broad `allowed-clients` ranges (for example `0.0.0.0/0`) would allow every client that can reach the network.
+- SUSE: the source's SuSE tab shows the same `sudo yum install -y nfs-utils` command, but SUSE Linux Enterprise uses `zypper`, not `yum`, so that command does not install the NFS client there; install the NFS client package with the distribution's package manager following the SUSE documentation instead.
 - Source: https://docs.cloud.google.com/netapp/volumes/docs/connect-clients/connect-nfs-clients (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -44,7 +44,7 @@ gcloud filestore instances create INSTANCE_ID \
 | On-demand retention | Until manually deleted | Until expired by a backup rule or deleted |
 | Protected against source project deletion | No | Yes |
 | Centralized management across resources and projects | No | Yes |
-| Retention over one year | No | Yes |
+| Long-term (more than one year) backup retention, as listed in the source | No (see Notes) | Yes |
 | Protected against source instance deletion | Yes | Yes |
 | CMEK | Yes | Yes |
 | Cross-region | Yes | Yes |
@@ -60,6 +60,7 @@ Preserved: instance ID, tier, capacity, file share name. Not preserved: descript
 - Enable the 30-day introductory trial of Backup and DR Service to explore enhanced backups. See also backup limitations (https://docs.cloud.google.com/filestore/docs/backups-limitations) and restoring (https://docs.cloud.google.com/filestore/docs/restore-data).
 - Source inconsistency: the service-tiers page's tier table lists "Backups, Snapshots, Replication" as data protection for "Multishares for GKE (Enterprise)", while the backups page says Filestore multishares for GKE are not supported for standard or enhanced backups and the snapshots page says Enterprise snapshots cannot be combined with Filestore multishares. The tier name makes it ambiguous whether the table row means the Enterprise tier or the multishares feature.
 - Snippet taken from https://docs.cloud.google.com/filestore/docs/creating-instances.
+- The source's comparison row "Long-term (more than one year) backup retention" is `No` for standard backups, but standard backups do not expire: they are kept until manually deleted (see the on-demand retention row). The difference is enforcement: enhanced backups apply retention set by backup rules in a backup vault and protect backups from deletion before it ends, while standard backups have no retention enforcement and can be deleted at any time.
 - Source: https://docs.cloud.google.com/filestore/docs/backups (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/filestore/docs/creating-instances (snippet; retrieved 2026-11-15)
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/filestore/instances/create (`--file-share` `source-backup`, `source-backup-region`; retrieved 2026-11-14)

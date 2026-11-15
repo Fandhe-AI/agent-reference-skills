@@ -8,7 +8,7 @@ Mount a NetApp Volumes volume on a Linux Compute Engine VM: open Mount instructi
 
 ## Signature / Usage
 
-Install the NFS client (Red Hat; the SuSE tab shows the same `yum` command):
+Install the NFS client (Red Hat; for SUSE see Notes):
 
 ```bash
 sudo yum install -y nfs-utils
@@ -35,7 +35,7 @@ Snippet taken from https://docs.cloud.google.com/netapp/volumes/docs/connect-cli
 
 - Steps: Volumes, More options icon, Mount instructions, SSH into the instance, install the NFS client, create a directory, run the mount command shown in the console. The source gives no literal `mount` line.
 - Clean up deletes the whole Google Cloud project (all contents, custom project ID lost). Destructive: use a disposable project; delete selected resources instead to preserve URLs that use the project ID.
-- Source inconsistency: the SuSE tab shows `sudo yum install -y nfs-utils` (SUSE normally uses zypper); kept as published.
+- SUSE: the source's SuSE tab shows the same `sudo yum install -y nfs-utils` command, but SUSE Linux Enterprise uses `zypper`, not `yum`, so that command does not install the NFS client there; install the NFS client package with the distribution's package manager following the SUSE documentation instead.
 - Source: https://docs.cloud.google.com/netapp/volumes/docs/get-started/quickstarts/mount-volume (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/netapp/volumes/docs/connect-clients/connect-nfs-clients (borrowed snippet)
 
