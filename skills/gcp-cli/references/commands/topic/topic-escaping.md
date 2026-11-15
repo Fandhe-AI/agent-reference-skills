@@ -99,7 +99,7 @@ Adapted (not in the official docs): runnable form of the example(s) above: lines
 
 ```bash
 gcloud compute instances create example-instance1 \
-    --metadata ^:^key1="value1":key2=value2:key3=value3Index1,value3Index2,valueIndex3:key4=value4
+    --metadata '^:^key1="value1":key2=value2:key3=value3Index1,value3Index2,valueIndex3:key4=value4'
 ```
 
 ### gcloud beta topic escaping
@@ -121,6 +121,7 @@ NAME
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the text says the value of `key1` is `"value1"` including the double quotes, but the shell removes unprotected double quotes; the runnable form single-quotes the whole `--metadata` argument so the quotes reach gcloud.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
