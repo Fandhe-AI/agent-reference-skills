@@ -19,6 +19,26 @@ Google Cloud (GCP) のストレージ・データ移行・バックアップス�
 skills/gcp-storage/
   SKILL.md
   references/
+    gcloud/                          # 機械生成: gcloud 593.0.0、取得 2026-11-14
+      README.md
+      <group>/
+        README.md
+        <group>-<sub>.md             # GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS
+                                     # 例: storage/storage-cp.md / storage/storage-sign-url.md / transfer/transfer-jobs-create.md
+                                     # 大きいものは <group>-<sub>-<N>.md に分割（例: netapp/netapp-storage-pools-1.md）
+    iam/                             # 機械生成: IAM roles-permissions reference、取得 2026-11-14
+      README.md
+      <service>[-<N>].md             # 例: storage.md / storagetransfer.md / file.md / lustre.md / backupdr-1.md・backupdr-2.md
+    rest/                            # 機械生成: Discovery 由来のメソッド表、取得 2026-11-14
+      README.md
+      <api>/
+        README.md
+        <api>.md                     # 例: rest/storage/storage.md
+    rest-schemas/                    # 機械生成: Discovery 由来のメッセージスキーマ、取得 2026-11-14
+      README.md
+      <api>/
+        README.md
+        <api>[-<N>].md               # 例: rest-schemas/backupdr/backupdr-1.md・backupdr-2.md
     cloud-storage-basics/            # 公式ガイド由来（手書き）: 製品概要・クイックスタート・バケット / オブジェクト・ストレージクラス・ロケーション・クォータ・gsutil 移行・XML API・HMAC キー
       README.md
       <page>.md                      # 例: introduction.md / buckets.md / storage-classes.md / locations.md / quotas.md / gsutil-transition-to-gcloud.md / hmackeys.md
@@ -93,25 +113,42 @@ skills/gcp-storage/
     backup-dr.md
 ```
 
-機械生成のカテゴリ（後続 PR で `references/gcloud/` 等に投入）:
+`references/gcloud/` が担当する gcloud グループ（6）: `storage`（バケット・オブジェクト・署名付き URL・Anywhere Cache・Storage Insights・Storage Intelligence・batch operations・マネージドフォルダ・HMAC）/ `transfer`（Storage Transfer Service のジョブ・エージェントプール・Transfer Appliance は alpha のみ）/ `filestore` / `lustre` / `netapp` / `backup-dr`。Parallelstore は gcloud 593.0.0 にコマンドグループが無く REST のみ。
 
-- `references/gcloud/` — gcloud グループ 6 件（`storage` / `transfer` / `filestore` / `lustre` / `netapp` / `backup-dr`）。Parallelstore は gcloud 593.0.0 にコマンドグループが無く REST のみ
-- `references/iam/` — 12 サービスのロール・権限（Cloud Storage / Storage Transfer Service / Storage Insights / Transfer Appliance / Filestore / Managed Lustre / Parallelstore / NetApp Volumes / NetApp Cloud Volumes Service / Dell EMC Cloud OneFS / Backup and DR）
-- `references/rest/` `references/rest-schemas/` — 7 API（`storage` / `storagetransfer` / `storagebatchoperations` / `file` / `netapp` / `parallelstore` / `backupdr`）
+`references/rest/` `references/rest-schemas/` が担当する API（7）: `storage`（Cloud Storage JSON API）/ `storagetransfer` / `storagebatchoperations` / `file`（Filestore）/ `netapp` / `parallelstore` / `backupdr`。Managed Lustre・Storage Insights・Transfer Appliance の REST は収録していない。
 
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
 1. 概念・手順（バケット / オブジェクト、アクセス制御、データ保護、FUSE、Insights、転送、ファイルストレージ、バックアップ）→ 下記マッピング表でカテゴリを選び、その README.md から個別ページを引く
-2. gcloud コマンド・フラグの全文、REST のメソッド・メッセージ型、IAM ロールと権限の一覧（機械生成の `references/gcloud/` `references/rest/` `references/rest-schemas/` `references/iam/`）は後続 PR で投入する。未投入の間は `gcloud help` と公式 reference を確認する
-3. 製品別の既定値・制限は各カテゴリのページ（`quotas.md` / `limits.md` / `service-tiers.md` / `service-levels.md` など）を先に引く
-4. 作業例 → `samples/README.md`、コマンド集 → `scripts/README.md`
+2. gcloud コマンド・フラグ → `references/gcloud/README.md` でグループを選び、`references/gcloud/<group>/README.md` からページを引く。例: 署名付き URL は `gcloud/storage/storage-sign-url.md`、Anywhere Cache は `storage-buckets-anywhere-caches.md`、Storage Insights は `storage-insights-dataset-configs.md` / `storage-insights-inventory-reports.md`、batch operations は `storage-batch-operations.md`、転送ジョブは `gcloud/transfer/transfer-jobs-create.md`
+3. alpha / beta トラックのコマンドは NAME + SYNOPSIS のみ（GA は全文）。フラグの詳細は `gcloud alpha|beta <command> --help` か公式ページ（gcloud reference）を参照する。alpha のみのコマンド（`gcloud storage ftp` / `feature-configs` / `tail`、`gcloud transfer appliances`、`gcloud lustre instances mirrors` など）に注意する
+4. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`
+5. IAM ロール・権限 → `references/iam/README.md` でサービスを選ぶ（ロール ID の接頭辞で引く。例: `roles/storage.*` → `storage.md`、`roles/storagetransfer.*` → `storagetransfer.md`、`roles/backupdr.*` → `backupdr-1.md` / `backupdr-2.md`）
+6. 作業例 → `samples/README.md`、コマンド集 → `scripts/README.md`
+7. 既定値・制限は各カテゴリのページ（`quotas.md` / `limits.md` / `service-tiers.md` / `service-levels.md` など）を先に引く
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| gcloud のコマンド・フラグを調べたい（storage / transfer / filestore / lustre / netapp / backup-dr の 6 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
+| `gcloud storage`（cp / rsync / ls / rm / buckets / objects / sign-url / hmac / managed-folders / restore）のフラグを調べたい | gcloud/storage | [references/gcloud/storage/README.md](references/gcloud/storage/README.md) |
+| `gcloud storage` の Anywhere Cache・Storage Insights・Storage Intelligence・batch operations を使いたい | gcloud/storage | [references/gcloud/storage/README.md](references/gcloud/storage/README.md) |
+| `gcloud transfer`（jobs / agent-pools / agents / operations / appliances）を使いたい | gcloud/transfer | [references/gcloud/transfer/README.md](references/gcloud/transfer/README.md) |
+| `gcloud filestore`（instances / backups / snapshots / レプリカ）を使いたい | gcloud/filestore | [references/gcloud/filestore/README.md](references/gcloud/filestore/README.md) |
+| `gcloud lustre`（instances / import-data / export-data / directory-policies）を使いたい | gcloud/lustre | [references/gcloud/lustre/README.md](references/gcloud/lustre/README.md) |
+| `gcloud netapp`（storage-pools / volumes / snapshots / replications / backup-vaults / active-directories）を使いたい | gcloud/netapp | [references/gcloud/netapp/README.md](references/gcloud/netapp/README.md) |
+| `gcloud backup-dr`（backup-vaults / backup-plans / backups / auto-protection / restore）を使いたい | gcloud/backup-dr | [references/gcloud/backup-dr/README.md](references/gcloud/backup-dr/README.md) |
+| ロール ID の権限一覧・事前定義ロールを調べたい（Cloud Storage / Transfer / Filestore / Lustre / NetApp / Backup and DR ほか 12 サービス） | iam | [references/iam/README.md](references/iam/README.md) |
+| REST のメソッド・パスを調べたい（storage / storagetransfer / storagebatchoperations / file / netapp / parallelstore / backupdr） | rest | [references/rest/README.md](references/rest/README.md) |
+| Cloud Storage JSON API（buckets / objects / ACL / notifications）のメソッドを調べたい | rest/storage | [references/rest/storage/README.md](references/rest/storage/README.md) |
+| Storage Transfer API・Storage Batch Operations API のメソッドを調べたい | rest/storagetransfer、rest/storagebatchoperations | [references/rest/storagetransfer/README.md](references/rest/storagetransfer/README.md)、[references/rest/storagebatchoperations/README.md](references/rest/storagebatchoperations/README.md) |
+| Filestore・NetApp・Parallelstore・Backup and DR の REST メソッドを調べたい | rest/file、rest/netapp、rest/parallelstore、rest/backupdr | [references/rest/file/README.md](references/rest/file/README.md)、[references/rest/netapp/README.md](references/rest/netapp/README.md)、[references/rest/parallelstore/README.md](references/rest/parallelstore/README.md)、[references/rest/backupdr/README.md](references/rest/backupdr/README.md) |
+| REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
+| Cloud Storage・Storage Transfer・Storage Batch Operations のメッセージ型を調べたい | rest-schemas/storage、rest-schemas/storagetransfer、rest-schemas/storagebatchoperations | [references/rest-schemas/storage/README.md](references/rest-schemas/storage/README.md)、[references/rest-schemas/storagetransfer/README.md](references/rest-schemas/storagetransfer/README.md)、[references/rest-schemas/storagebatchoperations/README.md](references/rest-schemas/storagebatchoperations/README.md) |
+| Filestore・NetApp・Parallelstore・Backup and DR のメッセージ型を調べたい | rest-schemas/file、rest-schemas/netapp、rest-schemas/parallelstore、rest-schemas/backupdr | [references/rest-schemas/file/README.md](references/rest-schemas/file/README.md)、[references/rest-schemas/netapp/README.md](references/rest-schemas/netapp/README.md)、[references/rest-schemas/parallelstore/README.md](references/rest-schemas/parallelstore/README.md)、[references/rest-schemas/backupdr/README.md](references/rest-schemas/backupdr/README.md) |
 | Cloud Storage の概念（バケット・オブジェクト・ストレージクラス・ロケーション・クォータ）、gcloud クイックスタート、gsutil からの移行、XML API・HMAC キー | cloud-storage-basics | [references/cloud-storage-basics/README.md](references/cloud-storage-basics/README.md) |
 | バケットの作成・メタデータ、階層型名前空間 (HNS)、マネージドフォルダ、オブジェクト削除 | cloud-storage-buckets-objects | [references/cloud-storage-buckets-objects/README.md](references/cloud-storage-buckets-objects/README.md) |
 | オブジェクトのアップロード・ダウンロード（gcloud / クライアントライブラリ / JSON・XML API） | cloud-storage-uploads-downloads | [references/cloud-storage-uploads-downloads/README.md](references/cloud-storage-uploads-downloads/README.md) |
@@ -134,7 +171,7 @@ skills/gcp-storage/
 
 - `gcp-cli` — gcloud 全般のインストール・設定・出力フォーマット・`gcloud auth` の使い方。`gcloud storage` / `transfer` / `filestore` / `lustre` / `netapp` / `backup-dr` のコマンドは本スキル
 - `gcp-foundation` — ADC・IAM の仕組み・サービスアカウント・Organization Policy・課金。Cloud Storage の IAM ロールと権限、UBLA、公開アクセス防止の設定は本スキル
-- `gcp-run` — Cloud Run のバケット / Filestore ボリュームマウント。分割 PR で順次追加中のため、公開までは公式ドキュメントを確認する。ストレージ側の製品・IAM は本スキル
+- `gcp-run` — Cloud Run のバケット / Filestore ボリュームマウント。ストレージ側の製品・IAM は本スキル
 - `gcp-client-libraries` — 言語別クライアントライブラリのコード（予定）。本スキルは製品・API・CLI
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `cloudflare-storage` — Cloudflare R2 / KV / D1。S3 互換でも Cloud Storage とは別基盤
@@ -160,7 +197,7 @@ skills/gcp-storage/
 
 - 取得日: ガイド（手書き）は 2026-11-15、機械生成のカテゴリは 2026-11-14（gcloud 593.0.0）
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
-- `references/gcloud/` `references/iam/` `references/rest/` `references/rest-schemas/` は機械生成で、後続 PR で投入する。上記 15 カテゴリは公式ガイド由来の手書き
+- `references/gcloud/` `references/iam/` `references/rest/` `references/rest-schemas/` は機械生成（gcloud 593.0.0 の help / Discovery / IAM reference、取得 2026-11-14）。上記 15 カテゴリは公式ガイド由来の手書き
 - gcloud は GA コマンドが gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ
 - ガイドは主要ページの要約で、公式の全ページではない。コードサンプルは Node.js / Python のみ収録（他言語は公式ページ）
 - Dell EMC Cloud OneFS・NetApp Cloud Volumes Service は IAM ロールのみ（ガイドなし）。Parallelstore は REST のみ（gcloud グループなし）、招待制の製品

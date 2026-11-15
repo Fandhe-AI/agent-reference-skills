@@ -75,6 +75,13 @@ NOTES
         $ gcloud alpha lustre operations cancel
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud lustre operations cancel my-operation \
+    --location=us-central1-a
+```
+
 ### gcloud lustre operations delete
 
 ```text
@@ -142,6 +149,13 @@ NOTES
         $ gcloud alpha lustre operations delete
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud lustre operations delete my-operation \
+    --location=us-central1-a
+```
+
 ### gcloud lustre operations describe
 
 ```text
@@ -207,6 +221,13 @@ NOTES
     This variant is also available:
 
         $ gcloud alpha lustre operations describe
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud lustre operations describe my-operation \
+    --location=us-central1-a
 ```
 
 ### gcloud lustre operations list
@@ -297,6 +318,13 @@ NOTES
         $ gcloud alpha lustre operations list
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud lustre operations list \
+    --location=us-central1-a
+```
+
 ### gcloud lustre operations wait
 
 ```text
@@ -364,6 +392,13 @@ NOTES
         $ gcloud alpha lustre operations wait
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud lustre operations wait my-operation \
+    --location=us-central1-a
+```
+
 ### gcloud alpha lustre operations cancel
 
 ```text
@@ -422,6 +457,8 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the examples give only the command, without the operation and `--location` that the SYNOPSIS requires (gcloud 593.0.0: "Must be specified"); the runnable forms pass the sample operation `my-operation` (`list` takes no operation) and the zone `us-central1-a` used by the other Lustre examples.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
