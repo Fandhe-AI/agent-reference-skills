@@ -316,6 +316,7 @@ Macros: `list.all(item, expr)` (typically with `ALLOW`) and `list.exists(item, e
 - Policies take effect in up to 15 minutes (about two minutes in the test example). Test in a new project, not an existing one.
 - Required roles: Organization Policy Administrator (`roles/orgpolicy.policyAdmin`) on the organization; Project IAM Admin (`roles/resourcemanager.projectIamAdmin`) for the test project.
 - A conditional rule must be paired with an unconditional rule.
+- The 1,500-character `condition` limit is as written on this IAM page; the general custom-constraint guide and the `orgpolicy.googleapis.com` v2 Discovery schema both state 1000 characters.
 - Source: https://docs.cloud.google.com/iam/docs/org-policy-custom-constraints
 - Retrieved 2026-11-14. Content CC BY 4.0; code samples Apache 2.0.
 
