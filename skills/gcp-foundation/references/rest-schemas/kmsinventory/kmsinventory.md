@@ -69,7 +69,7 @@ Message types referenced by the methods listed under `references/rest/kmsinvento
 | Field | Type | Description |
 |---|---|---|
 | `displayMessage` | string | The literal message providing context and details about the warnings. |
-| `warningCode` | string enum | The specific warning code for the displayed message. |
+| `warningCode` | string enum | The specific warning code for the displayed message. Values: `WARNING_CODE_UNSPECIFIED`, `INSUFFICIENT_PERMISSIONS_PARTIAL_DATA`, `RESOURCE_LIMIT_EXCEEDED_PARTIAL_DATA`, `ORG_LESS_PROJECT_PARTIAL_DATA`. |
 
 ### `GoogleCloudKmsV1CryptoKey`
 
@@ -87,7 +87,7 @@ Message types referenced by the methods listed under `references/rest/kmsinvento
 | `name` | string | Output only. The resource name for this CryptoKey in the format `projects/*/locations/*/keyRings/*/cryptoKeys/*`. |
 | `nextRotationTime` | string (google-datetime) | At next_rotation_time, the Key Management Service will automatically: 1. Create a new version of this CryptoKey. 2. Mark the new version as primary. Key rotations performed manually via CreateCryptoKeyVersion and UpdateCryptoKeyPrimaryVersion do not affect next_rotation_time. Keys with purpose ENCRYPT_DECRYPT support automatic rotation. For other keys, this field must be omitted. |
 | `primary` | GoogleCloudKmsV1CryptoKeyVersion | Output only. A copy of the "primary" CryptoKeyVersion that will be used by Encrypt when this CryptoKey is given in EncryptRequest.name. The CryptoKey's primary version can be updated via UpdateCryptoKeyPrimaryVersion. Keys with purpose ENCRYPT_DECRYPT may have a primary. For other keys, this field will be omitted. |
-| `purpose` | string enum | Immutable. The immutable purpose of this CryptoKey. |
+| `purpose` | string enum | Immutable. The immutable purpose of this CryptoKey. Values: `CRYPTO_KEY_PURPOSE_UNSPECIFIED`, `ENCRYPT_DECRYPT`, `ASYMMETRIC_SIGN`, `ASYMMETRIC_DECRYPT`, `RAW_ENCRYPT_DECRYPT`, `MAC`, `KEY_ENCAPSULATION`, `AES_WRAPPING`. |
 | `rotationPeriod` | string (google-duration) | next_rotation_time will be advanced by this period when the service automatically rotates a key. Must be at least 24 hours and at most 876,000 hours. If rotation_period is set, next_rotation_time must also be set. Keys with purpose ENCRYPT_DECRYPT support automatic rotation. For other keys, this field must be omitted. |
 | `versionTemplate` | GoogleCloudKmsV1CryptoKeyVersionTemplate | A template describing settings for new CryptoKeyVersion instances. The properties of new CryptoKeyVersion instances created by either CreateCryptoKeyVersion or auto-rotation are controlled by this template. |
 
@@ -98,7 +98,7 @@ Message types referenced by the methods listed under `references/rest/kmsinvento
 
 | Field | Type | Description |
 |---|---|---|
-| `algorithm` | string enum | Output only. The CryptoKeyVersionAlgorithm that this CryptoKeyVersion supports. |
+| `algorithm` | string enum | Output only. The CryptoKeyVersionAlgorithm that this CryptoKeyVersion supports. Values: `CRYPTO_KEY_VERSION_ALGORITHM_UNSPECIFIED`, `GOOGLE_SYMMETRIC_ENCRYPTION`, `AES_128_GCM`, `AES_256_GCM`, `AES_128_CBC`, `AES_256_CBC`, `AES_128_CTR`, `AES_256_CTR`, `RSA_SIGN_PSS_2048_SHA256`, `RSA_SIGN_PSS_3072_SHA256`, `RSA_SIGN_PSS_4096_SHA256`, `RSA_SIGN_PSS_4096_SHA512`, `RSA_SIGN_PKCS1_2048_SHA256`, `RSA_SIGN_PKCS1_3072_SHA256`, `RSA_SIGN_PKCS1_4096_SHA256`, `RSA_SIGN_PKCS1_4096_SHA512`, `RSA_SIGN_RAW_PKCS1_2048`, `RSA_SIGN_RAW_PKCS1_3072`, `RSA_SIGN_RAW_PKCS1_4096`, `RSA_DECRYPT_OAEP_2048_SHA256`, `RSA_DECRYPT_OAEP_3072_SHA256`, `RSA_DECRYPT_OAEP_4096_SHA256`, `RSA_DECRYPT_OAEP_4096_SHA512`, `RSA_DECRYPT_OAEP_2048_SHA1`, `RSA_DECRYPT_OAEP_3072_SHA1`, `RSA_DECRYPT_OAEP_4096_SHA1`, `EC_SIGN_P256_SHA256`, `EC_SIGN_P384_SHA384`, `EC_SIGN_SECP256K1_SHA256`, `EC_SIGN_ED25519`, `HMAC_SHA256`, `HMAC_SHA1`, `HMAC_SHA384`, `HMAC_SHA512`, `HMAC_SHA224`, `EXTERNAL_SYMMETRIC_ENCRYPTION`, `ML_KEM_768`, `ML_KEM_1024`, `KEM_XWING`, `PQ_SIGN_ML_DSA_44`, `PQ_SIGN_ML_DSA_65`, `PQ_SIGN_ML_DSA_87`, `PQ_SIGN_SLH_DSA_SHA2_128S`, `PQ_SIGN_HASH_SLH_DSA_SHA2_128S_SHA256`, `PQ_SIGN_ML_DSA_44_EXTERNAL_MU`, `PQ_SIGN_ML_DSA_65_EXTERNAL_MU`, `PQ_SIGN_ML_DSA_87_EXTERNAL_MU`, `KEM_ECDH_P256`, `KEM_ECDH_P384`, `AES_256_KWP`. |
 | `attestation` | GoogleCloudKmsV1KeyOperationAttestation | Output only. Statement that was generated and signed by the HSM at key creation time. Use this statement to verify attributes of the key as stored on the HSM, independently of Google. Only provided for key versions with protection_level HSM. |
 | `createTime` | string (google-datetime) | Output only. The time at which this CryptoKeyVersion was created. |
 | `destroyEventTime` | string (google-datetime) | Output only. The time this CryptoKeyVersion's key material was destroyed. Only present if state is DESTROYED. |
@@ -112,9 +112,9 @@ Message types referenced by the methods listed under `references/rest/kmsinvento
 | `importJob` | string | Output only. The name of the ImportJob used in the most recent import of this CryptoKeyVersion. Only present if the underlying key material was imported. |
 | `importTime` | string (google-datetime) | Output only. The time at which this CryptoKeyVersion's key material was most recently imported. |
 | `name` | string | Output only. The resource name for this CryptoKeyVersion in the format `projects/*/locations/*/keyRings/*/cryptoKeys/*/cryptoKeyVersions/*`. |
-| `protectionLevel` | string enum | Output only. The ProtectionLevel describing how crypto operations are performed with this CryptoKeyVersion. |
+| `protectionLevel` | string enum | Output only. The ProtectionLevel describing how crypto operations are performed with this CryptoKeyVersion. Values: `PROTECTION_LEVEL_UNSPECIFIED`, `SOFTWARE`, `HSM`, `EXTERNAL`, `EXTERNAL_VPC`, `HSM_SINGLE_TENANT`. |
 | `reimportEligible` | boolean | Output only. Whether or not this key version is eligible for reimport, by being specified as a target in ImportCryptoKeyVersionRequest.crypto_key_version. |
-| `state` | string enum | The current state of the CryptoKeyVersion. |
+| `state` | string enum | The current state of the CryptoKeyVersion. Values: `CRYPTO_KEY_VERSION_STATE_UNSPECIFIED`, `PENDING_GENERATION`, `ENABLED`, `DISABLED`, `DESTROYED`, `DESTROY_SCHEDULED`, `PENDING_IMPORT`, `IMPORT_FAILED`, `GENERATION_FAILED`, `PENDING_EXTERNAL_DESTRUCTION`, `EXTERNAL_DESTRUCTION_FAILED`. |
 | `trustedWrappingEnabled` | boolean | Optional. Immutable. Field indicating that the key may be wrapped by a trusted key. This field can be set for all key purposes except ENCRYPT_DECRYPT, and is only valid for keys with protection level HSM_SINGLE_TENANT. This field can only be set at creation or import time via CreateCryptoKeyVersion, or ImportCryptoKeyVersion. |
 
 ### `GoogleCloudKmsV1CryptoKeyVersionTemplate`
@@ -124,8 +124,8 @@ Message types referenced by the methods listed under `references/rest/kmsinvento
 
 | Field | Type | Description |
 |---|---|---|
-| `algorithm` | string enum | Required. Algorithm to use when creating a CryptoKeyVersion based on this template. For backwards compatibility, GOOGLE_SYMMETRIC_ENCRYPTION is implied if both this field is omitted and CryptoKey.purpose is ENCRYPT_DECRYPT. |
-| `protectionLevel` | string enum | ProtectionLevel to use when creating a CryptoKeyVersion based on this template. Immutable. Defaults to SOFTWARE. |
+| `algorithm` | string enum | Required. Algorithm to use when creating a CryptoKeyVersion based on this template. For backwards compatibility, GOOGLE_SYMMETRIC_ENCRYPTION is implied if both this field is omitted and CryptoKey.purpose is ENCRYPT_DECRYPT. Values: `CRYPTO_KEY_VERSION_ALGORITHM_UNSPECIFIED`, `GOOGLE_SYMMETRIC_ENCRYPTION`, `AES_128_GCM`, `AES_256_GCM`, `AES_128_CBC`, `AES_256_CBC`, `AES_128_CTR`, `AES_256_CTR`, `RSA_SIGN_PSS_2048_SHA256`, `RSA_SIGN_PSS_3072_SHA256`, `RSA_SIGN_PSS_4096_SHA256`, `RSA_SIGN_PSS_4096_SHA512`, `RSA_SIGN_PKCS1_2048_SHA256`, `RSA_SIGN_PKCS1_3072_SHA256`, `RSA_SIGN_PKCS1_4096_SHA256`, `RSA_SIGN_PKCS1_4096_SHA512`, `RSA_SIGN_RAW_PKCS1_2048`, `RSA_SIGN_RAW_PKCS1_3072`, `RSA_SIGN_RAW_PKCS1_4096`, `RSA_DECRYPT_OAEP_2048_SHA256`, `RSA_DECRYPT_OAEP_3072_SHA256`, `RSA_DECRYPT_OAEP_4096_SHA256`, `RSA_DECRYPT_OAEP_4096_SHA512`, `RSA_DECRYPT_OAEP_2048_SHA1`, `RSA_DECRYPT_OAEP_3072_SHA1`, `RSA_DECRYPT_OAEP_4096_SHA1`, `EC_SIGN_P256_SHA256`, `EC_SIGN_P384_SHA384`, `EC_SIGN_SECP256K1_SHA256`, `EC_SIGN_ED25519`, `HMAC_SHA256`, `HMAC_SHA1`, `HMAC_SHA384`, `HMAC_SHA512`, `HMAC_SHA224`, `EXTERNAL_SYMMETRIC_ENCRYPTION`, `ML_KEM_768`, `ML_KEM_1024`, `KEM_XWING`, `PQ_SIGN_ML_DSA_44`, `PQ_SIGN_ML_DSA_65`, `PQ_SIGN_ML_DSA_87`, `PQ_SIGN_SLH_DSA_SHA2_128S`, `PQ_SIGN_HASH_SLH_DSA_SHA2_128S_SHA256`, `PQ_SIGN_ML_DSA_44_EXTERNAL_MU`, `PQ_SIGN_ML_DSA_65_EXTERNAL_MU`, `PQ_SIGN_ML_DSA_87_EXTERNAL_MU`, `KEM_ECDH_P256`, `KEM_ECDH_P384`, `AES_256_KWP`. |
+| `protectionLevel` | string enum | ProtectionLevel to use when creating a CryptoKeyVersion based on this template. Immutable. Defaults to SOFTWARE. Values: `PROTECTION_LEVEL_UNSPECIFIED`, `SOFTWARE`, `HSM`, `EXTERNAL`, `EXTERNAL_VPC`, `HSM_SINGLE_TENANT`. |
 
 ### `GoogleCloudKmsV1ExternalProtectionLevelOptions`
 
@@ -145,7 +145,7 @@ Message types referenced by the methods listed under `references/rest/kmsinvento
 
 | Field | Type | Description |
 |---|---|---|
-| `allowedAccessReasons` | array<string> | The list of allowed reasons for access to a CryptoKey. Note that empty allowed_access_reasons has a different meaning depending on where this message appears. If this is under KeyAccessJustificationsPolicyConfig, it means allow-all. If this is under CryptoKey, it means deny-all. |
+| `allowedAccessReasons` | array<string> | The list of allowed reasons for access to a CryptoKey. Note that empty allowed_access_reasons has a different meaning depending on where this message appears. If this is under KeyAccessJustificationsPolicyConfig, it means allow-all. If this is under CryptoKey, it means deny-all. Values: `REASON_UNSPECIFIED`, `CUSTOMER_INITIATED_SUPPORT`, `GOOGLE_INITIATED_SERVICE`, `THIRD_PARTY_DATA_REQUEST`, `GOOGLE_INITIATED_REVIEW`, `CUSTOMER_INITIATED_ACCESS`, `GOOGLE_INITIATED_SYSTEM_OPERATION`, `REASON_NOT_EXPECTED`, `MODIFIED_CUSTOMER_INITIATED_ACCESS`, `MODIFIED_GOOGLE_INITIATED_SYSTEM_OPERATION`, `GOOGLE_RESPONSE_TO_PRODUCTION_ALERT`, `CUSTOMER_AUTHORIZED_WORKFLOW_SERVICING`. |
 
 ### `GoogleCloudKmsV1KeyOperationAttestation`
 
@@ -156,7 +156,7 @@ Message types referenced by the methods listed under `references/rest/kmsinvento
 |---|---|---|
 | `certChains` | GoogleCloudKmsV1KeyOperationAttestationCertificateChains | Output only. The certificate chains needed to validate the attestation |
 | `content` | string (byte) | Output only. The attestation data provided by the HSM when the key operation was performed. |
-| `format` | string enum | Output only. The format of the attestation data. |
+| `format` | string enum | Output only. The format of the attestation data. Values: `ATTESTATION_FORMAT_UNSPECIFIED`, `CAVIUM_V1_COMPRESSED`, `CAVIUM_V2_COMPRESSED`, `CAVIUM_V209`. |
 
 ### `GoogleCloudKmsV1KeyOperationAttestationCertificateChains`
 

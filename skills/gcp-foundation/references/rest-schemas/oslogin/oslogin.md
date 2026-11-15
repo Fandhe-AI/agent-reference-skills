@@ -102,7 +102,7 @@ Message types referenced by the methods listed under `references/rest/oslogin/`.
 | `gid` | string (int64) | The default group ID. |
 | `homeDirectory` | string | The path to the home directory for this account. |
 | `name` | string | Output only. The canonical resource name. |
-| `operatingSystemType` | string enum | The operating system type where this account applies. |
+| `operatingSystemType` | string enum | The operating system type where this account applies. Values: `OPERATING_SYSTEM_TYPE_UNSPECIFIED`, `LINUX`, `WINDOWS`. |
 | `primary` | boolean | Only one POSIX account can be marked as primary. |
 | `shell` | string | The path to the logic shell for this account. |
 | `systemId` | string | System identifier for which account the username or uid applies to. By default, the empty value is used. |

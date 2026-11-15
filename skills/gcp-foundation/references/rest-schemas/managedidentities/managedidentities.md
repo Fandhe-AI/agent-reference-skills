@@ -27,9 +27,9 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `createTime` | string (google-datetime) | Output only. The time the backups was created. |
 | `labels` | object | Optional. Resource labels to represent user provided metadata. |
 | `name` | string | Output only. The unique name of the Backup in the form of `projects/{project_id}/locations/global/domains/{domain_name}/backups/{name}` |
-| `state` | string enum | Output only. The current state of the backup. |
+| `state` | string enum | Output only. The current state of the backup. Values: `STATE_UNSPECIFIED`, `CREATING`, `ACTIVE`, `FAILED`, `DELETING`. |
 | `statusMessage` | string | Output only. Additional information about the current status of this backup, if available. |
-| `type` | string enum | Output only. Indicates whether it’s an on-demand backup or scheduled. |
+| `type` | string enum | Output only. Indicates whether it’s an on-demand backup or scheduled. Values: `TYPE_UNSPECIFIED`, `ON_DEMAND`, `SCHEDULED`. |
 | `updateTime` | string (google-datetime) | Output only. Last update time. |
 
 ### `Backup` (v1beta1)
@@ -43,9 +43,9 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `description` | string | Optional. A short description of the backup. |
 | `labels` | object | Optional. Resource labels to represent user provided metadata. |
 | `name` | string | Output only. The unique name of the Backup in the form of projects/{project_id}/locations/global/domains/{domain_name}/backups/{name} |
-| `state` | string enum | Output only. The current state of the backup. |
+| `state` | string enum | Output only. The current state of the backup. Values: `STATE_UNSPECIFIED`, `CREATING`, `ACTIVE`, `FAILED`, `DELETING`. |
 | `statusMessage` | string | Output only. Additional information about the current status of this backup, if available. |
-| `type` | string enum | Output only. Indicates whether it’s an on-demand backup or scheduled. |
+| `type` | string enum | Output only. Indicates whether it’s an on-demand backup or scheduled. Values: `TYPE_UNSPECIFIED`, `ON_DEMAND`, `SCHEDULED`, `SCHEMA_EXTENSION`. |
 | `updateTime` | string (google-datetime) | Output only. Last update time. |
 
 ### `Binding`
@@ -90,7 +90,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 | Field | Type | Description |
 |---|---|---|
 | `onpremDomains` | array<OnPremDomainSIDDetails> | The state of SID filtering of all the domains which has trust established. |
-| `state` | string enum | The state of DomainMigration. |
+| `state` | string enum | The state of DomainMigration. Values: `STATE_UNSPECIFIED`, `DISABLED`, `ENABLED`, `NEEDS_MAINTENANCE`. |
 
 ### `DailyCycle`
 
@@ -154,7 +154,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `locations` | array<string> | Required. Locations where domain needs to be provisioned. The locations can be specified according to https://cloud.google.com/compute/docs/regions-zones, such as `us-west1` or `us-east4`. Each domain supports up to 4 locations, separated by commas. Each location will use a /26 block. |
 | `name` | string | Required. The unique name of the domain using the form: `projects/{project_id}/locations/global/domains/{domain_name}`. |
 | `reservedIpRange` | string | Required. The CIDR range of internal addresses that are reserved for this domain. Reserved networks must be /24 or larger. Ranges must be unique and non-overlapping with existing subnets in \[Domain\].\[authorized_networks\]. |
-| `state` | string enum | Output only. The current state of this domain. |
+| `state` | string enum | Output only. The current state of this domain. Values: `STATE_UNSPECIFIED`, `CREATING`, `READY`, `UPDATING`, `DELETING`, `REPAIRING`, `PERFORMING_MAINTENANCE`, `UNAVAILABLE`. |
 | `statusMessage` | string | Output only. Additional information about the current status of this domain, if available. |
 | `trusts` | array<Trust> | Output only. The current trusts associated with the domain. |
 | `updateTime` | string (google-datetime) | Output only. The last update time. |
@@ -175,7 +175,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `managedIdentitiesAdminName` | string | Optional. Name of customer-visible admin used to perform Active Directory operations. If not specified `setupadmin` would be used. |
 | `name` | string | Output only. Unique name of the domain in this scope including projects and location using the form: `projects/{project_id}/locations/global/domains/{domain_name}`. |
 | `reservedIpRange` | string | Required. The CIDR range of internal addresses that are reserved for this domain. Reserved networks must be /24 or larger. Ranges must be unique and non-overlapping with existing subnets in \[Domain\].\[authorized_networks\]. |
-| `state` | string enum | Output only. The current state of this domain. |
+| `state` | string enum | Output only. The current state of this domain. Values: `STATE_UNSPECIFIED`, `CREATING`, `READY`, `UPDATING`, `DELETING`, `REPAIRING`, `PERFORMING_MAINTENANCE`, `DOWN`. |
 | `statusMessage` | string | Output only. Additional information about the current status of this domain, if available. |
 | `trusts` | array<Trust> | Output only. The current trusts associated with the domain. |
 | `updateTime` | string (google-datetime) | Output only. Last update time. Synthetic field is populated automatically by CCFE. |
@@ -311,7 +311,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `slmInstanceTemplate` | string | Link to the SLM instance template. Only populated when updating SLM instances via SSA's Actuation service adaptor. Service producers with custom control plane (e.g. Cloud SQL) doesn't need to populate this field. Instead they should use software_versions. |
 | `sloMetadata` | GoogleCloudSaasacceleratorManagementProvidersV1SloMetadata | Output only. SLO metadata for instance classification in the Standardized dataplane SLO platform. See (internal link) for feature description. |
 | `softwareVersions` | object | Software versions that are used to deploy this instance. This can be mutated by rollout services. |
-| `state` | string enum | Output only. Current lifecycle state of the resource (e.g. if it's being created or ready to use). |
+| `state` | string enum | Output only. Current lifecycle state of the resource (e.g. if it's being created or ready to use). Values: `STATE_UNSPECIFIED`, `CREATING`, `READY`, `UPDATING`, `REPAIRING`, `DELETING`, `ERROR`. |
 | `tenantProjectId` | string | Output only. ID of the associated GCP tenant project. See (internal link). |
 | `updateTime` | string (google-datetime) | Output only. Timestamp when the resource was last modified. |
 
@@ -410,7 +410,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `certificatePassword` | string | Input only. The password used to encrypt the uploaded PFX certificate. |
 | `certificatePfx` | string (byte) | Input only. The uploaded PKCS12-formatted certificate to configure LDAPS with. It will enable the domain controllers in this domain to accept LDAPS connections (either LDAP over SSL/TLS or the StartTLS operation). A valid certificate chain must form a valid x.509 certificate chain (or be comprised of a single self-signed certificate. It must be encrypted with either: 1) PBES2 + PBKDF2 + AES256 encryption and SHA256 PRF; or 2) pbeWithSHA1And3-KeyTripleDES-CBC Private key must be included for the leaf / single self-signed certificate. Note: For a fqdn your-example-domain.com, the wildcard fqdn is \*.your-example-domain.com. Specifically the leaf certificate must have: - Either a blank subject or a subject with CN matching the wildcard fqdn. - Exactly two SANs - the fqdn and wildcard fqdn. - Encipherment and digital key signature key usages. - Server authentication extended key usage (OID=1.3.6.1.5.5.7.3.1) - Private key must be in one of the following formats: RSA, ECDSA, ED25519. - Private key must have appropriate key length: 2048 for RSA, 256 for ECDSA - Signature algorithm of the leaf certificate cannot be MD2, MD5 or SHA1. |
 | `name` | string | The resource name of the LDAPS settings. Uses the form: `projects/{project}/locations/{location}/domains/{domain}`. |
-| `state` | string enum | Output only. The current state of this LDAPS settings. |
+| `state` | string enum | Output only. The current state of this LDAPS settings. Values: `STATE_UNSPECIFIED`, `UPDATING`, `ACTIVE`, `FAILED`. |
 | `updateTime` | string (google-datetime) | Output only. Last update time. |
 
 ### `ListBackupsResponse`
@@ -513,7 +513,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `description` | string | Optional. Description of what this policy is for. Create/Update methods return INVALID_ARGUMENT if the length is greater than 512. |
 | `labels` | object | Optional. Resource labels to represent user provided metadata. Each label is a key-value pair, where both the key and the value are arbitrary strings provided by the user. |
 | `name` | string | Required. MaintenancePolicy name using the form: `projects/{project_id}/locations/{location_id}/maintenancePolicies/{maintenance_policy_id}` where {project_id} refers to a GCP consumer project ID, {location_id} refers to a GCP region/zone, {maintenance_policy_id} must be 1-63 characters long and match the regular expression `[a-z0-9]([-a-z0-9]*[a-z0-9])?`. |
-| `state` | string enum | Optional. The state of the policy. |
+| `state` | string enum | Optional. The state of the policy. Values: `STATE_UNSPECIFIED`, `READY`, `DELETING`. |
 | `updatePolicy` | UpdatePolicy | Maintenance policy applicable to instance update. |
 | `updateTime` | string (google-datetime) | Output only. The time when the resource was updated. |
 
@@ -545,7 +545,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 | Field | Type | Description |
 |---|---|---|
 | `name` | string | FQDN of the on-prem domain being migrated. |
-| `sidFilteringState` | string enum | Current SID filtering state. |
+| `sidFilteringState` | string enum | Current SID filtering state. Values: `SID_FILTERING_STATE_UNSPECIFIED`, `ENABLED`, `DISABLED`. |
 
 ### `Operation`
 
@@ -587,7 +587,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `domainResource` | string | Required. Full domain resource path for the Managed AD Domain involved in peering. The resource path should be in the form: `projects/{project_id}/locations/global/domains/{domain_name}` |
 | `labels` | object | Optional. Resource labels to represent user-provided metadata. |
 | `name` | string | Output only. Unique name of the peering in this scope including projects and location using the form: `projects/{project_id}/locations/global/peerings/{peering_id}`. |
-| `state` | string enum | Output only. The current state of this Peering. |
+| `state` | string enum | Output only. The current state of this Peering. Values: `STATE_UNSPECIFIED`, `CREATING`, `CONNECTED`, `DISCONNECTED`, `DELETING`. |
 | `statusMessage` | string | Output only. Additional information about the current status of this peering, if available. |
 | `updateTime` | string (google-datetime) | Output only. Last update time. |
 
@@ -654,7 +654,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `createTime` | string (google-datetime) | Output only. The time the instance was created. |
 | `name` | string | The unique name of the sql integration in the form of `projects/{project_id}/locations/global/domains/{domain_name}/sqlIntegrations/{sql_integration}` |
 | `sqlInstance` | string | The full resource name of an integrated sql instance |
-| `state` | string enum | Output only. The current state of the managed OU. |
+| `state` | string enum | Output only. The current state of the managed OU. Values: `STATE_UNSPECIFIED`, `CREATING`, `DELETING`, `READY`. |
 | `updateTime` | string (google-datetime) | Output only. Last update time for this SQL instance. |
 
 ### `Schedule`
@@ -664,7 +664,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 
 | Field | Type | Description |
 |---|---|---|
-| `day` | string enum | Allows to define schedule that runs specified day of the week. |
+| `day` | string enum | Allows to define schedule that runs specified day of the week. Values: `DAY_OF_WEEK_UNSPECIFIED`, `MONDAY`, `TUESDAY`, `WEDNESDAY`, `THURSDAY`, `FRIDAY`, `SATURDAY`, `SUNDAY`. |
 | `duration` | string (google-duration) | Output only. Duration of the time window, set by service producer. |
 | `startTime` | TimeOfDay | Time within the window to start the operations. |
 
@@ -687,7 +687,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `createTime` | string (google-datetime) | Output only. The time the SQL integration was created. |
 | `name` | string | The unique name of the SQL integration in the form of `projects/{project_id}/locations/global/domains/{domain_name}/sqlIntegrations/{sql_integration}` |
 | `sqlInstance` | string | The full resource name of an integrated SQL instance |
-| `state` | string enum | Output only. The current state of the SQL integration. |
+| `state` | string enum | Output only. The current state of the SQL integration. Values: `STATE_UNSPECIFIED`, `CREATING`, `DELETING`, `READY`. |
 | `updateTime` | string (google-datetime) | Output only. The time the SQL integration was updated. |
 
 ### `Status`
@@ -741,13 +741,13 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `createTime` | string (google-datetime) | Output only. The time the instance was created. |
 | `lastTrustHeartbeatTime` | string (google-datetime) | Output only. The last heartbeat time when the trust was known to be connected. |
 | `selectiveAuthentication` | boolean | Optional. The trust authentication type, which decides whether the trusted side has forest/domain wide access or selective access to an approved set of resources. |
-| `state` | string enum | Output only. The current state of the trust. |
+| `state` | string enum | Output only. The current state of the trust. Values: `STATE_UNSPECIFIED`, `CREATING`, `UPDATING`, `DELETING`, `CONNECTED`, `DISCONNECTED`. |
 | `stateDescription` | string | Output only. Additional information about the current state of the trust, if available. |
 | `targetDnsIpAddresses` | array<string> | Required. The target DNS server IP addresses which can resolve the remote domain involved in the trust. |
 | `targetDomainName` | string | Required. The fully qualified target domain name which will be in trust with the current domain. |
-| `trustDirection` | string enum | Required. The trust direction, which decides if the current domain is trusted, trusting, or both. |
+| `trustDirection` | string enum | Required. The trust direction, which decides if the current domain is trusted, trusting, or both. Values: `TRUST_DIRECTION_UNSPECIFIED`, `INBOUND`, `OUTBOUND`, `BIDIRECTIONAL`. |
 | `trustHandshakeSecret` | string | Required. The trust secret used for the handshake with the target domain. This will not be stored. |
-| `trustType` | string enum | Required. The type of trust represented by the trust resource. |
+| `trustType` | string enum | Required. The type of trust represented by the trust resource. Values: `TRUST_TYPE_UNSPECIFIED`, `FOREST`, `EXTERNAL`. |
 | `updateTime` | string (google-datetime) | Output only. The last update time. |
 
 ### `Trust` (v1alpha1)
@@ -760,13 +760,13 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `createTime` | string (google-datetime) | Output only. The time the instance was created. |
 | `lastKnownTrustConnectedHeartbeatTime` | string (google-datetime) | Output only. The last heartbeat time when the trust was known to be connected. |
 | `selectiveAuthentication` | boolean | The trust authentication type which decides whether the trusted side has forest/domain wide access or selective access to approved set of resources. |
-| `state` | string enum | Output only. The current state of this trust. |
+| `state` | string enum | Output only. The current state of this trust. Values: `STATE_UNSPECIFIED`, `CREATING`, `UPDATING`, `DELETING`, `CONNECTED`, `DISCONNECTED`. |
 | `stateDescription` | string | Output only. Additional information about the current state of this trust, if available. |
 | `targetDnsIpAddresses` | array<string> | The target dns server ip addresses which can resolve the remote domain involved in trust. |
 | `targetDomainName` | string | The fully qualified target domain name which will be in trust with current domain. |
-| `trustDirection` | string enum | The trust direction decides the current domain is trusted, trusting or both. |
+| `trustDirection` | string enum | The trust direction decides the current domain is trusted, trusting or both. Values: `TRUST_DIRECTION_UNSPECIFIED`, `INBOUND`, `OUTBOUND`, `BIDIRECTIONAL`. |
 | `trustHandshakeSecret` | string | Input only, and will not be stored. The trust secret used for handshake with target domain. |
-| `trustType` | string enum | The type of trust represented by the trust resource. |
+| `trustType` | string enum | The type of trust represented by the trust resource. Values: `TRUST_TYPE_UNSPECIFIED`, `FOREST`, `EXTERNAL`. |
 | `updateTime` | string (google-datetime) | Output only. Last update time. |
 
 ### `UpdatePolicy`
@@ -776,7 +776,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 
 | Field | Type | Description |
 |---|---|---|
-| `channel` | string enum | Optional. Relative scheduling channel applied to resource. |
+| `channel` | string enum | Optional. Relative scheduling channel applied to resource. Values: `UPDATE_CHANNEL_UNSPECIFIED`, `EARLIER`, `LATER`, `WEEK1`, `WEEK2`, `WEEK5`. |
 | `denyMaintenancePeriods` | array<DenyMaintenancePeriod> | Deny Maintenance Period that is applied to resource to indicate when maintenance is forbidden. The protocol supports zero-to-many such periods, but the current SLM Rollout implementation only supports zero-to-one. |
 | `window` | MaintenanceWindow | Optional. Maintenance window that is applied to resources covered by this policy. |
 

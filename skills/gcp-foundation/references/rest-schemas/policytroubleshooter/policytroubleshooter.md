@@ -28,15 +28,15 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `allowAccessState` | string enum | Required. Indicates whether \_this role binding\_ gives the specified permission to the specified principal on the specified resource. This field does \_not\_ indicate whether the principal actually has the permission on the resource. There might be another role binding that overrides this role binding. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. |
+| `allowAccessState` | string enum | Required. Indicates whether \_this role binding\_ gives the specified permission to the specified principal on the specified resource. This field does \_not\_ indicate whether the principal actually has the permission on the resource. There might be another role binding that overrides this role binding. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. Values: `ALLOW_ACCESS_STATE_UNSPECIFIED`, `ALLOW_ACCESS_STATE_GRANTED`, `ALLOW_ACCESS_STATE_NOT_GRANTED`, `ALLOW_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `ALLOW_ACCESS_STATE_UNKNOWN_INFO`. |
 | `combinedMembership` | GoogleCloudPolicytroubleshooterIamV3AllowBindingExplanationAnnotatedAllowMembership | The combined result of all memberships. Indicates if the principal is included in any role binding, either directly or indirectly. |
 | `condition` | GoogleTypeExpr | A condition expression that specifies when the role binding grants access. To learn about IAM Conditions, see https://cloud.google.com/iam/help/conditions/overview. |
 | `conditionExplanation` | GoogleCloudPolicytroubleshooterIamV3ConditionExplanation | Condition evaluation state for this role binding. |
 | `memberships` | object | Indicates whether each role binding includes the principal specified in the request, either directly or indirectly. Each key identifies a principal in the role binding, and each value indicates whether the principal in the role binding includes the principal in the request. For example, suppose that a role binding includes the following principals: \* `user:alice@example.com` \* `group:product-eng@example.com` You want to troubleshoot access for `user:bob@example.com`. This user is a member of the group `group:product-eng@example.com`. For the first principal in the role binding, the key is `user:alice@example.com`, and the `membership` field in the value is set to `NOT_INCLUDED`. For the second principal in the role binding, the key is `group:product-eng@example.com`, and the `membership` field in the value is set to `INCLUDED`. |
-| `relevance` | string enum | The relevance of this role binding to the overall determination for the entire policy. |
+| `relevance` | string enum | The relevance of this role binding to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 | `role` | string | The role that this role binding grants. For example, `roles/compute.admin`. For a complete list of predefined IAM roles, as well as the permissions in each role, see https://cloud.google.com/iam/help/roles/reference. |
-| `rolePermission` | string enum | Indicates whether the role granted by this role binding contains the specified permission. |
-| `rolePermissionRelevance` | string enum | The relevance of the permission's existence, or nonexistence, in the role to the overall determination for the entire policy. |
+| `rolePermission` | string enum | Indicates whether the role granted by this role binding contains the specified permission. Values: `ROLE_PERMISSION_INCLUSION_STATE_UNSPECIFIED`, `ROLE_PERMISSION_INCLUDED`, `ROLE_PERMISSION_NOT_INCLUDED`, `ROLE_PERMISSION_UNKNOWN_INFO`. |
+| `rolePermissionRelevance` | string enum | The relevance of the permission's existence, or nonexistence, in the role to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3AllowBindingExplanationAnnotatedAllowMembership`
 
@@ -45,8 +45,8 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `membership` | string enum | Indicates whether the role binding includes the principal. |
-| `relevance` | string enum | The relevance of the principal's status to the overall determination for the role binding. |
+| `membership` | string enum | Indicates whether the role binding includes the principal. Values: `MEMBERSHIP_MATCHING_STATE_UNSPECIFIED`, `MEMBERSHIP_MATCHED`, `MEMBERSHIP_NOT_MATCHED`, `MEMBERSHIP_UNKNOWN_INFO`, `MEMBERSHIP_UNKNOWN_UNSUPPORTED`. |
+| `relevance` | string enum | The relevance of the principal's status to the overall determination for the role binding. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3AllowPolicyExplanation`
 
@@ -55,9 +55,9 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `allowAccessState` | string enum | Indicates whether the principal has the specified permission for the specified resource, based on evaluating all applicable IAM allow policies. |
+| `allowAccessState` | string enum | Indicates whether the principal has the specified permission for the specified resource, based on evaluating all applicable IAM allow policies. Values: `ALLOW_ACCESS_STATE_UNSPECIFIED`, `ALLOW_ACCESS_STATE_GRANTED`, `ALLOW_ACCESS_STATE_NOT_GRANTED`, `ALLOW_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `ALLOW_ACCESS_STATE_UNKNOWN_INFO`. |
 | `explainedPolicies` | array<GoogleCloudPolicytroubleshooterIamV3ExplainedAllowPolicy> | List of IAM allow policies that were evaluated to check the principal's permissions, with annotations to indicate how each policy contributed to the final result. The list of policies includes the policy for the resource itself, as well as allow policies that are inherited from higher levels of the resource hierarchy, including the organization, the folder, and the project. To learn more about the resource hierarchy, see https://cloud.google.com/iam/help/resource-hierarchy. |
-| `relevance` | string enum | The relevance of the allow policy type to the overall access state. |
+| `relevance` | string enum | The relevance of the allow policy type to the overall access state. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3ConditionContext`
 
@@ -145,10 +145,10 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `denyAccessState` | string enum | Indicates whether the principal is denied the specified permission for the specified resource, based on evaluating all applicable IAM deny policies. |
+| `denyAccessState` | string enum | Indicates whether the principal is denied the specified permission for the specified resource, based on evaluating all applicable IAM deny policies. Values: `DENY_ACCESS_STATE_UNSPECIFIED`, `DENY_ACCESS_STATE_DENIED`, `DENY_ACCESS_STATE_NOT_DENIED`, `DENY_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `DENY_ACCESS_STATE_UNKNOWN_INFO`. |
 | `explainedResources` | array<GoogleCloudPolicytroubleshooterIamV3ExplainedDenyResource> | List of resources with IAM deny policies that were evaluated to check the principal's denied permissions, with annotations to indicate how each policy contributed to the final result. The list of resources includes the policy for the resource itself, as well as policies that are inherited from higher levels of the resource hierarchy, including the organization, the folder, and the project. The order of the resources starts from the resource and climbs up the resource hierarchy. To learn more about the resource hierarchy, see https://cloud.google.com/iam/help/resource-hierarchy. |
 | `permissionDeniable` | boolean | Indicates whether the permission to troubleshoot is supported in deny policies. |
-| `relevance` | string enum | The relevance of the deny policy result to the overall access state. |
+| `relevance` | string enum | The relevance of the deny policy result to the overall access state. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3DenyRuleExplanation`
 
@@ -165,10 +165,10 @@ Message types referenced by the methods listed under `references/rest/policytrou
 | `conditionExplanation` | GoogleCloudPolicytroubleshooterIamV3ConditionExplanation | Condition evaluation state for this role binding. |
 | `deniedPermissions` | object | Lists all denied permissions in the deny rule and indicates whether each permission matches the permission in the request. Each key identifies a denied permission in the rule, and each value indicates whether the denied permission matches the permission in the request. |
 | `deniedPrincipals` | object | Lists all denied principals in the deny rule and indicates whether each principal matches the principal in the request, either directly or through membership in a principal set. Each key identifies a denied principal in the rule, and each value indicates whether the denied principal matches the principal in the request. |
-| `denyAccessState` | string enum | Required. Indicates whether \_this rule\_ denies the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal is actually denied on the permission for the resource. There might be another rule that overrides this rule. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. |
+| `denyAccessState` | string enum | Required. Indicates whether \_this rule\_ denies the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal is actually denied on the permission for the resource. There might be another rule that overrides this rule. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. Values: `DENY_ACCESS_STATE_UNSPECIFIED`, `DENY_ACCESS_STATE_DENIED`, `DENY_ACCESS_STATE_NOT_DENIED`, `DENY_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `DENY_ACCESS_STATE_UNKNOWN_INFO`. |
 | `exceptionPermissions` | object | Lists all exception permissions in the deny rule and indicates whether each permission matches the permission in the request. Each key identifies a exception permission in the rule, and each value indicates whether the exception permission matches the permission in the request. |
 | `exceptionPrincipals` | object | Lists all exception principals in the deny rule and indicates whether each principal matches the principal in the request, either directly or through membership in a principal set. Each key identifies a exception principal in the rule, and each value indicates whether the exception principal matches the principal in the request. |
-| `relevance` | string enum | The relevance of this role binding to the overall determination for the entire policy. |
+| `relevance` | string enum | The relevance of this role binding to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3DenyRuleExplanationAnnotatedDenyPrincipalMatching`
 
@@ -177,8 +177,8 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `membership` | string enum | Indicates whether the principal is listed as a denied principal in the deny rule, either directly or through membership in a principal set. |
-| `relevance` | string enum | The relevance of the principal's status to the overall determination for the role binding. |
+| `membership` | string enum | Indicates whether the principal is listed as a denied principal in the deny rule, either directly or through membership in a principal set. Values: `MEMBERSHIP_MATCHING_STATE_UNSPECIFIED`, `MEMBERSHIP_MATCHED`, `MEMBERSHIP_NOT_MATCHED`, `MEMBERSHIP_UNKNOWN_INFO`, `MEMBERSHIP_UNKNOWN_UNSUPPORTED`. |
+| `relevance` | string enum | The relevance of the principal's status to the overall determination for the role binding. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3DenyRuleExplanationAnnotatedPermissionMatching`
 
@@ -187,8 +187,8 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `permissionMatchingState` | string enum | Indicates whether the permission in the request is denied by the deny rule. |
-| `relevance` | string enum | The relevance of the permission status to the overall determination for the rule. |
+| `permissionMatchingState` | string enum | Indicates whether the permission in the request is denied by the deny rule. Values: `PERMISSION_PATTERN_MATCHING_STATE_UNSPECIFIED`, `PERMISSION_PATTERN_MATCHED`, `PERMISSION_PATTERN_NOT_MATCHED`. |
+| `relevance` | string enum | The relevance of the permission status to the overall determination for the rule. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3ExplainedAllowPolicy`
 
@@ -197,11 +197,11 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `allowAccessState` | string enum | Required. Indicates whether \_this policy\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. |
+| `allowAccessState` | string enum | Required. Indicates whether \_this policy\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. Values: `ALLOW_ACCESS_STATE_UNSPECIFIED`, `ALLOW_ACCESS_STATE_GRANTED`, `ALLOW_ACCESS_STATE_NOT_GRANTED`, `ALLOW_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `ALLOW_ACCESS_STATE_UNKNOWN_INFO`. |
 | `bindingExplanations` | array<GoogleCloudPolicytroubleshooterIamV3AllowBindingExplanation> | Details about how each role binding in the policy affects the principal's ability, or inability, to use the permission for the resource. The order of the role bindings matches the role binding order in the policy. If the sender of the request does not have access to the policy, this field is omitted. |
 | `fullResourceName` | string | The full resource name that identifies the resource. For example, `//compute.googleapis.com/projects/my-project/zones/us-central1-a/instances/my-instance`. If the sender of the request does not have access to the policy, this field is omitted. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names. |
 | `policy` | GoogleIamV1Policy | The IAM allow policy attached to the resource. If the sender of the request does not have access to the policy, this field is empty. |
-| `relevance` | string enum | The relevance of this policy to the overall access state in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. |
+| `relevance` | string enum | The relevance of this policy to the overall access state in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3ExplainedDenyPolicy`
 
@@ -210,9 +210,9 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `denyAccessState` | string enum | Required. Indicates whether \_this policy\_ denies the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. |
+| `denyAccessState` | string enum | Required. Indicates whether \_this policy\_ denies the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. Values: `DENY_ACCESS_STATE_UNSPECIFIED`, `DENY_ACCESS_STATE_DENIED`, `DENY_ACCESS_STATE_NOT_DENIED`, `DENY_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `DENY_ACCESS_STATE_UNKNOWN_INFO`. |
 | `policy` | GoogleIamV2Policy | The IAM deny policy attached to the resource. If the sender of the request does not have access to the policy, this field is omitted. |
-| `relevance` | string enum | The relevance of this policy to the overall access state in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. |
+| `relevance` | string enum | The relevance of this policy to the overall access state in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 | `ruleExplanations` | array<GoogleCloudPolicytroubleshooterIamV3DenyRuleExplanation> | Details about how each rule in the policy affects the principal's inability to use the permission for the resource. The order of the deny rule matches the order of the rules in the deny policy. If the sender of the request does not have access to the policy, this field is omitted. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3ExplainedDenyResource`
@@ -222,10 +222,10 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `denyAccessState` | string enum | Required. Indicates whether any policies attached to \_this resource\_ deny the specific permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. |
+| `denyAccessState` | string enum | Required. Indicates whether any policies attached to \_this resource\_ deny the specific permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. Values: `DENY_ACCESS_STATE_UNSPECIFIED`, `DENY_ACCESS_STATE_DENIED`, `DENY_ACCESS_STATE_NOT_DENIED`, `DENY_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `DENY_ACCESS_STATE_UNKNOWN_INFO`. |
 | `explainedPolicies` | array<GoogleCloudPolicytroubleshooterIamV3ExplainedDenyPolicy> | List of IAM deny policies that were evaluated to check the principal's denied permissions, with annotations to indicate how each policy contributed to the final result. |
 | `fullResourceName` | string | The full resource name that identifies the resource. For example, `//compute.googleapis.com/projects/my-project/zones/us-central1-a/instances/my-instance`. If the sender of the request does not have access to the policy, this field is omitted. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names. |
-| `relevance` | string enum | The relevance of this policy to the overall access state in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. |
+| `relevance` | string enum | The relevance of this policy to the overall access state in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3TroubleshootIamPolicyRequest`
 
@@ -246,7 +246,7 @@ Message types referenced by the methods listed under `references/rest/policytrou
 | `accessTuple` | GoogleCloudPolicytroubleshooterIamV3AccessTuple | The access tuple from the request, including any provided context used to evaluate the condition. |
 | `allowPolicyExplanation` | GoogleCloudPolicytroubleshooterIamV3AllowPolicyExplanation | An explanation of how the applicable IAM allow policies affect the final access state. |
 | `denyPolicyExplanation` | GoogleCloudPolicytroubleshooterIamV3DenyPolicyExplanation | An explanation of how the applicable IAM deny policies affect the final access state. |
-| `overallAccessState` | string enum | Indicates whether the principal has the specified permission for the specified resource, based on evaluating all types of the applicable IAM policies. |
+| `overallAccessState` | string enum | Indicates whether the principal has the specified permission for the specified resource, based on evaluating all types of the applicable IAM policies. Values: `OVERALL_ACCESS_STATE_UNSPECIFIED`, `CAN_ACCESS`, `CANNOT_ACCESS`, `UNKNOWN_INFO`, `UNKNOWN_CONDITIONAL`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaAccessContext`
 
@@ -280,15 +280,15 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `allowAccessState` | string enum | Required. Indicates whether \_this role binding\_ gives the specified permission to the specified principal on the specified resource. This field does \_not\_ indicate whether the principal actually has the permission on the resource. There might be another role binding that overrides this role binding. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. |
+| `allowAccessState` | string enum | Required. Indicates whether \_this role binding\_ gives the specified permission to the specified principal on the specified resource. This field does \_not\_ indicate whether the principal actually has the permission on the resource. There might be another role binding that overrides this role binding. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. Values: `ALLOW_ACCESS_STATE_UNSPECIFIED`, `ALLOW_ACCESS_STATE_GRANTED`, `ALLOW_ACCESS_STATE_NOT_GRANTED`, `ALLOW_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `ALLOW_ACCESS_STATE_UNKNOWN_INFO`. |
 | `combinedMembership` | GoogleCloudPolicytroubleshooterIamV3betaAllowBindingExplanationAnnotatedAllowMembership | The combined result of all memberships. Indicates if the principal is included in any role binding, either directly or indirectly. |
 | `condition` | GoogleTypeExpr | A condition expression that specifies when the role binding grants access. To learn about IAM Conditions, see https://cloud.google.com/iam/help/conditions/overview. |
 | `conditionExplanation` | GoogleCloudPolicytroubleshooterIamV3betaConditionExplanation | Condition evaluation state for this role binding. |
 | `memberships` | object | Indicates whether each role binding includes the principal specified in the request, either directly or indirectly. Each key identifies a principal in the role binding, and each value indicates whether the principal in the role binding includes the principal in the request. For example, suppose that a role binding includes the following principals: \* `user:alice@example.com` \* `group:product-eng@example.com` You want to troubleshoot access for `user:bob@example.com`. This user is a member of the group `group:product-eng@example.com`. For the first principal in the role binding, the key is `user:alice@example.com`, and the `membership` field in the value is set to `NOT_INCLUDED`. For the second principal in the role binding, the key is `group:product-eng@example.com`, and the `membership` field in the value is set to `INCLUDED`. |
-| `relevance` | string enum | The relevance of this role binding to the overall determination for the entire policy. |
+| `relevance` | string enum | The relevance of this role binding to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 | `role` | string | The role that this role binding grants. For example, `roles/compute.admin`. For a complete list of predefined IAM roles, as well as the permissions in each role, see https://cloud.google.com/iam/help/roles/reference. |
-| `rolePermission` | string enum | Indicates whether the role granted by this role binding contains the specified permission. |
-| `rolePermissionRelevance` | string enum | The relevance of the permission's existence, or nonexistence, in the role to the overall determination for the entire policy. |
+| `rolePermission` | string enum | Indicates whether the role granted by this role binding contains the specified permission. Values: `ROLE_PERMISSION_INCLUSION_STATE_UNSPECIFIED`, `ROLE_PERMISSION_INCLUDED`, `ROLE_PERMISSION_NOT_INCLUDED`, `ROLE_PERMISSION_UNKNOWN_INFO`. |
+| `rolePermissionRelevance` | string enum | The relevance of the permission's existence, or nonexistence, in the role to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaAllowBindingExplanationAnnotatedAllowMembership`
 
@@ -297,8 +297,8 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `membership` | string enum | Indicates whether the role binding includes the principal. |
-| `relevance` | string enum | The relevance of the principal's status to the overall determination for the role binding. |
+| `membership` | string enum | Indicates whether the role binding includes the principal. Values: `MEMBERSHIP_MATCHING_STATE_UNSPECIFIED`, `MEMBERSHIP_MATCHED`, `MEMBERSHIP_NOT_MATCHED`, `MEMBERSHIP_UNKNOWN_INFO`, `MEMBERSHIP_UNKNOWN_UNSUPPORTED`. |
+| `relevance` | string enum | The relevance of the principal's status to the overall determination for the role binding. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaAllowPolicyExplanation`
 
@@ -307,9 +307,9 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `allowAccessState` | string enum | Indicates whether the principal has the specified permission for the specified resource, based on evaluating all applicable IAM allow policies. |
+| `allowAccessState` | string enum | Indicates whether the principal has the specified permission for the specified resource, based on evaluating all applicable IAM allow policies. Values: `ALLOW_ACCESS_STATE_UNSPECIFIED`, `ALLOW_ACCESS_STATE_GRANTED`, `ALLOW_ACCESS_STATE_NOT_GRANTED`, `ALLOW_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `ALLOW_ACCESS_STATE_UNKNOWN_INFO`. |
 | `explainedPolicies` | array<GoogleCloudPolicytroubleshooterIamV3betaExplainedAllowPolicy> | List of IAM allow policies that were evaluated to check the principal's permissions, with annotations to indicate how each policy contributed to the final result. The list of policies includes the policy for the resource itself, as well as allow policies that are inherited from higher levels of the resource hierarchy, including the organization, the folder, and the project. To learn more about the resource hierarchy, see https://cloud.google.com/iam/help/resource-hierarchy. |
-| `relevance` | string enum | The relevance of the allow policy type to the overall access state. |
+| `relevance` | string enum | The relevance of the allow policy type to the overall access state. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaConditionContext`
 
@@ -397,10 +397,10 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `denyAccessState` | string enum | Indicates whether the principal is denied the specified permission for the specified resource, based on evaluating all applicable IAM deny policies. |
+| `denyAccessState` | string enum | Indicates whether the principal is denied the specified permission for the specified resource, based on evaluating all applicable IAM deny policies. Values: `DENY_ACCESS_STATE_UNSPECIFIED`, `DENY_ACCESS_STATE_DENIED`, `DENY_ACCESS_STATE_NOT_DENIED`, `DENY_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `DENY_ACCESS_STATE_UNKNOWN_INFO`. |
 | `explainedResources` | array<GoogleCloudPolicytroubleshooterIamV3betaExplainedDenyResource> | List of resources with IAM deny policies that were evaluated to check the principal's denied permissions, with annotations to indicate how each policy contributed to the final result. The list of resources includes the policy for the resource itself, as well as policies that are inherited from higher levels of the resource hierarchy, including the organization, the folder, and the project. The order of the resources starts from the resource and climbs up the resource hierarchy. To learn more about the resource hierarchy, see https://cloud.google.com/iam/help/resource-hierarchy. |
 | `permissionDeniable` | boolean | Indicates whether the permission to troubleshoot is supported in deny policies. |
-| `relevance` | string enum | The relevance of the deny policy result to the overall access state. |
+| `relevance` | string enum | The relevance of the deny policy result to the overall access state. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaDenyRuleExplanation`
 
@@ -417,10 +417,10 @@ Message types referenced by the methods listed under `references/rest/policytrou
 | `conditionExplanation` | GoogleCloudPolicytroubleshooterIamV3betaConditionExplanation | Condition evaluation state for this role binding. |
 | `deniedPermissions` | object | Lists all denied permissions in the deny rule and indicates whether each permission matches the permission in the request. Each key identifies a denied permission in the rule, and each value indicates whether the denied permission matches the permission in the request. |
 | `deniedPrincipals` | object | Lists all denied principals in the deny rule and indicates whether each principal matches the principal in the request, either directly or through membership in a principal set. Each key identifies a denied principal in the rule, and each value indicates whether the denied principal matches the principal in the request. |
-| `denyAccessState` | string enum | Required. Indicates whether \_this rule\_ denies the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal is actually denied on the permission for the resource. There might be another rule that overrides this rule. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. |
+| `denyAccessState` | string enum | Required. Indicates whether \_this rule\_ denies the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal is actually denied on the permission for the resource. There might be another rule that overrides this rule. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. Values: `DENY_ACCESS_STATE_UNSPECIFIED`, `DENY_ACCESS_STATE_DENIED`, `DENY_ACCESS_STATE_NOT_DENIED`, `DENY_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `DENY_ACCESS_STATE_UNKNOWN_INFO`. |
 | `exceptionPermissions` | object | Lists all exception permissions in the deny rule and indicates whether each permission matches the permission in the request. Each key identifies a exception permission in the rule, and each value indicates whether the exception permission matches the permission in the request. |
 | `exceptionPrincipals` | object | Lists all exception principals in the deny rule and indicates whether each principal matches the principal in the request, either directly or through membership in a principal set. Each key identifies a exception principal in the rule, and each value indicates whether the exception principal matches the principal in the request. |
-| `relevance` | string enum | The relevance of this role binding to the overall determination for the entire policy. |
+| `relevance` | string enum | The relevance of this role binding to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaDenyRuleExplanationAnnotatedDenyPrincipalMatching`
 
@@ -429,8 +429,8 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `membership` | string enum | Indicates whether the principal is listed as a denied principal in the deny rule, either directly or through membership in a principal set. |
-| `relevance` | string enum | The relevance of the principal's status to the overall determination for the role binding. |
+| `membership` | string enum | Indicates whether the principal is listed as a denied principal in the deny rule, either directly or through membership in a principal set. Values: `MEMBERSHIP_MATCHING_STATE_UNSPECIFIED`, `MEMBERSHIP_MATCHED`, `MEMBERSHIP_NOT_MATCHED`, `MEMBERSHIP_UNKNOWN_INFO`, `MEMBERSHIP_UNKNOWN_UNSUPPORTED`. |
+| `relevance` | string enum | The relevance of the principal's status to the overall determination for the role binding. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaDenyRuleExplanationAnnotatedPermissionMatching`
 
@@ -439,8 +439,8 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `permissionMatchingState` | string enum | Indicates whether the permission in the request is denied by the deny rule. |
-| `relevance` | string enum | The relevance of the permission status to the overall determination for the rule. |
+| `permissionMatchingState` | string enum | Indicates whether the permission in the request is denied by the deny rule. Values: `PERMISSION_PATTERN_MATCHING_STATE_UNSPECIFIED`, `PERMISSION_PATTERN_MATCHED`, `PERMISSION_PATTERN_NOT_MATCHED`. |
+| `relevance` | string enum | The relevance of the permission status to the overall determination for the rule. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaExplainedAllowPolicy`
 
@@ -449,11 +449,11 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `allowAccessState` | string enum | Required. Indicates whether \_this policy\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. |
+| `allowAccessState` | string enum | Required. Indicates whether \_this policy\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. Values: `ALLOW_ACCESS_STATE_UNSPECIFIED`, `ALLOW_ACCESS_STATE_GRANTED`, `ALLOW_ACCESS_STATE_NOT_GRANTED`, `ALLOW_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `ALLOW_ACCESS_STATE_UNKNOWN_INFO`. |
 | `bindingExplanations` | array<GoogleCloudPolicytroubleshooterIamV3betaAllowBindingExplanation> | Details about how each role binding in the policy affects the principal's ability, or inability, to use the permission for the resource. The order of the role bindings matches the role binding order in the policy. If the sender of the request does not have access to the policy, this field is omitted. |
 | `fullResourceName` | string | The full resource name that identifies the resource. For example, `//compute.googleapis.com/projects/my-project/zones/us-central1-a/instances/my-instance`. If the sender of the request does not have access to the policy, this field is omitted. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names. |
 | `policy` | GoogleIamV1Policy | The IAM allow policy attached to the resource. If the sender of the request does not have access to the policy, this field is empty. |
-| `relevance` | string enum | The relevance of this policy to the overall access state in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. |
+| `relevance` | string enum | The relevance of this policy to the overall access state in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaExplainedDenyPolicy`
 
@@ -462,9 +462,9 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `denyAccessState` | string enum | Required. Indicates whether \_this policy\_ denies the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. |
+| `denyAccessState` | string enum | Required. Indicates whether \_this policy\_ denies the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. Values: `DENY_ACCESS_STATE_UNSPECIFIED`, `DENY_ACCESS_STATE_DENIED`, `DENY_ACCESS_STATE_NOT_DENIED`, `DENY_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `DENY_ACCESS_STATE_UNKNOWN_INFO`. |
 | `policy` | GoogleIamV2Policy | The IAM deny policy attached to the resource. If the sender of the request does not have access to the policy, this field is omitted. |
-| `relevance` | string enum | The relevance of this policy to the overall access state in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. |
+| `relevance` | string enum | The relevance of this policy to the overall access state in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 | `ruleExplanations` | array<GoogleCloudPolicytroubleshooterIamV3betaDenyRuleExplanation> | Details about how each rule in the policy affects the principal's inability to use the permission for the resource. The order of the deny rule matches the order of the rules in the deny policy. If the sender of the request does not have access to the policy, this field is omitted. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaExplainedDenyResource`
@@ -474,10 +474,10 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `denyAccessState` | string enum | Required. Indicates whether any policies attached to \_this resource\_ deny the specific permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. |
+| `denyAccessState` | string enum | Required. Indicates whether any policies attached to \_this resource\_ deny the specific permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `overall_access_state` field in the TroubleshootIamPolicyResponse. Values: `DENY_ACCESS_STATE_UNSPECIFIED`, `DENY_ACCESS_STATE_DENIED`, `DENY_ACCESS_STATE_NOT_DENIED`, `DENY_ACCESS_STATE_UNKNOWN_CONDITIONAL`, `DENY_ACCESS_STATE_UNKNOWN_INFO`. |
 | `explainedPolicies` | array<GoogleCloudPolicytroubleshooterIamV3betaExplainedDenyPolicy> | List of IAM deny policies that were evaluated to check the principal's denied permissions, with annotations to indicate how each policy contributed to the final result. |
 | `fullResourceName` | string | The full resource name that identifies the resource. For example, `//compute.googleapis.com/projects/my-project/zones/us-central1-a/instances/my-instance`. If the sender of the request does not have access to the policy, this field is omitted. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names. |
-| `relevance` | string enum | The relevance of this policy to the overall access state in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. |
+| `relevance` | string enum | The relevance of this policy to the overall access state in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaExplainedPABBindingAndPolicy`
 
@@ -486,10 +486,10 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `bindingAndPolicyAccessState` | string enum | Output only. Indicates whether the principal is allowed to access the specified resource based on evaluating the binding and policy. |
+| `bindingAndPolicyAccessState` | string enum | Output only. Indicates whether the principal is allowed to access the specified resource based on evaluating the binding and policy. Values: `PAB_ACCESS_STATE_UNSPECIFIED`, `PAB_ACCESS_STATE_ALLOWED`, `PAB_ACCESS_STATE_NOT_ALLOWED`, `PAB_ACCESS_STATE_NOT_ENFORCED`, `PAB_ACCESS_STATE_UNKNOWN_INFO`. |
 | `explainedPolicy` | GoogleCloudPolicytroubleshooterIamV3betaExplainedPABPolicy | Optional. Details about how this policy contributes to the principal access boundary explanation, with annotations to indicate how the policy contributes to the overall access state. If the caller doesn't have permission to view the policy in the binding, this field is omitted. |
 | `explainedPolicyBinding` | GoogleCloudPolicytroubleshooterIamV3betaExplainedPolicyBinding | Details about how this binding contributes to the principal access boundary explanation, with annotations to indicate how the binding contributes to the overall access state. |
-| `relevance` | string enum | The relevance of this principal access boundary binding and policy to the overall access state. |
+| `relevance` | string enum | The relevance of this principal access boundary binding and policy to the overall access state. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaExplainedPABPolicy`
 
@@ -500,9 +500,9 @@ Message types referenced by the methods listed under `references/rest/policytrou
 |---|---|---|
 | `explainedRules` | array<GoogleCloudPolicytroubleshooterIamV3betaExplainedPABRule> | List of principal access boundary rules that were explained to check the principal's access to specified resource, with annotations to indicate how each rule contributes to the overall access state. |
 | `policy` | GoogleIamV3PrincipalAccessBoundaryPolicy | The policy that is explained. |
-| `policyAccessState` | string enum | Output only. Indicates whether the policy allows access to the specified resource. |
+| `policyAccessState` | string enum | Output only. Indicates whether the policy allows access to the specified resource. Values: `PAB_ACCESS_STATE_UNSPECIFIED`, `PAB_ACCESS_STATE_ALLOWED`, `PAB_ACCESS_STATE_NOT_ALLOWED`, `PAB_ACCESS_STATE_NOT_ENFORCED`, `PAB_ACCESS_STATE_UNKNOWN_INFO`. |
 | `policyVersion` | GoogleCloudPolicytroubleshooterIamV3betaExplainedPABPolicyVersion | Output only. Explanation of the principal access boundary policy's version. |
-| `relevance` | string enum | The relevance of this policy to the overall access state. |
+| `relevance` | string enum | The relevance of this policy to the overall access state. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaExplainedPABPolicyVersion`
 
@@ -511,7 +511,7 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `enforcementState` | string enum | Output only. Indicates whether the policy is enforced based on its version. |
+| `enforcementState` | string enum | Output only. Indicates whether the policy is enforced based on its version. Values: `PAB_POLICY_ENFORCEMENT_STATE_UNSPECIFIED`, `PAB_POLICY_ENFORCEMENT_STATE_ENFORCED`, `PAB_POLICY_ENFORCEMENT_STATE_NOT_ENFORCED`. |
 | `version` | integer (int32) | Output only. The actual version of the policy. - If the policy uses static version, this field is the chosen static version. - If the policy uses dynamic version, this field is the effective latest version. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaExplainedPABRule`
@@ -521,13 +521,13 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `combinedResourceInclusionState` | string enum | Output only. Indicates whether any resource of the rule is the specified resource or includes the specified resource. |
-| `combinedResourceRelevance` | string enum | The relevance of the combined resource inclusion state to the overall access state. |
-| `effect` | string enum | Required. The effect of the rule which describes the access relationship. |
+| `combinedResourceInclusionState` | string enum | Output only. Indicates whether any resource of the rule is the specified resource or includes the specified resource. Values: `RESOURCE_INCLUSION_STATE_UNSPECIFIED`, `RESOURCE_INCLUSION_STATE_INCLUDED`, `RESOURCE_INCLUSION_STATE_NOT_INCLUDED`, `RESOURCE_INCLUSION_STATE_UNKNOWN_INFO`, `RESOURCE_INCLUSION_STATE_UNKNOWN_UNSUPPORTED`. |
+| `combinedResourceRelevance` | string enum | The relevance of the combined resource inclusion state to the overall access state. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
+| `effect` | string enum | Required. The effect of the rule which describes the access relationship. Values: `EFFECT_UNSPECIFIED`, `ALLOW`, `DENY`. |
 | `explainedResources` | array<GoogleCloudPolicytroubleshooterIamV3betaExplainedPABRuleExplainedResource> | List of resources that were explained to check the principal's access to specified resource, with annotations to indicate how each resource contributes to the overall access state. |
 | `pabUnsupportedFeatures` | array<string> | Output only. Unsupported features detected in this rule. Supported values: \* `OPERATION`: Permission Subsetting (Operation constraints). See google.iam.v3.PrincipalAccessBoundaryPolicyRule.operation. |
-| `relevance` | string enum | The relevance of this rule to the overall access state. |
-| `ruleAccessState` | string enum | Output only. Indicates whether the rule allows access to the specified resource. |
+| `relevance` | string enum | The relevance of this rule to the overall access state. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
+| `ruleAccessState` | string enum | Output only. Indicates whether the rule allows access to the specified resource. Values: `PAB_ACCESS_STATE_UNSPECIFIED`, `PAB_ACCESS_STATE_ALLOWED`, `PAB_ACCESS_STATE_NOT_ALLOWED`, `PAB_ACCESS_STATE_NOT_ENFORCED`, `PAB_ACCESS_STATE_UNKNOWN_INFO`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaExplainedPABRuleExplainedResource`
 
@@ -536,9 +536,9 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `relevance` | string enum | The relevance of this resource to the overall access state. |
+| `relevance` | string enum | The relevance of this resource to the overall access state. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 | `resource` | string | The full resource name (https://cloud.google.com/iam/docs/full-resource-names) that identifies the resource that is explained. This can only be a project, a folder, or an organization which is what a PAB rule accepts. |
-| `resourceInclusionState` | string enum | Output only. Indicates whether the resource is the specified resource or includes the specified resource. |
+| `resourceInclusionState` | string enum | Output only. Indicates whether the resource is the specified resource or includes the specified resource. Values: `RESOURCE_INCLUSION_STATE_UNSPECIFIED`, `RESOURCE_INCLUSION_STATE_INCLUDED`, `RESOURCE_INCLUSION_STATE_NOT_INCLUDED`, `RESOURCE_INCLUSION_STATE_UNKNOWN_INFO`, `RESOURCE_INCLUSION_STATE_UNKNOWN_UNSUPPORTED`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaExplainedPolicyBinding`
 
@@ -549,8 +549,8 @@ Message types referenced by the methods listed under `references/rest/policytrou
 |---|---|---|
 | `conditionExplanation` | GoogleCloudPolicytroubleshooterIamV3betaConditionExplanation | Optional. Explanation of the condition in the policy binding. If the policy binding doesn't have a condition, this field is omitted. |
 | `policyBinding` | GoogleIamV3PolicyBinding | The policy binding that is explained. |
-| `policyBindingState` | string enum | Output only. Indicates whether the policy binding takes effect. |
-| `relevance` | string enum | The relevance of this policy binding to the overall access state. |
+| `policyBindingState` | string enum | Output only. Indicates whether the policy binding takes effect. Values: `POLICY_BINDING_STATE_UNSPECIFIED`, `POLICY_BINDING_STATE_ENFORCED`, `POLICY_BINDING_STATE_NOT_ENFORCED`. |
+| `relevance` | string enum | The relevance of this policy binding to the overall access state. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaPABPolicyExplanation`
 
@@ -560,8 +560,8 @@ Message types referenced by the methods listed under `references/rest/policytrou
 | Field | Type | Description |
 |---|---|---|
 | `explainedBindingsAndPolicies` | array<GoogleCloudPolicytroubleshooterIamV3betaExplainedPABBindingAndPolicy> | List of principal access boundary policies and bindings that are applicable to the principal's access state, with annotations to indicate how each binding and policy contributes to the overall access state. |
-| `principalAccessBoundaryAccessState` | string enum | Output only. Indicates whether the principal is allowed to access specified resource, based on evaluating all applicable principal access boundary bindings and policies. |
-| `relevance` | string enum | The relevance of the principal access boundary access state to the overall access state. |
+| `principalAccessBoundaryAccessState` | string enum | Output only. Indicates whether the principal is allowed to access specified resource, based on evaluating all applicable principal access boundary bindings and policies. Values: `PAB_ACCESS_STATE_UNSPECIFIED`, `PAB_ACCESS_STATE_ALLOWED`, `PAB_ACCESS_STATE_NOT_ALLOWED`, `PAB_ACCESS_STATE_NOT_ENFORCED`, `PAB_ACCESS_STATE_UNKNOWN_INFO`. |
+| `relevance` | string enum | The relevance of the principal access boundary access state to the overall access state. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `HEURISTIC_RELEVANCE_NORMAL`, `HEURISTIC_RELEVANCE_HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaTroubleshootIamPolicyErrorRequest`
 
@@ -582,7 +582,7 @@ Message types referenced by the methods listed under `references/rest/policytrou
 | `accessContext` | GoogleCloudPolicytroubleshooterIamV3betaAccessContext | The access context associated with the ErrorInfoId. |
 | `allowPolicyExplanation` | GoogleCloudPolicytroubleshooterIamV3betaAllowPolicyExplanation | An explanation of how the applicable IAM allow policies affect the final access state. |
 | `denyPolicyExplanation` | GoogleCloudPolicytroubleshooterIamV3betaDenyPolicyExplanation | An explanation of how the applicable IAM deny policies affect the final access state. |
-| `overallAccessState` | string enum | Indicates whether the principal has the permission to access the resource, based on evaluating all types of the applicable IAM policies. |
+| `overallAccessState` | string enum | Indicates whether the principal has the permission to access the resource, based on evaluating all types of the applicable IAM policies. Values: `OVERALL_ACCESS_STATE_UNSPECIFIED`, `OVERALL_ACCESS_STATE_CAN_ACCESS`, `OVERALL_ACCESS_STATE_CANNOT_ACCESS`, `OVERALL_ACCESS_STATE_UNKNOWN_INFO`, `OVERALL_ACCESS_STATE_UNKNOWN_CONDITIONAL`. |
 | `pabPolicyExplanation` | GoogleCloudPolicytroubleshooterIamV3betaPABPolicyExplanation | An explanation of how the applicable principal access boundary policies affect the final access state. |
 
 ### `GoogleCloudPolicytroubleshooterIamV3betaTroubleshootIamPolicyRequest`
@@ -604,7 +604,7 @@ Message types referenced by the methods listed under `references/rest/policytrou
 | `accessTuple` | GoogleCloudPolicytroubleshooterIamV3betaAccessTuple | The access tuple from the request, including any provided context used to evaluate the condition. |
 | `allowPolicyExplanation` | GoogleCloudPolicytroubleshooterIamV3betaAllowPolicyExplanation | An explanation of how the applicable IAM allow policies affect the final access state. |
 | `denyPolicyExplanation` | GoogleCloudPolicytroubleshooterIamV3betaDenyPolicyExplanation | An explanation of how the applicable IAM deny policies affect the final access state. |
-| `overallAccessState` | string enum | Indicates whether the principal has the specified permission for the specified resource, based on evaluating all types of the applicable IAM policies. |
+| `overallAccessState` | string enum | Indicates whether the principal has the specified permission for the specified resource, based on evaluating all types of the applicable IAM policies. Values: `OVERALL_ACCESS_STATE_UNSPECIFIED`, `CAN_ACCESS`, `CANNOT_ACCESS`, `UNKNOWN_INFO`, `UNKNOWN_CONDITIONAL`. |
 | `pabPolicyExplanation` | GoogleCloudPolicytroubleshooterIamV3betaPABPolicyExplanation | An explanation of how the applicable principal access boundary policies affect the final access state. |
 
 ### `GoogleCloudPolicytroubleshooterV1AccessTuple`
@@ -625,13 +625,13 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `access` | string enum | Required. Indicates whether \_this binding\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another binding that overrides this binding. To determine whether the principal actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. |
+| `access` | string enum | Required. Indicates whether \_this binding\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another binding that overrides this binding. To determine whether the principal actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. Values: `ACCESS_STATE_UNSPECIFIED`, `GRANTED`, `NOT_GRANTED`, `UNKNOWN_CONDITIONAL`, `UNKNOWN_INFO_DENIED`. |
 | `condition` | GoogleTypeExpr | A condition expression that prevents this binding from granting access unless the expression evaluates to `true`. To learn about IAM Conditions, see https://cloud.google.com/iam/help/conditions/overview. |
 | `memberships` | object | Indicates whether each principal in the binding includes the principal specified in the request, either directly or indirectly. Each key identifies a principal in the binding, and each value indicates whether the principal in the binding includes the principal in the request. For example, suppose that a binding includes the following principals: \* `user:alice@example.com` \* `group:product-eng@example.com` You want to troubleshoot access for `user:bob@example.com`. This user is a principal of the group `group:product-eng@example.com`. For the first principal in the binding, the key is `user:alice@example.com`, and the `membership` field in the value is set to `MEMBERSHIP_NOT_INCLUDED`. For the second principal in the binding, the key is `group:product-eng@example.com`, and the `membership` field in the value is set to `MEMBERSHIP_INCLUDED`. |
-| `relevance` | string enum | The relevance of this binding to the overall determination for the entire policy. |
+| `relevance` | string enum | The relevance of this binding to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 | `role` | string | The role that this binding grants. For example, `roles/compute.serviceAgent`. For a complete list of predefined IAM roles, as well as the permissions in each role, see https://cloud.google.com/iam/help/roles/reference. |
-| `rolePermission` | string enum | Indicates whether the role granted by this binding contains the specified permission. |
-| `rolePermissionRelevance` | string enum | The relevance of the permission's existence, or nonexistence, in the role to the overall determination for the entire policy. |
+| `rolePermission` | string enum | Indicates whether the role granted by this binding contains the specified permission. Values: `ROLE_PERMISSION_UNSPECIFIED`, `ROLE_PERMISSION_INCLUDED`, `ROLE_PERMISSION_NOT_INCLUDED`, `ROLE_PERMISSION_UNKNOWN_INFO_DENIED`. |
+| `rolePermissionRelevance` | string enum | The relevance of the permission's existence, or nonexistence, in the role to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership`
 
@@ -640,8 +640,8 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `membership` | string enum | Indicates whether the binding includes the principal. |
-| `relevance` | string enum | The relevance of the principal's status to the overall determination for the binding. |
+| `membership` | string enum | Indicates whether the binding includes the principal. Values: `MEMBERSHIP_UNSPECIFIED`, `MEMBERSHIP_INCLUDED`, `MEMBERSHIP_NOT_INCLUDED`, `MEMBERSHIP_UNKNOWN_INFO_DENIED`, `MEMBERSHIP_UNKNOWN_UNSUPPORTED`. |
+| `relevance` | string enum | The relevance of the principal's status to the overall determination for the binding. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterV1ExplainedPolicy`
 
@@ -650,11 +650,11 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `access` | string enum | Indicates whether \_this policy\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. |
+| `access` | string enum | Indicates whether \_this policy\_ provides the specified permission to the specified principal for the specified resource. This field does \_not\_ indicate whether the principal actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the principal actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. Values: `ACCESS_STATE_UNSPECIFIED`, `GRANTED`, `NOT_GRANTED`, `UNKNOWN_CONDITIONAL`, `UNKNOWN_INFO_DENIED`. |
 | `bindingExplanations` | array<GoogleCloudPolicytroubleshooterV1BindingExplanation> | Details about how each binding in the policy affects the principal's ability, or inability, to use the permission for the resource. If the sender of the request does not have access to the policy, this field is omitted. |
 | `fullResourceName` | string | The full resource name that identifies the resource. For example, `//compute.googleapis.com/projects/my-project/zones/us-central1-a/instances/my-instance`. If the sender of the request does not have access to the policy, this field is omitted. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names. |
 | `policy` | GoogleIamV1Policy | The IAM policy attached to the resource. If the sender of the request does not have access to the policy, this field is empty. |
-| `relevance` | string enum | The relevance of this policy to the overall determination in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. |
+| `relevance` | string enum | The relevance of this policy to the overall determination in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest`
 
@@ -672,7 +672,7 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `access` | string enum | Indicates whether the principal has the specified permission for the specified resource, based on evaluating all of the applicable IAM policies. |
+| `access` | string enum | Indicates whether the principal has the specified permission for the specified resource, based on evaluating all of the applicable IAM policies. Values: `ACCESS_STATE_UNSPECIFIED`, `GRANTED`, `NOT_GRANTED`, `UNKNOWN_CONDITIONAL`, `UNKNOWN_INFO_DENIED`. |
 | `errors` | array<GoogleRpcStatus> | The general errors contained in the troubleshooting response. |
 | `explainedPolicies` | array<GoogleCloudPolicytroubleshooterV1ExplainedPolicy> | List of IAM policies that were evaluated to check the principal's permissions, with annotations to indicate how each policy contributed to the final result. The list of policies can include the policy for the resource itself. It can also include policies that are inherited from higher levels of the resource hierarchy, including the organization, the folder, and the project. To learn more about the resource hierarchy, see https://cloud.google.com/iam/help/resource-hierarchy. |
 
@@ -694,13 +694,13 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `access` | string enum | Indicates whether \_this binding\_ provides the specified permission to the specified member for the specified resource. This field does \_not\_ indicate whether the member actually has the permission for the resource. There might be another binding that overrides this binding. To determine whether the member actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. |
+| `access` | string enum | Indicates whether \_this binding\_ provides the specified permission to the specified member for the specified resource. This field does \_not\_ indicate whether the member actually has the permission for the resource. There might be another binding that overrides this binding. To determine whether the member actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. Values: `ACCESS_STATE_UNSPECIFIED`, `GRANTED`, `NOT_GRANTED`, `UNKNOWN_CONDITIONAL`, `UNKNOWN_INFO_DENIED`. |
 | `condition` | GoogleTypeExpr | A condition expression that prevents access unless the expression evaluates to `true`. To learn about IAM Conditions, see https://cloud.google.com/iam/help/conditions/overview. |
 | `memberships` | object | Indicates whether each member in the binding includes the member specified in the request, either directly or indirectly. Each key identifies a member in the binding, and each value indicates whether the member in the binding includes the member in the request. For example, suppose that a binding includes the following members: \* `user:alice@example.com` \* `group:product-eng@example.com` You want to troubleshoot access for `user:bob@example.com`. This user is a member of the group `group:product-eng@example.com`. For the first member in the binding, the key is `user:alice@example.com`, and the `membership` field in the value is set to `MEMBERSHIP_NOT_INCLUDED`. For the second member in the binding, the key is `group:product-eng@example.com`, and the `membership` field in the value is set to `MEMBERSHIP_INCLUDED`. |
-| `relevance` | string enum | The relevance of this binding to the overall determination for the entire policy. |
+| `relevance` | string enum | The relevance of this binding to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 | `role` | string | The role that this binding grants. For example, `roles/compute.serviceAgent`. For a complete list of predefined IAM roles, as well as the permissions in each role, see https://cloud.google.com/iam/help/roles/reference. |
-| `rolePermission` | string enum | Indicates whether the role granted by this binding contains the specified permission. |
-| `rolePermissionRelevance` | string enum | The relevance of the permission's existence, or nonexistence, in the role to the overall determination for the entire policy. |
+| `rolePermission` | string enum | Indicates whether the role granted by this binding contains the specified permission. Values: `ROLE_PERMISSION_UNSPECIFIED`, `ROLE_PERMISSION_INCLUDED`, `ROLE_PERMISSION_NOT_INCLUDED`, `ROLE_PERMISSION_UNKNOWN_INFO_DENIED`. |
+| `rolePermissionRelevance` | string enum | The relevance of the permission's existence, or nonexistence, in the role to the overall determination for the entire policy. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterV1betaBindingExplanationAnnotatedMembership`
 
@@ -709,8 +709,8 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `membership` | string enum | Indicates whether the binding includes the member. |
-| `relevance` | string enum | The relevance of the member's status to the overall determination for the binding. |
+| `membership` | string enum | Indicates whether the binding includes the member. Values: `MEMBERSHIP_UNSPECIFIED`, `MEMBERSHIP_INCLUDED`, `MEMBERSHIP_NOT_INCLUDED`, `MEMBERSHIP_UNKNOWN_INFO_DENIED`, `MEMBERSHIP_UNKNOWN_UNSUPPORTED`. |
+| `relevance` | string enum | The relevance of the member's status to the overall determination for the binding. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterV1betaExplainedPolicy`
 
@@ -719,11 +719,11 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `access` | string enum | Indicates whether \_this policy\_ provides the specified permission to the specified member for the specified resource. This field does \_not\_ indicate whether the member actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the member actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. |
+| `access` | string enum | Indicates whether \_this policy\_ provides the specified permission to the specified member for the specified resource. This field does \_not\_ indicate whether the member actually has the permission for the resource. There might be another policy that overrides this policy. To determine whether the member actually has the permission, use the `access` field in the TroubleshootIamPolicyResponse. Values: `ACCESS_STATE_UNSPECIFIED`, `GRANTED`, `NOT_GRANTED`, `UNKNOWN_CONDITIONAL`, `UNKNOWN_INFO_DENIED`. |
 | `bindingExplanations` | array<GoogleCloudPolicytroubleshooterV1betaBindingExplanation> | Details about how each binding in the policy affects the member's ability, or inability, to use the permission for the resource. If the sender of the request does not have access to the policy, this field is omitted. |
 | `fullResourceName` | string | The full resource name that identifies the resource. For example, `//compute.googleapis.com/projects/my-project/zones/us-central1-a/instances/my-instance`. If the sender of the request does not have access to the policy, this field is omitted. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names. |
 | `policy` | GoogleIamV1Policy | The IAM policy attached to the resource. If the sender of the request does not have access to the policy, this field is empty. |
-| `relevance` | string enum | The relevance of this policy to the overall determination in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. |
+| `relevance` | string enum | The relevance of this policy to the overall determination in the TroubleshootIamPolicyResponse. If the sender of the request does not have access to the policy, this field is omitted. Values: `HEURISTIC_RELEVANCE_UNSPECIFIED`, `NORMAL`, `HIGH`. |
 
 ### `GoogleCloudPolicytroubleshooterV1betaTroubleshootIamPolicyRequest`
 
@@ -741,7 +741,7 @@ Message types referenced by the methods listed under `references/rest/policytrou
 
 | Field | Type | Description |
 |---|---|---|
-| `access` | string enum | Indicates whether the member has the specified permission for the specified resource, based on evaluating all of the applicable policies. |
+| `access` | string enum | Indicates whether the member has the specified permission for the specified resource, based on evaluating all of the applicable policies. Values: `ACCESS_STATE_UNSPECIFIED`, `GRANTED`, `NOT_GRANTED`, `UNKNOWN_CONDITIONAL`, `UNKNOWN_INFO_DENIED`. |
 | `explainedPolicies` | array<GoogleCloudPolicytroubleshooterV1betaExplainedPolicy> | List of IAM policies that were evaluated to check the member's permissions, with annotations to indicate how each policy contributed to the final result. The list of policies can include the policy for the resource itself. It can also include policies that are inherited from higher levels of the resource hierarchy, including the organization, the folder, and the project. To learn more about the resource hierarchy, see https://cloud.google.com/iam/help/resource-hierarchy. |
 
 ### `GoogleIamV1AuditConfig`
@@ -762,7 +762,7 @@ Message types referenced by the methods listed under `references/rest/policytrou
 | Field | Type | Description |
 |---|---|---|
 | `exemptedMembers` | array<string> | Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members. |
-| `logType` | string enum | The log type that this config enables. |
+| `logType` | string enum | The log type that this config enables. Values: `LOG_TYPE_UNSPECIFIED`, `ADMIN_READ`, `DATA_WRITE`, `DATA_READ`. |
 
 ### `GoogleIamV1Binding`
 
@@ -842,7 +842,7 @@ Message types referenced by the methods listed under `references/rest/policytrou
 | `etag` | string | Optional. The etag for the policy binding. If this is provided on update, it must match the server's etag. |
 | `name` | string | Identifier. The name of the policy binding, in the format `{binding_parent/locations/{location}/policyBindings/{policy_binding_id}`. The binding parent is the closest Resource Manager resource (project, folder, or organization) to the binding target. Format: \* `projects/{project_id}/locations/{location}/policyBindings/{policy_binding_id}` \* `projects/{project_number}/locations/{location}/policyBindings/{policy_binding_id}` \* `folders/{folder_id}/locations/{location}/policyBindings/{policy_binding_id}` \* `organizations/{organization_id}/locations/{location}/policyBindings/{policy_binding_id}` |
 | `policy` | string | Required. Immutable. The resource name of the policy to be bound. The binding parent and policy must belong to the same organization. |
-| `policyKind` | string enum | Immutable. The kind of the policy to attach in this binding. This field must be one of the following: - Left empty (will be automatically set to the policy kind) - The input policy kind |
+| `policyKind` | string enum | Immutable. The kind of the policy to attach in this binding. This field must be one of the following: - Left empty (will be automatically set to the policy kind) - The input policy kind Values: `POLICY_KIND_UNSPECIFIED`, `PRINCIPAL_ACCESS_BOUNDARY`, `ACCESS`. |
 | `policyUid` | string | Output only. The globally unique ID of the policy to be bound. |
 | `target` | GoogleIamV3PolicyBindingTarget | Required. Immutable. The full resource name of the resource to which the policy will be bound. Immutable once set. |
 | `uid` | string | Output only. The globally unique ID of the policy binding. Assigned when the policy binding is created. |
@@ -892,7 +892,7 @@ Message types referenced by the methods listed under `references/rest/policytrou
 | Field | Type | Description |
 |---|---|---|
 | `description` | string | Optional. The description of the principal access boundary policy rule. Must be less than or equal to 256 characters. |
-| `effect` | string enum | Required. The access relationship of principals to the resources in this rule. |
+| `effect` | string enum | Required. The access relationship of principals to the resources in this rule. Values: `EFFECT_UNSPECIFIED`, `ALLOW`, `DENY`. |
 | `excludedResources` | array<string> | Optional. A list of Resource Manager resources. If an excluded resource is listed in the rule, then the rule does not apply for that resource and its descendants. This takes precedence over the `resources` field. The number of excluded resources in this field is limited to 500 across all rules in the policy. The following resource types are supported: \* Organizations, such as `//cloudresourcemanager.googleapis.com/organizations/123`. \* Folders, such as `//cloudresourcemanager.googleapis.com/folders/123`. \* Projects, such as `//cloudresourcemanager.googleapis.com/projects/123` or `//cloudresourcemanager.googleapis.com/projects/my-project-id`. |
 | `operation` | GoogleIamV3PrincipalAccessBoundaryPolicyRuleOperation | Optional. The operation attributes that determine whether this rule applies to a request. If this field is not specified, the rule applies to all operations. |
 | `resources` | array<string> | Required. A list of Resource Manager resources. If a resource is listed in the rule, then the rule applies for that resource and its descendants. The number of resources in a policy is limited to 500 across all rules in the policy. The following resource types are supported: \* Organizations, such as `//cloudresourcemanager.googleapis.com/organizations/123`. \* Folders, such as `//cloudresourcemanager.googleapis.com/folders/123`. \* Projects, such as `//cloudresourcemanager.googleapis.com/projects/123` or `//cloudresourcemanager.googleapis.com/projects/my-project-id`. |

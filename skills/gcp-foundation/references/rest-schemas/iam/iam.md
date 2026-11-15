@@ -72,7 +72,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | Field | Type | Description |
 |---|---|---|
 | `exemptedMembers` | array<string> | Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members. |
-| `logType` | string enum | The log type that this config enables. |
+| `logType` | string enum | The log type that this config enables. Values: `LOG_TYPE_UNSPECIFIED`, `ADMIN_READ`, `DATA_WRITE`, `DATA_READ`. |
 
 ### `AuditableService`
 
@@ -110,7 +110,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `action` | string enum | The action that was performed on a Binding. Required |
+| `action` | string enum | The action that was performed on a Binding. Required Values: `ACTION_UNSPECIFIED`, `ADD`, `REMOVE`. |
 | `condition` | Expr | The condition that is associated with this binding. |
 | `member` | string | A single identity requesting access for a Google Cloud resource. Follows the same format of Binding.members. Required |
 | `role` | string | Role that is assigned to `members`. For example, `roles/viewer`, `roles/editor`, or `roles/owner`. Required |
@@ -123,7 +123,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | Field | Type | Description |
 |---|---|---|
 | `deleteResource` | boolean | DEPRECATED. Use exclusive_action instead. |
-| `exclusiveAction` | string enum | Excluisive action returned by the CLH. |
+| `exclusiveAction` | string enum | Excluisive action returned by the CLH. Values: `UNKNOWN_REPAIR_ACTION`, `DELETE`, `RETRY`. |
 
 ### `CreateRoleRequest`
 
@@ -142,8 +142,8 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `keyAlgorithm` | string enum | Which type of key and algorithm to use for the key. The default is currently a 2K RSA key. However this may change in the future. |
-| `privateKeyType` | string enum | The output format of the private key. The default value is `TYPE_GOOGLE_CREDENTIALS_FILE`, which is the Google Credentials File format. |
+| `keyAlgorithm` | string enum | Which type of key and algorithm to use for the key. The default is currently a 2K RSA key. However this may change in the future. Values: `KEY_ALG_UNSPECIFIED`, `KEY_ALG_RSA_1024`, `KEY_ALG_RSA_2048`. |
+| `privateKeyType` | string enum | The output format of the private key. The default value is `TYPE_GOOGLE_CREDENTIALS_FILE`, which is the Google Credentials File format. Values: `TYPE_UNSPECIFIED`, `TYPE_PKCS12_FILE`, `TYPE_GOOGLE_CREDENTIALS_FILE`. |
 
 ### `CreateServiceAccountRequest`
 
@@ -199,7 +199,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `key` | string enum | The key for this extended status. |
+| `key` | string enum | The key for this extended status. Values: `SERVICE_ACCOUNT_KEY_EXTENDED_STATUS_KEY_UNSPECIFIED`, `SERVICE_ACCOUNT_KEY_EXTENDED_STATUS_KEY_EXPOSED`, `SERVICE_ACCOUNT_KEY_EXTENDED_STATUS_KEY_COMPROMISE_DETECTED`. |
 | `value` | string | The value for the extended status. |
 
 ### `GetIamPolicyRequest`
@@ -261,7 +261,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `attributesType` | string enum | Required. Represents the IdP and type of claims that should be fetched. |
+| `attributesType` | string enum | Required. Represents the IdP and type of claims that should be fetched. Values: `ATTRIBUTES_TYPE_UNSPECIFIED`, `AZURE_AD_GROUPS_MAIL`, `AZURE_AD_GROUPS_ID`, `AZURE_AD_GROUPS_DISPLAY_NAME`. |
 | `clientId` | string | Required. The OAuth 2.0 client ID for retrieving extra attributes from the identity provider. Required to get the Access Token using client credentials grant flow. |
 | `clientSecret` | GoogleIamAdminV1WorkforcePoolProviderOidcClientSecret | Required. The OAuth 2.0 client secret for retrieving extra attributes from the identity provider. Required to get the Access Token using client credentials grant flow. |
 | `issuerUri` | string | Required. The OIDC identity provider's issuer URI. Must be a valid URI using the `https` scheme. Required to get the OIDC discovery document. |
@@ -316,8 +316,8 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | Field | Type | Description |
 |---|---|---|
 | `additionalScopes` | array<string> | Optional. Additional scopes to request for in the OIDC authentication request on top of scopes requested by default. By default, the `openid`, `profile` and `email` scopes that are supported by the identity provider are requested. Each additional scope may be at most 256 characters. A maximum of 10 additional scopes may be configured. |
-| `assertionClaimsBehavior` | string enum | Required. The behavior for how OIDC Claims are included in the `assertion` object used for attribute mapping and attribute condition. |
-| `responseType` | string enum | Required. The Response Type to request for in the OIDC Authorization Request for web sign-in. The `CODE` Response Type is recommended to avoid the Implicit Flow, for security reasons. |
+| `assertionClaimsBehavior` | string enum | Required. The behavior for how OIDC Claims are included in the `assertion` object used for attribute mapping and attribute condition. Values: `ASSERTION_CLAIMS_BEHAVIOR_UNSPECIFIED`, `MERGE_USER_INFO_OVER_ID_TOKEN_CLAIMS`, `ONLY_ID_TOKEN_CLAIMS`. |
+| `responseType` | string enum | Required. The Response Type to request for in the OIDC Authorization Request for web sign-in. The `CODE` Response Type is recommended to avoid the Implicit Flow, for security reasons. Values: `RESPONSE_TYPE_UNSPECIFIED`, `CODE`, `ID_TOKEN`. |
 
 ### `GoogleIamAdminV1WorkforcePoolProviderSaml`
 
@@ -335,7 +335,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `action` | string enum | The action that was performed on a Binding. Required |
+| `action` | string enum | The action that was performed on a Binding. Required Values: `ACTION_UNSPECIFIED`, `ADD`, `REMOVE`. |
 | `condition` | GoogleTypeExpr | The condition that is associated with this binding. |
 | `member` | string | A single identity requesting access for a Google Cloud resource. Follows the same format of Binding.members. Required |
 | `role` | string | Role that is assigned to `members`. For example, `roles/viewer`, `roles/editor`, or `roles/owner`. Required |
@@ -587,7 +587,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | Field | Type | Description |
 |---|---|---|
 | `caPools` | object | Optional. A required mapping of a Google Cloud region to the CA pool resource located in that region. The CA pool is used for certificate issuance, adhering to the following constraints: \* Key format: A supported cloud region name equivalent to the location identifier in the corresponding map entry's value. \* Value format: A valid CA pool resource path format like: "projects/{project}/locations/{location}/caPools/{ca_pool}" \* Region Matching: Workloads are ONLY issued certificates from CA pools within the same region. Also the CA pool region (in value) must match the workload's region (key). |
-| `keyAlgorithm` | string enum | Optional. Key algorithm to use when generating the key pair. This key pair will be used to create the certificate. If not specified, this will default to ECDSA_P256. |
+| `keyAlgorithm` | string enum | Optional. Key algorithm to use when generating the key pair. This key pair will be used to create the certificate. If not specified, this will default to ECDSA_P256. Values: `KEY_ALGORITHM_UNSPECIFIED`, `RSA_2048`, `RSA_3072`, `RSA_4096`, `ECDSA_P256`, `ECDSA_P384`. |
 | `lifetime` | string (google-duration) | Optional. Lifetime of the workload certificates issued by the CA pool. Must be between 24 hours and 30 days. If not specified, this will be defaulted to 24 hours. |
 | `rotationWindowPercentage` | integer (int32) | Optional. Rotation window percentage, the percentage of remaining lifetime after which certificate rotation is initiated. Must be between 50 and 80. If no value is specified, rotation window percentage is defaulted to 50. |
 | `useDefaultSharedCa` | boolean | Optional. Determines whether the trust domain utilizes the Google Cloud-provisioned default CA. A default CA in the same region as the workload will be selected to issue the certificate. Enabling this will clear any existing `ca_pools` configuration to provision the certificates. NOTE: This field is mutually exclusive with `ca_pools`. If this flag is enabled, certificates will be automatically provisioned from the default shared CAs. This flag should not be set if you want to use your own CA pools to provision the certificates. |
@@ -617,9 +617,9 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `format` | string enum | Output only. The format of the key. |
+| `format` | string enum | Output only. The format of the key. Values: `KEY_FORMAT_UNSPECIFIED`, `RSA_X509_PEM`. |
 | `key` | string | Output only. The key data. The format of the key is represented by the format field. |
-| `keySpec` | string enum | Required. The specifications for the key. |
+| `keySpec` | string enum | Required. The specifications for the key. Values: `KEY_SPEC_UNSPECIFIED`, `RSA_2048`, `RSA_3072`, `RSA_4096`. |
 | `notAfterTime` | string (google-datetime) | Output only. Latest timestamp when this key is valid. Attempts to use this key after this time will fail. Only present if the key data represents a X.509 certificate. |
 | `notBeforeTime` | string (google-datetime) | Output only. Earliest timestamp when this key is valid. Attempts to use this key before this time will fail. Only present if the key data represents a X.509 certificate. |
 
@@ -651,9 +651,9 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 |---|---|---|
 | `debugMessage` | string | Human readable debug message associated with the issue. |
 | `fieldName` | string | The name of the field for which this lint result is about. For nested messages `field_name` consists of names of the embedded fields separated by period character. The top-level qualifier is the input object to lint in the request. For example, the `field_name` value `condition.expression` identifies a lint result for the `expression` field of the provided condition. |
-| `level` | string enum | The validation unit level. |
+| `level` | string enum | The validation unit level. Values: `LEVEL_UNSPECIFIED`, `CONDITION`. |
 | `locationOffset` | integer (int32) | 0-based character position of problematic construct within the object identified by `field_name`. Currently, this is populated only for condition expression. |
-| `severity` | string enum | The validation unit severity. |
+| `severity` | string enum | The validation unit severity. Values: `SEVERITY_UNSPECIFIED`, `ERROR`, `WARNING`, `NOTICE`, `INFO`, `DEPRECATED`. |
 | `validationUnitName` | string | The validation unit name, for instance "lintValidationUnits/ConditionComplexityCheck". |
 
 ### `ListAttestationRulesResponse`
@@ -821,17 +821,17 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `allowedGrantTypes` | array<string> | Optional. The list of OAuth grant types is allowed for the OauthClient. |
+| `allowedGrantTypes` | array<string> | Optional. The list of OAuth grant types is allowed for the OauthClient. Values: `GRANT_TYPE_UNSPECIFIED`, `AUTHORIZATION_CODE_GRANT`, `REFRESH_TOKEN_GRANT`. |
 | `allowedRedirectUris` | array<string> | Required. The list of redirect uris that is allowed to redirect back when authorization process is completed. |
 | `allowedScopes` | array<string> | Required. The list of scopes that the OauthClient is allowed to request during OAuth flows. The following scopes are supported: \* `https://www.googleapis.com/auth/cloud-platform`: See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account. |
 | `clientId` | string | Output only. The system-generated OauthClient id. |
-| `clientType` | string enum | Immutable. The type of OauthClient. Either public or private. For private clients, the client secret can be managed using the dedicated OauthClientCredential resource. |
+| `clientType` | string enum | Immutable. The type of OauthClient. Either public or private. For private clients, the client secret can be managed using the dedicated OauthClientCredential resource. Values: `CLIENT_TYPE_UNSPECIFIED`, `PUBLIC_CLIENT`, `CONFIDENTIAL_CLIENT`. |
 | `description` | string | Optional. A user-specified description of the OauthClient. Cannot exceed 256 characters. |
 | `disabled` | boolean | Optional. Whether the OauthClient is disabled. You cannot use a disabled OAuth client. |
 | `displayName` | string | Optional. A user-specified display name of the OauthClient. Cannot exceed 32 characters. |
 | `expireTime` | string (google-datetime) | Output only. Time after which the OauthClient will be permanently purged and cannot be recovered. |
 | `name` | string | Immutable. Identifier. The resource name of the OauthClient. Format:`projects/{project}/locations/{location}/oauthClients/{oauth_client}`. |
-| `state` | string enum | Output only. The state of the OauthClient. |
+| `state` | string enum | Output only. The state of the OauthClient. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETED`. |
 
 ### `OauthClientCredential`
 
@@ -912,12 +912,12 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | Field | Type | Description |
 |---|---|---|
 | `apiDisabled` | boolean | The service API associated with the permission is not enabled. |
-| `customRolesSupportLevel` | string enum | The current custom role support level. |
+| `customRolesSupportLevel` | string enum | The current custom role support level. Values: `SUPPORTED`, `TESTING`, `NOT_SUPPORTED`. |
 | `description` | string | A brief description of what this Permission is used for. |
 | `name` | string | The name of this Permission. |
 | `onlyInPredefinedRoles` | boolean | — |
 | `primaryPermission` | string | The preferred name for this permission. If present, then this permission is an alias of, and equivalent to, the listed primary_permission. |
-| `stage` | string enum | The current launch stage of the permission. |
+| `stage` | string enum | The current launch stage of the permission. Values: `ALPHA`, `BETA`, `GA`, `DEPRECATED`. |
 | `title` | string | The title of this Permission. |
 
 ### `PermissionDelta`
@@ -979,7 +979,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | `fullResourceName` | string | Required. Required. The full resource name to query from the list of grantable roles. The name follows the Google Cloud Platform resource format. For example, a Cloud Platform project with id `my-project` will be named `//cloudresourcemanager.googleapis.com/projects/my-project`. |
 | `pageSize` | integer (int32) | Optional limit on the number of roles to include in the response. The default is 300, and the maximum is 3,000. |
 | `pageToken` | string | Optional pagination token returned in an earlier QueryGrantableRolesResponse. |
-| `view` | string enum | — |
+| `view` | string enum | — Values: `BASIC`, `FULL`. |
 
 ### `QueryGrantableRolesResponse`
 
@@ -1020,7 +1020,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | Field | Type | Description |
 |---|---|---|
 | `deleteResource` | boolean | DEPRECATED. Use exclusive_action instead. |
-| `exclusiveAction` | string enum | Excluisive action returned by the CLH. |
+| `exclusiveAction` | string enum | Excluisive action returned by the CLH. Values: `UNKNOWN_REPAIR_ACTION`, `DELETE`, `RETRY`. |
 
 ### `RemoveAttestationRuleRequest`
 
@@ -1048,7 +1048,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | `etag` | string (byte) | Used to perform a consistent read-modify-write. |
 | `includedPermissions` | array<string> | The names of the permissions this role grants when bound in an IAM policy. |
 | `name` | string | The name of the role. When `Role` is used in `CreateRole`, the role name must not be set. When `Role` is used in output and other input such as `UpdateRole`, the role name is the complete path. For example, `roles/logging.viewer` for predefined roles, `organizations/{ORGANIZATION_ID}/roles/myRole` for organization-level custom roles, and `projects/{PROJECT_ID}/roles/myRole` for project-level custom roles. |
-| `stage` | string enum | The current launch stage of the role. If the `ALPHA` launch stage has been selected for a role, the `stage` field will not be included in the returned definition for the role. |
+| `stage` | string enum | The current launch stage of the role. If the `ALPHA` launch stage has been selected for a role, the `stage` field will not be included in the returned definition for the role. Values: `ALPHA`, `BETA`, `GA`, `DEPRECATED`, `DISABLED`, `EAP`. |
 | `title` | string | Optional. A human-readable title for the role. Typically this is limited to 100 UTF-8 bytes. |
 
 ### `Saml`
@@ -1084,15 +1084,15 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `disableReason` | string enum | Output only. optional. If the key is disabled, it may have a DisableReason describing why it was disabled. |
+| `disableReason` | string enum | Output only. optional. If the key is disabled, it may have a DisableReason describing why it was disabled. Values: `SERVICE_ACCOUNT_KEY_DISABLE_REASON_UNSPECIFIED`, `SERVICE_ACCOUNT_KEY_DISABLE_REASON_USER_INITIATED`, `SERVICE_ACCOUNT_KEY_DISABLE_REASON_EXPOSED`, `SERVICE_ACCOUNT_KEY_DISABLE_REASON_COMPROMISE_DETECTED`. |
 | `disabled` | boolean | The key status. |
 | `extendedStatus` | array<ExtendedStatus> | Output only. Extended Status provides permanent information about a service account key. For example, if this key was detected as exposed or compromised, that information will remain for the lifetime of the key in the extended_status. |
-| `keyAlgorithm` | string enum | Specifies the algorithm (and possibly key size) for the key. |
-| `keyOrigin` | string enum | The key origin. |
-| `keyType` | string enum | The key type. |
+| `keyAlgorithm` | string enum | Specifies the algorithm (and possibly key size) for the key. Values: `KEY_ALG_UNSPECIFIED`, `KEY_ALG_RSA_1024`, `KEY_ALG_RSA_2048`. |
+| `keyOrigin` | string enum | The key origin. Values: `ORIGIN_UNSPECIFIED`, `USER_PROVIDED`, `GOOGLE_PROVIDED`. |
+| `keyType` | string enum | The key type. Values: `KEY_TYPE_UNSPECIFIED`, `USER_MANAGED`, `SYSTEM_MANAGED`. |
 | `name` | string | The resource name of the service account key in the following format `projects/{PROJECT_ID}/serviceAccounts/{ACCOUNT}/keys/{key}`. |
 | `privateKeyData` | string (byte) | The private key data. Only provided in `CreateServiceAccountKey` responses. Make sure to keep the private key data secure because it allows for the assertion of the service account identity. When base64 decoded, the private key data can be used to authenticate with Google API client libraries and with gcloud auth activate-service-account. |
-| `privateKeyType` | string enum | The output format for the private key. Only provided in `CreateServiceAccountKey` responses, not in `GetServiceAccountKey` or `ListServiceAccountKey` responses. Google never exposes system-managed private keys, and never retains user-managed private keys. |
+| `privateKeyType` | string enum | The output format for the private key. Only provided in `CreateServiceAccountKey` responses, not in `GetServiceAccountKey` or `ListServiceAccountKey` responses. Google never exposes system-managed private keys, and never retains user-managed private keys. Values: `TYPE_UNSPECIFIED`, `TYPE_PKCS12_FILE`, `TYPE_GOOGLE_CREDENTIALS_FILE`. |
 | `publicKeyData` | string (byte) | The public key data. Only provided in `GetServiceAccountKey` responses. |
 | `validAfterTime` | string (google-datetime) | The key can be used after this timestamp. |
 | `validBeforeTime` | string (google-datetime) | The key can be used before this timestamp. For system-managed key pairs, this timestamp is the end time for the private key signing operation. The public key could still be used for verification for a few hours after this time. |
@@ -1314,7 +1314,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | `name` | string | Identifier. The resource name of the pool. Format: `locations/{location}/workforcePools/{workforce_pool_id}` |
 | `parent` | string | Immutable. The resource name of the parent. Format: `organizations/{org-id}`. |
 | `sessionDuration` | string (google-duration) | Optional. Duration that the Google Cloud access tokens, console sign-in sessions, and `gcloud` sign-in sessions from this pool are valid. Must be greater than 15 minutes (900s) and less than 12 hours (43200s). If `session_duration` is not configured, minted credentials have a default duration of one hour (3600s). For SAML providers, the lifetime of the token is the minimum of the `session_duration` and the `SessionNotOnOrAfter` claim in the SAML assertion. |
-| `state` | string enum | Output only. The state of the pool. |
+| `state` | string enum | Output only. The state of the pool. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETED`. |
 
 ### `WorkforcePoolProvider`
 
@@ -1335,9 +1335,9 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | `name` | string | Identifier. The resource name of the provider. Format: `locations/{location}/workforcePools/{workforce_pool_id}/providers/{provider_id}` |
 | `oidc` | GoogleIamAdminV1WorkforcePoolProviderOidc | An OpenID Connect 1.0 identity provider configuration. |
 | `saml` | GoogleIamAdminV1WorkforcePoolProviderSaml | A SAML identity provider configuration. |
-| `scimUsage` | string enum | Optional. Gemini Enterprise only. Specifies whether the workforce identity pool provider uses SCIM-managed groups instead of the `google.groups` attribute mapping for authorization checks. The `scim_usage` and `extended_attributes_oauth2_client` fields are mutually exclusive. A request that enables both fields on the same workforce identity pool provider will produce an error. |
-| `state` | string enum | Output only. The state of the provider. |
-| `vendorType` | string enum | Optional. The vendor type of the third-party identity provider. |
+| `scimUsage` | string enum | Optional. Gemini Enterprise only. Specifies whether the workforce identity pool provider uses SCIM-managed groups instead of the `google.groups` attribute mapping for authorization checks. The `scim_usage` and `extended_attributes_oauth2_client` fields are mutually exclusive. A request that enables both fields on the same workforce identity pool provider will produce an error. Values: `SCIM_USAGE_UNSPECIFIED`, `ENABLED_FOR_GROUPS`, `ENABLED_FOR_USERS_GROUPS`. |
+| `state` | string enum | Output only. The state of the provider. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETED`. |
+| `vendorType` | string enum | Optional. The vendor type of the third-party identity provider. Values: `VENDOR_TYPE_UNSPECIFIED`, `ENTRA_ID`, `OKTA`, `PING_FEDERATE`, `ADFS`, `KEYCLOAK`, `FORGE_ROCK`, `JUMP_CLOUD`, `ONE_LOGIN`, `GENERIC`. |
 
 ### `WorkforcePoolProviderKey`
 
@@ -1349,8 +1349,8 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | `expireTime` | string (google-datetime) | Output only. The time after which the key will be permanently deleted and cannot be recovered. Note that the key may get purged before this time if the total limit of keys per provider is exceeded. |
 | `keyData` | KeyData | Immutable. Public half of the asymmetric key. |
 | `name` | string | Identifier. The resource name of the key. Format: `locations/{location}/workforcePools/{workforce_pool_id}/providers/{provider_id}/keys/{key_id}` |
-| `state` | string enum | Output only. The state of the key. |
-| `use` | string enum | Required. The purpose of the key. |
+| `state` | string enum | Output only. The state of the key. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETED`. |
+| `use` | string enum | Required. The purpose of the key. Values: `KEY_USE_UNSPECIFIED`, `ENCRYPTION`. |
 
 ### `WorkforcePoolProviderScimTenant`
 
@@ -1366,7 +1366,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | `name` | string | Identifier. Gemini Enterprise only. The resource name of the SCIM Tenant. Format: `locations/{location}/workforcePools/{workforce_pool}/providers/ {workforce_pool_provider}/scimTenants/{scim_tenant}` |
 | `purgeTime` | string (google-datetime) | Output only. Gemini Enterprise only. The timestamp that represents the time when the SCIM tenant is purged. |
 | `serviceAgent` | string | Output only. Service Agent created by SCIM Tenant API. SCIM tokens created under this tenant will be attached to this service agent. |
-| `state` | string enum | Output only. Gemini Enterprise only. The state of the tenant. |
+| `state` | string enum | Output only. Gemini Enterprise only. The state of the tenant. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETED`. |
 
 ### `WorkforcePoolProviderScimToken`
 
@@ -1378,7 +1378,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | `displayName` | string | Optional. Gemini Enterprise only. The display name of the SCIM token. Cannot exceed 32 characters. |
 | `name` | string | Identifier. Gemini Enterprise only. The resource name of the SCIM Token. Format: `locations/{location}/workforcePools/{workforce_pool}/providers/ {workforce_pool_provider}/scimTenants/{scim_tenant}/tokens/{token}` |
 | `securityToken` | string | Output only. Gemini Enterprise only. The token string. Provide this to the IdP for authentication. Will be set only during creation. |
-| `state` | string enum | Output only. Gemini Enterprise only. The state of the token. |
+| `state` | string enum | Output only. Gemini Enterprise only. The state of the token. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETED`. |
 
 ### `WorkloadIdentityPool`
 
@@ -1393,9 +1393,9 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | `expireTime` | string (google-datetime) | Output only. Time after which the workload identity pool will be permanently purged and cannot be recovered. |
 | `inlineCertificateIssuanceConfig` | InlineCertificateIssuanceConfig | Optional. Defines the Certificate Authority (CA) pool resources and configurations required for issuance and rotation of mTLS workload certificates. |
 | `inlineTrustConfig` | InlineTrustConfig | Optional. Represents config to add additional trusted trust domains. |
-| `mode` | string enum | Immutable. The mode the pool is operating in. |
+| `mode` | string enum | Immutable. The mode the pool is operating in. Values: `MODE_UNSPECIFIED`, `FEDERATION_ONLY`, `TRUST_DOMAIN`, `SYSTEM_TRUST_DOMAIN`. |
 | `name` | string | Identifier. The resource name of the pool. |
-| `state` | string enum | Output only. The state of the pool. |
+| `state` | string enum | Output only. The state of the pool. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETED`. |
 
 ### `WorkloadIdentityPoolManagedIdentity`
 
@@ -1408,7 +1408,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | `disabled` | boolean | Optional. Whether the managed identity is disabled. If disabled, credentials may no longer be issued for the identity, however existing credentials will still be accepted until they expire. |
 | `expireTime` | string (google-datetime) | Output only. Time after which the managed identity will be permanently purged and cannot be recovered. |
 | `name` | string | Identifier. The resource name of the managed identity. |
-| `state` | string enum | Output only. The state of the managed identity. |
+| `state` | string enum | Output only. The state of the managed identity. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETED`. |
 
 ### `WorkloadIdentityPoolNamespace`
 
@@ -1422,7 +1422,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | `expireTime` | string (google-datetime) | Output only. Time after which the namespace will be permanently purged and cannot be recovered. |
 | `name` | string | Identifier. The resource name of the namespace. |
 | `ownerService` | OwnerService | Output only. The Google Cloud service that owns this namespace. |
-| `state` | string enum | Output only. The state of the namespace. |
+| `state` | string enum | Output only. The state of the namespace. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETED`. |
 
 ### `WorkloadIdentityPoolOperationMetadata`
 
@@ -1447,7 +1447,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | `name` | string | Identifier. The resource name of the provider. |
 | `oidc` | Oidc | An OpenId Connect 1.0 identity provider. |
 | `saml` | Saml | An SAML 2.0 identity provider. |
-| `state` | string enum | Output only. The state of the provider. |
+| `state` | string enum | Output only. The state of the provider. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETED`. |
 | `x509` | X509 | An X.509-type identity provider. |
 
 ### `WorkloadIdentityPoolProviderKey`
@@ -1460,8 +1460,8 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 | `expireTime` | string (google-datetime) | Output only. Time after which the key will be permanently purged and cannot be recovered. Note that the key may get purged before this timestamp if the total limit of keys per provider is crossed. |
 | `keyData` | KeyData | Immutable. Public half of the asymmetric key. |
 | `name` | string | Identifier. The resource name of the key. |
-| `state` | string enum | Output only. The state of the key. |
-| `use` | string enum | Required. The purpose of the key. |
+| `state` | string enum | Output only. The state of the key. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETED`. |
+| `use` | string enum | Required. The purpose of the key. Values: `KEY_USE_UNSPECIFIED`, `ENCRYPTION`. |
 
 ### `X509`
 

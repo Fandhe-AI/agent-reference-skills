@@ -60,7 +60,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 
 | Field | Type | Description |
 |---|---|---|
-| `notificationCode` | string enum | Warning notification enum. Can be used for localization. |
+| `notificationCode` | string enum | Warning notification enum. Can be used for localization. Values: `NOTIFICATION_CODE_UNSPECIFIED`, `MISSING_LOWERCASE_CHARACTER`, `MISSING_UPPERCASE_CHARACTER`, `MISSING_NUMERIC_CHARACTER`, `MISSING_NON_ALPHANUMERIC_CHARACTER`, `MINIMUM_PASSWORD_LENGTH`, `MAXIMUM_PASSWORD_LENGTH`. |
 | `notificationMessage` | string | Warning notification string. Can be used as fallback. |
 
 ### `GoogleCloudIdentitytoolkitV1VerifyIosClientRequest`
@@ -211,7 +211,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 |---|---|---|
 | `allowedNonAlphanumericCharacters` | array<string> | Output only. Allowed characters which satisfy the non_alphanumeric requirement. |
 | `customStrengthOptions` | GoogleCloudIdentitytoolkitV2CustomStrengthOptions | The custom strength options enforced by the password policy. |
-| `enforcementState` | string enum | Output only. Which enforcement mode to use for the password policy. |
+| `enforcementState` | string enum | Output only. Which enforcement mode to use for the password policy. Values: `ENFORCEMENT_STATE_UNSPECIFIED`, `OFF`, `ENFORCE`. |
 | `forceUpgradeOnSignin` | boolean | Users must have a password compliant with the password policy to sign-in. |
 | `schemaVersion` | integer (int32) | Output only. schema version number for the password policy |
 
@@ -234,8 +234,8 @@ Message types referenced by the methods listed under `references/rest/identityto
 
 | Field | Type | Description |
 |---|---|---|
-| `enforcementState` | string enum | The reCAPTCHA enforcement state for the provider. |
-| `provider` | string enum | The provider that has reCAPTCHA protection. |
+| `enforcementState` | string enum | The reCAPTCHA enforcement state for the provider. Values: `ENFORCEMENT_STATE_UNSPECIFIED`, `OFF`, `AUDIT`, `ENFORCE`. |
+| `provider` | string enum | The provider that has reCAPTCHA protection. Values: `RECAPTCHA_PROVIDER_UNSPECIFIED`, `EMAIL_PASSWORD_PROVIDER`, `PHONE_PROVIDER`. |
 
 ### `GoogleCloudIdentitytoolkitV2RevokeTokenRequest`
 
@@ -249,7 +249,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | `redirectUri` | string | The redirect URI provided in the initial authorization request made by the client to the IDP. The URI must use the HTTPS protocol, include a domain name, and can't contain an IP address or localhost. Required if token_type is CODE. |
 | `tenantId` | string | The ID of the Identity Platform tenant the user is signing in to. If not set, the user will sign in to the default Identity Platform project. |
 | `token` | string | Required. The token to be revoked. If an authorization_code is passed in, the API will first exchange the code for access token and then revoke the token exchanged. |
-| `tokenType` | string enum | Required. The type of the token to be revoked. |
+| `tokenType` | string enum | Required. The type of the token to be revoked. Values: `TOKEN_TYPE_UNSPECIFIED`, `REFRESH_TOKEN`, `ACCESS_TOKEN`, `CODE`. |
 
 ### `GoogleCloudIdentitytoolkitV2RevokeTokenResponse`
 
@@ -287,13 +287,13 @@ Message types referenced by the methods listed under `references/rest/identityto
 |---|---|---|
 | `autoRetrievalInfo` | GoogleCloudIdentitytoolkitV2AutoRetrievalInfo | Android only. Used by Google Play Services to identify the app for auto-retrieval. |
 | `captchaResponse` | string | The reCAPTCHA Enterprise token provided by the reCAPTCHA client-side integration. Required when reCAPTCHA enterprise is enabled. |
-| `clientType` | string enum | The client type, web, android or ios. Required when reCAPTCHA Enterprise is enabled. |
+| `clientType` | string enum | The client type, web, android or ios. Required when reCAPTCHA Enterprise is enabled. Values: `CLIENT_TYPE_UNSPECIFIED`, `CLIENT_TYPE_WEB`, `CLIENT_TYPE_ANDROID`, `CLIENT_TYPE_IOS`. |
 | `iosReceipt` | string | iOS only. Receipt of successful app token validation with APNS. |
 | `iosSecret` | string | iOS only. Secret delivered to iOS app via APNS. |
 | `phoneNumber` | string | Required for enrollment. Phone number to be enrolled as MFA. |
 | `playIntegrityToken` | string | Android only. Used to assert application identity in place of a recaptcha token (or safety net token). A Play Integrity Token can be generated via the \[PlayIntegrity API\] (https://developer.android.com/google/play/integrity) with applying SHA256 to the `phone_number` field as the nonce. |
 | `recaptchaToken` | string | Web only. Recaptcha solution. |
-| `recaptchaVersion` | string enum | The reCAPTCHA version of the reCAPTCHA token in the captcha_response. Required when reCAPTCHA Enterprise is enabled. |
+| `recaptchaVersion` | string enum | The reCAPTCHA version of the reCAPTCHA token in the captcha_response. Required when reCAPTCHA Enterprise is enabled. Values: `RECAPTCHA_VERSION_UNSPECIFIED`, `RECAPTCHA_ENTERPRISE`. |
 | `safetyNetToken` | string | Android only. Used to assert application identity in place of a recaptcha token. A SafetyNet Token can be generated via the SafetyNet Android Attestation API (https://developer.android.com/training/safetynet/attestation.html), with the Base64 encoding of the `phone_number` field as the nonce. |
 
 ### `GoogleCloudIdentitytoolkitV2StartMfaPhoneResponseInfo`
@@ -384,7 +384,7 @@ Message types referenced by the methods listed under `references/rest/identityto
 | Field | Type | Description |
 |---|---|---|
 | `exemptedMembers` | array<string> | Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members. |
-| `logType` | string enum | The log type that this config enables. |
+| `logType` | string enum | The log type that this config enables. Values: `LOG_TYPE_UNSPECIFIED`, `ADMIN_READ`, `DATA_WRITE`, `DATA_READ`. |
 
 ### `GoogleIamV1Binding`
 
