@@ -1,12 +1,12 @@
 ---
-source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1
+source: https://cloudasset.googleapis.com/$discovery/rest?version=v1
 ---
 
 # Cloud Asset API REST API (cloudasset)
 
 ## Signature / Usage
 
-Base URL: `https://cloudasset.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1p1beta1).
+Base URL: `https://cloudasset.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1).
 
 ### `cloudasset.assets.list`
 
@@ -140,8 +140,8 @@ Base URL: `https://cloudasset.googleapis.com`. Methods are listed by `id`; the `
 
 ### `cloudasset.operations.get`
 
-- Versions: v1p7beta1, v1
-- `GET https://cloudasset.googleapis.com/v1p7beta1/{+name}`
+- Versions: v1, v1p7beta1
+- `GET https://cloudasset.googleapis.com/v1/{+name}`
 - Gets the latest state of a long-running operation. Clients can use this method to poll the operation result at intervals as recommended by the API service.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`, `https://www.googleapis.com/auth/cloudasset`
 - Request: —; Response: `Operation`
@@ -428,6 +428,18 @@ Base URL: `https://cloudasset.googleapis.com`. Methods are listed by `id`; the `
 | `readTimeWindow.startTime` | query | string (google-datetime) | no | Start time of the time window (exclusive). |
 | `relationshipTypes` | query | repeated string | no | Optional. A list of relationship types to output, for example: `INSTANCE_TO_INSTANCEGROUP`. This field should only be specified if content_type=RELATIONSHIP. \* If specified: it outputs specified relationships' history on the \[asset_names\]. It returns an error if any of the \[relationship_types\] doesn't belong to the supported relationship types of the \[asset_names\] or if any of the \[asset_names\]'s types doesn't belong to the source types of the \[relationship_types\]. \* Otherwise: it outputs the supported relationships' history on the \[asset_names\] or returns an error if any of the \[asset_names\]'s types has no relationship support. See Introduction to Cloud Asset Inventory (https://cloud.google.com/asset-inventory/docs/overview) for all supported asset types and relationship types. |
 
+### `cloudasset.exportAssets`
+
+- Versions: v1, v1p7beta1
+- `POST https://cloudasset.googleapis.com/v1/{+parent}:exportAssets`
+- Exports assets with time and resource types to a given Cloud Storage location/BigQuery table. For Cloud Storage location destinations, the output format is newline-delimited JSON. Each line represents a google.cloud.asset.v1.Asset in the JSON format; for BigQuery table destinations, the output table stores the fields in asset Protobuf as columns. This API implements the google.longrunning.Operation API, which allows you to keep track of the export. We recommend intervals of at least 2 seconds with exponential retry to poll the export operation result. For regular-size resource parent, the export operation usually finishes within 5 minutes.
+- Scopes: `https://www.googleapis.com/auth/cloud-platform`
+- Request: `ExportAssetsRequest`; Response: `Operation`
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `parent` | path | string | yes | Required. The relative name of the root asset. This can only be an organization number (such as "organizations/123"), a project ID (such as "projects/my-project-id"), or a project number (such as "projects/12345"), or a folder number (such as "folders/123"). |
+
 ### `cloudasset.queryAssets`
 
 - Versions: v1
@@ -475,18 +487,6 @@ Base URL: `https://cloudasset.googleapis.com`. Methods are listed by `id`; the `
 | `query` | query | string | no | Optional. The query statement. See how to construct a query (https://cloud.google.com/asset-inventory/docs/searching-resources#how_to_construct_a_query) for more information. If not specified or empty, it will search all the resources within the specified `scope`. Examples: \* `name:Important` to find Google Cloud resources whose name contains `Important` as a word. \* `name=Important` to find the Google Cloud resource whose name is exactly `Important`. \* `displayName:Impor*` to find Google Cloud resources whose display name contains `Impor` as a prefix of any word in the field. \* `location:us-west*` to find Google Cloud resources whose location contains both `us` and `west` as prefixes. \* `labels:prod` to find Google Cloud resources whose labels contain `prod` as a key or value. \* `labels.env:prod` to find Google Cloud resources that have a label `env` and its value is `prod`. \* `labels.env:*` to find Google Cloud resources that have a label `env`. \* `tagKeys:env` to find Google Cloud resources that have directly attached tags where the \[`TagKey.namespacedName`\](https://cloud.google.com/resource-manager/reference/rest/v3/tagKeys#resource:-tagkey) contains `env`. \* `tagValues:prod*` to find Google Cloud resources that have directly attached tags where the \[`TagValue.namespacedName`\](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue) contains a word prefixed by `prod`. \* `tagValueIds=tagValues/123` to find Google Cloud resources that have directly attached tags where the \[`TagValue.name`\](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue) is exactly `tagValues/123`. \* `effectiveTagKeys:env` to find Google Cloud resources that have directly attached or inherited tags where the \[`TagKey.namespacedName`\](https://cloud.google.com/resource-manager/reference/rest/v3/tagKeys#resource:-tagkey) contains `env`. \* `effectiveTagValues:prod*` to find Google Cloud resources that have directly attached or inherited tags where the \[`TagValue.namespacedName`\](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue) contains a word prefixed by `prod`. \* `effectiveTagValueIds=tagValues/123` to find Google Cloud resources that have directly attached or inherited tags where the \[`TagValue.name`\](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue) is exactly `tagValues/123`. \* `kmsKey:key` to find Google Cloud resources encrypted with a customer-managed encryption key whose name contains `key` as a word. This field is deprecated. Use the `kmsKeys` field to retrieve Cloud KMS key information. \* `kmsKeys:key` to find Google Cloud resources encrypted with customer-managed encryption keys whose name contains the word `key`. \* `relationships:instance-group-1` to find Google Cloud resources that have relationships with `instance-group-1` in the related resource name. \* `relationships:INSTANCE_TO_INSTANCEGROUP` to find Compute Engine instances that have relationships of type `INSTANCE_TO_INSTANCEGROUP`. \* `relationships.INSTANCE_TO_INSTANCEGROUP:instance-group-1` to find Compute Engine instances that have relationships with `instance-group-1` in the Compute Engine instance group resource name, for relationship type `INSTANCE_TO_INSTANCEGROUP`. \* `sccSecurityMarks.key=value` to find Cloud resources that are attached with security marks whose key is `key` and value is `value`. \* `sccSecurityMarks.key:*` to find Cloud resources that are attached with security marks whose key is `key`. \* `state:ACTIVE` to find Google Cloud resources whose state contains `ACTIVE` as a word. \* `NOT state:ACTIVE` to find Google Cloud resources whose state doesn't contain `ACTIVE` as a word. \* `createTime<1609459200` to find Google Cloud resources that were created before `2021-01-01 00:00:00 UTC`. `1609459200` is the epoch timestamp of `2021-01-01 00:00:00 UTC` in seconds. \* `updateTime>1609459200` to find Google Cloud resources that were updated after `2021-01-01 00:00:00 UTC`. `1609459200` is the epoch timestamp of `2021-01-01 00:00:00 UTC` in seconds. \* `Important` to find Google Cloud resources that contain `Important` as a word in any of the searchable fields. \* `Impor*` to find Google Cloud resources that contain `Impor` as a prefix of any word in any of the searchable fields. \* `Important location:(us-west1 OR global)` to find Google Cloud resources that contain `Important` as a word in any of the searchable fields and are also located in the `us-west1` region or the `global` location. |
 | `readMask` | query | string (google-fieldmask) | no | Optional. A comma-separated list of fields that you want returned in the results. The following fields are returned by default if not specified: \* `name` \* `assetType` \* `project` \* `folders` \* `organization` \* `displayName` \* `description` \* `location` \* `labels` \* `tags` \* `effectiveTags` \* `networkTags` \* `kmsKeys` \* `createTime` \* `updateTime` \* `state` \* `additionalAttributes` \* `parentFullResourceName` \* `parentAssetType` Some fields of large size, such as `versionedResources`, `attachedResources`, `effectiveTags` etc., are not returned by default, but you can specify them in the `read_mask` parameter if you want to include them. If `"*"` is specified, all available fields (https://cloud.google.com/asset-inventory/docs/reference/rest/v1/TopLevel/searchAllResources#resourcesearchresult) are returned. Examples: `"name,location"`, `"name,versionedResources"`, `"*"`. Any invalid field path will trigger INVALID_ARGUMENT error. |
 
-### `cloudasset.exportAssets`
-
-- Versions: v1p7beta1, v1
-- `POST https://cloudasset.googleapis.com/v1p7beta1/{+parent}:exportAssets`
-- Exports assets with time and resource types to a given Cloud Storage location/BigQuery table. For Cloud Storage location destinations, the output format is newline-delimited JSON. Each line represents a google.cloud.asset.v1p7beta1.Asset in the JSON format; for BigQuery table destinations, the output table stores the fields in asset proto as columns. This API implements the google.longrunning.Operation API , which allows you to keep track of the export. We recommend intervals of at least 2 seconds with exponential retry to poll the export operation result. For regular-size resource parent, the export operation usually finishes within 5 minutes.
-- Scopes: `https://www.googleapis.com/auth/cloud-platform`
-- Request: `GoogleCloudAssetV1p7beta1ExportAssetsRequest`; Response: `Operation`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `parent` | path | string | yes | Required. The relative name of the root asset. This can only be an organization number (such as "organizations/123"), a project ID (such as "projects/my-project-id"), or a project number (such as "projects/12345"), or a folder number (such as "folders/123"). |
-
 ### Example request skeleton
 
 Generated from the Discovery entry of `cloudasset.assets.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
@@ -499,10 +499,10 @@ curl -X GET \
 
 ## Notes
 
-- Generated from the Discovery document(s) v1p7beta1, v1p1beta1, v1p5beta1, v1, v1beta1 of `cloudasset` (retrieved 2026-11-14). Resources on this page: assets, effectiveIamPolicies, feeds, folders, iamPolicies, operations, organizations, projects, resources, savedQueries, v1, v1p7beta1.
+- Generated from the Discovery document(s) v1, v1p7beta1, v1p5beta1, v1p1beta1, v1beta1 of `cloudasset` (retrieved 2026-11-14). Resources on this page: assets, effectiveIamPolicies, feeds, folders, iamPolicies, operations, organizations, projects, resources, savedQueries, v1.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
 - Message schemas are listed under `references/rest-schemas/cloudasset/`.
-- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p5beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1, https://cloudasset.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
+- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p5beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
 
