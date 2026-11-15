@@ -1,0 +1,345 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/filestore/instances/update
+---
+
+# gcloud filestore instances update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud filestore instances update
+
+```text
+NAME
+    gcloud filestore instances update - update a Filestore instance
+
+SYNOPSIS
+    gcloud filestore instances update (INSTANCE : --zone=ZONE) [--async]
+        [--description=DESCRIPTION] [--location=LOCATION]
+        [--performance=[max-iops=MAX-IOPS],[max-iops-per-tb=MAX-IOPS-PER-TB]]
+        [--region=REGION] [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [[--file-share=[capacity=CAPACITY],
+          [name=NAME],[nfs-export-options=NFS-EXPORT-OPTIONS]
+          : --clear-nfs-export-options]]
+        [--[no-]deletion-protection
+          --deletion-protection-reason=DELETION_PROTECTION_REASON]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update a Filestore instance.
+
+EXAMPLES
+    The following command updates the Filestore instance NAME to change the
+    description to "A new description."
+
+        $ gcloud filestore instances update NAME \
+            --description="A new description."
+
+    The following command updates a Filestore instance named NAME to add the
+    label "key1=value1" and remove any metadata with the label "key2".
+
+        $ gcloud filestore instances update NAME \
+            --update-labels=key1=value1 --remove-labels=key2
+
+        $ gcloud filestore instances update NAME --zone=ZONE \
+            --flags-file=FILE_PATH
+
+    Example json configuration file:        {
+        "--file-share":
+        {
+          "capacity": "102400",
+          "name": "my_vol",
+          "nfs-export-options": [
+            {
+              "access-mode": "READ_WRITE",
+              "ip-ranges": [
+                "10.0.0.0/29",
+                "10.2.0.0/29"
+              ],
+              "squash-mode": "ROOT_SQUASH",
+              "anon_uid": 1003,
+              "anon_gid": 1003
+            }
+          ]
+        }
+        }
+
+    The following command updates a Filestore instance named NAME to change the
+    capacity to CAPACITY.
+
+        $ gcloud filestore instances update NAME --project=PROJECT_ID \
+            --zone=ZONE --file-share=name=VOLUME_NAME,capacity=CAPACITY
+
+    The following command updates a Filestore instance named NAME to configure
+    the max-iops-per-tb to MAX-IOPS-PER-TB.
+
+        $ gcloud filestore instances update NAME --project=PROJECT_ID \
+            --zone=ZONE --performance=max-iops-per-tb=MAX-IOPS-PER-TB
+
+POSITIONAL ARGUMENTS
+     Instance resource - The instance to update. The arguments in this group
+     can be used to specify the attributes of this resource. (NOTE) Some
+     attributes are not given arguments in this group but can be set in other
+     ways.
+
+     To set the project attribute:
+      * provide the argument instance on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       INSTANCE
+          ID of the instance or fully qualified identifier for the instance.
+
+          To set the instance attribute:
+          + provide the argument instance on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --zone=ZONE
+          The zone of the instance.
+
+          To set the zone attribute:
+          + provide the argument instance on the command line with a fully
+            specified name;
+          + provide the argument --zone on the command line;
+          + provide the argument region on the command line;
+          + provide the argument location on the command line;
+          + set the property filestore/zone;
+          + set the property filestore/region;
+          + set the property filestore/location.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --description=DESCRIPTION
+        A description of the Cloud Filestore instance.
+
+     --location=LOCATION
+        Location of the Cloud Filestore instance/operation.
+
+     --performance=[max-iops=MAX-IOPS],[max-iops-per-tb=MAX-IOPS-PER-TB]
+        Performance configuration for the instance. This flag is used to
+        configure the read IOPS provisioned for the instance. The instance's
+        write IOPS and read/write throughputs will be derived from the
+        configured read IOPS. For more information about the derived
+        performance limits and default performance see:
+        https://cloud.google.com/filestore/docs/performance. Must be one of:
+
+            max-iops
+              The number of IOPS to provision for the instance.
+              MAX-IOPS must be in multiple of 1000 and in the supported IOPS
+              range for the current capacity of the instance.
+              For more details, see: https://cloud.google.com/filestore/docs/performance.
+
+            max-iops-per-tb
+              Is used for setting the max IOPS of the instance by
+              specifying the IOPS per TB. When this parameter is used, the
+              max IOPS are derived from the instance capacity:
+              The instance max IOPS will be calculated by multiplying the
+              capacity of the instance (TB) by MAX-IOPS-PER-TB, and rounding
+              to the nearest 1000. The max IOPS will be changed
+              dynamically based on the instance capacity.
+              MAX-IOPS-PER-TB must be in the supported range of the instance.
+              For more details, see: https://cloud.google.com/filestore/docs/performance.
+
+        Examples:
+
+        Configure an instance with max-iops performance:
+
+            $ gcloud filestore instances update example-cluster \
+                --performance=max-iops=17000
+
+        Configure an instance with max-iops-per-tb performance:
+
+            $ gcloud filestore instances update example-cluster \
+                --performance=max-iops-per-tb=17000
+
+     --region=REGION
+        Region of the Cloud Filestore instance.
+
+     --update-labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to update. If a label exists, its value
+        is modified. Otherwise, a new label is created.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     At most one of these can be specified:
+
+       --clear-labels
+          Remove all labels. If --update-labels is also specified then
+          --clear-labels is applied first.
+
+          For example, to remove all labels:
+
+              $ gcloud filestore instances update --clear-labels
+
+          To remove all existing labels and create two new labels, foo and baz:
+
+              $ gcloud filestore instances update --clear-labels \
+                --update-labels foo=bar,baz=qux
+
+       --remove-labels=[KEY,...]
+          List of label keys to remove. If a label does not exist it is
+          silently ignored. If --update-labels is also specified then
+          --update-labels is applied first.
+
+     Parameters for file-share.
+
+     --file-share=[capacity=CAPACITY],[name=NAME],[nfs-export-options=NFS-EXPORT-OPTIONS]
+        File share configuration for an instance. Specifying both name and
+        capacity is required.
+
+         capacity
+            The desired capacity of the volume in GB or TB units. If no
+            capacity unit is specified, GB is assumed. Acceptable instance
+            capacities for each tier are as follows:
+            + BASIC_HDD: 1TB-63.9TB in 1GB increments or its multiples.
+            + BASIC_SSD: 2.5TB-63.9TB in 1GB increments or its multiples.
+            + HIGH_SCALE_SSD: 10TB-100TB in 2.5TB increments or its
+              multiples.
+            + ZONAL: 100GB-100TB:
+              - 100GB-10239GB in 1GB increments or its multiples.
+              - 10TB-100TB in 2.5TB increments or its multiples.
+            + ENTERPRISE: 1TB-10TB in 256GB increments or its multiples.
+            + REGIONAL: 1TB-100TB (100GB-100TB in supported regions):
+              - (100GB|1TB)-10239GB in 1GB increments or its multiples.
+              - 10TB-100TB in 2.5TB increments or its multiples.
+
+         name
+            The desired logical name of the volume.
+
+         nfs-export-options
+            The NfsExportOptions for the Cloud Filestore instance file share.
+            Configuring NfsExportOptions is optional and can only be set using
+            flags-file. Use the --flags-file flag to specify the path to a JSON
+            or YAML configuration file that contains the required
+            NfsExportOptions flags.
+
+         ip-ranges
+            A list of IPv4 addresses or CIDR ranges that are allowed to mount
+            the file share. IPv4 addresses format: {octet 1}.{octet 2}.{octet
+            3}.{octet 4}. CIDR range format: {octet 1}.{octet 2}.{octet
+            3}.{octet 4}/{mask size}. Overlapping IP ranges are allowed for all
+            tiers other than BASIC_HDD and BASIC_SSD. The limit of IP
+            ranges/addresses for each FileShareConfig among all
+            NfsExportOptions is 64 per instance.
+
+         access-mode
+            The type of access allowed for the specified IP-addresses or CIDR
+            ranges. READ_ONLY: Allows only read requests on the exported file
+            share. READ_WRITE: Allows both read and write requests on the
+            exported file share. The default setting is READ_WRITE.
+
+         squash-mode
+            Enables or disables root squash for the specified IP addresses or
+            CIDR ranges. NO_ROOT_SQUASH: Disables root squash to allow root
+            access on the exported file share. ROOT_SQUASH. Enables root squash
+            to remove root access on the exported file share. The default
+            setting is NO_ROOT_SQUASH.
+
+         anon_uid
+            An integer that represents the user ID of anonymous users. Anon_uid
+            may only be set when squash_mode is set to ROOT_SQUASH. If
+            NO_ROOT_SQUASH is specified, an error will be returned. The default
+            value is 65534.
+
+         anon_gid
+            An integer that represents the group ID of anonymous groups.
+            Anon_gid may only be set when squash_mode is set to ROOT_SQUASH. If
+            NO_ROOT_SQUASH is specified, an error will be returned. The default
+            value is 65534.
+
+            This flag argument must be specified if any of the other arguments
+            in this group are specified.
+
+     --clear-nfs-export-options
+        Clears the NfsExportOptions. Must specify --file-share flag if
+        --clear-nfs-export-options is specified.
+
+     Deletion protection control options. When deletion protection is enabled,
+     the instance cannot be deleted.
+
+     --[no-]deletion-protection
+        Enables deletion protection for the instance. Use --deletion-protection
+        to enable and --no-deletion-protection to disable.
+
+     --deletion-protection-reason=DELETION_PROTECTION_REASON
+        The reason for enabling deletion protection for the instance.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha filestore instances update
+
+        $ gcloud beta filestore instances update
+```
+
+### gcloud beta filestore instances update
+
+```text
+NAME
+    gcloud beta filestore instances update - update a Filestore instance
+
+SYNOPSIS
+    gcloud beta filestore instances update (INSTANCE : --zone=ZONE) [--async]
+        [--description=DESCRIPTION] [--location=LOCATION]
+        [--performance=[max-iops=MAX-IOPS],[max-iops-per-tb=MAX-IOPS-PER-TB]]
+        [--region=REGION] [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--disconnect-managed-ad
+          | --managed-ad=[computer=COMPUTER],[domain=DOMAIN]]
+        [[--file-share=[capacity=CAPACITY],
+          [name=NAME],[nfs-export-options=NFS-EXPORT-OPTIONS]
+          : --clear-nfs-export-options]]
+        [--[no-]deletion-protection
+          --deletion-protection-reason=DELETION_PROTECTION_REASON]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha filestore instances update
+
+```text
+NAME
+    gcloud alpha filestore instances update - update a Filestore instance
+
+SYNOPSIS
+    gcloud alpha filestore instances update (INSTANCE : --zone=ZONE) [--async]
+        [--description=DESCRIPTION] [--location=LOCATION] [--region=REGION]
+        [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [[--file-share=[capacity=CAPACITY],[name=NAME],
+          [nfs-export-options=NFS-EXPORT-OPTIONS],
+          [source-snapshot=SOURCE-SNAPSHOT],
+          [source-snapshot-region=SOURCE-SNAPSHOT-REGION]
+          : --clear-nfs-export-options]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/filestore/instances/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
