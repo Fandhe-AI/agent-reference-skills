@@ -1,0 +1,196 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/sign-url
+---
+
+# gcloud storage sign-url
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud storage sign-url
+
+```text
+NAME
+    gcloud storage sign-url - generate a URL with embedded authentication that
+        can be used by anyone
+
+SYNOPSIS
+    gcloud storage sign-url URL [URL ...]
+        [--duration=DURATION, -d DURATION; default=3600]
+        [--headers=[KEY=VALUE,...]]
+        [--http-verb=HTTP_VERB, -m HTTP_VERB; default="GET"] [--path-style-url]
+        [--private-key-file=PRIVATE_KEY_FILE]
+        [--private-key-password=PRIVATE_KEY_PASSWORD, -p PRIVATE_KEY_PASSWORD]
+        [--query-params=[KEY=VALUE,...]] [--region=REGION, -r REGION]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud storage sign-url will generate a signed URL that embeds
+    authentication data so the URL can be used by someone who does not have a
+    Google account. Use the global --impersonate-service-account flag to
+    specify the service account that will be used to sign the specified URL or
+    authenticate with a service account directly. Otherwise, a service account
+    key is required. Please see the Signed URLs documentation
+    (https://cloud.google.com/storage/docs/access-control/signed-urls) for
+    background about signed URLs.
+
+    Note, gcloud storage sign-url does not support operations on
+    sub-directories. For example, unless you have an object named
+    some-directory/ stored inside the bucket some-bucket, the following command
+    returns an error: gcloud storage sign-url gs://some-bucket/some-directory/.
+
+EXAMPLES
+    To create a signed url for downloading an object valid for 10 minutes with
+    the credentials of an impersonated service account:
+
+        $ gcloud storage sign-url gs://my-bucket/file.txt --duration=10m \
+            --impersonate-service-account=sa@my-project.iam.gserviceaccount.\
+        com
+
+    To create a signed url that will bill to my-billing-project when already
+    authenticated as a service account:
+
+        $ gcloud storage sign-url gs://my-bucket/file.txt \
+            --query-params=userProject=my-billing-project
+
+    To create a signed url, valid for one hour, for uploading a plain text file
+    via HTTP PUT:
+
+        $ gcloud storage sign-url gs://my-bucket/file.txt --http-verb=PUT \
+            --duration=1h --headers=content-type=text/plain \
+            --impersonate-service-account=sa@my-project.iam.gserviceaccount.\
+        com
+
+    To create a signed URL that initiates a resumable upload for a plain text
+    file using a private key file:
+
+        $ gcloud storage sign-url gs://my-bucket/file.txt --http-verb=POST \
+            --headers=x-goog-resumable=start,content-type=text/plain \
+            --private-key-file=key.json
+
+POSITIONAL ARGUMENTS
+     URL [URL ...]
+        The URLs to be signed. May contain wildcards.
+
+FLAGS
+     --duration=DURATION, -d DURATION; default=3600
+        Specifies the duration that the signed url should be valid for, default
+        duration is 1 hour. For example 10s for 10 seconds. See $ gcloud topic
+        datetimes for information on duration formats.
+
+        The max duration allowed is 12 hours. This limitation exists because
+        the system-managed key used to sign the URL may not remain valid after
+        12 hours.
+
+        Alternatively, the max duration allowed is 7 days when signing with
+        either the --private-key-file flag or an account that authorized with
+        gcloud auth activate-service-account.
+
+     --headers=[KEY=VALUE,...]
+        Specifies the headers to be used in the signed request. Possible
+        headers are listed in the XML API's documentation:
+        https://cloud.google.com/storage/docs/xml-api/reference-headers#headers
+
+     --http-verb=HTTP_VERB, -m HTTP_VERB; default="GET"
+        Specifies the HTTP verb to be authorized for use with the signed URL,
+        default is GET. When using a signed URL to start a resumable upload
+        session, you will need to specify the x-goog-resumable:start header in
+        the request or else signature validation will fail.
+
+     --path-style-url
+        Generate path-style signed URL.
+
+        By default, virtual hosted-style signed URL is generated, except for
+        domain-named buckets
+        (https://cloud.google.com/storage/docs/domain-name-verification). Use
+        this flag to force the generation of path-style signed URL. Signed URL
+        generated for domain-named buckets is always path-style. Learn more
+        about the two URL styles here
+        (https://cloud.google.com/storage/docs/request-endpoints#xml-api).
+
+     --private-key-file=PRIVATE_KEY_FILE
+        The service account private key used to generate the cryptographic
+        signature for the generated URL. Must be in PKCS12 or JSON format. If
+        encrypted, will prompt for the passphrase used to protect the private
+        key file (default notasecret).
+
+        Note: Service account keys are a security risk if not managed
+        correctly. Review best practices for managing service account keys
+        (https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys)
+        before using this option.
+
+     --private-key-password=PRIVATE_KEY_PASSWORD, -p PRIVATE_KEY_PASSWORD
+        Specifies the PRIVATE_KEY_FILE password instead of prompting.
+
+     --query-params=[KEY=VALUE,...]
+        Specifies the query parameters to be used in the signed request.
+        Possible query parameters are listed in the XML API's documentation:
+        https://cloud.google.com/storage/docs/xml-api/reference-headers#query
+
+     --region=REGION, -r REGION
+        Specifies the region in which the resources for which you are creating
+        signed URLs are stored.
+
+        Default value is auto which will cause gcloud storage sign-url to fetch
+        the region for the resource. When auto-detecting the region, the
+        current user's credentials, not the credentials from PRIVATE_KEY_FILE,
+        are used to fetch the bucket's metadata.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha storage sign-url
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+
+```bash
+gcloud storage sign-url gs://my-bucket/file.txt \
+    --duration=10m \
+    --impersonate-service-account=sa@my-project.iam.gserviceaccount.com
+
+gcloud storage sign-url gs://my-bucket/file.txt \
+    --http-verb=PUT \
+    --duration=1h \
+    --headers=content-type=text/plain \
+    --impersonate-service-account=sa@my-project.iam.gserviceaccount.com
+```
+
+### gcloud alpha storage sign-url
+
+```text
+NAME
+    gcloud alpha storage sign-url - generate a URL with embedded authentication
+        that can be used by anyone
+
+SYNOPSIS
+    gcloud alpha storage sign-url URL [URL ...]
+        [--duration=DURATION, -d DURATION; default=3600]
+        [--headers=[KEY=VALUE,...]]
+        [--http-verb=HTTP_VERB, -m HTTP_VERB; default="GET"] [--path-style-url]
+        [--private-key-file=PRIVATE_KEY_FILE]
+        [--private-key-password=PRIVATE_KEY_PASSWORD, -p PRIVATE_KEY_PASSWORD]
+        [--query-params=[KEY=VALUE,...]] [--region=REGION, -r REGION]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/sign-url (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
