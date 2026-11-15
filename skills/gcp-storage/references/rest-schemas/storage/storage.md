@@ -591,6 +591,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `storage` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Corrected from the official docs (the Discovery text above is verbatim): the `ServiceAccount` type is described as "A subscription to receive Google PubSub notifications", its `email_address` as "The ID of the notification" and its `kind` as `storage#notification`; these texts are copied from `Notification`. `ServiceAccount` is the response of `storage.projects.serviceAccount.get` ("Get the email address of this project's Google Cloud Storage service account"): `email_address` is that service account's email address, and `kind` is `storage#serviceAccount` (the field default in Discovery).
 - Source: https://storage.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
 ## Related
