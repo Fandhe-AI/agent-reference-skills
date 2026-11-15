@@ -7,6 +7,8 @@ description: >
 model: sonnet
 user-invocable: true
 argument-hint: "<library> [check|apply] (例: update-skill zod apply)"
+metadata:
+  internal: "true"
 ---
 
 # update-skill

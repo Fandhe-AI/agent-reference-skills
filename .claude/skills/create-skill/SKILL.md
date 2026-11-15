@@ -7,6 +7,8 @@ description: >
 model: sonnet
 user-invocable: true
 argument-hint: "<library> [base_url] (例: create-skill zod https://zod.dev)"
+metadata:
+  internal: "true"
 ---
 
 # create-skill

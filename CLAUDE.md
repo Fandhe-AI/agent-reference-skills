@@ -109,7 +109,7 @@ skills/
 **Two kinds of skills exist:**
 
 - `skills/` — Library/framework reference skills, distributed via `npx skills add`
-- `.claude/skills/` — Workflow skills for this repo's own development (not distributed)
+- `.claude/skills/` — Workflow skills for this repo's own development (not distributed). Each one carries `metadata.internal: "true"` in its frontmatter so the skills CLI hides it from `--list` and `--all`; add the same key to any new workflow skill
 
 ## Agents & Delegation
 
