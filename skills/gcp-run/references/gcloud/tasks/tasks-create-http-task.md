@@ -1,0 +1,193 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/tasks/create-http-task
+---
+
+# gcloud tasks create-http-task
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud tasks create-http-task
+
+```text
+NAME
+    gcloud tasks create-http-task - create and add a task that targets a HTTP
+        endpoint
+
+SYNOPSIS
+    gcloud tasks create-http-task [TASK_ID] --queue=QUEUE --url=URL
+        [--header=HEADER_FIELD: HEADER_VALUE] [--location=LOCATION]
+        [--method=METHOD] [--schedule-time=SCHEDULE_TIME]
+        [--body-content=BODY_CONTENT | --body-file=BODY_FILE]
+        [[--oauth-service-account-email=OAUTH_SERVICE_ACCOUNT_EMAIL
+          : --oauth-token-scope=OAUTH_TOKEN_SCOPE]
+          | [--oidc-service-account-email=OIDC_SERVICE_ACCOUNT_EMAIL
+          : --oidc-token-audience=OIDC_TOKEN_AUDIENCE]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create and add a task that targets a HTTP endpoint.
+
+EXAMPLES
+    To create a task:
+
+        $ gcloud tasks create-http-task --queue=my-queue \
+          --url=http://example.com/handler-path my-task
+
+POSITIONAL ARGUMENTS
+     [TASK_ID]
+        The task to create.
+
+        If not specified then the system will generate a random unique task ID.
+        Explicitly specifying a task ID enables task de-duplication. If a
+        task's ID is identical to that of an existing task or a task that was
+        deleted or completed recently then the call will fail.
+
+        Because there is an extra lookup cost to identify duplicate task names,
+        tasks created with IDs have significantly increased latency. Using
+        hashed strings for the task ID or for the prefix of the task ID is
+        recommended.
+
+REQUIRED FLAGS
+     --queue=QUEUE
+        The queue the task belongs to.
+
+     --url=URL
+        The full URL path that the request will be sent to. This string must
+        begin with either "http://" or "https://".
+
+OPTIONAL FLAGS
+     --header=HEADER_FIELD: HEADER_VALUE
+        An HTTP request header. Header values can contain commas. This flag can
+        be repeated. Repeated header fields will have their values overridden.
+
+     --location=LOCATION
+        The location where we want to manage the queue or task. If not
+        specified, uses the location of the current project's App Engine app if
+        there is an associated app.
+
+     --method=METHOD
+        The HTTP method to use for the request. If not specified, "POST" will
+        be used.
+
+     --schedule-time=SCHEDULE_TIME
+        The time when the task is scheduled to be first attempted. Defaults to
+        "now" if not specified.
+
+     At most one of these can be specified:
+
+       --body-content=BODY_CONTENT
+          HTTP Body data sent to the task worker processing the task.
+
+       --body-file=BODY_FILE
+          File containing HTTP body data sent to the task worker processing the
+          task.
+
+     How the request sent to the target when executing the task should be
+     authenticated.
+
+     At most one of these can be specified:
+
+       OAuth2
+
+       --oauth-service-account-email=OAUTH_SERVICE_ACCOUNT_EMAIL
+          The service account email to be used for generating an OAuth2 access
+          token to be included in the request sent to the target when executing
+          the task. The service account must be within the same project as the
+          queue. The caller must have 'iam.serviceAccounts.actAs' permission
+          for the service account.
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+       --oauth-token-scope=OAUTH_TOKEN_SCOPE
+          The scope to be used when generating an OAuth2 access token to be
+          included in the request sent to the target when executing the task.
+          If not specified, 'https://www.googleapis.com/auth/cloud-platform'
+          will be used.
+
+       OpenId Connect
+
+       --oidc-service-account-email=OIDC_SERVICE_ACCOUNT_EMAIL
+          The service account email to be used for generating an OpenID Connect
+          token to be included in the request sent to the target when executing
+          the task. The service account must be within the same project as the
+          queue. The caller must have 'iam.serviceAccounts.actAs' permission
+          for the service account.
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+       --oidc-token-audience=OIDC_TOKEN_AUDIENCE
+          The audience to be used when generating an OpenID Connect token to be
+          included in the request sent to the target when executing the task.
+          If not specified, the URI specified in the target will be used.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha tasks create-http-task
+
+        $ gcloud beta tasks create-http-task
+```
+
+### gcloud beta tasks create-http-task
+
+```text
+NAME
+    gcloud beta tasks create-http-task - create and add a task that targets a
+        HTTP endpoint
+
+SYNOPSIS
+    gcloud beta tasks create-http-task [TASK_ID] --queue=QUEUE --url=URL
+        [--header=HEADER_FIELD: HEADER_VALUE] [--location=LOCATION]
+        [--method=METHOD] [--schedule-time=SCHEDULE_TIME]
+        [--body-content=BODY_CONTENT | --body-file=BODY_FILE]
+        [--max-attempts=MAX_ATTEMPTS --max-backoff=MAX_BACKOFF
+          --max-doublings=MAX_DOUBLINGS
+          --max-retry-duration=MAX_RETRY_DURATION --min-backoff=MIN_BACKOFF]
+        [[--oauth-service-account-email=OAUTH_SERVICE_ACCOUNT_EMAIL
+          : --oauth-token-scope=OAUTH_TOKEN_SCOPE]
+          | [--oidc-service-account-email=OIDC_SERVICE_ACCOUNT_EMAIL
+          : --oidc-token-audience=OIDC_TOKEN_AUDIENCE]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha tasks create-http-task
+
+```text
+NAME
+    gcloud alpha tasks create-http-task - create and add a task that targets a
+        HTTP endpoint
+
+SYNOPSIS
+    gcloud alpha tasks create-http-task [TASK_ID] --queue=QUEUE --url=URL
+        [--header=HEADER_FIELD: HEADER_VALUE] [--location=LOCATION]
+        [--method=METHOD] [--schedule-time=SCHEDULE_TIME]
+        [--body-content=BODY_CONTENT | --body-file=BODY_FILE]
+        [--max-attempts=MAX_ATTEMPTS --max-backoff=MAX_BACKOFF
+          --max-doublings=MAX_DOUBLINGS
+          --max-retry-duration=MAX_RETRY_DURATION --min-backoff=MIN_BACKOFF]
+        [[--oauth-service-account-email=OAUTH_SERVICE_ACCOUNT_EMAIL
+          : --oauth-token-scope=OAUTH_TOKEN_SCOPE]
+          | [--oidc-service-account-email=OIDC_SERVICE_ACCOUNT_EMAIL
+          : --oidc-token-audience=OIDC_TOKEN_AUDIENCE]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/tasks/create-http-task (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
