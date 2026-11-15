@@ -851,6 +851,7 @@ SYNOPSIS
 
 ## Notes
 
+- Corrected from the official docs (the help text above is verbatim): the `update` help describes the `--add-threshold-rule` `percent` as an "Integer between 0 and 100", while the `create` help describes `--threshold-rule` `percent` as a "Number between 0.0 and 1.0" ("0.5 equals 50 percent"); the Budget API field `thresholdPercent` is a fraction (`1.0` = 100%), matching the `create` text. The official docs do not confirm which form `update` accepts, so check the resulting budget (`describe`) after updating.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
