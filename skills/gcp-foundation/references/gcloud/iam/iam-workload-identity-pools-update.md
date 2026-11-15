@@ -1,0 +1,194 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/iam/workload-identity-pools/update
+---
+
+# gcloud iam workload-identity-pools update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud iam workload-identity-pools update
+
+```text
+NAME
+    gcloud iam workload-identity-pools update - update a workload identity pool
+
+SYNOPSIS
+    gcloud iam workload-identity-pools update
+        (WORKLOAD_IDENTITY_POOL : --location=LOCATION)
+        [--description=DESCRIPTION] [--disabled] [--display-name=DISPLAY_NAME]
+        [--inline-trust-config-file=INLINE_TRUST_CONFIG_FILE]
+        [--inline-certificate-issuance-config-file=INLINE_CERTIFICATE_ISSUANCE_CONFIG_FILE | --certificate-lifetime=CERTIFICATE_LIFETIME --key-algorithm=KEY_ALGORITHM --rotation-window-percentage=ROTATION_WINDOW_PERCENTAGE --[no-]use-default-shared-ca]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update a workload identity pool.
+
+EXAMPLES
+    The following command updates the workload identity pool with the ID
+    my-workload-identity-pool:
+
+        $ gcloud iam workload-identity-pools update \
+            my-workload-identity-pool --location="global" \
+            --display-name="My workload pool" \
+            --description="My workload pool description" --disabled
+
+POSITIONAL ARGUMENTS
+     Workload identity pool resource - The workload identity pool to update.
+     The arguments in this group can be used to specify the attributes of this
+     resource. (NOTE) Some attributes are not given arguments in this group but
+     can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument workload_identity_pool on the command line with
+        a fully specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       WORKLOAD_IDENTITY_POOL
+          ID of the workload identity pool or fully qualified identifier for
+          the workload identity pool.
+
+          To set the workload_identity_pool attribute:
+          + provide the argument workload_identity_pool on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --location=LOCATION
+          The location name.
+
+          To set the location attribute:
+          + provide the argument workload_identity_pool on the command line
+            with a fully specified name;
+          + provide the argument --location on the command line.
+
+FLAGS
+     --description=DESCRIPTION
+        A description of the pool. Cannot exceed 256 characters.
+
+     --disabled
+        Whether the pool is disabled. You cannot use a disabled pool to
+        exchange tokens, or use existing tokens to access resources. If the
+        pool is re-enabled, existing tokens grant access again.
+
+     --display-name=DISPLAY_NAME
+        A display name for the pool. Cannot exceed 32 characters.
+
+     --inline-trust-config-file=INLINE_TRUST_CONFIG_FILE
+        YAML file with configuration for providing additional trust bundles.
+        Example file format:            inlineTrustConfig:
+              additionalTrustBundles:
+                example.com:
+                  trustAnchors:
+                  - pemCertificate: "-----BEGIN CERTIFICATE-----
+                    <certificate>
+                    -----END CERTIFICATE-----"
+                  - pemCertificate: "-----BEGIN CERTIFICATE-----
+                    <certificate>
+                    -----END CERTIFICATE-----"
+                myorg.com:
+                  trustAnchors:
+                  - pemCertificate: "-----BEGIN CERTIFICATE-----
+                    <certificate>
+                    -----END CERTIFICATE-----"
+                  - pemCertificate: "-----BEGIN CERTIFICATE-----
+                    <certificate>
+                    -----END CERTIFICATE-----"
+
+     At most one of these can be specified:
+
+       --inline-certificate-issuance-config-file=INLINE_CERTIFICATE_ISSUANCE_CONFIG_FILE
+          YAML file with configuration for certificate issuance. Example file
+          format:              inlineCertificateIssuanceConfig:
+                caPools:
+                  us-east1: projects/1234/locations/us-east1/caPools/capoolname
+                  us-west1: projects/1234/locations/us-west1/caPools/capoolname
+                keyAlgorithm: ECDSA_P256
+                lifetime: 86400s
+                rotationWindowPercentage: 50
+
+       Or at least one of these can be specified:
+
+         --certificate-lifetime=CERTIFICATE_LIFETIME
+            Lifetime of the workload certificates issued by the CA pool.
+
+         --key-algorithm=KEY_ALGORITHM
+            Key algorithm to use when generating the key pair. This key pair
+            will be used to create the certificate. KEY_ALGORITHM must be one
+            of: ecdsa-p256, ecdsa-p384, key-algorithm-unspecified, rsa-2048,
+            rsa-3072, rsa-4096.
+
+         --rotation-window-percentage=ROTATION_WINDOW_PERCENTAGE
+            Rotation window percentage indicating when certificate rotation
+            should be initiated based on remaining lifetime.
+
+         --[no-]use-default-shared-ca
+            Use the default shared certificate authorities (CAs) to issue
+            certificates. If enabled, Google Cloud automatically provisions
+            certificates from a default shared CA in the same region as the
+            workload. Enabling this flag clears any existing CA pools
+            configuration. Use --use-default-shared-ca to enable and
+            --no-use-default-shared-ca to disable.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the iam/v1 API. The full documentation for this API can
+    be found at: https://cloud.google.com/iam/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha iam workload-identity-pools update
+
+        $ gcloud beta iam workload-identity-pools update
+```
+
+### gcloud beta iam workload-identity-pools update
+
+```text
+NAME
+    gcloud beta iam workload-identity-pools update - update a workload identity
+        pool
+
+SYNOPSIS
+    gcloud beta iam workload-identity-pools update
+        (WORKLOAD_IDENTITY_POOL : --location=LOCATION)
+        [--description=DESCRIPTION] [--disabled] [--display-name=DISPLAY_NAME]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha iam workload-identity-pools update
+
+```text
+NAME
+    gcloud alpha iam workload-identity-pools update - update a workload
+        identity pool
+
+SYNOPSIS
+    gcloud alpha iam workload-identity-pools update
+        (WORKLOAD_IDENTITY_POOL : --location=LOCATION)
+        [--description=DESCRIPTION] [--disabled] [--display-name=DISPLAY_NAME]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/iam/workload-identity-pools/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
