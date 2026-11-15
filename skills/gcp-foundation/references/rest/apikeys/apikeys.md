@@ -43,7 +43,7 @@ Base URL: `https://apikeys.googleapis.com`. Methods are listed by `id`; the `Ver
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `parent` | path | string | yes | Required. The project in which the API key is created. The parent field must be in format of "projects//locations/global". |
-| `keyId` | query | string | no | User specified key id (optional). If specified, it will become the final component of the key resource name. The id must be unique within the project, must conform with RFC-1034, is restricted to lower-cased letters, and has a maximum length of 63 characters. In another word, the id must match the regular expression: `a-z?`. The id must NOT be a UUID-like string. |
+| `keyId` | query | string | no | User specified key id (optional). If specified, it will become the final component of the key resource name. The id must be unique within the project, must conform with RFC-1034, is restricted to lower-cased letters, and has a maximum length of 63 characters. In another word, the id must match the regular expression: `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`. The id must NOT be a UUID-like string. |
 
 ### `apikeys.projects.locations.keys.delete`
 
@@ -126,18 +126,20 @@ Base URL: `https://apikeys.googleapis.com`. Methods are listed by `id`; the `Ver
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `apikeys.keys.lookupKey` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `apikeys.keys.lookupKey` (not in the official docs); replace the `{...}` path variables and required query parameters (URL-encode query values):
 
 ```bash
 curl -X GET \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-  "https://apikeys.googleapis.com/v2/keys:lookupKey"
+  "https://apikeys.googleapis.com/v2/keys:lookupKey?keyString={keyString}"
 ```
 
 ## Notes
 
 - Generated from the Discovery document(s) v2 of `apikeys` (retrieved 2026-11-14). Resources on this page: keys, operations, projects.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/apikeys/`.
+- Descriptions are verbatim from Discovery, which drops angle-bracket placeholders of the source comments: a format such as `projects//locations/global` stands for `projects/{project}/locations/global`, and an expression such as `... && in labels` lost its left operand (for example `'label_value' in labels`). Check the method or field in the product's REST reference before relying on such a format.
 - Source: https://apikeys.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
 
 ## Related

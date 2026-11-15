@@ -597,7 +597,7 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `account` | path | string | yes | Optional. Resource name of the account. Required if integrator is not provided. Otherwise, leave this field empty/unset. |
-| `integrator` | query | string | yes | Optional. Resource name of the integrator. Required if account is not provided. Otherwise, leave this field empty/unset. |
+| `integrator` | query | string | conditional | Optional. Resource name of the integrator. Required if account is not provided. Otherwise, leave this field empty/unset. |
 | `pageSize` | query | integer (int32) | no | Optional. The maximum number of service accounts to return. The service may return fewer than this value. If unspecified, returns at most 100 service accounts. The maximum value is 1000; the server will coerce values above 1000. |
 | `pageToken` | query | string | no | Optional. A page token, received from a previous `ListSubscribers` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `ListSubscribers` must match the call that provided the page token. |
 
@@ -744,7 +744,7 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `integrator` | path | string | yes | Optional. Resource name of the integrator. Required if account is not provided. Otherwise, leave this field empty/unset. |
-| `account` | query | string | yes | Optional. Resource name of the account. Required if integrator is not provided. Otherwise, leave this field empty/unset. |
+| `account` | query | string | conditional | Optional. Resource name of the account. Required if integrator is not provided. Otherwise, leave this field empty/unset. |
 | `pageSize` | query | integer (int32) | no | Optional. The maximum number of service accounts to return. The service may return fewer than this value. If unspecified, returns at most 100 service accounts. The maximum value is 1000; the server will coerce values above 1000. |
 | `pageToken` | query | string | no | Optional. A page token, received from a previous `ListSubscribers` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `ListSubscribers` must match the call that provided the page token. |
 
@@ -857,7 +857,7 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `cloudchannel.accounts.channelPartnerLinks.channelPartnerRepricingConfigs.get` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `cloudchannel.accounts.channelPartnerLinks.channelPartnerRepricingConfigs.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
 
 ```bash
 curl -X GET \
@@ -868,6 +868,7 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `cloudchannel` (retrieved 2026-11-14). Resources on this page: accounts, integrators, operations, products.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/cloudchannel/`.
 - Source: https://cloudchannel.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 

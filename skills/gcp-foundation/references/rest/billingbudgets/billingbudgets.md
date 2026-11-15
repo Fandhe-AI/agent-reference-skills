@@ -74,7 +74,7 @@ Base URL: `https://billingbudgets.googleapis.com`. Methods are listed by `id`; t
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `billingbudgets.billingAccounts.budgets.get` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `billingbudgets.billingAccounts.budgets.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
 
 ```bash
 curl -X GET \
@@ -85,8 +85,9 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta1 of `billingbudgets` (retrieved 2026-11-14). Resources on this page: billingAccounts.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/billingbudgets/`.
-- Source: https://billingbudgets.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Source: https://billingbudgets.googleapis.com/$discovery/rest?version=v1, https://billingbudgets.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
 

@@ -116,7 +116,7 @@ Base URL: `https://advisorynotifications.googleapis.com`. Methods are listed by 
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `advisorynotifications.organizations.locations.getSettings` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `advisorynotifications.organizations.locations.getSettings` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
 
 ```bash
 curl -X GET \
@@ -127,6 +127,7 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `advisorynotifications` (retrieved 2026-11-14). Resources on this page: organizations, projects.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/advisorynotifications/`.
 - Source: https://advisorynotifications.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 

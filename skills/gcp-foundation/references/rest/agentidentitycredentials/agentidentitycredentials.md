@@ -46,7 +46,7 @@ Base URL: `https://agentidentitycredentials.googleapis.com`. Methods are listed 
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `agentidentitycredentials.projects.locations.authProviders.credentials.exchange` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `agentidentitycredentials.projects.locations.authProviders.credentials.exchange` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
 
 ```bash
 curl -X POST \
@@ -57,8 +57,9 @@ curl -X POST \
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta, v1alpha of `agentidentitycredentials` (retrieved 2026-11-14). Resources on this page: projects.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/agentidentitycredentials/`.
-- Source: https://agentidentitycredentials.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Source: https://agentidentitycredentials.googleapis.com/$discovery/rest?version=v1, https://agentidentitycredentials.googleapis.com/$discovery/rest?version=v1beta, https://agentidentitycredentials.googleapis.com/$discovery/rest?version=v1alpha (https://developers.google.com/discovery)
 
 ## Related
 

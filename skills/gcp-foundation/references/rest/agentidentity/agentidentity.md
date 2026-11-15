@@ -340,7 +340,7 @@ Base URL: `https://agentidentity.googleapis.com`. Methods are listed by `id`; th
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `agentidentity.projects.locations.accessSummaries.get` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `agentidentity.projects.locations.accessSummaries.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
 
 ```bash
 curl -X GET \
@@ -351,8 +351,9 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta, v1alpha of `agentidentity` (retrieved 2026-11-14). Resources on this page: projects.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/agentidentity/`.
-- Source: https://agentidentity.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Source: https://agentidentity.googleapis.com/$discovery/rest?version=v1, https://agentidentity.googleapis.com/$discovery/rest?version=v1beta, https://agentidentity.googleapis.com/$discovery/rest?version=v1alpha (https://developers.google.com/discovery)
 
 ## Related
 
