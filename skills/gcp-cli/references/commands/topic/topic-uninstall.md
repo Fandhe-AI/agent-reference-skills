@@ -60,6 +60,12 @@ NOTES
         $ gcloud beta topic uninstall
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the commands are rewritten so that they run as described (see Notes).
+
+```bash
+find ~/Library/Caches/ -type d -name "google-cloud-sdk" -prune -exec rm -r {} +
+```
+
 ### gcloud beta topic uninstall
 
 ```text
@@ -78,6 +84,8 @@ NAME
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the cache-cleanup example pipes `find` into plain `xargs rm -r`, which splits paths that contain spaces and can delete unrelated directories; the runnable form uses `find -exec`, which passes each path intact.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
