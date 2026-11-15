@@ -280,7 +280,7 @@ gcloud help compute instances create
 
 ## Notes
 
-- The SHA256 checksums are tied to the versionless file names (`google-cloud-cli-<platform>.tar.gz`), which always serve the latest release; they are the values shown on the official page on the retrieval date and do not match other releases (for example, the versioned `google-cloud-cli-593.0.0-linux-x86.tar.gz` has SHA256 `ecf6c0e7fe61c4732903399058e1f278abc8cb7b26551696a08e52bac2d4e37c`, measured 2026-11-15). Compare against the checksum currently shown on the official page, or download a versioned archive for a reproducible install.
+- The SHA256 checksums are those the official page showed on the retrieval date for the versionless file names (`google-cloud-cli-<platform>.tar.gz`), which always serve the latest release; after a new release they no longer match. Compare against the checksum currently shown on the official page, or use the pinned 593.0.0 archives and checksums listed in [downloads-versioned-archives.md](./downloads-versioned-archives.md).
 - Windows troubleshooting: if installation fails because `find` is not recognized, include the folder containing `find` (usually `C:\WINDOWS\system32;`) in `PATH`; if you uninstalled the gcloud CLI, reboot before reinstalling; if unzipping fails, run the installer as an administrator.
 - If you use Compute Engine, the gcloud CLI may already be installed on some OS images; if you run a modern Ubuntu with Snap and want automatic updates, see downloads-snap.
 - The page lists `google-cloud-cli-terraform-tools` for APT (Debian/Ubuntu) and `google-cloud-cli-terraform-validator` for RPM and Chromebook, as in the source.

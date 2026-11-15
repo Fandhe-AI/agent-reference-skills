@@ -16,8 +16,10 @@ Click **Session information** and then click **Usage quota**. A dialog displays 
 
 If you encounter a `no space left on device` error, free up space by removing files from your home directory. To see the space each file uses within each sub-directory:
 
+Adapted (not in the official docs): the official `du -hs $(ls -A)` splits file names that contain spaces and passes names that start with `-` as options; this form passes every entry of the current directory (including dotfiles) intact.
+
 ```bash
-du -hs $(ls -A)
+du -hs -- .[!.]* ..?* * 2>/dev/null
 ```
 
 ### Required `.bashrc` content
@@ -55,6 +57,7 @@ gcloud config set accessibility/screen_reader false
 
 ## Notes
 
+- Adapted from the official docs: the disk-usage example `du -hs $(ls -A)` is replaced by a glob form (`du -hs -- .[!.]* ..?* *`) that does not word-split file names or treat a leading `-` as an option.
 - Cloud Shell is intended for interactive use only. Coin mining and network scanning using Cloud Shell are strictly prohibited; violating the Terms of Service results in Cloud Shell being disabled for your account.
 - If a session is terminated or can't be established because you exceeded a service limit, Cloud Shell displays an error with a link to a form to appeal the violation.
 - The majority of these limits are not present in Cloud Workstations.
