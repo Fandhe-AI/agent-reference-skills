@@ -108,6 +108,7 @@ SECRET_DIR="$(mktemp -d)"
 ```bash
 (umask 077; gcloud iam oauth-clients credentials create APP_OAUTH_CLIENT_CREDENTIAL_ID \
     --oauth-client=APP_OAUTH_CLIENT_ID \
+    --project=PROJECT_ID \
     --display-name='My OAuth client credential' \
     --location='global' > "${SECRET_DIR}/oauth-client-credential.txt")
 ```
@@ -125,12 +126,14 @@ gcloud iam oauth-clients credentials list \
 ```bash
 (umask 077; gcloud iam oauth-clients credentials describe APP_OAUTH_CLIENT_CREDENTIAL_ID \
     --oauth-client=APP_OAUTH_CLIENT_ID \
+    --project=PROJECT_ID \
     --location='global' > "${SECRET_DIR}/oauth-client-credential.txt")
 ```
 
 ```bash
 (umask 077; gcloud iam oauth-clients credentials update APP_OAUTH_CLIENT_CREDENTIAL_ID \
     --oauth-client=APP_OAUTH_CLIENT_ID \
+    --project=PROJECT_ID \
     --display-name="My new credential name" \
     --location=global > "${SECRET_DIR}/oauth-client-credential-update.txt")
 ```

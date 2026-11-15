@@ -51,13 +51,14 @@ gcloud resource-manager tags bindings delete \
 
 ### Custom constraint YAML
 
+Adapted (not in the official docs): `methodTypes` lists only `CREATE`, because service account and service account key custom constraints can only be enforced on `CREATE` (see Options / Props).
+
 ```yaml
 name: organizations/ORGANIZATION_ID/customConstraints/CONSTRAINT_NAME
 resourceTypes:
 - iam.googleapis.com/RESOURCE_TYPE
 methodTypes:
 - CREATE
-- UPDATE
 condition: "CONDITION"
 actionType: ACTION
 displayName: DISPLAY_NAME
@@ -167,7 +168,7 @@ Tag roles: `roles/resourcemanager.tagViewer`, `roles/resourcemanager.organizatio
 ## Notes
 
 - Corrected from the official docs: the key-creation and key-upload constraint conditions compare `resource.keyType` / `resource.keyOrigin` with bare `USER_MANAGED` / `GOOGLE_PROVIDED` / `USER_PROVIDED`; this page quotes them as string literals.
-- Adapted from the official docs: the `custom.denyServiceAccountCreation` example drops `UPDATE` from `methodTypes`, because the official page states the constraint can only be enforced on the REST `CREATE` method.
+- Adapted from the official docs: the generic constraint template and the `custom.denyServiceAccountCreation` example drop `UPDATE` from `methodTypes`, because the official page states the constraint can only be enforced on the REST `CREATE` method.
 - The sample output (`name: tagBindings/...`) is the shape of the plain `tags bindings list --parent` command; `--effective` returns effective tags in a different shape (not shown in the official docs).
 - Adapted from the official docs: `tags bindings list` shows directly attached bindings only; add `--effective` to include inherited tags.
 
