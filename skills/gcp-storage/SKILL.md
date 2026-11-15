@@ -172,7 +172,7 @@ skills/gcp-storage/
 - `gcp-cli` — gcloud 全般のインストール・設定・出力フォーマット・`gcloud auth` の使い方。`gcloud storage` / `transfer` / `filestore` / `lustre` / `netapp` / `backup-dr` のコマンドは本スキル
 - `gcp-foundation` — ADC・IAM の仕組み・サービスアカウント・Organization Policy・課金。Cloud Storage の IAM ロールと権限、UBLA、公開アクセス防止の設定は本スキル
 - `gcp-run` — Cloud Run のバケット / Filestore ボリュームマウント。ストレージ側の製品・IAM は本スキル
-- `gcp-client-libraries` — 言語別クライアントライブラリのコード（予定）。本スキルは製品・API・CLI
+- `gcp-client-libraries` — 言語別クライアントライブラリのコード（Node.js / Python / Rust）。本スキルは製品・API・CLI
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `cloudflare-storage` — Cloudflare R2 / KV / D1。S3 互換でも Cloud Storage とは別基盤
 - `supabase` — Supabase Storage。Cloud Storage とは別
