@@ -10,12 +10,13 @@ Extend the preconfigured base images (minimal IDE, Linux terminal, language tool
 
 ### Extend a base image: install a package
 
-Adapted (not in the official docs): `apt update` and `apt install` are joined into one `RUN` with `apt-get`, so a cached update layer cannot leave stale package indexes for a changed install line.
+Adapted (not in the official docs): `apt update` and `apt install` are joined into one `RUN` with `apt-get`, so a cached update layer cannot leave stale package indexes for a changed install line, and the build step runs as root through `USER root` instead of `sudo`.
 
 ```dockerfile
 FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/code-oss:latest
 
-RUN sudo apt-get update && sudo apt-get install -y emacs
+USER root
+RUN apt-get update && apt-get install -y emacs
 ```
 
 ### User customization script
@@ -159,7 +160,7 @@ docker push TARGET_IMAGE
 - Host custom images in Artifact Registry (recommended and supported); other repositories (for example GitHub) may not work as expected. A private image requires a service account with pull permission in the workstation configuration.
 - `docker run --privileged` is for local testing only; do not use it on shared hosts.
 - Corrected from the official docs: the user customization script `groupadd $GROUP` / `usermod -a -G $GROUP $USERNAME` uses unquoted placeholders in a script that runs as root, so an empty, space-containing or `-`-prefixed value is split or parsed as an option. The rewrite sets `GROUP` / `USERNAME` explicitly, rejects empty values, values starting with `-` and characters outside `a-z0-9_-` (a conservative lower-case rule; widen the pattern if your names need other characters), quotes every expansion and ends options with `--` before the name operands.
-- Adapted from the official docs: the emacs Dockerfile's two layers `RUN sudo apt update` / `RUN sudo apt install -y emacs` are written as one `RUN sudo apt-get update && sudo apt-get install -y emacs`.
+- Adapted from the official docs: the emacs Dockerfile's two layers `RUN sudo apt update` / `RUN sudo apt install -y emacs` are written as one `RUN apt-get update && apt-get install -y emacs` after `USER root`, so packages are installed by the root build step instead of through `sudo`.
 - Adapted from the official docs: the color-theme script `cat <<< $(jq '. += {"workbench.colorTheme": "Default Dark Modern"}' settings.json) > settings.json` empties `settings.json` when jq fails (missing file, or JSONC comments); it is rewritten to write a temp file and `mv` it on success. The command still uses the source's relative `settings.json`, and startup scripts run as root by default (the source says to use `runuser` to run as another user), so the script must change to `$HOME/.codeoss-cloudworkstations/data/Machine/` of the workstation user before running it; the source's Dockerfile for this script is not shown, so add a shebang and `chmod +x` as in the other startup-script examples.
 - The X11 forwarding Dockerfile uses a heredoc in `RUN` (`RUN cat >> /etc/ssh/sshd_config <<-EOF`), which needs a builder that supports Dockerfile heredocs (BuildKit); the legacy builder parses the following lines as instructions. See the `docker` skill.
 - Source inconsistency: the startup-script examples on this page use `011_`, `120_` and `150_` prefixes (running before or among the built-in `110_start-$IDE.sh`); https://docs.cloud.google.com/workstations/docs/preconfigured-base-images recommends prefixing your scripts with a three-digit number greater than 200.

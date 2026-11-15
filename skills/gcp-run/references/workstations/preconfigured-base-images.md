@@ -21,13 +21,7 @@ RUN apt-get update
 
 ### Customize without extending an image
 
-All base images run an executable `/home/user/.workstation/customize_environment` in the background as `user` once at workstation start (unlike `.profile` / `.bashrc`, which run per shell login):
-
-```bash
-#!/bin/bash
-sudo apt-get update
-sudo apt-get install -y emacs
-```
+All base images run an executable `/home/user/.workstation/customize_environment` in the background as `user` once at workstation start (unlike `.profile` / `.bashrc`, which run per shell login). Install packages in a custom image rather than from this script; see `customize-container-images.md` for the Dockerfile example and Notes for the omitted source example.
 
 ## Options / Props
 
@@ -67,6 +61,7 @@ Third-party image (maintained by Posit, not built, maintained or officially supp
 - AI agents: images include sample keep-alive configurations under `/google/samples/agents/keepalive/` (for example Claude Code, Antigravity CLI). They work best with workstation suspension (`idleAction` set to `SUSPEND`). See https://docs.cloud.google.com/workstations/docs/agent-optimized-development.
 - Source inconsistency: this page recommends prefixing your startup scripts with a three-digit number greater than 200; the examples in https://docs.cloud.google.com/workstations/docs/customize-container-images use `011_`, `120_` and `150_` prefixes so they run before or among the built-in `110_start-$IDE.sh`.
 - Base images are for Cloud Workstations; for general Dockerfile and image-build practice see the `docker` skill.
+- Omitted: the source's `customize_environment` example (`sudo apt-get update` / `sudo apt-get install -y emacs`) installs packages with `sudo` from a script that runs as `user` at every workstation start. Install packages once in a custom image built from a base image (root build step, no `sudo`) instead; see customize-container-images.md. Workstations can also turn off `sudo` with `CLOUD_WORKSTATIONS_CONFIG_DISABLE_SUDO`.
 - Source: https://docs.cloud.google.com/workstations/docs/preconfigured-base-images (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
