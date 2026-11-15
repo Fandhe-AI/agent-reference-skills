@@ -493,7 +493,7 @@ Base URL: `https://cloudnumberregistry.googleapis.com`. Methods are listed by `i
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | Required. The resource name of the Realm to retrieve. |
-| `view` | query | string enum | no | Optional. The view of the Realm to retrieve. |
+| `view` | query | string enum | no | Optional. The view of the Realm to retrieve. Values: `REALM_VIEW_UNSPECIFIED`, `BASIC`, `FULL`, `AGGREGATE`. |
 
 ### `cloudnumberregistry.projects.locations.realms.list`
 
@@ -510,7 +510,7 @@ Base URL: `https://cloudnumberregistry.googleapis.com`. Methods are listed by `i
 | `orderBy` | query | string | no | Optional. Hint for how to order the results. |
 | `pageSize` | query | integer (int32) | no | Optional. Requested page size. Server may return fewer items than requested. If unspecified, server will pick an appropriate default. |
 | `pageToken` | query | string | no | Optional. A token identifying a page of results the server should return. |
-| `view` | query | string enum | no | Optional. The view of the Realm to retrieve. |
+| `view` | query | string enum | no | Optional. The view of the Realm to retrieve. Values: `REALM_VIEW_UNSPECIFIED`, `BASIC`, `FULL`, `AGGREGATE`. |
 
 ### `cloudnumberregistry.projects.locations.realms.patch`
 
@@ -565,7 +565,7 @@ Base URL: `https://cloudnumberregistry.googleapis.com`. Methods are listed by `i
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | Required. The resource name of the RegistryBook to retrieve. |
-| `view` | query | string enum | no | Optional. The view of the RegistryBook to retrieve. |
+| `view` | query | string enum | no | Optional. The view of the RegistryBook to retrieve. Values: `REGISTRY_BOOK_VIEW_UNSPECIFIED`, `BASIC`, `FULL`, `AGGREGATE`. |
 
 ### `cloudnumberregistry.projects.locations.registryBooks.list`
 
@@ -582,7 +582,7 @@ Base URL: `https://cloudnumberregistry.googleapis.com`. Methods are listed by `i
 | `orderBy` | query | string | no | Optional. Hint for how to order the results. |
 | `pageSize` | query | integer (int32) | no | Optional. Requested page size. Server may return fewer items than requested. If unspecified, server will pick an appropriate default. |
 | `pageToken` | query | string | no | Optional. A token identifying a page of results the server should return. |
-| `view` | query | string enum | no | Optional. The view of the RegistryBook to retrieve. |
+| `view` | query | string enum | no | Optional. The view of the RegistryBook to retrieve. Values: `REGISTRY_BOOK_VIEW_UNSPECIFIED`, `BASIC`, `FULL`, `AGGREGATE`. |
 
 ### `cloudnumberregistry.projects.locations.registryBooks.patch`
 

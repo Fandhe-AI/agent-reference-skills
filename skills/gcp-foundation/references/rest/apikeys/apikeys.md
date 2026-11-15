@@ -56,7 +56,7 @@ Base URL: `https://apikeys.googleapis.com`. Methods are listed by `id`; the `Ver
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | Required. The resource name of the API key to be deleted. |
-| `checkExistingUsage` | query | string enum | no | Optional. Defines the behavior for checking existing usage when deleting a key. |
+| `checkExistingUsage` | query | string enum | no | Optional. Defines the behavior for checking existing usage when deleting a key. Values: `CHECK_EXISTING_USAGE_UNSPECIFIED`, `SKIP`, `CHECK`. |
 | `etag` | query | string | no | Optional. The etag known to the client for the expected state of the key. This is to be used for optimistic concurrency. |
 
 ### `apikeys.projects.locations.keys.get`
@@ -109,7 +109,7 @@ Base URL: `https://apikeys.googleapis.com`. Methods are listed by `id`; the `Ver
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | Identifier. The resource name of the key. The `name` has the form: `projects//locations/global/keys/`. For example: `projects/123456867718/locations/global/keys/b7ff1f9f-8275-410a-94dd-3855ee9b5dd2` NOTE: Key is a global resource; hence the only supported value for location is `global`. |
-| `checkExistingUsage` | query | string enum | no | Optional. Defines the behavior for checking existing usage when updating a key. |
+| `checkExistingUsage` | query | string enum | no | Optional. Defines the behavior for checking existing usage when updating a key. Values: `CHECK_EXISTING_USAGE_UNSPECIFIED`, `SKIP`, `CHECK`. |
 | `updateMask` | query | string (google-fieldmask) | no | The field mask specifies which fields to be updated as part of this request. All other fields are ignored. Mutable fields are: `display_name`, `restrictions`, and `annotations`. If an update mask is not provided, the service treats it as an implied mask equivalent to all allowed fields that are set on the wire. If the field mask has a special value "\*", the service treats it equivalent to replace all allowed mutable fields. |
 
 ### `apikeys.projects.locations.keys.undelete`

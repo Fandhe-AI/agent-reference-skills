@@ -331,7 +331,7 @@ Base URL: `https://cloudidentity.googleapis.com`. Methods are listed by `id`; th
 | `orderBy` | query | string | no | Optional. Order specification for devices in the response. Only one of the following field names may be used to specify the order: `create_time`, `last_sync_time`, `model`, `os_version`, `device_type` and `serial_number`. `desc` may be specified optionally at the end to specify results to be sorted in descending order. Default order is ascending. |
 | `pageSize` | query | integer (int32) | no | Optional. The maximum number of Devices to return. If unspecified, at most 20 Devices will be returned. The maximum value is 100; values above 100 will be coerced to 100. |
 | `pageToken` | query | string | no | Optional. A page token, received from a previous `ListDevices` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `ListDevices` must match the call that provided the page token. |
-| `view` | query | string enum | no | Optional. The view to use for the List request. |
+| `view` | query | string enum | no | Optional. The view to use for the List request. Values: `VIEW_UNSPECIFIED`, `COMPANY_INVENTORY`, `USER_ASSIGNED_DEVICES`. |
 
 ### `cloudidentity.devices.wipe`
 
@@ -355,7 +355,7 @@ Base URL: `https://cloudidentity.googleapis.com`. Methods are listed by `id`; th
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `initialGroupConfig` | query | string enum | no | Optional. The initial configuration option for the `Group`. |
+| `initialGroupConfig` | query | string enum | no | Optional. The initial configuration option for the `Group`. Values: `INITIAL_GROUP_CONFIG_UNSPECIFIED`, `WITH_INITIAL_OWNER`, `EMPTY`. |
 
 ### `cloudidentity.groups.delete`
 
@@ -407,7 +407,7 @@ Base URL: `https://cloudidentity.googleapis.com`. Methods are listed by `id`; th
 | `pageSize` | query | integer (int32) | no | The maximum number of results to return. Note that the number of results returned may be less than this value even if there are more available results. To fetch all results, clients must continue calling this method repeatedly until the response no longer contains a `next_page_token`. If unspecified, defaults to 200 for `View.BASIC` and to 50 for `View.FULL`. Must not be greater than 1000 for `View.BASIC` or 500 for `View.FULL`. |
 | `pageToken` | query | string | no | The `next_page_token` value returned from a previous list request, if any. |
 | `parent` | query | string | yes | Required. The parent resource under which to list all `Group` resources. Must be of the form `identitysources/{identity_source}` for external- identity-mapped groups or `customers/{customer_id}` for Google Groups. The `customer_id` must begin with "C" (for example, 'C046psxkn'). \[Find your customer ID.\] (https://support.google.com/cloudidentity/answer/10070793) |
-| `view` | query | string enum | no | The level of detail to be returned. If unspecified, defaults to `View.BASIC`. |
+| `view` | query | string enum | no | The level of detail to be returned. If unspecified, defaults to `View.BASIC`. Values: `VIEW_UNSPECIFIED`, `BASIC`, `FULL`. |
 
 ### `cloudidentity.groups.lookup`
 
@@ -497,7 +497,7 @@ Base URL: `https://cloudidentity.googleapis.com`. Methods are listed by `id`; th
 | `parent` | path | string | yes | Required. The parent `Group` resource under which to lookup the `Membership` name. Must be of the form `groups/{group}`. |
 | `pageSize` | query | integer (int32) | no | The maximum number of results to return. Note that the number of results returned may be less than this value even if there are more available results. To fetch all results, clients must continue calling this method repeatedly until the response no longer contains a `next_page_token`. If unspecified, defaults to 200 for `GroupView.BASIC` and to 50 for `GroupView.FULL`. Must not be greater than 1000 for `GroupView.BASIC` or 500 for `GroupView.FULL`. |
 | `pageToken` | query | string | no | The `next_page_token` value returned from a previous search request, if any. |
-| `view` | query | string enum | no | The level of detail to be returned. If unspecified, defaults to `View.BASIC`. |
+| `view` | query | string enum | no | The level of detail to be returned. If unspecified, defaults to `View.BASIC`. Values: `VIEW_UNSPECIFIED`, `BASIC`, `FULL`. |
 
 ### `cloudidentity.groups.memberships.lookup`
 
@@ -596,7 +596,7 @@ Base URL: `https://cloudidentity.googleapis.com`. Methods are listed by `id`; th
 | `pageSize` | query | integer (int32) | no | The maximum number of results to return. Note that the number of results returned may be less than this value even if there are more available results. To fetch all results, clients must continue calling this method repeatedly until the response no longer contains a `next_page_token`. If unspecified, defaults to 200 for `GroupView.BASIC` and 50 for `GroupView.FULL`. Must not be greater than 1000 for `GroupView.BASIC` or 500 for `GroupView.FULL`. |
 | `pageToken` | query | string | no | The `next_page_token` value returned from a previous search request, if any. |
 | `query` | query | string | yes | Required. The search query. \* Must be specified in Common Expression Language (https://opensource.google/projects/cel). See CEL Introduction (https://github.com/google/cel-spec/blob/master/doc/intro.md) for CEL syntax usage and examples. \* Must contain equality operators on the parent, e.g. `parent == 'customers/{customer_id}'`. The `customer_id` must begin with "C" (for example, 'C046psxkn'). \[Find your customer ID.\] (https://support.google.com/cloudidentity/answer/10070793) \* Can contain optional inclusion operators on `labels` such as `'cloudidentity.googleapis.com/groups.discussion_forum' in labels`). \* Can contain an optional equality operator on `domain_name`. e.g. `domain_name == 'examplepetstore.com'` \* Can contain optional `startsWith/contains/equality` operators on `group_key`, e.g. `group_key.startsWith('dev')`, `group_key.contains('dev'), group_key == 'dev@examplepetstore.com'` \* Can contain optional `startsWith/contains/equality` operators on `display_name`, such as `display_name.startsWith('dev')` , `display_name.contains('dev')`, `display_name == 'dev'` Examples: \* Search for all discussion forums under a customer: `parent == 'customers/C046psxkn' && 'cloudidentity.googleapis.com/groups.discussion_forum' in labels` \* Search for groups with key starting with 'sales': `parent == 'customers/C046psxkn' && group_key.startsWith('sales')` \* Search for groups with display name containing 'test': `parent == 'customers/C046psxkn' && display_name.contains('test')` |
-| `view` | query | string enum | no | The level of detail to be returned. If unspecified, defaults to `View.BASIC`. |
+| `view` | query | string enum | no | The level of detail to be returned. If unspecified, defaults to `View.BASIC`. Values: `VIEW_UNSPECIFIED`, `BASIC`, `FULL`. |
 
 ### `cloudidentity.groups.updateSecuritySettings`
 

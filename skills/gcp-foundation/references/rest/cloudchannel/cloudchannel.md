@@ -170,7 +170,7 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | Required. The resource name of the channel partner link to retrieve. Name uses the format: accounts/{account_id}/channelPartnerLinks/{id} where {id} is the Cloud Identity ID of the partner. |
-| `view` | query | string enum | no | Optional. The level of granularity the ChannelPartnerLink will display. |
+| `view` | query | string enum | no | Optional. The level of granularity the ChannelPartnerLink will display. Values: `UNSPECIFIED`, `BASIC`, `FULL`. |
 
 ### `cloudchannel.accounts.channelPartnerLinks.list`
 
@@ -185,7 +185,7 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 | `parent` | path | string | yes | Required. The resource name of the reseller account for listing channel partner links. Parent uses the format: accounts/{account_id} |
 | `pageSize` | query | integer (int32) | no | Optional. Requested page size. Server might return fewer results than requested. If unspecified, server will pick a default size (25). The maximum value is 200; the server will coerce values above 200. |
 | `pageToken` | query | string | no | Optional. A token for a page of results other than the first page. Obtained using ListChannelPartnerLinksResponse.next_page_token of the previous CloudChannelService.ListChannelPartnerLinks call. |
-| `view` | query | string enum | no | Optional. The level of granularity the ChannelPartnerLink will display. |
+| `view` | query | string enum | no | Optional. The level of granularity the ChannelPartnerLink will display. Values: `UNSPECIFIED`, `BASIC`, `FULL`. |
 
 ### `cloudchannel.accounts.channelPartnerLinks.patch`
 
@@ -517,7 +517,7 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `customer` | path | string | yes | Required. The resource name of the customer to list SKUs for. Format: accounts/{account_id}/customers/{customer_id}. |
-| `changeOfferPurchase.changeType` | query | string enum | conditional | Required. Change Type for the entitlement. |
+| `changeOfferPurchase.changeType` | query | string enum | conditional | Required. Change Type for the entitlement. Values: `CHANGE_TYPE_UNSPECIFIED`, `UPGRADE`, `DOWNGRADE`. |
 | `changeOfferPurchase.entitlement` | query | string | conditional | Required. Resource name of the entitlement. Format: accounts/{account_id}/customers/{customer_id}/entitlements/{entitlement_id} |
 | `createEntitlementPurchase.product` | query | string | conditional | Required. List SKUs belonging to this Product. Format: products/{product_id}. Supports products/- to retrieve SKUs for all products. |
 | `languageCode` | query | string | no | Optional. The BCP-47 language code. For example, "en-US". The response will localize in the corresponding language code, if specified. The default value is "en-US". |

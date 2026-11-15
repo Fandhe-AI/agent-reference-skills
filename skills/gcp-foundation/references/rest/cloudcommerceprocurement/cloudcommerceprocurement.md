@@ -31,7 +31,7 @@ Base URL: `https://cloudcommerceprocurement.googleapis.com`. Methods are listed 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | Required. The name of the account to retrieve. |
-| `view` | query | string enum | no | Optional. What information to include in the response. |
+| `view` | query | string enum | no | Optional. What information to include in the response. Values: `ACCOUNT_VIEW_UNSPECIFIED`, `ACCOUNT_VIEW_BASIC`, `ACCOUNT_VIEW_FULL`. |
 
 ### `cloudcommerceprocurement.providers.accounts.list`
 

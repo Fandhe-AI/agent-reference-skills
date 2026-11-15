@@ -19,7 +19,7 @@ Base URL: `https://developerknowledge.googleapis.com`. Methods are listed by `id
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `names` | query | repeated string | yes | Required. Specifies the names of the documents to retrieve. A maximum of 20 documents can be retrieved in a batch. The documents are returned in the same order as the `names` in the request. Format: `documents/{uri_without_scheme}` Example: `documents/docs.cloud.google.com/storage/docs/creating-buckets` Each name must not exceed 500 characters; values longer than 500 characters will result in an `INVALID_ARGUMENT` error. |
-| `view` | query | string enum | no | Optional. Specifies the DocumentView of the document. If unspecified, DeveloperKnowledge.BatchGetDocuments defaults to `DOCUMENT_VIEW_CONTENT`. |
+| `view` | query | string enum | no | Optional. Specifies the DocumentView of the document. If unspecified, DeveloperKnowledge.BatchGetDocuments defaults to `DOCUMENT_VIEW_CONTENT`. Values: `DOCUMENT_VIEW_UNSPECIFIED`, `DOCUMENT_VIEW_BASIC`, `DOCUMENT_VIEW_FULL`, `DOCUMENT_VIEW_CONTENT`. |
 
 ### `developerknowledge.documents.get`
 
@@ -32,7 +32,7 @@ Base URL: `https://developerknowledge.googleapis.com`. Methods are listed by `id
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | Required. Specifies the name of the document to retrieve. Format: `documents/{uri_without_scheme}` Example: `documents/docs.cloud.google.com/storage/docs/creating-buckets` The name must not exceed 500 characters; values longer than 500 characters will result in an `INVALID_ARGUMENT` error. |
-| `view` | query | string enum | no | Optional. Specifies the DocumentView of the document. If unspecified, DeveloperKnowledge.GetDocument defaults to `DOCUMENT_VIEW_CONTENT`. |
+| `view` | query | string enum | no | Optional. Specifies the DocumentView of the document. If unspecified, DeveloperKnowledge.GetDocument defaults to `DOCUMENT_VIEW_CONTENT`. Values: `DOCUMENT_VIEW_UNSPECIFIED`, `DOCUMENT_VIEW_BASIC`, `DOCUMENT_VIEW_FULL`, `DOCUMENT_VIEW_CONTENT`. |
 
 ### `developerknowledge.documents.searchDocumentChunks`
 

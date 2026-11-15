@@ -593,7 +593,7 @@ Base URL: `https://iam.googleapis.com`. Methods are listed by `id`; the `Version
 | `pageSize` | query | integer (int32) | no | Optional limit on the number of roles to include in the response. The default is 300, and the maximum is 1,000. |
 | `pageToken` | query | string | no | Optional pagination token returned in an earlier ListRolesResponse. |
 | `showDeleted` | query | boolean | no | Include Roles that have been deleted. |
-| `view` | query | string enum | no | Optional view for the returned Role objects. When `FULL` is specified, the `includedPermissions` field is returned, which includes a list of all permissions in the role. The default value is `BASIC`, which does not return the `includedPermissions` field. |
+| `view` | query | string enum | no | Optional view for the returned Role objects. When `FULL` is specified, the `includedPermissions` field is returned, which includes a list of all permissions in the role. The default value is `BASIC`, which does not return the `includedPermissions` field. Values: `BASIC`, `FULL`. |
 
 ### `iam.organizations.roles.patch`
 
@@ -1476,7 +1476,7 @@ Base URL: `https://iam.googleapis.com`. Methods are listed by `id`; the `Version
 | `pageSize` | query | integer (int32) | no | Optional limit on the number of roles to include in the response. The default is 300, and the maximum is 1,000. |
 | `pageToken` | query | string | no | Optional pagination token returned in an earlier ListRolesResponse. |
 | `showDeleted` | query | boolean | no | Include Roles that have been deleted. |
-| `view` | query | string enum | no | Optional view for the returned Role objects. When `FULL` is specified, the `includedPermissions` field is returned, which includes a list of all permissions in the role. The default value is `BASIC`, which does not return the `includedPermissions` field. |
+| `view` | query | string enum | no | Optional view for the returned Role objects. When `FULL` is specified, the `includedPermissions` field is returned, which includes a list of all permissions in the role. The default value is `BASIC`, which does not return the `includedPermissions` field. Values: `BASIC`, `FULL`. |
 
 ### `iam.projects.roles.patch`
 
@@ -1635,7 +1635,7 @@ Base URL: `https://iam.googleapis.com`. Methods are listed by `id`; the `Version
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | Required. The resource name of the service account key. Use one of the following formats: \* `projects/{PROJECT_ID}/serviceAccounts/{EMAIL_ADDRESS}/keys/{KEY_ID}` \* `projects/{PROJECT_ID}/serviceAccounts/{UNIQUE_ID}/keys/{KEY_ID}` As an alternative, you can use the `-` wildcard character instead of the project ID: \* `projects/-/serviceAccounts/{EMAIL_ADDRESS}/keys/{KEY_ID}` \* `projects/-/serviceAccounts/{UNIQUE_ID}/keys/{KEY_ID}` When possible, avoid using the `-` wildcard character, because it can cause response messages to contain misleading error codes. For example, if you try to access the service account key `projects/-/serviceAccounts/fake@example.com/keys/fake-key`, which does not exist, the response contains an HTTP `403 Forbidden` error instead of a `404 Not Found` error. |
-| `publicKeyType` | query | string enum | no | Optional. The output format of the public key. The default is `TYPE_NONE`, which means that the public key is not returned. |
+| `publicKeyType` | query | string enum | no | Optional. The output format of the public key. The default is `TYPE_NONE`, which means that the public key is not returned. Values: `TYPE_NONE`, `TYPE_X509_PEM_FILE`, `TYPE_RAW_PUBLIC_KEY`. |
 
 ### Example request skeleton
 

@@ -49,7 +49,7 @@ Base URL: `https://kmsinventory.googleapis.com`. Methods are listed by `id`; the
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | Required. The resource name of the CryptoKey. |
-| `fallbackScope` | query | string enum | no | Optional. The scope to use if the kms organization service account is not configured. |
+| `fallbackScope` | query | string enum | no | Optional. The scope to use if the kms organization service account is not configured. Values: `FALLBACK_SCOPE_UNSPECIFIED`, `FALLBACK_SCOPE_PROJECT`. |
 
 ### `kmsinventory.projects.protectedResources.search`
 

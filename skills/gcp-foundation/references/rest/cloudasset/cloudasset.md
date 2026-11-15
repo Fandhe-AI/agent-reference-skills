@@ -20,7 +20,7 @@ Base URL: `https://cloudasset.googleapis.com`. Methods are listed by `id`; the `
 |---|---|---|---|---|
 | `parent` | path | string | yes | Required. Name of the organization, folder, or project the assets belong to. Format: "organizations/\[organization-number\]" (such as "organizations/123"), "projects/\[project-id\]" (such as "projects/my-project-id"), "projects/\[project-number\]" (such as "projects/12345"), or "folders/\[folder-number\]" (such as "folders/12345"). |
 | `assetTypes` | query | repeated string | no | A list of asset types to take a snapshot for. For example: "compute.googleapis.com/Disk". Regular expression is also supported. For example: \* "compute.googleapis.com.\*" snapshots resources whose asset type starts with "compute.googleapis.com". \* ".\*Instance" snapshots resources whose asset type ends with "Instance". \* ".\*Instance.\*" snapshots resources whose asset type contains "Instance". See RE2 (https://github.com/google/re2/wiki/Syntax) for all supported regular expression syntax. If the regular expression does not match any supported asset type, an INVALID_ARGUMENT error will be returned. If specified, only matching assets will be returned, otherwise, it will snapshot all asset types. See Introduction to Cloud Asset Inventory (https://cloud.google.com/asset-inventory/docs/overview) for all supported asset types. |
-| `contentType` | query | string enum | no | Asset content type. If not specified, no content but the asset name will be returned. |
+| `contentType` | query | string enum | no | Asset content type. If not specified, no content but the asset name will be returned. Values: `CONTENT_TYPE_UNSPECIFIED`, `RESOURCE`, `IAM_POLICY`, `ORG_POLICY`, `ACCESS_POLICY`, `OS_INVENTORY`, `RELATIONSHIP`. |
 | `pageSize` | query | integer (int32) | no | The maximum number of assets to be returned in a single response. Default is 100, minimum is 1, and maximum is 1000. |
 | `pageToken` | query | string | no | The `next_page_token` returned from the previous `ListAssetsResponse`, or unspecified for the first `ListAssetsRequest`. It is a continuation of a prior `ListAssets` call, and the API should return the next page of assets. |
 | `readTime` | query | string (google-datetime) | no | Timestamp to take an asset snapshot. This can only be set to a timestamp between the current time and the current time minus 35 days (inclusive). If not specified, the current time will be used. Due to delays in resource data collection and indexing, there is a volatile window during which running the same query may get different results. |
@@ -162,7 +162,7 @@ Base URL: `https://cloudasset.googleapis.com`. Methods are listed by `id`; the `
 |---|---|---|---|---|
 | `parent` | path | string | yes | Required. The relative name of the root asset. It can only be an organization number (such as "organizations/123"), a project ID (such as "projects/my-project-id")", or a project number (such as "projects/12345"). |
 | `assetNames` | query | repeated string | no | A list of the full names of the assets. For example: `//compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1`. See Resource Names (https://cloud.google.com/apis/design/resource_names#full_resource_name) for more info. The request becomes a no-op if the asset name list is empty, and the max size of the asset name list is 100 in one request. |
-| `contentType` | query | string enum | no | Optional. The content type. |
+| `contentType` | query | string enum | no | Optional. The content type. Values: `CONTENT_TYPE_UNSPECIFIED`, `RESOURCE`, `IAM_POLICY`. |
 | `readTimeWindow.endTime` | query | string (google-datetime) | no | End time of the time window (inclusive). If not specified, the current timestamp is used instead. |
 | `readTimeWindow.startTime` | query | string (google-datetime) | no | Start time of the time window (exclusive). |
 
@@ -202,7 +202,7 @@ Base URL: `https://cloudasset.googleapis.com`. Methods are listed by `id`; the `
 |---|---|---|---|---|
 | `parent` | path | string | yes | Required. The relative name of the root asset. It can only be an organization number (such as "organizations/123"), a project ID (such as "projects/my-project-id")", or a project number (such as "projects/12345"). |
 | `assetNames` | query | repeated string | no | A list of the full names of the assets. For example: `//compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1`. See Resource Names (https://cloud.google.com/apis/design/resource_names#full_resource_name) for more info. The request becomes a no-op if the asset name list is empty, and the max size of the asset name list is 100 in one request. |
-| `contentType` | query | string enum | no | Optional. The content type. |
+| `contentType` | query | string enum | no | Optional. The content type. Values: `CONTENT_TYPE_UNSPECIFIED`, `RESOURCE`, `IAM_POLICY`. |
 | `readTimeWindow.endTime` | query | string (google-datetime) | no | End time of the time window (inclusive). If not specified, the current timestamp is used instead. |
 | `readTimeWindow.startTime` | query | string (google-datetime) | no | Start time of the time window (exclusive). |
 
@@ -361,7 +361,7 @@ Base URL: `https://cloudasset.googleapis.com`. Methods are listed by `id`; the `
 |---|---|---|---|---|
 | `resource` | path | string | yes | Required. Name of the resource to perform the analysis against. Only Google Cloud projects are supported as of today. Hence, this can only be a project ID (such as "projects/my-project-id") or a project number (such as "projects/12345"). |
 | `destinationParent` | query | string | yes | Required. Name of the Google Cloud folder or organization to reparent the target resource. The analysis will be performed against hypothetically moving the resource to this specified destination parent. This can only be a folder number (such as "folders/123") or an organization number (such as "organizations/123"). |
-| `view` | query | string enum | no | Analysis view indicating what information should be included in the analysis response. If unspecified, the default view is FULL. |
+| `view` | query | string enum | no | Analysis view indicating what information should be included in the analysis response. If unspecified, the default view is FULL. Values: `ANALYSIS_VIEW_UNSPECIFIED`, `FULL`, `BASIC`. |
 
 ### `cloudasset.analyzeOrgPolicies`
 
@@ -423,7 +423,7 @@ Base URL: `https://cloudasset.googleapis.com`. Methods are listed by `id`; the `
 |---|---|---|---|---|
 | `parent` | path | string | yes | Required. The relative name of the root asset. It can only be an organization number (such as "organizations/123"), a project ID (such as "projects/my-project-id")", or a project number (such as "projects/12345"). |
 | `assetNames` | query | repeated string | no | A list of the full names of the assets. See: https://cloud.google.com/asset-inventory/docs/resource-name-format Example: `//compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1`. The request becomes a no-op if the asset name list is empty, and the max size of the asset name list is 100 in one request. |
-| `contentType` | query | string enum | no | Optional. The content type. |
+| `contentType` | query | string enum | no | Optional. The content type. Values: `CONTENT_TYPE_UNSPECIFIED`, `RESOURCE`, `IAM_POLICY`, `ORG_POLICY`, `ACCESS_POLICY`, `OS_INVENTORY`, `RELATIONSHIP`. |
 | `readTimeWindow.endTime` | query | string (google-datetime) | no | End time of the time window (inclusive). If not specified, the current timestamp is used instead. |
 | `readTimeWindow.startTime` | query | string (google-datetime) | no | Start time of the time window (exclusive). |
 | `relationshipTypes` | query | repeated string | no | Optional. A list of relationship types to output, for example: `INSTANCE_TO_INSTANCEGROUP`. This field should only be specified if content_type=RELATIONSHIP. \* If specified: it outputs specified relationships' history on the \[asset_names\]. It returns an error if any of the \[relationship_types\] doesn't belong to the supported relationship types of the \[asset_names\] or if any of the \[asset_names\]'s types doesn't belong to the source types of the \[relationship_types\]. \* Otherwise: it outputs the supported relationships' history on the \[asset_names\] or returns an error if any of the \[asset_names\]'s types has no relationship support. See Introduction to Cloud Asset Inventory (https://cloud.google.com/asset-inventory/docs/overview) for all supported asset types and relationship types. |

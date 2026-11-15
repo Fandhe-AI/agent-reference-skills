@@ -60,7 +60,7 @@ Base URL: `https://servicemanagement.googleapis.com`. Methods are listed by `id`
 |---|---|---|---|---|
 | `serviceName` | path | string | yes | Required. The name of the service. See the overview (https://cloud.google.com/service-management/overview) for naming requirements. For example: `example.googleapis.com`. |
 | `configId` | path | string | yes | Required. The id of the service configuration resource. This field must be specified for the server to return all fields, including `SourceInfo`. |
-| `view` | query | string enum | no | Specifies which parts of the Service Config should be returned in the response. |
+| `view` | query | string enum | no | Specifies which parts of the Service Config should be returned in the response. Values: `BASIC`, `FULL`. |
 
 ### `servicemanagement.services.configs.list`
 
@@ -176,7 +176,7 @@ Base URL: `https://servicemanagement.googleapis.com`. Methods are listed by `id`
 |---|---|---|---|---|
 | `serviceName` | path | string | yes | Required. The name of the service. See the overview (https://cloud.google.com/service-management/overview) for naming requirements. For example: `example.googleapis.com`. |
 | `configId` | query | string | yes | Required. The id of the service configuration resource. This field must be specified for the server to return all fields, including `SourceInfo`. |
-| `view` | query | string enum | no | Specifies which parts of the Service Config should be returned in the response. |
+| `view` | query | string enum | no | Specifies which parts of the Service Config should be returned in the response. Values: `BASIC`, `FULL`. |
 
 ### `servicemanagement.services.getIamPolicy`
 

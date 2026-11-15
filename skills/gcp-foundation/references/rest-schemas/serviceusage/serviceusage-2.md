@@ -21,7 +21,7 @@ Message types referenced by the methods listed under `references/rest/serviceusa
 | `oneofs` | array<string> | The list of types appearing in `oneof` definitions in this type. |
 | `options` | array<Option> | The protocol buffer options. |
 | `sourceContext` | SourceContext | The source context. |
-| `syntax` | string enum | The source syntax. |
+| `syntax` | string enum | The source syntax. Values: `SYNTAX_PROTO2`, `SYNTAX_PROTO3`, `SYNTAX_EDITIONS`. |
 
 ### `UpdateAdminQuotaPolicyMetadata`
 

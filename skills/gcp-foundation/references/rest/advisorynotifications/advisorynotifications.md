@@ -47,7 +47,7 @@ Base URL: `https://advisorynotifications.googleapis.com`. Methods are listed by 
 | `languageCode` | query | string | no | ISO code for requested localization language. If unset, will be interpereted as "en". If the requested language is valid, but not supported for this notification, English will be returned with an "Not applicable" LocalizationState. If the ISO code is invalid (i.e. not a real language), this RPC will throw an error. |
 | `pageSize` | query | integer (int32) | no | The maximum number of notifications to return. The service may return fewer than this value. If unspecified or equal to 0, at most 50 notifications will be returned. The maximum value is 50; values above 50 will be coerced to 50. |
 | `pageToken` | query | string | no | A page token returned from a previous request. When paginating, all other parameters provided in the request must match the call that returned the page token. |
-| `view` | query | string enum | no | Specifies which parts of the notification resource should be returned in the response. |
+| `view` | query | string enum | no | Specifies which parts of the notification resource should be returned in the response. Values: `NOTIFICATION_VIEW_UNSPECIFIED`, `BASIC`, `FULL`. |
 
 ### `advisorynotifications.organizations.locations.updateSettings`
 
@@ -100,7 +100,7 @@ Base URL: `https://advisorynotifications.googleapis.com`. Methods are listed by 
 | `languageCode` | query | string | no | ISO code for requested localization language. If unset, will be interpereted as "en". If the requested language is valid, but not supported for this notification, English will be returned with an "Not applicable" LocalizationState. If the ISO code is invalid (i.e. not a real language), this RPC will throw an error. |
 | `pageSize` | query | integer (int32) | no | The maximum number of notifications to return. The service may return fewer than this value. If unspecified or equal to 0, at most 50 notifications will be returned. The maximum value is 50; values above 50 will be coerced to 50. |
 | `pageToken` | query | string | no | A page token returned from a previous request. When paginating, all other parameters provided in the request must match the call that returned the page token. |
-| `view` | query | string enum | no | Specifies which parts of the notification resource should be returned in the response. |
+| `view` | query | string enum | no | Specifies which parts of the notification resource should be returned in the response. Values: `NOTIFICATION_VIEW_UNSPECIFIED`, `BASIC`, `FULL`. |
 
 ### `advisorynotifications.projects.locations.updateSettings`
 
