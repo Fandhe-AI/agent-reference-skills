@@ -15,14 +15,12 @@ Predefined roles of `appdevelopmentexperience` (role ID, description, included p
 - Give the App Development Experience service agent access to Cloud Platform resources. > \[!WARNING\] > \*\*Warning:\*\* Do not grant service agent roles to any principals except service agents (https://docs.cloud.google.com/iam/docs/service-agents).
 - Permissions (13): `container.clusters.get`, `container.clusters.update`, `gkehub.features.get`, `gkehub.gateway.delete`, `gkehub.gateway.generateCredentials`, `gkehub.gateway.get`, `gkehub.gateway.patch`, `gkehub.gateway.post`, `gkehub.gateway.put`, `gkehub.locations.get`, `gkehub.locations.list`, `gkehub.memberships.get`, `gkehub.memberships.list`
 
-### Example: grant a role
+### Example: inspect a role
 
-Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Project):
+Generated example (not in the official docs) describing the first role on this page; every role on this page is a service agent role, which is granted to the service agent by Google Cloud and must not be granted to users:
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
-  --member="user:EMAIL_ADDRESS" \
-  --role="roles/appdevelopmentexperience.serviceAgent"
+gcloud iam roles describe roles/appdevelopmentexperience.serviceAgent
 ```
 
 ## Notes
