@@ -934,6 +934,9 @@ Base URL: `https://storage.googleapis.com/storage/v1`. Methods are listed by `id
 - Versions: v1
 - `POST https://storage.googleapis.com/storage/v1/b/{bucket}/o`
 - Stores a new object and metadata.
+- Media upload (resumable): `POST https://storage.googleapis.com/upload/storage/v1/b/{bucket}/o` with `uploadType=resumable` (starts a resumable upload session; send the content to the session URI that the response returns); the Discovery document also lists the path `/resumable/upload/storage/v1/b/{bucket}/o` for this protocol
+- Media upload (simple): `POST https://storage.googleapis.com/upload/storage/v1/b/{bucket}/o` with `uploadType=media` (the body is the file content only) or `uploadType=multipart` (a `multipart/related` body with the JSON metadata part followed by the content part)
+- Media upload limits: accepted media types: `*/*`
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`, `https://www.googleapis.com/auth/devstorage.full_control`, `https://www.googleapis.com/auth/devstorage.read_write`
 - Request: `Object`; Response: `Object`
 
