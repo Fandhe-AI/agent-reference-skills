@@ -118,7 +118,7 @@ EOF
 
 ### Receive and validate the token (Python, Flask)
 
-Adapted (not in the official docs): `verify_token` is given `audience=os.environ["SERVICE_URL"]` so a Google-signed ID token minted for a different service is rejected. Cloud Run does not set `SERVICE_URL`; set it at deployment (for example `--update-env-vars SERVICE_URL=https://my-cloud-run-service.run.app/`) to exactly the audience string callers request. If it is unset, the lookup raises `KeyError` and the request fails (fail closed). In addition, an invalid token, an unhandled header scheme and a missing `Authorization` header now call `abort(401)` instead of returning a message with HTTP 200; the docstring and the error messages were updated to match.
+Adapted (not in the official docs): `verify_token` is given `audience=os.environ["SERVICE_URL"]` so a Google-signed ID token minted for a different service is rejected; Cloud Run does not set `SERVICE_URL`, so set it at deployment (for example `--update-env-vars SERVICE_URL=https://my-cloud-run-service.run.app/`) to exactly the audience string callers request, and if it is unset the lookup raises `KeyError` and the request fails (fail closed). Verification only authenticates the token, so the verified `email` (with `email_verified` true when that claim is present) must also be listed in the comma-separated `ALLOWED_CALLERS` environment variable, otherwise the request gets `abort(403)`; an unset or empty `ALLOWED_CALLERS` rejects every caller (fail closed). The header is split with `auth_header.split(" ", 1)` without tuple unpacking, and a missing `Authorization` header, a non-bearer scheme, an empty credential and an invalid token (`GoogleAuthError` or `ValueError`) call `abort(401)` instead of returning a message with HTTP 200 or raising an unhandled `ValueError` (HTTP 500); the docstring and the error messages were updated to match.
 
 ```python
 import os
@@ -131,8 +131,8 @@ from google.oauth2 import id_token
 
 
 def receive_request_and_parse_auth_header(request: Request) -> str:
-    """Parse the authorization header, validate the Bearer token
-    and decode the token to get its information.
+    """Parse the authorization header, validate the Bearer token,
+    decode the token and authorize the caller.
 
     Args:
         request: Flask request object.
@@ -142,27 +142,47 @@ def receive_request_and_parse_auth_header(request: Request) -> str:
 
     Raises:
         werkzeug.exceptions.Unauthorized: HTTP 401 when the header is
-        missing, uses another scheme, or carries an invalid token.
+        missing, uses another scheme, has no credentials, or carries an
+        invalid token.
+        werkzeug.exceptions.Forbidden: HTTP 403 when the token's email is
+        not verified or not listed in ALLOWED_CALLERS (unset or empty
+        ALLOWED_CALLERS rejects every caller).
     """
     auth_header = request.headers.get("Authorization")
-    if auth_header:
-        # Split the auth type and value from the header.
-        auth_type, creds = auth_header.split(" ", 1)
+    if not auth_header:
+        abort(401, description="Missing Authorization header.")
 
-        if auth_type.lower() == "bearer":
-            # Find more information about `verify_token` function here:
-            # https://google-auth.readthedocs.io/en/master/reference/google.oauth2.id_token.html#google.oauth2.id_token.verify_token
-            try:
-                decoded_token = id_token.verify_token(
-                    creds, requests.Request(), audience=os.environ["SERVICE_URL"]
-                )
-                return f"Hello, {decoded_token['email']}!\n"
-            except GoogleAuthError:
-                abort(401, description="Invalid token.")
-        else:
-            abort(401, description=f"Unhandled header format ({auth_type}).")
+    # Split the auth type and value from the header.
+    parts = auth_header.split(" ", 1)
+    auth_type = parts[0]
+    creds = parts[1].strip() if len(parts) == 2 else ""
+    if auth_type.lower() != "bearer":
+        abort(401, description=f"Unhandled header format ({auth_type}).")
+    if not creds:
+        abort(401, description="Missing bearer token.")
 
-    abort(401, description="Missing Authorization header.")
+    # Find more information about `verify_token` function here:
+    # https://google-auth.readthedocs.io/en/master/reference/google.oauth2.id_token.html#google.oauth2.id_token.verify_token
+    try:
+        decoded_token = id_token.verify_token(
+            creds, requests.Request(), audience=os.environ["SERVICE_URL"]
+        )
+    except (GoogleAuthError, ValueError):
+        abort(401, description="Invalid token.")
+
+    # Verification authenticates the token; authorize the caller explicitly.
+    allowed_callers = {
+        email.strip().lower()
+        for email in os.environ.get("ALLOWED_CALLERS", "").split(",")
+        if email.strip()
+    }
+    caller = str(decoded_token.get("email", "")).lower()
+    if "email_verified" in decoded_token and decoded_token["email_verified"] is not True:
+        abort(403, description="Caller email is not verified.")
+    if not caller or caller not in allowed_callers:
+        abort(403, description="Caller is not allowed.")
+
+    return f"Hello, {decoded_token['email']}!\n"
 ```
 
 ## Options / Props
@@ -192,7 +212,9 @@ Async alternatives (the service manages the interaction): Cloud Tasks (one to on
 - The `aud` check is an exact string match: `SERVICE_URL` must equal the audience the callers request, including any trailing slash. The caller samples above use audiences with a trailing slash (`'https://my-cloud-run-service.run.app/'`, `'https://TARGET_AUDIENCE/'`), while `gcloud run services describe` prints the URL without one; use the same form on both sides.
 - Source inconsistency: this page says custom domains are "Currently not supported for the `aud` value"; https://docs.cloud.google.com/run/docs/securing/service-identity says the audience can be "a custom audience, such as a custom domain". A custom domain works as `aud` only when it is configured as a custom audience.
 - Corrected from the official docs: the source's Python receiving sample returns `f"Invalid token: {e}\n"`, `f"Unhandled header format ({auth_type}).\n"` and `"Hello, anonymous user.\n"` as plain strings, which a Flask handler sends with HTTP 200, so callers built on it treat a rejected token as success; the sample above calls `abort(401)` in all three branches (fail closed) and does not echo the verification error to the client.
-- Per https://docs.cloud.google.com/run/docs/securing/security, when the Invoker IAM check is enabled Cloud Run performs an IAM check on every request before forwarding it to the container; the in-container check is still needed when that check is disabled or to enforce the audience.
+- Per https://docs.cloud.google.com/run/docs/securing/security, when the Invoker IAM check is enabled Cloud Run performs an IAM check on every request before forwarding it to the container; keep it enabled (recommended). In-container `verify_token` only authenticates the token (signature, expiry, audience) and does not authorize the caller: any third party can mint a Google-signed ID token for this audience with its own service account. Authorization therefore comes from the Invoker IAM check (`roles/run.invoker` bindings) or, when that check is disabled, from the `ALLOWED_CALLERS` allowlist in the receiving sample.
+- Corrected from the official docs: after `decoded_token = id_token.verify_token(creds, requests.Request())` the source's receiving sample returns `f"Hello, {decoded_token['email']}!\n"` for any valid Google-signed token without checking who the caller is, and it unpacks `auth_type, creds = auth_header.split(" ", 1)` outside the `try`, which raises `ValueError` (HTTP 500 instead of 401) for a header such as `Authorization: Bearer` with no credentials; the sample above authorizes the verified `email` against `ALLOWED_CALLERS` (HTTP 403 otherwise) and splits the header safely (HTTP 401 for a non-bearer scheme or an empty credential).
+- Set `ALLOWED_CALLERS` on the receiver at deployment the same way as `SERVICE_URL`, for example `gcloud run services update RECEIVING_SERVICE --update-env-vars ALLOWED_CALLERS=CALLING_SERVICE_IDENTITY` (the calling service account email). gcloud splits `--update-env-vars` values on commas, so for several callers use the alternate-delimiter syntax, for example `--update-env-vars '^:^ALLOWED_CALLERS=SA_EMAIL_1,SA_EMAIL_2'` (https://docs.cloud.google.com/sdk/gcloud/reference/topic/escaping).
 - The source also shows Console, Terraform, Go, and Java samples (not reproduced). It links the securing Cloud Run services tutorial: https://docs.cloud.google.com/run/docs/tutorials/secure-services
 - Source: https://docs.cloud.google.com/run/docs/authenticating/service-to-service (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Distance: Cloud Run is Google Cloud's serverless container platform, distinct from Cloudflare Workers (`cloudflare-workers`) and Vercel Functions (`vercel`). See `gcp-foundation` for service accounts and workload identity federation.

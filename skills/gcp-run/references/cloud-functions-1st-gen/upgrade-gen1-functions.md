@@ -137,10 +137,10 @@ gcloud run services get-iam-policy FUNCTION_NAME --region=REGION
 | --- | --- | --- |
 | `roles/iam.serviceAccountUser` | On the function's service account | Upgrade |
 | `roles/cloudfunctions.admin` (or equivalent) | Project | Perform the upgrade; includes `cloudfunctions.functions.generationUpgrade` |
-| `roles/serviceusage.consumer` or custom role with `pubsub.topic.setIAMPermissions` | Pub/Sub function with `no-retry` | Set topic IAM |
+| `roles/serviceusage.serviceUsageConsumer`, or a custom role with `pubsub.topics.setIamPolicy` | Pub/Sub function with `no-retry` | Set topic IAM |
 | `roles/pubsub.admin` | Project | Commit a Pub/Sub function upgrade (grants administrative access to all Pub/Sub resources in the project) |
-| `roles/run.invoker` | Pub/Sub trigger service account | Prompted if it lacks `run.route.invoke` |
-| `projects.getIamPolicy`, `run.setIamPolicy` | Caller | IAM policy upgrade |
+| `roles/run.invoker` | Pub/Sub trigger service account | Prompted if it lacks `run.routes.invoke` |
+| `resourcemanager.projects.getIamPolicy`, `run.services.setIamPolicy` | Caller | IAM policy upgrade |
 
 ### IAM role conversion
 
@@ -163,7 +163,7 @@ gcloud run services get-iam-policy FUNCTION_NAME --region=REGION
 
 ## Notes
 
-- Source inconsistency: the Pub/Sub `no-retry` row is kept verbatim from a visibly truncated source sentence ("`roles/serviceusage.consumer` role or a custom role with the ... and `pubsub.topic.setIAMPermissions` role"); the role ID used elsewhere in the docs is `roles/serviceusage.serviceUsageConsumer`, and the Pub/Sub topic IAM permission is `pubsub.topics.setIamPolicy`.
+- Corrected from the official docs: the source's required-role and permission identifiers do not exist in the IAM roles and permissions reference, so the table above uses the documented ones. The Pub/Sub `no-retry` sentence reads "`roles/serviceusage.consumer` role or a custom role with the ... and `pubsub.topic.setIAMPermissions` role" (visibly truncated: the custom role's other permission is missing and cannot be recovered); the documented role is `roles/serviceusage.serviceUsageConsumer` and the Pub/Sub topic IAM permission is `pubsub.topics.setIamPolicy`. The trigger step says the system prompts to bind `roles/run.invoker` if the trigger service account "lacks the `run.route.invoke` permission"; `roles/run.invoker` contains `run.routes.invoke`. The IAM policy upgrade "fails if the caller lacks `projects.getIamPolicy` or `run.setIamPolicy` permissions"; the documented permissions are `resourcemanager.projects.getIamPolicy` and, because the upgraded function is a Cloud Run service, `run.services.setIamPolicy` (inferred: the source does not name the resource type). Sources: https://docs.cloud.google.com/iam/docs/roles-permissions/serviceusage, https://docs.cloud.google.com/iam/docs/roles-permissions/pubsub, https://docs.cloud.google.com/iam/docs/roles-permissions/run, https://docs.cloud.google.com/iam/docs/roles-permissions/resourcemanager
 - Do not delete the function source from Cloud Storage or the container from Artifact Registry once the upgrade starts. Without pinned dependencies the 2nd gen copy may pull newer dependency versions.
 - Commit is irreversible and deletes the 1st gen function; it is equivalent to `detach` unless `--skip-detach` is used (then the function stays manageable with the Cloud Functions v2 API as well). Try the process on non-production functions first. If a commit fails in a rollback-safe state (`COMMIT_FUNCTION_UPGRADE_ERROR_ROLLBACK_SAFE`), retry `--commit`, `--rollback-traffic`, or `--abort`.
 - Pub/Sub risks: duplicate messages (a new subscription is created before the old one is deleted) and lost messages if the new function fails after redirect, especially with retry disabled. Retry disabled is unsupported on Cloud Run, so the tool creates an Eventarc Pub/Sub trigger plus a dead letter queue (DLQ) whose topic stores undelivered messages; retry enabled yields an Eventarc trigger with default settings. CMEK for the DLQ topic can be updated after migration.

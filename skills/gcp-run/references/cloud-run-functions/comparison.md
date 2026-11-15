@@ -39,7 +39,7 @@ gcloud functions deploy YOUR_FUNCTION_NAME \
 | Function types | HTTP functions; CloudEvents (event-driven) functions in all language runtimes | HTTP functions; only Ruby, .NET, and PHP runtimes support CloudEvents. Node.js, Go, Python, Java use Background functions for events |
 | HTTPS URL | `run.app` (v2 API functions also have a `cloudfunctions.net` endpoint) | `cloudfunctions.net` |
 | Image registry | Artifact Registry only | Artifact Registry or Container Registry (deprecated) |
-| IAM roles for deployment | `roles/run.sourceDeveloper`, `roles/run.serviceusage.serviceUsageConsumer` (as written in the source), `roles/iam.serviceAccountUser` | `roles/cloudfunctions.developer` |
+| IAM roles for deployment | `roles/run.sourceDeveloper`, `roles/serviceusage.serviceUsageConsumer`, `roles/iam.serviceAccountUser` | `roles/cloudfunctions.developer` |
 | Internal infrastructure | Cloud Run | Google internal |
 | Pricing | Cloud Run pricing | Cloud Run functions (1st gen) pricing |
 
@@ -74,7 +74,7 @@ gcloud functions deploy YOUR_FUNCTION_NAME \
 - Function name rules (`YOUR_FUNCTION_NAME`): starts with a letter, followed by up to 62 letters, numbers, hyphens, or underscores, ends with a letter or number. The Cloud Run service name replaces underscores with hyphens and lowercases (`Function_1` becomes `function-1`).
 - Since August 2024, Cloud Run can deploy and manage functions created with the Cloud Functions v2 API: metadata such as runtime ID and build configs is stored in the Cloud Run service definition, which is the source of truth. Functions created with the Cloud Run Admin API cannot be modified with the Cloud Functions API.
 - Detach: v2 API functions can be detached so they are managed only through the Cloud Run Admin API (e.g. to stay within the `run.googleapis.com` boundary for Assured Workloads, or to use the Cloud Run SKU). See https://docs.cloud.google.com/functions/docs/managing.
-- The source's IAM cell lists the Service Usage Consumer role as `roles/run.serviceusage.serviceUsageConsumer`; the linked role page is `serviceusage.serviceUsageConsumer`. Source inconsistency: kept verbatim.
+- Source inconsistency (corrected in the table above): the source's IAM cell lists the Service Usage Consumer role as `roles/run.serviceusage.serviceUsageConsumer`, which does not exist; the linked role page (https://docs.cloud.google.com/iam/docs/roles-permissions/serviceusage#serviceusage.serviceUsageConsumer) names it `roles/serviceusage.serviceUsageConsumer`, which the table above uses.
 - Source inconsistency: this page gives the Cloud Run functions instance size as up to 16 GiB RAM with 4 vCPU; the Cloud Run functions quotas page (https://docs.cloud.google.com/functions/quotas) gives max function memory of 32GiB for Cloud Run functions (2nd gen).
 - The source's Terraform cell shows the 1st gen resource as `cloudfunctions_function` (link text without the provider prefix); the Terraform resource type is `google_cloudfunctions_function`.
 - Container Registry is deprecated (shut down March 18, 2025); use Artifact Registry.
