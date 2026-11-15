@@ -54,6 +54,8 @@ gcloud run worker-pools update WORKER_POOL --instances=0
 gcloud run worker-pools describe WORKER_POOL --format export > worker-pool.yaml
 ```
 
+Edit `worker-pool.yaml`. If the exported file has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing the existing name with a changed configuration is rejected.
+
 ```bash
 gcloud run worker-pools replace worker-pool.yaml
 ```

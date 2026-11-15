@@ -59,7 +59,7 @@ If you do not pass an authentication flag you are prompted; answer no to keep th
 gcloud run services describe SERVICE --format export > service.yaml
 ```
 
-Edit `service.yaml` (for example set `spec.template.spec.containers[0].image`), then apply it. YAML replaces the whole configuration; do not mix it with console or gcloud changes.
+Edit `service.yaml` (for example set `spec.template.spec.containers[0].image`). If the exported file has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing the existing name with a changed configuration is rejected. Then apply it. YAML replaces the whole configuration; do not mix it with console or gcloud changes.
 
 ```bash
 gcloud run services replace service.yaml
