@@ -1145,6 +1145,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta1 of `netapp` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Corrected from the official docs (the Discovery text above is verbatim): the `name` format of the quota rule methods repeats `volumes` (`.../volumes/volumes/{volume_id}/quotaRules/{quota_rule_id}`); the path pattern in Discovery is `projects/{project_number}/locations/{location_id}/volumes/{volume_id}/quotaRules/{quota_rule_id}`.
 - Source: https://netapp.googleapis.com/$discovery/rest?version=v1, https://netapp.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
