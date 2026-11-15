@@ -243,7 +243,7 @@ Base URL: `https://cloudtasks.googleapis.com`. Methods are listed by `id`; the `
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `queue` | path | string | yes | Required. The parent queue name. For example: projects/PROJECT_ID/locations/LOCATION_ID/queues/QUEUE_ID\` The queue must already exist. |
-| `taskId` | path | string | yes | Optional. Task ID for the task being created. If not provided, Cloud Tasks generates an ID for the task. |
+| `taskId` | path | string | conditional | Optional. Task ID for the task being created. If not provided, Cloud Tasks generates an ID for the task. |
 
 ### `cloudtasks.projects.locations.queues.tasks.cancelLease`
 
