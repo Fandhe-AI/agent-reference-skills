@@ -132,6 +132,7 @@ Required roles: Cloud Run Developer (`roles/run.developer`) on the service; Serv
 - A tagged revision counts toward service-level minimum instances if it is part of a traffic split.
 - Adapted from the official docs: the REST URL `https://run.googleapis.com/v2/projects/PROJECT_ID/locations/REGION/services/SERVICE?update_mask=scaling.minInstanceCount` is quoted (unquoted `?` is a glob character in zsh; bash behavior is unchanged).
 - The source also shows Console, Terraform, and client-library forms (omitted).
+- The revision name in the template (`spec.template.metadata.name`, `REVISION` in the YAML above) must be new and unique for each change, or remove the line; revision names are immutable, so reusing an existing revision name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/min-instances (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

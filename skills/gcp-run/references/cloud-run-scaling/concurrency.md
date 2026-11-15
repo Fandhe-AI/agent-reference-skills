@@ -82,6 +82,7 @@ Required roles:
 - The WebSockets page states concurrent connections up to 1,000 per container; that figure is not on this page.
 - Source inconsistency: the about-concurrency page (https://docs.cloud.google.com/run/docs/about-concurrency) gives the gcloud CLI / Terraform default for a new service as 80 times the number of vCPUs (console: 80); this page says the default is 80.
 - The source also shows Console and Terraform forms (omitted).
+- The revision name in the template (`spec.template.metadata.name`, `REVISION` in the YAML above) must be new and unique for each change, or remove the line; revision names are immutable, so reusing an existing revision name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/concurrency (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/run/docs/triggering/websockets (retrieved 2026-11-15; CC BY 4.0) for the 1,000 figure
 

@@ -342,6 +342,7 @@ Environment variable limits: at most 1000 variables per service, at most 32 Kb p
 - Cloud Run is Google Cloud's serverless container platform, distinct from Cloudflare Workers (`cloudflare-workers`), Vercel Functions (`vercel`), and HTTP frameworks (`hono`, `fastify`) that only run inside the container. See the `gcp-foundation` skill for IAM and service accounts and the `gcp-cli` skill for gcloud setup.
 - Command group reference: https://docs.cloud.google.com/sdk/gcloud/reference/run/services
 - To make a public service private again, close both mechanisms as shown under "Disable the Invoker IAM check (public service)": re-enable the check and remove any `allUsers` / `allAuthenticatedUsers` binding for `roles/run.invoker`.
+- If the exported file has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing the existing name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/deploying (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/run/docs/deploying-source-code (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/run/docs/managing/services (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)

@@ -82,6 +82,7 @@ gcloud run worker-pools update WORKER_POOL --instances=0
 - Source inconsistency: this page uses `--instances=0` to disable the worker pool; the gcloud help for `gcloud run worker-pools update` / `gcloud run worker-pools deploy` says the `--instances` value should be a positive integer.
 - Corrected from the official docs: YAML annotation `` `INSTANCE_COUNT` `` (backticks) and the unquoted `update_mask` URL.
 - The source also shows Console and Terraform forms, omitted here.
+- If the exported file has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing the existing name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/workerpools/manual-scaling (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

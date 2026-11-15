@@ -221,6 +221,7 @@ Use `all-traffic` when sending to privately used external IP ranges, a Private S
 - Allow-all ingress rule `vpc-connector-requests` gives the connector access to every resource in the network; restrict it as shown above.
 - Corrected from the official docs: the source command reads `--range IP_RANGE` followed directly by `--min-instances MIN \` with no continuation backslash; a `\` was added after `--range IP_RANGE`.
 - The source also shows Console, Terraform, and job YAML forms.
+- The revision name in the template (`spec.template.metadata.name`, `REVISION` in the YAML above) must be new and unique for each change, or remove the line; revision names are immutable, so reusing an existing revision name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/vpc-connectors (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

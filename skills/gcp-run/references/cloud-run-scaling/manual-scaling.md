@@ -130,6 +130,7 @@ Billing: with instance-based billing, idle manually scaled instances are billed 
 - Adapted from the official docs: the switch-to-automatic REST URL `...?update_mask=launchStage,scaling.scalingMode,scaling.manualInstanceCount` is quoted for the same reason.
 - Corrected from the official docs: the Scheduler `--uri="https://run.googleapis.com/v2/projects/PROJECT_ID/locations/REGION/services/hello?update_mask=..."` value was split over two lines with no `\` continuation; it is joined into one line.
 - The source also shows Console and Terraform forms (omitted).
+- If the exported file has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing the existing name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/services/manual-scaling (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

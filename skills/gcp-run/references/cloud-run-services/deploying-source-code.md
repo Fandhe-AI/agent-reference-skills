@@ -158,6 +158,7 @@ Enable the Cloud Run Admin API (and the Cloud Build API for builds) first; enabl
 - Corrected from the official docs: the prebuilt-source service YAML uses `apiVersion: serving.knative.dev/v2`; changed to `serving.knative.dev/v1`, which every other Cloud Run Service YAML uses and `gcloud run services replace` sends to the v1 Admin API.
 - `gcr.io/buildpacks/builder:latest` is Google's buildpacks builder image named in the source, not the shut-down Container Registry as a push target.
 - Omitted from this page: the source's REST example (its JSON body has a broken quote around the bucket name) and the Terraform form; the source also shows Python example `requirements.txt` and `main.py` for prebuilt source.
+- If the YAML you apply to an existing service has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing an existing revision name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/deploying-source-code (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -90,6 +90,7 @@ In the YAML, `run.googleapis.com/cpu-throttling: false` = instance-based; a miss
 
 - Source inconsistency: this page says request-based billing charges instances only when they process requests, start and shut down; the minimum instances page says idle minimum instances under request-based billing are "billed at a lower rate" (https://docs.cloud.google.com/run/docs/configuring/min-instances).
 - The source also shows Console and Terraform (`cpu_idle = false` in `google_cloud_run_v2_service`) forms.
+- The revision name in the template (`spec.template.metadata.name`, `REVISION` in the YAML above) must be new and unique for each change, or remove the line; revision names are immutable, so reusing an existing revision name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/billing-settings (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

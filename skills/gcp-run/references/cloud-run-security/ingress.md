@@ -136,6 +136,7 @@ Disabling the default `run.app` URL breaks callers that use it: `cloudfunctions.
 - Corrected from the official docs: the service YAML had `run.googleapis.com/default-url-disabled: true` (a YAML boolean); `metadata.annotations` values are strings, so it is quoted as `'true'`, matching the source's own instance YAML.
 - `gcloud run deploy SERVICE_NAME --no-default-url` (verbatim) has no `--image`; the deploy command defaults to source deployment (of the current directory) when neither `--image` nor `--source` is supplied (https://docs.cloud.google.com/run/docs/deploying-source-code). Add `--image IMAGE_URL` to deploy an existing image.
 - The source also shows Console and Terraform forms (not reproduced).
+- The revision name in the template (`spec.template.metadata.name`, `REVISION` in the YAML above) must be new and unique for each change, or remove the line; revision names are immutable, so reusing an existing revision name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/securing/ingress (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -196,6 +196,7 @@ Cloud Run Service Agent permissions needed on the project (role `roles/run.servi
 - Corrected from the official docs: the source's service, job and worker pool YAML write `'[{"network":"NETWORK","subnetwork":"SUBNET","tags":"NETWORK_TAG_NAMES"}]'` with `tags` as a string, but `NetworkInterface.tags` is `array<string>` in the Cloud Run Admin API and the source's own instance YAML writes `"tags":["NETWORK_TAG_NAMES"]`; use the array form even for one tag (`"tags":["TAG_1","TAG_2"]` for several). The same applies to the job and worker pool YAML described in prose above.
 - The source also shows Console, Terraform, and detailed per-resource YAML/disconnect forms (service/job/instance YAML disconnect).
 - Cloud Run is Google Cloud's serverless container platform, distinct from Cloudflare Workers (`cloudflare-workers`) and Vercel Functions (`vercel`).
+- If the exported file has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing the existing name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/vpc-direct-vpc (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

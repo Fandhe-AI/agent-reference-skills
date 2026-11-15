@@ -92,6 +92,7 @@ Required roles: Cloud Run Developer (`roles/run.developer`) on the service; Serv
 - A GPU service's maximum must stay below the project's regional GPU quota (see the GPU page).
 - Limits that can apply to your service: https://docs.cloud.google.com/run/docs/configuring/max-instances-limits
 - The source also shows Console and Terraform forms (omitted).
+- The revision name in the template (`spec.template.metadata.name`, `REVISION` in the YAML above) must be new and unique for each change, or remove the line; revision names are immutable, so reusing an existing revision name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/max-instances (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
