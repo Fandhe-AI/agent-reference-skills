@@ -116,7 +116,7 @@ loggingFunc.on('log', (fields: LogFields, args: unknown[]) => {
 
 ## Notes
 
-- Payloads logged at `DEBUG` can contain sensitive data. The custom-logger example above forwards every entry except `auth`; combine it with a severity check (second example) or a Log Router sink filter `severity >= INFO` (or `>= WARNING`) so payloads are not ingested. Per-attempt errors are also `DEBUG`; keep those that carry an `error.type` or `gcp.errors.domain` attribute if you need them.
+- Payloads logged at `DEBUG` can contain sensitive data. The custom-logger example above forwards every entry except `auth`; drop or redact sensitive entries in the process before they are written (for example with the severity check in the second example). A Cloud Logging Log Router sink filter only controls which entries that sink routes after ingestion; it does not stop the output to stdout/stderr or storage by other sinks such as `_Default`. Per-attempt errors are also `DEBUG`; keep those that carry an `error.type` or `gcp.errors.domain` attribute if you need them.
 - `Hook logs` does not prevent normal output; identifiers are cached so logs of the same name reach the same handlers. The block is a fragment (`loggingFunc` and `LogFields` are not imported).
 - The "Drop DEBUG payloads" block is a fragment (it only installs a backend).
 - Applies to `google-logging-utils` 2.2.0 (npm).

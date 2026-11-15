@@ -108,6 +108,8 @@ Set the quota project through client options when you create the client. The sou
 
 If your application accepts any credential type besides a service account key (ADC credential files, Workload Identity Federation credential files, Workforce Identity Federation login configuration files), validate these fields when present. If any field does not conform to the expected value, do not use the credential.
 
+Adapted (not in the official docs): the three AWS rows are listed at `credential_source.url`, `credential_source.region_url` and `credential_source.imdsv2_session_token_url` (the official table shows them under `credential_source.aws.*`, but in AWS external account configs they sit directly under `credential_source`).
+
 | Field | Purpose | Expected value |
 |---|---|---|
 | `service_account_impersonation_url` | Endpoint used to generate an access token for the impersonated service account. | `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/service account email:generateAccessToken` |
@@ -115,9 +117,9 @@ If your application accepts any credential type besides a service account key (A
 | `credential_source.file` | File the library reads an external token from, then sends to `token_url`. | The path for a file containing an external token. You should recognize this path. |
 | `credential_source.url` | Endpoint that returns an external token. | A well-known endpoint provided by your cloud provider, or an endpoint you explicitly set up to provide tokens. |
 | `credential_source.executable.command` | Run when `GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES` is `1`. | An executable file or command that returns an external token. You should recognize it and validate that it is safe. |
-| `credential_source.aws.url` | Retrieves an AWS security token. | `http://169.254.169.254/latest/meta-data/iam/security-credentials` or `http://[fd00:ec2::254]/latest/meta-data/iam/security-credentials` |
-| `credential_source.aws.region_url` | Retrieves the active AWS region. | `http://169.254.169.254/latest/meta-data/placement/availability-zone` or `http://[fd00:ec2::254]/latest/meta-data/placement/availability-zone` |
-| `credential_source.aws.imdsv2_session_token_url` | Retrieves the AWS session token. | `http://169.254.169.254/latest/api/token` or `http://[fd00:ec2::254]/latest/api/token` |
+| `credential_source.url` (AWS: security token URL) | Retrieves an AWS security token. | `http://169.254.169.254/latest/meta-data/iam/security-credentials` or `http://[fd00:ec2::254]/latest/meta-data/iam/security-credentials` |
+| `credential_source.region_url` | Retrieves the active AWS region. | `http://169.254.169.254/latest/meta-data/placement/availability-zone` or `http://[fd00:ec2::254]/latest/meta-data/placement/availability-zone` |
+| `credential_source.imdsv2_session_token_url` | Retrieves the AWS session token. | `http://169.254.169.254/latest/api/token` or `http://[fd00:ec2::254]/latest/api/token` |
 
 ### Quota project
 
@@ -139,6 +141,7 @@ Precedence when several are set: programmatic (client options), then environment
 - The final `authenticateImplicitWithAdc();` call in the Node.js ADC block does not handle the returned promise; append `.catch(console.error)` when running it.
 - Corrected from the official docs: the original reads `const authClient = JWT.fromJSON(keys);`; in google-auth-library 11.3.4 `fromJSON` is an instance method of `JWT` returning `void` (`jwtclient.d.ts`: `fromJSON(json: JWTInput): void;`, constructor `constructor(options?: JWTOptions);`).
 - This is the Google Cloud client library, distinct from the `google-genai` Gemini SDK (the `google-gemini-api` skill) and from `googleapis` (the Node.js Google API Client Library for REST discovery APIs).
+- Corrected from the official docs: the validation table lists `credential_source.aws.url`, `credential_source.aws.region_url` and `credential_source.aws.imdsv2_session_token_url`; AWS external account configurations put `url`, `region_url` and `imdsv2_session_token_url` directly under `credential_source`, so validating only the `aws.*` paths would miss the fields actually used.
 - Source: https://docs.cloud.google.com/docs/authentication/client-libraries (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/docs/quotas/set-quota-project (retrieved 2026-11-16; CC BY 4.0)
 - Source: https://github.com/googleapis/google-cloud-node/blob/google-auth-library-v11.3.4/core/packages/google-auth-library-nodejs/src/auth/jwtclient.ts (pinned at tag google-auth-library-v11.3.4)

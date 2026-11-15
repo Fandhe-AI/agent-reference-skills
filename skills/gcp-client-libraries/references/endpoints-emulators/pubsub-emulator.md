@@ -79,8 +79,20 @@ pub async fn sample(project_id: &str, topic_id: &str) -> anyhow::Result<()> {
 
 ### Stop and unset
 
+To stop the emulator, press Control+C.
+
+After you stop the emulator, run the following command to remove the `PUBSUB_EMULATOR_HOST` environment variable so your application will connect to Pub/Sub:
+
+Linux / macOS:
+
 ```sh
 unset PUBSUB_EMULATOR_HOST
+```
+
+Windows:
+
+```bat
+set PUBSUB_EMULATOR_HOST=
 ```
 
 ## Options / Props
