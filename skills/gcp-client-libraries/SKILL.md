@@ -44,7 +44,7 @@ skills/gcp-client-libraries/
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. 言語を決める。Node.js は `nodejs` / `nodejs-auth`、Python は `python` / `python-calls` / `python-auth`、Rust は `rust-setup` / `rust-calls` / `rust-patterns-testing`。言語に依らない概念・パッケージ名・エンドポイント・エミュレーターは `concepts` / `authentication` / `endpoints-emulators`
+1. 言語を決める。Node.js は `nodejs` / `nodejs-auth`（後続 PR で投入）、Python は `python`（後続 PR で投入） / `python-calls`（後続 PR で投入） / `python-auth`（後続 PR で投入）、Rust は `rust-setup`（後続 PR で投入） / `rust-calls`（後続 PR で投入） / `rust-patterns-testing`（後続 PR で投入）。言語に依らない概念・パッケージ名・エンドポイント・エミュレーターは `concepts` / `authentication` / `endpoints-emulators`
 2. 下記マッピング表でタスクに対応するカテゴリを選び、そのカテゴリの README.md から個別ページを引く。ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある
 3. 該当ページの `.md` を Read して詳細を確認する
 4. サービス固有の API（Cloud Storage・Cloud Run のメソッド等）、gcloud 側の ADC 設定・IAM は他スキルの担当。下記「他スキルとの使い分け」を参照する

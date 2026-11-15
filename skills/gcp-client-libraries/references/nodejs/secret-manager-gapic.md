@@ -25,6 +25,8 @@ npm install @google-cloud/secret-manager
 
 With logging enabled:
 
+Verbatim from the logging README at tag `google-logging-utils-v2.2.0` (Example 1, lines 99–112), including its in-code comment.
+
 ```js
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
@@ -42,6 +44,7 @@ main().catch(console.error);
 
 ## Notes
 
+- The `// Enable logging for the Secret Manager client library (prefer a service-scoped …)` comment is part of the upstream README block (google-logging-utils 2.2.0 `README.md` lines 102–103), not an editorial addition; the block is unmodified.
 - Samples (generated, `v1` and `v1beta2`): access secret version, add secret version, create secret, delete secret, destroy secret version, disable secret version, enable secret version, get iam policy, get secret, get secret version, list secret versions, list secrets, set iam policy, test iam permissions, update secret. Each links to `samples/generated/<version>/secret_manager_service.<method>.js` in the package.
 - The README itself contains no code beyond `npm install`; the second block is borrowed from the logging README (Secret Manager is that README's example).
 - Snippet taken from https://github.com/googleapis/google-cloud-node/blob/google-logging-utils-v2.2.0/core/packages/logging-utils/README.md (lists secrets by parent; reads no secret payload).

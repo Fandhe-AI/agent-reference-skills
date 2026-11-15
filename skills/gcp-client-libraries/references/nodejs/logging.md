@@ -22,6 +22,8 @@ GOOGLE_SDK_NODE_LOGGING=* node yourApp.js
 
 ### Enable in code
 
+Verbatim from the logging README at tag `google-logging-utils-v2.2.0` (Example 1, lines 99–112), including its in-code comment.
+
 ```js
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
@@ -61,6 +63,7 @@ The last block logs under `test` and `test:specific` respectively.
 
 ## Notes
 
+- The `// Enable logging for the Secret Manager client library (prefer a service-scoped …)` comment is part of the upstream README block (google-logging-utils 2.2.0 `README.md` lines 102–103), not an editorial addition; the block is unmodified.
 - Client libraries log request and response payloads at `DEBUG` severity, and payloads can contain sensitive data. `GOOGLE_SDK_NODE_LOGGING` selects systems, not severities, and the built-in backends do not filter by severity: with the default Node backend, `translate` or `*` prints `DEBUG` payloads to stderr. Filter by severity as shown in `logging-backends.md`.
 - Per-client switch: `enableTelemetryLogging: true` enables logging; when unset, the env var must match the client's service namespace (`'*'`, exact `'all'` / `'true'`, or comma-separated wildcard patterns). `enableTelemetryLogging: false` disables it for that client even when the env var matches (`clientInterface.d.ts`, `observability/util.d.ts`). It also exists on `CallOptions`.
 - Failed RPC logs are emitted by gax at `WARNING` for a failed logical request and `DEBUG` for a failed transport attempt (`LoggerHelper.d.ts`).
