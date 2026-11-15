@@ -46,7 +46,7 @@ Step-by-step download, start and connect commands are on [connect-auth-proxy.md]
 
 ### Service account permissions
 
-The credential needs `cloudsql.instances.connect`, included in the predefined roles Cloud SQL Client, Cloud SQL Editor, Cloud SQL Admin. With legacy project roles the account needs at least Editor. Creating the service account requires `resourcemanager.projects.setIamPolicy`.
+The credential needs `cloudsql.instances.connect`, included in the predefined roles Cloud SQL Client, Cloud SQL Editor, Cloud SQL Admin. With legacy project roles the account needs at least Editor. Separate permissions apply to each step: creating the service account needs `iam.serviceAccounts.create` (for example Service Account Admin), granting it a role on the project needs `resourcemanager.projects.setIamPolicy` (Project Owner, Project IAM Admin or Organization Administrator), and creating a JSON key needs `iam.serviceAccountKeys.create`. The source's note names only `resourcemanager.projects.setIamPolicy` "to create a service account with the required permissions", which covers the role grant.
 
 ### Behavior and limits
 

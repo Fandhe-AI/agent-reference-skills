@@ -63,7 +63,7 @@ NEW_INSTANCE_NAME \
 - Restoring from a backup does not retain the deleted instance's IP address.
 - All backups except the first are incremental; the oldest backup is about the instance size. Backup size is the billable size.
 - Integrity checks run offline by restoring a sample of customer-initiated or recovery backups. Cloud SQL tries to keep at least one last daily backup of every active instance (recovery backup, via Customer Care).
-- Deleting an instance without a final backup means no data recovery is possible. This is destructive: try deletion only on a disposable instance first.
+- Deleting an instance is destructive: data survives only through a final backup, retained backups (on-demand backups, and automated backups kept after deletion per the retention rows above), point-in-time recovery of a deleted instance while its logs are still retained (see pitr.md), or the four-day retention of a deleted instance's backups for recovery via Customer Care. If none of these apply, the data cannot be recovered. Try deletion only on a disposable instance first.
 - The source also shows many console links and the enhanced vs standard comparison, covered in backup-options.md.
 - Cloud SQL pages describe managed PostgreSQL / MySQL / SQL Server on Google Cloud, distinct from Supabase Postgres (`supabase`), Cloudflare D1 / Hyperdrive (`cloudflare-storage`), and the Node.js client `mssql` / ORM `drizzle` (those skills cover client code, not the managed service).
 - Source: https://docs.cloud.google.com/sql/docs/postgres/backup-recovery/backups (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)

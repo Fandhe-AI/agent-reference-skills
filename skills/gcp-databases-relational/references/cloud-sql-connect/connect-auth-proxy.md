@@ -142,7 +142,7 @@ Use `--connector-enforcement NOT_REQUIRED` to disable. The update does not resta
 
 ### Service account setup
 
-Roles with `cloudsql.instances.connect`: Cloud SQL Client (`roles/cloudsql.client`), Cloud SQL Editor, Cloud SQL Admin; legacy roles need at least Editor. Creating one needs `resourcemanager.projects.setIamPolicy`; the JSON key is created under Manage keys and must be kept secure. On Compute Engine prefer the attached service account (set the VM scope to `cloud-platform`) with Cloud SQL Client, plus Cloud SQL Instance User (`roles/cloudsql.instanceUser`) for IAM database authentication.
+Roles with `cloudsql.instances.connect`: Cloud SQL Client (`roles/cloudsql.client`), Cloud SQL Editor, Cloud SQL Admin; legacy roles need at least Editor. Separate permissions apply to each step: creating the service account needs `iam.serviceAccounts.create` (for example Service Account Admin), granting it a role on the project needs `resourcemanager.projects.setIamPolicy` (Project Owner, Project IAM Admin or Organization Administrator), and creating a JSON key needs `iam.serviceAccountKeys.create`. The source's note names only `resourcemanager.projects.setIamPolicy` "to create a service account with the required permissions", which covers the role grant. The JSON key is created under Manage keys and must be kept secure. On Compute Engine prefer the attached service account (set the VM scope to `cloud-platform`) with Cloud SQL Client, plus Cloud SQL Instance User (`roles/cloudsql.instanceUser`) for IAM database authentication.
 
 ### Troubleshooting
 
