@@ -1,0 +1,137 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/policy-troubleshoot/iam
+---
+
+# gcloud policy-troubleshoot iam
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud policy-troubleshoot iam
+
+```text
+NAME
+    gcloud policy-troubleshoot iam - troubleshoot the IAM Policy
+
+SYNOPSIS
+    gcloud policy-troubleshoot iam RESOURCE --permission=PERMISSION
+        --principal-email=PRINCIPAL_EMAIL [--destination-ip=DESTINATION_IP]
+        [--destination-port=DESTINATION_PORT] [--request-time=REQUEST_TIME]
+        [--resource-name=RESOURCE_NAME] [--resource-service=RESOURCE_SERVICE]
+        [--resource-type=RESOURCE_TYPE] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Performs a check on whether a principal is granted a permission on a
+    resource and how that access is determined according to the resource's
+    effective IAM policy interpretation.
+
+EXAMPLES
+    To troubleshoot a permission of a principal on a resource, run:
+
+        $ gcloud policy-troubleshoot iam \
+            //cloudresourcemanager.googleapis.com/projects/project-id \
+            --principal-email=my-iam-account@somedomain.com \
+            --permission=resourcemanager.projects.get
+
+    See https://cloud.google.com/iam/help/allow-policies/overview for more
+    information about IAM policies.
+
+POSITIONAL ARGUMENTS
+     RESOURCE
+        Full resource name that access is checked against. See:
+        https://cloud.google.com/iam/docs/resource-names.
+
+REQUIRED FLAGS
+     --permission=PERMISSION
+        Cloud IAM permission to check, e.g. "resourcemanager.projects.get".
+
+     --principal-email=PRINCIPAL_EMAIL
+        Email address that identifies the principal to check. Only Google
+        Accounts and service accounts are supported.
+
+OPTIONAL FLAGS
+     --destination-ip=DESTINATION_IP
+        The request destination IP address to use when checking conditional
+        bindings. For example, 198.1.1.1.
+
+     --destination-port=DESTINATION_PORT
+        The request destination port to use when checking conditional bindings.
+        For example, 8080.
+
+     --request-time=REQUEST_TIME
+        The request timestamp to use when checking conditional bindings. This
+        string must adhere to UTC format (RFC 3339). For
+        example,2021-01-01T00:00:00Z. See: https://tools.ietf.org/html/rfc3339
+
+     --resource-name=RESOURCE_NAME
+        The resource name value to use when checking conditional bindings. See:
+        https://cloud.google.com/iam/docs/conditions-resource-attributes#resource-name.
+
+     --resource-service=RESOURCE_SERVICE
+        The resource service value to use when checking conditional bindings.
+        See:
+        https://cloud.google.com/iam/docs/conditions-resource-attributes#resource-service
+
+     --resource-type=RESOURCE_TYPE
+        The resource type value to use when checking conditional bindings. See:
+        https://cloud.google.com/iam/docs/conditions-resource-attributes#resource-type
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the policytroubleshooter/v2alpha1 API. The full
+    documentation for this API can be found at: https://cloud.google.com/iam/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha policy-troubleshoot iam
+
+        $ gcloud beta policy-troubleshoot iam
+```
+
+### gcloud beta policy-troubleshoot iam
+
+```text
+NAME
+    gcloud beta policy-troubleshoot iam - troubleshoot the IAM Policy
+
+SYNOPSIS
+    gcloud beta policy-troubleshoot iam RESOURCE --permission=PERMISSION
+        --principal-email=PRINCIPAL_EMAIL [--destination-ip=DESTINATION_IP]
+        [--destination-port=DESTINATION_PORT] [--request-time=REQUEST_TIME]
+        [--resource-name=RESOURCE_NAME] [--resource-service=RESOURCE_SERVICE]
+        [--resource-type=RESOURCE_TYPE] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha policy-troubleshoot iam
+
+```text
+NAME
+    gcloud alpha policy-troubleshoot iam - troubleshoot the IAM Policy
+
+SYNOPSIS
+    gcloud alpha policy-troubleshoot iam RESOURCE --permission=PERMISSION
+        --principal-email=PRINCIPAL_EMAIL [--destination-ip=DESTINATION_IP]
+        [--destination-port=DESTINATION_PORT] [--request-time=REQUEST_TIME]
+        [--resource-name=RESOURCE_NAME] [--resource-service=RESOURCE_SERVICE]
+        [--resource-type=RESOURCE_TYPE] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/policy-troubleshoot/iam (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
