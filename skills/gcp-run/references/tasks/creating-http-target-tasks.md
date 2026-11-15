@@ -167,7 +167,7 @@ curl -X HTTP_METHOD \
 | Token type | ID token (OIDC) for handlers on Google Cloud (Cloud Run, Cloud Run functions); access token (OAuth) for Google APIs on `*.googleapis.com` |
 | Token fields | task: `httpRequest.oidcToken` / `oauthToken` with `serviceAccountEmail` (and optional `audience`, default: the task's target URL; for Cloud Run set it to the service URL without a path or a custom audience); queue: `httpTarget` override |
 | Service account | must be in the same project as the queue |
-| Roles | Cloud Tasks Enqueuer (`roles/cloudtasks.enqueuer`, Beta) on the account that creates tasks, plus `iam.serviceAccounts.actAs` (for example Service Account User) for that account on the token service account; the handler role (for example Cloud Run Invoker); Service Account User (`roles/iam.serviceAccountUser`) for the Cloud Tasks service agent `service-PROJECT_NUMBER@gcp-sa-cloudtasks.iam.gserviceaccount.com` on that service account |
+| Roles | Cloud Tasks Enqueuer (`roles/cloudtasks.enqueuer`, Beta) on the account that creates tasks, plus `iam.serviceAccounts.actAs` (for example Service Account User) for that account on the token service account; the handler role (for example Cloud Run Invoker); the source's setup also grants Service Account User (`roles/iam.serviceAccountUser`) to the Cloud Tasks service agent `service-PROJECT_NUMBER@gcp-sa-cloudtasks.iam.gserviceaccount.com` on that service account only (token minting itself comes from the service agent role below; see Notes) |
 | Service agent role | Cloud Tasks Service Agent (`roles/cloudtasks.serviceAgent`); automatic unless the API was enabled before March 19, 2019 |
 
 | Request header | Description |
@@ -192,6 +192,7 @@ curl -X HTTP_METHOD \
 - Corrected from the official docs: the source's `curl -X HTTP_METHOD\` (no space) and trailing `\` in the BufferTask example; the `-H "Authorization: Bearer ACCESS_TOKEN"` line is not in the first BufferTask example; it is taken from the source's second BufferTask curl example, which authenticates with application default credentials.
 - Omitted: C#, Go, Java, PHP, Ruby samples, the Node.js `CreateTask` sample (`@google-cloud/tasks` `^6.0.0`, Node.js >= 20; POST with a base64 text payload and `scheduleTime`), the Node.js token variant (adds `oidcToken: {serviceAccountEmail}` to `httpRequest`, without `audience`), the Python `BufferTask` sample (mutable default argument), and Console steps.
 - The schedule-time Python sample uses `datetime.datetime.utcnow()`, which still yields the correct UTC timestamp but is deprecated since Python 3.12; it is kept verbatim.
+- Service agent permissions: the Cloud Tasks Service Agent role includes `iam.serviceAccounts.getOpenIdToken` and `iam.serviceAccounts.getAccessToken` (see access-control.md), which is what lets Cloud Tasks mint the header token; `iam.serviceAccounts.actAs` is a requirement on the principal that creates the task. The source's extra Service Account User grant to the service agent is kept as published; if you make it, scope it to the token service account, not the project.
 - Source: https://docs.cloud.google.com/tasks/docs/creating-http-target-tasks (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/run/docs/authenticating/service-to-service (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
