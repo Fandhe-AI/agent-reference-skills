@@ -8,6 +8,23 @@ source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1
 
 Message types referenced by the methods listed under `references/rest/cloudasset/`.
 
+### `SoftwarePackage`
+
+- Software package information of the operating system.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `aptPackage` | VersionedPackage | Details of an APT package. For details about the apt package manager, see https://wiki.debian.org/Apt. |
+| `cosPackage` | VersionedPackage | Details of a COS package. |
+| `googetPackage` | VersionedPackage | Details of a Googet package. For details about the googet package manager, see https://github.com/google/googet. |
+| `qfePackage` | WindowsQuickFixEngineeringPackage | Details of a Windows Quick Fix engineering package. See https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-quickfixengineering for info in Windows Quick Fix Engineering. |
+| `windowsApplication` | WindowsApplication | Details of Windows Application. |
+| `wuaPackage` | WindowsUpdatePackage | Details of a Windows Update package. See https://docs.microsoft.com/en-us/windows/win32/api/\_wua/ for information about Windows Update. |
+| `yumPackage` | VersionedPackage | Yum package info. For details about the yum package manager, see https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/ch-yum. |
+| `zypperPackage` | VersionedPackage | Details of a Zypper package. For details about the Zypper package manager, see https://en.opensuse.org/SDB:Zypper_manual. |
+| `zypperPatch` | ZypperPatch | Details of a Zypper patch. For details about the Zypper package manager, see https://en.opensuse.org/SDB:Zypper_manual. |
+
 ### `StandardResourceMetadata`
 
 - The standard metadata of a cloud resource.
@@ -199,21 +216,21 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `severity` | string | The severity specified for this patch |
 | `summary` | string | Any summary information provided about this patch. |
 
-### Shape of `StandardResourceMetadata`
+### Shape of `SoftwarePackage`
 
 Generated from the Discovery schema (not in the official docs); values show each field type:
 
 ```json
 {
-  "additionalAttributes": "array<string>",
-  "assetType": "string",
-  "description": "string",
-  "displayName": "string",
-  "labels": "object",
-  "location": "string",
-  "name": "string",
-  "networkTags": "array<string>",
-  "project": "string"
+  "aptPackage": "VersionedPackage",
+  "cosPackage": "VersionedPackage",
+  "googetPackage": "VersionedPackage",
+  "qfePackage": "WindowsQuickFixEngineeringPackage",
+  "windowsApplication": "WindowsApplication",
+  "wuaPackage": "WindowsUpdatePackage",
+  "yumPackage": "VersionedPackage",
+  "zypperPackage": "VersionedPackage",
+  "zypperPatch": "ZypperPatch"
 }
 ```
 
