@@ -34,9 +34,11 @@ gcloud run services add-iam-policy-binding SERVICE \
 
 ### Create an HTTP task with an OIDC token (Python)
 
-```python
-from typing import Optional
+Pass `url` as the Cloud Run service URL plus the handler path, and `audience` as the service URL without a path (or a configured custom audience).
 
+Adapted (not in the official docs): `audience` is a required argument instead of `Optional[str] = None`, and the unused `Optional` import is removed, so the token audience is always the Cloud Run service URL.
+
+```python
 from google.cloud import tasks_v2
 
 
@@ -47,7 +49,7 @@ def create_http_task_with_token(
     url: str,
     payload: bytes,
     service_account_email: str,
-    audience: Optional[str] = None,
+    audience: str,
 ) -> tasks_v2.Task:
     """Create an HTTP POST task with an OIDC token and an arbitrary payload.
     Args:
@@ -95,6 +97,8 @@ google-cloud-tasks==2.18.0
 
 ### Create an HTTP task with an OIDC token (Node.js)
 
+Adapted (not in the official docs): added `audience` (the Cloud Run service URL, no path) to `oidcToken` and a Cloud Run URL with a handler path as the example `url`; the source's `oidcToken` has only `serviceAccountEmail`.
+
 ```javascript
 // Imports the Google Cloud Tasks library.
 const {CloudTasksClient} = require('@google-cloud/tasks');
@@ -107,7 +111,8 @@ async function createHttpTaskWithToken() {
   // const project = 'my-project-id';
   // const queue = 'my-queue';
   // const location = 'us-central1';
-  // const url = 'https://example.com/taskhandler';
+  // const url = 'https://my-cloud-run-service.run.app/taskhandler';
+  // const audience = 'https://my-cloud-run-service.run.app/';
   // const serviceAccountEmail = 'client@<project-id>.iam.gserviceaccount.com';
   // const payload = 'Hello, World!';
 
@@ -123,6 +128,7 @@ async function createHttpTaskWithToken() {
       url,
       oidcToken: {
         serviceAccountEmail,
+        audience,
       },
     },
   };
@@ -152,7 +158,7 @@ createHttpTaskWithToken();
 | Task service account | Needs the Cloud Run Invoker role (`roles/run.invoker`) on the service |
 | Enqueuing code | Must have permission to create tasks, such as the Cloud Tasks Enqueuer role (`roles/cloudtasks.enqueuer`), plus `iam.serviceAccounts.actAs` (for example Service Account User, `roles/iam.serviceAccountUser`) on the task service account `SERVICE_ACCOUNT_NAME` |
 | Payload requests | Tasks with data payloads must use HTTP `PUT` or `POST` |
-| OIDC `audience` | Optional in the Python sample; the source gives no audience rule on this page |
+| OIDC `audience` | The Cloud Run service URL (no path) or a configured custom audience; if omitted, Cloud Tasks uses the task's target URL (Cloud Tasks v2 `OidcToken.audience`) |
 | Queue defaults | Defaults usually work; rate limits and retry parameters are configurable |
 
 ## Notes
@@ -165,7 +171,10 @@ createHttpTaskWithToken();
 - Keep the service private (require authentication); use a dedicated user-managed service account for the task identity.
 - Adapted from the official docs: the queue was created with `gcloud tasks queues create QUEUE-ID` (no `--location`); `--location=REGION` was added, since the flag otherwise defaults to the App Engine app's location "if there is an associated app" (https://docs.cloud.google.com/sdk/gcloud/reference/tasks/queues/create).
 - Source inconsistency: this page says to respond `y` when prompted to create an App Engine app, because "Cloud Tasks uses this for the queue"; https://docs.cloud.google.com/tasks/docs/creating-queues says "Using HTTP target tasks doesn't require an App Engine app. You select a Google Cloud location when you create your queue." Tasks to a Cloud Run service are HTTP target tasks; after you set a region for an App Engine app you can't change it (https://docs.cloud.google.com/scheduler/docs/setup), so pass `--location` instead of creating one.
+- Corrected from the official docs: the Python sample declares `audience: Optional[str] = None` (with `from typing import Optional`), so the audience can be omitted. When `audience` is omitted, "the URI specified in target will be used" (Cloud Tasks v2 `OidcToken.audience`, https://docs.cloud.google.com/tasks/docs/reference/rest/v2/OidcToken), but Cloud Run requires the `aud` claim to be "the URL of the receiving service or a configured custom audience" (https://docs.cloud.google.com/run/docs/authenticating/service-to-service), so a token whose audience is a URL with a handler path is rejected. `audience` is now a required argument, passed separately from the request `url`.
+- Corrected from the official docs: the Node.js sample sends `oidcToken: {serviceAccountEmail}` (no `audience`) with `url` `'https://example.com/taskhandler'`, so the token audience defaults to the full task URL including `/taskhandler`. `oidcToken` now also carries `audience` (the service URL), and the example values are `https://my-cloud-run-service.run.app/taskhandler` / `https://my-cloud-run-service.run.app/`; that URL form is taken from the service-to-service page.
 - Source: https://docs.cloud.google.com/run/docs/triggering/using-tasks (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/run/docs/authenticating/service-to-service (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Distance: Cloud Tasks and Cloud Run are Google Cloud services, distinct from Cloudflare Queues (`cloudflare-stateful`) and Vercel Functions (`vercel`).
 
 ## Related
