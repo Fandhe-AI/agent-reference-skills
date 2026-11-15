@@ -343,6 +343,22 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `tags` | object | Optional. Input only. Immutable. Tag keys/values directly bound to this folder. Each item in the map must be expressed as " : ". For example: "123/environment" : "production", "123/costCenter" : "marketing" Note: Currently this field is in Preview. |
 | `updateTime` | string (google-datetime) | Output only. Timestamp when the folder was last modified. |
 
+### `Folder` (v2)
+
+- A Folder in an Organization's resource hierarchy, used to organize that Organization's resources.
+- Version: v2
+
+| Field | Type | Description |
+|---|---|---|
+| `configuredCapabilities` | array<string> | Output only. Optional capabilities configured for this folder (via UpdateCapability API). Example: `folders/123/capabilities/app-management`. |
+| `createTime` | string (google-datetime) | Output only. Timestamp when the Folder was created. Assigned by the server. |
+| `displayName` | string | The folder's display name. A folder's display name must be unique amongst its siblings, e.g. no two folders with the same parent can share the same display name. The display name must start and end with a letter or digit, may contain letters, digits, spaces, hyphens and underscores and can be no longer than 30 characters. This is captured by the regular expression: `[\p{L}\p{N}]([\p{L}\p{N}_- ]{0,28}[\p{L}\p{N}])?`. |
+| `lifecycleState` | string enum | Output only. The lifecycle state of the folder. Updates to the lifecycle_state must be performed via DeleteFolder and UndeleteFolder. |
+| `managementProject` | string | Output only. Management Project associated with this folder (if app-management capability is enabled). Example: `projects/google-mp-123` OUTPUT ONLY. |
+| `name` | string | Output only. The resource name of the Folder. Its format is `folders/{folder_id}`, for example: "folders/1234". |
+| `parent` | string | Required. The Folder's parent's resource name. Updates to the folder's parent must be performed via MoveFolder. |
+| `tags` | object | Optional. Input only. Immutable. Tag keys/values directly bound to this folder. Each item in the map must be expressed as " : ". For example: "123/environment" : "production", "123/costCenter" : "marketing" Note: Currently this field is in Preview. |
+
 ### `FolderOperation`
 
 - Metadata describing a long running folder operation
@@ -679,6 +695,33 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `state` | string enum | Output only. The organization's current lifecycle state. |
 | `updateTime` | string (google-datetime) | Output only. Timestamp when the Organization was last modified. |
 
+### `Organization` (v1)
+
+- The root node in the resource hierarchy to which a particular entity's (e.g., company) resources belong.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `creationTime` | string (google-datetime) | Timestamp when the Organization was created. Assigned by the server. |
+| `displayName` | string | A human-readable string that refers to the Organization in the Google Cloud console. This string is set by the server and cannot be changed. The string will be set to the primary domain (for example, "google.com") of the G Suite customer that owns the organization. |
+| `lifecycleState` | string enum | The organization's current lifecycle state. Assigned by the server. |
+| `name` | string | Output only. The resource name of the organization. This is the organization's relative path in the API. Its format is "organizations/\[organization_id\]". For example, "organizations/1234". |
+| `owner` | OrganizationOwner | The owner of this Organization. The owner should be specified on creation. Once set, it cannot be changed. This field is required. |
+
+### `Organization` (v1beta1)
+
+- The root node in the resource hierarchy to which a particular entity's (e.g., company) resources belong.
+- Version: v1beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `creationTime` | string (google-datetime) | Timestamp when the Organization was created. Assigned by the server. |
+| `displayName` | string | A human-readable string that refers to the Organization in the Google Cloud console. This string is set by the server and cannot be changed. The string will be set to the primary domain (for example, "google.com") of the G Suite customer that owns the organization. |
+| `lifecycleState` | string enum | The organization's current lifecycle state. Assigned by the server. |
+| `name` | string | Output only. The resource name of the organization. This is the organization's relative path in the API. Its format is "organizations/\[organization_id\]". For example, "organizations/1234". |
+| `organizationId` | string | An immutable id for the Organization that is assigned on creation. This should be omitted when creating a new Organization. This field is read-only. |
+| `owner` | OrganizationOwner | The owner of this Organization. The owner should be specified on creation. Once set, it cannot be changed. This field is required. |
+
 ### `OrganizationOwner`
 
 - The entity that owns an Organization. The lifetime of the Organization and all of its descendants are bound to the `OrganizationOwner`. If the `OrganizationOwner` is deleted, the Organization and all its descendants will be deleted.
@@ -721,6 +764,43 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `state` | string enum | Output only. The project lifecycle state. |
 | `tags` | object | Optional. Input only. Immutable. Tag keys/values directly bound to this project. Each item in the map must be expressed as " : ". For example: "123/environment" : "production", "123/costCenter" : "marketing" Note: Currently this field is in Preview. |
 | `updateTime` | string (google-datetime) | Output only. The most recent time this resource was modified. |
+
+### `Project` (v1)
+
+- A Project is a high-level Google Cloud Platform entity. It is a container for ACLs, APIs, App Engine Apps, VMs, and other Google Cloud Platform resources.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `configuredCapabilities` | array<string> | Output only. If this project is a Management Project, list of capabilities configured on the parent folder. Note, presence of any capability implies that this is a Management Project. Example: `folders/123/capabilities/app-management`. OUTPUT ONLY. |
+| `createTime` | string (google-datetime) | Creation time. Read-only. |
+| `isManagementProject` | boolean | Output only. If `true`, this project is a Management Project. A Management Project manages dedicated project groups for specific purposes (e.g., agent management or app management). |
+| `labels` | object | The labels associated with this Project. Label keys must be between 1 and 63 characters long and must conform to the following regular expression: a-z{0,62}. Label values must be between 0 and 63 characters long and must conform to the regular expression \[a-z0-9\_-\]{0,63}. A label value can be empty. No more than 256 labels can be associated with a given resource. Clients should store labels in a representation such as JSON that does not depend on specific characters being disallowed. Example: "environment" : "dev" Read-write. |
+| `lifecycleState` | string enum | The Project lifecycle state. Read-only. |
+| `managementType` | string enum | Output only. The type of Management Project. This field is only populated if `is_management_project` is `true`. |
+| `name` | string | The optional user-assigned display name of the Project. When present it must be between 4 to 30 characters. Allowed characters are: lowercase and uppercase letters, numbers, hyphen, single-quote, double-quote, space, and exclamation point. Example: `My Project` Read-write. |
+| `parent` | ResourceId | An optional reference to a parent Resource. Supported parent types include "organization" and "folder". Once set, the parent cannot be cleared. The `parent` can be set on creation or using the `UpdateProject` method; the end user must have the `resourcemanager.projects.create` permission on the parent. |
+| `projectId` | string | The unique, user-assigned ID of the Project. It must be 6 to 30 lowercase letters, digits, or hyphens. It must start with a letter. Trailing hyphens are prohibited. Example: `tokyo-rain-123` Read-only after creation. |
+| `projectNumber` | string (int64) | The number uniquely identifying the project. Example: `415104041262` Read-only. |
+| `tags` | object | Optional. Input only. Immutable. Tag keys/values directly bound to this project. Each item in the map must be expressed as " : ". For example: "123/environment" : "production", "123/costCenter" : "marketing" Note: Currently this field is in Preview. |
+
+### `Project` (v1beta1)
+
+- A Project is a high-level Google Cloud Platform entity. It is a container for ACLs, APIs, App Engine Apps, VMs, and other Google Cloud Platform resources.
+- Version: v1beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `configuredCapabilities` | array<string> | Output only. If this project is a Management Project, list of capabilities configured on the parent folder. Note, presence of any capability implies that this is a Management Project. Example: `folders/123/capabilities/app-management`. OUTPUT ONLY. |
+| `createTime` | string (google-datetime) | Creation time. Read-only. |
+| `isManagementProject` | boolean | Output only. If `true`, this project is a Management Project. A Management Project manages dedicated project groups for specific purposes (e.g., agent management or app management). |
+| `labels` | object | The labels associated with this Project. Label keys must be between 1 and 63 characters long and must conform to the following regular expression: a-z{0,62}. Label values must be between 0 and 63 characters long and must conform to the regular expression \[a-z0-9\_-\]{0,63}. A label value can be empty. No more than 256 labels can be associated with a given resource. Clients should store labels in a representation such as JSON that does not depend on specific characters being disallowed. Example: `"environment" : "dev"` Read-write. |
+| `lifecycleState` | string enum | The Project lifecycle state. Read-only. |
+| `managementType` | string enum | Output only. The type of Management Project. This field is only populated if `is_management_project` is `true`. |
+| `name` | string | The optional user-assigned display name of the Project. When present it must be between 4 to 30 characters. Allowed characters are: lowercase and uppercase letters, numbers, hyphen, single-quote, double-quote, space, and exclamation point. Example: `My Project` Read-write. |
+| `parent` | ResourceId | An optional reference to a parent Resource. Supported parent types include "organization" and "folder". Once set, the parent cannot be cleared. The `parent` can be set on creation or using the `UpdateProject` method; the end user must have the `resourcemanager.projects.create` permission on the parent. Read-write. |
+| `projectId` | string | The unique, user-assigned ID of the Project. It must be 6 to 30 lowercase letters, digits, or hyphens. It must start with a letter. Trailing hyphens are prohibited. Example: `tokyo-rain-123` Read-only after creation. |
+| `projectNumber` | string (int64) | The number uniquely identifying the project. Example: `415104041262` Read-only. |
 
 ### `ProjectCreationStatus`
 
@@ -1011,7 +1091,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) v3, v2, v1, v1beta1 of `cloudresourcemanager` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Generated from the Discovery document(s) v3, v2, v1, v1beta1 of `cloudresourcemanager` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
 - Source: https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v3, https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v2, https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1, https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related

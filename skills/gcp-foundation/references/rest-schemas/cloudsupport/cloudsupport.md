@@ -72,6 +72,30 @@ Message types referenced by the methods listed under `references/rest/cloudsuppo
 | `timeZone` | string | The timezone of the user who created the support case. It should be in a format IANA recognizes: https://www.iana.org/time-zones. There is no additional validation done by the API. |
 | `updateTime` | string (google-datetime) | Output only. The time this case was last updated. |
 
+### `Case` (v2beta)
+
+- A Case is an object that contains the details of a support case. It contains fields for the time it was created, its priority, its classification, and more. Cases can also have comments and attachments that get added over time. A case is parented by a Google Cloud organization or project. Organizations are identified by a number, so the name of a case parented by an organization would look like this: organizations/123/cases/456 Projects have two unique identifiers, an ID and a number, and they look like this: projects/abc/cases/456 projects/123/cases/456 You can use either of them when calling the API. To learn more about project identifiers, see AIP-2510 (https://google.aip.dev/cloud/2510).
+- Version: v2beta
+
+| Field | Type | Description |
+|---|---|---|
+| `classification` | CaseClassification | The issue classification applicable to this case. |
+| `contactEmail` | string | A user-supplied email address to send case update notifications for. This field must be set when the request is authenticated using a Workforce Identity Federation (BYOID) flow and must not be set otherwise. When unset, the contact email is inferred from the authenticated user's credentials. If you use a service account to create the case and its inferred email address cannot receive emails, you should add appropriate contact emails in the `subscriber_email_addresses` field. |
+| `createTime` | string (google-datetime) | Output only. The time this case was created. |
+| `creator` | Actor | The user who created the case. This field is ignored on input. Note: The name and email will be obfuscated if the case was created by Google Support. |
+| `description` | string | A broad description of the issue. |
+| `displayName` | string | The short summary of the issue reported in this case. |
+| `escalated` | boolean | Whether the case is currently escalated. |
+| `languageCode` | string | The language the user has requested to receive support in. This should be a BCP 47 language code (e.g., `"en"`, `"zh-CN"`, `"zh-TW"`, `"ja"`, `"ko"`). If no language or an unsupported language is specified, this field defaults to English (en). Language selection during case creation may affect your available support options. For a list of supported languages and their support working hours, see: https://cloud.google.com/support/docs/language-working-hours |
+| `name` | string | Identifier. The resource name for the case. |
+| `priority` | string enum | The priority of this case. |
+| `severity` | string enum | REMOVED. The severity of this case. Use priority instead. |
+| `state` | string enum | Output only. The current status of the support case. |
+| `subscriberEmailAddresses` | array<string> | The email addresses to receive updates on this case. |
+| `testCase` | boolean | Whether this case was created for internal API testing and should not be acted on by the support team. |
+| `timeZone` | string | The timezone of the user who created the support case. It should be in a format IANA recognizes: https://www.iana.org/time-zones. There is no additional validation done by the API. |
+| `updateTime` | string (google-datetime) | Output only. The time this case was last updated. |
+
 ### `CaseClassification`
 
 - A Case Classification represents the topic that a case is about. It's very important to use accurate classifications, because they're used to route your cases to specialists who can help you. A classification always has an ID that is its unique identifier. A valid ID is required when creating a case.
@@ -81,6 +105,17 @@ Message types referenced by the methods listed under `references/rest/cloudsuppo
 |---|---|---|
 | `displayName` | string | A display name for the classification. The display name is not static and can change. To uniquely and consistently identify classifications, use the `CaseClassification.id` field. |
 | `id` | string | The unique ID for a classification. Must be specified for case creation. To retrieve valid classification IDs for case creation, use `caseClassifications.search`. Classification IDs returned by `caseClassifications.search` are guaranteed to be valid for at least 6 months. If a given classification is deactiveated, it will immediately stop being returned. After 6 months, `case.create` requests using the classification ID will fail. |
+
+### `CaseClassification` (v2beta)
+
+- A Case Classification represents the topic that a case is about. It's very important to use accurate classifications, because they're used to route your cases to specialists who can help you. A classification always has an ID that is its unique identifier. A valid ID is required when creating a case.
+- Version: v2beta
+
+| Field | Type | Description |
+|---|---|---|
+| `displayName` | string | A display name for the classification. The display name is not static and can change. To uniquely and consistently identify classifications, use the `CaseClassification.id` field. |
+| `id` | string | The unique ID for a classification. Must be specified for case creation. To retrieve valid classification IDs for case creation, use `caseClassifications.search`. Classification IDs returned by `caseClassifications.search` are guaranteed to be valid for at least 6 months. If a given classification is deactiveated, it will immediately stop being returned. After 6 months, `case.create` requests using the classification ID will fail. |
+| `product` | Product | The full product the classification corresponds to. |
 
 ### `CloseCaseRequest`
 
@@ -437,7 +472,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) v2, v2beta of `cloudsupport` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Generated from the Discovery document(s) v2, v2beta of `cloudsupport` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
 - Source: https://cloudsupport.googleapis.com/$discovery/rest?version=v2, https://cloudsupport.googleapis.com/$discovery/rest?version=v2beta (https://developers.google.com/discovery)
 
 ## Related

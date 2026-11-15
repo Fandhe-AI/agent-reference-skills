@@ -2,4 +2,4 @@
 
 | Name | Description | Path |
 |---|---|---|
-| Cloud Resource Manager API (cloudresourcemanager) | 107 schemas | [cloudresourcemanager.md](./cloudresourcemanager.md) |
+| Cloud Resource Manager API (cloudresourcemanager) | 112 schemas | [cloudresourcemanager.md](./cloudresourcemanager.md) |

@@ -2,4 +2,4 @@
 
 | Name | Description | Path |
 |---|---|---|
-| Cloud Domains API (domains) | 57 schemas | [domains.md](./domains.md) |
+| Cloud Domains API (domains) | 58 schemas | [domains.md](./domains.md) |

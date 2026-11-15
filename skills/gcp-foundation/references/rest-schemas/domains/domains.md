@@ -480,6 +480,30 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 | `supportedPrivacy` | array<string> | Output only. Set of options for the `contact_settings.privacy` field that this `Registration` supports. |
 | `transferFailureReason` | string enum | Output only. Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations). The reason the domain transfer failed. Only set for domains in TRANSFER_FAILED state. |
 
+### `Registration` (v1alpha2)
+
+- The `Registration` resource facilitates managing and configuring domain name registrations. There are several ways to create a new `Registration` resource: To create a new `Registration` resource, find a suitable domain name by calling the `SearchDomains` method with a query to see available domain name options. After choosing a name, call `RetrieveRegisterParameters` to ensure availability and obtain information like pricing, which is needed to build a call to `RegisterDomain`. Another way to create a new `Registration` is to transfer an existing domain from another registrar (Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations)). First, go to the current registrar to unlock the domain for transfer and retrieve the domain's transfer authorization code. Then call `RetrieveTransferParameters` to confirm that the domain is unlocked and to get values needed to build a call to `TransferDomain`. Finally, you can create a new `Registration` by importing an existing domain managed with Google Domains (https://domains.google/) (Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations)). First, call `RetrieveImportableDomains` to list domains to which the calling user has sufficient access. Then call `ImportDomain` on any domain names you want to use with Cloud Domains.
+- Version: v1alpha2
+
+| Field | Type | Description |
+|---|---|---|
+| `contactSettings` | ContactSettings | Required. Settings for contact information linked to the `Registration`. You cannot update these with the `UpdateRegistration` method. To update these settings, use the `ConfigureContactSettings` method. |
+| `createTime` | string (google-datetime) | Output only. The creation timestamp of the `Registration` resource. |
+| `dnsSettings` | DnsSettings | Settings controlling the DNS configuration of the `Registration`. You cannot update these with the `UpdateRegistration` method. To update these settings, use the `ConfigureDnsSettings` method. |
+| `domainName` | string | Required. Immutable. The domain name. Unicode domain names must be expressed in Punycode format. |
+| `domainProperties` | array<string> | Output only. Special properties of the domain. |
+| `expireTime` | string (google-datetime) | Output only. The expiration timestamp of the `Registration`. |
+| `issues` | array<string> | Output only. The set of issues with the `Registration` that require attention. |
+| `labels` | object | Set of labels associated with the `Registration`. |
+| `managementSettings` | ManagementSettings | Settings for management of the `Registration`, including renewal, billing, and transfer. You cannot update these with the `UpdateRegistration` method. To update these settings, use the `ConfigureManagementSettings` method. |
+| `name` | string | Output only. Name of the `Registration` resource, in the format `projects/*/locations/*/registrations/`. |
+| `pendingContactSettings` | ContactSettings | Output only. Pending contact settings for the `Registration`. Updates to the `contact_settings` field that change its `registrant_contact` or `privacy` fields require email confirmation by the `registrant_contact` before taking effect. This field is set only if there are pending updates to the `contact_settings` that have not been confirmed. To confirm the changes, the `registrant_contact` must follow the instructions in the email they receive. |
+| `provider` | string enum | Output only. Current domain management provider. |
+| `registerFailureReason` | string enum | Output only. The reason the domain registration failed. Only set for domains in REGISTRATION_FAILED state. |
+| `state` | string enum | Output only. The state of the `Registration` |
+| `supportedPrivacy` | array<string> | Output only. Set of options for the `contact_settings.privacy` field that this `Registration` supports. |
+| `transferFailureReason` | string enum | Output only. Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations). The reason the domain transfer failed. Only set for domains in TRANSFER_FAILED state. |
+
 ### `RenewDomainRequest`
 
 - Request for the `RenewDomain` method.
@@ -667,8 +691,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) v1 of `domains` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
-- Source: https://domains.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1, v1alpha2 of `domains` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Source: https://domains.googleapis.com/$discovery/rest?version=v1, https://domains.googleapis.com/$discovery/rest?version=v1alpha2 (https://developers.google.com/discovery)
 
 ## Related
 

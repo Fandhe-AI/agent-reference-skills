@@ -2,4 +2,4 @@
 
 | Name | Description | Path |
 |---|---|---|
-| Google Cloud Support API (cloudsupport) | 35 schemas | [cloudsupport.md](./cloudsupport.md) |
+| Google Cloud Support API (cloudsupport) | 37 schemas | [cloudsupport.md](./cloudsupport.md) |
