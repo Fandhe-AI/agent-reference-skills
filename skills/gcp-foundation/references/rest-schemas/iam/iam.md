@@ -152,7 +152,7 @@ Message types referenced by the methods listed under `references/rest/iam/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `accountId` | string | Required. The account id that is used to generate the service account email address and a stable unique id. It is unique within a project, must be 6-30 characters long, and match the regular expression `a-z` to comply with RFC1035. |
+| `accountId` | string | Required. The account id that is used to generate the service account email address and a stable unique id. It is unique within a project, must be 6-30 characters long, and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])` to comply with RFC1035. |
 | `serviceAccount` | ServiceAccount | The ServiceAccount resource to create. Currently, only the following values are user assignable: `display_name` and `description`. |
 
 ### `DisableServiceAccountKeyRequest`
@@ -1485,8 +1485,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `iam` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://iam.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v2, v1, v2beta of `iam` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Source: https://iam.googleapis.com/$discovery/rest?version=v2, https://iam.googleapis.com/$discovery/rest?version=v1, https://iam.googleapis.com/$discovery/rest?version=v2beta (https://developers.google.com/discovery)
 
 ## Related
 
