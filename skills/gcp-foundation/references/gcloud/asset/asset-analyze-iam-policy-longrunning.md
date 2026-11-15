@@ -204,6 +204,23 @@ NOTES
         $ gcloud beta asset analyze-iam-policy-longrunning
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud asset analyze-iam-policy-longrunning \
+    --organization=YOUR_ORG_ID \
+    --full-resource-name=YOUR_PROJECT_FULL_RESOURCE_NAME \
+    --identity='user:u1@foo.com' \
+    --bigquery-dataset='projects/YOUR_PROJECT_ID/datasets/YOUR_DATASET_ID' \
+    --bigquery-table-prefix='YOUR_BIGQUERY_TABLE_PREFIX'
+
+gcloud asset analyze-iam-policy-longrunning \
+    --organization=YOUR_ORG_ID \
+    --permissions='iam.serviceAccounts.actAs' \
+    --bigquery-dataset='projects/YOUR_PROJECT_ID/datasets/YOUR_DATASET_ID' \
+    --bigquery-table-prefix='YOUR_BIGQUERY_TABLE_PREFIX'
+```
+
 ### gcloud beta asset analyze-iam-policy-longrunning
 
 ```text
@@ -258,6 +275,7 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
