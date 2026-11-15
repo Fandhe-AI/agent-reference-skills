@@ -196,6 +196,15 @@ NOTES
         $ gcloud alpha storage insights inventory-reports delete
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud storage insights inventory-reports delete projects/foo/locations/us-central1/reportConfigs/1234
+
+gcloud storage insights inventory-reports delete projects/foo/locations/us-central1/reportConfigs/1234 \
+    --force
+```
+
 ### gcloud storage insights inventory-reports describe
 
 ```text
@@ -273,6 +282,15 @@ NOTES
     This variant is also available:
 
         $ gcloud alpha storage insights inventory-reports describe
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud storage insights inventory-reports describe projects/foo/locations/us-central1/reportConfigs/1234
+
+gcloud storage insights inventory-reports describe projects/foo/locations/us-central1/reportConfigs/1234 \
+    --format="json(displayName)"
 ```
 
 ### gcloud storage insights inventory-reports details describe
@@ -364,12 +382,12 @@ NOTES
         $ gcloud alpha storage insights inventory-reports details describe
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
-gcloud storage insights inventory-reports details describe /projects/foo/locations/us-central1/reportConfigs/1234/reportDetails/5678
+gcloud storage insights inventory-reports details describe projects/foo/locations/us-central1/reportConfigs/1234/reportDetails/5678
 
-gcloud storage insights inventory-reports details describe /projects/foo/locations/us-central1/reportConfigs/1234/reportDetails/5678 \
+gcloud storage insights inventory-reports details describe projects/foo/locations/us-central1/reportConfigs/1234/reportDetails/5678 \
     --format="json(status)"
 ```
 
@@ -485,6 +503,12 @@ NOTES
     This variant is also available:
 
         $ gcloud alpha storage insights inventory-reports details list
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud storage insights inventory-reports details list projects/foo/locations/us-central1/reportConfigs/1234
 ```
 
 ### gcloud storage insights inventory-reports list
@@ -722,6 +746,13 @@ NOTES
         $ gcloud alpha storage insights inventory-reports update
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud storage insights inventory-reports update projects/foo/locations/us-central1/reportConfigs/1234 \
+    --display-name=bar
+```
+
 ### gcloud alpha storage insights inventory-reports create
 
 ```text
@@ -830,6 +861,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the examples that pass a fully specified name write it with a leading slash (`/projects/foo/...`); a fully specified name starts with `projects/`, and gcloud 593.0.0 rejects the slashed form in `delete`, `describe` and `details` with "Error parsing [report_config]" / "Error parsing [report_detail]", so the runnable forms drop the leading slash.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

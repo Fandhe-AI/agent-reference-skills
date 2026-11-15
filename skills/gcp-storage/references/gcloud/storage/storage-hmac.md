@@ -88,6 +88,12 @@ NOTES
         $ gcloud alpha storage hmac delete
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud storage hmac delete ACCESS_ID
+```
+
 ### gcloud storage hmac describe
 
 ```text
@@ -329,6 +335,8 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the second `delete` example omits the access ID and says gcloud prompts for the keys to delete, but `ACCESS_ID` is a required positional argument (SYNOPSIS) and gcloud 593.0.0 has no prompt for it ("argument ACCESS_ID: Must be specified"); the runnable form passes `ACCESS_ID`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
