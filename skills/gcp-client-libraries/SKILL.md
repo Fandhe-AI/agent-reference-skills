@@ -29,6 +29,15 @@ skills/gcp-client-libraries/
     nodejs/                       # Node.js (google-gax): セットアップ・クライアントと呼び出しオプション・REST fallback・retry / timeout・LRO・ストリーミング・pagination・logging・proxy
       README.md
       <page>.md                   # 例: client-options.md / rest-fallback.md / retry-timeout.md / long-running-operations.md / auto-pagination.md
+    nodejs-auth/                  # Node.js (google-auth-library): ADC・JWT・OAuth2・ID トークン・impersonation・WIF / Workforce・proxy
+      README.md
+      <page>.md                   # 例: adc-googleauth.md / id-tokens.md / impersonated-credentials.md / workload-identity-federation.md
+    python/                       # Python: セットアップ・ClientOptions・ClientInfo・universe domain・logging・OpenTelemetry・google-cloud-core の設定
+      README.md
+      <page>.md                   # 例: setup.md / client-options.md / client-info.md / universe-domain.md / opentelemetry-tracing.md
+    python-calls/                 # Python (google-api-core): retry・timeout・LRO・polling・pagination・例外（docstring 由来）
+      README.md
+      <page>.md                   # 例: retry.md / timeout.md / operation-lro.md / page-iterator.md / exceptions.md
 ```
 
 ## 対象バージョンと pin
@@ -44,7 +53,7 @@ skills/gcp-client-libraries/
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. 言語を決める。Node.js は `nodejs` / `nodejs-auth`（後続 PR で投入）、Python は `python`（後続 PR で投入） / `python-calls`（後続 PR で投入） / `python-auth`（後続 PR で投入）、Rust は `rust-setup`（後続 PR で投入） / `rust-calls`（後続 PR で投入） / `rust-patterns-testing`（後続 PR で投入）。言語に依らない概念・パッケージ名・エンドポイント・エミュレーターは `concepts` / `authentication` / `endpoints-emulators`
+1. 言語を決める。Node.js は `nodejs` / `nodejs-auth`、Python は `python` / `python-calls` / `python-auth`（後続 PR で投入）、Rust は `rust-setup`（後続 PR で投入） / `rust-calls`（後続 PR で投入） / `rust-patterns-testing`（後続 PR で投入）。言語に依らない概念・パッケージ名・エンドポイント・エミュレーターは `concepts` / `authentication` / `endpoints-emulators`
 2. 下記マッピング表でタスクに対応するカテゴリを選び、そのカテゴリの README.md から個別ページを引く。ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある
 3. 該当ページの `.md` を Read して詳細を確認する
 4. サービス固有の API（Cloud Storage・Cloud Run のメソッド等）、gcloud 側の ADC 設定・IAM は他スキルの担当。下記「他スキルとの使い分け」を参照する
@@ -63,8 +72,14 @@ skills/gcp-client-libraries/
 | Node.js のクライアントオプション・REST fallback・呼び出しオプション（`CallOptions`）・キャンセル | nodejs | [references/nodejs/README.md](references/nodejs/README.md) |
 | Node.js の retry / timeout（`RetryOptions` / `BackoffSettings` / `clientConfig`）・LRO（`Operation`）・ストリーミング・auto-pagination | nodejs | [references/nodejs/README.md](references/nodejs/README.md) |
 | Node.js のログ（`GOOGLE_SDK_NODE_LOGGING`）・OpenTelemetry・gaxios の proxy・resumable upload | nodejs | [references/nodejs/README.md](references/nodejs/README.md) |
+| Node.js の ADC（`GoogleAuth`）・サービスアカウント JWT・OAuth2 クライアント・API キー | nodejs-auth | [references/nodejs-auth/README.md](references/nodejs-auth/README.md) |
+| Node.js の ID トークン・impersonation・downscoped 認証情報・Workload Identity Federation / Workforce・カスタム supplier・proxy | nodejs-auth | [references/nodejs-auth/README.md](references/nodejs-auth/README.md) |
+| Python のセットアップ（venv・インストール・ローカル ADC ログイン）・対応 Python バージョン・プロジェクト検出（google-cloud-core） | python | [references/python/README.md](references/python/README.md) |
+| Python の `ClientOptions`・`ClientInfo`・universe domain・ログ（`GOOGLE_SDK_PYTHON_LOGGING_SCOPE`）・OpenTelemetry トレース | python | [references/python/README.md](references/python/README.md) |
+| Python の retry（`Retry` / `AsyncRetry` / ストリーミング）・timeout クラス・`gapic_v1.method` の `retry=` / `timeout=` | python-calls | [references/python-calls/README.md](references/python-calls/README.md) |
+| Python の LRO（`Operation`）・polling・page iterator・例外階層（`GoogleAPICallError`） | python-calls | [references/python-calls/README.md](references/python-calls/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `nodejs-auth` / `python` / `python-calls` / `python-auth` / `rust-setup` / `rust-calls` / `rust-patterns-testing`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `python-auth` / `rust-setup` / `rust-calls` / `rust-patterns-testing`
 
 ## 他スキルとの使い分け
 
