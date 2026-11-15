@@ -196,7 +196,7 @@ STS_RESPONSE="$(curl -s -H "Content-Type:application/x-www-form-urlencoded" \
     https://sts.googleapis.com/v1/token \
     -d "grant_type=urn:ietf:params:oauth:grant-type:token-exchange&subject_token_type=urn:ietf:params:oauth:token-type:access_token&requested_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=original-token" \
     --data-urlencode "options=$(cat ./access-boundary.json)")"
-DOWNSCOPED_TOKEN="$(printf '%s' "${STS_RESPONSE}" | jq -r '.access_token')"
+DOWNSCOPED_TOKEN="$(printf '%s' "${STS_RESPONSE}" | jq -er '.access_token')"
 ```
 
 ```
@@ -249,6 +249,6 @@ Response: `access_token`, `expires_in` (only if the original token represents a 
 
 ## Related
 
-- service-account-best-practices.md (`references/iam-guides/service-accounts/service-account-best-practices.md`, added in a follow-up PR)
+- [service-account-best-practices.md](../service-accounts/service-account-best-practices.md)
 - [authentication-methods-and-sts-audit.md](./authentication-methods-and-sts-audit.md)
 - Other skill: gcp-client-libraries (ADC code)

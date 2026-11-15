@@ -92,5 +92,5 @@ gcloud iam service-accounts delete \
 ## Related
 
 - [service-account-impersonation.md](../references/auth-mcp/credentials-and-tokens/service-account-impersonation.md)
-- service-accounts-create-manage.md (`references/iam-guides/service-account-lifecycle/service-accounts-create-manage.md`, added in a follow-up PR)
+- [service-accounts-create-manage.md](../references/iam-guides/service-account-lifecycle/service-accounts-create-manage.md)
 - [set-up-adc.md](../references/auth-mcp/adc/set-up-adc.md)

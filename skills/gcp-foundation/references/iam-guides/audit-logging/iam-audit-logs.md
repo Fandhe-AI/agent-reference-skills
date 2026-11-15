@@ -240,4 +240,4 @@ SAML signature verification and decryption details appear under `keyInfo`:
 ## Related
 
 - [workload-identity-federation-best-practices.md](../federation-credentials/workload-identity-federation-best-practices.md)
-- attach-service-accounts-and-pipelines.md (`references/iam-guides/service-accounts/attach-service-accounts-and-pipelines.md`, added in a follow-up PR)
+- [attach-service-accounts-and-pipelines.md](../service-accounts/attach-service-accounts-and-pipelines.md)
