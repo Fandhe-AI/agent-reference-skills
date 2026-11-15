@@ -1,0 +1,100 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/asset/get-effective-iam-policy
+---
+
+# gcloud asset get-effective-iam-policy
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud asset get-effective-iam-policy
+
+```text
+NAME
+    gcloud asset get-effective-iam-policy - get effective IAM policies for a
+        specified list of resources within accessible scope, such as a project,
+        folder or organization
+
+SYNOPSIS
+    gcloud asset get-effective-iam-policy --names=NAMES,[NAMES,...]
+        --scope=SCOPE [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Batch get effective IAM policies that match a request.
+
+EXAMPLES
+    To list effective IAM policies of 1 resource in an organization, run:
+
+        $ gcloud asset get-effective-iam-policy \
+            --scope=organizations/YOUR_ORG_ID --names=RESOURCE_NAME1
+
+    To list effective IAM policies of 2 resources in a folder, run:
+
+        $ gcloud asset get-effective-iam-policy \
+            --scope=folders/YOUR_FOLDER_ID \
+            --names=RESOURCE_NAME1,RESOURCE_NAME2
+
+    To list effective IAM policies of 3 resources in a project using project
+    ID, run:
+
+        $ gcloud asset get-effective-iam-policy \
+            --scope=projects/YOUR_PROJECT_ID \
+            --names=RESOURCE_NAME1,RESOURCE_NAME2,RESOURCE_NAME3
+
+    To list effective IAM policies of 2 resources in a project using project
+    number, run:
+
+        $ gcloud asset get-effective-iam-policy \
+            --scope=projects/YOUR_PROJECT_NUMBER \
+            --names=RESOURCE_NAME1,RESOURCE_NAME2
+
+REQUIRED FLAGS
+     --names=NAMES,[NAMES,...]
+        Names refer to a list of full resource names
+        (https://cloud.google.com/asset-inventory/docs/resource-name-format) of
+        searchable asset types
+        (https://cloud.google.com/asset-inventory/docs/supported-asset-types).
+        For each batch call, total number of names provided is between 1 and
+        20.
+
+        The example value is:
+
+        * //cloudsql.googleapis.com/projects/{PROJECT_ID}/instances/{INSTANCE}
+          (e.g.
+          //cloudsql.googleapis.com/projects/probe-per-rt-project/instances/instance1)
+
+     --scope=SCOPE
+        Scope can be a project, a folder, or an organization. The search is
+        limited to the IAM policies within this scope. The caller must be
+        granted the cloudasset.assets.analyzeIamPolicy,
+        cloudasset.assets.searchAllResources,
+        cloudasset.assets.searchAllIamPolicies permissions on the desired
+        scope.
+
+        The allowed values are:
+
+        * projects/{PROJECT_ID} (e.g. projects/foo-bar)
+        * projects/{PROJECT_NUMBER} (e.g. projects/12345678)
+        * folders/{FOLDER_NUMBER} (e.g. folders/1234567)
+        * organizations/{ORGANIZATION_NUMBER} (e.g. organizations/123456)
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/asset/get-effective-iam-policy (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
