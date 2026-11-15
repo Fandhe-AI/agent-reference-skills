@@ -99,7 +99,8 @@ curl -X GET \
 
 - Warning: if a principal is not subject to any PAB policy, it becomes eligible to access all Google Cloud resources. Removing the last PAB policy from a principal set therefore widens, not narrows, eligibility.
 - To make principals eligible for all resources: find all PAB policies bound to the principal set, then delete the relevant bindings.
-- To reduce eligible resources without ever leaving principals unbound: identify the policies containing only resources to keep (create and bind a new policy if none), then delete bindings of policies containing resources to exclude. To reduce access for specific principals, add a binding condition instead of deleting. Alternatively edit the policy.
+- To reduce eligible resources without ever leaving principals unbound: identify the policies containing only resources to keep (create and bind a new policy if none), then delete bindings of policies containing resources to exclude. Alternatively edit the policy to shrink its rules' resources.
+- Corrected from the official docs: the source page suggests adding a binding condition to reduce access for specific principals. A binding condition only narrows which principals the policy applies to; a principal for whom the condition is false is no longer subject to that policy and, if it was the last applicable one, becomes eligible for all resources. To reduce access, keep an appropriately restrictive PAB policy applied to those principals and reduce its `resources`.
 - Eligibility to access a resource does not mean the user can access it; see policy evaluation.
 - Test deletions first with Policy Simulator (simulate deleting PAB rules, a policy, or a binding).
 - Deleting a policy that still has bindings eventually deletes those bindings, but until then they count against the limit of 10 bindings per principal set. Best practice: find and delete the bindings first.
