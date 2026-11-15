@@ -16,6 +16,8 @@ gcloud beta projects get-ancestors-iam-policy PROJECT_ID --include-deny --format
 
 Abbreviated response structure from the page (allow policy on the organization, plus a deny policy on the project):
 
+Adapted (not in the official docs): the deny rule uses the v2 principal identifier `principal://goog/subject/raha@example.com`; the official sample shows `user:raha@example.com`, which deny policies don't accept.
+
 ```
 [
   {
@@ -46,7 +48,7 @@ Abbreviated response structure from the page (allow policy on the organization, 
               "iam.googleapis.com/serviceAccounts.create"
             ],
             "deniedPrincipals": [
-              "user:raha@example.com"
+              "principal://goog/subject/raha@example.com"
             ]
           },
           "description": "Prevent service account creation"
@@ -62,6 +64,7 @@ In this example Raha holds `roles/iam.serviceAccountAdmin` on the organization, 
 
 ## Notes
 
+- Corrected from the official docs: the sample deny policy lists `user:raha@example.com` in `deniedPrincipals`; deny policies require v2 principal identifiers (`principal://goog/subject/EMAIL` for a Google Account), so the sample uses that form.
 - Policy Troubleshooter takes a principal, resource, and permission, examines allow, deny, and PAB policies, and explains the result. See Policy Troubleshooter docs (https://docs.cloud.google.com/policy-intelligence/docs/troubleshoot-access).
 - Required role to view all allow and deny policies: Security Reviewer `roles/iam.securityReviewer` on the organization containing the resource.
 - Policies that affect a resource: its allow policy and deny policies, plus those of its parent project, folder, and organization (inheritance). An organization-level deny cannot be overridden by more permissive child deny policies or allow policies.

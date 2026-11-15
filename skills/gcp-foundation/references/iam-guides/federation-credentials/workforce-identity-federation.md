@@ -29,6 +29,8 @@ Register an application in your IdP and add the redirect URL for console sign-in
 https://auth.cloud.google/signin-callback/locations/global/workforcePools/WORKFORCE_POOL_ID/providers/WORKFORCE_PROVIDER_ID
 ```
 
+Adapted (not in the official docs): the optional `--jwk-json-path` flag is omitted from this console sign-in example, because locally uploaded OIDC JWKs are used only in the programmatic flow (STS `/token` exchange), not in console sign-in.
+
 ```bash
 gcloud iam workforce-pools providers create-oidc WORKFORCE_PROVIDER_ID \
     --workforce-pool=WORKFORCE_POOL_ID \
@@ -42,12 +44,13 @@ gcloud iam workforce-pools providers create-oidc WORKFORCE_PROVIDER_ID \
     --web-sso-additional-scopes="WEB_SSO_ADDITIONAL_SCOPES" \
     --attribute-mapping="ATTRIBUTE_MAPPING" \
     --attribute-condition="ATTRIBUTE_CONDITION" \
-    --jwk-json-path="JWK_JSON_PATH" \
     --detailed-audit-logging \
     --location=global
 ```
 
 ### OIDC provider (implicit flow)
+
+Adapted (not in the official docs): the optional `--jwk-json-path` flag is omitted from this console sign-in example, because locally uploaded OIDC JWKs are used only in the programmatic flow (STS `/token` exchange), not in console sign-in.
 
 ```bash
 gcloud iam workforce-pools providers create-oidc WORKFORCE_PROVIDER_ID \
@@ -61,10 +64,11 @@ gcloud iam workforce-pools providers create-oidc WORKFORCE_PROVIDER_ID \
     --web-sso-additional-scopes="WEB_SSO_ADDITIONAL_SCOPES" \
     --attribute-mapping="ATTRIBUTE_MAPPING" \
     --attribute-condition="ATTRIBUTE_CONDITION" \
-    --jwk-json-path="JWK_JSON_PATH" \
     --detailed-audit-logging \
     --location=global
 ```
+
+For the programmatic flow only, add `--jwk-json-path="JWK_JSON_PATH"` to either `create-oidc` command to use locally uploaded OIDC JWKs instead of the IdP's `/.well-known/openid-configuration` keys; console sign-in can't use them.
 
 Attribute mapping and condition examples:
 
@@ -156,6 +160,7 @@ OIDC keywords: `assertion.NAME` (claim in the ID token payload). SAML keywords: 
 
 ## Notes
 
+- Adapted from the official docs: the official `create-oidc` examples include the optional `--jwk-json-path`, but the same page states local OIDC JWKs can be used only in the programmatic flow and not for console sign-in, so the flag is moved out of the console sign-in examples.
 - Corrected from the official docs: the SAML mapping example is comma-separated, and the list-valued `ipaddr` attribute is indexed with `[0]` in the condition.
 
 - Workforce identity pools are organization-level and available across all projects and folders.
