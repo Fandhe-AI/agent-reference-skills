@@ -155,14 +155,15 @@ REST credential calls:
   > oauth-client-credential.json)
 ```
 
-Adapted (not in the official docs): `disabled` is sent as a JSON boolean.
+Adapted (not in the official docs): `disabled` is sent as a JSON boolean, and the response (which includes `clientSecret`) is written to an owner-only file instead of being printed.
 
 ```bash
-curl -d'{"disabled":true}' \
+(umask 077; curl -d'{"disabled":true}' \
   -H "Content-Type: application/json" -X PATCH \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
   -H "X-Goog-User-Project: PROJECT_ID" \
-  https://iam.googleapis.com/v1/projects/PROJECT_ID/locations/global/oauthClients/APP_OAUTH_CLIENT_ID/credentials/APP_OAUTH_CLIENT_CREDENTIAL_ID?update_mask=disabled
+  https://iam.googleapis.com/v1/projects/PROJECT_ID/locations/global/oauthClients/APP_OAUTH_CLIENT_ID/credentials/APP_OAUTH_CLIENT_CREDENTIAL_ID?update_mask=disabled \
+  > oauth-client-credential-update.json)
 ```
 
 ```bash
