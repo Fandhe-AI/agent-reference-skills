@@ -100,6 +100,7 @@ gcloud run services set-iam-policy SERVICE policy.yaml
 - Verify the setting after deployment by browsing to the service HTTPS endpoint.
 - To make a public service private again, close both mechanisms as shown in "Re-enable the Invoker IAM check": re-enable the check and remove any `allUsers` / `allAuthenticatedUsers` binding for `roles/run.invoker`.
 - Snippet taken from https://docs.cloud.google.com/run/docs/securing/managing-access: the `gcloud run services remove-iam-policy-binding` block in "Re-enable the Invoker IAM check" (verbatim; `PRINCIPAL` and `ROLE` are that page's placeholders).
+- If the exported file has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing the existing name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/authenticating/public (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/run/docs/securing/managing-access (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/run/docs/deploying (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)

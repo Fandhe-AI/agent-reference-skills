@@ -155,6 +155,7 @@ Move mounts to Cloud Run configuration (init scripts must assume mounts exist); 
 - Public access has two independent mechanisms (https://docs.cloud.google.com/run/docs/authenticating/public): disabling the Invoker IAM check (`--no-invoker-iam-check`, re-enabled with `--invoker-iam-check`) and granting `roles/run.invoker` to `allUsers`. The source's "disallow public access" for `--no-allow-unauthenticated` covers only the `allUsers` binding; to make a service private again, close both.
 - Corrected from the official docs: the REST body `'{template: {containers: [{image: "IMAGE_URL"}]}}'` has unquoted keys (not valid JSON); the keys are quoted, and the URL `https://run.googleapis.com/v2/projects/PROJECT_ID/locations/REGION/services?serviceId=SERVICE` is wrapped in double quotes.
 - The source also shows Console, Terraform, Cloud Code, MCP (`deploy_service_from_image`, `/deploy` prompt) and client library forms.
+- If the exported file has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing the existing name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/deploying (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/run/docs/authenticating/public (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 

@@ -146,6 +146,7 @@ Limitations:
 - Prefer Secret Manager (`--set-secrets` / `--update-secrets`) over plain `--set-env-vars` for sensitive values. Grant `secretAccessor` to a dedicated user-managed service account, not the Compute Engine default service account.
 - Grant `roles/secretmanager.secretAccessor` on each secret the service uses rather than on the project, since a project-level grant can read every secret in the project (https://docs.cloud.google.com/secret-manager/docs/manage-access-to-secrets).
 - The source also shows Console, Terraform, and `gcloud run compose up` (`compose.yaml` `secrets:`) forms; these are not reproduced.
+- The revision name in the template (`spec.template.metadata.name`, `REVISION` in the YAML above) must be new and unique for each change, or remove the line; revision names are immutable, so reusing an existing revision name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/services/secrets (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

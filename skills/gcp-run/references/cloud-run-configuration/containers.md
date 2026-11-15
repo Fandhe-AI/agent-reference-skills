@@ -151,6 +151,7 @@ Required roles: Cloud Run Developer (`roles/run.developer`) on the service; Serv
 - Commas in arguments are escaped as described in the environment variables page (alternate delimiter such as `^@^`).
 - Any configuration change creates a new revision.
 - The source also shows Console, Terraform, and Compose (`gcloud run compose up`) forms (omitted).
+- The revision name in the template (`spec.template.metadata.name`, `REVISION` in the YAML above) must be new and unique for each change, or remove the line; revision names are immutable, so reusing an existing revision name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/services/containers (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

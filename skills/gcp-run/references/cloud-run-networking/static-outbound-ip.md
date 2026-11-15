@@ -110,6 +110,7 @@ Call an API or site that echoes the originating IP (the source mentions `curlmyi
 - Corrected from the official docs: the source's connector YAML sets only `run.googleapis.com/vpc-access-connector: CONNECTOR_NAME` with no `run.googleapis.com/vpc-access-egress` annotation, so egress falls back to the default `private-ranges-only` (https://docs.cloud.google.com/run/docs/configuring/vpc-connectors) and internet traffic does not use Cloud NAT or the static IP; the gcloud (`--vpc-egress=all-traffic`) and Terraform (`egress = "ALL_TRAFFIC"`) connector examples on the same page route all traffic.
 - The source also shows Terraform examples for the router, address, NAT, and both service variants.
 - Cloud Run is Google Cloud's serverless container platform, distinct from Cloudflare Workers (`cloudflare-workers`).
+- If the YAML you apply to an existing service has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing an existing revision name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/static-outbound-ip (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -71,6 +71,7 @@ Required roles: Cloud Run Developer (`roles/run.developer`) on the service; Serv
 - Clarification of the source's wording: an exit on SIGTERM shows only that the signal stops the container, not that the application ran its cleanup (when the app is not the init process, SIGTERM's default action terminates it without any handler). Confirm a handler by checking that the application logs its own shutdown message and that in-flight requests complete before exit. `tini` forwards the signal to the service and reaps child processes; it does not flush application logs or wait for in-flight work, so cleanup such as flushing logs still needs a SIGTERM handler in the application.
 - Any configuration change creates a new revision.
 - The source also shows Console and Terraform forms (omitted).
+- If the exported file has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing the existing name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/execution-environments (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -133,6 +133,7 @@ Required roles: Cloud Run Developer (`roles/run.developer`) on the service; Serv
 - For a new service, `--gpu 1` also needs `--cpu 4` or more and `--memory 16Gi` or more (`gcloud run deploy --gpu` help: "1 gpu also requires a minimum 4 --cpu value and a minimum 16Gi --memory value"; RTX PRO 6000 needs at least 20 CPU and `80Gi`) and instance-based billing (`--no-cpu-throttling`); the source's minimal create commands above omit them, so add those flags when the service does not already have them.
 - Corrected from the official docs: the update command `--max-instances MAX_INSTANCE` followed by `--GPU_ZONAL_REDUNDANCY` on the next line had no `\` continuation and used a placeholder in place of a flag; added the `\` and wrote `--no-gpu-zonal-redundancy`.
 - The source also shows Console and Terraform forms (omitted).
+- If the YAML you apply to an existing service has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing an existing revision name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/configuring/services/gpu (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

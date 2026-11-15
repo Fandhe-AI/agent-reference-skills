@@ -154,6 +154,7 @@ spec:
 - Adapted from the official docs: the "different region" command was `gcloud run worker-pools deploy WORKER_POOL --region REGION` (no `--image`, so it would start a source deploy); `--image IMAGE_URL` was added.
 - The source also shows Console and Terraform forms, and the Cloud Run region list, omitted here.
 - Cloud Run / Cloud Run functions are Google Cloud's serverless containers/functions, distinct from Cloudflare Workers (`cloudflare-workers`), Vercel Functions (`vercel`), and HTTP frameworks (`hono`, `fastify`).
+- If the exported file has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing the existing name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/deploy-worker-pools (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -96,6 +96,7 @@ curl -H "Authorization: Bearer ACCESS_TOKEN" \
 - Source inconsistency: this page disables a worker pool with `--instances=0`; the gcloud help for `gcloud run worker-pools update` says the `--instances` value should be a positive integer.
 - Corrected from the official docs: wrapped gcloud flags without `\`, backticked YAML value `` `0` ``, and unquoted `update_mask` URL (quoted so `?` is not globbed).
 - The source also shows Console and client library forms, omitted here. Filtering lists by label: https://docs.cloud.google.com/run/docs/configuring/workerpools/labels#label-listing
+- If the exported file has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing the existing name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/managing/workerpools (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

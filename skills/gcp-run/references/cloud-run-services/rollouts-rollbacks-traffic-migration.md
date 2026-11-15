@@ -142,6 +142,7 @@ spec:
 - Terraform: referenced revisions must already exist, otherwise `Error 400: spec.template.spec: Revision template was empty`.
 - Source inconsistency: in the gradual rollout steps both bullets are labeled "To deploy a service from source code"; the first (`--image IMAGE`) is the container image case.
 - The source also shows Console and Terraform forms for every task.
+- If the exported file has `spec.template.metadata.name` (a revision name), delete it or set a new revision name before applying; revision names are immutable, so reusing the existing name with a changed configuration is rejected.
 - Source: https://docs.cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
