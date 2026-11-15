@@ -77,6 +77,8 @@ For buckets in a region the new class cannot be Multi-Regional; for multi-region
 - Expiration time metadata: with a `Delete` rule using `age` (plus optionally `matchesStorageClass`), objects can carry an expiration time, retrievable only through the XML API as the `x-goog-expiration` response header. It is unavailable when other conditions exist, the storage class does not match, the object has a hold, or soft delete is enabled. With a bucket retention policy the expiration is the later of the `age` time and the retention period; with conflicting rules the earliest applies.
 - Tracking: Cloud Storage usage logs (`cs_user_agent` value `GCS Lifecycle Management`) or Pub/Sub notifications (does not record who acted).
 - Destructive: `Delete` rules remove data. Test on a disposable bucket or a prefix subset first.
+- Hierarchical namespace buckets: from August 26, 2026, the `Delete` action also deletes empty folders that meet all of the conditions in the rule (Cloud Storage release notes, May 28, 2026, Breaking).
+- Source: https://docs.cloud.google.com/storage/docs/release-notes (May 28, 2026 entry; retrieved 2026-11-15; CC BY 4.0)
 - The source also lists configuration samples in a separate page and points to a Cloud Storage basics skill for AI coding assistants.
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`).
 - Source: https://docs.cloud.google.com/storage/docs/lifecycle (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
