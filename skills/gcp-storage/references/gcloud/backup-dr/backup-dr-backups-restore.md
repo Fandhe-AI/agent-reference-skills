@@ -459,7 +459,9 @@ gcloud backup-dr backups restore compute sample-backup \
     --location=us-central1 \
     --backup-vault=sample-backup-vault \
     --data-source=sample-data-source \
-    --TARGET_PROPERTIES
+    --name=sample-restored-vm \
+    --target-project=sample-project \
+    --target-zone=us-central1-a
 ```
 
 ### gcloud backup-dr backups restore disk
@@ -712,7 +714,9 @@ gcloud backup-dr backups restore disk sample-backup \
     --location=us-central1 \
     --backup-vault=sample-backup-vault \
     --data-source=sample-data-source \
-    --TARGET_PROPERTIES
+    --name=sample-restored-disk \
+    --target-project=sample-project \
+    --target-zone=us-central1-a
 ```
 
 ### gcloud beta backup-dr backups restore compute
@@ -847,7 +851,8 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
-- Corrected from the official docs (runnable form only; the help text above is verbatim): angle-bracket placeholders such as `<service-name>` are shell redirections when pasted into bash; the runnable form writes them as upper-case placeholders (`SERVICE_NAME`).
+- Corrected from the official docs (the help text above is verbatim): the `restore disk` help describes `READ_ONLY_MANY` as "attached to multiple instances in RW mode" and `READ_WRITE_MANY` as "attached to multiple instances in RO mode", which is reversed: as the flag description just above says, `READ_ONLY_MANY` grants read-only access to multiple VMs and `READ_WRITE_MANY` grants read-write access to multiple VMs.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the restore examples end with `--<target-properties>`, which is not a flag, and omit flags the SYNOPSIS and REQUIRED FLAGS mark as required; the runnable forms pass `--name`, `--target-project` and `--target-zone` (compute) or `--target-zone` (disk; `--target-region` is the mutually exclusive alternative) with example values.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
