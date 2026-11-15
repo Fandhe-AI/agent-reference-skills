@@ -62,24 +62,9 @@ gcloud compute ssh VM_NAME \
   --tunnel-through-iap
 ```
 
-### Install the client packages (Rocky Linux 9 / RHEL 9)
-
-Adapted (not in the official docs): the source pipes `print-settings` output straight into `sudo bash`; it is split into save, inspect and run.
-
-```bash
-gcloud beta artifacts print-settings yum \
-  --repository=lustre-client-rocky-9 \
-  --location=us --project=lustre-client-binaries > lustre-yum-settings.sh
-cat lustre-yum-settings.sh
-sudo bash lustre-yum-settings.sh
-```
-
-```bash
-sudo yum -y --enablerepo=lustre-client-rocky-9 install kmod-lustre-client
-sudo yum -y --enablerepo=lustre-client-rocky-9 install lustre-client
-```
-
 ### Install the client packages (Ubuntu 22.04 LTS)
+
+The Rocky Linux 8 / Rocky Linux 9 / RHEL 9 package installation is not reproduced on this page (see Notes); follow the official page for those images.
 
 Adapted (not in the official docs): the apt transport source URL is changed from `http://` to `https://`.
 
@@ -98,7 +83,7 @@ sudo apt install lustre-client-modules-$(uname -r)/lustre-client-ubuntu-jammy
 sudo apt install lustre-client-utils/lustre-client-ubuntu-jammy
 ```
 
-Ubuntu 20.04 uses `lustre-client-ubuntu-focal` and 24.04 uses `lustre-client-ubuntu-noble` in the same commands; Rocky Linux 8 uses repository `lustre-client-rocky-8`.
+Ubuntu 20.04 uses `lustre-client-ubuntu-focal` and 24.04 uses `lustre-client-ubuntu-noble` in the same commands.
 
 ### Load the module and mount
 
@@ -159,10 +144,10 @@ sudo umount /mnt/MOUNT_DIR
 - `apt` commands in the source omit `-y`; the VM startup script uses `-y`.
 - The source also shows Console steps, Ubuntu 20.04/24.04 and Rocky 8 VM commands, and the POSIX exceptions page (https://docs.cloud.google.com/managed-lustre/docs/posix-compliance).
 - File storage, not object storage; unrelated to Cloud Storage buckets.
-- The script that `print-settings yum` generates writes `repo_gpgcheck=0` / `gpgcheck=0` (gcloud 593.0.0 template), so `kmod-lustre-client` and `lustre-client` are installed without signature checks. Review `lustre-yum-settings.sh` before running it, and install only on trusted networks.
+- Omitted: the source's HPC Rocky Linux 8 / Rocky Linux 9 / RHEL 9 steps pipe `gcloud beta artifacts print-settings yum` (repository `lustre-client-rocky-8` or `lustre-client-rocky-9`) into `sudo bash` and then `yum install` the `kmod-lustre-client` / `lustre-client` kernel-module packages; the yum repository definition that command generates sets `repo_gpgcheck=0` and `gpgcheck=0` (gcloud 593.0.0 template), so packages and metadata are not signature-checked, and those blocks are not reproduced. Use the official page https://docs.cloud.google.com/managed-lustre/docs/connect-from-compute-engine for those images and install only on trusted networks. The Ubuntu apt path above verifies packages through the `signed-by` keyrings.
 - The VM examples use the default Compute Engine service account with the `cloud-platform` scope; in production attach a dedicated service account (`--service-account=SA_EMAIL`) with only the roles the client needs (Artifact Registry read access for the package repositories).
 - Corrected from the official docs: the `/etc/fstab` line `IP_ADDRESS@tcp:/FILESYSTEM_NAME ~/MOUNT_DIR lustre defaults,_netdev 0 0` used `~/MOUNT_DIR`, which fstab does not expand (fstab mount points must be absolute); it and the `mkdir` / `mount` / `lfs df` / `umount` commands (`~/MOUNT_DIR`) now use `/mnt/MOUNT_DIR`.
-- Adapted from the official docs: `gcloud beta artifacts print-settings yum ... | sudo bash` was split into save, inspect and run; the apt source `http://packages.cloud.google.com/apt` was changed to `https://`.
+- Adapted from the official docs: the apt source `deb [signed-by=/usr/share/keyrings/google-cloud.gpg] http://packages.cloud.google.com/apt apt-transport-artifact-registry-stable main` was changed to `https://`.
 - Source: https://docs.cloud.google.com/managed-lustre/docs/connect-from-compute-engine (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

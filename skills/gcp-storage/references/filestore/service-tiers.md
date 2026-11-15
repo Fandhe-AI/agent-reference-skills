@@ -10,13 +10,15 @@ Filestore tiers vary in capacity, performance and features: Zonal, Regional, Mul
 
 Select a tier with `--tier` when creating an instance (tier cannot change later). Regional example with custom performance:
 
+Adapted (not in the official docs): removed the invalid `reserved-ip-range="10.0.7.0/29"` (a /29 block is for Basic tier only) so Filestore allocates the range.
+
 ```bash
 gcloud filestore instances create render1 \
   --project=myproject \
   --region=us-central1 \
   --tier=REGIONAL \
   --performance=max-iops-per-tb=17000 \
-  --network=name="default",reserved-ip-range="10.0.7.0/29" \
+  --network=name="default" \
   --flags-file=nfs-export-options.json
 ```
 
@@ -51,6 +53,7 @@ Below 1024 GiB you must use custom performance: fixed IOPS not lower than 2,000,
 - Filestore is managed NFS file storage, not an object API (distinct from Cloud Storage and Cloud Storage FUSE).
 - Source: https://docs.cloud.google.com/filestore/docs/service-tiers (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/filestore/docs/creating-instances.
+- Corrected from the official docs: the regional example passed `--network=name="default",reserved-ip-range="10.0.7.0/29"` (described as "Reserved IP address range is `10.0.7.0/29`"), but a /29 block is valid only for Basic tier; the creating-instances page requires a block size of 26 for zonal, regional and enterprise instances. `reserved-ip-range` is optional (per the `gcloud filestore instances create` help), so it is removed and Filestore allocates a free range, which the page recommends.
 
 ## Related
 

@@ -20,7 +20,7 @@ folder1/folder2/folder3/.../folder50/my-data.txt
 - List: evaluates the true folder structure; filters `prefix`, `delimiter` (`/` for directory-like mode), `lexicographicStart`, `lexicographicEnd`; paginated, at most 1000 folders per response page.
 - Get metadata: returns the folder resource itself, not its contents.
 - Rename or move: same underlying operation; an atomic metadata-only change that updates paths of child folders, objects and managed folders without copying or deleting objects. It starts a long-running operation whose duration depends on the number of folders renamed. During it you can read and list the folders but cannot run write operations on them. In the console **Rename folder** and **Move folder** run the same backend operation.
-- Delete: permanent. Folders are not removed automatically when they become empty; delete them explicitly.
+- Delete: permanent. A folder that becomes empty because its objects were deleted is not removed with them; delete it with the delete folder operation. Exception: from August 26, 2026, an Object Lifecycle Management `Delete` rule deletes empty folders that meet all of the rule's conditions (see Notes).
 
 ## Options / Props
 
@@ -58,6 +58,9 @@ folder1/folder2/folder3/.../folder50/my-data.txt
 - Folder names are more broadly visible than metadata (they appear in URLs and listings); do not put sensitive information or PII in folder names.
 - Associated managed folders: creating a managed folder creates any missing folders in its path (for example `2025/training-data/` creates `2025/` and `training-data/`); deleting a folder deletes its associated managed folder and its IAM policies (fails without permission to delete the managed folder); renaming a folder renames the associated managed folder. In these buckets a managed folder cannot exist without an associated folder.
 - Folder delete is destructive; try it on a disposable resource first.
+- Lifecycle exception: the Cloud Storage release notes (May 28, 2026, Breaking) say: "As of August 26, 2026, in buckets with hierarchical namespace enabled, the Object Lifecycle Management `Delete` action will delete empty folders when the empty folder meets all of the conditions in the lifecycle rule." Source inconsistency: the folders overview page still says folders "are not automatically removed when they become empty. You must delete them explicitly." without this exception. The lifecycle page adds that `sizeBelowBytes` can never be satisfied by an empty folder. This applies to folders only, not managed folders.
+- Source: https://docs.cloud.google.com/storage/docs/release-notes (May 28, 2026 entry; retrieved 2026-11-15; CC BY 4.0)
+- Source: https://docs.cloud.google.com/storage/docs/lifecycle (retrieved 2026-11-15; CC BY 4.0)
 - The source also shows Console and API steps in other pages (create/manage folders, rename folder).
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`). Folders here are object storage namespaces, not Filestore file storage.
 - Source: https://docs.cloud.google.com/storage/docs/folders-overview (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)

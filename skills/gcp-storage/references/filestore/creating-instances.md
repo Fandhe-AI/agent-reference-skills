@@ -51,9 +51,9 @@ Custom performance and a Shared VPC network:
 
 ### Example: regional instance with IP-based access rules and deletion protection
 
-Creates instance `render1` in project `myproject`, region `us-central1`, tier `REGIONAL`, `max-iops-per-tb=17000`, file share `my_vol` (2 TiB), network `default`, reserved range `10.0.7.0/29`, read-write with root squashed for `10.0.0.0/29` and `10.2.0.0/29`, read-only with no root squash for `192.168.0.0/26`, and deletion protection with a reason.
+Creates instance `render1` in project `myproject`, region `us-central1`, tier `REGIONAL`, `max-iops-per-tb=17000`, file share `my_vol` (2 TiB), network `default` with a reserved IP range that Filestore allocates, read-write with root squashed for `10.0.0.0/29` and `10.2.0.0/29`, read-only with no root squash for `192.168.0.0/26`, and deletion protection with a reason.
 
-Adapted (not in the official docs): joined the wrapped `--deletion-protection-reason` string onto one line, because the source breaks a quoted value across lines.
+Adapted (not in the official docs): removed the invalid `reserved-ip-range="10.0.7.0/29"` (a /29 block is for Basic tier only) so Filestore allocates the range, and joined the wrapped `--deletion-protection-reason` string onto one line.
 
 ```bash
 gcloud filestore instances create render1 \
@@ -61,7 +61,7 @@ gcloud filestore instances create render1 \
   --region=us-central1 \
   --tier=REGIONAL \
   --performance=max-iops-per-tb=17000 \
-  --network=name="default",reserved-ip-range="10.0.7.0/29" \
+  --network=name="default" \
   --flags-file=nfs-export-options.json \
   --deletion-protection \
   --deletion-protection-reason="All genomics data must adhere to current organization policies."
@@ -137,7 +137,8 @@ Reserved IP range: CIDR, valid VPC subnet range; block size `/29` for basic, `/2
 - Console uses Private Service Connect (needs a service connection policy); gcloud/API can also use VPC Network Peering (direct peering or private services access). Shared VPC in a service project requires private services access enabled by the network admin. The network cannot be changed after creation.
 - NFS file locking may require opening Filestore ports in custom or changed-firewall networks (private services access / direct peering only).
 - Adapted from the official docs: the source wraps the `--deletion-protection-reason` quoted value across two lines (`"All genomics data must adhere to current` / `organization policies."`).
-- Source inconsistency: the regional example uses `reserved-ip-range="10.0.7.0/29"`, but this page requires a block size of 26 for zonal, regional and enterprise instances, and the `gcloud filestore instances create` help says a direct CIDR value must be a /24 block for High Scale, Zonal, Enterprise or Regional tier (/29 only for Basic). The example is kept verbatim; the page recommends letting Filestore choose a free range.
+- Corrected from the official docs: the regional example passed `--network=name="default",reserved-ip-range="10.0.7.0/29"` (described as "Reserved IP address range is `10.0.7.0/29`"), but a /29 block is valid only for Basic tier; the creating-instances page requires a block size of 26 for zonal, regional and enterprise instances. `reserved-ip-range` is optional (per the `gcloud filestore instances create` help), so it is removed and Filestore allocates a free range, which the page recommends.
+- Source inconsistency: for a directly specified CIDR `reserved-ip-range`, the creating-instances page requires a block size of 26 for zonal, regional and enterprise instances, while the `gcloud filestore instances create` help says a /24 block for High Scale, Zonal, Enterprise or Regional tier (/29 only for Basic). Check the current requirement before setting one.
 - Source inconsistency: the page says at least one rule must grant `admin` (read-write, no-root-squash) at creation, but its `nfs-export-options.json` example has only an `editor` rule (`READ_WRITE` + `ROOT_SQUASH`) and an `admin-viewer` rule (`READ_ONLY` + `NO_ROOT_SQUASH`), no `admin` rule. Add a `READ_WRITE` + `NO_ROOT_SQUASH` rule for an admin client range if creation is rejected.
 - The synopsis and the `--performance` / `--network` fragments are shown as `text` because they are not runnable shell commands (the source shows the synopsis as an unlabelled block).
 - The source also shows Console steps, a REST `curl` example and links to NFSv4.1, CSI driver, Cloud Run and remote mounting. The REST sample is omitted because its JSON is not valid (missing comma after `"performanceConfig"`).
