@@ -22,10 +22,10 @@ Predefined roles of `orgpolicy` (role ID, description, included permissions). Th
 
 ### Example: grant a role
 
-Generated example (not in the official docs) using the first role on this page:
+Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Organization):
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
   --member="user:EMAIL_ADDRESS" \
   --role="roles/orgpolicy.policyAdmin"
 ```

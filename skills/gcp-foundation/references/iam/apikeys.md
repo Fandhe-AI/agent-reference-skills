@@ -8,6 +8,14 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions/apikeys
 
 Predefined roles of `apikeys` (role ID, description, included permissions). The permissions table below lists the roles that contain each permission.
 
+### Example: inspect a role that contains these permissions
+
+Generated example (not in the official docs) describing the first predefined role listed in the table below:
+
+```bash
+gcloud iam roles describe roles/serviceusage.apiKeysAdmin
+```
+
 ### Permissions and the roles that contain them
 
 | Permission | Roles |

@@ -57,10 +57,10 @@ Predefined roles of `billing` (role ID, description, included permissions). The 
 
 ### Example: grant a role
 
-Generated example (not in the official docs) using the first role on this page:
+Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Billing Account):
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud billing accounts add-iam-policy-binding BILLING_ACCOUNT_ID \
   --member="user:EMAIL_ADDRESS" \
   --role="roles/billing.admin"
 ```

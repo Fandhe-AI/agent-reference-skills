@@ -30,7 +30,7 @@ Predefined roles of `commerceorggovernance` (role ID, description, included perm
 
 ### Example: grant a role
 
-Generated example (not in the official docs) using the first role on this page:
+Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Project):
 
 ```bash
 gcloud projects add-iam-policy-binding PROJECT_ID \

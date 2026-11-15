@@ -22,10 +22,10 @@ Predefined roles of `resourcesettings` (role ID, description, included permissio
 
 ### Example: grant a role
 
-Generated example (not in the official docs) using the first role on this page:
+Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Organization):
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
   --member="user:EMAIL_ADDRESS" \
   --role="roles/resourcesettings.admin"
 ```
