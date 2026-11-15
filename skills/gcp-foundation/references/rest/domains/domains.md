@@ -367,7 +367,7 @@ Base URL: `https://domains.googleapis.com`. Methods are listed by `id`; the `Ver
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `domains.projects.locations.get` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `domains.projects.locations.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
 
 ```bash
 curl -X GET \
@@ -378,8 +378,9 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta1, v1alpha2 of `domains` (retrieved 2026-11-14). Resources on this page: projects.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/domains/`.
-- Source: https://domains.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Source: https://domains.googleapis.com/$discovery/rest?version=v1, https://domains.googleapis.com/$discovery/rest?version=v1beta1, https://domains.googleapis.com/$discovery/rest?version=v1alpha2 (https://developers.google.com/discovery)
 
 ## Related
 

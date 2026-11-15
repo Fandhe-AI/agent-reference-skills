@@ -59,19 +59,20 @@ Base URL: `https://developerknowledge.googleapis.com`. Methods are listed by `id
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `developerknowledge.documents.batchGet` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `developerknowledge.documents.batchGet` (not in the official docs); replace the `{...}` path variables and required query parameters (URL-encode query values):
 
 ```bash
 curl -X GET \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-  "https://developerknowledge.googleapis.com/v1/documents:batchGet"
+  "https://developerknowledge.googleapis.com/v1/documents:batchGet?names={names}"
 ```
 
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1alpha of `developerknowledge` (retrieved 2026-11-14). Resources on this page: documents, v1.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/developerknowledge/`.
-- Source: https://developerknowledge.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Source: https://developerknowledge.googleapis.com/$discovery/rest?version=v1, https://developerknowledge.googleapis.com/$discovery/rest?version=v1alpha (https://developers.google.com/discovery)
 
 ## Related
 
