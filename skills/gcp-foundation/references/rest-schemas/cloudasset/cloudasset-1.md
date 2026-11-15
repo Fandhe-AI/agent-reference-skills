@@ -1,5 +1,5 @@
 ---
-source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1
+source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1
 ---
 
 # Cloud Asset API message schemas (cloudasset) (part 1/2)
@@ -1625,22 +1625,15 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `nextPageToken` | string | If there are more results than those appearing in this response, then `next_page_token` is included. To get the next set of results, call this method again using the value of `next_page_token` as `page_token`. |
 | `results` | array<StandardResourceMetadata> | A list of resource that match the search query. |
 
-### `SoftwarePackage`
+### `SearchAllResourcesResponse` (v1)
 
-- Software package information of the operating system.
+- Search all resources response.
 - Version: v1
 
 | Field | Type | Description |
 |---|---|---|
-| `aptPackage` | VersionedPackage | Details of an APT package. For details about the apt package manager, see https://wiki.debian.org/Apt. |
-| `cosPackage` | VersionedPackage | Details of a COS package. |
-| `googetPackage` | VersionedPackage | Details of a Googet package. For details about the googet package manager, see https://github.com/google/googet. |
-| `qfePackage` | WindowsQuickFixEngineeringPackage | Details of a Windows Quick Fix engineering package. See https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-quickfixengineering for info in Windows Quick Fix Engineering. |
-| `windowsApplication` | WindowsApplication | Details of Windows Application. |
-| `wuaPackage` | WindowsUpdatePackage | Details of a Windows Update package. See https://docs.microsoft.com/en-us/windows/win32/api/\_wua/ for information about Windows Update. |
-| `yumPackage` | VersionedPackage | Yum package info. For details about the yum package manager, see https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/ch-yum. |
-| `zypperPackage` | VersionedPackage | Details of a Zypper package. For details about the Zypper package manager, see https://en.opensuse.org/SDB:Zypper_manual. |
-| `zypperPatch` | ZypperPatch | Details of a Zypper patch. For details about the Zypper package manager, see https://en.opensuse.org/SDB:Zypper_manual. |
+| `nextPageToken` | string | If there are more results than those appearing in this response, then `next_page_token` is included. To get the next set of results, call this method again using the value of `next_page_token` as `page_token`. |
+| `results` | array<ResourceSearchResult> | A list of Resources that match the search query. It contains the resource standard metadata information. |
 
 ### Shape of `AccessSelector`
 
@@ -1655,9 +1648,9 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) v1p1beta1, v1p5beta1, v1p7beta1, v1, v1beta1 of `cloudasset` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
-- Descriptions are verbatim from Discovery, which drops angle-bracket placeholders of the source comments: a format such as `projects//locations/global` stands for `projects/{project}/locations/global` (likewise `"@.iam.gserviceaccount.com"` lost the account ID before `@`), and an expression such as `... && in labels` lost its left operand (for example `'label_value' in labels`). Check the method or field in the product's REST reference before relying on such a format.
-- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p5beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1, https://cloudasset.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1p7beta1, v1p1beta1, v1p5beta1, v1, v1beta1 of `cloudasset` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Descriptions are verbatim from Discovery, which drops angle-bracket placeholders of the source comments: a format such as `projects//locations/global` stands for `projects/{project}/locations/global` (likewise `"@.iam.gserviceaccount.com"` lost the account ID before `@`, and a name format ending in a collection such as `projects/*/locations/*/registrations/` lost its last ID), and an expression such as `... && in labels` lost its left operand (for example `'label_value' in labels`). Check the method or field in the product's REST reference before relying on such a format.
+- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p5beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1, https://cloudasset.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
 
