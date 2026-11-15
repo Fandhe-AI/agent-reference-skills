@@ -33,13 +33,15 @@ Open the service URL in two browser tabs; drawing in one propagates to the other
 | Session affinity | Best-effort only; new connections can still reach other instances |
 | HTTP/2 end-to-end | Do not enable |
 | Concurrency | Up to 1,000 concurrent connections per container; raise the maximum concurrency above the default if the service can handle the load |
-| Billing | An instance with any open WebSocket connection is active, so CPU is allocated and it is billed as instance-based billing |
+| Billing | An open WebSocket connection is an in-flight request: an instance with any open connection is considered active, so CPU is allocated and the instance is billed as active for the whole connection. The service's configured billing setting (request-based or instance-based) does not change |
 | Cloud Load Balancing | WebSockets are also supported behind it |
 
 ## Notes
 
 - Synchronizing data between instances: instances are stateless and autoscaled, so use an external store. A database such as Cloud SQL works by polling, but with request-based billing (the default) instances have no CPU when they are not handling any requests (a container with a connected client keeps CPU). Message queues work better because instances pull messages over connections they initiate: Redis Pub/Sub (Memorystore, for example Socket.IO redis adapter) or Firestore real-time updates. Each instance `SUBSCRIBE`s to a Redis channel and `PUBLISH`es client messages to it.
 - The source says instances "do not have CPU" when the container is not handling any requests, without naming the billing setting; with instance-based billing CPU is allocated for the whole instance lifecycle (https://docs.cloud.google.com/run/docs/configuring/billing-settings).
+- The source words the billing rule as: an instance with any open WebSocket connection "is considered active, so CPU is allocated and the service is billed as instance-based billing". This describes how the connected time is charged (the instance is active and has CPU for as long as a connection is open), not a switch of the service's billing setting: under request-based billing (the default) instances are charged when they process requests, start and shut down, and an open WebSocket stream is a request for its whole lifetime.
+- Source: https://docs.cloud.google.com/run/docs/configuring/billing-settings (billing settings; retrieved 2026-11-15; CC BY 4.0)
 - Example: with maximum concurrency 1,000, more than 1,000 chatroom users are served by different instances that do not see each other's messages without synchronization.
 - Makes the service publicly accessible (`--allow-unauthenticated` in the sample command); use only for intentionally public content.
 - The sample command deploys from source and clones a third-party repository; try it on a disposable project or service.

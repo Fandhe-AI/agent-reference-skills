@@ -34,7 +34,7 @@ The autoscaler computes the recommended count per driver independently and takes
 
 ### On-demand scaling
 
-Used when no instance is available for a request; the only driver for scaling from zero. A request pends for up to 10 seconds or 3.5 times the predicted cold start time (whichever is higher) before a new instance starts.
+Used when no instance is available for a request; the only driver for scaling from zero. For each request Cloud Run weighs cold start latency against pending queue latency and checks whether queuing for an upcoming instance or an existing instance is faster (in that order) before trying to start a new on-demand instance. A request is held in the pending queue (including while new instances start) for at most 10 seconds or 3.5 times the predicted cold start time, whichever is higher.
 
 ### ACT
 
@@ -69,6 +69,7 @@ Instances may stay idle up to 15 minutes (10 minutes for GPUs) to reduce cold st
 
 - Source: https://docs.cloud.google.com/run/docs/about-instance-autoscaling (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/run/docs/configuring/billing-settings (source page has no code).
+- The on-demand scaling section says a request "remains in the pending queue for a maximum of 10 seconds or 3.5 times the predicted cold start time (whichever is higher) before the system triggers a new on-demand instance". Read the figure as the maximum time a request stays pending, not as a delay before any new instance starts: the same page's maximum instances and "Autoscaling and pending requests" sections and the container runtime contract (container-contract.md in this category) state "Requests will pend for up to 3.5 times average startup time of container instances of this service, or 10 seconds, whichever is greater", and with the maximum instances limit reached the request then fails with `429`.
 
 ## Related
 

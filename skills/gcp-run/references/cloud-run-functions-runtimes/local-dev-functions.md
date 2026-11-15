@@ -60,7 +60,7 @@ FUNCTION_TARGET=YOUR_FUNCTION_NAME functions-framework
 
 ### Call a locally running HTTP function
 
-By default the function is at `localhost:8080` (unless you set `PORT`), reachable only from the machine or VM it runs on.
+By default the function is at `localhost:8080` (unless you set `PORT`). Issue the request from the same system the function is running on:
 
 ```bash
 curl localhost:8080
@@ -139,6 +139,9 @@ Other languages: Go uses `PORT` and `funcframework.RegisterHTTPFunctionContext`,
 - The Cloud Storage sample contains the most commonly used object attributes; see the Cloud Storage Object reference for the full list.
 - To run several functions at once, run multiple framework instances on different `PORT` values.
 - In Cloud Shell, test with Web Preview (port 8080) or `curl` from a second terminal on the same system.
+- The source says the `localhost:8080` interface "is only accessible from the machine or VM your function is running on". Calling it through `localhost` does not guarantee that: the Node.js and Python Functions Frameworks listen on all network interfaces by default (Node.js calls `server.listen(options.port)` with no host; Python's `--host` / `HOST` option defaults to `0.0.0.0`), so other hosts on the network can reach the port. The local function has no authentication; block the port with a host firewall on shared or untrusted networks. The source's PHP command (`php -S localhost:${PORT:-8080}`) binds only `localhost`.
+- Source: https://github.com/GoogleCloudPlatform/functions-framework-nodejs/blob/v5.0.5/src/main.ts (Node.js bind behavior; retrieved 2026-11-15)
+- Source: https://github.com/GoogleCloudPlatform/functions-framework-python/blob/v3.10.2/src/functions_framework/_cli.py (Python bind behavior; retrieved 2026-11-15)
 - The source also shows Go, Java, C#, Ruby and PHP install and run instructions.
 - Source: https://docs.cloud.google.com/run/docs/local-dev-functions (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
