@@ -439,6 +439,27 @@ NOTES
         $ gcloud beta iam workforce-pools providers create-oidc
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud iam workforce-pools providers create-oidc my-workforce-pool-provider \
+    --workforce-pool="my-workforce-pool" \
+    --location="global" \
+    --display-name="My Workforce Pool Provider" \
+    --description="My workforce pool provider description." \
+    --disabled \
+    --detailed-audit-logging \
+    --attribute-mapping="google.subject=assertion.sub" \
+    --attribute-condition="true" \
+    --client-id="client-id" \
+    --client-secret-value="client-secret" \
+    --issuer-uri="https://test-idp.com" \
+    --web-sso-response-type="code" \
+    --web-sso-assertion-claims-behavior="merge-user-info-over-id-token-claims" \
+    --web-sso-additional-scopes="groups,photos" \
+    --jwk-json-path="path/to/jwk.json"
+```
+
 ### gcloud beta iam workforce-pools providers create-oidc
 
 ```text
@@ -495,6 +516,7 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
