@@ -14,13 +14,13 @@ Predefined roles of `policysimulator` (role ID, description, included permission
 
 - Launch stage: Beta
 - Admin user that can run and access replays.
-- Permissions (11): `policysimulator.accessPolicySimulationResults.list`, `policysimulator.accessPolicySimulations.*`, `policysimulator.accessPolicySimulations.create`, `policysimulator.accessPolicySimulations.get`, `policysimulator.accessPolicySimulations.list`, `policysimulator.replayResults.list`, `policysimulator.replays.*`, `policysimulator.replays.create`, `policysimulator.replays.get`, `policysimulator.replays.list`, `policysimulator.replays.run`
+- Permissions (9): `policysimulator.accessPolicySimulationResults.list`, `policysimulator.accessPolicySimulations.create`, `policysimulator.accessPolicySimulations.get`, `policysimulator.accessPolicySimulations.list`, `policysimulator.replayResults.list`, `policysimulator.replays.create`, `policysimulator.replays.get`, `policysimulator.replays.list`, `policysimulator.replays.run`
 
 ### OrgPolicy Simulator Admin (`roles/policysimulator.orgPolicyAdmin`)
 
 - Launch stage: Beta
 - OrgPolicy Admin that can run and access simulations.
-- Permissions (14): `cloudasset.assets.analyzeOrgPolicy`, `cloudasset.assets.exportResource`, `cloudasset.assets.listResource`, `cloudasset.assets.searchAllResources`, `orgpolicy.customConstraints.get`, `orgpolicy.customConstraints.list`, `orgpolicy.policies.list`, `orgpolicy.policy.get`, `policysimulator.orgPolicyViolations.list`, `policysimulator.orgPolicyViolationsPreviews.*`, `policysimulator.orgPolicyViolationsPreviews.create`, `policysimulator.orgPolicyViolationsPreviews.get`, `policysimulator.orgPolicyViolationsPreviews.list`, `resourcemanager.organizations.get`
+- Permissions (13): `cloudasset.assets.analyzeOrgPolicy`, `cloudasset.assets.exportResource`, `cloudasset.assets.listResource`, `cloudasset.assets.searchAllResources`, `orgpolicy.customConstraints.get`, `orgpolicy.customConstraints.list`, `orgpolicy.policies.list`, `orgpolicy.policy.get`, `policysimulator.orgPolicyViolations.list`, `policysimulator.orgPolicyViolationsPreviews.create`, `policysimulator.orgPolicyViolationsPreviews.get`, `policysimulator.orgPolicyViolationsPreviews.list`, `resourcemanager.organizations.get`
 
 ### Policysimulator Viewer (`roles/policysimulator.viewer`)
 
@@ -58,7 +58,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `policysimulator` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `policysimulator` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/policysimulator (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

@@ -13,7 +13,7 @@ Predefined roles of `essentialcontacts` (role ID, description, included permissi
 ### Essential Contacts Admin (`roles/essentialcontacts.admin`)
 
 - Full access to all essential contacts
-- Permissions (7): `essentialcontacts.*`, `essentialcontacts.contacts.create`, `essentialcontacts.contacts.delete`, `essentialcontacts.contacts.get`, `essentialcontacts.contacts.list`, `essentialcontacts.contacts.send`, `essentialcontacts.contacts.update`
+- Permissions (6): `essentialcontacts.contacts.create`, `essentialcontacts.contacts.delete`, `essentialcontacts.contacts.get`, `essentialcontacts.contacts.list`, `essentialcontacts.contacts.send`, `essentialcontacts.contacts.update`
 
 ### Essential Contacts Viewer (`roles/essentialcontacts.viewer`)
 
@@ -43,7 +43,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `essentialcontacts` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `essentialcontacts` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/essentialcontacts (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

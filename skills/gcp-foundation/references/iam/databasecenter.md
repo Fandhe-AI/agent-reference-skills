@@ -13,12 +13,12 @@ Predefined roles of `databasecenter` (role ID, description, included permissions
 ### Database Center Admin (`roles/databasecenter.admin`)
 
 - Admin role for Database Center resource data
-- Permissions (26): `cloudaicompanion.entitlements.get`, `databasecenter.*`, `databasecenter.databaseGroups.list`, `databasecenter.fleetHealthStats.list`, `databasecenter.fleetInsights.list`, `databasecenter.fleetStats.list`, `databasecenter.locations.list`, `databasecenter.products.list`, `databasecenter.queryStats.list`, `databasecenter.reportConfigs.create`, `databasecenter.reportConfigs.delete`, `databasecenter.reportConfigs.get`, `databasecenter.reportConfigs.list`, `databasecenter.reportConfigs.update`, `databasecenter.userLabels.list`, `databasecenter.userTags.list`, `databasesconsole.databaseCenterViews.*`, `databasesconsole.databaseCenterViews.create`, `databasesconsole.databaseCenterViews.delete`, `databasesconsole.databaseCenterViews.search`, `databasesconsole.databaseCenterViews.update`, `databasesconsole.locations.*`, `databasesconsole.locations.get`, `databasesconsole.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (23): `cloudaicompanion.entitlements.get`, `databasecenter.databaseGroups.list`, `databasecenter.fleetHealthStats.list`, `databasecenter.fleetInsights.list`, `databasecenter.fleetStats.list`, `databasecenter.locations.list`, `databasecenter.products.list`, `databasecenter.queryStats.list`, `databasecenter.reportConfigs.create`, `databasecenter.reportConfigs.delete`, `databasecenter.reportConfigs.get`, `databasecenter.reportConfigs.list`, `databasecenter.reportConfigs.update`, `databasecenter.userLabels.list`, `databasecenter.userTags.list`, `databasesconsole.databaseCenterViews.create`, `databasesconsole.databaseCenterViews.delete`, `databasesconsole.databaseCenterViews.search`, `databasesconsole.databaseCenterViews.update`, `databasesconsole.locations.get`, `databasesconsole.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Database Center Viewer (`roles/databasecenter.viewer`)
 
 - Viewer role for Database Center resource data
-- Permissions (18): `cloudaicompanion.entitlements.get`, `databasecenter.databaseGroups.list`, `databasecenter.fleetHealthStats.list`, `databasecenter.fleetInsights.list`, `databasecenter.fleetStats.list`, `databasecenter.locations.list`, `databasecenter.products.list`, `databasecenter.queryStats.list`, `databasecenter.reportConfigs.get`, `databasecenter.reportConfigs.list`, `databasecenter.userLabels.list`, `databasecenter.userTags.list`, `databasesconsole.databaseCenterViews.search`, `databasesconsole.locations.*`, `databasesconsole.locations.get`, `databasesconsole.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (17): `cloudaicompanion.entitlements.get`, `databasecenter.databaseGroups.list`, `databasecenter.fleetHealthStats.list`, `databasecenter.fleetInsights.list`, `databasecenter.fleetStats.list`, `databasecenter.locations.list`, `databasecenter.products.list`, `databasecenter.queryStats.list`, `databasecenter.reportConfigs.get`, `databasecenter.reportConfigs.list`, `databasecenter.userLabels.list`, `databasecenter.userTags.list`, `databasesconsole.databaseCenterViews.search`, `databasesconsole.locations.get`, `databasesconsole.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Example: grant a role
 
@@ -51,7 +51,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `databasecenter` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `databasecenter` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/databasecenter (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

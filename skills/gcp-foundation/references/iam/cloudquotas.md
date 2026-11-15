@@ -13,7 +13,7 @@ Predefined roles of `cloudquotas` (role ID, description, included permissions). 
 ### Cloud Quotas Admin (`roles/cloudquotas.admin`)
 
 - Full access to Cloud Quotas resources.
-- Permissions (6): `cloudquotas.*`, `cloudquotas.quotas.get`, `cloudquotas.quotas.update`, `monitoring.timeSeries.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (5): `cloudquotas.quotas.get`, `cloudquotas.quotas.update`, `monitoring.timeSeries.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Cloud Quotas Viewer (`roles/cloudquotas.viewer`)
 
@@ -39,7 +39,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `cloudquotas` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `cloudquotas` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/cloudquotas (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

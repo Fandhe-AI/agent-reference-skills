@@ -13,17 +13,17 @@ Predefined roles of `domains` (role ID, description, included permissions). The 
 ### Cloud Domains Admin (`roles/domains.admin`)
 
 - Full access to Cloud Domains Registrations and related resources.
-- Permissions (22): `domains.*`, `domains.locations.get`, `domains.locations.list`, `domains.operations.cancel`, `domains.operations.get`, `domains.operations.list`, `domains.registrations.configureContact`, `domains.registrations.configureDns`, `domains.registrations.configureManagement`, `domains.registrations.create`, `domains.registrations.createTagBinding`, `domains.registrations.delete`, `domains.registrations.deleteTagBinding`, `domains.registrations.get`, `domains.registrations.getIamPolicy`, `domains.registrations.list`, `domains.registrations.listEffectiveTags`, `domains.registrations.listTagBindings`, `domains.registrations.setIamPolicy`, `domains.registrations.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (21): `domains.locations.get`, `domains.locations.list`, `domains.operations.cancel`, `domains.operations.get`, `domains.operations.list`, `domains.registrations.configureContact`, `domains.registrations.configureDns`, `domains.registrations.configureManagement`, `domains.registrations.create`, `domains.registrations.createTagBinding`, `domains.registrations.delete`, `domains.registrations.deleteTagBinding`, `domains.registrations.get`, `domains.registrations.getIamPolicy`, `domains.registrations.list`, `domains.registrations.listEffectiveTags`, `domains.registrations.listTagBindings`, `domains.registrations.setIamPolicy`, `domains.registrations.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Cloud Domains Editor (`roles/domains.editor`)
 
 - Editor role for Cloud Domains
-- Permissions (20): `domains.locations.*`, `domains.locations.get`, `domains.locations.list`, `domains.operations.*`, `domains.operations.cancel`, `domains.operations.get`, `domains.operations.list`, `domains.registrations.configureContact`, `domains.registrations.configureDns`, `domains.registrations.configureManagement`, `domains.registrations.create`, `domains.registrations.delete`, `domains.registrations.get`, `domains.registrations.getIamPolicy`, `domains.registrations.list`, `domains.registrations.listEffectiveTags`, `domains.registrations.listTagBindings`, `domains.registrations.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (18): `domains.locations.get`, `domains.locations.list`, `domains.operations.cancel`, `domains.operations.get`, `domains.operations.list`, `domains.registrations.configureContact`, `domains.registrations.configureDns`, `domains.registrations.configureManagement`, `domains.registrations.create`, `domains.registrations.delete`, `domains.registrations.get`, `domains.registrations.getIamPolicy`, `domains.registrations.list`, `domains.registrations.listEffectiveTags`, `domains.registrations.listTagBindings`, `domains.registrations.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Cloud Domains Viewer (`roles/domains.viewer`)
 
 - Read-only access to Cloud Domains Registrations and related resources.
-- Permissions (12): `domains.locations.*`, `domains.locations.get`, `domains.locations.list`, `domains.operations.get`, `domains.operations.list`, `domains.registrations.get`, `domains.registrations.getIamPolicy`, `domains.registrations.list`, `domains.registrations.listEffectiveTags`, `domains.registrations.listTagBindings`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (11): `domains.locations.get`, `domains.locations.list`, `domains.operations.get`, `domains.operations.list`, `domains.registrations.get`, `domains.registrations.getIamPolicy`, `domains.registrations.list`, `domains.registrations.listEffectiveTags`, `domains.registrations.listTagBindings`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Example: grant a role
 
@@ -61,7 +61,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `domains` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `domains` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/domains (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

@@ -14,19 +14,19 @@ Predefined roles of `policyanalyzer` (role ID, description, included permissions
 
 - Launch stage: Beta
 - Admin role for policyanalyzer
-- Permissions (6): `policyanalyzer.*`, `policyanalyzer.resourceAuthorizationActivities.query`, `policyanalyzer.serviceAccountKeyLastAuthenticationActivities.query`, `policyanalyzer.serviceAccountLastAuthenticationActivities.query`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (5): `policyanalyzer.resourceAuthorizationActivities.query`, `policyanalyzer.serviceAccountKeyLastAuthenticationActivities.query`, `policyanalyzer.serviceAccountLastAuthenticationActivities.query`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Policyanalyzer Viewer (`roles/policyanalyzer.viewer`)
 
 - Launch stage: Beta
 - Viewer role for policyanalyzer
-- Permissions (6): `policyanalyzer.*`, `policyanalyzer.resourceAuthorizationActivities.query`, `policyanalyzer.serviceAccountKeyLastAuthenticationActivities.query`, `policyanalyzer.serviceAccountLastAuthenticationActivities.query`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (5): `policyanalyzer.resourceAuthorizationActivities.query`, `policyanalyzer.serviceAccountKeyLastAuthenticationActivities.query`, `policyanalyzer.serviceAccountLastAuthenticationActivities.query`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Activity Analysis Viewer (`roles/policyanalyzer.activityAnalysisViewer`)
 
 - Launch stage: Beta
 - Viewer user that can read all activity analysis.
-- Permissions (4): `policyanalyzer.*`, `policyanalyzer.resourceAuthorizationActivities.query`, `policyanalyzer.serviceAccountKeyLastAuthenticationActivities.query`, `policyanalyzer.serviceAccountLastAuthenticationActivities.query`
+- Permissions (3): `policyanalyzer.resourceAuthorizationActivities.query`, `policyanalyzer.serviceAccountKeyLastAuthenticationActivities.query`, `policyanalyzer.serviceAccountLastAuthenticationActivities.query`
 
 ### Example: grant a role
 
@@ -48,7 +48,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `policyanalyzer` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `policyanalyzer` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/policyanalyzer (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

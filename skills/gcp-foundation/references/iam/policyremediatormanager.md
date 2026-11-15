@@ -14,25 +14,25 @@ Predefined roles of `policyremediatormanager` (role ID, description, included pe
 
 - Launch stage: Beta
 - Admin role for policyremediatormanager
-- Permissions (12): `policyremediatormanager.*`, `policyremediatormanager.locations.get`, `policyremediatormanager.locations.list`, `policyremediatormanager.operations.cancel`, `policyremediatormanager.operations.delete`, `policyremediatormanager.operations.get`, `policyremediatormanager.operations.list`, `policyremediatormanager.remediatorServices.disable`, `policyremediatormanager.remediatorServices.enable`, `policyremediatormanager.remediatorServices.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (11): `policyremediatormanager.locations.get`, `policyremediatormanager.locations.list`, `policyremediatormanager.operations.cancel`, `policyremediatormanager.operations.delete`, `policyremediatormanager.operations.get`, `policyremediatormanager.operations.list`, `policyremediatormanager.remediatorServices.disable`, `policyremediatormanager.remediatorServices.enable`, `policyremediatormanager.remediatorServices.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Policyremediatormanager Viewer (`roles/policyremediatormanager.viewer`)
 
 - Launch stage: Beta
 - Viewer role for policyremediatormanager
-- Permissions (8): `policyremediatormanager.locations.*`, `policyremediatormanager.locations.get`, `policyremediatormanager.locations.list`, `policyremediatormanager.operations.get`, `policyremediatormanager.operations.list`, `policyremediatormanager.remediatorServices.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (7): `policyremediatormanager.locations.get`, `policyremediatormanager.locations.list`, `policyremediatormanager.operations.get`, `policyremediatormanager.operations.list`, `policyremediatormanager.remediatorServices.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Policy Remediator Admin (`roles/policyremediatormanager.policyRemediatorAdmin`)
 
 - Launch stage: Beta
 - Grants the ability to enable and disable the usage of the policy remediator for the organization
-- Permissions (10): `policyremediatormanager.*`, `policyremediatormanager.locations.get`, `policyremediatormanager.locations.list`, `policyremediatormanager.operations.cancel`, `policyremediatormanager.operations.delete`, `policyremediatormanager.operations.get`, `policyremediatormanager.operations.list`, `policyremediatormanager.remediatorServices.disable`, `policyremediatormanager.remediatorServices.enable`, `policyremediatormanager.remediatorServices.get`
+- Permissions (9): `policyremediatormanager.locations.get`, `policyremediatormanager.locations.list`, `policyremediatormanager.operations.cancel`, `policyremediatormanager.operations.delete`, `policyremediatormanager.operations.get`, `policyremediatormanager.operations.list`, `policyremediatormanager.remediatorServices.disable`, `policyremediatormanager.remediatorServices.enable`, `policyremediatormanager.remediatorServices.get`
 
 ### Policy Remediator Reader (`roles/policyremediatormanager.policyRemediatorReader`)
 
 - Launch stage: Beta
 - Grants the ability to read/view the state of the policy remediator for the organization
-- Permissions (6): `policyremediatormanager.locations.*`, `policyremediatormanager.locations.get`, `policyremediatormanager.locations.list`, `policyremediatormanager.operations.get`, `policyremediatormanager.operations.list`, `policyremediatormanager.remediatorServices.get`
+- Permissions (5): `policyremediatormanager.locations.get`, `policyremediatormanager.locations.list`, `policyremediatormanager.operations.get`, `policyremediatormanager.operations.list`, `policyremediatormanager.remediatorServices.get`
 
 ### Example: grant a role
 
@@ -60,7 +60,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `policyremediatormanager` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `policyremediatormanager` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/policyremediatormanager (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

@@ -13,7 +13,7 @@ Predefined roles of `resourcesettings` (role ID, description, included permissio
 ### Resource Settings Administrator (`roles/resourcesettings.admin`)
 
 - Provides admin capabilities to set Resource Setting Values on resources. Lowest-level resources where you can grant this role: - Organization
-- Permissions (4): `resourcesettings.*`, `resourcesettings.settings.get`, `resourcesettings.settings.list`, `resourcesettings.settings.update`
+- Permissions (3): `resourcesettings.settings.get`, `resourcesettings.settings.list`, `resourcesettings.settings.update`
 
 ### Resource Settings Viewer (`roles/resourcesettings.viewer`)
 
@@ -40,7 +40,7 @@ gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
 
 ## Notes
 
-- Roles and permissions of the `resourcesettings` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `resourcesettings` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/resourcesettings (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

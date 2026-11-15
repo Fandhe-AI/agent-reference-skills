@@ -14,13 +14,13 @@ Predefined roles of `commerceoffercatalog` (role ID, description, included permi
 
 - Launch stage: Beta
 - Admin role for Commerce Offer Catalog
-- Permissions (8): `commerceoffercatalog.*`, `commerceoffercatalog.agreements.get`, `commerceoffercatalog.agreements.list`, `commerceoffercatalog.documents.get`, `commerceoffercatalog.documents.list`, `commerceoffercatalog.offers.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (7): `commerceoffercatalog.agreements.get`, `commerceoffercatalog.agreements.list`, `commerceoffercatalog.documents.get`, `commerceoffercatalog.documents.list`, `commerceoffercatalog.offers.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Commerce Offer Catalog Offers Viewer (`roles/commerceoffercatalog.offersViewer`)
 
 - Launch stage: Beta
 - Allows viewing offers
-- Permissions (6): `commerceoffercatalog.*`, `commerceoffercatalog.agreements.get`, `commerceoffercatalog.agreements.list`, `commerceoffercatalog.documents.get`, `commerceoffercatalog.documents.list`, `commerceoffercatalog.offers.get`
+- Permissions (5): `commerceoffercatalog.agreements.get`, `commerceoffercatalog.agreements.list`, `commerceoffercatalog.documents.get`, `commerceoffercatalog.documents.list`, `commerceoffercatalog.offers.get`
 
 ### Example: grant a role
 
@@ -44,7 +44,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `commerceoffercatalog` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `commerceoffercatalog` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/commerceoffercatalog (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

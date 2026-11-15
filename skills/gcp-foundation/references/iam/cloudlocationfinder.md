@@ -14,13 +14,13 @@ Predefined roles of `cloudlocationfinder` (role ID, description, included permis
 
 - Launch stage: Beta
 - Full access to Cloud Location Finder resources.
-- Permissions (11): `cloudlocationfinder.*`, `cloudlocationfinder.cloudLocations.create`, `cloudlocationfinder.cloudLocations.delete`, `cloudlocationfinder.cloudLocations.get`, `cloudlocationfinder.cloudLocations.list`, `cloudlocationfinder.cloudLocations.search`, `cloudlocationfinder.cloudLocations.update`, `cloudlocationfinder.locations.get`, `cloudlocationfinder.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (10): `cloudlocationfinder.cloudLocations.create`, `cloudlocationfinder.cloudLocations.delete`, `cloudlocationfinder.cloudLocations.get`, `cloudlocationfinder.cloudLocations.list`, `cloudlocationfinder.cloudLocations.search`, `cloudlocationfinder.cloudLocations.update`, `cloudlocationfinder.locations.get`, `cloudlocationfinder.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Cloud Location Finder Viewer (`roles/cloudlocationfinder.viewer`)
 
 - Launch stage: Beta
 - Readonly access to Cloud Location Finder resources.
-- Permissions (8): `cloudlocationfinder.cloudLocations.get`, `cloudlocationfinder.cloudLocations.list`, `cloudlocationfinder.cloudLocations.search`, `cloudlocationfinder.locations.*`, `cloudlocationfinder.locations.get`, `cloudlocationfinder.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (7): `cloudlocationfinder.cloudLocations.get`, `cloudlocationfinder.cloudLocations.list`, `cloudlocationfinder.cloudLocations.search`, `cloudlocationfinder.locations.get`, `cloudlocationfinder.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Example: grant a role
 
@@ -47,7 +47,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `cloudlocationfinder` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `cloudlocationfinder` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/cloudlocationfinder (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

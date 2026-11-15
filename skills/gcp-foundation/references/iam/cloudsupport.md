@@ -13,7 +13,7 @@ Predefined roles of `cloudsupport` (role ID, description, included permissions).
 ### Support Administrator (`roles/cloudsupport.admin`)
 
 - Allows management of a support account and support cases. See the Cloud Support documentation (https://docs.cloud.google.com/support/docs/access-control#support_account_admin) for more information. Lowest-level resources where you can grant this role: - Organization
-- Permissions (19): `cloudsupport.*`, `cloudsupport.accounts.create`, `cloudsupport.accounts.delete`, `cloudsupport.accounts.get`, `cloudsupport.accounts.getIamPolicy`, `cloudsupport.accounts.getUserRoles`, `cloudsupport.accounts.list`, `cloudsupport.accounts.purchase`, `cloudsupport.accounts.setIamPolicy`, `cloudsupport.accounts.update`, `cloudsupport.accounts.updateUserRoles`, `cloudsupport.operations.get`, `cloudsupport.properties.get`, `cloudsupport.techCases.create`, `cloudsupport.techCases.escalate`, `cloudsupport.techCases.get`, `cloudsupport.techCases.list`, `cloudsupport.techCases.update`, `resourcemanager.organizations.get`
+- Permissions (18): `cloudsupport.accounts.create`, `cloudsupport.accounts.delete`, `cloudsupport.accounts.get`, `cloudsupport.accounts.getIamPolicy`, `cloudsupport.accounts.getUserRoles`, `cloudsupport.accounts.list`, `cloudsupport.accounts.purchase`, `cloudsupport.accounts.setIamPolicy`, `cloudsupport.accounts.update`, `cloudsupport.accounts.updateUserRoles`, `cloudsupport.operations.get`, `cloudsupport.properties.get`, `cloudsupport.techCases.create`, `cloudsupport.techCases.escalate`, `cloudsupport.techCases.get`, `cloudsupport.techCases.list`, `cloudsupport.techCases.update`, `resourcemanager.organizations.get`
 
 ### Support Viewer (`roles/cloudsupport.viewer`)
 
@@ -43,7 +43,7 @@ Predefined roles of `cloudsupport` (role ID, description, included permissions).
 ### Tech Support Editor (`roles/cloudsupport.techSupportEditor`)
 
 - Full read-write access to technical support cases (applicable for Cloud Customer Care and Maps support). See the Cloud Support documentation (https://docs.cloud.google.com/support/docs/access-control#tech_support_editor) for more information.
-- Permissions (11): `billing.resourceAssociations.list`, `cloudasset.assets.searchAllResources`, `cloudsupport.properties.get`, `cloudsupport.techCases.*`, `cloudsupport.techCases.create`, `cloudsupport.techCases.escalate`, `cloudsupport.techCases.get`, `cloudsupport.techCases.list`, `cloudsupport.techCases.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (10): `billing.resourceAssociations.list`, `cloudasset.assets.searchAllResources`, `cloudsupport.properties.get`, `cloudsupport.techCases.create`, `cloudsupport.techCases.escalate`, `cloudsupport.techCases.get`, `cloudsupport.techCases.list`, `cloudsupport.techCases.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Tech Support Viewer (`roles/cloudsupport.techSupportViewer`)
 
@@ -84,7 +84,7 @@ gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
 
 ## Notes
 
-- Roles and permissions of the `cloudsupport` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `cloudsupport` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/cloudsupport (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

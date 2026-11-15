@@ -14,19 +14,19 @@ Predefined roles of `commerceorggovernance` (role ID, description, included perm
 
 - Launch stage: Beta
 - Full access to Organization Governance APIs
-- Permissions (24): `commerceorggovernance.*`, `commerceorggovernance.collectionRequestApprovals.list`, `commerceorggovernance.collectionRequestApprovals.review`, `commerceorggovernance.collections.create`, `commerceorggovernance.collections.delete`, `commerceorggovernance.collections.get`, `commerceorggovernance.collections.list`, `commerceorggovernance.collections.update`, `commerceorggovernance.consumerSharingPolicies.get`, `commerceorggovernance.consumerSharingPolicies.update`, `commerceorggovernance.organizationSettings.get`, `commerceorggovernance.organizationSettings.update`, `commerceorggovernance.populateCollectionJobs.create`, `commerceorggovernance.populateCollectionJobs.list`, `commerceorggovernance.populateCollectionJobs.run`, `commerceorggovernance.populateCollectionJobs.update`, `commerceorggovernance.services.get`, `commerceorggovernance.services.list`, `commerceorggovernance.services.request`, `consumerprocurement.entitlements.*`, `consumerprocurement.entitlements.get`, `consumerprocurement.entitlements.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (22): `commerceorggovernance.collectionRequestApprovals.list`, `commerceorggovernance.collectionRequestApprovals.review`, `commerceorggovernance.collections.create`, `commerceorggovernance.collections.delete`, `commerceorggovernance.collections.get`, `commerceorggovernance.collections.list`, `commerceorggovernance.collections.update`, `commerceorggovernance.consumerSharingPolicies.get`, `commerceorggovernance.consumerSharingPolicies.update`, `commerceorggovernance.organizationSettings.get`, `commerceorggovernance.organizationSettings.update`, `commerceorggovernance.populateCollectionJobs.create`, `commerceorggovernance.populateCollectionJobs.list`, `commerceorggovernance.populateCollectionJobs.run`, `commerceorggovernance.populateCollectionJobs.update`, `commerceorggovernance.services.get`, `commerceorggovernance.services.list`, `commerceorggovernance.services.request`, `consumerprocurement.entitlements.get`, `consumerprocurement.entitlements.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Commerce Organization Governance Viewer (`roles/commerceorggovernance.viewer`)
 
 - Launch stage: Beta
 - Full access to Organization Governance read-only APIs.
-- Permissions (12): `commerceorggovernance.collections.get`, `commerceorggovernance.collections.list`, `commerceorggovernance.consumerSharingPolicies.get`, `commerceorggovernance.organizationSettings.get`, `commerceorggovernance.populateCollectionJobs.list`, `commerceorggovernance.services.get`, `commerceorggovernance.services.list`, `consumerprocurement.entitlements.*`, `consumerprocurement.entitlements.get`, `consumerprocurement.entitlements.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (11): `commerceorggovernance.collections.get`, `commerceorggovernance.collections.list`, `commerceorggovernance.consumerSharingPolicies.get`, `commerceorggovernance.organizationSettings.get`, `commerceorggovernance.populateCollectionJobs.list`, `commerceorggovernance.services.get`, `commerceorggovernance.services.list`, `consumerprocurement.entitlements.get`, `consumerprocurement.entitlements.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Governed Marketplace User (`roles/commerceorggovernance.user`)
 
 - Launch stage: Beta
 - Full access to Governed Marketplace features.
-- Permissions (9): `commerceorggovernance.services.*`, `commerceorggovernance.services.get`, `commerceorggovernance.services.list`, `commerceorggovernance.services.request`, `consumerprocurement.entitlements.*`, `consumerprocurement.entitlements.get`, `consumerprocurement.entitlements.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (7): `commerceorggovernance.services.get`, `commerceorggovernance.services.list`, `commerceorggovernance.services.request`, `consumerprocurement.entitlements.get`, `consumerprocurement.entitlements.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Example: grant a role
 
@@ -63,7 +63,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `commerceorggovernance` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `commerceorggovernance` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/commerceorggovernance (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

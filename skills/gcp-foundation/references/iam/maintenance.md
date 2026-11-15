@@ -13,12 +13,12 @@ Predefined roles of `maintenance` (role ID, description, included permissions). 
 ### Maintenance Admin (`roles/maintenance.admin`)
 
 - Admin role for maintenance
-- Permissions (7): `maintenance.*`, `maintenance.locations.get`, `maintenance.locations.list`, `maintenance.resourceMaintenances.get`, `maintenance.resourceMaintenances.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (6): `maintenance.locations.get`, `maintenance.locations.list`, `maintenance.resourceMaintenances.get`, `maintenance.resourceMaintenances.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Maintenance API Viewer (`roles/maintenance.viewer`)
 
 - Readonly access to Maintenance API resources.
-- Permissions (7): `maintenance.*`, `maintenance.locations.get`, `maintenance.locations.list`, `maintenance.resourceMaintenances.get`, `maintenance.resourceMaintenances.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (6): `maintenance.locations.get`, `maintenance.locations.list`, `maintenance.resourceMaintenances.get`, `maintenance.resourceMaintenances.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Example: grant a role
 
@@ -41,7 +41,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `maintenance` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `maintenance` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/maintenance (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

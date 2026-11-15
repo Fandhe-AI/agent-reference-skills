@@ -14,19 +14,19 @@ Predefined roles of `commercebusinessenablement` (role ID, description, included
 
 - Launch stage: Beta
 - Admin of Various Provider Configuration resources
-- Permissions (22): `bigquery.datasets.create`, `bigquery.datasets.get`, `bigquery.datasets.update`, `commercebusinessenablement.leadgenConfig.*`, `commercebusinessenablement.leadgenConfig.get`, `commercebusinessenablement.leadgenConfig.update`, `commercebusinessenablement.partnerAccounts.*`, `commercebusinessenablement.partnerAccounts.get`, `commercebusinessenablement.partnerAccounts.list`, `commercebusinessenablement.partnerInfo.get`, `commercebusinessenablement.resellerConfig.*`, `commercebusinessenablement.resellerConfig.get`, `commercebusinessenablement.resellerConfig.update`, `commercebusinessenablement.resellerRestrictions.*`, `commercebusinessenablement.resellerRestrictions.list`, `commercebusinessenablement.resellerRestrictions.update`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`, `serviceusage.operations.get`, `serviceusage.services.enable`, `serviceusage.services.get`
+- Permissions (18): `bigquery.datasets.create`, `bigquery.datasets.get`, `bigquery.datasets.update`, `commercebusinessenablement.leadgenConfig.get`, `commercebusinessenablement.leadgenConfig.update`, `commercebusinessenablement.partnerAccounts.get`, `commercebusinessenablement.partnerAccounts.list`, `commercebusinessenablement.partnerInfo.get`, `commercebusinessenablement.resellerConfig.get`, `commercebusinessenablement.resellerConfig.update`, `commercebusinessenablement.resellerRestrictions.list`, `commercebusinessenablement.resellerRestrictions.update`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`, `serviceusage.operations.get`, `serviceusage.services.enable`, `serviceusage.services.get`
 
 ### Commerce Business Enablement Configuration Viewer (`roles/commercebusinessenablement.viewer`)
 
 - Launch stage: Beta
 - Viewer of Various Provider Configuration resource
-- Permissions (10): `commercebusinessenablement.leadgenConfig.get`, `commercebusinessenablement.partnerAccounts.*`, `commercebusinessenablement.partnerAccounts.get`, `commercebusinessenablement.partnerAccounts.list`, `commercebusinessenablement.partnerInfo.get`, `commercebusinessenablement.resellerConfig.get`, `commercebusinessenablement.resellerRestrictions.list`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (9): `commercebusinessenablement.leadgenConfig.get`, `commercebusinessenablement.partnerAccounts.get`, `commercebusinessenablement.partnerAccounts.list`, `commercebusinessenablement.partnerInfo.get`, `commercebusinessenablement.resellerConfig.get`, `commercebusinessenablement.resellerRestrictions.list`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Commerce Business Enablement PaymentConfig Admin (`roles/commercebusinessenablement.paymentConfigAdmin`)
 
 - Launch stage: Beta
 - Administration of Payment Configuration resource
-- Permissions (6): `commercebusinessenablement.partnerInfo.get`, `commercebusinessenablement.paymentConfig.*`, `commercebusinessenablement.paymentConfig.get`, `commercebusinessenablement.paymentConfig.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (5): `commercebusinessenablement.partnerInfo.get`, `commercebusinessenablement.paymentConfig.get`, `commercebusinessenablement.paymentConfig.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Commerce Business Enablement PaymentConfig Viewer (`roles/commercebusinessenablement.paymentConfigViewer`)
 
@@ -38,7 +38,7 @@ Predefined roles of `commercebusinessenablement` (role ID, description, included
 
 - Launch stage: Beta
 - Provides admin access to rebates
-- Permissions (14): `commercebusinessenablement.operations.*`, `commercebusinessenablement.operations.cancel`, `commercebusinessenablement.operations.delete`, `commercebusinessenablement.operations.get`, `commercebusinessenablement.operations.list`, `commercebusinessenablement.partnerInfo.get`, `commercebusinessenablement.refunds.*`, `commercebusinessenablement.refunds.cancel`, `commercebusinessenablement.refunds.create`, `commercebusinessenablement.refunds.delete`, `commercebusinessenablement.refunds.get`, `commercebusinessenablement.refunds.list`, `commercebusinessenablement.refunds.start`, `commercebusinessenablement.refunds.update`
+- Permissions (12): `commercebusinessenablement.operations.cancel`, `commercebusinessenablement.operations.delete`, `commercebusinessenablement.operations.get`, `commercebusinessenablement.operations.list`, `commercebusinessenablement.partnerInfo.get`, `commercebusinessenablement.refunds.cancel`, `commercebusinessenablement.refunds.create`, `commercebusinessenablement.refunds.delete`, `commercebusinessenablement.refunds.get`, `commercebusinessenablement.refunds.list`, `commercebusinessenablement.refunds.start`, `commercebusinessenablement.refunds.update`
 
 ### Commerce Business Enablement Rebates Viewer (`roles/commercebusinessenablement.rebatesViewer`)
 
@@ -50,13 +50,13 @@ Predefined roles of `commercebusinessenablement` (role ID, description, included
 
 - Launch stage: Beta
 - Provides admin access to reseller discount offers
-- Permissions (21): `commercebusinessenablement.partnerAccounts.*`, `commercebusinessenablement.partnerAccounts.get`, `commercebusinessenablement.partnerAccounts.list`, `commercebusinessenablement.partnerInfo.get`, `commercebusinessenablement.resellerConfig.get`, `commercebusinessenablement.resellerDiscountConfig.get`, `commercebusinessenablement.resellerDiscountOffers.*`, `commercebusinessenablement.resellerDiscountOffers.cancel`, `commercebusinessenablement.resellerDiscountOffers.create`, `commercebusinessenablement.resellerDiscountOffers.list`, `commercebusinessenablement.resellerPrivateOfferPlans.*`, `commercebusinessenablement.resellerPrivateOfferPlans.cancel`, `commercebusinessenablement.resellerPrivateOfferPlans.create`, `commercebusinessenablement.resellerPrivateOfferPlans.delete`, `commercebusinessenablement.resellerPrivateOfferPlans.get`, `commercebusinessenablement.resellerPrivateOfferPlans.list`, `commercebusinessenablement.resellerPrivateOfferPlans.publish`, `commercebusinessenablement.resellerPrivateOfferPlans.update`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (18): `commercebusinessenablement.partnerAccounts.get`, `commercebusinessenablement.partnerAccounts.list`, `commercebusinessenablement.partnerInfo.get`, `commercebusinessenablement.resellerConfig.get`, `commercebusinessenablement.resellerDiscountConfig.get`, `commercebusinessenablement.resellerDiscountOffers.cancel`, `commercebusinessenablement.resellerDiscountOffers.create`, `commercebusinessenablement.resellerDiscountOffers.list`, `commercebusinessenablement.resellerPrivateOfferPlans.cancel`, `commercebusinessenablement.resellerPrivateOfferPlans.create`, `commercebusinessenablement.resellerPrivateOfferPlans.delete`, `commercebusinessenablement.resellerPrivateOfferPlans.get`, `commercebusinessenablement.resellerPrivateOfferPlans.list`, `commercebusinessenablement.resellerPrivateOfferPlans.publish`, `commercebusinessenablement.resellerPrivateOfferPlans.update`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Commerce Business Enablement Reseller Discount Viewer (`roles/commercebusinessenablement.resellerDiscountViewer`)
 
 - Launch stage: Beta
 - Provides read-only access to reseller discount offers
-- Permissions (12): `commercebusinessenablement.partnerAccounts.*`, `commercebusinessenablement.partnerAccounts.get`, `commercebusinessenablement.partnerAccounts.list`, `commercebusinessenablement.partnerInfo.get`, `commercebusinessenablement.resellerConfig.get`, `commercebusinessenablement.resellerDiscountConfig.get`, `commercebusinessenablement.resellerDiscountOffers.list`, `commercebusinessenablement.resellerPrivateOfferPlans.get`, `commercebusinessenablement.resellerPrivateOfferPlans.list`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (11): `commercebusinessenablement.partnerAccounts.get`, `commercebusinessenablement.partnerAccounts.list`, `commercebusinessenablement.partnerInfo.get`, `commercebusinessenablement.resellerConfig.get`, `commercebusinessenablement.resellerDiscountConfig.get`, `commercebusinessenablement.resellerDiscountOffers.list`, `commercebusinessenablement.resellerPrivateOfferPlans.get`, `commercebusinessenablement.resellerPrivateOfferPlans.list`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Example: grant a role
 
@@ -108,7 +108,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `commercebusinessenablement` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `commercebusinessenablement` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/commercebusinessenablement (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

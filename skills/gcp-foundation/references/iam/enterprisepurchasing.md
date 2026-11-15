@@ -14,19 +14,19 @@ Predefined roles of `enterprisepurchasing` (role ID, description, included permi
 
 - Launch stage: Beta
 - Full access to Enterprise Purchasing resources.
-- Permissions (17): `enterprisepurchasing.*`, `enterprisepurchasing.gcveCuds.create`, `enterprisepurchasing.gcveCuds.get`, `enterprisepurchasing.gcveCuds.list`, `enterprisepurchasing.gcveNodePricingInfo.list`, `enterprisepurchasing.licenseKeys.create`, `enterprisepurchasing.licenseKeys.delete`, `enterprisepurchasing.licenseKeys.get`, `enterprisepurchasing.licenseKeys.list`, `enterprisepurchasing.locations.get`, `enterprisepurchasing.locations.list`, `enterprisepurchasing.operations.cancel`, `enterprisepurchasing.operations.delete`, `enterprisepurchasing.operations.get`, `enterprisepurchasing.operations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (16): `enterprisepurchasing.gcveCuds.create`, `enterprisepurchasing.gcveCuds.get`, `enterprisepurchasing.gcveCuds.list`, `enterprisepurchasing.gcveNodePricingInfo.list`, `enterprisepurchasing.licenseKeys.create`, `enterprisepurchasing.licenseKeys.delete`, `enterprisepurchasing.licenseKeys.get`, `enterprisepurchasing.licenseKeys.list`, `enterprisepurchasing.locations.get`, `enterprisepurchasing.locations.list`, `enterprisepurchasing.operations.cancel`, `enterprisepurchasing.operations.delete`, `enterprisepurchasing.operations.get`, `enterprisepurchasing.operations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Enterprise Purchasing Editor (`roles/enterprisepurchasing.editor`)
 
 - Launch stage: Beta
 - Edit access to Enterprise Purchasing resources.
-- Permissions (12): `enterprisepurchasing.gcveCuds.get`, `enterprisepurchasing.gcveCuds.list`, `enterprisepurchasing.gcveNodePricingInfo.list`, `enterprisepurchasing.licenseKeys.get`, `enterprisepurchasing.licenseKeys.list`, `enterprisepurchasing.locations.*`, `enterprisepurchasing.locations.get`, `enterprisepurchasing.locations.list`, `enterprisepurchasing.operations.get`, `enterprisepurchasing.operations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (11): `enterprisepurchasing.gcveCuds.get`, `enterprisepurchasing.gcveCuds.list`, `enterprisepurchasing.gcveNodePricingInfo.list`, `enterprisepurchasing.licenseKeys.get`, `enterprisepurchasing.licenseKeys.list`, `enterprisepurchasing.locations.get`, `enterprisepurchasing.locations.list`, `enterprisepurchasing.operations.get`, `enterprisepurchasing.operations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Enterprise Purchasing Viewer (`roles/enterprisepurchasing.viewer`)
 
 - Launch stage: Beta
 - Readonly access to Enterprise Purchasing resources.
-- Permissions (12): `enterprisepurchasing.gcveCuds.get`, `enterprisepurchasing.gcveCuds.list`, `enterprisepurchasing.gcveNodePricingInfo.list`, `enterprisepurchasing.licenseKeys.get`, `enterprisepurchasing.licenseKeys.list`, `enterprisepurchasing.locations.*`, `enterprisepurchasing.locations.get`, `enterprisepurchasing.locations.list`, `enterprisepurchasing.operations.get`, `enterprisepurchasing.operations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (11): `enterprisepurchasing.gcveCuds.get`, `enterprisepurchasing.gcveCuds.list`, `enterprisepurchasing.gcveNodePricingInfo.list`, `enterprisepurchasing.licenseKeys.get`, `enterprisepurchasing.licenseKeys.list`, `enterprisepurchasing.locations.get`, `enterprisepurchasing.locations.list`, `enterprisepurchasing.operations.get`, `enterprisepurchasing.operations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Example: grant a role
 
@@ -59,7 +59,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `enterprisepurchasing` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `enterprisepurchasing` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/enterprisepurchasing (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

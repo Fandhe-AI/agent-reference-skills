@@ -13,7 +13,7 @@ Predefined roles of `orgpolicy` (role ID, description, included permissions). Th
 ### Organization Policy Administrator (`roles/orgpolicy.policyAdmin`)
 
 - Provides access to define what restrictions an organization wants to place on the configuration of cloud resources by setting Organization Policies. Lowest-level resources where you can grant this role: - Organization
-- Permissions (30): `cloudasset.assets.analyzeOrgPolicy`, `cloudasset.assets.exportResource`, `cloudasset.assets.listResource`, `cloudasset.assets.searchAllResources`, `orgpolicy.*`, `orgpolicy.constraints.list`, `orgpolicy.customConstraints.create`, `orgpolicy.customConstraints.delete`, `orgpolicy.customConstraints.get`, `orgpolicy.customConstraints.list`, `orgpolicy.customConstraints.update`, `orgpolicy.policies.create`, `orgpolicy.policies.delete`, `orgpolicy.policies.list`, `orgpolicy.policies.update`, `orgpolicy.policy.get`, `orgpolicy.policy.set`, `policysimulator.orgPolicyViolations.list`, `policysimulator.orgPolicyViolationsPreviews.*`, `policysimulator.orgPolicyViolationsPreviews.create`, `policysimulator.orgPolicyViolationsPreviews.get`, `policysimulator.orgPolicyViolationsPreviews.list`, `recommender.orgPolicyInsights.*`, `recommender.orgPolicyInsights.get`, `recommender.orgPolicyInsights.list`, `recommender.orgPolicyInsights.update`, `recommender.orgPolicyRecommendations.*`, `recommender.orgPolicyRecommendations.get`, `recommender.orgPolicyRecommendations.list`, `recommender.orgPolicyRecommendations.update`
+- Permissions (26): `cloudasset.assets.analyzeOrgPolicy`, `cloudasset.assets.exportResource`, `cloudasset.assets.listResource`, `cloudasset.assets.searchAllResources`, `orgpolicy.constraints.list`, `orgpolicy.customConstraints.create`, `orgpolicy.customConstraints.delete`, `orgpolicy.customConstraints.get`, `orgpolicy.customConstraints.list`, `orgpolicy.customConstraints.update`, `orgpolicy.policies.create`, `orgpolicy.policies.delete`, `orgpolicy.policies.list`, `orgpolicy.policies.update`, `orgpolicy.policy.get`, `orgpolicy.policy.set`, `policysimulator.orgPolicyViolations.list`, `policysimulator.orgPolicyViolationsPreviews.create`, `policysimulator.orgPolicyViolationsPreviews.get`, `policysimulator.orgPolicyViolationsPreviews.list`, `recommender.orgPolicyInsights.get`, `recommender.orgPolicyInsights.list`, `recommender.orgPolicyInsights.update`, `recommender.orgPolicyRecommendations.get`, `recommender.orgPolicyRecommendations.list`, `recommender.orgPolicyRecommendations.update`
 
 ### Organization Policy Viewer (`roles/orgpolicy.policyViewer`)
 
@@ -49,7 +49,7 @@ gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
 
 ## Notes
 
-- Roles and permissions of the `orgpolicy` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `orgpolicy` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/orgpolicy (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

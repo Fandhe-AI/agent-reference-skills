@@ -13,12 +13,12 @@ Predefined roles of `licensemanager` (role ID, description, included permissions
 ### Cloud License Manager Admin (`roles/licensemanager.admin`)
 
 - Full access to Cloud License Manager resources.
-- Permissions (20): `licensemanager.*`, `licensemanager.configurations.aggregateUsage`, `licensemanager.configurations.create`, `licensemanager.configurations.delete`, `licensemanager.configurations.get`, `licensemanager.configurations.list`, `licensemanager.configurations.queryLicenseUsage`, `licensemanager.configurations.update`, `licensemanager.instances.get`, `licensemanager.instances.list`, `licensemanager.locations.get`, `licensemanager.locations.list`, `licensemanager.operations.cancel`, `licensemanager.operations.delete`, `licensemanager.operations.get`, `licensemanager.operations.list`, `licensemanager.products.get`, `licensemanager.products.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (19): `licensemanager.configurations.aggregateUsage`, `licensemanager.configurations.create`, `licensemanager.configurations.delete`, `licensemanager.configurations.get`, `licensemanager.configurations.list`, `licensemanager.configurations.queryLicenseUsage`, `licensemanager.configurations.update`, `licensemanager.instances.get`, `licensemanager.instances.list`, `licensemanager.locations.get`, `licensemanager.locations.list`, `licensemanager.operations.cancel`, `licensemanager.operations.delete`, `licensemanager.operations.get`, `licensemanager.operations.list`, `licensemanager.products.get`, `licensemanager.products.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Cloud License Manager Viewer (`roles/licensemanager.viewer`)
 
 - Readonly access to Cloud License Manager resources.
-- Permissions (15): `licensemanager.configurations.get`, `licensemanager.configurations.list`, `licensemanager.instances.*`, `licensemanager.instances.get`, `licensemanager.instances.list`, `licensemanager.locations.*`, `licensemanager.locations.get`, `licensemanager.locations.list`, `licensemanager.operations.get`, `licensemanager.operations.list`, `licensemanager.products.*`, `licensemanager.products.get`, `licensemanager.products.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (12): `licensemanager.configurations.get`, `licensemanager.configurations.list`, `licensemanager.instances.get`, `licensemanager.instances.list`, `licensemanager.locations.get`, `licensemanager.locations.list`, `licensemanager.operations.get`, `licensemanager.operations.list`, `licensemanager.products.get`, `licensemanager.products.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Example: grant a role
 
@@ -54,7 +54,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `licensemanager` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `licensemanager` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/licensemanager (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

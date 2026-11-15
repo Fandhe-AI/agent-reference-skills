@@ -13,12 +13,12 @@ Predefined roles of `advisorynotifications` (role ID, description, included perm
 ### Advisory Notifications Admin (`roles/advisorynotifications.admin`)
 
 - Grants write access to settings in Advisory Notifications
-- Permissions (7): `advisorynotifications.*`, `advisorynotifications.notifications.get`, `advisorynotifications.notifications.list`, `advisorynotifications.settings.get`, `advisorynotifications.settings.update`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`
+- Permissions (6): `advisorynotifications.notifications.get`, `advisorynotifications.notifications.list`, `advisorynotifications.settings.get`, `advisorynotifications.settings.update`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`
 
 ### Advisory Notifications Viewer (`roles/advisorynotifications.viewer`)
 
 - Grants view access in Advisory Notifications
-- Permissions (6): `advisorynotifications.notifications.*`, `advisorynotifications.notifications.get`, `advisorynotifications.notifications.list`, `advisorynotifications.settings.get`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`
+- Permissions (5): `advisorynotifications.notifications.get`, `advisorynotifications.notifications.list`, `advisorynotifications.settings.get`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`
 
 ### Example: grant a role
 
@@ -41,7 +41,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `advisorynotifications` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `advisorynotifications` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/advisorynotifications (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

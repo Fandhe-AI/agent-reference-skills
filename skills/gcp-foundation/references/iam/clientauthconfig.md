@@ -37,7 +37,7 @@ gcloud iam roles describe roles/oauthconfig.editor
 
 ## Notes
 
-- Roles and permissions of the `clientauthconfig` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `clientauthconfig` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/clientauthconfig (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

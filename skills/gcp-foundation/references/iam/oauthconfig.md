@@ -14,7 +14,7 @@ Predefined roles of `oauthconfig` (role ID, description, included permissions). 
 
 - Launch stage: Beta
 - Read/write access to OAuth config resources
-- Permissions (31): `clientauthconfig.*`, `clientauthconfig.brands.create`, `clientauthconfig.brands.delete`, `clientauthconfig.brands.get`, `clientauthconfig.brands.list`, `clientauthconfig.brands.update`, `clientauthconfig.clients.create`, `clientauthconfig.clients.createSecret`, `clientauthconfig.clients.delete`, `clientauthconfig.clients.get`, `clientauthconfig.clients.getWithSecret`, `clientauthconfig.clients.list`, `clientauthconfig.clients.listWithSecrets`, `clientauthconfig.clients.undelete`, `clientauthconfig.clients.update`, `firebase.clients.create`, `firebase.clients.get`, `firebase.clients.list`, `firebase.clients.update`, `firebaseappcheck.resourcePolicies.*`, `firebaseappcheck.resourcePolicies.get`, `firebaseappcheck.resourcePolicies.update`, `oauthconfig.*`, `oauthconfig.clientpolicy.get`, `oauthconfig.testusers.get`, `oauthconfig.testusers.update`, `oauthconfig.verification.get`, `oauthconfig.verification.submit`, `oauthconfig.verification.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (28): `clientauthconfig.brands.create`, `clientauthconfig.brands.delete`, `clientauthconfig.brands.get`, `clientauthconfig.brands.list`, `clientauthconfig.brands.update`, `clientauthconfig.clients.create`, `clientauthconfig.clients.createSecret`, `clientauthconfig.clients.delete`, `clientauthconfig.clients.get`, `clientauthconfig.clients.getWithSecret`, `clientauthconfig.clients.list`, `clientauthconfig.clients.listWithSecrets`, `clientauthconfig.clients.undelete`, `clientauthconfig.clients.update`, `firebase.clients.create`, `firebase.clients.get`, `firebase.clients.list`, `firebase.clients.update`, `firebaseappcheck.resourcePolicies.get`, `firebaseappcheck.resourcePolicies.update`, `oauthconfig.clientpolicy.get`, `oauthconfig.testusers.get`, `oauthconfig.testusers.update`, `oauthconfig.verification.get`, `oauthconfig.verification.submit`, `oauthconfig.verification.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### OAuth Config Viewer (`roles/oauthconfig.viewer`)
 
@@ -45,7 +45,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `oauthconfig` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `oauthconfig` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/oauthconfig (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

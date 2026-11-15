@@ -14,7 +14,7 @@ Predefined roles of `commerceagreementpublishing` (role ID, description, include
 
 - Launch stage: Beta
 - Admin of Commerce Agreement Publishing service
-- Permissions (13): `commerceagreementpublishing.*`, `commerceagreementpublishing.agreements.create`, `commerceagreementpublishing.agreements.delete`, `commerceagreementpublishing.agreements.get`, `commerceagreementpublishing.agreements.list`, `commerceagreementpublishing.agreements.update`, `commerceagreementpublishing.documents.create`, `commerceagreementpublishing.documents.delete`, `commerceagreementpublishing.documents.get`, `commerceagreementpublishing.documents.list`, `commerceagreementpublishing.documents.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (12): `commerceagreementpublishing.agreements.create`, `commerceagreementpublishing.agreements.delete`, `commerceagreementpublishing.agreements.get`, `commerceagreementpublishing.agreements.list`, `commerceagreementpublishing.agreements.update`, `commerceagreementpublishing.documents.create`, `commerceagreementpublishing.documents.delete`, `commerceagreementpublishing.documents.get`, `commerceagreementpublishing.documents.list`, `commerceagreementpublishing.documents.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Commerce Agreement Publishing Viewer (`roles/commerceagreementpublishing.viewer`)
 
@@ -49,7 +49,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `commerceagreementpublishing` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `commerceagreementpublishing` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/commerceagreementpublishing (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

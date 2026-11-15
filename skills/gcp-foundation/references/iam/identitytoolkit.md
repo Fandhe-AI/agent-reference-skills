@@ -13,12 +13,12 @@ Predefined roles of `identitytoolkit` (role ID, description, included permission
 ### Identity Toolkit Admin (`roles/identitytoolkit.admin`)
 
 - Full access to Identity Toolkit resources.
-- Permissions (20): `firebaseauth.*`, `firebaseauth.configs.create`, `firebaseauth.configs.get`, `firebaseauth.configs.getHashConfig`, `firebaseauth.configs.getSecret`, `firebaseauth.configs.update`, `firebaseauth.users.create`, `firebaseauth.users.createSession`, `firebaseauth.users.delete`, `firebaseauth.users.get`, `firebaseauth.users.sendEmail`, `firebaseauth.users.update`, `identitytoolkit.*`, `identitytoolkit.tenants.create`, `identitytoolkit.tenants.delete`, `identitytoolkit.tenants.get`, `identitytoolkit.tenants.getIamPolicy`, `identitytoolkit.tenants.list`, `identitytoolkit.tenants.setIamPolicy`, `identitytoolkit.tenants.update`
+- Permissions (18): `firebaseauth.configs.create`, `firebaseauth.configs.get`, `firebaseauth.configs.getHashConfig`, `firebaseauth.configs.getSecret`, `firebaseauth.configs.update`, `firebaseauth.users.create`, `firebaseauth.users.createSession`, `firebaseauth.users.delete`, `firebaseauth.users.get`, `firebaseauth.users.sendEmail`, `firebaseauth.users.update`, `identitytoolkit.tenants.create`, `identitytoolkit.tenants.delete`, `identitytoolkit.tenants.get`, `identitytoolkit.tenants.getIamPolicy`, `identitytoolkit.tenants.list`, `identitytoolkit.tenants.setIamPolicy`, `identitytoolkit.tenants.update`
 
 ### Identity Toolkit editor (`roles/identitytoolkit.editor`)
 
 - Write access to Identity Toolkit resources.
-- Permissions (23): `firebase.clients.get`, `firebase.clients.list`, `firebase.projects.get`, `firebaseauth.*`, `firebaseauth.configs.create`, `firebaseauth.configs.get`, `firebaseauth.configs.getHashConfig`, `firebaseauth.configs.getSecret`, `firebaseauth.configs.update`, `firebaseauth.users.create`, `firebaseauth.users.createSession`, `firebaseauth.users.delete`, `firebaseauth.users.get`, `firebaseauth.users.sendEmail`, `firebaseauth.users.update`, `identitytoolkit.tenants.create`, `identitytoolkit.tenants.delete`, `identitytoolkit.tenants.get`, `identitytoolkit.tenants.getIamPolicy`, `identitytoolkit.tenants.list`, `identitytoolkit.tenants.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (22): `firebase.clients.get`, `firebase.clients.list`, `firebase.projects.get`, `firebaseauth.configs.create`, `firebaseauth.configs.get`, `firebaseauth.configs.getHashConfig`, `firebaseauth.configs.getSecret`, `firebaseauth.configs.update`, `firebaseauth.users.create`, `firebaseauth.users.createSession`, `firebaseauth.users.delete`, `firebaseauth.users.get`, `firebaseauth.users.sendEmail`, `firebaseauth.users.update`, `identitytoolkit.tenants.create`, `identitytoolkit.tenants.delete`, `identitytoolkit.tenants.get`, `identitytoolkit.tenants.getIamPolicy`, `identitytoolkit.tenants.list`, `identitytoolkit.tenants.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Identity Toolkit Viewer (`roles/identitytoolkit.viewer`)
 
@@ -54,7 +54,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `identitytoolkit` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `identitytoolkit` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/identitytoolkit (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related

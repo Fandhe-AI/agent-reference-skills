@@ -14,19 +14,19 @@ Predefined roles of `cloud` (role ID, description, included permissions). The pe
 
 - Launch stage: Beta
 - Admin role for cloud
-- Permissions (5): `cloud.*`, `cloud.locations.get`, `cloud.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (4): `cloud.locations.get`, `cloud.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Cloud Viewer (`roles/cloud.viewer`)
 
 - Launch stage: Beta
 - Viewer role for cloud
-- Permissions (5): `cloud.*`, `cloud.locations.get`, `cloud.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
+- Permissions (4): `cloud.locations.get`, `cloud.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
 ### Location reader (`roles/cloud.locationReader`)
 
 - Launch stage: Beta
 - Read and enumerate locations available for resource creation.
-- Permissions (3): `cloud.*`, `cloud.locations.get`, `cloud.locations.list`
+- Permissions (2): `cloud.locations.get`, `cloud.locations.list`
 
 ### Example: grant a role
 
@@ -47,7 +47,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ## Notes
 
-- Roles and permissions of the `cloud` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role.
+- Roles and permissions of the `cloud` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/cloud (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related
