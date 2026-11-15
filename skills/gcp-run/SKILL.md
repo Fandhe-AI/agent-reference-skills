@@ -79,6 +79,37 @@ skills/gcp-run/
     tasks/                        # Cloud Tasks（Google Tasks API ではない）: キュー作成・設定・HTTP ターゲットタスク・クォータ
       README.md
       <page>.md                   # 例: dual-overview.md / creating-queues.md / creating-http-target-tasks.md / quotas.md
+    workstations/                 # Cloud Workstations: クラスター・構成・ベースイメージ・アクセス制御・クォータ
+      README.md
+      <page>.md                   # 例: overview.md / architecture.md / create-configuration.md / customize-container-images.md
+  samples/
+    README.md
+    deploy-service-from-source.md
+    deploy-image-from-artifact-registry.md
+    service-to-service-id-token.md
+    scheduler-oidc-private-service.md
+    tasks-http-target-oidc.md
+    pubsub-push-and-eventarc-trigger.md
+    job-overrides-and-retries.md
+    secrets-env-and-volume.md
+    gradual-rollout-with-tags.md
+    direct-vpc-egress-and-connector.md
+    gpu-service.md
+    function-http-and-event.md
+    upgrade-functions-gen1.md
+    migrate-app-engine-standard.md
+    worker-pool-deploy-and-scale.md
+    workstations-cluster-config-start.md
+  scripts/
+    README.md
+    services.md
+    jobs.md
+    worker-pools.md
+    functions.md
+    tasks.md
+    scheduler.md
+    app-engine.md
+    workstations.md
 ```
 
 機械生成カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas`）は後続 PR で `references/gcloud/` 等に投入する。投入後に担当するもの:
@@ -93,7 +124,7 @@ skills/gcp-run/
 
 1. 手順・概念（Cloud Run の設計・デプロイ・スケーリング・認証・ネットワーク・トリガー、Cloud Run functions、App Engine、Cloud Scheduler、Cloud Tasks、Cloud Workstations）→ 下記マッピング表でカテゴリを選び、その README.md から個別ページを引く。ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある
 2. gcloud コマンド・フラグの全文、IAM ロールの権限、REST のメソッド・メッセージ型（機械生成の `references/gcloud/` `references/iam/` `references/rest/` `references/rest-schemas/`）は後続 PR で投入する。未投入の間は `gcloud <group> --help` と公式 reference を確認する
-3. 作業例 → `samples/README.md`（後続 PR で投入）、コマンド集 → `scripts/README.md`（後続 PR で投入）
+3. 作業例 → `samples/README.md`、コマンド集 → `scripts/README.md`
 
 ## タスク → カテゴリ マッピング
 
@@ -123,8 +154,9 @@ skills/gcp-run/
 | Cloud Scheduler のジョブ作成・cron 形式とタイムゾーン・リトライ・HTTP ターゲット認証（OIDC / OAuth）・トラブルシューティング | scheduler | [references/scheduler/README.md](references/scheduler/README.md) |
 | Cloud Run jobs を Cloud Scheduler で定期実行したい | scheduler | [references/scheduler/README.md](references/scheduler/README.md) |
 | Cloud Tasks のキュー作成・レート / リトライ設定・HTTP ターゲットタスク（OIDC トークン）・クォータ | tasks | [references/tasks/README.md](references/tasks/README.md) |
-
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `workstations` / `samples` / `scripts`
+| Cloud Workstations のクラスター・構成・ベースイメージ・カスタムコンテナーイメージ・アクセス制御・クォータ | workstations | [references/workstations/README.md](references/workstations/README.md) |
+| 典型的な使い方を知りたい（Cloud Run のデプロイ・認証・トリガー・ジョブ・GPU・VPC、functions、移行、worker pools、Workstations の 16 件） | samples | [samples/README.md](samples/README.md) |
+| コマンドをコピペしたい（services / jobs / worker-pools / functions / tasks / scheduler / app-engine / workstations） | scripts | [scripts/README.md](scripts/README.md) |
 
 ## 他スキルとの使い分け
 
