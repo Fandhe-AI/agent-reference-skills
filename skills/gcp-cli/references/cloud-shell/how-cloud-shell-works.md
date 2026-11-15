@@ -86,8 +86,10 @@ sudo update-java-alternatives -s java-1.21.0-openjdk-amd64 && export JAVA_HOME=/
 
 To change back to 17:
 
+Adapted (not in the official docs): the official command sets `JAVA_HOME` to `/usr/lib/jvm/java-17-openjdk-amd64/jre`; OpenJDK 17 has no separate `jre` directory, so the JDK root is used, as in the Java 11 and 21 commands.
+
 ```sh
-sudo update-java-alternatives -s java-1.17.0-openjdk-amd64 && export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/jre
+sudo update-java-alternatives -s java-1.17.0-openjdk-amd64 && export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ```
 
 ### Safe mode
@@ -100,7 +102,7 @@ If there's a problem in your `.bashrc` or `.tmux.conf` files, Cloud Shell immedi
 - Warning (verbatim): If you delete your `$HOME` directory, or if you don't access Cloud Shell for 120 days, Cloud Shell automatically deletes your `$HOME` directory and can't recover your files. You'll receive an email notification before this occurs. Starting a Cloud Shell session prevents the `$HOME` directory persistent storage from being recycled.
 - While `GOOGLE_CLOUD_PROJECT` inherits the active project from the console, your Cloud Shell instance is not directly associated with or managed by this project.
 - Inactivity timeout: this page says the session terminates "after an hour of inactivity", whereas [quotas-limits.md](./quotas-limits.md) says the VM "terminates if your session is inactive for 40 minutes". Both are kept as written in the official pages.
-- Language versions might change; you can install different versions with the environment customization script. The `/jre` suffix appears only in the Java 17 `JAVA_HOME` path, verbatim from the source.
+- Language versions might change; you can install different versions with the environment customization script. Corrected from the official docs: the Java 17 command sets `JAVA_HOME` to `/usr/lib/jvm/java-17-openjdk-amd64/jre`, but OpenJDK 17 ships no separate `jre` directory; the JDK root `/usr/lib/jvm/java-17-openjdk-amd64` is used, matching the Java 11 and 21 commands.
 - The Safe Mode bullet in the source reads "click , click **Safe Mode**" (the name of the first button is missing in the fetched twin); it is not guessed here.
 - Source: https://docs.cloud.google.com/shell/docs/how-cloud-shell-works (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
