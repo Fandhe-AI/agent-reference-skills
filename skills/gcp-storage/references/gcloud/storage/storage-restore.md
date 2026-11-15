@@ -178,6 +178,16 @@ NOTES
         $ gcloud alpha storage restore
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud storage restore gs://bucket/** \
+    --async \
+    --allow-overwrite \
+    --created-before-time="2023-01-01T00:00:00Z" \
+    --deleted-after-time="2023-01-01T00:00:00Z"
+```
+
 ### gcloud alpha storage restore
 
 ```text
@@ -197,6 +207,8 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the point-in-time example says it selects the objects that were live at 2023-01-01T00:00:00Z and then soft-deleted, but passes `--created-after-time`, which selects generations created after that time and excludes the ones that were live then (with `--allow-overwrite` it can make a wrong generation live); an object live at that time was created before it and deleted after it, so the runnable form uses `--created-before-time` with `--deleted-after-time`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
