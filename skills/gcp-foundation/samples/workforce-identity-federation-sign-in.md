@@ -87,6 +87,6 @@ gcloud auth login
 
 ## Related
 
-- [workforce-console-and-gcloud-sign-in.md](../references/iam-guides/workforce-identity-federation/workforce-console-and-gcloud-sign-in.md)
-- [workforce-identity-federation-overview.md](../references/iam-guides/workforce-identity-federation/workforce-identity-federation-overview.md)
-- [workforce-credentials-and-troubleshooting.md](../references/iam-guides/workforce-identity-federation/workforce-credentials-and-troubleshooting.md)
+- workforce-console-and-gcloud-sign-in.md (`references/iam-guides/workforce-identity-federation/workforce-console-and-gcloud-sign-in.md`, added in a follow-up PR)
+- workforce-identity-federation-overview.md (`references/iam-guides/workforce-identity-federation/workforce-identity-federation-overview.md`, added in a follow-up PR)
+- workforce-credentials-and-troubleshooting.md (`references/iam-guides/workforce-identity-federation/workforce-credentials-and-troubleshooting.md`, added in a follow-up PR)

@@ -265,9 +265,9 @@ gcloud alpha iam policies lint-condition --condition-from-file="condition.json"
 ## Related
 
 - [grant-revoke-allow-policy.md](../references/iam-guides/access-management/grant-revoke-allow-policy.md)
-- [service-accounts-create-manage.md](../references/iam-guides/service-account-lifecycle/service-accounts-create-manage.md)
-- [service-account-key-lifecycle.md](../references/iam-guides/service-account-credentials/service-account-key-lifecycle.md)
-- [choosing-and-creating-roles.md](../references/iam-guides/roles/choosing-and-creating-roles.md)
+- service-accounts-create-manage.md (`references/iam-guides/service-account-lifecycle/service-accounts-create-manage.md`, added in a follow-up PR)
+- service-account-key-lifecycle.md (`references/iam-guides/service-account-credentials/service-account-key-lifecycle.md`, added in a follow-up PR)
+- choosing-and-creating-roles.md (`references/iam-guides/roles/choosing-and-creating-roles.md`, added in a follow-up PR)
 - [deny-policies.md](../references/iam-guides/access-policies/deny-policies.md)
 - [principal-access-boundary-policies.md](../references/iam-guides/principal-access-boundary/principal-access-boundary-policies.md)
 - [lint-conditions.md](../references/iam-guides/policy-guardrails/lint-conditions.md)
