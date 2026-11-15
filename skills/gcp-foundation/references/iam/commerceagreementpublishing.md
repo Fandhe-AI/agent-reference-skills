@@ -10,13 +10,13 @@ Predefined roles of `commerceagreementpublishing` (role ID, description, include
 
 ### Roles
 
-### Commerce Agreement Publishing Admin (`roles/commerceagreementpublishing.admin`)
+#### Commerce Agreement Publishing Admin (`roles/commerceagreementpublishing.admin`)
 
 - Launch stage: Beta
 - Admin of Commerce Agreement Publishing service
 - Permissions (12): `commerceagreementpublishing.agreements.create`, `commerceagreementpublishing.agreements.delete`, `commerceagreementpublishing.agreements.get`, `commerceagreementpublishing.agreements.list`, `commerceagreementpublishing.agreements.update`, `commerceagreementpublishing.documents.create`, `commerceagreementpublishing.documents.delete`, `commerceagreementpublishing.documents.get`, `commerceagreementpublishing.documents.list`, `commerceagreementpublishing.documents.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Commerce Agreement Publishing Viewer (`roles/commerceagreementpublishing.viewer`)
+#### Commerce Agreement Publishing Viewer (`roles/commerceagreementpublishing.viewer`)
 
 - Launch stage: Beta
 - Viewer of Commerce Agreement Publishing service

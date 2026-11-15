@@ -10,47 +10,47 @@ Predefined roles of `consumerprocurement` (role ID, description, included permis
 
 ### Roles
 
-### Consumer Procurement Entitlement Manager (`roles/consumerprocurement.entitlementManager`)
+#### Consumer Procurement Entitlement Manager (`roles/consumerprocurement.entitlementManager`)
 
 - Allows managing entitlements and enabling, disabling, and inspecting service states for a consumer project.
 - Permissions (29): `commerceoffercatalog.offers.get`, `consumerprocurement.consents.check`, `consumerprocurement.consents.grant`, `consumerprocurement.consents.list`, `consumerprocurement.consents.revoke`, `consumerprocurement.entitlements.get`, `consumerprocurement.entitlements.list`, `consumerprocurement.freeTrials.create`, `consumerprocurement.freeTrials.get`, `consumerprocurement.freeTrials.list`, `orgpolicy.policy.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`, `serviceusage.catalogs.listMembers`, `serviceusage.consumerpolicy.analyze`, `serviceusage.consumerpolicy.get`, `serviceusage.consumerpolicy.update`, `serviceusage.effectivepolicy.get`, `serviceusage.groups.list`, `serviceusage.groups.listExpandedMembers`, `serviceusage.groups.listMembers`, `serviceusage.operations.get`, `serviceusage.services.disable`, `serviceusage.services.enable`, `serviceusage.services.get`, `serviceusage.services.list`, `serviceusage.services.listApis`, `serviceusage.services.listDependentServices`, `serviceusage.values.test`
 
-### Consumer Procurement Entitlement Viewer (`roles/consumerprocurement.entitlementViewer`)
+#### Consumer Procurement Entitlement Viewer (`roles/consumerprocurement.entitlementViewer`)
 
 - Allows inspecting entitlements and service states for a consumer project.
 - Permissions (22): `commerceoffercatalog.offers.get`, `consumerprocurement.consents.check`, `consumerprocurement.consents.list`, `consumerprocurement.entitlements.get`, `consumerprocurement.entitlements.list`, `consumerprocurement.freeTrials.get`, `consumerprocurement.freeTrials.list`, `orgpolicy.policy.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`, `serviceusage.catalogs.listMembers`, `serviceusage.consumerpolicy.analyze`, `serviceusage.consumerpolicy.get`, `serviceusage.effectivepolicy.get`, `serviceusage.groups.list`, `serviceusage.groups.listExpandedMembers`, `serviceusage.groups.listMembers`, `serviceusage.services.get`, `serviceusage.services.list`, `serviceusage.services.listApis`, `serviceusage.services.listDependentServices`, `serviceusage.values.test`
 
-### Consumer Procurement Events Viewer (`roles/consumerprocurement.eventsViewer`)
+#### Consumer Procurement Events Viewer (`roles/consumerprocurement.eventsViewer`)
 
 - Allows viewing key events for an offer
 - Permissions (2): `consumerprocurement.events.get`, `consumerprocurement.events.list`
 
-### Consumer Procurement License Pool Editor (`roles/consumerprocurement.licensePoolEditor`)
+#### Consumer Procurement License Pool Editor (`roles/consumerprocurement.licensePoolEditor`)
 
 - Allows managing license pools and license assignments.
 - Permissions (5): `consumerprocurement.licensePools.assign`, `consumerprocurement.licensePools.enumerateLicensedUsers`, `consumerprocurement.licensePools.get`, `consumerprocurement.licensePools.unassign`, `consumerprocurement.licensePools.update`
 
-### Consumer Procurement License Pool Viewer (`roles/consumerprocurement.licensePoolViewer`)
+#### Consumer Procurement License Pool Viewer (`roles/consumerprocurement.licensePoolViewer`)
 
 - Allows viewing license pools and license assignments.
 - Permissions (2): `consumerprocurement.licensePools.enumerateLicensedUsers`, `consumerprocurement.licensePools.get`
 
-### Consumer Procurement Order Administrator (`roles/consumerprocurement.orderAdmin`)
+#### Consumer Procurement Order Administrator (`roles/consumerprocurement.orderAdmin`)
 
 - Allows managing purchases.
 - Permissions (38): `billing.accounts.get`, `billing.accounts.getIamPolicy`, `billing.accounts.list`, `billing.accounts.redeemPromotion`, `billing.credits.list`, `billing.resourceAssociations.create`, `commerceoffercatalog.agreements.get`, `commerceoffercatalog.agreements.list`, `commerceoffercatalog.documents.get`, `commerceoffercatalog.documents.list`, `commerceoffercatalog.offers.get`, `consumerprocurement.accounts.create`, `consumerprocurement.accounts.delete`, `consumerprocurement.accounts.get`, `consumerprocurement.accounts.list`, `consumerprocurement.consents.check`, `consumerprocurement.consents.grant`, `consumerprocurement.consents.list`, `consumerprocurement.consents.revoke`, `consumerprocurement.events.get`, `consumerprocurement.events.list`, `consumerprocurement.licensePools.assign`, `consumerprocurement.licensePools.enumerateLicensedUsers`, `consumerprocurement.licensePools.get`, `consumerprocurement.licensePools.unassign`, `consumerprocurement.licensePools.update`, `consumerprocurement.orderAttributions.get`, `consumerprocurement.orderAttributions.list`, `consumerprocurement.orderAttributions.update`, `consumerprocurement.orders.cancel`, `consumerprocurement.orders.get`, `consumerprocurement.orders.list`, `consumerprocurement.orders.modify`, `consumerprocurement.orders.place`, `discoveryengine.billingAccountLicenseConfigs.distribute`, `discoveryengine.billingAccountLicenseConfigs.get`, `discoveryengine.billingAccountLicenseConfigs.list`, `discoveryengine.billingAccountLicenseConfigs.retract`
 
-### Consumer Procurement Order Viewer (`roles/consumerprocurement.orderViewer`)
+#### Consumer Procurement Order Viewer (`roles/consumerprocurement.orderViewer`)
 
 - Allows inspecting purchases.
 - Permissions (21): `billing.accounts.get`, `billing.accounts.getIamPolicy`, `billing.accounts.list`, `billing.credits.list`, `commerceoffercatalog.agreements.get`, `commerceoffercatalog.agreements.list`, `commerceoffercatalog.documents.get`, `commerceoffercatalog.documents.list`, `commerceoffercatalog.offers.get`, `consumerprocurement.accounts.get`, `consumerprocurement.accounts.list`, `consumerprocurement.consents.check`, `consumerprocurement.consents.list`, `consumerprocurement.licensePools.enumerateLicensedUsers`, `consumerprocurement.licensePools.get`, `consumerprocurement.orderAttributions.get`, `consumerprocurement.orderAttributions.list`, `consumerprocurement.orders.get`, `consumerprocurement.orders.list`, `discoveryengine.billingAccountLicenseConfigs.get`, `discoveryengine.billingAccountLicenseConfigs.list`
 
-### Consumer Procurement Administrator (`roles/consumerprocurement.procurementAdmin`)
+#### Consumer Procurement Administrator (`roles/consumerprocurement.procurementAdmin`)
 
 - Allows managing purchases, consents at both billing account and project level.
 - Permissions (63): `billing.accounts.get`, `billing.accounts.getIamPolicy`, `billing.accounts.list`, `billing.accounts.redeemPromotion`, `billing.credits.list`, `billing.resourceAssociations.create`, `commerceoffercatalog.agreements.get`, `commerceoffercatalog.agreements.list`, `commerceoffercatalog.documents.get`, `commerceoffercatalog.documents.list`, `commerceoffercatalog.offers.get`, `consumerprocurement.accounts.create`, `consumerprocurement.accounts.delete`, `consumerprocurement.accounts.get`, `consumerprocurement.accounts.list`, `consumerprocurement.consents.allowProjectGrant`, `consumerprocurement.consents.check`, `consumerprocurement.consents.grant`, `consumerprocurement.consents.list`, `consumerprocurement.consents.revoke`, `consumerprocurement.entitlements.get`, `consumerprocurement.entitlements.list`, `consumerprocurement.events.get`, `consumerprocurement.events.list`, `consumerprocurement.freeTrials.create`, `consumerprocurement.freeTrials.get`, `consumerprocurement.freeTrials.list`, `consumerprocurement.licensePools.assign`, `consumerprocurement.licensePools.enumerateLicensedUsers`, `consumerprocurement.licensePools.get`, `consumerprocurement.licensePools.unassign`, `consumerprocurement.licensePools.update`, `consumerprocurement.orderAttributions.get`, `consumerprocurement.orderAttributions.list`, `consumerprocurement.orderAttributions.update`, `consumerprocurement.orders.cancel`, `consumerprocurement.orders.get`, `consumerprocurement.orders.list`, `consumerprocurement.orders.modify`, `consumerprocurement.orders.place`, `discoveryengine.billingAccountLicenseConfigs.distribute`, `discoveryengine.billingAccountLicenseConfigs.get`, `discoveryengine.billingAccountLicenseConfigs.list`, `discoveryengine.billingAccountLicenseConfigs.retract`, `orgpolicy.policy.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`, `serviceusage.catalogs.listMembers`, `serviceusage.consumerpolicy.analyze`, `serviceusage.consumerpolicy.get`, `serviceusage.consumerpolicy.update`, `serviceusage.effectivepolicy.get`, `serviceusage.groups.list`, `serviceusage.groups.listExpandedMembers`, `serviceusage.groups.listMembers`, `serviceusage.operations.get`, `serviceusage.services.disable`, `serviceusage.services.enable`, `serviceusage.services.get`, `serviceusage.services.list`, `serviceusage.services.listApis`, `serviceusage.services.listDependentServices`, `serviceusage.values.test`
 
-### Consumer Procurement Viewer (`roles/consumerprocurement.procurementViewer`)
+#### Consumer Procurement Viewer (`roles/consumerprocurement.procurementViewer`)
 
 - Allows inspecting purchases, consents and entitlements and service states for a consumer project.
 - Permissions (40): `billing.accounts.get`, `billing.accounts.getIamPolicy`, `billing.accounts.list`, `billing.credits.list`, `commerceoffercatalog.agreements.get`, `commerceoffercatalog.agreements.list`, `commerceoffercatalog.documents.get`, `commerceoffercatalog.documents.list`, `commerceoffercatalog.offers.get`, `consumerprocurement.accounts.get`, `consumerprocurement.accounts.list`, `consumerprocurement.consents.check`, `consumerprocurement.consents.list`, `consumerprocurement.entitlements.get`, `consumerprocurement.entitlements.list`, `consumerprocurement.freeTrials.get`, `consumerprocurement.freeTrials.list`, `consumerprocurement.licensePools.enumerateLicensedUsers`, `consumerprocurement.licensePools.get`, `consumerprocurement.orderAttributions.get`, `consumerprocurement.orderAttributions.list`, `consumerprocurement.orders.get`, `consumerprocurement.orders.list`, `discoveryengine.billingAccountLicenseConfigs.get`, `discoveryengine.billingAccountLicenseConfigs.list`, `orgpolicy.policy.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`, `serviceusage.catalogs.listMembers`, `serviceusage.consumerpolicy.analyze`, `serviceusage.consumerpolicy.get`, `serviceusage.effectivepolicy.get`, `serviceusage.groups.list`, `serviceusage.groups.listExpandedMembers`, `serviceusage.groups.listMembers`, `serviceusage.services.get`, `serviceusage.services.list`, `serviceusage.services.listApis`, `serviceusage.services.listDependentServices`, `serviceusage.values.test`

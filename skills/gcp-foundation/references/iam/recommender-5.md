@@ -13,13 +13,15 @@ Predefined roles of `recommender` (role ID, description, included permissions) a
 Generated example (not in the official docs) describing the first predefined role listed in the table below:
 
 ```bash
-gcloud iam roles describe roles/billing.admin
+gcloud iam roles describe roles/iam.securityAdmin
 ```
 
 ### Permissions and the roles that contain them (continued)
 
 | Permission | Roles |
 |---|---|
+| `recommender.computeInstanceGroupManagerCpuUsageTrendInsights.list` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/reader`, `roles/viewer`, `roles/iam.securityAdmin`, `roles/iam.securityReviewer`, `roles/recommender.admin`, `roles/recommender.editor`, `roles/recommender.viewer`, `roles/apphub.appManagementViewer`, `roles/cloudhub.operator`, `roles/iam.securityAuditor`, `roles/iam.supportUser`, `roles/recommender.computeAdmin`, `roles/recommender.computeViewer` |
+| `recommender.computeInstanceGroupManagerCpuUsageTrendInsights.update` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/recommender.admin`, `roles/recommender.editor`, `roles/recommender.computeAdmin` |
 | `recommender.computeInstanceGroupManagerMachineTypeRecommendations.get` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/reader`, `roles/viewer`, `roles/billing.admin`, `roles/recommender.admin`, `roles/recommender.editor`, `roles/recommender.viewer`, `roles/apphub.appManagementViewer`, `roles/cloudhub.operator`, `roles/iam.supportUser`, `roles/recommender.computeAdmin`, `roles/recommender.computeViewer` |
 | `recommender.computeInstanceGroupManagerMachineTypeRecommendations.list` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/reader`, `roles/viewer`, `roles/billing.admin`, `roles/iam.securityAdmin`, `roles/iam.securityReviewer`, `roles/recommender.admin`, `roles/recommender.editor`, `roles/recommender.viewer`, `roles/apphub.appManagementViewer`, `roles/cloudhub.operator`, `roles/iam.securityAuditor`, `roles/iam.supportUser`, `roles/recommender.computeAdmin`, `roles/recommender.computeViewer` |
 | `recommender.computeInstanceGroupManagerMachineTypeRecommendations.update` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/recommender.admin`, `roles/recommender.editor`, `roles/recommender.computeAdmin` |
@@ -145,8 +147,6 @@ gcloud iam roles describe roles/billing.admin
 | `recommender.memorystorePerformanceRecommendations.list` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/reader`, `roles/viewer`, `roles/iam.securityAdmin`, `roles/iam.securityReviewer`, `roles/recommender.admin`, `roles/recommender.editor`, `roles/recommender.viewer`, `roles/apphub.appManagementViewer`, `roles/cloudhub.operator`, `roles/iam.securityAuditor`, `roles/iam.supportUser`, `roles/recommender.memorystoreperformanceAdmin`, `roles/recommender.memorystoreperformanceViewer` |
 | `recommender.memorystorePerformanceRecommendations.update` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/recommender.admin`, `roles/recommender.editor`, `roles/recommender.memorystoreperformanceAdmin` |
 | `recommender.memorystoreReliabilityInsights.get` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/reader`, `roles/viewer`, `roles/recommender.admin`, `roles/recommender.editor`, `roles/recommender.viewer`, `roles/apphub.appManagementViewer`, `roles/cloudhub.operator`, `roles/iam.supportUser`, `roles/recommender.memorystorereliabilityAdmin`, `roles/recommender.memorystorereliabilityViewer` |
-| `recommender.memorystoreReliabilityInsights.list` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/reader`, `roles/viewer`, `roles/iam.securityAdmin`, `roles/iam.securityReviewer`, `roles/recommender.admin`, `roles/recommender.editor`, `roles/recommender.viewer`, `roles/apphub.appManagementViewer`, `roles/cloudhub.operator`, `roles/iam.securityAuditor`, `roles/iam.supportUser`, `roles/recommender.memorystorereliabilityAdmin`, `roles/recommender.memorystorereliabilityViewer` |
-| `recommender.memorystoreReliabilityInsights.update` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/recommender.admin`, `roles/recommender.editor`, `roles/recommender.memorystorereliabilityAdmin` |
 
 ## Notes
 

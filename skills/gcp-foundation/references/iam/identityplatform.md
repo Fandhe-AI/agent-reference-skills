@@ -10,13 +10,13 @@ Predefined roles of `identityplatform` (role ID, description, included permissio
 
 ### Roles
 
-### Identity Platform Admin (`roles/identityplatform.admin`)
+#### Identity Platform Admin (`roles/identityplatform.admin`)
 
 - Launch stage: Beta
 - Full access to Identity Platform resources.
 - Permissions (18): `firebaseauth.configs.create`, `firebaseauth.configs.get`, `firebaseauth.configs.getHashConfig`, `firebaseauth.configs.getSecret`, `firebaseauth.configs.update`, `firebaseauth.users.create`, `firebaseauth.users.createSession`, `firebaseauth.users.delete`, `firebaseauth.users.get`, `firebaseauth.users.sendEmail`, `firebaseauth.users.update`, `identitytoolkit.tenants.create`, `identitytoolkit.tenants.delete`, `identitytoolkit.tenants.get`, `identitytoolkit.tenants.getIamPolicy`, `identitytoolkit.tenants.list`, `identitytoolkit.tenants.setIamPolicy`, `identitytoolkit.tenants.update`
 
-### Identity Platform Viewer (`roles/identityplatform.viewer`)
+#### Identity Platform Viewer (`roles/identityplatform.viewer`)
 
 - Launch stage: Beta
 - Read access to Identity Platform resources.

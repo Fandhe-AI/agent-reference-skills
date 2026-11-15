@@ -10,12 +10,12 @@ Predefined roles of `databasecenter` (role ID, description, included permissions
 
 ### Roles
 
-### Database Center Admin (`roles/databasecenter.admin`)
+#### Database Center Admin (`roles/databasecenter.admin`)
 
 - Admin role for Database Center resource data
 - Permissions (23): `cloudaicompanion.entitlements.get`, `databasecenter.databaseGroups.list`, `databasecenter.fleetHealthStats.list`, `databasecenter.fleetInsights.list`, `databasecenter.fleetStats.list`, `databasecenter.locations.list`, `databasecenter.products.list`, `databasecenter.queryStats.list`, `databasecenter.reportConfigs.create`, `databasecenter.reportConfigs.delete`, `databasecenter.reportConfigs.get`, `databasecenter.reportConfigs.list`, `databasecenter.reportConfigs.update`, `databasecenter.userLabels.list`, `databasecenter.userTags.list`, `databasesconsole.databaseCenterViews.create`, `databasesconsole.databaseCenterViews.delete`, `databasesconsole.databaseCenterViews.search`, `databasesconsole.databaseCenterViews.update`, `databasesconsole.locations.get`, `databasesconsole.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Database Center Viewer (`roles/databasecenter.viewer`)
+#### Database Center Viewer (`roles/databasecenter.viewer`)
 
 - Viewer role for Database Center resource data
 - Permissions (17): `cloudaicompanion.entitlements.get`, `databasecenter.databaseGroups.list`, `databasecenter.fleetHealthStats.list`, `databasecenter.fleetInsights.list`, `databasecenter.fleetStats.list`, `databasecenter.locations.list`, `databasecenter.products.list`, `databasecenter.queryStats.list`, `databasecenter.reportConfigs.get`, `databasecenter.reportConfigs.list`, `databasecenter.userLabels.list`, `databasecenter.userTags.list`, `databasesconsole.databaseCenterViews.search`, `databasesconsole.locations.get`, `databasesconsole.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`

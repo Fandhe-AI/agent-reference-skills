@@ -10,12 +10,12 @@ Predefined roles of `essentialcontacts` (role ID, description, included permissi
 
 ### Roles
 
-### Essential Contacts Admin (`roles/essentialcontacts.admin`)
+#### Essential Contacts Admin (`roles/essentialcontacts.admin`)
 
 - Full access to all essential contacts
 - Permissions (6): `essentialcontacts.contacts.create`, `essentialcontacts.contacts.delete`, `essentialcontacts.contacts.get`, `essentialcontacts.contacts.list`, `essentialcontacts.contacts.send`, `essentialcontacts.contacts.update`
 
-### Essential Contacts Viewer (`roles/essentialcontacts.viewer`)
+#### Essential Contacts Viewer (`roles/essentialcontacts.viewer`)
 
 - Viewer for all essential contacts
 - Permissions (2): `essentialcontacts.contacts.get`, `essentialcontacts.contacts.list`

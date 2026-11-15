@@ -10,12 +10,12 @@ Predefined roles of `licensemanager` (role ID, description, included permissions
 
 ### Roles
 
-### Cloud License Manager Admin (`roles/licensemanager.admin`)
+#### Cloud License Manager Admin (`roles/licensemanager.admin`)
 
 - Full access to Cloud License Manager resources.
 - Permissions (19): `licensemanager.configurations.aggregateUsage`, `licensemanager.configurations.create`, `licensemanager.configurations.delete`, `licensemanager.configurations.get`, `licensemanager.configurations.list`, `licensemanager.configurations.queryLicenseUsage`, `licensemanager.configurations.update`, `licensemanager.instances.get`, `licensemanager.instances.list`, `licensemanager.locations.get`, `licensemanager.locations.list`, `licensemanager.operations.cancel`, `licensemanager.operations.delete`, `licensemanager.operations.get`, `licensemanager.operations.list`, `licensemanager.products.get`, `licensemanager.products.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Cloud License Manager Viewer (`roles/licensemanager.viewer`)
+#### Cloud License Manager Viewer (`roles/licensemanager.viewer`)
 
 - Readonly access to Cloud License Manager resources.
 - Permissions (12): `licensemanager.configurations.get`, `licensemanager.configurations.list`, `licensemanager.instances.get`, `licensemanager.instances.list`, `licensemanager.locations.get`, `licensemanager.locations.list`, `licensemanager.operations.get`, `licensemanager.operations.list`, `licensemanager.products.get`, `licensemanager.products.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`

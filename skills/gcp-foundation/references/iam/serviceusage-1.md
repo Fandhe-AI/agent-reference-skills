@@ -10,27 +10,27 @@ Predefined roles of `serviceusage` (role ID, description, included permissions) 
 
 ### Roles
 
-### API Keys Admin (`roles/serviceusage.apiKeysAdmin`)
+#### API Keys Admin (`roles/serviceusage.apiKeysAdmin`)
 
 - Ability to create, delete, update, get and list API keys for a project.
 - Permissions (12): `apikeys.keys.create`, `apikeys.keys.delete`, `apikeys.keys.get`, `apikeys.keys.getKeyString`, `apikeys.keys.list`, `apikeys.keys.lookup`, `apikeys.keys.undelete`, `apikeys.keys.update`, `orgpolicy.policy.get`, `serviceusage.apiKeys.regenerate`, `serviceusage.apiKeys.revert`, `serviceusage.operations.get`
 
-### Service Usage Admin (`roles/serviceusage.serviceUsageAdmin`)
+#### Service Usage Admin (`roles/serviceusage.serviceUsageAdmin`)
 
 - Ability to enable, disable, and inspect service states, inspect operations, and consume quota and billing for a consumer project.
 - Permissions (27): `cloudquotas.quotas.get`, `cloudquotas.quotas.update`, `monitoring.timeSeries.list`, `serviceusage.catalogs.listMembers`, `serviceusage.consumerpolicy.analyze`, `serviceusage.consumerpolicy.get`, `serviceusage.consumerpolicy.update`, `serviceusage.contentsecuritypolicy.get`, `serviceusage.contentsecuritypolicy.update`, `serviceusage.effectivemcppolicy.get`, `serviceusage.effectivepolicy.get`, `serviceusage.groups.list`, `serviceusage.groups.listExpandedMembers`, `serviceusage.groups.listMembers`, `serviceusage.mcppolicy.get`, `serviceusage.mcppolicy.update`, `serviceusage.operations.get`, `serviceusage.quotas.get`, `serviceusage.quotas.update`, `serviceusage.services.disable`, `serviceusage.services.enable`, `serviceusage.services.get`, `serviceusage.services.list`, `serviceusage.services.listApis`, `serviceusage.services.listDependentServices`, `serviceusage.services.use`, `serviceusage.values.test`
 
-### Service Usage Consumer (`roles/serviceusage.serviceUsageConsumer`)
+#### Service Usage Consumer (`roles/serviceusage.serviceUsageConsumer`)
 
 - Ability to inspect service states and operations, and consume quota and billing for a consumer project.
 - Permissions (19): `monitoring.timeSeries.list`, `serviceusage.catalogs.listMembers`, `serviceusage.consumerpolicy.analyze`, `serviceusage.consumerpolicy.get`, `serviceusage.contentsecuritypolicy.get`, `serviceusage.effectivemcppolicy.get`, `serviceusage.effectivepolicy.get`, `serviceusage.groups.list`, `serviceusage.groups.listExpandedMembers`, `serviceusage.groups.listMembers`, `serviceusage.mcppolicy.get`, `serviceusage.operations.get`, `serviceusage.quotas.get`, `serviceusage.services.get`, `serviceusage.services.list`, `serviceusage.services.listApis`, `serviceusage.services.listDependentServices`, `serviceusage.services.use`, `serviceusage.values.test`
 
-### Service Usage Viewer (`roles/serviceusage.serviceUsageViewer`)
+#### Service Usage Viewer (`roles/serviceusage.serviceUsageViewer`)
 
 - Ability to inspect service states and operations for a consumer project.
 - Permissions (18): `monitoring.timeSeries.list`, `serviceusage.catalogs.listMembers`, `serviceusage.consumerpolicy.analyze`, `serviceusage.consumerpolicy.get`, `serviceusage.contentsecuritypolicy.get`, `serviceusage.effectivemcppolicy.get`, `serviceusage.effectivepolicy.get`, `serviceusage.groups.list`, `serviceusage.groups.listExpandedMembers`, `serviceusage.groups.listMembers`, `serviceusage.mcppolicy.get`, `serviceusage.operations.get`, `serviceusage.quotas.get`, `serviceusage.services.get`, `serviceusage.services.list`, `serviceusage.services.listApis`, `serviceusage.services.listDependentServices`, `serviceusage.values.test`
 
-### API Keys Viewer (`roles/serviceusage.apiKeysViewer`)
+#### API Keys Viewer (`roles/serviceusage.apiKeysViewer`)
 
 - Ability to get and list API keys for a project.
 - Permissions (4): `apikeys.keys.get`, `apikeys.keys.getKeyString`, `apikeys.keys.list`, `apikeys.keys.lookup`

@@ -10,12 +10,12 @@ Predefined roles of `resourcesettings` (role ID, description, included permissio
 
 ### Roles
 
-### Resource Settings Administrator (`roles/resourcesettings.admin`)
+#### Resource Settings Administrator (`roles/resourcesettings.admin`)
 
 - Provides admin capabilities to set Resource Setting Values on resources. Lowest-level resources where you can grant this role: - Organization
 - Permissions (3): `resourcesettings.settings.get`, `resourcesettings.settings.list`, `resourcesettings.settings.update`
 
-### Resource Settings Viewer (`roles/resourcesettings.viewer`)
+#### Resource Settings Viewer (`roles/resourcesettings.viewer`)
 
 - Provides capabilities to view Resource Settings and Resource Setting Values on resources.
 - Permissions (2): `resourcesettings.settings.get`, `resourcesettings.settings.list`

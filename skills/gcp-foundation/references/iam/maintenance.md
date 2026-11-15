@@ -10,12 +10,12 @@ Predefined roles of `maintenance` (role ID, description, included permissions) a
 
 ### Roles
 
-### Maintenance Admin (`roles/maintenance.admin`)
+#### Maintenance Admin (`roles/maintenance.admin`)
 
 - Admin role for maintenance
 - Permissions (6): `maintenance.locations.get`, `maintenance.locations.list`, `maintenance.resourceMaintenances.get`, `maintenance.resourceMaintenances.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Maintenance API Viewer (`roles/maintenance.viewer`)
+#### Maintenance API Viewer (`roles/maintenance.viewer`)
 
 - Readonly access to Maintenance API resources.
 - Permissions (6): `maintenance.locations.get`, `maintenance.locations.list`, `maintenance.resourceMaintenances.get`, `maintenance.resourceMaintenances.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`

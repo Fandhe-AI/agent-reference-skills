@@ -10,19 +10,19 @@ Predefined roles of `enterprisepurchasing` (role ID, description, included permi
 
 ### Roles
 
-### Enterprise Purchasing Admin (`roles/enterprisepurchasing.admin`)
+#### Enterprise Purchasing Admin (`roles/enterprisepurchasing.admin`)
 
 - Launch stage: Beta
 - Full access to Enterprise Purchasing resources.
 - Permissions (16): `enterprisepurchasing.gcveCuds.create`, `enterprisepurchasing.gcveCuds.get`, `enterprisepurchasing.gcveCuds.list`, `enterprisepurchasing.gcveNodePricingInfo.list`, `enterprisepurchasing.licenseKeys.create`, `enterprisepurchasing.licenseKeys.delete`, `enterprisepurchasing.licenseKeys.get`, `enterprisepurchasing.licenseKeys.list`, `enterprisepurchasing.locations.get`, `enterprisepurchasing.locations.list`, `enterprisepurchasing.operations.cancel`, `enterprisepurchasing.operations.delete`, `enterprisepurchasing.operations.get`, `enterprisepurchasing.operations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Enterprise Purchasing Editor (`roles/enterprisepurchasing.editor`)
+#### Enterprise Purchasing Editor (`roles/enterprisepurchasing.editor`)
 
 - Launch stage: Beta
 - Edit access to Enterprise Purchasing resources.
 - Permissions (11): `enterprisepurchasing.gcveCuds.get`, `enterprisepurchasing.gcveCuds.list`, `enterprisepurchasing.gcveNodePricingInfo.list`, `enterprisepurchasing.licenseKeys.get`, `enterprisepurchasing.licenseKeys.list`, `enterprisepurchasing.locations.get`, `enterprisepurchasing.locations.list`, `enterprisepurchasing.operations.get`, `enterprisepurchasing.operations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Enterprise Purchasing Viewer (`roles/enterprisepurchasing.viewer`)
+#### Enterprise Purchasing Viewer (`roles/enterprisepurchasing.viewer`)
 
 - Launch stage: Beta
 - Readonly access to Enterprise Purchasing resources.

@@ -10,19 +10,19 @@ Predefined roles of `policysimulator` (role ID, description, included permission
 
 ### Roles
 
-### Simulator Admin (`roles/policysimulator.admin`)
+#### Simulator Admin (`roles/policysimulator.admin`)
 
 - Launch stage: Beta
 - Admin user that can run and access replays.
 - Permissions (9): `policysimulator.accessPolicySimulationResults.list`, `policysimulator.accessPolicySimulations.create`, `policysimulator.accessPolicySimulations.get`, `policysimulator.accessPolicySimulations.list`, `policysimulator.replayResults.list`, `policysimulator.replays.create`, `policysimulator.replays.get`, `policysimulator.replays.list`, `policysimulator.replays.run`
 
-### OrgPolicy Simulator Admin (`roles/policysimulator.orgPolicyAdmin`)
+#### OrgPolicy Simulator Admin (`roles/policysimulator.orgPolicyAdmin`)
 
 - Launch stage: Beta
 - OrgPolicy Admin that can run and access simulations.
 - Permissions (13): `cloudasset.assets.analyzeOrgPolicy`, `cloudasset.assets.exportResource`, `cloudasset.assets.listResource`, `cloudasset.assets.searchAllResources`, `orgpolicy.customConstraints.get`, `orgpolicy.customConstraints.list`, `orgpolicy.policies.list`, `orgpolicy.policy.get`, `policysimulator.orgPolicyViolations.list`, `policysimulator.orgPolicyViolationsPreviews.create`, `policysimulator.orgPolicyViolationsPreviews.get`, `policysimulator.orgPolicyViolationsPreviews.list`, `resourcemanager.organizations.get`
 
-### Policysimulator Viewer (`roles/policysimulator.viewer`)
+#### Policysimulator Viewer (`roles/policysimulator.viewer`)
 
 - Launch stage: Beta
 - Viewer role for policysimulator

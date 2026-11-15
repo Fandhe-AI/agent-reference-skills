@@ -10,49 +10,49 @@ Predefined roles of `cloudprivatecatalog` (role ID, description, included permis
 
 ### Roles
 
-### Catalog Admin (`roles/cloudprivatecatalog.admin`)
+#### Catalog Admin (`roles/cloudprivatecatalog.admin`)
 
 - Launch stage: Beta
 - Admin role for Cloud Private Catalog
 - Permissions (3): `cloudprivatecatalog.targets.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Catalog Viewer (`roles/cloudprivatecatalog.viewer`)
+#### Catalog Viewer (`roles/cloudprivatecatalog.viewer`)
 
 - Launch stage: Beta
 - Viewer role for Cloud Private Catalog
 - Permissions (3): `cloudprivatecatalog.targets.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Catalog Admin (`roles/cloudprivatecatalogproducer.admin`)
+#### Catalog Admin (`roles/cloudprivatecatalogproducer.admin`)
 
 - Launch stage: Beta
 - Can manage catalog and view its associations.
 - Permissions (40): `cloudprivatecatalog.targets.get`, `cloudprivatecatalogproducer.associations.create`, `cloudprivatecatalogproducer.associations.delete`, `cloudprivatecatalogproducer.associations.get`, `cloudprivatecatalogproducer.associations.list`, `cloudprivatecatalogproducer.catalogAssociations.create`, `cloudprivatecatalogproducer.catalogAssociations.delete`, `cloudprivatecatalogproducer.catalogAssociations.get`, `cloudprivatecatalogproducer.catalogAssociations.list`, `cloudprivatecatalogproducer.catalogs.create`, `cloudprivatecatalogproducer.catalogs.delete`, `cloudprivatecatalogproducer.catalogs.get`, `cloudprivatecatalogproducer.catalogs.getIamPolicy`, `cloudprivatecatalogproducer.catalogs.list`, `cloudprivatecatalogproducer.catalogs.setIamPolicy`, `cloudprivatecatalogproducer.catalogs.undelete`, `cloudprivatecatalogproducer.catalogs.update`, `cloudprivatecatalogproducer.producerCatalogs.attachProduct`, `cloudprivatecatalogproducer.producerCatalogs.create`, `cloudprivatecatalogproducer.producerCatalogs.delete`, `cloudprivatecatalogproducer.producerCatalogs.detachProduct`, `cloudprivatecatalogproducer.producerCatalogs.get`, `cloudprivatecatalogproducer.producerCatalogs.getIamPolicy`, `cloudprivatecatalogproducer.producerCatalogs.list`, `cloudprivatecatalogproducer.producerCatalogs.setIamPolicy`, `cloudprivatecatalogproducer.producerCatalogs.update`, `cloudprivatecatalogproducer.products.create`, `cloudprivatecatalogproducer.products.delete`, `cloudprivatecatalogproducer.products.get`, `cloudprivatecatalogproducer.products.getIamPolicy`, `cloudprivatecatalogproducer.products.list`, `cloudprivatecatalogproducer.products.setIamPolicy`, `cloudprivatecatalogproducer.products.update`, `cloudprivatecatalogproducer.targets.associate`, `cloudprivatecatalogproducer.targets.unassociate`, `resourcemanager.folders.get`, `resourcemanager.folders.list`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Catalog Editor (`roles/cloudprivatecatalogproducer.editor`)
+#### Catalog Editor (`roles/cloudprivatecatalogproducer.editor`)
 
 - Launch stage: Beta
 - Editor role for Cloud Private Catalog
 - Permissions (35): `cloudprivatecatalogproducer.associations.create`, `cloudprivatecatalogproducer.associations.delete`, `cloudprivatecatalogproducer.associations.get`, `cloudprivatecatalogproducer.associations.list`, `cloudprivatecatalogproducer.catalogAssociations.create`, `cloudprivatecatalogproducer.catalogAssociations.delete`, `cloudprivatecatalogproducer.catalogAssociations.get`, `cloudprivatecatalogproducer.catalogAssociations.list`, `cloudprivatecatalogproducer.catalogs.create`, `cloudprivatecatalogproducer.catalogs.delete`, `cloudprivatecatalogproducer.catalogs.get`, `cloudprivatecatalogproducer.catalogs.getIamPolicy`, `cloudprivatecatalogproducer.catalogs.list`, `cloudprivatecatalogproducer.catalogs.undelete`, `cloudprivatecatalogproducer.catalogs.update`, `cloudprivatecatalogproducer.producerCatalogs.attachProduct`, `cloudprivatecatalogproducer.producerCatalogs.create`, `cloudprivatecatalogproducer.producerCatalogs.delete`, `cloudprivatecatalogproducer.producerCatalogs.detachProduct`, `cloudprivatecatalogproducer.producerCatalogs.get`, `cloudprivatecatalogproducer.producerCatalogs.getIamPolicy`, `cloudprivatecatalogproducer.producerCatalogs.list`, `cloudprivatecatalogproducer.producerCatalogs.update`, `cloudprivatecatalogproducer.products.create`, `cloudprivatecatalogproducer.products.delete`, `cloudprivatecatalogproducer.products.get`, `cloudprivatecatalogproducer.products.getIamPolicy`, `cloudprivatecatalogproducer.products.list`, `cloudprivatecatalogproducer.products.update`, `cloudprivatecatalogproducer.settings.get`, `cloudprivatecatalogproducer.settings.update`, `cloudprivatecatalogproducer.targets.associate`, `cloudprivatecatalogproducer.targets.unassociate`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Catalog Viewer (`roles/cloudprivatecatalogproducer.viewer`)
+#### Catalog Viewer (`roles/cloudprivatecatalogproducer.viewer`)
 
 - Launch stage: Beta
 - Viewer role for Cloud Private Catalog
 - Permissions (16): `cloudprivatecatalogproducer.associations.get`, `cloudprivatecatalogproducer.associations.list`, `cloudprivatecatalogproducer.catalogAssociations.get`, `cloudprivatecatalogproducer.catalogAssociations.list`, `cloudprivatecatalogproducer.catalogs.get`, `cloudprivatecatalogproducer.catalogs.getIamPolicy`, `cloudprivatecatalogproducer.catalogs.list`, `cloudprivatecatalogproducer.producerCatalogs.get`, `cloudprivatecatalogproducer.producerCatalogs.getIamPolicy`, `cloudprivatecatalogproducer.producerCatalogs.list`, `cloudprivatecatalogproducer.products.get`, `cloudprivatecatalogproducer.products.getIamPolicy`, `cloudprivatecatalogproducer.products.list`, `cloudprivatecatalogproducer.settings.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Catalog Consumer (`roles/cloudprivatecatalog.consumer`)
+#### Catalog Consumer (`roles/cloudprivatecatalog.consumer`)
 
 - Launch stage: Beta
 - Can browse catalogs in the target resource context.
 - Permissions (3): `cloudprivatecatalog.targets.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Catalog Manager (`roles/cloudprivatecatalogproducer.manager`)
+#### Catalog Manager (`roles/cloudprivatecatalogproducer.manager`)
 
 - Launch stage: Beta
 - Can manage associations between a catalog and a target resource.
 - Permissions (20): `cloudprivatecatalog.targets.get`, `cloudprivatecatalogproducer.associations.create`, `cloudprivatecatalogproducer.associations.delete`, `cloudprivatecatalogproducer.associations.get`, `cloudprivatecatalogproducer.associations.list`, `cloudprivatecatalogproducer.catalogAssociations.create`, `cloudprivatecatalogproducer.catalogAssociations.delete`, `cloudprivatecatalogproducer.catalogAssociations.get`, `cloudprivatecatalogproducer.catalogAssociations.list`, `cloudprivatecatalogproducer.catalogs.get`, `cloudprivatecatalogproducer.catalogs.list`, `cloudprivatecatalogproducer.producerCatalogs.get`, `cloudprivatecatalogproducer.producerCatalogs.list`, `cloudprivatecatalogproducer.targets.associate`, `cloudprivatecatalogproducer.targets.unassociate`, `resourcemanager.folders.get`, `resourcemanager.folders.list`, `resourcemanager.organizations.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Catalog Org Admin (`roles/cloudprivatecatalogproducer.orgAdmin`)
+#### Catalog Org Admin (`roles/cloudprivatecatalogproducer.orgAdmin`)
 
 - Launch stage: Beta
 - Can manage catalog org settings.

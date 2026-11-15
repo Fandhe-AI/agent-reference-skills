@@ -10,17 +10,17 @@ Predefined roles of `domains` (role ID, description, included permissions) and, 
 
 ### Roles
 
-### Cloud Domains Admin (`roles/domains.admin`)
+#### Cloud Domains Admin (`roles/domains.admin`)
 
 - Full access to Cloud Domains Registrations and related resources.
 - Permissions (21): `domains.locations.get`, `domains.locations.list`, `domains.operations.cancel`, `domains.operations.get`, `domains.operations.list`, `domains.registrations.configureContact`, `domains.registrations.configureDns`, `domains.registrations.configureManagement`, `domains.registrations.create`, `domains.registrations.createTagBinding`, `domains.registrations.delete`, `domains.registrations.deleteTagBinding`, `domains.registrations.get`, `domains.registrations.getIamPolicy`, `domains.registrations.list`, `domains.registrations.listEffectiveTags`, `domains.registrations.listTagBindings`, `domains.registrations.setIamPolicy`, `domains.registrations.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Cloud Domains Editor (`roles/domains.editor`)
+#### Cloud Domains Editor (`roles/domains.editor`)
 
 - Editor role for Cloud Domains
 - Permissions (18): `domains.locations.get`, `domains.locations.list`, `domains.operations.cancel`, `domains.operations.get`, `domains.operations.list`, `domains.registrations.configureContact`, `domains.registrations.configureDns`, `domains.registrations.configureManagement`, `domains.registrations.create`, `domains.registrations.delete`, `domains.registrations.get`, `domains.registrations.getIamPolicy`, `domains.registrations.list`, `domains.registrations.listEffectiveTags`, `domains.registrations.listTagBindings`, `domains.registrations.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Cloud Domains Viewer (`roles/domains.viewer`)
+#### Cloud Domains Viewer (`roles/domains.viewer`)
 
 - Read-only access to Cloud Domains Registrations and related resources.
 - Permissions (11): `domains.locations.get`, `domains.locations.list`, `domains.operations.get`, `domains.operations.list`, `domains.registrations.get`, `domains.registrations.getIamPolicy`, `domains.registrations.list`, `domains.registrations.listEffectiveTags`, `domains.registrations.listTagBindings`, `resourcemanager.projects.get`, `resourcemanager.projects.list`

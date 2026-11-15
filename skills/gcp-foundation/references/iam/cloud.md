@@ -10,19 +10,19 @@ Predefined roles of `cloud` (role ID, description, included permissions) and, fo
 
 ### Roles
 
-### Cloud Admin (`roles/cloud.admin`)
+#### Cloud Admin (`roles/cloud.admin`)
 
 - Launch stage: Beta
 - Admin role for cloud
 - Permissions (4): `cloud.locations.get`, `cloud.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Cloud Viewer (`roles/cloud.viewer`)
+#### Cloud Viewer (`roles/cloud.viewer`)
 
 - Launch stage: Beta
 - Viewer role for cloud
 - Permissions (4): `cloud.locations.get`, `cloud.locations.list`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Location reader (`roles/cloud.locationReader`)
+#### Location reader (`roles/cloud.locationReader`)
 
 - Launch stage: Beta
 - Read and enumerate locations available for resource creation.

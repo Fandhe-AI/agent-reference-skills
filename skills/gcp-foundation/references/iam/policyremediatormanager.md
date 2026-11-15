@@ -10,25 +10,25 @@ Predefined roles of `policyremediatormanager` (role ID, description, included pe
 
 ### Roles
 
-### Policyremediatormanager Admin (`roles/policyremediatormanager.admin`)
+#### Policyremediatormanager Admin (`roles/policyremediatormanager.admin`)
 
 - Launch stage: Beta
 - Admin role for policyremediatormanager
 - Permissions (11): `policyremediatormanager.locations.get`, `policyremediatormanager.locations.list`, `policyremediatormanager.operations.cancel`, `policyremediatormanager.operations.delete`, `policyremediatormanager.operations.get`, `policyremediatormanager.operations.list`, `policyremediatormanager.remediatorServices.disable`, `policyremediatormanager.remediatorServices.enable`, `policyremediatormanager.remediatorServices.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Policyremediatormanager Viewer (`roles/policyremediatormanager.viewer`)
+#### Policyremediatormanager Viewer (`roles/policyremediatormanager.viewer`)
 
 - Launch stage: Beta
 - Viewer role for policyremediatormanager
 - Permissions (7): `policyremediatormanager.locations.get`, `policyremediatormanager.locations.list`, `policyremediatormanager.operations.get`, `policyremediatormanager.operations.list`, `policyremediatormanager.remediatorServices.get`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### Policy Remediator Admin (`roles/policyremediatormanager.policyRemediatorAdmin`)
+#### Policy Remediator Admin (`roles/policyremediatormanager.policyRemediatorAdmin`)
 
 - Launch stage: Beta
 - Grants the ability to enable and disable the usage of the policy remediator for the organization
 - Permissions (9): `policyremediatormanager.locations.get`, `policyremediatormanager.locations.list`, `policyremediatormanager.operations.cancel`, `policyremediatormanager.operations.delete`, `policyremediatormanager.operations.get`, `policyremediatormanager.operations.list`, `policyremediatormanager.remediatorServices.disable`, `policyremediatormanager.remediatorServices.enable`, `policyremediatormanager.remediatorServices.get`
 
-### Policy Remediator Reader (`roles/policyremediatormanager.policyRemediatorReader`)
+#### Policy Remediator Reader (`roles/policyremediatormanager.policyRemediatorReader`)
 
 - Launch stage: Beta
 - Grants the ability to read/view the state of the policy remediator for the organization

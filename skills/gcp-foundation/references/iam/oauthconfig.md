@@ -10,13 +10,13 @@ Predefined roles of `oauthconfig` (role ID, description, included permissions) a
 
 ### Roles
 
-### OAuth Config Editor (`roles/oauthconfig.editor`)
+#### OAuth Config Editor (`roles/oauthconfig.editor`)
 
 - Launch stage: Beta
 - Read/write access to OAuth config resources
 - Permissions (28): `clientauthconfig.brands.create`, `clientauthconfig.brands.delete`, `clientauthconfig.brands.get`, `clientauthconfig.brands.list`, `clientauthconfig.brands.update`, `clientauthconfig.clients.create`, `clientauthconfig.clients.createSecret`, `clientauthconfig.clients.delete`, `clientauthconfig.clients.get`, `clientauthconfig.clients.getWithSecret`, `clientauthconfig.clients.list`, `clientauthconfig.clients.listWithSecrets`, `clientauthconfig.clients.undelete`, `clientauthconfig.clients.update`, `firebase.clients.create`, `firebase.clients.get`, `firebase.clients.list`, `firebase.clients.update`, `firebaseappcheck.resourcePolicies.get`, `firebaseappcheck.resourcePolicies.update`, `oauthconfig.clientpolicy.get`, `oauthconfig.testusers.get`, `oauthconfig.testusers.update`, `oauthconfig.verification.get`, `oauthconfig.verification.submit`, `oauthconfig.verification.update`, `resourcemanager.projects.get`, `resourcemanager.projects.list`
 
-### OAuth Config Viewer (`roles/oauthconfig.viewer`)
+#### OAuth Config Viewer (`roles/oauthconfig.viewer`)
 
 - Launch stage: Beta
 - Read-only access to OAuth config resources
