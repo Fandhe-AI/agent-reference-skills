@@ -95,6 +95,24 @@ NOTES
         $ gcloud beta essential-contacts list
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud essential-contacts list \
+    --page-size=10 \
+    --limit=20
+
+gcloud essential-contacts list \
+    --folder=456 \
+    --page-size=10 \
+    --limit=20
+
+gcloud essential-contacts list \
+    --organization=456 \
+    --page-size=10 \
+    --limit=20
+```
+
 ### gcloud beta essential-contacts list
 
 ```text
@@ -125,6 +143,9 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): `--page_size` in the example is corrected to `--page-size`, the flag defined in the SYNOPSIS.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): optional flags shown in square brackets in the example are written without the brackets.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
