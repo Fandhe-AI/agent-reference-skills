@@ -1,0 +1,443 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/rsync
+---
+
+# gcloud storage rsync
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud storage rsync
+
+```text
+NAME
+    gcloud storage rsync - synchronize content of two buckets/directories
+
+SYNOPSIS
+    gcloud storage rsync SOURCE DESTINATION [--additional-headers=HEADER=VALUE]
+        [--canned-acl=PREDEFINED_ACL,
+          --predefined-acl=PREDEFINED_ACL, -a PREDEFINED_ACL]
+        [--checksums-only] [--no-clobber, -n] [--content-md5=MD5_DIGEST]
+        [--continue-on-error, -c] [--delete-unmatched-destination-objects]
+        [--do-not-decompress] [--dry-run]
+        [--exclude=[REGEX,...], -x [REGEX,...]]
+        [--gzip-in-flight=[FILE_EXTENSIONS,...], -j [FILE_EXTENSIONS,...]]
+        [--gzip-in-flight-all, -J] [--no-ignore-symlinks]
+        [--include-managed-folders] [--preserve-posix, -P]
+        [--recursive, -R, -r] [--skip-if-dest-has-newer-mtime, -u]
+        [--skip-unsupported, -U]
+        [--decryption-keys=[DECRYPTION_KEY,...]
+          --encryption-key=ENCRYPTION_KEY]
+        [--cache-control=CACHE_CONTROL
+          --content-disposition=CONTENT_DISPOSITION
+          --content-encoding=CONTENT_ENCODING
+          --content-language=CONTENT_LANGUAGE --content-type=CONTENT_TYPE
+          --custom-time=CUSTOM_TIME --clear-custom-contexts
+          | --custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          | --custom-contexts-file=CUSTOM_CONTEXTS_FILE
+          | --remove-custom-contexts=[CUSTOM_CONTEXTS_KEYS,...]
+          --update-custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          --clear-custom-metadata
+          | --custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]
+          | --remove-custom-metadata=[METADATA_KEYS,...]
+          --update-custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]]
+        [--if-generation-match=GENERATION
+          --if-metageneration-match=METAGENERATION] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud storage rsync copies to and updates objects at DESTINATION to match
+    SOURCE. SOURCE must specify a directory, bucket, or bucket subdirectory.
+    gcloud storage rsync does not copy empty directory trees, since storage
+    providers use a flat namespace
+    (https://cloud.google.com/storage/docs/folders).
+
+    Note, shells (like bash, zsh) sometimes attempt to expand wildcards in ways
+    that can be surprising. Also, attempting to copy files whose names contain
+    wildcard characters can result in problems.
+
+    If synchronizing a large amount of data between clouds you might consider
+    setting up a Google Compute Engine account and running gcloud storage rsync
+    there. Since gcloud storage rsync cross-provider data transfers flow
+    through the machine where gcloud storage rsync is running, doing this can
+    make your transfer run significantly faster than on your local workstation.
+
+EXAMPLES
+    To sync the contents of the local directory data to the bucket
+    gs://my-bucket/data:
+
+        $ gcloud storage rsync data gs://my-bucket/data
+
+    To recurse into directories use --recursive:
+
+        $ gcloud storage rsync data gs://my-bucket/data --recursive
+
+    To make the local directory my-data the same as the contents of
+    gs://mybucket/data and delete objects in the local directory that are not
+    in gs://mybucket/data:
+
+        $ gcloud storage rsync gs://mybucket/data my-data --recursive \
+            --delete-unmatched-destination-objects
+
+    To make the contents of gs://mybucket2 the same as gs://mybucket1 and
+    delete objects in gs://mybucket2 that are not in gs://mybucket1:
+
+        $ gcloud storage rsync gs://mybucket1 gs://mybucket2 --recursive \
+            --delete-unmatched-destination-objects
+
+    To copy all objects from dir1 into dir2 and delete all objects in dir2
+    which are not in dir1:
+
+        $ gcloud storage rsync dir1 dir2 --recursive - \
+            --delete-unmatched-destination-objects
+
+    To mirror your objects across cloud providers:
+
+        $ gcloud storage rsync gs://my-gs-bucket s3://my-s3-bucket \
+            --recursive --delete-unmatched-destination-objects
+
+    To apply gzip compression to only uploaded image files in dir:
+
+        $ gcloud storage rsync dir gs://my-bucket/data \
+            --gzip-in-flight=jpeg,jpg,gif,png
+
+    To skip the file dir/data1/a.txt:
+
+        $ gcloud storage rsync dir gs://my-bucket --exclude="data./.*\.txt$"
+
+    To skip all .txt and .jpg files:
+
+        $ gcloud storage rsync dir gs://my-bucket \
+            --exclude=".*\.txt$|.*\.jpg$"
+
+    The contexts are preserved when using rsync to sync to Google Cloud
+    Storage. However, the following command would clear all custom contexts
+    from the destination object while syncing to the destination bucket.
+
+        $ gcloud storage rsync gs://my-bucket/ gs://destination-bucket/ \
+            --clear-custom-contexts
+
+POSITIONAL ARGUMENTS
+     SOURCE
+        The source container path.
+
+     DESTINATION
+        The destination container path.
+
+FLAGS
+     --additional-headers=HEADER=VALUE
+        Includes arbitrary headers in storage API calls. Accepts a comma
+        separated list of key=value pairs, e.g. header1=value1,header2=value2.
+        Overrides the default storage/additional_headers property value for
+        this command invocation.
+
+     --canned-acl=PREDEFINED_ACL, --predefined-acl=PREDEFINED_ACL, -a PREDEFINED_ACL
+        Applies predefined, or "canned," ACLs to a resource. See docs for a
+        list of predefined ACL constants:
+        https://cloud.google.com/storage/docs/access-control/lists#predefined-acl
+
+     --checksums-only
+        When comparing objects with matching names at the source and
+        destination, skip modification time check and compare object hashes.
+        Normally, hashes are only compared if modification times are not
+        available.
+
+     --no-clobber, -n
+        Do not overwrite existing files or objects at the destination. Skipped
+        items will be printed. This option may perform an additional GET
+        request for cloud objects before attempting an upload.
+
+     --content-md5=MD5_DIGEST
+        Manually specified MD5 hash digest for the contents of an uploaded
+        file. This flag cannot be used when uploading multiple files. The
+        custom digest is used by the cloud provider for validation.
+
+     --continue-on-error, -c
+        If any operations are unsuccessful, the command will exit with a
+        non-zero exit status after completing the remaining operations. This
+        flag takes effect only in sequential execution mode (i.e. processor and
+        thread count are set to 1). Parallelism is default.
+
+     --delete-unmatched-destination-objects
+        Delete extra files under DESTINATION not found under SOURCE. By default
+        extra files are not deleted. Managed folders are not affected by this
+        flag.
+
+        Note: this option can delete data quickly if you specify the wrong
+        source and destination combination.
+
+     --do-not-decompress
+        Do not automatically decompress downloaded gzip files.
+
+     --dry-run
+        Print what operations rsync would perform without actually executing
+        them.
+
+     --exclude=[REGEX,...], -x [REGEX,...]
+        Exclude objects matching regex pattern from rsync.
+
+        Note that this is a Python regular expression, not a pure wildcard
+        pattern. For example, matching a string ending in "abc" is .*abc$
+        rather than *abc. Also note that the exclude path is relative, as
+        opposed to absolute (similar to Linux rsync and tar exclude options).
+
+        For the Windows cmd.exe command line interpreter, use ^ as an escape
+        character instead of \ and escape the | character. When using Windows
+        PowerShell, use ' instead of " and surround the | character with ".
+
+     --gzip-in-flight=[FILE_EXTENSIONS,...], -j [FILE_EXTENSIONS,...]
+        Applies gzip transport encoding to any file upload whose extension
+        matches the input extension list. This is useful when uploading files
+        with compressible content such as .js, .css, or .html files. This also
+        saves network bandwidth while leaving the data uncompressed in Cloud
+        Storage.
+
+        When you specify the --gzip-in-flight option, files being uploaded are
+        compressed in-memory and on-the-wire only. Both the local files and
+        Cloud Storage objects remain uncompressed. The uploaded objects retain
+        the Content-Type and name of the original files.
+
+     --gzip-in-flight-all, -J
+        Applies gzip transport encoding to file uploads. This option works like
+        the --gzip-in-flight option described above, but it applies to all
+        uploaded files, regardless of extension.
+
+        CAUTION: If some of the source files don't compress well, such as
+        binary data, using this option may result in longer uploads.
+
+     --ignore-symlinks
+        Ignore file symlinks instead of copying what they point to. Enabled by
+        default, use --no-ignore-symlinks to disable.
+
+     --include-managed-folders
+        Includes managed folders in command operations. For transfers, gcloud
+        storage will set up managed folders in the destination with the same
+        IAM policy bindings as the source. Managed folders are only included
+        with recursive cloud-to-cloud transfers.
+
+     --preserve-posix, -P
+        Causes POSIX attributes to be preserved when objects are copied. With
+        this feature enabled, gcloud storage will copy several fields provided
+        by the stat command: access time, modification time, owner UID, owner
+        group GID, and the mode (permissions) of the file.
+
+        For uploads, these attributes are read off of local files and stored in
+        the cloud as custom metadata. For downloads, custom cloud metadata is
+        set as POSIX attributes on files after they are downloaded.
+
+        On Windows, this flag will only set and restore access time and
+        modification time because Windows doesn't have a notion of POSIX UID,
+        GID, and mode.
+
+     --recursive, -R, -r
+        Recursively copy the contents of any directories that match the source
+        path expression.
+
+     --skip-if-dest-has-newer-mtime, -u
+        Skip operating on destination object if it has a newer modification
+        time than the source.
+
+     --skip-unsupported, -U
+        Skip objects with unsupported object types.
+
+ENCRYPTION FLAGS
+     --decryption-keys=[DECRYPTION_KEY,...]
+        A comma-separated list of customer-supplied encryption keys (RFC 4648
+        section 4 base64-encoded AES256 strings) that will be used to decrypt
+        Cloud Storage objects. Data encrypted with a customer-managed
+        encryption key (CMEK) is decrypted automatically, so CMEKs do not need
+        to be listed here.
+
+     --encryption-key=ENCRYPTION_KEY
+        The encryption key to use for encrypting target objects. The specified
+        encryption key can be a customer-supplied encryption key (An RFC 4648
+        section 4 base64-encoded AES256 string), or a customer-managed
+        encryption key of the form
+        projects/{project}/locations/{location}/keyRings/{key-ring}/cryptoKeys/{crypto-key}.
+        The specified key also acts as a decryption key, which is useful when
+        copying or moving encrypted data to a new location. Using this flag in
+        an objects update command triggers a rewrite of target objects.
+
+OBJECT METADATA FLAGS
+     --cache-control=CACHE_CONTROL
+        How caches should handle requests and responses.
+
+     --content-disposition=CONTENT_DISPOSITION
+        How content should be displayed.
+
+     --content-encoding=CONTENT_ENCODING
+        How content is encoded (e.g. gzip).
+
+     --content-language=CONTENT_LANGUAGE
+        Content's language (e.g. en signifies "English").
+
+     --content-type=CONTENT_TYPE
+        Type of data contained in the object (e.g. text/html).
+
+     --custom-time=CUSTOM_TIME
+        Custom time for Cloud Storage objects in RFC 3339 format.
+
+     Group that allow users to handle object contexts.
+
+     At most one of these can be specified:
+
+       --clear-custom-contexts
+          Clears all custom contexts on objects.
+
+       --custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          Sets custom contexts on objects. The existing custom contexts (if
+          any) would be overwritten.
+
+       --custom-contexts-file=CUSTOM_CONTEXTS_FILE
+          Path to a local JSON or YAML file containing custom contexts one
+          wants to set on an object. For example:
+
+          1. The following JSON document shows two key value pairs, i.e. (key1,
+          value1) and (key2, value2):
+
+                {
+                  "key1": {"value": "value1"},
+                  "key2": {"value": "value2"}
+                }
+
+          2. The following YAML document shows two key value pairs, i.e. (key1,
+          value1) and (key2, value2):
+
+                key1:
+                  value: value1
+                key2:
+                  value: value2
+
+          Note: Currently object contexts only supports string format for
+          values.
+
+       Or at least one of these can be specified:
+
+         Flags that preserve the existing contexts on the object, and can be
+         specified together. However they cannot be specified with
+         --clear-custom-contexts, --custom-contexts or --custom-contexts-file.
+         If --update-custom-contexts and --remove-custom-contexts are specified
+         together, the --remove-custom-contexts would be applied first on
+         object.
+
+         --remove-custom-contexts=[CUSTOM_CONTEXTS_KEYS,...]
+            Removes the custom contexts on the object, if an entry is not
+            found, it would be ignored.
+
+         --update-custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+            Updates the custom contexts on the object, if an entry is found, it
+            would be overwritten, otherwise the entry would be added.
+
+     At most one of these can be specified:
+
+       --clear-custom-metadata
+          Clears all custom metadata on objects. When used with
+          --preserve-posix, POSIX attributes will still be stored in custom
+          metadata.
+
+       --custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]
+          Sets custom metadata on objects. When used with --preserve-posix,
+          POSIX attributes are also stored in custom metadata.
+
+       Or at least one of these can be specified:
+
+         Flags that preserve unspecified existing metadata cannot be used with
+         --custom-metadata or --clear-custom-metadata, but can be specified
+         together:
+
+         --remove-custom-metadata=[METADATA_KEYS,...]
+            Removes individual custom metadata keys from objects. This flag can
+            be used with --update-custom-metadata. When used with
+            --preserve-posix, POSIX attributes specified by this flag are not
+            preserved.
+
+         --update-custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]
+            Adds or sets individual custom metadata key value pairs on objects.
+            Existing custom metadata not specified with this flag is not
+            changed. This flag can be used with --remove-custom-metadata. When
+            keys overlap with those provided by --preserve-posix, values
+            specified by this flag are used.
+
+PRECONDITION FLAGS
+     --if-generation-match=GENERATION
+        Execute only if the generation matches the generation of the requested
+        object.
+
+     --if-metageneration-match=METAGENERATION
+        Execute only if the metageneration matches the metageneration of the
+        requested object.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha storage rsync
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud storage rsync dir1 dir2 \
+    --recursive \
+    --delete-unmatched-destination-objects
+```
+
+### gcloud alpha storage rsync
+
+```text
+NAME
+    gcloud alpha storage rsync - synchronize content of two buckets/directories
+
+SYNOPSIS
+    gcloud alpha storage rsync SOURCE DESTINATION
+        [--additional-headers=HEADER=VALUE]
+        [--canned-acl=PREDEFINED_ACL,
+          --predefined-acl=PREDEFINED_ACL, -a PREDEFINED_ACL]
+        [--checksums-only] [--no-clobber, -n] [--content-md5=MD5_DIGEST]
+        [--continue-on-error, -c] [--delete-unmatched-destination-objects]
+        [--do-not-decompress] [--dry-run]
+        [--exclude=[REGEX,...], -x [REGEX,...]]
+        [--gzip-in-flight=[FILE_EXTENSIONS,...], -j [FILE_EXTENSIONS,...]]
+        [--gzip-in-flight-all, -J] [--no-ignore-symlinks]
+        [--include-managed-folders] [--preserve-posix, -P]
+        [--recursive, -R, -r] [--skip-if-dest-has-newer-mtime, -u]
+        [--skip-unsupported, -U]
+        [--decryption-keys=[DECRYPTION_KEY,...]
+          --encryption-key=ENCRYPTION_KEY]
+        [--cache-control=CACHE_CONTROL
+          --content-disposition=CONTENT_DISPOSITION
+          --content-encoding=CONTENT_ENCODING
+          --content-language=CONTENT_LANGUAGE --content-type=CONTENT_TYPE
+          --custom-time=CUSTOM_TIME --clear-custom-contexts
+          | --custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          | --custom-contexts-file=CUSTOM_CONTEXTS_FILE
+          | --remove-custom-contexts=[CUSTOM_CONTEXTS_KEYS,...]
+          --update-custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          --clear-custom-metadata
+          | --custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]
+          | --remove-custom-metadata=[METADATA_KEYS,...]
+          --update-custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]]
+        [--if-generation-match=GENERATION
+          --if-metageneration-match=METAGENERATION] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Destructive: `--delete-unmatched-destination-objects` deletes destination objects (or local files) that are absent from the source; run the same command with `--dry-run` first.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `rsync dir1 dir2` example has a stray `-` argument before `--delete-unmatched-destination-objects`; the runnable form removes it.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/rsync (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

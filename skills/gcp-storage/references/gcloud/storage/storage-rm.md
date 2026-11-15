@@ -1,0 +1,158 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/rm
+---
+
+# gcloud storage rm
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud storage rm
+
+```text
+NAME
+    gcloud storage rm - delete objects and buckets
+
+SYNOPSIS
+    gcloud storage rm [URLS ...] [--additional-headers=HEADER=VALUE]
+        [--all-versions, -a] [--continue-on-error, -c]
+        [--exclude-managed-folders] [--read-paths-from-stdin, -I]
+        [--recursive, -R, -r]
+        [--if-generation-match=GENERATION
+          --if-metageneration-match=METAGENERATION] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Delete objects and buckets.
+
+EXAMPLES
+    The following command deletes a Cloud Storage object named my-object from
+    the bucket my-bucket:
+
+        $ gcloud storage rm gs://my-bucket/my-object
+
+    The following command deletes all objects directly within the directory
+    my-dir but no objects within subdirectories:
+
+        $ gcloud storage rm gs://my-bucket/my-dir/*
+
+    The following command deletes all objects and subdirectories within the
+    directory my-dir:
+
+        $ gcloud storage rm gs://my-bucket/my-dir/**
+
+    Note that for buckets that contain versioned objects
+    (https://cloud.google.com/storage/docs/object-versioning), the above
+    command only affects live versions. Use the --recursive flag instead to
+    delete all versions.
+
+    The following command deletes all versions of all resources in my-bucket
+    and then deletes the bucket.
+
+        $ gcloud storage rm --recursive gs://my-bucket/
+
+    The following command deletes all text files in the top-level of my-bucket,
+    but not text files in subdirectories:
+
+        $ gcloud storage rm -recursive gs://my-bucket/*.txt
+
+    The following command deletes one wildcard expression per line passed in by
+    stdin:
+
+        $ some_program | gcloud storage rm -I
+
+POSITIONAL ARGUMENTS
+     [URLS ...]
+        The URLs of the resources to delete.
+
+FLAGS
+     --additional-headers=HEADER=VALUE
+        Includes arbitrary headers in storage API calls. Accepts a comma
+        separated list of key=value pairs, e.g. header1=value1,header2=value2.
+        Overrides the default storage/additional_headers property value for
+        this command invocation.
+
+     --all-versions, -a
+        Delete all versions
+        (https://cloud.google.com/storage/docs/object-versioning) of an object.
+
+     --continue-on-error, -c
+        If any operations are unsuccessful, the command will exit with a
+        non-zero exit status after completing the remaining operations. This
+        flag takes effect only in sequential execution mode (i.e. processor and
+        thread count are set to 1). Parallelism is default.
+
+     --exclude-managed-folders
+        Excludes managed folders from command operations. By default gcloud
+        storage includes managed folders in recursive removals. Please note
+        that this flag would not be applicable for hierarchical namespace
+        buckets as we always list managed folders for these buckets.
+
+     --read-paths-from-stdin, -I
+        Read the list of URLs from stdin.
+
+     --recursive, -R, -r
+        Recursively delete the contents of buckets or directories that match
+        the path expression. By default, this will delete managed folders as
+        well. If the path is set to a bucket, like gs://bucket, the bucket is
+        also deleted. This option implies the --all-versions option. If you
+        want to delete only live object versions, use the ``**'' wildcard
+        instead.
+
+PRECONDITION FLAGS
+     --if-generation-match=GENERATION
+        Execute only if the generation matches the generation of the requested
+        object.
+
+     --if-metageneration-match=METAGENERATION
+        Execute only if the metageneration matches the metageneration of the
+        requested object.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha storage rm
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud storage rm 'gs://my-bucket/*.txt'
+```
+
+### gcloud alpha storage rm
+
+```text
+NAME
+    gcloud alpha storage rm - delete objects and buckets
+
+SYNOPSIS
+    gcloud alpha storage rm [URLS ...] [--additional-headers=HEADER=VALUE]
+        [--all-versions, -a] [--continue-on-error, -c]
+        [--exclude-managed-folders] [--read-paths-from-stdin, -I]
+        [--recursive, -R, -r]
+        [--if-generation-match=GENERATION
+          --if-metageneration-match=METAGENERATION] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Destructive: `gcloud storage rm --recursive gs://BUCKET/` deletes every object version in the bucket and then the bucket itself; run `gcloud storage ls --recursive` on the same URL first and target a disposable bucket when trying the examples.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example that deletes only the top-level text files is written `gcloud storage rm -recursive gs://my-bucket/*.txt`; `-recursive` is not a valid flag and recursion contradicts the description, so the runnable form drops it and single-quotes the wildcard so the local shell does not expand it.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/rm (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
