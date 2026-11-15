@@ -21,7 +21,7 @@ Message types referenced by the methods listed under `references/rest/billingbud
 | `etag` | string | Optional. Etag to validate that the object is unchanged for a read-modify-write operation. An empty etag causes an update to overwrite other changes. |
 | `name` | string | Output only. Resource name of the budget. The resource name implies the scope of a budget. Values are of the form `billingAccounts/{billingAccountId}/budgets/{budgetId}`. |
 | `notificationsRule` | GoogleCloudBillingBudgetsV1NotificationsRule | Optional. Rules to apply to notifications sent based on budget spend and thresholds. Must be set when `spend_cap` is set. For spend caps, `enable_project_level_recipients` must be set to `true`, `disable_default_iam_recipients` must be `false` (or unset), and `pubsub_topic` and `monitoring_notification_channels` must be empty. |
-| `ownershipScope` | string enum | Optional. When `spend_cap` is set, must be `OWNERSHIP_SCOPE_UNSPECIFIED` or `ALL_USERS`. `BILLING_ACCOUNT` is not supported for spend caps. |
+| `ownershipScope` | string enum | Optional. When `spend_cap` is set, must be `OWNERSHIP_SCOPE_UNSPECIFIED` or `ALL_USERS`. `BILLING_ACCOUNT` is not supported for spend caps. Values: `OWNERSHIP_SCOPE_UNSPECIFIED`, `ALL_USERS`, `BILLING_ACCOUNT`. |
 | `spendCap` | GoogleCloudBillingBudgetsV1SpendCap | Optional. The spend cap configured for this budget. When `spend_cap` is set, strict field restrictions apply to the budget (see field-level comments on `ownership_scope`, `budget_filter`, `amount`, `threshold_rules`, and `notifications_rule`). When `spend_cap.output_state` is `ENFORCED`, only `spend_cap.input_state` can be modified in an `UpdateBudget` request (e.g., setting `input_state` to `AWAITING_NEXT_PERIOD` to lift the cap); modifying any other budget field while enforced will fail with `FAILED_PRECONDITION`. If the existing resource is a spend cap and an `update_mask` is supplied in an `UpdateBudget` request, `spend_cap` or `spend_cap.input_state` must be specified in the update mask. To convert a spend cap budget to a regular budget, specify `spend_cap` in the `update_mask` and omit `spend_cap` from the budget in the request. |
 | `thresholdRules` | array<GoogleCloudBillingBudgetsV1ThresholdRule> | Optional. Rules that trigger alerts (notifications of thresholds being crossed) when spend exceeds the specified percentages of the budget. Optional for `pubsubTopic` notifications. Required if using email notifications. Must be set when `spend_cap` is set. Spend caps must have exactly three `CURRENT_SPEND` threshold rules with `threshold_percent` values of `0.5`, `0.8`, and `1.0` (50%, 80%, and 100%). `FORECASTED_SPEND` threshold rules are not supported for spend caps. |
 
@@ -52,9 +52,9 @@ Message types referenced by the methods listed under `references/rest/billingbud
 
 | Field | Type | Description |
 |---|---|---|
-| `calendarPeriod` | string enum | Optional. Specifies to track usage for recurring calendar period. For example, assume that CalendarPeriod.QUARTER is set. The budget tracks usage from April 1 to June 30, when the current calendar month is April, May, June. After that, it tracks usage from July 1 to September 30 when the current calendar month is July, August, September, so on. When `spend_cap` is set, must be `MONTH` (or `usage_period` left unset, which defaults to `MONTH`). `QUARTER` and `YEAR` are not supported for spend caps. |
+| `calendarPeriod` | string enum | Optional. Specifies to track usage for recurring calendar period. For example, assume that CalendarPeriod.QUARTER is set. The budget tracks usage from April 1 to June 30, when the current calendar month is April, May, June. After that, it tracks usage from July 1 to September 30 when the current calendar month is July, August, September, so on. When `spend_cap` is set, must be `MONTH` (or `usage_period` left unset, which defaults to `MONTH`). `QUARTER` and `YEAR` are not supported for spend caps. Values: `CALENDAR_PERIOD_UNSPECIFIED`, `MONTH`, `QUARTER`, `YEAR`. |
 | `creditTypes` | array<string> | Optional. If Filter.credit_types_treatment is INCLUDE_SPECIFIED_CREDITS, this is a list of credit types to be subtracted from gross cost to determine the spend for threshold calculations. See a list of acceptable credit type values (https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery-tables/detailed-usage#credits-type). If Filter.credit_types_treatment is \*\*not\*\* INCLUDE_SPECIFIED_CREDITS, this field must be empty. Not supported when `spend_cap` is set; must be empty. |
-| `creditTypesTreatment` | string enum | Optional. If not set, default behavior is `INCLUDE_ALL_CREDITS`. Must be set to `EXCLUDE_ALL_CREDITS` when `spend_cap` is set. |
+| `creditTypesTreatment` | string enum | Optional. If not set, default behavior is `INCLUDE_ALL_CREDITS`. Must be set to `EXCLUDE_ALL_CREDITS` when `spend_cap` is set. Values: `CREDIT_TYPES_TREATMENT_UNSPECIFIED`, `INCLUDE_ALL_CREDITS`, `EXCLUDE_ALL_CREDITS`, `INCLUDE_SPECIFIED_CREDITS`. |
 | `customPeriod` | GoogleCloudBillingBudgetsV1CustomPeriod | Optional. Specifies to track usage from any start date (required) to any end date (optional). This time period is static, it does not recur. Not supported when `spend_cap` is set. |
 | `labels` | object | Optional. A single label and value pair specifying that usage from only this set of labeled resources should be included in the budget. If omitted, the report includes all labeled and unlabeled usage. An object containing a single `"key": value` pair. Example: `{ "name": "wrench" }`. \_Currently, multiple entries or multiple values per entry are not allowed.\_ Not supported when `spend_cap` is set; must be empty. |
 | `projects` | array<string> | Optional. A set of projects of the form `projects/{project}`, specifying that usage from only this set of projects should be included in the budget. If omitted, the report includes all usage for the billing account, regardless of which project the usage occurred on. Must be set when `spend_cap` is set; must contain exactly one project. |
@@ -97,8 +97,8 @@ Message types referenced by the methods listed under `references/rest/billingbud
 
 | Field | Type | Description |
 |---|---|---|
-| `inputState` | string enum | Required. The desired state specified by the user. Valid values for mutation: - `CONFIGURED`: Must be set when creating a spend cap (`CreateBudget`). Also valid when updating (`UpdateBudget`) to activate the spend cap. If the spend cap is in state `AWAITING_NEXT_PERIOD`, `input_state` must be set to `CONFIGURED`. - `AWAITING_NEXT_PERIOD`: Valid only when updating (`UpdateBudget`) to explicitly lift an enforced cap. Not allowed if the spend cap is in state `AWAITING_NEXT_PERIOD`. Supplying any other value will result in an INVALID_ARGUMENT error. |
-| `outputState` | string enum | Output only. The actual resting state of the spend cap. |
+| `inputState` | string enum | Required. The desired state specified by the user. Valid values for mutation: - `CONFIGURED`: Must be set when creating a spend cap (`CreateBudget`). Also valid when updating (`UpdateBudget`) to activate the spend cap. If the spend cap is in state `AWAITING_NEXT_PERIOD`, `input_state` must be set to `CONFIGURED`. - `AWAITING_NEXT_PERIOD`: Valid only when updating (`UpdateBudget`) to explicitly lift an enforced cap. Not allowed if the spend cap is in state `AWAITING_NEXT_PERIOD`. Supplying any other value will result in an INVALID_ARGUMENT error. Values: `STATE_UNSPECIFIED`, `CONFIGURED`, `ENFORCED`, `AWAITING_NEXT_PERIOD`. |
+| `outputState` | string enum | Output only. The actual resting state of the spend cap. Values: `STATE_UNSPECIFIED`, `CONFIGURED`, `ENFORCED`, `AWAITING_NEXT_PERIOD`. |
 | `reconciling` | boolean | Output only. Indicates whether the server is actively processing a state transition or async workflow. |
 
 ### `GoogleCloudBillingBudgetsV1ThresholdRule`
@@ -108,7 +108,7 @@ Message types referenced by the methods listed under `references/rest/billingbud
 
 | Field | Type | Description |
 |---|---|---|
-| `spendBasis` | string enum | Optional. The type of basis used to determine if spend has passed the threshold. Behavior defaults to CURRENT_SPEND if not set. When `spend_cap` is set on the budget, must be `CURRENT_SPEND` or `BASIS_UNSPECIFIED`. `FORECASTED_SPEND` is not supported. |
+| `spendBasis` | string enum | Optional. The type of basis used to determine if spend has passed the threshold. Behavior defaults to CURRENT_SPEND if not set. When `spend_cap` is set on the budget, must be `CURRENT_SPEND` or `BASIS_UNSPECIFIED`. `FORECASTED_SPEND` is not supported. Values: `BASIS_UNSPECIFIED`, `CURRENT_SPEND`, `FORECASTED_SPEND`. |
 | `thresholdPercent` | number (double) | Required. Send an alert when this threshold is exceeded. This is a 1.0-based percentage, so 0.5 = 50%. Validation: non-negative number. When `spend_cap` is set on the budget, `threshold_rules` must contain exactly three rules with `threshold_percent` values of `0.5`, `0.8`, and `1.0` (50%, 80%, and 100%). |
 
 ### `GoogleCloudBillingBudgetsV1beta1AllUpdatesRule`
@@ -137,7 +137,7 @@ Message types referenced by the methods listed under `references/rest/billingbud
 | `displayName` | string | User data for display name in UI. Validation: <= 60 chars. |
 | `etag` | string | Optional. Etag to validate that the object is unchanged for a read-modify-write operation. An empty etag will cause an update to overwrite other changes. |
 | `name` | string | Output only. Resource name of the budget. The resource name implies the scope of a budget. Values are of the form `billingAccounts/{billingAccountId}/budgets/{budgetId}`. |
-| `ownershipScope` | string enum | — |
+| `ownershipScope` | string enum | — Values: `OWNERSHIP_SCOPE_UNSPECIFIED`, `ALL_USERS`, `BILLING_ACCOUNT`. |
 | `thresholdRules` | array<GoogleCloudBillingBudgetsV1beta1ThresholdRule> | Optional. Rules that trigger alerts (notifications of thresholds being crossed) when spend exceeds the specified percentages of the budget. Optional for `pubsubTopic` notifications. Required if using email notifications. |
 
 ### `GoogleCloudBillingBudgetsV1beta1BudgetAmount`
@@ -176,9 +176,9 @@ Message types referenced by the methods listed under `references/rest/billingbud
 
 | Field | Type | Description |
 |---|---|---|
-| `calendarPeriod` | string enum | Optional. Specifies to track usage for recurring calendar period. For example, assume that CalendarPeriod.QUARTER is set. The budget will track usage from April 1 to June 30, when the current calendar month is April, May, June. After that, it will track usage from July 1 to September 30 when the current calendar month is July, August, September, so on. |
+| `calendarPeriod` | string enum | Optional. Specifies to track usage for recurring calendar period. For example, assume that CalendarPeriod.QUARTER is set. The budget will track usage from April 1 to June 30, when the current calendar month is April, May, June. After that, it will track usage from July 1 to September 30 when the current calendar month is July, August, September, so on. Values: `CALENDAR_PERIOD_UNSPECIFIED`, `MONTH`, `QUARTER`, `YEAR`. |
 | `creditTypes` | array<string> | Optional. If Filter.credit_types_treatment is INCLUDE_SPECIFIED_CREDITS, this is a list of credit types to be subtracted from gross cost to determine the spend for threshold calculations. See a list of acceptable credit type values (https://cloud.google.com/billing/docs/how-to/export-data-bigquery-tables#credits-type). If Filter.credit_types_treatment is \*\*not\*\* INCLUDE_SPECIFIED_CREDITS, this field must be empty. |
-| `creditTypesTreatment` | string enum | Optional. If not set, default behavior is `INCLUDE_ALL_CREDITS`. |
+| `creditTypesTreatment` | string enum | Optional. If not set, default behavior is `INCLUDE_ALL_CREDITS`. Values: `CREDIT_TYPES_TREATMENT_UNSPECIFIED`, `INCLUDE_ALL_CREDITS`, `EXCLUDE_ALL_CREDITS`, `INCLUDE_SPECIFIED_CREDITS`. |
 | `customPeriod` | GoogleCloudBillingBudgetsV1beta1CustomPeriod | Optional. Specifies to track usage from any start date (required) to any end date (optional). This time period is static, it does not recur. |
 | `labels` | object | Optional. A single label and value pair specifying that usage from only this set of labeled resources should be included in the budget. If omitted, the report will include all labeled and unlabeled usage. An object containing a single `"key": value` pair. Example: `{ "name": "wrench" }`. \_Currently, multiple entries or multiple values per entry are not allowed.\_ |
 | `projects` | array<string> | Optional. A set of projects of the form `projects/{project}`, specifying that usage from only this set of projects should be included in the budget. If omitted, the report will include all usage for the billing account, regardless of which project the usage occurred on. |
@@ -208,7 +208,7 @@ Message types referenced by the methods listed under `references/rest/billingbud
 
 | Field | Type | Description |
 |---|---|---|
-| `spendBasis` | string enum | Optional. The type of basis used to determine if spend has passed the threshold. Behavior defaults to CURRENT_SPEND if not set. |
+| `spendBasis` | string enum | Optional. The type of basis used to determine if spend has passed the threshold. Behavior defaults to CURRENT_SPEND if not set. Values: `BASIS_UNSPECIFIED`, `CURRENT_SPEND`, `FORECASTED_SPEND`. |
 | `thresholdPercent` | number (double) | Required. Send an alert when this threshold is exceeded. This is a 1.0-based percentage, so 0.5 = 50%. Validation: non-negative number. |
 
 ### `GoogleCloudBillingBudgetsV1beta1UpdateBudgetRequest`

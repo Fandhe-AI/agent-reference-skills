@@ -35,7 +35,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | Field | Type | Description |
 |---|---|---|
 | `exemptedMembers` | array<string> | Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members. |
-| `logType` | string enum | The log type that this config enables. |
+| `logType` | string enum | The log type that this config enables. Values: `LOG_TYPE_UNSPECIFIED`, `ADMIN_READ`, `DATA_WRITE`, `DATA_READ`. |
 
 ### `Binding`
 
@@ -75,7 +75,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `managementProject` | string | Output only. The Management Project of the CapabilityConfig this Boundary is associated with. Will be empty if the Boundary is not associated with any CapabilityConfig. Format: `projects/{project_number}` Example: `projects/123456789012` |
 | `name` | string | Identifier. The unique resource name of the Boundary. Format: - `organizations/{organization_id}/boundaries/{boundary_id}` - `folders/{folder_id}/boundaries/{boundary_id}` Example: `folders/123456789/boundaries/my-boundary` |
 | `resourceFilter` | ResourceFilter | Optional. The filter defining the criteria for descendant projects to be included in the Boundary. Descendant projects are dynamically included in the Boundary based on this filter. |
-| `state` | string enum | Output only. The lifecycle state of the Boundary. |
+| `state` | string enum | Output only. The lifecycle state of the Boundary. Values: `STATE_UNSPECIFIED`, `CREATING`, `ACTIVE`. |
 | `updateTime` | string (google-datetime) | Output only. The most recent time this Boundary was modified. |
 
 ### `BoundaryConfig`
@@ -113,8 +113,8 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `etag` | string | This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding. |
 | `managementProject` | string | Optional. Immutable. The Management Project associated with this CapabilityConfig. If not provided during creation, a management project will be automatically created. Cannot be modified after creation. Format: `projects/{project_number}` Example: `projects/123456789012` |
 | `name` | string | Identifier. The unique resource name of the CapabilityConfig. Format: `organizations/{organization}/capabilityConfigs/{capabilityConfig}` or, `folders/{folder}/capabilityConfigs/{capabilityConfig}` or, `projects/{project}/capabilityConfigs/{capabilityConfig}` |
-| `state` | string enum | Output only. The lifecycle state of the CapabilityConfig. |
-| `types` | array<string> | Required. The CapabilityConfig types. |
+| `state` | string enum | Output only. The lifecycle state of the CapabilityConfig. Values: `STATE_UNSPECIFIED`, `ACTIVE`. |
+| `types` | array<string> | Required. The CapabilityConfig types. Values: `TYPE_UNSPECIFIED`, `APP_MANAGEMENT`, `AGENT_MANAGEMENT`. |
 | `updateTime` | string (google-datetime) | Output only. The most recent time this CapabilityConfig was modified. |
 
 ### `ClearOrgPolicyRequest`
@@ -136,7 +136,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 |---|---|---|
 | `destinationParent` | string | The resource name of the folder or organization we are either creating the folder under or moving the folder to. |
 | `displayName` | string | The display name of the folder. |
-| `operationType` | string enum | The type of this operation. |
+| `operationType` | string enum | The type of this operation. Values: `OPERATION_TYPE_UNSPECIFIED`, `CREATE`, `MOVE`. |
 | `sourceParent` | string | The resource name of the folder's parent. Only applicable when the operation_type is MOVE. |
 
 ### `CloudresourcemanagerGoogleCloudResourcemanagerV2beta1FolderOperation`
@@ -148,7 +148,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 |---|---|---|
 | `destinationParent` | string | The resource name of the folder or organization we are either creating the folder under or moving the folder to. |
 | `displayName` | string | The display name of the folder. |
-| `operationType` | string enum | The type of this operation. |
+| `operationType` | string enum | The type of this operation. Values: `OPERATION_TYPE_UNSPECIFIED`, `CREATE`, `MOVE`. |
 | `sourceParent` | string | The resource name of the folder's parent. Only applicable when the operation_type is MOVE. |
 
 ### `Constraint`
@@ -159,7 +159,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | Field | Type | Description |
 |---|---|---|
 | `booleanConstraint` | BooleanConstraint | Defines this constraint as being a BooleanConstraint. |
-| `constraintDefault` | string enum | The evaluation behavior of this constraint in the absence of 'Policy'. |
+| `constraintDefault` | string enum | The evaluation behavior of this constraint in the absence of 'Policy'. Values: `CONSTRAINT_DEFAULT_UNSPECIFIED`, `ALLOW`, `DENY`. |
 | `description` | string | Detailed description of what this `Constraint` controls as well as how and where it is enforced. Mutable. |
 | `displayName` | string | The human readable name. Mutable. |
 | `listConstraint` | ListConstraint | Defines this constraint as being a ListConstraint. |
@@ -339,7 +339,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `managementProject` | string | Output only. Management Project associated with this folder (if app-management capability is enabled). Example: `projects/google-mp-123` OUTPUT ONLY. |
 | `name` | string | Identifier. The resource name of the folder. Its format is `folders/{folder_id}`, for example: "folders/1234". |
 | `parent` | string | Required. The folder's parent's resource name. Updates to the folder's parent must be performed using MoveFolder. |
-| `state` | string enum | Output only. The lifecycle state of the folder. Updates to the state must be performed using DeleteFolder and UndeleteFolder. |
+| `state` | string enum | Output only. The lifecycle state of the folder. Updates to the state must be performed using DeleteFolder and UndeleteFolder. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETE_REQUESTED`. |
 | `tags` | object | Optional. Input only. Immutable. Tag keys/values directly bound to this folder. Each item in the map must be expressed as " : ". For example: "123/environment" : "production", "123/costCenter" : "marketing" Note: Currently this field is in Preview. |
 | `updateTime` | string (google-datetime) | Output only. Timestamp when the folder was last modified. |
 
@@ -353,7 +353,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `configuredCapabilities` | array<string> | Output only. Optional capabilities configured for this folder (via UpdateCapability API). Example: `folders/123/capabilities/app-management`. |
 | `createTime` | string (google-datetime) | Output only. Timestamp when the Folder was created. Assigned by the server. |
 | `displayName` | string | The folder's display name. A folder's display name must be unique amongst its siblings, e.g. no two folders with the same parent can share the same display name. The display name must start and end with a letter or digit, may contain letters, digits, spaces, hyphens and underscores and can be no longer than 30 characters. This is captured by the regular expression: `[\p{L}\p{N}]([\p{L}\p{N}_- ]{0,28}[\p{L}\p{N}])?`. |
-| `lifecycleState` | string enum | Output only. The lifecycle state of the folder. Updates to the lifecycle_state must be performed via DeleteFolder and UndeleteFolder. |
+| `lifecycleState` | string enum | Output only. The lifecycle state of the folder. Updates to the lifecycle_state must be performed via DeleteFolder and UndeleteFolder. Values: `LIFECYCLE_STATE_UNSPECIFIED`, `ACTIVE`, `DELETE_REQUESTED`. |
 | `managementProject` | string | Output only. Management Project associated with this folder (if app-management capability is enabled). Example: `projects/google-mp-123` OUTPUT ONLY. |
 | `name` | string | Output only. The resource name of the Folder. Its format is `folders/{folder_id}`, for example: "folders/1234". |
 | `parent` | string | Required. The Folder's parent's resource name. Updates to the folder's parent must be performed via MoveFolder. |
@@ -368,7 +368,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 |---|---|---|
 | `destinationParent` | string | The resource name of the folder or organization we are either creating the folder under or moving the folder to. |
 | `displayName` | string | The display name of the folder. |
-| `operationType` | string enum | The type of this operation. |
+| `operationType` | string enum | The type of this operation. Values: `OPERATION_TYPE_UNSPECIFIED`, `CREATE`, `MOVE`. |
 | `sourceParent` | string | The resource name of the folder's parent. Only applicable when the operation_type is MOVE. |
 
 ### `FolderOperationError`
@@ -378,7 +378,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 
 | Field | Type | Description |
 |---|---|---|
-| `errorMessageId` | string enum | The type of operation error experienced. |
+| `errorMessageId` | string enum | The type of operation error experienced. Values: `ERROR_TYPE_UNSPECIFIED`, `ACTIVE_FOLDER_HEIGHT_VIOLATION`, `MAX_CHILD_FOLDERS_VIOLATION`, `FOLDER_NAME_UNIQUENESS_VIOLATION`, `RESOURCE_DELETED_VIOLATION`, `PARENT_DELETED_VIOLATION`, `CYCLE_INTRODUCED_VIOLATION`, `FOLDER_BEING_MOVED_VIOLATION`, `FOLDER_TO_DELETE_NON_EMPTY_VIOLATION`, `DELETED_FOLDER_HEIGHT_VIOLATION`, `FOLDER_TO_DELETE_CONFIGURED_CAPABILITY_VIOLATION`. |
 
 ### `GetAncestryRequest`
 
@@ -561,7 +561,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 
 | Field | Type | Description |
 |---|---|---|
-| `allValues` | string enum | The policy all_values state. |
+| `allValues` | string enum | The policy all_values state. Values: `ALL_VALUES_UNSPECIFIED`, `ALLOW`, `DENY`. |
 | `allowedValues` | array<string> | List of values allowed at this resource. Can only be set if `all_values` is set to `ALL_VALUES_UNSPECIFIED`. |
 | `deniedValues` | array<string> | List of values denied at this resource. Can only be set if `all_values` is set to `ALL_VALUES_UNSPECIFIED`. |
 | `inheritFromParent` | boolean | Determines the inheritance behavior for this `Policy`. By default, a `ListPolicy` set at a resource supersedes any `Policy` set anywhere up the resource hierarchy. However, if `inherit_from_parent` is set to `true`, then the values from the effective `Policy` of the parent resource are inherited, meaning the values set in this `Policy` are added to the values inherited up the hierarchy. Setting `Policy` hierarchies that inherit both allowed values and denied values isn't recommended in most circumstances to keep the configuration simple and understandable. However, it is possible to set a `Policy` with `allowed_values` set that inherits a `Policy` with `denied_values` set. In this case, the values that are allowed must be in `allowed_values` and not present in `denied_values`. For example, suppose you have a `Constraint` `constraints/serviceuser.services`, which has a `constraint_type` of `list_constraint`, and with `constraint_default` set to `ALLOW`. Suppose that at the Organization level, a `Policy` is applied that restricts the allowed API activations to {`E1`, `E2`}. Then, if a `Policy` is applied to a project below the Organization that has `inherit_from_parent` set to `false` and field all_values set to DENY, then an attempt to activate any API will be denied. The following examples demonstrate different possible layerings for `projects/bar` parented by `organizations/foo`: Example 1 (no inherited values): `organizations/foo` has a `Policy` with values: {allowed_values: "E1" allowed_values:"E2"} `projects/bar` has `inherit_from_parent` `false` and values: {allowed_values: "E3" allowed_values: "E4"} The accepted values at `organizations/foo` are `E1`, `E2`. The accepted values at `projects/bar` are `E3`, and `E4`. Example 2 (inherited values): `organizations/foo` has a `Policy` with values: {allowed_values: "E1" allowed_values:"E2"} `projects/bar` has a `Policy` with values: {value: "E3" value: "E4" inherit_from_parent: true} The accepted values at `organizations/foo` are `E1`, `E2`. The accepted values at `projects/bar` are `E1`, `E2`, `E3`, and `E4`. Example 3 (inheriting both allowed and denied values): `organizations/foo` has a `Policy` with values: {allowed_values: "E1" allowed_values: "E2"} `projects/bar` has a `Policy` with: {denied_values: "E1"} The accepted values at `organizations/foo` are `E1`, `E2`. The value accepted at `projects/bar` is `E2`. Example 4 (RestoreDefault): `organizations/foo` has a `Policy` with values: {allowed_values: "E1" allowed_values:"E2"} `projects/bar` has a `Policy` with values: {RestoreDefault: {}} The accepted values at `organizations/foo` are `E1`, `E2`. The accepted values at `projects/bar` are either all or none depending on the value of `constraint_default` (if `ALLOW`, all; if `DENY`, none). Example 5 (no policy inherits parent policy): `organizations/foo` has no `Policy` set. `projects/bar` has no `Policy` set. The accepted values at both levels are either all or none depending on the value of `constraint_default` (if `ALLOW`, all; if `DENY`, none). Example 6 (ListConstraint allowing all): `organizations/foo` has a `Policy` with values: {allowed_values: "E1" allowed_values: "E2"} `projects/bar` has a `Policy` with: {all: ALLOW} The accepted values at `organizations/foo` are `E1`, E2`. Any value is accepted at `projects/bar`. Example 7 (ListConstraint allowing none): `organizations/foo` has a `Policy` with values: {allowed_values: "E1" allowed_values: "E2"} `projects/bar` has a `Policy` with: {all: DENY} The accepted values at `organizations/foo` are `E1`, E2`. No value is accepted at `projects/bar`. Example 10 (allowed and denied subtrees of Resource Manager hierarchy): Given the following resource hierarchy O1->{F1, F2}; F1->{P1}; F2->{P2, P3}, `organizations/foo` has a `Policy` with values: {allowed_values: "under:organizations/O1"} `projects/bar` has a `Policy` with: {allowed_values: "under:projects/P3"} {denied_values: "under:folders/F2"} The accepted values at `organizations/foo` are `organizations/O1`, `folders/F1`, `folders/F2`, `projects/P1`, `projects/P2`, `projects/P3`. The accepted values at `projects/bar` are `organizations/O1`, `folders/F1`, `projects/P1`. |
@@ -692,7 +692,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `displayName` | string | Output only. A human-readable string that refers to the organization in the Google Cloud Console. This string is set by the server and cannot be changed. The string will be set to the primary domain (for example, "google.com") of the Google Workspace customer that owns the organization. |
 | `etag` | string | Output only. A checksum computed by the server based on the current value of the Organization resource. This may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding. |
 | `name` | string | Output only. The resource name of the organization. This is the organization's relative path in the API. Its format is "organizations/\[organization_id\]". For example, "organizations/1234". |
-| `state` | string enum | Output only. The organization's current lifecycle state. |
+| `state` | string enum | Output only. The organization's current lifecycle state. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETE_REQUESTED`. |
 | `updateTime` | string (google-datetime) | Output only. Timestamp when the Organization was last modified. |
 
 ### `Organization` (v1)
@@ -704,7 +704,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 |---|---|---|
 | `creationTime` | string (google-datetime) | Timestamp when the Organization was created. Assigned by the server. |
 | `displayName` | string | A human-readable string that refers to the Organization in the Google Cloud console. This string is set by the server and cannot be changed. The string will be set to the primary domain (for example, "google.com") of the G Suite customer that owns the organization. |
-| `lifecycleState` | string enum | The organization's current lifecycle state. Assigned by the server. |
+| `lifecycleState` | string enum | The organization's current lifecycle state. Assigned by the server. Values: `LIFECYCLE_STATE_UNSPECIFIED`, `ACTIVE`, `DELETE_REQUESTED`. |
 | `name` | string | Output only. The resource name of the organization. This is the organization's relative path in the API. Its format is "organizations/\[organization_id\]". For example, "organizations/1234". |
 | `owner` | OrganizationOwner | The owner of this Organization. The owner should be specified on creation. Once set, it cannot be changed. This field is required. |
 
@@ -717,7 +717,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 |---|---|---|
 | `creationTime` | string (google-datetime) | Timestamp when the Organization was created. Assigned by the server. |
 | `displayName` | string | A human-readable string that refers to the Organization in the Google Cloud console. This string is set by the server and cannot be changed. The string will be set to the primary domain (for example, "google.com") of the G Suite customer that owns the organization. |
-| `lifecycleState` | string enum | The organization's current lifecycle state. Assigned by the server. |
+| `lifecycleState` | string enum | The organization's current lifecycle state. Assigned by the server. Values: `LIFECYCLE_STATE_UNSPECIFIED`, `ACTIVE`, `DELETE_REQUESTED`. |
 | `name` | string | Output only. The resource name of the organization. This is the organization's relative path in the API. Its format is "organizations/\[organization_id\]". For example, "organizations/1234". |
 | `organizationId` | string | An immutable id for the Organization that is assigned on creation. This should be omitted when creating a new Organization. This field is read-only. |
 | `owner` | OrganizationOwner | The owner of this Organization. The owner should be specified on creation. Once set, it cannot be changed. This field is required. |
@@ -757,11 +757,11 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `etag` | string | Output only. A checksum computed by the server based on the current value of the Project resource. This may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding. |
 | `isManagementProject` | boolean | Output only. If `true`, this project is a Management Project. A Management Project manages dedicated project groups for specific purposes (e.g., agent management or app management). |
 | `labels` | object | Optional. The labels associated with this project. Label keys must be between 1 and 63 characters long and must conform to the following regular expression: \\[a-z\\](\\[-a-z0-9\\]\*\\[a-z0-9\\])?. Label values must be between 0 and 63 characters long and must conform to the regular expression (\\[a-z\\](\\[-a-z0-9\\]\*\\[a-z0-9\\])?)?. No more than 64 labels can be associated with a given resource. Clients should store labels in a representation such as JSON that does not depend on specific characters being disallowed. Example: `"myBusinessDimension" : "businessValue"` |
-| `managementType` | string enum | Output only. The type of Management Project. This field is only populated if `is_management_project` is `true`. |
+| `managementType` | string enum | Output only. The type of Management Project. This field is only populated if `is_management_project` is `true`. Values: `MANAGEMENT_TYPE_UNSPECIFIED`, `SELF_MANAGED`, `HUB`. |
 | `name` | string | Output only. The unique resource name of the project. It is an int64 generated number prefixed by "projects/". Example: `projects/415104041262` |
 | `parent` | string | Optional. A reference to a parent Resource. eg., `organizations/123` or `folders/876`. |
 | `projectId` | string | Immutable. The unique, user-assigned id of the project. It must be 6 to 30 lowercase ASCII letters, digits, or hyphens. It must start with a letter. Trailing hyphens are prohibited. Example: `tokyo-rain-123` |
-| `state` | string enum | Output only. The project lifecycle state. |
+| `state` | string enum | Output only. The project lifecycle state. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `DELETE_REQUESTED`. |
 | `tags` | object | Optional. Input only. Immutable. Tag keys/values directly bound to this project. Each item in the map must be expressed as " : ". For example: "123/environment" : "production", "123/costCenter" : "marketing" Note: Currently this field is in Preview. |
 | `updateTime` | string (google-datetime) | Output only. The most recent time this resource was modified. |
 
@@ -776,8 +776,8 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `createTime` | string (google-datetime) | Creation time. Read-only. |
 | `isManagementProject` | boolean | Output only. If `true`, this project is a Management Project. A Management Project manages dedicated project groups for specific purposes (e.g., agent management or app management). |
 | `labels` | object | The labels associated with this Project. Label keys must be between 1 and 63 characters long and must conform to the following regular expression: a-z{0,62}. Label values must be between 0 and 63 characters long and must conform to the regular expression \[a-z0-9\_-\]{0,63}. A label value can be empty. No more than 256 labels can be associated with a given resource. Clients should store labels in a representation such as JSON that does not depend on specific characters being disallowed. Example: "environment" : "dev" Read-write. |
-| `lifecycleState` | string enum | The Project lifecycle state. Read-only. |
-| `managementType` | string enum | Output only. The type of Management Project. This field is only populated if `is_management_project` is `true`. |
+| `lifecycleState` | string enum | The Project lifecycle state. Read-only. Values: `LIFECYCLE_STATE_UNSPECIFIED`, `ACTIVE`, `DELETE_REQUESTED`, `DELETE_IN_PROGRESS`. |
+| `managementType` | string enum | Output only. The type of Management Project. This field is only populated if `is_management_project` is `true`. Values: `MANAGEMENT_TYPE_UNSPECIFIED`, `SELF_MANAGED`, `HUB`. |
 | `name` | string | The optional user-assigned display name of the Project. When present it must be between 4 to 30 characters. Allowed characters are: lowercase and uppercase letters, numbers, hyphen, single-quote, double-quote, space, and exclamation point. Example: `My Project` Read-write. |
 | `parent` | ResourceId | An optional reference to a parent Resource. Supported parent types include "organization" and "folder". Once set, the parent cannot be cleared. The `parent` can be set on creation or using the `UpdateProject` method; the end user must have the `resourcemanager.projects.create` permission on the parent. |
 | `projectId` | string | The unique, user-assigned ID of the Project. It must be 6 to 30 lowercase letters, digits, or hyphens. It must start with a letter. Trailing hyphens are prohibited. Example: `tokyo-rain-123` Read-only after creation. |
@@ -795,8 +795,8 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `createTime` | string (google-datetime) | Creation time. Read-only. |
 | `isManagementProject` | boolean | Output only. If `true`, this project is a Management Project. A Management Project manages dedicated project groups for specific purposes (e.g., agent management or app management). |
 | `labels` | object | The labels associated with this Project. Label keys must be between 1 and 63 characters long and must conform to the following regular expression: a-z{0,62}. Label values must be between 0 and 63 characters long and must conform to the regular expression \[a-z0-9\_-\]{0,63}. A label value can be empty. No more than 256 labels can be associated with a given resource. Clients should store labels in a representation such as JSON that does not depend on specific characters being disallowed. Example: `"environment" : "dev"` Read-write. |
-| `lifecycleState` | string enum | The Project lifecycle state. Read-only. |
-| `managementType` | string enum | Output only. The type of Management Project. This field is only populated if `is_management_project` is `true`. |
+| `lifecycleState` | string enum | The Project lifecycle state. Read-only. Values: `LIFECYCLE_STATE_UNSPECIFIED`, `ACTIVE`, `DELETE_REQUESTED`, `DELETE_IN_PROGRESS`. |
+| `managementType` | string enum | Output only. The type of Management Project. This field is only populated if `is_management_project` is `true`. Values: `MANAGEMENT_TYPE_UNSPECIFIED`, `SELF_MANAGED`, `HUB`. |
 | `name` | string | The optional user-assigned display name of the Project. When present it must be between 4 to 30 characters. Allowed characters are: lowercase and uppercase letters, numbers, hyphen, single-quote, double-quote, space, and exclamation point. Example: `My Project` Read-write. |
 | `parent` | ResourceId | An optional reference to a parent Resource. Supported parent types include "organization" and "folder". Once set, the parent cannot be cleared. The `parent` can be set on creation or using the `UpdateProject` method; the end user must have the `resourcemanager.projects.create` permission on the parent. Read-write. |
 | `projectId` | string | The unique, user-assigned ID of the Project. It must be 6 to 30 lowercase letters, digits, or hyphens. It must start with a letter. Trailing hyphens are prohibited. Example: `tokyo-rain-123` Read-only after creation. |
@@ -980,7 +980,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `name` | string | Immutable. The resource name for a TagKey. Must be in the format `tagKeys/{tag_key_id}`, where `tag_key_id` is the generated numeric id for the TagKey. |
 | `namespacedName` | string | Output only. Immutable. Namespaced name of the TagKey. |
 | `parent` | string | Immutable. The resource name of the TagKey's parent. A TagKey can be parented by an Organization or a Project. For a TagKey parented by an Organization, its parent must be in the form `organizations/{org_id}`. For a TagKey parented by a Project, its parent can be in the form `projects/{project_id}` or `projects/{project_number}`. |
-| `purpose` | string enum | Optional. A purpose denotes that this Tag is intended for use in policies of a specific policy engine, and will involve that policy engine in management operations involving this Tag. A purpose does not grant a policy engine exclusive rights to the Tag, and it may be referenced by other policy engines. A purpose cannot be changed once set. |
+| `purpose` | string enum | Optional. A purpose denotes that this Tag is intended for use in policies of a specific policy engine, and will involve that policy engine in management operations involving this Tag. A purpose does not grant a policy engine exclusive rights to the Tag, and it may be referenced by other policy engines. A purpose cannot be changed once set. Values: `PURPOSE_UNSPECIFIED`, `GCE_FIREWALL`, `DATA_GOVERNANCE`. |
 | `purposeData` | object | Optional. Purpose data corresponds to the policy system that the tag is intended for. See documentation for `Purpose` for formatting of this field. Purpose data cannot be changed once set. |
 | `shortName` | string | Required. Immutable. The user friendly name for a TagKey. The short name should be unique for TagKeys within the same tag namespace. The short name must be 1-256 characters, beginning and ending with an alphanumeric character (\[a-z0-9A-Z\]) with dashes (-), underscores (\_), dots (.), and alphanumerics between. |
 | `updateTime` | string (google-datetime) | Output only. Update time. |

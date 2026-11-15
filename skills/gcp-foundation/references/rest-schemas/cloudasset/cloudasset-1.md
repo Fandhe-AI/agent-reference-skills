@@ -191,7 +191,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `details` | string | The details of the exception. |
-| `exceptionType` | string enum | The type of exception. |
+| `exceptionType` | string enum | The type of exception. Values: `EXCEPTION_TYPE_UNSPECIFIED`, `TRUNCATION`. |
 
 ### `AttachedResource`
 
@@ -221,7 +221,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `exemptedMembers` | array<string> | Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members. |
-| `logType` | string enum | The log type that this config enables. |
+| `logType` | string enum | The log type that this config enables. Values: `LOG_TYPE_UNSPECIFIED`, `ADMIN_READ`, `DATA_WRITE`, `DATA_READ`. |
 
 ### `BatchGetAssetsHistoryResponse`
 
@@ -281,7 +281,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 
 | Field | Type | Description |
 |---|---|---|
-| `evaluationValue` | string enum | The evaluation result. |
+| `evaluationValue` | string enum | The evaluation result. Values: `EVALUATION_VALUE_UNSPECIFIED`, `TRUE`, `FALSE`, `CONDITIONAL`. |
 
 ### `CreateFeedRequest`
 
@@ -346,7 +346,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `assetTypes` | array<string> | A list of asset types to take a snapshot for. For example: "compute.googleapis.com/Disk". Regular expressions are also supported. For example: \* "compute.googleapis.com.\*" snapshots resources whose asset type starts with "compute.googleapis.com". \* ".\*Instance" snapshots resources whose asset type ends with "Instance". \* ".\*Instance.\*" snapshots resources whose asset type contains "Instance". See RE2 (https://github.com/google/re2/wiki/Syntax) for all supported regular expression syntax. If the regular expression does not match any supported asset type, an INVALID_ARGUMENT error will be returned. If specified, only matching assets will be returned, otherwise, it will snapshot all asset types. See Introduction to Cloud Asset Inventory (https://cloud.google.com/asset-inventory/docs/overview) for all supported asset types. |
-| `contentType` | string enum | Asset content type. If not specified, no content but the asset name will be returned. |
+| `contentType` | string enum | Asset content type. If not specified, no content but the asset name will be returned. Values: `CONTENT_TYPE_UNSPECIFIED`, `RESOURCE`, `IAM_POLICY`, `ORG_POLICY`, `ACCESS_POLICY`, `OS_INVENTORY`, `RELATIONSHIP`. |
 | `outputConfig` | OutputConfig | Required. Output configuration indicating where the results will be output to. |
 | `readTime` | string (google-datetime) | Timestamp to take an asset snapshot. This can only be set to a timestamp between the current time and the current time minus 35 days (inclusive). If not specified, the current time will be used. Due to delays in resource data collection and indexing, there is a volatile window during which running the same query may get different results. |
 | `relationshipTypes` | array<string> | A list of relationship types to export, for example: `INSTANCE_TO_INSTANCEGROUP`. This field should only be specified if content_type=RELATIONSHIP. \* If specified: it snapshots specified relationships. It returns an error if any of the \[relationship_types\] doesn't belong to the supported relationship types of the \[asset_types\] or if any of the \[asset_types\] doesn't belong to the source types of the \[relationship_types\]. \* Otherwise: it snapshots the supported relationships for all \[asset_types\] or returns an error if any of the \[asset_types\] has no relationship support. An unspecified asset types field means all supported asset_types. See Introduction to Cloud Asset Inventory (https://cloud.google.com/asset-inventory/docs/overview) for all supported asset types and relationship types. |
@@ -359,7 +359,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `assetTypes` | array<string> | A list of asset types of which to take a snapshot for. For example: "google.compute.Disk". If specified, only matching assets will be returned. See Introduction to Cloud Asset Inventory (https://cloud.google.com/resource-manager/docs/cloud-asset-inventory/overview) for all supported asset types. |
-| `contentType` | string enum | Asset content type. If not specified, no content but the asset name will be returned. |
+| `contentType` | string enum | Asset content type. If not specified, no content but the asset name will be returned. Values: `CONTENT_TYPE_UNSPECIFIED`, `RESOURCE`, `IAM_POLICY`. |
 | `outputConfig` | OutputConfig | Required. Output configuration indicating where the results will be output to. All results will be in newline delimited JSON format. |
 | `readTime` | string (google-datetime) | Timestamp to take an asset snapshot. This can only be set to a timestamp between 2018-10-02 UTC (inclusive) and the current time. If not specified, the current time will be used. Due to delays in resource data collection and indexing, there is a volatile window during which running the same query may get different results. |
 
@@ -385,7 +385,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `assetNames` | array<string> | A list of the full names of the assets to receive updates. You must specify either or both of asset_names and asset_types. Only asset updates matching specified asset_names or asset_types are exported to the feed. Example: `//compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1`. For a list of the full names for supported asset types, see Resource name format. |
 | `assetTypes` | array<string> | A list of types of the assets to receive updates. You must specify either or both of asset_names and asset_types. Only asset updates matching specified asset_names or asset_types are exported to the feed. Example: `"compute.googleapis.com/Disk"` For a list of all supported asset types, see Supported asset types. |
 | `condition` | Expr | A condition which determines whether an asset update should be published. If specified, an asset will be returned only when the expression evaluates to true. When set, `expression` field in the `Expr` must be a valid \[CEL expression\] (https://github.com/google/cel-spec) on a TemporalAsset with name `temporal_asset`. Example: a Feed with expression ("temporal_asset.deleted == true") will only publish Asset deletions. Other fields of `Expr` are optional. See our user guide (https://cloud.google.com/asset-inventory/docs/monitoring-asset-changes-with-condition) for detailed instructions. |
-| `contentType` | string enum | Asset content type. If not specified, no content but the asset name and type will be returned. |
+| `contentType` | string enum | Asset content type. If not specified, no content but the asset name and type will be returned. Values: `CONTENT_TYPE_UNSPECIFIED`, `RESOURCE`, `IAM_POLICY`, `ORG_POLICY`, `ACCESS_POLICY`, `OS_INVENTORY`, `RELATIONSHIP`. |
 | `feedOutputConfig` | FeedOutputConfig | Required. Feed output configuration defining where the asset updates are published to. |
 | `name` | string | Required. The format will be projects/{project_number}/feeds/{client-assigned_feed_identifier} or folders/{folder_number}/feeds/{client-assigned_feed_identifier} or organizations/{organization_number}/feeds/{client-assigned_feed_identifier} The client-assigned feed identifier must be unique within the parent project/folder/organization. |
 | `relationshipTypes` | array<string> | A list of relationship types to output, for example: `INSTANCE_TO_INSTANCEGROUP`. This field should only be specified if content_type=RELATIONSHIP. \* If specified: it outputs specified relationship updates on the \[asset_names\] or the \[asset_types\]. It returns an error if any of the \[relationship_types\] doesn't belong to the supported relationship types of the \[asset_names\] or \[asset_types\], or any of the \[asset_names\] or the \[asset_types\] doesn't belong to the source types of the \[relationship_types\]. \* Otherwise: it outputs the supported relationships of the types of \[asset_names\] and \[asset_types\] or returns an error if any of the \[asset_names\] or the \[asset_types\] has no replationship support. See Introduction to Cloud Asset Inventory (https://cloud.google.com/asset-inventory/docs/overview) for all supported asset types and relationship types. |
@@ -481,7 +481,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `dataset` | string | Required. The BigQuery dataset in format "projects/projectId/datasets/datasetId", to which the analysis results should be exported. If this dataset does not exist, the export call will return an INVALID_ARGUMENT error. |
-| `partitionKey` | string enum | The partition key for BigQuery partitioned table. |
+| `partitionKey` | string enum | The partition key for BigQuery partitioned table. Values: `PARTITION_KEY_UNSPECIFIED`, `REQUEST_TIME`. |
 | `tablePrefix` | string | Required. The prefix of the BigQuery tables to which the analysis results will be written. Tables will be created based on this table_prefix if not exist: \* \_analysis table will contain export operation's metadata. \* \_analysis_result will contain all the IamPolicyAnalysisResult. When \[partition_key\] is specified, both tables will be partitioned based on the \[partition_key\]. |
 | `writeDisposition` | string | Optional. Specifies the action that occurs if the destination table or partition already exists. The following values are supported: \* WRITE_TRUNCATE: If the table or partition already exists, BigQuery overwrites the entire table or all the partitions data. \* WRITE_APPEND: If the table or partition already exists, BigQuery appends the data to the table or the latest partition. \* WRITE_EMPTY: If the table already exists and contains data, an error is returned. The default value is WRITE_APPEND. Each action is atomic and only occurs if BigQuery is able to complete the job successfully. Details are at https://cloud.google.com/bigquery/docs/loading-data-local#appending_to_or_overwriting_a_table_using_a_local_file. |
 
@@ -498,7 +498,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `booleanConstraint` | GoogleCloudAssetV1BooleanConstraint | Defines this constraint as being a BooleanConstraint. |
-| `constraintDefault` | string enum | The evaluation behavior of this constraint in the absence of 'Policy'. |
+| `constraintDefault` | string enum | The evaluation behavior of this constraint in the absence of 'Policy'. Values: `CONSTRAINT_DEFAULT_UNSPECIFIED`, `ALLOW`, `DENY`. |
 | `description` | string | Detailed description of what this `Constraint` controls as well as how and where it is enforced. |
 | `displayName` | string | The human readable name of the constraint. |
 | `listConstraint` | GoogleCloudAssetV1ListConstraint | Defines this constraint as being a ListConstraint. |
@@ -511,11 +511,11 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 
 | Field | Type | Description |
 |---|---|---|
-| `actionType` | string enum | Allow or deny type. |
+| `actionType` | string enum | Allow or deny type. Values: `ACTION_TYPE_UNSPECIFIED`, `ALLOW`, `DENY`. |
 | `condition` | string | Organization Policy condition/expression. For example: `resource.instanceName.matches("(production\|test)_(.+_)?[\d]+")'` or, `resource.management.auto_upgrade == true` |
 | `description` | string | Detailed information about this custom policy constraint. |
 | `displayName` | string | One line display name for the UI. |
-| `methodTypes` | array<string> | All the operations being applied for this constraint. |
+| `methodTypes` | array<string> | All the operations being applied for this constraint. Values: `METHOD_TYPE_UNSPECIFIED`, `CREATE`, `UPDATE`, `DELETE`, `REMOVE_GRANT`, `GOVERN_TAGS`. |
 | `name` | string | Name of the constraint. This is unique within the organization. Format of the name should be \* `organizations/{organization_id}/customConstraints/{custom_constraint_id}` Example : "organizations/123/customConstraints/custom.createOnlyE2TypeVms" |
 | `resourceTypes` | array<string> | The Resource Instance type on which this policy applies to. Format will be of the form : "/" Example: \* `compute.googleapis.com/Instance`. |
 
@@ -669,7 +669,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `assetTypes` | array<string> | A list of asset types to take a snapshot for. For example: "compute.googleapis.com/Disk". Regular expressions are also supported. For example: \* "compute.googleapis.com.\*" snapshots resources whose asset type starts with "compute.googleapis.com". \* ".\*Instance" snapshots resources whose asset type ends with "Instance". \* ".\*Instance.\*" snapshots resources whose asset type contains "Instance". See RE2 (https://github.com/google/re2/wiki/Syntax) for all supported regular expression syntax. If the regular expression does not match any supported asset type, an INVALID_ARGUMENT error will be returned. If specified, only matching assets will be returned, otherwise, it will snapshot all asset types. See Introduction to Cloud Asset Inventory (https://cloud.google.com/asset-inventory/docs/overview) for all supported asset types. |
-| `contentType` | string enum | Asset content type. If not specified, no content but the asset name will be returned. |
+| `contentType` | string enum | Asset content type. If not specified, no content but the asset name will be returned. Values: `CONTENT_TYPE_UNSPECIFIED`, `RESOURCE`, `IAM_POLICY`, `ORG_POLICY`, `ACCESS_POLICY`, `RELATIONSHIP`. |
 | `outputConfig` | GoogleCloudAssetV1p7beta1OutputConfig | Required. Output configuration indicating where the results will be output to. |
 | `readTime` | string (google-datetime) | Timestamp to take an asset snapshot. This can only be set to a timestamp between the current time and the current time minus 35 days (inclusive). If not specified, the current time will be used. Due to delays in resource data collection and indexing, there is a volatile window during which running the same query may get different results. |
 | `relationshipTypes` | array<string> | A list of relationship types to export, for example: `INSTANCE_TO_INSTANCEGROUP`. This field should only be specified if content_type=RELATIONSHIP. If specified, it will snapshot \[asset_types\]' specified relationships, or give errors if any relationship_types' supported types are not in \[asset_types\]. If not specified, it will snapshot all \[asset_types\]' supported relationships. An unspecified \[asset_types\] field means all supported asset_types. See Introduction to Cloud Asset Inventory (https://cloud.google.com/asset-inventory/docs/overview) for all supported asset types and relationship types. |
@@ -701,7 +701,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 
 | Field | Type | Description |
 |---|---|---|
-| `partitionKey` | string enum | The partition key for BigQuery partitioned table. |
+| `partitionKey` | string enum | The partition key for BigQuery partitioned table. Values: `PARTITION_KEY_UNSPECIFIED`, `READ_TIME`, `REQUEST_TIME`. |
 
 ### `GoogleCloudAssetV1p7beta1RelatedAsset`
 
@@ -767,7 +767,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 
 | Field | Type | Description |
 |---|---|---|
-| `allValues` | string enum | The policy all_values state. |
+| `allValues` | string enum | The policy all_values state. Values: `ALL_VALUES_UNSPECIFIED`, `ALLOW`, `DENY`. |
 | `allowedValues` | array<string> | List of values allowed at this resource. Can only be set if `all_values` is set to `ALL_VALUES_UNSPECIFIED`. |
 | `deniedValues` | array<string> | List of values denied at this resource. Can only be set if `all_values` is set to `ALL_VALUES_UNSPECIFIED`. |
 | `inheritFromParent` | boolean | Determines the inheritance behavior for this `Policy`. By default, a `ListPolicy` set at a resource supersedes any `Policy` set anywhere up the resource hierarchy. However, if `inherit_from_parent` is set to `true`, then the values from the effective `Policy` of the parent resource are inherited, meaning the values set in this `Policy` are added to the values inherited up the hierarchy. Setting `Policy` hierarchies that inherit both allowed values and denied values isn't recommended in most circumstances to keep the configuration simple and understandable. However, it is possible to set a `Policy` with `allowed_values` set that inherits a `Policy` with `denied_values` set. In this case, the values that are allowed must be in `allowed_values` and not present in `denied_values`. For example, suppose you have a `Constraint` `constraints/serviceuser.services`, which has a `constraint_type` of `list_constraint`, and with `constraint_default` set to `ALLOW`. Suppose that at the Organization level, a `Policy` is applied that restricts the allowed API activations to {`E1`, `E2`}. Then, if a `Policy` is applied to a project below the Organization that has `inherit_from_parent` set to `false` and field all_values set to DENY, then an attempt to activate any API will be denied. The following examples demonstrate different possible layerings for `projects/bar` parented by `organizations/foo`: Example 1 (no inherited values): `organizations/foo` has a `Policy` with values: {allowed_values: "E1" allowed_values:"E2"} `projects/bar` has `inherit_from_parent` `false` and values: {allowed_values: "E3" allowed_values: "E4"} The accepted values at `organizations/foo` are `E1`, `E2`. The accepted values at `projects/bar` are `E3`, and `E4`. Example 2 (inherited values): `organizations/foo` has a `Policy` with values: {allowed_values: "E1" allowed_values:"E2"} `projects/bar` has a `Policy` with values: {value: "E3" value: "E4" inherit_from_parent: true} The accepted values at `organizations/foo` are `E1`, `E2`. The accepted values at `projects/bar` are `E1`, `E2`, `E3`, and `E4`. Example 3 (inheriting both allowed and denied values): `organizations/foo` has a `Policy` with values: {allowed_values: "E1" allowed_values: "E2"} `projects/bar` has a `Policy` with: {denied_values: "E1"} The accepted values at `organizations/foo` are `E1`, `E2`. The value accepted at `projects/bar` is `E2`. Example 4 (RestoreDefault): `organizations/foo` has a `Policy` with values: {allowed_values: "E1" allowed_values:"E2"} `projects/bar` has a `Policy` with values: {RestoreDefault: {}} The accepted values at `organizations/foo` are `E1`, `E2`. The accepted values at `projects/bar` are either all or none depending on the value of `constraint_default` (if `ALLOW`, all; if `DENY`, none). Example 5 (no policy inherits parent policy): `organizations/foo` has no `Policy` set. `projects/bar` has no `Policy` set. The accepted values at both levels are either all or none depending on the value of `constraint_default` (if `ALLOW`, all; if `DENY`, none). Example 6 (ListConstraint allowing all): `organizations/foo` has a `Policy` with values: {allowed_values: "E1" allowed_values: "E2"} `projects/bar` has a `Policy` with: {all: ALLOW} The accepted values at `organizations/foo` are `E1`, E2`. Any value is accepted at `projects/bar`. Example 7 (ListConstraint allowing none): `organizations/foo` has a `Policy` with values: {allowed_values: "E1" allowed_values: "E2"} `projects/bar` has a `Policy` with: {all: DENY} The accepted values at `organizations/foo` are `E1`, E2`. No value is accepted at `projects/bar`. Example 10 (allowed and denied subtrees of Resource Manager hierarchy): Given the following resource hierarchy O1->{F1, F2}; F1->{P1}; F2->{P2, P3}, `organizations/foo` has a `Policy` with values: {allowed_values: "under:organizations/O1"} `projects/bar` has a `Policy` with: {allowed_values: "under:projects/P3"} {denied_values: "under:folders/F2"} The accepted values at `organizations/foo` are `organizations/O1`, `folders/F1`, `folders/F2`, `projects/P1`, `projects/P2`, `projects/P3`. The accepted values at `projects/bar` are `organizations/O1`, `folders/F1`, `projects/P1`. |
@@ -846,7 +846,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 
 | Field | Type | Description |
 |---|---|---|
-| `combiningFunction` | string enum | How the `conditions` list should be combined to determine if a request is granted this `AccessLevel`. If `AND` is used, each `Condition` in `conditions` must be satisfied for the `AccessLevel` to be applied. If `OR` is used, at least one `Condition` in `conditions` must be satisfied for the `AccessLevel` to be applied. Default behavior is `AND`. |
+| `combiningFunction` | string enum | How the `conditions` list should be combined to determine if a request is granted this `AccessLevel`. If `AND` is used, each `Condition` in `conditions` must be satisfied for the `AccessLevel` to be applied. If `OR` is used, at least one `Condition` in `conditions` must be satisfied for the `AccessLevel` to be applied. Default behavior is `AND`. Values: `AND`, `OR`. |
 | `conditions` | array<GoogleIdentityAccesscontextmanagerV1Condition> | Required. A list of requirements for the `AccessLevel` to be granted. |
 
 ### `GoogleIdentityAccesscontextmanagerV1Condition`
@@ -880,8 +880,8 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 
 | Field | Type | Description |
 |---|---|---|
-| `allowedDeviceManagementLevels` | array<string> | Allowed device management levels. An empty list allows all management levels. |
-| `allowedEncryptionStatuses` | array<string> | Allowed encryption statuses. An empty list allows all statuses. |
+| `allowedDeviceManagementLevels` | array<string> | Allowed device management levels. An empty list allows all management levels. Values: `MANAGEMENT_UNSPECIFIED`, `NONE`, `BASIC`, `COMPLETE`. |
+| `allowedEncryptionStatuses` | array<string> | Allowed encryption statuses. An empty list allows all statuses. Values: `ENCRYPTION_UNSPECIFIED`, `ENCRYPTION_UNSUPPORTED`, `UNENCRYPTED`, `ENCRYPTED`. |
 | `osConstraints` | array<GoogleIdentityAccesscontextmanagerV1OsConstraint> | Allowed OS versions. An empty list allows all types and all versions. |
 | `requireAdminApproval` | boolean | Whether the device needs to be approved by the customer admin. |
 | `requireCorpOwned` | boolean | Whether the device needs to be corp-owned. |
@@ -895,8 +895,8 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `identities` | array<string> | A list of identities that are allowed access through \[EgressPolicy\]. Identities can be an individual user, service account, Google group, third-party identity, or agent identity. For the list of supported identity types, see https://docs.cloud.google.com/vpc-service-controls/docs/supported-identities. |
-| `identityType` | string enum | Specifies the type of identities that are allowed access to outside the perimeter. If left unspecified, then members of `identities` field will be allowed access. |
-| `sourceRestriction` | string enum | Whether to enforce traffic restrictions based on `sources` field. If the `sources` field is not empty, then this field must be set to `SOURCE_RESTRICTION_ENABLED`. |
+| `identityType` | string enum | Specifies the type of identities that are allowed access to outside the perimeter. If left unspecified, then members of `identities` field will be allowed access. Values: `IDENTITY_TYPE_UNSPECIFIED`, `ANY_IDENTITY`, `ANY_USER_ACCOUNT`, `ANY_SERVICE_ACCOUNT`. |
+| `sourceRestriction` | string enum | Whether to enforce traffic restrictions based on `sources` field. If the `sources` field is not empty, then this field must be set to `SOURCE_RESTRICTION_ENABLED`. Values: `SOURCE_RESTRICTION_UNSPECIFIED`, `SOURCE_RESTRICTION_ENABLED`, `SOURCE_RESTRICTION_DISABLED`. |
 | `sources` | array<GoogleIdentityAccesscontextmanagerV1EgressSource> | Sources that this EgressPolicy authorizes access from. If this field is not empty, then `source_restriction` must be set to `SOURCE_RESTRICTION_ENABLED`. |
 
 ### `GoogleIdentityAccesscontextmanagerV1EgressPolicy`
@@ -941,7 +941,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `identities` | array<string> | A list of identities that are allowed access through \[IngressPolicy\]. Identities can be an individual user, service account, Google group, third-party identity, or agent identity. For the list of supported identity types, see https://docs.cloud.google.com/vpc-service-controls/docs/supported-identities. |
-| `identityType` | string enum | Specifies the type of identities that are allowed access from outside the perimeter. If left unspecified, then members of `identities` field will be allowed access. |
+| `identityType` | string enum | Specifies the type of identities that are allowed access from outside the perimeter. If left unspecified, then members of `identities` field will be allowed access. Values: `IDENTITY_TYPE_UNSPECIFIED`, `ANY_IDENTITY`, `ANY_USER_ACCOUNT`, `ANY_SERVICE_ACCOUNT`. |
 | `sources` | array<GoogleIdentityAccesscontextmanagerV1IngressSource> | Sources that this IngressPolicy authorizes access from. |
 
 ### `GoogleIdentityAccesscontextmanagerV1IngressPolicy`
@@ -1004,7 +1004,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `minimumVersion` | string | The minimum allowed OS version. If not set, any version of this OS satisfies the constraint. Format: `"major.minor.patch"`. Examples: `"10.5.301"`, `"9.2.1"`. |
-| `osType` | string enum | Required. The allowed OS type. |
+| `osType` | string enum | Required. The allowed OS type. Values: `OS_UNSPECIFIED`, `DESKTOP_MAC`, `DESKTOP_WINDOWS`, `DESKTOP_LINUX`, `DESKTOP_CHROME_OS`, `GOOGLEBOOK_OS`, `ANDROID`, `IOS`. |
 | `requireVerifiedChromeOs` | boolean | Only allows requests from devices with a verified Chrome OS. Verification includes requirements that the device is enterprise-managed, conforms to domain policies, and the caller has permission to call the API targeted by the request. |
 
 ### `GoogleIdentityAccesscontextmanagerV1PrivateServiceConnectEndpoint`
@@ -1037,7 +1037,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `description` | string | Description of the `ServicePerimeter` and its use. Does not affect behavior. |
 | `etag` | string | Optional. An opaque identifier for the current version of the `ServicePerimeter`. This identifier does not follow any specific format. If an etag is not provided, the operation will be performed as if a valid etag is provided. |
 | `name` | string | Identifier. Resource name for the `ServicePerimeter`. Format: `accessPolicies/{access_policy}/servicePerimeters/{service_perimeter}`. The `service_perimeter` component must begin with a letter, followed by alphanumeric characters or `_`. After you create a `ServicePerimeter`, you cannot change its `name`. |
-| `perimeterType` | string enum | Perimeter type indicator. A single project or VPC network is allowed to be a member of a single regular perimeter, but multiple service perimeter bridges. A project cannot be included in a perimeter bridge without being included in a regular perimeter. For perimeter bridges, the restricted service list as well as access level lists must be empty. |
+| `perimeterType` | string enum | Perimeter type indicator. A single project or VPC network is allowed to be a member of a single regular perimeter, but multiple service perimeter bridges. A project cannot be included in a perimeter bridge without being included in a regular perimeter. For perimeter bridges, the restricted service list as well as access level lists must be empty. Values: `PERIMETER_TYPE_REGULAR`, `PERIMETER_TYPE_BRIDGE`. |
 | `spec` | GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfig | Proposed (or dry run) ServicePerimeter configuration. This configuration allows you to specify and test ServicePerimeter configuration without enforcing actual access restrictions. Only allowed to be set when the `use_explicit_dry_run_spec` flag is set. |
 | `status` | GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfig | Current ServicePerimeter configuration. Specifies sets of resources, restricted services, and access levels that determine perimeter content and boundaries. |
 | `title` | string | Human readable title. Must be unique within the Policy. |
@@ -1067,7 +1067,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `allowedServicePatterns` | array<GoogleIdentityAccesscontextmanagerV1ServicePattern> | Specifies which Google services are allowed to be accessed from VPC networks in the service perimeter. |
 | `allowedServices` | array<string> | The list of APIs usable within the Service Perimeter. Must be empty unless `enable_restriction` is `true`. You can specify a list of individual services, as well as include the `'RESTRICTED-SERVICES'` value, which automatically includes all of the services protected by the perimeter. |
 | `enableRestriction` | boolean | Whether to restrict API calls within the Service Perimeter to the list of APIs specified in `allowed_services`. |
-| `servicePatternsEnforcementScopes` | array<string> | Defines the enforcement scopes of service patterns. |
+| `servicePatternsEnforcementScopes` | array<string> | Defines the enforcement scopes of service patterns. Values: `SERVICE_PATTERNS_ENFORCEMENT_SCOPE_UNSPECIFIED`, `GOOGLE_APIS_VIA_PRIVATE_PATH`. |
 
 ### `GoogleIdentityAccesscontextmanagerV1VpcNetworkSource`
 
@@ -1145,7 +1145,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `cause` | string | The human-readable description of the cause of failure. |
-| `code` | string enum | The Google standard error code that best describes the state. For example: - OK means the analysis on this entity has been successfully finished; - PERMISSION_DENIED means an access denied error is encountered; - DEADLINE_EXCEEDED means the analysis on this entity hasn't been started in time; |
+| `code` | string enum | The Google standard error code that best describes the state. For example: - OK means the analysis on this entity has been successfully finished; - PERMISSION_DENIED means an access denied error is encountered; - DEADLINE_EXCEEDED means the analysis on this entity hasn't been started in time; Values: `OK`, `CANCELLED`, `UNKNOWN`, `INVALID_ARGUMENT`, `DEADLINE_EXCEEDED`, `NOT_FOUND`, `ALREADY_EXISTS`, `PERMISSION_DENIED`, `UNAUTHENTICATED`, `RESOURCE_EXHAUSTED`, `FAILED_PRECONDITION`, `ABORTED`, `OUT_OF_RANGE`, `UNIMPLEMENTED`, `INTERNAL`, `UNAVAILABLE`, `DATA_LOSS`. |
 
 ### `IamPolicySearchResult`
 
@@ -1206,8 +1206,8 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `createTime` | string (google-datetime) | When this inventory item was first detected. |
 | `id` | string | Identifier for this item, unique across items for this VM. |
 | `installedPackage` | SoftwarePackage | Software package present on the VM instance. |
-| `originType` | string enum | The origin of this inventory item. |
-| `type` | string enum | The specific type of inventory, correlating to its specific details. |
+| `originType` | string enum | The origin of this inventory item. Values: `ORIGIN_TYPE_UNSPECIFIED`, `INVENTORY_REPORT`. |
+| `type` | string enum | The specific type of inventory, correlating to its specific details. Values: `TYPE_UNSPECIFIED`, `INSTALLED_PACKAGE`, `AVAILABLE_PACKAGE`. |
 | `updateTime` | string (google-datetime) | When this inventory item was last modified. |
 
 ### `ListAssetsResponse`
@@ -1352,7 +1352,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 
 | Field | Type | Description |
 |---|---|---|
-| `partitionKey` | string enum | The partition key for BigQuery partitioned table. |
+| `partitionKey` | string enum | The partition key for BigQuery partitioned table. Values: `PARTITION_KEY_UNSPECIFIED`, `READ_TIME`, `REQUEST_TIME`. |
 
 ### `Permissions`
 

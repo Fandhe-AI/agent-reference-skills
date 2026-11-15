@@ -28,9 +28,9 @@ Message types referenced by the methods listed under `references/rest/essentialc
 | `email` | string | Required. The email address to send notifications to. The email address does not need to be a Google Account. |
 | `languageTag` | string | Required. The preferred language for notifications, as a ISO 639-1 language code. See Supported languages (https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages) for a list of supported languages. |
 | `name` | string | Output only. The identifier for the contact. Format: {resource_type}/{resource_id}/contacts/{contact_id} |
-| `notificationCategorySubscriptions` | array<string> | Required. The categories of notifications that the contact will receive communications for. |
+| `notificationCategorySubscriptions` | array<string> | Required. The categories of notifications that the contact will receive communications for. Values: `NOTIFICATION_CATEGORY_UNSPECIFIED`, `ALL`, `SUSPENSION`, `SECURITY`, `TECHNICAL`, `BILLING`, `LEGAL`, `PRODUCT_UPDATES`, `TECHNICAL_INCIDENTS`. |
 | `validateTime` | string (google-datetime) | Output only. The last time the validation_state was updated, either manually or automatically. A contact is considered stale if its validation state was updated more than 1 year ago. |
-| `validationState` | string enum | Output only. The validity of the contact. A contact is considered valid if it is the correct recipient for notifications for a particular resource. |
+| `validationState` | string enum | Output only. The validity of the contact. A contact is considered valid if it is the correct recipient for notifications for a particular resource. Values: `VALIDATION_STATE_UNSPECIFIED`, `VALID`, `INVALID`. |
 
 ### `GoogleCloudEssentialcontactsV1ListContactsResponse`
 
@@ -50,7 +50,7 @@ Message types referenced by the methods listed under `references/rest/essentialc
 | Field | Type | Description |
 |---|---|---|
 | `contacts` | array<string> | Required. The list of names of the contacts to send a test message to. Format: organizations/{organization}/contacts/{contact}, folders/{folder}/contacts/{contact} or projects/{project}/contacts/{contact} (where {project} is the project number) |
-| `notificationCategory` | string enum | Required. The notification category to send the test message for. All contacts must be subscribed to this category. |
+| `notificationCategory` | string enum | Required. The notification category to send the test message for. All contacts must be subscribed to this category. Values: `NOTIFICATION_CATEGORY_UNSPECIFIED`, `ALL`, `SUSPENSION`, `SECURITY`, `TECHNICAL`, `BILLING`, `LEGAL`, `PRODUCT_UPDATES`, `TECHNICAL_INCIDENTS`. |
 
 ### `GoogleProtobufEmpty`
 

@@ -114,7 +114,7 @@ Message types referenced by the methods listed under `references/rest/cloudnumbe
 | `resourceUri` | string | Output only. The resource uri of the discovered resource. |
 | `sourceId` | string | Output only. The canonical google.aip.dev/122 name of the source resource. |
 | `sourceSubId` | string | Output only. A single source resource can be the source of multiple CNR resources. This sub_id is used to distinguish between the different CNR resources derived from the same upstream resource. For example, a single subnetwork can be the source of multiple Ranges, one for each protocol. In this case, the sub_id could be "private-ipv4" or "private-ipv6". |
-| `state` | string enum | Output only. The state of the resource. |
+| `state` | string enum | Output only. The state of the resource. Values: `RESOURCE_STATE_UNSPECIFIED`, `INVALID`, `EXISTS`, `DOES_NOT_EXIST`, `ERROR`. |
 | `updateTime` | string (google-datetime) | Output only. The time when the resource was last modified. |
 
 ### `Empty`
@@ -148,11 +148,11 @@ Message types referenced by the methods listed under `references/rest/cloudnumbe
 | Field | Type | Description |
 |---|---|---|
 | `createTime` | string (google-datetime) | Output only. The time at which the IpamAdminScope was created. |
-| `enabledAddonPlatforms` | array<string> | Required. Add-on platforms that are enabled for this IpamAdminScope. Cloud Number Registry only discovers the IP addresses from the enabled platforms. |
+| `enabledAddonPlatforms` | array<string> | Required. Add-on platforms that are enabled for this IpamAdminScope. Cloud Number Registry only discovers the IP addresses from the enabled platforms. Values: `ADD_ON_PLATFORM_UNSPECIFIED`, `COMPUTE_ENGINE`, `GCE`. |
 | `labels` | object | Optional. User-defined labels. |
 | `name` | string | Required. Identifier. The resource name of the IpamAdminScope. |
 | `scopes` | array<string> | Required. Administrative scopes enabled for IP address discovery and management. For example, "organizations/1234567890". Minimum of 1 scope is required. In preview, only one organization scope is allowed. |
-| `state` | string enum | Output only. State of resource discovery pipeline. |
+| `state` | string enum | Output only. State of resource discovery pipeline. Values: `DISCOVERY_PIPELINE_STATE_UNSPECIFIED`, `INTERNAL_FAILURE`, `FAILED`, `SETUP_IN_PROGRESS`, `READY_FOR_USE`, `DELETING_IN_PROGRESS`, `UPDATING`, `RECOVERING`, `DISABLED`, `DELETION_COMPLETED`, `CLEANUP_IN_PROGRESS`, `READY_FOR_DELETION`. |
 | `updateTime` | string (google-datetime) | Output only. The time at which the IpamAdminScope was last updated. |
 
 ### `IpamAdminScopeAvailability`
@@ -163,7 +163,7 @@ Message types referenced by the methods listed under `references/rest/cloudnumbe
 | Field | Type | Description |
 |---|---|---|
 | `adminProject` | string (int64) | The admin project of the IpamAdminScope if it exists. |
-| `availability` | string enum | The availability of the scope. |
+| `availability` | string enum | The availability of the scope. Values: `AVAILABILITY_UNSPECIFIED`, `AVAILABLE`, `UNAVAILABLE`. |
 | `scope` | string | The scope of the IpamAdminScope. |
 
 ### `ListCustomRangesResponse`
@@ -340,12 +340,12 @@ Message types referenced by the methods listed under `references/rest/cloudnumbe
 | `aggregatedData` | RealmAggregatedData | Output only. Aggregated data for the Realm. Populated only when the view is AGGREGATE. |
 | `createTime` | string (google-datetime) | Output only. The time at which the Realm was created. |
 | `discoveryMetadata` | DiscoveryMetadata | Output only. Discovery metadata of the Realm. |
-| `ipVersion` | string enum | Optional. IP version of the Realm. |
+| `ipVersion` | string enum | Optional. IP version of the Realm. Values: `IP_VERSION_UNSPECIFIED`, `IPV4`, `IPV6`. |
 | `labels` | object | Optional. User-defined labels. |
-| `managementType` | string enum | Optional. Management type of the Realm. |
+| `managementType` | string enum | Optional. Management type of the Realm. Values: `MANAGEMENT_TYPE_UNSPECIFIED`, `CNR`, `USER`. |
 | `name` | string | Required. Identifier. The resource name of the Realm. |
 | `registryBook` | string | Required. Name of the RegistryBook that claims the Realm. |
-| `trafficType` | string enum | Required. Traffic type of the Realm. |
+| `trafficType` | string enum | Required. Traffic type of the Realm. Values: `TRAFFIC_TYPE_UNSPECIFIED`, `UNSET`, `INTERNET`, `PRIVATE`, `LINKLOCAL`. |
 | `updateTime` | string (google-datetime) | Output only. The time at which the Realm was last updated. |
 
 ### `RealmAggregatedData`
@@ -396,7 +396,7 @@ Message types referenced by the methods listed under `references/rest/cloudnumbe
 | `pageSize` | integer (int32) | Optional. Requested page size. Server may return fewer items than requested. If unspecified, server will pick an appropriate default. |
 | `pageToken` | string | Optional. A token identifying a page of results the server should return. |
 | `query` | string | Optional. Search query. This string filters resources in an AIP-160-like format. It has some limitations. You can only specify top level conjunctions or attribute level negations. Each restriction can only be used once except the attribute restriction. The available restrictions for Ranges are: - `resource_id`: The resource ID to search for within Ranges (only substring matching using the format `resource_id="*value*"` is supported). - `realm`: The Realm name to search in. - `ip_address`: The IP address to search for within Ranges. - `ip_version`: The IP version to filter by (e.g., "IPV4", "IPV6"). - `parent_range`: The parent Range of the Range to search for. - `attribute_text`: The attribute text to search for within Ranges. - `attribute`: The attribute key and value to filter by. The available restrictions for Realms are: - `ip_version`: The IP version to search for. - `management_type`: The management type of the Realm (e.g., "CNR", "USER"). Only one of attribute_text or multiple attribute filters can be specified. Examples: - `realm=test-realm` - `realm=test-realm AND ip_address=10.0.0.0` - `realm=test-realm AND ip_version=IPV6` - `realm=test-realm AND resource_id="*my-range*"` - `realm=test-realm AND attribute_text=test` - `ip_address=10.0.0.0 AND attribute:(key1=value1) AND attribute:(key2=value2)` - `attribute_text=test AND parent_range=projects/123/locations/global/discoveredRanges/test-parent-range` - `management_type=CNR` |
-| `searchResourceTypes` | array<string> | Optional. The type of resources to search for. If not specified, the server will return Ranges. |
+| `searchResourceTypes` | array<string> | Optional. The type of resources to search for. If not specified, the server will return Ranges. Values: `SEARCH_RESOURCE_TYPE_UNSPECIFIED`, `RANGES`, `REALMS`. |
 | `showUtilization` | boolean | Optional. Whether to show the utilization of the Ranges in the response. |
 
 ### `SearchIpResourcesResponse`

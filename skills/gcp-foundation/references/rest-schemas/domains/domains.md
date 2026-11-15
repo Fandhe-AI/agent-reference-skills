@@ -26,7 +26,7 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 | Field | Type | Description |
 |---|---|---|
 | `exemptedMembers` | array<string> | Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members. |
-| `logType` | string enum | The log type that this config enables. |
+| `logType` | string enum | The log type that this config enables. Values: `LOG_TYPE_UNSPECIFIED`, `ADMIN_READ`, `DATA_WRITE`, `DATA_READ`. |
 
 ### `AuthorizationCode`
 
@@ -55,7 +55,7 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `contactNotices` | array<string> | The list of contact notices that the caller acknowledges. The notices needed here depend on the values specified in `contact_settings`. |
+| `contactNotices` | array<string> | The list of contact notices that the caller acknowledges. The notices needed here depend on the values specified in `contact_settings`. Values: `CONTACT_NOTICE_UNSPECIFIED`, `PUBLIC_CONTACT_DATA_ACKNOWLEDGEMENT`. |
 | `contactSettings` | ContactSettings | Fields of the `ContactSettings` to update. |
 | `updateMask` | string (google-fieldmask) | Required. The field mask describing which fields to update as a comma-separated list. For example, if only the registrant contact is being updated, the `update_mask` is `"registrant_contact"`. |
 | `validateOnly` | boolean | Validate the request without actually updating the contact settings. |
@@ -102,7 +102,7 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 | Field | Type | Description |
 |---|---|---|
 | `adminContact` | Contact | Required. The administrative contact for the `Registration`. |
-| `privacy` | string enum | Required. Privacy setting for the contacts associated with the `Registration`. |
+| `privacy` | string enum | Required. Privacy setting for the contacts associated with the `Registration`. Values: `CONTACT_PRIVACY_UNSPECIFIED`, `PUBLIC_CONTACT_DATA`, `PRIVATE_CONTACT_DATA`, `REDACTED_CONTACT_DATA`. |
 | `registrantContact` | Contact | Required. The registrant contact for the `Registration`. \*Caution: Anyone with access to this email address, phone number, and/or postal address can take control of the domain.\* \*Warning: For new `Registration`s, the registrant receives an email confirmation that they must complete within 15 days to avoid domain suspension.\* |
 | `technicalContact` | Contact | Required. The technical contact for the `Registration`. |
 
@@ -136,7 +136,7 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 | Field | Type | Description |
 |---|---|---|
 | `domainName` | string | The domain name. Unicode domain names are expressed in Punycode format. |
-| `resourceState` | string enum | The state of this domain as a `Registration` resource. |
+| `resourceState` | string enum | The state of this domain as a `Registration` resource. Values: `RESOURCE_STATE_UNSPECIFIED`, `IMPORTABLE`, `UNSUPPORTED`, `SUSPENDED`, `EXPIRED`, `DELETED`. |
 | `yearlyPrice` | Money | Price to renew the domain for one year. Only set when `resource_state` is `IMPORTABLE`. |
 
 ### `DomainForwarding`
@@ -148,7 +148,7 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 |---|---|---|
 | `pathForwarding` | boolean | If true, forwards the path after the domain name to the same path at the new address. |
 | `pemCertificate` | string | The PEM-encoded certificate chain. |
-| `redirectType` | string enum | The redirect type. |
+| `redirectType` | string enum | The redirect type. Values: `REDIRECT_TYPE_UNSPECIFIED`, `TEMPORARY`, `PERMANENT`. |
 | `sslEnabled` | boolean | If true, the forwarding works also over HTTPS. |
 | `subdomain` | string | The subdomain of the registered domain that is being forwarded. E.g. `www.example.com`, `example.com` (i.e. the registered domain itself) or `*.example.com` (i.e. all subdomains). |
 | `targetUri` | string | The target of the domain forwarding, i.e. the path to redirect the `subdomain` to. |
@@ -160,9 +160,9 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `algorithm` | string enum | The algorithm used to generate the referenced DNSKEY. |
+| `algorithm` | string enum | The algorithm used to generate the referenced DNSKEY. Values: `ALGORITHM_UNSPECIFIED`, `RSAMD5`, `DH`, `DSA`, `ECC`, `RSASHA1`, `DSANSEC3SHA1`, `RSASHA1NSEC3SHA1`, `RSASHA256`, `RSASHA512`, `ECCGOST`, `ECDSAP256SHA256`, `ECDSAP384SHA384`, `ED25519`, `ED448`, `INDIRECT`, `PRIVATEDNS`, `PRIVATEOID`. |
 | `digest` | string | The digest generated from the referenced DNSKEY. |
-| `digestType` | string enum | The hash function used to generate the digest of the referenced DNSKEY. |
+| `digestType` | string enum | The hash function used to generate the digest of the referenced DNSKEY. Values: `DIGEST_TYPE_UNSPECIFIED`, `SHA1`, `SHA256`, `GOST3411`, `SHA384`. |
 | `keyTag` | integer (int32) | The key tag of the record. Must be set in range 0 -- 65535. |
 
 ### `EmailForwarding`
@@ -233,7 +233,7 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 | Field | Type | Description |
 |---|---|---|
 | `dsRecords` | array<DsRecord> | Output only. The list of DS records published for this domain. The list is automatically populated when `ds_state` is `DS_RECORDS_PUBLISHED`, otherwise it remains empty. |
-| `dsState` | string enum | Required. The state of DS records for this domain. Used to enable or disable automatic DNSSEC. |
+| `dsState` | string enum | Required. The state of DS records for this domain. Used to enable or disable automatic DNSSEC. Values: `DS_STATE_UNSPECIFIED`, `DS_RECORDS_UNPUBLISHED`, `DS_RECORDS_PUBLISHED`. |
 | `nameServers` | array<string> | Output only. A list of name servers that store the DNS zone for this domain. Each name server is a domain name, with Unicode domain names expressed in Punycode format. This field is automatically populated with the name servers assigned to the Google Domains DNS zone. |
 
 ### `HealthCheckTargets`
@@ -305,8 +305,8 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 | Field | Type | Description |
 |---|---|---|
 | `ipAddress` | string | The frontend IP address of the load balancer to health check. |
-| `ipProtocol` | string enum | The protocol of the load balancer to health check. |
-| `loadBalancerType` | string enum | The type of load balancer specified by this target. This value must match the configuration of the load balancer located at the LoadBalancerTarget's IP address, port, and region. Use the following: - \*regionalL4ilb\*: for a regional internal passthrough Network Load Balancer. - \*regionalL7ilb\*: for a regional internal Application Load Balancer. - \*globalL7ilb\*: for a global internal Application Load Balancer. |
+| `ipProtocol` | string enum | The protocol of the load balancer to health check. Values: `UNDEFINED`, `TCP`, `UDP`. |
+| `loadBalancerType` | string enum | The type of load balancer specified by this target. This value must match the configuration of the load balancer located at the LoadBalancerTarget's IP address, port, and region. Use the following: - \*regionalL4ilb\*: for a regional internal passthrough Network Load Balancer. - \*regionalL7ilb\*: for a regional internal Application Load Balancer. - \*globalL7ilb\*: for a global internal Application Load Balancer. Values: `NONE`, `GLOBAL_L7ILB`, `REGIONAL_L4ILB`, `REGIONAL_L7ILB`. |
 | `networkUrl` | string | The fully qualified URL of the network that the load balancer is attached to. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`. |
 | `port` | string | The configured port of the load balancer. |
 | `project` | string | The project ID in which the load balancer is located. |
@@ -332,10 +332,10 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `effectiveTransferLockState` | string enum | Output only. The actual transfer lock state for this `Registration`. |
-| `preferredRenewalMethod` | string enum | Optional. The desired renewal method for this `Registration`. The actual `renewal_method` is automatically updated to reflect this choice. If unset or equal to `RENEWAL_METHOD_UNSPECIFIED`, the actual `renewalMethod` is treated as if it were set to `AUTOMATIC_RENEWAL`. You cannot use `RENEWAL_DISABLED` during resource creation, and you can update the renewal status only when the `Registration` resource has state `ACTIVE` or `SUSPENDED`. When `preferred_renewal_method` is set to `AUTOMATIC_RENEWAL`, the actual `renewal_method` can be set to `RENEWAL_DISABLED` in case of problems with the billing account or reported domain abuse. In such cases, check the `issues` field on the `Registration`. After the problem is resolved, the `renewal_method` is automatically updated to `preferred_renewal_method` in a few hours. |
-| `renewalMethod` | string enum | Output only. The actual renewal method for this `Registration`. When `preferred_renewal_method` is set to `AUTOMATIC_RENEWAL`, the actual `renewal_method` can be equal to `RENEWAL_DISABLED`—for example, when there are problems with the billing account or reported domain abuse. In such cases, check the `issues` field on the `Registration`. After the problem is resolved, the `renewal_method` is automatically updated to `preferred_renewal_method` in a few hours. |
-| `transferLockState` | string enum | This is the desired transfer lock state for this `Registration`. A transfer lock controls whether the domain can be transferred to another registrar. The transfer lock state of the domain is returned in the `effective_transfer_lock_state` property. The transfer lock state values might be different for the following reasons: \* `transfer_lock_state` was updated only a short time ago. \* Domains with the `TRANSFER_LOCK_UNSUPPORTED_BY_REGISTRY` state are in the list of `domain_properties`. These domains are always in the `UNLOCKED` state. |
+| `effectiveTransferLockState` | string enum | Output only. The actual transfer lock state for this `Registration`. Values: `TRANSFER_LOCK_STATE_UNSPECIFIED`, `UNLOCKED`, `LOCKED`. |
+| `preferredRenewalMethod` | string enum | Optional. The desired renewal method for this `Registration`. The actual `renewal_method` is automatically updated to reflect this choice. If unset or equal to `RENEWAL_METHOD_UNSPECIFIED`, the actual `renewalMethod` is treated as if it were set to `AUTOMATIC_RENEWAL`. You cannot use `RENEWAL_DISABLED` during resource creation, and you can update the renewal status only when the `Registration` resource has state `ACTIVE` or `SUSPENDED`. When `preferred_renewal_method` is set to `AUTOMATIC_RENEWAL`, the actual `renewal_method` can be set to `RENEWAL_DISABLED` in case of problems with the billing account or reported domain abuse. In such cases, check the `issues` field on the `Registration`. After the problem is resolved, the `renewal_method` is automatically updated to `preferred_renewal_method` in a few hours. Values: `RENEWAL_METHOD_UNSPECIFIED`, `AUTOMATIC_RENEWAL`, `MANUAL_RENEWAL`, `RENEWAL_DISABLED`. |
+| `renewalMethod` | string enum | Output only. The actual renewal method for this `Registration`. When `preferred_renewal_method` is set to `AUTOMATIC_RENEWAL`, the actual `renewal_method` can be equal to `RENEWAL_DISABLED`—for example, when there are problems with the billing account or reported domain abuse. In such cases, check the `issues` field on the `Registration`. After the problem is resolved, the `renewal_method` is automatically updated to `preferred_renewal_method` in a few hours. Values: `RENEWAL_METHOD_UNSPECIFIED`, `AUTOMATIC_RENEWAL`, `MANUAL_RENEWAL`, `RENEWAL_DISABLED`. |
+| `transferLockState` | string enum | This is the desired transfer lock state for this `Registration`. A transfer lock controls whether the domain can be transferred to another registrar. The transfer lock state of the domain is returned in the `effective_transfer_lock_state` property. The transfer lock state values might be different for the following reasons: \* `transfer_lock_state` was updated only a short time ago. \* Domains with the `TRANSFER_LOCK_UNSUPPORTED_BY_REGISTRY` state are in the list of `domain_properties`. These domains are always in the `UNLOCKED` state. Values: `TRANSFER_LOCK_STATE_UNSPECIFIED`, `UNLOCKED`, `LOCKED`. |
 
 ### `Money`
 
@@ -438,8 +438,8 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `contactNotices` | array<string> | The list of contact notices that the caller acknowledges. The notices needed here depend on the values specified in `registration.contact_settings`. |
-| `domainNotices` | array<string> | The list of domain notices that you acknowledge. Call `RetrieveRegisterParameters` to see the notices that need acknowledgement. |
+| `contactNotices` | array<string> | The list of contact notices that the caller acknowledges. The notices needed here depend on the values specified in `registration.contact_settings`. Values: `CONTACT_NOTICE_UNSPECIFIED`, `PUBLIC_CONTACT_DATA_ACKNOWLEDGEMENT`. |
+| `domainNotices` | array<string> | The list of domain notices that you acknowledge. Call `RetrieveRegisterParameters` to see the notices that need acknowledgement. Values: `DOMAIN_NOTICE_UNSPECIFIED`, `HSTS_PRELOADED`. |
 | `registration` | Registration | Required. The complete `Registration` resource to be created. |
 | `validateOnly` | boolean | When true, only validation is performed, without actually registering the domain. Follows: https://cloud.google.com/apis/design/design_patterns#request_validation |
 | `yearlyPrice` | Money | Required. Yearly price to register or renew the domain. The value that should be put here can be obtained from RetrieveRegisterParameters or SearchDomains calls. |
@@ -451,10 +451,10 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `availability` | string enum | Indicates whether the domain is available for registration. This value is accurate when obtained by calling `RetrieveRegisterParameters`, but is approximate when obtained by calling `SearchDomains`. |
+| `availability` | string enum | Indicates whether the domain is available for registration. This value is accurate when obtained by calling `RetrieveRegisterParameters`, but is approximate when obtained by calling `SearchDomains`. Values: `AVAILABILITY_UNSPECIFIED`, `AVAILABLE`, `UNAVAILABLE`, `UNSUPPORTED`, `UNKNOWN`. |
 | `domainName` | string | The domain name. Unicode domain names are expressed in Punycode format. |
-| `domainNotices` | array<string> | Notices about special properties of the domain. |
-| `supportedPrivacy` | array<string> | Contact privacy options that the domain supports. |
+| `domainNotices` | array<string> | Notices about special properties of the domain. Values: `DOMAIN_NOTICE_UNSPECIFIED`, `HSTS_PRELOADED`. |
+| `supportedPrivacy` | array<string> | Contact privacy options that the domain supports. Values: `CONTACT_PRIVACY_UNSPECIFIED`, `PUBLIC_CONTACT_DATA`, `PRIVATE_CONTACT_DATA`, `REDACTED_CONTACT_DATA`. |
 | `yearlyPrice` | Money | Price to register or renew the domain for one year. |
 
 ### `Registration`
@@ -468,17 +468,17 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 | `createTime` | string (google-datetime) | Output only. The creation timestamp of the `Registration` resource. |
 | `dnsSettings` | DnsSettings | Settings controlling the DNS configuration of the `Registration`. You cannot update these with the `UpdateRegistration` method. To update these settings, use the `ConfigureDnsSettings` method. |
 | `domainName` | string | Required. Immutable. The domain name. Unicode domain names must be expressed in Punycode format. |
-| `domainProperties` | array<string> | Output only. Special properties of the domain. |
+| `domainProperties` | array<string> | Output only. Special properties of the domain. Values: `DOMAIN_PROPERTY_UNSPECIFIED`, `TRANSFER_LOCK_UNSUPPORTED_BY_REGISTRY`, `REQUIRE_PUSH_TRANSFER`. |
 | `expireTime` | string (google-datetime) | Output only. The expiration timestamp of the `Registration`. |
-| `issues` | array<string> | Output only. The set of issues with the `Registration` that require attention. |
+| `issues` | array<string> | Output only. The set of issues with the `Registration` that require attention. Values: `ISSUE_UNSPECIFIED`, `CONTACT_SUPPORT`, `UNVERIFIED_EMAIL`, `PROBLEM_WITH_BILLING`, `DNS_NOT_ACTIVATED`, `AUTO_RENEWAL_UPDATE_NOT_EFFECTIVE`. |
 | `labels` | object | Set of labels associated with the `Registration`. |
 | `managementSettings` | ManagementSettings | Settings for management of the `Registration`, including renewal, billing, and transfer. You cannot update these with the `UpdateRegistration` method. To update these settings, use the `ConfigureManagementSettings` method. |
 | `name` | string | Output only. Name of the `Registration` resource, in the format `projects/*/locations/*/registrations/`. |
 | `pendingContactSettings` | ContactSettings | Output only. Pending contact settings for the `Registration`. Updates to the `contact_settings` field that change its `registrant_contact` or `privacy` fields require email confirmation by the `registrant_contact` before taking effect. This field is set only if there are pending updates to the `contact_settings` that have not been confirmed. To confirm the changes, the `registrant_contact` must follow the instructions in the email they receive. |
-| `registerFailureReason` | string enum | Output only. The reason the domain registration failed. Only set for domains in REGISTRATION_FAILED state. |
-| `state` | string enum | Output only. The state of the `Registration` |
-| `supportedPrivacy` | array<string> | Output only. Set of options for the `contact_settings.privacy` field that this `Registration` supports. |
-| `transferFailureReason` | string enum | Output only. Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations). The reason the domain transfer failed. Only set for domains in TRANSFER_FAILED state. |
+| `registerFailureReason` | string enum | Output only. The reason the domain registration failed. Only set for domains in REGISTRATION_FAILED state. Values: `REGISTER_FAILURE_REASON_UNSPECIFIED`, `REGISTER_FAILURE_REASON_UNKNOWN`, `DOMAIN_NOT_AVAILABLE`, `INVALID_CONTACTS`. |
+| `state` | string enum | Output only. The state of the `Registration` Values: `STATE_UNSPECIFIED`, `REGISTRATION_PENDING`, `REGISTRATION_FAILED`, `TRANSFER_PENDING`, `TRANSFER_FAILED`, `IMPORT_PENDING`, `ACTIVE`, `SUSPENDED`, `EXPORTED`, `EXPIRED`. |
+| `supportedPrivacy` | array<string> | Output only. Set of options for the `contact_settings.privacy` field that this `Registration` supports. Values: `CONTACT_PRIVACY_UNSPECIFIED`, `PUBLIC_CONTACT_DATA`, `PRIVATE_CONTACT_DATA`, `REDACTED_CONTACT_DATA`. |
+| `transferFailureReason` | string enum | Output only. Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations). The reason the domain transfer failed. Only set for domains in TRANSFER_FAILED state. Values: `TRANSFER_FAILURE_REASON_UNSPECIFIED`, `TRANSFER_FAILURE_REASON_UNKNOWN`, `EMAIL_CONFIRMATION_FAILURE`, `DOMAIN_NOT_REGISTERED`, `DOMAIN_HAS_TRANSFER_LOCK`, `INVALID_AUTHORIZATION_CODE`, `TRANSFER_CANCELLED`, `TRANSFER_REJECTED`, `INVALID_REGISTRANT_EMAIL_ADDRESS`, `DOMAIN_NOT_ELIGIBLE_FOR_TRANSFER`, `TRANSFER_ALREADY_PENDING`. |
 
 ### `Registration` (v1alpha2)
 
@@ -491,18 +491,18 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 | `createTime` | string (google-datetime) | Output only. The creation timestamp of the `Registration` resource. |
 | `dnsSettings` | DnsSettings | Settings controlling the DNS configuration of the `Registration`. You cannot update these with the `UpdateRegistration` method. To update these settings, use the `ConfigureDnsSettings` method. |
 | `domainName` | string | Required. Immutable. The domain name. Unicode domain names must be expressed in Punycode format. |
-| `domainProperties` | array<string> | Output only. Special properties of the domain. |
+| `domainProperties` | array<string> | Output only. Special properties of the domain. Values: `DOMAIN_PROPERTY_UNSPECIFIED`, `TRANSFER_LOCK_UNSUPPORTED_BY_REGISTRY`, `REQUIRE_PUSH_TRANSFER`. |
 | `expireTime` | string (google-datetime) | Output only. The expiration timestamp of the `Registration`. |
-| `issues` | array<string> | Output only. The set of issues with the `Registration` that require attention. |
+| `issues` | array<string> | Output only. The set of issues with the `Registration` that require attention. Values: `ISSUE_UNSPECIFIED`, `CONTACT_SUPPORT`, `UNVERIFIED_EMAIL`, `PROBLEM_WITH_BILLING`, `DNS_NOT_ACTIVATED`, `AUTO_RENEWAL_UPDATE_NOT_EFFECTIVE`. |
 | `labels` | object | Set of labels associated with the `Registration`. |
 | `managementSettings` | ManagementSettings | Settings for management of the `Registration`, including renewal, billing, and transfer. You cannot update these with the `UpdateRegistration` method. To update these settings, use the `ConfigureManagementSettings` method. |
 | `name` | string | Output only. Name of the `Registration` resource, in the format `projects/*/locations/*/registrations/`. |
 | `pendingContactSettings` | ContactSettings | Output only. Pending contact settings for the `Registration`. Updates to the `contact_settings` field that change its `registrant_contact` or `privacy` fields require email confirmation by the `registrant_contact` before taking effect. This field is set only if there are pending updates to the `contact_settings` that have not been confirmed. To confirm the changes, the `registrant_contact` must follow the instructions in the email they receive. |
-| `provider` | string enum | Output only. Current domain management provider. |
-| `registerFailureReason` | string enum | Output only. The reason the domain registration failed. Only set for domains in REGISTRATION_FAILED state. |
-| `state` | string enum | Output only. The state of the `Registration` |
-| `supportedPrivacy` | array<string> | Output only. Set of options for the `contact_settings.privacy` field that this `Registration` supports. |
-| `transferFailureReason` | string enum | Output only. Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations). The reason the domain transfer failed. Only set for domains in TRANSFER_FAILED state. |
+| `provider` | string enum | Output only. Current domain management provider. Values: `REGISTRAR_UNSPECIFIED`, `GOOGLE_DOMAINS`, `SQUARESPACE`. |
+| `registerFailureReason` | string enum | Output only. The reason the domain registration failed. Only set for domains in REGISTRATION_FAILED state. Values: `REGISTER_FAILURE_REASON_UNSPECIFIED`, `REGISTER_FAILURE_REASON_UNKNOWN`, `DOMAIN_NOT_AVAILABLE`, `INVALID_CONTACTS`. |
+| `state` | string enum | Output only. The state of the `Registration` Values: `STATE_UNSPECIFIED`, `REGISTRATION_PENDING`, `REGISTRATION_FAILED`, `TRANSFER_PENDING`, `TRANSFER_FAILED`, `IMPORT_PENDING`, `ACTIVE`, `SUSPENDED`, `EXPORTED`, `EXPIRED`. |
+| `supportedPrivacy` | array<string> | Output only. Set of options for the `contact_settings.privacy` field that this `Registration` supports. Values: `CONTACT_PRIVACY_UNSPECIFIED`, `PUBLIC_CONTACT_DATA`, `PRIVATE_CONTACT_DATA`, `REDACTED_CONTACT_DATA`. |
+| `transferFailureReason` | string enum | Output only. Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations). The reason the domain transfer failed. Only set for domains in TRANSFER_FAILED state. Values: `TRANSFER_FAILURE_REASON_UNSPECIFIED`, `TRANSFER_FAILURE_REASON_UNKNOWN`, `EMAIL_CONFIRMATION_FAILURE`, `DOMAIN_NOT_REGISTERED`, `DOMAIN_HAS_TRANSFER_LOCK`, `INVALID_AUTHORIZATION_CODE`, `TRANSFER_CANCELLED`, `TRANSFER_REJECTED`, `INVALID_REGISTRANT_EMAIL_ADDRESS`, `DOMAIN_NOT_ELIGIBLE_FOR_TRANSFER`, `TRANSFER_ALREADY_PENDING`. |
 
 ### `RenewDomainRequest`
 
@@ -637,7 +637,7 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 | Field | Type | Description |
 |---|---|---|
 | `authorizationCode` | AuthorizationCode | The domain's transfer authorization code. You can obtain this from the domain's current registrar. |
-| `contactNotices` | array<string> | The list of contact notices that you acknowledge. The notices needed here depend on the values specified in `registration.contact_settings`. |
+| `contactNotices` | array<string> | The list of contact notices that you acknowledge. The notices needed here depend on the values specified in `registration.contact_settings`. Values: `CONTACT_NOTICE_UNSPECIFIED`, `PUBLIC_CONTACT_DATA_ACKNOWLEDGEMENT`. |
 | `registration` | Registration | Required. The complete `Registration` resource to be created. You can leave `registration.dns_settings` unset to import the domain's current DNS configuration from its current registrar. Use this option only if you are sure that the domain's current DNS service does not cease upon transfer, as is often the case for DNS services provided for free by the registrar. |
 | `validateOnly` | boolean | Validate the request without actually transferring the domain. |
 | `yearlyPrice` | Money | Required. Acknowledgement of the price to transfer or renew the domain for one year. Call `RetrieveTransferParameters` to obtain the price, which you must acknowledge. |
@@ -653,8 +653,8 @@ Message types referenced by the methods listed under `references/rest/domains/`.
 | `currentRegistrarUri` | string | The URL of the registrar that currently manages the domain. |
 | `domainName` | string | The domain name. Unicode domain names are expressed in Punycode format. |
 | `nameServers` | array<string> | The name servers that currently store the configuration of the domain. |
-| `supportedPrivacy` | array<string> | Contact privacy options that the domain supports. |
-| `transferLockState` | string enum | Indicates whether the domain is protected by a transfer lock. For a transfer to succeed, this must show `UNLOCKED`. To unlock a domain, go to its current registrar. |
+| `supportedPrivacy` | array<string> | Contact privacy options that the domain supports. Values: `CONTACT_PRIVACY_UNSPECIFIED`, `PUBLIC_CONTACT_DATA`, `PRIVATE_CONTACT_DATA`, `REDACTED_CONTACT_DATA`. |
+| `transferLockState` | string enum | Indicates whether the domain is protected by a transfer lock. For a transfer to succeed, this must show `UNLOCKED`. To unlock a domain, go to its current registrar. Values: `TRANSFER_LOCK_STATE_UNSPECIFIED`, `UNLOCKED`, `LOCKED`. |
 | `yearlyPrice` | Money | Price to transfer or renew the domain for one year. |
 
 ### `WrrPolicy`
