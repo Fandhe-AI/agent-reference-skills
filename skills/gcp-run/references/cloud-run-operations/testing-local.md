@@ -28,6 +28,8 @@ Open `http://localhost:9090`. The `PORT` variable is a requirement of the contai
 
 Use a service account key (see the source's security warning below), mount it read-only and set `GOOGLE_APPLICATION_CREDENTIALS`:
 
+Adapted (not in the official docs): the host path in `-v` is quoted (`"${GOOGLE_APPLICATION_CREDENTIALS}"`) so a path with spaces or glob characters is passed as one argument.
+
 ```bash
 PORT=8080 && docker run \
 -p 9090:${PORT} \
@@ -36,7 +38,7 @@ PORT=8080 && docker run \
 -e K_CONFIGURATION=dev \
 -e K_REVISION=dev-00001 \
 -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/FILE_NAME.json \
--v $GOOGLE_APPLICATION_CREDENTIALS:/tmp/keys/FILE_NAME.json:ro \
+-v "${GOOGLE_APPLICATION_CREDENTIALS}:/tmp/keys/FILE_NAME.json:ro" \
 IMAGE_URL
 ```
 
@@ -93,7 +95,7 @@ gcloud beta code dev --dockerfile=PATH_TO_DOCKERFILE --service-account=SERVICE_A
 - Service account keys are a security risk if not managed correctly; choose a more secure alternative whenever possible. You are responsible for the private key and the practices in "Best practices for managing service account keys". Key creation might be disabled by organization policy. Validate keys acquired from external sources. `--service-account` downloads and caches a key locally.
 - Source inconsistency: the page calls the Docker env flag `--environment (-e)`; the Docker CLI long form is `--env`, and the examples use `-e`.
 - The Cloud Code emulator (VS Code, JetBrains) can configure CPU/memory, environment variables, and Cloud SQL connections.
-- Docker's `-v $GOOGLE_APPLICATION_CREDENTIALS:...` is shown unquoted in the source; quote the variable if your path contains spaces.
+- Corrected from the official docs: the source writes `-v $GOOGLE_APPLICATION_CREDENTIALS:/tmp/keys/FILE_NAME.json:ro` with the variable unquoted, which word-splits and glob-expands a host path containing spaces or wildcard characters; the example quotes it.
 - See the `docker` skill for Dockerfile / image build in general.
 - Source: https://docs.cloud.google.com/run/docs/testing/local (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 

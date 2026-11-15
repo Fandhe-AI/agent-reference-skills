@@ -71,7 +71,27 @@ spec:
       - image: IMAGE_URL
 ```
 
-For a connector, replace the two annotations with `run.googleapis.com/vpc-access-connector: CONNECTOR_NAME`. Apply with `gcloud run services replace service.yaml`.
+### YAML (Serverless VPC Access connector)
+
+Adapted (not in the official docs): added `run.googleapis.com/vpc-access-egress: all-traffic`, which the source's connector YAML omits; without it egress stays `private-ranges-only` and internet traffic bypasses Cloud NAT.
+
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: SERVICE
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/vpc-access-connector: CONNECTOR_NAME
+        run.googleapis.com/vpc-access-egress: all-traffic
+    spec:
+      containers:
+      - image: IMAGE_URL
+```
+
+For a connector, replace only `run.googleapis.com/network-interfaces` with `run.googleapis.com/vpc-access-connector: CONNECTOR_NAME` and keep `run.googleapis.com/vpc-access-egress: all-traffic`. Apply either YAML with `gcloud run services replace service.yaml`.
 
 ### Verify
 
@@ -87,6 +107,7 @@ Call an API or site that echoes the originating IP (the source mentions `curlmyi
 - Deleting the reserved address: see "Release a static external IP address" in the VPC docs (`https://docs.cloud.google.com/vpc/docs/reserve-static-external-ip-address#release_ip`).
 - A reserved IP resource keeps the underlying address when the resource it is attached to is deleted and re-created.
 - Comparison (from the source): Direct VPC egress or a connector can both feed Cloud NAT; the source tells you to pass `--vpc-connector` instead of `--network`/`--subnet` for the connector path.
+- Corrected from the official docs: the source's connector YAML sets only `run.googleapis.com/vpc-access-connector: CONNECTOR_NAME` with no `run.googleapis.com/vpc-access-egress` annotation, so egress falls back to the default `private-ranges-only` (https://docs.cloud.google.com/run/docs/configuring/vpc-connectors) and internet traffic does not use Cloud NAT or the static IP; the gcloud (`--vpc-egress=all-traffic`) and Terraform (`egress = "ALL_TRAFFIC"`) connector examples on the same page route all traffic.
 - The source also shows Terraform examples for the router, address, NAT, and both service variants.
 - Cloud Run is Google Cloud's serverless container platform, distinct from Cloudflare Workers (`cloudflare-workers`).
 - Source: https://docs.cloud.google.com/run/docs/configuring/static-outbound-ip (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)

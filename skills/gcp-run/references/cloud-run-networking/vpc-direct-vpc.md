@@ -43,7 +43,7 @@ Expected output contains `VPC access:` with `Network`, `Subnet`, and `Egress: pr
 
 ### Service YAML
 
-Adapted (not in the official docs): the source indents `kind`, `metadata` and `spec` under `apiVersion`, which is not valid YAML; keys were moved to the top level.
+Adapted (not in the official docs): the source indents `kind`, `metadata` and `spec` under `apiVersion`, which is not valid YAML, so the keys were moved to the top level; `tags` is written as an array (`["NETWORK_TAG_NAMES"]`) instead of the source's string.
 
 ```yaml
 apiVersion: serving.knative.dev/v1
@@ -56,7 +56,7 @@ spec:
   template:
     metadata:
       annotations:
-        run.googleapis.com/network-interfaces: '[{"network":"NETWORK","subnetwork":"SUBNET","tags":"NETWORK_TAG_NAMES"}]'
+        run.googleapis.com/network-interfaces: '[{"network":"NETWORK","subnetwork":"SUBNET","tags":["NETWORK_TAG_NAMES"]}]'
         run.googleapis.com/vpc-access-egress: EGRESS_SETTING
     spec:
       containers:
@@ -193,7 +193,7 @@ Cloud Run Service Agent permissions needed on the project (role `roles/run.servi
 - The `run.allowedVPCEgress` organization policy restricts which egress settings developers can select.
 - The metadata server call uses plain HTTP by design (link-local `metadata.google.internal`, reachable only from inside the instance).
 - Adapted from the official docs: YAML blocks in the source indent `kind`/`metadata`/`spec` under `apiVersion` (invalid YAML).
-- Source inconsistency: the service, job and worker pool YAML in the source write `"tags":"NETWORK_TAG_NAMES"` as a string in the `run.googleapis.com/network-interfaces` annotation, while the source's instance YAML (and gcloud, which stores network tags as a list) writes `"tags":["NETWORK_TAG_NAMES"]`; use the array form for multiple tags.
+- Corrected from the official docs: the source's service, job and worker pool YAML write `'[{"network":"NETWORK","subnetwork":"SUBNET","tags":"NETWORK_TAG_NAMES"}]'` with `tags` as a string, but `NetworkInterface.tags` is `array<string>` in the Cloud Run Admin API and the source's own instance YAML writes `"tags":["NETWORK_TAG_NAMES"]`; use the array form even for one tag (`"tags":["TAG_1","TAG_2"]` for several). The same applies to the job and worker pool YAML described in prose above.
 - The source also shows Console, Terraform, and detailed per-resource YAML/disconnect forms (service/job/instance YAML disconnect).
 - Cloud Run is Google Cloud's serverless container platform, distinct from Cloudflare Workers (`cloudflare-workers`) and Vercel Functions (`vercel`).
 - Source: https://docs.cloud.google.com/run/docs/configuring/vpc-direct-vpc (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)

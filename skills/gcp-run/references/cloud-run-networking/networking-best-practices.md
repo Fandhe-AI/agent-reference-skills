@@ -42,7 +42,7 @@ Snippet taken from https://docs.cloud.google.com/run/docs/configuring/static-out
 | Port exhaustion | Use connection pooling and reuse; high connection rates to one IP can exhaust outbound ports and cause connection refused errors |
 | Scanning / high-connection workloads via Cloud NAT | Allocate enough static IPs and configure port reservation |
 | Execution environment | Use the second generation execution environment with Direct VPC egress (faster networking, especially with packet loss) |
-| Internet egress | `all-traffic` plus Cloud NAT (Public or Private NAT) |
+| Internet egress | `all-traffic` plus Cloud NAT (Public NAT) |
 | MTU | Do not change the VPC network MTU; use the default of 1,460 bytes |
 
 Cost considerations: co-locate Cloud Run with backends and buckets in the same region (same-region transfer between Google Cloud resources is free); switch from connectors to Direct VPC egress (scales to zero, no idle connector cost); use Cloud CDN for cacheable content; inbound traffic is free and 1 GiB of free outbound internet transfer per month within North America.
@@ -51,6 +51,7 @@ Cost considerations: co-locate Cloud Run with backends and buckets in the same r
 
 - Comparison (from the source): Direct VPC egress is recommended over Serverless VPC Access connectors for faster egress throughput and because it scales to zero, eliminating connector baseline compute and idle costs.
 - Source inconsistency: this page and the static outbound IP page recommend Direct VPC egress with Cloud NAT for internet egress (https://docs.cloud.google.com/run/docs/configuring/networking-best-practices, https://docs.cloud.google.com/run/docs/configuring/static-outbound-ip), while the Direct VPC egress page warns of cold-start delays of 30s or more with Cloud NAT and recommends Serverless VPC Access connectors with Cloud NAT for better startup performance (https://docs.cloud.google.com/run/docs/configuring/vpc-direct-vpc).
+- Internet egress needs Public NAT: the source links to "Cloud NAT Direct VPC egress interactions" for setting up "Public NAT or Private NAT", but Private NAT translates traffic between private networks (for example Hybrid NAT to on-premises RFC 1918 destinations) and does not provide internet access.
 - Running scanning or load testing over the default shared pool degrades IP reputation, can disrupt other customers in violation of the Google Cloud Acceptable Use Policy, and might get your workload throttled or suspended.
 - A reputation-sensitive workload on the shared pool can trigger external WAF blocks or `HTTP 403` errors caused by other tenants' noisy traffic.
 - Source: https://docs.cloud.google.com/run/docs/configuring/networking-best-practices (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
