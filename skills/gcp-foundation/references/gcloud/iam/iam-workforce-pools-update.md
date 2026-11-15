@@ -1,0 +1,149 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/iam/workforce-pools/update
+---
+
+# gcloud iam workforce-pools update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud iam workforce-pools update
+
+```text
+NAME
+    gcloud iam workforce-pools update - update a workforce pool
+
+SYNOPSIS
+    gcloud iam workforce-pools update (WORKFORCE_POOL : --location=LOCATION)
+        [--async] [--description=DESCRIPTION] [--disable-programmatic-signin]
+        [--disabled] [--display-name=DISPLAY_NAME]
+        [--session-duration=SESSION_DURATION] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update a workforce pool.
+
+EXAMPLES
+    The following command updates a workforce pool with ID my-workforce-pool
+    with explicit values for all required and optional parameters:
+
+        $ gcloud iam workforce-pools update my-workforce-pool \
+            --location=global --display-name="My Workforce Pool" \
+            --description="My workforce pool description." \
+            --session-duration="7200s" --disabled
+
+POSITIONAL ARGUMENTS
+     Workforce pool resource - The workforce pool to update. The arguments in
+     this group can be used to specify the attributes of this resource.
+
+     This must be specified.
+
+       WORKFORCE_POOL
+          ID of the workforce pool or fully qualified identifier for the
+          workforce pool.
+
+          To set the workforce_pool attribute:
+          + provide the argument workforce_pool on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --location=LOCATION
+          The location for the workforce pool.
+
+          To set the location attribute:
+          + provide the argument workforce_pool on the command line with a
+            fully specified name;
+          + provide the argument --location on the command line.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --description=DESCRIPTION
+        A description for the workforce pool. Cannot exceed 256 characters in
+        length.
+
+     --disable-programmatic-signin
+        Disables the programmatic sign-in for workforce pool users. Specify
+        --no-disable-security-token-exchange to enable programmatic sign-in.
+        For more information, refer to Obtain short-lived tokens for workforce
+        identity federation at
+        https://cloud.google.com/iam/docs/workforce-obtaining-short-lived-credentials
+
+     --disabled
+        Disables the workforce pool. You cannot use a disabled workforce pool
+        to perform new token exchanges or sign-ins using any provider in the
+        workforce pool. Specify --no-disabled to enable a disabled pool.
+
+     --display-name=DISPLAY_NAME
+        A display name for the workforce pool. Cannot exceed 32 characters in
+        length.
+
+     --session-duration=SESSION_DURATION
+        How long the Google Cloud access tokens, console sign-in sessions, and
+        gcloud sign-in sessions from this workforce pool are valid. Must be
+        greater than 15 minutes (900s) and less than 12 hours (43200s). If not
+        configured, minted credentials will have a default duration of one hour
+        (3600s).
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the iam/v1 API. The full documentation for this API can
+    be found at: https://cloud.google.com/iam/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha iam workforce-pools update
+
+        $ gcloud beta iam workforce-pools update
+```
+
+### gcloud beta iam workforce-pools update
+
+```text
+NAME
+    gcloud beta iam workforce-pools update - update a workforce pool
+
+SYNOPSIS
+    gcloud beta iam workforce-pools update
+        (WORKFORCE_POOL : --location=LOCATION) [--async]
+        [--description=DESCRIPTION] [--disable-programmatic-signin]
+        [--disabled] [--display-name=DISPLAY_NAME]
+        [--session-duration=SESSION_DURATION] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha iam workforce-pools update
+
+```text
+NAME
+    gcloud alpha iam workforce-pools update - update a workforce pool
+
+SYNOPSIS
+    gcloud alpha iam workforce-pools update
+        (WORKFORCE_POOL : --location=LOCATION) [--async]
+        [--description=DESCRIPTION] [--disable-programmatic-signin]
+        [--disabled] [--display-name=DISPLAY_NAME]
+        [--session-duration=SESSION_DURATION] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Corrected from the official docs (the help text above is verbatim): the `--disable-programmatic-signin` description says to use `--no-disable-security-token-exchange` to re-enable programmatic sign-in; the negated form of the flag defined in the SYNOPSIS is `--no-disable-programmatic-signin`.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/iam/workforce-pools/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
