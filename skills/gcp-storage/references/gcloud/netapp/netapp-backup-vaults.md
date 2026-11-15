@@ -634,6 +634,15 @@ NOTES
         $ gcloud beta netapp backup-vaults backups update
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud netapp backup-vaults backups update NAME \
+    --backup-vault=BACKUP_VAULT \
+    --location=us-central1 \
+    --description="new description"
+```
+
 ### gcloud netapp backup-vaults create
 
 ```text
@@ -763,9 +772,14 @@ NOTES
         $ gcloud beta netapp backup-vaults create
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
+gcloud netapp backup-vaults create BACKUP_VAULT \
+    --location=LOCATION \
+    --async \
+    --description="test"
+
 gcloud netapp backup-vaults create CMEK_BACKUP_VAULT \
     --location=LOCATION \
     --kms-config=projects/PROJECT/locations/LOCATION/kmsConfigs/KMS_CONFIG
@@ -1289,6 +1303,8 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the backups `update` example omits `--backup-vault`; the backup resource takes its backup vault from a fully specified name or `--backup-vault` (POSITIONAL ARGUMENTS), and gcloud 593.0.0 fails with "Error parsing [backup]" without it, so the runnable form adds `--backup-vault=BACKUP_VAULT` as in the other backups examples.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the first `create` example ends its last line with a backslash, so the sentence that introduces the next example ("The following command creates a Backup Vault named CMEK_BACKUP_VAULT with a KMS config:") becomes part of the command; the runnable form ends the command after `--description="test"`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
