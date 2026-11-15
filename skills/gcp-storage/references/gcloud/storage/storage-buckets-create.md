@@ -247,6 +247,24 @@ NOTES
         $ gcloud alpha storage buckets create
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the commands are rewritten so that they run as described (see Notes).
+
+```bash
+cat > ip-filter.json <<'EOF'
+{
+  "mode": "Enabled",
+  "publicNetworkSource": { "allowedIpCidrRanges": ["203.0.113.0/24"] },
+  "vpcNetworkSources": [
+    {
+      "network": "projects/PROJECT_NAME/global/networks/NETWORK_NAME",
+      "allowedIpCidrRanges": ["10.0.0.0/24"]
+    }
+  ]
+}
+EOF
+gcloud storage buckets create gs://my-bucket --ip-filter-file=ip-filter.json
+```
+
 ### gcloud alpha storage buckets create
 
 ```text
@@ -277,6 +295,9 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Relocation: the `--location` description says a bucket's location cannot be changed after creation; Cloud Storage bucket relocation (`gcloud storage buckets relocate`, see `storage-buckets-relocate.md`) can move an existing bucket to another location, and it is available only when Storage Intelligence is configured (see `cloud-storage-basics/locations.md`); otherwise copy the data to a new bucket in the other location.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `--ip-filter-file` JSON example ends the `vpcNetworkSources` array with a trailing comma after the last element, which is not valid JSON; the runnable form writes the file without it. It also replaces the allow-all range `0.0.0.0/0` with example ranges (`203.0.113.0/24`, a documentation range, and `10.0.0.0/24`); list the ranges that must reach the bucket, since an enabled IP filter blocks requests from every other address.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

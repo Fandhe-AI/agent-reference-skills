@@ -224,6 +224,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (the help text above is verbatim): the `--test-type` description swaps the two throughput tests: it says `DOWNLOAD_THROUGHPUT` uploads objects and `UPLOAD_THROUGHPUT` downloads objects; in gcloud 593.0.0 `DOWNLOAD_THROUGHPUT` runs the download throughput diagnostic (configured with `--download-type`) and `UPLOAD_THROUGHPUT` the upload throughput diagnostic (configured with `--upload-type`), as the flag descriptions on this page say.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example passes `--no-of-objects=10`, which is not a flag (gcloud 593.0.0 rejects it as an unrecognized argument); the SYNOPSIS flag is `--object-count`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the export example passes `--destination=<PATH>`, a shell redirection when pasted; the runnable form uses `--destination=DESTINATION_DIR`, which must be an existing directory although the flag description says "Destination file path" (gcloud 593.0.0 checks that the path is a directory and otherwise fails with "Invalid destination path").
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
