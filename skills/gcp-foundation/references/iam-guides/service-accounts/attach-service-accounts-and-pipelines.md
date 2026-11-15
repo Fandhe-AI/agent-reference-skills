@@ -39,33 +39,35 @@ POST https://iam.googleapis.com/v1/projects/PROJECT_ID/serviceAccounts/USER_SA_N
 }
 ```
 
-Modified policy:
+Modified policy, sent as the `setIamPolicy` request body:
 
-Adapted (not in the official docs): `roles/iam.serviceAccountUser` (which carries `iam.serviceAccounts.actAs`) is granted to the principal that attaches the service account to the resource, not to the service account itself; the service agent receives `roles/iam.serviceAccountTokenCreator`. The member placeholder carries a principal type prefix (`PRINCIPAL_TYPE:`), and the bindings returned by `getIamPolicy` are kept alongside these.
+Adapted (not in the official docs): `roles/iam.serviceAccountUser` (which carries `iam.serviceAccounts.actAs`) is granted to the principal that attaches the service account to the resource, not to the service account itself; the service agent receives `roles/iam.serviceAccountTokenCreator`. The member placeholder carries a principal type prefix (`PRINCIPAL_TYPE:`). The policy is wrapped in the `policy` field that `SetIamPolicyRequest` requires, uses `"version": 3` (as requested from `getIamPolicy`), and keeps the `etag` and every existing binding returned by `getIamPolicy`, including their `condition` fields, alongside these.
+
+```
+POST https://iam.googleapis.com/v1/projects/PROJECT_ID/serviceAccounts/USER_SA_NAME@PROJECT_ID.iam.gserviceaccount.com:setIamPolicy
+```
 
 ```json
 {
-  "version": 1,
-  "etag": "BwWl3KCTUMY=",
-  "bindings": [
-    {
-      "role": "roles/iam.serviceAccountTokenCreator",
-      "members": [
-        "serviceAccount:SERVICE_AGENT_EMAIL"
-      ]
-    },
-    {
-      "role": "roles/iam.serviceAccountUser",
-      "members": [
-        "PRINCIPAL_TYPE:PRINCIPAL_THAT_ATTACHES_SERVICE_ACCOUNT"
-      ]
-    }
-  ]
+  "policy": {
+    "version": 3,
+    "etag": "BwWl3KCTUMY=",
+    "bindings": [
+      {
+        "role": "roles/iam.serviceAccountTokenCreator",
+        "members": [
+          "serviceAccount:SERVICE_AGENT_EMAIL"
+        ]
+      },
+      {
+        "role": "roles/iam.serviceAccountUser",
+        "members": [
+          "PRINCIPAL_TYPE:PRINCIPAL_THAT_ATTACHES_SERVICE_ACCOUNT"
+        ]
+      }
+    ]
+  }
 }
-```
-
-```
-POST https://iam.googleapis.com/v1/projects/PROJECT_ID/serviceAccounts/SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com:setIamPolicy
 ```
 
 ### Organization policy for cross-project use
@@ -105,7 +107,7 @@ AI Platform Prediction (model versions) and Training (jobs), App Engine standard
 
 ## Notes
 
-- Adapted from the official docs: the `members` placeholder carries a principal type prefix (`PRINCIPAL_TYPE:...`, for example `user:alex@example.com`), because allow policy members require one. In the read-modify-write flow, keep the existing bindings returned by `getIamPolicy` and add these.
+- Adapted from the official docs: the `members` placeholder carries a principal type prefix (`PRINCIPAL_TYPE:...`, for example `user:alex@example.com`), because allow policy members require one. In the read-modify-write flow, keep the `etag` and the existing bindings (with any `condition`) returned by `getIamPolicy`, set `version` to `3` so conditional bindings are accepted, and send the policy inside the `policy` field of the `setIamPolicy` request; both URLs use the same service account (`USER_SA_NAME`).
 - Adapted from the official docs: the `roles/iam.serviceAccountUser` binding in the modified-policy example names the principal that attaches the service account (`iam.serviceAccounts.actAs`), not the service account itself.
 
 - Using the `iam.serviceAccounts.actAs` permission to attach a service account produces an audit log with the attaching principal and the attached service account.
