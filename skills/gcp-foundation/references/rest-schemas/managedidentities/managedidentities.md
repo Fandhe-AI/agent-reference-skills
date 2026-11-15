@@ -32,6 +32,22 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `type` | string enum | Output only. Indicates whether it’s an on-demand backup or scheduled. |
 | `updateTime` | string (google-datetime) | Output only. Last update time. |
 
+### `Backup` (v1beta1)
+
+- Represents a Managed Microsoft Identities backup.
+- Version: v1beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `createTime` | string (google-datetime) | Output only. The time the backups was created. |
+| `description` | string | Optional. A short description of the backup. |
+| `labels` | object | Optional. Resource labels to represent user provided metadata. |
+| `name` | string | Output only. The unique name of the Backup in the form of projects/{project_id}/locations/global/domains/{domain_name}/backups/{name} |
+| `state` | string enum | Output only. The current state of the backup. |
+| `statusMessage` | string | Output only. Additional information about the current status of this backup, if available. |
+| `type` | string enum | Output only. Indicates whether it’s an on-demand backup or scheduled. |
+| `updateTime` | string (google-datetime) | Output only. Last update time. |
+
 ### `Binding`
 
 - Associates `members`, or principals, with a `role`.
@@ -143,6 +159,27 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `trusts` | array<Trust> | Output only. The current trusts associated with the domain. |
 | `updateTime` | string (google-datetime) | Output only. The last update time. |
 
+### `Domain` (v1alpha1)
+
+- If the domain is being changed, it will be placed into the UPDATING state, which indicates that the resource is being reconciled. At this point, Get will reflect an intermediate state.
+- Version: v1alpha1
+
+| Field | Type | Description |
+|---|---|---|
+| `auditLogsEnabled` | boolean | Optional. Configuration for audit logs. True if audit logs are enabled, else false. Default is audit logs disabled. |
+| `authorizedNetworks` | array<string> | Optional. The full names of the Google Compute Engine networks to which the instance is connected. Network can be added using UpdateDomain later. Domain is only available on network part of authorized_networks. Caller needs to make sure that CIDR subnets do not overlap between networks, else domain creation will fail. |
+| `createTime` | string (google-datetime) | Output only. The time the instance was created. Synthetic field is populated automatically by CCFE. (internal link) |
+| `fqdn` | string | Output only. Fully-qualified domain name of the exposed domain used by clients to connect to the service. Similar to what would be chosen for an Active Directory that is set up on an internal network. |
+| `labels` | object | Optional. Resource labels to represent user provided metadata |
+| `locations` | array<string> | Required. Locations where domain needs to be provisioned. regions e.g. us-west1 or us-east4 Service supports up to 4 locations at once. Each location will use a /26 block. |
+| `managedIdentitiesAdminName` | string | Optional. Name of customer-visible admin used to perform Active Directory operations. If not specified `setupadmin` would be used. |
+| `name` | string | Output only. Unique name of the domain in this scope including projects and location using the form: `projects/{project_id}/locations/global/domains/{domain_name}`. |
+| `reservedIpRange` | string | Required. The CIDR range of internal addresses that are reserved for this domain. Reserved networks must be /24 or larger. Ranges must be unique and non-overlapping with existing subnets in \[Domain\].\[authorized_networks\]. |
+| `state` | string enum | Output only. The current state of this domain. |
+| `statusMessage` | string | Output only. Additional information about the current status of this domain, if available. |
+| `trusts` | array<Trust> | Output only. The current trusts associated with the domain. |
+| `updateTime` | string (google-datetime) | Output only. Last update time. Synthetic field is populated automatically by CCFE. |
+
 ### `DomainJoinMachineRequest`
 
 - DomainJoinMachineRequest is the request message for DomainJoinMachine method
@@ -175,6 +212,16 @@ Message types referenced by the methods listed under `references/rest/managedide
 
 | Field | Type | Description |
 |---|---|---|
+| `migratingDomains` | array<OnPremDomainDetails> | Required. List of the on-prem domains to be migrated. |
+
+### `EnableMigrationRequest` (v1beta1)
+
+- EnableMigrationRequest is the request message for EnableMigration method.
+- Version: v1beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `enableDuration` | string (google-duration) | Optional. Period after which the migration would be auto disabled. If unspecified, a default timeout of 48h is used. |
 | `migratingDomains` | array<OnPremDomainDetails> | Required. List of the on-prem domains to be migrated. |
 
 ### `Expr`
@@ -565,6 +612,15 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `targetDnsIpAddresses` | array<string> | Required. The target DNS server IP addresses to resolve the remote domain involved in the trust. |
 | `targetDomainName` | string | Required. The fully-qualified target domain name which will be in trust with current domain. |
 
+### `ReconfigureTrustRequest` (v1alpha1)
+
+-
+- Version: v1alpha1
+
+| Field | Type | Description |
+|---|---|---|
+| `trust` | Trust | The domain trust resource with updated dns conditional forwarder. |
+
 ### `ResetAdminPasswordRequest`
 
 - Request message for ResetAdminPassword
@@ -694,6 +750,25 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `trustType` | string enum | Required. The type of trust represented by the trust resource. |
 | `updateTime` | string (google-datetime) | Output only. The last update time. |
 
+### `Trust` (v1alpha1)
+
+- Represents a relationship between two domains which makes it possible for users in one domain to be authenticated by a dc in another domain. Refer https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc731335(v%3dws.10) If the trust is being changed, it will be placed into the UPDATING state, which indicates that the resource is being reconciled. At this point, Get will reflect an intermediate state.
+- Version: v1alpha1
+
+| Field | Type | Description |
+|---|---|---|
+| `createTime` | string (google-datetime) | Output only. The time the instance was created. |
+| `lastKnownTrustConnectedHeartbeatTime` | string (google-datetime) | Output only. The last heartbeat time when the trust was known to be connected. |
+| `selectiveAuthentication` | boolean | The trust authentication type which decides whether the trusted side has forest/domain wide access or selective access to approved set of resources. |
+| `state` | string enum | Output only. The current state of this trust. |
+| `stateDescription` | string | Output only. Additional information about the current state of this trust, if available. |
+| `targetDnsIpAddresses` | array<string> | The target dns server ip addresses which can resolve the remote domain involved in trust. |
+| `targetDomainName` | string | The fully qualified target domain name which will be in trust with current domain. |
+| `trustDirection` | string enum | The trust direction decides the current domain is trusted, trusting or both. |
+| `trustHandshakeSecret` | string | Input only, and will not be stored. The trust secret used for handshake with target domain. |
+| `trustType` | string enum | The type of trust represented by the trust resource. |
+| `updateTime` | string (google-datetime) | Output only. Last update time. |
+
 ### `UpdatePolicy`
 
 - Maintenance policy applicable to instance updates.
@@ -735,9 +810,9 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) v1, v1alpha1 of `managedidentities` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Generated from the Discovery document(s) v1, v1beta1, v1alpha1 of `managedidentities` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
 - Google-internal `go/` short links in the Discovery descriptions are replaced with `(internal link)`; they are not reachable outside Google.
-- Source: https://managedidentities.googleapis.com/$discovery/rest?version=v1, https://managedidentities.googleapis.com/$discovery/rest?version=v1alpha1 (https://developers.google.com/discovery)
+- Source: https://managedidentities.googleapis.com/$discovery/rest?version=v1, https://managedidentities.googleapis.com/$discovery/rest?version=v1beta1, https://managedidentities.googleapis.com/$discovery/rest?version=v1alpha1 (https://developers.google.com/discovery)
 
 ## Related
 
