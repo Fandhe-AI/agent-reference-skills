@@ -23,3 +23,7 @@
 | gcloud backup-dr operations | 6 commands (alpha, beta, ga); backup-dr operations describe … | [backup-dr-operations.md](./backup-dr-operations.md) |
 | gcloud backup-dr resource-backup-config | 3 commands (alpha, beta, ga); backup-dr resource-backup-config list … | [backup-dr-resource-backup-config.md](./backup-dr-resource-backup-config.md) |
 | gcloud backup-dr restore-template-executions | 9 commands (alpha, beta, ga); backup-dr restore-template-executions describe … | [backup-dr-restore-template-executions.md](./backup-dr-restore-template-executions.md) |
+| gcloud backup-dr restore-templates | 18 commands (alpha, beta, ga); backup-dr restore-templates create … | [backup-dr-restore-templates.md](./backup-dr-restore-templates.md) |
+| gcloud backup-dr restore-verification-plan-associations | 15 commands (alpha, beta, ga); backup-dr restore-verification-plan-associations create … | [backup-dr-restore-verification-plan-associations.md](./backup-dr-restore-verification-plan-associations.md) |
+| gcloud backup-dr restore-verification-plans | 12 commands (alpha, beta, ga); backup-dr restore-verification-plans create … | [backup-dr-restore-verification-plans.md](./backup-dr-restore-verification-plans.md) |
+| gcloud backup-dr service-config | 3 commands (alpha, beta, ga); backup-dr service-config init … | [backup-dr-service-config.md](./backup-dr-service-config.md) |
