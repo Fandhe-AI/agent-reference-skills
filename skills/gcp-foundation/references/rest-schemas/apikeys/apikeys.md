@@ -59,7 +59,7 @@ Message types referenced by the methods listed under `references/rest/apikeys/`.
 | Field | Type | Description |
 |---|---|---|
 | `methods` | array<string> | Optional. List of one or more methods that can be called. If empty, all methods for the service are allowed. A wildcard (\*) can be used as the last symbol. Valid examples: `google.cloud.translate.v2.TranslateService.GetSupportedLanguage` `TranslateText` `Get*` `translate.googleapis.com.Get*` |
-| `service` | string | The service for this restriction. It should be the canonical service name, for example: `translate.googleapis.com`. You can use `gcloud services list` (https://cloud.google.com/sdk/gcloud/reference/services/list) to get a list of services that are enabled in the project. |
+| `service` | string | The service for this restriction. It should be the canonical service name, for example: `translate.googleapis.com`. You can use \[`gcloud services list`\](https://cloud.google.com/sdk/gcloud/reference/services/list) to get a list of services that are enabled in the project. |
 
 ### `V2BrowserKeyRestrictions`
 
@@ -170,7 +170,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `apikeys` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
+- Generated from the Discovery document(s) v2 of `apikeys` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Descriptions are verbatim from Discovery, which drops angle-bracket placeholders of the source comments: a format such as `projects//locations/global` stands for `projects/{project}/locations/global`, and an expression such as `... && in labels` lost its left operand (for example `'label_value' in labels`). Check the method or field in the product's REST reference before relying on such a format.
 - Source: https://apikeys.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
 
 ## Related

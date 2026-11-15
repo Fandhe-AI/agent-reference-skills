@@ -103,7 +103,7 @@ Message types referenced by the methods listed under `references/rest/billingbud
 
 ### `GoogleCloudBillingBudgetsV1ThresholdRule`
 
-- ThresholdRule contains the definition of a threshold. Threshold rules define the triggering events used to generate a budget notification email. When a threshold is crossed (spend exceeds the specified percentages of the budget), budget alert emails are sent to the email recipients you specify in the NotificationsRule. Threshold rules also affect the fields included in the JSON data object (https://docs.cloud.google.com/billing/docs/how-to/budgets-programmatic-notifications#notification-format) sent to a Pub/Sub topic. Threshold rules are \_required\_ if using email notifications. Threshold rules are \_optional\_ if only setting a `pubsubTopic` NotificationsRule, unless you want your JSON data object to include data about the thresholds you set. For more information, see set budget threshold rules and actions (https://docs.cloud.google.com/billing/docs/how-to/budgets#budget-actions).
+- ThresholdRule contains the definition of a threshold. Threshold rules define the triggering events used to generate a budget notification email. When a threshold is crossed (spend exceeds the specified percentages of the budget), budget alert emails are sent to the email recipients you specify in the NotificationsRule. Threshold rules also affect the fields included in the JSON data object (https://docs.cloud.google.com/billing/docs/how-to/budgets-programmatic-notifications#notification-format) sent to a Pub/Sub topic. Threshold rules are \_required\_ if using email notifications. Threshold rules are \_optional\_ if only setting a \[`pubsubTopic` NotificationsRule\](#NotificationsRule), unless you want your JSON data object to include data about the thresholds you set. For more information, see set budget threshold rules and actions (https://docs.cloud.google.com/billing/docs/how-to/budgets#budget-actions).
 - Version: v1
 
 | Field | Type | Description |
@@ -203,7 +203,7 @@ Message types referenced by the methods listed under `references/rest/billingbud
 
 ### `GoogleCloudBillingBudgetsV1beta1ThresholdRule`
 
-- ThresholdRule contains the definition of a threshold. Threshold rules define the triggering events used to generate a budget notification email. When a threshold is crossed (spend exceeds the specified percentages of the budget), budget alert emails are sent to the email recipients you specify in the NotificationsRule. Threshold rules also affect the fields included in the JSON data object (https://cloud.google.com/billing/docs/how-to/budgets-programmatic-notifications#notification_format) sent to a Pub/Sub topic. Threshold rules are \_required\_ if using email notifications. Threshold rules are \_optional\_ if only setting a `pubsubTopic` NotificationsRule, unless you want your JSON data object to include data about the thresholds you set. For more information, see set budget threshold rules and actions (https://cloud.google.com/billing/docs/how-to/budgets#budget-actions).
+- ThresholdRule contains the definition of a threshold. Threshold rules define the triggering events used to generate a budget notification email. When a threshold is crossed (spend exceeds the specified percentages of the budget), budget alert emails are sent to the email recipients you specify in the NotificationsRule. Threshold rules also affect the fields included in the JSON data object (https://cloud.google.com/billing/docs/how-to/budgets-programmatic-notifications#notification_format) sent to a Pub/Sub topic. Threshold rules are \_required\_ if using email notifications. Threshold rules are \_optional\_ if only setting a \[`pubsubTopic` NotificationsRule\](#NotificationsRule), unless you want your JSON data object to include data about the thresholds you set. For more information, see set budget threshold rules and actions (https://cloud.google.com/billing/docs/how-to/budgets#budget-actions).
 - Version: v1beta1
 
 | Field | Type | Description |
@@ -268,8 +268,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `billingbudgets` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://billingbudgets.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1, v1beta1 of `billingbudgets` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Source: https://billingbudgets.googleapis.com/$discovery/rest?version=v1, https://billingbudgets.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
 

@@ -386,7 +386,7 @@ Base URL: `https://servicenetworking.googleapis.com`. Methods are listed by `id`
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `servicenetworking.operations.get` (not in the official docs); replace the `{...}` path variables:
+Generated from the Discovery entry of `servicenetworking.operations.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
 
 ```bash
 curl -X GET \
@@ -397,8 +397,9 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta of `servicenetworking` (retrieved 2026-11-14). Resources on this page: operations, services.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
 - Message schemas are listed under `references/rest-schemas/servicenetworking/`.
-- Source: https://servicenetworking.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Source: https://servicenetworking.googleapis.com/$discovery/rest?version=v1, https://servicenetworking.googleapis.com/$discovery/rest?version=v1beta (https://developers.google.com/discovery)
 
 ## Related
 
