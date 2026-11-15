@@ -100,6 +100,7 @@ Adapted (not in the official docs): bucket name `example-bucket` and folder pref
 
 ## Notes
 
+- Custom roles are allowed in `availablePermissions`: the official field reference says "Each value is the identifier for an IAM predefined role or custom role, with the prefix `inRole:`" and adds "If necessary, create a custom role that includes only the permissions you need" (https://docs.cloud.google.com/iam/docs/downscoping-short-lived-credentials); the how-to page likewise describes `ROLE_ID` as "The ID of a predefined or custom role" (https://docs.cloud.google.com/iam/docs/create-downscoped-short-lived-credentials).
 - Only the resources in the boundary are accessible; no permissions on others.
 - Cloud Storage API attributes (`storage.googleapis.com/objectListPrefix`) work only in Credential Access Boundaries; in conditional role bindings they break Cloud Storage methods and slow permission checks.
 - Corrected from the official docs: the folder example originally mixed bucket names (`example-folder` vs `example-bucket`) and a `'{example-folder}'` list prefix; now unified.
