@@ -946,8 +946,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `policytroubleshooter` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://policytroubleshooter.googleapis.com/$discovery/rest?version=v3 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v3, v1, v3beta, v1beta of `policytroubleshooter` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Source: https://policytroubleshooter.googleapis.com/$discovery/rest?version=v3, https://policytroubleshooter.googleapis.com/$discovery/rest?version=v1, https://policytroubleshooter.googleapis.com/$discovery/rest?version=v3beta, https://policytroubleshooter.googleapis.com/$discovery/rest?version=v1beta (https://developers.google.com/discovery)
 
 ## Related
 

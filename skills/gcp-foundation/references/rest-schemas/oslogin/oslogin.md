@@ -115,7 +115,7 @@ Message types referenced by the methods listed under `references/rest/oslogin/`.
 |---|---|---|
 | `deviceNickname` | string | The security key nickname explicitly set by the user. |
 | `privateKey` | string | Hardware-backed private key text in SSH format. |
-| `publicKey` | string | Public key text in SSH format, defined by RFC4253 section 6.6. |
+| `publicKey` | string | Public key text in SSH format, defined by \[RFC4253\]("https://www.ietf.org/rfc/rfc4253.txt") section 6.6. |
 | `universalTwoFactor` | UniversalTwoFactor | The U2F protocol type. |
 | `webAuthn` | WebAuthn | The Web Authentication protocol type. |
 
@@ -187,8 +187,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `oslogin` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://oslogin.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1, v1beta, v1alpha of `oslogin` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Source: https://oslogin.googleapis.com/$discovery/rest?version=v1, https://oslogin.googleapis.com/$discovery/rest?version=v1beta, https://oslogin.googleapis.com/$discovery/rest?version=v1alpha (https://developers.google.com/discovery)
 
 ## Related
 

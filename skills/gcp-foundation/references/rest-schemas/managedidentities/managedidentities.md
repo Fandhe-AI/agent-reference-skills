@@ -249,23 +249,23 @@ Message types referenced by the methods listed under `references/rest/managedide
 
 | Field | Type | Description |
 |---|---|---|
-| `consumerDefinedName` | string | consumer_defined_name is the name of the instance set by the service consumers. Generally this is different from the `name` field which reperesents the system-assigned id of the instance which the service consumers do not recognize. This is a required field for tenants onboarding to Maintenance Window notifications (go/slm-rollout-maintenance-policies#prerequisites). |
+| `consumerDefinedName` | string | consumer_defined_name is the name of the instance set by the service consumers. Generally this is different from the `name` field which reperesents the system-assigned id of the instance which the service consumers do not recognize. This is a required field for tenants onboarding to Maintenance Window notifications ((internal link)#prerequisites). |
 | `consumerProjectNumber` | string | Optional. The consumer_project_number associated with this Apigee instance. This field is added specifically to support Apigee integration with SLM Rollout and UMM. It represents the numerical project ID of the GCP project that consumes this Apigee instance. It is used for SLM rollout notifications and UMM integration, enabling proper mapping to customer projects and log delivery for Apigee instances. This field complements consumer_project_id and may be used for specific Apigee scenarios where the numerical ID is required. |
 | `createTime` | string (google-datetime) | Output only. Timestamp when the resource was created. |
 | `instanceType` | string | Optional. The instance_type of this instance of format: projects/{project_number}/locations/{location_id}/instanceTypes/{instance_type_id}. Instance Type represents a high-level tier or SKU of the service that this instance belong to. When enabled(eg: Maintenance Rollout), Rollout uses 'instance_type' along with 'software_versions' to determine whether instance needs an update or not. |
 | `labels` | object | Optional. Resource labels to represent user provided metadata. Each label is a key-value pair, where both the key and the value are arbitrary strings provided by the user. |
-| `maintenancePolicyNames` | object | Optional. The MaintenancePolicies that have been attached to the instance. The key must be of the type name of the oneof policy name defined in MaintenancePolicy, and the referenced policy must define the same policy type. For details, please refer to go/mr-user-guide. Should not be set if maintenance_settings.maintenance_policies is set. |
+| `maintenancePolicyNames` | object | Optional. The MaintenancePolicies that have been attached to the instance. The key must be of the type name of the oneof policy name defined in MaintenancePolicy, and the referenced policy must define the same policy type. For details, please refer to (internal link). Should not be set if maintenance_settings.maintenance_policies is set. |
 | `maintenanceSchedules` | object | The MaintenanceSchedule contains the scheduling information of published maintenance schedule with same key as software_versions. |
 | `maintenanceSettings` | GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettings | Optional. The MaintenanceSettings associated with instance. |
-| `name` | string | Unique name of the resource. It uses the form: `projects/{project_number}/locations/{location_id}/instances/{instance_id}` Note: This name is passed, stored and logged across the rollout system. So use of consumer project_id or any other consumer PII in the name is strongly discouraged for wipeout (go/wipeout) compliance. See go/elysium/project_ids#storage-guidance for more details. |
+| `name` | string | Unique name of the resource. It uses the form: `projects/{project_number}/locations/{location_id}/instances/{instance_id}` Note: This name is passed, stored and logged across the rollout system. So use of consumer project_id or any other consumer PII in the name is strongly discouraged for wipeout ((internal link)) compliance. See (internal link)#storage-guidance for more details. |
 | `notificationParameters` | object | Optional. notification_parameter are information that service producers may like to include that is not relevant to Rollout. This parameter will only be passed to Gamma and Cloud Logging for notification/logging purpose. |
-| `producerMetadata` | object | Output only. Custom string attributes used primarily to expose producer-specific information in monitoring dashboards. See go/get-instance-metadata. |
-| `provisionedResources` | array<GoogleCloudSaasacceleratorManagementProvidersV1ProvisionedResource> | Output only. The list of data plane resources provisioned for this instance, e.g. compute VMs. See go/get-instance-metadata. |
+| `producerMetadata` | object | Output only. Custom string attributes used primarily to expose producer-specific information in monitoring dashboards. See (internal link). |
+| `provisionedResources` | array<GoogleCloudSaasacceleratorManagementProvidersV1ProvisionedResource> | Output only. The list of data plane resources provisioned for this instance, e.g. compute VMs. See (internal link). |
 | `slmInstanceTemplate` | string | Link to the SLM instance template. Only populated when updating SLM instances via SSA's Actuation service adaptor. Service producers with custom control plane (e.g. Cloud SQL) doesn't need to populate this field. Instead they should use software_versions. |
-| `sloMetadata` | GoogleCloudSaasacceleratorManagementProvidersV1SloMetadata | Output only. SLO metadata for instance classification in the Standardized dataplane SLO platform. See go/cloud-ssa-standard-slo for feature description. |
+| `sloMetadata` | GoogleCloudSaasacceleratorManagementProvidersV1SloMetadata | Output only. SLO metadata for instance classification in the Standardized dataplane SLO platform. See (internal link) for feature description. |
 | `softwareVersions` | object | Software versions that are used to deploy this instance. This can be mutated by rollout services. |
 | `state` | string enum | Output only. Current lifecycle state of the resource (e.g. if it's being created or ready to use). |
-| `tenantProjectId` | string | Output only. ID of the associated GCP tenant project. See go/get-instance-metadata. |
+| `tenantProjectId` | string | Output only. ID of the associated GCP tenant project. See (internal link). |
 | `updateTime` | string (google-datetime) | Output only. Timestamp when the resource was last modified. |
 
 ### `GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSchedule`
@@ -290,7 +290,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 |---|---|---|
 | `exclude` | boolean | Optional. Exclude instance from maintenance. When true, rollout service will not attempt maintenance on the instance. Rollout service will include the instance in reported rollout progress as not attempted. |
 | `isRollback` | boolean | Optional. If the update call is triggered from rollback, set the value as true. |
-| `maintenancePolicies` | object | Optional. The MaintenancePolicies that have been attached to the instance. The key must be of the type name of the oneof policy name defined in MaintenancePolicy, and the embedded policy must define the same policy type. For details, please refer to go/mr-user-guide. Should not be set if maintenance_policy_names is set. If only the name is needed, then only populate MaintenancePolicy.name. |
+| `maintenancePolicies` | object | Optional. The MaintenancePolicies that have been attached to the instance. The key must be of the type name of the oneof policy name defined in MaintenancePolicy, and the embedded policy must define the same policy type. For details, please refer to (internal link). Should not be set if maintenance_policy_names is set. If only the name is needed, then only populate MaintenancePolicy.name. |
 
 ### `GoogleCloudSaasacceleratorManagementProvidersV1NodeSloMetadata`
 
@@ -465,7 +465,7 @@ Message types referenced by the methods listed under `references/rest/managedide
 | `createTime` | string (google-datetime) | Output only. The time when the resource was created. |
 | `description` | string | Optional. Description of what this policy is for. Create/Update methods return INVALID_ARGUMENT if the length is greater than 512. |
 | `labels` | object | Optional. Resource labels to represent user provided metadata. Each label is a key-value pair, where both the key and the value are arbitrary strings provided by the user. |
-| `name` | string | Required. MaintenancePolicy name using the form: `projects/{project_id}/locations/{location_id}/maintenancePolicies/{maintenance_policy_id}` where {project_id} refers to a GCP consumer project ID, {location_id} refers to a GCP region/zone, {maintenance_policy_id} must be 1-63 characters long and match the regular expression `a-z0-9?`. |
+| `name` | string | Required. MaintenancePolicy name using the form: `projects/{project_id}/locations/{location_id}/maintenancePolicies/{maintenance_policy_id}` where {project_id} refers to a GCP consumer project ID, {location_id} refers to a GCP region/zone, {maintenance_policy_id} must be 1-63 characters long and match the regular expression `[a-z0-9]([-a-z0-9]*[a-z0-9])?`. |
 | `state` | string enum | Optional. The state of the policy. |
 | `updatePolicy` | UpdatePolicy | Maintenance policy applicable to instance update. |
 | `updateTime` | string (google-datetime) | Output only. The time when the resource was updated. |
@@ -735,8 +735,9 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `managedidentities` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://managedidentities.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1, v1alpha1 of `managedidentities` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Google-internal `go/` short links in the Discovery descriptions are replaced with `(internal link)`; they are not reachable outside Google.
+- Source: https://managedidentities.googleapis.com/$discovery/rest?version=v1, https://managedidentities.googleapis.com/$discovery/rest?version=v1alpha1 (https://developers.google.com/discovery)
 
 ## Related
 

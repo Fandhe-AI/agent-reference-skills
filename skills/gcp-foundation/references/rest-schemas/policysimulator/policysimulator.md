@@ -224,7 +224,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 |---|---|---|
 | `customConstraint` | GoogleCloudOrgpolicyV2CustomConstraint | The custom constraint being violated. |
 | `error` | GoogleRpcStatus | Any error encountered during the evaluation. |
-| `name` | string | The name of the `OrgPolicyViolation`. Example: organizations/my-example-org/locations/global/orgPolicyViolationsPreviews/506a5f7f/orgPolicyViolations/38ce` |
+| `name` | string | The name of the `OrgPolicyViolation`. Example: organizations/my-example-org/locations/global/orgPolicyViolationsPreviews/506a5f7f/orgPolicyViolations/38ce\` |
 | `resource` | GoogleCloudPolicysimulatorV1ResourceContext | The resource violating the constraint. |
 
 ### `GoogleCloudPolicysimulatorV1OrgPolicyViolationsPreview`
@@ -512,7 +512,7 @@ Message types referenced by the methods listed under `references/rest/policysimu
 |---|---|---|
 | `customConstraint` | GoogleCloudOrgpolicyV2CustomConstraint | The custom constraint being violated. |
 | `error` | GoogleRpcStatus | Any error encountered during the evaluation. |
-| `name` | string | The name of the `OrgPolicyViolation`. Example: organizations/my-example-org/locations/global/orgPolicyViolationsPreviews/506a5f7f/orgPolicyViolations/38ce` |
+| `name` | string | The name of the `OrgPolicyViolation`. Example: organizations/my-example-org/locations/global/orgPolicyViolationsPreviews/506a5f7f/orgPolicyViolations/38ce\` |
 | `resource` | GoogleCloudPolicysimulatorV1betaResourceContext | The resource violating the constraint. |
 
 ### `GoogleCloudPolicysimulatorV1betaOrgPolicyViolationsPreview`
@@ -727,8 +727,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `policysimulator` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://policysimulator.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1, v1beta of `policysimulator` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Source: https://policysimulator.googleapis.com/$discovery/rest?version=v1, https://policysimulator.googleapis.com/$discovery/rest?version=v1beta (https://developers.google.com/discovery)
 
 ## Related
 
