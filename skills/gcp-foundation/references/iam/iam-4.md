@@ -164,7 +164,7 @@ Predefined roles of `iam` (role ID, description, included permissions) and, for 
 Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Service Account):
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud iam service-accounts add-iam-policy-binding SERVICE_ACCOUNT_EMAIL \
   --member="user:EMAIL_ADDRESS" \
   --role="roles/iam.serviceAccountAdmin"
 ```
