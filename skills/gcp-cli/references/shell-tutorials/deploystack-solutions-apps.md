@@ -52,29 +52,7 @@ resource "google_project_service" "all" {
 
 `./main.tf` - Set permissions (Cloud Build service account):
 
-```hcl
-variable "build_roles_list" {
-    description = "The list of roles that build needs for"
-    type        = list(string)
-    default = [
-        "roles/run.developer",
-        "roles/vpaccess.user",
-        "roles/iam.serviceAccountUser",
-        "roles/run.admin",
-        "roles/secretmanager.secretAccessor",
-        "roles/artifactregistry.admin",
-    ]
-}
-resource "google_project_iam_member" "allbuild" {
-    for_each   = toset(var.build_roles_list)
-    project    = var.project_number
-    role       = each.key
-    member     = "serviceAccount:${local.sabuild}"
-    depends_on = [google_project_service.all]
-}
-```
-
-Adapted (not in the official docs): `roles/vpaccess.user` in the official list is a typo for `roles/vpcaccess.user` (Serverless VPC Access User); a binding with the misspelled role fails.
+Adapted (not in the official docs): the official list has `roles/vpaccess.user`, a typo for `roles/vpcaccess.user` (Serverless VPC Access User); a binding with the misspelled role fails, so the corrected role is shown.
 
 ```hcl
 variable "build_roles_list" {
@@ -132,19 +110,7 @@ resource "null_resource" "cloudbuild_fe" {
 
 `./code/database/load_schema.sh` - Initialize database schema (makes a temporary Cloud Storage bucket to upload the schema to Cloud SQL):
 
-```bash
-PROJECT=$1
-SQLNAME=$2
-
-SQLSERVICEACCOUNT=$(gcloud sql instances describe $SQLNAME --format="value(serviceAccountEmailAddress)" | xargs)
-gcloud storage buckets create gs://$PROJECT-temp
-gcloud storage cp schema.sql gs://$PROJECT-temp/schema.sql
-gcloud storage buckets add-iam-policy-binding gs://$PROJECT-temp/ --member=serviceAccount:$SQLSERVICEACCOUNT --role=roles/storage.objectViewer
-gcloud sql import sql $SQLNAME gs://$PROJECT-temp/schema.sql -q
-gcloud storage rm gs://$PROJECT-temp --recursive
-```
-
-Adapted (not in the official docs): the arguments and the command output are expanded unquoted, so a value with spaces or glob characters is split, including in the recursive delete; this copy quotes every expansion and stops on the first error.
+Adapted (not in the official docs): the official script expands the arguments and the command output unquoted, so a value with spaces or glob characters is split, including in the recursive delete; this version quotes every expansion and stops on the first error.
 
 ```bash
 set -euo pipefail
@@ -215,13 +181,7 @@ substitutions:
 
 `./code/frontend/massage.sh` - Edit JavaScript:
 
-```bash
-API=$(gcloud run services describe todo-api --region=$1 --format="value(status.url)")
-stripped=$(echo ${API/https:\/\//})
-sed -i"" -e "s/127.0.0.1:9000/$stripped/" www/js/main.js
-```
-
-Adapted (not in the official docs): the region argument and the command output are expanded unquoted; this copy quotes them.
+Adapted (not in the official docs): the official script expands the region argument and the command output unquoted; this version quotes them.
 
 ```bash
 API="$(gcloud run services describe todo-api --region="$1" --format="value(status.url)")"
@@ -477,10 +437,10 @@ The breakdown also creates a Cloud DNS managed zone, a managed SSL certificate, 
 
 ## Notes
 
-- Adapted from the official docs: the Three Tier App role list is also shown with `roles/vpcaccess.user` (the official `roles/vpaccess.user` is a typo), and `load_schema.sh` / `massage.sh` are also shown with every variable and command substitution quoted.
+- Adapted from the official docs: the Three Tier App role list uses `roles/vpcaccess.user` (the official `roles/vpaccess.user` is a typo), and `load_schema.sh` / `massage.sh` are shown only with every variable and command substitution quoted.
 - These stacks create billable resources (Cloud Run, Cloud SQL, Memorystore, load balancers, and so on). Static Hosting With Domain also purchases a domain from the registrar at its yearly price. The source gives no teardown / destroy command; none is given here.
 - Sample-only, not production: the stacks make Cloud Run services world readable (`allUsers`), grant broad roles (`roles/editor`, `roles/secretmanager.admin`, `roles/artifactregistry.admin`) and hard-code sample credentials in the Three Tier App API service (`todo_user` / `todo_pass`). Review before reusing in a real project.
-- Source typos kept verbatim: `roles/vpaccess.user` (the Three Tier App list), `clouldbuild.yaml` (file names), "repoistory" (source heading).
+- Source typos: `roles/vpaccess.user` (corrected above), `clouldbuild.yaml` (file names), "repoistory" (source heading).
 - Fixes of conversion damage only: the Three Tier App middleware `clouldbuild.yaml` section was a single run-together block in the fetched twin; it is split here into the build block and the push block. The Cloud Build YAML in that stack is shown as the source has it (no `- ` list markers).
 - Only whole code blocks are included; remaining Terraform is summarized with a pointer to the GitHub repository.
 - Product details: Cloud Run: `gcp-run` skill; Cloud Storage: `gcp-storage` skill; Terraform / IaC in general: future `gcp-iac` skill.

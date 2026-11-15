@@ -47,29 +47,14 @@ gcloud info --format='value(config.account)'
 
 ### Iterate over projects, service accounts and keys
 
-```bash
-#!/bin/bash
-for project in  $(gcloud projects list --format="value(projectId)")
-do
-  echo "ProjectId:  $project"
-  for robot in $(gcloud iam service-accounts list --project $project --format="value(email)")
-   do
-     echo "    -> Robot $robot"
-     for key in $(gcloud iam service-accounts keys list --iam-account $robot --project $project --format="value(name.basename())")
-        do
-          echo "        $key"
-     done
-   done
-done
-```
-
-Adapted (not in the official docs): the official loop expands command output and variables unquoted, so values are word-split, and a failed listing is silently ignored; this copy reads line by line, quotes every variable, and exits non-zero when a listing fails.
+Adapted (not in the official docs): the official Bash loop expands command output and variables unquoted (values are word-split and glob-expanded) and ignores a failed listing; it is replaced by this version, which reads line by line, quotes every variable, skips empty lines, and stops on the first error.
 
 ```bash
 #!/bin/bash
 set -euo pipefail
 projects="$(gcloud projects list --format="value(projectId)")"
 while IFS= read -r project; do
+  [ -n "${project}" ] || continue
   echo "ProjectId:  ${project}"
   robots="$(gcloud iam service-accounts list --project "${project}" --format="value(email)")"
   while IFS= read -r robot; do
@@ -82,27 +67,28 @@ done <<< "${projects}"
 
 ### Split multi-valued CSV fields
 
+Adapted (not in the official docs): the official loop iterates over an unquoted command substitution (records are word-split) and wraps the `--format` value across lines; it is replaced by this version, which reads one CSV record per line, quotes every variable, and stops on the first error.
+
 ```bash
 #!/bin/bash
-for scopesInfo in $(
-    gcloud compute instances list --filter=name:instance-1 \
-        --format="csv[no-heading](name,id,serviceAccounts[].email.list(),
-                      serviceAccounts[].scopes[].map().list(separator=;))")
-do
-      IFS=',' read -r -a scopesInfoArray<<< "$scopesInfo"
-      NAME="${scopesInfoArray[0]}"
-      ID="${scopesInfoArray[1]}"
-      EMAIL="${scopesInfoArray[2]}"
-      SCOPES_LIST="${scopesInfoArray[3]}"
+set -euo pipefail
+scopes_info="$(gcloud compute instances list --filter=name:instance-1 \
+  --format="csv[no-heading](name,id,serviceAccounts[].email.list(),serviceAccounts[].scopes[].map().list(separator=;))")"
+while IFS= read -r scopesInfo; do
+  [ -n "${scopesInfo}" ] || continue
+  IFS=',' read -r -a scopesInfoArray <<< "${scopesInfo}"
+  NAME="${scopesInfoArray[0]}"
+  ID="${scopesInfoArray[1]}"
+  EMAIL="${scopesInfoArray[2]}"
+  SCOPES_LIST="${scopesInfoArray[3]}"
 
-      echo "NAME: $NAME, ID: $ID, EMAIL: $EMAIL"
-      echo ""
-      IFS=';' read -r -a scopeListArray<<< "$SCOPES_LIST"
-      for SCOPE in  "${scopeListArray[@]}"
-      do
-        echo "  SCOPE: $SCOPE"
-      done
-done
+  echo "NAME: ${NAME}, ID: ${ID}, EMAIL: ${EMAIL}"
+  echo ""
+  IFS=';' read -r -a scopeListArray <<< "${SCOPES_LIST}"
+  for SCOPE in "${scopeListArray[@]}"; do
+    echo "  SCOPE: ${SCOPE}"
+  done
+done <<< "${scopes_info}"
 ```
 
 ### Pass flag values from YAML files
@@ -143,7 +129,7 @@ gcloud topic arg-files
 
 ## Notes
 
-- Adapted from the official docs: the nested project / service account / key loop is also shown with quoted variables, line-by-line reads, and `set -euo pipefail` so that a failed listing stops the script.
+- Adapted from the official docs: the key-listing loop and the CSV parsing loop are shown only in a safe form (quoted variables, line-by-line reads, `set -euo pipefail`); the official versions iterate over unquoted command substitutions.
 - Do depend on the command exit status: a non-zero status means an error occurred and output may be incomplete. Do not depend on the wording of messages on standard error or on the raw default standard output; use `--format` (and `--filter`) instead.
 - Parallel execution of multiple gcloud CLI commands is not supported.
 - The Bash loops expand command output unquoted, as in the official samples; they assume values contain no whitespace.

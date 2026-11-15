@@ -60,6 +60,7 @@ Adapted (not in the official docs): the official nested loop for service account
 set -euo pipefail
 projects="$(gcloud projects list --format="value(projectId)")"
 while IFS= read -r project; do
+  [ -n "${project}" ] || continue
   echo "ProjectId:  ${project}"
   robots="$(gcloud iam service-accounts list --project "${project}" --format="value(email)")"
   while IFS= read -r robot; do
