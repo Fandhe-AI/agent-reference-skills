@@ -65,3 +65,5 @@
 | gcloud run worker-pools replace | 3 commands (alpha, beta, ga); run worker-pools replace … | [run-worker-pools-replace.md](./run-worker-pools-replace.md) |
 | gcloud run worker-pools revisions | 11 commands (alpha, beta, ga); run worker-pools revisions delete … | [run-worker-pools-revisions.md](./run-worker-pools-revisions.md) |
 | gcloud run worker-pools set-iam-policy | 3 commands (alpha, beta, ga); run worker-pools set-iam-policy … | [run-worker-pools-set-iam-policy.md](./run-worker-pools-set-iam-policy.md) |
+| gcloud run worker-pools update | 3 commands (alpha, beta, ga); run worker-pools update … | [run-worker-pools-update.md](./run-worker-pools-update.md) |
+| gcloud run worker-pools update-instance-split | 3 commands (alpha, beta, ga); run worker-pools update-instance-split … | [run-worker-pools-update-instance-split.md](./run-worker-pools-update-instance-split.md) |
