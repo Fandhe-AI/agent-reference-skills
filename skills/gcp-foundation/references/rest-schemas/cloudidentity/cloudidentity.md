@@ -896,6 +896,26 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `parent` | string | Required. Immutable. The resource name of the entity under which this `Group` resides in the Cloud Identity resource hierarchy. Must be of the form `identitysources/{identity_source}` for external identity-mapped groups (https://support.google.com/a/answer/9039510) or `customers/{customer_id}` for Google Groups. The `customer_id` must begin with "C" (for example, 'C046psxkn'). \[Find your customer ID.\] (https://support.google.com/cloudidentity/answer/10070793) |
 | `updateTime` | string (google-datetime) | Output only. The time when the `Group` was last updated. |
 
+### `Group` (v1beta1)
+
+- A group within the Cloud Identity Groups API. A `Group` is a collection of entities, where each entity is either a user, another group, or a service account.
+- Version: v1beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `additionalGroupKeys` | array<EntityKey> | Output only. Additional group keys associated with the Group. |
+| `createTime` | string (google-datetime) | Output only. The time when the `Group` was created. |
+| `description` | string | An extended description to help users determine the purpose of a `Group`. Must not be longer than 4,096 characters. |
+| `displayName` | string | The display name of the `Group`. |
+| `dynamicGroupMetadata` | DynamicGroupMetadata | Optional. Dynamic group metadata like queries and status. |
+| `externalIds` | array<ExternalId> | Optional. External identifiers associated with the `Group`. Enables external identity providers and directory sync tools to link their native unique identifiers with this group. Currently, the only allowable namespace is `"system/external"`. |
+| `groupKey` | EntityKey | Required. The `EntityKey` of the `Group`. |
+| `labels` | object | Required. One or more label entries that apply to the Group. Labels contain a key with an empty value. Google Groups are the default type of group and have a label with a key of `cloudidentity.googleapis.com/groups.discussion_forum` and an empty value. Existing Google Groups can have an additional label with a key of `cloudidentity.googleapis.com/groups.security` and an empty value added to them. \*\*This is an immutable change and the security label cannot be removed once added.\*\* Dynamic groups have a label with a key of `cloudidentity.googleapis.com/groups.dynamic`. Identity-mapped groups for Cloud Search have a label with a key of `system/groups/external` and an empty value. Google Groups can be locked (https://support.google.com/a?p=locked-groups). To lock a group, add a label with a key of `cloudidentity.googleapis.com/groups.locked` and an empty value. Doing so locks the group. To unlock the group, remove this label. |
+| `name` | string | Output only. The resource name (https://cloud.google.com/apis/design/resource_names) of the `Group`. Shall be of the form `groups/{group_id}`. |
+| `parent` | string | Required. Immutable. The resource name of the entity under which this `Group` resides in the Cloud Identity resource hierarchy. Must be of the form `identitysources/{identity_source}` for external identity-mapped groups (https://support.google.com/a/answer/9039510) or `customers/{customer_id}` for Google Groups. The `customer_id` must begin with "C" (for example, 'C046psxkn'). \[Find your customer ID.\] (https://support.google.com/cloudidentity/answer/10070793) |
+| `posixGroups` | array<PosixGroup> | Optional. The POSIX groups associated with the `Group`. |
+| `updateTime` | string (google-datetime) | Output only. The time when the `Group` was last updated. |
+
 ### `GroupRelation`
 
 - Message representing a transitive group of a user or a group.
@@ -1166,6 +1186,22 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `deliverySetting` | string enum | Output only. Delivery setting associated with the membership. |
 | `name` | string | Output only. The resource name (https://cloud.google.com/apis/design/resource_names) of the `Membership`. Shall be of the form `groups/{group}/memberships/{membership}`. |
 | `preferredMemberKey` | EntityKey | Required. Immutable. The `EntityKey` of the member. |
+| `roles` | array<MembershipRole> | The `MembershipRole`s that apply to the `Membership`. If unspecified, defaults to a single `MembershipRole` with `name` `MEMBER`. Must not contain duplicate `MembershipRole`s with the same `name`. |
+| `type` | string enum | Output only. The type of the membership. |
+| `updateTime` | string (google-datetime) | Output only. The time when the `Membership` was last updated. |
+
+### `Membership` (v1beta1)
+
+- A membership within the Cloud Identity Groups API. A `Membership` defines a relationship between a `Group` and an entity belonging to that `Group`, referred to as a "member".
+- Version: v1beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `createTime` | string (google-datetime) | Output only. The time when the `Membership` was created. |
+| `deliverySetting` | string enum | Output only. Delivery setting associated with the membership. |
+| `memberKey` | EntityKey | Immutable. The `EntityKey` of the member. Either `member_key` or `preferred_member_key` must be set when calling MembershipsService.CreateMembership but not both; both shall be set when returned. |
+| `name` | string | Output only. The resource name (https://cloud.google.com/apis/design/resource_names) of the `Membership`. Shall be of the form `groups/{group_id}/memberships/{membership_id}`. |
+| `preferredMemberKey` | EntityKey | Required. Immutable. The `EntityKey` of the member. Either `member_key` or `preferred_member_key` must be set when calling MembershipsService.CreateMembership but not both; both shall be set when returned. |
 | `roles` | array<MembershipRole> | The `MembershipRole`s that apply to the `Membership`. If unspecified, defaults to a single `MembershipRole` with `name` `MEMBER`. Must not contain duplicate `MembershipRole`s with the same `name`. |
 | `type` | string enum | Output only. The type of the membership. |
 | `updateTime` | string (google-datetime) | Output only. The time when the `Membership` was last updated. |
@@ -1615,7 +1651,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) v1, v1beta1 of `cloudidentity` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Generated from the Discovery document(s) v1, v1beta1 of `cloudidentity` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Corrected from the official docs (the Discovery text above is verbatim): the ClientState name format is written `devices/{device}/deviceUsers/{device_user}/clientState/{partner}`; the collection is `clientStates` (as in the `clientStates.get` and `clientStates.list` paths), so use `.../clientStates/{partner}`.
 - Source: https://cloudidentity.googleapis.com/$discovery/rest?version=v1, https://cloudidentity.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related

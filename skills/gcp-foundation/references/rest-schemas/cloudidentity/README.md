@@ -2,4 +2,4 @@
 
 | Name | Description | Path |
 |---|---|---|
-| Cloud Identity API (cloudidentity) | 155 schemas | [cloudidentity.md](./cloudidentity.md) |
+| Cloud Identity API (cloudidentity) | 157 schemas | [cloudidentity.md](./cloudidentity.md) |
