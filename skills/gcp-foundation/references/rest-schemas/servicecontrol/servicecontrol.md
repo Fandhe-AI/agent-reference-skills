@@ -216,6 +216,18 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `resources` | array<ResourceInfo> | Describes the resources and the policies applied to each resource. |
 | `serviceConfigId` | string | Specifies the version of the service configuration that should be used to process the request. Must not be empty. Set this field to 'latest' to specify using the latest configuration. |
 
+### `CheckRequest` (v1)
+
+- Request message for the Check method.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `operation` | Operation | The operation to be checked. |
+| `requestProjectSettings` | boolean | Requests the project settings to be returned as part of the check response. |
+| `serviceConfigId` | string | Specifies which version of service configuration should be used to process the request. If unspecified or no matching version can be found, the latest one will be used. |
+| `skipActivationCheck` | boolean | Indicates if service activation check should be skipped for this request. Default behavior is to perform the check and apply relevant quota. WARNING: Setting this flag to "true" will disable quota enforcement. |
+
 ### `CheckResponse`
 
 - Response message for the Check method.
@@ -226,6 +238,20 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `dynamicMetadata` | object | Optional response metadata that will be emitted as dynamic metadata to be consumed by the caller of ServiceController. For compatibility with the ext_authz interface. |
 | `headers` | object | Returns a set of request contexts generated from the `CheckRequest`. |
 | `status` | Status | Operation is allowed when this field is not set. Any non-'OK' status indicates a denial; google.rpc.Status.details would contain additional details about the denial. |
+
+### `CheckResponse` (v1)
+
+- Response message for the Check method.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `checkErrors` | array<CheckError> | Indicate the decision of the check. If no check errors are present, the service should process the operation. Otherwise the service should use the list of errors to determine the appropriate action. |
+| `checkInfo` | CheckInfo | Feedback data returned from the server during processing a Check request. |
+| `operationId` | string | The same operation_id value used in the CheckRequest. Used for logging and diagnostics purposes. |
+| `quotaInfo` | QuotaInfo | Quota information for the check request associated with this response. |
+| `serviceConfigId` | string | The actual config id used to process the request. |
+| `serviceRolloutId` | string | The current service rollout id used to process the request. |
 
 ### `ConsumerInfo`
 
@@ -570,6 +596,17 @@ Message types referenced by the methods listed under `references/rest/servicecon
 |---|---|---|
 | `extensions` | object | The extension field to store serialized OTel responses. e.g. ExportLogsServiceResponse, ExportMetricsServiceResponse. |
 
+### `ReportResponse` (v1)
+
+- Response message for the Report method.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `reportErrors` | array<ReportError> | Partial failures, one for each `Operation` in the request that failed processing. There are three possible combinations of the RPC status: 1. The combination of a successful RPC status and an empty `report_errors` list indicates a complete success where all `Operations` in the request are processed successfully. 2. The combination of a successful RPC status and a non-empty `report_errors` list indicates a partial success where some `Operations` in the request succeeded. Each `Operation` that failed processing has a corresponding item in this list. 3. A failed RPC status indicates a general non-deterministic failure. When this happens, it's impossible to know which of the 'Operations' in the request succeeded or failed. |
+| `serviceConfigId` | string | The actual config id used to process the request. |
+| `serviceRolloutId` | string | The current service rollout id used to process the request. |
+
 ### `Request`
 
 - This message defines attributes for an HTTP request. If the actual request is not an HTTP request, the runtime system should try to map the actual request to an equivalent HTTP request.
@@ -636,6 +673,18 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `name` | string | The name of the resource referenced in the request. |
 | `permission` | string | The resource permission needed for this request. The format must be "{service}/{plural}.{verb}". |
 | `type` | string | The resource type in the format of "{service}/{kind}". |
+
+### `ResourceInfo` (v1)
+
+- Describes a resource associated with this operation.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `permission` | string | The resource permission required for this request. |
+| `resourceContainer` | string | The identifier of the parent of this resource instance. Must be in one of the following formats: - `projects/` - `folders/` - `organizations/` |
+| `resourceLocation` | string | The location of the resource. If not empty, the resource will be checked against location policy. The value must be a valid zone, region or multiregion. For example: "europe-west4" or "northamerica-northeast1-a" |
+| `resourceName` | string | Name of the resource. This is used for auditing purposes. |
 
 ### `ResourceLocation`
 
@@ -939,7 +988,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) v2, v1 of `servicecontrol` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Generated from the Discovery document(s) v2, v1 of `servicecontrol` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
 - Google-internal `go/` short links in the Discovery descriptions are replaced with `(internal link)`; they are not reachable outside Google.
 - Source: https://servicecontrol.googleapis.com/$discovery/rest?version=v2, https://servicecontrol.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
