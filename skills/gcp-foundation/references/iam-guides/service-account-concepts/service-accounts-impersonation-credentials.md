@@ -10,7 +10,7 @@ How principals authenticate as service accounts: impersonation, short-lived cred
 
 Ways to impersonate a service account:
 
-- Set the gcloud `--impersonate-service-account` flag or the `impersonate-service-account` property; gcloud creates short-lived credentials and runs the command with them. The flag can also be used when creating an Application Default Credentials file so client libraries impersonate automatically.
+- Set the gcloud `--impersonate-service-account` flag or the `auth/impersonate_service_account` property (`gcloud config set auth/impersonate_service_account SERVICE_ACCOUNT_EMAIL`); gcloud creates short-lived credentials and runs the command with them. The flag can also be used when creating an Application Default Credentials file so client libraries impersonate automatically.
 - Create short-lived credentials with the Service Account Credentials API (`generateAccessToken()`), then use them for API requests.
 - Use a credential configuration file with Workload Identity Federation (external workloads get an environment-specific credential, then a short-lived service account credential).
 

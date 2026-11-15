@@ -18,11 +18,19 @@ gcloud resource-manager tags bindings create \
     --parent=RESOURCE_ID
 ```
 
-List bindings (direct and inherited):
+List directly attached bindings:
 
 ```bash
 gcloud resource-manager tags bindings list \
     --parent=RESOURCE_ID
+```
+
+Adapted (not in the official docs): `--effective` is added to include inherited tags; the plain list above shows only directly attached bindings.
+
+```bash
+gcloud resource-manager tags bindings list \
+    --parent=RESOURCE_ID \
+    --effective
 ```
 
 ```text
@@ -158,6 +166,8 @@ Required permissions to manage org policies (for example via Organization Policy
 Tag roles: `roles/resourcemanager.tagViewer`, `roles/resourcemanager.organizationViewer`, `roles/resourcemanager.tagAdmin` (create/update/delete definitions), `roles/resourcemanager.tagUser` (attach/remove on the tag value and the resource), plus `roles/iam.serviceAccountAdmin` on the service account.
 
 ## Notes
+
+- Adapted from the official docs: `tags bindings list` shows directly attached bindings only; add `--effective` to include inherited tags.
 
 - Tags on service accounts are Preview (Pre-GA terms). Tags let you conditionally allow/deny IAM policies; changing or deleting a tag can remove access granted by conditional role bindings.
 - Inherited tags cannot be detached, only overridden by attaching the same key with a different value. Delete tag bindings before deleting a tag definition.
