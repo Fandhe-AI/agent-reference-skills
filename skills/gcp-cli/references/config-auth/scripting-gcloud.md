@@ -150,7 +150,7 @@ foreach ($project in gcloud projects list --format="value(projectId)")
 
 The sample writes the service account information into an array and segregates values in the multi-valued CSV-formatted `serviceAccounts.scope()` field:
 
-Adapted (not in the official docs): the official loop iterates over an unquoted command substitution (records are word-split) and wraps the `--format` value across lines; it is replaced by this version, which reads one CSV record per line, quotes every variable, and stops on the first error.
+Adapted (not in the official docs): the official loop iterates over an unquoted command substitution (records are word-split) and wraps the `--format` value across lines; it is replaced by this version, which reads one CSV record per line, quotes every variable, and stops on the first error. A VM without a service account yields empty email and scope fields, so missing array elements default to empty strings.
 
 ```bash
 #!/bin/bash
@@ -160,10 +160,10 @@ scopes_info="$(gcloud compute instances list --filter=name:instance-1 \
 while IFS= read -r scopesInfo; do
   [ -n "${scopesInfo}" ] || continue
   IFS=',' read -r -a scopesInfoArray <<< "${scopesInfo}"
-  NAME="${scopesInfoArray[0]}"
-  ID="${scopesInfoArray[1]}"
-  EMAIL="${scopesInfoArray[2]}"
-  SCOPES_LIST="${scopesInfoArray[3]}"
+  NAME="${scopesInfoArray[0]-}"
+  ID="${scopesInfoArray[1]-}"
+  EMAIL="${scopesInfoArray[2]-}"
+  SCOPES_LIST="${scopesInfoArray[3]-}"
 
   echo "NAME: ${NAME}, ID: ${ID}, EMAIL: ${EMAIL}"
   echo ""
@@ -190,7 +190,6 @@ done <<< "${scopes_info}"
 - Adapted from the official docs: the Bash loops (service account keys per project, and the multi-valued CSV parsing) are shown only in a safe form: the official versions iterate over unquoted command substitutions, which word-split values, and the CSV example wraps the `--format` value across lines. The PowerShell loop is unchanged.
 - Parallel execution of multiple gcloud CLI commands is not supported.
 - The service account key-file command `gcloud auth activate-service-account --key-file [KEY_FILE]` is the older form used here; the Authorize page uses `gcloud auth login --cred-file=KEY_FILE` (see authorizing-service-accounts.md). Service account keys are a security risk; key lifecycle and keyless alternatives belong to the `gcp-foundation` skill.
-- The Bash loops above expand command output unquoted, as in the official sample.
 - Further reading named on the page: the blog posts "Scripting with gcloud: a beginner's guide to automating Google Cloud tasks" (https://cloud.google.com/blog/products/management-tools/scripting-with-gcloud-a-beginners-guide-to-automating-gcp-tasks) and "filtering and formatting fun with" (https://cloud.google.com/blog/products/it-ops/filtering-and-formatting-fun-with); `gcloud topic filters`, `gcloud topic formats`, `gcloud topic projections` are the topic references.
 - Source: https://docs.cloud.google.com/sdk/docs/scripting-gcloud (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
