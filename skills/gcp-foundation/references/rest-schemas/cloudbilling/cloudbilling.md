@@ -1504,10 +1504,10 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | `int64Value` | string (int64) | Primitive for int64. |
 | `intervalValue` | string (byte) | Encoded interval value. For the encoding format see documentation for IntervalValue::SerializeAsBytes(). |
 | `jsonValue` | string | Tag 22 was used for json value as bytes, now obsolete. Json value represented as a string document. |
-| `mapValue` | Map | Encoded map value. See go/googlesql_map. |
+| `mapValue` | Map | Encoded map value. See (internal link). |
 | `numericValue` | string (byte) | Encoded numeric value. For the encoding format see documentation for NumericValue::SerializeAsProtoBytes(). |
 | `protoValue` | string (byte) | Stores a serialized protocol message. |
-| `rangeValue` | Range | Encoded range value. See go/googlesql_range. |
+| `rangeValue` | Range | Encoded range value. See (internal link). |
 | `stringValue` | string | Primitive for string. |
 | `structValue` | Struct | A struct of values |
 | `timeValue` | string (int64) | Bit field encoding of hour/minute/second/nanos. See TimeValue class for details. |
@@ -1532,8 +1532,9 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `cloudbilling` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://cloudbilling.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1, v1beta of `cloudbilling` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Google-internal `go/` short links in the Discovery descriptions are replaced with `(internal link)`; they are not reachable outside Google.
+- Source: https://cloudbilling.googleapis.com/$discovery/rest?version=v1, https://cloudbilling.googleapis.com/$discovery/rest?version=v1beta (https://developers.google.com/discovery)
 
 ## Related
 

@@ -1573,7 +1573,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `labels` | object | Labels associated with this resource. See Labelling and grouping Google Cloud resources (https://cloud.google.com/blog/products/gcp/labelling-and-grouping-your-google-cloud-platform-resources) for more information. |
 | `location` | string | Location can be "global", regional like "us-east1", or zonal like "us-west1-b". |
 | `name` | string | The full resource name. For example: `//compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1`. See Resource Names (https://cloud.google.com/apis/design/resource_names#full_resource_name) for more information. |
-| `networkTags` | array<string> | Network tags associated with this resource. Like labels, network tags are a type of annotations used to group Google Cloud resources. See Labelling Google Cloud resources for more information. |
+| `networkTags` | array<string> | Network tags associated with this resource. Like labels, network tags are a type of annotations used to group Google Cloud resources. See \[Labelling Google Cloud resources\](lhttps://cloud.google.com/blog/products/gcp/labelling-and-grouping-your-google-cloud-platform-resources) for more information. |
 | `project` | string | The project that this resource belongs to, in the form of `projects/{project_number}`. |
 
 ### `Status`
@@ -1656,8 +1656,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `cloudasset` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1p1beta1, v1, v1p7beta1 of `cloudasset` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1 (https://developers.google.com/discovery)
 
 ## Related
 

@@ -1,5 +1,5 @@
 ---
-source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1
+source: https://cloudasset.googleapis.com/$discovery/rest?version=v1
 ---
 
 # Cloud Asset API message schemas (cloudasset) (part 2/2)
@@ -117,8 +117,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `cloudasset` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1 of `cloudasset` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
 ## Related
 
