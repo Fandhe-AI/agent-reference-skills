@@ -1280,7 +1280,7 @@ curl -X GET \
 
 - Generated from the Discovery document(s) v1, v1beta of `backupdr` (retrieved 2026-11-14). Resources on this page: folders, organizations, projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when a path variable is described as optional (the method then also accepts the URL without that segment, as its description says).
-- Message schemas (the request and response types named above) are listed under `references/rest-schemas/backupdr/`; they are the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
 - Descriptions are verbatim from Discovery, which drops angle-bracket placeholders of the source comments: a format such as `projects//locations/global` stands for `projects/{project}/locations/global` (likewise `"@.iam.gserviceaccount.com"` lost the account ID before `@`, and a name format ending in a collection such as `projects/*/locations/*/registrations/` lost its last ID), and an expression such as `... && in labels` lost its left operand (for example `'label_value' in labels`). Check the method or field in the product's REST reference before relying on such a format.
 - Source: https://backupdr.googleapis.com/$discovery/rest?version=v1, https://backupdr.googleapis.com/$discovery/rest?version=v1beta (https://developers.google.com/discovery)
 
