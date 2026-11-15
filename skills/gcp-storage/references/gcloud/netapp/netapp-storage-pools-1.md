@@ -254,14 +254,14 @@ NOTES
         $ gcloud beta netapp storage-pools create
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud netapp storage-pools create NAME \
     --location=us-central1 \
     --service-level=standard \
     --capacity=2048 \
-    --network=name=projects/VPC_PROJECT/locations/us-central1/networks/default \
+    --network=name=projects/VPC_PROJECT/global/networks/default \
     --active-directory=ad1 \
     --kms-config=kms-config1 \
     --enable-ldap=true \
@@ -1576,6 +1576,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the shared VPC example (and the `--network` description) write the long-form network name as `projects/VPC_PROJECT/locations/us-central1/networks/default`; the NetApp API v1 discovery document defines `StoragePool.network` as `projects/{project}/global/networks/{network}`, so the runnable form passes `projects/VPC_PROJECT/global/networks/default` (`name=` is the dictionary key of `--network`).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
