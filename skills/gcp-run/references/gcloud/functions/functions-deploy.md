@@ -776,6 +776,7 @@ Adapted (not in the official docs): runnable form of the example(s) above: lines
 
 ```bash
 gcloud functions deploy my_function \
+    --no-gen2 \
     --runtime=python312 \
     --trigger-event=providers/cloud.firestore/eventTypes/document.write \
     --trigger-resource='projects/PROJECT_ID/databases/(default)/documents/messages/{pushId}'
@@ -906,6 +907,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the Firestore `--trigger-event` example is a 1st gen trigger but does not pass `--no-gen2`, so it depends on the `functions/gen2` property; the runnable form adds `--no-gen2` so it always deploys a 1st gen function.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `--trigger-resource` value contains `(default)`, which bash parses as a subshell and rejects unquoted; the runnable form single-quotes the value and writes the project as the `PROJECT_ID` placeholder.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example uses `--runtime=python37`; the runtime-support page lists Python 3.7 as decommissioned on 2025-01-30, so the runnable form uses `python312`, the newest Python runtime the page lists for 1st gen (the Firestore `--trigger-event` example is a 1st gen trigger).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
