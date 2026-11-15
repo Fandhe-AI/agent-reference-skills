@@ -94,6 +94,7 @@ GCLOUD WIDE FLAGS
 
 ## Notes
 
+- Deprecated: the 593.0.0 help marks `gcloud docker` as deprecated (not supported for Docker client versions above 18.03); use `gcloud auth configure-docker` to set gcloud as a Docker credential helper and run `docker` directly. Container Registry (`gcr.io`), which this command targets, is shut down; current registries are in Artifact Registry.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
