@@ -1242,8 +1242,8 @@ Message types referenced by the methods listed under `references/rest/cloudident
 
 | Field | Type | Description |
 |---|---|---|
-| `customer` | string | Required. Immutable. Customer on whose membership change is made. All authorization will happen on the role assignments of this customer. Format: customers/{$customerId} where `$customerId` is the `id` from the Admin SDK `Customer` resource (https://developers.google.com/admin-sdk/directory/reference/rest/v1/customers). You may also use `customers/my_customer` to specify your own organization. |
-| `destinationOrgUnit` | string | Required. Immutable. OrgUnit where the membership will be moved to. Format: orgUnits/{$orgUnitId} where `$orgUnitId` is the `orgUnitId` from the Admin SDK `OrgUnit` resource (https://developers.google.com/admin-sdk/directory/reference/rest/v1/orgunits). |
+| `customer` | string | Required. Immutable. Customer on whose membership change is made. All authorization will happen on the role assignments of this customer. Format: customers/{$customerId} where `$customerId` is the `id` from the \[Admin SDK `Customer` resource\](https://developers.google.com/admin-sdk/directory/reference/rest/v1/customers). You may also use `customers/my_customer` to specify your own organization. |
+| `destinationOrgUnit` | string | Required. Immutable. OrgUnit where the membership will be moved to. Format: orgUnits/{$orgUnitId} where `$orgUnitId` is the `orgUnitId` from the \[Admin SDK `OrgUnit` resource\](https://developers.google.com/admin-sdk/directory/reference/rest/v1/orgunits). |
 
 ### `OidcIdpConfig`
 
@@ -1295,9 +1295,9 @@ Message types referenced by the methods listed under `references/rest/cloudident
 
 | Field | Type | Description |
 |---|---|---|
-| `member` | string | Immutable. Org member id as full resource name. Format for shared drive resource: //drive.googleapis.com/drives/{$memberId} where `$memberId` is the `id` from Drive API (V3) `Drive` resource (https://developers.google.com/drive/api/v3/reference/drives#resource). |
-| `memberUri` | string | Uri with which you can read the member. This follows https://aip.dev/122 Format for shared drive resource: https://drive.googleapis.com/drive/v3/drives/{$memberId} where `$memberId` is the `id` from Drive API (V3) `Drive` resource (https://developers.google.com/drive/api/v3/reference/drives#resource). |
-| `name` | string | Required. Immutable. The resource name (https://cloud.google.com/apis/design/resource_names) of the OrgMembership. Format: orgUnits/{$orgUnitId}/memberships/{$membership} The `$orgUnitId` is the `orgUnitId` from the Admin SDK `OrgUnit` resource (https://developers.google.com/admin-sdk/directory/reference/rest/v1/orgunits). The `$membership` shall be of the form `{$entityType};{$memberId}`, where `$entityType` is the enum value of \[OrgMembership.EntityType\], and `memberId` is the `id` from Drive API (V3) `Drive` resource (https://developers.google.com/drive/api/v3/reference/drives#resource) for OrgMembership.EntityType.SHARED_DRIVE. |
+| `member` | string | Immutable. Org member id as full resource name. Format for shared drive resource: //drive.googleapis.com/drives/{$memberId} where `$memberId` is the `id` from \[Drive API (V3) `Drive` resource\](https://developers.google.com/drive/api/v3/reference/drives#resource). |
+| `memberUri` | string | Uri with which you can read the member. This follows https://aip.dev/122 Format for shared drive resource: https://drive.googleapis.com/drive/v3/drives/{$memberId} where `$memberId` is the `id` from \[Drive API (V3) `Drive` resource\](https://developers.google.com/drive/api/v3/reference/drives#resource). |
+| `name` | string | Required. Immutable. The resource name (https://cloud.google.com/apis/design/resource_names) of the OrgMembership. Format: orgUnits/{$orgUnitId}/memberships/{$membership} The `$orgUnitId` is the `orgUnitId` from the \[Admin SDK `OrgUnit` resource\](https://developers.google.com/admin-sdk/directory/reference/rest/v1/orgunits). The `$membership` shall be of the form `{$entityType};{$memberId}`, where `$entityType` is the enum value of \[OrgMembership.EntityType\], and `memberId` is the `id` from \[Drive API (V3) `Drive` resource\](https://developers.google.com/drive/api/v3/reference/drives#resource) for OrgMembership.EntityType.SHARED_DRIVE. |
 | `type` | string enum | Immutable. Entity type for the org member. |
 
 ### `Policy`
@@ -1615,8 +1615,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `cloudidentity` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://cloudidentity.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1, v1beta1 of `cloudidentity` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Source: https://cloudidentity.googleapis.com/$discovery/rest?version=v1, https://cloudidentity.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
 
