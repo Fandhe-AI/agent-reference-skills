@@ -2,7 +2,7 @@
 name: gcp-cli
 description: >
   Google Cloud (GCP) の gcloud CLI 横断機能
-  (Google Cloud CLI の install・init・components・config・auth・format・filter・projections・emulators・Cloud Shell・Open in Cloud Shell・DeployStack・gcloud terraform vet・gcloud topic・interactive・CLOUDSDK_*) のリファレンス・ガイド・サンプル。
+  (Google Cloud CLI の install・init・components・config・auth・format・filter・projections・emulators・Cloud Shell・Open in Cloud Shell・DeployStack・gcloud beta terraform vet・gcloud topic・interactive・CLOUDSDK_*) のリファレンス・ガイド・サンプル。
   プロダクト別コマンドは各 gcp-* スキル、ADC・IAM は gcp-foundation、言語別 SDK は gcp-client-libraries、Google Workspace CLI は gws とは別。
 user-invocable: false
 ---
@@ -55,7 +55,7 @@ skills/gcp-cli/
     cloud-shell.md
 ```
 
-gcloud の横断グループ（21、後続 PR で `references/commands/` に投入）: `gcloud`（ルートとグローバルフラグ）/ `alpha` / `auth` / `beta` / `cheat-sheet` / `cloud-shell` / `code` / `components` / `config` / `docker` / `emulators` / `feedback` / `help` / `info` / `init` / `interactive` / `onboarding` / `survey` / `terraform` / `topic` / `version`。
+gcloud の横断グループ（21、後続 PR で `references/commands/` に投入）: `gcloud`（ルートとグローバルフラグ）/ `alpha` / `auth` / `beta` / `cheat-sheet` / `cloud-shell` / `code`（alpha / beta のみ）/ `components` / `config` / `docker` / `emulators` / `feedback` / `help` / `info` / `init` / `interactive`（alpha / beta のみ）/ `onboarding`（alpha のみ）/ `survey` / `terraform`（alpha / beta のみ）/ `topic` / `version`。
 
 ## 探索手順
 
@@ -85,7 +85,7 @@ gcloud の横断グループ（21、後続 PR で `references/commands/` に投�
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `gws` — Google Workspace CLI。`gcloud` とは別の CLI で、Workspace API は対象外
 - `docker` — Docker 一般。本スキルは gcloud CLI の公式イメージと `gcloud docker` のみ
-- `terraform` 本体の文法・プロバイダーは対象外。`gcloud terraform` コマンドのみ本スキル
+- `terraform` 本体の文法・プロバイダーは対象外。`gcloud beta terraform` / `gcloud alpha terraform` コマンドのみ本スキル
 - Firebase は別計画（`firebase-*`）。本スキルでは扱わない
 
 ## 鮮度・ライセンス・既知の制約
