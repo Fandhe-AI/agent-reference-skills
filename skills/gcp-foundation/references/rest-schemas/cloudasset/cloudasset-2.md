@@ -1,5 +1,5 @@
 ---
-source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1
+source: https://cloudasset.googleapis.com/$discovery/rest?version=v1
 ---
 
 # Cloud Asset API message schemas (cloudasset) (part 2/2)
@@ -45,7 +45,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 ### `Status`
 
 - The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by gRPC (https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the API Design Guide (https://cloud.google.com/apis/design/errors).
-- Version: v1p7beta1
+- Version: v1
 
 | Field | Type | Description |
 |---|---|---|
@@ -236,8 +236,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) v1p7beta1, v1p1beta1, v1, v1beta1 of `cloudasset` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
-- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1, https://cloudasset.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1, v1p1beta1, v1beta1 of `cloudasset` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
 
