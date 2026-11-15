@@ -1,0 +1,174 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/netapp/volumes/restore-backup-files
+---
+
+# gcloud netapp volumes restore-backup-files
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud netapp volumes restore-backup-files
+
+```text
+NAME
+    gcloud netapp volumes restore-backup-files - restore specific files from a
+        backup to a Volume
+
+SYNOPSIS
+    gcloud netapp volumes restore-backup-files (VOLUME : --location=LOCATION)
+        --file-list=FILE_LIST,[FILE_LIST,...]
+        (--backup=BACKUP : --backup_vault=BACKUP_VAULT) [--async]
+        [--restore-destination-path=RESTORE_DESTINATION_PATH]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Restore specific files from a backup to a Volume
+
+EXAMPLES
+    The following command restores file1.txt and file2.txt from the given
+    backup to a Volume named NAME to the directory
+    /path/to/destination/directory.
+
+        $ gcloud netapp volumes restore-backup-files NAME \
+          --location=us-central1 --backup=backup-1 \
+          --file-list=file1.txt,file2.txt \
+          --restore-destination-path=/path/to/destination/directory
+
+POSITIONAL ARGUMENTS
+     Volume resource - The Volume to restore into. The arguments in this group
+     can be used to specify the attributes of this resource. (NOTE) Some
+     attributes are not given arguments in this group but can be set in other
+     ways.
+
+     To set the project attribute:
+      * provide the argument volume on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       VOLUME
+          ID of the volume or fully qualified identifier for the volume.
+
+          To set the volume attribute:
+          + provide the argument volume on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --location=LOCATION
+          The location of the volume.
+
+          To set the location attribute:
+          + provide the argument volume on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property netapp/location.
+
+REQUIRED FLAGS
+     --file-list=FILE_LIST,[FILE_LIST,...]
+        List of files to be restored in the form of their absolute path as in
+        source volume.
+
+     Backup resource - The Backup from which files are restored back to the
+     Volume. The arguments in this group can be used to specify the attributes
+     of this resource. (NOTE) Some attributes are not given arguments in this
+     group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument --backup on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     To set the location attribute:
+      * provide the argument --backup on the command line with a fully
+        specified name;
+      * set the property netapp/location.
+
+     This must be specified.
+
+       --backup=BACKUP
+          ID of the backup or fully qualified identifier for the backup.
+
+          To set the backup attribute:
+          + provide the argument --backup on the command line.
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+       --backup_vault=BACKUP_VAULT
+          The Backup Vault of the backup.
+
+          To set the backup_vault attribute:
+          + provide the argument --backup on the command line with a fully
+            specified name;
+          + provide the argument --backup_vault on the command line;
+          + provide the argument --backup-vault on the command line.
+
+OPTIONAL FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --restore-destination-path=RESTORE_DESTINATION_PATH
+        Name of the absolute directory path in the destination volume..
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha netapp volumes restore-backup-files
+
+        $ gcloud beta netapp volumes restore-backup-files
+```
+
+### gcloud beta netapp volumes restore-backup-files
+
+```text
+NAME
+    gcloud beta netapp volumes restore-backup-files - restore specific files
+        from a backup to a Volume
+
+SYNOPSIS
+    gcloud beta netapp volumes restore-backup-files
+        (VOLUME : --location=LOCATION) --file-list=FILE_LIST,[FILE_LIST,...]
+        (--backup=BACKUP : --backup_vault=BACKUP_VAULT) [--async]
+        [--restore-destination-path=RESTORE_DESTINATION_PATH]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha netapp volumes restore-backup-files
+
+```text
+NAME
+    gcloud alpha netapp volumes restore-backup-files - restore specific files
+        from a backup to a Volume
+
+SYNOPSIS
+    gcloud alpha netapp volumes restore-backup-files
+        (VOLUME : --location=LOCATION) --file-list=FILE_LIST,[FILE_LIST,...]
+        (--backup=BACKUP : --backup_vault=BACKUP_VAULT) [--async]
+        [--restore-destination-path=RESTORE_DESTINATION_PATH]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/netapp/volumes/restore-backup-files (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
