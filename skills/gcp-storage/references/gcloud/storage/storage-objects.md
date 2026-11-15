@@ -1,0 +1,805 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/objects
+---
+
+# gcloud storage objects
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud storage objects compose
+
+```text
+NAME
+    gcloud storage objects compose - concatenate a sequence of objects into a
+        new composite object
+
+SYNOPSIS
+    gcloud storage objects compose SOURCE [SOURCE ...] DESTINATION
+        [--additional-headers=HEADER=VALUE] [--delete-source-objects]
+        [--clear-custom-contexts
+          | --custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          | --custom-contexts-file=CUSTOM_CONTEXTS_FILE]
+        [--if-generation-match=GENERATION
+          --if-metageneration-match=METAGENERATION]
+        [--retain-until=DATETIME --retention-mode=RETENTION_MODE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud storage objects compose creates a new object whose content is the
+    concatenation of a given sequence of source objects in the same bucket. For
+    more information, please see: composite objects documentation
+    (https://cloud.google.com/storage/docs/composite-objects).
+
+    There is a limit (currently 32) to the number of components that can be
+    composed in a single operation.
+
+EXAMPLES
+    The following command creates a new object target.txt by concatenating
+    a.txt and b.txt:
+
+        $ gcloud storage objects compose gs://bucket/a.txt \
+            gs://bucket/b.txt gs://bucket/target.txt
+
+    Contexts are merged from source objects on the composed object by default.
+    However, the following command overwrites custom contexts on composed
+    object:
+
+        $ gcloud storage objects compose gs://bucket/a.txt \
+            gs://bucket/b.txt gs://bucket/target.txt \
+            --custom-contexts=key1=value1,key2=value2
+
+    The following command creates a new object target.txt by concatenating
+    a.txt and b.txt, and deletes the source objects after a successful
+    composition:
+
+        $ gcloud storage objects compose gs://bucket/a.txt \
+            gs://bucket/b.txt gs://bucket/target.txt --delete-source-objects
+
+POSITIONAL ARGUMENTS
+     SOURCE [SOURCE ...]
+        The list of source objects that will be concatenated into a single
+        object.
+
+     DESTINATION
+        The destination object.
+
+FLAGS
+     --additional-headers=HEADER=VALUE
+        Includes arbitrary headers in storage API calls. Accepts a comma
+        separated list of key=value pairs, e.g. header1=value1,header2=value2.
+        Overrides the default storage/additional_headers property value for
+        this command invocation.
+
+     --delete-source-objects
+        If set, the source objects will be deleted after a successful
+        composition. Note that this deletion bypasses the soft delete policy if
+        configured on the bucket.
+
+OBJECT CONTEXTS FLAGS
+     Group that allow users to handle object contexts.
+
+     At most one of these can be specified:
+
+       --clear-custom-contexts
+          Clears all custom contexts on objects.
+
+       --custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          Sets custom contexts on objects. The existing custom contexts (if
+          any) would be overwritten.
+
+       --custom-contexts-file=CUSTOM_CONTEXTS_FILE
+          Path to a local JSON or YAML file containing custom contexts one
+          wants to set on an object. For example:
+
+          1. The following JSON document shows two key value pairs, i.e. (key1,
+          value1) and (key2, value2):
+
+                {
+                  "key1": {"value": "value1"},
+                  "key2": {"value": "value2"}
+                }
+
+          2. The following YAML document shows two key value pairs, i.e. (key1,
+          value1) and (key2, value2):
+
+                key1:
+                  value: value1
+                key2:
+                  value: value2
+
+          Note: Currently object contexts only supports string format for
+          values.
+
+PRECONDITION FLAGS
+     --if-generation-match=GENERATION
+        Execute only if the generation matches the generation of the requested
+        object.
+
+     --if-metageneration-match=METAGENERATION
+        Execute only if the metageneration matches the metageneration of the
+        requested object.
+
+RETENTION FLAGS
+     --retain-until=DATETIME
+        Ensures the destination object is retained until the specified time in
+        RFC 3339 format.
+
+     --retention-mode=RETENTION_MODE
+        Sets the destination object retention mode to either "Locked" or
+        "Unlocked". When retention mode is "Locked", the retain until time can
+        only be increased. RETENTION_MODE must be one of: Locked, Unlocked.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha storage objects compose
+```
+
+### gcloud storage objects describe
+
+```text
+NAME
+    gcloud storage objects describe - describe a Cloud Storage object
+
+SYNOPSIS
+    gcloud storage objects describe URL [--additional-headers=HEADER=VALUE]
+        [--fetch-encrypted-object-hashes] [--raw] [--soft-deleted]
+        [--decryption-keys=[DECRYPTION_KEY,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Describe a Cloud Storage object.
+
+EXAMPLES
+    Describe a Google Cloud Storage object with the url
+    "gs://bucket/my-object":
+
+        $ gcloud storage objects describe gs://bucket/my-object
+
+    Describe object with JSON formatting, only returning the "name" key:
+
+        $ gcloud storage objects describe gs://bucket/my-object \
+            --format="json(name)"
+
+    Describe only contexts attached to objects as key value pairs.
+
+        $ gcloud storage objects describe gs://my-bucket/object \
+            --format=contextsonly
+
+POSITIONAL ARGUMENTS
+     URL
+        Specifies URL of object to describe.
+
+FLAGS
+     --additional-headers=HEADER=VALUE
+        Includes arbitrary headers in storage API calls. Accepts a comma
+        separated list of key=value pairs, e.g. header1=value1,header2=value2.
+        Overrides the default storage/additional_headers property value for
+        this command invocation.
+
+     --fetch-encrypted-object-hashes
+        If the initial GET request returns an object encrypted with a
+        customer-supplied encryption key, the hash fields will be null. If the
+        matching decryption key is present on the system, this flag retries the
+        GET request with the key.
+
+     --raw
+        Shows metadata in the format returned by the API instead of
+        standardizing it.
+
+     --soft-deleted
+        Displays soft-deleted resources only. For objects, it will exclude live
+        and noncurrent ones.
+
+ENCRYPTION FLAGS
+     --decryption-keys=[DECRYPTION_KEY,...]
+        A comma-separated list of customer-supplied encryption keys (RFC 4648
+        section 4 base64-encoded AES256 strings) that will be used to decrypt
+        Cloud Storage objects. Data encrypted with a customer-managed
+        encryption key (CMEK) is decrypted automatically, so CMEKs do not need
+        to be listed here.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha storage objects describe
+```
+
+### gcloud storage objects list
+
+```text
+NAME
+    gcloud storage objects list - lists Cloud Storage objects
+
+SYNOPSIS
+    gcloud storage objects list URLS [URLS ...]
+        [--additional-headers=HEADER=VALUE] [--exhaustive]
+        [--fetch-encrypted-object-hashes] [--metadata-filter=METADATA_FILTER]
+        [--next-page-token=NEXT_PAGE_TOKEN] [--raw] [--soft-deleted] [--stat]
+        [--decryption-keys=[DECRYPTION_KEY,...]] [--filter=EXPRESSION]
+        [--limit=LIMIT] [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [--uri]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    List Cloud Storage objects.
+
+    Bucket URLs like gs://bucket match all the objects inside a bucket, but
+    gs://b* fails because it matches a list of buckets.
+
+EXAMPLES
+    List all objects in bucket my-bucket within current directory level:
+
+        $ gcloud storage objects list gs://my-bucket
+
+    List all objects across nested directories using wildcards
+    (https://cloud.google.com/storage/docs/wildcards):
+
+        $ gcloud storage objects list gs://my-bucket/**
+
+    List all objects in bucket beginning with ``o'', including objects across
+    nested directories:
+
+        $ gcloud storage objects list gs://my-bucket/**/o*
+
+    List all objects within current directory of bucket with JSON formatting,
+    only returning the value of the name metadata field:
+
+        $ gcloud storage objects list gs://my-bucket --format="json(name)"
+
+    List only contexts attached to objects as key value pairs.
+
+        $ gcloud storage objects list gs://my-bucket --format=contextsonly
+
+POSITIONAL ARGUMENTS
+     URLS [URLS ...]
+        Specifies URL of objects to list.
+
+FLAGS
+     --additional-headers=HEADER=VALUE
+        Includes arbitrary headers in storage API calls. Accepts a comma
+        separated list of key=value pairs, e.g. header1=value1,header2=value2.
+        Overrides the default storage/additional_headers property value for
+        this command invocation.
+
+     --exhaustive
+        For features like soft delete, the API may return an empty list. If
+        present, continue querying. This may incur costs from repeated LIST
+        calls and may not return any additional objects.
+
+     --fetch-encrypted-object-hashes
+        API requests to the LIST endpoint do not fetch the hashes for encrypted
+        objects by default. If this flag is set, a GET request is sent for each
+        encrypted object in order to fetch hashes. This can significantly
+        increase the cost of the command.
+
+     --metadata-filter=METADATA_FILTER
+        Server side filtering for objects. Works only for Google Cloud Storage
+        URLs. The filter only works for objects, and not directories or
+        buckets, which means commands like storage ls and storage du will still
+        list directories or buckets even if they do not contain any objects
+        matching the filter. See
+        https://cloud.google.com/storage/docs/listing-objects#filter-by-object-contexts-syntax
+        for more details.
+
+     --next-page-token=NEXT_PAGE_TOKEN
+        Page token for resuming LIST calls.
+
+     --raw
+        Shows metadata in the format returned by the API instead of
+        standardizing it.
+
+     --soft-deleted
+        Displays soft-deleted resources only. For objects, it will exclude live
+        and noncurrent ones.
+
+     --stat
+        Emulates gsutil stat-style behavior. Does not show past object versions
+        and changes output format.
+
+ENCRYPTION FLAGS
+     --decryption-keys=[DECRYPTION_KEY,...]
+        A comma-separated list of customer-supplied encryption keys (RFC 4648
+        section 4 base64-encoded AES256 strings) that will be used to decrypt
+        Cloud Storage objects. Data encrypted with a customer-managed
+        encryption key (CMEK) is decrypted automatically, so CMEKs do not need
+        to be listed here.
+
+LIST COMMAND FLAGS
+     --filter=EXPRESSION
+        Apply a Boolean filter EXPRESSION to each resource item to be listed.
+        If the expression evaluates True, then that item is listed. For more
+        details and examples of filter expressions, run $ gcloud topic filters.
+        This flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --limit=LIMIT
+        Maximum number of resources to list. The default is unlimited. This
+        flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --page-size=PAGE_SIZE
+        Some services group resource list output into pages. This flag
+        specifies the maximum number of resources per page. The default is
+        determined by the service if it supports paging, otherwise it is
+        unlimited (no paging). Paging may be applied before or after --filter
+        and --limit depending on the service.
+
+     --sort-by=[FIELD,...]
+        Comma-separated list of resource field key names to sort by. The
+        default order is ascending. Prefix a field with ``~'' for descending
+        order on that field. This flag interacts with other flags that are
+        applied in this order: --flatten, --sort-by, --filter, --limit.
+
+     --uri
+        Print a list of resource URIs instead of the default output, and change
+        the command output to a list of URIs. If this flag is used with
+        --format, the formatting is applied on this URI list. To display URIs
+        alongside other keys instead, use the uri() transform.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha storage objects list
+```
+
+### gcloud storage objects update
+
+```text
+NAME
+    gcloud storage objects update - update Cloud Storage objects
+
+SYNOPSIS
+    gcloud storage objects update [URL ...] [--additional-headers=HEADER=VALUE]
+        [--all-versions] [--continue-on-error, -c] [--[no-]event-based-hold]
+        [--read-paths-from-stdin, -I] [--recursive, -R, -r]
+        [--storage-class=STORAGE_CLASS, -s STORAGE_CLASS]
+        [--[no-]temporary-hold]
+        [--acl-file=ACL_FILE --add-acl-grant=[ACL_GRANT,...]
+          --canned-acl=PREDEFINED_ACL, --predefined-acl=PREDEFINED_ACL, -a
+          PREDEFINED_ACL
+          --[no-]preserve-acl, -p --remove-acl-grant=REMOVE_ACL_GRANT]
+        [--clear-encryption-key --decryption-keys=[DECRYPTION_KEY,...]
+          --encryption-key=ENCRYPTION_KEY]
+        [--cache-control=CACHE_CONTROL --clear-cache-control
+          --clear-content-disposition --clear-content-encoding
+          --clear-content-language --clear-content-type --clear-custom-time
+          --content-disposition=CONTENT_DISPOSITION
+          --content-encoding=CONTENT_ENCODING
+          --content-language=CONTENT_LANGUAGE --content-type=CONTENT_TYPE
+          --custom-time=CUSTOM_TIME --clear-custom-contexts
+          | --custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          | --custom-contexts-file=CUSTOM_CONTEXTS_FILE
+          | --remove-custom-contexts=[CUSTOM_CONTEXTS_KEYS,...]
+          --update-custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          --clear-custom-metadata
+          | --custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]
+          | --remove-custom-metadata=[METADATA_KEYS,...]
+          --update-custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]]
+        [--if-generation-match=GENERATION
+          --if-metageneration-match=METAGENERATION]
+        [--clear-retention --override-unlocked-retention
+          --retain-until=DATETIME --retention-mode=RETENTION_MODE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update Cloud Storage objects.
+
+EXAMPLES
+    Update a Google Cloud Storage object's custom-metadata:
+
+        $ gcloud storage objects update gs://bucket/my-object \
+            --custom-metadata=key1=value1,key2=value2
+
+    You can use wildcards (https://cloud.google.com/storage/docs/wildcards) to
+    update multiple objects in a single command. For instance to update all
+    objects to have a custom-metadata key:
+
+        $ gcloud storage objects update gs://bucket/** \
+            --custom-metadata=key1=value1,key2=value2
+
+    Rewrite all JPEG images to the NEARLINE storage class, including objects
+    across nested directories:
+
+        $ gcloud storage objects update gs://bucket/**/*.jpg \
+            --storage-class=NEARLINE
+
+    You can also provide a precondition on an object's metageneration in order
+    to avoid potential race conditions:
+
+        $ gcloud storage objects update gs://bucket/*.jpg \
+            --storage-class=NEARLINE --if-metageneration-match=123456789
+
+    The following command overwrites the custom contexts of an object:
+
+        $ gcloud storage objects update gs://bucket/my-object \
+            --custom-contexts=key1=value1,key2=value2
+
+    The following example simultaneously updates and removes custom contexts,
+    with remove being applied first:
+
+        $ gcloud storage objects update gs://bucket/my-object \
+            --update-custom-contexts=key2=value3 \
+            --remove-custom-contexts=key2,key3
+
+POSITIONAL ARGUMENTS
+     [URL ...]
+        Specifies URLs of objects to update.
+
+FLAGS
+     --additional-headers=HEADER=VALUE
+        Includes arbitrary headers in storage API calls. Accepts a comma
+        separated list of key=value pairs, e.g. header1=value1,header2=value2.
+        Overrides the default storage/additional_headers property value for
+        this command invocation.
+
+     --all-versions
+        Perform the operation on all object versions.
+
+     --continue-on-error, -c
+        If any operations are unsuccessful, the command will exit with a
+        non-zero exit status after completing the remaining operations. This
+        flag takes effect only in sequential execution mode (i.e. processor and
+        thread count are set to 1). Parallelism is default.
+
+     --[no-]event-based-hold
+        Enables or disables an event-based hold on objects. Use
+        --event-based-hold to enable and --no-event-based-hold to disable.
+
+     --read-paths-from-stdin, -I
+        Read the list of objects to update from stdin. No need to enter a
+        source argument if this flag is present. Example: "storage objects
+        update -I --content-type=new-type"
+
+     --recursive, -R, -r
+        Recursively update objects under any buckets or directories that match
+        the URL expression.
+
+     --storage-class=STORAGE_CLASS, -s STORAGE_CLASS
+        Specify the storage class of the object. Using this flag triggers a
+        rewrite of underlying object data.
+
+     --[no-]temporary-hold
+        Enables or disables a temporary hold on objects. Use --temporary-hold
+        to enable and --no-temporary-hold to disable.
+
+     --acl-file=ACL_FILE
+        Path to a local JSON or YAML formatted file containing a valid policy.
+        See the ObjectAccessControls resource
+        (https://cloud.google.com/storage/docs/json_api/v1/objectAccessControls)
+        for a representation of JSON formatted files. The output of gcloud
+        storage [buckets|objects] describe --format="multi(acl:format=json)" is
+        a valid file and can be edited for more fine-grained control.
+
+     --add-acl-grant=[ACL_GRANT,...]
+        Key-value pairs mirroring the JSON accepted by your cloud provider. For
+        example, for Cloud
+        Storage,--add-acl-grant=entity=user-tim@gmail.com,role=OWNER
+
+     --canned-acl=PREDEFINED_ACL, --predefined-acl=PREDEFINED_ACL, -a PREDEFINED_ACL
+        Applies predefined, or "canned," ACLs to a resource. See docs for a
+        list of predefined ACL constants:
+        https://cloud.google.com/storage/docs/access-control/lists#predefined-acl
+
+     --[no-]preserve-acl, -p
+        Preserves ACLs when copying in the cloud. This option is Cloud
+        Storage-only, and you need OWNER access to all copied objects. If all
+        objects in the destination bucket should have the same ACL, you can
+        also set a default object ACL on that bucket instead of using this
+        flag. Preserving ACLs is the default behavior for updating existing
+        objects. Use --preserve-acl to enable and --no-preserve-acl to disable.
+
+     --remove-acl-grant=REMOVE_ACL_GRANT
+        Key-value pairs mirroring the JSON accepted by your cloud provider. For
+        example, for Cloud Storage, --remove-acl-grant=ENTITY, where ENTITY has
+        a valid ACL entity format, such as user-tim@gmail.com, group-admins,
+        allUsers, etc.
+
+ENCRYPTION FLAGS
+     --clear-encryption-key
+        Clears the encryption key associated with an object. Using this flag
+        triggers a rewrite of affected objects, which are then encrypted using
+        the default encryption key set on the bucket, if one exists, or else
+        with a Google-managed encryption key.
+
+     --decryption-keys=[DECRYPTION_KEY,...]
+        A comma-separated list of customer-supplied encryption keys (RFC 4648
+        section 4 base64-encoded AES256 strings) that will be used to decrypt
+        Cloud Storage objects. Data encrypted with a customer-managed
+        encryption key (CMEK) is decrypted automatically, so CMEKs do not need
+        to be listed here.
+
+     --encryption-key=ENCRYPTION_KEY
+        The encryption key to use for encrypting target objects. The specified
+        encryption key can be a customer-supplied encryption key (An RFC 4648
+        section 4 base64-encoded AES256 string), or a customer-managed
+        encryption key of the form
+        projects/{project}/locations/{location}/keyRings/{key-ring}/cryptoKeys/{crypto-key}.
+        The specified key also acts as a decryption key, which is useful when
+        copying or moving encrypted data to a new location. Using this flag in
+        an objects update command triggers a rewrite of target objects.
+
+OBJECT METADATA FLAGS
+     --cache-control=CACHE_CONTROL
+        How caches should handle requests and responses.
+
+     --clear-cache-control
+        Clears object cache control.
+
+     --clear-content-disposition
+        Clears object content disposition.
+
+     --clear-content-encoding
+        Clears content encoding.
+
+     --clear-content-language
+        Clears object content language.
+
+     --clear-content-type
+        Clears object content type.
+
+     --clear-custom-time
+        Clears object custom time.
+
+     --content-disposition=CONTENT_DISPOSITION
+        How content should be displayed.
+
+     --content-encoding=CONTENT_ENCODING
+        How content is encoded (e.g. gzip).
+
+     --content-language=CONTENT_LANGUAGE
+        Content's language (e.g. en signifies "English").
+
+     --content-type=CONTENT_TYPE
+        Type of data contained in the object (e.g. text/html).
+
+     --custom-time=CUSTOM_TIME
+        Custom time for Cloud Storage objects in RFC 3339 format.
+
+     Group that allow users to handle object contexts.
+
+     At most one of these can be specified:
+
+       --clear-custom-contexts
+          Clears all custom contexts on objects.
+
+       --custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          Sets custom contexts on objects. The existing custom contexts (if
+          any) would be overwritten.
+
+       --custom-contexts-file=CUSTOM_CONTEXTS_FILE
+          Path to a local JSON or YAML file containing custom contexts one
+          wants to set on an object. For example:
+
+          1. The following JSON document shows two key value pairs, i.e. (key1,
+          value1) and (key2, value2):
+
+                {
+                  "key1": {"value": "value1"},
+                  "key2": {"value": "value2"}
+                }
+
+          2. The following YAML document shows two key value pairs, i.e. (key1,
+          value1) and (key2, value2):
+
+                key1:
+                  value: value1
+                key2:
+                  value: value2
+
+          Note: Currently object contexts only supports string format for
+          values.
+
+       Or at least one of these can be specified:
+
+         Flags that preserve the existing contexts on the object, and can be
+         specified together. However they cannot be specified with
+         --clear-custom-contexts, --custom-contexts or --custom-contexts-file.
+         If --update-custom-contexts and --remove-custom-contexts are specified
+         together, the --remove-custom-contexts would be applied first on
+         object.
+
+         --remove-custom-contexts=[CUSTOM_CONTEXTS_KEYS,...]
+            Removes the custom contexts on the object, if an entry is not
+            found, it would be ignored.
+
+         --update-custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+            Updates the custom contexts on the object, if an entry is found, it
+            would be overwritten, otherwise the entry would be added.
+
+     At most one of these can be specified:
+
+       --clear-custom-metadata
+          Clears all custom metadata on objects. When used with
+          --preserve-posix, POSIX attributes will still be stored in custom
+          metadata.
+
+       --custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]
+          Sets custom metadata on objects. When used with --preserve-posix,
+          POSIX attributes are also stored in custom metadata.
+
+       Or at least one of these can be specified:
+
+         Flags that preserve unspecified existing metadata cannot be used with
+         --custom-metadata or --clear-custom-metadata, but can be specified
+         together:
+
+         --remove-custom-metadata=[METADATA_KEYS,...]
+            Removes individual custom metadata keys from objects. This flag can
+            be used with --update-custom-metadata. When used with
+            --preserve-posix, POSIX attributes specified by this flag are not
+            preserved.
+
+         --update-custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]
+            Adds or sets individual custom metadata key value pairs on objects.
+            Existing custom metadata not specified with this flag is not
+            changed. This flag can be used with --remove-custom-metadata. When
+            keys overlap with those provided by --preserve-posix, values
+            specified by this flag are used.
+
+PRECONDITION FLAGS
+     --if-generation-match=GENERATION
+        Execute only if the generation matches the generation of the requested
+        object.
+
+     --if-metageneration-match=METAGENERATION
+        Execute only if the metageneration matches the metageneration of the
+        requested object.
+
+RETENTION FLAGS
+     --clear-retention
+        Clears object retention settings and unlocks the configuration.
+        Requires --override-unlocked-retention flag as confirmation.
+
+     --override-unlocked-retention
+        Needed for certain retention configuration modifications, such as
+        clearing retention settings and reducing retention time. Note that
+        locked configurations cannot be edited even with this flag.
+
+     --retain-until=DATETIME
+        Ensures the object is retained until the specified time in RFC 3339
+        format. Requires --override-unlocked-retention flag to shorten the
+        retain-until time in unlocked configurations.
+
+     --retention-mode=RETENTION_MODE
+        Sets the object retention mode to either "Locked" or "Unlocked". When
+        retention mode is "Locked", the retain until time can only be
+        increased. RETENTION_MODE must be one of: Locked, Unlocked.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha storage objects update
+```
+
+### gcloud alpha storage objects compose
+
+```text
+NAME
+    gcloud alpha storage objects compose - concatenate a sequence of objects
+        into a new composite object
+
+SYNOPSIS
+    gcloud alpha storage objects compose SOURCE [SOURCE ...] DESTINATION
+        [--additional-headers=HEADER=VALUE] [--delete-source-objects]
+        [--clear-custom-contexts
+          | --custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          | --custom-contexts-file=CUSTOM_CONTEXTS_FILE]
+        [--if-generation-match=GENERATION
+          --if-metageneration-match=METAGENERATION]
+        [--retain-until=DATETIME --retention-mode=RETENTION_MODE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha storage objects describe
+
+```text
+NAME
+    gcloud alpha storage objects describe - describe a Cloud Storage object
+
+SYNOPSIS
+    gcloud alpha storage objects describe URL
+        [--additional-headers=HEADER=VALUE] [--fetch-encrypted-object-hashes]
+        [--raw] [--soft-deleted] [--decryption-keys=[DECRYPTION_KEY,...]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha storage objects list
+
+```text
+NAME
+    gcloud alpha storage objects list - lists Cloud Storage objects
+
+SYNOPSIS
+    gcloud alpha storage objects list URLS [URLS ...]
+        [--additional-headers=HEADER=VALUE] [--exhaustive]
+        [--fetch-encrypted-object-hashes] [--metadata-filter=METADATA_FILTER]
+        [--next-page-token=NEXT_PAGE_TOKEN] [--raw] [--soft-deleted] [--stat]
+        [--decryption-keys=[DECRYPTION_KEY,...]] [--filter=EXPRESSION]
+        [--limit=LIMIT] [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [--uri]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha storage objects update
+
+```text
+NAME
+    gcloud alpha storage objects update - update Cloud Storage objects
+
+SYNOPSIS
+    gcloud alpha storage objects update [URL ...]
+        [--additional-headers=HEADER=VALUE] [--all-versions]
+        [--continue-on-error, -c] [--[no-]event-based-hold]
+        [--read-paths-from-stdin, -I] [--recursive, -R, -r]
+        [--storage-class=STORAGE_CLASS, -s STORAGE_CLASS]
+        [--[no-]temporary-hold]
+        [--acl-file=ACL_FILE --add-acl-grant=[ACL_GRANT,...]
+          --canned-acl=PREDEFINED_ACL, --predefined-acl=PREDEFINED_ACL, -a
+          PREDEFINED_ACL
+          --[no-]preserve-acl, -p --remove-acl-grant=REMOVE_ACL_GRANT]
+        [--clear-encryption-key --decryption-keys=[DECRYPTION_KEY,...]
+          --encryption-key=ENCRYPTION_KEY]
+        [--cache-control=CACHE_CONTROL --clear-cache-control
+          --clear-content-disposition --clear-content-encoding
+          --clear-content-language --clear-content-type --clear-custom-time
+          --content-disposition=CONTENT_DISPOSITION
+          --content-encoding=CONTENT_ENCODING
+          --content-language=CONTENT_LANGUAGE --content-type=CONTENT_TYPE
+          --custom-time=CUSTOM_TIME --clear-custom-contexts
+          | --custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          | --custom-contexts-file=CUSTOM_CONTEXTS_FILE
+          | --remove-custom-contexts=[CUSTOM_CONTEXTS_KEYS,...]
+          --update-custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          --clear-custom-metadata
+          | --custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]
+          | --remove-custom-metadata=[METADATA_KEYS,...]
+          --update-custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]]
+        [--if-generation-match=GENERATION
+          --if-metageneration-match=METAGENERATION]
+        [--clear-retention --override-unlocked-retention
+          --retain-until=DATETIME --retention-mode=RETENTION_MODE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/objects (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

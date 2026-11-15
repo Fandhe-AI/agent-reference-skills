@@ -30,3 +30,13 @@
 | gcloud storage intelligence-configs | 8 commands (alpha, ga); storage intelligence-configs describe … | [storage-intelligence-configs.md](./storage-intelligence-configs.md) |
 | gcloud storage intelligence-findings | 10 commands (alpha, ga); storage intelligence-findings describe … | [storage-intelligence-findings.md](./storage-intelligence-findings.md) |
 | gcloud storage ls | 2 commands (alpha, ga); storage ls … | [storage-ls.md](./storage-ls.md) |
+| gcloud storage managed-folders | 16 commands (alpha, ga); storage managed-folders add-iam-policy-binding … | [storage-managed-folders.md](./storage-managed-folders.md) |
+| gcloud storage mv | 2 commands (alpha, ga); storage mv … | [storage-mv.md](./storage-mv.md) |
+| gcloud storage objects | 8 commands (alpha, ga); storage objects compose … | [storage-objects.md](./storage-objects.md) |
+| gcloud storage operations | 6 commands (alpha, ga); storage operations cancel … | [storage-operations.md](./storage-operations.md) |
+| gcloud storage restore | 2 commands (alpha, ga); storage restore … | [storage-restore.md](./storage-restore.md) |
+| gcloud storage rm | 2 commands (alpha, ga); storage rm … | [storage-rm.md](./storage-rm.md) |
+| gcloud storage rsync | 2 commands (alpha, ga); storage rsync … | [storage-rsync.md](./storage-rsync.md) |
+| gcloud storage service-agent | 2 commands (alpha, ga); storage service-agent … | [storage-service-agent.md](./storage-service-agent.md) |
+| gcloud storage sign-url | 2 commands (alpha, ga); storage sign-url … | [storage-sign-url.md](./storage-sign-url.md) |
+| gcloud storage tail | alpha storage tail | [storage-tail.md](./storage-tail.md) |
