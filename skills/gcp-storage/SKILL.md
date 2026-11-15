@@ -25,15 +25,40 @@ skills/gcp-storage/
     cloud-storage-buckets-objects/   # 公式ガイド由来: バケット作成・メタデータ・階層型名前空間 (HNS)・マネージドフォルダ・削除
       README.md
       <page>.md                      # 例: creating-buckets.md / bucket-metadata.md / hns-overview.md / managed-folders.md / deleting-objects.md
+    cloud-storage-uploads-downloads/ # 公式ガイド由来: アップロード・ダウンロード手順
+      README.md
+      uploading-objects.md
+      downloading-objects.md
+    cloud-storage-features/          # 公式ガイド由来: 整合性・メタデータ・前提条件・再開可能アップロード・Autoclass・Requester Pays・Pub/Sub 通知・CORS
+      README.md
+      <page>.md                      # 例: consistency.md / request-preconditions.md / resumable-uploads.md / autoclass.md / pubsub-notifications.md
     cloud-storage-access-control/    # 公式ガイド由来: IAM・UBLA・ACL・署名付き URL・公開アクセス防止
       README.md
       <page>.md                      # 例: iam.md / uniform-bucket-level-access.md / signed-urls.md / signing-urls-with-helpers.md / public-access-prevention.md
     cloud-storage-data-protection/   # 公式ガイド由来: バージョニング・ライフサイクル・Bucket Lock・Object Lock・ホールド・ソフト削除・暗号化
       README.md
       <page>.md                      # 例: object-versioning.md / lifecycle.md / bucket-lock.md / soft-delete.md / customer-managed-keys.md
+    cloud-storage-fuse-performance/  # 公式ガイド由来: Cloud Storage FUSE・Anywhere Cache・ベストプラクティス
+      README.md
+      <page>.md                      # 例: overview.md / install.md / mount-bucket.md / file-caching.md / anywhere-cache.md
+    storage-insights-batch-operations/ # 公式ガイド由来: インベントリレポート・データセット・Storage Intelligence・batch operations
+      README.md
+      <page>.md                      # 例: inventory-reports.md / datasets.md / configure-datasets.md / batch-operations-overview.md
+    filestore/                       # 公式ガイド由来: Filestore のティア・インスタンス作成・マウント・バックアップ・スナップショット
+      README.md
+      <page>.md                      # 例: service-tiers.md / creating-instances.md / mounting-fileshares.md / snapshots.md / iam.md
+    lustre-parallelstore/            # 公式ガイド由来: Managed Lustre・Parallelstore の概要・作成・Compute Engine 接続
+      README.md
+      <page>.md                      # 例: managed-lustre-create-instance.md / managed-lustre-quotas.md / parallelstore-create-instance.md
+    netapp-volumes/                  # 公式ガイド由来: NetApp Volumes のサービスレベル・プール・ボリューム・NFS・スナップショット・バックアップ
+      README.md
+      <page>.md                      # 例: service-levels.md / create-storage-pool.md / connect-nfs-clients.md / networking.md / iam.md
     backup-dr/                       # 公式ガイド由来: Backup and DR の保管庫・プラン・クイックスタート・IAM・非推奨
       README.md
       <page>.md                      # 例: backup-vault.md / backup-plan.md / quickstart-compute-engine-backup-vault.md / deprecations.md
+    cloud-storage-release-notes/     # 公式ガイド由来: Cloud Storage リリースノート（2025-2026）
+      README.md
+      release-notes-2025-2026.md
 ```
 
 機械生成のカテゴリ（後続 PR で `references/gcloud/` 等に投入）:
@@ -57,11 +82,19 @@ skills/gcp-storage/
 | --- | --- | --- |
 | Cloud Storage の概念（バケット・オブジェクト・ストレージクラス・ロケーション・クォータ）、gcloud クイックスタート、gsutil からの移行、XML API・HMAC キー | cloud-storage-basics | [references/cloud-storage-basics/README.md](references/cloud-storage-basics/README.md) |
 | バケットの作成・メタデータ、階層型名前空間 (HNS)、マネージドフォルダ、オブジェクト削除 | cloud-storage-buckets-objects | [references/cloud-storage-buckets-objects/README.md](references/cloud-storage-buckets-objects/README.md) |
+| オブジェクトのアップロード・ダウンロード（gcloud / クライアントライブラリ / JSON・XML API） | cloud-storage-uploads-downloads | [references/cloud-storage-uploads-downloads/README.md](references/cloud-storage-uploads-downloads/README.md) |
+| 整合性・メタデータ・リクエスト前提条件・再開可能アップロード、Autoclass・Requester Pays・Pub/Sub 通知・CORS | cloud-storage-features | [references/cloud-storage-features/README.md](references/cloud-storage-features/README.md) |
 | IAM・uniform bucket-level access (UBLA)・ACL・署名付き URL（signed URLs）・公開アクセス防止 | cloud-storage-access-control | [references/cloud-storage-access-control/README.md](references/cloud-storage-access-control/README.md) |
 | Object Versioning・ライフサイクル・Bucket Lock・Object Retention Lock・ホールド・ソフト削除・暗号化（既定の鍵 / CMEK / CSEK） | cloud-storage-data-protection | [references/cloud-storage-data-protection/README.md](references/cloud-storage-data-protection/README.md) |
+| Cloud Storage FUSE（gcsfuse）のインストール・マウント・ファイルキャッシュ、Anywhere Cache、FUSE のベストプラクティス | cloud-storage-fuse-performance | [references/cloud-storage-fuse-performance/README.md](references/cloud-storage-fuse-performance/README.md) |
+| Storage Insights（インベントリレポート・データセット）、Storage Intelligence、storage batch operations | storage-insights-batch-operations | [references/storage-insights-batch-operations/README.md](references/storage-insights-batch-operations/README.md) |
+| Filestore（マネージド NFS）のティア・インスタンス作成・マウント・バックアップ・スナップショット・制限・リージョン・IAM | filestore | [references/filestore/README.md](references/filestore/README.md) |
+| Managed Lustre・Parallelstore の概要・インスタンス作成・Compute Engine からの接続・クォータ | lustre-parallelstore | [references/lustre-parallelstore/README.md](references/lustre-parallelstore/README.md) |
+| NetApp Volumes のサービスレベル・ストレージプール・ボリューム作成・マウント・スナップショット・バックアップ・ネットワーク・IAM | netapp-volumes | [references/netapp-volumes/README.md](references/netapp-volumes/README.md) |
 | Backup and DR の保管庫・バックアッププラン・Compute Engine クイックスタート・IAM・Terraform・非推奨 | backup-dr | [references/backup-dr/README.md](references/backup-dr/README.md) |
+| Cloud Storage の新機能・変更・非推奨の経緯（2025-2026）を知りたい | cloud-storage-release-notes | [references/cloud-storage-release-notes/README.md](references/cloud-storage-release-notes/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `cloud-storage-uploads-downloads` / `cloud-storage-features` / `cloud-storage-fuse-performance` / `storage-insights-batch-operations` / `storage-transfer` / `transfer-appliance` / `filestore` / `lustre-parallelstore` / `netapp-volumes` / `cloud-storage-release-notes` / `samples` / `scripts`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `storage-transfer` / `transfer-appliance` / `samples` / `scripts`
 
 ## 他スキルとの使い分け
 
