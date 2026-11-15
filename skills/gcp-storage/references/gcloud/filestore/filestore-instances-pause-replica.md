@@ -1,0 +1,116 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/filestore/instances/pause-replica
+---
+
+# gcloud filestore instances pause-replica
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud filestore instances pause-replica
+
+```text
+NAME
+    gcloud filestore instances pause-replica - pause a Filestore replica
+        instance
+
+SYNOPSIS
+    gcloud filestore instances pause-replica (INSTANCE : --zone=ZONE) [--async]
+        [--location=LOCATION] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Pause a Filestore replica instance. This command can be called only on a
+    standby instance. After calling the command, the NFS file system of the
+    standby instance becomes writeable. Any data changed on the standby
+    instance while it is paused will be lost when the replica is resumed or
+    promoted.
+
+EXAMPLES
+    To pause a replica instance with the name my-replica-instance located in
+    us-central1-c, run:
+
+        $ gcloud filestore instances pause-replica my-replica-instance \
+            --zone=us-central1
+
+POSITIONAL ARGUMENTS
+     Instance resource - Arguments and flags that specify the Filestore
+     instance to pause. The arguments in this group can be used to specify the
+     attributes of this resource. (NOTE) Some attributes are not given
+     arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument instance on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       INSTANCE
+          ID of the instance or fully qualified identifier for the instance.
+
+          To set the instance attribute:
+          + provide the argument instance on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --zone=ZONE
+          The zone of the Filestore instance.
+
+          To set the zone attribute:
+          + provide the argument instance on the command line with a fully
+            specified name;
+          + provide the argument --zone on the command line;
+          + provide the argument --location on the command line;
+          + set the property filestore/zone.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --location=LOCATION
+        Location of the Filestore instance to pause.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the file/v1 API. The full documentation for this API can
+    be found at: https://cloud.google.com/filestore/
+
+NOTES
+    This variant is also available:
+
+        $ gcloud beta filestore instances pause-replica
+```
+
+### gcloud beta filestore instances pause-replica
+
+```text
+NAME
+    gcloud beta filestore instances pause-replica - pause a Filestore replica
+        instance
+
+SYNOPSIS
+    gcloud beta filestore instances pause-replica (INSTANCE : --zone=ZONE)
+        [--async] [--location=LOCATION] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/filestore/instances/pause-replica (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
