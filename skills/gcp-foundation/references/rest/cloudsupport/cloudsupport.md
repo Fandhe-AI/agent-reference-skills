@@ -318,8 +318,9 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v2, v2beta of `cloudsupport` (retrieved 2026-11-14). Resources on this page: caseClassifications, cases, media, organizations.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
 - Message schemas are listed under `references/rest-schemas/cloudsupport/`.
+- Corrected from the official docs (the Discovery text above is verbatim): the Python snippets in the `organizations.supportEventSubscriptions.*` descriptions call `supportApiService.supportEventSubscriptions()` (and the `delete` snippet has a stray `)` after `supportApiService`); with the Discovery client the resource chain is `supportApiService.organizations().supportEventSubscriptions()`.
 - Source: https://cloudsupport.googleapis.com/$discovery/rest?version=v2, https://cloudsupport.googleapis.com/$discovery/rest?version=v2beta (https://developers.google.com/discovery)
 
 ## Related
