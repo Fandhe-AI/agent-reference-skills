@@ -275,7 +275,7 @@ NOTES
         $ gcloud beta iam policy-bindings create
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
 
 ```bash
 gcloud iam policy-bindings create my-binding \

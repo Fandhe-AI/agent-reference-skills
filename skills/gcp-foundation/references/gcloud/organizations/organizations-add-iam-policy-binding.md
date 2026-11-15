@@ -151,7 +151,7 @@ NOTES
         $ gcloud beta organizations add-iam-policy-binding
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
 
 ```bash
 gcloud organizations add-iam-policy-binding example-organization-id-1 \

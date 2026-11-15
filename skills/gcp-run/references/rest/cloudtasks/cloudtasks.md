@@ -383,8 +383,9 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v2, v2beta3, v2beta2 of `cloudtasks` (retrieved 2026-11-14). Resources on this page: api, projects.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when a path variable is described as optional (the method then also accepts the URL without that segment, as its description says).
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
 - Message schemas (the request and response types named above) are listed under `references/rest-schemas/cloudtasks/`; they are the `schemas` section of the Discovery documents in Source.
+- `taskId` in `cloudtasks.projects.locations.queues.tasks.buffer` is `conditional`: the route above takes it in the path to set the ID; to omit it, use `POST https://cloudtasks.googleapis.com/v2/projects/PROJECT_ID/locations/LOCATION_ID/queues/QUEUE_ID/tasks:buffer` (Cloud Tasks generates the ID), as the method description says.
 - Source: https://cloudtasks.googleapis.com/$discovery/rest?version=v2, https://cloudtasks.googleapis.com/$discovery/rest?version=v2beta3, https://cloudtasks.googleapis.com/$discovery/rest?version=v2beta2 (https://developers.google.com/discovery)
 
 ## Related

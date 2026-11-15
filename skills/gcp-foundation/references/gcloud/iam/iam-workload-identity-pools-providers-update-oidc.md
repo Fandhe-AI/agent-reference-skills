@@ -300,7 +300,7 @@ NOTES
         $ gcloud beta iam workload-identity-pools providers update-oidc
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud iam workload-identity-pools providers update-oidc my-provider \

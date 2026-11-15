@@ -139,7 +139,7 @@ NOTES
         $ gcloud beta resource-manager folders add-iam-policy-binding
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
 
 ```bash
 gcloud resource-manager folders add-iam-policy-binding folder-id \
@@ -737,7 +737,7 @@ NOTES
         $ gcloud beta resource-manager folders remove-iam-policy-binding
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
 
 ```bash
 gcloud resource-manager folders remove-iam-policy-binding folder-id \

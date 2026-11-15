@@ -623,8 +623,8 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1alpha of `cloudnumberregistry` (retrieved 2026-11-14). Resources on this page: organizations, projects.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
-- Message schemas are listed under `references/rest-schemas/cloudnumberregistry/`.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/cloudnumberregistry/`; they are the `schemas` section of the Discovery documents in Source.
 - Source: https://cloudnumberregistry.googleapis.com/$discovery/rest?version=v1alpha (https://developers.google.com/discovery)
 
 ## Related

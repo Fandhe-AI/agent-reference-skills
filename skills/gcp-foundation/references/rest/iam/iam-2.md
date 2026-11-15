@@ -182,8 +182,8 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `iam` (retrieved 2026-11-14). Resources on this page: projects, roles.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
-- Message schemas are listed under `references/rest-schemas/iam/`.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/iam/`; they are the `schemas` section of the Discovery documents in Source.
 - Deprecated methods (`deprecated: true` in Discovery): `iam.projects.serviceAccounts.signBlob`, `iam.projects.serviceAccounts.signJwt`. Avoid them in new code.
 - Methods whose description announces a deprecation or a deprecation-related restriction: `iam.projects.serviceAccounts.update`; read the method description above for the replacement.
 - Migration: `iam.projects.serviceAccounts.signBlob` and `signJwt` are deprecated; use `projects.serviceAccounts.signBlob` / `signJwt` of the IAM Service Account Credentials API (`iamcredentials`), and use `iam.projects.serviceAccounts.patch` instead of `update` (its description says it is being deprecated in favor of PatchServiceAccount).

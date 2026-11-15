@@ -209,6 +209,8 @@ Base URL: `https://cloudsupport.googleapis.com`. Methods are listed by `id`; the
 - Versions: v2, v2beta
 - `POST https://cloudsupport.googleapis.com/v2/{+parent}/attachments`
 - Create a file attachment on a case or Cloud resource. The attachment must have the following fields set: `filename`. EXAMPLES: cURL: echo "This text is in a file I'm uploading using CSAPI." \ > "./example_file.txt" case="projects/some-project/cases/43594844" curl \ --header "Authorization: Bearer $(gcloud auth print-access-token)" \ --data-binary @"./example_file.txt" \ "https://cloudsupport.googleapis.com/upload/v2/$case/attachments?attachment.filename=uploaded_via_curl.txt" Python: import googleapiclient.discovery api_version = "v2" supportApiService = googleapiclient.discovery.build( serviceName="cloudsupport", version=api_version, discoveryServiceUrl=f"https://cloudsupport.googleapis.com/$discovery/rest?version={api_version}", ) file_path = "./example_file.txt" with open(file_path, "w") as file: file.write( "This text is inside a file I'm going to upload using the Cloud Support API.", ) request = supportApiService.media().upload( parent="projects/some-project/cases/43595344", media_body=file_path ) request.uri = request.uri.split("?")\[0\] + "?attachment.filename=uploaded_via_python.txt" print(request.execute())
+- Media upload (simple): `POST https://cloudsupport.googleapis.com/upload/v2/{+parent}/attachments` with `uploadType=media` (the body is the file content only) or `uploadType=multipart` (a `multipart/related` body with the JSON metadata part followed by the content part)
+- Media upload limits: accepted media types: `*/*`
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
 - Request: `CreateAttachmentRequest`; Response: `Attachment`
 
@@ -318,8 +320,8 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v2, v2beta of `cloudsupport` (retrieved 2026-11-14). Resources on this page: caseClassifications, cases, media, organizations.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
-- Message schemas are listed under `references/rest-schemas/cloudsupport/`.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/cloudsupport/`; they are the `schemas` section of the Discovery documents in Source.
 - Corrected from the official docs (the Discovery text above is verbatim): the Python snippets in the `organizations.supportEventSubscriptions.*` descriptions call `supportApiService.supportEventSubscriptions()` (and the `delete` snippet has a stray `)` after `supportApiService`); with the Discovery client the resource chain is `supportApiService.organizations().supportEventSubscriptions()`.
 - Source: https://cloudsupport.googleapis.com/$discovery/rest?version=v2, https://cloudsupport.googleapis.com/$discovery/rest?version=v2beta (https://developers.google.com/discovery)
 

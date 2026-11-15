@@ -50,7 +50,7 @@ NOTES
         $ gcloud beta asset operations describe
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
 
 ```bash
 gcloud asset operations describe projects/19306908007/operations/ExportAssets/RESOURCE/78689643348272423423

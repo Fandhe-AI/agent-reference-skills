@@ -81,7 +81,7 @@ NOTES
         $ gcloud beta auth enterprise-certificate-config create linux
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+Adapted (not in the official docs): runnable form of the example(s) above: `$VARIABLE` placeholders are quoted.
 
 ```bash
 gcloud auth enterprise-certificate-config create linux \
@@ -156,7 +156,7 @@ NOTES
         $ gcloud beta auth enterprise-certificate-config create macos
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+Adapted (not in the official docs): runnable form of the example(s) above: `$VARIABLE` placeholders are quoted.
 
 ```bash
 gcloud auth enterprise-certificate-config create macos \
@@ -229,7 +229,7 @@ NOTES
         $ gcloud beta auth enterprise-certificate-config create windows
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+Adapted (not in the official docs): runnable form of the example(s) above: `$VARIABLE` placeholders are quoted.
 
 ```bash
 gcloud auth enterprise-certificate-config create windows \
