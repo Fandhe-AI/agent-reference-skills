@@ -58,14 +58,10 @@ C:\> gcloud init
 
 Linux and macOS: save the install script locally instead of piping it to bash, then run it:
 
-Adapted (not in the official docs): the official `curl https://sdk.cloud.google.com > install.sh` becomes `curl -fsSL https://sdk.cloud.google.com -o install.sh` (fail on HTTP errors), and an inspect step (`less install.sh`) is added before the script runs.
+Adapted (not in the official docs): the official `curl https://sdk.cloud.google.com > install.sh` becomes `curl -fsSL https://sdk.cloud.google.com -o install.sh` (fail on HTTP errors). Review the downloaded script once interactively (for example with `less install.sh`, as in the interactive steps) before running it unattended.
 
 ```bash
 curl -fsSL https://sdk.cloud.google.com -o install.sh
-```
-
-```bash
-less install.sh
 ```
 
 ```bash

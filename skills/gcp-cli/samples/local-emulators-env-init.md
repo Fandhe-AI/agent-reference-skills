@@ -54,13 +54,15 @@ gcloud emulators firestore start --database-mode=datastore-mode
 
 Import data at start and export it on shutdown:
 
+Adapted (not in the official docs): the help-text placeholders `<path/to/file>` and `<path/to/directory>` are shell redirections when pasted into bash; they are written as `PATH_TO_FILE` and `PATH_TO_DIRECTORY`.
+
 ```bash
-gcloud emulators firestore start --import-data=<path/to/file>
+gcloud emulators firestore start --import-data=PATH_TO_FILE
 ```
 
 ```bash
 gcloud emulators firestore start \
-    --export-on-exit=<path/to/directory>
+    --export-on-exit=PATH_TO_DIRECTORY
 ```
 
 ### Pub/Sub (beta)
@@ -114,7 +116,7 @@ gcloud beta emulators datastore env-unset --data-dir=DATA_DIR
 
 ## Notes
 
-- Adapted from the official docs: the Pub/Sub and Datastore lines are the beta SYNOPSIS lines (for example `gcloud beta emulators pubsub start [--data-dir=DATA_DIR] [--host-port=HOST_PORT]`) with the optional-marker brackets removed; every flag in them is optional. `<path/to/file>` and `<path/to/directory>` are placeholders from the help text.
+- Adapted from the official docs: the Pub/Sub and Datastore lines are the beta SYNOPSIS lines (for example `gcloud beta emulators pubsub start [--data-dir=DATA_DIR] [--host-port=HOST_PORT]`) with the optional-marker brackets removed; every flag in them is optional. The help-text placeholders `<path/to/file>` and `<path/to/directory>` are written as `PATH_TO_FILE` / `PATH_TO_DIRECTORY` because `<` and `>` are bash redirections.
 - `env-init` / `env-unset` print commands; they do not start anything. Start the emulator in one terminal and apply the output in the terminal that runs your application.
 - Some GA/beta pages in the input show only the SYNOPSIS for alpha and beta; use `gcloud beta emulators <name> start --help` for the full text.
 - The names of the exported environment variables are not in the input; read them from the `env-init` output.

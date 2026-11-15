@@ -128,7 +128,7 @@ resource "google_project_service" "all" {
 
 `./main.tf` - Assign roles (to the `etlpipeline` service account; also grants the Cloud Composer v2 API Service Agent Extension role to the Cloud Composer Service Agent, required for Composer 2 environments):
 
-Adapted (not in the official docs): the fetched source renders this block without indentation and with escaped brackets; indentation and plain `[` / `]` are restored.
+Adapted (not in the official docs): the fetched source renders this block without indentation and with escaped brackets; indentation and plain `[` / `]` are restored. The official list also grants the service-agent roles `roles/dataflow.serviceAgent` and `roles/composer.ServiceAgentV2Ext` to the `etlpipeline` workload account; they are removed here (service-agent roles belong to the Google-managed service agents, and the Composer agent binding below already grants `roles/composer.ServiceAgentV2Ext`).
 
 ```hcl
 variable "build_roles_list" {
@@ -139,9 +139,7 @@ variable "build_roles_list" {
     "roles/dataflow.admin",
     "roles/dataflow.worker",
     "roles/bigquery.admin",
-    "roles/storage.objectAdmin",
-    "roles/dataflow.serviceAgent",
-    "roles/composer.ServiceAgentV2Ext"
+    "roles/storage.objectAdmin"
   ]
 }
 
@@ -165,6 +163,7 @@ The breakdown also creates: the `etlpipeline` service account, a Composer enviro
 
 ## Notes
 
+- Adapted from the official docs: the ETL role list granted `roles/dataflow.serviceAgent` and `roles/composer.ServiceAgentV2Ext` to the workload service account; those service-agent roles are removed from the list and only the existing `composerAgent` binding (to the Cloud Composer Service Agent) keeps `roles/composer.ServiceAgentV2Ext`.
 - Adapted from the official docs: the budget `local-exec` provisioner interpolated `${var.basename}`, `${var.billing_account}`, `${var.budgetamount}` and `${var.project_id}` directly into the shell command; it passes them through `environment` and quotes them in the shell.
 - Both stacks create billable resources. Cloud Composer environments in particular run continuously; ETL Pipeline grants broad roles (`roles/bigquery.admin`, `roles/dataflow.admin`, `roles/storage.objectAdmin`). The source gives no teardown / destroy command; none is given here. For Cost Sentry, deactivating resources is performed by its Cloud Function, not by a command in the page.
 - Conversion fix only: in the fetched twin of the ETL Pipeline page, the `build_roles_list` block had lost its indentation and carried `\[` / `\]` escapes; it is restored as a normal HCL block. The source typo "fucntions" (Cost Sentry) is kept verbatim.

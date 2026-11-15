@@ -102,13 +102,15 @@ gcloud emulators firestore start --rules=firestore.rules
 gcloud emulators firestore start --database-mode=datastore-mode
 ```
 
+Adapted (not in the official docs): the help-text placeholders `<path/to/file>` and `<path/to/directory>` are shell redirections when pasted into bash; they are written as `PATH_TO_FILE` and `PATH_TO_DIRECTORY`.
+
 ```bash
-gcloud emulators firestore start --import-data=<path/to/file>
+gcloud emulators firestore start --import-data=PATH_TO_FILE
 ```
 
 ```bash
 gcloud emulators firestore start \
-    --export-on-exit=<path/to/directory>
+    --export-on-exit=PATH_TO_DIRECTORY
 ```
 
 Adapted (not in the official docs): the help example's lowercase placeholder `--edition=edition` is not an accepted value; `enterprise` (one of `standard`, `enterprise`) is used.
@@ -176,7 +178,7 @@ gcloud beta emulators datastore env-unset
 - `env-init` prints the commands that export the emulator's environment variables; `env-unset` (Datastore) prints the commands that unset them. Neither sets variables by itself.
 - Emulators ship as separate packages (for example `google-cloud-cli-firestore-emulator`, `google-cloud-cli-pubsub-emulator`, `google-cloud-cli-spanner-emulator`); the apt and rpm package lists are on the install page, see install.md.
 - Corrected from the official docs: the help example `gcloud emulators firestore start --edition=edition` passes a placeholder that is not one of the accepted values (`EDITION must be one of: standard, enterprise`); the fence uses `--edition=enterprise`.
-- Replace `<path/to/file>` and `<path/to/directory>` with real paths, as in the official help text. The Firestore import and export flags read and write files on this machine.
+- Adapted from the official docs: the help text writes the Firestore paths as `<path/to/file>` and `<path/to/directory>`; they are `PATH_TO_FILE` / `PATH_TO_DIRECTORY` here because `<` and `>` are bash redirections. Replace them with real paths. The Firestore import and export flags read and write files on this machine.
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/components/list (gcloud 593.0.0 help)
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/components/install (gcloud 593.0.0 help)
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/components/update (gcloud 593.0.0 help)

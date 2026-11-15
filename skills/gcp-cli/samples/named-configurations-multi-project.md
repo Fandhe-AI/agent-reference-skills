@@ -10,14 +10,16 @@ Create one named configuration per project, then switch with `activate`, `--conf
 
 ### Create a configuration per project
 
-Adapted (not in the official docs): the `create`, `config set project`, and `config set compute/zone` examples are combined into one setup; `project-1` / `project-2` are the names used in the official listing example, and `PROJECT_1_ID` / `PROJECT_2_ID` are placeholders.
+Adapted (not in the official docs): the `create`, `config set project`, and `config set compute/zone` examples are combined into one setup; `project-1` / `project-2` are the names used in the official listing example, and `PROJECT_1_ID` / `PROJECT_2_ID` are placeholders. A new configuration starts empty (it does not copy `core/account`), so each one also sets `account` (`ACCOUNT` is an account already authorized with `gcloud auth login`).
 
 ```bash
 gcloud config configurations create project-1
+gcloud config set account ACCOUNT
 gcloud config set project PROJECT_1_ID
 gcloud config set compute/zone us-east1-b
 
 gcloud config configurations create project-2
+gcloud config set account ACCOUNT
 gcloud config set project PROJECT_2_ID
 gcloud config set compute/zone us-east1-c
 ```
