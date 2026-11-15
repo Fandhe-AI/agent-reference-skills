@@ -31,6 +31,23 @@ skills/gcp-cli/
     shell-tutorials/              # 公式ガイド由来: Cloud Shell チュートリアル作成・DeployStack
       README.md
       <page>.md                   # 例: writing-tutorials.md / directives-layout.md / deploystack-overview.md
+    commands/                     # 機械生成: gcloud 593.0.0 の help、取得 2026-11-14
+      README.md
+      <group>/
+        README.md
+        <group>-<sub>.md          # GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ
+                                  # 単独コマンドのグループは <group>.md（例: gcloud/gcloud.md・init/init.md）
+                                  # 大きいものは <group>-<sub>-<N>.md に分割
+    rest/                         # 機械生成: Discovery 由来のメソッド表、取得 2026-11-14
+      README.md
+      cloudshell/
+        README.md
+        cloudshell.md
+    rest-schemas/                 # 機械生成: Discovery 由来のメッセージスキーマ、取得 2026-11-14
+      README.md
+      cloudshell/
+        README.md
+        cloudshell.md
   samples/
     README.md
     named-configurations-multi-project.md
@@ -55,15 +72,19 @@ skills/gcp-cli/
     cloud-shell.md
 ```
 
-gcloud の横断グループ（21、後続 PR で `references/commands/` に投入）: `gcloud`（ルートとグローバルフラグ）/ `alpha` / `auth` / `beta` / `cheat-sheet` / `cloud-shell` / `code`（alpha / beta のみ）/ `components` / `config` / `docker` / `emulators` / `feedback` / `help` / `info` / `init` / `interactive`（alpha / beta のみ）/ `onboarding`（alpha のみ）/ `survey` / `terraform`（alpha / beta のみ）/ `topic` / `version`。
+`references/commands/` が担当する gcloud グループ（21）: `gcloud`（ルートとグローバルフラグ）/ `alpha` / `auth` / `beta` / `cheat-sheet` / `cloud-shell` / `code`（alpha / beta のみ）/ `components` / `config` / `docker` / `emulators` / `feedback` / `help` / `info` / `init` / `interactive`（alpha / beta のみ）/ `onboarding`（alpha のみ）/ `survey` / `terraform`（alpha / beta のみ）/ `topic` / `version`。
 
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
 1. 手順・概念（インストール、configurations、認証、Cloud Shell、チュートリアル）→ 下記マッピング表で `install-setup` / `config-auth` / `cloud-shell` / `shell-tutorials` を選び、その README.md から個別ページを引く
-2. gcloud コマンド・グローバルフラグ・`--format` / `--filter` の全文（機械生成の `references/commands/`）と Cloud Shell API（`references/rest/` `references/rest-schemas/`）は後続 PR で投入する。未投入の間は `gcloud help` と公式 reference を確認する
-3. 作業例 → `samples/README.md`、コマンド集 → `scripts/README.md`
+2. グローバルフラグ（`--project` / `--format` / `--filter` / `--impersonate-service-account` / `--quiet` / `--verbosity` など）→ `references/commands/gcloud/gcloud.md`
+3. 出力制御 → `--format` は `references/commands/topic/topic-formats.md`、`--filter` は `topic-filters.md`、projections・transforms は `topic-projections.md`、リソースキーは `topic-resource-keys.md`（いずれも `references/commands/topic/`）
+4. コマンド・フラグ → `references/commands/README.md` でグループを選び、`references/commands/<group>/README.md` からページを引く（GA は `gcloud help` の全文）
+5. alpha / beta トラックのコマンドは NAME + SYNOPSIS のみ（GA は全文）。フラグの詳細は `gcloud alpha|beta <command> --help` か公式ページ（gcloud reference）を参照する。`references/commands/alpha/` と `beta/` はトラックのルート（`gcloud alpha` / `gcloud beta` のグループ help）
+6. Cloud Shell の REST API（`cloudshell.googleapis.com`）→ `references/rest/cloudshell/`、メッセージ型 → `references/rest-schemas/cloudshell/`
+7. 作業例 → `samples/README.md`、コマンド集 → `scripts/README.md`
 
 ## タスク → カテゴリ マッピング
 
@@ -73,6 +94,30 @@ gcloud の横断グループ（21、後続 PR で `references/commands/` に投�
 | configurations・properties・認証（ユーザー / サービスアカウント / Workforce Identity Federation）・スクリプト化・cheat sheet | config-auth | [references/config-auth/README.md](references/config-auth/README.md) |
 | Cloud Shell の起動・Editor・Web Preview・設定・ファイル転送・クォータ・Open in Cloud Shell | cloud-shell | [references/cloud-shell/README.md](references/cloud-shell/README.md) |
 | Cloud Shell チュートリアルの書き方・ディレクティブ・DeployStack ソリューション | shell-tutorials | [references/shell-tutorials/README.md](references/shell-tutorials/README.md) |
+| gcloud コマンドグループの一覧から目的のコマンドを探したい | commands | [references/commands/README.md](references/commands/README.md) |
+| グローバルフラグ・ルートコマンドを調べたい | commands/gcloud | [references/commands/gcloud/README.md](references/commands/gcloud/README.md) |
+| `--format` / `--filter` / projections / datetimes / escaping / `--flags-file` / gcloudignore などのトピックを読みたい | commands/topic | [references/commands/topic/README.md](references/commands/topic/README.md) |
+| `gcloud auth`（login / activate-service-account / application-default / print-access-token ほか）のフラグを調べたい | commands/auth | [references/commands/auth/README.md](references/commands/auth/README.md) |
+| `gcloud config`（set / get / list / configurations）のフラグを調べたい | commands/config | [references/commands/config/README.md](references/commands/config/README.md) |
+| `gcloud init` で初期化したい | commands/init | [references/commands/init/README.md](references/commands/init/README.md) |
+| `gcloud info` で環境診断したい | commands/info | [references/commands/info/README.md](references/commands/info/README.md) |
+| `gcloud version` でバージョン確認したい | commands/version | [references/commands/version/README.md](references/commands/version/README.md) |
+| `gcloud components`（install / update / remove / list）を使いたい | commands/components | [references/commands/components/README.md](references/commands/components/README.md) |
+| `gcloud emulators`（Firestore / Spanner / Pub/Sub / Bigtable / Datastore）を起動したい | commands/emulators | [references/commands/emulators/README.md](references/commands/emulators/README.md) |
+| `gcloud code`（`code dev` / `code clean-up`、alpha / beta のみ）を調べたい | commands/code | [references/commands/code/README.md](references/commands/code/README.md) |
+| `gcloud cloud-shell`（ssh / scp / get-mount-command など）を使いたい | commands/cloud-shell | [references/commands/cloud-shell/README.md](references/commands/cloud-shell/README.md) |
+| `gcloud help` でヘルプを引きたい | commands/help | [references/commands/help/README.md](references/commands/help/README.md) |
+| `gcloud beta interactive` の対話シェル（alpha / beta のみ）を使いたい | commands/interactive | [references/commands/interactive/README.md](references/commands/interactive/README.md) |
+| `gcloud cheat-sheet` を引きたい | commands/cheat-sheet | [references/commands/cheat-sheet/README.md](references/commands/cheat-sheet/README.md) |
+| `gcloud feedback` でフィードバックを送りたい | commands/feedback | [references/commands/feedback/README.md](references/commands/feedback/README.md) |
+| `gcloud survey` のアンケートを扱いたい | commands/survey | [references/commands/survey/README.md](references/commands/survey/README.md) |
+| `gcloud onboarding express`（alpha のみ）を調べたい | commands/onboarding | [references/commands/onboarding/README.md](references/commands/onboarding/README.md) |
+| `gcloud docker`（Docker credential helper）を使いたい | commands/docker | [references/commands/docker/README.md](references/commands/docker/README.md) |
+| `gcloud beta terraform vet`（Terraform plan のポリシー検証）を使いたい | commands/terraform | [references/commands/terraform/README.md](references/commands/terraform/README.md) |
+| `gcloud alpha`（alpha トラックのルート・グループ一覧）を調べたい | commands/alpha | [references/commands/alpha/README.md](references/commands/alpha/README.md) |
+| `gcloud beta`（beta トラックのルート・グループ一覧）を調べたい | commands/beta | [references/commands/beta/README.md](references/commands/beta/README.md) |
+| Cloud Shell API の REST メソッド・パスを調べたい | rest | [references/rest/README.md](references/rest/README.md)、[references/rest/cloudshell/README.md](references/rest/cloudshell/README.md) |
+| Cloud Shell API のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md)、[references/rest-schemas/cloudshell/README.md](references/rest-schemas/cloudshell/README.md) |
 | 典型的な使い方を知りたい（named configuration・CI・format / filter・impersonation・emulator・Cloud Shell・proxy・Docker の 11 件） | samples | [samples/README.md](samples/README.md) |
 | コマンドをコピペしたい（install / config / auth / output-formatting / scripting / components-emulators / cloud-shell） | scripts | [scripts/README.md](scripts/README.md) |
 
@@ -92,7 +137,7 @@ gcloud の横断グループ（21、後続 PR で `references/commands/` に投�
 
 - 取得日: 2026-11-14、gcloud 593.0.0
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
-- `references/commands/` `references/rest/` `references/rest-schemas/` は機械生成（gcloud 593.0.0 の help / Discovery、取得 2026-11-14）で、後続 PR で投入する。`install-setup` `config-auth` `cloud-shell` `shell-tutorials` は公式ガイド由来の手書き
+- `references/commands/` `references/rest/` `references/rest-schemas/` は機械生成（gcloud 593.0.0 の help / Discovery、取得 2026-11-14）。`install-setup` `config-auth` `cloud-shell` `shell-tutorials` は公式ガイド由来の手書き
 - alpha / beta トラックのコマンドは NAME + SYNOPSIS のみ（フラグ全文は GA のみ）
 - 変更ログ（gcloud release notes）は未収録
 - `shell-tutorials/` は Cloud Shell チュートリアル作成ページと DeployStack ページを収録（DeployStack はソリューション集の概要）
