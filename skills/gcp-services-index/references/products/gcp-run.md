@@ -6,19 +6,19 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 
 ## Signature / Usage
 
-Owner skill: `gcp-run` (status: 未収録（予定）). gcloud groups: `app`, `functions`, `run`, `scheduler`, `tasks`, `workstations`.
+Owner skill: `gcp-run` (status: 収録済み). gcloud groups: `app`, `functions`, `run`, `scheduler`, `tasks`, `workstations`.
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Lifecycle | Docs | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| App Development Experience | — | — | — | `appdevelopmentexperience.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/appdevelopmentexperience | 未収録（予定） |
-| App Engine | `appengine.googleapis.com` (v1, v1alpha, v1beta) | Provisions and manages developers' App Engine applications. | `app` | `appengine.` | 12 | — | — | https://cloud.google.com/appengine/docs/admin-api/ | 未収録（予定） |
-| App Engine flexible environment | — | — | — | `appengineflex.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/appengineflex | 未収録（予定） |
-| Cloud Run | `run.googleapis.com` (v1, v2) | Deploy and manage user provided container images that scale automatically based on incoming requests. The Cloud Run Admin API v1 follows the Knative Serving API specification, while v2 is aligned with Google Cloud AIP-based API standards, as described in https://google.aip.dev/. | `run` | `run.` | 14 | — | — | https://cloud.google.com/run/ | 未収録（予定） |
-| Cloud Run functions | `cloudfunctions.googleapis.com` (v1, v2, v2alpha, v2beta) | Manages lightweight user-provided functions executed in response to events. | `functions` | `cloudfunctions.` | 7 | Cloud Functions | — | https://cloud.google.com/functions | 未収録（予定） |
-| Cloud Scheduler | `cloudscheduler.googleapis.com` (v1, v1beta1) | Creates and manages jobs run on a regular recurring schedule. | `scheduler` | `cloudscheduler.` | 4 | — | — | https://cloud.google.com/scheduler/ | 未収録（予定） |
-| Cloud Tasks | `cloudtasks.googleapis.com` (v2, v2beta2, v2beta3) | Manages the execution of large numbers of distributed requests. | `tasks` | `cloudtasks.` | 8 | — | — | https://cloud.google.com/tasks/ | 未収録（予定） |
-| Cloud Workstations | `workstations.googleapis.com` (v1, v1beta) | Allows administrators to create managed developer environments in the cloud. | `workstations` | `workstations.` | 9 | — | — | https://cloud.google.com/workstations | 未収録（予定） |
-| Serverless Integrations | — | — | — | `runapps.` | 5 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/runapps | 未収録（予定） |
+| App Development Experience | — | — | — | `appdevelopmentexperience.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/appdevelopmentexperience | 収録済み |
+| App Engine | `appengine.googleapis.com` (v1, v1alpha, v1beta) | Provisions and manages developers' App Engine applications. | `app` | `appengine.` | 12 | — | — | https://cloud.google.com/appengine/docs/admin-api/ | 収録済み |
+| App Engine flexible environment | — | — | — | `appengineflex.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/appengineflex | 収録済み |
+| Cloud Run | `run.googleapis.com` (v1, v2) | Deploy and manage user provided container images that scale automatically based on incoming requests. The Cloud Run Admin API v1 follows the Knative Serving API specification, while v2 is aligned with Google Cloud AIP-based API standards, as described in https://google.aip.dev/. | `run` | `run.` | 14 | — | — | https://cloud.google.com/run/ | 収録済み |
+| Cloud Run functions | `cloudfunctions.googleapis.com` (v1, v2, v2alpha, v2beta) | Manages lightweight user-provided functions executed in response to events. | `functions` | `cloudfunctions.` | 7 | Cloud Functions | — | https://cloud.google.com/functions | 収録済み |
+| Cloud Scheduler | `cloudscheduler.googleapis.com` (v1, v1beta1) | Creates and manages jobs run on a regular recurring schedule. | `scheduler` | `cloudscheduler.` | 4 | — | — | https://cloud.google.com/scheduler/ | 収録済み |
+| Cloud Tasks | `cloudtasks.googleapis.com` (v2, v2beta2, v2beta3) | Manages the execution of large numbers of distributed requests. | `tasks` | `cloudtasks.` | 8 | — | — | https://cloud.google.com/tasks/ | 収録済み |
+| Cloud Workstations | `workstations.googleapis.com` (v1, v1beta) | Allows administrators to create managed developer environments in the cloud. | `workstations` | `workstations.` | 9 | — | — | https://cloud.google.com/workstations | 収録済み |
+| Serverless Integrations | — | — | — | `runapps.` | 5 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/runapps | 収録済み |
 
 ```bash
 gcloud help
