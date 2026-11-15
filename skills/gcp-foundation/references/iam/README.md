@@ -52,3 +52,15 @@
 | Recommender part 3 | 45 roles, 67 permissions | [recommender-3.md](./recommender-3.md) |
 | Recommender part 4 | 137 permissions | [recommender-4.md](./recommender-4.md) |
 | Recommender part 5 | 127 permissions | [recommender-5.md](./recommender-5.md) |
+| Recommender part 6 | 118 permissions | [recommender-6.md](./recommender-6.md) |
+| Resource Manager part 1 | 10 roles | [resourcemanager-1.md](./resourcemanager-1.md) |
+| Resource Manager part 2 | 9 roles, 46 permissions | [resourcemanager-2.md](./resourcemanager-2.md) |
+| Resource Manager part 3 | 2 permissions | [resourcemanager-3.md](./resourcemanager-3.md) |
+| Resource Manager part 4 | 27 permissions | [resourcemanager-4.md](./resourcemanager-4.md) |
+| Resource Settings | 2 roles, 3 permissions | [resourcesettings.md](./resourcesettings.md) |
+| Service Consumer Management | 4 roles, 8 permissions | [serviceconsumermanagement.md](./serviceconsumermanagement.md) |
+| Service Management | 10 roles, 11 permissions | [servicemanagement.md](./servicemanagement.md) |
+| Service Networking | 5 roles, 22 permissions | [servicenetworking.md](./servicenetworking.md) |
+| Service Usage part 1 | 5 roles, 23 permissions | [serviceusage-1.md](./serviceusage-1.md) |
+| Service Usage part 2 | 3 permissions | [serviceusage-2.md](./serviceusage-2.md) |
+| Workload Certificate | 5 roles, 13 permissions | [workloadcertificate.md](./workloadcertificate.md) |
