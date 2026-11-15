@@ -664,13 +664,20 @@ NOTES
         $ gcloud alpha storage batch-operations jobs create
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud storage batch-operations jobs create my-job \
     --bucket=my-bucket \
     --included-object-prefixes=prefix1,prefix2 \
     --put-metadata=Content-Disposition=inline,Content-Language=en,Retain-Until=2025-01-01T00:00:00Z,Retention-Mode=locked
+
+gcloud storage batch-operations jobs create my-job \
+    --bucket=my-bucket \
+    --included-object-prefixes=prefix1 \
+    --put-object-event-based-hold \
+    --log-actions=transform \
+    --log-action-states=succeeded,failed
 
 gcloud storage batch-operations jobs create my-job \
     --target-project=my-project \
@@ -1002,6 +1009,7 @@ SYNOPSIS
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `cancel` and `delete` examples pass `my-job --location=us-central1`, but these commands have no `--location` flag (gcloud 593.0.0 rejects it as an unrecognized argument; the location is taken from a fully specified name and defaults to `global`); the runnable form uses the fully specified name `projects/my-project/locations/us-central1/jobs/my-job`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the event-based-hold example passes neither `--included-object-prefixes` nor `--manifest-location`, one of which the SYNOPSIS requires with `--bucket` (gcloud 593.0.0: "argument (--included-object-prefixes | --manifest-location): Must be specified"), and combines `--put-object-event-based-hold` with `--put-metadata`, which the SYNOPSIS lists as alternative transformations (gcloud 593.0.0: "Exactly one of (--put-metadata | ... ) must be specified"); the runnable form adds `--included-object-prefixes=prefix1` (the prefix of the other examples; `--included-object-prefixes=''` selects every object) and drops `--put-metadata`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
