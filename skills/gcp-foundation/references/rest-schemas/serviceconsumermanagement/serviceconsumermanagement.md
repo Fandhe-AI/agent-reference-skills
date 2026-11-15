@@ -937,7 +937,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 
 | Field | Type | Description |
 |---|---|---|
-| `accountId` | string | ID of the IAM service account to be created in tenant project. The email format of the service account is "@.iam.gserviceaccount.com". This account ID must be unique within tenant project and service producers have to guarantee it. The ID must be 6-30 characters long, and match the following regular expression: `a-z`. |
+| `accountId` | string | ID of the IAM service account to be created in tenant project. The email format of the service account is "@.iam.gserviceaccount.com". This account ID must be unique within tenant project and service producers have to guarantee it. The ID must be 6-30 characters long, and match the following regular expression: `[a-z]([-a-z0-9]*[a-z0-9])`. |
 | `tenantProjectRoles` | array<string> | Roles for the associated service account for the tenant project. |
 
 ### `SourceContext`
@@ -1350,7 +1350,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 
 | Field | Type | Description |
 |---|---|---|
-| `attachStatus` | string enum | Status of the role attachment. Under development (go/si-attach-role), currently always return ATTACH_STATUS_UNSPECIFIED) |
+| `attachStatus` | string enum | Status of the role attachment. Under development ((internal link)), currently always return ATTACH_STATUS_UNSPECIFIED) |
 | `identity` | V1DefaultIdentity | DefaultIdentity that was created or retrieved. |
 | `role` | string | Role attached to consumer project. Empty if not attached in this request. (Under development, currently always return empty.) |
 
@@ -1428,7 +1428,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 
 | Field | Type | Description |
 |---|---|---|
-| `attachStatus` | string enum | Status of the role attachment. Under development (go/si-attach-role), currently always return ATTACH_STATUS_UNSPECIFIED) |
+| `attachStatus` | string enum | Status of the role attachment. Under development ((internal link)), currently always return ATTACH_STATUS_UNSPECIFIED) |
 | `identity` | V1beta1DefaultIdentity | DefaultIdentity that was created or retrieved. |
 | `role` | string | Role attached to consumer project. Empty if not attached in this request. (Under development, currently always return empty.) |
 
@@ -1481,8 +1481,9 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `serviceconsumermanagement` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://serviceconsumermanagement.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1, v1beta1 of `serviceconsumermanagement` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Google-internal `go/` short links in the Discovery descriptions are replaced with `(internal link)`; they are not reachable outside Google.
+- Source: https://serviceconsumermanagement.googleapis.com/$discovery/rest?version=v1, https://serviceconsumermanagement.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
 

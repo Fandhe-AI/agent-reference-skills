@@ -147,7 +147,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | Field | Type | Description |
 |---|---|---|
 | `authoritySelector` | string | The authority selector specified by the requestor, if any. It is not guaranteed that the principal was allowed to use this authority. |
-| `loggableShortLivedCredential` | object | Converted from "identity_cloudgaia.AuditLoggableShortLivedCredential" proto. This message will be used by security, detection and response team. For context please refer to go/cg:short-lived-credential-logging. When the JSON object represented here has a proto equivalent, the proto name will be indicated in the `@type` property. |
+| `loggableShortLivedCredential` | object | Converted from "identity_cloudgaia.AuditLoggableShortLivedCredential" proto. This message will be used by security, detection and response team. For context please refer to (internal link):short-lived-credential-logging. When the JSON object represented here has a proto equivalent, the proto name will be indicated in the `@type` property. |
 | `oauthInfo` | OAuthInfo | OAuth authentication information such as the OAuth client ID. |
 | `principalEmail` | string | The email address of the authenticated user (or service account on behalf of third party principal) making the request. For third party identity callers, the `principal_subject` field is populated instead of this field. For privacy reasons, the principal email address is sometimes redacted. For more information, see Caller identities in audit logs (https://cloud.google.com/logging/docs/audit#user-id). |
 | `principalSubject` | string | String representation of identity of requesting party. Populated for both first and third party identities. |
@@ -254,7 +254,7 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `maximum` | number (double) | The maximum of the population of values. Ignored if `count` is zero. |
 | `mean` | number (double) | The arithmetic mean of the samples in the distribution. If `count` is zero then this field must be zero. |
 | `minimum` | number (double) | The minimum of the population of values. Ignored if `count` is zero. |
-| `sumOfSquaredDeviation` | number (double) | The sum of squared deviations from the mean: Sumi=1..count^2) where each x_i is a sample values. If `count` is zero then this field must be zero, otherwise validation of the request fails. |
+| `sumOfSquaredDeviation` | number (double) | The sum of squared deviations from the mean: Sum\[i=1..count\]((x_i - mean)^2) where each x_i is a sample values. If `count` is zero then this field must be zero, otherwise validation of the request fails. |
 
 ### `Exemplar`
 
@@ -824,10 +824,10 @@ Message types referenced by the methods listed under `references/rest/servicecon
 
 | Field | Type | Description |
 |---|---|---|
-| `contextId` | string (int64) | The ESF unique context id of the api request, from which this resource event originated. This field is only needed for CAIS integration via api annotation. See go/cais-lro-delete for more details. |
+| `contextId` | string (int64) | The ESF unique context id of the api request, from which this resource event originated. This field is only needed for CAIS integration via api annotation. See (internal link) for more details. |
 | `destinations` | string | The destinations field determines which backend services should handle the event. This should be specified as a comma-delimited string. |
 | `parent` | Resource | The parent resource for the resource. |
-| `path` | string enum | The api path the resource event was created in. This should match the source of the `payload` field. For direct integrations with Chemist, this should generally be the RESPONSE. go/resource-event-pipeline-type |
+| `path` | string enum | The api path the resource event was created in. This should match the source of the `payload` field. For direct integrations with Chemist, this should generally be the RESPONSE. (internal link) |
 | `payload` | object | The payload contains metadata associated with the resource event. A ResourceEventPayloadStatus is provided instead if the original payload cannot be returned due to a limitation (e.g. size limit). |
 | `resource` | Resource | The resource associated with the event. |
 | `type` | string enum | The resource event type determines how the backend service should process the event. |
@@ -906,10 +906,10 @@ Message types referenced by the methods listed under `references/rest/servicecon
 
 | Field | Type | Description |
 |---|---|---|
-| `contextId` | string (int64) | The ESF unique context id of the api request, from which this resource event originated. This field is only needed for CAIS integration via api annotation. See go/cais-lro-delete for more details. |
+| `contextId` | string (int64) | The ESF unique context id of the api request, from which this resource event originated. This field is only needed for CAIS integration via api annotation. See (internal link) for more details. |
 | `destinations` | string | The destinations field determines which backend services should handle the event. This should be specified as a comma-delimited string. |
 | `parent` | Resource | The parent resource for the resource. |
-| `path` | string enum | The api path the resource event was created in. This should match the source of the `payload` field. For direct integrations with Chemist, this should generally be the RESPONSE. go/resource-event-pipeline-type |
+| `path` | string enum | The api path the resource event was created in. This should match the source of the `payload` field. For direct integrations with Chemist, this should generally be the RESPONSE. (internal link) |
 | `payload` | object | The payload contains metadata associated with the resource event. A ResourceEventPayloadStatus is provided instead if the original payload cannot be returned due to a limitation (e.g. size limit). |
 | `resource` | Resource | The resource associated with the event. |
 | `type` | string enum | The resource event type determines how the backend service should process the event. |
@@ -939,8 +939,9 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `servicecontrol` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://servicecontrol.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v2, v1 of `servicecontrol` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Google-internal `go/` short links in the Discovery descriptions are replaced with `(internal link)`; they are not reachable outside Google.
+- Source: https://servicecontrol.googleapis.com/$discovery/rest?version=v2, https://servicecontrol.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
 ## Related
 
