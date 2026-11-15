@@ -124,8 +124,10 @@ gcloud projects list \
     --filter="createTime>-P2W"
 ```
 
+Adapted (not in the official docs): the official example omits the required positional `IMAGE_NAME`; `gcr.io/PROJECT_ID/IMAGE` is added so the command runs.
+
 ```bash
-gcloud container images list-tags --filter="'tags:30e5504145'"
+gcloud container images list-tags gcr.io/PROJECT_ID/IMAGE --filter="'tags:30e5504145'"
 ```
 
 The `createTime>-P2W` filter uses an ISO 8601 duration (the last two weeks). The last command single-quotes the value so `30e5504145` is not read as a number in scientific notation.
@@ -148,8 +150,10 @@ gcloud compute instances list --filter="labels.my-label:*" --limit=10
 
 ### Filter a nested list with --flatten
 
+Adapted (not in the official docs): `PROJECT_ID` replaces the help-text sample project `cloudsdktest`; the flags are unchanged.
+
 ```bash
-gcloud projects get-iam-policy cloudsdktest --flatten=bindings \
+gcloud projects get-iam-policy PROJECT_ID --flatten=bindings \
     --filter=bindings.role:roles/editor \
     --format='value(bindings.members)'
 ```
@@ -158,7 +162,8 @@ gcloud projects get-iam-policy cloudsdktest --flatten=bindings \
 
 - `--flatten`, `--sort-by`, `--filter`, and `--limit` are applied in that order. `--format` and `--flatten` are gcloud-wide flags; `--filter`, `--limit`, and `--sort-by` are list-command flags (for example on `gcloud projects list`).
 - The format names for `--format` include `json`, `yaml`, `csv`, `text`, `list`, `table(...)`, and `value(...)`; see `gcloud topic formats`. `core/format` and `core/default_format` can set a default format; `--format` takes precedence over both. See config.md.
-- The `gcloud projects get-iam-policy` example uses the project ID `cloudsdktest` from the help text; replace it with your own project ID.
+- Adapted from the official docs: the `gcloud projects get-iam-policy` example uses `PROJECT_ID` instead of the help-text sample project `cloudsdktest`.
+- Corrected from the official docs: the filters topic example `gcloud container images list-tags --filter="'tags:30e5504145'"` has no `IMAGE_NAME`, which the SYNOPSIS requires; `gcr.io/PROJECT_ID/IMAGE` follows the documented `*.gcr.io/PROJECT_ID/IMAGE_PATH` format.
 - Scripts should rely on `--format` output rather than the default human-readable output, which can change between releases; see scripting.md.
 - Resource field names differ between services; the examples use Compute Engine and Resource Manager fields from the official help.
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/topic/formats (gcloud 593.0.0 help)

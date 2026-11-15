@@ -30,8 +30,10 @@ gcloud config configurations create CONFIG_NAME
 
 Set the project and region for it:
 
+Adapted (not in the official docs): the placeholder `[PROJECT_NAME]` is renamed `[PROJECT_ID]` because `gcloud config set project` takes the project ID.
+
 ```bash
-gcloud config set project [PROJECT_NAME]
+gcloud config set project [PROJECT_ID]
 ```
 
 ```bash
@@ -69,7 +71,8 @@ gcloud config set disable_usage_reporting true
 - Without these steps gcloud preferences live in a temporary folder for the current tab only and are lost across sessions.
 - The script runs in the background, so installed packages can appear a few moments after the login prompt.
 - `.customize_environment` runs as root: keep it to trusted package installs.
-- Replace `[PROJECT_NAME]` with your project ID and drop the brackets.
+- Replace `[PROJECT_ID]` with your project ID and drop the brackets.
+- Corrected from the official docs: the page writes `gcloud config set project [PROJECT_NAME]`, but the `core/project` property takes a project ID, not a display name; this sample uses `[PROJECT_ID]`.
 - Named configurations in general are in the `named-configurations-multi-project` sample.
 - Source: https://docs.cloud.google.com/shell/docs/configuring-cloud-shell (retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/sdk/docs/configurations (retrieved 2026-11-14)

@@ -111,8 +111,10 @@ gcloud emulators firestore start \
     --export-on-exit=<path/to/directory>
 ```
 
+Adapted (not in the official docs): the help example's lowercase placeholder `--edition=edition` is not an accepted value; `enterprise` (one of `standard`, `enterprise`) is used.
+
 ```bash
-gcloud emulators firestore start --edition=edition
+gcloud emulators firestore start --edition=enterprise
 ```
 
 The default bind address is `localhost:8080`. `--edition` accepts `standard` (default) or `enterprise`. `--index-file` and `--require-indexes` work only in Datastore Mode, together.
@@ -173,6 +175,7 @@ gcloud beta emulators datastore env-unset
 - `gcloud emulators firestore` and `gcloud emulators spanner` are GA in the 593.0.0 reference; `pubsub`, `bigtable`, and `datastore` appear there as alpha and beta only, so they are written as `gcloud beta emulators ...`.
 - `env-init` prints the commands that export the emulator's environment variables; `env-unset` (Datastore) prints the commands that unset them. Neither sets variables by itself.
 - Emulators ship as separate packages (for example `google-cloud-cli-firestore-emulator`, `google-cloud-cli-pubsub-emulator`, `google-cloud-cli-spanner-emulator`); the apt and rpm package lists are on the install page, see install.md.
+- Corrected from the official docs: the help example `gcloud emulators firestore start --edition=edition` passes a placeholder that is not one of the accepted values (`EDITION must be one of: standard, enterprise`); the fence uses `--edition=enterprise`.
 - Replace `<path/to/file>` and `<path/to/directory>` with real paths, as in the official help text. The Firestore import and export flags read and write files on this machine.
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/components/list (gcloud 593.0.0 help)
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/components/install (gcloud 593.0.0 help)

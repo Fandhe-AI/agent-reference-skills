@@ -65,28 +65,40 @@ gcloud emulators firestore start \
 
 ### Pub/Sub (beta)
 
-The input documents only the beta and alpha tracks (NAME and SYNOPSIS).
+The input documents only the beta and alpha tracks (NAME and SYNOPSIS). Both flags are optional; omit either one to use its default.
+
+Adapted (not in the official docs): the SYNOPSIS brackets (optional markers) are removed so the line runs as written.
 
 ```bash
-gcloud beta emulators pubsub start [--data-dir=DATA_DIR] [--host-port=HOST_PORT]
+gcloud beta emulators pubsub start --data-dir=DATA_DIR --host-port=HOST_PORT
 ```
 
+Adapted (not in the official docs): the SYNOPSIS brackets (optional markers) are removed so the line runs as written.
+
 ```bash
-gcloud beta emulators pubsub env-init [--data-dir=DATA_DIR]
+gcloud beta emulators pubsub env-init --data-dir=DATA_DIR
 ```
 
 ### Datastore (beta)
 
-```bash
-gcloud beta emulators datastore start [--data-dir=DATA_DIR] [--host-port=HOST_PORT] [--no-store-on-disk]
-```
+All three flags are optional; `--no-store-on-disk` disables persisting data to disk (enabled by default).
+
+Adapted (not in the official docs): the SYNOPSIS brackets (optional markers) are removed so the line runs as written.
 
 ```bash
-gcloud beta emulators datastore env-init [--data-dir=DATA_DIR]
+gcloud beta emulators datastore start --data-dir=DATA_DIR --host-port=HOST_PORT --no-store-on-disk
 ```
 
+Adapted (not in the official docs): the SYNOPSIS brackets (optional markers) are removed so the line runs as written.
+
 ```bash
-gcloud beta emulators datastore env-unset [--data-dir=DATA_DIR]
+gcloud beta emulators datastore env-init --data-dir=DATA_DIR
+```
+
+Adapted (not in the official docs): the SYNOPSIS brackets (optional markers) are removed so the line runs as written.
+
+```bash
+gcloud beta emulators datastore env-unset --data-dir=DATA_DIR
 ```
 
 ## Options / Props
@@ -102,7 +114,7 @@ gcloud beta emulators datastore env-unset [--data-dir=DATA_DIR]
 
 ## Notes
 
-- Brackets in the beta lines are the SYNOPSIS optional markers; write the flags without brackets when you run them. `<path/to/file>` and `<path/to/directory>` are placeholders from the help text.
+- Adapted from the official docs: the Pub/Sub and Datastore lines are the beta SYNOPSIS lines (for example `gcloud beta emulators pubsub start [--data-dir=DATA_DIR] [--host-port=HOST_PORT]`) with the optional-marker brackets removed; every flag in them is optional. `<path/to/file>` and `<path/to/directory>` are placeholders from the help text.
 - `env-init` / `env-unset` print commands; they do not start anything. Start the emulator in one terminal and apply the output in the terminal that runs your application.
 - Some GA/beta pages in the input show only the SYNOPSIS for alpha and beta; use `gcloud beta emulators <name> start --help` for the full text.
 - The names of the exported environment variables are not in the input; read them from the `env-init` output.

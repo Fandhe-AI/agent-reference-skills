@@ -127,6 +127,8 @@ gcloud storage rm "gs://${PROJECT}-temp" --recursive
 
 `./code/middleware/clouldbuild.yaml` - Build API container:
 
+Excerpt: one element of the `steps:` list in `cloudbuild.yaml`.
+
 Adapted (not in the official docs): the fetched source runs the build and push steps together in one block; they are shown as the two blocks below.
 
 ```yaml
@@ -135,6 +137,8 @@ args: [ 'build', '-t', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_BASENAME-app/api',
 ```
 
 Push API container to Artifact Registry:
+
+Excerpt: one element of the `steps:` list in `cloudbuild.yaml`.
 
 ```yaml
 name: 'gcr.io/cloud-builders/docker'
@@ -151,6 +155,8 @@ substitutions:
 
 `./code/frontend/clouldbuild.yaml` - Massage code content (injects the randomized Cloud Run API URL into the static JS):
 
+Excerpt: one element of the `steps:` list in `cloudbuild.yaml`.
+
 ```yaml
 name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
 entrypoint: bash
@@ -159,12 +165,16 @@ args: [ './massage.sh', '$_REGION' ]
 
 Build the front end container:
 
+Excerpt: one element of the `steps:` list in `cloudbuild.yaml`.
+
 ```yaml
 name: 'gcr.io/cloud-builders/docker'
 args: [ 'build', '-t', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_BASENAME-app/fe', '.' ]
 ```
 
 Push to Artifact Registry:
+
+Excerpt: one element of the `steps:` list in `cloudbuild.yaml`.
 
 ```yaml
 name: 'gcr.io/cloud-builders/docker'
@@ -267,12 +277,16 @@ resource "null_resource" "cloudbuild_app" {
 
 `./code/app/cloudbuild.yaml` - Build API Container:
 
+Excerpt: one element of the `steps:` list in `cloudbuild.yaml`.
+
 ```yaml
 - name: "gcr.io/cloud-builders/docker"
   args: [ "build", "-t", "$_REGION-docker.pkg.dev/$PROJECT_ID/$_BASENAME-app/prod", ".", ]
 ```
 
 Push API container to Artifact Registry:
+
+Excerpt: one element of the `steps:` list in `cloudbuild.yaml`.
 
 ```yaml
 - name: "gcr.io/cloud-builders/docker"
@@ -442,6 +456,7 @@ The breakdown also creates a Cloud DNS managed zone, a managed SSL certificate, 
 - Sample-only, not production: the stacks make Cloud Run services world readable (`allUsers`), grant broad roles (`roles/editor`, `roles/secretmanager.admin`, `roles/artifactregistry.admin`) and hard-code sample credentials in the Three Tier App API service (`todo_user` / `todo_pass`). Review before reusing in a real project.
 - Source typos: `roles/vpaccess.user` (corrected above), `clouldbuild.yaml` (file names), "repoistory" (source heading).
 - Fixes of conversion damage only: the Three Tier App middleware `clouldbuild.yaml` section was a single run-together block in the fetched twin; it is split here into the build block and the push block. The Cloud Build YAML in that stack is shown as the source has it (no `- ` list markers).
+- `google_container_registry` in the Serverless Photo Sharing Terraform is shown as the source has it; Container Registry has been shut down, and container images now go to Artifact Registry.
 - Only whole code blocks are included; remaining Terraform is summarized with a pointer to the GitHub repository.
 - Product details: Cloud Run: `gcp-run` skill; Cloud Storage: `gcp-storage` skill; Terraform / IaC in general: future `gcp-iac` skill.
 - Source: https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)

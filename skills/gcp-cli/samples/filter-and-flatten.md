@@ -56,8 +56,10 @@ gcloud projects list \
 
 ### Values that look like numbers
 
+Adapted (not in the official docs): the official example omits the required positional `IMAGE_NAME`; `gcr.io/PROJECT_ID/IMAGE` is added so the command runs.
+
 ```bash
-gcloud container images list-tags --filter="'tags:30e5504145'"
+gcloud container images list-tags gcr.io/PROJECT_ID/IMAGE --filter="'tags:30e5504145'"
 ```
 
 ### Metadata keys
@@ -72,12 +74,6 @@ gcloud compute instances list --limit=1 \
 ### Filter on a nested list with --flatten
 
 List the members of a project that hold the editor role. `--flatten=bindings` turns each IAM binding into its own record, so the filter and the projection can use `bindings.role` and `bindings.members`.
-
-```bash
-gcloud projects get-iam-policy cloudsdktest --flatten=bindings \
-  --filter=bindings.role:roles/editor \
-  --format='value(bindings.members)'
-```
 
 Adapted (not in the official docs): `PROJECT_ID` replaces the official sample project `cloudsdktest`; the flags are unchanged.
 
@@ -110,6 +106,8 @@ gcloud compute project-info describe --flatten='quotas[]' \
 - Flags apply in the order `--flatten`, `--sort-by`, `--filter`, `--limit`. `--flatten` also flattens the keys used by `--format` and `--filter`.
 - Depending on the API, filtering may run on the client, on the server, or both.
 - The `:` operator is changing for consistency across Google APIs (a deprecated and a new implementation exist); a warning appears when the two would return different matches. `=` behaves differently across APIs: where you want matching, use `:`.
+- Corrected from the official docs: the filters topic example `gcloud container images list-tags --filter="'tags:30e5504145'"` has no `IMAGE_NAME`, which the SYNOPSIS (`gcloud container images list-tags IMAGE_NAME ...`) requires; the format is `*.gcr.io/PROJECT_ID/IMAGE_PATH`.
+- Adapted from the official docs: the `--flatten=bindings` example uses `PROJECT_ID` instead of the help-text sample project `cloudsdktest`.
 - Add `--format=yaml --limit=1` (or `--format=text`) to see which keys a resource has before writing a filter.
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/topic/filters (Google Cloud CLI 593.0.0 help, retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/sdk/docs/cheatsheet (retrieved 2026-11-14)

@@ -60,8 +60,10 @@ cloudshell download $HOME/.bashrc
 
 Run these in the Cloud Shell terminal. By default preferences live in a temporary folder for the current tab only.
 
+Adapted (not in the official docs): the placeholder `[PROJECT_NAME]` is renamed `[PROJECT_ID]` because `gcloud config set project` takes the project ID.
+
 ```bash
-gcloud config set project [PROJECT_NAME]
+gcloud config set project [PROJECT_ID]
 ```
 
 ```bash
@@ -111,6 +113,7 @@ The official reset procedure then deletes every file in the Cloud Shell home dir
 - Other flags, see `gcloud cloud-shell ssh --help` and `gcloud cloud-shell scp --help`: `--authorize-session` (send OAuth credentials to the session), `--dry-run` (print the command instead of running it), `--recurse` (scp directories), `--ssh-key-file`, `--force-key-file-overwrite`.
 - Reset and disable: Cloud Shell cannot recover deleted home-directory files. Consider Safe mode to sign in as root and fix file issues before resetting. Disabling Cloud Shell for managed Google Workspace or Cloud Identity users is done in the Google Admin console, not from the command line.
 - The official Cloud Shell page writes the `scp` local destination as `localhost:~data.txt` (no slash); the examples above use the `~/` form from the gcloud 593.0.0 help.
+- Corrected from the official docs: the page writes `gcloud config set project [PROJECT_NAME]`, but the `core/project` property takes a project ID, not a display name; this file uses `[PROJECT_ID]`.
 - `gcloud cloud-shell ssh` and `scp` use the SSH key at `~/.ssh/google_compute_engine` by default.
 - The `authuser` URL parameter for opening Cloud Shell with a specific account is documented, but the example URL is truncated in the source, so none is given here.
 - General gcloud configuration commands (named configurations, `gcloud config set`) are in config.md; ADC and credential design belong to the `gcp-foundation` skill, and client libraries to the `gcp-client-libraries` skill.

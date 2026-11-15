@@ -12,12 +12,6 @@ Run an HTTP server on the Cloud Shell VM on a port between 2000 and 65000 and op
 
 Start a simple Python HTTP server from the Cloud Shell command prompt:
 
-```sh
-cd `mktemp -d` \
-    && echo '<html><body>Hello World</body></html>' >./index.html \
-    && python -m http.server 8080
-```
-
 Adapted (not in the official docs): the unquoted backtick substitution is replaced by a quoted `$(...)`, so `cd` fails safely if `mktemp` fails or returns a path with spaces.
 
 ```sh
@@ -51,7 +45,7 @@ echo "https://${PORT}-${WEB_HOST}"
 
 ## Notes
 
-- Adapted from the official docs: the server example is also shown with a quoted `"$(mktemp -d)"` instead of the unquoted backtick substitution.
+- Adapted from the official docs: the page starts the server with `` cd `mktemp -d` `` (unquoted backtick substitution); the fence uses a quoted `"$(mktemp -d)"`.
 - The ports are reachable only through the secure Cloud Shell proxy, which restricts access over HTTPS to your user account.
 - Streamlit apps need the three flags above on their command line to work behind the Cloud Shell HTTP proxy. They disable CORS and XSRF protection: use them only for disposable preview sessions.
 - The server above serves a new temporary directory created by `mktemp -d`.

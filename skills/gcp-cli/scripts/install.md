@@ -12,8 +12,10 @@ Copy-paste commands for installing the Google Cloud CLI (gcloud CLI 593.0.0 docs
 
 Replace the package name with the one for your platform (`uname -a`): `google-cloud-cli-linux-x86_64.tar.gz`, `google-cloud-cli-linux-arm.tar.gz`, or `google-cloud-cli-linux-x86.tar.gz`.
 
+Adapted (not in the official docs): `curl -O` becomes `curl -fLO` so an HTTP error fails the download instead of saving the error page under the archive name.
+
 ```bash
-curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz
+curl -fLO https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz
 ```
 
 ```bash
@@ -34,8 +36,10 @@ The last command lists the flags for non-interactive installation.
 
 Replace `FILE_NAME` with `google-cloud-cli-darwin-x86_64.tar.gz`, `google-cloud-cli-darwin-arm.tar.gz` (Apple silicon), or `google-cloud-cli-darwin-x86.tar.gz` (check with `uname -m`).
 
+Adapted (not in the official docs): `curl -O` becomes `curl -fLO` so an HTTP error fails the download instead of saving the error page under the archive name.
+
 ```bash
-curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/FILE_NAME
+curl -fLO https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/FILE_NAME
 ```
 
 ```bash
@@ -54,10 +58,10 @@ The last command is the screen reader variant.
 
 ### Install with the interactive installer (Linux and macOS)
 
-Adapted (not in the official docs): the official `curl https://sdk.cloud.google.com | bash` is split into download, inspect, run so the script can be reviewed before it executes.
+Adapted (not in the official docs): the official `curl https://sdk.cloud.google.com | bash` is split into download, inspect, run so the script can be reviewed before it executes, and `curl -fsSL ... -o install.sh` fails on HTTP errors instead of saving an error page as the script.
 
 ```bash
-curl https://sdk.cloud.google.com > install.sh
+curl -fsSL https://sdk.cloud.google.com -o install.sh
 ```
 
 ```bash
@@ -78,8 +82,14 @@ gcloud init
 
 ### Install non-interactively (Linux and macOS)
 
+Adapted (not in the official docs): the official `curl https://sdk.cloud.google.com > install.sh` becomes `curl -fsSL https://sdk.cloud.google.com -o install.sh` (fail on HTTP errors), and an inspect step (`less install.sh`) is added before the script runs.
+
 ```bash
-curl https://sdk.cloud.google.com > install.sh
+curl -fsSL https://sdk.cloud.google.com -o install.sh
+```
+
+```bash
+less install.sh
 ```
 
 ```bash
@@ -156,12 +166,14 @@ For RHEL 10, ARM64, the `yum` command, and optional packages, see the install pa
 
 ### Install with snap (Ubuntu)
 
+Adapted (not in the official docs): `sudo` is added to both `snap` commands because installing and removing snaps needs root privileges.
+
 ```bash
-snap remove google-cloud-sdk
+sudo snap remove google-cloud-sdk
 ```
 
 ```bash
-snap install google-cloud-cli --classic
+sudo snap install google-cloud-cli --classic
 ```
 
 ```bash
@@ -172,7 +184,7 @@ echo "source /snap/google-cloud-cli/current/completion.bash.inc" >> ~/.bashrc
 echo "source /snap/google-cloud-cli/current/completion.zsh.inc" >> ~/.zshrc
 ```
 
-`snap remove google-cloud-sdk` removes the deprecated snap; the two `echo` lines add Bash and Zsh completion.
+`sudo snap remove google-cloud-sdk` removes the deprecated snap; the two `echo` lines add Bash and Zsh completion.
 
 ### Install on Windows (PowerShell)
 
@@ -295,10 +307,6 @@ gcloud info --format='value(config.paths.global_config_dir)'
 
 Then delete both directories by hand, and remove the `completion.bash.inc` and `path.bash.inc` source lines from your shell init file if you added them. On macOS, also remove the cache directories:
 
-```bash
-find ~/Library/Caches/ -type d -name "google-cloud-sdk" | xargs -I {} rm -r "{}"
-```
-
 Adapted (not in the official docs): `find -exec` passes each path intact (no pipe to `xargs`), and `-prune` stops `find` from descending into a directory it is about to delete.
 
 ```bash
@@ -307,10 +315,11 @@ find ~/Library/Caches/ -type d -name "google-cloud-sdk" -prune -exec rm -r {} +
 
 ## Notes
 
-- Adapted from the official docs: the macOS cache cleanup is also shown with `find ... -prune -exec rm -r {} +`, which does not depend on how `xargs` splits paths.
+- Adapted from the official docs: the official macOS cache cleanup `find ~/Library/Caches/ -type d -name "google-cloud-sdk" | xargs -I {} rm -r "{}"` is replaced with `find ... -prune -exec rm -r {} +`, which does not depend on how `xargs` splits paths.
+- Adapted from the official docs: the archive downloads use `curl -fLO` instead of `curl -O`, the installer script is fetched with `curl -fsSL https://sdk.cloud.google.com -o install.sh` instead of `curl https://sdk.cloud.google.com > install.sh` (both fail on HTTP errors), and the snap commands are run with `sudo` (the snap page prints them without it).
 - `gcloud init --no-browser` is for a machine without a browser when you can run the gcloud CLI on another machine that has one (see `gcloud init --help`). `gcloud info --anonymize` minimizes personal information when sharing output.
 - Installs from an OS package (apt, dnf, snap) are uninstalled with the OS package manager; on Windows run `uninstaller.exe` in the gcloud CLI directory.
-- The `find ... | xargs ... rm -r` line deletes every directory it matches; run it without `| xargs ...` first to preview the matches.
+- The `find ... -prune -exec rm -r {} +` line deletes every directory it matches; run it without `-exec rm -r {} +` first to preview the matches.
 - Credentials and ADC design (service account keys, Workload Identity Federation, impersonation) belong to the `gcp-foundation` skill. Language-specific client libraries belong to the `gcp-client-libraries` skill.
 - `gcloud init` modifies your active configuration; see config.md for named configurations.
 - Package and archive names, checksums, and supported OS versions are in the install page; this file keeps one representative command per method.
