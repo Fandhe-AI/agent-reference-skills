@@ -24,7 +24,7 @@ Snippet taken from https://docs.cloud.google.com/storage/docs/insights/configure
 |-------|---------|
 | `INHERIT` | Inherits the parent resource's edition configuration |
 | `STANDARD` | Enables Storage Intelligence; the default when you configure a resource |
-| `DISABLED` | Disables it for the resource; children inherit the disabled state unless set to `STANDARD` or `INHERIT` |
+| `DISABLED` | Disables it for the resource; children inherit the disabled state unless explicitly set to an enabled edition such as `STANDARD` |
 | `TRIAL` | Activates the 30-day introductory trial |
 
 ### Example hierarchy
@@ -51,6 +51,7 @@ Bucket filters include or exclude buckets by location, or by a name regular expr
 - Manage at scale: bucket relocation between regions with minimal downtime (preserves bucket names, object metadata, and storage classes), and storage batch operations across billions of objects.
 - Pricing depends on the capabilities used and the volume of data; see Storage Intelligence pricing on the Cloud Storage pricing page.
 - Distance: Cloud Storage is Google Cloud's object storage; distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`).
+- Source inconsistency: the source says children of a `DISABLED` resource inherit the disabled state "unless explicitly configured with `STANDARD` or `INHERIT`", but `INHERIT` is defined as inheriting the parent's edition configuration, so a child set to `INHERIT` under a `DISABLED` parent stays disabled. To enable Storage Intelligence under a disabled parent, set an enabled edition (for example `STANDARD`) explicitly.
 - Source: https://docs.cloud.google.com/storage/docs/storage-intelligence/overview (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/storage/docs/insights/configure-datasets (snippet)
 

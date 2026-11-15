@@ -39,7 +39,7 @@ In the JSON API use arrays, for example `"method": ["GET", "PUT"]`. Wildcard ori
 | Field | XML API response | JSON API response |
 |---|---|---|
 | `origin` | Returns `Access-Control-Allow-Origin` only on a match; wildcard `<Origin>*</Origin>` allowed | Returns `Access-Control-Allow-Origin` set to the request origin |
-| `method` | Supports `DELETE`, `GET`, `HEAD`, `POST`, `PUT`; checks `Access-Control-Request-Methods`; no match returns `200` without CORS headers. Do not specify `OPTIONS`. | Returns `Access-Control-Allow-Methods`: `DELETE`, `GET`, `HEAD`, `PATCH`, `POST`, `PUT` |
+| `method` | Supports `DELETE`, `GET`, `HEAD`, `POST`, `PUT`; checks `Access-Control-Request-Method`; no match returns `200` without CORS headers. Do not specify `OPTIONS`. | Returns `Access-Control-Allow-Methods`: `DELETE`, `GET`, `HEAD`, `PATCH`, `POST`, `PUT` |
 | `responseHeader` | Preflight: checks `Access-Control-Request-Headers`; no match returns no CORS headers; value returned in `Access-Control-Allow-Headers` | Returns `Access-Control-Allow-Headers` equal to `Access-Control-Request-Headers` |
 | `maxAgeSeconds` (optional) | Returns `Access-Control-Max-Age`; default `3600` if omitted | Returns `Access-Control-Max-Age` default `3600` |
 
@@ -61,6 +61,7 @@ Field names above are JSON API names; for the XML API use its XML format (Set Bu
 - Browsers' `XMLHttpRequest` handles CORS headers; no new client code is needed.
 - The source also links to setup steps and CORS configuration samples.
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`).
+- Source inconsistency: the source's configuration table says Cloud Storage checks the `Access-Control-Request-Methods` header; the CORS preflight request header is the singular `Access-Control-Request-Method` (as used elsewhere on this page), so this page writes the singular form.
 - Source: https://docs.cloud.google.com/storage/docs/cross-origin (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
