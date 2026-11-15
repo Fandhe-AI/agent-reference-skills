@@ -40,9 +40,11 @@ Retry schedule for a failed scheduled job: retry after 4 minutes, then 16 minute
 - A plan's retention cannot be shorter than the destination vault's minimum retention. Backups are immutable for the vault's enforced retention period; after both periods lapse the service deletes the backup automatically.
 - CMEK alignment: a CMEK-protected source workload needs a CMEK-enabled vault; Google-managed-key resources must go to a standard vault.
 - Regions without zone separation (backups may not be stored in a different zone): Osaka (asia-northeast2), Warsaw (europe-central2), Doha (me-central1), Johannesburg (africa-south1), Montreal (northamerica-northeast1), Querétaro (northamerica-south1), Santiago (southamerica-west1).
+- Source inconsistency: this page lists seven regions without zone separation; the backup vault overview (https://docs.cloud.google.com/backup-disaster-recovery/docs/concepts/backup-vault, see `backup-vault.md`) lists three (Osaka, Montreal and Querétaro).
 - Deprecation: backup and restore of workloads managed through the legacy appliance management console is deprecated (Management Console deprecated September 30, 2026; see deprecations page).
 - The source's "What's next" links are empty in the fetched twin.
 - Source: https://docs.cloud.google.com/backup-disaster-recovery/docs/concepts/backup-plan (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/backup-disaster-recovery/docs/concepts/backup-vault (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/backup-disaster-recovery/docs/quickstarts/gce-instances-backup-vault (borrowed snippet)
 
 ## Related

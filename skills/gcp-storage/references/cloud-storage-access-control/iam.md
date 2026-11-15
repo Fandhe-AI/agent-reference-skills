@@ -53,7 +53,7 @@ All other bucket-level roles (including Legacy Object roles) and all project-lev
 ### Role levels
 
 - Roles can be granted at project, bucket, or managed folder level; permissions apply additively down the hierarchy.
-- Usable at all levels: Storage Admin (`roles/storage.admin`), Storage Object Viewer (`roles/storage.objectViewer`; contains `storage.objects.get` and `storage.objects.list`), Storage Object Creator (`roles/storage.objectCreator`; contains `storage.objects.create`), Storage Object Admin (`roles/storage.objectAdmin`).
+- Usable at project and bucket level (the source's examples of roles usable "at all levels"): Storage Admin (`roles/storage.admin`; lowest grantable level is the bucket), Storage Object Viewer (`roles/storage.objectViewer`; contains `storage.objects.get` and `storage.objects.list`), Storage Object Creator (`roles/storage.objectCreator`; contains `storage.objects.create`). Storage Object Viewer, Storage Object Creator and Storage Object Admin (`roles/storage.objectAdmin`) can also be granted on a managed folder (IAM role reference).
 - Single-level: Storage Legacy Object Owner (`roles/storage.legacyObjectOwner`) only at bucket or managed folder level; IAM deny-policy roles only at organization level.
 - Example: Object Viewer at project level plus Object Creator on bucket A lets a user read any object but create only in bucket A.
 
@@ -76,6 +76,8 @@ All other bucket-level roles (including Legacy Object roles) and all project-lev
 ## Notes
 
 - IAM policies can be set on buckets, managed folders and projects, but not directly on individual objects; IAM deny policies cannot be set on buckets, managed folders or objects.
+- Hidden gcloud 593.0.0 commands `gcloud storage objects add-iam-policy-binding`, `set-iam-policy` and `get-iam-policy` take an object URL. Their help says `set-iam-policy` and `get-iam-policy` behave similarly to `gcloud storage objects set-object-acl` / `get-object-acl` but use the IAM policy binding syntax, and the `add-iam-policy-binding` examples bind only legacy object roles (`roles/storage.legacyObjectOwner`, `roles/storage.legacyObjectReader`). Read them as ACL operations expressed in IAM binding syntax (changing object ACLs needs `storage.objects.getIamPolicy` / `.setIamPolicy`, see above), not as a way to attach a separate IAM policy to an object; use bucket or managed folder IAM for access control, as this page says.
+- Storage Admin's lowest grantable level is the bucket; Storage Object Viewer, Storage Object Creator and Storage Object Admin go down to the managed folder (IAM role reference, https://docs.cloud.google.com/iam/docs/roles-permissions/storage).
 - Caution: setting IAM policies at project, bucket, and managed folder levels can give users access to objects they did not have before; evaluate carefully.
 - Viewing a project's IAM policy does not show bucket policies. The console shows inherited project-level permissions for a bucket, but `gcloud storage` and client libraries return only the bucket's own policy; check both.
 - Object ACLs do not appear in the IAM hierarchy; when evaluating access, check object ACLs too. IAM deny policies do apply to access granted by ACLs.
@@ -84,6 +86,7 @@ All other bucket-level roles (including Legacy Object roles) and all project-lev
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`). General IAM concepts are in `gcp-foundation`.
 - Source inconsistency: the Cloud Storage FUSE mount page says Storage Object Viewer has only `storage.objects.list` and does not allow reads; this page lists `storage.objects.get` and `storage.objects.list`, so the role can read object data.
 - Source: https://docs.cloud.google.com/storage/docs/access-control/iam (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/iam/docs/roles-permissions/storage (IAM roles reference for Cloud Storage; retrieved 2026-11-14)
 
 ## Related
 

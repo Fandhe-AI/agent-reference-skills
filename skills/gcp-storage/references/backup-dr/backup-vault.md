@@ -24,7 +24,7 @@ Snippet taken from https://docs.cloud.google.com/backup-disaster-recovery/docs/c
 |---|---|---|
 | Compute Engine instance / disk | Google Cloud console | `asia`, `eu`, `us` |
 | Cloud SQL instance | Google Cloud console | `asia`, `eu`, `us` |
-| Filestore instance | Google Cloud console | Not supported (regional only) |
+| Filestore instance | Google Cloud console | Not supported (regional and cross-region vaults only) |
 | AlloyDB cluster | Google Cloud console | Not supported; vault must be in the same region as the source workload |
 | Google Cloud VMware Engine, Oracle, SQL Server | Appliance management console | Not supported |
 
@@ -39,7 +39,7 @@ Name rules: lowercase letters, numbers, hyphens; start and end with a letter or 
 
 ## Notes
 
-- Enforced retention: set a minimum between 0 days and 99 years; no backup can be deleted by anyone (including Google) before it expires. Options: minimum enforced retention, inherit retention from the backup rule (must be chosen at vault creation), and lock. A lock has an effective date; before it you can adjust the period up or down, after it no one (not even a Project Owner) can decrease it, only increase it. The access restriction and the lock are irreversible once effective.
+- Enforced retention: set a minimum between 0 days and 99 years; no backup can be deleted by anyone (including Google) before it expires. Options: minimum enforced retention, inherit retention from the backup rule (must be chosen at vault creation), and lock. A lock has an effective date; before it you can adjust the period up or down, after it no one (not even a Project Owner) can decrease it, only increase it. The lock is irreversible once effective; the source also calls the access restriction permanent, but gcloud can change it (see the Source inconsistency note below).
 - Backups under enforced retention incur standard storage charges for the full duration. Beginning November 1, 2026, Backup and DR automatically applies a project-level lien to any project containing a vault with backups protected by enforced retention (https://docs.cloud.google.com/backup-disaster-recovery/docs/configuration/project-liens).
 - Locations: regional, cross-regional (explicit target region) or multi-regional (ASIA, EU, US; only resources in regions sharing the prefix). Backup plans in the console must be created in the same region as the source workload. Regional and cross-region vaults survive a single-zone outage (at least two zones); multi-region vaults survive a single-region outage. Osaka, Montreal and Querétaro do not support zone separation. The compatibility cells in the fetched twin tables are blank; use the prose and the multi-region vs cross-region comparison (multi-region: Compute Engine instances/disks, Cloud SQL; cross-region: those plus Filestore).
 - Source inconsistency: this page calls the access restriction permanent ("permanent and can't be changed"), but gcloud 593.0.0 `gcloud backup-dr backup-vaults update --access-restriction` allows the restriction changes listed in its help (more and less restrictive, with `--force-update-access-restriction` for non-compliant data sources).

@@ -83,12 +83,13 @@ Applies to both flat namespace and hierarchical namespace buckets.
 | Immutability | Objects cannot be changed in place (no append or truncate); replacing is atomic until the new upload completes readers get the old version |
 | Generation | Changes each time the object's data is replaced |
 | Same-object write rate | Once-per-second limit; faster replacement can return `429 Too Many Requests`; handle with exponential backoff retry |
-| Rename | Not directly possible; copy then delete the original |
+| Rename | The source says not directly possible, copy then delete the original. The `objects.move` JSON API method renames an object in flat and hierarchical namespace buckets (see Notes) |
 | Count | No limit on objects per bucket |
 
 ## Notes
 
-- Simulated folder rename or move requires copying and deleting each object, is non-atomic and can leave a bucket in an inconsistent state if it fails.
+- Source inconsistency: this page says "Existing objects cannot be directly renamed, but you can indirectly rename an object by copying and deleting the original object"; the soft-delete page (https://docs.cloud.google.com/storage/docs/soft-delete) recommends "If you need to rename an object, use the `objects.move` JSON API method to rename the object. Don't rename the object by copying it.", and the release notes (https://docs.cloud.google.com/storage/docs/release-notes, February 24, 2025) say `Objects: move` "supports moving objects in both flat and hierarchical namespace buckets". Copy + delete (which `gcloud storage mv` performs per object, per its help) leaves the original as a soft-deleted object that accrues storage charges in buckets with soft delete enabled; the soft-delete page recommends `objects.move` for renames "to help reduce costs for temporary objects". Only flat and hierarchical namespace support is stated for `objects.move`; check its reference (https://docs.cloud.google.com/storage/docs/json_api/v1/objects/move) for other constraints.
+- The source says simulated folder rename or move requires copying and deleting each object (this is about folders in flat namespace buckets; hierarchical namespace buckets have atomic folder rename), is non-atomic and can leave a bucket in an inconsistent state if it fails.
 - A console-created empty folder is a zero-byte placeholder object such as `folder/`; delete that object to remove the folder. You cannot create a zero-byte folder-mimicking object with the gcloud CLI, and gcloud skips objects whose names end with `/` when downloading locally.
 - Retries can change naming: rerunning `gcloud storage cp ./your-dir gs://your-bucket/new --recursive` after a partial first attempt can create `new/your-dir/dir1/abc` instead of `new/dir1/abc`. Add a trailing slash to the destination, or use `gcloud storage rsync`.
 - `gs://your-bucket/folder/` and `gs://your-bucket/folder` are different objects.
@@ -96,6 +97,9 @@ Applies to both flat namespace and hierarchical namespace buckets.
 - The source also shows the Console tab for creating folders.
 - The source's `gcloud storage cp home/top-dir/** gs://your-bucket` example is unquoted; in bash (without `globstar`) and zsh the shell expands a trailing `**` like `*` before gcloud runs, so quote the wildcard (`'home/top-dir/**'`) to get the described gcloud wildcard behavior.
 - Source: https://docs.cloud.google.com/storage/docs/objects (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/storage/docs/soft-delete (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/storage/docs/release-notes (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/mv (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

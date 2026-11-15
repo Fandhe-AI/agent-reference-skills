@@ -8,7 +8,7 @@ Quotas and request limits for Cloud Storage. Quotas can be increased on request;
 
 ## Signature / Usage
 
-Soft delete retention is capped by the bucket limit below (maximum 90 days). Setting it at bucket creation:
+Soft delete retention is capped by the bucket limit below (maximum 90 days). Bucket creation command (as shown it sets no soft delete duration, so the default soft delete policy applies):
 
 ```bash
 gcloud storage buckets create gs://BUCKET_NAME --location=BUCKET_LOCATION

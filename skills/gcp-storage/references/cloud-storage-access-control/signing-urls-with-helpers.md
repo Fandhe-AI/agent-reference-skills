@@ -12,7 +12,7 @@ Create V4 signed URLs that give time-limited read or write access with the Googl
 
 1. Enable the Service Account Credentials API (`iamcredentials.googleapis.com`; requires `serviceusage.services.enable`, available through Owner `roles/owner` or Service Usage Admin `roles/serviceusage.serviceUsageAdmin`).
 2. Create a service account (skip if you already have one).
-3. Give the service account permission to perform the request the signed URL will make. Ask your administrator to grant one of:
+3. Give the service account permission to perform the request the signed URL will make. Ask your administrator to grant one of the following, on the bucket (or managed folder) the URLs are for rather than the project (see Notes):
    - Storage Object User (`roles/storage.objectUser`): signed URLs for both upload and download; also required if the URL could overwrite an existing object.
    - Storage Object Viewer (`roles/storage.objectViewer`): download only.
    - Storage Object Creator (`roles/storage.objectCreator`): upload only, without overwriting existing objects.
@@ -222,9 +222,11 @@ def generate_upload_signed_url_v4(bucket_name, blob_name):
 - The source also shows C++, C#, Go, Java, PHP, Ruby and Rust samples for download and upload; they are omitted here.
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`).
 - Source inconsistency (corrected in step 4 above): for a service account attached to a compute instance the source says "this role should be granted on the project that contains the service account". A project-level grant of `roles/iam.serviceAccountTokenCreator` lets that service account sign as, and mint tokens for, every service account in the project, which contradicts least privilege; to impersonate itself it only needs the role on its own IAM policy.
+- Least privilege (not stated by the source, which gives no grant level in step 3): grant the storage role on the bucket or managed folder the signed URLs are for. A project-level grant lets the signing service account mint URLs for every bucket in the project. All three roles can be granted down to the managed folder level (IAM role reference, https://docs.cloud.google.com/iam/docs/roles-permissions/storage).
 - Least privilege: grant `roles/iam.serviceAccountTokenCreator` on the service account itself (`gcloud iam service-accounts add-iam-policy-binding SA_EMAIL --member=serviceAccount:SA_EMAIL --role=roles/iam.serviceAccountTokenCreator`) rather than on the project, which would allow impersonating every service account in it.
 - Source: https://docs.cloud.google.com/storage/docs/access-control/signing-urls-with-helpers (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/sign-url (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/iam/docs/roles-permissions/storage (IAM roles reference for Cloud Storage; retrieved 2026-11-14)
 
 ## Related
 

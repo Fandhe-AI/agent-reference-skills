@@ -76,7 +76,7 @@ Important: setting a bucket to `publicReadWrite` allows anyone on the Internet t
 
 ## Notes
 
-- Caution: applying a predefined ACL to an existing bucket or object completely replaces the existing ACL. For example if you are in project owners but not the owner of an object with `projectPrivate`, applying `publicRead` removes your `OWNER` permission and you lose access to the object ACL; the IAM role `storage.objectAdmin` can fix this.
+- Caution: applying a predefined ACL to an existing bucket or object completely replaces the existing ACL. For example if you are in project owners but not the owner of an object with `projectPrivate`, applying `publicRead` removes your `OWNER` permission and you lose access to the object ACL; the IAM role Storage Object Admin (`roles/storage.objectAdmin`) can fix this.
 - `allUsers` and `publicRead` / `publicReadWrite` make data publicly accessible; use only for intentionally public content.
 - ACL rules: you cannot apply an ACL that changes the bucket or object owner; the owner always keeps `OWNER` (added automatically if omitted, but the project owners group is not added to objects, so include it explicitly). Ownership is permanent but object ownership can effectively change by replacing the object (needs `WRITER` or `OWNER` on the bucket).
 - IAM and ACLs work in tandem (either grant suffices). An IAM deny policy overrides ACL-granted access for the same permission (for example a deny on `storage.objects.get` blocks an object `READER` grant; a deny on `storage.buckets.get` blocks bucket metadata but a bucket `WRITER` grant still allows listing, creating and deleting objects).

@@ -45,7 +45,7 @@ To create such a bucket, follow https://docs.cloud.google.com/storage/docs/creat
 | ListObjects with `delimiter` | Each child folder is a `prefix`; empty folders excluded unless `includeFoldersAsPrefixes` is set |
 | Listing buckets | All hierarchical namespace buckets can be listed regardless of storage layout |
 | Deleting buckets | Allowed only if empty (no objects or managed folders; empty folders are allowed) |
-| Lifecycle, age conditions | Renaming a folder preserves object creation times, so age-based rules apply immediately; in flat namespace buckets a rename copies objects and resets creation times |
+| Lifecycle, age conditions | Renaming a folder preserves object creation times, so age-based rules apply immediately; in flat namespace buckets, renaming a folder with tools copies every object to the destination and deletes the original, so creation times are reset |
 
 ### Associated managed folders
 
@@ -59,10 +59,13 @@ All object APIs and widely used features (except the limitations above); Storage
 
 - Use it for Hadoop and Spark workloads, file-oriented workloads (batch analytics, financial services, HPC) and AI/ML tools (TensorFlow, Pandas, PyTorch), especially with Cloud Storage FUSE.
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`). Cloud Storage FUSE, Filestore and NetApp Volumes are file storage, not object APIs.
+- The copy-and-delete rename above describes tool-driven renames in flat namespace buckets (as `gcloud storage mv` does per object, per its help). Individual objects can also be renamed with the `objects.move` JSON API method, which the release notes (https://docs.cloud.google.com/storage/docs/release-notes, February 24, 2025) say supports both flat and hierarchical namespace buckets; see `objects.md` in the basics category and https://docs.cloud.google.com/storage/docs/json_api/v1/objects/move.
 - Snippet taken from https://docs.cloud.google.com/storage/docs/objects (the hierarchical namespace page itself has no code).
 - Source inconsistency: this page says a managed folder name is at most 512 bytes (UTF-8); the managed folders page and the quotas page say 1024 bytes. Both are kept verbatim.
 - Source: https://docs.cloud.google.com/storage/docs/hns-overview (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/storage/docs/objects (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/storage/docs/release-notes (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/mv (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

@@ -58,7 +58,7 @@ curl -X DELETE \
   "https://storage.googleapis.com/storage/v1/b/BUCKET_NAME/o/OBJECT_NAME"
 ```
 
-The XML API form is the same call to `https://storage.googleapis.com/BUCKET_NAME/OBJECT_NAME`.
+The XML API form is the same call to `https://storage.googleapis.com/BUCKET_NAME/OBJECT_NAME`. In these request URLs `OBJECT_NAME` is URL-encoded: `pets/dog.png` becomes `pets%2Fdog.png`.
 
 ### XML API multi-object delete (up to 1,000 objects)
 
@@ -98,7 +98,7 @@ curl -X POST --data-binary @XML_FILE_NAME \
 
 | Field | Description |
 |---|---|
-| `OBJECT_NAME` | URL-encoded name (for example `pets%2Fdog.png`); up to 1,000 objects per request |
+| `OBJECT_NAME` | Object name in the `<Key>` element of the XML body, as stored (for example `pets/dog.png`), not URL-encoded; escape XML special characters such as `&` and `<` as entities. Up to 1,000 objects per request |
 | `VERSION_ID` | Version ID of the object, for example `11111` |
 | `Quiet` | `False` gives a verbose response with every object's result; `True` lists only failures (an empty `<DeleteResult/>` if all succeed) |
 
@@ -106,6 +106,7 @@ curl -X POST --data-binary @XML_FILE_NAME \
 
 - Keep soft delete enabled unless the bucket holds only short-lived data; with soft delete disabled deleted objects cannot be recovered.
 - Deleting Nearline, Coldline or Archive data can incur early deletion charges. With Object Versioning enabled, the original object stays until deleted explicitly by generation number.
+- Source inconsistency: the source describes the `<Key>` value as "the URL-encoded name of the object. For example, `pets/dog.png`, URL-encoded as `pets%2Fdog.png`", but its own example responses show unencoded keys (`<Key>images/photo1.jpg</Key>`). `<Key>` carries the object name itself, so a URL-encoded key such as `pets%2Fdog.png` names a different object; the table above follows the examples. URL encoding applies to object names in request URL paths (the JSON and XML single-object calls), not to the XML body.
 - The XML multi-object delete is not atomic; partial failures are possible, so use the verbose response (Data Access audit logs also show failure details).
 - Avoid `gcloud storage` for bulk deletes of a hundred thousand or more objects (very slow). The console can bulk delete up to several million objects in the background. For millions or billions of objects use storage batch operations (manifest file or prefixes); to delete by age or class use Object Lifecycle Management; JSON API batch requests group up to 100 calls per HTTP request.
 - Amazon S3 tools: `aws s3api delete-objects` with `--endpoint-url` set to `storage.googleapis.com`, or S3-compatible libraries (for example Boto3) with `endpoint_url='https://storage.googleapis.com'` and HMAC credentials, call the multi-object delete XML API.

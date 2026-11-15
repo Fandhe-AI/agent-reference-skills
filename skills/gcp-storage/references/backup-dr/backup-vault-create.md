@@ -72,7 +72,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 | Name | Description |
 |------|-------------|
 | `RETENTION_PERIOD_INHERITANCE` | `inherit-vault-retention` (default) or `match-backup-expire-time`; cannot be changed once set |
-| `RETENTION_PERIOD_IN_DAYS` | Minimum 0 days, maximum 99 years; for example `2w1d` is two weeks and one day |
+| `RETENTION_PERIOD_IN_DAYS` | Minimum 0 days, maximum 99 years; for example `2w1d` is two weeks and one day. Relative duration with a unit (gcloud help examples: `p1d`, `p1m`, `p1m1d`, `1d`); a bare number is read as seconds, not days |
 | `KMS_KEY` | `projects/KMS_PROJECT_ID/locations/KMS_LOCATION/keyRings/KEY_RING_NAME/cryptoKeys/KEY_NAME`; enables CMEK, only at creation |
 | `ACCESS_RESTRICTION` | `within-project`, `within-org`, `unrestricted`, `within-org-but-unrestricted-for-ba`; default `within-org` |
 
@@ -88,6 +88,7 @@ Required role: Backup and DR Backup Vault Admin (`roles/backupdr.backupvaultAdmi
 ## Notes
 
 - Irreversible: once the lock effective date is reached the minimum enforced retention can only be increased and the lock cannot be removed; before that you can remove the lock. CMEK can only be configured at creation. Retention changes apply only to backups created after the update. In console-based plans, an increase beyond the backup plan's retention is prevented.
+- `--backup-min-enforced-retention` (create and update) takes a relative duration with a unit (gcloud 593.0.0 help: "The value must be specified in relative time format (e.g. p1d, p1m, p1m1d)"; the create help examples also use `"1d"`); a bare number is read as seconds, not days, so `30` sets a 30-second minimum. Use `30d` or `p30d` for 30 days. Per the same help, "Once the effective time is reached, the enforced retention period cannot be decreased or removed": once locked, the minimum enforced retention is irreversible and can only be increased, so check the unit before the effective time.
 - Apply a project lien to protect the vault's project from deletion (https://docs.cloud.google.com/backup-disaster-recovery/docs/configuration/project-liens); use Privileged Access Manager for multi-party approval. Beginning November 1, 2026, Backup and DR automatically applies a project-level lien to projects containing a vault with enforced-retention backups.
 - A vault cannot be deleted until every backup has passed its enforced retention and expired or been deleted. The delete command is destructive; try it on a disposable vault first.
 - Back up a Compute Engine VM from another project: grant the vault service agent Backup and DR Compute Engine Operator (`roles/backupdr.computeEngineOperator`) in the VM project; same-project backups need no grant. The same role in the restore project is needed to restore. The service agent is a Google-managed service account; grant it only the role described.

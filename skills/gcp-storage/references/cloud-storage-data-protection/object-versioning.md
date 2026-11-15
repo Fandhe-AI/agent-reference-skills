@@ -58,10 +58,12 @@ Copying a noncurrent version over the live version replaces the live version wit
 ## Notes
 
 - Caution: objects can only be recovered from a deleted bucket when soft delete is enabled. Object Versioning does not protect against bucket deletions.
+- Least privilege for restores: this page points to Storage Admin (`roles/storage.admin`) for restoring soft-deleted objects, but per the IAM role reference `storage.objects.restore` is also in Storage Object Admin (`roles/storage.objectAdmin`) and Storage Object User (`roles/storage.objectUser`), both grantable down to a managed folder. Check the required permissions at https://docs.cloud.google.com/storage/docs/use-soft-deleted-objects#before-you-begin and grant the narrowest role on the bucket rather than Storage Admin on the project.
 - Configuration changes may take time to propagate: wait at least 30 seconds between changing the versioning configuration and deleting or replacing objects.
 - Enabling versioning does not change existing objects' `generation` or `metageneration`. Metadata-only updates increase `metageneration` but do not create a version.
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`).
 - Source: https://docs.cloud.google.com/storage/docs/object-versioning (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/iam/docs/roles-permissions/storage (IAM roles reference for Cloud Storage; retrieved 2026-11-14)
 
 ## Related
 

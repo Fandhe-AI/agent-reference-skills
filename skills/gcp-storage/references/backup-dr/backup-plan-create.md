@@ -147,7 +147,7 @@ Required role: Backup and DR User V2 (`roles/backupdr.userv2`) on the backup vau
 ## Notes
 
 - A plan and its linked vault must be in the same project. Plans with no rule are supported for Compute Engine instances, disks and Cloud SQL only.
-- Retention caps: most resource types 36,135 days (99 years), Cloud SQL 3,653 days (10 years), AlloyDB 365 days. Source inconsistency: the on-demand cap is stated as 3,653 days here and "capped at 36,135 days" elsewhere.
+- Retention caps: most resource types 36,135 days (99 years), Cloud SQL 3,653 days (10 years), AlloyDB 365 days. The console's "Maximum custom on-demand retention" field accepts at most 3,653 days, below the general 36,135-day retention cap (both stated on this page).
 - Source inconsistency: the Cloud SQL resource type is `sql.googleapis.com/Instance` in the source's resource type list but `sqladmin.googleapis.com/Instance` in the source's note on which type to use for a Cloud SQL instance. gcloud 593.0.0 Backup and DR examples also use `sqladmin.googleapis.com/Instance`; use that value.
 - Source inconsistency: the source says the hourly minimum is always six hours; gcloud 593.0.0 `gcloud backup-dr backup-plans create` help states `hourly-frequency` must be between 4 and 23.
 - A plan in use cannot be deleted; remove it from the resource first. Deleting does not affect existing backups (they expire per retention). Destructive: try on a disposable plan first.

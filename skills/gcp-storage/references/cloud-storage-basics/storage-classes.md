@@ -8,7 +8,7 @@ A storage class is object metadata that affects availability and the pricing mod
 
 ## Signature / Usage
 
-Set the default storage class of a new bucket with the `--default-storage-class` flag (for example `STANDARD`), using the names in the first table below:
+Bucket creation command. As shown it sets no default storage class, so the bucket's default storage class is Standard storage ("If you don't specify a default storage class when you create a bucket, that bucket's default storage class is set to Standard storage"). To choose another class, `gcloud storage buckets create` also takes `--default-storage-class` with an API / CLI name from the first table below:
 
 ```bash
 gcloud storage buckets create gs://BUCKET_NAME --location=BUCKET_LOCATION
@@ -84,12 +84,14 @@ Cannot be set in the Google Cloud console; use Standard unless already in use.
 - Changing a bucket's default storage class does not affect existing objects. Change an existing object's class by rewriting the object or with Object Lifecycle Management; Autoclass can manage transitions automatically.
 - When Autoclass is enabled on a bucket, legacy classes are considered different from Standard: objects other than soft-deleted objects transition to Standard, including objects in legacy classes.
 - Early deletion: deleting data stored as Nearline, Coldline or Archive before its minimum storage duration (30, 90 and 365 days) might incur early deletion charges (stated on the delete-objects page).
+- The Cloud Storage introduction (https://docs.cloud.google.com/storage/docs/introduction, see `introduction.md`) says dual-regions and multi-regions replicate data "for 99.99% availability" without separating SLA from typical availability; per the table above, the multi-region and dual-region availability SLA is 99.95% for Standard and 99.9% for Nearline, Coldline and Archive, and typical monthly availability is >99.99% for Standard and 99.95% for the others.
 - Snippet taken from https://docs.cloud.google.com/storage/docs/creating-buckets (the storage classes page itself has no code).
 - Minimum storage durations and retrieval fees are priced per https://docs.cloud.google.com/storage/pricing (early-delete and retrieval-pricing sections); this page only lists the duration and whether retrieval fees apply.
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`).
 - Source: https://docs.cloud.google.com/storage/docs/storage-classes (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/storage/docs/creating-buckets (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/storage/docs/deleting-objects (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/storage/docs/introduction (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

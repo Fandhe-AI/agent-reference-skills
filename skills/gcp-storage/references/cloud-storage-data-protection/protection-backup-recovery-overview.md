@@ -33,8 +33,10 @@ P#Y#M#W#DT#H#M#S
 ## Notes
 
 - Official pages for dual-regions, turbo replication, cross-bucket replication, Backup and DR Service, Storage Transfer Service and Transfer Appliance are outside this category; see https://docs.cloud.google.com/storage/docs/locations, https://docs.cloud.google.com/storage/docs/availability-durability#turbo-replication, https://docs.cloud.google.com/storage/docs/using-cross-bucket-replication, https://docs.cloud.google.com/backup-disaster-recovery/docs/concepts/backup-dr, https://docs.cloud.google.com/storage-transfer/docs/overview and https://docs.cloud.google.com/transfer-appliance/docs/4.0/overview.
+- Source inconsistency: this page says Backup and DR Service lets you "Back up Persistent Disk snapshots of your Compute Engine VMs to Cloud Storage buckets"; the Backup and DR overview (https://docs.cloud.google.com/backup-disaster-recovery/docs/concepts/backup-dr) lists two storage targets, Google-managed backup vault storage (recommended; isolated, immutable and indelible) and self-managed storage (Persistent Disk snapshots and Cloud Storage buckets in your projects, used through the appliance management console). Backups land in your own Cloud Storage buckets only in the self-managed case.
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`).
 - Source: https://docs.cloud.google.com/storage/docs/protection-backup-recovery-overview (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/backup-disaster-recovery/docs/concepts/backup-dr (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source (snippet): https://docs.cloud.google.com/storage/docs/bucket-lock
 
 ## Related

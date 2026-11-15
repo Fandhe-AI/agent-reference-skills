@@ -51,7 +51,7 @@ A `#NUMBER` appended to a resource name selects a specific object generation. `#
 |---|---|
 | AI/ML and analytics | Rapid Bucket (zonal, Rapid storage class), Rapid Cache, hierarchical namespace (up to 8x higher initial QPS; only enabled at bucket creation), Cloud Storage FUSE |
 | Security and compliance | IAM, uniform bucket-level access, bucket IP filtering, Google-managed keys / CMEK / CSEK, Bucket Lock, Object Retention, Object Versioning, soft delete (enabled by default on all buckets, 7-day retention) |
-| Backup and DR | Dual-regions and multi-regions (99.99% availability), turbo replication (100% of newly written objects between dual-region pairs within 15 minutes) |
+| Backup and DR | Dual-regions and multi-regions (automatically replicate data across geographically separated Google Cloud regions for 99.99% availability), turbo replication (100% of newly written objects between dual-region pairs within 15 minutes) |
 | Cost | Storage classes (Standard, Nearline, Coldline, Archive, Rapid), Autoclass, Object Lifecycle Management |
 | Content distribution | Cloud CDN, Cloud Load Balancing, signed URLs, static website hosting |
 | Migration and events | Storage Transfer Service, Transfer Appliance, Eventarc and Pub/Sub notifications |
@@ -60,9 +60,13 @@ A `#NUMBER` appended to a resource name selects a specific object generation. `#
 ## Notes
 
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`). Cloud Storage FUSE, Filestore and NetApp Volumes are file storage, not object APIs.
+- Source inconsistency: this page says "By default, Cloud Storage enables soft delete for all buckets with a seven day retention period"; the soft delete page (https://docs.cloud.google.com/storage/docs/soft-delete, see `soft-delete.md` in this skill) says the default policy is set on newly created buckets, except buckets that use incompatible capabilities (such as zonal buckets that use Rapid Bucket), and that a tag can change the default retention for new buckets (7 to 90 days) or disable soft delete by default.
+- The "99.99% availability" figure for dual-regions and multi-regions is this page's wording. The storage classes page (https://docs.cloud.google.com/storage/docs/storage-classes, see `storage-classes.md`) separates the availability SLA from typical monthly availability: in multi-regions and dual-regions, Standard storage has a 99.95% SLA and >99.99% typical monthly availability; Nearline, Coldline and Archive have a 99.9% SLA and 99.95% typical monthly availability.
 - Other storage services listed by the page: Managed Lustre, Google Drive, Cloud Storage for Firebase, Persistent Disk, Filestore.
 - The source also shows quickstart links (console, gcloud CLI, Terraform) and a code-free capability overview.
 - Source: https://docs.cloud.google.com/storage/docs/introduction (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/storage/docs/soft-delete (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/storage/docs/storage-classes (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 
