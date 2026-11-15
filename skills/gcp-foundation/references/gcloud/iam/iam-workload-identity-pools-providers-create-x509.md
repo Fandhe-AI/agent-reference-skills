@@ -226,8 +226,24 @@ API REFERENCE
     be found at: https://cloud.google.com/iam/
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud iam workload-identity-pools providers create-x509 my-workload-identity-pool-provider \
+    --location="global" \
+    --workload-identity-pool="my-workload-identity-pool" \
+    --display-name="My workload pool provider" \
+    --description="My workload pool provider description" \
+    --disabled \
+    --attribute-mapping="google.subject=assertion.subject.dn.cn" \
+    --attribute-condition="true" \
+    --trust-store-config-path="path/to/config/file.yaml"
+```
+
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the X.509 example maps `google.subject=assertion.sub`, which is the OIDC claim form; X.509 mappings use certificate attributes, so the runnable form uses `google.subject=assertion.subject.dn.cn` (the default mapping for X.509 providers).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

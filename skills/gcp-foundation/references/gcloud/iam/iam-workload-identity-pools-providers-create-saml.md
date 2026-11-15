@@ -237,7 +237,6 @@ gcloud iam workload-identity-pools providers create-saml my-workload-identity-po
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
-- Corrected from the official docs (the help text above is verbatim): the `--attribute-mapping` description shows `{"google.subject": "assertion.sub"}` for SAML; in a SAML assertion the NameID is `assertion.subject`, so map `google.subject` to `assertion.subject`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the SAML example maps `google.subject=assertion.sub`, which is the OIDC claim form; in a SAML assertion the NameID is `assertion.subject`, so the runnable form uses `google.subject=assertion.subject`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
