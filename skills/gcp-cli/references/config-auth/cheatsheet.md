@@ -128,12 +128,7 @@ For Compute Engine instances with prefix `us` and not machine type `f1-micro`:
 gcloud compute instances list --filter="zone ~ ^us AND -machineType:f1-micro"
 ```
 
-For a list of projects created on or after 15 January 2018, sorted from oldest to newest, presented as a table with project number, project id and creation time columns with dates and times in local timezone (official text, as printed on the page):
-
-```
-gcloud projects list --format="table(projectNumber,projectId,createTime.date(tz=LOCAL))"
---filter="createTime>=2018-01-15T12:00:00" --sort-by=createTime
-```
+For a list of projects created on or after 15 January 2018, sorted from oldest to newest, presented as a table with project number, project id and creation time columns with dates and times in local timezone:
 
 Adapted (not in the official docs): the official example breaks across two lines without a continuation character, so a shell runs `--filter=...` as a separate command; a trailing backslash joins them.
 
@@ -188,7 +183,7 @@ gcloud + compute + instances + create + example-instance-1 + --zone=us-central1-
 
 ## Notes
 
-- Corrected from the official docs: the `--sort-by` example above is shown verbatim first, then with a line continuation added (see the Adapted line before the second fence).
+- Corrected from the official docs: the page prints the `--sort-by` example as two lines without a continuation character (`gcloud projects list --format="table(projectNumber,projectId,createTime.date(tz=LOCAL))"` then `--filter="createTime>=2018-01-15T12:00:00" --sort-by=createTime`), so a shell would run the second line as a separate command; the fence above adds a trailing backslash.
 - Corrected from the official docs: the cheat sheet lists `gcloud iam service-accounts set-iam-policy-binding` ("Replace existing IAM policy binding"), but no such command exists; its link target is `https://docs.cloud.google.com/sdk/gcloud/reference/iam/service-accounts/set-iam-policy`, which replaces the whole policy. To change a single binding use `add-iam-policy-binding` / `remove-iam-policy-binding`.
 - The `gcloud auth ...` and `gcloud config ...` commands are detailed in authorizing-*.md and configurations.md. ADC and service account key design belong to the `gcp-foundation` skill.
 - Command reference pages follow `https://docs.cloud.google.com/sdk/gcloud/reference/<command path>`; global flags are at `https://docs.cloud.google.com/sdk/gcloud/reference`.

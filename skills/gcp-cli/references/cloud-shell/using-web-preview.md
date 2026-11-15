@@ -14,8 +14,10 @@ You can run any web application that listens to HTTP requests on the Cloud Shell
 
 To start a simple Python HTTP server from the Cloud Shell command prompt:
 
+Adapted (not in the official docs): the unquoted backtick substitution is replaced by a quoted `$(...)`, so `cd` fails safely if `mktemp` fails or returns a path with spaces.
+
 ```sh
-cd `mktemp -d` \
+cd "$(mktemp -d)" \
     && echo '<html><body>Hello World</body></html>' >./index.html \
     && python -m http.server 8080
 ```
@@ -32,6 +34,7 @@ Web preview in Cloud Shell works through a series of HTTP proxies. Streamlit app
 
 ## Notes
 
+- Adapted from the official docs: the page starts the server with `` cd `mktemp -d` `` (unquoted backtick substitution); the fence uses a quoted `"$(mktemp -d)"`.
 - Disabling CORS and XSRF protection for Streamlit is the official guidance for running behind the Cloud Shell proxy; apply it only to disposable preview sessions.
 - Port 970 via Web Preview can be used to reach the Cloud Shell Editor when third-party cookies are blocked (see [quotas-limits.md](./quotas-limits.md)).
 - Source: https://docs.cloud.google.com/shell/docs/using-web-preview (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
