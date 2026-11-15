@@ -100,7 +100,7 @@ curl "http://metadata.google.internal/computeMetadata/v1/instance/service-accoun
 
 After setting up the service account, configuring workload identity federation, and allowing the external identity to impersonate the service account, call `generateIdToken` instead of `generateAccessToken`:
 
-Adapted (not in the official docs): added `-fsS` so an HTTP error is not parsed as a token, used `application/json`, used `jq -er` so a missing `token` fails instead of yielding the string `null`, and removed `echo $ID_TOKEN` so the credential is not printed to the terminal or logs.
+Adapted (not in the official docs): added `-fsS` so an HTTP error is not parsed as a token, used `application/json`, used `jq -er` so a missing `token` fails instead of yielding the string `null`, removed `echo $ID_TOKEN` so the credential is not printed to the terminal or logs, and added `"includeEmail": true` so the token carries the `email` claim that the receiver below checks against `ALLOWED_CALLERS`.
 
 ```bash
 ID_TOKEN=$(curl -fsS -0 -X POST https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/SERVICE_ACCOUNT:generateIdToken \
@@ -108,7 +108,8 @@ ID_TOKEN=$(curl -fsS -0 -X POST https://iamcredentials.googleapis.com/v1/project
   -H "Authorization: Bearer $STS_TOKEN" \
   -d @- <<EOF | jq -er .token
   {
-      "audience": "SERVICE_URL"
+      "audience": "SERVICE_URL",
+      "includeEmail": true
   }
 EOF
 )
@@ -206,7 +207,7 @@ Async alternatives (the service manages the interaction): Cloud Tasks (one to on
 - The source's console and gcloud steps default the calling identity to `PROJECT_NUMBER-compute@developer.gserviceaccount.com`, but it recommends a per-service user-managed service account with the minimum set of permissions.
 - Service account keys are a security risk if not managed correctly. Choose a more secure alternative (workload identity federation) whenever possible. If a key must be used, you are responsible for protecting it and for validating keys acquired from external sources. Key creation might be disabled by organization policy. Setting `GOOGLE_APPLICATION_CREDENTIALS` to a key path works only outside Cloud Run; the code does not accept user account credentials.
 - Adapted from the official docs: the metadata-server curl wrote `?audience=[AUDIENCE]`; the square brackets are a curl URL glob, so it is written `?audience=AUDIENCE`.
-- Adapted from the official docs: the workload identity federation example was `curl -0 -X POST ... -H "Content-Type: text/json; charset=utf-8" ... | jq -r .token` followed by `echo $ID_TOKEN`; it now uses `curl -fsS`, `application/json`, `jq -er .token`, and no `echo` (printing the ID token leaks a live credential).
+- Adapted from the official docs: the workload identity federation example was `curl -0 -X POST ... -H "Content-Type: text/json; charset=utf-8" ... | jq -r .token` followed by `echo $ID_TOKEN`; it now uses `curl -fsS`, `application/json`, `jq -er .token`, no `echo` (printing the ID token leaks a live credential), and the request body adds `"includeEmail": true` (the source sends only `audience`, so the token would lack the `email` claim that the receiver's `ALLOWED_CALLERS` check needs; `includeEmail` is a field of the `generateIdToken` request in the IAM Service Account Credentials API).
 - Corrected from the official docs: the source's Python receiving sample calls `id_token.verify_token(creds, requests.Request())` without an `audience` argument, so it accepts a valid Google-signed ID token issued for any audience; the sample above passes `audience=os.environ["SERVICE_URL"]`, matching the source's Java sample, which validates against the `SERVICE_URL` environment variable (Java comment: "Get the service URL from the environment variable set at the time of deployment.").
 - `SERVICE_URL` is not one of the variables Cloud Run injects (`PORT`, `K_SERVICE`, `K_REVISION`, `K_CONFIGURATION`; https://docs.cloud.google.com/run/docs/container-contract). Set it yourself at deployment, for example `gcloud run services update SERVICE --update-env-vars SERVICE_URL=https://my-cloud-run-service.run.app/` (the caller samples' audience). `--update-env-vars` adds the variable; `--set-env-vars` would first remove all existing environment variables (gcloud reference: https://docs.cloud.google.com/sdk/gcloud/reference/run/deploy). Without `SERVICE_URL` the receiver raises `KeyError` for every request that carries a bearer token.
 - The `aud` check is an exact string match: `SERVICE_URL` must equal the audience the callers request, including any trailing slash. The caller samples above use audiences with a trailing slash (`'https://my-cloud-run-service.run.app/'`, `'https://TARGET_AUDIENCE/'`), while `gcloud run services describe` prints the URL without one; use the same form on both sides.
