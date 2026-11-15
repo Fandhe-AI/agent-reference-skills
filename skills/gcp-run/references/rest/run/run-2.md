@@ -46,7 +46,7 @@ curl -X POST \
 
 - Generated from the Discovery document(s) v2, v1 of `run` (retrieved 2026-11-14). Resources on this page: projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when a path variable is described as optional (the method then also accepts the URL without that segment, as its description says).
-- Message schemas (the request and response types named above) are listed under `references/rest-schemas/run/`; they are the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
 - Source: https://run.googleapis.com/$discovery/rest?version=v2, https://run.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
 ## Related
