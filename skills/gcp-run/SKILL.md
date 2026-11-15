@@ -19,6 +19,9 @@ Google Cloud (GCP) のサーバーレス実行基盤・ジョブ基盤・開発�
 skills/gcp-run/
   SKILL.md
   references/
+    cloud-run-overview/           # 公式ガイド由来（手書き）: Cloud Run の概念・リソースモデル・container contract・同時実行・オートスケール・ロケーション・クォータ・課金設定
+      README.md
+      <page>.md                   # 例: what-is-cloud-run.md / resource-model.md / container-contract.md / billing-settings.md
     cloud-run-deploy/             # クイックスタート・コンテナーデプロイ・イメージのビルド
       README.md
       <page>.md                   # 例: deploy-container.md / deploying.md / containers.md
@@ -28,12 +31,27 @@ skills/gcp-run/
     cloud-run-auth/               # 認証: 公開・サービス間・エンドユーザー・開発者・IAM アクセス管理
       README.md
       <page>.md                   # 例: public.md / service-to-service.md / managing-access.md
+    cloud-run-networking/         # Direct VPC egress・Serverless VPC Access コネクタ・静的送信 IP・プライベートネットワーキング
+      README.md
+      <page>.md                   # 例: vpc-direct-vpc.md / vpc-connectors.md / static-outbound-ip.md / private-networking.md
+    cloud-run-http-serving/       # HTTPS・gRPC・WebSockets・カスタムドメイン・ヘルスチェック
+      README.md
+      <page>.md                   # 例: https-request.md / grpc.md / mapping-custom-domains.md / healthchecks.md
+    cloud-run-jobs/               # ジョブの作成・実行・管理・並列度・リトライ・タスクタイムアウト
+      README.md
+      <page>.md                   # 例: create-jobs.md / execute-jobs.md / parallelism.md / max-retries.md
     cloud-run-functions/          # Cloud Run functions: 概要・1st gen との比較・関数の記述・デプロイ・トリガー
       README.md
       <page>.md                   # 例: functions-with-run.md / write-functions.md / deploy-functions.md / function-triggers.md
+    cloud-run-functions-runtimes/ # ランタイム・サポートスケジュール・Node.js / Python・ローカル開発
+      README.md
+      <page>.md                   # 例: runtime-support.md / nodejs.md / python.md / local-dev-functions.md
     cloud-functions-1st-gen/      # Cloud Run functions (1st gen、旧 Cloud Functions 1st gen)・Cloud Functions v2 API 互換・アップグレード
       README.md
       <page>.md                   # 例: concepts-overview.md / deploy-1st-gen.md / upgrade-gen1-functions.md / quotas.md
+    cloud-run-operations/         # ログ・モニタリング・ローカルテスト・トラブルシューティング
+      README.md
+      <page>.md                   # 例: logging.md / monitoring.md / testing-local.md / troubleshooting.md
     app-engine/                   # App Engine: 概要・環境比較・app.yaml・ランタイムライフサイクル・クォータ
       README.md
       <page>.md                   # 例: an-overview-of-app-engine.md / standard-app-yaml.md / flexible-app-yaml.md / standard-quotas.md
@@ -60,15 +78,22 @@ skills/gcp-run/
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| Cloud Run の概念（services / jobs / worker pools / instances）・リソースモデル・向き不向きを知りたい | cloud-run-overview | [references/cloud-run-overview/README.md](references/cloud-run-overview/README.md) |
+| container contract（ポート・環境変数・ライフサイクル・シグナル）・ロケーション・クォータ・課金設定（リクエストベース / インスタンスベース） | cloud-run-overview | [references/cloud-run-overview/README.md](references/cloud-run-overview/README.md) |
 | コンテナーイメージをデプロイしたい・クイックスタート・イメージのビルド（Cloud Build / buildpacks / Artifact Registry） | cloud-run-deploy | [references/cloud-run-deploy/README.md](references/cloud-run-deploy/README.md) |
 | CPU・メモリ・環境変数・コンテナー（サイドカー）・実行環境（第 1 世代 / 第 2 世代）を設定したい | cloud-run-configuration | [references/cloud-run-configuration/README.md](references/cloud-run-configuration/README.md) |
 | 公開アクセス・サービス間認証（ID トークン）・エンドユーザー認証・開発者のテスト呼び出し・IAM invoker | cloud-run-auth | [references/cloud-run-auth/README.md](references/cloud-run-auth/README.md) |
+| Direct VPC egress・Serverless VPC Access コネクタ・静的送信 IP（Cloud NAT）・Shared VPC・プライベートネットワーキング | cloud-run-networking | [references/cloud-run-networking/README.md](references/cloud-run-networking/README.md) |
+| HTTPS・gRPC・WebSockets・カスタムドメイン・ヘルスチェック（startup / liveness / readiness） | cloud-run-http-serving | [references/cloud-run-http-serving/README.md](references/cloud-run-http-serving/README.md) |
+| Cloud Run jobs の作成・実行（オーバーライド・キャンセル）・並列度・リトライ・タスクタイムアウト | cloud-run-jobs | [references/cloud-run-jobs/README.md](references/cloud-run-jobs/README.md) |
 | Cloud Run functions の概念・改称（旧 Cloud Functions）・関数の記述（Functions Framework）・デプロイ・トリガー | cloud-run-functions | [references/cloud-run-functions/README.md](references/cloud-run-functions/README.md) |
+| 関数のランタイム・サポートスケジュール・Node.js / Python ランタイム・ローカル実行 | cloud-run-functions-runtimes | [references/cloud-run-functions-runtimes/README.md](references/cloud-run-functions-runtimes/README.md) |
 | Cloud Functions 1st gen の扱い・`--no-gen2` デプロイ・`gcloud functions upgrade`・1st gen のクォータ | cloud-functions-1st-gen | [references/cloud-functions-1st-gen/README.md](references/cloud-functions-1st-gen/README.md) |
+| Cloud Run のログ・モニタリング・ローカルテスト・デプロイ / 実行時エラーのトラブルシューティング | cloud-run-operations | [references/cloud-run-operations/README.md](references/cloud-run-operations/README.md) |
 | App Engine の概要・standard / flexible の違い・`app.yaml`・ランタイムのサポート状況・クォータ | app-engine | [references/app-engine/README.md](references/app-engine/README.md) |
 | App Engine から Cloud Run へ移行したい（比較表・`gcloud beta app migrate-to-run`） | app-engine-migration | [references/app-engine-migration/README.md](references/app-engine-migration/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `cloud-run-overview` / `cloud-run-services` / `cloud-run-scaling` / `cloud-run-security` / `cloud-run-networking` / `cloud-run-http-serving` / `cloud-run-triggers` / `cloud-run-jobs` / `cloud-run-worker-pools` / `cloud-run-functions-runtimes` / `cloud-run-operations` / `scheduler` / `tasks` / `workstations` / `samples` / `scripts`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `cloud-run-services` / `cloud-run-scaling` / `cloud-run-security` / `cloud-run-triggers` / `cloud-run-worker-pools` / `scheduler` / `tasks` / `workstations` / `samples` / `scripts`
 
 ## 他スキルとの使い分け
 
