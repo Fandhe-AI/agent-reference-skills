@@ -1,0 +1,287 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/domains/registrations/register
+---
+
+# gcloud domains registrations register
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud domains registrations register
+
+```text
+NAME
+    gcloud domains registrations register - register a new domain
+
+SYNOPSIS
+    gcloud domains registrations register REGISTRATION
+        [--contact-data-from-file=CONTACT_DATA_FILE_NAME]
+        [--contact-privacy=CONTACT_PRIVACY] [--validate-only]
+        [--cloud-dns-zone=CLOUD_DNS_ZONE | --name-servers=NAME_SERVER,...,[...]
+          | --use-google-domains-dns] [--async] [--disable-dnssec]
+        [--labels=[KEY=VALUE,...]] [--notices=[NOTICE,...]]
+        [--yearly-price=YEARLY_PRICE] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create a new Cloud Domains registration resource by registering a new
+    domain. The new resource's ID will be equal to the domain name.
+
+    After this command executes, the resource will be in state
+    REGISTRATION_PENDING. The registration process should complete in less than
+    5 minutes. After that the resource will be in state ACTIVE. In rare cases
+    this process can take much longer due, for example, to a downtime of the
+    domain registry.
+
+    Also in rare cases, the domain may end up in state REGISTRATION_FAILED. In
+    that case, delete the registration resource and try again.
+
+    When using Cloud DNS Zone DNSSEC will be enabled by default whenever the
+    Zone is DNSSEC signed. You can choose to not enable DNSSEC by using the
+    --disable-dnssec flag.
+
+EXAMPLES
+    To register example.com interactively, run:
+
+        $ gcloud domains registrations register example.com
+
+    To register example.com using contact data from a YAML file contacts.yaml,
+    run:
+
+        $ gcloud domains registrations register example.com \
+            --contact-data-from-file=contacts.yaml
+
+    To register example.com with interactive prompts disabled, provide
+    --contact-data-from-file, --contact-privacy, --yearly-price flags and one
+    of the flags for setting authoritative name servers. Sometimes also
+    --notices flag is required. For example, run:
+
+        $ gcloud domains registrations register example.com \
+            --contact-data-from-file=contacts.yaml \
+            --contact-privacy=private-contact-data \
+            --yearly-price="12.00 USD" --cloud-dns-zone=example-com --quiet
+
+POSITIONAL ARGUMENTS
+     Registration resource - The domain name to register. This represents a
+     Cloud resource. (NOTE) Some attributes are not given arguments in this
+     group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument registration on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     To set the location attribute:
+      * provide the argument registration on the command line with a fully
+        specified name;
+      * location is always global.
+
+     This must be specified.
+
+       REGISTRATION
+          ID of the registration or fully qualified identifier for the
+          registration.
+
+          To set the registration attribute:
+          + provide the argument registration on the command line.
+
+COMMONLY USED FLAGS
+     --contact-data-from-file=CONTACT_DATA_FILE_NAME
+        A YAML file containing the contact data for the domain's three
+        contacts: registrant, admin, and technical.
+
+        The file can either specify a single set of contact data with label
+        'allContacts', or three separate sets of contact data with labels
+        'adminContact' and 'technicalContact'.
+
+        Each contact data must contain values for all required fields: email,
+        phoneNumber and postalAddress in google.type.PostalAddress format.
+
+        For more guidance on how to specify postalAddress, please see:
+        https://support.google.com/business/answer/6397478
+
+        Examples of file contents:
+
+            allContacts:
+              email: 'example@example.com'
+              phoneNumber: '+1.8005550123'
+              postalAddress:
+                regionCode: 'US'
+                postalCode: '94043'
+                administrativeArea: 'CA'
+                locality: 'Mountain View'
+                addressLines: ['1600 Amphitheatre Pkwy']
+                recipients: ['Jane Doe']
+
+            registrantContact:
+              email: 'registrant@example.com'
+              phoneNumber: '+1.8005550123'
+              postalAddress:
+                regionCode: 'US'
+                postalCode: '94043'
+                administrativeArea: 'CA'
+                locality: 'Mountain View'
+                addressLines: ['1600 Amphitheatre Pkwy']
+                recipients: ['Registrant Jane Doe']
+            adminContact:
+              email: 'admin@example.com'
+              phoneNumber: '+1.8005550123'
+              postalAddress:
+                regionCode: 'US'
+                postalCode: '94043'
+                administrativeArea: 'CA'
+                locality: 'Mountain View'
+                addressLines: ['1600 Amphitheatre Pkwy']
+                recipients: ['Admin Jane Doe']
+            technicalContact:
+              email: 'technical@example.com'
+              phoneNumber: '+1.8005550123'
+              postalAddress:
+                regionCode: 'US'
+                postalCode: '94043'
+                administrativeArea: 'CA'
+                locality: 'Mountain View'
+                addressLines: ['1600 Amphitheatre Pkwy']
+                recipients: ['Technic Jane Doe']
+
+     --contact-privacy=CONTACT_PRIVACY
+        The contact privacy mode to use. Supported privacy modes depend on the
+        domain. CONTACT_PRIVACY must be one of:
+
+         private-contact-data
+            (DEPRECATED) Your contact info won't be available to the public. To
+            help protect your info and prevent spam, a third party provides
+            alternate (proxy) contact info for your domain in the public
+            directory at no extra cost. They will forward received messages to
+            you. The private-contact-data option is deprecated; See
+            https://cloud.google.com/domains/docs/deprecations/feature-deprecations.
+         public-contact-data
+            All the data from contact config is publicly available. To set this
+            value, you must also pass the --notices flag with value
+            public-contact-data-acknowledgement or agree to the notice
+            interactively.
+         redacted-contact-data
+            Limited personal information will be available to the public. The
+            actual information redacted depends on the domain. For more
+            information see https://support.google.com/domains/answer/3251242.
+
+     --validate-only
+        Don't actually create registration. Only validate arguments.
+
+     Set the authoritative name servers for the given domain.
+
+     At most one of these can be specified:
+
+       --cloud-dns-zone=CLOUD_DNS_ZONE
+          The name of the Cloud DNS managed-zone to set as the name server for
+          the domain. If it's in the same project, you can use short name. If
+          not, use the full resource name, e.g.:
+          --cloud-dns-zone=projects/example-project/managedZones/example-zone.
+          If the zone is signed, DNSSEC will be enabled by default unless you
+          pass --disable-dnssec.
+
+       --name-servers=NAME_SERVER,...,[...]
+          List of DNS name servers for the domain.
+
+       --use-google-domains-dns
+          (REMOVED) Use free name servers provided by Google Domains. If the
+          zone is signed, DNSSEC will be enabled by default unless you pass
+          --disable-dnssec.
+
+          Flag --use-google-domains-dns has been removed.
+
+OTHER FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --disable-dnssec
+        Use this flag to disable DNSSEC, or to skip enabling it when switching
+        to a Cloud DNS Zone or Google Domains nameservers.
+
+     --labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to add.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     --notices=[NOTICE,...]
+        Notices about special properties of certain domains or contacts. NOTICE
+        must be one of:
+
+         public-contact-data-acknowledgement
+            By sending this notice you acknowledge that using
+            public-contact-data contact privacy makes all the data from contact
+            config publicly available.
+         hsts-preloaded
+            By sending this notice you acknowledge that the domain is preloaded
+            on the HTTP Strict Transport Security list in browsers. Serving a
+            website on such domain will require an SSL certificate. See
+            https://support.google.com/domains/answer/7638036 for details.
+
+     --yearly-price=YEARLY_PRICE
+        Accept the domain's yearly price in the interactive flow or by using
+        this flag. Use a number followed by a currency code, for example,
+        "12.00 USD". Get the price using the get-register-parameters command.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha domains registrations register
+
+        $ gcloud beta domains registrations register
+```
+
+### gcloud beta domains registrations register
+
+```text
+NAME
+    gcloud beta domains registrations register - register a new domain
+
+SYNOPSIS
+    gcloud beta domains registrations register REGISTRATION
+        [--contact-data-from-file=CONTACT_DATA_FILE_NAME]
+        [--contact-privacy=CONTACT_PRIVACY] [--validate-only]
+        [--cloud-dns-zone=CLOUD_DNS_ZONE | --name-servers=NAME_SERVER,...,[...]
+          | --use-google-domains-dns] [--async] [--disable-dnssec]
+        [--labels=[KEY=VALUE,...]] [--notices=[NOTICE,...]]
+        [--yearly-price=YEARLY_PRICE] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha domains registrations register
+
+```text
+NAME
+    gcloud alpha domains registrations register - register a new domain
+
+SYNOPSIS
+    gcloud alpha domains registrations register REGISTRATION
+        [--contact-data-from-file=CONTACT_DATA_FILE_NAME]
+        [--contact-privacy=CONTACT_PRIVACY] [--validate-only]
+        [--cloud-dns-zone=CLOUD_DNS_ZONE | --name-servers=NAME_SERVER,...,[...]
+          | --use-google-domains-dns] [--async] [--disable-dnssec]
+        [--labels=[KEY=VALUE,...]] [--notices=[NOTICE,...]]
+        [--yearly-price=YEARLY_PRICE] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/domains/registrations/register (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
