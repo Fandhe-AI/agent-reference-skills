@@ -26,9 +26,11 @@ gcloud storage buckets add-iam-policy-binding gs://BUCKET_NAME \
     --role=roles/storage.objectCreator
 ```
 
+Adapted (not in the official docs): the gcloud help example uses `--role=roles/customRoleName`; a custom role must be given by its full name, so this uses `projects/PROJECT_ID/roles/CUSTOM_ROLE_ID`.
+
 ```bash
 gcloud storage buckets add-iam-policy-binding gs://BUCKET_NAME \
-    --member=user:USER_EMAIL --role=roles/customRoleName
+    --member=user:USER_EMAIL --role=projects/PROJECT_ID/roles/CUSTOM_ROLE_ID
 ```
 
 ### Revoke a role on a bucket
@@ -156,6 +158,7 @@ gcloud storage hmac delete ACCESS_ID
 - The HMAC secret is shown only at creation; store it in a secret manager, not in shell history or source control. Prefer short-lived credentials (impersonation or Workload Identity Federation, see the `gcp-foundation` skill) where possible.
 - Wildcard URLs (`*`, `**`) must be quoted in zsh and similar shells; none are used here.
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`).
+- Corrected from the official docs: the `gcloud storage buckets add-iam-policy-binding` help example passes `--role=roles/customRoleName`, but `roles/` names are predefined roles only; custom roles are named `projects/PROJECT_ID/roles/CUSTOM_ROLE_ID` (or `organizations/ORGANIZATION_ID/roles/CUSTOM_ROLE_ID`), so the example uses the project-level full name.
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/buckets/add-iam-policy-binding (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/buckets/remove-iam-policy-binding (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/buckets/get-iam-policy (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)

@@ -133,14 +133,14 @@ gcloud compute networks peerings update sn-netapp-prod \
 
 Both commands below are gcloud help examples; the pool command is the help's "all possible arguments" variant for a shared VPC. It uses a shared VPC host project (`VPC_PROJECT`) and needs an existing Active Directory policy (`ad1`) and KMS config (`kms-config1`); the volume command needs an existing storage pool (`sp2`, not the pool `NAME` created here). Replace these help-example values with your own resources.
 
-Adapted (not in the official docs): runnable form of the gcloud help example: the lines wrapped by `gcloud help` inside the `--network` value are joined, and one flag is put per line.
+Adapted (not in the official docs): runnable form of the gcloud help example: the lines wrapped by `gcloud help` inside the `--network` value are joined, one flag is put per line, and the shared VPC network name uses the API format `projects/VPC_PROJECT/global/networks/default` instead of the help's `projects/VPC_PROJECT/locations/us-central1/networks/default`.
 
 ```bash
 gcloud netapp storage-pools create NAME \
     --location=us-central1 \
     --service-level=standard \
     --capacity=2048 \
-    --network=name=projects/VPC_PROJECT/locations/us-central1/networks/default \
+    --network=name=projects/VPC_PROJECT/global/networks/default \
     --active-directory=ad1 \
     --kms-config=kms-config1 \
     --enable-ldap=true \
@@ -241,6 +241,7 @@ gcloud netapp volumes delete NAME --location=us-central1
 - The Lustre `instances update` help example writes `--description="<updated description>"`; it is shown as `UPDATED_DESCRIPTION`. The command is otherwise verbatim.
 - The Lustre client packages must be installed before `modprobe lustre`; the Managed Lustre connect reference shows the signature-verified Ubuntu apt repository setup. The source's Rocky Linux / RHEL setup (`gcloud beta artifacts print-settings yum`) generates a yum repository with `gpgcheck=0` / `repo_gpgcheck=0` and is not reproduced; follow https://docs.cloud.google.com/managed-lustre/docs/connect-from-compute-engine for those images and install only on trusted networks.
 - NetApp Volumes backup vaults are separate from Backup and DR backup vaults (see backup-dr.md).
+- Corrected from the official docs: the `gcloud netapp storage-pools create` help example (and its `--network` description) writes the long-form network name as `projects/VPC_PROJECT/locations/us-central1/networks/default`, but VPC networks are global resources and the NetApp API defines `StoragePool.network` as `projects/{project}/global/networks/{network}` (Cloud NetApp API v1 discovery document), so the example uses `projects/VPC_PROJECT/global/networks/default`. `name=` is the key of the `--network` dictionary flag and stays.
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/lustre/instances (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/netapp/storage-pools/create (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/netapp/volumes (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
