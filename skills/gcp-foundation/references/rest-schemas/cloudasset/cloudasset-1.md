@@ -141,6 +141,39 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `servicePerimeter` | GoogleIdentityAccesscontextmanagerV1ServicePerimeter | Also refer to the service perimeter user guide (https://cloud.google.com/vpc-service-controls/docs/overview). |
 | `updateTime` | string (google-datetime) | The last update timestamp of an asset. update_time is updated when create/update/delete operation is performed. |
 
+### `Asset` (v1beta1)
+
+- An asset in Google Cloud. An asset can be any resource in the Google Cloud resource hierarchy (https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy), a resource outside the Google Cloud resource hierarchy (such as Google Kubernetes Engine clusters and objects), or a policy (e.g. IAM policy). See Supported asset types (https://cloud.google.com/asset-inventory/docs/supported-asset-types) for more information.
+- Version: v1beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `accessLevel` | GoogleIdentityAccesscontextmanagerV1AccessLevel | Please also refer to the access level user guide (https://cloud.google.com/access-context-manager/docs/overview#access-levels). |
+| `accessPolicy` | GoogleIdentityAccesscontextmanagerV1AccessPolicy | Please also refer to the access policy user guide (https://cloud.google.com/access-context-manager/docs/overview#access-policies). |
+| `assetType` | string | The type of the asset. Example: `compute.googleapis.com/Disk` See Supported asset types (https://cloud.google.com/asset-inventory/docs/supported-asset-types) for more information. |
+| `iamPolicy` | Policy | A representation of the IAM policy set on a Google Cloud resource. There can be a maximum of one IAM policy set on any given resource. In addition, IAM policies inherit their granted access scope from any policies set on parent resources in the resource hierarchy. Therefore, the effectively policy is the union of both the policy set on this resource and each policy set on all of the resource's ancestry resource levels in the hierarchy. See this topic (https://cloud.google.com/iam/help/allow-policies/inheritance) for more information. |
+| `name` | string | The full name of the asset. Example: `//compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1` See Resource names (https://cloud.google.com/apis/design/resource_names#full_resource_name) for more information. |
+| `orgPolicy` | array<GoogleCloudOrgpolicyV1Policy> | A representation of an organization policy (https://cloud.google.com/resource-manager/docs/organization-policy/overview#organization_policy). There can be more than one organization policy with different constraints set on a given resource. |
+| `resource` | Resource | A representation of the resource. |
+| `servicePerimeter` | GoogleIdentityAccesscontextmanagerV1ServicePerimeter | Please also refer to the service perimeter user guide (https://cloud.google.com/vpc-service-controls/docs/overview). |
+
+### `Asset` (v1p5beta1)
+
+- An asset in Google Cloud. An asset can be any resource in the Google Cloud resource hierarchy (https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy), a resource outside the Google Cloud resource hierarchy (such as Google Kubernetes Engine clusters and objects), or a policy (e.g. IAM policy). See Supported asset types (https://cloud.google.com/asset-inventory/docs/supported-asset-types) for more information.
+- Version: v1p5beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `accessLevel` | GoogleIdentityAccesscontextmanagerV1AccessLevel | Please also refer to the access level user guide (https://cloud.google.com/access-context-manager/docs/overview#access-levels). |
+| `accessPolicy` | GoogleIdentityAccesscontextmanagerV1AccessPolicy | Please also refer to the access policy user guide (https://cloud.google.com/access-context-manager/docs/overview#access-policies). |
+| `ancestors` | array<string> | The ancestry path of an asset in Google Cloud resource hierarchy (https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy), represented as a list of relative resource names. An ancestry path starts with the closest ancestor in the hierarchy and ends at root. If the asset is a project, folder, or organization, the ancestry path starts from the asset itself. Example: `["projects/123456789", "folders/5432", "organizations/1234"]` |
+| `assetType` | string | The type of the asset. Example: `compute.googleapis.com/Disk` See Supported asset types (https://cloud.google.com/asset-inventory/docs/supported-asset-types) for more information. |
+| `iamPolicy` | Policy | A representation of the IAM policy set on a Google Cloud resource. There can be a maximum of one IAM policy set on any given resource. In addition, IAM policies inherit their granted access scope from any policies set on parent resources in the resource hierarchy. Therefore, the effectively policy is the union of both the policy set on this resource and each policy set on all of the resource's ancestry resource levels in the hierarchy. See this topic (https://cloud.google.com/iam/help/allow-policies/inheritance) for more information. |
+| `name` | string | The full name of the asset. Example: `//compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1` See Resource names (https://cloud.google.com/apis/design/resource_names#full_resource_name) for more information. |
+| `orgPolicy` | array<GoogleCloudOrgpolicyV1Policy> | A representation of an organization policy (https://cloud.google.com/resource-manager/docs/organization-policy/overview#organization_policy). There can be more than one organization policy with different constraints set on a given resource. |
+| `resource` | Resource | A representation of the resource. |
+| `servicePerimeter` | GoogleIdentityAccesscontextmanagerV1ServicePerimeter | Please also refer to the service perimeter user guide (https://cloud.google.com/vpc-service-controls/docs/overview). |
+
 ### `AssetEnrichment`
 
 - The enhanced metadata information for a resource.
@@ -317,6 +350,18 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `outputConfig` | OutputConfig | Required. Output configuration indicating where the results will be output to. |
 | `readTime` | string (google-datetime) | Timestamp to take an asset snapshot. This can only be set to a timestamp between the current time and the current time minus 35 days (inclusive). If not specified, the current time will be used. Due to delays in resource data collection and indexing, there is a volatile window during which running the same query may get different results. |
 | `relationshipTypes` | array<string> | A list of relationship types to export, for example: `INSTANCE_TO_INSTANCEGROUP`. This field should only be specified if content_type=RELATIONSHIP. \* If specified: it snapshots specified relationships. It returns an error if any of the \[relationship_types\] doesn't belong to the supported relationship types of the \[asset_types\] or if any of the \[asset_types\] doesn't belong to the source types of the \[relationship_types\]. \* Otherwise: it snapshots the supported relationships for all \[asset_types\] or returns an error if any of the \[asset_types\] has no relationship support. An unspecified asset types field means all supported asset_types. See Introduction to Cloud Asset Inventory (https://cloud.google.com/asset-inventory/docs/overview) for all supported asset types and relationship types. |
+
+### `ExportAssetsRequest` (v1beta1)
+
+- Export asset request.
+- Version: v1beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `assetTypes` | array<string> | A list of asset types of which to take a snapshot for. For example: "google.compute.Disk". If specified, only matching assets will be returned. See Introduction to Cloud Asset Inventory (https://cloud.google.com/resource-manager/docs/cloud-asset-inventory/overview) for all supported asset types. |
+| `contentType` | string enum | Asset content type. If not specified, no content but the asset name will be returned. |
+| `outputConfig` | OutputConfig | Required. Output configuration indicating where the results will be output to. All results will be in newline delimited JSON format. |
+| `readTime` | string (google-datetime) | Timestamp to take an asset snapshot. This can only be set to a timestamp between 2018-10-02 UTC (inclusive) and the current time. If not specified, the current time will be used. Due to delays in resource data collection and indexing, there is a volatile window during which running the same query may get different results. |
 
 ### `Expr`
 
@@ -1114,6 +1159,21 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `project` | string | The project that the associated Google Cloud resource belongs to, in the form of `projects/{project_number}`. If an IAM policy is set on a resource -- such as a Compute Engine instance or a Cloud Storage bucket -- the project field will indicate the project that contains the resource. If an IAM policy is set on a folder or organization, the project field will be empty. |
 | `resource` | string | The full resource name (https://cloud.google.com/apis/design/resource_names#full_resource_name) of the resource associated with this IAM policy. |
 
+### `IamPolicySearchResult` (v1)
+
+- A result of IAM Policy search, containing information of an IAM policy.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `assetType` | string | The type of the resource associated with this IAM policy. Example: `compute.googleapis.com/Disk`. To search against the `asset_type`: \* specify the `asset_types` field in your search request. |
+| `explanation` | Explanation | Explanation about the IAM policy search result. It contains additional information to explain why the search result matches the query. |
+| `folders` | array<string> | The folder(s) that the IAM policy belongs to, in the form of folders/{FOLDER_NUMBER}. This field is available when the IAM policy belongs to one or more folders. To search against `folders`: \* use a field query. Example: `folders:(123 OR 456)` \* use a free text query. Example: `123` \* specify the `scope` field as this folder in your search request. |
+| `organization` | string | The organization that the IAM policy belongs to, in the form of organizations/{ORGANIZATION_NUMBER}. This field is available when the IAM policy belongs to an organization. To search against `organization`: \* use a field query. Example: `organization:123` \* use a free text query. Example: `123` \* specify the `scope` field as this organization in your search request. |
+| `policy` | Policy | The IAM policy directly set on the given resource. Note that the original IAM policy can contain multiple bindings. This only contains the bindings that match the given query. For queries that don't contain a constrain on policies (e.g., an empty query), this contains all the bindings. To search against the `policy` bindings: \* use a field query: - query by the policy contained members. Example: `policy:amy@gmail.com` - query by the policy contained roles. Example: `policy:roles/compute.admin` - query by the policy contained roles' included permissions. Example: `policy.role.permissions:compute.instances.create` |
+| `project` | string | The project that the associated Google Cloud resource belongs to, in the form of projects/{PROJECT_NUMBER}. If an IAM policy is set on a resource (like VM instance, Cloud Storage bucket), the project field will indicate the project that contains the resource. If an IAM policy is set on a folder or organization, this field will be empty. To search against the `project`: \* specify the `scope` field as this project in your search request. |
+| `resource` | string | The full resource name of the resource associated with this IAM policy. Example: `//compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1`. See Cloud Asset Inventory Resource Name Format (https://cloud.google.com/asset-inventory/docs/resource-name-format) for more information. To search against the `resource`: \* use a field query. Example: `resource:organizations/123` |
+
 ### `IdentitySelector`
 
 - Specifies an identity for which to determine resource access, based on roles assigned either directly to them or to the groups they belong to, directly or indirectly.
@@ -1274,6 +1334,15 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `bigqueryDestination` | BigQueryDestination | Destination on BigQuery. The output table stores the fields in asset Protobuf as columns in BigQuery. |
+| `gcsDestination` | GcsDestination | Destination on Cloud Storage. |
+
+### `OutputConfig` (v1beta1)
+
+- Output configuration for export assets destination.
+- Version: v1beta1
+
+| Field | Type | Description |
+|---|---|---|
 | `gcsDestination` | GcsDestination | Destination on Cloud Storage. |
 
 ### `PartitionSpec`
@@ -1452,6 +1521,20 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `resourceUrl` | string | The REST URL for accessing the resource. An HTTP `GET` request using this URL returns the resource itself. Example: `https://cloudresourcemanager.googleapis.com/v1/projects/my-project-123` This value is unspecified for resources without a REST API. |
 | `version` | string | The API version. Example: `v1` |
 
+### `Resource` (v1p5beta1)
+
+- A representation of a Google Cloud resource.
+- Version: v1p5beta1
+
+| Field | Type | Description |
+|---|---|---|
+| `data` | object | The content of the resource, in which some sensitive fields are removed and may not be present. |
+| `discoveryDocumentUri` | string | The URL of the discovery document containing the resource's JSON schema. Example: `https://www.googleapis.com/discovery/v1/apis/compute/v1/rest` This value is unspecified for resources that do not have an API based on a discovery document, such as Cloud Bigtable. |
+| `discoveryName` | string | The JSON schema name listed in the discovery document. Example: `Project` This value is unspecified for resources that do not have an API based on a discovery document, such as Cloud Bigtable. |
+| `parent` | string | The full name of the immediate parent of this resource. See Resource Names (https://cloud.google.com/apis/design/resource_names#full_resource_name) for more information. For Google Cloud assets, this value is the parent resource defined in the IAM policy hierarchy (https://cloud.google.com/iam/docs/overview#policy_hierarchy). Example: `//cloudresourcemanager.googleapis.com/projects/my_project_123` For third-party assets, this field may be set differently. |
+| `resourceUrl` | string | The REST URL for accessing the resource. An HTTP `GET` request using this URL returns the resource itself. Example: `https://cloudresourcemanager.googleapis.com/v1/projects/my-project-123` This value is unspecified for resources without a REST API. |
+| `version` | string | The API version. Example: "v1". |
+
 ### `ResourceOwners`
 
 - The resource owners information.
@@ -1559,90 +1642,6 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `zypperPackage` | VersionedPackage | Details of a Zypper package. For details about the Zypper package manager, see https://en.opensuse.org/SDB:Zypper_manual. |
 | `zypperPatch` | ZypperPatch | Details of a Zypper patch. For details about the Zypper package manager, see https://en.opensuse.org/SDB:Zypper_manual. |
 
-### `StandardResourceMetadata`
-
-- The standard metadata of a cloud resource.
-- Version: v1p1beta1
-
-| Field | Type | Description |
-|---|---|---|
-| `additionalAttributes` | array<string> | Additional searchable attributes of this resource. Informational only. The exact set of attributes is subject to change. For example: project id, DNS name etc. |
-| `assetType` | string | The type of this resource. For example: "compute.googleapis.com/Disk". |
-| `description` | string | One or more paragraphs of text description of this resource. Maximum length could be up to 1M bytes. |
-| `displayName` | string | The display name of this resource. |
-| `labels` | object | Labels associated with this resource. See Labelling and grouping Google Cloud resources (https://cloud.google.com/blog/products/gcp/labelling-and-grouping-your-google-cloud-platform-resources) for more information. |
-| `location` | string | Location can be "global", regional like "us-east1", or zonal like "us-west1-b". |
-| `name` | string | The full resource name. For example: `//compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1`. See Resource Names (https://cloud.google.com/apis/design/resource_names#full_resource_name) for more information. |
-| `networkTags` | array<string> | Network tags associated with this resource. Like labels, network tags are a type of annotations used to group Google Cloud resources. See \[Labelling Google Cloud resources\](lhttps://cloud.google.com/blog/products/gcp/labelling-and-grouping-your-google-cloud-platform-resources) for more information. |
-| `project` | string | The project that this resource belongs to, in the form of `projects/{project_number}`. |
-
-### `Status`
-
-- The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by gRPC (https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the API Design Guide (https://cloud.google.com/apis/design/errors).
-- Version: v1p7beta1
-
-| Field | Type | Description |
-|---|---|---|
-| `code` | integer (int32) | The status code, which should be an enum value of google.rpc.Code. |
-| `details` | array<object> | A list of messages that carry the error details. There is a common set of message types for APIs to use. |
-| `message` | string | A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client. |
-
-### `TableFieldSchema`
-
-- A field in TableSchema.
-- Version: v1
-
-| Field | Type | Description |
-|---|---|---|
-| `field` | string | The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (\_), and must start with a letter or underscore. The maximum length is 128 characters. |
-| `fields` | array<TableFieldSchema> | Describes the nested schema fields if the type property is set to RECORD. |
-| `mode` | string | The field mode. Possible values include NULLABLE, REQUIRED and REPEATED. The default value is NULLABLE. |
-| `type` | string | The field data type. Possible values include \* STRING \* BYTES \* INTEGER \* FLOAT \* BOOLEAN \* TIMESTAMP \* DATE \* TIME \* DATETIME \* GEOGRAPHY, \* NUMERIC, \* BIGNUMERIC, \* RECORD (where RECORD indicates that the field contains a nested schema). |
-
-### `TableSchema`
-
-- BigQuery Compatible table schema.
-- Version: v1
-
-| Field | Type | Description |
-|---|---|---|
-| `fields` | array<TableFieldSchema> | Describes the fields in a table. |
-
-### `Tag`
-
-- The key and value for a tag (https://cloud.google.com/resource-manager/docs/tags/tags-overview).
-- Version: v1
-
-| Field | Type | Description |
-|---|---|---|
-| `tagKey` | string | TagKey namespaced name, in the format of {ORG_ID}/{TAG_KEY_SHORT_NAME}. |
-| `tagKeyId` | string | TagKey ID, in the format of tagKeys/{TAG_KEY_ID}. |
-| `tagValue` | string | TagValue namespaced name, in the format of {ORG_ID}/{TAG_KEY_SHORT_NAME}/{TAG_VALUE_SHORT_NAME}. |
-| `tagValueId` | string | TagValue ID, in the format of tagValues/{TAG_VALUE_ID}. |
-
-### `TemporalAsset`
-
-- An asset in Google Cloud and its temporal metadata, including the time window when it was observed and its status during that window.
-- Version: v1
-
-| Field | Type | Description |
-|---|---|---|
-| `asset` | Asset | An asset in Google Cloud. |
-| `deleted` | boolean | Whether the asset has been deleted or not. |
-| `priorAsset` | Asset | Prior copy of the asset. Populated if prior_asset_state is PRESENT. Currently this is only set for responses in Real-Time Feed. |
-| `priorAssetState` | string enum | State of prior_asset. |
-| `window` | TimeWindow | The time window when the asset data and state was observed. |
-
-### `TimeWindow`
-
-- A time window specified by its `start_time` and `end_time`.
-- Version: v1
-
-| Field | Type | Description |
-|---|---|---|
-| `endTime` | string (google-datetime) | End time of the time window (inclusive). If not specified, the current timestamp is used instead. |
-| `startTime` | string (google-datetime) | Start time of the time window (exclusive). |
-
 ### Shape of `AccessSelector`
 
 Generated from the Discovery schema (not in the official docs); values show each field type:
@@ -1656,8 +1655,9 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) v1p1beta1, v1, v1p7beta1 of `cloudasset` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
-- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v1p1beta1, v1p5beta1, v1p7beta1, v1, v1beta1 of `cloudasset` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Descriptions are verbatim from Discovery, which drops angle-bracket placeholders of the source comments: a format such as `projects//locations/global` stands for `projects/{project}/locations/global` (likewise `"@.iam.gserviceaccount.com"` lost the account ID before `@`), and an expression such as `... && in labels` lost its left operand (for example `'label_value' in labels`). Check the method or field in the product's REST reference before relying on such a format.
+- Source: https://cloudasset.googleapis.com/$discovery/rest?version=v1p1beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p5beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1p7beta1, https://cloudasset.googleapis.com/$discovery/rest?version=v1, https://cloudasset.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
 
