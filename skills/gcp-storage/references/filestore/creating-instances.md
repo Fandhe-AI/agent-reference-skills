@@ -51,7 +51,7 @@ Custom performance and a Shared VPC network:
 
 ### Example: regional instance with IP-based access rules and deletion protection
 
-Creates instance `render1` in project `myproject`, region `us-central1`, tier `REGIONAL`, `max-iops-per-tb=17000`, file share `my_vol` (2 TiB), network `default` with a reserved IP range that Filestore allocates, read-write with root squashed for `10.0.0.0/29` and `10.2.0.0/29`, read-only with no root squash for `192.168.0.0/26`, and deletion protection with a reason.
+Creates instance `render1` in project `myproject`, region `us-central1`, tier `REGIONAL`, `max-iops-per-tb=17000`, file share `my_vol` (2 TiB), network `default` with a reserved IP range that Filestore allocates, read-write with root squashed for `10.0.0.0/29` and `10.2.0.0/29`, read-only with no root squash for `192.168.0.0/26`, read-write with no root squash (`admin`) for the single admin client `10.0.0.10/32`, and deletion protection with a reason.
 
 Adapted (not in the official docs): removed the invalid `reserved-ip-range="10.0.7.0/29"` (a /29 block is for Basic tier only) so Filestore allocates the range, and joined the wrapped `--deletion-protection-reason` string onto one line.
 
@@ -68,6 +68,8 @@ gcloud filestore instances create render1 \
 ```
 
 `nfs-export-options.json`:
+
+Adapted (not in the official docs): added a third rule granting `admin` access (`READ_WRITE` + `NO_ROOT_SQUASH`) to a single admin client, `10.0.0.10/32`, because the page requires at least one `admin` rule at instance creation and the source's two rules (`editor` and `admin-viewer`) include none; replace the address with your admin VM's internal IP.
 
 ```json
 {
@@ -90,6 +92,13 @@ gcloud filestore instances create render1 \
           "access-mode": "READ_ONLY",
           "ip-ranges": [
             "192.168.0.0/26"
+          ],
+          "squash-mode": "NO_ROOT_SQUASH"
+        },
+        {
+          "access-mode": "READ_WRITE",
+          "ip-ranges": [
+            "10.0.0.10/32"
           ],
           "squash-mode": "NO_ROOT_SQUASH"
         }
@@ -125,7 +134,7 @@ Capacity by tier:
 
 Basic HDD and basic SSD can only scale up; other tiers scale up or down.
 
-IP-based access rule fields (`--flags-file` JSON): `ip-ranges`; `access-mode` `READ_WRITE` (default) or `READ_ONLY`; `squash-mode` `ROOT_SQUASH` or `NO_ROOT_SQUASH` (default); `anon_uid` / `anon_gid` (default `65534`, set only via API and gcloud). Console access levels: `admin` (read-write, no-root-squash), `admin-viewer` (read-only, no-root-squash), `editor` (read-write, root-squash), `viewer` (read-only, root-squash). Limits: console up to 4 rules and 64 IPs/ranges; gcloud up to 64 IPs/CIDR blocks across at most 10 rules. At least one rule must grant `admin` at creation (removable later).
+IP-based access rule fields (`--flags-file` JSON): `ip-ranges`; `access-mode` `READ_WRITE` (default) or `READ_ONLY`; `squash-mode` `ROOT_SQUASH` or `NO_ROOT_SQUASH` (default); `anon_uid` / `anon_gid` (default `65534`, set only via API and gcloud). Console access levels: `admin` (read-write, no-root-squash), `admin-viewer` (read-only, no-root-squash), `editor` (read-write, root-squash), `viewer` (read-only, root-squash). Limits: console up to 4 rules and 64 IPs/ranges; gcloud up to 64 IPs/CIDR blocks across at most 10 rules. When you create IP-based access rules, at least one rule must grant `admin` (`READ_WRITE` + `NO_ROOT_SQUASH`) at instance creation; that rule can be removed once the instance is created.
 
 Reserved IP range: CIDR, valid VPC subnet range; block size `/29` for basic, `/26` for zonal/regional/enterprise (the gcloud help says `/24`; see Notes); must not overlap existing subnets, peered subnets or other Filestore ranges; `172.17.0.0/16` is reserved for internal components; immutable once set. Letting Filestore choose is recommended.
 
@@ -139,7 +148,7 @@ Reserved IP range: CIDR, valid VPC subnet range; block size `/29` for basic, `/2
 - Adapted from the official docs: the source wraps the `--deletion-protection-reason` quoted value across two lines (`"All genomics data must adhere to current` / `organization policies."`).
 - Corrected from the official docs: the regional example passed `--network=name="default",reserved-ip-range="10.0.7.0/29"` (described as "Reserved IP address range is `10.0.7.0/29`"), but a /29 block is valid only for Basic tier; the creating-instances page requires a block size of 26 for zonal, regional and enterprise instances. `reserved-ip-range` is optional (per the `gcloud filestore instances create` help), so it is removed and Filestore allocates a free range, which the page recommends.
 - Source inconsistency: for a directly specified CIDR `reserved-ip-range`, the creating-instances page requires a block size of 26 for zonal, regional and enterprise instances, while the `gcloud filestore instances create` help says a /24 block for High Scale, Zonal, Enterprise or Regional tier (/29 only for Basic). Check the current requirement before setting one.
-- Source inconsistency: the page says at least one rule must grant `admin` (read-write, no-root-squash) at creation, but its `nfs-export-options.json` example has only an `editor` rule (`READ_WRITE` + `ROOT_SQUASH`) and an `admin-viewer` rule (`READ_ONLY` + `NO_ROOT_SQUASH`), no `admin` rule. Add a `READ_WRITE` + `NO_ROOT_SQUASH` rule for an admin client range if creation is rejected.
+- Corrected from the official docs: the page says "At least one rule must grant `admin` access at the time of instance creation", but both of its `nfs-export-options.json` examples (the gcloud example and the IP-based access control section) contain only an `editor` rule (`"access-mode": "READ_WRITE"` with `"squash-mode": "ROOT_SQUASH"`) and an `admin-viewer` rule (`"access-mode": "READ_ONLY"` with `"squash-mode": "NO_ROOT_SQUASH"`). A third rule with `READ_WRITE` + `NO_ROOT_SQUASH` for `10.0.0.10/32` (an example address, not from the source) is added; the source's own three-rule example also lists `access-mode=READ_WRITE`, `squash-mode=NO_ROOT_SQUASH`. The source's prose for the gcloud example ("Grants read and write access with root squashed to the client with IP address `10.0.2.0`") does not match its JSON; the description above follows the JSON.
 - The synopsis and the `--performance` / `--network` fragments are shown as `text` because they are not runnable shell commands (the source shows the synopsis as an unlabelled block).
 - The source also shows Console steps, a REST `curl` example and links to NFSv4.1, CSI driver, Cloud Run and remote mounting. The REST sample is omitted because its JSON is not valid (missing comma after `"performanceConfig"`).
 - Filestore is managed file storage (NFS), not an object API; distinct from Cloud Storage (object) and Cloud Storage FUSE. Use the `gcp-foundation` skill for IAM and the `gcp-cli` skill for gcloud setup.

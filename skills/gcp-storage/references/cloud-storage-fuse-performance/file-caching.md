@@ -80,7 +80,7 @@ To disable parallel downloads, set `--file-cache-enable-parallel-downloads` or `
 
 | Use case | Guidance |
 |----------|----------|
-| Training | Enable file caching if data is read multiple times (same file, or different offsets). If the dataset is larger than the file cache, keep the cache disabled and use `--file-cache-cache-file-for-range-read` / `file-cache:cache-file-for-range-read` |
+| Training | Enable file caching if data is read multiple times (same file, or different offsets). If the dataset is larger than the file cache, the source says the file cache should remain disabled (see Notes about the range-read option it names there) |
 | Serving model weights and checkpoint reads | Enable file caching with parallel downloads |
 
 ## Notes
@@ -91,6 +91,8 @@ To disable parallel downloads, set `--file-cache-enable-parallel-downloads` or `
 - Eviction is least recently used (LRU) once the max size is reached. Data and metadata are managed separately, so one can be evicted without the other.
 - Persistence: caches are not persisted across unmounts and restarts; data may remain in the cache directory, so delete it after unmounts or restarts.
 - If the first read starts at offset `0`, the whole file is loaded into the cache. Reads from other offsets do not trigger a full fetch by default.
+- With the file cache enabled, `--file-cache-cache-file-for-range-read` / `file-cache:cache-file-for-range-read` set to `true` makes a first read at a non-zero offset ingest the whole file into the cache asynchronously. The source recommends enabling it if many different random or partial read operations are performed on the same object; each file read this way must still fit within the available cache capacity.
+- Source inconsistency: the use-case table says that if the dataset is larger than the file cache, "the file cache should remain disabled, and instead, use" `--file-cache-cache-file-for-range-read` or `file-cache:cache-file-for-range-read`. That option is a file-cache setting (the configuration steps describe it as enabling "the file cache's ability to asynchronously load the entire file into the cache"), so it pulls whole files into the cache and is not an alternative to a disabled file cache. For a dataset larger than the cache, keep the file cache disabled; use the range-read option only when the file cache is enabled and the files fit in it.
 - The cache directory holds files in an encrypted format; anyone with access to the directory can access them, so restrict access. Do not rely on the "encrypted format" for confidentiality: the source says any user or process that has access to the cache directory can access these files; restrict permissions on `cache-dir`.
 - Accessing or modifying cached files with any process other than Cloud Storage FUSE can corrupt data. Caches are per process with no awareness across processes or machines; do not share a cache directory across processes. Use a separate cache directory per process, dynamic mounting (shared cache), caching on one statically mounted bucket, or mount and cache only a bucket-level folder.
 - Distance: this is a client-side cache for file-system access to Cloud Storage; for a zonal SSD cache on the bucket side see [anywhere-cache.md](./anywhere-cache.md).

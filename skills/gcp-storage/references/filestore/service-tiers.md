@@ -53,6 +53,7 @@ Below 1024 GiB you must use custom performance: fixed IOPS not lower than 2,000,
 - Filestore is managed NFS file storage, not an object API (distinct from Cloud Storage and Cloud Storage FUSE).
 - Source: https://docs.cloud.google.com/filestore/docs/service-tiers (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/filestore/docs/creating-instances.
+- The `nfs-export-options.json` flags file referenced by the example is shown in [creating-instances.md](./creating-instances.md); when it sets IP-based access rules, at least one rule must grant `admin` access (`READ_WRITE` + `NO_ROOT_SQUASH`) at instance creation.
 - Corrected from the official docs: the regional example passed `--network=name="default",reserved-ip-range="10.0.7.0/29"` (described as "Reserved IP address range is `10.0.7.0/29`"), but a /29 block is valid only for Basic tier; the creating-instances page requires a block size of 26 for zonal, regional and enterprise instances. `reserved-ip-range` is optional (per the `gcloud filestore instances create` help), so it is removed and Filestore allocates a free range, which the page recommends.
 
 ## Related
