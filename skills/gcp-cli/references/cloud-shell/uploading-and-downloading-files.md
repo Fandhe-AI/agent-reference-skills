@@ -19,10 +19,6 @@ cloudshell download test1.md test2.md
 
 - Use the `gcloud cloud-shell scp` command on a local terminal to transfer files between Cloud Shell and your workstation. For example, to move a file, 'data.txt', from Cloud Shell to your local machine:
 
-```bash
-gcloud cloud-shell scp cloudshell:~/data.txt localhost:~data.txt
-```
-
 Adapted (not in the official docs): `localhost:~data.txt` lacks the slash after `~`; the file is meant to land in the local home directory.
 
 ```bash
@@ -33,7 +29,7 @@ gcloud cloud-shell scp cloudshell:~/data.txt localhost:~/data.txt
 
 ## Notes
 
-- Corrected from the official docs: the destination `localhost:~data.txt` is kept verbatim above, followed by the corrected `localhost:~/data.txt` (the `gcloud cloud-shell scp` help uses `localhost:~/...`).
+- Corrected from the official docs: the page writes the destination as `localhost:~data.txt` (`gcloud cloud-shell scp cloudshell:~/data.txt localhost:~data.txt`), which lacks the slash after `~`; the fence uses `localhost:~/data.txt`, the form the `gcloud cloud-shell scp` help uses.
 - Source: https://docs.cloud.google.com/shell/docs/uploading-and-downloading-files (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

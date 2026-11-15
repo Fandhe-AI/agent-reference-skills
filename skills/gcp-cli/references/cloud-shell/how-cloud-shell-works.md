@@ -28,10 +28,6 @@ The active project in the Google Cloud console is propagated to your `gcloud` co
 
 Cloud Shell is globally distributed across multiple Google Cloud regions. You are assigned to the closest available region; you can't pick your own, and Cloud Shell tries to migrate your VM to a closer region when it isn't in use. To view your current region, run from a Cloud Shell session:
 
-```bash
-curl metadata/computeMetadata/v1/instance/zone
-```
-
 Adapted (not in the official docs): the Compute Engine metadata server requires the `Metadata-Flavor: Google` request header for `computeMetadata/v1` paths.
 
 ```bash
@@ -98,7 +94,7 @@ If there's a problem in your `.bashrc` or `.tmux.conf` files, Cloud Shell immedi
 
 ## Notes
 
-- Adapted from the official docs: the region example is also shown with the `Metadata-Flavor: Google` header that the metadata server requires for `computeMetadata/v1` requests.
+- Adapted from the official docs: the page shows the region example as `curl metadata/computeMetadata/v1/instance/zone`, without the `Metadata-Flavor: Google` header that the metadata server requires for `computeMetadata/v1` requests; the fence adds the header and the full `http://metadata.google.internal/` URL.
 - Warning (verbatim): If you delete your `$HOME` directory, or if you don't access Cloud Shell for 120 days, Cloud Shell automatically deletes your `$HOME` directory and can't recover your files. You'll receive an email notification before this occurs. Starting a Cloud Shell session prevents the `$HOME` directory persistent storage from being recycled.
 - While `GOOGLE_CLOUD_PROJECT` inherits the active project from the console, your Cloud Shell instance is not directly associated with or managed by this project.
 - Inactivity timeout: this page says the session terminates "after an hour of inactivity", whereas [quotas-limits.md](./quotas-limits.md) says the VM "terminates if your session is inactive for 40 minutes". Both are kept as written in the official pages.

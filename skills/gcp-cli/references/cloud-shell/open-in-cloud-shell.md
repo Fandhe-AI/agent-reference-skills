@@ -12,14 +12,18 @@ An Open in Cloud Shell link, optionally embedded in a button image, can be added
 
 To embed a button to open a sample Git repository in Cloud Shell, include the following Markdown in your repository's README.md file:
 
+Adapted (not in the official docs): the official snippet uses the placeholder `http://path-to-repo/sample.git`; it is written as `https://path-to-repo/sample.git` so the clone is not fetched over plain HTTP.
+
 ```markdown
-[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=http://path-to-repo/sample.git)
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://path-to-repo/sample.git)
 ```
 
 To embed the same functionality into a website, use this equivalent HTML snippet:
 
+Adapted (not in the official docs): the official snippet uses the placeholder `http://path-to-repo/sample.git`; it is written as `https://path-to-repo/sample.git` so the clone is not fetched over plain HTTP.
+
 ```html
-<a href="https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=http://path-to-repo/sample.git">
+<a href="https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://path-to-repo/sample.git">
 <img alt="Open in Cloud Shell" src ="https://gstatic.com/cloudssh/images/open-btn.svg">
 </a>
 ```
@@ -48,6 +52,7 @@ Optional:
 
 ## Notes
 
+- Adapted from the official docs: the `cloudshell_git_repo` placeholder `http://path-to-repo/sample.git` is written with `https://`.
 - Only GitHub and Bitbucket repositories are permitted by default. To add a different repository type, send feedback with the repository type you'd like to use.
 - The official page also embeds an interactive Open in Cloud Shell link generator form (iframe), which is not reproduced here.
 - Source: https://docs.cloud.google.com/shell/docs/open-in-cloud-shell (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)

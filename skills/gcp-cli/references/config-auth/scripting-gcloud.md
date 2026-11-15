@@ -189,6 +189,7 @@ done <<< "${scopes_info}"
 
 ## Notes
 
+- `project_id` in the `table(...)` projection is kept as written: gcloud resolves a snake_case key to the camelCase field (`projectId`) when the exact key is absent (`GetMatchingIndex` in `googlecloudsdk/core/resource/resource_property.py`, gcloud 593.0.0).
 - Adapted from the official docs: the `--quiet` example used `gcloud debug targets list` (Cloud Debugger, shut down 2023-05-31; no `debug` group in gcloud 593.0.0) and is replaced with `gcloud projects list --quiet`.
 - Adapted from the official docs: the Bash loops (service account keys per project, and the multi-valued CSV parsing) are shown only in a safe form: the official versions iterate over unquoted command substitutions, which word-split values, and the CSV example wraps the `--format` value across lines. The PowerShell loop is unchanged.
 - Parallel execution of multiple gcloud CLI commands is not supported.

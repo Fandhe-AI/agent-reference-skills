@@ -10,12 +10,10 @@ The gcloud CLI provides an installer for each supported platform, deployable int
 
 ### Linux and macOS (interactive)
 
-The official page pipes the installer directly into `bash`. Adapted into download, inspect, run:
-
-Adapted (not in the official docs): the official `curl https://sdk.cloud.google.com | bash` is split into download, inspect, run so the script can be reviewed before execution.
+Adapted (not in the official docs): the official `curl https://sdk.cloud.google.com | bash` is split into download, inspect, run so the script can be reviewed before execution, and `curl -fsSL ... -o install.sh` fails on HTTP errors instead of saving an error page as the script.
 
 ```bash
-curl https://sdk.cloud.google.com > install.sh
+curl -fsSL https://sdk.cloud.google.com -o install.sh
 ```
 
 ```bash
@@ -40,7 +38,7 @@ gcloud init
 
 Requires Windows 8.1 and later, or Windows Server 2012 and later. Download the installer or use PowerShell:
 
-```bash
+```powershell
 (New-Object Net.WebClient).DownloadFile("https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe", "$env:Temp\GoogleCloudSDKInstaller.exe")
 
 & $env:Temp\GoogleCloudSDKInstaller.exe
@@ -60,8 +58,10 @@ C:\> gcloud init
 
 Linux and macOS: save the install script locally instead of piping it to bash, then run it:
 
+Adapted (not in the official docs): the official `curl https://sdk.cloud.google.com > install.sh` becomes `curl -fsSL https://sdk.cloud.google.com -o install.sh` (fail on HTTP errors). Review the downloaded script once interactively (for example with `less install.sh`, as in the interactive steps) before running it unattended.
+
 ```bash
-curl https://sdk.cloud.google.com > install.sh
+curl -fsSL https://sdk.cloud.google.com -o install.sh
 ```
 
 ```bash
@@ -93,7 +93,7 @@ Windows installer flags (case sensitive):
 
 ## Notes
 
-- Adapted from the official docs: the official Linux/macOS interactive one-liner `curl https://sdk.cloud.google.com | bash` was rewritten as download, inspect, run (the page's own non-interactive section already saves the script to `install.sh`).
+- Adapted from the official docs: the official Linux/macOS interactive one-liner `curl https://sdk.cloud.google.com | bash` was rewritten as download, inspect, run, and the non-interactive section's `curl https://sdk.cloud.google.com > install.sh` gained an inspect step; both downloads use `curl -fsSL https://sdk.cloud.google.com -o install.sh` so that an HTTP error does not leave an error page in `install.sh`.
 - To install a specific version non-interactively (for example reproducible production builds), use a versioned archive instead; the installer targets the latest version.
 - Windows troubleshooting: if `find` is not recognized, include its folder (usually `C:\WINDOWS\system32;`) in `PATH`; reboot before reinstalling after an uninstall; run the installer as administrator if unzipping fails.
 - Source: https://docs.cloud.google.com/sdk/docs/downloads-interactive (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)

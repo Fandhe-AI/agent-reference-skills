@@ -24,10 +24,6 @@ gcloud cloud-shell ssh
 
 2. Copy a file, `data.txt`, from Cloud Shell to your local machine:
 
-```bash
-gcloud cloud-shell scp cloudshell:~/data.txt localhost:~data.txt
-```
-
 Adapted (not in the official docs): `localhost:~data.txt` lacks the slash after `~`; the file is meant to land in the local home directory.
 
 ```bash
@@ -42,7 +38,8 @@ gcloud cloud-shell get-mount-command ~/my-cloud-shell
 
 ## Notes
 
-- Corrected from the official docs: the destination `localhost:~data.txt` is kept verbatim above, followed by the corrected `localhost:~/data.txt` (the `gcloud cloud-shell scp` help uses `localhost:~/...`).
+- Corrected from the official docs: the page writes the destination as `localhost:~data.txt` (`gcloud cloud-shell scp cloudshell:~/data.txt localhost:~data.txt`), which lacks the slash after `~`; the fence uses `localhost:~/data.txt`, the form the `gcloud cloud-shell scp` help uses.
+- `gcloud cloud-shell get-mount-command` is marked DEPRECATED in the gcloud 593.0.0 help ("deprecated and will be removed in a future release. Please use gcloud cloud-shell scp or gcloud cloud-shell ssh instead"); the `sshfs` mount step above is kept as the source page shows it.
 - To propagate your credentials to your Cloud Shell when starting it from the Google Cloud CLI, use the `--authorize-session` flag when running `gcloud cloud-shell ssh`.
 - Reference documentation for the command group: https://docs.cloud.google.com/sdk/gcloud/reference/cloud-shell
 - Distance line: installing the gcloud CLI is covered by the `install-setup` category of this skill.

@@ -87,6 +87,7 @@ External package manager equivalents (APT / YUM packages for the same components
 - The component manager is disabled when the gcloud CLI was installed with a package manager such as APT or `yum`; use the external package manager packages instead. If the package manager cannot find them, configure `https://packages.cloud.google.com/` as a package source (see install-sdk).
 - When modifying your installation, the terminal's current directory must be outside the `google-cloud-cli` installation directory. On Windows, open the terminal as Administrator after an *All Users* installation.
 - The page's sample `gcloud components list` output is not complete; update the CLI and run `gcloud components list` for current offerings. Components with status `Not Installed` can be installed.
+- The page still lists a `preview` component and `gcloud preview` commands, but the gcloud 593.0.0 command reference has no `gcloud preview` group (only `gcloud alpha` and `gcloud beta` release-level groups); use `gcloud components list` to see whether a `preview` component is offered.
 - To downgrade a package-manager installation, use the version-specific `apt-get` / `yum` instructions in install-sdk.
 - Source: https://docs.cloud.google.com/sdk/docs/components (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 

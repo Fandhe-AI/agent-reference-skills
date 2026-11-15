@@ -48,16 +48,10 @@ gcloud config set compute/zone us-east1-b
 
 Each property has a corresponding environment variable. The name follows the `CLOUDSDK_SECTION_NAME_PROPERTY_NAME` pattern. For example, you can set the `core/project` and `compute/zone` properties as follows:
 
-```
-CLOUDSDK_CORE_PROJECT=PROJECT_NAME
-
-CLOUDSDK_COMPUTE_ZONE=ZONE_NAME
-```
-
-Adapted (not in the official docs): a plain assignment creates an unexported shell variable that `gcloud` does not see; `export` passes it to the `gcloud` process.
+Adapted (not in the official docs): a plain assignment creates an unexported shell variable that `gcloud` does not see, so `export` passes it to the `gcloud` process; the placeholder `PROJECT_NAME` is renamed `PROJECT_ID` because `core/project` takes the project ID.
 
 ```bash
-export CLOUDSDK_CORE_PROJECT=PROJECT_NAME
+export CLOUDSDK_CORE_PROJECT=PROJECT_ID
 export CLOUDSDK_COMPUTE_ZONE=ZONE_NAME
 ```
 
@@ -84,7 +78,8 @@ The list of all properties can be found by running `gcloud topic configurations`
 
 ## Notes
 
-- Adapted from the official docs: the environment-variable assignments are also shown with `export`, which is needed for `gcloud` (a child process) to read them.
+- Adapted from the official docs: the page sets the environment variables without `export` (`CLOUDSDK_CORE_PROJECT=PROJECT_NAME`, `CLOUDSDK_COMPUTE_ZONE=ZONE_NAME`); `gcloud` (a child process) reads them only when exported, so the fence uses `export`.
+- Corrected from the official docs: the placeholder `PROJECT_NAME` is shown as `PROJECT_ID`, because `core/project` takes a project ID, not a display name.
 - Properties and flags: the gcloud CLI supports both global flags and command flags that have the same effect as properties (for example the `--project` flag and the `project` property). Properties maintain the same settings across command executions while flags affect behavior on a per-invocation basis. Flags override properties when both are set.
 - A configuration is a named set of properties. The gcloud CLI uses a configuration named `default` as the initial active configuration, which is suitable for most use cases. See configurations.md.
 - Environment variable values take precedence over property values set using `gcloud config set`.

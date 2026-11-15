@@ -29,11 +29,13 @@ export CLOUDSDK_CONFIG=$HOME/.config/gcloud
 
 To set the project you'd like to work on:
 
+Adapted (not in the official docs): the placeholder `[PROJECT_NAME]` is renamed `[PROJECT_ID]` because `gcloud config set project` takes the project ID.
+
 ```bash
-gcloud config set project [PROJECT_NAME]
+gcloud config set project [PROJECT_ID]
 ```
 
-Your command prompt updates to the format `[USERNAME]@cloudshell:~ ([PROJECT_NAME])$`. To select your preferred region:
+Your command prompt updates to the format `[USERNAME]@cloudshell:~ ([PROJECT_ID])$`. To select your preferred region:
 
 ```bash
 gcloud config set compute/region us-east1
@@ -73,6 +75,7 @@ gcloud config set disable_usage_reporting true
 
 ## Notes
 
+- Corrected from the official docs: the page writes `gcloud config set project [PROJECT_NAME]` (and the prompt as `([PROJECT_NAME])$`), but the `core/project` property takes a project ID, not a display name; this page uses `[PROJECT_ID]`.
 - The `authuser` example URL in the fetched source is truncated (it shows only a stray backtick and `shell.cloud.google.com`), so no example URL is reproduced here.
 - If you want a specific package included with Cloud Shell by default, the page asks you to submit your suggestion as feedback.
 - Distance line: gcloud properties and named configurations in general are in the `config-auth` category of this skill.

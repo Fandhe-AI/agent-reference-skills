@@ -34,15 +34,7 @@ gcloud config set proxy/username [USERNAME]
 gcloud config set proxy/password [PASSWORD]
 ```
 
-The official page recommends environment variables so that the gcloud CLI does not store the proxy credentials in its configuration or logs. Typing a literal password on an `export` line still records it in your shell history, so read secret values without echoing them (see the Adapted block below). Official text:
-
-```bash
-export CLOUDSDK_PROXY_USERNAME [USERNAME]
-
-export CLOUDSDK_PROXY_PASSWORD [PASSWORD]
-```
-
-Corrected copy (the official sample omits the `=` that `export` needs):
+The official page recommends environment variables so that the gcloud CLI does not store the proxy credentials in its configuration or logs. Typing a literal password on an `export` line still records it in your shell history, so read secret values without echoing them (see the Adapted block below).
 
 Adapted (not in the official docs): `export NAME [VALUE]` is not valid shell syntax; `export NAME=VALUE` is required to set a variable.
 
@@ -78,7 +70,7 @@ gcloud config set core/custom_ca_certs_file [PATH_TO_CUSTOM_CA]
 ## Notes
 
 - Adapted from the official docs: environment variables keep the credentials out of the gcloud configuration and logs, but a password typed on an `export` line is saved in the shell history; the page adds a `read -r -s` example that avoids this.
-- Corrected from the official docs: the `export CLOUDSDK_PROXY_USERNAME [USERNAME]` samples lack `=`; the corrected copy above uses `export NAME=VALUE`.
+- Corrected from the official docs: the page prints `export CLOUDSDK_PROXY_USERNAME [USERNAME]` and `export CLOUDSDK_PROXY_PASSWORD [PASSWORD]`, which lack the `=` that `export` needs; the fence above uses `export NAME=VALUE`.
 - If you see warnings or errors about `https_proxy`, you may have written `https_proxy=https://...` instead of `https_proxy=http://...`. The gcloud CLI only supports HTTP proxies; earlier versions silently ignored the difference and always contacted the proxy via HTTP.
 - For a full description of related properties, run `gcloud topic configurations` or `gcloud config set` and look for **proxy** under Available properties.
 - Source: https://docs.cloud.google.com/sdk/docs/proxy-settings (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)

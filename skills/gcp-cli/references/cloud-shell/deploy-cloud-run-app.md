@@ -31,7 +31,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 Replace `PROJECT_ID` with your Google Cloud project ID and `SERVICE_ACCOUNT_EMAIL_ADDRESS` with the email address of the Cloud Build service account. If you're using the Compute Engine default service account as the Cloud Build service account, use the following format for the service account email address:
 
-```bash
+```text
 PROJECT_NUMBER-compute@developer.gserviceaccount.com
 ```
 

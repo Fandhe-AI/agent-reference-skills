@@ -20,8 +20,10 @@ Requires Python 3.10 to 3.15. The x86_64 and Arm Linux packages include a bundle
 
 Download (replace the package name with the one for your configuration), extract, then run the installer from the folder you extracted:
 
+Adapted (not in the official docs): `curl -O` becomes `curl -fLO` so an HTTP error fails the download instead of saving the error page under the archive name.
+
 ```bash
-curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz
+curl -fLO https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz
 ```
 
 ```bash
@@ -96,13 +98,13 @@ sudo apt-get install ca-certificates gnupg curl
 
    Inside a Docker image, use a single `RUN` step:
 
-   ```bash
+   ```docker
    RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg && apt-get update -y && apt-get install google-cloud-cli -y
    ```
 
    For older base images without `gpg --dearmor`:
 
-   ```bash
+   ```docker
    RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-cli -y
    ```
 
@@ -192,8 +194,10 @@ Requires Python 3.10 to 3.15 (check with `python3 -V` or `python -V`); the insta
 
 Replace `FILE_NAME` with the package name for your platform:
 
+Adapted (not in the official docs): `curl -O` becomes `curl -fLO` so an HTTP error fails the download instead of saving the error page under the archive name.
+
 ```bash
-curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/FILE_NAME
+curl -fLO https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/FILE_NAME
 ```
 
 ```bash
@@ -280,6 +284,9 @@ gcloud help compute instances create
 
 ## Notes
 
+- The page labels the `cloud-sdk-el9-x86_64` and `cloud-sdk-el9-aarch64` repositories "RHEL 7, 8, or 9-compatible" (kept as written); the repository name targets EL9 and RHEL 7 has no `dnf` (use `yum`). On RHEL 7 or 8, confirm the packages resolve before relying on it.
+- Adapted from the official docs: the Linux and macOS archive downloads use `curl -fLO` instead of the official `curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/...` so that an HTTP error stops the download.
+- The two `RUN` lines are Dockerfile instructions (shown as `docker` fences), not shell commands. They call `curl` and `gpg` (or `apt-key`) without installing them, so the base image must already have `curl` and `gnupg`.
 - The `libxcrypt-compat.x86_64` step applies to x86_64 hosts; the source page shows no aarch64 package for this step (not verified on aarch64).
 - The SHA256 checksums are those the official page showed on the retrieval date for the versionless file names (`google-cloud-cli-<platform>.tar.gz`), which always serve the latest release; after a new release they no longer match. Compare against the checksum currently shown on the official page, or use the pinned 593.0.0 archives and checksums listed in [downloads-versioned-archives.md](./downloads-versioned-archives.md).
 - Windows troubleshooting: if installation fails because `find` is not recognized, include the folder containing `find` (usually `C:\WINDOWS\system32;`) in `PATH`; if you uninstalled the gcloud CLI, reboot before reinstalling; if unzipping fails, run the installer as an administrator.

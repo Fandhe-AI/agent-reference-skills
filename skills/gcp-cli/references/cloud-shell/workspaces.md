@@ -30,10 +30,18 @@ To use the Home workspace, click **File** > **Open Folder** and choose your Home
 
 > **Warning:** These actions will delete your folder and can't be undone.
 
-To delete the folder, run the following command:
+To delete the folder, first check that the path is the workspace folder you mean, then delete it. `rm -rf` removes the folder and everything under it without prompting.
+
+Adapted (not in the official docs): a listing step is added before the deletion so you can confirm the target first.
 
 ```bash
-rm -rf FOLDER_NAME
+ls -la -- "FOLDER_NAME"
+```
+
+Adapted (not in the official docs): the folder name is quoted and preceded by `--` so a name with spaces or a leading `-` is not split or read as an option.
+
+```bash
+rm -rf -- "FOLDER_NAME"
 ```
 
 ### Configure settings
@@ -46,6 +54,7 @@ Settings are accessible through the Settings Gear in the bottom left corner of t
 
 ## Notes
 
+- Adapted from the official docs: the page gives only `rm -rf FOLDER_NAME`; this page adds `ls -la -- "FOLDER_NAME"` to confirm the target first and runs `rm -rf -- "FOLDER_NAME"` with the name quoted.
 - When a setting is set in more than one scope, remote settings override user settings, and workspace settings override both remote and user settings.
 - Source: https://docs.cloud.google.com/shell/docs/workspaces (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 

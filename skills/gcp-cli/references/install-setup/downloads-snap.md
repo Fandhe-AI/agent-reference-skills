@@ -14,14 +14,18 @@ The snap contains the gcloud CLI, `gcloud alpha`, `gcloud beta`, `gsutil`, `dock
 
    > **Warning:** this uninstalls the `google-cloud-sdk` snap from the machine.
 
+   Adapted (not in the official docs): `sudo` is added because removing a snap needs root privileges.
+
    ```bash
-   snap remove google-cloud-sdk
+   sudo snap remove google-cloud-sdk
    ```
 
 2. Install the snap:
 
+   Adapted (not in the official docs): `sudo` is added because installing a snap needs root privileges.
+
    ```bash
-   snap install google-cloud-cli --classic
+   sudo snap install google-cloud-cli --classic
    ```
 
 3. Optional command completion (Bash, then Zsh), then restart your shell:
@@ -43,6 +47,7 @@ The snap contains the gcloud CLI, `gcloud alpha`, `gcloud beta`, `gsutil`, `dock
 ## Notes
 
 - Ubuntu only (snap-capable releases).
+- Adapted from the official docs: the page prints `snap remove google-cloud-sdk` and `snap install google-cloud-cli --classic` without `sudo`; both are shown with `sudo`.
 - Source: https://docs.cloud.google.com/sdk/docs/downloads-snap (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

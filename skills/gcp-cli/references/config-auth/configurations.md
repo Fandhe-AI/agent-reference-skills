@@ -97,16 +97,10 @@ gcloud config unset project
 
 Properties can also be set via environment variables named `CLOUDSDK_SECTION_NAME_PROPERTY_NAME`. For example, you can set the `core/project` and `compute/zone` properties as follows:
 
-```
-CLOUDSDK_CORE_PROJECT=[YOUR_PROJECT_NAME]
-
-CLOUDSDK_COMPUTE_ZONE=[YOUR_ZONE_NAME]
-```
-
-Adapted (not in the official docs): a plain assignment creates an unexported shell variable that `gcloud` does not see; `export` passes it to the `gcloud` process.
+Adapted (not in the official docs): a plain assignment creates an unexported shell variable that `gcloud` does not see, so `export` passes it to the `gcloud` process; the placeholder `[YOUR_PROJECT_NAME]` is renamed `[YOUR_PROJECT_ID]` because `core/project` takes the project ID.
 
 ```bash
-export CLOUDSDK_CORE_PROJECT=[YOUR_PROJECT_NAME]
+export CLOUDSDK_CORE_PROJECT=[YOUR_PROJECT_ID]
 export CLOUDSDK_COMPUTE_ZONE=[YOUR_ZONE_NAME]
 ```
 
@@ -159,7 +153,8 @@ You can't delete the active configuration. Use `gcloud config configurations act
 
 ## Notes
 
-- Adapted from the official docs: the environment-variable assignments are also shown with `export`, which is needed for `gcloud` (a child process) to read them.
+- Adapted from the official docs: the page sets the environment variables without `export` (`CLOUDSDK_CORE_PROJECT=[YOUR_PROJECT_NAME]`, `CLOUDSDK_COMPUTE_ZONE=[YOUR_ZONE_NAME]`); `gcloud` (a child process) reads them only when exported, so the fence uses `export`.
+- Corrected from the official docs: the placeholder `[YOUR_PROJECT_NAME]` is shown as `[YOUR_PROJECT_ID]`, because `core/project` takes a project ID, not a display name.
 - Configuration management commands: `gcloud config configurations create | activate | list | describe | delete` (written out individually above).
 - This guide says the new configuration must be activated after creation, while the `gcloud config configurations create` help of gcloud 593.0.0 activates it by default (`--no-activate` turns this off). Activate explicitly if in doubt.
 - Source: https://docs.cloud.google.com/sdk/docs/configurations (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
