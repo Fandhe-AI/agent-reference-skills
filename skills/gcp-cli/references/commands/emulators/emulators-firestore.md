@@ -124,6 +124,22 @@ NOTES
         $ gcloud beta emulators firestore start
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud emulators firestore start \
+    --host-port=localhost:8080
+
+gcloud emulators firestore start \
+    --import-data=PATH_TO_FILE
+
+gcloud emulators firestore start \
+    --export-on-exit=PATH_TO_DIRECTORY
+
+gcloud emulators firestore start \
+    --edition=enterprise
+```
+
 ### gcloud beta emulators firestore start
 
 ```text
@@ -154,6 +170,10 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `--edition=edition` example passes a placeholder that is not an accepted value (`EDITION must be one of: standard, enterprise`); the runnable form uses `--edition=enterprise`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `--host-port=0.0.0.0:8080` example exposes the unauthenticated emulator on every network interface; the runnable form binds to `localhost:8080` (bind to `0.0.0.0` only on an isolated network or behind a firewall).
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `<path/to/file>` and `<path/to/directory>` placeholders are bash redirections when pasted; the runnable form writes them as `PATH_TO_FILE` / `PATH_TO_DIRECTORY`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
