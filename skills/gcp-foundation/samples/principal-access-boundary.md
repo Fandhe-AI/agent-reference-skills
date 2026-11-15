@@ -8,7 +8,7 @@ Restrict which resources a set of principals is eligible to access by creating a
 
 ## Signature / Usage
 
-Requires `roles/iam.principalAccessBoundaryAdmin` on the organization.
+Requires `roles/iam.principalAccessBoundaryAdmin` on the organization to create the policy. Applying (binding) a policy needs `roles/iam.principalAccessBoundaryUser` on the organization (`iam.principalaccessboundarypolicies.bind`) plus a role on the target principal set, for example `roles/resourcemanager.projectIamAdmin` on the project (`resourcemanager.projects.createPolicyBinding`), `roles/resourcemanager.folderIamAdmin` on the folder, or `roles/resourcemanager.organizationAdmin` on the organization. Add `roles/iam.operationViewer` on the project to poll the operation.
 
 ### Rule format
 
@@ -91,7 +91,8 @@ principal.subject != 'special-admin@example.com'
 
 ## Notes
 
-- PAB can only block access, never grant it. Once a principal is subject to at least one PAB policy, access is blocked unless some policy lists the resource.
+- PAB can only block access, never grant it. Once a principal is subject to at least one PAB policy, access is blocked unless some policy lists the resource, but only for the permissions that the chosen enforcement version enforces ("The enforcement version determines which permissions IAM enforces"); access through permissions outside that version is not restricted by PAB. Check the supported permissions for your enforcement version before relying on it as a complete resource boundary.
+- Project principal set form, as in the official table: "Project's principal set ... Format: `//cloudresourcemanager.googleapis.com/projects/PROJECT_ID`" (the official view page uses `//cloudresourcemanager.googleapis.com/projects/example-project`, a project ID). The folder and organization forms take numeric IDs; workload identity pools use `PROJECT_NUMBER` in `//iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/WORKLOAD_POOL_ID`.
 - Keep principals subject to at least one PAB policy at all times; removing all policies makes them eligible for everything again.
 - `latest` is not recommended because principals may lose access unexpectedly; pin an enforcement version. Evaluation fails closed, so test on a throwaway project and organization subset first.
 - The policy and the principal set of a binding cannot be changed after creation.
