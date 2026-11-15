@@ -52,6 +52,11 @@ Use the `google_workload_identity_service_agent` resource; roles can be referenc
 ```terraform
 data "google_project" "default" {
 }
+
+# Create all project-level bigquery.googleapis.com service agents
+resource "google_workload_identity_service_agent" "primary" {
+  parent = "projects/${data.google_project.default.number}/locations/global/serviceProducers/bigquery.googleapis.com"
+}
 ```
 
 ### Grant roles to the created service agents
@@ -69,7 +74,7 @@ gcloud RESOURCE_TYPE add-iam-policy-binding RESOURCE_ID \
 - Agents created on request are not automatically granted their usual roles. The role listed in the response is not granted; grant each listed role to the listed principal yourself or the service may not function.
 - Terraform and policies-as-code workflows revoke or flag automatically granted roles that are absent from the configuration, so create the agents and grant roles in code.
 - For service-specific resources, follow the individual service's documentation.
-- The Terraform sample here is only the opening data block; the full resource example (BigQuery, default project) is on the source page.
+- The Terraform sample creates all project-level `bigquery.googleapis.com` service agents for the default project.
 - Source: https://docs.cloud.google.com/iam/docs/create-service-agents (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

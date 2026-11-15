@@ -73,7 +73,7 @@ STS_RESPONSE="$(curl -s https://sts.googleapis.com/v1/token \
     --data-urlencode "subject_token_type=SUBJECT_TOKEN_TYPE" \
     --data-urlencode "subject_token=EXTERNAL_SUBJECT_TOKEN"  \
     --data-urlencode "options={\"userProject\":\"BILLING_PROJECT_NUMBER\"}")"
-ACCESS_TOKEN="$(printf '%s' "${STS_RESPONSE}" | jq -r '.access_token')"
+ACCESS_TOKEN="$(printf '%s' "${STS_RESPONSE}" | jq -er '.access_token')"
 ```
 
 ```json

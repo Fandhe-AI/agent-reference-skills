@@ -12,7 +12,7 @@ Managing, using, and securing user-managed service account keys (RSA key pairs w
 
 Set the Service Account Key Exposure Response constraint to `DISABLE_KEY`. A key disabled this way carries these metadata fields:
 
-```json
+```text
 "disable_reason": "SERVICE_ACCOUNT_KEY_DISABLE_REASON_EXPOSED"
 "extended_status": "SERVICE_ACCOUNT_KEY_EXTENDED_STATUS_KEY_EXPOSED"
 "extended_status_message": "LINK_TO_EXPOSURE"

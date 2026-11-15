@@ -188,7 +188,7 @@ STS_RESPONSE="$(curl -s --key CLIENT_CERT_KEY \
 --request POST 'https://sts.mtls.googleapis.com/v1/token' \
 --header "Content-Type: application/json" \
 --data-raw "${REQUEST_BODY}")"
-STS_TOKEN="$(printf '%s' "${STS_RESPONSE}" | jq -r '.access_token')"
+STS_TOKEN="$(printf '%s' "${STS_RESPONSE}" | jq -er '.access_token')"
 ```
 
 Regional endpoint form: `https://sts.REGION.rep.mtls.googleapis.com/v1/token`. Optional impersonation (Adapted (not in the official docs): the response is captured in a variable and the token is not printed):

@@ -84,7 +84,7 @@ gcloud iam workforce-pools providers create-oidc WORKFORCE_PROVIDER_ID \
 
 Example OIDC attribute mapping and condition:
 
-Adapted (not in the official docs): entries are comma-separated, and `google.subject` / the condition use the standard OIDC `sub` claim instead of `oid` / `subject`, which Okta does not issue unless you add them as custom claims.
+Adapted (not in the official docs): entries are comma-separated, `google.subject` is mapped from the standard OIDC `sub` claim instead of `oid`, and the condition checks the mapped `google.subject` value (attribute conditions may reference `google.*` attributes).
 
 ```
 google.subject=assertion.sub,
@@ -92,8 +92,10 @@ google.groups=assertion.groups,
 attribute.costcenter=assertion.costcenter
 ```
 
+Condition, for use when the value mapped to `google.subject` contains an email address that ends with `@example.com`:
+
 ```
-assertion.sub.endsWith('@example.com')
+google.subject.endsWith('@example.com')
 ```
 
 ### 3c. SAML provider
@@ -211,7 +213,7 @@ Console (federated): `https://auth.cloud.google/signin?continueUrl=https://conso
 
 ## Notes
 
-- Corrected from the official docs: the OIDC mapping example lacked a comma after `google.subject=...`, and referenced non-standard claims (`oid`, `subject`); the example now uses `assertion.sub`. Whether Okta `sub` carries an email-style value depends on your configuration (not confirmed in the official docs); adjust the condition to a claim you actually issue.
+- Corrected from the official docs: the OIDC mapping example lacked a comma after `google.subject=...` and mapped `assertion.oid`; the example maps the standard OIDC `sub` claim instead. The official condition example (`assertion.subject.endsWith('@example.com')`) applies "when the value of `subject` mapped earlier contains an email address"; this page expresses that as `google.subject.endsWith(...)`, which `gcloud iam workforce-pools providers create-oidc --help` allows (`google` attributes may be referenced in `--attribute-condition`). Map `google.subject` from a claim whose value has that format, or change the condition.
 
 - Required role: `roles/iam.workforcePoolAdmin` on the organization. No-cost feature; detailed audit logging incurs Cloud Logging charges.
 - The IdP must provide signed authentication info (OIDC JWT or signed SAML response).

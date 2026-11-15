@@ -158,7 +158,7 @@ Example conditions: `assertion.role == 'gcp-users'`, `assertion.subject.endsWith
 - Local OIDC JWKs are usable only in programmatic flow (direct STS `/token` exchange), not console (federated) sign-in.
 - Managing OIDC JWKs: upload with `--jwk-json-path` on create; `update-oidc` with a path replaces all uploaded keys; pass an empty file plus `--issuer-uri` to delete all uploaded keys and revert to issuer URI fetching.
 - Up to 400 groups can be mapped using extra attributes (Microsoft Entra ID scalable groups).
-- A client secret value in a command is sensitive; avoid shell history exposure and logging.
+- `--client-secret-value` passes the OIDC client secret on the command line; the gcloud CLI has no file-based alternative for this flag, so run such commands where the shell history and command logs are not shared.
 - Install and update gcloud with `gcloud components update`; external IdP users must sign in to gcloud with their federated identity first.
 - Source: https://docs.cloud.google.com/iam/docs/manage-workforce-identity-pools-providers
 - Retrieved 2026-11-14. Content CC BY 4.0; code samples Apache 2.0.

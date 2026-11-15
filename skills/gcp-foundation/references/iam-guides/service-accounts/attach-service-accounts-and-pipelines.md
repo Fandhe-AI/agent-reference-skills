@@ -41,7 +41,7 @@ POST https://iam.googleapis.com/v1/projects/PROJECT_ID/serviceAccounts/USER_SA_N
 
 Modified policy:
 
-Adapted (not in the official docs): `roles/iam.serviceAccountUser` (which carries `iam.serviceAccounts.actAs`) is granted to the principal that attaches the service account to the resource, not to the service account itself; the service agent receives `roles/iam.serviceAccountTokenCreator`.
+Adapted (not in the official docs): `roles/iam.serviceAccountUser` (which carries `iam.serviceAccounts.actAs`) is granted to the principal that attaches the service account to the resource, not to the service account itself; the service agent receives `roles/iam.serviceAccountTokenCreator`. The member placeholder carries a principal type prefix (`PRINCIPAL_TYPE:`), and the bindings returned by `getIamPolicy` are kept alongside these.
 
 ```json
 {
@@ -57,7 +57,7 @@ Adapted (not in the official docs): `roles/iam.serviceAccountUser` (which carrie
     {
       "role": "roles/iam.serviceAccountUser",
       "members": [
-        "PRINCIPAL_THAT_ATTACHES_SERVICE_ACCOUNT"
+        "PRINCIPAL_TYPE:PRINCIPAL_THAT_ATTACHES_SERVICE_ACCOUNT"
       ]
     }
   ]
@@ -105,6 +105,7 @@ AI Platform Prediction (model versions) and Training (jobs), App Engine standard
 
 ## Notes
 
+- Adapted from the official docs: the `members` placeholder carries a principal type prefix (`PRINCIPAL_TYPE:...`, for example `user:alex@example.com`), because allow policy members require one. In the read-modify-write flow, keep the existing bindings returned by `getIamPolicy` and add these.
 - Adapted from the official docs: the `roles/iam.serviceAccountUser` binding in the modified-policy example names the principal that attaches the service account (`iam.serviceAccounts.actAs`), not the service account itself.
 
 - Using the `iam.serviceAccounts.actAs` permission to attach a service account produces an audit log with the attaching principal and the attached service account.

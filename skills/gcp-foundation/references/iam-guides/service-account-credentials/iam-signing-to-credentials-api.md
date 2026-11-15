@@ -48,6 +48,7 @@ gcloud iam service-accounts sign-blob
 
 ## Notes
 
+- The "moving to the new API" wording is from the official page (a July 2021 migration); gcloud 593.0.0 has the GA commands `gcloud iam service-accounts sign-jwt` and `gcloud iam service-accounts sign-blob`.
 - Client libraries are separate (add the IAM Credentials client; remove the old `iam_credentials`-style library when no longer needed). Python: use `sign_jwt()` / `sign_blob()`; `google-auth` >= 1.21.2; `python-storage` >= 1.30.0 when signing via those libraries.
 - Data Access audit logs for the IAM API must be enabled to log signing requests; this also enables them for the Service Account Credentials API, and they count toward logging ingestion charges.
 - Source: https://docs.cloud.google.com/iam/docs/migrating-to-credentials-api

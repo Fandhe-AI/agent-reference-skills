@@ -25,18 +25,18 @@ gcloud resource-manager tags bindings list \
     --parent=RESOURCE_ID
 ```
 
+```text
+name: tagBindings/%2F%2Fcloudresourcemanager.googleapis.com%2Fprojects%2F7890123456/tagValues/567890123456
+tagValue: tagValues/567890123456
+resource: //iam.googleapis.com/projects/test-project/serviceAccounts/1029384756
+```
+
 Adapted (not in the official docs): `--effective` is added to include inherited tags; the plain list above shows only directly attached bindings.
 
 ```bash
 gcloud resource-manager tags bindings list \
     --parent=RESOURCE_ID \
     --effective
-```
-
-```text
-name: tagBindings/%2F%2Fcloudresourcemanager.googleapis.com%2Fprojects%2F7890123456/tagValues/567890123456
-tagValue: tagValues/567890123456
-resource: //iam.googleapis.com/projects/test-project/serviceAccounts/1029384756
 ```
 
 Detach a directly attached tag:
@@ -91,7 +91,7 @@ gcloud org-policies set-policy POLICY_PATH --update-mask=spec
 
 Example constraint and its denial message:
 
-Adapted (not in the official docs): `resourceTypes` is a list.
+Adapted (not in the official docs): `resourceTypes` is a list, and `methodTypes` lists only `CREATE` (the official example also lists `UPDATE`, but the same page states the constraint can only be enforced on `CREATE`).
 
 ```yaml
 name: organizations/ORG_ID/customConstraints/custom.denyServiceAccountCreation
@@ -99,7 +99,6 @@ resourceTypes:
   - iam.googleapis.com/ServiceAccount
 methodTypes:
   - CREATE
-  - UPDATE
 condition:
   "resource.description.contains('INVALID_DESCRIPTION')"
 actionType: DENY
@@ -153,7 +152,7 @@ displayName: Deny all service account key uploads.
 |---|---|
 | `name` | Must start with `custom.`; letters and numbers only; max 70 characters excluding the `organizations/ID/customConstraints/custom` prefix |
 | `resourceTypes` | Resource name, e.g. `iam.googleapis.com/ServiceAccount` or `iam.googleapis.com/ServiceAccountKey`; most resource types support up to 20 custom constraints |
-| `methodTypes` | `CREATE` (console/gcloud docs state CREATE only; the YAML example also lists `UPDATE`) |
+| `methodTypes` | `CREATE` only (the official YAML example also lists `UPDATE`) |
 | `condition` | CEL expression, max 1,500 characters |
 | `actionType` | `ALLOW` or `DENY` (gcloud docs state `ALLOW` only; examples use `DENY`) |
 | `displayName` | Max 200 characters |
@@ -167,6 +166,8 @@ Tag roles: `roles/resourcemanager.tagViewer`, `roles/resourcemanager.organizatio
 
 ## Notes
 
+- Adapted from the official docs: the `custom.denyServiceAccountCreation` example drops `UPDATE` from `methodTypes`, because the official page states the constraint can only be enforced on the REST `CREATE` method.
+- The sample output (`name: tagBindings/...`) is the shape of the plain `tags bindings list --parent` command; `--effective` returns effective tags in a different shape (not shown in the official docs).
 - Adapted from the official docs: `tags bindings list` shows directly attached bindings only; add `--effective` to include inherited tags.
 
 - Tags on service accounts are Preview (Pre-GA terms). Tags let you conditionally allow/deny IAM policies; changing or deleting a tag can remove access granted by conditional role bindings.

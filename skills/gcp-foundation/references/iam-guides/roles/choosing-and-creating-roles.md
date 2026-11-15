@@ -143,7 +143,7 @@ Other update flags: `--remove-permissions=PERMISSIONS`, `--permissions=PERMISSIO
 |------|-------------|
 | Predefined | Default choice; managed by Google and updated as services add permissions. Prefer broad Admin / Editor / Viewer roles per service. |
 | Custom | When every predefined role containing a needed permission also has permissions the principal should not have, or a role recommendation proposes a custom role. Not updated automatically. |
-| Basic (Owner, Editor, Viewer) | Only when there is no alternative, e.g. development or test environments. |
+| Basic (Admin, Writer, Reader; legacy Owner, Editor, Viewer) | Only when there is no alternative, e.g. development or test environments. |
 
 ### Custom role limits
 

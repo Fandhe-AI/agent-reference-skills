@@ -10,16 +10,18 @@ Register OAuth clients and client credentials so federated workforce users can s
 
 Create a client:
 
+Adapted (not in the official docs): `--client-type` and `--allowed-grant-types` use the lowercase, hyphenated values listed in `gcloud iam oauth-clients create --help` (`confidential-client`, `authorization-code-grant`).
+
 ```bash
 gcloud iam oauth-clients create APP_OAUTH_CLIENT_ID \
     --project=PROJECT_ID \
     --location=global \
-    --client-type="CONFIDENTIAL_CLIENT" \
+    --client-type="confidential-client" \
     --display-name="My OAuth application" \
     --description="An application registration for MyApp" \
     --allowed-scopes="https://www.googleapis.com/auth/cloud-platform" \
     --allowed-redirect-uris="REDIRECT_URI" \
-    --allowed-grant-types="authorization_code_grant"
+    --allowed-grant-types="authorization-code-grant"
 ```
 
 Adapted (not in the official docs): the request body uses valid JSON (double-quoted keys and strings inside a single-quoted shell string).
@@ -185,14 +187,15 @@ curl -X DELETE \
 | `APP_OAUTH_CLIENT_ID` | ID that represents the OAuth client. |
 | `APP_OAUTH_CLIENT_CREDENTIAL_ID` | ID that represents the client credential. |
 | `PROJECT_ID` | Project in the organization where the workforce pool and provider were created. |
-| `--client-type` | `CONFIDENTIAL_CLIENT` in the example. |
-| `--allowed-grant-types` | `authorization_code_grant` in the example. |
+| `--client-type` | `confidential-client` or `public-client` (gcloud help). The REST field `clientType` uses `CONFIDENTIAL_CLIENT` / `PUBLIC_CLIENT`. |
+| `--allowed-grant-types` | `authorization-code-grant`, `refresh-token-grant` (gcloud help). The REST field `allowedGrantTypes` uses `AUTHORIZATION_CODE_GRANT` / `REFRESH_TOKEN_GRANT`. |
 | `--allowed-scopes` | For example `https://www.googleapis.com/auth/cloud-platform`. |
 | `--allowed-redirect-uris` | Redirect URI, e.g. `https://myapp.com/signin-callback`. |
 | `update_mask` | REST field mask, e.g. `allowed_redirect_uris`, `display_name`, `disabled`. |
 
 ## Notes
 
+- Corrected from the official docs: the gcloud example used `--client-type="CONFIDENTIAL_CLIENT"` and `--allowed-grant-types="authorization_code_grant"`; gcloud 593.0.0 `gcloud iam oauth-clients create --help` lists `confidential-client` / `public-client` and `authorization-code-grant` / `refresh-token-grant`.
 - OAuth application integration works only with Identity-Aware Proxy and Looker. The `projects.locations.oauthClients` API is only for Workforce Identity Federation; standard OAuth 2.0 client IDs for Google Cloud users or services are under **APIs & Services > Credentials**.
 - Prerequisites: an organization, and a workforce identity pool and provider in the same organization (see the Entra ID and Okta pages). Required role: `roles/iam.oauthClientAdmin` on the project.
 - For Looker, redirect users to `https://auth.cloud.google/authorize` to get an authorization code, then exchange codes or refresh tokens with the Cloud OAuth API using the client credentials.

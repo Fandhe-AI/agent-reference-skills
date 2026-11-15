@@ -146,7 +146,9 @@ gcloud iam workforce-pools create-cred-config \
     --output-file /path/to/generated/config.json
 ```
 
-Interactive mode: add `--executable-interactive-timeout-millis=EXECUTABLE_INTERACTIVE_TIMEOUT` (with `--executable-output-file`) to the same command. Sign in with a credential config:
+Interactive mode: add `--executable-interactive-timeout-millis=EXECUTABLE_INTERACTIVE_TIMEOUT` (with `--executable-output-file`) to the same command.
+
+Sign in to the gcloud CLI with a file-sourced or URL-sourced credential configuration (the gcloud CLI does not support executable-sourced credential types; see Notes):
 
 ```bash
 gcloud auth login --cred-file=/path/to/config.json
@@ -181,10 +183,13 @@ client = storage.Client(
     project="project-id", credentials=credentials)
 ```
 
+Adapted (not in the official docs): `import java.util.Arrays;` is added so the sample compiles.
+
 ```java
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import java.util.Arrays;
 
 GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
 GoogleCredentials sourceCredentials = credentials
@@ -207,7 +212,7 @@ STS_RESPONSE="$(curl -s https://sts.googleapis.com/v1/token \
     --data-urlencode "subject_token_type=SUBJECT_TOKEN_TYPE" \
     --data-urlencode "subject_token=EXTERNAL_SUBJECT_TOKEN"  \
     --data-urlencode "options={\"userProject\":\"BILLING_PROJECT_NUMBER\"}")"
-ACCESS_TOKEN="$(printf '%s' "${STS_RESPONSE}" | jq -r '.access_token')"
+ACCESS_TOKEN="$(printf '%s' "${STS_RESPONSE}" | jq -er '.access_token')"
 ```
 
 ```json
@@ -250,6 +255,8 @@ gcloud config set account principal://iam.googleapis.com/locations/global/workfo
 
 ## Notes
 
+- The official page ends its "Executable-sourced credentials for gcloud interactive mode" section with `gcloud auth login --cred-file`, but the same page also states that neither the gcloud CLI nor the bq tool supports executable-sourced credential types. This page therefore shows `gcloud auth login --cred-file` only for file-sourced and URL-sourced configurations.
+- Adapted from the official docs: the Java sample adds the missing `import java.util.Arrays;`.
 - Adapted from the official docs: the Client libraries examples are preceded by `export GOOGLE_APPLICATION_CREDENTIALS=...` pointing at the generated config, since `gcloud auth login` does not set up ADC for client libraries.
 
 - Workforce pools belong to an organization, not a project, so Node.js `GoogleAuth` and Python storage clients must be given a project ID explicitly (or `GOOGLE_CLOUD_PROJECT`).

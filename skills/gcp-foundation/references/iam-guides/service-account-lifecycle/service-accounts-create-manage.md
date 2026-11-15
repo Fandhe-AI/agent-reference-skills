@@ -218,6 +218,7 @@ POST https://iam.googleapis.com/v1/projects/PROJECT_ID/serviceAccounts/SA_NUMERI
 
 ## Notes
 
+- The official page uses `gcloud beta iam service-accounts undelete`; gcloud 593.0.0 also has the GA command `gcloud iam service-accounts undelete ACCOUNT_ID`.
 - Enable the IAM API first (`serviceusage.services.enable`, from `roles/owner` or `roles/serviceusage.serviceUsageAdmin`). Basic roles also contain these permissions; do not grant them in production.
 - Email format: `SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com`. Each account gets a permanent 21-digit numeric ID.
 - After creation, wait 60 seconds or more; reads are eventually consistent. Retry with exponential backoff on errors.

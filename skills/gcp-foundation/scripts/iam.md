@@ -102,9 +102,12 @@ gcloud beta iam service-accounts undelete ACCOUNT_ID
 
 ### Manage service account keys
 
+Adapted (not in the official docs): the private key file is created with `umask 077` inside a new private directory from `mktemp -d`, so it is owner-only and no existing file with looser permissions is reused; move the key to a secret store and delete the directory when done.
+
 ```bash
-gcloud iam service-accounts keys create KEY_FILE \
-    --iam-account=SA_NAME@PROJECT_ID.iam.gserviceaccount.com
+SECRET_DIR="$(mktemp -d)"
+(umask 077; gcloud iam service-accounts keys create "${SECRET_DIR}/KEY_FILE" \
+    --iam-account=SA_NAME@PROJECT_ID.iam.gserviceaccount.com)
 ```
 
 ```bash
@@ -250,6 +253,7 @@ gcloud alpha iam policies lint-condition --condition-from-file="condition.json"
 
 ## Notes
 
+- Adapted from the official docs: `gcloud iam service-accounts keys create` writes the private key to the output file; the example creates it with `umask 077` inside a new `mktemp -d` directory instead of the current directory.
 - Warning: use a disposable project or test environment for `remove-iam-policy-binding`, `set-iam-policy`, `service-accounts delete`, `keys delete`, `roles delete` and `iam policies delete`; always name the exact resource and never omit the target.
 - A deleted service account can be undeleted only within 30 days and only if no account with the same name exists.
 - Service account keys are a security risk; prefer impersonation or Workload Identity Federation. Key creation can be blocked by organization policy.

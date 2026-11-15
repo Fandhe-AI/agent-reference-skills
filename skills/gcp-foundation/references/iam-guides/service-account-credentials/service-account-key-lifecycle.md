@@ -10,9 +10,12 @@ Manage user-managed service account keys. Keys are a security risk; prefer a mor
 
 Create a JSON key (a service account can have up to 10 keys):
 
+Adapted (not in the official docs): the private key file is created with `umask 077` inside a new private directory from `mktemp -d`, so it is owner-only and no existing file with looser permissions is reused; move the key to a secret store and delete the directory when done.
+
 ```bash
-gcloud iam service-accounts keys create KEY_FILE \
-    --iam-account=SA_NAME@PROJECT_ID.iam.gserviceaccount.com
+SECRET_DIR="$(mktemp -d)"
+(umask 077; gcloud iam service-accounts keys create "${SECRET_DIR}/KEY_FILE" \
+    --iam-account=SA_NAME@PROJECT_ID.iam.gserviceaccount.com)
 ```
 
 ```text
@@ -156,6 +159,7 @@ Configure the `iam.disableServiceAccountKeyCreation` constraint as not enforced 
 
 ## Notes
 
+- Adapted from the official docs: `gcloud iam service-accounts keys create` writes the private key to the output file; the example creates it with `umask 077` inside a new `mktemp -d` directory instead of the current directory.
 - Do not store or paste real private key contents in chat, tickets, or source control; the private key is downloadable only once.
 - If your organization was created on or after May 3, 2024, `iam.disableServiceAccountKeyCreation` (and upload) is enforced by default.
 - Keys never expire by default; the `iam.serviceAccountKeyExpiryHours` constraint limits validity. For uploads under that constraint the certificate `-days` value must not exceed the limit.
