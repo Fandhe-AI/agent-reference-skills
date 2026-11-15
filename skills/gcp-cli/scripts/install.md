@@ -299,8 +299,15 @@ Then delete both directories by hand, and remove the `completion.bash.inc` and `
 find ~/Library/Caches/ -type d -name "google-cloud-sdk" | xargs -I {} rm -r "{}"
 ```
 
+Adapted (not in the official docs): `find -exec` passes each path intact (no pipe to `xargs`), and `-prune` stops `find` from descending into a directory it is about to delete.
+
+```bash
+find ~/Library/Caches/ -type d -name "google-cloud-sdk" -prune -exec rm -r {} +
+```
+
 ## Notes
 
+- Adapted from the official docs: the macOS cache cleanup is also shown with `find ... -prune -exec rm -r {} +`, which does not depend on how `xargs` splits paths.
 - `gcloud init --no-browser` is for a machine without a browser when you can run the gcloud CLI on another machine that has one (see `gcloud init --help`). `gcloud info --anonymize` minimizes personal information when sharing output.
 - Installs from an OS package (apt, dnf, snap) are uninstalled with the OS package manager; on Windows run `uninstaller.exe` in the gcloud CLI directory.
 - The `find ... | xargs ... rm -r` line deletes every directory it matches; run it without `| xargs ...` first to preview the matches.
