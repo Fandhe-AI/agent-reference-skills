@@ -27,7 +27,7 @@ gcloud run services update SERVICE \
 
 `INSTANCE_COUNT` sets manual scaling; `0` disables the service; `auto` restores default autoscaling.
 
-Adapted (not in the official docs): the source YAML shows the annotation keys at the same indentation as `annotations:`; they are indented under it here, matching the YAML shape used in the minimum instances page.
+Adapted (not in the official docs): the source YAML shows the annotation keys at the same indentation as `annotations:`; they are indented under it here, matching the YAML shape used in the minimum instances page, and the `INSTANCE_COUNT` value is quoted because annotation values must be strings.
 
 ```yaml
 apiVersion: serving.knative.dev/v1
@@ -36,7 +36,7 @@ metadata:
   name: SERVICE
   annotations:
     run.googleapis.com/scalingMode: MODE
-    run.googleapis.com/manualInstanceCount: INSTANCE_COUNT
+    run.googleapis.com/manualInstanceCount: 'INSTANCE_COUNT'
 ```
 
 `MODE` is `manual` or `automatic`. Export with `gcloud run services describe SERVICE --format export > service.yaml`, then apply:
@@ -124,8 +124,8 @@ Billing: with instance-based billing, idle manually scaled instances are billed 
 - The Scheduler example sets 10 instances for business hours (9am-5pm, Mon-Fri) and a second job (`hello-stop-instances`, schedule `0 17 * * MON-FRI`, same flags) scales down off-hours; setting its count to `0` disables the service but not the Scheduler jobs, which later re-enable it.
 - The Scheduler CLI cannot set `http-method=PATCH`, hence `PUT` plus `X-HTTP-Method-Override=PATCH`; in the Console the method can be PATCH without the header.
 - The example uses the Compute Engine default service account; any service account that can update Cloud Run services works. A dedicated (user-managed) service account is preferable.
-- The source YAML for disabling also shows a backtick-wrapped `0`; use the plain `0` or `--scaling=0`.
-- Corrected from the official docs: in the source YAML the annotation keys (`run.googleapis.com/scalingMode: MODE`, `run.googleapis.com/manualInstanceCount: INSTANCE_COUNT`) are not nested under `metadata.annotations`, so the YAML is not valid; they are indented under `annotations:` here.
+- The source YAML for disabling also shows a backtick-wrapped `0`; use the quoted string `'0'` (annotation values must be strings; an unquoted `0` is a YAML integer) or `--scaling=0`.
+- Corrected from the official docs: in the source YAML the annotation keys (`run.googleapis.com/scalingMode: MODE`, `run.googleapis.com/manualInstanceCount: INSTANCE_COUNT`) are not nested under `metadata.annotations`, so the YAML is not valid; they are indented under `annotations:` here. The source also leaves `INSTANCE_COUNT` unquoted, which becomes a YAML integer when replaced with a number; it is quoted here (`'INSTANCE_COUNT'`) because `metadata.annotations` values must be strings.
 - Adapted from the official docs: the manual-count REST URL `https://run.googleapis.com/v2/projects/PROJECT_ID/locations/REGION/services/SERVICE?update_mask=scaling.manualInstanceCount` is quoted (unquoted `?` is a glob character in zsh; bash behavior is unchanged).
 - Adapted from the official docs: the switch-to-automatic REST URL `...?update_mask=launchStage,scaling.scalingMode,scaling.manualInstanceCount` is quoted for the same reason.
 - Corrected from the official docs: the Scheduler `--uri="https://run.googleapis.com/v2/projects/PROJECT_ID/locations/REGION/services/hello?update_mask=..."` value was split over two lines with no `\` continuation; it is joined into one line.
