@@ -1,0 +1,1290 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/run/multi-region-services
+---
+
+# gcloud run multi-region-services
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud run multi-region-services delete
+
+```text
+NAME
+    gcloud run multi-region-services delete - deletes a multi-region service
+
+SYNOPSIS
+    gcloud run multi-region-services delete (SERVICE : --namespace=NAMESPACE)
+        [--[no-]async] [--region=REGION] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Deletes a multi-region service.
+
+EXAMPLES
+    To delete a service:
+
+        $ gcloud run multi-region-services delete <service-name>
+
+POSITIONAL ARGUMENTS
+     Service resource - Service to delete. The arguments in this group can be
+     used to specify the attributes of this resource.
+
+     This must be specified.
+
+       SERVICE
+          ID of the service or fully qualified identifier for the service.
+
+          To set the service attribute:
+          + provide the argument SERVICE on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --namespace=NAMESPACE
+          Specific to Cloud Run for Anthos: Kubernetes namespace for the
+          service.
+
+          To set the namespace attribute:
+          + provide the argument SERVICE on the command line with a fully
+            specified name;
+          + provide the argument --namespace on the command line;
+          + set the property run/namespace;
+          + For Cloud Run on Kubernetes Engine, defaults to "default".
+            Otherwise, defaults to project ID.;
+          + provide the argument project on the command line;
+          + set the property core/project.
+
+FLAGS
+     --[no-]async
+        Return immediately, without waiting for the operation in progress to
+        complete. Defaults to --no-async. Use --async to enable and --no-async
+        to disable.
+
+     --region=REGION
+        Region in which the resource can be found. Alternatively, set the
+        property [run/region].
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha run multi-region-services delete
+
+        $ gcloud beta run multi-region-services delete
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud run multi-region-services delete SERVICE_NAME
+```
+
+### gcloud run multi-region-services describe
+
+```text
+NAME
+    gcloud run multi-region-services describe - command to describe a
+        multi-region service
+
+SYNOPSIS
+    gcloud run multi-region-services describe (SERVICE : --namespace=NAMESPACE)
+        [--region=REGION] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Command to describe a multi-region service.
+
+EXAMPLES
+    To obtain details about a given service:
+
+        $ gcloud run multi-region-services describe <service-name>
+
+    To get those details in the YAML format:
+
+        $ gcloud run multi-region-services describe <service-name> \
+          --format=yaml
+
+    To get them in YAML format suited to export (omitting metadata specific to
+    this deployment and status info):
+
+        $ gcloud run multi-region-services describe <service-name> \
+          --format=export
+
+POSITIONAL ARGUMENTS
+     Service resource - Service to describe. The arguments in this group can be
+     used to specify the attributes of this resource.
+
+     This must be specified.
+
+       SERVICE
+          ID of the service or fully qualified identifier for the service.
+
+          To set the service attribute:
+          + provide the argument SERVICE on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --namespace=NAMESPACE
+          Specific to Cloud Run for Anthos: Kubernetes namespace for the
+          service.
+
+          To set the namespace attribute:
+          + provide the argument SERVICE on the command line with a fully
+            specified name;
+          + provide the argument --namespace on the command line;
+          + set the property run/namespace;
+          + For Cloud Run on Kubernetes Engine, defaults to "default".
+            Otherwise, defaults to project ID.;
+          + provide the argument project on the command line;
+          + set the property core/project.
+
+FLAGS
+     --region=REGION
+        Region in which the resource can be found. Alternatively, set the
+        property [run/region].
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha run multi-region-services describe
+
+        $ gcloud beta run multi-region-services describe
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud run multi-region-services describe SERVICE_NAME
+
+gcloud run multi-region-services describe SERVICE_NAME \
+    --format=yaml
+
+gcloud run multi-region-services describe SERVICE_NAME \
+    --format=export
+```
+
+### gcloud run multi-region-services list
+
+```text
+NAME
+    gcloud run multi-region-services list - list available multi-region
+        services
+
+SYNOPSIS
+    gcloud run multi-region-services list [--region=REGION]
+        [--filter=EXPRESSION] [--limit=LIMIT] [--page-size=PAGE_SIZE]
+        [--sort-by=[FIELD,...]] [--uri] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    List available multi-region services.
+
+EXAMPLES
+    To list available services:
+
+        $ gcloud run multi-region-services list
+
+FLAGS
+     --region=REGION
+        Region in which the resource can be found. Alternatively, set the
+        property [run/region].
+
+LIST COMMAND FLAGS
+     --filter=EXPRESSION
+        Apply a Boolean filter EXPRESSION to each resource item to be listed.
+        If the expression evaluates True, then that item is listed. For more
+        details and examples of filter expressions, run $ gcloud topic filters.
+        This flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --limit=LIMIT
+        Maximum number of resources to list. The default is unlimited. This
+        flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --page-size=PAGE_SIZE
+        Some services group resource list output into pages. This flag
+        specifies the maximum number of resources per page. The default is
+        determined by the service if it supports paging, otherwise it is
+        unlimited (no paging). Paging may be applied before or after --filter
+        and --limit depending on the service.
+
+     --sort-by=[FIELD,...]
+        Comma-separated list of resource field key names to sort by. The
+        default order is ascending. Prefix a field with ``~'' for descending
+        order on that field. This flag interacts with other flags that are
+        applied in this order: --flatten, --sort-by, --filter, --limit.
+
+     --uri
+        Print a list of resource URIs instead of the default output, and change
+        the command output to a list of URIs. If this flag is used with
+        --format, the formatting is applied on this URI list. To display URIs
+        alongside other keys instead, use the uri() transform.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha run multi-region-services list
+
+        $ gcloud beta run multi-region-services list
+```
+
+### gcloud run multi-region-services replace
+
+```text
+NAME
+    gcloud run multi-region-services replace - create or Update multi-region
+        service from YAML
+
+SYNOPSIS
+    gcloud run multi-region-services replace [FILE] [--async] [--dry-run]
+        [--region=REGION] [--regions=REGIONS] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Creates or replaces a service from a YAML service specification.
+
+EXAMPLES
+    To replace the specification for a service defined in myservice.yaml
+
+        $ gcloud run multi-region-services replace myservice.yaml
+
+POSITIONAL ARGUMENTS
+     [FILE]
+        The absolute path to the YAML file with a Knative service definition
+        for the service to update or deploy. Defaults to service.yaml if not
+        specified.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --dry-run
+        If set to true, only validates the configuration. The configuration is
+        not applied.
+
+     --region=REGION
+        Region in which the resource can be found. Alternatively, set the
+        property [run/region].
+
+     --regions=REGIONS
+        Comma-separated list of regions in which the multi-region Service can
+        be found.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha run multi-region-services replace
+
+        $ gcloud beta run multi-region-services replace
+```
+
+### gcloud run multi-region-services update
+
+```text
+NAME
+    gcloud run multi-region-services update - update environment variables,
+        add/remove regions, and other configuration settings in Multi-Region
+        Services
+
+SYNOPSIS
+    gcloud run multi-region-services update [[SERVICE] --namespace=NAMESPACE]
+        [--async] [--breakglass=JUSTIFICATION] [--clear-vpc-connector]
+        [--concurrency=CONCURRENCY] [--container=CONTAINER] [--[no-]cpu-boost]
+        [--[no-]cpu-throttling] [--[no-]default-url]
+        [--[no-]deploy-health-check]
+        [--execution-environment=EXECUTION_ENVIRONMENT] [--gpu-type=GPU_TYPE]
+        [--[no-]gpu-zonal-redundancy] [--[no-]iap]
+        [--ingress=INGRESS; default="all"] [--[no-]invoker-iam-check]
+        [--max=MAX] [--max-instances=MAX_INSTANCES] [--min=MIN]
+        [--min-instances=MIN_INSTANCES] [--region=REGION]
+        [--remove-containers=[CONTAINER,...]]
+        [--revision-suffix=REVISION_SUFFIX] [--scaling=SCALING]
+        [--scaling-concurrency-target=SCALING_CONCURRENCY_TARGET]
+        [--scaling-cpu-target=SCALING_CPU_TARGET]
+        [--service-account=SERVICE_ACCOUNT] [--[no-]session-affinity]
+        [--tag=TAG] [--timeout=TIMEOUT] [--no-traffic]
+        [--vpc-connector=VPC_CONNECTOR] [--vpc-egress=VPC_EGRESS]
+        [--add-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          | --clear-cloudsql-instances
+          | --remove-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          | --set-cloudsql-instances=[CLOUDSQL-INSTANCES,...]]
+        [--add-custom-audiences=[CUSTOM-AUDIENCES,...]
+          | --clear-custom-audiences
+          | --remove-custom-audiences=[CUSTOM-AUDIENCES,...]
+          | --set-custom-audiences=[CUSTOM-AUDIENCES,...]]
+        [--add-volume=[KEY=VALUE,...]
+          --clear-volumes --remove-volume=[VOLUME,...]]
+        [--add-volume-mount=[volume=NAME,mount-path=MOUNT_PATH,...]
+          --args=[ARG,...] --clear-volume-mounts --command=[COMMAND,...]
+          --cpu=CPU --depends-on=[CONTAINER,...] --gpu=GPU --image=IMAGE
+          --liveness-probe=[KEY=VALUE,...] --memory=MEMORY --port=PORT
+          --readiness-probe=[KEY=VALUE,...]
+          --remove-volume-mount=[MOUNT_PATH,...]
+          --startup-probe=[KEY=VALUE,...]
+          --[no-]use-http2 --workdir=WORKDIR --clear-env-vars
+          | --env-vars-file=FILE_PATH | --set-env-vars=[KEY=VALUE,...]
+          | --remove-env-vars=[KEY,...]
+          --update-env-vars=[KEY=VALUE,...] --clear-secrets
+          | --set-secrets=[KEY=VALUE,...]
+          | --remove-secrets=[KEY,...] --update-secrets=[KEY=VALUE,...]]
+        [--binary-authorization=POLICY | --clear-binary-authorization]
+        [--clear-encryption-key-shutdown-hours
+          | --encryption-key-shutdown-hours=ENCRYPTION_KEY_SHUTDOWN_HOURS]
+        [--clear-key | --key=KEY]
+        [--clear-labels | --remove-labels=[KEY,...] --labels=[KEY=VALUE,...]
+          | --update-labels=[KEY=VALUE,...]]
+        [--clear-network
+          | --network=NETWORK --subnet=SUBNET --clear-network-tags
+          | --network-tags=[TAG,...]]
+        [--clear-post-key-revocation-action-type
+          | --post-key-revocation-action-type=POST_KEY_REVOCATION_ACTION_TYPE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update environment variables, add/remove regions, and other configuration
+    settings in Multi-Region Services.
+
+EXAMPLES
+    To update one or more env vars:
+
+        $ gcloud run multi-region-services update myservice \
+          --update-env-vars=KEY1=VALUE1,KEY2=VALUE2
+
+POSITIONAL ARGUMENTS
+     Service resource - Service to update the configuration of. The arguments
+     in this group can be used to specify the attributes of this resource.
+
+     [SERVICE]
+        ID of the service or fully qualified identifier for the service.
+
+        To set the service attribute:
+        * provide the argument SERVICE on the command line;
+        * specify the service name from an interactive prompt.
+
+     --namespace=NAMESPACE
+        Specific to Cloud Run for Anthos: Kubernetes namespace for the service.
+
+        To set the namespace attribute:
+        * provide the argument SERVICE on the command line with a fully
+          specified name;
+        * specify the service name from an interactive prompt with a fully
+          specified name;
+        * provide the argument --namespace on the command line;
+        * set the property run/namespace;
+        * For Cloud Run on Kubernetes Engine, defaults to "default".
+          Otherwise, defaults to project ID.;
+        * provide the argument project on the command line;
+        * set the property core/project.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --breakglass=JUSTIFICATION
+        Justification to bypass Binary Authorization policy constraints and
+        allow the operation. See
+        https://cloud.google.com/binary-authorization/docs/using-breakglass for
+        more information. Next update or deploy command will automatically
+        clear existing breakglass justification.
+
+     --clear-vpc-connector
+        Remove the VPC connector for this resource.
+
+     --concurrency=CONCURRENCY
+        Set the maximum number of concurrent requests allowed per container
+        instance. Leave concurrency unspecified or provide the special value
+        'default' to receive the server default value.
+
+     --container=CONTAINER
+        Specifies a container by name. Flags following --container will apply
+        to the specified container.
+
+        Flags that are not container-specific must be specified before
+        --container.
+
+     --[no-]cpu-boost
+        Whether to allocate extra CPU to containers on startup to reduce the
+        perceived latency of a cold start request. Enabled by default when
+        unspecified on new services. Use --cpu-boost to enable and
+        --no-cpu-boost to disable.
+
+     --[no-]cpu-throttling
+        Whether to throttle the CPU when the container is not actively serving
+        requests. Use --cpu-throttling to enable and --no-cpu-throttling to
+        disable.
+
+     --[no-]default-url
+        Toggles the default url for a run service. This is enabled by default
+        if not specified. Use --default-url to enable and --no-default-url to
+        disable.
+
+     --[no-]deploy-health-check
+        Schedules a single instance of the Revision and waits for it to pass
+        its startup probe for the deployment to succeed. If disabled, the
+        startup probe runs only when the revision is first started via
+        invocation or by setting min-instances. This check is enabled by
+        default when unspecified. Use --deploy-health-check to enable and
+        --no-deploy-health-check to disable.
+
+     --execution-environment=EXECUTION_ENVIRONMENT
+        Selects the execution environment where the application will run.
+        EXECUTION_ENVIRONMENT must be one of:
+
+         gen1
+            Run the application in a first generation execution environment.
+         gen2
+            Run the application in a second generation execution environment.
+
+     --gpu-type=GPU_TYPE
+        The GPU type to use.
+
+     --[no-]gpu-zonal-redundancy
+        Set GPU zonal redundancy. Use --gpu-zonal-redundancy to enable and
+        --no-gpu-zonal-redundancy to disable.
+
+     --[no-]iap
+        Whether to enable IAP for the Service. Use --iap to enable and --no-iap
+        to disable.
+
+     --ingress=INGRESS; default="all"
+        Set the ingress traffic sources allowed to call the service. For Cloud
+        Run the --[no-]allow-unauthenticated flag separately controls the
+        identities allowed to call the service. INGRESS must be one of:
+
+         all
+            Inbound requests from all sources are allowed.
+         internal
+            For Cloud Run, only inbound requests from VPC networks in the same
+            project or VPC Service Controls perimeter, as well as Pub/Sub
+            subscriptions and Eventarc events in the same project or VPC
+            Service Controls perimeter are allowed. All other requests are
+            rejected. See https://cloud.google.com/run/docs/securing/ingress
+            for full details on the definition of internal traffic for Cloud
+            Run.
+
+         internal-and-cloud-load-balancing
+            Only inbound requests from Google Cloud Load Balancing or a traffic
+            source allowed by the internal option are allowed.
+
+     --[no-]invoker-iam-check
+        Optionally disable invoker IAM checks. More info at
+        https://cloud.google.com/run/docs/securing/managing-access#invoker_check.
+        Use --invoker-iam-check to enable and --no-invoker-iam-check to
+        disable.
+
+     --max=MAX
+        The maximum number of container instances to run for this Service. This
+        instance limit will be divided among all Revisions receiving a
+        percentage of traffic and can be modified without deploying a new
+        Revision.
+
+     --max-instances=MAX_INSTANCES
+        The maximum number of container instances for this Revision to run or
+        'default' to remove. This setting is immutably set on each new Revision
+        and modifying its value will deploy another Revision.
+
+     --min=MIN
+        The minimum number of container instances to run for this Service or
+        'default' to remove. These instances will be divided among all
+        Revisions receiving a percentage of traffic and can be modified without
+        deploying a new Revision.
+
+     --min-instances=MIN_INSTANCES
+        The minimum number of container instances to run for this Revision or
+        'default' to remove. This setting is immutably set on each new Revision
+        and modifying its value will deploy a another Revision. Consider using
+        --min to set the minimum number of instances across all revisions of
+        the Service which may be modified dynamically.
+
+     --region=REGION
+        Region in which the resource can be found. Alternatively, set the
+        property [run/region].
+
+     --remove-containers=[CONTAINER,...]
+        List of containers to remove.
+
+     --revision-suffix=REVISION_SUFFIX
+        Specify the suffix of the revision name. Revision names always start
+        with the service name automatically. For example, specifying
+        [--revision-suffix=v1] for a service named 'helloworld', would lead to
+        a revision named 'helloworld-v1'. Set empty string to clear the suffix
+        and resume server-assigned naming.
+
+     --scaling=SCALING
+        The scaling mode to use for this service. Flag value could be either
+        "auto" for automatic scaling, or a positive integer to configure manual
+        scaling with the given integer as a fixed instance count.
+
+     --scaling-concurrency-target=SCALING_CONCURRENCY_TARGET
+        This represents the concurrency utilization target threshold for
+        scaling up new instances. Set any value between 0.1 and 0.95 inclusive.
+        To unset this field, pass the special value "default". To disable this
+        scaling factor, pass the value "disabled". Please note that values are
+        rounded at the second decimal place, and that CPU and concurrency
+        scaling cannot both be disabled.
+
+     --scaling-cpu-target=SCALING_CPU_TARGET
+        This represents the CPU utilization target threshold for scaling up new
+        instances. Set any value between 0.1 and 0.90 inclusive. To unset this
+        field, pass the special value "default". To disable this scaling
+        factor, pass the value "disabled". Please note that values are rounded
+        at the second decimal place. CPU and concurrency scaling cannot both be
+        disabled.
+
+     --service-account=SERVICE_ACCOUNT
+        the email address of an IAM service account associated with the
+        revision of the service. The service account represents the identity of
+        the running revision, and determines what permissions the revision has.
+
+     --[no-]session-affinity
+        Whether to enable session affinity for connections to the service. Use
+        --session-affinity to enable and --no-session-affinity to disable.
+
+     --tag=TAG
+        Traffic tag to assign to the newly created revision.
+
+     --timeout=TIMEOUT
+        Set the maximum request execution time (timeout). It is specified as a
+        duration; for example, "10m5s" is ten minutes, and five seconds. If you
+        don't specify a unit, seconds is assumed. For example, "10" is 10
+        seconds.
+
+     --no-traffic
+        True to avoid sending traffic to the revision being deployed. Setting
+        this flag assigns any traffic assigned to the LATEST revision to the
+        specific revision bound to LATEST before the deployment. The effect is
+        that the revision being deployed will not receive traffic.
+
+        After a deployment with this flag the LATEST revision will not receive
+        traffic on future deployments. To restore sending traffic to the LATEST
+        revision by default, run the gcloud run services update-traffic command
+        with --to-latest.
+
+     --vpc-connector=VPC_CONNECTOR
+        Set a VPC connector for this resource.
+
+     --vpc-egress=VPC_EGRESS
+        Specify which of the outbound traffic to send through Direct VPC egress
+        or the VPC connector for this resource. This resource must have Direct
+        VPC egress enabled or a VPC connector to set this flag. VPC_EGRESS must
+        be one of:
+
+         all
+            (DEPRECATED) Sends all outbound traffic through Direct VPC egress
+            or the VPC connector. Provides the same functionality as
+            'all-traffic'. Prefer to use 'all-traffic' instead.
+         all-traffic
+            Sends all outbound traffic through Direct VPC egress or the VPC
+            connector.
+         private-ranges-only
+            Default option. Sends outbound traffic to private IP addresses (RFC
+            1918 and Private Google Access IPs) through Direct VPC egress or
+            the VPC connector.
+
+            Traffic to other Cloud Run services might require additional
+            configuration. See
+            https://cloud.google.com/run/docs/securing/private-networking#send_requests_to_other_services_and_services
+            for more information.
+
+     These flags modify the Cloud SQL instances this Service connects to. You
+     can specify a name of a Cloud SQL instance if it's in the same project and
+     region as your Cloud Run service; otherwise specify
+     <project>:<region>:<instance> for the instance.
+
+     At most one of these can be specified:
+
+       --add-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          Append the given values to the current Cloud SQL instances.
+
+       --clear-cloudsql-instances
+          Empty the current Cloud SQL instances.
+
+       --remove-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          Remove the given values from the current Cloud SQL instances.
+
+       --set-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          Completely replace the current Cloud SQL instances with the given
+          values.
+
+     These flags modify the custom audiences that can be used in the audience
+     field of ID token for authenticated requests.
+
+     At most one of these can be specified:
+
+       --add-custom-audiences=[CUSTOM-AUDIENCES,...]
+          Append the given values to the current custom audiences.
+
+       --clear-custom-audiences
+          Empty the current custom audiences.
+
+       --remove-custom-audiences=[CUSTOM-AUDIENCES,...]
+          Remove the given values from the current custom audiences.
+
+       --set-custom-audiences=[CUSTOM-AUDIENCES,...]
+          Completely replace the current custom audiences with the given
+          values.
+
+     --add-volume=[KEY=VALUE,...]
+        Adds a volume to the Cloud Run resource. To add more than one volume,
+        specify this flag multiple times. Volumes must have a type key. Volumes
+        must have a name key if mount-path is not specified. A name key is
+        optional if mount-path is specified.Only certain values are supported
+        for type. Depending on the provided type, other keys will be required.
+        The following types are supported with the specified additional keys:
+
+        cloud-storage: A volume representing a Cloud Storage bucket. This
+        volume type is mounted using Cloud Storage FUSE. See
+        https://cloud.google.com/storage/docs/gcs-fuse for the details and
+        limitations of this filesystem. Additional keys:
+        * bucket: (required) the name of the bucket to use as the source of
+          this volume
+        * readonly: (optional) A boolean. If true, this volume will be
+          read-only from all mounts.
+        * mount-options: (optional) A list of flags to pass to GCSFuse. Flags
+          should be specified without leading dashes and separated by
+          semicolons.
+        * mount-path: (optional) The path at which the volume should be
+          mounted. The mount-path parameter is only supported for single
+          container services which do not make use of the --container flag. For
+          multi-container services, specify the mount-path parameter under the
+          --add-volume-mount flag.
+
+        ephemeral-disk: A volume that stores data on a temporary disk. With
+        this type of volume, data is not shared between instances and all data
+        will be lost when the instance it is on is terminated. Additional keys:
+        * mount-path: (optional) The path at which the volume should be
+          mounted. The mount-path parameter is only supported for single
+          container services which do not make use of the --container flag. For
+          multi-container services, specify the mount-path parameter under the
+          --add-volume-mount flag.
+        * size: (optional) A quantity representing the amount of disk space
+          allocated to this volume, such as "10Gi" or "100G".
+
+        in-memory: An ephemeral volume that stores data in the instance's
+        memory. With this type of volume, data is not shared between instances
+        and all data will be lost when the instance it is on is terminated.
+        Additional keys:
+        * mount-path: (optional) The path at which the volume should be
+          mounted. The mount-path parameter is only supported for single
+          container services which do not make use of the --container flag. For
+          multi-container services, specify the mount-path parameter under the
+          --add-volume-mount flag.
+        * size-limit: (optional) A quantity representing the maximum amount
+          of memory allocated to this volume, such as "512Mi" or "3G". Data
+          stored in an in-memory volume consumes the memory allocation of the
+          container that wrote the data. If size-limit is not specified, the
+          maximum size will be half the total memory limit of all containers.
+
+        nfs: Represents a volume backed by an NFS server. Additional keys:
+        * location: (required) The location of the NFS Server, in the form
+          SERVER:/PATH
+        * mount-path: (optional) The path at which the volume should be
+          mounted. The mount-path parameter is only supported for single
+          container services which do not make use of the --container flag. For
+          multi-container services, specify the mount-path parameter under the
+          --add-volume-mount flag.
+        * readonly: (optional) A boolean. If true, this volume will be
+          read-only from all mounts.
+
+     --clear-volumes
+        Remove all existing volumes from the Cloud Run resource, including
+        volumes mounted as secrets
+
+     --remove-volume=[VOLUME,...]
+        Removes volumes from the Cloud Run resource.
+
+    Container Flags
+
+        If the --container or --remove-containers flag is specified the following
+        arguments may only be specified after a --container flag.
+
+     --add-volume-mount=[volume=NAME,mount-path=MOUNT_PATH,...]
+        Adds a mount to the current container. Must contain the keys
+        volume=NAME and mount-path=/PATH where NAME is the name of a volume on
+        this resource and PATH is the path within the container's filesystem to
+        mount this volume.
+
+     --args=[ARG,...]
+        Comma-separated arguments passed to the command run by the container
+        image. If not specified and no '--command' is provided, the container
+        image's default Cmd is used. Otherwise, if not specified, no arguments
+        are passed. To reset this field to its default, pass an empty string.
+
+     --clear-volume-mounts
+        Remove all existing mounts from the current container.
+
+     --command=[COMMAND,...]
+        Entrypoint for the container image. If not specified, the container
+        image's default Entrypoint is run. To reset this field to its default,
+        pass an empty string.
+
+     --cpu=CPU
+        Set a CPU limit in Kubernetes cpu units.
+
+        Cloud Run supports values fractional values below 1, 1, 2, 4, and 8.
+        Some CPU values requires a minimum Memory --memory value.
+
+     --depends-on=[CONTAINER,...]
+        List of container dependencies to add to the current container.
+
+     --gpu=GPU
+        Cloud Run supports values 0 or 1. 1 gpu also requires a minimum 4 --cpu
+        value and a minimum 16Gi --memory value.
+
+     --image=IMAGE
+        Name of the container image to deploy (e.g.
+        us-docker.pkg.dev/cloudrun/container/hello:latest).
+
+     --liveness-probe=[KEY=VALUE,...]
+        Comma separated settings for liveness probe in the form KEY=VALUE. Each
+        key stands for a field of the probe described in
+        https://cloud.google.com/run/docs/reference/rest/v1/Container#Probe.
+        Currently supported keys are: initialDelaySeconds, timeoutSeconds,
+        periodSeconds, failureThreshold, httpGet.port, httpGet.path, grpc.port,
+        grpc.service.
+
+        For example, to set a probe with 10s timeout and HTTP probe requests
+        sent to 8080 port of the container:
+
+            $ --liveness-probe=timeoutSeconds=10,httpGet.port=8080
+
+        To remove existing probe:
+
+            $ --liveness-probe=""
+
+     --memory=MEMORY
+        Set a memory limit. Ex: 1024Mi, 4Gi.
+
+     --port=PORT
+        Container port to receive requests at. Also sets the $PORT environment
+        variable. Must be a number between 1 and 65535, inclusive. To unset
+        this field, pass the special value "default". If updating an existing
+        service with a TCP startup probe pointing to the previous container
+        port, this will also update the probe port.
+
+     --readiness-probe=[KEY=VALUE,...]
+        Comma separated settings for readiness probe in the form KEY=VALUE.
+        Each key stands for a field of the probe described in
+        https://cloud.google.com/run/docs/reference/rest/v1/Container#Probe.
+        Currently supported keys are: timeoutSeconds, periodSeconds,
+        failureThreshold, successThreshold, httpGet.port, httpGet.path,
+        grpc.port, grpc.service.
+
+        For example, to set a probe with 10s timeout and HTTP probe requests
+        sent to 8080 port of the container:
+
+            $ --readiness-probe=timeoutSeconds=10,httpGet.port=8080
+
+        To remove existing probe:
+
+            $ --readiness-probe=""
+
+     --remove-volume-mount=[MOUNT_PATH,...]
+        Removes the volume mounted at the specified path from the current
+        container.
+
+     --startup-probe=[KEY=VALUE,...]
+        Comma separated settings for startup probe in the form KEY=VALUE. Each
+        key stands for a field of the probe described in
+        https://cloud.google.com/run/docs/reference/rest/v1/Container#Probe.
+        Currently supported keys are: initialDelaySeconds, timeoutSeconds,
+        periodSeconds, failureThreshold, httpGet.port, httpGet.path, grpc.port,
+        grpc.service, tcpSocket.port.
+
+        For example, to set a probe with 10s timeout and HTTP probe requests
+        sent to 8080 port of the container:
+
+            $ --startup-probe=timeoutSeconds=10,httpGet.port=8080
+
+        To remove existing probe:
+
+            $ --startup-probe=""
+
+     --[no-]use-http2
+        Whether to use HTTP/2 for connections to the service. Use --use-http2
+        to enable and --no-use-http2 to disable.
+
+     --workdir=WORKDIR
+        Working directory of the container process. If not specified, the
+        container image's default working directory is used. To reset this
+        field to its default, pass an empty string.
+
+     At most one of these can be specified:
+
+       --clear-env-vars
+          Remove all environment variables.
+
+       --env-vars-file=FILE_PATH
+          Path to a local YAML or ENV file with definitions for all environment
+          variables. All existing environment variables will be removed before
+          the new environment variables are added. Example YAML content:
+
+              KEY_1: "value1"
+              KEY_2: "value 2"
+
+          Example ENV content:
+
+              KEY_1="value1"
+              KEY_2="value 2"
+
+       --set-env-vars=[KEY=VALUE,...]
+          List of key-value pairs to set as environment variables. All existing
+          environment variables will be removed first.
+
+       Or at least one of these can be specified:
+
+         Only --update-env-vars and --remove-env-vars can be used together. If
+         both are specified, --remove-env-vars will be applied first.
+
+         --remove-env-vars=[KEY,...]
+            List of environment variables to be removed.
+
+         --update-env-vars=[KEY=VALUE,...]
+            List of key-value pairs to set as environment variables.
+
+     Specify secrets to mount or provide as environment variables. Keys
+     starting with a forward slash '/' are mount paths. All other keys
+     correspond to environment variables. Values should be in the form
+     SECRET_NAME:SECRET_VERSION. For example:
+     '--update-secrets=/secrets/api/key=mysecret:latest,ENV=othersecret:1' will
+     mount a volume at '/secrets/api' containing a file 'key' with the latest
+     version of secret 'mysecret'. An environment variable named ENV will also
+     be created whose value is version 1 of secret 'othersecret'.
+
+     At most one of these can be specified:
+
+       --clear-secrets
+          Remove all secrets.
+
+       --set-secrets=[KEY=VALUE,...]
+          List of key-value pairs to set as secrets. All existing secrets will
+          be removed first.
+
+       Or at least one of these can be specified:
+
+         Only --update-secrets and --remove-secrets can be used together. If
+         both are specified, --remove-secrets will be applied first.
+
+         --remove-secrets=[KEY,...]
+            List of secrets to be removed.
+
+         --update-secrets=[KEY=VALUE,...]
+            List of key-value pairs to set as secrets.
+
+     At most one of these can be specified:
+
+       --binary-authorization=POLICY
+          Binary Authorization policy to check against. This must be set to
+          "default".
+
+       --clear-binary-authorization
+          Remove any previously set Binary Authorization policy.
+
+     At most one of these can be specified:
+
+       --clear-encryption-key-shutdown-hours
+          Remove any previously set CMEK key shutdown hours setting.
+
+       --encryption-key-shutdown-hours=ENCRYPTION_KEY_SHUTDOWN_HOURS
+          The number of hours to wait before an automatic shutdown server after
+          CMEK key revocation is detected.
+
+     At most one of these can be specified:
+
+       --clear-key
+          Remove any previously set CMEK key reference.
+
+       --key=KEY
+          CMEK key reference to encrypt the container with.
+
+     At most one of these can be specified:
+
+       --clear-labels
+          Remove all labels. If --update-labels is also specified then
+          --clear-labels is applied first.
+
+          For example, to remove all labels:
+
+              $ gcloud run multi-region-services update --clear-labels
+
+          To remove all existing labels and create two new labels, foo and baz:
+
+              $ gcloud run multi-region-services update --clear-labels \
+                --update-labels foo=bar,baz=qux
+
+       --remove-labels=[KEY,...]
+          List of label keys to remove. If a label does not exist it is
+          silently ignored. If --update-labels is also specified then
+          --update-labels is applied first.
+
+     At most one of these can be specified:
+
+       --labels=[KEY=VALUE,...]
+          List of label KEY=VALUE pairs to add.
+
+          An alias to --update-labels.
+
+       --update-labels=[KEY=VALUE,...]
+          List of label KEY=VALUE pairs to update. If a label exists, its value
+          is modified. Otherwise, a new label is created.
+
+     At most one of these can be specified:
+
+       --clear-network
+          Disconnect this Cloud Run service from the VPC network it is
+          connected to.
+
+       Or at least one of these can be specified:
+
+         Direct VPC egress setting flags group.
+
+         --network=NETWORK
+            The VPC network that the Cloud Run service will be able to send
+            traffic to. If --subnet is also specified, subnet must be a
+            subnetwork of the network specified by this --network flag. To
+            clear existing VPC network settings, use --clear-network.
+
+         --subnet=SUBNET
+            The VPC subnetwork that the Cloud Run service will get IPs from.
+            The subnetwork must be /26 or larger. If --network is also
+            specified, subnet must be a subnetwork of the network specified by
+            the --network flag. If --network is not specified, network will be
+            looked up from this subnetwork. To clear existing VPC network
+            settings, use --clear-network.
+
+         At most one of these can be specified:
+
+           --clear-network-tags
+              Clears all existing network tags from the Cloud Run service.
+
+           --network-tags=[TAG,...]
+              Applies the given network tags (comma separated) to the Cloud Run
+              service. To clear existing tags, use --clear-network-tags.
+
+     At most one of these can be specified:
+
+       --clear-post-key-revocation-action-type
+          Remove any previously set post CMEK key revocation action type.
+
+       --post-key-revocation-action-type=POST_KEY_REVOCATION_ACTION_TYPE
+          Action type after CMEK key revocation.
+          POST_KEY_REVOCATION_ACTION_TYPE must be one of:
+
+           prevent-new
+              No new instances will be started after CMEK key revocation.
+           shut-down
+              No new instances will be started and the existing instances will
+              be shut down after CMEK key revocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha run multi-region-services update
+
+        $ gcloud beta run multi-region-services update
+```
+
+### gcloud beta run multi-region-services delete
+
+```text
+NAME
+    gcloud beta run multi-region-services delete - deletes a multi-region
+        service
+
+SYNOPSIS
+    gcloud beta run multi-region-services delete
+        (SERVICE : --namespace=NAMESPACE) [--[no-]async] [--dry-run]
+        [--region=REGION] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta run multi-region-services describe
+
+```text
+NAME
+    gcloud beta run multi-region-services describe - command to describe a
+        multi-region service
+
+SYNOPSIS
+    gcloud beta run multi-region-services describe
+        (SERVICE : --namespace=NAMESPACE) [--region=REGION]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta run multi-region-services list
+
+```text
+NAME
+    gcloud beta run multi-region-services list - list available multi-region
+        services
+
+SYNOPSIS
+    gcloud beta run multi-region-services list [--region=REGION]
+        [--filter=EXPRESSION] [--limit=LIMIT] [--page-size=PAGE_SIZE]
+        [--sort-by=[FIELD,...]] [--uri] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta run multi-region-services replace
+
+```text
+NAME
+    gcloud beta run multi-region-services replace - create or Update
+        multi-region service from YAML
+
+SYNOPSIS
+    gcloud beta run multi-region-services replace [FILE] [--async] [--dry-run]
+        [--region=REGION] [--regions=REGIONS] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta run multi-region-services update
+
+```text
+NAME
+    gcloud beta run multi-region-services update - update environment
+        variables, add/remove regions, and other configuration settings in
+        Multi-Region Services
+
+SYNOPSIS
+    gcloud beta run multi-region-services update
+        [[SERVICE] --namespace=NAMESPACE] [--[no-]ambient-networking]
+        [--ambient-scope=AMBIENT_SCOPE] [--async] [--breakglass=JUSTIFICATION]
+        [--clear-vpc-connector] [--concurrency=CONCURRENCY]
+        [--container=CONTAINER] [--[no-]cpu-boost] [--[no-]cpu-throttling]
+        [--[no-]default-url] [--[no-]deploy-health-check] [--dry-run]
+        [--execution-environment=EXECUTION_ENVIRONMENT]
+        [--functional-type=FUNCTIONAL_TYPE] [--gpu-type=GPU_TYPE]
+        [--[no-]gpu-zonal-redundancy] [--[no-]iap]
+        [--[no-]identity-certificate] [--identity-type=IDENTITY_TYPE]
+        [--ingress=INGRESS; default="all"] [--[no-]invoker-iam-check]
+        [--max=MAX] [--max-instances=MAX_INSTANCES] [--mesh=MESH] [--min=MIN]
+        [--min-instances=MIN_INSTANCES] [--public] [--region=REGION]
+        [--remove-containers=[CONTAINER,...]]
+        [--revision-suffix=REVISION_SUFFIX] [--scaling=SCALING]
+        [--scaling-concurrency-target=SCALING_CONCURRENCY_TARGET]
+        [--scaling-cpu-target=SCALING_CPU_TARGET]
+        [--service-account=SERVICE_ACCOUNT] [--[no-]session-affinity]
+        [--[no-]ssh] [--tag=TAG] [--timeout=TIMEOUT] [--no-traffic]
+        [--vpc-connector=VPC_CONNECTOR] [--vpc-egress=VPC_EGRESS]
+        [--add-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          | --clear-cloudsql-instances
+          | --remove-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          | --set-cloudsql-instances=[CLOUDSQL-INSTANCES,...]]
+        [--add-custom-audiences=[CUSTOM-AUDIENCES,...]
+          | --clear-custom-audiences
+          | --remove-custom-audiences=[CUSTOM-AUDIENCES,...]
+          | --set-custom-audiences=[CUSTOM-AUDIENCES,...]]
+        [--add-volume=[KEY=VALUE,...]
+          --clear-volumes --remove-volume=[VOLUME,...]]
+        [--add-volume-mount=[volume=NAME,mount-path=MOUNT_PATH,...]
+          --args=[ARG,...] --clear-volume-mounts --command=[COMMAND,...]
+          --cpu=CPU --depends-on=[CONTAINER,...] --gpu=GPU --image=IMAGE
+          --liveness-probe=[KEY=VALUE,...] --memory=MEMORY --port=PORT
+          --readiness-probe=[KEY=VALUE,...]
+          --remove-volume-mount=[MOUNT_PATH,...] --[no-]sandbox-launcher
+          --startup-probe=[KEY=VALUE,...]
+          --[no-]use-http2 --workdir=WORKDIR --clear-env-vars
+          | --env-vars-file=FILE_PATH | --set-env-vars=[KEY=VALUE,...]
+          | --remove-env-vars=[KEY,...]
+          --update-env-vars=[KEY=VALUE,...] --clear-secrets
+          | --set-secrets=[KEY=VALUE,...]
+          | --remove-secrets=[KEY,...] --update-secrets=[KEY=VALUE,...]]
+        [--binary-authorization=POLICY | --clear-binary-authorization]
+        [--clear-encryption-key-shutdown-hours
+          | --encryption-key-shutdown-hours=ENCRYPTION_KEY_SHUTDOWN_HOURS]
+        [--clear-key | --key=KEY]
+        [--clear-labels | --remove-labels=[KEY,...] --labels=[KEY=VALUE,...]
+          | --update-labels=[KEY=VALUE,...]]
+        [--clear-network
+          | --network=NETWORK --subnet=SUBNET --clear-network-tags
+          | --network-tags=[TAG,...]]
+        [--clear-post-key-revocation-action-type
+          | --post-key-revocation-action-type=POST_KEY_REVOCATION_ACTION_TYPE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha run multi-region-services delete
+
+```text
+NAME
+    gcloud alpha run multi-region-services delete - deletes a multi-region
+        service
+
+SYNOPSIS
+    gcloud alpha run multi-region-services delete
+        (SERVICE : --namespace=NAMESPACE) [--[no-]async] [--dry-run]
+        [--region=REGION] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha run multi-region-services describe
+
+```text
+NAME
+    gcloud alpha run multi-region-services describe - command to describe a
+        multi-region service
+
+SYNOPSIS
+    gcloud alpha run multi-region-services describe
+        (SERVICE : --namespace=NAMESPACE) [--region=REGION]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha run multi-region-services list
+
+```text
+NAME
+    gcloud alpha run multi-region-services list - list available multi-region
+        services
+
+SYNOPSIS
+    gcloud alpha run multi-region-services list [--region=REGION]
+        [--filter=EXPRESSION] [--limit=LIMIT] [--page-size=PAGE_SIZE]
+        [--sort-by=[FIELD,...]] [--uri] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha run multi-region-services replace
+
+```text
+NAME
+    gcloud alpha run multi-region-services replace - create or Update
+        multi-region service from YAML
+
+SYNOPSIS
+    gcloud alpha run multi-region-services replace [FILE] [--async] [--dry-run]
+        [--region=REGION] [--regions=REGIONS] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha run multi-region-services update
+
+```text
+NAME
+    gcloud alpha run multi-region-services update - update environment
+        variables, add/remove regions, and other configuration settings in
+        Multi-Region Services
+
+SYNOPSIS
+    gcloud alpha run multi-region-services update
+        [[SERVICE] --namespace=NAMESPACE] [--[no-]ambient-networking]
+        [--ambient-scope=AMBIENT_SCOPE] [--async] [--breakglass=JUSTIFICATION]
+        [--clear-vpc-connector] [--concurrency=CONCURRENCY]
+        [--container=CONTAINER] [--[no-]cpu-boost] [--[no-]cpu-throttling]
+        [--[no-]default-url] [--[no-]deploy-health-check]
+        [--description=DESCRIPTION] [--dry-run]
+        [--execution-environment=EXECUTION_ENVIRONMENT]
+        [--functional-type=FUNCTIONAL_TYPE] [--gpu-type=GPU_TYPE]
+        [--[no-]gpu-zonal-redundancy] [--grace-period=GRACE_PERIOD]
+        [--[no-]iap] [--[no-]identity-certificate]
+        [--identity-type=IDENTITY_TYPE] [--ingress=INGRESS; default="all"]
+        [--[no-]invoker-iam-check] [--max=MAX] [--max-instances=MAX_INSTANCES]
+        [--mesh=MESH] [--min=MIN] [--min-instances=MIN_INSTANCES] [--public]
+        [--region=REGION] [--remove-containers=[CONTAINER,...]]
+        [--revision-suffix=REVISION_SUFFIX] [--scaling=SCALING]
+        [--scaling-concurrency-target=SCALING_CONCURRENCY_TARGET]
+        [--scaling-cpu-target=SCALING_CPU_TARGET]
+        [--service-account=SERVICE_ACCOUNT] [--[no-]session-affinity]
+        [--[no-]ssh] [--tag=TAG] [--timeout=TIMEOUT] [--no-traffic]
+        [--vpc-connector=VPC_CONNECTOR] [--vpc-egress=VPC_EGRESS]
+        [--add-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          | --clear-cloudsql-instances
+          | --remove-cloudsql-instances=[CLOUDSQL-INSTANCES,...]
+          | --set-cloudsql-instances=[CLOUDSQL-INSTANCES,...]]
+        [--add-custom-audiences=[CUSTOM-AUDIENCES,...]
+          | --clear-custom-audiences
+          | --remove-custom-audiences=[CUSTOM-AUDIENCES,...]
+          | --set-custom-audiences=[CUSTOM-AUDIENCES,...]]
+        [--add-volume=[KEY=VALUE,...]
+          --clear-volumes --remove-volume=[VOLUME,...]]
+        [--add-volume-mount=[volume=NAME,mount-path=MOUNT_PATH,...]
+          --args=[ARG,...] --clear-volume-mounts --command=[COMMAND,...]
+          --cpu=CPU --depends-on=[CONTAINER,...] --gpu=GPU --image=IMAGE
+          --liveness-probe=[KEY=VALUE,...] --memory=MEMORY --port=PORT
+          --readiness-probe=[KEY=VALUE,...]
+          --remove-volume-mount=[MOUNT_PATH,...] --[no-]sandbox-launcher
+          --startup-probe=[KEY=VALUE,...]
+          --[no-]use-http2 --workdir=WORKDIR --clear-env-vars
+          | --env-vars-file=FILE_PATH | --set-env-vars=[KEY=VALUE,...]
+          | --remove-env-vars=[KEY,...]
+          --update-env-vars=[KEY=VALUE,...] --clear-secrets
+          | --set-secrets=[KEY=VALUE,...]
+          | --remove-secrets=[KEY,...] --update-secrets=[KEY=VALUE,...]]
+        [--binary-authorization=POLICY | --clear-binary-authorization]
+        [--clear-encryption-key-shutdown-hours
+          | --encryption-key-shutdown-hours=ENCRYPTION_KEY_SHUTDOWN_HOURS]
+        [--clear-key | --key=KEY]
+        [--clear-labels | --remove-labels=[KEY,...] --labels=[KEY=VALUE,...]
+          | --update-labels=[KEY=VALUE,...]]
+        [--clear-network
+          | --network=NETWORK --subnet=SUBNET --clear-network-tags
+          | --network-tags=[TAG,...]]
+        [--clear-post-key-revocation-action-type
+          | --post-key-revocation-action-type=POST_KEY_REVOCATION_ACTION_TYPE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha run multi-region-services update-traffic
+
+```text
+NAME
+    gcloud alpha run multi-region-services update-traffic - adjust the traffic
+        assignments for a Cloud Run Multi-Region service
+
+SYNOPSIS
+    gcloud alpha run multi-region-services update-traffic
+        [[SERVICE] --namespace=NAMESPACE] [--async] [--region=REGION]
+        [--clear-tags | --set-tags=[TAG=REVISION,...]
+          | --remove-tags=[TAG,...] --update-tags=[TAG=REVISION,...]]
+        [--to-latest | --to-revisions=[REVISION-NAME=PERCENTAGE,...]
+          | --to-tags=[TAG=PERCENTAGE,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): angle-bracket placeholders such as `<service-name>` are shell redirections when pasted into bash; the runnable form writes them as upper-case placeholders (`SERVICE_NAME`).
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/run/multi-region-services (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
