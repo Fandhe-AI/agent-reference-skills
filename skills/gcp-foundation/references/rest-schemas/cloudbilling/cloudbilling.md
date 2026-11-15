@@ -139,8 +139,8 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | Field | Type | Description |
 |---|---|---|
 | `aggregationCount` | integer (int32) | The number of intervals to aggregate over. Example: If aggregation_level is "DAILY" and aggregation_count is 14, aggregation will be over 14 days. |
-| `aggregationInterval` | string enum | — |
-| `aggregationLevel` | string enum | — |
+| `aggregationInterval` | string enum | — Values: `AGGREGATION_INTERVAL_UNSPECIFIED`, `DAILY`, `MONTHLY`. |
+| `aggregationLevel` | string enum | — Values: `AGGREGATION_LEVEL_UNSPECIFIED`, `ACCOUNT`, `PROJECT`. |
 
 ### `Array`
 
@@ -183,7 +183,7 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | Field | Type | Description |
 |---|---|---|
 | `exemptedMembers` | array<string> | Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members. |
-| `logType` | string enum | The log type that this config enables. |
+| `logType` | string enum | The log type that this config enables. Values: `LOG_TYPE_UNSPECIFIED`, `ADMIN_READ`, `DATA_WRITE`, `DATA_READ`. |
 
 ### `AuthenticationInfo`
 
@@ -408,7 +408,7 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | Field | Type | Description |
 |---|---|---|
 | `regions` | array<string> | The list of regions associated with a sku. Empty for Global skus, which are associated with all Google Cloud regions. |
-| `type` | string enum | The type of Geo Taxonomy: GLOBAL, REGIONAL, or MULTI_REGIONAL. |
+| `type` | string enum | The type of Geo Taxonomy: GLOBAL, REGIONAL, or MULTI_REGIONAL. Values: `TYPE_UNSPECIFIED`, `GLOBAL`, `REGIONAL`, `MULTI_REGIONAL`. |
 
 ### `GoogleCloudBillingBillingaccountpricesV1betaAggregationInfo`
 
@@ -417,8 +417,8 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 
 | Field | Type | Description |
 |---|---|---|
-| `interval` | string enum | Interval at which usage is aggregated to compute cost. Example: "MONTHLY" interval indicates that usage is aggregated every month. |
-| `level` | string enum | Level at which usage is aggregated to compute cost. Example: "ACCOUNT" level indicates that usage is aggregated across all projects in a single account. |
+| `interval` | string enum | Interval at which usage is aggregated to compute cost. Example: "MONTHLY" interval indicates that usage is aggregated every month. Values: `INTERVAL_UNSPECIFIED`, `INTERVAL_MONTHLY`, `INTERVAL_DAILY`. |
+| `level` | string enum | Level at which usage is aggregated to compute cost. Example: "ACCOUNT" level indicates that usage is aggregated across all projects in a single account. Values: `LEVEL_UNSPECIFIED`, `LEVEL_ACCOUNT`, `LEVEL_PROJECT`. |
 
 ### `GoogleCloudBillingBillingaccountpricesV1betaBillingAccountPrice`
 
@@ -610,7 +610,7 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | `globalMetadata` | GoogleCloudBillingBillingaccountskugroupskusV1betaGeoTaxonomyGlobal | Global geographic metadata with no regions. |
 | `multiRegionalMetadata` | GoogleCloudBillingBillingaccountskugroupskusV1betaGeoTaxonomyMultiRegional | Multi-regional geographic metadata with 2 or more regions. |
 | `regionalMetadata` | GoogleCloudBillingBillingaccountskugroupskusV1betaGeoTaxonomyRegional | Regional geographic metadata with 1 region. |
-| `type` | string enum | Type of geographic taxonomy associated with the billing account SKU group SKU. |
+| `type` | string enum | Type of geographic taxonomy associated with the billing account SKU group SKU. Values: `TYPE_UNSPECIFIED`, `TYPE_GLOBAL`, `TYPE_REGIONAL`, `TYPE_MULTI_REGIONAL`. |
 
 ### `GoogleCloudBillingBillingaccountskugroupskusV1betaGeoTaxonomyGlobal`
 
@@ -696,7 +696,7 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | `globalMetadata` | GoogleCloudBillingBillingaccountskusV1betaGeoTaxonomyGlobal | Global geographic metadata with no regions. |
 | `multiRegionalMetadata` | GoogleCloudBillingBillingaccountskusV1betaGeoTaxonomyMultiRegional | Multi-regional geographic metadata with 2 or more regions. |
 | `regionalMetadata` | GoogleCloudBillingBillingaccountskusV1betaGeoTaxonomyRegional | Regional geographic metadata with 1 region. |
-| `type` | string enum | Type of geographic taxonomy associated with the billing account SKU. |
+| `type` | string enum | Type of geographic taxonomy associated with the billing account SKU. Values: `TYPE_UNSPECIFIED`, `TYPE_GLOBAL`, `TYPE_REGIONAL`, `TYPE_MULTI_REGIONAL`. |
 
 ### `GoogleCloudBillingBillingaccountskusV1betaGeoTaxonomyGlobal`
 
@@ -765,8 +765,8 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 
 | Field | Type | Description |
 |---|---|---|
-| `interval` | string enum | Interval at which usage is aggregated to compute cost. Example: "MONTHLY" interval indicates that usage is aggregated every month. |
-| `level` | string enum | Level at which usage is aggregated to compute cost. Example: "ACCOUNT" level indicates that usage is aggregated across all projects in a single account. |
+| `interval` | string enum | Interval at which usage is aggregated to compute cost. Example: "MONTHLY" interval indicates that usage is aggregated every month. Values: `INTERVAL_UNSPECIFIED`, `INTERVAL_MONTHLY`, `INTERVAL_DAILY`. |
+| `level` | string enum | Level at which usage is aggregated to compute cost. Example: "ACCOUNT" level indicates that usage is aggregated across all projects in a single account. Values: `LEVEL_UNSPECIFIED`, `LEVEL_ACCOUNT`, `LEVEL_PROJECT`. |
 
 ### `GoogleCloudBillingPricesV1betaListPricesResponse`
 
@@ -852,7 +852,7 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | `globalMetadata` | GoogleCloudBillingSkugroupskusV1betaGeoTaxonomyGlobal | Global geographic metadata with no regions. |
 | `multiRegionalMetadata` | GoogleCloudBillingSkugroupskusV1betaGeoTaxonomyMultiRegional | Multi-regional geographic metadata with 2 or more regions. |
 | `regionalMetadata` | GoogleCloudBillingSkugroupskusV1betaGeoTaxonomyRegional | Regional geographic metadata with 1 region. |
-| `type` | string enum | Type of geographic taxonomy associated with the SKU group SKU. |
+| `type` | string enum | Type of geographic taxonomy associated with the SKU group SKU. Values: `TYPE_UNSPECIFIED`, `TYPE_GLOBAL`, `TYPE_REGIONAL`, `TYPE_MULTI_REGIONAL`. |
 
 ### `GoogleCloudBillingSkugroupskusV1betaGeoTaxonomyGlobal`
 
@@ -958,7 +958,7 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | Field | Type | Description |
 |---|---|---|
 | `description` | string | Output only. The description of the insight. |
-| `severity` | string enum | Output only. The severity of the insight, used for UI rendering (e.g., color-coding). |
+| `severity` | string enum | Output only. The severity of the insight, used for UI rendering (e.g., color-coding). Values: `SEVERITY_UNSPECIFIED`, `INFO`, `WARNING`, `CRITICAL`. |
 | `title` | string | Output only. The title of the insight. |
 
 ### `InteropLink`
@@ -969,7 +969,7 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | Field | Type | Description |
 |---|---|---|
 | `label` | string | Output only. The label of the link, suitable for UI rendering. |
-| `linkType` | string enum | Output only. The type of the interop link, e.g., "COST_REPORT", "BQE_QUERY", etc. |
+| `linkType` | string enum | Output only. The type of the interop link, e.g., "COST_REPORT", "BQE_QUERY", etc. Values: `LINK_TYPE_UNSPECIFIED`, `COST_REPORT`, `BQE_QUERY`, `FINOPS_HUB`. |
 | `url` | string | Output only. The URL of the link. |
 
 ### `ListBillingAccountsResponse`
@@ -1053,7 +1053,7 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | `extensions` | array<string> | The URIs of extensions that are present or contributed to this Message. |
 | `messageId` | string | The unique identifier (e.g. UUID)of the message. This is required and created by the message creator. |
 | `metadata` | object | protolint:enable REPEATED_FIELD_NAMES_PLURALIZED Any optional metadata to provide along with the message. |
-| `role` | string enum | A role for the message. |
+| `role` | string enum | A role for the message. Values: `ROLE_UNSPECIFIED`, `ROLE_USER`, `ROLE_AGENT`. |
 | `taskId` | string | The task id of the message. This is optional and if set, the message will be associated with the given task. |
 
 ### `Money`
@@ -1223,7 +1223,7 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | Field | Type | Description |
 |---|---|---|
 | `displayMessage` | string | Output only. A user-facing message explaining the rejection. |
-| `reason` | string enum | Output only. The reason for the rejection. |
+| `reason` | string enum | Output only. The reason for the rejection. Values: `REASON_UNSPECIFIED`, `EXPLICIT_OUT_OF_SCOPE`. |
 
 ### `Row`
 
@@ -1366,7 +1366,7 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | Field | Type | Description |
 |---|---|---|
 | `chartTitle` | string | The title of the chart. |
-| `chartType` | string enum | The type of the chart. |
+| `chartType` | string enum | The type of the chart. Values: `CHART_TYPE_UNSPECIFIED`, `BAR_CHART`, `UNCHARTABLE`, `LINE_CHART`, `AREA_CHART`. |
 | `seriesField` | string | The field used for the series (e.g., color-coding). Optional, but recommended for time-series data. |
 | `xAxisField` | string | The field used for the x-axis. |
 | `xAxisLabel` | string | The label of the x-axis. |
@@ -1428,7 +1428,7 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 | Field | Type | Description |
 |---|---|---|
 | `message` | Message | A message associated with the status. |
-| `state` | string enum | The current state of this task |
+| `state` | string enum | The current state of this task Values: `TASK_STATE_UNSPECIFIED`, `TASK_STATE_SUBMITTED`, `TASK_STATE_WORKING`, `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELLED`, `TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_REJECTED`, `TASK_STATE_AUTH_REQUIRED`. |
 | `timestamp` | string (google-datetime) | Timestamp when the status was recorded. Example: "2023-10-27T10:00:00Z" |
 
 ### `TaskStatusUpdateEvent`
@@ -1479,7 +1479,7 @@ Message types referenced by the methods listed under `references/rest/cloudbilli
 
 | Field | Type | Description |
 |---|---|---|
-| `persona` | string enum | Optional. The user's persona (e.g., FinOps Manager, Developer). |
+| `persona` | string enum | Optional. The user's persona (e.g., FinOps Manager, Developer). Values: `PERSONA_UNSPECIFIED`, `FINOPS_MANAGER`, `DEVELOPER`. |
 | `role` | string | Optional. The user's role (e.g., Billing Admin, Project Owner, etc.). |
 
 ### `ValueProto`

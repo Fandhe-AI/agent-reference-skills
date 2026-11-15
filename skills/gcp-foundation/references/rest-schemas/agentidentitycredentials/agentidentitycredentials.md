@@ -95,7 +95,7 @@ Message types referenced by the methods listed under `references/rest/agentident
 |---|---|---|
 | `scopes` | array<string> | Optional. The desired downstream OAuth scopes to request for the exchanged token. |
 | `sourceCredential` | string | Required. The incoming identity or assertion token to be exchanged. |
-| `targetTokenType` | string enum | Optional. The desired target token type to be returned from the exchange. If unspecified, defaults to the token type configured on the AuthProvider. |
+| `targetTokenType` | string enum | Optional. The desired target token type to be returned from the exchange. If unspecified, defaults to the token type configured on the AuthProvider. Values: `TARGET_TOKEN_TYPE_UNSPECIFIED`, `TARGET_TOKEN_TYPE_ACCESS_TOKEN`, `TARGET_TOKEN_TYPE_ID_JAG`. |
 | `tokenBinding` | GoogleCloudAgentidentitycredentialsV1alpha_TokenBinding | Optional. The token binding parameters to be applied to downstream tokens and embedded into the ID-JAG assertion. |
 
 ### `GoogleCloudAgentidentitycredentialsV1alpha_ExchangeCredentialsResponse`

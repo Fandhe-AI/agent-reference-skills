@@ -16,8 +16,8 @@ Message types referenced by the methods listed under `references/rest/cloudlocat
 | Field | Type | Description |
 |---|---|---|
 | `carbonFreeEnergyPercentage` | number (float) | Optional. The carbon free energy percentage of the cloud location. This represents the average percentage of time customers' application will be running on carbon-free energy. See https://cloud.google.com/sustainability/region-carbon for more details. There is a difference between default value 0 and unset value. 0 means the carbon free energy percentage is 0%, while unset value means the carbon footprint data is not available. |
-| `cloudLocationType` | string enum | Optional. The type of the cloud location. |
-| `cloudProvider` | string enum | Optional. The provider of the cloud location. Values can be Google Cloud or third-party providers, including AWS, Azure, or Oracle Cloud Infrastructure. |
+| `cloudLocationType` | string enum | Optional. The type of the cloud location. Values: `CLOUD_LOCATION_TYPE_UNSPECIFIED`, `CLOUD_LOCATION_TYPE_REGION`, `CLOUD_LOCATION_TYPE_ZONE`, `CLOUD_LOCATION_TYPE_GDCC_ZONE`, `CLOUD_LOCATION_TYPE_GLOBAL`. |
+| `cloudProvider` | string enum | Optional. The provider of the cloud location. Values can be Google Cloud or third-party providers, including AWS, Azure, or Oracle Cloud Infrastructure. Values: `CLOUD_PROVIDER_UNSPECIFIED`, `CLOUD_PROVIDER_GCP`, `CLOUD_PROVIDER_AWS`, `CLOUD_PROVIDER_AZURE`, `CLOUD_PROVIDER_OCI`. |
 | `containingCloudLocation` | string | Output only. The containing cloud location in the strict nesting hierarchy. For example, the containing cloud location of a zone is a region. |
 | `displayName` | string | Optional. The human-readable name of the cloud location. Example: us-east-2, us-east1. |
 | `gcpAttributes` | GcpAttributes | Optional. GCP-specific attributes. |
@@ -31,7 +31,7 @@ Message types referenced by the methods listed under `references/rest/cloudlocat
 
 | Field | Type | Description |
 |---|---|---|
-| `zoneType` | string enum | Optional. The type of the cloud zone. |
+| `zoneType` | string enum | Optional. The type of the cloud zone. Values: `GCP_ZONE_TYPE_UNSPECIFIED`, `GENERAL_PURPOSE`, `AI_ZONE`. |
 
 ### `ListCloudLocationsResponse`
 

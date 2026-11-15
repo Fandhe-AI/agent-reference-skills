@@ -21,7 +21,7 @@ Message types referenced by the methods listed under `references/rest/cloudcomme
 | `name` | string | Output only. The resource name of the account. Account names have the form `accounts/{account_id}`. |
 | `provider` | string | Output only. The identifier of the service provider that this account was created against. Each service provider is assigned a unique provider value when they onboard with Cloud Commerce platform. |
 | `resellerParentBillingAccount` | string | Output only. The reseller parent billing account of the account's corresponding billing account, applicable only when the corresponding billing account is a subaccount of a reseller. Included in responses only for view: ACCOUNT_VIEW_FULL. Format: billingAccounts/{billing_account_id} |
-| `state` | string enum | Output only. The state of the account. This is used to decide whether the customer is in good standing with the provider and is able to make purchases. An account might not be able to make a purchase if the billing account is suspended, for example. |
+| `state` | string enum | Output only. The state of the account. This is used to decide whether the customer is in good standing with the provider and is able to make purchases. An account might not be able to make a purchase if the billing account is suspended, for example. Values: `ACCOUNT_STATE_UNSPECIFIED`, `ACCOUNT_ACTIVATION_REQUESTED`, `ACCOUNT_ACTIVE`. |
 | `updateTime` | string (google-datetime) | Output only. The last update timestamp. |
 
 ### `Approval`
@@ -33,7 +33,7 @@ Message types referenced by the methods listed under `references/rest/cloudcomme
 |---|---|---|
 | `name` | string | Output only. The name of the approval. |
 | `reason` | string | Output only. An explanation for the state of the approval. |
-| `state` | string enum | Output only. The state of the approval. |
+| `state` | string enum | Output only. The state of the approval. Values: `STATE_UNSPECIFIED`, `PENDING`, `APPROVED`, `REJECTED`. |
 | `updateTime` | string (google-datetime) | Optional. The last update timestamp of the approval. |
 
 ### `ApproveAccountRequest`
@@ -109,7 +109,7 @@ Message types referenced by the methods listed under `references/rest/cloudcomme
 | `productExternalName` | string | Output only. The identifier of the product that was procured. |
 | `provider` | string | Output only. The identifier of the service provider that this entitlement was created against. Each service provider is assigned a unique provider value when they onboard with Cloud Commerce platform. |
 | `quoteExternalName` | string | Output only. The identifier of the quote that was used to procure. Empty if the order is not purchased using a quote. |
-| `state` | string enum | Output only. The state of the entitlement. |
+| `state` | string enum | Output only. The state of the entitlement. Values: `ENTITLEMENT_STATE_UNSPECIFIED`, `ENTITLEMENT_ACTIVATION_REQUESTED`, `ENTITLEMENT_ACTIVE`, `ENTITLEMENT_PENDING_CANCELLATION`, `ENTITLEMENT_CANCELLED`, `ENTITLEMENT_PENDING_PLAN_CHANGE`, `ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL`, `ENTITLEMENT_SUSPENDED`. |
 | `subscriptionEndTime` | string (google-datetime) | Output only. End time for the subscription corresponding to this entitlement. |
 | `updateTime` | string (google-datetime) | Output only. The last update timestamp. |
 | `usageReportingId` | string | Output only. The consumerId to use when reporting usage through the Service Control API. See the consumerId field at Reporting Metrics (https://cloud.google.com/service-control/reporting-metrics) for more details. This field is present only if the product has usage-based billing configured. |

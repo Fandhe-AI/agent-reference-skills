@@ -79,7 +79,7 @@ Message types referenced by the methods listed under `references/rest/advisoryno
 | `createTime` | string (google-datetime) | Output only. Time the notification was created. |
 | `messages` | array<GoogleCloudAdvisorynotificationsV1Message> | A list of messages in the notification. |
 | `name` | string | The resource name of the notification. Format: organizations/{organization}/locations/{location}/notifications/{notification} or projects/{project}/locations/{location}/notifications/{notification}. |
-| `notificationType` | string enum | Type of notification |
+| `notificationType` | string enum | Type of notification Values: `NOTIFICATION_TYPE_UNSPECIFIED`, `NOTIFICATION_TYPE_SECURITY_PRIVACY_ADVISORY`, `NOTIFICATION_TYPE_SENSITIVE_ACTIONS`, `NOTIFICATION_TYPE_SECURITY_MSA`, `NOTIFICATION_TYPE_THREAT_HORIZONS`. |
 | `subject` | GoogleCloudAdvisorynotificationsV1Subject | The subject line of the notification. |
 
 ### `GoogleCloudAdvisorynotificationsV1NotificationSettings`
@@ -119,7 +119,7 @@ Message types referenced by the methods listed under `references/rest/advisoryno
 | Field | Type | Description |
 |---|---|---|
 | `enText` | string | The English copy. |
-| `localizationState` | string enum | Status of the localization. |
+| `localizationState` | string enum | Status of the localization. Values: `LOCALIZATION_STATE_UNSPECIFIED`, `LOCALIZATION_STATE_NOT_APPLICABLE`, `LOCALIZATION_STATE_PENDING`, `LOCALIZATION_STATE_COMPLETED`. |
 | `localizedText` | string | The requested localized copy (if applicable). |
 
 ### Shape of `GoogleCloudAdvisorynotificationsV1Attachment`

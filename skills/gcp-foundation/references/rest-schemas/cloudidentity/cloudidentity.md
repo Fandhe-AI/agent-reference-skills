@@ -47,7 +47,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `enabledUnknownSources` | boolean | Whether applications from unknown sources can be installed on device. |
 | `hasPotentiallyHarmfulApps` | boolean | Whether any potentially harmful apps were detected on the device. |
 | `ownerProfileAccount` | boolean | Whether this account is on an owner/primary profile. For phones, only true for owner profiles. Android 4+ devices can have secondary or restricted user profiles. |
-| `ownershipPrivilege` | string enum | Ownership privileges on device. |
+| `ownershipPrivilege` | string enum | Ownership privileges on device. Values: `OWNERSHIP_PRIVILEGE_UNSPECIFIED`, `DEVICE_ADMINISTRATOR`, `PROFILE_OWNER`, `DEVICE_OWNER`. |
 | `supportsWorkProfile` | boolean | Whether the device supports Android work profiles. If false, this service will not block access to corp data even if an administrator turns on the "Enforce Work Profile" policy. |
 | `verifiedBoot` | boolean | Whether Android verified boot status is GREEN. |
 | `verifyAppsEnabled` | boolean | Whether Google Play Protect Verify Apps is enabled. |
@@ -61,7 +61,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 |---|---|---|
 | `displayName` | string | Output only. The display name of the anti-virus software. |
 | `productGuid` | string | Output only. The GUID of the anti-virus product. |
-| `productState` | string enum | Output only. The state of the anti-virus. |
+| `productState` | string enum | Output only. The state of the anti-virus. Values: `PRODUCT_STATE_UNSPECIFIED`, `PRODUCT_STATE_ON`, `PRODUCT_STATE_OFF`, `PRODUCT_STATE_SNOOZED`, `PRODUCT_STATE_EXPIRED`. |
 
 ### `ApproveDeviceUserRequest`
 
@@ -117,7 +117,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 
 | Field | Type | Description |
 |---|---|---|
-| `browserManagementState` | string enum | Output only. Browser's management state. |
+| `browserManagementState` | string enum | Output only. Browser's management state. Values: `UNSPECIFIED`, `UNMANAGED`, `MANAGED_BY_OTHER_DOMAIN`, `PROFILE_MANAGED`, `BROWSER_MANAGED`. |
 | `browserVersion` | string | Version of the request initiating browser. E.g. `91.0.4442.4`. |
 | `isBuiltInDnsClientEnabled` | boolean | Current state of built-in DNS client (https://chromeenterprise.google/policies/#BuiltInDnsClientEnabled). |
 | `isBulkDataEntryAnalysisEnabled` | boolean | Current state of bulk data analysis (https://chromeenterprise.google/policies/#OnBulkDataEntryEnterpriseConnector). Set to true if provider list from Chrome is non-empty. |
@@ -129,9 +129,9 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `isSecurityEventAnalysisEnabled` | boolean | Current state of security event analysis (https://chromeenterprise.google/policies/#OnSecurityEventEnterpriseConnector). Set to true if provider list from Chrome is non-empty. |
 | `isSiteIsolationEnabled` | boolean | Current state of site isolation (https://chromeenterprise.google/policies/?policy=IsolateOrigins). |
 | `isThirdPartyBlockingEnabled` | boolean | Current state of third-party blocking (https://chromeenterprise.google/policies/#ThirdPartyBlockingEnabled). |
-| `passwordProtectionWarningTrigger` | string enum | Current state of password protection trigger (https://chromeenterprise.google/policies/#PasswordProtectionWarningTrigger). |
+| `passwordProtectionWarningTrigger` | string enum | Current state of password protection trigger (https://chromeenterprise.google/policies/#PasswordProtectionWarningTrigger). Values: `PASSWORD_PROTECTION_TRIGGER_UNSPECIFIED`, `PROTECTION_OFF`, `PASSWORD_REUSE`, `PHISHING_REUSE`. |
 | `policies` | array<ChromePolicy> | Output only. Chrome policies information for the browser as can be seen in chrome://policy. Full possibilities of policies can be consulted in Chrome Enterprise Policy List (https://chromeenterprise.google/policies/). |
-| `safeBrowsingProtectionLevel` | string enum | Current state of Safe Browsing protection level (https://chromeenterprise.google/policies/#SafeBrowsingProtectionLevel). |
+| `safeBrowsingProtectionLevel` | string enum | Current state of Safe Browsing protection level (https://chromeenterprise.google/policies/#SafeBrowsingProtectionLevel). Values: `SAFE_BROWSING_LEVEL_UNSPECIFIED`, `DISABLED`, `STANDARD`, `ENHANCED`. |
 
 ### `CancelUserInvitationRequest`
 
@@ -187,7 +187,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `serialNumber` | string | Serial number of the certificate, Example: "123456789". |
 | `subject` | string | The subject name of this certificate. |
 | `thumbprint` | string | The certificate thumbprint. |
-| `validationState` | string enum | Validation state of this certificate. |
+| `validationState` | string enum | Validation state of this certificate. Values: `CERTIFICATE_VALIDATION_STATE_UNSPECIFIED`, `VALIDATION_SUCCESSFUL`, `VALIDATION_FAILED`. |
 | `validityExpirationTime` | string (google-datetime) | Certificate not valid at or after this timestamp. |
 | `validityStartTime` | string (google-datetime) | Certificate not valid before this timestamp. |
 
@@ -220,8 +220,8 @@ Message types referenced by the methods listed under `references/rest/cloudident
 |---|---|---|
 | `conflicts` | array<PolicyConflict> | Output only. A list of other policy values for the same policy name that were not applied due to lower precedence. This field is empty if there were no conflicts. |
 | `name` | string | Output only. The unique name of the Chrome policy. These names correspond to the policy names listed in Chrome Enterprise Policy List (https://chromeenterprise.google/policies/) |
-| `scope` | string enum | Output only. The scope at which the \*applied\* policy value is set (USER or MACHINE). |
-| `source` | string enum | Output only. The source from which the \*applied\* policy value originated. |
+| `scope` | string enum | Output only. The scope at which the \*applied\* policy value is set (USER or MACHINE). Values: `SCOPE_UNKNOWN`, `USER`, `MACHINE`. |
+| `source` | string enum | Output only. The source from which the \*applied\* policy value originated. Values: `SOURCE_UNKNOWN`, `ENTERPRISE_DEFAULT`, `CLOUD`, `ACTIVE_DIRECTORY`, `DEVICE_LOCAL_ACCOUNT_OVERRIDE_DEPRECATED`, `PLATFORM`, `PRIORITY_CLOUD_DEPRECATED`, `MERGED`, `COMMAND_LINE`, `CLOUD_FROM_ASH`, `RESTRICTED_MANAGED_GUEST_SESSION_OVERRIDE`. |
 | `value` | string | Output only. The currently applied value of the policy. The format depends on the policy type (e.g., boolean, string, JSON array/object). |
 
 ### `ClientState`
@@ -232,16 +232,16 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | Field | Type | Description |
 |---|---|---|
 | `assetTags` | array<string> | The caller can specify asset tags for this resource |
-| `complianceState` | string enum | The compliance state of the resource as specified by the API client. |
+| `complianceState` | string enum | The compliance state of the resource as specified by the API client. Values: `COMPLIANCE_STATE_UNSPECIFIED`, `COMPLIANT`, `NON_COMPLIANT`. |
 | `createTime` | string (google-datetime) | Output only. The time the client state data was created. |
 | `customId` | string | This field may be used to store a unique identifier for the API resource within which these CustomAttributes are a field. |
 | `etag` | string | The token that needs to be passed back for concurrency control in updates. Token needs to be passed back in UpdateRequest |
-| `healthScore` | string enum | The Health score of the resource |
+| `healthScore` | string enum | The Health score of the resource Values: `HEALTH_SCORE_UNSPECIFIED`, `VERY_POOR`, `POOR`, `NEUTRAL`, `GOOD`, `VERY_GOOD`. |
 | `keyValuePairs` | object | The map of key-value attributes stored by callers specific to a device. The total serialized length of this map may not exceed 10KB. No limit is placed on the number of attributes in a map. |
 | `lastUpdateTime` | string (google-datetime) | Output only. The time the client state data was last updated. |
-| `managed` | string enum | The management state of the resource as specified by the API client. |
+| `managed` | string enum | The management state of the resource as specified by the API client. Values: `MANAGED_STATE_UNSPECIFIED`, `MANAGED`, `UNMANAGED`. |
 | `name` | string | Output only. Resource name (https://cloud.google.com/apis/design/resource_names) of the ClientState in format: `devices/{device_id}/deviceUsers/{device_user_id}/clientState/{partner_id}`, where partner_id corresponds to the partner storing the data. |
-| `ownerType` | string enum | Output only. The owner of the ClientState |
+| `ownerType` | string enum | Output only. The owner of the ClientState Values: `OWNER_TYPE_UNSPECIFIED`, `OWNER_TYPE_CUSTOMER`, `OWNER_TYPE_PARTNER`. |
 | `scoreReason` | string | A descriptive cause of the health score. |
 
 ### `CreateDeviceRequest`
@@ -343,29 +343,29 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `brand` | string | Output only. Device brand. Example: Samsung. |
 | `browserProfiles` | array<BrowserAttributes> | Browser profiles on the device. This is a copy of the BrowserAttributes message defined in EndpointVerificationSpecificAttributes. We are replicating it here since EndpointVerification isn't the only client reporting browser profiles. |
 | `buildNumber` | string | Output only. Build number of the device. |
-| `clientTypes` | array<string> | List of the clients the device is reporting to. |
-| `compromisedState` | string enum | Output only. Represents whether the Device is compromised. |
+| `clientTypes` | array<string> | List of the clients the device is reporting to. Values: `CLIENT_TYPE_UNSPECIFIED`, `DRIVE_FS`, `FUNDAMENTAL`, `ENDPOINT_VERIFICATION`, `WINDOWS_ADVANCED`, `GOOGLE_CREDENTIALS_PROVIDER_FOR_WINDOWS`. |
+| `compromisedState` | string enum | Output only. Represents whether the Device is compromised. Values: `COMPROMISED_STATE_UNSPECIFIED`, `COMPROMISED`, `UNCOMPROMISED`. |
 | `createTime` | string (google-datetime) | Output only. When the Company-Owned device was imported. This field is empty for BYOD devices. |
 | `deviceId` | string | Unique identifier for the device. |
-| `deviceType` | string enum | Output only. Type of device. |
+| `deviceType` | string enum | Output only. Type of device. Values: `DEVICE_TYPE_UNSPECIFIED`, `ANDROID`, `IOS`, `GOOGLE_SYNC`, `WINDOWS`, `MAC_OS`, `LINUX`, `CHROME_OS`, `GOOGLEBOOK`. |
 | `enabledDeveloperOptions` | boolean | Output only. Whether developer options is enabled on device. |
 | `enabledUsbDebugging` | boolean | Output only. Whether USB debugging is enabled on device. |
-| `encryptionState` | string enum | Output only. Device encryption state. |
+| `encryptionState` | string enum | Output only. Device encryption state. Values: `ENCRYPTION_STATE_UNSPECIFIED`, `UNSUPPORTED_BY_DEVICE`, `ENCRYPTED`, `NOT_ENCRYPTED`. |
 | `endpointVerificationSpecificAttributes` | EndpointVerificationSpecificAttributes | Output only. Attributes specific to Endpoint Verification (https://cloud.google.com/endpoint-verification/docs/overview) devices. |
 | `hostname` | string | Host name of the device. |
 | `imei` | string | Output only. IMEI number of device if GSM device; empty otherwise. |
 | `kernelVersion` | string | Output only. Kernel version of the device. |
 | `lastSyncTime` | string (google-datetime) | Most recent time when device synced with this service. |
-| `managementState` | string enum | Output only. Management state of the device |
+| `managementState` | string enum | Output only. Management state of the device Values: `MANAGEMENT_STATE_UNSPECIFIED`, `APPROVED`, `BLOCKED`, `PENDING`, `UNPROVISIONED`, `WIPING`, `WIPED`. |
 | `manufacturer` | string | Output only. Device manufacturer. Example: Motorola. |
 | `meid` | string | Output only. MEID number of device if CDMA device; empty otherwise. |
 | `model` | string | Output only. Model name of device. Example: Pixel 3. |
 | `name` | string | Output only. Resource name (https://cloud.google.com/apis/design/resource_names) of the Device in format: `devices/{device_id}`, where device_id is the unique id assigned to the Device. |
 | `networkOperator` | string | Output only. Mobile or network operator of device, if available. |
-| `osFirewallStatus` | string enum | Output only. OS firewall status of the device. |
+| `osFirewallStatus` | string enum | Output only. OS firewall status of the device. Values: `OS_FIREWALL_STATUS_UNSPECIFIED`, `OS_FIREWALL_STATUS_UNKNOWN`, `OS_FIREWALL_STATUS_ENABLED`, `OS_FIREWALL_STATUS_DISABLED`. |
 | `osVersion` | string | Output only. OS version of the device. Example: Android 8.1.0. |
 | `otherAccounts` | array<string> | Output only. Domain name for Google accounts on device. Type for other accounts on device. On Android, will only be populated if \|ownership_privilege\| is \|PROFILE_OWNER\| or \|DEVICE_OWNER\|. Does not include the account signed in to the device policy app if that account's domain has only one account. Examples: "com.example", "xyz.com". |
-| `ownerType` | string enum | Output only. Whether the device is owned by the company or an individual |
+| `ownerType` | string enum | Output only. Whether the device is owned by the company or an individual Values: `DEVICE_OWNERSHIP_UNSPECIFIED`, `COMPANY`, `BYOD`. |
 | `releaseVersion` | string | Output only. OS release version. Example: 6.0. |
 | `securityPatchTime` | string (google-datetime) | Output only. OS security patch update time on device. |
 | `serialNumber` | string | Serial Number of device. Example: HT82V1A01076. |
@@ -380,14 +380,14 @@ Message types referenced by the methods listed under `references/rest/cloudident
 
 | Field | Type | Description |
 |---|---|---|
-| `compromisedState` | string enum | Compromised State of the DeviceUser object |
+| `compromisedState` | string enum | Compromised State of the DeviceUser object Values: `COMPROMISED_STATE_UNSPECIFIED`, `COMPROMISED`, `NOT_COMPROMISED`. |
 | `createTime` | string (google-datetime) | When the user first signed in to the device |
 | `firstSyncTime` | string (google-datetime) | Output only. Most recent time when user registered with this service. |
 | `languageCode` | string | Output only. Default locale used on device, in IETF BCP-47 format. |
 | `lastSyncTime` | string (google-datetime) | Output only. Last time when user synced with policies. |
-| `managementState` | string enum | Output only. Management state of the user on the device. |
+| `managementState` | string enum | Output only. Management state of the user on the device. Values: `MANAGEMENT_STATE_UNSPECIFIED`, `WIPING`, `WIPED`, `APPROVED`, `BLOCKED`, `PENDING_APPROVAL`, `UNENROLLED`. |
 | `name` | string | Output only. Resource name (https://cloud.google.com/apis/design/resource_names) of the DeviceUser in format: `devices/{device_id}/deviceUsers/{device_user_id}`, where `device_user_id` uniquely identifies a user's use of a device. |
-| `passwordState` | string enum | Password state of the DeviceUser object |
+| `passwordState` | string enum | Password state of the DeviceUser object Values: `PASSWORD_STATE_UNSPECIFIED`, `PASSWORD_SET`, `PASSWORD_NOT_SET`. |
 | `userAgent` | string | Output only. User agent on the device for this specific user |
 | `userEmail` | string | Email address of the user registered on the device. |
 
@@ -418,7 +418,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | Field | Type | Description |
 |---|---|---|
 | `query` | string | Query that determines the memberships of the dynamic group. Examples: All users with at least one `organizations.department` of engineering. `user.organizations.exists(org, org.department=='engineering')` All users with at least one location that has `area` of `foo` and `building_id` of `bar`. `user.locations.exists(loc, loc.area=='foo' && loc.building_id=='bar')` All users with any variation of the name John Doe (case-insensitive queries add `equalsIgnoreCase()` to the value being queried). `user.name.value.equalsIgnoreCase('jOhn DoE')` |
-| `resourceType` | string enum | Resource type for the Dynamic Group Query |
+| `resourceType` | string enum | Resource type for the Dynamic Group Query Values: `RESOURCE_TYPE_UNSPECIFIED`, `USER`. |
 
 ### `DynamicGroupStatus`
 
@@ -427,7 +427,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 
 | Field | Type | Description |
 |---|---|---|
-| `status` | string enum | Status of the dynamic group. |
+| `status` | string enum | Status of the dynamic group. Values: `STATUS_UNSPECIFIED`, `UP_TO_DATE`, `UPDATING_MEMBERSHIPS`, `INVALID_QUERY`. |
 | `statusTime` | string (google-datetime) | The latest time at which the dynamic group is guaranteed to be in the given status. If status is `UP_TO_DATE`, the latest time at which the dynamic group was confirmed to be up-to-date. If status is `UPDATING_MEMBERSHIPS`, the time at which dynamic group was created. |
 
 ### `EndpointVerificationSpecificAttributes`
@@ -496,7 +496,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `enabledUnknownSources` | boolean | Whether applications from unknown sources can be installed on device. |
 | `hasPotentiallyHarmfulApps` | boolean | Whether any potentially harmful apps were detected on the device. |
 | `ownerProfileAccount` | boolean | Whether this account is on an owner/primary profile. For phones, only true for owner profiles. Android 4+ devices can have secondary or restricted user profiles. |
-| `ownershipPrivilege` | string enum | Ownership privileges on device. |
+| `ownershipPrivilege` | string enum | Ownership privileges on device. Values: `OWNERSHIP_PRIVILEGE_UNSPECIFIED`, `DEVICE_ADMINISTRATOR`, `PROFILE_OWNER`, `DEVICE_OWNER`. |
 | `supportsWorkProfile` | boolean | Whether device supports Android work profiles. If false, this service will not block access to corp data even if an administrator turns on the "Enforce Work Profile" policy. |
 | `verifiedBoot` | boolean | Whether Android verified boot status is GREEN. |
 | `verifyAppsEnabled` | boolean | Whether Google Play Protect Verify Apps is enabled. |
@@ -565,7 +565,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 
 | Field | Type | Description |
 |---|---|---|
-| `browserManagementState` | string enum | Output only. Browser's management state. |
+| `browserManagementState` | string enum | Output only. Browser's management state. Values: `UNSPECIFIED`, `UNMANAGED`, `MANAGED_BY_OTHER_DOMAIN`, `PROFILE_MANAGED`, `BROWSER_MANAGED`. |
 | `browserVersion` | string | Version of the request initiating browser. E.g. `91.0.4442.4`. |
 | `isBuiltInDnsClientEnabled` | boolean | Current state of built-in DNS client (https://chromeenterprise.google/policies/#BuiltInDnsClientEnabled). |
 | `isBulkDataEntryAnalysisEnabled` | boolean | Current state of bulk data analysis (https://chromeenterprise.google/policies/#OnBulkDataEntryEnterpriseConnector). Set to true if provider list from Chrome is non-empty. |
@@ -577,8 +577,8 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `isSecurityEventAnalysisEnabled` | boolean | Current state of security event analysis (https://chromeenterprise.google/policies/#OnSecurityEventEnterpriseConnector). Set to true if provider list from Chrome is non-empty. |
 | `isSiteIsolationEnabled` | boolean | Current state of site isolation (https://chromeenterprise.google/policies/?policy=IsolateOrigins). |
 | `isThirdPartyBlockingEnabled` | boolean | Current state of third-party blocking (https://chromeenterprise.google/policies/#ThirdPartyBlockingEnabled). |
-| `passwordProtectionWarningTrigger` | string enum | Current state of password protection trigger (https://chromeenterprise.google/policies/#PasswordProtectionWarningTrigger). |
-| `safeBrowsingProtectionLevel` | string enum | Current state of Safe Browsing protection level (https://chromeenterprise.google/policies/#SafeBrowsingProtectionLevel). |
+| `passwordProtectionWarningTrigger` | string enum | Current state of password protection trigger (https://chromeenterprise.google/policies/#PasswordProtectionWarningTrigger). Values: `PASSWORD_PROTECTION_TRIGGER_UNSPECIFIED`, `PROTECTION_OFF`, `PASSWORD_REUSE`, `PHISHING_REUSE`. |
+| `safeBrowsingProtectionLevel` | string enum | Current state of Safe Browsing protection level (https://chromeenterprise.google/policies/#SafeBrowsingProtectionLevel). Values: `SAFE_BROWSING_LEVEL_UNSPECIFIED`, `DISABLED`, `STANDARD`, `ENHANCED`. |
 
 ### `GoogleAppsCloudidentityDevicesV1CancelWipeDeviceMetadata`
 
@@ -639,7 +639,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `serialNumber` | string | Serial number of the certificate, Example: "123456789". |
 | `subject` | string | The subject name of this certificate. |
 | `thumbprint` | string | The certificate thumbprint. |
-| `validationState` | string enum | Output only. Validation state of this certificate. |
+| `validationState` | string enum | Output only. Validation state of this certificate. Values: `CERTIFICATE_VALIDATION_STATE_UNSPECIFIED`, `VALIDATION_SUCCESSFUL`, `VALIDATION_FAILED`. |
 | `validityExpirationTime` | string (google-datetime) | Certificate not valid at or after this timestamp. |
 | `validityStartTime` | string (google-datetime) | Certificate not valid before this timestamp. |
 
@@ -662,16 +662,16 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | Field | Type | Description |
 |---|---|---|
 | `assetTags` | array<string> | The caller can specify asset tags for this resource |
-| `complianceState` | string enum | The compliance state of the resource as specified by the API client. |
+| `complianceState` | string enum | The compliance state of the resource as specified by the API client. Values: `COMPLIANCE_STATE_UNSPECIFIED`, `COMPLIANT`, `NON_COMPLIANT`. |
 | `createTime` | string (google-datetime) | Output only. The time the client state data was created. |
 | `customId` | string | This field may be used to store a unique identifier for the API resource within which these CustomAttributes are a field. |
 | `etag` | string | The token that needs to be passed back for concurrency control in updates. Token needs to be passed back in UpdateRequest |
-| `healthScore` | string enum | The Health score of the resource. The Health score is the callers specification of the condition of the device from a usability point of view. For example, a third-party device management provider may specify a health score based on its compliance with organizational policies. |
+| `healthScore` | string enum | The Health score of the resource. The Health score is the callers specification of the condition of the device from a usability point of view. For example, a third-party device management provider may specify a health score based on its compliance with organizational policies. Values: `HEALTH_SCORE_UNSPECIFIED`, `VERY_POOR`, `POOR`, `NEUTRAL`, `GOOD`, `VERY_GOOD`. |
 | `keyValuePairs` | object | The map of key-value attributes stored by callers specific to a device. The total serialized length of this map may not exceed 10KB. No limit is placed on the number of attributes in a map. |
 | `lastUpdateTime` | string (google-datetime) | Output only. The time the client state data was last updated. |
-| `managed` | string enum | The management state of the resource as specified by the API client. |
+| `managed` | string enum | The management state of the resource as specified by the API client. Values: `MANAGED_STATE_UNSPECIFIED`, `MANAGED`, `UNMANAGED`. |
 | `name` | string | Output only. Resource name (https://cloud.google.com/apis/design/resource_names) of the ClientState in format: `devices/{device}/deviceUsers/{device_user}/clientState/{partner}`, where partner corresponds to the partner storing the data. For partners belonging to the "BeyondCorp Alliance", this is the partner ID specified to you by Google. For all other callers, this is a string of the form: `{customer}-suffix`, where `customer` is your customer ID. The \*suffix\* is any string the caller specifies. This string will be displayed verbatim in the administration console. This suffix is used in setting up Custom Access Levels in Context-Aware Access. Your organization's customer ID can be obtained from the URL: `GET https://www.googleapis.com/admin/directory/v1/customers/my_customer` The `id` field in the response contains the customer ID starting with the letter 'C'. The customer ID to be used in this API is the string after the letter 'C' (not including 'C') |
-| `ownerType` | string enum | Output only. The owner of the ClientState |
+| `ownerType` | string enum | Output only. The owner of the ClientState Values: `OWNER_TYPE_UNSPECIFIED`, `OWNER_TYPE_CUSTOMER`, `OWNER_TYPE_PARTNER`. |
 | `scoreReason` | string | A descriptive cause of the health score. |
 
 ### `GoogleAppsCloudidentityDevicesV1CreateDeviceMetadata`
@@ -713,19 +713,19 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `bootloaderVersion` | string | Output only. Device bootloader version. Example: 0.6.7. |
 | `brand` | string | Output only. Device brand. Example: Samsung. |
 | `buildNumber` | string | Output only. Build number of the device. |
-| `compromisedState` | string enum | Output only. Represents whether the Device is compromised. |
+| `compromisedState` | string enum | Output only. Represents whether the Device is compromised. Values: `COMPROMISED_STATE_UNSPECIFIED`, `COMPROMISED`, `UNCOMPROMISED`. |
 | `createTime` | string (google-datetime) | Output only. When the Company-Owned device was imported. This field is empty for BYOD devices. |
 | `deviceId` | string | Unique identifier for the device. |
-| `deviceType` | string enum | Output only. Type of device. |
+| `deviceType` | string enum | Output only. Type of device. Values: `DEVICE_TYPE_UNSPECIFIED`, `ANDROID`, `IOS`, `GOOGLE_SYNC`, `WINDOWS`, `MAC_OS`, `LINUX`, `CHROME_OS`, `GOOGLEBOOK`. |
 | `enabledDeveloperOptions` | boolean | Output only. Whether developer options is enabled on device. |
 | `enabledUsbDebugging` | boolean | Output only. Whether USB debugging is enabled on device. |
-| `encryptionState` | string enum | Output only. Device encryption state. |
+| `encryptionState` | string enum | Output only. Device encryption state. Values: `ENCRYPTION_STATE_UNSPECIFIED`, `UNSUPPORTED_BY_DEVICE`, `ENCRYPTED`, `NOT_ENCRYPTED`. |
 | `endpointVerificationSpecificAttributes` | GoogleAppsCloudidentityDevicesV1EndpointVerificationSpecificAttributes | Output only. Attributes specific to Endpoint Verification (https://cloud.google.com/endpoint-verification/docs/overview) devices. |
 | `hostname` | string | Host name of the device. |
 | `imei` | string | Output only. IMEI number of device if GSM device; empty otherwise. |
 | `kernelVersion` | string | Output only. Kernel version of the device. |
 | `lastSyncTime` | string (google-datetime) | Most recent time when device synced with this service. |
-| `managementState` | string enum | Output only. Management state of the device |
+| `managementState` | string enum | Output only. Management state of the device Values: `MANAGEMENT_STATE_UNSPECIFIED`, `APPROVED`, `BLOCKED`, `PENDING`, `UNPROVISIONED`, `WIPING`, `WIPED`. |
 | `manufacturer` | string | Output only. Device manufacturer. Example: Motorola. |
 | `meid` | string | Output only. MEID number of device if CDMA device; empty otherwise. |
 | `model` | string | Output only. Model name of device. Example: Pixel 3. |
@@ -733,7 +733,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `networkOperator` | string | Output only. Mobile or network operator of device, if available. |
 | `osVersion` | string | Output only. OS version of the device. Example: Android 8.1.0. |
 | `otherAccounts` | array<string> | Output only. Domain name for Google accounts on device. Type for other accounts on device. On Android, will only be populated if \|ownership_privilege\| is \|PROFILE_OWNER\| or \|DEVICE_OWNER\|. Does not include the account signed in to the device policy app if that account's domain has only one account. Examples: "com.example", "xyz.com". |
-| `ownerType` | string enum | Output only. Whether the device is owned by the company or an individual |
+| `ownerType` | string enum | Output only. Whether the device is owned by the company or an individual Values: `DEVICE_OWNERSHIP_UNSPECIFIED`, `COMPANY`, `BYOD`. |
 | `releaseVersion` | string | Output only. OS release version. Example: 6.0. |
 | `securityPatchTime` | string (google-datetime) | Output only. OS security patch update time on device. |
 | `serialNumber` | string | Serial Number of device. Example: HT82V1A01076. |
@@ -747,14 +747,14 @@ Message types referenced by the methods listed under `references/rest/cloudident
 
 | Field | Type | Description |
 |---|---|---|
-| `compromisedState` | string enum | Compromised State of the DeviceUser object |
+| `compromisedState` | string enum | Compromised State of the DeviceUser object Values: `COMPROMISED_STATE_UNSPECIFIED`, `COMPROMISED`, `NOT_COMPROMISED`. |
 | `createTime` | string (google-datetime) | When the user first signed in to the device |
 | `firstSyncTime` | string (google-datetime) | Output only. Most recent time when user registered with this service. |
 | `languageCode` | string | Output only. Default locale used on device, in IETF BCP-47 format. |
 | `lastSyncTime` | string (google-datetime) | Output only. Last time when user synced with policies. |
-| `managementState` | string enum | Output only. Management state of the user on the device. |
+| `managementState` | string enum | Output only. Management state of the user on the device. Values: `MANAGEMENT_STATE_UNSPECIFIED`, `WIPING`, `WIPED`, `APPROVED`, `BLOCKED`, `PENDING_APPROVAL`, `UNENROLLED`. |
 | `name` | string | Output only. Resource name (https://cloud.google.com/apis/design/resource_names) of the DeviceUser in format: `devices/{device}/deviceUsers/{device_user}`, where `device_user` uniquely identifies a user's use of a device. |
-| `passwordState` | string enum | Password state of the DeviceUser object |
+| `passwordState` | string enum | Password state of the DeviceUser object Values: `PASSWORD_STATE_UNSPECIFIED`, `PASSWORD_SET`, `PASSWORD_NOT_SET`. |
 | `userAgent` | string | Output only. User agent on the device for this specific user |
 | `userEmail` | string | Email address of the user registered on the device. |
 
@@ -927,7 +927,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `group` | string | Resource name for this group. |
 | `groupKey` | EntityKey | Entity key has an id and a namespace. In case of discussion forums, the id will be an email address without a namespace. |
 | `labels` | object | Labels for Group resource. |
-| `relationType` | string enum | The relation between the member and the transitive group. |
+| `relationType` | string enum | The relation between the member and the transitive group. Values: `RELATION_TYPE_UNSPECIFIED`, `DIRECT`, `INDIRECT`, `DIRECT_AND_INDIRECT`. |
 | `roles` | array<TransitiveMembershipRole> | Membership roles of the member for the group. |
 
 ### `IdpCredential`
@@ -981,7 +981,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `rank` | integer (int32) | Must be zero (which is the default value so it can be omitted) for assignments with `target_org_unit` set and must be greater-than-or-equal-to one for assignments with `target_group` set. |
 | `samlSsoInfo` | SamlSsoInfo | SAML SSO details. Must be set if and only if `sso_mode` is set to `SAML_SSO`. |
 | `signInBehavior` | SignInBehavior | Assertions about users assigned to an IdP will always be accepted from that IdP. This controls whether/when Google should redirect a user to the IdP. Unset (defaults) is the recommended configuration. |
-| `ssoMode` | string enum | Inbound SSO behavior. |
+| `ssoMode` | string enum | Inbound SSO behavior. Values: `SSO_MODE_UNSPECIFIED`, `SSO_OFF`, `SAML_SSO`, `OIDC_SSO`, `DOMAIN_WIDE_SAML_IF_ENABLED`. |
 | `targetGroup` | string | Immutable. Must be of the form `groups/{group}`. |
 | `targetOrgUnit` | string | Immutable. Must be of the form `orgUnits/{org_unit}`. |
 
@@ -1162,7 +1162,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 |---|---|---|
 | `member` | string | Resource name for this member. |
 | `preferredMemberKey` | array<EntityKey> | Entity key has an id and a namespace. In case of discussion forums, the id will be an email address without a namespace. |
-| `relationType` | string enum | The relation between the group and the transitive member. |
+| `relationType` | string enum | The relation between the group and the transitive member. Values: `RELATION_TYPE_UNSPECIFIED`, `DIRECT`, `INDIRECT`, `DIRECT_AND_INDIRECT`. |
 | `roles` | array<TransitiveMembershipRole> | The membership role details (i.e name of role and expiry time). |
 
 ### `MemberRestriction`
@@ -1183,11 +1183,11 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | Field | Type | Description |
 |---|---|---|
 | `createTime` | string (google-datetime) | Output only. The time when the `Membership` was created. |
-| `deliverySetting` | string enum | Output only. Delivery setting associated with the membership. |
+| `deliverySetting` | string enum | Output only. Delivery setting associated with the membership. Values: `DELIVERY_SETTING_UNSPECIFIED`, `ALL_MAIL`, `DIGEST`, `DAILY`, `NONE`, `DISABLED`. |
 | `name` | string | Output only. The resource name (https://cloud.google.com/apis/design/resource_names) of the `Membership`. Shall be of the form `groups/{group}/memberships/{membership}`. |
 | `preferredMemberKey` | EntityKey | Required. Immutable. The `EntityKey` of the member. |
 | `roles` | array<MembershipRole> | The `MembershipRole`s that apply to the `Membership`. If unspecified, defaults to a single `MembershipRole` with `name` `MEMBER`. Must not contain duplicate `MembershipRole`s with the same `name`. |
-| `type` | string enum | Output only. The type of the membership. |
+| `type` | string enum | Output only. The type of the membership. Values: `TYPE_UNSPECIFIED`, `USER`, `SERVICE_ACCOUNT`, `GROUP`, `SHARED_DRIVE`, `CBCM_BROWSER`, `CHROME_OS_DEVICE`, `PERSONAL_AGENT`, `COWORKER_AGENT`, `OTHER`. |
 | `updateTime` | string (google-datetime) | Output only. The time when the `Membership` was last updated. |
 
 ### `Membership` (v1beta1)
@@ -1198,12 +1198,12 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | Field | Type | Description |
 |---|---|---|
 | `createTime` | string (google-datetime) | Output only. The time when the `Membership` was created. |
-| `deliverySetting` | string enum | Output only. Delivery setting associated with the membership. |
+| `deliverySetting` | string enum | Output only. Delivery setting associated with the membership. Values: `DELIVERY_SETTING_UNSPECIFIED`, `ALL_MAIL`, `DIGEST`, `DAILY`, `NONE`, `DISABLED`. |
 | `memberKey` | EntityKey | Immutable. The `EntityKey` of the member. Either `member_key` or `preferred_member_key` must be set when calling MembershipsService.CreateMembership but not both; both shall be set when returned. |
 | `name` | string | Output only. The resource name (https://cloud.google.com/apis/design/resource_names) of the `Membership`. Shall be of the form `groups/{group_id}/memberships/{membership_id}`. |
 | `preferredMemberKey` | EntityKey | Required. Immutable. The `EntityKey` of the member. Either `member_key` or `preferred_member_key` must be set when calling MembershipsService.CreateMembership but not both; both shall be set when returned. |
 | `roles` | array<MembershipRole> | The `MembershipRole`s that apply to the `Membership`. If unspecified, defaults to a single `MembershipRole` with `name` `MEMBER`. Must not contain duplicate `MembershipRole`s with the same `name`. |
-| `type` | string enum | Output only. The type of the membership. |
+| `type` | string enum | Output only. The type of the membership. Values: `TYPE_UNSPECIFIED`, `USER`, `SERVICE_ACCOUNT`, `GROUP`, `SHARED_DRIVE`, `CBCM_BROWSER`, `CHROME_OS_DEVICE`, `PERSONAL_AGENT`, `COWORKER_AGENT`, `OTHER`. |
 | `updateTime` | string (google-datetime) | Output only. The time when the `Membership` was last updated. |
 
 ### `MembershipAdjacencyList`
@@ -1249,7 +1249,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 
 | Field | Type | Description |
 |---|---|---|
-| `state` | string enum | Output only. The current state of the restriction |
+| `state` | string enum | Output only. The current state of the restriction Values: `STATE_UNSPECIFIED`, `COMPLIANT`, `FORWARD_COMPLIANT`, `NON_COMPLIANT`, `EVALUATING`. |
 
 ### `ModifyMembershipRolesRequest`
 
@@ -1334,7 +1334,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `member` | string | Immutable. Org member id as full resource name. Format for shared drive resource: //drive.googleapis.com/drives/{$memberId} where `$memberId` is the `id` from Drive API (V3) `Drive` resource (https://developers.google.com/drive/api/v3/reference/drives#resource). |
 | `memberUri` | string | Uri with which you can read the member. This follows https://aip.dev/122 Format for shared drive resource: https://drive.googleapis.com/drive/v3/drives/{$memberId} where `$memberId` is the `id` from Drive API (V3) `Drive` resource (https://developers.google.com/drive/api/v3/reference/drives#resource). |
 | `name` | string | Required. Immutable. The resource name (https://cloud.google.com/apis/design/resource_names) of the OrgMembership. Format: orgUnits/{$orgUnitId}/memberships/{$membership} The `$orgUnitId` is the `orgUnitId` from the Admin SDK `OrgUnit` resource (https://developers.google.com/admin-sdk/directory/reference/rest/v1/orgunits). The `$membership` shall be of the form `{$entityType};{$memberId}`, where `$entityType` is the enum value of \[OrgMembership.EntityType\], and `memberId` is the `id` from Drive API (V3) `Drive` resource (https://developers.google.com/drive/api/v3/reference/drives#resource) for OrgMembership.EntityType.SHARED_DRIVE. |
-| `type` | string enum | Immutable. Entity type for the org member. |
+| `type` | string enum | Immutable. Entity type for the org member. Values: `ENTITY_TYPE_UNSPECIFIED`, `SHARED_DRIVE`. |
 
 ### `Policy`
 
@@ -1347,7 +1347,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | `name` | string | Output only. Identifier. The resource name (https://cloud.google.com/apis/design/resource_names) of the Policy. Format: policies/{policy}. |
 | `policyQuery` | PolicyQuery | Required. The PolicyQuery the Setting applies to. |
 | `setting` | Setting | Required. The Setting configured by this Policy. |
-| `type` | string enum | Output only. The type of the policy. |
+| `type` | string enum | Output only. The type of the policy. Values: `POLICY_TYPE_UNSPECIFIED`, `SYSTEM`, `ADMIN`. |
 
 ### `PolicyConflict`
 
@@ -1356,8 +1356,8 @@ Message types referenced by the methods listed under `references/rest/cloudident
 
 | Field | Type | Description |
 |---|---|---|
-| `scope` | string enum | Output only. The scope at which this lower-priority policy is set (USER or MACHINE). |
-| `source` | string enum | Output only. The source from which this lower-priority policy value originated. |
+| `scope` | string enum | Output only. The scope at which this lower-priority policy is set (USER or MACHINE). Values: `SCOPE_UNKNOWN`, `USER`, `MACHINE`. |
+| `source` | string enum | Output only. The source from which this lower-priority policy value originated. Values: `SOURCE_UNKNOWN`, `ENTERPRISE_DEFAULT`, `CLOUD`, `ACTIVE_DIRECTORY`, `DEVICE_LOCAL_ACCOUNT_OVERRIDE_DEPRECATED`, `PLATFORM`, `PRIORITY_CLOUD_DEPRECATED`, `MERGED`, `COMMAND_LINE`, `CLOUD_FROM_ASH`, `RESTRICTED_MANAGED_GUEST_SESSION_OVERRIDE`. |
 | `value` | string | Output only. The policy value from this lower-priority source. |
 
 ### `PolicyQuery`
@@ -1390,7 +1390,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 
 | Field | Type | Description |
 |---|---|---|
-| `state` | string enum | Output only. The current state of the restriction |
+| `state` | string enum | Output only. The current state of the restriction Values: `STATE_UNSPECIFIED`, `EVALUATING`, `COMPLIANT`, `FORWARD_COMPLIANT`, `NON_COMPLIANT`. |
 
 ### `RestrictionEvaluations`
 
@@ -1513,7 +1513,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 
 | Field | Type | Description |
 |---|---|---|
-| `redirectCondition` | string enum | When to redirect sign-ins to the IdP. |
+| `redirectCondition` | string enum | When to redirect sign-ins to the IdP. Values: `REDIRECT_CONDITION_UNSPECIFIED`, `NEVER`. |
 
 ### `Status`
 
@@ -1587,7 +1587,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 |---|---|---|
 | `mailsSentCount` | string (int64) | Number of invitation emails sent to the user. |
 | `name` | string | Shall be of the form `customers/{customer}/userinvitations/{user_email_address}`. |
-| `state` | string enum | State of the `UserInvitation`. |
+| `state` | string enum | State of the `UserInvitation`. Values: `STATE_UNSPECIFIED`, `NOT_YET_SENT`, `INVITED`, `ACCEPTED`, `DECLINED`. |
 | `updateTime` | string (google-datetime) | Time when the `UserInvitation` was last updated. |
 
 ### `WindowsSpecificDeviceAttributes`
@@ -1598,7 +1598,7 @@ Message types referenced by the methods listed under `references/rest/cloudident
 | Field | Type | Description |
 |---|---|---|
 | `hotfixes` | array<string> | Output only. The hotfixes installed on the device. |
-| `secureBootMode` | string enum | Output only. Secure boot mode of the device. |
+| `secureBootMode` | string enum | Output only. Secure boot mode of the device. Values: `SECURE_BOOT_MODE_UNSPECIFIED`, `SECURE_BOOT_MODE_UNKNOWN`, `SECURE_BOOT_MODE_ENABLED`, `SECURE_BOOT_MODE_DISABLED`. |
 | `windowsMachineDomain` | string | Output only. The domain of the machine that the user is logged into. This is different from the windows_user_domain as the user could be logged into a domain different from the machine domain. |
 | `windowsUserDomain` | string | Output only. The domain of the user account that is logged into the machine. |
 

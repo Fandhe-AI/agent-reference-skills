@@ -96,7 +96,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | `asset` | Asset | An asset in Google Cloud. |
 | `deleted` | boolean | Whether the asset has been deleted or not. |
 | `priorAsset` | Asset | Prior copy of the asset. Populated if prior_asset_state is PRESENT. Currently this is only set for responses in Real-Time Feed. |
-| `priorAssetState` | string enum | State of prior_asset. |
+| `priorAssetState` | string enum | State of prior_asset. Values: `PRIOR_ASSET_STATE_UNSPECIFIED`, `PRESENT`, `INVALID`, `DOES_NOT_EXIST`, `DELETED`. |
 | `window` | TimeWindow | The time window when the asset data and state was observed. |
 
 ### `TemporalAsset` (v1beta1)

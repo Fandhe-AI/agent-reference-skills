@@ -65,8 +65,8 @@ Message types referenced by the methods listed under `references/rest/cloudsuppo
 | `escalated` | boolean | Whether the case is currently escalated. |
 | `languageCode` | string | The language the user has requested to receive support in. This should be a BCP 47 language code (e.g., `"en"`, `"zh-CN"`, `"zh-TW"`, `"ja"`, `"ko"`). If no language or an unsupported language is specified, this field defaults to English (en). Language selection during case creation may affect your available support options. For a list of supported languages and their support working hours, see: https://cloud.google.com/support/docs/language-working-hours |
 | `name` | string | Identifier. The resource name for the case. |
-| `priority` | string enum | The priority of this case. |
-| `state` | string enum | Output only. The current status of the support case. |
+| `priority` | string enum | The priority of this case. Values: `PRIORITY_UNSPECIFIED`, `P0`, `P1`, `P2`, `P3`, `P4`. |
+| `state` | string enum | Output only. The current status of the support case. Values: `STATE_UNSPECIFIED`, `NEW`, `IN_PROGRESS_GOOGLE_SUPPORT`, `ACTION_REQUIRED`, `SOLUTION_PROVIDED`, `CLOSED`. |
 | `subscriberEmailAddresses` | array<string> | The email addresses to receive updates on this case. |
 | `testCase` | boolean | Whether this case was created for internal API testing and should not be acted on by the support team. |
 | `timeZone` | string | The timezone of the user who created the support case. It should be in a format IANA recognizes: https://www.iana.org/time-zones. There is no additional validation done by the API. |
@@ -88,9 +88,9 @@ Message types referenced by the methods listed under `references/rest/cloudsuppo
 | `escalated` | boolean | Whether the case is currently escalated. |
 | `languageCode` | string | The language the user has requested to receive support in. This should be a BCP 47 language code (e.g., `"en"`, `"zh-CN"`, `"zh-TW"`, `"ja"`, `"ko"`). If no language or an unsupported language is specified, this field defaults to English (en). Language selection during case creation may affect your available support options. For a list of supported languages and their support working hours, see: https://cloud.google.com/support/docs/language-working-hours |
 | `name` | string | Identifier. The resource name for the case. |
-| `priority` | string enum | The priority of this case. |
-| `severity` | string enum | REMOVED. The severity of this case. Use priority instead. |
-| `state` | string enum | Output only. The current status of the support case. |
+| `priority` | string enum | The priority of this case. Values: `PRIORITY_UNSPECIFIED`, `P0`, `P1`, `P2`, `P3`, `P4`. |
+| `severity` | string enum | REMOVED. The severity of this case. Use priority instead. Values: `SEVERITY_UNSPECIFIED`, `S0`, `S1`, `S2`, `S3`, `S4`. |
+| `state` | string enum | Output only. The current status of the support case. Values: `STATE_UNSPECIFIED`, `NEW`, `IN_PROGRESS_GOOGLE_SUPPORT`, `ACTION_REQUIRED`, `SOLUTION_PROVIDED`, `CLOSED`. |
 | `subscriberEmailAddresses` | array<string> | The email addresses to receive updates on this case. |
 | `testCase` | boolean | Whether this case was created for internal API testing and should not be acted on by the support team. |
 | `timeZone` | string | The timezone of the user who created the support case. It should be in a format IANA recognizes: https://www.iana.org/time-zones. There is no additional validation done by the API. |
@@ -151,7 +151,7 @@ Message types referenced by the methods listed under `references/rest/cloudsuppo
 | `md5Hash` | string (byte) | \# gdata.\* are outside protos with mising documentation |
 | `objectId` | ObjectId | \# gdata.\* are outside protos with mising documentation |
 | `path` | string | \# gdata.\* are outside protos with mising documentation |
-| `referenceType` | string enum | \# gdata.\* are outside protos with mising documentation |
+| `referenceType` | string enum | \# gdata.\* are outside protos with mising documentation Values: `PATH`, `BLOB_REF`, `INLINE`, `BIGSTORE_REF`, `COSMO_BINARY_REFERENCE`. |
 | `sha1Hash` | string (byte) | \# gdata.\* are outside protos with mising documentation |
 
 ### `ContentTypeInfo`
@@ -278,7 +278,7 @@ Message types referenced by the methods listed under `references/rest/cloudsuppo
 | Field | Type | Description |
 |---|---|---|
 | `justification` | string | Required. A free text description to accompany the `reason` field above. Provides additional context on why the case is being escalated. |
-| `reason` | string enum | Required. The reason why the Case is being escalated. |
+| `reason` | string enum | Required. The reason why the Case is being escalated. Values: `REASON_UNSPECIFIED`, `RESOLUTION_TIME`, `TECHNICAL_EXPERTISE`, `BUSINESS_IMPACT`. |
 
 ### `ExpungeSupportEventSubscriptionRequest`
 
@@ -370,7 +370,7 @@ Message types referenced by the methods listed under `references/rest/cloudsuppo
 | `mediaId` | string (byte) | \# gdata.\* are outside protos with mising documentation |
 | `objectId` | ObjectId | \# gdata.\* are outside protos with mising documentation |
 | `path` | string | \# gdata.\* are outside protos with mising documentation |
-| `referenceType` | string enum | \# gdata.\* are outside protos with mising documentation |
+| `referenceType` | string enum | \# gdata.\* are outside protos with mising documentation Values: `PATH`, `BLOB_REF`, `INLINE`, `GET_MEDIA`, `COMPOSITE_MEDIA`, `BIGSTORE_REF`, `DIFF_VERSION_RESPONSE`, `DIFF_CHECKSUMS_RESPONSE`, `DIFF_DOWNLOAD_RESPONSE`, `DIFF_UPLOAD_REQUEST`, `DIFF_UPLOAD_RESPONSE`, `COSMO_BINARY_REFERENCE`, `ARBITRARY_BYTES`. |
 | `sha1Hash` | string (byte) | \# gdata.\* are outside protos with mising documentation |
 | `sha256Hash` | string (byte) | \# gdata.\* are outside protos with mising documentation |
 | `sha512Hash` | string (byte) | \# gdata.\* are outside protos with mising documentation |
@@ -395,7 +395,7 @@ Message types referenced by the methods listed under `references/rest/cloudsuppo
 
 | Field | Type | Description |
 |---|---|---|
-| `productLine` | string enum | The product line of the Product. |
+| `productLine` | string enum | The product line of the Product. Values: `PRODUCT_LINE_UNSPECIFIED`, `GOOGLE_CLOUD`, `GOOGLE_MAPS`. |
 
 ### `SearchCaseClassificationsResponse`
 
@@ -436,11 +436,11 @@ Message types referenced by the methods listed under `references/rest/cloudsuppo
 |---|---|---|
 | `createTime` | string (google-datetime) | Output only. The time at which the subscription was created. |
 | `deleteTime` | string (google-datetime) | Output only. The time at which the subscription was deleted. |
-| `failureReason` | string enum | Output only. Reason why subscription is failing. State of subscription must be FAILING in order for this to have a value. |
+| `failureReason` | string enum | Output only. Reason why subscription is failing. State of subscription must be FAILING in order for this to have a value. Values: `FAILURE_REASON_UNSPECIFIED`, `PERMISSION_DENIED`, `TOPIC_NOT_FOUND`, `OTHER`. |
 | `name` | string | Identifier. The resource name of the support event subscription. |
 | `pubSubTopic` | string | Required. The name of the Pub/Sub topic to publish notifications to. Format: projects/{project}/topics/{topic} |
 | `purgeTime` | string (google-datetime) | Output only. The time at which the subscription will be purged. |
-| `state` | string enum | Output only. The state of the subscription. |
+| `state` | string enum | Output only. The state of the subscription. Values: `STATE_UNSPECIFIED`, `WORKING`, `FAILING`, `DELETED`. |
 | `updateTime` | string (google-datetime) | Output only. The time at which the subscription was last updated. |
 
 ### `TextContent`

@@ -91,7 +91,7 @@ Message types referenced by the methods listed under `references/rest/developerk
 | `title` | string | Output only. Provides the title of the document. |
 | `updateTime` | string (google-datetime) | Output only. Represents the timestamp when the content or metadata of the document was last updated. |
 | `uri` | string | Output only. Provides the URI of the content, such as `https://docs.cloud.google.com/storage/docs/creating-buckets`. |
-| `view` | string enum | Output only. Specifies the DocumentView of the document. |
+| `view` | string enum | Output only. Specifies the DocumentView of the document. Values: `DOCUMENT_VIEW_UNSPECIFIED`, `DOCUMENT_VIEW_BASIC`, `DOCUMENT_VIEW_FULL`, `DOCUMENT_VIEW_CONTENT`. |
 
 ### `DocumentChunk`
 

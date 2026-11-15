@@ -125,7 +125,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | `channelPartnerCloudIdentityInfo` | GoogleCloudChannelV1CloudIdentityInfo | Output only. Cloud Identity info of the channel partner (IR). |
 | `createTime` | string (google-datetime) | Output only. Timestamp of when the channel partner link is created. |
 | `inviteLinkUri` | string | Output only. URI of the web page where partner accepts the link invitation. |
-| `linkState` | string enum | Required. State of the channel partner link. |
+| `linkState` | string enum | Required. State of the channel partner link. Values: `CHANNEL_PARTNER_LINK_STATE_UNSPECIFIED`, `INVITED`, `ACTIVE`, `REVOKED`, `SUSPENDED`. |
 | `name` | string | Output only. Resource name for the channel partner link, in the format accounts/{account_id}/channelPartnerLinks/{id}. |
 | `publicId` | string | Output only. Public identifier that a customer must use to generate a transfer token to move to this distributor-reseller combination. |
 | `resellerCloudIdentityId` | string | Required. Cloud Identity ID of the linked reseller. |
@@ -171,7 +171,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | `channelPartnerCloudIdentityId` | string | If existing = true, and is 2-tier customer, the channel partner of the customer. |
 | `customerCloudIdentityId` | string | If existing = true, the Cloud Identity ID of the customer. |
 | `customerName` | string | If owned = true, the name of the customer that owns the Cloud Identity account. Customer_name uses the format: accounts/{account_id}/customers/{customer_id} |
-| `customerType` | string enum | If existing = true, the type of the customer. |
+| `customerType` | string enum | If existing = true, the type of the customer. Values: `CUSTOMER_TYPE_UNSPECIFIED`, `DOMAIN`, `TEAM`. |
 | `existing` | boolean | Returns true if a Cloud Identity account exists for a specific domain. |
 | `owned` | boolean | Returns true if the Cloud Identity account is associated with a customer of the Channel Services partner (with active subscriptions or purchase consents). |
 
@@ -184,7 +184,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 |---|---|---|
 | `adminConsoleUri` | string | Output only. URI of Customer's Admin console dashboard. |
 | `alternateEmail` | string | The alternate email. |
-| `customerType` | string enum | CustomerType indicates verification type needed for using services. |
+| `customerType` | string enum | CustomerType indicates verification type needed for using services. Values: `CUSTOMER_TYPE_UNSPECIFIED`, `DOMAIN`, `TEAM`. |
 | `eduData` | GoogleCloudChannelV1EduData | Edu information about the customer. |
 | `isDomainVerified` | boolean | Output only. Whether the domain is verified. This field is not returned for a Customer's cloud_identity_info resource. Partners can use the domains.get() method of the Workspace SDK's Directory API, or listen to the PRIMARY_DOMAIN_VERIFIED Pub/Sub event in to track domain verification of their resolve Workspace customers. |
 | `languageCode` | string | Language code. |
@@ -199,7 +199,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | Field | Type | Description |
 |---|---|---|
 | `columnId` | string | The unique name of the column (for example, customer_domain, channel_partner, customer_cost). You can use column IDs in RunReportJobRequest.filter. To see all reports and their columns, call CloudChannelReportsService.ListReports. |
-| `dataType` | string enum | The type of the values for this column. |
+| `dataType` | string enum | The type of the values for this column. Values: `DATA_TYPE_UNSPECIFIED`, `STRING`, `INT`, `DECIMAL`, `MONEY`, `DATE`, `DATE_TIME`. |
 | `displayName` | string | The column's display name. |
 
 ### `GoogleCloudChannelV1CommitmentSettings`
@@ -221,7 +221,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | Field | Type | Description |
 |---|---|---|
 | `adjustment` | GoogleCloudChannelV1RepricingAdjustment | Required. Information about the applied override's adjustment. |
-| `rebillingBasis` | string enum | Required. The RebillingBasis to use for the applied override. Shows the relative cost based on your repricing costs. |
+| `rebillingBasis` | string enum | Required. The RebillingBasis to use for the applied override. Shows the relative cost based on your repricing costs. Values: `REBILLING_BASIS_UNSPECIFIED`, `COST_AT_LIST`, `DIRECT_CUSTOMER_COST`. |
 | `repricingCondition` | GoogleCloudChannelV1RepricingCondition | Required. Specifies the condition which, if met, will apply the override. |
 
 ### `GoogleCloudChannelV1Constraints`
@@ -270,7 +270,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | `cloudIdentityInfo` | GoogleCloudChannelV1CloudIdentityInfo | Output only. Cloud Identity information for the customer. Populated only if a Cloud Identity account exists for this customer. |
 | `correlationId` | string | Optional. External CRM ID for the customer. Populated only if a CRM ID exists for this customer. |
 | `createTime` | string (google-datetime) | Output only. Time when the customer was created. |
-| `customerAttestationState` | string enum | Optional. Indicate if a customer is attesting about the correctness of provided information. Only required if creating a GCP Entitlement. NOTE: This field will be mandatory for all new GCP customers starting Aug 31st, 2026 and this field will also be required for all existing customers purchasing new GCP Entitlements. |
+| `customerAttestationState` | string enum | Optional. Indicate if a customer is attesting about the correctness of provided information. Only required if creating a GCP Entitlement. NOTE: This field will be mandatory for all new GCP customers starting Aug 31st, 2026 and this field will also be required for all existing customers purchasing new GCP Entitlements. Values: `CUSTOMER_ATTESTATION_STATE_UNSPECIFIED`, `EXEMPT`, `NON_EXEMPT_AND_INFO_VERIFIED`. |
 | `domain` | string | Required. The customer's primary domain. Must match the primary contact email's domain. |
 | `languageCode` | string | Optional. The BCP-47 language code, such as "en-US" or "sr-Latn". For more information, see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier. |
 | `name` | string | Output only. Resource name of the customer. Format: accounts/{account_id}/customers/{customer_id} |
@@ -286,9 +286,9 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 
 | Field | Type | Description |
 |---|---|---|
-| `allowedCustomerTypes` | array<string> | Allowed Customer Type. |
+| `allowedCustomerTypes` | array<string> | Allowed Customer Type. Values: `CUSTOMER_TYPE_UNSPECIFIED`, `DOMAIN`, `TEAM`. |
 | `allowedRegions` | array<string> | Allowed geographical regions of the customer. |
-| `promotionalOrderTypes` | array<string> | Allowed Promotional Order Type. Present for Promotional offers. |
+| `promotionalOrderTypes` | array<string> | Allowed Promotional Order Type. Present for Promotional offers. Values: `PROMOTIONAL_TYPE_UNSPECIFIED`, `NEW_UPGRADE`, `TRANSFER`, `PROMOTION_SWITCH`. |
 
 ### `GoogleCloudChannelV1CustomerEvent`
 
@@ -298,7 +298,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | Field | Type | Description |
 |---|---|---|
 | `customer` | string | Resource name of the customer. Format: accounts/{account_id}/customers/{customer_id} |
-| `eventType` | string enum | Type of event which happened for the customer. |
+| `eventType` | string enum | Type of event which happened for the customer. Values: `TYPE_UNSPECIFIED`, `PRIMARY_DOMAIN_CHANGED`, `PRIMARY_DOMAIN_VERIFIED`. |
 
 ### `GoogleCloudChannelV1CustomerRepricingConfig`
 
@@ -332,7 +332,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 |---|---|---|
 | `discountAbsolute` | GoogleTypeMoney | Fixed value discount. |
 | `discountPercentage` | number (double) | Discount percentage, represented as decimal. For example, a 20% discount will be represented as 0.2. |
-| `discountType` | string enum | Type of the discount. |
+| `discountType` | string enum | Type of the discount. Values: `DISCOUNT_TYPE_UNSPECIFIED`, `REGIONAL_DISCOUNT`, `PROMOTIONAL_DISCOUNT`, `SALES_DISCOUNT`, `RESELLER_MARGIN`, `DEAL_CODE`. |
 
 ### `GoogleCloudChannelV1EduData`
 
@@ -341,8 +341,8 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 
 | Field | Type | Description |
 |---|---|---|
-| `instituteSize` | string enum | Size of the institute. |
-| `instituteType` | string enum | Designated institute type of customer. |
+| `instituteSize` | string enum | Size of the institute. Values: `INSTITUTE_SIZE_UNSPECIFIED`, `SIZE_1_100`, `SIZE_101_500`, `SIZE_501_1000`, `SIZE_1001_2000`, `SIZE_2001_5000`, `SIZE_5001_10000`, `SIZE_10001_OR_MORE`. |
+| `instituteType` | string enum | Designated institute type of customer. Values: `INSTITUTE_TYPE_UNSPECIFIED`, `K12`, `UNIVERSITY`. |
 | `website` | string | Web address for the edu customer's institution. |
 
 ### `GoogleCloudChannelV1Entitlement`
@@ -361,9 +361,9 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | `parameters` | array<GoogleCloudChannelV1Parameter> | Extended entitlement parameters. When creating an entitlement, valid parameter names and values are defined in the Offer.parameter_definitions. For Google Workspace, the following Parameters may be accepted as input: - max_units: The maximum assignable units for a flexible offer OR - num_units: The total commitment for commitment-based offers The response may additionally include the following output-only Parameters: - assigned_units: The number of licenses assigned to users. For Google Cloud billing subaccounts, the following Parameter may be accepted as input: - display_name: The display name of the billing subaccount. |
 | `priceReferenceId` | string | Optional. Price reference ID for the offer. Only for offers that require additional price information. Used to guarantee that the pricing is consistent between quoting the offer and placing the order. |
 | `provisionedService` | GoogleCloudChannelV1ProvisionedService | Output only. Service provisioning details for the entitlement. |
-| `provisioningState` | string enum | Output only. Current provisioning state of the entitlement. |
+| `provisioningState` | string enum | Output only. Current provisioning state of the entitlement. Values: `PROVISIONING_STATE_UNSPECIFIED`, `ACTIVE`, `SUSPENDED`. |
 | `purchaseOrderId` | string | Optional. This purchase order (PO) information is for resellers to use for their company tracking usage. If a purchaseOrderId value is given, it appears in the API responses and shows up in the invoice. The property accepts up to 80 plain text characters. This is only supported for Google Workspace entitlements. |
-| `suspensionReasons` | array<string> | Output only. Enumerable of all current suspension reasons for an entitlement. |
+| `suspensionReasons` | array<string> | Output only. Enumerable of all current suspension reasons for an entitlement. Values: `SUSPENSION_REASON_UNSPECIFIED`, `RESELLER_INITIATED`, `TRIAL_ENDED`, `RENEWAL_WITH_TYPE_CANCEL`, `PENDING_TOS_ACCEPTANCE`, `OTHER`. |
 | `trialSettings` | GoogleCloudChannelV1TrialSettings | Output only. Settings for trial offers. |
 | `updateTime` | string (google-datetime) | Output only. The time at which the entitlement is updated. |
 
@@ -374,18 +374,18 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 
 | Field | Type | Description |
 |---|---|---|
-| `activationReason` | string enum | The Entitlement's activation reason |
-| `cancellationReason` | string enum | Cancellation reason for the Entitlement. |
-| `changeType` | string enum | The change action type. |
+| `activationReason` | string enum | The Entitlement's activation reason Values: `ACTIVATION_REASON_UNSPECIFIED`, `RESELLER_REVOKED_SUSPENSION`, `CUSTOMER_ACCEPTED_PENDING_TOS`, `RENEWAL_SETTINGS_CHANGED`, `OTHER_ACTIVATION_REASON`. |
+| `cancellationReason` | string enum | Cancellation reason for the Entitlement. Values: `CANCELLATION_REASON_UNSPECIFIED`, `SERVICE_TERMINATED`, `RELATIONSHIP_ENDED`, `PARTIAL_TRANSFER`. |
+| `changeType` | string enum | The change action type. Values: `CHANGE_TYPE_UNSPECIFIED`, `CREATED`, `PRICE_PLAN_SWITCHED`, `COMMITMENT_CHANGED`, `RENEWED`, `SUSPENDED`, `ACTIVATED`, `CANCELLED`, `SKU_CHANGED`, `RENEWAL_SETTING_CHANGED`, `PAID_SUBSCRIPTION_STARTED`, `LICENSE_CAP_CHANGED`, `SUSPENSION_DETAILS_CHANGED`, `TRIAL_END_DATE_EXTENDED`, `TRIAL_STARTED`. |
 | `createTime` | string (google-datetime) | The submitted time of the change. |
 | `entitlement` | string | Required. Resource name of an entitlement in the form: accounts/{account_id}/customers/{customer_id}/entitlements/{entitlement_id} |
 | `offer` | string | Required. Resource name of the Offer at the time of change. Takes the form: accounts/{account_id}/offers/{offer_id}. |
 | `operator` | string | Human-readable identifier that shows what operator made a change. When the operator_type is RESELLER, this is the user's email address. For all other operator types, this is empty. |
-| `operatorType` | string enum | Operator type responsible for the change. |
+| `operatorType` | string enum | Operator type responsible for the change. Values: `OPERATOR_TYPE_UNSPECIFIED`, `CUSTOMER_SERVICE_REPRESENTATIVE`, `SYSTEM`, `CUSTOMER`, `RESELLER`. |
 | `otherChangeReason` | string | e.g. purchase_number change reason, entered by CRS. |
 | `parameters` | array<GoogleCloudChannelV1Parameter> | Extended parameters, such as: purchase_order_number, gcp_details; internal_correlation_id, long_running_operation_id, order_id; etc. |
 | `provisionedService` | GoogleCloudChannelV1ProvisionedService | Service provisioned for an Entitlement. |
-| `suspensionReason` | string enum | Suspension reason for the Entitlement. |
+| `suspensionReason` | string enum | Suspension reason for the Entitlement. Values: `SUSPENSION_REASON_UNSPECIFIED`, `RESELLER_INITIATED`, `TRIAL_ENDED`, `RENEWAL_WITH_TYPE_CANCEL`, `PENDING_TOS_ACCEPTANCE`, `OTHER`. |
 
 ### `GoogleCloudChannelV1EntitlementEvent`
 
@@ -395,7 +395,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | Field | Type | Description |
 |---|---|---|
 | `entitlement` | string | Resource name of an entitlement of the form: accounts/{account_id}/customers/{customer_id}/entitlements/{entitlement_id} |
-| `eventType` | string enum | Type of event which happened for the entitlement. |
+| `eventType` | string enum | Type of event which happened for the entitlement. Values: `TYPE_UNSPECIFIED`, `CREATED`, `PRICE_PLAN_SWITCHED`, `COMMITMENT_CHANGED`, `RENEWED`, `SUSPENDED`, `ACTIVATED`, `CANCELLED`, `SKU_CHANGED`, `RENEWAL_SETTING_CHANGED`, `PAID_SERVICE_STARTED`, `LICENSE_ASSIGNMENT_CHANGED`, `LICENSE_CAP_CHANGED`. |
 
 ### `GoogleCloudChannelV1FetchReportResultsRequest`
 
@@ -654,7 +654,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 |---|---|---|
 | `content` | string | URL of the media. |
 | `title` | string | Title of the media. |
-| `type` | string enum | Type of the media. |
+| `type` | string enum | Type of the media. Values: `MEDIA_TYPE_UNSPECIFIED`, `MEDIA_TYPE_IMAGE`. |
 
 ### `GoogleCloudChannelV1Offer`
 
@@ -681,7 +681,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 
 | Field | Type | Description |
 |---|---|---|
-| `operationType` | string enum | The RPC that initiated this Long Running Operation. |
+| `operationType` | string enum | The RPC that initiated this Long Running Operation. Values: `OPERATION_TYPE_UNSPECIFIED`, `CREATE_ENTITLEMENT`, `CHANGE_RENEWAL_SETTINGS`, `START_PAID_SERVICE`, `ACTIVATE_ENTITLEMENT`, `SUSPEND_ENTITLEMENT`, `CANCEL_ENTITLEMENT`, `TRANSFER_ENTITLEMENTS`, `TRANSFER_ENTITLEMENTS_TO_GOOGLE`, `CHANGE_OFFER`, `CHANGE_PARAMETERS`, `PROVISION_CLOUD_IDENTITY`. |
 
 ### `GoogleCloudChannelV1Parameter`
 
@@ -706,7 +706,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | `minValue` | GoogleCloudChannelV1Value | Minimal value of the parameter, if applicable. Inclusive. For example, minimal commitment when purchasing Anthos is 0.01. Applicable to INT64 and DOUBLE parameter types. |
 | `name` | string | Name of the parameter. |
 | `optional` | boolean | If set to true, parameter is optional to purchase this Offer. |
-| `parameterType` | string enum | Data type of the parameter. Minimal value, Maximum value and allowed values will use specified data type here. |
+| `parameterType` | string enum | Data type of the parameter. Minimal value, Maximum value and allowed values will use specified data type here. Values: `PARAMETER_TYPE_UNSPECIFIED`, `INT64`, `STRING`, `DOUBLE`, `BOOLEAN`. |
 
 ### `GoogleCloudChannelV1PercentageAdjustment`
 
@@ -725,7 +725,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | Field | Type | Description |
 |---|---|---|
 | `duration` | integer (int32) | Total duration of Period Type defined. |
-| `periodType` | string enum | Period Type. |
+| `periodType` | string enum | Period Type. Values: `PERIOD_TYPE_UNSPECIFIED`, `DAY`, `MONTH`, `YEAR`. |
 
 ### `GoogleCloudChannelV1Plan`
 
@@ -736,8 +736,8 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 |---|---|---|
 | `billingAccount` | string | Reseller Billing account to charge after an offer transaction. Only present for Google Cloud offers. |
 | `paymentCycle` | GoogleCloudChannelV1Period | Describes how frequently the reseller will be billed, such as once per month. |
-| `paymentPlan` | string enum | Describes how a reseller will be billed. |
-| `paymentType` | string enum | Specifies when the payment needs to happen. |
+| `paymentPlan` | string enum | Describes how a reseller will be billed. Values: `PAYMENT_PLAN_UNSPECIFIED`, `COMMITMENT`, `FLEXIBLE`, `FREE`, `TRIAL`, `OFFLINE`. |
+| `paymentType` | string enum | Specifies when the payment needs to happen. Values: `PAYMENT_TYPE_UNSPECIFIED`, `PREPAY`, `POSTPAY`. |
 | `trialPeriod` | GoogleCloudChannelV1Period | Present for Offers with a trial period. For trial-only Offers, a paid service needs to start before the trial period ends for continued service. For Regular Offers with a trial period, the regular pricing goes into effect when trial period ends, or if paid service is started before the end of the trial period. |
 
 ### `GoogleCloudChannelV1Price`
@@ -763,7 +763,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 |---|---|---|
 | `price` | GoogleCloudChannelV1Price | Price of the Offer. Present if there are no price phases. |
 | `pricePhases` | array<GoogleCloudChannelV1PricePhase> | Specifies the price by time range. |
-| `resourceType` | string enum | Resource Type. Example: SEAT |
+| `resourceType` | string enum | Resource Type. Example: SEAT Values: `RESOURCE_TYPE_UNSPECIFIED`, `SEAT`, `MAU`, `GB`, `LICENSED_USER`, `MINUTES`, `IAAS_USAGE`, `SUBSCRIPTION`, `AI_CREDITS`. |
 
 ### `GoogleCloudChannelV1PricePhase`
 
@@ -774,7 +774,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 |---|---|---|
 | `firstPeriod` | integer (int32) | Defines first period for the phase. |
 | `lastPeriod` | integer (int32) | Defines first period for the phase. |
-| `periodType` | string enum | Defines the phase period type. |
+| `periodType` | string enum | Defines the phase period type. Values: `PERIOD_TYPE_UNSPECIFIED`, `DAY`, `MONTH`, `YEAR`. |
 | `price` | GoogleCloudChannelV1Price | Price of the phase. Present if there are no price tiers. |
 | `priceTiers` | array<GoogleCloudChannelV1PriceTier> | Price by the resource tiers. |
 
@@ -878,7 +878,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 |---|---|---|
 | `enableRenewal` | boolean | If false, the plan will be completed at the end date. |
 | `paymentCycle` | GoogleCloudChannelV1Period | Describes how frequently the reseller will be billed, such as once per month. |
-| `paymentPlan` | string enum | Describes how a reseller will be billed. |
+| `paymentPlan` | string enum | Describes how a reseller will be billed. Values: `PAYMENT_PLAN_UNSPECIFIED`, `COMMITMENT`, `FLEXIBLE`, `FREE`, `TRIAL`, `OFFLINE`. |
 | `resizeUnitCount` | boolean | If true and enable_renewal = true, the unit (for example seats or licenses) will be set to the number of active units at renewal time. |
 
 ### `GoogleCloudChannelV1Report`
@@ -924,7 +924,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 |---|---|---|
 | `endTime` | string (google-datetime) | The report generation's completion time. |
 | `startTime` | string (google-datetime) | The report generation's start time. |
-| `state` | string enum | The current state of the report generation process. |
+| `state` | string enum | The current state of the report generation process. Values: `STATE_UNSPECIFIED`, `STARTED`, `WRITING`, `AVAILABLE`, `FAILED`. |
 
 ### `GoogleCloudChannelV1ReportValue`
 
@@ -970,7 +970,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | `conditionalOverrides` | array<GoogleCloudChannelV1ConditionalOverride> | The conditional overrides to apply for this configuration. If you list multiple overrides, only the first valid override is used. If you don't list any overrides, the API uses the normal adjustment and rebilling basis. |
 | `effectiveInvoiceMonth` | GoogleTypeDate | Required. The YearMonth when these adjustments activate. The Day field needs to be "0" since we only accept YearMonth repricing boundaries. |
 | `entitlementGranularity` | GoogleCloudChannelV1RepricingConfigEntitlementGranularity | Required. Applies the repricing configuration at the entitlement level. Note: If a ChannelPartnerRepricingConfig using RepricingConfig.EntitlementGranularity becomes effective, then no existing or future RepricingConfig.ChannelPartnerGranularity will apply to the RepricingConfig.EntitlementGranularity.entitlement. This is the recommended value for both CustomerRepricingConfig and ChannelPartnerRepricingConfig. |
-| `rebillingBasis` | string enum | Required. The RebillingBasis to use for this bill. Specifies the relative cost based on repricing costs you will apply. |
+| `rebillingBasis` | string enum | Required. The RebillingBasis to use for this bill. Specifies the relative cost based on repricing costs you will apply. Values: `REBILLING_BASIS_UNSPECIFIED`, `COST_AT_LIST`, `DIRECT_CUSTOMER_COST`. |
 
 ### `GoogleCloudChannelV1RepricingConfigChannelPartnerGranularity`
 
@@ -1093,7 +1093,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | Field | Type | Description |
 |---|---|---|
 | `description` | string | Localized description if reseller is not eligible to transfer the SKU. |
-| `ineligibilityReason` | string enum | Specified the reason for ineligibility. |
+| `ineligibilityReason` | string enum | Specified the reason for ineligibility. Values: `REASON_UNSPECIFIED`, `PENDING_TOS_ACCEPTANCE`, `SKU_NOT_ELIGIBLE`, `SKU_SUSPENDED`, `CHANNEL_PARTNER_NOT_AUTHORIZED_FOR_SKU`. |
 | `isEligible` | boolean | Whether reseller is eligible to transfer the SKU. |
 
 ### `GoogleCloudChannelV1TransferEntitlementsRequest`
@@ -1217,7 +1217,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | Field | Type | Description |
 |---|---|---|
 | `channelPartner` | string | Resource name for the Channel Partner Link. Channel_partner uses the format: accounts/{account_id}/channelPartnerLinks/{channel_partner_id} |
-| `eventType` | string enum | Type of event which happened for the channel partner. |
+| `eventType` | string enum | Type of event which happened for the channel partner. Values: `TYPE_UNSPECIFIED`, `LINK_STATE_CHANGED`, `PARTNER_ADVANTAGE_INFO_CHANGED`. |
 
 ### `GoogleCloudChannelV1alpha1Column`
 
@@ -1227,7 +1227,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | Field | Type | Description |
 |---|---|---|
 | `columnId` | string | The unique name of the column (for example, customer_domain, channel_partner, customer_cost). You can use column IDs in RunReportJobRequest.filter. To see all reports and their columns, call CloudChannelReportsService.ListReports. |
-| `dataType` | string enum | The type of the values for this column. |
+| `dataType` | string enum | The type of the values for this column. Values: `DATA_TYPE_UNSPECIFIED`, `STRING`, `INT`, `DECIMAL`, `MONEY`, `DATE`, `DATE_TIME`. |
 | `displayName` | string | The column's display name. |
 
 ### `GoogleCloudChannelV1alpha1CommitmentSettings`
@@ -1249,7 +1249,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | Field | Type | Description |
 |---|---|---|
 | `customer` | string | Resource name of the customer. Format: accounts/{account_id}/customers/{customer_id} |
-| `eventType` | string enum | Type of event which happened for the customer. |
+| `eventType` | string enum | Type of event which happened for the customer. Values: `TYPE_UNSPECIFIED`, `PRIMARY_DOMAIN_CHANGED`, `PRIMARY_DOMAIN_VERIFIED`. |
 
 ### `GoogleCloudChannelV1alpha1DateRange`
 
@@ -1283,9 +1283,9 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | `parameters` | array<GoogleCloudChannelV1alpha1Parameter> | Extended entitlement parameters. When creating an entitlement, valid parameter names and values are defined in the Offer.parameter_definitions. For Google Workspace, the following Parameters may be accepted as input: - max_units: The maximum assignable units for a flexible offer OR - num_units: The total commitment for commitment-based offers The response may additionally include the following output-only Parameters: - assigned_units: The number of licenses assigned to users. For Google Cloud billing subaccounts, the following Parameter may be accepted as input: - display_name: The display name of the billing subaccount. |
 | `priceReferenceId` | string | Optional. Price reference ID for the offer. Only for offers that require additional price information. Used to guarantee that the pricing is consistent between quoting the offer and placing the order. |
 | `provisionedService` | GoogleCloudChannelV1alpha1ProvisionedService | Output only. Service provisioning details for the entitlement. |
-| `provisioningState` | string enum | Output only. Current provisioning state of the entitlement. |
+| `provisioningState` | string enum | Output only. Current provisioning state of the entitlement. Values: `PROVISIONING_STATE_UNSPECIFIED`, `ACTIVE`, `CANCELED`, `COMPLETE`, `PENDING`, `SUSPENDED`. |
 | `purchaseOrderId` | string | Optional. This purchase order (PO) information is for resellers to use for their company tracking usage. If a purchaseOrderId value is given, it appears in the API responses and shows up in the invoice. The property accepts up to 80 plain text characters. This is only supported for Google Workspace entitlements. |
-| `suspensionReasons` | array<string> | Output only. Enumerable of all current suspension reasons for an entitlement. |
+| `suspensionReasons` | array<string> | Output only. Enumerable of all current suspension reasons for an entitlement. Values: `SUSPENSION_REASON_UNSPECIFIED`, `RESELLER_INITIATED`, `TRIAL_ENDED`, `RENEWAL_WITH_TYPE_CANCEL`, `PENDING_TOS_ACCEPTANCE`, `OTHER`. |
 | `trialSettings` | GoogleCloudChannelV1alpha1TrialSettings | Output only. Settings for trial offers. |
 | `updateTime` | string (google-datetime) | Output only. The time at which the entitlement is updated. |
 
@@ -1297,7 +1297,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | Field | Type | Description |
 |---|---|---|
 | `entitlement` | string | Resource name of an entitlement of the form: accounts/{account_id}/customers/{customer_id}/entitlements/{entitlement_id} |
-| `eventType` | string enum | Type of event which happened for the entitlement. |
+| `eventType` | string enum | Type of event which happened for the entitlement. Values: `TYPE_UNSPECIFIED`, `CREATED`, `PRICE_PLAN_SWITCHED`, `COMMITMENT_CHANGED`, `RENEWED`, `SUSPENDED`, `ACTIVATED`, `CANCELLED`, `SKU_CHANGED`, `RENEWAL_SETTING_CHANGED`, `PAID_SERVICE_STARTED`, `LICENSE_ASSIGNMENT_CHANGED`, `LICENSE_CAP_CHANGED`. |
 
 ### `GoogleCloudChannelV1alpha1OperationMetadata`
 
@@ -1306,7 +1306,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 
 | Field | Type | Description |
 |---|---|---|
-| `operationType` | string enum | The RPC that initiated this Long Running Operation. |
+| `operationType` | string enum | The RPC that initiated this Long Running Operation. Values: `OPERATION_TYPE_UNSPECIFIED`, `CREATE_ENTITLEMENT`, `CHANGE_QUANTITY`, `CHANGE_RENEWAL_SETTINGS`, `CHANGE_PLAN`, `START_PAID_SERVICE`, `CHANGE_SKU`, `ACTIVATE_ENTITLEMENT`, `SUSPEND_ENTITLEMENT`, `CANCEL_ENTITLEMENT`, `TRANSFER_ENTITLEMENTS`, `TRANSFER_ENTITLEMENTS_TO_GOOGLE`, `CHANGE_OFFER`, `CHANGE_PARAMETERS`, `PROVISION_CLOUD_IDENTITY`. |
 
 ### `GoogleCloudChannelV1alpha1OpportunityEvent`
 
@@ -1315,7 +1315,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 
 | Field | Type | Description |
 |---|---|---|
-| `eventType` | string enum | Type of event which happened for the opportunity. |
+| `eventType` | string enum | Type of event which happened for the opportunity. Values: `TYPE_UNSPECIFIED`, `CREATED`, `UPDATED`, `PARTNER_DETACHED`. |
 | `opportunity` | string | Resource name of the opportunity. Format: opportunities/{opportunity} |
 | `partner` | string | Resource name of the partner. Format: partners/{partner} |
 
@@ -1338,7 +1338,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | Field | Type | Description |
 |---|---|---|
 | `duration` | integer (int32) | Total duration of Period Type defined. |
-| `periodType` | string enum | Period Type. |
+| `periodType` | string enum | Period Type. Values: `PERIOD_TYPE_UNSPECIFIED`, `DAY`, `MONTH`, `YEAR`. |
 
 ### `GoogleCloudChannelV1alpha1ProvisionedService`
 
@@ -1361,8 +1361,8 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 | `disableCommitment` | boolean | If true, disables commitment-based offer on renewal and switches to flexible or pay as you go. Deprecated: Use `payment_plan` instead. |
 | `enableRenewal` | boolean | If false, the plan will be completed at the end date. |
 | `paymentCycle` | GoogleCloudChannelV1alpha1Period | Describes how frequently the reseller will be billed, such as once per month. |
-| `paymentOption` | string enum | Set if enable_renewal=true. Deprecated: Use `payment_cycle` instead. |
-| `paymentPlan` | string enum | Describes how a reseller will be billed. |
+| `paymentOption` | string enum | Set if enable_renewal=true. Deprecated: Use `payment_cycle` instead. Values: `PAYMENT_OPTION_UNSPECIFIED`, `ANNUAL`, `MONTHLY`. |
+| `paymentPlan` | string enum | Describes how a reseller will be billed. Values: `PAYMENT_PLAN_UNSPECIFIED`, `COMMITMENT`, `FLEXIBLE`, `FREE`, `TRIAL`, `OFFLINE`. |
 | `resizeUnitCount` | boolean | If true and enable_renewal = true, the unit (for example seats or licenses) will be set to the number of active units at renewal time. |
 | `scheduledRenewalOffer` | string | Output only. The offer resource name that the entitlement will renew on at the end date. Takes the form: accounts/{account_id}/offers/{offer_id}. |
 
@@ -1409,7 +1409,7 @@ Message types referenced by the methods listed under `references/rest/cloudchann
 |---|---|---|
 | `endTime` | string (google-datetime) | The report generation's completion time. |
 | `startTime` | string (google-datetime) | The report generation's start time. |
-| `state` | string enum | The current state of the report generation process. |
+| `state` | string enum | The current state of the report generation process. Values: `STATE_UNSPECIFIED`, `STARTED`, `WRITING`, `AVAILABLE`, `FAILED`. |
 
 ### `GoogleCloudChannelV1alpha1RunReportJobResponse`
 

@@ -16,7 +16,7 @@ Message types referenced by the methods listed under `references/rest/agentident
 | Field | Type | Description |
 |---|---|---|
 | `authProvider` | string | Output only. The auth provider that this access summary is associated with. |
-| `authProviderType` | string enum | Output only. The auth provider type used to create this access summary. |
+| `authProviderType` | string enum | Output only. The auth provider type used to create this access summary. Values: `AUTH_PROVIDER_TYPE_UNSPECIFIED`, `AUTH_PROVIDER_TYPE_THREE_LEGGED_OAUTH`, `AUTH_PROVIDER_TYPE_TWO_LEGGED_OAUTH`, `AUTH_PROVIDER_TYPE_API_KEY`, `AUTH_PROVIDER_TYPE_GEMINI_ENTERPRISE`, `AUTH_PROVIDER_TYPE_CROSS_APP_ACCESS`, `AUTH_PROVIDER_TYPE_CONNECTOR_REFERENCE`. |
 | `firstAccessTime` | string (google-datetime) | Output only. The first time this user interacted with this workload, rounded to the previous hour. |
 | `labels` | object | Optional. Labels as key-value pairs. |
 | `lastAccessTime` | string (google-datetime) | Output only. The most recent time this user interacted with this workload, rounded to the previous hour. |
@@ -59,7 +59,7 @@ Message types referenced by the methods listed under `references/rest/agentident
 | Field | Type | Description |
 |---|---|---|
 | `exemptedMembers` | array<string> | Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members. |
-| `logType` | string enum | The log type that this config enables. |
+| `logType` | string enum | The log type that this config enables. Values: `LOG_TYPE_UNSPECIFIED`, `ADMIN_READ`, `DATA_WRITE`, `DATA_READ`. |
 
 ### `AuthProvider`
 
@@ -77,7 +77,7 @@ Message types referenced by the methods listed under `references/rest/agentident
 | `expireTime` | string (google-datetime) | Output only. The time when the auth provider will expire. |
 | `labels` | object | Optional. Labels as key-value pairs. |
 | `name` | string | Identifier. The full resource name of the auth provider. Format: projects/{project}/locations/{location}/authProviders/{auth_provider} |
-| `state` | string enum | Output only. The state of the auth provider. |
+| `state` | string enum | Output only. The state of the auth provider. Values: `STATE_UNSPECIFIED`, `ENABLED`, `DISABLED`. |
 | `updateTime` | string (google-datetime) | Output only. The update timestamp. |
 | `workloadIds` | array<string> | Optional. Input only. Identifiers for the agents that will use this auth provider, starting with `principal://`. For example: `principal://agents.global.org-${ORG_ID}.system.id.goog/resources/aiplatform/projects/{PROJECT_ID}/locations/{LOCATIONS}/reasoningEngines/{ID}` |
 
@@ -106,7 +106,7 @@ Message types referenced by the methods listed under `references/rest/agentident
 | `createTime` | string (google-datetime) | Output only. The creation timestamp. |
 | `name` | string | Identifier. The resource name of the authorization. |
 | `scopes` | array<string> | Output only. The scopes actually granted by the end user during the consent flow. |
-| `state` | string enum | Output only. The state of the authorization. |
+| `state` | string enum | Output only. The state of the authorization. Values: `STATE_UNSPECIFIED`, `ACTIVE`, `SUSPENDED`. |
 | `updateTime` | string (google-datetime) | Output only. The update timestamp. |
 
 ### `Binding`

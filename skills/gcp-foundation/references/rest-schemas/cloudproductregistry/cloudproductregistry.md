@@ -45,7 +45,7 @@ Message types referenced by the methods listed under `references/rest/cloudprodu
 
 | Field | Type | Description |
 |---|---|---|
-| `lifecycleState` | string enum | Output only. Current Lifecycle state of the logical product. |
+| `lifecycleState` | string enum | Output only. Current Lifecycle state of the logical product. Values: `LIFECYCLE_STATE_UNSPECIFIED`, `LIFECYCLE_STATE_PUBLIC_PREVIEW`, `LIFECYCLE_STATE_PRIVATE_GA`, `LIFECYCLE_STATE_GA`, `LIFECYCLE_STATE_DEPRECATED`. |
 | `name` | string | Identifier. The resource name of the LogicalProduct. Format: logicalProducts/{logical_product}. |
 | `productSuite` | string | Product suite associated with the logical product. Format: productSuites/{product_suite}. |
 | `replaced` | boolean | Output only. Indicates whether the logical product has been replaced. If `false`, the product is active. If `true`, the product has been replaced by another type, and the `replacement` field contains the resource name of that replacement. |
@@ -60,7 +60,7 @@ Message types referenced by the methods listed under `references/rest/cloudprodu
 
 | Field | Type | Description |
 |---|---|---|
-| `lifecycleState` | string enum | Output only. Current Lifecycle state of the logical product variant. |
+| `lifecycleState` | string enum | Output only. Current Lifecycle state of the logical product variant. Values: `LIFECYCLE_STATE_UNSPECIFIED`, `LIFECYCLE_STATE_PUBLIC_PREVIEW`, `LIFECYCLE_STATE_PRIVATE_GA`, `LIFECYCLE_STATE_GA`, `LIFECYCLE_STATE_DEPRECATED`. |
 | `name` | string | Identifier. The resource name of the LogicalProductVariant. Format: logicalProducts/{logical_product}/variants/{variant} |
 | `replaced` | boolean | Output only. Indicates whether the logical product variant has been replaced. If `false`, the variant is active. If `true`, the variant has been replaced by another type, and the `replacement` field contains the resource name of that replacement. |
 | `replacement` | string | Output only. The resource name of the Logical Entity that the logical product variant is replaced by. This field is only populated when this logical product variant is replaced by some other type. Eg: logicalProducts/{logical_product}, productSuites/{product_suite}, etc. |
