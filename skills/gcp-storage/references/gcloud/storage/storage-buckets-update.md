@@ -1,0 +1,470 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/buckets/update
+---
+
+# gcloud storage buckets update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud storage buckets update
+
+```text
+NAME
+    gcloud storage buckets update - update bucket settings
+
+SYNOPSIS
+    gcloud storage buckets update [URL ...] [--additional-headers=HEADER=VALUE]
+        [--clear-soft-delete] [--continue-on-error, -c]
+        [--[no-]default-event-based-hold]
+        [--default-storage-class=DEFAULT_STORAGE_CLASS]
+        [--encryption-enforcement-file=ENCRYPTION_ENFORCEMENT_FILE]
+        [--lock-retention-period] [--read-paths-from-stdin, -I]
+        [--recovery-point-objective=SETTING, --rpo=SETTING]
+        [--[no-]requester-pays] [--soft-delete-duration=SOFT_DELETE_DURATION]
+        [--[no-]uniform-bucket-level-access] [--[no-]versioning]
+        [--acl-file=ACL_FILE --add-acl-grant=[ACL_GRANT,...]
+          --canned-acl=PREDEFINED_ACL, --predefined-acl=PREDEFINED_ACL,
+          -a PREDEFINED_ACL --remove-acl-grant=REMOVE_ACL_GRANT]
+        [--add-default-object-acl-grant=[DEFAULT_OBJECT_ACL_GRANT,...]
+          --default-object-acl-file=DEFAULT_OBJECT_ACL_FILE
+          --predefined-default-object-acl=PREDEFINED_DEFAULT_OBJECT_ACL
+          --remove-default-object-acl-grant=REMOVE_DEFAULT_OBJECT_ACL_GRANT]
+        [--clear-cors | --cors-file=CORS_FILE]
+        [--clear-default-encryption-key
+          | --default-encryption-key=DEFAULT_ENCRYPTION_KEY]
+        [--clear-ip-filter | --ip-filter-file=IP_FILTER_FILE]
+        [--clear-labels | --labels-file=LABELS_FILE
+          | --remove-labels=[LABEL_KEYS,...]
+          --update-labels=[LABEL_KEYS_AND_VALUES,...]]
+        [--clear-lifecycle | --lifecycle-file=LIFECYCLE_FILE]
+        [--clear-log-bucket | --log-bucket=LOG_BUCKET]
+        [--clear-log-object-prefix | --log-object-prefix=LOG_OBJECT_PREFIX]
+        [--clear-pap, --clear-public-access-prevention
+          | --[no-]pap, --[no-]public-access-prevention]
+        [--clear-retention-period | --retention-period=RETENTION_PERIOD]
+        [--clear-web-error-page | --web-error-page=WEB_ERROR_PAGE]
+        [--clear-web-main-page-suffix
+          | --web-main-page-suffix=WEB_MAIN_PAGE_SUFFIX]
+        [--autoclass-terminal-storage-class=AUTOCLASS_TERMINAL_STORAGE_CLASS
+          --[no-]enable-autoclass] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update the settings for a bucket.
+
+EXAMPLES
+    The following command updates the default storage class of a Cloud Storage
+    bucket named "my-bucket" to NEARLINE and sets requester pays to true:
+
+        $ gcloud storage buckets update gs://my-bucket \
+            --default-storage-class=NEARLINE --requester-pays
+
+    The following command updates the retention period of a Cloud Storage
+    bucket named "my-bucket" to one year and thirty-six minutes:
+
+        $ gcloud storage buckets update gs://my-bucket \
+            --retention-period=1y36m
+
+    The following command clears the retention period of a bucket:
+
+        $ gcloud storage buckets update gs://my-bucket \
+            --clear-retention-period
+
+POSITIONAL ARGUMENTS
+     [URL ...]
+        Specifies the URLs of the buckets to update.
+
+FLAGS
+     --additional-headers=HEADER=VALUE
+        Includes arbitrary headers in storage API calls. Accepts a comma
+        separated list of key=value pairs, e.g. header1=value1,header2=value2.
+        Overrides the default storage/additional_headers property value for
+        this command invocation.
+
+     --clear-soft-delete
+        Clears bucket soft delete settings. Does not affect objects already in
+        soft-deleted state.
+
+     --continue-on-error, -c
+        If any operations are unsuccessful, the command will exit with a
+        non-zero exit status after completing the remaining operations. This
+        flag takes effect only in sequential execution mode (i.e. processor and
+        thread count are set to 1). Parallelism is default.
+
+     --[no-]default-event-based-hold
+        Sets the default value for an event-based hold on the bucket. By
+        setting the default event-based hold on a bucket, newly-created objects
+        inherit that value as their event-based hold (it is not applied
+        retroactively). Use --default-event-based-hold to enable and
+        --no-default-event-based-hold to disable.
+
+     --default-storage-class=DEFAULT_STORAGE_CLASS
+        Sets the default storage class for the bucket.
+
+     --encryption-enforcement-file=ENCRYPTION_ENFORCEMENT_FILE
+        Sets the encryption enforcement configuration for the bucket from a
+        JSON file. This configuration determines restrictions on the types of
+        encryption (GMEK, CMEK, CSEK) allowed for new objects created in the
+        bucket.
+
+        The JSON file should contain an object with keys among
+        "gmekEnforcement", "cmekEnforcement", and "csekEnforcement". Each of
+        these keys, if present, should have a "restrictionMode" key,
+        determining whether the corresponding encryption type should be allowed
+        or restricted for new objects.
+
+        Valid values for "restrictionMode" are:
+        * "NotRestricted": The encryption type is allowed for new objects.
+        * "FullyRestricted": The encryption type is not allowed for new
+          objects.
+
+        Example JSON file content, to enforce only CMEK for new objects:
+
+            {
+              "gmekEnforcement": {
+                "restrictionMode": "FullyRestricted"
+              },
+              "cmekEnforcement": {
+                "restrictionMode": "NotRestricted"
+              },
+              "csekEnforcement": {
+                "restrictionMode": "FullyRestricted"
+              }
+            }
+
+        Omitted keys will not be sent in the API request. To clear restrictions
+        for a specific encryption-type during an update, set its
+        "restrictionMode" to "NotRestricted". For example, to clear any
+        restrictions on GMEK: { "gmekEnforcement": { "restrictionMode":
+        "NotRestricted" } }
+
+     --lock-retention-period
+        Locks an unlocked retention policy on the buckets. Caution: A locked
+        retention policy cannot be removed from a bucket or reduced in
+        duration. Once locked, deleting the bucket is the only way to "remove"
+        a retention policy.
+
+     --read-paths-from-stdin, -I
+        Read the list of URLs from stdin.
+
+     --recovery-point-objective=SETTING, --rpo=SETTING
+        Sets the recovery point objective
+        (https://cloud.google.com/architecture/dr-scenarios-planning-guide#basics_of_dr_planning)
+        of a bucket. This flag can only be used with multi-region and
+        dual-region buckets. DEFAULT option is valid for multi-region and
+        dual-regions buckets. ASYNC_TURBO option is only valid for dual-region
+        buckets. If unspecified when the bucket is created, it defaults to
+        DEFAULT for dual-region and multi-region buckets. For more information,
+        see replication in Cloud Storage
+        (https://cloud.google.com/storage/docs/availability-durability#cross-region-redundancy).
+        SETTING must be one of: ASYNC_TURBO, DEFAULT.
+
+     --[no-]requester-pays
+        Allows you to configure a Cloud Storage bucket so that the requester
+        pays all costs related to accessing the bucket and its objects. Use
+        --requester-pays to enable and --no-requester-pays to disable.
+
+     --soft-delete-duration=SOFT_DELETE_DURATION
+        Duration to retain soft-deleted objects. For example, "2w1d" is two
+        weeks and one day.
+
+     --[no-]uniform-bucket-level-access
+        Enables or disables uniform bucket-level access
+        (https://cloud.google.com/storage/docs/bucket-policy-only) for the
+        buckets. Use --uniform-bucket-level-access to enable and
+        --no-uniform-bucket-level-access to disable.
+
+     --[no-]versioning
+        Allows you to configure a Cloud Storage bucket to keep old versions of
+        objects. Use --versioning to enable and --no-versioning to disable.
+
+     --acl-file=ACL_FILE
+        Path to a local JSON or YAML formatted file containing a valid policy.
+        See the ObjectAccessControls resource
+        (https://cloud.google.com/storage/docs/json_api/v1/objectAccessControls)
+        for a representation of JSON formatted files. The output of gcloud
+        storage [buckets|objects] describe --format="multi(acl:format=json)" is
+        a valid file and can be edited for more fine-grained control.
+
+     --add-acl-grant=[ACL_GRANT,...]
+        Key-value pairs mirroring the JSON accepted by your cloud provider. For
+        example, for Cloud
+        Storage,--add-acl-grant=entity=user-tim@gmail.com,role=OWNER
+
+     --canned-acl=PREDEFINED_ACL, --predefined-acl=PREDEFINED_ACL, -a PREDEFINED_ACL
+        Applies predefined, or "canned," ACLs to a resource. See docs for a
+        list of predefined ACL constants:
+        https://cloud.google.com/storage/docs/access-control/lists#predefined-acl
+
+     --remove-acl-grant=REMOVE_ACL_GRANT
+        Key-value pairs mirroring the JSON accepted by your cloud provider. For
+        example, for Cloud Storage, --remove-acl-grant=ENTITY, where ENTITY has
+        a valid ACL entity format, such as user-tim@gmail.com, group-admins,
+        allUsers, etc.
+
+     --add-default-object-acl-grant=[DEFAULT_OBJECT_ACL_GRANT,...]
+        Adds default object ACL grant. See --add-acl-grant help text for more
+        details.
+
+     --default-object-acl-file=DEFAULT_OBJECT_ACL_FILE
+        Sets the default object ACL from file for the bucket.
+
+     --predefined-default-object-acl=PREDEFINED_DEFAULT_OBJECT_ACL
+        Apply a predefined set of default object access controls tobuckets
+
+     --remove-default-object-acl-grant=REMOVE_DEFAULT_OBJECT_ACL_GRANT
+        Removes default object ACL grant. See --remove-acl-grant help text for
+        more details.
+
+     At most one of these can be specified:
+
+       --clear-cors
+          Clears the bucket's CORS settings.
+
+       --cors-file=CORS_FILE
+          Sets the Cross-Origin Resource Sharing (CORS) configuration on a
+          bucket. An example CORS JSON document looks like the following:
+
+              [
+                {
+                  "origin": ["http://origin1.example.com"],
+                  "responseHeader": ["Content-Type"],
+                  "method": ["GET"],
+                  "maxAgeSeconds": 3600
+                }
+              ]
+
+          For more information about supported endpoints for CORS, see Cloud
+          Storage CORS support
+          (https://cloud.google.com/storage/docs/cross-origin#server-side-support).
+
+     At most one of these can be specified:
+
+       --clear-default-encryption-key
+          Clears the bucket's default encryption key.
+
+       --default-encryption-key=DEFAULT_ENCRYPTION_KEY
+          Set the default KMS key for the bucket.
+
+     At most one of these can be specified:
+
+       --clear-ip-filter
+          Disables and clears IP filter configuration of the bucket.
+
+       --ip-filter-file=IP_FILTER_FILE
+          Sets the IP filter for the bucket. The IP filter is a list of ip
+          ranges that are allowed to access the bucket. For example, The
+          following JSON document shows the IP filter configuration with mode
+          enabled and list of public network sources and vpc network sources:
+
+              {
+                "mode": "Enabled",
+                "publicNetworkSource": { "allowedIpCidrRanges": ["0.0.0.0/0"] },
+                "vpcNetworkSources": [
+                    {
+                        "network": "projects/PROJECT_NAME/global/networks/NETWORK_NAME",
+                        "allowedIpCidrRanges": ["0.0.0.0/0"]
+                    },
+                ]
+              }
+
+          For more information about supported configurations, see Cloud
+          Storage bucket IP filtering configurations
+          (https://cloud.google.com/storage/docs/create-ip-filter#ip-filtering-configurations)
+
+     At most one of these can be specified:
+
+       --clear-labels
+          Clear all labels associated with a bucket.
+
+       --labels-file=LABELS_FILE
+          Sets the label configuration for the bucket. An example label JSON
+          document looks like the following:
+
+              {
+                "your_label_key": "your_label_value",
+                "your_other_label_key": "your_other_label_value"
+              }
+
+       Or at least one of these can be specified:
+
+         --remove-labels=[LABEL_KEYS,...]
+            Remove labels by their key names.
+
+         --update-labels=[LABEL_KEYS_AND_VALUES,...]
+            Add or update labels. Example:
+            --update-labels=key1=value1,key2=value2
+
+     At most one of these can be specified:
+
+       --clear-lifecycle
+          Removes all lifecycle configuration for the bucket.
+
+       --lifecycle-file=LIFECYCLE_FILE
+          Sets the lifecycle management configuration on a bucket. For example,
+          The following lifecycle management configuration JSON document
+          specifies that all objects in this bucket that are more than 365 days
+          old are deleted automatically:
+
+              {
+                "rule":
+                [
+                  {
+                    "action": {"type": "Delete"},
+                    "condition": {"age": 365}
+                  }
+                ]
+              }
+
+     At most one of these can be specified:
+
+       --clear-log-bucket
+          Disables usage and storage logging for the bucket specified in the
+          overall update command.
+
+       --log-bucket=LOG_BUCKET
+          Enables usage and storage logging for the bucket specified in the
+          overall update command, outputting log files to the bucket specified
+          in this flag. Cloud Storage does not validate the existence of the
+          bucket receiving logs. In addition to enabling logging on your
+          bucket, you also need to grant cloud-storage-analytics@google.com
+          write access to the log bucket.
+
+     At most one of these can be specified:
+
+       --clear-log-object-prefix
+          Clears the prefix used to determine the naming of log objects in the
+          logging bucket.
+
+       --log-object-prefix=LOG_OBJECT_PREFIX
+          Specifies a prefix for the names of logs generated in the log bucket.
+          The default prefix is the bucket name. If logging is not enabled,
+          this flag has no effect.
+
+     At most one of these can be specified:
+
+       --clear-pap, --clear-public-access-prevention
+          Unsets the public access prevention setting on a bucket.
+
+       --[no-]pap, --[no-]public-access-prevention
+          If True, sets public access prevention
+          (https://cloud.google.com/storage/docs/public-access-prevention) to
+          "enforced". If False, sets public access prevention to "inherited".
+          Use --public-access-prevention to enable and
+          --no-public-access-prevention to disable.
+
+     At most one of these can be specified:
+
+       --clear-retention-period
+          Clears the object retention period for a bucket.
+
+       --retention-period=RETENTION_PERIOD
+          Minimum retention period
+          (https://cloud.google.com/storage/docs/bucket-lock#retention-periods)
+          for objects stored in the bucket, for example
+          --retention-period=P1Y1M1DT5S. Objects added to the bucket cannot be
+          deleted until they've been stored for the specified length of time.
+          Default is no retention period. Only available for Cloud Storage
+          using the JSON API.
+
+     At most one of these can be specified:
+
+       --clear-web-error-page
+          Clear website error page if bucket is hosting website.
+
+       --web-error-page=WEB_ERROR_PAGE
+          Cloud Storage allows you to configure a bucket to behave like a
+          static website. A subsequent GET bucket request through a custom
+          domain for a non-existent object serves the specified error page
+          instead of the standard Cloud Storage error.
+
+     At most one of these can be specified:
+
+       --clear-web-main-page-suffix
+          Clear website main page suffix if bucket is hosting website.
+
+       --web-main-page-suffix=WEB_MAIN_PAGE_SUFFIX
+          Cloud Storage allows you to configure a bucket to behave like a
+          static website. A subsequent GET bucket request through a custom
+          domain serves the specified "main" page instead of performing the
+          usual bucket listing.
+
+AUTOCLASS FLAGS
+     --autoclass-terminal-storage-class=AUTOCLASS_TERMINAL_STORAGE_CLASS
+        The storage class that objects in the bucket eventually transition to
+        if they are not read for a certain length of time. Only valid if
+        Autoclass is enabled.
+
+     --[no-]enable-autoclass
+        The Autoclass feature automatically selects the best storage class for
+        objects based on access patterns. Use --enable-autoclass to enable and
+        --no-enable-autoclass to disable.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha storage buckets update
+```
+
+### gcloud alpha storage buckets update
+
+```text
+NAME
+    gcloud alpha storage buckets update - update bucket settings
+
+SYNOPSIS
+    gcloud alpha storage buckets update [URL ...]
+        [--additional-headers=HEADER=VALUE] [--clear-soft-delete]
+        [--continue-on-error, -c] [--[no-]default-event-based-hold]
+        [--default-storage-class=DEFAULT_STORAGE_CLASS]
+        [--encryption-enforcement-file=ENCRYPTION_ENFORCEMENT_FILE]
+        [--lock-retention-period] [--read-paths-from-stdin, -I]
+        [--recovery-point-objective=SETTING, --rpo=SETTING]
+        [--[no-]requester-pays] [--soft-delete-duration=SOFT_DELETE_DURATION]
+        [--[no-]uniform-bucket-level-access] [--[no-]versioning]
+        [--acl-file=ACL_FILE --add-acl-grant=[ACL_GRANT,...]
+          --canned-acl=PREDEFINED_ACL, --predefined-acl=PREDEFINED_ACL,
+          -a PREDEFINED_ACL --remove-acl-grant=REMOVE_ACL_GRANT]
+        [--add-default-object-acl-grant=[DEFAULT_OBJECT_ACL_GRANT,...]
+          --default-object-acl-file=DEFAULT_OBJECT_ACL_FILE
+          --predefined-default-object-acl=PREDEFINED_DEFAULT_OBJECT_ACL
+          --remove-default-object-acl-grant=REMOVE_DEFAULT_OBJECT_ACL_GRANT]
+        [--clear-cors | --cors-file=CORS_FILE]
+        [--clear-default-encryption-key
+          | --default-encryption-key=DEFAULT_ENCRYPTION_KEY]
+        [--clear-ip-filter | --ip-filter-file=IP_FILTER_FILE]
+        [--clear-labels | --labels-file=LABELS_FILE
+          | --remove-labels=[LABEL_KEYS,...]
+          --update-labels=[LABEL_KEYS_AND_VALUES,...]]
+        [--clear-lifecycle | --lifecycle-file=LIFECYCLE_FILE]
+        [--clear-log-bucket | --log-bucket=LOG_BUCKET]
+        [--clear-log-object-prefix | --log-object-prefix=LOG_OBJECT_PREFIX]
+        [--clear-pap, --clear-public-access-prevention
+          | --[no-]pap, --[no-]public-access-prevention]
+        [--clear-retention-period | --retention-period=RETENTION_PERIOD]
+        [--clear-web-error-page | --web-error-page=WEB_ERROR_PAGE]
+        [--clear-web-main-page-suffix
+          | --web-main-page-suffix=WEB_MAIN_PAGE_SUFFIX]
+        [--autoclass-terminal-storage-class=AUTOCLASS_TERMINAL_STORAGE_CLASS
+          --[no-]enable-autoclass] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/buckets/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
