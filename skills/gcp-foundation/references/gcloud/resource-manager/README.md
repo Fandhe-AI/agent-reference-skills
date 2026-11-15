@@ -13,3 +13,6 @@
 | gcloud resource-manager semantic-tags | 8 commands (alpha); alpha resource-manager semantic-tags bindings create … | [resource-manager-semantic-tags.md](./resource-manager-semantic-tags.md) |
 | gcloud resource-manager semantics-catalog | alpha resource-manager semantics-catalog list | [resource-manager-semantics-catalog.md](./resource-manager-semantics-catalog.md) |
 | gcloud resource-manager tags bindings | 10 commands (alpha, beta, ga); resource-manager tags bindings create … | [resource-manager-tags-bindings.md](./resource-manager-tags-bindings.md) |
+| gcloud resource-manager tags holds | 9 commands (alpha, beta, ga); resource-manager tags holds create … | [resource-manager-tags-holds.md](./resource-manager-tags-holds.md) |
+| gcloud resource-manager tags keys | 27 commands (alpha, beta, ga); resource-manager tags keys add-iam-policy-binding … | [resource-manager-tags-keys.md](./resource-manager-tags-keys.md) |
+| gcloud resource-manager tags values | 27 commands (alpha, beta, ga); resource-manager tags values add-iam-policy-binding … | [resource-manager-tags-values.md](./resource-manager-tags-values.md) |
