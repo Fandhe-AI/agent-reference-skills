@@ -2,4 +2,4 @@
 
 | Name | Description | Path |
 |---|---|---|
-| Managed Service for Microsoft Active Directory API (managedidentities) | 64 schemas | [managedidentities.md](./managedidentities.md) |
+| Managed Service for Microsoft Active Directory API (managedidentities) | 69 schemas | [managedidentities.md](./managedidentities.md) |

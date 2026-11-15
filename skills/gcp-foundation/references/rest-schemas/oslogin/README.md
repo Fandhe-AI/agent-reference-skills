@@ -2,4 +2,4 @@
 
 | Name | Description | Path |
 |---|---|---|
-| Cloud OS Login API (oslogin) | 15 schemas | [oslogin.md](./oslogin.md) |
+| Cloud OS Login API (oslogin) | 17 schemas | [oslogin.md](./oslogin.md) |
