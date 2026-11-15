@@ -18,3 +18,9 @@
 | gcloud netapp volumes get-split-status | 3 commands (alpha, beta, ga); netapp volumes get-split-status … | [netapp-volumes-get-split-status.md](./netapp-volumes-get-split-status.md) |
 | gcloud netapp volumes list | 3 commands (alpha, beta, ga); netapp volumes list … | [netapp-volumes-list.md](./netapp-volumes-list.md) |
 | gcloud netapp volumes quota-rules | 10 commands (beta, ga); netapp volumes quota-rules create … | [netapp-volumes-quota-rules.md](./netapp-volumes-quota-rules.md) |
+| gcloud netapp volumes replications | 30 commands (alpha, beta, ga); netapp volumes replications create … | [netapp-volumes-replications.md](./netapp-volumes-replications.md) |
+| gcloud netapp volumes restore-backup-files | 3 commands (alpha, beta, ga); netapp volumes restore-backup-files … | [netapp-volumes-restore-backup-files.md](./netapp-volumes-restore-backup-files.md) |
+| gcloud netapp volumes revert | 3 commands (alpha, beta, ga); netapp volumes revert … | [netapp-volumes-revert.md](./netapp-volumes-revert.md) |
+| gcloud netapp volumes snapshots | 15 commands (alpha, beta, ga); netapp volumes snapshots create … | [netapp-volumes-snapshots.md](./netapp-volumes-snapshots.md) |
+| gcloud netapp volumes start-split | 3 commands (alpha, beta, ga); netapp volumes start-split … | [netapp-volumes-start-split.md](./netapp-volumes-start-split.md) |
+| gcloud netapp volumes update | 3 commands (alpha, beta, ga); netapp volumes update … | [netapp-volumes-update.md](./netapp-volumes-update.md) |
