@@ -1448,6 +1448,8 @@ Base URL: `https://run.googleapis.com`. Methods are listed by `id`; the `Version
 - Versions: v2
 - `POST https://run.googleapis.com/v2/{+parent}:uploadSource`
 - Uploads a source archive to a Google Cloud Storage bucket through Cloud Run. The uploaded source object should be used for Cloud Run resource deployments. User is responsible for managing the lifecycle of the uploaded object. If uploading through the Cloud Run API to Cloud Storage is not desired, you can use the IAM Deny Policy to deny the `run.locations.uploadSource` permission for all principals.
+- Media upload (simple): `POST https://run.googleapis.com/upload/v2/{+parent}:uploadSource` with `uploadType=media` (the body is the file content only) or `uploadType=multipart` (a `multipart/related` body with the JSON metadata part followed by the content part)
+- Media upload limits: accepted media types: `*/*`; maximum size: 262144000 bytes
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`, `https://www.googleapis.com/auth/run`
 - Request: `GoogleCloudRunV2UploadSourceRequest`; Response: `GoogleCloudRunV2UploadSourceResponse`
 
@@ -1631,7 +1633,7 @@ curl -X GET \
 
 - Generated from the Discovery document(s) v2, v1 of `run` (retrieved 2026-11-14). Resources on this page: namespaces, projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when a path variable is described as optional (the method then also accepts the URL without that segment, as its description says).
-- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/run/`; they are the `schemas` section of the Discovery documents in Source.
 - Source: https://run.googleapis.com/$discovery/rest?version=v2, https://run.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
 ## Related

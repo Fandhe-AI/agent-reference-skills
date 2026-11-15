@@ -86,6 +86,15 @@ NOTES
         $ gcloud beta run domain-mappings create
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud beta run domain-mappings create \
+    --service=myapp \
+    --domain=www.example.com \
+    --region=us-central1
+```
+
 ### gcloud run domain-mappings delete
 
 ```text
@@ -161,6 +170,14 @@ NOTES
         $ gcloud beta run domain-mappings delete
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud beta run domain-mappings delete \
+    --domain=www.example.com \
+    --region=us-central1
+```
+
 ### gcloud run domain-mappings describe
 
 ```text
@@ -228,6 +245,14 @@ NOTES
         $ gcloud alpha run domain-mappings describe
 
         $ gcloud beta run domain-mappings describe
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud beta run domain-mappings describe \
+    --domain=www.example.com \
+    --region=us-central1
 ```
 
 ### gcloud run domain-mappings list
@@ -299,6 +324,13 @@ NOTES
         $ gcloud alpha run domain-mappings list
 
         $ gcloud beta run domain-mappings list
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud beta run domain-mappings list \
+    --region=us-central1
 ```
 
 ### gcloud beta run domain-mappings create
@@ -399,6 +431,8 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the GA `domain-mappings` commands are for Cloud Run for Anthos (DESCRIPTION: "For domain mapping support with fully managed Cloud Run, use gcloud beta run domain-mappings"), and gcloud 593.0.0 refuses them on fully managed Cloud Run, the default platform ("This command group is in beta for fully managed Cloud Run; use `gcloud beta run domain-mappings`"); the runnable forms use `gcloud beta run domain-mappings` with `--region=us-central1`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

@@ -84,10 +84,10 @@ Predefined roles of `run` (role ID, description, included permissions) and, for 
 
 ### Example: grant a role
 
-Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Project):
+Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Cloud Run service):
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud run services add-iam-policy-binding SERVICE_NAME --region=REGION \
   --member="user:EMAIL_ADDRESS" \
   --role="roles/run.admin"
 ```
