@@ -1,0 +1,125 @@
+---
+name: gcp-run
+description: >
+  Google Cloud (GCP) の Cloud Run (services・jobs・worker pools)・Cloud Run functions (旧 Cloud Functions)・App Engine・Cloud Tasks・Cloud Scheduler・Cloud Workstations の gcloud・REST・IAM。
+  container contract・revisions・traffic・IAM invoker・Eventarc trigger・Direct VPC egress・GPU・secrets、gcloud run・functions・app・tasks・scheduler。
+  Cloudflare Workers・Vercel Functions とは別、gcloud 全般は gcp-cli、IAM 基盤は gcp-foundation。
+user-invocable: false
+---
+
+# gcp-run
+
+Google Cloud (GCP) のサーバーレス実行基盤・ジョブ基盤・開発環境スキル。Cloud Run（services / jobs / worker pools）、Cloud Run functions（旧 Cloud Functions。1st gen を含む）、App Engine（standard / flexible と Cloud Run への移行）、Cloud Tasks、Cloud Scheduler、Cloud Workstations を扱う。コンテナーのランタイム契約・リビジョンとトラフィック分割・スケーリング・GPU・シークレット・Ingress・認証（IAM invoker / ID トークン）・Direct VPC egress・Eventarc / Pub/Sub トリガー・ログとモニタリング・トラブルシューティングを収録する。
+
+参照本文は英語（公式ドキュメント・`gcloud help` の原語）。
+
+## ディレクトリ構成
+
+```text
+skills/gcp-run/
+  SKILL.md
+  references/
+    cloud-run-deploy/             # クイックスタート・コンテナーデプロイ・イメージのビルド
+      README.md
+      <page>.md                   # 例: deploy-container.md / deploying.md / containers.md
+    cloud-run-configuration/      # コンテナー・CPU・メモリ・環境変数・実行環境
+      README.md
+      <page>.md                   # 例: containers.md / cpu.md / memory-limits.md / execution-environments.md
+    cloud-run-auth/               # 認証: 公開・サービス間・エンドユーザー・開発者・IAM アクセス管理
+      README.md
+      <page>.md                   # 例: public.md / service-to-service.md / managing-access.md
+    cloud-run-functions/          # Cloud Run functions: 概要・1st gen との比較・関数の記述・デプロイ・トリガー
+      README.md
+      <page>.md                   # 例: functions-with-run.md / write-functions.md / deploy-functions.md / function-triggers.md
+    cloud-functions-1st-gen/      # Cloud Run functions (1st gen、旧 Cloud Functions 1st gen)・Cloud Functions v2 API 互換・アップグレード
+      README.md
+      <page>.md                   # 例: concepts-overview.md / deploy-1st-gen.md / upgrade-gen1-functions.md / quotas.md
+    app-engine/                   # App Engine: 概要・環境比較・app.yaml・ランタイムライフサイクル・クォータ
+      README.md
+      <page>.md                   # 例: an-overview-of-app-engine.md / standard-app-yaml.md / flexible-app-yaml.md / standard-quotas.md
+    app-engine-migration/         # App Engine から Cloud Run への移行（比較・standard・flexible）
+      README.md
+      <page>.md                   # 例: compare-gae-with-run.md / migrate-app-engine-standard-to-run.md
+```
+
+機械生成カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas`）は後続 PR で `references/gcloud/` 等に投入する。投入後に担当するもの:
+
+- gcloud グループ（6）: `run`（compose / deploy / domain-mappings / instances（alpha / beta のみ）/ jobs / multi-region-services / regions / revisions / services / worker-pools）/ `functions`（`local` は alpha のみ）/ `app` / `tasks`（pull-task 系コマンドは alpha のみ）/ `scheduler` / `workstations`
+- IAM roles-permissions（10 ファイル）: `run.` / `cloudfunctions.` / `appengine.` / `appengineflex.` / `cloudscheduler.` / `cloudtasks.` / `workstations.` / `runapps.` / `appdevelopmentexperience.`
+- REST（Discovery）: Cloud Run Admin API (`run`) / Cloud Functions API / App Engine Admin API / Cloud Scheduler API / Cloud Tasks API / Cloud Workstations API のメソッド表とメッセージスキーマ
+
+## 探索手順
+
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
+
+1. 手順・概念（Cloud Run の設計・デプロイ・スケーリング・認証・ネットワーク・トリガー、Cloud Run functions、App Engine、Cloud Scheduler、Cloud Tasks、Cloud Workstations）→ 下記マッピング表でカテゴリを選び、その README.md から個別ページを引く。ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある
+2. gcloud コマンド・フラグの全文、IAM ロールの権限、REST のメソッド・メッセージ型（機械生成の `references/gcloud/` `references/iam/` `references/rest/` `references/rest-schemas/`）は後続 PR で投入する。未投入の間は `gcloud <group> --help` と公式 reference を確認する
+3. 作業例 → `samples/README.md`（後続 PR で投入）、コマンド集 → `scripts/README.md`（後続 PR で投入）
+
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照 README |
+| --- | --- | --- |
+| コンテナーイメージをデプロイしたい・クイックスタート・イメージのビルド（Cloud Build / buildpacks / Artifact Registry） | cloud-run-deploy | [references/cloud-run-deploy/README.md](references/cloud-run-deploy/README.md) |
+| CPU・メモリ・環境変数・コンテナー（サイドカー）・実行環境（第 1 世代 / 第 2 世代）を設定したい | cloud-run-configuration | [references/cloud-run-configuration/README.md](references/cloud-run-configuration/README.md) |
+| 公開アクセス・サービス間認証（ID トークン）・エンドユーザー認証・開発者のテスト呼び出し・IAM invoker | cloud-run-auth | [references/cloud-run-auth/README.md](references/cloud-run-auth/README.md) |
+| Cloud Run functions の概念・改称（旧 Cloud Functions）・関数の記述（Functions Framework）・デプロイ・トリガー | cloud-run-functions | [references/cloud-run-functions/README.md](references/cloud-run-functions/README.md) |
+| Cloud Functions 1st gen の扱い・`--no-gen2` デプロイ・`gcloud functions upgrade`・1st gen のクォータ | cloud-functions-1st-gen | [references/cloud-functions-1st-gen/README.md](references/cloud-functions-1st-gen/README.md) |
+| App Engine の概要・standard / flexible の違い・`app.yaml`・ランタイムのサポート状況・クォータ | app-engine | [references/app-engine/README.md](references/app-engine/README.md) |
+| App Engine から Cloud Run へ移行したい（比較表・`gcloud beta app migrate-to-run`） | app-engine-migration | [references/app-engine-migration/README.md](references/app-engine-migration/README.md) |
+
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `cloud-run-overview` / `cloud-run-services` / `cloud-run-scaling` / `cloud-run-security` / `cloud-run-networking` / `cloud-run-http-serving` / `cloud-run-triggers` / `cloud-run-jobs` / `cloud-run-worker-pools` / `cloud-run-functions-runtimes` / `cloud-run-operations` / `scheduler` / `tasks` / `workstations` / `samples` / `scripts`
+
+## 他スキルとの使い分け
+
+- `gcp-cli` — gcloud 全般のインストール・設定・出力フォーマット・Cloud Shell。`gcloud run` / `functions` / `app` / `tasks` / `scheduler` / `workstations` のコマンドは本スキル
+- `gcp-foundation` — IAM の基盤（allow / deny policy・サービスアカウント・Workload Identity Federation）・ADC・Service Usage・クォータ・課金。本スキルは各プロダクトの IAM ロール（`roles/run.invoker` など）と invoker 設計のみ
+- `gcp-storage` — Cloud Storage 本体・Cloud Storage FUSE ボリュームマウント・NFS ボリューム（分割 PR で順次追加中）。本スキルはイベントトリガー（Eventarc 経由）の起動側のみ
+- `gcp-client-libraries` — 言語別クライアントライブラリのコード（予定）。本スキルは Functions Framework と gcloud / REST の手順のみ
+- `gcp-messaging-workflows` / `gcp-networking` / `gcp-security` / `gcp-observability` / `gcp-devops` — Pub/Sub・Eventarc・Workflows、VPC・Load Balancing・Serverless VPC Access、Secret Manager・IAP・Binary Authorization、Logging・Monitoring、Cloud Build・Artifact Registry の本体（いずれも予定、分割 PR で順次追加中）。本スキルは Cloud Run 側の接続・設定ページのみ
+- `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
+- `docker` — Dockerfile・Docker Engine 一般。本スキルは Cloud Run 向けのコンテナー契約とビルド手順のみ
+- `cloudflare-workers` — Cloudflare Workers（V8 isolate）。Cloud Run / Cloud Run functions とは別基盤
+- `vercel` — Vercel のデプロイ基盤と Vercel Functions。Cloud Run functions とは別
+- `hono` / `fastify` — Cloud Run 上で動かす Web フレームワークの API は各スキル。本スキルはデプロイ・実行基盤のみ
+- Firebase（Cloud Functions for Firebase・Firebase Hosting を含む）は別計画（`firebase-*`）。本スキルでは扱わない
+- `references/tasks/` は Cloud Tasks（`cloudtasks.googleapis.com`）。Google Workspace の Google Tasks API（To-Do リスト）は対象外
+
+## 収録しなかった主なガイド群
+
+公式ドキュメントのガイドは主要ページに絞って収録した。次は未収録。必要なときは URL を確認する（いずれも https://docs.cloud.google.com/ 配下）。
+
+- 他言語・フレームワークのクイックスタート（Go / Java / .NET / PHP / Ruby / FastAPI / Next.js ほか）— `run/docs/quickstarts`
+- 継続的デプロイ — `run/docs/quickstarts/deploy-continuously`
+- ボリュームマウント（Cloud Storage / NFS / in-memory）— `run/docs/configuring/services/cloud-storage-volume-mounts`
+- ベースイメージ・自動更新・ビルド設定 — `run/docs/configuring/services/runtime-base-images`
+- HTTP/2・セッションアフィニティ・Webhook — `run/docs/configuring/http2`、`run/docs/configuring/session-affinity`
+- jobs / worker pools の GPU・Worker pool の Kafka autoscaler — `run/docs/configuring/jobs/gpu`、`run/docs/configuring/workerpools/kafka-autoscaler`
+- 高度なセキュリティ（IAP・CMEK・VPC Service Controls・Binary Authorization・Cloud Armor・custom audiences）— `run/docs/securing/identity-aware-proxy-cloud-run`、`run/docs/securing/using-cmek`、`run/docs/securing/using-vpc-service-controls`
+- Direct VPC への移行・Shared VPC host / service project・Cloud Service Mesh — `run/docs/configuring/migrate-direct-vpc`、`run/docs/configuring/shared-vpc-host-project`
+- マルチリージョン・CDN — `run/docs/multiple-regions`、`run/docs/set-up-cdn`
+- ジョブの言語別クイックスタート・リトライとチェックポイント — `run/docs/jobs-retries`
+- Cloud Run functions の retries・best practices・依存関係・ビルド — `run/docs/tips/function-retries`、`run/docs/tips/functions-best-practices`、`run/docs/runtimes/nodejs-dependencies`
+- AI エージェント・MCP サーバー・A2A のホスティング — `run/docs/ai-agents`、`run/docs/host-mcp-servers`、`run/docs/deploy-a2a-agents`
+- 他プラットフォームからの移行（AWS Lambda / Heroku / Cloud Foundry / Kubernetes）— `run/docs/migrate/from-aws-lambda`、`run/docs/migrate/from-kubernetes`
+- 開発のヒント・既知の問題・チュートリアル・コードサンプル・リリースノート — `run/docs/tips/general`、`run/docs/known-issues`、`run/docs/tutorials/codelabs`、`run/docs/samples`、`run/docs/release-notes`
+- Cloud Functions 1st gen のチュートリアル・セキュリティ / IAM・Terraform・リリースノート — `functions/1stgendocs/tutorials/http-1st-gen`、`functions/docs/securing/managing-access-iam`、`functions/docs/release-notes`
+- App Engine のレガシーランタイムとバンドルサービス（約 1,800 ページ）・第 2 世代バンドルサービス・言語別設定・トラフィック分割・移行センター・非推奨 — `appengine/docs/legacy/standard/python/an-overview-of-app-engine`、`appengine/docs/standard/python3/services/access`、`appengine/docs/standard/splitting-traffic`、`appengine/migration-center`、`appengine/docs/standard/deprecations`
+- App Engine flexible のクォータ（standard 版とほぼ同文で、Compute Engine のクォータを消費する旨のみ異なる）— `appengine/docs/flexible/quotas`
+- Cloud Scheduler の Console / Terraform 版クイックスタート・チュートリアル・VPC Service Controls・ログ — `scheduler/docs/schedule-run-cron-job`、`scheduler/docs/tut-gcf-pub-sub`、`scheduler/docs/secure-with-vpcsc`、`scheduler/docs/viewing-logs`
+- Cloud Tasks の App Engine タスク・`queue.yaml`・Task Queues からの移行・認証詳細・CMEK・Pub/Sub / Cloud Scheduler との比較 — `tasks/docs/creating-appengine-tasks`、`tasks/docs/queue-yaml`、`tasks/docs/authentication`、`tasks/docs/comp-pub-sub`、`tasks/docs/comp-tasks-sched`、`tasks/docs/common-pitfalls`
+- Cloud Workstations のローカル IDE・SSH 接続・プリセット IDE・マシンタイプ・GPU・セキュリティのベストプラクティス・CMEK・Shared VPC・Terraform — `workstations/docs/ssh-support`、`workstations/docs/preconfigured-ides`、`workstations/docs/available-machine-types`、`workstations/docs/available-gpus`、`workstations/docs/set-up-security-best-practices`、`workstations/docs/encrypt-workstation-resources-using-cmek`、`workstations/docs/terraform-support-for-cloud-workstations`
+- Serverless Integrations（`runapps.`）・App Development Experience（`appdevelopmentexperience.`）・App Engine flexible（`appengineflex.`）はガイドが無く、IAM ロールのみ。IAM reference は https://docs.cloud.google.com/iam/docs/roles-permissions/runapps 、 https://docs.cloud.google.com/iam/docs/roles-permissions/appdevelopmentexperience 、 https://docs.cloud.google.com/iam/docs/roles-permissions/appengineflex
+
+## 鮮度・ライセンス・既知の制約
+
+- 取得日: 2026-11-15（ガイド）、gcloud 593.0.0（機械生成分は取得 2026-11-14）
+- ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
+- `references/gcloud/` `references/iam/` `references/rest/` `references/rest-schemas/` は機械生成（gcloud 593.0.0 の help / IAM reference / Discovery、取得 2026-11-14）で、後続 PR で投入する。上記 21 カテゴリは公式ガイド由来の手書き
+- alpha / beta トラックの gcloud コマンドは NAME + SYNOPSIS のみ（フラグ全文は GA のみ）
+- 料金ページは Markdown 取得ができないため未収録。公式料金ページを確認する — Cloud Run / Cloud Run functions: https://cloud.google.com/run/pricing 、App Engine: https://cloud.google.com/appengine/pricing 、Cloud Scheduler: https://cloud.google.com/scheduler/pricing 、Cloud Tasks: https://cloud.google.com/tasks/pricing 、Cloud Workstations: https://cloud.google.com/workstations/pricing
+- Cloud Run functions は旧 Cloud Functions（2nd gen）の改称で、Cloud Run functions (1st gen) が旧 Cloud Functions (1st gen)。1st gen は `cloud-functions-1st-gen/` に分離して収録
+- App Engine はレガシー扱いで、概要・環境比較・`app.yaml`・ランタイムサポート・standard のクォータ・Cloud Run への移行に絞って収録
+- リリースノート（Cloud Run / Cloud Functions / App Engine / Cloud Tasks / Cloud Scheduler / Cloud Workstations）は未収録
+- Cloud Run の Preview 機能（カスタムドメインのドメインマッピング、`gcloud beta app migrate-to-run` など）は各ページの記載に従い、GA と区別して扱う
+- gcloud は頻繁に更新される。新しいバージョンのフラグは `gcloud help` と公式 reference で確認する
