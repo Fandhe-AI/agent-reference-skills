@@ -1,0 +1,152 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/active-directory/domains/create
+---
+
+# gcloud active-directory domains create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud active-directory domains create
+
+```text
+NAME
+    gcloud active-directory domains create - create a Managed Microsoft AD
+        domain
+
+SYNOPSIS
+    gcloud active-directory domains create DOMAIN --region=[REGION,...]
+        --reserved-ip-range=RESERVED_IP_RANGE [--admin-name=ADMIN_NAME]
+        [--async] [--authorized-networks=[AUTHORIZED_NETWORKS,...]]
+        [--enable-audit-logs] [--labels=[KEY=VALUE,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create a new Managed Microsoft AD domain with the given name using Google
+    Cloud's Managed Service for Microsoft Active Directory.
+
+    This command can fail for the following reasons:
+      o An AD domain with the same name already exists.
+      o The active account does not have permission to create AD domains.
+      o There is an overlap between the provided CIDR range and authorized
+        network's CIDR.
+      o A valid region was not provided.
+
+EXAMPLES
+    The following command creates an AD domain with the name my-domain.com in
+    region us-central1, a network peering to my-network and consuming the IP
+    address range 10.172.0.0/24.
+
+        $ gcloud active-directory domains create my-domain.com \
+            --region=us-central1 --reserved-ip-range="10.172.0.0/24" \
+            --authorized-networks=projects/my-project/global/networks/\
+        my-network
+
+POSITIONAL ARGUMENTS
+     Domain resource - Name of the managed Managed Microsoft AD domain you want
+     to create. This represents a Cloud resource. (NOTE) Some attributes are
+     not given arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument domain on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       DOMAIN
+          ID of the domain or fully qualified identifier for the domain.
+
+          To set the domain attribute:
+          + provide the argument domain on the command line.
+
+REQUIRED FLAGS
+     --region=[REGION,...]
+        Google Compute Engine region in which to provision domain controllers.
+
+     --reserved-ip-range=RESERVED_IP_RANGE
+        Classless Inter-Domain Routing range of internal addresses that are
+        reserved for this domain.
+
+OPTIONAL FLAGS
+     --admin-name=ADMIN_NAME
+        Name of the administrator that may be used to perform Active Directory
+        operations. This is a delegated administrator account provisioned by
+        our service. If left unspecified MIAdmin will be used. This is
+        different from both the domain administrator and the Directory Services
+        Restore Mode (DSRM) administrator.
+
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --authorized-networks=[AUTHORIZED_NETWORKS,...]
+        Names of the Google Compute Engine networks to which the domain will be
+        connected.
+
+     --enable-audit-logs
+        If specified, Active Directory data audit logs are enabled for the
+        domain.
+
+     --labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to add.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the managedidentities/v1 API. The full documentation for
+    this API can be found at: https://cloud.google.com/managed-microsoft-ad/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha active-directory domains create
+
+        $ gcloud beta active-directory domains create
+```
+
+### gcloud beta active-directory domains create
+
+```text
+NAME
+    gcloud beta active-directory domains create - create a Managed Microsoft AD
+        domain
+
+SYNOPSIS
+    gcloud beta active-directory domains create DOMAIN --region=[REGION,...]
+        --reserved-ip-range=RESERVED_IP_RANGE [--admin-name=ADMIN_NAME]
+        [--async] [--authorized-networks=[AUTHORIZED_NETWORKS,...]]
+        [--enable-audit-logs] [--labels=[KEY=VALUE,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha active-directory domains create
+
+```text
+NAME
+    gcloud alpha active-directory domains create - create a Managed Microsoft
+        AD domain
+
+SYNOPSIS
+    gcloud alpha active-directory domains create DOMAIN --region=[REGION,...]
+        --reserved-ip-range=RESERVED_IP_RANGE [--admin-name=ADMIN_NAME]
+        [--async] [--authorized-networks=[AUTHORIZED_NETWORKS,...]]
+        [--enable-audit-logs] [--labels=[KEY=VALUE,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/active-directory/domains/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
