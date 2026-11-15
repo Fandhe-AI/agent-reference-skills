@@ -1,0 +1,514 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/mv
+---
+
+# gcloud storage mv
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud storage mv
+
+```text
+NAME
+    gcloud storage mv - moves or renames objects
+
+SYNOPSIS
+    gcloud storage mv [SOURCE ...] DESTINATION
+        [--additional-headers=HEADER=VALUE] [--all-versions, -A]
+        [--no-clobber, -n] [--content-md5=MD5_DIGEST] [--continue-on-error, -c]
+        [--daisy-chain, -D] [--do-not-decompress] [--include-managed-folders]
+        [--manifest-path=MANIFEST_PATH, -L MANIFEST_PATH]
+        [--preserve-posix, -P] [--print-created-message, -v]
+        [--read-paths-from-stdin, -I] [--skip-unsupported, -U]
+        [--storage-class=STORAGE_CLASS, -s STORAGE_CLASS]
+        [--canned-acl=PREDEFINED_ACL, --predefined-acl=PREDEFINED_ACL,
+          -a PREDEFINED_ACL --[no-]preserve-acl, -p]
+        [--gzip-in-flight=[FILE_EXTENSIONS,...], -j [FILE_EXTENSIONS,...]
+          | --gzip-in-flight-all, -J
+          | --gzip-local=[FILE_EXTENSIONS,...], -z [FILE_EXTENSIONS,...]
+          | --gzip-local-all, -Z] [--ignore-symlinks | --preserve-symlinks]
+        [--decryption-keys=[DECRYPTION_KEY,...]
+          --encryption-key=ENCRYPTION_KEY]
+        [--cache-control=CACHE_CONTROL
+          --content-disposition=CONTENT_DISPOSITION
+          --content-encoding=CONTENT_ENCODING
+          --content-language=CONTENT_LANGUAGE --content-type=CONTENT_TYPE
+          --custom-time=CUSTOM_TIME --clear-custom-contexts
+          | --custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          | --custom-contexts-file=CUSTOM_CONTEXTS_FILE
+          | --remove-custom-contexts=[CUSTOM_CONTEXTS_KEYS,...]
+          --update-custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          --clear-custom-metadata
+          | --custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]
+          | --remove-custom-metadata=[METADATA_KEYS,...]
+          --update-custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]]
+        [--if-generation-match=GENERATION
+          --if-metageneration-match=METAGENERATION]
+        [--retain-until=DATETIME --retention-mode=RETENTION_MODE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    The mv command allows you to move data between your local file system and
+    the cloud, move data within the cloud, and move data between cloud storage
+    providers.
+
+    Renaming Groups Of Objects
+
+    You can use the mv command to rename all objects with a given prefix to
+    have a new prefix. For example, the following command renames all objects
+    under gs://my_bucket/oldprefix to be under gs://my_bucket/newprefix,
+    otherwise preserving the naming structure:
+
+        $ gcloud storage mv gs://my_bucket/oldprefix gs://my_bucket/newprefix
+
+    Note that when using mv to rename groups of objects with a common prefix,
+    you cannot specify the source URL using wildcards; you must spell out the
+    complete name.
+
+    If you do a rename as specified above and you want to preserve ACLs.
+
+    Non-Atomic Operation
+
+    Unlike the case with many file systems, the mv command does not perform a
+    single atomic operation. Rather, it performs a copy from source to
+    destination followed by removing the source for each object.
+
+    A consequence of this is that, in addition to normal network and operation
+    charges, if you move a Nearline Storage, Coldline Storage, or Archive
+    Storage object, deletion and data retrieval charges apply. See the
+    documentation for pricing details.
+
+EXAMPLES
+    To move all objects from a bucket to a local directory you could use:
+
+        $ gcloud storage mv gs://my_bucket/* dir
+
+    Similarly, to move all objects from a local directory to a bucket you could
+    use:
+
+        $ gcloud storage mv ./dir gs://my_bucket
+
+    The following command renames all objects under gs://my_bucket/oldprefix to
+    be under gs://my_bucket/newprefix, otherwise preserving the naming
+    structure:
+
+        $ gcloud storage mv gs://my_bucket/oldprefix gs://my_bucket/newprefix
+
+    The following command would clear all custom contexts from the destination
+    object while moving the object to the destination bucket.
+
+        $ gcloud storage mv gs://my-bucket/object \
+            gs://destination-bucket/object --clear-custom-contexts
+
+POSITIONAL ARGUMENTS
+     [SOURCE ...]
+        The source path(s) to copy.
+
+     DESTINATION
+        The destination path.
+
+FLAGS
+     --additional-headers=HEADER=VALUE
+        Includes arbitrary headers in storage API calls. Accepts a comma
+        separated list of key=value pairs, e.g. header1=value1,header2=value2.
+        Overrides the default storage/additional_headers property value for
+        this command invocation.
+
+     --all-versions, -A
+        Copy all source versions from a source bucket or folder. If not set,
+        only the live version of each source object is copied.
+
+        Note: This option is only useful when the destination bucket has Object
+        Versioning enabled. Additionally, the generation numbers of copied
+        versions do not necessarily match the order of the original generation
+        numbers.
+
+     --no-clobber, -n
+        Do not overwrite existing files or objects at the destination. Skipped
+        items will be printed. This option may perform an additional GET
+        request for cloud objects before attempting an upload.
+
+     --content-md5=MD5_DIGEST
+        Manually specified MD5 hash digest for the contents of an uploaded
+        file. This flag cannot be used when uploading multiple files. The
+        custom digest is used by the cloud provider for validation.
+
+     --continue-on-error, -c
+        If any operations are unsuccessful, the command will exit with a
+        non-zero exit status after completing the remaining operations. This
+        flag takes effect only in sequential execution mode (i.e. processor and
+        thread count are set to 1). Parallelism is default.
+
+     --daisy-chain, -D
+        Copy in "daisy chain" mode, which means copying an object by first
+        downloading it to the machine where the command is run, then uploading
+        it to the destination bucket. The default mode is a "copy in the
+        cloud," where data is copied without uploading or downloading. During a
+        copy in the cloud, a source composite object remains composite at its
+        destination. However, you can use daisy chain mode to change a
+        composite object into a non-composite object. Note: Daisy chain mode is
+        automatically used when copying between providers.
+
+     --do-not-decompress
+        Do not automatically decompress downloaded gzip files.
+
+     --include-managed-folders
+        Includes managed folders in command operations. For transfers, gcloud
+        storage will set up managed folders in the destination with the same
+        IAM policy bindings as the source. Managed folders are only included
+        with recursive cloud-to-cloud transfers. Please note that for
+        hierarchical namespace buckets, managed folders are always included.
+        Hence this flag would not be applicable to hierarchical namespace
+        buckets.
+
+     --manifest-path=MANIFEST_PATH, -L MANIFEST_PATH
+        Outputs a manifest log file with detailed information about each item
+        that was copied. This manifest contains the following information for
+        each item:
+
+        * Source path.
+        * Destination path.
+        * Source size.
+        * Bytes transferred.
+        * MD5 hash.
+        * Transfer start time and date in UTC and ISO 8601 format.
+        * Transfer completion time and date in UTC and ISO 8601 format.
+        * Final result of the attempted transfer: OK, error, or skipped.
+        * Details, if any.
+
+        If the manifest file already exists, gcloud storage appends log items
+        to the existing file.
+
+        Objects that are marked as "OK" or "skipped" in the existing manifest
+        file are not retried by future commands. Objects marked as "error" are
+        retried.
+
+     --preserve-posix, -P
+        Causes POSIX attributes to be preserved when objects are copied. With
+        this feature enabled, gcloud storage will copy several fields provided
+        by the stat command: access time, modification time, owner UID, owner
+        group GID, and the mode (permissions) of the file.
+
+        For uploads, these attributes are read off of local files and stored in
+        the cloud as custom metadata. For downloads, custom cloud metadata is
+        set as POSIX attributes on files after they are downloaded.
+
+        On Windows, this flag will only set and restore access time and
+        modification time because Windows doesn't have a notion of POSIX UID,
+        GID, and mode.
+
+     --print-created-message, -v
+        Prints the version-specific URL for each copied object.
+
+     --read-paths-from-stdin, -I
+        Read the list of resources to copy from stdin. No need to enter a
+        source argument if this flag is present. Example: "storage cp -I
+        gs://bucket/destination". The input format must consist of one path
+        (e.g., "Documents/data/file1.txt") or one object URL (e.g.,
+        "gs://example-bucket/event.log") per line. Use a pipe to send the file
+        list to the command. Example: "cat example-file-list.txt | gcloud
+        storage cp --read-paths-from-stdin gs://example-destination-bucket".
+        Note: To copy the contents of one file directly from stdin, use "-" as
+        the source argument without the "-I" flag.
+
+     --skip-unsupported, -U
+        Skip objects with unsupported object types.
+
+     --storage-class=STORAGE_CLASS, -s STORAGE_CLASS
+        Specify the storage class of the destination object. If not specified,
+        the default storage class of the destination bucket is used. This
+        option is not valid for copying to non-cloud destinations.
+
+     --canned-acl=PREDEFINED_ACL, --predefined-acl=PREDEFINED_ACL, -a PREDEFINED_ACL
+        Applies predefined, or "canned," ACLs to a resource. See docs for a
+        list of predefined ACL constants:
+        https://cloud.google.com/storage/docs/access-control/lists#predefined-acl
+
+     --[no-]preserve-acl, -p
+        Preserves ACLs when copying in the cloud. This option is Cloud
+        Storage-only, and you need OWNER access to all copied objects. If all
+        objects in the destination bucket should have the same ACL, you can
+        also set a default object ACL on that bucket instead of using this
+        flag. Preserving ACLs is the default behavior for updating existing
+        objects. Use --preserve-acl to enable and --no-preserve-acl to disable.
+
+     At most one of these can be specified:
+
+       --gzip-in-flight=[FILE_EXTENSIONS,...], -j [FILE_EXTENSIONS,...]
+          Applies gzip transport encoding to any file upload whose extension
+          matches the input extension list. This is useful when uploading files
+          with compressible content such as .js, .css, or .html files. This
+          also saves network bandwidth while leaving the data uncompressed in
+          Cloud Storage.
+
+          When you specify the --gzip-in-flight option, files being uploaded
+          are compressed in-memory and on-the-wire only. Both the local files
+          and Cloud Storage objects remain uncompressed. The uploaded objects
+          retain the Content-Type and name of the original files.
+
+       --gzip-in-flight-all, -J
+          Applies gzip transport encoding to file uploads. This option works
+          like the --gzip-in-flight option described above, but it applies to
+          all uploaded files, regardless of extension.
+
+          CAUTION: If some of the source files don't compress well, such as
+          binary data, using this option may result in longer uploads.
+
+       --gzip-local=[FILE_EXTENSIONS,...], -z [FILE_EXTENSIONS,...]
+          Applies gzip content encoding to any file upload whose extension
+          matches the input extension list. This is useful when uploading files
+          with compressible content such as .js, .css, or .html files. This
+          saves network bandwidth and space in Cloud Storage.
+
+          When you specify the --gzip-local option, the data from files is
+          compressed before it is uploaded, but the original files are left
+          uncompressed on the local disk. The uploaded objects retain the
+          Content-Type and name of the original files. However, the
+          Content-Encoding metadata is set to gzip and the Cache-Control
+          metadata set to no-transform. The data remains compressed on Cloud
+          Storage servers and will not be decompressed on download by gcloud
+          storage because of the no-transform field.
+
+          Since the local gzip option compresses data prior to upload, it is
+          not subject to the same compression buffer bottleneck of the
+          in-flight gzip option.
+
+       --gzip-local-all, -Z
+          Applies gzip content encoding to file uploads. This option works like
+          the --gzip-local option described above, but it applies to all
+          uploaded files, regardless of extension.
+
+          CAUTION: If some of the source files don't compress well, such as
+          binary data, using this option may result in files taking up more
+          space in the cloud than they would if left uncompressed.
+
+     Flags to influence behavior when handling symlinks. Only one value may be
+     set.
+
+     At most one of these can be specified:
+
+       --ignore-symlinks
+          Ignore file symlinks instead of copying what they point to.
+
+       --preserve-symlinks
+          Preserve symlinks instead of copying what they point to. With this
+          feature enabled, uploaded symlinks will be represented as
+          placeholders in the cloud whose content consists of the linked path.
+          Inversely, such placeholders will be converted to symlinks when
+          downloaded while this feature is enabled, as described at
+          https://cloud.google.com/storage-transfer/docs/metadata-preservation#posix_to.
+
+          Directory symlinks are only followed if this flag is specified.
+
+          CAUTION: No validation is applied to the symlink target paths. Once
+          downloaded, preserved symlinks will point to whatever path was
+          specified by the placeholder, regardless of the location or
+          permissions of the path, or whether it actually exists.
+
+          This feature is not supported on Windows.
+
+ENCRYPTION FLAGS
+     --decryption-keys=[DECRYPTION_KEY,...]
+        A comma-separated list of customer-supplied encryption keys (RFC 4648
+        section 4 base64-encoded AES256 strings) that will be used to decrypt
+        Cloud Storage objects. Data encrypted with a customer-managed
+        encryption key (CMEK) is decrypted automatically, so CMEKs do not need
+        to be listed here.
+
+     --encryption-key=ENCRYPTION_KEY
+        The encryption key to use for encrypting target objects. The specified
+        encryption key can be a customer-supplied encryption key (An RFC 4648
+        section 4 base64-encoded AES256 string), or a customer-managed
+        encryption key of the form
+        projects/{project}/locations/{location}/keyRings/{key-ring}/cryptoKeys/{crypto-key}.
+        The specified key also acts as a decryption key, which is useful when
+        copying or moving encrypted data to a new location. Using this flag in
+        an objects update command triggers a rewrite of target objects.
+
+OBJECT METADATA FLAGS
+     --cache-control=CACHE_CONTROL
+        How caches should handle requests and responses.
+
+     --content-disposition=CONTENT_DISPOSITION
+        How content should be displayed.
+
+     --content-encoding=CONTENT_ENCODING
+        How content is encoded (e.g. gzip).
+
+     --content-language=CONTENT_LANGUAGE
+        Content's language (e.g. en signifies "English").
+
+     --content-type=CONTENT_TYPE
+        Type of data contained in the object (e.g. text/html).
+
+     --custom-time=CUSTOM_TIME
+        Custom time for Cloud Storage objects in RFC 3339 format.
+
+     Group that allow users to handle object contexts.
+
+     At most one of these can be specified:
+
+       --clear-custom-contexts
+          Clears all custom contexts on objects.
+
+       --custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          Sets custom contexts on objects. The existing custom contexts (if
+          any) would be overwritten.
+
+       --custom-contexts-file=CUSTOM_CONTEXTS_FILE
+          Path to a local JSON or YAML file containing custom contexts one
+          wants to set on an object. For example:
+
+          1. The following JSON document shows two key value pairs, i.e. (key1,
+          value1) and (key2, value2):
+
+                {
+                  "key1": {"value": "value1"},
+                  "key2": {"value": "value2"}
+                }
+
+          2. The following YAML document shows two key value pairs, i.e. (key1,
+          value1) and (key2, value2):
+
+                key1:
+                  value: value1
+                key2:
+                  value: value2
+
+          Note: Currently object contexts only supports string format for
+          values.
+
+       Or at least one of these can be specified:
+
+         Flags that preserve the existing contexts on the object, and can be
+         specified together. However they cannot be specified with
+         --clear-custom-contexts, --custom-contexts or --custom-contexts-file.
+         If --update-custom-contexts and --remove-custom-contexts are specified
+         together, the --remove-custom-contexts would be applied first on
+         object.
+
+         --remove-custom-contexts=[CUSTOM_CONTEXTS_KEYS,...]
+            Removes the custom contexts on the object, if an entry is not
+            found, it would be ignored.
+
+         --update-custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+            Updates the custom contexts on the object, if an entry is found, it
+            would be overwritten, otherwise the entry would be added.
+
+     At most one of these can be specified:
+
+       --clear-custom-metadata
+          Clears all custom metadata on objects. When used with
+          --preserve-posix, POSIX attributes will still be stored in custom
+          metadata.
+
+       --custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]
+          Sets custom metadata on objects. When used with --preserve-posix,
+          POSIX attributes are also stored in custom metadata.
+
+       Or at least one of these can be specified:
+
+         Flags that preserve unspecified existing metadata cannot be used with
+         --custom-metadata or --clear-custom-metadata, but can be specified
+         together:
+
+         --remove-custom-metadata=[METADATA_KEYS,...]
+            Removes individual custom metadata keys from objects. This flag can
+            be used with --update-custom-metadata. When used with
+            --preserve-posix, POSIX attributes specified by this flag are not
+            preserved.
+
+         --update-custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]
+            Adds or sets individual custom metadata key value pairs on objects.
+            Existing custom metadata not specified with this flag is not
+            changed. This flag can be used with --remove-custom-metadata. When
+            keys overlap with those provided by --preserve-posix, values
+            specified by this flag are used.
+
+PRECONDITION FLAGS
+     --if-generation-match=GENERATION
+        Execute only if the generation matches the generation of the requested
+        object.
+
+     --if-metageneration-match=METAGENERATION
+        Execute only if the metageneration matches the metageneration of the
+        requested object.
+
+RETENTION FLAGS
+     --retain-until=DATETIME
+        Ensures the destination object is retained until the specified time in
+        RFC 3339 format.
+
+     --retention-mode=RETENTION_MODE
+        Sets the destination object retention mode to either "Locked" or
+        "Unlocked". When retention mode is "Locked", the retain until time can
+        only be increased. RETENTION_MODE must be one of: Locked, Unlocked.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha storage mv
+```
+
+### gcloud alpha storage mv
+
+```text
+NAME
+    gcloud alpha storage mv - moves or renames objects
+
+SYNOPSIS
+    gcloud alpha storage mv [SOURCE ...] DESTINATION
+        [--additional-headers=HEADER=VALUE] [--all-versions, -A]
+        [--no-clobber, -n] [--content-md5=MD5_DIGEST] [--continue-on-error, -c]
+        [--daisy-chain, -D] [--do-not-decompress] [--include-managed-folders]
+        [--manifest-path=MANIFEST_PATH, -L MANIFEST_PATH]
+        [--preserve-posix, -P] [--print-created-message, -v]
+        [--read-paths-from-stdin, -I] [--skip-unsupported, -U]
+        [--storage-class=STORAGE_CLASS, -s STORAGE_CLASS]
+        [--canned-acl=PREDEFINED_ACL, --predefined-acl=PREDEFINED_ACL,
+          -a PREDEFINED_ACL --[no-]preserve-acl, -p]
+        [--gzip-in-flight=[FILE_EXTENSIONS,...], -j [FILE_EXTENSIONS,...]
+          | --gzip-in-flight-all, -J
+          | --gzip-local=[FILE_EXTENSIONS,...], -z [FILE_EXTENSIONS,...]
+          | --gzip-local-all, -Z] [--ignore-symlinks | --preserve-symlinks]
+        [--decryption-keys=[DECRYPTION_KEY,...]
+          --encryption-key=ENCRYPTION_KEY]
+        [--cache-control=CACHE_CONTROL
+          --content-disposition=CONTENT_DISPOSITION
+          --content-encoding=CONTENT_ENCODING
+          --content-language=CONTENT_LANGUAGE --content-type=CONTENT_TYPE
+          --custom-time=CUSTOM_TIME --clear-custom-contexts
+          | --custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          | --custom-contexts-file=CUSTOM_CONTEXTS_FILE
+          | --remove-custom-contexts=[CUSTOM_CONTEXTS_KEYS,...]
+          --update-custom-contexts=[CUSTOM_CONTEXTS_KEYS_AND_VALUES,...]
+          --clear-custom-metadata
+          | --custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]
+          | --remove-custom-metadata=[METADATA_KEYS,...]
+          --update-custom-metadata=[CUSTOM_METADATA_KEYS_AND_VALUES,...]]
+        [--if-generation-match=GENERATION
+          --if-metageneration-match=METAGENERATION]
+        [--retain-until=DATETIME --retention-mode=RETENTION_MODE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/mv (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
