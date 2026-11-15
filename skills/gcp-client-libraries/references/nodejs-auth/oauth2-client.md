@@ -10,12 +10,13 @@ source: https://github.com/googleapis/google-cloud-node/blob/google-auth-library
 
 ### Complete authorization-code flow
 
-Adapted (not in the official docs): removed the `console.log` of the authorization code (it is a credential), replaced `console.log(tokenInfo)` with the non-secret `tokenInfo.scopes`, and loaded the ESM-only `open` package with `import()` instead of `require`.
+Adapted (not in the official docs): removed the `console.log` of the authorization code (it is a credential), replaced `console.log(tokenInfo)` with the non-secret `tokenInfo.scopes`, and loaded the ESM-only `open` package with `import()` instead of `require`, added a per-request random `state` that the callback checks before exchanging the code (login CSRF protection), and bound the callback server to `localhost`.
 
 ```js
 const {OAuth2Client} = require('google-auth-library');
 const http = require('http');
 const url = require('url');
+const crypto = require('crypto');
 const destroyer = require('server-destroy');
 
 // Download your OAuth2 configuration from the Google
@@ -56,9 +57,11 @@ function getAuthenticatedClient() {
     });
 
     // Generate the url that will be used for the consent dialog.
+    const state = crypto.randomBytes(32).toString('hex');
     const authorizeUrl = oAuth2Client.generateAuthUrl({
       access_type: 'offline',
       scope: 'https://www.googleapis.com/auth/userinfo.profile',
+      state,
     });
 
     // Open an http server to accept the oauth callback. In this simple example, the
@@ -70,6 +73,11 @@ function getAuthenticatedClient() {
             // acquire the code from the querystring, and close the web server.
             const qs = new url.URL(req.url, 'http://localhost:3000')
               .searchParams;
+            if (qs.get('state') !== state) {
+              res.statusCode = 400;
+              res.end('State mismatch.');
+              return;
+            }
             const code = qs.get('code');
             res.end('Authentication successful! Please return to the console.');
             server.destroy();
@@ -85,7 +93,7 @@ function getAuthenticatedClient() {
           reject(e);
         }
       })
-      .listen(3000, () => {
+      .listen(3000, 'localhost', () => {
         // open the browser to the authorize url to start the workflow
         import('open').then(({default: open}) => open(authorizeUrl, {wait: false})).then(cp => cp.unref());
       });
@@ -113,7 +121,7 @@ See [oauth2-tokens-api-keys.md](./oauth2-tokens-api-keys.md) for the `tokens` ev
 
 - Applies to google-auth-library 11.3.4 (npm), `node>=22`.
 - This is the Google Cloud auth library (`google-auth-library`, used by `@google-cloud/*`). It is distinct from the `google-genai` Gemini SDK (the `google-gemini-api` skill) and from `googleapis`, the Node.js Google API Client Library for REST discovery APIs.
-- Adapted from the official docs: original lines ``console.log(`Code is ${code}`);``, `console.log(tokenInfo);`, `const open = require('open');` and `open(authorizeUrl, {wait: false}).then(cp => cp.unref());`. Treat authorization codes, refresh tokens and access tokens as secrets; never log them.
+- Adapted from the official docs: original lines ``console.log(`Code is ${code}`);``, `console.log(tokenInfo);`, `const open = require('open');` and `open(authorizeUrl, {wait: false}).then(cp => cp.unref());`; the original `generateAuthUrl({access_type: 'offline', scope: ...})` call sets no `state`, the callback exchanges any received `code`, and the server uses `.listen(3000, () => {` (all interfaces). `state` is a documented `GenerateAuthUrlOpts` field (`oauth2client.d.ts`). Treat authorization codes, refresh tokens and access tokens as secrets; never log them.
 - The downloaded `oauth2.keys.json` contains the OAuth client secret. Keep it out of source control.
 - `open` and `server-destroy` are third-party npm packages used by the sample, not part of this library. Not stated in the source: `open` 11.0.4 is an ES module package (`"type": "module"`), and on Node.js 24 `require('open')` returns the module namespace object rather than the function (checked locally), which is why the example uses `import()`.
 - The README's separate "Retrieve access token" snippet (`oauth2Client.getToken(code)` then `setCredentials(tokens)`) is not reproduced: it passes the whole response where the complete example passes `r.tokens`.

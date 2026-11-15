@@ -55,9 +55,9 @@ gcloud auth application-default login --login-config="$LOGIN_CONFIG"
 
 ### Custom subject token supplier (OIDC or SAML 2.0)
 
-Implement `SubjectTokenSupplier` for tokens the library cannot fetch natively; the client does not cache the token. Replace `$WORKFORCE_POOL_ID` and `$PROVIDER_ID`.
+Implement `SubjectTokenSupplier` for tokens the library cannot fetch natively; the client does not cache the token. Replace `$WORKFORCE_POOL_ID`, `$PROVIDER_ID` and `$WORKFORCE_POOL_USER_PROJECT` (the project number of the workforce pools user project).
 
-Adapted (not in the official docs): the README ended with `new CustomSupplier(clientOptions)`, which constructs the supplier rather than a client; it now constructs an `IdentityPoolClient`.
+Adapted (not in the official docs): the README ended with `new CustomSupplier(clientOptions)`, which constructs the supplier rather than a client; it now constructs an `IdentityPoolClient`. Added `workforce_pool_user_project`, which the README's own prose names and the options type marks required for workforce pools but the README's `clientOptions` omits.
 
 ```ts
 class CustomSupplier implements SubjectTokenSupplier {
@@ -73,7 +73,8 @@ class CustomSupplier implements SubjectTokenSupplier {
 const clientOptions = {
   audience: '//iam.googleapis.com/locations/global/workforcePools/$WORKFORCE_POOL_ID/providers/$PROVIDER_ID', // Set the GCP audience.
   subject_token_type: 'urn:ietf:params:oauth:token-type:id_token', // Set the subject token type.
-  subject_token_supplier: new CustomSupplier() // Set the custom supplier.
+  subject_token_supplier: new CustomSupplier(), // Set the custom supplier.
+  workforce_pool_user_project: '$WORKFORCE_POOL_USER_PROJECT', // Set the workforce pool user project number.
 }
 
 const client = new IdentityPoolClient(clientOptions);
@@ -96,6 +97,7 @@ const client = new IdentityPoolClient(clientOptions);
 - Executable-sourced security: restrict access to the executable (it prints credentials to stdout) and make the configuration file non-modifiable; prefer file or URL sources. Never log executable output or tokens.
 - Corrected from the official docs: original line `const client = new CustomSupplier(clientOptions);` (README "Workforce Identity Federation" custom supplier section; it constructs the supplier, not an auth client).
 - Corrected from the official docs: unquoted variables in the original gcloud lines, for example `locations/global/workforcePools/$WORKFORCE_POOL_ID/providers/$PROVIDER_ID \`, `--credential-source-headers $HEADER_KEY=$HEADER_VALUE \` and `gcloud auth application-default login --login-config=$LOGIN_CONFIG`.
+- Corrected from the official docs: the README's `clientOptions` ends with `subject_token_supplier: new CustomSupplier() // Set the custom supplier.` and has no `workforce_pool_user_project`.
 - For the custom supplier, the README also names the workforce pool user project (the project number associated with the workforce pools user project); the client option is `workforce_pool_user_project` ("Required when using a workforce identity pool", `BaseExternalAccountClientOptions` in `baseexternalclient.d.ts`).
 - Fragment: the `ts` block has no imports and `getSubjectToken` has no return statement. The supplier interfaces and options are described in `external-account-custom-suppliers.md`.
 - Dropped: the file-sourced OIDC and executable gcloud blocks (the README puts `#` comment lines between `\` continuations, which would end the shell command); their flags are in the table. The file-sourced SAML and URL-sourced OIDC blocks above are verbatim. The URL-sourced SAML block is the same as the OIDC one with `--subject-token-type=urn:ietf:params:oauth:token-type:saml2` and `--credential-source-url=$URL_TO_GET_SAML_ASSERTION`.
