@@ -229,9 +229,9 @@ Register the custom constraint above:
 gcloud org-policies set-custom-constraint CONSTRAINT_PATH
 ```
 
-Adapted (not in the official docs): the official sample defines the custom constraint but never enforces it, and its conditional `allowAll` rule has no unconditional rule beside it (a policy with a conditional rule must also contain an unconditional rule). This version enforces the custom constraint, and the legacy policy keeps an unconditional rule that restricts to your organization principal set plus the tag-conditional `allowAll`.
-
 Enforce the custom constraint:
+
+Adapted (not in the official docs): the official sample defines the custom constraint but never enforces it, and its conditional `allowAll` rule has no unconditional rule beside it (a policy with a conditional rule must also contain an unconditional rule). This version enforces the custom constraint, and the legacy policy keeps an unconditional rule that restricts to your organization principal set plus the tag-conditional `allowAll`.
 
 ```yaml
 name: organizations/ORGANIZATION_ID/policies/custom.allowInternalAndSpecialIdentitiesOnly

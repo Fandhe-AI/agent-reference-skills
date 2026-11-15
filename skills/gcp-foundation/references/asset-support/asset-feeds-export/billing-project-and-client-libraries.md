@@ -167,7 +167,7 @@ listAssets('compute.googleapis.com/Instance', 'RESOURCE');
 - `roles/storage.admin` on the bucket and project-level BigQuery roles are broad; scope them to the minimum bucket/project and remove after use where possible.
 - Setting a billing project always is good practice to minimize confusion.
 - Adapted from the official docs: the Node.js sample moves `getProjectId()` into `listAssets()` and declares `assetTypes` / `contentType` as parameters, so it runs as a CommonJS script.
-- The Node.js and Python samples above omit the official TODO variable comments for brevity; official samples also exist for C#, Go, Java, PHP, and Ruby. The client libraries authenticate through Application Default Credentials (ADC).
+- The Node.js sample above omits the official TODO variable comments for brevity (the Python sample keeps them verbatim); official samples also exist for C#, Go, Java, PHP, and Ruby. The client libraries authenticate through Application Default Credentials (ADC).
 - Source: https://docs.cloud.google.com/asset-inventory/docs/multiple-projects, https://docs.cloud.google.com/asset-inventory/docs/client-libraries (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

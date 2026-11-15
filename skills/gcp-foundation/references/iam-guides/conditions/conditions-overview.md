@@ -98,7 +98,9 @@ principal.type == 'iam.googleapis.com/ServiceAccount'
 principal.subject != 'super-admin@example.com'
 ```
 
-Request attributes. Adapted (not in the official docs): the working-hours example's truncated last line is completed as `<= 5` (Monday to Friday), matching the same example on the official temporary-access page.
+Request attributes.
+
+Adapted (not in the official docs): the working-hours example's truncated last line is completed as `<= 5` (Monday to Friday), matching the same example on the official temporary-access page.
 
 Adapted (not in the official docs): `request.host.endsWith('example.com')` is shown as `endsWith('.example.com')` so it does not also match unrelated domains such as `attackerexample.com`.
 
