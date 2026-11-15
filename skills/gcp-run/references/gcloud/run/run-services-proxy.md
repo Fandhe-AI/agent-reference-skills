@@ -1,0 +1,144 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/run/services/proxy
+---
+
+# gcloud run services proxy
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud run services proxy
+
+```text
+NAME
+    gcloud run services proxy - proxy a service to localhost authenticating as
+        the active account or with the specified token
+
+SYNOPSIS
+    gcloud run services proxy (SERVICE : --namespace=NAMESPACE) [--port=PORT]
+        [--region=REGION] [--tag=TAG] [--token=TOKEN] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Runs a server on localhost that proxies requests to the specified Cloud Run
+    Service with credentials attached.
+
+    You can use this to test services protected with IAM authentication.
+
+    The Cloud Run service must be reachable from the machine running this
+    command. For example, if the Cloud Run Service is configured to only allow
+    internal ingress, this command will not work from outside the service's VPC
+    network.
+
+EXAMPLES
+    To proxy the service 'my-service' at localhost port 8080:
+
+        $ gcloud run services proxy my-service --port=8080
+
+    To proxy the existing traffic tag 'my-tag' on the service 'my-service:
+
+        $ gcloud run services proxy my-service --tag=my-tag
+
+POSITIONAL ARGUMENTS
+     Service resource - Service to proxy locally. The arguments in this group
+     can be used to specify the attributes of this resource.
+
+     This must be specified.
+
+       SERVICE
+          ID of the service or fully qualified identifier for the service.
+
+          To set the service attribute:
+          + provide the argument SERVICE on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --namespace=NAMESPACE
+          Specific to Cloud Run for Anthos: Kubernetes namespace for the
+          service.
+
+          To set the namespace attribute:
+          + provide the argument SERVICE on the command line with a fully
+            specified name;
+          + provide the argument --namespace on the command line;
+          + set the property run/namespace;
+          + For Cloud Run on Kubernetes Engine, defaults to "default".
+            Otherwise, defaults to project ID.;
+          + provide the argument project on the command line;
+          + set the property core/project.
+
+FLAGS
+     --port=PORT
+        Local port number to expose the proxied service. If not specified, it
+        will be set to 8080.
+
+     --region=REGION
+        Region in which the resource can be found. Alternatively, set the
+        property [run/region].
+
+     --tag=TAG
+        Traffic tag of the service to expose via the proxy. If not specified,
+        the default service URL will be proxied which may serve different
+        revisions based on traffic-splits. Custom tags can be used to proxy
+        specific revisions. Please see
+        https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration#tags.
+
+     --token=TOKEN
+        The specific identity token to add to all requests of the proxied
+        service. If not specified, the identity token of the currently active
+        authenticated account will be used (e.g. gcloud auth
+        print-identity-token).
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha run services proxy
+
+        $ gcloud beta run services proxy
+```
+
+### gcloud beta run services proxy
+
+```text
+NAME
+    gcloud beta run services proxy - proxy a service to localhost
+        authenticating as the active account or with the specified token
+
+SYNOPSIS
+    gcloud beta run services proxy (SERVICE : --namespace=NAMESPACE)
+        [--endpoint-mode=ENDPOINT_MODE] [--port=PORT] [--region=REGION]
+        [--tag=TAG] [--token=TOKEN] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha run services proxy
+
+```text
+NAME
+    gcloud alpha run services proxy - proxy a service to localhost
+        authenticating as the active account or with the specified token
+
+SYNOPSIS
+    gcloud alpha run services proxy (SERVICE : --namespace=NAMESPACE)
+        [--endpoint-mode=ENDPOINT_MODE] [--port=PORT] [--region=REGION]
+        [--tag=TAG] [--token=TOKEN] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/run/services/proxy (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
