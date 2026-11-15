@@ -8,6 +8,27 @@
 | gcloud iam oauth-clients | 22 commands (alpha, ga); iam oauth-clients create … | [iam-oauth-clients.md](./iam-oauth-clients.md) |
 | gcloud iam policies | 16 commands (alpha, beta, ga); iam policies create … | [iam-policies.md](./iam-policies.md) |
 | gcloud iam policy-bindings | 12 commands (beta, ga); iam policy-bindings create … | [iam-policy-bindings.md](./iam-policy-bindings.md) |
+| gcloud iam principal-access-boundary-policies | 12 commands (beta, ga); iam principal-access-boundary-policies create … | [iam-principal-access-boundary-policies.md](./iam-principal-access-boundary-policies.md) |
+| gcloud iam roles | 21 commands (alpha, beta, ga); iam roles copy … | [iam-roles.md](./iam-roles.md) |
+| gcloud iam service-accounts add-iam-policy-binding | 3 commands (alpha, beta, ga); iam service-accounts add-iam-policy-binding … | [iam-service-accounts-add-iam-policy-binding.md](./iam-service-accounts-add-iam-policy-binding.md) |
+| gcloud iam service-accounts config | alpha iam service-accounts config export | [iam-service-accounts-config.md](./iam-service-accounts-config.md) |
+| gcloud iam service-accounts create | 3 commands (alpha, beta, ga); iam service-accounts create … | [iam-service-accounts-create.md](./iam-service-accounts-create.md) |
+| gcloud iam service-accounts delete | 3 commands (alpha, beta, ga); iam service-accounts delete … | [iam-service-accounts-delete.md](./iam-service-accounts-delete.md) |
+| gcloud iam service-accounts describe | 3 commands (alpha, beta, ga); iam service-accounts describe … | [iam-service-accounts-describe.md](./iam-service-accounts-describe.md) |
+| gcloud iam service-accounts disable | 3 commands (alpha, beta, ga); iam service-accounts disable … | [iam-service-accounts-disable.md](./iam-service-accounts-disable.md) |
+| gcloud iam service-accounts enable | 3 commands (alpha, beta, ga); iam service-accounts enable … | [iam-service-accounts-enable.md](./iam-service-accounts-enable.md) |
+| gcloud iam service-accounts get-iam-policy | 3 commands (alpha, beta, ga); iam service-accounts get-iam-policy … | [iam-service-accounts-get-iam-policy.md](./iam-service-accounts-get-iam-policy.md) |
+| gcloud iam service-accounts keys | 21 commands (alpha, beta, ga); iam service-accounts keys create … | [iam-service-accounts-keys.md](./iam-service-accounts-keys.md) |
+| gcloud iam service-accounts list | 3 commands (alpha, beta, ga); iam service-accounts list … | [iam-service-accounts-list.md](./iam-service-accounts-list.md) |
+| gcloud iam service-accounts remove-iam-policy-binding | 3 commands (alpha, beta, ga); iam service-accounts remove-iam-policy-binding … | [iam-service-accounts-remove-iam-policy-binding.md](./iam-service-accounts-remove-iam-policy-binding.md) |
+| gcloud iam service-accounts set-iam-policy | 3 commands (alpha, beta, ga); iam service-accounts set-iam-policy … | [iam-service-accounts-set-iam-policy.md](./iam-service-accounts-set-iam-policy.md) |
+| gcloud iam service-accounts sign-blob | 3 commands (alpha, beta, ga); iam service-accounts sign-blob … | [iam-service-accounts-sign-blob.md](./iam-service-accounts-sign-blob.md) |
+| gcloud iam service-accounts sign-jwt | 3 commands (alpha, beta, ga); iam service-accounts sign-jwt … | [iam-service-accounts-sign-jwt.md](./iam-service-accounts-sign-jwt.md) |
+| gcloud iam service-accounts undelete | 3 commands (alpha, beta, ga); iam service-accounts undelete … | [iam-service-accounts-undelete.md](./iam-service-accounts-undelete.md) |
+| gcloud iam service-accounts update | 3 commands (alpha, beta, ga); iam service-accounts update … | [iam-service-accounts-update.md](./iam-service-accounts-update.md) |
+| gcloud iam simulator | iam simulator replay-recent-access | [iam-simulator.md](./iam-simulator.md) |
+| gcloud iam workforce-pools create-cred-config | 3 commands (alpha, beta, ga); iam workforce-pools create-cred-config … | [iam-workforce-pools-create-cred-config.md](./iam-workforce-pools-create-cred-config.md) |
+| gcloud iam workforce-pools create-login-config | 3 commands (alpha, beta, ga); iam workforce-pools create-login-config … | [iam-workforce-pools-create-login-config.md](./iam-workforce-pools-create-login-config.md) |
 | gcloud iam workforce-pools providers scim-tenants tokens | 15 commands (alpha, beta, ga); iam workforce-pools providers scim-tenants tokens create … | [iam-workforce-pools-providers-scim-tenants-tokens.md](./iam-workforce-pools-providers-scim-tenants-tokens.md) |
 | gcloud iam workforce-pools providers scim-tenants undelete | 3 commands (alpha, beta, ga); iam workforce-pools providers scim-tenants undelete … | [iam-workforce-pools-providers-scim-tenants-undelete.md](./iam-workforce-pools-providers-scim-tenants-undelete.md) |
 | gcloud iam workforce-pools providers scim-tenants update | 3 commands (alpha, beta, ga); iam workforce-pools providers scim-tenants update … | [iam-workforce-pools-providers-scim-tenants-update.md](./iam-workforce-pools-providers-scim-tenants-update.md) |
