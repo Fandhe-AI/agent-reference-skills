@@ -330,7 +330,7 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v2, v1, v2beta, v2alpha of `cloudfunctions` (retrieved 2026-11-14). Resources on this page: operations, projects.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are always `yes`.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
 - Message schemas (the request and response types named above) are listed under `references/rest-schemas/cloudfunctions/`; they are the `schemas` section of the Discovery documents in Source.
 - Source: https://cloudfunctions.googleapis.com/$discovery/rest?version=v2, https://cloudfunctions.googleapis.com/$discovery/rest?version=v1, https://cloudfunctions.googleapis.com/$discovery/rest?version=v2beta, https://cloudfunctions.googleapis.com/$discovery/rest?version=v2alpha (https://developers.google.com/discovery)
 

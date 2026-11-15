@@ -608,7 +608,7 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta1 of `file` (retrieved 2026-11-14). Resources on this page: projects.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are always `yes`.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
 - Message schemas (the request and response types named above) are listed under `references/rest-schemas/file/`; they are the `schemas` section of the Discovery documents in Source.
 - Corrected from the official docs (the Discovery text above is verbatim): the share `name` format is written `.../instances/{instance_id}/share/{share_id}`; the collection is `shares` (Discovery path pattern `projects/{project_id}/locations/{location}/instances/{instance_id}/shares/{share_id}`).
 - Source: https://file.googleapis.com/$discovery/rest?version=v1, https://file.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
