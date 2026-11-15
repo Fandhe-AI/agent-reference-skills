@@ -67,7 +67,7 @@ done <<< "${projects}"
 
 ### Split multi-valued CSV fields
 
-Adapted (not in the official docs): the official loop iterates over an unquoted command substitution (records are word-split) and wraps the `--format` value across lines; it is replaced by this version, which reads one CSV record per line, quotes every variable, and stops on the first error.
+Adapted (not in the official docs): the official loop iterates over an unquoted command substitution (records are word-split) and wraps the `--format` value across lines; it is replaced by this version, which reads one CSV record per line, quotes every variable, and stops on the first error. A VM without a service account yields empty email and scope fields, so missing array elements default to empty strings.
 
 ```bash
 #!/bin/bash
@@ -77,10 +77,10 @@ scopes_info="$(gcloud compute instances list --filter=name:instance-1 \
 while IFS= read -r scopesInfo; do
   [ -n "${scopesInfo}" ] || continue
   IFS=',' read -r -a scopesInfoArray <<< "${scopesInfo}"
-  NAME="${scopesInfoArray[0]}"
-  ID="${scopesInfoArray[1]}"
-  EMAIL="${scopesInfoArray[2]}"
-  SCOPES_LIST="${scopesInfoArray[3]}"
+  NAME="${scopesInfoArray[0]-}"
+  ID="${scopesInfoArray[1]-}"
+  EMAIL="${scopesInfoArray[2]-}"
+  SCOPES_LIST="${scopesInfoArray[3]-}"
 
   echo "NAME: ${NAME}, ID: ${ID}, EMAIL: ${EMAIL}"
   echo ""
