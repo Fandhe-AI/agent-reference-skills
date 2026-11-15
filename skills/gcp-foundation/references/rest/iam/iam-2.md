@@ -169,18 +169,18 @@ Base URL: `https://iam.googleapis.com`. Methods are listed by `id`; the `Version
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `iam.projects.locations.oauthClients.credentials.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
+Generated from the Discovery entry of `iam.projects.serviceAccounts.keys.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
 
 ```bash
 curl -X GET \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-  "https://iam.googleapis.com/v1/{+name}"
+  "https://iam.googleapis.com/v1/{+name}/keys"
 ```
 
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `iam` (retrieved 2026-11-14). Resources on this page: projects, roles.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
 - Message schemas are listed under `references/rest-schemas/iam/`.
 - Source: https://iam.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 

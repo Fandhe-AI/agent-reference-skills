@@ -102,7 +102,7 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `iamcredentials` (retrieved 2026-11-14). Resources on this page: locations, projects.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
 - Message schemas are listed under `references/rest-schemas/iamcredentials/`.
 - Source: https://iamcredentials.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 

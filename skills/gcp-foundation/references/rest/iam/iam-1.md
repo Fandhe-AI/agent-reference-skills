@@ -1650,7 +1650,7 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v2, v1, v2beta of `iam` (retrieved 2026-11-14). Resources on this page: iamPolicies, locations, organizations, permissions, policies, projects.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives).
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
 - Message schemas are listed under `references/rest-schemas/iam/`.
 - Source: https://iam.googleapis.com/$discovery/rest?version=v2, https://iam.googleapis.com/$discovery/rest?version=v1, https://iam.googleapis.com/$discovery/rest?version=v2beta (https://developers.google.com/discovery)
 
