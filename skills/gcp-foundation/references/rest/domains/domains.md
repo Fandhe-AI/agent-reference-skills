@@ -117,6 +117,7 @@ Base URL: `https://domains.googleapis.com`. Methods are listed by `id`; the `Ver
 - Versions: v1, v1beta1, v1alpha2
 - `POST https://domains.googleapis.com/v1/{+name}:export`
 - Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations) Exports a `Registration` resource, such that it is no longer managed by Cloud Domains. When an active domain is successfully exported, you can continue to use the domain in Google Domains (https://domains.google/) until it expires. The calling user becomes the domain's sole owner in Google Domains, and permissions for the domain are subsequently managed there. The domain does not renew automatically unless the new owner sets up billing in Google Domains.
+- Deprecated: `deprecated: true` in the Discovery document
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
 - Request: `ExportRegistrationRequest`; Response: `Operation`
 
@@ -154,6 +155,7 @@ Base URL: `https://domains.googleapis.com`. Methods are listed by `id`; the `Ver
 - Versions: v1, v1beta1, v1alpha2
 - `POST https://domains.googleapis.com/v1/{+parent}/registrations:import`
 - Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations) Imports a domain name from Google Domains (https://domains.google/) for use in Cloud Domains. To transfer a domain from another registrar, use the `TransferDomain` method instead. Since individual users can own domains in Google Domains, the calling user must have ownership permission on the domain.
+- Deprecated: `deprecated: true` in the Discovery document
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
 - Request: `ImportDomainRequest`; Response: `Operation`
 
@@ -281,6 +283,7 @@ Base URL: `https://domains.googleapis.com`. Methods are listed by `id`; the `Ver
 - Versions: v1, v1beta1, v1alpha2
 - `GET https://domains.googleapis.com/v1/{+location}/registrations:retrieveImportableDomains`
 - Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations) Lists domain names from Google Domains (https://domains.google/) that can be imported to Cloud Domains using the `ImportDomain` method. Since individual users can own domains in Google Domains, the list of domains returned depends on the individual user making the call. Domains already managed by Cloud Domains are not returned.
+- Deprecated: `deprecated: true` in the Discovery document
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `RetrieveImportableDomainsResponse`
 
@@ -308,6 +311,7 @@ Base URL: `https://domains.googleapis.com`. Methods are listed by `id`; the `Ver
 - Versions: v1, v1beta1, v1alpha2
 - `GET https://domains.googleapis.com/v1/{+location}/registrations:retrieveTransferParameters`
 - Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations) Gets parameters needed to transfer a domain name from another registrar to Cloud Domains. For domains already managed by Google Domains (https://domains.google/), use `ImportDomain` instead. Use the returned values to call `TransferDomain`.
+- Deprecated: `deprecated: true` in the Discovery document
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `RetrieveTransferParametersResponse`
 
@@ -358,6 +362,7 @@ Base URL: `https://domains.googleapis.com`. Methods are listed by `id`; the `Ver
 - Versions: v1, v1beta1, v1alpha2
 - `POST https://domains.googleapis.com/v1/{+parent}/registrations:transfer`
 - Deprecated: For more information, see Cloud Domains feature deprecation (https://cloud.google.com/domains/docs/deprecations/feature-deprecations) Transfers a domain name from another registrar to Cloud Domains. For domains already managed by Google Domains (https://domains.google/), use `ImportDomain` instead. Before calling this method, go to the domain's current registrar to unlock the domain for transfer and retrieve the domain's transfer authorization code. Then call `RetrieveTransferParameters` to confirm that the domain is unlocked and to get values needed to build a call to this method. A successful call creates a `Registration` resource in state `TRANSFER_PENDING`. It can take several days to complete the transfer process. The registrant can often speed up this process by approving the transfer through the current registrar, either by clicking a link in an email from the registrar or by visiting the registrar's website. A few minutes after transfer approval, the resource transitions to state `ACTIVE`, indicating that the transfer was successful. If the transfer is rejected or the request expires without being approved, the resource can end up in state `TRANSFER_FAILED`. If transfer fails, you can safely delete the resource and retry the transfer.
+- Deprecated: `deprecated: true` in the Discovery document
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
 - Request: `TransferDomainRequest`; Response: `Operation`
 
@@ -380,6 +385,10 @@ curl -X GET \
 - Generated from the Discovery document(s) v1, v1beta1, v1alpha2 of `domains` (retrieved 2026-11-14). Resources on this page: projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
 - Message schemas are listed under `references/rest-schemas/domains/`.
+- Deprecated methods (`deprecated: true` in Discovery): `domains.projects.locations.registrations.export`, `domains.projects.locations.registrations.import`, `domains.projects.locations.registrations.retrieveImportableDomains`, `domains.projects.locations.registrations.retrieveTransferParameters`, `domains.projects.locations.registrations.transfer`. Avoid them in new code.
+- Methods whose description announces a deprecation or a deprecation-related restriction: `domains.projects.locations.registrations.delete`, `domains.projects.locations.registrations.retrieveGoogleDomainsDnsRecords`, `domains.projects.locations.registrations.retrieveGoogleDomainsForwardingConfig`; read the method description above for the replacement.
+- Restriction: after January 2024, `domains.projects.locations.registrations.delete` deletes a `Registration` only when `state` is `EXPORTED`, `EXPIRED`, `REGISTRATION_FAILED` or `TRANSFER_FAILED`; see https://cloud.google.com/domains/docs/deprecations/feature-deprecations.
+- Descriptions are verbatim from Discovery, which drops angle-bracket placeholders of the source comments: a format such as `projects//locations/global` stands for `projects/{project}/locations/global` (likewise `"@.iam.gserviceaccount.com"` lost the account ID before `@`, and a name format ending in a collection such as `projects/*/locations/*/registrations/` lost its last ID), and an expression such as `... && in labels` lost its left operand (for example `'label_value' in labels`). Check the method or field in the product's REST reference before relying on such a format.
 - Source: https://domains.googleapis.com/$discovery/rest?version=v1, https://domains.googleapis.com/$discovery/rest?version=v1beta1, https://domains.googleapis.com/$discovery/rest?version=v1alpha2 (https://developers.google.com/discovery)
 
 ## Related
