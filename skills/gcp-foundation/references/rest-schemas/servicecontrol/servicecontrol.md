@@ -587,6 +587,16 @@ Message types referenced by the methods listed under `references/rest/servicecon
 | `operations` | array<AttributeContext> | Describes the list of operations to be reported. Each operation is represented as an AttributeContext, and contains all attributes around an API access. |
 | `serviceConfigId` | string | Specifies the version of the service configuration that should be used to process the request. Must not be empty. Set this field to 'latest' to specify using the latest configuration. |
 
+### `ReportRequest` (v1)
+
+- Request message for the Report method.
+- Version: v1
+
+| Field | Type | Description |
+|---|---|---|
+| `operations` | array<Operation> | Operations to be reported. Typically the service should report one operation per request. Putting multiple operations into a single request is allowed, but should be used only when multiple operations are natually available at the time of the report. There is no limit on the number of operations in the same ReportRequest, however the ReportRequest size should be no larger than 1MB. See ReportResponse.report_errors for partial failure behavior. |
+| `serviceConfigId` | string | Specifies which version of service config should be used to process the request. If unspecified or no matching version can be found, the latest one will be used. |
+
 ### `ReportResponse`
 
 - Response message for the Report method.

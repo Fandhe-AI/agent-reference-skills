@@ -2,4 +2,4 @@
 
 | Name | Description | Path |
 |---|---|---|
-| Service Control API (servicecontrol) | 74 schemas | [servicecontrol.md](./servicecontrol.md) |
+| Service Control API (servicecontrol) | 75 schemas | [servicecontrol.md](./servicecontrol.md) |
