@@ -185,6 +185,13 @@ NOTES
         $ gcloud beta active-directory domains backups delete
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud active-directory domains backups delete projects/my-proj/locations/global/domains/my-domain.com/backups/my-backup \
+    --async
+```
+
 ### gcloud active-directory domains backups describe
 
 ```text
@@ -265,6 +272,12 @@ NOTES
         $ gcloud alpha active-directory domains backups describe
 
         $ gcloud beta active-directory domains backups describe
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud active-directory domains backups describe projects/my-proj/locations/global/domains/my-domain.com/backups/my-backup
 ```
 
 ### gcloud active-directory domains backups list
@@ -481,6 +494,13 @@ NOTES
         $ gcloud beta active-directory domains backups update
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud active-directory domains backups update projects/my-proj/locations/global/domains/my-domain.com/backups/my-backup \
+    --update-labels=l1=1,l2=2
+```
+
 ### gcloud beta active-directory domains backups create
 
 ```text
@@ -609,6 +629,7 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

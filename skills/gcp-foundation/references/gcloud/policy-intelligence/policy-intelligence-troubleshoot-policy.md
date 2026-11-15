@@ -1,0 +1,138 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/policy-intelligence/troubleshoot-policy
+---
+
+# gcloud policy-intelligence troubleshoot-policy
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud policy-intelligence troubleshoot-policy iam
+
+```text
+NAME
+    gcloud policy-intelligence troubleshoot-policy iam - troubleshoot IAM allow
+        and deny policies
+
+SYNOPSIS
+    gcloud policy-intelligence troubleshoot-policy iam RESOURCE
+        --permission=PERMISSION --principal-email=EMAIL
+        [--destination-ip=DESTINATION_IP] [--destination-port=DESTINATION_PORT]
+        [--request-time=REQUEST_TIME] [--resource-name=RESOURCE_NAME]
+        [--resource-service=RESOURCE_SERVICE] [--resource-type=RESOURCE_TYPE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Uses a resource's effective IAM allow policy and IAM deny policy to check
+    whether a principal has a specific permission on the resource.
+
+EXAMPLES
+    The following command checks whether the principal my-user@example.com has
+    the permission resourcemanager.projects.get on the project my-project:
+
+        $ gcloud policy-intelligence troubleshoot-policy iam \
+            //cloudresourcemanager.googleapis.com/projects/my-project \
+            --principal-email=my-user@example.com \
+            --permission=resourcemanager.projects.get
+
+    The following command checks whether the principal my-user@example.com has
+    the compute.images.get permission on the project my-project. The command
+    also provides additional context that lets Troubleshooter evaluate
+    conditional role bindings:
+
+        $ gcloud policy-intelligence troubleshoot-policy iam \
+            //cloudresourcemanager.googleapis.com/projects/my-project \
+            --principal-email=my-user@example.com \
+            --permission=compute.images.get \
+            --resource-name=//compute.googleapis.com/projects/my-project/\
+        zones/images/my-image'
+         --resource-service='compute.googleapis.com'         \
+            --resource-type='compute.googleapis.com/Image'         \
+            --destination-ip='192.2.2.2'--destination-port=8080 \
+            --request-time='2023-01-01T00:00:00Z'
+
+POSITIONAL ARGUMENTS
+     RESOURCE
+        Full resource name that access is checked against. For a list of full
+        resource name formats, see:
+        https://cloud.google.com/iam/docs/resource-names.
+
+REQUIRED FLAGS
+     --permission=PERMISSION
+        IAM permission to check. The permssion can be in the v1 or v2 format.
+        For example, resourcemanager.projects.get or
+        cloudresourcemanager.googleapis.com/projects.get. For a list of
+        permissions, see
+        https://cloud.google.com/iam/docs/permissions-reference and
+        https://cloud.google.com/iam/docs/deny-permissions-support
+
+     --principal-email=EMAIL
+        Email address that identifies the principal to check. Only Google
+        Accounts and service accounts are supported.
+
+OPTIONAL FLAGS
+     --destination-ip=DESTINATION_IP
+        The request destination IP address to use when checking conditional
+        bindings. For example, 198.1.1.1.
+
+     --destination-port=DESTINATION_PORT
+        The request destination port to use when checking conditional bindings.
+        For example, 8080.
+
+     --request-time=REQUEST_TIME
+        The request timestamp to use when checking conditional bindings. This
+        string must adhere to UTC format (RFC 3339). For
+        example,2021-01-01T00:00:00Z. For more information, see:
+        https://tools.ietf.org/html/rfc3339
+
+     --resource-name=RESOURCE_NAME
+        The resource name value to use when checking conditional bindings. For
+        accepted values, see:
+        https://cloud.google.com/iam/docs/conditions-resource-attributes#resource-name.
+
+     --resource-service=RESOURCE_SERVICE
+        The resource service value to use when checking conditional bindings.
+        For accepted values, see:
+        https://cloud.google.com/iam/docs/conditions-resource-attributes#resource-service
+
+     --resource-type=RESOURCE_TYPE
+        The resource type value to use when checking conditional bindings. For
+        accepted values, see:
+        https://cloud.google.com/iam/docs/conditions-resource-attributes#resource-type
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+
+```bash
+gcloud policy-intelligence troubleshoot-policy iam //cloudresourcemanager.googleapis.com/projects/my-project \
+    --principal-email=my-user@example.com \
+    --permission=compute.images.get \
+    --resource-name=//compute.googleapis.com/projects/my-project/zones/images/my-image \
+    --resource-service='compute.googleapis.com' \
+    --resource-type='compute.googleapis.com/Image' \
+    --destination-ip='192.2.2.2' \
+    --destination-port=8080 \
+    --request-time='2023-01-01T00:00:00Z'
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example has an unmatched `'` after `my-image` and no space before `--destination-port`; the runnable form replaces the quote with a line continuation and adds the space.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/policy-intelligence/troubleshoot-policy (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
