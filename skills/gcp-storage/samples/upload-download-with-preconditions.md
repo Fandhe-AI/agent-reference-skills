@@ -187,7 +187,7 @@ downloadFile().catch(console.error);
 
 - A plain upload to an existing name overwrites the object; use `0` for create-only writes or enable Object Versioning to keep earlier versions.
 - A precondition often costs an extra metadata request; store generation numbers locally and use `0` for objects you know are new.
-- Authentication for the client libraries uses Application Default Credentials; setup is in `gcp-foundation`. The language-neutral client library overview will be in the `gcp-client-libraries` skill (planned).
+- Authentication for the client libraries uses Application Default Credentials; setup is in `gcp-foundation`. The language-neutral client library overview is in the `gcp-client-libraries` skill.
 - Corrected from the official docs: the Node.js upload sample referenced `generationMatchPrecondition` without declaring it (ReferenceError); it is declared as `0`.
 - The source also shows Console steps and C++, C#, Go, Java, PHP, Ruby, Rust samples.
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`).

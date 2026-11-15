@@ -41,7 +41,7 @@ Use cases for deploying functions:
 
 ## Notes
 
-- Functions are a connective layer of logic: listen and respond to a file upload to Cloud Storage, a log change, or an incoming Pub/Sub message. Functions have access to the Google Service Account credential and are seamlessly authenticated with most Google Cloud services; Cloud Client Libraries simplify the integrations; for client library code see the `gcp-client-libraries` skill (planned).
+- Functions are a connective layer of logic: listen and respond to a file upload to Cloud Storage, a log change, or an incoming Pub/Sub message. Functions have access to the Google Service Account credential and are seamlessly authenticated with most Google Cloud services; Cloud Client Libraries simplify the integrations; for client library code see the `gcp-client-libraries` skill.
 - Automatic provisioning of an HTTPS endpoint makes functions a good candidate for webhooks.
 - If you need `gcloud functions deploy`, the Cloud Functions v2 API, or the `google_cloudfunctions2_function` Terraform configuration for backward compatibility, see https://docs.cloud.google.com/functions/docs/deploy.
 - Cloud Run / Cloud Run functions are Google Cloud's serverless containers/functions, distinct from Cloudflare Workers (`cloudflare-workers`) and Vercel Functions (`vercel`); HTTP frameworks (`hono`, `fastify`) only run inside the container.

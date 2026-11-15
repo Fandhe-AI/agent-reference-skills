@@ -38,6 +38,18 @@ skills/gcp-client-libraries/
     python-calls/                 # Python (google-api-core): retry・timeout・LRO・polling・pagination・例外（docstring 由来）
       README.md
       <page>.md                   # 例: retry.md / timeout.md / operation-lro.md / page-iterator.md / exceptions.md
+    python-auth/                  # Python (google-auth): ADC・認証情報の種類・サービスアカウント・impersonation・ID トークン・外部アカウント
+      README.md
+      <page>.md                   # 例: adc-default.md / credential-types.md / id-tokens.md / external-account-wif.md
+    rust-setup/                   # Rust: クイックスタート・ClientBuilder・エンドポイントと認証の上書き・rustls・logging・observability・MSRV
+      README.md
+      <page>.md                   # 例: quickstart.md / configure-client.md / override-default-endpoint.md / observability.md
+    rust-calls/                   # Rust: retry / polling ポリシー・LRO・pagination・エラー処理・列挙型
+      README.md
+      <page>.md                   # 例: configure-retry-policies.md / long-running-operations.md / pagination.md / error-handling.md
+    rust-patterns-testing/        # Rust: フィールドマスク・etag による楽観的同時実行制御・モック・LRO のモック
+      README.md
+      <page>.md                   # 例: update-field-mask.md / optimistic-concurrency-control.md / mocking.md / mocking-lros.md
 ```
 
 ## 対象バージョンと pin
@@ -53,7 +65,7 @@ skills/gcp-client-libraries/
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. 言語を決める。Node.js は `nodejs` / `nodejs-auth`、Python は `python` / `python-calls` / `python-auth`（後続 PR で投入）、Rust は `rust-setup`（後続 PR で投入） / `rust-calls`（後続 PR で投入） / `rust-patterns-testing`（後続 PR で投入）。言語に依らない概念・パッケージ名・エンドポイント・エミュレーターは `concepts` / `authentication` / `endpoints-emulators`
+1. 言語を決める。Node.js は `nodejs` / `nodejs-auth`、Python は `python` / `python-calls` / `python-auth`、Rust は `rust-setup` / `rust-calls` / `rust-patterns-testing`。言語に依らない概念・パッケージ名・エンドポイント・エミュレーターは `concepts` / `authentication` / `endpoints-emulators`
 2. 下記マッピング表でタスクに対応するカテゴリを選び、そのカテゴリの README.md から個別ページを引く。ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある
 3. 該当ページの `.md` を Read して詳細を確認する
 4. サービス固有の API（Cloud Storage・Cloud Run のメソッド等）、gcloud 側の ADC 設定・IAM は他スキルの担当。下記「他スキルとの使い分け」を参照する
@@ -78,8 +90,14 @@ skills/gcp-client-libraries/
 | Python の `ClientOptions`・`ClientInfo`・universe domain・ログ（`GOOGLE_SDK_PYTHON_LOGGING_SCOPE`）・OpenTelemetry トレース | python | [references/python/README.md](references/python/README.md) |
 | Python の retry（`Retry` / `AsyncRetry` / ストリーミング）・timeout クラス・`gapic_v1.method` の `retry=` / `timeout=` | python-calls | [references/python-calls/README.md](references/python-calls/README.md) |
 | Python の LRO（`Operation`）・polling・page iterator・例外階層（`GoogleAPICallError`） | python-calls | [references/python-calls/README.md](references/python-calls/README.md) |
-
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `python-auth` / `rust-setup` / `rust-calls` / `rust-patterns-testing`
+| Python の ADC・認証情報の種類・サービスアカウント・Compute Engine 認証情報・ユーザー認証情報・API キー | python-auth | [references/python-auth/README.md](references/python-auth/README.md) |
+| Python の ID トークン・impersonation・downscoped・外部アカウント（WIF / Workforce / executable / custom supplier）・認証付きリクエスト | python-auth | [references/python-auth/README.md](references/python-auth/README.md) |
+| Rust のクイックスタート・クライアント初期化・`ClientBuilder` の設定（proxy / universe domain）・対応 Rust バージョン（MSRV） | rust-setup | [references/rust-setup/README.md](references/rust-setup/README.md) |
+| Rust のエンドポイント上書き（`with_endpoint`）・認証上書き（`with_credentials`）・rustls crypto provider・post-quantum | rust-setup | [references/rust-setup/README.md](references/rust-setup/README.md) |
+| Rust のログ（`tracing`）・observability（OpenTelemetry）・トラブルシューティング | rust-setup | [references/rust-setup/README.md](references/rust-setup/README.md) |
+| Rust の retry / polling ポリシー・LRO（`Poller`）・pagination・エラー処理（`StatusDetails`）・列挙型 | rust-calls | [references/rust-calls/README.md](references/rust-calls/README.md) |
+| Rust のフィールドマスクによる部分更新・etag の楽観的同時実行制御 | rust-patterns-testing | [references/rust-patterns-testing/README.md](references/rust-patterns-testing/README.md) |
+| Rust のクライアントのモック（`mockall` / `from_stub`）・LRO のモック | rust-patterns-testing | [references/rust-patterns-testing/README.md](references/rust-patterns-testing/README.md) |
 
 ## 他スキルとの使い分け
 
