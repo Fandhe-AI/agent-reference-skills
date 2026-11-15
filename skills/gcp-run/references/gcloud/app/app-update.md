@@ -1,0 +1,100 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/app/update
+---
+
+# gcloud app update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud app update
+
+```text
+NAME
+    gcloud app update - updates an App Engine application
+
+SYNOPSIS
+    gcloud app update [--service-account=SERVICE_ACCOUNT]
+        [--[no-]split-health-checks] [--ssl-policy=SSL_POLICY]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    This command is used to update settings on an app engine application.
+
+EXAMPLES
+    To enable split health checks on an application:
+
+        $ gcloud app update --split-health-checks
+
+    To update the app-level service account on an application:
+
+        $ gcloud app update --service-account=SERVICE_ACCOUNT
+
+    To update the app-level minimum SSL policy of the application:
+
+        $ gcloud app update --ssl-policy=TLS_VERSION_1_2
+
+FLAGS
+     --service-account=SERVICE_ACCOUNT
+        The app-level default service account to update the app with.
+
+     --[no-]split-health-checks
+        Enables/disables split health checks by default on new deployments. Use
+        --split-health-checks to enable and --no-split-health-checks to
+        disable.
+
+     --ssl-policy=SSL_POLICY
+        The app-level SSL policy to update the app with. SSL_POLICY must be one
+        of: TLS_VERSION_1_0, TLS_VERSION_1_2.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha app update
+
+        $ gcloud beta app update
+```
+
+### gcloud beta app update
+
+```text
+NAME
+    gcloud beta app update - updates an App Engine application
+
+SYNOPSIS
+    gcloud beta app update [--service-account=SERVICE_ACCOUNT]
+        [--[no-]split-health-checks] [--ssl-policy=SSL_POLICY]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha app update
+
+```text
+NAME
+    gcloud alpha app update - updates an App Engine application
+
+SYNOPSIS
+    gcloud alpha app update [--service-account=SERVICE_ACCOUNT]
+        [--[no-]split-health-checks] [--ssl-policy=SSL_POLICY]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/app/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
