@@ -16,7 +16,7 @@ Create V4 signed URLs that give time-limited read or write access with the Googl
    - Storage Object User (`roles/storage.objectUser`): signed URLs for both upload and download; also required if the URL could overwrite an existing object.
    - Storage Object Viewer (`roles/storage.objectViewer`): download only.
    - Storage Object Creator (`roles/storage.objectCreator`): upload only, without overwriting existing objects.
-4. Have permission to sign blobs with the service account: Service Account Token Creator (`roles/iam.serviceAccountTokenCreator`), containing `iam.serviceAccounts.signBlob`. With user credentials, you are the principal and the role is granted on the service account. With a service account attached to a compute instance, the service account is the principal (to impersonate itself) and the role is granted on the project containing it.
+4. Have permission to sign blobs with the service account: Service Account Token Creator (`roles/iam.serviceAccountTokenCreator`), containing `iam.serviceAccounts.signBlob`. With user credentials, you are the principal and the role is granted on the service account. With a service account attached to a compute instance, the service account is the principal (to impersonate itself) and the role is granted on that service account's own IAM policy, not on the project (see Notes).
 
 ### Download an object (command line)
 
@@ -221,6 +221,7 @@ def generate_upload_signed_url_v4(bucket_name, blob_name):
 - The Python samples note that they require a service account key file; the Go sample comment lists a private key, an access ID with `iam.serviceAccounts.signBlob`, or a custom `SignBytes` function as signing options. Prefer impersonation or `signBlob` over downloaded keys where possible; credential setup is in `gcp-foundation` (ADC, service accounts).
 - The source also shows C++, C#, Go, Java, PHP, Ruby and Rust samples for download and upload; they are omitted here.
 - Cloud Storage is Google Cloud's object storage; it is distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`).
+- Source inconsistency (corrected in step 4 above): for a service account attached to a compute instance the source says "this role should be granted on the project that contains the service account". A project-level grant of `roles/iam.serviceAccountTokenCreator` lets that service account sign as, and mint tokens for, every service account in the project, which contradicts least privilege; to impersonate itself it only needs the role on its own IAM policy.
 - Least privilege: grant `roles/iam.serviceAccountTokenCreator` on the service account itself (`gcloud iam service-accounts add-iam-policy-binding SA_EMAIL --member=serviceAccount:SA_EMAIL --role=roles/iam.serviceAccountTokenCreator`) rather than on the project, which would allow impersonating every service account in it.
 - Source: https://docs.cloud.google.com/storage/docs/access-control/signing-urls-with-helpers (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/sign-url (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
