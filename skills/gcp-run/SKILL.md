@@ -204,9 +204,9 @@ skills/gcp-run/
 
 - `gcp-cli` — gcloud 全般のインストール・設定・出力フォーマット・Cloud Shell。`gcloud run` / `functions` / `app` / `tasks` / `scheduler` / `workstations` のコマンドは本スキル
 - `gcp-foundation` — IAM の基盤（allow / deny policy・サービスアカウント・Workload Identity Federation）・ADC・Service Usage・クォータ・課金。本スキルは各プロダクトの IAM ロール（`roles/run.invoker` など）と invoker 設計のみ
-- `gcp-storage` — Cloud Storage 本体・Cloud Storage FUSE ボリュームマウント・NFS ボリューム（分割 PR で順次追加中）。本スキルはイベントトリガー（Eventarc 経由）の起動側のみ
+- `gcp-storage` — Cloud Storage 本体・Cloud Storage FUSE ボリュームマウント・NFS ボリューム。本スキルはイベントトリガー（Eventarc 経由）の起動側のみ
 - `gcp-client-libraries` — 言語別クライアントライブラリのコード（予定）。本スキルは Functions Framework と gcloud / REST の手順のみ
-- `gcp-messaging-workflows` / `gcp-networking` / `gcp-security` / `gcp-observability` / `gcp-devops` — Pub/Sub・Eventarc・Workflows、VPC・Load Balancing・Serverless VPC Access、Secret Manager・IAP・Binary Authorization、Logging・Monitoring、Cloud Build・Artifact Registry の本体（いずれも予定、分割 PR で順次追加中）。本スキルは Cloud Run 側の接続・設定ページのみ
+- `gcp-messaging-workflows` / `gcp-networking` / `gcp-security` / `gcp-observability` / `gcp-devops` — Pub/Sub・Eventarc・Workflows、VPC・Load Balancing・Serverless VPC Access、Secret Manager・IAP・Binary Authorization、Logging・Monitoring、Cloud Build・Artifact Registry の本体（いずれも予定）。本スキルは Cloud Run 側の接続・設定ページのみ
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `docker` — Dockerfile・Docker Engine 一般。本スキルは Cloud Run 向けのコンテナー契約とビルド手順のみ
 - `cloudflare-workers` — Cloudflare Workers（V8 isolate）。Cloud Run / Cloud Run functions とは別基盤

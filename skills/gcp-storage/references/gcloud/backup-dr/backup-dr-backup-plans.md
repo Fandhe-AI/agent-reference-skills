@@ -326,6 +326,25 @@ NOTES
         $ gcloud beta backup-dr backup-plans create
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud backup-dr backup-plans create sample-backup-plan \
+    --project=sample-project \
+    --location=us-central1 \
+    --resource-type=compute.googleapis.com/Instance \
+    --backup-vault=projects/sample-project/locations/us-central1/backupVaults/sample-vault \
+    --backup-rule=rule-id=sample-hourly-rule,retention-days=30,recurrence=HOURLY,hourly-frequency=6,time-zone=UTC,backup-window-start=10,backup-window-end=20 \
+    --backup-rule=rule-id=sample-daily-rule,retention-days=7,recurrence=DAILY,backup-window-start=1,backup-window-end=14
+
+gcloud backup-dr backup-plans create sample-filestore-backup-plan \
+    --project=sample-project \
+    --location=us-central1 \
+    --resource-type=file.googleapis.com/Instance \
+    --backup-vault=projects/sample-project/locations/us-central1/backupVaults/sample-vault \
+    --backup-rule=rule-id=sample-daily-rule,retention-days=7,recurrence=DAILY,backup-window-start=1,backup-window-end=14
+```
+
 ### gcloud backup-dr backup-plans delete
 
 ```text
@@ -471,6 +490,13 @@ NOTES
         $ gcloud alpha backup-dr backup-plans describe
 
         $ gcloud beta backup-dr backup-plans describe
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud backup-dr backup-plans describe BACKUP_PLAN \
+    --location=us-central1
 ```
 
 ### gcloud backup-dr backup-plans list
@@ -916,6 +942,19 @@ Adapted (not in the official docs): runnable form of the example(s) above: the c
 gcloud backup-dr backup-plans update sample-backup-plan \
     --project=sample-project \
     --location=us-central1 \
+    --backup-rule=rule-id=sample-hourly-rule,retention-days=30,recurrence=HOURLY,hourly-frequency=6,time-zone=UTC,backup-window-start=10,backup-window-end=20 \
+    --backup-rule=rule-id=sample-daily-rule,retention-days=7,recurrence=DAILY,backup-window-start=1,backup-window-end=14 \
+    --description "This is a sample backup plan"
+
+gcloud backup-dr backup-plans update sample-backup-plan \
+    --project=sample-project \
+    --location=us-central1 \
+    --add-backup-rule=rule-id=sample-hourly-rule,retention-days=30,recurrence=HOURLY,hourly-frequency=6,time-zone=UTC,backup-window-start=10,backup-window-end=20 \
+    --add-backup-rule=rule-id=sample-daily-rule,retention-days=7,recurrence=DAILY,backup-window-start=1,backup-window-end=14
+
+gcloud backup-dr backup-plans update sample-backup-plan \
+    --project=sample-project \
+    --location=us-central1 \
     --backup-rules-from-file=FILE_PATH
 ```
 
@@ -1066,6 +1105,8 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `create` and `update` examples pass the placeholders `<BACKUP-VAULT>` and `<BACKUP-RULE>` (shell redirections when pasted) and the resource types `compute.<UNIVERSE_DOMAIN>/Instance` / `file.<UNIVERSE_DOMAIN>/Instance`; the runnable forms use `compute.googleapis.com/Instance` / `file.googleapis.com/Instance` (the default universe domain), the backup vault `projects/sample-project/locations/us-central1/backupVaults/sample-vault` and the rules from "Backup Rule Examples" in the same help (`sample-hourly-rule`, plus `sample-daily-rule` where a second rule is needed and for the Filestore plan).
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `describe` example passes only `BACKUP_PLAN`; the SYNOPSIS also requires `--location` for the resource (no property sets it), and gcloud 593.0.0 fails with "Error parsing [backup_plan]" without it, so the runnable form adds `--location=us-central1`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example that overrides backup rules from a file passes `--backup-rules-fom-file <FILE_PATH>`; the flag is `--backup-rules-from-file` (SYNOPSIS and FLAGS), and `<FILE_PATH>` is a shell redirection when pasted, so the runnable form uses `--backup-rules-from-file=FILE_PATH`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the override-from-file example puts `$ gcloud` on the same line as `run:`; the runnable form starts the command on its own line.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.

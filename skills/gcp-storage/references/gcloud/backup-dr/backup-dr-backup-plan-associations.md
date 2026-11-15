@@ -303,6 +303,13 @@ NOTES
         $ gcloud beta backup-dr backup-plan-associations describe
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud backup-dr backup-plan-associations describe BACKUP_PLAN_ASSOCIATION \
+    --location=us-central1
+```
+
 ### gcloud backup-dr backup-plan-associations fetch-for-resource-type
 
 ```text
@@ -926,6 +933,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `describe` example passes only `BACKUP_PLAN_ASSOCIATION`; the SYNOPSIS also requires `--location` for the resource (no property sets it), and gcloud 593.0.0 fails with "Error parsing [backup_plan_association]" without it, so the runnable form adds `--location=us-central1`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the create example omits `--resource-type`, which the SYNOPSIS and REQUIRED FLAGS list as required; the runnable form adds `--resource-type=compute.googleapis.com/Instance` (a Compute Engine instance; replace `sample-resource-uri` with that instance's resource name, or use `file.googleapis.com/Instance` and so on for other resource types).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.

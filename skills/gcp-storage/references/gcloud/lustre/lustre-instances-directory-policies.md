@@ -98,6 +98,15 @@ NOTES
         $ gcloud alpha lustre instances directory-policies create
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud lustre instances directory-policies create my-policy \
+    --instance=my-instance \
+    --location=us-central1-a \
+    --directory-path=/lustre/testFolder
+```
+
 ### gcloud lustre instances directory-policies delete
 
 ```text
@@ -183,6 +192,14 @@ NOTES
         $ gcloud alpha lustre instances directory-policies delete
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud lustre instances directory-policies delete my-policy \
+    --instance=my-instance \
+    --location=us-central1-a
+```
+
 ### gcloud lustre instances directory-policies describe
 
 ```text
@@ -261,6 +278,14 @@ NOTES
     This variant is also available:
 
         $ gcloud alpha lustre instances directory-policies describe
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud lustre instances directory-policies describe my-policy \
+    --instance=my-instance \
+    --location=us-central1-a
 ```
 
 ### gcloud lustre instances directory-policies list
@@ -365,6 +390,14 @@ NOTES
         $ gcloud alpha lustre instances directory-policies list
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud lustre instances directory-policies list \
+    --instance=my-instance \
+    --location=us-central1-a
+```
+
 ### gcloud alpha lustre instances directory-policies create
 
 ```text
@@ -420,6 +453,8 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the examples give only the command, without the directory policy, `--instance` and `--location` that the SYNOPSIS requires, and `--directory-path` for `create` (gcloud 593.0.0: "Must be specified"); the runnable forms pass the policy `my-policy` (`list` takes no policy), the instance `my-instance` and zone `us-central1-a` used by the other Lustre examples, and `/lustre/testFolder`, the example path in the `--directory-path` description.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
