@@ -122,10 +122,10 @@ Predefined roles of `storage` (role ID, description, included permissions) and, 
 
 ### Example: grant a role
 
-Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Project):
+Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Bucket):
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud storage buckets add-iam-policy-binding gs://BUCKET_NAME \
   --member="user:EMAIL_ADDRESS" \
   --role="roles/storage.admin"
 ```
