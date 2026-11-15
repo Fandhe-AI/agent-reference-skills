@@ -1,0 +1,110 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/hash
+---
+
+# gcloud storage hash
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud storage hash
+
+```text
+NAME
+    gcloud storage hash - calculates hashes on local or cloud files
+
+SYNOPSIS
+    gcloud storage hash URLS [URLS ...] [--additional-headers=HEADER=VALUE]
+        [--hex] [--skip-crc32c | --skip-md5]
+        [--decryption-keys=[DECRYPTION_KEY,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Calculates hashes on local or cloud files that can be used to compare with
+    "gcloud storage ls -L" output. If a specific hash option is not provided,
+    this command calculates all gcloud storage-supported hashes for the file.
+
+    Note that gcloud storage automatically performs hash validation when
+    uploading or downloading files, so this command is only needed if you want
+    to write a script that separately checks the hash for some reason.
+
+    If you calculate a CRC32C hash for the file without a precompiled
+    google-crc32c installation, hashing will be very slow.
+
+EXAMPLES
+    To get the MD5 and CRC32C hash digest of a cloud object in Base64 format:
+
+        $ gcloud storage hash gs://bucket/object
+
+    To get just the MD5 hash digest of a local object in hex format:
+
+        $ gcloud storage hash /dir/object.txt --skip-crc32c --hex
+
+POSITIONAL ARGUMENTS
+     URLS [URLS ...]
+        Local or cloud URLs of objects to hash.
+
+FLAGS
+     --additional-headers=HEADER=VALUE
+        Includes arbitrary headers in storage API calls. Accepts a comma
+        separated list of key=value pairs, e.g. header1=value1,header2=value2.
+        Overrides the default storage/additional_headers property value for
+        this command invocation.
+
+     --hex
+        Output hash digests in hex format. By default, digests are displayed in
+        base64.
+
+     At most one of these can be specified:
+
+       --skip-crc32c
+          Skip CRC32C hash calculation. Useful if command is running slow.
+
+       --skip-md5
+          Skip MD5 hash calculation. Useful if command is running slow.
+
+ENCRYPTION FLAGS
+     --decryption-keys=[DECRYPTION_KEY,...]
+        A comma-separated list of customer-supplied encryption keys (RFC 4648
+        section 4 base64-encoded AES256 strings) that will be used to decrypt
+        Cloud Storage objects. Data encrypted with a customer-managed
+        encryption key (CMEK) is decrypted automatically, so CMEKs do not need
+        to be listed here.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha storage hash
+```
+
+### gcloud alpha storage hash
+
+```text
+NAME
+    gcloud alpha storage hash - calculates hashes on local or cloud files
+
+SYNOPSIS
+    gcloud alpha storage hash URLS [URLS ...]
+        [--additional-headers=HEADER=VALUE] [--hex]
+        [--skip-crc32c | --skip-md5] [--decryption-keys=[DECRYPTION_KEY,...]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/hash (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

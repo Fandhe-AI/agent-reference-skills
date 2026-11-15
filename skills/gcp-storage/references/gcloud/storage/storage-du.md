@@ -1,0 +1,155 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/du
+---
+
+# gcloud storage du
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud storage du
+
+```text
+NAME
+    gcloud storage du - displays the amount of space in bytes used by storage
+        resources
+
+SYNOPSIS
+    gcloud storage du [URL ...] [--additional-headers=HEADER=VALUE]
+        [--all-versions, -a]
+        [--exclude-name-pattern=EXCLUDE_NAME_PATTERN, -e EXCLUDE_NAME_PATTERN]
+        [--exclude-name-pattern-file=EXCLUDE_NAME_PATTERN_FILE,
+          -X EXCLUDE_NAME_PATTERN_FILE] [--metadata-filter=METADATA_FILTER]
+        [--readable-sizes, -r] [--summarize, -s] [--total, -c]
+        [--zero-terminator, -0] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Displays the amount of space in bytes used by the objects in a bucket,
+    subdirectory, or project. This command calculates the current space usage
+    by making a series of object listing requests, which can take a long time
+    for large buckets. If your bucket contains hundreds of thousands of
+    objects, or if you want to monitor your bucket size over time, use
+    Monitoring instead, as described in Get bucket size
+    (https://cloud.google.com/storage/docs/getting-bucket-size)
+
+EXAMPLES
+    To list the size of each object in a bucket:
+
+        $ gcloud storage du gs://bucketname
+
+    To list the size of each object in the prefix subdirectory:
+
+        $ gcloud storage du gs://bucketname/prefix/*
+
+    To print the total number of bytes in a bucket in human-readable form:
+
+        $ gcloud storage du -c gs://bucketname
+
+    To see a summary of the total number of bytes in two given buckets:
+
+        $ gcloud storage du -s gs://bucket1 gs://bucket2
+
+    To list the size of each object in a bucket with Object Versioning enabled,
+    including noncurrent objects:
+
+        $ gcloud storage du -a gs://bucketname
+
+    To list the size of each object in a bucket, except objects that end in
+    ".bak", with each object printed ending in a null byte:
+
+        $ gcloud storage du -e "*.bak" -0 gs://bucketname
+
+    To list the size of each bucket in a project and the total size of the
+    project:
+
+        $ gcloud storage du --summarize --readable-sizes --total
+
+POSITIONAL ARGUMENTS
+     [URL ...]
+        The url of objects to list.
+
+FLAGS
+     --additional-headers=HEADER=VALUE
+        Includes arbitrary headers in storage API calls. Accepts a comma
+        separated list of key=value pairs, e.g. header1=value1,header2=value2.
+        Overrides the default storage/additional_headers property value for
+        this command invocation.
+
+     --all-versions, -a
+        Includes noncurrent object versions for a bucket with Object Versioning
+        enabled. Also prints the generation and metageneration number for each
+        listed object.
+
+     --exclude-name-pattern=EXCLUDE_NAME_PATTERN, -e EXCLUDE_NAME_PATTERN
+        Exclude a pattern from the report. Example: -e "*.o" excludes any
+        object that ends in ".o". Can be specified multiple times.
+
+     --exclude-name-pattern-file=EXCLUDE_NAME_PATTERN_FILE, -X EXCLUDE_NAME_PATTERN_FILE
+        Similar to -e, but excludes patterns from the given file. The patterns
+        to exclude should be listed one per line.
+
+     --metadata-filter=METADATA_FILTER
+        Server side filtering for objects. Works only for Google Cloud Storage
+        URLs. The filter only works for objects, and not directories or
+        buckets, which means commands like storage ls and storage du will still
+        list directories or buckets even if they do not contain any objects
+        matching the filter. See
+        https://cloud.google.com/storage/docs/listing-objects#filter-by-object-contexts-syntax
+        for more details.
+
+     --readable-sizes, -r
+        Prints object sizes in human-readable format. For example, 1 KiB, 234
+        MiB, or 2GiB.
+
+     --summarize, -s
+        Displays only the summary for each argument.
+
+     --total, -c
+        Includes a total size of all input sources.
+
+     --zero-terminator, -0
+        Ends each output line with a 0 byte rather than a newline. You can use
+        this to make the output machine-readable.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha storage du
+```
+
+### gcloud alpha storage du
+
+```text
+NAME
+    gcloud alpha storage du - displays the amount of space in bytes used by
+        storage resources
+
+SYNOPSIS
+    gcloud alpha storage du [URL ...] [--additional-headers=HEADER=VALUE]
+        [--all-versions, -a]
+        [--exclude-name-pattern=EXCLUDE_NAME_PATTERN, -e EXCLUDE_NAME_PATTERN]
+        [--exclude-name-pattern-file=EXCLUDE_NAME_PATTERN_FILE,
+          -X EXCLUDE_NAME_PATTERN_FILE] [--metadata-filter=METADATA_FILTER]
+        [--readable-sizes, -r] [--summarize, -s] [--total, -c]
+        [--zero-terminator, -0] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/storage/du (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
