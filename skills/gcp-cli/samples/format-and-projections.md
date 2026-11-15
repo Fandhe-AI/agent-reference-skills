@@ -108,6 +108,7 @@ gcloud config set core/default_format json
 
 ## Notes
 
+- `project_id` in the `table(...)` projection is kept as written: gcloud resolves a snake_case key to the camelCase field (`projectId`) when the exact key is absent (`GetMatchingIndex` in `googlecloudsdk/core/resource/resource_property.py`, gcloud 593.0.0).
 - Quote the whole `--format` value; parentheses are shell syntax. Inside a double-quoted value use single quotes (`'...'`) for inner strings, and the reverse.
 - `table`, `csv`, and `value` require a projection that lists the keys to print.
 - `core/default_format` overrides the default yaml format; `core/format` and `--format` both take precedence over it. A command-specific format takes precedence over `core/default_format`.

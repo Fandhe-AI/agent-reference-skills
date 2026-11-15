@@ -50,12 +50,20 @@ resource "google_project_service" "all" {
 
 `./main.tf` - Create a budget (runs `gcloud beta billing budgets create`):
 
+Adapted (not in the official docs): Terraform interpolates the variables into the shell command before the shell parses it; the values are passed through `environment` and quoted in the shell instead.
+
 ```hcl
 provisioner "local-exec" {
+    environment = {
+      BASENAME        = var.basename
+      BILLING_ACCOUNT = var.billing_account
+      BUDGET_AMOUNT   = var.budgetamount
+      PROJECT_ID      = var.project_id
+    }
     command = <<-EOT
-    gcloud beta billing budgets create --display-name ${var.basename}-budget \
-    --billing-account ${var.billing_account} --budget-amount ${var.budgetamount} \
-    --all-updates-rule-pubsub-topic=projects/${var.project_id}/topics/${var.basename}-billing-channel
+    gcloud beta billing budgets create --display-name "$BASENAME-budget" \
+    --billing-account "$BILLING_ACCOUNT" --budget-amount "$BUDGET_AMOUNT" \
+    --all-updates-rule-pubsub-topic="projects/$PROJECT_ID/topics/$BASENAME-billing-channel"
     EOT
 }
 ```
@@ -157,6 +165,7 @@ The breakdown also creates: the `etlpipeline` service account, a Composer enviro
 
 ## Notes
 
+- Adapted from the official docs: the budget `local-exec` provisioner interpolated `${var.basename}`, `${var.billing_account}`, `${var.budgetamount}` and `${var.project_id}` directly into the shell command; it passes them through `environment` and quotes them in the shell.
 - Both stacks create billable resources. Cloud Composer environments in particular run continuously; ETL Pipeline grants broad roles (`roles/bigquery.admin`, `roles/dataflow.admin`, `roles/storage.objectAdmin`). The source gives no teardown / destroy command; none is given here. For Cost Sentry, deactivating resources is performed by its Cloud Function, not by a command in the page.
 - Conversion fix only: in the fetched twin of the ETL Pipeline page, the `build_roles_list` block had lost its indentation and carried `\[` / `\]` escapes; it is restored as a normal HCL block. The source typo "fucntions" (Cost Sentry) is kept verbatim.
 - Only whole code blocks are included; remaining Terraform is summarized with a pointer to the GitHub repository.

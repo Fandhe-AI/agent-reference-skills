@@ -140,7 +140,7 @@ sudo apt-get update && sudo apt-get install google-cloud-cli=123.0.0-0
 
 ### Install on Red Hat, Fedora or CentOS (dnf)
 
-RHEL 7, 8, or 9-compatible, x86_64:
+RHEL 9-compatible, x86_64 (the repository is `cloud-sdk-el9-x86_64`; see Notes for RHEL 7 and 8):
 
 ```bash
 sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
@@ -315,6 +315,7 @@ find ~/Library/Caches/ -type d -name "google-cloud-sdk" -prune -exec rm -r {} +
 
 ## Notes
 
+- The install page labels the `cloud-sdk-el9-*` repository "RHEL 7, 8, or 9-compatible"; the repository name targets EL9, and RHEL 7 has no `dnf` (the page says to use `yum` if you have not moved to `dnf`). On RHEL 7 or 8, confirm the packages resolve before relying on this repository.
 - Adapted from the official docs: the official macOS cache cleanup `find ~/Library/Caches/ -type d -name "google-cloud-sdk" | xargs -I {} rm -r "{}"` is replaced with `find ... -prune -exec rm -r {} +`, which does not depend on how `xargs` splits paths.
 - Adapted from the official docs: the archive downloads use `curl -fLO` instead of `curl -O`, the installer script is fetched with `curl -fsSL https://sdk.cloud.google.com -o install.sh` instead of `curl https://sdk.cloud.google.com > install.sh` (both fail on HTTP errors), and the snap commands are run with `sudo` (the snap page prints them without it).
 - `gcloud init --no-browser` is for a machine without a browser when you can run the gcloud CLI on another machine that has one (see `gcloud init --help`). `gcloud info --anonymize` minimizes personal information when sharing output.

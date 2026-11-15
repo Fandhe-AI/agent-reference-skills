@@ -78,11 +78,17 @@ resource "google_project_iam_member" "allbuild" {
 
 `./main.tf` - Create artifact for middleware (runs `gcloud builds submit`):
 
+Adapted (not in the official docs): Terraform interpolates `var.region` / `var.basename` into the shell command before the shell parses it; the values are passed through `environment` and quoted in the shell instead.
+
 ```hcl
 resource "null_resource" "cloudbuild_api" {
   provisioner "local-exec" {
     working_dir = "${path.module}/code/middleware"
-    command     = "gcloud builds submit . --substitutions=_REGION=${var.region},_BASENAME=${var.basename}"
+    environment = {
+      REGION   = var.region
+      BASENAME = var.basename
+    }
+    command     = "gcloud builds submit . --substitutions=\"_REGION=$REGION,_BASENAME=$BASENAME\""
   }
   depends_on = [
     google_artifact_registry_repository.todo_app,
@@ -95,11 +101,17 @@ resource "null_resource" "cloudbuild_api" {
 
 `./main.tf` - Create artifact for front end:
 
+Adapted (not in the official docs): Terraform interpolates `var.region` / `var.basename` into the shell command before the shell parses it; the values are passed through `environment` and quoted in the shell instead.
+
 ```hcl
 resource "null_resource" "cloudbuild_fe" {
     provisioner "local-exec" {
         working_dir = "${path.module}/code/frontend"
-        command     = "gcloud builds submit . --substitutions=_REGION=${var.region},_BASENAME=${var.basename}"
+        environment = {
+          REGION   = var.region
+          BASENAME = var.basename
+        }
+        command     = "gcloud builds submit . --substitutions=\"_REGION=$REGION,_BASENAME=$BASENAME\""
     }
     depends_on = [
         google_artifact_registry_repository.todo_app,
@@ -261,11 +273,17 @@ resource "google_project_iam_member" "allbuild" {
 
 `./main.tf` - Build container for the Cloud Run application:
 
+Adapted (not in the official docs): Terraform interpolates `var.region` / `var.basename` into the shell command before the shell parses it; the values are passed through `environment` and quoted in the shell instead.
+
 ```hcl
 resource "null_resource" "cloudbuild_app" {
     provisioner "local-exec" {
         working_dir = "${path.module}/code/app"
-        command     = "gcloud builds submit . --substitutions=_REGION=${var.region},_BASENAME=${var.basename}"
+        environment = {
+          REGION   = var.region
+          BASENAME = var.basename
+        }
+        command     = "gcloud builds submit . --substitutions=\"_REGION=$REGION,_BASENAME=$BASENAME\""
     }
 
     depends_on = [
@@ -451,6 +469,7 @@ The breakdown also creates a Cloud DNS managed zone, a managed SSL certificate, 
 
 ## Notes
 
+- Adapted from the official docs: the `local-exec` provisioners that run `gcloud builds submit` interpolated `${var.region}` and `${var.basename}` directly into the shell command; they pass the values through `environment` and quote them in the shell.
 - Adapted from the official docs: the Three Tier App role list uses `roles/vpcaccess.user` (the official `roles/vpaccess.user` is a typo), and `load_schema.sh` / `massage.sh` are shown only with every variable and command substitution quoted.
 - These stacks create billable resources (Cloud Run, Cloud SQL, Memorystore, load balancers, and so on). Static Hosting With Domain also purchases a domain from the registrar at its yearly price. The source gives no teardown / destroy command; none is given here.
 - Sample-only, not production: the stacks make Cloud Run services world readable (`allUsers`), grant broad roles (`roles/editor`, `roles/secretmanager.admin`, `roles/artifactregistry.admin`) and hard-code sample credentials in the Three Tier App API service (`todo_user` / `todo_pass`). Review before reusing in a real project.

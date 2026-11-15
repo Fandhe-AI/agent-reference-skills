@@ -284,6 +284,7 @@ gcloud help compute instances create
 
 ## Notes
 
+- The page labels the `cloud-sdk-el9-x86_64` and `cloud-sdk-el9-aarch64` repositories "RHEL 7, 8, or 9-compatible" (kept as written); the repository name targets EL9 and RHEL 7 has no `dnf` (use `yum`). On RHEL 7 or 8, confirm the packages resolve before relying on it.
 - Adapted from the official docs: the Linux and macOS archive downloads use `curl -fLO` instead of the official `curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/...` so that an HTTP error stops the download.
 - The two `RUN` lines are Dockerfile instructions (shown as `docker` fences), not shell commands. They call `curl` and `gpg` (or `apt-key`) without installing them, so the base image must already have `curl` and `gnupg`.
 - The `libxcrypt-compat.x86_64` step applies to x86_64 hosts; the source page shows no aarch64 package for this step (not verified on aarch64).

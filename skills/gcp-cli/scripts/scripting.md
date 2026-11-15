@@ -132,7 +132,6 @@ gcloud topic arg-files
 - Adapted from the official docs: the key-listing loop and the CSV parsing loop are shown only in a safe form (quoted variables, line-by-line reads, `set -euo pipefail`); the official versions iterate over unquoted command substitutions.
 - Do depend on the command exit status: a non-zero status means an error occurred and output may be incomplete. Do not depend on the wording of messages on standard error or on the raw default standard output; use `--format` (and `--filter`) instead.
 - Parallel execution of multiple gcloud CLI commands is not supported.
-- The Bash loops expand command output unquoted, as in the official samples; they assume values contain no whitespace.
 - The `disable_prompts` property is equivalent to the `--quiet` flag or the environment variable `CLOUDSDK_CORE_DISABLE_PROMPTS` set to 1 (see `gcloud config set --help`).
 - The `show_structured_logs` property (values `never`, `always`, `log`, `terminal`; see `gcloud config set --help`) makes error logs parseable as JSON.
 - The service account key sample is the older form; the Authorize page uses `gcloud auth login --cred-file=KEY_FILE`. Service account keys are a security risk; key lifecycle and keyless alternatives belong to the `gcp-foundation` skill.

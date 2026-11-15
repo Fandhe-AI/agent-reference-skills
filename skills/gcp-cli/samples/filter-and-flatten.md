@@ -56,10 +56,10 @@ gcloud projects list \
 
 ### Values that look like numbers
 
-Adapted (not in the official docs): the official example omits the required positional `IMAGE_NAME`; `gcr.io/PROJECT_ID/IMAGE` is added so the command runs.
+Adapted (not in the official docs): the official example omits the required positional `IMAGE_NAME`; `gcr.io/PROJECT_ID/IMAGE` is added so the command runs, and the single quotes enclose only the value so the filter matches.
 
 ```bash
-gcloud container images list-tags gcr.io/PROJECT_ID/IMAGE --filter="'tags:30e5504145'"
+gcloud container images list-tags gcr.io/PROJECT_ID/IMAGE --filter="tags:'30e5504145'"
 ```
 
 ### Metadata keys
@@ -106,7 +106,7 @@ gcloud compute project-info describe --flatten='quotas[]' \
 - Flags apply in the order `--flatten`, `--sort-by`, `--filter`, `--limit`. `--flatten` also flattens the keys used by `--format` and `--filter`.
 - Depending on the API, filtering may run on the client, on the server, or both.
 - The `:` operator is changing for consistency across Google APIs (a deprecated and a new implementation exist); a warning appears when the two would return different matches. `=` behaves differently across APIs: where you want matching, use `:`.
-- Corrected from the official docs: the filters topic example `gcloud container images list-tags --filter="'tags:30e5504145'"` has no `IMAGE_NAME`, which the SYNOPSIS (`gcloud container images list-tags IMAGE_NAME ...`) requires; the format is `*.gcr.io/PROJECT_ID/IMAGE_PATH`.
+- Corrected from the official docs: the filters topic example `gcloud container images list-tags --filter="'tags:30e5504145'"` has no `IMAGE_NAME`, which the SYNOPSIS (`gcloud container images list-tags IMAGE_NAME ...`) requires; the format is `*.gcr.io/PROJECT_ID/IMAGE_PATH`. Inside the filter, only the value is quoted (`tags:'30e5504145'`): the official form quotes the whole expression, which gcloud 593.0.0's filter parser (`resource_filter.Compile`) treats as a single quoted term that does not match a resource whose `tags` contains `30e5504145`.
 - Adapted from the official docs: the `--flatten=bindings` example uses `PROJECT_ID` instead of the help-text sample project `cloudsdktest`.
 - Add `--format=yaml --limit=1` (or `--format=text`) to see which keys a resource has before writing a filter.
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/topic/filters (Google Cloud CLI 593.0.0 help, retrieved 2026-11-14)

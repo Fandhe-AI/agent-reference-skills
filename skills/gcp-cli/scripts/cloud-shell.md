@@ -26,8 +26,10 @@ gcloud cloud-shell ssh --command=ls
 
 Prefix Cloud Shell paths with `cloudshell:` and local paths with `localhost:`.
 
+Adapted (not in the official docs): the help example copies a directory without `--recurse`, which `gcloud cloud-shell scp` requires for directories ("Upload directories recursively"); `--recurse` is added.
+
 ```bash
-gcloud cloud-shell scp cloudshell:~/REMOTE-DIR \
+gcloud cloud-shell scp --recurse cloudshell:~/REMOTE-DIR \
   localhost:~/LOCAL-DIR
 ```
 
@@ -110,6 +112,7 @@ The official reset procedure then deletes every file in the Cloud Shell home dir
 
 ## Notes
 
+- Corrected from the official docs: the `gcloud cloud-shell scp cloudshell:~/REMOTE-DIR localhost:~/LOCAL-DIR` help example copies a directory, so `--recurse` is added (see `gcloud cloud-shell scp --help`).
 - Other flags, see `gcloud cloud-shell ssh --help` and `gcloud cloud-shell scp --help`: `--authorize-session` (send OAuth credentials to the session), `--dry-run` (print the command instead of running it), `--recurse` (scp directories), `--ssh-key-file`, `--force-key-file-overwrite`.
 - Reset and disable: Cloud Shell cannot recover deleted home-directory files. Consider Safe mode to sign in as root and fix file issues before resetting. Disabling Cloud Shell for managed Google Workspace or Cloud Identity users is done in the Google Admin console, not from the command line.
 - The official Cloud Shell page writes the `scp` local destination as `localhost:~data.txt` (no slash); the examples above use the `~/` form from the gcloud 593.0.0 help.
