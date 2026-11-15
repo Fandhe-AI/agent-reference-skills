@@ -85,7 +85,7 @@ Snippet taken from https://docs.cloud.google.com/storage/docs/cloud-storage-fuse
 - Limitation, performance: much higher latency than a local file system; do not use as a database backend. Larger files or multiple files at a time improve throughput.
 - Limitation, versioning: buckets with object versioning enabled are not formally supported and can behave unpredictably.
 - Limitation, gzip: objects with `content-encoding: gzip` are not decompressively transcoded; they are returned compressed. Editing them through the mount can produce unpredictable behavior.
-- Limitation, retention: writing to a bucket with a retention policy fails; reading is supported only if mounted read-only with `-o RO`.
+- Limitation, retention: writing to a bucket with a retention policy fails; reading is supported only if mounted read-only with `-o ro`.
 - Limitation, local storage: new or modified objects are stored entirely in a local temporary file until closed or synced; ensure enough local capacity.
 - Limitation, file handles: the Linux kernel default is 1,024 open file handles. When serving web content on Cloud Run from a mount, maximum concurrent requests per instance is restricted to less than 1,000.
 - Limitation, `rsync`: reads and writes one file at a time; use `gcloud storage rsync` for parallel transfers.
@@ -93,7 +93,7 @@ Snippet taken from https://docs.cloud.google.com/storage/docs/cloud-storage-fuse
 - For a POSIX file system on Google Cloud, the source points to Managed Lustre or Filestore.
 - Distance: Cloud Storage is Google Cloud's object storage; Cloud Storage FUSE is a file-system adapter on top of it. Distinct from Cloudflare R2 (`cloudflare-storage`) and Supabase Storage (`supabase`).
 - The source also links to the open GitHub issues for known issues and to the semantics document in the gcsfuse repository.
-- Source inconsistency: this page writes the read-only option as `-o RO`; the mount-bucket page documents and uses lowercase `-o ro`.
+- Source inconsistency: the overview page writes the read-only option as `-o RO`; the mount-bucket page documents and uses lowercase `-o ro`, which is the actual mount option, so this page writes `-o ro`.
 - Source: https://docs.cloud.google.com/storage/docs/cloud-storage-fuse/overview (retrieved 2026-11-15; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/storage/docs/cloud-storage-fuse/mount-bucket (retrieved 2026-11-15; snippet)
 
