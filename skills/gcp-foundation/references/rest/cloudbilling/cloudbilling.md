@@ -254,7 +254,7 @@ Base URL: `https://cloudbilling.googleapis.com`. Methods are listed by `id`; the
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `parent` | path | string | conditional | Optional. The parent to create a billing account from. Format: - `billingAccounts/{billing_account_id}`, for example, `billingAccounts/012345-567890-ABCDEF` |
+| `parent` | path | string | yes | Optional. The parent to create a billing account from. Format: - `billingAccounts/{billing_account_id}`, for example, `billingAccounts/012345-567890-ABCDEF` |
 
 ### `cloudbilling.billingAccounts.subAccounts.list`
 
@@ -266,7 +266,7 @@ Base URL: `https://cloudbilling.googleapis.com`. Methods are listed by `id`; the
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `parent` | path | string | conditional | Optional. The parent resource to list billing accounts from. Format: - `organizations/{organization_id}`, for example, `organizations/12345678` - `billingAccounts/{billing_account_id}`, for example, `billingAccounts/012345-567890-ABCDEF` |
+| `parent` | path | string | yes | Optional. The parent resource to list billing accounts from. Format: - `organizations/{organization_id}`, for example, `organizations/12345678` - `billingAccounts/{billing_account_id}`, for example, `billingAccounts/012345-567890-ABCDEF` |
 | `filter` | query | string | no | Options for how to filter the returned billing accounts. This only supports filtering for subaccounts (https://cloud.google.com/billing/docs/concepts) under a single provided parent billing account. (for example, `master_billing_account=billingAccounts/012345-678901-ABCDEF`). Boolean algebra and other fields are not currently supported. |
 | `pageSize` | query | integer (int32) | no | Requested page size. The maximum page size is 100; this is also the default. |
 | `pageToken` | query | string | no | A token identifying a page of results to return. This should be a `next_page_token` value returned from a previous `ListBillingAccounts` call. If unspecified, the first page of results is returned. |
@@ -309,7 +309,7 @@ Base URL: `https://cloudbilling.googleapis.com`. Methods are listed by `id`; the
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `parent` | path | string | conditional | Optional. The parent to create a billing account from. Format: - `billingAccounts/{billing_account_id}`, for example, `billingAccounts/012345-567890-ABCDEF` |
+| `parent` | path | string | yes | Optional. The parent to create a billing account from. Format: - `billingAccounts/{billing_account_id}`, for example, `billingAccounts/012345-567890-ABCDEF` |
 
 ### `cloudbilling.organizations.billingAccounts.list`
 
@@ -321,7 +321,7 @@ Base URL: `https://cloudbilling.googleapis.com`. Methods are listed by `id`; the
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `parent` | path | string | conditional | Optional. The parent resource to list billing accounts from. Format: - `organizations/{organization_id}`, for example, `organizations/12345678` - `billingAccounts/{billing_account_id}`, for example, `billingAccounts/012345-567890-ABCDEF` |
+| `parent` | path | string | yes | Optional. The parent resource to list billing accounts from. Format: - `organizations/{organization_id}`, for example, `organizations/12345678` - `billingAccounts/{billing_account_id}`, for example, `billingAccounts/012345-567890-ABCDEF` |
 | `filter` | query | string | no | Options for how to filter the returned billing accounts. This only supports filtering for subaccounts (https://cloud.google.com/billing/docs/concepts) under a single provided parent billing account. (for example, `master_billing_account=billingAccounts/012345-678901-ABCDEF`). Boolean algebra and other fields are not currently supported. |
 | `pageSize` | query | integer (int32) | no | Requested page size. The maximum page size is 100; this is also the default. |
 | `pageToken` | query | string | no | A token identifying a page of results to return. This should be a `next_page_token` value returned from a previous `ListBillingAccounts` call. If unspecified, the first page of results is returned. |
@@ -599,8 +599,9 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta of `cloudbilling` (retrieved 2026-11-14). Resources on this page: billingAccounts, message, organizations, projects, services, skuGroups, skus, tasks, v1, v1beta.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when a path variable is described as optional (the method then also accepts the URL without that segment, as its description says).
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are always `yes`.
 - Message schemas (the request and response types named above) are listed under `references/rest-schemas/cloudbilling/`; they are the `schemas` section of the Discovery documents in Source.
+- Path variables described as "Optional" in the Discovery document are still required by the route shown, so they are `yes` in the Required column: `parent` in `cloudbilling.billingAccounts.subAccounts.create`, `parent` in `cloudbilling.billingAccounts.subAccounts.list`, `parent` in `cloudbilling.organizations.billingAccounts.create`, `parent` in `cloudbilling.organizations.billingAccounts.list`. The description refers to the field in the request message; the Discovery document defines no URL without that segment. Where a sibling method covers an alternative parent (another resource's method listed separately), call that method's route instead.
 - Source: https://cloudbilling.googleapis.com/$discovery/rest?version=v1, https://cloudbilling.googleapis.com/$discovery/rest?version=v1beta (https://developers.google.com/discovery)
 
 ## Related

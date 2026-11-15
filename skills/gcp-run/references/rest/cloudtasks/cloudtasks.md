@@ -243,7 +243,7 @@ Base URL: `https://cloudtasks.googleapis.com`. Methods are listed by `id`; the `
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `queue` | path | string | yes | Required. The parent queue name. For example: projects/PROJECT_ID/locations/LOCATION_ID/queues/QUEUE_ID\` The queue must already exist. |
-| `taskId` | path | string | conditional | Optional. Task ID for the task being created. If not provided, Cloud Tasks generates an ID for the task. |
+| `taskId` | path | string | yes | Optional. Task ID for the task being created. If not provided, Cloud Tasks generates an ID for the task. |
 
 ### `cloudtasks.projects.locations.queues.tasks.cancelLease`
 
@@ -383,8 +383,9 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v2, v2beta3, v2beta2 of `cloudtasks` (retrieved 2026-11-14). Resources on this page: api, projects.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when a path variable is described as optional (the method then also accepts the URL without that segment, as its description says).
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are always `yes`.
 - Message schemas (the request and response types named above) are listed under `references/rest-schemas/cloudtasks/`; they are the `schemas` section of the Discovery documents in Source.
+- Path variables described as "Optional" in the Discovery document are still required by the route shown, so they are `yes` in the Required column: `taskId` in `cloudtasks.projects.locations.queues.tasks.buffer`. The description refers to the field in the request message; the Discovery document defines no URL without that segment. Where a sibling method covers an alternative parent (another resource's method listed separately), call that method's route instead.
 - Source: https://cloudtasks.googleapis.com/$discovery/rest?version=v2, https://cloudtasks.googleapis.com/$discovery/rest?version=v2beta3, https://cloudtasks.googleapis.com/$discovery/rest?version=v2beta2 (https://developers.google.com/discovery)
 
 ## Related
