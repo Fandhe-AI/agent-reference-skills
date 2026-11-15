@@ -667,7 +667,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `domains` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
+- Generated from the Discovery document(s) v1 of `domains` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
 - Source: https://domains.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
 ## Related

@@ -334,7 +334,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `configuredCapabilities` | array<string> | Output only. Optional capabilities configured for this folder (via UpdateCapability API). Example: `folders/123/capabilities/app-management`. |
 | `createTime` | string (google-datetime) | Output only. Timestamp when the folder was created. |
 | `deleteTime` | string (google-datetime) | Output only. Timestamp when the folder was requested to be deleted. |
-| `displayName` | string | The folder's display name. A folder's display name must be unique amongst its siblings. For example, no two folders with the same parent can share the same display name. The display name must start and end with a letter or digit, may contain letters, digits, spaces, hyphens and underscores and can be no longer than 30 characters. This is captured by the regular expression: `\p{L}\p{N}?`. |
+| `displayName` | string | The folder's display name. A folder's display name must be unique amongst its siblings. For example, no two folders with the same parent can share the same display name. The display name must start and end with a letter or digit, may contain letters, digits, spaces, hyphens and underscores and can be no longer than 30 characters. This is captured by the regular expression: `[\p{L}\p{N}]([\p{L}\p{N}_- ]{0,28}[\p{L}\p{N}])?`. |
 | `etag` | string | Output only. A checksum computed by the server based on the current value of the folder resource. This may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding. |
 | `managementProject` | string | Output only. Management Project associated with this folder (if app-management capability is enabled). Example: `projects/google-mp-123` OUTPUT ONLY. |
 | `name` | string | Identifier. The resource name of the folder. Its format is `folders/{folder_id}`, for example: "folders/1234". |
@@ -713,7 +713,7 @@ Message types referenced by the methods listed under `references/rest/cloudresou
 | `displayName` | string | Optional. A user-assigned display name of the project. When present it must be between 4 to 30 characters. Allowed characters are: lowercase and uppercase letters, numbers, hyphen, single-quote, double-quote, space, and exclamation point. Example: `My Project` |
 | `etag` | string | Output only. A checksum computed by the server based on the current value of the Project resource. This may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding. |
 | `isManagementProject` | boolean | Output only. If `true`, this project is a Management Project. A Management Project manages dedicated project groups for specific purposes (e.g., agent management or app management). |
-| `labels` | object | Optional. The labels associated with this project. Label keys must be between 1 and 63 characters long and must conform to the following regular expression: \a-z\?. Label values must be between 0 and 63 characters long and must conform to the regular expression (\a-z\?)?. No more than 64 labels can be associated with a given resource. Clients should store labels in a representation such as JSON that does not depend on specific characters being disallowed. Example: `"myBusinessDimension" : "businessValue"` |
+| `labels` | object | Optional. The labels associated with this project. Label keys must be between 1 and 63 characters long and must conform to the following regular expression: \\[a-z\\](\\[-a-z0-9\\]\*\\[a-z0-9\\])?. Label values must be between 0 and 63 characters long and must conform to the regular expression (\\[a-z\\](\\[-a-z0-9\\]\*\\[a-z0-9\\])?)?. No more than 64 labels can be associated with a given resource. Clients should store labels in a representation such as JSON that does not depend on specific characters being disallowed. Example: `"myBusinessDimension" : "businessValue"` |
 | `managementType` | string enum | Output only. The type of Management Project. This field is only populated if `is_management_project` is `true`. |
 | `name` | string | Output only. The unique resource name of the project. It is an int64 generated number prefixed by "projects/". Example: `projects/415104041262` |
 | `parent` | string | Optional. A reference to a parent Resource. eg., `organizations/123` or `folders/876`. |
@@ -1011,8 +1011,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `cloudresourcemanager` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v3 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v3, v2, v1, v1beta1 of `cloudresourcemanager` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Source: https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v3, https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v2, https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1, https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
 

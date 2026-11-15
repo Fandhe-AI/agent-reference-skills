@@ -394,7 +394,7 @@ Message types referenced by the methods listed under `references/rest/cloudsuppo
 
 ### `SupportEventSubscription`
 
-- A support event subscription. You can also manage support event subscriptions using other tools: \* `gcloud support support-event-subscriptions` (or `gcloud beta` for beta) \* Terraform `google_cloud_support_support_event_subscription` (https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_support_support_event_subscription) (or google-beta provider (https://registry.terraform.io/providers/hashicorp/google-beta/latest/docs/resources/cloud_support_support_event_subscription) for beta)
+- A support event subscription. You can also manage support event subscriptions using other tools: \* \[`gcloud support support-event-subscriptions`\](/sdk/gcloud/reference/support/support-event-subscriptions) (or \[`gcloud beta`\](/sdk/gcloud/reference/beta/support/support-event-subscriptions) for beta) \* \[Terraform `google_cloud_support_support_event_subscription`\](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_support_support_event_subscription) (or google-beta provider (https://registry.terraform.io/providers/hashicorp/google-beta/latest/docs/resources/cloud_support_support_event_subscription) for beta)
 - Version: v2
 
 | Field | Type | Description |
@@ -437,8 +437,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ## Notes
 
-- Generated from the Discovery document(s) of `cloudsupport` (retrieved 2026-11-14); a type shared by several versions shows the preferred version.
-- Source: https://cloudsupport.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
+- Generated from the Discovery document(s) v2, v2beta of `cloudsupport` (retrieved 2026-11-14); a type shared by several versions shows the preferred version, and each type's `Version` line names the document it was taken from.
+- Source: https://cloudsupport.googleapis.com/$discovery/rest?version=v2, https://cloudsupport.googleapis.com/$discovery/rest?version=v2beta (https://developers.google.com/discovery)
 
 ## Related
 
