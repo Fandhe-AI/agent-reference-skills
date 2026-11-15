@@ -104,4 +104,4 @@ principal.subject != 'special-admin@example.com'
 
 - [principal-access-boundary-policies.md](../references/iam-guides/principal-access-boundary/principal-access-boundary-policies.md)
 - [deny-policies.md](../references/iam-guides/access-policies/deny-policies.md)
-- workload-identity-federation-pools.md (`references/iam-guides/workload-and-workforce-federation/workload-identity-federation-pools.md`, added in a follow-up PR)
+- [workload-identity-federation-pools.md](../references/iam-guides/workload-and-workforce-federation/workload-identity-federation-pools.md)

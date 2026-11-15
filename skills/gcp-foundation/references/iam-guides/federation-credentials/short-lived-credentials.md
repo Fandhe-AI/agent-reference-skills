@@ -249,6 +249,6 @@ Response: `access_token`, `expires_in` (only if the original token represents a 
 
 ## Related
 
-- service-account-best-practices.md (`references/iam-guides/service-accounts/service-account-best-practices.md`, added in a follow-up PR)
+- [service-account-best-practices.md](../service-accounts/service-account-best-practices.md)
 - [authentication-methods-and-sts-audit.md](./authentication-methods-and-sts-audit.md)
 - Other skill: gcp-client-libraries (ADC code)
