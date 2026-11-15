@@ -111,7 +111,7 @@ Operation denied by custom org policy: ["customConstraints/custom.denyServiceAcc
 
 Common use cases (from the official table):
 
-Adapted (not in the official docs): CEL boolean literal written as lowercase `true`.
+Adapted (not in the official docs): the CEL boolean literal is written as lowercase `true`, and enum values in the key conditions are CEL string literals (`'USER_MANAGED'`, `'GOOGLE_PROVIDED'`, `'USER_PROVIDED'`); the official table writes them as bare identifiers, which CEL treats as undeclared variables.
 
 ```yaml
 name: organizations/ORGANIZATION_ID/customConstraints/custom.disableServiceAccountCreation
@@ -130,7 +130,7 @@ resourceTypes:
 - iam.googleapis.com/ServiceAccountKey
 methodTypes:
 - CREATE
-condition: "resource.keyType == USER_MANAGED && resource.keyOrigin == GOOGLE_PROVIDED"
+condition: "resource.keyType == 'USER_MANAGED' && resource.keyOrigin == 'GOOGLE_PROVIDED'"
 actionType: DENY
 displayName: Deny all service account key creation.
 ```
@@ -141,7 +141,7 @@ resourceTypes:
 - iam.googleapis.com/ServiceAccountKey
 methodTypes:
 - CREATE
-condition: "resource.keyType == USER_MANAGED && resource.keyOrigin == USER_PROVIDED"
+condition: "resource.keyType == 'USER_MANAGED' && resource.keyOrigin == 'USER_PROVIDED'"
 actionType: DENY
 displayName: Deny all service account key uploads.
 ```
@@ -166,6 +166,7 @@ Tag roles: `roles/resourcemanager.tagViewer`, `roles/resourcemanager.organizatio
 
 ## Notes
 
+- Corrected from the official docs: the key-creation and key-upload constraint conditions compare `resource.keyType` / `resource.keyOrigin` with bare `USER_MANAGED` / `GOOGLE_PROVIDED` / `USER_PROVIDED`; this page quotes them as string literals.
 - Adapted from the official docs: the `custom.denyServiceAccountCreation` example drops `UPDATE` from `methodTypes`, because the official page states the constraint can only be enforced on the REST `CREATE` method.
 - The sample output (`name: tagBindings/...`) is the shape of the plain `tags bindings list --parent` command; `--effective` returns effective tags in a different shape (not shown in the official docs).
 - Adapted from the official docs: `tags bindings list` shows directly attached bindings only; add `--effective` to include inherited tags.

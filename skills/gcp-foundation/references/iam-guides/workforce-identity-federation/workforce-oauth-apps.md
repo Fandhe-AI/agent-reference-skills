@@ -112,11 +112,14 @@ SECRET_DIR="$(mktemp -d)"
     --location='global' > "${SECRET_DIR}/oauth-client-credential.txt")
 ```
 
+Adapted (not in the official docs): `list` selects only non-secret fields with `--format`, and `update` writes its output (the updated credential, which includes `clientSecret`) to a new owner-only file in `SECRET_DIR` instead of printing it.
+
 ```bash
 gcloud iam oauth-clients credentials list \
     --oauth-client=APP_OAUTH_CLIENT_ID \
     --project=PROJECT_ID \
-    --location=global
+    --location=global \
+    --format="table(name,displayName,disabled)"
 ```
 
 ```bash
@@ -126,20 +129,20 @@ gcloud iam oauth-clients credentials list \
 ```
 
 ```bash
-gcloud iam oauth-clients credentials update APP_OAUTH_CLIENT_CREDENTIAL_ID \
+(umask 077; gcloud iam oauth-clients credentials update APP_OAUTH_CLIENT_CREDENTIAL_ID \
     --oauth-client=APP_OAUTH_CLIENT_ID \
     --display-name="My new credential name" \
-    --location=global
+    --location=global > "${SECRET_DIR}/oauth-client-credential-update.txt")
 ```
 
 Disable (required before deleting), then delete a credential:
 
 ```bash
-gcloud iam oauth-clients credentials update APP_OAUTH_CLIENT_CREDENTIAL_ID \
+(umask 077; gcloud iam oauth-clients credentials update APP_OAUTH_CLIENT_CREDENTIAL_ID \
     --oauth-client=APP_OAUTH_CLIENT_ID \
     --disabled \
     --project=PROJECT_ID \
-    --location=global
+    --location=global > "${SECRET_DIR}/oauth-client-credential-update.txt")
 ```
 
 ```bash
@@ -195,6 +198,7 @@ curl -X DELETE \
 
 ## Notes
 
+- Adapted from the official docs: `credentials update` returns the updated credential including `clientSecret`, so the gcloud update and disable examples write to a new owner-only file in `SECRET_DIR`; `credentials list` limits output to `name`, `displayName`, and `disabled` with `--format`.
 - Corrected from the official docs: the gcloud example used `--client-type="CONFIDENTIAL_CLIENT"` and `--allowed-grant-types="authorization_code_grant"`; gcloud 593.0.0 `gcloud iam oauth-clients create --help` lists `confidential-client` / `public-client` and `authorization-code-grant` / `refresh-token-grant`.
 - OAuth application integration works only with Identity-Aware Proxy and Looker. The `projects.locations.oauthClients` API is only for Workforce Identity Federation; standard OAuth 2.0 client IDs for Google Cloud users or services are under **APIs & Services > Credentials**.
 - Prerequisites: an organization, and a workforce identity pool and provider in the same organization (see the Entra ID and Okta pages). Required role: `roles/iam.oauthClientAdmin` on the project.
