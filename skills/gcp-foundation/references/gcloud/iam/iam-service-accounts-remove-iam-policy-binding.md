@@ -174,7 +174,7 @@ NOTES
         $ gcloud beta iam service-accounts remove-iam-policy-binding
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
 
 ```bash
 gcloud iam service-accounts remove-iam-policy-binding my-iam-account@my-project.iam.gserviceaccount.com \

@@ -596,7 +596,7 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `account` | path | string | yes | Optional. Resource name of the account. Required if integrator is not provided. Otherwise, leave this field empty/unset. |
+| `account` | path | string | conditional | Optional. Resource name of the account. Required if integrator is not provided. Otherwise, leave this field empty/unset. |
 | `integrator` | query | string | conditional | Optional. Resource name of the integrator. Required if account is not provided. Otherwise, leave this field empty/unset. |
 | `pageSize` | query | integer (int32) | no | Optional. The maximum number of service accounts to return. The service may return fewer than this value. If unspecified, returns at most 100 service accounts. The maximum value is 1000; the server will coerce values above 1000. |
 | `pageToken` | query | string | no | Optional. A page token, received from a previous `ListSubscribers` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `ListSubscribers` must match the call that provided the page token. |
@@ -652,7 +652,7 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `account` | path | string | yes | Optional. Resource name of the account. Required if integrator is not provided. Otherwise, leave this field empty/unset. |
+| `account` | path | string | conditional | Optional. Resource name of the account. Required if integrator is not provided. Otherwise, leave this field empty/unset. |
 
 ### `cloudchannel.accounts.reportJobs.fetchReportResults`
 
@@ -734,7 +734,7 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `account` | path | string | yes | Optional. Resource name of the account. Required if integrator is not provided. Otherwise, leave this field empty/unset. |
+| `account` | path | string | conditional | Optional. Resource name of the account. Required if integrator is not provided. Otherwise, leave this field empty/unset. |
 
 ### `cloudchannel.integrators.listSubscribers`
 
@@ -746,7 +746,7 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `integrator` | path | string | yes | Optional. Resource name of the integrator. Required if account is not provided. Otherwise, leave this field empty/unset. |
+| `integrator` | path | string | conditional | Optional. Resource name of the integrator. Required if account is not provided. Otherwise, leave this field empty/unset. |
 | `account` | query | string | conditional | Optional. Resource name of the account. Required if integrator is not provided. Otherwise, leave this field empty/unset. |
 | `pageSize` | query | integer (int32) | no | Optional. The maximum number of service accounts to return. The service may return fewer than this value. If unspecified, returns at most 100 service accounts. The maximum value is 1000; the server will coerce values above 1000. |
 | `pageToken` | query | string | no | Optional. A page token, received from a previous `ListSubscribers` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `ListSubscribers` must match the call that provided the page token. |
@@ -761,7 +761,7 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `integrator` | path | string | yes | Optional. Resource name of the integrator. Required if account is not provided. Otherwise, leave this field empty/unset. |
+| `integrator` | path | string | conditional | Optional. Resource name of the integrator. Required if account is not provided. Otherwise, leave this field empty/unset. |
 
 ### `cloudchannel.integrators.unregisterSubscriber`
 
@@ -773,7 +773,7 @@ Base URL: `https://cloudchannel.googleapis.com`. Methods are listed by `id`; the
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `integrator` | path | string | yes | Optional. Resource name of the integrator. Required if account is not provided. Otherwise, leave this field empty/unset. |
+| `integrator` | path | string | conditional | Optional. Resource name of the integrator. Required if account is not provided. Otherwise, leave this field empty/unset. |
 
 ### `cloudchannel.operations.cancel`
 
@@ -871,8 +871,8 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `cloudchannel` (retrieved 2026-11-14). Resources on this page: accounts, integrators, operations, products.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
-- Message schemas are listed under `references/rest-schemas/cloudchannel/`.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when a path variable is described as optional (the method then also accepts the URL without that segment, as its description says).
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/cloudchannel/`; they are the `schemas` section of the Discovery documents in Source.
 - Deprecated methods (`deprecated: true` in Discovery): `cloudchannel.accounts.reportJobs.fetchReportResults`, `cloudchannel.accounts.reports.list`, `cloudchannel.accounts.reports.run`. Avoid them in new code.
 - Source: https://cloudchannel.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 

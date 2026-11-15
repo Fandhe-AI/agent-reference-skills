@@ -95,7 +95,7 @@ NOTES
         $ gcloud beta essential-contacts list
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
 
 ```bash
 gcloud essential-contacts list \

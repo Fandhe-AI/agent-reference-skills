@@ -84,7 +84,7 @@ GCLOUD WIDE FLAGS
     Run $ gcloud help for details.
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and `$VARIABLE` placeholders are quoted.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
 
 ```bash
 gcloud iam workload-identity-pools add-attestation-rule my-pool \

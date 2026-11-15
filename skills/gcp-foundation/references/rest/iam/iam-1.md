@@ -34,7 +34,7 @@ Base URL: `https://iam.googleapis.com`. Methods are listed by `id`; the `Version
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `location` | path | string | yes | Optional. The location of the pool to create. Format: `locations/{location}`. |
+| `location` | path | string | conditional | Optional. The location of the pool to create. Format: `locations/{location}`. |
 | `workforcePoolId` | query | string | no | Optional. The ID to use for the pool, which becomes the final component of the resource name. The IDs must be a globally unique string of 6 to 63 lowercase letters, digits, or hyphens. It must start with a letter, and cannot have a trailing hyphen. The prefix `gcp-` is reserved for use by Google, and may not be specified. |
 
 ### `iam.locations.workforcePools.delete`
@@ -1650,8 +1650,8 @@ curl -X GET \
 ## Notes
 
 - Generated from the Discovery document(s) v2, v1, v2beta of `iam` (retrieved 2026-11-14). Resources on this page: iamPolicies, locations, organizations, permissions, policies, projects.
-- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives) or when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof.
-- Message schemas are listed under `references/rest-schemas/iam/`.
+- The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when a path variable is described as optional (the method then also accepts the URL without that segment, as its description says).
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/iam/`; they are the `schemas` section of the Discovery documents in Source.
 - Source: https://iam.googleapis.com/$discovery/rest?version=v2, https://iam.googleapis.com/$discovery/rest?version=v1, https://iam.googleapis.com/$discovery/rest?version=v2beta (https://developers.google.com/discovery)
 
 ## Related
