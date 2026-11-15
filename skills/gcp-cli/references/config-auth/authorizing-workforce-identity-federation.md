@@ -112,12 +112,14 @@ SAML_ASSERTION_PATH=SAML_ASSERTION_PATH
 
 3. To generate a configuration file, run the following command:
 
+Adapted (not in the official docs): the official SAML example passes `PROJECT_ID`; `--workforce-pool-user-project` takes the project number (see `gcloud iam workforce-pools create-cred-config --help`), so `PROJECT_NUMBER` is used here and in the generated file.
+
 ```
 gcloud iam workforce-pools create-cred-config \
     locations/global/workforcePools/WORKFORCE_POOL_ID/providers/WORKFORCE_PROVIDER_ID \
     --subject-token-type="urn:ietf:params:oauth:token-type:saml2" \
     --credential-source-file="SAML_ASSERTION_PATH"  \
-    --workforce-pool-user-project="PROJECT_ID"  \
+    --workforce-pool-user-project="PROJECT_NUMBER"  \
     --output-file="config.json"
 ```
 
@@ -126,7 +128,7 @@ Replace the following:
 - `WORKFORCE_PROVIDER_ID`: the workforce provider ID you created earlier in this guide.
 - `WORKFORCE_POOL_ID`: the workforce pool ID you created earlier in this guide.
 - `SAML_ASSERTION_PATH`: the path of the SAML assertion file.
-- `PROJECT_ID`: the project ID
+- `PROJECT_NUMBER`: the project number of the workforce pools user project
 
 The configuration file that is generated looks similar to the following:
 
@@ -139,7 +141,7 @@ The configuration file that is generated looks similar to the following:
   "credential_source": {
     "file": "SAML_ASSERTION_PATH"
   },
-  "workforce_pool_user_project": "PROJECT_ID"
+  "workforce_pool_user_project": "PROJECT_NUMBER"
 }
 ```
 
@@ -173,12 +175,13 @@ gcloud auth list
 | `CLOUDSDK_AUTH_LOGIN_CONFIG_FILE` | environment variable | Login configuration file path |
 | `--subject-token-type` | flag (`create-cred-config`) | `urn:ietf:params:oauth:token-type:id_token` (OIDC) or `urn:ietf:params:oauth:token-type:saml2` (SAML) |
 | `--credential-source-file` | flag (`create-cred-config`) | File holding the OIDC token or SAML assertion |
-| `--workforce-pool-user-project` | flag (`create-cred-config`) | Project (number for OIDC; project ID in the SAML example) used as workforce pools user project |
+| `--workforce-pool-user-project` | flag (`create-cred-config`) | Project number used as workforce pools user project (OIDC and SAML) |
 | `--cred-file` | flag (`gcloud auth login`) | Credential configuration file used for token exchange |
 
 ## Notes
 
 - Official text inconsistency, kept as written: in the OIDC step the command uses the placeholder `PATH_TO_OIDC_ID_TOKEN` but the "Replace the following" list names `PATH_TO_OIDC_TOKEN`; the generated file shows `PATH_TO_OIDC_CREDENTIALS_FILE`. The SAML step's `SAML_ASSERTION_PATH=SAML_ASSERTION_PATH` is also a placeholder-to-placeholder assignment in the source.
+- Corrected from the official docs: the SAML example on the source page uses `PROJECT_ID` for `--workforce-pool-user-project`, but the flag help (gcloud 593.0.0) defines it as the client project number, matching the OIDC example; the command, replacement list and generated JSON here use `PROJECT_NUMBER`.
 - Workforce Identity Federation design (pools, providers, IdP setup) belongs to the `gcp-foundation` skill; this page covers only the gcloud CLI sign-in commands.
 - Source: https://docs.cloud.google.com/sdk/docs/authorizing (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 

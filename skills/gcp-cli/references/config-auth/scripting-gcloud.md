@@ -32,8 +32,10 @@ You can SSH into your VM instance by using `gcloud compute ssh`, which takes car
 
 Some gcloud CLI commands are interactive. You can disable prompts by setting the `disable_prompts` property in your configuration to `True` or by using the global `--quiet` or `-q` flag. Most interactive commands have default values when additional confirmation or input is required. If prompts are disabled, these default values are used.
 
+Adapted (not in the official docs): the official example uses `gcloud debug targets list`; Cloud Debugger was shut down on 2023-05-31 and the `debug` group is absent from gcloud 593.0.0, so a current list command is shown.
+
 ```
-gcloud debug targets list --quiet
+gcloud projects list --quiet
 ```
 
 ### Filtering and formatting output
@@ -187,6 +189,7 @@ done <<< "${scopes_info}"
 
 ## Notes
 
+- Adapted from the official docs: the `--quiet` example used `gcloud debug targets list` (Cloud Debugger, shut down 2023-05-31; no `debug` group in gcloud 593.0.0) and is replaced with `gcloud projects list --quiet`.
 - Adapted from the official docs: the Bash loops (service account keys per project, and the multi-valued CSV parsing) are shown only in a safe form: the official versions iterate over unquoted command substitutions, which word-split values, and the CSV example wraps the `--format` value across lines. The PowerShell loop is unchanged.
 - Parallel execution of multiple gcloud CLI commands is not supported.
 - The service account key-file command `gcloud auth activate-service-account --key-file [KEY_FILE]` is the older form used here; the Authorize page uses `gcloud auth login --cred-file=KEY_FILE` (see authorizing-service-accounts.md). Service account keys are a security risk; key lifecycle and keyless alternatives belong to the `gcp-foundation` skill.
