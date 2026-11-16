@@ -54,15 +54,17 @@ match /mydocuments/{doc} {
 }
 ```
 
+Adapted (not in the official docs): the modular `query()` / `or()` / `where()` functions take a modular `CollectionReference`, so `db.collection("mydocuments")` (namespaced API) is replaced with `collection(db, "mydocuments")` (assumes `db` from `getFirestore()`).
+
 ```js
 // These queries will fail
-query(db.collection("mydocuments"),
+query(collection(db, "mydocuments"),
       or(where("x", "==", 1),
          where("x", "==", 6)
       )
     )
 
-query(db.collection("mydocuments"),
+query(collection(db, "mydocuments"),
       where("x", "in", [1, 3, 6, 42, 99])
     )
 ```
@@ -142,6 +144,7 @@ A matching query: `db.collectionGroup("posts").where("author", "==", user.uid).g
 
 - The source also shows a rule set that restricts a `transactions` collection group by a `user` field duplicated from the path; it is omitted here because its write rule reads `request.data.user` (not a rules variable; the incoming document is `request.resource.data`), and its example query `where("user", "==", user)` passes the user object rather than `user.uid`.
 - A collection group rule applies to every collection with that ID regardless of hierarchy (e.g. `/posts/{postid}`, `/forums/{forumid}/posts/{postid}`, `/forums/{forumid}/subforum/{subforumid}/posts/{postid}`). The source also shows the `/stories` and `/forums/{forumid}/posts` published/author collection group rule set and the Web queries against it; omitted for size.
+- Corrected from the official docs: the `or` / `in` query samples pass `db.collection("mydocuments")` (namespaced API) to the modular `query()`, which expects `collection(db, "mydocuments")`; the passing variants described in prose need the same change.
 - Source: https://docs.cloud.google.com/firestore/native/docs/security/rules-query (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

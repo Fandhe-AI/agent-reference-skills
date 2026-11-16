@@ -28,7 +28,7 @@ db.collection("employees")
   .orderBy("experience");
 ```
 
-Ordering by only the most selective field and reordering client-side avoids reading all `experience` index entries:
+A different requirement from the source: to find employees whose salary is more than 100000 and order them by years of experience, when only a small number of employees are expected to match the salary filter, order by the selective field only and reorder client-side (there is no `experience` filter in this query):
 
 ```javascript
 const querySnapshot = await db.collection('employees')
@@ -58,7 +58,7 @@ const querySnapshot = await db.collection('employees')
 ## Notes
 
 - The `ORDER BY` clause determines which indexes serve the query: `ORDER BY a ASC, b ASC` requires a composite index on `a ASC, b ASC`.
-- If `experience` were added to the `orderBy` above, Firestore would select the `(experience [...], salary [...])` index and read all `employees` index entries before applying the `salary` filter, increasing latency and cost.
+- The source says: "If `experience` were added to the order by clause, then Firestore will select the `(experience [...], salary [...])` index" and read all `employees` index entries before applying the `salary` filter. Because Firestore prefers an index whose fields prefix-match the `orderBy` clause, this applies when `experience` is the first `orderBy` (ordering by `experience` instead of reordering client-side); appending `.orderBy("experience")` after `.orderBy("salary")` keeps the `(salary [...], experience [...])` order, as in the earlier example.
 - Pricing: billed on documents read and index entries read.
 - Corrected from the official docs: Node.js sample `.where('population', '>', 1000000),` had a trailing comma after the first call; the Python sample in the source places `.where(...)` lines without line continuation and is omitted. Samples for Web, Swift, Objective-C, Java, Kotlin, Go, PHP, C#, Ruby, C++, Unity and Dart are also omitted. The source cross-references use unresolved reference-style links.
 - Firestore pages here describe Google Cloud's managed document database (Native mode, Datastore mode, MongoDB compatibility), distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`).
