@@ -50,7 +50,7 @@ const querySnapshot = await firestore.runTransaction(
 );
 ```
 
-REST: pass `readTime` in `readOptions` of `get`, `list`, `batchGet`, `listCollectionIds`, `listDocuments`, `runQuery`, `runAggregationQuery`, `partitionQuery`, or use `readTime` with `BeginTransaction` in a `ReadOnly` transaction for multiple PITR reads. The FirestoreIO Apache Beam connector supports `withReadTime(@Nullable Instant readTime)`.
+REST: set `readTime` on the read request. Per the Firestore v1 Discovery document, it is the `readTime` query parameter of `documents.get`, `documents.list` and `documents.listDocuments`, and a top-level `readTime` field of the request body of `batchGet`, `listCollectionIds`, `runQuery`, `runAggregationQuery` and `partitionQuery`. For multiple PITR reads, call `beginTransaction` with `options.readOnly.readTime` (a `ReadOnly` transaction) and pass the returned transaction to the reads. The FirestoreIO Apache Beam connector supports `withReadTime(@Nullable Instant readTime)`.
 
 ### Clone a database
 
@@ -117,6 +117,7 @@ Import with the steps in [export-import.md](./export-import.md); existing docume
 - Source inconsistency: the source prose names the flag `--enable-ptir`, while the command uses `--enable-pitr`.
 - The source also shows Console steps, Java samples (read-only transaction and Beam), and the Firebase CLI `firestore:databases:clone` form (omitted).
 - Firestore's managed document database (Native / Datastore mode, MongoDB compatibility) — distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`).
+- Source inconsistency: the source says "pass the `readTime` value as as a supported PITR timestamp in the `readOptions` method"; the REST methods have no `readOptions` field, so the locations above follow the Discovery document (see `references/rest/firestore/firestore.md` and `references/rest-schemas/firestore/`).
 - Source: https://docs.cloud.google.com/firestore/native/docs/use-pitr (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
