@@ -1,0 +1,1255 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/container/clusters/create-auto
+---
+
+# gcloud container clusters create-auto
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud container clusters create-auto
+
+```text
+NAME
+    gcloud container clusters create-auto - create an Autopilot cluster for
+        running containers
+
+SYNOPSIS
+    gcloud container clusters create-auto NAME
+        [--anonymous-authentication-config=ANONYMOUS_AUTHENTICATION_CONFIG]
+        [--async] [--auto-monitoring-scope=AUTO_MONITORING_SCOPE]
+        [--autopilot-general-profile=AUTOPILOT_GENERAL_PROFILE]
+        [--autopilot-privileged-admission=[ALLOWLIST_PATHS,...]]
+        [--autoprovisioning-enable-insecure-kubelet-readonly-port]
+        [--autoprovisioning-network-tags=TAGS,[TAGS,...]]
+        [--autoprovisioning-resource-manager-tags=[KEY=VALUE,...]]
+        [--binauthz-evaluation-mode=BINAUTHZ_EVALUATION_MODE]
+        [--boot-disk-kms-key=BOOT_DISK_KMS_KEY]
+        [--cluster-ipv4-cidr=CLUSTER_IPV4_CIDR]
+        [--cluster-secondary-range-name=NAME]
+        [--cluster-version=CLUSTER_VERSION]
+        [--confidential-node-type=CONFIDENTIAL_NODE_TYPE]
+        [--containerd-config-from-file=PATH_TO_FILE]
+        [--control-plane-egress=CONTROL_PLANE_EGRESS]
+        [--create-subnetwork=[KEY=VALUE,...]]
+        [--database-encryption-key=DATABASE_ENCRYPTION_KEY]
+        [--disable-l4-lb-firewall-reconciliation] [--disable-multi-nic-lustre]
+        [--enable-agent-sandbox] [--enable-ambient-networking]
+        [--enable-authorized-networks-on-private-endpoint] [--enable-auto-ipam]
+        [--enable-backup-restore] [--enable-cilium-clusterwide-network-policy]
+        [--enable-confidential-nodes] [--enable-default-compute-class]
+        [--enable-dns-access] [--enable-fleet] [--enable-google-cloud-access]
+        [--enable-ip-access] [--enable-k8s-certs-via-dns]
+        [--enable-k8s-tokens-via-dns]
+        [--enable-kernel-module-signature-enforcement]
+        [--enable-kubernetes-unstable-apis=API,[API,...]]
+        [--enable-legacy-lustre-port] [--enable-lustre-csi-driver]
+        [--enable-master-global-access] [--enable-multi-networking]
+        [--enable-ray-cluster-logging] [--enable-ray-cluster-monitoring]
+        [--enable-ray-operator] [--fleet-project=PROJECT_ID_OR_NUMBER]
+        [--hpa-profile=HPA_PROFILE] [--image=IMAGE]
+        [--image-project=IMAGE_PROJECT] [--image-type=IMAGE_TYPE]
+        [--labels=[KEY=VALUE,...]] [--logging=[COMPONENT,...]]
+        [--managed-otel-scope=MANAGED_OTEL_SCOPE]
+        [--membership-type=MEMBERSHIP_TYPE] [--monitoring=[COMPONENT,...]]
+        [--network=NETWORK] [--node-creation-mode=NODE_CREATION_MODE]
+        [--private-endpoint-subnetwork=NAME] [--release-channel=CHANNEL]
+        [--security-group=SECURITY_GROUP] [--security-posture=SECURITY_POSTURE]
+        [--services-ipv4-cidr=CIDR] [--services-secondary-range-name=NAME]
+        [--subnetwork=SUBNETWORK] [--tier=TIER]
+        [--workload-policies=WORKLOAD_POLICIES]
+        [--workload-vulnerability-scanning=WORKLOAD_VULNERABILITY_SCANNING]
+        [--additive-vpc-scope-dns-domain=ADDITIVE_VPC_SCOPE_DNS_DOMAIN
+          | --disable-additive-vpc-scope]
+        [--aggregation-ca=CA_POOL_PATH --cluster-ca=CA_POOL_PATH
+          --control-plane-disk-encryption-key=KEY --etcd-api-ca=CA_POOL_PATH
+          --etcd-peer-ca=CA_POOL_PATH --gkeops-etcd-backup-encryption-key=KEY
+          --service-account-signing-keys=KEY_VERSION,[KEY_VERSION,...]
+          --service-account-verification-keys=KEY_VERSION,[KEY_VERSION,...]]
+        [--dataplane-v2-observability-mode=DATAPLANE_V2_OBSERVABILITY_MODE
+          | --disable-dataplane-v2-flow-observability
+          | --enable-dataplane-v2-flow-observability]
+        [--disable-pod-snapshots | --enable-pod-snapshots]
+        [--enable-insecure-binding-system-authenticated
+          --enable-insecure-binding-system-unauthenticated]
+        [--enable-master-authorized-networks
+          --master-authorized-networks=NETWORK,[NETWORK,...]]
+        [--enable-private-endpoint
+          --enable-private-nodes --master-ipv4-cidr=MASTER_IPV4_CIDR]
+        [--enable-secret-manager --enable-secret-manager-rotation
+          --secret-manager-rotation-interval=SECRET_MANAGER_ROTATION_INTERVAL]
+        [--enable-secret-sync --enable-secret-sync-rotation
+          --secret-sync-rotation-interval=SECRET_SYNC_ROTATION_INTERVAL]
+        [--location=LOCATION | --region=REGION | --zone=ZONE, -z ZONE]
+        [--maintenance-minor-version-disruption-interval=MAINTENANCE_MINOR_VERSION_DISRUPTION_INTERVAL --maintenance-patch-version-disruption-interval=MAINTENANCE_PATCH_VERSION_DISRUPTION_INTERVAL]
+        [--scopes=[SCOPE,...];
+          default="gke-default" --service-account=SERVICE_ACCOUNT]
+        [--wiz-sensor-api-key-secret-uri=WIZ_SENSOR_API_KEY_SECRET_URI
+          --wiz-sensor-proxy-secret-uri=WIZ_SENSOR_PROXY_SECRET_URI
+          --wiz-sensor-registry-secret-uri=WIZ_SENSOR_REGISTRY_SECRET_URI]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create an Autopilot cluster for running containers.
+
+EXAMPLES
+    To create a cluster with the default configuration, run:
+
+        $ gcloud container clusters create-auto sample-cluster
+
+POSITIONAL ARGUMENTS
+     NAME
+        The name of the cluster to create.
+
+        The name may contain only lowercase alphanumerics and '-', must start
+        with a letter and end with an alphanumeric, and must be no longer than
+        40 characters.
+
+FLAGS
+     --anonymous-authentication-config=ANONYMOUS_AUTHENTICATION_CONFIG
+        Enable or restrict anonymous access to the cluster. When enabled,
+        anonymous users will be authenticated as system:anonymous with the
+        group system:unauthenticated. Limiting access restricts anonymous
+        access to only the health check endpoints /readyz, /livez, and
+        /healthz.
+
+        ANONYMOUS_AUTHENTICATION_CONFIG must be one of:
+
+         ENABLED
+            'ENABLED' enables anonymous calls.
+         LIMITED
+            'LIMITED' restricts anonymous access to the cluster. Only calls to
+            the health check endpoints are allowed anonymously, all other calls
+            will be rejected.
+
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --auto-monitoring-scope=AUTO_MONITORING_SCOPE
+        Enables Auto-Monitoring for a specific scope within the cluster. ALL:
+        Enables Auto-Monitoring for all supported workloads within the cluster.
+        NONE: Disables Auto-Monitoring. AUTO_MONITORING_SCOPE must be one of:
+        ALL, NONE.
+
+     --autopilot-general-profile=AUTOPILOT_GENERAL_PROFILE
+        Sets the Autopilot general profile for the cluster; possible values are
+        none and no-performance. If none is used, the cluster will use the
+        Autopilot default configuration. AUTOPILOT_GENERAL_PROFILE must be one
+        of: none, no-performance.
+
+     --autopilot-privileged-admission=[ALLOWLIST_PATHS,...]
+        Specifies which privileged workload allowlist paths can be referenced
+        and installed by AllowlistSynchronizers in Autopilot modes.
+
+        The value is a comma-separated list of paths in the format:
+
+        * gke://<partner_name>/<app_name>/<allowlist_path> for Autopilot
+          partner allowlists
+        * gs://<bucket_name>/<allowlist_path> for user allowlists
+
+        By default, all GKE-managed allowlists (gke://*) are authorized. See
+        https://cloud.google.com/kubernetes-engine/docs/resources/autopilot-partners
+        for all supported Autopilot partner allowlists. When setting this flag,
+        be careful to explicitly specify gke://* in addition to other entries
+        if you rely on this default behavior.
+
+        Wildcards (*) are supported. For example, if gke://* is authorized,
+        then AllowlistSynchronizers can be used to install
+        gke://partner1/allowlist1.yaml and gke://partner2/allowlist2.yaml.
+
+        Note: Use of user allowlists (gs://) requires special permissions and
+        is only available to a subset of high tier customers. Please contact
+        your account team for more information.
+
+        Examples:
+
+        Allow all GKE-managed allowlists (default behavior):
+
+            $ gcloud container clusters create-auto \
+                --autopilot-privileged-admission=gke://*
+
+        Authorize only allowlists from a GKE Autopilot partner:
+
+            $ gcloud container clusters create-auto \
+                --autopilot-privileged-admission=gke://my-partner/*
+
+        Authorize only a singular user-owned allowlist
+
+            $ gcloud container clusters create-auto \
+                --autopilot-privileged-admission=gs://my-bucket/allowlists/\
+            my-allowlist.yaml
+
+        Authorize all user-owned allowlists under a given path:
+
+            $ gcloud container clusters create-auto \
+                --autopilot-privileged-admission=gs://my-bucket/*
+
+        Authorize all GKE-managed allowlists and a specific user-owned
+        allowlist:
+
+            $ gcloud container clusters create-auto \
+                --autopilot-privileged-admission=gke://*,gs://my-bucket/\
+            allowlists/my-allowlist.yaml
+
+        Disable allowlist installation entirely:
+
+            $ gcloud container clusters create-auto \
+                --autopilot-privileged-admission=""
+
+        Exercise caution when using this flag on an existing cluster. Upon
+        updates, existing AllowlistSynchronizers will uninstall allowlists that
+        are no longer authorized.
+
+        For instructions on installing allowlists in the cluster after
+        authorization, please refer to:
+        https://cloud.google.com/kubernetes-engine/docs/how-to/run-autopilot-partner-workloads
+
+     --autoprovisioning-enable-insecure-kubelet-readonly-port
+        Enables the Kubelet's insecure read only port for Autoprovisioned Node
+        Pools.
+
+        If not set, the value from nodePoolDefaults.nodeConfigDefaults will be
+        used.
+
+        To disable the readonly port
+        --no-autoprovisioning-enable-insecure-kubelet-readonly-port.
+
+     --autoprovisioning-network-tags=TAGS,[TAGS,...]
+        Applies the given Compute Engine tags (comma separated) on all nodes in
+        the auto-provisioned node pools of the new Standard cluster or the new
+        Autopilot cluster.
+
+        Examples:
+
+            $ gcloud container clusters create-auto example-cluster \
+                --autoprovisioning-network-tags=tag1,tag2
+
+        New nodes in auto-provisioned node pools, including ones created by
+        resize or recreate, will have these tags on the Compute Engine API
+        instance object and can be used in firewall rules. See
+        https://cloud.google.com/sdk/gcloud/reference/compute/firewall-rules/create
+        for examples.
+
+     --autoprovisioning-resource-manager-tags=[KEY=VALUE,...]
+        Applies the specified comma-separated resource manager tags that has
+        the GCE_FIREWALL purpose to all nodes in the new Autopilot cluster or
+        all auto-provisioned nodes in the new Standard cluster.
+
+        Examples:
+
+            $ gcloud container clusters create-auto example-cluster \
+                --autoprovisioning-resource-manager-tags=tagKeys/\
+            1234=tagValues/2345
+            $ gcloud container clusters create-auto example-cluster \
+                --autoprovisioning-resource-manager-tags=my-project/key1=value1
+            $ gcloud container clusters create-auto example-cluster \
+                --autoprovisioning-resource-manager-tags=12345/key1=value1,\
+            23456/key2=value2
+            $ gcloud container clusters create-auto example-cluster \
+                --autoprovisioning-resource-manager-tags=
+
+        All nodes in an Autopilot cluster or all auto-provisioned nodes in a
+        Standard cluster, including nodes that are resized or re-created, will
+        have the specified tags on the corresponding Instance object in the
+        Compute Engine API. You can reference these tags in network firewall
+        policy rules. For instructions, see
+        https://cloud.google.com/firewall/docs/use-tags-for-firewalls.
+
+     Flags for Binary Authorization:
+
+     --binauthz-evaluation-mode=BINAUTHZ_EVALUATION_MODE
+        Enable Binary Authorization for this cluster. BINAUTHZ_EVALUATION_MODE
+        must be one of: disabled, project-singleton-policy-enforce.
+
+     --boot-disk-kms-key=BOOT_DISK_KMS_KEY
+        The Customer Managed Encryption Key used to encrypt the boot disk
+        attached to each node in the node pool. This should be of the form
+        projects/[KEY_PROJECT_ID]/locations/[LOCATION]/keyRings/[RING_NAME]/cryptoKeys/[KEY_NAME].
+        For more information about protecting resources with Cloud KMS Keys
+        please see:
+        https://cloud.google.com/compute/docs/disks/customer-managed-encryption
+
+     --cluster-ipv4-cidr=CLUSTER_IPV4_CIDR
+        The IP address range for the pods in this cluster in CIDR notation
+        (e.g. 10.0.0.0/14). Prior to Kubernetes version 1.7.0 this must be a
+        subset of 10.0.0.0/8; however, starting with version 1.7.0 can be any
+        RFC 1918 IP range.
+
+        If you omit this option, a range is chosen automatically. The
+        automatically chosen range is randomly selected from 10.0.0.0/8 and
+        will not include IP address ranges allocated to VMs, existing routes,
+        or ranges allocated to other clusters. The automatically chosen range
+        might conflict with reserved IP addresses, dynamic routes, or routes
+        within VPCs that peer with this cluster. You should specify
+        --cluster-ipv4-cidr to prevent conflicts.
+
+        This field is not applicable in a Shared VPC setup where the IP address
+        range for the pods must be specified with
+        --cluster-secondary-range-name
+
+     --cluster-secondary-range-name=NAME
+        Set the secondary range to be used as the source for pod IPs. Alias
+        ranges will be allocated from this secondary range. NAME must be the
+        name of an existing secondary range in the cluster subnetwork.
+
+        Cannot be used with '--create-subnetwork' option.
+
+     --cluster-version=CLUSTER_VERSION
+        The Kubernetes version to use for the master and nodes. Defaults to
+        server-specified.
+
+        The default Kubernetes version is available using the following
+        command.
+
+            $ gcloud container get-server-config
+
+     --confidential-node-type=CONFIDENTIAL_NODE_TYPE
+        Enable confidential nodes for the cluster. Enabling Confidential Nodes
+        will create nodes using Confidential VM
+        https://docs.cloud.google.com/compute/docs/about-confidential-vm.
+        CONFIDENTIAL_NODE_TYPE must be one of: sev, sev_snp, tdx.
+
+     --containerd-config-from-file=PATH_TO_FILE
+        Path of the YAML file that contains containerd configuration entries
+        like configuring access to private image registries.
+
+        For detailed information on the configuration usage, please refer to
+        https://cloud.google.com/kubernetes-engine/docs/how-to/customize-containerd-configuration.
+
+        Note: Updating the containerd configuration of an existing cluster or
+        node pool requires recreation of the existing nodes, which might cause
+        disruptions in running workloads.
+
+        Use a full or relative path to a local file containing the value of
+        containerd_config.
+
+     --control-plane-egress=CONTROL_PLANE_EGRESS
+        Configures the egress policy for the GKE control plane to control
+        outbound traffic from the kube-apiserver. CONTROL_PLANE_EGRESS must be
+        one of:
+
+         NONE
+            (Recommended) Provides maximum security. This mode removes the
+            control plane's public IP address and blocks all outbound traffic
+            from the kube-apiserver by default, preventing unexpected data
+            exfiltration. Webhooks that use clientConfig.url will be disabled.
+            Essential GKE-managed services are still permitted to function via
+            an internal allowlist.
+         VIA_CONTROL_PLANE
+            (Default) Maintains backward compatibility. The control plane
+            retains its public IP address and allows egress traffic from the
+            kube-apiserver.
+
+     --create-subnetwork=[KEY=VALUE,...]
+        Create a new subnetwork for the cluster. The name and range of the
+        subnetwork can be customized via optional 'name' and 'range' key-value
+        pairs.
+
+        'name' specifies the name of the subnetwork to be created.
+
+        'range' specifies the IP range for the new subnetwork. This can either
+        be a netmask size (e.g. '/20') or a CIDR range (e.g. '10.0.0.0/20'). If
+        a netmask size is specified, the IP is automatically taken from the
+        free space in the cluster's network.
+
+        Examples:
+
+        Create a new subnetwork with a default name and size.
+
+            $ gcloud container clusters create-auto --create-subnetwork ""
+
+        Create a new subnetwork named "my-subnet" with netmask of size 21.
+
+            $ gcloud container clusters create-auto \
+                --create-subnetwork name=my-subnet,range=/21
+
+        Create a new subnetwork with a default name with the primary range of
+        10.100.0.0/16.
+
+            $ gcloud container clusters create-auto \
+                --create-subnetwork range=10.100.0.0/16
+
+        Create a new subnetwork with the name "my-subnet" with a default range.
+
+            $ gcloud container clusters create-auto \
+                --create-subnetwork name=my-subnet
+
+        Cannot be used in conjunction with '--subnetwork' option.
+
+     --database-encryption-key=DATABASE_ENCRYPTION_KEY
+        Enable Database Encryption.
+
+        Enable database encryption that will be used to encrypt Kubernetes
+        Secrets at the application layer. The key provided should be the
+        resource ID in the format of
+        projects/[KEY_PROJECT_ID]/locations/[LOCATION]/keyRings/[RING_NAME]/cryptoKeys/[KEY_NAME].
+        For more information, see
+        https://cloud.google.com/kubernetes-engine/docs/how-to/encrypting-secrets.
+
+     --disable-l4-lb-firewall-reconciliation
+        Disable reconciliation on the cluster for L4 Load Balancer VPC
+        firewalls targeting ingress traffic.
+
+     --disable-multi-nic-lustre
+        Disable the Lustre CSI driver to automatically detect and configure all
+        suitable network interfaces on a node for Lustre IO.
+
+     --enable-agent-sandbox
+        Enable the Agent Sandbox feature on the cluster. Use
+        --no-enable-agent-sandbox to disable.
+
+     --enable-ambient-networking
+        Enable ambient networking on the cluster.
+
+     --enable-authorized-networks-on-private-endpoint
+        Enable enforcement of --master-authorized-networks CIDR ranges for
+        traffic reaching cluster's control plane via private IP.
+
+     --enable-auto-ipam
+        Enable the Auto IP Address Management (Auto IPAM) feature for the
+        cluster.
+
+     --enable-backup-restore
+        Enable the Backup for GKE add-on. This add-on is disabled by default.
+        To learn more, see the Backup for GKE overview:
+        https://cloud.google.com/kubernetes-engine/docs/add-on/backup-for-gke/concepts/backup-for-gke.
+
+     --enable-cilium-clusterwide-network-policy
+        Enable Cilium Clusterwide Network Policies on the cluster. Disabled by
+        default.
+
+     --enable-confidential-nodes
+        Enable confidential nodes for the cluster. Enabling Confidential Nodes
+        will create nodes using Confidential VM
+        https://docs.cloud.google.com/compute/docs/about-confidential-vm.
+
+     --enable-default-compute-class
+        Enable the default compute class to use for the cluster.
+
+        To disable Default Compute Class in an existing cluster, explicitly set
+        flag --no-enable-default-compute-class.
+
+     --enable-dns-access
+        Enable access to the cluster's control plane over DNS-based endpoint.
+
+        DNS-based control plane access is recommended.
+
+     --enable-fleet
+        Set cluster project as the fleet host project. This will register the
+        cluster to the same project. To register the cluster to a fleet in a
+        different project, please use --fleet-project=FLEET_HOST_PROJECT.
+        Example: $ gcloud container clusters create-auto --enable-fleet
+
+     --enable-google-cloud-access
+        When you enable Google Cloud Access, any public IP addresses owned by
+        Google Cloud can reach the public control plane endpoint of your
+        cluster.
+
+     --enable-ip-access
+        Enable access to the cluster's control plane over private IP and public
+        IP if --enable-private-endpoint is not enabled.
+
+     --enable-k8s-certs-via-dns
+        Enable K8s client certificates Authentication to the cluster's control
+        plane over DNS-based endpoint.
+
+     --enable-k8s-tokens-via-dns
+        Enable K8s Service Account tokens Authentication to the cluster's
+        control plane over DNS-based endpoint.
+
+     --enable-kernel-module-signature-enforcement
+        Enforces that kernel modules are signed on all new nodes in the cluster
+        unless explicitly overridden with
+        --no-enable-kernel-module-signature-enforcement when creating the
+        nodepool. Use --no-enable-kernel-module-signature-enforcement to
+        disable.
+
+        Examples:
+
+            $ gcloud container clusters create-auto example-cluster \
+                --enable-kernel-module-signature-enforcement
+
+     --enable-kubernetes-unstable-apis=API,[API,...]
+        Enable Kubernetes beta API features on this cluster. Beta APIs are not
+        expected to be production ready and should be avoided in
+        production-grade environments.
+
+     --enable-legacy-lustre-port
+        Allow the Lustre CSI driver to initialize LNet (the virtual network
+        layer for Lustre kernel module) using port 6988. This flag is required
+        to workaround a port conflict with the gke-metadata-server on GKE
+        nodes.
+
+     --enable-lustre-csi-driver
+        Enable the Lustre CSI Driver GKE add-on. This add-on is disabled by
+        default.
+
+     --enable-master-global-access
+        Use with private clusters to allow access to the master's private
+        endpoint from any Google Cloud region or on-premises environment
+        regardless of the private cluster's region.
+
+     --enable-multi-networking
+        Enables multi-networking on the cluster. Multi-networking is disabled
+        by default.
+
+     --enable-ray-cluster-logging
+        Enable automatic log processing sidecar for Ray clusters.
+
+     --enable-ray-cluster-monitoring
+        Enable automatic metrics collection for Ray clusters.
+
+     --enable-ray-operator
+        Enable the Ray Operator GKE add-on. This add-on is disabled by default.
+
+     --fleet-project=PROJECT_ID_OR_NUMBER
+        Sets fleet host project for the cluster. If specified, the current
+        cluster will be registered as a fleet membership under the fleet host
+        project.
+
+        Example: $ gcloud container clusters create-auto
+        --fleet-project=my-project
+
+     --hpa-profile=HPA_PROFILE
+        Set Horizontal Pod Autoscaler behavior. Accepted values are: none,
+        performance. For more information, see
+        https://cloud.google.com/kubernetes-engine/docs/how-to/horizontal-pod-autoscaling#hpa-profile.
+
+     --image=IMAGE
+        The Operating System image for the node pool. This is a private
+        feature, please contact your Google account team for allowlisting this
+        feature.
+
+     --image-project=IMAGE_PROJECT
+        The Google Cloud project storing the Operating System image for the
+        node pool. This is a private feature, please contact your Google
+        account team for allowlisting this feature.
+
+     --image-type=IMAGE_TYPE
+        The image type to use for the cluster. Defaults to server-specified.
+
+        Image Type specifies the base OS that the nodes in the cluster will run
+        on. If an image type is specified, that will be assigned to the cluster
+        and all future upgrades will use the specified image type. If it is not
+        specified the server will pick the default image type.
+
+        The default image type and the list of valid image types are available
+        using the following command.
+
+            $ gcloud container get-server-config
+
+     --labels=[KEY=VALUE,...]
+        Labels to apply to the Google Cloud resources in use by the Kubernetes
+        Engine cluster. These are unrelated to Kubernetes labels.
+
+        Examples:
+
+            $ gcloud container clusters create-auto example-cluster \
+                --labels=label_a=value1,label_b=,label_c=value3
+
+     --logging=[COMPONENT,...]
+        Set the components that have logging enabled. Valid component values
+        are: SYSTEM, WORKLOAD, API_SERVER, CONTROLLER_MANAGER, SCHEDULER,
+        KCP_HPA, KCP_VPA
+
+        The default is SYSTEM,WORKLOAD. If this flag is set, then SYSTEM must
+        be included.
+
+        For more information, see
+        https://cloud.google.com/kubernetes-engine/docs/concepts/about-logs#available-logs
+
+        Examples:
+
+            $ gcloud container clusters create-auto --logging=SYSTEM
+            $ gcloud container clusters create-auto --logging=SYSTEM,WORKLOAD
+            $ gcloud container clusters create-auto \
+                --logging=SYSTEM,WORKLOAD,API_SERVER,CONTROLLER_MANAGER,\
+            SCHEDULER,KCP_HPA,KCP_VPA
+
+     --managed-otel-scope=MANAGED_OTEL_SCOPE
+        Specifies the scope of Managed OpenTelemetry within the cluster.
+
+        COLLECTION_AND_INSTRUMENTATION_COMPONENTS: Enables GKE Managed
+        OpenTelemetry Collector and other Instrumentations components like
+        Instrumentation CRD within the cluster. NONE: Disables the GKE Managed
+        OpenTelemetry.
+
+        MANAGED_OTEL_SCOPE must be one of:
+        COLLECTION_AND_INSTRUMENTATION_COMPONENTS, NONE.
+
+     --membership-type=MEMBERSHIP_TYPE
+        Specify a membership type for the cluster's fleet membership. Example:
+        $ gcloud container clusters create-auto \
+        --membership-type=LIGHTWEIGHT. MEMBERSHIP_TYPE must be (only \ one
+        value is supported):
+
+         LIGHTWEIGHT
+            Fleet membership representing this cluster will be lightweight.
+
+     --monitoring=[COMPONENT,...]
+        Set the components that have monitoring enabled. Valid component values
+        are: SYSTEM, WORKLOAD (Deprecated), NONE, API_SERVER,
+        CONTROLLER_MANAGER, SCHEDULER, DAEMONSET, DEPLOYMENT, HPA, POD,
+        STATEFULSET, STORAGE, CADVISOR, KUBELET, DCGM, JOBSET
+
+        Note: DAEMONSET, DEPLOYMENT, HPA, POD, STATEFULSET, STORAGE, CADVISOR,
+        KUBELET, DCGM, and JOBSET require Google Managed Prometheus to be
+        enabled.
+
+        For more information, see
+        https://cloud.google.com/kubernetes-engine/docs/how-to/configure-metrics#available-metrics
+
+        Examples:
+
+            $ gcloud container clusters create-auto \
+                --monitoring=SYSTEM,API_SERVER,POD,DCGM
+            $ gcloud container clusters create-auto --monitoring=SYSTEM
+
+     --network=NETWORK
+        The Compute Engine Network that the cluster will connect to. Google
+        Kubernetes Engine will use this network when creating routes and
+        firewalls for the clusters. Defaults to the 'default' network.
+
+     --node-creation-mode=NODE_CREATION_MODE
+        Configures node creation mode for the cluster, either via kubelet or
+        via control plane. NODE_CREATION_MODE must be one of:
+
+         CONTROL_PLANE
+            registers nodes via control plane; kubelet registration will be
+            rejected. This selection will not take effect if you turn off
+            Shielded Nodes.
+         KUBELET
+            registers nodes via kubelet.
+
+     --private-endpoint-subnetwork=NAME
+        Sets the subnetwork GKE uses to provision the control plane's private
+        endpoint.
+
+     --release-channel=CHANNEL
+        Release channel a cluster is subscribed to.
+
+        If left unspecified and a version is specified, the cluster is enrolled
+        in the most mature release channel where the version is available
+        (first checking STABLE, then REGULAR, and finally RAPID). Otherwise, if
+        no release channel and no version is specified, the cluster is enrolled
+        in the REGULAR channel with its default version. When a cluster is
+        subscribed to a release channel, Google maintains both the master
+        version and the node version. Node auto-upgrade is enabled by default
+        for release channel clusters and can be controlled via upgrade-scope
+        exclusions
+        (https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions#scope_of_maintenance_to_exclude).
+
+        CHANNEL must be one of:
+
+         extended
+            Clusters subscribed to 'extended' can remain on a minor version for
+            24 months from when the minor version is made available in the
+            Regular channel.
+
+         rapid
+            'rapid' channel is offered on an early access basis for customers
+            who want to test new releases.
+
+            WARNING: Versions available in the 'rapid' channel may be subject
+            to unresolved issues with no known workaround and are not subject
+            to any SLAs.
+
+         regular
+            Clusters subscribed to 'regular' receive versions that are
+            considered GA quality. 'regular' is intended for production users
+            who want to take advantage of new features.
+
+         stable
+            Clusters subscribed to 'stable' receive versions that are known to
+            be stable and reliable in production.
+
+     --security-group=SECURITY_GROUP
+        The name of the RBAC security group for use with Google security groups
+        in Kubernetes RBAC
+        (https://kubernetes.io/docs/reference/access-authn-authz/rbac/).
+
+        To include group membership as part of the claims issued by Google
+        during authentication, a group must be designated as a security group
+        by including it as a direct member of this group.
+
+        If unspecified, no groups will be returned for use with RBAC.
+
+     --security-posture=SECURITY_POSTURE
+        Sets the mode of the Kubernetes security posture API's off-cluster
+        features.
+
+        To enable advanced mode explicitly set the flag to
+        --security-posture=enterprise.
+
+        To enable in standard mode explicitly set the flag to
+        --security-posture=standard
+
+        To disable in an existing cluster, explicitly set the flag to
+        --security-posture=disabled.
+
+        For more information on enablement, see
+        https://cloud.google.com/kubernetes-engine/docs/concepts/about-security-posture-dashboard#feature-enablement.
+
+        SECURITY_POSTURE must be one of: disabled, standard, enterprise.
+
+     --services-ipv4-cidr=CIDR
+        Set the IP range for the services IPs.
+
+        Can be specified as a netmask size (e.g. '/20') or as in CIDR notion
+        (e.g. '10.100.0.0/20'). If given as a netmask size, the IP range will
+        be chosen automatically from the available space in the network.
+
+        If unspecified, the services CIDR range will be chosen with a default
+        mask size.
+
+     --services-secondary-range-name=NAME
+        Set the secondary range to be used for services (e.g. ClusterIPs). NAME
+        must be the name of an existing secondary range in the cluster
+        subnetwork.
+
+        Cannot be used with '--create-subnetwork' option.
+
+     --subnetwork=SUBNETWORK
+        The Google Compute Engine subnetwork
+        (https://cloud.google.com/compute/docs/subnetworks) to which the
+        cluster is connected. The subnetwork must belong to the network
+        specified by --network.
+
+        Cannot be used with the "--create-subnetwork" option.
+
+     --tier=TIER
+        (DEPRECATED) Set the desired tier for the cluster.
+
+        The --tier flag is deprecated. More info:
+        https://cloud.google.com/kubernetes-engine/docs/release-notes#September_02_2025.
+        TIER must be one of: standard, enterprise.
+
+     --workload-policies=WORKLOAD_POLICIES
+        Add Autopilot workload policies to the cluster.
+
+        Examples:
+
+            $ gcloud container clusters create-auto example-cluster \
+                --workload-policies=allow-net-admin
+
+        The only supported workload policy is 'allow-net-admin'.
+
+     --workload-vulnerability-scanning=WORKLOAD_VULNERABILITY_SCANNING
+        Sets the mode of the Kubernetes security posture API's workload
+        vulnerability scanning.
+
+        To enable Advanced vulnerability insights mode explicitly set the flag
+        to --workload-vulnerability-scanning=enterprise.
+
+        To enable in standard mode explicitly set the flag to
+        --workload-vulnerability-scanning=standard.
+
+        To disable in an existing cluster, explicitly set the flag to
+        --workload-vulnerability-scanning=disabled.
+
+        For more information on enablement, see
+        https://cloud.google.com/kubernetes-engine/docs/concepts/about-security-posture-dashboard#feature-enablement.
+
+        WORKLOAD_VULNERABILITY_SCANNING must be one of: disabled, standard,
+        enterprise.
+
+     At most one of these can be specified:
+
+       --additive-vpc-scope-dns-domain=ADDITIVE_VPC_SCOPE_DNS_DOMAIN
+          The domain used in Additive VPC scope. Only works with Cluster Scope.
+
+       --disable-additive-vpc-scope
+          Disables Additive VPC Scope.
+
+     Control Plane Keys
+
+     --aggregation-ca=CA_POOL_PATH
+        The Certificate Authority Service caPool that will back the aggregation
+        CA
+
+     --cluster-ca=CA_POOL_PATH
+        The Certificate Authority Service caPool that will back the cluster CA
+
+     --control-plane-disk-encryption-key=KEY
+        The Cloud KMS symmetric encryption cryptoKey that will be used to
+        encrypt the control plane disks
+
+     --etcd-api-ca=CA_POOL_PATH
+        The Certificate Authority Service caPool that will back the etcd API CA
+
+     --etcd-peer-ca=CA_POOL_PATH
+        The Certificate Authority Service caPool that will back the etcd peer
+        CA
+
+     --gkeops-etcd-backup-encryption-key=KEY
+        The Cloud KMS symmetric encryption cryptoKey that will be used to
+        encrypt the disaster recovery etcd backups for the cluster
+
+     --service-account-signing-keys=KEY_VERSION,[KEY_VERSION,...]
+        A Cloud KMS asymmetric signing cryptoKeyVersion that will be used to
+        sign service account tokens
+
+     --service-account-verification-keys=KEY_VERSION,[KEY_VERSION,...]
+        A Cloud KMS asymmetric signing cryptoKeyVersion that will be used to
+        verify service account tokens. Maybe specified multiple times.
+
+     At most one of these can be specified:
+
+       --dataplane-v2-observability-mode=DATAPLANE_V2_OBSERVABILITY_MODE
+          (REMOVED) Select Advanced Datapath Observability mode for the
+          cluster. Defaults to DISABLED.
+
+          Advanced Datapath Observability allows for a real-time view into
+          pod-to-pod traffic within your cluster.
+
+          Examples:
+
+              $ gcloud container clusters create-auto \
+                  --dataplane-v2-observability-mode=DISABLED
+
+              $ gcloud container clusters create-auto \
+                  --dataplane-v2-observability-mode=INTERNAL_VPC_LB
+
+              $ gcloud container clusters create-auto \
+                  --dataplane-v2-observability-mode=EXTERNAL_LB
+
+          Flag --dataplane-v2-observability-mode has been removed.
+
+          DATAPLANE_V2_OBSERVABILITY_MODE must be one of:
+
+           DISABLED
+              Disables Advanced Datapath Observability.
+           EXTERNAL_LB
+              Makes Advanced Datapath Observability available to the external
+              network.
+           INTERNAL_VPC_LB
+              Makes Advanced Datapath Observability available from the VPC
+              network.
+
+       --disable-dataplane-v2-flow-observability
+          Disables Advanced Datapath Observability.
+
+       --enable-dataplane-v2-flow-observability
+          Enables Advanced Datapath Observability which allows for a real-time
+          view into pod-to-pod traffic within your cluster.
+
+     At most one of these can be specified:
+
+       --disable-pod-snapshots
+          Disable the Pod Snapshot feature on the cluster.
+
+       --enable-pod-snapshots
+          Enable the Pod Snapshot feature on the cluster.
+
+     --enable-insecure-binding-system-authenticated
+        Allow using system:authenticated as a subject in ClusterRoleBindings
+        and RoleBindings. Allowing bindings that reference system:authenticated
+        is a security risk and is not recommended.
+
+        To disallow binding system:authenticated in a cluster, explicitly set
+        the --no-enable-insecure-binding-system-authenticated flag instead.
+
+     --enable-insecure-binding-system-unauthenticated
+        Allow using system:unauthenticated and system:anonymous as subjects in
+        ClusterRoleBindings and RoleBindings. Allowing bindings that reference
+        system:unauthenticated and system:anonymous are a security risk and is
+        not recommended.
+
+        To disallow binding system:authenticated in a cluster, explicitly set
+        the --no-enable-insecure-binding-system-unauthenticated flag instead.
+
+     Master Authorized Networks
+
+     --enable-master-authorized-networks
+        Allow only specified set of CIDR blocks (specified by the
+        --master-authorized-networks flag) to connect to Kubernetes master
+        through HTTPS. Besides these blocks, the following have access as well:
+
+            1) The private network the cluster connects to if
+            `--enable-private-nodes` is specified.
+            2) Google Compute Engine Public IPs if `--enable-private-nodes` is not
+            specified.
+
+        Use --no-enable-master-authorized-networks to disable. When disabled,
+        public internet (0.0.0.0/0) is allowed to connect to Kubernetes master
+        through HTTPS.
+
+     --master-authorized-networks=NETWORK,[NETWORK,...]
+        The list of CIDR blocks (up to 100 for private cluster, 50 for public
+        cluster) that are allowed to connect to Kubernetes master through
+        HTTPS. Specified in CIDR notation (e.g. 1.2.3.4/30). Cannot be
+        specified unless --enable-master-authorized-networks is also specified.
+
+     Private Clusters
+
+     --enable-private-endpoint
+        Cluster is managed using the private IP address of the master API
+        endpoint.
+
+     --enable-private-nodes
+        Cluster is created with no public IP addresses on the cluster nodes.
+
+     --master-ipv4-cidr=MASTER_IPV4_CIDR
+        IPv4 CIDR range to use for the master network. This should have a
+        netmask of size /28 and should be used in conjunction with the
+        --enable-private-nodes flag.
+
+     Flags for Secret Manager configuration:
+
+     --enable-secret-manager
+        Enables the Secret Manager CSI driver provider component. See
+        https://secrets-store-csi-driver.sigs.k8s.io/introduction
+        https://github.com/GoogleCloudPlatform/secrets-store-csi-driver-provider-gcp
+
+     --enable-secret-manager-rotation
+        Enables the rotation of secrets in the Secret Manager CSI driver
+        provider component.
+
+     --secret-manager-rotation-interval=SECRET_MANAGER_ROTATION_INTERVAL
+        Set the rotation period for secrets in the Secret Manager CSI driver
+        provider component. If you don't specify a time interval for the
+        rotation, it will default to a rotation period of two minutes.
+
+     Flags for Secret Sync configuration:
+
+     --enable-secret-sync
+        Enables the Secret Sync component. For details, see Synchronize secrets
+        to Kubernetes Secrets
+        (https://docs.cloud.google.com/secret-manager/docs/sync-k8-secrets).
+
+     --enable-secret-sync-rotation
+        Enables the rotation of secrets in the Secret Sync component.
+
+     --secret-sync-rotation-interval=SECRET_SYNC_ROTATION_INTERVAL
+        Set the rotation period for secrets in the Secret Sync component.
+
+     At most one of these can be specified:
+
+       --location=LOCATION
+          Compute zone or region (e.g. us-central1-a or us-central1) for the
+          cluster. Overrides the default compute/region or compute/zone value
+          for this command invocation. Prefer using this flag over the --region
+          or --zone flags.
+
+       --region=REGION
+          Compute region (e.g. us-central1) for a regional cluster. Overrides
+          the default compute/region property value for this command
+          invocation.
+
+       --zone=ZONE, -z ZONE
+          Compute zone (e.g. us-central1-a) for a zonal cluster. Overrides the
+          default compute/zone property value for this command invocation.
+
+     Flags for cluster disruption budget configuration:
+
+     --maintenance-minor-version-disruption-interval=MAINTENANCE_MINOR_VERSION_DISRUPTION_INTERVAL
+        Set the minimum interval of time between minor version cluster
+        upgrades.
+
+     --maintenance-patch-version-disruption-interval=MAINTENANCE_PATCH_VERSION_DISRUPTION_INTERVAL
+        Set the minimum interval of time between patch version cluster
+        upgrades.
+
+     Options to specify the node identity.
+
+     Scopes options.
+
+     --scopes=[SCOPE,...]; default="gke-default"
+        Specifies scopes for the node instances.
+
+        Examples:
+
+            $ gcloud container clusters create-auto example-cluster \
+                --scopes=https://www.googleapis.com/auth/devstorage.read_only
+
+            $ gcloud container clusters create-auto example-cluster \
+                --scopes=bigquery,storage-rw,compute-ro
+
+        Multiple scopes can be specified, separated by commas. Various scopes
+        are automatically added based on feature usage. Such scopes are not
+        added if an equivalent scope already exists.
+
+        * monitoring-write: always added to ensure metrics can be written
+        * logging-write: added if Cloud Logging is enabled
+          (--enable-cloud-logging/--logging)
+        * monitoring: added if Cloud Monitoring is enabled
+          (--enable-cloud-monitoring/--monitoring)
+        * gke-default: added for Autopilot clusters that use the default
+          service account
+        * cloud-platform: added for Autopilot clusters that use any other
+          service account
+
+        SCOPE can be either the full URI of the scope or an alias. Default
+        scopes are assigned to all instances. Available aliases are:
+
+          Alias                  URI
+          bigquery               https://www.googleapis.com/auth/bigquery
+          cloud-platform         https://www.googleapis.com/auth/cloud-platform
+          cloud-source-repos     https://www.googleapis.com/auth/source.full_control
+          cloud-source-repos-ro  https://www.googleapis.com/auth/source.read_only
+          compute-ro             https://www.googleapis.com/auth/compute.readonly
+          compute-rw             https://www.googleapis.com/auth/compute
+          datastore              https://www.googleapis.com/auth/datastore
+          default                https://www.googleapis.com/auth/devstorage.read_only
+                                 https://www.googleapis.com/auth/logging.write
+                                 https://www.googleapis.com/auth/monitoring.write
+                                 https://www.googleapis.com/auth/pubsub
+                                 https://www.googleapis.com/auth/service.management.readonly
+                                 https://www.googleapis.com/auth/servicecontrol
+                                 https://www.googleapis.com/auth/trace.append
+          gke-default            https://www.googleapis.com/auth/devstorage.read_only
+                                 https://www.googleapis.com/auth/logging.write
+                                 https://www.googleapis.com/auth/monitoring
+                                 https://www.googleapis.com/auth/service.management.readonly
+                                 https://www.googleapis.com/auth/servicecontrol
+                                 https://www.googleapis.com/auth/trace.append
+          logging-write          https://www.googleapis.com/auth/logging.write
+          monitoring             https://www.googleapis.com/auth/monitoring
+          monitoring-read        https://www.googleapis.com/auth/monitoring.read
+          monitoring-write       https://www.googleapis.com/auth/monitoring.write
+          pubsub                 https://www.googleapis.com/auth/pubsub
+          service-control        https://www.googleapis.com/auth/servicecontrol
+          service-management     https://www.googleapis.com/auth/service.management.readonly
+          sql (deprecated)       https://www.googleapis.com/auth/sqlservice
+          sql-admin              https://www.googleapis.com/auth/sqlservice.admin
+          storage-full           https://www.googleapis.com/auth/devstorage.full_control
+          storage-ro             https://www.googleapis.com/auth/devstorage.read_only
+          storage-rw             https://www.googleapis.com/auth/devstorage.read_write
+          taskqueue              https://www.googleapis.com/auth/taskqueue
+          trace                  https://www.googleapis.com/auth/trace.append
+          userinfo-email         https://www.googleapis.com/auth/userinfo.email
+
+        DEPRECATION WARNING: https://www.googleapis.com/auth/sqlservice account
+        scope and sql alias do not provide SQL instance management capabilities
+        and have been deprecated. Please, use
+        https://www.googleapis.com/auth/sqlservice.admin or sql-admin to manage
+        your Google SQL Service instances.
+
+     --service-account=SERVICE_ACCOUNT
+        The Google Cloud Platform Service Account to be used by the node VMs.
+        If a service account is specified, the cloud-platform and
+        userinfo.email scopes are used. If no Service Account is specified, the
+        project default service account is used.
+
+     Flags for Wiz Sensor configuration:
+
+     --wiz-sensor-api-key-secret-uri=WIZ_SENSOR_API_KEY_SECRET_URI
+        The Secret Manager URI for the Wiz API key secret, for example,
+        projects/my-project/secrets/my-api-key/versions/1 or
+        projects/my-project/secrets/my-api-key/versions/latest. Requires the
+        Wiz Sensor and Secret Sync addons to be enabled.
+
+     --wiz-sensor-proxy-secret-uri=WIZ_SENSOR_PROXY_SECRET_URI
+        The Secret Manager URI for the Wiz proxy configuration, for example,
+        projects/my-project/secrets/my-proxy-secret/versions/1 or
+        projects/my-project/secrets/my-proxy-secret/versions/latest. Requires
+        the Wiz Sensor and Secret Sync addons to be enabled.
+
+     --wiz-sensor-registry-secret-uri=WIZ_SENSOR_REGISTRY_SECRET_URI
+        The Secret Manager URI for the Wiz registry secret, for example,
+        projects/my-project/secrets/my-registry-secret/versions/1 or
+        projects/my-project/secrets/my-registry-secret/versions/latest.
+        Requires the Wiz Sensor and Secret Sync addons to be enabled.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha container clusters create-auto
+
+        $ gcloud beta container clusters create-auto
+```
+
+### gcloud beta container clusters create-auto
+
+```text
+NAME
+    gcloud beta container clusters create-auto - create an Autopilot cluster
+        for running containers
+
+SYNOPSIS
+    gcloud beta container clusters create-auto NAME
+        [--anonymous-authentication-config=ANONYMOUS_AUTHENTICATION_CONFIG]
+        [--async] [--auto-monitoring-scope=AUTO_MONITORING_SCOPE]
+        [--autopilot-general-profile=AUTOPILOT_GENERAL_PROFILE]
+        [--autopilot-privileged-admission=[ALLOWLIST_PATHS,...]]
+        [--autoprovisioning-enable-insecure-kubelet-readonly-port]
+        [--autoprovisioning-network-tags=TAGS,[TAGS,...]]
+        [--autoprovisioning-resource-manager-tags=[KEY=VALUE,...]]
+        [--boot-disk-kms-key=BOOT_DISK_KMS_KEY]
+        [--cluster-ipv4-cidr=CLUSTER_IPV4_CIDR]
+        [--cluster-secondary-range-name=NAME]
+        [--cluster-version=CLUSTER_VERSION]
+        [--confidential-node-type=CONFIDENTIAL_NODE_TYPE]
+        [--containerd-config-from-file=PATH_TO_FILE]
+        [--control-plane-egress=CONTROL_PLANE_EGRESS]
+        [--create-subnetwork=[KEY=VALUE,...]]
+        [--database-encryption-key=DATABASE_ENCRYPTION_KEY]
+        [--disable-l4-lb-firewall-reconciliation] [--disable-multi-nic-lustre]
+        [--enable-agent-sandbox] [--enable-ambient-networking]
+        [--enable-authorized-networks-on-private-endpoint] [--enable-auto-ipam]
+        [--enable-backup-restore] [--enable-cilium-clusterwide-network-policy]
+        [--enable-confidential-nodes] [--enable-default-compute-class]
+        [--enable-dns-access] [--enable-fleet] [--enable-google-cloud-access]
+        [--enable-ip-access] [--enable-k8s-certs-via-dns]
+        [--enable-k8s-tokens-via-dns]
+        [--enable-kernel-module-signature-enforcement]
+        [--enable-kubernetes-unstable-apis=API,[API,...]]
+        [--enable-legacy-lustre-port] [--enable-lustre-csi-driver]
+        [--enable-managed-mldiagnostics] [--enable-master-global-access]
+        [--enable-multi-networking] [--enable-ray-cluster-logging]
+        [--enable-ray-cluster-monitoring] [--enable-ray-operator]
+        [--enable-scheduled-upgrades] [--fleet-project=PROJECT_ID_OR_NUMBER]
+        [--hpa-profile=HPA_PROFILE] [--image=IMAGE]
+        [--image-project=IMAGE_PROJECT] [--image-type=IMAGE_TYPE]
+        [--labels=[KEY=VALUE,...]] [--logging=[COMPONENT,...]]
+        [--managed-otel-scope=MANAGED_OTEL_SCOPE]
+        [--membership-type=MEMBERSHIP_TYPE] [--monitoring=[COMPONENT,...]]
+        [--network=NETWORK] [--node-creation-mode=NODE_CREATION_MODE]
+        [--node-pool-upgrade-concurrency-config=[max-count=MAX-COUNT]]
+        [--private-endpoint-subnetwork=NAME] [--release-channel=CHANNEL]
+        [--security-group=SECURITY_GROUP] [--security-posture=SECURITY_POSTURE]
+        [--services-ipv4-cidr=CIDR] [--services-secondary-range-name=NAME]
+        [--subnetwork=SUBNETWORK] [--tier=TIER]
+        [--workload-policies=WORKLOAD_POLICIES]
+        [--workload-vulnerability-scanning=WORKLOAD_VULNERABILITY_SCANNING]
+        [--additive-vpc-scope-dns-domain=ADDITIVE_VPC_SCOPE_DNS_DOMAIN
+          | --disable-additive-vpc-scope]
+        [--aggregation-ca=CA_POOL_PATH --cluster-ca=CA_POOL_PATH
+          --control-plane-disk-encryption-key=KEY --etcd-api-ca=CA_POOL_PATH
+          --etcd-peer-ca=CA_POOL_PATH --gkeops-etcd-backup-encryption-key=KEY
+          --service-account-signing-keys=KEY_VERSION,[KEY_VERSION,...]
+          --service-account-verification-keys=KEY_VERSION,[KEY_VERSION,...]]
+        [--binauthz-evaluation-mode=BINAUTHZ_EVALUATION_MODE
+          --binauthz-policy-bindings=[name=BINAUTHZ_POLICY]]
+        [--dataplane-v2-observability-mode=DATAPLANE_V2_OBSERVABILITY_MODE
+          | --disable-dataplane-v2-flow-observability
+          | --enable-dataplane-v2-flow-observability]
+        [--disable-pod-snapshots | --enable-pod-snapshots]
+        [--enable-insecure-binding-system-authenticated
+          --enable-insecure-binding-system-unauthenticated]
+        [--enable-master-authorized-networks
+          --master-authorized-networks=NETWORK,[NETWORK,...]]
+        [--enable-private-endpoint
+          --enable-private-nodes --master-ipv4-cidr=MASTER_IPV4_CIDR]
+        [--enable-secret-manager --enable-secret-manager-rotation
+          --secret-manager-rotation-interval=SECRET_MANAGER_ROTATION_INTERVAL]
+        [--enable-secret-sync --enable-secret-sync-rotation
+          --secret-sync-rotation-interval=SECRET_SYNC_ROTATION_INTERVAL]
+        [--location=LOCATION | --region=REGION | --zone=ZONE, -z ZONE]
+        [--maintenance-minor-version-disruption-interval=MAINTENANCE_MINOR_VERSION_DISRUPTION_INTERVAL --maintenance-patch-version-disruption-interval=MAINTENANCE_PATCH_VERSION_DISRUPTION_INTERVAL]
+        [--scopes=[SCOPE,...];
+          default="gke-default" --service-account=SERVICE_ACCOUNT]
+        [--wiz-sensor-api-key-secret-uri=WIZ_SENSOR_API_KEY_SECRET_URI
+          --wiz-sensor-proxy-secret-uri=WIZ_SENSOR_PROXY_SECRET_URI
+          --wiz-sensor-registry-secret-uri=WIZ_SENSOR_REGISTRY_SECRET_URI]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha container clusters create-auto
+
+```text
+NAME
+    gcloud alpha container clusters create-auto - create an Autopilot cluster
+        for running containers
+
+SYNOPSIS
+    gcloud alpha container clusters create-auto NAME
+        [--anonymous-authentication-config=ANONYMOUS_AUTHENTICATION_CONFIG]
+        [--async] [--auto-monitoring-scope=AUTO_MONITORING_SCOPE]
+        [--autopilot-general-profile=AUTOPILOT_GENERAL_PROFILE]
+        [--autopilot-privileged-admission=[ALLOWLIST_PATHS,...]]
+        [--autoprovisioning-enable-insecure-kubelet-readonly-port]
+        [--autoprovisioning-network-tags=TAGS,[TAGS,...]]
+        [--autoprovisioning-resource-manager-tags=[KEY=VALUE,...]]
+        [--boot-disk-kms-key=BOOT_DISK_KMS_KEY]
+        [--cluster-ipv4-cidr=CLUSTER_IPV4_CIDR]
+        [--cluster-secondary-range-name=NAME]
+        [--cluster-version=CLUSTER_VERSION]
+        [--confidential-node-type=CONFIDENTIAL_NODE_TYPE]
+        [--containerd-config-from-file=PATH_TO_FILE]
+        [--control-plane-egress=CONTROL_PLANE_EGRESS]
+        [--create-subnetwork=[KEY=VALUE,...]]
+        [--database-encryption-key=DATABASE_ENCRYPTION_KEY]
+        [--disable-l4-lb-firewall-reconciliation] [--disable-multi-nic-lustre]
+        [--enable-agent-sandbox] [--enable-ambient-networking]
+        [--enable-authorized-networks-on-private-endpoint] [--enable-auto-ipam]
+        [--enable-backup-restore] [--enable-cilium-clusterwide-network-policy]
+        [--enable-confidential-nodes] [--enable-default-compute-class]
+        [--enable-dns-access] [--enable-fleet] [--enable-google-cloud-access]
+        [--enable-ip-access] [--enable-k8s-certs-via-dns]
+        [--enable-k8s-tokens-via-dns]
+        [--enable-kernel-module-signature-enforcement]
+        [--enable-kubernetes-unstable-apis=API,[API,...]]
+        [--enable-legacy-lustre-port] [--enable-lustre-csi-driver]
+        [--enable-managed-mldiagnostics] [--enable-master-global-access]
+        [--enable-multi-networking] [--enable-ray-cluster-logging]
+        [--enable-ray-cluster-monitoring] [--enable-ray-operator]
+        [--enable-scheduled-upgrades] [--fleet-project=PROJECT_ID_OR_NUMBER]
+        [--hpa-profile=HPA_PROFILE] [--image=IMAGE]
+        [--image-project=IMAGE_PROJECT] [--image-type=IMAGE_TYPE]
+        [--labels=[KEY=VALUE,...]] [--logging=[COMPONENT,...]]
+        [--managed-otel-scope=MANAGED_OTEL_SCOPE]
+        [--membership-type=MEMBERSHIP_TYPE] [--monitoring=[COMPONENT,...]]
+        [--network=NETWORK] [--node-creation-mode=NODE_CREATION_MODE]
+        [--node-pool-upgrade-concurrency-config=[max-count=MAX-COUNT]]
+        [--private-endpoint-subnetwork=NAME] [--release-channel=CHANNEL]
+        [--security-group=SECURITY_GROUP] [--security-posture=SECURITY_POSTURE]
+        [--services-ipv4-cidr=CIDR] [--services-secondary-range-name=NAME]
+        [--subnetwork=SUBNETWORK] [--tier=TIER]
+        [--workload-policies=WORKLOAD_POLICIES]
+        [--workload-vulnerability-scanning=WORKLOAD_VULNERABILITY_SCANNING]
+        [--additive-vpc-scope-dns-domain=ADDITIVE_VPC_SCOPE_DNS_DOMAIN
+          | --disable-additive-vpc-scope]
+        [--aggregation-ca=CA_POOL_PATH --cluster-ca=CA_POOL_PATH
+          --control-plane-disk-encryption-key=KEY --etcd-api-ca=CA_POOL_PATH
+          --etcd-peer-ca=CA_POOL_PATH --gkeops-etcd-backup-encryption-key=KEY
+          --service-account-signing-keys=KEY_VERSION,[KEY_VERSION,...]
+          --service-account-verification-keys=KEY_VERSION,[KEY_VERSION,...]]
+        [--binauthz-evaluation-mode=BINAUTHZ_EVALUATION_MODE
+          --binauthz-policy-bindings=[name=BINAUTHZ_POLICY,
+          enforcement-mode=ENFORCEMENT_MODE,...]]
+        [--dataplane-v2-observability-mode=DATAPLANE_V2_OBSERVABILITY_MODE
+          | --disable-dataplane-v2-flow-observability
+          | --enable-dataplane-v2-flow-observability]
+        [--disable-pod-snapshots | --enable-pod-snapshots]
+        [--enable-insecure-binding-system-authenticated
+          --enable-insecure-binding-system-unauthenticated]
+        [--enable-master-authorized-networks
+          --master-authorized-networks=NETWORK,[NETWORK,...]]
+        [--enable-private-endpoint
+          --enable-private-nodes --master-ipv4-cidr=MASTER_IPV4_CIDR]
+        [--enable-secret-manager --enable-secret-manager-rotation
+          --secret-manager-rotation-interval=SECRET_MANAGER_ROTATION_INTERVAL]
+        [--enable-secret-sync --enable-secret-sync-rotation
+          --secret-sync-rotation-interval=SECRET_SYNC_ROTATION_INTERVAL]
+        [--location=LOCATION | --region=REGION | --zone=ZONE, -z ZONE]
+        [--maintenance-minor-version-disruption-interval=MAINTENANCE_MINOR_VERSION_DISRUPTION_INTERVAL --maintenance-patch-version-disruption-interval=MAINTENANCE_PATCH_VERSION_DISRUPTION_INTERVAL]
+        [--scopes=[SCOPE,...];
+          default="gke-default" --service-account=SERVICE_ACCOUNT]
+        [--wiz-sensor-api-key-secret-uri=WIZ_SENSOR_API_KEY_SECRET_URI
+          --wiz-sensor-proxy-secret-uri=WIZ_SENSOR_PROXY_SECRET_URI
+          --wiz-sensor-registry-secret-uri=WIZ_SENSOR_REGISTRY_SECRET_URI]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud container clusters create-auto --tier`: "The --tier flag is deprecated. More info: https://cloud.google.com/kubernetes-engine/docs/release-notes#September_02_2025."; `gcloud container clusters create-auto --dataplane-v2-observability-mode`: "Flag --dataplane-v2-observability-mode has been removed.".
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/container/clusters/create-auto (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

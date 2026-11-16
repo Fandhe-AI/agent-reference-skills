@@ -65,3 +65,12 @@
 | gcloud container clusters config | alpha container clusters config export | [container-clusters-config.md](./container-clusters-config.md) |
 | gcloud container clusters create (part 1) | container clusters create | [container-clusters-create-1.md](./container-clusters-create-1.md) |
 | gcloud container clusters create (part 2) | 2 commands (alpha, beta, ga); beta container clusters create … | [container-clusters-create-2.md](./container-clusters-create-2.md) |
+| gcloud container clusters create-auto | 3 commands (alpha, beta, ga); container clusters create-auto … | [container-clusters-create-auto.md](./container-clusters-create-auto.md) |
+| gcloud container clusters delete | 3 commands (alpha, beta, ga); container clusters delete … | [container-clusters-delete.md](./container-clusters-delete.md) |
+| gcloud container clusters describe | 3 commands (alpha, beta, ga); container clusters describe … | [container-clusters-describe.md](./container-clusters-describe.md) |
+| gcloud container clusters get-credentials | 3 commands (alpha, beta, ga); container clusters get-credentials … | [container-clusters-get-credentials.md](./container-clusters-get-credentials.md) |
+| gcloud container clusters get-upgrade-info | 3 commands (alpha, beta, ga); container clusters get-upgrade-info … | [container-clusters-get-upgrade-info.md](./container-clusters-get-upgrade-info.md) |
+| gcloud container clusters list | 3 commands (alpha, beta, ga); container clusters list … | [container-clusters-list.md](./container-clusters-list.md) |
+| gcloud container clusters resize | 3 commands (alpha, beta, ga); container clusters resize … | [container-clusters-resize.md](./container-clusters-resize.md) |
+| gcloud container clusters update (part 1) | container clusters update | [container-clusters-update-1.md](./container-clusters-update-1.md) |
+| gcloud container clusters update (part 2) | 2 commands (alpha, beta, ga); beta container clusters update … | [container-clusters-update-2.md](./container-clusters-update-2.md) |
