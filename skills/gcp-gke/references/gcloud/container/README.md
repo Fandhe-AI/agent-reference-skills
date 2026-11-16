@@ -60,3 +60,8 @@
 | gcloud container binauthz policy remove-iam-policy-binding | 3 commands (alpha, beta, ga); container binauthz policy remove-iam-policy-binding … | [container-binauthz-policy-remove-iam-policy-binding.md](./container-binauthz-policy-remove-iam-policy-binding.md) |
 | gcloud container binauthz policy set-iam-policy | 3 commands (alpha, beta, ga); container binauthz policy set-iam-policy … | [container-binauthz-policy-set-iam-policy.md](./container-binauthz-policy-set-iam-policy.md) |
 | gcloud container binauthz policy update | 2 commands (alpha, beta); beta container binauthz policy update … | [container-binauthz-policy-update.md](./container-binauthz-policy-update.md) |
+| gcloud container clusters check-autopilot-compatibility | 3 commands (alpha, beta, ga); container clusters check-autopilot-compatibility … | [container-clusters-check-autopilot-compatibility.md](./container-clusters-check-autopilot-compatibility.md) |
+| gcloud container clusters complete-control-plane-upgrade | 3 commands (alpha, beta, ga); container clusters complete-control-plane-upgrade … | [container-clusters-complete-control-plane-upgrade.md](./container-clusters-complete-control-plane-upgrade.md) |
+| gcloud container clusters config | alpha container clusters config export | [container-clusters-config.md](./container-clusters-config.md) |
+| gcloud container clusters create (part 1) | container clusters create | [container-clusters-create-1.md](./container-clusters-create-1.md) |
+| gcloud container clusters create (part 2) | 2 commands (alpha, beta, ga); beta container clusters create … | [container-clusters-create-2.md](./container-clusters-create-2.md) |
