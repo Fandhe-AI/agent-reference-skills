@@ -19,16 +19,34 @@ Google Cloud (GCP) のコンピュート系スキル。Compute Engine の VM イ
 skills/gcp-compute/
   SKILL.md
   references/
+    compute-overview/             # 公式ガイド由来（手書き）: 概要・インスタンスの概念・停止 / 一時停止 / リセットの違い・リージョンとゾーン・割り当て・ライフサイクル・プロビジョニングモデル・作成と起動・廃止一覧
+      README.md
+      <page>.md                   # 例: deprecations.md / create-start-instance.md
+    compute-machine-types/        # マシンリソースの体系・コンピューティング最適化・メモリ最適化・Arm VM
+      README.md
+      <page>.md
+    compute-machine-families/     # 汎用マシンファミリー（C4 / N4 / C3 / N2 / E2 / N1 / Tau 等、カスタムマシンタイプ）・アクセラレータ最適化マシン（A4 / A3 / A2 / G4 / G2 等）
+      README.md
+      <page>.md
     compute-instances/            # インスタンス作成の方法と構成オプション・インスタンステンプレートの作成
       README.md
       <page>.md                   # 例: instance-creation-overview.md / create-instance-templates.md
     compute-instance-lifecycle/   # インスタンスの停止と再起動・削除
       README.md
       <page>.md
+    compute-metadata-scripts/     # メタデータサーバー・定義済みメタデータキー・起動 / シャットダウンスクリプト・ゲスト環境・ゲストエージェント
+      README.md
+      <page>.md
     compute-access-ssh/           # アクセス方法の概要・標準 SSH・OS Login・IAP TCP 転送による SSH・シリアルポート出力・シリアルコンソール
       README.md
       <page>.md
+    compute-security/             # アクセス制御・IAM・サービスアカウント・組織ポリシー・Shielded VM・整合性モニタリング・CSEK の廃止告知
+      README.md
+      <page>.md                   # 例: csek-deprecation-in-compute-engine.md
     compute-disks/                # ストレージの選択肢・Persistent Disk・Hyperdisk・ローカル SSD・ディスク暗号化
+      README.md
+      <page>.md
+    compute-snapshots-images/     # データ保護・スナップショット・インスタントスナップショット・スケジュール・リージョン PD・イメージ・イメージファミリー・マシンイメージ・OS イメージのライフサイクル
       README.md
       <page>.md
     compute-instance-groups/      # インスタンスグループ・インスタンステンプレート・ゾーン / リージョン MIG・自動修復・更新・ステートフル MIG
@@ -65,18 +83,25 @@ skills/gcp-compute/
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
 1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
-2. 非推奨・サポート終了を確認するときは、まず `compute-overview/deprecations.md`（後続 PR で投入）（一覧表）、CSEK は加えて `compute-security/csek-deprecation-in-compute-engine.md`（後続 PR で投入）、legacy Cloud TPU API は `cloud-tpu/tpus-in-compute-engine.md`、preemptible VM との関係は `compute-capacity/spot.md` を引く
+2. 非推奨・サポート終了を確認するときは、まず `compute-overview/deprecations.md`（一覧表）、CSEK は加えて `compute-security/csek-deprecation-in-compute-engine.md`、legacy Cloud TPU API は `cloud-tpu/tpus-in-compute-engine.md`、preemptible VM との関係は `compute-capacity/spot.md` を引く
 
-未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `compute-overview` / `compute-machine-types` / `compute-machine-families` / `compute-metadata-scripts` / `compute-security` / `compute-snapshots-images` / `vm-manager` / `confidential-computing` / `oracle-database`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `vm-manager` / `confidential-computing` / `oracle-database`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| Compute Engine の概要・インスタンスの概念・リージョンとゾーン・割り当て・インスタンスのライフサイクル・プロビジョニングモデル・VM の作成と起動・廃止一覧 | compute-overview | [references/compute-overview/README.md](references/compute-overview/README.md) |
+| 停止 / 一時停止 / リセットの違い・グローバル / リージョン / ゾーンリソース | compute-overview | [references/compute-overview/README.md](references/compute-overview/README.md) |
+| マシンファミリー・シリーズ・タイプの体系・コンピューティング最適化・メモリ最適化・Arm VM | compute-machine-types | [references/compute-machine-types/README.md](references/compute-machine-types/README.md) |
+| 汎用マシン（C4 / N4 / C3 / N2 / E2 / N1 / Tau）・カスタムマシンタイプ・アクセラレータ最適化マシン（A4 / A3 / A2 / G4 / G2）を選びたい | compute-machine-families | [references/compute-machine-families/README.md](references/compute-machine-families/README.md) |
 | インスタンス作成の方法と構成オプション・インスタンステンプレートを作りたい | compute-instances | [references/compute-instances/README.md](references/compute-instances/README.md) |
 | VM の停止・再起動・削除（課金への影響を含む） | compute-instance-lifecycle | [references/compute-instance-lifecycle/README.md](references/compute-instance-lifecycle/README.md) |
+| メタデータサーバー・定義済みメタデータキー・起動スクリプト・シャットダウンスクリプト・ゲスト環境・ゲストエージェント | compute-metadata-scripts | [references/compute-metadata-scripts/README.md](references/compute-metadata-scripts/README.md) |
 | VM への SSH 接続・OS Login の設定・IAP TCP 転送・シリアルポート出力・シリアルコンソール | compute-access-ssh | [references/compute-access-ssh/README.md](references/compute-access-ssh/README.md) |
+| Compute Engine の IAM・サービスアカウントの VM への付与・組織ポリシーの制約・Shielded VM・整合性モニタリング・CSEK の廃止 | compute-security | [references/compute-security/README.md](references/compute-security/README.md) |
 | Persistent Disk・Hyperdisk（性能）・ローカル SSD・ディスク暗号化（Google 管理鍵 / CMEK / CSEK） | compute-disks | [references/compute-disks/README.md](references/compute-disks/README.md) |
+| スナップショット・インスタントスナップショット・スナップショットスケジュール・リージョン PD・イメージ・イメージファミリー・マシンイメージ・OS イメージのライフサイクル | compute-snapshots-images | [references/compute-snapshots-images/README.md](references/compute-snapshots-images/README.md) |
 | インスタンスグループ・インスタンステンプレート・ゾーン / リージョン MIG・自動修復・MIG の更新（proactive / opportunistic）・ステートフル MIG | compute-instance-groups | [references/compute-instance-groups/README.md](references/compute-instance-groups/README.md) |
 | オートスケーラー・CPU 使用率 / LB 処理能力 / 複数シグナルによるスケーリング・予測自動スケーリング・スケールインの制御 | compute-autoscaling | [references/compute-autoscaling/README.md](references/compute-autoscaling/README.md) |
 | Spot VM・Flex-start VM・予約・将来の予約・確約利用割引（CUD） | compute-capacity | [references/compute-capacity/README.md](references/compute-capacity/README.md) |
@@ -87,7 +112,7 @@ skills/gcp-compute/
 | Bare Metal Solution の概要・計画・セットアップ（VLAN アタッチメント・ルーティング）・IAM・セキュリティ・メンテナンス・SSH 鍵 | bare-metal-solution | [references/bare-metal-solution/README.md](references/bare-metal-solution/README.md) |
 | Cluster Director（Slurm クラスタ）の作成・マシンタイプ・消費オプション・接続・クォータ・OS イメージ | cluster-director | [references/cluster-director/README.md](references/cluster-director/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `compute-overview` / `compute-machine-types` / `compute-machine-families` / `compute-metadata-scripts` / `compute-security` / `compute-snapshots-images` / `vm-manager` / `confidential-computing` / `oracle-database`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `vm-manager` / `confidential-computing` / `oracle-database`
 
 ## 他スキルとの使い分け
 
