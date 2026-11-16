@@ -12,6 +12,8 @@ Overview of using the Organization Policy Service to enforce constraints on Comp
 
 Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/resource-manager/org-policies/enable-enforce (gcloud 593.0.0 help). It enforces the boolean constraint `compute.disableSerialPortAccess` on project `foo-project`:
 
+Adapted (not in the official docs): removed the shell prompt `$ ` from the help example.
+
 ```bash
 gcloud resource-manager org-policies enable-enforce \
     compute.disableSerialPortAccess --project=foo-project
@@ -69,8 +71,9 @@ Limit: 20 constraints per Compute Engine resource, counting managed and custom c
 - The list of `compute.managed.*` constraints is on https://docs.cloud.google.com/compute/docs/access/managed-constraints; custom constraints are on https://docs.cloud.google.com/compute/docs/access/custom-constraints.
 - `compute.disableSerialPortAccess` is a security setting: it turns interactive serial console access off.
 - Distance line: Compute Engine constraints only; org policy in general is in `gcp-foundation`. Cloud KMS keys and Security Command Center are in the planned `gcp-security`.
+- Adapted from the official docs: the `enable-enforce` example drops the leading `$ ` prompt that the gcloud help shows, so the command can be pasted as is.
+- Source (gcloud help): https://docs.cloud.google.com/sdk/gcloud/reference/resource-manager/org-policies/enable-enforce (gcloud 593.0.0 help)
 - Source: https://docs.cloud.google.com/compute/docs/access/organization-policies (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
-- Source: https://docs.cloud.google.com/sdk/gcloud/reference/resource-manager/org-policies/enable-enforce (gcloud 593.0.0 help; prompt `$ ` removed from the example)
 
 ## Related
 
