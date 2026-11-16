@@ -36,19 +36,20 @@ jobs:
         run: bash .github/scripts/check-skill-structure.sh
 
   # --------------------------------------------------
-  # skill-tests（vendored スキルの node:test 回帰テスト）
+  # skill-tests（vendored スキルと skills/make の node:test 回帰テスト）
   # --------------------------------------------------
-  # .agents/skills/*/tests/*.test.mjs（vendored スキルの回帰テスト）を実行する。
   # skills/（リファレンススキル）は原則ドキュメントのみでテスト対象外。例外として
   # skills/make/ は補助 CLI（scripts/bin/*.mjs）と回帰テスト（tests/）を同梱するため、
-  # 別ステップで対象を skills/make/tests/ に限定して実行する。
+  # 対象を skills/make/tests/ に限定して実行する。
+  # vendored スキル（.agents/skills/）のテストは、上流 agent-cli-skills の dev/ に移り
+  # 配布されなくなった（上流の CI が実行する）。同期で消えるまでの移行期間に残って
+  # いる分は引き続き実行し、0 件になったらそのステップは何もせずに成功で終える。
   # ubuntu-latest には Node.js が同梱されるため setup-node の追加
   # （新規 action の SHA 固定管理）は不要。
   skill-tests:
     name: Skill tests (node:test)
     runs-on: ubuntu-latest
-    # 静的ファイル検査と gh スタブでの挙動テストのみのため軽量。structure job と
-    # 同じ 5 分では implement-issue-tree の大規模テスト群が収まらないため 10 分とする。
+    # 移行期間は vendored の implement-issue-tree の大規模テスト群も走るため 10 分とする。
     timeout-minutes: 10
     permissions:
       contents: read
@@ -59,21 +60,25 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run node:test
-        # `shopt -s failglob` でグロブが 1 件もマッチしない場合にシェルを即エラー
-        # 終了させる。failglob なしだとグロブが展開されずリテラル文字列のまま
-        # node --test に渡り、0 tests・終了コード 0 で「成功」してしまう
-        # （回帰テストゲートが無自覚に無効化される fail-open）。globstar で
-        # tests/ 配下のサブディレクトリも再帰探索する（`**` は 0 階層にも
-        # マッチするため tests/ 直下も引き続き対象。agent-cli-skills#447 の横展開）。
+      - name: Run node:test (vendored skills, while present)
+        # 同期で tests/ が消えるまでは従来どおり実行する（検証ゲートを移行完了前に
+        # 外さない）。0 件のときは「配布されなくなった」状態なので成功で終える。
+        # 1 件以上あるときにグロブがリテラルのまま node --test へ渡る fail-open は、
+        # nullglob で配列に展開してから件数で分岐することで防ぐ。
         run: |
-          shopt -s globstar failglob
-          node --test .agents/skills/*/tests/**/*.test.mjs
+          shopt -s globstar nullglob
+          files=(.agents/skills/*/tests/**/*.test.mjs)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "vendored スキルのテストは 0 件（上流 agent-cli-skills の CI が実行する）"
+            exit 0
+          fi
+          node --test "${files[@]}"
 
       - name: Run node:test (skills/make helper scripts)
         # 補助 CLI の回帰テストのみ。Node 標準ライブラリだけで動き、Rust / pnpm や
         # ネットワークを要求しない（samples/projects の実ビルド検証は含まない）。
-        # failglob により 0 件マッチはエラー終了する（上のステップと同じ fail-closed）。
+        # `shopt -s failglob` でグロブが 1 件もマッチしない場合にシェルを即エラー
+        # 終了させる（0 tests・終了コード 0 で「成功」する fail-open を防ぐ）。
         run: |
           shopt -s globstar failglob
           node --test skills/make/tests/**/*.test.mjs
