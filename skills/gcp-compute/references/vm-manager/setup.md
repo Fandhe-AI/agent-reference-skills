@@ -151,7 +151,15 @@ gcloud compute project-info add-metadata \
     --metadata=osconfig-disabled-features=tasks
 ```
 
-To disable `osinventory` and `guestpolicies` instead, the source sets `--metadata=osconfig-disabled-features=osinventory,guestpolicies`.
+To disable `osinventory` and `guestpolicies` instead (the source writes `--metadata=osconfig-disabled-features=osinventory,guestpolicies`, which gcloud splits at the comma):
+
+Adapted (not in the official docs): `^~^` sets `~` as the delimiter, so the comma stays inside the value.
+
+```bash
+gcloud compute project-info add-metadata \
+    --project PROJECT_ID \
+    --metadata=^~^osconfig-disabled-features=osinventory,guestpolicies
+```
 
 ### Configure an HTTP proxy
 
@@ -198,7 +206,14 @@ sudo systemctl stop google-osconfig-agent
 sudo systemctl disable google-osconfig-agent
 ```
 
-On Windows the source uses `PowerShell Stop-Service google_osconfig_agent [-StartupType disabled]`.
+On Windows (the source writes `PowerShell Stop-Service google_osconfig_agent [-StartupType disabled]`; `Stop-Service` has no `-StartupType` parameter):
+
+Adapted (not in the official docs): the stop and the startup-type change are split into `Stop-Service` and `Set-Service -StartupType Disabled`.
+
+```powershell
+Stop-Service -Name google_osconfig_agent
+Set-Service -Name google_osconfig_agent -StartupType Disabled
+```
 
 ## Options / Props
 
@@ -225,6 +240,12 @@ On Windows the source uses `PowerShell Stop-Service google_osconfig_agent [-Star
 - Omitted: the startup-script install example (Debian 10), the folder / project variants of the organization-policy command (`--folder=folder-id`, `--project=project-id`), the `enable-guest-attributes=TRUE,enable-osconfig=TRUE` variants of the metadata commands, the Ubuntu 16.04 / 18.04 repository commands, SLES / openSUSE repository setup, Console steps, and a few REST descriptions. Hierarchical activation is Preview (Pre-GA Offerings Terms apply). The source also shows Console steps.
 - Verification guide: https://docs.cloud.google.com/compute/docs/troubleshooting/vm-manager/verify-setup
 - Source (apt key with `gpg --dearmor` and `signed-by`): https://docs.cloud.google.com/sdk/docs/install-sdk (retrieved 2026-11-17)
+- Corrected from the official docs: `--metadata=osconfig-disabled-features=osinventory,guestpolicies` is parsed by gcloud as `KEY=VALUE,[KEY=VALUE,...]`, so `guestpolicies` becomes a separate entry; `gcloud topic escaping` documents `^DELIM^` to change the delimiter (`--dict-flag=^:^a=b,c:d=f,g # => {'a': 'b,c', 'd': 'f,g'}`), so the example starts the value with `^~^`. In cmd.exe and PowerShell, `^` is a special character (see `gcloud topic escaping`).
+- Corrected from the official docs: the Windows step `Stop-Service google_osconfig_agent [-StartupType disabled]` uses a parameter that `Stop-Service` does not have (its syntax lists `-Force`, `-NoWait`, `-PassThru`, `-Include`, `-Exclude`); `Set-Service` has `-StartupType`, and `Disabled` means "The service is disabled and cannot be started by a user or application".
+- Source (gcloud metadata flag): `gcloud compute project-info add-metadata --help` (gcloud 593.0.0, retrieved 2026-11-14)
+- Source (gcloud delimiter escaping): `gcloud topic escaping` (gcloud 593.0.0, retrieved 2026-11-14)
+- Source (Stop-Service): https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/stop-service?view=powershell-7.5 (retrieved 2026-11-17)
+- Source (Set-Service): https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service?view=powershell-7.5 (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/vm-manager/docs/setup (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -37,16 +37,18 @@ sudo apt-get update && sudo apt-get install -y \
 
 Download and install Go:
 
-Adapted (not in the official docs): `$PATH` in the last line is quoted as `"/usr/local/go/bin:${PATH}"`.
+Adapted (not in the official docs): the download and an archive listing must succeed before anything is installed, Go is unpacked into a new versioned directory instead of replacing `/usr/local/go` with `rm -rf`, and `PATH` is quoted.
 
 ```bash
 GO_VERSION="1.25.0"
 curl -fsSL \
   "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" \
-  -o go.tar.gz
-sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go.tar.gz
-rm go.tar.gz
-export PATH="/usr/local/go/bin:${PATH}"
+  -o go.tar.gz \
+  && tar -tzf go.tar.gz > /dev/null \
+  && sudo mkdir "/usr/local/go${GO_VERSION}" \
+  && sudo tar -C "/usr/local/go${GO_VERSION}" --strip-components=1 -xzf go.tar.gz \
+  && rm go.tar.gz \
+  && export PATH="/usr/local/go${GO_VERSION}/bin:${PATH}"
 ```
 
 Clone and compile:
@@ -101,7 +103,7 @@ Verify the collected evidence locally:
 - The AMD Secure Processor is a shared resource: a host can throttle guest access, and firmware updates (host events) can happen at any time.
 - GPU driver attestation: enable Secure Boot when creating the instance so only distribution-signed GPU drivers load; the official driver establishes the SPDM session and is the root of trust for GPU device attestation. Device attestation verifies the VBIOS.
 - Known issue: GPU attestation might fail with a mismatched measurement record at index 9; do a full stop and restart of the VM (a guest reboot does not fix it).
-- The Go tarball in the source is downloaded over HTTPS without a checksum check, and `sudo rm -rf /usr/local/go` removes an existing Go install; run these on a disposable VM first.
+- Adapted from the official docs: the source runs `curl ... -o go.tar.gz` and then `sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go.tar.gz` as separate commands, so a failed download still removes an existing Go install. The example chains every step with `&&`, checks that the archive lists, and unpacks into `/usr/local/go${GO_VERSION}` without deleting `/usr/local/go`. The tarball is still not checked against a published checksum; run these on a disposable VM first.
 - GPUs on GKE nodes are in `gcp-gke`; CUDA programming is in `nvidia-cuda`. Confidential VM on Google Cloud; not Apple Private Cloud Compute (`apple-intelligence`).
 
 ## Related

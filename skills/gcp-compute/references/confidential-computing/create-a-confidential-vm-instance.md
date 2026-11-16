@@ -41,6 +41,8 @@ gcloud compute instances create my-instance \
 POST https://compute.googleapis.com/compute/v1/projects/PROJECT_ID/zones/ZONE_NAME/instances
 ```
 
+Adapted (not in the official docs): `"nicType": "gVNIC"` changed to `"nicType": "GVNIC"`, the enum value in the Compute Engine API schema.
+
 ```json
 {
   "name": "INSTANCE_NAME",
@@ -65,13 +67,15 @@ POST https://compute.googleapis.com/compute/v1/projects/PROJECT_ID/zones/ZONE_NA
   ],
   "networkInterfaces": [
     {
-      "nicType": "gVNIC"
+      "nicType": "GVNIC"
     }
   ]
 }
 ```
 
 Example with curl (Linux, macOS or Cloud Shell; assumes you're logged in to the gcloud CLI):
+
+Adapted (not in the official docs): `"nicType": "gVNIC"` changed to `"nicType": "GVNIC"`, the enum value in the Compute Engine API schema.
 
 ```bash
 curl -X POST \
@@ -100,7 +104,7 @@ curl -X POST \
             ],
             "networkInterfaces": [
               {
-                "nicType": "gVNIC"
+                "nicType": "GVNIC"
               }
             ]
           }' \
@@ -138,6 +142,7 @@ Higher network bandwidth: with a Tier_1 network bandwidth configuration, data tr
 - Source (Deploy Confidential Space workloads, cited above as `deploy-workloads.md`): https://docs.cloud.google.com/confidential-computing/confidential-space/docs/deploy-workloads (retrieved 2026-11-17)
 - Source (`--network-interface` `nic-type`): `gcloud compute instances create --help` (gcloud 593.0.0, retrieved 2026-11-14)
 - Source (`NetworkInterface.nicType` values): Compute Engine API v1 Discovery document https://compute.googleapis.com/$discovery/rest?version=v1, schema `NetworkInterface` (retrieved 2026-11-14)
+- Corrected from the official docs: the REST bodies set `"nicType": "gVNIC"`; the Compute Engine API `NetworkInterface.nicType` values are `GVNIC`, `IDPF`, `IRDMA`, `MRDMA`, `UNSPECIFIED_NIC_TYPE` and `VIRTIO_NET`, so both bodies use `GVNIC`.
 - Source: https://docs.cloud.google.com/confidential-computing/confidential-vm/docs/create-a-confidential-vm-instance (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - The source also shows the Console steps, a PowerShell variant, and sample responses; they are omitted here. The source's PowerShell sample has a missing comma in the JSON body and an incomplete URL, so don't copy it.
 - Source inconsistency: the source's gcloud text says "For N2D and C3D machine types that use SEV, set this to `MIGRATE` for live migration support", while its REST text says "For N2D machine types that use SEV, set this to `MIGRATE` for live migration support". live-migration-process.md, supported-configurations.md and confidential-vm-overview.md also name N2D and C3D with AMD SEV, while host-maintenance-overview.md lists "Confidential VM instances except for N2D machine types with AMD EPYC Milan CPU platforms running AMD SEV" among instances that terminate, the C3D maintenance table in general-purpose-c3-series.md gives "C3D with Confidential VM" the behavior "Terminate", and deploy-workloads.md (Confidential Space) names only N2D. Only N2D with AMD SEV is documented as live migrating on every page.
