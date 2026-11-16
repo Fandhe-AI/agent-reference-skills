@@ -129,6 +129,7 @@ skills/gcp-databases-relational/
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| gcloud のコマンド・フラグを調べたい（sql / alloydb / spanner / database-migration の 4 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
 | `gcloud sql`（instances・backups・import / export・connect・users・databases・ssl / ssl-certs・tiers・flags・generate-login-token・blue-green-deployments）のフラグを調べたい | gcloud/sql | [references/gcloud/sql/README.md](references/gcloud/sql/README.md) |
 | `gcloud alloydb`（clusters・instances・backups・users・operations）のフラグを調べたい | gcloud/alloydb | [references/gcloud/alloydb/README.md](references/gcloud/alloydb/README.md) |
 | `gcloud spanner`（instances / instance-partitions / databases / backups / backup-schedules / instance-configs / rows / samples / cli）のフラグを調べたい | gcloud/spanner | [references/gcloud/spanner/README.md](references/gcloud/spanner/README.md) |
@@ -138,6 +139,7 @@ skills/gcp-databases-relational/
 | Cloud SQL Admin API のメソッド（instances / backupRuns / databases / users / operations / connect） | rest/sqladmin | [references/rest/sqladmin/README.md](references/rest/sqladmin/README.md) |
 | AlloyDB API・Cloud Spanner API・Database Migration API のメソッド | rest/alloydb、rest/spanner、rest/datamigration | [references/rest/alloydb/README.md](references/rest/alloydb/README.md)、[references/rest/spanner/README.md](references/rest/spanner/README.md)、[references/rest/datamigration/README.md](references/rest/datamigration/README.md) |
 | REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
+| 各 API のメッセージ型（Cloud SQL の DatabaseInstance / Settings、AlloyDB の Cluster / Instance、Spanner の Instance / Database / Transaction、DMS の MigrationJob） | rest-schemas/sqladmin、rest-schemas/alloydb、rest-schemas/spanner、rest-schemas/datamigration | [references/rest-schemas/sqladmin/README.md](references/rest-schemas/sqladmin/README.md)、[references/rest-schemas/alloydb/README.md](references/rest-schemas/alloydb/README.md)、[references/rest-schemas/spanner/README.md](references/rest-schemas/spanner/README.md)、[references/rest-schemas/datamigration/README.md](references/rest-schemas/datamigration/README.md) |
 | Cloud SQL の概念・エンジン別の機能差・エディション（Enterprise / Enterprise Plus）・マシンタイプ・ストレージ・対応バージョン・クォータ | cloud-sql-overview | [references/cloud-sql-overview/README.md](references/cloud-sql-overview/README.md) |
 | Cloud SQL のベストプラクティス・可用性・SLA から除外される構成・ロケーション | cloud-sql-overview | [references/cloud-sql-overview/README.md](references/cloud-sql-overview/README.md) |
 | Cloud SQL インスタンスの作成・設定変更・ユーザー・パスワードポリシー・Managed Connection Pooling | cloud-sql-instances | [references/cloud-sql-instances/README.md](references/cloud-sql-instances/README.md) |
@@ -167,8 +169,6 @@ skills/gcp-databases-relational/
 | Spanner の fine-grained access control の設定（`roles/spanner.fineGrainedAccessUser`・条件付き `roles/spanner.databaseRoleUser`・`CREATE ROLE` / `GRANT`・`--database-role`） | spanner-operations | [references/spanner-operations/configure-fgac.md](references/spanner-operations/configure-fgac.md) |
 | Database Migration Service で PostgreSQL を Cloud SQL へ移行（ソース準備・接続方式・移行ジョブ・promote・制限） | database-migration | [references/database-migration/README.md](references/database-migration/README.md) |
 | Database Center のフリート横断ヘルス・Cloud SQL / AlloyDB の Query insights | database-center-insights | [references/database-center-insights/README.md](references/database-center-insights/README.md) |
-
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/sqladmin`
 
 ## 他スキルとの使い分け
 
