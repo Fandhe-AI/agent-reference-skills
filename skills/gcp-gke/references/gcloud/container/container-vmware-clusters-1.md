@@ -1531,6 +1531,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (the help text above is verbatim): the examples in the `--ingress-vip`, `--control-plane-ip-block`, `--enable-dhcp`, `--metal-lb-config-address-pools` and `--static-ip-config-ip-blocks` descriptions start with `gcloud gcloud container vmware clusters ...`; drop the duplicated `gcloud` (`gcloud container vmware clusters create` / `update`).
 - Incomplete example: the `create` example gives only the cluster name and `--location`; gcloud 593.0.0 rejects it ("Exactly one of (--metal-lb-config-address-pools | ... | [--f5-config-address ...]) must be specified"), because the SYNOPSIS requires `--admin-cluster-membership`, `--version`, `--control-plane-vip` / `--ingress-vip` and a load balancer configuration (MetalLB address pools, the manual node ports, or the F5 BIG-IP flags). Use the SYNOPSIS and flags on this page to complete the command.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.

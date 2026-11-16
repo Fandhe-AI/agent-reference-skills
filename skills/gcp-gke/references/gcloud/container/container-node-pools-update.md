@@ -1350,7 +1350,7 @@ SYNOPSIS
 
 ## Notes
 
-- Corrected from the official docs (the help text above is verbatim): the `--system-config-from-file` YAML example sets `topologyManager` `policy: BestEffort`, while the list of supported values on the same page is `none`, `best-effort`, `single-numa-node` or `restricted`; use `policy: best-effort`.
+- Corrected from the official docs (the help text above is verbatim): the `--system-config-from-file` YAML example sets `topologyManager` `policy: BestEffort`, while the list of supported values on the same page is `none`, `best-effort`, `single-numa-node` or `restricted`; use `policy: best-effort`; the autoscaling flag descriptions (`--enable-autoscaling`, `--max-nodes`, `--min-nodes`, `--total-max-nodes`, `--total-min-nodes`) say they apply to "the node pool specified by --node-pool (or default node pool if unspecified)"; this command has no `--node-pool` flag in its SYNOPSIS, and the node pool is the one named by the required positional `NAME`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
