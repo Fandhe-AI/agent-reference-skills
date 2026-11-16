@@ -58,11 +58,12 @@ gcloud compute instances add-metadata INSTANCE_NAME \
 
 ### Exclusion filter (project-wide enabled, exclude specific instances)
 
+Adapted (not in the official docs): the source joins `resource.labels.instance_id != "INSTANCE_1_ID"` and `!= "INSTANCE_2_ID"`, which matches every instance except those two; an exclusion filter drops the entries it matches, so the condition is changed to match only the two instances.
+
 ```text
 logName = "projects/PROJECT_ID/logs/serialconsole.googleapis.com%2Fserial_port_1_output"
 resource.type = "gce_instance"
-resource.labels.instance_id != "INSTANCE_1_ID"
-resource.labels.instance_id != "INSTANCE_2_ID"
+(resource.labels.instance_id = "INSTANCE_1_ID" OR resource.labels.instance_id = "INSTANCE_2_ID")
 ```
 
 ## Options / Props
@@ -91,6 +92,9 @@ If these are restricted, use Cloud Logging (standard HTTPS, port 443).
 - Setting `constraints/compute.disableSerialPortLogging` to `true` is not retroactive: instances whose metadata already enables logging keep logging until you reset the metadata. Afterwards you can't enable logging via metadata for any instance in the organization.
 - Output is escaped with Abseil `CHexEscape()`, so non-UTF8 characters are hex strings; use `CUnescape()` to recover the exact output.
 - Corrected from the official docs: the REST example shows `GET https://compute.googleapis.com/compute/projects/PROJECT_ID/...` without the API version; the Compute Engine API path is `compute/v1/` (checked against the Compute API discovery document).
+- Corrected from the official docs: the exclusion filter used `resource.labels.instance_id != ...` for both instances. Cloud Logging drops the entries that match an exclusion filter, and statements on separate lines are joined with an implicit `AND`, so the source filter would drop serial port logs of all other instances and keep the two it means to exclude; the example matches the two instance IDs with `=` joined by `OR` in parentheses.
+- Source (routing and exclusion filters): https://docs.cloud.google.com/logging/docs/routing/overview (retrieved 2026-11-17) — a sink routes a log entry "when the log entry matches the sink's inclusion filter but doesn't match any of the sink's exclusion filters".
+- Source (implicit AND between statements): https://docs.cloud.google.com/logging/docs/view/logging-query-language (retrieved 2026-11-17)
 - For SSH failures, see the SSH troubleshooting guide.
 - The source also shows Console steps and the Logs Explorer click path.
 - Source: https://docs.cloud.google.com/compute/docs/troubleshooting/viewing-serial-port-output (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)

@@ -61,7 +61,7 @@ gcloud cluster-director clusters update my-cluster \
 
 ## Notes
 
-- Managed compute orchestration details: `https://docs.cloud.google.com/cluster-director/docs/managed-compute-orchestration`; Slurm controller versions: `.../slurm-controller-versions`.
+- Managed compute orchestration details: https://docs.cloud.google.com/cluster-director/docs/managed-compute-orchestration ; Slurm controller versions: https://docs.cloud.google.com/cluster-director/docs/slurm-controller-versions .
 - Slurm here is the Cluster Director managed Slurm environment on Compute Engine; Kubernetes-based orchestration is in `gcp-gke`.
 - Adapted from the official gcloud help text: `--update-slurm-node-sets=id=nodeset1,staticNodeCount=2,\` followed by `maxDynamicNodeCount=10` on the next line was joined into one argument, and `--update-slurm-partitions=id=partition1,nodesetIds=[nodeset0]` was corrected to `nodeSetIds` and single-quoted.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/cluster-director/clusters/update (gcloud 593.0.0 help). The command changes a cluster; try it on a disposable cluster first. The source page shows no commands.

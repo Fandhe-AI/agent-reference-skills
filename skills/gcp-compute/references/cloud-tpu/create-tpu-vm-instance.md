@@ -19,7 +19,7 @@ For the gcloud CLI, install and initialize it (`gcloud init`), run `gcloud compo
 
 ### On-demand TPU VM instance
 
-With the `ct6e-standard-8t` machine type you must set the threads per core to `1` by adding `--threads-per-core=1` to the following command (the same applies to the Spot, reservation-bound and Flex-start commands below).
+With the `ct6e-standard-8t` machine type you must set the threads per core to `1` by adding `--threads-per-core=1` to the following command (the same applies to the Spot, reservation-bound and Flex-start commands below). The REST requests on this page do not show it; in a REST request, set the same value with `"advancedMachineFeatures": {"threadsPerCore": 1}` in the instance body (the `AdvancedMachineFeatures.threadsPerCore` field of the Compute Engine API).
 
 ```bash
 gcloud compute instances create TPU_NAME \

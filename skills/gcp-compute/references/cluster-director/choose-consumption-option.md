@@ -62,7 +62,7 @@ Format the recommendations as a Markdown comparison table for my Slurm partition
 - Destructive: when a reservation reaches its end time Cluster Director deletes the instances that use it. Back up data first (see Compute Engine data protection options for disks and instances) and try on a disposable cluster first.
 - Prices are not copied; see the Compute Engine VM pricing, TPU pricing, DWS pricing and Spot pricing pages linked in the source.
 - The source's decision flowchart image is summarized above as text.
-- Reserving capacity through your account team: `https://docs.cloud.google.com/cluster-director/docs/reserve-capacity`; cluster creation: `https://docs.cloud.google.com/cluster-director/docs/create/cluster-from-template` and `.../create/custom-cluster`.
+- Reserving capacity through your account team: https://docs.cloud.google.com/cluster-director/docs/reserve-capacity ; cluster creation: https://docs.cloud.google.com/cluster-director/docs/create/cluster-from-template and https://docs.cloud.google.com/cluster-director/docs/create/custom-cluster .
 - Source: https://docs.cloud.google.com/cluster-director/docs/choose-consumption-option (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
