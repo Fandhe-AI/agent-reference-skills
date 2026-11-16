@@ -34,6 +34,11 @@ skills/gcp-gke/
       <api>/
         README.md
         <api>.md                  # container / gkebackup / gkehub / gkeonprem
+    rest-schemas/                 # 機械生成: Discovery 由来のメッセージスキーマ、取得 2026-11-14
+      README.md
+      <api>/
+        README.md
+        <api>.md                  # container は container-1〜3、gkehub は gkehub-1・2、gkeonprem は gkeonprem-1・2、gkebackup は 1 ファイル
     gke-overview/                 # 公式ガイド由来（手書き）: GKE の概要・アーキテクチャ・Autopilot・モード選択・責任共有・クォータ・大規模クラスター・バージョニング
       README.md
       <page>.md                   # 例: kubernetes-engine-overview.md / cluster-architecture.md / choose-cluster-mode.md / versioning.md
@@ -128,6 +133,7 @@ skills/gcp-gke/
 | ロール ID の権限一覧・事前定義ロールを調べたい（`roles/container.*` / `roles/gkebackup.*` / `roles/gkehub.*` / `roles/gkemulticloud.*` / `roles/gkeonprem.*` / `roles/anthosservicemesh.*` 等） | iam | [references/iam/README.md](references/iam/README.md) |
 | REST のメソッド・パスを調べたい（Kubernetes Engine API・Backup for GKE API・GKE Hub API・GKE On-Prem API） | rest | [references/rest/README.md](references/rest/README.md) |
 | 各 API のメソッド | rest/container、rest/gkebackup、rest/gkehub、rest/gkeonprem | [references/rest/container/README.md](references/rest/container/README.md)、[references/rest/gkebackup/README.md](references/rest/gkebackup/README.md)、[references/rest/gkehub/README.md](references/rest/gkehub/README.md)、[references/rest/gkeonprem/README.md](references/rest/gkeonprem/README.md) |
+| REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
 | GKE の概要・クラスターアーキテクチャ・Autopilot と Standard の選び方・責任共有 | gke-overview | [references/gke-overview/README.md](references/gke-overview/README.md) |
 | GKE のクォータと制限・大規模クラスターの計画・スケーラビリティ・バージョニングとサポート | gke-overview | [references/gke-overview/README.md](references/gke-overview/README.md) |
 | クラスター構成の選択・Autopilot / regional / zonal クラスターの作成・クラスター管理・削除 | gke-clusters | [references/gke-clusters/README.md](references/gke-clusters/README.md) |
@@ -156,7 +162,7 @@ skills/gcp-gke/
 | GKE on AWS / Azure の非推奨とアーキテクチャ・GKE attached clusters（EKS / AKS / 汎用）のアタッチ・更新・デタッチ・ロギング / モニタリング | gke-multicloud | [references/gke-multicloud/README.md](references/gke-multicloud/README.md) |
 | Google Distributed Cloud software only（VMware / bare metal）の概要・advanced clusters・インストール計画・アップグレード・スケーラビリティ・接続・制限 | gdc-software | [references/gdc-software/README.md](references/gdc-software/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/gkebackup` / `rest-schemas/gkehub` / `rest-schemas/gkeonprem`
 
 ## 他スキルとの使い分け
 
