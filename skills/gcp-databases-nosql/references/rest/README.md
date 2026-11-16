@@ -6,3 +6,4 @@
 | Cloud Datastore API (datastore) | Accesses the schemaless NoSQL database to provide fully managed, robust, scalable storage for your application. | [datastore/README.md](./datastore/README.md) |
 | Cloud Firestore API (firestore) | Accesses the NoSQL document database built for automatic scaling, high performance, and ease of application development. | [firestore/README.md](./firestore/README.md) |
 | Cloud Memorystore for Memcached API (memcache) | Google Cloud Memorystore for Memcached API is used for creating and managing Memcached instances in GCP. | [memcache/README.md](./memcache/README.md) |
+| Google Cloud Memorystore for Redis API (redis) | Creates and manages Redis instances on the Google Cloud Platform. | [redis/README.md](./redis/README.md) |
