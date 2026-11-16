@@ -99,7 +99,7 @@ skills/gcp-databases-nosql/
 
 - 取得日: 2026-11-16（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin）
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
-- 現時点の `references/` は公式ガイド由来の手書き 20 カテゴリのみ。gcloud（593.0.0 の help）・IAM roles-permissions reference・REST（`google-api-python-client` 同梱の Discovery document）は機械生成分として後続 PR で投入する
+- 手書きの公式ガイド由来カテゴリは最終的に 20（分割投入中のため、現時点で収録済みなのは上のツリーとマッピング表に載せたカテゴリのみ）。gcloud（593.0.0 の help）・IAM roles-permissions reference・REST（`google-api-python-client` 同梱の Discovery document）は機械生成分として後続 PR で投入する
 - Firestore は Native mode / Datastore mode / MongoDB 互換でページの前提が異なる。機能・制限・クォータ・インデックスの扱いをモードをまたいで当てはめない（`firestore-datastore-mode` / `firestore-mongodb` の固有ページを優先する）
 - Memorystore の 4 製品は別 API・別 gcloud グループ。Valkey は `gcloud memorystore`、Redis Cluster は `gcloud redis clusters`、Redis は `gcloud redis instances`、Memcached は `gcloud memcache`。Memorystore for Valkey には Discovery document が無く、REST のメソッド表・メッセージスキーマは無い
 - 料金ページ・リリースノートは未収録。公式ページを確認する
