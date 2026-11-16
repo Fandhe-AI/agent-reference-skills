@@ -43,7 +43,7 @@ const SLICE_EXPORTS = [
   'monitorPrompt',
   'mergeExecutePrompt',
   'mergeVerifyPrompt',
-  'optinRecordVerifyPrompt',
+  'observeGatePrompt',
   'prCreatePrompt',
   'fixPrompt',
   'baseMergePrompt',
@@ -52,6 +52,8 @@ const SLICE_EXPORTS = [
   'recoverImplementPrompt',
   'prereqProbePrompt',
   'declaredDepsPrompt',
+  'externalChecksPrompt',
+  'skipLabelsPrompt',
   'outOfTreeStatePrompt',
   'rootAncestorsPrompt',
 ]
@@ -94,7 +96,7 @@ const prompts = {
   monitorPrompt: () => m.monitorPrompt(item, impl, [], true, false),
   mergeExecutePrompt: () => m.mergeExecutePrompt(item, impl, true, [{ app: 'cursor', contexts: ['Cursor Bugbot'] }]),
   mergeVerifyPrompt: () => m.mergeVerifyPrompt(item, impl),
-  optinRecordVerifyPrompt: () => m.optinRecordVerifyPrompt(item, impl, ['make e2e']),
+  optinRecordObservePrompt: () => m.observeGatePrompt({ mode: 'optin-record', pr: 123, optinCommands: ['make e2e'] }, 'opt-in テスト実行記録', 'n1', [m.MERGE_CONTEXT_COMMON]),
   prCreatePrompt: () => m.prCreatePrompt(item, impl, []),
   'fixPrompt(push)': () => m.fixPrompt(item, impl, finding, true),
   'fixPrompt(no-push)': () => m.fixPrompt(item, impl, finding, false),
@@ -104,6 +106,8 @@ const prompts = {
   recoverImplementPrompt: () => m.recoverImplementPrompt(item, { done: '', remaining: '', broken: '' }, 'fix/42-noop'),
   prereqProbePrompt: () => m.prereqProbePrompt([7], {}),
   declaredDepsPrompt: () => m.declaredDepsPrompt([7]),
+  externalChecksPrompt: () => m.externalChecksPrompt('n'),
+  skipLabelsPrompt: () => m.skipLabelsPrompt(['a'], 'n'),
   outOfTreeStatePrompt: () => m.outOfTreeStatePrompt([7]),
   rootAncestorsPrompt: () => m.rootAncestorsPrompt(4),
 }
@@ -115,8 +119,8 @@ for (const [name, build] of Object.entries(prompts)) {
 
 test('駆動部: インラインの Tree 取得・外部チェック観測エージェントも COMMON を含む', () => {
   for (const head of ['GitHub イシューツリー取得タスク。', '外部チェック観測タスク']) {
-    const i = (head.startsWith('GitHub') ? definitionPart : driverPart).indexOf(head)
+    const i = definitionPart.indexOf(head)
     assert.ok(i >= 0, `${head} が見つからない`)
-    assert.match((head.startsWith('GitHub') ? definitionPart : driverPart).slice(i, i + 300), /\n\s+COMMON,\n/)
+    assert.match(definitionPart.slice(i, i + 400), /\n\s+COMMON,\n/)
   }
 })

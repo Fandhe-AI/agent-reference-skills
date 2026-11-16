@@ -32,7 +32,14 @@
 #   - subagent（agent_id あり）からのマージ系スペリングは無条件 deny:
 #       gh pr merge（あらゆる形）/ REST merge（pulls/<n>/merge・repos/<o>/<r>/merges）/
 #       GraphQL merge（mergePullRequest / enablePullRequestAutoMerge / mergeBranch）/
-#       gh pr review --approve / gh alias / gh extension
+#       gh pr review の承認（--approve と短縮 -a。-ab 等の束ね書きを含む）/
+#       reviews API の承認（pulls/<n>/reviews・pulls/<n>/reviews/<id>/events への event=APPROVE と、
+#       本文を判定できない --input・@file・変数・COMMENT / REQUEST_CHANGES 以外の event。
+#       --jq 等の値は対象外。明示の GET でも event を検査する）/
+#       GraphQL の承認（addPullRequestReview / submitPullRequestReview は event が COMMENT /
+#       REQUEST_CHANGES のリテラルのときだけ許可。APPROVE・変数・@file・event なしは deny。
+#       addPullRequestReviewThreadReply は対象外）/
+#       gh alias / gh extension
 #   - subagent からのリポジトリ設定変更も無条件 deny（読み取りは許可）:
 #       gh api による rulesets・branches/<b>/protection への書き込み（明示の PUT/PATCH/POST/DELETE、
 #       またはフィールド指定による暗黙の POST）/ repos/<o>/<r> 本体への明示の書き込み /
@@ -87,6 +94,11 @@
 #   されうるが、これは意図した over-deny — 1 回の Bash 呼び出しに複数コマンドを `&&`/`;` で
 #   連結せず、個別の Bash 呼び出しに分ければ回避できる。fail-closed の設計思想上、この
 #   over-deny は under-deny より常に安全な方向）。
+#
+#   （例外: gh pr review の短縮 -a の走査だけは、引用符を追跡してセグメントを分ける。Issue #783。
+#   `gh pr review 5 -c -b ok; cp -a x y` の -a は別コマンドの引数で、分割しないと承認と誤認して
+#   正当なコマンドを止めるため。判定対象を削るのではなく走査の打ち切りだけに使い、区切りが隠れる形
+#   （$( ` <( >( <<）は全体を走査する。マージ系・設定変更系の判定は従来どおり全体で行う）
 #
 #   メタ文字空白化 → トークン単位 basename 正規化という合成順序（PR #195 codex P0
 #   第3〜6ラウンド / Bugbot High の集約対応）:
@@ -144,16 +156,42 @@
 #   これは意図した over-deny であり best-effort として許容する（誤 deny の実害は subagent が
 #   コマンドを言い換えて再実行する手間のみ）。
 #
+# レビュー承認の判定（Issue #783 とその後続の監査対応）の既知の限界。いずれも best-effort の範囲内
+# として受容する（実強制はサーバー側 ruleset と、人間が承認・マージする運用が担う）:
+#   - 過検知: パイプ後段の jq 式（`... | jq '.[] | select(.event=="APPROVE")'`）、本文に書いた
+#     `event=APPROVE`、ヒアドキュメント本文の `-la` のような語、引用符内のコマンドを全体走査で見直す際の
+#     別コマンドの `-a`、`GET ... -f event=APPROVE`（GET の免除は置かない）は deny になりうる。
+#     言い換えて再実行すれば足りる。
+#   - 見逃し: curl 等での API 直接呼び出し、変数・コマンド置換・eval・base64 復元による間接実行
+#     （`$GH pr review 5 -a` 等）。文字列照合では原理的に追えない。
+#   - 引用符を追う走査（shell_tokens）は、引用符が閉じないまま終わる（コメント中のアポストロフィ等）
+#     場合と、コマンド全体に gh pr review が引用符の外で見えた回数より多く現れる場合に、全体走査へ倒す。
+#
 # set -f はトークン走査（`for tok in $s`）でのパス名展開を無効化する（cwd のファイル名が
 # トークン列へ混入する非決定性を排除。本スクリプトは glob を一切必要としない）。
 set -uf
 
+# 結果（deny の出力、または意図した許可の exit 0）を出さずに終わったかの印。
+RESULT_DONE=0
+
 # deny 応答を出力して終了する。reason は本スクリプト内の固定文言のみを渡す契約
 # （外部入力を埋め込むと JSON 破壊・reason 経由の注入面になるため禁止）。
 deny() {
+  RESULT_DONE=1
   printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"implement-issue-tree-merge-guard: %s"}}\n' "$1"
   exit 0
 }
+
+# 意図した許可（出力なし exit 0）の唯一の出口。
+allow_exit() {
+  RESULT_DONE=1
+  exit 0
+}
+
+# 結果を出す前に落ちた場合（未定義変数・想定外の失敗。set -u の違反は exit 1 で、exit 1 は
+# Claude Code では非ブロックのエラー = 許可と同じ）は、許可へ倒さず deny を出す
+# （init-codex の agent-guard.sh と同じ方式）。
+trap 'if [ "$RESULT_DONE" -eq 0 ]; then deny "想定外の異常終了のため deny（fail-closed）"; fi' EXIT
 
 input=$(cat) || deny "stdin の読み取りに失敗したため deny（fail-closed）"
 
@@ -163,24 +201,35 @@ input=$(cat) || deny "stdin の読み取りに失敗したため deny（fail-clo
 # この簡易照合で許可側へ倒すことはない）。
 case "$input" in
   *'"agent_id"'*) : ;;
-  *) exit 0 ;;
+  *) allow_exit ;;
 esac
 
 # jq 不在は subagent 判定が不能のため fail-closed（許可へ倒すと hook が形骸化する）
 command -v jq >/dev/null 2>&1 || deny "jq が見つからないため deny（fail-closed）。jq を導入すること"
+# 判定に使う基盤コマンドが無いと、証拠照合が黙って不成立（= 許可）になる。不在は deny に倒す
+for _mg_cmd in awk grep sed tr; do
+  command -v "$_mg_cmd" >/dev/null 2>&1 || deny "判定に必要なコマンド（${_mg_cmd}）が見つからないため deny（fail-closed）"
+done
 
 # agent_id 判定より前のパース失敗も deny でよい（不正な hook 入力を許可へ倒さない）
 agent_id=$(printf '%s' "$input" | jq -r '.agent_id // empty' 2>/dev/null) \
   || deny "hook 入力 JSON のパースに失敗したため deny（fail-closed）"
 
 # main スレッド（agent_id 空値）は制限対象外。何も出力せず許可する
-[ -z "$agent_id" ] && exit 0
+[ -z "$agent_id" ] && allow_exit
 
 cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // empty' 2>/dev/null) \
   || deny "tool_input.command の取得に失敗したため deny（fail-closed）"
 
 # command が空（Bash 以外のツール・空コマンド）は照合対象がないため許可
-[ -z "$cmd" ] && exit 0
+[ -z "$cmd" ] && allow_exit
+
+# 制御文字（\t・\n・\r を除く）を含むコマンドは deny する。\001 は区切りの目印（SEP_MARK）、\002 は
+# 引用符内の空白の目印として判定内部で使うため、コマンド文字列に混ぜられると走査の区切りを偽造できる。
+# 正当なコマンドは使わない（過検知は fail-closed 方向で安全）。
+cmd_clean=$(printf '%s' "$cmd" | LC_ALL=C tr -d '\001-\010\013\014\016-\037\177') \
+  || deny "コマンドの制御文字検査に失敗したため deny（fail-closed）"
+[ "$cmd_clean" = "$cmd" ] || deny "制御文字を含むコマンドは deny（判定の区切り目印の偽造を防ぐ。fail-closed）"
 
 # --- deny 最前段: デコード用プリミティブの存在検知（raw コマンドに対して）----------------
 # ANSI-C クォート（$'\x67\x68' 等）と IFS 由来展開（$IFS / ${IFS} / ${IFS%?} 等）は、
@@ -216,6 +265,8 @@ fi
 # ファイル冒頭コメント・SKILL.md 参照。実強制は「自動マージを行わない」方針とサーバ側
 # branch protection が担う）。
 norm_of() {
+  # パイプの途中（awk 等）の失敗を呼び出し側へ伝える（$(...) 内なので他の判定へは波及しない）
+  set -o pipefail
   printf '%s\n' "$1" \
     | awk '{ if (sub(/\\$/, "")) printf "%s", $0; else print }' \
     | tr '\n' ' ' \
@@ -224,7 +275,7 @@ norm_of() {
     | tr -d "\\\\" \
     | tr -s '[:space:]' ' '
 }
-norm=$(norm_of "$cmd")
+norm=$(norm_of "$cmd") || deny "コマンドの正規化に失敗したため deny（fail-closed）"
 
 # トークン列（空白区切り）の各トークンについて、トークン全体が「非空白プレフィックス + /gh」
 # に一致する場合のみ "gh" へ置き換える（パス修飾起動の basename 正規化。部分削除はしない —
@@ -234,8 +285,9 @@ norm=$(norm_of "$cmd")
 normalize_gh_tokens() {
   local s="$1" tok out=""
   for tok in $s; do
+    # 大文字小文字を区別しない（macOS の FS 対策。`GH pr merge` も gh として動く）
     case "$tok" in
-      */gh) tok="gh" ;;
+      */[Gg][Hh]|[Gg][Hh]) tok="gh" ;;
     esac
     out="$out $tok"
   done
@@ -252,12 +304,12 @@ normalize_gh_tokens() {
 #   (3) トークン単位の basename 正規化（normalize_gh_tokens。トークン全体が */gh の場合のみ）
 tokenize_of() {
   local t
-  t=$(printf '%s' "$1" \
+  t=$(set -o pipefail; printf '%s' "$1" \
     | sed -e 's/[;&|<>(){}`$]/ /g' \
-    | tr -s '[:space:]' ' ')
+    | tr -s '[:space:]' ' ') || return 1
   normalize_gh_tokens "$t"
 }
-tokenized=$(tokenize_of "$norm")
+tokenized=$(tokenize_of "$norm") || deny "コマンドのトークン化に失敗したため deny（fail-closed）"
 
 # --- 暗黙 POST 判定専用の走査対象（scan_norm / scan_tok）--------------------------------
 # 契約（Issue #537）: `gh api repos/o/r/rulesets | grep -F 'enforcement=active'` のように、
@@ -295,7 +347,7 @@ segment_scan_text() {
         c = seg
         gsub("[;&|<>(){}`$\047\"\\\\]", " ", c)
         m = split(c, w, /[ \t]+/)
-        for (j = 1; j <= m; j++) if (w[j] == "gh" || w[j] ~ /\/gh$/) hasgh = 1
+        for (j = 1; j <= m; j++) if (tolower(w[j]) == "gh" || tolower(w[j]) ~ /\/gh$/) hasgh = 1
         if (!hasgh) { seg = ""; return }
       }
       out = out " ; " seg
@@ -337,8 +389,8 @@ case "$cmd" in
     fi
     ;;
 esac
-scan_norm=$(norm_of "$scan_src")
-scan_tok=$(tokenize_of "$scan_norm")
+scan_norm=$(norm_of "$scan_src") || deny "コマンドの正規化に失敗したため deny（fail-closed）"
+scan_tok=$(tokenize_of "$scan_norm") || deny "コマンドのトークン化に失敗したため deny（fail-closed）"
 
 # 暗黙 POST 用の証拠照合（走査対象のみ。evidence() の scan 版）。
 scan_evidence() {
@@ -353,6 +405,49 @@ scan_evidence() {
 evidence() {
   printf '%s' "$norm" | grep -qE "$1" && return 0
   printf '%s' "$tokenized" | grep -qE "$1"
+}
+
+# コマンド全体を引用符を考慮してトークンに分け、1 行 1 トークンで出す（Issue #783。レビュー承認の
+# 判定専用。init-codex の agent-guard.sh と同じ実装）。引用符の外の ; | & 改行はトークンの代わりに
+# 区切り行（SEP_MARK）を出す（>& &> >| のリダイレクトは区切りにしない）。引用符の中の空白は \002 に
+# 置き換えて 1 トークンに保つ（呼び出し側が必要なら空白へ戻す）。$1 が keep のとき ( ) { } ` $ < >
+# をトークン文字として残し、それ以外は空白と同じ扱いにする。
+# 冒頭コメントの「セグメント分割は採用しない」はマージ系・設定変更系の判定の方針であり、ここは例外:
+# `gh pr review 5 -c -b ok; cp -a x y` の `-a` は別コマンドの引数で、分割しないと承認と誤認する。
+# 分割の対象は -a の走査だけで、他の判定は従来どおりコマンド全体を見る。
+SEP_MARK=$'\001SEP'
+shell_tokens() {
+  printf '%s\n' "$cmd" | awk -v keep="$1" '
+    function flush() { if (have) print cur; cur = ""; have = 0 }
+    { text = text $0 "\n" }
+    END {
+      len = length(text); q = 0; cur = ""; have = 0
+      for (i = 1; i <= len; i++) {
+        ch = substr(text, i, 1)
+        if (q == 1) { if (ch == "\047") q = 0; else cur = cur ((ch ~ /[ \t\n]/) ? "\002" : ch); continue }
+        if (q == 2) {
+          if (ch == "\"") q = 0
+          else if (ch == "\\") { i++; cur = cur substr(text, i, 1) }
+          else cur = cur ((ch ~ /[ \t\n]/) ? "\002" : ch)
+          continue
+        }
+        if (ch == "\\") { i++; nx = substr(text, i, 1); if (nx != "\n") { cur = cur nx; have = 1 }; continue }
+        if (ch == "\047") { q = 1; have = 1; continue }
+        if (ch == "\"") { q = 2; have = 1; continue }
+        if (ch == " " || ch == "\t" || ch == "\r") { flush(); continue }
+        if (ch == "\n" || ch == ";" || ch == "|" || ch == "&") {
+          pv = substr(text, i - 1, 1); nt = substr(text, i + 1, 1)
+          flush()
+          if ((ch == "&" && (pv == ">" || pv == "<" || nt == ">")) || (ch == "|" && pv == ">")) continue
+          print "\001SEP"; continue
+        }
+        if (keep != "keep" && index("(){}`$<>", ch) > 0) { flush(); continue }
+        cur = cur ch; have = 1
+      }
+      flush()
+      # 引用符が閉じないまま終わった（コメント中のアポストロフィ等）。以降のトークンは信用できない
+      if (q != 0) exit 3
+    }'
 }
 
 # フラグトークン（`-` で始まるすべてのトークン）を除去したトークン列を返す。
@@ -396,7 +491,9 @@ fi
 # gh api 経由のマージ（グローバルオプションの挟み込みで迂回不可）
 if contains_subsequence "$all_nf" gh api; then
   # REST merge: PUT repos/<owner>/<repo>/pulls/<n>/merge
-  if evidence 'pulls/[^[:space:]]*/merge'; then
+  # パスの途中にコマンド置換（`pulls/$(gh pr view ... -q .number)/merge`）があると空白で語が割れるため、
+  # 空白を許す緩い形で照合する（過検知は fail-closed 方向で安全）。
+  if evidence 'pulls/.*/merge'; then
     deny "subagent からの REST merge（gh api pulls/<n>/merge）は禁止"
   fi
   # REST ブランチマージ: POST repos/<owner>/<repo>/merges
@@ -407,6 +504,85 @@ if contains_subsequence "$all_nf" gh api; then
   # mergeBranch は PR を経由せず head ref を base へ直接マージできる迂回経路として塞ぐ。
   if evidence 'mergePullRequest|enablePullRequestAutoMerge|mergeBranch'; then
     deny "subagent からの GraphQL merge 系 mutation（mergePullRequest / enablePullRequestAutoMerge / mergeBranch）は禁止"
+  fi
+
+  # API 経由の承認（外部レビューゲートの自作自演。Issue #783）。REST は pulls/<n>/reviews（作成）と
+  # pulls/<n>/reviews/<id>/events（送信）で、event フィールドが COMMENT / REQUEST_CHANGES の
+  # リテラル以外（APPROVE・@file・変数・判定できない値）なら deny する。--input は本文を
+  # ファイル / stdin から渡すため中身が見えず deny する。event を持たない書き込み（保留レビュー
+  # の作成）と、event を持たない読み取りは許可。
+  # パスの照合は、途中にコマンド置換（`pulls/$(gh pr view ... -q .number)/reviews`）があって空白で
+  # 語が割れる形と、末尾スラッシュ（`reviews/`）も拾うよう緩くする。
+  # 明示の GET でも event は検査する（GET の免除は、コマンド全体の `-X GET` の字面が別の gh api
+  # 呼び出しやコメント（`... -f event=APPROVE # -X GET`）にあるだけで成立してしまうため置かない。
+  # `GET ... -f event=APPROVE` を deny するのは意図した過検知）。
+  if evidence 'pulls/.*/reviews([?/[:space:]]|$)'; then
+    if printf '%s' "$tokenized" | grep -qE '(^|[[:space:]])--input([[:space:]]|=|$)'; then
+      deny "subagent からの reviews API への --input（本文を判定できない）は禁止（承認の自作自演を防ぐ）"
+    fi
+    # event の検査はフィールド指定の引数に限る。--jq / -q / --template / -t の値（フィルタ式）は除く。
+    # 引用符を追う分割が信用できない（閉じ忘れ・awk 失敗）ときは、引用符を除いた norm を空白で割る。
+    rt_keep=$(shell_tokens keep) || rt_keep=$(printf '%s' "$norm" | tr ' ' '\n')
+    rest_text=""; rest_drop=0
+    while IFS= read -r rest_tok; do
+      if [ "$rest_drop" -eq 1 ]; then rest_drop=0; continue; fi
+      case "$rest_tok" in
+        --jq|--template) rest_drop=1; continue ;;
+        --jq=*|--template=*) continue ;;
+        -[qt]|-[A-Za-z]*[qt]) rest_drop=1; continue ;;
+        -[qt]?*) continue ;;
+      esac
+      rest_text="$rest_text ${rest_tok//$'\002'/ }"
+    done <<EOF_RT
+$rt_keep
+EOF_RT
+    rc=0
+    ev_vals=$(printf '%s' "$rest_text" | grep -oiE 'event[[:space:]]*=[[:space:]]*[^[:space:]]*') || rc=$?
+    [ "$rc" -le 1 ] || deny "event の検査（grep）に失敗したため deny（fail-closed）"
+    while IFS= read -r ev_line; do
+      [ -n "$ev_line" ] || continue
+      ev_v=${ev_line#*=}
+      ev_v=$(printf '%s' "$ev_v" | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')
+      case "$ev_v" in
+        COMMENT|REQUEST_CHANGES) : ;;
+        *) deny "subagent からの reviews API の承認（event=APPROVE・判定できない event）は禁止（承認の自作自演を防ぐ）" ;;
+      esac
+    done <<EOF_EV
+$ev_vals
+EOF_EV
+  fi
+  # GraphQL: レビュー作成・送信の mutation（addPullRequestReviewThreadReply 等の別名は対象外）。
+  # `gh api graphql` の語の位置に依らず（`/graphql`・URL 形も）mutation 名で判定する。mutation がある
+  # 場合は event が COMMENT / REQUEST_CHANGES のリテラルで、$var・@file・$(...) を含まない形だけを許可
+  # する（event を持たない・変数経由・引用符内の値は判定できないので deny。APPROVE の語も deny）。
+  if evidence '(addPullRequestReview|submitPullRequestReview)([^A-Za-z0-9_]|$)'; then
+    rc=0
+    gq_vals=$(printf '%s' "$norm" | grep -oE 'event[[:space:]]*:[[:space:]]*[^[:space:],})]*') || rc=$?
+    [ "$rc" -le 1 ] || deny "GraphQL の event の検査（grep）に失敗したため deny（fail-closed）"
+    gq_n=0
+    while IFS= read -r gq_line; do
+      [ -n "$gq_line" ] || continue
+      gq_v=${gq_line#*:}
+      gq_v=$(printf '%s' "$gq_v" | tr -d '[:space:]')
+      case "$gq_v" in
+        COMMENT|REQUEST_CHANGES) gq_n=$((gq_n + 1)) ;;
+        *) deny "subagent からの GraphQL レビュー承認（APPROVE・変数・判定できない event）は禁止" ;;
+      esac
+    done <<EOF_GQ
+$gq_vals
+EOF_GQ
+    [ "$gq_n" -ge 1 ] || deny "subagent からの GraphQL レビュー作成・送信は event が COMMENT / REQUEST_CHANGES のリテラルで指定されない限り禁止"
+    if evidence '(^|[^A-Za-z0-9_])APPROVE([^A-Za-z0-9_]|$)' \
+      || printf '%s' "$norm" | grep -qE '=[[:space:]]*@'; then
+      deny "subagent からの GraphQL レビュー作成・送信に APPROVE・@file が含まれる形は禁止"
+    fi
+  fi
+  # GraphQL の query を @file / 変数 / コマンド置換（先頭が @ か $）や --input で渡す形は中身を見られない。
+  if evidence '(^|[^A-Za-z0-9_])graphql([^A-Za-z0-9_]|$)'; then
+    if evidence '(^|[[:space:]])(-[A-Za-z]*[fF]|--(raw-)?field)[[:space:]=]*query[[:space:]]*=[[:space:]]*[@$]' \
+      || printf '%s' "$tokenized" | grep -qE '(^|[[:space:]])--input([[:space:]]|=|$)'; then
+      deny "subagent からの GraphQL の query を @file / 変数 / --input で渡す形（中身を判定できない）は禁止"
+    fi
   fi
 
   # リポジトリ設定の書き込み（ruleset・branch protection・リポジトリ本体）。承認なしの ruleset 変更
@@ -463,6 +639,103 @@ if contains_subsequence "$all_nf" gh pr review \
   deny "subagent からの gh pr review --approve は禁止"
 fi
 
+# 短縮 -a（--approve の略。Issue #783）。束ね書き（-ab 等）は pflag と同じく先頭から読み、値を取る
+# -b / -F が来たらそれ以降は値（-ba の a は本文）。値を取るオプションの次トークンも値として読み飛ばす。
+# gh pr review の後ろだけを見る。
+# 走査は 2 モード:
+#   normal: 引用符を追うトークン化（shell_tokens strip）。引用符の外の ; | & 改行で状態を戻し、
+#           `gh pr review 5 -c -b ok; cp -a x y` の -a（別コマンドの引数）を承認と誤認しない。
+#   flat:   トークン化済みの全体（tokenized）を区切りなしで走査する（over-deny 側）。引用符の中の
+#           コマンド（`bash -c 'gh pr review 5 -a'`）、$( ` <( >( << で区切りが隠れる形、引用符を追えない形で使う。
+# gh / git の語では状態を戻さない（`gh pr review 5 -b "see $(git rev-parse HEAD)" -a`・
+# `gh pr review fix/git -a` のように引数に現れても -a を見失わないため。次のコマンドの境界は normal の区切りだけが担う）。
+# 戻り値: 0 = 承認あり / 1 = なし / 2 = 引用符を追えず信用できない（normal のみ）。REV_N に review への突入回数を残す。
+REV_N=0
+review_scan() {
+  local mode="$1" tok st=0 skip=0 body m ch rt
+  REV_N=0
+  if [ "$mode" = normal ]; then
+    rt=$(shell_tokens strip) || return 2
+  else
+    rt=$(printf '%s' "$tokenized" | tr ' ' '\n') || return 2
+  fi
+  while IFS= read -r tok; do
+    if [ "$mode" = normal ] && [ "$tok" = "$SEP_MARK" ]; then st=0; skip=0; continue; fi
+    if [ "$st" -lt 3 ]; then
+      # コマンド名はフルパス・相対パス・大文字小文字違いでも gh として比較する（normalize_gh_tokens と同じ基準）。
+      case "$tok" in
+        */[Gg][Hh]|[Gg][Hh]) tok=gh ;;
+      esac
+      case "$tok" in
+        -*) continue ;;
+      esac
+      case "$st:$tok" in
+        0:gh) st=1 ;;
+        1:pr) st=2 ;;
+        2:review) st=3; REV_N=$((REV_N + 1)) ;;
+      esac
+      continue
+    fi
+    # 値トークン（-b gh の gh 等）を先に消化する。
+    if [ "$skip" -eq 1 ]; then skip=0; continue; fi
+    case "$tok" in
+      --body|--body-file) skip=1 ;;
+      --*) : ;;
+      -?*)
+        body=${tok#-}
+        m=0
+        while [ "$m" -lt "${#body}" ]; do
+          ch=${body:$m:1}
+          case "$ch" in
+            a) return 0 ;;
+            b|F) [ "$m" -eq $((${#body} - 1)) ] && skip=1; break ;;
+          esac
+          m=$((m + 1))
+        done
+        ;;
+    esac
+  done <<EOF_RV
+$rt
+EOF_RV
+  return 1
+}
+
+# gh → pr → review の語順が（フラグ除去後に）何回現れるか。
+count_gh_pr_review() {
+  local tok idx=0 n=0
+  for tok in $1; do
+    case "$idx:$tok" in
+      0:gh) idx=1 ;;
+      1:pr) idx=2 ;;
+      2:review) n=$((n + 1)); idx=0 ;;
+    esac
+  done
+  printf '%s' "$n"
+}
+
+review_short_approve() {
+  local rc=0 n_flat
+  case "$cmd" in
+    *'$('*|*'`'*|*'<('*|*'>('*|*'<<'*)
+      review_scan flat && return 0
+      return 1
+      ;;
+  esac
+  review_scan normal || rc=$?
+  [ "$rc" -eq 0 ] && return 0
+  if [ "$rc" -eq 1 ]; then
+    # 引用符の中のコマンド（bash -c '...'・eval '...'）は normal では 1 トークンになり review 状態に入らない。
+    # 全体に gh pr review が normal の見た回数より多く現れるときは、flat で見直す。
+    n_flat=$(count_gh_pr_review "$all_nf")
+    [ "$n_flat" -gt "$REV_N" ] || return 1
+  fi
+  review_scan flat && return 0
+  return 1
+}
+if review_short_approve; then
+  deny "subagent からの gh pr review -a（--approve の短縮形）は禁止"
+fi
+
 # 別名・拡張経由の迂回封じ: gh alias（set / import 等すべて）・gh extension（install 等）
 if contains_subsequence "$all_nf" gh alias; then
   deny "subagent からの gh alias は禁止（別名経由のマージ迂回を防ぐ）"
@@ -473,4 +746,4 @@ if contains_subsequence "$all_nf" gh extension \
 fi
 
 # マージ系以外のコマンド（gh pr comment による催促・読み取り系等）は許可
-exit 0
+allow_exit
