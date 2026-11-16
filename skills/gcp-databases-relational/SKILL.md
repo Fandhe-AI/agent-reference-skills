@@ -117,6 +117,7 @@ skills/gcp-databases-relational/
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | `gcloud alloydb`（clusters・instances・backups・users・operations）のフラグを調べたい | gcloud/alloydb | [references/gcloud/alloydb/README.md](references/gcloud/alloydb/README.md) |
+| `gcloud spanner`（instances / instance-partitions / databases / backups / backup-schedules / instance-configs / rows / samples / cli）のフラグを調べたい | gcloud/spanner | [references/gcloud/spanner/README.md](references/gcloud/spanner/README.md) |
 | `gcloud database-migration`（migration-jobs・connection-profiles・private-connections・conversion-workspaces・objects）のフラグを調べたい | gcloud/database-migration | [references/gcloud/database-migration/README.md](references/gcloud/database-migration/README.md) |
 | Cloud SQL の概念・エンジン別の機能差・エディション（Enterprise / Enterprise Plus）・マシンタイプ・ストレージ・対応バージョン・クォータ | cloud-sql-overview | [references/cloud-sql-overview/README.md](references/cloud-sql-overview/README.md) |
 | Cloud SQL のベストプラクティス・可用性・SLA から除外される構成・ロケーション | cloud-sql-overview | [references/cloud-sql-overview/README.md](references/cloud-sql-overview/README.md) |
@@ -148,7 +149,7 @@ skills/gcp-databases-relational/
 | Database Migration Service で PostgreSQL を Cloud SQL へ移行（ソース準備・接続方式・移行ジョブ・promote・制限） | database-migration | [references/database-migration/README.md](references/database-migration/README.md) |
 | Database Center のフリート横断ヘルス・Cloud SQL / AlloyDB の Query insights | database-center-insights | [references/database-center-insights/README.md](references/database-center-insights/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `iam` / `rest` / `rest-schemas` / `gcloud/sql` / `gcloud/spanner`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `iam` / `rest` / `rest-schemas` / `gcloud/sql`
 
 ## 他スキルとの使い分け
 
