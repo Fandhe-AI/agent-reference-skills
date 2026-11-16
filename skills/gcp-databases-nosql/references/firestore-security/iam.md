@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/firestore/native/docs/security/iam
 
 # Security for server client libraries
 
-IAM permissions and roles for Firestore, used by the server client libraries and the REST / RPC APIs (these bypass Firestore Security Rules).
+IAM permissions and roles for Firestore. The server client libraries, and REST / RPC requests authorized with a Google Identity OAuth 2.0 token (for example from a service account), are authorized by IAM and bypass Firestore Security Rules. REST requests with a Firebase Authentication ID token, or unauthenticated requests, are evaluated by Security Rules instead (see `firestore-databases-data/use-rest-api.md`).
 
 ## Signature / Usage
 
@@ -90,7 +90,7 @@ gcloud projects add-iam-policy-binding project_id \
 | `datastore.databases.import` / `.export` / `.bulkDelete` | Import entities into / export entities from / bulk delete entities from a database. |
 | `datastore.databases.getMetadata` / `.list` | Read metadata from a database / list databases in a project. |
 | `datastore.databases.create` / `.update` / `.delete` / `.clone` | Create / update / delete / clone a database. |
-| `datastore.databases.createTagBinding` / `.deleteTagBinding` / `.listTagBindings` / `.listEffectiveTagBindings` | Create / delete / list tag bindings / list effective tag bindings for a database. |
+| `datastore.databases.createTagBinding` / `.deleteTagBinding` / `.listTagBindings` / `.listEffectiveTags` | Create / delete / list tag bindings / list effective tags for a database. |
 | `datastore.entities.create` / `.delete` / `.get` / `.update` | Create / delete / read / update a document. |
 | `datastore.entities.list` | List the names of documents in a project (`datastore.entities.get` is required to access the document data). |
 | `datastore.schemas.create` / `.delete` / `.get` / `.list` / `.update` | Create / delete / read metadata of / list / update an index. |
@@ -110,6 +110,7 @@ gcloud projects add-iam-policy-binding project_id \
 - The method table above is condensed; the source lists each REST / RPC method on its own row with links.
 - Removing `roles/firebaserules.system` from the Firebase rules service account makes security rules deny all requests. In the gcloud command, replace `project_id` and `project_number` with your own values.
 - Google Cloud's managed document database (Native mode, Datastore mode, MongoDB compatibility) — distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`). IAM concepts: `gcp-foundation`.
+- Source inconsistency: the source's permissions table names `datastore.databases.listEffectiveTagBindings`, while its method table (`create`, `clone`) and the IAM roles reference (see `references/iam/firestore.md`) use `datastore.databases.listEffectiveTags`; this page uses `listEffectiveTags`.
 - Source: https://docs.cloud.google.com/firestore/native/docs/security/iam (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
