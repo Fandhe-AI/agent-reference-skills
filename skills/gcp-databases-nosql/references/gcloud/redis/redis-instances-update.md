@@ -1,0 +1,307 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/redis/instances/update
+---
+
+# gcloud redis instances update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud redis instances update
+
+```text
+NAME
+    gcloud redis instances update - update Memorystore Redis instances
+
+SYNOPSIS
+    gcloud redis instances update (INSTANCE : --region=REGION) [--async]
+        [--display-name=DISPLAY_NAME] [--enable-auth]
+        [--maintenance-version=MAINTENANCE_VERSION]
+        [--persistence-mode=PERSISTENCE_MODE]
+        [--rdb-snapshot-period=RDB_SNAPSHOT_PERIOD]
+        [--rdb-snapshot-start-time=RDB_SNAPSHOT_START_TIME]
+        [--read-replicas-mode=READ_REPLICAS_MODE]
+        [--remove-redis-config=[KEY,...]] [--replica-count=REPLICA_COUNT]
+        [--secondary-ip-range=SECONDARY_IP_RANGE] [--size=SIZE]
+        [--update-labels=[KEY=VALUE,...]] [--update-redis-config=KEY=VALUE]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--maintenance-window-any
+          | --maintenance-window-day=MAINTENANCE_WINDOW_DAY
+          --maintenance-window-hour=MAINTENANCE_WINDOW_HOUR]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update the metadata and/or configuration parameters of a Redis instance.
+
+    This command can fail for the following reasons:
+      o The instance specified does not exist.
+      o The active account does not have permission to update the given
+        instance.
+
+EXAMPLES
+    To update a Redis instance with the name my-redis-instance to have the
+    display name "Cache for Foo Service", and add the two labels, env and
+    service, run:
+
+        $ gcloud redis instances update my-redis-instance \
+            --display-name="Cache for Foo Service" \
+            --update-labels=env=test,service=foo
+
+POSITIONAL ARGUMENTS
+     Instance resource - Arguments and flags that specify the Memorystore Redis
+     instance you want to update. The arguments in this group can be used to
+     specify the attributes of this resource. (NOTE) Some attributes are not
+     given arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument instance on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       INSTANCE
+          ID of the instance or fully qualified identifier for the instance.
+
+          To set the instance attribute:
+          + provide the argument instance on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --region=REGION
+          The name of the Redis region of the instance. Overrides the default
+          redis/region property value for this command invocation.
+
+          To set the region attribute:
+          + provide the argument instance on the command line with a fully
+            specified name;
+          + provide the argument --region on the command line;
+          + set the property redis/region.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --display-name=DISPLAY_NAME
+        A human-readable name for the instance.
+
+     --enable-auth
+        Enables Redis AUTH for the instance.
+
+     --maintenance-version=MAINTENANCE_VERSION
+        Specifies which maintenance version to apply to your instance during
+        self-service maintenance. To view the available maintenance versions
+        for your instance, run gcloud redis instances describe [INSTANCE_ID].
+        Acceptable values for this flag are either current_default or one of
+        the specific versions listed by the describe command. If you pass the
+        value current_default, the Memorystore updates to the most recent
+        available maintenance version during self service maintenance.
+
+     --persistence-mode=PERSISTENCE_MODE
+        Operation mode for automated persistence. PERSISTENCE_MODE must be one
+        of:
+
+         disabled
+            RDB mode is disabled
+         rdb
+            Automatic RDB persistence
+
+     --rdb-snapshot-period=RDB_SNAPSHOT_PERIOD
+        The attempted period between RDB snapshots. RDB_SNAPSHOT_PERIOD must be
+        one of:
+
+         12h
+            12 hours
+         1h
+            1 hour
+         24h
+            24 hours
+         6h
+            6 hours
+
+     --rdb-snapshot-start-time=RDB_SNAPSHOT_START_TIME
+        Date and time of the first snapshot in the ISO 1801 format, and
+        alignment time for future snapshots. For example, 2022-11-02T03:00:00Z.
+
+     --read-replicas-mode=READ_REPLICAS_MODE
+        Read replicas mode used by the instance. Only works against standard
+        tier instances with 5GB and above provisioned capacity and Redis
+        version 5.0 and above. This is an irreversible update i.e. Read
+        replicas can not be disabled for the instance once it is enabled. Also
+        this update is exclusive and cannot be clubbed with other update
+        operations. READ_REPLICAS_MODE must be one of:
+
+         read-replicas-disabled
+            If read replica is not enabled on the instance, no changes are
+            done. If read replica is enabled for the instance, update operation
+            fails
+
+         read-replicas-enabled
+            Read replica is enabled for the instance if not already enabled.
+            Read endpoint will be provided and the instance can scale up and
+            down the number of replicas.
+
+     --remove-redis-config=[KEY,...]
+        A list of Redis config parameters to remove. Removing a non-existent
+        config parameter is silently ignored.
+
+     --replica-count=REPLICA_COUNT
+        The replica count of the instance. Valid from 0 to 5.
+
+     --secondary-ip-range=SECONDARY_IP_RANGE
+        Required only when read-replicas-mode is enabled on the instance. The
+        CIDR range of internal addresses that are reserved for this instance.
+        For example, 10.0.0.0/28 or 192.168.0.0/28. Range must be unique and
+        non-overlapping with existing ranges in the network. If value 'auto'
+        passed, the service will automatically pick an available range.
+
+     --size=SIZE
+        The memory size of the instance in GiB.
+
+     --update-labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to update. If a label exists, its value
+        is modified. Otherwise, a new label is created.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     --update-redis-config=KEY=VALUE
+        A list of Redis config KEY=VALUE pairs to update according to
+        http://cloud.google.com/memorystore/docs/reference/redis-configs. If a
+        config parameter is already set, its value is modified; otherwise a new
+        Redis config parameter is added. Currently, the only supported
+        parameters are:
+
+        Redis version 3.2 and newer: maxmemory-policy, notify-keyspace-events,
+        timeout.
+
+        Redis version 4.0 and newer: activedefrag, lfu-decay-time,
+        lfu-log-factor, maxmemory-gb.
+
+        Redis version 5.0 and newer: stream-node-max-bytes,
+        stream-node-max-entries.
+
+        Redis version 7.0 and newer: maxmemory-clients, lazyfree-lazy-eviction,
+        lazyfree-lazy-expire, lazyfree-lazy-user-del, lazyfree-lazy-user-flush.
+
+     At most one of these can be specified:
+
+       --clear-labels
+          Remove all labels. If --update-labels is also specified then
+          --clear-labels is applied first.
+
+          For example, to remove all labels:
+
+              $ gcloud redis instances update --clear-labels
+
+          To remove all existing labels and create two new labels, foo and baz:
+
+              $ gcloud redis instances update --clear-labels \
+                --update-labels foo=bar,baz=qux
+
+       --remove-labels=[KEY,...]
+          List of label keys to remove. If a label does not exist it is
+          silently ignored. If --update-labels is also specified then
+          --update-labels is applied first.
+
+     At most one of these can be specified:
+
+       --maintenance-window-any
+          Removes the user-specified maintenance window.
+
+       Or at least one of these can be specified:
+
+         --maintenance-window-day=MAINTENANCE_WINDOW_DAY
+            Day of week for maintenance window, in UTC time zone.
+            MAINTENANCE_WINDOW_DAY must be one of: SUNDAY, MONDAY, TUESDAY,
+            WEDNESDAY, THURSDAY, FRIDAY, SATURDAY. MAINTENANCE_WINDOW_DAY must
+            be one of: day-of-week-unspecified, friday, monday, saturday,
+            sunday, thursday, tuesday, wednesday.
+
+         --maintenance-window-hour=MAINTENANCE_WINDOW_HOUR
+            Hour of day (0 to 23) for maintenance window, in UTC time zone.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the redis/v1 API. The full documentation for this API can
+    be found at: https://cloud.google.com/memorystore/docs/redis/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha redis instances update
+
+        $ gcloud beta redis instances update
+```
+
+### gcloud beta redis instances update
+
+```text
+NAME
+    gcloud beta redis instances update - update Memorystore Redis instances
+
+SYNOPSIS
+    gcloud beta redis instances update (INSTANCE : --region=REGION) [--async]
+        [--display-name=DISPLAY_NAME] [--enable-auth]
+        [--maintenance-version=MAINTENANCE_VERSION]
+        [--persistence-mode=PERSISTENCE_MODE]
+        [--rdb-snapshot-period=RDB_SNAPSHOT_PERIOD]
+        [--rdb-snapshot-start-time=RDB_SNAPSHOT_START_TIME]
+        [--read-replicas-mode=READ_REPLICAS_MODE]
+        [--remove-redis-config=[KEY,...]] [--replica-count=REPLICA_COUNT]
+        [--secondary-ip-range=SECONDARY_IP_RANGE] [--size=SIZE]
+        [--update-labels=[KEY=VALUE,...]] [--update-redis-config=KEY=VALUE]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--maintenance-window-any
+          | --maintenance-window-day=MAINTENANCE_WINDOW_DAY
+          --maintenance-window-hour=MAINTENANCE_WINDOW_HOUR]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha redis instances update
+
+```text
+NAME
+    gcloud alpha redis instances update - update Memorystore Redis instances
+
+SYNOPSIS
+    gcloud alpha redis instances update (INSTANCE : --region=REGION) [--async]
+        [--display-name=DISPLAY_NAME] [--enable-auth]
+        [--maintenance-version=MAINTENANCE_VERSION]
+        [--persistence-mode=PERSISTENCE_MODE]
+        [--rdb-snapshot-period=RDB_SNAPSHOT_PERIOD]
+        [--rdb-snapshot-start-time=RDB_SNAPSHOT_START_TIME]
+        [--read-replicas-mode=READ_REPLICAS_MODE]
+        [--remove-redis-config=[KEY,...]] [--replica-count=REPLICA_COUNT]
+        [--secondary-ip-range=SECONDARY_IP_RANGE] [--size=SIZE]
+        [--update-labels=[KEY=VALUE,...]] [--update-redis-config=KEY=VALUE]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--maintenance-window-any
+          | --maintenance-window-day=MAINTENANCE_WINDOW_DAY
+          --maintenance-window-hour=MAINTENANCE_WINDOW_HOUR]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/redis/instances/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

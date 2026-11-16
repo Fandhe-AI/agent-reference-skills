@@ -1,0 +1,332 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/redis/instances/create
+---
+
+# gcloud redis instances create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud redis instances create
+
+```text
+NAME
+    gcloud redis instances create - create a Memorystore Redis instance
+
+SYNOPSIS
+    gcloud redis instances create (INSTANCE : --region=REGION)
+        [--alternative-zone=ALTERNATIVE_ZONE] [--async]
+        [--connect-mode=CONNECT_MODE]
+        [--customer-managed-key=CUSTOMER_MANAGED_KEY]
+        [--display-name=DISPLAY_NAME] [--enable-auth]
+        [--labels=[KEY=VALUE,...]]
+        [--maintenance-window-day=MAINTENANCE_WINDOW_DAY]
+        [--maintenance-window-hour=MAINTENANCE_WINDOW_HOUR]
+        [--network=NETWORK; default="default"]
+        [--persistence-mode=PERSISTENCE_MODE]
+        [--rdb-snapshot-period=RDB_SNAPSHOT_PERIOD]
+        [--rdb-snapshot-start-time=RDB_SNAPSHOT_START_TIME]
+        [--read-replicas-mode=READ_REPLICAS_MODE]
+        [--redis-config=[KEY=VALUE,...]] [--redis-version=VERSION]
+        [--replica-count=REPLICA_COUNT] [--reserved-ip-range=RESERVED_IP_RANGE]
+        [--size=SIZE; default=1] [--tags=[KEY=VALUE,...]]
+        [--tier=TIER; default="basic"]
+        [--transit-encryption-mode=TRANSIT_ENCRYPTION_MODE] [--zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create a new Redis instance.
+
+    This command can fail for the following reasons:
+      o An instance with the same name already exists.
+      o The active account does not have permission to create instances.
+
+EXAMPLES
+    To create a basic tier instance with the name my-redis-instance in region
+    us-central-1 with memory size of 5 GiB, run:
+
+        $ gcloud redis instances create my-redis-instance \
+            --region=us-central1 --size=5
+
+POSITIONAL ARGUMENTS
+     Instance resource - Arguments and flags that specify the Memorystore Redis
+     instance you want to create. The arguments in this group can be used to
+     specify the attributes of this resource. (NOTE) Some attributes are not
+     given arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument instance on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       INSTANCE
+          ID of the instance or fully qualified identifier for the instance.
+
+          To set the instance attribute:
+          + provide the argument instance on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --region=REGION
+          The name of the Redis region of the instance. Overrides the default
+          redis/region property value for this command invocation.
+
+          To set the region attribute:
+          + provide the argument instance on the command line with a fully
+            specified name;
+          + provide the argument --region on the command line;
+          + set the property redis/region.
+
+FLAGS
+     --alternative-zone=ALTERNATIVE_ZONE
+        A secondary zone for the Redis instance. Only applicable to the
+        standard tier. This protects the instance against zonal failures by
+        provisioning it across two zones. If provided, alternative zone must be
+        a different zone from the one provided through --zone.
+
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --connect-mode=CONNECT_MODE
+        Network connection mode used by instances. CONNECT_MODE must be one of:
+        connect-mode-unspecified, direct-peering, private-service-access.
+
+     --customer-managed-key=CUSTOMER_MANAGED_KEY
+        The KMS key reference that you want to use to encrypt the data at rest
+        for this Redis instance. If this is provided, CMEK is enabled.
+
+     --display-name=DISPLAY_NAME
+        A human-readable name for the instance.
+
+     --enable-auth
+        Enables Redis AUTH for the instance. If omitted AUTH is disabled.
+
+     --labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to add.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     --maintenance-window-day=MAINTENANCE_WINDOW_DAY
+        Day of week for maintenance window, in UTC time zone.
+        MAINTENANCE_WINDOW_DAY must be one of: SUNDAY, MONDAY, TUESDAY,
+        WEDNESDAY, THURSDAY, FRIDAY, SATURDAY. MAINTENANCE_WINDOW_DAY must be
+        one of: day-of-week-unspecified, friday, monday, saturday, sunday,
+        thursday, tuesday, wednesday.
+
+     --maintenance-window-hour=MAINTENANCE_WINDOW_HOUR
+        Hour of day (0 to 23) for maintenance window, in UTC time zone.
+
+     --network=NETWORK; default="default"
+        The name of the Google Compute Engine network to which the instance
+        will be connected. If left unspecified, the default network will be
+        used.
+
+     --persistence-mode=PERSISTENCE_MODE
+        Operation mode for automated persistence. PERSISTENCE_MODE must be one
+        of:
+
+         disabled
+            RDB mode is disabled
+         rdb
+            Automatic RDB persistence
+
+     --rdb-snapshot-period=RDB_SNAPSHOT_PERIOD
+        Attempted period between RDB snapshots. RDB_SNAPSHOT_PERIOD must be one
+        of:
+
+         12h
+            12 hours
+         1h
+            1 hour
+         24h
+            24 hours
+         6h
+            6 hours
+
+     --rdb-snapshot-start-time=RDB_SNAPSHOT_START_TIME
+        Date and time of the first snapshot in the ISO 1801 format, and
+        alignment time for future snapshots. For example, 2022-11-02T03:00:00Z.
+
+     --read-replicas-mode=READ_REPLICAS_MODE
+        Read replicas mode used by the instance. Only works against standard
+        tier instances with 5GB and above provisioned capacity.
+        READ_REPLICAS_MODE must be one of:
+
+         read-replicas-disabled
+            Read replica is disabled for the instance. Read endpoint will not
+            be provided and the instance cannot scale up or down the number of
+            replicas.
+
+         read-replicas-enabled
+            Read replica is enabled for the instance. Read endpoint will be
+            provided and the instance can scale up and down the number of
+            replicas.
+
+     --redis-config=[KEY=VALUE,...]
+        A list of Redis config KEY=VALUE pairs to set on the instance according
+        to http://redis.io/topics/config. Currently, the only supported
+        parameters are:
+
+        Redis version 3.2 and newer: maxmemory-policy, notify-keyspace-events,
+        timeout, databases.
+
+        Redis version 4.0 and newer: activedefrag, lfu-decay-time,
+        lfu-log-factor, maxmemory-gb.
+
+        Redis version 5.0 and newer: stream-node-max-bytes,
+        stream-node-max-entries.
+
+     --redis-version=VERSION
+        The version of Redis software. VERSION must be one of:
+
+         redis_3_2
+            Redis 3.2 compatibility
+         redis_4_0
+            Redis 4.0 compatibility
+         redis_5_0
+            Redis 5.0 compatibility
+         redis_6_x
+            Redis 6.x compatibility
+         redis_7_0
+            Redis 7.0 compatibility
+         redis_7_2
+            Redis 7.2 compatibility
+
+     --replica-count=REPLICA_COUNT
+        The replica count of the instance.
+
+     --reserved-ip-range=RESERVED_IP_RANGE
+        For DIRECT_PEERING mode, the CIDR range of internal addresses that are
+        reserved for this instance. Range must be unique and non-overlapping
+        with existing subnets in an authorized network. For
+        PRIVATE_SERVICE_ACCESS mode, the name of an IP address range allocated
+        for the private service access connection. If not provided, the service
+        will choose an unused /29 block, for example, 10.0.0.0/29 or
+        192.168.0.0/29. If READ_REPLICAS_ENABLED is used for the
+        --read-replicas-mode flag, then the block size required for this flag
+        is /28.
+
+     --size=SIZE; default=1
+        The memory size of the instance in GiB. If not provided, size of 1 GiB
+        will be used.
+
+     --tags=[KEY=VALUE,...]
+        List of tag KEY=VALUE pairs to add.
+
+     --tier=TIER; default="basic"
+        The service tier of the instance. TIER must be one of:
+
+         basic
+            Basic Redis instance with no replication
+         standard
+            Standard high-availability Redis instance with replication
+
+     --transit-encryption-mode=TRANSIT_ENCRYPTION_MODE
+        Transit encryption mode used by the instance. TRANSIT_ENCRYPTION_MODE
+        must be one of:
+
+         disabled
+            Transit encryption is disabled for the instance.
+         server-authentication
+            Client to Server traffic encryption enabled with server
+            authentication.
+
+     --zone=ZONE
+        The zone of the Redis instance. If not provided the service will pick a
+        random zone in the region. For the standard tier, instances will be
+        created across two zones for protection against zonal failures. So if
+        --alternative-zone is also provided, it must be different from --zone.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the redis/v1 API. The full documentation for this API can
+    be found at: https://cloud.google.com/memorystore/docs/redis/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha redis instances create
+
+        $ gcloud beta redis instances create
+```
+
+### gcloud beta redis instances create
+
+```text
+NAME
+    gcloud beta redis instances create - create a Memorystore Redis instance
+
+SYNOPSIS
+    gcloud beta redis instances create (INSTANCE : --region=REGION)
+        [--alternative-zone=ALTERNATIVE_ZONE] [--async]
+        [--connect-mode=CONNECT_MODE]
+        [--customer-managed-key=CUSTOMER_MANAGED_KEY]
+        [--display-name=DISPLAY_NAME] [--enable-auth]
+        [--labels=[KEY=VALUE,...]]
+        [--maintenance-window-day=MAINTENANCE_WINDOW_DAY]
+        [--maintenance-window-hour=MAINTENANCE_WINDOW_HOUR]
+        [--network=NETWORK; default="default"]
+        [--persistence-mode=PERSISTENCE_MODE]
+        [--rdb-snapshot-period=RDB_SNAPSHOT_PERIOD]
+        [--rdb-snapshot-start-time=RDB_SNAPSHOT_START_TIME]
+        [--read-replicas-mode=READ_REPLICAS_MODE]
+        [--redis-config=[KEY=VALUE,...]] [--redis-version=VERSION]
+        [--replica-count=REPLICA_COUNT] [--reserved-ip-range=RESERVED_IP_RANGE]
+        [--size=SIZE; default=1] [--tier=TIER; default="basic"]
+        [--transit-encryption-mode=TRANSIT_ENCRYPTION_MODE] [--zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha redis instances create
+
+```text
+NAME
+    gcloud alpha redis instances create - create a Memorystore Redis instance
+
+SYNOPSIS
+    gcloud alpha redis instances create (INSTANCE : --region=REGION)
+        [--alternative-zone=ALTERNATIVE_ZONE] [--async]
+        [--connect-mode=CONNECT_MODE]
+        [--customer-managed-key=CUSTOMER_MANAGED_KEY]
+        [--display-name=DISPLAY_NAME] [--enable-auth]
+        [--labels=[KEY=VALUE,...]]
+        [--maintenance-window-day=MAINTENANCE_WINDOW_DAY]
+        [--maintenance-window-hour=MAINTENANCE_WINDOW_HOUR]
+        [--network=NETWORK; default="default"]
+        [--persistence-mode=PERSISTENCE_MODE]
+        [--rdb-snapshot-period=RDB_SNAPSHOT_PERIOD]
+        [--rdb-snapshot-start-time=RDB_SNAPSHOT_START_TIME]
+        [--read-replicas-mode=READ_REPLICAS_MODE]
+        [--redis-config=[KEY=VALUE,...]] [--redis-version=VERSION]
+        [--replica-count=REPLICA_COUNT] [--reserved-ip-range=RESERVED_IP_RANGE]
+        [--size=SIZE; default=1] [--tier=TIER; default="basic"]
+        [--transit-encryption-mode=TRANSIT_ENCRYPTION_MODE] [--zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/redis/instances/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
