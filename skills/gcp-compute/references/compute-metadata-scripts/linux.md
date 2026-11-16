@@ -101,11 +101,11 @@ POST https://compute.googleapis.com/compute/v1/projects/PROJECT_ID/zones/ZONE/in
 
 Startup script that reads the `foo` key (keeps the `Metadata-Flavor: Google` header):
 
-Adapted (not in the official docs): `curl` changed to `curl -fsS` so a missing key or an unavailable metadata server fails the command instead of writing the error body into the page.
+Adapted (not in the official docs): `curl` changed to `curl -fsS` and `|| exit 1` added to the assignment, so a missing key or an unavailable metadata server stops the script with a non-zero exit status instead of installing Apache and writing the error body into the page.
 
 ```bash
 #! /bin/bash
-METADATA_VALUE=$(curl -fsS http://metadata.google.internal/computeMetadata/v1/instance/attributes/foo -H "Metadata-Flavor: Google")
+METADATA_VALUE=$(curl -fsS http://metadata.google.internal/computeMetadata/v1/instance/attributes/foo -H "Metadata-Flavor: Google") || exit 1
 apt update
 apt -y install apache2
 cat <<EOF > /var/www/html/index.html
@@ -160,6 +160,7 @@ Permissions: all permissions needed to create a VM, plus `compute.instances.setM
 - Source (guest agent binaries): https://docs.cloud.google.com/compute/docs/images/guest-agent (retrieved 2026-11-17)
 - Source (OS image lifecycle per version): https://docs.cloud.google.com/compute/docs/images/os-details (retrieved 2026-11-17)
 - Source (metadata server status codes): https://docs.cloud.google.com/compute/docs/troubleshooting/troubleshoot-metadata-server (retrieved 2026-11-17)
+- Adapted from the official docs: `|| exit 1` is added to the `METADATA_VALUE=$(curl -fsS ...)` assignment; the script has no `set -e`, so without it a failed metadata request would not stop the commands that follow.
 - Source: https://docs.cloud.google.com/compute/docs/instances/startup-scripts/linux (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

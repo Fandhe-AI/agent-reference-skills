@@ -80,7 +80,7 @@ Discount eligibility stated in the source: SUDs (up to 30%) for M2 and M1; resou
 | `m4n-ultramem-224` | 224 | 5,952 | 2 | 4 (full server) | 400 | 200 |
 
 - M4N: no Titanium SSD/Local SSD; predefined only; no GPUs; select zones and regions; NVMe only, gVNIC only (VirtIO-net and SCSI not supported). Hyperdisk Extreme up to 25,000 MiB/s and 1,000,000 IOPS on the largest types; the largest types have two Titanium Smart NICs (4x M4 network bandwidth).
-- Disks: `hyperdisk-balanced`, `hyperdisk-balanced-high-availability`, `hyperdisk-extreme`, `hyperdisk-throughput`, `hyperdisk-ml`. Max 64 Hyperdisk volumes per VM; max 512 TiB total. Per-type disk counts (Hyperdisk per VM, same for Balanced incl. HA / Throughput / ML; Extreme is 8 except 2/4/8-vCPU types): hypermem-2/4/8: 8; hypermem-16: 16 (Extreme 8); hypermem-32/64, megamem-28/56, ultramem-28/56: 32 (Extreme 8); megamem-112, ultramem-112: 64 (Extreme 8); megamem-224, ultramem-224: 128 (Extreme 8).
+- Disks: `hyperdisk-balanced`, `hyperdisk-balanced-high-availability`, `hyperdisk-extreme`, `hyperdisk-throughput`, `hyperdisk-ml`. Max 64 Hyperdisk volumes per VM; max 512 TiB total. Per-type disk counts (Hyperdisk per VM, same for Balanced incl. HA / Throughput / ML; Extreme is 8 except 2/4/8-vCPU types): hypermem-2/4/8: 8; hypermem-16: 16 (Extreme 8); hypermem-32/64, megamem-28/56, ultramem-28/56: 32 (Extreme 8); megamem-112, ultramem-112: 64 (Extreme 8); megamem-224, ultramem-224: 128 (Extreme 8). The 128 values conflict with the 64-volume limit above; see the Source inconsistency line.
 - Network: up to 400 Gbps VM-to-VM, no per VM Tier_1 networking. For the 224 vCPU types you must configure at least 2 vNICs using Jumbo frames (8896B) at creation to get full throughput (vNICs map to pNICs round-robin). gVNIC required; up to 10 network interfaces, scaling with vCPUs.
 - Maintenance: monthly; Live migrate; notification 7 days; on-demand Yes; simulate Yes.
 
@@ -158,6 +158,8 @@ Discount eligibility stated in the source: SUDs (up to 30%) for M2 and M1; resou
 - Prices and discount percentages are not copied beyond the eligibility statements above; see the pricing pages.
 - Source inconsistency: the M2 limitations say "Sole tenant nodes are available for only the `m2-ultramem-416` shape.", while the sole-tenant node type table lists both `m2-node-416-11776` (416 vCPUs, 11,776 GB) and `m2-node-416-8832` (416 vCPUs, 8,832 GB); in the M2 table on this page 11,776 GB is the memory of `m2-ultramem-416` and 8,832 GB that of `m2-hypermem-416`.
 - Source (sole-tenant node types): https://docs.cloud.google.com/compute/docs/nodes/sole-tenant-nodes (retrieved 2026-11-17)
+- Source inconsistency: the M4N "Disk and capacity limits" section says "The number of Hyperdisk volumes can't exceed 64 per VM", while the M4N storage limits table on the same page lists 128 for "Hyperdisk per VM", Hyperdisk Balanced, Hyperdisk Throughput and Hyperdisk ML on `m4n-megamem-224` and `m4n-ultramem-224`. Neither this page nor hyperdisk-perf-limits (whose M4N table gives IOPS and throughput only) resolves which number applies; the lower, 64 per VM, is the one stated as a restriction.
+- Source (compared page, Hyperdisk performance limits): https://docs.cloud.google.com/compute/docs/disks/hyperdisk-perf-limits (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/docs/memory-optimized-machines (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

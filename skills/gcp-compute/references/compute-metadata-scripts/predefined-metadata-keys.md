@@ -10,11 +10,11 @@ Compute Engine creates predefined keys in the `instance/` and `project/` metadat
 
 Snippet taken from https://docs.cloud.google.com/compute/docs/instances/startup-scripts/linux (first two lines of the "Accessing metadata" block). The same pattern reads any key below.
 
-Adapted (not in the official docs): `curl` changed to `curl -fsS`, as in the adapted linux.md script, so a missing key or an unavailable metadata server fails the command instead of storing the error body in `METADATA_VALUE`.
+Adapted (not in the official docs): `curl` changed to `curl -fsS` and `|| exit 1` added, as in the adapted linux.md script, so a missing key or an unavailable metadata server stops the script instead of storing the error body in `METADATA_VALUE`.
 
 ```bash
 #! /bin/bash
-METADATA_VALUE=$(curl -fsS http://metadata.google.internal/computeMetadata/v1/instance/attributes/foo -H "Metadata-Flavor: Google")
+METADATA_VALUE=$(curl -fsS http://metadata.google.internal/computeMetadata/v1/instance/attributes/foo -H "Metadata-Flavor: Google") || exit 1
 ```
 
 ## Options / Props
@@ -95,6 +95,7 @@ METADATA_VALUE=$(curl -fsS http://metadata.google.internal/computeMetadata/v1/in
 - Corrected from the official docs: the borrowed snippet calls `curl` without `-f`; the metadata server returns `404` ("Not Found: the requested endpoint doesn't exist") for a path that does not exist, such as an unset attribute key, and `503` while it "isn't ready to serve"; without `-f`, `curl` prints the error response body and exits 0, so `METADATA_VALUE` holds the error text instead of failing. It now uses `curl -fsS`.
 - Source (metadata server status codes): https://docs.cloud.google.com/compute/docs/troubleshooting/troubleshoot-metadata-server (retrieved 2026-11-17)
 - Source (OS Login and metadata SSH keys): https://docs.cloud.google.com/compute/docs/oslogin (retrieved 2026-11-17)
+- Adapted from the official docs: `|| exit 1` is added to the `METADATA_VALUE=$(curl -fsS ...)` assignment; the script has no `set -e`, so without it a failed metadata request would not stop the commands that follow.
 - Source: https://docs.cloud.google.com/compute/docs/metadata/predefined-metadata-keys (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/compute/docs/instances/startup-scripts/linux
 

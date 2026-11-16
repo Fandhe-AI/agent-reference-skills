@@ -12,11 +12,11 @@ Every Compute Engine instance stores its metadata (instance properties, network 
 
 Snippet taken from https://docs.cloud.google.com/compute/docs/instances/startup-scripts/linux (first two lines of the "Accessing metadata" block). Always send the `Metadata-Flavor: Google` header.
 
-Adapted (not in the official docs): `curl` changed to `curl -fsS`, as in the adapted linux.md script, so a missing key or an unavailable metadata server fails the command instead of storing the error body in `METADATA_VALUE`.
+Adapted (not in the official docs): `curl` changed to `curl -fsS` and `|| exit 1` added, as in the adapted linux.md script, so a missing key or an unavailable metadata server stops the script instead of storing the error body in `METADATA_VALUE`.
 
 ```bash
 #! /bin/bash
-METADATA_VALUE=$(curl -fsS http://metadata.google.internal/computeMetadata/v1/instance/attributes/foo -H "Metadata-Flavor: Google")
+METADATA_VALUE=$(curl -fsS http://metadata.google.internal/computeMetadata/v1/instance/attributes/foo -H "Metadata-Flavor: Google") || exit 1
 ```
 
 ### HTTPS metadata server root certificate (Shielded VMs with the guest environment)
@@ -83,6 +83,7 @@ Metadata keys: `disable-https-mds-setup` set to `FALSE` enables automatic certif
 - The HTTPS form of each metadata directory is the same path under `https://metadata.google.internal` (Shielded VMs only).
 - Corrected from the official docs: the borrowed snippet calls `curl` without `-f`; the metadata server returns `404` ("Not Found: the requested endpoint doesn't exist") for a path that does not exist, such as an unset attribute key, and `503` while it "isn't ready to serve"; without `-f`, `curl` prints the error response body and exits 0, so `METADATA_VALUE` holds the error text instead of failing. It now uses `curl -fsS`.
 - Source (metadata server status codes): https://docs.cloud.google.com/compute/docs/troubleshooting/troubleshoot-metadata-server (retrieved 2026-11-17)
+- Adapted from the official docs: `|| exit 1` is added to the `METADATA_VALUE=$(curl -fsS ...)` assignment; the script has no `set -e`, so without it a failed metadata request would not stop the commands that follow.
 - Source: https://docs.cloud.google.com/compute/docs/metadata/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/compute/docs/instances/startup-scripts/linux
 
