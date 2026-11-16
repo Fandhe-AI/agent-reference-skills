@@ -308,3 +308,13 @@
 | gcloud container hub workload-identity disable | 3 commands (alpha, beta, ga); container hub workload-identity disable … | [container-hub-workload-identity-disable.md](./container-hub-workload-identity-disable.md) |
 | gcloud container hub workload-identity enable | 3 commands (alpha, beta, ga); container hub workload-identity enable … | [container-hub-workload-identity-enable.md](./container-hub-workload-identity-enable.md) |
 | gcloud container hub workload-identity scope-tenancy-pool | 6 commands (alpha, beta, ga); container hub workload-identity scope-tenancy-pool set … | [container-hub-workload-identity-scope-tenancy-pool.md](./container-hub-workload-identity-scope-tenancy-pool.md) |
+| gcloud container images | 19 commands (alpha, beta, ga); container images add-tag … | [container-images.md](./container-images.md) |
+| gcloud container node-pools complete-upgrade | 3 commands (alpha, beta, ga); container node-pools complete-upgrade … | [container-node-pools-complete-upgrade.md](./container-node-pools-complete-upgrade.md) |
+| gcloud container node-pools config | alpha container node-pools config export | [container-node-pools-config.md](./container-node-pools-config.md) |
+| gcloud container node-pools create (part 1) | container node-pools create | [container-node-pools-create-1.md](./container-node-pools-create-1.md) |
+| gcloud container node-pools create (part 2) | 2 commands (alpha, beta, ga); beta container node-pools create … | [container-node-pools-create-2.md](./container-node-pools-create-2.md) |
+| gcloud container node-pools delete | 3 commands (alpha, beta, ga); container node-pools delete … | [container-node-pools-delete.md](./container-node-pools-delete.md) |
+| gcloud container node-pools describe | 3 commands (alpha, beta, ga); container node-pools describe … | [container-node-pools-describe.md](./container-node-pools-describe.md) |
+| gcloud container node-pools get-upgrade-info | 3 commands (alpha, beta, ga); container node-pools get-upgrade-info … | [container-node-pools-get-upgrade-info.md](./container-node-pools-get-upgrade-info.md) |
+| gcloud container node-pools list | 3 commands (alpha, beta, ga); container node-pools list … | [container-node-pools-list.md](./container-node-pools-list.md) |
+| gcloud container node-pools rollback | 3 commands (alpha, beta, ga); container node-pools rollback … | [container-node-pools-rollback.md](./container-node-pools-rollback.md) |

@@ -1,0 +1,1773 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/container/node-pools/create
+---
+
+# gcloud container node-pools create (part 1/2)
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud container node-pools create
+
+```text
+NAME
+    gcloud container node-pools create - create a node pool in a running
+        cluster
+
+SYNOPSIS
+    gcloud container node-pools create NAME
+        [--accelerator=[type=TYPE,[count=COUNT,
+          gpu-driver-version=GPU_DRIVER_VERSION,
+          gpu-partition-size=GPU_PARTITION_SIZE,
+          gpu-sharing-strategy=GPU_SHARING_STRATEGY,
+          max-shared-clients-per-gpu=MAX_SHARED_CLIENTS_PER_GPU],...]]
+        [--accelerator-network-profile=ACCELERATOR_NETWORK_PROFILE]
+        [--add-maintenance-exclusion-until-end-of-support]
+        [--additional-node-network=[network=NETWORK_NAME,
+          subnetwork=SUBNETWORK_NAME[,stack-type=STACK_TYPE],...]]
+        [--additional-pod-network=[subnetwork=SUBNETWORK_NAME,
+          pod-ipv4-range=SECONDARY_RANGE_NAME,
+          [max-pods-per-node=NUM_PODS],...]] [--async]
+        [--autoscaled-rollout-policy=[wait-for-drain-duration=WAIT-FOR-DRAIN-DURATION]]
+        [--boot-disk-kms-key=BOOT_DISK_KMS_KEY]
+        [--boot-disk-provisioned-iops=BOOT_DISK_PROVISIONED_IOPS]
+        [--boot-disk-provisioned-throughput=BOOT_DISK_PROVISIONED_THROUGHPUT]
+        [--cluster=CLUSTER] [--confidential-node-type=CONFIDENTIAL_NODE_TYPE]
+        [--consolidation-delay=CONSOLIDATION_DELAY]
+        [--containerd-config-from-file=PATH_TO_FILE]
+        [--data-cache-count=DATA_CACHE_COUNT] [--disk-size=DISK_SIZE]
+        [--disk-type=DISK_TYPE] [--enable-autoprovisioning]
+        [--enable-autorepair] [--no-enable-autoupgrade]
+        [--enable-blue-green-upgrade] [--enable-confidential-nodes]
+        [--enable-confidential-storage] [--enable-gvnic]
+        [--enable-image-streaming] [--enable-insecure-kubelet-readonly-port]
+        [--enable-kernel-module-signature-enforcement]
+        [--enable-nested-virtualization] [--enable-private-nodes]
+        [--enable-queued-provisioning] [--enable-surge-upgrade] [--flex-start]
+        [--image=IMAGE] [--image-project=IMAGE_PROJECT]
+        [--image-type=IMAGE_TYPE] [--labels=[KEY=VALUE,...]]
+        [--logging-variant=LOGGING_VARIANT]
+        [--machine-type=MACHINE_TYPE, -m MACHINE_TYPE]
+        [--max-pods-per-node=MAX_PODS_PER_NODE]
+        [--max-run-duration=MAX_RUN_DURATION]
+        [--max-surge-upgrade=MAX_SURGE_UPGRADE; default=1]
+        [--max-unavailable-upgrade=MAX_UNAVAILABLE_UPGRADE]
+        [--metadata=KEY=VALUE,[KEY=VALUE,...]]
+        [--metadata-from-file=KEY=LOCAL_FILE_PATH,[...]]
+        [--min-cpu-platform=PLATFORM]
+        [--network-performance-configs=[PROPERTY=VALUE,...]]
+        [--node-architecture-taint-behavior=NODE_ARCHITECTURE_TAINT_BEHAVIOR]
+        [--node-group=NODE_GROUP] [--node-labels=[NODE_LABEL,...]]
+        [--node-locations=ZONE,[ZONE,...]]
+        [--node-pool-soak-duration=NODE_POOL_SOAK_DURATION]
+        [--node-taints=[NODE_TAINT,...]] [--node-version=NODE_VERSION]
+        [--num-nodes=NUM_NODES]
+        [--opportunistic-maintenance=[node-idle-time=NODE_IDLE_TIME,
+          window=WINDOW,min-nodes=MIN_NODES,...]]
+        [--performance-monitoring-unit=PERFORMANCE_MONITORING_UNIT]
+        [--placement-policy=PLACEMENT_POLICY] [--placement-type=PLACEMENT_TYPE]
+        [--preemptible] [--resource-manager-tags=[KEY=VALUE,...]]
+        [--sandbox=[type=TYPE]]
+        [--secondary-boot-disk=[disk-image=DISK_IMAGE,[mode=MODE],...]]
+        [--shielded-integrity-monitoring] [--shielded-secure-boot]
+        [--sole-tenant-min-node-cpus=SOLE_TENANT_MIN_NODE_CPUS]
+        [--sole-tenant-node-affinity-file=SOLE_TENANT_NODE_AFFINITY_FILE]
+        [--spot]
+        [--standard-rollout-policy=[batch-node-count=BATCH_NODE_COUNT,
+          batch-percent=BATCH_NODE_PERCENTAGE,
+          batch-soak-duration=BATCH_SOAK_DURATION,...]]
+        [--storage-pools=STORAGE_POOL,[...]] [--subnetwork=SUBNETWORK]
+        [--system-config-from-file=PATH_TO_FILE] [--tags=TAG,[TAG,...]]
+        [--threads-per-core=THREADS_PER_CORE] [--tpu-topology=TPU_TOPOLOGY]
+        [--windows-os-version=WINDOWS_OS_VERSION]
+        [--workload-metadata=WORKLOAD_METADATA]
+        [--create-pod-ipv4-range=[KEY=VALUE,...] | --pod-ipv4-range=NAME]
+        [--enable-autoscaling --location-policy=LOCATION_POLICY
+          --max-nodes=MAX_NODES --min-nodes=MIN_NODES
+          --total-max-nodes=TOTAL_MAX_NODES --total-min-nodes=TOTAL_MIN_NODES]
+        [--enable-best-effort-provision
+          --min-provision-nodes=MIN_PROVISION_NODES]
+        [--ephemeral-storage-local-ssd[=[capacity=CAPACITY],[count=COUNT]]
+          | --local-nvme-ssd-block[=[count=COUNT]]
+          | --local-ssd-count=LOCAL_SSD_COUNT]
+        [--location=LOCATION | --region=REGION | --zone=ZONE, -z ZONE]
+        [--node-drain-grace-period-seconds=NODE_DRAIN_GRACE_PERIOD_SECONDS
+          --node-drain-pdb-timeout-seconds=NODE_DRAIN_PDB_TIMEOUT_SECONDS
+          --respect-pdb-during-node-pool-deletion]
+        [--reservation=RESERVATION --reservation-affinity=RESERVATION_AFFINITY]
+        [--scopes=[SCOPE,...];
+          default="gke-default" --service-account=SERVICE_ACCOUNT]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud container node-pools create facilitates the creation of a node pool
+    in a Google Kubernetes Engine cluster. A variety of options exists to
+    customize the node configuration and the number of nodes created.
+
+EXAMPLES
+    To create a new node pool "node-pool-1" with the default options in the
+    cluster "sample-cluster", run:
+
+        $ gcloud container node-pools create node-pool-1 \
+            --cluster=sample-cluster
+
+    The new node pool will show up in the cluster after all the nodes have been
+    provisioned.
+
+    To create a node pool with 5 nodes, run:
+
+        $ gcloud container node-pools create node-pool-1 \
+            --cluster=sample-cluster --num-nodes=5
+
+POSITIONAL ARGUMENTS
+     NAME
+        The name of the node pool to create.
+
+FLAGS
+     --accelerator=[type=TYPE,[count=COUNT,gpu-driver-version=GPU_DRIVER_VERSION,gpu-partition-size=GPU_PARTITION_SIZE,gpu-sharing-strategy=GPU_SHARING_STRATEGY,max-shared-clients-per-gpu=MAX_SHARED_CLIENTS_PER_GPU],...]
+        Attaches accelerators (e.g. GPUs) to all nodes.
+
+         type
+            (Required) The specific type (e.g. nvidia-tesla-t4 for NVIDIA T4)
+            of accelerator to attach to the instances. Use gcloud compute
+            accelerator-types list to learn about all available accelerator
+            types.
+
+         count
+            (Optional) The number of accelerators to attach to the instances.
+            The default value is 1.
+
+         gpu-driver-version
+            (Optional) The NVIDIA driver version to install. GPU_DRIVER_VERSION
+            must be one of:
+
+                `default`: Install the default driver version for this GKE version. For GKE version 1.30.1-gke.1156000 and later, this is the default option.
+
+                `latest`: Install the latest driver version available for this GKE version.
+                Can only be used for nodes that use Container-Optimized OS.
+
+                `disabled`: Skip automatic driver installation. You must manually install a
+                driver after you create the cluster. For GKE version 1.30.1-gke.1156000 and earlier, this is the default option.
+                To manually install the GPU driver, refer to https://cloud.google.com/kubernetes-engine/docs/how-to/gpus#installing_drivers.
+
+         gpu-partition-size
+            (Optional) The GPU partition size used when running multi-instance
+            GPUs. For information about multi-instance GPUs, refer to:
+            https://cloud.google.com/kubernetes-engine/docs/how-to/gpus-multi
+
+         gpu-sharing-strategy
+            (Optional) The GPU sharing strategy (e.g. time-sharing) to use. For
+            information about GPU sharing, refer to:
+            https://cloud.google.com/kubernetes-engine/docs/concepts/timesharing-gpus
+
+         max-shared-clients-per-gpu
+            (Optional) The max number of containers allowed to share each GPU
+            on the node. This field is used together with gpu-sharing-strategy.
+
+     --accelerator-network-profile=ACCELERATOR_NETWORK_PROFILE
+        Accelerator Network Profile that will be used by the node pool.
+
+        Currently only the auto value is supported. A compatible Accelerator
+        machine type needs to be specified with the --machine-type flag. An
+        Accelerator Network Profile will be created if it does not exist.
+
+     Node pool maintenance exclusions
+
+     --add-maintenance-exclusion-until-end-of-support
+        Add node pool maintenance exclusion until the end of support.
+
+     --additional-node-network=[network=NETWORK_NAME,subnetwork=SUBNETWORK_NAME[,stack-type=STACK_TYPE],...]
+        Attach an additional network interface to each node in the pool. This
+        parameter can be specified up to 7 times.
+
+        E.g., to configure the additional interface with 'dataplane' network,
+        'subnet-dp' subnetwork and dual-stack, run: --additional-node-network
+        network=dataplane,subnetwork=subnet-dp,stack-type=ipv4-ipv6
+
+         network
+            (Required) The network to attach the new interface to.
+
+         subnetwork
+            (Required) The subnetwork to attach the new interface to.
+
+         stack-type
+            (Optional) The stack-type to be set on the new interface.
+            STACK_TYPE must be one of: ipv4, ipv4-ipv6, ipv6.
+
+     --additional-pod-network=[subnetwork=SUBNETWORK_NAME,pod-ipv4-range=SECONDARY_RANGE_NAME,[max-pods-per-node=NUM_PODS],...]
+        Specify the details of a secondary range to be used for an additional
+        pod network. Not needed if you use "host" typed NIC from this network.
+        This parameter can be specified up to 35 times.
+
+        e.g. --additional-pod-network
+        subnetwork=subnet-dp,pod-ipv4-range=sec-range-blue,max-pods-per-node=8.
+
+         subnetwork
+            (Optional) The name of the subnetwork to link the pod network to.
+            If not specified, the pod network defaults to the subnet connected
+            to the default network interface.
+
+         pod-ipv4-range
+            (Required) The name of the secondary range in the subnetwork. The
+            range must hold at least (2 * MAX_PODS_PER_NODE *
+            MAX_NODES_IN_RANGE) IPs.
+
+         max-pods-per-node
+            (Optional) Maximum amount of pods per node that can utilize this
+            ipv4-range. Defaults to NodePool (if specified) or Cluster value.
+
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --autoscaled-rollout-policy=[wait-for-drain-duration=WAIT-FOR-DRAIN-DURATION]
+        Autoscaled rollout policy options for blue-green upgrade.
+
+         wait-for-drain-duration
+            (Optional) Time in seconds to wait after cordoning the blue pool
+            before draining the nodes.
+
+            Examples:
+
+                $ gcloud container node-pools create node-pool-1 \
+                    --cluster=example-cluster  --enable-blue-green-upgrade  \
+                    --autoscaled-rollout-policy=""
+
+                $ gcloud container node-pools create node-pool-1 \
+                    --cluster=example-cluster  --enable-blue-green-upgrade  \
+                    --autoscaled-rollout-policy=wait-for-drain-duration=7200s
+
+     --boot-disk-kms-key=BOOT_DISK_KMS_KEY
+        The Customer Managed Encryption Key used to encrypt the boot disk
+        attached to each node in the node pool. This should be of the form
+        projects/[KEY_PROJECT_ID]/locations/[LOCATION]/keyRings/[RING_NAME]/cryptoKeys/[KEY_NAME].
+        For more information about protecting resources with Cloud KMS Keys
+        please see:
+        https://cloud.google.com/compute/docs/disks/customer-managed-encryption
+
+     --boot-disk-provisioned-iops=BOOT_DISK_PROVISIONED_IOPS
+        Configure the Provisioned IOPS for the node pool boot disks. Only valid
+        for hyperdisk-balanced boot disks.
+
+     --boot-disk-provisioned-throughput=BOOT_DISK_PROVISIONED_THROUGHPUT
+        Configure the Provisioned Throughput for the node pool boot disks. Only
+        valid for hyperdisk-balanced boot disks.
+
+     --cluster=CLUSTER
+        The cluster to add the node pool to. Overrides the default
+        container/cluster property value for this command invocation.
+
+     --confidential-node-type=CONFIDENTIAL_NODE_TYPE
+        Enable confidential nodes for the node pool. Enabling Confidential
+        Nodes will create nodes using Confidential VM
+        https://docs.cloud.google.com/compute/docs/about-confidential-vm.
+        CONFIDENTIAL_NODE_TYPE must be one of: sev, sev_snp, tdx, disabled.
+
+     --consolidation-delay=CONSOLIDATION_DELAY
+        Set the duration after which the Cluster Autoscaler can scale down
+        underutilized nodes.
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --consolidation-delay=3600s
+
+     --containerd-config-from-file=PATH_TO_FILE
+        Path of the YAML file that contains containerd configuration entries
+        like configuring access to private image registries.
+
+        For detailed information on the configuration usage, please refer to
+        https://cloud.google.com/kubernetes-engine/docs/how-to/customize-containerd-configuration.
+
+        Note: Updating the containerd configuration of an existing cluster or
+        node pool requires recreation of the existing nodes, which might cause
+        disruptions in running workloads.
+
+        Use a full or relative path to a local file containing the value of
+        containerd_config.
+
+     --data-cache-count=DATA_CACHE_COUNT
+        Specifies the number of local SSDs to be utilized for GKE Data Cache in
+        the node pool.
+
+     --disk-size=DISK_SIZE
+        Size for node VM boot disks in GB. Defaults to 100GB.
+
+     --disk-type=DISK_TYPE
+        Type of the node VM boot disk. For version 1.24 and later, defaults to
+        pd-balanced. For versions earlier than 1.24, defaults to pd-standard.
+        DISK_TYPE must be one of: pd-standard, pd-ssd, pd-balanced,
+        hyperdisk-balanced, hyperdisk-extreme, hyperdisk-throughput.
+
+     --enable-autoprovisioning
+        Enables Cluster Autoscaler to treat the node pool as if it was
+        autoprovisioned.
+
+        Cluster Autoscaler will be able to delete the node pool if it's
+        unneeded.
+
+     --enable-autorepair
+        Enable node autorepair feature for a node pool.
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --enable-autorepair
+
+        Node autorepair is enabled by default for node pools using COS,
+        COS_CONTAINERD, UBUNTU or UBUNTU_CONTAINERD as a base image, use
+        --no-enable-autorepair to disable.
+
+        See
+        https://cloud.google.com/kubernetes-engine/docs/how-to/node-auto-repair
+        for more info.
+
+     --enable-autoupgrade
+        Sets autoupgrade feature for a node pool.
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --enable-autoupgrade
+
+        See https://cloud.google.com/kubernetes-engine/docs/node-auto-upgrades
+        for more info.
+
+        Enabled by default, use --no-enable-autoupgrade to disable.
+
+     --enable-blue-green-upgrade
+        Changes node pool upgrade strategy to blue-green upgrade.
+
+     --enable-confidential-nodes
+        Enable confidential nodes for the node pool. Enabling Confidential
+        Nodes will create nodes using Confidential VM
+        https://docs.cloud.google.com/compute/docs/about-confidential-vm.
+
+     --enable-confidential-storage
+        Enable confidential storage for the node pool. Enabling Confidential
+        Storage will create boot disk with confidential mode
+
+     --enable-gvnic
+        Enable the use of GVNIC for this cluster. Requires re-creation of nodes
+        using either a node-pool upgrade or node-pool creation.
+
+     --enable-image-streaming
+        Enable Image Streaming for the node pool, allowing nodes to stream
+        container image data from Artifact Registry on demand to reduce
+        container start times. This setting overrides the cluster-level Image
+        Streaming default for this specific node pool.
+
+        See Image Streaming documentation
+        (https://cloud.google.com/kubernetes-engine/docs/how-to/image-streaming)
+        for full requirements (including version, API enablement and Artifact
+        Registry usage). To disable Image Streaming for the node pool, use
+        --no-enable-image-streaming.
+
+     --enable-insecure-kubelet-readonly-port
+        Enables the Kubelet's insecure read only port.
+
+        To disable the readonly port on a cluster or node-pool set the flag to
+        --no-enable-insecure-kubelet-readonly-port.
+
+     --enable-kernel-module-signature-enforcement
+        Enforces that kernel modules are signed on all nodes in the node pool.
+        This setting overrides the cluster-level setting. For example, if the
+        cluster disables enforcement, you can enable enforcement only for a
+        specific node pool. When the policy is modified on an existing node
+        pool, nodes will be immediately recreated to use the new policy. Use
+        --no-enable-kernel-module-signature-enforcement to disable.
+
+        Examples:
+
+            $ gcloud container node-pools create node-pool-1 \
+                --enable-kernel-module-signature-enforcement
+
+     --enable-nested-virtualization
+        Enables the use of nested virtualization on the node pool. Defaults to
+        false. Can only be enabled on UBUNTU_CONTAINERD base image or
+        COS_CONTAINERD base image with version 1.28.4-gke.1083000 and above.
+
+     --enable-private-nodes
+        Enables provisioning nodes with private IP addresses only.
+
+        The control plane still communicates with all nodes through private IP
+        addresses only, regardless of whether private nodes are enabled or
+        disabled.
+
+     --enable-queued-provisioning
+        Mark the nodepool as Queued only. This means that all new nodes can be
+        obtained only through queuing via ProvisioningRequest API.
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --enable-queued-provisioning
+            ... and other required parameters, for more details see:
+            https://cloud.google.com/kubernetes-engine/docs/how-to/provisioningrequest
+
+     --enable-surge-upgrade
+        Changes node pool upgrade strategy to surge upgrade.
+
+     --flex-start
+        Start the node pool with Flex Start provisioning model.
+
+            $ gcloud container node-pools create node-pool-1 \
+                 --cluster=example-cluster --flex-start
+            and other required parameters, for more details see:
+            https://cloud.google.com/kubernetes-engine/docs/how-to/provisioningrequest
+
+     --image=IMAGE
+        The Operating System image for the node pool. This is a private
+        feature, please contact your Google account team for allowlisting this
+        feature.
+
+     --image-project=IMAGE_PROJECT
+        The Google Cloud project storing the Operating System image for the
+        node pool. This is a private feature, please contact your Google
+        account team for allowlisting this feature.
+
+     --image-type=IMAGE_TYPE
+        The image type to use for the node pool. Defaults to server-specified.
+
+        Image Type specifies the base OS that the nodes in the node pool will
+        run on. If an image type is specified, that will be assigned to the
+        node pool and all future upgrades will use the specified image type. If
+        it is not specified the server will pick the default image type.
+
+        The default image type and the list of valid image types are available
+        using the following command.
+
+            $ gcloud container get-server-config
+
+     --labels=[KEY=VALUE,...]
+        Labels to apply to the Google Cloud resources of node pools in the
+        Kubernetes Engine cluster. These are unrelated to Kubernetes labels.
+        Warning: Updating this label will causes the node(s) to be recreated.
+
+        Examples:
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --labels=label1=value1,label2=value2
+
+     --logging-variant=LOGGING_VARIANT
+        Specifies the logging variant that will be deployed on all the nodes in
+        the node pool. If the node pool doesn't specify a logging variant, then
+        the logging variant specified for the cluster will be deployed on all
+        the nodes in the node pool. Valid logging variants are MAX_THROUGHPUT,
+        DEFAULT. LOGGING_VARIANT must be one of:
+
+         DEFAULT
+            'DEFAULT' variant requests minimal resources but may not guarantee
+            high throughput.
+         MAX_THROUGHPUT
+            'MAX_THROUGHPUT' variant requests more node resources and is able
+            to achieve logging throughput up to 10MB per sec.
+
+     --machine-type=MACHINE_TYPE, -m MACHINE_TYPE
+        The type of machine to use for nodes. Defaults to e2-medium. The list
+        of predefined machine types is available using the following command:
+
+            $ gcloud compute machine-types list
+
+        You can also specify custom machine types by providing a string with
+        the format "custom-CPUS-RAM" where "CPUS" is the number of virtual CPUs
+        and "RAM" is the amount of RAM in MiB.
+
+        For example, to create a node pool using custom machines with 2 vCPUs
+        and 12 GB of RAM:
+
+            $ gcloud container node-pools create high-mem-pool \
+                --machine-type=custom-2-12288
+
+     --max-pods-per-node=MAX_PODS_PER_NODE
+        The max number of pods per node for this node pool.
+
+        This flag sets the maximum number of pods that can be run at the same
+        time on a node. This will override the value given with
+        --default-max-pods-per-node flag set at the cluster level.
+
+        Must be used in conjunction with '--enable-ip-alias'.
+
+     --max-run-duration=MAX_RUN_DURATION
+        Limit the runtime of each node in the node pool to the specified
+        duration.
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --max-run-duration=3600s
+
+     --max-surge-upgrade=MAX_SURGE_UPGRADE; default=1
+        Number of extra (surge) nodes to be created on each upgrade of the node
+        pool.
+
+        Specifies the number of extra (surge) nodes to be created during this
+        node pool's upgrades. For example, running the following command will
+        result in creating an extra node each time the node pool is upgraded:
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --max-surge-upgrade=1   \
+                --max-unavailable-upgrade=0
+
+        Must be used in conjunction with '--max-unavailable-upgrade'.
+
+     --max-unavailable-upgrade=MAX_UNAVAILABLE_UPGRADE
+        Number of nodes that can be unavailable at the same time on each
+        upgrade of the node pool.
+
+        Specifies the number of nodes that can be unavailable at the same time
+        during this node pool's upgrades. For example, running the following
+        command will result in having 3 nodes being upgraded in parallel (1 +
+        2), but keeping always at least 3 (5 - 2) available each time the node
+        pool is upgraded:
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --num-nodes=5   \
+                --max-surge-upgrade=1 --max-unavailable-upgrade=2
+
+        Must be used in conjunction with '--max-surge-upgrade'.
+
+     --metadata=KEY=VALUE,[KEY=VALUE,...]
+        Compute Engine metadata to be made available to the guest operating
+        system running on nodes within the node pool.
+
+        Each metadata entry is a key/value pair separated by an equals sign.
+        Metadata keys must be unique and less than 128 bytes in length. Values
+        must be less than or equal to 32,768 bytes in length. The total size of
+        all keys and values must be less than 512 KB. Multiple arguments can be
+        passed to this flag. For example:
+
+        --metadata key-1=value-1,key-2=value-2,key-3=value-3
+
+        Additionally, the following keys are reserved for use by Kubernetes
+        Engine:
+
+        * cluster-location
+        * cluster-name
+        * cluster-uid
+        * configure-sh
+        * enable-os-login
+        * gci-update-strategy
+        * gci-ensure-gke-docker
+        * instance-template
+        * kube-env
+        * startup-script
+        * user-data
+
+        Google Kubernetes Engine sets the following keys by default:
+
+        * serial-port-logging-enable
+
+        See also Compute Engine's documentation
+        (https://cloud.google.com/compute/docs/storing-retrieving-metadata) on
+        storing and retrieving instance metadata.
+
+     --metadata-from-file=KEY=LOCAL_FILE_PATH,[...]
+        Same as --metadata except that the value for the entry will be read
+        from a local file. A value can be read from standard input by
+        specifying ``-'' as the file path.
+
+     --min-cpu-platform=PLATFORM
+        When specified, the nodes for the new node pool will be scheduled on
+        host with specified CPU architecture or a newer one.
+
+        Examples:
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --min-cpu-platform=PLATFORM
+
+        To list available CPU platforms in given zone, run:
+
+            $ gcloud beta compute zones describe ZONE \
+                --format="value(availableCpuPlatforms)"
+
+        CPU platform selection is available only in selected zones.
+
+     --network-performance-configs=[PROPERTY=VALUE,...]
+        Configures network performance settings for the node pool. If this flag
+        is not specified, the pool will be created with its default network
+        performance configuration.
+
+         total-egress-bandwidth-tier
+            Total egress bandwidth is the available outbound bandwidth from a
+            VM, regardless of whether the traffic is going to internal IP or
+            external IP destinations. The following tier values are allowed:
+            [TIER_UNSPECIFIED,TIER_1]
+
+     --node-architecture-taint-behavior=NODE_ARCHITECTURE_TAINT_BEHAVIOR
+        Control how architecture taint should be applied to nodes in a new node
+        pool.
+
+            Supported values:
+              * unspecified: Default behavior, currently the same as `arm`.
+              * arm: kubernetes.io/arch=arm:NoSchedule taint will be added for ARM nodes.
+              * none: No architecture taint will be applied.
+
+        Examples:
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster \
+                --node-architecture-taint-behavior=none
+
+        To read more about node-taints, see
+        https://cloud.google.com/kubernetes-engine/docs/node-taints.
+
+        NODE_ARCHITECTURE_TAINT_BEHAVIOR must be one of: unspecified, arm,
+        none.
+
+     --node-group=NODE_GROUP
+        Assign instances of this pool to run on the specified Google Compute
+        Engine node group. This is useful for running workloads on sole tenant
+        nodes.
+
+        To see available sole tenant node-groups, run:
+
+            $ gcloud compute sole-tenancy node-groups list
+
+        To create a sole tenant node group, run:
+
+            $ gcloud compute sole-tenancy node-groups create [GROUP_NAME]     \
+                --location [ZONE] --node-template [TEMPLATE_NAME]     \
+                --target-size [TARGET_SIZE]
+
+        See https://cloud.google.com/compute/docs/nodes for more information on
+        sole tenancy and node groups.
+
+     --node-labels=[NODE_LABEL,...]
+        Applies the given Kubernetes labels on all nodes in the new node pool.
+
+        Examples:
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster \
+                --node-labels=label1=value1,label2=value2
+
+        Updating the node pool's --node-labels flag applies the labels to the
+        Kubernetes Node objects for existing nodes in-place; it does not
+        re-create or replace nodes. New nodes, including ones created by
+        resizing or re-creating nodes, will have these labels on the Kubernetes
+        API Node object. The labels can be used in the nodeSelector field. See
+        https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+        for examples.
+
+        Note that Kubernetes labels, intended to associate cluster components
+        and resources with one another and manage resource lifecycles, are
+        different from Google Kubernetes Engine labels that are used for the
+        purpose of tracking billing and usage information.
+
+     --node-locations=ZONE,[ZONE,...]
+        The set of zones in which the node pool's nodes should be located.
+
+        Multiple locations can be specified, separated by commas. For example:
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=sample-cluster \
+                --node-locations=us-central1-a,us-central1-b
+
+     --node-pool-soak-duration=NODE_POOL_SOAK_DURATION
+        Time in seconds to be spent waiting during blue-green upgrade before
+        deleting the blue pool and completing the upgrade.
+
+            $ gcloud container node-pools create example-cluster  \
+                --node-pool-soak-duration=600s
+
+     --node-taints=[NODE_TAINT,...]
+        Applies the given kubernetes taints on all nodes in the new node pool,
+        which can be used with tolerations for pod scheduling.
+
+        Examples:
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster \
+                --node-taints=key1=val1:NoSchedule,key2=val2:PreferNoSchedule
+
+        To read more about node-taints, see
+        https://cloud.google.com/kubernetes-engine/docs/node-taints.
+
+     --node-version=NODE_VERSION
+        The Kubernetes version to use for nodes. Defaults to server-specified.
+
+        The default Kubernetes version is available using the following
+        command.
+
+            $ gcloud container get-server-config
+
+     --num-nodes=NUM_NODES
+        The number of nodes in the node pool in each of the cluster's zones.
+        Defaults to 3.
+
+        Exception: when --tpu-topology is specified for multi-host TPU machine
+        types the number of nodes will be defaulted to (product of topology)/(#
+        of chips per VM).
+
+     --opportunistic-maintenance=[node-idle-time=NODE_IDLE_TIME,window=WINDOW,min-nodes=MIN_NODES,...]
+        Opportunistic maintenance options.
+
+        node-idle-time: Time to be spent waiting for node to be idle before
+        starting maintenance, ending with 's'. Example: "3.5s"
+
+        window: The window of time that opportunistic maintenance can run,
+        ending with 's'. Example: A setting of 14 days (1209600s) implies that
+        opportunistic maintenance can only be ran in the 2 weeks leading up to
+        the scheduled maintenance date. Setting 28 days(2419200s) allows
+        opportunistic maintenance to run at any time in the scheduled
+        maintenance window.
+
+        min-nodes: Minimum number of nodes in the node pool to be available
+        during the opportunistic triggered maintenance.
+
+            $ gcloud container node-pools create example-cluster  \
+                --opportunistic-maintenance=node-idle-time=600s,window=600s,\
+            min-nodes=2
+
+     --performance-monitoring-unit=PERFORMANCE_MONITORING_UNIT
+        Sets the Performance Monitoring Unit level. Valid values are
+        architectural, standard and enhanced. PERFORMANCE_MONITORING_UNIT must
+        be one of:
+
+         architectural
+            Enables architectural PMU events tied to non last level cache (LLC)
+            events.
+         enhanced
+            Enables most documented core/L2 and LLC PMU events.
+         standard
+            Enables most documented core/L2 PMU events.
+
+     --placement-policy=PLACEMENT_POLICY
+        Indicates the desired resource policy to use.
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --placement-policy my-placement
+
+     --placement-type=PLACEMENT_TYPE
+        Placement type allows to define the type of node placement within this
+        node pool.
+
+        UNSPECIFIED - No requirements on the placement of nodes. This is the
+        default option.
+
+        COMPACT - GKE will attempt to place the nodes in a close proximity to
+        each other. This helps to reduce the communication latency between the
+        nodes, but imposes additional limitations on the node pool size.
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --placement-type=COMPACT
+
+        PLACEMENT_TYPE must be one of: UNSPECIFIED, COMPACT.
+
+     --preemptible
+        Create nodes using preemptible VM instances in the new node pool.
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --preemptible
+
+        New nodes, including ones created by resize or recreate, will use
+        preemptible VM instances. See
+        https://cloud.google.com/kubernetes-engine/docs/preemptible-vm for more
+        information on how to use Preemptible VMs with Kubernetes Engine.
+
+     --resource-manager-tags=[KEY=VALUE,...]
+        Applies the specified comma-separated resource manager tags that has
+        the GCE_FIREWALL purpose to all nodes in the new node pool.
+
+        Examples:
+
+            $ gcloud container node-pools create example-node-pool \
+                --resource-manager-tags=tagKeys/1234=tagValues/2345
+            $ gcloud container node-pools create example-node-pool \
+                --resource-manager-tags=my-project/key1=value1
+            $ gcloud container node-pools create example-node-pool \
+                --resource-manager-tags=12345/key1=value1,23456/key2=value2
+            $ gcloud container node-pools create example-node-pool \
+                --resource-manager-tags=
+
+        All nodes, including nodes that are resized or re-created, will have
+        the specified tags on the corresponding Instance object in the Compute
+        Engine API. You can reference these tags in network firewall policy
+        rules. For instructions, see
+        https://cloud.google.com/firewall/docs/use-tags-for-firewalls.
+
+     --sandbox=[type=TYPE]
+        Enables the requested sandbox on all nodes in the node pool.
+
+        Examples:
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --sandbox="type=gvisor"
+
+        The only supported type is 'gvisor'.
+
+     --secondary-boot-disk=[disk-image=DISK_IMAGE,[mode=MODE],...]
+        Attaches secondary boot disks to all nodes in the node pool. Secondary
+        Boot Disks (SBD) can accelerate container startup times by preloading
+        container images or data onto disks attached to the nodes. Learn more
+        about Using Secondary Boot Disks
+        (https://cloud.google.com/kubernetes-engine/docs/how-to/data-container-image-preloading)
+        for full requirements (including version, API enablement and source
+        disk images).
+
+        The value for this flag is a list of key=value pairs. Available keys
+        are:
+
+         disk-image
+            (Required) The full resource path to the source disk image to
+            create the secondary boot disks from (e.g.,
+            projects/my-project/global/images/my-disk-image).
+
+         mode
+            (Optional) The mode of the secondary boot disk. Supported values
+            are:
+            + CONTAINER_IMAGE_CACHE: The disk is used to cache container
+              images. This is the default if not specified.
+            + DATA: The disk is used to preload arbitrary data, accessible
+              via hostPath volume mounts.
+
+     --shielded-integrity-monitoring
+        Enables monitoring and attestation of the boot integrity of the
+        instance. The attestation is performed against the integrity policy
+        baseline. This baseline is initially derived from the implicitly
+        trusted boot image when the instance is created.
+
+     --shielded-secure-boot
+        The instance will boot with secure boot enabled.
+
+     --sole-tenant-min-node-cpus=SOLE_TENANT_MIN_NODE_CPUS
+        A integer value that specifies the minimum number of vCPUs that each
+        sole tenant node must have to use CPU overcommit. If not specified, the
+        CPU overcommit feature is disabled.
+
+     --sole-tenant-node-affinity-file=SOLE_TENANT_NODE_AFFINITY_FILE
+        JSON/YAML file containing the configuration of desired sole tenant
+        nodes onto which this node pool could be backed by. These rules filter
+        the nodes according to their node affinity labels. A node's affinity
+        labels come from the node template of the group the node is in.
+
+        The file should contain a list of a JSON/YAML objects. For an example,
+        see
+        https://cloud.google.com/compute/docs/nodes/provisioning-sole-tenant-vms#configure_node_affinity_labels.
+        The following list describes the fields:
+
+         key
+            Corresponds to the node affinity label keys of the Node resource.
+         operator
+            Specifies the node selection type. Must be one of: IN: Requires
+            Compute Engine to seek for matched nodes. NOT_IN: Requires Compute
+            Engine to avoid certain nodes.
+         values
+            Optional. A list of values which correspond to the node affinity
+            label values of the Node resource.
+
+     --spot
+        Create nodes using spot VM instances in the new node pool.
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --spot
+
+        New nodes, including ones created by resize or recreate, will use spot
+        VM instances.
+
+     --standard-rollout-policy=[batch-node-count=BATCH_NODE_COUNT,batch-percent=BATCH_NODE_PERCENTAGE,batch-soak-duration=BATCH_SOAK_DURATION,...]
+        Standard rollout policy options for blue-green upgrade.
+
+        Batch sizes are specified by one of, batch-node-count or batch-percent.
+        The duration between batches is specified by batch-soak-duration.
+
+            $ gcloud container node-pools create example-cluster  \
+                --standard-rollout-policy=batch-node-count=3,\
+            batch-soak-duration=60s
+
+            $ gcloud container node-pools create example-cluster  \
+                --standard-rollout-policy=batch-percent=0.3,\
+            batch-soak-duration=60s
+
+     --storage-pools=STORAGE_POOL,[...]
+        A list of storage pools where the node pool's boot disks will be
+        provisioned.
+
+        STORAGE_POOL must be in the format
+        projects/project/zones/zone/storagePools/storagePool
+
+     --subnetwork=SUBNETWORK
+        The subnetwork to use for nodes. This subnetwork must exist in the
+        cluster's list of additional subnetworks.
+
+        If not specified, the node pool's node IP addresses are allocated from
+        the least utilized subnet and its secondary range. See details at
+        https://cloud.google.com/kubernetes-engine/docs/how-to/multi-subnet-clusters#create-node-pool
+
+     --system-config-from-file=PATH_TO_FILE
+        Path of the YAML/JSON file that contains the node configuration,
+        including Linux kernel parameters (sysctls) and kubelet configs. For
+        more information about the configuration options, such as supported
+        machine series and limits, see Customize node system config
+        (https://docs.cloud.google.com/kubernetes-engine/docs/how-to/node-system-config#kubelet-options).
+
+        Examples:
+
+            kubeletConfig:
+              cpuManagerPolicy: static
+              memoryManager:
+                policy: Static
+              topologyManager:
+                policy: BestEffort
+                scope: pod
+              crashLoopBackOff:
+                maxContainerRestartPeriod: '300s'
+            linuxConfig:
+              accurateTimeConfig:
+                enablePtpKvmTimeSync: true
+              sysctl:
+                net.core.somaxconn: '2048'
+                net.ipv4.tcp_rmem: '4096 87380 6291456'
+              hugepageConfig:
+                hugepage_size2m: '1024'
+                hugepage_size1g: '2'
+              swapConfig:
+                enabled: true
+                bootDiskProfile:
+                  swapSizeGib: 8
+              cgroupMode: 'CGROUP_MODE_V2'
+              nodeKernelModuleLoading:
+                policy: 'ENFORCE_SIGNED_MODULES'
+              nodeVfioConfig:
+                dmaEntryLimit: 65536
+              diskIoScheduler:
+                nodeSystemIoScheduler: 'bfq'
+                nodeAttachedDiskIoScheduler: 'mq-deadline'
+
+        List of supported kubelet configs in 'kubeletConfig'.
+
+          KEY                                     VALUE
+          cpuManagerPolicy                        either 'static' or 'none'
+          cpuCFSQuota                             true or false (enabled by
+                                                  default)
+          cpuCFSQuotaPeriod                       interval (e.g., '100ms'. The
+                                                  value must be between 1ms and
+                                                  1 second, inclusive.)
+          memoryManager                           specify memory manager policy
+          topologyManager                         specify topology manager
+                                                  policy and scope
+          podPidsLimit                            integer (The value must be
+                                                  greater than or equal to 1024
+                                                  and less than 4194304.)
+          containerLogMaxSize                     positive number plus unit
+                                                  suffix (e.g., '100Mi',
+                                                  '0.2Gi'. The value must be
+                                                  between 10Mi and 500Mi,
+                                                  inclusive.)
+          containerLogMaxFiles                    integer (The value must be
+                                                  between [2, 10].)
+          containerLogMaxWorkers                  integer (The value must be
+                                                  between [1, 10].)
+          containerLogMonitorInterval             interval (e.g., '10s', '60s'.
+                                                  The value must be between 3s
+                                                  and 300s, inclusive.)
+          imageGcLowThresholdPercent              integer (The value must be
+                                                  between [10, 85], and lower
+                                                  than
+                                                  imageGcHighThresholdPercent.)
+          imageGcHighThresholdPercent             integer (The value must be
+                                                  between [10, 85], and greater
+                                                  than
+                                                  imageGcLowThresholdPercent.)
+          imageMinimumGcAge                       interval (e.g., '100s', '1m'.
+                                                  The value must be less than
+                                                  '2m'.)
+          imageMaximumGcAge                       interval (e.g., '100s', '1m'.
+                                                  The value must be greater than
+                                                  imageMinimumGcAge.)
+          evictionSoft                            specify eviction soft
+                                                  thresholds
+          evictionSoftGracePeriod                 specify eviction soft grace
+                                                  period
+          evictionMinimumReclaim                  specify eviction minimum
+                                                  reclaim thresholds
+          evictionMaxPodGracePeriodSeconds        integer (Max grace period for
+                                                  pod termination during
+                                                  eviction, in seconds. The
+                                                  value must be between [0,
+                                                  300].)
+          shutdownGracePeriodSeconds              integer (Grace period for pods
+                                                  terminating on node shutdown,
+                                                  in seconds. Allowed values: 0,
+                                                  30, 120.)
+          shutdownGracePeriodCriticalPodsSeconds  integer (Grace period for
+                                                  critical pods terminating on
+                                                  node shutdown, in seconds. The
+                                                  value must be between [0, 120]
+                                                  and less than
+                                                  shutdownGracePeriodSeconds.)
+          allowedUnsafeSysctls                    list of sysctls (Allowlisted
+                                                  groups: 'kernel.shm*',
+                                                  'kernel.msg*', 'kernel.sem',
+                                                  'fs.mqueue.*', and 'net.*',
+                                                  and sysctls under the groups.)
+          singleProcessOomKill                    true or false
+          maxParallelImagePulls                   integer (The value must be
+                                                  between [2, 5].)
+          crashLoopBackOff                        specify crashloopbackoff
+                                                  thresholds
+          reservedSystemCpus                      string. The list of CPUs
+                                                  reserved for host system
+                                                  services (for example, '0-3'
+                                                  or '0,1').
+
+        List of supported keys in memoryManager in 'kubeletConfig'.
+
+          KEY                                         VALUE
+          policy                                      either 'Static' or 'None'
+
+        List of supported keys in topologyManager in 'kubeletConfig'.
+
+          KEY                                         VALUE
+          policy                                      either 'none' or
+                                                      'best-effort' or
+                                                      'single-numa-node' or
+                                                      'restricted'
+          scope                                       either 'pod' or
+                                                      'container'
+
+        List of supported keys in evictionSoft in 'kubeletConfig'.
+
+          KEY                        VALUE
+          memoryAvailable            quantity (e.g., '100Mi', '1Gi'. Represents
+                                     the amount of memory available before soft
+                                     eviction. The value must be at least 100Mi
+                                     and less than 50% of the node's memory.)
+          nodefsAvailable            percentage (e.g., '20%'. Represents the
+                                     nodefs available before soft eviction. The
+                                     value must be between 10% and 50%,
+                                     inclusive.)
+          nodefsInodesFree           percentage (e.g., '20%'. Represents the
+                                     nodefs inodes free before soft eviction.
+                                     The value must be between 5% and 50%,
+                                     inclusive.)
+          imagefsAvailable           percentage (e.g., '20%'. Represents the
+                                     imagefs available before soft eviction. The
+                                     value must be between 15% and 50%,
+                                     inclusive.)
+          imagefsInodesFree          percentage (e.g., '20%'. Represents the
+                                     imagefs inodes free before soft eviction.
+                                     The value must be between 5% and 50%,
+                                     inclusive.)
+          pidAvailable               percentage (e.g., '20%'. Represents the pid
+                                     available before soft eviction. The value
+                                     must be between 10% and 50%, inclusive.)
+
+        List of supported keys in evictionSoftGracePeriod in 'kubeletConfig'.
+
+          KEY                        VALUE
+          memoryAvailable            duration (e.g., '30s', '1m'. The grace
+                                     period for soft eviction for this resource.
+                                     The value must be positive and no more than
+                                     '5m'.)
+          nodefsAvailable            duration (e.g., '30s', '1m'. The grace
+                                     period for soft eviction for this resource.
+                                     The value must be positive and no more than
+                                     '5m'.)
+          nodefsInodesFree           duration (e.g., '30s', '1m'. The grace
+                                     period for soft eviction for this resource.
+                                     The value must be positive and no more than
+                                     '5m'.)
+          imagefsAvailable           duration (e.g., '30s', '1m'. The grace
+                                     period for soft eviction for this resource.
+                                     The value must be positive and no more than
+                                     '5m'.)
+          imagefsInodesFree          duration (e.g., '30s', '1m'. The grace
+                                     period for soft eviction for this resource.
+                                     The value must be positive and no more than
+                                     '5m'.)
+          pidAvailable               duration (e.g., '30s', '1m'. The grace
+                                     period for soft eviction for this resource.
+                                     The value must be positive and no more than
+                                     '5m'.)
+
+        List of supported keys in evictionMinimumReclaim in 'kubeletConfig'.
+
+          KEY                        VALUE
+          memoryAvailable            percentage (e.g., '5%'. Represents the
+                                     minimum reclaim threshold for memory
+                                     available. The value must be positive and
+                                     no more than 10%.)
+          nodefsAvailable            percentage (e.g., '5%'. Represents the
+                                     minimum reclaim threshold for nodefs
+                                     available. The value must be positive and
+                                     no more than 10%.)
+          nodefsInodesFree           percentage (e.g., '5%'. Represents the
+                                     minimum reclaim threshold for nodefs inodes
+                                     free. The value must be positive and no
+                                     more than 10%.)
+          imagefsAvailable           percentage (e.g., '5%'. Represents the
+                                     minimum reclaim threshold for imagefs
+                                     available. The value must be positive and
+                                     no more than 10%.)
+          imagefsInodesFree          percentage (e.g., '5%'. Represents the
+                                     minimum reclaim threshold for imagefs
+                                     inodes free. The value must be positive and
+                                     no more than 10%.)
+          pidAvailable               percentage (e.g., '5%'. Represents the
+                                     minimum reclaim threshold for pid
+                                     available. The value must be positive and
+                                     no more than 10%.)
+
+        List of supported keys in crashLoopBackOff in 'kubeletConfig'.
+
+          KEY                                         VALUE
+          maxContainerRestartPeriod                   duration (e.g., '30s',
+                                                      '1m'. The maximum duration
+                                                      the backoff delay can
+                                                      accrue to for container
+                                                      restarts. The value must
+                                                      be between [1s, 300s].)
+
+        List of supported sysctls in 'linuxConfig'.
+
+          KEY                                                 VALUE
+          net.core.netdev_max_backlog                         Any positive
+                                                              integer, less than
+                                                              2147483647
+          net.core.rmem_default                               Must be between
+                                                              [2304, 2147483647]
+          net.core.rmem_max                                   Must be between
+                                                              [2304, 2147483647]
+          net.core.wmem_default                               Must be between
+                                                              [4608, 2147483647]
+          net.core.wmem_max                                   Must be between
+                                                              [4608, 2147483647]
+          net.core.optmem_max                                 Any positive
+                                                              integer, less than
+                                                              2147483647
+          net.core.somaxconn                                  Must be between
+                                                              [128, 2147483647]
+          net.ipv4.tcp_rmem                                   Any positive
+                                                              integer tuple
+          net.ipv4.tcp_wmem                                   Any positive
+                                                              integer tuple
+          net.ipv4.tcp_tw_reuse                               Must be {0, 1, 2}
+          net.ipv4.tcp_mtu_probing                            Must be {0, 1, 2}
+          net.ipv4.tcp_max_orphans                            Must be between
+                                                              [16384, 262144]
+          net.ipv4.tcp_max_tw_buckets                         Must be between
+                                                              [4096, 2147483647]
+          net.ipv4.tcp_syn_retries                            Must be between
+                                                              [1, 127]
+          net.ipv4.tcp_ecn                                    Must be {0, 1, 2}
+          net.ipv4.tcp_congestion_control                     Supported values
+                                                              for COS: 'reno',
+                                                              'cubic', 'bbr',
+                                                              'lp', 'htcp'.
+                                                              Supported values
+                                                              for Ubuntu:
+                                                              'reno', 'cubic',
+                                                              'bbr', 'lp',
+                                                              'htcp', 'vegas',
+                                                              'dctcp', 'bic',
+                                                              'cdg',
+                                                              'highspeed',
+                                                              'hybla',
+                                                              'illinois', 'nv',
+                                                              'scalable',
+                                                              'veno',
+                                                              'westwood',
+                                                              'yeah'.
+          net.ipv4.neigh.default.gc_thresh1                   Must be between
+                                                              [0, 262144]
+          net.ipv4.neigh.default.gc_thresh2                   Must be between
+                                                              [512, 524288]
+          net.ipv4.neigh.default.gc_thresh3                   Must be between
+                                                              [1024, 1048576]
+          net.netfilter.nf_conntrack_max                      Must be between
+                                                              [65536, 4194304]
+          net.netfilter.nf_conntrack_buckets                  Must be between
+                                                              [65536, 524288].
+                                                              Recommend setting:
+                                                              nf_conntrack_max =
+                                                              nf_conntrack_bucke
+                                                              ts * 4
+          net.netfilter.nf_conntrack_tcp_timeout_close_wait   Must be between
+                                                              [60, 3600]
+          net.netfilter.nf_conntrack_tcp_timeout_time_wait    Must be between
+                                                              [1, 600]
+          net.netfilter.nf_conntrack_tcp_timeout_established  Must be between
+                                                              [600, 86400]
+          net.netfilter.nf_conntrack_acct                     Must be {0, 1}
+          kernel.keys.maxkeys                                 Must be between
+                                                              [200, 1048576]
+          kernel.keys.maxbytes                                Must be between
+                                                              [20000, 2097152]
+          kernel.shmmni                                       Must be between
+                                                              [4096, 32768]
+          kernel.shmmax                                       Must be between
+                                                              [0,
+                                                              184467440736927743
+                                                              99]
+          kernel.shmall                                       Must be between
+                                                              [0,
+                                                              184467440736927743
+                                                              99]
+          kernel.perf_event_paranoid                          Must be {-1, 0, 1,
+                                                              2, 3}
+          kernel.sched_rt_runtime_us                          Must be [-1,
+                                                              1000000]
+          kernel.softlockup_panic                             Must be {0, 1}
+          kernel.yama.ptrace_scope                            Must be {0, 1, 2,
+                                                              3}
+          kernel.kptr_restrict                                Must be {0, 1, 2}
+          kernel.dmesg_restrict                               Must be {0, 1}
+          kernel.sysrq                                        Must be [0, 511]
+          fs.aio-max-nr                                       Must be between
+                                                              [65536, 4194304]
+          fs.file-max                                         Must be between
+                                                              [104857, 67108864]
+          fs.inotify.max_user_instances                       Must be between
+                                                              [8192, 1048576]
+          fs.inotify.max_user_watches                         Must be between
+                                                              [8192, 1048576]
+          fs.nr_open                                          Must be between
+                                                              [1048576,
+                                                              2147483584]
+          vm.dirty_background_ratio                           Must be between
+                                                              [1, 100]
+          vm.dirty_background_bytes                           Must be between
+                                                              [0, 68719476736]
+          vm.dirty_expire_centisecs                           Must be between
+                                                              [0, 6000]
+          vm.dirty_ratio                                      Must be between
+                                                              [1, 100]
+          vm.dirty_bytes                                      Must be between
+                                                              [0, 68719476736]
+          vm.dirty_writeback_centisecs                        Must be between
+                                                              [0, 1000]
+          vm.max_map_count                                    Must be between
+                                                              [65536,
+                                                              2147483647]
+          vm.overcommit_memory                                Must be one of {0,
+                                                              1, 2}. Not
+                                                              supported on
+                                                              machines with less
+                                                              than 15 GB memory.
+          vm.overcommit_ratio                                 Must be between
+                                                              [0, 100]
+          vm.vfs_cache_pressure                               Must be between
+                                                              [0, 100]
+          vm.swappiness                                       Must be between
+                                                              [0, 200]
+          vm.watermark_scale_factor                           Must be between
+                                                              [10, 3000]
+          vm.min_free_kbytes                                  Must be between
+                                                              [67584, 1048576]
+
+        List of supported keys in 'accurateTimeConfig' under 'linuxConfig'.
+
+          KEY                                         VALUE
+          enablePtpKvmTimeSync                        boolean
+
+        List of supported hugepage size in 'hugepageConfig'.
+
+          KEY               VALUE
+          hugepage_size2m   Number of 2M huge pages, any positive integer
+          hugepage_size1g   Number of 1G huge pages, any positive integer
+
+        List of supported keys in 'swapConfig' under 'linuxConfig'.
+
+          KEY                                         VALUE
+          enabled                                     boolean
+          encryptionConfig                            specify encryption
+                                                      settings for the swap
+                                                      space
+          bootDiskProfile                             specify swap on the node's
+                                                      boot disk
+          ephemeralLocalSsdProfile                    specify swap on the local
+                                                      SSD shared with pod
+                                                      ephemeral storage
+          dedicatedLocalSsdProfile                    specify swap on a new,
+                                                      separate local NVMe SSD
+                                                      exclusively for swap
+
+        List of supported keys in 'encryptionConfig' under 'swapConfig'.
+
+          KEY                                         VALUE
+          disabled                                    boolean
+
+        List of supported keys in 'bootDiskProfile' under 'swapConfig'.
+
+          KEY                                         VALUE
+          swapSizeGib                                 integer
+          swapSizePercent                             integer
+
+        List of supported keys in 'ephemeralLocalSsdProfile' under
+        'swapConfig'.
+
+          KEY                                         VALUE
+          swapSizeGib                                 integer
+          swapSizePercent                             integer
+
+        List of supported keys in 'dedicatedLocalSsdProfile' under
+        'swapConfig'.
+
+          KEY                                         VALUE
+          diskCount                                   integer
+
+        List of supported keys in 'nodeKernelModuleLoading'.
+
+          KEY                                         VALUE
+          policy                                      ENFORCE_SIGNED_MODULES,
+                                                      DO_NOT_ENFORCE_SIGNED_MODU
+                                                      LES, POLICY_UNSPECIFIED
+
+        List of supported keys in 'nodeVfioConfig' under 'linuxConfig'.
+
+          KEY                                         VALUE
+          dmaEntryLimit                               integer between [65535,
+                                                      4194304]
+
+        List of supported keys in 'diskIoScheduler' under 'linuxConfig'.
+
+          KEY                                         VALUE
+          nodeSystemIoScheduler                       string. Supported values:
+                                                      'mq-deadline', 'bfq',
+                                                      'kyber', 'none'.
+          nodeAttachedDiskIoScheduler                 string. Supported values:
+                                                      'mq-deadline', 'bfq',
+                                                      'kyber', 'none'.
+
+        The upper limit for total allocated hugepage size differs based upon
+        machine size.
+
+        * On machines with less than 30 GB memory: 60% of the total memory.
+          For example, on e2-standard-2 machine with 8 GB of memory, you can't
+          allocate more than 4.8 GB for hugepages.
+        * On machines with more than 30 GB memory: 80% of the total memory.
+          For example, on c4a-standard-8 machines with 32 GB of memory,
+          hugepages cannot exceed 25.6 GB.
+
+        1G hugepages are only available in following machine familes: c3, m2,
+        c2d, c3d, h3, m3, a2, a3, g2.
+
+        Supported values for 'cgroupMode' under 'linuxConfig'.
+
+        * CGROUP_MODE_V1: Use cgroupv1 on the node pool.
+        * CGROUP_MODE_V2: Use cgroupv2 on the node pool.
+        * CGROUP_MODE_UNSPECIFIED: Use the default GKE cgroup configuration.
+
+        Supported values for 'transparentHugepageEnabled' under 'linuxConfig'
+        which controls transparent hugepage support for anonymous memory.
+
+        * TRANSPARENT_HUGEPAGE_ENABLED_ALWAYS: Transparent hugepage is
+          enabled system wide.
+        * TRANSPARENT_HUGEPAGE_ENABLED_MADVISE: Transparent hugepage is
+          enabled inside MADV_HUGEPAGE regions. This is the default kernel
+          configuration.
+        * TRANSPARENT_HUGEPAGE_ENABLED_NEVER: Transparent hugepage is
+          disabled.
+        * TRANSPARENT_HUGEPAGE_ENABLED_UNSPECIFIED: Default value. GKE will
+          not modify the kernel configuration.
+
+        Supported values for 'transparentHugepageDefrag' under 'linuxConfig'
+        which defines the transparent hugepage defrag configuration on the
+        node.
+
+        * TRANSPARENT_HUGEPAGE_DEFRAG_ALWAYS: It means that an application
+          requesting THP will stall on allocation failure and directly reclaim
+          pages and compact memory in an effort to allocate a THP immediately.
+        * TRANSPARENT_HUGEPAGE_DEFRAG_DEFER: It means that an application
+          will wake kswapd in the background to reclaim pages and wake
+          kcompactd to compact memory so that THP is available in the near
+          future. It is the responsibility of khugepaged to then install the
+          THP pages later.
+        * TRANSPARENT_HUGEPAGE_DEFRAG_DEFER_WITH_MADVISE: It means that an
+          application will enter direct reclaim and compaction like always, but
+          only for regions that have used madvise(MADV_HUGEPAGE); all other
+          regions will wake kswapd in the background to reclaim pages and wake
+          kcompactd to compact memory so that THP is available in the near
+          future.
+        * TRANSPARENT_HUGEPAGE_DEFRAG_MADVISE: It means that an application
+          will enter direct reclaim and compaction like always, but only for
+          regions that have used madvise(MADV_HUGEPAGE); all other regions will
+          wake kswapd in the background to reclaim pages and wake kcompactd to
+          compact memory so that THP is available in the near future.
+        * TRANSPARENT_HUGEPAGE_DEFRAG_NEVER: It means that an application
+          will never enter direct reclaim or compaction.
+        * TRANSPARENT_HUGEPAGE_DEFRAG_UNSPECIFIED: Default value. GKE will
+          not modify the kernel configuration.
+
+        Supported values for 'policy' under 'nodeKernelModuleLoading'.
+
+        * POLICY_UNSPECIFIED: Default behavior. GKE selects the image based
+          on node type. For CPU and TPU nodes, the image will not allow loading
+          external kernel modules. For GPU nodes, the image will allow loading
+          any module, whether it is signed or not.
+        * ENFORCE_SIGNED_MODULES: Enforced signature verification: Node pools
+          will use a Container-Optimized OS image configured to allow loading
+          of Google-signed external kernel modules. Loadpin is enabled but
+          configured to exclude modules, and kernel module signature checking
+          is enforced.
+        * DO_NOT_ENFORCE_SIGNED_MODULES: Do not enforce kernel module
+          signature enforcement. Mirrors existing DEFAULT behavior.
+
+        Note, updating the system configuration of an existing node pool
+        requires recreation of the nodes which which might cause a disruption.
+
+        Use a full or relative path to a local file containing the value of
+        system_config.
+
+     --tags=TAG,[TAG,...]
+        Applies the given Compute Engine tags (comma separated) on all nodes in
+        the new node-pool. Example:
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --tags=tag1,tag2
+
+        New nodes, including ones created by resize or recreate, will have
+        these tags on the Compute Engine API instance object and can be used in
+        firewall rules. See
+        https://cloud.google.com/sdk/gcloud/reference/compute/firewall-rules/create
+        for examples.
+
+     --threads-per-core=THREADS_PER_CORE
+        The number of visible threads per physical core for each node. To
+        disable simultaneous multithreading (SMT) set this to 1.
+
+     --tpu-topology=TPU_TOPOLOGY
+        The desired physical topology for the PodSlice.
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster --tpu-topology
+
+     --windows-os-version=WINDOWS_OS_VERSION
+        Specifies the Windows Server Image to use when creating a Windows node
+        pool. Valid variants can be "ltsc2019", "ltsc2022", "ltsc2025". It
+        means using LTSC2019 server image, LTSC2022 server image or LTSC2025
+        server image. If the node pool doesn't specify a Windows Server Image
+        OS version, then the default depends on the node version: Ltsc2019 for
+        node versions before 1.37, and Ltsc2022 for node versions 1.37 and
+        later. WINDOWS_OS_VERSION must be one of: ltsc2019, ltsc2022, ltsc2025.
+
+     --workload-metadata=WORKLOAD_METADATA
+        Type of metadata server available to pods running in the node pool.
+        WORKLOAD_METADATA must be one of:
+
+         GCE_METADATA
+            Pods running in this node pool have access to the node's underlying
+            Compute Engine Metadata Server.
+         GKE_METADATA
+            Run the Kubernetes Engine Metadata Server on this node. The
+            Kubernetes Engine Metadata Server exposes a metadata API to
+            workloads that is compatible with the V1 Compute Metadata APIs
+            exposed by the Compute Engine and App Engine Metadata Servers. This
+            feature can only be enabled if Workload Identity is enabled at the
+            cluster level.
+
+     At most one of these can be specified:
+
+       --create-pod-ipv4-range=[KEY=VALUE,...]
+          Create a new pod range for the node pool. The name and range of the
+          pod range can be customized via optional name and range keys.
+
+          name specifies the name of the secondary range to be created.
+
+          range specifies the IP range for the new secondary range. This can
+          either be a netmask size (e.g. "/20") or a CIDR range (e.g.
+          "10.0.0.0/20"). If a netmask size is specified, the IP is
+          automatically taken from the free space in the cluster's network.
+
+          Must be used in VPC native clusters. Can not be used in conjunction
+          with the --pod-ipv4-range option.
+
+          Examples:
+
+          Create a new pod range with a default name and size.
+
+              $ gcloud container node-pools create --create-pod-ipv4-range ""
+
+          Create a new pod range named my-range with netmask of size 21.
+
+              $ gcloud container node-pools create \
+                  --create-pod-ipv4-range name=my-range,range=/21
+
+          Create a new pod range with a default name with the primary range of
+          10.100.0.0/16.
+
+              $ gcloud container node-pools create \
+                  --create-pod-ipv4-range range=10.100.0.0/16
+
+          Create a new pod range with the name my-range with a default range.
+
+              $ gcloud container node-pools create \
+                  --create-pod-ipv4-range name=my-range
+
+          Must be used in VPC native clusters. Can not be used in conjunction
+          with the --pod-ipv4-range option.
+
+       --pod-ipv4-range=NAME
+          Set the pod range to be used as the source for pod IPs for the pods
+          in this node pool. NAME must be the name of an existing subnetwork
+          secondary range in the subnetwork for this cluster.
+
+          Must be used in VPC native clusters. Cannot be used with
+          --create-ipv4-pod-range.
+
+          Examples:
+
+          Specify a pod range called other-range
+
+              $ gcloud container node-pools create --pod-ipv4-range other-range
+
+     Cluster autoscaling
+
+     --enable-autoscaling
+        Enables autoscaling for a node pool.
+
+        Enables autoscaling in the node pool specified by --node-pool or the
+        default node pool if --node-pool is not provided. If not already,
+        --max-nodes or --total-max-nodes must also be set.
+
+     --location-policy=LOCATION_POLICY
+        Location policy specifies the algorithm used when scaling-up the node
+        pool.
+
+        * BALANCED - Is a best effort policy that aims to balance the sizes
+          of available zones.
+        * ANY - Instructs the cluster autoscaler to prioritize utilization of
+          unused reservations, and reduces preemption risk for Spot VMs.
+
+        LOCATION_POLICY must be one of: BALANCED, ANY.
+
+     --max-nodes=MAX_NODES
+        Maximum number of nodes per zone in the node pool.
+
+        Maximum number of nodes per zone to which the node pool specified by
+        --node-pool (or default node pool if unspecified) can scale. Ignored
+        unless --enable-autoscaling is also specified.
+
+     --min-nodes=MIN_NODES
+        Minimum number of nodes per zone in the node pool.
+
+        Minimum number of nodes per zone to which the node pool specified by
+        --node-pool (or default node pool if unspecified) can scale. Ignored
+        unless --enable-autoscaling is also specified.
+
+     --total-max-nodes=TOTAL_MAX_NODES
+        Maximum number of all nodes in the node pool.
+
+        Maximum number of all nodes to which the node pool specified by
+        --node-pool (or default node pool if unspecified) can scale. Ignored
+        unless --enable-autoscaling is also specified.
+
+     --total-min-nodes=TOTAL_MIN_NODES
+        Minimum number of all nodes in the node pool.
+
+        Minimum number of all nodes to which the node pool specified by
+        --node-pool (or default node pool if unspecified) can scale. Ignored
+        unless --enable-autoscaling is also specified.
+
+     Specifies minimum number of nodes to be created when best effort
+     provisioning enabled.
+
+     --enable-best-effort-provision
+        Enable best effort provision for nodes
+
+     --min-provision-nodes=MIN_PROVISION_NODES
+        Specifies the minimum number of nodes to be provisioned during creation
+
+     At most one of these can be specified:
+
+       --ephemeral-storage-local-ssd[=[capacity=CAPACITY],[count=COUNT]]
+          Parameters for the ephemeral storage filesystem. If unspecified,
+          ephemeral storage is backed by the boot disk.
+
+          Examples:
+
+              $ gcloud container node-pools create node-pool-1 --cluster=example \
+                  cluster --ephemeral-storage-local-ssd count=2
+              $ gcloud container node-pools create node-pool-1 --cluster=example \
+                  cluster --ephemeral-storage-local-ssd count=2,capacity=2000GB
+              $ gcloud container node-pools create node-pool-1 --cluster=example \
+                  cluster --ephemeral-storage-local-ssd capacity=2000GB
+
+          'count' specifies the number of local SSDs to use to back ephemeral
+          storage. Local SSDs use NVMe interfaces. For first- and
+          second-generation machine types, a nonzero count field is required
+          for local ssd to be configured. For third-generation machine types,
+          the count field is optional because the count is inferred from the
+          machine type.
+
+          'capacity' specifies the capacity set aside for ephemeral storage
+          when using mixed Local SSD modes. The remaining capacity is raw
+          block.
+
+          See https://cloud.google.com/compute/docs/disks/local-ssd for more
+          information.
+
+       --local-nvme-ssd-block[=[count=COUNT]]
+          Adds the requested local SSDs on all nodes in default node pool(s) in
+          the new cluster.
+
+          Examples:
+
+              $ gcloud container node-pools create node-pool-1 --cluster=example \
+                  cluster --local-nvme-ssd-block count=2
+
+          'count' must be between 1-8
+
+          New nodes, including ones created by resize or recreate, will have
+          these local SSDs.
+
+          For first- and second-generation machine types, a nonzero count field
+          is required for local ssd to be configured. For third-generation
+          machine types, the count field is optional because the count is
+          inferred from the machine type.
+
+          See https://cloud.google.com/compute/docs/disks/local-ssd for more
+          information.
+
+       --local-ssd-count=LOCAL_SSD_COUNT
+          The number of local SSD disks to provision on each node, formatted
+          and mounted in the filesystem.
+
+          Local SSDs have a fixed 375 GB capacity per device. The number of
+          disks that can be attached to an instance is limited by the maximum
+          number of disks available on a machine, which differs by compute
+          zone. See https://cloud.google.com/compute/docs/disks/local-ssd for
+          more information.
+
+     At most one of these can be specified:
+
+       --location=LOCATION
+          Compute zone or region (e.g. us-central1-a or us-central1) for the
+          cluster. Overrides the default compute/region or compute/zone value
+          for this command invocation. Prefer using this flag over the --region
+          or --zone flags.
+
+       --region=REGION
+          Compute region (e.g. us-central1) for a regional cluster. Overrides
+          the default compute/region property value for this command
+          invocation.
+
+       --zone=ZONE, -z ZONE
+          Compute zone (e.g. us-central1-a) for a zonal cluster. Overrides the
+          default compute/zone property value for this command invocation.
+
+     Node drain settings
+
+     --node-drain-grace-period-seconds=NODE_DRAIN_GRACE_PERIOD_SECONDS
+        The grace period in seconds for nodes to drain before being forcefully
+        removed.
+
+     --node-drain-pdb-timeout-seconds=NODE_DRAIN_PDB_TIMEOUT_SECONDS
+        The timeout in seconds for the node pool to be drained.
+
+     --respect-pdb-during-node-pool-deletion
+        Whether to respect PDBs when deleting nodes in the node pool.
+
+     Specifies the reservation for the node pool.
+
+     --reservation=RESERVATION
+        The name of the reservation, required when
+        --reservation-affinity=specific.
+
+     --reservation-affinity=RESERVATION_AFFINITY
+        The type of the reservation for the node pool. RESERVATION_AFFINITY
+        must be one of: any, none, specific, any-reservation-then-fail.
+
+     Options to specify the node identity.
+
+     Scopes options.
+
+     --scopes=[SCOPE,...]; default="gke-default"
+        Specifies scopes for the node instances.
+
+        Examples:
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster \
+                --scopes=https://www.googleapis.com/auth/devstorage.read_only
+
+            $ gcloud container node-pools create node-pool-1 \
+                --cluster=example-cluster \
+                --scopes=bigquery,storage-rw,compute-ro
+
+        Multiple scopes can be specified, separated by commas. Various scopes
+        are automatically added based on feature usage. Such scopes are not
+        added if an equivalent scope already exists.
+
+        * monitoring-write: always added to ensure metrics can be written
+        * logging-write: added if Cloud Logging is enabled
+          (--enable-cloud-logging/--logging)
+        * monitoring: added if Cloud Monitoring is enabled
+          (--enable-cloud-monitoring/--monitoring)
+        * gke-default: added for Autopilot clusters that use the default
+          service account
+        * cloud-platform: added for Autopilot clusters that use any other
+          service account
+
+        SCOPE can be either the full URI of the scope or an alias. Default
+        scopes are assigned to all instances. Available aliases are:
+
+          Alias                  URI
+          bigquery               https://www.googleapis.com/auth/bigquery
+          cloud-platform         https://www.googleapis.com/auth/cloud-platform
+          cloud-source-repos     https://www.googleapis.com/auth/source.full_control
+          cloud-source-repos-ro  https://www.googleapis.com/auth/source.read_only
+          compute-ro             https://www.googleapis.com/auth/compute.readonly
+          compute-rw             https://www.googleapis.com/auth/compute
+          datastore              https://www.googleapis.com/auth/datastore
+          default                https://www.googleapis.com/auth/devstorage.read_only
+                                 https://www.googleapis.com/auth/logging.write
+                                 https://www.googleapis.com/auth/monitoring.write
+                                 https://www.googleapis.com/auth/pubsub
+                                 https://www.googleapis.com/auth/service.management.readonly
+                                 https://www.googleapis.com/auth/servicecontrol
+                                 https://www.googleapis.com/auth/trace.append
+          gke-default            https://www.googleapis.com/auth/devstorage.read_only
+                                 https://www.googleapis.com/auth/logging.write
+                                 https://www.googleapis.com/auth/monitoring
+                                 https://www.googleapis.com/auth/service.management.readonly
+                                 https://www.googleapis.com/auth/servicecontrol
+                                 https://www.googleapis.com/auth/trace.append
+          logging-write          https://www.googleapis.com/auth/logging.write
+          monitoring             https://www.googleapis.com/auth/monitoring
+          monitoring-read        https://www.googleapis.com/auth/monitoring.read
+          monitoring-write       https://www.googleapis.com/auth/monitoring.write
+          pubsub                 https://www.googleapis.com/auth/pubsub
+          service-control        https://www.googleapis.com/auth/servicecontrol
+          service-management     https://www.googleapis.com/auth/service.management.readonly
+          sql (deprecated)       https://www.googleapis.com/auth/sqlservice
+          sql-admin              https://www.googleapis.com/auth/sqlservice.admin
+          storage-full           https://www.googleapis.com/auth/devstorage.full_control
+          storage-ro             https://www.googleapis.com/auth/devstorage.read_only
+          storage-rw             https://www.googleapis.com/auth/devstorage.read_write
+          taskqueue              https://www.googleapis.com/auth/taskqueue
+          trace                  https://www.googleapis.com/auth/trace.append
+          userinfo-email         https://www.googleapis.com/auth/userinfo.email
+
+        DEPRECATION WARNING: https://www.googleapis.com/auth/sqlservice account
+        scope and sql alias do not provide SQL instance management capabilities
+        and have been deprecated. Please, use
+        https://www.googleapis.com/auth/sqlservice.admin or sql-admin to manage
+        your Google SQL Service instances.
+
+     --service-account=SERVICE_ACCOUNT
+        The Google Cloud Platform Service Account to be used by the node VMs.
+        If a service account is specified, the cloud-platform and
+        userinfo.email scopes are used. If no Service Account is specified, the
+        project default service account is used.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha container node-pools create
+
+        $ gcloud beta container node-pools create
+```
+
+## Notes
+
+- Corrected from the official docs (the help text above is verbatim): the `--system-config-from-file` YAML example sets `topologyManager` `policy: BestEffort`, while the list of supported values on the same page is `none`, `best-effort`, `single-numa-node` or `restricted`; use `policy: best-effort`.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/container/node-pools/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
