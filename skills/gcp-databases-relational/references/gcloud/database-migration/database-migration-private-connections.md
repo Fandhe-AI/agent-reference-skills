@@ -191,7 +191,7 @@ Adapted (not in the official docs): runnable form of the example(s) above: the c
 gcloud database-migration private-connections create my-private-connection \
     --region=us-central1 \
     --display-name=my-private-connection \
-    --network-attachment=network-attachment-example
+    --network-attachment=projects/my-project/regions/us-central1/networkAttachments/network-attachment-example
 ```
 
 ### gcloud database-migration private-connections delete
@@ -491,6 +491,7 @@ REGIONAL ENDPOINTS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `create` example passes `--network-attachment=network-attachment-example`, but the flag description on this page asks for the full URI of the network attachment (`projects/test-project/regions/us-central1/networkAttachments/my-na`), so the runnable form passes `--network-attachment=projects/my-project/regions/us-central1/networkAttachments/network-attachment-example`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example passes `--location=us-central1`, but the SYNOPSIS of this command takes the region with `--region` and has no `--location` flag (gcloud 593.0.0: "unrecognized arguments: --location=us-central1"); the runnable form uses `--region=us-central1`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
