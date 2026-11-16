@@ -34,6 +34,8 @@ spec:
 
 Behaves like core Ingress (same host, path, protocol termination and backend spec).
 
+Adapted (not in the official docs): each host rule's `backend` is moved under `http.paths[]`, the form used by the multi-cluster Ingress how-to page.
+
 ```yaml
 apiVersion: networking.gke.io/v1
 kind: MultiClusterIngress
@@ -48,13 +50,17 @@ spec:
         servicePort: 80
       rules:
       - host: foo.example.com
-        backend:
-          serviceName: foo
-          servicePort: 80
+        http:
+          paths:
+          - backend:
+              serviceName: foo
+              servicePort: 80
       - host: bar.example.com
-        backend:
-          serviceName: bar
-          servicePort: 80
+        http:
+          paths:
+          - backend:
+              serviceName: bar
+              servicePort: 80
 ```
 
 ### Cluster selection
@@ -110,6 +116,8 @@ spec:
 - Member clusters within the same fleet and region must have unique names.
 - Reasons to set `spec.clusters`: isolate the config cluster, control traffic during migration, route to a subset of clusters, use one HTTP(S) VIP for backends in different clusters.
 - Kubernetes Gateway API resources on GKE, and Multi Cluster Ingress, are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (planned `gcp-networking`).
+- Corrected from the official docs: the concepts page's `foobar-ingress` example puts `backend` directly under each `rules[]` entry. Host rules route through `rules[].http.paths[].backend`, as in the multi-cluster Ingress how-to (`rules: - host: HOST_HEADER http: paths: - path: PATH backend: ...`); the example now uses that form.
+- Source (`http.paths` form): https://docs.cloud.google.com/kubernetes-engine/docs/how-to/multi-cluster-ingress (retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/multi-cluster-ingress (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
