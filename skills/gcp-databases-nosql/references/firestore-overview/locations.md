@@ -30,13 +30,13 @@ A multi-region location has read-write replicas (full data) and a witness replic
 
 ### Regional locations
 
-The source lists the same regions for both editions except `europe-west10` (Berlin), which appears only in the Standard edition list. For regions marked "No App Engine", the source states: "This location does not support App Engine. If you plan to use App Engine, you should choose a different location."
+The source lists the same regional locations for both editions. For regions marked "No App Engine", the source states: "This location does not support App Engine. If you plan to use App Engine, you should choose a different location."
 
 | Area | Regions (description) |
 |---|---|
 | North America | `us-west1` (Oregon), `us-west2` (Los Angeles), `us-west3` (Salt Lake City), `us-west4` (Las Vegas), `us-central1` (Iowa; No App Engine), `northamerica-northeast1` (Montréal), `northamerica-northeast2` (Toronto; No App Engine), `northamerica-south1` (Queretaro; No App Engine), `us-east1` (South Carolina), `us-east4` (Northern Virginia), `us-east5` (Columbus; No App Engine), `us-south1` (Dallas; No App Engine) |
 | South America | `southamerica-west1` (Santiago; No App Engine), `southamerica-east1` (São Paulo) |
-| Europe | `europe-west2` (London), `europe-west1` (Belgium; No App Engine), `europe-west4` (Netherlands; No App Engine), `europe-west8` (Milan; No App Engine), `europe-southwest1` (Madrid; No App Engine), `europe-west9` (Paris; No App Engine), `europe-west12` (Turin; No App Engine), `europe-west10` (Berlin; No App Engine; Standard list only), `europe-west3` (Frankfurt), `europe-north1` (Finland; No App Engine), `europe-north2` (Stockholm; No App Engine), `europe-central2` (Warsaw), `europe-west6` (Zürich) |
+| Europe | `europe-west2` (London), `europe-west1` (Belgium; No App Engine), `europe-west4` (Netherlands; No App Engine), `europe-west8` (Milan; No App Engine), `europe-southwest1` (Madrid; No App Engine), `europe-west9` (Paris; No App Engine), `europe-west12` (Turin; No App Engine), `europe-west10` (Berlin; No App Engine), `europe-west3` (Frankfurt), `europe-north1` (Finland; No App Engine), `europe-north2` (Stockholm; No App Engine), `europe-central2` (Warsaw), `europe-west6` (Zürich) |
 | Middle East | `me-central1` (Doha; No App Engine), `me-central2` (Dammam; No App Engine), `me-west1` (Tel Aviv; No App Engine) |
 | Asia | `asia-south1` (Mumbai), `asia-south2` (Delhi; No App Engine), `asia-southeast1` (Singapore), `asia-southeast2` (Jakarta), `asia-southeast3` (Bangkok), `asia-east2` (Hong Kong), `asia-east1` (Taiwan), `asia-northeast1` (Tokyo), `asia-northeast2` (Osaka), `asia-northeast3` (Seoul) |
 | Australia | `australia-southeast1` (Sydney), `australia-southeast2` (Melbourne; No App Engine) |

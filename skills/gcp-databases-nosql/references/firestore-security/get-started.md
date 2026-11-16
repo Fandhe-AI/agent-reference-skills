@@ -10,7 +10,7 @@ Firestore Security Rules provide access control and data validation for requests
 
 ### Rules version 2
 
-Version 2 changes recursive wildcard `{name=**}` behavior and is required for collection group queries. Opt in with `rules_version = '2';` as the first line:
+Version 2 changes recursive wildcard `{name=**}` behavior and is required for collection group queries. Opt in with `rules_version = '2';` as the first line (fragment, verbatim from the source; see [rules-structure.md](./rules-structure.md) for a complete rule set):
 
 ```text
 rules_version = '2';

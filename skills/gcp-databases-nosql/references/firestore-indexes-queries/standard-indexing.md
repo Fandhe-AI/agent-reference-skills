@@ -93,6 +93,7 @@ Progress of an index build (`workCompleted` / `workEstimated`):
 - Migrating `google_datastore_index` (deprecated, unavailable in terraform-provider-google 6.0.0 and later) to `google_firestore_index`: write the equivalent resource (`kind` becomes `collection`, `ancestor` becomes `query_scope` with `ALL_ANCESTORS` mapping to `COLLECTION_RECURSIVE` and otherwise `COLLECTION_GROUP`, add `api_scope = "DATASTORE_MODE_API"`, `properties` becomes `fields` with `name` / `direction` becoming `field_path` / `order`), `terraform import`, remove the old resource and its state, run `terraform plan`. Warning from the source: do not run `terraform apply` if the plan shows any index resource being replaced or deleted, as that may lose the index and cause downtime.
 - The source also shows Terraform HCL examples (single-field, composite, vector, Datastore mode, migration) and many Console steps; they are omitted here.
 - Firebase CLI / Firebase console usage is out of scope of this skill beyond what the source states. Firestore pages here describe Google Cloud's managed document database, distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`).
+- `datastore.indexes.*` is the legacy alias of `datastore.schemas.*`; the IAM roles reference (`references/iam/firestore.md`) lists the `datastore.schemas.*` names (see `firestore-security/iam.md`).
 - Source: https://docs.cloud.google.com/firestore/native/docs/standard-indexing (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -81,6 +81,7 @@ gcloud firestore fields ttls update ttl_field --collection-group=collection_grou
 - Enabling a TTL policy is destructive (expired documents are deleted permanently); try it on a disposable collection group or database first.
 - The source also shows Console steps (omitted). Placeholders `ttl_field`, `collection_group_name`, `expiration_offset` are lower-case in the source.
 - Firestore's managed document database (Native / Datastore mode, MongoDB compatibility) — distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`).
+- `datastore.indexes.*` is the legacy alias of `datastore.schemas.*`; the IAM roles reference (`references/iam/firestore.md`) lists the `datastore.schemas.*` names (see `firestore-security/iam.md`).
 - Source: https://docs.cloud.google.com/firestore/native/docs/ttl (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

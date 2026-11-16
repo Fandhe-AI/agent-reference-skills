@@ -112,6 +112,7 @@ protoc --decode_raw < export0.export_metadata
 - Corrected from the official docs: the gcloud and gsutil examples use square-bracket placeholders such as `gs://[BUCKET_NAME]`, `--database=[DATABASE]` and `gcloud firestore operations describe [OPERATION_NAME]`. The import-specific-collection-groups block is summarized in prose.
 - The source also shows Console steps and BigQuery load details (omitted). Table cells keep the source's square-bracket notation; they are not commands.
 - Firestore's managed document database (Native / Datastore mode, MongoDB compatibility) — distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`).
+- Source inconsistency: the bucket-access section grants `roles/storage.admin` ("The service agent needs the `Storage Admin` role"), while the service-agent migration section grants the narrower `Firestore Service Agent` role (read and write on the bucket). Prefer the narrower role for least privilege.
 - Source: https://docs.cloud.google.com/firestore/native/docs/manage-data/export-import (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

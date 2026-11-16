@@ -140,6 +140,7 @@ Supported text languages (code = name): und = Autodetect, af, ak, sq, am, ar, hy
 - Corrected from the official docs: the partitioned-index examples originally read `name: "country_text_food_text"` (and `name: "location_2dsphere_region_2dsphere"`) with no trailing comma and `firestoreOptions: {"customPartitionFields": ["PARTITIONED_FIELD"]` without the closing `}`.
 - Source inconsistency: the createIndexes example uses collection `"restaurant"` while the other examples use `restaurants`.
 - The source also shows Console and Terraform (`google_firestore_index` with `api_scope = "MONGODB_COMPATIBLE_API"`) forms; omitted.
+- `datastore.indexes.*` is the legacy alias of `datastore.schemas.*`; the IAM roles reference (`references/iam/firestore.md`) lists the `datastore.schemas.*` names (see `firestore-security/iam.md`).
 - Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/indexing (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -57,6 +57,7 @@ gcloud firestore databases create --database=foo \
 - You can create both Enterprise and Standard databases in the same project. Firestore data is compatible with both editions; to migrate, create a new Enterprise database (see https://docs.cloud.google.com/firestore/native/docs/migrate-standard-to-enterprise).
 - Both editions start with daily free usage. Pricing: https://cloud.google.com/firestore/enterprise/pricing and https://cloud.google.com/firestore/pricing.
 - Google Cloud's managed document database (Native mode, Datastore mode, MongoDB compatibility) is distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`).
+- Source inconsistency: the quotas page lists a 1 MiB maximum document size for both Standard and Enterprise editions, while the editions overview and the MongoDB compatibility behavior-differences pages give 16 MiB for Firestore with MongoDB compatibility (1 MiB for Native mode). Kept as written on each page; check the limit for your database before relying on documents larger than 1 MiB.
 - Source: https://docs.cloud.google.com/firestore/native/docs/editions-overview (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Snippet source: https://docs.cloud.google.com/sdk/gcloud/reference/firestore/databases/create (gcloud 593.0.0 help text, EXAMPLES section)
 

@@ -33,7 +33,7 @@ service cloud.firestore {
 
 ### Required and forbidden fields on create
 
-These conditions only validate fields; combine them with authentication and ownership or role checks, because a parent `match` condition does not apply to nested `allow` statements. To require fields, the source's rule is `allow create: if request.resource.data.keys().hasAll(['name', 'location', 'city']);`. To forbid fields, it uses `allow create: if (!request.resource.data.keys().hasAny(['average_score', 'rating_count']));` (both on `match /restaurant/{restId}`). The allowlist below combines required and optional fields.
+These conditions only validate fields; combine them with authentication and ownership or role checks, because field checks alone are not authorization (the source's examples check only `request.resource.data` keys and types). To require fields, the source's rule is `allow create: if request.resource.data.keys().hasAll(['name', 'location', 'city']);`. To forbid fields, it uses `allow create: if (!request.resource.data.keys().hasAny(['average_score', 'rating_count']));` (both on `match /restaurant/{restId}`). The allowlist below combines required and optional fields.
 
 ### Allowlist, with required and optional fields
 

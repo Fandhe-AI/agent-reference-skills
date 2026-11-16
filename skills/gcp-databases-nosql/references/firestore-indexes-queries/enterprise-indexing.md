@@ -138,6 +138,7 @@ Example progress output:
 - `gcloud firestore indexes composite delete` is destructive; try it on a disposable database first.
 - On the console, text indexes ask for Search Type Text, query scope, default language and optional language override path; geospatial indexes use Search Type Geo (2dsphere). The source also shows Console steps and a Terraform example (`google_firestore_index` with `multikey` and `density`), omitted here.
 - Firestore pages here describe Google Cloud's managed document database (Native mode, Datastore mode, MongoDB compatibility), distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`).
+- `datastore.indexes.*` is the legacy alias of `datastore.schemas.*`; the IAM roles reference (`references/iam/firestore.md`) lists the `datastore.schemas.*` names (see `firestore-security/iam.md`).
 - Source: https://docs.cloud.google.com/firestore/native/docs/enterprise-indexing (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

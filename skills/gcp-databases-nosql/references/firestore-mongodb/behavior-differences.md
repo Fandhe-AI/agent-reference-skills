@@ -65,8 +65,9 @@ This table lists commands with field restrictions; for the full list of supporte
 - Source inconsistency: this page says "Commands not listed in the following tables are unsupported", but the supported-features pages list further supported commands that are not in its tables (for example `hello`, `buildInfo`, `collStats`); use `supported-features-80.md` for command support.
 - Source inconsistency: this page lists `dropIndexes` with no unsupported fields, while the supported-features pages mark the `dropIndexes` command as not supported (`dropIndex` is supported; see `indexing.md` for deleting indexes).
 - Source inconsistency: this page lists the top-level `_id` types without Boolean, while the supported data types page lists Boolean as well (see `supported-data-types-drivers.md`). Avoid Boolean `_id` values unless you have verified them against your database.
+- Source inconsistency: the quotas page lists a 1 MiB maximum document size for both Standard and Enterprise editions, while the editions overview and the MongoDB compatibility behavior-differences pages give 16 MiB for Firestore with MongoDB compatibility (1 MiB for Native mode). Kept as written on each page; check the limit for your database before relying on documents larger than 1 MiB.
 - Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/behavior-differences (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
-- Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/connect
+- Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/connect (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

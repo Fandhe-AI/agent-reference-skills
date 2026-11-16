@@ -6,16 +6,16 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 
 ## Signature / Usage
 
-Owner skill: `gcp-databases-nosql` (status: 未収録（予定）). gcloud groups: `bigtable`, `datastore`, `firestore`, `memcache`, `memorystore`, `redis`.
+Owner skill: `gcp-databases-nosql` (status: 収録済み). gcloud groups: `bigtable`, `datastore`, `firestore`, `memcache`, `memorystore`, `redis`.
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Lifecycle | Docs | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| Bigtable | — | — | `bigtable` | `bigtable.` | 5 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/bigtable | 未収録（予定） |
-| Firestore | `firestore.googleapis.com` (v1, v1beta1, v1beta2) | Accesses the NoSQL document database built for automatic scaling, high performance, and ease of application development. | `firestore` | `datastore.`, `firestore.` | 18 | — | — | https://cloud.google.com/firestore | 未収録（予定） |
-| Memorystore | — | — | `memorystore` | `memorystore.` | 4 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/memorystore | 未収録（予定） |
-| Memorystore for Memcached | `memcache.googleapis.com` (v1, v1beta2) | Google Cloud Memorystore for Memcached API is used for creating and managing Memcached instances in GCP. | `memcache` | `memcache.` | 4 | — | — | https://cloud.google.com/memorystore/ | 未収録（予定） |
-| Memorystore for Redis | `redis.googleapis.com` (v1, v1beta1) | Creates and manages Redis instances on the Google Cloud Platform. | `redis` | `redis.` | 5 | — | — | https://cloud.google.com/memorystore/docs/redis/ | 未収録（予定） |
-| Redis Enterprise Cloud | — | — | — | `redisenterprisecloud.` | 2 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/redisenterprisecloud | 未収録（予定） |
+| Bigtable | — | — | `bigtable` | `bigtable.` | 5 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/bigtable | 収録済み |
+| Firestore | `firestore.googleapis.com` (v1, v1beta1, v1beta2) | Accesses the NoSQL document database built for automatic scaling, high performance, and ease of application development. | `firestore` | `datastore.`, `firestore.` | 18 | — | — | https://cloud.google.com/firestore | 収録済み |
+| Memorystore | — | — | `memorystore` | `memorystore.` | 4 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/memorystore | 収録済み |
+| Memorystore for Memcached | `memcache.googleapis.com` (v1, v1beta2) | Google Cloud Memorystore for Memcached API is used for creating and managing Memcached instances in GCP. | `memcache` | `memcache.` | 4 | — | — | https://cloud.google.com/memorystore/ | 収録済み |
+| Memorystore for Redis | `redis.googleapis.com` (v1, v1beta1) | Creates and manages Redis instances on the Google Cloud Platform. | `redis` | `redis.` | 5 | — | — | https://cloud.google.com/memorystore/docs/redis/ | 収録済み |
+| Redis Enterprise Cloud | — | — | — | `redisenterprisecloud.` | 2 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/redisenterprisecloud | 収録済み |
 
 ```bash
 gcloud help
