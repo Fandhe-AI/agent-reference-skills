@@ -57,6 +57,8 @@ An instant snapshot is always stored in the same zone or region as its disk (for
 - Size can show zero either because nothing changed or because the size isn't yet updated; it does not mean the disk is empty.
 - Snapshot-type comparison table is identical to the one in snapshots.md.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/instant-snapshots/create (gcloud 593.0.0 help).
+- Source inconsistency: csek-deprecation-in-compute-engine.md (compute-security) tells you to create a CMEK-encrypted instant snapshot of a temporary disk and then "delete the CSEK-encrypted standard snapshot and the temporary disk", while this page says "When you delete a disk, all instant snapshots of the disk are deleted". Keep the temporary disk for as long as you need that instant snapshot.
+- Source (compared page, csek-deprecation-in-compute-engine.md): https://docs.cloud.google.com/compute/docs/deprecations/csek-deprecation-in-compute-engine (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/docs/disks/instant-snapshots (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
