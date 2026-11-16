@@ -39,7 +39,7 @@ Container fields apply to `containers`, `initContainers` and `ephemeralContainer
 | Unsafe sysctls mask | `spec.securityContext.sysctls[*].name` | Undefined or nil; `kernel.shm_rmid_forced`, `net.ipv4.ip_local_port_range`, `net.ipv4.ip_unprivileged_port_start`, `net.ipv4.tcp_syncookies`, `net.ipv4.ping_group_range` | Medium |
 | Running as non-root | `spec.securityContext.runAsNonRoot` and `spec.containers[*].securityContext.runAsNonRoot` (and init / ephemeral) | `true` | Medium |
 | Privilege escalation | `spec.containers[*].securityContext.allowPrivilegeEscalation` (and init / ephemeral) | `false` | Medium |
-| Unconfined AppArmor profile | `metadata.annotations["container.apparmor.security.beta.kubernetes.io/*"]` | `false` | Low |
+| Unconfined AppArmor profile | `metadata.annotations["container.apparmor.security.beta.kubernetes.io/*"]` | Undefined or nil; `runtime/default`; `localhost/*` (see Notes) | Low |
 
 GKE also reports a **Medium** finding named **Effectively Anonymous Users Granted GKE Cluster Access** when any RoleBinding or ClusterRoleBinding references `system:anonymous`, `system:authenticated` or `system:unauthenticated`.
 
@@ -52,6 +52,8 @@ GKE also reports a **Medium** finding named **Effectively Anonymous Users Grante
 - The source has no code blocks; the fenced text above quotes its examples. Related GKE security posture dashboard: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/about-security-posture-dashboard
 - The code block quotes the `--security-posture` flag description from https://docs.cloud.google.com/sdk/gcloud/reference/container/clusters/update; the concept page itself has no code.
 - Corrected from the official docs: the introductory example writes the field path as `spec.containers.securityContext.privileged`; `containers` is a list, so the path is `spec.containers[*].securityContext.privileged` (as in the source's own control table).
+- Corrected from the official docs: the source lists `false` as the accepted value for the AppArmor annotation, but the annotation takes a profile name, not a boolean. The accepted values here follow the Kubernetes Pod Security Standards (Baseline, AppArmor): "Undefined/nil", `runtime/default`, `localhost/*`; the finding is about the `unconfined` value. On current Kubernetes, the field `securityContext.appArmorProfile.type` (allowed values Undefined/nil, `RuntimeDefault`, `Localhost`) replaces the annotation.
+- Source (Pod Security Standards): https://kubernetes.io/docs/concepts/security/pod-security-standards/ (kubernetes/website commit 48a1f0659629, retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/about-configuration-scanning (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

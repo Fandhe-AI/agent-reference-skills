@@ -33,8 +33,10 @@ jsonPayload.eventType=EVENT_TYPE
 
 In GKE (recommended): set `filter` in the `--notification-config` flag when enabling notifications, a pipe-delimited list of types, for example `filter="UpgradeEvent|SecurityBulletinEvent"`. In Pub/Sub, use a subscription filter:
 
+Adapted (not in the official docs): the right-hand side of `OR` is written as a complete `attributes.type_url = ...` comparison.
+
 ```text
-attributes.type_url = "type.googleapis.com/google.container.v1beta1.UpgradeEvent" OR "type.googleapis.com/google.container.v1beta1.UpgradeAvailableEvent"
+attributes.type_url = "type.googleapis.com/google.container.v1beta1.UpgradeEvent" OR attributes.type_url = "type.googleapis.com/google.container.v1beta1.UpgradeAvailableEvent"
 ```
 
 ### Log-based alert query
@@ -99,6 +101,8 @@ Replace `RESOURCE_TYPE` with `gke_cluster` or `gke_nodepool` (or a combination) 
 - GKE always sends `beta` notification types; parse the payload to get the GA type where available.
 - To opt out of storing notification logs, configure a Cloud Logging exclusion filter.
 - The source also shows sample payloads for `SecurityBulletinEvent`, `UpgradeAvailableEvent`, `UpgradeInfoEvent`, and scheduled upgrades; they are omitted here.
+- Corrected from the official docs: the source filter is `attributes.type_url = "...UpgradeEvent" OR "...UpgradeAvailableEvent"`, whose right-hand side is a bare string. The Pub/Sub filter syntax requires complete expressions on both sides of a boolean operator (the Pub/Sub page lists `attributes.name = "com" AND ("net" OR "org")` as invalid), so the example repeats `attributes.type_url =`.
+- Source (Pub/Sub filter syntax): https://docs.cloud.google.com/pubsub/docs/subscription-message-filter (retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/cluster-notifications (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
