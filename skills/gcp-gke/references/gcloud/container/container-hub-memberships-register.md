@@ -1,0 +1,367 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/container/hub/memberships/register
+---
+
+# gcloud container hub memberships register
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud container hub memberships register
+
+```text
+NAME
+    gcloud container hub memberships register - register a cluster with a fleet
+
+SYNOPSIS
+    gcloud container hub memberships register
+        (MEMBERSHIP_NAME : --location=LOCATION)
+        (--gke-cluster=LOCATION/CLUSTER_NAME | --gke-uri=GKE_URI
+          | [--context=CONTEXT : --kubeconfig=KUBECONFIG])
+        [--install-connect-agent] [--internal-ip]
+        [--manifest-output-file=MANIFEST_OUTPUT_FILE] [--proxy=PROXY]
+        [--read-only]
+        [--service-account-key-file=SERVICE_ACCOUNT_KEY_FILE
+          | [--enable-workload-identity : --has-private-issuer
+          | --public-issuer-url=PUBLIC_ISSUER_URL]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    This command registers a cluster with the fleet by:
+
+        1. Creating a Fleet Membership resource corresponding to the cluster.
+        2. Adding in-cluster Kubernetes Resources that make the cluster exclusive
+           to one fleet.
+        3. Installing the Connect agent into this cluster (optional for GKE).
+
+    A successful registration implies that the cluster is now exclusive to a
+    single Fleet. If the cluster is already registered to another Fleet, the
+    registration will not be successful.
+
+    To register a GKE cluster, use --gke-cluster or --gke-uri flag (no
+    --kubeconfig flag is required). Connect agent will not be installed by
+    default for GKE clusters. To install it, specify --install-connect-agent.
+    The default value for --location is the same as the cluster's region or
+    zone, can be specified as global.
+
+    Anthos clusters on VMware, bare metal, AWS, and Azure are registered with a
+    fleet when the clusters are created. To register Amazon EKS clusters, see
+    Attach your EKS cluster
+    (https://cloud.google.com/anthos/clusters/docs/multi-cloud/attached/eks/how-to/attach-cluster).
+    To regiser Microsoft Azure clusters, see Attach your AKS cluster
+    (https://cloud.google.com/anthos/clusters/docs/multi-cloud/attached/aks/how-to/attach-cluster).
+
+    To register a third-party cluster, use --context flag (with an optional
+    --kubeconfig flag). Connect agent will always be installed for these
+    clusters.
+
+    If Connect agent is to be installed, its authentication needs to be
+    configured by --enable-workload-identity or --service-account-key-file. For
+    the latter case, the corresponding service account must have been granted
+    gkehub.connect permissions. For more information about Connect agent, go
+    to:
+    https://cloud.google.com/anthos/multicluster-management/connect/overview/
+
+    Rerunning this command against the same cluster with the same
+    MEMBERSHIP_NAME and target fleet is successful, and will upgrade the
+    Connect agent if it is supposed to be installed and a newer version is
+    available. Rerunning with --enable-workload-identity ensures that Workload
+    Identity is enabled on the cluster.
+
+EXAMPLES
+    Register a non-GKE cluster referenced from a specific kubeconfig file, and
+    install the Connect agent:
+
+        $ gcloud container hub memberships register my-cluster \
+            --context=my-cluster-context \
+            --kubeconfig=/home/user/custom_kubeconfig \
+            --service-account-key-file=/tmp/keyfile.json
+
+    Register a non-GKE cluster referenced from the default kubeconfig file, and
+    install the Connect agent:
+
+        $ gcloud container hub memberships register my-cluster \
+            --context=my-cluster-context \
+            --service-account-key-file=/tmp/keyfile.json
+
+    Register a non-GKE cluster, and install a specific version of the Connect
+    agent:
+
+        $ gcloud container hub memberships register my-cluster \
+            --context=my-cluster-context \
+            --version=gkeconnect_20190802_02_00 \
+            --service-account-key-file=/tmp/keyfile.json
+
+    Register a non-GKE cluster and output a manifest that can be used to
+    install the Connect agent by kubectl:
+
+        $ gcloud container hub memberships register my-cluster \
+            --context=my-cluster-context \
+            --manifest-output-file=/tmp/manifest.yaml \
+            --service-account-key-file=/tmp/keyfile.json
+
+    Register a GKE cluster referenced from a GKE URI:
+
+        $ gcloud container hub memberships register my-cluster \
+            --gke-uri=my-cluster-gke-uri
+
+    Register a GKE cluster referenced from a GKE URI, and install the Connect
+    agent using service account key file:
+
+        $ gcloud container hub memberships register my-cluster \
+            --gke-uri=my-cluster-gke-uri --install-connect-agent \
+            --service-account-key-file=/tmp/keyfile.json
+
+    Register a GKE cluster and output a manifest that can be used to install
+    the Connect agent by kubectl:
+
+        $ gcloud container hub memberships register my-cluster \
+            --gke-uri=my-cluster-gke-uri --enable-workload-identity \
+            --install-connect-agent \
+            --manifest-output-file=/tmp/manifest.yaml
+
+    Register a GKE cluster first, and install the Connect agent later.
+
+        $ gcloud container hub memberships register my-cluster \
+            --gke-cluster=my-cluster-region-or-zone/my-cluster
+
+        $ gcloud container hub memberships register my-cluster \
+            --gke-cluster=my-cluster-region-or-zone/my-cluster \
+            --install-connect-agent --enable-workload-identity
+
+    Register a GKE cluster, and install a specific version of the Connect
+    agent:
+
+        $ gcloud container hub memberships register my-cluster \
+            --gke-cluster=my-cluster-region-or-zone/my-cluster \
+            --install-connect-agent --version=20220819-00-00 \
+            --service-account-key-file=/tmp/keyfile.json
+
+    Register a GKE cluster and output a manifest that can be used to install
+    the Connect agent:
+
+        $ gcloud container hub memberships register my-cluster \
+            --gke-uri=my-cluster-gke-uri --install-connect-agent \
+            --manifest-output-file=/tmp/manifest.yaml \
+            --service-account-key-file=/tmp/keyfile.json
+
+POSITIONAL ARGUMENTS
+     Membership resource - The group of arguments defining a membership. The
+     arguments in this group can be used to specify the attributes of this
+     resource. (NOTE) Some attributes are not given arguments in this group but
+     can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument MEMBERSHIP_NAME on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       MEMBERSHIP_NAME
+          ID of the membership or fully qualified identifier for the
+          membership.
+
+          To set the membership attribute:
+          + provide the argument MEMBERSHIP_NAME on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --location=LOCATION
+          The location for the membership resource, e.g. us-central1. If not
+          specified, defaults to global. Not supported for GKE clusters, whose
+          membership location will be the location of the cluster.
+
+          To set the location attribute:
+          + provide the argument MEMBERSHIP_NAME on the command line with a
+            fully specified name;
+          + provide the argument --location on the command line;
+          + set the property gkehub/location.
+
+REQUIRED FLAGS
+     Cluster identifier.
+
+     Exactly one of these must be specified:
+
+       --gke-cluster=LOCATION/CLUSTER_NAME
+          The location/name of the GKE cluster. The location can be a zone or a
+          region for e.g us-central1-a/my-cluster.
+
+       --gke-uri=GKE_URI
+          The URI of a GKE cluster that you want to register to Hub; for
+          example,
+          'https://container.googleapis.com/v1/projects/my-project/locations/us-central1-a/clusters/my-cluster'.
+          To obtain the URI, you can run 'gcloud container clusters list
+          --uri'. Note that this should only be provided if the cluster being
+          registered is a GKE cluster. The service will validate the provided
+          URI to confirm that it maps to a valid GKE cluster."
+
+       Or at least one of these can be specified:
+
+         Non-GKE cluster identifier.
+
+         --context=CONTEXT
+            The cluster context as it appears in the kubeconfig file. You can
+            get this value from the command line by running command: kubectl
+            config current-context.
+
+            This flag argument must be specified if any of the other arguments
+            in this group are specified.
+
+         --kubeconfig=KUBECONFIG
+            The kubeconfig file containing an entry for the cluster. Defaults
+            to $KUBECONFIG if it is set in the environment, otherwise defaults
+            to $HOME/.kube/config.
+
+OPTIONAL FLAGS
+     --install-connect-agent
+        If set to True for a GKE cluster, Connect agent will be installed in
+        the cluster. No-op for Non-GKE clusters, where Connect agent will
+        always be installed unless --no-install-connect-agent is specified.
+
+     --internal-ip
+        Whether to use the internal IP address of the cluster endpoint.
+
+     --manifest-output-file=MANIFEST_OUTPUT_FILE
+        The full path of the file into which the Connect agent installation
+        manifest should be stored. If this option is provided, then the
+        manifest will be written to this file and will not be deployed into the
+        cluster by gcloud, and it will need to be deployed manually.
+
+     --proxy=PROXY
+        The proxy address in the format of http[s]://{hostname}. The proxy must
+        support the HTTP CONNECT method in order for this connection to
+        succeed.
+
+     --read-only
+        Register the cluster with a READ_ONLY membership type. A READ_ONLY
+        membership supports only read-only features i.e. can view cluster
+        information but no mutating operations.
+
+     At most one of these can be specified:
+
+       --service-account-key-file=SERVICE_ACCOUNT_KEY_FILE
+          The JSON file of a Google Cloud service account private key. This
+          service account key is stored as a secret named creds-gcp in
+          gke-connect namespace. To update the creds-gcp secret in gke-connect
+          namespace with a new service account key file, run the following
+          command:
+
+          kubectl delete secret creds-gcp -n gke-connect
+
+          kubectl create secret generic creds-gcp -n gke-connect
+          --from-file=creds-gcp.json=/path/to/file
+
+       Or at least one of these can be specified:
+
+         Workload Identity
+
+         --enable-workload-identity
+            Enable Workload Identity when registering the cluster with a fleet.
+            Ensure that GKE Workload Identity is enabled on your GKE cluster,
+            it is a requirement for using Workload Identity with memberships.
+            Refer to the Enable GKE Workload Identity section in
+            https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#enable
+            --service_account_key_file flag should not be set if this is set.
+
+            This flag argument must be specified if any of the other arguments
+            in this group are specified.
+
+         At most one of these can be specified:
+
+           --has-private-issuer
+              Set to true for clusters where no publicly-routable OIDC
+              discovery endpoint for the Kubernetes service account token
+              issuer exists.
+
+              When set to true, the gcloud command-line tool will read the
+              private issuer URL and JSON Web Key Set (JWKS) (public keys) for
+              validating service account tokens from the cluster's API server
+              and upload both when creating the Membership. Google Cloud
+              Platform will then use the JWKS, instead of a public OIDC
+              endpoint, to validate service account tokens issued by this
+              cluster. Note the JWKS establishes the uniqueness of issuers in
+              this configuration, but issuer claims in tokens are still
+              compared to the issuer URL associated with the Membership when
+              validating tokens.
+
+              Note the cluster's OIDC discovery endpoints (KUBE-API-ADDRESS
+              (https://)/.well-known/openid-configuration and KUBE-API-ADDRESS
+              (https://)/openid/v1/jwks) must still be network-accessible to
+              the gcloud client running this command.
+
+           --public-issuer-url=PUBLIC_ISSUER_URL
+              Skip auto-discovery and register the cluster with this issuer
+              URL. Use this option when the OpenID Provider Configuration and
+              associated JSON Web Key Set for validating the cluster's service
+              account JWTs are served at a public endpoint different from the
+              cluster API server. Requires --enable-workload-identity.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha container hub memberships register
+
+        $ gcloud beta container hub memberships register
+```
+
+### gcloud beta container hub memberships register
+
+```text
+NAME
+    gcloud beta container hub memberships register - register a cluster with a
+        fleet
+
+SYNOPSIS
+    gcloud beta container hub memberships register
+        (MEMBERSHIP_NAME : --location=LOCATION)
+        (--gke-cluster=LOCATION/CLUSTER_NAME | --gke-uri=GKE_URI
+          | [--context=CONTEXT : --kubeconfig=KUBECONFIG])
+        [--install-connect-agent] [--internal-ip]
+        [--manifest-output-file=MANIFEST_OUTPUT_FILE] [--proxy=PROXY]
+        [--read-only]
+        [--service-account-key-file=SERVICE_ACCOUNT_KEY_FILE
+          | [--enable-workload-identity : --has-private-issuer
+          | --public-issuer-url=PUBLIC_ISSUER_URL]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha container hub memberships register
+
+```text
+NAME
+    gcloud alpha container hub memberships register - register a cluster with a
+        fleet
+
+SYNOPSIS
+    gcloud alpha container hub memberships register
+        (MEMBERSHIP_NAME : --location=LOCATION)
+        (--gke-cluster=LOCATION/CLUSTER_NAME | --gke-uri=GKE_URI
+          | [--context=CONTEXT : --kubeconfig=KUBECONFIG])
+        [--install-connect-agent] [--internal-ip]
+        [--manifest-output-file=MANIFEST_OUTPUT_FILE] [--proxy=PROXY]
+        [--read-only]
+        [--service-account-key-file=SERVICE_ACCOUNT_KEY_FILE
+          | [--enable-workload-identity : --has-private-issuer
+          | --public-issuer-url=PUBLIC_ISSUER_URL]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/container/hub/memberships/register (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

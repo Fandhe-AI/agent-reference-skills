@@ -1,0 +1,212 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/container/hub/memberships/unregister
+---
+
+# gcloud container hub memberships unregister
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud container hub memberships unregister
+
+```text
+NAME
+    gcloud container hub memberships unregister - unregister a cluster from a
+        fleet
+
+SYNOPSIS
+    gcloud container hub memberships unregister
+        (MEMBERSHIP_NAME : --location=LOCATION)
+        (--gke-cluster=LOCATION/CLUSTER_NAME | --gke-uri=GKE_URI
+          | [--context=CONTEXT : --kubeconfig=KUBECONFIG])
+        [--uninstall-connect-agent] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    This command unregisters a cluster with the fleet by:
+
+        1. Deleting the Fleet Membership resource for this cluster (a.k.a
+           `gcloud container hub memberships delete`).
+        2. Removing the corresponding in-cluster Kubernetes Resources that make the
+           cluster exclusive to one fleet (a.k.a `kubectl delete memberships
+           membership`).
+        3. [Optional for GKE cluster] Uninstalling the Connect agent from this
+           cluster (a.k.a `kubectl delete on the gke-connect namespace`).
+
+    The unregister command makes additional internal checks to ensure that all
+    three steps can be safely done to properly clean-up in-Fleet and in-cluster
+    resources.
+
+    To unregister a GKE cluster use --gke-cluster or --gke-uri flag (no
+    --kubeconfig flag is required).
+
+    To unregister a third-party cluster use --context flag (with an optional
+    --kubeconfig`s flag).
+
+    To only delete the Fleet Membership resource, consider using the command:
+    gcloud container hub memberships delete. This command is intended to delete
+    stale Fleet Membership resources as doing so on a fully registered cluster
+    will skip some of the steps above and orphan in-cluster resources and agent
+    connections to Google.
+
+EXAMPLES
+    Unregister a third-party cluster referenced from a specific kubeconfig
+    file:
+
+        $ gcloud container hub memberships unregister my-membership \
+            --context=my-cluster-context \
+            --kubeconfig=/home/user/custom_kubeconfig
+
+    Unregister a third-party cluster referenced from the default kubeconfig
+    file:
+
+        $ gcloud container hub memberships unregister my-membership \
+            --context=my-cluster-context
+
+    Unregister a GKE cluster referenced from a GKE URI:
+
+        $ gcloud container hub memberships unregister my-membership \
+            --gke-uri=my-cluster-gke-uri
+
+    Unregister a GKE cluster referenced from a GKE Cluster location and name:
+
+        $ gcloud container hub memberships unregister my-membership \
+            --gke-cluster=my-cluster-region-or-zone/my-cluster
+
+    Unregister a GKE cluster and uninstall Connect agent:
+
+        $ gcloud container hub memberships unregister my-membership \
+            --gke-cluster=my-cluster-region-or-zone/my-cluster \
+            --uninstall-connect-agent
+
+POSITIONAL ARGUMENTS
+     Membership resource - The group of arguments defining a membership. The
+     arguments in this group can be used to specify the attributes of this
+     resource. (NOTE) Some attributes are not given arguments in this group but
+     can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument MEMBERSHIP_NAME on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       MEMBERSHIP_NAME
+          ID of the membership or fully qualified identifier for the
+          membership.
+
+          To set the membership attribute:
+          + provide the argument MEMBERSHIP_NAME on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --location=LOCATION
+          The location of the membership resource, e.g. us-central1. If not
+          specified, defaults to global.
+
+          To set the location attribute:
+          + provide the argument MEMBERSHIP_NAME on the command line with a
+            fully specified name;
+          + provide the argument --location on the command line;
+          + set the property gkehub/location.
+
+REQUIRED FLAGS
+     Cluster identifier.
+
+     Exactly one of these must be specified:
+
+       --gke-cluster=LOCATION/CLUSTER_NAME
+          The location/name of the GKE cluster. The location can be a zone or a
+          region for e.g us-central1-a/my-cluster.
+
+       --gke-uri=GKE_URI
+          The URI of a GKE cluster that you want to register to Hub; for
+          example,
+          'https://container.googleapis.com/v1/projects/my-project/locations/us-central1-a/clusters/my-cluster'.
+          To obtain the URI, you can run 'gcloud container clusters list
+          --uri'. Note that this should only be provided if the cluster being
+          registered is a GKE cluster. The service will validate the provided
+          URI to confirm that it maps to a valid GKE cluster."
+
+       Or at least one of these can be specified:
+
+         Non-GKE cluster identifier.
+
+         --context=CONTEXT
+            The cluster context as it appears in the kubeconfig file. You can
+            get this value from the command line by running command: kubectl
+            config current-context.
+
+            This flag argument must be specified if any of the other arguments
+            in this group are specified.
+
+         --kubeconfig=KUBECONFIG
+            The kubeconfig file containing an entry for the cluster. Defaults
+            to $KUBECONFIG if it is set in the environment, otherwise defaults
+            to $HOME/.kube/config.
+
+OPTIONAL FLAGS
+     --uninstall-connect-agent
+        If set to True for a GKE cluster, Connect agent will be uninstalled
+        from the cluster. No-op for third-party clusters, where Connect agent
+        will always be uninstalled.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha container hub memberships unregister
+
+        $ gcloud beta container hub memberships unregister
+```
+
+### gcloud beta container hub memberships unregister
+
+```text
+NAME
+    gcloud beta container hub memberships unregister - unregister a cluster
+        from a fleet
+
+SYNOPSIS
+    gcloud beta container hub memberships unregister
+        (MEMBERSHIP_NAME : --location=LOCATION)
+        (--gke-cluster=LOCATION/CLUSTER_NAME | --gke-uri=GKE_URI
+          | [--context=CONTEXT : --kubeconfig=KUBECONFIG])
+        [--uninstall-connect-agent] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha container hub memberships unregister
+
+```text
+NAME
+    gcloud alpha container hub memberships unregister - unregister a cluster
+        from a fleet
+
+SYNOPSIS
+    gcloud alpha container hub memberships unregister
+        (MEMBERSHIP_NAME : --location=LOCATION)
+        (--gke-cluster=LOCATION/CLUSTER_NAME | --gke-uri=GKE_URI
+          | [--context=CONTEXT : --kubeconfig=KUBECONFIG])
+        [--uninstall-connect-agent] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/container/hub/memberships/unregister (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

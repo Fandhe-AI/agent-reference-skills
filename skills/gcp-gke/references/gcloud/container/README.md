@@ -231,3 +231,32 @@
 | gcloud container hub ingress enable | 3 commands (alpha, beta, ga); container hub ingress enable … | [container-hub-ingress-enable.md](./container-hub-ingress-enable.md) |
 | gcloud container hub ingress update | 3 commands (alpha, beta, ga); container hub ingress update … | [container-hub-ingress-update.md](./container-hub-ingress-update.md) |
 | gcloud container hub list | 3 commands (alpha, beta, ga); container hub list … | [container-hub-list.md](./container-hub-list.md) |
+| gcloud container hub memberships bindings | 15 commands (alpha, beta, ga); container hub memberships bindings create … | [container-hub-memberships-bindings.md](./container-hub-memberships-bindings.md) |
+| gcloud container hub memberships delete | 3 commands (alpha, beta, ga); container hub memberships delete … | [container-hub-memberships-delete.md](./container-hub-memberships-delete.md) |
+| gcloud container hub memberships describe | 3 commands (alpha, beta, ga); container hub memberships describe … | [container-hub-memberships-describe.md](./container-hub-memberships-describe.md) |
+| gcloud container hub memberships generate-gateway-rbac | 3 commands (alpha, beta, ga); container hub memberships generate-gateway-rbac … | [container-hub-memberships-generate-gateway-rbac.md](./container-hub-memberships-generate-gateway-rbac.md) |
+| gcloud container hub memberships get-credentials | 3 commands (alpha, beta, ga); container hub memberships get-credentials … | [container-hub-memberships-get-credentials.md](./container-hub-memberships-get-credentials.md) |
+| gcloud container hub memberships list | 3 commands (alpha, beta, ga); container hub memberships list … | [container-hub-memberships-list.md](./container-hub-memberships-list.md) |
+| gcloud container hub memberships register | 3 commands (alpha, beta, ga); container hub memberships register … | [container-hub-memberships-register.md](./container-hub-memberships-register.md) |
+| gcloud container hub memberships support-access | 12 commands (alpha, beta, ga); container hub memberships support-access describe … | [container-hub-memberships-support-access.md](./container-hub-memberships-support-access.md) |
+| gcloud container hub memberships unregister | 3 commands (alpha, beta, ga); container hub memberships unregister … | [container-hub-memberships-unregister.md](./container-hub-memberships-unregister.md) |
+| gcloud container hub memberships update | 3 commands (alpha, beta, ga); container hub memberships update … | [container-hub-memberships-update.md](./container-hub-memberships-update.md) |
+| gcloud container hub mesh debug | 6 commands (alpha, beta); beta container hub mesh debug bug-report … | [container-hub-mesh-debug.md](./container-hub-mesh-debug.md) |
+| gcloud container hub mesh describe | 3 commands (alpha, beta, ga); container hub mesh describe … | [container-hub-mesh-describe.md](./container-hub-mesh-describe.md) |
+| gcloud container hub mesh disable | 3 commands (alpha, beta, ga); container hub mesh disable … | [container-hub-mesh-disable.md](./container-hub-mesh-disable.md) |
+| gcloud container hub mesh enable | 3 commands (alpha, beta, ga); container hub mesh enable … | [container-hub-mesh-enable.md](./container-hub-mesh-enable.md) |
+| gcloud container hub mesh update | 3 commands (alpha, beta, ga); container hub mesh update … | [container-hub-mesh-update.md](./container-hub-mesh-update.md) |
+| gcloud container hub multi-cluster-services describe | 3 commands (alpha, beta, ga); container hub multi-cluster-services describe … | [container-hub-multi-cluster-services-describe.md](./container-hub-multi-cluster-services-describe.md) |
+| gcloud container hub multi-cluster-services disable | 3 commands (alpha, beta, ga); container hub multi-cluster-services disable … | [container-hub-multi-cluster-services-disable.md](./container-hub-multi-cluster-services-disable.md) |
+| gcloud container hub multi-cluster-services enable | 3 commands (alpha, beta, ga); container hub multi-cluster-services enable … | [container-hub-multi-cluster-services-enable.md](./container-hub-multi-cluster-services-enable.md) |
+| gcloud container hub namespaceactuation create | alpha container hub namespaceactuation create | [container-hub-namespaceactuation-create.md](./container-hub-namespaceactuation-create.md) |
+| gcloud container hub namespaceactuation delete | alpha container hub namespaceactuation delete | [container-hub-namespaceactuation-delete.md](./container-hub-namespaceactuation-delete.md) |
+| gcloud container hub namespaceactuation describe | alpha container hub namespaceactuation describe | [container-hub-namespaceactuation-describe.md](./container-hub-namespaceactuation-describe.md) |
+| gcloud container hub namespaceactuation update | alpha container hub namespaceactuation update | [container-hub-namespaceactuation-update.md](./container-hub-namespaceactuation-update.md) |
+| gcloud container hub operations describe | 3 commands (alpha, beta, ga); container hub operations describe … | [container-hub-operations-describe.md](./container-hub-operations-describe.md) |
+| gcloud container hub operations list | 3 commands (alpha, beta, ga); container hub operations list … | [container-hub-operations-list.md](./container-hub-operations-list.md) |
+| gcloud container hub operations wait | 3 commands (alpha, beta, ga); container hub operations wait … | [container-hub-operations-wait.md](./container-hub-operations-wait.md) |
+| gcloud container hub packages create | 3 commands (alpha, beta, ga); container hub packages create … | [container-hub-packages-create.md](./container-hub-packages-create.md) |
+| gcloud container hub packages delete | 3 commands (alpha, beta, ga); container hub packages delete … | [container-hub-packages-delete.md](./container-hub-packages-delete.md) |
+| gcloud container hub packages describe | 3 commands (alpha, beta, ga); container hub packages describe … | [container-hub-packages-describe.md](./container-hub-packages-describe.md) |
+| gcloud container hub packages list | 3 commands (alpha, beta, ga); container hub packages list … | [container-hub-packages-list.md](./container-hub-packages-list.md) |
