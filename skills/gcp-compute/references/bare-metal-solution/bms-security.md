@@ -30,7 +30,7 @@ Application connectivity patterns:
 - Only network path to or from the regional extension is Partner Interconnect to the associated region over customer-specific VLAN attachments. Servers have no internet access by default; create a NAT instance if needed.
 - BGP dynamic routing means resources in the attached VPC (and new subnets) can reach the servers directly; restrict with firewall policies.
 - VPC peering: add a custom advertisement of the peered network CIDR on the redundant Cloud Routers. Shared VPC: create VLAN attachments in the host project.
-- On-premises: connect via Dedicated Interconnect, Partner Interconnect or Cloud VPN, add a custom advertisement for the on-premises subnet CIDR, and use firewall rules to allow or block access.
+- On-premises: connect via Dedicated Interconnect, Partner Interconnect or Cloud VPN and add a custom advertisement for the on-premises subnet CIDR. The source adds "use firewall rules to allow or block access", but VPC firewall rules do not apply to traffic that transits Google Cloud between Bare Metal Solution and on-premises (see Notes), so they do not protect that path.
 - Backups: Oracle RMAN or solutions such as Actifio, with backup data stored in Cloud Storage tiers matching RTO/RPO.
 
 ## Notes
@@ -40,6 +40,8 @@ Application connectivity patterns:
 - Key takeaways: shared responsibility, least privilege, separation of duties, prevent exfiltration via `restricted.googleapis.com`, follow Oracle's database security best practices. The Oracle suggestions are not exhaustive.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/bms/ssh-keys/list (gcloud 593.0.0 help; the source page has no code).
 - The custom advertisement of the peered or on-premises CIDR range on the redundant Cloud Routers mentioned in the connectivity list uses `gcloud compute routers update-bgp-peer`; see [bms-setup.md](./bms-setup.md) for the command and its notes on keeping advertised ranges narrow.
+- Source inconsistency: this page says to "use firewall rules to allow or block access" for on-premises connectivity, while bms-planning.md says "VPC firewalls do not apply to any traffic that transits your Google Cloud environment between, for example, your Bare Metal Solution environments and your other Bare Metal Solution or extended on-premises environments." The planning page uses VPC firewall rules for a different purpose: "create firewall rules that allow incoming connections from the Bare Metal Solution environment" in your VPC network. For east-west traffic inside the environment the planning page says to ask your Google Cloud sales representative.
+- Source (Bare Metal Solution planning, firewalls): https://docs.cloud.google.com/bare-metal/docs/bms-planning (retrieved 2026-11-17)
 - Distance line: VPC networks, firewall policies and VPC Service Controls themselves are in the planned `gcp-networking` / `gcp-security`; IAM in general is in `gcp-foundation`. This page covers Oracle on Bare Metal Solution, not Oracle Database@Google Cloud, Cloud SQL or AlloyDB.
 - Source: https://docs.cloud.google.com/bare-metal/docs/bms-security (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
