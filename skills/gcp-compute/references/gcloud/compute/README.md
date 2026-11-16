@@ -98,3 +98,11 @@
 | gcloud compute forwarding-rules update | 3 commands (alpha, beta, ga); compute forwarding-rules update … | [compute-forwarding-rules-update.md](./compute-forwarding-rules-update.md) |
 | gcloud compute future-reservations | 18 commands (alpha, beta, ga); compute future-reservations cancel … | [compute-future-reservations.md](./compute-future-reservations.md) |
 | gcloud compute global-vm-extension-policies | 17 commands (alpha, beta, ga); compute global-vm-extension-policies create … | [compute-global-vm-extension-policies.md](./compute-global-vm-extension-policies.md) |
+| gcloud compute health-aggregation-policies | 15 commands (alpha, beta, ga); compute health-aggregation-policies create … | [compute-health-aggregation-policies.md](./compute-health-aggregation-policies.md) |
+| gcloud compute health-checks create | 21 commands (alpha, beta, ga); compute health-checks create grpc … | [compute-health-checks-create.md](./compute-health-checks-create.md) |
+| gcloud compute health-checks delete | 3 commands (alpha, beta, ga); compute health-checks delete … | [compute-health-checks-delete.md](./compute-health-checks-delete.md) |
+| gcloud compute health-checks describe | 3 commands (alpha, beta, ga); compute health-checks describe … | [compute-health-checks-describe.md](./compute-health-checks-describe.md) |
+| gcloud compute health-checks list | 3 commands (alpha, beta, ga); compute health-checks list … | [compute-health-checks-list.md](./compute-health-checks-list.md) |
+| gcloud compute health-checks test-iam-permissions | 3 commands (alpha, beta, ga); compute health-checks test-iam-permissions … | [compute-health-checks-test-iam-permissions.md](./compute-health-checks-test-iam-permissions.md) |
+| gcloud compute health-checks update | 21 commands (alpha, beta, ga); compute health-checks update grpc … | [compute-health-checks-update.md](./compute-health-checks-update.md) |
+| gcloud compute health-sources | 21 commands (alpha, beta, ga); compute health-sources create … | [compute-health-sources.md](./compute-health-sources.md) |
