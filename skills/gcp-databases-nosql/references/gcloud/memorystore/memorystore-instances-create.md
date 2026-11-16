@@ -1,0 +1,787 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/memorystore/instances/create
+---
+
+# gcloud memorystore instances create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud memorystore instances create
+
+```text
+NAME
+    gcloud memorystore instances create - create a Memorystore instance
+
+SYNOPSIS
+    gcloud memorystore instances create INSTANCE [--acl-policy=ACL_POLICY]
+        [--async] [--async-instance-endpoints-deletion-enabled]
+        [--authorization-mode=AUTHORIZATION_MODE]
+        [--deletion-protection-enabled] [--endpoints=[connections=CONNECTIONS]]
+        [--engine-configs=[ENGINE_CONFIGS,...]]
+        [--engine-version=ENGINE_VERSION] [--labels=[LABELS,...]]
+        [--location=LOCATION]
+        [--maintenance-policy-weekly-window=[day=DAY],[startTime=STARTTIME]]
+        [--mode=MODE] [--node-type=NODE_TYPE] [--ondemand-maintenance]
+        [--psc-auto-connections=[network=NETWORK],
+          [port=PORT],[projectId=PROJECTID]] [--replica-count=REPLICA_COUNT]
+        [--request-id=REQUEST_ID] [--rotate-server-certificate]
+        [--server-ca-mode=SERVER_CA_MODE] [--server-ca-pool=SERVER_CA_POOL]
+        [--shard-count=SHARD_COUNT] [--simulate-maintenance-event]
+        [--transit-encryption-mode=TRANSIT_ENCRYPTION_MODE]
+        [--aof-config-append-fsync=AOF_CONFIG_APPEND_FSYNC
+          --persistence-config-mode=PERSISTENCE_CONFIG_MODE
+          --rdb-config-snapshot-period=RDB_CONFIG_SNAPSHOT_PERIOD
+          --rdb-config-snapshot-start-time=RDB_CONFIG_SNAPSHOT_START_TIME]
+        [--automated-backup-config-mode=AUTOMATED_BACKUP_CONFIG_MODE
+          --automated-backup-config-retention=AUTOMATED_BACKUP_CONFIG_RETENTION
+          (--fixed-frequency-schedule-start-time-hours=FIXED_FREQUENCY_SCHEDULE_START_TIME_HOURS --fixed-frequency-schedule-start-time-minutes=FIXED_FREQUENCY_SCHEDULE_START_TIME_MINUTES --fixed-frequency-schedule-start-time-nanos=FIXED_FREQUENCY_SCHEDULE_START_TIME_NANOS --fixed-frequency-schedule-start-time-seconds=FIXED_FREQUENCY_SCHEDULE_START_TIME_SECONDS)]
+        [--cross-instance-replication-config-role=CROSS_INSTANCE_REPLICATION_CONFIG_ROLE : --cross-instance-replication-config-secondary-instances=[instance=INSTANCE] --primary-instance=PRIMARY_INSTANCE]
+        [--gcs-source-uris=[GCS_SOURCE_URIS,...]
+          | --managed-backup-source=MANAGED_BACKUP_SOURCE]
+        [--kms-key=KMS_KEY : --key-ring=KEY_RING]
+        [--zone-distribution-config=ZONE_DISTRIBUTION_CONFIG
+          --zone-distribution-config-mode=ZONE_DISTRIBUTION_CONFIG_MODE
+          --zone-distribution-config-zones=[ZONE_DISTRIBUTION_CONFIG_ZONES,
+          ...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create a Memorystore instance.
+
+    A service connection policy for service class gcp-memorystore must already
+    exist for the location and network. Refer to creation prerequisites
+    (https://cloud.google.com/memorystore/docs/valkey/networking#prerequisites_required_before_creating_an_instance)
+    for more details.
+
+EXAMPLES
+    To create a three shard Memorystore instance my-instance in project
+    my-project and location us-central1, run:
+
+        $ gcloud memorystore instances create my-instance \
+            --project=my-project --location=us-central1 --shard-count=3 \
+            --psc-auto-connections="network=NETWORK,projectId=PROJECT_ID"
+
+    To create a three shard Memorystore instance my-instance in project
+    my-project, location us-central1, with one replica per shard, and TLS
+    enabled, run:
+
+        $ gcloud memorystore instances create my-instance \
+            --project=my-project --location=us-central1 --shard-count=3 \
+            --psc-auto-connections="network=NETWORK,projectId=PROJECT_ID" \
+            --transit-encryption-mode=server-authentication \
+            --replica-count=1
+
+POSITIONAL ARGUMENTS
+     Instance resource - Identifier. Unique name of the instance. Format:
+     projects/{project}/locations/{location}/instances/{instance} This
+     represents a Cloud resource. (NOTE) Some attributes are not given
+     arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument instance on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     To set the location attribute:
+      * provide the argument instance on the command line with a fully
+        specified name;
+      * provide the argument --location on the command line.
+
+     This must be specified.
+
+       INSTANCE
+          ID of the instance or fully qualified identifier for the instance.
+
+          To set the instance attribute:
+          + provide the argument instance on the command line.
+
+FLAGS
+     Arguments for the acl policy.
+
+     AclPolicy resource - The ACL policy for the instance. Format:
+     projects/{project}/locations/{location}/aclPolicies/{acl_policy} This
+     represents a Cloud resource. (NOTE) Some attributes are not given
+     arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument --acl-policy on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     To set the location attribute:
+      * provide the argument --acl-policy on the command line with a fully
+        specified name;
+      * provide the argument --location on the command line.
+
+     --acl-policy=ACL_POLICY
+        ID of the aclPolicy or fully qualified identifier for the aclPolicy.
+
+        To set the acl-policy attribute:
+        * provide the argument --acl-policy on the command line.
+
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     Arguments for the async instance endpoints deletion enabled.
+
+     --async-instance-endpoints-deletion-enabled
+        If true, instance endpoints that are created and registered by
+        customers can be deleted asynchronously. That is, such an instance
+        endpoint can be de-registered before the forwarding rules in the
+        instance endpoint are deleted.
+
+     --authorization-mode=AUTHORIZATION_MODE
+        Authorization mode of the instance. AUTHORIZATION_MODE must be one of:
+
+         auth-disabled
+            Authorization disabled.
+         iam-auth
+            IAM basic authorization.
+         token-auth
+            Token based authorization.
+
+     Arguments for the deletion protection enabled.
+
+     --deletion-protection-enabled
+        If set to true deletion of the instance will fail.
+
+     --endpoints=[connections=CONNECTIONS]
+        Endpoints for the instance.
+
+         connections
+            A group of PSC connections. They are created in the same VPC
+            network, one for each service attachment in the cluster.
+
+             pscAutoConnection
+                Detailed information of a PSC connection that is created
+                through service connectivity automation.
+
+                 network
+                    The network where the PSC endpoints are created, in the
+                    form of projects/{project_id}/global/networks/{network_id}.
+
+                 port
+                    port will only be set for Primary/Reader or Discovery
+                    endpoint.
+
+                 projectId
+                    The consumer project_id where PSC connections are
+                    established. This should be the same project_id that the
+                    instance is being created in.
+
+        Shorthand Example:
+
+            --endpoints=connections=[{pscAutoConnection={network=string,port=int,projectId=string}}] --endpoints=connections=[{pscAutoConnection={network=string,port=int,projectId=string}}]
+
+        JSON Example:
+
+            --endpoints='[{"connections": [{"pscAutoConnection": {"network": "string", "port": int, "projectId": "string"}}]}]'
+
+        File Example:
+
+            --endpoints=path_to_file.(yaml|json)
+
+     --engine-configs=[ENGINE_CONFIGS,...]
+        User-provided engine configurations for the instance.
+
+         KEY
+            Sets KEY value.
+
+         VALUE
+            Sets VALUE value.
+
+        Shorthand Example:
+
+            --engine-configs=string=string
+
+        JSON Example:
+
+            --engine-configs='{"string": "string"}'
+
+        File Example:
+
+            --engine-configs=path_to_file.(yaml|json)
+
+     --engine-version=ENGINE_VERSION
+        Engine version of the instance.
+
+     --labels=[LABELS,...]
+        Labels to represent user-provided metadata.
+
+         KEY
+            Keys must start with a lowercase character and contain only hyphens
+            (-), underscores (_), lowercase characters, and numbers.
+
+         VALUE
+            Values must contain only hyphens (-), underscores (_), lowercase
+            characters, and numbers.
+
+        Shorthand Example:
+
+            --labels=string=string
+
+        JSON Example:
+
+            --labels='{"string": "string"}'
+
+        File Example:
+
+            --labels=path_to_file.(yaml|json)
+
+     --location=LOCATION
+        For resources [instance, acl-policy, kms-key, primary-instance,
+        server-ca-pool], provides fallback value for resource location
+        attribute. When the resource's full URI path is not provided, location
+        will fallback to this flag value.
+
+     Maintenance policy per instance.
+
+     --maintenance-policy-weekly-window=[day=DAY],[startTime=STARTTIME]
+        Maintenance window that is applied to resources covered by this policy.
+        Minimum 1. For the current version, the maximum number of weekly_window
+        is expected to be one.
+
+         day
+            Allows to define schedule that runs specified day of the week.
+
+         startTime
+            Start time of the window in UTC.
+
+             hours
+                Hours of a day in 24 hour format. Must be greater than or equal
+                to 0 and typically must be less than or equal to 23. An API may
+                choose to allow the value "24:00:00" for scenarios like
+                business closing time.
+
+             minutes
+                Minutes of an hour. Must be greater than or equal to 0 and less
+                than or equal to 59.
+
+             nanos
+                Fractions of seconds, in nanoseconds. Must be greater than or
+                equal to 0 and less than or equal to 999,999,999.
+
+             seconds
+                Seconds of a minute. Must be greater than or equal to 0 and
+                typically must be less than or equal to 59. An API may allow
+                the value 60 if it allows leap-seconds.
+
+        Shorthand Example:
+
+            --maintenance-policy-weekly-window=day=string,startTime={hours=int,minutes=int,nanos=int,seconds=int} --maintenance-policy-weekly-window=day=string,startTime={hours=int,minutes=int,nanos=int,seconds=int}
+
+        JSON Example:
+
+            --maintenance-policy-weekly-window='[{"day": "string", "startTime": {"hours": int, "minutes": int, "nanos": int, "seconds": int}}]'
+
+        File Example:
+
+            --maintenance-policy-weekly-window=path_to_file.(yaml|json)
+
+     --mode=MODE
+        The mode config for the instance. MODE must be one of:
+
+         cluster
+            Instance is in cluster mode.
+         cluster-disabled
+            Cluster mode is disabled for the instance.
+         standalone
+            Deprecated: Use CLUSTER_DISABLED instead.
+
+     --node-type=NODE_TYPE
+        Machine type for individual nodes of the instance. NODE_TYPE must be
+        one of:
+
+         custom-micro
+            Custom micro.
+         custom-mini
+            Custom mini.
+         custom-pico
+            Custom pico.
+         highcpu-medium
+            High cpu medium.
+         highmem-2xlarge
+            High memory 2xlarge.
+         highmem-medium
+            High memory medium.
+         highmem-xlarge
+            High memory extra large.
+         shared-core-nano
+            Shared core nano.
+         standard-large
+            Standard large.
+         standard-small
+            Standard small.
+
+     Arguments for the ondemand maintenance.
+
+     --ondemand-maintenance
+        Ondemand maintenance for the instance.
+
+     --psc-auto-connections=[network=NETWORK],[port=PORT],[projectId=PROJECTID]
+        Deprecated: Use the endpoints.connections.psc_auto_connection value
+        instead.
+
+         network
+            The network where the PSC endpoints are created, in the form of
+            projects/{project_id}/global/networks/{network_id}.
+
+         port
+            port will only be set for Primary/Reader or Discovery endpoint.
+
+         projectId
+            The consumer project_id where PSC connections are established. This
+            should be the same project_id that the instance is being created
+            in.
+
+        Shorthand Example:
+
+            --psc-auto-connections=network=string,port=int,projectId=string --psc-auto-connections=network=string,port=int,projectId=string
+
+        JSON Example:
+
+            --psc-auto-connections='[{"network": "string", "port": int, "projectId": "string"}]'
+
+        File Example:
+
+            --psc-auto-connections=path_to_file.(yaml|json)
+
+     Arguments for the replica count.
+
+     --replica-count=REPLICA_COUNT
+        Number of replica nodes per shard. If omitted the default is 0
+        replicas.
+
+     --request-id=REQUEST_ID
+        An optional request ID to identify requests. Specify a unique request
+        ID so that if you must retry your request, the server will know to
+        ignore the request if it has already been completed. The server will
+        guarantee that for at least 60 minutes since the first request.
+
+        For example, consider a situation where you make an initial request and
+        the request times out. If you make the request again with the same
+        request ID, the server can check if original operation with the same
+        request ID was received, and if so, will ignore the second request.
+        This prevents clients from accidentally creating duplicate commitments.
+
+        The request ID must be a valid UUID with the exception that zero UUID
+        is not supported (00000000-0000-0000-0000-000000000000).
+
+     Arguments for the rotate server certificate.
+
+     --rotate-server-certificate
+        Rotate the server certificates.
+
+     Arguments for the server ca mode.
+
+     --server-ca-mode=SERVER_CA_MODE
+        The Server CA mode for the instance. SERVER_CA_MODE must be one of:
+
+         customer-managed-cas-ca
+            The instance uses a customer-managed CA from CAS.
+         google-managed-per-instance-ca
+            Each instance has its own Google-managed CA.
+         google-managed-shared-ca
+            The instance uses a Google-managed shared CA for the instance's
+            region.
+         server-ca-mode-customer-managed-cas-ca
+            Deprecated: Use CUSTOMER_MANAGED_CAS_CA instead.
+         server-ca-mode-google-managed-per-instance-ca
+            Deprecated: Use GOOGLE_MANAGED_PER_INSTANCE_CA instead.
+         server-ca-mode-google-managed-shared-ca
+            Deprecated: Use GOOGLE_MANAGED_SHARED_CA instead.
+
+     Arguments for the server ca pool.
+
+     CaPool resource - Customer-managed CA pool. The resource name of the
+     Certificate Authority Service (CAS) CA Pool. Required and only applicable
+     when --server-ca-mode is set to customer-managed-cas-ca. Format:
+     projects/{project}/locations/{region}/caPools/{ca_pool} This represents a
+     Cloud resource. (NOTE) Some attributes are not given arguments in this
+     group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument --server-ca-pool on the command line with a
+        fully specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     To set the location attribute:
+      * provide the argument --server-ca-pool on the command line with a
+        fully specified name;
+      * provide the argument --location on the command line.
+
+     --server-ca-pool=SERVER_CA_POOL
+        ID of the caPool or fully qualified identifier for the caPool.
+
+        To set the ca-pool attribute:
+        * provide the argument --server-ca-pool on the command line.
+
+     --shard-count=SHARD_COUNT
+        Number of shards for the instance.
+
+     Arguments for the simulate maintenance event.
+
+     --simulate-maintenance-event
+        Simulate a maintenance event.
+
+     --transit-encryption-mode=TRANSIT_ENCRYPTION_MODE
+        In-transit encryption mode of the instance. TRANSIT_ENCRYPTION_MODE
+        must be one of:
+
+         server-authentication
+            Server-managed encryption is used for in-transit encryption.
+         transit-encryption-disabled
+            In-transit encryption is disabled.
+
+     Represents persistence configuration for a instance.
+
+     Configuration for AOF based persistence.
+
+     --aof-config-append-fsync=AOF_CONFIG_APPEND_FSYNC
+        The fsync mode. AOF_CONFIG_APPEND_FSYNC must be one of:
+
+         always
+            Fsync every time new write commands are appended to the AOF. The
+            best data loss protection at the cost of performance.
+         every-sec
+            Fsync every second. You may lose 1 second of data if there is a
+            disaster.
+         never
+            Never fsync. Normally Linux will flush data every 30 seconds with
+            this configuration, but it's up to the kernel's exact tuning.
+
+     --persistence-config-mode=PERSISTENCE_CONFIG_MODE
+        Current persistence mode. PERSISTENCE_CONFIG_MODE must be one of:
+
+         aof
+            AOF based persistence is enabled.
+         disabled
+            Persistence is disabled, and any snapshot data is deleted.
+         rdb
+            RDB based persistence is enabled.
+
+     Configuration for RDB based persistence.
+
+     --rdb-config-snapshot-period=RDB_CONFIG_SNAPSHOT_PERIOD
+        Period between RDB snapshots. RDB_CONFIG_SNAPSHOT_PERIOD must be one
+        of:
+
+         one-hour
+            One hour.
+         six-hours
+            Six hours.
+         twelve-hours
+            Twelve hours.
+         twenty-four-hours
+            Twenty four hours.
+
+     --rdb-config-snapshot-start-time=RDB_CONFIG_SNAPSHOT_START_TIME
+        Time that the first snapshot was/will be attempted, and to which future
+        snapshots will be aligned. If not provided, the current time will be
+        used.
+
+     The automated backup config for an instance.
+
+     --automated-backup-config-mode=AUTOMATED_BACKUP_CONFIG_MODE
+        The automated backup mode. If the mode is disabled, the other fields
+        will be ignored. AUTOMATED_BACKUP_CONFIG_MODE must be one of:
+
+         disabled
+            Automated backup config disabled.
+         enabled
+            Automated backup config enabled.
+
+     --automated-backup-config-retention=AUTOMATED_BACKUP_CONFIG_RETENTION
+        How long to keep automated backups before the backups are deleted. The
+        value should be between 1 day and 365 days. If not specified, the
+        default value is 35 days.
+
+     Arguments for the schedule.
+
+     This schedule allows the backup to be triggered at a fixed frequency
+     (currently only daily is supported).
+
+     Represents a time of day. The date and time zone are either not
+     significant or are specified elsewhere. An API may choose to allow leap
+     seconds. Related types are [google.type.Date][google.type.Date] and
+     google.protobuf.Timestamp.
+
+     At least one of these must be specified:
+
+       --fixed-frequency-schedule-start-time-hours=FIXED_FREQUENCY_SCHEDULE_START_TIME_HOURS
+          Hours of a day in 24 hour format. Must be greater than or equal to 0
+          and typically must be less than or equal to 23. An API may choose to
+          allow the value "24:00:00" for scenarios like business closing time.
+
+       --fixed-frequency-schedule-start-time-minutes=FIXED_FREQUENCY_SCHEDULE_START_TIME_MINUTES
+          Minutes of an hour. Must be greater than or equal to 0 and less than
+          or equal to 59.
+
+       --fixed-frequency-schedule-start-time-nanos=FIXED_FREQUENCY_SCHEDULE_START_TIME_NANOS
+          Fractions of seconds, in nanoseconds. Must be greater than or equal
+          to 0 and less than or equal to 999,999,999.
+
+       --fixed-frequency-schedule-start-time-seconds=FIXED_FREQUENCY_SCHEDULE_START_TIME_SECONDS
+          Seconds of a minute. Must be greater than or equal to 0 and typically
+          must be less than or equal to 59. An API may allow the value 60 if it
+          allows leap-seconds.
+
+     Cross instance replication config.
+
+     --cross-instance-replication-config-role=CROSS_INSTANCE_REPLICATION_CONFIG_ROLE
+        The role of the instance in cross instance replication.
+        CROSS_INSTANCE_REPLICATION_CONFIG_ROLE must be one of:
+
+         none
+            This instance does not participate in cross instance replication.
+            It is an independent instance and does not replicate to or from any
+            other instances.
+         primary
+            A instance that allows both reads and writes. Any data written to
+            this instance is also replicated to the attached secondary
+            instances.
+         secondary
+            A instance that allows only reads and replicates data from a
+            primary instance.
+
+        This flag argument must be specified if any of the other arguments in
+        this group are specified.
+
+     --cross-instance-replication-config-secondary-instances=[instance=INSTANCE]
+        List of secondary instances that are replicating from this primary
+        instance.
+
+        This field is only set for a primary instance.
+
+         instance
+            The full resource path of the remote instance in the format:
+            projects/<project>/locations/<region>/instances/<instance-id>.
+
+        Shorthand Example:
+
+            --cross-instance-replication-config-secondary-instances=instance=string --cross-instance-replication-config-secondary-instances=instance=string
+
+        JSON Example:
+
+            --cross-instance-replication-config-secondary-instances='[{"instance": "string"}]'
+
+        File Example:
+
+            --cross-instance-replication-config-secondary-instances=path_to_file.(yaml|json)
+
+     Details of the remote instance associated with this instance in a cross
+     instance replication setup.
+
+     Instance resource - The full resource path of the remote instance in the
+     format: projects/<project>/locations/<region>/instances/<instance-id> This
+     represents a Cloud resource. (NOTE) Some attributes are not given
+     arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument --primary-instance on the command line with a
+        fully specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     To set the location attribute:
+      * provide the argument --primary-instance on the command line with a
+        fully specified name;
+      * provide the argument --location on the command line.
+
+     --primary-instance=PRIMARY_INSTANCE
+        ID of the instance or fully qualified identifier for the instance.
+
+        To set the instance attribute:
+        * provide the argument --primary-instance on the command line.
+
+     Arguments for the import sources.
+
+     At most one of these can be specified:
+
+       Backups that stored in Cloud Storage buckets. The Cloud Storage buckets
+       need to be the same region as the instances.
+
+       --gcs-source-uris=[GCS_SOURCE_URIS,...]
+          Example: gs://bucket1/object1, gs://bucket2/folder2/object2
+
+       Backups that generated and managed by memorystore.
+
+       --managed-backup-source=MANAGED_BACKUP_SOURCE
+          Example:
+          //memorystore.googleapis.com/projects/{project}/locations/{location}/backupCollections/{collection}/backups/{backup}
+          A shorter version (without the prefix) of the backup name is also
+          supported, like
+          projects/{project}/locations/{location}/backupCollections/{collection}/backups/{backup_id}
+          In this case, it assumes the backup is under
+          memorystore.googleapis.com.
+
+     Arguments for the kms key.
+
+     CryptoKey resource - The KMS key used to encrypt the at-rest data of the
+     cluster. The arguments in this group can be used to specify the attributes
+     of this resource. (NOTE) Some attributes are not given arguments in this
+     group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument --kms-key on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     To set the location attribute:
+      * provide the argument --kms-key on the command line with a fully
+        specified name;
+      * provide the argument --location on the command line.
+
+     --kms-key=KMS_KEY
+        ID of the cryptoKey or fully qualified identifier for the cryptoKey.
+
+        To set the crypto-key attribute:
+        * provide the argument --kms-key on the command line.
+
+        This flag argument must be specified if any of the other arguments in
+        this group are specified.
+
+     --key-ring=KEY_RING
+        The keyRing id of the cryptoKey resource.
+
+        To set the key-ring attribute:
+        * provide the argument --kms-key on the command line with a fully
+          specified name;
+        * provide the argument --key-ring on the command line.
+
+     Zone distribution configuration for allocation of instance resources.
+
+     --zone-distribution-config=ZONE_DISTRIBUTION_CONFIG
+        Defines zone where all resources will be allocated with SINGLE_ZONE
+        mode. Ignored for MULTI_ZONE mode.
+
+     --zone-distribution-config-mode=ZONE_DISTRIBUTION_CONFIG_MODE
+        Current zone distribution mode. Defaults to MULTI_ZONE.
+        ZONE_DISTRIBUTION_CONFIG_MODE must be one of:
+
+         multi-zone
+            Distribute resources across 3 zones picked at random within the
+            region.
+         single-zone
+            Provision resources in a single zone. Zone field must be specified.
+
+     --zone-distribution-config-zones=[ZONE_DISTRIBUTION_CONFIG_ZONES,...]
+        Specify the zones of a multi-zone instance where Memorystore instance
+        allocates resources. This flag isn't applicable for single-zone
+        instances.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the memorystore/v1 API. The full documentation for this
+    API can be found at: https://cloud.google.com/memorystore/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha memorystore instances create
+
+        $ gcloud beta memorystore instances create
+```
+
+### gcloud beta memorystore instances create
+
+```text
+NAME
+    gcloud beta memorystore instances create - create a Memorystore instance
+
+SYNOPSIS
+    gcloud beta memorystore instances create INSTANCE [--acl-policy=ACL_POLICY]
+        [--async] [--async-instance-endpoints-deletion-enabled]
+        [--authorization-mode=AUTHORIZATION_MODE]
+        [--deletion-protection-enabled] [--endpoints=[connections=CONNECTIONS]]
+        [--engine-configs=[ENGINE_CONFIGS,...]]
+        [--engine-version=ENGINE_VERSION] [--labels=[LABELS,...]]
+        [--location=LOCATION]
+        [--maintenance-policy-weekly-window=[day=DAY],[startTime=STARTTIME]]
+        [--mode=MODE] [--node-type=NODE_TYPE] [--ondemand-maintenance]
+        [--psc-auto-connections=[network=NETWORK],
+          [port=PORT],[projectId=PROJECTID]] [--replica-count=REPLICA_COUNT]
+        [--request-id=REQUEST_ID] [--rotate-server-certificate]
+        [--server-ca-mode=SERVER_CA_MODE] [--server-ca-pool=SERVER_CA_POOL]
+        [--shard-count=SHARD_COUNT] [--simulate-maintenance-event]
+        [--transit-encryption-mode=TRANSIT_ENCRYPTION_MODE]
+        [--aof-config-append-fsync=AOF_CONFIG_APPEND_FSYNC
+          --persistence-config-mode=PERSISTENCE_CONFIG_MODE
+          --rdb-config-snapshot-period=RDB_CONFIG_SNAPSHOT_PERIOD
+          --rdb-config-snapshot-start-time=RDB_CONFIG_SNAPSHOT_START_TIME]
+        [--automated-backup-config-mode=AUTOMATED_BACKUP_CONFIG_MODE
+          --automated-backup-config-retention=AUTOMATED_BACKUP_CONFIG_RETENTION
+          (--fixed-frequency-schedule-start-time-hours=FIXED_FREQUENCY_SCHEDULE_START_TIME_HOURS --fixed-frequency-schedule-start-time-minutes=FIXED_FREQUENCY_SCHEDULE_START_TIME_MINUTES --fixed-frequency-schedule-start-time-nanos=FIXED_FREQUENCY_SCHEDULE_START_TIME_NANOS --fixed-frequency-schedule-start-time-seconds=FIXED_FREQUENCY_SCHEDULE_START_TIME_SECONDS)]
+        [--cross-instance-replication-config-role=CROSS_INSTANCE_REPLICATION_CONFIG_ROLE : --cross-instance-replication-config-secondary-instances=[instance=INSTANCE] --primary-instance=PRIMARY_INSTANCE]
+        [--gcs-source-uris=[GCS_SOURCE_URIS,...]
+          | --managed-backup-source=MANAGED_BACKUP_SOURCE]
+        [--kms-key=KMS_KEY : --key-ring=KEY_RING]
+        [--zone-distribution-config=ZONE_DISTRIBUTION_CONFIG
+          --zone-distribution-config-mode=ZONE_DISTRIBUTION_CONFIG_MODE
+          --zone-distribution-config-zones=[ZONE_DISTRIBUTION_CONFIG_ZONES,
+          ...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha memorystore instances create
+
+```text
+NAME
+    gcloud alpha memorystore instances create - create a Memorystore instance
+
+SYNOPSIS
+    gcloud alpha memorystore instances create INSTANCE
+        [--acl-policy=ACL_POLICY] [--async]
+        [--async-instance-endpoints-deletion-enabled]
+        [--authorization-mode=AUTHORIZATION_MODE]
+        [--deletion-protection-enabled] [--endpoints=[connections=CONNECTIONS]]
+        [--engine-configs=[ENGINE_CONFIGS,...]]
+        [--engine-version=ENGINE_VERSION] [--labels=[LABELS,...]]
+        [--location=LOCATION]
+        [--maintenance-policy-weekly-window=[day=DAY],[startTime=STARTTIME]]
+        [--mode=MODE] [--node-type=NODE_TYPE] [--ondemand-maintenance]
+        [--psc-auto-connections=[network=NETWORK],
+          [port=PORT],[projectId=PROJECTID]] [--replica-count=REPLICA_COUNT]
+        [--request-id=REQUEST_ID] [--rotate-server-certificate]
+        [--server-ca-mode=SERVER_CA_MODE] [--server-ca-pool=SERVER_CA_POOL]
+        [--shard-count=SHARD_COUNT] [--simulate-maintenance-event]
+        [--transit-encryption-mode=TRANSIT_ENCRYPTION_MODE]
+        [--aof-config-append-fsync=AOF_CONFIG_APPEND_FSYNC
+          --persistence-config-mode=PERSISTENCE_CONFIG_MODE
+          --rdb-config-snapshot-period=RDB_CONFIG_SNAPSHOT_PERIOD
+          --rdb-config-snapshot-start-time=RDB_CONFIG_SNAPSHOT_START_TIME]
+        [--automated-backup-config-mode=AUTOMATED_BACKUP_CONFIG_MODE
+          --automated-backup-config-retention=AUTOMATED_BACKUP_CONFIG_RETENTION
+          (--fixed-frequency-schedule-start-time-hours=FIXED_FREQUENCY_SCHEDULE_START_TIME_HOURS --fixed-frequency-schedule-start-time-minutes=FIXED_FREQUENCY_SCHEDULE_START_TIME_MINUTES --fixed-frequency-schedule-start-time-nanos=FIXED_FREQUENCY_SCHEDULE_START_TIME_NANOS --fixed-frequency-schedule-start-time-seconds=FIXED_FREQUENCY_SCHEDULE_START_TIME_SECONDS)]
+        [--cross-instance-replication-config-role=CROSS_INSTANCE_REPLICATION_CONFIG_ROLE : --cross-instance-replication-config-secondary-instances=[instance=INSTANCE] --primary-instance=PRIMARY_INSTANCE]
+        [--gcs-source-uris=[GCS_SOURCE_URIS,...]
+          | --managed-backup-source=MANAGED_BACKUP_SOURCE]
+        [--kms-key=KMS_KEY : --key-ring=KEY_RING]
+        [--zone-distribution-config=ZONE_DISTRIBUTION_CONFIG
+          --zone-distribution-config-mode=ZONE_DISTRIBUTION_CONFIG_MODE
+          --zone-distribution-config-zones=[ZONE_DISTRIBUTION_CONFIG_ZONES,
+          ...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/memorystore/instances/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
