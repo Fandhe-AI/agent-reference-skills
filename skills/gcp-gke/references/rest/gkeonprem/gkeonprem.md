@@ -521,7 +521,7 @@ Base URL: `https://gkeonprem.googleapis.com`. Methods are listed by `id`; the `V
 | `name` | path | string | yes | Required. Name of the bare metal user cluster to be unenrolled. Format: "projects/{project}/locations/{location}/bareMetalClusters/{cluster}" |
 | `allowMissing` | query | boolean | no | If set to true, and the bare metal cluster is not found, the request will succeed but no action will be taken on the server and return a completed LRO. |
 | `etag` | query | string | no | The current etag of the bare metal Cluster. If an etag is provided and does not match the current etag of the cluster, deletion will be blocked and an ABORTED error will be returned. |
-| `force` | query | boolean | no | This is required if the cluster has any associated node pools. When set, any child node pools will also be unenrolled. |
+| `force` | query | boolean | conditional | This is required if the cluster has any associated node pools. When set, any child node pools will also be unenrolled. |
 | `validateOnly` | query | boolean | no | Validate the request without actually doing any updates. |
 
 ### `gkeonprem.projects.locations.get`
@@ -942,7 +942,7 @@ Base URL: `https://gkeonprem.googleapis.com`. Methods are listed by `id`; the `V
 | `name` | path | string | yes | Required. Name of the VMware user cluster to be unenrolled. Format: "projects/{project}/locations/{location}/vmwareClusters/{vmware_cluster}" |
 | `allowMissing` | query | boolean | no | If set to true, and the VMware cluster is not found, the request will succeed but no action will be taken on the server and return a completed LRO. |
 | `etag` | query | string | no | The current etag of the VMware Cluster. If an etag is provided and does not match the current etag of the cluster, deletion will be blocked and an ABORTED error will be returned. |
-| `force` | query | boolean | no | This is required if the cluster has any associated node pools. When set, any child node pools will also be unenrolled. |
+| `force` | query | boolean | conditional | This is required if the cluster has any associated node pools. When set, any child node pools will also be unenrolled. |
 | `validateOnly` | query | boolean | no | Validate the request without actually doing any updates. |
 
 ### `gkeonprem.projects.locations.vmwareClusters.vmwareNodePools.create`
