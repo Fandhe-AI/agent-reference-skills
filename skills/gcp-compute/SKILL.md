@@ -21,20 +21,8 @@ skills/gcp-compute/
   references/
     gcloud/                       # 機械生成: gcloud 593.0.0、取得 2026-11-14
       README.md
-      compute/
-        README.md                 # gcloud compute（Compute Engine 全般に加え、ネットワーク・LB・Cloud Armor 系、compute tpus、compute os-config を含む）
-        compute-<group>.md        # 例: compute-addresses.md / compute-ssl-certificates.md
-        compute-<group>-<cmd>.md  # GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS（例: compute-instances-create-with-container.md）
       batch/
         README.md                 # gcloud batch
-      bms/
-        README.md                 # gcloud bms（Bare Metal Solution）
-        bms-<group>.md            # 例: bms-instances.md / bms-volumes.md / bms-networks.md
-      cluster-director/
-        README.md                 # gcloud cluster-director
-      oracle-database/
-        README.md                 # gcloud oracle-database
-        oracle-database-<group>.md  # 例: oracle-database-db-systems.md / oracle-database-odb-networks-1.md
     compute-overview/             # 公式ガイド由来（手書き）: 概要・インスタンスの概念・停止 / 一時停止 / リセットの違い・リージョンとゾーン・割り当て・ライフサイクル・プロビジョニングモデル・作成と起動・廃止一覧
       README.md
       <page>.md                   # 例: deprecations.md / create-start-instance.md
@@ -120,7 +108,7 @@ skills/gcp-compute/
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
-未投入カテゴリ（`iam` / `rest` / `rest-schemas` / `gcloud/compute` / `gcloud/bms` / `gcloud/cluster-director` / `gcloud/oracle-database`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud/compute` / `gcloud/bms` / `gcloud/cluster-director` / `gcloud/oracle-database` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -152,7 +140,7 @@ skills/gcp-compute/
 | Confidential VM（対応構成・作成・構成証明・組織ポリシーによる強制）・Confidential Space のワークロード | confidential-computing | [references/confidential-computing/README.md](references/confidential-computing/README.md) |
 | Oracle Database@Google Cloud の概要・環境準備・ODB Network・Exadata Infrastructure・Autonomous AI Database・IAM・クォータ | oracle-database | [references/oracle-database/README.md](references/oracle-database/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `iam` / `rest` / `rest-schemas` / `gcloud/compute` / `gcloud/bms` / `gcloud/cluster-director` / `gcloud/oracle-database`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/compute` / `gcloud/bms` / `gcloud/cluster-director` / `gcloud/oracle-database` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
