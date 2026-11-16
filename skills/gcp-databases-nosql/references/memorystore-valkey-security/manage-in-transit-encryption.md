@@ -71,6 +71,7 @@ Create `/tmp/server_ca.pem` on the client (the source uses `sudo vim /tmp/server
 - CAs are valid for ten years; new CAs are available about five years before expiry. Install all downloadable CAs on clients so rotation (existing and new CAs both active) does not break connections. TLS 1.2 and later.
 - Clients connect to the instance IP, port 6379, and the CA file. The source also shows a Console path and a sample PEM block (omitted).
 - Managed Valkey on Google Cloud; distinct from Upstash Redis (`upstash`). Client library patterns: `gcp-client-libraries`.
+- The source's example writes `--mode=CLUSTER` while the gcloud help lists lower-case choices (`cluster`, `cluster-disabled`); gcloud 593.0.0 accepts both spellings (checked locally: `--mode=CLUSTER` and `--mode=cluster` both pass argument parsing, while an invalid value is rejected with `Invalid choice`). The example is kept verbatim.
 - Source: https://docs.cloud.google.com/memorystore/docs/valkey/manage-in-transit-encryption (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
