@@ -20,3 +20,6 @@
 | gcloud compute backend-buckets test-iam-permissions | 3 commands (alpha, beta, ga); compute backend-buckets test-iam-permissions … | [compute-backend-buckets-test-iam-permissions.md](./compute-backend-buckets-test-iam-permissions.md) |
 | gcloud compute backend-buckets update | 3 commands (alpha, beta, ga); compute backend-buckets update … | [compute-backend-buckets-update.md](./compute-backend-buckets-update.md) |
 | gcloud compute backend-services (part 1) | 4 commands (alpha, beta, ga); compute backend-services add-backend … | [compute-backend-services-1.md](./compute-backend-services-1.md) |
+| gcloud compute backend-services (part 2) | 6 commands (alpha, beta, ga); compute backend-services create … | [compute-backend-services-2.md](./compute-backend-services-2.md) |
+| gcloud compute backend-services (part 3) | 10 commands (alpha, beta, ga); compute backend-services get-health … | [compute-backend-services-3.md](./compute-backend-services-3.md) |
+| gcloud compute backend-services (part 4) | compute backend-services update | [compute-backend-services-4.md](./compute-backend-services-4.md) |
