@@ -63,7 +63,7 @@ Defaults are capped at the machine type's maximum. The source's C4A and N4 table
 | Setting | Minimum | Maximum |
 |---------|---------|---------|
 | IOPS | 3,000 | 500 IOPS per GB capacity; 160,000 (Balanced) / 100,000 (Balanced HA) |
-| Throughput | 140 MiB/s | Balanced: greater of 2,400 MiB/s or provisioned IOPS / 4. Balanced HA: greater of 1,200 MiB/s or provisioned IOPS / 4 |
+| Throughput | 140 MiB/s | The lesser of the cap and provisioned IOPS / 4, and never above the machine type's maximum. Cap: 2,400 MiB/s (Balanced), 1,200 MiB/s (Balanced HA). See the Source inconsistency note |
 
 Limitations: capacity/disk size changes allowed twice every four hours; IOPS and throughput changes once every four hours (more frequent increases can leave storage full for extended periods and affect performance).
 
@@ -89,6 +89,7 @@ Limitations: capacity/disk size changes allowed twice every four hours; IOPS and
 
 ## Notes
 
+- Source inconsistency: the Cloud SQL page gives the maximum throughput as "the greater of 2,400 MiB/s or the provisioned IOPS divided by 4" (1,200 MiB/s for Balanced HA). Taken literally, 160,000 IOPS would allow 40,000 MiB/s, above the per-machine limits on this page. Compute Engine gives the limit as `MIN (2,400, P/4)` MiB/s for a provisioned IOPS value `P` (Hyperdisk Balanced and Balanced HA), so the table above uses the lesser value and the machine maximum: https://docs.cloud.google.com/compute/docs/disks/hd-types/hyperdisk-balanced#provisioned-tput-limits and https://docs.cloud.google.com/compute/docs/disks/hd-types/hyperdisk-balanced-ha (retrieved 2026-11-16).
 - SSD IOPS and throughput are set by machine type and capacity and can't be configured; for N2 increase storage capacity to raise them. SSD is a Persistent Disk offering.
 - HDD may suit large datasets (>10 TB) that are not latency-sensitive, batch scans/writes and archival; not recommended for real-time dashboards.
 - Automatic storage increase can be enabled with Hyperdisk Balanced. Storage can be manually shrunk (see "About storage shrink" in the official docs).
