@@ -1,0 +1,267 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/spanner/instances/create
+---
+
+# gcloud spanner instances create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud spanner instances create
+
+```text
+NAME
+    gcloud spanner instances create - create a Cloud Spanner instance
+
+SYNOPSIS
+    gcloud spanner instances create INSTANCE --config=CONFIG
+        --description=DESCRIPTION [--async]
+        [--default-backup-schedule-type=DEFAULT_BACKUP_SCHEDULE_TYPE]
+        [--edition=EDITION] [--expire-behavior=EXPIRE_BEHAVIOR]
+        [--instance-type=INSTANCE_TYPE] [--labels=[KEY=VALUE,...]]
+        [--nodes=NODES | --processing-units=PROCESSING_UNITS
+          | [--autoscaling-storage-target=AUTOSCALING_STORAGE_TARGET
+          (--autoscaling-high-priority-cpu-target=AUTOSCALING_HIGH_PRIORITY_CPU_TARGET --autoscaling-total-cpu-target=AUTOSCALING_TOTAL_CPU_TARGET) (--autoscaling-max-nodes=AUTOSCALING_MAX_NODES --autoscaling-min-nodes=AUTOSCALING_MIN_NODES | --autoscaling-max-processing-units=AUTOSCALING_MAX_PROCESSING_UNITS --autoscaling-min-processing-units=AUTOSCALING_MIN_PROCESSING_UNITS) : --asymmetric-autoscaling-option=[disable_high_priority_cpu_autoscaling=DISABLE_HIGH_PRIORITY_CPU_AUTOSCALING],
+          [disable_total_cpu_autoscaling=DISABLE_TOTAL_CPU_AUTOSCALING],
+          [high_priority_cpu_target=HIGH_PRIORITY_CPU_TARGET],
+          [location=LOCATION],[max_nodes=MAX_NODES],
+          [max_processing_units=MAX_PROCESSING_UNITS],[min_nodes=MIN_NODES],
+          [min_processing_units=MIN_PROCESSING_UNITS],
+          [total_cpu_target=TOTAL_CPU_TARGET] --[no-]disable-downscaling]]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create a Cloud Spanner instance.
+
+EXAMPLES
+    To create a Cloud Spanner instance, run:
+
+        $ gcloud spanner instances create my-instance-id \
+            --config=regional-us-east1 \
+            --description=my-instance-display-name --nodes=3
+
+POSITIONAL ARGUMENTS
+     INSTANCE
+        Cloud Spanner instance ID.
+
+REQUIRED FLAGS
+     --config=CONFIG
+        Instance configuration defines the geographic placement and replication
+        of the databases in that instance. Available configurations can be
+        found by running "gcloud spanner instance-configs list"
+
+     --description=DESCRIPTION
+        Description of the instance.
+
+OPTIONAL FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --default-backup-schedule-type=DEFAULT_BACKUP_SCHEDULE_TYPE
+        The default backup schedule type that is used in the instance.
+        DEFAULT_BACKUP_SCHEDULE_TYPE must be one of:
+
+         AUTOMATIC
+            A default backup schedule is created automatically when a new
+            database is created in an instance. You can edit or delete the
+            default backup schedule once it's created. The default backup
+            schedule creates a full backup every 24 hours. These full backups
+            are retained for 7 days.
+         DEFAULT_BACKUP_SCHEDULE_TYPE_UNSPECIFIED
+            Not specified.
+         NONE
+            No default backup schedule is created automatically when a new
+            database is created in an instance.
+
+     --edition=EDITION
+        Spanner edition. EDITION must be one of:
+
+         EDITION_UNSPECIFIED
+            Spanner's legacy pricing model. For more information, see the
+            Spanner editions overview
+            (https://cloud.google.com/spanner/docs/editions-overview)
+         ENTERPRISE
+            Enterprise edition
+         ENTERPRISE_PLUS
+            Enterprise Plus edition
+         STANDARD
+            Standard edition
+
+     --expire-behavior=EXPIRE_BEHAVIOR
+        The expire behavior of a free trial instance. EXPIRE_BEHAVIOR must be
+        one of:
+
+         free-to-provisioned
+            When the free trial instance expires, upgrade the instance to a
+            provisioned instance.
+         remove-after-grace-period
+            When the free trial instance expires, disable the instance, and
+            delete it after the grace period passes if it has not been upgraded
+            to a provisioned instance.
+
+     --instance-type=INSTANCE_TYPE
+        Specifies the type for this instance. INSTANCE_TYPE must be one of:
+
+         free-instance
+            Free trial instances provide no guarantees for dedicated resources,
+            both node_count and processing_units should be 0. They come with
+            stricter usage limits and limited support.
+         provisioned
+            Provisioned instances have dedicated resources, standard usage
+            limits, and support.
+
+     --labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to add.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     At most one of these can be specified:
+
+       --nodes=NODES
+          Number of nodes for the instance.
+
+       --processing-units=PROCESSING_UNITS
+          Number of processing units for the instance.
+
+       Or at least one of these can be specified:
+
+         Autoscaling
+
+         --autoscaling-storage-target=AUTOSCALING_STORAGE_TARGET
+            Specifies the target percentage of storage the autoscaled instance
+            can utilize.
+
+            This flag argument must be specified if any of the other arguments
+            in this group are specified.
+
+         --asymmetric-autoscaling-option=[disable_high_priority_cpu_autoscaling=DISABLE_HIGH_PRIORITY_CPU_AUTOSCALING],[disable_total_cpu_autoscaling=DISABLE_TOTAL_CPU_AUTOSCALING],[high_priority_cpu_target=HIGH_PRIORITY_CPU_TARGET],[location=LOCATION],[max_nodes=MAX_NODES],[max_processing_units=MAX_PROCESSING_UNITS],[min_nodes=MIN_NODES],[min_processing_units=MIN_PROCESSING_UNITS],[total_cpu_target=TOTAL_CPU_TARGET]
+            Specifies the asymmetric autoscaling option for the instance.
+
+         --[no-]disable-downscaling
+            Set the flag to disable downscaling for the autoscaled instance.
+            Use --disable-downscaling to enable and --no-disable-downscaling to
+            disable.
+
+         Specify one or both CPU targets:
+
+         At least one of these must be specified:
+
+           --autoscaling-high-priority-cpu-target=AUTOSCALING_HIGH_PRIORITY_CPU_TARGET
+              Specifies the target percentage of high-priority CPU the
+              autoscaled instance can utilize.
+
+           --autoscaling-total-cpu-target=AUTOSCALING_TOTAL_CPU_TARGET
+              Specifies the target percentage of total CPU the autoscaled
+              instance can utilize.
+
+         Autoscaling limits can be defined in either nodes or processing units.
+
+         Exactly one of these must be specified:
+
+           Autoscaling limits in nodes:
+
+           --autoscaling-max-nodes=AUTOSCALING_MAX_NODES
+              Maximum number of nodes for the autoscaled instance.
+
+              This flag argument must be specified if any of the other
+              arguments in this group are specified.
+
+           --autoscaling-min-nodes=AUTOSCALING_MIN_NODES
+              Minimum number of nodes for the autoscaled instance.
+
+              This flag argument must be specified if any of the other
+              arguments in this group are specified.
+
+           Autoscaling limits in processing units:
+
+           --autoscaling-max-processing-units=AUTOSCALING_MAX_PROCESSING_UNITS
+              Maximum number of processing units for the autoscaled instance.
+
+              This flag argument must be specified if any of the other
+              arguments in this group are specified.
+
+           --autoscaling-min-processing-units=AUTOSCALING_MIN_PROCESSING_UNITS
+              Minimum number of processing units for the autoscaled instance.
+
+              This flag argument must be specified if any of the other
+              arguments in this group are specified.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha spanner instances create
+
+        $ gcloud beta spanner instances create
+```
+
+### gcloud beta spanner instances create
+
+```text
+NAME
+    gcloud beta spanner instances create - create a Cloud Spanner instance
+
+SYNOPSIS
+    gcloud beta spanner instances create INSTANCE --config=CONFIG
+        --description=DESCRIPTION [--async]
+        [--default-backup-schedule-type=DEFAULT_BACKUP_SCHEDULE_TYPE]
+        [--edition=EDITION] [--expire-behavior=EXPIRE_BEHAVIOR]
+        [--instance-type=INSTANCE_TYPE] [--labels=[KEY=VALUE,...]]
+        [--nodes=NODES | --processing-units=PROCESSING_UNITS
+          | [--autoscaling-storage-target=AUTOSCALING_STORAGE_TARGET
+          (--autoscaling-high-priority-cpu-target=AUTOSCALING_HIGH_PRIORITY_CPU_TARGET --autoscaling-total-cpu-target=AUTOSCALING_TOTAL_CPU_TARGET) (--autoscaling-max-nodes=AUTOSCALING_MAX_NODES --autoscaling-min-nodes=AUTOSCALING_MIN_NODES | --autoscaling-max-processing-units=AUTOSCALING_MAX_PROCESSING_UNITS --autoscaling-min-processing-units=AUTOSCALING_MIN_PROCESSING_UNITS) : --asymmetric-autoscaling-option=[disable_high_priority_cpu_autoscaling=DISABLE_HIGH_PRIORITY_CPU_AUTOSCALING],
+          [disable_total_cpu_autoscaling=DISABLE_TOTAL_CPU_AUTOSCALING],
+          [high_priority_cpu_target=HIGH_PRIORITY_CPU_TARGET],
+          [location=LOCATION],[max_nodes=MAX_NODES],
+          [max_processing_units=MAX_PROCESSING_UNITS],[min_nodes=MIN_NODES],
+          [min_processing_units=MIN_PROCESSING_UNITS],
+          [total_cpu_target=TOTAL_CPU_TARGET] --[no-]disable-downscaling]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha spanner instances create
+
+```text
+NAME
+    gcloud alpha spanner instances create - create a Cloud Spanner instance
+
+SYNOPSIS
+    gcloud alpha spanner instances create INSTANCE --config=CONFIG
+        --description=DESCRIPTION [--async]
+        [--default-backup-schedule-type=DEFAULT_BACKUP_SCHEDULE_TYPE]
+        [--edition=EDITION] [--expire-behavior=EXPIRE_BEHAVIOR]
+        [--instance-type=INSTANCE_TYPE] [--labels=[KEY=VALUE,...]]
+        [--nodes=NODES | --processing-units=PROCESSING_UNITS
+          | [--autoscaling-storage-target=AUTOSCALING_STORAGE_TARGET
+          (--autoscaling-high-priority-cpu-target=AUTOSCALING_HIGH_PRIORITY_CPU_TARGET --autoscaling-total-cpu-target=AUTOSCALING_TOTAL_CPU_TARGET) (--autoscaling-max-nodes=AUTOSCALING_MAX_NODES --autoscaling-min-nodes=AUTOSCALING_MIN_NODES | --autoscaling-max-processing-units=AUTOSCALING_MAX_PROCESSING_UNITS --autoscaling-min-processing-units=AUTOSCALING_MIN_PROCESSING_UNITS) : --asymmetric-autoscaling-option=[disable_high_priority_cpu_autoscaling=DISABLE_HIGH_PRIORITY_CPU_AUTOSCALING],
+          [disable_total_cpu_autoscaling=DISABLE_TOTAL_CPU_AUTOSCALING],
+          [high_priority_cpu_target=HIGH_PRIORITY_CPU_TARGET],
+          [location=LOCATION],[max_nodes=MAX_NODES],
+          [max_processing_units=MAX_PROCESSING_UNITS],[min_nodes=MIN_NODES],
+          [min_processing_units=MIN_PROCESSING_UNITS],
+          [total_cpu_target=TOTAL_CPU_TARGET] --[no-]disable-downscaling]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/spanner/instances/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
