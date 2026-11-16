@@ -12,3 +12,5 @@
 | gcloud firestore indexes composite | 12 commands (alpha, beta, ga); firestore indexes composite create … | [firestore-indexes-composite.md](./firestore-indexes-composite.md) |
 | gcloud firestore indexes fields | 9 commands (alpha, beta, ga); firestore indexes fields describe … | [firestore-indexes-fields.md](./firestore-indexes-fields.md) |
 | gcloud firestore locations | 4 commands (alpha, beta, ga); firestore locations list … | [firestore-locations.md](./firestore-locations.md) |
+| gcloud firestore operations | 13 commands (alpha, beta, ga); firestore operations cancel … | [firestore-operations.md](./firestore-operations.md) |
+| gcloud firestore user-creds | 21 commands (alpha, beta, ga); firestore user-creds create … | [firestore-user-creds.md](./firestore-user-creds.md) |
