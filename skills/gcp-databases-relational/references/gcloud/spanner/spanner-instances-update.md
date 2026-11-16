@@ -1,0 +1,283 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/spanner/instances/update
+---
+
+# gcloud spanner instances update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud spanner instances update
+
+```text
+NAME
+    gcloud spanner instances update - update a Cloud Spanner instance
+
+SYNOPSIS
+    gcloud spanner instances update INSTANCE [--async]
+        [--default-backup-schedule-type=DEFAULT_BACKUP_SCHEDULE_TYPE]
+        [--description=DESCRIPTION] [--edition=EDITION]
+        [--expire-behavior=EXPIRE_BEHAVIOR] [--instance-type=INSTANCE_TYPE]
+        [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--nodes=NODES | --processing-units=PROCESSING_UNITS
+          | --autoscaling-storage-target=AUTOSCALING_STORAGE_TARGET
+          --[no-]disable-downscaling
+          --asymmetric-autoscaling-option=[disable_high_priority_cpu_autoscaling=DISABLE_HIGH_PRIORITY_CPU_AUTOSCALING],
+          [disable_total_cpu_autoscaling=DISABLE_TOTAL_CPU_AUTOSCALING],
+          [high_priority_cpu_target=HIGH_PRIORITY_CPU_TARGET],
+          [location=LOCATION],[max_nodes=MAX_NODES],
+          [max_processing_units=MAX_PROCESSING_UNITS],[min_nodes=MIN_NODES],
+          [min_processing_units=MIN_PROCESSING_UNITS],
+          [total_cpu_target=TOTAL_CPU_TARGET]
+          | --clear-asymmetric-autoscaling-option=LOCATION,[LOCATION,...]
+          --autoscaling-high-priority-cpu-target=AUTOSCALING_HIGH_PRIORITY_CPU_TARGET --autoscaling-total-cpu-target=AUTOSCALING_TOTAL_CPU_TARGET --autoscaling-max-nodes=AUTOSCALING_MAX_NODES --autoscaling-min-nodes=AUTOSCALING_MIN_NODES | --autoscaling-max-processing-units=AUTOSCALING_MAX_PROCESSING_UNITS --autoscaling-min-processing-units=AUTOSCALING_MIN_PROCESSING_UNITS]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update a Cloud Spanner instance.
+
+EXAMPLES
+    To update the display name of a Cloud Spanner instance, run:
+
+        $ gcloud spanner instances update my-instance-id \
+            --description=my-new-display-name
+
+    To update the node count of a Cloud Spanner instance, run:
+
+        $ gcloud spanner instances update my-instance-id --nodes=1
+
+POSITIONAL ARGUMENTS
+     INSTANCE
+        Cloud Spanner instance ID.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --default-backup-schedule-type=DEFAULT_BACKUP_SCHEDULE_TYPE
+        The default backup schedule type that is used in the instance.
+        DEFAULT_BACKUP_SCHEDULE_TYPE must be one of:
+
+         AUTOMATIC
+            A default backup schedule is created automatically when a new
+            database is created in an instance. You can edit or delete the
+            default backup schedule once it's created. The default backup
+            schedule creates a full backup every 24 hours. These full backups
+            are retained for 7 days.
+         DEFAULT_BACKUP_SCHEDULE_TYPE_UNSPECIFIED
+            Not specified.
+         NONE
+            No default backup schedule is created automatically when a new
+            database is created in an instance.
+
+     --description=DESCRIPTION
+        Description of the instance.
+
+     --edition=EDITION
+        Spanner edition. You can upgrade your Standard edition instance to the
+        ENTERPRISE edition or ENTERPRISE_PLUS edition. You can also upgrade
+        your Enterprise edition instance to the ENTERPRISE_PLUS edition. You
+        can downgrade your ENTERPRISE_PLUS edition instance to the ENTERPRISE
+        or STANDARD edition. You can also downgrade your ENTERPRISE edition
+        instance to the STANDARD edition. You must stop using the higher-tier
+        edition features in order to downgrade. Otherwise, downgrade fails. For
+        more information, see Spanner editions overview
+        (https://cloud.google.com/spanner/docs/editions-overview).
+
+     --expire-behavior=EXPIRE_BEHAVIOR
+        The expire behavior of a free trial instance. EXPIRE_BEHAVIOR must be
+        one of:
+
+         free-to-provisioned
+            When the free trial instance expires, upgrade the instance to a
+            provisioned instance.
+         remove-after-grace-period
+            When the free trial instance expires, disable the instance, and
+            delete it after the grace period passes if it has not been upgraded
+            to a provisioned instance.
+
+     --instance-type=INSTANCE_TYPE
+        Specifies the type for this instance. INSTANCE_TYPE must be one of:
+
+         free-instance
+            Free trial instances provide no guarantees for dedicated resources,
+            both node_count and processing_units should be 0. They come with
+            stricter usage limits and limited support.
+         provisioned
+            Provisioned instances have dedicated resources, standard usage
+            limits, and support.
+
+     --update-labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to update. If a label exists, its value
+        is modified. Otherwise, a new label is created.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     At most one of these can be specified:
+
+       --clear-labels
+          Remove all labels. If --update-labels is also specified then
+          --clear-labels is applied first.
+
+          For example, to remove all labels:
+
+              $ gcloud spanner instances update --clear-labels
+
+          To remove all existing labels and create two new labels, foo and baz:
+
+              $ gcloud spanner instances update --clear-labels \
+                --update-labels foo=bar,baz=qux
+
+       --remove-labels=[KEY,...]
+          List of label keys to remove. If a label does not exist it is
+          silently ignored. If --update-labels is also specified then
+          --update-labels is applied first.
+
+     At most one of these can be specified:
+
+       --nodes=NODES
+          Number of nodes for the instance.
+
+       --processing-units=PROCESSING_UNITS
+          Number of processing units for the instance.
+
+       Or at least one of these can be specified:
+
+         Autoscaling
+
+         --autoscaling-storage-target=AUTOSCALING_STORAGE_TARGET
+            Specifies the target percentage of storage the autoscaled instance
+            can utilize.
+
+         --[no-]disable-downscaling
+            Set the flag to disable downscaling for the autoscaled instance.
+            Use --disable-downscaling to enable and --no-disable-downscaling to
+            disable.
+
+         At most one of these can be specified:
+
+           --asymmetric-autoscaling-option=[disable_high_priority_cpu_autoscaling=DISABLE_HIGH_PRIORITY_CPU_AUTOSCALING],[disable_total_cpu_autoscaling=DISABLE_TOTAL_CPU_AUTOSCALING],[high_priority_cpu_target=HIGH_PRIORITY_CPU_TARGET],[location=LOCATION],[max_nodes=MAX_NODES],[max_processing_units=MAX_PROCESSING_UNITS],[min_nodes=MIN_NODES],[min_processing_units=MIN_PROCESSING_UNITS],[total_cpu_target=TOTAL_CPU_TARGET]
+              Specifies the asymmetric autoscaling option for the instance.
+
+           --clear-asymmetric-autoscaling-option=LOCATION,[LOCATION,...]
+              Specify a comma separated list of locations from which to remove
+              asymmetric autoscaling options
+
+         Specify one or both CPU targets:
+
+         --autoscaling-high-priority-cpu-target=AUTOSCALING_HIGH_PRIORITY_CPU_TARGET
+            Specifies the target percentage of high-priority CPU the autoscaled
+            instance can utilize.
+
+         --autoscaling-total-cpu-target=AUTOSCALING_TOTAL_CPU_TARGET
+            Specifies the target percentage of total CPU the autoscaled
+            instance can utilize.
+
+         Autoscaling limits can be defined in either nodes or processing units.
+
+         At most one of these can be specified:
+
+           Autoscaling limits in nodes:
+
+           --autoscaling-max-nodes=AUTOSCALING_MAX_NODES
+              Maximum number of nodes for the autoscaled instance.
+
+           --autoscaling-min-nodes=AUTOSCALING_MIN_NODES
+              Minimum number of nodes for the autoscaled instance.
+
+           Autoscaling limits in processing units:
+
+           --autoscaling-max-processing-units=AUTOSCALING_MAX_PROCESSING_UNITS
+              Maximum number of processing units for the autoscaled instance.
+
+           --autoscaling-min-processing-units=AUTOSCALING_MIN_PROCESSING_UNITS
+              Minimum number of processing units for the autoscaled instance.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha spanner instances update
+
+        $ gcloud beta spanner instances update
+```
+
+### gcloud beta spanner instances update
+
+```text
+NAME
+    gcloud beta spanner instances update - update a Cloud Spanner instance
+
+SYNOPSIS
+    gcloud beta spanner instances update INSTANCE [--async]
+        [--default-backup-schedule-type=DEFAULT_BACKUP_SCHEDULE_TYPE]
+        [--description=DESCRIPTION] [--edition=EDITION]
+        [--expire-behavior=EXPIRE_BEHAVIOR] [--instance-type=INSTANCE_TYPE]
+        [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--nodes=NODES | --processing-units=PROCESSING_UNITS
+          | --autoscaling-storage-target=AUTOSCALING_STORAGE_TARGET
+          --[no-]disable-downscaling
+          --asymmetric-autoscaling-option=[disable_high_priority_cpu_autoscaling=DISABLE_HIGH_PRIORITY_CPU_AUTOSCALING],
+          [disable_total_cpu_autoscaling=DISABLE_TOTAL_CPU_AUTOSCALING],
+          [high_priority_cpu_target=HIGH_PRIORITY_CPU_TARGET],
+          [location=LOCATION],[max_nodes=MAX_NODES],
+          [max_processing_units=MAX_PROCESSING_UNITS],[min_nodes=MIN_NODES],
+          [min_processing_units=MIN_PROCESSING_UNITS],
+          [total_cpu_target=TOTAL_CPU_TARGET]
+          | --clear-asymmetric-autoscaling-option=LOCATION,[LOCATION,...]
+          --autoscaling-high-priority-cpu-target=AUTOSCALING_HIGH_PRIORITY_CPU_TARGET --autoscaling-total-cpu-target=AUTOSCALING_TOTAL_CPU_TARGET --autoscaling-max-nodes=AUTOSCALING_MAX_NODES --autoscaling-min-nodes=AUTOSCALING_MIN_NODES | --autoscaling-max-processing-units=AUTOSCALING_MAX_PROCESSING_UNITS --autoscaling-min-processing-units=AUTOSCALING_MIN_PROCESSING_UNITS]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha spanner instances update
+
+```text
+NAME
+    gcloud alpha spanner instances update - update a Cloud Spanner instance
+
+SYNOPSIS
+    gcloud alpha spanner instances update INSTANCE [--async]
+        [--default-backup-schedule-type=DEFAULT_BACKUP_SCHEDULE_TYPE]
+        [--description=DESCRIPTION] [--edition=EDITION]
+        [--expire-behavior=EXPIRE_BEHAVIOR] [--instance-type=INSTANCE_TYPE]
+        [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--nodes=NODES | --processing-units=PROCESSING_UNITS
+          | --autoscaling-storage-target=AUTOSCALING_STORAGE_TARGET
+          --[no-]disable-downscaling
+          --asymmetric-autoscaling-option=[disable_high_priority_cpu_autoscaling=DISABLE_HIGH_PRIORITY_CPU_AUTOSCALING],
+          [disable_total_cpu_autoscaling=DISABLE_TOTAL_CPU_AUTOSCALING],
+          [high_priority_cpu_target=HIGH_PRIORITY_CPU_TARGET],
+          [location=LOCATION],[max_nodes=MAX_NODES],
+          [max_processing_units=MAX_PROCESSING_UNITS],[min_nodes=MIN_NODES],
+          [min_processing_units=MIN_PROCESSING_UNITS],
+          [total_cpu_target=TOTAL_CPU_TARGET]
+          | --clear-asymmetric-autoscaling-option=LOCATION,[LOCATION,...]
+          --autoscaling-high-priority-cpu-target=AUTOSCALING_HIGH_PRIORITY_CPU_TARGET --autoscaling-total-cpu-target=AUTOSCALING_TOTAL_CPU_TARGET --autoscaling-max-nodes=AUTOSCALING_MAX_NODES --autoscaling-min-nodes=AUTOSCALING_MIN_NODES | --autoscaling-max-processing-units=AUTOSCALING_MAX_PROCESSING_UNITS --autoscaling-min-processing-units=AUTOSCALING_MIN_PROCESSING_UNITS]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/spanner/instances/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
