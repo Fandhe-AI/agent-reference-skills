@@ -1,0 +1,1094 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/container/aws/node-pools
+---
+
+# gcloud container aws node-pools
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud container aws node-pools create
+
+```text
+NAME
+    gcloud container aws node-pools create - create a node pool in an Anthos
+        cluster on AWS
+
+SYNOPSIS
+    gcloud container aws node-pools create
+        (NODE_POOL : --cluster=CLUSTER --location=LOCATION)
+        --config-encryption-kms-key-arn=CONFIG_ENCRYPTION_KMS_KEY_ARN
+        --iam-instance-profile=IAM_INSTANCE_PROFILE
+        --max-pods-per-node=MAX_PODS_PER_NODE --node-version=NODE_VERSION
+        --subnet-id=SUBNET_ID (--max-nodes=MAX_NODES --min-nodes=MIN_NODES)
+        [--annotations=ANNOTATION,[ANNOTATION,...]] [--async]
+        [--enable-autorepair]
+        [--kubelet-config-cpu-cfs-quota=KUBELET_CONFIG_CPU_CFS_QUOTA]
+        [--kubelet-config-cpu-cfs-quota-period=KUBELET_CONFIG_CPU_CFS_QUOTA_PERIOD]
+        [--kubelet-config-cpu-manager-policy=KUBELET_CONFIG_CPU_MANAGER_POLICY]
+        [--kubelet-config-pod-pids-limit=KUBELET_CONFIG_POD_PIDS_LIMIT]
+        [--max-surge-update=MAX_SURGE_UPDATE]
+        [--max-unavailable-update=MAX_UNAVAILABLE_UPDATE]
+        [--node-labels=NODE_LABEL,[NODE_LABEL,...]]
+        [--node-taints=NODE_TAINT,[NODE_TAINT,...]]
+        [--root-volume-iops=ROOT_VOLUME_IOPS]
+        [--root-volume-kms-key-arn=ROOT_VOLUME_KMS_KEY_ARN]
+        [--root-volume-size=ROOT_VOLUME_SIZE]
+        [--root-volume-throughput=ROOT_VOLUME_THROUGHPUT]
+        [--root-volume-type=ROOT_VOLUME_TYPE]
+        [--security-group-ids=[SECURITY_GROUP_ID,...]]
+        [--ssh-ec2-key-pair=SSH_EC2_KEY_PAIR] [--tags=TAG,[TAG,...]]
+        [--validate-only]
+        [--autoscaling-metrics-granularity=AUTOSCALING_METRICS_GRANULARITY
+          : --autoscaling-metrics=[AUTOSCALING_METRIC,...]]
+        [--instance-type=INSTANCE_TYPE
+          | --spot-instance-types=[INSTANCE_TYPE,...]]
+        [--proxy-secret-arn=PROXY_SECRET_ARN
+          --proxy-secret-version-id=PROXY_SECRET_VERSION_ID]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    (DEPRECATED) Create a node pool in an Anthos cluster on AWS.
+
+    This command is deprecated. See
+    https://cloud.google.com/kubernetes-engine/multi-cloud/docs/aws/deprecations/deprecation-announcement
+    for more details.
+
+EXAMPLES
+    To create a node pool named my-node-pool in a cluster named my-cluster
+    managed in location us-west1, run:
+
+        $ gcloud container aws node-pools create my-node-pool \
+            --cluster=my-cluster --location=us-west1 \
+            --iam-instance-profile=IAM_INSTANCE_PROFILE \
+            --node-version=NODE_VERSION --subnet-id=SUBNET_ID
+
+POSITIONAL ARGUMENTS
+     Node pool resource - node pool to create. The arguments in this group can
+     be used to specify the attributes of this resource. (NOTE) Some attributes
+     are not given arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument node_pool on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       NODE_POOL
+          ID of the node_pool or fully qualified identifier for the node_pool.
+
+          To set the node_pool attribute:
+          + provide the argument node_pool on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --cluster=CLUSTER
+          cluster of the node_pool.
+
+          To set the cluster attribute:
+          + provide the argument node_pool on the command line with a fully
+            specified name;
+          + provide the argument --cluster on the command line.
+
+       --location=LOCATION
+          Google Cloud location for the node_pool.
+
+          To set the location attribute:
+          + provide the argument node_pool on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property container_aws/location.
+
+REQUIRED FLAGS
+     --config-encryption-kms-key-arn=CONFIG_ENCRYPTION_KMS_KEY_ARN
+        Amazon Resource Name (ARN) of the AWS KMS key to encrypt the user data.
+
+     --iam-instance-profile=IAM_INSTANCE_PROFILE
+        Name or ARN of the IAM instance profile associated with the node pool.
+
+     --max-pods-per-node=MAX_PODS_PER_NODE
+        Maximum number of pods per node.
+
+     --node-version=NODE_VERSION
+        Kubernetes version to use for the node pool.
+
+     --subnet-id=SUBNET_ID
+        Subnet ID of an existing VNET to use for the node pool.
+
+     Node pool autoscaling
+
+     This must be specified.
+
+       --max-nodes=MAX_NODES
+          Maximum number of nodes in the node pool.
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+       --min-nodes=MIN_NODES
+          Minimum number of nodes in the node pool.
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+OPTIONAL FLAGS
+     --annotations=ANNOTATION,[ANNOTATION,...]
+        Annotations for the node pool.
+
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --enable-autorepair
+        Enable node autorepair feature for a node pool. Use
+        --no-enable-autorepair to disable.
+
+            $ gcloud container aws node-pools create --enable-autorepair
+
+        Node autorepair is disabled by default.
+
+     --kubelet-config-cpu-cfs-quota=KUBELET_CONFIG_CPU_CFS_QUOTA
+        Enforce a Kubelet CPU CFS quota.
+
+     --kubelet-config-cpu-cfs-quota-period=KUBELET_CONFIG_CPU_CFS_QUOTA_PERIOD
+        Kubelet CPU CFS quota period, within the range "1ms" to "1s".
+
+     --kubelet-config-cpu-manager-policy=KUBELET_CONFIG_CPU_MANAGER_POLICY
+        Kubelet CPU manager policy. KUBELET_CONFIG_CPU_MANAGER_POLICY must be
+        one of: none, static.
+
+     --kubelet-config-pod-pids-limit=KUBELET_CONFIG_POD_PIDS_LIMIT
+        Kubelet maximum number of PIDS in any pod, within the range 1024 to
+        4194304.
+
+     --max-surge-update=MAX_SURGE_UPDATE
+        Maximum number of extra (surge) nodes to be created beyond the current
+        size of the node pool during its update process. Use
+        --max-unavailable-update as well, if needed, to control the overall
+        surge settings.
+
+        To create an extra node each time the node pool is rolling updated,
+        run:
+
+            $ gcloud container aws node-pools create --max-surge-update=1 \
+                --max-unavailable-update=0
+
+     --max-unavailable-update=MAX_UNAVAILABLE_UPDATE
+        Maximum number of nodes that can be simultaneously unavailable during
+        this node pool's update process. Use --max-surge-update as well, if
+        needed, to control the overall surge settings.
+
+        To update 3 nodes in parallel (1 + 2), but keep at least 4 nodes (6 -
+        2) available each time the node pool is rolling updated, run:
+
+            $ gcloud container aws node-pools create --min-nodes=6 \
+                --max-surge-update=1 --max-unavailable-update=2
+
+     --node-labels=NODE_LABEL,[NODE_LABEL,...]
+        Labels assigned to the node pool's nodes.
+
+     --node-taints=NODE_TAINT,[NODE_TAINT,...]
+        Taints assigned to nodes of the node pool. Node taint is of format
+        key=value:effect. Effect must be one of: NoExecute, NoSchedule,
+        PreferNoSchedule.
+
+     --root-volume-iops=ROOT_VOLUME_IOPS
+        Number of I/O operations per second (IOPS) to provision for the root
+        volume.
+
+     --root-volume-kms-key-arn=ROOT_VOLUME_KMS_KEY_ARN
+        Amazon Resource Name (ARN) of the AWS KMS key to encrypt the root
+        volume.
+
+     --root-volume-size=ROOT_VOLUME_SIZE
+        Size of the root volume. The value must be a whole number followed by a
+        size unit of GB for gigabyte, or TB for terabyte. If no size unit is
+        specified, GB is assumed.
+
+     --root-volume-throughput=ROOT_VOLUME_THROUGHPUT
+        Throughput to provision for the root volume, in MiB/s. Only valid if
+        the volume type is GP3. If volume type is GP3 and throughput is not
+        provided, it defaults to 125.
+
+     --root-volume-type=ROOT_VOLUME_TYPE
+        Type of the root volume. ROOT_VOLUME_TYPE must be one of: gp2, gp3.
+
+     --security-group-ids=[SECURITY_GROUP_ID,...]
+        IDs of additional security groups to add to the node pool's nodes.
+
+     --ssh-ec2-key-pair=SSH_EC2_KEY_PAIR
+        Name of the EC2 key pair authorized to login to the node pool's nodes.
+
+     --tags=TAG,[TAG,...]
+        Applies the given tags (comma separated) on the node pool. Example:
+
+            $ gcloud container aws node-pools create EXAMPLE_NODE_POOL \
+                --tags=tag1=one,tag2=two
+
+     --validate-only
+        Validate the node pool to create, but don't actually perform it.
+
+     Node pool autoscaling metrics collection
+
+     --autoscaling-metrics-granularity=AUTOSCALING_METRICS_GRANULARITY
+        Frequency at which EC2 Auto Scaling sends aggregated data to AWS
+        CloudWatch. The only valid value is "1Minute".
+
+        This flag argument must be specified if any of the other arguments in
+        this group are specified.
+
+     --autoscaling-metrics=[AUTOSCALING_METRIC,...]
+        Autoscaling metrics to enable. For a list of valid metrics, refer to
+        https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_EnableMetricsCollection.html.
+        If granularity is specified but not any metrics, all metrics are
+        enabled.
+
+     Node pool instance configuration
+
+     At most one of these can be specified:
+
+       --instance-type=INSTANCE_TYPE
+          AWS EC2 instance type for the node pool's nodes.
+
+       --spot-instance-types=[INSTANCE_TYPE,...]
+          List of AWS EC2 instance types for creating a spot node pool's nodes.
+          The specified instance types must have the same CPU architecture, the
+          same number of CPUs and memory. You can use the Amazon EC2 Instance
+          Selector tool (https://github.com/aws/amazon-ec2-instance-selector)
+          to choose instance types with matching CPU and memory configurations.
+
+     Proxy config
+
+     --proxy-secret-arn=PROXY_SECRET_ARN
+        ARN of the AWS Secrets Manager secret that contains a proxy
+        configuration.
+
+        This flag argument must be specified if any of the other arguments in
+        this group are specified.
+
+     --proxy-secret-version-id=PROXY_SECRET_VERSION_ID
+        Version ID string of the AWS Secrets Manager secret that contains a
+        proxy configuration.
+
+        This flag argument must be specified if any of the other arguments in
+        this group are specified.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha container aws node-pools create
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud container aws node-pools create my-node-pool \
+    --cluster=my-cluster \
+    --location=us-west1 \
+    --iam-instance-profile=IAM_INSTANCE_PROFILE \
+    --node-version=NODE_VERSION \
+    --subnet-id=SUBNET_ID \
+    --config-encryption-kms-key-arn=CONFIG_ENCRYPTION_KMS_KEY_ARN \
+    --max-pods-per-node=110 \
+    --min-nodes=1 \
+    --max-nodes=3
+```
+
+### gcloud container aws node-pools delete
+
+```text
+NAME
+    gcloud container aws node-pools delete - delete a node pool in an Anthos
+        cluster on AWS
+
+SYNOPSIS
+    gcloud container aws node-pools delete
+        (NODE_POOL : --cluster=CLUSTER --location=LOCATION) [--allow-missing]
+        [--async] [--ignore-errors] [--validate-only] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    (DEPRECATED) Delete a node pool in an Anthos cluster on AWS.
+
+    This command is deprecated. See
+    https://cloud.google.com/kubernetes-engine/multi-cloud/docs/aws/deprecations/deprecation-announcement
+    for more details.
+
+EXAMPLES
+    To delete a node pool named my-node-pool in a cluster named my-cluster
+    managed in location us-west1, run:
+
+        $ gcloud container aws node-pools delete my-node-pool \
+            --cluster=my-cluster --location=us-west1
+
+POSITIONAL ARGUMENTS
+     Node pool resource - node pool to delete. The arguments in this group can
+     be used to specify the attributes of this resource. (NOTE) Some attributes
+     are not given arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument node_pool on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       NODE_POOL
+          ID of the node_pool or fully qualified identifier for the node_pool.
+
+          To set the node_pool attribute:
+          + provide the argument node_pool on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --cluster=CLUSTER
+          cluster of the node_pool.
+
+          To set the cluster attribute:
+          + provide the argument node_pool on the command line with a fully
+            specified name;
+          + provide the argument --cluster on the command line.
+
+       --location=LOCATION
+          Google Cloud location for the node_pool.
+
+          To set the location attribute:
+          + provide the argument node_pool on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property container_aws/location.
+
+FLAGS
+     --allow-missing
+        Allow idempotent deletion of node pool. The request will still succeed
+        in case the node pool does not exist.
+
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --ignore-errors
+        Force delete an AWS node pool. Deletion of the AWS node pool will
+        succeed even if errors occur during deleting in-node pool resources.
+        Using this parameter may result in orphaned resources in the node pool.
+
+     --validate-only
+        Validate the node pool to delete, but don't actually perform it.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha container aws node-pools delete
+```
+
+### gcloud container aws node-pools describe
+
+```text
+NAME
+    gcloud container aws node-pools describe - describe a node pool in an
+        Anthos cluster on AWS
+
+SYNOPSIS
+    gcloud container aws node-pools describe
+        (NODE_POOL : --cluster=CLUSTER --location=LOCATION)
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    (DEPRECATED) Describe a node pool in an Anthos cluster on AWS.
+
+    This command is deprecated. See
+    https://cloud.google.com/kubernetes-engine/multi-cloud/docs/aws/deprecations/deprecation-announcement
+    for more details.
+
+EXAMPLES
+    To describe a node pool named my-node-pool in a cluster named my-cluster
+    managed in location us-west1, run:
+
+        $ gcloud container aws node-pools describe my-node-pool \
+            --cluster=my-cluster --location=us-west1
+
+POSITIONAL ARGUMENTS
+     Node pool resource - node pool to describe. The arguments in this group
+     can be used to specify the attributes of this resource. (NOTE) Some
+     attributes are not given arguments in this group but can be set in other
+     ways.
+
+     To set the project attribute:
+      * provide the argument node_pool on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       NODE_POOL
+          ID of the node_pool or fully qualified identifier for the node_pool.
+
+          To set the node_pool attribute:
+          + provide the argument node_pool on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --cluster=CLUSTER
+          cluster of the node_pool.
+
+          To set the cluster attribute:
+          + provide the argument node_pool on the command line with a fully
+            specified name;
+          + provide the argument --cluster on the command line.
+
+       --location=LOCATION
+          Google Cloud location for the node_pool.
+
+          To set the location attribute:
+          + provide the argument node_pool on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property container_aws/location.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha container aws node-pools describe
+```
+
+### gcloud container aws node-pools list
+
+```text
+NAME
+    gcloud container aws node-pools list - list node pools in an Anthos cluster
+        on AWS
+
+SYNOPSIS
+    gcloud container aws node-pools list
+        (--cluster=CLUSTER : --location=LOCATION) [--filter=EXPRESSION]
+        [--limit=LIMIT] [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [--uri]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    (DEPRECATED) List node pools in an Anthos cluster on AWS.
+
+    This command is deprecated. See
+    https://cloud.google.com/kubernetes-engine/multi-cloud/docs/aws/deprecations/deprecation-announcement
+    for more details.
+
+EXAMPLES
+    To list all node pools in a cluster named my-cluster managed in location
+    us-west1, run:
+
+        $ gcloud container aws node-pools list --cluster=my-cluster \
+            --location=us-west1
+
+REQUIRED FLAGS
+     Cluster resource - cluster to list. The arguments in this group can be
+     used to specify the attributes of this resource. (NOTE) Some attributes
+     are not given arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument --cluster on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       --cluster=CLUSTER
+          ID of the cluster or fully qualified identifier for the cluster.
+
+          To set the cluster attribute:
+          + provide the argument --cluster on the command line.
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+       --location=LOCATION
+          Google Cloud location for the cluster.
+
+          To set the location attribute:
+          + provide the argument --cluster on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property container_aws/location.
+
+LIST COMMAND FLAGS
+     --filter=EXPRESSION
+        Apply a Boolean filter EXPRESSION to each resource item to be listed.
+        If the expression evaluates True, then that item is listed. For more
+        details and examples of filter expressions, run $ gcloud topic filters.
+        This flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --limit=LIMIT
+        Maximum number of resources to list. The default is unlimited. This
+        flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --page-size=PAGE_SIZE
+        Some services group resource list output into pages. This flag
+        specifies the maximum number of resources per page. The default is
+        determined by the service if it supports paging, otherwise it is
+        unlimited (no paging). Paging may be applied before or after --filter
+        and --limit depending on the service.
+
+     --sort-by=[FIELD,...]
+        Comma-separated list of resource field key names to sort by. The
+        default order is ascending. Prefix a field with ``~'' for descending
+        order on that field. This flag interacts with other flags that are
+        applied in this order: --flatten, --sort-by, --filter, --limit.
+
+     --uri
+        Print a list of resource URIs instead of the default output, and change
+        the command output to a list of URIs. If this flag is used with
+        --format, the formatting is applied on this URI list. To display URIs
+        alongside other keys instead, use the uri() transform.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha container aws node-pools list
+```
+
+### gcloud container aws node-pools rollback
+
+```text
+NAME
+    gcloud container aws node-pools rollback - rollback a node pool in an
+        Anthos cluster on AWS
+
+SYNOPSIS
+    gcloud container aws node-pools rollback
+        (NODE_POOL : --cluster=CLUSTER --location=LOCATION) [--async]
+        [--respect-pdb] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    (DEPRECATED) Rollback a node pool in an Anthos cluster on AWS.
+
+    This command is deprecated. See
+    https://cloud.google.com/kubernetes-engine/multi-cloud/docs/aws/deprecations/deprecation-announcement
+    for more details.
+
+EXAMPLES
+    To roll back a canceled or failed update in node pool named my-node-pool in
+    a cluster named my-cluster managed in location us-west1, run:
+
+        $ gcloud container aws node-pools rollback my-node-pool \
+            --cluster=my-cluster --location=us-west1
+
+POSITIONAL ARGUMENTS
+     Node pool resource - node pool to rollback. The arguments in this group
+     can be used to specify the attributes of this resource. (NOTE) Some
+     attributes are not given arguments in this group but can be set in other
+     ways.
+
+     To set the project attribute:
+      * provide the argument node_pool on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       NODE_POOL
+          ID of the node_pool or fully qualified identifier for the node_pool.
+
+          To set the node_pool attribute:
+          + provide the argument node_pool on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --cluster=CLUSTER
+          cluster of the node_pool.
+
+          To set the cluster attribute:
+          + provide the argument node_pool on the command line with a fully
+            specified name;
+          + provide the argument --cluster on the command line.
+
+       --location=LOCATION
+          Google Cloud location for the node_pool.
+
+          To set the location attribute:
+          + provide the argument node_pool on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property container_aws/location.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --respect-pdb
+        Indicates whether the node pool rollback should respect pod disruption
+        budget.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha container aws node-pools rollback
+```
+
+### gcloud container aws node-pools update
+
+```text
+NAME
+    gcloud container aws node-pools update - update a node pool in an Anthos
+        cluster on AWS
+
+SYNOPSIS
+    gcloud container aws node-pools update
+        (NODE_POOL : --cluster=CLUSTER --location=LOCATION) [--async]
+        [--config-encryption-kms-key-arn=CONFIG_ENCRYPTION_KMS_KEY_ARN]
+        [--enable-autorepair] [--iam-instance-profile=IAM_INSTANCE_PROFILE]
+        [--instance-type=INSTANCE_TYPE] [--max-surge-update=MAX_SURGE_UPDATE]
+        [--max-unavailable-update=MAX_UNAVAILABLE_UPDATE]
+        [--node-version=NODE_VERSION] [--root-volume-iops=ROOT_VOLUME_IOPS]
+        [--root-volume-kms-key-arn=ROOT_VOLUME_KMS_KEY_ARN]
+        [--root-volume-size=ROOT_VOLUME_SIZE]
+        [--root-volume-throughput=ROOT_VOLUME_THROUGHPUT]
+        [--root-volume-type=ROOT_VOLUME_TYPE] [--validate-only]
+        [--annotations=ANNOTATION,[ANNOTATION,...] | --clear-annotations]
+        [--clear-autoscaling-metrics
+          | --autoscaling-metrics=[AUTOSCALING_METRIC,...]
+          --autoscaling-metrics-granularity=AUTOSCALING_METRICS_GRANULARITY]
+        [--clear-node-labels | --node-labels=NODE_LABEL,[NODE_LABEL,...]]
+        [--clear-proxy-config | --proxy-secret-arn=PROXY_SECRET_ARN
+          --proxy-secret-version-id=PROXY_SECRET_VERSION_ID]
+        [--clear-security-group-ids
+          | --security-group-ids=[SECURITY_GROUP_ID,...]]
+        [--clear-ssh-ec2-key-pair | --ssh-ec2-key-pair=SSH_EC2_KEY_PAIR]
+        [--clear-tags | --tags=TAG,[TAG,...]]
+        [--max-nodes=MAX_NODES --min-nodes=MIN_NODES] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    (DEPRECATED) Update a node pool in an Anthos cluster on AWS.
+
+    This command is deprecated. See
+    https://cloud.google.com/kubernetes-engine/multi-cloud/docs/aws/deprecations/deprecation-announcement
+    for more details.
+
+EXAMPLES
+    To update a node pool named my-node-pool in a cluster named my-cluster
+    managed in location us-west1, run:
+
+        $ gcloud container aws node-pools update my-node-pool \
+            --cluster=my-cluster --location=us-west1 \
+            --node-version=NODE_VERSION
+
+POSITIONAL ARGUMENTS
+     Node pool resource - node pool to update. The arguments in this group can
+     be used to specify the attributes of this resource. (NOTE) Some attributes
+     are not given arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument node_pool on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       NODE_POOL
+          ID of the node_pool or fully qualified identifier for the node_pool.
+
+          To set the node_pool attribute:
+          + provide the argument node_pool on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --cluster=CLUSTER
+          cluster of the node_pool.
+
+          To set the cluster attribute:
+          + provide the argument node_pool on the command line with a fully
+            specified name;
+          + provide the argument --cluster on the command line.
+
+       --location=LOCATION
+          Google Cloud location for the node_pool.
+
+          To set the location attribute:
+          + provide the argument node_pool on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property container_aws/location.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --config-encryption-kms-key-arn=CONFIG_ENCRYPTION_KMS_KEY_ARN
+        Amazon Resource Name (ARN) of the AWS KMS key to encrypt the user data.
+
+     --enable-autorepair
+        Enable node autorepair feature for a node pool. Use
+        --no-enable-autorepair to disable.
+
+            $ gcloud container aws node-pools update --enable-autorepair
+
+     --iam-instance-profile=IAM_INSTANCE_PROFILE
+        Name or ARN of the IAM instance profile associated with the node pool.
+
+     --instance-type=INSTANCE_TYPE
+        AWS EC2 instance type for the node pool's nodes.
+
+     --max-surge-update=MAX_SURGE_UPDATE
+        Maximum number of extra (surge) nodes to be created beyond the current
+        size of the node pool during its update process. Use
+        --max-unavailable-update as well, if needed, to control the overall
+        surge settings.
+
+        To create an extra node each time the node pool is rolling updated,
+        run:
+
+            $ gcloud container aws node-pools update --max-surge-update=1 \
+                --max-unavailable-update=0
+
+     --max-unavailable-update=MAX_UNAVAILABLE_UPDATE
+        Maximum number of nodes that can be simultaneously unavailable during
+        this node pool's update process. Use --max-surge-update as well, if
+        needed, to control the overall surge settings.
+
+        To modify a node pool with 6 nodes such that, 3 nodes are updated in
+        parallel (1 + 2), but keep at least 4 nodes (6 - 2) available each time
+        this node pool is rolling updated, run:
+
+            $ gcloud container aws node-pools update --max-surge-update=1 \
+                --max-unavailable-update=2
+
+     --node-version=NODE_VERSION
+        Kubernetes version to use for the node pool.
+
+     --root-volume-iops=ROOT_VOLUME_IOPS
+        Number of I/O operations per second (IOPS) to provision for the root
+        volume.
+
+     --root-volume-kms-key-arn=ROOT_VOLUME_KMS_KEY_ARN
+        Amazon Resource Name (ARN) of the AWS KMS key to encrypt the root
+        volume.
+
+     --root-volume-size=ROOT_VOLUME_SIZE
+        Size of the root volume. The value must be a whole number followed by a
+        size unit of GB for gigabyte, or TB for terabyte. If no size unit is
+        specified, GB is assumed.
+
+     --root-volume-throughput=ROOT_VOLUME_THROUGHPUT
+        Throughput to provision for the root volume, in MiB/s. Only valid if
+        the volume type is GP3. If volume type is GP3 and throughput is not
+        provided, it defaults to 125.
+
+     --root-volume-type=ROOT_VOLUME_TYPE
+        Type of the root volume. ROOT_VOLUME_TYPE must be one of: gp2, gp3.
+
+     --validate-only
+        Validate the node pool to update, but don't actually perform it.
+
+     Annotations
+
+     At most one of these can be specified:
+
+       --annotations=ANNOTATION,[ANNOTATION,...]
+          Annotations for the node pool.
+
+       --clear-annotations
+          Clear the annotations for the node pool.
+
+     Node pool autoscaling metrics collection
+
+     At most one of these can be specified:
+
+       --clear-autoscaling-metrics
+          Clear the cloudwatch autoscaling metrics collection associated with
+          the nodepool.
+
+       Or at least one of these can be specified:
+
+         Update existing cloudwatch autoscaling metrics collection parameters
+
+         --autoscaling-metrics=[AUTOSCALING_METRIC,...]
+            Autoscaling metrics to enable. For a list of valid metrics, refer
+            to
+            https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_EnableMetricsCollection.html.
+            If granularity is specified but not any metrics, all metrics are
+            enabled.
+
+         --autoscaling-metrics-granularity=AUTOSCALING_METRICS_GRANULARITY
+            Frequency at which EC2 Auto Scaling sends aggregated data to AWS
+            CloudWatch. The only valid value is "1Minute".
+
+     Node labels
+
+     At most one of these can be specified:
+
+       --clear-node-labels
+          Clear the labels assigned to the node pool's nodes.
+
+       --node-labels=NODE_LABEL,[NODE_LABEL,...]
+          Labels assigned to the node pool's nodes.
+
+     Proxy config
+
+     At most one of these can be specified:
+
+       --clear-proxy-config
+          Clear the proxy configuration associated with the node pool.
+
+       Or at least one of these can be specified:
+
+         Update existing proxy config parameters
+
+         --proxy-secret-arn=PROXY_SECRET_ARN
+            ARN of the AWS Secrets Manager secret that contains a proxy
+            configuration.
+
+         --proxy-secret-version-id=PROXY_SECRET_VERSION_ID
+            Version ID string of the AWS Secrets Manager secret that contains a
+            proxy configuration.
+
+     Security groups
+
+     At most one of these can be specified:
+
+       --clear-security-group-ids
+          Clear any additional security groups associated with the node pool's
+          nodes. This does not remove the default security groups.
+
+       --security-group-ids=[SECURITY_GROUP_ID,...]
+          IDs of additional security groups to add to the node pool's nodes.
+
+     SSH config
+
+     At most one of these can be specified:
+
+       --clear-ssh-ec2-key-pair
+          Clear the EC2 key pair authorized to login to the node pool's nodes.
+
+       --ssh-ec2-key-pair=SSH_EC2_KEY_PAIR
+          Name of the EC2 key pair authorized to login to the node pool's
+          nodes.
+
+     Tags
+
+     At most one of these can be specified:
+
+       --clear-tags
+          Clear any tags associated with the node pool's nodes.
+
+       --tags=TAG,[TAG,...]
+          Applies the given tags (comma separated) on the node pool. Example:
+
+              $ gcloud container aws node-pools update EXAMPLE_NODE_POOL \
+                  --tags=tag1=one,tag2=two
+
+     Node pool autoscaling
+
+     --max-nodes=MAX_NODES
+        Maximum number of nodes in the node pool.
+
+     --min-nodes=MIN_NODES
+        Minimum number of nodes in the node pool.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha container aws node-pools update
+```
+
+### gcloud alpha container aws node-pools create
+
+```text
+NAME
+    gcloud alpha container aws node-pools create - create a node pool in an
+        Anthos cluster on AWS
+
+SYNOPSIS
+    gcloud alpha container aws node-pools create
+        (NODE_POOL : --cluster=CLUSTER --location=LOCATION)
+        --config-encryption-kms-key-arn=CONFIG_ENCRYPTION_KMS_KEY_ARN
+        --iam-instance-profile=IAM_INSTANCE_PROFILE
+        --max-pods-per-node=MAX_PODS_PER_NODE --node-version=NODE_VERSION
+        --subnet-id=SUBNET_ID (--max-nodes=MAX_NODES --min-nodes=MIN_NODES)
+        [--annotations=ANNOTATION,[ANNOTATION,...]] [--async]
+        [--enable-autorepair] [--image-type=IMAGE_TYPE]
+        [--instance-placement=INSTANCE_PLACEMENT]
+        [--kubelet-config-cpu-cfs-quota=KUBELET_CONFIG_CPU_CFS_QUOTA]
+        [--kubelet-config-cpu-cfs-quota-period=KUBELET_CONFIG_CPU_CFS_QUOTA_PERIOD]
+        [--kubelet-config-cpu-manager-policy=KUBELET_CONFIG_CPU_MANAGER_POLICY]
+        [--kubelet-config-pod-pids-limit=KUBELET_CONFIG_POD_PIDS_LIMIT]
+        [--max-surge-update=MAX_SURGE_UPDATE]
+        [--max-unavailable-update=MAX_UNAVAILABLE_UPDATE]
+        [--node-labels=NODE_LABEL,[NODE_LABEL,...]]
+        [--node-taints=NODE_TAINT,[NODE_TAINT,...]]
+        [--root-volume-iops=ROOT_VOLUME_IOPS]
+        [--root-volume-kms-key-arn=ROOT_VOLUME_KMS_KEY_ARN]
+        [--root-volume-size=ROOT_VOLUME_SIZE]
+        [--root-volume-throughput=ROOT_VOLUME_THROUGHPUT]
+        [--root-volume-type=ROOT_VOLUME_TYPE]
+        [--security-group-ids=[SECURITY_GROUP_ID,...]]
+        [--ssh-ec2-key-pair=SSH_EC2_KEY_PAIR] [--tags=TAG,[TAG,...]]
+        [--validate-only]
+        [--autoscaling-metrics-granularity=AUTOSCALING_METRICS_GRANULARITY
+          : --autoscaling-metrics=[AUTOSCALING_METRIC,...]]
+        [--instance-type=INSTANCE_TYPE
+          | --spot-instance-types=[INSTANCE_TYPE,...]]
+        [--proxy-secret-arn=PROXY_SECRET_ARN
+          --proxy-secret-version-id=PROXY_SECRET_VERSION_ID]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha container aws node-pools delete
+
+```text
+NAME
+    gcloud alpha container aws node-pools delete - delete a node pool in an
+        Anthos cluster on AWS
+
+SYNOPSIS
+    gcloud alpha container aws node-pools delete
+        (NODE_POOL : --cluster=CLUSTER --location=LOCATION) [--allow-missing]
+        [--async] [--ignore-errors] [--validate-only] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha container aws node-pools describe
+
+```text
+NAME
+    gcloud alpha container aws node-pools describe - describe a node pool in an
+        Anthos cluster on AWS
+
+SYNOPSIS
+    gcloud alpha container aws node-pools describe
+        (NODE_POOL : --cluster=CLUSTER --location=LOCATION)
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha container aws node-pools list
+
+```text
+NAME
+    gcloud alpha container aws node-pools list - list node pools in an Anthos
+        cluster on AWS
+
+SYNOPSIS
+    gcloud alpha container aws node-pools list
+        (--cluster=CLUSTER : --location=LOCATION) [--filter=EXPRESSION]
+        [--limit=LIMIT] [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [--uri]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha container aws node-pools rollback
+
+```text
+NAME
+    gcloud alpha container aws node-pools rollback - rollback a node pool in an
+        Anthos cluster on AWS
+
+SYNOPSIS
+    gcloud alpha container aws node-pools rollback
+        (NODE_POOL : --cluster=CLUSTER --location=LOCATION) [--async]
+        [--respect-pdb] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha container aws node-pools update
+
+```text
+NAME
+    gcloud alpha container aws node-pools update - update a node pool in an
+        Anthos cluster on AWS
+
+SYNOPSIS
+    gcloud alpha container aws node-pools update
+        (NODE_POOL : --cluster=CLUSTER --location=LOCATION) [--async]
+        [--config-encryption-kms-key-arn=CONFIG_ENCRYPTION_KMS_KEY_ARN]
+        [--enable-autorepair] [--iam-instance-profile=IAM_INSTANCE_PROFILE]
+        [--instance-type=INSTANCE_TYPE] [--max-surge-update=MAX_SURGE_UPDATE]
+        [--max-unavailable-update=MAX_UNAVAILABLE_UPDATE]
+        [--node-version=NODE_VERSION] [--root-volume-iops=ROOT_VOLUME_IOPS]
+        [--root-volume-kms-key-arn=ROOT_VOLUME_KMS_KEY_ARN]
+        [--root-volume-size=ROOT_VOLUME_SIZE]
+        [--root-volume-throughput=ROOT_VOLUME_THROUGHPUT]
+        [--root-volume-type=ROOT_VOLUME_TYPE] [--validate-only]
+        [--annotations=ANNOTATION,[ANNOTATION,...] | --clear-annotations]
+        [--clear-autoscaling-metrics
+          | --autoscaling-metrics=[AUTOSCALING_METRIC,...]
+          --autoscaling-metrics-granularity=AUTOSCALING_METRICS_GRANULARITY]
+        [--clear-node-labels | --node-labels=NODE_LABEL,[NODE_LABEL,...]]
+        [--clear-proxy-config | --proxy-secret-arn=PROXY_SECRET_ARN
+          --proxy-secret-version-id=PROXY_SECRET_VERSION_ID]
+        [--clear-security-group-ids
+          | --security-group-ids=[SECURITY_GROUP_ID,...]]
+        [--clear-ssh-ec2-key-pair | --ssh-ec2-key-pair=SSH_EC2_KEY_PAIR]
+        [--clear-tags | --tags=TAG,[TAG,...]]
+        [--max-nodes=MAX_NODES --min-nodes=MIN_NODES] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud container aws node-pools create`: "Create a node pool in an Anthos cluster on AWS. This command is deprecated. See https://cloud.google.com/kubernetes-engine/multi-cloud/docs/aws/deprecations/deprecation-announcement for more details."; `gcloud container aws node-pools delete`: "Delete a node pool in an Anthos cluster on AWS. This command is deprecated. See https://cloud.google.com/kubernetes-engine/multi-cloud/docs/aws/deprecations/deprecation-announcement for more details."; `gcloud container aws node-pools describe`: "Describe a node pool in an Anthos cluster on AWS. This command is deprecated. See https://cloud.google.com/kubernetes-engine/multi-cloud/docs/aws/deprecations/deprecation-announcement for more details."; `gcloud container aws node-pools list`: "List node pools in an Anthos cluster on AWS. This command is deprecated. See https://cloud.google.com/kubernetes-engine/multi-cloud/docs/aws/deprecations/deprecation-announcement for more details."; `gcloud container aws node-pools rollback`: "Rollback a node pool in an Anthos cluster on AWS. This command is deprecated. See https://cloud.google.com/kubernetes-engine/multi-cloud/docs/aws/deprecations/deprecation-announcement for more details."; `gcloud container aws node-pools update`: "Update a node pool in an Anthos cluster on AWS. This command is deprecated. See https://cloud.google.com/kubernetes-engine/multi-cloud/docs/aws/deprecations/deprecation-announcement for more details.".
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example omits `--config-encryption-kms-key-arn`, `--max-pods-per-node` and the `--min-nodes` / `--max-nodes` pair, which the SYNOPSIS requires (gcloud 593.0.0: "Must be specified"); the runnable form adds `--config-encryption-kms-key-arn=CONFIG_ENCRYPTION_KMS_KEY_ARN` and sample values `--max-pods-per-node=110 --min-nodes=1 --max-nodes=3` (integers; choose your own).
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/container/aws/node-pools (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
