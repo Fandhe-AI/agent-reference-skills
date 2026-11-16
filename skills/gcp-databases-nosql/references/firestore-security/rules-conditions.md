@@ -93,6 +93,8 @@ service cloud.firestore {
 
 ### Custom functions
 
+Adapted (not in the official docs): `signedInOrPublic()` is used for `read` only; `cities` gets no `write` rule (denied) and `users` documents can be written only by their owner.
+
 ```text
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -102,11 +104,12 @@ service cloud.firestore {
     }
 
     match /cities/{city} {
-      allow read, write: if signedInOrPublic();
+      allow read: if signedInOrPublic();
     }
 
     match /users/{user} {
-      allow read, write: if signedInOrPublic();
+      allow read: if signedInOrPublic();
+      allow write: if request.auth != null && request.auth.uid == user;
     }
   }
 }
@@ -143,6 +146,8 @@ The same query with `.where("visibility", "==", "public")` before `.get()` is al
 - `request.auth` carries authentication information when the app uses Firebase Authentication or Google Cloud Identity Platform.
 - The source also shows a Web-only query sample (other platform tabs are not present in the twin).
 - Corrected from the official docs: the "users can only read and write their own data" sample has `allow create: if request.auth != null;`, which lets any signed-in user create the document for any `userId`; `create` now also checks `request.auth.uid == userId`.
+- Corrected from the official docs: the custom-function sample uses `allow read, write: if signedInOrPublic();` on `cities` and `users`, which lets any signed-in user (and, for documents with `visibility == 'public'`, anyone) modify or delete them; the public condition is now limited to `read`.
+- The "Authentication" sample (`allow read, write: if request.auth != null;` on `cities`) lets any signed-in user modify every city document; it shows the `request.auth` check only. Production rules should also check ownership or roles, as in the "users can only read and write their own data" sample.
 - Source inconsistency: this page says "The total call stack depth is limited to 10", while the rules-structure page's limits table lists "Maximum function call depth" as 20 (see `rules-structure.md`). The source gives no condition that separates the two values; design for 10 to stay within both.
 - Source: https://docs.cloud.google.com/firestore/native/docs/security/rules-conditions (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 

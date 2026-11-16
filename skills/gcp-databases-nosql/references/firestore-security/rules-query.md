@@ -14,12 +14,18 @@ Firestore evaluates a query against its potential result set, not the actual fie
 
 Rule restricting `stories` to their author:
 
+Adapted (not in the official docs): `write` is split into `create` (checks `request.resource.data.author`, because `resource` does not exist yet), `update` (also keeps `author` unchanged) and `delete` (checks `resource.data.author`).
+
 ```text
 service cloud.firestore {
   match /databases/{database}/documents {
     match /stories/{storyid} {
       // Only the authenticated user who authored the document can read or write
-      allow read, write: if request.auth != null && request.auth.uid == resource.data.author;
+      allow read: if request.auth != null && request.auth.uid == resource.data.author;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.author;
+      allow update: if request.auth != null && request.auth.uid == resource.data.author
+                    && request.resource.data.author == resource.data.author;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.author;
     }
   }
 }
@@ -75,6 +81,8 @@ The same queries with values that all satisfy the rule (for example `or(where("x
 
 `request.query` contains the `limit`, `offset` and `orderBy` properties of a query; for example `allow list: if request.query.limit <= 10;`. A full rule set:
 
+Adapted (not in the official docs): `write` is split into `create` (checks `request.resource.data.author`, because `resource` does not exist yet), `update` (also keeps `author` unchanged) and `delete` (checks `resource.data.author`).
+
 ```text
 service cloud.firestore {
 
@@ -99,7 +107,10 @@ service cloud.firestore {
       allow get: if authorOrPublished();
 
       // Only a story's author can write to a story
-      allow write: if request.auth.uid == resource.data.author;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.author;
+      allow update: if request.auth != null && request.auth.uid == resource.data.author
+                    && request.resource.data.author == resource.data.author;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.author;
     }
 
   }
@@ -109,6 +120,8 @@ service cloud.firestore {
 ### Collection group queries
 
 Collection group queries need `rules_version = '2';` as the first line and a rule written with `match /{path=**}/[COLLECTION_ID]/{doc}`:
+
+Adapted (not in the official docs): `write` is split into `create` (checks `request.resource.data.author`, because `resource` does not exist yet), `update` (also keeps `author` unchanged) and `delete` (checks `resource.data.author`).
 
 ```text
 rules_version = '2';
@@ -123,7 +136,10 @@ service cloud.firestore {
     }
     match /forums/{forumid}/posts/{postid} {
       // Only a post's author can write to a post
-      allow write: if request.auth != null && request.auth.uid == resource.data.author;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.author;
+      allow update: if request.auth != null && request.auth.uid == resource.data.author
+                    && request.resource.data.author == resource.data.author;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.author;
 
     }
   }
@@ -145,6 +161,7 @@ A matching query: `db.collectionGroup("posts").where("author", "==", user.uid).g
 - The source also shows a rule set that restricts a `transactions` collection group by a `user` field duplicated from the path; it is omitted here because its write rule reads `request.data.user` (not a rules variable; the incoming document is `request.resource.data`), and its example query `where("user", "==", user)` passes the user object rather than `user.uid`.
 - A collection group rule applies to every collection with that ID regardless of hierarchy (e.g. `/posts/{postid}`, `/forums/{forumid}/posts/{postid}`, `/forums/{forumid}/subforum/{subforumid}/posts/{postid}`). The source also shows the `/stories` and `/forums/{forumid}/posts` published/author collection group rule set and the Web queries against it; omitted for size.
 - Corrected from the official docs: the `or` / `in` query samples pass `db.collection("mydocuments")` (namespaced API) to the modular `query()`, which expects `collection(db, "mydocuments")`; the passing variants described in prose need the same change.
+- Corrected from the official docs: the source's author rules use `allow write` (or `allow read, write`) with `request.auth.uid == resource.data.author`. `write` includes `create`, where `resource` does not exist yet, so authors could not create their own documents; `create` now checks `request.resource.data.author`, and `update` also prevents changing `author`.
 - Source: https://docs.cloud.google.com/firestore/native/docs/security/rules-query (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

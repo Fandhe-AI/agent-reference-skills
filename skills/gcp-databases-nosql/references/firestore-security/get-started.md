@@ -104,6 +104,7 @@ firebase deploy --only firestore
 - The server client libraries bypass all Firestore Security Rules and authenticate through Application Default Credentials; for server client libraries, and for REST or RPC requests authorized with a Google Identity OAuth 2.0 token, set up IAM for Firestore (see [iam.md](./iam.md)). REST requests with a Firebase Authentication ID token, or unauthenticated requests, are evaluated by Security Rules (see `firestore-databases-data/use-rest-api.md`).
 - Deploying with the Firebase CLI overwrites any existing rules in the Firebase console with the rules defined in your project directory. Try a rules deployment on a disposable project or database first.
 - Rules are applied separately for each database; multiple databases need rules deployed for each.
+- The "Allow authenticated users" rule set (`allow read, write: if request.auth != null;` on `{document=**}`) lets any signed-in user read, modify and delete every document; add ownership or role checks before using it with real data.
 - The "Allow all" rule set allows anyone to read and write the whole database; do not deploy it to a database that holds real data.
 - For full validation, the source recommends the Local Emulator Suite for automated unit tests (emulators: see `gcp-client-libraries`).
 - Google Cloud's managed document database (Native mode, Datastore mode, MongoDB compatibility) — distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`); Firebase client-side setup is out of scope of this skill.

@@ -131,7 +131,7 @@ service cloud.firestore {
 - Keep side effects out of transaction functions: they can run multiple times and are not guaranteed to run on the UI thread.
 - For bulk data entry use a server client library with parallelized individual writes (or a bulk writer); batched writes outperform serialized writes but not parallel writes. Do not use a mobile/web SDK for bulk operations.
 - The source's Node.js transaction samples are omitted: they catch the transaction error, only log `Transaction failure:` and continue, so a failed transaction would go unnoticed. Its Python batched-write sample is omitted as a duplicate of the Node.js one.
-- Google Cloud's managed document database (Native mode): distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`). Client-side Firebase setup is out of scope; Security Rules samples are kept as the source shows them.
+- Google Cloud's managed document database (Native mode): distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`). Client-side Firebase setup is out of scope; Security Rules samples are kept as the source shows them; the `getAfter()` sample shows the cross-document check only and lets any signed-in user write `countries` documents, so add ownership or role checks in real rules.
 - The source also shows Web (v8/v9), Swift, Objective-C, Kotlin, Java, Dart, C++, Go, PHP, Unity, C# and Ruby samples, and async Python variants; they are omitted here.
 - Troubleshooting for large writes and contention: https://cloud.google.com/firestore/docs/troubleshooting
 
