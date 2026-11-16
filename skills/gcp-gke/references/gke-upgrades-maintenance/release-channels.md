@@ -10,10 +10,14 @@ Release channels (Rapid, Regular, Stable, Extended) let GKE pick cluster version
 
 ### Run a patch version from a newer channel
 
-The source example: with Rapid offering 1.23.2-gke.700 and 1.22.4-gke.1500 and Regular offering 1.21.4-gke.400 and 1.22.1-gke.400, a Regular-channel cluster on 1.22.1-gke.400 could manually upgrade to 1.22.4-gke.1500 (same minor version) but not to 1.23.2-gke.700. This works with the gcloud CLI or the GKE API. The source shows no command; this is the gcloud help example for a manual control plane upgrade (snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/container/clusters/upgrade):
+The source example: with Rapid offering 1.23.2-gke.700 and 1.22.4-gke.1500 and Regular offering 1.21.4-gke.400 and 1.22.1-gke.400, a Regular-channel cluster on 1.22.1-gke.400 could manually upgrade to 1.22.4-gke.1500 (same minor version) but not to 1.23.2-gke.700. This works with the gcloud CLI or the GKE API. The source shows no command; this is the gcloud help example for a manual control plane upgrade (snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/container/clusters/upgrade). Set `--cluster-version` to an available patch of the same minor version (for example `1.22.4-gke.1500` in the scenario above); list the allowed versions with `gcloud container get-server-config`.
+
+Adapted (not in the official docs): `--cluster-version=TARGET_PATCH_VERSION` and `--location=CONTROL_PLANE_LOCATION` are added so the upgrade targets the chosen patch instead of the default cluster version.
 
 ```bash
-gcloud container clusters upgrade sample-cluster --master
+gcloud container clusters upgrade sample-cluster --master \
+    --cluster-version=TARGET_PATCH_VERSION \
+    --location=CONTROL_PLANE_LOCATION
 ```
 
 ## Options / Props
@@ -73,6 +77,7 @@ gcloud container clusters upgrade sample-cluster --master
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/container/clusters/upgrade (the source page itself has no code).
 - No dates in the schedule tables are fixed; they depend on the open source schedule and are subject to change.
 - Source inconsistency: this page says "Enroll alpha clusters in the Rapid channel to access alpha patch versions; alpha clusters can also be in Regular or Stable but then can't access them" (and, in the enrollment limits, "You can't enroll a cluster that uses: ... alpha clusters"), while configuration-overview.md says alpha clusters "cannot be upgraded or added to release channels" and cluster-upgrades.md says "alpha clusters can't be enrolled in release channels". The source does not reconcile the statements; this page is the one dedicated to release channels and has a section "Choose the Rapid channel for alpha clusters".
+- Adapted from the official docs: the gcloud help example `gcloud container clusters upgrade sample-cluster --master` omits `--cluster-version`; without it "master upgrades default to the default cluster version, which can be found in the server config", which may not be the newer-channel patch this section describes (`gcloud container clusters upgrade --help`, gcloud 593.0.0, retrieved 2026-11-14).
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/release-channels (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
