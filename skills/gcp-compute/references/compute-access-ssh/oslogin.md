@@ -51,6 +51,7 @@ OS Login configures the POSIX account when you connect to an OS Login VM with th
 - Not supported on all configurations; see the limitations in [set-up-oslogin.md](./set-up-oslogin.md).
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/os-login/describe-profile (gcloud 593.0.0 help); the source twin itself has no code.
 - Source inconsistency: this page says "You can grant OS Login IAM roles at the instance, folder, or organization level." (project is not named), while set-up-oslogin.md says that `roles/compute.osLogin` or `roles/compute.osAdminLogin` is granted "On the Project or instance" and "If a user requires SSH access from Google Cloud console or Google Cloud CLI, you must grant these roles at the project level, or additionally grant a role at the project level that contains the `compute.projects.get` permission."
+- Source inconsistency: this page says "Compute instances that use OS Login can't use metadata-based SSH keys", while access.md and iam.md (compute-security) describe adding SSH keys to project or instance metadata as the way to give SSH access, and instances.md (compute-overview) says "You can use SSH keys stored in project metadata to access all instances in a project". Those metadata-key paths apply only to VMs without OS Login.
 - Source (set up OS Login): https://docs.cloud.google.com/compute/docs/oslogin/set-up-oslogin (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/docs/oslogin (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

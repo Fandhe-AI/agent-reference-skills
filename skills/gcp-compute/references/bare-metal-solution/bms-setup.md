@@ -161,7 +161,7 @@ Add the VM to the instance group:
 gcloud compute instance-groups unmanaged add-instances INSTANCE_GROUP_NAME --project=PROJECT_ID --zone=ZONE --instances=VM_NAME
 ```
 
-Internet policy-based route (`SOURCE_RANGE` = Bare Metal Solution IP range, `NEXT_HOP` = the load balancer frontend IPv4 address, `REGION` = region of the VLAN attachment):
+Internet policy-based route (`SOURCE_RANGE` = "the source IP CIDR range. In this case, this is the Bare Metal Solution IP address", `NEXT_HOP` = the load balancer frontend IPv4 address, `REGION` = region of the VLAN attachment):
 
 ```bash
 gcloud network-connectivity policy-based-routes create ROUTE_NAME \
@@ -175,7 +175,7 @@ gcloud network-connectivity policy-based-routes create ROUTE_NAME \
  --interconnect-attachment-region=REGION
 ```
 
-Skip route for on-premises and local subnets (its priority must be less than or equal to the internet route's priority value):
+Skip route for on-premises and local subnets (its priority must be less than or equal to the internet route's priority value; the source passes `SOURCE_RANGE/32`, so `SOURCE_RANGE` here is the single Bare Metal Solution IP address used in the internet route, see Notes):
 
 ```bash
 gcloud network-connectivity policy-based-routes create ROUTE_NAME \
@@ -221,6 +221,7 @@ Create a custom-mode VPC network and a subnet for internet access, then two Clou
 - Distance line: VPC networks, firewall policies, Cloud Router, Cloud NAT and Cloud Load Balancing themselves are in the planned `gcp-networking`; the VM-side settings are here.
 - Omitted: the firewall-rule command block (summarized above), the attachment `describe` and `partner update` commands, the root password change commands, the persist-across-reboot commands for Method 1, and the three Method 3 commands (VPC network, subnet, Cloud Routers). The source also shows Console steps for VLAN attachments, routes, firewall rules, VM creation and the load balancer (omitted), and a sample `describe` output.
 - Corrected from the official docs: the source writes the two NAT gateway commands with a leading `$` prompt (`$ sudo sysctl -w net.ipv4.ip_forward=1`, `$ sudo iptables -t nat -A POSTROUTING ...`); the prompt is removed so that pasting the blocks does not fail with `$: command not found`.
+- Both routes in Method 2 must cover the same source. The source defines `SOURCE_RANGE` as "the Bare Metal Solution IP address" and appends `/32` only in the skip route. If you give the internet route a CIDR range (for example several servers), pass that same CIDR without `/32` to the skip route; otherwise traffic from the other addresses to on-premises and local subnets matches only the internet route.
 - Source: https://docs.cloud.google.com/bare-metal/docs/bms-setup (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
