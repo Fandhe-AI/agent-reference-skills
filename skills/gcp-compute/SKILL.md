@@ -23,6 +23,9 @@ skills/gcp-compute/
       README.md
       batch/
         README.md                 # gcloud batch
+      bms/
+        README.md                 # gcloud bms（Bare Metal Solution）
+        bms-<group>.md            # 例: bms-instances.md / bms-volumes.md / bms-networks.md
     compute-overview/             # 公式ガイド由来（手書き）: 概要・インスタンスの概念・停止 / 一時停止 / リセットの違い・リージョンとゾーン・割り当て・ライフサイクル・プロビジョニングモデル・作成と起動・廃止一覧
       README.md
       <page>.md                   # 例: deprecations.md / create-start-instance.md
@@ -108,7 +111,7 @@ skills/gcp-compute/
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
-未投入カテゴリ（`gcloud/compute` / `gcloud/bms` / `gcloud/cluster-director` / `gcloud/oracle-database` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud/compute` / `gcloud/cluster-director` / `gcloud/oracle-database` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -116,6 +119,7 @@ skills/gcp-compute/
 | --- | --- | --- |
 | gcloud のコマンド・フラグを調べたい（compute / batch / bms / cluster-director / oracle-database の 5 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
 | `gcloud batch` のジョブ・タスクのコマンドを調べたい | gcloud/batch | [references/gcloud/batch/README.md](references/gcloud/batch/README.md) |
+| `gcloud bms`（Bare Metal Solution のインスタンス・ボリューム・ネットワーク）のフラグを調べたい | gcloud/bms | [references/gcloud/bms/README.md](references/gcloud/bms/README.md) |
 | Compute Engine の概要・インスタンスの概念・リージョンとゾーン・割り当て・インスタンスのライフサイクル・プロビジョニングモデル・VM の作成と起動・廃止一覧 | compute-overview | [references/compute-overview/README.md](references/compute-overview/README.md) |
 | 停止 / 一時停止 / リセットの違い・グローバル / リージョン / ゾーンリソース | compute-overview | [references/compute-overview/README.md](references/compute-overview/README.md) |
 | マシンファミリー・シリーズ・タイプの体系・コンピューティング最適化・メモリ最適化・Arm VM | compute-machine-types | [references/compute-machine-types/README.md](references/compute-machine-types/README.md) |
@@ -140,7 +144,7 @@ skills/gcp-compute/
 | Confidential VM（対応構成・作成・構成証明・組織ポリシーによる強制）・Confidential Space のワークロード | confidential-computing | [references/confidential-computing/README.md](references/confidential-computing/README.md) |
 | Oracle Database@Google Cloud の概要・環境準備・ODB Network・Exadata Infrastructure・Autonomous AI Database・IAM・クォータ | oracle-database | [references/oracle-database/README.md](references/oracle-database/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/compute` / `gcloud/bms` / `gcloud/cluster-director` / `gcloud/oracle-database` / `iam` / `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/compute` / `gcloud/cluster-director` / `gcloud/oracle-database` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
