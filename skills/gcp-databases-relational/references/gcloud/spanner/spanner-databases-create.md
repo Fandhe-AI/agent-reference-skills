@@ -1,0 +1,227 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/spanner/databases/create
+---
+
+# gcloud spanner databases create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud spanner databases create
+
+```text
+NAME
+    gcloud spanner databases create - create a Cloud Spanner database
+
+SYNOPSIS
+    gcloud spanner databases create (DATABASE : --instance=INSTANCE) [--async]
+        [--database-dialect=DATABASE_DIALECT] [--ddl=DDL] [--ddl-file=DDL_FILE]
+        [--proto-descriptors-file=PROTO_DESCRIPTORS_FILE]
+        [--kms-keys=[KMS_KEYS,...] | [--kms-key=KMS_KEY
+          : --kms-keyring=KMS_KEYRING
+          --kms-location=KMS_LOCATION --kms-project=KMS_PROJECT]]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create a Cloud Spanner database.
+
+EXAMPLES
+    To create an empty Cloud Spanner database, run:
+
+        $ gcloud spanner databases create testdb --instance=my-instance-id
+
+    To create a Cloud Spanner database with populated schema, run:
+
+        $ gcloud spanner databases create testdb --instance=my-instance-id \
+            --ddl='CREATE TABLE mytable (a INT64, b INT64) PRIMARY KEY(a)'
+
+    To create a Cloud Spanner database with the PostgreSQL dialect, run:
+
+        $ gcloud spanner databases create testdb --instance=my-instance-id \
+            --database-dialect=POSTGRESQL
+
+POSITIONAL ARGUMENTS
+     Database resource - The Cloud Spanner database to create. The arguments in
+     this group can be used to specify the attributes of this resource. (NOTE)
+     Some attributes are not given arguments in this group but can be set in
+     other ways.
+
+     To set the project attribute:
+      * provide the argument database on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       DATABASE
+          ID of the database or fully qualified identifier for the database.
+
+          To set the database attribute:
+          + provide the argument database on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --instance=INSTANCE
+          The Cloud Spanner instance for the database.
+
+          To set the instance attribute:
+          + provide the argument database on the command line with a fully
+            specified name;
+          + provide the argument --instance on the command line;
+          + set the property spanner/instance.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --database-dialect=DATABASE_DIALECT
+        The SQL dialect of the Cloud Spanner Database. GOOGLE_STANDARD_SQL is
+        the default. DATABASE_DIALECT must be one of: POSTGRESQL,
+        GOOGLE_STANDARD_SQL.
+
+     --ddl=DDL
+        Semi-colon separated DDL (data definition language) statements to run
+        inside the newly created database. If there is an error in any
+        statement, the database is not created. This option is not supported
+        for the PostgreSQL dialect. Full DDL specification is at
+        https://cloud.google.com/spanner/docs/data-definition-language
+
+     --ddl-file=DDL_FILE
+        Path of a file that contains semi-colon separated DDL (data definition
+        language) statements to run inside the newly created database. If there
+        is an error in any statement, the database is not created. This option
+        is not supported for the PostgreSQL dialect. Full DDL specification is
+        at https://cloud.google.com/spanner/docs/data-definition-language. If
+        --ddl_file is set, --ddl is ignored. One line comments starting with --
+        are ignored.
+
+     --proto-descriptors-file=PROTO_DESCRIPTORS_FILE
+        Path of a file that contains a protobuf-serialized
+        google.protobuf.FileDescriptorSet message. To generate it, install and
+        run protoc with --include_imports and --descriptor_set_out.
+
+     KMS key name group
+
+     At most one of these can be specified:
+
+       Key resource - Cloud KMS key(s) to be used to create the Cloud Spanner
+       database. This represents a Cloud resource. (NOTE) Some attributes are
+       not given arguments in this group but can be set in other ways.
+
+       To set the kms-project attribute:
+        + provide the argument --kms-keys on the command line with a fully
+          specified name.
+
+       To set the kms-location attribute:
+        + provide the argument --kms-keys on the command line with a fully
+          specified name.
+
+       To set the kms-keyring attribute:
+        + provide the argument --kms-keys on the command line with a fully
+          specified name.
+
+       --kms-keys=[KMS_KEYS,...]
+          IDs of the keys or fully qualified identifiers for the keys.
+
+          To set the kms-key attribute:
+          + provide the argument --kms-keys on the command line.
+
+       Key resource - Cloud KMS key to be used to create the Cloud Spanner
+       database. The arguments in this group can be used to specify the
+       attributes of this resource.
+
+       --kms-key=KMS_KEY
+          ID of the key or fully qualified identifier for the key.
+
+          To set the kms-key attribute:
+          + provide the argument --kms-key on the command line.
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+       --kms-keyring=KMS_KEYRING
+          KMS keyring id of the key.
+
+          To set the kms-keyring attribute:
+          + provide the argument --kms-key on the command line with a fully
+            specified name;
+          + provide the argument --kms-keyring on the command line.
+
+       --kms-location=KMS_LOCATION
+          Cloud location for the key.
+
+          To set the kms-location attribute:
+          + provide the argument --kms-key on the command line with a fully
+            specified name;
+          + provide the argument --kms-location on the command line.
+
+       --kms-project=KMS_PROJECT
+          Cloud project id for the key.
+
+          To set the kms-project attribute:
+          + provide the argument --kms-key on the command line with a fully
+            specified name;
+          + provide the argument --kms-project on the command line.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha spanner databases create
+
+        $ gcloud beta spanner databases create
+```
+
+### gcloud beta spanner databases create
+
+```text
+NAME
+    gcloud beta spanner databases create - create a Cloud Spanner database
+
+SYNOPSIS
+    gcloud beta spanner databases create (DATABASE : --instance=INSTANCE)
+        [--async] [--database-dialect=DATABASE_DIALECT] [--ddl=DDL]
+        [--ddl-file=DDL_FILE] [--proto-descriptors-file=PROTO_DESCRIPTORS_FILE]
+        [--kms-keys=[KMS_KEYS,...] | [--kms-key=KMS_KEY
+          : --kms-keyring=KMS_KEYRING
+          --kms-location=KMS_LOCATION --kms-project=KMS_PROJECT]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha spanner databases create
+
+```text
+NAME
+    gcloud alpha spanner databases create - create a Cloud Spanner database
+
+SYNOPSIS
+    gcloud alpha spanner databases create (DATABASE : --instance=INSTANCE)
+        [--async] [--database-dialect=DATABASE_DIALECT] [--ddl=DDL]
+        [--ddl-file=DDL_FILE] [--proto-descriptors-file=PROTO_DESCRIPTORS_FILE]
+        [--kms-keys=[KMS_KEYS,...] | [--kms-key=KMS_KEY
+          : --kms-keyring=KMS_KEYRING
+          --kms-location=KMS_LOCATION --kms-project=KMS_PROJECT]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/spanner/databases/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
