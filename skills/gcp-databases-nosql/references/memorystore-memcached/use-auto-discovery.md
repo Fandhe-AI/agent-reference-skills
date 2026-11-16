@@ -32,10 +32,12 @@ config get cluster
 
 Response format:
 
+Adapted (not in the official docs): a space is added between the node entries (`[node1-port] [node2-ip]`), matching the space-separated node list on the auto discovery overview page.
+
 ```text
 CONFIG cluster 0 [length-of-payload-in-next-two-lines]
 [integer]
-[node1-ip]|[node1-ip]|[node1-port][node2-ip]|[node2-ip]|[node2-port]
+[node1-ip]|[node1-ip]|[node1-port] [node2-ip]|[node2-ip]|[node2-port]
 \r\n
 END\r\n
 ```
@@ -46,6 +48,7 @@ END\r\n
 - Do not use the discovery endpoint for data queries such as `set` and `get`.
 - The discovery endpoint is also shown on the instance details page in the console.
 - Adapted from the official docs: the source writes `gcloud memcache instances describe instance-id --project=project --region=region --format="default(discoveryEndpoint)"` and `telnet discovery-endpoint-ip-address discovery-endpoint-port-number`; the placeholders are upper-cased and `project` is shown as `PROJECT_ID`.
+- Corrected from the official docs: the source's response format writes `[node1-port][node2-ip]` with no separator, while the overview page's Node List example is `node1-ip|node1-ip|node1-port node2-ip|node2-ip|node2-port` (space-separated); the format here uses the space so a parser splits nodes correctly.
 - Source: https://docs.cloud.google.com/memorystore/docs/memcached/use-auto-discovery (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
