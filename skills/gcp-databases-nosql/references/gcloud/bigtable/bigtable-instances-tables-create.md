@@ -264,7 +264,7 @@ gcloud bigtable instances tables create my-table \
 gcloud bigtable instances tables create my-table \
     --instance=my-instance \
     --column-families="my-family" \
-    --automated-backup-locations=us-central1-b,us-east1-c
+    --automated-backup-locations=projects/my-project/locations/us-central1-b,projects/my-project/locations/us-east1-c
 ```
 
 ### gcloud beta bigtable instances tables create
@@ -317,7 +317,7 @@ SYNOPSIS
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): `--automated-backup-retention_period` in the example is corrected to `--automated-backup-retention-period`, the flag defined in the SYNOPSIS (gcloud 593.0.0 rejects the underscore spelling as an unrecognized argument).
-- Corrected from the official docs (runnable form only; the help text above is verbatim): the `--automated-backup-locations` example has no `--column-families`, which the SYNOPSIS requires (gcloud 593.0.0: "argument --column-families: Must be specified"); the runnable form adds `--column-families="my-family"`, as in the retention-period example before it.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `--automated-backup-locations` example has no `--column-families`, which the SYNOPSIS requires (gcloud 593.0.0: "argument --column-families: Must be specified"); the runnable form adds `--column-families="my-family"`, as in the retention-period example before it. Also, the flag description says "Locations are in the format projects/{project}/locations/{zone}" and gcloud 593.0.0 passes the values to the API unchanged (`api_lib/bigtable/tables.py`), but the example passes bare zone IDs (`us-central1-b,us-east1-c`); the runnable form uses full location names with the placeholder project `my-project`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
