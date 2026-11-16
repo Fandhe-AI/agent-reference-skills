@@ -130,6 +130,8 @@ skills/gcp-databases-relational/
 | `gcloud database-migration`（migration-jobs・connection-profiles・private-connections・conversion-workspaces・objects）のフラグを調べたい | gcloud/database-migration | [references/gcloud/database-migration/README.md](references/gcloud/database-migration/README.md) |
 | ロール ID の権限一覧・事前定義ロールを調べたい（`roles/cloudsql.*` / `roles/alloydb.*` / `roles/spanner.*` / `roles/datamigration.*` / `roles/databaseinsights.*`） | iam | [references/iam/README.md](references/iam/README.md) |
 | REST のメソッド・パスを調べたい（Cloud SQL Admin API・AlloyDB API・Cloud Spanner API・Database Migration API） | rest | [references/rest/README.md](references/rest/README.md) |
+| Cloud SQL Admin API のメソッド（instances / backupRuns / databases / users / operations / connect） | rest/sqladmin | [references/rest/sqladmin/README.md](references/rest/sqladmin/README.md) |
+| AlloyDB API・Cloud Spanner API・Database Migration API のメソッド | rest/alloydb、rest/spanner、rest/datamigration | [references/rest/alloydb/README.md](references/rest/alloydb/README.md)、[references/rest/spanner/README.md](references/rest/spanner/README.md)、[references/rest/datamigration/README.md](references/rest/datamigration/README.md) |
 | Cloud SQL の概念・エンジン別の機能差・エディション（Enterprise / Enterprise Plus）・マシンタイプ・ストレージ・対応バージョン・クォータ | cloud-sql-overview | [references/cloud-sql-overview/README.md](references/cloud-sql-overview/README.md) |
 | Cloud SQL のベストプラクティス・可用性・SLA から除外される構成・ロケーション | cloud-sql-overview | [references/cloud-sql-overview/README.md](references/cloud-sql-overview/README.md) |
 | Cloud SQL インスタンスの作成・設定変更・ユーザー・パスワードポリシー・Managed Connection Pooling | cloud-sql-instances | [references/cloud-sql-instances/README.md](references/cloud-sql-instances/README.md) |
@@ -160,7 +162,7 @@ skills/gcp-databases-relational/
 | Database Migration Service で PostgreSQL を Cloud SQL へ移行（ソース準備・接続方式・移行ジョブ・promote・制限） | database-migration | [references/database-migration/README.md](references/database-migration/README.md) |
 | Database Center のフリート横断ヘルス・Cloud SQL / AlloyDB の Query insights | database-center-insights | [references/database-center-insights/README.md](references/database-center-insights/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas` / `rest/sqladmin` / `rest/spanner`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas`
 
 ## 他スキルとの使い分け
 
