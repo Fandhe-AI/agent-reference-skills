@@ -19,7 +19,31 @@ Google Cloud (GCP) のコンピュート系スキル。Compute Engine の VM イ
 skills/gcp-compute/
   SKILL.md
   references/
+    compute-instances/            # インスタンス作成の方法と構成オプション・インスタンステンプレートの作成
+      README.md
+      <page>.md                   # 例: instance-creation-overview.md / create-instance-templates.md
+    compute-instance-lifecycle/   # インスタンスの停止と再起動・削除
+      README.md
+      <page>.md
     compute-access-ssh/           # アクセス方法の概要・標準 SSH・OS Login・IAP TCP 転送による SSH・シリアルポート出力・シリアルコンソール
+      README.md
+      <page>.md
+    compute-disks/                # ストレージの選択肢・Persistent Disk・Hyperdisk・ローカル SSD・ディスク暗号化
+      README.md
+      <page>.md
+    compute-instance-groups/      # インスタンスグループ・インスタンステンプレート・ゾーン / リージョン MIG・自動修復・更新・ステートフル MIG
+      README.md
+      <page>.md
+    compute-autoscaling/          # オートスケーラー・CPU / LB 処理能力 / 複数シグナル・予測自動スケーリング・判断の読み方
+      README.md
+      <page>.md
+    compute-capacity/             # Spot VM・Flex-start VM・予約・将来の予約・確約利用割引（CUD）
+      README.md
+      <page>.md                   # 例: spot.md
+    compute-host-tenancy/         # ライブマイグレーション・ホストメンテナンス・ホストオプション・sole-tenant ノード・VM テナンシー
+      README.md
+      <page>.md
+    compute-gpus/                 # GPU の概要・種類と機能・マシンシリーズ別 GPU・ドライバのインストール・GPU VM のホストメンテナンス
       README.md
       <page>.md
     batch/                        # Batch: 概要・ジョブの作成と実行・サンプルジョブ・VM の OS 環境・ネットワーク・認証・再試行・タイムアウト・クォータ
@@ -41,21 +65,29 @@ skills/gcp-compute/
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
 1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
-2. 非推奨・サポート終了を確認するときは、まず `compute-overview/deprecations.md`（後続 PR で投入）（一覧表）、CSEK は加えて `compute-security/csek-deprecation-in-compute-engine.md`（後続 PR で投入）、legacy Cloud TPU API は `cloud-tpu/tpus-in-compute-engine.md`、preemptible VM との関係は `compute-capacity/spot.md`（後続 PR で投入） を引く
+2. 非推奨・サポート終了を確認するときは、まず `compute-overview/deprecations.md`（後続 PR で投入）（一覧表）、CSEK は加えて `compute-security/csek-deprecation-in-compute-engine.md`（後続 PR で投入）、legacy Cloud TPU API は `cloud-tpu/tpus-in-compute-engine.md`、preemptible VM との関係は `compute-capacity/spot.md` を引く
 
-未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `compute-overview` / `compute-machine-types` / `compute-machine-families` / `compute-instances` / `compute-instance-lifecycle` / `compute-metadata-scripts` / `compute-security` / `compute-disks` / `compute-snapshots-images` / `compute-instance-groups` / `compute-autoscaling` / `compute-capacity` / `compute-host-tenancy` / `compute-gpus` / `vm-manager` / `confidential-computing` / `oracle-database`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `compute-overview` / `compute-machine-types` / `compute-machine-families` / `compute-metadata-scripts` / `compute-security` / `compute-snapshots-images` / `vm-manager` / `confidential-computing` / `oracle-database`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| インスタンス作成の方法と構成オプション・インスタンステンプレートを作りたい | compute-instances | [references/compute-instances/README.md](references/compute-instances/README.md) |
+| VM の停止・再起動・削除（課金への影響を含む） | compute-instance-lifecycle | [references/compute-instance-lifecycle/README.md](references/compute-instance-lifecycle/README.md) |
 | VM への SSH 接続・OS Login の設定・IAP TCP 転送・シリアルポート出力・シリアルコンソール | compute-access-ssh | [references/compute-access-ssh/README.md](references/compute-access-ssh/README.md) |
+| Persistent Disk・Hyperdisk（性能）・ローカル SSD・ディスク暗号化（Google 管理鍵 / CMEK / CSEK） | compute-disks | [references/compute-disks/README.md](references/compute-disks/README.md) |
+| インスタンスグループ・インスタンステンプレート・ゾーン / リージョン MIG・自動修復・MIG の更新（proactive / opportunistic）・ステートフル MIG | compute-instance-groups | [references/compute-instance-groups/README.md](references/compute-instance-groups/README.md) |
+| オートスケーラー・CPU 使用率 / LB 処理能力 / 複数シグナルによるスケーリング・予測自動スケーリング・スケールインの制御 | compute-autoscaling | [references/compute-autoscaling/README.md](references/compute-autoscaling/README.md) |
+| Spot VM・Flex-start VM・予約・将来の予約・確約利用割引（CUD） | compute-capacity | [references/compute-capacity/README.md](references/compute-capacity/README.md) |
+| ライブマイグレーション・ホストメンテナンスのポリシー・sole-tenant ノード・VM テナンシー | compute-host-tenancy | [references/compute-host-tenancy/README.md](references/compute-host-tenancy/README.md) |
+| GPU の種類・マシンシリーズ別の GPU・GPU ドライバのインストール・GPU VM のホストメンテナンス | compute-gpus | [references/compute-gpus/README.md](references/compute-gpus/README.md) |
 | Batch のジョブ作成・実行・VM の OS 環境・ネットワーク・認証・タスクの再試行・タイムアウト・クォータ | batch | [references/batch/README.md](references/batch/README.md) |
 | Cloud TPU の概要・システムアーキテクチャ・Compute Engine での TPU VM / MIG の作成・TPU のリージョンとゾーン・TPU7x / v6e・legacy Cloud TPU API との対応 | cloud-tpu | [references/cloud-tpu/README.md](references/cloud-tpu/README.md) |
 | Bare Metal Solution の概要・計画・セットアップ（VLAN アタッチメント・ルーティング）・IAM・セキュリティ・メンテナンス・SSH 鍵 | bare-metal-solution | [references/bare-metal-solution/README.md](references/bare-metal-solution/README.md) |
 | Cluster Director（Slurm クラスタ）の作成・マシンタイプ・消費オプション・接続・クォータ・OS イメージ | cluster-director | [references/cluster-director/README.md](references/cluster-director/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `compute-overview` / `compute-machine-types` / `compute-machine-families` / `compute-instances` / `compute-instance-lifecycle` / `compute-metadata-scripts` / `compute-security` / `compute-disks` / `compute-snapshots-images` / `compute-instance-groups` / `compute-autoscaling` / `compute-capacity` / `compute-host-tenancy` / `compute-gpus` / `vm-manager` / `confidential-computing` / `oracle-database`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `compute-overview` / `compute-machine-types` / `compute-machine-families` / `compute-metadata-scripts` / `compute-security` / `compute-snapshots-images` / `vm-manager` / `confidential-computing` / `oracle-database`
 
 ## 他スキルとの使い分け
 
