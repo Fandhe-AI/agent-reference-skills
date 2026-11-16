@@ -211,7 +211,7 @@ NOTES
         $ gcloud beta compute disks update
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud compute disks update example-disk \
@@ -220,7 +220,7 @@ gcloud compute disks update example-disk \
 
 gcloud compute disks update example-disk \
     --zone=us-central1-a \
-    --replace-licenses=projects/license-project/global/licenses/license-1,projects/license-project/global/licenses/license-2
+    --remove-licenses=projects/license-project/global/licenses/license-1,projects/license-project/global/licenses/license-2
 
 gcloud compute disks update example-disk \
     --zone=us-central1-a \
@@ -271,6 +271,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the "To remove licenses from the disk" example passes `--replace-licenses`, which is not a flag of this command (the SYNOPSIS and FLAGS define `--append-licenses`, `--remove-licenses` and `--replace-license`); the runnable form uses `--remove-licenses`, the flag whose description says the listed licenses "will be removed".
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
