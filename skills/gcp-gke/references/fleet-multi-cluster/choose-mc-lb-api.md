@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/choose-mc-
 
 # Choose your multi-cluster load balancing API for GKE
 
-Compares the three ways to attach a load balancer to a fleet of GKE clusters: Multi Cluster Ingress (MCI), multi-cluster Gateway (MCG), and a user-managed load balancer with Standalone NEGs. Features not listed in the table should be handled with a user-managed load balancer with Standalone NEGs instead of the Kubernetes-native API.
+Compares the three ways to attach a load balancer to a fleet of GKE clusters: Multi Cluster Ingress (MCI), multi-cluster Gateway (MCG), and a user-managed load balancer with Standalone NEGs. Features not listed in the table should be handled with a user-managed load balancer with Standalone NEGs instead of the Kubernetes-native API. The multi-cluster Gateway columns lag behind the multi-cluster Gateway concepts page (see Notes); check `multi-cluster-gateways.md` before choosing Standalone NEGs.
 
 ## Signature / Usage
 
@@ -90,6 +90,8 @@ spec:
 
 - Kubernetes Gateway API resources on GKE, and Multi Cluster Ingress, are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (planned `gcp-networking`).
 - The source table also lists automated frontend IP management, forwarding rule / target proxy / URL map / backend service / health check management (Yes for MCI and MCG, No for Standalone NEGs) and static / dynamic IP assignment (all Yes).
+- Source inconsistency: this comparison page marks multi-cluster Gateway as "No" for cross-region internal Application Load Balancer, proxy Network Load Balancer and SSL (TLS). The multi-cluster Gateway concepts page (same retrieval date) lists `gke-l7-cross-regional-internal-managed-mc` (cross-region internal Application Load Balancer or cross-region internal proxy Network Load Balancer), regional external and regional internal proxy Network Load Balancers through `gke-l7-regional-external-managed-mc` / `gke-l7-rilb-mc`, and `TLSRoute` (TLS passthrough) on those three GatewayClasses. The table is kept as published; prefer the concepts page for multi-cluster Gateway support (see `multi-cluster-gateways.md`).
+- Source (multi-cluster Gateway GatewayClasses and TLSRoute): https://docs.cloud.google.com/kubernetes-engine/docs/concepts/multi-cluster-gateways (retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/choose-mc-lb-api (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/multi-cluster-ingress (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/kubernetes-engine/docs/concepts/multi-cluster-ingress (the source page has no code).

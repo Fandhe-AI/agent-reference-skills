@@ -29,11 +29,11 @@ gcloud container clusters create CLUSTER_NAME --enable-fleet \
 gcloud container clusters create CLUSTER_NAME --enable-fleet --membership-type=LIGHTWEIGHT
 ```
 
-`CLUSTER_NAME` becomes the membership name; the command errors if the fleet already has a cluster with that name. `PROJECT_ID` is the project that owns the new cluster. For Standard clusters, `--workload-pool` is recommended (it enables fleet Workload Identity Federation) but can be omitted; Autopilot has Workload Identity Federation for GKE enabled by default.
+`CLUSTER_NAME` becomes the membership name; the command errors if the fleet already has a cluster with that name. `PROJECT_ID` is the project that owns the new cluster. For Standard clusters, `--workload-pool` is recommended (it enables fleet Workload Identity Federation for regular memberships; lightweight memberships cannot use it) but can be omitted; Autopilot has Workload Identity Federation for GKE enabled by default.
 
 ### Register an existing cluster (gcloud)
 
-Both of the first two commands enable fleet Workload Identity Federation if the cluster already has Workload Identity Federation for GKE enabled.
+Registering with a regular membership (`--enable-fleet` without `--membership-type=LIGHTWEIGHT`, or `--fleet-project`) enables fleet Workload Identity Federation if the cluster already has Workload Identity Federation for GKE enabled. Lightweight memberships cannot use fleet Workload Identity Federation.
 
 ```bash
 gcloud container clusters update CLUSTER_NAME --enable-fleet
@@ -119,6 +119,7 @@ spec:
 - Terraform: use the `google` provider version 5.6.0 or later with a `fleet { project = "FLEET_HOST_PROJECT" }` block in `google_container_cluster`; `workload_identity_config { workload_pool = "PROJECT_ID.svc.id.goog" }` enables Workload Identity Federation for GKE. The source also shows Console steps and the full Terraform blocks, omitted here. If `fleet.project` is not set, the cluster is not registered.
 - In the Console, clusters with Workload Identity Federation for GKE automatically get fleet Workload Identity Federation when registered. Autopilot clusters have it enabled by default.
 - Distinct from Workload Identity Federation for external workloads (AWS / Azure / OIDC), which is in `gcp-foundation`.
+- Source inconsistency: the source says "Both of these commands enable fleet Workload Identity Federation" right after listing the regular and the `--membership-type=LIGHTWEIGHT` registration commands, while the fleet Workload Identity Federation page says lightweight memberships cannot use it. The sentence is applied to regular memberships only here (see `about-fleet-workload-identity-federation.md`).
 - Source: https://docs.cloud.google.com/kubernetes-engine/fleet-management/docs/register/gke (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the `--fleet-project ... /` continuation and the trailing `}` after the `issuer` field.
 
