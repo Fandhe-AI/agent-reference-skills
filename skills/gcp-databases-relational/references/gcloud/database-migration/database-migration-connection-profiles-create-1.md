@@ -1365,6 +1365,7 @@ REGIONAL ENDPOINTS
 
 ## Notes
 
+- Corrected from the official docs (the help text above is verbatim): the `--ca-certificate`, `--client-certificate` and `--private-key` descriptions suggest `--ca-certificate=$(</path/to/certificate_file.pem)` (and the same form for the other two) without quotes; an unquoted command substitution is split on the PEM's spaces and newlines into several arguments. Quote it: `--ca-certificate="$(</path/to/certificate_file.pem)"`, `--client-certificate="$(</path/to/certificate_file.pem)"`, `--private-key="$(</path/to/private_key_file.pem)"`.
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the Oracle `create` example omits `--database-service`, which the SYNOPSIS and REQUIRED FLAGS list as required (gcloud 593.0.0: "argument --database-service: Must be specified"); the runnable form adds `--database-service=DATABASE_SERVICE` (the Oracle database service name).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.

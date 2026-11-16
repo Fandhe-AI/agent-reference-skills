@@ -369,6 +369,7 @@ SYNOPSIS
 
 ## Notes
 
+- Corrected from the official docs (the help text above is verbatim): the `--ca-certificate` description suggests `--ca-certificate=$(</path/to/certificate_file.pem)` without quotes; an unquoted command substitution is split on the PEM's spaces and newlines into several arguments. Quote it: `--ca-certificate="$(</path/to/certificate_file.pem)"`.
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the SQL Server destination `create` example passes `--cloudsql-instance` alone; the SYNOPSIS groups it with `--username` and `--password` / `--prompt-for-password` (gcloud 593.0.0: "argument --cloudsql-instance: --username (--password | --prompt-for-password) must be specified"), so the runnable form adds `--username=USERNAME --prompt-for-password` (gcloud asks for the password instead of taking it on the command line).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.

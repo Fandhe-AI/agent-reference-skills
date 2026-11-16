@@ -393,6 +393,7 @@ SYNOPSIS
 
 ## Notes
 
+- Corrected from the official docs (the help text above is verbatim): the `--ca-certificate`, `--client-certificate` and `--private-key` descriptions suggest `--ca-certificate=$(</path/to/certificate_file.pem)` (and the same form for the other two) without quotes; an unquoted command substitution is split on the PEM's spaces and newlines into several arguments. Quote it: `--ca-certificate="$(</path/to/certificate_file.pem)"`, `--client-certificate="$(</path/to/certificate_file.pem)"`, `--private-key="$(</path/to/private_key_file.pem)"`; the `--disable-iam-authentication` description repeats the `--enable-iam-authentication` text ("Use IAM database authentication to connect to the database. The username will be overridden by the DMS service agent principal."); `--disable-iam-authentication` turns IAM database authentication off for the profile (the two flags are mutually exclusive in the SYNOPSIS), so use `--enable-iam-authentication` to turn it on.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
