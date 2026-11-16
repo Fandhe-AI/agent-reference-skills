@@ -79,7 +79,9 @@ const connectWithConnectorAutoIAMAuthn = async config => {
 
 Authenticate first: a user with `gcloud auth login`, a service account with `gcloud auth activate-service-account`. Then request a token and log in. The OAuth 2.0 token is too long to paste into a password field, so pass it through an environment variable (the command is for Unix/Linux; on Windows substitute environment variable settings). Replace `HOSTNAME` (public or private IP of the instance), `USERNAME` and `DATABASE_NAME`.
 
-Adapted (not in the official docs): `sslmode=verify-ca` with `sslrootcert=server-ca.pem` replaces `sslmode=require`, so the token is only sent after the server certificate is verified.
+Per-instance CA (`GOOGLE_MANAGED_INTERNAL_CA`, the default) only:
+
+Adapted (not in the official docs): `sslmode=verify-ca` with `sslrootcert=server-ca.pem` replaces `sslmode=require`, so the token is only sent after the server certificate is verified; this is enough only for a per-instance CA, where the CA is unique to the instance.
 
 ```bash
 PGPASSWORD=`gcloud sql generate-login-token` \
@@ -90,6 +92,27 @@ user=USERNAME \
 dbname=DATABASE_NAME" \
 --no-password
 ```
+
+Shared CA (`GOOGLE_MANAGED_CAS_CA`) or customer-managed CA (`CUSTOMER_MANAGED_CAS_CA`): get the instance's DNS name from the `dnsNames:` field of the instance description (not from the certificate the server presents), create a DNS record for it, and connect to that name with hostname verification. Snippet taken from https://docs.cloud.google.com/sql/docs/postgres/configure-ssl-instance:
+
+```bash
+gcloud sql instances describe INSTANCE_NAME \
+  --project=PROJECT_ID
+```
+
+Adapted (not in the official docs): `sslmode=verify-full` with `sslrootcert=server-ca.pem` (the CA bundle) and `host=DNS_NAME` (a name from `dnsNames`) replace `sslmode=require` and `hostaddr=HOSTNAME`, so the token is only sent to a server whose certificate is issued by the CA and names this instance.
+
+```bash
+PGPASSWORD=`gcloud sql generate-login-token` \
+psql "sslmode=verify-full \
+sslrootcert=server-ca.pem \
+host=DNS_NAME \
+user=USERNAME \
+dbname=DATABASE_NAME" \
+--no-password
+```
+
+The Auth Proxy or a connector with automatic IAM authentication (above) verifies the server without these steps.
 
 ## Options / Props
 
@@ -106,15 +129,18 @@ Prerequisites: instance configured for IAM database authentication; IAM user, se
 
 ## Notes
 
-- Adapted from the official docs: the source's manual login uses `sslmode=require`, which encrypts but does not verify the server, so the token could be sent to an impostor. The example uses `sslmode=verify-ca sslrootcert=server-ca.pem`. For an instance with a per-instance CA (the default), the source's SSL page gets the file with `gcloud sql instances describe INSTANCE_NAME --format="value(serverCaCert.cert)" > server-ca.pem`; for a shared or customer-managed CA, download the CA bundle as described in https://docs.cloud.google.com/sql/docs/postgres/manage-ssl-instance. `verify-full` needs the instance's DNS name instead of an IP (see `cloud-sql-operations/troubleshooting.md`). Automatic IAM authentication through the Auth Proxy or a connector avoids handling the token.
+- Adapted from the official docs: the source's manual login uses `sslmode=require`, which encrypts but does not verify the server, so the token could be sent to an impostor. The per-instance CA example uses `sslmode=verify-ca sslrootcert=server-ca.pem`; the source's SSL page gets that file with `gcloud sql instances describe INSTANCE_NAME --format="value(serverCaCert.cert)" > server-ca.pem`. Per https://docs.cloud.google.com/sql/docs/postgres/authorize-ssl, verifying the CA verifies the server identity only for a per-instance CA. Automatic IAM authentication through the Auth Proxy or a connector avoids handling the token.
+- Adapted from the official docs: for a shared CA the CA is shared by all instances in the region, so `verify-ca` would also accept another instance's certificate; the source requires hostname verification as well (https://docs.cloud.google.com/sql/docs/postgres/authorize-ssl), and for a customer-managed CA it says you might want to verify the hostname too. That example therefore uses `sslmode=verify-full` with `host=DNS_NAME`, following the steps in https://docs.cloud.google.com/sql/docs/postgres/configure-ssl-instance (take `DNS_NAME` from `dnsNames` in `gcloud sql instances describe`, create the DNS record, use `sslmode=verify-full`). Download the CA bundle for `sslrootcert` as described in https://docs.cloud.google.com/sql/docs/postgres/manage-ssl-instance. Not from the source (libpq): `verify-full` checks the certificate against `host`, not `hostaddr`, so `host` must be the DNS name. The listed names end with a trailing dot; the source's Node.js `servername` example (see `cloud-sql-operations/troubleshooting.md`) omits it. With a per-instance CA the certificate carries the DNS name only for Private Service Connect instances.
 - Warning (source): if you run the Auth Proxy as a service, it requests access tokens on behalf of your applications; ensure only trusted users can reach its address and port or Unix socket. Keep the proxy on its default `127.0.0.1`.
 - Warning (source): the OAuth 2.0 token can make authenticated requests on your behalf; keep it secure and be careful where you store it. Tokens live one hour.
-- Manual login: for a public IP instance you must authorize your machine's IP address; for private IP run the command inside the VPC network. Exposes the instance on a public IP when authorized networks are used; prefer private IP, PSC or the Auth Proxy / connectors with IAM authentication when the source offers them. SSL is mandatory (IAM logins are SSL-only; the source uses `sslmode=require`, the example above `sslmode=verify-ca`). If the instance `ssl_mode` is `TRUSTED_CLIENT_CERTIFICATE_REQUIRED`, the source recommends automatic IAM database authentication to enforce client identity validation.
+- Manual login: for a public IP instance you must authorize your machine's IP address; for private IP run the command inside the VPC network. Exposes the instance on a public IP when authorized networks are used; prefer private IP, PSC or the Auth Proxy / connectors with IAM authentication when the source offers them. SSL is mandatory (IAM logins are SSL-only; the source uses `sslmode=require`, the examples above `sslmode=verify-ca` for a per-instance CA and `sslmode=verify-full` for a shared or customer-managed CA). If the instance `ssl_mode` is `TRUSTED_CLIENT_CERTIFICATE_REQUIRED`, the source recommends automatic IAM database authentication to enforce client identity validation.
 - Source inconsistency: the page text lists Auth Proxy, Go, Java and Python as supporting automatic IAM database authentication, yet it also provides a Node.js sample using `authType: 'IAM'`.
 - The Node.js and Python samples default to public IP when `PRIVATE_IP` is unset. The source's full Python automatic-IAM sample (`connect_with_connector_auto_iam_authn`) is in [connectors-iam-python.md](./connectors-iam-python.md).
 - Leading indentation and trailing blank lines from the rendered twin were normalized in code blocks. The source also shows Go, Java JDBC and Java R2DBC samples; omitted. The Java sample's placeholder password `"password"` exists only to bypass driver validation.
 - Cloud SQL is managed PostgreSQL on Google Cloud, distinct from Supabase Postgres (`supabase`), Cloudflare D1 / Hyperdrive (`cloudflare-storage`), and the Node.js client `mssql` / ORM `drizzle`. ADC setup: `gcp-foundation`; client-library patterns: `gcp-client-libraries`; gcloud: `gcp-cli`.
 - Source: https://docs.cloud.google.com/sql/docs/postgres/iam-logins (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sql/docs/postgres/configure-ssl-instance (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0; the `gcloud sql instances describe` snippet)
+- Source: https://docs.cloud.google.com/sql/docs/postgres/authorize-ssl (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

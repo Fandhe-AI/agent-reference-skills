@@ -16,9 +16,9 @@ Automatic IAM database authentication (a connector requests and refreshes the to
 ./cloud-sql-proxy --auto-iam-authn INSTANCE_CONNECTION_NAME
 ```
 
-Manual IAM database authentication (you pass the token as the password; SSL is required):
+Manual IAM database authentication (you pass the token as the password; SSL is required). For an instance with a per-instance CA (`GOOGLE_MANAGED_INTERNAL_CA`, the default) only:
 
-Adapted (not in the official docs): `sslmode=verify-ca` with `sslrootcert=server-ca.pem` replaces `sslmode=require`, so the token is only sent after the server certificate is verified.
+Adapted (not in the official docs): `sslmode=verify-ca` with `sslrootcert=server-ca.pem` replaces `sslmode=require`, so the token is only sent after the server certificate is verified; this is enough only for a per-instance CA, where the CA is unique to the instance.
 
 ```bash
 PGPASSWORD=`gcloud sql generate-login-token` \
@@ -29,6 +29,8 @@ user=USERNAME \
 dbname=DATABASE_NAME" \
 --no-password
 ```
+
+For a shared CA (`GOOGLE_MANAGED_CAS_CA`) or customer-managed CA (`CUSTOMER_MANAGED_CAS_CA`), `verify-ca` is not enough: use `sslmode=verify-full` with `host=` set to the instance DNS name taken from `dnsNames` in `gcloud sql instances describe` (full steps and example in [iam-logins.md](./iam-logins.md)), or use the Auth Proxy / a connector.
 
 ## Options / Props
 
@@ -64,7 +66,7 @@ Instance scenarios:
 
 ## Notes
 
-- Adapted from the official docs: the source's manual login uses `sslmode=require`, which encrypts but does not verify the server, so the token could be sent to an impostor. The example uses `sslmode=verify-ca sslrootcert=server-ca.pem`. For an instance with a per-instance CA (the default), the source's SSL page gets the file with `gcloud sql instances describe INSTANCE_NAME --format="value(serverCaCert.cert)" > server-ca.pem`; for a shared or customer-managed CA, download the CA bundle as described in https://docs.cloud.google.com/sql/docs/postgres/manage-ssl-instance. `verify-full` needs the instance's DNS name instead of an IP (see `cloud-sql-operations/troubleshooting.md`). Automatic IAM authentication through the Auth Proxy or a connector avoids handling the token.
+- Adapted from the official docs: the source's manual login uses `sslmode=require`, which encrypts but does not verify the server, so the token could be sent to an impostor. The example uses `sslmode=verify-ca sslrootcert=server-ca.pem` and applies only to a per-instance CA (the default); the source's SSL page gets that file with `gcloud sql instances describe INSTANCE_NAME --format="value(serverCaCert.cert)" > server-ca.pem`. Per https://docs.cloud.google.com/sql/docs/postgres/authorize-ssl, a shared CA is shared across instances, so hostname verification is required as well (for a customer-managed CA the source says you might want to verify the hostname too); https://docs.cloud.google.com/sql/docs/postgres/configure-ssl-instance takes the DNS name from `dnsNames` in `gcloud sql instances describe` and uses `sslmode=verify-full` (see [iam-logins.md](./iam-logins.md)). Automatic IAM authentication through the Auth Proxy or a connector avoids handling the token.
 - Automatic authentication is strongly recommended over manual, especially for long-lived processes and connection pools; manual tokens expire after one hour and later logins fail. The source lists support for the Cloud SQL Auth Proxy and the Go, Java and Python connectors (the sibling login page also shows a Node.js sample; see [iam-logins.md](./iam-logins.md)).
 - Group authentication best practices: also delete a group from the Cloud SQL instance when you revoke its `cloudsql.instances.login` in Cloud Identity or delete the group; give groups least privileges; don't grant group-user roles to built-in users. To move an existing individual IAM account to group authentication, remove the individual account first. With read replicas, log in to the primary first so group user information replicates.
 - Context-aware access: connectors (including the Auth Proxy) can't be used with IAM database authentication; connect directly instead.
@@ -77,6 +79,8 @@ Instance scenarios:
 - Cloud SQL is managed PostgreSQL on Google Cloud, distinct from Supabase Postgres (`supabase`) auth. IAM principals, service accounts and ADC basics: `gcp-foundation`.
 - Source: https://docs.cloud.google.com/sql/docs/postgres/iam-authentication (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source (snippets): https://docs.cloud.google.com/sql/docs/postgres/iam-logins
+- Source: https://docs.cloud.google.com/sql/docs/postgres/configure-ssl-instance (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sql/docs/postgres/authorize-ssl (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

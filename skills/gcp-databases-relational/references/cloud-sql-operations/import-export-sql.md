@@ -88,7 +88,8 @@ Adapted (not in the official docs): the source body uses the non-JSON placeholde
 ## Notes
 
 - Before a large export, ensure at least 25 percent of the database size is free on the instance to avoid aggressive autogrowth affecting availability.
-- Import accepts `.gz` or `.sql`. Console destination runs `USE DATABASE_NAME` before import; a `USE` statement in the file overrides it.
+- Import accepts `.gz` or `.sql`. The target database is chosen with `--database` (`gcloud sql import sql`), `importContext.database` (REST) or the Console's Destination field.
+- Source inconsistency: the PostgreSQL page's Console import steps say that selecting the destination makes Cloud SQL run a `USE DATABASE_NAME` statement and that a `USE DATABASE_NAME` statement in the dump overrides it. PostgreSQL has no `USE` statement (that text matches the MySQL page); the PostgreSQL page's own gcloud and REST forms select the database with `--database` / `importContext.database`.
 - Role and IAM changes can take a few minutes to propagate.
 - Large objects (blobs) can make an export consume a lot of memory.
 - Import and export can be canceled. PostgreSQL imports in a single transaction, so a canceled import persists no data (stated on https://docs.cloud.google.com/sql/docs/postgres/known-issues).

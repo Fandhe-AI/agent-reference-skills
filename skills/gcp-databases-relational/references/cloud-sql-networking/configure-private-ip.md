@@ -12,6 +12,8 @@ How to configure a Cloud SQL for PostgreSQL instance to use private IP (private 
 
 Enable the Service Networking API and establish VPC Network Peering with Google services first; otherwise creation fails with `SERVICE_NETWORKING_NOT_ENABLED` or `NETWORK_NOT_PEERED`.
 
+With Shared VPC, the address range and the peering belong to the host project that owns the VPC network (`NETWORK_PROJECT_ID`); only the Cloud SQL instance commands run in the service project (`PROJECT_ID`). Run the API enablement below for the service project and again with `--project=NETWORK_PROJECT_ID`: the source says to enable the same APIs, and grant the same user the same permissions, in the host project.
+
 ```bash
 gcloud services enable \
     sqladmin.googleapis.com \
@@ -20,21 +22,25 @@ gcloud services enable \
     --project=PROJECT_ID
 ```
 
+Adapted (not in the official docs): `--project=NETWORK_PROJECT_ID` replaces `--project=PROJECT_ID`, so with Shared VPC the range is reserved in the host project that owns the network.
+
 ```bash
 gcloud compute addresses create google-managed-services-VPC_NETWORK_NAME \
     --global \
     --purpose=VPC_PEERING \
     --prefix-length=16 \
     --network=projects/NETWORK_PROJECT_ID/global/networks/VPC_NETWORK_NAME \
-    --project=PROJECT_ID
+    --project=NETWORK_PROJECT_ID
 ```
+
+Adapted (not in the official docs): `--project=NETWORK_PROJECT_ID` replaces `--project=PROJECT_ID`, because `--network` names a network in the `--project` project.
 
 ```bash
 gcloud services vpc-peerings connect \
     --service=servicenetworking.googleapis.com \
     --ranges=google-managed-services-VPC_NETWORK_NAME \
     --network=VPC_NETWORK_NAME \
-    --project=PROJECT_ID
+    --project=NETWORK_PROJECT_ID
 ```
 
 ### New instance with private IP
@@ -71,11 +77,13 @@ gcloud sql instances patch INSTANCE_NAME \
 --authorized-networks=192.88.99.0/24,11.0.0.0/24
 ```
 
+Adapted (not in the official docs): `--project=NETWORK_PROJECT_ID` replaces `--project=PROJECT_ID`; the peering lives in the VPC network's project (the host project with Shared VPC).
+
 ```bash
 gcloud compute networks peerings update cloudsql-postgres-googleapis-com \
 --network=VPC_NETWORK_NAME \
 --export-subnet-routes-with-public-ip \
---project=PROJECT_ID
+--project=NETWORK_PROJECT_ID
 ```
 
 For an instance placed in a privately used public IP range, enable `--import-subnet-routes-with-public-ip` on the same peering update command instead.
@@ -85,7 +93,7 @@ For an instance placed in a privately used public IP range, enable `--import-sub
 | Placeholder / flag | Description |
 |--------------------|-------------|
 | `INSTANCE_ID`, `PROJECT_ID` | Instance ID and project ID. |
-| `NETWORK_PROJECT_ID` | Project of the VPC network. With Shared VPC, `PROJECT_ID` is the service project and `NETWORK_PROJECT_ID` the host project. |
+| `NETWORK_PROJECT_ID` | Project of the VPC network. With Shared VPC, `PROJECT_ID` is the service project and `NETWORK_PROJECT_ID` the host project; the address range, peering and peering route commands use `NETWORK_PROJECT_ID`. Without Shared VPC both are the same project. |
 | `VPC_NETWORK_NAME` | VPC network name. |
 | `RANGE_NAME` | Optional. Allocated range name; RFC-1035, 1-63 characters. |
 | `DATABASE_VERSION` | e.g. `POSTGRES_14`. |
@@ -99,6 +107,11 @@ Permissions: `compute.addresses.create`, `compute.addresses.list`, `compute.glob
 ## Notes
 
 - Source: https://docs.cloud.google.com/sql/docs/postgres/configure-private-ip (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sql/docs/postgres/configure-private-services-access (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: `gcloud compute addresses create` used `--project=PROJECT_ID`, which this page defines as the Shared VPC service project; the allocated range must be in the VPC network's project, so it uses `--project=NETWORK_PROJECT_ID`. Evidence: this page's own `--network=projects/NETWORK_PROJECT_ID/...` value and its note that the host project needs the same APIs and permissions, plus https://docs.cloud.google.com/sql/docs/postgres/configure-private-services-access (enable the APIs in the Shared VPC host project; grant `roles/compute.networkAdmin` in the host project). Not from the source: that the `--project` of this command must be the host project is inferred from those statements.
+- Adapted from the official docs: `gcloud services vpc-peerings connect` used `--project=PROJECT_ID`; its gcloud help defines `--network` as "the network in the current project", so with Shared VPC the service project has no such network and it uses `--project=NETWORK_PROJECT_ID`.
+- Adapted from the official docs: `gcloud compute networks peerings update` used `--project=PROJECT_ID`; https://docs.cloud.google.com/sql/docs/postgres/configure-private-services-access says `PROJECT_ID` there is the project of the VPC network (the host project with Shared VPC), so it uses `--project=NETWORK_PROJECT_ID`. The `--import-subnet-routes-with-public-ip` variant takes the same project.
+- Source inconsistency: this page says that with Shared VPC `PROJECT_ID` must be the service project for all its gcloud commands, including the range and peering commands; configure-private-services-access uses the host project (the VPC network's project) for the peering and route commands.
 - The source also shows Console, Terraform and REST (v1, v1beta4) forms, omitted here. The REST bodies in the source omit a comma after `"allocatedIpRange": "RANGE_NAME"`, so they are not valid JSON as printed.
 - After configuring private IP you cannot disable private IP connectivity. After creation you can't assign or change an allocated range name. Address ranges can be specified only for a primary, not for a read replica or clone.
 - `--cpu`/`--memory` work only for Enterprise edition. For PostgreSQL 16 and later (default edition Enterprise Plus) add `--edition=ENTERPRISE`, or use `--tier` with an Enterprise Plus machine type (gcloud help: --cpu/--memory not compatible with Enterprise Plus).

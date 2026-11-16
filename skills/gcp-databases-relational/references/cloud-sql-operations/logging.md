@@ -71,6 +71,16 @@ gcloud logging read \
 
 ### Log query statements with pgaudit
 
+Order from https://docs.cloud.google.com/sql/docs/postgres/pg-audit: enable the flag, create the extension, then set `pgaudit.log`.
+
+First enable `cloudsql.enable_pgaudit`. Snippet taken from https://docs.cloud.google.com/sql/docs/postgres/pg-audit. `--database-flags` replaces every flag already set on the instance, so add your existing flags to the list. Changing this flag restarts the instance; wait for the operation to finish.
+
+```bash
+gcloud sql instances patch INSTANCE_NAME --database-flags cloudsql.enable_pgaudit=on
+```
+
+Then connect and create the extension:
+
 ```bash
 gcloud sql connect INSTANCE_NAME
 ```
@@ -79,10 +89,14 @@ gcloud sql connect INSTANCE_NAME
 CREATE EXTENSION pgaudit;
 ```
 
+Finally exit the database and set `pgaudit.log` (again keep `cloudsql.enable_pgaudit=on` and your other existing flags in the list):
+
 ```bash
 gcloud sql instances patch INSTANCE_NAME \
 --database-flags=cloudsql.enable_pgaudit=on,pgaudit.log=all
 ```
+
+For per-database or per-role audit settings, see the "Customizing database audit logging" section of the pg-audit page.
 
 ## Options / Props
 
@@ -113,12 +127,14 @@ gcloud sql instances patch INSTANCE_NAME \
 - Source inconsistency: the first `gcloud logging read` example says to replace `PROJECT_ID` but the block contains `PROJECT-ID`.
 - Adapted from the official docs: the download-as-JSON filter spanned lines inside the quotes.
 - Adapted from the official docs: the download-as-text command ended with `... | .textPayload' \ --order=asc > downloaded-log.txt`, and its filter also spanned lines.
+- Source inconsistency: this page's troubleshooting row runs `CREATE EXTENSION pgaudit` first and only then sets `cloudsql.enable_pgaudit=on,pgaudit.log=all`; https://docs.cloud.google.com/sql/docs/postgres/pg-audit enables `cloudsql.enable_pgaudit` first ("After enabling the database flag, run the `CREATE EXTENSION` command"), then sets `pgaudit.log`. The steps above follow the pg-audit page; the blocks are unchanged, only reordered, with the flag-only patch added from that page.
 - `--database-flags` overwrites all previously set database flags (unlisted flags return to defaults) and may restart the instance; include every existing flag in the list. `pgaudit.log=all` logs every statement, which adds CPU, memory and log volume (see the troubleshooting row above). Source: https://docs.cloud.google.com/sql/docs/postgres/flags
 - The Logs Explorer queries are filters, not shell commands (the source tags the Cloud Run one as `bash`); Logs Explorer does not expand `$SERVICE_NAME` / `$REVISION_NAME`, so replace them with literal values.
 - The source also shows the Console Logs Explorer flow and the App Engine Services page flow (omitted).
 - Distinct from Supabase Postgres (`supabase`) and Cloudflare D1 / Hyperdrive (`cloudflare-storage`); `mssql` / `drizzle` cover client code.
 - Source: https://docs.cloud.google.com/sql/docs/postgres/logging (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sql/docs/postgres/flags (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sql/docs/postgres/pg-audit (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0; the flag-only `patch` snippet and step order)
 
 ## Related
 

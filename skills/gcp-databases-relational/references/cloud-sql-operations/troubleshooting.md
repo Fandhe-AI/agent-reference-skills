@@ -67,11 +67,20 @@ ALTER USER username SET TIMEZONE TO 'timezone';
 
 ### Node.js `verify-full` hostname mismatch
 
-The downloaded `server-ca.pem` has no DNS name. Replace `INSTANCE_IP_ADDRESS`, then set `servername` to the `DNS:` value.
+The downloaded `server-ca.pem` is the CA certificate and has no DNS name. Take the expected name for `servername` from the `dnsNames:` field of the target instance's description, not from the connection you are trying to verify. Snippet taken from https://docs.cloud.google.com/sql/docs/postgres/configure-ssl-instance:
+
+```bash
+gcloud sql instances describe INSTANCE_NAME \
+  --project=PROJECT_ID
+```
+
+The source reads the name from the server certificate instead. Use that only to see what the server presents (replace `INSTANCE_IP_ADDRESS`); if no `DNS:` value matches the instance's `dnsNames`, you are not talking to that instance, so stop rather than copy the value into `servername`.
 
 ```bash
 echo | openssl s_client -starttls postgres -connect INSTANCE_IP_ADDRESS:5432 | openssl x509 -noout -text | grep 'DNS:'
 ```
+
+Then set `servername` to the name from `dnsNames` (not the `openssl` output), without the trailing dot as in the source's example:
 
 ```javascript
 ssl: {
@@ -185,6 +194,8 @@ gcloud compute forwarding-rules describe ENDPOINT_NAME \
 - Adapted from the official docs: Step 2 selected `username`; now `usename`.
 - Adapted from the official docs: `pg_cancel_backend` filtered `WHERE username = ...`; now `usename`.
 - Adapted from the official docs: `pg_terminate_backend` filtered `WHERE username = ...`; now `usename`.
+- Source inconsistency: for the Node.js `verify-full` hostname mismatch, this page sets `servername` to the `DNS:` value read with `openssl s_client` from the server's certificate; that certificate comes from the unverified connection being diagnosed, so an impostor (with a shared CA, any instance under the same CA) would supply its own name. https://docs.cloud.google.com/sql/docs/postgres/configure-ssl-instance instead takes the DNS name from `dnsNames` in `gcloud sql instances describe` (the instance lookup API), which this page follows; the `openssl` command is kept only as a comparison.
+- Not from the source: `gcloud services vpc-peerings update --network` names a network in the `--project` project (its gcloud help says "the network in the current project"), so with Shared VPC pass the host project (the VPC network's project) as `PROJECT_ID`; https://docs.cloud.google.com/sql/docs/postgres/configure-private-services-access says the same for the peering route commands.
 - Source inconsistency: its deleted-instance row says all data and backups are permanently lost; its backup row and the backups page describe final and retained backups.
 - The source gives the `pg_signal_backend` procedure as three steps and shows `pg_cancel_backend` and `pg_terminate_backend` in separate blocks; they are alternatives, kept as separate fences here.
 - `--database-flags` overwrites all previously set database flags (unlisted flags return to defaults) and may restart the instance; include every existing flag in the list. Source: https://docs.cloud.google.com/sql/docs/postgres/flags
@@ -194,6 +205,7 @@ gcloud compute forwarding-rules describe ENDPOINT_NAME \
 - Distinct from Supabase Postgres (`supabase`), Cloudflare D1 / Hyperdrive (`cloudflare-storage`), and the `mssql` / `drizzle` client skills.
 - Source: https://docs.cloud.google.com/sql/docs/postgres/troubleshooting (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sql/docs/postgres/flags (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sql/docs/postgres/configure-ssl-instance (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0; the `gcloud sql instances describe` snippet)
 
 ## Related
 

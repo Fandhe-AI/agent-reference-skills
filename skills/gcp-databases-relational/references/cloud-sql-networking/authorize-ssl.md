@@ -33,7 +33,7 @@ For `CUSTOMER_MANAGED_CAS_CA`, also set the `serverCaPool` field to a CA pool in
 | Unsupported connection sources | None | App Engine standard, App Engine flexible, Cloud Run first generation | Same as shared CA |
 
 - Per-instance CA is the default when `serverCaMode` is unspecified. You can't update an instance from shared or customer-managed back to per-instance. Shared and customer-managed can be switched to from other modes by create or edit.
-- With shared CAs, verify the hostname as well as the CA, since CAs are shared across instances.
+- With shared CAs, verify the hostname as well as the CA, since CAs are shared across instances. Per https://docs.cloud.google.com/sql/docs/postgres/configure-ssl-instance, take the hostname from the `dnsNames` field of `gcloud sql instances describe`, create a DNS record for it, and connect with `sslmode=verify-full`; with a per-instance CA, verifying the CA (`sslmode=verify-ca`) verifies the server identity.
 
 ### Certificate rotation
 
@@ -47,6 +47,7 @@ For `CUSTOMER_MANAGED_CAS_CA`, also set the `serverCaPool` field to a CA pool in
 - Source: https://docs.cloud.google.com/sql/docs/postgres/edit-instance (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sql/docs/postgres/instance-settings (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sql/docs/postgres/create-instance (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sql/docs/postgres/configure-ssl-instance (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Switching to `GOOGLE_MANAGED_CAS_CA` cannot be reverted to the per-instance CA, and Auth Proxy clients need version 2.13.0 or later; try it on a disposable instance first.
 - Auth Proxy and language connectors encrypt with SSL/TLS and verify client and server identity without a downloaded CA or client certificate.
 - Source inconsistency: the per-instance console option is called "Google managed internal certificate authority" in one place and "Google internal Certificate Authority" in another.
