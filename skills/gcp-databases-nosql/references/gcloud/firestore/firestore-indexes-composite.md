@@ -255,6 +255,16 @@ NOTES
         $ gcloud beta firestore indexes composite create
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud firestore indexes composite create \
+    --database='(default)' \
+    --collection-group=Events \
+    --field-config=field-path=user-id,order=descending \
+    --field-config=field-path=timestamp,order=descending
+```
+
 ### gcloud firestore indexes composite delete
 
 ```text
@@ -333,6 +343,13 @@ NOTES
         $ gcloud alpha firestore indexes composite delete
 
         $ gcloud beta firestore indexes composite delete
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud firestore indexes composite delete 3421ef \
+    --database='(default)'
 ```
 
 ### gcloud firestore indexes composite describe
@@ -418,6 +435,13 @@ NOTES
         $ gcloud alpha firestore indexes composite describe
 
         $ gcloud beta firestore indexes composite describe
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud firestore indexes composite describe 3421ef \
+    --database='(default)'
 ```
 
 ### gcloud firestore indexes composite list
@@ -525,6 +549,13 @@ NOTES
         $ gcloud alpha firestore indexes composite list
 
         $ gcloud beta firestore indexes composite list
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud firestore indexes composite list \
+    --database='(default)'
 ```
 
 ### gcloud beta firestore indexes composite create
@@ -643,6 +674,8 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the examples pass `--database=(default)` unquoted; in bash and sh the parentheses are shell syntax, so the command fails with a syntax error before gcloud runs. The runnable form quotes the value: `--database='(default)'`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

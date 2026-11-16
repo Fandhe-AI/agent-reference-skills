@@ -82,6 +82,12 @@ NOTES
         $ gcloud beta firestore bulk-delete
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the commands are rewritten so that they run as described (see Notes).
+
+```bash
+gcloud firestore bulk-delete --namespace-ids='customers','orders'
+```
+
 Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
 
 ```bash
@@ -119,6 +125,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `--namespace-ids` flag description gives the example `gcloud firestore bulk-delete --namespaces-ids='customers','orders'`, but the flag is `--namespace-ids` (as in the SYNOPSIS and FLAGS); gcloud 593.0.0 rejects `--namespaces-ids` as an unrecognized argument. The runnable form uses `--namespace-ids`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
