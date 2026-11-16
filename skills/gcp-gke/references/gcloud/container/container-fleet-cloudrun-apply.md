@@ -1,0 +1,127 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/container/fleet/cloudrun/apply
+---
+
+# gcloud container fleet cloudrun apply
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud container fleet cloudrun apply
+
+```text
+NAME
+    gcloud container fleet cloudrun apply - deploy or update the CloudRun
+        feature
+
+SYNOPSIS
+    gcloud container fleet cloudrun apply
+        (--gke-cluster=LOCATION/CLUSTER_NAME | --gke-uri=GKE_URI
+          | [--context=CONTEXT : --kubeconfig=KUBECONFIG]) [--config=CONFIG]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Deploy or update a user-specified config file of the CloudRun custom
+    resource. The config file should be a YAML file.
+
+EXAMPLES
+    To apply the CloudRun YAML file, run:
+
+        $ gcloud container fleet cloudrun apply \
+            --kubeconfig=/path/to/kubeconfig \
+            --config=/path/to/cloud-run-cr.yaml
+
+REQUIRED FLAGS
+     Cluster identifier.
+
+     Exactly one of these must be specified:
+
+       --gke-cluster=LOCATION/CLUSTER_NAME
+          The location/name of the GKE cluster. The location can be a zone or a
+          region for e.g us-central1-a/my-cluster.
+
+       --gke-uri=GKE_URI
+          The URI of a GKE cluster that you want to register to Hub; for
+          example,
+          'https://container.googleapis.com/v1/projects/my-project/locations/us-central1-a/clusters/my-cluster'.
+          To obtain the URI, you can run 'gcloud container clusters list
+          --uri'. Note that this should only be provided if the cluster being
+          registered is a GKE cluster. The service will validate the provided
+          URI to confirm that it maps to a valid GKE cluster."
+
+       Or at least one of these can be specified:
+
+         Non-GKE cluster identifier.
+
+         --context=CONTEXT
+            The cluster context as it appears in the kubeconfig file. You can
+            get this value from the command line by running command: kubectl
+            config current-context.
+
+            This flag argument must be specified if any of the other arguments
+            in this group are specified.
+
+         --kubeconfig=KUBECONFIG
+            The kubeconfig file containing an entry for the cluster. Defaults
+            to $KUBECONFIG if it is set in the environment, otherwise defaults
+            to $HOME/.kube/config.
+
+OPTIONAL FLAGS
+     --config=CONFIG
+        The path to CloudRun custom resource config file.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha container fleet cloudrun apply
+
+        $ gcloud beta container fleet cloudrun apply
+```
+
+### gcloud beta container fleet cloudrun apply
+
+```text
+NAME
+    gcloud beta container fleet cloudrun apply - deploy or update the CloudRun
+        feature
+
+SYNOPSIS
+    gcloud beta container fleet cloudrun apply
+        (--gke-cluster=LOCATION/CLUSTER_NAME | --gke-uri=GKE_URI
+          | [--context=CONTEXT : --kubeconfig=KUBECONFIG]) [--config=CONFIG]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha container fleet cloudrun apply
+
+```text
+NAME
+    gcloud alpha container fleet cloudrun apply - deploy or update the CloudRun
+        feature
+
+SYNOPSIS
+    gcloud alpha container fleet cloudrun apply
+        (--gke-cluster=LOCATION/CLUSTER_NAME | --gke-uri=GKE_URI
+          | [--context=CONTEXT : --kubeconfig=KUBECONFIG]) [--config=CONFIG]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/container/fleet/cloudrun/apply (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
