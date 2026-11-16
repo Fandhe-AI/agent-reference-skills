@@ -12,8 +12,10 @@ tempdb holds temporary tables, stored procedures and more, and is recreated on e
 
 Use the `/var/opt/mssql/data/` directory for the physical path. Example values: `LOGICAL_FILENAME` `tempdev4`, `PHYSICAL_FILENAME` `/var/opt/mssql/data/tempdb4.ndf`, `SIZE` `1GB`.
 
+Adapted (not in the official docs): `PHYSICAL_FILENAME` is quoted, because T-SQL `FILENAME` takes a string literal.
+
 ```sql
-ALTER DATABASE [tempdb] ADD FILE (NAME = LOGICAL_FILENAME, FILENAME = PHYSICAL_FILENAME, SIZE = SIZE)
+ALTER DATABASE [tempdb] ADD FILE (NAME = LOGICAL_FILENAME, FILENAME = 'PHYSICAL_FILENAME', SIZE = SIZE)
 ```
 
 ```sql
@@ -50,6 +52,7 @@ Default file count: at least eight files for instances with eight or more logica
 
 ## Notes
 
+- Corrected from the official docs: the source writes `FILENAME = PHYSICAL_FILENAME` unquoted; with the example value it becomes `FILENAME = /var/opt/mssql/data/tempdb4.ndf`, a syntax error. `FILENAME` takes a quoted string (`'os_file_name'` in Microsoft's `ALTER DATABASE` file options, https://learn.microsoft.com/en-us/sql/t-sql/statements/alter-database-transact-sql-file-and-filegroup-options).
 - Source: https://docs.cloud.google.com/sql/docs/sqlserver/manage-tempdb (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - SQL Server-specific page (tempdb); no PostgreSQL counterpart was checked.
 - Managed Cloud SQL feature; distinct from the Node.js client `mssql` skill (client code only).
