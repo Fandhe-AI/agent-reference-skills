@@ -380,7 +380,7 @@ Base URL: `https://gkehub.googleapis.com`. Methods are listed by `id`; the `Vers
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Output only. The resource name of the membershipFeature, in the format: `projects/{project}/locations/{location}/memberships/{membership}/features/{feature}`. Note that `membershipFeatures` is shortened to `features` in the resource name. (see http://go/aip/122#collection-identifiers) |
+| `name` | path | string | yes | Output only. The resource name of the membershipFeature, in the format: `projects/{project}/locations/{location}/memberships/{membership}/features/{feature}`. Note that `membershipFeatures` is shortened to `features` in the resource name. (see https://google.aip.dev/122#collection-identifiers) |
 | `allowMissing` | query | boolean | no | Optional. If set to true, and the MembershipFeature is not found, a new MembershipFeature will be created. In this situation, `update_mask` is ignored. |
 | `requestId` | query | string | no | Idempotent request UUID. |
 | `updateMask` | query | string (google-fieldmask) | yes | Required. Mask of fields to update. |
@@ -1105,6 +1105,8 @@ curl -X GET \
 - Generated from the Discovery document(s) v2, v1, v2beta, v1beta1, v1beta, v2alpha, v1alpha of `gkehub` (retrieved 2026-11-14). Resources on this page: organizations, projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
 - Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Corrected from the official docs (the Discovery text above is verbatim): the fleet namespace resource name (the `name` field of the `Namespace` type and the `name` parameter of `gkehub.projects.locations.scopes.namespaces.patch`) is described as `projects/{project}/locations/{location}/namespaces/{namespace}`, but the Discovery path pattern of the `scopes.namespaces` methods is `projects/[^/]+/locations/[^/]+/scopes/[^/]+/namespaces/[^/]+`; use `projects/{project}/locations/{location}/scopes/{scope}/namespaces/{namespace}`.
+- Adapted from the official docs: Google-internal `go/aip/N` links in the Discovery descriptions are replaced with the public AIP pages `https://google.aip.dev/N`.
 - Source: https://gkehub.googleapis.com/$discovery/rest?version=v2, https://gkehub.googleapis.com/$discovery/rest?version=v1, https://gkehub.googleapis.com/$discovery/rest?version=v2beta, https://gkehub.googleapis.com/$discovery/rest?version=v1beta1, https://gkehub.googleapis.com/$discovery/rest?version=v1beta, https://gkehub.googleapis.com/$discovery/rest?version=v2alpha, https://gkehub.googleapis.com/$discovery/rest?version=v1alpha (https://developers.google.com/discovery)
 
 ## Related
