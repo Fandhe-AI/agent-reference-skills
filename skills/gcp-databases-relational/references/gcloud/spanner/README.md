@@ -35,3 +35,10 @@
 | gcloud spanner instances get-locations | 3 commands (alpha, beta, ga); spanner instances get-locations … | [spanner-instances-get-locations.md](./spanner-instances-get-locations.md) |
 | gcloud spanner instances list | 3 commands (alpha, beta, ga); spanner instances list … | [spanner-instances-list.md](./spanner-instances-list.md) |
 | gcloud spanner instances move | 3 commands (alpha, beta, ga); spanner instances move … | [spanner-instances-move.md](./spanner-instances-move.md) |
+| gcloud spanner instances remove-iam-policy-binding | 3 commands (alpha, beta, ga); spanner instances remove-iam-policy-binding … | [spanner-instances-remove-iam-policy-binding.md](./spanner-instances-remove-iam-policy-binding.md) |
+| gcloud spanner instances set-iam-policy | 3 commands (alpha, beta, ga); spanner instances set-iam-policy … | [spanner-instances-set-iam-policy.md](./spanner-instances-set-iam-policy.md) |
+| gcloud spanner instances update | 3 commands (alpha, beta, ga); spanner instances update … | [spanner-instances-update.md](./spanner-instances-update.md) |
+| gcloud spanner migrate | 5 commands (alpha); alpha spanner migrate cleanup … | [spanner-migrate.md](./spanner-migrate.md) |
+| gcloud spanner operations | 9 commands (alpha, beta, ga); spanner operations cancel … | [spanner-operations.md](./spanner-operations.md) |
+| gcloud spanner rows | 9 commands (alpha, beta, ga); spanner rows delete … | [spanner-rows.md](./spanner-rows.md) |
+| gcloud spanner samples | 15 commands (alpha, beta, ga); spanner samples backend … | [spanner-samples.md](./spanner-samples.md) |
