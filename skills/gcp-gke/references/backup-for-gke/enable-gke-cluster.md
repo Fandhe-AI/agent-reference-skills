@@ -12,11 +12,12 @@ Enable the Backup for GKE agent on Standard and Autopilot clusters at creation, 
 
 Add `--addons=BackupRestore` to the cluster creation command:
 
+Adapted (not in the official docs): the fixed `--cluster-version=1.24.2-gke.1900` is removed so the cluster uses the current default version.
+
 ```bash
 gcloud container clusters create CLUSTER_NAME \
     --project=PROJECT_ID  \
     --location=LOCATION \
-    --cluster-version=1.24.2-gke.1900 \
     --addons=BackupRestore
 ```
 
@@ -72,6 +73,7 @@ addonsConfig:
 
 - Console defaults when creating a backup plan with the cluster: daily scheduled backups with a seven-day retention period.
 - The source also shows Console steps and Terraform (`gke_backup_agent_config` in `google_container_cluster`).
+- Corrected from the official docs: the Standard `clusters create` example pins `--cluster-version=1.24.2-gke.1900`, an old 1.24 patch version (the source introduces it as an example of "how you can create a 1.24 cluster"), which new clusters may not be able to use. The flag is dropped to use the default version; to pin a version, pass one listed by `gcloud container get-server-config`.
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/add-on/backup-for-gke/how-to/enable-gke-cluster (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -41,7 +41,7 @@ Manual conversion: remove `Repo` configs in `system/`; declare the namespace of 
 | Layout | Structure | RootSync/RepoSync usage |
 |--------|-----------|-------------------------|
 | Environment-based | `cluster-essentials/` (CRDs, namespaces), `environments/{dev,staging,prod}/...`, `system/monitoring/` | Multiple `RootSync` objects per cluster; for example a dev cluster syncs `cluster-essentials/`, `system/`, and `environments/dev/` |
-| Cluster-based | `clusters/<cluster>/{apps,networking}`, `shared/{roles,policies}` | A `RepoSync` per cluster syncing `shared` and the cluster-specific directory |
+| Cluster-based | `clusters/<cluster>/{apps,networking}`, `shared/{roles,policies}` | The source suggests a `RepoSync` per cluster syncing `shared` and the cluster-specific directory; for cluster-scoped configurations use `RootSync` objects instead (see Notes) |
 | Team-based | `teams/<team>/...`, `platform/{cluster-roles,storage-classes}` | Each team uses a `RootSync` (for example `team-alpha` syncs `teams/team-alpha/`) |
 
 ## Notes
@@ -52,6 +52,8 @@ Manual conversion: remove `Repo` configs in `system/`; declare the namespace of 
 - Built-in user-facing ClusterRoles (`cluster-admin`, `admin`, `edit`, `view`) can't be managed directly (conflicts with GKE). Use role aggregation with a uniquely named ClusterRole and the appropriate annotations.
 - Recommended `sourceFormat` is `unstructured`; the hierarchical format requires a specific folder structure.
 - The mutation annotation can't be modified manually on managed objects in the cluster.
+- Source inconsistency: for the cluster-based layout the source says "you can use a `RepoSync` to configure each cluster to sync both from `shared` and the cluster-specific directory". The architecture page says a `RepoSync` creates a namespace reconciler that applies objects "to a specific namespace in the cluster" and syncs namespace-scoped resources in that namespace, while a `RootSync` (default `cluster-admin`) syncs cluster-scoped and namespace-scoped resources. Each sync object watches one directory (`spec.git.dir`). So shared cluster-wide objects in `shared/roles` or `shared/policies` need a `RootSync`, and syncing `shared/` and `clusters/<cluster>/` takes one `RootSync` per directory, as in the environment-based layout.
+- Source (RootSync and RepoSync scope): https://docs.cloud.google.com/kubernetes-engine/config-sync/docs/concepts/architecture (retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/config-sync/docs/concepts/configs (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

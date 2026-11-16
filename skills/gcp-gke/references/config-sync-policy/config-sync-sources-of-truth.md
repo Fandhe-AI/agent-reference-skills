@@ -46,6 +46,8 @@ spec:
 
 ### Helm chart (`helm-sync` container)
 
+Adapted (not in the official docs): the comment on `spec.helm.namespace` now says it sets the release namespace (`.Release.Namespace`); the source comment says it is the namespace "where the chart resources will be deployed".
+
 ```yaml
 apiVersion: configsync.gke.io/v1beta1
 kind: RootSync
@@ -61,7 +63,7 @@ spec:
     auth: gcpserviceaccount
     gcpServiceAccountEmail: my-service-account@my-project.iam.gserviceaccount.com
     releaseName: my-chart-release
-    namespace: my-app-namespace # Namespace where the chart resources will be deployed
+    namespace: my-app-namespace # Release namespace; only templates that use .Release.Namespace
 ```
 
 ## Options / Props
@@ -80,6 +82,8 @@ spec:
 - Git: configure repository URL, branch, and revision (commit or tag). OCI usually needs a separate build-and-push process (for example into Artifact Registry). Helm charts can be pulled from a Helm repository (such as Artifact Registry) or a Git repository; Config Sync can alternatively render Helm through Kustomize.
 - Different source types can be mixed on one cluster, for example a `RootSync` from Git for platform resources, a `RepoSync` from a Helm chart in one namespace, and another `RepoSync` from an OCI image in another.
 - Workload Identity Federation for GKE here is distinct from Workload Identity Federation for external workloads (AWS / Azure / OIDC), which is in `gcp-foundation`.
+- Corrected from the official docs: the Helm example comment says `namespace` is the "Namespace where the chart resources will be deployed". The Config Controller setup page describes the same field as "the target namespace for a release. It only sets a namespace for resources that contain `namespace: {{ .Release.Namespace }}` in their templates" (default `config-management-system`). Templates that hard-code a namespace, or omit it without using `.Release.Namespace`, are not moved; check `metadata.namespace` in the rendered manifests.
+- Source (`spec.helm.namespace` behavior): https://docs.cloud.google.com/kubernetes-engine/config-controller/docs/setup (retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/config-sync/docs/concepts/sources-of-truth (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
