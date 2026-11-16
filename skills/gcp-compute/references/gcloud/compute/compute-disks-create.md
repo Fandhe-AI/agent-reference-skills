@@ -1,0 +1,497 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/disks/create
+---
+
+# gcloud compute disks create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute disks create
+
+```text
+NAME
+    gcloud compute disks create - create Compute Engine persistent disks
+
+SYNOPSIS
+    gcloud compute disks create DISK_NAME [DISK_NAME ...]
+        [--access-mode=ACCESS_MODE] [--architecture=ARCHITECTURE]
+        [--confidential-compute] [--csek-key-file=FILE]
+        [--description=DESCRIPTION]
+        [--guest-os-features=[GUEST_OS_FEATURE,...]] [--labels=[KEY=VALUE,...]]
+        [--licenses=[LICENSE,...]]
+        [--primary-disk-project=PRIMARY_DISK_PROJECT]
+        [--provisioned-iops=PROVISIONED_IOPS]
+        [--provisioned-throughput=PROVISIONED_THROUGHPUT]
+        [--replica-zones=ZONE,ZONE] [--no-require-csek-key-create]
+        [--resource-manager-tags=[KEY=VALUE,...]]
+        [--resource-policies=[RESOURCE_POLICY,...]] [--size=SIZE]
+        [--storage-pool=STORAGE_POOL] [--type=TYPE]
+        [--image-family-scope=IMAGE_FAMILY_SCOPE
+          --image-project=IMAGE_PROJECT --image=IMAGE
+          | --image-family=IMAGE_FAMILY | --primary-disk=PRIMARY_DISK
+          | --source-disk=SOURCE_DISK
+          | --source-instant-snapshot=SOURCE_INSTANT_SNAPSHOT
+          | --source-snapshot=SOURCE_SNAPSHOT]
+        [--kms-key=KMS_KEY : --kms-keyring=KMS_KEYRING
+          --kms-location=KMS_LOCATION --kms-project=KMS_PROJECT]
+        [--primary-disk-region=PRIMARY_DISK_REGION
+          | --primary-disk-zone=PRIMARY_DISK_ZONE]
+        [--region=REGION | --zone=ZONE]
+        [--source-disk-region=SOURCE_DISK_REGION
+          | --source-disk-zone=SOURCE_DISK_ZONE] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute disks create creates one or more Compute Engine persistent
+    disks. When creating virtual machine instances, disks can be attached to
+    the instances through the gcloud compute instances create command. Disks
+    can also be attached to instances that are already running using gcloud
+    compute instances attach-disk.
+
+    Disks are zonal resources, so they reside in a particular zone for their
+    entire lifetime. The contents of a disk can be moved to a different zone by
+    snapshotting the disk (using gcloud compute disks snapshot) and creating a
+    new disk using --source-snapshot in the desired zone. The contents of a
+    disk can also be moved across project or zone by creating an image (using
+    gcloud compute images create) and creating a new disk using --image in the
+    desired project and/or zone.
+
+    For a comprehensive guide, including details on minimum and maximum disk
+    size, refer to: https://cloud.google.com/compute/docs/disks
+
+EXAMPLES
+    When creating disks, be sure to include the --zone option. To create disks
+    'my-disk-1' and 'my-disk-2' in zone us-east1-a:
+
+        $ gcloud compute disks create my-disk-1 my-disk-2 --zone=us-east1-a
+
+POSITIONAL ARGUMENTS
+     DISK_NAME [DISK_NAME ...]
+        Names of the disks to create. For details on the naming convention for
+        this resource, refer to:
+        https://cloud.google.com/compute/docs/naming-resources
+
+FLAGS
+     --access-mode=ACCESS_MODE
+        Specifies how VMs attached to the disk can access the data on the disk.
+        To grant read-only access to multiple VMs attached to the disk, set
+        access-mode to READ_ONLY_MANY. To grant read-write access to only one
+        VM attached to the disk, use READ_WRITE_SINGLE. READ_WRITE_SINGLE is
+        used if omitted. ACCESS_MODE must be one of: READ_ONLY_MANY,
+        READ_WRITE_MANY, READ_WRITE_SINGLE.
+
+     --architecture=ARCHITECTURE
+        Specifies the architecture or processor type that this disk can
+        support. For available processor types on Compute Engine, see
+        https://cloud.google.com/compute/docs/cpu-platforms. ARCHITECTURE must
+        be one of: ARM64, X86_64.
+
+     --confidential-compute
+        Creates the disk with confidential compute mode enabled. Encryption
+        with a Cloud KMS key is required to enable this option.
+
+     --csek-key-file=FILE
+        (DEPRECATED) Path to a Customer-Supplied Encryption Key (CSEK) key file
+        that maps Compute Engine resources to user managed keys to be used when
+        creating, mounting, or taking snapshots of disks.
+
+            If you pass `-` as value of the flag, the CSEK is read from stdin.
+            See https://cloud.google.com/compute/docs/disks/customer-supplied-encryption for more details.
+
+        The --csek-key-file flag is deprecated.
+
+     --description=DESCRIPTION
+        An optional, textual description for the disks being created.
+
+     --guest-os-features=[GUEST_OS_FEATURE,...]
+        Enables one or more features for VM instances that use the image for
+        their boot disks. See the descriptions of supported features at:
+        https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#guest-os-features.
+        GUEST_OS_FEATURE must be one of: BARE_METAL_LINUX_COMPATIBLE,
+        BMSAI_CAPABLE, CCA_CAPABLE, GVNIC, IDPF, MULTI_IP_SUBNET, SEV_CAPABLE,
+        SEV_LIVE_MIGRATABLE, SEV_LIVE_MIGRATABLE_V2, SEV_SNP_CAPABLE,
+        SNP_SVSM_CAPABLE, SUSPEND_SAFE_FPR, TDX_CAPABLE, UEFI_COMPATIBLE,
+        VIRTIO_SCSI_MULTIQUEUE, WINDOWS.
+
+     --labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to add.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     --licenses=[LICENSE,...]
+        A list of URIs to license resources. The provided licenses will be
+        added onto the created disks to indicate the licensing and billing
+        policies.
+
+     --primary-disk-project=PRIMARY_DISK_PROJECT
+        Project of the primary disk for asynchronous replication.
+
+     --provisioned-iops=PROVISIONED_IOPS
+        Provisioned IOPS of disk to create. Only for use with disks of type
+        pd-extreme and hyperdisk-extreme.
+
+     --provisioned-throughput=PROVISIONED_THROUGHPUT
+        Provisioned throughput of disk to create. The throughput unit is MB per
+        sec. Only for use with disks of type hyperdisk-throughput.
+
+     --replica-zones=ZONE,ZONE
+        A comma-separated list of exactly 2 zones that a regional disk will be
+        replicated to. Required when creating regional disk. The zones must be
+        in the same region as specified in the --region flag. See available
+        zones with gcloud compute zones list.
+
+     --require-csek-key-create
+        (DEPRECATED) Refuse to create resources not protected by a user managed
+        key in the key file when --csek-key-file is given. This behavior is
+        enabled by default to prevent incorrect gcloud invocations from
+        accidentally creating resources with no user managed key. Disabling the
+        check allows creation of some resources without a matching
+        Customer-Supplied Encryption Key in the supplied --csek-key-file. See
+        https://cloud.google.com/compute/docs/disks/customer-supplied-encryption
+        for more details.
+
+        The --require-csek-key-create flag is deprecated. Enabled by default,
+        use --no-require-csek-key-create to disable.
+
+     --resource-manager-tags=[KEY=VALUE,...]
+        A comma-separated list of Resource Manager tags to apply to the disk.
+
+     --resource-policies=[RESOURCE_POLICY,...]
+        A list of resource policy names to be added to the disk. The policies
+        must exist in the same region as the disk.
+
+     --size=SIZE
+        Size of the disks. The value must be a whole number followed by a size
+        unit of GB for gigabyte, or TB for terabyte. If no size unit is
+        specified, GB is assumed. For example, 10GB will produce 10 gigabyte
+        disks. Disk size must be a multiple of 1 GB. If disk size is not
+        specified, the default size of 500GB for pd-standard disks, 100GB for
+        pd-balanced disks, 100GB for pd-ssd disks, and 1000GB for pd-extreme
+        will be used. For details about disk size limits, refer to:
+        https://cloud.google.com/compute/docs/disks
+
+     --storage-pool=STORAGE_POOL
+        Specifies the URI of the storage pool in which the disk is created.
+
+     --type=TYPE
+        Specifies the type of disk to create. To get a list of available disk
+        types, run gcloud compute disk-types list. The default disk type is
+        pd-standard.
+
+     --image-family-scope=IMAGE_FAMILY_SCOPE
+        Sets the scope for the --image-family flag. By default, when specifying
+        an image family in a public image project, the zonal image family scope
+        is used. All other projects default to the global image. Use this flag
+        to override this behavior. IMAGE_FAMILY_SCOPE must be one of: zonal,
+        global.
+
+     --image-project=IMAGE_PROJECT
+        The Google Cloud project against which all image and image family
+        references will be resolved. It is best practice to define
+        image-project. A full list of available projects can be generated by
+        running gcloud projects list.
+        * If specifying one of our public images, image-project must be
+          provided.
+        * If there are several of the same image-family value in multiple
+          projects, image-project must be specified to clarify the image to be
+          used.
+        * If not specified and either image or image-family is provided, the
+          current default project is used.
+
+     At most one of these can be specified:
+
+       --image=IMAGE
+          An image to apply to the disks being created. When using this option,
+          the size of the disks must be at least as large as the image size.
+          Use --size to adjust the size of the disks.
+
+          This flag is mutually exclusive with --source-snapshot and
+          --image-family.
+
+       --image-family=IMAGE_FAMILY
+          The image family for the operating system that the boot disk will be
+          initialized with. Compute Engine offers multiple Linux distributions,
+          some of which are available as both regular and Shielded VM images.
+          When a family is specified instead of an image, the latest
+          non-deprecated image associated with that family is used. It is best
+          practice to use --image-family when the latest version of an image is
+          needed.
+
+       --primary-disk=PRIMARY_DISK
+          Primary disk for asynchronous replication. This flag is required when
+          creating a secondary disk.
+
+       --source-disk=SOURCE_DISK
+          Source disk used to create the disk(s). It is safe to delete a source
+          disk after a disk has been created from the source disk. To get a
+          list of disks in your current project, run gcloud compute disks list.
+          This flag is mutually exclusive with --image and --source-snapshot.
+
+          When using this option, the size of the disks must be at least as
+          large as the source disk size. Use --size to adjust the size of the
+          disks.
+
+          The source disk must be in the same zone/region as the disk to be
+          created.
+
+          To create a disk from a source disk in a different project, specify
+          the source disk using its full resource path. For example:
+
+              projects/SOURCE_PROJECT/zones/ZONE/disks/SOURCE_DISK
+
+          or for a regional disk:
+
+              projects/SOURCE_PROJECT/regions/REGION/disks/SOURCE_DISK
+
+          When cloning a disk across projects:
+
+          + The source disk and target disk must still reside in the same
+            zone (or region for regional disks).
+          + You must have permission to access the disk in the source project
+            (such as roles/compute.viewer or compute.disks.get and
+            compute.disks.useReadOnly) and permission to create disks in the
+            target project (compute.disks.create).
+          + If the source disk is encrypted with a customer-managed
+            encryption key (CMEK) or customer-supplied encryption key (CSEK),
+            you must provide the same encryption key for the cloned disk using
+            --kms-key (for CMEK) or --csek-key-file (for CSEK).
+
+       --source-instant-snapshot=SOURCE_INSTANT_SNAPSHOT
+          Name of the source instant snapshot used to create the disks.
+
+       --source-snapshot=SOURCE_SNAPSHOT
+          Source snapshot used to create the disks. It is safe to delete a
+          snapshot after a disk has been created from the snapshot. In such
+          cases, the disks will no longer reference the deleted snapshot. To
+          get a list of snapshots in your current project, run gcloud compute
+          snapshots list. A snapshot from an existing disk can be created using
+          the gcloud compute disks snapshot command. This flag is mutually
+          exclusive with --image.
+
+          When using this option, the size of the disks must be at least as
+          large as the snapshot size. Use --size to adjust the size of the
+          disks.
+
+     Key resource - The Cloud KMS (Key Management Service) cryptokey that will
+     be used to protect the disk. The 'Compute Engine Service Agent' service
+     account must hold permission 'Cloud KMS CryptoKey Encrypter/Decrypter'.
+     The arguments in this group can be used to specify the attributes of this
+     resource.
+
+     --kms-key=KMS_KEY
+        ID of the key or fully qualified identifier for the key.
+
+        To set the kms-key attribute:
+        * provide the argument --kms-key on the command line.
+
+        This flag argument must be specified if any of the other arguments in
+        this group are specified.
+
+     --kms-keyring=KMS_KEYRING
+        The KMS keyring of the key.
+
+        To set the kms-keyring attribute:
+        * provide the argument --kms-key on the command line with a fully
+          specified name;
+        * provide the argument --kms-keyring on the command line.
+
+     --kms-location=KMS_LOCATION
+        The Google Cloud location for the key.
+
+        To set the kms-location attribute:
+        * provide the argument --kms-key on the command line with a fully
+          specified name;
+        * provide the argument --kms-location on the command line;
+        * provide the argument --region on the command line.
+
+     --kms-project=KMS_PROJECT
+        The Google Cloud project for the key.
+
+        To set the kms-project attribute:
+        * provide the argument --kms-key on the command line with a fully
+          specified name;
+        * provide the argument --kms-project on the command line;
+        * set the property core/project.
+
+     At most one of these can be specified:
+
+       --primary-disk-region=PRIMARY_DISK_REGION
+          Region of the primary disk for asynchronous replication. The primary
+          and secondary disks must not be in the same region. Overrides the
+          default compute/region property value for this command invocation.
+
+       --primary-disk-zone=PRIMARY_DISK_ZONE
+          Zone of the primary disk for asynchronous replication. The primary
+          and secondary disks must not be in the same region. Overrides the
+          default compute/zone property value for this command invocation.
+
+     At most one of these can be specified:
+
+       --region=REGION
+          Region of the disks to create. If not specified, you might be
+          prompted to select a region (interactive mode only).
+
+          To avoid prompting when this flag is omitted, you can set the
+          compute/region property:
+
+              $ gcloud config set compute/region REGION
+
+          A list of regions can be fetched by running:
+
+              $ gcloud compute regions list
+
+          To unset the property, run:
+
+              $ gcloud config unset compute/region
+
+          Alternatively, the region can be stored in the environment variable
+          CLOUDSDK_COMPUTE_REGION.
+
+       --zone=ZONE
+          Zone of the disks to create. If not specified and the compute/zone
+          property isn't set, you might be prompted to select a zone
+          (interactive mode only).
+
+          To avoid prompting when this flag is omitted, you can set the
+          compute/zone property:
+
+              $ gcloud config set compute/zone ZONE
+
+          A list of zones can be fetched by running:
+
+              $ gcloud compute zones list
+
+          To unset the property, run:
+
+              $ gcloud config unset compute/zone
+
+          Alternatively, the zone can be stored in the environment variable
+          CLOUDSDK_COMPUTE_ZONE.
+
+     At most one of these can be specified:
+
+       --source-disk-region=SOURCE_DISK_REGION
+          Region of the source disk. This argument is not required if the
+          target disk is in the same region as the source disk. Overrides the
+          default compute/region property value for this command invocation.
+
+       --source-disk-zone=SOURCE_DISK_ZONE
+          Zone of the source disk. This argument is not required if the target
+          disk is in the same zone as the source disk. Overrides the default
+          compute/zone property value for this command invocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute disks create
+
+        $ gcloud beta compute disks create
+```
+
+### gcloud beta compute disks create
+
+```text
+NAME
+    gcloud beta compute disks create - create Compute Engine persistent disks
+
+SYNOPSIS
+    gcloud beta compute disks create DISK_NAME [DISK_NAME ...]
+        [--access-mode=ACCESS_MODE] [--architecture=ARCHITECTURE]
+        [--confidential-compute] [--csek-key-file=FILE]
+        [--description=DESCRIPTION] [--erase-windows-vss-signature]
+        [--guest-os-features=[GUEST_OS_FEATURE,...]] [--interface=INTERFACE]
+        [--kms-key-service-account=KMS_KEY_SERVICE_ACCOUNT]
+        [--labels=[KEY=VALUE,...]] [--licenses=[LICENSE,...]] [--multi-writer]
+        [--physical-block-size=PHYSICAL_BLOCK_SIZE; default="4096"]
+        [--primary-disk-project=PRIMARY_DISK_PROJECT]
+        [--provisioned-iops=PROVISIONED_IOPS]
+        [--provisioned-throughput=PROVISIONED_THROUGHPUT]
+        [--replica-zones=ZONE,ZONE] [--no-require-csek-key-create]
+        [--resource-manager-tags=[KEY=VALUE,...]]
+        [--resource-policies=[RESOURCE_POLICY,...]] [--size=SIZE]
+        [--source-machine-image=SOURCE_MACHINE_IMAGE]
+        [--source-machine-image-disk-device-name=SOURCE_MACHINE_IMAGE_DISK_DEVICE_NAME]
+        [--storage-pool=STORAGE_POOL] [--type=TYPE]
+        [--global-source-snapshot
+          | --source-snapshot-region=SOURCE_SNAPSHOT_REGION]
+        [--image-family-scope=IMAGE_FAMILY_SCOPE
+          --image-project=IMAGE_PROJECT --image=IMAGE
+          | --image-family=IMAGE_FAMILY | --primary-disk=PRIMARY_DISK
+          | --source-disk=SOURCE_DISK
+          | --source-instant-snapshot=SOURCE_INSTANT_SNAPSHOT
+          | --source-snapshot=SOURCE_SNAPSHOT]
+        [--kms-key=KMS_KEY : --kms-keyring=KMS_KEYRING
+          --kms-location=KMS_LOCATION --kms-project=KMS_PROJECT]
+        [--primary-disk-region=PRIMARY_DISK_REGION
+          | --primary-disk-zone=PRIMARY_DISK_ZONE]
+        [--region=REGION | --zone=ZONE]
+        [--source-disk-region=SOURCE_DISK_REGION
+          | --source-disk-zone=SOURCE_DISK_ZONE] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute disks create
+
+```text
+NAME
+    gcloud alpha compute disks create - create Compute Engine persistent disks
+
+SYNOPSIS
+    gcloud alpha compute disks create DISK_NAME [DISK_NAME ...]
+        [--access-mode=ACCESS_MODE] [--architecture=ARCHITECTURE]
+        [--confidential-compute] [--csek-key-file=FILE]
+        [--description=DESCRIPTION] [--erase-windows-vss-signature]
+        [--guest-os-features=[GUEST_OS_FEATURE,...]] [--interface=INTERFACE]
+        [--kms-key-service-account=KMS_KEY_SERVICE_ACCOUNT]
+        [--labels=[KEY=VALUE,...]] [--licenses=[LICENSE,...]] [--multi-writer]
+        [--physical-block-size=PHYSICAL_BLOCK_SIZE; default="4096"]
+        [--primary-disk-project=PRIMARY_DISK_PROJECT]
+        [--provisioned-iops=PROVISIONED_IOPS]
+        [--provisioned-throughput=PROVISIONED_THROUGHPUT]
+        [--replica-zones=ZONE,ZONE] [--no-require-csek-key-create]
+        [--resource-manager-tags=[KEY=VALUE,...]]
+        [--resource-policies=[RESOURCE_POLICY,...]] [--size=SIZE]
+        [--source-instant-snapshot-project=SOURCE_INSTANT_SNAPSHOT_PROJECT]
+        [--source-machine-image=SOURCE_MACHINE_IMAGE]
+        [--source-machine-image-disk-device-name=SOURCE_MACHINE_IMAGE_DISK_DEVICE_NAME]
+        [--storage-pool=STORAGE_POOL] [--type=TYPE]
+        [--user-licenses=[LICENSE,...]]
+        [--global-source-snapshot
+          | --source-snapshot-region=SOURCE_SNAPSHOT_REGION]
+        [--image-family-scope=IMAGE_FAMILY_SCOPE
+          --image-project=IMAGE_PROJECT --image=IMAGE
+          | --image-family=IMAGE_FAMILY | --primary-disk=PRIMARY_DISK
+          | --source-disk=SOURCE_DISK
+          | --source-instant-snapshot=SOURCE_INSTANT_SNAPSHOT
+          | --source-snapshot=SOURCE_SNAPSHOT]
+        [--kms-key=KMS_KEY : --kms-keyring=KMS_KEYRING
+          --kms-location=KMS_LOCATION --kms-project=KMS_PROJECT]
+        [--primary-disk-region=PRIMARY_DISK_REGION
+          | --primary-disk-zone=PRIMARY_DISK_ZONE]
+        [--region=REGION | --zone=ZONE]
+        [--source-disk-region=SOURCE_DISK_REGION
+          | --source-disk-zone=SOURCE_DISK_ZONE] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud compute disks create --csek-key-file`: "The --csek-key-file flag is deprecated."; `gcloud compute disks create --require-csek-key-create`: "The --require-csek-key-create flag is deprecated. Enabled by default, use --no-require-csek-key-create to disable.".
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/disks/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

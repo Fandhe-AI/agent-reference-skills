@@ -33,3 +33,28 @@
 | gcloud compute disk-settings | 4 commands (alpha, beta); beta compute disk-settings describe … | [compute-disk-settings.md](./compute-disk-settings.md) |
 | gcloud compute disk-types | 6 commands (alpha, beta, ga); compute disk-types describe … | [compute-disk-types.md](./compute-disk-types.md) |
 | gcloud compute disks add-iam-policy-binding | 3 commands (alpha, beta, ga); compute disks add-iam-policy-binding … | [compute-disks-add-iam-policy-binding.md](./compute-disks-add-iam-policy-binding.md) |
+| gcloud compute disks add-labels | 3 commands (alpha, beta, ga); compute disks add-labels … | [compute-disks-add-labels.md](./compute-disks-add-labels.md) |
+| gcloud compute disks add-resource-policies | 3 commands (alpha, beta, ga); compute disks add-resource-policies … | [compute-disks-add-resource-policies.md](./compute-disks-add-resource-policies.md) |
+| gcloud compute disks bulk | 6 commands (alpha, beta, ga); compute disks bulk create … | [compute-disks-bulk.md](./compute-disks-bulk.md) |
+| gcloud compute disks config | alpha compute disks config export | [compute-disks-config.md](./compute-disks-config.md) |
+| gcloud compute disks convert | 3 commands (alpha, beta, ga); compute disks convert … | [compute-disks-convert.md](./compute-disks-convert.md) |
+| gcloud compute disks create | 3 commands (alpha, beta, ga); compute disks create … | [compute-disks-create.md](./compute-disks-create.md) |
+| gcloud compute disks delete | 3 commands (alpha, beta, ga); compute disks delete … | [compute-disks-delete.md](./compute-disks-delete.md) |
+| gcloud compute disks describe | 3 commands (alpha, beta, ga); compute disks describe … | [compute-disks-describe.md](./compute-disks-describe.md) |
+| gcloud compute disks get-async-replication-status | alpha compute disks get-async-replication-status | [compute-disks-get-async-replication-status.md](./compute-disks-get-async-replication-status.md) |
+| gcloud compute disks get-iam-policy | 3 commands (alpha, beta, ga); compute disks get-iam-policy … | [compute-disks-get-iam-policy.md](./compute-disks-get-iam-policy.md) |
+| gcloud compute disks list | 3 commands (alpha, beta, ga); compute disks list … | [compute-disks-list.md](./compute-disks-list.md) |
+| gcloud compute disks move | 3 commands (alpha, beta, ga); compute disks move … | [compute-disks-move.md](./compute-disks-move.md) |
+| gcloud compute disks remove-iam-policy-binding | 3 commands (alpha, beta, ga); compute disks remove-iam-policy-binding … | [compute-disks-remove-iam-policy-binding.md](./compute-disks-remove-iam-policy-binding.md) |
+| gcloud compute disks remove-labels | 3 commands (alpha, beta, ga); compute disks remove-labels … | [compute-disks-remove-labels.md](./compute-disks-remove-labels.md) |
+| gcloud compute disks remove-resource-policies | 3 commands (alpha, beta, ga); compute disks remove-resource-policies … | [compute-disks-remove-resource-policies.md](./compute-disks-remove-resource-policies.md) |
+| gcloud compute disks resize | 3 commands (alpha, beta, ga); compute disks resize … | [compute-disks-resize.md](./compute-disks-resize.md) |
+| gcloud compute disks set-iam-policy | 3 commands (alpha, beta, ga); compute disks set-iam-policy … | [compute-disks-set-iam-policy.md](./compute-disks-set-iam-policy.md) |
+| gcloud compute disks snapshot | 3 commands (alpha, beta, ga); compute disks snapshot … | [compute-disks-snapshot.md](./compute-disks-snapshot.md) |
+| gcloud compute disks start-async-replication | 3 commands (alpha, beta, ga); compute disks start-async-replication … | [compute-disks-start-async-replication.md](./compute-disks-start-async-replication.md) |
+| gcloud compute disks stop-async-replication | 3 commands (alpha, beta, ga); compute disks stop-async-replication … | [compute-disks-stop-async-replication.md](./compute-disks-stop-async-replication.md) |
+| gcloud compute disks stop-group-async-replication | 3 commands (alpha, beta, ga); compute disks stop-group-async-replication … | [compute-disks-stop-group-async-replication.md](./compute-disks-stop-group-async-replication.md) |
+| gcloud compute disks test-iam-permissions | 3 commands (alpha, beta, ga); compute disks test-iam-permissions … | [compute-disks-test-iam-permissions.md](./compute-disks-test-iam-permissions.md) |
+| gcloud compute disks update | 3 commands (alpha, beta, ga); compute disks update … | [compute-disks-update.md](./compute-disks-update.md) |
+| gcloud compute disks update-kms-key | 3 commands (alpha, beta, ga); compute disks update-kms-key … | [compute-disks-update-kms-key.md](./compute-disks-update-kms-key.md) |
+| gcloud compute disks wait-for-replication-catchup | alpha compute disks wait-for-replication-catchup | [compute-disks-wait-for-replication-catchup.md](./compute-disks-wait-for-replication-catchup.md) |
