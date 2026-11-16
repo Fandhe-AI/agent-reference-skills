@@ -1,0 +1,140 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/container/binauthz/attestors/create
+---
+
+# gcloud container binauthz attestors create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud container binauthz attestors create
+
+```text
+NAME
+    gcloud container binauthz attestors create - create an Attestor
+
+SYNOPSIS
+    gcloud container binauthz attestors create ATTESTOR
+        (--attestation-authority-note=ATTESTATION_AUTHORITY_NOTE
+          : --attestation-authority-note-project=ATTESTATION_AUTHORITY_NOTE_PROJECT)
+        [--description=DESCRIPTION] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create an Attestor.
+
+EXAMPLES
+    To create an Attestor with an existing Note projects/my_proj/notes/my_note:
+
+        $ gcloud container binauthz attestors create my_new_attestor \
+            --attestation-authority-note=my_note \
+            --attestation-authority-note-project=my_proj
+
+POSITIONAL ARGUMENTS
+     Attestor resource - The attestor to be created. This represents a Cloud
+     resource. (NOTE) Some attributes are not given arguments in this group but
+     can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument ATTESTOR on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       ATTESTOR
+          ID of the attestor or fully qualified identifier for the attestor.
+
+          To set the name attribute:
+          + provide the argument ATTESTOR on the command line.
+
+REQUIRED FLAGS
+     Note resource - The Container Analysis Note to which the created attestor
+     will be bound.
+
+     For the attestor to be able to access and use the Note, the Note must
+     exist and the active gcloud account (core/account) must have the
+     containeranalysis.notes.listOccurrences permission for the Note. This can
+     be achieved by granting the containeranalysis.notes.occurrences.viewer
+     role to the active account for the Note resource in question.
+
+         The arguments in this group can be used to specify the attributes of this resource.
+
+     This must be specified.
+
+       --attestation-authority-note=ATTESTATION_AUTHORITY_NOTE
+          ID of the note or fully qualified identifier for the note.
+
+          To set the note attribute:
+          + provide the argument --attestation-authority-note on the command
+            line.
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+       --attestation-authority-note-project=ATTESTATION_AUTHORITY_NOTE_PROJECT
+          The Container Analysis project for the note.
+
+          To set the project attribute:
+          + provide the argument --attestation-authority-note on the command
+            line with a fully specified name;
+          + provide the argument --attestation-authority-note-project on the
+            command line.
+
+OPTIONAL FLAGS
+     --description=DESCRIPTION
+        A description for the attestor
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha container binauthz attestors create
+
+        $ gcloud beta container binauthz attestors create
+```
+
+### gcloud beta container binauthz attestors create
+
+```text
+NAME
+    gcloud beta container binauthz attestors create - create an Attestor
+
+SYNOPSIS
+    gcloud beta container binauthz attestors create ATTESTOR
+        (--attestation-authority-note=ATTESTATION_AUTHORITY_NOTE
+          : --attestation-authority-note-project=ATTESTATION_AUTHORITY_NOTE_PROJECT)
+        [--description=DESCRIPTION] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha container binauthz attestors create
+
+```text
+NAME
+    gcloud alpha container binauthz attestors create - create an Attestor
+
+SYNOPSIS
+    gcloud alpha container binauthz attestors create ATTESTOR
+        (--attestation-authority-note=ATTESTATION_AUTHORITY_NOTE
+          : --attestation-authority-note-project=ATTESTATION_AUTHORITY_NOTE_PROJECT)
+        [--description=DESCRIPTION] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/container/binauthz/attestors/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
