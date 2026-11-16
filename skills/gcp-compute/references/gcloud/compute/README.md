@@ -87,3 +87,14 @@
 | gcloud compute folder-rollout-plans | 4 commands (alpha); alpha compute folder-rollout-plans create … | [compute-folder-rollout-plans.md](./compute-folder-rollout-plans.md) |
 | gcloud compute folder-rollouts | 4 commands (alpha); alpha compute folder-rollouts cancel … | [compute-folder-rollouts.md](./compute-folder-rollouts.md) |
 | gcloud compute forwarding-rules config | alpha compute forwarding-rules config export | [compute-forwarding-rules-config.md](./compute-forwarding-rules-config.md) |
+| gcloud compute forwarding-rules create | 3 commands (alpha, beta, ga); compute forwarding-rules create … | [compute-forwarding-rules-create.md](./compute-forwarding-rules-create.md) |
+| gcloud compute forwarding-rules delete | 3 commands (alpha, beta, ga); compute forwarding-rules delete … | [compute-forwarding-rules-delete.md](./compute-forwarding-rules-delete.md) |
+| gcloud compute forwarding-rules describe | 3 commands (alpha, beta, ga); compute forwarding-rules describe … | [compute-forwarding-rules-describe.md](./compute-forwarding-rules-describe.md) |
+| gcloud compute forwarding-rules export | 3 commands (alpha, beta, ga); compute forwarding-rules export … | [compute-forwarding-rules-export.md](./compute-forwarding-rules-export.md) |
+| gcloud compute forwarding-rules import | 3 commands (alpha, beta, ga); compute forwarding-rules import … | [compute-forwarding-rules-import.md](./compute-forwarding-rules-import.md) |
+| gcloud compute forwarding-rules list | 3 commands (alpha, beta, ga); compute forwarding-rules list … | [compute-forwarding-rules-list.md](./compute-forwarding-rules-list.md) |
+| gcloud compute forwarding-rules set-target | 3 commands (alpha, beta, ga); compute forwarding-rules set-target … | [compute-forwarding-rules-set-target.md](./compute-forwarding-rules-set-target.md) |
+| gcloud compute forwarding-rules test-iam-permissions | alpha compute forwarding-rules test-iam-permissions | [compute-forwarding-rules-test-iam-permissions.md](./compute-forwarding-rules-test-iam-permissions.md) |
+| gcloud compute forwarding-rules update | 3 commands (alpha, beta, ga); compute forwarding-rules update … | [compute-forwarding-rules-update.md](./compute-forwarding-rules-update.md) |
+| gcloud compute future-reservations | 18 commands (alpha, beta, ga); compute future-reservations cancel … | [compute-future-reservations.md](./compute-future-reservations.md) |
+| gcloud compute global-vm-extension-policies | 17 commands (alpha, beta, ga); compute global-vm-extension-policies create … | [compute-global-vm-extension-policies.md](./compute-global-vm-extension-policies.md) |
