@@ -84,7 +84,7 @@ Predefined roles of `run` (role ID, description, included permissions) and, for 
 
 ### Example: grant a role
 
-Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Cloud Run service):
+Generated example (not in the official docs) granting the first role on this page at one of its lowest-level resources (Cloud Run service; the role page lists Cloud Run service, Cloud Run job, Cloud Run instance, Cloud Run worker pool):
 
 ```bash
 gcloud run services add-iam-policy-binding SERVICE_NAME --region=REGION \

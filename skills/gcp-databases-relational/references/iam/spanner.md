@@ -82,10 +82,10 @@ Predefined roles of `spanner` (role ID, description, included permissions) and, 
 
 ### Example: grant a role
 
-Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Project):
+Generated example (not in the official docs) granting the first role on this page at one of its lowest-level resources (Instance; the role page lists Instance, Database):
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud spanner instances add-iam-policy-binding INSTANCE_ID \
   --member="user:EMAIL_ADDRESS" \
   --role="roles/spanner.admin"
 ```
