@@ -66,8 +66,10 @@ gcloud container fleet cloudrun apply --gke-cluster=CLUSTER_LOCATION/CLUSTER_NAM
 
 4. Verify the Knative serving version labels, then check that all Knative serving deployments are running in the `knative-serving` and `appdevexperience` namespaces:
 
+Adapted (not in the official docs): `kubectl get all` returns a `List`, so the template ranges over `.items` and prints each resource's `serving.knative.dev/release` label.
+
 ```bash
-kubectl get all -n knative-serving -o 'go-template={{index .metadata.labels "serving.knative.dev/release"}}'
+kubectl get all -n knative-serving -o 'go-template={{range .items}}{{.kind}}/{{.metadata.name}} {{with .metadata.labels}}{{index . "serving.knative.dev/release"}}{{end}}{{"\n"}}{{end}}'
 ```
 
 ## Notes
@@ -78,6 +80,7 @@ kubectl get all -n knative-serving -o 'go-template={{index .metadata.labels "ser
 - Knative serving on GKE is distinct from Cloud Run (`gcp-run`), which is a separate fully managed product. The `gcloud container fleet cloudrun` command group name reflects the former Cloud Run for Anthos lineage.
 - The source also shows a Console verification step (Feature Manager and GKE clusters pages), omitted here.
 - Corrected from the official docs: `--region CLUSTER_LOCATION` and `--region us-central1-c` in the `clusters describe` commands changed to `--location` (`us-central1-c` is a zone, not a region).
+- Corrected from the official docs: the source template `{{index .metadata.labels "serving.knative.dev/release"}}` reads the labels of the `List` returned by `kubectl get all`, which has none; the example ranges over `.items` and prints the label of each resource (empty for resources without it).
 - Source: https://docs.cloud.google.com/kubernetes-engine/enterprise/knative-serving/docs/install/on-gcp (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

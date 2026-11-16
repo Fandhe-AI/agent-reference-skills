@@ -35,10 +35,10 @@ gcloud network-services meshes describe my-mesh --location=global
 
 | Who | Permissions |
 |---|---|
-| Mesh administrators | `networkservices.mesh.*` |
+| Mesh administrators | `networkservices.meshes.*` |
 | Gateway administrators | `networkservices.gateways.*` |
 | Service owners | `networkservices.grpcRoutes.*`, `networkservices.httpRoutes.*`, or `networkservices.tcpRoutes.*` |
-| Grant to service owners to attach Routes | `networkservices.mesh.use` (same model for `Gateway`) |
+| Grant to service owners to attach Routes | `networkservices.meshes.use` (same model for `Gateway`) |
 
 `roles/compute.networkAdmin` has `networkservices.*` by default; no other predefined role is required. Custom roles may need the permissions added.
 
@@ -51,6 +51,8 @@ gcloud network-services meshes describe my-mesh --location=global
 - All traffic is intercepted automatically with `Mesh` and `Gateway`.
 - Considerations: xDS v3 or later (Envoy 1.20.0 minimum; gRPC bootstrap generator v0.14.0 minimum); only Compute Engine VMs with automatic Envoy deployment and GKE Pods with automatic Envoy injection (no manual deployment); not backward compatible with older APIs; a port matched by a `TCPRoute` attached to a `Mesh` cannot serve other routes even on different IPs; automatically deployed ingress Envoys must not use `serving_ports` in `--service-proxy`; automatic Envoy cannot use a project number different from the VM's project.
 - TCP traffic splitting by weight is supported; `HTTPRoute` can split traffic (for example 70% / 30%).
+- Corrected from the official docs: the source writes the Mesh permissions as `networkservices.mesh.*` and `networkservices.mesh.use`; the IAM permission names use the plural collection `networkservices.meshes.*` (for example `networkservices.meshes.use`), and the source itself says to search the IAM reference for `meshes`.
+- Source (IAM permissions): https://docs.cloud.google.com/iam/docs/roles-permissions/networkservices (retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/service-mesh/docs/service-routing/service-routing-overview (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference/network-services/meshes/describe (gcloud 593.0.0 help text, retrieved 2026-11-14)
 

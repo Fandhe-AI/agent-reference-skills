@@ -12,15 +12,17 @@ Local SSD gives GKE nodes high-performance ephemeral storage attached to a singl
 
 The source page has no code block; it lists the flags `--ephemeral-storage-local-ssd` (ephemeral storage, GKE 1.25.3-gke.1800 and later) and `--local-nvme-ssd-block` (raw block NVMe, GKE 1.25.3-gke.1800 and later) in its "Local SSD parameters on GKE" table. Verbatim examples from the gcloud help of `clusters create`:
 
-Adapted (not in the official docs): the cluster name `example_cluster` is changed to `example-cluster`, because GKE cluster names cannot contain underscores (lowercase letters, numbers, and hyphens only).
+Adapted (not in the official docs): the cluster name `example_cluster` is changed to `example-cluster`, because GKE cluster names cannot contain underscores (lowercase letters, numbers, and hyphens only). `--machine-type=n2-standard-2` is added because the default `e2-medium` does not support Local SSD and `count=2` applies to first- and second-generation machine series such as N2.
 
 ```bash
 gcloud container clusters create example-cluster \
+    --machine-type=n2-standard-2 \
     --ephemeral-storage-local-ssd count=2
 ```
 
 ```bash
 gcloud container clusters create example-cluster \
+    --machine-type=n2-standard-2 \
     --local-nvme-ssd-block count=2
 ```
 
@@ -77,6 +79,7 @@ Existing parameters continue to work as-is; migrate to benefit from NVMe instead
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/container/clusters/create (gcloud 593.0.0 help examples for `--ephemeral-storage-local-ssd` and `--local-nvme-ssd-block`); the concept page itself has no code.
 - Source inconsistency: this page says "Autopilot and node auto-provisioning support Local SSD only through custom ComputeClasses", while storage-overview.md says "Autopilot support is in preview on A2 Ultra A100 machines, on clusters and node pools running GKE 1.27 and later". The source does not reconcile the two.
 - Corrected from the official docs: the `gcloud container clusters create --help` examples use the name `example_cluster`, but GKE cluster names allow only lowercase letters, numbers, and hyphens; the examples use `example-cluster`.
+- Adapted from the official docs: the help examples omit `--machine-type`, so the cluster would use the default `e2-medium`, which this page lists as not supported for Local SSD; the examples set `n2-standard-2`. Choose a machine type whose Local SSD count limits include the `count` you pass (see the Compute Engine machine series pages).
 - Source (gcloud help): `gcloud container clusters create --help` (gcloud 593.0.0, retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/local-ssd (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 

@@ -12,8 +12,10 @@ Architectural overview of Knative serving on GKE and what changes in a cluster w
 
 Knative serving components live in the `knative-serving` namespace; Cloud Service Mesh components live in `istio-system` by default. The page itself has no commands; the following command is taken from https://docs.cloud.google.com/kubernetes-engine/enterprise/knative-serving/docs/install/on-gcp (the verification step) and prints the release label of the installed version.
 
+Adapted (not in the official docs): `kubectl get all` returns a `List`, so the template ranges over `.items` and prints each resource's `serving.knative.dev/release` label.
+
 ```bash
-kubectl get all -n knative-serving -o 'go-template={{index .metadata.labels "serving.knative.dev/release"}}'
+kubectl get all -n knative-serving -o 'go-template={{range .items}}{{.kind}}/{{.metadata.name}} {{with .metadata.labels}}{{index . "serving.knative.dev/release"}}{{end}}{{"\n"}}{{end}}'
 ```
 
 ### What happens when a Knative serving Service is created
@@ -74,6 +76,7 @@ kubectl get all -n knative-serving -o 'go-template={{index .metadata.labels "ser
 - Knative serving components are updated automatically with GKE control plane updates.
 - Knative serving routes traffic through Cloud Service Mesh (formerly Anthos Service Mesh). This is Knative serving on GKE, distinct from Cloud Run (`gcp-run`), which is a separate fully managed product.
 - Snippet taken from https://docs.cloud.google.com/kubernetes-engine/enterprise/knative-serving/docs/install/on-gcp (the source page has no code).
+- Corrected from the official docs: the source template `{{index .metadata.labels "serving.knative.dev/release"}}` reads the labels of the `List` returned by `kubectl get all`, which has none; the example ranges over `.items` and prints the label of each resource (empty for resources without it).
 - Source: https://docs.cloud.google.com/kubernetes-engine/enterprise/knative-serving/docs/architecture-overview (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

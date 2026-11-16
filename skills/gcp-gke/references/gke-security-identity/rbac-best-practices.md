@@ -28,11 +28,13 @@ kubectl get clusterrolebindings -o json \
 
 Only `system:basic-user`, `system:discovery` and `system:public-info-viewer` should be listed. For each additional binding, list the role's permissions:
 
+Adapted (not in the official docs): `$1` / `$0` are quoted as `"${1}"` / `"${0}"` because the values come from the cluster.
+
 ```bash
 kubectl get clusterrolebinding CLUSTER_ROLE_BINDING_NAME -o json \
     | jq ' .roleRef.name +" " + .roleRef.kind' \
     | sed -e 's/"//g' \
-    | xargs -l bash -c 'kubectl get $1 $0 -o yaml'
+    | xargs -l bash -c 'kubectl get "${1}" "${0}" -o yaml'
 ```
 
 If unsafe, delete it (never delete the default `system:` bindings):
@@ -57,11 +59,13 @@ kubectl get rolebindings -A -o json \
 
 List its role's permissions and delete an unsafe binding:
 
+Adapted (not in the official docs): `$1` / `$0` are quoted as `"${1}"` / `"${0}"` because the values come from the cluster.
+
 ```bash
 kubectl get rolebinding ROLE_BINDING_NAME --namespace ROLE_BINDING_NAMESPACE -o json \
     | jq ' .roleRef.name +" " + .roleRef.kind' \
     | sed -e 's/"//g' \
-    | xargs -l bash -c 'kubectl get $1 $0 -o yaml --namespace ROLE_BINDING_NAMESPACE'
+    | xargs -l bash -c 'kubectl get "${1}" "${0}" -o yaml --namespace ROLE_BINDING_NAMESPACE'
 ```
 
 ```bash
@@ -117,6 +121,7 @@ Use with the `NoUpdateServiceAccount` constraint template (https://docs.cloud.go
 - The source contrasts recommended and not-recommended rule YAML in tables; the rules are summarized in the guidelines above. Sample manifests: https://github.com/GoogleCloudPlatform/gke-rbac-best-practices
 - Policy Controller is deprecated as of November 12, 2026 and reaches end of support on December 31, 2027; GKE clusters on version 1.39 and later don't support it (not stated in the source page; see the deprecation notice below). Check the current documentation before relying on the constraint.
 - Source (Policy Controller end of support on December 31, 2027): https://docs.cloud.google.com/kubernetes-engine/docs/deprecations/policy-controller (retrieved 2026-11-16)
+- Adapted from the official docs: the `xargs -l bash -c 'kubectl get $1 $0 ...'` commands quote `"${1}"` and `"${0}"` so the role name and kind read from the binding are not word-split or glob-expanded. `xargs -l` passes one input line per command and splits it on blanks into `$0` (role name) and `$1` (kind); Kubernetes role names and kinds contain no blanks.
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/best-practices/rbac (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
