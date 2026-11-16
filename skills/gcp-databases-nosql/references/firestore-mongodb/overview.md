@@ -34,7 +34,7 @@ exit
 - Distinct from Google Cloud's other Firestore modes (Native mode, Datastore mode), from Supabase Postgres (`supabase`) and from Cloudflare KV / D1 (`cloudflare-storage`). Firebase client-side setup is out of scope.
 - Snippet taken from https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/create-and-query-database (the overview page itself has no code).
 - Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/overview (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
-- Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/create-and-query-database
+- Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/create-and-query-database (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

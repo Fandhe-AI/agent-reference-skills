@@ -85,7 +85,7 @@ Supported selector: `$near`. Not supported: `$box`, `$center`, `$centerSphere`, 
 - Pages for MongoDB 7.0, 6.0 and 5.0 exist at the same path pattern (`supported-features-70`, `-60`, `-50`).
 - Source inconsistency: the command table marks `dropIndexes` as not supported, while the behavior-differences page lists `dropIndexes` among commands with no unsupported fields. Delete indexes with `dropIndex` (supported; see `indexing.md`).
 - Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/supported-features-80 (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
-- Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/indexing
+- Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/indexing (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

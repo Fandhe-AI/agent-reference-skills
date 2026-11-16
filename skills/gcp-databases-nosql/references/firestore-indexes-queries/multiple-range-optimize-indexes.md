@@ -27,7 +27,7 @@ console.log(planSummary);
 console.log(stats);
 ```
 
-Less selective field first, using the `(experience ASC, salary ASC)` index (Java in the source; Node.js equivalent form shown in [multiple-range-fields.md](./multiple-range-fields.md)). The result below scans 95000 index entries to return five documents:
+Less selective field first, using the `(experience ASC, salary ASC)` index (Java in the source: `.whereGreaterThan("salary", 100000).whereGreaterThan("experience", 0).orderBy("experience").orderBy("salary")`; the source shows no Node.js form of this ordering). The result below scans 95000 index entries to return five documents:
 
 ```text
 // Output query planning info

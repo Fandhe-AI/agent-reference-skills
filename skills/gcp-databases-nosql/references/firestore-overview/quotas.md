@@ -106,6 +106,7 @@ Managed deletes (TTL), PITR data, backup data, restore operations and clone oper
 - Source inconsistency: the Enterprise tables use slightly different wording for index limits ("indexes", "fields in an index") and omit some Standard rows (query memory limit, single-field configurations, indexed field value size); omitted rows are marked "not listed" above rather than assumed equal.
 - Google Cloud's managed document database is distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`).
 - Source inconsistency: the security rules limits list "Function call depth" as 20, while the rules-conditions page says "The total call stack depth is limited to 10" (see `firestore-security/rules-conditions.md`); design for 10 to stay within both.
+- Source inconsistency: the quotas page lists a 1 MiB maximum document size for both Standard and Enterprise editions, while the editions overview and the MongoDB compatibility behavior-differences pages give 16 MiB for Firestore with MongoDB compatibility (1 MiB for Native mode). Kept as written on each page; check the limit for your database before relying on documents larger than 1 MiB.
 - Source: https://docs.cloud.google.com/firestore/quotas (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

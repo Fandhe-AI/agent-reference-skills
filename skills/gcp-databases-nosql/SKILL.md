@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-databases-nosql
 
-Google Cloud (GCP) の NoSQL・インメモリデータストア系スキル。Firestore（Native mode・Datastore mode・MongoDB 互換の Enterprise edition）、Bigtable、Memorystore（for Valkey・for Redis Cluster・for Redis・for Memcached）を扱う。Firestore のデータモデル・データベース管理・トランザクション・インデックス・クエリ・security rules・IAM・バックアップ / PITR・TTL、Datastore mode の GQL・index.yaml・multitenancy、MongoDB 互換の接続と動作差、Bigtable のスキーマ設計・row key・app profile・replication・GoogleSQL・backups・change streams、Memorystore の PSC ネットワーク・IAM 認証・TLS・CMEK・HA・永続化・バックアップ・メンテナンスを収録する。
+Google Cloud (GCP) の NoSQL・インメモリデータストア系スキル。Firestore（Native mode・Datastore mode・MongoDB 互換の Enterprise edition）、Bigtable、Memorystore（for Valkey・for Redis Cluster・for Redis・for Memcached）を扱う。Firestore のデータモデル・データベース管理・トランザクション・インデックス・クエリ・security rules・IAM・バックアップ / PITR・TTL、Datastore mode の GQL・index.yaml・multitenancy、MongoDB 互換の接続と動作差、Bigtable のスキーマ設計・row key・app profile・replication・GoogleSQL・backups・change streams、Memorystore の PSC ネットワーク・IAM 認証・TLS・CMEK・HA・永続化・バックアップ・メンテナンスに加え、gcloud 6 グループ・IAM ロール・REST（Discovery）を収録する。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。Memorystore は for Valkey（`gcloud memorystore`）・for Redis Cluster（`gcloud redis clusters`）・for Redis（`gcloud redis instances`）・for Memcached（`gcloud memcache`）が別製品・別 API のため、カテゴリも製品ごとに分けている。
 
@@ -17,6 +17,24 @@ Google Cloud (GCP) の NoSQL・インメモリデータストア系スキル。F
 skills/gcp-databases-nosql/
   SKILL.md
   references/
+    gcloud/                       # 機械生成: gcloud 593.0.0
+      README.md
+      <group>/                    # bigtable / datastore / firestore / memcache / memorystore / redis
+        README.md
+        <group>-<sub>.md          # GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS
+    iam/                          # 機械生成: IAM roles-permissions reference、取得 2026-11-14
+      README.md
+      <service>.md                # サブディレクトリなし（bigtable / firestore / memcache / memorystore / redis / redisenterprisecloud）
+    rest/                         # 機械生成: Discovery 由来のメソッド表
+      README.md
+      <api>/                      # bigtableadmin / datastore / firestore / memcache / redis
+        README.md
+        <api>.md
+    rest-schemas/                 # 機械生成: Discovery 由来のメッセージスキーマ
+      README.md
+      <api>/                      # rest/ と同じ 5 API
+        README.md
+        <api>.md                  # firestore のみ <api>-1.md・<api>-2.md の 2 分割
     firestore-overview/           # 公式ガイド由来（手書き）: Firestore の概要・エディション・データモデル・データ型・ロケーション・クォータ・ベストプラクティス
       README.md
       <page>.md                   # 例: overview.md / editions-overview.md / data-model.md / quotas.md / best-practices.md
@@ -83,17 +101,41 @@ skills/gcp-databases-nosql/
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. gcloud コマンド・フラグの全文、IAM ロールの権限、REST のメソッド・メッセージ型（機械生成の `references/gcloud/` `references/iam/` `references/rest/` `references/rest-schemas/`）は後続 PR で投入する。未投入の間は `gcloud <group> --help`（`firestore` / `datastore` / `bigtable` / `memorystore` / `redis` / `memcache`）と公式 reference を確認する
-2. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
-3. Firestore は Native mode（Standard edition）・Enterprise edition（MongoDB 互換を含む）・Datastore mode でページが分かれる。Native mode / Enterprise の共通事項は `firestore-*`、Datastore mode 固有は `firestore-datastore-mode`、MongoDB 互換固有は `firestore-mongodb`。まず共通カテゴリを引き、モード固有の挙動は固有カテゴリで補う
-4. Memorystore は製品ごとにカテゴリが別（`memorystore-valkey-*` / `memorystore-redis-cluster` / `memorystore-redis` / `memorystore-memcached`）。製品名（Valkey / Redis Cluster / Redis / Memcached）と gcloud グループを照合してから引く。Memorystore for Valkey には Discovery document が無く、REST のメソッド表は無い
+1. gcloud コマンド → 下記マッピング表で `gcloud` を選び、`references/gcloud/<group>/README.md` からページ（GA は全文）を引く。GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ
+2. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`
+3. IAM ロール・権限 → `references/iam/README.md` の索引から `<service>.md` を引く。ロール ID・権限名のサービス接頭辞で選ぶ（例: `roles/bigtable.user` → `bigtable.md`、`roles/redis.admin` → `redis.md`）
+4. 製品 → gcloud group / REST api / IAM service の対応:
 
-`samples/` と `scripts/` は本スキルに無い。コマンドは `gcloud <group> --help` と公式 reference を引く。
+    | 製品 | gcloud group | REST api | IAM service |
+    | --- | --- | --- | --- |
+    | Firestore（Native / Enterprise） | `firestore` | `firestore` | `firestore` |
+    | Firestore in Datastore mode（旧 Datastore） | `datastore` | `datastore` | `firestore` |
+    | Bigtable | `bigtable` | `bigtableadmin` | `bigtable` |
+    | Memorystore for Valkey | `memorystore` | 無し | `memorystore` |
+    | Memorystore for Redis Cluster / for Redis | `redis`（`redis clusters` / `redis instances`） | `redis` | `redis` |
+    | Memorystore for Memcached | `memcache` | `memcache` | `memcache` |
+
+    Memorystore for Valkey の REST（memorystore API）のページは本スキルに無い（`references/rest/` に `memorystore` ディレクトリが無い）。メソッド・メッセージ型は公式 reference を確認する。`references/iam/redisenterprisecloud.md` は Redis Labs が管理するパートナー提供サービス Redis Enterprise Cloud のロール（`roles/redisenterprisecloud.admin` / `viewer`）で、Memorystore とは別
+5. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
+6. Firestore は Native mode（Standard edition）・Enterprise edition（MongoDB 互換を含む）・Datastore mode でページが分かれる。Native mode / Enterprise の共通事項は `firestore-*`、Datastore mode 固有は `firestore-datastore-mode`、MongoDB 互換固有は `firestore-mongodb`。まず共通カテゴリを引き、モード固有の挙動は固有カテゴリで補う
+7. Memorystore は製品ごとにカテゴリが別（`memorystore-valkey-*` / `memorystore-redis-cluster` / `memorystore-redis` / `memorystore-memcached`）。製品名（Valkey / Redis Cluster / Redis / Memcached）と gcloud グループを照合してから引く。Memorystore for Valkey には Discovery document が無く、REST のメソッド表は無い
+
+`samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| gcloud のコマンド・フラグを調べたい（firestore / datastore / bigtable / memorystore / redis / memcache の 6 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
+| `gcloud firestore`（databases・indexes・backups・export / import・operations・bulk-delete）・`gcloud datastore`（indexes・export / import）のフラグを調べたい | gcloud/firestore、gcloud/datastore | [references/gcloud/firestore/README.md](references/gcloud/firestore/README.md)、[references/gcloud/datastore/README.md](references/gcloud/datastore/README.md) |
+| `gcloud bigtable`（instances・clusters・app-profiles・backups・authorized-views・logical-views）のフラグを調べたい | gcloud/bigtable | [references/gcloud/bigtable/README.md](references/gcloud/bigtable/README.md) |
+| `gcloud memorystore`（Valkey: instances・backup-collections・acl-policies・locations・operations）のフラグを調べたい | gcloud/memorystore | [references/gcloud/memorystore/README.md](references/gcloud/memorystore/README.md) |
+| `gcloud redis`（clusters・instances・acl-policies・operations・regions・zones）・`gcloud memcache`（instances）のフラグを調べたい | gcloud/redis、gcloud/memcache | [references/gcloud/redis/README.md](references/gcloud/redis/README.md)、[references/gcloud/memcache/README.md](references/gcloud/memcache/README.md) |
+| ロール ID の権限一覧・事前定義ロールを調べたい（`roles/datastore.*` / `roles/firestore.*` / `roles/bigtable.*` / `roles/memorystore.*` / `roles/redis.*` / `roles/memcache.*`） | iam | [references/iam/README.md](references/iam/README.md) |
+| REST のメソッド・パスを調べたい（Firestore API・Datastore API・Bigtable Admin API・Memorystore for Redis API・Memorystore for Memcached API） | rest | [references/rest/README.md](references/rest/README.md) |
+| 各 API のメソッド（firestore / datastore / bigtableadmin / redis / memcache） | rest/firestore、rest/datastore、rest/bigtableadmin、rest/redis、rest/memcache | [references/rest/firestore/README.md](references/rest/firestore/README.md)、[references/rest/datastore/README.md](references/rest/datastore/README.md)、[references/rest/bigtableadmin/README.md](references/rest/bigtableadmin/README.md)、[references/rest/redis/README.md](references/rest/redis/README.md)、[references/rest/memcache/README.md](references/rest/memcache/README.md) |
+| REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
+| 各 API のメッセージ型（firestore / datastore / bigtableadmin / redis / memcache） | rest-schemas/firestore、rest-schemas/datastore、rest-schemas/bigtableadmin、rest-schemas/redis、rest-schemas/memcache | [references/rest-schemas/firestore/README.md](references/rest-schemas/firestore/README.md)、[references/rest-schemas/datastore/README.md](references/rest-schemas/datastore/README.md)、[references/rest-schemas/bigtableadmin/README.md](references/rest-schemas/bigtableadmin/README.md)、[references/rest-schemas/redis/README.md](references/rest-schemas/redis/README.md)、[references/rest-schemas/memcache/README.md](references/rest-schemas/memcache/README.md) |
 | Firestore の概要・インターフェースの選び方・Standard / Enterprise edition の違い・データモデル（documents / collections / subcollections）・データ型 | firestore-overview | [references/firestore-overview/README.md](references/firestore-overview/README.md) |
 | Firestore のロケーション・クォータと制限・ベストプラクティス（ID・hotspot・500/50/5 ルール）・読み書きの内部動作・課金例 | firestore-overview | [references/firestore-overview/README.md](references/firestore-overview/README.md) |
 | Firestore と Datastore の違い・Datastore mode の制約の把握 | firestore-overview、firestore-datastore-mode | [references/firestore-overview/firestore-or-datastore.md](references/firestore-overview/firestore-or-datastore.md)、[references/firestore-datastore-mode/README.md](references/firestore-datastore-mode/README.md) |
@@ -155,7 +197,8 @@ skills/gcp-databases-nosql/
 
 - 取得日: 2026-11-16（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin）
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
-- 手書きの公式ガイド由来カテゴリは最終的に 20（分割投入中のため、現時点で収録済みなのは上のツリーとマッピング表に載せたカテゴリのみ）。gcloud（593.0.0 の help）・IAM roles-permissions reference・REST（`google-api-python-client` 同梱の Discovery document）は機械生成分として後続 PR で投入する
+- `references/gcloud/` `references/iam/` `references/rest/` `references/rest-schemas/` は機械生成（gcloud 593.0.0 の help、IAM roles-permissions reference、`google-api-python-client` 同梱の Discovery document。取得 2026-11-14）。他の 20 カテゴリは公式ガイド由来の手書き
+- gcloud は GA コマンドが gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ
 - Firestore は Native mode / Datastore mode / MongoDB 互換でページの前提が異なる。機能・制限・クォータ・インデックスの扱いをモードをまたいで当てはめない（`firestore-datastore-mode` / `firestore-mongodb` の固有ページを優先する）
 - Memorystore の 4 製品は別 API・別 gcloud グループ。Valkey は `gcloud memorystore`、Redis Cluster は `gcloud redis clusters`、Redis は `gcloud redis instances`、Memcached は `gcloud memcache`。Memorystore for Valkey には Discovery document が無く、REST のメソッド表・メッセージスキーマは無い
 - 料金ページ・リリースノートは未収録。公式ページを確認する

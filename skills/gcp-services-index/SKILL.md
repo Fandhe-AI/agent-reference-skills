@@ -18,7 +18,7 @@ Google Cloud (GCP) 全プロダクトの索引スキル。プロダクト名か�
 `gcp-databases-nosql` / `gcp-gke` / `gcp-compute` / `gcp-networking` / `gcp-security` / `gcp-observability` /
 `gcp-messaging-workflows` / `gcp-devops` / `gcp-iac` / `gcp-bigquery` / `gcp-agent-platform` / `gcp-data-pipelines` /
 `gcp-agent-platform-ml` / `gcp-ai-apis` / `gcp-api-management` / `gcp-hybrid-migration` / `gcp-architecture`）は
-`gcp-foundation`・`gcp-cli`（gcloud 横断グループ・CLI 設定・Cloud Shell、製品ページは持たない）・`gcp-run`・`gcp-storage`・`gcp-client-libraries`・`gcp-databases-relational` が収録済みで、残りは未収録（予定）。各製品ページの Status 列が最新の状況。収録しなかったプロダクトは「対象外」として `references/products/out-of-scope.md` に分離する。
+`gcp-foundation`・`gcp-cli`（gcloud 横断グループ・CLI 設定・Cloud Shell、製品ページは持たない）・`gcp-run`・`gcp-storage`・`gcp-client-libraries`・`gcp-databases-relational`・`gcp-databases-nosql` が収録済みで、残りは未収録（予定）。各製品ページの Status 列が最新の状況。収録しなかったプロダクトは「対象外」として `references/products/out-of-scope.md` に分離する。
 
 範囲方針は深層スキル側で定義する。gcloud・REST・IAM は全件、ガイド系ページは各プロダクトの主要ページに絞る。
 
