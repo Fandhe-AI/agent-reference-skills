@@ -55,7 +55,7 @@ principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workl
 |---|---|
 | `hostname` | Hostname of the node |
 | `id` | Unique ID of the node |
-| `service-accounts/` | Service accounts of the node: `aliases`, `email`, `identity` (JWT; requires `audience`), `scopes`, `token` (OAuth 2.0 access token) |
+| `service-accounts/` | Service accounts directory (the source describes it as "service accounts associated with the node"): `aliases`, `email`, `identity` (JWT; requires `audience`), `scopes`, `token` (OAuth 2.0 access token). For a Pod served by the GKE metadata server, `service-accounts/default/token` returns a token for the identity the Pod is configured to use (its Kubernetes ServiceAccount principal, or the linked IAM service account), not the node's service account; Pods with `hostNetwork: true` reach the Compute Engine metadata server instead (see Notes). |
 | `zone` | Compute Engine zone of the node |
 
 ### Instance attributes (`.../instance/attributes/`)
@@ -91,6 +91,7 @@ principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workl
 - Restrictions: Pods with `hostNetwork: true` don't use it and are routed to the Compute Engine metadata server (with the Cloud Storage FUSE CSI driver on Standard clusters running 1.33.3-gke.1226000 or later, host-network Pods can authenticate with their own ServiceAccount). When ServiceAccounts are linked to IAM service accounts, the metadata server returns `SERVICEACCOUNT_NAME.svc.id.goog` unless the `iam.gke.io/return-principal-id-as-email: "true"` annotation is set. The metadata server needs a few seconds to accept requests in a new Pod (retry). Built-in logging and monitoring agents still use the node service account; node pools still use their service account for image pulls (`ImagePullBackOff` / `ErrImagePull`). Knative serving needs manual setup to keep releasing request metrics. VPC Service Controls ingress/egress rules for these principals are in Preview.
 - Alternatives (less secure): the Compute Engine default service account on nodes (shared by all workloads on the node, over-provisioned, inappropriate for multi-tenant clusters) or exported service account keys stored as Kubernetes Secrets (a security risk; follow https://docs.cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys).
 - Distinct from Workload Identity Federation for external workloads (AWS / Azure / OIDC), which is in `gcp-foundation`.
+- Source inconsistency: the instance metadata table describes `service-accounts/` as "A directory of service accounts associated with the node", while the same page says the `GET /computeMetadata/v1/instance/service-accounts/default/token` request "retrieves a token for the IAM service account that the Pod is configured to impersonate". This page describes the Pod identity.
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/workload-identity (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -40,7 +40,7 @@ status:
 | Strategy | How it works | Isolation |
 | --- | --- | --- |
 | Multi-instance GPU | GKE divides a supported GPU into up to seven slices; each slice goes to one container (max seven containers per GPU). | Hardware isolation, consistent and predictable QoS. |
-| GPU time-sharing | Built-in NVIDIA timesharing (instruction-level preemption since the Pascal architecture). | Software-level: address space, performance, and error isolation. |
+| GPU time-sharing | Built-in NVIDIA timesharing (instruction-level preemption since the Pascal architecture). | Software-level: address space, performance, and error isolation; GPU memory limits are not enforced, so a container can exhaust memory shared with others. Only share a GPU between workloads in the same trust boundary (see Notes). |
 | NVIDIA MPS | NVIDIA Multi-Process Service, a binary-compatible CUDA API implementation for cooperative multi-process CUDA workloads. | Software-level: resource limits (active thread percentage, pinned device memory). |
 
 Best practice: combine multi-instance GPU with GPU time-sharing, or multi-instance GPU with NVIDIA MPS. The maximum number of containers sharing a physical GPU is set in the workload spec on Autopilot, and at node pool creation on Standard (every GPU in the pool shares per that setting).
@@ -75,6 +75,8 @@ The number of GPUs requested with time-sharing or MPS is not a measure of comput
 
 - These node-level metrics differ from the container-level (`container/accelerator`) metrics of regular GPUs, which are not collected for containers on time-shared or MPS GPUs.
 - NVIDIA MPS is available on Standard clusters; multi-instance GPUs and time-sharing are available on Autopilot and Standard (see gpus.md).
+- Limitation (from the time-sharing how-to page): "GKE enforces address space isolation, performance isolation, and error isolation between containers that share a physical GPU. However, memory limits aren't enforced on GPUs. To avoid running into out-of-memory (OOM) issues, set GPU memory limits in your workloads. To avoid security issues, only deploy workloads that are in the same trust boundary to GPU time-sharing." For workloads that must not affect each other, use multi-instance GPU (hardware isolation).
+- Source (limitations): https://docs.cloud.google.com/kubernetes-engine/docs/how-to/timesharing-gpus#limitations (retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/timesharing-gpus (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -33,7 +33,7 @@ volumeBindingMode: WaitForFirstConsumer
 | Hyperdisk Storage Pool | Standard (boot and attached disks), Autopilot (attached Hyperdisks only) | Pre-provisioned pool of capacity, throughput and IOPS shared by disks in the pool. | Pooled performance and cost optimization. |
 | Local SSD | Standard; Autopilot support is in preview on A2 Ultra A100 machines, on clusters and node pools running GKE 1.27 and later | Attached to one node; ephemeral (tied to the Pod lifecycle for emptyDir). | Hot caching, real-time analytics, lowest-latency ephemeral storage. |
 | Managed Lustre | Autopilot, Standard with Container-Optimized OS nodes | Parallel file system; persistent. | AI/ML and HPC needing high-throughput multi-Pod file access; volumes can be expanded without downtime. |
-| Filestore | Autopilot, Standard | NFS, `ReadWriteMany`. Enterprise tier defaults to regional availability, other tiers zonal. Persistent. | Shared multi-reader/writer file access (CMS, migrations, analytics, rendering, media). Multishares: one enterprise-tier instance of 10 GiB or larger shared with up to 80 PersistentVolumes. |
+| Filestore | Autopilot, Standard | NFS, `ReadWriteMany`. Enterprise tier defaults to regional availability, other tiers zonal. Persistent. | Shared multi-reader/writer file access (CMS, migrations, analytics, rendering, media). Multishares: one enterprise-tier instance shared with up to 80 PersistentVolumes; each share is 10 GiB or larger, and the instance itself is 1 TiB to 10 TiB (see Notes). |
 | Cloud Storage FUSE | Autopilot, Standard | `ReadWriteMany`, `ReadOnlyMany`, `ReadWriteOnce`; regional object availability. Persistent. | File semantics over Cloud Storage buckets; ML training and model data. |
 | Run:ai Model Streamer | GKE | Streams model weights (for example `safetensors`) from Cloud Storage to GPU memory; integrates with vLLM and SGLang. | Faster inference model loading. |
 | Managed databases | n/a | AlloyDB for PostgreSQL, Cloud SQL, Spanner, Memorystore for Redis. | Lower operational overhead than running a database in Kubernetes. |
@@ -44,6 +44,9 @@ volumeBindingMode: WaitForFirstConsumer
 - Hyperdisk and Persistent Disk comparison, driver setup and per-type how-to guides are on separate pages; see Related.
 - The managed databases themselves are covered by the `gcp-databases-relational` / `gcp-databases-nosql` skills; Cloud Storage, Filestore and Managed Lustre as products are in `gcp-storage`. This skill covers only the GKE (CSI driver / Kubernetes object) side.
 - Source inconsistency: the Local SSD row says "Autopilot support is in preview on A2 Ultra A100 machines, on clusters and node pools running GKE 1.27 and later", while local-ssd.md says "Autopilot and node auto-provisioning support Local SSD only through custom ComputeClasses". The source does not reconcile the two.
+- Clarified from the official docs: this page says multishares let you "share a Filestore enterprise tier instance of 10 GiB or larger with up to 80 PersistentVolumes"; in the Filestore docs, 10 GiB is the minimum capacity of each share ("Enterprise multishares minimum share capacity: 10 GiB"), and the Multishares for GKE (Enterprise) instance capacity is 1 TiB to 10 TiB.
+- Source (Filestore limits): https://docs.cloud.google.com/filestore/docs/limits (retrieved 2026-11-15)
+- Source (Filestore service tiers): https://docs.cloud.google.com/filestore/docs/service-tiers (retrieved 2026-11-15)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/storage-overview (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Snippet source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/persistent-volumes
 
