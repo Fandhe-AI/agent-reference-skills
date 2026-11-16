@@ -115,6 +115,7 @@ skills/gcp-gke/
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | gcloud のコマンド・フラグを調べたい（container / anthos の 2 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
+| `gcloud container`（clusters・node-pools・fleet / hub・backup-restore・binauthz・aws・azure・attached・vmware・bare-metal）のフラグを調べたい | gcloud/container | [references/gcloud/container/README.md](references/gcloud/container/README.md) |
 | `gcloud anthos`（apply・auth・config・create-login-config・export）のフラグを調べたい | gcloud/anthos | [references/gcloud/anthos/README.md](references/gcloud/anthos/README.md) |
 | GKE の概要・クラスターアーキテクチャ・Autopilot と Standard の選び方・責任共有 | gke-overview | [references/gke-overview/README.md](references/gke-overview/README.md) |
 | GKE のクォータと制限・大規模クラスターの計画・スケーラビリティ・バージョニングとサポート | gke-overview | [references/gke-overview/README.md](references/gke-overview/README.md) |
@@ -144,7 +145,7 @@ skills/gcp-gke/
 | GKE on AWS / Azure の非推奨とアーキテクチャ・GKE attached clusters（EKS / AKS / 汎用）のアタッチ・更新・デタッチ・ロギング / モニタリング | gke-multicloud | [references/gke-multicloud/README.md](references/gke-multicloud/README.md) |
 | Google Distributed Cloud software only（VMware / bare metal）の概要・advanced clusters・インストール計画・アップグレード・スケーラビリティ・接続・制限 | gdc-software | [references/gdc-software/README.md](references/gdc-software/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `iam` / `rest` / `rest-schemas` / `gcloud/container`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
