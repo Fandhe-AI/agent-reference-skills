@@ -20,13 +20,13 @@ InnoDB is the only supported engine. Do not do this if the dump contains the `my
 
 Per-instance CA (`GOOGLE_MANAGED_INTERNAL_CA`, the default) only:
 
-Adapted (not in the official docs): changed `-p [PASSWORD]` (which makes `mysqldump` prompt and treat the bracketed word as a database name, and would put a password on the command line) to a bare `-p` password prompt, added `--ssl-mode=VERIFY_CA --ssl-ca=server-ca.pem` so the password is only sent after the server certificate is verified (enough only for a per-instance CA), and replaced the bracketed placeholders with upper-case ones.
+Adapted (not in the official docs): changed `-p [PASSWORD]` (which makes `mysqldump` prompt and treat the bracketed word as a database name, and would put a password on the command line) to a bare `-p` password prompt, added `--ssl-mode=VERIFY_CA --ssl-ca=server-ca.pem` so the password is only sent after the server certificate is verified (enough only for a per-instance CA), replaced the bracketed placeholders with upper-case ones, and anchored the `sed` pattern to the `) ENGINE=MyISAM` line that closes each `CREATE TABLE` so row data and routine bodies are not rewritten.
 
 ```bash
 mysqldump --databases DATABASE_NAME \
 -h INSTANCE_IP -u USERNAME -p \
 --ssl-mode=VERIFY_CA --ssl-ca=server-ca.pem \
---hex-blob --default-character-set=utf8mb4 | sed 's/ENGINE=MyISAM/ENGINE=InnoDB/g' > DATABASE_FILE.sql
+--hex-blob --default-character-set=utf8mb4 | sed 's/^) ENGINE=MyISAM/) ENGINE=InnoDB/' > DATABASE_FILE.sql
 ```
 
 Shared CA (`GOOGLE_MANAGED_CAS_CA`) or customer-managed CA (`CUSTOMER_MANAGED_CAS_CA`): take the instance DNS name from the `dnsNames:` field of the instance description (not from the certificate the server presents) and create a DNS record for it. Snippet taken from https://docs.cloud.google.com/sql/docs/mysql/configure-ssl-instance:
@@ -36,13 +36,13 @@ gcloud sql instances describe INSTANCE_NAME \
   --project=PROJECT_ID
 ```
 
-Adapted (not in the official docs): same changes as above, but with `--ssl-mode=VERIFY_IDENTITY` and `-h DNS_NAME` (a name from `dnsNames`) instead of `--ssl-mode=VERIFY_CA` and `-h INSTANCE_IP`, so the password is only sent to a server whose certificate is issued by the CA and names this instance.
+Adapted (not in the official docs): same changes as above, but with `--ssl-mode=VERIFY_IDENTITY` and `-h DNS_NAME` (a name from `dnsNames`) instead of `--ssl-mode=VERIFY_CA` and `-h INSTANCE_IP`, so the password is only sent to a server whose certificate is issued by the CA and names this instance; the `sed` pattern is anchored the same way.
 
 ```bash
 mysqldump --databases DATABASE_NAME \
 -h DNS_NAME -u USERNAME -p \
 --ssl-mode=VERIFY_IDENTITY --ssl-ca=server-ca.pem \
---hex-blob --default-character-set=utf8mb4 | sed 's/ENGINE=MyISAM/ENGINE=InnoDB/g' > DATABASE_FILE.sql
+--hex-blob --default-character-set=utf8mb4 | sed 's/^) ENGINE=MyISAM/) ENGINE=InnoDB/' > DATABASE_FILE.sql
 ```
 
 Replace `DATABASE_NAME`, `INSTANCE_IP` or `DNS_NAME`, `USERNAME` and `DATABASE_FILE` with your values; `-p` prompts for the password.
@@ -111,7 +111,7 @@ SET FOREIGN_KEY_CHECKS=1;
 ## Notes
 
 - MySQL variant; the PostgreSQL counterpart is https://docs.cloud.google.com/sql/docs/postgres/import-export.
-- Corrected from the official docs: the original was `mysqldump --databases [DATABASE_NAME] -h [INSTANCE_IP] -u [USERNAME] -p [PASSWORD] ...`; with the MySQL client default `--ssl-mode=PREFERRED` the password could go to an unverified server, so `--ssl-mode=VERIFY_CA --ssl-ca=server-ca.pem` (Not from the source: standard MySQL client options; MariaDB clients use `--ssl-verify-server-cert`) was added. Verifying the CA verifies the server identity only for a per-instance CA (https://docs.cloud.google.com/sql/docs/mysql/configure-ssl-instance, "Server identity verification"). Get `server-ca.pem` as described in `cloud-sql-connectors-iam/iam-logins.md`, or run `mysqldump` through the Auth Proxy on `127.0.0.1` instead.
+- Corrected from the official docs: the original was `mysqldump --databases [DATABASE_NAME] -h [INSTANCE_IP] -u [USERNAME] -p [PASSWORD] ...`; with the MySQL client default `--ssl-mode=PREFERRED` the password could go to an unverified server, so `--ssl-mode=VERIFY_CA --ssl-ca=server-ca.pem` (Not from the source: standard MySQL client options; MariaDB clients use `--ssl-verify-server-cert`) was added. Verifying the CA verifies the server identity only for a per-instance CA (https://docs.cloud.google.com/sql/docs/mysql/configure-ssl-instance, "Server identity verification"). Get `server-ca.pem` as described in `cloud-sql-connectors-iam/iam-logins.md`, or run `mysqldump` through the Auth Proxy on `127.0.0.1` instead. Also, the source's `sed 's/ENGINE=MyISAM/ENGINE=InnoDB/g'` rewrites every occurrence in the dump, including string values in `INSERT` statements and routine bodies, which would change the restored data. The examples only rewrite lines that start with `) ENGINE=MyISAM` (the table-options line `mysqldump` writes at the end of `CREATE TABLE`). Not from the source: to be certain no data is touched, dump the schema with `--no-data` and the data with `--no-create-info` separately and convert only the schema file; review the converted file before importing.
 - Adapted from the official docs: a shared CA is shared across instances, so the source requires hostname verification as well (for a customer-managed CA it says you can perform DNS name-based verification for any instance type); its steps take the DNS name from `dnsNames` in `gcloud sql instances describe`, create the DNS record, connect to that name and specify `--ssl-mode=VERIFY_IDENTITY` (https://docs.cloud.google.com/sql/docs/mysql/configure-ssl-instance). The shared-CA example applies that to the dump command; for a shared CA, `server-ca.pem` is then the root and regional CA bundle (https://docs.cloud.google.com/sql/docs/mysql/manage-ssl-instance, "Download root and regional CA certificate bundles for a shared CA").
 - A public `INSTANCE_IP` needs your client in authorized networks; prefer private IP, PSC or the Auth Proxy.
 - Instances can't be stopped mid-export; if a database exceeds about 500 GB, import and export take long and block backups. Verify the result after import by connecting and listing databases, tables and entries.

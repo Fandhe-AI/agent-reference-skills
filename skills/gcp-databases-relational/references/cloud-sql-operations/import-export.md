@@ -58,7 +58,7 @@ If you delete the instance during a serverless export, the export stops some tim
 | `HTTP Error 409 ... another operation was already in progress` | Only one operation at a time; retry after it finishes |
 | Import taking too long | Too many active connections; check CPU and memory; restarting the instance first closes connections and ends resource-consuming tasks |
 | Fails because users in the dump don't exist | Create the owning / granted database users in the target before importing |
-| Disk usage much higher after import | Possibly point-in-time recovery logs; disable PITR to delete logs and recover storage (provisioned size does not shrink) |
+| Disk usage much higher after import | Possibly point-in-time recovery logs. First check where the logs are stored (monitor-instance.md) and increase storage or enable automatic storage increases. The source's other fix, disabling PITR, deletes the existing logs: you can no longer restore to any point before PITR is re-enabled, so take an on-demand backup first. The provisioned size does not shrink either way |
 | `GRANT stderr: ERROR: must be member of role ROLE_NAME` (job ran about four days) | Create `ROLE_NAME` in the destination and import as a user who is a member of it with `--user` |
 
 ### Troubleshooting exports
