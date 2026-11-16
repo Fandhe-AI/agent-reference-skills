@@ -120,7 +120,7 @@ Base URL: `https://servicenetworking.googleapis.com`. Methods are listed by `id`
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | Required. The private service connection that connects to a service producer organization. The name includes both the private service name and the VPC network peering name in the format of `services/{peering_service_name}/connections/{vpc_peering_name}`. For Google services that support this functionality, this is `services/servicenetworking.googleapis.com/connections/servicenetworking-googleapis-com`. |
-| `force` | query | boolean | no | If a previously defined allocated range is removed, force flag must be set to true. |
+| `force` | query | boolean | conditional | If a previously defined allocated range is removed, force flag must be set to true. |
 | `updateMask` | query | string (google-fieldmask) | no | The update mask. If this is omitted, it defaults to "\*". You can only update the listed peering ranges. |
 
 ### `servicenetworking.services.disableVpcServiceControls`
@@ -369,7 +369,7 @@ Base URL: `https://servicenetworking.googleapis.com`. Methods are listed by `id`
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | The service producer peering service that is managing peering connectivity for a service producer organization. For Google services that support this functionality, this is `services/servicenetworking.googleapis.com`. |
-| `force` | query | boolean | no | If a previously defined allocated range is removed, force flag must be set to true. |
+| `force` | query | boolean | conditional | If a previously defined allocated range is removed, force flag must be set to true. |
 | `updateMask` | query | string (google-fieldmask) | no | The update mask. If this is omitted, it defaults to "\*". You can only update the listed peering ranges. |
 
 ### `servicenetworking.services.validate`

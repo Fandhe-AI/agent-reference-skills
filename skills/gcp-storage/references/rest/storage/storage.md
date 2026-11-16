@@ -205,7 +205,7 @@ Base URL: `https://storage.googleapis.com/storage/v1`. Methods are listed by `id
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `bucket` | path | string | yes | Name of a bucket. |
-| `generation` | query | string (int64) | no | If present, specifies the generation of the bucket. This is required if softDeleted is true. |
+| `generation` | query | string (int64) | conditional | If present, specifies the generation of the bucket. This is required if softDeleted is true. |
 | `ifMetagenerationMatch` | query | string (int64) | no | Makes the return of the bucket metadata conditional on whether the bucket's current metageneration matches the given value. |
 | `ifMetagenerationNotMatch` | query | string (int64) | no | Makes the return of the bucket metadata conditional on whether the bucket's current metageneration does not match the given value. |
 | `projection` | query | string enum | no | Set of properties to return. Defaults to noAcl. Values: `full`, `noAcl`. |

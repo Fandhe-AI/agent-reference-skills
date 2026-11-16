@@ -906,6 +906,7 @@ SYNOPSIS
 
 ## Notes
 
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud functions deploy --docker-registry`: "With the general transition from Container Registry to Artifact Registry, the option to specify docker registry is deprecated. All container image storage and management will automatically transition to Artifact Registry. For more information, see https://cloud.google.com/artifact-registry/docs/transition/transition-from-gcr".
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the Firestore `--trigger-event` example is a 1st gen trigger but does not pass `--no-gen2`, so it depends on the `functions/gen2` property; the runnable form adds `--no-gen2` so it always deploys a 1st gen function.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `--trigger-resource` value contains `(default)`, which bash parses as a subshell and rejects unquoted; the runnable form single-quotes the value and writes the project as the `PROJECT_ID` placeholder.
