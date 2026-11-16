@@ -37,6 +37,8 @@ city_ref.update({"capital": firestore.DELETE_FIELD})
 
 ### Delete a collection (server environment only)
 
+These samples call `recursiveDelete` (Node.js) / `recursive_delete` (Python), which delete the collection's documents **and all of their subcollections** (every descendant document). Unlike deleting a single document, nothing under the collection is kept.
+
 ```javascript
 async function deleteCollection(db, collectionPath) {
   const collectionRef = db.collection(collectionPath);
@@ -74,7 +76,7 @@ firebase firestore:delete  --database=DATABASE_ID PATH
 - Source: https://docs.cloud.google.com/firestore/native/docs/manage-data/delete-data (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Warning from the source: deleting a document does not delete its subcollections. Subcollection documents stay accessible by reference (for example `/mycoll/mydoc/mysubcoll/mysubdoc` after deleting `/mycoll/mydoc`). Non-existent parent documents appear in the console but not in query results and snapshots.
 - Deleting a collection means reading all its documents and deleting them (read and delete costs); delete in smaller batches to avoid out-of-memory errors. Do it only from a trusted server environment; deleting from a mobile/web client has negative security and performance implications.
-- The source states its collection-delete snippets are simplified (no error handling, security, subcollection deletion or performance optimizations). Production approach: https://docs.cloud.google.com/firestore/native/docs/solutions/delete-collections
+- The source states its collection-delete snippets "are simplified for clarity and don't include error handling, security, deleting subcollections, or performance optimizations". Source inconsistency: the Node.js and Python snippets kept here use `recursiveDelete` / `recursive_delete`, which do delete subcollections (the source's Java snippet is commented "Delete a collection and all its subcollections"); the "deleting subcollections" caveat applies to the source's other, non-recursive snippets. Production approach: https://docs.cloud.google.com/firestore/native/docs/solutions/delete-collections
 - C++ and Unity do not support collection deletion; delete data using the CLI.
 - Large numbers of deletes can impact latency; this usually resolves on its own, otherwise contact support.
 - All of these operations are destructive; try them on a disposable database or collection first. Bulk delete: https://docs.cloud.google.com/firestore/native/docs/manage-data/bulk-delete. TTL: https://docs.cloud.google.com/firestore/native/docs/ttl

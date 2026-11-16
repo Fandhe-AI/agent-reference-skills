@@ -71,6 +71,7 @@ OIDC authentication from Google Cloud: Go, C#, Ruby in all supported versions; J
 - Field names matching `__.*__` are escaped by adding `r:` in Firestore: BSON `__foo__` becomes `__r:foo__`.
 - Some tools need a connection string; `gcloud firestore databases connection-string` returns it (https://docs.cloud.google.com/sdk/gcloud/reference/firestore/databases/connection-string).
 - The source also shows Java, Android Java and Go samples for BSON types, and older supported-feature pages (4.0, 3.6).
+- Source inconsistency: this page includes Boolean among the allowed top-level `_id` types, while the behavior-differences page lists ObjectId, String, 64-bit integer, 32-bit integer, Double, Binary and Object only. Avoid Boolean `_id` values unless you have verified them against your database.
 - Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/supported-data-types-drivers (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

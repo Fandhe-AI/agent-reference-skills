@@ -83,6 +83,7 @@ Supported selector: `$near`. Not supported: `$box`, `$center`, `$centerSphere`, 
 - To delete a database use the database delete flow (not `dropDatabase`); delete indexes as described in `indexing.md`; manage database access through IAM and SCRAM user credentials (see `connect.md`), not MongoDB user / role commands. Deleting a database is destructive; try it on a disposable database first.
 - Source inconsistency: the source's update-operator table also lists `$percentile` among the array update operators, but `$percentile` is an aggregation accumulator / expression, not a MongoDB update operator, so it is left out of the list above. The source also lists `$percentile` as unsupported for the `$group` accumulator but supported as an accumulator expression.
 - Pages for MongoDB 7.0, 6.0 and 5.0 exist at the same path pattern (`supported-features-70`, `-60`, `-50`).
+- Source inconsistency: the command table marks `dropIndexes` as not supported, while the behavior-differences page lists `dropIndexes` among commands with no unsupported fields. Delete indexes with `dropIndex` (supported; see `indexing.md`).
 - Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/supported-features-80 (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/indexing
 
