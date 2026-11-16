@@ -56,7 +56,7 @@ diskSizeGb: 100
 
 The source states `privileged: true` is "Required for GKE versions earlier than 1.28 to access TPUs".
 
-Adapted (not in the official docs): the duplicate `ports` key in the container was removed (the 8431 entry is kept).
+Adapted (not in the official docs): the duplicate `ports` key in the container was removed (the 8431 entry is kept), and the required `spec.selector.matchLabels` and matching `spec.template.metadata.labels` were added.
 
 ```yaml
 apiVersion: apps/v1
@@ -67,7 +67,13 @@ metadata:
     app: tpu-workload
 spec:
   replicas: 2
+  selector:
+    matchLabels:
+      app: tpu-workload
   template:
+    metadata:
+      labels:
+        app: tpu-workload
     spec:
       nodeSelector:
         cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
@@ -129,6 +135,7 @@ Setting precedence: ComputeClass / Pod spec, then cluster NAP default, then Goog
 - Corrected from the official docs: `enabled: true` was unindented in the ComputeClass example, and the TPU Deployment listed `ports` twice.
 - The source also shows Console and some inline settings omitted here.
 - The TPU example uses the unpinned image tag `:latest`; pin a specific tag or digest for production use.
+- Corrected from the official docs: the source TPU Deployment has no `spec.selector` and no Pod template labels (only Deployment `metadata.labels`). `apps/v1` Deployments require `spec.selector`, and it must match `spec.template.metadata.labels`, so both were added with `app: tpu-workload`.
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/node-auto-provisioning (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -64,7 +64,7 @@ spec:
 
 ## Notes
 
-- Kubernetes Secret requirements: listener `port` 443 and `protocol` `HTTPS`, `listener.tls.mode: Terminate`, and the credentials referenced in the `listeners.tls` block (`Gateway.spec.tls.certificateRef`). Limitations: only HTTPS listeners terminate with the Secrets; multiple HTTPS listeners on one Gateway need unique hostnames; only one hostname may be omitted or `*` per port and protocol pair; one default certificate per Gateway.
+- Kubernetes Secret requirements: listener `port` 443 and `protocol` `HTTPS`, `listener.tls.mode: Terminate`, and the credentials referenced in the `listeners.tls` block (`spec.listeners[].tls.certificateRefs[]`; the source writes `Gateway.spec.tls.certificateRef`, see the correction below). Limitations: only HTTPS listeners terminate with the Secrets; multiple HTTPS listeners on one Gateway need unique hostnames; only one hostname may be omitted or `*` per port and protocol pair; one default certificate per Gateway.
 - The scope and location of an SSL certificate must match the Gateway (a global certificate cannot be used by a regional Gateway). Google-managed SSL certificates are not compatible with regional Gateways; use Certificate Manager.
 - Certificate Manager lets a Gateway reference a `CertificateMap`, improves propagation times and supports Cloud Monitoring for expired certificates.
 - The source table has no value for `gke-l7-rilb-mc` in the certificate scope table (cell is empty); the TLS support table groups it with the regional classes.
@@ -73,6 +73,8 @@ spec:
 - TLS passthrough suits compliance cases where private keys cannot be shared with cloud infrastructure, or non-HTTP TLS protocols.
 - These are Kubernetes Gateway API resources on GKE, not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (planned `gcp-networking`).
 - TLSRoute on the multi-cluster classes: multi-cluster-gateways.md (fleet-multi-cluster) lists TLSRoute as supported on `gke-l7-regional-external-managed-mc`, `gke-l7-rilb-mc` and `gke-l7-cross-regional-internal-managed-mc`, consistent with the table above; see choose-mc-lb-api.md for the comparison page and its Source inconsistency note.
+- Corrected from the official docs: the source names the field `Gateway.spec.tls.certificateRef`. Gateway manifests in the GKE how-to set Secrets per listener as `spec.listeners[].tls.certificateRefs[]` (a list, for example `certificateRefs: - name: store-example-com` under a listener with `tls.mode: Terminate`); use that path.
+- Source (`listeners[].tls.certificateRefs`): https://docs.cloud.google.com/kubernetes-engine/docs/how-to/deploying-gateways (retrieved 2026-11-16)
 - Source (multi-cluster Gateway GatewayClasses and TLSRoute): https://docs.cloud.google.com/kubernetes-engine/docs/concepts/multi-cluster-gateways (retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/gateway-security (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/configure-gateway-resources (snippet; retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)

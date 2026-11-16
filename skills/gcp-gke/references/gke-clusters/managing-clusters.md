@@ -60,21 +60,25 @@ gcloud container clusters update example-cluster \
 
 Create and attach a tag key (for example `do_not_delete`) to protected clusters, then create a deny policy JSON file:
 
+Adapted (not in the official docs): `deniedPrincipals`, `deniedPermissions` and `denialCondition` are nested in a `denyRule` object, as the IAM v2 `PolicyRule` schema requires.
+
 ```json
 {
   "displayName": "Prevent cluster deletion based on tag",
   "rules": [
     {
       "description": "Prevent cluster deletion based on tag",
-      "deniedPrincipals": [
-        "principalSet://goog/public:all"
-      ],
-      "deniedPermissions": [
-        "container.googleapis.com/clusters.delete"
-      ],
-      "denialCondition": {
-        "title": "Cluster has the do_not_delete tag",
-        "expression": "resource.hasTagKey('TAG_KEY_NAME')"
+      "denyRule": {
+        "deniedPrincipals": [
+          "principalSet://goog/public:all"
+        ],
+        "deniedPermissions": [
+          "container.googleapis.com/clusters.delete"
+        ],
+        "denialCondition": {
+          "title": "Cluster has the do_not_delete tag",
+          "expression": "resource.hasTagKey('TAG_KEY_NAME')"
+        }
       }
     }
   ]
@@ -106,6 +110,8 @@ gcloud iam policies create POLICY_ID \
 - With the deny policy, any attempt to delete a cluster carrying the tag key fails with `Permission denied` until the tag key is detached. The deny rule covers any principal (`principalSet://goog/public:all`); try it on a disposable cluster first.
 - Fleets enable features such as Multi Cluster Ingress, Config Sync and Policy Controller; clusters can be added via Console, gcloud, Terraform or Config Connector.
 - The source also shows Console forms; they are omitted here.
+- Corrected from the official docs: the source deny policy places `deniedPrincipals`, `deniedPermissions` and `denialCondition` directly in the `rules[]` entry. The IAM v2 `PolicyRule` has only `description` and `denyRule` (a `DenyRule` holding those three fields), so they are now nested in `denyRule`.
+- Source (IAM v2 `PolicyRule` / `DenyRule` schema): https://iam.googleapis.com/$discovery/rest?version=v2 (Discovery document bundled with google-api-python-client, retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/managing-clusters (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the first zonal example omitted the trailing `\` after `--location us-central1-a`.
 

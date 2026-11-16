@@ -110,7 +110,9 @@ spec:
 
 ### IAP
 
-IAP is not applied by default; configure it in a GCPBackendPolicy. Get the OAuth client ID and secret, enable IAP for GKE (no BackendConfig needed), then save as `backend-policy.yaml`. Replace `CLIENT_SECRET` with the OAuth client secret, `CLIENT_ID` with the OAuth client ID and `SERVICE_NAME` with the target Service.
+IAP is not applied by default; configure it in a GCPBackendPolicy. Get the OAuth client ID and secret, enable IAP for GKE (no BackendConfig needed), then save as `backend-policy.yaml`. Replace `SECRET_NAME` with the name of the Kubernetes Secret that holds the OAuth client secret (not the secret value itself), `CLIENT_ID` with the OAuth client ID and `SERVICE_NAME` with the target Service.
+
+Adapted (not in the official docs): the placeholder `CLIENT_SECRET` under `oauth2ClientSecret.name` is renamed `SECRET_NAME`, because the field takes a Secret name.
 
 ```yaml
 apiVersion: networking.gke.io/v1
@@ -124,7 +126,7 @@ spec:
     iap:
       enabled: true
       oauth2ClientSecret:
-        name: CLIENT_SECRET
+        name: SECRET_NAME
       clientID: CLIENT_ID
   # Attach to a Service in the cluster.
   targetRef:
@@ -222,6 +224,7 @@ TCP GCPBackendPolicy (for TLSRoute) supports only these `spec.default` fields: `
 - These are Kubernetes Gateway API resources on GKE, not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (planned `gcp-networking`).
 - This page covers the first half of the source; custom-metrics backend selection, GCPTrafficDistributionPolicy routing, session affinity and traffic-based autoscaling are in `gateway-traffic-distribution.md`.
 - Omitted for size: the multi-cluster region example (`GCPGatewayPolicy` with `spec.default.region: us-central1`, GKE 1.30.3-gke.1225000+), the SSL policy example (see `gateway-security.md`), and the backend service timeout (`timeoutSec`, default 30) and connection draining (`connectionDraining.drainingTimeoutSec`) `GCPBackendPolicy` examples.
+- Corrected from the official docs: the source tells you to replace `CLIENT_SECRET` in `oauth2ClientSecret.name` with "the OAuth client secret", but `oauth2ClientSecret` references a Kubernetes Secret by name; the same page's `kubectl describe gcpbackendpolicy` output shows `oauth2ClientSecret: Name: my-iap-secret`. Do not put the secret value in the manifest. The source does not show how to create that Secret or which key it must contain.
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/configure-gateway-resources (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
