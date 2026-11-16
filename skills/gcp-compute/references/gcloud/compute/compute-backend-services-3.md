@@ -906,7 +906,7 @@ NOTES
 
 ## Notes
 
-- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud compute backend-services list --regexp`: "Flag --regexp is deprecated. Use --filter="name~'REGEXP'" instead.".
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud compute backend-services list NAME`: "Argument NAME is deprecated. Use --filter="name=( 'NAME' ... )" instead."; `gcloud compute backend-services list --regexp`: "Flag --regexp is deprecated. Use --filter="name~'REGEXP'" instead.".
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): angle-bracket placeholders such as `<service-name>` are shell redirections when pasted into bash; the runnable form writes them as upper-case placeholders (`SERVICE_NAME`).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
