@@ -56,13 +56,13 @@ C4D max disks (same for standard, highcpu, highmem and `-lssd` of the same vCPU 
 | 384 | 128 | 128 | 128 | 0 | 8 |
 | 384 `-metal` | 128 | 128 | 8 | 0 | 8 |
 
-C4D maintenance (all: typical frequency minimum 30 days, live migrate, 7 days advanced notification, simulate maintenance Yes): on-demand maintenance Yes for `c4d-*-lssd` and `c4d-*-384`; No for all others.
+C4D maintenance (all: typical frequency minimum 30 days, live migrate, 7 days advanced notification, simulate maintenance Yes): on-demand maintenance Yes for `c4d-*-lssd` and `c4d-*-384`; No for all others. Caveat (from live-migration-process.md, quoted in Notes): bare metal instances "don't support live migration", so the `c4d-*-384-metal` types use `TERMINATE` and `RESTART`, unlike the source table's "Live migrate" for `c4d-*-384`.
 
 ### C4A (Google Axion, Arm Neoverse V2, Titanium)
 
 - Up to 72 vCPUs and 576 GB DDR5 (VMs); `highmem` bare metal 96 vCPUs / 768 GB; up to 6 TiB Titanium SSD; standard networking up to 50 Gbps (up to 100 Gbps for bare metal), Tier_1 up to 100 Gbps. SMT not supported: each vCPU is an entire core. Single UMA node; sole-tenant nodes supported.
 - `standard` 4 GB/vCPU, `highcpu` 2 GB/vCPU, `highmem` 8 GB/vCPU. Doesn't support custom machine types, compact placement policies, or suspend for instances with attached Titanium SSD. Supports PMU, CUDs, Spot VMs, reservations.
-- VM disks: `hyperdisk-balanced`, `hyperdisk-balanced-high-availability`, `hyperdisk-throughput`, `hyperdisk-extreme`, `hyperdisk-ML`, Titanium SSD (`-lssd` only). Bare metal: `hyperdisk-balanced`, `hyperdisk-extreme`, `hyperdisk-ML`. No Persistent Disk. Capacity totals as for C4D (257 / 512 TiB).
+- VM disks: `hyperdisk-balanced`, `hyperdisk-balanced-high-availability`, `hyperdisk-throughput`, `hyperdisk-extreme`, `hyperdisk-ml`, Titanium SSD (`-lssd` only). Bare metal: `hyperdisk-balanced`, `hyperdisk-extreme`, `hyperdisk-ml`. No Persistent Disk. Capacity totals as for C4D (257 / 512 TiB).
 - NICs: VMs require gVNIC; bare metal requires IDPF. Community-supported Arm OSes might be supported; test OSes not listed on the OS details page.
 
 | vCPUs | Memory GB (standard / highcpu / highmem) | Default egress (Gbps) | Tier_1 egress (Gbps) |
@@ -142,6 +142,9 @@ C4 maintenance (frequency minimum 30 days, advanced notification 7 days): `c4-*-
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/machine-types/list (gcloud 593.0.0 help); the source page has no code.
 - Regional availability: C4D zones are listed in the Available regions and zones table (select machine series C4D); bare metal availability is on the bare metal instances page. C4A / C4 availability is in the same regions-and-zones table.
 - Per VM Tier_1 networking: see high-bandwidth networking configuration.
+- Source inconsistency: the "Maintenance experience for C4D instances" table gives "Live migrate" for `c4d-*-384` and "All others", which includes the `c4d-*-384-metal` bare metal types, while live-migration-process.md (compute-host-tenancy) says bare metal instances "don't support live migration. The maintenance behavior for these instances is set to `TERMINATE` and `RESTART`". The C4A and C4 tables on this page list their `-metal` types as "Terminate"; treat C4D bare metal the same way.
+- Corrected from the official docs: the C4A "Supported disk types" lists write Hyperdisk ML as `hyperdisk-ML`; other lists on the same page use `hyperdisk-ml`, the lowercase disk type name used elsewhere in this skill, so both C4A lines use `hyperdisk-ml`.
+- Source (compared page, live-migration-process.md): https://docs.cloud.google.com/compute/docs/instances/live-migration-process (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/docs/general-purpose-machines (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
