@@ -102,6 +102,14 @@ NOTES
         $ gcloud beta redis clusters reschedule-maintenance
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud redis clusters reschedule-maintenance my-redis-cluster \
+    --region=us-central1 \
+    --reschedule-type=immediate
+```
+
 ### gcloud beta redis clusters reschedule-maintenance
 
 ```text
@@ -130,6 +138,8 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example passes `--reschedule-type=IMMEDIATE`, while REQUIRED FLAGS lists the values as `immediate` and `specific-time`; gcloud 593.0.0 also accepts the upper-case form, but the runnable form uses the documented value `immediate`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
