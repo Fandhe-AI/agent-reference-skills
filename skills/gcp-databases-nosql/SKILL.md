@@ -56,6 +56,18 @@ skills/gcp-databases-nosql/
     bigtable-security-operations/ # IAM・認証と CMEK・バックアップ・モニタリング・change streams
       README.md
       <page>.md                   # 例: access-control.md / authentication-and-cmek.md / backups.md / change-streams-overview.md
+    memorystore-valkey-ha-persistence/  # Valkey の HA・レプリカ・RDB / AOF 永続化・バックアップ・クロスリージョンレプリケーション・スケーリング
+      README.md
+      <page>.md                   # 例: ha-and-replicas.md / persistence-overview.md / backups.md / about-cross-region-replication.md
+    memorystore-redis-cluster/    # Memorystore for Redis Cluster の概念・ノード仕様・設定・ロケーション・クォータ・作成・接続・対応コマンド
+      README.md
+      <page>.md                   # 例: memorystore-for-redis-cluster-overview.md / create-instances.md / connect-cluster-instance.md
+    memorystore-redis/            # Memorystore for Redis（Basic / Standard Tier）の概要・バージョン・作成・接続・ネットワーク・AUTH・HA・リードレプリカ・RDB
+      README.md
+      <page>.md                   # 例: redis-tiers.md / create-manage-instances.md / connect-redis-instance.md / about-redis-auth.md
+    memorystore-memcached/        # Memorystore for Memcached の概要・バージョン・作成・接続・Auto Discovery・ネットワーク・IAM・メンテナンス・スケーリング
+      README.md
+      <page>.md                   # 例: memcached-overview.md / create-manage-instances.md / about-auto-discovery.md / scale-instances.md
 ```
 
 ## 探索手順
@@ -65,7 +77,7 @@ skills/gcp-databases-nosql/
 1. gcloud コマンド・フラグの全文、IAM ロールの権限、REST のメソッド・メッセージ型（機械生成の `references/gcloud/` `references/iam/` `references/rest/` `references/rest-schemas/`）は後続 PR で投入する。未投入の間は `gcloud <group> --help`（`firestore` / `datastore` / `bigtable` / `memorystore` / `redis` / `memcache`）と公式 reference を確認する
 2. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
 3. Firestore は Native mode（Standard edition）・Enterprise edition（MongoDB 互換を含む）・Datastore mode でページが分かれる。Native mode / Enterprise の共通事項は `firestore-*`、Datastore mode 固有は `firestore-datastore-mode`、MongoDB 互換固有は `firestore-mongodb`。まず共通カテゴリを引き、モード固有の挙動は固有カテゴリで補う
-4. Memorystore は製品ごとにカテゴリが別（`memorystore-valkey-*` / `memorystore-redis-cluster`（後続 PR で投入） / `memorystore-redis`（後続 PR で投入） / `memorystore-memcached`（後続 PR で投入））。製品名（Valkey / Redis Cluster / Redis / Memcached）と gcloud グループを照合してから引く。Memorystore for Valkey には Discovery document が無く、REST のメソッド表は無い
+4. Memorystore は製品ごとにカテゴリが別（`memorystore-valkey-*` / `memorystore-redis-cluster` / `memorystore-redis` / `memorystore-memcached`）。製品名（Valkey / Redis Cluster / Redis / Memcached）と gcloud グループを照合してから引く。Memorystore for Valkey には Discovery document が無く、REST のメソッド表は無い
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `gcloud <group> --help` と公式 reference を引く。
 
@@ -96,8 +108,12 @@ skills/gcp-databases-nosql/
 | GoogleSQL for Bigtable（SQL でのクエリ・temporal filter・UNPACK・Data Boost） | bigtable-replication-sql | [references/bigtable-replication-sql/README.md](references/bigtable-replication-sql/README.md) |
 | Bigtable の IAM（ロール・instance / table / backup / authorized view への付与）・認証・CMEK | bigtable-security-operations | [references/bigtable-security-operations/README.md](references/bigtable-security-operations/README.md) |
 | Bigtable のバックアップ（standard / hot）・モニタリング・change streams（CDC） | bigtable-security-operations | [references/bigtable-security-operations/README.md](references/bigtable-security-operations/README.md) |
+| Memorystore for Valkey の高可用性・レプリカ数・RDB / AOF 永続化・バックアップ・クロスリージョンレプリケーション・シャード数 / ノードタイプのスケーリング | memorystore-valkey-ha-persistence | [references/memorystore-valkey-ha-persistence/README.md](references/memorystore-valkey-ha-persistence/README.md) |
+| Memorystore for Redis Cluster の概念・ノード仕様・設定・クォータ・作成・接続（discovery endpoint・redis-cli・TLS）・クライアントサンプル・対応コマンド | memorystore-redis-cluster | [references/memorystore-redis-cluster/README.md](references/memorystore-redis-cluster/README.md) |
+| Memorystore for Redis（Basic / Standard Tier）の概要・対応バージョン・インスタンスの作成と管理・接続・ネットワーク・AUTH・HA・リードレプリカ・RDB スナップショット | memorystore-redis | [references/memorystore-redis/README.md](references/memorystore-redis/README.md) |
+| Memorystore for Memcached の概要・バージョン・作成・接続・Auto Discovery・ネットワーク・IAM・ベストプラクティス・設定パラメーター・メンテナンス・モニタリング・ノード数のスケール | memorystore-memcached | [references/memorystore-memcached/README.md](references/memorystore-memcached/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `memorystore-valkey-overview` / `memorystore-valkey-security` / `memorystore-valkey-ha-persistence` / `memorystore-valkey-operations` / `memorystore-redis-cluster` / `memorystore-redis` / `memorystore-memcached`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `memorystore-valkey-overview` / `memorystore-valkey-security` / `memorystore-valkey-operations`
 
 ## 他スキルとの使い分け
 
