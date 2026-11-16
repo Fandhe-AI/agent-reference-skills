@@ -17,6 +17,15 @@ Google Cloud (GCP) の Kubernetes 系スキル。Google Kubernetes Engine（Auto
 skills/gcp-gke/
   SKILL.md
   references/
+    gke-clusters/                 # クラスターの構成選択・作成（Autopilot / regional / zonal）・管理・kubectl アクセス・削除
+      README.md
+      <page>.md                   # 例: configuration-overview.md / creating-an-autopilot-cluster.md / cluster-access-for-kubectl.md
+    gke-autoscaling/              # cluster autoscaler・HPA・VPA・node auto-provisioning・capacity buffer・カスタム / 外部メトリクス
+      README.md
+      <page>.md                   # 例: cluster-autoscaler.md / horizontalpodautoscaler.md / node-auto-provisioning.md
+    gke-gateway/                  # GKE Gateway API の概念・セキュリティ（TLS）・Policy 設定・トラフィック分散・session affinity・autoscaling
+      README.md
+      <page>.md                   # 例: gateway-api.md / gateway-security.md / configure-gateway-resources.md
     backup-for-gke/               # Backup for GKE: backup plan・backup・restore plan・restore・スケジュール・ロール・クォータ
       README.md
       <page>.md                   # 例: backup-for-gke.md / backup-plan.md / restore-plan.md / roles.md
@@ -29,6 +38,12 @@ skills/gcp-gke/
     config-sync-policy/           # Config Sync・Policy Controller（非推奨）・Config Controller
       README.md
       <page>.md                   # 例: config-sync-overview.md / installing-config-sync.md / policy-controller-deprecation.md
+    gke-multicloud/               # GKE on AWS / Azure（非推奨）・GKE attached clusters（EKS / AKS / 汎用 CNCF 準拠クラスター）
+      README.md
+      <page>.md                   # 例: aws-deprecation-announcement.md / attached-concepts-overview.md / attach-cluster-eks.md
+    gdc-software/                 # Google Distributed Cloud software only（VMware / bare metal）の概要・インストール計画・アップグレード・制限
+      README.md
+      <page>.md                   # 例: vmware-overview.md / vmware-advanced-clusters.md / bare-metal-about-bare-metal.md
 ```
 
 `references/gcloud/` が担当する gcloud グループ（2）:
@@ -48,7 +63,7 @@ skills/gcp-gke/
 2. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`。GKE クラスター・node pool は `container`、Backup for GKE は `gkebackup`、fleet・membership・Feature は `gkehub`、Google Distributed Cloud（VMware / bare metal）クラスターは `gkeonprem`。GKE Multi-Cloud の REST は無い
 3. IAM ロール・権限 → `references/iam/README.md`（後続 PR で投入） の索引から `<service>.md` を引く。ロール ID・権限名のサービス接頭辞で選ぶ（例: `roles/container.admin` → `container-1.md`、`roles/gkebackup.admin` → `gkebackup.md`、`roles/gkehub.admin` → `gkehub.md`）。GKE の権限一覧は `container-3.md`〜`container-5.md`
 4. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
-5. 製品名の旧称で引くときは、Anthos 系は fleet 系（`fleet-management`）・Cloud Service Mesh（`service-mesh`（後続 PR で投入））・Config Sync（`config-sync-policy`）・Google Distributed Cloud（`gdc-software`（後続 PR で投入））へ振り分ける。Knative serving は `gke-workloads-accelerators`（後続 PR で投入） の `knative-*` ページ
+5. 製品名の旧称で引くときは、Anthos 系は fleet 系（`fleet-management`）・Cloud Service Mesh（`service-mesh`（後続 PR で投入））・Config Sync（`config-sync-policy`）・Google Distributed Cloud（`gdc-software`）へ振り分ける。Knative serving は `gke-workloads-accelerators`（後続 PR で投入） の `knative-*` ページ
 6. 非推奨・サポート終了を確認するときは、Policy Controller は `config-sync-policy/policy-controller-deprecation.md`、GKE on AWS / Azure は `gke-multicloud/*-deprecation-announcement.md`、GKE Identity Service は `fleet-management/identity-service-deprecation.md`、Cloud Service Mesh は `service-mesh/deprecations.md` を引く
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
@@ -57,14 +72,20 @@ skills/gcp-gke/
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| クラスター構成の選択・Autopilot / regional / zonal クラスターの作成・クラスター管理・削除 | gke-clusters | [references/gke-clusters/README.md](references/gke-clusters/README.md) |
+| kubectl と `gke-gcloud-auth-plugin` のセットアップ・`get-credentials`・クラスターエンドポイント | gke-clusters | [references/gke-clusters/README.md](references/gke-clusters/README.md) |
+| cluster autoscaler・Horizontal / Vertical Pod Autoscaler・node auto-provisioning・capacity buffer・カスタム / 外部メトリクス | gke-autoscaling | [references/gke-autoscaling/README.md](references/gke-autoscaling/README.md) |
+| GKE Gateway API（GatewayClass・Gateway・HTTPRoute）の概念・TLS 終端 / パススルー・GCPGatewayPolicy / HealthCheckPolicy / GCPBackendPolicy・トラフィック分散・session affinity | gke-gateway | [references/gke-gateway/README.md](references/gke-gateway/README.md) |
 | Backup for GKE の有効化・backup plan・バックアップ・restore plan・復元・ロール・クォータ | backup-for-gke | [references/backup-for-gke/README.md](references/backup-for-gke/README.md) |
 | fleet の概念・計画・作成・クラスター登録・fleet 機能・team scope・Fleet Workload Identity Federation | fleet-management | [references/fleet-management/README.md](references/fleet-management/README.md) |
 | Connect gateway・Connect Agent・GKE Identity Service（サードパーティ IdP 認証）とその非推奨 | fleet-management | [references/fleet-management/README.md](references/fleet-management/README.md) |
 | Multi Cluster Ingress・multi-cluster Gateway・Multi-cluster Services（MCS）・マルチクラスター LB API の選び方 | fleet-multi-cluster | [references/fleet-multi-cluster/README.md](references/fleet-multi-cluster/README.md) |
 | Config Sync（Git / OCI / Helm の RootSync・RepoSync）・Config Controller | config-sync-policy | [references/config-sync-policy/README.md](references/config-sync-policy/README.md) |
 | Policy Controller（Gatekeeper ベース）の概要・非推奨と移行（ValidatingAdmissionPolicy / Pod Security Admission / Gatekeeper） | config-sync-policy | [references/config-sync-policy/README.md](references/config-sync-policy/README.md) |
+| GKE on AWS / Azure の非推奨とアーキテクチャ・GKE attached clusters（EKS / AKS / 汎用）のアタッチ・更新・デタッチ・ロギング / モニタリング | gke-multicloud | [references/gke-multicloud/README.md](references/gke-multicloud/README.md) |
+| Google Distributed Cloud software only（VMware / bare metal）の概要・advanced clusters・インストール計画・アップグレード・スケーラビリティ・接続・制限 | gdc-software | [references/gdc-software/README.md](references/gdc-software/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `gke-overview` / `gke-clusters` / `gke-nodes` / `gke-autoscaling` / `gke-upgrades-maintenance` / `gke-networking-core` / `gke-networking-services` / `gke-gateway` / `gke-storage` / `gke-security-identity` / `gke-security-hardening` / `gke-workloads-accelerators` / `gke-observability-troubleshooting` / `service-mesh` / `gke-multicloud` / `gdc-software`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `gke-overview` / `gke-nodes` / `gke-upgrades-maintenance` / `gke-networking-core` / `gke-networking-services` / `gke-storage` / `gke-security-identity` / `gke-security-hardening` / `gke-workloads-accelerators` / `gke-observability-troubleshooting` / `service-mesh`
 
 ## 他スキルとの使い分け
 
