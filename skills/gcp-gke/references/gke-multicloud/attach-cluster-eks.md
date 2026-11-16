@@ -42,6 +42,8 @@ KUBECONFIG_CONTEXT=$(kubectl config current-context)
 
 4. Register the cluster:
 
+Adapted (not in the official docs): `--context` expands the `KUBECONFIG_CONTEXT` shell variable saved above instead of the literal placeholder.
+
 ```bash
 gcloud container attached clusters register CLUSTER_NAME \
   --location=GOOGLE_CLOUD_REGION \
@@ -49,7 +51,7 @@ gcloud container attached clusters register CLUSTER_NAME \
   --platform-version=PLATFORM_VERSION \
   --distribution=eks \
   --issuer-url=ISSUER_URL \
-  --context=KUBECONFIG_CONTEXT \
+  --context="${KUBECONFIG_CONTEXT}" \
   --kubeconfig=KUBECONFIG_PATH
 ```
 
@@ -81,6 +83,7 @@ gcloud projects add-iam-policy-binding GOOGLE_PROJECT_ID \
 - If attaching fails, Google Cloud changes (for example the workload identity pool) are rolled back automatically and the EKS cluster is unaffected; retry after fixing the cause.
 - Starting with Kubernetes 1.28 the telemetry binding is unnecessary. Before that it is project-wide, run once after the first cluster exists.
 - Cluster requirements: https://docs.cloud.google.com/kubernetes-engine/multi-cloud/docs/attached/eks/reference/cluster-prerequisites
+- Corrected from the official docs: the source saves `KUBECONFIG_CONTEXT=$(kubectl config current-context)` but then passes the literal `--context=KUBECONFIG_CONTEXT`; the commands now use `--context="${KUBECONFIG_CONTEXT}"`.
 - Source: https://docs.cloud.google.com/kubernetes-engine/multi-cloud/docs/attached/eks/how-to/attach-cluster (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

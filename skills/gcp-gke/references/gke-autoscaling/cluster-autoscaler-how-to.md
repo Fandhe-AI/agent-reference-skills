@@ -80,12 +80,15 @@ autoscaling:
 
 ### Prioritize unused reservations
 
-Adapted (not in the official docs): added `--location=CONTROL_PLANE_LOCATION`, which the source omits (see Notes).
+Adapted (not in the official docs): added `--location=CONTROL_PLANE_LOCATION`, which the source omits (see Notes), and `--enable-autoscaling` with `--min-nodes` / `--max-nodes`, because the location policy is an autoscaler setting.
 
 ```bash
 gcloud container node-pools create POOL_NAME \
     --cluster=CLUSTER_NAME \
     --location=CONTROL_PLANE_LOCATION \
+    --enable-autoscaling \
+    --min-nodes=MIN_NODES \
+    --max-nodes=MAX_NODES \
     --location-policy=ANY
 ```
 
@@ -125,6 +128,8 @@ The cluster size is fixed at the current default node pool size, which can be ma
 - Corrected from the official docs: `gcloud container node-pools describe NODE_POOL_NAME --cluster=CLUSTER_NAME` and `gcloud container node-pools create POOL_NAME --cluster=CLUSTER_NAME --location-policy=ANY` omitted `--location`; it was added to both.
 - Disabling autoscaling and resizing are disruptive operations; try them on a disposable cluster first.
 - The source also shows Console steps for each task.
+- Corrected from the official docs: the reservation example sets only `--location-policy=ANY`. In `gcloud container node-pools create` help, `--location-policy` belongs to the Cluster autoscaling flag group and "specifies the algorithm used when scaling-up the node pool", and `--enable-autoscaling` needs `--max-nodes` or `--total-max-nodes`; the example now enables autoscaling with per-zone `MIN_NODES` / `MAX_NODES`.
+- Source (`--location-policy` flag group): `gcloud container node-pools create --help` (gcloud 593.0.0, retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/cluster-autoscaler (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

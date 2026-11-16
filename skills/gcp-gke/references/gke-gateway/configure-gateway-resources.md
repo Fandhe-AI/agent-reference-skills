@@ -194,7 +194,7 @@ TCP GCPBackendPolicy (for TLSRoute) supports only these `spec.default` fields: `
 | `INTERVAL` | Check interval in seconds; default 15 with no HealthCheckPolicy, 5 when a HealthCheckPolicy omits `checkIntervalSec`. |
 | `TIMEOUT` | Probe timeout in seconds; must be less than or equal to `INTERVAL`. |
 | `HEALTHY_THRESHOLD` / `UNHEALTHY_THRESHOLD` | Consecutive successes or failures to change state; default 2. |
-| `PROTOCOL` | Required; health check type (`http`, `https`, `grpc`, `http2`, `tcp`). |
+| `PROTOCOL` | Required; health check type in upper case (`HTTP`, `HTTPS`, `GRPC`, `HTTP2` or `TCP`), matching the per-protocol block (`httpHealthCheck`, `httpsHealthCheck`, `grpcHealthCheck`, `http2HealthCheck`, `tcpHealthCheck`). |
 | `PORT_SPECIFICATION` | `USE_FIXED_PORT`, `USE_NAMED_PORT` or `USE_SERVING_PORT` (default when `port` is unset). |
 | `PORT` | Port number only; default 80. Use a `containerPort` of the serving Pods. |
 | `HOST` | Host header (RFC 1123 hostname, no numeric IPs); defaults to the health check IP address. |
@@ -225,6 +225,9 @@ TCP GCPBackendPolicy (for TLSRoute) supports only these `spec.default` fields: `
 - This page covers the first half of the source; custom-metrics backend selection, GCPTrafficDistributionPolicy routing, session affinity and traffic-based autoscaling are in `gateway-traffic-distribution.md`.
 - Omitted for size: the multi-cluster region example (`GCPGatewayPolicy` with `spec.default.region: us-central1`, GKE 1.30.3-gke.1225000+), the SSL policy example (see `gateway-security.md`), and the backend service timeout (`timeoutSec`, default 30) and connection draining (`connectionDraining.drainingTimeoutSec`) `GCPBackendPolicy` examples.
 - Corrected from the official docs: the source tells you to replace `CLIENT_SECRET` in `oauth2ClientSecret.name` with "the OAuth client secret", but `oauth2ClientSecret` references a Kubernetes Secret by name; the same page's `kubectl describe gcpbackendpolicy` output shows `oauth2ClientSecret: Name: my-iap-secret`. Do not put the secret value in the manifest. The source does not show how to create that Secret or which key it must contain.
+- The upper-case `config.type` values follow the GKE how-to manifests, which set `type: TCP` (TLS passthrough Gateway) and `type: HTTP` (multi-cluster inference Gateway); the placeholder description on this page does not list the values.
+- Source (`config.type: TCP`): https://docs.cloud.google.com/kubernetes-engine/docs/how-to/deploy-tls-passthrough-gateway (retrieved 2026-11-16)
+- Source (`config.type: HTTP`): https://docs.cloud.google.com/kubernetes-engine/docs/how-to/setup-multicluster-inference-gateway (retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/configure-gateway-resources (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
