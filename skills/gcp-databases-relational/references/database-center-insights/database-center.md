@@ -10,12 +10,12 @@ Database Center is an AI-assisted dashboard that gives one centralized view acro
 
 ### Roles to grant (IAM, project / folder / organization level)
 
-Source lists the roles below. Grant at organization level to see all database resources. Console path: IAM page, View by Principals, GRANT ACCESS, Assign roles, Save. You need `Owner` or `Admin` on the project to grant roles.
+Source lists the roles below. Grant at organization level to see all database resources. Console path: IAM page, View by Principals, GRANT ACCESS, Assign roles, Save. The source says you need the `Owner` or `Admin` role on the project to grant roles. Not from the source: granting a project role needs `resourcemanager.projects.setIamPolicy`, which is in `roles/owner` and `roles/resourcemanager.projectIamAdmin` (Project IAM Admin); "Admin" is the source's shorthand, not a role ID.
 
 - `roles/databasecenter.viewer`: view access to all instances in the project for which Database Center is enabled. Metadata of managed databases only, not their data.
 - `roles/recommender.viewer` (optional): view access to recommender-related health issues.
 - `roles/monitoring.editor`: create and modify alerting policies in the Google Cloud console.
-- "Database center admin" (console role name): create, update or delete a saved dashboard view.
+- "Database center admin" (console role name; `roles/databasecenter.admin`, which holds `databasesconsole.databaseCenterViews.create` / `update` / `delete` per `iam/databasesconsole.md`): create, update or delete a saved dashboard view.
 
 ### Resolve a data protection issue: deletion protection (Cloud SQL)
 

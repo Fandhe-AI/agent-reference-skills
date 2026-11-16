@@ -33,6 +33,7 @@ Versions in extended support as of the retrieval date (per https://docs.cloud.go
 ## Notes
 
 - Upgrade before the extended support period starts to avoid charges.
+- Source inconsistency: the three-month enrollment and three-year duration rules don't hold for every version listed on https://docs.cloud.google.com/sql/docs/db-versions. MySQL 8.0 has extended support starting January 1, 2027 and deprecation on July 1, 2029 (two and a half years), and the source names only MySQL 5.6 and PostgreSQL 9.6 as late starters. Use the per-version dates in `db-versions.md`.
 - Viewing instances in extended support: filter by **Type** (major version) on the Cloud SQL Instances page for a project, or use **Products & versions** in Database Center for an organization (console steps omitted).
 - Source: https://docs.cloud.google.com/sql/docs/extended-support (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sql/docs/db-versions (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)

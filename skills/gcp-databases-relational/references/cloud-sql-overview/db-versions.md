@@ -73,6 +73,7 @@ MySQL: first two numbers = major (5.7.13 -> 5.7, minor 13). PostgreSQL 9.6: 9.6 
 ## Notes
 
 - MySQL 8.0 provisions on the default minor version (one earlier than the latest). Automatic minor version upgrade is supported for 8.0.35 or later, on by default when no minor version is specified, and happens only during scheduled maintenance (not self-service maintenance). On 8.0.34 or earlier upgrade manually first.
+- Source inconsistency: the lifecycle rule gives three years of extended support, but the MySQL 8.0 row runs from January 1, 2027 (extended support start) to July 1, 2029 (deprecation); the per-version dates in the tables are the ones to plan against (see `extended-support.md`).
 - If no database version is specified at creation, the default version is used. Cloud SQL might not support every community minor version.
 - Console steps to see/filter instance versions and the Database Center fleet view are omitted.
 - Source: https://docs.cloud.google.com/sql/docs/db-versions (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)

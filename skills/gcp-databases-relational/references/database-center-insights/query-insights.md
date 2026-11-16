@@ -76,7 +76,7 @@ PostgreSQL 11 and later replace constants with `$1`, `$2`, ... (9.6 and 10 use `
 | Database versions | PostgreSQL 9.6 or later | PostgreSQL 12 or later |
 | Machine types | All | Not on shared-core or read replica instances |
 | Metrics retention | 7 days | 30 days |
-| Query length limit maximum | 4500 bytes | 100 KB |
+| Query length limit maximum | 4500 bytes | 100 KB (`100000` bytes; the editions page says 1 MB, see Notes) |
 | Query plan sample maximum | 20 | 200 |
 | Wait event analysis, index advisor, terminate sessions in active queries, AI-assisted troubleshooting (Preview) | Not available | Available |
 | Query cardinality | Top 100 queries per day by client IP, database, application tag, username and query text | Top 4,000 queries per minute by application tag, database, username and query ID |
@@ -98,7 +98,7 @@ PostgreSQL 11 and later replace constants with `$1`, `$2`, ... (9.6 and 10 use `
 
 | Item | Value |
 | --- | --- |
-| Roles on the project hosting the instance | `roles/databaseinsights.viewer` (Database Insights viewer) and `roles/cloudsql.viewer` (Cloud SQL viewer) |
+| Roles on the project hosting the instance | `roles/databaseinsights.viewer` (Database Insights viewer) and `roles/cloudsql.viewer` (Cloud SQL viewer). For Enterprise Plus, the source says these specific roles are required: custom roles and other predefined roles don't give access to historical query execution data |
 | API | Cloud Trace API enabled (for query plans and end-to-end views) |
 | Enterprise Plus | Automatic storage increases must stay enabled (default); you cannot disable it and enable Enterprise Plus insights |
 
@@ -121,6 +121,8 @@ PostgreSQL 11 and later replace constants with `$1`, `$2`, ... (9.6 and 10 use `
 
 ## Notes
 
+- Source inconsistency: the query length values on this page (Enterprise Plus maximum 100 KB; setting range `1024` to `100000` bytes, default `10000`) are the per-query text capture limit of query insights from https://docs.cloud.google.com/sql/docs/postgres/using-query-insights. https://docs.cloud.google.com/sql/docs/postgres/editions-intro (retrieved 2026-11-16) gives "1 MB query length" for the same Enterprise Plus feature (see `cloud-sql-overview/editions-intro.md`); the `gcloud sql instances patch` help (gcloud 593.0.0) gives the same Enterprise Plus range for `--insights-config-query-string-length` (1024 to 100,000 bytes, default 10,000). For SQL Server, https://docs.cloud.google.com/sql/docs/sqlserver/using-query-insights gives 20 KB (`256` to `20480` bytes) for Enterprise Plus (see `cloud-sql-sqlserver/editions-intro.md`).
+- gcloud 593.0.0 help for `gcloud sql instances patch` describes `--insights-config-query-plans-per-minute` as "Default value is 5. Allowed range: 0 to 20.", which is the Enterprise range on this page; the source gives up to `200` (default `200`) for Enterprise Plus, so check the value your instance accepts. The help also has `--[no-]insights-config-enhanced-query-insights-enabled` ("Enable enhanced query insights for Enterprise Plus edition"); the source's gcloud steps don't use it and enable the Enterprise Plus features with the console's **Enable Enterprise Plus features** setting.
 - By default only completed queries are shown; use active queries to monitor running queries.
 - Enabling Enterprise Plus insights on PostgreSQL maintenance version `20250302.00_RC30` or earlier restarts the instance (operations suspended for several minutes); `20250302.00_RC31` or later does not need a restart. Enabling index advisor on RC30 or earlier also restarts. Changing the query length limit on RC31 or later needs no restart. Try changes on a disposable instance first.
 - Corrected from the official docs: the original ended with "--tier=API_TIER_STRING \ --region=REGION". `gcloud sql instances patch` has no `--region` flag, and `--tier` changes the machine type.
@@ -134,6 +136,7 @@ PostgreSQL 11 and later replace constants with `$1`, `$2`, ... (9.6 and 10 use `
 - The source also shows Console steps, REST (`instances.patch` with `insightsConfig`), PowerShell and Terraform forms, and the multi-instance enable dialog.
 - Managed PostgreSQL on Google Cloud, distinct from Supabase Postgres (`supabase`), Cloudflare D1 / Hyperdrive (`cloudflare-storage`), and the clients `mssql` / `drizzle`.
 - Source: https://docs.cloud.google.com/sql/docs/postgres/using-query-insights (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sql/docs/postgres/editions-intro (retrieved 2026-11-16; CC BY 4.0; the 1 MB value in the source inconsistency note)
 - Source: https://docs.cloud.google.com/alloydb/docs/query-insights-overview (retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/alloydb/docs/using-query-insights (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 

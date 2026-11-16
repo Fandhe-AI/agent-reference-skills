@@ -43,7 +43,8 @@ Check success with `gcloud database-migration migration-jobs describe` (job stat
 ## Notes
 
 - Promotion disconnects the destination from the source and is the production cutover. It is a failover-style operation: try the flow on a disposable migration first.
-- You can promote even if the replication delay isn't zero, which can reduce downtime but may affect the accuracy of the destination data.
+- You can promote even if the replication delay isn't zero, which can reduce downtime but may affect the accuracy of the destination data. Not from the source: changes that the source committed but that weren't replicated yet are missing from the destination after promotion, so wait for a zero delay unless you can accept that loss.
+- Not from the source: promotion ends replication for the job, and writes made on the source afterward aren't copied to the destination. Before promoting, verify the destination data (for example row counts or checksums of key tables) and keep the source database intact and read-only until the application runs correctly on the destination, so the source remains your fallback; don't delete the source or its replication setup until then.
 - After promotion the destination is ready for full application traffic and the job status changes to `Completed`; you can then connect your application and delete the migration job.
 - `pg_cron` isn't migrated by Database Migration Service but is supported on Cloud SQL for PostgreSQL; reinstall it on the destination.
 - After promotion, enable PITR and restore customized backup settings (Cloud SQL resets backup settings to defaults); see known-limitations.md.

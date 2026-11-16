@@ -50,7 +50,7 @@ Domain local groups aren't supported.
 - AD-based logins can't be managed from the console.
 - Windows Authentication doesn't work with an external trust (`The target principal name is incorrect. Cannot generate SSPI context.`); use a forest trust.
 - Managed domains with fewer than eight characters (for example `xyz.com`) are unsupported.
-- If you need a TLS connection without trusting the server certificate, rotate certificates after enabling Windows Authentication; if a certificate was created before March 15, 2025 and the connection fails, rotate the server certificate again.
+- If you need a TLS connection without trusting the server certificate, rotate certificates after enabling Windows Authentication; if a certificate was created before March 15, 2025 and the connection fails, rotate the server certificate again. Not from the source: "without trusting the server certificate" refers to not setting the SQL Server client option `TrustServerCertificate=true`, that is, the client validates the server certificate chain and host name; keep that validation on, because Microsoft warns that trusting the server certificate can make the client "vulnerable to man-in-the-middle attacks", which would expose the login, including SQL Authentication passwords (https://learn.microsoft.com/en-us/sql/connect/oledb/features/encryption-and-certificate-validation, retrieved 2026-11-16).
 
 ### Unsupported for integration
 

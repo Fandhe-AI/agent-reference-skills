@@ -80,6 +80,7 @@ Limitations:
 - Restricted server roles include `DbRootRole`, `serveradmin`, `securityadmin`, `setupadmin`, `diskadmin`, `dbcreator`. `sysadmin` is unsupported, so procedures that require it (for example `sp_OADestroy`) can't run, and DACPAC automated schema deployment isn't supported.
 - All SQL Server users must have a password; users created through Cloud SQL get the same database permissions as `sqlserver`, users created with `CREATE LOGIN` do not (compare with `sys.fn_my_permissions`).
 - Use `ALTER ROLE` to change user permissions.
+- Not from the source: members of `db_owner` "can perform all configuration and maintenance activities on the database, and can also DROP the database" (Microsoft); if the user only needs to read or write data, add it to a narrower role such as `db_datareader` / `db_datawriter` instead (https://learn.microsoft.com/en-us/sql/relational-databases/security/authentication-access/database-level-roles, retrieved 2026-11-16).
 - Linked servers: enabling, adding and configuring them is on https://docs.cloud.google.com/sql/docs/sqlserver/manage-linked-servers. The linked-servers page has no code block.
 - Source: https://docs.cloud.google.com/sql/docs/sqlserver/linked-servers (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source inconsistency: the `db_owner` fix above is labelled `bash` in the source but contains T-SQL; it is shown here as `sql`.

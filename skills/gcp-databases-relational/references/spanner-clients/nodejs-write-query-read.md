@@ -10,7 +10,7 @@ Write rows with DML in a read-write transaction (`runUpdate()`), and query them 
 
 ### Write data with DML
 
-Adapted (not in the official docs): `process.exitCode = 1;` is set where the error is logged (the `if (err)` branch and the `catch` block) so a failed transaction does not exit 0.
+Adapted (not in the official docs): `process.exitCode = 1;` is set where the error is logged (the `if (err)` branch and the `catch` block) so a failed transaction does not exit 0, and `database.close()` is awaited in `finally` and also called in the `if (err)` branch, which returns before the `try`.
 
 ```javascript
 // Imports the Google Cloud client library
@@ -36,6 +36,7 @@ database.runTransaction(async (err, transaction) => {
   if (err) {
     console.error(err);
     process.exitCode = 1;
+    await database.close();
     return;
   }
   try {
@@ -53,7 +54,7 @@ database.runTransaction(async (err, transaction) => {
     process.exitCode = 1;
   } finally {
     // Close the database when finished.
-    database.close();
+    await database.close();
   }
 });
 ```
@@ -122,7 +123,7 @@ This block is a contiguous excerpt: the full sample starts with the same import,
 - Source: https://docs.cloud.google.com/spanner/docs/getting-started/nodejs (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Client-library basics (ADC, retries, the emulator) belong to the `gcp-client-libraries` skill.
 - Spanner is Google Cloud's distributed relational database, not a PostgreSQL server even with the PostgreSQL interface; distinct from `supabase` and `drizzle`.
-- Corrected from the official docs: in the DML write sample, the `runTransaction` callback only logged errors (`if (err) { console.error(err); return; }` and `} catch (err) { console.error('ERROR:', err); }`), so a failed transaction exited 0.
+- Corrected from the official docs: in the DML write sample, the `runTransaction` callback only logged errors (`if (err) { console.error(err); return; }` and `} catch (err) { console.error('ERROR:', err); }`), so a failed transaction exited 0; the `if (err)` branch also returned without closing the database, and `finally` called `database.close();` without `await`.
 - Corrected from the official docs: the `Database.run()` sample ran `const [rows] = await database.run(query);` at the top level of a `require` script and its catch block only logged the error (`console.error('ERROR:', err);`), so it is a `SyntaxError` in CommonJS and exits 0 on failure.
 - Cloud Spanner interprets Node.js numbers as FLOAT64, so they must be converted to strings before being inserted as INT64 (stated in the mutation sample).
 - There are limits to commit size; see https://docs.cloud.google.com/spanner/quotas#limits-for

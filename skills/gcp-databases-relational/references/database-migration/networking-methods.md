@@ -50,6 +50,7 @@ Source-specific setup is in the per-source connectivity pages (self-hosted, AWS,
 
 ## Notes
 
+- IP allowlist with TLS: in the source connection profile, the **Basic** option encrypts without verifying the source's CA and **None** doesn't encrypt (https://docs.cloud.google.com/database-migration/docs/postgres/create-connection-profiles, retrieved 2026-11-16). Not from the source: over a public path use TLS or mTLS, which verify the source server, so the migration user's credentials aren't sent to an unverified host (see configure-source-database.md).
 - Private connectivity to a destination created by Database Migration Service: only VPC peering (private services access) is possible; PSC interfaces need a pre-created destination instance.
 - IP allowlist exposes the source on a public IP; prefer a private method. For sources inside Google Cloud (Cloud SQL or self-hosted), the source recommends PSC interfaces or VPC peering over reverse SSH; an IP allowlist for Cloud SQL sources is "not recommended".
 - Migrating to a new destination instance doesn't support PSC interfaces connectivity.

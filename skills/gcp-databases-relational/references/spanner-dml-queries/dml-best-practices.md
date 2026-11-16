@@ -104,8 +104,8 @@ def dml_last_statement_option(instance_id, database_id):
 | Effect | Defers some validation, such as unique constraint validation, until commit. |
 | After use | Subsequent reads, queries and DML in the same transaction are rejected. |
 | Mutations | Not compatible; including mutations in the same transaction returns an error. |
-| Client libraries | Go 1.77.0 or later; Java 2.27.0 or later; Python 3.53.0 or later; PGAdapter 0.45.0 or later. |
-| Supported and enabled by default in autocommit mode | JDBC driver 6.87.0 or later; Go database/sql driver 1.11.2 or later; Python dbapi driver 3.53.0 or later. |
+| Client libraries | Go 1.77.0 or later; Java 2.27.0 or later (see Notes); Python 3.53.0 or later; PGAdapter 0.45.0 or later. |
+| Supported and enabled by default in autocommit mode | JDBC driver 6.87.0 or later (see Notes); Go database/sql driver 1.11.2 or later; Python dbapi driver 3.53.0 or later. |
 
 ### JDBC auto_batch_dml
 
@@ -126,6 +126,7 @@ def dml_last_statement_option(instance_id, database_id):
 - The sample's `print` inside `update_singers` is log-only and repeats on each retry; put real side effects (external calls, messages) after `run_in_transaction` returns.
 - If no secondary index exists on `FirstName` / `LastName`, locating the singer needs a full table scan; include `SingerId` in the `WHERE` clause instead of adding an index if you want to avoid that.
 - Spanner is Google Cloud's distributed relational database, not a PostgreSQL server even with the PostgreSQL interface; it is distinct from `supabase` and `drizzle`.
+- Source inconsistency: the Java version numbers look swapped. Maven Central has `com.google.cloud:google-cloud-spanner` (the Java client library) 6.87.0 but no 2.27.0, and `com.google.cloud:google-cloud-spanner-jdbc` (the JDBC driver) 2.27.0 but no 6.87.0 (https://repo1.maven.org/maven2/com/google/cloud/google-cloud-spanner/maven-metadata.xml and https://repo1.maven.org/maven2/com/google/cloud/google-cloud-spanner-jdbc/maven-metadata.xml, retrieved 2026-11-16). Read them as Java client 6.87.0 or later and JDBC driver 2.27.0 or later, and confirm in the release notes.
 - The source also shows Go and Java `last_statement` samples and PostgreSQL-dialect variants.
 - Source: https://docs.cloud.google.com/spanner/docs/dml-best-practices (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 

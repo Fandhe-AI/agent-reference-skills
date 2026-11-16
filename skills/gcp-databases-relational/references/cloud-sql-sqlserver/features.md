@@ -50,6 +50,7 @@ App Engine flexible environment languages: C#, Go, Java, Node.js, PHP, Python, R
 - Source: https://docs.cloud.google.com/sql/docs/sqlserver/features (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - SQL Server variant of the Cloud SQL features page; PostgreSQL counterpart: https://docs.cloud.google.com/sql/docs/postgres/features (MySQL: https://docs.cloud.google.com/sql/docs/mysql/features).
 - Managed SQL Server on Google Cloud; distinct from the Node.js client `mssql` skill (client code only, not the managed service) and from Cloudflare D1 / Hyperdrive (`cloudflare-storage`).
+- Source inconsistency: the compute row (custom machine types up to 624 GB of RAM and 96 CPUs) matches the Enterprise edition general purpose dedicated core limits; https://docs.cloud.google.com/sql/docs/sqlserver/editions-intro lists larger Enterprise Plus machine series (N2 up to 128 vCPU / 864 GB, C4D up to 192 vCPU / 1,512 GB; see `editions-intro.md`).
 - Cloud SQL restricts system procedures and tables that need advanced privileges; superuser accounts can't be created or accessed.
 - The source page has no code blocks. Snippet taken from https://docs.cloud.google.com/sql/docs/sqlserver/users
 - Source: https://docs.cloud.google.com/sql/docs/sqlserver/users (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)

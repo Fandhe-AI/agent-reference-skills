@@ -64,7 +64,7 @@ In the console, Enterprise Plus is selected by default for a new primary. A read
 | Advanced DR / write endpoint / write endpoint connectivity | Yes | No |
 | Managed Connection Pooling | Yes | No |
 | AI-assisted troubleshooting | Yes | No |
-| Query insights | 30 day retention, 1 MB query length, 200 query plan samples, wait event analysis, index advisor | 7 day retention, 4500 bytes query length, 20 query plan samples |
+| Query insights | 30 day retention, 1 MB query length (per this page; the query insights page gives 100 KB, see Notes), 200 query plan samples, wait event analysis, index advisor | 7 day retention, 4500 bytes query length, 20 query plan samples |
 | Enhanced recommenders | Yes | No |
 
 ## Notes
@@ -75,10 +75,12 @@ In the console, Enterprise Plus is selected by default for a new primary. A read
 - Enterprise Plus supports PostgreSQL 12–18 but is the default only for 16+ (the source's table cell says so).
 - `--cpu`/`--memory` are not compatible with Enterprise Plus (gcloud help); keep `--edition=ENTERPRISE` on the Enterprise command, since PostgreSQL 16+ defaults to Enterprise Plus.
 - Source inconsistency: this page (https://docs.cloud.google.com/sql/docs/postgres/editions-intro) gives Enterprise maintenance downtime as < 30 seconds; https://docs.cloud.google.com/sql/docs/postgres/instance-settings says non-Enterprise-Plus maintenance downtime is typically 60 seconds or less.
+- Source inconsistency: this page gives the Enterprise Plus query insights query length as 1 MB, while https://docs.cloud.google.com/sql/docs/postgres/using-query-insights (retrieved 2026-11-16) gives a 100 KB query length limit maximum and a configurable `--insights-config-query-string-length` range of `1024` to `100000` bytes (default `10000`) for Enterprise Plus; Enterprise is 4500 bytes on both pages. Use the query insights page's values when setting the length (see `database-center-insights/query-insights.md`).
 - Source inconsistency: N4 maximum memory is 624 GB here and 640 GB in https://docs.cloud.google.com/sql/docs/postgres/machine-series-overview.
 - Source: https://docs.cloud.google.com/sql/docs/postgres/editions-intro (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sql/docs/postgres/create-instance (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sql/docs/postgres/machine-series-overview (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sql/docs/postgres/using-query-insights (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0; the query length limits)
 
 ## Related
 

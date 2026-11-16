@@ -69,6 +69,7 @@ Cloud SQL creates and deletes databases and users but is not an administration t
 
 - Connecting is similar to a self-managed database; the instance has a public IP (internet) and/or a private IP (VPC only). Exposes the instance on a public IP; prefer private IP, PSC or the Auth Proxy / connectors with IAM authentication when the source offers them.
 - Managed PostgreSQL / MySQL / SQL Server on Google Cloud — distinct from Supabase Postgres (`supabase`), Cloudflare D1 / Hyperdrive (`cloudflare-storage`), and the Node.js client `mssql` / ORM `drizzle` (those skills cover client code, not the managed service).
+- The sub-second maintenance row names only PostgreSQL and MySQL, as the source does; https://docs.cloud.google.com/sql/docs/sqlserver/editions-intro also gives less than 1 second of maintenance downtime for SQL Server Enterprise Plus (see `cloud-sql-sqlserver/editions-intro.md`).
 - The source also shows quickstart links and an architecture image (omitted).
 - Source: https://docs.cloud.google.com/sql/docs/introduction (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sql/docs/key-terms (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
