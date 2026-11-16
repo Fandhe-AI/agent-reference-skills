@@ -14,11 +14,13 @@ If your organization sends internet traffic through an HTTP proxy, configure GKE
 
 ### 1. Proxy configuration file
 
-```yaml
+Adapted (not in the official docs): the three values are quoted strings and the block is marked `json`.
+
+```json
 {
-"httpProxy": HTTP_PROXY_AUTHENTICATION_URL,
-"httpsProxy": HTTPS_PROXY_AUTH_URL,
-"noProxy": NO_PROXY_ADDRESSES
+"httpProxy": "HTTP_PROXY_AUTHENTICATION_URL",
+"httpsProxy": "HTTPS_PROXY_AUTH_URL",
+"noProxy": "NO_PROXY_ADDRESSES"
 }
 ```
 
@@ -80,6 +82,7 @@ gcloud container attached clusters update CLUSTER_NAME \
 - `noProxy`: values can be IPs, CIDRs, domains or `*`; a single `*` skips the proxy for all traffic. A leading dot (`.google.com`) matches subdomains but not `google.com`. Include `kubernetes.default.svc.cluster.local` and `kubernetes.default.svc` for proper logging (source example: `198.51.100.0,192.0.2.0/16,examplepetstore.com,.altostrat.com,kubernetes.default.svc.cluster.local, kubernetes.default.svc`).
 - Corrected from the official docs: the source shows `register` / `update` with only `--proxy-secret-name` and `--proxy-secret-namespace` (no `--location` or the required registration flags).
 - Security: the proxy file can contain credentials. Kubernetes Secrets are base64-encoded, not encrypted; keep the file out of version control and restrict access to the Secret. `.gcr.io` is a legacy Container Registry domain kept as written in the source.
+- Corrected from the official docs: the source's proxy configuration file (marked `yaml`) leaves `HTTP_PROXY_AUTHENTICATION_URL`, `HTTPS_PROXY_AUTH_URL` and `NO_PROXY_ADDRESSES` unquoted. The file is a JSON object and `noProxy` is a comma-separated list, so unquoted values give invalid JSON (and, read as YAML flow mapping, the commas split the list); the values are now quoted strings.
 - Source: https://docs.cloud.google.com/kubernetes-engine/multi-cloud/docs/attached/generic/how-to/use-a-proxy (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -86,8 +86,11 @@ gcloud container clusters get-credentials CLUSTER_NAME \
 
 ### Run a command against a specific cluster
 
+Adapted (not in the official docs): `--cluster my-new-cluster` is replaced with `--context=CONTEXT_NAME` (a kubeconfig context name; see Notes).
+
 ```bash
-kubectl run my-app --image us-docker.pkg.dev/my-project/my-repo/my-app:1.0 --cluster my-new-cluster
+kubectl config get-contexts
+kubectl run my-app --image us-docker.pkg.dev/my-project/my-repo/my-app:1.0 --context=CONTEXT_NAME
 ```
 
 ## Options / Props
@@ -99,7 +102,7 @@ kubectl run my-app --image us-docker.pkg.dev/my-project/my-repo/my-app:1.0 --clu
 | `--internal-ip` | kubeconfig uses the internal IP-based endpoint |
 | `--dns-endpoint` | kubeconfig uses the DNS-based endpoint; omits `certificate-authority-data` (GFE presents a publicly signed certificate) |
 | IP-based endpoints | kubeconfig includes `certificate-authority-data` (cluster root CA) |
-| `--cluster=CLUSTER_NAME` | Run a single kubectl command against another cluster without changing the current context |
+| `--context=CONTEXT_NAME` | Run a single kubectl command against another cluster without changing the current context (kubeconfig context name, not the GKE cluster name) |
 
 ## Notes
 
@@ -108,6 +111,8 @@ kubectl run my-app --image us-docker.pkg.dev/my-project/my-repo/my-app:1.0 --clu
 - The plugin is mandatory for Kubernetes 1.26 and later clients; without it existing clients show an error.
 - The `get-credentials` switching example in the source reuses the same command with placeholders; it shows the switch for `my-cluster` vs `my-new-cluster`.
 - gcloud installation and auth are covered by `gcp-cli`.
+- Corrected from the official docs: the source runs `kubectl run ... --cluster my-new-cluster` with the GKE cluster name. kubectl `--cluster` takes a kubeconfig cluster entry name, and the names written by `gcloud container clusters get-credentials` have the form `gke_PROJECT_ID_LOCATION_CLUSTER_NAME` (for example `gke_PROJECT_ID_us-west1-a_gke-west-1`); `--cluster` alone also keeps the current context's user. The example now lists contexts and passes `--context=CONTEXT_NAME`.
+- Source (`gke_PROJECT_ID_LOCATION_CLUSTER_NAME` context names): https://docs.cloud.google.com/kubernetes-engine/docs/how-to/prepare-environment-multi-cluster-gateways (retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
