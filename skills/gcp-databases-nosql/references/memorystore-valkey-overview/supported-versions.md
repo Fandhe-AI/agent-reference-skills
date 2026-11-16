@@ -37,7 +37,7 @@ gcloud memorystore instances create INSTANCE \
 |---|---|
 | Throughput gains | I/O threading and string handling optimizations: up to 17% more overall throughput (up to 30% for `GET`). |
 | Database-level access control | ACLs can restrict user access at the database level. |
-| New commands | `HGETDEL` (return a hash field value and delete it atomically), `MSETNX` (set multiple keys with a shared expiration time), `CLUSTERSCAN` (scan keys across all nodes). `HSETEX` supports `NX` and `XX`. |
+| New commands | `HGETDEL` (return a hash field value and delete it atomically), `MSETNX` (the source's description: "set multiple keys with a shared expiration time"; see Notes), `CLUSTERSCAN` (scan keys across all nodes). `HSETEX` supports `NX` and `XX`. |
 
 ### Valkey 9.0
 
@@ -71,6 +71,7 @@ gcloud memorystore instances create INSTANCE \
 
 - After you upgrade the version of an instance, you cannot downgrade it to an earlier version.
 - Check an instance's version with the view-instance-information page; release history is in the product release notes.
+- Corrected from the official docs: the Valkey 9.1 "New commands" list links `MSETNX` (https://valkey.io/commands/msetnx/) and describes it as "set multiple keys with a shared expiration time". `MSETNX` is an existing command that sets multiple keys only if none of them exist and takes no expiration argument (it is also listed on `memorystore-valkey-operations/supported-commands.md`). Do not rely on `MSETNX` to set an expiration; set it separately (for example with `EXPIRE`).
 - Source: https://docs.cloud.google.com/memorystore/docs/valkey/supported-versions (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

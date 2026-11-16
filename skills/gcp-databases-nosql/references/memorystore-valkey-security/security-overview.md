@@ -42,7 +42,7 @@ gcloud memorystore instances get-certificate-authority INSTANCE_ID \
 - Valkey's own view of security: https://valkey.io/topics/security/. Product-specific VPC-SC limitations: https://docs.cloud.google.com/vpc-service-controls/docs/supported-products#table_memorystore_for_valkey
 - Managed Valkey on Google Cloud; distinct from Upstash Redis (`upstash`) and Cloudflare Workers KV (`cloudflare-storage`).
 - Source: https://docs.cloud.google.com/memorystore/docs/valkey/security-overview (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
-- Source: https://docs.cloud.google.com/memorystore/docs/valkey/use-vpc-service-controls
+- Source: https://docs.cloud.google.com/memorystore/docs/valkey/use-vpc-service-controls (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

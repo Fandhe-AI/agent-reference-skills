@@ -60,7 +60,7 @@ console.log(retval)
 
 ### IAM authentication and in-transit encryption (redis-py 5.1 or later)
 
-Adapted (not in the official docs): `<TO-DO-n ...>` placeholders turned into upper-case string literals, the stray extra `"` after the service account removed, `ssl_ca_certs` passed to `redis.Redis` (the source passed an undefined `caFilePath`), and the `print` of the access token removed so the token is never logged.
+Adapted (not in the official docs): `<TO-DO-n ...>` placeholders turned into upper-case string literals, the stray extra `"` after the service account removed, `ssl_ca_certs` passed to `redis.Redis` (the source passed an undefined `caFilePath`), and the `print` of the access token removed so the token is never logged, and the client is `redis.RedisCluster` (cluster-aware, follows `MOVED` redirections) because the host is the discovery endpoint.
 
 ```python
 from google.cloud import iam_credentials_v1
@@ -104,7 +104,7 @@ class ValkeyTokenProvider(redis.CredentialProvider):
         return "default",token
 
 creds_provider = ValkeyTokenProvider()
-client = redis.Redis(host=host, port=6379, credential_provider=creds_provider, ssl=True, ssl_ca_certs=ssl_ca_certs)
+client = redis.RedisCluster(host=host, port=6379, credential_provider=creds_provider, ssl=True, ssl_ca_certs=ssl_ca_certs)
 client.set('foo',"bar")
 print(client.get('foo'))
 ```
@@ -122,7 +122,7 @@ print(client.get('foo'))
 ## Notes
 
 - Sample systems with Spring Boot, PostgreSQL and Memorystore for Valkey: session management, scalable leaderboard and high-performance caching (https://github.com/GoogleCloudPlatform/memorystore-samples).
-- Corrected from the official docs: the redis-py sample used `primaryEndpoint = PRIMARY_ENDPOINT_IP`; the Node.js sample used `const primaryEndpoint = PRIMARY_ENDPOINT_IP`, `'redis://primaryEndpoint:6379'` and `client.set(key, value)` with undefined `key` / `value`; the IAM sample used `service_account="projects/-/serviceAccounts/<TO-DO-1: ...>""`, `host=<TO-DO-2: ...>`, `ssl_ca_certs=<TO-DO-3, ...>`, printed `str(response.access_token)` and passed `ssl_ca_certs=caFilePath`. The IAM sample's extra imports (`ConstantBackoff`, `Retry`, exceptions, `str_if_bytes`) are unused but kept as in the source.
+- Corrected from the official docs: the redis-py sample used `primaryEndpoint = PRIMARY_ENDPOINT_IP`; the Node.js sample used `const primaryEndpoint = PRIMARY_ENDPOINT_IP`, `'redis://primaryEndpoint:6379'` and `client.set(key, value)` with undefined `key` / `value`; the IAM sample used `service_account="projects/-/serviceAccounts/<TO-DO-1: ...>""`, `host=<TO-DO-2: ...>`, `ssl_ca_certs=<TO-DO-3, ...>`, printed `str(response.access_token)` and passed `ssl_ca_certs=caFilePath`; it also connected with `redis.Redis` to the "Redis Cluster discovery endpoint ip", and `redis.Redis` does not follow cluster `MOVED` redirections, so keys on other shards fail. It now uses `redis.RedisCluster` (redis-py 5.3.1 passes `credential_provider`, `ssl` and `ssl_ca_certs` through to node connections). For a Cluster Mode Disabled instance, use `redis.Redis` with the primary endpoint IP instead. The IAM sample's extra imports (`ConstantBackoff`, `Retry`, exceptions, `str_if_bytes`) are unused but kept as in the source.
 - The sample's code comment says "Generated IAM tokens are valid for 15 minutes"; the credential provider fetches a fresh one per connection.
 - Source inconsistency: the IAM authentication pages say access tokens expire one hour after they are retrieved (configurable up to 12 hours; see `memorystore-valkey-security/about-iam-auth.md`), while this sample's comment says 15 minutes. Kept as written; refresh tokens well before either limit.
 - The source also shows go-redis, Jedis and Go (IAM and TLS) samples, omitted here. The Go IAM sample prints the token.

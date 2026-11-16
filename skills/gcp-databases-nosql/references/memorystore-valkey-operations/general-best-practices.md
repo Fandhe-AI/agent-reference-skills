@@ -29,7 +29,7 @@ redis-cli --latency -h ENDPOINT_ADDRESS -p PORT
 | Variable-length keyset | `SMEMBERS` | `SSCAN` |
 | Blocks script running | `EVAL` | Ensure the script doesn't run indefinitely |
 | Blocks script running | `EVALSHA` | Ensure the script doesn't run indefinitely |
-| Remove files and links | `DELETE` | `UNLINK` |
+| Remove keys | `DEL` | `UNLINK` |
 | Publish and subscribe | `PUBLISH` | `SPUBLISH` |
 | Publish and subscribe | `SUBSCRIBE` | `SSUBSCRIBE` |
 
@@ -89,6 +89,7 @@ Metrics: `/instance/memory/average_utilization`, `/instance/memory/maximum_utili
 - Memorystore for Valkey on Google Cloud: managed Valkey, distinct from Upstash Redis (`upstash`) and Cloudflare Workers KV (`cloudflare-storage`).
 - Source inconsistency: the general best-practices page gives `/instance/cpu/maximum_utilization` targets of 0.5 seconds for the primary with 1 replica and 0.9 seconds with 2 or more replicas (0.5 seconds per replica), while the supported-monitoring-metrics page says to keep it at most 0.8 seconds for the primary and 0.5 seconds per read replica. Kept as written on each page.
 - Source inconsistency: this page recommends `SLOWLOG` for finding resource-intensive commands, but the supported-commands page lists `SLOWLOG GET`, `SLOWLOG LEN` and `SLOWLOG RESET` as blocked (`NOPERM`); see `supported-commands.md`.
+- Corrected from the official docs: the blocking-commands table has the row "Remove files and links | `DELETE` | `UNLINK`". Valkey has no `DELETE` command; the synchronous key-deletion command is `DEL`, and `UNLINK` removes keys and reclaims memory asynchronously (both are listed on `supported-commands.md`).
 - Source: https://docs.cloud.google.com/memorystore/docs/valkey/general-best-practices (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -93,7 +93,7 @@ Console options (same for both zone types): replicas default 1 (0-5); Security: 
 
 - By default in-transit encryption is disabled and the authorized network is `default`. Keep TLS and IAM / token authentication enabled for production where the source offers it.
 - If you create an instance with replicas and one zone is unavailable, Memorystore creates it in the available zones and redistributes nodes evenly later. Without replicas, creation fails when a zone is unavailable.
-- Cluster mode and the Valkey version cannot be changed or downgraded after creation; Google recommends Cluster Mode Enabled.
+- Cluster mode cannot be changed after creation ("you can't change the instance to the other mode"); Google recommends Cluster Mode Enabled. The Valkey version can be upgraded after creation but not downgraded (see `memorystore-valkey-operations/upgrade-valkey-version.md`).
 - The source also shows Console steps (summarized above).
 - Memorystore for Valkey is managed Valkey / Redis / Memcached on Google Cloud, distinct from Upstash Redis (`upstash`) and Cloudflare Workers KV (`cloudflare-storage`). IAM and service accounts: `gcp-foundation`.
 - Source: https://docs.cloud.google.com/memorystore/docs/valkey/create-instances (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
