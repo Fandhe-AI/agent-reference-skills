@@ -92,8 +92,10 @@ Windows (clean shutdown after shutdown scripts finish, or forced):
 shutdown /s
 ```
 
+Adapted (not in the official docs): the source shows `shutdown /f` alone; `/s` is added because `/f` only forces running applications to close and does not select the shutdown action.
+
 ```text
-shutdown /f
+shutdown /s /f
 ```
 
 ### Restart an instance (no CSEK-encrypted disks)
@@ -162,6 +164,7 @@ Role: Compute Instance Admin (v1), `roles/compute.instanceAdmin.v1`, on the proj
 - Source (`--discard-local-ssd`): `gcloud compute instances stop --help` and `gcloud beta compute instances stop --help` (gcloud 593.0.0, retrieved 2026-11-14)
 - Source (suspend, stop and reset overview): https://docs.cloud.google.com/compute/docs/instances/suspend-stop-reset-instances-overview (retrieved 2026-11-17)
 - Source (CSEK deprecation notice): https://docs.cloud.google.com/compute/docs/deprecations/csek-deprecation-in-compute-engine (retrieved 2026-11-17)
+- Corrected from the official docs: the forced Windows shutdown is `shutdown /f` in the source. `/f` forces running applications to close without warning but does not choose an action; `shutdown /s /f` shuts down the guest OS with forced application close.
 - Source: https://docs.cloud.google.com/compute/docs/instances/stop-start-instance (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Limitations: an instance can be stopped or restarted only if its lifecycle state allows it; restart needs sufficient resources in the zone; TPU instances cannot be restarted, only deleted after stopping.
 - After a stop you still pay for attached disks, disk snapshots and external IP addresses; detach and delete what you no longer need.

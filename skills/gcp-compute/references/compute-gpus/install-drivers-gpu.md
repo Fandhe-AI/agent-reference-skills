@@ -79,6 +79,8 @@ Adapted (not in the official docs): added `-f` so an HTTP error page is not save
 curl -fL https://storage.googleapis.com/compute-gpu-installation-us/installer/latest/cuda_installer.pyz --output cuda_installer.pyz
 ```
 
+Adapted (not in the official docs): shell variables are quoted (`"${VAR}"`, and whole `--flag=...` values that contain them) so values with spaces or glob characters are not split or expanded.
+
 ```bash
 PROJECT=PROJECT_ID
 ZONE=ZONE
@@ -86,45 +88,55 @@ BASE_IMAGE=BASE_IMAGE_NAME
 SECURE_BOOT_IMAGE=IMAGE_NAME
 
 python3 cuda_installer.pyz build_image \
-  --project $PROJECT \
-  --vm-zone $ZONE \
-  --base-image $BASE_IMAGE $SECURE_BOOT_IMAGE
+  --project "${PROJECT}" \
+  --vm-zone "${ZONE}" \
+  --base-image "${BASE_IMAGE}" "${SECURE_BOOT_IMAGE}"
 ```
 
 Verify with a test VM (the source uses N1 + one T4; any GPU machine type works), where `ZONE` must have T4 or your chosen GPU:
+
+Adapted (not in the official docs): shell variables are quoted (`"${VAR}"`, and whole `--flag=...` values that contain them) so values with spaces or glob characters are not split or expanded.
 
 ```bash
 TEST_INSTANCE_NAME=TEST_INSTANCE_NAME
 ZONE=ZONE
 
-gcloud compute instances create $TEST_INSTANCE_NAME \
- --project=$PROJECT \
- --zone=$ZONE \
+gcloud compute instances create "${TEST_INSTANCE_NAME}" \
+ --project="${PROJECT}" \
+ --zone="${ZONE}" \
  --machine-type=n1-standard-4 \
  --accelerator=count=1,type=nvidia-tesla-t4 \
- --create-disk=auto-delete=yes,boot=yes,device-name=$TEST_INSTANCE_NAME,image=projects/$PROJECT/global/images/$SECURE_BOOT_IMAGE,mode=rw,size=100,type=pd-balanced \
+ --create-disk="auto-delete=yes,boot=yes,device-name=${TEST_INSTANCE_NAME},image=projects/${PROJECT}/global/images/${SECURE_BOOT_IMAGE},mode=rw,size=100,type=pd-balanced" \
  --shielded-secure-boot \
  --shielded-vtpm \
  --shielded-integrity-monitoring \
  --maintenance-policy=TERMINATE
 ```
 
-```bash
-gcloud compute ssh --project=$PROJECT --zone=$ZONE $TEST_INSTANCE_NAME --command "mokutil --sb-state"
-```
+Adapted (not in the official docs): shell variables are quoted (`"${VAR}"`, and whole `--flag=...` values that contain them) so values with spaces or glob characters are not split or expanded.
 
 ```bash
-gcloud compute ssh --project=$PROJECT --zone=$ZONE $TEST_INSTANCE_NAME --command "nvidia-smi"
+gcloud compute ssh --project="${PROJECT}" --zone="${ZONE}" "${TEST_INSTANCE_NAME}" --command "mokutil --sb-state"
+```
+
+Adapted (not in the official docs): shell variables are quoted (`"${VAR}"`, and whole `--flag=...` values that contain them) so values with spaces or glob characters are not split or expanded.
+
+```bash
+gcloud compute ssh --project="${PROJECT}" --zone="${ZONE}" "${TEST_INSTANCE_NAME}" --command "nvidia-smi"
 ```
 
 Clean up (destructive):
 
-```bash
-gcloud compute instances delete --zone=$ZONE --project=$PROJECT $TEST_INSTANCE_NAME
-```
+Adapted (not in the official docs): shell variables are quoted (`"${VAR}"`, and whole `--flag=...` values that contain them) so values with spaces or glob characters are not split or expanded.
 
 ```bash
-gcloud compute images delete --project=$PROJECT $SECURE_BOOT_IMAGE
+gcloud compute instances delete --zone="${ZONE}" --project="${PROJECT}" "${TEST_INSTANCE_NAME}"
+```
+
+Adapted (not in the official docs): shell variables are quoted (`"${VAR}"`, and whole `--flag=...` values that contain them) so values with spaces or glob characters are not split or expanded.
+
+```bash
+gcloud compute images delete --project="${PROJECT}" "${SECURE_BOOT_IMAGE}"
 ```
 
 ### Verify the install
@@ -197,6 +209,7 @@ On Windows Server run `nvidia-smi` in PowerShell.
 - The source's Secure Boot test VM uses one NVIDIA T4 (`--accelerator=count=1,type=nvidia-tesla-t4`); the Compute Engine deprecations page lists "NVIDIA T4 | August 1, 2026 | August 1, 2027" (deprecated, shutdown date), and gpus.md says "NVIDIA T4 GPUs reach end of support on August 1, 2027". Where T4 is unavailable, use another GPU model and machine type listed in [gpus.md](./gpus.md) for the test VM.
 - Source (NVIDIA T4 deprecation): https://docs.cloud.google.com/compute/docs/deprecations (retrieved 2026-11-17)
 - Source (GPU platforms, cited above as `gpus.md`): https://docs.cloud.google.com/compute/docs/gpus (retrieved 2026-11-17)
+- Adapted from the official docs: the Secure Boot image build, test VM and cleanup commands quote every shell variable (`"${PROJECT}"`, `"${ZONE}"`, `"${TEST_INSTANCE_NAME}"`, `"${SECURE_BOOT_IMAGE}"`, `"${BASE_IMAGE}"`) and the whole `--create-disk=...` value; the source leaves them unquoted, which splits or glob-expands values with spaces or wildcard characters (a risk for the delete commands).
 - Source: https://docs.cloud.google.com/compute/docs/gpus/install-drivers-gpu (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
