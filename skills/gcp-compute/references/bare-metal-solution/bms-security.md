@@ -30,7 +30,7 @@ Application connectivity patterns:
 - Only network path to or from the regional extension is Partner Interconnect to the associated region over customer-specific VLAN attachments. Servers have no internet access by default; create a NAT instance if needed.
 - BGP dynamic routing means resources in the attached VPC (and new subnets) can reach the servers directly; restrict with firewall policies.
 - VPC peering: add a custom advertisement of the peered network CIDR on the redundant Cloud Routers. Shared VPC: create VLAN attachments in the host project.
-- On-premises: connect via Dedicated Interconnect, Partner Interconnect or Cloud VPN and add a custom advertisement for the on-premises subnet CIDR. The source adds "use firewall rules to allow or block access", but VPC firewall rules do not apply to traffic that transits Google Cloud between Bare Metal Solution and on-premises (see Notes), so they do not protect that path.
+- On-premises: connect via Dedicated Interconnect, Partner Interconnect or Cloud VPN, add a custom advertisement for the on-premises subnet CIDR, and use firewall rules to allow or block access. Caveat (from bms-planning.md, quoted in Notes): "VPC firewalls do not apply to any traffic that transits your Google Cloud environment between, for example, your Bare Metal Solution environments and your other Bare Metal Solution or extended on-premises environments."
 - Backups: Oracle RMAN or solutions such as Actifio, with backup data stored in Cloud Storage tiers matching RTO/RPO.
 
 ## Notes
