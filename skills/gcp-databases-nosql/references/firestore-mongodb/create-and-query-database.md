@@ -24,11 +24,15 @@ UID.LOCATION.firestore.goog
 
 ### Connect
 
+Adapted (not in the official docs): the user name is passed with `--username` and `--password` is the last option with no value, so `mongosh` prompts for the password instead of reading it from the URI on the command line.
+
 ```bash
-mongosh 'mongodb://USERNAME:PASSWORD@CONNECTION_STRING:443/DATABASE_ID?loadBalanced=true&authMechanism=SCRAM-SHA-256&tls=true&retryWrites=false'
+mongosh 'mongodb://CONNECTION_STRING:443/DATABASE_ID?loadBalanced=true&authMechanism=SCRAM-SHA-256&tls=true&retryWrites=false' \
+      --username USERNAME \
+      --password
 ```
 
-Replace `USERNAME` with the database user, `PASSWORD` with the generated password, `CONNECTION_STRING` with the database connection string, and `DATABASE_ID` with a database ID.
+Replace `USERNAME` with the database user (enter the generated password at the prompt), `CONNECTION_STRING` with the database connection string, and `DATABASE_ID` with a database ID.
 
 ### Create and read data
 
@@ -49,7 +53,7 @@ exit
 
 - Firestore with MongoDB compatibility requires Firestore Enterprise edition.
 - The source also shows Console click-paths for project selection, IAM role checks and database creation (omitted here).
-- A password placed in the `mongosh` URI is stored in shell history and visible in the process list; the source offers no alternative on this page. Never commit or log a real password.
+- Corrected from the official docs: the source's command is `mongosh 'mongodb://USERNAME:PASSWORD@CONNECTION_STRING:443/DATABASE_ID?...'`, which stores the password in shell history and the process list. The mongosh options reference says: "To force the MongoDB Shell to prompt for a password, enter the `--password` option as the last option and leave out the argument" (https://www.mongodb.com/docs/mongodb-shell/reference/options/). Never commit or log a real password.
 - Distinct from Supabase Postgres (`supabase`) and Cloudflare KV / D1 (`cloudflare-storage`).
 - Source: https://docs.cloud.google.com/firestore/mongodb-compatibility/docs/create-and-query-database (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 

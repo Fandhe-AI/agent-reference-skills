@@ -74,10 +74,13 @@ mongodb://DATABASE_UID.LOCATION.firestore.goog:443/DATABASE_ID?loadBalanced=true
 
 ### Temporary access token (diagnostics, valid one hour)
 
+Adapted (not in the official docs): `--password` is moved to the end with no value so `mongosh` prompts for it (paste the output of `gcloud auth print-access-token` at the prompt), instead of passing the token as a process argument through an unquoted `$(...)`.
+
 ```bash
 mongosh --tls \
-      --username access_token --password $(gcloud auth print-access-token) \
-      'mongodb://UID.LOCATION.firestore.goog:443/DATABASE_ID?loadBalanced=true&authMechanism=PLAIN&authSource=$external&retryWrites=false'
+      --username access_token \
+      'mongodb://UID.LOCATION.firestore.goog:443/DATABASE_ID?loadBalanced=true&authMechanism=PLAIN&authSource=$external&retryWrites=false' \
+      --password
 ```
 
 ## Options / Props
@@ -96,7 +99,7 @@ mongosh --tls \
 ## Notes
 
 - The source also shows Console steps, Java and Python administrative samples (create user credentials and set IAM policy) and a Java OIDC callback sample using the Google Auth Library; they are omitted. The administrative samples print the generated password; do not log it.
-- `--password $(gcloud auth print-access-token)` places the token in the process list and shell history for its one-hour lifetime; never share or print it. The source documents no prompt or environment-variable alternative.
+- Corrected from the official docs: the source's command is `mongosh --tls --username access_token --password $(gcloud auth print-access-token) 'mongodb://...'`, which puts a valid one-hour access token in the `mongosh` process arguments (visible in the process list). The mongosh options reference says: "To force the MongoDB Shell to prompt for a password, enter the `--password` option as the last option and leave out the argument" (https://www.mongodb.com/docs/mongodb-shell/reference/options/). Prefer the MONGODB-OIDC connection string above where the environment supports it.
 - The SCRAM connection string embeds `PASSWORD`; passed on a command line (for example to `mongosh`), it ends up in shell history and the process list. Keep connection strings with credentials out of logs and shared shells; the source documents no alternative.
 - Source inconsistency: the access-token section's "Replace the following" lists `DATABASE_UID` while the command uses `UID`; both denote the database UID.
 - Corrected from the official docs: the `gcloud projects add-iam-policy-binding PROJECT_NAME ...` commands and the condition `resource.name == "projects/PROJECT_NAME/databases/DATABASE_ID"` use `PROJECT_NAME`, described as "the name of your project"; gcloud rejects a project name ("must be set to a valid project ID, not the project name"). The `user-creds create` output example keeps the source's `projects/PROJECT_NAME/...` text verbatim; that resource name also contains the project ID.
