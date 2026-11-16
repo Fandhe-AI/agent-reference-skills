@@ -1,0 +1,1130 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/memorystore/instances/update
+---
+
+# gcloud memorystore instances update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud memorystore instances update
+
+```text
+NAME
+    gcloud memorystore instances update - update the configuration of a
+        Memorystore instance
+
+SYNOPSIS
+    gcloud memorystore instances update INSTANCE [--async]
+        [--[no-]async-instance-endpoints-deletion-enabled]
+        [--authorization-mode=AUTHORIZATION_MODE]
+        [--[no-]deletion-protection-enabled] [--engine-version=ENGINE_VERSION]
+        [--location=LOCATION] [--maintenance-version=MAINTENANCE_VERSION]
+        [--mode=MODE] [--node-type=NODE_TYPE] [--[no-]ondemand-maintenance]
+        [--replica-count=REPLICA_COUNT] [--request-id=REQUEST_ID]
+        [--[no-]rotate-server-certificate] [--shard-count=SHARD_COUNT]
+        [--[no-]simulate-maintenance-event]
+        [--acl-policy=ACL_POLICY | --clear-acl-policy]
+        [--aof-config-append-fsync=AOF_CONFIG_APPEND_FSYNC
+          --clear-persistence-config
+          --persistence-config-mode=PERSISTENCE_CONFIG_MODE
+          --rdb-config-snapshot-period=RDB_CONFIG_SNAPSHOT_PERIOD
+          --rdb-config-snapshot-start-time=RDB_CONFIG_SNAPSHOT_START_TIME]
+        [--automated-backup-config-mode=AUTOMATED_BACKUP_CONFIG_MODE
+          --automated-backup-config-retention=AUTOMATED_BACKUP_CONFIG_RETENTION
+          --clear-automated-backup-config
+          --fixed-frequency-schedule-start-time-hours=FIXED_FREQUENCY_SCHEDULE_START_TIME_HOURS --fixed-frequency-schedule-start-time-minutes=FIXED_FREQUENCY_SCHEDULE_START_TIME_MINUTES --fixed-frequency-schedule-start-time-nanos=FIXED_FREQUENCY_SCHEDULE_START_TIME_NANOS --fixed-frequency-schedule-start-time-seconds=FIXED_FREQUENCY_SCHEDULE_START_TIME_SECONDS]
+        [--clear-cross-instance-replication-config
+          --cross-instance-replication-config-role=CROSS_INSTANCE_REPLICATION_CONFIG_ROLE --clear-primary-instance | --primary-instance=PRIMARY_INSTANCE --cross-instance-replication-config-secondary-instances=[instance=INSTANCE] | --add-cross-instance-replication-config-secondary-instances=[instance=INSTANCE] --clear-cross-instance-replication-config-secondary-instances | --remove-cross-instance-replication-config-secondary-instances=[instance=INSTANCE]]
+        [--clear-maintenance-policy
+          --maintenance-policy-weekly-window=[day=DAY],[startTime=STARTTIME]
+          | --add-maintenance-policy-weekly-window=[day=DAY],
+          [startTime=STARTTIME] --clear-maintenance-policy-weekly-window
+          | --remove-maintenance-policy-weekly-window=[day=DAY],
+          [startTime=STARTTIME]]
+        [--endpoints=[connections=CONNECTIONS]
+          | --add-endpoints=[connections=CONNECTIONS] --clear-endpoints
+          | --remove-endpoints=[connections=CONNECTIONS]]
+        [--engine-configs=[ENGINE_CONFIGS,...]
+          | --update-engine-configs=[UPDATE_ENGINE_CONFIGS,...]
+          --clear-engine-configs
+          | --remove-engine-configs=REMOVE_ENGINE_CONFIGS]
+        [--key-ring=KEY_RING --clear-kms-key | --kms-key=KMS_KEY]
+        [--labels=[LABELS,...]
+          | --update-labels=[UPDATE_LABELS,...] --clear-labels
+          | --remove-labels=REMOVE_LABELS] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update the configuration of a Memorystore instance.
+
+EXAMPLES
+    To update Memorystore instance my-instance in project my-project and
+    location us-central1 to six shards, run:
+
+        $ gcloud memorystore instances update `my-instance` \
+            --project=my-project --location=us-central1 --shard-count=6
+
+    To update Memorystore instance my-instance in project my-project and
+    location us-central1 to use a maxmemory-policy of allkeys-lru, run:
+
+        $ gcloud memorystore instances update `my-instance` \
+            --project=my-project --location=us-central1 \
+            --update-engine-configs=maxmemory-policy=allkeys-lru
+
+POSITIONAL ARGUMENTS
+     Instance resource - Identifier. Unique name of the instance. Format:
+     projects/{project}/locations/{location}/instances/{instance} This
+     represents a Cloud resource. (NOTE) Some attributes are not given
+     arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument instance on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     To set the location attribute:
+      * provide the argument instance on the command line with a fully
+        specified name;
+      * provide the argument --location on the command line.
+
+     This must be specified.
+
+       INSTANCE
+          ID of the instance or fully qualified identifier for the instance.
+
+          To set the instance attribute:
+          + provide the argument instance on the command line.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     Arguments for the async instance endpoints deletion enabled.
+
+     --[no-]async-instance-endpoints-deletion-enabled
+        If true, instance endpoints that are created and registered by
+        customers can be deleted asynchronously. That is, such an instance
+        endpoint can be de-registered before the forwarding rules in the
+        instance endpoint are deleted. Use
+        --async-instance-endpoints-deletion-enabled to enable and
+        --no-async-instance-endpoints-deletion-enabled to disable.
+
+     --authorization-mode=AUTHORIZATION_MODE
+        Authorization mode of the instance. AUTHORIZATION_MODE must be one of:
+
+         auth-disabled
+            Authorization disabled.
+         token-auth
+            Token based authorization.
+
+     Arguments for the deletion protection enabled.
+
+     --[no-]deletion-protection-enabled
+        If set to true deletion of the instance will fail. Use
+        --deletion-protection-enabled to enable and
+        --no-deletion-protection-enabled to disable.
+
+     --engine-version=ENGINE_VERSION
+        Engine version of the instance.
+
+     --location=LOCATION
+        For resources [instance, acl-policy, kms-key, primary-instance],
+        provides fallback value for resource location attribute. When the
+        resource's full URI path is not provided, location will fallback to
+        this flag value.
+
+     Arguments for the maintenance version.
+
+     --maintenance-version=MAINTENANCE_VERSION
+        This field can be used to trigger self service update to indicate the
+        desired maintenance version. The input to this field can be determined
+        by the available_maintenance_versions field.
+
+     --mode=MODE
+        The mode config for the instance. MODE must be one of:
+
+         cluster
+            Instance is in cluster mode.
+         cluster-disabled
+            Cluster mode is disabled for the instance.
+         standalone
+            Deprecated: Use CLUSTER_DISABLED instead.
+
+     --node-type=NODE_TYPE
+        Machine type for individual nodes of the instance. NODE_TYPE must be
+        one of:
+
+         custom-micro
+            Custom micro.
+         custom-mini
+            Custom mini.
+         custom-pico
+            Custom pico.
+         highcpu-medium
+            High cpu medium.
+         highmem-2xlarge
+            High memory 2xlarge.
+         highmem-medium
+            High memory medium.
+         highmem-xlarge
+            High memory extra large.
+         shared-core-nano
+            Shared core nano.
+         standard-large
+            Standard large.
+         standard-small
+            Standard small.
+
+     Arguments for the ondemand maintenance.
+
+     --[no-]ondemand-maintenance
+        Ondemand maintenance for the instance. Use --ondemand-maintenance to
+        enable and --no-ondemand-maintenance to disable.
+
+     Arguments for the replica count.
+
+     --replica-count=REPLICA_COUNT
+        Number of replica nodes per shard. If omitted the default is 0
+        replicas.
+
+     --request-id=REQUEST_ID
+        An optional request ID to identify requests. Specify a unique request
+        ID so that if you must retry your request, the server will know to
+        ignore the request if it has already been completed. The server will
+        guarantee that for at least 60 minutes since the first request.
+
+        For example, consider a situation where you make an initial request and
+        the request times out. If you make the request again with the same
+        request ID, the server can check if original operation with the same
+        request ID was received, and if so, will ignore the second request.
+        This prevents clients from accidentally creating duplicate commitments.
+
+        The request ID must be a valid UUID with the exception that zero UUID
+        is not supported (00000000-0000-0000-0000-000000000000).
+
+     Arguments for the rotate server certificate.
+
+     --[no-]rotate-server-certificate
+        Rotate the server certificates. Use --rotate-server-certificate to
+        enable and --no-rotate-server-certificate to disable.
+
+     --shard-count=SHARD_COUNT
+        Number of shards for the instance.
+
+     Arguments for the simulate maintenance event.
+
+     --[no-]simulate-maintenance-event
+        Simulate a maintenance event. Use --simulate-maintenance-event to
+        enable and --no-simulate-maintenance-event to disable.
+
+     Arguments for the acl policy.
+
+     Update acl_policy.
+
+     At most one of these can be specified:
+
+       AclPolicy resource - Set acl_policy to new value.
+
+       The ACL policy for the instance. Format:
+       projects/{project}/locations/{location}/aclPolicies/{acl_policy} This
+       represents a Cloud resource. (NOTE) Some attributes are not given
+       arguments in this group but can be set in other ways.
+
+       To set the project attribute:
+        + provide the argument --acl-policy on the command line with a fully
+          specified name;
+        + provide the argument --project on the command line;
+        + set the property core/project.
+
+       To set the location attribute:
+        + provide the argument --acl-policy on the command line with a fully
+          specified name;
+        + provide the argument --location on the command line.
+
+       --acl-policy=ACL_POLICY
+          ID of the aclPolicy or fully qualified identifier for the aclPolicy.
+
+          To set the acl-policy attribute:
+          + provide the argument --acl-policy on the command line.
+
+       --clear-acl-policy
+          Clear acl_policy value and set to null.
+
+     Represents persistence configuration for a instance.
+
+     Configuration for AOF based persistence.
+
+     --aof-config-append-fsync=AOF_CONFIG_APPEND_FSYNC
+        The fsync mode. AOF_CONFIG_APPEND_FSYNC must be one of:
+
+         always
+            Fsync every time new write commands are appended to the AOF. The
+            best data loss protection at the cost of performance.
+         every-sec
+            Fsync every second. You may lose 1 second of data if there is a
+            disaster.
+         never
+            Never fsync. Normally Linux will flush data every 30 seconds with
+            this configuration, but it's up to the kernel's exact tuning.
+
+     --clear-persistence-config
+        Set instance.persistenceConfig back to default value.
+
+     --persistence-config-mode=PERSISTENCE_CONFIG_MODE
+        Current persistence mode. PERSISTENCE_CONFIG_MODE must be one of:
+
+         aof
+            AOF based persistence is enabled.
+         disabled
+            Persistence is disabled, and any snapshot data is deleted.
+         rdb
+            RDB based persistence is enabled.
+
+     Configuration for RDB based persistence.
+
+     --rdb-config-snapshot-period=RDB_CONFIG_SNAPSHOT_PERIOD
+        Period between RDB snapshots. RDB_CONFIG_SNAPSHOT_PERIOD must be one
+        of:
+
+         one-hour
+            One hour.
+         six-hours
+            Six hours.
+         twelve-hours
+            Twelve hours.
+         twenty-four-hours
+            Twenty four hours.
+
+     --rdb-config-snapshot-start-time=RDB_CONFIG_SNAPSHOT_START_TIME
+        Time that the first snapshot was/will be attempted, and to which future
+        snapshots will be aligned. If not provided, the current time will be
+        used.
+
+     The automated backup config for an instance.
+
+     --automated-backup-config-mode=AUTOMATED_BACKUP_CONFIG_MODE
+        The automated backup mode. If the mode is disabled, the other fields
+        will be ignored. AUTOMATED_BACKUP_CONFIG_MODE must be one of:
+
+         disabled
+            Automated backup config disabled.
+         enabled
+            Automated backup config enabled.
+
+     --automated-backup-config-retention=AUTOMATED_BACKUP_CONFIG_RETENTION
+        How long to keep automated backups before the backups are deleted. The
+        value should be between 1 day and 365 days. If not specified, the
+        default value is 35 days.
+
+     --clear-automated-backup-config
+        Set instance.automatedBackupConfig back to default value.
+
+     Arguments for the schedule.
+
+     This schedule allows the backup to be triggered at a fixed frequency
+     (currently only daily is supported).
+
+     Represents a time of day. The date and time zone are either not
+     significant or are specified elsewhere. An API may choose to allow leap
+     seconds. Related types are [google.type.Date][google.type.Date] and
+     google.protobuf.Timestamp.
+
+     --fixed-frequency-schedule-start-time-hours=FIXED_FREQUENCY_SCHEDULE_START_TIME_HOURS
+        Hours of a day in 24 hour format. Must be greater than or equal to 0
+        and typically must be less than or equal to 23. An API may choose to
+        allow the value "24:00:00" for scenarios like business closing time.
+
+     --fixed-frequency-schedule-start-time-minutes=FIXED_FREQUENCY_SCHEDULE_START_TIME_MINUTES
+        Minutes of an hour. Must be greater than or equal to 0 and less than or
+        equal to 59.
+
+     --fixed-frequency-schedule-start-time-nanos=FIXED_FREQUENCY_SCHEDULE_START_TIME_NANOS
+        Fractions of seconds, in nanoseconds. Must be greater than or equal to
+        0 and less than or equal to 999,999,999.
+
+     --fixed-frequency-schedule-start-time-seconds=FIXED_FREQUENCY_SCHEDULE_START_TIME_SECONDS
+        Seconds of a minute. Must be greater than or equal to 0 and typically
+        must be less than or equal to 59. An API may allow the value 60 if it
+        allows leap-seconds.
+
+     Cross instance replication config.
+
+     --clear-cross-instance-replication-config
+        Set instance.crossInstanceReplicationConfig back to default value.
+
+     --cross-instance-replication-config-role=CROSS_INSTANCE_REPLICATION_CONFIG_ROLE
+        The role of the instance in cross instance replication.
+        CROSS_INSTANCE_REPLICATION_CONFIG_ROLE must be one of:
+
+         none
+            This instance does not participate in cross instance replication.
+            It is an independent instance and does not replicate to or from any
+            other instances.
+         primary
+            A instance that allows both reads and writes. Any data written to
+            this instance is also replicated to the attached secondary
+            instances.
+         secondary
+            A instance that allows only reads and replicates data from a
+            primary instance.
+
+     Details of the remote instance associated with this instance in a cross
+     instance replication setup.
+
+     Update primary_instance.
+
+     At most one of these can be specified:
+
+       --clear-primary-instance
+          Clear primary_instance value and set to null.
+
+       Instance resource - Set primary_instance to new value.
+
+       The full resource path of the remote instance in the format:
+       projects/<project>/locations/<region>/instances/<instance-id> This
+       represents a Cloud resource. (NOTE) Some attributes are not given
+       arguments in this group but can be set in other ways.
+
+       To set the project attribute:
+        + provide the argument --primary-instance on the command line with a
+          fully specified name;
+        + provide the argument --project on the command line;
+        + set the property core/project.
+
+       To set the location attribute:
+        + provide the argument --primary-instance on the command line with a
+          fully specified name;
+        + provide the argument --location on the command line.
+
+       --primary-instance=PRIMARY_INSTANCE
+          ID of the instance or fully qualified identifier for the instance.
+
+          To set the instance attribute:
+          + provide the argument --primary-instance on the command line.
+
+     Update cross_instance_replication_config_secondary_instances.
+
+     At most one of these can be specified:
+
+       --cross-instance-replication-config-secondary-instances=[instance=INSTANCE]
+          Set cross_instance_replication_config_secondary_instances to new
+          value. List of secondary instances that are replicating from this
+          primary instance.
+
+          This field is only set for a primary instance.
+
+           instance
+              The full resource path of the remote instance in the format:
+              projects/<project>/locations/<region>/instances/<instance-id>.
+
+          Shorthand Example:
+
+              --cross-instance-replication-config-secondary-instances=instance=string --cross-instance-replication-config-secondary-instances=instance=string
+
+          JSON Example:
+
+              --cross-instance-replication-config-secondary-instances='[{"instance": "string"}]'
+
+          File Example:
+
+              --cross-instance-replication-config-secondary-instances=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-cross-instance-replication-config-secondary-instances=[instance=INSTANCE]
+            Add new value to
+            cross_instance_replication_config_secondary_instances list. List of
+            secondary instances that are replicating from this primary
+            instance.
+
+            This field is only set for a primary instance.
+
+             instance
+                The full resource path of the remote instance in the format:
+                projects/<project>/locations/<region>/instances/<instance-id>.
+
+            Shorthand Example:
+
+                --add-cross-instance-replication-config-secondary-instances=instance=string --add-cross-instance-replication-config-secondary-instances=instance=string
+
+            JSON Example:
+
+                --add-cross-instance-replication-config-secondary-instances='[{"instance": "string"}]'
+
+            File Example:
+
+                --add-cross-instance-replication-config-secondary-instances=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-cross-instance-replication-config-secondary-instances
+              Clear cross_instance_replication_config_secondary_instances value
+              and set to empty list.
+
+           --remove-cross-instance-replication-config-secondary-instances=[instance=INSTANCE]
+              Remove existing value from
+              cross_instance_replication_config_secondary_instances list. List
+              of secondary instances that are replicating from this primary
+              instance.
+
+              This field is only set for a primary instance.
+
+               instance
+                  The full resource path of the remote instance in the format:
+                  projects/<project>/locations/<region>/instances/<instance-id>.
+
+              Shorthand Example:
+
+                  --remove-cross-instance-replication-config-secondary-instances=instance=string --remove-cross-instance-replication-config-secondary-instances=instance=string
+
+              JSON Example:
+
+                  --remove-cross-instance-replication-config-secondary-instances='[{"instance": "string"}]'
+
+              File Example:
+
+                  --remove-cross-instance-replication-config-secondary-instances=path_to_file.(yaml|json)
+
+     Maintenance policy per instance.
+
+     --clear-maintenance-policy
+        Set instance.maintenancePolicy back to default value.
+
+     Update maintenance_policy_weekly_window.
+
+     At most one of these can be specified:
+
+       --maintenance-policy-weekly-window=[day=DAY],[startTime=STARTTIME]
+          Set maintenance_policy_weekly_window to new value. Maintenance window
+          that is applied to resources covered by this policy. Minimum 1. For
+          the current version, the maximum number of weekly_window is expected
+          to be one.
+
+           day
+              Allows to define schedule that runs specified day of the week.
+
+           startTime
+              Start time of the window in UTC.
+
+               hours
+                  Hours of a day in 24 hour format. Must be greater than or
+                  equal to 0 and typically must be less than or equal to 23. An
+                  API may choose to allow the value "24:00:00" for scenarios
+                  like business closing time.
+
+               minutes
+                  Minutes of an hour. Must be greater than or equal to 0 and
+                  less than or equal to 59.
+
+               nanos
+                  Fractions of seconds, in nanoseconds. Must be greater than or
+                  equal to 0 and less than or equal to 999,999,999.
+
+               seconds
+                  Seconds of a minute. Must be greater than or equal to 0 and
+                  typically must be less than or equal to 59. An API may allow
+                  the value 60 if it allows leap-seconds.
+
+          Shorthand Example:
+
+              --maintenance-policy-weekly-window=day=string,startTime={hours=int,minutes=int,nanos=int,seconds=int} --maintenance-policy-weekly-window=day=string,startTime={hours=int,minutes=int,nanos=int,seconds=int}
+
+          JSON Example:
+
+              --maintenance-policy-weekly-window='[{"day": "string", "startTime": {"hours": int, "minutes": int, "nanos": int, "seconds": int}}]'
+
+          File Example:
+
+              --maintenance-policy-weekly-window=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-maintenance-policy-weekly-window=[day=DAY],[startTime=STARTTIME]
+            Add new value to maintenance_policy_weekly_window list. Maintenance
+            window that is applied to resources covered by this policy. Minimum
+            1. For the current version, the maximum number of weekly_window is
+            expected to be one.
+
+             day
+                Allows to define schedule that runs specified day of the week.
+
+             startTime
+                Start time of the window in UTC.
+
+                 hours
+                    Hours of a day in 24 hour format. Must be greater than or
+                    equal to 0 and typically must be less than or equal to 23.
+                    An API may choose to allow the value "24:00:00" for
+                    scenarios like business closing time.
+
+                 minutes
+                    Minutes of an hour. Must be greater than or equal to 0 and
+                    less than or equal to 59.
+
+                 nanos
+                    Fractions of seconds, in nanoseconds. Must be greater than
+                    or equal to 0 and less than or equal to 999,999,999.
+
+                 seconds
+                    Seconds of a minute. Must be greater than or equal to 0 and
+                    typically must be less than or equal to 59. An API may
+                    allow the value 60 if it allows leap-seconds.
+
+            Shorthand Example:
+
+                --add-maintenance-policy-weekly-window=day=string,startTime={hours=int,minutes=int,nanos=int,seconds=int} --add-maintenance-policy-weekly-window=day=string,startTime={hours=int,minutes=int,nanos=int,seconds=int}
+
+            JSON Example:
+
+                --add-maintenance-policy-weekly-window='[{"day": "string", "startTime": {"hours": int, "minutes": int, "nanos": int, "seconds": int}}]'
+
+            File Example:
+
+                --add-maintenance-policy-weekly-window=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-maintenance-policy-weekly-window
+              Clear maintenance_policy_weekly_window value and set to empty
+              list.
+
+           --remove-maintenance-policy-weekly-window=[day=DAY],[startTime=STARTTIME]
+              Remove existing value from maintenance_policy_weekly_window list.
+              Maintenance window that is applied to resources covered by this
+              policy. Minimum 1. For the current version, the maximum number of
+              weekly_window is expected to be one.
+
+               day
+                  Allows to define schedule that runs specified day of the
+                  week.
+
+               startTime
+                  Start time of the window in UTC.
+
+                   hours
+                      Hours of a day in 24 hour format. Must be greater than or
+                      equal to 0 and typically must be less than or equal to
+                      23. An API may choose to allow the value "24:00:00" for
+                      scenarios like business closing time.
+
+                   minutes
+                      Minutes of an hour. Must be greater than or equal to 0
+                      and less than or equal to 59.
+
+                   nanos
+                      Fractions of seconds, in nanoseconds. Must be greater
+                      than or equal to 0 and less than or equal to 999,999,999.
+
+                   seconds
+                      Seconds of a minute. Must be greater than or equal to 0
+                      and typically must be less than or equal to 59. An API
+                      may allow the value 60 if it allows leap-seconds.
+
+              Shorthand Example:
+
+                  --remove-maintenance-policy-weekly-window=day=string,startTime={hours=int,minutes=int,nanos=int,seconds=int} --remove-maintenance-policy-weekly-window=day=string,startTime={hours=int,minutes=int,nanos=int,seconds=int}
+
+              JSON Example:
+
+                  --remove-maintenance-policy-weekly-window='[{"day": "string", "startTime": {"hours": int, "minutes": int, "nanos": int, "seconds": int}}]'
+
+              File Example:
+
+                  --remove-maintenance-policy-weekly-window=path_to_file.(yaml|json)
+
+     Update endpoints.
+
+     At most one of these can be specified:
+
+       --endpoints=[connections=CONNECTIONS]
+          Set endpoints to new value. Endpoints for the instance.
+
+           connections
+              A group of PSC connections. They are created in the same VPC
+              network, one for each service attachment in the cluster.
+
+               pscConnection
+                  Detailed information of a PSC connection that is created by
+                  the user.
+
+                   forwardingRule
+                      The URI of the consumer side forwarding rule. Format:
+                      projects/{project}/regions/{region}/forwardingRules/{forwarding_rule}.
+
+                   ipAddress
+                      The IP allocated on the consumer network for the PSC
+                      forwarding rule.
+
+                   network
+                      The consumer network where the IP address resides, in the
+                      form of
+                      projects/{project_id}/global/networks/{network_id}.
+
+                   port
+                      port will only be set for Primary/Reader or Discovery
+                      endpoint.
+
+                   pscConnectionId
+                      The PSC connection id of the forwarding rule connected to
+                      the service attachment.
+
+                   serviceAttachment
+                      The service attachment which is the target of the PSC
+                      connection, in the form of
+                      projects/{project-id}/regions/{region}/serviceAttachments/{service-attachment-id}.
+
+          Shorthand Example:
+
+              --endpoints=connections=[{pscConnection={forwardingRule=string,ipAddress=string,network=string,port=int,pscConnectionId=string,serviceAttachment=string}}] --endpoints=connections=[{pscConnection={forwardingRule=string,ipAddress=string,network=string,port=int,pscConnectionId=string,serviceAttachment=string}}]
+
+          JSON Example:
+
+              --endpoints='[{"connections": [{"pscConnection": {"forwardingRule": "string", "ipAddress": "string", "network": "string", "port": int, "pscConnectionId": "string", "serviceAttachment": "string"}}]}]'
+
+          File Example:
+
+              --endpoints=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-endpoints=[connections=CONNECTIONS]
+            Add new value to endpoints list. Endpoints for the instance.
+
+             connections
+                A group of PSC connections. They are created in the same VPC
+                network, one for each service attachment in the cluster.
+
+                 pscConnection
+                    Detailed information of a PSC connection that is created by
+                    the user.
+
+                     forwardingRule
+                        The URI of the consumer side forwarding rule. Format:
+                        projects/{project}/regions/{region}/forwardingRules/{forwarding_rule}.
+
+                     ipAddress
+                        The IP allocated on the consumer network for the PSC
+                        forwarding rule.
+
+                     network
+                        The consumer network where the IP address resides, in
+                        the form of
+                        projects/{project_id}/global/networks/{network_id}.
+
+                     port
+                        port will only be set for Primary/Reader or Discovery
+                        endpoint.
+
+                     pscConnectionId
+                        The PSC connection id of the forwarding rule connected
+                        to the service attachment.
+
+                     serviceAttachment
+                        The service attachment which is the target of the PSC
+                        connection, in the form of
+                        projects/{project-id}/regions/{region}/serviceAttachments/{service-attachment-id}.
+
+            Shorthand Example:
+
+                --add-endpoints=connections=[{pscConnection={forwardingRule=string,ipAddress=string,network=string,port=int,pscConnectionId=string,serviceAttachment=string}}] --add-endpoints=connections=[{pscConnection={forwardingRule=string,ipAddress=string,network=string,port=int,pscConnectionId=string,serviceAttachment=string}}]
+
+            JSON Example:
+
+                --add-endpoints='[{"connections": [{"pscConnection": {"forwardingRule": "string", "ipAddress": "string", "network": "string", "port": int, "pscConnectionId": "string", "serviceAttachment": "string"}}]}]'
+
+            File Example:
+
+                --add-endpoints=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-endpoints
+              Clear endpoints value and set to empty list.
+
+           --remove-endpoints=[connections=CONNECTIONS]
+              Remove existing value from endpoints list. Endpoints for the
+              instance.
+
+               connections
+                  A group of PSC connections. They are created in the same VPC
+                  network, one for each service attachment in the cluster.
+
+                   pscConnection
+                      Detailed information of a PSC connection that is created
+                      by the user.
+
+                       forwardingRule
+                          The URI of the consumer side forwarding rule. Format:
+                          projects/{project}/regions/{region}/forwardingRules/{forwarding_rule}.
+
+                       ipAddress
+                          The IP allocated on the consumer network for the PSC
+                          forwarding rule.
+
+                       network
+                          The consumer network where the IP address resides, in
+                          the form of
+                          projects/{project_id}/global/networks/{network_id}.
+
+                       port
+                          port will only be set for Primary/Reader or Discovery
+                          endpoint.
+
+                       pscConnectionId
+                          The PSC connection id of the forwarding rule
+                          connected to the service attachment.
+
+                       serviceAttachment
+                          The service attachment which is the target of the PSC
+                          connection, in the form of
+                          projects/{project-id}/regions/{region}/serviceAttachments/{service-attachment-id}.
+
+              Shorthand Example:
+
+                  --remove-endpoints=connections=[{pscConnection={forwardingRule=string,ipAddress=string,network=string,port=int,pscConnectionId=string,serviceAttachment=string}}] --remove-endpoints=connections=[{pscConnection={forwardingRule=string,ipAddress=string,network=string,port=int,pscConnectionId=string,serviceAttachment=string}}]
+
+              JSON Example:
+
+                  --remove-endpoints='[{"connections": [{"pscConnection": {"forwardingRule": "string", "ipAddress": "string", "network": "string", "port": int, "pscConnectionId": "string", "serviceAttachment": "string"}}]}]'
+
+              File Example:
+
+                  --remove-endpoints=path_to_file.(yaml|json)
+
+     Update engine_configs.
+
+     At most one of these can be specified:
+
+       --engine-configs=[ENGINE_CONFIGS,...]
+          Set engine_configs to new value. User-provided engine configurations
+          for the instance.
+
+           KEY
+              Sets KEY value.
+
+           VALUE
+              Sets VALUE value.
+
+          Shorthand Example:
+
+              --engine-configs=string=string
+
+          JSON Example:
+
+              --engine-configs='{"string": "string"}'
+
+          File Example:
+
+              --engine-configs=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --update-engine-configs=[UPDATE_ENGINE_CONFIGS,...]
+            Update engine_configs value or add key value pair. User-provided
+            engine configurations for the instance.
+
+             KEY
+                Sets KEY value.
+
+             VALUE
+                Sets VALUE value.
+
+            Shorthand Example:
+
+                --update-engine-configs=string=string
+
+            JSON Example:
+
+                --update-engine-configs='{"string": "string"}'
+
+            File Example:
+
+                --update-engine-configs=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-engine-configs
+              Clear engine_configs value and set to empty map.
+
+           --remove-engine-configs=REMOVE_ENGINE_CONFIGS
+              Remove existing value from map engine_configs. Sets
+              remove_engine_configs value.
+
+              Shorthand Example:
+
+                  --remove-engine-configs=string,string
+
+              JSON Example:
+
+                  --remove-engine-configs=["string"]
+
+              File Example:
+
+                  --remove-engine-configs=path_to_file.(yaml|json)
+
+     Arguments for the kms key.
+
+     All arguments needed to update kms_key.
+
+     --key-ring=KEY_RING
+        The keyRing id of the cryptoKey resource.
+
+        To set the key-ring attribute:
+        * provide the argument --current on the command line with a fully
+          specified name;
+        * provide the argument --key-ring on the command line.
+
+     Update kms_key.
+
+     At most one of these can be specified:
+
+       --clear-kms-key
+          Clear kms_key value and set to null.
+
+       CryptoKey resource - Set kms_key to new value.
+
+       The KMS key used to encrypt the at-rest data of the cluster. This
+       represents a Cloud resource. (NOTE) Some attributes are not given
+       arguments in this group but can be set in other ways.
+
+       To set the project attribute:
+        + provide the argument --kms-key on the command line with a fully
+          specified name;
+        + provide the argument --project on the command line;
+        + set the property core/project.
+
+       To set the location attribute:
+        + provide the argument --kms-key on the command line with a fully
+          specified name;
+        + provide the argument --location on the command line.
+
+       To set the key-ring attribute:
+        + provide the argument --kms-key on the command line with a fully
+          specified name;
+        + provide the argument --key-ring on the command line.
+
+       --kms-key=KMS_KEY
+          ID of the cryptoKey or fully qualified identifier for the cryptoKey.
+
+          To set the crypto-key attribute:
+          + provide the argument --kms-key on the command line.
+
+     Update labels.
+
+     At most one of these can be specified:
+
+       --labels=[LABELS,...]
+          Set labels to new value. Labels to represent user-provided metadata.
+
+           KEY
+              Keys must start with a lowercase character and contain only
+              hyphens (-), underscores (_), lowercase characters, and numbers.
+
+           VALUE
+              Values must contain only hyphens (-), underscores (_), lowercase
+              characters, and numbers.
+
+          Shorthand Example:
+
+              --labels=string=string
+
+          JSON Example:
+
+              --labels='{"string": "string"}'
+
+          File Example:
+
+              --labels=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --update-labels=[UPDATE_LABELS,...]
+            Update labels value or add key value pair. Labels to represent
+            user-provided metadata.
+
+             KEY
+                Keys must start with a lowercase character and contain only
+                hyphens (-), underscores (_), lowercase characters, and
+                numbers.
+
+             VALUE
+                Values must contain only hyphens (-), underscores (_),
+                lowercase characters, and numbers.
+
+            Shorthand Example:
+
+                --update-labels=string=string
+
+            JSON Example:
+
+                --update-labels='{"string": "string"}'
+
+            File Example:
+
+                --update-labels=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-labels
+              Clear labels value and set to empty map.
+
+           --remove-labels=REMOVE_LABELS
+              Remove existing value from map labels. Sets remove_labels value.
+
+              Shorthand Example:
+
+                  --remove-labels=string,string
+
+              JSON Example:
+
+                  --remove-labels=["string"]
+
+              File Example:
+
+                  --remove-labels=path_to_file.(yaml|json)
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the memorystore/v1 API. The full documentation for this
+    API can be found at: https://cloud.google.com/memorystore/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha memorystore instances update
+
+        $ gcloud beta memorystore instances update
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud memorystore instances update my-instance \
+    --project=my-project \
+    --location=us-central1 \
+    --shard-count=6
+
+gcloud memorystore instances update my-instance \
+    --project=my-project \
+    --location=us-central1 \
+    --update-engine-configs=maxmemory-policy=allkeys-lru
+```
+
+### gcloud beta memorystore instances update
+
+```text
+NAME
+    gcloud beta memorystore instances update - update the configuration of a
+        Memorystore instance
+
+SYNOPSIS
+    gcloud beta memorystore instances update INSTANCE [--async]
+        [--[no-]async-instance-endpoints-deletion-enabled]
+        [--authorization-mode=AUTHORIZATION_MODE]
+        [--[no-]deletion-protection-enabled] [--engine-version=ENGINE_VERSION]
+        [--location=LOCATION] [--maintenance-version=MAINTENANCE_VERSION]
+        [--mode=MODE] [--node-type=NODE_TYPE] [--[no-]ondemand-maintenance]
+        [--replica-count=REPLICA_COUNT] [--request-id=REQUEST_ID]
+        [--[no-]rotate-server-certificate] [--shard-count=SHARD_COUNT]
+        [--[no-]simulate-maintenance-event]
+        [--acl-policy=ACL_POLICY | --clear-acl-policy]
+        [--aof-config-append-fsync=AOF_CONFIG_APPEND_FSYNC
+          --clear-persistence-config
+          --persistence-config-mode=PERSISTENCE_CONFIG_MODE
+          --rdb-config-snapshot-period=RDB_CONFIG_SNAPSHOT_PERIOD
+          --rdb-config-snapshot-start-time=RDB_CONFIG_SNAPSHOT_START_TIME]
+        [--automated-backup-config-mode=AUTOMATED_BACKUP_CONFIG_MODE
+          --automated-backup-config-retention=AUTOMATED_BACKUP_CONFIG_RETENTION
+          --clear-automated-backup-config
+          --fixed-frequency-schedule-start-time-hours=FIXED_FREQUENCY_SCHEDULE_START_TIME_HOURS --fixed-frequency-schedule-start-time-minutes=FIXED_FREQUENCY_SCHEDULE_START_TIME_MINUTES --fixed-frequency-schedule-start-time-nanos=FIXED_FREQUENCY_SCHEDULE_START_TIME_NANOS --fixed-frequency-schedule-start-time-seconds=FIXED_FREQUENCY_SCHEDULE_START_TIME_SECONDS]
+        [--clear-cross-instance-replication-config
+          --cross-instance-replication-config-role=CROSS_INSTANCE_REPLICATION_CONFIG_ROLE --clear-primary-instance | --primary-instance=PRIMARY_INSTANCE --cross-instance-replication-config-secondary-instances=[instance=INSTANCE] | --add-cross-instance-replication-config-secondary-instances=[instance=INSTANCE] --clear-cross-instance-replication-config-secondary-instances | --remove-cross-instance-replication-config-secondary-instances=[instance=INSTANCE]]
+        [--clear-maintenance-policy
+          --maintenance-policy-weekly-window=[day=DAY],[startTime=STARTTIME]
+          | --add-maintenance-policy-weekly-window=[day=DAY],
+          [startTime=STARTTIME] --clear-maintenance-policy-weekly-window
+          | --remove-maintenance-policy-weekly-window=[day=DAY],
+          [startTime=STARTTIME]]
+        [--endpoints=[connections=CONNECTIONS]
+          | --add-endpoints=[connections=CONNECTIONS] --clear-endpoints
+          | --remove-endpoints=[connections=CONNECTIONS]]
+        [--engine-configs=[ENGINE_CONFIGS,...]
+          | --update-engine-configs=[UPDATE_ENGINE_CONFIGS,...]
+          --clear-engine-configs
+          | --remove-engine-configs=REMOVE_ENGINE_CONFIGS]
+        [--key-ring=KEY_RING --clear-kms-key | --kms-key=KMS_KEY]
+        [--labels=[LABELS,...]
+          | --update-labels=[UPDATE_LABELS,...] --clear-labels
+          | --remove-labels=REMOVE_LABELS] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha memorystore instances update
+
+```text
+NAME
+    gcloud alpha memorystore instances update - update the configuration of a
+        Memorystore instance
+
+SYNOPSIS
+    gcloud alpha memorystore instances update INSTANCE [--async]
+        [--[no-]async-instance-endpoints-deletion-enabled]
+        [--authorization-mode=AUTHORIZATION_MODE]
+        [--[no-]deletion-protection-enabled] [--engine-version=ENGINE_VERSION]
+        [--location=LOCATION] [--maintenance-version=MAINTENANCE_VERSION]
+        [--mode=MODE] [--node-type=NODE_TYPE] [--[no-]ondemand-maintenance]
+        [--replica-count=REPLICA_COUNT] [--request-id=REQUEST_ID]
+        [--[no-]rotate-server-certificate] [--shard-count=SHARD_COUNT]
+        [--[no-]simulate-maintenance-event]
+        [--acl-policy=ACL_POLICY | --clear-acl-policy]
+        [--aof-config-append-fsync=AOF_CONFIG_APPEND_FSYNC
+          --clear-persistence-config
+          --persistence-config-mode=PERSISTENCE_CONFIG_MODE
+          --rdb-config-snapshot-period=RDB_CONFIG_SNAPSHOT_PERIOD
+          --rdb-config-snapshot-start-time=RDB_CONFIG_SNAPSHOT_START_TIME]
+        [--automated-backup-config-mode=AUTOMATED_BACKUP_CONFIG_MODE
+          --automated-backup-config-retention=AUTOMATED_BACKUP_CONFIG_RETENTION
+          --clear-automated-backup-config
+          --fixed-frequency-schedule-start-time-hours=FIXED_FREQUENCY_SCHEDULE_START_TIME_HOURS --fixed-frequency-schedule-start-time-minutes=FIXED_FREQUENCY_SCHEDULE_START_TIME_MINUTES --fixed-frequency-schedule-start-time-nanos=FIXED_FREQUENCY_SCHEDULE_START_TIME_NANOS --fixed-frequency-schedule-start-time-seconds=FIXED_FREQUENCY_SCHEDULE_START_TIME_SECONDS]
+        [--clear-cross-instance-replication-config
+          --cross-instance-replication-config-role=CROSS_INSTANCE_REPLICATION_CONFIG_ROLE --clear-primary-instance | --primary-instance=PRIMARY_INSTANCE --cross-instance-replication-config-secondary-instances=[instance=INSTANCE] | --add-cross-instance-replication-config-secondary-instances=[instance=INSTANCE] --clear-cross-instance-replication-config-secondary-instances | --remove-cross-instance-replication-config-secondary-instances=[instance=INSTANCE]]
+        [--clear-maintenance-policy
+          --maintenance-policy-weekly-window=[day=DAY],[startTime=STARTTIME]
+          | --add-maintenance-policy-weekly-window=[day=DAY],
+          [startTime=STARTTIME] --clear-maintenance-policy-weekly-window
+          | --remove-maintenance-policy-weekly-window=[day=DAY],
+          [startTime=STARTTIME]]
+        [--endpoints=[connections=CONNECTIONS]
+          | --add-endpoints=[connections=CONNECTIONS] --clear-endpoints
+          | --remove-endpoints=[connections=CONNECTIONS]]
+        [--engine-configs=[ENGINE_CONFIGS,...]
+          | --update-engine-configs=[UPDATE_ENGINE_CONFIGS,...]
+          --clear-engine-configs
+          | --remove-engine-configs=REMOVE_ENGINE_CONFIGS]
+        [--key-ring=KEY_RING --clear-kms-key | --kms-key=KMS_KEY]
+        [--labels=[LABELS,...]
+          | --update-labels=[UPDATE_LABELS,...] --clear-labels
+          | --remove-labels=REMOVE_LABELS] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the examples wrap the instance name in backticks (`` `my-instance` ``), which the shell runs as a command substitution, so the INSTANCE argument is not passed; the runnable form passes `my-instance` without backticks.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/memorystore/instances/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
