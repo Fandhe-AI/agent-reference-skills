@@ -1,0 +1,177 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/spanner/cli
+---
+
+# gcloud spanner cli
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud spanner cli
+
+```text
+NAME
+    gcloud spanner cli - an interactive shell for Spanner
+
+SYNOPSIS
+    gcloud spanner cli (DATABASE : --instance=INSTANCE)
+        [--database-role=DATABASE_ROLE] [--delimiter=DELIMITER; default=";"]
+        [--directed-read=DIRECTED_READ] [--execute=EXECUTE]
+        [--host=HOST; default="localhost"] [--html]
+        [--idle-transaction-timeout=IDLE_TRANSACTION_TIMEOUT; default=60]
+        [--init-command=INIT_COMMAND] [--init-command-add=INIT_COMMAND_ADD]
+        [--port=PORT] [--prompt=PROMPT; default="spanner-cli> "]
+        [--proto-descriptor-file=PROTO_DESCRIPTOR_FILE] [--skip-column-names]
+        [--skip-system-command] [--source=SOURCE]
+        [--system-command=SYSTEM_COMMAND; default="ON"] [--table] [--tee=TEE]
+        [--xml] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    An interactive shell for Spanner.
+
+EXAMPLES
+    To start an interactive shell with your Spanner example database, run the
+    following command:
+
+        $ gcloud spanner cli example-database --instance=example-instance
+
+POSITIONAL ARGUMENTS
+     Database resource - The Cloud Spanner database to use within the
+     interactive shell. The arguments in this group can be used to specify the
+     attributes of this resource. (NOTE) Some attributes are not given
+     arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument database on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       DATABASE
+          ID of the database or fully qualified identifier for the database.
+
+          To set the database attribute:
+          + provide the argument database on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --instance=INSTANCE
+          The Cloud Spanner instance for the database.
+
+          To set the instance attribute:
+          + provide the argument database on the command line with a fully
+            specified name;
+          + provide the argument --instance on the command line;
+          + set the property spanner/instance.
+
+FLAGS
+     --database-role=DATABASE_ROLE
+        Database role user used to access the database.
+
+     --delimiter=DELIMITER; default=";"
+        Set the statement delimiter.
+
+     --directed-read=DIRECTED_READ
+        Enables directed reads to provide the flexibility to route read-only
+        transactions and single reads to a specific replica type or region
+        (replica_location:replica_type). The replica_type is optional and can
+        be either READ_ONLY or READ_WRITE.
+
+     --execute=EXECUTE
+        Execute the statement and then exits.
+
+     --host=HOST; default="localhost"
+        Host on which Spanner server is located.
+
+     --html
+        Show output in HTML format.
+
+     --idle-transaction-timeout=IDLE_TRANSACTION_TIMEOUT; default=60
+        Set the idle transaction timeout. The default timeout is 60 seconds.
+
+     --init-command=INIT_COMMAND
+        SQL statement to execute after startup.
+
+     --init-command-add=INIT_COMMAND_ADD
+        Additional SQL statement to execute after startup.
+
+     --port=PORT
+        Port number that gcloud uses to connect to Spanner.
+
+     --prompt=PROMPT; default="spanner-cli> "
+        Set the prompt to the specified format.
+
+     --proto-descriptor-file=PROTO_DESCRIPTOR_FILE
+        Path of a file that contains a protobuf-serialized
+        google.protobuf.FileDescriptorSet message to use in this invocation.
+
+     --skip-column-names
+        Do not show column names in output.
+
+     --skip-system-command
+        Do not allow system command.
+
+     --source=SOURCE
+        Execute the statement from a file and then exits.
+
+     --system-command=SYSTEM_COMMAND; default="ON"
+        Enable or disable system commands. Default: ON. SYSTEM_COMMAND must be
+        one of: ON, OFF.
+
+     --table
+        Show output in table format.
+
+     --tee=TEE
+        Append a copy of the output to a named file.
+
+     --xml
+        Show output in XML format.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha spanner cli
+```
+
+### gcloud alpha spanner cli
+
+```text
+NAME
+    gcloud alpha spanner cli - an interactive shell for Spanner
+
+SYNOPSIS
+    gcloud alpha spanner cli (DATABASE : --instance=INSTANCE)
+        [--database-role=DATABASE_ROLE] [--delimiter=DELIMITER; default=";"]
+        [--directed-read=DIRECTED_READ] [--execute=EXECUTE]
+        [--host=HOST; default="localhost"] [--html]
+        [--idle-transaction-timeout=IDLE_TRANSACTION_TIMEOUT; default=60]
+        [--init-command=INIT_COMMAND] [--init-command-add=INIT_COMMAND_ADD]
+        [--port=PORT] [--prompt=PROMPT; default="spanner-cli> "]
+        [--proto-descriptor-file=PROTO_DESCRIPTOR_FILE] [--skip-column-names]
+        [--skip-system-command] [--source=SOURCE]
+        [--system-command=SYSTEM_COMMAND; default="ON"] [--table] [--tee=TEE]
+        [--xml] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/spanner/cli (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
