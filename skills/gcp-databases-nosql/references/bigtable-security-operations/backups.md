@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/bigtable/docs/backups
 
 # Bigtable backups overview
 
-Backups save a copy of a table's schema and data on one cluster, to be restored later to a new table. Standard backups are optimized for long-term retention; hot backups restore to production-level performance fastest. Some features (hot backups, per-cluster automated backup locations, 365-day retention) are Enterprise Plus edition only.
+Backups save a copy of a table's schema and data on one cluster, to be restored later to a new table. Standard backups are optimized for long-term retention; hot backups restore to production-level performance fastest. The source notes that the page "includes features that are available only in Enterprise Plus edition": selecting the cluster locations where automated backup is enabled, and on-demand or updated retention up to 365 days (Enterprise edition: up to 90 days). Hot backups are listed for both Enterprise and Enterprise Plus in the editions overview.
 
 ## Signature / Usage
 
