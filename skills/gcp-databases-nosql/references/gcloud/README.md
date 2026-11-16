@@ -5,3 +5,4 @@
 | gcloud bigtable | 259 commands across release tracks | [bigtable/README.md](./bigtable/README.md) |
 | gcloud datastore | 30 commands across release tracks | [datastore/README.md](./datastore/README.md) |
 | gcloud firestore | 137 commands across release tracks | [firestore/README.md](./firestore/README.md) |
+| gcloud memcache | 42 commands across release tracks | [memcache/README.md](./memcache/README.md) |
