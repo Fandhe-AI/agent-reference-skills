@@ -19,79 +19,7 @@ Google Cloud (GCP) のコンピュート系スキル。Compute Engine の VM イ
 skills/gcp-compute/
   SKILL.md
   references/
-    gcloud/                       # 機械生成: gcloud 593.0.0、取得 2026-11-14
-      README.md
-      compute/
-        README.md                 # gcloud compute（Compute Engine 全般に加え、ネットワーク・LB・Cloud Armor 系、compute tpus、compute os-config を含む）
-        compute-<group>.md        # 例: compute-addresses.md / compute-ssl-certificates.md
-        compute-<group>-<cmd>.md  # GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS（例: compute-instances-create-with-container.md）
-      batch/
-        README.md                 # gcloud batch
-      bms/
-        README.md                 # gcloud bms（Bare Metal Solution）
-        bms-<group>.md            # 例: bms-instances.md / bms-volumes.md / bms-networks.md
-      cluster-director/
-        README.md                 # gcloud cluster-director
-      oracle-database/
-        README.md                 # gcloud oracle-database
-        oracle-database-<group>.md  # 例: oracle-database-db-systems.md / oracle-database-odb-networks-1.md
-    iam/                          # 機械生成: IAM roles-permissions reference、取得 2026-11-14
-      README.md
-      <service>.md                # compute は compute-1.md〜compute-15.md の 15 分割。他に osconfig / batch / tpu / baremetalsolution / hypercomputecluster / oracledatabase-1・2 / confidentialcomputing / autoscaling / oci
-    rest/                         # 機械生成: Discovery 由来のメソッド表、取得 2026-11-14
-      README.md
-      <api>/
-        README.md                 # compute / batch / baremetalsolution / hypercomputecluster / oracledatabase / osconfig / tpu
-    rest-schemas/                 # 機械生成: Discovery 由来のメッセージスキーマ、取得 2026-11-14
-      README.md
-      <api>/
-        README.md                 # rest/ と同じ 7 API。compute は compute-1.md〜compute-14.md の 14 分割
-    compute-overview/             # 公式ガイド由来（手書き）: 概要・インスタンスの概念・停止 / 一時停止 / リセットの違い・リージョンとゾーン・割り当て・ライフサイクル・プロビジョニングモデル・作成と起動・廃止一覧
-      README.md
-      <page>.md                   # 例: deprecations.md / create-start-instance.md
-    compute-machine-types/        # マシンリソースの体系・コンピューティング最適化・メモリ最適化・Arm VM
-      README.md
-      <page>.md
-    compute-machine-families/     # 汎用マシンファミリー（C4 / N4 / C3 / N2 / E2 / N1 / Tau 等、カスタムマシンタイプ）・アクセラレータ最適化マシン（A4 / A3 / A2 / G4 / G2 等）
-      README.md
-      <page>.md
-    compute-instances/            # インスタンス作成の方法と構成オプション・インスタンステンプレートの作成
-      README.md
-      <page>.md                   # 例: instance-creation-overview.md / create-instance-templates.md
-    compute-instance-lifecycle/   # インスタンスの停止と再起動・削除
-      README.md
-      <page>.md
-    compute-metadata-scripts/     # メタデータサーバー・定義済みメタデータキー・起動 / シャットダウンスクリプト・ゲスト環境・ゲストエージェント
-      README.md
-      <page>.md
     compute-access-ssh/           # アクセス方法の概要・標準 SSH・OS Login・IAP TCP 転送による SSH・シリアルポート出力・シリアルコンソール
-      README.md
-      <page>.md
-    compute-security/             # アクセス制御・IAM・サービスアカウント・組織ポリシー・Shielded VM・整合性モニタリング・CSEK の廃止告知
-      README.md
-      <page>.md                   # 例: csek-deprecation-in-compute-engine.md
-    compute-disks/                # ストレージの選択肢・Persistent Disk・Hyperdisk・ローカル SSD・ディスク暗号化
-      README.md
-      <page>.md
-    compute-snapshots-images/     # データ保護・スナップショット・インスタントスナップショット・スケジュール・リージョン PD・イメージ・イメージファミリー・マシンイメージ・OS イメージのライフサイクル
-      README.md
-      <page>.md
-    compute-instance-groups/      # インスタンスグループ・インスタンステンプレート・ゾーン / リージョン MIG・自動修復・更新・ステートフル MIG
-      README.md
-      <page>.md
-    compute-autoscaling/          # オートスケーラー・CPU / LB 処理能力 / 複数シグナル・予測自動スケーリング・判断の読み方
-      README.md
-      <page>.md
-    compute-capacity/             # Spot VM・Flex-start VM・予約・将来の予約・確約利用割引（CUD）
-      README.md
-      <page>.md                   # 例: spot.md
-    compute-host-tenancy/         # ライブマイグレーション・ホストメンテナンス・ホストオプション・sole-tenant ノード・VM テナンシー
-      README.md
-      <page>.md
-    compute-gpus/                 # GPU の概要・種類と機能・マシンシリーズ別 GPU・ドライバのインストール・GPU VM のホストメンテナンス
-      README.md
-      <page>.md
-    vm-manager/                   # VM Manager（OS Config）: 概要・セットアップ・OS パッチ管理・OS ポリシー・OS インベントリ
       README.md
       <page>.md
     batch/                        # Batch: 概要・ジョブの作成と実行・サンプルジョブ・VM の OS 環境・ネットワーク・認証・再試行・タイムアウト・クォータ
@@ -104,12 +32,6 @@ skills/gcp-compute/
       README.md
       <page>.md
     cluster-director/             # Cluster Director: 概要・クラスタ作成・マシンタイプ・消費オプション・Slurm・接続・クォータ・ネットワーク・ストレージ・OS イメージ（Cluster Toolkit / AI Hypercomputer の概要各 1 件を含む）
-      README.md
-      <page>.md
-    confidential-computing/       # Confidential Computing: Confidential VM（対応構成・作成・構成証明・組織ポリシー）・Confidential Space
-      README.md
-      <page>.md
-    oracle-database/              # Oracle Database@Google Cloud: 概要・環境準備・リージョン・IAM・ODB Network・Exadata Infrastructure・Autonomous AI Database・クォータ
       README.md
       <page>.md
 ```
@@ -130,9 +52,9 @@ skills/gcp-compute/
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. gcloud コマンド → 下記マッピング表で `gcloud` を選び、`references/gcloud/compute/README.md`（`gcloud compute`）、`references/gcloud/batch/README.md`、`references/gcloud/bms/README.md`、`references/gcloud/cluster-director/README.md`、`references/gcloud/oracle-database/README.md` からグループページ・コマンドページを引く。`gcloud compute tpus`（legacy Cloud TPU API）と `gcloud compute os-config`（VM Manager）は独立したグループではなく `compute` グループ配下のため、`references/gcloud/compute/` の `compute-tpus-*` / `compute-os-config-*` を引く。GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ
+1. gcloud コマンド → 下記マッピング表で `gcloud`（後続 PR で投入） を選び、`references/gcloud/compute/README.md`（`gcloud compute`）、`references/gcloud/batch/README.md`、`references/gcloud/bms/README.md`、`references/gcloud/cluster-director/README.md`、`references/gcloud/oracle-database/README.md` からグループページ・コマンドページを引く。`gcloud compute tpus`（legacy Cloud TPU API）と `gcloud compute os-config`（VM Manager）は独立したグループではなく `compute` グループ配下のため、`references/gcloud/compute/` の `compute-tpus-*` / `compute-os-config-*` を引く。GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ
 2. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`。`<api>` は `compute` / `batch` / `baremetalsolution` / `hypercomputecluster` / `oracledatabase` / `osconfig` / `tpu`。VPC・ファイアウォール・LB・Cloud Armor の REST も `compute` に入る
-3. IAM ロール・権限 → `references/iam/README.md` の索引から `<service>.md` を引く。`compute` は `compute-1.md`〜`compute-15.md` に分割されているため、ロール ID（例: `roles/compute.instanceAdmin.v1`）で `references/iam/` 配下を grep して該当ファイルを特定する。ロール ID のサービス接頭辞（`roles/osconfig.*` → `osconfig.md`、`roles/batch.*` → `batch.md`、`roles/tpu.*` → `tpu.md` 等）で他サービスを選ぶ
+3. IAM ロール・権限 → `references/iam/README.md`（後続 PR で投入） の索引から `<service>.md` を引く。`compute` は `compute-1.md`〜`compute-15.md` に分割されているため、ロール ID（例: `roles/compute.instanceAdmin.v1`）で `references/iam/` 配下を grep して該当ファイルを特定する。ロール ID のサービス接頭辞（`roles/osconfig.*` → `osconfig.md`、`roles/batch.*` → `batch.md`、`roles/tpu.*` → `tpu.md` 等）で他サービスを選ぶ
 4. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
 5. VPC・ファイアウォール・Cloud NAT・VPN・ロードバランサー・Cloud Armor は、コマンド・メソッド・ロールのみ機械生成ページ（手順 1〜3）にある。概念・設計の説明は本スキルに無い
 6. 非推奨・サポート終了を確認するときは、まず `compute-overview/deprecations.md`（一覧表）、CSEK は加えて `compute-security/csek-deprecation-in-compute-engine.md`、legacy Cloud TPU API は `cloud-tpu/tpus-in-compute-engine.md`、preemptible VM との関係は `compute-capacity/spot.md` を引く
@@ -143,40 +65,13 @@ skills/gcp-compute/
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
-| gcloud のコマンド・フラグを調べたい（compute / batch / bms / cluster-director / oracle-database の 5 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
-| `gcloud compute`（instances・disks・instance-templates・instance-groups・images・snapshots・reservations、および compute tpus・compute os-config、ネットワーク / LB / Cloud Armor 系）のフラグを調べたい | gcloud/compute | [references/gcloud/compute/README.md](references/gcloud/compute/README.md) |
-| `gcloud batch` のジョブ・タスクのコマンドを調べたい | gcloud/batch | [references/gcloud/batch/README.md](references/gcloud/batch/README.md) |
-| `gcloud bms`（Bare Metal Solution のインスタンス・ボリューム・ネットワーク）のフラグを調べたい | gcloud/bms | [references/gcloud/bms/README.md](references/gcloud/bms/README.md) |
-| `gcloud cluster-director` のコマンドを調べたい | gcloud/cluster-director | [references/gcloud/cluster-director/README.md](references/gcloud/cluster-director/README.md) |
-| `gcloud oracle-database`（Exadata・VM クラスタ・Autonomous Database・ODB Network）のフラグを調べたい | gcloud/oracle-database | [references/gcloud/oracle-database/README.md](references/gcloud/oracle-database/README.md) |
-| ロール ID の権限一覧・事前定義ロールを調べたい（`roles/compute.*` / `roles/osconfig.*` / `roles/batch.*` / `roles/tpu.*` / `roles/baremetalsolution.*` / `roles/oracledatabase.*` 等） | iam | [references/iam/README.md](references/iam/README.md) |
-| REST のメソッド・パスを調べたい（Compute Engine API・Batch API・Cloud TPU API・OS Config API・Bare Metal Solution API・Cluster Director（hypercomputecluster）・Oracle Database API） | rest | [references/rest/README.md](references/rest/README.md) |
-| 各 API のメソッド | rest/compute、rest/batch、rest/baremetalsolution、rest/hypercomputecluster、rest/oracledatabase、rest/osconfig、rest/tpu | [references/rest/compute/README.md](references/rest/compute/README.md)、[references/rest/batch/README.md](references/rest/batch/README.md)、[references/rest/baremetalsolution/README.md](references/rest/baremetalsolution/README.md)、[references/rest/hypercomputecluster/README.md](references/rest/hypercomputecluster/README.md)、[references/rest/oracledatabase/README.md](references/rest/oracledatabase/README.md)、[references/rest/osconfig/README.md](references/rest/osconfig/README.md)、[references/rest/tpu/README.md](references/rest/tpu/README.md) |
-| REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
-| 各 API のメッセージ型（Instance / Disk / InstanceTemplate / Reservation、Job / Task、Node、OsPolicyAssignment 等） | rest-schemas/compute、rest-schemas/batch、rest-schemas/baremetalsolution、rest-schemas/hypercomputecluster、rest-schemas/oracledatabase、rest-schemas/osconfig、rest-schemas/tpu | [references/rest-schemas/compute/README.md](references/rest-schemas/compute/README.md)、[references/rest-schemas/batch/README.md](references/rest-schemas/batch/README.md)、[references/rest-schemas/baremetalsolution/README.md](references/rest-schemas/baremetalsolution/README.md)、[references/rest-schemas/hypercomputecluster/README.md](references/rest-schemas/hypercomputecluster/README.md)、[references/rest-schemas/oracledatabase/README.md](references/rest-schemas/oracledatabase/README.md)、[references/rest-schemas/osconfig/README.md](references/rest-schemas/osconfig/README.md)、[references/rest-schemas/tpu/README.md](references/rest-schemas/tpu/README.md) |
-| Compute Engine の概要・インスタンスの概念・リージョンとゾーン・割り当て・インスタンスのライフサイクル・プロビジョニングモデル・VM の作成と起動・廃止一覧 | compute-overview | [references/compute-overview/README.md](references/compute-overview/README.md) |
-| 停止 / 一時停止 / リセットの違い・グローバル / リージョン / ゾーンリソース | compute-overview | [references/compute-overview/README.md](references/compute-overview/README.md) |
-| マシンファミリー・シリーズ・タイプの体系・コンピューティング最適化・メモリ最適化・Arm VM | compute-machine-types | [references/compute-machine-types/README.md](references/compute-machine-types/README.md) |
-| 汎用マシン（C4 / N4 / C3 / N2 / E2 / N1 / Tau）・カスタムマシンタイプ・アクセラレータ最適化マシン（A4 / A3 / A2 / G4 / G2）を選びたい | compute-machine-families | [references/compute-machine-families/README.md](references/compute-machine-families/README.md) |
-| インスタンス作成の方法と構成オプション・インスタンステンプレートを作りたい | compute-instances | [references/compute-instances/README.md](references/compute-instances/README.md) |
-| VM の停止・再起動・削除（課金への影響を含む） | compute-instance-lifecycle | [references/compute-instance-lifecycle/README.md](references/compute-instance-lifecycle/README.md) |
-| メタデータサーバー・定義済みメタデータキー・起動スクリプト・シャットダウンスクリプト・ゲスト環境・ゲストエージェント | compute-metadata-scripts | [references/compute-metadata-scripts/README.md](references/compute-metadata-scripts/README.md) |
 | VM への SSH 接続・OS Login の設定・IAP TCP 転送・シリアルポート出力・シリアルコンソール | compute-access-ssh | [references/compute-access-ssh/README.md](references/compute-access-ssh/README.md) |
-| Compute Engine の IAM・サービスアカウントの VM への付与・組織ポリシーの制約・Shielded VM・整合性モニタリング・CSEK の廃止 | compute-security | [references/compute-security/README.md](references/compute-security/README.md) |
-| Persistent Disk・Hyperdisk（性能）・ローカル SSD・ディスク暗号化（Google 管理鍵 / CMEK / CSEK） | compute-disks | [references/compute-disks/README.md](references/compute-disks/README.md) |
-| スナップショット・インスタントスナップショット・スナップショットスケジュール・リージョン PD・イメージ・イメージファミリー・マシンイメージ・OS イメージのライフサイクル | compute-snapshots-images | [references/compute-snapshots-images/README.md](references/compute-snapshots-images/README.md) |
-| インスタンスグループ・インスタンステンプレート・ゾーン / リージョン MIG・自動修復・MIG の更新（proactive / opportunistic）・ステートフル MIG | compute-instance-groups | [references/compute-instance-groups/README.md](references/compute-instance-groups/README.md) |
-| オートスケーラー・CPU 使用率 / LB 処理能力 / 複数シグナルによるスケーリング・予測自動スケーリング・スケールインの制御 | compute-autoscaling | [references/compute-autoscaling/README.md](references/compute-autoscaling/README.md) |
-| Spot VM・Flex-start VM・予約・将来の予約・確約利用割引（CUD） | compute-capacity | [references/compute-capacity/README.md](references/compute-capacity/README.md) |
-| ライブマイグレーション・ホストメンテナンスのポリシー・sole-tenant ノード・VM テナンシー | compute-host-tenancy | [references/compute-host-tenancy/README.md](references/compute-host-tenancy/README.md) |
-| GPU の種類・マシンシリーズ別の GPU・GPU ドライバのインストール・GPU VM のホストメンテナンス | compute-gpus | [references/compute-gpus/README.md](references/compute-gpus/README.md) |
-| VM Manager（OS Config）のセットアップ・OS パッチ管理・OS ポリシー・OS インベントリ | vm-manager | [references/vm-manager/README.md](references/vm-manager/README.md) |
 | Batch のジョブ作成・実行・VM の OS 環境・ネットワーク・認証・タスクの再試行・タイムアウト・クォータ | batch | [references/batch/README.md](references/batch/README.md) |
 | Cloud TPU の概要・システムアーキテクチャ・Compute Engine での TPU VM / MIG の作成・TPU のリージョンとゾーン・TPU7x / v6e・legacy Cloud TPU API との対応 | cloud-tpu | [references/cloud-tpu/README.md](references/cloud-tpu/README.md) |
 | Bare Metal Solution の概要・計画・セットアップ（VLAN アタッチメント・ルーティング）・IAM・セキュリティ・メンテナンス・SSH 鍵 | bare-metal-solution | [references/bare-metal-solution/README.md](references/bare-metal-solution/README.md) |
 | Cluster Director（Slurm クラスタ）の作成・マシンタイプ・消費オプション・接続・クォータ・OS イメージ | cluster-director | [references/cluster-director/README.md](references/cluster-director/README.md) |
-| Confidential VM（対応構成・作成・構成証明・組織ポリシーによる強制）・Confidential Space のワークロード | confidential-computing | [references/confidential-computing/README.md](references/confidential-computing/README.md) |
-| Oracle Database@Google Cloud の概要・環境準備・ODB Network・Exadata Infrastructure・Autonomous AI Database・IAM・クォータ | oracle-database | [references/oracle-database/README.md](references/oracle-database/README.md) |
+
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `compute-overview` / `compute-machine-types` / `compute-machine-families` / `compute-instances` / `compute-instance-lifecycle` / `compute-metadata-scripts` / `compute-security` / `compute-disks` / `compute-snapshots-images` / `compute-instance-groups` / `compute-autoscaling` / `compute-capacity` / `compute-host-tenancy` / `compute-gpus` / `vm-manager` / `confidential-computing` / `oracle-database`
 
 ## 他スキルとの使い分け
 
