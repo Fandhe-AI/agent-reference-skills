@@ -46,6 +46,7 @@ gcloud memcache instances create myinstance --node-count=3 --node-cpu=2 --node-m
 - Managed Valkey / Redis / Memcached on Google Cloud; distinct from Upstash Redis (`upstash`) and Cloudflare Workers KV (`cloudflare-storage`).
 - Instance-level authentication is not available, so access control relies on the VPC network boundary.
 - Snippet taken from https://docs.cloud.google.com/memorystore/docs/memcached/create-manage-instances (the overview page has no code).
+- Source inconsistency: this page lists Memcached `1.5.16` and `1.6.15`, while the gcloud create page's `--memcached-version` accepts `1.5` or `1.6.15` (see `create-manage-instances.md`); use the gcloud values on the command line.
 - Source: https://docs.cloud.google.com/memorystore/docs/memcached/memcached-overview (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

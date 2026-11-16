@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/memorystore/docs/valkey/create-manage-cros
 
 # Work with cross-region replication
 
-Create, view, switch over, detach and delete secondary instances for Memorystore for Valkey cross-region replication. Requires gcloud CLI version 488.0.0 or later (`gcloud components update`) and a service network policy in the secondary's region.
+Create, view, switch over, detach and delete secondary instances for Memorystore for Valkey cross-region replication. Requires gcloud CLI version 488.0.0 or later (`gcloud components update`) and a service connection policy in the secondary's region (the source's prerequisites say "service network policy"; its networking steps say "service connection policy").
 
 ## Signature / Usage
 
@@ -112,7 +112,8 @@ gcloud memorystore instances update my-primary-instance \
 - After a switchover you must reconnect applications to the new primary. Follow the switchover best practices in [about-cross-region-replication.md](./about-cross-region-replication.md) first.
 - `--cross-instance-replication-config-role=none` is optional when detaching some secondaries; required to detach all so the primary becomes independent. Listing instances you do not want to detach detaches the rest.
 - ACL policies are not replicated; update and delete each policy on primary and secondary separately, keeping rules consistent.
-- Settings changed on the primary (capacity, configurations, deletion protection, persistence) are synced; zone distribution, replica count and maintenance windows are changed on each instance.
+- This page's "Update settings on the primary instance" list says: "You must change the following settings on the primary instance. After you do, Memorystore for Valkey synchronizes the changes to the secondary instance" and lists capacity, configuration, deletion protection and persistence; zone distribution, replica count and maintenance windows are changed on each instance.
+- Source inconsistency: the about page (see [about-cross-region-replication.md](./about-cross-region-replication.md)) lists deletion protection under "Configure local settings" (not synced). Check and set deletion protection on each secondary instance separately rather than relying on the primary's setting.
 - Deleting a primary: detach or delete all secondaries first; primary and secondary cannot be deleted simultaneously. Switchover, detach and delete are destructive to the replication topology; try them on disposable instances first.
 - The source also shows Console steps.
 - Memorystore for Valkey is managed Valkey on Google Cloud, distinct from Upstash Redis (`upstash`) and Cloudflare Workers KV (`cloudflare-storage`).

@@ -34,7 +34,8 @@ gcloud memcache instances describe my-memcache-instance \
 |---|---|
 | `memcache.instances.list`, `.get` | Admin, Editor, Viewer |
 | `memcache.instances.create`, `.delete`, `.upgrade` | Admin |
-| `memcache.instances.update`, `.applyParameters`, `.updateParameters`, `.applySoftwareUpdate` | Admin, Editor |
+| `memcache.instances.update`, `.applyParameters`, `.updateParameters` | Admin, Editor |
+| `memcache.instances.applySoftwareUpdate` | Admin (the source's permissions table also lists Editor; see Notes) |
 | `memcache.locations.list`, `.get` | Admin, Editor, Viewer |
 | `memcache.operations.list`, `.get` | Admin, Editor, Viewer |
 | `memcache.operations.delete` | Admin, Editor |
@@ -90,6 +91,7 @@ gcloud memcache instances describe my-memcache-instance \
 - Instance-level authentication is not available; data-plane access is controlled by VPC network reachability.
 - Calling API methods also requires the OAuth scopes described on each method's reference page.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/memcache/instances/describe (the access control page has no code).
+- Source inconsistency: the source's permissions table lists `memcache.instances.applySoftwareUpdate` for "Memcached Admin Memcached Editor", while its predefined-roles table excludes it from `roles/memcache.editor` ("All `memcache` permissions except for `memcache.instances.create` `memcache.instances.delete` `memcache.instances.applySoftwareUpdate` `memcache.instances.upgrade`"). The IAM roles reference (`references/iam/memcache.md`) grants it to `roles/memcache.admin` and not to `roles/memcache.editor`, so plan on Memcached Admin for applying software updates.
 - Source: https://docs.cloud.google.com/memorystore/docs/memcached/access-control (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -10,6 +10,8 @@ Backups are point-in-time snapshots of a Memorystore for Valkey instance, used t
 
 Create an on-demand backup (full details in [manage-backups.md](./manage-backups.md)).
 
+Snippet taken from https://docs.cloud.google.com/memorystore/docs/valkey/manage-backups.
+
 ```bash
 gcloud memorystore instances backup INSTANCE_ID \
 --backup-id=BACKUP_ID \
@@ -17,8 +19,6 @@ gcloud memorystore instances backup INSTANCE_ID \
 --project=PROJECT_ID \
 --location=REGION_ID
 ```
-
-Snippet taken from https://docs.cloud.google.com/memorystore/docs/valkey/manage-backups.
 
 ## Options / Props
 

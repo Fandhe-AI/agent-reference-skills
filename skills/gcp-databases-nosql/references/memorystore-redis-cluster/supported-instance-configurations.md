@@ -8,7 +8,7 @@ Maxmemory policies and the Redis configuration parameters that can be modified w
 
 ## Signature / Usage
 
-### Create a cluster (configuration parameters are set at create or update time)
+### Base create command (configuration parameters are set as described on the Configure a cluster page)
 
 ```bash
 gcloud redis clusters create INSTANCE_ID \

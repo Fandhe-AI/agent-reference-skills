@@ -59,6 +59,7 @@ Nodes have a minimum of 2 vCPUs, except in these regions where the minimum is 1 
 
 - Source inconsistency: this page says the instance ID cannot exceed 40 characters, while the gcloud section of create-manage-instances says 1 to 63 characters.
 - Adapted from the official docs: the source writes `gcloud memcache instances describe instance-id --region=region`; the placeholders are upper-cased here.
+- Source inconsistency: this page lists Memcached `1.5.16` and `1.6.15`, while the gcloud create page's `--memcached-version` accepts `1.5` or `1.6.15` (see `create-manage-instances.md`); use the gcloud values on the command line.
 - Source: https://docs.cloud.google.com/memorystore/docs/memcached/instance-node-properties (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

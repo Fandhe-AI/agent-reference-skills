@@ -75,7 +75,7 @@ gcloud memorystore backup-collections backups delete BACKUP_NAME \
 
 ### Export a backup to Cloud Storage
 
-Grant the Memorystore for Valkey service agent (`service-PROJECT_NUMBER@gcp-sa-memorystore.iam.gserviceaccount.com`, where PROJECT_NUMBER is the project number, not the project ID) access to the bucket. The role needs `storage.buckets.get`, `storage.objects.create`, `storage.objects.delete` and `storage.folders.create`.
+Grant the Memorystore for Valkey service agent (`service-PROJECT_NUMBER@gcp-sa-memorystore.iam.gserviceaccount.com`, where PROJECT_NUMBER is the project number, not the project ID) access to the bucket. The role needs `storage.buckets.get`, `storage.objects.create`, `storage.objects.delete` and `storage.folders.create`. The source's command below grants `roles/storage.admin`, which is broader than these permissions; for least privilege, grant a custom role with only the listed permissions instead.
 
 ```bash
 gcloud storage buckets add-iam-policy-binding gs://BUCKET_NAME \
@@ -129,7 +129,7 @@ gcloud memorystore instances create INSTANCE_ID \
 | `PROJECT_ID` (`projectId=`) | Consumer project of the PSC connections; per the gcloud help, the project the instance is created in. |
 | `URI` | Comma-separated Cloud Storage URIs, e.g. `gs://my-bucket/folder/file1.rdb,gs://my-bucket/folder/file2.rdb`. |
 | `NODE_TYPE` | Optional; default `highmem-medium`. |
-| Roles | Memorystore Admin and Editor can perform all backup operations; Memorystore Viewer can view and export backups. |
+| Roles | Memorystore Admin can perform all backup operations; Memorystore Viewer can view (`memorystore.backups.get`, `.list`) backups; exporting needs `memorystore.backups.export` (Memorystore Admin, or the basic Editor / Owner role). |
 | Restore permission | Principal creating the instance needs `memorystore.backups.get` on the backup. |
 
 ## Notes
@@ -138,10 +138,11 @@ gcloud memorystore instances create INSTANCE_ID \
 - Restore seeds only a new instance in the same project/region as the backup; do not decrease node type, shard count or replicas from the backup values, or the import may fail. A Cluster Mode Enabled instance supports only one database, so a multi-database backup cannot be imported into it.
 - Scheduled backups can be enabled on an existing instance only if no daily schedule was set at creation. Updates and maintenance can cancel or skip backups; backups are rejected while an instance update is running.
 - After instance deletion, backups are kept for the retention period (max 365 days); delete manually to remove earlier. Deleting a backup does not affect instances already seeded from it. Delete is destructive; try it on a disposable resource first.
-- `roles/storage.admin` is the source's example; any role containing the permissions listed above suffices, so a narrower role is preferable. The example output of `describe` (backupFiles, expireTime, nodeType, shardCount, state) is omitted.
+- `roles/storage.admin` is the source's example and is broader than needed; any role containing the permissions listed above suffices, so prefer a custom role with exactly those permissions (export: `storage.buckets.get`, `storage.objects.create`, `storage.objects.delete`, `storage.folders.create`; RDB import: `storage.buckets.get`, `storage.objects.get`). The example output of `describe` (backupFiles, expireTime, nodeType, shardCount, state) is omitted.
 - `--psc-auto-connections` is marked "Deprecated: Use the endpoints.connections.psc_auto_connection value instead." in the gcloud help (SDK 593.0.0); the create-instances page (https://docs.cloud.google.com/memorystore/docs/valkey/create-instances) uses `--endpoints`.
 - The source also shows Console steps, the automated-backup `create`, `operations describe`, `backup-collections list` and `backups describe` command blocks (summarized in prose above) and a second, identical `gcloud storage buckets add-iam-policy-binding` block for the RDB import bucket. Monitor with Cloud Monitoring backup metrics.
 - Memorystore for Valkey is managed Valkey on Google Cloud, distinct from Upstash Redis (`upstash`) and Cloudflare Workers KV (`cloudflare-storage`).
+- Corrected from the official docs: the source says "Memorystore Admin and Editor" can perform all backup operations and Memorystore Viewer can export backups. the IAM roles reference (`references/iam/memorystore.md`) has no `roles/memorystore.editor`, and `memorystore.backups.export` is not in `roles/memorystore.viewer`; the Roles row follows the IAM reference.
 - Source: https://docs.cloud.google.com/memorystore/docs/valkey/manage-backups (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: `gcloud memorystore operations list --projects=PROJECT_ID`; the automated backup `update` examples (and the omitted `create` example) without `--location`; `--psc-auto-connections=NETWORK`; and the "list backups" example without a trailing `\` after `--backup-collection=BACKUP_COLLECTION`. The source's RDB import bucket binding (omitted here) also lacks `\` after `gs://BUCKET_NAME` and the `--member` line.
 

@@ -54,6 +54,7 @@ gcloud memorystore instances update INSTANCE_ID \
 - Replicas increase read throughput at the cost of potential data staleness.
 - Memorystore for Valkey is managed Valkey on Google Cloud, distinct from Upstash Redis (`upstash`) and Cloudflare Workers KV (`cloudflare-storage`).
 - The source also shows architecture diagrams, omitted here.
+- Source inconsistency: the HA and replicas page gives an average unavailability of about 30 seconds during automated repairs and maintenance failover, while the maintenance page says a Cluster Mode Disabled failover "typically lasts 15 seconds", a coordinated failover (Cluster Mode Enabled) takes typically tens of milliseconds, and scheduled maintenance is zero-downtime. Kept as written on each page; design clients to retry with exponential backoff.
 - Source: https://docs.cloud.google.com/memorystore/docs/valkey/ha-and-replicas (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

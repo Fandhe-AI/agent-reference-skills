@@ -10,6 +10,8 @@ Cross-region replication creates read-only secondary instances (asynchronously r
 
 Create a secondary instance (details in [create-manage-cross-region-replication.md](./create-manage-cross-region-replication.md)).
 
+Snippet taken from https://docs.cloud.google.com/memorystore/docs/valkey/create-manage-cross-region-replication.
+
 ```bash
 gcloud memorystore instances create INSTANCE_ID \
 --project=PROJECT_ID \
@@ -18,8 +20,6 @@ gcloud memorystore instances create INSTANCE_ID \
 --psc-auto-connections=network=NETWORK,projectId=PROJECT_ID \
 --primary-instance=PRIMARY_INSTANCE_PATH
 ```
-
-Snippet taken from https://docs.cloud.google.com/memorystore/docs/valkey/create-manage-cross-region-replication.
 
 ## Options / Props
 
@@ -53,6 +53,7 @@ Snippet taken from https://docs.cloud.google.com/memorystore/docs/valkey/create-
 - Switchover and detach change roles of production instances; try them on disposable instances first.
 - Memorystore for Valkey is managed Valkey on Google Cloud, distinct from Upstash Redis (`upstash`) and Cloudflare Workers KV (`cloudflare-storage`).
 - `--psc-auto-connections` is marked "Deprecated: Use the endpoints.connections.psc_auto_connection value instead." in the gcloud help (SDK 593.0.0); the source still uses it for secondaries.
+- Source inconsistency: this page lists deletion protection under local settings, while the create-and-manage page lists it among settings changed on the primary and synced to secondaries (see [create-manage-cross-region-replication.md](./create-manage-cross-region-replication.md)). Check and set deletion protection on each secondary instance separately.
 - Source: https://docs.cloud.google.com/memorystore/docs/valkey/about-cross-region-replication (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

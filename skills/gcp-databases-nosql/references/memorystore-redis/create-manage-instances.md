@@ -31,8 +31,10 @@ gcloud redis instances create myinstance --size=5 --region=us-central1 \
 
 Enable AUTH with `--enable-auth`. Enable in-transit encryption with `--transit-encryption-mode=SERVER_AUTHENTICATION`.
 
+Adapted (not in the official docs): `--region=REGION_ID` is added; without it gcloud fails with `Error parsing [instance]` unless the `redis/region` property is set.
+
 ```bash
-gcloud redis instances create INSTANCE_ID --size=SIZE --zone=ZONE --alternative-zone=ALTERNATIVE_ZONE --tier=STANDARD 
+gcloud redis instances create INSTANCE_ID --size=SIZE --region=REGION_ID --zone=ZONE --alternative-zone=ALTERNATIVE_ZONE --tier=STANDARD 
 ```
 
 ```bash
@@ -114,7 +116,8 @@ gcloud redis instances delete INSTANCE_ID --region=REGION_ID
 
 - Source inconsistency: the Console steps say to select Redis version `7.0 (recommended)`, the create flag list marks `redis_7_0` as default, while the supported-versions page says the default is 7.2.
 - Corrected from the official docs: the source lists `redis_6_X` among the `--redis-version` values and its example ends with `--redis-version=redis_6_X`, which gcloud rejects (`Invalid choice: 'redis_6_X'. Did you mean 'redis_6_x'?`); the `--redis-version` choices in the gcloud reference are lower case (`redis_3_2`, `redis_4_0`, `redis_5_0`, `redis_6_x`, `redis_7_0`, `redis_7_2`).
-- The generic Standard Tier command (`gcloud redis instances create INSTANCE_ID --size=SIZE --zone=ZONE --alternative-zone=ALTERNATIVE_ZONE --tier=STANDARD`) is kept verbatim but has no `--region`: gcloud requires the region either from `--region` or from the `redis/region` property, otherwise it fails with `Error parsing [instance]`.
+- Corrected from the official docs: the generic Standard Tier command (`gcloud redis instances create INSTANCE_ID --size=SIZE --zone=ZONE --alternative-zone=ALTERNATIVE_ZONE --tier=STANDARD`) has no `--region`; gcloud 593.0.0 requires the region either from `--region` or from the `redis/region` property, otherwise it fails with `Error parsing [instance]`.
+- The source writes `--tier=STANDARD` and `--connect-mode=DIRECT_PEERING` / `PRIVATE_SERVICE_ACCESS` in upper case while the gcloud help lists lower-case choices (`standard`, `direct-peering`, `private-service-access`); gcloud 593.0.0 accepts both spellings for these flags (checked locally; an invalid value is rejected with `Invalid choice`).
 - Delete is destructive and all instance data is lost; try it on a disposable resource first. A recreated instance with the same name gets different IP addresses; clients that hardcode the old IPs cannot connect and must use the new primary and read endpoints.
 - Creating with `--connect-mode=private-service-access` fails unless a private services access connection exists on the network. If the Console shows `No existing IP ranges available`, add the `compute.globalAddresses.list` permission.
 - Default connection mode is direct peering when none is specified in scripts; private services access is recommended.

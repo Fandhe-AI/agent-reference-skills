@@ -71,6 +71,7 @@ gcloud redis instances create myinstance --size=5 --region=us-central1 \
 - Memorystore for Redis Cluster has its own locations page.
 - Snippet taken from https://docs.cloud.google.com/memorystore/docs/redis/create-manage-instances (the regions page has no commands).
 - Corrected from the official docs: the source example ends with `--redis-version=redis_6_X`, which gcloud rejects (`Invalid choice: 'redis_6_X'. Did you mean 'redis_6_x'?`); the `--redis-version` choices in the gcloud reference are lower case (`redis_3_2`, `redis_4_0`, `redis_5_0`, `redis_6_x`, `redis_7_0`, `redis_7_2`).
+- Source inconsistency: the instances overview page lists 36 regions, fewer than this page (for example `africa-south1`, `asia-southeast3`, `europe-north2`, `europe-west10`, `northamerica-south1`, `us-east5`, `us-south1` appear only here). See `instances.md`.
 - Source: https://docs.cloud.google.com/memorystore/docs/redis/regions (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

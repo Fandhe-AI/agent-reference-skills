@@ -8,7 +8,7 @@ RDB snapshots store complete point-in-time snapshots on persistent storage at a 
 
 ## Signature / Usage
 
-Create an instance (snapshots are enabled by default in the Console; the interval and start time are chosen at creation):
+Base create command (it sets no persistence options; snapshots are enabled by default in the Console, and enabling snapshots or setting the interval and start time is covered on the source's managing-rdb-snapshots page, not here):
 
 ```bash
 gcloud redis instances create INSTANCE_ID --size=SIZE --region=REGION_ID

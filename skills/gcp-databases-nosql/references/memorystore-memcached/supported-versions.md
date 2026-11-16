@@ -40,6 +40,7 @@ gcloud memcache instances create myinstance --node-count=3 --node-cpu=2 --node-m
 
 - TLS (available in OSS Memcached 1.5.13 and later) is not supported by Memorystore for Memcached.
 - Snippet taken from https://docs.cloud.google.com/memorystore/docs/memcached/create-manage-instances (the versions page has no code).
+- Source inconsistency: this page lists Memcached `1.5.16` and `1.6.15`, while the gcloud create page's `--memcached-version` accepts `1.5` or `1.6.15` (see `create-manage-instances.md`); use the gcloud values on the command line.
 - Source: https://docs.cloud.google.com/memorystore/docs/memcached/supported-versions (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
