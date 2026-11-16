@@ -260,3 +260,24 @@
 | gcloud container hub packages delete | 3 commands (alpha, beta, ga); container hub packages delete … | [container-hub-packages-delete.md](./container-hub-packages-delete.md) |
 | gcloud container hub packages describe | 3 commands (alpha, beta, ga); container hub packages describe … | [container-hub-packages-describe.md](./container-hub-packages-describe.md) |
 | gcloud container hub packages list | 3 commands (alpha, beta, ga); container hub packages list … | [container-hub-packages-list.md](./container-hub-packages-list.md) |
+| gcloud container hub packages resource-bundles | 30 commands (alpha, beta, ga); container hub packages resource-bundles create … | [container-hub-packages-resource-bundles.md](./container-hub-packages-resource-bundles.md) |
+| gcloud container hub packages rollouts | 15 commands (alpha, beta, ga); container hub packages rollouts abort … | [container-hub-packages-rollouts.md](./container-hub-packages-rollouts.md) |
+| gcloud container hub packages update | 3 commands (alpha, beta, ga); container hub packages update … | [container-hub-packages-update.md](./container-hub-packages-update.md) |
+| gcloud container hub policycontroller content | 12 commands (alpha, beta, ga); container hub policycontroller content bundles remove … | [container-hub-policycontroller-content.md](./container-hub-policycontroller-content.md) |
+| gcloud container hub policycontroller deployment | 6 commands (alpha, beta, ga); container hub policycontroller deployment remove … | [container-hub-policycontroller-deployment.md](./container-hub-policycontroller-deployment.md) |
+| gcloud container hub policycontroller describe | 3 commands (alpha, beta, ga); container hub policycontroller describe … | [container-hub-policycontroller-describe.md](./container-hub-policycontroller-describe.md) |
+| gcloud container hub policycontroller detach | 3 commands (alpha, beta, ga); container hub policycontroller detach … | [container-hub-policycontroller-detach.md](./container-hub-policycontroller-detach.md) |
+| gcloud container hub policycontroller disable | 3 commands (alpha, beta, ga); container hub policycontroller disable … | [container-hub-policycontroller-disable.md](./container-hub-policycontroller-disable.md) |
+| gcloud container hub policycontroller enable | 3 commands (alpha, beta, ga); container hub policycontroller enable … | [container-hub-policycontroller-enable.md](./container-hub-policycontroller-enable.md) |
+| gcloud container hub policycontroller suspend | 3 commands (alpha, beta, ga); container hub policycontroller suspend … | [container-hub-policycontroller-suspend.md](./container-hub-policycontroller-suspend.md) |
+| gcloud container hub policycontroller update | 3 commands (alpha, beta, ga); container hub policycontroller update … | [container-hub-policycontroller-update.md](./container-hub-policycontroller-update.md) |
+| gcloud container hub rbacrolebindingactuation describe | 3 commands (alpha, beta, ga); container hub rbacrolebindingactuation describe … | [container-hub-rbacrolebindingactuation-describe.md](./container-hub-rbacrolebindingactuation-describe.md) |
+| gcloud container hub rbacrolebindingactuation update | 3 commands (alpha, beta, ga); container hub rbacrolebindingactuation update … | [container-hub-rbacrolebindingactuation-update.md](./container-hub-rbacrolebindingactuation-update.md) |
+| gcloud container hub rollouts cancel | 3 commands (alpha, beta, ga); container hub rollouts cancel … | [container-hub-rollouts-cancel.md](./container-hub-rollouts-cancel.md) |
+| gcloud container hub rollouts delete | 3 commands (alpha, beta, ga); container hub rollouts delete … | [container-hub-rollouts-delete.md](./container-hub-rollouts-delete.md) |
+| gcloud container hub rollouts describe | 3 commands (alpha, beta, ga); container hub rollouts describe … | [container-hub-rollouts-describe.md](./container-hub-rollouts-describe.md) |
+| gcloud container hub rollouts force-complete-stage | 3 commands (alpha, beta, ga); container hub rollouts force-complete-stage … | [container-hub-rollouts-force-complete-stage.md](./container-hub-rollouts-force-complete-stage.md) |
+| gcloud container hub rollouts list | 3 commands (alpha, beta, ga); container hub rollouts list … | [container-hub-rollouts-list.md](./container-hub-rollouts-list.md) |
+| gcloud container hub rollouts pause | 3 commands (alpha, beta, ga); container hub rollouts pause … | [container-hub-rollouts-pause.md](./container-hub-rollouts-pause.md) |
+| gcloud container hub rollouts resume | 3 commands (alpha, beta, ga); container hub rollouts resume … | [container-hub-rollouts-resume.md](./container-hub-rollouts-resume.md) |
+| gcloud container hub rolloutsequences create | 3 commands (alpha, beta, ga); container hub rolloutsequences create … | [container-hub-rolloutsequences-create.md](./container-hub-rolloutsequences-create.md) |
