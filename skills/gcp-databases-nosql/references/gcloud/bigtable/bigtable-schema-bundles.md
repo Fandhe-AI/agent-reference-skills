@@ -701,6 +701,15 @@ NOTES
         $ gcloud beta bigtable schema-bundles list
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud bigtable schema-bundles list \
+    --instance=my-instance \
+    --table=my-table \
+    --filter='name=( projects/my-project/instances/my-instance/tables/my-table/schemaBundles/my-schema-bundle )'
+```
+
 ### gcloud bigtable schema-bundles remove-iam-policy-binding
 
 ```text
@@ -1372,6 +1381,7 @@ SYNOPSIS
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example wraps flag values in backticks (for example `` --instance=`my-instance` ``), which the shell runs as command substitutions; the runnable form passes the values in single quotes.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the filter example `` --filter="name=( `NAME` ... )" `` puts backticks inside double quotes, so the shell runs `NAME` as a command substitution and passes its output instead of a name; the runnable form single-quotes the filter and uses a full schema bundle name with placeholder IDs (`my-project`, `my-schema-bundle`).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
