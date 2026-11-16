@@ -695,6 +695,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta1 of `datamigration` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Incomplete in the official docs (the Discovery text above is verbatim): in the `backupFilePattern` examples of `SqlServerHomogeneousMigrationJobConfig`, Discovery dropped the names of the named capture groups, so `(?<name>...)` is shown as `(?...)` and the patterns are not usable as written. The capture group sets are year (`yy` / `yyyy`), month (`mm`), day (`dd`), hour (`hh`), minutes (`mi`) and seconds (`ss`), or `timestamp` (Unix timestamp); the exact group names are not in the Discovery document, the googleapis protos (commit 97f6460 has no `backup_file_pattern`) or the .NET client reference, so confirm them in the Database Migration Service documentation or console before relying on a pattern. The first example also contains `_backup_`, which the example file name `TestDB_20230802_155400.trn` does not contain.
 - Source: https://datamigration.googleapis.com/$discovery/rest?version=v1, https://datamigration.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related

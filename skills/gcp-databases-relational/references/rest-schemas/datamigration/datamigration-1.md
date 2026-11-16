@@ -1654,6 +1654,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta1 of `datamigration` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Corrected from the official docs (the Discovery text above is verbatim): Discovery dropped the bracket expressions from the `ErrorInfo` `metadata` key regular expression; in google/rpc/error_details.proto (googleapis commit 97f6460, https://github.com/googleapis/googleapis/blob/97f6460c3558c1435d7fd001a9251f8df058ae2f/google/rpc/error_details.proto) it is `[a-z][a-zA-Z0-9-_]+` (shown above as `a-z+`).
+- Corrected from the official docs (the Discovery text above is verbatim): Discovery dropped the bracket expressions from the `ErrorInfo` / `FieldViolation` `reason` regular expression; in google/rpc/error_details.proto (googleapis commit 97f6460, https://github.com/googleapis/googleapis/blob/97f6460c3558c1435d7fd001a9251f8df058ae2f/google/rpc/error_details.proto) it is `[A-Z][A-Z0-9_]+[A-Z0-9]` (UPPER_SNAKE_CASE; shown above as `A-Z+[A-Z0-9]`).
 - Source: https://datamigration.googleapis.com/$discovery/rest?version=v1, https://datamigration.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
