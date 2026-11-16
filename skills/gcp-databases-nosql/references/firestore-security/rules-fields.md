@@ -33,11 +33,11 @@ service cloud.firestore {
 
 ### Required and forbidden fields on create
 
-To require fields, the source's rule is `allow create: if request.resource.data.keys().hasAll(['name', 'location', 'city']);`. To forbid fields, it uses `allow create: if (!request.resource.data.keys().hasAny(['average_score', 'rating_count']));` (both on `match /restaurant/{restId}`). The allowlist below combines required and optional fields.
+These conditions only validate fields; combine them with authentication and ownership or role checks, because a parent `match` condition does not apply to nested `allow` statements. To require fields, the source's rule is `allow create: if request.resource.data.keys().hasAll(['name', 'location', 'city']);`. To forbid fields, it uses `allow create: if (!request.resource.data.keys().hasAny(['average_score', 'rating_count']));` (both on `match /restaurant/{restId}`). The allowlist below combines required and optional fields.
 
 ### Allowlist, with required and optional fields
 
-Adapted (not in the official docs): `rules_version = '2';` is added because the rule set uses `let`, which is available only in rules version 2 (rules default to version 1).
+Adapted (not in the official docs): `rules_version = '2';` is added because the rule set uses `let`, which is available only in rules version 2 (rules default to version 1); and because field validation alone is not authorization, the rule also requires a signed-in user with the `Editor` custom claim (`request.auth.token.role`, the same custom-claim pattern as the `Finance` example above).
 
 ```text
 rules_version = '2';
@@ -49,8 +49,10 @@ service cloud.firestore {
         request.resource.data.keys().hasOnly(allAllowedFields);
     }
     match /restaurant/{restId} {
-      allow create: if verifyFields(['name', 'location', 'city'],
-        ['address', 'hours', 'cuisine']);
+      allow create: if request.auth != null &&
+        request.auth.token.role == 'Editor' &&
+        verifyFields(['name', 'location', 'city'],
+          ['address', 'hours', 'cuisine']);
     }
   }
 }
@@ -60,14 +62,18 @@ service cloud.firestore {
 
 `request.resource.data.keys()` is the whole post-update document, so use `diff()` against `resource.data` and `affectedKeys()`:
 
+Adapted (not in the official docs): field validation alone is not authorization, so the rule also requires a signed-in user with the `Editor` custom claim (`request.auth.token.role`, the same custom-claim pattern as the `Finance` example above).
+
 ```text
 service cloud.firestore {
   match /databases/{database}/documents {
     match /restaurant/{restId} {
       // Allow the client to update a document only if that document doesn't
       // change the average_score or rating_count fields
-      allow update: if (!request.resource.data.diff(resource.data).affectedKeys()
-        .hasAny(['average_score', 'rating_count']));
+      allow update: if request.auth != null &&
+        request.auth.token.role == 'Editor' &&
+        (!request.resource.data.diff(resource.data).affectedKeys()
+          .hasAny(['average_score', 'rating_count']));
     }
   }
 }
@@ -75,13 +81,17 @@ service cloud.firestore {
 
 The allowlist form is generally considered more secure because writes to new fields are disallowed until explicitly allowed:
 
+Adapted (not in the official docs): field validation alone is not authorization, so the rule also requires a signed-in user with the `Editor` custom claim (`request.auth.token.role`, the same custom-claim pattern as the `Finance` example above).
+
 ```text
 service cloud.firestore {
   match /databases/{database}/documents {
     match /restaurant/{restId} {
     // Allow a client to update only these 6 fields in a document
-      allow update: if (request.resource.data.diff(resource.data).affectedKeys()
-        .hasOnly(['name', 'location', 'city', 'address', 'hours', 'cuisine']));
+      allow update: if request.auth != null &&
+        request.auth.token.role == 'Editor' &&
+        (request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['name', 'location', 'city', 'address', 'hours', 'cuisine']));
     }
   }
 }
@@ -89,13 +99,16 @@ service cloud.firestore {
 
 ### Enforce field types
 
+Adapted (not in the official docs): field validation alone is not authorization, so the rule also requires a signed-in user (`request.auth != null`).
+
 ```text
 service cloud.firestore {
   match /databases/{database}/documents {
     match /restaurant/{restId} {
       // Restaurant rules go here...
       match /review/{reviewId} {
-        allow create: if (request.resource.data.score is int &&
+        allow create: if request.auth != null &&
+          (request.resource.data.score is int &&
           request.resource.data.headline is string &&
           request.resource.data.content is string &&
           request.resource.data.author_name is string &&
@@ -137,6 +150,7 @@ function reviewFieldsAreValidTypes(docData) {
 - Field types must be enforced on both create and update; share a helper function between the two.
 - The source's `orders` (list / map type) example and the create + update helper example are omitted: their brace nesting and trailing `&&` are malformed in the source.
 - The source's separate required-fields and forbidden-fields rule sets are summarized in prose; the conditions are quoted from them.
+- Corrected from the official docs: the restaurant `create` / `update` samples and the review `create` sample check only fields and types, so anyone (including unauthenticated users) could create or overwrite documents that pass validation. The restaurant rules now also require `request.auth.token.role == 'Editor'` (an example custom claim; use your app's own ownership or role check) and the review rule requires a signed-in user. Field validation is not authorization.
 - Corrected from the official docs: the `verifyFields` helper sample uses `let` without a `rules_version = '2';` declaration; rules use version 1 by default and `let` requires version 2.
 - Source: https://docs.cloud.google.com/firestore/native/docs/security/rules-fields (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
