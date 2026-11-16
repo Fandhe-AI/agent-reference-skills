@@ -34,7 +34,7 @@ spec:
 
 ### Create
 
-Replace `DEPLOYMENT_FILE` with the manifest file, such as `config.yaml`. `kubectl apply -f DIRECTORY/` creates all objects (except existing ones) defined in the directory. `kubectl apply` fails without an active cluster.
+Replace `DEPLOYMENT_FILE` with the manifest file, such as `config.yaml`. `kubectl apply -f DIRECTORY/` creates the objects defined in the directory that do not exist yet and updates the ones that already exist to match the manifests (see Notes). `kubectl apply` fails without an active cluster.
 
 ```bash
 kubectl apply -f DEPLOYMENT_FILE
@@ -110,11 +110,15 @@ kubectl delete deployment DEPLOYMENT_NAME
 ## Notes
 
 - Prerequisites: GKE API enabled, gcloud CLI installed and initialized, and the containerized app stored in an image registry such as Artifact Registry.
-- Other ways to update: `kubectl set` can also change `resources` and `selector`; `kubectl edit` edits the live Deployment.
+- Other ways to update: `kubectl set` can also change `resources`; `kubectl edit` edits the live Deployment. A Deployment's `spec.selector` is immutable after creation in `apps/v1`, so changing the selector requires creating a new Deployment.
 - `kubectl delete deployment` is destructive; try it on a disposable Deployment first.
 - The source also shows Console (Workloads page) steps for create, inspect, rolling update, scale and delete; they are omitted here.
 - Windows applications are covered by a separate page (Deploy a Windows Server application).
 - Corrected from the official docs: the source shows `kubectl set image deployment DEPLOYMENT_NAME IMAGE IMAGE:TAG`, which `kubectl` rejects because each argument after the resource name must be `CONTAINER_NAME=IMAGE`; the example uses `CONTAINER_NAME=IMAGE:TAG`, consistent with the source's own `nginx=nginx:1.9.1` example.
+- Corrected from the official docs: the source says `kubectl set` can change a Deployment's "image, resources (requests or limits), or selector fields", but the Kubernetes docs state "A Deployment's label selector is **immutable** after creation; it cannot be updated via `kubectl patch`, `kubectl edit`, `kubectl apply`, or tools like `helm upgrade`".
+- Clarified from the official docs: the source says `kubectl apply -f DIRECTORY/` creates "all objects (except existing ones)"; the Kubernetes declarative object management page adds that `kubectl apply` also updates "all objects defined in a directory, even if those objects already exist", setting fields from the files and clearing removed fields.
+- Source (Kubernetes Deployment): https://kubernetes.io/docs/concepts/workloads/controllers/deployment/ (kubernetes/website commit 48a1f0659629, retrieved 2026-11-16)
+- Source (kubectl apply): https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/ (kubernetes/website commit 48a1f0659629, retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/stateless-apps (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
