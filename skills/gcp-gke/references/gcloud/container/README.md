@@ -114,3 +114,32 @@
 | gcloud container fleet ingress enable | 3 commands (alpha, beta, ga); container fleet ingress enable … | [container-fleet-ingress-enable.md](./container-fleet-ingress-enable.md) |
 | gcloud container fleet ingress update | 3 commands (alpha, beta, ga); container fleet ingress update … | [container-fleet-ingress-update.md](./container-fleet-ingress-update.md) |
 | gcloud container fleet list | 3 commands (alpha, beta, ga); container fleet list … | [container-fleet-list.md](./container-fleet-list.md) |
+| gcloud container fleet memberships bindings | 15 commands (alpha, beta, ga); container fleet memberships bindings create … | [container-fleet-memberships-bindings.md](./container-fleet-memberships-bindings.md) |
+| gcloud container fleet memberships delete | 3 commands (alpha, beta, ga); container fleet memberships delete … | [container-fleet-memberships-delete.md](./container-fleet-memberships-delete.md) |
+| gcloud container fleet memberships describe | 3 commands (alpha, beta, ga); container fleet memberships describe … | [container-fleet-memberships-describe.md](./container-fleet-memberships-describe.md) |
+| gcloud container fleet memberships generate-gateway-rbac | 3 commands (alpha, beta, ga); container fleet memberships generate-gateway-rbac … | [container-fleet-memberships-generate-gateway-rbac.md](./container-fleet-memberships-generate-gateway-rbac.md) |
+| gcloud container fleet memberships get-credentials | 3 commands (alpha, beta, ga); container fleet memberships get-credentials … | [container-fleet-memberships-get-credentials.md](./container-fleet-memberships-get-credentials.md) |
+| gcloud container fleet memberships list | 3 commands (alpha, beta, ga); container fleet memberships list … | [container-fleet-memberships-list.md](./container-fleet-memberships-list.md) |
+| gcloud container fleet memberships register | 3 commands (alpha, beta, ga); container fleet memberships register … | [container-fleet-memberships-register.md](./container-fleet-memberships-register.md) |
+| gcloud container fleet memberships support-access | 12 commands (alpha, beta, ga); container fleet memberships support-access describe … | [container-fleet-memberships-support-access.md](./container-fleet-memberships-support-access.md) |
+| gcloud container fleet memberships unregister | 3 commands (alpha, beta, ga); container fleet memberships unregister … | [container-fleet-memberships-unregister.md](./container-fleet-memberships-unregister.md) |
+| gcloud container fleet memberships update | 3 commands (alpha, beta, ga); container fleet memberships update … | [container-fleet-memberships-update.md](./container-fleet-memberships-update.md) |
+| gcloud container fleet mesh debug | 6 commands (alpha, beta); beta container fleet mesh debug bug-report … | [container-fleet-mesh-debug.md](./container-fleet-mesh-debug.md) |
+| gcloud container fleet mesh describe | 3 commands (alpha, beta, ga); container fleet mesh describe … | [container-fleet-mesh-describe.md](./container-fleet-mesh-describe.md) |
+| gcloud container fleet mesh disable | 3 commands (alpha, beta, ga); container fleet mesh disable … | [container-fleet-mesh-disable.md](./container-fleet-mesh-disable.md) |
+| gcloud container fleet mesh enable | 3 commands (alpha, beta, ga); container fleet mesh enable … | [container-fleet-mesh-enable.md](./container-fleet-mesh-enable.md) |
+| gcloud container fleet mesh update | 3 commands (alpha, beta, ga); container fleet mesh update … | [container-fleet-mesh-update.md](./container-fleet-mesh-update.md) |
+| gcloud container fleet multi-cluster-services describe | 3 commands (alpha, beta, ga); container fleet multi-cluster-services describe … | [container-fleet-multi-cluster-services-describe.md](./container-fleet-multi-cluster-services-describe.md) |
+| gcloud container fleet multi-cluster-services disable | 3 commands (alpha, beta, ga); container fleet multi-cluster-services disable … | [container-fleet-multi-cluster-services-disable.md](./container-fleet-multi-cluster-services-disable.md) |
+| gcloud container fleet multi-cluster-services enable | 3 commands (alpha, beta, ga); container fleet multi-cluster-services enable … | [container-fleet-multi-cluster-services-enable.md](./container-fleet-multi-cluster-services-enable.md) |
+| gcloud container fleet namespaceactuation create | alpha container fleet namespaceactuation create | [container-fleet-namespaceactuation-create.md](./container-fleet-namespaceactuation-create.md) |
+| gcloud container fleet namespaceactuation delete | alpha container fleet namespaceactuation delete | [container-fleet-namespaceactuation-delete.md](./container-fleet-namespaceactuation-delete.md) |
+| gcloud container fleet namespaceactuation describe | alpha container fleet namespaceactuation describe | [container-fleet-namespaceactuation-describe.md](./container-fleet-namespaceactuation-describe.md) |
+| gcloud container fleet namespaceactuation update | alpha container fleet namespaceactuation update | [container-fleet-namespaceactuation-update.md](./container-fleet-namespaceactuation-update.md) |
+| gcloud container fleet operations describe | 3 commands (alpha, beta, ga); container fleet operations describe … | [container-fleet-operations-describe.md](./container-fleet-operations-describe.md) |
+| gcloud container fleet operations list | 3 commands (alpha, beta, ga); container fleet operations list … | [container-fleet-operations-list.md](./container-fleet-operations-list.md) |
+| gcloud container fleet operations wait | 3 commands (alpha, beta, ga); container fleet operations wait … | [container-fleet-operations-wait.md](./container-fleet-operations-wait.md) |
+| gcloud container fleet packages create | 3 commands (alpha, beta, ga); container fleet packages create … | [container-fleet-packages-create.md](./container-fleet-packages-create.md) |
+| gcloud container fleet packages delete | 3 commands (alpha, beta, ga); container fleet packages delete … | [container-fleet-packages-delete.md](./container-fleet-packages-delete.md) |
+| gcloud container fleet packages describe | 3 commands (alpha, beta, ga); container fleet packages describe … | [container-fleet-packages-describe.md](./container-fleet-packages-describe.md) |
+| gcloud container fleet packages list | 3 commands (alpha, beta, ga); container fleet packages list … | [container-fleet-packages-list.md](./container-fleet-packages-list.md) |
