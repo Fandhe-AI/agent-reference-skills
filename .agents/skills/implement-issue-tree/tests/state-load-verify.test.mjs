@@ -34,7 +34,7 @@ if (markerIndex < 0) {
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 const driverPart = source.slice(markerIndex)
 
-globalThis.args = { parent: 1 }
+globalThis.args = { parent: 1, skillDir: '/skill' }
 
 const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-state-verify-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-state-verify-defs.mjs')
@@ -46,6 +46,9 @@ const SLICE_EXPORTS = [
   'isValidBranchName',
   'branchMatchesIssue',
   'loadState',
+  'ensureBoundaryNonceSeed',
+  'mergeStateVerify',
+  'isValidStateVerifyEnvelope',
   'mergeVerifyPrompt',
   'monitorPrompt',
   'mergeExecutePrompt',
@@ -65,6 +68,9 @@ const {
   isValidBranchName,
   branchMatchesIssue,
   loadState,
+  ensureBoundaryNonceSeed,
+  mergeStateVerify,
+  isValidStateVerifyEnvelope,
   mergeVerifyPrompt,
   monitorPrompt,
   mergeExecutePrompt,
@@ -75,6 +81,10 @@ const {
   MERGE_SCHEMA,
   MERGE_VERIFY_SCHEMA,
 } = await import(pathToFileURL(slicePath).href)
+
+import { stateVerifyReply, makeEnvelope, nonceOf, inputSha256 } from './lib/signed-output.mjs'
+globalThis.agent = async () => ({ seedHex: 'c'.repeat(64) })
+await ensureBoundaryNonceSeed()
 
 const nodeSha = (s) => createHash('sha256').update(s, 'utf8').digest('hex')
 // 検証側が返す keysSha256 の期待値（hashes のキー一覧の jq 正規形の sha256）。
@@ -256,7 +266,9 @@ function installAgentStub(behavior) {
   const calls = []
   globalThis.agent = async (prompt, opts) => {
     calls.push({ prompt, opts })
-    return behavior(opts, prompt)
+    const r = await behavior(opts, prompt)
+    // state:load-verify は scripts/state.sh verify の封筒で返る（P5）。従来の平らな照合入力を封筒へ変換する
+    return opts.label.startsWith('state:load-verify') ? stateVerifyReply(prompt, r) : r
   }
   const logs = []
   globalThis.log = (msg) => { logs.push(msg) }
@@ -458,15 +470,16 @@ test('loadState: 全件が初回で返れば再取得エージェントは起動
 // 層 3: プロンプト・駆動部の配線
 // ---------------------------------------------------------------------------
 
-test('検証プロンプトは項目ごとの jq -jcS ハッシュを要求し、読込プロンプトは分割読みと推測禁止を指示する', async () => {
+test('検証プロンプトは state.sh verify の固定コマンドだけを実行させ（インラインの jq / sha256sum を持たない）、読込プロンプトは分割読みと推測禁止を指示する', async () => {
   const { calls } = installAgentStub((opts) =>
     opts.label === 'state:load' ? loadResult({}) : { fileExists: true, hashes: {}, keysSha256: keysOf({}), keysCount: Object.keys({}).length, highWaterBytes: 0, highWaterVersion: 0 })
   await loadState()
-  assert.match(calls[1].prompt, /jq -jcS --arg k "\$k" '\.items\[\$k\]'/)
-  // キーは issue 番号（正の整数の 10 進表記）だけに絞り、「キー ハッシュ」行の解釈を一意にする。
-  assert.ok(calls[1].prompt.includes(`keys[] | select(test("^[1-9][0-9]*$"))`))
-  assert.match(calls[1].prompt, /sha256sum/)
-  assert.match(calls[1].prompt, /shasum -a 256/)
+  const v = calls[1].prompt
+  assert.match(v, /bash '\/skill\/scripts\/run-verified\.sh' \S+ state\.sh --nonce [0-9a-z]{1,64} --file _\/issue-trees\/1\.json verify --page 0\n/)
+  // 旧プロンプトのインラインのコマンド（バックスラッシュを書き写す形）は残っていない
+  assert.doesNotMatch(v, /jq -jcS|sha256sum 2>|shasum -a 256|while IFS= read|KEYS |\\\$\/p|R=1,20/)
+  assert.match(v, /nonce・payload・sha256 を持つ 1 行の JSON/)
+  assert.match(v, /全件を出力の順のまま転記する/)
   assert.match(calls[0].prompt, /5 件ずつ/)
   assert.match(calls[0].prompt, /推測で埋めない/)
   assert.match(calls[0].prompt, /ホストが再取得/)
@@ -699,7 +712,7 @@ test('駆動部: 新規 PR は pr-create 直後・Merge ループ投入前に PR
 })
 
 test('駆動部: state-unverified の issue は dispatch 前に blocked（halt 非カウント）で止め、後続も止める', () => {
-  assert.match(driverPart, /unverified: stateUnverified,\s*\} = await loadState\(\)/)
+  assert.match(driverPart, /unverified: stateUnverified,\s*keys: stateKeys,\s*\} = await loadState\(\)/)
   const idx = driverPart.indexOf('if (unverifiedIssues.has(item.number)) {')
   const preloop = driverPart.indexOf('const failedSet = new Set()')
   const work = driverPart.indexOf('const work = queue.filter(')
@@ -798,7 +811,8 @@ test('loadState: 検証エージェントが haiku / sonnet とも不正な応�
 })
 
 test('駆動部: state:load-verify の isValid は isValidStateVerifyResult を使う', () => {
-  assert.match(source, /label: 'state:load-verify', schema: STATE_VERIFY_SCHEMA, isValid: isValidStateVerifyResult/)
+  assert.match(source, /label: page === 0 \? 'state:load-verify'[^\n]*isValid: \(r\) => isValidStateVerifyEnvelope\(r, nonce, page\)/)
+  assert.match(source, /return isValidStateVerifyResult\(r\) \? r : null/)
 })
 
 // pr-create 直後の PR 照合失敗ブロックを切り出して実行する（Codex P1: unverifiedPr 保存の成否確認）。
@@ -913,33 +927,18 @@ test('loadState: 数値でないキーが混在するファイルでも、数値
   assert.deepEqual(r.unverified, [])
 })
 
-test('検証プロンプトは KEYS 行（数値キー一覧の jq -jc ダイジェスト）を要求する', async () => {
+test('検証プロンプトの nonce は呼び出しごと・ページごとに一意（開始時の封筒を終了時の再読込へ流用できない）', async () => {
   const { calls } = installAgentStub((opts) =>
     opts.label === 'state:load' ? loadResult({}) : { fileExists: true, hashes: {}, keysSha256: JQ_KEYS_SHA_EMPTY, keysCount: 0, highWaterBytes: 0, highWaterVersion: 0 })
   await loadState()
-  const p = calls[1].prompt
-  assert.ok(p.includes(`K='[.items // {} | keys[] | select(test("^[1-9][0-9]*$"))]'; echo "KEYS $(jq -jc "$K" "$f" | h | cut -c1-64) $(jq "$K | length" "$f")"`))
-  // KEYS 行（ダイジェストと件数）はコマンド出力の先頭: ファイルあり分岐で最初の出力コマンドであり、
-  // 高水位の行・項目ごとのハッシュ行（while ループ）より前に出す（Bugbot 指摘）。
-  const branchStart = p.indexOf('if [ -f "$f" ]; then ')
-  const keysIdx = p.indexOf('echo "KEYS ')
-  const hwIdx = p.indexOf("jq -c '[.perWorktreeByteReserveHighWater")
-  const loopIdx = p.indexOf('while IFS= read -r k')
-  assert.ok(branchStart > 0 && keysIdx > branchStart && keysIdx < hwIdx && hwIdx < loopIdx, 'KEYS 行が出力の先頭にない')
-  assert.doesNotMatch(p.slice(branchStart, keysIdx), /echo |printf |jq -c|jq -r/, 'KEYS 行より前に別の出力がある')
-  // 範囲指定での分割実行（キー行のみ）
-  assert.ok(p.includes('sed -n "${R:-1,\\$}p"'))
-  assert.match(p, /R=1,20 のように行範囲を指定して同じコマンドを分割実行し全件を取得する/)
-})
-
-test('検証プロンプトは keysSha256 / keysCount を KEYS 行からそのまま転記させ、再計算・自前のキー一覧からの作成を禁じる', async () => {
-  const { calls } = installAgentStub((opts) =>
-    opts.label === 'state:load' ? loadResult({}) : { fileExists: true, hashes: {}, keysSha256: JQ_KEYS_SHA_EMPTY, keysCount: 0, highWaterBytes: 0, highWaterVersion: 0 })
   await loadState()
-  assert.match(calls[1].prompt, /先頭の KEYS 行の 2 列目を keysSha256・3 列目を keysCount へそのまま転記する（自分で計算し直したり、返すキー一覧から作ったりしない）/)
+  const nonces = calls.filter((c) => c.opts.label === 'state:load-verify').map((c) => nonceOf(c.prompt))
+  assert.equal(nonces.length, 2)
+  assert.notEqual(nonces[0], nonces[1])
+  assert.ok(nonces.every((n) => /^[0-9a-z]{28}$/.test(n)))
 })
 
-test('loadState: KEYS 行の件数（keysCount）と hashes の件数が一致しなければ停止する', async () => {
+test('loadState: keysCount と hashes の件数が一致しなければ停止する', async () => {
   installAgentStub((opts) =>
     opts.label === 'state:load'
       ? loadResult(sampleItems)

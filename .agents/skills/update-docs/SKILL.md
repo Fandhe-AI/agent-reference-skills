@@ -1,8 +1,10 @@
 ---
 name: update-docs
 description: >
-  前回更新コミット (_/.last-update-docs で追跡) からの差分をもとに CLAUDE.md のスキル一覧・リポジトリ構造ツリーを更新する。
-  新スキル追加時、.claude/agents/ や .claude/rules/ の変更時、「ドキュメント更新して」「CLAUDE.md を更新して」などで使用。
+  前回更新コミット (_/.last-update-docs で追跡) からの差分をもとに、指示ファイルのスキル一覧・リポジトリ構造ツリーを更新する。
+  更新するのは CLAUDE.md があれば CLAUDE.md、無ければ AGENTS.md の「ある方」のみ（両方あれば CLAUDE.md だけ）。
+  新スキル追加時、.claude/agents・.claude/rules・.agents/skills・.codex/agents・.opencode/agents の変更時、
+  「ドキュメント更新して」「CLAUDE.md を更新して」「AGENTS.md を更新して」で使用。
   コード内コメント・ドキュメンテーションコメントの補強を依頼された場合にも参照する指針を含む。
 model: haiku
 user-invocable: true
@@ -10,7 +12,9 @@ user-invocable: true
 
 # update-docs
 
-コード変更に基づいて `CLAUDE.md` を更新し、`_/.last-update-docs` に記録します。
+コード変更に基づいて、対象リポジトリの指示ファイル（`CLAUDE.md` または `AGENTS.md` の**ある方**）を更新し、`_/.last-update-docs` に記録します。
+
+更新するのは 1 つだけで、Step 0 で選ぶ。`CLAUDE.md` があれば `CLAUDE.md` だけを更新する（`AGENTS.md` があっても触らない）。`CLAUDE.md` が無く `AGENTS.md` があれば `AGENTS.md` を更新する。どちらも無ければファイルを作らずに報告して止める。以降、選ばれた方を「指示ファイル」と呼ぶ。
 
 ## `_/.last-update-docs` ファイル形式
 
@@ -24,25 +28,161 @@ commit_date=<ISO 8601>
 
 ## フロー
 
+### Step 0: 更新する指示ファイルを選ぶ
+
+このスキルの `scripts/`（SKILL.md と同じディレクトリ）にある `select-target.sh` と `agents-section.sh` を使う。絶対パスは、読み込んだ SKILL.md の場所から求める。**信頼境界:** 次のフェンスは、対象リポジトリ内のスクリプトを `skills/` → `.agents/skills/` → `.claude/skills/` の順に探して実行する。リポジトリの内容を信頼する前提は、このリポジトリのほかのスキルと同じである（信頼できないリポジトリでは実行しない）。各コードフェンスは独立したシェルで実行され得るため、次のフェンスはスクリプトを `skills/` → `.agents/skills/` → `.claude/skills/` の 3 レイアウトから自己完結的に解決する。リポジトリのルートで実行する。
+
+```bash
+SELECT_TARGET=""
+for CANDIDATE in \
+  "skills/update-docs/scripts/select-target.sh" \
+  ".agents/skills/update-docs/scripts/select-target.sh" \
+  ".claude/skills/update-docs/scripts/select-target.sh"; do
+  # 存在確認は -f のみ（vendoring で実行ビットが落ちても bash 経由で起動できる）
+  if [[ -f "${CANDIDATE}" ]]; then
+    SELECT_TARGET="${CANDIDATE}"
+    break
+  fi
+done
+if [[ -z "${SELECT_TARGET}" ]]; then
+  echo "エラー: select-target.sh が見つからない（3 レイアウトいずれにも存在しない）" >&2
+  exit 1
+fi
+
+# 最終行が UPDATE_DOCS_TARGET <claude|agents|none>。非ゼロ終了はそのまま終了ステータスにする
+bash "${SELECT_TARGET}" --root .
+```
+
+最終行の語彙で次のとおり進む。
+
+| 結果 | 更新する指示ファイル | 以降の扱い |
+|------|---------------------|-----------|
+| `claude` | `CLAUDE.md` | 従来どおり直接編集する（`CLAUDE.md` がリポジトリ内への symlink のときも可）。`AGENTS.md` があっても読み書きしない（バイト単位で変えない） |
+| `agents` | `AGENTS.md` | **update-docs 専用のマーカー区間の中だけ**を `agents-section.sh` で書く（後述）。区間の外は変更しない。`CLAUDE.md` と `AGENTS.md` が同じファイルで、どちらかがシンボリックリンクのときも `agents` になり、stderr に警告が出る（両方が同じ実体への別々のリンクでも同じ）。`AGENTS.md` 自体がリポジトリ内の別ファイルへのシンボリックリンクのときは、リンクを保ったままリンク先の実体へ書く。`CLAUDE.md` として直接書き換えると init-codex 等の管理区間とレビュー観点集を壊し得るためで、`CLAUDE.md` は直接編集しない |
+| `none` | なし | ファイルを作らずに、`CLAUDE.md` も `AGENTS.md` も無かったことを報告して止める（Step 1 以降へ進まない） |
+| `error-symlink`（終了コード 3） | なし | `CLAUDE.md` か `AGENTS.md` が symlink で、リンク先がリポジトリの外にある・壊れている・通常ファイルでない。リポジトリ外のファイルを書き換えないため、書かずに報告して止める（Step 1 以降へ進まない）。リンクの修正はユーザーに任せる |
+| `error-hardlink`（終了コード 3） | なし | `CLAUDE.md` と `AGENTS.md` が同じファイルへのハードリンク。置換でリンクが切れるため、書かずに報告して止める。どちらかを symlink か別ファイルにするようユーザーに案内する |
+| 終了コードが上記以外の 0 以外 | なし | 使い方の誤り・ルート不在。原因を報告して止める |
+
+#### `agents` のときの書き込み規則
+
+`AGENTS.md` には init-codex 系の管理区間や、setup-repo-guards が置くレビュー観点集など、人が育てた本文がある。そのため次を守る。
+
+- **`AGENTS.md` への書き込みは `agents-section.sh` だけで行う。** ファイルの直接編集（エディタ操作・`sed`・リダイレクト等）は禁止する。
+- 書くのは `<!-- agent-cli-skills:update-docs:start -->` 〜 `<!-- agent-cli-skills:update-docs:end -->` の中身だけ。区間が無ければ末尾へ追記される。区間の外（管理区間・見出し・観点集）はバイト単位で変わらない。
+- 区間に書く内容は、スキル一覧と構成の節（Step 3 の `## Current Skills (N)`・リポジトリ管理スキル・参照スキルの各節と、Repository Structure）。区間の中身を読み、`CLAUDE.md` の場合と同じ更新を施した**全文**を `_/update-docs-section.md` へ書いて（`_/` が無ければ作る）`--block` に渡す。中身に 2 つのマーカー（`update-docs` 用と `agents-md` 用の start / end）の文字列は含めない。
+- 区間の外にある同名の節や手書きの記述は更新しない。
+- 次のときは書かずに止まるので、結果語彙を報告してユーザーに対応を求める: 自マーカーが片方のみ・重複・逆順（`error-markers`）、`agents-md` 管理区間の内側にある、または内側に含む（`error-nested`）、コードフェンスが閉じていない（`error-fence`）、中身にマーカーがある（`error-block-marker`）、`--block` の中身のファイルがシンボリックリンク（`error-symlink`）、走査のあとに `AGENTS.md` が書き換えられた（`error-changed`。他の更新を上書きしないため。内容を確かめてから再実行する）。自分でマーカーを直したり、スクリプトを迂回したりしない。
+- 書き込み後の `AGENTS.md` が 32768 バイト（Codex の既定の読み込み上限）を超えると stderr に警告が出る。書き込みは行われる。報告に警告を含め、一覧の簡素化をユーザーに提案する。
+
+書き込みの手順（Step 3 で区間の中身の全文を `_/update-docs-section.md` へ書いたあとに実行する。ファイルが無いとスクリプトが止まる）。書き込み先は `select-target.sh --print-write-path` が返す物理パスで、`AGENTS.md` がリポジトリ内の別ファイルへのシンボリックリンクでも、リンクは壊さずリンク先の実体へ区間だけを書く。`select-target.sh` がエラー語彙（`error-symlink`・`error-hardlink`）で止めた場合は、その語彙と終了コードをそのまま報告して止まる（上の表と同じ扱い）:
+
+```bash
+AGENTS_SECTION=""
+for CANDIDATE in \
+  "skills/update-docs/scripts/agents-section.sh" \
+  ".agents/skills/update-docs/scripts/agents-section.sh" \
+  ".claude/skills/update-docs/scripts/agents-section.sh"; do
+  if [[ -f "${CANDIDATE}" ]]; then
+    AGENTS_SECTION="${CANDIDATE}"
+    break
+  fi
+done
+if [[ -z "${AGENTS_SECTION}" ]]; then
+  echo "エラー: agents-section.sh が見つからない（3 レイアウトいずれにも存在しない）" >&2
+  exit 1
+fi
+
+# 書き込み先は select-target.sh が決める。--print-write-path は、選択と同じ検証（リポジトリ内の
+# 通常ファイル・symlink を最後まで辿る・ハードリンクは拒否）を通った物理パスだけを返す。
+# select-target.sh は agents-section.sh と同じディレクトリにある。
+SELECT_TARGET="$(dirname "${AGENTS_SECTION}")/select-target.sh"
+if [[ ! -f "${SELECT_TARGET}" ]]; then
+  echo "エラー: select-target.sh が見つからない（agents-section.sh と同じディレクトリに無い）" >&2
+  exit 1
+fi
+sel_status=0
+SEL_OUT="$(bash "${SELECT_TARGET}" --root . --print-write-path)" || sel_status=$?
+if (( sel_status != 0 )); then
+  printf '%s\n' "${SEL_OUT}"
+  echo "exit=${sel_status}" >&2
+  exit "${sel_status}"
+fi
+if [[ "$(printf '%s\n' "${SEL_OUT}" | tail -n 1)" != "UPDATE_DOCS_TARGET agents" ]]; then
+  echo "エラー: 更新対象が AGENTS.md ではないため、区間を書かずに止める（Step 0 の結果を確認する）" >&2
+  exit 1
+fi
+TARGET_FILE="$(printf '%s\n' "${SEL_OUT}" | sed -n 's/^UPDATE_DOCS_WRITE_PATH //p')"
+if [[ -z "${TARGET_FILE}" ]]; then
+  echo "エラー: 書き込み先のパスを得られないため、区間を書かずに止める" >&2
+  exit 1
+fi
+
+# 書き込み前に --check で結果語彙（appended / replaced / unchanged）を確かめ、
+# 非ゼロ終了はそのままフェンスの終了ステータスにする
+BODY="_/update-docs-section.md"
+status=0
+bash "${AGENTS_SECTION}" --target "${TARGET_FILE}" --block "${BODY}" --check || status=$?
+if (( status == 0 )); then
+  bash "${AGENTS_SECTION}" --target "${TARGET_FILE}" --block "${BODY}" || status=$?
+fi
+rm -f "${BODY}"
+if (( status != 0 )); then
+  echo "exit=${status}" >&2
+  exit "${status}"
+fi
+```
+
+最終行は `UPDATE_DOCS_SECTION_RESULT <appended|replaced|unchanged|error-...>`。`unchanged` なら `AGENTS.md`（リンクのときはリンク先の実体）は書き換えられていない。
+
 ### Step 1: 前回の更新コミットを確認する
 
-`_/.last-update-docs` を読み込んで `commit_hash` を取得。
-ファイルが存在しない場合は初回扱いとして直近のコミットを基準にする。
+`_/.last-update-docs` を読み込んで `commit_hash` を取得する。値は**展開する前に**検証し、40 桁の小文字 16 進（`^[0-9a-f]{40}$`）でなければ報告して止める（コマンドやオプションとして解釈される値を後続のシェルへ渡さないため）。ファイルが存在しない場合は初回扱いで、`BASE_COMMIT` は空になる。
+
+```bash
+LAST_FILE="_/.last-update-docs"
+BASE_HASH=""
+if [[ -f "${LAST_FILE}" ]]; then
+  BASE_HASH="$(sed -n 's/^commit_hash=//p' "${LAST_FILE}" | head -n 1)"
+  if [[ ! "${BASE_HASH}" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "エラー: ${LAST_FILE} の commit_hash が 40 桁の小文字 16 進ではないため中止する（ファイルを確認する）" >&2
+    exit 1
+  fi
+fi
+# 出力の BASE_COMMIT を Step 2 で使う（空なら初回）
+echo "BASE_COMMIT=${BASE_HASH}"
+```
 
 ### Step 2: 変更内容を確認する
 
+Step 1 の `BASE_COMMIT` の値を単一引用符の中に入れて実行する。シェルの状態は呼び出しごとに消えるため、フェンスの中でも形式を検証し直す。初回（空）は直近 10 件のコミットを見て、現在の構成を Step 3 で全件確認する。
+
 ```bash
-git log <commit_hash>..HEAD --oneline
-git diff <commit_hash>..HEAD --stat
+BASE_HASH='<Step 1 の BASE_COMMIT の値>'
+if [[ -z "${BASE_HASH}" ]]; then
+  git log -n 10 --oneline
+elif [[ "${BASE_HASH}" =~ ^[0-9a-f]{40}$ ]]; then
+  git log "${BASE_HASH}..HEAD" --oneline
+  git diff "${BASE_HASH}..HEAD" --stat
+  # 次の場所の変更は、一覧・構造ツリーの更新対象になる
+  git diff --name-only "${BASE_HASH}..HEAD" -- \
+    skills .claude/agents .claude/rules .claude/skills \
+    .agents/skills .codex/agents .opencode/agents
+else
+  echo "エラー: BASE_COMMIT が 40 桁の小文字 16 進ではないため中止する" >&2
+  exit 1
+fi
 ```
 
 変更されたファイルと内容を把握する。
 
-### Step 3: CLAUDE.md を更新する
+### Step 3: 指示ファイルを更新する
+
+Step 0 で選んだ指示ファイル（`CLAUDE.md` または `AGENTS.md`）を更新する。`AGENTS.md` のときは、ここで作った内容を Step 0 の手順で `agents-section.sh` に渡して書き込む（直接編集しない）。
 
 #### Current Skills の更新
 
-スキルを2系統に分けて列挙し、`CLAUDE.md` の `## Current Skills` セクションと「リポジトリ管理スキル」セクションをそれぞれ更新する。
+スキルを2系統に分けて列挙し、指示ファイルの `## Current Skills` セクションと「リポジトリ管理スキル」セクションをそれぞれ更新する。
 
 **系統 A: 配布可能スキルの全列挙（カウント対象）**
 
@@ -64,7 +204,8 @@ fi
 
 - スキル数のカウントを更新: `## Current Skills (N)`（N は系統 A のみ）
 - カンマ区切りのスキル名一覧を更新
-- `CLAUDE.md` に `## Current Skills` セクションが存在しない場合は新規作成する
+- 指示ファイル（`AGENTS.md` のときは update-docs の区間）に `## Current Skills` セクションが存在しない場合は新規作成する
+- `.claude/` が無く `.agents/skills/` だけにスキルがあるリポジトリ（Codex / OpenCode だけを使う構成）でも、`skills/` が無ければ上のコマンドが `.agents/skills/` を列挙するため、系統 A で数える（数え漏れない）。系統 B の `WARN: .claude/skills/<name> から実体へ到達できない` はこの構成では想定内で、同じスキルは系統 A で計上済みのため B2・B3 の節には載せない
 
 **系統 B: `.claude/skills/` / `.agents/skills/` 配下のスキルの全列挙（列挙対象。カウントの扱いは内訳による）**
 
@@ -110,7 +251,7 @@ symlink の有無を見る判定はこのレイアウトで成立しない。そ
 | B1 | `skills/<name>/`（`.claude/skills/<name>` の物理解決先が `skills/<name>` の物理解決先と一致することを検証済み）。**消費側レイアウトでは加えて** `.agents/skills/<name>/`（`.claude/skills/<name>` の物理解決先が `.agents/skills/<name>` の物理解決先と一致することを検証済み）も B1 に含む（系統 A の列挙元が `.agents/skills/` であるため、同じ実体への一致は系統 A で既に計上済み） | 含める（系統 A の列挙で既に計上済み。B1 を理由に N を増減させない） | `## Current Skills (N)` |
 | B2 | `.claude/skills/<name>/` が `SKILL.md` を持つ実体で、`skills/<name>/` にも `.agents/skills/<name>/` にも該当せず、`skills-lock.json` にも掲載されていない | 含めない | 「リポジトリ管理スキル（.claude/skills/ に配置）」 |
 | B3 | **上流レイアウト限定**: `.agents/skills/<name>/` が `SKILL.md` を持つ実体で、`.claude/skills/<name>` の物理解決先が `.agents/skills/<name>` の物理解決先と一致することを検証済み（`.claude/skills/<name>` 自身が symlink である子 symlink 型・`.claude/skills` 自体が symlink である親 symlink 型のいずれも該当）。`skills/<name>` とは別実体の参照スキルという位置づけのため、`skills/` が存在する上流レイアウトでのみ成立する。消費側レイアウトでは同じ一致は B1 として扱う（B3 に該当するケースが存在しない） | 含めない | 「参照スキル（.claude/skills/ に配置）」 |
-| B4 | 誤配置・判定不能（`skills-lock.json` 掲載の実ディレクトリ、物理解決先の不一致・到達不能、別ターゲットへの symlink、`jq` 不在でタイブレーク未実施 等） | 含めない | CLAUDE.md には記載しない（stderr へ警告のみ。手動対応が必要な構成問題として扱う） |
+| B4 | 誤配置・判定不能（`skills-lock.json` 掲載の実ディレクトリ、物理解決先の不一致・到達不能、別ターゲットへの symlink、`jq` 不在でタイブレーク未実施 等） | 含めない | 指示ファイルには記載しない（stderr へ警告のみ。手動対応が必要な構成問題として扱う） |
 
 B1・B2・B3 の抽出コマンド（シェル関数として定義する。「検証」節でも**同一の関数**を呼び出すため、
 コマンド本体はここに一度だけ記述する）。分類の核は単一の分類器 `classify_b`（名前ごとに排他的な
@@ -247,7 +388,7 @@ extract_b3   # 参照スキルの掲載一覧
 タイブレークを実装済みであり、`jq` が無い環境ではタイブレーク判定自体を行わず B4 として
 除外・報告する。フェイルクローズにより、判定できないケースを誤って B2 に含めることはない）。
 
-- `CLAUDE.md` の「リポジトリ管理スキル（.claude/skills/ に配置）」「参照スキル（.claude/skills/ に配置）」の各セクションを B2・B3 で更新する
+- 指示ファイルの「リポジトリ管理スキル（.claude/skills/ に配置）」「参照スキル（.claude/skills/ に配置）」の各セクションを B2・B3 で更新する
 - セクションが存在しない場合は新規作成する
 
 **件数整合式（プレースホルダー。対象リポジトリで都度実測する）**: 系統 A・B1・B2・B3・B4 の
@@ -283,6 +424,9 @@ extract_b3   # 参照スキルの掲載一覧
 - `.claude/agents/` にエージェント定義が追加・削除された
 - `.claude/rules/` にルールが追加・削除された
 - `.claude/skills/` にワークフロースキルが追加・削除された
+- `.agents/skills/` にスキルが追加・削除された
+- `.codex/agents/` に Codex のエージェント定義が追加・削除された
+- `.opencode/agents/` に OpenCode のエージェント定義が追加・削除された
 
 #### その他の更新対象
 
@@ -308,15 +452,16 @@ commit_date=2026-03-21T10:00:00+09:00
 
 ### Step 5: 更新内容を報告する
 
-更新したファイルの一覧と変更内容を表示する。
+更新したファイルの一覧と変更内容を表示する。`AGENTS.md` を更新したときは `agents-section.sh` の結果語彙（`appended` / `replaced` / `unchanged`）と、サイズ超過の警告があればそれも含める。`none` で止めたときは、どちらの指示ファイルも無かったので何も作っていないことを報告する。
 
 ## 検証
 
 更新後、以下で完了を確認する。
 
 ```bash
-# CLAUDE.md のスキル数が実ディレクトリ数と一致しているか確認
-grep "^## Current Skills" CLAUDE.md
+# 指示ファイル（Step 0 で選んだ CLAUDE.md または AGENTS.md）のスキル数が実ディレクトリ数と一致しているか確認
+TARGET_FILE=CLAUDE.md   # agents を選んだときは AGENTS.md
+grep "^## Current Skills" "${TARGET_FILE}"
 if [ -d skills ]; then
   find -L skills -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l
 elif [ -d .agents/skills ]; then
@@ -372,22 +517,25 @@ comm -12 <(printf '%s\n' "${b1}" | sed '/^$/d') <(printf '%s\n' "${b3}" | sed '/
 comm -12 <(printf '%s\n' "${b2}" | sed '/^$/d') <(printf '%s\n' "${b3}" | sed '/^$/d')
 ```
 
-- B2 の出力（stdout）が `CLAUDE.md` の「リポジトリ管理スキル（.claude/skills/ に配置）」節と一致すること
-- B3 の出力（stdout）が `CLAUDE.md` の「参照スキル（.claude/skills/ に配置）」節と一致すること
+- B2 の出力（stdout）が指示ファイルの「リポジトリ管理スキル（.claude/skills/ に配置）」節と一致すること
+- B3 の出力（stdout）が指示ファイルの「参照スキル（.claude/skills/ に配置）」節と一致すること
 - B1/B2/B3 の排他性チェック（`comm -12` 3本）がいずれも空出力であること（重複があれば
   B2・B3 抽出コマンドのタイブレークに誤りがある）
 - B1（系統 A で計上済み）+ B2 + B3 + B4（名前集合差分で算出した件数）が、`-L` 付き全列挙の
   件数と一致すること
-- `b4` が空でない場合、対応する `WARN:` 行の内容を確認し、CLAUDE.md のどのセクションにも
-  含めないこと（B4 は記載対象外）
+- `b4` が空でない場合、対応する `WARN:` 行の内容を確認し、指示ファイルのどのセクションにも
+  含めないこと（B4 は記載対象外）。`.claude/skills/` が無いリポジトリ（`.agents/skills/` だけにスキルがある構成）では
+  全スキルが B4 の `WARN:` になるが想定内で、系統 A が数えており `B1 + B2 + B3 + B4 = B` も成立する
 
 ## 注意事項
 
-- `CLAUDE.md` のみが更新対象。個別スキルの `SKILL.md` や `references/` は対象外
+- 更新対象は Step 0 で選んだ指示ファイル 1 つだけ（`CLAUDE.md` があれば `CLAUDE.md`、無ければ `AGENTS.md`）。両方あるときの `AGENTS.md` は読み書きしない。ただし両者が同じファイルで一方が symlink のときは `AGENTS.md` として区間だけを更新し、`CLAUDE.md` を直接書き換えない（ハードリンクのときは書かずに止める）。どちらも無いときは作らずに報告して止める
+- `AGENTS.md` を更新するときの書き込みは `agents-section.sh` だけで行い、update-docs 専用のマーカー区間の外（init-codex 系の管理区間・レビュー観点集など）を変更しない
+- 個別スキルの `SKILL.md` や `references/` は更新対象外
 - 自動生成ファイルは更新対象外
 - `_/.last-update-docs` が `.gitignore` に追加されているか確認する
 - **`.claude/skills/` の実ディレクトリ抽出（用途が異なる点に注意）**: `find .claude/skills -maxdepth 1 -mindepth 1 -type d`（`-L` を付けない）は「symlink ではない実ディレクトリ = そのリポジトリ固有の管理スキル」を狙った抽出コマンドだが、**`.claude/skills` 自体が `.agents/skills` を指す symlink であるレイアウト（親 symlink 型）では、配下の全エントリが symlink ではなく実ディレクトリに見えるため、このコマンドは常に空を返し B2 判定には使えない。** 系統 B の分類は `classify_b`（`resolve` による物理解決先の比較）を基準とし、`-L` 無し find は用途を持たない。全列挙が必要な場面では必ず `-L` 付きの版（上記 `classify_b` の候補集合構築コマンド）を使う
-- **`github-docs` 等の扱い**: `.claude/skills/github-docs`（子 symlink 型なら symlink、親 symlink 型なら実ディレクトリに見える）の物理解決先が `.agents/skills/github-docs` の物理解決先と一致するため、`classify_b` は本リポジトリ（`skills/` が存在する上流レイアウト）では `github-docs`・`anthropic-claude-code` 等を B3（参照スキル）に分類する。これは B2 からの除外であって `CLAUDE.md` からの除外ではなく、「参照スキル（.claude/skills/ に配置）」節に記載する。`skills/` を持たない消費側レイアウトでは同じ一致は B1 として扱われる（上記分類表参照）
+- **`github-docs` 等の扱い**: `.claude/skills/github-docs`（子 symlink 型なら symlink、親 symlink 型なら実ディレクトリに見える）の物理解決先が `.agents/skills/github-docs` の物理解決先と一致するため、`classify_b` は本リポジトリ（`skills/` が存在する上流レイアウト）では `github-docs`・`anthropic-claude-code` 等を B3（参照スキル）に分類する。これは B2 からの除外であって指示ファイルからの除外ではなく、「参照スキル（.claude/skills/ に配置）」節に記載する。`skills/` を持たない消費側レイアウトでは同じ一致は B1 として扱われる（上記分類表参照）
 - **実ディレクトリ型リポジトリでの振る舞い**: `.claude/skills/<name>` が実ディレクトリで配置されているリポジトリ（`.claude/skills` が実ディレクトリ運用の消費側リポジトリ等）では、実体が `.claude/skills/<name>` 直下にあるかどうかだけで判定すると外部取り込みスキルまで拾ってしまい「リポジトリ管理スキル」節が過大になり得る。`classify_b` は物理解決先の一致を優先することで、実ディレクトリか symlink かに関わらず次の順でタイブレークする:
   1. 物理解決先が `skills/<name>/` の物理解決先と一致する → 配布スキル（系統 A・B1）。リポジトリ管理スキルではない
   2. 物理解決先が `.agents/skills/<name>/` の物理解決先と一致する →
@@ -405,16 +553,17 @@ comm -12 <(printf '%s\n' "${b2}" | sed '/^$/d') <(printf '%s\n' "${b3}" | sed '/
   あり B4 として除外し stderr へ警告する（誤って B3 に含めない）。この B3 判定自体が
   `skills/` ディレクトリの存在する上流レイアウトに限定される点は上記の分類表・タイブレーク
   一覧を参照（消費側レイアウトでは同じ解決先一致を B1 として扱う）
+- **`.agents/skills/` だけにあるスキル**: `.claude/skills/` が無く `.agents/skills/<name>/SKILL.md` だけがある構成では、`skills/` が無ければ系統 A が `.agents/skills/` を列挙して数えるため `## Current Skills (N)` の N に入る（系統 B では B4 の `WARN:` になるが、系統 A で計上済みなので B2・B3 の節には載せない）。`skills/` がある上流レイアウトで `.agents/skills/<name>` だけが `.claude/skills/` から未リンクの場合は、系統 A の対象外で B4 になり、どの節にも載らない。この構成では `.claude/skills/<name>` へのリンクを作るか別管理にするかを手動で決める（update-docs 自身は構成を変更しない）
 - **空出力の扱い**: `2>/dev/null` はディレクトリ不在（例: `.agents/skills` が無いリポジトリ）を許容する目的に限る。空出力を即座に「0 件」と判断せず、対象ディレクトリ自体の存在を先に確認する
 
 ## コード内コメントの観点（任意）
 
-コメント補強を依頼された場合に適用する指針。CLAUDE.md 同期とは独立した作業として実施する。
+コメント補強を依頼された場合に適用する指針。指示ファイル（CLAUDE.md / AGENTS.md）の同期とは独立した作業として実施する。
 
 ### 基本方針
 
 コメントは「何をするか」ではなく「このパッケージ・サービスにおける対象の役割」を記述する。
-後続の読み手（Claude を含む）は渡された情報からしか判断できないため、以下の観点を明示する。
+後続の読み手（人間およびエージェント）は渡された情報からしか判断できないため、以下の観点を明示する。
 
 - **呼び出し元からの観点** — このシンボルが呼び出し元にとって何を提供するか
 - **呼び出し先からの観点** — このシンボルが依存している外部サービス・モジュールとの関係
@@ -429,5 +578,13 @@ comm -12 <(printf '%s\n' "${b2}" | sed '/^$/d') <(printf '%s\n' "${b3}" | sed '/
 
 ### 詳細規約の参照先
 
-コメントスタイルの詳細（形式・言語・長さ・禁止事項）は対象リポジトリの `.claude/rules/code-comment-style.md` に従う。
-当該ファイルが存在しない場合は、対象リポジトリの既存コメントスタイルに合わせる。
+対象リポジトリのコメント規約（CLAUDE.md / AGENTS.md / CONTRIBUTING / `.claude/rules/code-comment-style.md` 等）があれば、形式・言語・長さ・禁止事項はそれに従う。無ければ次の要点に従う。
+
+- 形式は言語の慣習に従うドキュメンテーションコメント（JSDoc / docstring / rustdoc 等）にし、先頭の要約行に役割・責務を 1〜2 行で書く
+- インラインコメントは what ではなく why（制約・背景・仕様上の都合）を書く。参照すべき Issue 番号・仕様書 URL があれば記載する
+- コードを読めば自明な逐語的説明や、シグネチャの繰り返しは書かない。解決済みの経緯だけのコメントは削除する
+- 言語・文体・長さは、対象リポジトリの既存コメントに合わせる
+
+## sandbox 環境での実行
+
+このスキルは sandbox 環境で実行できる。ネットワーク越しの操作は行わず、使うのは `git log` / `git diff` などローカルの git 読み取りとファイル入出力だけである。書き込み先は指示ファイル（`CLAUDE.md` または `AGENTS.md`・ワークスペース内）、`_/.last-update-docs`、`_/update-docs-section.md`（`AGENTS.md` を更新するときだけ・書き込み後に削除する）で、`.git`・`.agents`・`.codex` へは書かない（`.agents/skills`・`.codex/agents` は変更の検知のために読むだけ）。`agents-section.sh` は作業用の一時ファイルを OS の一時ディレクトリ（`TMPDIR`）に作り、終了時に消す。Codex の既定 sandbox でも、これらの書き込み先はワークスペース内なので昇格は要らない。`_/` に書けない環境では、書けなかったことを報告して止める。

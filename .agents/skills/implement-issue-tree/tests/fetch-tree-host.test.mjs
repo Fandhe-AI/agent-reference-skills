@@ -9,9 +9,9 @@ import { runScript, BASE_ARGS } from './lib/stub-run.mjs'
 import { treeFetchReply } from './lib/signed-output.mjs'
 
 const baseNodes = () => [
-  { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: 2 },
-  { number: 2, title: 'a', state: 'open', parent: 1, siblingIndex: 0, dependsOn: [], subIssuesTotal: 0 },
-  { number: 3, title: 'b', state: 'open', parent: 1, siblingIndex: 1, dependsOn: [], subIssuesTotal: 0 },
+  { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: 2, optinTests: [] },
+  { number: 2, title: 'a', state: 'open', parent: 1, siblingIndex: 0, dependsOn: [], subIssuesTotal: 0, optinTests: [] },
+  { number: 3, title: 'b', state: 'open', parent: 1, siblingIndex: 1, dependsOn: [], subIssuesTotal: 0, optinTests: [] },
 ]
 const POST = /^(detect:external-checks|plan:declared-deps|plan:root-ancestors|plan:out-of-tree-deps)/
 const isTree = (label) => label === 'plan:issue-tree' || label === 'plan:issue-tree-retry'
@@ -33,12 +33,14 @@ function run(replies, args = BASE_ARGS) {
 }
 const honest = (prompt) => treeFetchReply(prompt, baseNodes())
 
+// 7 欄（第 7 欄 optinTests = 本文の opt-in テスト宣言を含む）
 const MUTATIONS = {
   number: (n) => ({ ...n, number: 9 }),
   parent: (n) => ({ ...n, parent: 2 }),
   siblingIndex: (n) => ({ ...n, siblingIndex: 5 }),
   state: (n) => ({ ...n, state: 'closed' }),
   subIssuesTotal: (n) => ({ ...n, subIssuesTotal: 1 }),
+  optinTests: (n) => ({ ...n, optinTests: ['make e2e'] }),
 }
 
 for (const [field, mutate] of Object.entries(MUTATIONS)) {
@@ -75,9 +77,9 @@ test('2 回とも不一致なら後続 agent を 1 件も起動せず、メッ�
 
 // 1 ページの封筒の payload は dir・tsvSha256 を持たない（空文字の欄は転記で落ちやすく、欠けると sha256 が毎回不一致になるため）。
 // 観測値の sha256 のまま、転記で欄が欠けた・余った返却は検査値の不一致として 2 回とも拒否される（fail-closed）。
-test('1 ページの封筒の payload は 6 欄だけで、dir・tsvSha256 を含まない', () => {
+test('1 ページの封筒の payload は 8 欄だけで（repo を含む。Issue #808）、dir・tsvSha256 を含まない', () => {
   const r = honest('--nonce abc123 --root 1')
-  assert.deepEqual(Object.keys(r.payload).sort(), ['count', 'inputSha256', 'nodesSha256', 'pages', 'structSha256', 'taskIdSha256'])
+  assert.deepEqual(Object.keys(r.payload).sort(), ['count', 'inputSha256', 'nodesSha256', 'optinSha256', 'pages', 'repo', 'structSha256', 'taskIdSha256'])
 })
 
 for (const [name, tamper] of [
@@ -138,8 +140,8 @@ test('title のみ不一致でも完全性検査が落ちれば止まる（構�
 })
 
 test('約 570 ノード規模で title が 1〜2 件違っても止まらない', async () => {
-  const big = [{ number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: 569 }]
-  for (let i = 0; i < 569; i++) big.push({ number: 2 + i, title: `t${i}`, state: 'closed', parent: 1, siblingIndex: i, dependsOn: [], subIssuesTotal: 0 })
+  const big = [{ number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: 569, optinTests: [] }]
+  for (let i = 0; i < 569; i++) big.push({ number: 2 + i, title: `t${i}`, state: 'closed', parent: 1, siblingIndex: i, dependsOn: [], subIssuesTotal: 0, optinTests: [] })
   const copied = (p) => treeFetchReply(p, big.map((n) => (n.number === 100 || n.number === 400 ? { ...n, title: n.title + 'x' } : n)), { digestNodes: big })
   const { result } = await run([copied, copied])
   assert.equal(result.treeFetch.titleMismatch, true)
@@ -172,7 +174,71 @@ test('タスク ID が正しく title の他の部分だけが違う返却は、
   assert.equal(result.treeFetch.titleMismatch, true)
 })
 
+// opt-in テスト宣言（optinTests）は実行コマンドの宣言に使うため、title と違い不一致を許容しない（structSha256 と同じ扱い: 取り直し 1 回・2 回目も違えば停止）
+const withOptin = () => baseNodes().map((n) => (n.number === 2 ? { ...n, optinTests: ['make e2e', 'npm run e2e'] } : n))
+const OPTIN_COPY_ERRORS = {
+  '1 要素の書き換え': (nodes) => nodes.map((n) => (n.number === 2 ? { ...n, optinTests: ['make e2e', 'make deploy'] } : n)),
+  '1 要素の欠落': (nodes) => nodes.map((n) => (n.number === 2 ? { ...n, optinTests: ['make e2e'] } : n)),
+  '要素の並べ替え': (nodes) => nodes.map((n) => (n.number === 2 ? { ...n, optinTests: ['npm run e2e', 'make e2e'] } : n)),
+  '宣言の無いノードへの追加': (nodes) => nodes.map((n) => (n.number === 3 ? { ...n, optinTests: ['make e2e'] } : n)),
+}
+for (const [name, copyError] of Object.entries(OPTIN_COPY_ERRORS)) {
+  const copied = (p) => treeFetchReply(p, copyError(withOptin()), { digestNodes: withOptin() })
+  test(`optinTests の書き写し誤り（${name}）は 1 回取り直し、2 回目が正しければ続行する`, async () => {
+    const { result } = await run([copied, (p) => treeFetchReply(p, withOptin())])
+    assert.equal(result.treeFetch.attempts, 2)
+    assert.equal(result.treeFetch.titleMismatch, false)
+  })
+  test(`optinTests の書き写し誤り（${name}）が 2 回続くと、title のように警告つきで続行せず停止する（後続 agent も起動しない）`, async () => {
+    const seen = []
+    await assert.rejects(
+      runScript({
+        args: BASE_ARGS,
+        leaves: [2, 3],
+        override: (label, _o, prompt) => {
+          seen.push(label)
+          return isTree(label) ? copied(prompt) : undefined
+        },
+      }),
+      /検査値/,
+    )
+    assert.deepEqual(seen.filter((l) => l.startsWith('plan:issue-tree')), ['plan:issue-tree', 'plan:issue-tree-retry'])
+    assert.ok(!seen.some((l) => POST.test(l)))
+  })
+}
+
+test('試行 1 が title のみ不一致で試行 2 が optinTests の書き写し誤りなら、試行 2 は採用せず、試行 1 の検証済みノードで続行する', async () => {
+  const { result } = await run([titleOff, (p) => treeFetchReply(p, withOptin().map((n) => (n.number === 3 ? { ...n, optinTests: ['x'] } : n)), { digestNodes: withOptin() })])
+  assert.equal(result.treeFetch.attempts, 1)
+  assert.equal(result.treeFetch.titleMismatch, true)
+})
+
+test('宣言のあるツリーの正直な返却は 1 回で採用する（取り直さない）', async () => {
+  const { result, calls } = await run([(p) => treeFetchReply(p, withOptin())])
+  assert.equal(result.treeFetch.attempts, 1)
+  assert.equal(names(calls).filter(isTree).length, 1)
+})
+
+const SHAPE_BAD = {
+  'optinTests の欠落': (n) => { const { optinTests: _o, ...rest } = n; return rest },
+  'optinTests が文字列': (n) => ({ ...n, optinTests: 'make e2e' }),
+  'optinTests に非文字列の要素': (n) => ({ ...n, optinTests: [1] }),
+  'optinTests が null': (n) => ({ ...n, optinTests: null }),
+}
+for (const [name, mutate] of Object.entries(SHAPE_BAD)) {
+  test(`${name}は形の検査で拒否し、2 回続けば停止する`, async () => {
+    const bad = (p) => treeFetchReply(p, baseNodes().map((n) => (n.number === 2 ? mutate(n) : n)), { digestNodes: baseNodes() })
+    await assert.rejects(run([bad, bad]), /形式（#2）/)
+  })
+}
+
 const BROKEN = {
+  'optinSha256 の転記漏れ': (p) => {
+    const r = treeFetchReply(p, baseNodes())
+    delete r.payload.optinSha256
+    return r
+  },
+  'optinSha256 の書き換え（sha256 も整合）': (p) => treeFetchReply(p, baseNodes(), { payload: { optinSha256: 'a'.repeat(64) } }),
   'taskIdSha256 の転記漏れ': (p) => {
     const r = treeFetchReply(p, baseNodes())
     delete r.payload.taskIdSha256

@@ -18,7 +18,8 @@ import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { stripMetaExport } from './lib/workflow-script-contract.mjs'
-import { hashPrecheckReply, signedReply, wrapTreeReply } from './lib/signed-output.mjs'
+import { externalChecksReply, hashPrecheckReply, signedReply, skipLabelsReply, stateVerifyReply, wrapTreeReply } from './lib/signed-output.mjs'
+import { requestedNumbersOf } from './lib/declared-deps-prompt.mjs'
 
 const SCRIPT_PATH = join(dirname(fileURLToPath(import.meta.url)), '..', 'scripts', 'implement-issue-tree.src.js')
 const DRIVER_MARKER = ['__IMPLEMENT', 'ISSUE', 'TREE', 'DRIVER', 'START__'].join('_')
@@ -36,7 +37,7 @@ const slicePath = join(sliceDir, 'implement-issue-tree-agent-budget-defs.mjs')
 const SLICE_EXPORTS = [
   'AGENT_RUN_LIMIT', 'AGENT_CALLS_START', 'AGENT_CALLS_PER_ISSUE', 'AGENT_CALLS_TERMINAL_BASE', 'BLOCKED_STATE_CHUNK_SIZE',
   'parseAgentCallLimit', 'wrapAgentCounting', 'agentBudgetHold', 'sha256Hex', 'canonicalJson',
-  'declaredDepsChecksum', 'outOfTreeStateChecksum', 'stopReasons', 'stopNote',
+  'declaredDepsChecksum', 'outOfTreeStateChecksum', 'stopReasons', 'stopNote', 'terminalVerifyReserve',
 ]
 const optionalExports = SLICE_EXPORTS.map((n) => `const __opt_${n} = typeof ${n} === 'undefined' ? undefined : ${n}`).join('\n')
 const exportList = SLICE_EXPORTS.map((n) => `__opt_${n} as ${n}`).join(', ')
@@ -47,7 +48,7 @@ const mod = await import(pathToFileURL(slicePath).href)
 const {
   AGENT_RUN_LIMIT, AGENT_CALLS_START, AGENT_CALLS_PER_ISSUE, AGENT_CALLS_TERMINAL_BASE, BLOCKED_STATE_CHUNK_SIZE,
   parseAgentCallLimit, wrapAgentCounting, agentBudgetHold, declaredDepsChecksum, outOfTreeStateChecksum, sha256Hex, canonicalJson,
-  stopReasons, stopNote,
+  stopReasons, stopNote, terminalVerifyReserve,
 } = mod
 
 // ---------------------------------------------------------------------------
@@ -118,6 +119,23 @@ test('単体: agentBudgetHold の式は「実行中 × 目安 + 候補の目安 
   assert.equal(manyReq, impl + AGENT_CALLS_TERMINAL_BASE + Math.ceil(1100 / BLOCKED_STATE_CHUNK_SIZE))
 })
 
+test('単体: 終了時の照合の予備（terminalVerifyReserve）は 2 ページ目以降 × フォールバック 2 回で、1 ページは 0・上限 50 ページで頭打ち (PR #810 codex P1)', () => {
+  const rows = [[0, 0], [1, 0], [100, 0], [101, 2], [200, 2], [201, 4], [1001, 20], [3000, 58], [3001, 60], [5000, 98], [5001, 98], [1e6, 98]]
+  for (const [n, want] of rows) assert.equal(terminalVerifyReserve(n), want, `項目 ${n} 件`)
+})
+
+test('単体: agentBudgetHold は終了時の照合の予備（budget.terminalVerify）を最初の着手にも課す。未設定は 0 (PR #810 codex P1)', () => {
+  const impl = AGENT_CALLS_PER_ISSUE.implement
+  const need = impl + AGENT_CALLS_TERMINAL_BASE + 58
+  // 最初の着手（chunks は免除）も照合の予備は免除しない: ちょうど足りれば通り、1 足りなければ保留
+  assert.equal(agentBudgetHold({ limit: need, used: 0, starts: 0, terminalVerify: 58 }, { running: 0, kind: 'implement', pending: 1100 }), null)
+  assert.deepEqual(agentBudgetHold({ limit: need - 1, used: 0, starts: 0, terminalVerify: 58 }, { running: 0, kind: 'implement', pending: 1100 }), { remaining: need - 1, required: need, chunks: 11, needed: need })
+  // 2 件目以降は chunks 項と合わせて課す
+  assert.equal(agentBudgetHold({ limit: 1, used: 0, starts: 1, terminalVerify: 58 }, { running: 1, kind: 'close', pending: 1100 }).required, impl + AGENT_CALLS_PER_ISSUE.close + AGENT_CALLS_TERMINAL_BASE + 58 + 11)
+  // 未設定（従来の呼び出し）は 0
+  assert.equal(agentBudgetHold({ limit: 1, used: 0, starts: 1 }, { running: 0, kind: 'close', pending: 0 }).required, AGENT_CALLS_PER_ISSUE.close + AGENT_CALLS_TERMINAL_BASE)
+})
+
 test('単体: 生成元は agent() の呼び出し箇所を変えず、pipeline() も使わない（数え方が 1:1 で成り立つ前提）', () => {
   const dist = readFileSync(join(dirname(SCRIPT_PATH), 'implement-issue-tree.js'), 'utf8')
   assert.doesNotMatch(dist, /\bpipeline\(/, 'pipeline() が増えると agent() 呼び出し数とランタイムの数がずれる（コメント除去済みの生成物で検査）')
@@ -169,6 +187,9 @@ async function runScript({ args, leaves, cutoffAfter = Infinity, override = () =
   const logs = []
   const inFlight = new Set()
   let peak = 0
+  // 照合の正直な応答はラン内で 1 回だけ組む（ページごとに全項目をハッシュし直さない）
+  let savedCheck = null
+  const verifyCheck = () => (savedCheck ??= saved === null ? { fileExists: false, hashes: {}, keysSha256: '', keysCount: 0, highWaterBytes: 0, highWaterVersion: 0 } : { ...stateVerifyFor(saved), highWaterVersion: 2 })
   const handler = (prompt, opts) => {
     const label = opts.label
     const overridden = override(label, opts, prompt)
@@ -178,12 +199,12 @@ async function runScript({ args, leaves, cutoffAfter = Infinity, override = () =
     if (label === 'script-hash-precheck') return hashPrecheckReply(prompt)
     if (label === 'worktree:untracked-scan') return { count: 0, paths: [] }
     if (label === 'state:load') return { ok: true, fileExisted: saved !== null, items: saved ?? {}, highWaterBytes: 0, highWaterVersion: saved ? 2 : 0 }
-    if (label === 'state:load-verify') return saved === null ? { fileExists: false, hashes: {}, keysSha256: '', keysCount: 0, highWaterBytes: 0, highWaterVersion: 0 } : { ...stateVerifyFor(saved), highWaterVersion: 2 }
+    // 2 ページ目以降（state:load-verify:pN）とフォールバックの label も同じ正直な応答（大きな状態ファイルの照合。PR #810）
+    if (label.startsWith('state:load-verify')) return stateVerifyReply(prompt, verifyCheck())
     if (label === 'plan:issue-tree') return wrapTreeReply(prompt, { nodes: structuredClone(nodes) })
-    if (label === 'detect:external-checks') return { apps: [] }
+    if (label === 'detect:external-checks') return externalChecksReply(prompt)
     if (label.startsWith('plan:declared-deps')) {
-      const m = /for n in ([0-9 ]+); do/.exec(prompt)
-      return { entries: m[1].trim().split(' ').map(Number).map((x) => ({ number: x, deps: [], sig: declaredDepsChecksum(x, []) })) }
+            return { entries: requestedNumbersOf(prompt).map((x) => ({ number: x, deps: [], sig: declaredDepsChecksum(x, []) })) }
     }
     if (label.startsWith('plan:root-ancestors')) return { fetched: true, chain: [{ number: args.parent, parent: 0 }] }
     if (label.startsWith('plan:out-of-tree-deps')) {
@@ -191,7 +212,7 @@ async function runScript({ args, leaves, cutoffAfter = Infinity, override = () =
       return { entries: m[1].trim().split(' ').map(Number).map((x) => ({ number: x, state: 'OPEN', sig: outOfTreeStateChecksum(x, 'OPEN') })) }
     }
     // 対象外ラベル（args.skipLabels）の既定の応答: どのラベルにも該当する open issue なし。通知コメントは成功
-    if (label.startsWith('plan:skip-labels')) return { entries: [...new Set(args.skipLabels ?? [])].map((_, k) => ({ i: k + 1, x: 0, numbers: [], sig: declaredDepsChecksum((k + 1) * 2, []) })) }
+    if (label.startsWith('plan:skip-labels')) return skipLabelsReply(prompt, { entries: [...new Set(args.skipLabels ?? [])].map((_, k) => ({ i: k + 1, numbers: [] })) })
     if (label === 'notify-blocked') return { ok: true }
     if (label === 'worktree:orphan-scan') return { entries: [{ path: '/repo', branch: 'main', isMain: true }] }
     if (label === 'worktree:record-count') return { count: 1 }
@@ -523,7 +544,9 @@ test('結合: 開始処理で予算を使い切り最初の 1 件も着手でき
   for (const t of notes) assertBudgetFragment(t, 81, '未着手の note')
   // (a) N は保留時の記録から導かれる: N = 保留時の使用 + required。最初の 1 件（first）は required から chunks 項を免除され、ゲートが実際に使った
   // 必要量は 実装の目安 + 終了処理の予備 = 50。N にはこれに上乗せしない（chunks 項は観測値 held[].chunks として別に返す）。
-  for (const t of notes) assert.equal(heldN(t) - heldUsed(t), AGENT_CALLS_PER_ISSUE.implement + AGENT_CALLS_TERMINAL_BASE, `N = 保留時の使用 + ゲートが使った必要量（上乗せしない）: ${t}`)
+  // 終了時の照合の予備（PR #810）: 状態は空でも、キュー 1001 件（葉 1000 + 親 #1）をこのランで書き得るので 11 ページ = 2 × 10 回
+  assert.equal(a.terminalVerify, 20)
+  for (const t of notes) assert.equal(heldN(t) - heldUsed(t), AGENT_CALLS_PER_ISSUE.implement + AGENT_CALLS_TERMINAL_BASE + a.terminalVerify, `N = 保留時の使用 + ゲートが使った必要量（上乗せしない）: ${t}`)
   assert.equal(a.held[0].chunks, Math.ceil((MANY.length + 1) / BLOCKED_STATE_CHUNK_SIZE), 'chunks は観測値として返す（未完了 = 葉 1000 + 親 #1 = 1001 件）')
   const startUsed = heldUsed(notes[0])
   assert.ok(startUsed > AGENT_CALLS_START, `開始処理の見積り ${AGENT_CALLS_START} を超えて使っている（${startUsed}）ことが前提`)
@@ -539,6 +562,34 @@ test('結合: 開始処理で予算を使い切り最初の 1 件も着手でき
   const below = await runScript({ args: { ...BASE_ARGS, agentCallLimit: a.neededLimit - 1 }, leaves: MANY })
   assert.ok(!planned(below, 2) && below.result.agentBudget.starved, `limit ${a.neededLimit - 1}（N - 1）では保留される`)
 })
+// PR #810 codex P1: 終了時の loadState の照合は ceil(項目数 / 100) 回（フォールバックで最大 2 倍）。状態ファイルが大きいと、予算ゲートを通った
+// ランでも終了処理の途中でランタイムの上限に届き得る。開始時のキー ∪ キューの番号から終了時のページ数を見積もり、新規着手の判定に加える。
+// 状態 3000 件（ツリーの 9 ノードを pending で含む）: 項目の上限は 3000 件（キューの番号は既にキーにある。和ではなく和集合）→ 30 ページ → 予備 2 × 29 = 58。
+const BIG_STATE = Object.fromEntries([
+  [1, { type: 'verify-close', status: 'pending' }],
+  ...LEAVES.map((n) => [n, { type: 'implement', status: 'pending' }]),
+  ...Array.from({ length: 3000 - 1 - LEAVES.length }, (_, i) => [10 + i, { type: 'implement', status: 'merged', pr: 0, branch: '', worktree: '', fixCount: 0 }]),
+])
+test('結合: 状態 3000 件では終了時の照合の予備（58）を新規着手の判定に加え、足りなければ着手せず、足りれば着手する (PR #810 codex P1)', async () => {
+  assert.equal(Object.keys(BIG_STATE).length, 3000)
+  // 足りない: 下限の limit では 1 件も着手せず、観測値 N = 保留時の使用 + 実装の目安 + 予備 20 + 照合の予備 58（最初の着手も免除しない）
+  const low = await runScript({ args: { ...BASE_ARGS, agentCallLimit: 81 }, leaves: LEAVES, saved: BIG_STATE })
+  const a = low.result.agentBudget
+  assert.equal(a.starts, 0)
+  assert.equal(a.starved, true)
+  const note = notStartedNotes(low.result).find(soleBudget)
+  assert.equal(heldN(note) - heldUsed(note), AGENT_CALLS_PER_ISSUE.implement + AGENT_CALLS_TERMINAL_BASE + 58, note)
+  // しきい値の事実: limit が N なら最初の 1 件は通り、N - 1 では保留される（差の 58 は照合の予備だけ）
+  const pass = await runScript({ args: { ...BASE_ARGS, agentCallLimit: a.neededLimit }, leaves: LEAVES, saved: BIG_STATE })
+  assert.ok(pass.result.agentBudget.starts >= 1, `limit ${a.neededLimit}（N）では着手する`)
+  assert.equal(pass.result.agentBudget.terminalVerify, 58)
+  assert.ok(pass.logs.some((l) => l.includes('終了時の状態ファイル照合の予備 58 回（項目の上限 3000 件）')))
+  // 照合の実数: 開始時 30 ページ + 終了時 30 ページ（フォールバックなし）。終了時の 2 ページ目以降（29）は予備（58 = 29 × 2）に収まる
+  assert.equal(pass.calls.filter((c) => c.opts.label.startsWith('state:load-verify')).length, 60)
+  const below = await runScript({ args: { ...BASE_ARGS, agentCallLimit: a.neededLimit - 1 }, leaves: LEAVES, saved: BIG_STATE })
+  assert.equal(below.result.agentBudget.starts, 0, `limit ${a.neededLimit - 1}（N - 1）では着手しない`)
+})
+
 test('結合: 開始処理が小さいツリーでは starved にならず従来どおり着手する (Bugbot D 対照)', async () => {
   const { result, calls } = await runScript({ args: { ...BASE_ARGS, agentCallLimit: 81 }, leaves: LEAVES })
   assert.ok(calls.some((c) => c.opts.label.startsWith('plan:#')))
@@ -587,7 +638,7 @@ test('結合: 予算に収まる monitoring 再開が worktree ゲートで defe
     const notes = notStartedNotes(result).filter(soleBudget)
     assert.ok(notes.length > 0 && notes.every((t) => heldN(t) === a.neededLimit), `limit ${limit}: 実装の保留は同じ観測値 N を報告する: ${notes[0]}`)
     for (const t of notes) assertBudgetFragment(t, limit, `limit ${limit}`)
-    assert.equal(a.neededLimit - heldUsed(notes[0]), AGENT_CALLS_PER_ISSUE.implement + AGENT_CALLS_TERMINAL_BASE, `limit ${limit}: 観測値 = 保留時の使用 + 実装 1 件に要る量（予算で保留されていない再開 #2 は数えない）`)
+    assert.equal(a.neededLimit - heldUsed(notes[0]), AGENT_CALLS_PER_ISSUE.implement + AGENT_CALLS_TERMINAL_BASE + a.terminalVerify, `limit ${limit}: 観測値 = 保留時の使用 + 実装 1 件に要る量（予算で保留されていない再開 #2 は数えない）`)
     assert.ok(result.interrupted.includes(2), `limit ${limit}: 再開 #2 は中断として残る`)
     assert.ok(noteOf(result, 2).includes('worktree') && !noteOf(result, 2).includes('予算'), `limit ${limit}: 再開 #2 の note は worktree ゲートの理由のまま: ${noteOf(result, 2)}`)
     const saved = Object.values(patchesFromBatchCalls(calls)).filter((p) => soleBudget(p.note))
@@ -598,14 +649,12 @@ test('結合: 予算に収まる monitoring 再開が worktree ゲートで defe
 
 test('結合: ラン中に ready になった安価な verify-close は、開始時に実装が予算で保留されていても着手できる（ループ前で止まらない）(Bugbot 指摘 2)', async () => {
   // 実装（50）は収まらず verify-close（6 + 20 = 26）は収まる残りになる limit だけを検査対象にする（掃引。空振りは失敗）。
+  // 必要量には終了時の照合の予備（ツリーの大きさで決まる。PR #810）が加わるので、その分だけ掃引の範囲をずらす。
+  const mk = (limit) => ({ args: { ...BASE_ARGS, agentCallLimit: limit }, tree: budgetTree({ ready: [3, 4, 5] }), saved: { 11: mergedNoResume }, override: closedProbe })
+  const tv = (await runScript(mk(1000))).result.agentBudget.terminalVerify
   const hits = []
-  for (let limit = 81; limit <= 100; limit++) {
-    const run = await runScript({
-      args: { ...BASE_ARGS, agentCallLimit: limit },
-      tree: budgetTree({ ready: [3, 4, 5] }),
-      saved: { 11: mergedNoResume },
-      override: closedProbe,
-    })
+  for (let limit = 81 + tv; limit <= 100 + tv; limit++) {
+    const run = await runScript(mk(limit))
     if (run.logs.some((l) => l.includes('新規着手を停止する')) && !run.calls.some((c) => c.opts.label.startsWith('plan:#'))) hits.push({ limit, ...run })
   }
   assert.ok(hits.length > 0, '実装が予算で一度も着手されないランが 1 つ以上ある')
@@ -653,7 +702,7 @@ test('結合: 予算で保留した monitoring 再開の note は、前回評価
   const probe = await runScript(mk(1000))
   const loopUsed = callsBefore(probe.calls, (l) => l === 'prereq:probe')
   assert.ok(loopUsed > 0)
-  const limit = loopUsed + AGENT_CALLS_PER_ISSUE.resume + AGENT_CALLS_TERMINAL_BASE
+  const limit = loopUsed + AGENT_CALLS_PER_ISSUE.resume + AGENT_CALLS_TERMINAL_BASE + probe.result.agentBudget.terminalVerify
   assert.ok(limit >= 81, `limit ${limit} は下限以上（パディングの葉を増やして開始処理の使用量を上げる）`)
   const { result, logs } = await runScript(mk(limit))
   assert.ok(logs.some((l) => l.includes('#2:') && l.includes('monitoring 再開を defer')), '前提: 周回 1 で worktree ゲートの理由が記録される')
@@ -686,7 +735,7 @@ test('結合: ゲートの理由が残る monitoring 再開は予算だけが理
     override: (label, ...rest) => withOneExtraWorktree(label) ?? closedProbe(label, ...rest),
   })
   const probe = await runScript(mk(1000))
-  const limit = callsBefore(probe.calls, (l) => l === 'prereq:probe') + AGENT_CALLS_PER_ISSUE.resume + AGENT_CALLS_TERMINAL_BASE
+  const limit = callsBefore(probe.calls, (l) => l === 'prereq:probe') + AGENT_CALLS_PER_ISSUE.resume + AGENT_CALLS_TERMINAL_BASE + probe.result.agentBudget.terminalVerify
   assert.ok(limit >= 81)
   const { result, logs } = await runScript(mk(limit))
   assert.ok(logs.some((l) => l.includes('#2:') && l.includes('monitoring 再開を defer')), '前提: 周回 1 でゲートの理由が記録される')
@@ -749,14 +798,17 @@ test('結合: starved の note・終了ログは保留時の観測値を報告�
   assert.ok(warn[0].includes(`args.agentCallLimit が ${result.agentBudget.neededLimit} 以上なら予算検査を通った`) && warn[0].includes('予算不足で 1 件も着手していない'), '終了ログは neededLimit のノードと同じ断片')
 })
 test('結合: 新規着手抑止（ラッチ）が効いていても、予算で保留された monitoring 再開は予算だけが理由なので starved になる（再開はラッチの対象外）', async () => {
+  const mk = (limit) => ({
+    args: { ...BASE_ARGS, maxResidualWorktrees: 1, agentCallLimit: limit },
+    tree: budgetTree({ ready: [2], pad: 1600 }),
+    saved: { 2: resumeSaved(2) },
+    override: (label) => (label === 'worktree:orphan-scan' ? { entries: EXTRA_WORKTREES } : undefined),
+  })
+  // 終了時の照合の予備（PR #810）の分だけ掃引の範囲をずらす
+  const tv = (await runScript(mk(1000))).result.agentBudget.terminalVerify
   const hits = []
-  for (let limit = 81; limit <= 100; limit++) {
-    const run = await runScript({
-      args: { ...BASE_ARGS, maxResidualWorktrees: 1, agentCallLimit: limit },
-      tree: budgetTree({ ready: [2], pad: 1600 }),
-      saved: { 2: resumeSaved(2) },
-      override: (label) => (label === 'worktree:orphan-scan' ? { entries: EXTRA_WORKTREES } : undefined),
-    })
+  for (let limit = 81 + tv; limit <= 100 + tv; limit++) {
+    const run = await runScript(mk(limit))
     if (run.logs.some((l) => l.includes('新規着手を停止する')) && noteOf(run.result, 2).includes(BUDGET_MARK)) hits.push({ limit, ...run })
   }
   assert.ok(hits.length > 0, '再開 #2 が予算で保留されるランが 1 つ以上ある')
@@ -765,7 +817,7 @@ test('結合: 新規着手抑止（ラッチ）が効いていても、予算で
     assert.equal(a.starts, 0, `limit ${limit}`)
     assert.equal(a.starved, true, `limit ${limit}: 実装の保留はラッチが理由だが、再開 #2 は予算だけが理由`)
     assert.equal(a.neededLimit, heldN(noteOf(result, 2)), `limit ${limit}: 観測値は再開 #2 の保留時の記録`)
-    assert.equal(a.neededLimit - heldUsed(noteOf(result, 2)), AGENT_CALLS_PER_ISSUE.resume + AGENT_CALLS_TERMINAL_BASE, `limit ${limit}: 観測値 = 保留時の使用 + 再開 1 件に要る量`)
+    assert.equal(a.neededLimit - heldUsed(noteOf(result, 2)), AGENT_CALLS_PER_ISSUE.resume + AGENT_CALLS_TERMINAL_BASE + tv, `limit ${limit}: 観測値 = 保留時の使用 + 再開 1 件に要る量`)
     assertBudgetFragment(noteOf(result, 2), limit, `limit ${limit}`)
     const impl = notStartedNotes(result).filter((t) => t.includes('残置 worktree 上限ゲート'))
     assert.ok(impl.length > 0 && impl.every((t) => t.startsWith('残置 worktree 上限ゲートにより') && !soleBudget(t)), `limit ${limit}: ラッチが理由の実装の note は抑止の理由が先頭`)
@@ -1141,7 +1193,9 @@ test('結合: ループ内のゲート実測が着手なしに呼び出しを消
   // 「同じ引数で足りる」ように見えてしまう窓がここにある（以前の need = startUsed + required）。
   const leaves = Array.from({ length: 1500 }, (_, i) => 2 + i)
   const hits = []
-  for (let limit = 81; limit <= 90; limit++) {
+  // 必要量には終了時の照合の予備（1501 件 = 16 ページ → 2 × 15 回。PR #810）が加わるので、その分だけ掃引の範囲をずらす
+  const tv = 30
+  for (let limit = 81 + tv; limit <= 90 + tv; limit++) {
     const run = await runScript({
       args: { ...BASE_ARGS, maxResidualWorktreeBytes: 1073741824, agentCallLimit: limit, skillDir: '/opt/skills/implement-issue-tree' },
       leaves,
@@ -1161,6 +1215,7 @@ test('結合: ループ内のゲート実測が着手なしに呼び出しを消
   for (const { limit, result, logs } of hits) {
     const a = result.agentBudget
     const row3 = a.held.find((h) => h.issue === 3)
+    assert.equal(a.terminalVerify, tv)
     assert.equal(a.starts, 0, `limit ${limit}`)
     assert.ok(row3.resume && row3.used + row3.required > limit, `limit ${limit}: #3 は予算だけが理由の再開で、保留である限り used + required > limit`)
     const note = noteOf(result, 3)
@@ -1188,9 +1243,10 @@ test('結合: held は予算で保留した全ノード（併存を含む）の�
   assert.deepEqual([r3.kind, r3.resume, r3.budgetOnly], ['implement', false, true])
   const chunks = Math.ceil(1604 / BLOCKED_STATE_CHUNK_SIZE)
   assert.equal(r2.chunks, chunks)
-  assert.equal(r2.required, AGENT_CALLS_PER_ISSUE.resume + AGENT_CALLS_TERMINAL_BASE, '最初の 1 件（first）の required は chunks 項を含まない')
+  assert.equal(a.terminalVerify, 2 * (Math.ceil(1604 / 100) - 1), '終了時の照合の予備はキュー 1604 件の 2 ページ目以降 × 2（PR #810）')
+  assert.equal(r2.required, AGENT_CALLS_PER_ISSUE.resume + AGENT_CALLS_TERMINAL_BASE + a.terminalVerify, '最初の 1 件（first）の required は chunks 項を含まない（照合の予備は含む）')
   assert.equal(r2.needed, r2.used + r2.required, 'needed はゲートが使った必要量そのまま（免除された chunks 項を足さない）')
-  assert.equal(r3.needed, r3.used + AGENT_CALLS_PER_ISSUE.implement + AGENT_CALLS_TERMINAL_BASE)
+  assert.equal(r3.needed, r3.used + AGENT_CALLS_PER_ISSUE.implement + AGENT_CALLS_TERMINAL_BASE + a.terminalVerify)
   assert.equal(r3.chunks, chunks)
   assert.equal(a.neededLimit, Math.min(...a.held.filter((h) => h.budgetOnly).map((h) => h.needed)))
   assertStarvedConsistent(result, '保留の記録', logs)

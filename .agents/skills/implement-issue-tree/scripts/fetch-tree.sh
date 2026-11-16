@@ -13,21 +13,28 @@
 #       ホストが 1 ページごとに別のエージェントで --page を実行させ、ページの封筒で照合してから連結する
 #       （1 体のエージェントに全件を書き写させない。Issue #673・#690）。
 # 出力（取得モード。標準出力。成功時のみ。失敗時は何も出さない）:
-#   ページ数 1   ノードごとに 1 行の TSV: number TAB parent TAB siblingIndex TAB state TAB subIssuesTotal TAB title
-#                （発見順。ルートは parent 0・siblingIndex 0。title は制御文字を半角スペースへ置換した表示形）に続けて封筒
+#   ページ数 1   ノードごとに 1 行の TSV: number TAB parent TAB siblingIndex TAB state TAB subIssuesTotal TAB title TAB optinTests
+#                （発見順。ルートは parent 0・siblingIndex 0。title は制御文字を半角スペースへ置換した表示形。optinTests は本文の
+#                `<!-- optin-tests: ... -->` 宣言の値を正規化した文字列配列の compact JSON〔open ノードだけ・無ければ `[]`。
+#                抽出と正規化・上限は lib/fetch-tree-lib.sh の FT_JQ_OPTIN。同じ行で閉じない宣言〔#802〕・値の合計 1,000 文字超〔#803〕は `["?"]`。
+#                第 7 欄は 1 ノード最大 1,061 バイト〕）に続けて封筒
 #   ページ数 2 以上  封筒 1 行だけ（行は --page で読む）
-#   封筒 {nonce, payload, sha256}。payload は {"count":N,"dir":"...","inputSha256":"...","nodesSha256":"...","pages":P,"structSha256":"...","taskIdSha256":"...","tsvSha256":"..."}
-#   （P が 1 のときは dir・tsvSha256 を含まない 6 欄。空文字の欄の転記漏れで署名が合わなくなるのを避ける）
+#   封筒 {nonce, payload, sha256}。payload は {"count":N,"dir":"...","inputSha256":"...","nodesSha256":"...","optinSha256":"...","pages":P,"repo":"...","structSha256":"...","taskIdSha256":"...","tsvSha256":"..."}
+#   （P が 1 のときは dir・tsvSha256 を含まない 8 欄。空文字の欄の転記漏れで署名が合わなくなるのを避ける）
 #         - count       全ページ合計の行数
 #         - dir         ページ数 2 以上のときの一時ディレクトリの絶対パス（1 のときは空文字）
 #         - inputSha256  sha256("fetch-tree\n" + root + "\n" + repo)。ルート・対象リポジトリを束縛する
-#         - nodesSha256  lib/fetch-tree-lib.sh の ft_nodes_digest（6 欄を網羅。title は SHA-256 の 16 進にして含める）
+#         - nodesSha256  lib/fetch-tree-lib.sh の ft_nodes_digest（6 欄を網羅。title は SHA-256 の 16 進にして含める。第 7 欄 optinTests は含めない）
+#         - optinSha256  lib/fetch-tree-lib.sh の ft_optin_digest（number 昇順に `number TAB 第 7 欄の JSON` を改行で連結した文字列の SHA-256。
+#                        本文由来の宣言を書き写しの誤りから守る。title と違い不一致は取り直しののち停止する）
 #         - structSha256 lib/fetch-tree-lib.sh の ft_struct_digest（title を除く 5 欄。title の書き写し誤りと構造の誤りを分けて扱う・Issue #687）
 #         - taskIdSha256 lib/fetch-tree-lib.sh の ft_task_id_digest（title 先頭のタスク ID だけ。依存解決に使う値で、title の不一致を許容する場合でも別に検査する）
 #         - pages        ページ数
+#         - repo         ツリーのリポジトリ（owner/repo）。--repo があればその値、無ければルートの repository_url の末尾 2 成分
+#                        （gh がカレントから解決したリポジトリ）。ホストは args.repo が無いとき、この値で repo-scan.sh を束縛する（Issue #808）
 #         - tsvSha256    tree.tsv 全体（各行 + 改行）の SHA-256。--page の封筒の入力の束縛に使う
 # 出力（--page モード）: 指定ページの TSV 行 + そのページだけの封筒 1 行。payload は
-#   {"count":N,"inputSha256":sha256("fetch-tree-page\n" + tsvSha256 + "\n" + P),"nodesSha256":..,"page":P,"structSha256":..,"taskIdSha256":..}
+#   {"count":N,"inputSha256":sha256("fetch-tree-page\n" + tsvSha256 + "\n" + P),"nodesSha256":..,"optinSha256":..,"page":P,"structSha256":..,"taskIdSha256":..}
 #   （各ダイジェストはそのページの行だけに対する値）。ホストが同じ定義で照合する。
 # 終了コード:
 #   0  成功（取得モードは封筒を出力した）
@@ -113,8 +120,9 @@ if [ -n "${page}" ] || [ "${release}" = "1" ]; then
   p_nodes=$(printf '%s' "${page_out}" | ft_nodes_digest) || { echo "fetch-tree: ノードのダイジェストを作れなかった" >&2; exit 3; }
   p_struct=$(printf '%s' "${page_out}" | ft_struct_digest) || { echo "fetch-tree: 構造のダイジェストを作れなかった" >&2; exit 3; }
   p_task=$(printf '%s' "${page_out}" | ft_task_id_digest) || { echo "fetch-tree: タスク ID のダイジェストを作れなかった" >&2; exit 3; }
+  p_optin=$(printf '%s' "${page_out}" | ft_optin_digest) || { echo "fetch-tree: opt-in 宣言のダイジェストを作れなかった" >&2; exit 3; }
   p_input=$(ft_page_input_sha "${tsv_sha}" "${page}") || { echo "fetch-tree: 入力のハッシュを計算できなかった" >&2; exit 3; }
-  p_env=$(so_emit "${nonce}" "$(printf '{"count":%d,"inputSha256":"%s","nodesSha256":"%s","page":%d,"structSha256":"%s","taskIdSha256":"%s"}' "${p_count}" "${p_input}" "${p_nodes}" "${page}" "${p_struct}" "${p_task}")") \
+  p_env=$(so_emit "${nonce}" "$(printf '{"count":%d,"inputSha256":"%s","nodesSha256":"%s","optinSha256":"%s","page":%d,"structSha256":"%s","taskIdSha256":"%s"}' "${p_count}" "${p_input}" "${p_nodes}" "${p_optin}" "${page}" "${p_struct}" "${p_task}")") \
     || { echo "fetch-tree: 出力封筒を作れなかった" >&2; exit 3; }
   p_total=$(printf '%s%s\n' "${page_out}" "${p_env}" | wc -c | tr -d ' ')
   [ "${p_total}" -le "${MAX_TSV_BYTES}" ] || { echo "fetch-tree: 出力が大きすぎる（${p_total} バイト > ${MAX_TSV_BYTES}）" >&2; exit 7; }
@@ -136,18 +144,30 @@ nl='
 
 # 1 ノードぶんの検証を jq で行い TSV 行へ。number は正の整数、state は open / closed、
 # sub_issues_summary.total は 0 以上の整数でなければ jq がエラー終了する（応答の形が想定外 = exit 5）。
-JQ_ROW="${FT_JQ_DISP}"'
+# 第 7 欄 optinTests は同じ応答の body から FT_JQ_OPTIN が作る（API 呼び出しは増やさない）。body は open / closed を問わず、キーがあり値が
+# 文字列か null であることを要求する（キーの欠落や別の型を「宣言なし」として黙って通さない = exit 5。エラーは固定語彙で本文を含まない）。
+JQ_ROW="${FT_JQ_DISP}${FT_JQ_OPTIN}"'
 def okint(lo): type == "number" and . == floor and . >= lo and . < 1000000000;
 def row($parent; $sib):
   if (.number | okint(1)) and (.state == "open" or .state == "closed") and (.title | type == "string")
+    and has("body") and (.body | type == "string" or . == null)
     and (.sub_issues_summary | type == "object") and (.sub_issues_summary.total | okint(0))
-  then [(.number | tostring), ($parent | tostring), ($sib | tostring), .state, (.sub_issues_summary.total | tostring), (.title | disp)] | join("\t")
+  then [(.number | tostring), ($parent | tostring), ($sib | tostring), .state, (.sub_issues_summary.total | tostring), (.title | disp), (optin_list | tojson)] | join("\t")
   else error("bad-node") end;'
 
 # ルート
 root_json=$(gh api "${base}/issues/${root}" 2>/dev/null) || { echo "fetch-tree: gh 失敗（ルート #${root}）" >&2; exit 5; }
 root_row=$(printf '%s' "${root_json}" | jq -r --argjson r "${root}" "${JQ_ROW}"' if .number == $r then row(0; 0) else error("root-mismatch") end' 2>/dev/null) \
   || { echo "fetch-tree: ルートの応答が想定外の形（#${root}）" >&2; exit 5; }
+
+# ツリーのリポジトリ（Issue #808）。--repo があればその値、無ければルートの repository_url（…/repos/OWNER/REPO）の末尾 2 成分。
+# 取れない・形が違うときは応答が想定外として止める（空のまま出して、ホストが別のリポジトリを走査する経路を作らない）
+if [ -n "${repo}" ]; then
+  tree_repo=${repo}
+else
+  tree_repo=$(printf '%s' "${root_json}" | jq -r '.repository_url | if type == "string" then split("/") | .[-2:] | join("/") else error("bad-url") end' 2>/dev/null) \
+    && valid_repo "${tree_repo}" || { echo "fetch-tree: ルートの repository_url が想定外の形（#${root}）" >&2; exit 5; }
+fi
 
 rows="${root_row}"
 seen=" ${root} "
@@ -192,6 +212,7 @@ count=$(printf '%s\n' "${rows}" | grep -c '')
 nodes_sha=$(printf '%s\n' "${rows}" | ft_nodes_digest) || { echo "fetch-tree: ノードのダイジェストを作れなかった" >&2; exit 3; }
 struct_sha=$(printf '%s\n' "${rows}" | ft_struct_digest) || { echo "fetch-tree: 構造のダイジェストを作れなかった" >&2; exit 3; }
 task_sha=$(printf '%s\n' "${rows}" | ft_task_id_digest) || { echo "fetch-tree: タスク ID のダイジェストを作れなかった" >&2; exit 3; }
+optin_sha=$(printf '%s\n' "${rows}" | ft_optin_digest) || { echo "fetch-tree: opt-in 宣言のダイジェストを作れなかった" >&2; exit 3; }
 pages=$(printf '%s\n' "${rows}" | ft_page_count "${PAGE_BYTES}") || { echo "fetch-tree: ページ数を数えられなかった" >&2; exit 4; }
 [ "${pages}" -le "${MAX_PAGES}" ] || { echo "fetch-tree: ツリーが大きすぎる（${pages} ページ > ${MAX_PAGES}）" >&2; exit 7; }
 out_dir=""
@@ -218,9 +239,9 @@ fi
 # 空文字の欄はエージェントの転記で落ちやすい。1 欄でも欠けると署名の再計算が合わず取得が毎回失敗するため、
 # 転記で落ちうる欄を署名対象から外す（ホストの TREE_SCHEMA でも dir・tsvSha256 は任意）
 if [ "${pages}" = "1" ]; then
-  payload=$(printf '{"count":%d,"inputSha256":"%s","nodesSha256":"%s","pages":%d,"structSha256":"%s","taskIdSha256":"%s"}' "${count}" "${input_sha}" "${nodes_sha}" "${pages}" "${struct_sha}" "${task_sha}")
+  payload=$(printf '{"count":%d,"inputSha256":"%s","nodesSha256":"%s","optinSha256":"%s","pages":%d,"repo":"%s","structSha256":"%s","taskIdSha256":"%s"}' "${count}" "${input_sha}" "${nodes_sha}" "${optin_sha}" "${pages}" "${tree_repo}" "${struct_sha}" "${task_sha}")
 else
-  payload=$(printf '{"count":%d,"dir":"%s","inputSha256":"%s","nodesSha256":"%s","pages":%d,"structSha256":"%s","taskIdSha256":"%s","tsvSha256":"%s"}' "${count}" "${out_dir}" "${input_sha}" "${nodes_sha}" "${pages}" "${struct_sha}" "${task_sha}" "${tsv_sha}")
+  payload=$(printf '{"count":%d,"dir":"%s","inputSha256":"%s","nodesSha256":"%s","optinSha256":"%s","pages":%d,"repo":"%s","structSha256":"%s","taskIdSha256":"%s","tsvSha256":"%s"}' "${count}" "${out_dir}" "${input_sha}" "${nodes_sha}" "${optin_sha}" "${pages}" "${tree_repo}" "${struct_sha}" "${task_sha}" "${tsv_sha}")
 fi
 envelope=$(so_emit "${nonce}" "${payload}") \
   || { [ -z "${out_dir}" ] || { rm -f "${out_dir}/tree.tsv"; rmdir "${out_dir}" 2>/dev/null; }; echo "fetch-tree: 出力封筒を作れなかった（sha256sum / shasum が無い等）" >&2; exit 3; }

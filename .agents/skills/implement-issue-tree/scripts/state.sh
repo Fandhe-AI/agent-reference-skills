@@ -6,16 +6,22 @@
 #   bash state.sh --file _/issue-trees/N.json init             （標準入力: [{"number":N,"type":"implement|verify-close"}…]）
 #   bash state.sh --file _/issue-trees/N.json hw-max --bytes B --version V
 #   bash state.sh --file _/issue-trees/N.json hw-set --bytes B --version V
+#   bash state.sh --nonce NONCE --file _/issue-trees/N.json verify [--page P]   （読み取り専用。標準入力なし）
 #
 # 役割: 状態ファイルを jq で書き換える手順（mktemp → jq → mv）を、エージェントが文章から組み立てる代わりに、固定のコマンド列として
 #       持つ（Issue #603 第 5 弾）。patch の自由文はプログラム文字列に入れず --slurpfile で渡す。入力の形を検証し、書き換え前に
 #       ファイルが変わっていないか確かめる（lib/state-lib.sh の st_rewrite）。worktree・branch の削除と読み込みはしない。
 #       init だけは、ファイルが無ければ空の状態を作ってから書く（st_create。読込側が作り損ねたとき、ラン中の書き込みが
 #       すべて no-file になるのを防ぐ）。merge / hw-max / hw-set はファイルを作らない。
+#       verify は唯一の読み取りモード（Issue #603 計画 C の P5。ホストの state:load-verify が書き写していたハッシュ取得の
+#       コマンドの置き換え）。書き込みのモードと経路を共有しない: 引数の検証のあと、trap・日時・一時ファイル・書き換えの準備より
+#       前に lib/state-verify-lib.sh の sv_run へ分岐して終わる。ファイルを書かない・作らない・ディレクトリも作らない。
 # 出力: 標準出力の最後の 1 行が `STATE_RESULT {"ok":true}` または `STATE_RESULT {"ok":false,"reason":"…"}`。reason は固定語彙
 #       （invalid-input / no-file / rewrite-failed / changed-concurrently / no-temp）。patch の内容は出さない。
 #       結果を出せたときは、書き込みの失敗を含めて exit 0。
-# 終了コード: 0 結果の行を出力した / 2 使い方の誤り（結果の行は出さない）/ 3 jq が無い
+#       verify だけは STATE_RESULT を出さず、封筒 {nonce, payload, sha256} を 1 行で出す（lib/state-verify-lib.sh。ホストが値を
+#       採用するため）。outcome = ok / nofile / error。壊れた・読めないファイルは nofile にせず error にする。
+# 終了コード: 0 結果の行（verify は封筒）を出力した / 2 使い方の誤り（結果の行は出さない）/ 3 jq が無い・verify の封筒を作れない
 # 自衛: 書き込み先は _/issue-trees/<正の整数>.json の 1 形だけ。rm は自分が作った一時ファイルだけ。
 # 互換: macOS（BSD userland・bash 3.2）と Linux（GNU・busybox）。
 
@@ -30,7 +36,7 @@ script_dir=$(cd "$(dirname "$0")" && pwd -P) || exit 3
 . "${script_dir}/lib/state-lib.sh" || exit 3
 
 usage() {
-  echo "使い方: state.sh --file _/issue-trees/N.json (merge|init|hw-max --bytes B --version V|hw-set --bytes B --version V)" >&2
+  echo "使い方: state.sh --file _/issue-trees/N.json (merge|init|hw-max --bytes B --version V|hw-set --bytes B --version V|verify --nonce NONCE [--page P])" >&2
   [ $# -eq 0 ] || echo "state: $1" >&2
   exit 2
 }
@@ -47,18 +53,22 @@ file=""
 mode=""
 bytes=""
 version=""
+nonce=""
+page=""
 while [ $# -gt 0 ]; do
   case "$1" in
-    --file | --bytes | --version)
+    --file | --bytes | --version | --nonce | --page)
       [ $# -ge 2 ] || usage "$1 に値が無い"
       case "$1" in
         --file) file=$2 ;;
         --bytes) bytes=$2 ;;
         --version) version=$2 ;;
+        --nonce) nonce=$2 ;;
+        --page) page=$2 ;;
       esac
       shift 2
       ;;
-    merge | init | hw-max | hw-set)
+    merge | init | hw-max | hw-set | verify)
       [ -z "${mode}" ] || usage "モードは 1 つだけ"
       mode=$1
       shift
@@ -68,6 +78,22 @@ while [ $# -gt 0 ]; do
 done
 [ -n "${mode}" ] || usage "モードが無い"
 st_valid_file "${file}" || usage "--file は _/issue-trees/N.json の形で指定する"
+
+# 読み取りモード。書き込みの準備（trap・日時・一時ファイル）より前に分岐して終わる
+if [ "${mode}" = verify ]; then
+  [ -z "${bytes}${version}" ] || usage "verify では --bytes / --version を指定できない"
+  [ -n "${nonce}" ] || usage "verify には --nonce が要る"
+  [ -n "${page}" ] || page=0
+  st_uint "${page}" || usage "--page は 0 以上の整数で指定する"
+  # shellcheck source=lib/signed-output.sh
+  . "${script_dir}/lib/signed-output.sh" || exit 3
+  # shellcheck source=lib/state-verify-lib.sh
+  . "${script_dir}/lib/state-verify-lib.sh" || exit 3
+  so_valid_nonce "${nonce}" || usage "--nonce の形式が不正（小文字英数字 1〜64 文字）"
+  sv_run "${file}" "${nonce}" "${page}" || { echo "state: verify の封筒を作れない（sha256sum / shasum が無い）" >&2; exit 3; }
+  exit 0
+fi
+[ -z "${nonce}${page}" ] || usage "--nonce / --page は verify だけで指定する"
 
 pf=""
 # shellcheck disable=SC2329  # trap 経由で呼ばれる

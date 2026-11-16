@@ -13,7 +13,8 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { stripMetaExport } from './workflow-script-contract.mjs'
 import { trackTmp } from './tmp-track.mjs'
-import { hashPrecheckReply, wrapTreeReply } from './signed-output.mjs'
+import { externalChecksReply, hashPrecheckReply, skipLabelsReply, stateVerifyReply, wrapSkipLabelsReply, wrapTreeReply } from './signed-output.mjs'
+import { requestedNumbersOf } from './declared-deps-prompt.mjs'
 
 export const SCRIPT_PATH = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'scripts', 'implement-issue-tree.src.js')
 const DRIVER_MARKER = ['__IMPLEMENT', 'ISSUE', 'TREE', 'DRIVER', 'START__'].join('_')
@@ -68,18 +69,17 @@ export async function runScript({ args, leaves = [2], override = () => undefined
     const label = opts.label
     const overridden = override(label, opts, prompt)
     // ツリー取得は封筒つきで返る（Issue #668）。override が平らな { nodes } を返したら封筒に包む（封筒の形・null・Error はそのまま）
-    if (overridden !== undefined) return label.startsWith('plan:issue-tree') ? wrapTreeReply(prompt, overridden) : overridden
+    if (overridden !== undefined) return label.startsWith('plan:issue-tree') ? wrapTreeReply(prompt, overridden) : label.startsWith('plan:skip-labels') ? wrapSkipLabelsReply(prompt, overridden) : label.startsWith('state:load-verify') ? stateVerifyReply(prompt, overridden) : overridden
     const n = Number(/#(\d+)/.exec(label)?.[1])
     if (label === 'nonce:seed') return { seedHex: 'b'.repeat(64) }
     if (label === 'script-hash-precheck') return hashPrecheckReply(prompt)
     if (label === 'worktree:untracked-scan') return { count: 0, paths: [] }
     if (label === 'state:load') return { ok: true, fileExisted: false, items: {}, highWaterBytes: 0, highWaterVersion: 0 }
-    if (label === 'state:load-verify') return { fileExists: false, hashes: {}, keysSha256: '', keysCount: 0, highWaterBytes: 0, highWaterVersion: 0 }
+    if (label === 'state:load-verify') return stateVerifyReply(prompt, { fileExists: false, hashes: {}, keysSha256: '', keysCount: 0, highWaterBytes: 0, highWaterVersion: 0 })
     if (label === 'plan:issue-tree') return wrapTreeReply(prompt, { nodes: structuredClone(nodes) })
-    if (label === 'detect:external-checks') return { apps: [] }
+    if (label === 'detect:external-checks') return externalChecksReply(prompt)
     if (label.startsWith('plan:declared-deps')) {
-      const m = /for n in ([0-9 ]+); do/.exec(prompt)
-      return { entries: m[1].trim().split(' ').map(Number).map((x) => ({ number: x, deps: [], sig: declaredDepsChecksum(x, []) })) }
+            return { entries: requestedNumbersOf(prompt).map((x) => ({ number: x, deps: [], sig: declaredDepsChecksum(x, []) })) }
     }
     if (label.startsWith('plan:root-ancestors')) return { fetched: true, chain: [{ number: args.parent, parent: 0 }] }
     if (label.startsWith('plan:out-of-tree-deps')) {
@@ -87,7 +87,7 @@ export async function runScript({ args, leaves = [2], override = () => undefined
       return { entries: m[1].trim().split(' ').map(Number).map((x) => ({ number: x, state: 'OPEN', sig: outOfTreeStateChecksum(x, 'OPEN') })) }
     }
     // 対象外ラベル（args.skipLabels）の既定の応答: どのラベルにも該当する open issue なし。通知コメントは成功
-    if (label.startsWith('plan:skip-labels')) return { entries: [...new Set(args.skipLabels ?? [])].map((_, k) => ({ i: k + 1, x: 0, numbers: [], sig: declaredDepsChecksum((k + 1) * 2, []) })) }
+    if (label.startsWith('plan:skip-labels')) return skipLabelsReply(prompt, { entries: [...new Set(args.skipLabels ?? [])].map((_, k) => ({ i: k + 1, numbers: [] })) })
     if (label === 'notify-blocked') return { ok: true }
     if (label === 'worktree:orphan-scan') return { entries: [{ path: '/repo', branch: 'main', isMain: true }] }
     if (label === 'worktree:record-count') return { count: 1 }

@@ -109,7 +109,10 @@ test('(f) Tree 取得プロンプトは fetch-tree.sh を launcher 経由で 1 �
   assert.ok(!/--page|--release|FETCH_TREE_DIR/.test(p), 'ページの起動はホストが行う')
   assert.ok(!/--paginate/.test(p), '取得手順そのものはプロンプトに書かない')
   assert.match(p, /dependsOn/)
-  assert.match(p, /optin-tests/)
+  // opt-in テスト宣言は取得スクリプトが第 7 欄へ出す。エージェントは写すだけで、本文を読む jq（scan）を手で実行させない
+  assert.match(p, /subIssuesTotal, title, optinTests の順にタブ区切り/)
+  assert.match(p, /第 7 欄 optinTests は JSON 配列/)
+  assert.ok(!/scan\(|--json body --jq|optin-tests:/.test(p), 'optinTests の抽出コマンドはプロンプトに無い')
 })
 
 test('(g) クローズ検証プロンプトは直下だけでなく子孫を再帰確認する', () => {

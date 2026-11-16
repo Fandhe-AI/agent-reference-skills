@@ -5,13 +5,15 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { runScript, BASE_ARGS, importDefinitions, source } from './lib/stub-run.mjs'
 import { treePagesFetchReply, treePageReply } from './lib/signed-output.mjs'
+import { filterOfPrompt, requestedNumbersOf } from './lib/declared-deps-prompt.mjs'
 
 const LEAVES = [2, 3, 4, 5]
 const truth = () => [
-  { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: LEAVES.length },
-  ...LEAVES.map((n, i) => ({ number: n, title: `issue ${n}`, state: 'open', parent: 1, siblingIndex: i, dependsOn: [], subIssuesTotal: 0 })),
+  { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: LEAVES.length, optinTests: [] },
+  ...LEAVES.map((n, i) => ({ number: n, title: `issue ${n}`, state: 'open', parent: 1, siblingIndex: i, dependsOn: [], subIssuesTotal: 0, optinTests: [] })),
 ]
 const chunk = (nodes, size) => Array.from({ length: Math.ceil(nodes.length / size) }, (_, i) => nodes.slice(i * size, (i + 1) * size))
 const TSV = 'a'.repeat(64)
@@ -149,6 +151,86 @@ test('呼び出し数の上限が小さいと、ページ読みの前の事前�
   assert.ok(seen.includes('plan:issue-tree-release'))
 })
 
+// 終了時の照合の予備（PR #810 codex P1）: 事前検査の必要量には、開始時の状態ファイルのキーから見積もった終了時の照合の 2 ページ目以降も入る。
+// 状態 1000 件 = 10 ページ → 予備 2 × 9 = 18。20 ページのツリーの必要量は 2 × 20 + 1 + 2 + 20 + 18 = 81（予備が無ければ 63 で通ってしまう残り）
+test('事前検査の必要量は、開始時の状態ファイルの件数から見積もった終了時の照合の予備を含む (PR #810)', async () => {
+  const item = { status: 'merged' }
+  const keys = Array.from({ length: 1000 }, (_, i) => String(10 + i)).sort()
+  const h = createHash('sha256').update(JSON.stringify(item)).digest('hex')
+  const check = { fileExists: true, hashes: Object.fromEntries(keys.map((k) => [k, h])), keysSha256: createHash('sha256').update(JSON.stringify(keys)).digest('hex'), keysCount: 1000, highWaterBytes: 0, highWaterVersion: 2 }
+  const seen = []
+  const err = await runScript({
+    args: { ...BASE_ARGS, agentCallLimit: 81 },
+    leaves: LEAVES,
+    override: (label, _o, prompt) => {
+      seen.push(label)
+      if (label === 'state:load') return { ok: true, fileExisted: true, items: Object.fromEntries(keys.map((k) => [k, item])), highWaterBytes: 0, highWaterVersion: 2 }
+      if (label.startsWith('state:load-verify')) return check
+      return isMain(label) ? treePagesFetchReply(prompt, truth(), { pages: 20, dir: DIR, tsvSha: TSV }) : label === 'plan:issue-tree-release' ? { ok: true } : undefined
+    },
+  }).then(() => null, (e) => e)
+  assert.equal(seen.filter((l) => l.startsWith('state:load-verify')).length, 10, '前提: 開始時の照合は 10 ページ')
+  const m = /必要なエージェント呼び出し数（(\d+)）が残り（(\d+)）を超える（20 ページ・5 ノード）/.exec(err?.message ?? '')
+  assert.ok(m, String(err?.message))
+  assert.equal(Number(m[1]), 2 * 20 + 1 + 2 + 20 + 18)
+  assert.ok(Number(m[2]) >= 2 * 20 + 1 + 2 + 20, `前提: 予備が無ければ通る残り（${m[2]}）`)
+  assert.ok(!seen.some(isPage))
+})
+
+// opt-in テスト宣言（第 7 欄 optinTests）。ページ読みの封筒はそのページの行だけの optinSha256 を持ち、連結後は取得時の封筒の optinSha256 と照合する
+const truthWithOptin = () => truth().map((x) => (x.number === 3 ? { ...x, optinTests: ['make e2e', 'npm run e2e'] } : x))
+const optinOff = (nodes) => nodes.map((x) => (x.number === 3 ? { ...x, optinTests: ['make e2e', 'make deploy'] } : x))
+
+test('宣言のあるツリーの 3 ページの正直な返却は連結して採用する（取り直しなし）', async () => {
+  const all = truthWithOptin()
+  const { result, calls } = await run({ all })
+  assert.equal(result.treeFetch.pages, 3)
+  assert.equal(names(calls).filter((l) => l.endsWith('-retry')).length, 0)
+})
+
+test('ページの optinTests の書き写し誤りは、そのページだけを取り直して続行する', async () => {
+  const all = truthWithOptin()
+  let n = 0
+  const { calls } = await run({
+    all,
+    page: (label, prompt, parts) => {
+      const p = pageOf(prompt)
+      if (parts[p - 1].some((x) => x.number === 3) && n++ === 0) return treePageReply(prompt, optinOff(parts[p - 1]), TSV, { digestNodes: parts[p - 1] })
+      return treePageReply(prompt, parts[p - 1], TSV)
+    },
+  })
+  assert.equal(names(calls).filter((l) => l.endsWith('-retry')).length, 1)
+})
+
+test('ページの optinTests の書き写し誤りが 2 回続くと、title のように続行せず停止し、後続 agent は 0 件・片づけは呼ばれる', async () => {
+  const all = truthWithOptin()
+  const bad = (label, prompt, parts) => {
+    const p = pageOf(prompt)
+    if (parts[p - 1].some((x) => x.number === 3)) return treePageReply(prompt, optinOff(parts[p - 1]), TSV, { digestNodes: parts[p - 1] })
+    return treePageReply(prompt, parts[p - 1], TSV)
+  }
+  await assert.rejects(run({ all, page: bad }).catch((e) => { assert.equal(e.releases.length, 1); throw e }), /検査値/)
+})
+
+test('ページごとの照合に通っても取得時の封筒の optinSha256 と食い違えば、取得を取り直さずに停止する', async () => {
+  const seen = []
+  await assert.rejects(
+    runScript({
+      args: BASE_ARGS,
+      leaves: LEAVES,
+      override: (label, _o, prompt) => {
+        seen.push(label)
+        if (isMain(label)) return treePagesFetchReply(prompt, truthWithOptin(), { pages: 3, dir: DIR, tsvSha: TSV })
+        if (isPage(label)) return treePageReply(prompt, chunk(truth(), 2)[pageOf(prompt) - 1], TSV)
+        return label === 'plan:issue-tree-release' ? { ok: true } : undefined
+      },
+    }),
+    /連結した結果が取得時の検査値と一致しない/,
+  )
+  assert.ok(!seen.includes('plan:issue-tree-retry'))
+  assert.ok(seen.includes('plan:issue-tree-release'))
+})
+
 test('ページごとの照合に通っても取得時の封筒と食い違えば、取得を取り直さずに停止する', async () => {
   const skewed = truth().map((x) => (x.number === 3 ? { ...x, siblingIndex: 9 } : x))
   const seen = []
@@ -173,8 +255,8 @@ test('ページごとの照合に通っても取得時の封筒と食い違え�
 test('約 1460 ノードの合成ツリー（10 ページ）が通る。ツリー取得系のエージェントは 1 + ページ数 + 1', async () => {
   const leaves = Array.from({ length: 1459 }, (_, i) => i + 2)
   const all = [
-    { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: leaves.length },
-    ...leaves.map((n, i) => ({ number: n, title: `issue ${n}`, state: 'open', parent: 1, siblingIndex: i, dependsOn: [], subIssuesTotal: 0 })),
+    { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: leaves.length, optinTests: [] },
+    ...leaves.map((n, i) => ({ number: n, title: `issue ${n}`, state: 'open', parent: 1, siblingIndex: i, dependsOn: [], subIssuesTotal: 0, optinTests: [] })),
   ]
   const { result, calls } = await run({ args: { ...BASE_ARGS, dryRun: true }, leaves, all, size: 146 })
   assert.ok(result)
@@ -191,8 +273,8 @@ test('1 ページのツリーではページ用・片づけ用のエージェン
 const { declaredDepsChecksum } = await importDefinitions(['declaredDepsChecksum'], 'pages-host')
 const TASK_LEAVES = [2, 3, 4, 5, 6]
 const taskTree = (leaves = TASK_LEAVES) => [
-  { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: leaves.length },
-  ...leaves.map((n, i) => ({ number: n, title: `TASK-9-${i + 1} step ${i + 1}`, state: 'open', parent: 1, siblingIndex: i, dependsOn: [], subIssuesTotal: 0 })),
+  { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: leaves.length, optinTests: [] },
+  ...leaves.map((n, i) => ({ number: n, title: `TASK-9-${i + 1} step ${i + 1}`, state: 'open', parent: 1, siblingIndex: i, dependsOn: [], subIssuesTotal: 0, optinTests: [] })),
 ]
 // #5（TASK-9-4・ページ 3）の「前の工程」= #4（ページ 2）、#6（TASK-9-5・ページ 3）の「TASK-9-1 の結果を踏まえ」= #2（ページ 1）
 const TASK_BODIES = {
@@ -212,8 +294,8 @@ function runTaskTree(bodies) {
       if (isPage(label)) return treePageReply(prompt, parts[pageOf(prompt) - 1], TSV)
       if (label === 'plan:issue-tree-release') return { ok: true }
       if (label.startsWith('plan:declared-deps')) {
-        const filter = /--jq '([^']*)'\) && printf/.exec(prompt)[1]
-        const numbers = /for n in ([0-9 ]+); do/.exec(prompt)[1].trim().split(' ').map(Number)
+        const filter = filterOfPrompt(prompt)
+        const numbers = requestedNumbersOf(prompt)
         return {
           entries: numbers.map((number) => {
             const out = JSON.parse(execFileSync('jq', ['-c', filter], { input: JSON.stringify({ number, body: bodies[number] ?? '' }) }).toString())

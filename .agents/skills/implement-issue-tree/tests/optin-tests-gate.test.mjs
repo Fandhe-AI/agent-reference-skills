@@ -48,7 +48,11 @@ const SLICE_EXPORTS = [
   'implementPrompt',
   'recoverImplementPrompt',
   'prCreatePrompt',
-  'optinRecordVerifyPrompt',
+  'observeGatePrompt',
+  'observeCommand',
+  'observeInputText',
+  'classifyOptinRecordObservation',
+  'MERGE_CONTEXT_COMMON',
   'mergeExecutePrompt',
   'fixPrompt',
 ]
@@ -85,7 +89,11 @@ const {
   implementPrompt,
   recoverImplementPrompt,
   prCreatePrompt,
-  optinRecordVerifyPrompt,
+  observeGatePrompt,
+  observeCommand,
+  observeInputText,
+  classifyOptinRecordObservation,
+  MERGE_CONTEXT_COMMON,
   mergeExecutePrompt,
   fixPrompt,
   __setBoundaryNonceSeedForTest,
@@ -661,13 +669,27 @@ test('optinTestExecutionLines: pr-create 以外の呼び出し（implement / rec
   }
 })
 
-test('optinRecordVerifyPrompt: gh pr view --json body,headRefOid を単一呼び出しで取得し、本文転記禁止・headRefOid 検証・件数のみ返却の指示を含む（PR #503 3 巡目 codex P1）', () => {
-  const p = optinRecordVerifyPrompt(item, impl, ['make e2e'])
-  assert.match(p, /gh pr view 123 --json body,headRefOid/)
-  assert.match(p, /\^\[0-9a-f\]\{40\}\$/)
-  assert.match(p, /表示・転記しない/)
-  assert.match(p, /counts/)
-  assert.match(p, /headRefOid/)
+test('観測プロンプト（optin-record）: 固定コマンドの実行と封筒の転記だけを指示し、gh / jq / grep を埋め込まない（Issue #603）', () => {
+  const p = observeGatePrompt({ mode: 'optin-record', pr: 123, optinCommands: ['make e2e', 'cargo test -- --ignored'] }, 'opt-in テスト実行記録', 'nonce1', [MERGE_CONTEXT_COMMON])
+  assert.ok(p.includes(MERGE_CONTEXT_COMMON), 'merge-exec と同じコンテキスト分離契約')
+  assert.match(p, /scripts\/run-verified\.sh' (?:[0-9a-f]{64}|@@SCRIPT_SHA256:observe-pr\.sh@@) observe-pr\.sh --nonce nonce1 --mode optin-record --pr 123 --optin-cmd 'make e2e' --optin-cmd 'cargo test -- --ignored'\n/)
+  assert.match(p, /一字一句そのまま/)
+  assert.match(p, /nonce・payload・sha256/)
+  // 旧プロンプトが書き写させていたシェル手順（gh pr view・jq・grep・tr・sed）は、共通規則より後の固定コマンドの部分に無い
+  const cmdPart = p.slice(p.indexOf('次のコマンドを'))
+  assert.doesNotMatch(cmdPart, /gh pr view|jq |grep|tr -d|sed -e|mktemp/)
+  assert.ok(cmdPart.length < 600, `コマンドの部分は短い（実際: ${cmdPart.length}）`)
+})
+
+test('観測の入力: コマンドは --optin-cmd の単一引用符つきで渡り、inputSha256 の入力は 9 行 + 個数 + 各コマンドで、順序と個数を束縛する', () => {
+  const f = { mode: 'optin-record', pr: 7, optinCommands: ['make e2e', 'make other'] }
+  assert.ok(observeCommand('n1', f).endsWith(" --mode optin-record --pr 7 --optin-cmd 'make e2e' --optin-cmd 'make other'"))
+  assert.equal(observeInputText(f), ['observe-pr', 'optin-record', '7', '', '', '', '', '', '', '2', 'make e2e', 'make other'].join('\n'))
+  assert.notEqual(observeInputText(f), observeInputText({ ...f, optinCommands: ['make other', 'make e2e'] }))
+  assert.notEqual(observeInputText(f), observeInputText({ ...f, optinCommands: ['make e2e'] }))
+  for (const bad of [[], ['make e2e', 'make e2e'], ["make 'x'"], ['make $(x)'], ['make e2e\nmake x'], ['-x'], [''], ['a'.repeat(201)], Array.from({ length: OPTIN_TESTS_MAX + 1 }, (_, i) => `make t${i}`), 'make e2e', [1]]) {
+    assert.throws(() => observeCommand('n1', { ...f, optinCommands: bad }), /optinCommands の形式が不正/, JSON.stringify(bad))
+  }
 })
 
 test('mergeExecutePrompt に optin 関連文字列と --json body が含まれない（分離契約の非退行。expectedHeadSha 指定時も同様）', () => {
@@ -722,33 +744,29 @@ test('fixPrompt: pushAfterFix=false（push 前 Review ループ）では optinTe
 })
 
 // ---------------------------------------------------------------------------
-// 群 F: 実行レベル（optinRecordVerifyPrompt と同じ grep 手順をシェルで再現）
+// 群 F: 実行レベル（観測スクリプトの件数の数え方を、実際の scripts/lib/optin-record-lib.sh で検査する）
 // ---------------------------------------------------------------------------
 
-// optinRecordVerifyPrompt 手順 3 の正規化パイプライン（tr -d '\r' | sed 行頭・行末空白除去）と
-// 手順 4 の 3 種類（pass/fail/not-run）固定文字列 -cxF グレップをそのまま再現する
-// （PR #503 3 巡目 codex P1: sha 束縛後の実装。$H は事前に sanitizeSha 相当の形式検証を通過した
-// 値という前提でシェルへ展開する）。行頭インデント・CRLF が付いたマーカー行でも一致すること、
-// sha が一致しない行は一致しないことを検証するのが目的。
+// かつてはプロンプトの grep 手順をテスト内に写して再現していたが（写しと本物がずれ得る）、手順は scripts/lib/optin-record-lib.sh へ移った
+// （Issue #603）ので、その本物を source して正規化 + 3 種類（pass / fail / not-run）の固定文字列 -cxF の件数を数える。PR #503 3 巡目 codex P1:
+// sha 束縛。行頭インデント・CRLF が付いたマーカー行でも一致すること、sha が一致しない行は一致しないことを検証するのが目的。
+const OPTIN_RECORD_LIB = join(dirname(fileURLToPath(import.meta.url)), '..', 'scripts', 'lib', 'optin-record-lib.sh')
 function grepShaResultCounts(bodyText, sha, command) {
-  const script = `
-f=$(mktemp)
-g=$(mktemp)
-cat > "$f" <<'BODYEOF'
-${bodyText}
-BODYEOF
-tr -d '\\r' < "$f" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' > "$g"
-H="$1"
-pass=$(grep -cxF -- "${OPTIN_RECORD_MARKER_PREFIX}$H pass $2 -->" "$g")
-fail=$(grep -cxF -- "${OPTIN_RECORD_MARKER_PREFIX}$H fail $2 -->" "$g")
-notrun=$(grep -cxF -- "${OPTIN_RECORD_MARKER_PREFIX}$H not-run $2 -->" "$g")
-rm -f "$f" "$g"
-echo "$pass $fail $notrun"
-`
-  const out = execFileSync('bash', ['-c', script, 'bash', sha, command], { encoding: 'utf8' })
-  const [pass, fail, notrun] = out.trim().split(' ').map(Number)
-  return { pass, nonPass: fail + notrun }
+  const script = '. "$1" && norm=$(optin_record_normalize) && optin_record_counts "$norm" "$2" "$3"'
+  const out = execFileSync('bash', ['-c', script, 'bash', OPTIN_RECORD_LIB, sha, command], { input: `${bodyText}\n`, encoding: 'utf8', env: { ...process.env, LC_ALL: 'C' } })
+  const [pass, nonPass] = out.trim().split(' ').map(Number)
+  return { pass, nonPass }
 }
+
+test('実行レベル: lib のマーカー接頭辞は src の OPTIN_RECORD_MARKER_PREFIX と同じ（書き手と読み手の書式のずれを検出する）', () => {
+  const lib = readFileSync(OPTIN_RECORD_LIB, 'utf8')
+  assert.equal(/^OPTIN_RECORD_MARKER_PREFIX='([^']*)'$/m.exec(lib)?.[1], OPTIN_RECORD_MARKER_PREFIX)
+})
+
+test('実行レベル: 記録節の描画（見出し・人間可読行・マーカー行を含む節全体）を通しても、lib が数えるのはマーカー行だけ', () => {
+  const section = renderOptinRecordSection(['make e2e']).replace(/<sha>/g, SHA_A).replace(/<result>/g, 'pass')
+  assert.deepEqual(grepShaResultCounts(section, SHA_A, 'make e2e'), { pass: 1, nonPass: 0 })
+})
 
 test('実行レベル: 一致する sha の pass 行のみ → pass=1 / nonPass=0', () => {
   const body = optinRecordMarkerLine(SHA_A, 'pass', 'make e2e')
@@ -964,14 +982,14 @@ test('記録節の書き直し: 固定文字列を行の途中に含む行・行
 // 群 G: 駆動部配線（source-scan）
 // ---------------------------------------------------------------------------
 
-test('駆動部: optinRecordVerifyPrompt の呼び出しが 1 箇所だけあり、!recoveryOnly を条件に含む', () => {
-  const calls = (driverPart.match(/optinRecordVerifyPrompt\(/g) ?? []).length
+test('駆動部: opt-in 記録の観測（observeOptinRecord）の呼び出しが 1 箇所だけあり、!recoveryOnly を条件に含む', () => {
+  const calls = (driverPart.match(/observeOptinRecord\(/g) ?? []).length
   assert.equal(calls, 1)
   assert.match(driverPart, /allowMerge && Array\.isArray\(item\.optinTests\)/)
 })
 
-test('駆動部: optinRecordVerifyPrompt の判定後に mergeExecutePrompt が呼ばれる', () => {
-  const verifyIdx = driverPart.indexOf('optinRecordVerifyPrompt(')
+test('駆動部: opt-in 記録の観測の判定後に mergeExecutePrompt が呼ばれる', () => {
+  const verifyIdx = driverPart.indexOf('observeOptinRecord(')
   const execIdx = driverPart.indexOf('mergeExecutePrompt(')
   assert.ok(verifyIdx >= 0 && execIdx >= 0 && verifyIdx < execIdx)
 })
@@ -980,14 +998,14 @@ test('駆動部: optinRecordVerifyPrompt の判定後に mergeExecutePrompt が�
 // 群 G 追加: 手動マージ済み PR の回復を opt-in ゲートが止めない配線（Issue #509）
 // ---------------------------------------------------------------------------
 
-test('駆動部: マージ済み独立確認（mergeVerifyPrompt 再利用）が recoveryOnly の後・optinRecordVerifyPrompt より前で呼ばれる（Issue #509）', () => {
+test('駆動部: マージ済み独立確認（mergeVerifyPrompt 再利用）が recoveryOnly の後・observeOptinRecord より前で呼ばれる（Issue #509）', () => {
   const recoveryIdx = driverPart.indexOf('const recoveryOnly')
   const probeIdx = driverPart.indexOf('mergeVerifyPrompt(', recoveryIdx)
-  const verifyIdx = driverPart.indexOf('optinRecordVerifyPrompt(')
+  const verifyIdx = driverPart.indexOf('observeOptinRecord(')
   assert.ok(recoveryIdx >= 0, 'const recoveryOnly が見つからない')
   assert.ok(probeIdx >= 0, 'recoveryOnly 後に mergeVerifyPrompt の呼び出しが見つからない')
   assert.ok(verifyIdx >= 0)
-  assert.ok(recoveryIdx < probeIdx && probeIdx < verifyIdx, 'probe は recoveryOnly の後・optinRecordVerifyPrompt の前で呼ばれる必要がある')
+  assert.ok(recoveryIdx < probeIdx && probeIdx < verifyIdx, 'probe は recoveryOnly の後・observeOptinRecord の前で呼ばれる必要がある')
 })
 
 test('駆動部: allowMerge の導出に prAlreadyMerged が含まれる（Issue #509）', () => {

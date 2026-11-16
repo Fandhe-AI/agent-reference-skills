@@ -108,7 +108,7 @@ test('ゲートは ready の後・recoveryOnly とマージ実行より前に置
   assert.ok(driverPart.indexOf('const recoveryOnly = ') > gate, 'recoveryOnly（人手マージ待ちの経路）より前')
   assert.ok(driverPart.indexOf('merge-exec:#${item.number}') > gate)
   assert.equal(driverPart.split('__ADDED_FILES_GATE__').length, 2, '目印は 1 つ')
-  assert.ok(definitionPart.includes("label: `merge:${key}:#${item.number}`") && definitionPart.includes("'added-files', '新規追加ファイルの衝突'"))
+  assert.ok(definitionPart.includes("label: extra.label ?? `merge:${key}:#${item.number}`") && definitionPart.includes("'added-files', '新規追加ファイルの衝突'"))
 })
 
 // ---- 結合: 2 件のツリーを parallel 1 で回し、#2（PR 1002）の後に #3（PR 1003）を監視する ----

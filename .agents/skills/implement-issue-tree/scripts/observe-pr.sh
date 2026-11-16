@@ -3,7 +3,8 @@
 #
 # 使い方（通常は run-verified.sh 経由。ホストが nonce 入りのコマンドを組み立てる）:
 #   bash observe-pr.sh --nonce N --mode MODE --pr NUM [--repo OWNER/REPO] [--base BRANCH] [--branch BRANCH]
-#                      [--issue NUM] [--slug APP] [--until review|settled|started] [--thread-id ID] [--peers N,N,…] [--allow P,P,…] [--wait --attempt K]
+#                      [--issue NUM] [--slug APP] [--until review|settled|started] [--thread-id ID] [--peers N,N,…] [--allow P,P,…]
+#                      [--optin-cmd CMD …] [--wait --attempt K]
 #
 # 役割: monitor エージェントのプロンプトに書いていた gh / jq の観測コマンド列と、その分類規則を持つ（Issue #603
 #       第 2 弾）。入力と出力を定義できる部分だけを切り出したもので、「ready にしてよいか」の判断は呼び出し側
@@ -54,6 +55,16 @@
 #             fix が計画外の CI 構成を変えていないかのマージ前の確認）。判定は lib/policy-paths-lib.sh。state が OPEN でなければ数えない。
 #             一覧が REST の上限で切り詰められた（pulls/<pr> の changed_files が取得件数より多い）ときは truncated:1。payload は
 #             パスの文字列を含めず件数だけ。--allow は 20 個まで・[A-Za-z0-9._/-] だけ・先頭が - や / でなく .. を含まず重複不可。--wait は取らない
+#   optin-record
+#             マージ前の opt-in テスト記録ゲート（Issue #495）の観測。PR 本文の記録節のマーカー行
+#             `<!-- optin-test-record: <sha> <pass|fail|not-run> <コマンド> -->` を、PR の現在の HEAD sha に対して、--optin-cmd で渡した
+#             宣言コマンドごとに数える（pass の件数と、fail + not-run の件数）。--optin-cmd は繰り返し指定する（1〜10 個・重複不可・
+#             先頭が英数字で [A-Za-z0-9 _./:=@+,-] だけ・200 文字以内。順序が payload の配列の添字になる）。gh pr view の
+#             1 回の呼び出しで body と headRefOid を取り、本文を lib/optin-record-lib.sh で正規化して固定文字列で数える（pass は行全体の一致、fail と not-run は行内の部分一致 =
+#             LC_ALL=C が削らない Unicode の空白が付いた行も数える）。
+#             payload は headSha（40 桁 16 進）と pass / nonPass（コマンドごとの整数の配列）だけで、本文・コマンドの文字列は含めない。
+#             取得失敗・headRefOid の形式不正・本文が文字列でも null でもない・grep の異常終了は err:1（件数を 0 件へ畳み込まない）。
+#             判定（pass が 1 件以上かつ pass 以外が 0 件）はホストの classifyOptinRecordGate が行う。--wait は取らない
 # 出力: 標準出力に 1 行の封筒 {nonce, payload, sha256}（lib/signed-output.sh）。payload は整数と ASCII の固定語彙・
 #       40 桁 16 進だけで、PR のコメント本文・チェック名・context 名のような外部由来の文字列は含めない。共通キー:
 #       - mode         実行したモード
@@ -131,9 +142,12 @@ script_dir=$(cd "$(dirname "$0")" && pwd -P) || exit 2
 # policy_paths_count（policy-paths の判定。純関数）
 # shellcheck source=lib/policy-paths-lib.sh
 . "${script_dir}/lib/policy-paths-lib.sh" || exit 3
+# optin_cmd_valid / optin_record_normalize / optin_record_counts（optin-record の判定。純関数）
+# shellcheck source=lib/optin-record-lib.sh
+. "${script_dir}/lib/optin-record-lib.sh" || exit 3
 
 usage() {
-  echo "使い方: observe-pr.sh --nonce N --mode pr|checks|required|reviews|threads|threads-detail|push|added-files|policy-paths --pr NUM [--repo O/R] [--base B] [--branch B] [--issue N] [--slug S] [--until review|settled|started] [--thread-id ID] [--peers N,N,…] [--allow P,P,…] [--wait --attempt K]" >&2
+  echo "使い方: observe-pr.sh --nonce N --mode pr|checks|required|reviews|threads|threads-detail|push|added-files|policy-paths|optin-record --pr NUM [--repo O/R] [--base B] [--branch B] [--issue N] [--slug S] [--until review|settled|started] [--thread-id ID] [--peers N,N,…] [--allow P,P,…] [--optin-cmd CMD …] [--wait --attempt K]" >&2
   [ $# -eq 0 ] || echo "observe-pr: $1" >&2
   exit 2
 }
@@ -173,6 +187,8 @@ valid_slug() {
   [ "${#1}" -le 39 ]
 }
 
+nl='
+'
 nonce=""
 mode=""
 pr=""
@@ -187,12 +203,15 @@ peers=""
 peers_set=0
 allow=""
 allow_set=0
+optin_cmds=""
+optin_input=""
+optin_count=0
 wait=0
 attempt=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --wait) wait=1; shift ;;
-    --nonce | --mode | --pr | --repo | --base | --branch | --issue | --slug | --until | --thread-id | --peers | --allow | --attempt)
+    --nonce | --mode | --pr | --repo | --base | --branch | --issue | --slug | --until | --thread-id | --peers | --allow | --optin-cmd | --attempt)
       [ $# -ge 2 ] || usage "$1 に値が無い"
       case "$1" in
         --nonce) nonce=$2 ;;
@@ -207,6 +226,14 @@ while [ $# -gt 0 ]; do
         --thread-id) thread_id=$2 ;;
         --peers) peers=$2; peers_set=1 ;;
         --allow) allow=$2; allow_set=1 ;;
+        --optin-cmd)
+          # 値は 1 件ずつ検証し（改行・許可外の文字・長さ・重複は拒否）、改行区切りで貯める（検証済みの値は改行を含まない）
+          optin_cmd_valid "$2" || usage "--optin-cmd の形式が不正"
+          case "${optin_cmds}" in *"${nl}$2${nl}"*) usage "--optin-cmd に重複がある" ;; esac
+          optin_cmds="${optin_cmds}${nl}$2${nl}"
+          optin_input="${optin_input}${nl}$2"
+          optin_count=$((optin_count + 1))
+          ;;
         --attempt) attempt=$2 ;;
       esac
       shift 2
@@ -217,7 +244,7 @@ done
 
 so_valid_nonce "${nonce}" || usage "--nonce は小文字英数字 1〜64 文字で指定する"
 case "${mode}" in
-  pr | checks | required | reviews | threads | threads-detail | push | added-files | policy-paths) ;;
+  pr | checks | required | reviews | threads | threads-detail | push | added-files | policy-paths | optin-record) ;;
   *) usage "--mode が不正: ${mode}" ;;
 esac
 is_uint "${pr}" || usage "--pr は正の整数で指定する"
@@ -270,6 +297,11 @@ if [ "${allow_set}" -eq 1 ]; then
     done
     [ "${allow_count}" -le 20 ] || usage "--allow は 20 個まで"
   fi
+fi
+# --optin-cmd: optin-record だけが取る。1〜10 個
+if [ "${optin_count}" -gt 0 ] && [ "${mode}" != optin-record ]; then usage "--optin-cmd は optin-record だけが取る"; fi
+if [ "${mode}" = optin-record ]; then
+  [ "${optin_count}" -ge 1 ] && [ "${optin_count}" -le 10 ] || usage "optin-record には --optin-cmd が 1〜10 個必要"
 fi
 case "${until_cond}" in
   '' | review | settled | started) ;;
@@ -325,13 +357,13 @@ if [ "${mode}" = pr ]; then
 fi
 [ "${wait}" -eq 1 ] || polls=1
 
-nl='
-'
 input_text="observe-pr${nl}${mode}${nl}${pr}${nl}${repo}${nl}${base}${nl}${branch}${nl}${issue}${nl}${slug}${nl}${until_cond}"
 # added-files だけ peers の並び（引数の文字列そのもの）を最後の行に足す（他のモードの入力の定義は変えない）
 [ "${mode}" != added-files ] || input_text="${input_text}${nl}${peers}"
 # policy-paths だけ allow の並び（引数の文字列そのもの）を最後の行に足す
 [ "${mode}" != policy-paths ] || input_text="${input_text}${nl}${allow}"
+# optin-record だけ --optin-cmd の個数と、各コマンド（渡した順）を 1 行ずつ最後に足す（コマンドは改行を含まない検証済みの値）
+[ "${mode}" != optin-record ] || input_text="${input_text}${nl}${optin_count}${optin_input}"
 input_sha=$(printf '%s' "${input_text}" | so_sha256) || {
   echo "observe-pr: 入力のハッシュを計算できなかった（sha256sum / shasum が無い等）" >&2
   exit 3
@@ -803,6 +835,37 @@ observe_policy_paths() {
   return 0
 }
 
+# optin-record: PR 本文の記録節のマーカー行を、現在の HEAD の sha に対してコマンドごとに数える。gh pr view の 1 回の呼び出しで body と
+# headRefOid を取る（本文と HEAD が別の時点の値にならない）。取得・解析の失敗は return 1（『0 件』に畳まない）。判定はしない
+O_OR_PASS='[]'; O_OR_NONPASS='[]'
+observe_optin_record() {
+  O_OR_PASS='[]'; O_OR_NONPASS='[]'; HEAD=""
+  local sha body norm c row pl="" nl_="" sep=""
+  gh_pr_view --json body,headRefOid || { fail "gh pr view"; return 1; }
+  # headRefOid は 40 桁小文字 16 進、body は文字列か null（null は空の本文）。それ以外の形は取得失敗
+  sha=$(printf '%s' "${OUT}" | jq -r 'if type == "object" and (.headRefOid | type) == "string" and ((.body | type) == "string" or .body == null) then .headRefOid else empty end' 2>/dev/null) || { fail "gh pr view の JSON"; return 1; }
+  case "${sha}" in '' | *[!0-9a-f]*) fail "headRefOid の形式"; return 1 ;; esac
+  [ "${#sha}" -eq 40 ] || { fail "headRefOid の桁数"; return 1; }
+  body=$(printf '%s' "${OUT}" | jq -r '.body // ""' 2>/dev/null) || { fail "body の取り出し"; return 1; }
+  norm=$(printf '%s\n' "${body}" | optin_record_normalize) || { fail "本文の正規化"; return 1; }
+  while IFS= read -r c; do
+    [ -n "${c}" ] || continue
+    row=$(optin_record_counts "${norm}" "${sha}" "${c}") || { fail "マーカー行の件数"; return 1; }
+    # shellcheck disable=SC2086
+    set -- ${row}
+    [ $# -eq 2 ] || { fail "件数の形式"; return 1; }
+    case "$1$2" in '' | *[!0-9]*) fail "件数の形式"; return 1 ;; esac
+    pl="${pl}${sep}$1"
+    nl_="${nl_}${sep}$2"
+    sep=","
+  done <<OPTIN_CMDS_EOF
+${optin_cmds}
+OPTIN_CMDS_EOF
+  O_OR_PASS="[${pl}]"
+  O_OR_NONPASS="[${nl_}]"
+  HEAD=${sha}
+}
+
 # ---- 観測ループ。--wait なしは 1 回だけ観測する ----
 run_observe() {
   case "${mode}" in
@@ -814,6 +877,7 @@ run_observe() {
     threads | threads-detail) observe_threads ;;
     added-files) observe_added_files ;;
     policy-paths) observe_policy_paths ;;
+    optin-record) observe_optin_record ;;
   esac
 }
 run_met() {
@@ -910,6 +974,7 @@ if [ "${err}" -ne 0 ] || [ "${inconclusive}" -eq 1 ]; then
   O_AF_STATE=""; O_AF_ADDED=0; O_AF_NUMBERED=0; O_AF_SAMEPATH=0; O_AF_SEQPEER=0; O_AF_SEQBASE=0; O_AF_TRUNC=0
   O_AF_PATHPEERS='[]'; O_AF_SEQPEERS='[]'
   O_PP_STATE=""; O_PP_FILES=0; O_PP_POLICY=0; O_PP_UNPLANNED=0; O_PP_TRUNC=0
+  O_OR_PASS='[]'; O_OR_NONPASS='[]'
 fi
 
 case "${mode}" in
@@ -964,6 +1029,11 @@ case "${mode}" in
     payload=$(jq -cnS --arg m "${mode}" --arg is "${input_sha}" --arg oc "${outcome}" --arg st "${O_PP_STATE}" \
       --argjson e "${err}" --argjson fi "${O_PP_FILES}" --argjson po "${O_PP_POLICY}" --argjson un "${O_PP_UNPLANNED}" --argjson tr "${O_PP_TRUNC}" \
       '{mode: $m, inputSha256: $is, outcome: $oc, err: $e, state: $st, files: $fi, policy: $po, unplanned: $un, truncated: $tr}')
+    ;;
+  optin-record)
+    payload=$(jq -cnS --arg m "${mode}" --arg is "${input_sha}" --arg oc "${outcome}" --arg hs "${HEAD}" \
+      --argjson e "${err}" --argjson pa "${O_OR_PASS}" --argjson np "${O_OR_NONPASS}" \
+      '{mode: $m, inputSha256: $is, outcome: $oc, err: $e, headSha: $hs, pass: $pa, nonPass: $np}')
     ;;
 esac
 [ -n "${payload:-}" ] || { echo "observe-pr: payload を組み立てられなかった" >&2; exit 3; }

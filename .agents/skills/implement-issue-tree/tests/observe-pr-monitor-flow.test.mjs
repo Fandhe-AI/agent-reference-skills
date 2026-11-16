@@ -14,7 +14,8 @@ import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { stripMetaExport } from './lib/workflow-script-contract.mjs'
-import { wrapTreeReply, hashPrecheckReply, inputSha256, makeEnvelope, nonceOf } from './lib/signed-output.mjs'
+import { externalChecksReply, stateVerifyReply, wrapTreeReply, hashPrecheckReply, inputSha256, makeEnvelope, nonceOf } from './lib/signed-output.mjs'
+import { requestedNumbersOf } from './lib/declared-deps-prompt.mjs'
 
 const SCRIPT_PATH = join(dirname(fileURLToPath(import.meta.url)), '..', 'scripts', 'implement-issue-tree.src.js')
 const rawSource = readFileSync(SCRIPT_PATH, 'utf8')
@@ -53,11 +54,11 @@ async function run(monitorReply, { args = ARGS, mergeExecReply = () => null } = 
     if (label === 'script-hash-precheck') return hashPrecheckReply(prompt)
     if (label === 'worktree:untracked-scan') return { count: 0, paths: [] }
     if (label === 'state:load') return { ok: true, fileExisted: false, items: {}, highWaterBytes: 0, highWaterVersion: 0 }
-    if (label === 'state:load-verify') return { fileExists: false, hashes: {}, keysSha256: '', keysCount: 0, highWaterBytes: 0, highWaterVersion: 0 }
+    if (label === 'state:load-verify') return stateVerifyReply(prompt, { fileExists: false, hashes: {}, keysSha256: '', keysCount: 0, highWaterBytes: 0, highWaterVersion: 0 })
     if (label === 'plan:issue-tree') return wrapTreeReply(prompt, { nodes: structuredClone(nodes) })
-    if (label === 'detect:external-checks') return { apps: [] }
+    if (label === 'detect:external-checks') return externalChecksReply(prompt)
     if (label.startsWith('plan:declared-deps')) {
-      const nums = /for n in ([0-9 ]+); do/.exec(prompt)[1].trim().split(' ').map(Number)
+      const nums = requestedNumbersOf(prompt)
       return { entries: nums.map((x) => ({ number: x, deps: [], sig: declaredDepsChecksum(x, []) })) }
     }
     if (label.startsWith('plan:root-ancestors')) return { fetched: true, chain: [{ number: 1, parent: 0 }] }
