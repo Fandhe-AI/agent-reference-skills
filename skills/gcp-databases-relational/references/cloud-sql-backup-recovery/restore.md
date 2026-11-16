@@ -55,7 +55,7 @@ Restoring to a different region: the source key cannot be used; set `--disk-encr
 | Default log retention when unset | 14 days (Enterprise Plus), 7 days (Enterprise) |
 | Typical RPO | Five minutes or less |
 | Logs in Cloud Storage | Stored up to 35 days (Enterprise Plus) / 7 days (Enterprise), no additional cost |
-| On-disk logs | `expire_logs_days` / `binlog_expire_logs_seconds` set to the equivalent of one day; do not set either to `0` |
+| On-disk log retention (PostgreSQL) | Controlled by `transactionLogRetentionDays` (gcloud `--retained-transaction-log-days`) |
 
 ### Restore rate limit
 
@@ -63,6 +63,7 @@ Maximum three restore operations every 30 minutes per instance per region per pr
 
 ## Notes
 
+- Source inconsistency: the PostgreSQL version of this page says Cloud SQL sets the `expire_logs_days` and `binlog_expire_logs_seconds` flags to one day and lists them as on-disk log retention settings. Those are MySQL binary-log flags, not PostgreSQL settings, so they are omitted from the table above; for PostgreSQL use `transactionLogRetentionDays`.
 - Restoring an existing instance from a backup deletes the archived PITR logs; only logs generated after the restore can be used for PITR.
 - Caution (source): moving PITR transaction logs from disk to Cloud Storage causes several minutes of downtime and loses previous logs. Deactivating and re-enabling PITR deletes existing logs and restarts the database; you cannot PITR earlier than the re-enable time.
 - With CMEK, restore needs the latest key version for all days in `retained-transaction-log-days`; logs are encrypted with the latest CMEK version.

@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-databases-relational
 
-Google Cloud (GCP) のリレーショナルデータベース系スキル。Cloud SQL（MySQL / PostgreSQL / SQL Server）、AlloyDB for PostgreSQL、Spanner、Database Migration Service、Database Center / Query insights を扱う。インスタンス・クラスターの作成と設定、接続（Cloud SQL Auth Proxy・language connectors・IAM database authentication・private IP / Private Service Connect）、バックアップと PITR、HA・リードレプリカ・クロスリージョン、メンテナンス、Spanner のスキーマ設計・トランザクション・DML・インデックス・change streams・emulator・クライアント、DMS による移行に加え、gcloud 4 グループ・IAM ロール・REST（Discovery）を収録する。
+Google Cloud (GCP) のリレーショナルデータベース系スキル。Cloud SQL（MySQL / PostgreSQL / SQL Server）、AlloyDB for PostgreSQL、Spanner、Database Migration Service、Database Center / Query insights を扱う。インスタンス・クラスターの作成と設定、接続（Cloud SQL Auth Proxy・language connectors・IAM database authentication・private IP / Private Service Connect）、バックアップと PITR、HA・リードレプリカ・クロスリージョン、メンテナンス、Spanner のスキーマ設計・トランザクション・DML・インデックス・change streams・emulator・クライアント、DMS による移行を収録する。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。Cloud SQL の 3 エンジン共通ページは PostgreSQL 版から 1 度だけ収録し、`cloud-sql-mysql` / `cloud-sql-sqlserver` にはエンジン固有ページのみを置く。
 
@@ -49,13 +49,11 @@ skills/gcp-databases-relational/
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. gcloud コマンド → 下記マッピング表で `gcloud`（後続 PR で投入） を選び、`references/gcloud/<group>/README.md` からページ（GA は全文）を引く。GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ
-2. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`。Cloud SQL は `sqladmin`、Spanner は `spanner`、AlloyDB は `alloydb`、DMS は `datamigration`
-3. IAM ロール・権限 → `references/iam/README.md`（後続 PR で投入） の索引から `<service>.md` を引く。ロール ID・権限名のサービス接頭辞で選ぶ（例: `roles/cloudsql.client` → `cloudsql.md`、`roles/spanner.databaseUser` → `spanner.md`）
-4. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
-5. Cloud SQL はエンジン共通ページが `cloud-sql-*`（PostgreSQL 版を 1 度だけ収録）にあり、MySQL / SQL Server 固有の差分だけが `cloud-sql-mysql`（後続 PR で投入） / `cloud-sql-sqlserver`（後続 PR で投入） にある。まず共通カテゴリを引き、エンジン固有の挙動は固有カテゴリで補う
+1. gcloud コマンド・フラグの全文、IAM ロールの権限、REST のメソッド・メッセージ型（機械生成の `references/gcloud/` `references/iam/` `references/rest/` `references/rest-schemas/`）は後続 PR で投入する。未投入の間は `gcloud <group> --help` と公式 reference を確認する
+2. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
+3. Cloud SQL はエンジン共通ページが `cloud-sql-*`（PostgreSQL 版を 1 度だけ収録）にあり、MySQL / SQL Server 固有の差分だけが `cloud-sql-mysql`（後続 PR で投入） / `cloud-sql-sqlserver`（後続 PR で投入） にある。まず共通カテゴリを引き、エンジン固有の挙動は固有カテゴリで補う
 
-`samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
+`samples/` と `scripts/` は本スキルに無い。
 
 ## タスク → カテゴリ マッピング
 
