@@ -47,8 +47,10 @@ gcloud container attached clusters register CLUSTER_NAME \
 
 3b. Public OIDC issuer (experimental). Retrieve the issuer URL:
 
+Adapted (not in the official docs): `az aks show` takes the Azure-side `AKS_CLUSTER_NAME` instead of `CLUSTER_NAME`.
+
 ```bash
-az aks show -n CLUSTER_NAME \
+az aks show -n AKS_CLUSTER_NAME \
   -g RESOURCE_GROUP \
   --query "oidcIssuerProfile.issuerUrl" -otsv
 ```
@@ -97,6 +99,7 @@ gcloud projects add-iam-policy-binding GOOGLE_PROJECT_ID \
 - Starting with Kubernetes 1.28 the telemetry binding is unnecessary. Before that it is project-wide, run once after the first cluster exists.
 - Cluster requirements: https://docs.cloud.google.com/kubernetes-engine/multi-cloud/docs/attached/aks/reference/cluster-prerequisites
 - Corrected from the official docs: the source saves `KUBECONFIG_CONTEXT=$(kubectl config current-context)` but then passes the literal `--context=KUBECONFIG_CONTEXT`; the commands now use `--context="${KUBECONFIG_CONTEXT}"`.
+- Corrected from the official docs: the source passes `CLUSTER_NAME` (the name registered in Google Cloud) to `az aks show -n`, while the same page uses `AKS_CLUSTER_NAME` for `az aks get-credentials` and allows the two names to differ; the issuer lookup now uses `AKS_CLUSTER_NAME`.
 - Source: https://docs.cloud.google.com/kubernetes-engine/multi-cloud/docs/attached/aks/how-to/attach-cluster (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

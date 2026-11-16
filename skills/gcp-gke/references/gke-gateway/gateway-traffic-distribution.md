@@ -131,7 +131,7 @@ spec:
     name: SERVICE_NAME
 ```
 
-Replace `SERVICE_NAME` with the target Service. `HTTP_COOKIE`, `GENERATED_COOKIE` and `CLIENT_IP` follow the same shape (`type: CLIENT_IP` takes no extra fields; cookie types take `cookie.name` / `cookie.path` / `cookie.ttl`).
+Replace `SERVICE_NAME` with the target Service. Other types change `type` and its fields as listed in the Session affinity types table below: remove `httpHeaderName` (it belongs to `HEADER_FIELD` only); `CLIENT_IP` takes no extra fields; `HTTP_COOKIE` requires `cookie.name`; `GENERATED_COOKIE` accepts only `cookie.ttl`. `HTTP_COOKIE`, `GENERATED_COOKIE`, `HEADER_FIELD` and `CLIENT_IP` all require `localityLbAlgorithm: MAGLEV` or `RING_HASH`; only `STRONG_COOKIE_AFFINITY` accepts any algorithm.
 
 ```bash
 kubectl describe gcptrafficdistributionpolicy POLICY_NAME
