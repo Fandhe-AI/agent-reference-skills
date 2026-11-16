@@ -63,7 +63,7 @@ Columns: Instance admin (v1) / Image user / Network user / Network viewer / Netw
 | Create or delete VM instances | Yes* | No | No | No | No | No | No | No | Yes | No | No |
 | SSH into VM instances | Yes* | No | No | No | No | No | No | No | Yes* | No | No |
 | List or get VM instances | Yes | No | No | Yes | Yes | No | No | No | Yes | Yes | Yes |
-| Create or delete images, disks, snapshots | Yes | No | No | No | No | No | Yes | No | Yes | Yes | No |
+| Create or delete images, disks, snapshots | Yes | No | No | No | No | No | Yes | No | Yes | No (source: Yes; corrected, see Notes) | No |
 | List or get images | Yes | Yes | No | No | No | No | Yes | No | Yes | Yes | No |
 | Create or delete instance groups | Yes* | No | No | No | No | No | No | No | Yes | No | Yes |
 | Create and manage load balancers | No | No | No | No | Yes | No | No | No | Yes | No | Yes |
@@ -78,12 +78,13 @@ Columns: Instance admin (v1) / Image user / Network user / Network viewer / Netw
 - Resource-level IAM policies let you grant a role on specific instances, images or disks; the effective policy is the union of the resource policy and policies inherited from parents.
 - Organization policies for Compute Engine named here: disable interactive serial console access, disable external IP addresses for VMs, restrict image projects. Setting them needs `orgpolicy.policyAdmin` on the organization; projects can have overrides. See [organization-policies.md](./organization-policies.md).
 - `roles/compute.instanceAdmin.v1`, owner and editor members can SSH into instances automatically (instances that run as a service account also need `roles/iam.serviceAccountUser`).
-- Source inconsistency kept as written: the matrix lists Compute viewer as "Yes" for "Create or delete images, disks, snapshots", while the role description says read-only.
+- Corrected from the official docs: the source matrix lists Compute viewer as "Yes" for "Create or delete images, disks, snapshots", while the same page describes the Compute Engine viewer role as "Read-only access to get and list Compute Engine resources, without being able to read the data stored on them". The IAM roles and permissions reference lists `roles/compute.viewer` for `compute.disks.list` but not for `compute.disks.create`, `compute.disks.delete`, `compute.images.create`, `compute.images.delete`, `compute.snapshots.create` or `compute.snapshots.delete`, so the cell is shown as "No".
 - Distance line: this page covers Compute Engine IAM roles; IAM in general is in `gcp-foundation`. VPC networks and firewalls themselves are in the planned `gcp-networking`.
 - The source page also links Console flows for adding team members; those are omitted.
 - Source inconsistency: this page says "To give a user SSH access to VM instances and prevent access to all APIs, add the user's SSH keys to the project or instance" (the "Access paths" SSH-key bullet), while oslogin.md (compute-access-ssh) says "Compute instances that use OS Login can't use metadata-based SSH keys. If you enable OS Login for a compute instance, then the compute instance's guest agent ignores the keys stored in metadata". The SSH-key path applies only to VMs without OS Login; for OS Login VMs, set-up-oslogin.md lists `roles/compute.osLogin` or `roles/compute.osAdminLogin` for "All users".
 - Source (OS Login and metadata SSH keys): https://docs.cloud.google.com/compute/docs/oslogin (retrieved 2026-11-17)
 - Source (OS Login roles): https://docs.cloud.google.com/compute/docs/oslogin/set-up-oslogin (retrieved 2026-11-17)
+- Source (Compute Engine IAM permissions): https://docs.cloud.google.com/iam/docs/roles-permissions/compute (retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/compute/docs/access (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances (retrieved 2026-11-17).
 
