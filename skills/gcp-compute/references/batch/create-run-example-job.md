@@ -119,10 +119,11 @@ gcloud projects delete PROJECT_ID
 
 ## Notes
 
-- New project: the creator gets Owner and the Compute Engine default service account gets Editor, which already cover the tutorial. Editor and Storage Admin are broad; use a disposable project or narrower roles, not for production.
+- New project: the creator gets Owner and the Compute Engine default service account gets Editor, which already cover the tutorial. Editor and Storage Admin are broad; use a disposable project or narrower roles, not for production. Caveat (from the Compute Engine service accounts page): "Depending on your organization policy configuration, the default service account might automatically be granted the Editor role on your project"; that page recommends enforcing the `iam.automaticIamGrantsForDefaultServiceAccounts` organization policy constraint, and where it is enforced the default service account does not get Editor. Check the account's roles before relying on them, and grant the roles the tutorial lists if they are missing.
 - Destructive: `gcloud batch jobs delete` removes the job's details and history (logs follow Cloud Logging retention); `gcloud storage rm ... --recursive` deletes the bucket and all objects; `gcloud projects delete` deletes everything in the project and loses custom project IDs. Try them on disposable resources first.
 - The source also shows Console monitoring steps, sample command output and a final `rm -rf batch-samples` local cleanup (omitted).
 - Google Cloud Batch (`batch.googleapis.com`) — not the Claude / OpenAI batch APIs (`anthropic-api-core`, `openai-api-core`) and not Kubernetes Jobs (`gcp-gke`). Cloud Storage buckets themselves are in `gcp-storage`.
+- Source (Compute Engine default service account): https://docs.cloud.google.com/compute/docs/access/service-accounts (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/batch/docs/create-run-example-job (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

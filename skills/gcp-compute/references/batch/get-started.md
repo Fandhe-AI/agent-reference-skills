@@ -77,12 +77,13 @@ service-PROJECT_NUMBER@gcp-sa-cloudbatch.iam.gserviceaccount.com
 
 ## Notes
 
-- Jobs default to the Compute Engine default service account, which is granted the Editor role (`roles/editor`) by default; Editor is not recommended for production environments. Prefer a custom service account with least privilege.
+- Jobs default to the Compute Engine default service account, which is granted the Editor role (`roles/editor`) by default; Editor is not recommended for production environments. Prefer a custom service account with least privilege. Caveat (from the Compute Engine service accounts page): "Depending on your organization policy configuration, the default service account might automatically be granted the Editor role on your project"; that page recommends enforcing the `iam.automaticIamGrantsForDefaultServiceAccounts` organization policy constraint, and where it is enforced the default service account does not get Editor. Check the account's roles before relying on them, and grant the roles in the table above (job service account: `roles/batch.agentReporter` and `roles/logging.logWriter`) if they are missing.
 - Warning from the source: do not revoke the roles automatically granted to the Batch service agent, otherwise Batch might not work.
 - Caution from the source: the Batch service agent is used for creating all Batch jobs, so any permission granted to it can be used by any principal in the project that can create Batch jobs.
 - There is no additional cost for Batch; you pay only for the underlying resources. See the Batch pricing page.
 - Google Cloud Batch (`batch.googleapis.com`) — not the Claude / OpenAI batch APIs (`anthropic-api-core`, `openai-api-core`) and not Kubernetes Jobs (`gcp-gke`).
 - Job lifetime: see [create-run-job.md](./create-run-job.md). The source also shows Console steps for project setup (omitted).
+- Source (Compute Engine default service account): https://docs.cloud.google.com/compute/docs/access/service-accounts (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/batch/docs/get-started (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Permissions in the roles above (from the IAM roles reference, not from the Batch page): `roles/batch.agentReporter` grants `batch.states.report` (see the `iam/batch.md` page of this skill); `roles/logging.logWriter` grants `logging.logEntries.create` and `logging.logEntries.route`; `roles/iam.serviceAccountUser` grants `iam.serviceAccounts.actAs` (plus `iam.serviceAccounts.get` / `list`).
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/logging and https://docs.cloud.google.com/iam/docs/roles-permissions/iam (retrieved 2026-11-14)
