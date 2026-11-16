@@ -56,12 +56,27 @@ skills/gcp-databases-relational/
     alloydb-operations/           # AlloyDB のバックアップ・PITR・クロスリージョンレプリケーション・フェイルオーバー・メンテナンス・フラグ・columnar engine
       README.md
       <page>.md                   # 例: overview.md / restore-pitr.md / maintenance.md / columnar-engine.md
+    spanner-overview/             # Spanner のインスタンス・構成・コンピュート容量・エディション・レプリケーション・TrueTime・autoscaling・クォータ・PostgreSQL インターフェース
+      README.md
+      <page>.md                   # 例: instances.md / instance-configurations.md / compute-capacity.md / true-time-external-consistency.md
+    spanner-schema/               # スキーマとデータモデル・スキーマ設計・主キー・スキーマ更新・外部キー
+      README.md
+      <page>.md                   # 例: schema-and-data-model.md / schema-design.md / primary-keys-overview.md
+    spanner-transactions/         # トランザクション・timestamp bounds・DML と mutation の違い・エラーコード
+      README.md
+      <page>.md                   # 例: transactions.md / timestamp-bounds.md / dml-versus-mutations.md
     spanner-dml-queries/          # Partitioned DML・DML / SQL のベストプラクティス・クエリ実行プラン・分離レベル
       README.md
       <page>.md                   # 例: dml-partitioned.md / sql-best-practices.md / query-execution-plans.md / isolation-levels.md
+    spanner-indexes-change-streams/  # セカンダリインデックス・change streams の partition / record / クエリ
+      README.md
+      <page>.md                   # 例: secondary-indexes.md / change-streams-details.md
     spanner-clients/              # Node.js / Python のチュートリアル（データベース作成・読み書き・インデックス・トランザクション）
       README.md
       <page>.md                   # 例: nodejs-write-query-read.md / python-indexes-transactions.md
+    spanner-operations/           # バックアップ・PITR・fine-grained access control・change streams 概要・emulator・PGAdapter・Query insights
+      README.md
+      <page>.md                   # 例: backup.md / pitr.md / fgac-about.md / configure-fgac.md / pgadapter.md
     database-migration/           # Database Migration Service（PostgreSQL → Cloud SQL）: ソース準備・接続方式・移行ジョブ・promote・制限
       README.md
       <page>.md                   # 例: overview.md / configure-source-database.md / create-migration-job.md / promote-migration.md
@@ -113,12 +128,19 @@ skills/gcp-databases-relational/
 | AlloyDB への接続（private services access / PSC）・Auth Proxy・Language Connectors・IAM 認証 | alloydb-connect-security | [references/alloydb-connect-security/README.md](references/alloydb-connect-security/README.md) |
 | AlloyDB の IAM database authentication の設定（`alloydb.iam_authentication` フラグ・`roles/alloydb.databaseUser`・`gcloud alloydb users create --type=IAM_BASED` / `IAM_GROUP`・`GRANT`） | alloydb-connect-security | [references/alloydb-connect-security/manage-iam-auth.md](references/alloydb-connect-security/manage-iam-auth.md) |
 | AlloyDB のバックアップ・PITR 復元・クロスリージョンレプリケーション・フェイルオーバー・メンテナンス・database flags・columnar engine | alloydb-operations | [references/alloydb-operations/README.md](references/alloydb-operations/README.md) |
+| Spanner のインスタンス・構成（regional / multi-region）・コンピュート容量・エディション・TrueTime・autoscaling・クォータ | spanner-overview | [references/spanner-overview/README.md](references/spanner-overview/README.md) |
+| Spanner の GoogleSQL / PostgreSQL 方言の選択・PostgreSQL インターフェース・gcloud によるクイックスタート | spanner-overview | [references/spanner-overview/README.md](references/spanner-overview/README.md) |
+| Spanner のスキーマ設計（interleaving・主キー・ホットスポット回避）・スキーマ更新・外部キー | spanner-schema | [references/spanner-schema/README.md](references/spanner-schema/README.md) |
+| Spanner のトランザクション（read-write / read-only / partitioned DML）・timestamp bounds・DML と mutation の違い・エラーコード | spanner-transactions | [references/spanner-transactions/README.md](references/spanner-transactions/README.md) |
 | Spanner の Partitioned DML・DML / SQL のベストプラクティス・クエリ実行プラン・分離レベル | spanner-dml-queries | [references/spanner-dml-queries/README.md](references/spanner-dml-queries/README.md) |
+| Spanner のセカンダリインデックス・change streams のパーティション / レコード / クエリ | spanner-indexes-change-streams | [references/spanner-indexes-change-streams/README.md](references/spanner-indexes-change-streams/README.md) |
 | Node.js / Python から Spanner を使うチュートリアル（Client・execute_sql・Snapshot・トランザクション） | spanner-clients | [references/spanner-clients/README.md](references/spanner-clients/README.md) |
+| Spanner のバックアップ・PITR・fine-grained access control・change streams 概要・emulator・PGAdapter・Query insights（introspection） | spanner-operations | [references/spanner-operations/README.md](references/spanner-operations/README.md) |
+| Spanner の fine-grained access control の設定（`roles/spanner.fineGrainedAccessUser`・条件付き `roles/spanner.databaseRoleUser`・`CREATE ROLE` / `GRANT`・`--database-role`） | spanner-operations | [references/spanner-operations/configure-fgac.md](references/spanner-operations/configure-fgac.md) |
 | Database Migration Service で PostgreSQL を Cloud SQL へ移行（ソース準備・接続方式・移行ジョブ・promote・制限） | database-migration | [references/database-migration/README.md](references/database-migration/README.md) |
 | Database Center のフリート横断ヘルス・Cloud SQL / AlloyDB の Query insights | database-center-insights | [references/database-center-insights/README.md](references/database-center-insights/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `spanner-overview` / `spanner-schema` / `spanner-transactions` / `spanner-indexes-change-streams` / `spanner-operations`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
