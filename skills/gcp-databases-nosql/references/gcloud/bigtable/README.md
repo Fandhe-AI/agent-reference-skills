@@ -31,3 +31,19 @@
 | gcloud bigtable instances update | 3 commands (alpha, beta, ga); bigtable instances update … | [bigtable-instances-update.md](./bigtable-instances-update.md) |
 | gcloud bigtable instances upgrade | 3 commands (alpha, beta, ga); bigtable instances upgrade … | [bigtable-instances-upgrade.md](./bigtable-instances-upgrade.md) |
 | gcloud bigtable logical-views | 15 commands (alpha, beta, ga); bigtable logical-views create … | [bigtable-logical-views.md](./bigtable-logical-views.md) |
+| gcloud bigtable materialized-views | 15 commands (alpha, beta, ga); bigtable materialized-views create … | [bigtable-materialized-views.md](./bigtable-materialized-views.md) |
+| gcloud bigtable memory-layers | 6 commands (alpha, beta); beta bigtable memory-layers describe … | [bigtable-memory-layers.md](./bigtable-memory-layers.md) |
+| gcloud bigtable operations | 6 commands (alpha, beta, ga); bigtable operations describe … | [bigtable-operations.md](./bigtable-operations.md) |
+| gcloud bigtable schema-bundles | 27 commands (alpha, beta, ga); bigtable schema-bundles add-iam-policy-binding … | [bigtable-schema-bundles.md](./bigtable-schema-bundles.md) |
+| gcloud bigtable tables add-iam-policy-binding | 3 commands (alpha, beta, ga); bigtable tables add-iam-policy-binding … | [bigtable-tables-add-iam-policy-binding.md](./bigtable-tables-add-iam-policy-binding.md) |
+| gcloud bigtable tables config | alpha bigtable tables config export | [bigtable-tables-config.md](./bigtable-tables-config.md) |
+| gcloud bigtable tables create | 3 commands (alpha, beta, ga); bigtable tables create … | [bigtable-tables-create.md](./bigtable-tables-create.md) |
+| gcloud bigtable tables delete | 3 commands (alpha, beta, ga); bigtable tables delete … | [bigtable-tables-delete.md](./bigtable-tables-delete.md) |
+| gcloud bigtable tables describe | 3 commands (alpha, beta, ga); bigtable tables describe … | [bigtable-tables-describe.md](./bigtable-tables-describe.md) |
+| gcloud bigtable tables get-iam-policy | 3 commands (alpha, beta, ga); bigtable tables get-iam-policy … | [bigtable-tables-get-iam-policy.md](./bigtable-tables-get-iam-policy.md) |
+| gcloud bigtable tables list | 3 commands (alpha, beta, ga); bigtable tables list … | [bigtable-tables-list.md](./bigtable-tables-list.md) |
+| gcloud bigtable tables remove-iam-policy-binding | 3 commands (alpha, beta, ga); bigtable tables remove-iam-policy-binding … | [bigtable-tables-remove-iam-policy-binding.md](./bigtable-tables-remove-iam-policy-binding.md) |
+| gcloud bigtable tables restore | 3 commands (alpha, beta, ga); bigtable tables restore … | [bigtable-tables-restore.md](./bigtable-tables-restore.md) |
+| gcloud bigtable tables set-iam-policy | 3 commands (alpha, beta, ga); bigtable tables set-iam-policy … | [bigtable-tables-set-iam-policy.md](./bigtable-tables-set-iam-policy.md) |
+| gcloud bigtable tables undelete | 3 commands (alpha, beta, ga); bigtable tables undelete … | [bigtable-tables-undelete.md](./bigtable-tables-undelete.md) |
+| gcloud bigtable tables update | 3 commands (alpha, beta, ga); bigtable tables update … | [bigtable-tables-update.md](./bigtable-tables-update.md) |
