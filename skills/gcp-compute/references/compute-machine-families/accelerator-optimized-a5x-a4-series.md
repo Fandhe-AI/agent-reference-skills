@@ -26,7 +26,7 @@ gcloud compute accelerator-types list \
 | `a4x-highgpu-4g` | A4X, NVIDIA GB200 (B200 GPUs) | 140 | 884 | 12,000 | 6 | 2,000 | 4 | 744 (HBM3e) |
 | `a4-highgpu-8g` | A4, NVIDIA B200 | 224 | 3,968 | 12,000 | 10 | 3,600 | 8 | 1,440 (HBM3e) |
 
-Notes: A5X vCPU count 176 equals the 176 physical cores across two 88-core NVIDIA Vera sockets; for the others a vCPU is one hardware hyper-thread. Max network bandwidth is a cap on egress; actual depends on destination and other factors. GPU memory is separate from instance memory.
+Notes: A5X vCPU count 176 equals the 176 physical cores across two 88-core NVIDIA Vera sockets; for the others the source says "a vCPU is implemented as a single hardware hyper-thread" (for A4X Max and A4X, which use Arm-based NVIDIA Grace CPUs, machine-resource.md lists a vCPU as a physical core instead; see Notes). Max network bandwidth is a cap on egress; actual depends on destination and other factors. GPU memory is separate from instance memory.
 
 ### A5X
 
@@ -63,6 +63,8 @@ Notes: A5X vCPU count 176 equals the 176 physical cores across two 88-core NVIDI
 - Compute Engine VMs with GPUs; GPUs on GKE nodes are in `gcp-gke`; CUDA programming is in `nvidia-cuda`.
 - Hyperdisk size and attachment limits are in the Hyperdisk page; prices are not copied.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/accelerator-types/list (gcloud 593.0.0 help); the source page has no code.
+- Source inconsistency: this page's A4X Max and A4X machine type notes say "a vCPU is implemented as a single hardware hyper-thread on one of the available CPU platforms", while machine-resource.md (compute-machine-types) lists A4X Max and A4X with CPU type "NVIDIA Grace", architecture "Arm" and "vCPU =" "Core" (A4 is Intel with "vCPU =" "Thread"). Treat A4X Max and A4X vCPUs as physical Arm cores, like the other Arm series (C4A, N4A).
+- Source (compared page, machine-resource.md): https://docs.cloud.google.com/compute/docs/machine-resource (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/docs/accelerator-optimized-machines (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
