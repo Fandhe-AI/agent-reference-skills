@@ -57,9 +57,10 @@ gcloud logging read \
 > downloaded-log.json
 ```
 
-Adapted (not in the official docs): the filter is on one line as above, and `--order=asc` is passed to `gcloud logging read` before the pipe; the source placed it after `jq`, where `gcloud` never receives it.
+Adapted (not in the official docs): the filter is on one line as above, `--order=asc` is passed to `gcloud logging read` before the pipe (the source placed it after `jq`, where `gcloud` never receives it), and `set -o pipefail` makes a failed `gcloud logging read` fail the pipeline instead of exiting 0 with an empty or partial file.
 
 ```bash
+set -o pipefail
 gcloud logging read \
 "resource.type=cloudsql_database AND logName=projects/PROJECT_ID/logs/cloudsql.googleapis.com%2FLOG_NAME" \
 --format json \
@@ -126,7 +127,7 @@ For per-database or per-role audit settings, see the "Customizing database audit
 - Example log name in the Console flow: `cloudsql.googleapis.com/postgres.log`.
 - Source inconsistency: the first `gcloud logging read` example says to replace `PROJECT_ID` but the block contains `PROJECT-ID`.
 - Adapted from the official docs: the download-as-JSON filter spanned lines inside the quotes.
-- Adapted from the official docs: the download-as-text command ended with `... | .textPayload' \ --order=asc > downloaded-log.txt`, and its filter also spanned lines.
+- Adapted from the official docs: the download-as-text command ended with `... | .textPayload' \ --order=asc > downloaded-log.txt`, and its filter also spanned lines; `set -o pipefail` was added because the pipeline's status is otherwise that of `jq`.
 - Source inconsistency: this page's troubleshooting row runs `CREATE EXTENSION pgaudit` first and only then sets `cloudsql.enable_pgaudit=on,pgaudit.log=all`; https://docs.cloud.google.com/sql/docs/postgres/pg-audit enables `cloudsql.enable_pgaudit` first ("After enabling the database flag, run the `CREATE EXTENSION` command"), then sets `pgaudit.log`. The steps above follow the pg-audit page; the blocks are unchanged, only reordered, with the flag-only patch added from that page.
 - `--database-flags` overwrites all previously set database flags (unlisted flags return to defaults) and may restart the instance; include every existing flag in the list. `pgaudit.log=all` logs every statement, which adds CPU, memory and log volume (see the troubleshooting row above). Source: https://docs.cloud.google.com/sql/docs/postgres/flags
 - The Logs Explorer queries are filters, not shell commands (the source tags the Cloud Run one as `bash`); Logs Explorer does not expand `$SERVICE_NAME` / `$REVISION_NAME`, so replace them with literal values.

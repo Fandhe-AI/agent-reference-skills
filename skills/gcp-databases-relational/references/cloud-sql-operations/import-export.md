@@ -77,6 +77,7 @@ If you delete the instance during a serverless export, the export stops some tim
 ## Notes
 
 - Mismatched statement in the source: the export 403 row names `roles/storage.objectCreator`, while the SQL dump page says the instance service account needs `storage.objectAdmin` (or the listed custom permissions). Source inconsistency: kept verbatim in both pages.
+- Source inconsistency: this page says a standard export can't be stopped once started and that a long-running Cloud SQL instance operation can't be stopped, while https://docs.cloud.google.com/sql/docs/postgres/known-issues says an import or export can be cancelled (https://docs.cloud.google.com/sql/docs/postgres/import-export/cancel-import-export; a cancelled PostgreSQL import persists no data, see [known-issues.md](./known-issues.md)). Plan as if the operation must run to completion, but use the cancel procedure when needed.
 - Importing may overwrite or conflict with existing objects, and exports use database resources; try on a disposable instance first.
 - For whole-database migration from a supported server, the source recommends Database Migration Service instead of export plus import.
 - Distinct from Supabase Postgres (`supabase`) and Cloudflare D1 / Hyperdrive (`cloudflare-storage`); client code belongs to `mssql` / `drizzle`.

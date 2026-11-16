@@ -48,6 +48,7 @@ Fallback to R1: promote the new replica in R1; enable HA if needed; reconfigure 
 
 - Replication is asynchronous, so cross-region failover RPO is likely non-zero. To cut RTO, make the R2 replica an HA replica and the R3 replica a cascading replica of it.
 - Avoid split-brain: after R1 returns, make the original primary inaccessible before clients use the new primary, then delete it. Back up the new primary immediately after failover, before clients connect.
+- Not from the source: in an unplanned failover, transactions committed on the old primary after replication stopped exist only on the old primary, and deleting it (without retained or final backups) removes them for good. Before deleting it, keep it isolated from clients and take a final backup or export, or compare it with the new primary, if those transactions may matter.
 - Failover, replica failover, switchover and promotion are destructive-class operations. Try them on a disposable instance first; use switchover for routine DR drills.
 - Managed PostgreSQL on Google Cloud; distinct from Supabase Postgres (`supabase`) and the Node.js client `mssql` / ORM `drizzle` (those cover client code, not the managed service).
 - Snippet taken from https://docs.cloud.google.com/sql/docs/postgres/use-advanced-disaster-recovery (the designate-DR-replica step). Create the cross-region replica first; see [cross-region-replicas.md](./cross-region-replicas.md).

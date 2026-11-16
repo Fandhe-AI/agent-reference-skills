@@ -40,6 +40,7 @@ Intermediary VM: generally cheaper and faster to set up, but availability, secur
 ## Notes
 
 - Source: https://docs.cloud.google.com/sql/docs/postgres/connect-to-instance-from-outside-vpc (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Not from the source: the default network's `default-allow-ssh` rule admits TCP 22 from `0.0.0.0/0`, so relying on it exposes the VM's SSH port to the internet if the VM has an external IP. For IAP-only access, limit the ingress rule's source range to IAP TCP forwarding's `35.235.240.0/20` (see https://docs.cloud.google.com/iap/docs/using-tcp-forwarding) and remove or narrow `default-allow-ssh`.
 - Prerequisites: a Cloud SQL instance configured with an internal (private) IP rather than an external IP.
 - Use `--private-ip` with Auth Proxy v2 (`cloud-sql-proxy`); for TCP connections the proxy listens on `127.0.0.1` by default (per the Connect using the Cloud SQL Auth Proxy page).
 - Source: https://docs.cloud.google.com/sql/docs/postgres/connect-auth-proxy (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)

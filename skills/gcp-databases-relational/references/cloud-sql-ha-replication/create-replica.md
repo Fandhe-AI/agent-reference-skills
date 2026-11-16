@@ -84,6 +84,7 @@ Replace `REPLICA_NAME` with the unique ID of the new replica and `PARENT_REPLICA
 - Source inconsistency: the connector-enforcement restriction on read replicas is scoped three ways. This page: a primary with private IP that accepts Language Connector connections only. https://docs.cloud.google.com/sql/docs/postgres/replication: any instance with connector enforcement, "unless private service access is configured". https://docs.cloud.google.com/sql/docs/postgres/connect-connectors: Private Service Connect-enabled instances with connector enforcement.
 - `--allocated-ip-range-name` is available on `gcloud beta sql instances create` (not GA `create`) in gcloud 593.0.0.
 - Corrected from the official docs: the cascading-replica command ended with `--master-instance-name=PARENT_REPLICA_NAME \` (dangling continuation).
+- Not from the source: an inactive slot can belong to a paused logical replication consumer (for example Datastream, Debezium or a `pglogical` subscriber) or a disconnected replica. Dropping a slot can't be undone; check its `slot_type`, `plugin` and owner first, and expect that consumer to need re-initialization.
 - Creating a replica takes a backup if needed. Do not use a replica as the source for Datastream or Kafka.
 - Promoting or deleting replicas is destructive. Try it on a disposable instance first.
 - Source inconsistency: the v1beta4 PSC example uses `PATCH .../instances` to create a replica while the v1 example uses `POST`; the REST forms are omitted here.

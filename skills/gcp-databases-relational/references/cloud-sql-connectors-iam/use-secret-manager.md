@@ -19,7 +19,7 @@ Store sensitive Cloud SQL information (usernames and passwords, the instance con
 
 The source's bash wrapper polls the secret and restarts the proxy when the instance connection name changes.
 
-Adapted (not in the official docs): the v1 `cloud_sql_proxy -instances=...` calls are replaced by the v2 `cloud-sql-proxy --port "$PORT" "$INSTANCE"` form, and the restart is skipped when the secret read returns an empty value.
+Adapted (not in the official docs): the v1 `cloud_sql_proxy -instances=...` calls are replaced by the v2 `cloud-sql-proxy --port "$PORT" "$INSTANCE"` form, the restart is skipped when the secret read returns an empty value, and the proxy is started again when it has exited (for example after a failed start).
 
 ```bash
 #!/bin/bash
@@ -44,6 +44,9 @@ while true; do
         wait $PID
         cloud-sql-proxy --port "$PORT" "$INSTANCE" &
         PID=$!
+    elif ! kill -0 "$PID" 2>/dev/null; then
+        cloud-sql-proxy --port "$PORT" "$INSTANCE" &
+        PID=$!
     fi
 done
 ```
@@ -58,7 +61,7 @@ done
 
 ## Notes
 
-- Adapted from the official docs: v1 `cloud_sql_proxy -instances="$INSTANCE"=tcp:"$PORT" &` replaced by v2 `cloud-sql-proxy --port "$PORT" "$INSTANCE" &` (form from https://docs.cloud.google.com/sql/docs/postgres/connect-auth-proxy), and `if [ "$INSTANCE" != "$NEW" ]; then` guarded with `[ -n "$NEW" ]` so a failed `gcloud secrets versions access` (expired token, network error) does not kill the running proxy and restart it with an empty instance name.
+- Adapted from the official docs: v1 `cloud_sql_proxy -instances="$INSTANCE"=tcp:"$PORT" &` replaced by v2 `cloud-sql-proxy --port "$PORT" "$INSTANCE" &` (form from https://docs.cloud.google.com/sql/docs/postgres/connect-auth-proxy), and `if [ "$INSTANCE" != "$NEW" ]; then` guarded with `[ -n "$NEW" ]` so a failed `gcloud secrets versions access` (expired token, network error) does not kill the running proxy and restart it with an empty instance name; an `elif ! kill -0 "$PID"` branch restarts the proxy if it has exited, because the source loop only restarts on a secret change and would otherwise leave the proxy stopped after a transient start failure.
 - The source script used Cloud SQL Auth Proxy v1 (`cloud_sql_proxy`, `-instances=`) without labelling it; the IAM login page says v1 is legacy and should be migrated to v2 (`cloud-sql-proxy`, instance connection name as a positional argument). Keep the proxy listener on the default `127.0.0.1`.
 - Never put a database password in a command line, URL or connection string; read it from Secret Manager at runtime. The only value this script reads from Secret Manager is the instance connection name.
 - Secret Manager integrates with other products such as Cloud Run (see the Secret Manager docs on using secrets in container environments).

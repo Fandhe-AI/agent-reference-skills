@@ -190,6 +190,7 @@ gcloud compute forwarding-rules describe ENDPOINT_NAME \
 ## Notes
 
 - `pg_terminate_backend` ends other users' sessions, `ALTER` / `DROP` / instance deletion, `--force` peering updates and backup-restore related fixes are destructive or disruptive; try them on a disposable resource first.
+- Not from the source: an inactive slot can belong to a paused logical replication consumer (for example Datastream, Debezium or a `pglogical` subscriber) or a disconnected replica. Dropping a slot can't be undone; check its `slot_type`, `plugin` and owner first, and expect that consumer to need re-initialization.
 - Adapted from the official docs: running queries used `SELECT datname, username, ...`; the column is `usename` (https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-ACTIVITY-VIEW).
 - Adapted from the official docs: Step 2 selected `username`; now `usename`.
 - Adapted from the official docs: `pg_cancel_backend` filtered `WHERE username = ...`; now `usename`.

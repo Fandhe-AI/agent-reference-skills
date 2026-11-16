@@ -52,7 +52,7 @@ Source examples for a 66 GB instance: Hyperdisk Balanced threshold `MAX(5, (66 *
 | Private IP | Cannot be deactivated once activated | Activated or deactivated |
 | Public IP | Y | Activated or deactivated; deactivating releases the address and re-enabling gives a different IPv4 |
 | Authorized networks | Y | IP addresses or CIDR ranges (public IP only) |
-| Private path for Google Cloud services | Y | Needs private IP and an authorized network; `--enable-google-private-path` |
+| Private path for Google Cloud services | Y | Needs private IP and an authorized network (per this page; see Notes); `--enable-google-private-path` |
 | Data API access | Y | Allowed or disallowed (default); `--data-api-access=ALLOW_DATA_API` |
 | Data cache | Y | Activated (default on Enterprise Plus) or deactivated |
 | Machine type | Y | Enterprise Plus: N2, C4A, C4, C4D predefined. Enterprise: shared core, dedicated core, N4 (predefined and custom) |
@@ -88,6 +88,9 @@ Source examples for a 66 GB instance: Hyperdisk Balanced threshold `MAX(5, (66 *
 
 ## Notes
 
+- Source inconsistency: the settings table marks Database version as not modifiable after creation, while https://docs.cloud.google.com/sql/docs/postgres/upgrade-major-db-version-inplace upgrades the major version in place with `gcloud sql instances patch INSTANCE_NAME --database-version=DATABASE_VERSION` (optionally `--include-replicas-for-major-version-upgrade`), after a `gcloud sql instances pre-check-major-version-upgrade` check. Back up first and try an upgrade on a disposable instance or a clone.
+- Source inconsistency: this page says the private path is available only with a private IP and an authorized network, while https://docs.cloud.google.com/sql/docs/postgres/create-instance and https://docs.cloud.google.com/sql/docs/postgres/configure-private-ip make `--enable-google-private-path` valid with `--no-assign-ip` and `--network` (private IP only, no public IP and so no authorized networks).
+- Source inconsistency: this page gives the default number of retained automated backups as 7 for every instance; https://docs.cloud.google.com/sql/docs/postgres/backup-recovery/backup-options (`cloud-sql-backup-recovery/backup-options.md`) gives 7 for Enterprise and 15 for Enterprise Plus.
 - Source inconsistency: the settings table lists `POSTGRES_18` as the default database version, but the Database version description says to accept the default "PostgreSQL 16".
 - Source inconsistency: the table says to disable automatic certificate rotation by setting `serverCertificationRotationMode` to `NO_AUTOMATIC_ROTATION_DURING_MAINTENANCE`, while the gcloud flag is `--server-certificate-rotation-mode` with `NO_AUTOMATIC_ROTATION` (see create-instance).
 - Source inconsistency: the table lists "Data Api Access" (Activated or deactivated) and "Data API access" (Allowed or disallowed, default) as two rows for the same setting.
@@ -100,6 +103,8 @@ Source examples for a 66 GB instance: Hyperdisk Balanced threshold `MAX(5, (66 *
 - Managed PostgreSQL on Google Cloud; distinct from Supabase Postgres (`supabase`), Cloudflare D1 / Hyperdrive (`cloudflare-storage`), and the Node.js client `mssql` / ORM `drizzle`.
 - The source also shows only prose and the table for the other settings; no Console, Terraform or REST samples.
 - Source: https://docs.cloud.google.com/sql/docs/postgres/instance-settings (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sql/docs/postgres/upgrade-major-db-version-inplace (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sql/docs/postgres/backup-recovery/backup-options (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

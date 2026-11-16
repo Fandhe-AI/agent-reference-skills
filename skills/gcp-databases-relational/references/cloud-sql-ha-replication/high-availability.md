@@ -58,7 +58,7 @@ After either option, reconfigure clients: the recovered instances have different
 - Automated backups are highly recommended for HA. Maintenance affects HA primaries like other instances (brief downtime).
 - Managed PostgreSQL on Google Cloud; distinct from Supabase Postgres (`supabase`), Cloudflare D1 / Hyperdrive (`cloudflare-storage`), and the Node.js client `mssql` / ORM `drizzle` (those cover client code, not the managed service).
 - Snippet taken from https://docs.cloud.google.com/sql/docs/postgres/configure-ha (the source page has no code; it shows diagrams only).
-- Configuring HA restarts the instance and can't be stopped once started: "It typically takes only a few minutes ... if the instance has a large disk or load, then it might take up to an hour" (configure-ha page). Try it on a disposable instance first. The configure-ha REST flow also checks that automatic backups and point-in-time recovery are enabled, which it calls required for HA instances.
+- Configuring HA restarts the instance and can't be stopped once started: "It typically takes only a few minutes ... if the instance has a large disk or load, then it might take up to an hour" (configure-ha page). Try it on a disposable instance first. The configure-ha REST flow also checks that automatic backups and point-in-time recovery are enabled, which it calls required for HA instances. Source inconsistency: the high-availability page itself only calls automated backups highly recommended.
 - Source: https://docs.cloud.google.com/sql/docs/postgres/high-availability (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/sql/docs/postgres/configure-ha (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 

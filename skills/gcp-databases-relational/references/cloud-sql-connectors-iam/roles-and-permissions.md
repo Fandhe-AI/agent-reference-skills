@@ -8,7 +8,7 @@ How IAM roles and permissions are used with Cloud SQL instances: which roles con
 
 ## Signature / Usage
 
-An account that connects to a Cloud SQL instance must have the Cloud SQL Client role (`roles/cloudsql.client`), which includes the required connection permissions. To add, view or remove members in the project-level IAM policy (`gcloud beta projects add-iam-policy-binding`, `get-iam-policy`, `remove-iam-policy-binding`), the administrator needs `resourcemanager.projects.getIamPolicy` and `resourcemanager.projects.setIamPolicy`; the connecting account does not.
+The source says an account that connects to a Cloud SQL instance must have the Cloud SQL Client role (`roles/cloudsql.client`), which includes the permissions required for connecting (`cloudsql.instances.connect`); the iam-roles page scopes this to App Engine and the Auth Proxy (see Notes). To add, view or remove members in the project-level IAM policy (`gcloud beta projects add-iam-policy-binding`, `get-iam-policy`, `remove-iam-policy-binding`), the administrator needs `resourcemanager.projects.getIamPolicy` and `resourcemanager.projects.setIamPolicy`; the connecting account does not.
 
 Snippet taken from https://docs.cloud.google.com/sql/docs/postgres/connect-connectors (local Application Default Credentials for a principal that has `roles/cloudsql.client`):
 
@@ -46,6 +46,7 @@ Other role requirements:
 
 ## Notes
 
+- Source inconsistency: this page says every account that connects to an instance must have Cloud SQL Client, while https://docs.cloud.google.com/sql/docs/postgres/iam-roles describes it as giving connectivity "from App Engine and the Cloud SQL Auth Proxy" and "Not required for accessing an instance using IP addresses." Not from the source: Language Connectors authorize connections with IAM like the Auth Proxy ([language-connectors.md](./language-connectors.md)), so grant the role for them too. Separately, IAM database authentication logins need `cloudsql.instances.login` (Cloud SQL Instance User; [iam-logins.md](./iam-logins.md)).
 - Source inconsistency: the source lists `roles/resourcemanager.organizationViewer` for "Create, view, and manage groups", but that role contains only `resourcemanager.organizations.get` (IAM roles reference). It lets the console read the organization; creating and managing the groups themselves needs group-administration rights in Cloud Identity / Google Workspace (Not from the source: for example a Groups Admin administrator role there).
 - These are the default runtime service accounts (the Cloud Run one is `PROJECT_NUMBER-compute@developer.gserviceaccount.com`); granting Cloud SQL Client to a default service account gives it to every workload that uses that account. Prefer a dedicated user-managed service account with only `roles/cloudsql.client` (`gcp-foundation`). The full account form and this least-privilege advice are not stated in the source page.
 - If the error `The caller does not have permission Connection matched pg_hba.conf line 20: "local all +cloudsqliamuser cloudsql-iam-user"` appears when a service account connects, add the Cloud SQL Instance User role to the account.

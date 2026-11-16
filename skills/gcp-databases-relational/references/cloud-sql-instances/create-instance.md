@@ -92,14 +92,14 @@ For Enterprise Plus instances, Cloud SQL generates a write endpoint (global DNS 
 | Private IP (private services access) | `--network`, `--no-assign-ip`, `--allocated-ip-range-name` (beta/alpha only: `gcloud beta sql instances create`), `--enable-google-private-path` | `--network` requires private services access configured; `--enable-google-private-path` valid only with `--no-assign-ip` and `--network`. |
 | Private IP (Private Service Connect) | `--no-assign-ip`, `--enable-private-service-connect`, `--allowed-psc-projects`, `--psc-auto-connections`, `--enable-psc-auto-connection-policy` | `--allowed-psc-projects` is a comma-separated list of project IDs or numbers. |
 | Data API | `--data-api-access` | `ALLOW_DATA_API` / `DISALLOW_DATA_API` (default disallowed). For private-IP-only instances, allowing it lets authorized users call the Data API from the public internet. |
-| Public IP | `--authorized-networks` | Only authorized networks can connect. |
+| Public IP | `--authorized-networks` | Only authorized networks can connect. List only the client CIDR ranges that need access; avoid `0.0.0.0/0` (see `cloud-sql-networking/authorize-networks.md`). |
 | SSL | `--ssl-mode`, `--require-ssl` | `--require-ssl` is legacy; use `--ssl-mode`. |
 | Server CA mode | `--server-ca-mode` | `GOOGLE_MANAGED_INTERNAL_CA` (default), `GOOGLE_MANAGED_CAS_CA`, `CUSTOMER_MANAGED_CAS_CA`. |
 | Certificate rotation | `--server-certificate-rotation-mode` | `NO_AUTOMATIC_ROTATION` (default), `AUTOMATIC_ROTATION_DURING_MAINTENANCE` (needs a CAS CA mode). |
 | Network architecture | `--enforce-new-sql-network-architecture` | Can cause IP over-consumption or creation failure if the project is not fully upgraded. |
 | Machine type | `--tier`, `--cpu`, `--memory` | `--tier` for shared core (`db-f1-micro`, `db-g1-small`). |
 | Storage | `--storage-type`, `--storage-size` (GB), `--storage-auto-increase`, `--storage-auto-increase-limit` (GB, default `unlimited`) | |
-| Data cache | `--enable-data-cache` | |
+| Data cache | `--enable-data-cache` | Enterprise Plus only (gcloud 593.0.0 help); on by default there, see `instance-settings.md`. |
 | High availability | `--availability-type=REGIONAL`, `--zone`, `--secondary-zone` | See zone rules below. |
 | Backups | `--backup-start-time`, `--retained-backups-count`, `--retained-transaction-log-days`, `--enable-point-in-time-recovery` | |
 | Flags | `--database-flags` | |
@@ -119,8 +119,8 @@ For Enterprise Plus instances, Cloud SQL generates a write endpoint (global DNS 
 | Default edition | Enterprise Plus for PostgreSQL 16+ (unless region lacks Enterprise Plus support); Enterprise otherwise |
 | Enterprise Plus versions | PostgreSQL 12 and later |
 | Secondary zone | Valid zones; primary must also be set; must differ from primary; same region |
-| PITR default | Enterprise Plus: on always. Enterprise: on in Console, off with gcloud / Terraform / Admin API |
-| Write-ahead log retention (Console) | 1 to 7 days, default 7 (Enterprise; Enterprise Plus up to 35 days per editions-intro) |
+| PITR default | Enterprise Plus: on by default however the instance is created. Enterprise: on in Console, off with gcloud / Terraform / Admin API |
+| Write-ahead log retention (Console) | 1 to 7 days, default 7 (as stated in the source; this is the Enterprise range). Enterprise Plus: 1 to 35 days, default 14 (`--retained-transaction-log-days` gcloud help; `cloud-sql-backup-recovery/backup-options.md`) |
 | Automated backup retention | 1 to 365 |
 | Custom SAN | max 3 names, each up to 253 characters, no wildcards, no trailing dots, RFC 1034 |
 | Enterprise Plus machine series | N2, C4A, C4, C4D |
@@ -147,6 +147,7 @@ For Enterprise Plus instances, Cloud SQL generates a write endpoint (global DNS 
 - Troubleshooting from the source: `The zone or region does not have sufficient resources...` (retry another zone or time); `Failed to create subnetwork. Couldn't find free blocks in allocated IP ranges` (allocated range smaller than /24 or too small; expand or add a range, never shrink, e.g. 10.0.10.0/24 to at least 10.0.10.0/23, then run `gcloud services vpc-peerings update --service=servicenetworking.googleapis.com --ranges=RESERVED_RANGE_NAME --network=VPC_NETWORK --project=PROJECT_ID`; with a new range pass `--ranges=OLD_RESERVED_RANGE_NAME,NEW_RESERVED_RANGE_NAME` and the source adds `--force`, which changes the live peering so try it on a disposable project first); `Router status is temporarily unavailable` (retry); `SERVICE_NETWORKING_NOT_ENABLED` (`gcloud services enable servicenetworking.googleapis.com --project=PROJECT_ID`); `Required 'compute.projects.get' permission` (service account not yet propagated); custom SAN errors (more than 3 names, over 253 characters, invalid name); `sql.restrictNoncompliantResourceCreation` org policy (set by Assured Workloads; disable it if you do not use Assured Workloads, and use `constraints/gcp.resourceLocations`, `constraints/gcp.restrictNonCmekServices` or `constraints/sql.restrictPublicIp` instead).
 - Do not include sensitive or personally identifiable information in the instance name; it is externally visible. The project ID is added automatically where needed. Instance deletion protection and Terraform `deletion_protection` guard against accidental deletion.
 - Source: https://docs.cloud.google.com/sql/docs/postgres/create-instance (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/sql/docs/postgres/backup-recovery/backup-options (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0; Enterprise Plus transaction log retention)
 
 ## Related
 

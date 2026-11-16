@@ -45,7 +45,7 @@ Set the flag to an existing PostgreSQL role name: `cloudsql.pg_shadow_select_rol
 | Superuser | Customers cannot create or access users with superuser attributes |
 | Built-in users | Created through Cloud SQL (not IAM) join `cloudsqlsuperuser` with `CREATEROLE`, `CREATEDB`, `LOGIN`; change with `ALTER ROLE` |
 | IAM users | Granted no database roles automatically; assign `cloudsqlsuperuser` or custom roles when adding the account |
-| Password requirement | Every user must have a password; users without one cannot log in |
+| Password requirement | Every built-in (password) user must have a password; such a user without one cannot log in. The source says "All PostgreSQL users"; IAM database users log in with an OAuth 2.0 token instead (`cloud-sql-connectors-iam/iam-authentication.md`) |
 | `password_encryption` flag | `md5` (broadest compatibility) or `scram-sha-256` (more secure, may break older clients) |
 
 ### System roles
