@@ -14,8 +14,10 @@ The source describes monitoring only through the console; this latency command i
 
 Snippet taken from https://docs.cloud.google.com/memorystore/docs/valkey/troubleshoot-issues (run from a Compute Engine VM in the same region and VPC network; append `--tls` and specify CAs if the instance uses in-transit encryption):
 
+Adapted (not in the official docs): the source runs `redis-cli` after installing `valkey-tools`, which provides `valkey-cli`; the command uses `valkey-cli`.
+
 ```bash
-redis-cli --latency -h ENDPOINT_ADDRESS -p PORT
+valkey-cli --latency -h ENDPOINT_ADDRESS -p PORT
 ```
 
 ### View core metrics in the console
@@ -39,6 +41,7 @@ In **Monitoring**, open **Metrics Explorer** (or **Resources** > **Metrics Explo
 - Cloud Monitoring pricing: https://cloud.google.com/stackdriver/pricing
 - The list of Cloud Monitoring metrics is in [supported-monitoring-metrics.md](./supported-monitoring-metrics.md).
 - Memorystore for Valkey on Google Cloud: managed Valkey, distinct from Upstash Redis (`upstash`) and Cloudflare Workers KV (`cloudflare-storage`).
+- Corrected from the official docs: the source installs `valkey-tools` (which provides `valkey-cli`) but runs the latency check as `redis-cli --latency -h ENDPOINT_ADDRESS -p PORT`; the example uses `valkey-cli`.
 - Source: https://docs.cloud.google.com/memorystore/docs/valkey/monitor-instances (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

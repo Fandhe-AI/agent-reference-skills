@@ -14,8 +14,10 @@ The source suggests `SLOWLOG` (https://valkey.io/commands/slowlog/) for finding 
 
 Snippet taken from https://docs.cloud.google.com/memorystore/docs/valkey/troubleshoot-issues (run from a Compute Engine VM in the same region and VPC network; append `--tls` and specify CAs if the instance uses in-transit encryption):
 
+Adapted (not in the official docs): the source runs `redis-cli` after installing `valkey-tools`, which provides `valkey-cli`; the command uses `valkey-cli`.
+
 ```bash
-redis-cli --latency -h ENDPOINT_ADDRESS -p PORT
+valkey-cli --latency -h ENDPOINT_ADDRESS -p PORT
 ```
 
 ### Resource-intensive commands and alternatives
@@ -85,11 +87,12 @@ Metrics: `/instance/memory/average_utilization`, `/instance/memory/maximum_utili
 - Single-zone instance (no replicas) is recommended for lowest cost and peak performance for same-region clients; zonal outage exposure drops from 100% to 33% and recovery is by provisioning a new instance in a functioning zone.
 - Capacity planning: deploy across multiple locations (another zone or region on resource constraints), use cross-region access, and use cross-region replication switchover to promote a secondary instance for disaster recovery.
 - TLS: provides IAM authentication protection against server spoofing, application-layer end-to-end in-transit encryption and protection of authentication tokens. Cost: CPU for encryption and decryption and connection setup; enable TLS resumption to reduce handshake overhead (a sudden client scale-out may cause brief disruption from full handshakes). Some client libraries lack built-in TLS controls; custom code can add them. The source recommends evaluating your security policies against these benefits and drawbacks.
-- The `redis-cli` latency check requires a Compute Engine VM in the same region and VPC; the source installs `valkey-tools` for `valkey-cli` but shows `redis-cli` in the command.
+- The latency check requires a Compute Engine VM in the same region and VPC.
 - Memorystore for Valkey on Google Cloud: managed Valkey, distinct from Upstash Redis (`upstash`) and Cloudflare Workers KV (`cloudflare-storage`).
 - Source inconsistency: the general best-practices page gives `/instance/cpu/maximum_utilization` targets of 0.5 seconds for the primary with 1 replica and 0.9 seconds with 2 or more replicas (0.5 seconds per replica), while the supported-monitoring-metrics page says to keep it at most 0.8 seconds for the primary and 0.5 seconds per read replica. Kept as written on each page.
 - Source inconsistency: this page recommends `SLOWLOG` for finding resource-intensive commands, but the supported-commands page lists `SLOWLOG GET`, `SLOWLOG LEN` and `SLOWLOG RESET` as blocked (`NOPERM`); see `supported-commands.md`.
 - Corrected from the official docs: the blocking-commands table has the row "Remove files and links | `DELETE` | `UNLINK`". Valkey has no `DELETE` command; the synchronous key-deletion command is `DEL`, and `UNLINK` removes keys and reclaims memory asynchronously (both are listed on `supported-commands.md`).
+- Corrected from the official docs: the source installs `valkey-tools` (which provides `valkey-cli`) but runs the latency check as `redis-cli --latency -h ENDPOINT_ADDRESS -p PORT`; the example uses `valkey-cli`.
 - Source: https://docs.cloud.google.com/memorystore/docs/valkey/general-best-practices (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

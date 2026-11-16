@@ -22,8 +22,10 @@ sudo yum install valkey-tools
 
 Measure latency in milliseconds (let it run a few minutes, `Ctrl+C` for results). If the instance uses in-transit encryption, append the `--tls` flag and specify your certificate authorities (CAs):
 
+Adapted (not in the official docs): the source runs `redis-cli` after installing `valkey-tools`, which provides `valkey-cli`; the command uses `valkey-cli`.
+
 ```bash
-redis-cli --latency -h ENDPOINT_ADDRESS -p PORT
+valkey-cli --latency -h ENDPOINT_ADDRESS -p PORT
 ```
 
 ENDPOINT_ADDRESS is the IP address of the instance's endpoint; PORT is typically 6379. A consistently low average (typically 1 millisecond or less) means the instance is healthy; remaining delays come from the network (cross-region or cross-zone routing) or the client (high CPU or memory, exhausted connection pools, application logic).
@@ -72,7 +74,7 @@ spec:
 
 - `shared-core-nano` has no SLA; use it only for development or testing and choose another node type in production.
 - If CPU is high or resources are exhausted (for example too many connections), external metrics might be missing.
-- Source inconsistency: the source installs `valkey-tools` (which provides `valkey-cli`) but runs the command as `redis-cli`.
+- Corrected from the official docs: the source installs `valkey-tools` (which provides `valkey-cli`) but runs the latency check as `redis-cli --latency -h ENDPOINT_ADDRESS -p PORT`; the example uses `valkey-cli`.
 - Org policy folder `672235397475` and the PSC port ranges are service specifics; do not widen allowlists beyond what the source shows.
 - Memorystore for Valkey on Google Cloud: managed Valkey, distinct from Upstash Redis (`upstash`) and Cloudflare Workers KV (`cloudflare-storage`).
 - Source: https://docs.cloud.google.com/memorystore/docs/valkey/troubleshoot-issues (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
