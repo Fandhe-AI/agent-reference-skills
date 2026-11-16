@@ -64,6 +64,9 @@ skills/gcp-compute/
     compute-gpus/                 # GPU の概要・種類と機能・マシンシリーズ別 GPU・ドライバのインストール・GPU VM のホストメンテナンス
       README.md
       <page>.md
+    vm-manager/                   # VM Manager（OS Config）: 概要・セットアップ・OS パッチ管理・OS ポリシー・OS インベントリ
+      README.md
+      <page>.md
     batch/                        # Batch: 概要・ジョブの作成と実行・サンプルジョブ・VM の OS 環境・ネットワーク・認証・再試行・タイムアウト・クォータ
       README.md
       <page>.md
@@ -76,6 +79,12 @@ skills/gcp-compute/
     cluster-director/             # Cluster Director: 概要・クラスタ作成・マシンタイプ・消費オプション・Slurm・接続・クォータ・ネットワーク・ストレージ・OS イメージ（Cluster Toolkit / AI Hypercomputer の概要各 1 件を含む）
       README.md
       <page>.md
+    confidential-computing/       # Confidential Computing: Confidential VM（対応構成・作成・構成証明・組織ポリシー）・Confidential Space
+      README.md
+      <page>.md
+    oracle-database/              # Oracle Database@Google Cloud: 概要・環境準備・リージョン・IAM・ODB Network・Exadata Infrastructure・Autonomous AI Database・クォータ
+      README.md
+      <page>.md
 ```
 
 ## 探索手順
@@ -85,7 +94,7 @@ skills/gcp-compute/
 1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
 2. 非推奨・サポート終了を確認するときは、まず `compute-overview/deprecations.md`（一覧表）、CSEK は加えて `compute-security/csek-deprecation-in-compute-engine.md`、legacy Cloud TPU API は `cloud-tpu/tpus-in-compute-engine.md`、preemptible VM との関係は `compute-capacity/spot.md` を引く
 
-未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `vm-manager` / `confidential-computing` / `oracle-database`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -107,12 +116,15 @@ skills/gcp-compute/
 | Spot VM・Flex-start VM・予約・将来の予約・確約利用割引（CUD） | compute-capacity | [references/compute-capacity/README.md](references/compute-capacity/README.md) |
 | ライブマイグレーション・ホストメンテナンスのポリシー・sole-tenant ノード・VM テナンシー | compute-host-tenancy | [references/compute-host-tenancy/README.md](references/compute-host-tenancy/README.md) |
 | GPU の種類・マシンシリーズ別の GPU・GPU ドライバのインストール・GPU VM のホストメンテナンス | compute-gpus | [references/compute-gpus/README.md](references/compute-gpus/README.md) |
+| VM Manager（OS Config）のセットアップ・OS パッチ管理・OS ポリシー・OS インベントリ | vm-manager | [references/vm-manager/README.md](references/vm-manager/README.md) |
 | Batch のジョブ作成・実行・VM の OS 環境・ネットワーク・認証・タスクの再試行・タイムアウト・クォータ | batch | [references/batch/README.md](references/batch/README.md) |
 | Cloud TPU の概要・システムアーキテクチャ・Compute Engine での TPU VM / MIG の作成・TPU のリージョンとゾーン・TPU7x / v6e・legacy Cloud TPU API との対応 | cloud-tpu | [references/cloud-tpu/README.md](references/cloud-tpu/README.md) |
 | Bare Metal Solution の概要・計画・セットアップ（VLAN アタッチメント・ルーティング）・IAM・セキュリティ・メンテナンス・SSH 鍵 | bare-metal-solution | [references/bare-metal-solution/README.md](references/bare-metal-solution/README.md) |
 | Cluster Director（Slurm クラスタ）の作成・マシンタイプ・消費オプション・接続・クォータ・OS イメージ | cluster-director | [references/cluster-director/README.md](references/cluster-director/README.md) |
+| Confidential VM（対応構成・作成・構成証明・組織ポリシーによる強制）・Confidential Space のワークロード | confidential-computing | [references/confidential-computing/README.md](references/confidential-computing/README.md) |
+| Oracle Database@Google Cloud の概要・環境準備・ODB Network・Exadata Infrastructure・Autonomous AI Database・IAM・クォータ | oracle-database | [references/oracle-database/README.md](references/oracle-database/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `vm-manager` / `confidential-computing` / `oracle-database`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
