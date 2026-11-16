@@ -120,7 +120,7 @@ service cloud.firestore {
 | Maximum nested `match` statement depth | 10 |
 | Maximum path length, in path segments, within nested `match` statements | 100 |
 | Maximum path capture variables within nested `match` statements | 20 |
-| Maximum function call depth | 20 |
+| Maximum function call depth | 20 (the rules-conditions page says 10; see Notes) |
 | Maximum number of function arguments | 7 |
 | Maximum `let` variable bindings per function | 10 |
 | Maximum recursive or cyclical function calls | 0 (not permitted) |
@@ -135,12 +135,13 @@ service cloud.firestore {
 ## Notes
 
 - All `match` statements should point to documents, not collections. You can only access documents your rules specifically allow.
-- A project can contain up to 100 databases; only the first created is the default. Rules are applied and deployed per database.
+- The source says "While a project can contain up to 100 databases, only the first database created is designated as the default." Source inconsistency: the manage-databases page defines the default database by ID — creating a database without an ID gives "a database named `(default)`", "A named database includes any database not named `(default)`", and the Firebase SDKs and Google API Client Libraries connect to `(default)` by default. Treat the default database as the one with ID `(default)`, not the first one created. Rules are applied and deployed per database.
 - The `{document=**}` variable holds the entire matching path segment (e.g. `SF/landmarks/coit_tower`).
 - The overlapping-match example contains `allow read, write: if true;`, which lets anyone read and write the matched documents; it illustrates the pitfall and must not be deployed as is.
 - The server client libraries bypass Firestore Security Rules (see [iam.md](./iam.md)).
 - Firestore is Google Cloud's managed document database; Firebase client-side setup is out of scope of this skill.
 - The source's service-declaration-only block and the `songs` collection group block are summarized in prose.
+- Source inconsistency: this table lists "Maximum function call depth" as 20, while the rules-conditions page says "The total call stack depth is limited to 10" (see `rules-conditions.md`); design for 10 to stay within both.
 - Source: https://docs.cloud.google.com/firestore/native/docs/security/rules-structure (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

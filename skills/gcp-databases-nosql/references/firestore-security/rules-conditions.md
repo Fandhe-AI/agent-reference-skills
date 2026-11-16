@@ -24,6 +24,8 @@ service cloud.firestore {
 
 Users can only read and write their own data:
 
+Adapted (not in the official docs): the `create` rule also requires `request.auth.uid == userId`, so a signed-in user cannot create another user's document.
+
 ```text
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -32,7 +34,7 @@ service cloud.firestore {
     // available in rules.
     match /users/{userId} {
       allow read, update, delete: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == userId;
     }
   }
 }
@@ -132,7 +134,7 @@ The same query with `.where("visibility", "==", "public")` before `.get()` is al
 | Document access calls per rule set evaluation | 10 for single-document requests and query requests; 20 for multi-document reads, transactions and batched writes (10 also applies to each operation). Exceeding either limit gives permission denied; cached calls do not count |
 | Example | A batched write of 3 writes, each using 2 access calls: each write uses 2 of its 10 calls, the batch uses 6 of its 20 |
 | Function body | A single `return` statement only; no loops or external calls |
-| Function recursion | Not allowed; total call stack depth limited to 10 |
+| Function recursion | Not allowed; total call stack depth limited to 10 (the source's wording; see Notes) |
 | `let` bindings | Rules version `v2` only; up to 10 per function; function must end with a return statement |
 
 ## Notes
@@ -140,6 +142,8 @@ The same query with `.where("visibility", "==", "public")` before `.get()` is al
 - `get()`, `exists()` and `getAfter()` execute reads in your database; you are billed for them even if the rules reject the request.
 - `request.auth` carries authentication information when the app uses Firebase Authentication or Google Cloud Identity Platform.
 - The source also shows a Web-only query sample (other platform tabs are not present in the twin).
+- Corrected from the official docs: the "users can only read and write their own data" sample has `allow create: if request.auth != null;`, which lets any signed-in user create the document for any `userId`; `create` now also checks `request.auth.uid == userId`.
+- Source inconsistency: this page says "The total call stack depth is limited to 10", while the rules-structure page's limits table lists "Maximum function call depth" as 20 (see `rules-structure.md`). The source gives no condition that separates the two values; design for 10 to stay within both.
 - Source: https://docs.cloud.google.com/firestore/native/docs/security/rules-conditions (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -37,7 +37,10 @@ To require fields, the source's rule is `allow create: if request.resource.data.
 
 ### Allowlist, with required and optional fields
 
+Adapted (not in the official docs): `rules_version = '2';` is added because the rule set uses `let`, which is available only in rules version 2 (rules default to version 1).
+
 ```text
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function verifyFields(required, optional) {
@@ -134,6 +137,7 @@ function reviewFieldsAreValidTypes(docData) {
 - Field types must be enforced on both create and update; share a helper function between the two.
 - The source's `orders` (list / map type) example and the create + update helper example are omitted: their brace nesting and trailing `&&` are malformed in the source.
 - The source's separate required-fields and forbidden-fields rule sets are summarized in prose; the conditions are quoted from them.
+- Corrected from the official docs: the `verifyFields` helper sample uses `let` without a `rules_version = '2';` declaration; rules use version 1 by default and `let` requires version 2.
 - Source: https://docs.cloud.google.com/firestore/native/docs/security/rules-fields (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
