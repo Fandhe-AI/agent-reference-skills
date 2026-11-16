@@ -56,9 +56,18 @@ skills/gcp-databases-nosql/
     bigtable-security-operations/ # IAM・認証と CMEK・バックアップ・モニタリング・change streams
       README.md
       <page>.md                   # 例: access-control.md / authentication-and-cmek.md / backups.md / change-streams-overview.md
+    memorystore-valkey-overview/  # Memorystore for Valkey の概念・Cluster Mode・ノード仕様・バージョン・作成・設定・接続・クライアント
+      README.md
+      <page>.md                   # 例: product-overview.md / create-instances.md / connect-instance.md / supported-versions.md
+    memorystore-valkey-security/  # Valkey の PSC ネットワーク・IAM 認証・Basic 認証・in-transit encryption・CMEK
+      README.md
+      <page>.md                   # 例: networking.md / manage-iam-auth.md / about-in-transit-encryption.md / use-cmek.md
     memorystore-valkey-ha-persistence/  # Valkey の HA・レプリカ・RDB / AOF 永続化・バックアップ・クロスリージョンレプリケーション・スケーリング
       README.md
       <page>.md                   # 例: ha-and-replicas.md / persistence-overview.md / backups.md / about-cross-region-replication.md
+    memorystore-valkey-operations/  # Valkey のメンテナンス・バージョンアップグレード・ベストプラクティス・モニタリング・トラブルシューティング・対応コマンド
+      README.md
+      <page>.md                   # 例: about-maintenance.md / upgrade-valkey-version.md / troubleshoot-issues.md / supported-commands.md
     memorystore-redis-cluster/    # Memorystore for Redis Cluster の概念・ノード仕様・設定・ロケーション・クォータ・作成・接続・対応コマンド
       README.md
       <page>.md                   # 例: memorystore-for-redis-cluster-overview.md / create-instances.md / connect-cluster-instance.md
@@ -108,12 +117,14 @@ skills/gcp-databases-nosql/
 | GoogleSQL for Bigtable（SQL でのクエリ・temporal filter・UNPACK・Data Boost） | bigtable-replication-sql | [references/bigtable-replication-sql/README.md](references/bigtable-replication-sql/README.md) |
 | Bigtable の IAM（ロール・instance / table / backup / authorized view への付与）・認証・CMEK | bigtable-security-operations | [references/bigtable-security-operations/README.md](references/bigtable-security-operations/README.md) |
 | Bigtable のバックアップ（standard / hot）・モニタリング・change streams（CDC） | bigtable-security-operations | [references/bigtable-security-operations/README.md](references/bigtable-security-operations/README.md) |
+| Memorystore for Valkey の概念（shard・node・endpoint）・Cluster Mode・ノード仕様・対応バージョン・クォータ・インスタンスの作成と設定・接続（valkey-cli・TLS）・クライアントライブラリ | memorystore-valkey-overview | [references/memorystore-valkey-overview/README.md](references/memorystore-valkey-overview/README.md) |
+| Memorystore for Valkey のネットワーク（Private Service Connect・service connection policy・複数 VPC）・セキュリティモデル | memorystore-valkey-security | [references/memorystore-valkey-security/README.md](references/memorystore-valkey-security/README.md) |
+| Memorystore for Valkey の IAM ロール・IAM 認証・Basic（token）認証・in-transit encryption（TLS）・CMEK | memorystore-valkey-security | [references/memorystore-valkey-security/README.md](references/memorystore-valkey-security/README.md) |
 | Memorystore for Valkey の高可用性・レプリカ数・RDB / AOF 永続化・バックアップ・クロスリージョンレプリケーション・シャード数 / ノードタイプのスケーリング | memorystore-valkey-ha-persistence | [references/memorystore-valkey-ha-persistence/README.md](references/memorystore-valkey-ha-persistence/README.md) |
+| Memorystore for Valkey のメンテナンスウィンドウ・セルフサービスメンテナンス・バージョンアップグレード・ベストプラクティス・モニタリング・トラブルシューティング・対応 / ブロックされるコマンド | memorystore-valkey-operations | [references/memorystore-valkey-operations/README.md](references/memorystore-valkey-operations/README.md) |
 | Memorystore for Redis Cluster の概念・ノード仕様・設定・クォータ・作成・接続（discovery endpoint・redis-cli・TLS）・クライアントサンプル・対応コマンド | memorystore-redis-cluster | [references/memorystore-redis-cluster/README.md](references/memorystore-redis-cluster/README.md) |
 | Memorystore for Redis（Basic / Standard Tier）の概要・対応バージョン・インスタンスの作成と管理・接続・ネットワーク・AUTH・HA・リードレプリカ・RDB スナップショット | memorystore-redis | [references/memorystore-redis/README.md](references/memorystore-redis/README.md) |
 | Memorystore for Memcached の概要・バージョン・作成・接続・Auto Discovery・ネットワーク・IAM・ベストプラクティス・設定パラメーター・メンテナンス・モニタリング・ノード数のスケール | memorystore-memcached | [references/memorystore-memcached/README.md](references/memorystore-memcached/README.md) |
-
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `memorystore-valkey-overview` / `memorystore-valkey-security` / `memorystore-valkey-operations`
 
 ## 他スキルとの使い分け
 
