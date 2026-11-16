@@ -17,6 +17,12 @@ Google Cloud (GCP) のリレーショナルデータベース系スキル。Clou
 skills/gcp-databases-relational/
   SKILL.md
   references/
+    gcloud/                       # 機械生成: gcloud 593.0.0、取得 2026-11-14
+      README.md
+      <group>/
+        README.md
+        <group>-<sub>.md          # GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS
+                                  # 大きいものは <group>-<sub>-<N>.md に分割（例: alloydb/alloydb-clusters-1.md・database-migration/database-migration-migration-jobs-1.md）
     cloud-sql-overview/           # 公式ガイド由来（手書き）: Cloud SQL の概念・エディション・マシン / ストレージ・バージョン・ロケーション・クォータ・ベストプラクティス
       README.md
       <page>.md                   # 例: introduction.md / editions-intro.md / db-versions.md / quotas.md / best-practices.md
@@ -110,6 +116,7 @@ skills/gcp-databases-relational/
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| `gcloud alloydb`（clusters・instances・backups・users・operations）のフラグを調べたい | gcloud/alloydb | [references/gcloud/alloydb/README.md](references/gcloud/alloydb/README.md) |
 | Cloud SQL の概念・エンジン別の機能差・エディション（Enterprise / Enterprise Plus）・マシンタイプ・ストレージ・対応バージョン・クォータ | cloud-sql-overview | [references/cloud-sql-overview/README.md](references/cloud-sql-overview/README.md) |
 | Cloud SQL のベストプラクティス・可用性・SLA から除外される構成・ロケーション | cloud-sql-overview | [references/cloud-sql-overview/README.md](references/cloud-sql-overview/README.md) |
 | Cloud SQL インスタンスの作成・設定変更・ユーザー・パスワードポリシー・Managed Connection Pooling | cloud-sql-instances | [references/cloud-sql-instances/README.md](references/cloud-sql-instances/README.md) |
@@ -140,7 +147,7 @@ skills/gcp-databases-relational/
 | Database Migration Service で PostgreSQL を Cloud SQL へ移行（ソース準備・接続方式・移行ジョブ・promote・制限） | database-migration | [references/database-migration/README.md](references/database-migration/README.md) |
 | Database Center のフリート横断ヘルス・Cloud SQL / AlloyDB の Query insights | database-center-insights | [references/database-center-insights/README.md](references/database-center-insights/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `iam` / `rest` / `rest-schemas` / `gcloud/sql` / `gcloud/spanner` / `gcloud/database-migration`
 
 ## 他スキルとの使い分け
 
