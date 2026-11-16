@@ -1,0 +1,281 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/disks/update
+---
+
+# gcloud compute disks update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute disks update
+
+```text
+NAME
+    gcloud compute disks update - update a Compute Engine Hyperdisk or
+        Persistent Disk
+
+SYNOPSIS
+    gcloud compute disks update DISK_NAME [--access-mode=ACCESS_MODE]
+        [--provisioned-iops=PROVISIONED_IOPS]
+        [--provisioned-throughput=PROVISIONED_THROUGHPUT] [--size=SIZE]
+        [--update-labels=[KEY=VALUE,...]]
+        [--append-licenses=LICENSE,[LICENSE,...]
+          --remove-licenses=LICENSE,[LICENSE,...]
+          --replace-license=LICENSE,LICENSE]
+        [--clear-architecture | --update-architecture=UPDATE_ARCHITECTURE]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--region=REGION | --zone=ZONE] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute disks update updates a Compute Engine Hyperdisk or
+    Persistent Disk.
+
+EXAMPLES
+    To update labels 'k0' and 'k1' and remove label 'k3' of a disk, run:
+
+        $ gcloud compute disks update example-disk --zone=us-central1-a \
+          --update-labels=k0=value1,k1=value2 --remove-labels=k3
+
+        `_k0_` and `_k1_` are added as new labels if not already present.
+
+    Labels can be used to identify the disk. To list disks with the 'k1:value2'
+    label, run:
+
+        $ gcloud compute disks list --filter='labels.k1:value2'
+
+    To list only the labels when describing a resource, use --format to filter
+    the result:
+
+        $ gcloud compute disks describe example-disk \
+          --format="default(labels)"
+
+    To append licenses to the disk, run:
+
+        $ gcloud compute disks update example-disk --zone=us-central1-a \
+          --append-licenses=projects/license-project/global/licenses/\
+        license-1,projects/license-project/global/licenses/license-2
+
+    To remove licenses from the disk, run:
+
+        $ gcloud compute disks update example-disk --zone=us-central1-a \
+          --replace-licenses=projects/license-project/global/licenses/\
+        license-1,projects/license-project/global/licenses/license-2
+
+    To replace a license on the disk, run:
+
+        $ gcloud compute disks update example-disk --zone=us-central1-a \
+          --replace-license=projects/license-project/global/licenses/\
+        old-license,projects/license-project/global/licenses/new-license
+
+POSITIONAL ARGUMENTS
+     DISK_NAME
+        Name of the disk to update.
+
+FLAGS
+     --access-mode=ACCESS_MODE
+        Specifies how VMs attached to the disk can access the data on the disk.
+        To grant read-only access to multiple VMs attached to the disk, set
+        access-mode to READ_ONLY_MANY. To grant read-write access to only one
+        VM attached to the disk, use READ_WRITE_SINGLE. READ_WRITE_SINGLE is
+        used if omitted. ACCESS_MODE must be one of: READ_ONLY_MANY,
+        READ_WRITE_MANY, READ_WRITE_SINGLE.
+
+     --provisioned-iops=PROVISIONED_IOPS
+        Provisioned IOPS of disk to update. Only for use with disks of type
+        hyperdisk-extreme.
+
+     --provisioned-throughput=PROVISIONED_THROUGHPUT
+        Provisioned throughput of disk to update. The throughput unit is MB per
+        sec.
+
+     --size=SIZE
+        Size of the disks. The value must be a whole number followed by a size
+        unit of GB for gigabyte, or TB for terabyte. If no size unit is
+        specified, GB is assumed. For details about disk size limits, refer to:
+        https://cloud.google.com/compute/docs/disks
+
+     --update-labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to update. If a label exists, its value
+        is modified. Otherwise, a new label is created.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     --append-licenses=LICENSE,[LICENSE,...]
+        "A list of license URIs or license codes. These licenses will be
+        appended to the existing licenses on the disk. Provided licenses can be
+        either license URIs or license codes but not a mix of both.
+
+     --remove-licenses=LICENSE,[LICENSE,...]
+        A list of license URIs or license codes. If present in the set of
+        existing licenses, these licenses will be removed. If not present, this
+        is a no-op. Provided licenses can be either license URIs or license
+        codes but not a mix of both.
+
+     --replace-license=LICENSE,LICENSE
+        A list of license URIs or license codes. The first license is the
+        license to be replaced and the second license is the replacement
+        license. Provided licenses can be either license URIs or license codes
+        but not a mix of both.
+
+     At most one of these can be specified:
+
+       --clear-architecture
+          Removes the architecture or processor type annotation from the disk.
+
+       --update-architecture=UPDATE_ARCHITECTURE
+          Updates the architecture or processor type that this disk can
+          support. For available processor types on Compute Engine, see
+          https://cloud.google.com/compute/docs/cpu-platforms.
+          UPDATE_ARCHITECTURE must be one of: ARM64, X86_64.
+
+     At most one of these can be specified:
+
+       --clear-labels
+          Remove all labels. If --update-labels is also specified then
+          --clear-labels is applied first.
+
+          For example, to remove all labels:
+
+              $ gcloud compute disks update --clear-labels
+
+          To remove all existing labels and create two new labels, foo and baz:
+
+              $ gcloud compute disks update --clear-labels \
+                --update-labels foo=bar,baz=qux
+
+       --remove-labels=[KEY,...]
+          List of label keys to remove. If a label does not exist it is
+          silently ignored. If --update-labels is also specified then
+          --update-labels is applied first.
+
+     At most one of these can be specified:
+
+       --region=REGION
+          Region of the disk to update. If not specified, you might be prompted
+          to select a region (interactive mode only).
+
+          To avoid prompting when this flag is omitted, you can set the
+          compute/region property:
+
+              $ gcloud config set compute/region REGION
+
+          A list of regions can be fetched by running:
+
+              $ gcloud compute regions list
+
+          To unset the property, run:
+
+              $ gcloud config unset compute/region
+
+          Alternatively, the region can be stored in the environment variable
+          CLOUDSDK_COMPUTE_REGION.
+
+       --zone=ZONE
+          Zone of the disk to update. If not specified and the compute/zone
+          property isn't set, you might be prompted to select a zone
+          (interactive mode only).
+
+          To avoid prompting when this flag is omitted, you can set the
+          compute/zone property:
+
+              $ gcloud config set compute/zone ZONE
+
+          A list of zones can be fetched by running:
+
+              $ gcloud compute zones list
+
+          To unset the property, run:
+
+              $ gcloud config unset compute/zone
+
+          Alternatively, the zone can be stored in the environment variable
+          CLOUDSDK_COMPUTE_ZONE.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute disks update
+
+        $ gcloud beta compute disks update
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+
+```bash
+gcloud compute disks update example-disk \
+    --zone=us-central1-a \
+    --append-licenses=projects/license-project/global/licenses/license-1,projects/license-project/global/licenses/license-2
+
+gcloud compute disks update example-disk \
+    --zone=us-central1-a \
+    --replace-licenses=projects/license-project/global/licenses/license-1,projects/license-project/global/licenses/license-2
+
+gcloud compute disks update example-disk \
+    --zone=us-central1-a \
+    --replace-license=projects/license-project/global/licenses/old-license,projects/license-project/global/licenses/new-license
+```
+
+### gcloud beta compute disks update
+
+```text
+NAME
+    gcloud beta compute disks update - update a Compute Engine persistent disk
+
+SYNOPSIS
+    gcloud beta compute disks update DISK_NAME [--access-mode=ACCESS_MODE]
+        [--provisioned-iops=PROVISIONED_IOPS]
+        [--provisioned-throughput=PROVISIONED_THROUGHPUT] [--size=SIZE]
+        [--update-labels=[KEY=VALUE,...]]
+        [--append-licenses=LICENSE,[LICENSE,...]
+          --remove-licenses=LICENSE,[LICENSE,...]
+          --replace-license=LICENSE,LICENSE]
+        [--clear-architecture | --update-architecture=UPDATE_ARCHITECTURE]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--clear-user-licenses | --update-user-licenses=[LICENSE,...]]
+        [--region=REGION | --zone=ZONE] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute disks update
+
+```text
+NAME
+    gcloud alpha compute disks update - update a Compute Engine persistent disk
+
+SYNOPSIS
+    gcloud alpha compute disks update DISK_NAME [--access-mode=ACCESS_MODE]
+        [--add-guest-os-features=ADD_GUEST_OS_FEATURES]
+        [--provisioned-iops=PROVISIONED_IOPS]
+        [--provisioned-throughput=PROVISIONED_THROUGHPUT] [--size=SIZE]
+        [--update-labels=[KEY=VALUE,...]]
+        [--append-licenses=LICENSE,[LICENSE,...]
+          --remove-licenses=LICENSE,[LICENSE,...]
+          --replace-license=LICENSE,LICENSE]
+        [--clear-architecture | --update-architecture=UPDATE_ARCHITECTURE]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--clear-user-licenses | --update-user-licenses=[LICENSE,...]]
+        [--region=REGION | --zone=ZONE] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/disks/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
