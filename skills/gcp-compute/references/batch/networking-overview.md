@@ -46,6 +46,7 @@ The default network can be used if it exists (new projects have it unless the `c
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/batch/jobs/submit (gcloud 593.0.0 help).
 - Google Cloud Batch (`batch.googleapis.com`) — not the Claude / OpenAI batch APIs (`anthropic-api-core`, `openai-api-core`) and not Kubernetes Jobs (`gcp-gke`).
 - Source inconsistency: this page says "Every network has implied firewall rules that block all incoming connections and allow all outgoing connections", while global-regional-zonal-resources.md (compute-overview) says "instances in one zone can communicate with instances in another zone if both instances belong to the same VPC network". Same-network membership does not by itself allow a connection; the network's VPC firewall rules still control it.
+- Source (compared page, global-regional-zonal-resources.md): https://docs.cloud.google.com/compute/docs/regions-zones/global-regional-zonal-resources (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/batch/docs/networking-overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
