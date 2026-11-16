@@ -37,4 +37,11 @@
 | gcloud sql instances switchover | 3 commands (alpha, beta, ga); sql instances switchover … | [sql-instances-switchover.md](./sql-instances-switchover.md) |
 | gcloud sql operations | 12 commands (alpha, beta, ga); sql operations cancel … | [sql-operations.md](./sql-operations.md) |
 | gcloud sql reschedule-maintenance | 3 commands (alpha, beta, ga); sql reschedule-maintenance … | [sql-reschedule-maintenance.md](./sql-reschedule-maintenance.md) |
+| gcloud sql ssl client-certs | 12 commands (alpha, beta, ga); sql ssl client-certs create … | [sql-ssl-client-certs.md](./sql-ssl-client-certs.md) |
+| gcloud sql ssl customer-managed-certs | 9 commands (alpha, beta, ga); sql ssl customer-managed-certs delete … | [sql-ssl-customer-managed-certs.md](./sql-ssl-customer-managed-certs.md) |
+| gcloud sql ssl entraid-certs | 12 commands (alpha, beta, ga); sql ssl entraid-certs create … | [sql-ssl-entraid-certs.md](./sql-ssl-entraid-certs.md) |
+| gcloud sql ssl server-ca-certs | 12 commands (alpha, beta, ga); sql ssl server-ca-certs create … | [sql-ssl-server-ca-certs.md](./sql-ssl-server-ca-certs.md) |
+| gcloud sql ssl server-certs | 12 commands (alpha, beta, ga); sql ssl server-certs create … | [sql-ssl-server-certs.md](./sql-ssl-server-certs.md) |
 | gcloud sql ssl-certs | 12 commands (alpha, beta, ga); sql ssl-certs create … | [sql-ssl-certs.md](./sql-ssl-certs.md) |
+| gcloud sql tiers | 3 commands (alpha, beta, ga); sql tiers list … | [sql-tiers.md](./sql-tiers.md) |
+| gcloud sql users | 21 commands (alpha, beta, ga); sql users assign-roles … | [sql-users.md](./sql-users.md) |
