@@ -30,7 +30,7 @@ Roles to manage IAM group authentication:
 
 | Action | Role |
 |--------|------|
-| Create, view, and manage groups | `roles/resourcemanager.organizationViewer` |
+| Create, view, and manage groups (as listed in the source; see Notes) | `roles/resourcemanager.organizationViewer` |
 | View the IAM group membership change log | `roles/logging.viewer` |
 | Grant, view, and set IAM permissions at the project level | `roles/resourcemanager.projectIamAdmin` |
 | Grant, view, and set IAM permissions at the folder level | `roles/resourcemanager.folderIamAdmin` |
@@ -46,6 +46,7 @@ Other role requirements:
 
 ## Notes
 
+- Source inconsistency: the source lists `roles/resourcemanager.organizationViewer` for "Create, view, and manage groups", but that role contains only `resourcemanager.organizations.get` (IAM roles reference). It lets the console read the organization; creating and managing the groups themselves needs group-administration rights in Cloud Identity / Google Workspace (Not from the source: for example a Groups Admin administrator role there).
 - These are the default runtime service accounts (the Cloud Run one is `PROJECT_NUMBER-compute@developer.gserviceaccount.com`); granting Cloud SQL Client to a default service account gives it to every workload that uses that account. Prefer a dedicated user-managed service account with only `roles/cloudsql.client` (`gcp-foundation`). The full account form and this least-privilege advice are not stated in the source page.
 - If the error `The caller does not have permission Connection matched pg_hba.conf line 20: "local all +cloudsqliamuser cloudsql-iam-user"` appears when a service account connects, add the Cloud SQL Instance User role to the account.
 - The source says a Compute Engine instance using the Auth Proxy can use its default Compute Engine service account. A dedicated service account with only the required roles is the least-privilege alternative (`gcp-foundation`).

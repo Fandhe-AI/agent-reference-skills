@@ -27,17 +27,17 @@ projects/[KMS_PROJECT_ID]/locations/[LOCATION]/keyRings/[KEY_RING]/cryptoKeys/[K
 
 ## Options / Props
 
-Restrictions:
-
-- You can't enable CMEK on an existing instance.
-- You can't assign a different key to a replica in the same region as the primary; cross-region replicas need a new key for the replica region.
-- You can't assign a different key to a clone.
-- CMEK can't encrypt external servers (external primary instances and replicas) or instance metadata (instance ID, database version, machine type, flags, backup schedule, etc.).
-- CMEK doesn't encrypt user data in transit (queries and responses).
-- After instance creation you can't change the encryption key type (Google-owned and managed to Cloud KMS, or the reverse).
-- Cloud SQL does not support Customer-Supplied Encryption Keys (CSEK).
-- CMEK is available in all Cloud SQL instance locations, but the Cloud KMS key ring location must match the instance region; a multi-region or global key will not work and instance creation fails if regions don't match.
-- Cloud KMS Autokey works with Cloud SQL for PostgreSQL only when creating resources with Terraform or the REST API, and doesn't create keys for `BackupRun` resources.
+| Restriction | Detail |
+|-------------|--------|
+| Existing instances | You can't enable CMEK on an existing instance. |
+| Replica keys | You can't assign a different key to a replica in the same region as the primary; cross-region replicas need a new key for the replica region. |
+| Clone keys | You can't assign a different key to a clone. |
+| Not encrypted by CMEK | CMEK can't encrypt external servers (external primary instances and replicas) or instance metadata (instance ID, database version, machine type, flags, backup schedule, etc.). |
+| Data in transit | CMEK doesn't encrypt user data in transit (queries and responses). |
+| Key type change | After instance creation you can't change the encryption key type (Google-owned and managed to Cloud KMS, or the reverse). |
+| CSEK | Cloud SQL does not support Customer-Supplied Encryption Keys (CSEK). |
+| Key ring location | CMEK is available in all Cloud SQL instance locations, but the Cloud KMS key ring location must match the instance region; a multi-region or global key will not work and instance creation fails if regions don't match. |
+| Cloud KMS Autokey | Cloud KMS Autokey works with Cloud SQL for PostgreSQL only when creating resources with Terraform or the REST API, and doesn't create keys for `BackupRun` resources. |
 
 ## Notes
 
