@@ -104,7 +104,7 @@ snapshot.forEach((doc) => {
 
 ## Notes
 
-- You can't use both Firestore and Datastore in the same project, which might affect apps using App Engine. Use Firestore in a different project if you need Datastore.
+- The source notes: "You can't use both Firestore and Datastore in the same project, which might affect apps using App Engine." Source inconsistency: the current [manage-databases](https://docs.cloud.google.com/firestore/native/docs/manage-databases) page says "You can create multiple Firestore databases per project" and creates each one with `--type=firestore-native` or `--type=datastore-mode`, so the Native / Datastore mode choice is per database, not per project.
 - Creating the database in the console: choose Firestore in Native mode, pick a location, click Create Database. If the location can't be selected, the project's "location for default Google Cloud resources" is already set. Creating the database also enables the Firestore API.
 - Server client libraries authenticate with Application Default Credentials; the source says to set up authentication by creating a service account and setting an environment variable. Prefer ADC (see `authentication.md`) over a key file such as `keyFilename`. In the Node.js sample, `keyFilename` is optional.
 - Python: the source recommends installing into a virtual environment.

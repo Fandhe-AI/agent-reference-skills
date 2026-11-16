@@ -68,6 +68,8 @@ STORAGE_TYPE
 
 ### Node.js
 
+Adapted (not in the official docs): `createInstance` on the GAPIC `v2.BigtableInstanceAdminClient` resolves to `[LROperation, ...]`, so the operation is the first element and the instance comes from `operation.promise()`.
+
 ```javascript
 // Creates a Production Instance with the ID "ssd-instance"
 // with cluster id "ssd-cluster", 3 nodes and location us-central1-f
@@ -93,9 +95,9 @@ const instanceOptions = {
 };
 
 // Create production instance with given options
-const [prodInstance, operation] =
+const [operation] =
   await instanceAdminClient.createInstance(instanceOptions);
-await operation.promise();
+const [prodInstance] = await operation.promise();
 console.log(`Created Instance: ${prodInstance.name}`);
 ```
 
@@ -139,6 +141,7 @@ if not instance.exists():
 - Review replication settings in the default app profile after creation.
 - Node.js and Python samples omit variable definitions (`instanceID`, `clusterID`, etc.); the source also shows Console, C++, C#, Go, Java, PHP and Ruby samples.
 - Bigtable: wide-column NoSQL database, not a relational database; its SQL (GoogleSQL for Bigtable) is not Cloud SQL / Spanner (`gcp-databases-relational`). See `gcp-client-libraries` for client library and ADC patterns; `gcp-foundation` for IAM.
+- Corrected from the official docs: the Node.js sample reads `const [prodInstance, operation] = await instanceAdminClient.createInstance(instanceOptions); await operation.promise();`, but in `@google-cloud/bigtable-api` (re-exported as `@google-cloud/bigtable` `v2`) `createInstance` returns `Promise<[LROperation<IInstance, ICreateInstanceMetadata>, IOperation, ...]>`, so `operation` would be the raw operation proto without `promise()`.
 - Source: https://docs.cloud.google.com/bigtable/docs/creating-instance (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0). gcloud reference: https://docs.cloud.google.com/sdk/gcloud/reference/bigtable/instances/create
 
 ## Related

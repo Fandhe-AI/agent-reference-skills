@@ -44,9 +44,9 @@ SELECT * FROM Task WHERE done=true
 
 ## Notes
 
-- Datastore mode requires an active App Engine application.
-- Native Mode and Datastore mode cannot both be used in the same project. Native Mode is recommended for mobile and web apps; Datastore mode for app architectures with backend servers.
-- Datastore mode supports multi-region and regional locations. A multi-region location maximizes availability and durability; regional locations offer lower write latency. The location applies to both Datastore mode databases and App Engine apps in the project.
+- This quickstart states: "Datastore mode requires an active App Engine application" (it creates one, which needs `appengine.applications.create`, if the project has none). This is a precondition of the console quickstart; the manage-databases page creates Datastore mode databases with `gcloud firestore databases create --type=datastore-mode` and lists `roles/datastore.owner` as the required role, with no App Engine requirement.
+- This quickstart states: "You can't use both modes in the same project." Source inconsistency: the current [manage-databases](https://docs.cloud.google.com/firestore/native/docs/manage-databases) page says "You can create multiple Firestore databases per project" and creates each one with `--type=firestore-native` or `--type=datastore-mode`, so the Native / Datastore mode choice is per database, not per project. Native Mode is recommended for mobile and web apps; Datastore mode for app architectures with backend servers.
+- Datastore mode supports multi-region and regional locations. A multi-region location maximizes availability and durability; regional locations offer lower write latency. In this quickstart, the location applies to both the Datastore mode database and the App Engine app in the project.
 - Warning from the source: once you create your database, you cannot change the location.
 - The GQL editor autocompletes kinds with Ctrl+Space (up to 300 alphabetically sorted kinds).
 - Deleting an entity is permanent. Try deletes on a disposable resource first.

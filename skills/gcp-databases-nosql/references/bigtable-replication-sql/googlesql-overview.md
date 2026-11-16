@@ -73,7 +73,7 @@ SELECT * FROM `my.table` WHERE _key = 'r1'
 
 ### Python (asyncio) client
 
-Adapted (not in the official docs): the second query string was made an f-string so `{table_id}` is interpolated.
+Adapted (not in the official docs): the second query string was made an f-string so `{table_id}` is interpolated, and `_key` was added to the `SELECT` list because the loop prints `row["_key"]`.
 
 ```python
 from google.cloud.bigtable.data import BigtableDataClientAsync
@@ -81,7 +81,7 @@ from google.cloud.bigtable.data import BigtableDataClientAsync
 async def execute_query(project_id, instance_id, table_id):
     async with BigtableDataClientAsync(project=project_id) as client:
         query = (
-          "SELECT cf1['bytesCol'] AS bytesCol, CAST(cf2['stringCol'] AS STRING) AS stringCol,"
+          "SELECT _key, cf1['bytesCol'] AS bytesCol, CAST(cf2['stringCol'] AS STRING) AS stringCol,"
           f" cf3 FROM {table_id} WHERE _key='mykey'"
         )
         async for row in await client.execute_query(query, instance_id):
@@ -105,7 +105,7 @@ Client library minimum versions: Go `cloud.google.com/go/bigtable` 1.36.0, Java 
 
 ## Notes
 
-- Corrected from the official docs: the Python sample had `" cf3 FROM {table_id} WHERE _key='mykey'"` as a plain string; it is now an f-string.
+- Corrected from the official docs: the Python sample had `" cf3 FROM {table_id} WHERE _key='mykey'"` as a plain string; it is now an f-string. The query also selected only `bytesCol`, `stringCol` and `cf3` while printing `row["_key"]`; `_key` is now selected.
 - Corrected from the official docs: the `UNPACK` example selects `temp_versioned` in the outer query while the inner subquery aliases the column `SELECT metrics['temperature'] AS temperature_versioned`; the outer column would not exist.
 - Not supported in the current release: DML beyond `SELECT`, DDL, data access control statements, subqueries, `JOIN`, `UNION`, CTEs (the `UNPACK` input subquery is a table value function). You can create continuous materialized views and logical views with GoogleSQL.
 - Schema: special column `_key` (row key) plus one `MAP` column per column family. Default map is qualifier to latest value; with `with_history` it is `MAP<key, ARRAY<STRUCT<timestamp, value>>>`, newest first.
@@ -113,7 +113,7 @@ Client library minimum versions: Go `cloud.google.com/go/bigtable` 1.36.0, Java 
 - `UNPACK` input must be a subquery with `with_history => true`; the columns must be selected in the subquery; it adds `_timestamp`.
 - Reserved words and names with special characters (period in a table name) need backticks.
 - For production, list column family IDs instead of `SELECT *` (temporary errors when families are added or deleted); view definitions cannot use `SELECT *`.
-- `ARRAY_LENGTH(MAP_ENTRIES(address))` counts versions. Garbage collection policies control retained versions.
+- The source says `SELECT _key, ARRAY_LENGTH(MAP_ENTRIES(address)) AS version_count FROM myTable(with_history => TRUE)` retrieves "the number of versions in each row". Source inconsistency: per the schema above, with `with_history` each map entry is one column qualifier whose value is the array of versions, so `MAP_ENTRIES` yields one element per qualifier and the expression counts qualifiers, not versions. Garbage collection policies control retained versions.
 - The source also shows Go and Java samples (omitted here); Go needs the prepared-statement API (`PrepareStatement`, `Bind`, `Execute`).
 - Wide-column NoSQL database; GoogleSQL for Bigtable is not Cloud SQL or Spanner (`gcp-databases-relational`). Client library setup patterns: `gcp-client-libraries`.
 - Source: https://docs.cloud.google.com/bigtable/docs/googlesql-overview (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
