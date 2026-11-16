@@ -324,3 +324,6 @@
 | gcloud container vmware admin-clusters | 15 commands (alpha, beta, ga); container vmware admin-clusters describe … | [container-vmware-admin-clusters.md](./container-vmware-admin-clusters.md) |
 | gcloud container vmware clusters (part 1) | 17 commands (alpha, beta, ga); container vmware clusters create … | [container-vmware-clusters-1.md](./container-vmware-clusters-1.md) |
 | gcloud container vmware clusters (part 2) | 7 commands (alpha, beta, ga); alpha container vmware clusters delete … | [container-vmware-clusters-2.md](./container-vmware-clusters-2.md) |
+| gcloud container vmware node-pools | 18 commands (alpha, beta, ga); container vmware node-pools create … | [container-vmware-node-pools.md](./container-vmware-node-pools.md) |
+| gcloud container vmware operations | 9 commands (alpha, beta, ga); container vmware operations describe … | [container-vmware-operations.md](./container-vmware-operations.md) |
+| gcloud container workload | container workload profiles manifests create | [container-workload.md](./container-workload.md) |
