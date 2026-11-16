@@ -10,7 +10,7 @@ Guidance for memory, CPU, scaling thresholds, client configuration (cluster-awar
 
 ### Find slow commands and measure latency
 
-Resource-intensive commands are found with `SLOWLOG` (https://valkey.io/commands/slowlog/); real-time node data with `INFO memory` and `INFO cpu` (https://valkey.io/commands/info/).
+The source suggests `SLOWLOG` (https://valkey.io/commands/slowlog/) for finding resource-intensive commands, but `SLOWLOG GET`, `SLOWLOG LEN` and `SLOWLOG RESET` are blocked on Memorystore for Valkey (`NOPERM`, see `supported-commands.md`); use the `instance/commandstats/total_usec_count` and `instance/commandstats/total_calls_count` metrics (see `supported-monitoring-metrics.md`) instead. Real-time node data comes from `INFO memory` and `INFO cpu` (https://valkey.io/commands/info/).
 
 Snippet taken from https://docs.cloud.google.com/memorystore/docs/valkey/troubleshoot-issues (run from a Compute Engine VM in the same region and VPC network; append `--tls` and specify CAs if the instance uses in-transit encryption):
 
