@@ -191,3 +191,43 @@
 | gcloud container fleet workload-identity disable | 3 commands (alpha, beta, ga); container fleet workload-identity disable … | [container-fleet-workload-identity-disable.md](./container-fleet-workload-identity-disable.md) |
 | gcloud container fleet workload-identity enable | 3 commands (alpha, beta, ga); container fleet workload-identity enable … | [container-fleet-workload-identity-enable.md](./container-fleet-workload-identity-enable.md) |
 | gcloud container fleet workload-identity scope-tenancy-pool | 6 commands (alpha, beta, ga); container fleet workload-identity scope-tenancy-pool set … | [container-fleet-workload-identity-scope-tenancy-pool.md](./container-fleet-workload-identity-scope-tenancy-pool.md) |
+| gcloud container get-server-config | 3 commands (alpha, beta, ga); container get-server-config … | [container-get-server-config.md](./container-get-server-config.md) |
+| gcloud container hub cloudrun apply | 3 commands (alpha, beta, ga); container hub cloudrun apply … | [container-hub-cloudrun-apply.md](./container-hub-cloudrun-apply.md) |
+| gcloud container hub cloudrun describe | 3 commands (alpha, beta, ga); container hub cloudrun describe … | [container-hub-cloudrun-describe.md](./container-hub-cloudrun-describe.md) |
+| gcloud container hub cloudrun disable | 3 commands (alpha, beta, ga); container hub cloudrun disable … | [container-hub-cloudrun-disable.md](./container-hub-cloudrun-disable.md) |
+| gcloud container hub cloudrun enable | 3 commands (alpha, beta, ga); container hub cloudrun enable … | [container-hub-cloudrun-enable.md](./container-hub-cloudrun-enable.md) |
+| gcloud container hub clusterupgrade create | 3 commands (alpha, beta, ga); container hub clusterupgrade create … | [container-hub-clusterupgrade-create.md](./container-hub-clusterupgrade-create.md) |
+| gcloud container hub clusterupgrade describe | 3 commands (alpha, beta, ga); container hub clusterupgrade describe … | [container-hub-clusterupgrade-describe.md](./container-hub-clusterupgrade-describe.md) |
+| gcloud container hub clusterupgrade update | 3 commands (alpha, beta, ga); container hub clusterupgrade update … | [container-hub-clusterupgrade-update.md](./container-hub-clusterupgrade-update.md) |
+| gcloud container hub config-management apply | 2 commands (alpha, beta); beta container hub config-management apply … | [container-hub-config-management-apply.md](./container-hub-config-management-apply.md) |
+| gcloud container hub config-management delete | alpha container hub config-management delete | [container-hub-config-management-delete.md](./container-hub-config-management-delete.md) |
+| gcloud container hub config-management describe | 3 commands (alpha, beta, ga); container hub config-management describe … | [container-hub-config-management-describe.md](./container-hub-config-management-describe.md) |
+| gcloud container hub config-management disable | 3 commands (alpha, beta, ga); container hub config-management disable … | [container-hub-config-management-disable.md](./container-hub-config-management-disable.md) |
+| gcloud container hub config-management enable | 2 commands (alpha, beta); beta container hub config-management enable … | [container-hub-config-management-enable.md](./container-hub-config-management-enable.md) |
+| gcloud container hub config-management fetch-for-apply | alpha container hub config-management fetch-for-apply | [container-hub-config-management-fetch-for-apply.md](./container-hub-config-management-fetch-for-apply.md) |
+| gcloud container hub config-management status | 2 commands (alpha, beta); beta container hub config-management status … | [container-hub-config-management-status.md](./container-hub-config-management-status.md) |
+| gcloud container hub config-management unmanage | 2 commands (alpha, beta); beta container hub config-management unmanage … | [container-hub-config-management-unmanage.md](./container-hub-config-management-unmanage.md) |
+| gcloud container hub config-management update | 3 commands (alpha, beta, ga); container hub config-management update … | [container-hub-config-management-update.md](./container-hub-config-management-update.md) |
+| gcloud container hub config-management upgrade | 2 commands (alpha, beta); beta container hub config-management upgrade … | [container-hub-config-management-upgrade.md](./container-hub-config-management-upgrade.md) |
+| gcloud container hub config-management version | 2 commands (alpha, beta); beta container hub config-management version … | [container-hub-config-management-version.md](./container-hub-config-management-version.md) |
+| gcloud container hub create | 3 commands (alpha, beta, ga); container hub create … | [container-hub-create.md](./container-hub-create.md) |
+| gcloud container hub dataplane-v2-encryption describe | 3 commands (alpha, beta, ga); container hub dataplane-v2-encryption describe … | [container-hub-dataplane-v2-encryption-describe.md](./container-hub-dataplane-v2-encryption-describe.md) |
+| gcloud container hub dataplane-v2-encryption disable | 3 commands (alpha, beta, ga); container hub dataplane-v2-encryption disable … | [container-hub-dataplane-v2-encryption-disable.md](./container-hub-dataplane-v2-encryption-disable.md) |
+| gcloud container hub dataplane-v2-encryption enable | 3 commands (alpha, beta, ga); container hub dataplane-v2-encryption enable … | [container-hub-dataplane-v2-encryption-enable.md](./container-hub-dataplane-v2-encryption-enable.md) |
+| gcloud container hub delete | 3 commands (alpha, beta, ga); container hub delete … | [container-hub-delete.md](./container-hub-delete.md) |
+| gcloud container hub describe | 3 commands (alpha, beta, ga); container hub describe … | [container-hub-describe.md](./container-hub-describe.md) |
+| gcloud container hub features list | 3 commands (alpha, beta, ga); container hub features list … | [container-hub-features-list.md](./container-hub-features-list.md) |
+| gcloud container hub fleetobservability describe | 3 commands (alpha, beta, ga); container hub fleetobservability describe … | [container-hub-fleetobservability-describe.md](./container-hub-fleetobservability-describe.md) |
+| gcloud container hub fleetobservability disable | 3 commands (alpha, beta, ga); container hub fleetobservability disable … | [container-hub-fleetobservability-disable.md](./container-hub-fleetobservability-disable.md) |
+| gcloud container hub fleetobservability enable | 3 commands (alpha, beta, ga); container hub fleetobservability enable … | [container-hub-fleetobservability-enable.md](./container-hub-fleetobservability-enable.md) |
+| gcloud container hub fleetobservability update | 3 commands (alpha, beta, ga); container hub fleetobservability update … | [container-hub-fleetobservability-update.md](./container-hub-fleetobservability-update.md) |
+| gcloud container hub identity-service apply | 3 commands (alpha, beta, ga); container hub identity-service apply … | [container-hub-identity-service-apply.md](./container-hub-identity-service-apply.md) |
+| gcloud container hub identity-service delete | 3 commands (alpha, beta, ga); container hub identity-service delete … | [container-hub-identity-service-delete.md](./container-hub-identity-service-delete.md) |
+| gcloud container hub identity-service describe | 3 commands (alpha, beta, ga); container hub identity-service describe … | [container-hub-identity-service-describe.md](./container-hub-identity-service-describe.md) |
+| gcloud container hub identity-service disable | 3 commands (alpha, beta, ga); container hub identity-service disable … | [container-hub-identity-service-disable.md](./container-hub-identity-service-disable.md) |
+| gcloud container hub identity-service enable | 3 commands (alpha, beta, ga); container hub identity-service enable … | [container-hub-identity-service-enable.md](./container-hub-identity-service-enable.md) |
+| gcloud container hub ingress describe | 3 commands (alpha, beta, ga); container hub ingress describe … | [container-hub-ingress-describe.md](./container-hub-ingress-describe.md) |
+| gcloud container hub ingress disable | 3 commands (alpha, beta, ga); container hub ingress disable … | [container-hub-ingress-disable.md](./container-hub-ingress-disable.md) |
+| gcloud container hub ingress enable | 3 commands (alpha, beta, ga); container hub ingress enable … | [container-hub-ingress-enable.md](./container-hub-ingress-enable.md) |
+| gcloud container hub ingress update | 3 commands (alpha, beta, ga); container hub ingress update … | [container-hub-ingress-update.md](./container-hub-ingress-update.md) |
+| gcloud container hub list | 3 commands (alpha, beta, ga); container hub list … | [container-hub-list.md](./container-hub-list.md) |
