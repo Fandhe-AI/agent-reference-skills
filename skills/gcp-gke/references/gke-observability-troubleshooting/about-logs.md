@@ -62,7 +62,7 @@ Application logs might fail to reach Cloud Logging when:
 |---|---|
 | `roles/logging.logWriter` | Applications write logs; assign to the service account attached to the node pool. |
 | `roles/logging.viewer` | View logs in the project. |
-| `logging.privateLogViewer` (permission) | Access Data Access logs. |
+| `roles/logging.privateLogViewer` (Private Logs Viewer; includes the `logging.privateLogEntries.list` permission) | Access Data Access logs. |
 | `roles/logging.configWriter` | Required to create a logging sink (for example to route a namespace's logs to a central bucket). |
 | `roles/logging.admin` | Administrative capabilities. |
 
@@ -80,6 +80,8 @@ Application logs might fail to reach Cloud Logging when:
 - Access control: store control plane logs in a separate log bucket with limited access so they are not visible to everyone with `roles/logging.viewer`, and so they can be deleted without affecting other logs.
 - Pricing: Cloud Logging pricing applies; exporting to services such as BigQuery incurs their storage costs.
 - The source has no code block; the snippet above is borrowed from the view-logs page in this category.
+- Corrected from the official docs: the source says Data Access logs need "the `logging.privateLogViewer` IAM permission", but `logging.privateLogViewer` is a role (`roles/logging.privateLogViewer`); the permission that grants read access to private log entries is `logging.privateLogEntries.list`.
+- Source (IAM roles): https://docs.cloud.google.com/iam/docs/roles-permissions/logging (retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/about-logs (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/view-logs (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 

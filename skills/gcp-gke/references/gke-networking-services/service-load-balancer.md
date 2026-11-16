@@ -84,7 +84,7 @@ Without GKE subsetting, internal LoadBalancer Services can have problems if the 
 | `Cluster` | All nodes pass (kube-proxy / cilium-agent answers) | TCP 10256, cannot be customized |
 | `Local` | Only nodes with at least one ready, non-terminating serving Pod | Assigned from the node port range unless a custom health check port is specified |
 
-- NEG backends use zonal health checks that probe the Service port; instance group backends use global health checks that probe the `nodePort`.
+- `GCE_VM_IP` NEG backends use zonal health checks; instance group backends use global health checks. In both cases the probe port is the one in the table above (TCP 10256 for `Cluster`, the health check node port for `Local`), not the Service `port` or the application `nodePort` (see Notes).
 - Health check source ranges to allow: `130.211.0.0/22` and `35.191.0.0/16`; IPv6: `2600:2d00:1:b029::/64` (internal passthrough) and `2600:1901:8001::/48` (regional external passthrough).
 
 ### Packet processing
@@ -107,6 +107,7 @@ Responses use Direct Server Return. Proxy Terminating Endpoints is enabled on GK
 - Pricing and quotas: network pricing applies to packets processed; forwarding rule, backend service, health check and target pool quotas apply.
 - Source inconsistency: the endpoint membership table limits internal passthrough to 250 nodes with serving Pods and regional external passthrough to 3,000 (`Local`) or 250 (`Cluster`) nodes, while planning-scalability.md says "Internal passthrough NLB: 250 nodes without backend subsetting, 2,000 with subsetting. Regional external passthrough NLB: 1,000 nodes per zone". This page is the one that describes GKE-managed LoadBalancer Services.
 - Before copying the Service manifest: `clusterIP` must be an unused address inside the cluster's Service IP range (omit it to let Kubernetes choose one), `nodePort` values must be free ports in the node port range (omit them to have them allocated), and `status` is filled in by the cluster and is not part of what you apply.
+- Source inconsistency: the "NEG versus MIG health checking" section says "For zonal NEGs, health check probes target the Service's port directly" and "For instance groups, health check probes target the Service's allocated `nodePort`", which conflicts with the health check table on the same page (`Cluster`: "The load balancer health check port must be TCP port 10256"; `Local`: "The Kubernetes control plane assigns the health check port from the node port range unless you specify a custom health check port"). Firewall rules and troubleshooting should follow the table. This also differs from the `GCE_VM_IP_PORT` container-native NEGs used by Ingress and Gateway, which probe Pods.
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/service-load-balancer (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

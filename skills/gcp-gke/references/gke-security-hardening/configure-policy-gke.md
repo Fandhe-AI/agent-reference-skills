@@ -118,7 +118,7 @@ kubectl run hello-server --image us-docker.pkg.dev/google-samples/containers/gke
 kubectl get pods
 ```
 
-Expected output: `No resources found.` To see why:
+Expected output: `No resources found.` Because `kubectl run` creates the Pod directly, the admission denial is returned as the error of the `kubectl run` command itself. The `FailedCreate` event below is what a controller (for example the ReplicaSet of a Deployment) records when it cannot create the Pod (see Notes). To list events:
 
 ```bash
 kubectl get event --template \
@@ -156,6 +156,7 @@ gcloud container clusters delete \
 - Corrected from the official docs: the source deletes the test workload with `kubectl delete deployment hello-server`, but `kubectl run` creates a Pod (not a Deployment), so that command fails with NotFound; the example uses `kubectl delete pod hello-server`.
 - The source also shows Google Cloud console steps for every task (omitted here). The `gcloud` example uses `--zone`; the `--location` flag is the current general form.
 - The `built-by-cloud-build` attestor ([Preview](https://cloud.google.com/products#product-launch-stages)) can deploy only images built by Cloud Build. Binary Authorization policy concepts in general are planned in `gcp-security`.
+- Source inconsistency: the source creates the Pod with `kubectl run` and then shows a `FailedCreate: Error creating: pods ...` event, which is the event a controller records; for a Pod created directly, check the error printed by `kubectl run` instead, or deploy the image through a Deployment to see the event.
 - Source: https://docs.cloud.google.com/binary-authorization/docs/configure-policy-gke (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
