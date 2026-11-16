@@ -94,6 +94,7 @@ def connect_with_connector_auto_iam_authn() -> sqlalchemy.engine.base.Engine:
 
 ## Notes
 
+- With a shared CA (`GOOGLE_MANAGED_CAS_CA`), the Python Connector does not verify server identity (see [language-connectors.md](./language-connectors.md)); and Python is not listed for a customer-managed CA (`CUSTOMER_MANAGED_CAS_CA`). Use it with instances on the per-instance CA, and the Auth Proxy or the Java / Go / Node.js connector at the listed minimum versions for shared- or customer-managed-CA instances.
 - Prerequisites (iam-logins): the instance is configured for IAM database authentication, and the IAM user, service account or group is added to the database. A new IAM database user has no database privileges by default; assign database roles when adding or updating the account, or use `GRANT`. With group authentication, Cloud SQL creates the account on the member's first login.
 - The connector uses Application Default Credentials; the ADC login command above is for local development. For a service account, iam-logins shows impersonation with `gcloud auth application-default login --impersonate-service-account SERVICE_ACCOUNT_EMAIL_ADDRESS` (see [iam-logins.md](./iam-logins.md)). ADC in general: `gcp-foundation`; client-library patterns: `gcp-client-libraries`.
 - The sample defaults to public IP when `PRIVATE_IP` is unset. Exposes the instance on a public IP; prefer private IP, PSC or the Auth Proxy / connectors with IAM authentication when the source offers them. Connectors add no network path: private IP needs existing VPC access.

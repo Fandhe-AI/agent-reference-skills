@@ -112,7 +112,7 @@ dbname=DATABASE_NAME" \
 --no-password
 ```
 
-The Auth Proxy or a connector with automatic IAM authentication (above) verifies the server without these steps.
+The Auth Proxy or a connector with automatic IAM authentication (above) verifies the server without these steps. Exception: with a shared CA (`GOOGLE_MANAGED_CAS_CA`), the Python Connector does not verify server identity (minimum-version table in [language-connectors.md](./language-connectors.md)), so for a shared CA use the Auth Proxy or the Java (v1.21.0+), Go (v1.12.0+) or Node.js (v1.4.0+) connector instead.
 
 ## Options / Props
 

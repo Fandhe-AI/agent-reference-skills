@@ -30,7 +30,7 @@ dbname=DATABASE_NAME" \
 --no-password
 ```
 
-For a shared CA (`GOOGLE_MANAGED_CAS_CA`) or customer-managed CA (`CUSTOMER_MANAGED_CAS_CA`), `verify-ca` is not enough: use `sslmode=verify-full` with `host=` set to the instance DNS name taken from `dnsNames` in `gcloud sql instances describe` (full steps and example in [iam-logins.md](./iam-logins.md)), or use the Auth Proxy / a connector.
+For a shared CA (`GOOGLE_MANAGED_CAS_CA`) or customer-managed CA (`CUSTOMER_MANAGED_CAS_CA`), `verify-ca` is not enough: use `sslmode=verify-full` with `host=` set to the instance DNS name taken from `dnsNames` in `gcloud sql instances describe` (full steps and example in [iam-logins.md](./iam-logins.md)), or use the Auth Proxy / a connector. Exception: with a shared CA (`GOOGLE_MANAGED_CAS_CA`), the Python Connector does not verify server identity (minimum-version table in [language-connectors.md](./language-connectors.md)), so for a shared CA use the Auth Proxy or the Java (v1.21.0+), Go (v1.12.0+) or Node.js (v1.4.0+) connector instead.
 
 ## Options / Props
 
