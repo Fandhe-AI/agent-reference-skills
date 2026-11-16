@@ -17,6 +17,15 @@ Google Cloud (GCP) の Kubernetes 系スキル。Google Kubernetes Engine（Auto
 skills/gcp-gke/
   SKILL.md
   references/
+    gcloud/                       # 機械生成: gcloud 593.0.0、取得 2026-11-14
+      README.md
+      container/
+        README.md                 # gcloud container 1388 コマンド（clusters / node-pools / fleet / hub / backup-restore / binauthz / aws / azure / attached / vmware / bare-metal 等）
+        <group>.md                # 例: container-ai.md / container-aws-clusters.md / container-attached-clusters.md
+        container-<group>-<cmd>.md  # GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS（例: container-clusters-describe.md / container-fleet-create.md）
+      anthos/
+        README.md                 # gcloud anthos 27 コマンド（apply / auth / config / create-login-config / export）
+        anthos-<group>.md
     gke-overview/                 # 公式ガイド由来（手書き）: GKE の概要・アーキテクチャ・Autopilot・モード選択・責任共有・クォータ・大規模クラスター・バージョニング
       README.md
       <page>.md                   # 例: kubernetes-engine-overview.md / cluster-architecture.md / choose-cluster-mode.md / versioning.md
@@ -92,7 +101,7 @@ skills/gcp-gke/
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. gcloud コマンド → 下記マッピング表で `gcloud`（後続 PR で投入） を選び、`references/gcloud/container/README.md`（`gcloud container`）または `references/gcloud/anthos/README.md`（`gcloud anthos`）からグループページ・コマンドページを引く。GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ。fleet 系は `container fleet`（旧 `container hub`）で引く
+1. gcloud コマンド → 下記マッピング表で `gcloud` を選び、`references/gcloud/container/README.md`（`gcloud container`）または `references/gcloud/anthos/README.md`（`gcloud anthos`）からグループページ・コマンドページを引く。GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ。fleet 系は `container fleet`（旧 `container hub`）で引く
 2. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`。GKE クラスター・node pool は `container`、Backup for GKE は `gkebackup`、fleet・membership・Feature は `gkehub`、Google Distributed Cloud（VMware / bare metal）クラスターは `gkeonprem`。GKE Multi-Cloud の REST は無い
 3. IAM ロール・権限 → `references/iam/README.md`（後続 PR で投入） の索引から `<service>.md` を引く。ロール ID・権限名のサービス接頭辞で選ぶ（例: `roles/container.admin` → `container-1.md`、`roles/gkebackup.admin` → `gkebackup.md`、`roles/gkehub.admin` → `gkehub.md`）。GKE の権限一覧は `container-3.md`〜`container-5.md`
 4. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
@@ -105,6 +114,8 @@ skills/gcp-gke/
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| gcloud のコマンド・フラグを調べたい（container / anthos の 2 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
+| `gcloud anthos`（apply・auth・config・create-login-config・export）のフラグを調べたい | gcloud/anthos | [references/gcloud/anthos/README.md](references/gcloud/anthos/README.md) |
 | GKE の概要・クラスターアーキテクチャ・Autopilot と Standard の選び方・責任共有 | gke-overview | [references/gke-overview/README.md](references/gke-overview/README.md) |
 | GKE のクォータと制限・大規模クラスターの計画・スケーラビリティ・バージョニングとサポート | gke-overview | [references/gke-overview/README.md](references/gke-overview/README.md) |
 | クラスター構成の選択・Autopilot / regional / zonal クラスターの作成・クラスター管理・削除 | gke-clusters | [references/gke-clusters/README.md](references/gke-clusters/README.md) |
@@ -133,7 +144,7 @@ skills/gcp-gke/
 | GKE on AWS / Azure の非推奨とアーキテクチャ・GKE attached clusters（EKS / AKS / 汎用）のアタッチ・更新・デタッチ・ロギング / モニタリング | gke-multicloud | [references/gke-multicloud/README.md](references/gke-multicloud/README.md) |
 | Google Distributed Cloud software only（VMware / bare metal）の概要・advanced clusters・インストール計画・アップグレード・スケーラビリティ・接続・制限 | gdc-software | [references/gdc-software/README.md](references/gdc-software/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `iam` / `rest` / `rest-schemas` / `gcloud/container`
 
 ## 他スキルとの使い分け
 
