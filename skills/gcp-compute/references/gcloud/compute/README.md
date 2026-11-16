@@ -58,3 +58,32 @@
 | gcloud compute disks update | 3 commands (alpha, beta, ga); compute disks update … | [compute-disks-update.md](./compute-disks-update.md) |
 | gcloud compute disks update-kms-key | 3 commands (alpha, beta, ga); compute disks update-kms-key … | [compute-disks-update-kms-key.md](./compute-disks-update-kms-key.md) |
 | gcloud compute disks wait-for-replication-catchup | alpha compute disks wait-for-replication-catchup | [compute-disks-wait-for-replication-catchup.md](./compute-disks-wait-for-replication-catchup.md) |
+| gcloud compute external-vpn-gateways | 18 commands (alpha, beta, ga); compute external-vpn-gateways create … | [compute-external-vpn-gateways.md](./compute-external-vpn-gateways.md) |
+| gcloud compute firewall-policies associations | 9 commands (alpha, beta, ga); compute firewall-policies associations create … | [compute-firewall-policies-associations.md](./compute-firewall-policies-associations.md) |
+| gcloud compute firewall-policies clone-rules | 3 commands (alpha, beta, ga); compute firewall-policies clone-rules … | [compute-firewall-policies-clone-rules.md](./compute-firewall-policies-clone-rules.md) |
+| gcloud compute firewall-policies create | 3 commands (alpha, beta, ga); compute firewall-policies create … | [compute-firewall-policies-create.md](./compute-firewall-policies-create.md) |
+| gcloud compute firewall-policies delete | 3 commands (alpha, beta, ga); compute firewall-policies delete … | [compute-firewall-policies-delete.md](./compute-firewall-policies-delete.md) |
+| gcloud compute firewall-policies describe | 3 commands (alpha, beta, ga); compute firewall-policies describe … | [compute-firewall-policies-describe.md](./compute-firewall-policies-describe.md) |
+| gcloud compute firewall-policies export-rules | 3 commands (alpha, beta, ga); compute firewall-policies export-rules … | [compute-firewall-policies-export-rules.md](./compute-firewall-policies-export-rules.md) |
+| gcloud compute firewall-policies force-start-progressive-rollout | alpha compute firewall-policies force-start-progressive-rollout | [compute-firewall-policies-force-start-progressive-rollout.md](./compute-firewall-policies-force-start-progressive-rollout.md) |
+| gcloud compute firewall-policies get-iam-policy | 3 commands (alpha, beta, ga); compute firewall-policies get-iam-policy … | [compute-firewall-policies-get-iam-policy.md](./compute-firewall-policies-get-iam-policy.md) |
+| gcloud compute firewall-policies import-rules | 3 commands (alpha, beta, ga); compute firewall-policies import-rules … | [compute-firewall-policies-import-rules.md](./compute-firewall-policies-import-rules.md) |
+| gcloud compute firewall-policies list | 3 commands (alpha, beta, ga); compute firewall-policies list … | [compute-firewall-policies-list.md](./compute-firewall-policies-list.md) |
+| gcloud compute firewall-policies list-rules | 3 commands (alpha, beta, ga); compute firewall-policies list-rules … | [compute-firewall-policies-list-rules.md](./compute-firewall-policies-list-rules.md) |
+| gcloud compute firewall-policies mirroring-rules | 8 commands (alpha, beta); beta compute firewall-policies mirroring-rules create … | [compute-firewall-policies-mirroring-rules.md](./compute-firewall-policies-mirroring-rules.md) |
+| gcloud compute firewall-policies move | 3 commands (alpha, beta, ga); compute firewall-policies move … | [compute-firewall-policies-move.md](./compute-firewall-policies-move.md) |
+| gcloud compute firewall-policies rules | 12 commands (alpha, beta, ga); compute firewall-policies rules create … | [compute-firewall-policies-rules.md](./compute-firewall-policies-rules.md) |
+| gcloud compute firewall-policies set-iam-policy | 3 commands (alpha, beta, ga); compute firewall-policies set-iam-policy … | [compute-firewall-policies-set-iam-policy.md](./compute-firewall-policies-set-iam-policy.md) |
+| gcloud compute firewall-policies test-iam-permissions | 3 commands (alpha, beta, ga); compute firewall-policies test-iam-permissions … | [compute-firewall-policies-test-iam-permissions.md](./compute-firewall-policies-test-iam-permissions.md) |
+| gcloud compute firewall-policies update | 3 commands (alpha, beta, ga); compute firewall-policies update … | [compute-firewall-policies-update.md](./compute-firewall-policies-update.md) |
+| gcloud compute firewall-rules config | alpha compute firewall-rules config export | [compute-firewall-rules-config.md](./compute-firewall-rules-config.md) |
+| gcloud compute firewall-rules create | 3 commands (alpha, beta, ga); compute firewall-rules create … | [compute-firewall-rules-create.md](./compute-firewall-rules-create.md) |
+| gcloud compute firewall-rules delete | 3 commands (alpha, beta, ga); compute firewall-rules delete … | [compute-firewall-rules-delete.md](./compute-firewall-rules-delete.md) |
+| gcloud compute firewall-rules describe | 3 commands (alpha, beta, ga); compute firewall-rules describe … | [compute-firewall-rules-describe.md](./compute-firewall-rules-describe.md) |
+| gcloud compute firewall-rules list | 3 commands (alpha, beta, ga); compute firewall-rules list … | [compute-firewall-rules-list.md](./compute-firewall-rules-list.md) |
+| gcloud compute firewall-rules migrate | 2 commands (alpha, beta); beta compute firewall-rules migrate … | [compute-firewall-rules-migrate.md](./compute-firewall-rules-migrate.md) |
+| gcloud compute firewall-rules test-iam-permissions | alpha compute firewall-rules test-iam-permissions | [compute-firewall-rules-test-iam-permissions.md](./compute-firewall-rules-test-iam-permissions.md) |
+| gcloud compute firewall-rules update | 3 commands (alpha, beta, ga); compute firewall-rules update … | [compute-firewall-rules-update.md](./compute-firewall-rules-update.md) |
+| gcloud compute folder-rollout-plans | 4 commands (alpha); alpha compute folder-rollout-plans create … | [compute-folder-rollout-plans.md](./compute-folder-rollout-plans.md) |
+| gcloud compute folder-rollouts | 4 commands (alpha); alpha compute folder-rollouts cancel … | [compute-folder-rollouts.md](./compute-folder-rollouts.md) |
+| gcloud compute forwarding-rules config | alpha compute forwarding-rules config export | [compute-forwarding-rules-config.md](./compute-forwarding-rules-config.md) |
