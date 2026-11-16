@@ -11,3 +11,9 @@
 | gcloud database-migration connection-profiles test | database-migration connection-profiles test | [database-migration-connection-profiles-test.md](./database-migration-connection-profiles-test.md) |
 | gcloud database-migration connection-profiles update | 2 commands (alpha, ga); database-migration connection-profiles update … | [database-migration-connection-profiles-update.md](./database-migration-connection-profiles-update.md) |
 | gcloud database-migration conversion-workspaces (part 1) | 12 commands (ga); database-migration conversion-workspaces apply … | [database-migration-conversion-workspaces-1.md](./database-migration-conversion-workspaces-1.md) |
+| gcloud database-migration conversion-workspaces (part 2) | 4 commands (ga); database-migration conversion-workspaces mapping-rules list … | [database-migration-conversion-workspaces-2.md](./database-migration-conversion-workspaces-2.md) |
+| gcloud database-migration migration-jobs (part 1) | 9 commands (alpha, ga); database-migration migration-jobs create … | [database-migration-migration-jobs-1.md](./database-migration-migration-jobs-1.md) |
+| gcloud database-migration migration-jobs (part 2) | 17 commands (alpha, ga); database-migration migration-jobs resume … | [database-migration-migration-jobs-2.md](./database-migration-migration-jobs-2.md) |
+| gcloud database-migration objects | 2 commands (ga); database-migration objects list … | [database-migration-objects.md](./database-migration-objects.md) |
+| gcloud database-migration operations | 6 commands (alpha, ga); database-migration operations delete … | [database-migration-operations.md](./database-migration-operations.md) |
+| gcloud database-migration private-connections | 4 commands (ga); database-migration private-connections create … | [database-migration-private-connections.md](./database-migration-private-connections.md) |
