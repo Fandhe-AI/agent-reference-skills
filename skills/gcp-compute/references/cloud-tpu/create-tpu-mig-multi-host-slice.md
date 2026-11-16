@@ -117,6 +117,7 @@ POST https://compute.googleapis.com/compute/v1/projects/PROJECT_ID/zones/ZONE/in
 - Distance line: Compute Engine TPU VMs; GPUs and TPUs on GKE nodes are in `gcp-gke`; the MIG itself is a Compute Engine instance group.
 - The `createInstances` fence ends at the closing brace of the source block; its `...` is from the source.
 - Source inconsistency: this page gives `ct6e-standard-8t` as the `MACHINE_TYPE` example and `4x4x8` as the `TOPOLOGY` example for a multi-host slice, while v6e.md lists `ct6e-standard-8t` only as "Single-host" (`2x4`, 1 VM) and every v6e multi-host topology (`2x4` on 2 VMs up to `16x16` on 64 VMs) with `ct6e-standard-4t`, and tpu-machines.md lists the TPU7x multi-host topologies (`2x2x2` to `4x4x4`) with `tpu7x-standard-4t`. Pick the machine type, topology and MIG size from one row of those tables.
+- Source (compared pages): https://docs.cloud.google.com/tpu/docs/v6e (v6e.md), https://docs.cloud.google.com/compute/docs/tpus/tpu-machines (tpu-machines.md) (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/docs/tpus/create-tpu-mig-multi-host-slice (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

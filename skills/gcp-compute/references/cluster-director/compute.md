@@ -85,6 +85,7 @@ Type names are `n2-standard-N`, `n2-highmem-N`, `n2-highcpu-N`.
 - The source page shows no commands; the snippet is borrowed from https://docs.cloud.google.com/sdk/gcloud/reference/cluster-director/clusters/create (gcloud 593.0.0 help). Per the help, `quickstart` provisions "Compute: 2x a3-megagpu-8g nodes (Flex Start, max duration 7 days)", "Login Node: 1x n2-standard-16 node" and "Storage: 36TB Lustre storage (scratch disk)". It creates billable cluster resources; try it in a disposable project first and delete the cluster after testing.
 - Source inconsistency: gcloud 593.0.0 also offers the `g4-flex-start` ("4x g4-standard-384 compute nodes (Flex Start)") and `h4d-highmem-flex-start` ("4x h4d-highmem-192 compute nodes (Flex Start)") reference architectures, while this page lists no G4 or H4D machine series and choose-consumption-option.md lists only "A4, A3 Ultra, A3 Mega, TPU7x, TPU v6e, TPU v5p" for Flex-start. The A4X Max default Slurm image family is in [os-images.md](./os-images.md).
 - Source (Choose a consumption option, cited above as `choose-consumption-option.md`): https://docs.cloud.google.com/cluster-director/docs/choose-consumption-option (retrieved 2026-11-17)
+- Source (compared page): https://docs.cloud.google.com/cluster-director/docs/os-images (os-images.md) (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/cluster-director/docs/compute (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

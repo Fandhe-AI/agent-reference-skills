@@ -41,6 +41,7 @@ gcloud cluster-director clusters list --location=us-central1-a
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/cluster-director/clusters/list (gcloud 593.0.0 help).
 - Source inconsistency: the gcloud 593.0.0 `clusters create` examples (and compute.md, networking.md, storage.md) use `--location=us-central1`, while the `clusters list`, `describe`, `update` and `delete` examples use `--location=us-central1-a` ("To list all clusters in particular location us-central1-a"). The help gives the cluster resource format `projects/{project}/locations/{locations}/clusters/{cluster}`, so pass the location the cluster was created in.
 - Source (`--location` in the cluster examples): `gcloud cluster-director clusters create --help`, `gcloud cluster-director clusters list --help`, `gcloud cluster-director clusters describe --help`, `gcloud cluster-director clusters update --help`, `gcloud cluster-director clusters delete --help` (gcloud 593.0.0, retrieved 2026-11-14)
+- Source (compared pages): https://docs.cloud.google.com/cluster-director/docs/compute (compute.md), https://docs.cloud.google.com/cluster-director/docs/networking (networking.md), https://docs.cloud.google.com/cluster-director/docs/storage (storage.md) (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/cluster-director/docs/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
