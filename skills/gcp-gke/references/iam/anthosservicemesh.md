@@ -20,7 +20,7 @@ Predefined roles of `anthosservicemesh` (role ID, description, included permissi
 
 - Launch stage: Beta
 - Read access to mesh configuration
-- Permissions: none listed on the source page (the role takes effect through the IAM conditions described above).
+- Permissions: none listed on the source page.
 
 #### Trafficdirector Admin (`roles/trafficdirector.admin`)
 
