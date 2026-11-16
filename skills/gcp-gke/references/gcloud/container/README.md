@@ -318,3 +318,9 @@
 | gcloud container node-pools get-upgrade-info | 3 commands (alpha, beta, ga); container node-pools get-upgrade-info … | [container-node-pools-get-upgrade-info.md](./container-node-pools-get-upgrade-info.md) |
 | gcloud container node-pools list | 3 commands (alpha, beta, ga); container node-pools list … | [container-node-pools-list.md](./container-node-pools-list.md) |
 | gcloud container node-pools rollback | 3 commands (alpha, beta, ga); container node-pools rollback … | [container-node-pools-rollback.md](./container-node-pools-rollback.md) |
+| gcloud container node-pools update | 3 commands (alpha, beta, ga); container node-pools update … | [container-node-pools-update.md](./container-node-pools-update.md) |
+| gcloud container operations | 12 commands (alpha, beta, ga); container operations cancel … | [container-operations.md](./container-operations.md) |
+| gcloud container subnets | 3 commands (alpha, beta, ga); container subnets list-usable … | [container-subnets.md](./container-subnets.md) |
+| gcloud container vmware admin-clusters | 15 commands (alpha, beta, ga); container vmware admin-clusters describe … | [container-vmware-admin-clusters.md](./container-vmware-admin-clusters.md) |
+| gcloud container vmware clusters (part 1) | 17 commands (alpha, beta, ga); container vmware clusters create … | [container-vmware-clusters-1.md](./container-vmware-clusters-1.md) |
+| gcloud container vmware clusters (part 2) | 7 commands (alpha, beta, ga); alpha container vmware clusters delete … | [container-vmware-clusters-2.md](./container-vmware-clusters-2.md) |
