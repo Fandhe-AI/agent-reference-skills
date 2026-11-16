@@ -5,7 +5,7 @@
 #             ホスト（implement-issue-tree.src.js の treeRowDigestLine / treeNodesDigest）は同じ定義を JavaScript で
 #             計算し直して照合する。定義を変えるときは両方と tests/fetch-tree-unit.test.mjs の表を同時に直す。
 # 役割: 0) 構造 5 欄だけのダイジェスト structSha256（Issue #687）、1) title の表示形（制御文字を半角スペースへ置換）、2) 行ダイジェスト、3) ノード全体のダイジェスト nodesSha256、
-#       4) 入力の束縛 inputSha256 の定義を 1 箇所に持つ。
+#       4) 入力の束縛 inputSha256、5) 第 7 欄 optinTests（opt-in テスト宣言）の抽出・正規化の jq 定義と optinSha256 の定義を 1 箇所に持つ。
 # 契約: どの関数も exit せず、git・gh・ネットワークを呼ばない。結果は stdout と return 値で返す。
 #       source 元のシェル状態を壊さないため set -e / set -u / trap / exit は置かない。二重 source は無害。
 #       signed-output.sh（so_sha256）を先に source しておくこと。
@@ -26,6 +26,32 @@ FT_JQ_DISP='def disp: explode | map(if . < 32 or . == 127 then 32 else . end) | 
 ft_title_display() {
   printf '%s' "$1" | jq -Rrj -s "${FT_JQ_DISP} disp"
 }
+
+# 第 7 欄 optinTests（opt-in テスト宣言）の抽出・正規化の jq の定義。fetch-tree.sh の jq フィルタがこの定義を埋め込んで使う（実装を 1 つにする）。
+# 抽出: イシュー本文の `<!-- optin-tests: <値> -->` の値（従来 Tree エージェントが gh issue view --jq で手で実行していた scan と同じ意味: 値の前後の空白とタブを除いた文字列。
+#       コードフェンス内の宣言も拾う）。正規表現は `<!--[ \t]*optin-tests:([^\n]*?)-->` で、前後の空白は正規表現ではなく optin_trim が落とす
+#       （`[ \t]*` を値の前後に置いた形は Oniguruma でバックトラックが爆発し、空白の長い行で jq が retry-limit で異常終了する・`sub("[ \t]+$"; "")` も二次時間に戻り得るため。
+#       optin_trim は explode した配列を先頭と末尾から 1 回ずつ走査する線形の処理）。
+#       値の空白は ASCII の空白（32）とタブ（9）だけ。末尾の NBSP・全角空白は旧経路ではホストの trim() で落ちて一致したが、この経路では `?` になり invalid（blocked）になる。open ノードだけが対象で、closed のノードと宣言の無いノードは `[]`（空欄にしない）。
+# 値ごとの正規化: タブは空白 1 つ、許可文字 [A-Za-z0-9 _./:=@+,-]（ホストの OPTIN_TEST_COMMAND_RE の文字集合）に無い文字は 1 文字ずつ `?` にする。
+#       `?` は許可形式に無いので承認一覧と一致せず、必ず invalid（blocked）になる。結果は ASCII の印字可能文字だけで、JSON のエスケープが出ない
+#       （jq の tojson と JS の JSON.stringify が同じバイト列になる）。
+# 上限（fail-closed）: スキーマの上限（1 値 300 文字・20 件）を超えて schema エラーになる・黙って切り詰めて valid になることを避ける。
+#       1 値が 300 文字を超えるときは先頭 299 文字 + `?`（ホストの許可形式は 200 文字までなので必ず invalid）。
+#       件数が 20 を超えるときは先頭 19 件 + `?` の 1 件（`?` は invalid なので blocked）。件数 11〜20 はホストの parseOptinTestDeclarations が OPTIN_TESTS_MAX（10）超として invalid にする。
+# 閉じない宣言（Issue #802）: 開始 `<!--[ \t]*optin-tests:` があり、同じ行（`\n` 区切り）でその後ろに `-->` が無いときは、宣言の値を出さず `["?"]` にする
+#       （書き損じを「宣言なし」にして記録ゲートを静かに外さない fail-closed。本文中の構文の説明でもノードは blocked になる）。判定は「行の最後の `-->` より後ろに開始がある」で、
+#       `-->` は開始の文字と重ならないので、最後の `-->` の手前にある開始はすべて閉じている。正規表現を使わず split / explode だけの線形の処理（optin_open）。
+#       閉じない開始があると scan は行末まで探して二次時間になるため、scan を走らせる前に判定して飛ばす。
+# 1 ノードの合計（Issue #803）: 上の 2 つの上限を当てた後の値の文字数の合計が 1,000 を超えるときは、配列全体を `["?"]` に置き換える（黙って切らない・invalid = blocked）。
+#       これで第 7 欄は 1 ノード最大 1,061 バイト（値 1,000 + 引用符 40 + カンマ 19 + 括弧 2）になり、取得出力のページ数（30 ページの上限）を宣言で膨らませない。
+FT_JQ_OPTIN='def optin_norm: explode | map(if . == 9 then 32 elif (. >= 48 and . <= 57) or (. >= 65 and . <= 90) or (. >= 97 and . <= 122) or . == 32 or . == 95 or . == 46 or . == 47 or . == 58 or . == 61 or . == 64 or . == 43 or . == 44 or . == 45 then . else 63 end) | implode;
+def optin_trim: explode as $c | ($c | length) as $n | (first(range(0; $n) | select($c[.] != 32 and $c[.] != 9)) // $n) as $s | (first(range($n - 1; $s - 1; -1) | select($c[.] != 32 and $c[.] != 9)) // ($s - 1)) as $e | $c[$s:$e + 1] | implode;
+def optin_cap: if length > 300 then .[:299] + "?" else . end;
+def optin_head: explode as $c | ($c | length) as $n | (first(range(0; $n) | select($c[.] != 32 and $c[.] != 9)) // $n) as $s | $c[$s:$s + 12] == [111,112,116,105,110,45,116,101,115,116,115,58];
+def optin_open: split("\n") | any(.[]; ((split("-->") | last) // "") | split("<!--") | .[1:] | any(.[]; optin_head));
+def optin_total: if (map(length) | add // 0) > 1000 then ["?"] else . end;
+def optin_list: if .state != "open" then [] elif (.body // "") | optin_open then ["?"] else [(.body // "") | scan("<!--[ \t]*optin-tests:([^\n]*?)-->") | .[0] | optin_trim | optin_norm | optin_cap] | if length > 20 then .[:19] + ["?"] else . end | optin_total end;'
 
 # state は open / closed のみ。
 ft_valid_state() {
@@ -59,18 +85,22 @@ ft_row_digest_line() {
   printf '%s%s%s%s%s%s%s%s%s%s%s' "$1" "${tab}" "$2" "${tab}" "$3" "${tab}" "$4" "${tab}" "$5" "${tab}" "${tsha}"
 }
 
-# 標準入力の TSV（number TAB parent TAB siblingIndex TAB state TAB subIssuesTotal TAB title）の nodesSha256 を stdout へ。
-# 行ダイジェストの行を number の昇順（数値）に並べ、改行で連結（末尾改行なし）して SHA-256 を取る。並び順は検査対象にしない。
+# 標準入力の TSV（number TAB parent TAB siblingIndex TAB state TAB subIssuesTotal TAB title [TAB optinTests]）の nodesSha256 を stdout へ。
+# 行ダイジェストの行を number の昇順（数値）に並べ、改行で連結（末尾改行なし）して SHA-256 を取る。並び順は検査対象にしない。第 7 欄 optinTests は
+# この値に入れない（ft_optin_digest が別に束縛する）。欄の分割はタブを US（0x1f）へ変えてから行う: タブは IFS の空白文字で連続が 1 つに畳まれ、
+# 空の title が詰められて 7 欄の分割がずれるため（title は表示形で制御文字を含まないので US は現れない）。
 ft_nodes_digest() {
-  local tab num parent sib state total title lines line sorted
+  local tab us num parent sib state total title optin lines line sorted tsv_us
   tab=$(printf '\t')
+  us=$(printf '\037')
   lines=""
-  while IFS="${tab}" read -r num parent sib state total title || [ -n "${num}" ]; do
+  tsv_us=$(tr '\t' '\037') || return 1
+  while IFS="${us}" read -r num parent sib state total title optin || [ -n "${num}" ]; do
     [ -n "${num}" ] || continue
     line=$(ft_row_digest_line "${num}" "${parent}" "${sib}" "${state}" "${total}" "${title}") || return 1
     lines="${lines}${line}
 "
-  done
+  done <<<"${tsv_us}"
   [ -n "${lines}" ] || return 1
   sorted=$(printf '%s' "${lines}" | LC_ALL=C sort -t "${tab}" -k1,1n) || return 1
   printf '%s' "${sorted}" | so_sha256
@@ -80,14 +110,35 @@ ft_nodes_digest() {
 # subIssuesTotal）だけの行を number の昇順（数値）に並べ、改行で連結（末尾改行なし）して SHA-256 を取る。
 # title の書き写し誤りと構造の誤りを分けて扱うための検査値（ホストの treeStructDigest と同じ定義）。
 ft_struct_digest() {
-  local tab num parent sib state total title lines sorted
+  local tab us num parent sib state total title optin lines sorted tsv_us
   tab=$(printf '\t')
+  us=$(printf '\037')
   lines=""
-  while IFS="${tab}" read -r num parent sib state total title || [ -n "${num}" ]; do
+  tsv_us=$(tr '\t' '\037') || return 1
+  while IFS="${us}" read -r num parent sib state total title optin || [ -n "${num}" ]; do
     [ -n "${num}" ] || continue
     lines="${lines}${num}${tab}${parent}${tab}${sib}${tab}${state}${tab}${total}
 "
-  done
+  done <<<"${tsv_us}"
+  [ -n "${lines}" ] || return 1
+  sorted=$(printf '%s' "${lines}" | LC_ALL=C sort -t "${tab}" -k1,1n) || return 1
+  printf '%s' "${sorted}" | so_sha256
+}
+
+# 標準入力の TSV の optinSha256 を stdout へ。各行の「number TAB 第 7 欄（optinTests の compact JSON）」を number の昇順（数値）に並べ、
+# 改行で連結（末尾改行なし）して SHA-256 を取る（ホストの treeOptinDigest と同じ定義。JS 側は `${number}\t${JSON.stringify(optinTests)}`）。
+# 第 7 欄は FT_JQ_OPTIN が作る ASCII の JSON なので、このまま比較できる。本文由来の値を束縛する検査値で、title の不一致のように許容しない。
+ft_optin_digest() {
+  local tab us num parent sib state total title optin lines sorted tsv_us
+  tab=$(printf '\t')
+  us=$(printf '\037')
+  lines=""
+  tsv_us=$(tr '\t' '\037') || return 1
+  while IFS="${us}" read -r num parent sib state total title optin || [ -n "${num}" ]; do
+    [ -n "${num}" ] || continue
+    lines="${lines}${num}${tab}${optin}
+"
+  done <<<"${tsv_us}"
   [ -n "${lines}" ] || return 1
   sorted=$(printf '%s' "${lines}" | LC_ALL=C sort -t "${tab}" -k1,1n) || return 1
   printf '%s' "${sorted}" | so_sha256

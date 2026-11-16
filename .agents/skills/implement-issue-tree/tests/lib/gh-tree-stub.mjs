@@ -74,7 +74,8 @@ export function makeGhTreeStub(routes) {
   }
 }
 
-/** API の issue オブジェクト（テスト用の最小形） */
-export function issue(number, { title = `issue ${number}`, state = 'open', total = 0 } = {}) {
-  return { number, title, state, sub_issues_summary: { total, completed: 0, percent_completed: 0 } }
+/** API の issue オブジェクト（テスト用の最小形）。body は本文（opt-in テスト宣言の抽出元。issues/<n> と sub_issues の応答に入る。既定は null = 本文なし）。
+ *  repositoryUrl は実 API の repository_url（--repo を省いた取得でツリーのリポジトリを決める。Issue #808。既定は o/r） */
+export function issue(number, { title = `issue ${number}`, state = 'open', total = 0, body = null, repositoryUrl = 'https://api.github.com/repos/o/r' } = {}) {
+  return { number, title, state, body, repository_url: repositoryUrl, sub_issues_summary: { total, completed: 0, percent_completed: 0 } }
 }

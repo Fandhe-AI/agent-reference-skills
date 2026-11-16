@@ -3,9 +3,9 @@
 // 契約:
 //   - skipLabels 未指定・notifyBlocked 未指定では、新しい agent を 1 回も呼ばず、返却値のキーも増えない。
 //   - skipLabels の形式不正は agent を呼ぶ前に起動時エラーで止める。notifyBlocked は boolean だけ。
-//   - ラベルごとにリポジトリ全体の open issue を 1 体の agent で列挙し、ホストがツリーのノード番号と突き合わせる。
-//     sig（declaredDepsChecksum と同じ式）の不一致は 1 回だけ再試行し、なお取得できないラベルがあれば
-//     open ノードを全て対象外にする（fail-closed）。
+//   - ラベルごとにリポジトリ全体の open issue を 1 体の agent で列挙し（scripts/repo-scan.sh --mode skip-labels の封筒を転記させる）、
+//     ホストがツリーのノード番号と突き合わせる。封筒の不一致（nonce・sha256・入力の束縛）は 1 回だけ再試行し、なお取得できないラベルがあれば
+//     open ノードを全て対象外にする（fail-closed）。実スクリプトの実行は repo-scan.test.mjs・repo-scan-host.test.mjs。
 //   - 一致した open ノードは blocked（halt に数えない）。ラベルは本人だけに効き子孫へ継承しない。
 //   - dryRun は blocked.skippedLabel と skippedLabels.matched を返し、書き込み系の agent を起動しない。
 //   - notifyBlocked: 待ちがあるときだけルート issue へ 1 回コメントし、本文は整数と固定の文言だけ。
@@ -14,15 +14,11 @@
 // 実時間では待たない（偽 gh を PATH に置いたコマンドの実行も同期で一瞬）。
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { spawnSync } from 'node:child_process'
-import { mkdtempSync, writeFileSync, chmodSync } from 'node:fs'
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
 import { importDefinitions, runScript, BASE_ARGS } from './lib/stub-run.mjs'
-import { trackTmp } from './lib/tmp-track.mjs'
+import { makeEnvelope, parseRepoScanCommand, skipLabelsReply } from './lib/signed-output.mjs'
 
 const D = await importDefinitions(
-  ['parseSkipLabels', 'collectSkipLabelEntries', 'classifySkipLabels', 'skipLabelNote', 'skipLabelsPrompt', 'notifyBlockedPrompt', 'declaredDepsChecksum', 'estimateDispatch', 'sha256Hex', 'canonicalJson'],
+  ['parseSkipLabels', 'collectSkipLabelEntries', 'classifySkipLabels', 'skipLabelNote', 'skipLabelsPrompt', 'notifyBlockedPrompt', 'declaredDepsChecksum', 'estimateDispatch', 'sha256Hex', 'canonicalJson', 'repoScanInputSha256'],
   'skip-labels',
 )
 
@@ -37,8 +33,8 @@ const node = (number, parent, o = {}) => ({
 })
 // ルート 1 の直下に葉 leaves を並べたツリー
 const flat = (leaves, o = {}) => [node(1, 0, { sub: leaves.length }), ...leaves.map((n, i) => node(n, 1, { si: i, ...(o[n] ?? {}) }))]
-// x = 1 はラベルがリポジトリに無い。sig の number スロットは i * 2 + x
-const labelEntry = (i, numbers, x = 0) => ({ i, x, numbers, sig: D.declaredDepsChecksum(i * 2 + x, numbers) })
+// 平らな応答（stub-run が封筒に包む）。x = 1 はラベルがリポジトリに無い
+const labelEntry = (i, numbers, x = 0) => ({ i, x, numbers })
 // ラベル → 番号 の表から plan:skip-labels の応答を作る（添字は 1 始まり。番号は jq の unique と同じ昇順・重複なし）。table に無いラベルは該当なし。
 const skipReply = (labels, table, absent = []) => ({ entries: labels.map((l, k) => labelEntry(k + 1, [...new Set(table[l] ?? [])].sort((a, b) => a - b), absent.includes(l) ? 1 : 0)) })
 const ARGS = (extra = {}) => ({ ...BASE_ARGS, ...extra })
@@ -88,39 +84,51 @@ test('parseSkipLabels: 形式不正は throw（配列でない・11 件・空文
 
 // --- 取得コマンドと転記の照合（純粋関数） ---
 
-test('skipLabelsPrompt: ラベルは単一引用符化し、gh は GET・ページ送りで、成否は終了コードで判定する', () => {
-  const p = D.skipLabelsPrompt(['owner:human', "it's $(rm -rf x) `y`"])
-  assert.ok(p.includes(`for l in 'owner:human' 'it'\\''s $(rm -rf x) \`y\`'; do`), 'ラベルがシェルへ生で入っている')
-  assert.ok(p.includes('gh api -X GET repos/{owner}/{repo}/issues'))
-  assert.ok(p.includes('-f state=open') && p.includes('-f labels="$l"') && p.includes('--paginate'))
-  assert.ok(p.includes('select(.pull_request==null)'))
-  assert.ok(p.includes('--argjson i "$i"'), '添字は jq の --argjson で渡す')
-  assert.ok(p.includes('|| echo "FAILED $i" >&2'), '失敗を終了コードで判定していない')
+test('skipLabelsPrompt: 起動行は run-verified.sh 経由の repo-scan.sh の 1 行で、ラベルは単一引用符化し、gh・jq のコマンドを含まない', () => {
+  const p = D.skipLabelsPrompt(['owner:human', "it's $(rm -rf x) `y`"], 'n0nce', 'o/r', '1,2,30')
+  const line = p.split('\n').find((l) => l.includes('repo-scan.sh'))
+  assert.match(line, /^bash '<skillDir>\/scripts\/run-verified\.sh' \S+ repo-scan\.sh --mode skip-labels --nonce n0nce --repo o\/r --numbers 1,2,30 -- 'owner:human' 'it'\\''s \$\(rm -rf x\) `y`'$/)
+  assert.deepEqual(parseRepoScanCommand(p), { mode: 'skip-labels', nonce: 'n0nce', repo: 'o/r', numbers: '1,2,30', labels: ['owner:human', "it's $(rm -rf x) `y`"] })
+  assert.ok(!/gh api repos|--paginate|jq -|grep -F/.test(p), '転記させるコマンドがプロンプトに残っている')
+  assert.ok(!p.includes('\\n') || !line.includes('\\\\'), '起動行にバックスラッシュの重ね書きが無い')
 })
 
-test('collectSkipLabelEntries: 正常・依頼外の添字は無視・欠落は missing', () => {
-  const r = D.collectSkipLabelEntries([1, 2, 3], { entries: [labelEntry(1, [3, 5]), labelEntry(3, []), labelEntry(9, [1])] })
+// 封筒の payload（スクリプトの出力）→ 依頼した添字の取得結果。entries = [{ i, numbers }]
+const pl = (entries, o = {}) => ({ absent: [], failed: [], entries, inputSha256: 'x', ...o })
+
+test('collectSkipLabelEntries: 正常・依頼外の添字は無視・欠落（failed）は missing', () => {
+  const r = D.collectSkipLabelEntries([1, 2, 3], pl([{ i: 1, numbers: [3, 5] }, { i: 3, numbers: [] }], { failed: [2] }), 3)
   assert.deepEqual([...r.byIndex], [[1, [3, 5]], [3, []]])
   assert.deepEqual(r.missing, [2])
-  assert.deepEqual(D.collectSkipLabelEntries([1], undefined).missing, [1])
-  assert.deepEqual(D.collectSkipLabelEntries([1], { entries: 'x' }).missing, [1])
+  // 再試行の回: 依頼は 2 だけ。1・3 は（取れていても）無視する
+  const r2 = D.collectSkipLabelEntries([2], pl([{ i: 1, numbers: [3] }, { i: 2, numbers: [7] }, { i: 3, numbers: [] }]), 3)
+  assert.deepEqual([...r2.byIndex], [[2, [7]]])
+  assert.deepEqual(r2.missing, [])
+  assert.throws(() => D.collectSkipLabelEntries([1], undefined, 1), /契約違反/)
+  assert.throws(() => D.collectSkipLabelEntries([1], { entries: 'x' }, 1), /契約違反/)
 })
 
-test('collectSkipLabelEntries: sig 不一致・重複・昇順でない・非整数・0 以下は契約違反として throw', () => {
+test('collectSkipLabelEntries: 重複・範囲外・昇順でない・非整数・0 以下・entries と failed の食い違い・absent の食い違いは契約違反として throw', () => {
+  const e = (i, numbers) => ({ i, numbers })
   const bad = [
-    { entries: [{ i: 1, x: 0, numbers: [3, 5], sig: 1 }] },
-    { entries: [{ i: 1, numbers: [3], sig: D.declaredDepsChecksum(2, [3]) }] },
-    { entries: [{ i: 1, x: 2, numbers: [3], sig: D.declaredDepsChecksum(4, [3]) }] },
-    { entries: [{ i: 1, x: 1, numbers: [3], sig: D.declaredDepsChecksum(2, [3]) }] },
-    { entries: [labelEntry(1, [3]), labelEntry(1, [3])] },
-    { entries: [{ i: 1, x: 0, numbers: [5, 3], sig: D.declaredDepsChecksum(2, [5, 3]) }] },
-    { entries: [{ i: 1, x: 0, numbers: [3, 3], sig: D.declaredDepsChecksum(2, [3, 3]) }] },
-    { entries: [{ i: 1, x: 0, numbers: [1.5], sig: D.declaredDepsChecksum(2, [1.5]) }] },
-    { entries: [{ i: 1, x: 0, numbers: [0], sig: D.declaredDepsChecksum(2, [0]) }] },
-    { entries: [{ i: 1, x: 0, numbers: 'x', sig: 0 }] },
-    { entries: [{ i: 1, x: 0, numbers: [3], sig: D.declaredDepsChecksum(2, [3]) + 1 }] },
+    pl([e(1, [3]), e(1, [3])]),
+    pl([e(2, [3])]),
+    pl([e(0, [3])]),
+    pl([e(1, [5, 3])]),
+    pl([e(1, [3, 3])]),
+    pl([e(1, [1.5])]),
+    pl([e(1, [0])]),
+    pl([e(1, 'x')]),
+    pl([e(1, [3])], { failed: [1] }),
+    pl([e(1, [3])], { failed: [2] }),
+    pl([], { failed: [] }),
+    pl([e(1, [3])], { absent: [2] }),
+    pl([e(1, [3])], { absent: [1, 1] }),
+    pl([e(1, [3])], { absent: [9] }),
+    pl([e(1, [3])], { failed: ['1'] }),
+    pl([e(1, [3])], { absent: 'x' }),
   ]
-  for (const r of bad) assert.throws(() => D.collectSkipLabelEntries([1], r), /対象外ラベルの取得結果/, JSON.stringify(r))
+  for (const r of bad) assert.throws(() => D.collectSkipLabelEntries([1], r, 1), /対象外ラベルの取得結果/, JSON.stringify(r))
 })
 
 test('sig は番号の改変・脱落・並べ替えで変わる（転記の誤りを検出できる）', () => {
@@ -176,36 +184,6 @@ test('notifyBlockedPrompt: 本文は整数と固定の文言だけ。多数の�
   assert.throws(() => D.notifyBlockedPrompt('7; x', { outOfTree: [], skippedLabel: [], waitingOn: [] }))
 })
 
-// --- 偽 gh で実際にコマンドを走らせる（jq が出す sig をホストの検査が受理すること） ---
-
-test('取得コマンドを偽 gh で実行: 番号は昇順・重複なし、失敗ラベルは FAILED、sig はホストの検査を通る', { skip: spawnSync('jq', ['--version']).status !== 0 && 'jq が無い' }, () => {
-  const dir = trackTmp(mkdtempSync(join(tmpdir(), 'skip-labels-gh-')))
-  writeFileSync(join(dir, 'gh'), `#!/bin/bash
-label=""
-for a in "$@"; do case "$a" in labels=*) label="\${a#labels=}";; esac; done
-case "$*" in *"/issues"*) ;; *) printf '%s\\n' 'Owner:Human' "It's" broken; exit 0;; esac
-case "$label" in
-  'owner:human') printf '%s\\n' 9 3 5 3;;
-  "it's") printf '%s\\n' 4;;
-  'broken') echo '{"message":"boom"}'; exit 1;;
-  *) ;;
-esac
-`)
-  chmodSync(join(dir, 'gh'), 0o755)
-  const labels = ['owner:human', "it's", 'broken', 'none']
-  const command = D.skipLabelsPrompt(labels).split('\n').find((l) => l.startsWith('names=$('))
-  const r = spawnSync('/bin/bash', ['-c', command], { env: { ...process.env, PATH: `${dir}:${process.env.PATH}` }, encoding: 'utf8' })
-  assert.equal(r.status, 0, r.stderr)
-  assert.match(r.stderr, /FAILED 3/)
-  assert.ok(!r.stdout.includes('boom'), 'gh のエラー本文が標準出力の転記対象に混ざった')
-  const entries = r.stdout.trim().split('\n').map((l) => JSON.parse(l))
-  assert.deepEqual(entries.map((e) => [e.i, e.x, e.numbers]), [[1, 0, [3, 5, 9]], [2, 0, [4]], [4, 1, []]], '大文字小文字は区別せず、リポジトリに無い none だけ x = 1')
-  const c = D.collectSkipLabelEntries([1, 2, 3, 4], { entries })
-  assert.deepEqual([...c.byIndex.keys()], [1, 2, 4])
-  assert.deepEqual(c.missing, [3])
-  assert.deepEqual(c.absent, [4])
-})
-
 // --- 起動時の検証（agent を呼ぶ前に止まる） ---
 
 test('不正な skipLabels・notifyBlocked は agent を 1 回も呼ばずに起動時エラー', async () => {
@@ -244,7 +222,7 @@ test('空の skipLabels は未指定と同じ（agent を呼ばない）', async
 
 const skipOverride = (table, tree) => (label, opts, prompt) => {
   if (label.startsWith('plan:issue-tree') && tree) return { nodes: tree }
-  if (label === 'plan:skip-labels') return skipReply(['owner:human', 'owner:joint'], table)
+  if (label === 'plan:skip-labels') return skipReply(parseRepoScanCommand(prompt).labels, table)
   return undefined
 }
 
@@ -317,22 +295,60 @@ test('closed のノードは番号が一致しても対象外にならない（�
 
 // --- 取得の再試行と fail-closed ---
 
-test('sig の不一致は 1 回だけ再試行し、再試行で取れれば通常どおり', async () => {
+test('封筒の不一致（sha256・nonce・入力の束縛）は 1 回だけ再試行し、再試行で取れれば通常どおり', async () => {
   const labels = ['owner:human']
-  let n = 0
-  const { result, calls } = await runScript({
-    args: ARGS({ skipLabels: labels }),
-    leaves: [2, 3],
-    override: (label) => {
+  for (const broken of ['sha256', 'nonce', 'input', 'missing']) {
+    let n = 0
+    const { result, calls } = await runScript({
+      args: ARGS({ skipLabels: labels }),
+      leaves: [2, 3],
+      override: (label, opts, prompt) => {
+        if (!label.startsWith('plan:skip-labels')) return undefined
+        n++
+        const good = skipLabelsReply(prompt, { entries: [{ i: 1, numbers: [2] }] })
+        if (n > 1) return good
+        if (broken === 'sha256') return { ...good, sha256: '0'.repeat(64) }
+        if (broken === 'nonce') return { ...good, nonce: 'oldnonce' }
+        if (broken === 'input') return skipLabelsReply(prompt, { entries: [{ i: 1, numbers: [2] }], inputSha256: '0'.repeat(64) })
+        return { nonce: good.nonce, payload: good.payload } // sha256 の欠落
+      },
+    })
+    assert.deepEqual(labelsOf(calls).filter((l) => l.startsWith('plan:skip-labels')), ['plan:skip-labels', 'plan:skip-labels-retry'], broken)
+    assert.deepEqual(result.skippedLabels, { labels, matched: [2], unknown: [], absent: [] }, broken)
+    assert.ok(labelsOf(calls).includes('plan:#3'), broken)
+    assert.ok(!labelsOf(calls).includes('plan:#2'), broken)
+  }
+})
+
+test('封筒の照合に 2 回とも失敗したら、open ノードを全て待たせて何も着手しない（fail-closed）', async () => {
+  const labels = ['owner:human']
+  for (const broken of [(prompt) => ({ ...skipLabelsReply(prompt, { entries: [{ i: 1, numbers: [] }] }), sha256: '0'.repeat(64) }), () => null]) {
+    const { result, calls, logs } = await runScript({
+      args: ARGS({ skipLabels: labels }),
+      leaves: [2, 3],
+      override: (label, opts, prompt) => (label.startsWith('plan:skip-labels') ? broken(prompt) : undefined),
+    })
+    assert.deepEqual(labelsOf(calls).filter((l) => l.startsWith('plan:skip-labels')), ['plan:skip-labels', 'plan:skip-labels-retry'])
+    assert.deepEqual(startedLabels(calls), [], '取得できないのに着手した')
+    assert.deepEqual(result.skippedLabels, { labels, matched: [1, 2, 3], unknown: ['owner:human'], absent: [] })
+    assert.ok(logs.some((m) => m.includes('出力封筒の照合に失敗した（sha256）') || m.includes('出力封筒の照合に失敗した（missing）')))
+    for (const n of [1, 2, 3]) assert.equal(result.done.find((r) => r.issue === n).status, 'blocked')
+  }
+})
+
+test('呼び出しごとに nonce が違う（再試行の nonce は 1 回目と別。前回の封筒を流用しても受理されない）', async () => {
+  const nonces = []
+  await runScript({
+    args: ARGS({ skipLabels: ['a'] }),
+    leaves: [2],
+    override: (label, opts, prompt) => {
       if (!label.startsWith('plan:skip-labels')) return undefined
-      n++
-      return n === 1 ? { entries: [{ i: 1, x: 0, numbers: [2], sig: 12345 }] } : skipReply(labels, { 'owner:human': [2] })
+      nonces.push(parseRepoScanCommand(prompt).nonce)
+      return { entries: [] } // 常に欠落（平らな応答は封筒に包まれ、failed に添字が入る）
     },
   })
-  assert.deepEqual(labelsOf(calls).filter((l) => l.startsWith('plan:skip-labels')), ['plan:skip-labels', 'plan:skip-labels-retry'])
-  assert.deepEqual(result.skippedLabels, { labels, matched: [2], unknown: [], absent: [] })
-  assert.ok(labelsOf(calls).includes('plan:#3'))
-  assert.ok(!labelsOf(calls).includes('plan:#2'))
+  assert.equal(nonces.length, 2)
+  assert.notEqual(nonces[0], nonces[1])
 })
 
 test('欠落したラベルだけでも再試行は 1 回で、なお取れなければ open ノードを全て待たせる（fail-closed）', async () => {
@@ -551,7 +567,7 @@ test('保存状態が blocked・pr>0（再開情報としては無効な branch 
 
 // --- リポジトリへの束縛 ---
 
-test('args.repo があれば、ラベル一覧・issue 一覧・通知コメントの全 gh 呼び出しが対象リポジトリに束縛される', async () => {
+test('args.repo があれば、取得の起動行と通知コメントが対象リポジトリに束縛される（入力の束縛にも入る）', async () => {
   const labels = ['owner:human']
   const { calls } = await runScript({
     args: ARGS({ repo: 'Fandhe-AI/target', skipLabels: labels, notifyBlocked: true }),
@@ -559,33 +575,28 @@ test('args.repo があれば、ラベル一覧・issue 一覧・通知コメン�
     override: (label) => (label === 'plan:skip-labels' ? skipReply(labels, { 'owner:human': [2] }) : undefined),
   })
   const fetchPrompt = calls.find((c) => c.opts.label === 'plan:skip-labels').prompt
-  assert.ok(fetchPrompt.includes('repos/Fandhe-AI/target/labels') && fetchPrompt.includes('repos/Fandhe-AI/target/issues'))
-  assert.ok(!fetchPrompt.includes('{owner}'), 'カレントのリポジトリへ解決される形が残っている')
+  assert.deepEqual(parseRepoScanCommand(fetchPrompt).repo, 'Fandhe-AI/target')
+  assert.ok(fetchPrompt.includes('--nonce ') && fetchPrompt.includes(' --repo Fandhe-AI/target --numbers 1,2 -- '))
   const notify = calls.find((c) => c.opts.label === 'notify-blocked').prompt
   assert.ok(notify.includes("gh issue comment 1 -R Fandhe-AI/target --body"))
 })
 
-test('args.repo が無ければ、ツリー取得と同じくカレントのリポジトリ（{owner}/{repo}）で解決する', () => {
-  const p = D.skipLabelsPrompt(['a'])
-  assert.ok(p.includes('repos/{owner}/{repo}/labels') && p.includes('repos/{owner}/{repo}/issues'))
+test('起動行の --repo は呼び出し側が渡すリポジトリ（args.repo が無いランではツリーのリポジトリ。Issue #808）で、入力の束縛にも同じ値が入る', () => {
+  const p = D.skipLabelsPrompt(['a'], 'n', 'Fandhe-AI/tree', '3,4')
+  assert.ok(p.includes('--repo Fandhe-AI/tree --numbers 3,4 -- '))
+  // ノード番号の集合は repo の次の固定位置（Issue #807）
+  assert.equal(D.repoScanInputSha256('skip-labels', 'Fandhe-AI/tree', ['3,4', 'a']), D.sha256Hex('repo-scan\nskip-labels\nFandhe-AI/tree\n3,4\na'))
+  // 通知コメントは args.repo だけに束縛する（ツリーの repo へは広げない）
   assert.ok(D.notifyBlockedPrompt(7, { outOfTree: [1], skippedLabel: [], waitingOn: [] }).includes('gh issue comment 7 --body'))
 })
 
 // --- 存在しないラベル（typo・未作成）は fail-closed にせず警告と absent で知らせる ---
 
-test('存在確認: ラベル一覧との照合は取得コマンド内で行い、ラベル名を外から取り込まない（grep -Fxiq の終了コードだけ）', () => {
-  const p = D.skipLabelsPrompt(['owner:human'])
-  assert.ok(p.includes('-f per_page=100 --paginate --jq \'.[].name\''))
-  assert.ok(p.includes('grep -Fxiq -- "$l"'))
-  assert.ok(p.includes('--argjson x "$x"'))
-})
-
-test('collectSkipLabelEntries: x = 1 は absent に集め、x は sig の対象（x の書き換えを検出する）', () => {
-  const r = D.collectSkipLabelEntries([1, 2], { entries: [labelEntry(1, [], 1), labelEntry(2, [4], 0)] })
+test('absent: 存在しないラベルの添字は封筒の absent で届き、x の書き換え相当（absent の食い違い）は契約違反', () => {
+  const r = D.collectSkipLabelEntries([1, 2], pl([{ i: 1, numbers: [] }, { i: 2, numbers: [4] }], { absent: [1] }), 2)
   assert.deepEqual(r.absent, [1])
   assert.deepEqual([...r.byIndex], [[1, []], [2, [4]]])
-  const forged = { i: 1, x: 0, numbers: [], sig: D.declaredDepsChecksum(1 * 2 + 1, []) }
-  assert.throws(() => D.collectSkipLabelEntries([1], { entries: [forged] }), /契約違反/)
+  assert.throws(() => D.collectSkipLabelEntries([1], pl([{ i: 1, numbers: [] }], { absent: [2] }), 1), /契約違反/)
 })
 
 test('存在しないラベル: 全停止せず（他のラベルの対象外は効く）、警告ログと skippedLabels.absent（sanitize 済み）を出す', async () => {
@@ -615,4 +626,39 @@ test('存在しないラベル: dryRun の skippedLabels.absent にも出る', a
 test('存在するラベルだけなら absent は空', async () => {
   const { result } = await runScript({ args: ARGS({ skipLabels: ['a'] }), leaves: [2] })
   assert.deepEqual(result.skippedLabels.absent, [])
+})
+
+// --- Issue #807: ツリーの open ノードの番号（--numbers）を渡し、交わりだけを受け取る ---
+
+test('起動行の --numbers はツリーの open ノードの番号（昇順・closed を除く）で、期待する inputSha256 にも入る', async () => {
+  const tree = [node(1, 0, { sub: 3 }), node(30, 1, { si: 0 }), node(4, 1, { si: 1, state: 'closed' }), node(12, 1, { si: 2 })]
+  const { result, calls } = await runScript({ args: ARGS({ skipLabels: ['owner:human'] }), override: skipOverride({ 'owner:human': [12] }, tree) })
+  const c = parseRepoScanCommand(calls.find((x) => x.opts.label === 'plan:skip-labels').prompt)
+  assert.equal(c.numbers, '1,12,30')
+  assert.deepEqual(result.skippedLabels.matched, [12])
+})
+
+test('ノード番号の集合を束縛しない封筒（--numbers 無しの旧い入力・別の集合）は入力の束縛で拒否され、取得できなかったラベルとして全 open ノードを待たせる', async () => {
+  for (const numbers of [null, '1,2']) {
+    const { result, logs } = await runScript({
+      args: ARGS({ skipLabels: ['a'] }),
+      leaves: [2, 3],
+      override: (label, opts, prompt) => {
+        if (!label.startsWith('plan:skip-labels')) return undefined
+        const c = parseRepoScanCommand(prompt)
+        const rest = numbers === null ? c.labels : [numbers, ...c.labels]
+        return makeEnvelope(c.nonce, { absent: [], entries: [{ i: 1, numbers: [] }], failed: [], inputSha256: D.sha256Hex(['repo-scan', 'skip-labels', c.repo, ...rest].join('\n')) })
+      },
+    })
+    assert.deepEqual(result.skippedLabels.unknown, ['a'], String(numbers))
+    assert.deepEqual(result.skippedLabels.matched, [1, 2, 3], String(numbers))
+    assert.ok(logs.some((m) => m.includes('出力封筒の照合に失敗した（input）')), String(numbers))
+  }
+})
+
+test('open ノードが無ければ対象外ラベルの取得を起動しない（待たせる対象が無い）', async () => {
+  const tree = [node(1, 0, { sub: 1, state: 'closed' }), node(2, 1, { state: 'closed' })]
+  const { result, calls } = await runScript({ args: ARGS({ skipLabels: ['a'] }), override: skipOverride({}, tree) })
+  assert.equal(calls.filter((c) => c.opts.label.startsWith('plan:skip-labels')).length, 0)
+  assert.deepEqual(result.skippedLabels, { labels: ['a'], matched: [], unknown: [], absent: [] })
 })

@@ -188,8 +188,8 @@ test('配線: loadState() の初期 JSON テンプレートに perWorktreeByteRe
 test('配線: savedItems 取得が loadState() の分割代入へ変更され highWaterBytes・highWaterVersion を受け取る', () => {
   assert.match(
     source,
-    // verified / unverified は状態ファイル読込の内容照合の成否と、照合できなかった issue 番号。
-    /const \{\s*items: savedItems,\s*highWaterBytes: loadedHighWaterBytes,\s*highWaterVersion: loadedHighWaterVersion,\s*verified: savedItemsVerified,\s*unverified: stateUnverified,?\s*\} = await loadState\(\)/,
+    // verified / unverified は状態ファイル読込の内容照合の成否と、照合できなかった issue 番号。keys は照合した実ファイルのキー（終了時の照合の予備の見積り。PR #810）。
+    /const \{\s*items: savedItems,\s*highWaterBytes: loadedHighWaterBytes,\s*highWaterVersion: loadedHighWaterVersion,\s*verified: savedItemsVerified,\s*unverified: stateUnverified,\s*keys: stateKeys,?\s*\} = await loadState\(\)/,
   )
 })
 

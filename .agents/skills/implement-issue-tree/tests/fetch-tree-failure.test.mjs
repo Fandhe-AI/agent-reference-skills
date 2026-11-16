@@ -15,9 +15,9 @@ const ARGS = { ...BASE_ARGS, repo: 'o/r' }
 const bash = availableBashes()[0]
 const isTree = (label) => label === 'plan:issue-tree' || label === 'plan:issue-tree-retry'
 const baseNodes = () => [
-  { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: 2 },
-  { number: 2, title: 'a', state: 'open', parent: 1, siblingIndex: 0, dependsOn: [], subIssuesTotal: 0 },
-  { number: 3, title: 'b', state: 'open', parent: 1, siblingIndex: 1, dependsOn: [], subIssuesTotal: 0 },
+  { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: 2, optinTests: [] },
+  { number: 2, title: 'a', state: 'open', parent: 1, siblingIndex: 0, dependsOn: [], subIssuesTotal: 0, optinTests: [] },
+  { number: 3, title: 'b', state: 'open', parent: 1, siblingIndex: 1, dependsOn: [], subIssuesTotal: 0, optinTests: [] },
 ]
 
 // 実スクリプトを走らせ、非 0 なら正直な failure 返却にする

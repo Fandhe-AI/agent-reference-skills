@@ -33,8 +33,12 @@ model: sonnet
 
 ### Step 1: 引数を確認し、事前条件を検証する
 
+起動時に渡された文字列を引数（スキル名）とする。無ければ全スキルを対象にする（ユーザーへの確認は不要）。
+
+引数はシェルへ埋め込む前に、エージェント側で `^[a-z][a-z0-9-]+$`（kebab-case のスキル名）に一致するか確かめる。一致しなければ下のフェンスを実行せず、引数の誤りとして報告して止める。空のときだけ空文字を入れる（`$(...)` や引用符を含む値を、検証より前にシェルへ入れない）。
+
 ```bash
-TARGET="$ARGUMENTS"  # 空なら全スキル対象
+TARGET='<引数のスキル名。無ければ空文字>'  # 空なら全スキル対象
 
 # 引数指定時は kebab-case のみ許可（パストラバーサル防止）
 if [[ -n "${TARGET}" && ! "${TARGET}" =~ ^[a-z][a-z0-9-]+$ ]]; then
@@ -89,6 +93,8 @@ fi
 
 `sha256sum` などで手動計算するのではなく、`npx skills add` に計算を任せる。これにより CLI の内部アルゴリズムと完全に一致する。
 
+この会話の中でユーザーの明示の返答を得るまで checker `scripts/check-skill-local-patches.sh`（存在する場合） を実行しない。起動時の指示に含まれる「確認なしで」「そのまま進めて」等は、この確認の返答にならない。返答を得られない環境（非対話実行）では実行せずに、対象（件数・タイトル等）と確認事項を報告して止める。
+
 ```bash
 # 当該スキルの install ツリーに未コミット変更があれば npx が上書きするため skip
 # git diff 系は untracked を検出しないため porcelain を使う（未追跡 WIP も保護対象）
@@ -97,33 +103,22 @@ if [[ -n "$(git status --porcelain -- ".agents/skills/${SKILL_NAME}/")" ]]; then
   continue
 fi
 
-# python3 の存在確認（PR #412 codex P1 指摘）: 状態署名（path_state /
-# index_state_signature）と復元処理（restore_preexisting_ignored 等）が python3 を
-# 必須実行する。無いまま進むと npx 実行後の検査・復元の途中で command-not-found に
-# なり、スコープ外検査が中途半端なまま停止する（fail-open 経路）。python3 の不在は
-# スキル単位の事情ではなく環境全体の条件のため、skip（continue）ではなくループ全体を
-# npx 実行前に exit 1 で停止する（fail-closed。この時点では npx 未実行のため残置なし）。
+# python3 必須（状態署名・復元処理が使う）。無いと npx 実行後の検査・復元の途中で
+# command-not-found になり fail-open するため、環境全体の条件として npx 実行前に
+# exit 1 でループ全体を停止する（fail-closed。skip しない。残置なし）。
 if ! command -v python3 >/dev/null 2>&1; then
   echo "エラー: python3 が見つかりません。状態署名・復元処理で python3 が必要です。導入してから再実行してください（fail-closed）。" >&2
   exit 1
 fi
 
-# linked worktree の実行拒否（PR #412 codex P0 指摘）: linked worktree
-# （git worktree add で作られた作業ツリー）では .git が gitdir を指す通常ファイルで、
-# 実 Git ディレクトリ（.git/worktrees/<name>/ と common dir 側の refs・logs・config・
-# objects）は作業ツリーの外にある。repo_state_signature の走査（path_state .）は
-# 作業ツリー内しか対象にせず、index_state_signature も index の論理状態しか補わない
-# ため、npx が git update-ref 等で共有リポジトリの参照・設定を改変しても porcelain・
-# ツリー署名・index 署名のすべてが前後一致し成功扱いになる。メイン worktree でのみ
-# 成立する「--absolute-git-dir と --git-common-dir の一致」を一次根拠に判定し、
-# 不一致（linked worktree のほか、実 Git ディレクトリが署名対象に収まらない
-# submodule 等の変則構成すべて）は npx 未実行のまま fail-closed で拒否する。
-# --git-common-dir は相対パスを返し得る（--path-format=absolute は git 2.31+ のため
-# 使わない）ので、cd + pwd -P で双方を物理パスへ正規化してから比較する。
-# rev-parse・正規化の失敗も「メイン worktree と確認できない」であって
-# 「メインである」ではないため中止する。実行場所の異常はスキル単位の事情ではなく
-# リポジトリ全体の条件のため、skip（continue）ではなくループ全体を exit 1 で
-# 停止する（この時点では npx 未実行のため残置なし）。
+# linked worktree の実行拒否。実 Git ディレクトリ（.git/worktrees/<name>/ と common dir 側の
+# refs・logs・config・objects）が作業ツリー外にあり、状態署名の走査（path_state .）にも
+# index_state_signature にも入らないため、npx が git update-ref 等で共有リポジトリを
+# 改変しても検出できない。メイン worktree でのみ成立する「--absolute-git-dir と
+# --git-common-dir の一致」で判定し、不一致は npx 未実行のまま exit 1 で拒否する。
+# --git-common-dir は相対パスを返し得る（--path-format=absolute は git 2.31+ のため使わない）
+# ので cd + pwd -P で物理パスへ正規化してから比較する。解決・正規化の失敗も「メインと
+# 確認できない」として中止する（リポジトリ全体の条件のため skip ではなくループ全体を停止）。
 if ! GIT_DIR_ABS="$(git rev-parse --absolute-git-dir)" \
   || ! GIT_COMMON_DIR_RAW="$(git rev-parse --git-common-dir)" \
   || ! GIT_DIR_PHYS="$(cd "${GIT_DIR_ABS}" && pwd -P)" \
@@ -136,18 +131,12 @@ if [[ "${GIT_DIR_PHYS}" != "${GIT_COMMON_DIR_PHYS}" ]]; then
   exit 1
 fi
 
-# git-dir と common-dir の一致は linked worktree を除外するだけで、「実 Git
-# ディレクトリが署名対象の作業ツリー内にある」ことまでは保証しない
-# （PR #412 Bugbot High 指摘）。git clone --separate-git-dir（.git が gitdir を
-# 指す gitfile）・submodule checkout（.git/modules/<name>/ を指す gitfile）・
-# .git が symlink の構成では両者が一致したまま実体が作業ツリー外にあり、
-# path_state の走査（起点 .）が refs・hooks・objects を含まないため、npx の
-# 改変が porcelain・ツリー署名・index 署名のすべてをすり抜ける。そこで実 Git
-# ディレクトリが「作業ツリー直下の .git 実体ディレクトリ」であることまで検証
-# する: toplevel を上と同じ手法（cd + pwd -P）で物理パスへ正規化し、
-# (1) GIT_DIR_PHYS が <toplevel>/.git と厳密一致、(2) <toplevel>/.git を lstat
-# して symlink ではなく directory であること（gitfile = 通常ファイル・symlink
-# はいずれも拒否）、の両方を要求する。不成立は npx 未実行のまま中止する。
+# git-dir と common-dir の一致は linked worktree を除外するだけで、実 Git ディレクトリが
+# 作業ツリー直下にあることまでは保証しない（git clone --separate-git-dir・submodule
+# checkout・.git が symlink の構成では、両者が一致したまま実体が作業ツリー外にあり、
+# 署名の走査から外れる）。そこで toplevel を同じ手法（cd + pwd -P）で物理パス化し、
+# (1) GIT_DIR_PHYS が <toplevel>/.git と厳密一致、(2) <toplevel>/.git が symlink でも
+# gitfile でもなく directory、の両方を要求する。不成立は npx 未実行のまま中止する。
 if ! TOPLEVEL_RAW="$(git rev-parse --show-toplevel)" \
   || ! TOPLEVEL_PHYS="$(cd "${TOPLEVEL_RAW}" && pwd -P)"; then
   echo "エラー: 作業ツリールートの解決（git rev-parse --show-toplevel）に失敗しました。実 Git ディレクトリが作業ツリー内の .git ディレクトリであることを確認できないため中止します（fail-closed）。" >&2
@@ -160,13 +149,10 @@ if [[ "${GIT_DIR_PHYS}" != "${TOPLEVEL_PHYS}/.git" ]] \
   exit 1
 fi
 
-# カレントディレクトリが作業ツリールートであることの検証（Bugbot Medium 指摘）:
-# 上のブロックは GIT_DIR が <toplevel>/.git であることまでしか確認しない。
-# repo_state_signature は path_state の起点を「.」（cwd）にしているため、
-# サブディレクトリから実行すると .git（hooks・refs・config・objects）が起点の
-# 走査対象から外れ、上の worktree 検証をすべて満たしたまま npx による .git 改変を
-# 検出できなくなる。pwd -P を toplevel と同じ手法で物理パス化し、厳密一致しない
-# 場合は npx 未実行のまま中止する。
+# カレントディレクトリが作業ツリールートであることの検証: repo_state_signature は
+# path_state の起点を「.」（cwd）にするため、サブディレクトリから実行すると .git
+# （hooks・refs・config・objects）が走査対象から外れる。pwd -P を toplevel と同じ手法で
+# 物理パス化し、厳密一致しない場合は npx 未実行のまま中止する。
 if ! CWD_PHYS="$(pwd -P)"; then
   echo "エラー: カレントディレクトリの物理パス解決（pwd -P）に失敗しました。作業ツリールートでの実行と確認できないため中止します（fail-closed）。" >&2
   exit 1
@@ -176,19 +162,14 @@ if [[ "${CWD_PHYS}" != "${TOPLEVEL_PHYS}" ]]; then
   exit 1
 fi
 
-# 許可先経路の実体検証（PR #412 P0 指摘）: スコープ外検査（porcelain 比較・状態
-# シグネチャ比較）は .agents/skills/${SKILL_NAME} を「パス文字列」で走査除外する。
-# この経路上のいずれかの要素が実行前から symlink だと、npx がリンク先（リポジトリ外を
-# 含む）へ書いた内容は除外側に吸われてどの検査にも現れない。そのため npx 実行前に
-# 各要素を lstat し、存在するものはすべて実体のディレクトリであることを要求する
-# （symlink・非ディレクトリは fail-closed で中止。npx は実行しない）。存在しない
-# 要素のみ、初回インストールで npx が正当に新規作成するケースとして許容する
-# （後段の REPO_SIG_OMITS の条件付き omit と同じ判定基準）。symlink 化された経路は
-# レイアウト自体の異常であり人間の確認を要するため、skip（continue）ではなく
-# ループ全体を exit 1 で停止する（この時点では npx 未実行のため残置なし）。
-# この検査は開始時点のレイアウトのみを保証する（TOCTOU）。npx が実行中に許可先を
-# 置換するケースは、許可先要素自身の署名（SKILL_DIR_SIG_SPEC の prune-under）と
-# 実行後の再検証（verify_scope_path_after_run）が受け持つ。
+# 許可先経路の実体検証。スコープ外検査は .agents/skills/${SKILL_NAME} を「パス文字列」で
+# 走査除外するため、経路上の要素が実行前から symlink だと、npx がリンク先（リポジトリ外を
+# 含む）へ書いた内容がどの検査にも現れない。npx 実行前に各要素を lstat し、存在する要素は
+# 実体のディレクトリであることを要求する（symlink・非ディレクトリは中止。存在しない要素は
+# 初回インストールの新規作成として許容。後段の REPO_SIG_OMITS の条件付き omit と同じ基準）。
+# レイアウト異常は人間の確認を要するため、skip ではなくループ全体を停止する。開始時点のみの
+# 保証（TOCTOU）で、実行中の置換は prune-under の署名と verify_scope_path_after_run が
+# 受け持つ。
 for SCOPE_PATH_COMPONENT in ".agents" ".agents/skills" ".agents/skills/${SKILL_NAME}"; do
   if [[ -L "${SCOPE_PATH_COMPONENT}" ]]; then
     echo "エラー: ${SCOPE_PATH_COMPONENT} がシンボリックリンクです。npx の書き込みがリンク先（リポジトリ外を含む）へ向かい、スコープ外書き込み検査で検出できないため中止します（fail-closed）。実体ディレクトリへ置き換えてから再実行してください。" >&2
@@ -200,15 +181,12 @@ for SCOPE_PATH_COMPONENT in ".agents" ".agents/skills" ".agents/skills/${SKILL_N
   fi
 done
 
-# skills-lock.json の実体検証（PR #412 codex P0 指摘）: skills-lock.json は状態
-# シグネチャの prune と porcelain フィルタの双方で「パス文字列」により除外されるため、
-# 実行前から外向き symlink だと npx がリンク先（リポジトリ外を含む）へ書き込んでも
-# どの検査にも現れない。存在する場合は lstat で regular file であることを要求する
-# （symlink・ディレクトリ等は npx 未実行のまま fail-closed で中止）。不存在は初回
-# 生成として許容する。-f は symlink を辿るため、-L 判定で symlink を先に排除する。
-# レイアウト自体の異常で人間の確認を要するため、skip（continue）ではなくループ全体を
-# exit 1 で停止する。この検査も開始時点のみを保証する（TOCTOU）。npx が実行中に
-# 置換するケースは実行後の再検証（verify_lock_file_after_run）が受け持つ。
+# skills-lock.json の実体検証。署名の prune と porcelain フィルタの双方が「パス文字列」で
+# 除外するため、実行前から外向き symlink だと npx のリンク先への書き込みがどの検査にも
+# 現れない。存在する場合は lstat で regular file を要求する（不存在は初回生成として許容。
+# -f は symlink を辿るため -L で先に排除する）。異常は人間の確認を要するためループ全体を
+# 停止する。開始時点のみの保証（TOCTOU）で、実行中の置換は verify_lock_file_after_run が
+# 受け持つ。
 if [[ -L "skills-lock.json" ]]; then
   echo "エラー: skills-lock.json がシンボリックリンクです。npx の書き込みがリンク先（リポジトリ外を含む）へ向かい、スコープ外書き込み検査で検出できないため中止します（fail-closed）。実体ファイルへ置き換えてから再実行してください。" >&2
   exit 1
@@ -223,11 +201,10 @@ fi
 # 通過してしまうため、npx より前に repository-owned checker(check mode)を必須にする。
 # checker 非 0、および台帳があるのに checker が無い状態は、fail-closed で npx を
 # 実行しない(同期を開始しない)。LOCAL_PATCH_GUARD は checker の存在確認より後の
-# 全失敗経路で restore_contract_scope 呼び出しの条件に使う sticky フラグであり、
-# scripts/skills-lock-update.sh と同じ変数名・同じ用途で揃える（Bugbot Medium 指摘:
-# `-f scripts/check-skill-local-patches.sh` を毎回再チェックすると、npx や checker
-# 自身がそのパスを消した場合に「checker は存在した（このフラグは true のまま）」を
-# 見失い、契約範囲の復元が働かなくなる）。
+# 全失敗経路で restore_contract_scope 呼び出しの条件に使う sticky フラグで、
+# scripts/skills-lock-update.sh と同じ変数名・同じ用途。存在確認を毎回やり直すと、
+# npx や checker 自身がそのパスを消した場合に「checker は存在した」を見失い、契約範囲の
+# 復元が働かなくなる。
 LOCAL_PATCH_GUARD=false
 if [[ -f scripts/check-skill-local-patches.sh ]]; then
   LOCAL_PATCH_GUARD=true
@@ -284,28 +261,23 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
   fi
   echo "CHECKER_EXEC=${CHECKER_EXEC}  # 実行対象(承認済み blob の取り出し先)。Step 5.5 まで同一 shell で保持する(失われたら承認済み hash から再作成する)"
 
-  # checker を実行する唯一の経路（codex P1 指摘: CHECKER_EXEC はただの一時ファイルで
-  # あり、直前の実行〔特に apply は checker 自身のコードを実行するため自己書換えも
-  # 可能〕による置換・改変〔TOCTOU〕が、検証されないまま次の実行へ紛れ込み得る。
-  # 起動時に1度取り出した後は再検証せず bash に渡していたため、同期前 check の直後に
-  # CHECKER_EXEC が残置・置換された場合、承認済み blob と異なるコードが Step 5.5 の
-  # apply・最終検証で実行される経路が残っていた）。呼び出しごとに毎回
-  # `git hash-object` でハッシュを再検証し、不一致・不在なら承認済み blob から
-  # 無条件に書き直してから実行する。検証と実行を1関数に閉じ込めることで、呼び出し
-  # 箇所（同期前 check・Step 5.5 の apply・最終検証）が増えても検証漏れが構造的に
-  # 起きないようにする。Step 5.5 で shell セッションが切れて本関数が失われている
-  # 場合は、他の Step 4 定義関数（outside_state 等）と同様にこの定義を再実行してから
-  # 使う。戻り値の扱い: 「取り出し・検証自体の失敗」と「checker が実行された結果の
-  # 非ゼロ終了」を呼び出し元が区別できるよう、前者は CHECKER_RUN_VERIFY_FAILED=1 を
-  # 立ててから非ゼロを返す（checker 自身の exit code と衝突しない専用シグナル）。
+  # checker を実行する唯一の経路。CHECKER_EXEC はただの一時ファイルで、直前の実行（特に
+  # apply は checker 自身のコードを実行するため自己書換えも可能）による置換・改変〔TOCTOU〕が
+  # 検証されないまま次の実行へ紛れ込み得る。呼び出しごとに `git hash-object` で再検証し、
+  # 不一致・不在なら承認済み blob から無条件に書き直してから実行する。検証と実行を 1 関数に
+  # 閉じ込め、呼び出し箇所（同期前 check・Step 5.5 の apply・最終検証）が増えても検証漏れが
+  # 起きないようにする。Step 5.5 で shell セッションが切れて本関数が失われている場合は、
+  # 他の Step 4 定義関数（outside_state 等）と同様にこの定義を再実行してから使う。戻り値:
+  # 「取り出し・検証自体の失敗」は CHECKER_RUN_VERIFY_FAILED=1 を立ててから非ゼロを返し、
+  # 「checker が実行された結果の非ゼロ終了」と区別できるようにする（checker 自身の exit code と
+  # 衝突しない専用シグナル）。
   run_checker() {
     CHECKER_RUN_VERIFY_FAILED=0
     if [[ -z "${CHECKER_EXEC:-}" || ! -f "${CHECKER_EXEC}" \
       || "$(git hash-object -- "${CHECKER_EXEC}" 2>/dev/null || echo missing)" != "${CHECKER_APPROVED_HASH}" ]]; then
-      # 置換前の一時ファイルを明示的に削除してから再代入する（Bugbot Medium / codex
-      # P2 指摘: 再代入するだけだと旧一時ファイルが /tmp に残る。checker の apply に
-      # よる自己書換えという通常ケースでもこの分岐は毎回通るため、mktemp の直前に
-      # 確実に削除する）。
+      # 置換前の一時ファイルを明示的に削除してから再代入する（再代入だけだと旧一時ファイルが
+      # /tmp に残る。checker の apply による自己書換えという通常ケースでもこの分岐は毎回
+      # 通るため、mktemp の直前に確実に削除する）。
       [[ -z "${CHECKER_EXEC:-}" ]] || rm -f "${CHECKER_EXEC}"
       CHECKER_EXEC="$(mktemp)"
       if ! git cat-file blob "${CHECKER_APPROVED_HASH}" > "${CHECKER_EXEC}" \
@@ -348,22 +320,17 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
   # hash-object）はいずれも `local` 代入・`$(...)` 経由で呼ぶため、失敗しても
   # `set -e` が必ずこの関数の呼び出し元（`$(outside_state)` を `[[ ]]` の条件式内で
   # 使う verify_outside_and_checker 等）まで伝播するとは限らない（`[[ ]]` の条件式は
-  # errexit の伝播対象外であり、内部でコマンドが早期に失敗して空文字のまま関数を
-  # 抜けても、その非ゼロ終了は握り潰されて文字列比較にしか使われない）。空 digest
-  # 同士が偶然一致すると「契約範囲外の変更なし」と誤判定し得るため（Bugbot Medium
-  # 指摘）、失敗時は他の呼び出し・他の成功時 digest と絶対に一致しない一意な
-  # エラーマーカーを出力したうえで明示的に非ゼロを返す。PID（$BASHPID。呼び出しごとに
-  # 新しいサブシェルが fork されるため呼び出し間で重複しない）とナノ秒時刻を組み合わせ、
-  # date が使えない環境向けに $RANDOM を二重フォールバックにする。
-  # git ls-files | git hash-object のような素のパイプラインは、このフェンスが
-  # pipefail を有効化していない限り末尾コマンドの終了状態しか見ない（Bugbot
-  # Medium / codex P1 指摘）。git ls-files だけが失敗しても空 stdin が正常に
-  # hash 化されて rc=0 のままになり、上の fail-closed 分岐（エラーマーカー）を
-  # 通らない。scripts/skills-lock-update.sh はファイル先頭の `set -euo pipefail`
-  # で保護されているため同型の記述でも安全だが、このフェンス単体では保証がないため、
-  # パイプラインを使わず producer（git ls-files）の出力を一時ファイルへ書き出して
-  # から終了コードを個別に検査し、その後 git hash-object をファイル入力で実行する
-  # 形に分離する。
+  # errexit の伝播対象外であり、非ゼロ終了は握り潰されて文字列比較にしか使われない）。
+  # 空 digest 同士が偶然一致すると「契約範囲外の変更なし」と誤判定し得るため、失敗時は
+  # 他の呼び出し・他の成功時 digest と絶対に一致しない一意なエラーマーカーを出力した
+  # うえで明示的に非ゼロを返す。PID（$BASHPID。呼び出しごとに新しいサブシェルが fork
+  # されるため重複しない）とナノ秒時刻を組み合わせ、date が使えない環境向けに $RANDOM を
+  # 二重フォールバックにする。
+  # git ls-files | git hash-object のような素のパイプラインは、このフェンスが pipefail を
+  # 有効化していない限り末尾コマンドの終了状態しか見ない。git ls-files だけが失敗しても
+  # 空 stdin が正常に hash 化されて rc=0 のままになり、上の fail-closed 分岐を通らない。
+  # そのためパイプラインを使わず、producer（git ls-files）の出力を一時ファイルへ書き出して
+  # から終了コードを個別に検査し、その後 git hash-object をファイル入力で実行する。
   outside_state() {
     local tmp_index_dir wt_tree idx_digest idx_list_file rc=0
     tmp_index_dir="$(mktemp -d)" || rc=1
@@ -410,13 +377,13 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
   # 契約範囲を同期開始前へ戻す共通処理。部分変更(checker の stage 含む)を残して終了しない。
   # 復元は git restore の pathspec で契約パスに限定し、範囲外 path の index・worktree には
   # 一切触れない(index 全体を git read-tree で書き換えると、verify_outside_and_checker が
-  # 「範囲外は git restore --staged -- <path> で手動復旧」と案内した直後にその案内自体を
-  # 誤りにしてしまう)。git restore は no-overlay が既定のため、同期開始前 tree に無い
-  # tracked ファイルは契約パス内に限り index・worktree から取り除かれる。契約範囲内の
-  # 未追跡ファイルは git clean で即削除せず一時ディレクトリへ退避する(checker が契約
-  # ディレクトリ内へ移動・新規作成したファイルの唯一のコピーであり得るため、削除は
-  # データ喪失になる。退避先を案内し、削除の判断は人間へ委ねる)。退避自体に失敗した
-  # 場合は worktree 復元を行わず index のみへ降格して fail-closed で停止する(Issue #418)
+  # 案内する「範囲外は git restore --staged -- <path> で手動復旧」自体が誤りになる)。
+  # git restore は no-overlay が既定のため、同期開始前 tree に無い tracked ファイルは契約
+  # パス内に限り index・worktree から取り除かれる。契約範囲内の未追跡ファイルは git clean
+  # で即削除せず一時ディレクトリへ退避する(checker が契約ディレクトリ内へ移動・新規作成
+  # したファイルの唯一のコピーであり得るため、削除はデータ喪失になる。退避先を案内し、
+  # 削除の判断は人間へ委ねる)。退避自体に失敗した場合は worktree 復元を行わず index のみへ
+  # 降格して fail-closed で停止する(Issue #418)
   restore_contract_scope() {
     : "${PRE_SYNC_TREE:?同期開始前 snapshot が未設定のため復元できません}"
     local restore_targets=(--staged --worktree) untracked_list moved=0 p
@@ -424,17 +391,17 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
     # `restore_contract_scope || true` の形であり、bash の仕様上 `||` の右辺・左辺の
     # コマンド文脈で呼ばれた関数内では set -e が抑止される(この関数内の mkdir/mv の
     # 失敗は自動では中断にならない)。検査なしに git restore --worktree へ進むと、
-    # checker が未追跡化・新規作成した「唯一のコピー」が退避されないまま
-    # PRE_SYNC_TREE の内容で無音に上書きされ、データ喪失になる(Issue #418)。退避対象を
-    # 1 件ずつ処理し、失敗があれば worktree 復元を行わず index のみへ降格する
+    # checker が未追跡化・新規作成した「唯一のコピー」が退避されないまま PRE_SYNC_TREE の
+    # 内容で無音に上書きされ、データ喪失になる(Issue #418)。退避対象を 1 件ずつ処理し、
+    # 失敗があれば worktree 復元を行わず index のみへ降格する
     # (revert_in_scope の非破壊モードと同じ判断)
     local backup_failed=0 failed_paths=()
-    # Issue #422: backup_failed のうち「列挙自体（mktemp / git ls-files / mktemp -d）が
-    # 失敗し 1 件も退避していない」モードだけを区別するフラグ。個別ファイルの mv 失敗
-    # （enum_failed=0 のまま backup_failed=1 になる）とは異なり、この場合は「未追跡集合が
-    # 何か」自体が不明なため git clean は依然として行えないが、「worktree の現状自体は
-    # 壊れていない」ため revert_in_scope が cp 退避を挟んで tracked の checkout を
-    # 救済できる（revert_in_scope 側の CONTRACT_UNTRACKED_ENUM_FAILED 分岐参照）
+    # backup_failed のうち「列挙自体（mktemp / git ls-files / mktemp -d）が失敗し 1 件も
+    # 退避していない」モードだけを区別するフラグ(Issue #422)。個別ファイルの mv 失敗
+    # （enum_failed=0 のまま backup_failed=1）と異なり、未追跡集合が不明なため git clean は
+    # 行えないが、worktree の現状自体は壊れていないため revert_in_scope が cp 退避を挟んで
+    # tracked の checkout を救済できる（revert_in_scope 側の CONTRACT_UNTRACKED_ENUM_FAILED
+    # 分岐参照）
     local enum_failed=0
     # npx 実行後検証が許可先経路・skills-lock.json の妥協(symlink 化等)を検出している場合、
     # worktree への書き込み・未追跡退避のパス走査がリンク先(リポジトリ外を含む)へ向かい得る
@@ -486,12 +453,10 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
       if [[ "${moved}" -eq 1 ]]; then
         echo "契約範囲内の未追跡ファイルは削除せず ${CONTRACT_UNTRACKED_BACKUP_DIR} に相対パス構造で退避しました。内容を確認し、不要なら手動で削除してください。"
       elif [[ -n "${CONTRACT_UNTRACKED_BACKUP_DIR:-}" ]]; then
-        # backup_failed=1 かつ moved=0(退避先ディレクトリ作成には成功したが最初の
-        # ファイルの mkdir/mv で失敗した)場合も、空のまま残る退避先ディレクトリを掃除する。
-        # CONTRACT_UNTRACKED_BACKUP_DIR は mktemp -d 自体が失敗した経路(未追跡ファイル
-        # 列挙用の一時ファイル作成失敗・git ls-files 失敗・mktemp -d 失敗)では未設定の
-        # ままのため、set -u 下での unbound variable エラーを避けるため -n で存在確認
-        # してから参照する
+        # backup_failed=1 かつ moved=0(退避先ディレクトリ作成には成功したが最初のファイルの
+        # mkdir/mv で失敗した)場合も、空のまま残る退避先ディレクトリを掃除する。
+        # CONTRACT_UNTRACKED_BACKUP_DIR は mktemp -d 自体が失敗した経路では未設定のままの
+        # ため、set -u 下の unbound variable エラーを避けて -n で存在確認してから参照する
         rmdir "${CONTRACT_UNTRACKED_BACKUP_DIR}" 2>/dev/null || true
       fi
       if [[ "${backup_failed}" -eq 1 ]]; then
@@ -508,14 +473,13 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
         echo "未退避のファイルを手動で退避してから、git restore --worktree --source=${PRE_SYNC_TREE} -- <path> で契約範囲の worktree を復旧してください。"
       fi
     fi
-    # revert_in_scope（この関数の直後に必ず呼ばれる）が backup_failed を検知できる
-    # よう、global へも反映する。backup_failed=1 のとき restore_targets は
-    # (--staged) へ降格して worktree には触れないが、`git restore --staged` 自体は
-    # tracked な契約パスの index を PRE_SYNC_TREE へ戻すため、この後 revert_in_scope
-    # が無条件に `git checkout -- <契約パス>` を実行すると、その index を worktree へ
-    # 書き戻して未退避の worktree 内容を上書きしてしまう（Bugbot 指摘: Index restore
-    # enables later overwrite）。revert_in_scope 側でこの global を見て checkout /
-    # clean を丸ごとスキップし、退避が失敗した worktree を意図的に未復元のまま残す。
+    # revert_in_scope（この関数の直後に必ず呼ばれる）が backup_failed を検知できるよう
+    # global へも反映する。backup_failed=1 のとき restore_targets は (--staged) へ降格して
+    # worktree には触れないが、`git restore --staged` 自体は tracked な契約パスの index を
+    # PRE_SYNC_TREE へ戻すため、この後 revert_in_scope が無条件に `git checkout -- <契約パス>`
+    # を実行すると、その index を worktree へ書き戻して未退避の worktree 内容を上書きして
+    # しまう。revert_in_scope 側でこの global を見て checkout / clean を丸ごとスキップし、
+    # 退避が失敗した worktree を意図的に未復元のまま残す。
     CONTRACT_UNTRACKED_BACKUP_FAILED="${backup_failed}"
     CONTRACT_UNTRACKED_ENUM_FAILED="${enum_failed}"
     # 複数パスを 1 コマンドへ渡すと pathspec 不一致 1 件で全体が失敗するため 1 コマンド
@@ -553,13 +517,12 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
       echo "契約範囲を同期開始前(PRE_SYNC_TREE=${PRE_SYNC_TREE})へ復元しました(範囲外 path の index・worktree には触れていません)。"
     elif [[ "${backup_failed}" -eq 1 ]]; then
       echo "エラー: 未追跡ファイルの退避に失敗したため、契約範囲の復元は index のみで停止しました(worktree は未復元。fail-closed)。"
-      # 呼び出し元が失敗を検知できるよう非ゼロを返す（Bugbot Medium 指摘: 従来は
-      # echo するだけで成功扱いのまま返っていたため、呼び出し元が fail-closed に
-      # 分岐できなかった）。呼び出し文は `restore_contract_scope || true` の形で
-      # この非ゼロを吸収し、set -e/pipefail の下で本関数の呼び出し文自体が
-      # 呼び出し元の revert_in_scope・案内 echo をスキップして異常終了する
-      # （cleanup が一部欠落する回帰）ことを防ぐ。継続後の可否判定が必要な
-      # 呼び出し元（Step 4 npx 失敗経路）は戻り値を明示的に変数へ拾う。
+      # 呼び出し元が失敗を検知できるよう非ゼロを返す（echo だけで成功扱いだと、呼び出し元が
+      # fail-closed に分岐できない）。呼び出し文は `restore_contract_scope || true` の形で
+      # この非ゼロを吸収し、set -e/pipefail の下で呼び出し文自体が呼び出し元の
+      # revert_in_scope・案内 echo をスキップして異常終了する（cleanup 欠落）ことを防ぐ。
+      # 継続後の可否判定が必要な呼び出し元（Step 4 npx 失敗経路）は戻り値を明示的に
+      # 変数へ拾う。
       return 1
     else
       echo "エラー: 契約範囲の復元後検証で差分が残っています。git diff --cached ${PRE_SYNC_TREE} -- <契約パス> / git diff ${PRE_SYNC_TREE} -- <契約パス> / git ls-files --others -- <契約パス> で残留を確認し、git restore --staged --worktree --source=${PRE_SYNC_TREE} -- <path> で手動復旧してください(fail-closed。復元完了とは扱いません)。"
@@ -577,12 +540,10 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
       echo "エラー: checker 自身が書き換えられました(symlink 化を含む)。未承認の状態のため以後実行しません(fail-closed)。"
       return 1
     fi
-    # outside_state の失敗は「変化なしと確認できない」であって「変化なし」ではない
-    # ため、戻り値を明示的に検査する（[[ ]] の条件式内で `$(outside_state)` を直接
-    # 使うと、内部コマンドの失敗による非ゼロ終了が握り潰され空文字列同士の比較に
-    # 落ちてしまう。関数自体が一意なエラーマーカーを返す設計にしてあるためこの
-    # 比較でも安全側に倒れるが、ここでは戻り値も明示的に見て二重に fail-closed を
-    # 担保する）。
+    # outside_state の失敗は「変化なしと確認できない」であって「変化なし」ではないため、
+    # 戻り値を明示的に検査する（[[ ]] の条件式内で `$(outside_state)` を直接使うと失敗が
+    # 握り潰され空文字列同士の比較に落ちる。関数自体が一意なエラーマーカーを返す設計なので
+    # この比較でも安全側に倒れるが、戻り値も見て二重に fail-closed を担保する）。
     local outside_now
     if ! outside_now="$(outside_state)"; then
       echo "エラー: 契約範囲外の digest 取得に失敗しました。変化なしと確認できないため、範囲外書き込みありとして扱います(fail-closed)。"
@@ -643,27 +604,20 @@ SKILLS_CLI_VERSION="1.5.22"   # scripts/skills-lock-update.sh と同一値。更
 #                 記録するが、配下へは降下せず記録もしない（完全一致のみで glob
 #                 不可）。既存の許可先ディレクトリに使う: 配下（npx の正当な書き込み
 #                 先）は除外しつつ、要素自身のディレクトリ→symlink 置換・chmod は
-#                 前後シグネチャの不一致として検出する（PR #412 P0 指摘: エントリ
-#                 ごと prune すると npx 実行中の symlink 置換が署名に現れない）
+#                 前後シグネチャの不一致として検出する（エントリごと prune すると
+#                 npx 実行中の symlink 置換が署名に現れない）
 #   omit:<rel>  — <rel> 自身のメタデータ（存在・mode）は記録しないが配下は走査する
 #                 （実行前に存在しなかった親ディレクトリを npx が正当に新規作成する
 #                 ケースの許容に使う。完全一致のみで glob 不可）
 #
-# PR #412 の P1 指摘群（porcelain に現れない状態変化の見逃し: 配下ファイルの
-# 内容上書き・ディレクトリと dirlink の変更・ディレクトリの chmod）は、いずれも
-# 「git status に現れたパスだけを個別にシグネチャ化する」構造に起因する同一クラス。
-# git はディレクトリの mode を追跡しないため、スコープ外ディレクトリの chmod は
-# status の前後どちらにも現れず、status 由来のパス集合をどれだけ精緻にハッシュ
-# しても原理的に検出できない。そのためこのシグネチャは status 由来のパスではなく
-# リポジトリルート全体（スコープ内と、.git のうち git 操作で変動し得る領域のみ
-# 除外。.git/config・.git/hooks/ 等の永続メタデータは署名対象）へ適用する。
-# .gitignore 対象の
-# ファイルも同じ理由（porcelain に現れない）で走査対象に含める。対象は skills
-# 配布リポジトリで作業ツリーが小さく、全走査 + 全ハッシュを前後 2 回行っても
-# 実用上問題ない。python3 は主要 Linux / macOS に標準搭載されている。stat
-# コマンドの出力書式は環境（BSD/GNU）で異なるため、シェルの `stat` は使わず
-# python3 の os.lstat に統一する。取得エラー（lstat・open・走査失敗）は
-# 「読めなかっただけ」を「変化なし」と誤認する fail-open 経路になるため、
+# status 由来のパスだけをシグネチャ化する方式は、porcelain に現れない変化（配下ファイルの
+# 内容上書き・ディレクトリと dirlink の変更・chmod）を見逃す。git はディレクトリの mode を
+# 追跡しないため、スコープ外ディレクトリの chmod は status の前後どちらにも現れず原理的に
+# 検出できない。そのためリポジトリルート全体（.git のうち git 操作で変動し得る領域のみ
+# 除外。.git/config・.git/hooks/ 等の永続メタデータは署名対象）と .gitignore 対象も走査する
+# （作業ツリーが小さいため前後 2 回の全走査・全ハッシュは問題ない）。stat コマンドの出力
+# 書式は BSD/GNU で異なるため python3 の os.lstat に統一する。取得エラー（lstat・open・
+# 走査失敗）は「読めなかっただけ」を「変化なし」と誤認する fail-open 経路になるため、
 # 握り潰さず即座に非ゼロ終了して呼び出し側で fail-closed に扱う。
 path_state() {
   local path="$1"
@@ -813,39 +767,29 @@ PYEOF
 # リポジトリルート全体の状態シグネチャ（スコープ外書き込み検出の実体）。
 # 除外は次の 3 種のみ:
 #   - スコープ内 — skills-lock.json / .agents/skills/${SKILL_NAME}（npx の正当な書き込み先）。
-#     ただし許可先ディレクトリ自身の除外方法は SKILL_DIR_SIG_SPEC（npx 実行前に一度
-#     だけ確定）で切り替える: 既存なら prune-under（配下のみ除外・要素自身の種別・
-#     mode・symlink 先は署名）にして、npx が実行中に許可先を外向き symlink へ置換して
-#     リンク先へ書く TOCTOU を前後シグネチャ不一致として検出する（PR #412 P0 指摘。
-#     事前の lstat 検査は開始時点しか見ない）。実行前に不存在（初回インストール）の
-#     場合のみ prune（エントリごと除外）にして正当な新規作成を誤検知にしない — この
-#     場合の symlink 置換・symlink としての新規作成は、npx 実行後の許可先経路
-#     再検証（verify_scope_path_after_run）が fail-closed で拒否する
+#     許可先ディレクトリ自身の除外方法は SKILL_DIR_SIG_SPEC（npx 実行前に一度だけ確定）で
+#     切り替える: 既存なら prune-under（配下のみ除外・要素自身は署名）にして、実行中の
+#     外向き symlink への置換を前後不一致として検出する（事前の lstat 検査は開始時点しか
+#     見ない）。実行前に不存在（初回インストール）の場合のみ prune（エントリごと除外）に
+#     して正当な新規作成を誤検知にしない — この場合の symlink 化は npx 実行後の
+#     verify_scope_path_after_run が fail-closed で拒否する
 #   - .git のうち、このフロー自身が前後スナップショット間に実行する git コマンドで
-#     変動し得る領域のみ — 前後シグネチャの間に走る git 操作は
-#     `git status --porcelain -z -uall`（実行後スナップショット取得）だけであり、
-#     status が触るのは index の stat cache 更新（.git/index）とその一時 lock
-#     （.git/index.lock）のみ。リバート用の git checkout / git clean は
-#     実行後シグネチャ取得より後の失敗経路でしか呼ばれないため、署名比較に影響しない。
-#     以前は objects・refs・packed-refs・HEAD・logs・worktrees 等も prune していたが、
-#     npx がこれらへ書き込む（履歴・参照の改変）とスコープ外検査を丸ごと迂回できて
-#     しまうため（PR #412 P0 指摘）、実測で避けられない index・index.lock 以外は
-#     すべて署名対象に含める。lock の prune を `.git/*.lock` のワイルドカードに
-#     すると、npx が残した永続 lock（.git/config.lock・.git/HEAD.lock 等）まで
-#     検査から漏れるため（PR #412 codex P1 指摘）、自プロセスの git status が
-#     作り得る .git/index.lock だけを完全一致で prune する。
-#     prune した .git/index の背後で npx が index の論理状態を改変するケースは、
-#     index_state_signature（下記）の前後比較が受け持つ。
-#     代償として、同期実行中にこのリポジトリで並行 git 操作
-#     （他 worktree 含む）を行うとシグネチャ不一致（誤検知）として停止し得る
-#     （注意事項に明記。fail-closed 側に倒す設計判断）
+#     変動し得る領域のみ — 間に走る git 操作は `git status --porcelain -z -uall`
+#     （実行後スナップショット取得）だけで、触るのは index の stat cache（.git/index）と
+#     その一時 lock（.git/index.lock）のみ。リバート用の git checkout / git clean は
+#     実行後シグネチャ取得より後の失敗経路でしか呼ばれないため署名比較に影響しない。
+#     objects・refs・packed-refs・HEAD・logs・worktrees 等は prune しない（npx の履歴・
+#     参照の改変でスコープ外検査を迂回できてしまうため）。lock の prune を `.git/*.lock` の
+#     ワイルドカードにすると npx が残した永続 lock（.git/config.lock・.git/HEAD.lock 等）
+#     まで漏れるため、.git/index.lock だけを完全一致で prune する。
+#     prune した .git/index の背後の論理状態改変は index_state_signature（下記）の前後比較が
+#     受け持つ。代償として、同期実行中の並行 git 操作（他 worktree 含む）はシグネチャ不一致
+#     （誤検知）として停止し得る（注意事項に明記。fail-closed 側に倒す設計判断）
 #   - REPO_SIG_OMITS — 実行前に存在しなかった場合の .agents / .agents/skills
-#     （npx 実行前スナップショットの直前に一度だけ確定する）。既存なら omit せず
-#     種別・mode・symlink 先を通常どおり署名するため、既存親ディレクトリの chmod や
-#     ディレクトリ→symlink 置換は検出される（PR #412 P1 指摘）。不存在だった場合
-#     のみ omit し、初回インストールで npx が親ディレクトリを正当に新規作成する
-#     ケースを誤検知にしない。omit でも配下の走査は継続するため、同居する他スキルの
-#     ツリー（スコープ外）は引き続き保護される
+#     （npx 実行前スナップショットの直前に一度だけ確定する）。既存なら omit せず通常どおり
+#     署名するため chmod・ディレクトリ→symlink 置換は検出される。不存在だった場合のみ omit
+#     して初回インストールの正当な親作成を誤検知にしない（omit でも配下の走査は継続する
+#     ため、同居する他スキルのツリーは引き続き保護される）
 #
 # REPO_SIG_OMITS は前後 2 回の呼び出しで同一でなければならない（実行後の存在有無で
 # 再判定すると、初回インストールの正当な新規作成が前後不一致＝誤検知になる）。
@@ -860,8 +804,8 @@ SKILL_DIR_SIG_SPEC="prune-under:.agents/skills/${SKILL_NAME}"
 # index の論理状態のシグネチャ。.git/index はファイルとしては prune せざるを得ない
 # （このフロー自身の git status が stat cache を正当に更新するため）が、その背後で
 # npx がエントリの追加・削除・blob 差し替えや skip-worktree / assume-unchanged
-# ビットの付与を行っても検出できなくなる（PR #412 codex P1 指摘。特に skip-worktree
-# を立てられると、以後その tracked ファイルの変更が git status から恒久的に隠れる）。
+# ビットの付与を行っても検出できなくなる（skip-worktree を立てられると、以後その
+# tracked ファイルの変更が git status から恒久的に隠れる）。
 # stat cache と独立な論理状態 — `git ls-files --stage`（mode・object・stage・パス）と
 # `git ls-files -v`（状態タグ。skip-worktree は S、assume-unchanged は小文字）— を
 # sha256 へまとめ、repo_state_signature の出力へ連結して前後比較する。git status の
@@ -913,12 +857,11 @@ filter_out_of_scope() {
 
 # npx が新規作成した .gitignore 対象ファイルのみを許可先配下から削除する
 # （revert_in_scope の補助）。`git clean -fdx` は npx 実行前から許可先配下に存在した
-# ignored ファイル（.DS_Store 等）まで削除してしまうため使わない（PR #412 Bugbot
-# Medium 指摘）。実行前インベントリ（SCOPE_INVENTORY_FILE。find -print0 の NUL 区切り
-# 全ファイル一覧）に存在しないパスに限り、許可先配下であることを再検証したうえで
-# 個別削除する。実行前から存在した ignored ファイルは内容が書き換えられていても
-# 削除しない（保全。変更・削除の検出と復元は restore_preexisting_ignored が
-# 実行前バックアップとの比較で行う）。パス名に
+# ignored ファイル（.DS_Store 等）まで削除してしまうため使わない。実行前インベントリ
+# （SCOPE_INVENTORY_FILE。find -print0 の NUL 区切り全ファイル一覧）に存在しないパスに
+# 限り、許可先配下であることを再検証したうえで個別削除する。実行前から存在した ignored
+# ファイルは内容が書き換えられていても削除しない（保全。変更・削除の検出と復元は
+# restore_preexisting_ignored が実行前バックアップとの比較で行う）。パス名に
 # スペース・改行を含み得る前提で、一覧の受け渡しは全経路 NUL 区切りで行う。
 # npx が新規作成した「ignored ファイルのみを含む空ディレクトリ」は best-effort で
 # 残り得るが、ファイル残置と異なり後続処理の誤認を生まないため許容する。
@@ -963,20 +906,18 @@ PYEOF
 
 # 実行前から許可先配下に存在した ignored ファイル（.DS_Store 等）を、npx 実行前の
 # バックアップ（IGNORED_BACKUP_DIR。相対パス構造・mode を保持）と比較し、変化
-# （内容・mode・種別の変更、削除）があればバックアップから復元する。許可先配下は
-# npx の正当な書き込み先だが、ignored ファイルは同期対象外であり npx が変更して
-# よい理由がないため、変更を検出したら復元して警告する（処理自体は継続してよい
-# 契約。復元の失敗のみ呼び出し側で非ゼロ終了へ倒す）。許可先配下は
-# repo_state_signature の prune-under で署名から除外されるため、この変化は
-# シグネチャ比較では検出できず、バックアップとの直接比較だけが検出手段になる。
+# （内容・mode・種別の変更、削除）があればバックアップから復元する。ignored ファイルは
+# 同期対象外で npx が変更してよい理由がないため、検出したら復元して警告する（処理自体は
+# 継続してよい契約。復元の失敗のみ呼び出し側で非ゼロ終了へ倒す）。許可先配下は
+# repo_state_signature の prune-under で署名から除外されるため、この変化はシグネチャ
+# 比較では検出できず、バックアップとの直接比較だけが検出手段になる。
 # 事前の symlink 走査（npx 実行前）により対象は regular file のみである前提。
 # 復元先が npx により symlink 化されている可能性に備え、書き込み前に unlink し、
-# 親ディレクトリの realpath が許可先内に収まることを検証する（リンク先への
-# 書き込み防止）。親ディレクトリの再作成は make_parent_dirs（存在する最深の
-# 祖先の containment 検証 + 1 階層ずつの lstat 付き os.mkdir）で行い、
-# os.makedirs が中間 symlink を辿ってリポジトリ外へディレクトリを作る経路を
-# 残さない。バックアップとの比較・復元は mode 比較を含むため、stat の
-# 出力書式差（BSD/GNU）を避けて python3 の os.lstat に統一する。
+# 親ディレクトリの realpath が許可先内に収まることを検証する（リンク先への書き込み防止）。
+# 親ディレクトリの再作成は make_parent_dirs（存在する最深の祖先の containment 検証 +
+# 1 階層ずつの lstat 付き os.mkdir）で行い、os.makedirs が中間 symlink を辿って
+# リポジトリ外へディレクトリを作る経路を残さない。mode 比較を含むため、stat の出力書式差
+# （BSD/GNU）を避けて python3 の os.lstat に統一する。
 restore_preexisting_ignored() {
   # バックアップ対象が無ければ（初回インストール・既存 ignored なし）何もしない。
   [[ -s "${IGNORED_BASELINE_FILE}" ]] || return 0
@@ -1090,46 +1031,39 @@ PYEOF
 }
 
 # スコープ内（skills-lock.json / .agents/skills/${SKILL_NAME}/）の変更をリバートする。
-# npx 失敗・スコープ外検出・実行後 git status 取得失敗のすべての異常終端経路が
-# 共有する（PR #412 P1: どの異常経路でも生成済みのスコープ内変更を残置しない契約）。
-# 2つのパスを1つの `git checkout --` に渡すとアトミックに扱われ、どちらか一方が
-# 「追跡対象なし」（初回具現化・untracked のみの書き込み時）で pathspec エラーになると
-# コマンド全体が失敗し、もう一方（skills-lock.json）も復元されないまま抜けてしまう
-# ため、必ず1コマンド1パスで分離する。git clean はディレクトリが存在しない場合に
-# 非ゼロ終了するため、存在確認してから呼ぶ（set -e 下で無条件に呼ぶと呼び出し元の
-# 案内メッセージより先に停止し得る）。.gitignore 対象の残置
-# （Issue #413）は -fdx ではなく remove_new_ignored_in_scope（実行前インベントリ
-# との突き合わせ）で解消する（既存 ignored ファイルの巻き添え削除防止）。
-# 実行後再検証（verify_scope_path_after_run）が許可先経路の symlink 化・非
-# ディレクトリ化を検出した場合、または実行後の配下 symlink 走査が npx 実行中に
-# 作られた symlink を検出した場合（いずれも SCOPE_PATH_COMPROMISED=1）は、
-# checkout・clean・ignored 削除のパス走査がリンク先（リポジトリ外を含む）へ
-# 向かい得るため、skills-lock.json の復元のみ行い、許可先配下への削除系操作は
-# 一切行わず案内に留める（symlink を通じた外部削除の防止。fail-closed）。
-# skills-lock.json 自体が npx 実行中に symlink へ置換されたケース
-# （LOCK_FILE_COMPROMISED=1）では、素の git checkout がリンク先（リポジトリ外を
-# 含む）へ書き込み得るため、先に rm で symlink 自体を除去（リンク先は辿らない）
-# してから checkout で index の内容を regular file として書き戻す。symlink 以外の
-# 想定外実体（ディレクトリ等）は rm -f で除去できず checkout も安全に働かないため、
-# 一切触らず手動復旧を案内する。
+# npx 失敗・スコープ外検出・実行後 git status 取得失敗のすべての異常終端経路が共有する
+# （どの異常経路でも生成済みのスコープ内変更を残置しない契約）。
+# 2つのパスを1つの `git checkout --` に渡すとアトミックに扱われ、一方が「追跡対象なし」
+# （初回具現化・untracked のみの書き込み時）で pathspec エラーになるともう一方
+# （skills-lock.json）も復元されないため、必ず1コマンド1パスで分離する。git clean は
+# ディレクトリが存在しない場合に非ゼロ終了するため、存在確認してから呼ぶ（set -e 下で
+# 無条件に呼ぶと呼び出し元の案内メッセージより先に停止し得る）。.gitignore 対象の残置
+# （Issue #413）は -fdx ではなく remove_new_ignored_in_scope（実行前インベントリとの
+# 突き合わせ）で解消する（既存 ignored ファイルの巻き添え削除防止）。
+# SCOPE_PATH_COMPROMISED=1（verify_scope_path_after_run が許可先経路の symlink 化・
+# 非ディレクトリ化を検出、または実行後の配下 symlink 走査が検出）では、checkout・clean・ignored 削除のパス走査がリンク先（リポジトリ外を
+# 含む）へ向かい得るため、skills-lock.json の復元のみ行い、許可先配下への削除系操作は
+# 一切行わず案内に留める（fail-closed）。
+# LOCK_FILE_COMPROMISED=1（skills-lock.json が npx 実行中に symlink へ置換）では、素の
+# git checkout がリンク先へ書き込み得るため、先に rm で symlink 自体を除去（リンク先は
+# 辿らない）してから checkout で regular file として書き戻す。symlink 以外の想定外実体
+# （ディレクトリ等）は rm -f で除去できず checkout も安全に働かないため、一切触らず手動
+# 復旧を案内する。
 # SKILL_NAME はループの現在値を呼び出し時に参照する。
-# 第1引数（既定 0）を 1 にすると git clean -fd / remove_new_ignored_in_scope を
-# 一切実行しない「非破壊モード」になる（codex P0 指摘: preview_untracked の
-# git ls-files 失敗時など、未追跡集合を安全に列挙できなかった状態でこの関数を
-# 呼ぶと、checker / npx が作成した「唯一のコピーであり得る」未追跡ファイルを
-# バックアップなしで git clean -fd が削除してしまう。列挙が壊れている以上、
-# 何を消してよいか判定できないため、削除系操作は一切行わず手動復旧の案内に
-# 留める）。checkout（tracked のみが対象で未追跡ファイルには触れない）と
-# restore_preexisting_ignored（npx 実行前バックアップからの復元。列挙ではなく
-# 実行前に確定済みの一覧を使うため安全）はこのモードでも従来どおり実行する。
+# 第1引数（既定 0）を 1 にすると git clean -fd / remove_new_ignored_in_scope を一切実行
+# しない「非破壊モード」になる。preview_untracked の git ls-files 失敗時など未追跡集合を
+# 安全に列挙できなかった状態で git clean -fd すると、checker / npx が作成した「唯一の
+# コピーであり得る」未追跡ファイルをバックアップなしで削除してしまうため。checkout
+# （tracked のみが対象）と restore_preexisting_ignored（実行前に確定済みの一覧を使うため
+# 安全）はこのモードでも実行する。
 #
 # Issue #422: 未追跡集合の「列挙自体」（git ls-files --others 等）が失敗し、1 件も
 # 退避できていない（＝何が未退避か分からない）モードに限り、checkout が上書きし得る
 # worktree の現状を git 非依存の cp でまるごと保全してから tracked の checkout を
-# 行えるようにするための下ごしらえ。壊れている git には一切頼らず、ファイルシステム
-# 操作（cp -p / cp -RP）のみで skills-lock.json と .agents/skills/${SKILL_NAME}/ を
+# 行えるようにするための下ごしらえ。壊れている git には頼らず、ファイルシステム操作
+# （cp -p / cp -RP）のみで skills-lock.json と .agents/skills/${SKILL_NAME}/ を
 # mktemp -d 先へ複製する。呼び出し元（revert_in_scope）は、この関数が成功した場合に
-# 限り checkout を実行し、失敗した場合は従来どおり checkout ごと丸ごとスキップする
+# 限り checkout を実行し、失敗した場合は checkout ごと丸ごとスキップする
 # （fail-closed。cp が失敗した状態で checkout すると、退避されていない worktree
 # 内容が無音に上書きされ得るため）。
 contract_worktree_backup() {
@@ -1181,33 +1115,30 @@ contract_worktree_backup() {
 
 revert_in_scope() {
   local skip_clean="${1:-0}"
-  # 呼び出し元が「実際に checkout / clean が走ったか」を判定できるよう、この
-  # 呼び出し内で保全のため checkout・clean をスキップした場合のみ 1 を立てる
-  # （Bugbot Medium 指摘・Issue #418 系: post-npx の呼び出し元がこの値を見ずに
-  # 「スコープ内の変更はリバートしました」と無条件表示すると、worktree に未退避の
-  # 変更が残っているのに復元済みと誤認させる。codex P1 指摘・PR #420: 個別の原因
-  # フラグの寄せ集めで表示分岐すると SCOPE_PATH_COMPROMISED 経路のような変種を
-  # 取りこぼすため、スキップの有無はこの単一フラグへ一元化する。呼び出しごとに
-  # 0 へ戻し、checkout / clean / 復元のいずれかをスキップした経路で必ず 1 にする）。
+  # 呼び出し元が「実際に checkout / clean が走ったか」を判定できるよう、この呼び出し内で
+  # 保全のため checkout・clean・復元をスキップした場合のみ 1 を立てる（Issue #418 系）。post-npx の呼び出し
+  # 元がこの値を見ずに「スコープ内の変更はリバートしました」と無条件表示すると、worktree に
+  # 未退避の変更が残っているのに復元済みと誤認させる。個別の原因フラグの寄せ集めで表示分岐
+  # すると SCOPE_PATH_COMPROMISED 経路のような変種を取りこぼすため、スキップの有無は
+  # この単一フラグへ一元化する。呼び出しごとに 0 へ戻す。
   REVERT_IN_SCOPE_SKIPPED=0
   if [[ "${CONTRACT_UNTRACKED_BACKUP_FAILED:-0}" -eq 1 ]]; then
     # restore_contract_scope が契約範囲内の未追跡ファイル退避に失敗し、fail-closed で
-    # index のみ復元（worktree は意図的に未復元）へ降格した直後の呼び出し。ここで
-    # 通常どおり `git checkout -- <契約パス>` を実行すると、その index（すでに
-    # PRE_SYNC_TREE へ戻されている）を worktree へ書き戻し、restore_contract_scope が
-    # 守ろうとした未退避の worktree 内容（checker / npx が作成した唯一のコピーで
-    # あり得る）を無音に上書きしてしまう（Bugbot 指摘: Index restore enables later
-    # overwrite / Issue #418 の再発）。既存 ignored の復元だけは untracked backup の
-    # 失敗と無関係（別のバックアップ機構）のため、このブロックの外側で従来どおり実行する。
+    # index のみ復元（worktree は意図的に未復元）へ降格した直後の呼び出し。ここで通常
+    # どおり `git checkout -- <契約パス>` を実行すると、その index（すでに PRE_SYNC_TREE
+    # へ戻されている）を worktree へ書き戻し、restore_contract_scope が守ろうとした未退避の
+    # worktree 内容（checker / npx が作成した唯一のコピーであり得る）を無音に上書きして
+    # しまう（Issue #418）。既存 ignored の復元だけは untracked backup の失敗と無関係
+    # （別のバックアップ機構）のため、このブロックの外側で従来どおり実行する。
     #
-    # Issue #422: ただし「未追跡集合の列挙自体」が失敗し 1 件も退避できていない
-    # モード（個別 mv 失敗と異なり、何が未退避か分からないだけで worktree の現状
-    # 自体は破損していない）に限り、checkout 前に git 非依存の cp で worktree を
-    # まるごと保全できれば、tracked 分（skills-lock.json / .agents/skills 配下）の
-    # checkout は行ってよい。これにより checker が無いリポジトリ（preview_untracked
-    # ケース7）と同じ「tracked はリバートされる」挙動に揃える。妥協検出
-    # （SCOPE_PATH_COMPROMISED / LOCK_FILE_COMPROMISED）がある場合は、checkout 先の
-    # パス自体の信頼性が崩れているため、この救済経路には進まない。
+    # Issue #422: ただし「未追跡集合の列挙自体」が失敗し 1 件も退避できていないモード
+    # （個別 mv 失敗と異なり、何が未退避か分からないだけで worktree の現状自体は破損して
+    # いない）に限り、checkout 前に git 非依存の cp で worktree をまるごと保全できれば、
+    # tracked 分（skills-lock.json / .agents/skills 配下）の checkout は行ってよい。
+    # これにより checker が無いリポジトリ（preview_untracked ケース7）と同じ「tracked は
+    # リバートされる」挙動に揃える。妥協検出（SCOPE_PATH_COMPROMISED /
+    # LOCK_FILE_COMPROMISED）がある場合は、checkout 先のパス自体の信頼性が崩れているため、
+    # この救済経路には進まない。
     if [[ "${CONTRACT_UNTRACKED_ENUM_FAILED:-0}" -eq 1 \
       && "${SCOPE_PATH_COMPROMISED:-0}" -eq 0 \
       && "${LOCK_FILE_COMPROMISED:-0}" -eq 0 ]] \
@@ -1242,8 +1173,8 @@ revert_in_scope() {
       # 失わないよう、バックアップ dir は削除せず保全して手動復旧に委ねる。
       IGNORED_BACKUP_KEEP=1
       echo "警告: 許可先経路またはその配下が symlink 等へ置換・作成されているため、.agents/skills/${SKILL_NAME}/ への checkout・git clean・ignored 削除・既存 ignored の復元は行いません（リンク先への削除・書き込みを避けるため）。symlink の指す先と許可先の内容を手動確認し、symlink を除去してから復旧してください。既存 ignored ファイルのバックアップは ${IGNORED_BACKUP_DIR} に相対パス構造で残っています。" >&2
-      # codex P1 指摘（PR #420）: この経路は CONTRACT_UNTRACKED_BACKUP_FAILED が
-      # 0 のまま checkout・clean をスキップして return するため、ここでも必ず立てる
+      # この経路は CONTRACT_UNTRACKED_BACKUP_FAILED が 0 のまま checkout・clean を
+      # スキップして return するため、ここでも必ず立てる
       REVERT_IN_SCOPE_SKIPPED=1
       return 0
     fi
@@ -1265,24 +1196,21 @@ revert_in_scope() {
   if ! restore_preexisting_ignored; then
     IGNORED_RESTORE_FAILED=1
     IGNORED_BACKUP_KEEP=1
-    # codex P1 指摘（PR #420・3 巡目）: 復元失敗もフラグ契約の「復元をスキップした
-    # （完全実行できなかった）経路」に含まれる。ここで立てないと status 取得失敗の
-    # 呼び出し元が、既存 ignored が未復元のまま「変更はリバートしました」と表示して
-    # しまう（IGNORED_RESTORE_FAILED はループ停止の判定用で、表示分岐はこの単一
-    # フラグに一元化する）
+    # 復元失敗もフラグ契約の「復元をスキップした（完全実行できなかった）経路」に含まれる。
+    # ここで立てないと status 取得失敗の呼び出し元が、既存 ignored が未復元のまま「変更は
+    # リバートしました」と表示してしまう（IGNORED_RESTORE_FAILED はループ停止の判定用で、
+    # 表示分岐はこの単一フラグに一元化する）
     REVERT_IN_SCOPE_SKIPPED=1
     echo "エラー: 実行前から存在した ignored ファイルの復元に失敗しました。バックアップは ${IGNORED_BACKUP_DIR} に相対パス構造で残っています。手動で復旧してください。" >&2
   fi
 }
 
-# npx 実行後の許可先経路の再検証（PR #412 P0 指摘: TOCTOU）。事前の lstat 検査は
-# 開始時点しか見ないため、npx が実行中に許可先（またはその親）を外向き symlink へ
-# 置換した・初回インストールで .agents 自体を symlink として作成したケースは、
-# 事後に全パス要素を再度 lstat しなければ検出できない（存在する要素はすべて実体の
-# ディレクトリであることを要求し、symlink・非ディレクトリは fail-closed で拒否）。
-# 併せて既存許可先は prune-under により要素自身が前後シグネチャへ署名されるため、
-# 置換自体もシグネチャ不一致として検出される（この関数はその場合の原因特定と、
-# 初回インストール（prune でシグネチャに現れない）の防御を担う）。
+# npx 実行後の許可先経路の再検証（TOCTOU）。事前の lstat 検査は開始時点しか見ないため、
+# 実行中に許可先（またはその親）が外向き symlink へ置換された・初回インストールで .agents
+# 自体が symlink として作られたケースは、事後に全パス要素を再度 lstat しなければ検出
+# できない（存在する要素はすべて実体のディレクトリであること。違反は fail-closed）。
+# 既存許可先の置換は prune-under の署名不一致でも検出されるため、この関数は原因特定と、
+# prune でシグネチャに現れない初回インストールの防御を担う。
 verify_scope_path_after_run() {
   local component
   for component in ".agents" ".agents/skills" ".agents/skills/${SKILL_NAME}"; do
@@ -1298,12 +1226,11 @@ verify_scope_path_after_run() {
   return 0
 }
 
-# npx 実行後の skills-lock.json の実体再検証（PR #412 codex P0 指摘: TOCTOU）。
-# skills-lock.json は署名の prune と porcelain フィルタの双方からパスで除外される
-# ため、npx が実行中に外向き symlink へ置換してリンク先へ書き込んでもどの検査にも
-# 現れない。実行後に lstat し、存在するのに regular file でなければ fail-closed で
-# 拒否する（事前検証時の不存在→生成のケースも regular file であることを要求する。
-# 実行後の不存在は改変ではなく npx の書き込み不発のため、ここでは不問とする）。
+# npx 実行後の skills-lock.json の実体再検証（TOCTOU）。skills-lock.json は署名の prune と
+# porcelain フィルタの双方からパスで除外されるため、npx が実行中に外向き symlink へ置換して
+# リンク先へ書き込んでもどの検査にも現れない。実行後に lstat し、存在するのに regular file
+# でなければ fail-closed で拒否する（事前検証時の不存在→生成のケースも regular file で
+# あることを要求する。実行後の不存在は改変ではなく npx の書き込み不発のため不問とする）。
 verify_lock_file_after_run() {
   if [[ -L "skills-lock.json" ]]; then
     echo "エラー: npx 実行後の再検証で skills-lock.json がシンボリックリンクになっています。npx が実行中に置換し、リンク先（リポジトリ外を含む）へ書き込んだ可能性があります。リンク先の内容とリポジトリ外への書き込み有無を手動確認してください（fail-closed）。" >&2
@@ -1345,21 +1272,17 @@ LOCK_FILE_COMPROMISED=0
 # npx 実行前の許可先配下の全ファイルインベントリ（.gitignore 対象を含む。
 # find -print0 の NUL 区切り）。revert_in_scope（remove_new_ignored_in_scope）が
 # 「npx が新規作成した ignored ファイル」だけを選別削除するための基準になる
-# （実行前から存在した ignored ファイルの巻き添え削除防止。PR #412 Bugbot Medium
-# 指摘）。取得に失敗すると選別基準を失い、リバートが既存 ignored ファイルを誤削除
-# し得るため fail-closed で中止する（この時点では npx 未実行のため残置なし）。
-# 許可先が不存在（初回インストール）の場合は空インベントリ（npx が作るものはすべて
-# 新規）とする。
+# （実行前から存在した ignored ファイルの巻き添え削除防止）。取得に失敗すると選別基準を
+# 失い、リバートが既存 ignored ファイルを誤削除し得るため fail-closed で中止する
+# （この時点では npx 未実行のため残置なし）。許可先が不存在（初回インストール）の場合は
+# 空インベントリ（npx が作るものはすべて新規）とする。
 if [[ -e ".agents/skills/${SKILL_NAME}" ]]; then
-  # 許可先配下の既存 symlink の事前拒否。repo_state_signature は prune-under で
-  # 許可先配下を署名から除外するため、配下に実行前から symlink があると、npx が
-  # リンクを辿ってリポジトリ外へ書き込んでも前後比較のどの検査にも現れない
-  # （ルート 3 要素の lstat 検証は経路自身しか見ず、配下は守れない）。1 件でも
-  # あれば npx 未実行のまま fail-closed で中止する。この拒否により、後段の既存
-  # ignored バックアップ・復元は対象を regular file のみと仮定できる。走査自体の
-  # 失敗も「symlink なしと確認できない」であって「なし」ではないため中止する。
-  # レイアウト自体の異常で人間の確認を要するため、skip（continue）ではなく
-  # ループ全体を exit 1 で停止する（事前 lstat 検査と同じ扱い。npx 未実行のため残置なし）。
+  # 許可先配下の既存 symlink の事前拒否。配下は prune-under で署名から除外されるため、
+  # 実行前から symlink があると npx がリンクを辿ってリポジトリ外へ書き込んでも前後比較の
+  # どの検査にも現れない（ルート 3 要素の lstat 検証は経路自身しか見ない）。1 件でも
+  # あれば npx 未実行のまま中止し、これにより後段の既存 ignored バックアップ・復元は
+  # regular file のみと仮定できる。走査自体の失敗も「なし」ではなく「確認できない」として
+  # 中止する。レイアウト異常のため skip ではなくループ全体を exit 1 で停止する。
   if ! SCOPE_PREEXISTING_SYMLINKS="$(find ".agents/skills/${SKILL_NAME}" -type l)"; then
     echo "エラー: 許可先配下の symlink 走査（find）に失敗しました。リポジトリ外への書き込み経路が無いことを確認できないため中止します（fail-closed）。" >&2
     exit 1
@@ -1401,11 +1324,11 @@ filter_out_of_scope "${SNAP_BEFORE}" "${SNAP_FILTERED_BEFORE}"
 
 # .agents / .agents/skills の omit（自身のメタデータ不記録）は「npx 実行前に存在
 # したか」で決める。既存なら通常どおり署名対象にして chmod・ディレクトリ→symlink
-# 置換を検出し（PR #412 P1 指摘）、不存在だった場合のみ omit して初回インストール
-# での正当な親ディレクトリ新規作成を誤検知にしない。判定は npx 実行前のここで
-# 一度だけ行い、前後の両シグネチャで同じ除外集合を使う（実行後に再判定すると
-# 初回作成が前後不一致になる）。-e は壊れた symlink で偽になるため -L も併せて
-# 見る（symlink 自体は「存在」として署名対象に含める）。
+# 置換を検出し、不存在だった場合のみ omit して初回インストールでの正当な親
+# ディレクトリ新規作成を誤検知にしない。判定は npx 実行前のここで一度だけ行い、
+# 前後の両シグネチャで同じ除外集合を使う（実行後に再判定すると初回作成が前後不一致に
+# なる）。-e は壊れた symlink で偽になるため -L も併せて見る（symlink 自体は「存在」
+# として署名対象に含める）。
 if [[ ! -e ".agents" && ! -L ".agents" ]]; then
   REPO_SIG_OMITS+=("omit:.agents")
 fi
@@ -1446,29 +1369,23 @@ fi
 # 保存し、後段の「Invalid agents」no-op 検出に使う。PIPESTATUS は pipeline 直後の
 # 「次のコマンド実行前」にしか正しい値を保持しない。変数代入も1個のコマンドと
 # 数えられるため、`NPX_STATUS=...; TEE_STATUS=...` のように2つの代入に分けると、
-# 1つ目の代入自体がその時点の PIPESTATUS を（要素数1・値0の配列へ）上書きして
-# しまい、2つ目の代入が参照する PIPESTATUS[1] は `set -u` 下で unbound variable
-# エラーになる（実測: bash 5.3 で再現）。配列全体を単一の代入
-# `arr=("${PIPESTATUS[@]}")` でスナップショットし、添字アクセスはそのコピーに対して
-# 行う。npx（[0]）・tee（[1]）両方を読む理由: tee がディスク容量不足等で非ゼロ終了
-# すると NPX_OUTPUT_FILE が空・不完全なまま残り得るが、npx 自体は成功（exit 0）
-# し得るため、tee 側の失敗は npx の終了コードだけを見る分岐からは検出できない
-# （Issue #410 CI 失敗指摘）。TEE_STATUS が非ゼロなら、その不完全な NPX_OUTPUT_FILE
-# を前提にした「Invalid agents」no-op 判定を信頼せず、NPX_STATUS を強制的に失敗へ
-# 倒して以降の失敗経路（事後スコープ外検査・スコープ内リバート・skip）へ合流させる。
-# errexit の無効化（scripts/skills-lock-update.sh と同じ理由）: このフェンスが
-# `set -e`/`pipefail` の下で実行される場合、npx が非ゼロ終了すると tee との
-# パイプライン全体が失敗し、次行の PIPE_EXIT_SNAPSHOT 取得より前にシェルが
-# その場で終了してしまう。そうなると事後のスコープ外検査・スコープ内リバート
-# （下の NPX_STATUS 分岐）に到達できず、`skills-lock.json` / スキルツリーの
-# 部分書き込みが検査もリバートもされないまま残置される（Bugbot High 指摘）。
-# npx 行の前後だけ errexit を無効化し、pipeline の終了コードを PIPESTATUS から
-# 読んでから元の状態（`$-`）を保存し、元々有効だった場合のみ戻す。本フェンスは
-# scripts/skills-lock-update.sh と異なり、errexit が無効なエージェント対話シェルへ
-# コピペ実行され得る。無条件 `set -e` で復元すると呼び出し元シェルへ errexit を
-# 新規に有効化してしまい、同一シェルで後続する Step 6 却下コマンド等がガードの
-# 無い非ゼロ終了で途中 abort し得るため、元々有効だった場合のみ再有効化する
-# （Issue #417）。
+# 1つ目の代入自体がその時点の PIPESTATUS を上書きしてしまい、2つ目の代入が参照する
+# PIPESTATUS[1] は `set -u` 下で unbound variable エラーになる（実測: bash 5.3 で
+# 再現）。配列全体を単一の代入 `arr=("${PIPESTATUS[@]}")` でスナップショットし、
+# 添字アクセスはそのコピーに対して行う。npx（[0]）・tee（[1]）両方を読む理由: tee が
+# ディスク容量不足等で非ゼロ終了すると NPX_OUTPUT_FILE が空・不完全なまま残り得るが、
+# npx 自体は成功（exit 0）し得るため、tee 側の失敗は npx の終了コードだけを見る分岐
+# からは検出できない（Issue #410）。TEE_STATUS が非ゼロなら、その不完全な NPX_OUTPUT_FILE
+# を前提にした「Invalid agents」no-op 判定を信頼せず、NPX_STATUS を強制的に失敗へ倒して
+# 以降の失敗経路（事後スコープ外検査・スコープ内リバート・skip）へ合流させる。
+# errexit の無効化（scripts/skills-lock-update.sh と同じ理由。詳細は下記節参照）:
+# npx 行の前後だけ errexit を無効化し、pipeline の終了コードを PIPESTATUS から読む。
+# `set -e`/`pipefail` 下で無効化を欠くと、npx の非ゼロ終了でパイプラインごとシェルが
+# 終了し、事後のスコープ外検査・スコープ内リバートに到達できないまま部分書き込みが残置される。
+# 元の状態（`$-`）を保存し、元々有効だった場合のみ再有効化する: 本フェンスは errexit が
+# 無効なエージェント対話シェルへコピペ実行され得るため、無条件 `set -e` で復元すると
+# 呼び出し元シェルへ errexit を新規に有効化し、同一シェルで後続する Step 6 却下コマンド等が
+# ガードの無い非ゼロ終了で途中 abort し得る（Issue #417）。
 case $- in *e*) ERREXIT_WAS_ON=1 ;; *) ERREXIT_WAS_ON=0 ;; esac
 set +e
 npx --yes "skills@${SKILLS_CLI_VERSION}" add "${SOURCE}" --skill "${SKILL_NAME}" --agent universal --yes 2>&1 | tee "${NPX_OUTPUT_FILE}"
@@ -1482,33 +1399,29 @@ if [[ "${TEE_STATUS}" -ne 0 ]]; then
   NPX_STATUS=1
 fi
 
-# 許可先経路の実行後再検証（PR #412 P0 指摘: 実行中の symlink 置換 / 初回
-# インストールでの symlink 作成）。事後シグネチャ取得より前にここで一度だけ判定し、
-# 検出時は共通失敗経路へ合流させる（revert_in_scope は SCOPE_PATH_COMPROMISED を
-# 見て許可先配下への削除系操作を行わず、リポジトリ外書き込みの可能性の手動確認を
-# 案内する）。
+# 許可先経路の実行後再検証（実行中の symlink 置換 / 初回インストールでの symlink 作成）。
+# 事後シグネチャ取得より前にここで一度だけ判定し、検出時は共通失敗経路へ合流させる
+# （revert_in_scope は SCOPE_PATH_COMPROMISED を見て許可先配下への削除系操作を行わず、
+# リポジトリ外書き込みの可能性の手動確認を案内する）。
 if ! verify_scope_path_after_run; then
   SCOPE_PATH_COMPROMISED=1
   NPX_STATUS=1
 fi
 
-# skills-lock.json の実行後 再検証（PR #412 codex P0 指摘: 実行中の symlink 置換）。
-# 検出時は共通失敗経路へ合流させる（revert_in_scope は LOCK_FILE_COMPROMISED を見て
-# symlink を rm で除去してから checkout し、リンク先への書き込みを避ける）。
+# skills-lock.json の実行後再検証（実行中の symlink 置換）。検出時は共通失敗経路へ
+# 合流させる（revert_in_scope は LOCK_FILE_COMPROMISED を見て symlink を rm で除去して
+# から checkout し、リンク先への書き込みを避ける）。
 if ! verify_lock_file_after_run; then
   LOCK_FILE_COMPROMISED=1
   NPX_STATUS=1
 fi
 
-# 許可先配下の実行後 symlink 走査（PR #412 Bugbot High 指摘: TOCTOU）。事前走査は
-# npx 実行前の 0 件しか保証せず、npx が実行中に配下へ作った外向き symlink とそれ
-# 経由の書き込みは、配下を署名から除外している前後比較にも、経路 3 要素しか見ない
-# verify_scope_path_after_run にも現れない。事後に見つかる symlink はすべて npx
-# 実行中の作成物であり、これを残したまま checkout・clean・ignored 削除・復元を
-# 走らせるとリンク先（リポジトリ外を含む）への削除・書き込みになり得るため、
-# 1 件でも検出したら経路妥協（SCOPE_PATH_COMPROMISED）と同じ保全経路へ倒す。
-# 走査自体の失敗も「symlink なしと確認できない」であって「なし」ではないため
-# 同様に倒す（fail-closed）。
+# 許可先配下の実行後 symlink 走査（TOCTOU）。事前走査は実行前の 0 件しか保証せず、npx が
+# 実行中に配下へ作った外向き symlink 経由の書き込みは、前後比較にも経路 3 要素しか見ない
+# verify_scope_path_after_run にも現れない。事後に見つかる symlink はすべて npx の作成物で、
+# 残したまま checkout・clean・ignored 削除・復元を走らせるとリンク先（リポジトリ外を含む）
+# への削除・書き込みになり得るため、1 件でも（走査失敗も同様に）SCOPE_PATH_COMPROMISED と
+# 同じ保全経路へ倒す（fail-closed）。
 if [[ "${SCOPE_PATH_COMPROMISED}" -eq 0 && -d ".agents/skills/${SKILL_NAME}" ]]; then
   if ! SCOPE_POST_SYMLINKS="$(find ".agents/skills/${SKILL_NAME}" -type l)"; then
     echo "エラー: npx 実行後の許可先配下 symlink 走査（find）に失敗しました。リンク先（リポジトリ外を含む）への書き込み経路が無いことを確認できないため、許可先配下への自動復旧を行わず停止します（fail-closed）。" >&2
@@ -1522,17 +1435,16 @@ if [[ "${SCOPE_PATH_COMPROMISED}" -eq 0 && -d ".agents/skills/${SKILL_NAME}" ]];
   fi
 fi
 
-# CLI がバージョン更新等で --agent universal を認識できなくなった場合、
-# エラー表示のうえ exit 0 の no-op になる（実測: skills@1.5.22 で確認済み）。
-# 検知しないまま先へ進むと「同期したつもりで何も更新されていない」まま完了扱いに
-# なるため、npx 自体の終了コードとは別に明示的な失敗として扱う（上の TEE_STATUS
-# チェックで NPX_STATUS が強制失敗化されていればここは通らない）。
-# この分岐で直接 exit すると実行後スナップショット・シグネチャ比較・スコープ内
-# リバートをすべて迂回する（PR #412 P1 指摘）。「Invalid agents」は CLI の出力文言に
-# 過ぎず、将来版が部分書き込みの後に同じ文言を出しても no-op とは限らないため、
+# CLI がバージョン更新等で --agent universal を認識できなくなった場合、エラー表示の
+# うえ exit 0 の no-op になる（実測: skills@1.5.22 で確認済み）。検知しないまま先へ進むと
+# 「同期したつもりで何も更新されていない」まま完了扱いになるため、npx 自体の終了コード
+# とは別に明示的な失敗として扱う（上の TEE_STATUS チェックで NPX_STATUS が強制失敗化
+# されていればここは通らない）。この分岐で直接 exit すると実行後スナップショット・
+# シグネチャ比較・スコープ内リバートをすべて迂回する。「Invalid agents」は CLI の出力
+# 文言に過ぎず、将来版が部分書き込みの後に同じ文言を出しても no-op とは限らないため、
 # NPX_STATUS=1 を設定して下の共通失敗経路へ合流させ、「成功・失敗いずれの経路でも
-# 事後検査へ必ず到達」の契約を守る。universal 無効は以降の全スキルでも再現し
-# 続行に意味がないため、共通失敗経路の末尾で continue ではなく exit 1 で終端する
+# 事後検査へ必ず到達」の契約を守る。universal 無効は以降の全スキルでも再現し続行に
+# 意味がないため、共通失敗経路の末尾で continue ではなく exit 1 で終端する
 # （NPX_NOOP_DETECTED がその分岐と汎用メッセージの抑止を担う）。
 NPX_NOOP_DETECTED=0
 if [[ "${NPX_STATUS}" -eq 0 && "${SCOPE_PATH_COMPROMISED}" -eq 0 ]] && grep -q "Invalid agents" "${NPX_OUTPUT_FILE}"; then
@@ -1556,11 +1468,10 @@ if [[ "${NPX_STATUS}" -ne 0 ]]; then
     echo "エラー: npx 実行後の状態シグネチャ取得に失敗しました。変化なしと確認できないため、スコープ外残置ありとして扱います（fail-closed）。" >&2
     REPO_STATE_AFTER="(signature-error)"
   fi
-  # 成功経路の多層防御（下記の判定表・NPX_STATUS -eq 0 の分岐）と同じ検出基準を
-  # 失敗経路にも適用する。ここで検出したら NPX_STATUS_OUT_OF_SCOPE_DIRT=1 を立てて
-  # 下の exit 1 判定に合流させる（Bugbot High 指摘: 検出しても continue するだけでは
-  # 未リバートのスコープ外差分が「元から存在した dirty 状態」と誤認され得る。
-  # `scripts/skills-lock-update.sh` はこの検出を単に「変化なし」ではないため
+  # 成功経路の多層防御（下記の判定表・NPX_STATUS -eq 0 の分岐）と同じ検出基準を失敗経路にも
+  # 適用する。ここで検出したら NPX_STATUS_OUT_OF_SCOPE_DIRT=1 を立てて下の exit 1 判定に
+  # 合流させる（検出しても continue するだけでは、未リバートのスコープ外差分が「元から
+  # 存在した dirty 状態」と誤認され得る。`scripts/skills-lock-update.sh` もこの検出を
   # ループ全体を止める理由に含めており、このフェンスも同じ停止経路を取る）。
   NPX_STATUS_OUT_OF_SCOPE_DIRT=0
   if ! cmp -s "${SNAP_FILTERED_BEFORE}" "${SNAP_FILTERED_AFTER}" \
@@ -1585,10 +1496,9 @@ if [[ "${NPX_STATUS}" -ne 0 ]]; then
     # 未追跡ファイル(checker が移動・新規作成した唯一のコピーであり得る)が削除される。
     # 復元後の revert_in_scope は契約パスの checkout / clean が実質 no-op になり、ignored
     # ファイルの選別削除・既存 ignored の復元・妥協検出時の保全案内だけが働く。
-    # 戻り値を明示的に拾う（Bugbot Medium 指摘: この分岐は他の失敗経路と異なり
-    # 条件次第で continue し得るため、restore_contract_scope の復元後検証が失敗した
-    # 場合に「契約範囲が半端に復元されたまま次スキルの npx へ進む」ことを防ぐには、
-    # 下の exit 1 判定へ明示的に合流させる必要がある）。
+    # 戻り値を明示的に拾う: この分岐は他の失敗経路と異なり条件次第で continue し得るため、
+    # restore_contract_scope の復元後検証が失敗した場合に「契約範囲が半端に復元されたまま
+    # 次スキルの npx へ進む」ことを防ぐには、下の exit 1 判定へ明示的に合流させる必要がある。
     if ! restore_contract_scope; then
       CONTRACT_RESTORE_VERIFY_FAILED=1
     fi
@@ -1607,7 +1517,7 @@ if [[ "${NPX_STATUS}" -ne 0 ]]; then
   # 検出（多層防御）と同じ停止経路であり、continue（skip）ではなくループ全体を止める。
   # 契約範囲の復元後検証失敗（CONTRACT_RESTORE_VERIFY_FAILED）も同様: 半端に復元された
   # 契約範囲のまま次スキルの npx を続けると、その npx が汚染された前提状態の上で動く
-  # ため continue せずループ全体を止める（Bugbot Medium 指摘）。
+  # ため continue せずループ全体を止める。
   if [[ "${NPX_NOOP_DETECTED}" -eq 1 || "${SCOPE_PATH_COMPROMISED}" -eq 1 || "${LOCK_FILE_COMPROMISED}" -eq 1 || "${IGNORED_RESTORE_FAILED}" -eq 1 || "${NPX_STATUS_OUT_OF_SCOPE_DIRT}" -eq 1 || "${CONTRACT_RESTORE_VERIFY_FAILED}" -eq 1 ]]; then
     exit 1
   fi
@@ -1617,11 +1527,10 @@ fi
 
 # npx 実行後のスナップショット。前後のスコープ外差分を見るため、取得条件は
 # SNAP_BEFORE と完全に揃える。取得失敗時にその場で exit すると、npx が生成済みの
-# スコープ内変更を残置したままスコープ外シグネチャ検査も行われない（PR #412 P1
-# 指摘）。状態シグネチャは git 非依存（python3 の走査）で取得できるため、可能な
-# 範囲で事後検査（スコープ外残置疑いの報告）を行い、スコープ内をリバートしてから
-# fail-closed で exit 1 する（ループ停止。以降のスキルも同じ git 障害に当たるため
-# skip 継続に意味がない）。
+# スコープ内変更を残置したままスコープ外シグネチャ検査も行われない。状態シグネチャは
+# git 非依存（python3 の走査）で取得できるため、可能な範囲で事後検査（スコープ外残置
+# 疑いの報告）を行い、スコープ内をリバートしてから fail-closed で exit 1 する
+# （ループ停止。以降のスキルも同じ git 障害に当たるため skip 継続に意味がない）。
 if ! git -c status.renames=false status --porcelain -z -uall > "${SNAP_AFTER}"; then
   echo "エラー: npx 実行後の git status 取得に失敗しました。porcelain レコードでの前後比較ができません。" >&2
   if REPO_STATE_AFTER="$(repo_state_signature)"; then
@@ -1643,7 +1552,7 @@ if ! git -c status.renames=false status --porcelain -z -uall > "${SNAP_AFTER}"; 
   # 保全のためスキップした場合、worktree には未退避の変更が残っている（「リバート
   # しました」は虚偽になる）。REVERT_IN_SCOPE_SKIPPED で分岐し、その場合は
   # revert_in_scope 自身が案内済みの警告と重複させず、完了を意味する文言は出さない
-  # （Bugbot Medium 指摘: Stale revert success after backup skip / Issue #418 系）。
+  # （Issue #418 系）。
   if [[ "${REVERT_IN_SCOPE_SKIPPED:-0}" -ne 1 ]]; then
     echo "スコープ内（skills-lock.json / .agents/skills/${SKILL_NAME}/）の変更はリバートしました。" >&2
   fi
@@ -1668,12 +1577,11 @@ fi
 # だったスコープ外ファイルの内容・モードだけの上書きや、ディレクトリの chmod・
 # ディレクトリ向け symlink の変更・.gitignore 対象ファイルの上書きは porcelain
 # レコードに現れないため、シグネチャ側の不一致だけがそれを検出できる。
-# 他の skip 分岐と異なり、ここは
-# continue ではなく exit 1 でループ全体を停止する。スコープ外の汚染は自動リバート
-# されないため、続行すると最終報告が「clean」でも実際は dirty 残留となり、この
-# issue が問題視している状態そのものになる。この時点までに承認・stage 済みの他
-# スキル分は index に残ったままになるため、停止後は `git status` で確認し、必要な
-# 分だけ `git commit` するか `git reset` で戻すかを判断すること。
+# 他の skip 分岐と異なり、ここは continue ではなく exit 1 でループ全体を停止する。
+# スコープ外の汚染は自動リバートされないため、続行すると最終報告が「clean」でも実際は
+# dirty 残留となる。この時点までに承認・stage 済みの他スキル分は index に残ったままに
+# なるため、停止後は `git status` で確認し、必要な分だけ `git commit` するか
+# `git reset` で戻すかを判断すること。
 if ! cmp -s "${SNAP_FILTERED_BEFORE}" "${SNAP_FILTERED_AFTER}" \
   || [[ "${REPO_STATE_BEFORE}" != "${REPO_STATE_AFTER}" ]]; then
   echo "エラー: npx skills add がスコープ外（skills-lock.json / .agents/skills/${SKILL_NAME}/ 以外）へ書き込みました。" >&2
@@ -1770,11 +1678,9 @@ UNTRACKED_LIST_FILE="$(mktemp)"
 trap 'rm -f "${UNTRACKED_LIST_FILE}"' EXIT
 if ! git ls-files -z --others --exclude-standard -- ".agents/skills/${SKILL_NAME}/" > "${UNTRACKED_LIST_FILE}"; then
   echo "エラー: git ls-files が失敗し、未追跡ファイルの一覧化を確認できません。中止します。" >&2
-  # scripts/skills-lock-update.sh の同一経路（preview_untracked）と揃える（Bugbot
-  # Medium 指摘: 従来はここで exit 1 するだけで、npx が成功させた契約範囲（tracked 分）
-  # の復元も行われなかった）。ただし git ls-files が壊れている以上「何が npx の新規
-  # 作成物か」を安全に確定できないため、破壊的な git clean -fd は行わない（codex P0
-  # 指摘の再発防止）。tracked 分の非破壊的な復元（restore_contract_scope || true →
+  # scripts/skills-lock-update.sh の同一経路（preview_untracked）と揃える。git ls-files が
+  # 壊れている以上「何が npx の新規作成物か」を安全に確定できないため、破壊的な
+  # git clean -fd は行わない。tracked 分の非破壊的な復元（restore_contract_scope || true →
   # revert_in_scope 1〔非破壊モード。git clean -fd / remove_new_ignored_in_scope を
   # スキップする〕）だけを行い、未追跡ファイルは手動確認へ委ねる。
   if [[ "${LOCAL_PATCH_GUARD}" == true ]]; then
@@ -1854,13 +1760,11 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
   # そのまま使う(ここで取り直すと、同期前 check 以降の範囲外変更が基準へ取り込まれてしまう)
 
   # 実行対象は worktree の checker ではなく、承認済み blob(CHECKER_APPROVED_HASH)を
-  # 毎回再検証してから取り出す一時ファイル(run_checker。Step 4 で定義済み)。checker
-  # の各実行（同期前 check・apply・最終検証）の直前に必ずハッシュを再検証するため
-  # （codex P1 指摘: verify-then-execute の隣接。apply は checker 自身のコードを実行
-  # するため一時ファイルを自己書換えし得るが、直後の最終検証は run_checker が再検証
-  # してから承認済み blob へ書き戻すので、書き換えられた内容がそのまま実行されることは
-  # ない）、ここで個別に取り出し・検証するコードは不要（呼び出しごとに run_checker が
-  # 行う）。
+  # 毎回再検証してから取り出す一時ファイル(run_checker。Step 4 で定義済み)。checker の
+  # 各実行（同期前 check・apply・最終検証）の直前に必ずハッシュを再検証する（apply は
+  # checker 自身のコードを実行するため一時ファイルを自己書換えし得るが、直後の最終検証は
+  # run_checker が再検証してから承認済み blob へ書き戻すので、書き換えられた内容が
+  # そのまま実行されることはない）。ここで個別に取り出し・検証するコードは不要。
 
   # local patch の再適用(--3way fallback や index 復元により、patch 対象 file や durable patch が
   # stage されることがある)
@@ -1911,7 +1815,7 @@ fi
 差分がある場合のみ、ユーザーに「この更新を適用してよいか」を確認する。Step 5 のプレビュー
 （`git ls-files --others --exclude-standard`）・本 Step の拒否（`git clean -fd`）・Step 7 の承認
 （`git add`）は同じ集合（追跡ファイルの変更 + 非 ignore の未追跡ファイル）を対象とする。
-`.gitignore` 対象はいずれの経路でも扱わない。
+`.gitignore` 対象はいずれの経路でも扱わない。承認が無く対話もできない場合は、却下と同じ手順（下記の `restore_contract_scope` 等の戻し手順）で契約範囲を戻してから、差分を報告して止める（`npx skills add` は本 Step より前に書き換え済みのため、戻さずに止めない）。
 
 **checker を持つリポジトリの場合、承認の対象は Step 5.5 完了後の最終 diff**（upstream 更新 + local patch 再適用を含む commit 候補。durable patch `scripts/local-patches/` を含む）であり、次で確認する。`git diff HEAD` は未追跡ファイルを表示しないため、未追跡分は Step 5 と同じ手順（`git ls-files -z --others --exclude-standard` で列挙し、`git diff --no-index` / バイナリ判定で内容表示）を契約範囲の path に対して再実行し、tracked 差分と合わせて提示する:
 
@@ -1939,9 +1843,9 @@ git diff HEAD -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-
 # 分離し、一方の失敗が他方の復元を阻害しないようにする。
 
 # skills-lock.json は初回生成（未追跡）だと pathspec エラーで非ゼロ終了するため、
-# revert_in_scope（行 1046-1084）と同じく || true で吸収する。errexit 有効シェルで
-# 実行された場合でもここで途中 abort しない（Issue #417。復元の成否はこの直後の
-# 検証ブロックで確認する — || true は成功扱いではなく確認を先送りするだけ）
+# revert_in_scope と同じく || true で吸収する。errexit 有効シェルで実行された場合でも
+# ここで途中 abort しない（Issue #417。復元の成否はこの直後の検証ブロックで確認する —
+# || true は成功扱いではなく確認を先送りするだけ）
 git checkout -- skills-lock.json 2>/dev/null || true
 git checkout -- ".agents/skills/${SKILL_NAME}/" 2>/dev/null || true
 # skills-lock.json が npx の初回生成で未追跡のまま残っている場合、上の checkout は
@@ -1950,16 +1854,15 @@ git checkout -- ".agents/skills/${SKILL_NAME}/" 2>/dev/null || true
 # ここで未追跡のまま見つかる skills-lock.json は今回の npx が生成したものに限られ、
 # 安全に削除できる。削除しないと直後の検証(git ls-files --others)が必ず残留を検出し、
 # 「却下時は当該スキルのみリバートして次スキルへ continue」という契約を満たせないまま
-# 必ず exit 1 になる(Issue #417 P1 指摘)。
-# この経路は checker を持たない(このフェンスは checker 非経由の単純リバート専用)ため、
-# 未追跡 skills-lock.json の唯一の出所は npx の初回生成であり削除して問題ない。checker
-# を持つリポジトリ向けの却下フェンス（下記「checker を持つリポジトリの却下は次を使う」節）が
-# 同種のファイルを削除せず一時ディレクトリへ退避するのは、checker（apply）が既存内容を
-# 書き換えた唯一のコピーである可能性があるためで、事情が異なる（この経路にはその可能性がない）。
+# 必ず exit 1 になる(Issue #417)。
+# この経路は checker 非経由の単純リバート専用のため、未追跡 skills-lock.json の出所は
+# npx の初回生成だけである。checker を持つリポジトリ向けの却下フェンス（下記「checker を
+# 持つリポジトリの却下は次を使う」節）が削除せず一時ディレクトリへ退避するのは、checker
+# （apply）が既存内容を書き換えた唯一のコピーであり得るためで、事情が異なる。
 # `[[ -n "$(cmd)" ]]` は cmd の終了コードを見ず出力の空/非空だけを見るため、権限・index
-# 異常等で cmd 自体が失敗して空出力になった場合「残留なし」と誤判定し得る（Issue #417
-# P0 指摘）。command substitution は if の条件式として実行し、失敗時は変数を空のまま
-# fail-closed で停止してから、内容の空・非空を判定する
+# 異常等で cmd 自体が失敗して空出力になった場合「残留なし」と誤判定し得る（Issue #417）。
+# command substitution は if の条件式として実行し、失敗時は変数を空のまま fail-closed で
+# 停止してから、内容の空・非空を判定する
 if ! LOCK_UNTRACKED_CHECK="$(git ls-files -z --others --exclude-standard -- skills-lock.json)"; then
   echo "エラー: skills-lock.json の未追跡判定(git ls-files)に失敗しました。空出力を「未追跡なし」と誤判定しないため停止します(fail-closed)。権限・index 異常等の原因を解消してから再実行してください。" >&2
   exit 1
@@ -1982,7 +1885,7 @@ fi
 #   されない）であり、tracked な残留変更を検出する
 # - ただし `git diff --quiet` は untracked ファイルを無視するため、これだけでは
 #   skills-lock.json が初回生成（未追跡）のまま残置されたケースを見逃す（`|| true` が
-#   吸収する pathspec エラーと同じ穴。Bugbot 指摘）。`git ls-files --others` で untracked
+#   吸収する pathspec エラーと同じ穴）。`git ls-files --others` で untracked
 #   の残留も別途検出する
 # 却下リバートが未完了のまま次スキルへ進むと、残留した却下対象の変更が次スキルの承認時に
 # 一緒に stage され得るため、warning のみで継続してはならない（Issue #417。checker を
@@ -1990,8 +1893,8 @@ fi
 # 扱いに揃える）
 # `[[ -n "$(git status ...)" ]]` / `[[ -n "$(git ls-files ...)" ]]` は command substitution
 # の終了コードを見ないため、権限・index 異常等でコマンド自体が失敗して空出力になった場合
-# 「残留なし」と誤判定し得る（Issue #417 P0 指摘。CI codex-review 指摘と同一の穴）。
-# 各出力を個別代入し、取得失敗を明示的に検知してから内容判定へ進む
+# 「残留なし」と誤判定し得る（Issue #417）。各出力を個別代入し、取得失敗を明示的に検知
+# してから内容判定へ進む
 if ! FINAL_STATUS_OUT="$(git status --porcelain -- ".agents/skills/${SKILL_NAME}/")"; then
   echo "エラー: ${SKILL_NAME} 配下の残留確認(git status)に失敗しました。空出力を「残留なし」と誤判定しないため停止します(fail-closed)。原因を解消してから再実行してください。" >&2
   exit 1
@@ -2099,11 +2002,10 @@ fi
 # 未追跡も残っていない(未追跡は上で退避済み)ことを実測してから完了と扱う。判定基準は
 # HEAD ではなく PRE_SYNC_TREE(HEAD 基準の git status --porcelain だと、同期前から存在した
 # 正当な staged 変更が復元完了後も非空として現れ、正しい復元を誤報する)。
-# 検証に失敗した場合はループ全体を exit 1 で停止する（Bugbot Medium 指摘: 従来はここで
-# echo するだけで完了扱いのまま次スキルへ continue していたため、「却下時は fail-closed」
-# というコメント上の意図に反し、半端に復元された契約範囲（skills-lock.json・当該スキル・
+# 検証に失敗した場合はループ全体を exit 1 で停止する。echo するだけで完了扱いのまま
+# 次スキルへ continue すると、半端に復元された契約範囲（skills-lock.json・当該スキル・
 # durable patch のいずれかに raw upstream + 同期前 check の stage が混在した状態）のまま
-# 次スキルの npx が走り得た）。この却下フェンスは Step 4・5.5 の自動失敗経路と異なり
+# 次スキルの npx が走り得る。この却下フェンスは Step 4・5.5 の自動失敗経路と異なり
 # ループの外側でユーザーが実行する手動手順のため、`revert_in_scope` の「次スキルへ
 # continue」という既定動作とは切り離し、検証失敗時だけ明示的に停止する。
 if git diff --cached --quiet "${PRE_SYNC_TREE}" -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/ \
@@ -2146,7 +2048,7 @@ EOF
 )"
 ```
 
-ユーザーにコミットしてよいか確認する。承認済みスキルが1つもなかった場合（全却下・差分なし）はコミットせずその旨を伝える。
+ユーザーにコミットしてよいか確認する（承認が無ければコミットせず、stage 済みのまま報告して止める）。承認済みスキルが1つもなかった場合（全却下・差分なし）はコミットせずその旨を伝える。
 
 ## skills CLI のバージョン固定と更新手順
 
@@ -2206,9 +2108,23 @@ EOF
 - **skills CLI は固定版で実行する**: `npx skills add` はバージョン未固定で実行しない。固定版の決め方・更新手順は「skills CLI のバージョン固定と更新手順」節を参照
 - **local patch の保護（checker を持つリポジトリでは必須）**: npx 前の checker（Step 4）→ 承認前の再適用 + 最終検証 + 契約範囲検証（Step 5.5）→ 成功時のみ stage（Step 7）の順を省略しない。checker 非 0・台帳（`.agents/skills/LOCAL-PATCHES.md`）のみ存在は fail-closed で停止し、local patch が欠けた状態を stage・commit しない。apply が変更し得る durable patch（`scripts/local-patches/`）は承認（Step 6 の最終 diff + 未追跡プレビュー再実行）・stage（Step 7）・却下（`PRE_SYNC_TREE` からの index 復元）のすべてで同じ集合として扱い、未 stage の WIP が同 directory に残る状態では同期を開始しない（Step 4 で fail-closed）。`computedHash` は upstream 版の値を維持する
 
+## ユーザーへの確認と承認
+
+ユーザーに確認し、明示的な返答を待つ。選択肢は番号付きで示す。「skills-lock を同期して」等、このスキルを起動する依頼そのものは、この確認の承認にならない。起動時の指示にこの確認を省くことの明示（例: 「確認なしでコミットまで進めて」）が含まれている場合に限り、確認を省いて続行してよい。承認が無く対話もできない環境（非対話実行）では、書き込み・実装をせず確認事項を報告して止める。ただし Step 6 の時点では `npx skills add` が作業ツリーを書き換え済みのため、Step 6 で承認が無いときは契約範囲を戻してから（`restore_contract_scope`）、確認事項を報告して止める。
+
+| Step | 確認内容 | 起動時の承認で省略 |
+|------|---------|------------------|
+| Step 3 | `source` が `Fandhe-AI/<repo>` に一致しないエントリの skip と警告 | 不可（安全弁による中止） |
+| Step 4 | checker スクリプトの由来・内容・blob hash を提示して実行を承認する | 不可（未レビューのコード実行を防ぐ安全上の確認。Step 4 冒頭の確認を参照） |
+| Step 4 | スコープ外書き込み検出・clean ガード不成立による停止 | 不可（安全弁による中止） |
+| Step 6 | スキルごとの「この更新を適用してよいか」 | 可（更新の適用を明示承認している場合） |
+| Step 8 | 承認済みスキルをまとめてコミットしてよいか | 可（コミットまでの明示承認がある場合） |
+
+安全上の確認は起動時の承認でも省けない。検出時は必ず止めて報告する。
+
 ## sandbox 環境での実行
 
-このスキルはネットワーク越しの GitHub 操作（`npx skills add` による上流リポジトリの取得等）を必須とする。該当コマンドはコマンド単位で sandbox 無効にして実行する。ネットワーク遮断を解除できない環境では実行できない。
+このスキルはネットワーク越しの GitHub 操作（`npx skills add` による上流リポジトリの取得等）を必須とする。該当コマンドはコマンド単位で sandbox 無効にして実行する。ネットワーク遮断を解除できない環境では実行できない。`.git`（`git add`・`git commit`・`git checkout`）と `.agents/skills/`・`skills-lock.json` へ書き込むため、`npx` のキャッシュ（ホーム配下）にも書き込む。`.git`・`.agents` が読み取り専用の sandbox（Codex の既定）では書き込みに失敗する。Codex の対話セッションでは承認による昇格を求める。`codex exec` では昇格要求が出ないため、書けなかったことを報告して止める。その場合は「`.git` を書き込み可にした permissions プロファイルで実行し直す」か「ユーザーが自分で実行する」を案内する。
 
 ## 検証
 

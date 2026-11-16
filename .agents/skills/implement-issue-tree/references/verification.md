@@ -355,8 +355,8 @@ node --test skills/implement-issue-tree/tests/dep-reeval.test.mjs
 の状態ファイル復元。`{ runs, headSha }` を返す） / `optinRecordMarkerLine`（sha・result・command の順で束縛） /
 `renderOptinRecordSection`（`<sha>`/`<result>` プレースホルダのテンプレート） /
 `classifyOptinRecordGate`（headRefOid の検証を含む） / `combineOptinRecordGate`（`fixOptin`・
-`gateHeadSha` の sha 一致判定を含む） / `optinRecordVerifyPrompt`（`--json body,headRefOid` の
-単一取得） / `mergeExecutePrompt` の `expectedHeadSha` パラメータ）を変更した場合の確認手順。
+`gateHeadSha` の sha 一致判定を含む） / `observeOptinRecord`（`observe-pr.sh --mode optin-record` の封筒の照合と、合格時の独立な 2 回目の観測との一致 `pairOptinRecordObservations`。`--json body,headRefOid` の
+単一取得はスクリプト内） / `mergeExecutePrompt` の `expectedHeadSha` パラメータ）を変更した場合の確認手順。
 
 ```bash
 # 1. merge-exec のコンテキスト分離契約（Issue #145 / #160）が退行していないこと。
@@ -370,7 +370,7 @@ awk '/^function mergeExecutePrompt\(/{f=1;print;next} f&&/^function /{exit} f' \
   skills/implement-issue-tree/scripts/implement-issue-tree.src.js | grep -c -- '--json body'
 
 # 2. マージ前ゲートが新規マージ経路（!recoveryOnly）にのみ配線されていること。
-grep -n 'optinRecordVerifyPrompt(' skills/implement-issue-tree/scripts/implement-issue-tree.src.js
+grep -n 'observeOptinRecord(' skills/implement-issue-tree/scripts/implement-issue-tree.src.js
 
 # 3. ビルド鮮度・サイズ
 node skills/implement-issue-tree/scripts/build-workflow.mjs
@@ -384,7 +384,7 @@ node --test skills/implement-issue-tree/tests/optin-tests-gate.test.mjs
 期待結果: 手順 1
 のいずれのコマンドも出力 `0`（`mergeExecutePrompt` の関数本体に `optin`
 文字列・`--json body` が含まれないこと。コンテキスト分離の非退行）。手順 2 の
-`optinRecordVerifyPrompt(` 呼び出しがドライバ部に 1 箇所のみ。手順 3 のビルドが `--check` 通過・
+`observeOptinRecord(` 呼び出しがドライバ部に 1 箇所のみ。手順 3 のビルドが `--check` 通過・
 500,000 B 未満。手順 4 が全 pass・fail 0（宣言なしイシューでのプロンプト出力完全一致テストを
 含む＝既定無効の確認）。
 

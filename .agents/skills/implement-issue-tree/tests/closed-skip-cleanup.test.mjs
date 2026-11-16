@@ -11,7 +11,7 @@
 //       3. 実装スクリプト全体（tests/lib/stub-run.mjs）でのホスト結合。
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { importDefinitions, runScript, BASE_ARGS } from './lib/stub-run.mjs'
+import { importDefinitions, runScript, BASE_ARGS, driverPart } from './lib/stub-run.mjs'
 
 globalThis.args = { parent: 1, skillDir: '/opt/skills/implement-issue-tree' }
 const SHA = 'c'.repeat(40)
@@ -76,6 +76,13 @@ test('closedCleanupGate: 1 ランの上限と予算不足を表で固定する�
     [{ limit: 81, used: 30, attempted: 0, reserveImplement: true }, 'defer-budget'],
   ]
   for (const [input, want] of rows) assert.equal(m.closedCleanupGate(input), want, JSON.stringify(input))
+})
+
+test('駆動部: closed の後始末のゲートは終了時の照合の予備（agentBudget.terminalVerify）を差し引いた limit で判定する (PR #810 codex P1)', () => {
+  assert.equal((driverPart.match(/closedCleanupGate\(/g) ?? []).length, 1)
+  assert.ok(driverPart.includes('closedCleanupGate({ limit: agentBudget.limit - agentBudget.terminalVerify, used: agentBudget.used,'))
+  // 予備はゲートより前（キュー確定の直後）に見積もり直す
+  assert.ok(driverPart.indexOf('agentBudget.terminalVerify = terminalVerifyReserve(endStateMax)') < driverPart.indexOf('closedCleanupGate('))
 })
 
 test('prBindingValuesFetched: 4 項目すべてが取得できた値のときだけ true（番兵が 1 つでも混じれば false）', () => {
