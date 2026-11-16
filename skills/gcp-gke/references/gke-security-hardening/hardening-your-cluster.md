@@ -69,6 +69,8 @@ Available in GKE version 1.32.2-gke.1234000 and later. Specify `LIMITED` for the
 - Node auto-upgrade is enabled by default for clusters created with the console since June 2019 and with the GKE API since November 11, 2019. Node pools without auto-upgrade should be upgraded at least once a month.
 - Third-party secret tools: if they run in a cluster, use a different cluster than the workloads, store tool data in Cloud Storage or Spanner, and expose them with an internal passthrough Network Load Balancer. Kubernetes Secrets are encrypted at the storage layer by default.
 - Workload Identity Federation for GKE here is distinct from Workload Identity Federation for external workloads (AWS / Azure / OIDC), which is in `gcp-foundation`.
+- Policy Controller, recommended above for admission control, is deprecated as of November 12, 2026 and reaches end of support on December 31, 2027; clusters on GKE 1.39 and later don't support it. For new setups use the PodSecurity admission controller or Kubernetes ValidatingAdmissionPolicies (self-managed OPA Gatekeeper is the other migration target). See [policy-controller-deprecation.md](../config-sync-policy/policy-controller-deprecation.md).
+- Source (deprecation): https://docs.cloud.google.com/kubernetes-engine/docs/deprecations/policy-controller (retrieved 2026-11-16)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

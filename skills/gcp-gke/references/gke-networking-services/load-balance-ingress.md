@@ -93,6 +93,8 @@ spec:
               number: 80
 ```
 
+To reserve a global static external IP address, include the `kubernetes.io/ingress.global-static-ip-name` annotation in the Ingress object. The block below shows only the part to add: put the annotation under `metadata.annotations` of the `my-ingress` manifest above, keep its `spec.rules`, and apply the whole manifest (applying the block on its own is rejected because an Ingress needs `spec.rules` or `spec.defaultBackend`).
+
 Adapted (not in the official docs): the source's static IP example contained a stray closing fence inside the YAML; the stray line was removed.
 
 ```yaml

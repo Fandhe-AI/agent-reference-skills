@@ -72,7 +72,7 @@ Formulas: `N = 2^(32-S) - 4` (S between 9 and 29); `S = 32 - ceil(log2(N+4))`; f
 
 ### Max Pods from a Pod CIDR
 
-`M = 31 - ceil(log2(Q))`, `HM = 32 - M`, `HD = 32 - DS`, `MN = 2^(HD-HM)`, `MP = MN * Q` (Q = max Pods per node). The source says "For Autopilot clusters, the value of `Q` is fixed at 32"; on Autopilot 1.28 and later the maximum Pods per node is set dynamically between 8 and 256, so use the actual value for your nodes (see Notes). Example: `/17` with Q=32 gives 512 nodes and 16,384 Pods.
+`M = 31 - ceil(log2(Q))`, `HM = 32 - M`, `HD = 32 - DS`, `MN = 2^(HD-HM)`, `MP = MN * Q` (Q = max Pods per node). The source says "For Autopilot clusters, the value of `Q` is fixed at 32"; on Autopilot 1.28 and later the maximum Pods per node is set dynamically between 8 and 256, so use the actual value for your nodes (see Notes). Example: `/17` with Q=32 gives M = 26, HM = 6, HD = 15, MN = 2^(15-6) = 512 nodes and MP = 512 * 32 = 16,384 Pods.
 
 ### Max Services by Services secondary range
 
