@@ -446,7 +446,7 @@ fi
 
 **更新手順**:
 1. Step 3-5 フェンス内の `SKILLS_CLI_VERSION` を更新する（このスキル内での正の定義箇所はここ 1 箇所のみ）
-2. `node --test skills/init-claude/tests/*.mjs` で exact semver・実行行の固定を検証する
+2. `node --test dev/init-claude/tests/*.mjs` で exact semver・実行行の固定を検証する
 3. 1 リポジトリで実際に実行し、差分が正常であることを確認する
 4. `chore(init-claude): skills CLI を X.Y.Z へ更新` でコミットする
 5. 同じ `skills` CLI を固定する `update-claude` / `sync-skills-lock` の同名節も同時更新することを推奨する（値の同期は必須ではないが、乖離した場合はどちらかの節にその旨を記録する）

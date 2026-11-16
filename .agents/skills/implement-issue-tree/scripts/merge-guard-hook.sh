@@ -193,6 +193,18 @@ allow_exit() {
 # （init-codex の agent-guard.sh と同じ方式）。
 trap 'if [ "$RESULT_DONE" -eq 0 ]; then deny "想定外の異常終了のため deny（fail-closed）"; fi' EXIT
 
+# 判定の照合（grep -qE）の唯一の入口。$1 の文字列が拡張正規表現 $2 に一致すれば 0、しなければ 1 を返す。
+# grep の終了コード 2 以上（構文エラー・入出力エラー）は deny で終わる。2 以上を不一致と同じに扱うと、
+# deny の証拠照合が黙って不成立になり許可へ倒れる（fail-open）ため。終了コードはパイプ末尾の grep の値
+# （pipefail は使わない。grep -q が一致で先に終わると printf が SIGPIPE を受けるため）。
+# deny の exit を効かせるため、$(...)・パイプの中では呼ばず、本体のシェルで呼ぶ契約。
+match_ere() {
+  local rc=0
+  printf '%s' "$1" | grep -qE "$2" || rc=$?
+  [ "$rc" -le 1 ] || deny "判定の照合（grep）に失敗したため deny（fail-closed）"
+  return "$rc"
+}
+
 input=$(cat) || deny "stdin の読み取りに失敗したため deny（fail-closed）"
 
 # main スレッドの入力（agent_id フィールドを含まない hook JSON）は jq の有無より前に許可する。
@@ -240,10 +252,10 @@ cmd_clean=$(printf '%s' "$cmd" | LC_ALL=C tr -d '\001-\010\013\014\016-\037\177'
 # （eval・base64 復元・変数間接呼び出し・コマンド置換 $(...) 等）は文字列照合では原理的に
 # 防げない。本 hook は完全なサンドボックスではない（実強制は「自動マージを行わない」方針と
 # サーバ側 branch protection が担う。ファイル冒頭コメント・SKILL.md 参照）。
-if printf '%s' "$cmd" | grep -qE "[$]'"; then
+if match_ere "$cmd" "[$]'"; then
   deny "ANSI-C クォート構文（\$'...'）を含むコマンドは deny（デコードで難読化されたマージ経路を防ぐ best-effort。fail-closed）"
 fi
-if printf '%s' "$cmd" | grep -qE '[$]\{?IFS'; then
+if match_ere "$cmd" '[$]\{?IFS'; then
   deny "IFS 由来の展開（\$IFS / \${IFS} / \${IFS%?} 等）を含むコマンドは deny（トークン分割難読化を防ぐ best-effort。fail-closed）"
 fi
 
@@ -394,8 +406,8 @@ scan_tok=$(tokenize_of "$scan_norm") || deny "コマンドのトークン化に�
 
 # 暗黙 POST 用の証拠照合（走査対象のみ。evidence() の scan 版）。
 scan_evidence() {
-  printf '%s' "$scan_norm" | grep -qE "$1" && return 0
-  printf '%s' "$scan_tok" | grep -qE "$1"
+  match_ere "$scan_norm" "$1" && return 0
+  match_ere "$scan_tok" "$1"
 }
 
 # deny 証拠の部分文字列照合。メタ文字を保持した norm とトークン分割済みの tokenized の両方を
@@ -403,8 +415,8 @@ scan_evidence() {
 # 例: `merges;echo` の glued 境界は tokenized 側で、`pulls/$PR/merge` の `$` 混じり URL は
 # norm 側で検出される）。
 evidence() {
-  printf '%s' "$norm" | grep -qE "$1" && return 0
-  printf '%s' "$tokenized" | grep -qE "$1"
+  match_ere "$norm" "$1" && return 0
+  match_ere "$tokenized" "$1"
 }
 
 # コマンド全体を引用符を考慮してトークンに分け、1 行 1 トークンで出す（Issue #783。レビュー承認の
@@ -517,12 +529,15 @@ if contains_subsequence "$all_nf" gh api; then
   # 呼び出しやコメント（`... -f event=APPROVE # -X GET`）にあるだけで成立してしまうため置かない。
   # `GET ... -f event=APPROVE` を deny するのは意図した過検知）。
   if evidence 'pulls/.*/reviews([?/[:space:]]|$)'; then
-    if printf '%s' "$tokenized" | grep -qE '(^|[[:space:]])--input([[:space:]]|=|$)'; then
+    if match_ere "$tokenized" '(^|[[:space:]])--input([[:space:]]|=|$)'; then
       deny "subagent からの reviews API への --input（本文を判定できない）は禁止（承認の自作自演を防ぐ）"
     fi
     # event の検査はフィールド指定の引数に限る。--jq / -q / --template / -t の値（フィルタ式）は除く。
     # 引用符を追う分割が信用できない（閉じ忘れ・awk 失敗）ときは、引用符を除いた norm を空白で割る。
-    rt_keep=$(shell_tokens keep) || rt_keep=$(printf '%s' "$norm" | tr ' ' '\n')
+    # 分割の tr が失敗すると rt_keep が空になり event の検査を飛ばすため、その失敗は deny にする。
+    if ! rt_keep=$(shell_tokens keep); then
+      rt_keep=$(printf '%s' "$norm" | tr ' ' '\n') || deny "判定の分割（tr）に失敗したため deny（fail-closed）"
+    fi
     rest_text=""; rest_drop=0
     while IFS= read -r rest_tok; do
       if [ "$rest_drop" -eq 1 ]; then rest_drop=0; continue; fi
@@ -573,14 +588,14 @@ $gq_vals
 EOF_GQ
     [ "$gq_n" -ge 1 ] || deny "subagent からの GraphQL レビュー作成・送信は event が COMMENT / REQUEST_CHANGES のリテラルで指定されない限り禁止"
     if evidence '(^|[^A-Za-z0-9_])APPROVE([^A-Za-z0-9_]|$)' \
-      || printf '%s' "$norm" | grep -qE '=[[:space:]]*@'; then
+      || match_ere "$norm" '=[[:space:]]*@'; then
       deny "subagent からの GraphQL レビュー作成・送信に APPROVE・@file が含まれる形は禁止"
     fi
   fi
   # GraphQL の query を @file / 変数 / コマンド置換（先頭が @ か $）や --input で渡す形は中身を見られない。
   if evidence '(^|[^A-Za-z0-9_])graphql([^A-Za-z0-9_]|$)'; then
     if evidence '(^|[[:space:]])(-[A-Za-z]*[fF]|--(raw-)?field)[[:space:]=]*query[[:space:]]*=[[:space:]]*[@$]' \
-      || printf '%s' "$tokenized" | grep -qE '(^|[[:space:]])--input([[:space:]]|=|$)'; then
+      || match_ere "$tokenized" '(^|[[:space:]])--input([[:space:]]|=|$)'; then
       deny "subagent からの GraphQL の query を @file / 変数 / --input で渡す形（中身を判定できない）は禁止"
     fi
   fi
@@ -606,7 +621,7 @@ EOF_GQ
   if evidence "(^|[[:space:]])(-[A-Za-z]*X|--method)(=|[[:space:]]*)${m_write}([^A-Za-z]|\$)"; then
     explicit_write=1
   elif scan_evidence '(^|[[:space:]])(-[A-Za-z]*[fF](=|[[:space:]]*)[^[:space:]=-][^[:space:]=]*=|--(raw-)?field([[:space:]]|=)|--input([[:space:]]|=|$))' \
-    && ! printf '%s' "$norm" | grep -qE '(^|[[:space:]])(-[A-Za-z]*X|--method)(=|[[:space:]]*)[Gg][Ee][Tt]([^A-Za-z]|$)'; then
+    && ! match_ere "$norm" '(^|[[:space:]])(-[A-Za-z]*X|--method)(=|[[:space:]]*)[Gg][Ee][Tt]([^A-Za-z]|$)'; then
     implicit_write=1
   fi
   if [ "$explicit_write" -eq 1 ] || [ "$implicit_write" -eq 1 ]; then
@@ -635,7 +650,7 @@ done
 # strip_flags 後には残らない。tokenized（フラグ除去前・メタ文字区切り済み）に対して判定する
 # ことで、`--approve;echo` のようにメタ文字が空白なしで後置された形の境界判定漏れも防ぐ。
 if contains_subsequence "$all_nf" gh pr review \
-  && printf '%s' "$tokenized" | grep -qE '(^|[[:space:]])--approve([[:space:]]|$|=)'; then
+  && match_ere "$tokenized" '(^|[[:space:]])--approve([[:space:]]|$|=)'; then
   deny "subagent からの gh pr review --approve は禁止"
 fi
 
@@ -657,7 +672,8 @@ review_scan() {
   if [ "$mode" = normal ]; then
     rt=$(shell_tokens strip) || return 2
   else
-    rt=$(printf '%s' "$tokenized" | tr ' ' '\n') || return 2
+    # flat は最後の見直しで、ここで 2 を返すと「承認なし」と同じに扱われる。分割の失敗は deny にする
+    rt=$(printf '%s' "$tokenized" | tr ' ' '\n') || deny "判定の分割（tr）に失敗したため deny（fail-closed）"
   fi
   while IFS= read -r tok; do
     if [ "$mode" = normal ] && [ "$tok" = "$SEP_MARK" ]; then st=0; skip=0; continue; fi

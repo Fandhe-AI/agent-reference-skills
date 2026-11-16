@@ -2062,7 +2062,7 @@ EOF
 
 **更新手順**:
 1. `scripts/skills-lock-update.sh` の `SKILLS_CLI_VERSION` と、本ファイルの Step 4 フェンス内の `SKILLS_CLI_VERSION` を**同一コミット**で更新する（値は完全一致させる）
-2. `node --test skills/sync-skills-lock/tests/` で両ファイルの一致を検証する
+2. `node --test dev/sync-skills-lock/tests/` で両ファイルの一致を検証する
 3. **`universal` が新版でも有効な agent id であることを確認する**。無効値へ変わっていた場合、CLI はエラー表示のうえ `exit 0` の no-op になる（実測: `skills@1.5.22` で確認済み）ため、気付かずに運用すると「同期したつもりで何も更新されていない」状態になる。確認方法: スクラッチリポジトリで 1 スキルを実際に `--agent universal` で実行し、出力に `Invalid agents` が出ないこと、および `.agents/skills/<name>/` が実際に更新されることを確認する
 4. 1 スキルで実際に実行し、差分が正常であること・書き込みが `.agents/skills/<name>/` と `skills-lock.json` のみに限定されていること（`git status --porcelain` に `.claude/` 等の他ツリーが現れないこと）を確認する
 5. `chore(sync-skills-lock): skills CLI を X.Y.Z へ更新` でコミットする

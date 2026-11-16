@@ -4,7 +4,7 @@
 
 Workflow ランタイムは 1 ランあたりのエージェント数に上限を持つ。上限に達したランは `completed` として返るため、
 予算を持たないスクリプトは PR 作成直後の未監視のまま終わる（Issue #592）。本書は上限値の根拠、数え方、
-新規着手を止める式、止めたあとに返す情報をまとめる。実装は `scripts/implement-issue-tree.src.js` の
+新規着手を止める式、止めたあとに返す情報をまとめる。実装は `dev/implement-issue-tree/scripts/implement-issue-tree.src.js` の
 `agentBudget` 宣言部（定数・`agentBudgetHold`）と駆動部冒頭の `wrapAgentCounting` による差し替え。
 
 ## 上限値 1,000 の根拠
@@ -126,7 +126,7 @@ monitoring 再開は予算検査のあとに再開ゲート（残置 worktree �
   し、ゲート評価はその後なので、「ゲートを今回再評価済み × 予算保留」は存在しない。併存するゲートは必ず前回の評価である。
 - 新規着手抑止のラッチは、予算検査のあとに判定される。予算で保留したノードにもラッチは成立し得る（両方を示す）。再開ノードにはラッチは効かない。
 
-到達できない組み合わせ（ゲート理由を持つ新規着手・verify-close の再開、再開へのラッチ、前提待ちのノードのゲート理由・予算保留）は表から外す。テスト（`tests/agent-call-budget.test.mjs`）が
+到達できない組み合わせ（ゲート理由を持つ新規着手・verify-close の再開、再開へのラッチ、前提待ちのノードのゲート理由・予算保留）は表から外す。テスト（`dev/implement-issue-tree/tests/agent-call-budget.test.mjs`）が
 上の軸 × 種別の全組み合わせを純粋関数で網羅し、代表行は stub agent のランで実際にその状態へ到達して確かめる。
 
 ## 数え方（スクリプトの `agent()` 1 回 = ランタイムのエージェント 1 件）
