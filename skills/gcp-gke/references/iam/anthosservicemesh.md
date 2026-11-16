@@ -1,0 +1,84 @@
+---
+source: https://docs.cloud.google.com/iam/docs/roles-permissions/anthosservicemesh
+---
+
+# Cloud Service Mesh IAM roles and permissions
+
+## Signature / Usage
+
+Predefined roles of `anthosservicemesh` (role ID, description, included permissions) and, for each permission, the roles that contain it.
+
+### Roles
+
+#### Mesh Config Admin (`roles/meshconfig.admin`)
+
+- Launch stage: Beta
+- Full access to all mesh configuration resources
+- Permissions (1): `meshconfig.projects.init`
+
+#### Mesh Config Viewer (`roles/meshconfig.viewer`)
+
+- Launch stage: Beta
+- Read access to mesh configuration
+- Permissions: none listed on the source page (the role takes effect through the IAM conditions described above).
+
+#### Trafficdirector Admin (`roles/trafficdirector.admin`)
+
+- Launch stage: Beta
+- Admin role for trafficdirector
+- Permissions (4): `resourcemanager.projects.get`, `resourcemanager.projects.list`, `trafficdirector.networks.getConfigs`, `trafficdirector.networks.reportMetrics`
+
+#### Trafficdirector Viewer (`roles/trafficdirector.viewer`)
+
+- Launch stage: Beta
+- Viewer role for trafficdirector
+- Permissions (3): `resourcemanager.projects.get`, `resourcemanager.projects.list`, `trafficdirector.networks.getConfigs`
+
+#### Traffic Director Client (`roles/trafficdirector.client`)
+
+- Launch stage: Beta
+- Fetch service configurations and report metrics.
+- Permissions (2): `trafficdirector.networks.getConfigs`, `trafficdirector.networks.reportMetrics`
+
+#### Anthos Service Mesh Service Agent (`roles/anthosservicemesh.serviceAgent`)
+
+- Gives the Anthos Service Mesh service agent access to Cloud Platform resources. > \[!WARNING\] > \*\*Warning:\*\* Do not grant service agent roles to any principals except service agents (https://docs.cloud.google.com/iam/docs/service-agents).
+- Permissions (234): `compute.backendServices.create`, `compute.backendServices.delete`, `compute.backendServices.get`, `compute.backendServices.list`, `compute.backendServices.update`, `compute.backendServices.use`, `compute.firewalls.create`, `compute.firewalls.delete`, `compute.firewalls.get`, `compute.firewalls.update`, `compute.globalNetworkEndpointGroups.attachNetworkEndpoints`, `compute.globalNetworkEndpointGroups.create`, `compute.globalNetworkEndpointGroups.delete`, `compute.globalNetworkEndpointGroups.detachNetworkEndpoints`, `compute.globalNetworkEndpointGroups.get`, `compute.globalNetworkEndpointGroups.list`, `compute.globalNetworkEndpointGroups.use`, `compute.globalOperations.get`, `compute.healthChecks.create`, `compute.healthChecks.delete`, `compute.healthChecks.get`, `compute.healthChecks.list`, `compute.healthChecks.update`, `compute.healthChecks.use`, `compute.healthChecks.useReadOnly`, `compute.instances.use`, `compute.networkEndpointGroups.attachNetworkEndpoints`, `compute.networkEndpointGroups.create`, `compute.networkEndpointGroups.delete`, `compute.networkEndpointGroups.detachNetworkEndpoints`, `compute.networkEndpointGroups.get`, `compute.networkEndpointGroups.list`, `compute.networkEndpointGroups.use`, `compute.networks.updatePolicy`, `compute.regionNetworkEndpointGroups.attachNetworkEndpoints`, `compute.regionNetworkEndpointGroups.create`, `compute.regionNetworkEndpointGroups.delete`, `compute.regionNetworkEndpointGroups.detachNetworkEndpoints`, `compute.regionNetworkEndpointGroups.get`, `compute.regionNetworkEndpointGroups.list`, `compute.regionNetworkEndpointGroups.use`, `compute.regions.list`, `compute.zones.list`, `container.backendConfigs.create`, `container.backendConfigs.delete`, `container.backendConfigs.get`, `container.backendConfigs.list`, `container.backendConfigs.update`, `container.clusterRoleBindings.create`, `container.clusterRoleBindings.delete`, `container.clusterRoleBindings.get`, `container.clusterRoleBindings.list`, `container.clusterRoleBindings.update`, `container.clusterRoles.bind`, `container.clusterRoles.create`, `container.clusterRoles.delete`, `container.clusterRoles.escalate`, `container.clusterRoles.get`, `container.clusterRoles.list`, `container.clusterRoles.update`, `container.clusters.connect`, `container.clusters.get`, `container.clusters.update`, `container.configMaps.create`, `container.configMaps.delete`, `container.configMaps.get`, `container.configMaps.list`, `container.configMaps.update`, `container.customResourceDefinitions.create`, `container.customResourceDefinitions.get`, `container.customResourceDefinitions.list`, `container.customResourceDefinitions.update`, `container.daemonSets.create`, `container.daemonSets.delete`, `container.daemonSets.get`, `container.daemonSets.getStatus`, `container.daemonSets.list`, `container.daemonSets.update`, `container.deployments.get`, `container.deployments.list`, `container.events.get`, `container.events.list`, `container.jobs.create`, `container.jobs.delete`, `container.jobs.get`, `container.jobs.list`, `container.jobs.update`, `container.mutatingWebhookConfigurations.create`, `container.mutatingWebhookConfigurations.get`, `container.mutatingWebhookConfigurations.list`, `container.mutatingWebhookConfigurations.update`, `container.namespaces.create`, `container.namespaces.get`, `container.namespaces.list`, `container.operations.get`, `container.pods.get`, `container.pods.list`, `container.secrets.create`, `container.secrets.delete`, `container.secrets.get`, `container.secrets.list`, `container.secrets.update`, `container.serviceAccounts.create`, `container.serviceAccounts.delete`, `container.serviceAccounts.get`, `container.serviceAccounts.list`, `container.serviceAccounts.update`, `container.services.get`, `container.services.list`, `container.thirdPartyObjects.create`, `container.thirdPartyObjects.get`, `container.thirdPartyObjects.list`, `container.thirdPartyObjects.update`, `container.validatingWebhookConfigurations.create`, `container.validatingWebhookConfigurations.delete`, `container.validatingWebhookConfigurations.get`, `container.validatingWebhookConfigurations.list`, `container.validatingWebhookConfigurations.update`, `gkehub.features.get`, `gkehub.gateway.delete`, `gkehub.gateway.generateCredentials`, `gkehub.gateway.get`, `gkehub.gateway.patch`, `gkehub.gateway.post`, `gkehub.gateway.put`, `gkehub.locations.get`, `gkehub.locations.list`, `gkehub.memberships.get`, `gkehub.memberships.list`, `iam.googleapis.com/workloadIdentityPools.get`, `logging.logEntries.create`, `meshconfig.projects.init`, `monitoring.metricDescriptors.create`, `monitoring.metricDescriptors.get`, `monitoring.metricDescriptors.list`, `monitoring.monitoredResourceDescriptors.get`, `monitoring.monitoredResourceDescriptors.list`, `monitoring.timeSeries.create`, `networksecurity.authorizationPolicies.create`, `networksecurity.authorizationPolicies.delete`, `networksecurity.authorizationPolicies.get`, `networksecurity.authorizationPolicies.list`, `networksecurity.authorizationPolicies.update`, `networksecurity.authorizationPolicies.use`, `networksecurity.clientTlsPolicies.create`, `networksecurity.clientTlsPolicies.delete`, `networksecurity.clientTlsPolicies.get`, `networksecurity.clientTlsPolicies.list`, `networksecurity.clientTlsPolicies.update`, `networksecurity.clientTlsPolicies.use`, `networksecurity.operations.cancel`, `networksecurity.operations.delete`, `networksecurity.operations.get`, `networksecurity.operations.list`, `networksecurity.serverTlsPolicies.create`, `networksecurity.serverTlsPolicies.delete`, `networksecurity.serverTlsPolicies.get`, `networksecurity.serverTlsPolicies.list`, `networksecurity.serverTlsPolicies.update`, `networksecurity.serverTlsPolicies.use`, `networkservices.endpointPolicies.create`, `networkservices.endpointPolicies.delete`, `networkservices.endpointPolicies.get`, `networkservices.endpointPolicies.list`, `networkservices.endpointPolicies.update`, `networkservices.gateways.create`, `networkservices.gateways.delete`, `networkservices.gateways.get`, `networkservices.gateways.list`, `networkservices.gateways.update`, `networkservices.gateways.use`, `networkservices.grpcRoutes.create`, `networkservices.grpcRoutes.delete`, `networkservices.grpcRoutes.get`, `networkservices.grpcRoutes.list`, `networkservices.grpcRoutes.update`, `networkservices.httpFilters.create`, `networkservices.httpFilters.delete`, `networkservices.httpFilters.get`, `networkservices.httpFilters.list`, `networkservices.httpFilters.update`, `networkservices.httpRoutes.create`, `networkservices.httpRoutes.delete`, `networkservices.httpRoutes.get`, `networkservices.httpRoutes.list`, `networkservices.httpRoutes.update`, `networkservices.meshes.create`, `networkservices.meshes.delete`, `networkservices.meshes.get`, `networkservices.meshes.list`, `networkservices.meshes.update`, `networkservices.meshes.use`, `networkservices.operations.cancel`, `networkservices.operations.delete`, `networkservices.operations.get`, `networkservices.operations.list`, `networkservices.serviceLbPolicies.create`, `networkservices.serviceLbPolicies.delete`, `networkservices.serviceLbPolicies.get`, `networkservices.serviceLbPolicies.list`, `networkservices.serviceLbPolicies.update`, `networkservices.tcpRoutes.create`, `networkservices.tcpRoutes.delete`, `networkservices.tcpRoutes.get`, `networkservices.tcpRoutes.list`, `networkservices.tcpRoutes.update`, `networkservices.tlsRoutes.create`, `networkservices.tlsRoutes.delete`, `networkservices.tlsRoutes.get`, `networkservices.tlsRoutes.list`, `networkservices.tlsRoutes.update`, `orgpolicy.policy.get`, `resourcemanager.projects.get`, `serviceusage.catalogs.listMembers`, `serviceusage.consumerpolicy.analyze`, `serviceusage.consumerpolicy.get`, `serviceusage.effectivepolicy.get`, `serviceusage.groups.list`, `serviceusage.groups.listExpandedMembers`, `serviceusage.groups.listMembers`, `serviceusage.services.get`, `serviceusage.services.listApis`, `serviceusage.services.listDependentServices`, `serviceusage.services.use`, `serviceusage.values.test`, `trafficdirector.networks.getConfigs`, `trafficdirector.networks.reportMetrics`, `workloadcertificate.locations.get`, `workloadcertificate.locations.list`, `workloadcertificate.operations.get`, `workloadcertificate.workloadCertificateFeature.get`, `workloadcertificate.workloadRegistrations.create`, `workloadcertificate.workloadRegistrations.get`, `workloadcertificate.workloadRegistrations.list`
+
+#### Mesh Config Service Agent (`roles/meshconfig.serviceAgent`)
+
+- Apply mesh configuration > \[!WARNING\] > \*\*Warning:\*\* Do not grant service agent roles to any principals except service agents (https://docs.cloud.google.com/iam/docs/service-agents).
+- Permissions (95): `compute.backendServices.create`, `compute.backendServices.delete`, `compute.backendServices.get`, `compute.backendServices.list`, `compute.backendServices.setSecurityPolicy`, `compute.backendServices.update`, `compute.backendServices.use`, `compute.firewalls.create`, `compute.firewalls.delete`, `compute.firewalls.get`, `compute.firewalls.list`, `compute.firewalls.update`, `compute.globalForwardingRules.create`, `compute.globalForwardingRules.delete`, `compute.globalForwardingRules.get`, `compute.globalForwardingRules.list`, `compute.globalForwardingRules.setLabels`, `compute.globalForwardingRules.setTarget`, `compute.globalOperations.get`, `compute.globalOperations.list`, `compute.healthChecks.create`, `compute.healthChecks.delete`, `compute.healthChecks.get`, `compute.healthChecks.list`, `compute.healthChecks.update`, `compute.healthChecks.use`, `compute.healthChecks.useReadOnly`, `compute.networkEndpointGroups.get`, `compute.networkEndpointGroups.list`, `compute.networkEndpointGroups.use`, `compute.networks.get`, `compute.networks.updatePolicy`, `compute.networks.use`, `compute.regionTargetTcpProxies.create`, `compute.regionTargetTcpProxies.delete`, `compute.regionTargetTcpProxies.get`, `compute.regionTargetTcpProxies.list`, `compute.regionTargetTcpProxies.use`, `compute.subnetworks.use`, `compute.targetHttpProxies.create`, `compute.targetHttpProxies.delete`, `compute.targetHttpProxies.get`, `compute.targetHttpProxies.list`, `compute.targetHttpProxies.setUrlMap`, `compute.targetHttpProxies.use`, `compute.targetHttpsProxies.create`, `compute.targetHttpsProxies.delete`, `compute.targetHttpsProxies.get`, `compute.targetHttpsProxies.list`, `compute.targetHttpsProxies.setSslCertificates`, `compute.targetHttpsProxies.setSslPolicy`, `compute.targetHttpsProxies.setUrlMap`, `compute.targetHttpsProxies.use`, `compute.targetSslProxies.create`, `compute.targetSslProxies.delete`, `compute.targetSslProxies.get`, `compute.targetSslProxies.list`, `compute.targetSslProxies.setBackendService`, `compute.targetSslProxies.setProxyHeader`, `compute.targetSslProxies.setSslCertificates`, `compute.targetSslProxies.use`, `compute.targetTcpProxies.create`, `compute.targetTcpProxies.delete`, `compute.targetTcpProxies.get`, `compute.targetTcpProxies.list`, `compute.targetTcpProxies.update`, `compute.targetTcpProxies.use`, `compute.urlMaps.create`, `compute.urlMaps.delete`, `compute.urlMaps.get`, `compute.urlMaps.invalidateCache`, `compute.urlMaps.list`, `compute.urlMaps.update`, `compute.urlMaps.use`, `compute.urlMaps.validate`, `networksecurity.clientTlsPolicies.create`, `networksecurity.clientTlsPolicies.delete`, `networksecurity.clientTlsPolicies.get`, `networksecurity.clientTlsPolicies.list`, `networksecurity.clientTlsPolicies.update`, `networksecurity.serverTlsPolicies.create`, `networksecurity.serverTlsPolicies.delete`, `networksecurity.serverTlsPolicies.get`, `networksecurity.serverTlsPolicies.list`, `networksecurity.serverTlsPolicies.update`, `networkservices.httpFilters.create`, `networkservices.httpFilters.delete`, `networkservices.httpFilters.get`, `networkservices.httpFilters.list`, `networkservices.httpFilters.update`, `networkservices.httpfilters.create`, `networkservices.httpfilters.delete`, `networkservices.httpfilters.get`, `networkservices.httpfilters.list`, `networkservices.httpfilters.update`
+
+#### Mesh Data Plane Service Agent (`roles/meshdataplane.serviceAgent`)
+
+- Run user-space Istio components > \[!WARNING\] > \*\*Warning:\*\* Do not grant service agent roles to any principals except service agents (https://docs.cloud.google.com/iam/docs/service-agents).
+- Permissions (13): `cloudtrace.traces.patch`, `compute.forwardingRules.get`, `compute.globalForwardingRules.get`, `logging.logEntries.create`, `logging.logEntries.route`, `monitoring.metricDescriptors.create`, `monitoring.metricDescriptors.get`, `monitoring.metricDescriptors.list`, `monitoring.monitoredResourceDescriptors.get`, `monitoring.monitoredResourceDescriptors.list`, `monitoring.timeSeries.create`, `serviceusage.services.use`, `telemetry.traces.write`
+
+### Example: grant a role
+
+Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Project):
+
+```bash
+gcloud projects add-iam-policy-binding PROJECT_ID \
+  --member="user:EMAIL_ADDRESS" \
+  --role="roles/meshconfig.admin"
+```
+
+### Permissions and the roles that contain them
+
+| Permission | Roles |
+|---|---|
+| `meshconfig.projects.init` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/meshconfig.admin` (+2 service agent roles) |
+| `trafficdirector.networks.getConfigs` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/reader`, `roles/viewer`, `roles/compute.networkAdmin`, `roles/compute.networkViewer`, `roles/trafficdirector.admin`, `roles/trafficdirector.viewer`, `roles/iam.infrastructureAdmin`, `roles/iam.networkAdmin`, `roles/iam.securityAuditor`, `roles/iam.supportUser`, `roles/trafficdirector.client` (+8 service agent roles) |
+| `trafficdirector.networks.reportMetrics` | `roles/admin`, `roles/owner`, `roles/writer`, `roles/editor`, `roles/compute.networkAdmin`, `roles/compute.networkViewer`, `roles/trafficdirector.admin`, `roles/iam.infrastructureAdmin`, `roles/iam.networkAdmin`, `roles/iam.securityAuditor`, `roles/trafficdirector.client` (+8 service agent roles) |
+
+## Notes
+
+- Roles and permissions of the `anthosservicemesh` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
+- The permissions table lists role IDs only (role names and links are on the official page) and gives service agent roles as a count; service agent roles must not be granted to principals other than service agents.
+- Source: https://docs.cloud.google.com/iam/docs/roles-permissions/anthosservicemesh (CC BY 4.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
