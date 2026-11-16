@@ -36,19 +36,20 @@ jobs:
         run: bash .github/scripts/check-skill-structure.sh
 
   # --------------------------------------------------
-  # skill-tests（skills/make の node:test 回帰テスト）
+  # skill-tests（vendored スキルと skills/make の node:test 回帰テスト）
   # --------------------------------------------------
   # skills/（リファレンススキル）は原則ドキュメントのみでテスト対象外。例外として
   # skills/make/ は補助 CLI（scripts/bin/*.mjs）と回帰テスト（tests/）を同梱するため、
   # 対象を skills/make/tests/ に限定して実行する。
-  # vendored スキル（.agents/skills/）のテストは上流 agent-cli-skills の dev/ に移り
-  # 配布されなくなったため、ここでは実行しない（上流の CI が実行する）。
+  # vendored スキル（.agents/skills/）のテストは、上流 agent-cli-skills の dev/ に移り
+  # 配布されなくなった（上流の CI が実行する）。同期で消えるまでの移行期間に残って
+  # いる分は引き続き実行し、0 件になったらそのステップは何もせずに成功で終える。
   # ubuntu-latest には Node.js が同梱されるため setup-node の追加
   # （新規 action の SHA 固定管理）は不要。
   skill-tests:
     name: Skill tests (node:test)
     runs-on: ubuntu-latest
-    # skills/make の補助 CLI テストのみで軽量。上限は従来の 10 分のまま据え置く。
+    # 移行期間は vendored の implement-issue-tree の大規模テスト群も走るため 10 分とする。
     timeout-minutes: 10
     permissions:
       contents: read
@@ -58,6 +59,20 @@ jobs:
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
         with:
           persist-credentials: false
+
+      - name: Run node:test (vendored skills, while present)
+        # 同期で tests/ が消えるまでは従来どおり実行する（検証ゲートを移行完了前に
+        # 外さない）。0 件のときは「配布されなくなった」状態なので成功で終える。
+        # 1 件以上あるときにグロブがリテラルのまま node --test へ渡る fail-open は、
+        # nullglob で配列に展開してから件数で分岐することで防ぐ。
+        run: |
+          shopt -s globstar nullglob
+          files=(.agents/skills/*/tests/**/*.test.mjs)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "vendored スキルのテストは 0 件（上流 agent-cli-skills の CI が実行する）"
+            exit 0
+          fi
+          node --test "${files[@]}"
 
       - name: Run node:test (skills/make helper scripts)
         # 補助 CLI の回帰テストのみ。Node 標準ライブラリだけで動き、Rust / pnpm や
