@@ -566,6 +566,7 @@ SYNOPSIS
 
 ## Notes
 
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud netapp volumes create --snap-reserve`: "The snap-reserve option is deprecated".
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Deprecated flag: the SMB example passes `--snap-reserve=0.1`, which the 593.0.0 help marks as deprecated ("The snap-reserve option is deprecated"); it is kept as in the help example and can be omitted.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the SMB `volumes create` help example has no `--location`; the volume resource takes its location from a fully specified name, `--location` or the `netapp/location` property (no default), so the runnable form adds `--location=us-central1`.
