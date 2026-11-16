@@ -1,0 +1,144 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/backend-buckets/get-iam-policy
+---
+
+# gcloud compute backend-buckets get-iam-policy
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute backend-buckets get-iam-policy
+
+```text
+NAME
+    gcloud compute backend-buckets get-iam-policy - get the IAM policy for a
+        Compute Engine backend bucket
+
+SYNOPSIS
+    gcloud compute backend-buckets get-iam-policy BACKEND_BUCKET
+        [--global | --region=REGION] [--filter=EXPRESSION] [--limit=LIMIT]
+        [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute backend-buckets get-iam-policy displays the IAM policy
+    associated with a Compute Engine backend bucket in a project. If formatted
+    as JSON, the output can be edited and used as a policy file for
+    set-iam-policy. The output includes an "etag" field identifying the version
+    emitted and allowing detection of concurrent policy updates; see $ {parent}
+    set-iam-policy for additional details.
+
+EXAMPLES
+    To print the IAM policy for a given regional backend bucket, run:
+
+        $ gcloud compute backend-buckets get-iam-policy my-backend-bucket \
+            --region=REGION
+
+    To print the IAM policy for a given global backend bucket, run either of
+    the following:
+
+        $ gcloud compute backend-buckets get-iam-policy my-backend-bucket \
+            --global
+
+        $ gcloud compute backend-buckets get-iam-policy my-backend-bucket
+
+POSITIONAL ARGUMENTS
+     BACKEND_BUCKET
+        ID of the backend bucket or fully qualified identifier for the backend
+        bucket.
+
+            To set the backend_bucket attribute:
+            + provide the argument backend_bucket on the command line.
+
+FLAGS
+     At most one of these can be specified:
+
+       --global
+          If set, the backend bucket is global.
+
+       --region=REGION
+          Region of the backend bucket to operate on. Overrides the default
+          compute/region property value for this command invocation.
+
+LIST COMMAND FLAGS
+     --filter=EXPRESSION
+        Apply a Boolean filter EXPRESSION to each resource item to be listed.
+        If the expression evaluates True, then that item is listed. For more
+        details and examples of filter expressions, run $ gcloud topic filters.
+        This flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --limit=LIMIT
+        Maximum number of resources to list. The default is unlimited. This
+        flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --page-size=PAGE_SIZE
+        Some services group resource list output into pages. This flag
+        specifies the maximum number of resources per page. The default is
+        determined by the service if it supports paging, otherwise it is
+        unlimited (no paging). Paging may be applied before or after --filter
+        and --limit depending on the service.
+
+     --sort-by=[FIELD,...]
+        Comma-separated list of resource field key names to sort by. The
+        default order is ascending. Prefix a field with ``~'' for descending
+        order on that field. This flag interacts with other flags that are
+        applied in this order: --flatten, --sort-by, --filter, --limit.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the compute API. The full documentation for this API can
+    be found at: https://cloud.google.com/compute/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute backend-buckets get-iam-policy
+
+        $ gcloud beta compute backend-buckets get-iam-policy
+```
+
+### gcloud beta compute backend-buckets get-iam-policy
+
+```text
+NAME
+    gcloud beta compute backend-buckets get-iam-policy - get the IAM policy for
+        a Compute Engine backend bucket
+
+SYNOPSIS
+    gcloud beta compute backend-buckets get-iam-policy BACKEND_BUCKET
+        [--global | --region=REGION] [--filter=EXPRESSION] [--limit=LIMIT]
+        [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute backend-buckets get-iam-policy
+
+```text
+NAME
+    gcloud alpha compute backend-buckets get-iam-policy - get the IAM policy
+        for a Compute Engine backend bucket
+
+SYNOPSIS
+    gcloud alpha compute backend-buckets get-iam-policy BACKEND_BUCKET
+        [--global | --region=REGION] [--filter=EXPRESSION] [--limit=LIMIT]
+        [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/backend-buckets/get-iam-policy (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

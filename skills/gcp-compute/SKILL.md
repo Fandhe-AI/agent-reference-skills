@@ -21,6 +21,10 @@ skills/gcp-compute/
   references/
     gcloud/                       # 機械生成: gcloud 593.0.0、取得 2026-11-14
       README.md
+      compute/  # 分割投入中（18 / 602 ページ。収録済みは README 掲載分のみ）
+        README.md                 # gcloud compute（Compute Engine 全般に加え、ネットワーク・LB・Cloud Armor 系、compute tpus、compute os-config を含む）
+        compute-<group>.md        # 例: compute-addresses.md
+        compute-<group>-<cmd>.md  # GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS
       batch/
         README.md                 # gcloud batch
       bms/
@@ -107,19 +111,23 @@ skills/gcp-compute/
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
-2. VPC・ファイアウォール・Cloud NAT・VPN・ロードバランサー・Cloud Armor は、コマンド・メソッド・ロールのみ機械生成ページ（手順 1〜3）にある。概念・設計の説明は本スキルに無い
-3. 非推奨・サポート終了を確認するときは、まず `compute-overview/deprecations.md`（一覧表）、CSEK は加えて `compute-security/csek-deprecation-in-compute-engine.md`、legacy Cloud TPU API は `cloud-tpu/tpus-in-compute-engine.md`、preemptible VM との関係は `compute-capacity/spot.md` を引く
+1. gcloud コマンド → 下記マッピング表で `gcloud` を選び、`references/gcloud/compute/README.md`（`gcloud compute`）、`references/gcloud/batch/README.md`、`references/gcloud/bms/README.md`、`references/gcloud/cluster-director/README.md`、`references/gcloud/oracle-database/README.md`（後続 PR で投入） からグループページ・コマンドページを引く。`gcloud compute tpus`（legacy Cloud TPU API）と `gcloud compute os-config`（VM Manager）は独立したグループではなく `compute` グループ配下のため、`references/gcloud/compute/` の `compute-tpus-*`（後続 PR で投入） / `compute-os-config-*`（後続 PR で投入） を引く。GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ
+2. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
+3. VPC・ファイアウォール・Cloud NAT・VPN・ロードバランサー・Cloud Armor は、コマンド・メソッド・ロールのみ機械生成ページ（手順 1〜3）にある。概念・設計の説明は本スキルに無い
+4. 非推奨・サポート終了を確認するときは、まず `compute-overview/deprecations.md`（一覧表）、CSEK は加えて `compute-security/csek-deprecation-in-compute-engine.md`、legacy Cloud TPU API は `cloud-tpu/tpus-in-compute-engine.md`、preemptible VM との関係は `compute-capacity/spot.md` を引く
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
-未投入カテゴリ（`gcloud/compute` / `gcloud/oracle-database` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud/oracle-database` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+
+分割投入中のカテゴリ（`gcloud/compute`: 18 / 602 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | gcloud のコマンド・フラグを調べたい（compute / batch / bms / cluster-director / oracle-database の 5 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
+| `gcloud compute`（instances・disks・instance-templates・instance-groups・images・snapshots・reservations、および compute tpus・compute os-config、ネットワーク / LB / Cloud Armor 系）のフラグを調べたい | gcloud/compute | [references/gcloud/compute/README.md](references/gcloud/compute/README.md) |
 | `gcloud batch` のジョブ・タスクのコマンドを調べたい | gcloud/batch | [references/gcloud/batch/README.md](references/gcloud/batch/README.md) |
 | `gcloud bms`（Bare Metal Solution のインスタンス・ボリューム・ネットワーク）のフラグを調べたい | gcloud/bms | [references/gcloud/bms/README.md](references/gcloud/bms/README.md) |
 | `gcloud cluster-director` のコマンドを調べたい | gcloud/cluster-director | [references/gcloud/cluster-director/README.md](references/gcloud/cluster-director/README.md) |
@@ -147,7 +155,7 @@ skills/gcp-compute/
 | Confidential VM（対応構成・作成・構成証明・組織ポリシーによる強制）・Confidential Space のワークロード | confidential-computing | [references/confidential-computing/README.md](references/confidential-computing/README.md) |
 | Oracle Database@Google Cloud の概要・環境準備・ODB Network・Exadata Infrastructure・Autonomous AI Database・IAM・クォータ | oracle-database | [references/oracle-database/README.md](references/oracle-database/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/compute` / `gcloud/oracle-database` / `iam` / `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/oracle-database` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
