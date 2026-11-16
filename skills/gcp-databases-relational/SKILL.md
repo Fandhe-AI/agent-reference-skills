@@ -17,12 +17,30 @@ Google Cloud (GCP) のリレーショナルデータベース系スキル。Clou
 skills/gcp-databases-relational/
   SKILL.md
   references/
+    cloud-sql-instances/          # インスタンス作成・設定・ユーザー・組み込み認証・Managed Connection Pooling
+      README.md
+      <page>.md                   # 例: create-instance.md / instance-settings.md / users.md / managed-connection-pooling.md
     cloud-sql-connect/            # 接続オプション・Cloud SQL Auth Proxy
       README.md
       <page>.md                   # 例: connection-options.md / sql-proxy.md / connect-auth-proxy.md
+    cloud-sql-connectors-iam/     # Language Connectors・IAM database authentication・IAM ロール・CMEK・Secret Manager
+      README.md
+      <page>.md                   # 例: language-connectors.md / iam-logins.md / connectors-iam-python.md / iam-roles.md / cmek.md
+    cloud-sql-networking/         # private IP・Private Service Connect・承認済みネットワーク・SSL/TLS・VPC 外 / 複数 VPC からの接続
+      README.md
+      <page>.md                   # 例: private-ip.md / about-private-service-connect.md / authorize-ssl.md
+    cloud-sql-ha-replication/     # 高可用性・リードレプリカ・クロスリージョン・レプリケーションラグ・read pool・DR
+      README.md
+      <page>.md                   # 例: high-availability.md / create-replica.md / replication-lag.md
     cloud-sql-backup-recovery/    # バックアップ・バックアップオプション・PITR・復元
       README.md
       <page>.md                   # 例: backups.md / pitr.md / restoring.md
+    cloud-sql-operations/         # メンテナンス・import / export・ロギング・モニタリング・System insights・Cloud SQL Studio・トラブルシューティング
+      README.md
+      <page>.md                   # 例: maintenance.md / import-export-sql.md / logging.md / troubleshooting.md
+    cloud-sql-mysql/              # Cloud SQL for MySQL 固有: 機能・ユーザー・IAM 認証・レプリケーション・マイナーバージョンアップグレード
+      README.md
+      <page>.md                   # 例: features.md / users.md / replication.md / upgrade-minor-db-version.md
     alloydb-overview/             # AlloyDB の概要・マシンタイプ・バージョン・クォータ・クラスター / インスタンス作成・設定
       README.md
       <page>.md                   # 例: overview.md / choose-machine-type.md / cluster-create.md / instance-read-pool-create.md
@@ -51,7 +69,7 @@ skills/gcp-databases-relational/
 
 1. gcloud コマンド・フラグの全文、IAM ロールの権限、REST のメソッド・メッセージ型（機械生成の `references/gcloud/` `references/iam/` `references/rest/` `references/rest-schemas/`）は後続 PR で投入する。未投入の間は `gcloud <group> --help` と公式 reference を確認する
 2. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
-3. Cloud SQL はエンジン共通ページが `cloud-sql-*`（PostgreSQL 版を 1 度だけ収録）にあり、MySQL / SQL Server 固有の差分だけが `cloud-sql-mysql`（後続 PR で投入） / `cloud-sql-sqlserver`（後続 PR で投入） にある。まず共通カテゴリを引き、エンジン固有の挙動は固有カテゴリで補う
+3. Cloud SQL はエンジン共通ページが `cloud-sql-*`（PostgreSQL 版を 1 度だけ収録）にあり、MySQL / SQL Server 固有の差分だけが `cloud-sql-mysql` / `cloud-sql-sqlserver`（後続 PR で投入） にある。まず共通カテゴリを引き、エンジン固有の挙動は固有カテゴリで補う
 
 `samples/` と `scripts/` は本スキルに無い。
 
@@ -59,14 +77,23 @@ skills/gcp-databases-relational/
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| Cloud SQL インスタンスの作成・設定変更・ユーザー・パスワードポリシー・Managed Connection Pooling | cloud-sql-instances | [references/cloud-sql-instances/README.md](references/cloud-sql-instances/README.md) |
 | Cloud SQL への接続方法の選択（private / public IP・コネクター・IAM 認証）・Cloud SQL Auth Proxy の起動 | cloud-sql-connect | [references/cloud-sql-connect/README.md](references/cloud-sql-connect/README.md) |
+| Language Connectors（Java / Python / Go / Node.js）・IAM database authentication・IAM ロール・CMEK・Secret Manager | cloud-sql-connectors-iam | [references/cloud-sql-connectors-iam/README.md](references/cloud-sql-connectors-iam/README.md) |
+| Cloud SQL Python Connector の自動 IAM database authentication（`enable_iam_auth=True`・SQLAlchemy + pg8000・`pip install`）。Node.js（`authType: 'IAM'`）は iam-logins.md | cloud-sql-connectors-iam | [references/cloud-sql-connectors-iam/connectors-iam-python.md](references/cloud-sql-connectors-iam/connectors-iam-python.md)、[references/cloud-sql-connectors-iam/iam-logins.md](references/cloud-sql-connectors-iam/iam-logins.md) |
+| private IP・Private Service Connect・承認済みネットワーク・SSL/TLS 証明書・VPC 外 / 複数 VPC からの接続 | cloud-sql-networking | [references/cloud-sql-networking/README.md](references/cloud-sql-networking/README.md) |
+| Cloud SQL の SSL/TLS 強制（`--ssl-mode`・`ENCRYPTED_ONLY`・`TRUSTED_CLIENT_CERTIFICATE_REQUIRED`、作成時 / `patch` のフラグ） | cloud-sql-instances、cloud-sql-networking | [references/cloud-sql-instances/create-instance.md](references/cloud-sql-instances/create-instance.md)、[references/cloud-sql-instances/instance-settings.md](references/cloud-sql-instances/instance-settings.md)、[references/cloud-sql-networking/authorize-ssl.md](references/cloud-sql-networking/authorize-ssl.md) |
+| 高可用性（HA）・フェイルオーバー・リードレプリカ・cascading / クロスリージョンレプリカ・レプリケーションラグ・read pool・DR | cloud-sql-ha-replication | [references/cloud-sql-ha-replication/README.md](references/cloud-sql-ha-replication/README.md) |
 | Cloud SQL のバックアップ（標準 / 拡張）・PITR・復元（別インスタンス / 別プロジェクト / 削除済み） | cloud-sql-backup-recovery | [references/cloud-sql-backup-recovery/README.md](references/cloud-sql-backup-recovery/README.md) |
+| Cloud SQL の PITR を有効化（`--enable-point-in-time-recovery`・`--retained-transaction-log-days`、作成時のフラグ） | cloud-sql-instances、cloud-sql-backup-recovery | [references/cloud-sql-instances/create-instance.md](references/cloud-sql-instances/create-instance.md)、[references/cloud-sql-backup-recovery/pitr.md](references/cloud-sql-backup-recovery/pitr.md) |
+| メンテナンスウィンドウ・SQL ダンプの import / export・ログ・モニタリング・System insights・Cloud SQL Studio・トラブルシューティング | cloud-sql-operations | [references/cloud-sql-operations/README.md](references/cloud-sql-operations/README.md) |
+| Cloud SQL for MySQL 固有の機能・ユーザー・IAM 認証・レプリケーション（binary log）・マイナーバージョン更新 | cloud-sql-mysql | [references/cloud-sql-mysql/README.md](references/cloud-sql-mysql/README.md) |
 | AlloyDB の概要・アーキテクチャ・マシンタイプ・バージョン・クォータ・クラスター / primary / read pool の作成と設定 | alloydb-overview | [references/alloydb-overview/README.md](references/alloydb-overview/README.md) |
 | AlloyDB への接続（private services access / PSC）・Auth Proxy・Language Connectors・IAM 認証 | alloydb-connect-security | [references/alloydb-connect-security/README.md](references/alloydb-connect-security/README.md) |
 | AlloyDB の IAM database authentication の設定（`alloydb.iam_authentication` フラグ・`roles/alloydb.databaseUser`・`gcloud alloydb users create --type=IAM_BASED` / `IAM_GROUP`・`GRANT`） | alloydb-connect-security | [references/alloydb-connect-security/manage-iam-auth.md](references/alloydb-connect-security/manage-iam-auth.md) |
 | AlloyDB のバックアップ・PITR 復元・クロスリージョンレプリケーション・フェイルオーバー・メンテナンス・database flags・columnar engine | alloydb-operations | [references/alloydb-operations/README.md](references/alloydb-operations/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `cloud-sql-overview` / `cloud-sql-instances` / `cloud-sql-connectors-iam` / `cloud-sql-networking` / `cloud-sql-ha-replication` / `cloud-sql-operations` / `cloud-sql-mysql` / `cloud-sql-sqlserver` / `spanner-overview` / `spanner-schema` / `spanner-transactions` / `spanner-dml-queries` / `spanner-indexes-change-streams` / `spanner-clients` / `spanner-operations` / `database-migration` / `database-center-insights`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `cloud-sql-overview` / `cloud-sql-sqlserver` / `spanner-overview` / `spanner-schema` / `spanner-transactions` / `spanner-dml-queries` / `spanner-indexes-change-streams` / `spanner-clients` / `spanner-operations` / `database-migration` / `database-center-insights`
 
 ## 他スキルとの使い分け
 
