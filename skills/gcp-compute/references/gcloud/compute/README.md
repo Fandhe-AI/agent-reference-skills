@@ -23,3 +23,13 @@
 | gcloud compute backend-services (part 2) | 6 commands (alpha, beta, ga); compute backend-services create … | [compute-backend-services-2.md](./compute-backend-services-2.md) |
 | gcloud compute backend-services (part 3) | 10 commands (alpha, beta, ga); compute backend-services get-health … | [compute-backend-services-3.md](./compute-backend-services-3.md) |
 | gcloud compute backend-services (part 4) | compute backend-services update | [compute-backend-services-4.md](./compute-backend-services-4.md) |
+| gcloud compute backend-services (part 5) | 48 commands (alpha, beta, ga); compute backend-services update-backend … | [compute-backend-services-5.md](./compute-backend-services-5.md) |
+| gcloud compute commitments | 19 commands (alpha, beta, ga); compute commitments create … | [compute-commitments.md](./compute-commitments.md) |
+| gcloud compute composite-health-checks | 21 commands (alpha, beta, ga); compute composite-health-checks create … | [compute-composite-health-checks.md](./compute-composite-health-checks.md) |
+| gcloud compute config-ssh | 3 commands (alpha, beta, ga); compute config-ssh … | [compute-config-ssh.md](./compute-config-ssh.md) |
+| gcloud compute connect-to-serial-port | 3 commands (alpha, beta, ga); compute connect-to-serial-port … | [compute-connect-to-serial-port.md](./compute-connect-to-serial-port.md) |
+| gcloud compute copy-files | 3 commands (alpha, beta, ga); compute copy-files … | [compute-copy-files.md](./compute-copy-files.md) |
+| gcloud compute diagnose | 7 commands (alpha, beta, ga); compute diagnose export-logs … | [compute-diagnose.md](./compute-diagnose.md) |
+| gcloud compute disk-settings | 4 commands (alpha, beta); beta compute disk-settings describe … | [compute-disk-settings.md](./compute-disk-settings.md) |
+| gcloud compute disk-types | 6 commands (alpha, beta, ga); compute disk-types describe … | [compute-disk-types.md](./compute-disk-types.md) |
+| gcloud compute disks add-iam-policy-binding | 3 commands (alpha, beta, ga); compute disks add-iam-policy-binding … | [compute-disks-add-iam-policy-binding.md](./compute-disks-add-iam-policy-binding.md) |
