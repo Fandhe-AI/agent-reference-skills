@@ -37,10 +37,10 @@ Predefined roles of `bigtable` (role ID, description, included permissions) and,
 
 ### Example: grant a role
 
-Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Project):
+Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Table):
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud bigtable instances tables add-iam-policy-binding TABLE_ID --instance=INSTANCE_ID \
   --member="user:EMAIL_ADDRESS" \
   --role="roles/bigtable.admin"
 ```
