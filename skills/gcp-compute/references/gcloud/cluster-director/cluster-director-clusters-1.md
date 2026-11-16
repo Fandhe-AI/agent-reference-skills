@@ -703,7 +703,7 @@ NOTES
         $ gcloud beta cluster-director clusters create
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud cluster-director clusters create my-cluster \
@@ -711,16 +711,16 @@ gcloud cluster-director clusters create my-cluster \
     --description="My cluster description" \
     --labels=env=prod,client=gcloud-cli \
     --create-network=name=network0 \
-    --create-filestores=name=locations/us-central1-a/instances/filestore0,tier=ZONAL,capacityGb={filestoreSize},fileshare={fileshare} \
-    --filestores=locations/us-central1-a/instances/filestore1 \
-    --create-buckets=name=bucket0 \
-    --buckets=bucket1 \
-    --create-lustres=name=locations/us-central1-a/instances/lustre0,capacityGb={lustreSize},filesystem={filesystem} \
-    --lustres=locations/us-central1-a/instances/lustre1 \
+    --create-filestores=id=filestore0,name=locations/us-central1-a/instances/filestore0,tier=ZONAL,capacityGb={filestoreSize},fileshare={fileshare} \
+    --filestores=id=filestore1,name=locations/us-central1-a/instances/filestore1 \
+    --create-buckets=id=bucket0,name=bucket0 \
+    --buckets=id=bucket1,name=bucket1 \
+    --create-lustres=id=lustre0,name=locations/us-central1-a/instances/lustre0,capacityGb={lustreSize},filesystem={filesystem} \
+    --lustres=id=lustre1,name=locations/us-central1-a/instances/lustre1 \
     --reserved-instances=id=compute0,reservation=zones/us-central1-a/reservations/{reservation} \
     --slurm-login-node=machineType={machineType},zone=us-central1-a \
     --slurm-node-sets=id=nodeset0,computeId=compute0 \
-    --slurm-partitions=id=partition0,nodesetIds=[nodeset0] \
+    --slurm-partitions=id=partition0,nodeSetIds=[nodeset0] \
     --slurm-default-partition=partition0 \
     --format=json
 ```
@@ -1191,6 +1191,8 @@ NOTES
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the create example passes the storage flags without the `id` key that the flag definitions on this page list (`--create-filestores`, `--create-buckets` and `--create-lustres`: "Required fields: + id + name ..."; `--filestores`, `--buckets` and `--lustres` take `[id=ID],[name=NAME]`), and passes only a name to `--filestores`, `--buckets` and `--lustres`; the runnable form adds `id=` (the resource name's last segment) and writes the existing resources as `id=...,name=...`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the partition examples write the key as `nodesetIds`, while the SYNOPSIS, the Shorthand Example and the JSON Example of the partition flags use `nodeSetIds`; the runnable form uses `nodeSetIds`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

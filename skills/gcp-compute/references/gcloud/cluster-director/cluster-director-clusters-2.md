@@ -700,7 +700,7 @@ NOTES
         $ gcloud beta cluster-director clusters update
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud cluster-director clusters update my-cluster \
@@ -711,20 +711,20 @@ gcloud cluster-director clusters update my-cluster \
     --add-reserved-instances=id=compute2,reservation=zones/us-central1-a/reservations/{reservation} \
     --add-spot-instances=id=compute3,zone=us-central1-a,machineType=n2-standard-2 \
     --add-flex-start-instances=id=compute4,zone=us-central1-a,machineType=a4-highgpu-8g,maxDuration=10000s \
-    --add-new-lustre-instances=lustre=locations/us-central1-a/instances/lustre1,capacityGb=1024,filesystem=lustre1 \
-    --add-lustre-instances=locations/us-central1-a/instances/lustre0 \
+    --add-new-lustre-instances=id=lustre1,name=locations/us-central1-a/instances/lustre1,capacityGb=1024,filesystem=lustre1 \
+    --add-lustre-instances=id=lustre0,name=locations/us-central1-a/instances/lustre0 \
     --add-slurm-node-sets=id=nodeset1,computeId=compute1 \
     --add-slurm-node-sets=id=nodeset2,computeId=compute2 \
     --add-slurm-node-sets=id=nodeset3,computeId=compute3 \
     --add-slurm-node-sets=id=nodeset4,computeId=compute4 \
-    --add-slurm-partitions=id=partition1,nodesetIds=[nodeset1] \
-    --add-slurm-partitions=id=partition2,nodesetIds=[nodeset2,nodeset3,nodeset4] \
+    --add-slurm-partitions=id=partition1,nodeSetIds=[nodeset1] \
+    --add-slurm-partitions=id=partition2,nodeSetIds=[nodeset2,nodeset3,nodeset4] \
     --slurm-default-partition=partition1
 
 gcloud cluster-director clusters update my-cluster \
     --location=us-central1-a \
     --update-slurm-node-sets=id=nodeset1,staticNodeCount=2,maxDynamicNodeCount=10 \
-    --update-slurm-partitions=id=partition1,nodesetIds=[nodeset0]
+    --update-slurm-partitions=id=partition1,nodeSetIds=[nodeset0]
 
 gcloud cluster-director clusters update my-cluster \
     --location=us-central1-a \
@@ -1215,6 +1215,8 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the partition examples write the key as `nodesetIds`, while the SYNOPSIS, the Shorthand Example and the JSON Example of the partition flags use `nodeSetIds`; the runnable form uses `nodeSetIds`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the update example passes `--add-new-lustre-instances=lustre=...`, a key the flag does not define (`[capacityGb=...],[description=...],[filesystem=...],[id=ID],[name=NAME],[perUnitStorageThroughput=...]`, "Required fields: + id + name + capacityGb + filesystem"), and passes only a name to `--add-lustre-instances` (`[id=ID],[name=NAME]`); the runnable form uses `id=lustre1,name=...` and `id=lustre0,name=...`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
