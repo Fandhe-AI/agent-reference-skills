@@ -15,3 +15,7 @@
 | gcloud memorystore instances list | 3 commands (alpha, beta, ga); memorystore instances list … | [memorystore-instances-list.md](./memorystore-instances-list.md) |
 | gcloud memorystore instances reschedule-maintenance | 3 commands (alpha, beta, ga); memorystore instances reschedule-maintenance … | [memorystore-instances-reschedule-maintenance.md](./memorystore-instances-reschedule-maintenance.md) |
 | gcloud memorystore instances start-migration | 3 commands (alpha, beta, ga); memorystore instances start-migration … | [memorystore-instances-start-migration.md](./memorystore-instances-start-migration.md) |
+| gcloud memorystore instances token-auth-users | 21 commands (alpha, beta, ga); memorystore instances token-auth-users auth-tokens delete … | [memorystore-instances-token-auth-users.md](./memorystore-instances-token-auth-users.md) |
+| gcloud memorystore instances update | 3 commands (alpha, beta, ga); memorystore instances update … | [memorystore-instances-update.md](./memorystore-instances-update.md) |
+| gcloud memorystore locations | 6 commands (alpha, beta, ga); memorystore locations describe … | [memorystore-locations.md](./memorystore-locations.md) |
+| gcloud memorystore operations | 12 commands (alpha, beta, ga); memorystore operations cancel … | [memorystore-operations.md](./memorystore-operations.md) |
