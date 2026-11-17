@@ -62,7 +62,7 @@ service-PROJECT_NUMBER@gcp-sa-networkactions.iam.gserviceaccount.com
 | `--image` | URI of the artifact with the Wasm module in Artifact Registry |
 | `--main-version` | ID of the plugin version to create and set as the main (active) version |
 | `--plugin-config` / `--plugin-config-file` / `--plugin-config-uri` | Optional configuration data as text, a local file or an Artifact Registry image; directly provided data (file upload) is limited to under 900 KiB in the Console |
-| `--kms-key-name` | Regional plugins only: `projects/PROJECT/locations/LOCATION/keyRings/KEYRING_NAME/cryptoKeys/KEY_NAME`; otherwise Google default encryption is used |
+| `--kms-key-name` (`gcloud alpha` / `gcloud beta` only) | Regional plugins only; not in GA gcloud 593.0.0 (see Notes): `projects/PROJECT/locations/LOCATION/keyRings/KEYRING_NAME/cryptoKeys/KEY_NAME`; otherwise Google default encryption is used |
 
 ## Notes
 
@@ -73,6 +73,7 @@ service-PROJECT_NUMBER@gcp-sa-networkactions.iam.gserviceaccount.com
 - Required IAM roles are on the Service Extensions access-control page: https://docs.cloud.google.com/service-extensions/docs/access-control
 - The source also shows the Console wizard. To request Media CDN access, contact your Google Cloud sales representative or account team.
 - Google Cloud Service Extensions, not Cloudflare Workers (see `cloudflare-workers`) and not the Wasm toolchain itself (see `rust`).
+- Corrected from the official docs: the source's GA `gcloud service-extensions wasm-plugins create` example includes `--kms-key-name`, but in gcloud 593.0.0 the `--kms-key-name` / `--kms-keyring` / `--kms-location` / `--kms-project` flags exist only for `gcloud alpha` and `gcloud beta service-extensions wasm-plugins create` / `update`, and the `WasmPlugin.kmsKeyName` field is in the Network Services API v1beta1 Discovery document only (not v1). Use the beta track for customer-managed encryption keys.
 - Source: https://docs.cloud.google.com/service-extensions/docs/create-plugin (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: `--image=...-docker.pkg.dev/my-project/repository/container:tag` became `--image=REGION-docker.pkg.dev/my-project/repository/container:tag` in both examples (the source's other examples use a regional host such as `us-docker.pkg.dev`; use the Artifact Registry location of your repository).
 

@@ -201,7 +201,6 @@ gcloud edge-cache operations list
 
 ## Notes
 
-- The IAM roles reference page for `networkservices` does not list these three roles (see Notes).
 - The IAM roles are visible only in projects where Media CDN is enabled (see the overview page for how to request access).
 - The source also shows Console steps (enable the APIs, Go to Media CDN) and a Terraform pointer; omitted here. To list recent operations, `gcloud edge-cache operations list` prints END_TIME, ID, TARGET and DONE columns.
 - The describe outputs above are example output from the source, not input to create resources; the `publicKeys` values are public keys, not secrets. Keep private signing keys out of version control and out of logs.

@@ -10,7 +10,9 @@ Traffic extensions on supported Application Load Balancers use plugins or callou
 
 ### Traffic extension with a plugin (YAML)
 
-The example adds the response header `hello: service-extensions` when the host is `example.com`. Replace `PROJECT_ID`, `REGION` (forwarding rule region; must match the plugin location), `LOCATION` (`global` or a region) and `WASM_PLUGIN` (plugin ID or fully qualified name).
+The example adds the response header `hello: service-extensions` when the host is `example.com`. Replace `PROJECT_ID`, `REGION` (forwarding rule region; must match the plugin location) and `WASM_PLUGIN` (plugin ID or fully qualified name).
+
+Adapted (not in the official docs): the plugin path and the import location use `REGION` (the source uses `LOCATION` and `--location=global`), so the regional forwarding rule, the plugin and the extension are in one region.
 
 ```bash
 cat >traffic-plugin.yaml <<EOF
@@ -24,7 +26,7 @@ cat >traffic-plugin.yaml <<EOF
         celExpression: 'request.host == "example.com"'
       extensions:
       - name: 'ext1'
-        service: projects/PROJECT_ID/locations/LOCATION/wasmPlugins/WASM_PLUGIN
+        service: projects/PROJECT_ID/locations/REGION/wasmPlugins/WASM_PLUGIN
         failOpen: false
         supportedEvents:
         - RESPONSE_HEADERS
@@ -37,7 +39,7 @@ EOF
 ```bash
 gcloud service-extensions lb-traffic-extensions import traffic-ext \
     --source=traffic-plugin.yaml \
-    --location=global
+    --location=REGION
 ```
 
 ### Traffic extension with a callout (YAML)
@@ -96,8 +98,8 @@ The output includes `hello: service-extensions`. Repeat without the `host` heade
 | `forwardAttributes` | Maximum 16 per extension |
 | Forward headers | If none specified, all headers are sent |
 | `failOpen` | Default `false`: on error, processing stops; HTTP `500` returned if response headers weren't delivered, otherwise the stream is reset. `true` continues processing and later chain extensions run |
-| `timeout` (callout) | Console: 10 to 1000 milliseconds |
-| `metadata` (callout) | Sent in `ProcessingRequest` as `protobuf.Struct`; total size under 1 KiB; key count under 20 in the Console text and under 16 in the YAML text; key length under 64 characters; value length under 1,024 characters; all values strings; text matching `forwarding_rule_id` is replaced by the forwarding rule's full resource URL |
+| `timeout` (callout) | Console: 10 to 1000 milliseconds; the API field description says 10 to 10000 milliseconds (see Notes) |
+| `metadata` (callout) | Sent in `ProcessingRequest` as `protobuf.Struct`; total size under 1 KiB; key count under 20 in the Console text and under 16 in the YAML text; key length under 64 characters; value length under 1,024 characters; all values strings; the variable `{forwarding_rule_id}` is replaced by the forwarding rule's full resource URL |
 | Console load balancer choices (plugin) | Global external or cross-region internal Application Load Balancer |
 
 ## Notes
@@ -109,7 +111,9 @@ The output includes `hello: service-extensions`. Repeat without the `host` heade
 - The source also shows the Console wizard; it is not reproduced. The YAML heredocs keep the source's 4-space indentation.
 - Google Cloud Load Balancing, not Cloudflare or Vercel (see `cloudflare-workers`, `vercel`).
 - Full `gcloud compute forwarding-rules` flags are in the `gcp-compute` skill: https://docs.cloud.google.com/sdk/gcloud/reference/compute/forwarding-rules/describe
-- Source inconsistency: the plugin example references a regional forwarding rule (`.../regions/REGION/forwardingRules/http-content-rule`) and the replacement list says "`REGION`: the region of the forwarding rule. The value must match the value specified for the location of the plugin" and "`LOCATION`: the location of the plugin as either `global` or a region", but the import command uses `--location=global`. The example is kept as written; the source states that the forwarding rule region must match the plugin location.
+- Source inconsistency: the plugin example references a regional forwarding rule (`.../regions/REGION/forwardingRules/http-content-rule`) and the replacement list says "`REGION`: the region of the forwarding rule. The value must match the value specified for the location of the plugin" and "`LOCATION`: the location of the plugin as either `global` or a region", but the import command uses `--location=global`. The example is adapted to one region (see the Adapted line below).
+- Source inconsistency: this page gives the callout `timeout` range as 10 to 1000 milliseconds in the Console steps, while the `ExtensionChainExtension.timeout` description in the Network Services API v1 Discovery document says "between `10`-`10000` milliseconds". The `{forwarding_rule_id}` metadata variable is written with braces as in that Discovery description.
+- Adapted from the official docs: the plugin example's import used `--location=global` and the plugin path used `locations/LOCATION` while the forwarding rule is regional; both were changed to `REGION` so the regional forwarding rule, the plugin and the extension are in the same region, as the source's replacement list requires.
 - Source: https://docs.cloud.google.com/service-extensions/docs/configure-traffic-extensions (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

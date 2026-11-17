@@ -183,7 +183,7 @@ pathMatchers:
 | Method | Configuration |
 |---|---|
 | URL map default redirect | Top-level `defaultUrlRedirect` |
-| Path matcher default redirect | `pathMatchers[].defaultUrlRedirect[]` |
+| Path matcher default redirect | `pathMatchers[].defaultUrlRedirect` |
 | Path rule redirect | `pathMatchers[].pathRules[].urlRedirect` |
 | Route rule redirect | `pathMatchers[].routeRules[].urlRedirect` |
 
@@ -210,6 +210,7 @@ pathMatchers:
 - Google Cloud Load Balancing, not Cloudflare (`cloudflare-workers`, `cloudflare-pages`) or Vercel (`vercel`).
 - Source inconsistency: the source says "Similarly for regional external Application Load Balancers and Cloud Service Mesh, weighted backend services on route actions can direct the same URL to multiple backend services or buckets", but its own route rule example above uses `weightedBackendServices` with global backend services, and the global external traffic management page (https://docs.cloud.google.com/load-balancing/docs/https/traffic-management-global, retrieved 2026-11-17) describes weight-based traffic splitting for global external Application Load Balancers. The weighted backend services quota is "not supported by classic" on the quotas page, so global external is not excluded.
 - Corrected from the official docs: the source writes "A `--path-rule` for `/video/*`"; the gcloud 593.0.0 help for `gcloud compute url-maps add-path-matcher` names the flag `--path-rules=PATH=SERVICE,[...]`, as does the source's own example (`--path-rules=/video/hd=video-hd,...`).
+- Corrected from the official docs: the source writes `pathMatchers[].defaultUrlRedirect[]`, but the Compute Engine v1 Discovery document defines `PathMatcher.defaultUrlRedirect` (like `UrlMap.defaultUrlRedirect`) as a single `HttpRedirectAction` object, not an array.
 - Source: https://docs.cloud.google.com/load-balancing/docs/url-map-concepts (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
