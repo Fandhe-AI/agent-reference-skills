@@ -13,3 +13,7 @@
 | Network Management API | 7 roles, 36 permissions | [networkmanagement.md](./networkmanagement.md) |
 | Network Security part 1 | 22 roles, 79 permissions | [networksecurity-1.md](./networksecurity-1.md) |
 | Network Security part 2 | 95 permissions | [networksecurity-2.md](./networksecurity-2.md) |
+| Network Services part 1 | 6 roles, 109 permissions | [networkservices-1.md](./networkservices-1.md) |
+| Network Services part 2 | 23 permissions | [networkservices-2.md](./networkservices-2.md) |
+| Service Directory | 6 roles, 28 permissions | [servicedirectory.md](./servicedirectory.md) |
+| Serverless VPC Access | 4 roles, 8 permissions | [vpcaccess.md](./vpcaccess.md) |
