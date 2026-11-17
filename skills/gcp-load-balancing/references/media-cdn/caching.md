@@ -160,7 +160,7 @@ Media playlist indicating which bytes represent each chunk:
 | Component | Included by default | Details |
 |---|---|---|
 | Protocol | No | HTTP and HTTPS share an object; set `cacheKeyPolicy.includeProtocol` to true to separate. |
-| Host | Yes | Set `cdnPolicy.excludeHost` to true to share content across hostnames (the default policy shows `cacheKeyPolicy.excludeHost`). |
+| Host | Yes | Set `cdnPolicy.cacheKeyPolicy.excludeHost` to true to share content across hostnames (see Notes). |
 | Path | Yes | Always included; cannot be removed. |
 | Query parameters | Yes | `cacheKeyPolicy.excludeQueryString`, `includedQueryParameters` or `excludedQueryParameters` (one of the include / exclude lists per route). |
 | Headers | No | `cacheKeyPolicy.includedHeaderNames`; many high-cardinality headers lower hit rate. Names are lowercased. The special name `:method` includes the HTTP method. |
@@ -189,7 +189,7 @@ Media playlist indicating which bytes represent each chunk:
 - `BYPASS_CACHE` traffic is priced at internet egress rates; use an external Application Load Balancer for dynamic API backends.
 - Do not include confidential, sensitive or personally identifiable information in URL paths or query parameters (treated as non-identifiable service data).
 - Google Cloud Media CDN / Cloud CDN — not Cloudflare (`cloudflare-workers`, `cloudflare-pages`) or Vercel (`vercel`).
-- Source inconsistency: the default policy example in the source places `excludeHost` under `cacheKeyPolicy`, while the cache key table says to "set `cdnPolicy.excludeHost` to true" and sets `cacheKeyPolicy.excludeQueryString` in the next row. The table row is kept as written; the default policy example shows the nested `cacheKeyPolicy.excludeHost` form.
+- Source inconsistency: the default policy example in the source places `excludeHost` under `cacheKeyPolicy`, while the cache key table says to "set `cdnPolicy.excludeHost` to true" and sets `cacheKeyPolicy.excludeQueryString` in the next row. The table row uses the nested `cdnPolicy.cacheKeyPolicy.excludeHost` path shown in the default policy example, consistent with `cacheKeyPolicy.excludeQueryString`.
 - Source: https://docs.cloud.google.com/media-cdn/docs/caching (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
