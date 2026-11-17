@@ -421,3 +421,21 @@
 | gcloud compute reservations remove-iam-policy-binding | 3 commands (alpha, beta, ga); compute reservations remove-iam-policy-binding … | [compute-reservations-remove-iam-policy-binding.md](./compute-reservations-remove-iam-policy-binding.md) |
 | gcloud compute reservations set-iam-policy | 3 commands (alpha, beta, ga); compute reservations set-iam-policy … | [compute-reservations-set-iam-policy.md](./compute-reservations-set-iam-policy.md) |
 | gcloud compute reservations slots | 12 commands (alpha, beta, ga); compute reservations slots describe … | [compute-reservations-slots.md](./compute-reservations-slots.md) |
+| gcloud compute reservations sub-blocks | 19 commands (alpha, beta, ga); compute reservations sub-blocks describe … | [compute-reservations-sub-blocks.md](./compute-reservations-sub-blocks.md) |
+| gcloud compute reservations test-iam-permissions | 3 commands (alpha, beta, ga); compute reservations test-iam-permissions … | [compute-reservations-test-iam-permissions.md](./compute-reservations-test-iam-permissions.md) |
+| gcloud compute reservations update | 3 commands (alpha, beta, ga); compute reservations update … | [compute-reservations-update.md](./compute-reservations-update.md) |
+| gcloud compute reset-windows-password | 3 commands (alpha, beta, ga); compute reset-windows-password … | [compute-reset-windows-password.md](./compute-reset-windows-password.md) |
+| gcloud compute resource-policies create | 17 commands (alpha, beta, ga); compute resource-policies create disk-consistency-group … | [compute-resource-policies-create.md](./compute-resource-policies-create.md) |
+| gcloud compute resource-policies create-snapshot-schedule | 2 commands (alpha, beta); beta compute resource-policies create-snapshot-schedule … | [compute-resource-policies-create-snapshot-schedule.md](./compute-resource-policies-create-snapshot-schedule.md) |
+| gcloud compute resource-policies create-vm-maintenance | alpha compute resource-policies create-vm-maintenance | [compute-resource-policies-create-vm-maintenance.md](./compute-resource-policies-create-vm-maintenance.md) |
+| gcloud compute resource-policies delete | 3 commands (alpha, beta, ga); compute resource-policies delete … | [compute-resource-policies-delete.md](./compute-resource-policies-delete.md) |
+| gcloud compute resource-policies describe | 3 commands (alpha, beta, ga); compute resource-policies describe … | [compute-resource-policies-describe.md](./compute-resource-policies-describe.md) |
+| gcloud compute resource-policies get-iam-policy | 3 commands (alpha, beta, ga); compute resource-policies get-iam-policy … | [compute-resource-policies-get-iam-policy.md](./compute-resource-policies-get-iam-policy.md) |
+| gcloud compute resource-policies list | 3 commands (alpha, beta, ga); compute resource-policies list … | [compute-resource-policies-list.md](./compute-resource-policies-list.md) |
+| gcloud compute resource-policies set-iam-policy | 3 commands (alpha, beta, ga); compute resource-policies set-iam-policy … | [compute-resource-policies-set-iam-policy.md](./compute-resource-policies-set-iam-policy.md) |
+| gcloud compute resource-policies test-iam-permissions | 3 commands (alpha, beta, ga); compute resource-policies test-iam-permissions … | [compute-resource-policies-test-iam-permissions.md](./compute-resource-policies-test-iam-permissions.md) |
+| gcloud compute resource-policies update | 6 commands (alpha, beta, ga); compute resource-policies update instance-schedule … | [compute-resource-policies-update.md](./compute-resource-policies-update.md) |
+| gcloud compute rollout-plans | 12 commands (alpha, beta, ga); compute rollout-plans create … | [compute-rollout-plans.md](./compute-rollout-plans.md) |
+| gcloud compute rollouts | 13 commands (alpha, beta, ga); compute rollouts cancel … | [compute-rollouts.md](./compute-rollouts.md) |
+| gcloud compute routers add-bgp-peer | 3 commands (alpha, beta, ga); compute routers add-bgp-peer … | [compute-routers-add-bgp-peer.md](./compute-routers-add-bgp-peer.md) |
+| gcloud compute routers add-interface | 3 commands (alpha, beta, ga); compute routers add-interface … | [compute-routers-add-interface.md](./compute-routers-add-interface.md) |
