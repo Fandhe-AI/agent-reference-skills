@@ -7,10 +7,16 @@ import { BIN_DIR, makeTmpDir, cleanupTmpDir } from "./helpers.mjs";
 
 const PROJECTS_DIR = join(BIN_DIR, "..", "..", "samples", "projects");
 
+// preview-sample.test.mjs は samples/projects/tmp-<名前>-<pid> を一時的に作って消す。node --test はテストファイルを
+// 並列に実行するため、列挙から読み込みまでの間に消えて ENOENT になる。同梱サンプルではないので列挙から外す
+function sampleDirs() {
+  return readdirSync(PROJECTS_DIR, { withFileTypes: true }).filter((d) => d.isDirectory() && !d.name.startsWith("tmp-"));
+}
+
 // samples/projects の各 Makefile の recipe 行（タブ始まり）
 function recipeLines() {
-  return readdirSync(PROJECTS_DIR, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && existsSync(join(PROJECTS_DIR, d.name, "Makefile")))
+  return sampleDirs()
+    .filter((d) => existsSync(join(PROJECTS_DIR, d.name, "Makefile")))
     .flatMap((d) =>
       readFileSync(join(PROJECTS_DIR, d.name, "Makefile"), "utf8")
         .split("\n")
@@ -45,8 +51,8 @@ test("sample-projects: recipe でグロブ付きの rm -r を使わない（途�
 
 // samples/projects 直下で Cargo.toml を持つサンプル（= Cargo プロジェクトの root）
 function cargoSamples() {
-  return readdirSync(PROJECTS_DIR, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && existsSync(join(PROJECTS_DIR, d.name, "Cargo.toml")))
+  return sampleDirs()
+    .filter((d) => existsSync(join(PROJECTS_DIR, d.name, "Cargo.toml")))
     .map((d) => d.name);
 }
 
