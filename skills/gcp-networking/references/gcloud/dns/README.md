@@ -18,3 +18,4 @@
 | gcloud dns record-sets list | 3 commands (alpha, beta, ga); dns record-sets list … | [dns-record-sets-list.md](./dns-record-sets-list.md) |
 | gcloud dns record-sets transaction | 18 commands (alpha, beta, ga); dns record-sets transaction abort … | [dns-record-sets-transaction.md](./dns-record-sets-transaction.md) |
 | gcloud dns record-sets update | 3 commands (alpha, beta, ga); dns record-sets update … | [dns-record-sets-update.md](./dns-record-sets-update.md) |
+| gcloud dns response-policies | 30 commands (alpha, beta, ga); dns response-policies create … | [dns-response-policies.md](./dns-response-policies.md) |
