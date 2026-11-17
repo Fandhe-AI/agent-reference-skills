@@ -1,0 +1,653 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instance-groups/managed/create
+---
+
+# gcloud compute instance-groups managed create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute instance-groups managed create
+
+```text
+NAME
+    gcloud compute instance-groups managed create - create a Compute Engine
+        managed instance group
+
+SYNOPSIS
+    gcloud compute instance-groups managed create NAME --size=SIZE
+        --template=TEMPLATE
+        [--action-on-vm-failed-health-check=ACTION_ON_FAILED_HEALTH_CHECK]
+        [--base-instance-name=BASE_INSTANCE_NAME]
+        [--default-action-on-vm-failure=ACTION_ON_VM_FAILURE]
+        [--description=DESCRIPTION] [--[no-]force-update-on-repair]
+        [--initial-delay=INITIAL_DELAY] [--list-managed-instances-results=MODE]
+        [--on-repair-allow-changing-zone=ON_REPAIR_ALLOW_CHANGING_ZONE]
+        [--stopped-size=STOPPED_SIZE] [--suspended-size=SUSPENDED_SIZE]
+        [--target-pool=[TARGET_POOL,...]]
+        [--target-size-policy-mode=TARGET_SIZE_POLICY_MODE]
+        [--workload-policy=WORKLOAD_POLICY] [--zones=ZONE,[ZONE,...]]
+        [--health-check=HEALTH_CHECK | --http-health-check=HTTP_HEALTH_CHECK
+          | --https-health-check=HTTPS_HEALTH_CHECK]
+        [--instance-flexibility-policy=[INSTANCE_FLEXIBILITY_POLICY,...]
+          | --instance-selection=name=NAME,machine-type=MACHINE_TYPE[,
+          machine-type=MACHINE_TYPE...][,
+          rank=RANK][,min-cpu-platform=MIN_CPU_PLATFORM]
+          --instance-selection-machine-types=[MACHINE_TYPE,...]]
+        [--instance-redistribution-type=TYPE --target-distribution-shape=SHAPE]
+        [--region=REGION | --zone=ZONE]
+        [--standby-policy-initial-delay=STANDBY_POLICY_INITIAL_DELAY
+          --standby-policy-mode=STANDBY_POLICY_MODE]
+        [--stateful-disk=[auto-delete=AUTO-DELETE],[device-name=DEVICE-NAME]
+          --stateful-external-ip=[enabled],
+          [auto-delete=AUTO-DELETE],[interface-name=INTERFACE-NAME]
+          --stateful-internal-ip=[enabled],
+          [auto-delete=AUTO-DELETE],[interface-name=INTERFACE-NAME]]
+        [--update-policy-max-surge=MAX_SURGE
+          --update-policy-max-unavailable=MAX_UNAVAILABLE
+          --update-policy-minimal-action=UPDATE_POLICY_MINIMAL_ACTION
+          --update-policy-most-disruptive-action=UPDATE_POLICY_MOST_DISRUPTIVE_ACTION --update-policy-replacement-method=UPDATE_POLICY_REPLACEMENT_METHOD --update-policy-type=UPDATE_TYPE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instance-groups managed create creates a Compute Engine
+    managed instance group.
+
+EXAMPLES
+    Running:
+
+        $ gcloud compute instance-groups managed create \
+        example-managed-instance-group --zone=us-central1-a \
+        --template=example-global-instance-template --size=1
+
+    will create a managed instance group called
+    'example-managed-instance-group' in the us-central1-a zone with a global
+    instance template resource 'example-global-instance-template'.
+
+    To use a regional instance template, specify the full or partial URL of the
+    template.
+
+    Running:
+
+        $ gcloud compute instance-groups managed create \
+        example-managed-instance-group --zone=us-central1-a \
+        --template=projects/example-project/regions/us-central1/\
+        instanceTemplates/example-regional-instance-template --size=1
+
+    will create a managed instance group called
+    'example-managed-instance-group' in the us-central1-a zone with a regional
+    instance template resource 'example-regional-instance-template'.
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the managed instance group to create.
+
+REQUIRED FLAGS
+     --size=SIZE
+        Initial number of instances you want in this group.
+
+     --template=TEMPLATE
+        Specifies the instance template to use when creating new instances. An
+        instance template is either a global or regional resource.
+
+OPTIONAL FLAGS
+     --action-on-vm-failed-health-check=ACTION_ON_FAILED_HEALTH_CHECK
+        Specifies the action that a MIG performs on an unhealthy VM. A VM is
+        marked as unhealthy when the application running on that VM fails a
+        health check. By default, the value of the flag is set to
+        default-action. ACTION_ON_FAILED_HEALTH_CHECK must be one of:
+
+         default-action
+            (Default) MIG uses the same action configured for the
+            defaultActionOnFailure field.
+         do-nothing
+            MIG does not repair an unhealthy VM.
+         repair
+            MIG automatically repairs an unhealthy VM by recreating it.
+
+     --base-instance-name=BASE_INSTANCE_NAME
+        Base name to use for the Compute Engine instances that will be created
+        with the managed instance group. If not provided base instance name
+        will be the prefix of instance group name.
+
+     --default-action-on-vm-failure=ACTION_ON_VM_FAILURE
+        Specifies the action that a MIG performs on a failed VM. If the value
+        of the onFailedHealthCheck field is DEFAULT_ACTION, then the same
+        action also applies to the VMs on which your application fails a health
+        check. By default, the value of the flag is set to repair.
+        ACTION_ON_VM_FAILURE must be one of:
+
+         repair
+            (Default) MIG automatically repairs a failed VM by recreating it.
+         do-nothing
+            MIG does not repair a failed VM.
+
+     --description=DESCRIPTION
+        An optional description for this group.
+
+     --[no-]force-update-on-repair
+        Specifies whether to apply the group's latest configuration when
+        repairing a VM. If you updated the group's instance template or
+        per-instance configurations after the VM was created, then these
+        changes are applied when VM is repaired. If this flag is disabled with
+        -no-force-update-on-repair, then updates are applied in accordance with
+        the group's update policy type. By default, this flag is disabled. Use
+        --force-update-on-repair to enable and --no-force-update-on-repair to
+        disable.
+
+     --initial-delay=INITIAL_DELAY
+        Specifies the number of seconds that a new VM takes to initialize and
+        run its startup script. During a VM's initial delay period, the MIG
+        ignores unsuccessful health checks because the VM might be in the
+        startup process. This prevents the MIG from prematurely recreating a
+        VM. If the health check receives a healthy response during the initial
+        delay, it indicates that the startup process is complete and the VM is
+        ready. The value of initial delay must be between 0 and 3600 seconds.
+        The default value is 0. See $ gcloud topic datetimes for information on
+        duration formats.
+
+     --list-managed-instances-results=MODE
+        Pagination behavior for the group's listManagedInstances API method.
+        This flag does not affect the group's gcloud or console list-instances
+        behavior. By default it is set to pageless. MODE must be one of:
+
+         pageless
+            Pagination is disabled for the group's listManagedInstances API
+            method. maxResults and pageToken query parameters are ignored and
+            all instances are returned in a single response.
+         paginated
+            Pagination is enabled for the group's listManagedInstances API
+            method. maxResults and pageToken query parameters are respected.
+
+     --on-repair-allow-changing-zone=ON_REPAIR_ALLOW_CHANGING_ZONE
+        Specifies whether the MIG can change a VM's zone during a repair.
+        ON_REPAIR_ALLOW_CHANGING_ZONE must be one of:
+
+         no
+            (Default) MIG cannot change a VM's zone during a repair.
+         yes
+            MIG can select a different zone for the VM during a repair.
+
+     --stopped-size=STOPPED_SIZE
+        Specifies the target size of stopped VMs in the group.
+
+     --suspended-size=SUSPENDED_SIZE
+        Specifies the target size of suspended VMs in the group.
+
+     --target-pool=[TARGET_POOL,...]
+        Specifies any target pools you want the instances of this managed
+        instance group to be part of.
+
+     --target-size-policy-mode=TARGET_SIZE_POLICY_MODE
+        Specifies the mode in which the MIG creates VMs in the group.
+        TARGET_SIZE_POLICY_MODE must be one of:
+
+         bulk
+            MIG creates VMs all at once. If the MIG cannot create any VM to
+            meet the specified ``size``, then the MIG waits until the resources
+            become available to create all VMs.
+         individual
+            (Default) MIG creates VMs individually. If the MIG cannot create
+            all VMs to meet the specified ``size``, then it creates VMs for
+            which resources are available and continues to attempt to create
+            the remaining ones until the target size is met.
+
+     --workload-policy=WORKLOAD_POLICY
+        Specifies the workload policy for the managed instance group. It can be
+        a full or partial URL to a resource policy containing the workload
+        policy.
+
+     --zones=ZONE,[ZONE,...]
+        If this flag is specified a regional managed instance group will be
+        created. The managed instance group will be in the same region as
+        specified zones and will spread instances in it between specified
+        zones.
+
+        All zones must belong to the same region. You may specify --region flag
+        but it must be the region to which zones belong. This flag is mutually
+        exclusive with --zone flag.
+
+     At most one of these can be specified:
+
+       --health-check=HEALTH_CHECK
+          Name of the health check to operate on.
+
+       --http-health-check=HTTP_HEALTH_CHECK
+          (DEPRECATED) HTTP health check object used for autohealing instances
+          in this group.
+
+          HttpHealthCheck is deprecated. Use --health-check instead.
+
+       --https-health-check=HTTPS_HEALTH_CHECK
+          (DEPRECATED) HTTPS health check object used for autohealing instances
+          in this group.
+
+          HttpsHealthCheck is deprecated. Use --health-check instead.
+
+     At most one of these can be specified:
+
+       --instance-flexibility-policy=[INSTANCE_FLEXIBILITY_POLICY,...]
+          Instance flexibility configuration containing the named selections of
+          machine types with optional ranks. This flag can contain multiple
+          instance selections. Use this flag to specify additional instance
+          overrides, such as minimum CPU platform and disks. For example,
+          --instance-flexibility-policy={"instanceSelections":{"instance-selection-1":{"rank":1,"machineTypes":["e2-standard-8","n1-standard-1"],"minCpuPlatform":"MIN_CPU_PLATFORM"
+          ,"disks":[{"deviceName":"disk-name","boot":true}]},{"instance-selection-2":{"rank":2,"machineTypes":["n1-standard-2"]}}}}
+
+          Instead of --instance-flexibility-policy flag, you can also use one
+          of the following flags to specify instance selections.
+
+       Or at least one of these can be specified:
+
+         --instance-selection=name=NAME,machine-type=MACHINE_TYPE[,machine-type=MACHINE_TYPE...][,rank=RANK][,min-cpu-platform=MIN_CPU_PLATFORM]
+            Named selection of machine types with optional rank. Repeat this
+            flag for each selection of instances. You can use this flag for
+            overriding minimum CPU platform but not disks. For example,
+            --instance-selection="name=instance-selection-1,machine-type=e2-standard-8,machine-type=t2d-standard-8,rank=0,min-cpu-platform=MIN_CPU_PLATFORM"
+
+         --instance-selection-machine-types=[MACHINE_TYPE,...]
+            A single selection of machine types. If not provided, the machine
+            type specified in the instance template is used.
+
+     Parameters for setting distribution policy.
+
+     --instance-redistribution-type=TYPE
+        Specifies the type of the instance redistribution policy. An instance
+        redistribution type lets you enable or disable automatic instance
+        redistribution across zones to meet the group's target distribution
+        shape.
+
+        An instance redistribution type can be specified only for a
+        non-autoscaled regional managed instance group. By default it is set to
+        proactive.
+
+        TYPE must be one of:
+
+         none
+            The managed instance group does not redistribute instances across
+            zones.
+         proactive
+            The managed instance group proactively redistributes instances to
+            meet its target distribution.
+
+     --target-distribution-shape=SHAPE
+        Specifies how a regional managed instance group distributes its
+        instances across zones within the region. The default shape is even.
+        SHAPE must be one of:
+
+         any
+            The group picks zones for creating VM instances to fulfill the
+            requested number of VMs within present resource constraints and to
+            maximize utilization of unused zonal reservations. Recommended for
+            batch workloads that do not require high availability.
+         any-single-zone
+            The group schedules all instances within a single zone. The zone is
+            chosen based on hardware support, current resources availability,
+            and matching reservations. The group might not be able to create
+            the requested number of VMs in case of zonal resource availability
+            constraints. Recommended for workloads requiring extensive
+            communication between VMs.
+         balanced
+            The group prioritizes acquisition of resources, scheduling VMs in
+            zones where resources are available while distributing VMs as
+            evenly as possible across selected zones to minimize the impact of
+            zonal failure. Recommended for highly available serving or batch
+            workloads that do not require autoscaling.
+         even
+            The group schedules VM instance creation and deletion to achieve
+            and maintain an even number of managed instances across the
+            selected zones. The distribution is even when the number of managed
+            instances does not differ by more than 1 between any two zones.
+            Recommended for highly available serving workloads.
+
+     At most one of these can be specified:
+
+       --region=REGION
+          Region of the managed instance group to create. If not specified, you
+          might be prompted to select a region (interactive mode only).
+
+          A list of regions can be fetched by running:
+
+              $ gcloud compute regions list
+
+          If you specify --zones flag this flag must be unspecified or specify
+          the region to which the zones you listed belong.
+
+          Overrides the default compute/region property value for this command
+          invocation.
+
+       --zone=ZONE
+          Zone of the managed instance group to create. If not specified, you
+          might be prompted to select a zone (interactive mode only).
+
+          A list of zones can be fetched by running:
+
+              $ gcloud compute zones list
+
+          Overrides the default compute/zone property value for this command
+          invocation.
+
+     Parameters for setting standby policy.
+
+     --standby-policy-initial-delay=STANDBY_POLICY_INITIAL_DELAY
+        Specifies the number of seconds that the MIG should wait before
+        suspending or stopping a VM. The initial delay gives the initialization
+        script the time to prepare your VM for a quick scale out.
+
+     --standby-policy-mode=STANDBY_POLICY_MODE
+        Defines how a MIG resumes or starts VMs from a standby pool when the
+        group scales out. The default mode is manual. STANDBY_POLICY_MODE must
+        be one of:
+
+         manual
+            MIG does not automatically resume or start VMs in the standby pool
+            when the group scales out.
+         scale-out-pool
+            MIG automatically resumes or starts VMs in the standby pool when
+            the group scales out, and replenishes the standby pool afterwards.
+
+     Stateful policy settings for the managed instance group.
+
+     --stateful-disk=[auto-delete=AUTO-DELETE],[device-name=DEVICE-NAME]
+        Disks considered stateful by the instance group. Managed instance
+        groups preserve and reattach stateful disks on VM autohealing, update,
+        and recreate events.
+
+        Use this argument multiple times to attach more disks.
+
+         device-name
+            (Required) Device name of the disk to mark stateful.
+
+         auto-delete
+            (Optional) Specifies the auto deletion policy of the stateful disk.
+            The following options are available:
+            + never: (Default) Never delete this disk. Instead, detach the
+              disk when its instance is deleted.
+            + on-permanent-instance-deletion: Delete the stateful disk when
+              the instance that it's attached to is permanently deleted from
+              the group; for example, when the instance is deleted manually or
+              when the group size is decreased.
+
+     --stateful-external-ip=[enabled],[auto-delete=AUTO-DELETE],[interface-name=INTERFACE-NAME]
+        External IPs considered stateful by the instance group. Managed
+        instance groups preserve stateful IPs on VM autohealing, update, and
+        recreate events.
+
+        Use this argument multiple times to make more external IPs stateful.
+
+        At least one of the following is required:
+
+         enabled
+            Marks the IP address as stateful. The network interface named nic0
+            is assumed by default when interface-name is not specified. This
+            flag can be omitted when interface-name is provided explicitly.
+
+         interface-name
+            Marks the IP address from this network interface as stateful. This
+            flag can be omitted when enabled is provided.
+
+            Additional arguments:
+
+         auto-delete
+            (Optional) Prescribes what should happen to an associated static
+            Address resource when a VM instance is permanently deleted.
+            Regardless of the value of the delete rule, stateful IP addresses
+            are always preserved on instance autohealing, update, and
+            recreation operations. The following options are available:
+            + never: (Default) Never delete the static IP address. Instead,
+              unassign the address when its instance is permanently deleted and
+              keep the address reserved.
+            + on-permanent-instance-deletion: Delete the static IP address
+              reservation when the instance that it's assigned to is
+              permanently deleted from the instance group; for example, when
+              the instance is deleted manually or when the group size is
+              decreased.
+
+     --stateful-internal-ip=[enabled],[auto-delete=AUTO-DELETE],[interface-name=INTERFACE-NAME]
+        Internal IPs considered stateful by the instance group. Managed
+        instance groups preserve stateful IPs on VM autohealing, update, and
+        recreate events.
+
+        Use this argument multiple times to make more internal IPs stateful.
+
+        At least one of the following is required:
+
+         enabled
+            Marks the IP address as stateful. The network interface named nic0
+            is assumed by default when interface-name is not specified. This
+            flag can be omitted when interface-name is provided explicitly.
+
+         interface-name
+            Marks the IP address from this network interface as stateful. This
+            flag can be omitted when enabled is provided.
+
+            Additional arguments:
+
+         auto-delete
+            (Optional) Prescribes what should happen to an associated static
+            Address resource when a VM instance is permanently deleted.
+            Regardless of the value of the delete rule, stateful IP addresses
+            are always preserved on instance autohealing, update, and
+            recreation operations. The following options are available:
+            + never: (Default) Never delete the static IP address. Instead,
+              unassign the address when its instance is permanently deleted and
+              keep the address reserved.
+            + on-permanent-instance-deletion: Delete the static IP address
+              reservation when the instance that it's assigned to is
+              permanently deleted from the instance group; for example, when
+              the instance is deleted manually or when the group size is
+              decreased.
+
+     Parameters for setting update policy for this managed instance group.
+
+     --update-policy-max-surge=MAX_SURGE
+        Maximum additional number of VMs that can be created during the update
+        process. This can be a fixed number (e.g. 5) or a percentage of size to
+        the managed instance group (e.g. 10%).
+
+     --update-policy-max-unavailable=MAX_UNAVAILABLE
+        Maximum number of VMs that can be unavailable during the update
+        process. This can be a fixed number (e.g. 5) or a percentage of size to
+        the managed instance group (e.g. 10%). Defaults to the number of zones
+        in which the managed instance group operates.
+
+     --update-policy-minimal-action=UPDATE_POLICY_MINIMAL_ACTION
+        Use this flag to minimize disruption as much as possible or to apply a
+        more disruptive action than is strictly necessary. The MIG performs at
+        least this action on each VM while updating. If the update requires a
+        more disruptive action than the one specified here, then the more
+        disruptive action is performed. UPDATE_POLICY_MINIMAL_ACTION must be
+        one of:
+
+         none
+            No action
+         refresh
+            Apply the new configuration without stopping VMs, if possible. For
+            example, use ``refresh`` to apply changes that only affect metadata
+            or additional disks.
+         restart
+            Apply the new configuration without replacing VMs, if possible. For
+            example, stopping VMs and starting them again is sufficient to
+            apply changes to machine type.
+         replace
+            Replace old VMs according to the --update-policy-replacement-method
+            flag.
+
+     --update-policy-most-disruptive-action=UPDATE_POLICY_MOST_DISRUPTIVE_ACTION
+        Use this flag to prevent an update if it requires more disruption than
+        you can afford. At most, the MIG performs the specified action on each
+        VM while updating. If the update requires a more disruptive action than
+        the one specified here, then the update fails and no changes are made.
+        UPDATE_POLICY_MOST_DISRUPTIVE_ACTION must be one of:
+
+         none
+            No action
+         refresh
+            Apply the new configuration without stopping VMs, if possible. For
+            example, use ``refresh`` to apply changes that only affect metadata
+            or additional disks.
+         restart
+            Apply the new configuration without replacing VMs, if possible. For
+            example, stopping VMs and starting them again is sufficient to
+            apply changes to machine type.
+         replace
+            Replace old VMs according to the --update-policy-replacement-method
+            flag.
+
+     --update-policy-replacement-method=UPDATE_POLICY_REPLACEMENT_METHOD
+        Type of replacement method. Specifies what action will be taken to
+        update VMs. UPDATE_POLICY_REPLACEMENT_METHOD must be one of:
+
+         recreate
+            Recreate VMs and preserve the VM names. The VM IDs and creation
+            timestamps might change.
+         substitute
+            Delete old VMs and create VMs with new names.
+
+     --update-policy-type=UPDATE_TYPE
+        Specifies the type of update process. You can specify either
+        ``proactive`` so that the managed instance group proactively executes
+        actions in order to bring VMs to their target versions or
+        ``opportunistic`` so that no action is proactively executed but the
+        update will be performed as part of other actions. UPDATE_TYPE must be
+        one of:
+
+         opportunistic
+            Do not proactively replace VMs. Create new VMs and delete old ones
+            on resizes of the group and when you target specific VMs to be
+            updated or recreated.
+         proactive
+            Replace VMs proactively.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-groups managed create
+
+        $ gcloud beta compute instance-groups managed create
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+
+```bash
+gcloud compute instance-groups managed create example-managed-instance-group \
+    --zone=us-central1-a \
+    --template=projects/example-project/regions/us-central1/instanceTemplates/example-regional-instance-template \
+    --size=1
+```
+
+### gcloud beta compute instance-groups managed create
+
+```text
+NAME
+    gcloud beta compute instance-groups managed create - create a Compute
+        Engine managed instance group
+
+SYNOPSIS
+    gcloud beta compute instance-groups managed create NAME --size=SIZE
+        --template=TEMPLATE
+        [--action-on-vm-failed-health-check=ACTION_ON_FAILED_HEALTH_CHECK]
+        [--base-instance-name=BASE_INSTANCE_NAME]
+        [--default-action-on-vm-failure=ACTION_ON_VM_FAILURE]
+        [--description=DESCRIPTION] [--[no-]force-update-on-repair]
+        [--initial-delay=INITIAL_DELAY] [--list-managed-instances-results=MODE]
+        [--on-repair-allow-changing-zone=ON_REPAIR_ALLOW_CHANGING_ZONE]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--stopped-size=STOPPED_SIZE]
+        [--suspended-size=SUSPENDED_SIZE] [--target-pool=[TARGET_POOL,...]]
+        [--target-size-policy-mode=TARGET_SIZE_POLICY_MODE]
+        [--workload-policy=WORKLOAD_POLICY] [--zones=ZONE,[ZONE,...]]
+        [--health-check=HEALTH_CHECK | --http-health-check=HTTP_HEALTH_CHECK
+          | --https-health-check=HTTPS_HEALTH_CHECK]
+        [--instance-flexibility-policy=[INSTANCE_FLEXIBILITY_POLICY,...]
+          | --instance-selection=name=NAME,machine-type=MACHINE_TYPE[,
+          machine-type=MACHINE_TYPE...][,
+          rank=RANK][,min-cpu-platform=MIN_CPU_PLATFORM]
+          --instance-selection-machine-types=[MACHINE_TYPE,...]]
+        [--instance-redistribution-type=TYPE --target-distribution-shape=SHAPE]
+        [--region=REGION | --zone=ZONE]
+        [--standby-policy-initial-delay=STANDBY_POLICY_INITIAL_DELAY
+          --standby-policy-mode=STANDBY_POLICY_MODE]
+        [--stateful-disk=[auto-delete=AUTO-DELETE],[device-name=DEVICE-NAME]
+          --stateful-external-ip=[enabled],
+          [auto-delete=AUTO-DELETE],[interface-name=INTERFACE-NAME]
+          --stateful-internal-ip=[enabled],
+          [auto-delete=AUTO-DELETE],[interface-name=INTERFACE-NAME]]
+        [--update-policy-max-surge=MAX_SURGE
+          --update-policy-max-unavailable=MAX_UNAVAILABLE
+          --update-policy-min-ready=MIN_READY
+          --update-policy-replacement-method=UPDATE_POLICY_REPLACEMENT_METHOD
+          --update-policy-type=UPDATE_TYPE
+          --update-policy-allowed-actions=ACTION,[ACTION,...]
+          | --update-policy-minimal-action=UPDATE_POLICY_MINIMAL_ACTION
+          --update-policy-most-disruptive-action=UPDATE_POLICY_MOST_DISRUPTIVE_ACTION]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instance-groups managed create
+
+```text
+NAME
+    gcloud alpha compute instance-groups managed create - create a Compute
+        Engine managed instance group
+
+SYNOPSIS
+    gcloud alpha compute instance-groups managed create NAME --size=SIZE
+        --template=TEMPLATE
+        [--action-on-vm-failed-health-check=ACTION_ON_FAILED_HEALTH_CHECK]
+        [--base-instance-name=BASE_INSTANCE_NAME]
+        [--default-action-on-vm-failure=ACTION_ON_VM_FAILURE]
+        [--description=DESCRIPTION] [--[no-]force-update-on-repair]
+        [--initial-delay=INITIAL_DELAY] [--list-managed-instances-results=MODE]
+        [--on-repair-allow-changing-zone=ON_REPAIR_ALLOW_CHANGING_ZONE]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--stopped-size=STOPPED_SIZE]
+        [--suspended-size=SUSPENDED_SIZE] [--target-pool=[TARGET_POOL,...]]
+        [--target-size-policy-mode=TARGET_SIZE_POLICY_MODE]
+        [--workload-policy=WORKLOAD_POLICY] [--zones=ZONE,[ZONE,...]]
+        [--health-check=HEALTH_CHECK | --http-health-check=HTTP_HEALTH_CHECK
+          | --https-health-check=HTTPS_HEALTH_CHECK]
+        [--instance-flexibility-policy=[INSTANCE_FLEXIBILITY_POLICY,...]
+          | --instance-selection=name=NAME,machine-type=MACHINE_TYPE[,
+          machine-type=MACHINE_TYPE...][,
+          rank=RANK][,min-cpu-platform=MIN_CPU_PLATFORM]
+          --instance-selection-machine-types=[MACHINE_TYPE,...]]
+        [--instance-redistribution-type=TYPE --target-distribution-shape=SHAPE]
+        [--region=REGION | --zone=ZONE]
+        [--standby-policy-initial-delay=STANDBY_POLICY_INITIAL_DELAY
+          --standby-policy-mode=STANDBY_POLICY_MODE]
+        [--stateful-disk=[auto-delete=AUTO-DELETE],[device-name=DEVICE-NAME]
+          --stateful-external-ip=[enabled],
+          [auto-delete=AUTO-DELETE],[interface-name=INTERFACE-NAME]
+          --stateful-internal-ip=[enabled],
+          [auto-delete=AUTO-DELETE],[interface-name=INTERFACE-NAME]]
+        [--update-policy-max-surge=MAX_SURGE
+          --update-policy-max-unavailable=MAX_UNAVAILABLE
+          --update-policy-min-ready=MIN_READY
+          --update-policy-replacement-method=UPDATE_POLICY_REPLACEMENT_METHOD
+          --update-policy-type=UPDATE_TYPE
+          --update-policy-allowed-actions=ACTION,[ACTION,...]
+          | --update-policy-minimal-action=UPDATE_POLICY_MINIMAL_ACTION
+          --update-policy-most-disruptive-action=UPDATE_POLICY_MOST_DISRUPTIVE_ACTION]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud compute instance-groups managed create --http-health-check`: "HttpHealthCheck is deprecated. Use --health-check instead."; `gcloud compute instance-groups managed create --https-health-check`: "HttpsHealthCheck is deprecated. Use --health-check instead.".
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instance-groups/managed/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
