@@ -14,6 +14,12 @@ Quotas have default values and can typically be adjusted; system limits are fixe
 gcloud compute project-info describe --project PROJECT_ID
 ```
 
+Adapted (not in the official docs): the Compute Engine commands above show only the Compute Engine quotas (firewall rules and firewall policies); quotas defined by the Network Security API (`networksecurity.googleapis.com`) are listed with Cloud Quotas:
+
+```bash
+gcloud quotas info list --service=networksecurity.googleapis.com --project=PROJECT_ID
+```
+
 ## Options / Props
 
 ### Quotas per project
@@ -79,6 +85,7 @@ Example: an ingress allow rule (one source range, one protocol, one port range) 
 - Exceeding a quota with `gcloud` prints a `quota exceeded` error and exits with code `1`; an API request returns `413 Request Entity Too Large`.
 - Quotas don't guarantee resource availability.
 - The source also shows the Console steps for checking quota.
+- Clarified from the official docs: the source checks quotas only with `gcloud compute project-info describe` / `gcloud compute regions describe`, which describe Compute Engine project and region quotas (such as firewall rules and network firewall policies). Mirroring and intercept deployment, endpoint group and security profile quotas defined by `networksecurity.googleapis.com` are not part of that output, so the page adds `gcloud quotas info list --service=networksecurity.googleapis.com` (gcloud 593.0.0 help: `--service` is "Name of the service in which the quota is defined"), adapted from https://docs.cloud.google.com/sdk/gcloud/reference/quotas/info/list.
 - Source: https://docs.cloud.google.com/network-security-integration/docs/quotas (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -8,15 +8,13 @@ Quotas and system limits for NCC and Router appliance. Quotas apply per project 
 
 ## Signature / Usage
 
-```bash
-gcloud compute project-info describe --project PROJECT_ID
-```
-
-Replace `PROJECT_ID` with your project ID. To check used quota in a region:
+Adapted (not in the official docs): the source shows `gcloud compute project-info describe` (and `gcloud compute regions describe`), which return Compute Engine project and region quotas, not Network Connectivity Center quotas; this lists the quotas of `networkconnectivity.googleapis.com` with Cloud Quotas instead.
 
 ```bash
-gcloud compute regions describe example-region
+gcloud quotas info list --service=networkconnectivity.googleapis.com --project=PROJECT_ID
 ```
+
+Replace `PROJECT_ID` with your project ID.
 
 ## Options / Props
 
@@ -68,6 +66,7 @@ Router appliance also inherits the Cloud Router limits on Cloud Routers per VPC 
 - Most quotas are adjusted in the Google Cloud console (Quotas page) via a quota adjustment request.
 - The source also shows Console steps and links each quota to its Console Quotas page; the page itself does not list default quota values.
 - Source inconsistency: the spoke filters overview (https://docs.cloud.google.com/network-connectivity/docs/network-connectivity-center/concepts/spoke-filters-overview, retrieved 2026-11-17) says each of the include and exclude export and import range lists supports up to 16 CIDRs without distinguishing spoke types, while this quota is 32 CIDR ranges per hybrid spoke (16 per VPC or producer VPC spoke).
+- Corrected from the official docs: the source checks quotas with `gcloud compute project-info describe --project PROJECT_ID` and `gcloud compute regions describe example-region`; those commands describe the Compute Engine project and region, so they don't show Network Connectivity Center quotas. The example uses `gcloud quotas info list --service=networkconnectivity.googleapis.com` instead (gcloud 593.0.0 help: "list QuotaInfos of all quotas for a given project, folder or organization", `--service` is "Name of the service in which the quota is defined"). Snippet adapted from https://docs.cloud.google.com/sdk/gcloud/reference/quotas/info/list.
 - Source: https://docs.cloud.google.com/network-connectivity/docs/network-connectivity-center/quotas (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
