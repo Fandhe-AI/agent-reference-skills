@@ -1,0 +1,304 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/edge-cloud/container/clusters/create
+---
+
+# gcloud edge-cloud container clusters create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud edge-cloud container clusters create
+
+```text
+NAME
+    gcloud edge-cloud container clusters create - create an Edge Container
+        cluster
+
+SYNOPSIS
+    gcloud edge-cloud container clusters create (CLUSTER : --location=LOCATION)
+        [--admin-users=ADMIN_USERS] [--async]
+        [--cluster-ipv4-cidr=CLUSTER_IPV4_CIDR; default="10.0.0.0/17"]
+        [--container-default-runtime-class=CONTAINER_DEFAULT_RUNTIME_CLASS]
+        [--control-plane-kms-key=CONTROL_PLANE_KMS_KEY]
+        [--control-plane-machine-filter=CONTROL_PLANE_MACHINE_FILTER]
+        [--control-plane-node-count=CONTROL_PLANE_NODE_COUNT]
+        [--control-plane-node-location=CONTROL_PLANE_NODE_LOCATION]
+        [--control-plane-node-storage-schema=CONTROL_PLANE_NODE_STORAGE_SCHEMA]
+        [--control-plane-node-system-partition-size-gib=CONTROL_PLANE_NODE_SYSTEM_PARTITION_SIZE_GIB]
+        [--control-plane-shared-deployment-policy=CONTROL_PLANE_SHARED_DEPLOYMENT_POLICY]
+        [--default-max-pods-per-node=DEFAULT_MAX_PODS_PER_NODE]
+        [--enable-google-group-authentication]
+        [--external-lb-ipv4-address-pools=[EXTERNAL_LB_IPV4_ADDRESS,...]]
+        [--fleet-project=FLEET_PROJECT] [--labels=[KEY=VALUE,...]]
+        [--lro-timeout=LRO_TIMEOUT]
+        [--maintenance-window-end=MAINTENANCE_WINDOW_END]
+        [--maintenance-window-recurrence=MAINTENANCE_WINDOW_RECURRENCE]
+        [--maintenance-window-start=MAINTENANCE_WINDOW_START]
+        [--offline-reboot-ttl=OFFLINE_REBOOT_TTL]
+        [--release-channel=RELEASE_CHANNEL;
+          default="RELEASE_CHANNEL_UNSPECIFIED"]
+        [--services-ipv4-cidr=SERVICES_IPV4_CIDR; default="10.96.0.0/12"]
+        [--system-addons-config=SYSTEM_ADDONS_CONFIG] [--version=VERSION]
+        [--zone-storage-kms-key=ZONE_STORAGE_KMS_KEY] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create an Edge Container cluster.
+
+EXAMPLES
+    To create a cluster called my-cluster in region us-central1, run:
+
+        $ gcloud edge-cloud container clusters create my-cluster \
+            --location=us-central1
+
+POSITIONAL ARGUMENTS
+     Cluster resource - Edge Container cluster to create. The arguments in this
+     group can be used to specify the attributes of this resource. (NOTE) Some
+     attributes are not given arguments in this group but can be set in other
+     ways.
+
+     To set the project attribute:
+      * provide the argument cluster on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       CLUSTER
+          ID of the cluster or fully qualified identifier for the cluster.
+
+          To set the cluster attribute:
+          + provide the argument cluster on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --location=LOCATION
+          Google Cloud location for the cluster.
+
+          To set the location attribute:
+          + provide the argument cluster on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line.
+
+FLAGS
+     --admin-users=ADMIN_USERS
+        Username (Google email address) of the user who should be granted
+        cluster-admin initially. This currently supports exactly one admin. If
+        not set, the account issuing the creation request will be used by
+        default.
+
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --cluster-ipv4-cidr=CLUSTER_IPV4_CIDR; default="10.0.0.0/17"
+        All pods in the cluster are assigned an RFC1918 IPv4 address from this
+        block. This field cannot be changed after creation.
+
+     --container-default-runtime-class=CONTAINER_DEFAULT_RUNTIME_CLASS
+        Name of the default runtime class for containers. It supports two
+        values RUNC and GVISOR.
+
+     --control-plane-kms-key=CONTROL_PLANE_KMS_KEY
+        Google Cloud KMS key that will be used to secure persistent disks of
+        the control plane VMs of a remote control plane cluster. The Edge
+        Container service account for this project must have
+        roles/cloudkms.cryptoKeyEncrypterDecrypter on the key.
+
+        If not provided, a Google-managed key will be used by default.
+
+     --control-plane-machine-filter=CONTROL_PLANE_MACHINE_FILTER
+        Only machines matching this filter will be allowed to host local
+        control plane nodes. The filtering language accepts strings like
+        "name=<name>", and is documented here: AIP-160
+        (https://google.aip.dev/160).
+
+     --control-plane-node-count=CONTROL_PLANE_NODE_COUNT
+        The number of local control plane nodes in a cluster. Use one to create
+        a single-node control plane or use three to create a high availability
+        control plane. Any other numbers of nodes will not be accepted.
+
+     --control-plane-node-location=CONTROL_PLANE_NODE_LOCATION
+        Google Edge Cloud zone where the local control plane nodes will be
+        created.
+
+     --control-plane-node-storage-schema=CONTROL_PLANE_NODE_STORAGE_SCHEMA
+        Name for the storage schema of control plane nodes.
+
+     --control-plane-node-system-partition-size-gib=CONTROL_PLANE_NODE_SYSTEM_PARTITION_SIZE_GIB
+        Specifies the system partition size in GiB for the control plane nodes.
+        This parameter is optional. Valid values are 100 and 300 to set the
+        system partition size to 100GiB and 300GiB, respectively. If this
+        parameter is not specified, the system partition is created using the
+        default size specified in the system storage schema applicable to the
+        control plane nodes. CONTROL_PLANE_NODE_SYSTEM_PARTITION_SIZE_GIB must
+        be one of: 100, 300.
+
+     --control-plane-shared-deployment-policy=CONTROL_PLANE_SHARED_DEPLOYMENT_POLICY
+        Policy configuration about how user application is deployed for local
+        control plane cluster. It supports two values, ALLOWED and DISALLOWED.
+        ALLOWED means that user application can be deployed on control plane
+        nodes. DISALLOWED means that user application can not be deployed on
+        control plane nodes. Instead, it can only be deployed on worker nodes.
+        By default, this value is DISALLOWED. The input is case insensitive.
+
+     --default-max-pods-per-node=DEFAULT_MAX_PODS_PER_NODE
+        The default maximum number of pods per node.
+
+     --enable-google-group-authentication
+        If set, the cluster will be configured to use Google Group
+        authentication.
+
+     --external-lb-ipv4-address-pools=[EXTERNAL_LB_IPV4_ADDRESS,...]
+        IPv4 address pools that are used for data plane load balancing of local
+        control plane clusters. Existing pools cannot be updated after cluster
+        creation; only adding new pools is allowed. Each address pool must be
+        specified as one of the following two types of values: 1. A IPv4
+        address range, for example, "10.0.0.1-10.0.0.10". A range that contains
+        a single IP (e.g. "10.0.0.1-10.0.0.1") is allowed. 2. A IPv4 CIDR
+        block, for example, "10.0.0.1/24" Use comma when specifying multiple
+        address pools, for example: --external-lb-ipv4-address-pools
+        10.0.0.1-10.0.0.10,10.0.0.1/24
+
+     --fleet-project=FLEET_PROJECT
+        Name of the Fleet host project where the cluster is registered.
+
+     --labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to add.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     --lro-timeout=LRO_TIMEOUT
+        Overwrite the default LRO maximum timeout.
+
+     --maintenance-window-end=MAINTENANCE_WINDOW_END
+        End time of the recurring cluster maintenance window in the RFC 3339
+        (https://www.rfc-editor.org/rfc/rfc3339.txt) format. E.g.
+        "2021-01-01T00:00:00Z" or "2021-01-01T00:00:00-05:00"
+
+     --maintenance-window-recurrence=MAINTENANCE_WINDOW_RECURRENCE
+        An RFC 5545 (https://tools.ietf.org/html/rfc5545#section-3.8.5.3)
+        recurrence rule for how the cluster maintenance window recurs. They go
+        on for the span of time between the start and the end time. E.g.
+        FREQ=WEEKLY;BYDAY=SU.
+
+     --maintenance-window-start=MAINTENANCE_WINDOW_START
+        Start time of the recurring cluster maintenance window in the RFC 3339
+        (https://www.rfc-editor.org/rfc/rfc3339.txt) format. E.g.
+        "2021-01-01T00:00:00Z" or "2021-01-01T00:00:00-05:00"
+
+     --offline-reboot-ttl=OFFLINE_REBOOT_TTL
+        Specifies the maximum duration a node can reboot offline (without
+        connection to Google) and then rejoin its cluster to resume its
+        designated workloads. This duration is relative to the machine's most
+        recent connection to Google. The maximum allowed duration is 7 days. To
+        disallow offline reboot, set the duration to "PT0S". The parameter
+        should be an ISO 8601 duration string, for example, "P1DT1H2M3S".
+
+     --release-channel=RELEASE_CHANNEL; default="RELEASE_CHANNEL_UNSPECIFIED"
+        Release channel a cluster is subscribed to. It supports two values,
+        NONE and REGULAR. NONE is used to opt out of any release channel.
+        Clusters subscribed to the REGULAR channel will be automatically
+        upgraded to versions that are considered GA quality, and cannot be
+        manually upgraded. Additionally, if the REGULAR channel is used, a
+        specific target version cannot be set with the 'version' flag. If left
+        unspecified, the release channel will default to REGULAR.
+
+     --services-ipv4-cidr=SERVICES_IPV4_CIDR; default="10.96.0.0/12"
+        All services in the cluster are assigned an RFC1918 IPv4 address from
+        this block. This field cannot be changed after creation.
+
+     --system-addons-config=SYSTEM_ADDONS_CONFIG
+        If specified as a YAML/JSON file, customized configuration in this file
+        will be applied to the system add-ons.
+
+        For example,
+
+        { "systemAddonsConfig": { "ingress": { "disabled": true, "ipv4_vip":
+        "10.0.0.1" } } }
+
+     --version=VERSION
+        Target cluster version. For example: "1.5.0".
+
+     --zone-storage-kms-key=ZONE_STORAGE_KMS_KEY
+        Google Cloud KMS key that will be used to encrypt and decrypt the root
+        key for zone storage encryption. The zone storage KMS key is only
+        applicable to the storage infra cluster. The Edge Container service
+        account for this project must have
+        roles/cloudkms.cryptoKeyEncrypterDecrypter on the key.
+
+        If not provided, a Google-managed key will be used by default.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the edgecontainer/v1 API. The full documentation for this
+    API can be found at: https://cloud.google.com/edge-cloud
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha edge-cloud container clusters create
+```
+
+### gcloud alpha edge-cloud container clusters create
+
+```text
+NAME
+    gcloud alpha edge-cloud container clusters create - create an Edge
+        Container cluster
+
+SYNOPSIS
+    gcloud alpha edge-cloud container clusters create
+        (CLUSTER : --location=LOCATION) [--admin-users=ADMIN_USERS] [--async]
+        [--cluster-ipv4-cidr=CLUSTER_IPV4_CIDR; default="10.0.0.0/17"]
+        [--cluster-ipv6-cidr=CLUSTER_IPV6_CIDR]
+        [--container-default-runtime-class=CONTAINER_DEFAULT_RUNTIME_CLASS]
+        [--control-plane-kms-key=CONTROL_PLANE_KMS_KEY]
+        [--control-plane-machine-filter=CONTROL_PLANE_MACHINE_FILTER]
+        [--control-plane-node-count=CONTROL_PLANE_NODE_COUNT]
+        [--control-plane-node-location=CONTROL_PLANE_NODE_LOCATION]
+        [--control-plane-node-storage-schema=CONTROL_PLANE_NODE_STORAGE_SCHEMA]
+        [--control-plane-node-system-partition-size-gib=CONTROL_PLANE_NODE_SYSTEM_PARTITION_SIZE_GIB]
+        [--control-plane-shared-deployment-policy=CONTROL_PLANE_SHARED_DEPLOYMENT_POLICY]
+        [--default-max-pods-per-node=DEFAULT_MAX_PODS_PER_NODE]
+        [--enable-cluster-isolation=ENABLE_CLUSTER_ISOLATION]
+        [--enable-google-group-authentication]
+        [--external-lb-address-pools=EXTERNAL_LB_ADDRESS_POOLS]
+        [--external-lb-ipv4-address-pools=[EXTERNAL_LB_IPV4_ADDRESS,...]]
+        [--external-lb-ipv6-address-pools=[EXTERNAL_LB_IPV6_ADDRESS,...]]
+        [--fleet-project=FLEET_PROJECT] [--labels=[KEY=VALUE,...]]
+        [--lro-timeout=LRO_TIMEOUT]
+        [--maintenance-window-end=MAINTENANCE_WINDOW_END]
+        [--maintenance-window-recurrence=MAINTENANCE_WINDOW_RECURRENCE]
+        [--maintenance-window-start=MAINTENANCE_WINDOW_START]
+        [--offline-reboot-ttl=OFFLINE_REBOOT_TTL]
+        [--release-channel=RELEASE_CHANNEL;
+          default="RELEASE_CHANNEL_UNSPECIFIED"]
+        [--services-ipv4-cidr=SERVICES_IPV4_CIDR; default="10.96.0.0/12"]
+        [--services-ipv6-cidr=SERVICES_IPV6_CIDR]
+        [--system-addons-config=SYSTEM_ADDONS_CONFIG] [--version=VERSION]
+        [--zone-storage-kms-key=ZONE_STORAGE_KMS_KEY] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/edge-cloud/container/clusters/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
