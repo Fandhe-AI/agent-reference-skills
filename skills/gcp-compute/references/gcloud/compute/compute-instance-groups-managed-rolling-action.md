@@ -1,0 +1,547 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instance-groups/managed/rolling-action
+---
+
+# gcloud compute instance-groups managed rolling-action
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute instance-groups managed rolling-action replace
+
+```text
+NAME
+    gcloud compute instance-groups managed rolling-action replace - replaces
+        instances in a managed instance group
+
+SYNOPSIS
+    gcloud compute instance-groups managed rolling-action replace NAME
+        [--max-surge=MAX_SURGE] [--max-unavailable=MAX_UNAVAILABLE]
+        [--replacement-method=REPLACEMENT_METHOD]
+        [--region=REGION | --zone=ZONE] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Deletes the existing instance and creates a new instance from the target
+    template. The Updater creates a brand new instance with all new instance
+    properties, such as new internal and external IP addresses.
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the managed instance group to operate on.
+
+FLAGS
+     --max-surge=MAX_SURGE
+        Maximum additional number of instances that can be created during the
+        update process. This can be a fixed number (e.g. 5) or a percentage of
+        size to the managed instance group (e.g. 10%). Defaults to 0 if the
+        managed instance group has stateful configuration, or to the number of
+        zones in which it operates otherwise.
+
+     --max-unavailable=MAX_UNAVAILABLE
+        Maximum number of instances that can be unavailable during the update
+        process. This can be a fixed number (e.g. 5) or a percentage of size to
+        the managed instance group (e.g. 10%). Defaults to the number of zones
+        in which the managed instance group operates.
+
+     --replacement-method=REPLACEMENT_METHOD
+        Type of replacement method. Specifies what action will be taken to
+        update instances. Defaults to ``recreate`` if the managed instance
+        group has stateful configuration, or to ``substitute`` otherwise.
+        REPLACEMENT_METHOD must be one of:
+
+         recreate
+            Recreate instances and preserve the instance names. The instance
+            IDs and creation timestamps might change.
+         substitute
+            Delete old instances and create instances with new names.
+
+     At most one of these can be specified:
+
+       --region=REGION
+          Region of the managed instance group to operate on. If not specified,
+          you might be prompted to select a region (interactive mode only).
+
+          A list of regions can be fetched by running:
+
+              $ gcloud compute regions list
+
+          Overrides the default compute/region property value for this command
+          invocation.
+
+       --zone=ZONE
+          Zone of the managed instance group to operate on. If not specified,
+          you might be prompted to select a zone (interactive mode only).
+
+          A list of zones can be fetched by running:
+
+              $ gcloud compute zones list
+
+          Overrides the default compute/zone property value for this command
+          invocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-groups managed rolling-action replace
+
+        $ gcloud beta compute instance-groups managed rolling-action replace
+```
+
+### gcloud compute instance-groups managed rolling-action restart
+
+```text
+NAME
+    gcloud compute instance-groups managed rolling-action restart - restarts
+        instances in a managed instance group
+
+SYNOPSIS
+    gcloud compute instance-groups managed rolling-action restart NAME
+        [--max-unavailable=MAX_UNAVAILABLE] [--region=REGION | --zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instance-groups managed rolling-action restart restarts
+    instances in a managed instance group, effectively performing a stop and
+    start request. Note, if your request requires that the instance be replaced
+    to pick up changes, a forced replace will be performed instead.
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the managed instance group to operate on.
+
+FLAGS
+     --max-unavailable=MAX_UNAVAILABLE
+        Maximum number of instances that can be unavailable during the update
+        process. This can be a fixed number (e.g. 5) or a percentage of size to
+        the managed instance group (e.g. 10%). Defaults to the number of zones
+        in which the managed instance group operates.
+
+     At most one of these can be specified:
+
+       --region=REGION
+          Region of the managed instance group to operate on. If not specified,
+          you might be prompted to select a region (interactive mode only).
+
+          A list of regions can be fetched by running:
+
+              $ gcloud compute regions list
+
+          Overrides the default compute/region property value for this command
+          invocation.
+
+       --zone=ZONE
+          Zone of the managed instance group to operate on. If not specified,
+          you might be prompted to select a zone (interactive mode only).
+
+          A list of zones can be fetched by running:
+
+              $ gcloud compute zones list
+
+          Overrides the default compute/zone property value for this command
+          invocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-groups managed rolling-action restart
+
+        $ gcloud beta compute instance-groups managed rolling-action restart
+```
+
+### gcloud compute instance-groups managed rolling-action start-update
+
+```text
+NAME
+    gcloud compute instance-groups managed rolling-action start-update -
+        updates instances in a managed instance group
+
+SYNOPSIS
+    gcloud compute instance-groups managed rolling-action start-update NAME
+        --version=[template=TEMPLATE,[name=NAME],...]
+        [--canary-version=[template=TEMPLATE,
+          target-size=FIXED_OR_PERCENT,[name=NAME],...]]
+        [--type=TYPE; default="proactive"] [--force] [--max-surge=MAX_SURGE]
+        [--max-unavailable=MAX_UNAVAILABLE] [--minimal-action=MINIMAL_ACTION]
+        [--most-disruptive-allowed-action=MOST_DISRUPTIVE_ALLOWED_ACTION]
+        [--replacement-method=REPLACEMENT_METHOD]
+        [--region=REGION | --zone=ZONE] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instance-groups managed rolling-action start-update updates
+    instances in a managed instance group, according to the given versions and
+    the given update policy.
+
+    An instance template version can be either a global or regional resource.
+
+EXAMPLES
+    Running:
+
+        gcloud compute instance-groups managed rolling-action start-update example-managed-instance-group \
+        --version='template=example-global-instance-template'
+
+    Sets the group's instance template version to a global instance template
+    resource 'example-global-instance-template'.
+
+    To use a regional instance template, specify the full or partial URL of the
+    template.
+
+    Running:
+
+        gcloud compute instance-groups managed rolling-action start-update example-managed-instance-group \
+        --version='template=projects/example-project/regions/us-central1/instanceTemplates/example-regional-instance-template'
+
+    Sets the group's instance template version to a regional instance template
+    resource 'example-regional-instance-template'.
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the managed instance group to operate on.
+
+REQUIRED FLAGS
+     --version=[template=TEMPLATE,[name=NAME],...]
+        Original instance template resource to be used. Each version has the
+        following format: template=TEMPLATE,[name=NAME]
+
+COMMONLY USED FLAGS
+     --canary-version=[template=TEMPLATE,target-size=FIXED_OR_PERCENT,[name=NAME],...]
+        New instance template resource to be used. Each version has the
+        following format:
+        template=TEMPLATE,target-size=FIXED_OR_PERCENT,[name=NAME]
+
+     --type=TYPE; default="proactive"
+        Desired update type. TYPE must be one of:
+
+         opportunistic
+            Do not proactively replace VMs. Create new VMs and delete old ones
+            on resizes of the group and when you target specific VMs to be
+            updated or recreated.
+         proactive
+            Replace instances proactively.
+
+OTHER FLAGS
+     --force
+        If set, accepts any original or new version configurations without
+        validation.
+
+     --max-surge=MAX_SURGE
+        Maximum additional number of instances that can be created during the
+        update process. This can be a fixed number (e.g. 5) or a percentage of
+        size to the managed instance group (e.g. 10%). Defaults to 0 if the
+        managed instance group has stateful configuration, or to the number of
+        zones in which it operates otherwise.
+
+     --max-unavailable=MAX_UNAVAILABLE
+        Maximum number of instances that can be unavailable during the update
+        process. This can be a fixed number (e.g. 5) or a percentage of size to
+        the managed instance group (e.g. 10%). Defaults to the number of zones
+        in which the managed instance group operates.
+
+     --minimal-action=MINIMAL_ACTION
+        Use this flag to minimize disruption as much as possible or to apply a
+        more disruptive action than is strictly necessary. The MIG performs at
+        least this action on each instance while updating. If the update
+        requires a more disruptive action than the one specified here, then the
+        more disruptive action is performed. If you omit this flag, the update
+        uses the minimal-action value from the MIG's update policy, unless it
+        is not set in which case the default is replace.
+
+        MINIMAL_ACTION must be one of:
+
+         refresh
+            Apply the new configuration without stopping VMs, if possible. For
+            example, use ``refresh`` to apply changes that only affect metadata
+            or additional disks.
+         restart
+            Apply the new configuration without replacing VMs, if possible. For
+            example, stopping VMs and starting them again is sufficient to
+            apply changes to machine type.
+         replace
+            Replace old VMs according to the --replacement-method flag.
+
+     --most-disruptive-allowed-action=MOST_DISRUPTIVE_ALLOWED_ACTION
+        Use this flag to prevent an update if it requires more disruption than
+        you can afford. At most, the MIG performs the specified action on each
+        instance while updating. If the update requires a more disruptive
+        action than the one specified here, then the update fails and no
+        changes are made. If you omit this flag, the update uses the
+        most-disruptive-allowed-action value from the MIG's update policy,
+        unless it is not set in which case the default is replace.
+
+        MOST_DISRUPTIVE_ALLOWED_ACTION must be one of:
+
+         refresh
+            Apply the new configuration without stopping VMs, if possible. For
+            example, use ``refresh`` to apply changes that only affect metadata
+            or additional disks.
+         restart
+            Apply the new configuration without replacing VMs, if possible. For
+            example, stopping VMs and starting them again is sufficient to
+            apply changes to machine type.
+         replace
+            Replace old VMs according to the --replacement-method flag.
+
+     --replacement-method=REPLACEMENT_METHOD
+        Type of replacement method. Specifies what action will be taken to
+        update instances. Defaults to ``recreate`` if the managed instance
+        group has stateful configuration, or to ``substitute`` otherwise.
+        REPLACEMENT_METHOD must be one of:
+
+         recreate
+            Recreate instances and preserve the instance names. The instance
+            IDs and creation timestamps might change.
+         substitute
+            Delete old instances and create instances with new names.
+
+     At most one of these can be specified:
+
+       --region=REGION
+          Region of the managed instance group to operate on. If not specified,
+          you might be prompted to select a region (interactive mode only).
+
+          A list of regions can be fetched by running:
+
+              $ gcloud compute regions list
+
+          Overrides the default compute/region property value for this command
+          invocation.
+
+       --zone=ZONE
+          Zone of the managed instance group to operate on. If not specified,
+          you might be prompted to select a zone (interactive mode only).
+
+          A list of zones can be fetched by running:
+
+              $ gcloud compute zones list
+
+          Overrides the default compute/zone property value for this command
+          invocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-groups managed rolling-action \
+            start-update
+
+        $ gcloud beta compute instance-groups managed rolling-action \
+            start-update
+```
+
+### gcloud compute instance-groups managed rolling-action stop-proactive-update
+
+```text
+NAME
+    gcloud compute instance-groups managed rolling-action stop-proactive-update
+        - stop the proactive update process of managed instance group
+
+SYNOPSIS
+    gcloud compute instance-groups managed rolling-action stop-proactive-update
+        NAME [--region=REGION | --zone=ZONE] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    This command changes the update type of the managed instance group to
+    opportunistic.
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the managed instance group to operate on.
+
+FLAGS
+     At most one of these can be specified:
+
+       --region=REGION
+          Region of the managed instance group to operate on. If not specified,
+          you might be prompted to select a region (interactive mode only).
+
+          A list of regions can be fetched by running:
+
+              $ gcloud compute regions list
+
+          Overrides the default compute/region property value for this command
+          invocation.
+
+       --zone=ZONE
+          Zone of the managed instance group to operate on. If not specified,
+          you might be prompted to select a zone (interactive mode only).
+
+          A list of zones can be fetched by running:
+
+              $ gcloud compute zones list
+
+          Overrides the default compute/zone property value for this command
+          invocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-groups managed rolling-action \
+            stop-proactive-update
+
+        $ gcloud beta compute instance-groups managed rolling-action \
+            stop-proactive-update
+```
+
+### gcloud beta compute instance-groups managed rolling-action replace
+
+```text
+NAME
+    gcloud beta compute instance-groups managed rolling-action replace -
+        replaces instances in a managed instance group
+
+SYNOPSIS
+    gcloud beta compute instance-groups managed rolling-action replace NAME
+        [--max-surge=MAX_SURGE] [--max-unavailable=MAX_UNAVAILABLE]
+        [--min-ready=MIN_READY] [--replacement-method=REPLACEMENT_METHOD]
+        [--region=REGION | --zone=ZONE] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta compute instance-groups managed rolling-action restart
+
+```text
+NAME
+    gcloud beta compute instance-groups managed rolling-action restart -
+        restarts instances in a managed instance group
+
+SYNOPSIS
+    gcloud beta compute instance-groups managed rolling-action restart NAME
+        [--max-unavailable=MAX_UNAVAILABLE] [--min-ready=MIN_READY]
+        [--region=REGION | --zone=ZONE] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta compute instance-groups managed rolling-action start-update
+
+```text
+NAME
+    gcloud beta compute instance-groups managed rolling-action start-update -
+        updates instances in a managed instance group
+
+SYNOPSIS
+    gcloud beta compute instance-groups managed rolling-action start-update
+        NAME --version=[template=TEMPLATE,[name=NAME],...]
+        [--canary-version=[template=TEMPLATE,
+          target-size=FIXED_OR_PERCENT,[name=NAME],...]]
+        [--type=TYPE; default="proactive"] [--force] [--max-surge=MAX_SURGE]
+        [--max-unavailable=MAX_UNAVAILABLE] [--min-ready=MIN_READY]
+        [--minimal-action=MINIMAL_ACTION]
+        [--most-disruptive-allowed-action=MOST_DISRUPTIVE_ALLOWED_ACTION]
+        [--replacement-method=REPLACEMENT_METHOD]
+        [--region=REGION | --zone=ZONE] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta compute instance-groups managed rolling-action stop-proactive-update
+
+```text
+NAME
+    gcloud beta compute instance-groups managed rolling-action
+        stop-proactive-update - stop the proactive update process of managed
+        instance group
+
+SYNOPSIS
+    gcloud beta compute instance-groups managed rolling-action
+        stop-proactive-update NAME [--region=REGION | --zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instance-groups managed rolling-action replace
+
+```text
+NAME
+    gcloud alpha compute instance-groups managed rolling-action replace -
+        replaces instances in a managed instance group
+
+SYNOPSIS
+    gcloud alpha compute instance-groups managed rolling-action replace NAME
+        [--max-surge=MAX_SURGE] [--max-unavailable=MAX_UNAVAILABLE]
+        [--min-ready=MIN_READY] [--replacement-method=REPLACEMENT_METHOD]
+        [--region=REGION | --zone=ZONE] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instance-groups managed rolling-action restart
+
+```text
+NAME
+    gcloud alpha compute instance-groups managed rolling-action restart -
+        restarts instances in a managed instance group
+
+SYNOPSIS
+    gcloud alpha compute instance-groups managed rolling-action restart NAME
+        [--max-unavailable=MAX_UNAVAILABLE] [--min-ready=MIN_READY]
+        [--region=REGION | --zone=ZONE] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instance-groups managed rolling-action start-update
+
+```text
+NAME
+    gcloud alpha compute instance-groups managed rolling-action start-update -
+        updates instances in a managed instance group
+
+SYNOPSIS
+    gcloud alpha compute instance-groups managed rolling-action start-update
+        NAME --version=[template=TEMPLATE,[name=NAME],...]
+        [--canary-version=[template=TEMPLATE,
+          target-size=FIXED_OR_PERCENT,[name=NAME],...]]
+        [--type=TYPE; default="proactive"] [--force] [--max-surge=MAX_SURGE]
+        [--max-unavailable=MAX_UNAVAILABLE] [--min-ready=MIN_READY]
+        [--minimal-action=MINIMAL_ACTION]
+        [--most-disruptive-allowed-action=MOST_DISRUPTIVE_ALLOWED_ACTION]
+        [--replacement-method=REPLACEMENT_METHOD]
+        [--region=REGION | --zone=ZONE] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instance-groups managed rolling-action stop-proactive-update
+
+```text
+NAME
+    gcloud alpha compute instance-groups managed rolling-action
+        stop-proactive-update - stop the proactive update process of managed
+        instance group
+
+SYNOPSIS
+    gcloud alpha compute instance-groups managed rolling-action
+        stop-proactive-update NAME [--region=REGION | --zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instance-groups/managed/rolling-action (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
