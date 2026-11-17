@@ -403,7 +403,7 @@ API REFERENCE
     this API can be found at: https://cloud.google.com/oracle/database/docs
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud oracle-database autonomous-databases update my-autonomous-database \
@@ -413,17 +413,23 @@ gcloud oracle-database autonomous-databases update my-autonomous-database \
 
 gcloud oracle-database autonomous-databases update my-instance \
     --location=us-east4 \
-    --properties-local-data-guard-enabled=true \
+    --properties-local-data-guard-enabled \
     --properties-local-adg-auto-failover-max-data-loss-limit-duration=0
 
 gcloud oracle-database autonomous-databases update my-instance \
     --location=us-east4 \
     --properties-local-adg-auto-failover-max-data-loss-limit-duration=60
+
+gcloud oracle-database autonomous-databases update my-instance \
+    --location=us-east4 \
+    --no-properties-local-data-guard-enabled
 ```
 
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): `--[no-]properties-local-data-guard-enabled` is a boolean flag that takes no value (gcloud 593.0.0 rejects `--properties-local-data-guard-enabled=true`: "ignored explicit argument 'true'"); the runnable form uses `--properties-local-data-guard-enabled` to enable Local Data Guard.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): for the same reason, the disable example uses `--no-properties-local-data-guard-enabled` instead of `--properties-local-data-guard-enabled=false`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
