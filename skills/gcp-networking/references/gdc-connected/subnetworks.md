@@ -1,0 +1,108 @@
+---
+source: https://docs.cloud.google.com/distributed-cloud/connected/latest/docs/subnetworks
+---
+
+# Create and manage subnetworks
+
+Create, list, describe and delete subnetwork resources in a Distributed Cloud connected zone. A subnetwork is a VLAN within the parent network and is accessible to all nodes in the zone.
+
+## Signature / Usage
+
+The gcloud instructions assume Cloud Shell or another environment with `bash`.
+
+### Create a subnetwork
+
+Requires Edge Network Admin (`roles/edgenetwork.admin`).
+
+```bash
+gcloud edge-cloud networking subnets create SUBNETWORK_NAME \
+    --network=NETWORK_NAME \
+    --ipv4-range=IPV4_RANGE \
+    --vlan-id=VLAN_ID \
+    --location=REGION \
+    --zone=ZONE_NAME
+```
+
+REST request line (the body carries the `labels`, `network`, `ipv4Cidr` and `vlanId` fields):
+
+```text
+POST /v1/projects/PROJECT_ID/locations/REGION/zones/ZONE_NAME/subnets?subnetId=SUBNETWORK_ID
+```
+
+### List subnetworks
+
+Requires Edge Network Viewer (`roles/edgenetwork.viewer`).
+
+```bash
+gcloud edge-cloud networking subnets list \
+    --location=REGION \
+    --zone=ZONE_NAME
+```
+
+```text
+GET /v1/projects/PROJECT_ID/locations/REGION/zones/ZONE_NAME/subnets?filter=FILTER&pageSize=PAGE_SIZE&orderBy=SORT_BY&pageToken=PAGE_TOKEN
+```
+
+### Get information about a subnetwork
+
+```bash
+gcloud edge-cloud networking subnets describe SUBNETWORK_NAME \
+    --location=REGION \
+    --zone=ZONE_NAME
+```
+
+```text
+GET /v1/projects/PROJECT_ID/locations/REGION/zones/ZONE_NAME/subnets/SUBNETWORK_ID
+```
+
+### Delete a subnetwork
+
+Requires Edge Network Admin (`roles/edgenetwork.admin`).
+
+```bash
+gcloud edge-cloud networking subnets delete SUBNETWORK_NAME \
+    --location=REGION \
+    --zone=ZONE_NAME
+```
+
+```text
+DELETE /v1/projects/PROJECT_ID/locations/REGION/zones/ZONE_NAME/subnets/SUBNETWORK_ID
+```
+
+## Options / Props
+
+| Placeholder | Description |
+|---|---|
+| `SUBNETWORK_NAME` / `SUBNETWORK_ID` | Name (gcloud) or unique ID (REST) of the subnetwork. |
+| `NETWORK_NAME` | Network that encapsulates the subnetwork. |
+| `IPV4_RANGE` | IPv4 range the subnetwork covers, in IP address/prefix format. |
+| `VLAN_ID` | Target VLAN ID; specify `0` to have Distributed Cloud connected assign an unused VLAN ID at random. |
+| `REGION` / `ZONE_NAME` | Google Cloud region and Distributed Cloud connected zone. |
+| `LABELS`, `FILTER`, `PAGE_SIZE`, `SORT_BY`, `PAGE_TOKEN` | Labels and list-request parameters (`SORT_BY` is ascending by default; prefix with `~` for descending). |
+
+Provisioning state returned by describe:
+
+| State | Meaning |
+|---|---|
+| `PENDING` | Provisioning has not begun and the resource has not been propagated throughout the zone. |
+| `PROVISIONING` | Being provisioned; wait until it has been propagated throughout the zone. |
+| `RUNNING` | Successfully provisioned and propagated; ready to use. |
+| `FAILED` | Provisioning was not successful; not propagated throughout the zone. |
+
+| Limit | Value |
+|---|---|
+| Subnetworks per Distributed Cloud zone | up to 138 |
+
+## Notes
+
+- Each subnetwork must have a globally unique VLAN ID; Distributed Cloud connected does not allow the reuse of VLAN IDs.
+- Deleting a subnetwork is destructive and can break connectivity for workloads on that VLAN; try it on a disposable resource first.
+- The source's REST create body (`"labels": { LABELS, }`, `"network": { NETWORK_NAME, }`, `"ipv4Cidr": { IPV4_RANGE, }`, `"vlanId": { VLAN_ID, }`) is not valid JSON (braces around the placeholders and trailing commas), so only the request line is kept.
+- The source shows gcloud and REST forms only. The create flags above were checked against the SYNOPSIS of `gcloud edge-cloud networking subnets create` (gcloud 593.0.0 help); `--bonding-type` is not a flag of that command.
+- Source: https://docs.cloud.google.com/distributed-cloud/connected/latest/docs/subnetworks (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
+
+## Related
+
+- [networks.md](./networks.md)
+- [networking.md](./networking.md)
+- [quotas.md](./quotas.md)
