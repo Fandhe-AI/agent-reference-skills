@@ -1,0 +1,148 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/networks/subnets/add-iam-policy-binding
+---
+
+# gcloud compute networks subnets add-iam-policy-binding
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute networks subnets add-iam-policy-binding
+
+```text
+NAME
+    gcloud compute networks subnets add-iam-policy-binding - add an IAM policy
+        binding to a Compute Engine subnetwork
+
+SYNOPSIS
+    gcloud compute networks subnets add-iam-policy-binding
+        (SUBNETWORK : --region=REGION) --member=PRINCIPAL --role=ROLE
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Add an IAM policy binding to a Compute Engine subnetwork.
+
+EXAMPLES
+    To add an IAM policy binding for the role of 'roles/compute.securityAdmin'
+    for the user 'test-user@gmail.com' with subnetwork 'my-subnet' and region
+    'REGION', run:
+
+        $ gcloud compute networks subnets add-iam-policy-binding my-subnet \
+            --region=REGION --member='user:test-user@gmail.com' \
+            --role='roles/compute.securityAdmin'
+
+    See https://cloud.google.com/iam/docs/managing-policies for details of
+    policy role and member types.
+
+POSITIONAL ARGUMENTS
+     Subnetwork resource - The subnetwork for which to add the IAM policy to.
+     The arguments in this group can be used to specify the attributes of this
+     resource. (NOTE) Some attributes are not given arguments in this group but
+     can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument subnetwork on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       SUBNETWORK
+          ID of the subnetwork or fully qualified identifier for the
+          subnetwork.
+
+          To set the subnetwork attribute:
+          + provide the argument subnetwork on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --region=REGION
+          The name of the Google Compute Engine region.
+
+          To set the region attribute:
+          + provide the argument subnetwork on the command line with a fully
+            specified name;
+          + provide the argument --region on the command line;
+          + set the property compute/region.
+
+REQUIRED FLAGS
+     --member=PRINCIPAL
+        The principal to add the binding for. Should be of the form
+        user|group|serviceAccount:email or domain:domain.
+
+        Examples: user:test-user@gmail.com, group:admins@example.com,
+        serviceAccount:test123@example.domain.com, or
+        domain:example.domain.com.
+
+        Some resources also accept the following special values:
+        * allUsers - Special identifier that represents anyone who is on the
+          internet, with or without a Google account.
+        * allAuthenticatedUsers - Special identifier that represents anyone
+          who is authenticated with a Google account or a service account.
+
+     --role=ROLE
+        Role name to assign to the principal. The role name is the complete
+        path of a predefined role, such as roles/logging.viewer, or the role ID
+        for a custom role, such as
+        organizations/{ORGANIZATION_ID}/roles/logging.viewer.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the compute/v1 API. The full documentation for this API
+    can be found at: https://cloud.google.com/compute/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute networks subnets add-iam-policy-binding
+
+        $ gcloud beta compute networks subnets add-iam-policy-binding
+```
+
+### gcloud beta compute networks subnets add-iam-policy-binding
+
+```text
+NAME
+    gcloud beta compute networks subnets add-iam-policy-binding - add an IAM
+        policy binding to a Compute Engine subnetwork
+
+SYNOPSIS
+    gcloud beta compute networks subnets add-iam-policy-binding
+        (SUBNETWORK : --region=REGION) --member=PRINCIPAL --role=ROLE
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute networks subnets add-iam-policy-binding
+
+```text
+NAME
+    gcloud alpha compute networks subnets add-iam-policy-binding - add IAM
+        policy binding to a Compute Engine subnetwork
+
+SYNOPSIS
+    gcloud alpha compute networks subnets add-iam-policy-binding
+        (SUBNETWORK : --region=REGION) --member=PRINCIPAL --role=ROLE
+        [--condition=[KEY=VALUE,...] | --condition-from-file=PATH_TO_FILE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/networks/subnets/add-iam-policy-binding (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

@@ -1,0 +1,244 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/networks/create
+---
+
+# gcloud compute networks create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute networks create
+
+```text
+NAME
+    gcloud compute networks create - create a Compute Engine network
+
+SYNOPSIS
+    gcloud compute networks create NAME
+        [--bgp-routing-mode=MODE; default="regional"]
+        [--description=DESCRIPTION] [--[no-]enable-ula-internal-ipv6]
+        [--internal-ipv6-range=INTERNAL_IPV6_RANGE] [--mtu=MTU]
+        [--network-firewall-policy-enforcement-order=NETWORK_FIREWALL_POLICY_ENFORCEMENT_ORDER]
+        [--network-profile=NETWORK_PROFILE] [--range=RANGE]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--subnet-mode=MODE]
+        [--bgp-best-path-selection-mode=BGP_BEST_PATH_SELECTION_MODE
+          --[no-]bgp-bps-always-compare-med
+          --bgp-bps-inter-region-cost=BGP_BPS_INTER_REGION_COST]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute networks create is used to create virtual networks. A
+    network performs the same function that a router does in a home network: it
+    describes the network range and gateway IP address, handles communication
+    between instances, and serves as a gateway between instances and callers
+    outside the network.
+
+EXAMPLES
+    To create a regional auto subnet mode network with the name 'network-name',
+    run:
+
+        $ gcloud compute networks create network-name
+
+    To create a global custom subnet mode network with the name 'network-name',
+    run:
+
+        $ gcloud compute networks create network-name \
+            --bgp-routing-mode=global --subnet-mode=custom
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the network to create.
+
+FLAGS
+     --bgp-routing-mode=MODE; default="regional"
+        The BGP routing mode for this network. If not specified, defaults to
+        regional.
+
+        MODE must be one of:
+
+         global
+            Cloud Routers in this network advertise subnetworks from all
+            regions to their BGP peers, and program instances in all regions
+            with the router's best learned BGP routes.
+         regional
+            Cloud Routers in this network advertise subnetworks from their
+            local region only to their BGP peers, and program instances in
+            their local region only with the router's best learned BGP routes.
+
+     --description=DESCRIPTION
+        An optional, textual description for the network.
+
+     --[no-]enable-ula-internal-ipv6
+        Enable/disable ULA internal IPv6 on this network. Enabling this feature
+        will assign a /48 from google defined ULA prefix fd20::/20.
+
+        Use --enable-ula-internal-ipv6 to enable and
+        --no-enable-ula-internal-ipv6 to disable.
+
+     --internal-ipv6-range=INTERNAL_IPV6_RANGE
+        When enabling ULA internal IPv6, caller can optionally specify the /48
+        range they want from the google defined ULA prefix fd20::/20.
+        ULA_IPV6_RANGE must be a valid /48 ULA IPv6 address and within the
+        fd20::/20. Operation will fail if the speficied /48 is already in used
+        by another resource. If the field is not speficied, then a /48 range
+        will be randomly allocated from fd20::/20 and returned via this field.
+
+     --mtu=MTU
+        Maximum transmission unit (MTU) is the size of the largest IP packet
+        that can be transmitted on this network. Default value is 1460 bytes.
+        The minimum value is 1300 bytes and the maximum value is 8896 bytes.
+        The MTU advertised via DHCP to all instances attached to this network.
+
+     --network-firewall-policy-enforcement-order=NETWORK_FIREWALL_POLICY_ENFORCEMENT_ORDER
+        The Network Firewall Policy enforcement order of this network. If not
+        specified, defaults to AFTER_CLASSIC_FIREWALL.
+
+        NETWORK_FIREWALL_POLICY_ENFORCEMENT_ORDER must be one of:
+
+         AFTER_CLASSIC_FIREWALL
+            Network Firewall Policy is enforced after classic firewall.
+         BEFORE_CLASSIC_FIREWALL
+            Network Firewall Policy is enforced before classic firewall.
+
+     --network-profile=NETWORK_PROFILE
+        The network profile to apply to this network.
+
+     --range=RANGE
+        Specifies the IPv4 address range of legacy mode networks. The range
+        must be specified in CIDR format:
+        http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing
+
+        This flag only works if mode is legacy
+        (https://cloud.google.com/compute/docs/vpc/legacy).
+
+        Using legacy networks is **DEPRECATED**, given that many newer Google
+        Cloud Platform features are not supported on legacy networks. Please be
+        advised that legacy networks may not be supported in the future.
+
+     --resource-manager-tags=[KEY=VALUE,...]
+        A comma-separated list of Resource Manager tags to apply to the
+        network.
+
+     --subnet-mode=MODE
+        The subnet mode of the network. If not specified, defaults to AUTO.
+
+        MODE must be one of:
+
+         auto
+            Subnets are created automatically. This is the recommended
+            selection.
+         custom
+            Create subnets manually.
+         legacy
+            [Deprecated] Create an old style network that has a range and
+            cannot have subnets. This is not recommended for new networks.
+
+     BGP Best Path Selection flags
+
+     --bgp-best-path-selection-mode=BGP_BEST_PATH_SELECTION_MODE
+        The BGP best path selection algorithm to be employed.
+        BGP_BEST_PATH_SELECTION_MODE must be one of:
+
+         LEGACY
+            Dynamic routes are ranked based on the multiple exit-discriminator
+            (MED) BGP attribute. When global routing is enabled, the MED of the
+            routes received from other regions is the original MED plus the
+            region-to-region cost.
+         STANDARD
+            Dynamic routes are ranked based on AS Path, Origin, Neighbor ASN
+            and MED BGP attributes. When global routing is enabled,
+            region-to-region cost is used as a tiebreaker. This mode offers
+            customizations to fine-tune BGP best path routing with additional
+            flags like --bgp-bps-always-compare-med and
+            --bgp-bps-inter-region-cost
+
+     --[no-]bgp-bps-always-compare-med
+        Enables/disables the comparison of MED across routes with different
+        Neighbor ASNs. This value can only be set if the
+        --bgp-best-path-selection-mode is STANDARD. Use
+        --bgp-bps-always-compare-med to enable and
+        --no-bgp-bps-always-compare-med to disable.
+
+     --bgp-bps-inter-region-cost=BGP_BPS_INTER_REGION_COST
+        Defines the preferred approach for handling inter-region cost in the
+        selection process. This value can only be set if the
+        --bgp-best-path-selection-mode is STANDARD. BGP_BPS_INTER_REGION_COST
+        must be one of:
+
+         ADD_COST_TO_MED
+            Adds inter-region cost to the MED before comparing the MED value.
+            When multiple routes have the same value after the Add-cost-to-med
+            comparison, the route selection continues and prefers the route
+            with lowest cost.
+         DEFAULT
+            MED is compared as originally received from peers. When multiple
+            routes have the same MED, cost is evaluated as the next step.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute networks create
+
+        $ gcloud beta compute networks create
+```
+
+### gcloud beta compute networks create
+
+```text
+NAME
+    gcloud beta compute networks create - create a Compute Engine network
+
+SYNOPSIS
+    gcloud beta compute networks create NAME
+        [--bgp-routing-mode=MODE; default="regional"]
+        [--description=DESCRIPTION] [--[no-]enable-ula-internal-ipv6]
+        [--internal-ipv6-range=INTERNAL_IPV6_RANGE] [--mtu=MTU]
+        [--network-firewall-policy-enforcement-order=NETWORK_FIREWALL_POLICY_ENFORCEMENT_ORDER]
+        [--network-profile=NETWORK_PROFILE] [--range=RANGE]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--subnet-mode=MODE]
+        [--bgp-best-path-selection-mode=BGP_BEST_PATH_SELECTION_MODE
+          --[no-]bgp-bps-always-compare-med
+          --bgp-bps-inter-region-cost=BGP_BPS_INTER_REGION_COST]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute networks create
+
+```text
+NAME
+    gcloud alpha compute networks create - create a Compute Engine network
+
+SYNOPSIS
+    gcloud alpha compute networks create NAME
+        [--bgp-routing-mode=MODE; default="regional"]
+        [--description=DESCRIPTION] [--[no-]enable-ula-internal-ipv6]
+        [--internal-ipv6-range=INTERNAL_IPV6_RANGE] [--mtu=MTU]
+        [--network-firewall-policy-enforcement-order=NETWORK_FIREWALL_POLICY_ENFORCEMENT_ORDER]
+        [--network-profile=NETWORK_PROFILE] [--range=RANGE]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--subnet-mode=MODE]
+        [--bgp-best-path-selection-mode=BGP_BEST_PATH_SELECTION_MODE
+          --[no-]bgp-bps-always-compare-med
+          --bgp-bps-inter-region-cost=BGP_BPS_INTER_REGION_COST]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud compute networks create --subnet-mode legacy`: "[Deprecated] Create an old style network that has a range and cannot have subnets. This is not recommended for new networks."; `gcloud compute networks create --range`: "Using legacy networks is **DEPRECATED**, given that many newer Google Cloud Platform features are not supported on legacy networks. Please be advised that legacy networks may not be supported in the future.".
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/networks/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
