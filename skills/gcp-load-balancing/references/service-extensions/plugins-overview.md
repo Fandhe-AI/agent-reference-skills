@@ -12,13 +12,15 @@ Plugins are WebAssembly (Wasm) modules that use Proxy-Wasm APIs and run inline i
 
 The source calls this a conceptual Rust example.
 
+Adapted (not in the official docs): the callback is named `on_http_request_headers`, the `HttpContext` trait method of the Proxy-Wasm Rust SDK; the source names it `on_request_headers`, which is not a trait method and would never be called.
+
 ```rust
 use proxy_wasm::traits::{HttpContext, RootContext};
 use proxy_wasm::types::Action;
 
 // ... inside your HttpContext implementation ...
 
-fn on_request_headers(&mut self, _num_headers: usize, _end_of_stream: bool) -> Action {
+fn on_http_request_headers(&mut self, _num_headers: usize, _end_of_stream: bool) -> Action {
     if let Some(host) = self.get_property(vec!["request", "host"]) {
         // host is a Vec, convert to string
         let host_str = String::from_utf8(host).unwrap_or_default();
@@ -77,6 +79,7 @@ fn on_request_headers(&mut self, _num_headers: usize, _end_of_stream: bool) -> A
 - Use the plugin tester (plugin best practices) to benchmark CPU and memory.
 - Plugin attribute property names correspond to attribute names, as a path (for example `{"request", "host"}` for `request.host`).
 - Google Cloud Service Extensions plugins, not Cloudflare Workers (see `cloudflare-workers`) and not the Wasm toolchain itself (see `rust`).
+- Corrected from the official docs: the source's conceptual example defines `fn on_request_headers(...)` inside an `HttpContext` implementation, but the `proxy_wasm::traits::HttpContext` callback for request headers is `on_http_request_headers(&mut self, num_headers: usize, end_of_stream: bool) -> Action` (as in the Rust plugin code samples at https://docs.cloud.google.com/service-extensions/docs/plugin-code-samples, retrieved 2026-11-17); the method name was changed.
 - Source: https://docs.cloud.google.com/service-extensions/docs/plugins-overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
