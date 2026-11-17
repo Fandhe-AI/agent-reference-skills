@@ -317,3 +317,15 @@
 | gcloud compute machine-types | 6 commands (alpha, beta, ga); compute machine-types describe … | [compute-machine-types.md](./compute-machine-types.md) |
 | gcloud compute managed-rulesets | 6 commands (alpha, beta, ga); compute managed-rulesets describe … | [compute-managed-rulesets.md](./compute-managed-rulesets.md) |
 | gcloud compute migration disk-migrations | 8 commands (alpha); alpha compute migration disk-migrations cancel … | [compute-migration-disk-migrations.md](./compute-migration-disk-migrations.md) |
+| gcloud compute migration image-imports | 8 commands (alpha, ga); compute migration image-imports create … | [compute-migration-image-imports.md](./compute-migration-image-imports.md) |
+| gcloud compute migration machine-image-imports | 8 commands (alpha, ga); compute migration machine-image-imports create … | [compute-migration-machine-image-imports.md](./compute-migration-machine-image-imports.md) |
+| gcloud compute migration target-projects | 2 commands (alpha, ga); compute migration target-projects list … | [compute-migration-target-projects.md](./compute-migration-target-projects.md) |
+| gcloud compute network-attachments | 21 commands (alpha, beta, ga); compute network-attachments create … | [compute-network-attachments.md](./compute-network-attachments.md) |
+| gcloud compute network-edge-security-services | 15 commands (alpha, beta, ga); compute network-edge-security-services create … | [compute-network-edge-security-services.md](./compute-network-edge-security-services.md) |
+| gcloud compute network-endpoint-groups | 18 commands (alpha, beta, ga); compute network-endpoint-groups create … | [compute-network-endpoint-groups.md](./compute-network-endpoint-groups.md) |
+| gcloud compute network-firewall-policies associations | 9 commands (alpha, beta, ga); compute network-firewall-policies associations create … | [compute-network-firewall-policies-associations.md](./compute-network-firewall-policies-associations.md) |
+| gcloud compute network-firewall-policies clone-rules | 3 commands (alpha, beta, ga); compute network-firewall-policies clone-rules … | [compute-network-firewall-policies-clone-rules.md](./compute-network-firewall-policies-clone-rules.md) |
+| gcloud compute network-firewall-policies create | 3 commands (alpha, beta, ga); compute network-firewall-policies create … | [compute-network-firewall-policies-create.md](./compute-network-firewall-policies-create.md) |
+| gcloud compute network-firewall-policies delete | 3 commands (alpha, beta, ga); compute network-firewall-policies delete … | [compute-network-firewall-policies-delete.md](./compute-network-firewall-policies-delete.md) |
+| gcloud compute network-firewall-policies describe | 3 commands (alpha, beta, ga); compute network-firewall-policies describe … | [compute-network-firewall-policies-describe.md](./compute-network-firewall-policies-describe.md) |
+| gcloud compute network-firewall-policies export-rules | 3 commands (alpha, beta, ga); compute network-firewall-policies export-rules … | [compute-network-firewall-policies-export-rules.md](./compute-network-firewall-policies-export-rules.md) |
