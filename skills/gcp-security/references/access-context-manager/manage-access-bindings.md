@@ -79,7 +79,7 @@ gcloud access-context-manager cloud-bindings update \
   --dry-run-level=DEFAULT_DRY_RUN_ACCESS_LEVEL
 ```
 
-Default session controls for a Google Group binding (`--session-length` and `--session-reauth-method` must be used together):
+Default session controls for a Google Group binding (the guide sets `--session-length` and `--session-reauth-method` together; see the Notes for the gcloud defaults):
 
 ```bash
 gcloud access-context-manager cloud-bindings update \
@@ -180,7 +180,7 @@ A successful delete returns a 2xx status and an empty response.
 | `--level` | Default access level `accessPolicies/POLICY_ID/accessLevels/ACCESS_LEVEL_NAME`; empty string (`--level=`) removes it |
 | `--dry-run-level` | Default dry run access level applied to all applications not specified in the YAML; empty string removes it |
 | `--session-length` | Session duration in hour format, such as `15h` or `2h` (REST `sessionLength`: a `google-duration` string in seconds, such as `1800s` for 30 minutes or `7200s` for two hours); `0` removes the session control |
-| `--session-reauth-method` | `LOGIN`, `PASSWORD` or `SECURITY_KEY` (see below); must be used together with `--session-length` |
+| `--session-reauth-method` | `login`, `password` or `security-key` (REST: `LOGIN`, `PASSWORD`, `SECURITY_KEY`; see below). Defaults to `login` when only `--session-length` is set; cannot be used when `--session-length` is empty or `0` (gcloud 593.0.0 help) |
 
 ### Re-authentication methods
 
@@ -210,7 +210,7 @@ A successful delete returns a 2xx status and an empty response.
 - Updates can promote a dry run access level to a live one; try new levels in `dryRunAccessLevels` first, because a live level controls access to the Google Cloud console and Google Cloud APIs for the group.
 - Deleting a binding removes its access levels and session controls for that group or service account; to restore them, create the binding again. Try it on a disposable binding first.
 - The curl examples embed `gcloud auth print-access-token`; do not print or log the token in shared terminals or CI logs.
-- Source inconsistency: the guide says `--session-length` and `--session-reauth-method` must be used together, while the gcloud 593.0.0 help says `--session-reauth-method` defaults to `LOGIN` when only `--session-length` is set and cannot be used when `--session-length` is empty or `0`.
+- Source inconsistency: the guide says `--session-length` and `--session-reauth-method` must be used together, while the gcloud 593.0.0 help says `--session-reauth-method` defaults to `login` when only `--session-length` is set and cannot be used when `--session-length` is empty or `0`.
 - The gcloud 593.0.0 help shows `--session-reauth-method` values in lowercase (`login`, `password`, `security-key`, default `login`), while the REST API uses `LOGIN`, `PASSWORD`, `SECURITY_KEY`.
 - The source also shows Console steps and PowerShell variants.
 - Corrected from the official docs: the source describes the REST `SESSION_LENGTH` as "ISO 8601 duration format, such as `30m` for 30 minutes, or `2h` for two hours". The Access Context Manager v1 Discovery document types `SessionSettings.sessionLength` as `format: google-duration`, whose JSON form is seconds with an `s` suffix (`1800s`, `7200s`); `30m` / `2h` are the gcloud `--session-length` forms.
