@@ -32,7 +32,7 @@ skills/gcp-networking/
         edge-cloud-<group>.md
       ids/
         README.md                 # gcloud ids（Cloud IDS: endpoints・operations）
-      network-connectivity/  # 分割投入中（22 / 42 ページ。収録済みは README 掲載分のみ）
+      network-connectivity/  # 分割投入中（34 / 42 ページ。収録済みは README 掲載分のみ）
         README.md                 # gcloud network-connectivity（hubs・spokes・internal-ranges・policy-based-routes・regional-endpoints・service-connection-policies 等）
     vpc-overview/                 # 公式ガイド由来（手書き）: VPC の概要・VPC ネットワーク・サブネット・IPv6・MTU・network profiles・クォータ・legacy network
       README.md
@@ -110,7 +110,7 @@ skills/gcp-networking/
 
 未投入カテゴリ（`gcloud/network-management` / `gcloud/network-security` / `gcloud/network-services` / `gcloud/number-registry` / `gcloud/service-directory` / `gcloud/service-extensions` / `gcloud/zone-management` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`gcloud/network-connectivity`: 22 / 42 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`gcloud/network-connectivity`: 34 / 42 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
