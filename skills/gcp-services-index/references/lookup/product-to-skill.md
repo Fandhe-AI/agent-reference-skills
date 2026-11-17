@@ -73,6 +73,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Cloud Autoscaling | `gcp-compute` | `autoscaling` |
 | Cloud Billing | `gcp-foundation` | `billing` |
 | Cloud Build | `gcp-devops` | `cloudbuild` |
+| Cloud CDN (guides; gcloud compute / REST in gcp-compute) | `gcp-load-balancing` | `compute` |
 | Cloud Commerce Consumer Procurement | `gcp-foundation` | `consumerprocurement` |
 | Cloud Composer (now Managed Service for Apache Airflow) | `gcp-data-pipelines` | `composer` |
 | Cloud Controls Partner API | `gcp-security` | `cloudcontrolspartner` |
@@ -94,6 +95,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Cloud Key Management Service | `gcp-security` | `cloudkms` |
 | Cloud License Manager | `gcp-foundation` | `licensemanager` |
 | Cloud Life Sciences | 対象外 | `lifesciences` |
+| Cloud Load Balancing (guides; gcloud compute / REST in gcp-compute) | `gcp-load-balancing` | `compute` |
 | Cloud Location Finder | `gcp-foundation` | `cloudlocationfinder` |
 | Cloud Logging | `gcp-observability` | `logging` |
 | Cloud Monitoring | `gcp-observability` | `monitoring` |
@@ -260,6 +262,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Maps Platform Datasets | 対象外 | `mapsplatformdatasets` |
 | Marketplace Solutions API | 対象外 | `marketplacesolutions` |
 | Media Asset | `gcp-ai-apis` | `mediaasset` |
+| Media CDN (guides; gcloud edge-cache / REST in gcp-networking) | `gcp-load-balancing` | `networkservices` |
 | Memorystore | `gcp-databases-nosql` | `memorystore` |
 | Memorystore for Memcached | `gcp-databases-nosql` | `memcache` |
 | Memorystore for Redis | `gcp-databases-nosql` | `redis` |
@@ -323,6 +326,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Service Consumer Management | `gcp-foundation` | `serviceconsumermanagement` |
 | Service Directory | `gcp-networking` | `servicedirectory` |
 | Service Extensions | `gcp-networking` | `networkactions` |
+| Service Extensions (guides; gcloud service-extensions / REST in gcp-networking) | `gcp-load-balancing` | `networkactions` |
 | Service Management | `gcp-foundation` | `servicemanagement` |
 | Service Networking | `gcp-foundation` | `servicenetworking` |
 | Service Security Insights | `gcp-security` | `servicesecurityinsights` |

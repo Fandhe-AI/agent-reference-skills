@@ -63,7 +63,7 @@ spec:
 - External Application Load Balancers listen on the public internet through Google points of presence; internal Application Load Balancers listen within the VPC network.
 - Other exposure solutions: in-cluster Ingress (for example istio-ingressgateway, nginx-ingress; self-managed, hosted inside the cluster), standalone NEGs (manual load balancer frontend with GKE-managed Pod backends), and a service mesh (Cloud Service Mesh, client-side load balancing across clusters, regions, containers and VMs).
 - Ingress configuration comparison: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/ingress-configuration
-- Kubernetes Gateway API / Ingress resources on GKE are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-networking`, planned).
+- Kubernetes Gateway API / Ingress resources on GKE are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-load-balancing`).
 - Snippet taken from https://docs.cloud.google.com/kubernetes-engine/docs/concepts/service (the source page has no code block; this example is an ExternalName Service, shown only as a minimal Service manifest).
 - Source inconsistency: the "Choosing by protocol" and "Choosing by application regionality" tables list Multi Cluster Ingress as the only multi-cluster solution and omit Gateway, while about-load-balancing.md says "GKE Gateway is the recommended choice for new deployments" and gateway-api.md lists multi-cluster GatewayClasses (for example `gke-l7-global-external-managed-mc`). The tables are kept as published.
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/service-networking (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)

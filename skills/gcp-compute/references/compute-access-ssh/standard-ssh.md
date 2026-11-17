@@ -53,7 +53,7 @@ USERNAME@EXTERNAL_IP
 - Supported on all public Linux images. For Fedora CoreOS images you must set up SSH access first.
 - Console connections create an ephemeral SSH key; gcloud CLI connections create a persistent SSH key.
 - When a user connects to a VM, that user can use all IAM permissions granted to the service account attached to the VM.
-- Restrict the firewall rule source ranges to what you need; do not open port 22 to `0.0.0.0/0` more broadly than required. The VM-side setting is here; VPC networks and firewall policies themselves are in the planned `gcp-networking`.
+- Restrict the firewall rule source ranges to what you need; do not open port 22 to `0.0.0.0/0` more broadly than required. The VM-side setting is here; VPC networks and firewall policies themselves are in `gcp-networking`.
 - The source also shows the Console click-path and Cloud Shell activation steps.
 - Source: https://docs.cloud.google.com/compute/docs/connect/standard-ssh (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

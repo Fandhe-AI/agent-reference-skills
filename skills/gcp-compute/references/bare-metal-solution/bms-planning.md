@@ -170,7 +170,7 @@ Active-Standby: set a higher base route priority on the secondary BGP session. A
 - Advanced networking may show incorrect network status in the console and in `gcloud bms networks`.
 - VPC firewalls do not apply to traffic that transits Google Cloud between Bare Metal Solution and other environments; create VPC firewall rules that allow incoming connections from the Bare Metal Solution environment. East-west control inside the environment: ask sales.
 - Optional NATVM / JumpVM Compute Engine VMs provide internet access and remote access; regional instance groups with internal passthrough load balancers give redundancy.
-- Distance line: VPC networks, firewall policies and Cloud Load Balancing themselves are in the planned `gcp-networking`; VM-side settings are in this skill.
+- Distance line: VPC networks and firewall policies themselves are in `gcp-networking`, and Cloud Load Balancing in `gcp-load-balancing`; VM-side settings are in this skill.
 - The page also shows diagrams (omitted).
 - Source: https://docs.cloud.google.com/bare-metal/docs/bms-planning (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

@@ -42,7 +42,7 @@ Snippet taken from https://docs.cloud.google.com/compute/vm-manager/docs/setup (
 
 - Limitation: VM Manager supports only operating systems configured with an English locale. With a non-English locale the OS Config agent might fail to parse package manager output, which can make Patch, OS inventory management and OS policies fail.
 - If the Cloud OS Config Service Agent role was revoked from the service agent, the agent is not visible on the IAM page.
-- VPC-side requirements (Private Google Access, Cloud NAT) are only the VM-side setting here; VPC networks themselves are in the planned `gcp-networking`. Service agents and IAM in general are in `gcp-foundation`.
+- VPC-side requirements (Private Google Access, Cloud NAT) are only the VM-side setting here; VPC networks themselves are in `gcp-networking`. Service agents and IAM in general are in `gcp-foundation`.
 - For pricing see https://docs.cloud.google.com/compute/vm-manager/pricing (not copied).
 - Source inconsistency: this page says "For VMs in private networks, you can set up Private Google Access" to reach package sources and repositories, while patch.md says "The Patch service does not host or maintain package updates or patches" and, for a VM that "doesn't use public IPs" or a "private VPC network", recommends "hosting your own local repository or a Windows Server Update Service" or making "external update sources available to your VMs by using Cloud NAT or other proxy services"; private-google-access.md says such VMs "can reach the external IP addresses of Google APIs and services". For package repositories outside Google, follow patch.md.
 - Source (Patch, cited above as `patch.md`): https://docs.cloud.google.com/compute/vm-manager/docs/patch (retrieved 2026-11-17)

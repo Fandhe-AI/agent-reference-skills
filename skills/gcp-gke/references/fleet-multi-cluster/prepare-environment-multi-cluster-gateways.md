@@ -210,7 +210,7 @@ Shared VPC topologies: scenario 1 (fleet host project, config cluster and worklo
 
 ## Notes
 
-- Kubernetes Gateway API resources on GKE, and Multi Cluster Ingress, are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (planned `gcp-networking`).
+- Kubernetes Gateway API resources on GKE, and Multi Cluster Ingress, are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-load-balancing`).
 - Adapted from the official docs: the MCS service agent member is `serviceAccount:service-PROJECT_NUMBER@gcp-sa-mcsd.iam.gserviceaccount.com`; the source writes `service-PROJECT_ID@gcp-sa-mcsd...` in the single-project step.
 - Security: the controller service agent is granted `roles/container.admin` (as required by the source) and the firewall rule opens `tcp:0-65535` only from Google health check and proxy ranges `130.211.0.0/22,35.191.0.0/16`; do not widen the source ranges.
 - Disabling Fleet ingress is destructive: with `Gateway` resources present, load balancers can leak. Try on a disposable cluster first.

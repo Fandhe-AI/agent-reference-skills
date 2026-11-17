@@ -39,7 +39,7 @@ kubectl get gatewayclasses --context=gke-west-1
 - The controller uses multi-cluster Services (MCS) to discover Services across clusters and group Pods into one Service addressable across clusters.
 - Capabilities: phased rollouts and blue-green, header-based matching, weighted splitting, traffic mirroring, health-based failover, capacity-based load balancing, SNI routing via TLSRoute.
 - Traffic is routed by health checks, traffic splitting rules and capacity, directly to the optimal Pod in the selected cluster.
-- Kubernetes Gateway API resources on GKE, and Multi Cluster Ingress, are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (planned `gcp-networking`).
+- Kubernetes Gateway API resources on GKE, and Multi Cluster Ingress, are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-load-balancing`).
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/multi-cluster-gateways (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/prepare-environment-multi-cluster-gateways (retrieved 2026-11-16; the `kubectl get gatewayclasses` snippet above)
 

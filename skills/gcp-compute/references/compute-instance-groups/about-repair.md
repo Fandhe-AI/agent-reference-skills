@@ -60,7 +60,7 @@ Disks not specified in the instance template or per-instance configurations (for
 - Pricing: with an application health check, a Cloud Logging entry is written on each health state change by default; disable the health state change logs to avoid costs.
 - To preserve data: take persistent disk snapshots, export data (for example to Cloud Storage), configure stateful persistent disks, or use a custom image in the template.
 - Recreating VMs deletes and recreates them and data on non-stateful disks is lost; try it on a disposable MIG first.
-- Health check firewall rules and load balancing are in the planned `gcp-networking`; the VM-side settings are here.
+- Health check firewall rules are in `gcp-networking` and load balancing in `gcp-load-balancing`; the VM-side settings are here.
 - Adapted from the official docs: `[--region REGION | --zone ZONE]` in the recreate-instances command was changed to `--zone ZONE` (`--region REGION` for a regional MIG).
 - Source: https://docs.cloud.google.com/compute/docs/instance-groups/working-with-managed-instances (snippet; retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/compute/docs/instance-groups/about-repair (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)

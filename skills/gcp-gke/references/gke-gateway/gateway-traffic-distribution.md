@@ -203,7 +203,7 @@ spec:
 - Adapted from the official docs: the ring-hash example's `targetRefs` entry was written as `-   group: ""` followed by `    kind: Service`, which does not parse as one mapping; it is normalized to `- group: ""`.
 - The source also shows the HEADER_FIELD / HTTP_COOKIE / GENERATED_COOKIE / CLIENT_IP and GCPBackendPolicy GENERATED_COOKIE (`cookieTtlSec: 50`) variants, omitted for size. For the Policy Types API reference see https://googlecloudplatform.github.io/gke-gateway-api/.
 - GCPTrafficDistributionPolicy session affinity is for single-cluster Gateways only; it is not compatible with InferencePool and not supported for the classic Application Load Balancer. The common requirements and the other Policies are in `configure-gateway-resources.md`.
-- These are Kubernetes Gateway API resources on GKE, not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (planned `gcp-networking`).
+- These are Kubernetes Gateway API resources on GKE, not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-load-balancing`).
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/configure-gateway-resources (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

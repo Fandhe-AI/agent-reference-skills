@@ -210,7 +210,7 @@ Default handling of disks when overriding from a source instance:
 - The GPU example uses `nvidia-tesla-t4`; the deprecations page lists NVIDIA T4 as deprecated August 1, 2026 with shutdown August 1, 2027, so check availability before relying on it. The `cos-89-16108-403-15` image in the `--configure-disk` samples is the source's sample value (an old Container-Optimized OS release), not a recommendation.
 - Omitted to keep the page short: the source's "explicit settings" example (`--machine-type=e2-standard-4 --image-family=debian-13 --image-project=debian-cloud --boot-disk-size=250GB`); the GPU example below shows the same flags.
 - Not copied: the source's generic `--configure-disk= device-name=…` multi-line template (it contains spaces after line continuations and does not run as written); the concrete example above is kept instead. The source also shows Console, Terraform and Go, Java, Node.js and Python client-library samples, and a "Use custom or public images" section, none of which are reproduced.
-- VPC networks and firewall policies are in the planned `gcp-networking`.
+- VPC networks and firewall policies are in `gcp-networking`.
 - Source (project ID requirements): https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects (retrieved 2026-11-17)
 - Source (container startup agent shutdown): https://docs.cloud.google.com/compute/docs/deprecations/container-startup-agent-on-compute (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/docs/instance-templates/create-instance-templates (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)

@@ -72,7 +72,7 @@ All of: VPC-native cluster; no Shared VPC; no GKE Network Policy; `HttpLoadBalan
 - The external Application Load Balancer is the classic one using Google Front Ends; GKE creates firewall rules for `130.211.0.0/22` and `35.191.0.0/16`. The internal Application Load Balancer is Envoy-based, requires NEG backends and VPC-native clusters, and uses a proxy-only subnet.
 - `kubernetes.io/ingress.class` is deprecated in Kubernetes but GKE still relies exclusively on it; the deprecation warning can be ignored.
 - With instance groups there are two load-balancing hops; routes-based clusters with external Ingress use unmanaged instance groups containing all nodes, which can conflict with LoadBalancer Services (single load-balanced instance group limitation).
-- Kubernetes Gateway API / Ingress resources on GKE are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-networking`, planned).
+- Kubernetes Gateway API / Ingress resources on GKE are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-load-balancing`).
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/ingress (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

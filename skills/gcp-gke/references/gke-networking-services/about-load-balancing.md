@@ -68,7 +68,7 @@ Note: Gateway API supports proxy Network Load Balancers configured for TLS passt
 - Standalone NEGs: you create the load balancer components, GKE manages the NEGs. This is a proxy Network Load Balancer for TCP traffic only; traffic is terminated at the load balancing layer.
 - Container-native load balancing uses `GCE_VM_IP_PORT` NEGs to send traffic directly to Pod IPs. It is used for all GKE-managed Layer 7 load balancers (Gateway, Ingress) and standalone NEGs. LoadBalancer Services do not use it, but weighted load balancing gives a similar capability.
 - Choose a load balancer: https://docs.cloud.google.com/load-balancing/docs/choosing-load-balancer
-- Kubernetes Gateway API / Ingress resources on GKE are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-networking`, planned).
+- Kubernetes Gateway API / Ingress resources on GKE are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-load-balancing`).
 - Snippet taken from https://docs.cloud.google.com/kubernetes-engine/docs/concepts/service (the source page has no code block; this is a LoadBalancer Service example).
 - Source inconsistency: the Standalone NEGs description says "This is a proxy Network Load Balancer for TCP traffic only", while the comparison table above lists Standalone NEGs as "Yes" for the global, classic and regional external, regional internal and cross-region internal Application Load Balancers. The source does not reconcile the two; the table is the more detailed statement.
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/service (snippet; retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)

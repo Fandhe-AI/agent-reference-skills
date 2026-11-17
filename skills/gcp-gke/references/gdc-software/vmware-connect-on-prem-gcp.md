@@ -36,7 +36,7 @@ To avoid these errors, add the `--skip-validation-gcp` parameter to your `gkectl
 ## Notes
 
 - Impact of temporary disconnection: https://docs.cloud.google.com/kubernetes-engine/distributed-cloud/reference/connectivity
-- Network connectivity products (Cloud VPN, Interconnect, Private Google Access) are general Google Cloud networking (planned `gcp-networking`); this page covers only their use with Google Distributed Cloud.
+- Network connectivity products (Cloud VPN, Interconnect, Private Google Access) are general Google Cloud networking (`gcp-networking`); this page covers only their use with Google Distributed Cloud.
 - Former names: Google Distributed Cloud Virtual, Anthos clusters on VMware. The source mentions Container Registry among services reachable with Private Google Access; Container Registry was shut down on March 18, 2025, use Artifact Registry instead.
 - The source page has no code block; the fenced text is the error message quoted in the source.
 - Source: https://docs.cloud.google.com/kubernetes-engine/distributed-cloud/vmware/docs/concepts/connect-on-prem-gcp (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)

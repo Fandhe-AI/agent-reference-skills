@@ -43,7 +43,7 @@ gcloud cluster-director clusters list --location=us-central1-a
 
 - With future reservations for capacity blocks or in calendar mode you do not need to request quota (see https://docs.cloud.google.com/cluster-director/docs/obtain-capacity). Flex-start and Spot are charged against preemptible quota, on-demand against standard quota; see [choose-consumption-option.md](./choose-consumption-option.md).
 - Cluster Director's REST method pages are at `https://docs.cloud.google.com/cluster-director/docs/reference/rest/v1/projects.locations.clusters/create` (and `/delete`, `/get`, `/list`, `/patch`).
-- VPC networks and Cloud Storage quotas themselves are in the planned `gcp-networking` and in `gcp-storage`.
+- VPC networks and Cloud Storage quotas themselves are in `gcp-networking` and in `gcp-storage`.
 - The source page shows no commands; the snippet is borrowed from https://docs.cloud.google.com/sdk/gcloud/reference/cluster-director/clusters/list (gcloud 593.0.0 help).
 - Source inconsistency: the gcloud 593.0.0 `clusters create` examples (and compute.md, networking.md, storage.md) use `--location=us-central1`, while the `clusters list`, `describe`, `update` and `delete` examples use `--location=us-central1-a` ("To list all clusters in particular location us-central1-a"). The help gives the cluster resource format `projects/{project}/locations/{locations}/clusters/{cluster}`, so pass the location the cluster was created in.
 - Source (`--location` in the cluster examples): `gcloud cluster-director clusters create --help`, `gcloud cluster-director clusters list --help`, `gcloud cluster-director clusters describe --help`, `gcloud cluster-director clusters update --help`, `gcloud cluster-director clusters delete --help` (gcloud 593.0.0, retrieved 2026-11-14)

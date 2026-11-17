@@ -56,7 +56,7 @@ Use the dual-stack or IPv6-only setting when creating the instance template. Dua
 
 - By default Compute Engine deletes or recreates persistent disks together with the corresponding VM, so don't rely on attached disks as persistent data; back up elsewhere (for example Cloud Storage) or configure stateful disks.
 - Follow-up tasks (view info, resize, delete the group, change template, apply updates, recreate, canary test, add health check and load balancer) are linked from the source page; resize and delete operations are destructive, so try them on a disposable MIG first.
-- VPC, subnet, Shared VPC and load balancing are VM-side settings here; the networks themselves are in the planned `gcp-networking`.
+- VPC, subnet, Shared VPC and load balancing are VM-side settings here; the networks themselves are in `gcp-networking` and the load balancers in `gcp-load-balancing`.
 - Source: https://docs.cloud.google.com/compute/docs/instance-groups/creating-groups-of-managed-instances (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/compute/docs/instance-groups/create-zonal-mig (snippet; retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

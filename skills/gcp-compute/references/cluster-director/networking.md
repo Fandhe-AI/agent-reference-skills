@@ -47,7 +47,7 @@ Some high-performance machine types such as A4 and A3 Ultra must separate traffi
 
 ## Notes
 
-- The VM-side setting is here; VPC networks, firewall policies and Cloud Load Balancing themselves are in the planned `gcp-networking`. Do not open port 22 to `0.0.0.0/0`; use the IAP range as the source states.
+- The VM-side setting is here; VPC networks and firewall policies themselves are in `gcp-networking`, and Cloud Load Balancing in `gcp-load-balancing`. Do not open port 22 to `0.0.0.0/0`; use the IAP range as the source states.
 - Additional existing-network constraints (health check on TCP 8319, reserved non-overlapping IPv4 ranges, Shared VPC IAM) are in [process-overview.md](./process-overview.md).
 - The restricted services for a VPC Service Controls perimeter (`compute.googleapis.com`, `file.googleapis.com`, `hypercomputecluster.googleapis.com`, `logging.googleapis.com`, `lustre.googleapis.com`, `monitoring.googleapis.com`) are listed in [process-overview.md](./process-overview.md). VPC Service Controls creates a perimeter that by default blocks cross-boundary communication; see https://docs.cloud.google.com/vpc-service-controls/docs/overview.
 - The source page shows no commands; the snippet is borrowed from https://docs.cloud.google.com/sdk/gcloud/reference/cluster-director/clusters/create (gcloud 593.0.0 help). It creates billable cluster resources; try it in a disposable project first.

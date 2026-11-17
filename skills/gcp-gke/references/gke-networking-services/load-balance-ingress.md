@@ -165,7 +165,7 @@ Replace `LOAD_BALANCER_IP_ADDRESS` with the external IP address of the load bala
 - Shared VPC: the service project's GKE service account needs IAM permissions in the host project to manage firewall rules; otherwise events such as "Firewall change required by security admin: gcloud compute firewall-rules update ..." appear (allow tcp on source ranges `130.211.0.0/22,35.191.0.0/16`). If you provision firewall rules manually, use `networking.gke.io/suppress-firewall-xpn-error: "true"`.
 - The source also shows Console steps and a Cloud Shell guided walkthrough (omitted).
 - Corrected from the official docs: the `curl load-balancer-ip/v2` test command and the stray ``` line inside the static IP YAML example.
-- Kubernetes Gateway API / Ingress resources on GKE are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-networking`, planned).
+- Kubernetes Gateway API / Ingress resources on GKE are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-load-balancing`).
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/load-balance-ingress (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

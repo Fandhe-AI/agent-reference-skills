@@ -11,7 +11,7 @@ Google Cloud (GCP) のコンピュート系スキル。Compute Engine の VM イ
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。旧称・移行の対応は preemptible VM → Spot VM、Cloud TPU API（`Node` / `QueuedResource`）→ Compute Engine の TPU（Cloud TPU API は legacy 扱い）。
 
-機械生成の `gcloud compute` / `compute` REST / `roles/compute.*` のページは、Compute Engine API と `compute` gcloud グループに属する次のリソースも含む。VPC ネットワーク、ファイアウォール規則 / ポリシー、ルート、Cloud Router、VPN、Interconnect、Cloud NAT、ロードバランシングのリソース（バックエンドサービス、転送ルール、URL マップ、ヘルスチェック、SSL 証明書）、Cloud Armor セキュリティポリシー。これらのコマンド・メソッド・ロールは本スキルで引けるが、概念・手順のガイドは本スキルに無い（`gcp-networking` / `gcp-security`（予定）の担当）。
+機械生成の `gcloud compute` / `compute` REST / `roles/compute.*` のページは、Compute Engine API と `compute` gcloud グループに属する次のリソースも含む。VPC ネットワーク、ファイアウォール規則 / ポリシー、ルート、Cloud Router、VPN、Interconnect、Cloud NAT、ロードバランシングのリソース（バックエンドサービス、転送ルール、URL マップ、ヘルスチェック、SSL 証明書）、Cloud Armor セキュリティポリシー。これらのコマンド・メソッド・ロールは本スキルで引けるが、概念・手順のガイドは本スキルに無い（`gcp-networking`・`gcp-load-balancing`・`gcp-security`（予定）の担当）。
 
 ## ディレクトリ構成
 
@@ -192,7 +192,8 @@ skills/gcp-compute/
 - `docker` — コンテナーイメージ・Dockerfile・Docker Engine。Compute Engine のコンテナー起動エージェントは非推奨（下記）で、イメージの作り方はそちら
 - `anthropic-models-sdks` / `openai-api-core` / `openai-agents` — LLM の batch API（Message Batches 等）は Google Cloud の Batch（ジョブスケジューラー）とは無関係
 - `apple-intelligence` — Apple のオンデバイス AI。Confidential Computing（Confidential VM / Confidential Space）とは無関係
-- `gcp-networking`（予定）— VPC・ファイアウォール・Cloud Load Balancing・Cloud DNS・Cloud NAT・VPN / Interconnect の概念と手順。これらのコマンド・メソッド・ロールは本スキルの機械生成ページ（`compute` グループ）にある
+- `gcp-networking` — VPC・ファイアウォール・Cloud DNS・Cloud NAT・VPN / Interconnect の概念と手順。これらのコマンド・メソッド・ロールは本スキルの機械生成ページ（`compute` グループ）にある
+- `gcp-load-balancing` — Cloud Load Balancing（バックエンドサービス・転送ルール・URL マップ・ヘルスチェック・SSL 証明書）・Cloud CDN の概念と手順。これらのコマンド・メソッド・ロールは本スキルの機械生成ページ（`compute` グループ）にある
 - `gcp-security`（予定）— Cloud KMS（CMEK の鍵管理）・IAP 本体・Cloud Armor・Security Command Center。VM 側の Shielded VM / Confidential VM と、IAP TCP 転送による SSH の接続手順は本スキル
 - `gcp-observability`（予定）— Cloud Logging・Cloud Monitoring・Ops Agent
 - `gcp-iac`（予定）— Terraform
@@ -223,7 +224,7 @@ Oracle Database@Google Cloud の料金は、公式ドキュメント内に Oracl
 - AI Hypercomputer・Cluster Toolkit・Deep Learning VM — AI Hypercomputer と Cluster Toolkit は概要各 1 件のみ `cluster-director` に収録。マシン別の VM / MIG 作成手順（A3 / A4 等）・推論 / 学習のレシピ・NCCL・Cluster Toolkit のモジュールと CLI は対象外
 - legacy Cloud TPU API の作成手順・キュー型リソース（`queued-resources`）・マルチスライス・ML ツール（JAX / PyTorch / TensorFlow のチュートリアル）・ML Diagnostics
 - VM Manager のパッチデプロイの作成と管理・OS ポリシーの例・legacy guest policies・Shielded VM のセキュアブート変更 / vTPM の個別手順・Batch のジョブの種類別ガイド（GPU / TPU / コンテナ / MPI）と監視・Confidential Computing の個別設定とトラブルシューティング・Oracle Database@Google Cloud の VM クラスタ / バックアップ / GoldenGate / 監視
-- VPC・ファイアウォール・Cloud NAT・VPN / Interconnect・ロードバランシング・Cloud Armor の概念と手順（`gcp-networking` / `gcp-security`（予定）。コマンド・メソッド・ロールのみ本スキルに機械生成で収録）
+- VPC・ファイアウォール・Cloud NAT・VPN / Interconnect・ロードバランシング・Cloud Armor の概念と手順（`gcp-networking` / `gcp-load-balancing` / `gcp-security`（予定）。コマンド・メソッド・ロールのみ本スキルに機械生成で収録）
 - VMware Engine・Migrate to Virtual Machines（`gcp-hybrid-migration`（予定））
 - リリースノート・料金（上記 URL の導線のみ）・SLA
 
