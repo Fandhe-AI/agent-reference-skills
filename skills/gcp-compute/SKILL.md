@@ -38,6 +38,10 @@ skills/gcp-compute/
     iam/                          # 機械生成: IAM roles-permissions reference、取得 2026-11-14
       README.md
       <service>.md                # compute は compute-1.md〜compute-15.md の 15 分割。他に osconfig / batch / tpu / baremetalsolution / hypercomputecluster / oracledatabase-1・2 / confidentialcomputing / autoscaling / oci
+    rest/                         # 機械生成: Discovery 由来のメソッド表、取得 2026-11-14
+      README.md
+      <api>/
+        README.md                 # compute / batch / baremetalsolution / hypercomputecluster / oracledatabase / osconfig / tpu
     compute-overview/             # 公式ガイド由来（手書き）: 概要・インスタンスの概念・停止 / 一時停止 / リセットの違い・リージョンとゾーン・割り当て・ライフサイクル・プロビジョニングモデル・作成と起動・廃止一覧
       README.md
       <page>.md                   # 例: deprecations.md / create-start-instance.md
@@ -114,6 +118,8 @@ skills/gcp-compute/
 - `cluster-director`（Cluster Director）
 - `oracle-database`（Oracle Database@Google Cloud）
 
+`references/rest/` `references/rest-schemas/`（後続 PR で投入） の API（7）: `compute`（Compute Engine API）/ `batch` / `baremetalsolution` / `hypercomputecluster`（Cluster Director）/ `oracledatabase` / `osconfig`（VM Manager）/ `tpu`（Cloud TPU API）。
+
 `references/iam/` のサービス: `compute`（15 分割）/ `osconfig` / `batch` / `tpu` / `baremetalsolution` / `hypercomputecluster` / `oracledatabase`（2 分割）/ `confidentialcomputing` / `autoscaling` / `oci`。
 
 ## 探索手順
@@ -121,14 +127,13 @@ skills/gcp-compute/
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
 1. gcloud コマンド → 下記マッピング表で `gcloud` を選び、`references/gcloud/compute/README.md`（`gcloud compute`）、`references/gcloud/batch/README.md`、`references/gcloud/bms/README.md`、`references/gcloud/cluster-director/README.md`、`references/gcloud/oracle-database/README.md` からグループページ・コマンドページを引く。`gcloud compute tpus`（legacy Cloud TPU API）と `gcloud compute os-config`（VM Manager）は独立したグループではなく `compute` グループ配下のため、`references/gcloud/compute/` の `compute-tpus-*` / `compute-os-config-*` を引く。GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ
-2. IAM ロール・権限 → `references/iam/README.md` の索引から `<service>.md` を引く。`compute` は `compute-1.md`〜`compute-15.md` に分割されているため、ロール ID（例: `roles/compute.instanceAdmin.v1`）で `references/iam/` 配下を grep して該当ファイルを特定する。ロール ID のサービス接頭辞（`roles/osconfig.*` → `osconfig.md`、`roles/batch.*` → `batch.md`、`roles/tpu.*` → `tpu.md` 等）で他サービスを選ぶ
-3. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
-4. VPC・ファイアウォール・Cloud NAT・VPN・ロードバランサー・Cloud Armor は、コマンド・メソッド・ロールのみ機械生成ページ（手順 1〜3）にある。概念・設計の説明は本スキルに無い
-5. 非推奨・サポート終了を確認するときは、まず `compute-overview/deprecations.md`（一覧表）、CSEK は加えて `compute-security/csek-deprecation-in-compute-engine.md`、legacy Cloud TPU API は `cloud-tpu/tpus-in-compute-engine.md`、preemptible VM との関係は `compute-capacity/spot.md` を引く
+2. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`（後続 PR で投入）。`<api>` は `compute` / `batch` / `baremetalsolution` / `hypercomputecluster` / `oracledatabase` / `osconfig` / `tpu`。VPC・ファイアウォール・LB・Cloud Armor の REST も `compute` に入る
+3. IAM ロール・権限 → `references/iam/README.md` の索引から `<service>.md` を引く。`compute` は `compute-1.md`〜`compute-15.md` に分割されているため、ロール ID（例: `roles/compute.instanceAdmin.v1`）で `references/iam/` 配下を grep して該当ファイルを特定する。ロール ID のサービス接頭辞（`roles/osconfig.*` → `osconfig.md`、`roles/batch.*` → `batch.md`、`roles/tpu.*` → `tpu.md` 等）で他サービスを選ぶ
+4. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
+5. VPC・ファイアウォール・Cloud NAT・VPN・ロードバランサー・Cloud Armor は、コマンド・メソッド・ロールのみ機械生成ページ（手順 1〜3）にある。概念・設計の説明は本スキルに無い
+6. 非推奨・サポート終了を確認するときは、まず `compute-overview/deprecations.md`（一覧表）、CSEK は加えて `compute-security/csek-deprecation-in-compute-engine.md`、legacy Cloud TPU API は `cloud-tpu/tpus-in-compute-engine.md`、preemptible VM との関係は `compute-capacity/spot.md` を引く
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
-
-未投入カテゴリ（`rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -141,6 +146,7 @@ skills/gcp-compute/
 | `gcloud cluster-director` のコマンドを調べたい | gcloud/cluster-director | [references/gcloud/cluster-director/README.md](references/gcloud/cluster-director/README.md) |
 | `gcloud oracle-database`（Exadata・VM クラスタ・Autonomous Database・ODB Network）のフラグを調べたい | gcloud/oracle-database | [references/gcloud/oracle-database/README.md](references/gcloud/oracle-database/README.md) |
 | ロール ID の権限一覧・事前定義ロールを調べたい（`roles/compute.*` / `roles/osconfig.*` / `roles/batch.*` / `roles/tpu.*` / `roles/baremetalsolution.*` / `roles/oracledatabase.*` 等） | iam | [references/iam/README.md](references/iam/README.md) |
+| REST のメソッド・パスを調べたい（Compute Engine API・Batch API・Cloud TPU API・OS Config API・Bare Metal Solution API・Cluster Director（hypercomputecluster）・Oracle Database API） | rest | [references/rest/README.md](references/rest/README.md) |
 | Compute Engine の概要・インスタンスの概念・リージョンとゾーン・割り当て・インスタンスのライフサイクル・プロビジョニングモデル・VM の作成と起動・廃止一覧 | compute-overview | [references/compute-overview/README.md](references/compute-overview/README.md) |
 | 停止 / 一時停止 / リセットの違い・グローバル / リージョン / ゾーンリソース | compute-overview | [references/compute-overview/README.md](references/compute-overview/README.md) |
 | マシンファミリー・シリーズ・タイプの体系・コンピューティング最適化・メモリ最適化・Arm VM | compute-machine-types | [references/compute-machine-types/README.md](references/compute-machine-types/README.md) |
@@ -165,7 +171,7 @@ skills/gcp-compute/
 | Confidential VM（対応構成・作成・構成証明・組織ポリシーによる強制）・Confidential Space のワークロード | confidential-computing | [references/confidential-computing/README.md](references/confidential-computing/README.md) |
 | Oracle Database@Google Cloud の概要・環境準備・ODB Network・Exadata Infrastructure・Autonomous AI Database・IAM・クォータ | oracle-database | [references/oracle-database/README.md](references/oracle-database/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas` / `rest/compute` / `rest/hypercomputecluster` / `rest/oracledatabase` / `rest/osconfig` / `rest/tpu`
 
 ## 他スキルとの使い分け
 
@@ -220,7 +226,7 @@ Oracle Database@Google Cloud の料金は、公式ドキュメント内に Oracl
 
 - 取得日: 2026-11-17（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin）、2026-11-14（機械生成分）、gcloud 593.0.0
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
-- `references/gcloud/` `references/iam/` `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） は機械生成（gcloud 593.0.0 の help / IAM reference / Discovery）。他の 22 カテゴリは公式ガイド由来の手書き
+- `references/gcloud/` `references/iam/` `references/rest/` `references/rest-schemas/`（後続 PR で投入） は機械生成（gcloud 593.0.0 の help / IAM reference / Discovery）。他の 22 カテゴリは公式ガイド由来の手書き
 - gcloud は GA コマンドが gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ。公式の例の一部は訂正・補完してあり、該当箇所は `Adapted (not in the official docs)` の行と各ページの Notes に記している
 - 非推奨・サポート終了（日付は references の記載どおり。一覧は `compute-overview/deprecations.md`）:
   - CSEK（顧客指定の暗号鍵）— 日付が 2 ページで異なる。一覧表（`compute-overview/deprecations.md`）は 2026-06-15 に非推奨、2027-06-16 にシャットダウン。告知ページ（`compute-security/csek-deprecation-in-compute-engine.md`）は 2026-07-20 以降は CSEK で暗号化できず、2027-07-20 に削除。新規リソースでは CSEK を使わない。移行先は CMEK
