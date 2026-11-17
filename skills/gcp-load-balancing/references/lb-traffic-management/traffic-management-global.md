@@ -33,6 +33,8 @@ pathMatchers:
 
 ### Advanced host, path and route rule (95% / 5% weighted split)
 
+Adapted (not in the official docs): `priority: 1` is added to the route rule; the Compute Engine API requires a priority on every route rule.
+
 ```yaml
 defaultService: global/backendServices/service-a
 hostRules:
@@ -46,6 +48,7 @@ pathMatchers:
   routeRules:
   - matchRules:
     - prefixMatch: ''
+    priority: 1
     routeAction:
       weightedBackendServices:
       - backendService: global/backendServices/service-a
@@ -116,6 +119,7 @@ curl -v http://10.1.2.9/video/hd --header 'Host: example.com'
 - Source inconsistency: the source says traffic policies "aren't supported with internet NEG backends", but the internet NEG page (https://docs.cloud.google.com/load-balancing/docs/negs/internet-neg-concepts, retrieved 2026-11-17) says the advanced traffic management features (mirroring, retry policies and traffic policies) "aren't supported with *global* internet NEG backends", and regional internet NEGs use Envoy-based algorithms. Read the restriction as applying to global internet NEGs, which are the only internet NEGs that the global external Application Load Balancer supports.
 - The table uses the source's concept names; the Compute Engine v1 API field for the locality policy is `BackendService.localityLbPolicy`.
 - Source inconsistency: the source says "you can combine any one of the previously mentioned route actions" (which include `urlRedirect`) with mirroring, rewrites, retries, timeouts, fault injection, CORS and header actions, but its own table says `urlRedirect` "cannot be used in conjunction with a route action", and the Compute Engine v1 Discovery document says "Only one of urlRedirect, service or routeAction.weightedBackendService can be set". `requestMirrorPolicy`, `urlRewrite`, `retryPolicy`, `timeout`, `faultInjectionPolicy` and `corsPolicy` are fields of `HttpRouteAction`, so they are not available on a redirect rule; `headerAction` is a separate field of the rule.
+- Adapted from the official docs: the source's 95% / 5% split URL map has a route rule without `priority`; the `HttpRouteRule.priority` description in the Compute Engine v1 Discovery document says "Priority for each rule must be set to a number from 0 to 2147483647 inclusive", so `priority: 1` was added.
 - Source: https://docs.cloud.google.com/load-balancing/docs/https/traffic-management-global (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
