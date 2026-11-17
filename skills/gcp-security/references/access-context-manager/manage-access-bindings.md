@@ -29,10 +29,13 @@ curl -H "X-Goog-User-Project: PROJECT_ID" -X GET \
 "https://accesscontextmanager.googleapis.com/v1/organizations/ORGANIZATION_ID/gcpUserAccessBindings"
 ```
 
+Adapted (not in the official docs): the filter is sent with `-G --data-urlencode` instead of `?filter=FILTER` in the URL, because filters such as `principal:service_account OR principal:service_account_project_number` contain spaces that curl rejects in a URL.
+
 ```sh
-curl -H "X-Goog-User-Project: PROJECT_ID" -X GET \
+curl -G -H "X-Goog-User-Project: PROJECT_ID" \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-"https://accesscontextmanager.googleapis.com/v1/organizations/ORGANIZATION_ID/gcpUserAccessBindings?filter=FILTER"
+--data-urlencode "filter=FILTER" \
+"https://accesscontextmanager.googleapis.com/v1/organizations/ORGANIZATION_ID/gcpUserAccessBindings"
 ```
 
 ### View an access binding
@@ -214,6 +217,7 @@ A successful delete returns a 2xx status and an empty response.
 - The gcloud 593.0.0 help shows `--session-reauth-method` values in lowercase (`login`, `password`, `security-key`, default `login`), while the REST API uses `LOGIN`, `PASSWORD`, `SECURITY_KEY`.
 - The source also shows Console steps and PowerShell variants.
 - Corrected from the official docs: the source describes the REST `SESSION_LENGTH` as "ISO 8601 duration format, such as `30m` for 30 minutes, or `2h` for two hours". The Access Context Manager v1 Discovery document types `SessionSettings.sessionLength` as `format: google-duration`, whose JSON form is seconds with an `s` suffix (`1800s`, `7200s`); `30m` / `2h` are the gcloud `--session-length` forms.
+- Adapted from the official docs: the source appends `?filter=FILTER` to the URL. The service-account filters in the table contain spaces, which must be URL-encoded; `curl -G --data-urlencode "filter=..."` encodes the value and sends it as a query parameter of the same `GET` request.
 - Source: https://docs.cloud.google.com/access-context-manager/docs/manage-access-bindings (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

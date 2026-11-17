@@ -80,7 +80,8 @@ GET https://containeranalysis.googleapis.com/v1/projects/PROJECT_ID/notes/NOTE_I
 | `attestation.hint.humanReadableName` | Human-readable name of the attestation authority (note) |
 | `resourceUri` | Resource the occurrence is attached to (occurrence) |
 | `noteName` | `projects/<note project>/notes/<note id>` the occurrence refers to |
-| `serializedPayload`, `signatures[].publicKeyId`, `signatures[].signature` | Base64 values in the occurrence; the sample values are placeholders |
+| `serializedPayload`, `signatures[].signature` | Base64 values in the occurrence; the sample values are placeholders |
+| `signatures[].publicKeyId` | Identifier of the key that verifies the signature, given as is (not Base64-encoded); the sample value is a placeholder |
 
 ## Notes
 
