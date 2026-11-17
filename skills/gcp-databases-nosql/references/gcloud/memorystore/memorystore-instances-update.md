@@ -1118,6 +1118,7 @@ SYNOPSIS
 
 ## Notes
 
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud memorystore instances update --mode standalone`: "Deprecated: Use CLUSTER_DISABLED instead.".
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the examples wrap the instance name in backticks (`` `my-instance` ``), which the shell runs as a command substitution, so the INSTANCE argument is not passed; the runnable form passes `my-instance` without backticks.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
