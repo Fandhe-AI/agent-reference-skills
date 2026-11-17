@@ -1024,7 +1024,7 @@ Message types referenced by the methods listed under `references/rest/cloudasset
 | Field | Type | Description |
 |---|---|---|
 | `modifiers` | array<GoogleIdentityAccesscontextmanagerV1Modifier> | Modifiers to apply to the requests that match the URL pattern. |
-| `pattern` | string | URL pattern to allow. Only patterns of `".googleapis.com/*"`, `"www.googleapis.com//*"`, and `"*.appspot.com/*"` forms are supported, where `` should be an alphanumeric name. |
+| `pattern` | string | URL pattern to allow. Only patterns of `".googleapis.com/*"`, `"www.googleapis.com//*"`, and `"*.appspot.com/*"` forms are supported, where \`\` should be an alphanumeric name. |
 | `service` | string | Supported service to allow. |
 
 ### `GoogleIdentityAccesscontextmanagerV1ServicePerimeter`
