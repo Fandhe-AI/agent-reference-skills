@@ -9,6 +9,8 @@
 | Compute Engine API (compute) part 5 | 94 schemas, `HttpHeaderOption` … `InstanceGroupManagersCreateInstancesRequest` | [compute-5.md](./compute-5.md) |
 | Compute Engine API (compute) part 6 | 124 schemas, `InstanceGroupManagersDeleteInstancesRequest` … `InterconnectCircuitInfo` | [compute-6.md](./compute-6.md) |
 | Compute Engine API (compute) part 7 | 121 schemas, `InterconnectDiagnostics` … `NatIpInfoResponse` | [compute-7.md](./compute-7.md) |
+| Compute Engine API (compute) part 8 | 105 schemas, `Network` … `NodeType` | [compute-8.md](./compute-8.md) |
+| Compute Engine API (compute) part 9 | 107 schemas, `NodeTypeAggregatedList` … `RegionAddressesUpdatePublicPtrRequest` | [compute-9.md](./compute-9.md) |
 | Compute Engine API (compute) part 10 | 131 schemas, `RegionAutoscalerList` … `ResourceStatus` | [compute-10.md](./compute-10.md) |
 | Compute Engine API (compute) part 11 | 109 schemas, `ResourceStatusAcceleratorStatus` … `SecurityPolicyAssociation` | [compute-11.md](./compute-11.md) |
 | Compute Engine API (compute) part 12 | 119 schemas, `SecurityPolicyCloudArmorConfig` … `StoragePoolResourceStatus` | [compute-12.md](./compute-12.md) |
