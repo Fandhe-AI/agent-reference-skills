@@ -12,8 +12,12 @@ Each approved Access Approval request is signed with an asymmetric key (Google-o
 
 On the approved request's **Request details** page, copy the **Google-managed public key**, **Signature**, and **Serialized Approval Request** values into Cloud Shell, then verify. Replace the upper-case placeholders with the copied field contents.
 
+Adapted (not in the official docs): a quoted heredoc keeps the PEM header, body, footer and line breaks.
+
 ```bash
-echo GOOGLE_MANAGED_PUBLIC_KEY > ./public_key
+cat > ./public_key <<'EOF'
+GOOGLE_MANAGED_PUBLIC_KEY
+EOF
 ```
 
 ```bash
@@ -64,6 +68,7 @@ openssl dgst \
 
 ## Notes
 
+- Adapted from the official docs: the source writes `echo GOOGLE_MANAGED_PUBLIC_KEY > ./public_key`. Pasting a multi-line PEM key into an unquoted `echo` makes the shell run each line as a separate command, and joining it onto one line drops the line breaks `openssl dgst -verify` needs; the example uses a quoted heredoc instead (paste the whole key, including the `-----BEGIN PUBLIC KEY-----` and `-----END PUBLIC KEY-----` lines, in place of the placeholder).
 - Granting the role to the wrong principal (for example, your user account) might cause permission errors.
 - The commands are written for Cloud Shell, as in the source.
 - The source also shows Console steps for copying the fields.
