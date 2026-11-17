@@ -27,3 +27,8 @@
 | gcloud oracle-database goldengate-deployment-environments | oracle-database goldengate-deployment-environments list | [oracle-database-goldengate-deployment-environments.md](./oracle-database-goldengate-deployment-environments.md) |
 | gcloud oracle-database goldengate-deployment-types | oracle-database goldengate-deployment-types list | [oracle-database-goldengate-deployment-types.md](./oracle-database-goldengate-deployment-types.md) |
 | gcloud oracle-database goldengate-deployment-versions | oracle-database goldengate-deployment-versions list | [oracle-database-goldengate-deployment-versions.md](./oracle-database-goldengate-deployment-versions.md) |
+| gcloud oracle-database goldengate-deployments | 7 commands (ga); oracle-database goldengate-deployments create … | [oracle-database-goldengate-deployments.md](./oracle-database-goldengate-deployments.md) |
+| gcloud oracle-database odb-networks (part 1) | 13 commands (ga); oracle-database odb-networks create … | [oracle-database-odb-networks-1.md](./oracle-database-odb-networks-1.md) |
+| gcloud oracle-database odb-networks (part 2) | oracle-database odb-networks update | [oracle-database-odb-networks-2.md](./oracle-database-odb-networks-2.md) |
+| gcloud oracle-database operations | 5 commands (ga); oracle-database operations cancel … | [oracle-database-operations.md](./oracle-database-operations.md) |
+| gcloud oracle-database pluggable-databases | 2 commands (ga); oracle-database pluggable-databases describe … | [oracle-database-pluggable-databases.md](./oracle-database-pluggable-databases.md) |
