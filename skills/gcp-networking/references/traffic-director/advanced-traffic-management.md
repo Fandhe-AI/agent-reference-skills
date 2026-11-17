@@ -37,9 +37,11 @@ rules:
 
 ### Request handling
 
-- Envoy: the HTTP host header is matched against `hostnames` of each `HTTPRoute` / `GRPCRoute` (only those have `hostnames`); the IP address is matched for `TCPRoute`; SNI and ALPN for `TLSRoute`. Routes attached to a `Mesh` or `Gateway` must have unique hostnames, the `TCPRoute` `IP:Port` must be unique and SNI / ALPN must be unique for `TLSRoute`, otherwise the configuration is rejected. With overlapping hostnames (`a.example.com` and `*.example.com`), the more specific route matches.
-- Proxyless gRPC: clients use the `xds` scheme and resolve `hostname[:port]` by asking Cloud Service Mesh. Only the port of a `GRPCRoute` is compared to the port in the target URI (for example `xds:///example.hostname:8080`), and the target URI must exactly match the string in `hostnames`.
-- After the destination backend service is selected, traffic is distributed per the backend service configuration. By default the client sends to the nearest healthy backend with capacity, using round robin across other backends.
+| Request handling |
+|---|
+| Envoy: the HTTP host header is matched against `hostnames` of each `HTTPRoute` / `GRPCRoute` (only those have `hostnames`); the IP address is matched for `TCPRoute`; SNI and ALPN for `TLSRoute`. Routes attached to a `Mesh` or `Gateway` must have unique hostnames, the `TCPRoute` `IP:Port` must be unique and SNI / ALPN must be unique for `TLSRoute`, otherwise the configuration is rejected. With overlapping hostnames (`a.example.com` and `*.example.com`), the more specific route matches. |
+| Proxyless gRPC: clients use the `xds` scheme and resolve `hostname[:port]` by asking Cloud Service Mesh. Only the port of a `GRPCRoute` is compared to the port in the target URI (for example `xds:///example.hostname:8080`), and the target URI must exactly match the string in `hostnames`. |
+| After the destination backend service is selected, traffic is distributed per the backend service configuration. By default the client sends to the nearest healthy backend with capacity, using round robin across other backends. |
 
 ### Actions
 
@@ -54,8 +56,6 @@ rules:
 | Timeout | `timeout` | Route timeout, from fully processed request to fully processed response, includes all retries. |
 | Fault injection | `faultInjectionPolicy` | Introduces errors (latency, overload, failures, network partitions) to test resiliency. |
 | Security policies | `corsPolicy` | CORS settings. |
-
-Each route rule specifies one of: route to a single service (`destination.serviceName`), split between services (`destination.weight`), or redirect (`redirect`). Any one of these can be combined with the add-on actions: header manipulation, mirroring, URL rewrite, retry, timeout, fault injection, CORS policy.
 
 ### HTTP versus gRPC matching
 
@@ -78,6 +78,7 @@ Each route rule specifies one of: route to a single service (`destination.servic
 
 ## Notes
 
+- Actions: Each route rule specifies one of: route to a single service (`destination.serviceName`), split between services (`destination.weight`), or redirect (`redirect`). Any one of these can be combined with the add-on actions: header manipulation, mirroring, URL rewrite, retry, timeout, fault injection, CORS policy.
 - Some actions (redirects, rewrites, header transformations, mirroring, per-try timeouts, CORS) are not available with proxyless gRPC; see the features and proxyless limitations pages.
 - Cloud Service Mesh / Traffic Director here covers Compute Engine and proxyless gRPC; GKE-based meshes are in the `gcp-gke` skill.
 - Source: https://docs.cloud.google.com/service-mesh/docs/service-routing/advanced-traffic-management (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)

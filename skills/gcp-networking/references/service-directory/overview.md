@@ -39,19 +39,10 @@ gcloud service-directory services resolve SERVICE \
 | Access control | IAM controls who can register and resolve services; assign Service Directory roles to teams, service accounts, and organizations |
 | Limitations of pure DNS | DNS resolvers can be unreliable about TTLs and caching, cannot handle larger record sizes, and offer no easy way to serve metadata; Service Directory adds HTTP and gRPC APIs |
 
-### Components when using Cloud DNS
-
-1. Endpoints are registered directly with Service Directory by using the Service Directory API (Google Cloud and non-Google Cloud services).
-2. External and internal clients look up services at `https://servicedirectory.googleapis.com`.
-3. To enable DNS requests, create a Service Directory zone in Cloud DNS associated with a Service Directory namespace.
-4. Internal clients can resolve a service by using DNS, HTTP, and gRPC. External clients (not on the private network) must use HTTP or gRPC.
-
-### Example: expose a service over DNS
-
-The `payments` service is registered in the namespace `backend-namespace`, region `us-east1`, project `gcp-project`. The namespace is linked to the private zone `example.com`. Service Directory maintains the services and endpoints; the private zone is in Cloud DNS. A client requests the SRV record for `_payments._tcp.payments.example.com`, which resolves to the port numbers and address records of the endpoints.
-
 ## Notes
 
+- Components when using Cloud DNS: 1. Endpoints are registered directly with Service Directory by using the Service Directory API (Google Cloud and non-Google Cloud services). 2. External and internal clients look up services at `https://servicedirectory.googleapis.com`. 3. To enable DNS requests, create a Service Directory zone in Cloud DNS associated with a Service Directory namespace. 4. Internal clients can resolve a service by using DNS, HTTP, and gRPC. External clients (not on the private network) must use HTTP or gRPC.
+- Example: expose a service over DNS: The `payments` service is registered in the namespace `backend-namespace`, region `us-east1`, project `gcp-project`. The namespace is linked to the private zone `example.com`. Service Directory maintains the services and endpoints; the private zone is in Cloud DNS. A client requests the SRV record for `_payments._tcp.payments.example.com`, which resolves to the port numbers and address records of the endpoints.
 - Service Directory zones are Cloud DNS private zones; see the Cloud DNS pages of this skill for Google Cloud DNS in general (not Cloudflare DNS).
 - Snippet taken from https://docs.cloud.google.com/service-directory/docs/configuring-service-directory (the source overview page has no code).
 - Source: https://docs.cloud.google.com/service-directory/docs/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)

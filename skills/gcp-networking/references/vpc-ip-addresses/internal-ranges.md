@@ -24,8 +24,6 @@ gcloud network-connectivity internal-ranges create my-range \
 | `VPC_SUBNET` | Default. Range can create subnets and smaller child internal ranges. |
 | `INTERNAL_ADDRESS` | Only for reserving global internal IPv4 addresses for Private Service Connect endpoints for global Google APIs. |
 
-PSC endpoint ranges: purpose `INTERNAL_ADDRESS`, peering `FOR_SELF`, usage `FOR_VPC`, IPv4 only, must not overlap existing subnets or routes, and no subnets or child ranges inside.
-
 ### Peering types
 
 | Value | Meaning |
@@ -41,8 +39,6 @@ PSC endpoint ranges: purpose `INTERNAL_ADDRESS`, peering `FOR_SELF`, usage `FOR_
 | `FOR_VPC` | Default. Can be associated with other resources in the parent VPC network. |
 | `EXTERNAL_TO_VPC` | Cannot be associated with resources in the parent network. |
 | `FOR_MIGRATION` | Used to migrate a subnet range, including between peered VPC networks. Must have peering type `FOR_SELF`. |
-
-Migration ranges (IPv4 only) specify a CIDR range, a source subnet and a target subnet: the CIDR must match or contain the source subnet range; source and target can be in different projects; the source must be in the same project as the range; the target need not exist yet. After the source subnet is deleted, the CIDR can only be assigned to a subnet matching the target. Delete the range after migration.
 
 ### Use cases
 
@@ -64,10 +60,11 @@ Migration ranges (IPv4 only) specify a CIDR range, a source subnet and a target 
 | `RANDOM_FIRST_N_AVAILABLE` | Find N lowest free blocks of the requested length, pick one at random | Reduces contention while keeping contiguous space; larger N improves concurrency but may fragment. |
 | `FIRST_SMALLEST_FITTING` | Smallest free blocks that can contain the prefix; lowest start among them | Minimizes fragmentation; most contention, slowest. |
 
-Example: reserving a `/24` from `10.0.0.0/8` where only `10.1.0.0/25`, `10.2.0.0/16`, `10.3.0.0/23` are free gives `RANDOM` any free `/24` such as `10.2.179.0/24`; `FIRST_AVAILABLE` `10.2.0.0/24`; `RANDOM_FIRST_N_AVAILABLE` with N=3 one of `10.2.0.0/24`, `10.2.1.0/24`, `10.2.2.0/24`; `FIRST_SMALLEST_FITTING` `10.3.0.0/24`.
-
 ## Notes
 
+- Purpose types (cannot change after creation): PSC endpoint ranges: purpose `INTERNAL_ADDRESS`, peering `FOR_SELF`, usage `FOR_VPC`, IPv4 only, must not overlap existing subnets or routes, and no subnets or child ranges inside.
+- Usage types: Migration ranges (IPv4 only) specify a CIDR range, a source subnet and a target subnet: the CIDR must match or contain the source subnet range; source and target can be in different projects; the source must be in the same project as the range; the target need not exist yet. After the source subnet is deleted, the CIDR can only be assigned to a subnet matching the target. Delete the range after migration.
+- IPv4 allocation strategies (automatic allocation only): Example: reserving a `/24` from `10.0.0.0/8` where only `10.1.0.0/25`, `10.2.0.0/16`, `10.3.0.0/23` are free gives `RANDOM` any free `/24` such as `10.2.179.0/24`; `FIRST_AVAILABLE` `10.2.0.0/24`; `RANDOM_FIRST_N_AVAILABLE` with N=3 one of `10.2.0.0/24`, `10.2.1.0/24`, `10.2.2.0/24`; `FIRST_SMALLEST_FITTING` `10.3.0.0/24`.
 - By default you cannot reserve a range containing IPs used by other resources in the network. Overlap with subnets, routes or both can be enabled; resources cannot use an existing range's IPs unless associated with it (subnets) or overlap is allowed (routes, `overlaps` set to `OVERLAP_ROUTE_RANGE`).
 - Mutability: an immutable range only allows description changes; a mutable one (default) allows changing the CIDR, overlap behavior and description. Immutability cannot be changed after creation.
 - Example: with a mutable range `10.0.0.0/24` and no overlap, creating a subnet for `10.0.0.0/25` fails unless associated with the range, and a route fails unless `overlaps` is `OVERLAP_ROUTE_RANGE`.

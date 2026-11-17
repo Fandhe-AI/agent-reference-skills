@@ -30,24 +30,30 @@ gcloud compute network-attachments create \
 
 ### Specifications
 
-- Regional resource representing the consumer side of a Private Service Connect interface connection; associated with a single subnet.
-- Accepts connections explicitly or automatically; multiple interfaces can connect to the same network attachment.
-- If one VM has multiple interfaces, each must connect to a different network attachment with a different subnet, and to an attachment in a different VPC network, unless both hold: the consumer network uses an RDMA network profile for Falcon VPC networks, and the producer connects with virtual Private Service Connect interfaces.
-- Supports Shared VPC: the attachment can be created in a service project, but its subnet must be in a host project.
-- Connections are bi-directional and transitive. An attachment can connect to both virtual and dynamic interfaces.
+| Specifications |
+|---|
+| Regional resource representing the consumer side of a Private Service Connect interface connection; associated with a single subnet. |
+| Accepts connections explicitly or automatically; multiple interfaces can connect to the same network attachment. |
+| If one VM has multiple interfaces, each must connect to a different network attachment with a different subnet, and to an attachment in a different VPC network, unless both hold: the consumer network uses an RDMA network profile for Falcon VPC networks, and the producer connects with virtual Private Service Connect interfaces. |
+| Supports Shared VPC: the attachment can be created in a service project, but its subnet must be in a host project. |
+| Connections are bi-directional and transitive. An attachment can connect to both virtual and dynamic interfaces. |
 
 ### Subnet requirements
 
-- Must be a regular subnet; stack type IPv4-only, dual-stack or IPv6-only (dual-stack and IPv6-only need internal IPv6 ranges).
-- IP addresses are not reserved and other resources can use the subnet.
-- Cannot be deleted while assigned to an attachment; can be replaced (existing connections unaffected, new connections use the new subnet); the CIDR range can be expanded.
+| Subnet requirements |
+|---|
+| Must be a regular subnet; stack type IPv4-only, dual-stack or IPv6-only (dual-stack and IPv6-only need internal IPv6 ranges). |
+| IP addresses are not reserved and other resources can use the subnet. |
+| Cannot be deleted while assigned to an attachment; can be replaced (existing connections unaffected, new connections use the new subnet); the CIDR range can be expanded. |
 
 ### Limitations
 
-- Only the subnet, accept list, reject list and description can be updated; to change other fields, delete and recreate.
-- An attachment with open connections cannot be deleted; the producer must first delete the interfaces.
-- External (publicly advertised) IP addresses cannot be assigned to interfaces.
-- Quota: limited per region per project (see the VPC quota page).
+| Limitations |
+|---|
+| Only the subnet, accept list, reject list and description can be updated; to change other fields, delete and recreate. |
+| An attachment with open connections cannot be deleted; the producer must first delete the interfaces. |
+| External (publicly advertised) IP addresses cannot be assigned to interfaces. |
+| Quota: limited per region per project (see the VPC quota page). |
 
 ## Notes
 

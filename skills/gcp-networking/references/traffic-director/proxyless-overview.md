@@ -50,11 +50,13 @@ rules:
 
 ### Use cases
 
-- Resource efficiency in a large-scale service mesh (hundreds or thousands of clients and backends).
-- High-performance gRPC applications (reduced latency without client-side and server-side sidecars).
-- Environments where you cannot deploy sidecar proxies or configure request interception (for example with `iptables`).
-- Heterogeneous mesh mixing proxyless gRPC and Envoy.
-- Gradual migration from proxies to proxyless: create a new Cloud Service Mesh service that the proxyless client uses; the same APIs configure both.
+| Use cases |
+|---|
+| Resource efficiency in a large-scale service mesh (hundreds or thousands of clients and backends). |
+| High-performance gRPC applications (reduced latency without client-side and server-side sidecars). |
+| Environments where you cannot deploy sidecar proxies or configure request interception (for example with `iptables`). |
+| Heterogeneous mesh mixing proxyless gRPC and Envoy. |
+| Gradual migration from proxies to proxyless: create a new Cloud Service Mesh service that the proxyless client uses; the same APIs configure both. |
 
 ## Notes
 

@@ -18,15 +18,11 @@ gcloud network-security url-lists list --location=global
 
 ### Allocation quotas
 
-These don't reset over time; they are released when you release the resource. Per project per region.
-
 | Usage limit | Value |
 |-------------|-------|
 | Secure Web Proxy instances defined per project per region | 5 |
 | URL lists defined per project per region | 10 |
 | Policies defined per project per region | 10 |
-
-View instance quotas on the Network Services API quotas page and policy quotas on the Network Security API quotas page in the Google Cloud console.
 
 ### Usage limits
 
@@ -48,6 +44,8 @@ View instance quotas on the Network Services API quotas page and policy quotas o
 
 ## Notes
 
+- Allocation quotas: These don't reset over time; they are released when you release the resource. Per project per region.
+- Allocation quotas: View instance quotas on the Network Services API quotas page and policy quotas on the Network Security API quotas page in the Google Cloud console.
 - Quotas generally apply per Google Cloud project, and are shared across all applications and IP addresses within a project. When consumption exceeds a quota the system blocks access to the resource and the task fails in most cases.
 - Request changes through the Google Cloud console; the Cloud Quotas system also supports quota adjuster automation.
 - Source: https://docs.cloud.google.com/secure-web-proxy/docs/quotas (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)

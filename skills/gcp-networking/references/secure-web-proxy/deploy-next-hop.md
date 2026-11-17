@@ -94,14 +94,16 @@ gcloud network-connectivity policy-based-routes create POLICY_BASED_ROUTE_NAME \
     --project=PROJECT
 ```
 
-Default-routing route (must have a numerically lower priority than the route to the proxy):
+Default-routing route: it keeps traffic between VMs in the network on default routing, so it must have a numerically lower (higher-priority) value than the route to the proxy and match only that internal traffic. If it matched the same source and destination ranges as the proxy route, it would always win and the traffic would bypass Secure Web Proxy.
+
+Adapted (not in the official docs): `--destination-range` uses a separate placeholder, `INTERNAL_DESTINATION_RANGE` (the internal range of the VPC network, which must stay on default routing), instead of reusing `DESTINATION_RANGE` from the proxy route.
 
 ```bash
 gcloud network-connectivity policy-based-routes create DEFAULT_POLICY_BASED_ROUTE_NAME \
     --network="projects/PROJECT/global/networks/NETWORK_NAME" \
     --next-hop-other-routes="DEFAULT_ROUTING" \
     --protocol-version="IPV4" \
-    --destination-range=DESTINATION_RANGE \
+    --destination-range=INTERNAL_DESTINATION_RANGE \
     --source-range=SOURCE_RANGE \
     --priority=1 \
     --project=PROJECT
@@ -116,29 +118,35 @@ gcloud network-connectivity policy-based-routes create DEFAULT_POLICY_BASED_ROUT
 | `PRIORITY` (static) | Higher numbers denote lower priority; must be numerically lower than the default internet route, typically `1000` |
 | `TAGS` | Comma-separated network tags; use the same tags on all source resources |
 | `SOURCE_RANGE` | Source range for policy-based routes (static routes can't define a source range) |
+| `INTERNAL_DESTINATION_RANGE` | Internal range of the VPC network (traffic between VMs) that the default-routing policy-based route keeps on default routing; it must not cover the destinations that should go to the proxy |
 
 ### Limitations
 
-- `NEXT_HOP_ROUTING_MODE` instances support HTTP(S) and TCP proxy traffic. Other traffic, including cross-region traffic, is dropped without notification.
-- With `next-hop-ilb`, the limitations of internal passthrough Network Load Balancers apply to next hops.
-- All VM traffic matched by the next hop route (including background traffic and updates) is routed to the instance.
-- For a VPC network in a region, only one Secure Web Proxy as next hop (SWPaNH) instance can be deployed.
-- `all_ports`: only for `type: SECURE_WEB_GATEWAY`; only with `routingMode: NEXT_HOP_ROUTING_MODE`; can't be combined with an explicit `ports` list; within a network and region, a next-hop instance with `all_ports: true` can't coexist with an instance in any other mode.
+| Limitations |
+|---|
+| `NEXT_HOP_ROUTING_MODE` instances support HTTP(S) and TCP proxy traffic. Other traffic, including cross-region traffic, is dropped without notification. |
+| With `next-hop-ilb`, the limitations of internal passthrough Network Load Balancers apply to next hops. |
+| All VM traffic matched by the next hop route (including background traffic and updates) is routed to the instance. |
+| For a VPC network in a region, only one Secure Web Proxy as next hop (SWPaNH) instance can be deployed. |
+| `all_ports`: only for `type: SECURE_WEB_GATEWAY`; only with `routingMode: NEXT_HOP_ROUTING_MODE`; can't be combined with an explicit `ports` list; within a network and region, a next-hop instance with `all_ports: true` can't coexist with an instance in any other mode. |
 
 ### Post-deployment checklist (all items required)
 
-- Confirm that a default route to the internet gateway exists.
-- Add the correct network tag to the static route that points to the instance.
-- Define an appropriate priority for the default route to the instance as next hop.
-- The service is regional: client traffic must originate in the same region as the instance.
+| Post-deployment checklist (all items required) |
+|---|
+| Confirm that a default route to the internet gateway exists. |
+| Add the correct network tag to the static route that points to the instance. |
+| Define an appropriate priority for the default route to the instance as next hop. |
+| The service is regional: client traffic must originate in the same region as the instance. |
 
 ## Notes
 
-- Misconfigured policy-based routes can severely disrupt traffic flow. Review the policy-based route limitations first. The first policy-based route requires a second route as default routing; if the proxy route has higher priority than the default-routing route, it takes priority over all other VPC routes. Routes and gateways can break connectivity; try them on a disposable network first.
+- Misconfigured policy-based routes can severely disrupt traffic flow. Review the policy-based route limitations first. The proxy route requires a second policy-based route for default routing between VMs in the network; the default-routing route needs the higher priority (numerically lower value), and if the proxy route has the higher priority instead, it takes priority over all other VPC routes. Routes and gateways can break connectivity; try them on a disposable network first.
 - Host matching in next hop mode uses the SNI field for encrypted traffic (see [configure-rules.md](./configure-rules.md)).
 - The source also shows Console steps. The `gcloud compute routes create` full flag list is in the `gcp-compute` skill: https://docs.cloud.google.com/sdk/gcloud/reference/compute/routes/create
 - The source's test VM uses the `debian-11` image family, which is an older image; choose a currently supported image family for new VMs.
 - Setting `DESTINATION_RANGE` to `0.0.0.0/0` sends all internet traffic of the tagged VMs to the proxy; an incorrect priority or missing default route can cut their connectivity.
+- Corrected from the official docs: the source creates the proxy route (`--priority=2`) and the default-routing route (`--next-hop-other-routes="DEFAULT_ROUTING"`, `--priority=1`) with the same `--destination-range=DESTINATION_RANGE` and `--source-range=SOURCE_RANGE`. The source says the default-routing route "enables default routing for the traffic between virtual machine (VM) instances within your network" and must have the higher priority, so with identical match ranges the default-routing route would always be selected and no traffic would reach the proxy; the example limits it to `INTERNAL_DESTINATION_RANGE`.
 - Source: https://docs.cloud.google.com/secure-web-proxy/docs/deploy-next-hop (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

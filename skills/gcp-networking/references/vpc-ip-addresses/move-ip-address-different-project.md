@@ -101,8 +101,6 @@ Adapted (not in the official docs): removed the trailing comma (invalid JSON in 
 | Regional | `compute.addresses.delete` in the source project; `compute.addresses.create` in the destination project |
 | Global | `compute.globalAddresses.delete` in the source project; `compute.globalAddresses.create` in the destination project |
 
-Example roles: Compute Admin (`roles/compute.admin`), Compute Network Admin (`roles/compute.networkAdmin`), Compute Public IP Admin (`roles/compute.publicIpAdmin`).
-
 ### Prerequisites and limitations
 
 | Item |
@@ -116,6 +114,7 @@ Example roles: Compute Admin (`roles/compute.admin`), Compute Network Admin (`ro
 
 ## Notes
 
+- Permissions: Example roles: Compute Admin (`roles/compute.admin`), Compute Network Admin (`roles/compute.networkAdmin`), Compute Public IP Admin (`roles/compute.publicIpAdmin`).
 - Corrected from the official docs: the source request bodies end with a trailing comma (`"destination_address": "...",` and `"description": "NEW_DESCRIPTION",`), which is invalid JSON. Its regional examples write `"destination_address": "projects/TARGET_PROJECT/global/addresses/ADDRESS_NAME"` (and `.../global/addresses/NEW_NAME`); the Compute Engine API reference for `RegionAddressesMoveRequest.destinationAddress` documents `projects/project/regions/region/addresses/address`, so `regions/REGION/addresses/` is used. The source's `SOURCE_PROJECT` entry reads "the name or ID of the project that you want to move the IP address to" (the same text as `TARGET_PROJECT`); in the Placeholders table it is described as the project that currently holds the address.
 - The move removes the address from the source project and creates it in the destination, which can break connectivity for anything using it; try it on a disposable address first. By default the name and description are kept.
 - Troubleshooting: the error `Invalid resource usage: 'Cannot move address that belongs to a reserved address range. Address range must be disassembled first.'` means Cloud Support reserved the address as part of a contiguous range (its name has the form `STRING-198-51-100-2`); contact Cloud Support.

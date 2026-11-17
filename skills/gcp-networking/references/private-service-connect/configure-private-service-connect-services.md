@@ -143,10 +143,12 @@ gcloud dns managed-zones describe NAMESPACE--REGION
 
 ### Prerequisites
 
-- Enable the Compute Engine, Service Directory and Cloud DNS APIs.
-- A regular subnet in the same region as the service, giving the endpoint IP: an IPv4 address from an IPv4-only or dual-stack subnet, or a `/96` IPv6 address from an IPv6-only or dual-stack subnet with an internal IPv6 range. The IP version affects which published services the endpoint can reach.
-- Egress firewall rules must allow traffic to the endpoint's internal IP (the implied allow egress rule does; egress deny rules or hierarchical firewall policies that change it may block access, so add a specific egress allow).
-- The service attachment URI: `projects/SERVICE_PROJECT/regions/REGION/serviceAttachments/SERVICE_NAME`.
+| Prerequisites |
+|---|
+| Enable the Compute Engine, Service Directory and Cloud DNS APIs. |
+| A regular subnet in the same region as the service, giving the endpoint IP: an IPv4 address from an IPv4-only or dual-stack subnet, or a `/96` IPv6 address from an IPv6-only or dual-stack subnet with an internal IPv6 range. The IP version affects which published services the endpoint can reach. |
+| Egress firewall rules must allow traffic to the endpoint's internal IP (the implied allow egress rule does; egress deny rules or hierarchical firewall policies that change it may block access, so add a specific egress allow). |
+| The service attachment URI: `projects/SERVICE_PROJECT/regions/REGION/serviceAttachments/SERVICE_NAME`. |
 
 ### Required roles
 
@@ -155,8 +157,6 @@ gcloud dns managed-zones describe NAMESPACE--REGION
 | Create, view, delete endpoints | Compute Network Admin (`roles/compute.networkAdmin`) | Your project |
 | Configure DNS entries (automatic or manual) | DNS Administrator (`roles/dns.admin`) and Service Directory Editor (`roles/servicedirectory.editor`) | Your project |
 | Shared VPC: endpoints using a host project IP | Compute Network User (`roles/compute.networkUser`), providing `compute.networks.use` and `compute.subnetworks.use` | Host project (in addition to the project roles on the service project) |
-
-Key permissions: `compute.addresses.createInternal`, `compute.addresses.deleteInternal`, `compute.addresses.get`, `compute.addresses.list`, `compute.addresses.use`, `compute.forwardingRules.create`, `compute.forwardingRules.delete`, `compute.forwardingRules.get`, `compute.forwardingRules.list`, `compute.forwardingRules.pscCreate`, `compute.forwardingRules.pscDelete`, `compute.regionOperations.get`, `servicedirectory.namespaces.create`, `servicedirectory.namespaces.delete`, `servicedirectory.services.create`, `servicedirectory.services.delete`; for DNS: `dns.managedZones.create`, `dns.managedZones.delete`, `dns.networks.bindPrivateDNSZone`, `servicedirectory.namespaces.associatePrivateZone`.
 
 ### Behavior
 
@@ -170,6 +170,7 @@ Key permissions: `compute.addresses.createInternal`, `compute.addresses.deleteIn
 
 ## Notes
 
+- Required roles: Key permissions: `compute.addresses.createInternal`, `compute.addresses.deleteInternal`, `compute.addresses.get`, `compute.addresses.list`, `compute.addresses.use`, `compute.forwardingRules.create`, `compute.forwardingRules.delete`, `compute.forwardingRules.get`, `compute.forwardingRules.list`, `compute.forwardingRules.pscCreate`, `compute.forwardingRules.pscDelete`, `compute.regionOperations.get`, `servicedirectory.namespaces.create`, `servicedirectory.namespaces.delete`, `servicedirectory.services.create`, `servicedirectory.services.delete`; for DNS: `dns.managedZones.create`, `dns.managedZones.delete`, `dns.networks.bindPrivateDNSZone`, `servicedirectory.namespaces.associatePrivateZone`.
 - Deleting an endpoint does not delete its Service Directory namespace or Service Directory DNS zone (they may be used by others); check the namespace is empty before deleting it. Deleting an endpoint is destructive and can break connectivity; try it on a disposable resource first. Deleting a project marks resources for deletion but does not remove them immediately.
 - Known issue: connecting a global access endpoint to a service that is not configured for global access breaks health checks, so traffic may go to unhealthy backends and be dropped. Only enable global access if the attachment's load balancer has it; disabling global access does not interrupt same-region traffic but blocks other regions.
 - Troubleshooting: DNS zone creation can fail (Cloud DNS API disabled, missing permissions, same zone name or domain already in the network); create a Service Directory DNS zone manually. `PENDING` means the producer has not accepted (update the consumer accept list, recreate the service instance, or verify feature support, for example GKE control plane access only from the cluster's VPC). `ACCEPTED` but no traffic may mean a recent target service update. Global access creation error: `Private Service Connect global access is not supported for the given forwarding rule, since its producer service does not support consumer global access.`

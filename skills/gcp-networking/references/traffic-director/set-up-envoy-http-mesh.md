@@ -47,6 +47,14 @@ gcloud compute instance-groups managed create http-td-mig-us-east1 \
   --template=td-httpd-vm-template
 ```
 
+Adapted (not in the official docs): this `set-named-ports` step is added (in the form the TCP route guide uses for its group) so the backend service created below, which has no `--port-name` and therefore subscribes to the named port `http`, resolves to Apache on port 80.
+
+```bash
+gcloud compute instance-groups set-named-ports http-td-mig-us-east1 \
+  --zone=ZONE \
+  --named-ports=http:80
+```
+
 ```bash
 gcloud compute health-checks create http http-helloworld-health-check
 ```
@@ -139,6 +147,7 @@ The command returns a response from one MIG VM with its hostname.
 - The source uses the `debian-11` image family, an older Debian release; choose a currently supported Debian family for new VMs (the proxyless guide uses `debian-12`).
 - Cloud Service Mesh / Traffic Director here covers Compute Engine and proxyless gRPC; GKE-based meshes are in the `gcp-gke` skill.
 - Corrected from the official docs: the source startup script `echo '<!doctype <html><body><h1>'\`$(/bin/hostname)\`'</h1></body></html>'` sits inside a double-quoted `--metadata=startup-script="..."` argument, so `$(/bin/hostname)` is expanded by the shell that runs gcloud and the escaped backticks then execute that host name on the VM; `\$(/bin/hostname)` without backticks defers the expansion to the VM.
+- Corrected from the official docs: the source creates the managed instance group and adds it to `http-helloworld-service` without setting a named port; the gcloud 593.0.0 help for `gcloud compute backend-services create` says that when `--port-name` is omitted "a backend service subscribes to a named port called http", so `gcloud compute instance-groups set-named-ports http-td-mig-us-east1 --named-ports=http:80` was added (command form from https://docs.cloud.google.com/service-mesh/docs/service-routing/set-up-tcp-route).
 - Source: https://docs.cloud.google.com/service-mesh/docs/service-routing/set-up-envoy-http-mesh (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

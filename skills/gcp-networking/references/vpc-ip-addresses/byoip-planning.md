@@ -28,8 +28,6 @@ gcloud compute public-advertised-prefixes create \
 | Public advertised prefix for global load balancers | 192.0.2.0/24 | |
 | Public delegated prefix | 192.0.2.0/28 | global |
 
-The remaining addresses are reserved for future use.
-
 ### Decisions to make
 
 | Question | Guidance |
@@ -49,6 +47,7 @@ The remaining addresses are reserved for future use.
 
 ## Notes
 
+- Example provisioning plan: The remaining addresses are reserved for future use.
 - Organizations are recommended for organization-level IAM and Shared VPC.
 - This page says BYOIP provisions public IPv4 addresses; the BYOIP overview page also covers IPv6 prefixes.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/public-advertised-prefixes/create (gcloud 593.0.0 help). The full flag list is in the `gcp-compute` skill.

@@ -40,8 +40,6 @@ routingMode: EXPLICIT_ROUTING_MODE
 
 ### Policy models
 
-You configure only one primary policy model on a single gateway; service rate limiting policies are optional on top of either.
-
 | Policy | Use for |
 |--------|---------|
 | Authorization policy | Recommended when deploying as an Agent Gateway, or for non-agentic traffic that requires frontend mTLS or custom authorization extensions |
@@ -66,6 +64,7 @@ You configure only one primary policy model on a single gateway; service rate li
 
 ## Notes
 
+- Policy models: You configure only one primary policy model on a single gateway; service rate limiting policies are optional on top of either.
 - Request flow: workloads send outbound requests to the central instance; the proxy applies policies to allow or deny; allowed traffic is routed out through Google Cloud infrastructure, typically Cloud NAT, and Cloud DNS resolves external addresses.
 - Agent Gateway: for agents running on GKE or Cloud Run, a Secure Web Proxy instance can be deployed as an Agent Gateway; a Secure Web Proxy instance can be associated with one Agent Gateway (see [quotas.md](./quotas.md)).
 - Related Google Cloud tools named in the source: frontend mTLS, Certificate Manager (trust anchors and intermediate CAs for client certificate validation), VPC Service Controls (data exfiltration prevention), Cloud Trace.

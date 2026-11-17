@@ -89,8 +89,6 @@ Define the environment variable `GRPC_XDS_BOOTSTRAP` with the bootstrap file nam
 
 ### Required IAM roles
 
-Project `roles/owner` or `roles/editor` already includes the permissions. Otherwise all of these roles are required.
-
 | Task | Required role |
 |------|---------------|
 | Set IAM policy for a service account | Service Account Admin (`roles/iam.serviceAccountAdmin`) |
@@ -126,14 +124,10 @@ Project `roles/owner` or `roles/editor` already includes the permissions. Otherw
 | `TRAFFICDIRECTOR_MESH_NAME` | If empty or not specified, the value is `default`. |
 | `locality` | Google Cloud zone in which the client runs. |
 
-### Proxyless gRPC overall process
-
-1. Update gRPC clients to the latest version with the most recent patch.
-2. Update the clients' name resolver scheme when creating a channel and specify a bootstrap file.
-3. Configure Cloud Service Mesh and Cloud Load Balancing resources (Compute Engine VMs or GKE NEGs).
-
 ## Notes
 
+- Required IAM roles: Project `roles/owner` or `roles/editor` already includes the permissions. Otherwise all of these roles are required.
+- Proxyless gRPC overall process: 1. Update gRPC clients to the latest version with the most recent patch. 2. Update the clients' name resolver scheme when creating a channel and specify a bootstrap file. 3. Configure Cloud Service Mesh and Cloud Load Balancing resources (Compute Engine VMs or GKE NEGs).
 - The source also shows Console steps for granting the role and enabling APIs.
 - Cloud Service Mesh / Traffic Director here covers Compute Engine and proxyless gRPC; GKE-based meshes are in the `gcp-gke` skill.
 - Source inconsistency: the sample bootstrap JSON sets `TRAFFICDIRECTOR_NETWORK_NAME`, while the field table on this page documents `TRAFFICDIRECTOR_MESH_NAME` (default `default`) and does not list a network name field. Use the field table when generating a bootstrap for a mesh.

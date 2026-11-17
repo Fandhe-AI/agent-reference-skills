@@ -22,11 +22,13 @@ gcloud compute service-attachments create \
 
 ### Service attachments
 
-- Target service is one of: the forwarding rule of a load balancer, or a Secure Web Proxy instance. Only one target service per attachment; multiple attachments can share a target.
-- URI format: `projects/SERVICE_PROJECT/regions/REGION/serviceAttachments/SERVICE_NAME`.
-- Target can be updated without recreating the attachment (service mutability). Connections are kept and retain their `pscConnectionId`; traffic is disrupted briefly.
-- Service mutability limits: the attachment must keep a target; the new target needs the same VPC network, region and IP version; a port mapping target cannot be replaced while the attachment has connections from backends; `allow-psc-global-access` of old and new targets must match (change it in a separate operation afterwards); to or from internal protocol forwarding requires gcloud or API.
-- Supported replacements: any of internal passthrough Network Load Balancer, internal protocol forwarding (target instance), port mapping services, regional internal Application Load Balancer and regional internal proxy Network Load Balancer to any of the same five; cross-region internal Application Load Balancer and Secure Web Proxy can neither be replaced nor be a replacement.
+| Service attachments |
+|---|
+| Target service is one of: the forwarding rule of a load balancer, or a Secure Web Proxy instance. Only one target service per attachment; multiple attachments can share a target. |
+| URI format: `projects/SERVICE_PROJECT/regions/REGION/serviceAttachments/SERVICE_NAME`. |
+| Target can be updated without recreating the attachment (service mutability). Connections are kept and retain their `pscConnectionId`; traffic is disrupted briefly. |
+| Service mutability limits: the attachment must keep a target; the new target needs the same VPC network, region and IP version; a port mapping target cannot be replaced while the attachment has connections from backends; `allow-psc-global-access` of old and new targets must match (change it in a separate operation afterwards); to or from internal protocol forwarding requires gcloud or API. |
+| Supported replacements: any of internal passthrough Network Load Balancer, internal protocol forwarding (target instance), port mapping services, regional internal Application Load Balancer and regional internal proxy Network Load Balancer to any of the same five; cross-region internal Application Load Balancer and Secure Web Proxy can neither be replaced nor be a replacement. |
 
 ### NAT subnets
 
@@ -42,11 +44,7 @@ gcloud compute service-attachments create \
 | 5-tuple reuse delay | 65 seconds |
 | IP fragments | Not supported by SNAT |
 
-If all NAT IPs are used, additional connections fail. Monitor metric `private_service_connect/producer/used_nat_ip_addresses`, watch for the **Needs attention** connection status, and use connection limits for multi-tenant services.
-
 ### Maximum connections
-
-Simultaneous connections through an endpoint or backend are bounded by client ephemeral ports (Linux `net.ipv4.ip_local_port_range`; source ports 1024 to 65535, 64,512 per source IP, destination IP and protocol, including TCP `TIME_WAIT`), NAT IP source ports (64,512 per NAT IP), and a baseline per-backend limit of 65,535 connections (can increase with vCPUs for IPv4 backend VMs; not typically restrictive for Envoy-proxy services).
 
 | NAT IP addresses per endpoint | Backend VM vCPUs | Max simultaneous IPv4 connections per endpoint |
 |---|---|---|
@@ -54,8 +52,6 @@ Simultaneous connections through an endpoint or backend are bounded by client ep
 | 2 | 1 to 7 | 65,535 |
 | 2 | 8 to 15 | 98,302 |
 | 2 | 16 or more | 131,070 |
-
-No overall limit across all producer VMs; the practical bound is the number of VMs or Envoy proxies times the per-backend limit.
 
 ### Support for endpoints (target producer)
 
@@ -68,8 +64,6 @@ No overall limit across all producer VMs; the practical bound is the number of V
 | Regional internal Application Load Balancer | Only if global access enabled before the attachment is created | As cross-region plus regional internet NEGs | No | IPv4 |
 | Regional internal proxy Network Load Balancer | Only if global access enabled before the attachment is created | GCE_VM_IP_PORT zonal NEGs, hybrid NEGs, PSC NEGs, instance groups | No | IPv4 |
 | Secure Web Proxy | No | n/a | No | IPv4 |
-
-All endpoint targets support hybrid access and automatic DNS configuration (IPv4-only) and NCC connection propagation (IPv4 only); none support VPC Network Peering access.
 
 ### Support for backends (consumer load balancer)
 
@@ -84,29 +78,35 @@ All endpoint targets support hybrid access and automatic DNS configuration (IPv4
 | Regional internal Application Load Balancer | HTTP, HTTPS, HTTP2 | IPv4 | No |
 | Regional internal proxy Network Load Balancer | TCP | IPv4 | No |
 
-Producer load balancers for backends: cross-region internal Application Load Balancer (TCP, HTTP, HTTPS, HTTP/2, gRPC; one, multiple or all ports; no Composite Health), internal passthrough Network Load Balancer (TCP; Composite Health), regional internal Application Load Balancer (HTTP, HTTPS, HTTP/2; single port; Composite Health), regional internal proxy Network Load Balancer (TCP; single port; Composite Health; no connections from consumer global external Application Load Balancers), Secure Web Proxy (no Composite Health). PROXY protocol is not supported for any producer behind backends. For global or cross-region consumer backends, global access must be on for the producer load balancer before the attachment is created; do not disable it while global-access PSC NEGs connect.
-
 ### Producer port configuration (internal passthrough Network Load Balancer, consumer backends)
 
-- Single port: consumer uses the same port. Multiple ports: port `443` if included, otherwise the first port after alphabetical sort (for `80` and `1111` the consumer uses `1111`). Changing backend ports can interrupt consumers.
-- All ports: the consumer must specify a producer port in the NEG; otherwise it uses port `1`, which does not work.
+| Item | Details |
+|---|---|
+| Single port | consumer uses the same port. Multiple ports: port `443` if included, otherwise the first port after alphabetical sort (for `80` and `1111` the consumer uses `1111`). Changing backend ports can interrupt consumers. |
+| All ports | the consumer must specify a producer port in the NEG; otherwise it uses port `1`, which does not work. |
 
 ### IP version translation
 
-- Endpoint IP version follows the consumer forwarding rule address (IPv4 or IPv6, not both). Supported: IPv4 to IPv4, IPv6 to IPv6, IPv6 to IPv4 (automatic translation). An IPv4 endpoint cannot target an IPv6 service attachment (error: `Private Service Connect forwarding rule with an IPv4 address cannot target an IPv6 service attachment.`). Backend-to-attachment connections require IPv4 on both sides.
-
-### PROXY protocol
-
-PROXY protocol v2 reveals the consumer source IP and `pscConnectionId`; enable it when publishing. It applies to new connections only and the backend must be configured to parse it, otherwise requests may be malformed. The ID is a TLV: type 1 byte `0xE0` (PP2_TYPE_GCP), length 2 bytes `0x8`, value 8 bytes (`pscConnectionId`, network order). `pscConnectionId` can be reused (same IP re-created in a network; after a seven-day wait following network deletion). `pscServiceAttachmentId` (16 bytes) is available from the attachment but is not in the header.
+| IP version translation |
+|---|
+| Endpoint IP version follows the consumer forwarding rule address (IPv4 or IPv6, not both). Supported: IPv4 to IPv4, IPv6 to IPv6, IPv6 to IPv4 (automatic translation). An IPv4 endpoint cannot target an IPv6 service attachment (error: `Private Service Connect forwarding rule with an IPv4 address cannot target an IPv6 service attachment.`). Backend-to-attachment connections require IPv4 on both sides. |
 
 ### Other
 
-- Shared VPC: the producer forwarding rule uses an address from the Shared VPC network and the PSC subnet comes from it; both subnets must be shared with the service project.
-- Quota: `PSC ILB consumer forwarding rules per producer VPC network` (endpoints plus propagated connections, counted until deleted).
-- Limitations: load balancers with protocol `L3_DEFAULT` are not supported; Packet Mirroring cannot mirror PSC published service traffic; attachments to internal protocol forwarding rules require gcloud or API.
+| Item | Details |
+|---|---|
+| Shared VPC | the producer forwarding rule uses an address from the Shared VPC network and the PSC subnet comes from it; both subnets must be shared with the service project. |
+| Quota | `PSC ILB consumer forwarding rules per producer VPC network` (endpoints plus propagated connections, counted until deleted). |
+| Limitations | load balancers with protocol `L3_DEFAULT` are not supported; Packet Mirroring cannot mirror PSC published service traffic; attachments to internal protocol forwarding rules require gcloud or API. |
 
 ## Notes
 
+- NAT subnets: If all NAT IPs are used, additional connections fail. Monitor metric `private_service_connect/producer/used_nat_ip_addresses`, watch for the **Needs attention** connection status, and use connection limits for multi-tenant services.
+- Maximum connections: Simultaneous connections through an endpoint or backend are bounded by client ephemeral ports (Linux `net.ipv4.ip_local_port_range`; source ports 1024 to 65535, 64,512 per source IP, destination IP and protocol, including TCP `TIME_WAIT`), NAT IP source ports (64,512 per NAT IP), and a baseline per-backend limit of 65,535 connections (can increase with vCPUs for IPv4 backend VMs; not typically restrictive for Envoy-proxy services).
+- Maximum connections: No overall limit across all producer VMs; the practical bound is the number of VMs or Envoy proxies times the per-backend limit.
+- Support for endpoints (target producer): All endpoint targets support hybrid access and automatic DNS configuration (IPv4-only) and NCC connection propagation (IPv4 only); none support VPC Network Peering access.
+- Support for backends (consumer load balancer): Producer load balancers for backends: cross-region internal Application Load Balancer (TCP, HTTP, HTTPS, HTTP/2, gRPC; one, multiple or all ports; no Composite Health), internal passthrough Network Load Balancer (TCP; Composite Health), regional internal Application Load Balancer (HTTP, HTTPS, HTTP/2; single port; Composite Health), regional internal proxy Network Load Balancer (TCP; single port; Composite Health; no connections from consumer global external Application Load Balancers), Secure Web Proxy (no Composite Health). PROXY protocol is not supported for any producer behind backends. For global or cross-region consumer backends, global access must be on for the producer load balancer before the attachment is created; do not disable it while global-access PSC NEGs connect.
+- PROXY protocol: PROXY protocol v2 reveals the consumer source IP and `pscConnectionId`; enable it when publishing. It applies to new connections only and the backend must be configured to parse it, otherwise requests may be malformed. The ID is a TLV: type 1 byte `0xE0` (PP2_TYPE_GCP), length 2 bytes `0x8`, value 8 bytes (`pscConnectionId`, network order). `pscConnectionId` can be reused (same IP re-created in a network; after a seven-day wait following network deletion). `pscServiceAttachmentId` (16 bytes) is available from the attachment but is not in the header.
 - Multi-region failover: deploy and publish the service in each region; consumers use a PSC NEG per region plus a global backend service behind a load balancer that supports cross-region failover.
 - VPC Service Controls is compatible; establishing a connection between projects in different perimeters needs no explicit egress policy. VPC Flow Logs can be enabled on backend subnets; flows on the PSC subnet itself are not logged because no VMs connect to it.
 - PROXY protocol is not a substitute for TLS or application-layer authentication.

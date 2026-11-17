@@ -74,8 +74,6 @@ A more specific matcher:
 | Next hop | HTTPS without TLS inspection | Hostname checked against the SNI header, visible even on encrypted traffic | `sessionMatcher`: `host() == "example.com"` |
 | Next hop | HTTPS with TLS inspection | Both matchers | Same as explicit proxy with TLS inspection |
 
-In explicit proxy mode with Application Matcher attributes for TLS inspection, the proxy checks the hostname first at the connection level and then at the application level.
-
 ### TCP proxy rule attributes (Session Matcher)
 
 | Attribute | Type | Description |
@@ -89,12 +87,15 @@ In explicit proxy mode with Application Matcher attributes for TLS inspection, t
 
 ### Limitations
 
-- If you create an authorization policy on the instance, the proxy ignores all existing gateway security policies and their rules.
-- UDP applications aren't supported; Secure Web Proxy blocks UDP-based traffic.
-- TCP proxy rules must have a higher priority (lower number) than HTTP/S rules; the `host` Session Matcher attribute isn't supported in TCP proxy rules because host information isn't available at the TCP layer.
+| Limitations |
+|---|
+| If you create an authorization policy on the instance, the proxy ignores all existing gateway security policies and their rules. |
+| UDP applications aren't supported; Secure Web Proxy blocks UDP-based traffic. |
+| TCP proxy rules must have a higher priority (lower number) than HTTP/S rules; the `host` Session Matcher attribute isn't supported in TCP proxy rules because host information isn't available at the TCP layer. |
 
 ## Notes
 
+- Host matching by deployment mode: In explicit proxy mode with Application Matcher attributes for TLS inspection, the proxy checks the hostname first at the connection level and then at the application level.
 - TCP proxy rules filter only on destination port; the source recommends adding conditions with `&&` / `||` and attributes such as `source.ip`. The port 22 example above allows all sources; restrict it to a trusted range before use.
 - Set `tlsInspectionEnabled: true` on each rule that uses `applicationMatcher` to match HTTPS traffic; TLS inspection for the rule is limited to traffic matching the rule's `sessionMatcher`. To analyze HTTP methods or headers, enable TLS inspection.
 - Rule priority: lowest number is checked first; in the Console, `0` is the highest priority; the first matching rule decides.

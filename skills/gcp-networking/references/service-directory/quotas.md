@@ -22,26 +22,30 @@ gcloud quotas info list --service=servicedirectory.googleapis.com --project=PROJ
 
 ### Quotas
 
-- Namespaces per project per region
-- Services per namespace
-- Endpoints per service
-- Registration requests per minute per region
-- Lookup requests per minute per region
-
-Existing quotas and usage are on the Quotas page of the Google Cloud console (`servicedirectory.googleapis.com`). All projects start with the same quotas; some might increase automatically based on usage.
+| Quotas |
+|---|
+| Namespaces per project per region |
+| Services per namespace |
+| Endpoints per service |
+| Registration requests per minute per region |
+| Lookup requests per minute per region |
 
 ### System limits
 
-General:
+#### General
 
-- There is no health-status or health-checking for endpoints. Alternatives: use internal load balancers for integrated health checking and register the load balancer with Service Directory, or store individual endpoint health status as endpoint annotations.
+| Details |
+|---|
+| There is no health-status or health-checking for endpoints. Alternatives: use internal load balancers for integrated health checking and register the load balancer with Service Directory, or store individual endpoint health status as endpoint annotations. |
 
-Cloud DNS integration:
+#### Cloud DNS integration
 
-- Only endpoints with a valid IPv4 or IPv6 address are served; endpoints without a valid IP address are ignored by DNS requests.
-- SRV records cannot be customized. The symbolic service, protocol, TTL, weight, and priority are managed by Service Directory.
-- Service and endpoint annotations are not served in DNS requests; use HTTP support in Service Directory for custom annotations.
-- You cannot add resource records to the Service Directory zone. Only records generated internally from existing Service Directory endpoints are allowed.
+| Details |
+|---|
+| Only endpoints with a valid IPv4 or IPv6 address are served; endpoints without a valid IP address are ignored by DNS requests. |
+| SRV records cannot be customized. The symbolic service, protocol, TTL, weight, and priority are managed by Service Directory. |
+| Service and endpoint annotations are not served in DNS requests; use HTTP support in Service Directory for custom annotations. |
+| You cannot add resource records to the Service Directory zone. Only records generated internally from existing Service Directory endpoints are allowed. |
 
 ### Required roles
 
@@ -52,6 +56,7 @@ Cloud DNS integration:
 
 ## Notes
 
+- Quotas: Existing quotas and usage are on the Quotas page of the Google Cloud console (`servicedirectory.googleapis.com`). All projects start with the same quotas; some might increase automatically based on usage.
 - Exceeding a quota with a `gcloud` command prints a `quota exceeded` error and returns exit code `1`; an API request returns HTTP `413 Request Entity Too Large`.
 - Quotas generally apply per Google Cloud project and are shared across all applications and IP addresses in that project.
 - Quotas don't guarantee resource availability; a resource can be unavailable even when quota remains.

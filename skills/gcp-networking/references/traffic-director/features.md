@@ -34,10 +34,6 @@ gcloud compute backend-services create http-helloworld-service \
 | Network topologies | Single network in a project, multiple meshes per project, multiple gateways per project, Shared VPC |
 | Compliance | HIPAA; ISO 27001 / 27017 / 27018; SOC1 / SOC2 / SOC3; PCI DSS |
 
-### Services management
-
-Supported: automated deployment of sidecar proxies for Compute Engine VMs; automated injection of sidecar proxies for GKE Pods; hostname-based service discovery; autoscaling on CPU utilization; autoscaling on traffic load/serving capacity (Compute Engine MIGs only); autohealing on health checks; automatic endpoint registration for VMs and GKE Pods; API to add or remove endpoints.
-
 ### Service security
 
 | Feature | Envoy | gRPC |
@@ -48,8 +44,6 @@ Supported: automated deployment of sidecar proxies for Compute Engine VMs; autom
 | Rate limiting with Google Cloud Armor | Yes | No |
 
 ### Routing and traffic management
-
-None of the advanced traffic management features are available with the target TCP proxy resource, and none are supported when handling TCP (non-HTTP(S)) traffic.
 
 | Feature | Envoy (HTTP(S) or gRPC) | Proxyless gRPC |
 |---------|-------------------------|----------------|
@@ -97,6 +91,8 @@ None of the advanced traffic management features are available with the target T
 
 ## Notes
 
+- Services management: Supported: automated deployment of sidecar proxies for Compute Engine VMs; automated injection of sidecar proxies for GKE Pods; hostname-based service discovery; autoscaling on CPU utilization; autoscaling on traffic load/serving capacity (Compute Engine MIGs only); autohealing on health checks; automatic endpoint registration for VMs and GKE Pods; API to add or remove endpoints.
+- Routing and traffic management: None of the advanced traffic management features are available with the target TCP proxy resource, and none are supported when handling TCP (non-HTTP(S)) traffic.
 - Snippet taken from https://docs.cloud.google.com/service-mesh/docs/service-routing/set-up-envoy-http-mesh (the source page for the feature matrix has no code).
 - Cloud Service Mesh / Traffic Director here covers Compute Engine and proxyless gRPC; GKE-based meshes are in the `gcp-gke` skill.
 - Source: https://docs.cloud.google.com/service-mesh/docs/service-routing/features (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)

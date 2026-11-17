@@ -36,8 +36,6 @@ gcloud dns managed-zones list \
 | `all-apis` | `private.googleapis.com` | Most Google APIs and services regardless of VPC Service Controls support, including all `*.googleapis.com` endpoints (excludes `*.rep.googleapis.com` regional and multi-regional endpoints), Google Maps, Google Ads and Google Cloud. No Google Workspace web applications (Gmail, Docs) and no interactive websites. |
 | `vpc-sc` | `restricted.googleapis.com` | Only APIs and services supported by VPC Service Controls; blocks others. No Google Workspace APIs or web applications. |
 
-Bundles support only HTTP-based protocols over TCP (HTTP, HTTPS, HTTP/2); MQTT, ICMP and others are not supported. Choose `all-apis` if you do not use VPC Service Controls, or if you do but also need APIs it does not support. Use `vpc-sc` to restrict users to VPC Service Controls-supported APIs for extra data exfiltration protection.
-
 ### Service Directory DNS configuration
 
 | Setting | Behavior |
@@ -49,13 +47,15 @@ Bundles support only HTTP-based protocols over TCP (HTTP, HTTPS, HTTP/2); MQTT, 
 
 ### IP address requirements
 
-- A single IPv4 address (RFC 1918 or non-RFC 1918); IPv6 is not supported. Counts toward the project's global internal IP address quota.
-- Cannot be in any subnet range (primary or secondary) of the VPC network or of a peered network.
-- Cannot overlap a `/32` custom static route in the local network, or a `/32` peering custom static route when custom routes are exported by the peer and imported locally.
-- Cannot be in auto-mode ranges (`10.128.0.0/9`) if the network is auto mode or peered with one.
-- Cannot be in an allocated IP range of the local network (can be in one of a peered network).
-- Cannot be in an internal range, unless the address is reserved from an internal range for Private Service Connect endpoints in the same network.
-- An endpoint takes priority over a custom dynamic route with the same `/32` destination, and over local static, local dynamic or peering custom routes whose mask is shorter than `/32`.
+| IP address requirements |
+|---|
+| A single IPv4 address (RFC 1918 or non-RFC 1918); IPv6 is not supported. Counts toward the project's global internal IP address quota. |
+| Cannot be in any subnet range (primary or secondary) of the VPC network or of a peered network. |
+| Cannot overlap a `/32` custom static route in the local network, or a `/32` peering custom static route when custom routes are exported by the peer and imported locally. |
+| Cannot be in auto-mode ranges (`10.128.0.0/9`) if the network is auto mode or peered with one. |
+| Cannot be in an allocated IP range of the local network (can be in one of a peered network). |
+| Cannot be in an internal range, unless the address is reserved from an internal range for Private Service Connect endpoints in the same network. |
+| An endpoint takes priority over a custom dynamic route with the same `/32` destination, and over local static, local dynamic or peering custom routes whose mask is shorter than `/32`. |
 
 ### Roles and quotas
 
@@ -67,6 +67,7 @@ Bundles support only HTTP-based protocols over TCP (HTTP, HTTPS, HTTP/2); MQTT, 
 
 ## Notes
 
+- API bundles: Bundles support only HTTP-based protocols over TCP (HTTP, HTTPS, HTTP/2); MQTT, ICMP and others are not supported. Choose `all-apis` if you do not use VPC Service Controls, or if you do but also need APIs it does not support. Use `vpc-sc` to restrict users to VPC Service Controls-supported APIs for extra data exfiltration protection.
 - If you configure global Google APIs endpoints in VPC Service Controls service perimeters, endpoints created before September 1, 2026 are not supported and must be recreated.
 - DNS resolution: if the private zone for `p.googleapis.com` is missing, `storage-xyz.p.googleapis.com` resolves through public DNS (wildcard entry) to public Cloud Front End addresses, not to your endpoint. Hybrid clients need extra configuration (Cloud DNS inbound forwarding policy).
 - Shared VPC: an address resource in a service project cannot reserve an internal global IPv4 address from the host project; create forwarding rules and address resources in the same project where possible.

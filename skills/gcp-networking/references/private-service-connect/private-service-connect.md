@@ -36,17 +36,18 @@ gcloud compute forwarding-rules create ENDPOINT_NAME \
 | Interfaces | Special network interface that refers to a network attachment | Producer initiates (managed service egress); bidirectional; transitive |
 | Service attachments | Producer resource that publishes a service; targets a producer load balancer | Defines consumer accept list, NAT subnet, optional DNS domain |
 
-Characteristics of Private Service Connect:
+### Characteristics of Private Service Connect
 
-- Service-oriented design: producer services are exposed through load balancers with a single IP address; consumer access is unidirectional and limited to the service IP address, not an entire peered network.
-- Explicit authorization: consumers and producers have granular control over which endpoints can connect.
-- No shared dependencies: traffic uses NAT, so no IP address coordination is needed between consumer and producer VPC networks.
-- Line-rate performance: traffic goes directly from the physical host of the consumer client VM to the physical host of the producer load balancer VM; bandwidth is limited only by those hosts.
-
-Managed service types: published VPC-hosted services (Google services such as GKE, Apigee or Managed Service for Apache Airflow; third-party services; intra-organization services) and Google APIs (endpoints can target a bundle of global Google APIs or a regional / multi-regional Google API; backends can target a global, regional or multi-regional Google API).
+| Item | Details |
+|---|---|
+| Service-oriented design | producer services are exposed through load balancers with a single IP address; consumer access is unidirectional and limited to the service IP address, not an entire peered network. |
+| Explicit authorization | consumers and producers have granular control over which endpoints can connect. |
+| No shared dependencies | traffic uses NAT, so no IP address coordination is needed between consumer and producer VPC networks. |
+| Line-rate performance | traffic goes directly from the physical host of the consumer client VM to the physical host of the producer load balancer VM; bandwidth is limited only by those hosts. |
 
 ## Notes
 
+- Managed service types: published VPC-hosted services (Google services such as GKE, Apigee or Managed Service for Apache Airflow; third-party services; intra-organization services) and Google APIs (endpoints can target a bundle of global Google APIs or a regional / multi-regional Google API; backends can target a global, regional or multi-regional Google API).
 - Interface vs endpoint: an interface lets a producer VPC network initiate connections to a consumer VPC network, while an endpoint works in the reverse direction. An interface connection is transitive (producer workloads can reach workloads connected to the consumer VPC network); endpoints can only initiate connections to the producer VPC network.
 - Using Private Service Connect for Google APIs is an alternative to Private Google Access or the public domain names for Google APIs.
 - The producer service's own docs (Cloud SQL, AlloyDB, Memorystore and so on) are in the `gcp-databases-relational` / `gcp-databases-nosql` skills. The full `gcloud compute forwarding-rules` flag list is in the `gcp-compute` skill.

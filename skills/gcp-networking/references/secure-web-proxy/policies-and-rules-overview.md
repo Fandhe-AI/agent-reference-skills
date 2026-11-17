@@ -34,10 +34,12 @@ sessionMatcher: host() == 'www.wikipedia.org'
 
 ### Authorization policies (`AuthzPolicy`)
 
-- Allow, deny or delegate request authorization based on source, destination and other request attributes. Failed requests are rejected with `403 Forbidden`.
-- Use the unified `AuthzPolicy` API shared with Application Load Balancer and Cloud Service Mesh; Service Extensions authorization extensions can delegate decisions (for example to IAP).
-- Identity-centric: service accounts, tags or frontend mutual TLS, while still supporting IP-based rules.
-- If a gateway security policy with rules exists, it need not be removed; Secure Web Proxy ignores those rules once an authorization policy is applied.
+| Authorization policies (`AuthzPolicy`) |
+|---|
+| Allow, deny or delegate request authorization based on source, destination and other request attributes. Failed requests are rejected with `403 Forbidden`. |
+| Use the unified `AuthzPolicy` API shared with Application Load Balancer and Cloud Service Mesh; Service Extensions authorization extensions can delegate decisions (for example to IAP). |
+| Identity-centric: service accounts, tags or frontend mutual TLS, while still supporting IP-based rules. |
+| If a gateway security policy with rules exists, it need not be removed; Secure Web Proxy ignores those rules once an authorization policy is applied. |
 
 ### Agent Gateway two-tier governance
 
@@ -58,9 +60,11 @@ sessionMatcher: host() == 'www.wikipedia.org'
 
 ### Service rate limiting policies (Preview)
 
-- Preview: subject to the "Pre-GA Offerings Terms"; available "as is" with possibly limited support.
-- Enforced at the end of the request path, after gateway security rules, authorization checks and service extensions succeed.
-- Applies only to Layer 7 traffic that matches a rule with an application attribute (`ApplicationMatcher`); traffic matching only a session attribute (`SessionMatcher`) isn't rate limited.
+| Service rate limiting policies (Preview) |
+|---|
+| Preview: subject to the "Pre-GA Offerings Terms"; available "as is" with possibly limited support. |
+| Enforced at the end of the request path, after gateway security rules, authorization checks and service extensions succeed. |
+| Applies only to Layer 7 traffic that matches a rule with an application attribute (`ApplicationMatcher`); traffic matching only a session attribute (`SessionMatcher`) isn't rate limited. |
 
 ### Limitations
 

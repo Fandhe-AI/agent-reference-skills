@@ -36,16 +36,20 @@ gcloud network-services meshes import sidecar-mesh \
 
 ### Advanced traffic management limitations
 
-- If `BackendService.sessionAffinity` is not NONE and `BackendService.localityLbPolicy` is a policy other than `MAGLEV` or `RING_HASH`, the session affinity settings don't take effect.
-- `gcloud import` does not delete top-level fields of a resource such as the backend service or URL map. For example, `circuitBreakers` settings can be updated but not removed that way; delete and recreate the resource without them.
+| Advanced traffic management limitations |
+|---|
+| If `BackendService.sessionAffinity` is not NONE and `BackendService.localityLbPolicy` is a policy other than `MAGLEV` or `RING_HASH`, the session affinity settings don't take effect. |
+| `gcloud import` does not delete top-level fields of a resource such as the backend service or URL map. For example, `circuitBreakers` settings can be updated but not removed that way; delete and recreate the resource without them. |
 
 ### Service Directory limitations
 
-- Service Directory and Cloud Service Mesh don't guarantee network reachability for clients.
-- A backend service can reference only one of: a managed or unmanaged instance group, a network endpoint group, or service bindings.
-- Service Directory services can only be used with global backend services with `load-balancing-scheme=INTERNAL_SELF_MANAGED`.
-- A Service Directory service referenced by a service binding can be deleted; then applications that use Cloud Service Mesh cannot send traffic to it and requests fail.
-- When a Service Directory service is bound to a backend service, no health check can be configured on that backend service.
+| Service Directory limitations |
+|---|
+| Service Directory and Cloud Service Mesh don't guarantee network reachability for clients. |
+| A backend service can reference only one of: a managed or unmanaged instance group, a network endpoint group, or service bindings. |
+| Service Directory services can only be used with global backend services with `load-balancing-scheme=INTERNAL_SELF_MANAGED`. |
+| A Service Directory service referenced by a service binding can be deleted; then applications that use Cloud Service Mesh cannot send traffic to it and requests fail. |
+| When a Service Directory service is bound to a backend service, no health check can be configured on that backend service. |
 
 ## Notes
 

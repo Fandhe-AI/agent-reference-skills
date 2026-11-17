@@ -114,8 +114,6 @@ List with REST: `GET https://compute.googleapis.com/compute/v1/projects/PROJECT_
 
 ### Required role and permissions
 
-Compute Network Admin (`roles/compute.networkAdmin`) on the project, which includes:
-
 | Permission | On |
 |------------|----|
 | `compute.addresses.create` | the IP address |
@@ -139,6 +137,7 @@ Compute Network Admin (`roles/compute.networkAdmin`) on the project, which inclu
 
 ## Notes
 
+- Required role and permissions: Compute Network Admin (`roles/compute.networkAdmin`) on the project, which includes:
 - IPv6 ULA reservation requires a network with the ULA internal IPv6 range enabled and a subnet with an IPv6 range and the `INTERNAL` access type. An internal IPv6 address cannot be shared across multiple load balancer frontends.
 - HA VPN over Cloud Interconnect: reserve a range with `--purpose=IPSEC_INTERCONNECT` and `--prefix-length` between 26 and 29.
 - Shared VPC: the address object is created in the same service project as the resource that uses it, with its value taken from the shared subnet.
