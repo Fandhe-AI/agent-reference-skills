@@ -350,7 +350,7 @@ API REFERENCE
     this API can be found at: https://cloud.google.com/oracle/database/docs
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud oracle-database goldengate-deployments create my-deployment \
@@ -359,14 +359,14 @@ gcloud oracle-database goldengate-deployments create my-deployment \
     --gcp-oracle-zone="us-east4-b-r1" \
     --odb-network=projects/my-project/locations/us-east4/odbNetworks/my-network \
     --odb-subnet=projects/my-project/locations/us-east4/odbNetworks/my-network/odbSubnets/my-subnet \
-    --properties-license-model="LICENSE_INCLUDED" \
+    --properties-license-model="license-included" \
     --properties-environment-type="PRODUCTION" \
     --properties-deployment-type="DATABASE_ORACLE" \
     --properties-cpu-core-count=1 \
-    --ogg-data-deployment="my-ogg-deployment" \
+    --ogg-data-deployment="myOggDeployment" \
     --ogg-data-admin-username="admin" \
     --ogg-data-admin-password="password" \
-    --maintenance-window-day="MONDAY" \
+    --maintenance-window-day="monday" \
     --maintenance-window-start-hour=23 \
     --maintenance-config-interim-release-upgrade-period-days=0 \
     --maintenance-config-bundle-release-upgrade-period-days=1 \
@@ -939,6 +939,8 @@ API REFERENCE
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example passes enum choices as uppercase API names (for example `LICENSE_INCLUDED`, `MONDAY`, `CLIENT_SUBNET`), while the flag descriptions list the choices in lowercase with hyphens (`license-included`, `monday`, `client-subnet`); the runnable form uses the documented lowercase choices (gcloud 593.0.0 also accepts the uppercase names). Flags whose description gives no fixed list of choices (such as `--properties-deployment-type` and `--properties-environment-type`) keep the official values.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example sets `--ogg-data-deployment="my-ogg-deployment"`, but the flag description says the name "must contain only alphanumeric characters and must start with a letter"; the runnable form uses `myOggDeployment`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
