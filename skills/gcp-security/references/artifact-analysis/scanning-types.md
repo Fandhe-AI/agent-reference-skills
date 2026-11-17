@@ -26,12 +26,13 @@ gcloud artifacts docker images scan ubuntu:latest --location=asia
 
 ## Notes
 
-- Enabling the Artifact Analysis API starts scanning new images pushed to Artifact Registry repositories in the project; scanning is disabled by default for packages pushed to Artifact Registry repositories; to enable it in a repository, see [enable-automatic-scanning.md](./enable-automatic-scanning.md).
+- Enabling the Container Scanning API (`containerscanning.googleapis.com`) starts scanning new images pushed to Artifact Registry repositories in the project; scanning is disabled by default for packages pushed to Artifact Registry repositories; to enable it in a repository, see [enable-automatic-scanning.md](./enable-automatic-scanning.md).
 - Architectures: any Linux-based architecture; for manifest lists a Linux amd64 image is scanned if present, otherwise another image is selected.
 - Only packages publicly monitored for security vulnerabilities are detected. Malicious packages (OpenSSF Malicious Packages Repository) are reported as `CRITICAL` severity.
 - Supported types per registry product: https://docs.cloud.google.com/artifact-registry/docs/transition/setup-repo#analysis. Pricing: https://cloud.google.com/artifact-analysis/pricing (not copied).
 - Full source and OS version lists are on [container-scanning-overview.md](./container-scanning-overview.md).
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/artifacts/docker/images/scan (gcloud 593.0.0 help, EXAMPLES). On-demand scanning of local images requires the `local-extract` gcloud component; see [scan-os-on-demand.md](./scan-os-on-demand.md).
+- Corrected from the official docs: the source's note says scanning starts "When you enable the Artifact Analysis API". Automatic scanning is turned on by the Container Scanning API (`containerscanning.googleapis.com`), which also enables the Container Analysis API (`containeranalysis.googleapis.com`) used for metadata; enabling only the metadata API does not scan images (see [enable-automatic-scanning.md](./enable-automatic-scanning.md)).
 - Source: https://docs.cloud.google.com/artifact-analysis/docs/scanning-types (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

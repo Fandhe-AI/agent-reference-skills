@@ -53,9 +53,11 @@ Adapted (not in the official docs): the schema sketch is tagged `text` instead o
 }
 ```
 
+Adapted (not in the official docs): `"name"` is the full resource name `accessPolicies/POLICY_ID/accessLevels/example_custom_level`, not the short name.
+
 ```json
 {
-  "name": "example_custom_level",
+  "name": "accessPolicies/POLICY_ID/accessLevels/example_custom_level",
   "title": "Example custom level",
   "description": "An example custom access level.",
   "custom":  {
@@ -110,6 +112,7 @@ request.auth.matchesNetworkProject(origin)
 - Source inconsistency: the RPC field table lists `custom` as type string, while the REST request body puts an object with `expr` under `custom`.
 - Corrected from the official docs: the request-body schema sketch (`"name": string,` and so on) is in a `json` block.
 - The source also shows Console steps (Advanced Mode) and refers to the custom access level specification for CEL details.
+- Corrected from the official docs: the REST request bodies set `name` to the short level name. `AccessLevel.name` is the resource name `accessPolicies/{access_policy}/accessLevels/{access_level}` (Access Context Manager v1 Discovery document), so the examples use the full name; the short name is what `gcloud access-context-manager levels create` takes.
 - Source: https://docs.cloud.google.com/access-context-manager/docs/create-custom-access-level (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

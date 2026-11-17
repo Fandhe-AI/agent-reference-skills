@@ -67,9 +67,11 @@ Private IP variant:
 
 REST body:
 
+Adapted (not in the official docs): `"name"` is the full resource name `accessPolicies/POLICY/accessLevels/NAME`, not the short name.
+
 ```json
 {
- "name": "NAME",
+ "name": "accessPolicies/POLICY/accessLevels/NAME",
  "title": "TITLE",
  "basic": {
    "conditions": [
@@ -83,11 +85,11 @@ REST body:
 }
 ```
 
-Adapted (not in the official docs): the source writes `VPC_NETWORK_NAME` and `IP_RANGE` unquoted, which is invalid JSON; they are quoted here.
+Adapted (not in the official docs): the source writes `VPC_NETWORK_NAME` and `IP_RANGE` unquoted, which is invalid JSON; they are quoted here. `"name"` is the full resource name `accessPolicies/POLICY/accessLevels/NAME`, not the short name.
 
 ```json
 {
- "name": "NAME",
+ "name": "accessPolicies/POLICY/accessLevels/NAME",
  "title": "TITLE",
  "basic": {
    "conditions": [
@@ -119,9 +121,11 @@ Adapted (not in the official docs): the source writes `VPC_NETWORK_NAME` and `IP
         minimumVersion: 10.0.1809
 ```
 
+Adapted (not in the official docs): `"name"` is the full resource name `accessPolicies/POLICY/accessLevels/NAME`, not the short name.
+
 ```json
 {
- "name": "NAME",
+ "name": "accessPolicies/POLICY/accessLevels/NAME",
  "title": "TITLE",
  "basic": {
    "conditions": [
@@ -166,9 +170,11 @@ gcloud access-context-manager levels create NAME \
 
 REST body with `combiningFunction` set to `OR`:
 
+Adapted (not in the official docs): `"name"` is the full resource name `accessPolicies/POLICY/accessLevels/NAME`, not the short name.
+
 ```json
 {
- "name": "NAME",
+ "name": "accessPolicies/POLICY/accessLevels/NAME",
  "title": "TITLE",
  "basic": {
    "conditions": [
@@ -219,6 +225,7 @@ REST body with `combiningFunction` set to `OR`:
 - Corrected from the official docs: the `vpcNetworkSources` request body has `"network": VPC_NETWORK_NAME,` and `IP_RANGE` unquoted, which is not valid JSON.
 - The generic syntax line in the source (`levels create LEVEL_NAME OPTIONS --policy=POLICY`, with `OPTIONS` standing for the table's flags) is omitted because it is not runnable; the example commands show the flags.
 - The source also shows Console steps (including a CSV import for VPC networks and subnets).
+- Corrected from the official docs: the REST request bodies set `name` to the short level name. `AccessLevel.name` is the resource name `accessPolicies/{access_policy}/accessLevels/{access_level}` (Access Context Manager v1 Discovery document), so the examples use the full name; the short name is what `gcloud access-context-manager levels create` takes.
 - Source: https://docs.cloud.google.com/access-context-manager/docs/create-basic-access-level (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

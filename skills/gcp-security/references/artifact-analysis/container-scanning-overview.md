@@ -67,7 +67,7 @@ gcloud artifacts repositories update REPOSITORY \
 ## Notes
 
 - Malicious package categories detected: typosquatting or dependency confusion, account takeover, malicious binaries, security researcher activity. IDs: CVE ID by default, GHSA ID when no CVE exists (updated to the CVE if one is assigned later), `MAL-` prefix for malicious package advisories.
-- Enabling the Artifact Analysis API starts scanning each new image pushed to repositories in the project; scanning is disabled by default for packages pushed to Artifact Registry repositories; to enable it in a repository, see [enable-automatic-scanning.md](./enable-automatic-scanning.md).
+- Enabling the Container Scanning API (`containerscanning.googleapis.com`) starts scanning each new image pushed to repositories in the project; scanning is disabled by default for packages pushed to Artifact Registry repositories; to enable it in a repository, see [enable-automatic-scanning.md](./enable-automatic-scanning.md).
 - Architectures: any Linux-based architecture. For manifest lists, a Linux amd64 image is scanned if present; otherwise another image from the list is selected.
 - Not supported on Windows Server containers. Limitations: RHEL results are based on the latest minor version of each major version, so scanning an older minor version may be inaccurate; RHEL 9 is not supported for on-demand scanning.
 - On-demand scans can block and fail builds based on severity (see Cloud Build integration in the official docs); Binary Authorization can create attestations and a vulnerability allowlist from this data (https://docs.cloud.google.com/binary-authorization/docs/cv-vulnerability-check).
@@ -75,6 +75,7 @@ gcloud artifacts repositories update REPOSITORY \
 - To find the file path of a vulnerable package in the console: open the vulnerability list for an artifact, click VIEW FIX, then SHOW MORE INFO (File location field).
 - Interfaces: console, gcloud CLI, REST API (gRPC and REST/JSON, OAuth2) and client libraries.
 - Snippet taken from https://docs.cloud.google.com/artifact-analysis/docs/enable-automatic-scanning (per-repository scanning control).
+- Corrected from the official docs: the source's note says scanning starts "When you enable the Artifact Analysis API". Automatic scanning is turned on by the Container Scanning API (`containerscanning.googleapis.com`), which also enables the Container Analysis API (`containeranalysis.googleapis.com`) used for metadata; enabling only the metadata API does not scan images (see [enable-automatic-scanning.md](./enable-automatic-scanning.md)).
 - Source: https://docs.cloud.google.com/artifact-analysis/docs/container-scanning-overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
