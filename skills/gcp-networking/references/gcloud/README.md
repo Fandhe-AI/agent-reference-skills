@@ -7,3 +7,4 @@
 | gcloud edge-cloud | 152 commands across release tracks | [edge-cloud/README.md](./edge-cloud/README.md) |
 | gcloud ids | 19 commands across release tracks | [ids/README.md](./ids/README.md) |
 | gcloud network-connectivity | 180 commands across release tracks | [network-connectivity/README.md](./network-connectivity/README.md) |
+| gcloud network-management | 60 commands across release tracks | [network-management/README.md](./network-management/README.md) |
