@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "sessionModel": "opus",
+  "limits": {
+    "maxParallel": 4,
+    "repairAttempts": 1,
+    "maxAgents": 1000
+  },
+  "timeoutsSec": {
+    "default": 300,
+    "byPhase": {
+      "Plan": 1200,
+      "Implement": 1800,
+      "Review": 1200,
+      "Recover": 1800,
+      "Merge": 900
+    }
+  },
+  "cleanup": {
+    "deleteSessions": true
+  },
+  "models": {
+    "codex": {
+      "haiku": { "model": "gpt-6-luna", "effort": "low" },
+      "sonnet": { "model": "gpt-6.1-sol", "effort": "medium" },
+      "opus": { "model": "gpt-6.1-sol", "effort": "high" },
+      "fable": { "model": "gpt-6-astra", "effort": "high" }
+    },
+    "opencode": {
+      "haiku": { "model": null, "variant": "low" },
+      "sonnet": { "model": null, "variant": "medium" },
+      "opus": { "model": null, "variant": null },
+      "fable": { "model": null, "variant": null }
+    }
+  },
+  "notes": [
+    "出典: _/local-plans/iit-runners-phase0.md の 0-7・0-8（2026-11-15）。Codex の haiku(luna low) は状態の読み込み系だけで合格し、REVIEW は不合格だったため判断を伴う段には使わない。",
+    "Codex の effort は agent() の opts.effort があればそれを優先し、無ければこの表の値を使う。",
+    "OpenCode の model が null のときは利用者の既定モデルを使う（実測は bifrost/qwen3.8-flash-next）。段は variant の梯子で代用する。",
+    "未確定: OpenCode の haiku は variant low か medium（段ごとの差は負荷と 240 秒の上限が交絡して確定できなかった）。",
+    "未確定: OpenCode の opus・fable は variant なし（実測では xhigh 相当）。fable は deepseek が REVIEW 6/10 で不可のため opus と同じ割り当て（オーナー決定 2026-11-15）。",
+    "未確定: timeoutsSec は実測の分布（Codex 中央値 12.5 秒、成功時の最大約 125 秒。REVIEW の中央値は Codex 40〜95 秒・OpenCode 133〜202 秒）から置いた暫定値。",
+    "sessionModel は Workflow 版の「model 省略 = セッションのモデルを継ぐ」（plan・recover）に当たる段。ランナーにはセッションが無いため明示する。"
+  ]
+}

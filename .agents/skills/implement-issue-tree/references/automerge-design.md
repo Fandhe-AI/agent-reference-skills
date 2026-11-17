@@ -312,7 +312,7 @@ deny 判定は 2 段構えである。**最前段（raw コマンドに対する
       echo "${repo}@${branch}: 判定不能 (HTTP ${code:-?}) — head sha を取得できない"; continue
     fi
     head=$(gh api "repos/${repo}/commits/${branch_enc}" --jq '.sha' 2>/dev/null)
-    if ! printf '%s' "${head}" | grep -Eq '^[0-9a-f]{40}$'; then
+    if ! printf '%s' "${head}" | grep -Eq '(^[0-9a-f]{40}$)'; then
       echo "${repo}@${branch}: 判定不能 — head sha が 40 桁 hex でない"; continue
     fi
 
@@ -370,7 +370,7 @@ deny 判定は 2 段構えである。**最前段（raw コマンドに対する
       echo "${repo}@${branch}: 判定不能 — run list の応答が配列でない"; continue
     fi
     total_count=$(printf '%s' "${runs}" | jq 'length' 2>/dev/null)
-    if ! printf '%s' "${total_count}" | grep -Eq '^[0-9]+$'; then
+    if ! printf '%s' "${total_count}" | grep -Eq '(^[0-9]+$)'; then
       echo "${repo}@${branch}: 判定不能 — 取得件数を数値として読めない"; continue
     fi
     if [ "${total_count}" -ge 100 ]; then
@@ -395,7 +395,7 @@ deny 判定は 2 段構えである。**最前段（raw コマンドに対する
       echo "${repo}@${branch}: 判定不能 — 集計中の head 再取得に失敗（HTTP ${recheck_code:-?}）。base 更新のレースと区別できないため判定不能とする"; continue
     fi
     recheck=$(gh api "repos/${repo}/commits/${branch_enc}" --jq '.sha' 2>/dev/null)
-    if ! printf '%s' "${recheck}" | grep -Eq '^[0-9a-f]{40}$'; then
+    if ! printf '%s' "${recheck}" | grep -Eq '(^[0-9a-f]{40}$)'; then
       echo "${repo}@${branch}: 判定不能 — 集計中の head 再取得が 40 桁 hex を返さない（API 応答異常）"; continue
     fi
     if [ "${recheck}" != "${head}" ]; then

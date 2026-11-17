@@ -4,7 +4,8 @@
 # 呼び出し元: worktree-remove.sh（Issue #603 第 7 弾）。削除してよいかの判断（モードと観測 → 削除・強制削除・保持）、lock の扱い、
 #             git の出力の読み取り、入力の形式検証を、git を呼ぶ本体から切り出したもの。切り出した理由は、テストが 1 回の
 #             bash 起動でこれらの関数へ表の全ケースを渡せるようにするため（lib/pr-push-lib.sh と同じ）。
-# 契約: どの関数も exit せず、git・gh・ネットワークを呼ばない（wr_find_entry だけはパスの実体化に cd / pwd -P を使う）。
+# 契約: どの関数も exit せず、gh・ネットワークを呼ばない。git を呼ぶのは wr_trust_cwd だけで、それもカレントの root と共通ディレクトリをファイルの読み取りだけで
+#       確かめた後に限る。付属 worktree の中では git を呼ばない（wr_gitlink_check はファイルの読み取りだけで照合する）。パスの実体化に cd / pwd -P を使う。
 #       結果は WR_* 変数・標準出力・return 値で返す。source 元のシェル状態を壊さないため set -e / set -u / trap / exit は置かない。
 #       二重 source は無害。
 # 互換: macOS（BSD userland・bash 3.2）と Linux（GNU・busybox）。paste・bc・mapfile・連想配列・GNU 専用フラグを使わない。
@@ -187,13 +188,14 @@ wr_lock_action() {
 # 汚れ・submodule の観測 → 削除の方法。$1 = モード（superseded / discard）、$2 = 汚れの行数（-1 = 確認できなかった）、
 # $3 = 汚れのうち submodule 由来の行数、$4 = 初期化済み submodule の数。標準出力:
 #   plain             --force なしで消す（discard で汚れも初期化済み submodule も無い）
-#   force             --force で消す（superseded。汚れていても消すが、submodule に未記録の変更があれば保持）
+#   force             --force で消す（superseded。汚れていても消すが、submodule に未記録の変更・初期化済み submodule があれば保持）
 #   retain-dirty      汚れがあるため保持する
 #   retain-unobservable  汚れを確認できなかった（$2 = -1。git status コマンドそのものの失敗）ため保持する。汚れの有無は分からないので、
 #                        retain-dirty（汚れを観測した）とは別の語にする。ホストは後者を恒久の試行済み記録にするが、前者は一過性かもしれず次のランで再試行させる
 #   retain-broken     git の対象が worktree 自身でない（$2 = -2。.git の破損・toplevel の不一致）ため保持する。再試行しても解消しない決定的な状態なので、
 #                     ホストは retain-dirty と同じく恒久の試行済み記録にする（区別できない一過性の失敗もここへ倒す。毎ラン再試行して枠を食い続けるより安全）
-#   retain-submodule  submodule に未記録の変更（superseded）・初期化済み submodule（discard）があるため保持する
+#   retain-submodule  submodule に未記録の変更・初期化済み submodule があるため保持する（両モード。初期化済み submodule の中は観測しない〔その config は
+#                     エージェントが書ける場所にあり、中へ降りる git がそこのコマンドを実行し得る〕ので、superseded でも --force で消さない）
 wr_plan() {
   case "$1" in
     superseded)
@@ -201,7 +203,7 @@ wr_plan() {
         echo retain-broken
       elif [ "$2" -lt 0 ]; then
         echo retain-unobservable
-      elif [ "$3" -gt 0 ]; then
+      elif [ "$3" -gt 0 ] || [ "$4" -gt 0 ]; then
         echo retain-submodule
       else
         echo force
@@ -281,25 +283,161 @@ wr_real() {
   fi
 }
 
-# ディレクトリ（$1）が属するリポジトリの共通 git ディレクトリの実体。ディレクトリが無い・リポジトリの外なら何も出さず非 0
-wr_common_dir() {
-  local c
-  [ -d "$1" ] || return 1
-  c=$(git -C "$1" rev-parse --git-common-dir 2>/dev/null) && [ -n "${c}" ] || return 1
-  case "${c}" in
-    /*) ;;
-    *) c="$1/${c}" ;;
-  esac
-  [ -d "${c}" ] || return 1
-  (cd "${c}" 2>/dev/null && pwd -P)
+# ディレクトリ（$1）から上へたどって最初に .git（ファイル・ディレクトリ・シンボリックリンク）を持つディレクトリの実体。git を呼ばない。見つからなければ何も出さず非 0
+wr_find_top() {
+  local d
+  d=$(cd "$1" 2>/dev/null && pwd -P) || return 1
+  while [ ! -e "${d}/.git" ] && [ ! -L "${d}/.git" ]; do
+    [ "${d}" != / ] && [ -n "${d}" ] || return 1
+    d=${d%/*}
+    [ -n "${d}" ] || d=/
+  done
+  printf '%s\n' "${d}"
+}
+
+# カレントから信頼する共通 git ディレクトリを求めて TRUSTED_COMMON に入れる（求められなければ空）。カレントのリポジトリに対する最初の git より前に呼ぶ。
+# まず git を呼ばずに、カレントの root（wr_find_top）と共通ディレクトリ（wr_main_common。付属 worktree なら wr_gitlink_check に通ること）をファイルだけで求める。
+# カレントの .git が偽なら、git はその偽の共通ディレクトリの config とフックを使うので、ここで外れたら git を 1 回も呼ばない。
+# 求められたときだけ、git の見る root（rev-parse --show-toplevel）がそれと同じかを確かめる（git の探索とずれていれば信頼しない）。
+# 空のとき呼び出し側は、カレントのリポジトリでも付属 worktree の中でも git を呼ばずに fail-closed にする
+TRUSTED_COMMON=""
+wr_trust_cwd() {
+  local top c g
+  TRUSTED_COMMON=""
+  top=$(wr_find_top .) || return 0
+  c=$(wr_main_common "${top}") || return 0
+  g=$(git rev-parse --show-toplevel 2>/dev/null) || return 0
+  [ -n "${g}" ] && [ "$(wr_real "${g}")" = "${top}" ] || return 0
+  TRUSTED_COMMON=${c}
+}
+
+# --- worktree の git ディレクトリの照合（git を呼ばずにファイルだけを読む） ---
+# 付属 worktree の中で git を実行すると、git はその .git ファイルが指す git ディレクトリと、そこの commondir が指す共通ディレクトリの config を読む。
+# どちらもエージェントが書ける場所（作業ツリーと <共通>/worktrees/<名前>/）なので、偽の共通ディレクトリに core.fsmonitor などを置かれると、
+# サンドボックスの外で動くこのスクリプトの git がそのコマンドを実行してしまう。そこで worktree の中で git を呼ぶ前に、
+# 次の照合をファイルの読み取りだけで行い、通らなければ git を呼ばない（呼び出し側は保持の語で fail-closed にする）。
+
+# カレントの worktree の root（$1。wr_find_top がファイルだけで求めたもの）から、信頼する共通 git ディレクトリの実体を出す。
+# メイン worktree: .git が実ディレクトリ（シンボリックリンクでない）で commondir を持たないとき、その実体。
+# 付属 worktree（ランを付属 worktree で起動したセッション）: .git ファイル → git ディレクトリ → commondir で共通ディレクトリを求め、それが commondir を持たない
+# 実ディレクトリで、カレント自身が wr_gitlink_check に通るときだけ、その共通ディレクトリ（カレントの git ディレクトリと .git はメインの場合の .git/config と同じく
+# ランの非隔離側の場所で、隔離 worktree のエージェントが書ける <共通>/worktrees/<自分の名前>/ とは別）。
+# どれにも当たらない（.git が無い・シンボリックリンク・--separate-git-dir のメイン・照合の不一致）ときは何も出さず非 0（呼び出し側は worktree の中で git を呼ばない）
+wr_main_common() {
+  local g c
+  [ -n "$1" ] && [ -e "$1/.git" ] && [ ! -L "$1/.git" ] || return 1
+  if [ -d "$1/.git" ]; then
+    [ ! -e "$1/.git/commondir" ] && [ ! -L "$1/.git/commondir" ] || return 1
+    (cd "$1/.git" 2>/dev/null && pwd -P)
+    return
+  fi
+  wr_read_one_line "$1/.git" || return 1
+  case "${WR_LINE}" in 'gitdir: '?*) ;; *) return 1 ;; esac
+  g=$(wr_dir_real "$1" "${WR_LINE#gitdir: }") || return 1
+  wr_read_one_line "${g}/commondir" || return 1
+  c=$(wr_dir_real "${g}" "${WR_LINE}") || return 1
+  [ ! -L "${c}" ] && [ ! -e "${c}/commondir" ] && [ ! -L "${c}/commondir" ] || return 1
+  wr_gitlink_check "$1" "${c}" || return 1
+  printf '%s\n' "${c}"
+}
+
+# 1 行だけのファイル（$1）を読んで WR_LINE に入れる。通常ファイル（シンボリックリンクでない）で、中身が改行 1 つで終わる 1 行（または改行の無い 1 行）、
+# 4096 バイト以下で CR・NUL を含まないときだけ 0。2 行目がある・空・読めないときは非 0
+WR_LINE=""
+wr_read_one_line() {
+  local n z last line=""
+  WR_LINE=""
+  [ -f "$1" ] && [ ! -L "$1" ] || return 1
+  n=$(wc -c <"$1" 2>/dev/null | tr -d ' ') || return 1
+  case "${n}" in '' | *[!0-9]*) return 1 ;; esac
+  [ "${n}" -gt 0 ] && [ "${n}" -le 4096 ] || return 1
+  # NUL を元のバイト列で数える。bash の read は NUL を黙って読み飛ばすので、バイト数の照合だけでは『fake<NUL>/../..』のような行
+  # （git は NUL の手前までを使い、ここでは NUL を除いた全体を見る）を見落とす。読めないときは 0 バイトに数えて外れる側
+  z=$(LC_ALL=C tr -d '\000' <"$1" 2>/dev/null | wc -c | tr -d ' ')
+  [ "${z}" = "${n}" ] || return 1
+  IFS= read -r line <"$1" || [ -n "${line}" ] || return 1
+  # バイト数が 1 行分（LC_ALL=C の ${#line} はバイト数）と合わなければ 2 行目がある
+  if [ "${n}" -ne "${#line}" ]; then
+    [ "${n}" -eq $((${#line} + 1)) ] || return 1
+    # 余分な 1 バイトを改行と推定せず、末尾のバイトが本当に \n（0a）であることを確かめる
+    last=$(tail -c 1 "$1" 2>/dev/null | od -An -tx1 | tr -d ' \n')
+    [ "${last}" = 0a ] || return 1
+  fi
+  case "${line}" in '' | *$'\r'*) return 1 ;; esac
+  WR_LINE=${line}
+}
+
+# 相対なら基準のディレクトリ（$1）から解決したパス（$2）の実ディレクトリ。ディレクトリでなければ何も出さず非 0
+wr_dir_real() {
+  local p=$2
+  case "${p}" in /*) ;; *) p="$1/${p}" ;; esac
+  [ -d "${p}" ] || return 1
+  (cd "${p}" 2>/dev/null && pwd -P)
+}
+
+# worktree（$1）の git ディレクトリが、信頼する共通 git ディレクトリ（$2。wr_main_common の出力）に登録された本物かを、git を呼ばずに確かめる。
+# すべて満たすときだけ 0 で、git ディレクトリの実体を WR_GITDIR に入れる:
+#   1. <worktree>/.git が通常ファイル（ディレクトリ = 別のリポジトリ・シンボリックリンクは不可）で、中身がちょうど `gitdir: <パス>` の 1 行
+#   2. そのパスの実体が <共通>/worktrees/<名前> そのもの（git は同じ名前の worktree に連番をつけるので、名前は worktree のパスから推さない）
+#   3. <git ディレクトリ>/commondir が 1 行で、その実体が共通 git ディレクトリ（無いと git は git ディレクトリ自身を共通ディレクトリとして config を読む）
+#   4. <git ディレクトリ>/gitdir が 1 行で、<worktree の実体>/.git を指す（逆向きの照合）
+#   5. <git ディレクトリ>/config.worktree が無い（worktree 単位の config。extensions.worktreeConfig があると読まれる。中身の安全は判定しない）
+# 相対パスの形（worktree.useRelativePaths）も受ける。照合のあとも git は submodule の git ディレクトリ（<git ディレクトリ>/modules/ の下など）の config を読み得るので、
+# 呼び出し側は submodule の中へ降りる git（--ignore-submodules=none の status・submodule status・--force なしの worktree remove の確認）を使わない
+WR_GITDIR=""
+wr_gitlink_check() {
+  local wreal g back
+  WR_GITDIR=""
+  [ -n "$2" ] && [ -d "$1" ] || return 1
+  wreal=$(cd "$1" 2>/dev/null && pwd -P) || return 1
+  wr_read_one_line "${wreal}/.git" || return 1
+  case "${WR_LINE}" in 'gitdir: '?*) ;; *) return 1 ;; esac
+  g=$(wr_dir_real "${wreal}" "${WR_LINE#gitdir: }") || return 1
+  [ "${g}" = "$2/worktrees/${g##*/}" ] || return 1
+  wr_read_one_line "${g}/commondir" || return 1
+  [ "$(wr_dir_real "${g}" "${WR_LINE}")" = "$2" ] || return 1
+  wr_read_one_line "${g}/gitdir" || return 1
+  back=${WR_LINE}
+  case "${back}" in */.git) ;; *) return 1 ;; esac
+  [ "$(wr_dir_real "${g}" "${back%/.git}")" = "${wreal}" ] || return 1
+  [ ! -e "${g}/config.worktree" ] && [ ! -L "${g}/config.worktree" ] || return 1
+  WR_GITDIR=${g}
+}
+
+# <共通>/worktrees/ の下のシンボリックリンクの数（$1 = 信頼する共通 git ディレクトリ。空 = 求められない）。git worktree prune / remove は
+# 登録のディレクトリがシンボリックリンクだとリンク先の中身を消すので、1 件でもあれば呼び出し側は prune・remove をしない。
+# worktrees 自身がシンボリックリンク・共通ディレクトリが空のときは 1 を出す（求められないものは危険側に数える）
+wr_admin_links() {
+  local e n=0
+  [ -n "$1" ] && [ -d "$1" ] || { echo 1; return 0; }
+  [ ! -L "$1/worktrees" ] || { echo 1; return 0; }
+  for e in "$1/worktrees/"* "$1/worktrees/".[!.]* "$1/worktrees/"..?*; do
+    if [ -L "${e}" ]; then n=$((n + 1)); fi
+  done
+  echo "${n}"
+}
+
+# 実体のある submodule の数。$1 = worktree、$2 = その worktree での `git ls-files -s` の出力。gitlink（160000）の行のうち、作業ツリー側に .git が
+# ある（初期化済み）ものを数える。中へは降りない（submodule の config はエージェントが書ける場所にある）。引用されたパス（"…"）は照合できないので数える（保持側）
+wr_count_populated() {
+  local line p n=0
+  while IFS= read -r line; do
+    case "${line}" in 160000\ *) ;; *) continue ;; esac
+    p=${line#*$'\t'}
+    case "${p}" in '"'*) n=$((n + 1)); continue ;; esac
+    if [ -e "$1/${p}/.git" ] || [ -L "$1/${p}/.git" ]; then n=$((n + 1)); fi
+  done <<<"$2"
+  echo "${n}"
 }
 
 # 対象のリポジトリの確認（check-absent 用）。$1 = ホストが渡したリポジトリの root（空 = 渡されていない）、$2 = 確認するパス。
 # カレントのリポジトリ（git worktree list を取る先）と対象のリポジトリの共通 git ディレクトリが一致するときだけ 0。
 # $1 が空のときは、パスの最寄りの実在する祖先から属するリポジトリを求める。求められない・違うときは非 0（呼び出し側は unknown に倒す）。
-# 別のリポジトリのカレントで実行されると、その一覧に対象が載らず absent に倒れてしまう（失うものがある登録を見落とす）のを防ぐ
+# 別のリポジトリのカレントで実行されると、その一覧に対象が載らず absent に倒れてしまう（失うものがある登録を見落とす）のを防ぐ。
+# 対象側は git を呼ばずに求める（付属 worktree の中で git を呼ばない）: 祖先を上へたどって最初の .git を見つけ、ディレクトリならメインの形
+# （wr_main_common と同じ条件）、ファイルなら wr_gitlink_check を通った付属 worktree のときだけ、カレントの共通ディレクトリと同じとみなす
 wr_repo_matches() {
-  local base=$1 p=$2 here there
+  local base=$1 p=$2 here d
   if [ -z "${base}" ]; then
     base=$p
     while [ ! -d "${base}" ] && [ "${base}" != / ] && [ -n "${base}" ]; do
@@ -307,9 +445,20 @@ wr_repo_matches() {
       [ -n "${base}" ] || base=/
     done
   fi
-  here=$(wr_common_dir .) || return 1
-  there=$(wr_common_dir "${base}") || return 1
-  [ -n "${here}" ] && [ "${here}" = "${there}" ]
+  # カレント側は wr_trust_cwd がファイルだけで求めた信頼する共通ディレクトリ（ここでは git を呼ばない）
+  here=${TRUSTED_COMMON:-}
+  [ -n "${here}" ] && [ -d "${base}" ] || return 1
+  d=$(cd "${base}" 2>/dev/null && pwd -P) || return 1
+  while [ ! -e "${d}/.git" ] && [ ! -L "${d}/.git" ]; do
+    [ "${d}" != / ] && [ -n "${d}" ] || return 1
+    d=${d%/*}
+    [ -n "${d}" ] || d=/
+  done
+  if [ -d "${d}/.git" ] && [ ! -L "${d}/.git" ]; then
+    [ "$(wr_main_common "${d}")" = "${here}" ]
+  else
+    wr_gitlink_check "${d}" "${here}"
+  fi
 }
 
 # 2 つのパスが同じか。$1 = 一覧のエントリの字面、$2 = その実体、$3 = 探すパス、$4 = その実体、$5 = 1 のとき大小を区別しない
