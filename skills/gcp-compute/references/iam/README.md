@@ -23,3 +23,7 @@
 | Confidential Computing | 4 roles, 5 permissions | [confidentialcomputing.md](./confidentialcomputing.md) |
 | Cluster Director | 3 roles, 16 permissions | [hypercomputecluster.md](./hypercomputecluster.md) |
 | Oracle Database@Google Cloud service agent | 1 roles | [oci.md](./oci.md) |
+| Oracle Database@Google Cloud part 1 | 32 roles, 96 permissions | [oracledatabase-1.md](./oracledatabase-1.md) |
+| Oracle Database@Google Cloud part 2 | 52 permissions | [oracledatabase-2.md](./oracledatabase-2.md) |
+| Cloud OS Config | 23 roles, 48 permissions | [osconfig.md](./osconfig.md) |
+| Cloud TPU | 6 roles, 25 permissions | [tpu.md](./tpu.md) |
