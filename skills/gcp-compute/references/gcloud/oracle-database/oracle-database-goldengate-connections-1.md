@@ -2569,12 +2569,12 @@ Adapted (not in the official docs): runnable form of the example(s) above: lines
 gcloud oracle-database goldengate-connections create my-connection \
     --location=us-east4 \
     --properties-display-name="my connection" \
-    --properties-connection-type="ORACLE" \
-    --properties-routing-method="SHARED_DEPLOYMENT_ENDPOINT" \
+    --properties-connection-type="oracle" \
+    --properties-routing-method="shared-deployment-endpoint" \
     --oracle-connection-properties-technology-type="ORACLE_AUTONOMOUS_DATABASE_AT_GOOGLE_CLOUD" \
     --oracle-connection-properties-username="admin" \
     --oracle-connection-properties-password="password" \
-    --oracle-connection-properties-session-mode="DIRECT" \
+    --oracle-connection-properties-session-mode="direct" \
     --oracle-connection-properties-string="connection-string"
 ```
 
@@ -2582,6 +2582,7 @@ gcloud oracle-database goldengate-connections create my-connection \
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `create` example passes `--display-name`, which is not a flag of this command (gcloud 593.0.0: "unrecognized arguments: --display-name=my connection (did you mean '--properties-display-name'?)"); the runnable form uses `--properties-display-name`, the flag in the SYNOPSIS.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example passes enum choices as uppercase API names (for example `LICENSE_INCLUDED`, `MONDAY`, `CLIENT_SUBNET`), while the flag descriptions list the choices in lowercase with hyphens (`license-included`, `monday`, `client-subnet`); the runnable form uses the documented lowercase choices (gcloud 593.0.0 also accepts the uppercase names). Flags whose description gives no fixed list of choices (such as `--properties-deployment-type` and `--properties-environment-type`) keep the official values.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
