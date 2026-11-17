@@ -547,3 +547,25 @@
 | gcloud compute target-pools set-backup | 3 commands (alpha, beta, ga); compute target-pools set-backup … | [compute-target-pools-set-backup.md](./compute-target-pools-set-backup.md) |
 | gcloud compute target-pools test-iam-permissions | alpha compute target-pools test-iam-permissions | [compute-target-pools-test-iam-permissions.md](./compute-target-pools-test-iam-permissions.md) |
 | gcloud compute target-pools update | 3 commands (alpha, beta, ga); compute target-pools update … | [compute-target-pools-update.md](./compute-target-pools-update.md) |
+| gcloud compute target-ssl-proxies | 19 commands (alpha, beta, ga); compute target-ssl-proxies create … | [compute-target-ssl-proxies.md](./compute-target-ssl-proxies.md) |
+| gcloud compute target-tcp-proxies | 19 commands (alpha, beta, ga); compute target-tcp-proxies create … | [compute-target-tcp-proxies.md](./compute-target-tcp-proxies.md) |
+| gcloud compute target-vpn-gateways | 16 commands (alpha, beta, ga); compute target-vpn-gateways create … | [compute-target-vpn-gateways.md](./compute-target-vpn-gateways.md) |
+| gcloud compute tpus accelerator-types describe | 3 commands (alpha, beta, ga); compute tpus accelerator-types describe … | [compute-tpus-accelerator-types-describe.md](./compute-tpus-accelerator-types-describe.md) |
+| gcloud compute tpus accelerator-types list | 3 commands (alpha, beta, ga); compute tpus accelerator-types list … | [compute-tpus-accelerator-types-list.md](./compute-tpus-accelerator-types-list.md) |
+| gcloud compute tpus locations describe | 3 commands (alpha, beta, ga); compute tpus locations describe … | [compute-tpus-locations-describe.md](./compute-tpus-locations-describe.md) |
+| gcloud compute tpus locations list | 3 commands (alpha, beta, ga); compute tpus locations list … | [compute-tpus-locations-list.md](./compute-tpus-locations-list.md) |
+| gcloud compute tpus queued-resources create | 2 commands (alpha, ga); compute tpus queued-resources create … | [compute-tpus-queued-resources-create.md](./compute-tpus-queued-resources-create.md) |
+| gcloud compute tpus queued-resources delete | 2 commands (alpha, ga); compute tpus queued-resources delete … | [compute-tpus-queued-resources-delete.md](./compute-tpus-queued-resources-delete.md) |
+| gcloud compute tpus queued-resources describe | 2 commands (alpha, ga); compute tpus queued-resources describe … | [compute-tpus-queued-resources-describe.md](./compute-tpus-queued-resources-describe.md) |
+| gcloud compute tpus queued-resources list | 2 commands (alpha, ga); compute tpus queued-resources list … | [compute-tpus-queued-resources-list.md](./compute-tpus-queued-resources-list.md) |
+| gcloud compute tpus queued-resources perform-maintenance | alpha compute tpus queued-resources perform-maintenance | [compute-tpus-queued-resources-perform-maintenance.md](./compute-tpus-queued-resources-perform-maintenance.md) |
+| gcloud compute tpus queued-resources reset | 2 commands (alpha, ga); compute tpus queued-resources reset … | [compute-tpus-queued-resources-reset.md](./compute-tpus-queued-resources-reset.md) |
+| gcloud compute tpus queued-resources scp | 2 commands (alpha, ga); compute tpus queued-resources scp … | [compute-tpus-queued-resources-scp.md](./compute-tpus-queued-resources-scp.md) |
+| gcloud compute tpus queued-resources ssh | 2 commands (alpha, ga); compute tpus queued-resources ssh … | [compute-tpus-queued-resources-ssh.md](./compute-tpus-queued-resources-ssh.md) |
+| gcloud compute tpus reservations list | alpha compute tpus reservations list | [compute-tpus-reservations-list.md](./compute-tpus-reservations-list.md) |
+| gcloud compute tpus topologies list | 2 commands (alpha, ga); compute tpus topologies list … | [compute-tpus-topologies-list.md](./compute-tpus-topologies-list.md) |
+| gcloud compute tpus tpu-vm accelerator-types | 4 commands (alpha, ga); compute tpus tpu-vm accelerator-types describe … | [compute-tpus-tpu-vm-accelerator-types.md](./compute-tpus-tpu-vm-accelerator-types.md) |
+| gcloud compute tpus tpu-vm attach-disk | alpha compute tpus tpu-vm attach-disk | [compute-tpus-tpu-vm-attach-disk.md](./compute-tpus-tpu-vm-attach-disk.md) |
+| gcloud compute tpus tpu-vm create | 2 commands (alpha, ga); compute tpus tpu-vm create … | [compute-tpus-tpu-vm-create.md](./compute-tpus-tpu-vm-create.md) |
+| gcloud compute tpus tpu-vm delete | 2 commands (alpha, ga); compute tpus tpu-vm delete … | [compute-tpus-tpu-vm-delete.md](./compute-tpus-tpu-vm-delete.md) |
+| gcloud compute tpus tpu-vm describe | 2 commands (alpha, ga); compute tpus tpu-vm describe … | [compute-tpus-tpu-vm-describe.md](./compute-tpus-tpu-vm-describe.md) |
