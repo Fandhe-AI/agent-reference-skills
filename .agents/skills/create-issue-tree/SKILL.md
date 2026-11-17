@@ -93,7 +93,7 @@ fi
 # 許可する構文は正整数 + h のみ（例: 1h / 2h / 4h）。引用符・空白・コマンド置換・0h・単位なしは
 # ここで拒否する（ROOT_GRANULARITY はマーカー抽出時点で同じ正規表現を通しているが、
 # GRANULARITY_ARG はユーザー入力の生値のため、代入元によらずこの検証を必ず通す）
-if ! printf '%s' "${GRANULARITY}" | grep -qE '^[1-9][0-9]*h$'; then
+if ! printf '%s' "${GRANULARITY}" | grep -qE '(^[1-9][0-9]*h$)'; then
   echo "エラー: --granularity の値 '${GRANULARITY}' は不正です（許可: 正整数+h、例 2h）。中止します。"
   exit 1
 fi
@@ -244,7 +244,7 @@ ROOT_URL=$(gh issue create "${ROOT_ARGS[@]}" \
 - implement-issue-tree が post-order DFS で消化可能な構造を維持する
 EOF
 )")
-ROOT_NUMBER=$(printf '%s' "${ROOT_URL}" | grep -oE '[0-9]+$')
+ROOT_NUMBER=$(printf '%s' "${ROOT_URL}" | grep -oE '([0-9]+$)')
 echo "ルート issue: ${ROOT_NUMBER}"
 ```
 
@@ -327,7 +327,7 @@ PHASE_URL=$(gh issue create "${PHASE_ARGS[@]}" \
 | (子 issue 作成後に更新) | | |
 EOF
 )")
-PHASE_NUMBER=$(printf '%s' "${PHASE_URL}" | grep -oE '[0-9]+$')
+PHASE_NUMBER=$(printf '%s' "${PHASE_URL}" | grep -oE '([0-9]+$)')
 
 # ルートへ紐付け。sub_issue_id は issue 番号ではなく database id を渡す（GitHub sub-issues API 仕様）
 PHASE_ID=$(gh api "repos/{owner}/{repo}/issues/${PHASE_NUMBER}" --jq '.id')
@@ -366,7 +366,7 @@ CHILD_URL=$(gh issue create "${CHILD_ARGS[@]}" \
 - [ ] 条件2
 EOF
 )")
-CHILD_NUMBER=$(printf '%s' "${CHILD_URL}" | grep -oE '[0-9]+$')
+CHILD_NUMBER=$(printf '%s' "${CHILD_URL}" | grep -oE '([0-9]+$)')
 
 # Phase 親へ紐付け（sub_issue_id は database id）
 CHILD_ID=$(gh api "repos/{owner}/{repo}/issues/${CHILD_NUMBER}" --jq '.id')
@@ -381,7 +381,7 @@ if [[ -n "${MILESTONE}" ]]; then
   SUB_ARGS+=(--milestone "${MILESTONE}")
 fi
 SUB_URL=$(gh issue create "${SUB_ARGS[@]}" --body "...")
-SUB_NUMBER=$(printf '%s' "${SUB_URL}" | grep -oE '[0-9]+$')
+SUB_NUMBER=$(printf '%s' "${SUB_URL}" | grep -oE '([0-9]+$)')
 
 SUB_ID=$(gh api "repos/{owner}/{repo}/issues/${SUB_NUMBER}" --jq '.id')
 gh api \
@@ -594,7 +594,7 @@ gh api "repos/{owner}/{repo}/issues/${PHASE_NUMBER}/sub_issues?per_page=100" \
 - ページネーション: sub-issues が 100 件を超える場合は `per_page=100&page=N` でページングして全件取得する
 - Step 6 の本文生成は新規作成が `scripts/create-root-body.sh`、`--root` マージが `scripts/merge-root-body.sh`。本文生成ロジックを SKILL.md へ書き戻さない（肥大とヘルパー重複の再発防止）
 - シェルコマンドの変数は必ず `"${var}"` でクォートする（コマンドインジェクション対策）
-- **`gh issue create` は `--json` 非対応**。issue URL を stdout に出力するため、`| grep -oE '[0-9]+$'` で末尾の番号を抽出して変数に保持する
+- **`gh issue create` は `--json` 非対応**。issue URL を stdout に出力するため、`| grep -oE '([0-9]+$)'` で末尾の番号を抽出して変数に保持する
 - **sub_issues API の `sub_issue_id` は issue 番号ではなく database id**（GitHub 仕様）。`gh api "repos/{owner}/{repo}/issues/<number>" --jq '.id'` で id を取得してから POST する。番号をそのまま渡すと誤った issue を紐付ける／404 になる
 - 人手タスクは `owner:human` / `owner:joint` ラベルで区別し、依存する実装 issue には `## 前提` 節で `- #N` を書く。`implement-issue-tree` は `skipLabels` 付きで呼ぶ（Step 1・Step 5 参照）
 - phase ラベルは Step 4 冒頭の `gh label create "phase:${PHASE}" --color "0075ca"` で issue 作成より前に必ず作成する（作成済みリポジトリでは no-op）

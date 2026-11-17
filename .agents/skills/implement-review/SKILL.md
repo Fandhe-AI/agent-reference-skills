@@ -13,19 +13,25 @@ user-invocable: true
 
 ### Step 1: 変更内容を確認する
 
+ローカルの自己レビューなので、ネットワークを使わずにベースを解決し、`fetch` もしない。ローカルにある追跡 ref（`origin/<base>`）と比べるため、base が古いときはレビュー前にユーザーが `git fetch` で最新化する。リポジトリの規約が `develop` 等なら `base=` を `origin/develop` のように置き換える。解決できないときは `exit 1` で止めて報告する。
+
 ```bash
-git diff main...HEAD --stat
-git diff main...HEAD
+base="$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD)" || base=""
+if [ -z "${base}" ]; then
+  echo "比較先を解決できない。git remote set-head origin --auto で設定するか、比較先（例: origin/main）を明示する" >&2
+  exit 1
+fi
+git diff "${base}...HEAD" --stat
+git diff "${base}...HEAD"
 ```
 
-ベースブランチはリポジトリの規約に従う（`main` / `develop` 等）。
 または特定のファイル・ディレクトリを対象にする（ユーザーが指定した場合）。
 
 ### Step 2: ①仕様準拠レビュー
 
 サブエージェントを使える環境では、読み取り専用の調査用サブエージェントへ委譲する。使えない環境では同じ手順を自分で実行する。委譲しない場合も、仕様準拠（①）とコード品質・セキュリティ（②）は別々に 2 回に分けて実施する。委譲先（または自分）へ渡す入力は次のとおりで、どちらで実行しても同じ結果になるようにする。
 
-- 差分: Step 1 の `git diff <base>...HEAD`（ユーザーが対象を指定した場合はそのファイル・ディレクトリの差分）
+- 差分: Step 1 の `git diff "${base}...HEAD"`（`base` は `origin/main` のような追跡 ref 名）（ユーザーが対象を指定した場合はそのファイル・ディレクトリの差分）
 - 対応 Issue の本文・受入基準（あれば）
 - `_/local-plans/` の計画ファイルのパス（あれば）
 - 対象リポジトリの規約（CLAUDE.md / AGENTS.md 等、あるもの）
@@ -155,4 +161,4 @@ EOF
 
 ## sandbox 環境での実行
 
-Step 1〜4（`git diff` の読み取り、①仕様準拠レビュー、②コード品質/セキュリティレビュー、レポート生成）は sandbox 環境で実行できる。ネットワーク越しの操作を行わず、ワークスペース外への書き込みも行わない。前提として base ref（`origin/<base>` 等）がローカルに存在している必要があり、base を最新化する `git fetch` はネットワーク操作のため、そのコマンド単位で sandbox 無効にする。「実装対象外（out-of-scope）の扱い」節の追跡（承認前に走る `gh issue list --search`・Issue コメント投稿・新規起票）のみネットワークを要する任意ステップであり、該当コマンド単位で sandbox 無効にする。Codex の既定 sandbox では `.git`・`.agents`・`.codex` が読み取り専用だが、このスキルはそれらへ書き込まない。`codex exec` ではネットワーク昇格の要求が出ないため、コマンドが拒否されたら実行できなかったことを報告して止める。
+Step 1〜4（`git diff` の読み取り、①仕様準拠レビュー、②コード品質/セキュリティレビュー、レポート生成）は sandbox 環境で実行できる。ネットワーク越しの操作を行わず、ワークスペース外への書き込みも行わない。前提として base ref（`refs/remotes/origin/HEAD` が指す `origin/<base>` 等）がローカルに存在している必要がある。Step 1 は `fetch` せずローカルの追跡 ref と比べるため、base の最新化（`git fetch`・`git remote set-head origin --auto`）が要るときはレビューの前にユーザーが行う（`git fetch` はネットワーク操作のため、そのコマンド単位で sandbox 無効にする）。「実装対象外（out-of-scope）の扱い」節の追跡（承認前に走る `gh issue list --search`・Issue コメント投稿・新規起票）のみネットワークを要する任意ステップであり、該当コマンド単位で sandbox 無効にする。Codex の既定 sandbox では `.git`・`.agents`・`.codex` が読み取り専用だが、このスキルはそれらへ書き込まない。`codex exec` ではネットワーク昇格の要求が出ないため、コマンドが拒否されたら実行できなかったことを報告して止める。

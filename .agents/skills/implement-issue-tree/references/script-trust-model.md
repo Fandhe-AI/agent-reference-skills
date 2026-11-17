@@ -48,6 +48,45 @@
 
 payload には**入力の束縛** `inputSha256` を入れる。残置バイトは標準入力のパス列（末尾の改行 1 つを除く）、空き容量は対象パスの SHA-256 で、ホストは自分が送った値（`sha256Hex(パス列)`）から再計算して `verifySignedOutput` の第 3 引数で照合する。nonce は「どの呼び出しの出力か」を、`inputSha256` は「ホストが送った入力を測った出力か」を結び付ける。nonce は `boundaryNonce` に**呼び出し連番**を含めて作り、同じ対象を何度測っても呼び出し・再試行ごとに異なる（連番を含めないと同じパスの測定は同じ nonce になり、前回の封筒を流用しても受理される。PR #611 codex P1）。
 
+## 機械的な段の実行仕様（`<!-- iit-exec v1 ... -->`・Phase P6）
+
+モデルの判断が要らず、スクリプトを 1 回実行して結果を返すだけの段は、プロンプトの **0 行目**に機械可読の 1 行を持つ。モデルを介さずに直接実行するランナー（Codex / OpenCode 版）はこの 0 行目だけを読む（本文の他の場所・文言からの抜き出しはしない）。Workflow 版のモデルにとっては何もさせない HTML コメントで、手順は従来どおり本文のコマンドを実行する（挙動は変わらない）。
+
+```
+<!-- iit-exec v1 {"v":1,"script":"state.sh","sha256":"<64 桁>","argv":["--file","_/issue-trees/1.json","verify","--page","0"],"ret":"envelope","fail":null} -->
+```
+
+| キー | 意味 |
+|------|------|
+| `script` | `scripts/` 直下の固定名。許可リストは `SCRIPT_SHA256` の表と、`--verify-only` だけの `run-verified.sh` |
+| `sha256` | `SCRIPT_SHA256[script]`（`--verify-only` の行は無し）。ランナーは `bash <skillDir>/scripts/run-verified.sh <sha256> <script> ...argv` を shell を介さず `execFile` で起動する（ハッシュ照合は launcher が毎回行う。飛ばさない） |
+| `argv` | `<script>` の後ろの引数の配列。`--nonce` も含む。本文のコマンドの引数を `shellWords` で分解したもの（単一引用符と `'\''` だけを読み、展開・連結・リダイレクトは例外） |
+| `stdinHex` | 標準入力の UTF-8 を 16 進にした文字列（ヒアドキュメントの段だけ。本文のヒアドキュメントの内容 + 末尾の改行と同じ）。未信頼の自由文を 0 行目へ生で出さないため 16 進にする |
+| `ret` | 結果の返し方。`envelope` = 標準出力の最終行の JSON をそのまま返す（ホストが封筒を照合する）/ `exit-ok` = 終了コード 0 なら `{ ok: true }`・他は `{ ok: false }` / `line:<語>` = `<語>` に続く最終行の JSON を返す（`STATE_RESULT`・`WORKTREE_REMOVE_RESULT`） |
+| `fail` | 失敗時（スクリプトの非 0 終了・結果の行なし・封筒なし）にランナーが返す値。本文のプロンプトが指示している失敗値と同じで、`ret` ごとに決まる（下の表）。`envelope` は JSON の `null` |
+
+- **対象の段（label）**: `state:*` の書き込み（`state:update`・`state:high-water`・`state:high-water-set`・`state:init-all`・一括更新）・`state:load-verify`・`script-hash-precheck`・`plan:issue-tree-release`・`free:#N`・`worktree:absent`・`worktree:sweep`・`worktree:residual-bytes`・`worktree:free-disk-bytes`・`detect:external-checks`・`plan:skip-labels`・`merge:added-files` / `merge:policy-paths` / `merge:optin-record`・closed の後始末と使い捨て worktree の掃除（`state:cleanup:#N` のうち状態の書き戻し〔手順 2〕が付かない形だけ）。
+- **対象外**: 判断を含む段（ツリー取得 `plan:issue-tree`〔本文を読んで dependsOn を判断する〕・依存宣言の抽出〔レート制限の判断がある〕・Plan / Implement / Review / fix / PR 作成 / monitor / merge-exec / 回復 / base-merge〔隔離 worktree と pwd を使う〕・`git worktree list` などの生コマンドの段）と、2 つのスクリプトを続けて実行する形の掃除。これらの 0 行目には仕様が付かない。
+- **偽の行が混ざらない理由**: 仕様は src が組んだ文字列の先頭にだけ置く（位置固定）。値はホストが検証済みの引数から作り（`worktreeQuote`・`isValidBranchName` 等を通ったもの）、JSON は `<` `>` `&` U+2028 U+2029 を `\u` エスケープして 1 行にする。issue 本文・タイトル・note などの未信頼データは本文側にしか入らず、対象外の段の 0 行目は src の固定文字列で始まる（`exec-spec.test.mjs` が敵対的な値で縛る）。組めない値（許可外の文字・lone surrogate）は例外にせず仕様なしにし、ランナーはその段をモデルへ回す。
+- **直接実行しても信頼境界は変わらない**: 封筒の照合（nonce・sha256・入力の束縛）はホストが従来どおり行う。ランナーは標準出力の文字列を解釈せずそのまま返し、照合を省かない。
+
+失敗時の返り値（`fail`）。src の `execSpecLine` が仕様へ入れ、本文の失敗値との一致を `exec-spec.test.mjs` が縛る。
+
+| 段（label） | `ret` | `fail` |
+|------|------|------|
+| `state:*` の書き込み | `line:STATE_RESULT` | `{"ok":false}` |
+| `state:load-verify` / `script-hash-precheck` / `worktree:residual-bytes` / `worktree:free-disk-bytes` / `detect:external-checks` / `plan:skip-labels` / `merge:*` | `envelope` | `null` |
+| `plan:issue-tree-release` / `free:#N` | `exit-ok` | `{"ok":false}` |
+| `worktree:absent` / 後始末の `remove` | `line:WORKTREE_REMOVE_RESULT` | `{"ok":false,"retained":true,"worktree":""}` |
+| `worktree:sweep` | `line:WORKTREE_REMOVE_RESULT` | `{"removed":[]}` |
+
+ランナー（Codex / OpenCode 版。実装は別 PR）の契約:
+
+- **失敗は stdout を見ずに `fail` を返す。** スクリプトが非 0 で終了したら、標準出力に結果らしい行があっても読まず、仕様の `fail` をそのまま返す。結果の行（`ret` が `line:<語>`）や封筒（`envelope`）が標準出力に無いときも同じ。
+- **cwd はメイン worktree のルート。** 本文のコマンドと同じ場所で起動する（隔離 worktree やスキルディレクトリで起動しない）。`execFile` の `cwd` に明示する。
+- **label ごとの許可を持ち、合わなければ拒否する。** ランナーは label ごとに許可する `script`・`mode`（argv の `--mode` / 先頭語）・`ret` を持ち、仕様がそれと合わなければ実行せずその段をモデルへ回す。`script` は許可リストと完全一致（パス区切り・`..`・大文字小文字違いを許さない）で、`sha256` は launcher が照合する。
+- **多層防御（src 側）**: `agent()` を呼ぶ共通の入口（`guardExecSpecPrompt`）が、`<!-- iit-exec` で始まるのに `execSpecLine` が作った行でないプロンプトの先頭へ改行を足し、偽の仕様行が 0 行目にならないようにする（例外では止めない）。上のランナー側の許可と合わせて、仕様の位置固定だけに頼らない。
+
 ## 何を防ぐか
 
 | 事象 | 検出の仕組み |
@@ -394,16 +433,16 @@ G0 は適用 ruleset の `bypass_actors` を読むため `gh_api "${repo_path}/r
 
 ### 静的ガード
 
-`script-static-guard` は `git worktree remove` / `unlock` を `git push` と同じ**行単位の許可形**で扱う: `git worktree remove -- "${path}"`・`git worktree remove --force -- "${path}"`・`git worktree unlock -- "${path}"`（後ろに `>/dev/null 2>&1 || rc=$?`）だけを許し、`git worktree move` は常に拒否する。`git branch` の削除・上書き・改名（`-d` / `-D` / `-f` / `-M` / `-m` / `-C` / `--delete` / `--force` / `--move`。短縮の連結・長いオプションの省略形・引用符つきを含む）は禁止し、`git branch -D -- "${branch}"` の 1 形だけ許す。`git update-ref` は `git branch` の検査をすり抜ける経路なので、`base-merge.sh` と `pr-push.sh` が作業用 ref を片付ける `git update-ref -d "${base_ref}"` / `"${branch_ref}"` の 2 形（変数は `refs/worktree/…` の固定値だけを持つことを専用テストが固定）以外を拒否する。テストが固定する事実: 許可形が `worktree-remove.sh` にしか無く決まった行（remove 2 形・unlock 1 形・branch -D 1 形）だけが存在すること、`rm` の再帰削除の禁止、`worktree-remove.sh` に `rm`・`git clean`・`git reset`・`git checkout`・`git stash` が無いこと。除外リストと `merge-guard-hook.sh` は変えていない。
+`script-static-guard` は `git worktree remove` / `unlock` を `git push` と同じ**行単位の許可形**で扱う: `git -c core.fsmonitor=false worktree remove -- "${path}"`・`git -c core.fsmonitor=false worktree remove --force -- "${path}"`・`git -c core.fsmonitor=false worktree unlock -- "${path}"`（後ろに `>/dev/null 2>&1 || rc=$?`。`-c core.fsmonitor=false` は下の「付属 worktree の中の git の照合」の補助策で、欠けた形・値の違う形・別の `-c` を足した形は拒否する）だけを許し、`git worktree move` は常に拒否する。`git branch` の削除・上書き・改名（`-d` / `-D` / `-f` / `-M` / `-m` / `-C` / `--delete` / `--force` / `--move`。短縮の連結・長いオプションの省略形・引用符つきを含む）は禁止し、`git branch -D -- "${branch}"` の 1 形だけ許す。`git update-ref` は `git branch` の検査をすり抜ける経路なので、`base-merge.sh` と `pr-push.sh` が作業用 ref を片付ける `git update-ref -d "${base_ref}"` / `"${branch_ref}"` の 2 形（変数は `refs/worktree/…` の固定値だけを持つことを専用テストが固定）以外を拒否する。テストが固定する事実: 許可形が `worktree-remove.sh` にしか無く決まった行（remove 2 形・unlock 1 形・branch -D 1 形）だけが存在すること、`rm` の再帰削除の禁止、`worktree-remove.sh` に `rm`・`git clean`・`git reset`・`git checkout`・`git stash` が無いこと。除外リストと `merge-guard-hook.sh` は変えていない。
 
 ### 既知の挙動（旧プロンプトとの差）
 
 - **continue は discard と同じ `--mode discard`**: 初期化済み submodule や生きている agent の lock でも保持し、`failed` で保全する（保持 → `failed` の分岐は不変）。submodule を `update --init` する運用のリポジトリでは、continue が通らず手動の対処が要り得る。
 - **sweep は状態ファイルの形（ちょうど 1 個の JSON 値で、`.items` がオブジェクト）を先に確かめる**。`jq` は空ファイル・空白だけの入力でも 0 終了するため、確かめないと保持対象が空のままスイープが進み `--force` で消し得る。形が違えば何も消さず `state-unreadable` で終わる。
 - **discard で保持した（または結果が読めなかった）worktree は、ホストのメモリ上でも最終スイープの候補から外す**（`sweepHeldPaths`）。状態ファイルの保持対象（`failed` / `blocked` / `monitoring` が記録した worktree）は書き戻しの成否に依存し、continue / discard は先に `.worktree` を空にするため、failed の書き戻しが失敗すると保持対象から外れ、スイープが superseded の規則で `--force` 削除し得る。対策は二つ: (a) discard で `.worktree` を空にする更新を JSON マージに含めず、掃除エージェントの手順 2（worktree が無くなったときだけ空にする）に任せる、(b) 削除を確認できなかったパス（保持・結果なし・例外）を `sweepHeldPaths` に入れる（同じパスへの後の superseded の試みはその結果に従う）。
-- **superseded の保持は非致命で、状態ファイルの `.worktree` は保持したパスを指したまま残る**（クリアは worktree が無くなったときだけ）。回収は最終スイープか手動で、保持の理由（lock・submodule の未記録の変更・削除の失敗）はホストのログに出る。
+- **superseded の保持は非致命で、状態ファイルの `.worktree` は保持したパスを指したまま残る**（クリアは worktree が無くなったときだけ）。回収は最終スイープか手動で、保持の理由（lock・初期化済み submodule・照合の不一致・削除の失敗）はホストのログに出る。
 - **`git worktree list --porcelain` の `locked` 行が出ない版の git では、lock された worktree を lock なしと読み**、`git worktree remove` が lock を理由に拒否して `failed`（保持）に倒れる（unlock は決して行わない）。どの版から `locked` が出るかは未確認で、実測は git 2.54 のみ。`/proc/<pid>` の確認は Linux 限定（macOS は `kill -0` と `ps -p`）。macOS で `ps` が使えず `kill -0` も判定不能な場合は死亡を確定できないので保持になる。
-- **保持した worktree は残置の台帳（`ephemeralWorktrees`）へ事後に載せる**。台帳の不変条件は「台帳（+ ラン開始時の観測）は、物理的に存在しうる worktree を重複なく 1 件ずつ数える」。掃除の結果が「消えたと確認できない」（`retained` が真・結果なし・例外・状態マージ失敗による掃除スキップ）ときは、種別を問わず kind `retained` で載せ、バイトの再測定の対象に入れる。台帳・ラン開始時の観測・削除確認済みに既にあるパスは二重計上しない。載せた分（`retained`・`replacement`）は予約（`EPHEMERAL_KIND_MAX`）の差し引き（`recordedByIssue`・`LEDGER_ONLY_KINDS`）に数えない。予約は変えない: 正常に終わった fix の旧 worktree は通常 lock されておらず消えるので、保持は稀（実行中のエージェントの worktree・クラッシュで lock が残り pid が unknown・submodule の未記録の変更）で、全イシューの予約に積むと着手を無用に絞る。後から消えても台帳の件数は戻さない（過大側 = fail-closed）。
+- **保持した worktree は残置の台帳（`ephemeralWorktrees`）へ事後に載せる**。台帳の不変条件は「台帳（+ ラン開始時の観測）は、物理的に存在しうる worktree を重複なく 1 件ずつ数える」。掃除の結果が「消えたと確認できない」（`retained` が真・結果なし・例外・状態マージ失敗による掃除スキップ）ときは、種別を問わず kind `retained` で載せ、バイトの再測定の対象に入れる。台帳・ラン開始時の観測・削除確認済みに既にあるパスは二重計上しない。載せた分（`retained`・`replacement`）は予約（`EPHEMERAL_KIND_MAX`）の差し引き（`recordedByIssue`・`LEDGER_ONLY_KINDS`）に数えない。予約は変えない: 正常に終わった fix の旧 worktree は通常 lock されておらず消えるので、保持は稀（実行中のエージェントの worktree・クラッシュで lock が残り pid が unknown・初期化済み submodule）で、全イシューの予約に積むと着手を無用に絞る。後から消えても台帳の件数は戻さない（過大側 = fail-closed）。
   - **置換（fix。旧を消して新しい worktree に置き換える経路。呼び出し側が `options.replacementWorktree` に新パスを渡す）の計上は純関数 `planReplacementAccounting`（適用は `applyReplacementAccounting`）の 1 か所に集める**（Issue #624）。置換 1 回で物理的に増える本数は、旧が消えたことを確認できれば 0、確認できなければ 1。旧が消えたときは、旧が「数えられている」（判定は `isWorktreeCounted` 1 つ。台帳・ラン開始時の観測・`slotInheritedPaths` のどれか）なら件数を動かさず、新をバイトの測定対象（`slotInheritedPaths`）にだけ入れる（新パス不明なら `slotUnknownLiveCount` を増やし、バイトの再測定は物理一覧へ回す）。
   - 対応表: 旧が消えた・計上済み → 件数 0・新は測定対象へ / 旧が消えた・未計上 → 新を kind `replacement` で 1 件 / 旧が保持され計上済み → 新の 1 件 / 旧が保持され未計上 → 旧（`retained`）と新の 2 件 / 旧のパスが空（掃除を試みず、旧は消せていないものとして扱う）→ 新の 1 件。連続した fix でも台帳の件数は物理の本数を下回らない。
   - 引き継ぎ済みの新が後で `replacementWorktree` 無しの掃除に保持された場合は、台帳の 1 件が数えているので載せず、ラン終了時の「保持した worktree」の案内にだけ出す（`slotRetainedPaths`）。`replacement` は状態ファイルが追跡中の現行の実装 worktree なので、使い捨ての案内にも孤立スキャンの除外集合にも入れない（出すと未マージの成果の誤削除を誘う）。置換の呼び出しは fix の 2 経路（Review ループ・Merge ループ）と fallback の旧 worktree の掃除。置換で台帳の件数が増えないときは `remeasureResidualBytesIfDue` の契機にならないが、新規着手の直前は `remeasureResidualBytesNow` を直接呼ぶので、引き継いだ新のパスはそこで測る。
@@ -470,7 +509,7 @@ monitor の CI 完了待ち（旧 `gh pr checks --watch`）を、第 2 弾の `o
 
 - **ブランチ解決（`rp_resolve`）**: live（`git worktree list` に登録済みで、`rev-parse --show-toplevel` の実体が対象のパスと一致）なら worktree の HEAD（`git symbolic-ref -q --short HEAD`）を使う。state のブランチと食い違えば HEAD を優先する（WIP が積まれるのは HEAD 側）。dead（パスが存在しない）と branch だけの残骸は記録されたブランチを使う（無ければ `branch: ""` で確定し、継続不能 = discard。記録されたブランチが base と同名なら live と同じく `base-branch` で確定しない）。**確定しない**（`resolved: false`・何も書かない）: メイン worktree（`main-worktree`）、登録されていないパス（`not-registered`）、パスはあるが git がそのパス自身を指さない（`toplevel-mismatch`。`.git` が壊れて git が親の repo を見る場合に、メインの変更を WIP コミットしてしまうのを防ぐ。実体があるので dead 扱いにもしない）、detached HEAD（`detached`）、HEAD が base と同名（`base-branch`。base に WIP を積むと discard で消せず continue は壊れる）、worktree の一覧を取れない（`list-failed`）。
 - **WIP コミット**: 汚れの観測は第 7 弾と同じ対象の `git -C <worktree> -c core.excludesFile= status --porcelain=v2 -z -uall --ignore-submodules=none`（利用者の `status.showUntrackedFiles`・submodule の ignore 設定・グローバルの除外ファイルに左右されない）。**`-z`（NUL 区切り）で読む**: 区切りなしだとパスが C 引用で出て、入れ子の git リポジトリの検出（`? パス/`）が取りこぼされ、gitlink だけを WIP コミットして `wipCommitted: true` になり得る。シェル変数は NUL を持てないので、`tr` で改行→`?`・NUL→改行（パス中の改行が行区切りと紛れない）に変えて 1 レコード 1 行にし、rename / copy レコードの直後の元のパスは落とし、git の終了コードは末尾の `GITRC=` の行で受ける。`worktree-remove.sh` は行数と第 3 フィールドだけを読み、引用は件数・submodule 判定に影響しないので `-z` なし。フックを通す（`--no-verify` なし。stdin は `</dev/null`、フックの出力は標準エラーへ送って標準出力の最後の 1 行を結果に保つ）。**退避完了（`wipCommitted: true`）の根拠はコミットの終了コードではなく、コミット後の同じ観測が空であること**（`rp_wip_after`）。さらに**成功の終了コードでも、HEAD が進んでいない・進んだが前の HEAD との差分が空（フックが commit のあとで `reset --hard` などで変更を捨てた。汚れは無く見える）なら `empty-commit`・`false`**。マージ・cherry-pick・revert・rebase の途中（`MERGE_HEAD` / `CHERRY_PICK_HEAD` / `REVERT_HEAD` / `REBASE_HEAD` と `rebase-merge` などのディレクトリ）は未マージと同じく触らず `in-progress`・`false`。フックが拒否した（`commit-failed`）・フックがファイルを書き換えた／グローバルの除外に載った未追跡ファイルが拾われずに残った（`residual-dirty`。ほかにコミットできる変更があって commit は成功したとき。汚れがその未追跡ファイルだけだと `add -A` が何も拾わず commit が「nothing to commit」で失敗するので、フックが走っていなくても `commit-failed` になる）・submodule 内の未コミットの変更が残った（`submodule`。汚れが submodule だけで commit が失敗した場合も同じ語）・観測できなかった（`unverified`）は `false`。拒否されたときの `git add` は戻さない（staged も worktree-remove.sh が汚れとして保持する）。コンフリクト中（`unmerged`。`add -A` はマーカー入りの内容を確定させてしまう）と入れ子の独立 git リポジトリ（`nested-repo`。`add -A` は中身ではなくポインタだけを記録し、worktree を消すと中身が失われる）は触らず `false`。退避の対象が無い（dead worktree・branch だけの残骸）は `skipped`・`true`。
-- **初期化済み submodule の扱い**: 親の `git add -A` は submodule 内の未コミットの変更を記録しない。そうした変更はコミット後も汚れ（`S` で始まる行）として残るので `wip: submodule`・`wipCommitted: false`。変更が無ければ初期化済みであること自体は WIP の判定に影響しない（`wip: none`・`true`）。discard の可否は第 7 弾の `--mode discard` が「初期化済み submodule があれば保持」で判定する。
+- **初期化済み submodule の扱い**: submodule の中は観測せず、初期化済み submodule があれば WIP コミットを作らずに `wip: submodule`・`wipCommitted: false`（変更の有無によらない。下の「付属 worktree の中の git の照合」）。discard の可否は第 7 弾の `--mode discard` が「初期化済み submodule があれば保持」で判定する。
 - **base の取得と差分**: `git fetch origin refs/heads/<base>:refs/remotes/origin/<base>`（旧プロンプトと同じ共有の追跡 ref。保存先を明示する。Issue #361）の成否を `baseFetched` に出し、成功したときだけ `git diff --quiet --no-ext-diff --ignore-submodules=none <baseSha>...<branchSha>`（利用者の `diff.ignoreSubmodules` で submodule ポインタだけの変更が `empty` にならないよう固定する）の終了コード（0 = `empty`、1 = `nonempty`、他 = `unknown`）で差分を判定する。**取得に失敗したら `unknown`（`empty` にしない）**: 古い追跡 ref が残っていてもそれで判定しない。`empty` は discard の根拠になるため、プロンプトは `unknown` を「差分が空とは見なさず、branch の内容を直接読んで判断する」と指示する。ブランチが実在しない（`branchExists: false`）ときも `unknown`。`nonempty` のときは先行コミット数（`commitsAhead`）と変更ファイル数（`filesChanged`）も出す。
 - 出力にパス・フックの出力・外部由来の文字列を入れない（ブランチ名は `wr_valid_branch` を通ったものだけ。診断は標準エラーへ）。結果を出せたときは、失敗や未確定を含めて exit 0。使い方の誤りは exit 2（結果の行なし）、git が無ければ exit 3。
 
@@ -493,6 +532,57 @@ monitor の CI 完了待ち（旧 `gh pr checks --watch`）を、第 2 弾の `o
 ### この弾の検証範囲
 
 テストが固定している事実: 判断の表（`rp_resolve` 19 行・`rp_scan_status`・`rp_wip_plan`・`rp_wip_after`・`rp_wip_ok`・`rp_diff_state`・`rp_is_sha`）、実 git のサンドボックス（clean・追跡変更・staged・未追跡・混在・ignore のみ・`showUntrackedFiles=no`・グローバルの除外・フックの拒否 / 書き換え・コンフリクト中・入れ子の独立 repo・submodule〔clean・内部の変更・`diff.ignoreSubmodules=all` 下〕・観測不能・state との食い違い・dead worktree・branch だけの残骸・ブランチ不在・detached・メイン worktree・未登録パス・`.git` 破損・HEAD が base と同名・差分の件数・打ち消しコミット・base の取得失敗〔古い追跡 ref あり〕・base 不在・引数の誤り・cwd がリポジトリの外・run-verified.sh 経由）を bash 3.2 と 5 で、ホスト配線（コマンドの組み立て 3 形・手作業の文章が残っていないこと・第 1 層 / 第 2 層のゲート）、変異 25 件。**実ランの隔離なし（メイン checkout）の Recover エージェントからの `run-verified.sh` 経由の起動は未検証**で、`git fetch` は実 GitHub に対して実行していない（ローカルの bare リポジトリのみ）。フックは `pre-commit` のみ実測し、`commit-msg`（commitlint）・`prepare-commit-msg` は未実測。
+
+## 付属 worktree の中の git の照合（`worktree-remove.sh`・`recover-prep.sh`）
+
+### 何を塞ぐか
+
+`worktree-remove.sh`（`worktree:absent`・`worktree:sweep`・掃除の `remove`）と `recover-prep.sh --mode free`（`free:#N`）はサンドボックスの外で直接実行される。実装エージェントは自分の worktree と `<共通ディレクトリ>/worktrees/<名前>/` を書けるので、`commondir`・worktree の `.git`（gitdir 行・ディレクトリへの置き換え・シンボリックリンク）・`config.worktree`・初期化済み submodule の `.git` を偽の git ディレクトリへ向け、そこの config（`core.fsmonitor` など）に置いたコマンドを、スクリプトが呼ぶ素の `git -C <worktree> status` 等に実行させられた。`-c core.fsmonitor=false` のようなフラグだけでは、git が読む設定の全体（submodule の filter など）を列挙して打ち消せないので、主対策はフラグではなく git を呼ぶ前の照合とする。
+
+### 照合（`lib/worktree-remove-lib.sh` の `wr_gitlink_check`）
+
+worktree の中で git を呼ぶ前に、git を使わずファイルの読み取りだけで次を確かめる。1 つでも外れたら git を呼ばない。
+
+- 信頼する共通ディレクトリは、カレントのリポジトリに対する最初の git より前に、ファイルだけで求める（`wr_trust_cwd`）。カレントから上へたどって最初に `.git` を持つディレクトリ（`wr_find_top`）から `wr_main_common` が求め、求められたときだけ git の見る root（`rev-parse --show-toplevel`）がそれと同じかを確かめる（git の探索とずれていれば信頼しない）。カレントの `.git` が偽なら、git は一覧や ref の読み取りでもその偽の共通ディレクトリの config とフックを使うので、求められなければ git を 1 回も呼ばない（`--mode free` を含むどのモードも）。メイン worktree なら `.git` が実ディレクトリで `commondir` を持たないときのその `pwd -P`。ランを付属 worktree で起動したセッション（カレントが付属 worktree）なら、`.git` ファイル → git ディレクトリ → `commondir` で求めた共通ディレクトリが `commondir` を持たず、カレント自身が下の照合に通るときのその共通ディレクトリ（カレントの `.git` と git ディレクトリは、メインの場合の `.git/config` と同じくランの非隔離側の場所で、隔離 worktree のエージェントが書ける `<共通>/worktrees/<自分の名前>/` とは別）。求められない（リポジトリの外・照合の不一致・`--separate-git-dir` のメイン）なら空で、カレントのリポジトリの一覧・ref の読み取りを含めて git を呼ばず、付属 worktree の中の git・remove・prune・ブランチの削除・`recover-prep.sh` の処理全体（`--mode free` を含む）を行わない。
+- worktree の `.git` がシンボリックリンクでない通常ファイルで、ちょうど 1 行（末尾の改行は任意・CR / NUL なし・4096 バイト以下）の `gitdir: <パス>`。1 行の読み取り（`wr_read_one_line`。`commondir`・逆向きの `gitdir`・握り手の `HEAD` も同じ）は、NUL の有無を元のバイト列で数え（`tr -d '\000'` 後のバイト数と `wc -c` の一致）、末尾の余分な 1 バイトは実際に `\n` であることを確かめる。bash 5 の `read` は NUL を黙って読み飛ばし、git は NUL の手前までを使うので、『偽<NUL>/../本物』（末尾改行なし）の行はバイト数の照合だけでは本物に見えて通ってしまう（bash 3.2 の `read` は NUL で行を切るので長さの照合で落ちる）。
+- そのパスの実体（相対パスは worktree からの解決）が `<共通>/worktrees/<名前>` の直下。
+- `<gitdir>/commondir` が 1 行で、その実体が共通ディレクトリと一致。
+- `<gitdir>/gitdir`（逆向き）が 1 行の `<…>/.git` で、その親の実体が worktree と一致。
+- `<gitdir>/config.worktree` が無い（`extensions.worktreeConfig` の有無によらず拒否する）。
+
+`--mode check-absent` が `--repo-root` をカレントのリポジトリと突き合わせる `wr_repo_matches` も同じ照合（`.git` が実ディレクトリなら `wr_main_common`）に置き換え、`--repo-root` の中では git を呼ばない（修正前もここは `rev-parse` だけで、コマンドの実行には至らなかった）。
+
+### 外れたときの結果（既存の語）
+
+| スクリプト | 対象 | 結果 |
+|-----------|------|------|
+| `worktree-remove.sh` | remove（superseded・discard）・sweep | `retained-broken`（削除しない・ブランチも消さない） |
+| `worktree-remove.sh` | check-absent の `--repo-root` | `unknown` |
+| `recover-prep.sh` | 回復対象の worktree | `resolved: false`・`toplevel-mismatch`・`wip: skipped` |
+| `recover-prep.sh` | `--mode free` の握り手 | `in-use`（解放しない） |
+| `recover-prep.sh` | 信頼する共通ディレクトリを求められない | `list-failed`（`--mode free` は `detached: failed`） |
+| `worktree-remove.sh` | 信頼する共通ディレクトリを求められない | remove・sweep は `retained-broken`、ブランチは `keep`、check-absent は `unknown`、prune はしない |
+
+### 補助策
+
+- worktree の中の git には `--no-optional-locks -c core.fsmonitor=false` を付ける（照合の後の多重防御）。削除の `git worktree remove` / `unlock` には `-c core.fsmonitor=false` を付ける（静的ガードが形を固定）。
+- submodule の中へ降りない: 汚れの観測は `--ignore-submodules=all`、`git submodule status` は使わない。初期化済み submodule（`ls-files -s` の gitlink のうち `<パス>/.git` があるもの、または `<gitdir>/modules` が空でない）は中を観測できないので、`worktree-remove.sh` は superseded でも `retained-submodule` で保持し、`recover-prep.sh` は WIP コミットを作らず（親の `add`・`commit` も submodule の中を観測する）`wip: submodule`・`wipCommitted: false` にする（従来は superseded で消し、clean なら `wip: none`、親の変更は WIP に積んでいた）。worktree は削除側が保持するので、親の変更も消えない。
+- HEAD の付け直しの `update-ref --stdin` を含め、worktree の中で呼ぶ git にはすべてこのフラグを付ける。付けないのは形を静的ガードが固定している WIP の `add`・`commit` の 1 行だけ（下の残る限界）。
+- 削除の直前にもう一度照合し、`<共通>/worktrees/` の下にシンボリックリンクがあれば `git worktree remove` も `git worktree prune` もしない（両者はリンク先の中身を消す）。prune を飛ばした件数は `pruneSkipped` に足す。
+- `recover-prep.sh` は `GIT_DIR`・`GIT_WORK_TREE`・`GIT_COMMON_DIR`・`GIT_INDEX_FILE` を外す。
+- `core.hooksPath=/dev/null` は付けない（静的ガードが `core.hooksPath` の綴りを一律に禁じており、照合後に呼ぶコマンドでフックを走らせるのは WIP コミットだけで、そこは `--no-verify` 禁止の方針どおりフックを通す）。`GIT_CONFIG_NOSYSTEM` も付けない（システムの設定はエージェントが書けない）。
+
+### 残る限界
+
+- メインの config にある相対パスの `core.hooksPath`（husky 等）は、WIP コミットのときに付属 worktree の中から解決されるので、エージェントが書けるフックが走り得る（フックを通す方針との両立は未解決）。
+- WIP の `add`・`commit` の行は形が静的ガードで固定されていて `--no-optional-locks -c core.fsmonitor=false` を付けていない。照合からこの行までの間に設定をすり替えられる余地（TOCTOU）が残る。
+- メインの `.git` が gitfile（`--separate-git-dir`）のリポジトリ、カレントが照合に通らないランは、保持・確定しない側へ倒れる。
+- 管理ディレクトリをシンボリックリンクへ置き換える操作を実際のサンドボックスがエージェントに許すかは未確認（許す前提で塞いだ）。
+- `pr-push.sh`・`base-merge.sh`・`reply-resolve.sh`・`observe-pr.sh` は直接実行されず、カレントが隔離 worktree のエージェントが起動するので、この照合の対象外。
+
+### この節の検証範囲
+
+`dev/implement-issue-tree/tests/worktree-git-harden.test.mjs` が、仕込み 7 種（commondir・gitdir 行〔余分な空行・相対パス〕・`.git` のディレクトリ・シンボリックリンク・`config.worktree`・偽の submodule）のそれぞれについて、`worktree-remove.sh`（superseded・discard・sweep）と `recover-prep.sh` の実行後にマーカーが無く worktree が残ること、素の `git status` ではマーカーが作られること（陽性対照）を bash 3.2 と 5 で固定する。あわせて `--mode free` の握り手、管理ディレクトリのシンボリックリンクがあると remove・sweep が何も消さずリンク先も残ること（prune の直前の同じ検査は削除と prune の間に置かれたリンクへの多重防御で、`wr_admin_links` の単体だけを固定）、正規の worktree（絶対パス・Git 2.48 以降なら相対パスの形）の削除・回復・check-absent、`wr_gitlink_check` を 1 か所ずつ崩した 16 形の拒否、`check-absent` が仕込みのある worktree を不在と言わず、仕込んだ worktree を `--repo-root` に渡すと `unknown` になること、カレントが付属 worktree のラン（照合に通れば動き、カレント自身の `.git` が崩れていれば何もしない）を固定する。NUL を混ぜた `commondir`・`.git`（末尾改行なし。bash 5 で修正前はマーカーが作られ worktree の中身まで消えた）を仕込みに加え、`wr_gitlink_check` の単体で NUL（末尾改行の有無の両方・`.git`・`commondir`・逆向きの `gitdir`）・CR の形の拒否と、末尾改行の無い正規の形が通ることを固定する。カレントの `.git` が照合に通らないとき、recover・free・remove・sweep・check-absent のどれも git を 1 回も呼ばない（PATH の先頭に置いた git の代役の記録が空）ことも固定する。変異は H01（commondir の照合を外す）・H02（`config.worktree` を許す）・H03（submodule があっても WIP コミットを作る）・H04（NUL を数えず、末尾の余分な 1 バイトが改行かも確かめない。2 つの確認は NUL について互いに重なるので両方を外す）・H05〜H09（信頼の起点を確かめる前に git を呼ぶ・未確立のまま一覧・ブランチ・check-absent の git を呼ぶ）・H10（`update-ref --stdin` のフラグを外す。静的ガードが殺す）を足し、W02・C05（`--ignore-submodules=none` へ戻す）をこのテストで殺す形に改めた。e148ca4 のスクリプトに対して同じテストを流すと、仕込み 7 種 × 2 スクリプト × 2 bash の 28 件はすべてマーカーが作られて落ちる（`check-absent` は修正前も `rev-parse` しか呼ばずマーカーは作られない）。
 
 ## ハッシュ埋め込みと鮮度
 

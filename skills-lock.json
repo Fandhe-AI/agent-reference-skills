@@ -17,7 +17,7 @@
       "source": "Fandhe-AI/agent-cli-skills",
       "sourceType": "github",
       "skillPath": "skills/create-commit/SKILL.md",
-      "computedHash": "ab30a355b1c030c39adb391cbdfbf2e099ff355a6c484b03690fa2b3f1c65161"
+      "computedHash": "77ba8d6f43816fabfdc7d73068688235c74a18dcc923efabfa2d8c9d553e02c9"
     },
     "create-issue": {
       "source": "Fandhe-AI/agent-cli-skills",
@@ -29,7 +29,7 @@
       "source": "Fandhe-AI/agent-cli-skills",
       "sourceType": "github",
       "skillPath": "skills/create-issue-tree/SKILL.md",
-      "computedHash": "dbb44b5b586c9a735c88e48e86520e76aeb47583e341e418c275b9344e6e959f"
+      "computedHash": "7f8428dec66d9134c047d12a7d03e42d1808744cfa4374e4469cbf1698d2e8de"
     },
     "create-plan": {
       "source": "Fandhe-AI/agent-cli-skills",
@@ -41,7 +41,7 @@
       "source": "Fandhe-AI/agent-cli-skills",
       "sourceType": "github",
       "skillPath": "skills/create-pr/SKILL.md",
-      "computedHash": "31c472427315bb765c148530c6b249ca3bba29d4d139652118073644edc03662"
+      "computedHash": "d895101f05cfe9de4f88b7e8277c73f0855165c010c59b38eba2b3a6faa853e4"
     },
     "implement-issue": {
       "source": "Fandhe-AI/agent-cli-skills",
@@ -53,13 +53,13 @@
       "source": "Fandhe-AI/agent-cli-skills",
       "sourceType": "github",
       "skillPath": "skills/implement-issue-tree/SKILL.md",
-      "computedHash": "8c87b51cfabb39c4254114a59d1d13b6a83bd9637eccc739f1396bb586a238c3"
+      "computedHash": "ecdbe55f71f0a767826d8d999cc06dc4c850afd6151575ae85d5fe60685381be"
     },
     "implement-review": {
       "source": "Fandhe-AI/agent-cli-skills",
       "sourceType": "github",
       "skillPath": "skills/implement-review/SKILL.md",
-      "computedHash": "7c87df811e7374c98164683524be5f1f419156ab101965e83bd523a1fde0b223"
+      "computedHash": "a72f2239f6bc87ee5c7567e05adcc5a91e751df1367eadf6d297a08b01f7a3fa"
     },
     "implement-review-pr": {
       "source": "Fandhe-AI/agent-cli-skills",
@@ -137,7 +137,7 @@
       "source": "Fandhe-AI/agent-cli-skills",
       "sourceType": "github",
       "skillPath": "skills/update-issue-tree/SKILL.md",
-      "computedHash": "429f6dbe43a35abf9afaed2bba67ce9be8fe30fb0ab39d0179bb4f8bbeaa8bab"
+      "computedHash": "c260b527346c7435f3cc9b0047f322000aaca13c7759f0cb6505721b5eb746ab"
     }
   }
 }
