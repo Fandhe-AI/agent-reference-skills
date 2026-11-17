@@ -492,6 +492,7 @@ Adapted (not in the official docs): runnable form of the example(s) above: lines
 
 ```bash
 gcloud oracle-database cloud-vm-clusters create my-instance \
+    --exadata-infrastructure=my-exadata-infrastructure \
     --location=us-east4 \
     --display-name="my instance" \
     --odb-network=projects/network-project/locations/us-east4/odbNetworks/my-odbnetwork \
@@ -504,6 +505,7 @@ gcloud oracle-database cloud-vm-clusters create my-instance \
     --properties-cpu-core-count=4
 
 gcloud oracle-database cloud-vm-clusters create my-instance \
+    --exadata-infrastructure=my-exadata-infrastructure \
     --location=us-east4 \
     --display-name="my instance" \
     --odb-network=projects/network-project/locations/us-east4/odbNetworks/my-odbnetwork \
@@ -517,6 +519,7 @@ gcloud oracle-database cloud-vm-clusters create my-instance \
     --properties-cpu-core-count=4
 
 gcloud oracle-database cloud-vm-clusters create my-instance \
+    --exadata-infrastructure=my-exadata-infrastructure \
     --location=us-east4 \
     --display-name="my instance" \
     --cidr=10.1.0.0/24 \
@@ -1202,7 +1205,7 @@ API REFERENCE
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
-- Incomplete example: the `gcloud oracle-database cloud-vm-clusters create` example omits `--exadata-infrastructure`, which the SYNOPSIS requires (gcloud 593.0.0: "argument --exadata-infrastructure: Must be specified."). Add the required flag (see FLAGS on this page).
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `create` examples omit `--exadata-infrastructure`, which the SYNOPSIS requires (gcloud 593.0.0: "argument --exadata-infrastructure: Must be specified."); the runnable form adds `--exadata-infrastructure=my-exadata-infrastructure` (an example ID; the flag takes the ID or the fully qualified name of an existing Exadata Infrastructure in the same `--location`). The resource format line in the help spells the collection `cloudExadataInfrastuctures/{cloud_extradata_infrastructure}`; the REST resource name is `projects/{project}/locations/{location}/cloudExadataInfrastructures/{cloud_exadata_infrastructure}`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example gives the VPC network as `projects/my-project/locations/global/networks/default`, but the `--network` resource format in the same help is `projects/{project}/global/networks/{network}`; the runnable form uses `projects/my-project/global/networks/default`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example passes the API enum name in uppercase (for example `LICENSE_INCLUDED`, `DW`, `GOOGLE_MANAGED`, `SMART_STORAGE`), while the flag description lists the choices in lowercase (`license-included`, `dw`, `google-managed`, `smart-storage`); the runnable form uses the documented lowercase choices (gcloud 593.0.0 also accepts the uppercase names).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
