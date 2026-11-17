@@ -160,7 +160,7 @@ SYNOPSIS
 
 ## Notes
 
-- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud compute networks get-effective-firewalls NAME`: "Argument NAME is deprecated. Use --filter="name=( 'NAME' ... )" instead."; `gcloud compute networks get-effective-firewalls --regexp`: "Flag --regexp is deprecated. Use --filter="name~'REGEXP'" instead.".
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud compute networks get-effective-firewalls [NAME ...]`: "Argument NAME is deprecated. Use --filter="name=( 'NAME' ... )" instead." (this applies only to the additional `[NAME ...]` arguments; the first `NAME` in the SYNOPSIS is still required); `gcloud compute networks get-effective-firewalls --regexp`: "Flag --regexp is deprecated. Use --filter="name~'REGEXP'" instead.".
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
