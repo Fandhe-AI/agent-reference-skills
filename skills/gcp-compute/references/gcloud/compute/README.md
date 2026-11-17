@@ -198,3 +198,22 @@
 | gcloud compute instances config export | alpha compute instances config export | [compute-instances-config-export.md](./compute-instances-config-export.md) |
 | gcloud compute instances create (part 1) | compute instances create | [compute-instances-create-1.md](./compute-instances-create-1.md) |
 | gcloud compute instances create (part 2) | 2 commands (alpha, beta, ga); beta compute instances create … | [compute-instances-create-2.md](./compute-instances-create-2.md) |
+| gcloud compute instances create-with-container | 3 commands (alpha, beta, ga); compute instances create-with-container … | [compute-instances-create-with-container.md](./compute-instances-create-with-container.md) |
+| gcloud compute instances delete | 3 commands (alpha, beta, ga); compute instances delete … | [compute-instances-delete.md](./compute-instances-delete.md) |
+| gcloud compute instances delete-access-config | 3 commands (alpha, beta, ga); compute instances delete-access-config … | [compute-instances-delete-access-config.md](./compute-instances-delete-access-config.md) |
+| gcloud compute instances describe | 3 commands (alpha, beta, ga); compute instances describe … | [compute-instances-describe.md](./compute-instances-describe.md) |
+| gcloud compute instances detach-disk | 3 commands (alpha, beta, ga); compute instances detach-disk … | [compute-instances-detach-disk.md](./compute-instances-detach-disk.md) |
+| gcloud compute instances export | 3 commands (alpha, beta, ga); compute instances export … | [compute-instances-export.md](./compute-instances-export.md) |
+| gcloud compute instances get-guest-attributes | 3 commands (alpha, beta, ga); compute instances get-guest-attributes … | [compute-instances-get-guest-attributes.md](./compute-instances-get-guest-attributes.md) |
+| gcloud compute instances get-iam-policy | 3 commands (alpha, beta, ga); compute instances get-iam-policy … | [compute-instances-get-iam-policy.md](./compute-instances-get-iam-policy.md) |
+| gcloud compute instances get-screenshot | 2 commands (beta, ga); compute instances get-screenshot … | [compute-instances-get-screenshot.md](./compute-instances-get-screenshot.md) |
+| gcloud compute instances get-serial-port-output | 3 commands (alpha, beta, ga); compute instances get-serial-port-output … | [compute-instances-get-serial-port-output.md](./compute-instances-get-serial-port-output.md) |
+| gcloud compute instances get-shielded-identity | 3 commands (alpha, beta, ga); compute instances get-shielded-identity … | [compute-instances-get-shielded-identity.md](./compute-instances-get-shielded-identity.md) |
+| gcloud compute instances get-vm-extension-state | 2 commands (alpha, beta); beta compute instances get-vm-extension-state … | [compute-instances-get-vm-extension-state.md](./compute-instances-get-vm-extension-state.md) |
+| gcloud compute instances import | 3 commands (alpha, beta, ga); compute instances import … | [compute-instances-import.md](./compute-instances-import.md) |
+| gcloud compute instances list | 3 commands (alpha, beta, ga); compute instances list … | [compute-instances-list.md](./compute-instances-list.md) |
+| gcloud compute instances list-referrers | 3 commands (alpha, beta, ga); compute instances list-referrers … | [compute-instances-list-referrers.md](./compute-instances-list-referrers.md) |
+| gcloud compute instances list-vm-extension-states | 2 commands (alpha, beta); beta compute instances list-vm-extension-states … | [compute-instances-list-vm-extension-states.md](./compute-instances-list-vm-extension-states.md) |
+| gcloud compute instances network-interfaces add | 3 commands (alpha, beta, ga); compute instances network-interfaces add … | [compute-instances-network-interfaces-add.md](./compute-instances-network-interfaces-add.md) |
+| gcloud compute instances network-interfaces delete | 3 commands (alpha, beta, ga); compute instances network-interfaces delete … | [compute-instances-network-interfaces-delete.md](./compute-instances-network-interfaces-delete.md) |
+| gcloud compute instances network-interfaces get-effective-firewalls | 3 commands (alpha, beta, ga); compute instances network-interfaces get-effective-firewalls … | [compute-instances-network-interfaces-get-effective-firewalls.md](./compute-instances-network-interfaces-get-effective-firewalls.md) |
