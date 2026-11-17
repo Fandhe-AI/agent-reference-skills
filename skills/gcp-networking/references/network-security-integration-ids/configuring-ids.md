@@ -37,12 +37,14 @@ gcloud compute addresses create RESERVED_RANGE_NAME \
     --network=VPC_NETWORK
 ```
 
-If you already have a private connection, update it with the new range; otherwise create it (long-running operation):
+If you already have a private connection, update it with the new range; otherwise create it (long-running operation). `--ranges` on `update` replaces the connection's whole list of allocated ranges, so list the ranges already assigned and pass them together with the new one.
+
+Adapted (not in the official docs): `--ranges` lists `EXISTING_RANGE_NAMES` (comma-separated names of the ranges already assigned to the connection, from `gcloud services vpc-peerings list --network=VPC_NETWORK`) before the new `RESERVED_RANGE_NAME`, because the update replaces the list.
 
 ```bash
 gcloud services vpc-peerings update \
     --service=servicenetworking.googleapis.com \
-    --ranges=RESERVED_RANGE_NAME \
+    --ranges=EXISTING_RANGE_NAMES,RESERVED_RANGE_NAME \
     --network=VPC_NETWORK \
     --project=PROJECT_ID
 ```
@@ -175,6 +177,7 @@ Also needed: `compute.regions.list`, `compute.zones.list`.
 - Deleting an endpoint is destructive and is the way to stop Cloud IDS charges; try it on a disposable endpoint first. Updating private services access ranges or peerings can break connectivity of other services using the connection; use a separate unique range for Cloud IDS if private services access is already configured.
 - Corrected from the official docs: the source REST create example had a trailing comma after `"severity": "SEVERITY_LEVEL",` which is invalid JSON, and the REST examples used `projects/PROJECT_NAME` where the API takes the project ID (now `PROJECT_ID`). The source's REST describe and delete examples (`GET`/`DELETE .../endpoints?endpointId=ENDPOINT_NAME`) are omitted because they reuse the create query parameter form; use the gcloud commands or the Cloud IDS REST reference.
 - The source also shows Console steps (IDS Endpoints page, attach, view threat logs under IDS Threats).
+- Corrected from the official docs: this page updates an existing private connection with `--ranges=RESERVED_RANGE_NAME` only, but the private services access page (https://docs.cloud.google.com/vpc/docs/configure-private-services-access, retrieved 2026-11-17) says "`RESERVED_RANGE_NAME` replaces the previous list of allocated ranges. If you omit a range that was previously associated with this private connection, the range is removed from the connection. You must use the `--force` flag to remove a range." The example therefore passes the existing ranges as well.
 - Source: https://docs.cloud.google.com/intrusion-detection-system/docs/configuring-ids (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

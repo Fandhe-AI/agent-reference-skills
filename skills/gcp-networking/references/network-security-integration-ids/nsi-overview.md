@@ -32,7 +32,7 @@ gcloud network-security intercept-deployment-groups create \
 | Producer | Network appliance VMs that provide traffic inspection and monitoring. One or more zonal deployments; each zonal deployment is an internal passthrough Network Load Balancer whose backend VMs are appliances you manage. | Zonal deployments, grouped into a single deployment group |
 | Consumer | Google Cloud VMs whose traffic is secured or monitored. | An endpoint group (references the producer's deployment group) and rules in a global network firewall policy, or a hierarchical firewall policy for in-band integration |
 
-- Consumer firewall rules use the `apply_security_profile_group` action. Rules can match traffic by multiple attributes such as IP addresses or IP ranges, and secure tags.
+- This overview says consumer firewall rules use the `apply_security_profile_group` action; that is the in-band (intercept) case. For out-of-band integration the consumer uses mirroring rules whose actions are `MIRROR`, `DO_NOT_MIRROR` and `GOTO_NEXT` (see out-of-band-integration-overview.md). Rules can match traffic by multiple attributes such as IP addresses or IP ranges, and secure tags.
 - Depending on the configuration, Network Security Integration either intercepts or mirrors the traffic from one or more consumer networks, encapsulates it with GENEVE and sends it to the producer's appliances.
 
 ## Notes
@@ -40,6 +40,7 @@ gcloud network-security intercept-deployment-groups create \
 - Producer and consumer can be in the same organization (Figure 1 in the source) or in different projects.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-security/intercept-deployment-groups/create (gcloud 593.0.0 help). The source page itself has no code. The full flag list for `gcloud compute ...` resources is in the `gcp-compute` skill; Cloud NGFW firewall policies are covered in the `firewall` categories of this skill.
 - Creating or deleting deployment groups affects traffic inspection for consumers; try on a disposable resource first.
+- Clarified from the official docs: the overview says "These firewall rules use the `apply_security_profile_group` action", while the out-of-band integration overview (https://docs.cloud.google.com/network-security-integration/docs/out-of-band/out-of-band-integration-overview, retrieved 2026-11-17) says mirroring rules have the actions `MIRROR` ("permits mirroring of the traffic flow"), `DO_NOT_MIRROR` and `GOTO_NEXT`.
 - Source: https://docs.cloud.google.com/network-security-integration/docs/nsi-overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
