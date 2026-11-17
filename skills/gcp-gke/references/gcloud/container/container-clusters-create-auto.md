@@ -1244,7 +1244,7 @@ SYNOPSIS
 
 ## Notes
 
-- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud container clusters create-auto --tier`: "The --tier flag is deprecated. More info: https://cloud.google.com/kubernetes-engine/docs/release-notes#September_02_2025."; `gcloud container clusters create-auto --dataplane-v2-observability-mode`: "Flag --dataplane-v2-observability-mode has been removed.".
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud container clusters create-auto --tier`: "The --tier flag is deprecated. More info: https://cloud.google.com/kubernetes-engine/docs/release-notes#September_02_2025."; `gcloud container clusters create-auto --dataplane-v2-observability-mode`: "Flag --dataplane-v2-observability-mode has been removed."; `gcloud container clusters create-auto --scopes`: "DEPRECATION WARNING: https://www.googleapis.com/auth/sqlservice account scope and sql alias do not provide SQL instance management capabilities and have been deprecated. Please, use https://www.googleapis.com/auth/sqlservice.admin or sql-admin to manage your Google SQL Service instances.".
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

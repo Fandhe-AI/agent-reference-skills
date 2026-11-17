@@ -1233,7 +1233,7 @@ curl -X GET \
 - Generated from the Discovery document(s) v3, v2, v1 of `identitytoolkit` (retrieved 2026-11-14). Resources on this page: accounts, defaultSupportedIdps, projects, relyingparty, v1, v2.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
 - Message schemas (the request and response types named above) are listed under `references/rest-schemas/identitytoolkit/`; they are the `schemas` section of the Discovery documents in Source.
-- Methods whose description announces a deprecation or a deprecation-related restriction: `identitytoolkit.accounts.signInWithGameCenter`; read the method description above for the replacement.
+- Methods whose description mentions deprecation (this can be about the method itself or about the deprecation status of the resources it handles, such as deprecated images; these methods are not marked `deprecated: true` in Discovery): `identitytoolkit.accounts.signInWithGameCenter`; read the method description above to see which applies and whether it names a replacement.
 - Source: https://identitytoolkit.googleapis.com/$discovery/rest?version=v3, https://identitytoolkit.googleapis.com/$discovery/rest?version=v2, https://identitytoolkit.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
 ## Related

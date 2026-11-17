@@ -277,7 +277,7 @@ SYNOPSIS
 
 ## Notes
 
-- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud domains registrations register --use-google-domains-dns`: "Flag --use-google-domains-dns has been removed.".
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud domains registrations register --use-google-domains-dns`: "Flag --use-google-domains-dns has been removed."; `gcloud domains registrations register --contact-privacy private-contact-data`: "(DEPRECATED) Your contact info won't be available to the public. To help protect your info and prevent spam, a third party provides alternate (proxy) contact info for your domain in the public directory at no extra cost. They will forward received messages to you. The private-contact-data option is deprecated; See https://cloud.google.com/domains/docs/deprecations/feature-deprecations.".
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

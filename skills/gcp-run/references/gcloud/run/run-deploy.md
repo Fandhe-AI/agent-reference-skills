@@ -1011,6 +1011,7 @@ SYNOPSIS
 
 ## Notes
 
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud run deploy --vpc-egress all`: "(DEPRECATED) Sends all outbound traffic through Direct VPC egress or the VPC connector. Provides the same functionality as 'all-traffic'. Prefer to use 'all-traffic' instead.".
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the Cloud Run on GKE example passes `--cluster` without `--platform=gke`; gcloud 593.0.0 rejects it with "The `--cluster` flag is not supported on the fully managed version of Cloud Run. Specify `--platform gke`", so the runnable form adds `--platform=gke`; it also adds `--cluster-location=us-central1-a` (without it and with prompts disabled, gcloud 593.0.0 stops with "You must specify a cluster in a given location") and the service name `my-service` (the example omits the name so that gcloud prompts for one, which fails in a non-interactive shell); `--platform`, `--cluster` and `--cluster-location` are not listed in this help's SYNOPSIS, but gcloud 593.0.0 accepts them.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.

@@ -27,7 +27,7 @@ Predefined roles of `domains` (role ID, description, included permissions) and, 
 
 ### Example: grant a role
 
-Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Project):
+Generated example (not in the official docs) granting the first role on this page on a whole project (the role entry on this page does not list the lowest-level resources where it can be granted; granting it on a narrower resource, where the role supports that, limits the scope):
 
 ```bash
 gcloud projects add-iam-policy-binding PROJECT_ID \
