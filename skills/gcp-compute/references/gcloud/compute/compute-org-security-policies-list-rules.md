@@ -119,10 +119,10 @@ NOTES
         $ gcloud beta compute org-security-policies list-rules
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
-gcloud compute org-security-policies list-rules list-rules 123456789 \
+gcloud compute org-security-policies list-rules 123456789 \
     --format="table( priority, action, direction, match.config.srcIpRanges.list():label=SRC_RANGES, match.config.destIpRanges.list():label=DEST_RANGES, match.config.layer4Configs.map().org_firewall_rule().list():label=PORT_RANGES, targetServiceAccounts.list():label=TARGET_SVC_ACCT, targetResources:label=TARGET_RESOURCES, ruleTupleCount, enableLogging, description)"
 ```
 
@@ -158,6 +158,7 @@ SYNOPSIS
 
 - Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud compute org-security-policies list-rules NAME`: "Argument NAME is deprecated. Use --filter="name=( 'NAME' ... )" instead."; `gcloud compute org-security-policies list-rules --regexp`: "Flag --regexp is deprecated. Use --filter="name~'REGEXP'" instead.".
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the second example repeats `list-rules`, so `list-rules` is taken as SECURITY_POLICY and `123456789` as NAME; the runnable form drops the repeated word.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
