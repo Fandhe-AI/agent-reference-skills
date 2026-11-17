@@ -32,9 +32,9 @@ skills/gcp-compute/
         bms-<group>.md            # 例: bms-instances.md / bms-volumes.md / bms-networks.md
       cluster-director/
         README.md                 # gcloud cluster-director
-      oracle-database/  # 分割投入中（7 / 30 ページ。収録済みは README 掲載分のみ）
+      oracle-database/  # 分割投入中（18 / 30 ページ。収録済みは README 掲載分のみ）
         README.md                 # gcloud oracle-database
-        oracle-database-<group>.md
+        oracle-database-<group>.md  # 例: oracle-database-db-systems.md
     compute-overview/             # 公式ガイド由来（手書き）: 概要・インスタンスの概念・停止 / 一時停止 / リセットの違い・リージョンとゾーン・割り当て・ライフサイクル・プロビジョニングモデル・作成と起動・廃止一覧
       README.md
       <page>.md                   # 例: deprecations.md / create-start-instance.md
@@ -123,7 +123,7 @@ skills/gcp-compute/
 
 未投入カテゴリ（`iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`gcloud/oracle-database`: 7 / 30 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`gcloud/oracle-database`: 18 / 30 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
