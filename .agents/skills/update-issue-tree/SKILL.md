@@ -91,7 +91,7 @@ fi
 # 許可する構文は正整数 + h のみ（例: 1h / 2h / 4h）。引用符・空白・コマンド置換・0h・単位なしは
 # ここで拒否する（ROOT_GRANULARITY はマーカー抽出時点で同じ正規表現を通しているが、
 # GRANULARITY_ARG はユーザー入力の生値のため、代入元によらずこの検証を必ず通す）
-if ! printf '%s' "${GRANULARITY}" | grep -qE '^[1-9][0-9]*h$'; then
+if ! printf '%s' "${GRANULARITY}" | grep -qE '(^[1-9][0-9]*h$)'; then
   echo "エラー: --granularity の値 '${GRANULARITY}' は不正です（許可: 正整数+h、例 2h）。中止します。"
   exit 1
 fi
@@ -516,7 +516,7 @@ Phase N の実装タスクをまとめる親 issue。
 |-------|---------|------|
 EOF
 )")
-NEW_PHASE_NUMBER=$(printf '%s' "${NEW_PHASE_URL}" | grep -oE '[0-9]+$')
+NEW_PHASE_NUMBER=$(printf '%s' "${NEW_PHASE_URL}" | grep -oE '([0-9]+$)')
 
 # ルートへ紐付け。sub_issue_id は issue 番号ではなく database id を渡す（GitHub sub-issues API 仕様）
 NEW_PHASE_ID=$(gh api "repos/{owner}/{repo}/issues/${NEW_PHASE_NUMBER}" --jq '.id')
@@ -553,7 +553,7 @@ SUB_URL=$(gh issue create \
   --title "feat: サブタスク名" \
   --label "phase:N" \
   --body "...")
-SUB_NUMBER=$(printf '%s' "${SUB_URL}" | grep -oE '[0-9]+$')
+SUB_NUMBER=$(printf '%s' "${SUB_URL}" | grep -oE '([0-9]+$)')
 
 # 親 issue へ紐付け（sub_issue_id は database id）
 SUB_ID=$(gh api "repos/{owner}/{repo}/issues/${SUB_NUMBER}" --jq '.id')
@@ -760,7 +760,7 @@ gh api "repos/{owner}/{repo}/issues/${PHASE_NUMBER}/sub_issues" \
 - **棚卸し前に変更内容をユーザーに提示して確認を取る**（Step 2 参照）
 - ページネーション: sub-issues が 100 件を超える場合は `per_page=100&page=N` でページングして全件取得する（Step 1 のツリー全体取得に適用。`reassign-sub-issue.sh` は対象 issue の `parent_issue_url` を直接参照するため、付け替え判定自体にはページネーションが不要）
 - シェルコマンドの変数は必ず `"${var}"` でクォートする（コマンドインジェクション対策）
-- **`gh issue create` は `--json` 非対応**。issue URL を stdout に出力するため、`| grep -oE '[0-9]+$'` で末尾の番号を抽出する
+- **`gh issue create` は `--json` 非対応**。issue URL を stdout に出力するため、`| grep -oE '([0-9]+$)'` で末尾の番号を抽出する
 - **sub_issues API（POST / DELETE）の `sub_issue_id` は issue 番号ではなく database id**（GitHub 仕様）。`gh api "repos/{owner}/{repo}/issues/<number>" --jq '.id'` で id を取得してから渡す。番号をそのまま渡すと誤った issue を操作する／404 になる（`reassign-sub-issue.sh` はこれを内部で解決するため、Step 3/4 で手動取得する必要はない）
 - 孤児 issue の Phase が判断できない場合は推測せずにユーザーへ確認する（非対話時の扱いは Step 4）
 - sub_issues の DELETE API（付け替え時に旧親から外す操作）はパスが単数形 `sub_issue` である点に注意し、操作対象の issue 番号を必ず確認してから実行する

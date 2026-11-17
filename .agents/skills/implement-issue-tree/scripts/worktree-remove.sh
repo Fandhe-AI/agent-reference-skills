@@ -9,8 +9,8 @@
 #
 # 役割: 掃除プロンプトが文章で持っていた「登録の確認 → lock の扱い → 汚れの確認 → 削除 → ブランチ削除」を、固定のコマンド列として
 #       持つ（Issue #603 第 7 弾）。確認と削除を同じプロセスで行い、確認した状態のまま削除する。
-#   superseded  マージ済み・置き換え済み・最終スイープ。汚れていても --force で消す（汚れの行数を結果に記録）。ただし submodule に
-#               未記録の変更があれば保持する。
+#   superseded  マージ済み・置き換え済み・最終スイープ。汚れていても --force で消す（汚れの行数を結果に記録）。ただし初期化済み submodule が
+#               あれば保持する（中を観測しないので未記録の変更が無いと言えない。下の『付属 worktree の中の git』）。
 #   discard     Recover の破棄・継続。汚れていれば、または初期化済み submodule があれば保持する（--force は使わない）。--branch が
 #               あれば worktree が無くなったあとでブランチも消す（消す前の先頭 sha を結果に出す。base と同名のブランチは消さない）。--path と --branch を
 #               両方与えたときは、削除の前に同じプロセスでその worktree の HEAD を読み、--branch と違えば worktree もブランチも消さない。
@@ -33,8 +33,17 @@
 #               登録の掃除はこのモードでしない。prunable のときホストが planning の前に remove --mode discard --path <旧パス> を 1 回呼んで登録だけ片づける）。ホストが不在として扱うのはこの 2 語だけ。ほかは保全側: prunable-detached = 登録だけ残り detached、または HEAD が 0000…（ブランチ ref を update-ref -d で消した形）
 #               （登録がコミットの唯一の参照かもしれない）/ prunable-locked = 登録だけ残り lock あり（git は lock を prune しない・外付けの一時的な未接続かも
 #               しれない）/ present = 登録も実体もある / unregistered-present = 登録は無いがパスがある / main / unknown = 一覧・実在を確定できない。
-# 確認の方法: `git -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=none`（利用者の status.showUntrackedFiles や
-#       submodule の ignore 設定、グローバルの除外ファイル〔core.excludesFile・~/.config/git/ignore〕に左右されない形。素の status は設定で
+# 付属 worktree の中の git: このスクリプトはサンドボックスの外で直接実行され得る。付属 worktree と <共通>/worktrees/<名前>/ はエージェントが書けるので、
+#       そこで素の git を呼ぶと、偽の共通ディレクトリ・config.worktree の core.fsmonitor などのコマンドを実行させられる。そこで worktree の中で git を呼ぶ前に、
+#       wr_gitlink_check（.git が通常ファイルで 1 行の gitdir、その実体が <カレントの共通>/worktrees/<名前>、commondir が共通ディレクトリ、逆向きの gitdir が
+#       worktree の .git、config.worktree が無い）をファイルの読み取りだけで行い、通らなければ git を呼ばず retained-broken にする。削除（unlock・remove）の直前にも
+#       もう一度照合し、<共通>/worktrees/ の下にシンボリックリンクがあれば remove・prune をしない（リンク先の中身を消す）。補助として worktree の git には
+#       --no-optional-locks -c core.fsmonitor=false を付け、submodule の中へは降りない（--ignore-submodules=all。submodule status は使わない。初期化済みは保持）。
+#       信頼する共通ディレクトリはカレントの worktree から wr_main_common が求めたもの（メインの .git の実体、または照合に通るカレントの付属 worktree の共通ディレクトリ）。
+#       カレントのリポジトリに対する最初の git より前にファイルだけで求め（wr_trust_cwd）、求められなければカレントのリポジトリでも git を呼ばない。
+#       求められなければ付属 worktree の中の git・remove・prune・ブランチの削除をしない。
+# 確認の方法: `git -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=all`（利用者の status.showUntrackedFiles や
+#       グローバルの除外ファイル〔core.excludesFile・~/.config/git/ignore〕に左右されない形。素の status は設定で
 #       未追跡を隠す）。リポジトリの .gitignore と .git/info/exclude に載った ignore 対象（node_modules・dist 等）は汚れに数えず、中身ごと消える
 #       （--ignored は見ない）。残る限界は references/script-trust-model.md に記載。
 # lock: Claude Code の形（`claude agent|session <名前> (pid N)` と `… (pid N start <LC_ALL=C TZ=UTC ps -o lstart= の出力>)`）で、そのプロセスが
@@ -86,7 +95,7 @@
 #           retained-detached = discard で --head を与えたとき、HEAD が一致していても detached（detached 上の未 push のコミットは消すと失われる）。
 #           retained-unobservable = 観測に失敗した（git status コマンドそのものの失敗・--head 指定時の HEAD のコミットの一過性の読み取り失敗）。何も消さない。
 #               retained-dirty / retained-head-mismatch / retained-broken は観測した結果の保持で、これは観測できなかったという別の語（ホストは前者を恒久の試行済みに記録し、これは次のランで再試行させる）。
-#           retained-broken = git の対象が worktree 自身でない（.git の破損・toplevel の不一致）。読み直しても変わらない決定的な状態なのでホストは記録する側。
+#           retained-broken = git の対象が worktree 自身でない（.git の破損・照合〔wr_gitlink_check〕の不一致・toplevel の不一致・管理ディレクトリのシンボリックリンク）。読み直しても変わらない決定的な状態なのでホストは記録する側。
 #               rev-parse の一過性の失敗と区別できないときも、毎ラン再試行して枠を食い続けるより安全なので、この語（記録側）へ倒す。何も消さない。
 #           unborn（コミットが無い）の HEAD に --head を渡したときは retained-head-mismatch（PR の head と一致し得ない決定的な状態。毎ラン再試行させない）。
 #           retained-detached は実体の無い登録にも使う: 実体が無く、detached または HEAD 0000…（ブランチ ref が無い）で lock の無い登録は、登録がコミットの唯一の参照かもしれず、
@@ -112,6 +121,11 @@ command -v git >/dev/null 2>&1 || { echo "worktree-remove: git が無い" >&2; e
 script_dir=$(cd "$(dirname "$0")" && pwd -P) || exit 3
 # shellcheck source=lib/worktree-remove-lib.sh
 . "${script_dir}/lib/worktree-remove-lib.sh" || exit 3
+
+# 信頼する共通 git ディレクトリ（カレントの worktree から wr_main_common が求めたもの）。付属 worktree の中で git を呼ぶ前に、その worktree の .git・commondir・gitdir を
+# これとファイルの読み取りだけで照合する（wr_gitlink_check）。カレントのリポジトリに対する最初の git より前に、ファイルだけで求める（wr_trust_cwd）。
+# 求められないときは空で、カレントのリポジトリでも付属 worktree の中でも git を呼ばない（remove・sweep は保持、check-absent は unknown、ブランチは消さない）
+wr_trust_cwd
 
 usage() {
   echo "使い方: worktree-remove.sh remove --mode (superseded|discard) [--path P] [--branch B --base BASE] [--head SHA] [--expect-branch B] [--require-missing] / sweep --file _/issue-trees/N.json（候補は標準入力）/ check-absent --path P [--repo-root R]" >&2
@@ -170,13 +184,15 @@ T_UNLOCKED=false
 # $5 = 1 のとき、登録が無いのに実体のパスがあるものを retained-unregistered にする（discard の --head / --expect-branch / --require-missing。空 = not-registered のまま）
 # $6 = 1 のとき、実体が無いときだけ消す（discard の --require-missing と --branch の後始末。実体がある・lock ありは何も消さず、unlock もしない。lock は pid の生死を問わず retained-locked）
 remove_one() {
-  local m=$1 path=$2 expect=${3:-} expect_sha=${4:-} unreg_guard=${5:-0} req_missing=${6:-0} wt_sha wt_head wt_full sr_rc wt_unborn lreal list top real cwd_real plan lockact alive cur_start status_out sub_init gd rc kmsg krc kw pw pself pout prc xw
+  local m=$1 path=$2 expect=${3:-} expect_sha=${4:-} unreg_guard=${5:-0} req_missing=${6:-0} wt_sha wt_head wt_full sr_rc wt_unborn lreal list top real cwd_real plan lockact alive cur_start status_out ls_out sub_init gd rc kmsg krc kw pw pself pout prc xw
   T_WT=""
   T_DIRTY=0
   T_UNLOCKED=false
   # 字面を正規化してから使う（末尾の / と /.・連続する /・途中の /./。.. は入力検証が拒否済み）。remove は実体の無いパスを自分では
   # 解決せず、登録の字面と比べるので、正規化しない綴りで指すと登録を見つけても消せない
   path=$(wr_norm_path "${path}")
+  # 信頼する共通ディレクトリが無ければ、カレントのリポジトリの一覧も取らずに保持する（カレントの .git が偽なら、一覧の git もその偽の config を読む）
+  if [ -z "${TRUSTED_COMMON}" ]; then T_WT=retained-broken; return 0; fi
   list=$(git worktree list --porcelain 2>/dev/null) || { T_WT=failed; return 0; }
   wr_find_entry "${list}" "${path}"
   if [ "${WR_REGISTERED}" != 1 ] && [ ! -e "${path}" ] && [ ! -L "${path}" ]; then
@@ -257,28 +273,37 @@ remove_one() {
   wt_sha=""
   wt_unborn=0
   if [ -d "${path}" ]; then
-    top=$(git -C "${path}" rev-parse --show-toplevel 2>/dev/null) || top=""
+    top=""
+    gd=""
+    # git を呼ぶ前に、.git・commondir・gitdir をファイルの読み取りだけで照合する（偽の共通ディレクトリの config を git に読ませない）。通らなければ git を呼ばない
+    if wr_gitlink_check "${path}" "${TRUSTED_COMMON}"; then
+      gd=${WR_GITDIR}
+      top=$(git --no-optional-locks -c core.fsmonitor=false -C "${path}" rev-parse --show-toplevel 2>/dev/null) || top=""
+    fi
     if [ -z "${top}" ] || [ "$(wr_real "${top}")" != "${real}" ]; then
-      # git の対象がこの worktree 自身でない（.git の破損・toplevel の不一致）。読み直しても変わらない決定的な状態なので retained-broken（記録する側）。
+      # git の対象がこの worktree 自身でない（.git の破損・照合の不一致・toplevel の不一致）。読み直しても変わらない決定的な状態なので retained-broken（記録する側）。
       # rev-parse の一過性の失敗もここへ入るが、区別できないときは恒久側へ倒す（毎ラン再試行して closed 後始末の枠を食い続けるより、記録して人に見せる）
       WR_DIRTY=-2
-    elif status_out=$(git -C "${path}" -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=none 2>/dev/null); then
+    elif ls_out=$(git --no-optional-locks -c core.fsmonitor=false -C "${path}" ls-files -s 2>/dev/null) &&
+      status_out=$(git --no-optional-locks -c core.fsmonitor=false -C "${path}" -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=all 2>/dev/null); then
+      # submodule の中へは降りない（--ignore-submodules=all）。その config はエージェントが書ける場所にあり、中へ降りる git がそこのコマンドを実行し得る。
+      # 実体のある submodule は数えて保持する（下の sub_init）
       wr_count_status "${status_out}"
       # この worktree が実際に指すブランチ（toplevel がこの worktree 自身だと確かめた後に、削除と同じプロセスで読む）
-      wt_head=$(git -C "${path}" symbolic-ref -q --short HEAD 2>/dev/null) || wt_head=""
-      wt_full=$(git -C "${path}" symbolic-ref -q HEAD 2>/dev/null) || wt_full=""
-      wt_sha=$(git -C "${path}" rev-parse -q --verify 'HEAD^{commit}' 2>/dev/null) || wt_sha=""
+      wt_head=$(git --no-optional-locks -c core.fsmonitor=false -C "${path}" symbolic-ref -q --short HEAD 2>/dev/null) || wt_head=""
+      wt_full=$(git --no-optional-locks -c core.fsmonitor=false -C "${path}" symbolic-ref -q HEAD 2>/dev/null) || wt_full=""
+      wt_sha=$(git --no-optional-locks -c core.fsmonitor=false -C "${path}" rev-parse -q --verify 'HEAD^{commit}' 2>/dev/null) || wt_sha=""
       # コミットを読めなかった理由の見分け: HEAD が指す ref（フル名。refs/heads の外を指す HEAD も同じに扱う）が無いと git が終了コード 1 で言ったときだけ unborn（決定的）。
       # ref はあるのに読めない・show-ref 自体が別の理由で失敗した（1 以外）ときは unborn にせず、一過性の観測失敗（retained-unobservable）として残す
       if [ -z "${wt_sha}" ] && [ -n "${wt_full}" ]; then
         sr_rc=0
-        git -C "${path}" show-ref --verify -q "${wt_full}" >/dev/null 2>&1 || sr_rc=$?
+        git --no-optional-locks -c core.fsmonitor=false -C "${path}" show-ref --verify -q "${wt_full}" >/dev/null 2>&1 || sr_rc=$?
         if [ "${sr_rc}" -eq 1 ]; then wt_unborn=1; fi
       fi
-      # 初期化済み submodule（先頭が - の行は未初期化）と、このworktree専用の modules ディレクトリ（deinit 後もコミットが残り得る）
-      sub_init=$(git -C "${path}" submodule status 2>/dev/null | awk 'substr($0,1,1) != "-" && NF > 0 { n++ } END { print n + 0 }') || sub_init=0
-      gd=$(git -C "${path}" rev-parse --absolute-git-dir 2>/dev/null) || gd=""
-      if [ -n "${gd}" ] && [ -d "${gd}/modules" ] && [ -n "$(ls -A "${gd}/modules" 2>/dev/null)" ]; then sub_init=$((sub_init + 1)); fi
+      # 初期化済み submodule（index の gitlink のうち作業ツリー側に .git があるもの。git submodule status は中へ降りるので使わない）と、
+      # この worktree 専用の modules ディレクトリ（deinit 後もコミットが残り得る。照合済みの git ディレクトリの下を読む）
+      sub_init=$(wr_count_populated "${path}" "${ls_out}")
+      if [ -d "${gd}/modules" ] && [ -n "$(ls -A "${gd}/modules" 2>/dev/null)" ]; then sub_init=$((sub_init + 1)); fi
     else
       WR_DIRTY=-1 # git status コマンドそのものの失敗（一過性になり得る）
     fi
@@ -307,9 +332,17 @@ remove_one() {
     esac
   fi
 
+  # 変更コマンド（unlock・remove）の直前の照合。<共通>/worktrees/ の下にシンボリックリンクがあると、git worktree remove は登録のディレクトリの
+  # リンク先の中身を消す。実体があるときは .git・commondir・gitdir をもう一度照合する（上の観測から削除までの間の差し替え。--force なしの remove は
+  # 中で git status を走らせる）。どちらも通らなければ何も変えず retained-broken
+  if [ "$(wr_admin_links "${TRUSTED_COMMON}")" != 0 ] || { [ -d "${path}" ] && ! wr_gitlink_check "${path}" "${TRUSTED_COMMON}"; }; then
+    T_WT='retained-broken'
+    T_DIRTY=-1
+    return 0
+  fi
   rc=0
   if [ "${lockact}" = unlock ]; then
-    git worktree unlock -- "${path}" >/dev/null 2>&1 || rc=$?
+    git -c core.fsmonitor=false worktree unlock -- "${path}" >/dev/null 2>&1 || rc=$?
     if [ "${rc}" -ne 0 ]; then T_WT='retained-locked'; return 0; fi
     T_UNLOCKED=true
   fi
@@ -323,9 +356,9 @@ remove_one() {
     esac
   fi
   if [ "${plan}" = force ]; then
-    git worktree remove --force -- "${path}" >/dev/null 2>&1 || rc=$?
+    git -c core.fsmonitor=false worktree remove --force -- "${path}" >/dev/null 2>&1 || rc=$?
   else
-    git worktree remove -- "${path}" >/dev/null 2>&1 || rc=$?
+    git -c core.fsmonitor=false worktree remove -- "${path}" >/dev/null 2>&1 || rc=$?
   fi
   if [ "${rc}" -eq 0 ]; then T_WT=removed; else T_WT=failed; fi
   return 0
@@ -337,12 +370,15 @@ remove_one() {
 # 一覧を読めないときも prune しない（保全側）
 PRUNE_SKIPPED=0
 safe_prune() {
-  local plist
+  local plist plinks
   PRUNE_SKIPPED=0
+  [ -n "${TRUSTED_COMMON}" ] || { PRUNE_SKIPPED=1; return 0; }
   plist=$(git worktree list --porcelain 2>/dev/null) || { PRUNE_SKIPPED=1; return 0; }
   # 1 回の走査で、各登録の有無を 1 回だけ観測して risk と unobservable に互いに素に振り分ける（観測できない登録は prune が不在と扱って落とすので数える）
   wr_prune_scan "${plist}"
-  if [ "${WR_PRUNE_RISK}" -gt 0 ] || [ "${WR_PRUNE_UNOBS}" -gt 0 ]; then PRUNE_SKIPPED=$((WR_PRUNE_RISK + WR_PRUNE_UNOBS)); return 0; fi
+  # <共通>/worktrees/ の下のシンボリックリンク（prune はリンク先の中身を消す）。求められないときも 1 と数えてスキップする
+  plinks=$(wr_admin_links "${TRUSTED_COMMON}")
+  if [ "${WR_PRUNE_RISK}" -gt 0 ] || [ "${WR_PRUNE_UNOBS}" -gt 0 ] || [ "${plinks}" -gt 0 ]; then PRUNE_SKIPPED=$((WR_PRUNE_RISK + WR_PRUNE_UNOBS + plinks)); return 0; fi
   git worktree prune >/dev/null 2>&1 || true
 }
 
@@ -381,7 +417,13 @@ if [ "${cmd}" = check-absent ]; then
   path=$(wr_norm_path "${path}")
   ca_ok=1
   ca_ci=0
-  ca_list=$(git worktree list --porcelain 2>/dev/null) || { ca_ok=0; ca_list=""; }
+  ca_list=""
+  # 信頼する共通ディレクトリが無ければ一覧を取らない（unknown）
+  if [ -z "${TRUSTED_COMMON}" ]; then
+    ca_ok=0
+  else
+    ca_list=$(git worktree list --porcelain 2>/dev/null) || { ca_ok=0; ca_list=""; }
+  fi
   # 一覧を取るのはカレントのリポジトリ。対象のリポジトリと違えば登録を見落として absent に倒れるので、確定できないとき・違うときは unknown
   [ "${ca_ok}" -eq 0 ] || wr_repo_matches "${repo_root}" "${path}" || ca_ok=0
   ca_fs=$(wr_path_state "${path}")
@@ -443,7 +485,7 @@ if [ "${cmd}" = remove ]; then
   # --path の結果（T_WT・T_DIRTY・T_UNLOCKED）は後始末の結果で上書きしない（元の worktree が残ったように見えるのを防ぐ）。後始末の結果は holder と、ブランチを消すかの判断にだけ使う
   did_remove=0
   if [ "${T_WT}" = removed ]; then did_remove=1; fi
-  if [ -n "${branch}" ] && wr_wt_gone "${T_WT}"; then
+  if [ -n "${branch}" ] && [ -n "${TRUSTED_COMMON}" ] && wr_wt_gone "${T_WT}"; then
     hl=$(git worktree list --porcelain 2>/dev/null) || hl=""
     wr_branch_holder "${hl}" "${branch}"
     holder=${WR_HOLDER}
@@ -480,8 +522,15 @@ if [ "${cmd}" = remove ]; then
     # 後始末が保持・失敗なら、ブランチはまだ登録が掴んでいるので消さない（keep）
     { wr_wt_gone "${T_WT}" && { [ -z "${holder_word}" ] || [ "${holder_word}" = removed ] || [ "${holder_free}" = 1 ]; }; } && gone=1
     exists=0
-    if sha=$(git rev-parse --verify -q "refs/heads/${branch}^{commit}" 2>/dev/null); then exists=1; else sha=""; fi
-    act=$(wr_branch_action "${branch}" "${base}" "${gone}" "${exists}")
+    # 信頼する共通ディレクトリを求められないときはブランチを調べず消さない（keep。git はカレントの共通ディレクトリの config を読み、git branch -D は
+    # そこのフック〔reference-transaction〕を走らせる。照合に通らないカレントではそれが偽物であり得る）
+    if [ -z "${TRUSTED_COMMON}" ]; then
+      sha=""
+      act=keep
+    else
+      if sha=$(git rev-parse --verify -q "refs/heads/${branch}^{commit}" 2>/dev/null); then exists=1; else sha=""; fi
+      act=$(wr_branch_action "${branch}" "${base}" "${gone}" "${exists}")
+    fi
     case "${act}" in
       delete)
         # 先頭 sha は消す前に結果へ出す（消した後は gc まで到達不能なオブジェクトとして残るだけで、reflog には残らない）

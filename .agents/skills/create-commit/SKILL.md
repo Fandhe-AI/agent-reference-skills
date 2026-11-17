@@ -43,9 +43,11 @@ staged がない場合は `git diff` も確認してユーザーに staging を�
 ```bash
 # ---- パターン定義（自己テストと本検査で共有する。変更はここだけで行う）----
 
-# 認証情報ファイル名と、テンプレート・公開鍵の除外
-RE_CREDFILE='(^|/)\.env(\..+)?$|(^|/)(id_rsa|id_ed25519)(\..+)?$|\.(pem|p12|pfx|key)$'
-RE_CREDFILE_OK='\.(example|sample|template|pub)$'
+# 認証情報ファイル名と、テンプレート・公開鍵の除外。全体を括弧で包み、末尾の `$` の直後に
+# 閉じ引用符を置かない（並ぶとサブエージェントのコマンドガードが ANSI-C 引用符とみなして止める）。
+# 括弧で包んでも一致する範囲は変わらない
+RE_CREDFILE='((^|/)\.env(\..+)?$|(^|/)(id_rsa|id_ed25519)(\..+)?$|\.(pem|p12|pfx|key)$)'
+RE_CREDFILE_OK='(\.(example|sample|template|pub)$)'
 
 # 高信頼パターン: ベンダー固有のトークン形式・秘密鍵ヘッダー・JWT（3 セグメント）・
 # 認証情報を埋め込んだ接続文字列（scheme://user:pass@host）

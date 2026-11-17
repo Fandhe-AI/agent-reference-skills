@@ -18,18 +18,29 @@ user-invocable: true
 
 ### Step 1: 変更内容を分析する
 
-```bash
-git log main..HEAD --oneline
-git diff main...HEAD --stat
-```
+ベースブランチは Step 5 と同じ方法（`gh repo view` が返す既定ブランチ）で解決し、そのリモート追跡ブランチ（`origin/<base>`）との差分を見る。リポジトリの規約が `develop` 等なら、Step 5 と同じく `base=` をその名前に置き換える。ベースブランチ名を取得できないときは `exit 1` で止めて報告する。コードブロックは独立したシェルで実行され得るため、変数の引き継ぎに依存せず、このブロックの中で解決する。このブロックはネットワークを使い、`.git` の追跡 ref にも書き込むため、sandbox 節のとおり昇格して実行する。
 
-ベースブランチはリポジトリの規約に従う（`main` / `develop` 等）。
+```bash
+base="$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)" || base=""
+case "${base}" in  # gh --jq は null を空文字で出すが、jq 実装差に備えて null も弾く
+  ""|null)
+    echo "ベースブランチ名を取得できない。差分を確認できないため中止する" >&2
+    exit 1
+    ;;
+esac
+git fetch origin "+refs/heads/${base}:refs/remotes/origin/${base}" || {
+  echo "git fetch に失敗した。ネットワーク・認証・ブランチ名を確認して報告する" >&2
+  exit 1
+}
+git log "origin/${base}..HEAD" --oneline
+git diff "origin/${base}...HEAD" --stat
+```
 
 ### Step 2: セキュリティチェック（必須）
 
 サブエージェントを使える環境では、読み取り専用の調査用サブエージェントへ委譲してセキュリティ確認を行う。使えない環境では同じ手順を自分で実行する。渡す入力は次の 3 点で、どちらで実行しても同じ結果になるようにする。
 
-- 差分: Step 1 の `git diff <base>...HEAD`
+- 差分: Step 1 の `git diff origin/<base>...HEAD`
 - 観点: 次の確認項目
 - 出力形式: 問題なし、または `ファイル:行`・重大度（HIGH / MEDIUM / LOW）・説明・推奨修正の一覧
 
@@ -132,6 +143,9 @@ Step 2 のセキュリティチェックで HIGH / MEDIUM が無いと確かめ�
 ```bash
 base="$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)" || base=""
 branch="$(git symbolic-ref --quiet --short HEAD)" || branch=""
+case "${base}" in  # gh --jq は null を空文字で出すが、jq 実装差に備えて null も弾く
+  ""|null) base="" ;;
+esac
 if [ -z "${base}" ] || [ -z "${branch}" ]; then
   echo "ベースブランチまたは現在のブランチ名を取得できない（detached HEAD を含む）。push しない" >&2
   exit 1
@@ -192,6 +206,6 @@ gh pr checks <pr-number>
 
 ## sandbox 環境での実行
 
-このスキルはネットワーク越しの GitHub 操作（`gh api`・`gh issue view` / `gh issue edit`・`git push`・`gh pr create`・`gh pr view` / `gh pr checks`）を必須とする。該当コマンドはコマンド単位で sandbox 無効にして実行する。ネットワーク遮断を解除できない環境では実行できない。`codex exec` ではネットワーク昇格の要求が出ないため、コマンドが拒否されたら実行できなかったことを報告して止める。
+このスキルはネットワーク越しの GitHub 操作（Step 1 の `gh repo view`・`git fetch`、`gh api`・`gh issue view` / `gh issue edit`・`git push`・`gh pr create`・`gh pr view` / `gh pr checks`）を必須とする。該当コマンドはコマンド単位で sandbox 無効にして実行する。ネットワーク遮断を解除できない環境では実行できない。`codex exec` ではネットワーク昇格の要求が出ないため、コマンドが拒否されたら実行できなかったことを報告して止める。
 
-Step 5 の `git push -u origin HEAD` はネットワークを使ううえ、`.git` にも書き込む（リモート追跡ブランチと upstream の設定）。Codex の既定 sandbox では `.git` が読み取り専用のため、対話セッションではネットワークと `.git` への書き込みの昇格を求める。`codex exec` では昇格要求が出ないため、コマンドが拒否されたら push できなかったことを報告して止める。案内は次のどちらか: `.git` を書き込み可にした permissions プロファイルで実行し直す、またはユーザーが自分で push する。`.git` 以外では、このスキルは `.agents`・`.codex` へ書き込まない。
+Step 1 の `git fetch origin "+refs/heads/${base}:refs/remotes/origin/${base}"` はネットワークを使い、`.git` にも書き込む（`origin/<base>` の追跡 ref の更新）。同じ Step 1 の `gh repo view` もネットワークを使う。Step 5 の `git push -u origin HEAD` はネットワークを使ううえ、`.git` にも書き込む（リモート追跡ブランチと upstream の設定）。以下の昇格と拒否時の扱いは、Step 1 の fetch にも同様に適用する（拒否されたら分析を進めず、実行できなかったことを報告して止める。ネットワーク・認証の失敗と取り違えない）。Codex の既定 sandbox では `.git` が読み取り専用のため、対話セッションではネットワークと `.git` への書き込みの昇格を求める。`codex exec` では昇格要求が出ないため、コマンドが拒否されたら push できなかったことを報告して止める。案内は次のどちらか: `.git` を書き込み可にした permissions プロファイルで実行し直す、またはユーザーが自分で push する。`.git` 以外では、このスキルは `.agents`・`.codex` へ書き込まない。
