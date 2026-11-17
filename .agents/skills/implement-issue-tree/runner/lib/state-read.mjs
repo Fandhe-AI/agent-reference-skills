@@ -15,7 +15,8 @@
 //
 // 読む範囲（state.sh verify の sv_run と同じ判定にそろえる。どれかに当たれば照合不成立に倒れる値を返す）:
 //   - 置き場は <realpath(mainRoot)>/_/issue-trees（state:load の段に渡す書き込み可の置き場と同じ。stateDirOf）。
-//     置き場の realpath がこの形でない（`_` か `issue-trees` が symlink で外を指す）ときは読まない
+//     置き場の realpath がこの形でない（`_` か `issue-trees` が symlink で外を指す）ときは読まない。状態ファイルが無いときも
+//     同じで、absent（初期化をモデルの段へ回し、置き場を書き込み可で渡す）にせず bad にする
 //   - 状態ファイルが symlink・通常のファイルでない・読めない・JSON として不正（空・値が 2 つ以上を含む）・最上位がオブジェクトで
 //     ない・.items が（無い・null 以外で）オブジェクトでない・高水位が（無い・null 以外で）15 桁以内の非負整数でない
 //   - パスに .. は入らない（番号は正の整数の 10 進表記だけ）
@@ -47,6 +48,35 @@ const isPlainObject = (x) => x !== null && typeof x === 'object' && !Array.isArr
 const uintField = (v) => (v === undefined || v === null ? 0 : Number.isSafeInteger(v) && v >= 0 && v <= MAX_UINT ? v : undefined)
 
 /**
+ * 状態ファイルが無いときに、置き場の途中の `_`・`_/issue-trees` のうち実在するものが symlink でなく、realpath が字面と
+ * 同じことを確かめる。無い（absent）は初回の初期化として state:load の段へ書き込み可の置き場を渡す経路なので、ファイルが
+ * あるときの置き場の検査（realpath(dir) !== dir）と同じ閉じ込めをここでも掛ける（symlink 越しに外へ初期化させない）。
+ * 成分は手前から lstat し、symlink なら realpath を引く前に bad にする（リンク先が無い symlink を ENOENT で absent に落とさない）。
+ */
+function absentOrBad(root, bad) {
+  let p = root
+  for (const name of ['_', 'issue-trees']) {
+    p = join(p, name)
+    let st
+    try {
+      st = lstatSync(p)
+    } catch (e) {
+      if (e?.code === 'ENOENT' || e?.code === 'ENOTDIR') return { kind: 'absent' }
+      return bad(`状態ファイルの置き場を確かめられない（${String(e?.code ?? 'error')}）`)
+    }
+    if (st.isSymbolicLink()) return bad('状態ファイルが無く、置き場（_ か _/issue-trees）が symlink')
+    try {
+      if (realpathSync(p) !== p) return bad('状態ファイルが無く、置き場がメイン worktree の _/issue-trees の外を指す')
+    } catch (e) {
+      return bad(`状態ファイルの置き場を確かめられない（${String(e?.code ?? 'error')}）`)
+    }
+    // `_` が通常のファイル等なら、その下に置き場は無い（state.sh verify の nofile と同じく absent。初期化の段が失敗する）
+    if (!st.isDirectory()) return { kind: 'absent' }
+  }
+  return { kind: 'absent' }
+}
+
+/**
  * 状態ファイルを読む（何も書かない）。
  * @param {{ mainRoot: string, parent: number }} p
  * @returns {{ kind: 'absent' } | { kind: 'bad', reason: string }
@@ -67,7 +97,7 @@ export function readStateFile({ mainRoot, parent }) {
   try {
     st = lstatSync(file)
   } catch (e) {
-    if (e?.code === 'ENOENT' || e?.code === 'ENOTDIR') return { kind: 'absent' }
+    if (e?.code === 'ENOENT' || e?.code === 'ENOTDIR') return absentOrBad(root, bad)
     return bad(`状態ファイルを確かめられない（${String(e?.code ?? 'error')}）`)
   }
   try {

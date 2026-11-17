@@ -69,7 +69,7 @@ _/iit-runner/<runId>/
 
 - `result` はホストの return 値そのまま（dryRun なら `startable`・`blocked` 等の見積り）。終了コードが 0 以外のときは `null`。
 - `meta.json` の `outcome` は `ok`（schema に適合した値）/ `null`（未返却）/ `exec-spec`（直接実行した段）/ `throw`（呼び出しの不備・worktree 作成の失敗）。`direct: "host-cleanup"` は worktree 掃除の複合段をホストが直接実行したこと、`direct: "host-state-read"` は状態ファイルの読み込みの段をホストが直接読んだことを示す（`kind` はアダプタの失敗種別に使う）。
-  直接実行した段の `status` は `exec-ok`・`exec-fail`（状態ファイルの読み込みでは、あるのに読めない・形が違う・置き場の外、または `state:load-fill` で状態ファイルが無い）・`exec-refused`（許可表に合わない・仕様行が壊れている・下の固定と食い違う・読む状態ファイルを決められない）・`exec-invalid`。
+  直接実行した段の `status` は `exec-ok`・`exec-fail`（状態ファイルの読み込みでは、あるのに読めない・形が違う・置き場の外、状態ファイルが無く置き場が symlink、または `state:load-fill` で状態ファイルが無い）・`exec-refused`（許可表に合わない・仕様行が壊れている・下の固定と食い違う・読む状態ファイルを決められない）・`exec-invalid`。
 - 内容の固定（`lib/pins.mjs`）: アダプタを作る前（エージェントを 1 つも起動する前）に、ホストが直接起動する
   `scripts/run-verified.sh` と、その `--verify-only` の枝が照合より前に読む `scripts/lib/signed-output.sh`、ツールが
   実行中に遅延で読むガード（`agent-guard.sh`）・Codex の hook（`adapters/codex-hook.sh`）の sha256 を固定し、`host.log` に記録する。実行仕様の段の起動前とモデルの段の
@@ -83,7 +83,7 @@ _/iit-runner/<runId>/
 |------|-------------|----------|
 | 機械的な段（状態の読み書き・観測・掃除。プロンプト 0 行目に `<!-- iit-exec v1 … -->` を持つ段） | モデルがコマンドを実行して封筒を返す | モデルを介さず `bash <skillDir>/scripts/run-verified.sh …` を shell なしで直接実行する。label ごとの許可表（`lib/agent-host.mjs` の `EXEC_RULES`）に合わない仕様は実行せずその段の失敗値（表の値）を返し、表に無い label・仕様行が壊れているときは `null`。封筒の照合はホストが従来どおり行う（`references/script-trust-model.md`） |
 | worktree 掃除の複合段（`state:cleanup:#N` のうち、worktree を消して状態の worktree を空にする形。0 行目に仕様が無い） | モデルが `worktree-remove.sh` を実行し、結果の語が removed / not-registered / skipped のときだけ `state.sh merge` で記録を空にする（セッションの権限で書ける） | 読み取りの profile のモデルでは書けないため、モデルへ回さずホストが直接実行する（`lib/cleanup-host.mjs`。PR #851 の codex P1）。2 本の起動行・本文を行単位の完全一致で読み、label の N と本文の numbers を束縛する。対象は `<main>/.claude/worktrees/` の直下（symlink で外へ出ない）で、gitdir があれば `<main>/.git/worktrees/` の直下・commondir がメインの `.git`、状態ファイルの記録がそのパスか空文字のものに限る。discard は結びつけ（`--expect-branch`・`--branch`・`--require-missing` のどれか）が付いた形だけを読む（無い形は HEAD を照合せずに消すため）。読めない・確かめられないときは何も起動せず `{"ok":false,"retained":true,"worktree":""}`。権限を足す形にしないのは、gitdir の commondir 等を書けるようにすると HIGH-1 の経路を開き直すため |
-| 状態ファイルの読み込みの段（`state:load`・`state:load-fill`。0 行目に仕様が無い） | モデルが状態ファイルの `items` を書き写して返し、別の段の `state:load-verify`（`state.sh verify` の項目ハッシュ）と照合して一致した項目だけを採る | 長い値（40 桁の sha を含む note 等）の書き写し誤りで照合が成立しないため、モデルへ回さずホストが状態ファイルを読んでそのまま返す（`lib/state-read.mjs`）。読む状態ファイルは生成物と同じ式で `args` の `parent`（無ければ `issue`）から決め（`<main>/_/issue-trees/<parent>.json`。プロンプトは同じ状態ファイルを指すことの照合にだけ使う）、キーは決めず `items` を丸ごと返す（生成物は頼んだキーだけを拾う）。あるのに読めない・JSON として不正・形が違う・symlink・置き場の外（`_` か `issue-trees` が symlink で外を指す）のときは、モデルの段と同じ照合不成立に倒れる値（`state:load` は `ok: false`・`fileExisted: true`、`state:load-fill` は `items: {}`）を返し、読む対象を決められないときは `null`。状態ファイルが無いときの `state:load`（初回の初期化）だけは従来どおりモデルの段へ回す（初期化の内容はプロンプトにしか無いため） |
+| 状態ファイルの読み込みの段（`state:load`・`state:load-fill`。0 行目に仕様が無い） | モデルが状態ファイルの `items` を書き写して返し、別の段の `state:load-verify`（`state.sh verify` の項目ハッシュ）と照合して一致した項目だけを採る | 長い値（40 桁の sha を含む note 等）の書き写し誤りで照合が成立しないため、モデルへ回さずホストが状態ファイルを読んでそのまま返す（`lib/state-read.mjs`）。読む状態ファイルは生成物と同じ式で `args` の `parent`（無ければ `issue`）から決め（`<main>/_/issue-trees/<parent>.json`。プロンプトは同じ状態ファイルを指すことの照合にだけ使う）、キーは決めず `items` を丸ごと返す（生成物は頼んだキーだけを拾う）。あるのに読めない・JSON として不正・形が違う・symlink・置き場の外（`_` か `issue-trees` が symlink で外を指す）のときは、モデルの段と同じ照合不成立に倒れる値（`state:load` は `ok: false`・`fileExisted: true`、`state:load-fill` は `items: {}`）を返し、読む対象を決められないときは `null`。状態ファイルが無いときの `state:load`（初回の初期化）だけは従来どおりモデルの段へ回す（初期化の内容はプロンプトにしか無いため）。ただし置き場の途中（`_`・`_/issue-trees` のうち実在するもの）が symlink か realpath が字面と違うときは、置き場を書き込み可で渡さず、上と同じ照合不成立に倒れる値を返す |
 | model を省いた段（plan・recover） | セッションのモデルを継ぐ | セッションが無いため、設定の `sessionModel`（既定 `opus`）の段として扱う |
 | 並列 | ランタイムの既定（16 か CPU 数 − 2） | `--max-parallel` か `limits.maxParallel`（既定 4）。1 ランのエージェント数は `limits.maxAgents`（既定 1,000）まで |
 | 構造化出力 | ランタイムが schema を強制 | Codex は `--output-schema`（strict 変換。strict では全キーが必須になるため、元が任意のキーは null を許し、説明に「省くときは null」を足して、戻すときに null の欄を落とす）。ランナーが検証し、不適合なら修復を 1 回求め、なお不適合なら `null` |
@@ -100,7 +100,11 @@ _/iit-runner/<runId>/
   終了時に同期で SIGKILL する（セッションの削除は行えないことがある）。Codex の exec の本体が終わったときは
   （正常終了・異常終了・SIGTERM で本体だけが終わった場合を含む）、その場で同じプロセスグループへ SIGKILL を送り、残った子・孫を
   止める。Codex の exec と実行仕様の段の子は、時間切れ・出力超過で止めた後、猶予（2 秒。exec の時間切れは猶予 + 1 秒）を過ぎても
-  標準出力が閉じなければ待たずに失敗として決着する。実行仕様の段の子も、終わったときにプロセスグループへ SIGKILL を送る。隔離 worktree の後始末はホストの判断に従う。
+  標準出力が閉じなければ待たずに失敗として決着する。実行仕様の段の子の時間切れは、まずプロセスグループへ SIGTERM を送り（子の git が
+  作りかけの `*.lock` を片づけられるように）、2 秒の猶予を過ぎてもプロセスグループが空にならなければ SIGKILL を送る（出力超過は
+  SIGKILL のみ。SIGKILL の後はさらに 2 秒で決着する）。実行仕様の段の子も、終わったときにプロセスグループへ SIGKILL を送る（時間切れの
+  SIGTERM の後は送らず、標準出力が閉じてもグループが空になるか猶予を過ぎるまで決着しない。git は出力を /dev/null へ向けることがあり、
+  標準出力が閉じても片づけ中でありうるため）。隔離 worktree の後始末はホストの判断に従う。
 - 隔離 worktree は作成時にランナーの pid で lock する（`claude agent <runId>-<n> (pid <pid>)`）。`worktree-remove.sh` を起動するのも同じ
   プロセスなので、そのままではスクリプトから lock が生存と見え、旧 worktree が `retained-locked` で残る。そこで `worktree-remove.sh` を
   直接実行する段（掃除の複合段・`state:cleanup:#N` の remove・最終スイープ）の前に、対象のうち「このランナーが作り、いま隔離の段が使って
