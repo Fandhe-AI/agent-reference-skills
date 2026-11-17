@@ -26,22 +26,25 @@ Rules for CEL expressions that evaluate resource properties:
 
 ### Example CEL expressions
 
+Adapted (not in the official docs): a finding is raised only when an expression returns `false`, so the instance-name, service-allowlist and Cloud SQL examples are rewritten to return `true` for compliant resources: the name pattern uses `[0-9]+` instead of `\\\\d+`, the service example returns `true` for disabled or allowlisted services, and the Cloud SQL example returns `true` when the instance is out of scope or has no public IP and compares addresses exactly with `in`.
+
 | Resource type | Description | CEL expression |
 |---|---|---|
 | `cloudkms.googleapis.com/CryptoKey` | Check the Cloud KMS key rotation period | `has(resource.data.rotationPeriod) && resource.data.rotationPeriod < duration('60h')` |
 | `compute.googleapis.com/Network` | Match Virtual Private Cloud peering rule to network peers | `resource.data.selfLink.matches('https://www.googleapis.com/compute/v1/projects/PROJECT_ID/global/networks/default') \|\| resource.data.peerings.exists(p, p.network.matches('https://www.googleapis.com/compute/v1/projects/PROJECT_ID/global/networks/shared$'))` |
 | `cloudfunctions.googleapis.com/CloudFunction` | Only allow internal ingress traffic for a Cloud Run function | `has(resource.data.ingressSettings) && resource.data.ingressSettings.matches('ALLOW_INTERNAL_ONLY')` |
-| `compute.googleapis.com/Instance` | Resource name matches pattern | `resource.data.name.matches('^gcp-vm-(linux\|windows)-v\\\\d+$')` |
-| `serviceusage.googleapis.com/Service` | Only allow storage-related APIs to be enabled | `resource.data.state == 'ENABLED' && !( resource.data.name.matches('storage-api.googleapis.com') \|\| resource.data.name.matches('bigquery-json.googleapis.com') \|\| resource.data.name.matches('bigquery.googleapis.com') \|\| resource.data.name.matches('sql-component.googleapis.com') \|\| resource.data.name.matches('spanner.googleapis.com'))` |
-| `sqladmin.googleapis.com/Instance` | Only permit public IP addresses that are on the allowlist | `(resource.data.instanceType == 'CLOUD_SQL_INSTANCE' && resource.data.backendType == 'SECOND_GEN' && resource.data.settings.ipConfiguration.ipv4Enabled ) && (resource.data.ipAddresses.all(ip, ip.type != 'PRIMARY' \|\| ip.ipAddress.matches('IP_ADDRESS')))` |
+| `compute.googleapis.com/Instance` | Resource name matches pattern | `resource.data.name.matches('^gcp-vm-(linux\|windows)-v[0-9]+$')` |
+| `serviceusage.googleapis.com/Service` | Only allow storage-related APIs to be enabled | `resource.data.state != 'ENABLED' \|\| ( resource.data.name.matches('storage-api.googleapis.com') \|\| resource.data.name.matches('bigquery-json.googleapis.com') \|\| resource.data.name.matches('bigquery.googleapis.com') \|\| resource.data.name.matches('sql-component.googleapis.com') \|\| resource.data.name.matches('spanner.googleapis.com'))` |
+| `sqladmin.googleapis.com/Instance` | Only permit public IP addresses that are on the allowlist | `!(resource.data.instanceType == 'CLOUD_SQL_INSTANCE' && resource.data.backendType == 'SECOND_GEN' && resource.data.settings.ipConfiguration.ipv4Enabled) \|\| resource.data.ipAddresses.all(ip, ip.type != 'PRIMARY' \|\| ip.ipAddress in ['IP_ADDRESS_1', 'IP_ADDRESS_2'])` |
 | `dataproc.googleapis.com/Cluster` | Check if project IDs in a Managed Service for Apache Spark cluster contain the substrings `testing` or `development` | `has(resource.data.projectId) && !resource.data.projectId.contains('testing') && !resource.data.projectId.contains('development')` |
 
 ## Notes
 
 - Preview: subject to the "Pre-GA Offerings Terms"; available "as is" with limited support.
 - Corrected from the official docs: the source example reads `resource.data.state = "PENDING_GENERATION"`; the single `=` is not a CEL comparison, so it is shown as `==`.
-- In the table, `\|` is a Markdown escape for the CEL `||` operator and the `|` in a regular-expression alternation; the expression text is otherwise verbatim. Replace `PROJECT_ID` and `IP_ADDRESS` with your own values.
+- In the table, `\|` is a Markdown escape for the CEL `||` operator and the `|` in a regular-expression alternation; apart from the corrections noted below, the expression text is verbatim. Replace `PROJECT_ID`, `IP_ADDRESS_1` and `IP_ADDRESS_2` with your own values.
 - Find resource type names in the Cloud Asset Inventory asset types list. CEL references: the CEL spec and language definition on GitHub (`google/cel-spec`).
+- Corrected from the official docs: the source's examples conflict with the rule that a finding is triggered only when the result is `false`. (1) `'^gcp-vm-(linux|windows)-v\\\\d+$'` leaves `\\d` in the regular expression after CEL unescapes the string, which matches a literal backslash and `d`, not a digit; it is `[0-9]+` here. (2) `resource.data.state == 'ENABLED' && !(...)` is `true` for an enabled service that is not on the list, so a disallowed service never raised a finding; the expression is inverted to `state != 'ENABLED' || (...)`. (3) The Cloud SQL expression was `false` for every instance without `ipv4Enabled`, raising a finding for instances with no public IP, and `ipAddress.matches('IP_ADDRESS')` is an unanchored regular expression in which `.` matches any character (`10.0.0.1` also matches `110.0.0.10`); it now returns `true` for out-of-scope instances and uses exact membership (`in [...]`). Replace `IP_ADDRESS_1` / `IP_ADDRESS_2` with the allowed addresses.
 - Source: https://docs.cloud.google.com/assured-workloads/docs/write-rules-cloud-controls (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

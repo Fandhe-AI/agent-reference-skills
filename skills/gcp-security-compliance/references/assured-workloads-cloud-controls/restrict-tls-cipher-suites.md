@@ -56,19 +56,21 @@ To access this resource, please use an allowed TLS Cipher Suite.
 
 Replace `TLS_CIPHER_SUITE` (OpenSSL name, for example `ECDHE-ECDSA-AES128-SHA` for `TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA`) and `PROJECT_ID` (the project containing the key ring).
 
+Adapted (not in the official docs): `--verbose` removed: it prints the request headers, including the `Authorization` bearer token, to standard error.
+
 ```bash
 curl --ciphers TLS_CIPHER_SUITE --tls-max 1.2 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-  "https://cloudkms.googleapis.com/v1/projects/PROJECT_ID/locations/global/keyRings" --verbose
+  "https://cloudkms.googleapis.com/v1/projects/PROJECT_ID/locations/global/keyRings"
 ```
 
 Concrete example with `PROJECT_ID` set to `my-project-id` and `TLS_CIPHER_SUITE` set to `ECDHE-ECDSA-AES128-SHA`.
 
-Adapted (not in the official docs): removed the stray `GET` argument, which curl would treat as a second URL (the request is a GET by default).
+Adapted (not in the official docs): removed the stray `GET` argument, which curl would treat as a second URL (the request is a GET by default). `--verbose` removed: it prints the request headers, including the `Authorization` bearer token, to standard error.
 
 ```bash
 curl --ciphers ECDHE-ECDSA-AES128-SHA --tls-max 1.2 \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-  "https://cloudkms.googleapis.com/v1/projects/my-project-id/locations/global/keyRings" --verbose
+  "https://cloudkms.googleapis.com/v1/projects/my-project-id/locations/global/keyRings"
 ```
 
 If the policy for `my-project-id` denies `TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA`, the request fails with:
@@ -237,8 +239,9 @@ To access this resource, please use an allowed TLS Cipher Suite.
 - Tip: to order Google Chrome's cipher suites in a CNSA-recommended way, enable the `chrome://#cryptography-compliance-cnsa` flag.
 - Corrected from the official docs: the second test command contained `--tls-max 1.2 \ GET -H ...`, where `GET` would be parsed as an extra URL; `GET` is removed.
 - Denied requests also generate a Cloud Audit Logs entry (`policyViolationInfo.orgPolicyViolationInfo` with `constraint: "constraints/gcp.restrictTlsCipherSuites"` and `policyType: "LIST_CONSTRAINT"`); the source's example entry is omitted. For API requests that use third-party credentials, `authenticationInfo` might not occur in the audit log.
-- The `curl` tests print an access token via `gcloud auth print-access-token` only inside the command; do not paste verbose output into shared logs, because `--verbose` echoes request headers including the Authorization bearer token.
+- The `curl` tests obtain an access token with `gcloud auth print-access-token` inside the command; the token is not printed, but it is visible in the process list while `curl` runs, so do not run them on shared hosts.
 - The source also shows Console steps for setting the policy.
+- Adapted from the official docs: the source runs these `curl` commands with `--verbose`, which writes the `Authorization` header and its token to standard error, where shared terminals and CI logs keep it; the flag is removed. Without it curl still reports the HTTP or TLS error.
 - Source: https://docs.cloud.google.com/docs/security/compliance/restrict-tls-cipher-suites (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
