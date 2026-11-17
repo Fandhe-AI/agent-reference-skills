@@ -177,7 +177,7 @@ skills/gcp-compute/
 | Confidential VM（対応構成・作成・構成証明・組織ポリシーによる強制）・Confidential Space のワークロード | confidential-computing | [references/confidential-computing/README.md](references/confidential-computing/README.md) |
 | Oracle Database@Google Cloud の概要・環境準備・ODB Network・Exadata Infrastructure・Autonomous AI Database・IAM・クォータ | oracle-database | [references/oracle-database/README.md](references/oracle-database/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/hypercomputecluster` / `rest-schemas/oracledatabase` / `rest-schemas/osconfig` / `rest-schemas/tpu`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/osconfig` / `rest-schemas/tpu`
 
 ## 他スキルとの使い分け
 
