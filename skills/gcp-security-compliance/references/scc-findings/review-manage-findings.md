@@ -18,6 +18,16 @@ AND NOT mute="MUTED"
 AND launch_state="LAUNCH_STATE_DEPRECATED"
 ```
 
+As written in the source, the last line keeps only findings with `launch_state` set to `LAUNCH_STATE_DEPRECATED` (findings from deprecated Security Health Analytics detectors). To exclude those findings instead and review active findings from current detectors, negate the condition.
+
+Adapted (not in the official docs): `AND launch_state=...` changed to `AND NOT launch_state=...` so the query excludes deprecated-detector findings.
+
+```text
+state="ACTIVE"
+AND NOT mute="MUTED"
+AND NOT launch_state="LAUNCH_STATE_DEPRECATED"
+```
+
 ### List findings with gcloud
 
 ```bash
@@ -69,6 +79,7 @@ gcloud scc findings list 123456 --source=5678 \
 - Console click paths are omitted; see the source page.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/scc/findings/list (gcloud 593.0.0 help).
 - With no `--location`, the gcloud help says the request goes to the SCC V1 API; pass `--location` to use the V2 API.
+- Source inconsistency: the source labels the query with `launch_state="LAUNCH_STATE_DEPRECATED"` as the query the editor starts with; that condition selects only deprecated-detector findings, so copying it as a general findings query hides active findings from current detectors. The source query is kept verbatim and an `AND NOT` variant is added.
 - Source: https://docs.cloud.google.com/security-command-center/docs/review-manage-findings (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
