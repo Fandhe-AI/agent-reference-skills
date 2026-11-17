@@ -71,6 +71,8 @@ gcloud compute url-maps add-path-matcher l7-ilb-map \
 
 ### Callout VM running the sample Python `ext_proc` server
 
+The source uses `create-with-container`, which gcloud 593.0.0 marks as deprecated (see Notes); for a new deployment, run the container on the VM by one of the alternatives in the migration guide.
+
 ```bash
 gcloud compute instances create-with-container callouts-vm \
   --container-image=us-docker.pkg.dev/service-extensions-samples/callouts/python-example-basic:main \
@@ -146,6 +148,7 @@ gcloud compute backend-services add-backend l7-ilb-callout-service \
 - The `allow-ssh` tag only labels the VMs; no firewall rule is created on this page, and none should open SSH to `0.0.0.0/0`.
 - The source also shows Console steps.
 - Full flag lists for `gcloud compute ...` commands are in the `gcp-compute` skill (for example https://docs.cloud.google.com/sdk/gcloud/reference/compute/backend-services/create).
+- Deprecated: the gcloud 593.0.0 help for `gcloud compute instances create-with-container` says "(DEPRECATED) The option to deploy a container during VM creation using the container startup agent is deprecated. Use alternative services to run containers on your VMs. Learn more at https://cloud.google.com/compute/docs/containers/migrate-containers." The command is kept as in the source for the sample callout server; the full help is in the `gcp-compute` skill.
 - Source: https://docs.cloud.google.com/service-extensions/docs/configure-callout-backend-service (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
