@@ -38,7 +38,7 @@ gcloud compute network-firewall-policies rules create 10 \
 
 | Rule | Detail |
 |---|---|
-| Labels | At least two labels, each 1-63 characters, matching `[a-z]([-a-z0-9][a-z0-9])?.`, joined by a dot. |
+| Labels | At least two labels, each 1-63 characters, joined by a dot. The source also gives a label regular expression, which is not usable as written (see Notes). |
 | Not supported | Wildcards (`*.example.com.`) and top-level / root domains (`.org`). |
 | IDNs | Supported in Unicode or Punycode; Unicode is converted to Punycode; the 1-63 limit applies after conversion. |
 | Total length | Encoded FQDN can't exceed 255 bytes (octets). |
@@ -51,6 +51,7 @@ gcloud compute network-firewall-policies rules create 10 \
 - FQDNs can be combined with other source / destination parameters; see the rule-details page for permitted combinations.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/network-firewall-policies/rules/create (gcloud 593.0.0 help). Full flags are in the `gcp-compute` skill. DNS resolution itself is Google Cloud DNS, not Cloudflare DNS.
 - Adapted from the official docs: the help example for `network-firewall-policies rules create` omitted the required `--layer4-configs` and any source; `--layer4-configs=tcp:80` and `--src-ip-ranges=192.0.2.0/24` were added (the flag help: "Either --src-ip-ranges or --src-secure-tags must be specified for INGRESS traffic").
+- Source inconsistency: the source says each label "must match a regular expression that includes only these characters: `[a-z]([-a-z0-9][a-z0-9])?.`" and also that each label "must have a length of 1-63 characters". As a regular expression this has no repetition, so it matches at most three characters plus one more (the trailing `.` matches any character), and it cannot match a label such as `example`. Read it as the allowed characters only (lowercase letters, digits and hyphens, starting with a letter), not as a validation pattern.
 - Source: https://docs.cloud.google.com/firewall/docs/fqdn-objects-overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
