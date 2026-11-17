@@ -32,7 +32,7 @@ print(decoded_string) # Note that a newline character (\n) is added to the end o
 
 ## Options / Props
 
-### Client validation modes (`ServerTLSPolicy.clientValidationMode`)
+### Client validation modes (`ServerTlsPolicy.mtlsPolicy.clientValidationMode`)
 
 | Mode | Behavior |
 |---|---|
@@ -116,6 +116,7 @@ print(decoded_string) # Note that a newline character (\n) is added to the end o
 - Google Cloud Load Balancing, not Cloudflare (`cloudflare-workers`, `cloudflare-pages`) or Vercel (`vercel`). Certificate Manager (trust configs) is covered in the planned `gcp-security` skill.
 - Source inconsistency: the source says "more than ten intermediate certificates that share the same Subject and Subject Public Key Info" for `client_cert_pki_too_large` and the quotas page (https://docs.cloud.google.com/load-balancing/docs/quotas, retrieved 2026-11-17) lists "Intermediate certificates that share the same Subject and Subject Public Key information | Limit: 10", but the limits section says "All intermediate certificates must not have more than three certificates that share the same Subject and Subject Public Key info" (the trust store section also says "No more than three" on the backend authenticated TLS page). Both numbers are kept as written.
 - Source inconsistency: the error table says "The client certificate chain is too long (more than 10 intermediate certificates included with the client certificate)", while the limits section says "The maximum depth for a certificate chain is ten, including the root and client certificates" and "The accepted certificate chain received from the client is limited to up to 16 KB and 10 certificates". Both are kept as written.
+- REST field path: the client validation mode and relaxations are fields of the `mtlsPolicy` object of a `ServerTlsPolicy` (`mtlsPolicy.clientValidationMode`, `mtlsPolicy.clientValidationRelaxations`, `mtlsPolicy.clientValidationTrustConfig`; Network Security API v1 Discovery document, retrieved 2026-11-14). The prose name "ServerTLSPolicy" refers to the same resource. The full schema is in the `gcp-networking` skill.
 - Source: https://docs.cloud.google.com/load-balancing/docs/mtls (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -53,7 +53,7 @@ gcloud compute health-checks create http2 my-health-check-name
 | TCP | Open a TCP connection before timeout; closed by prober FIN/RST or backend FIN (a backend RST after prober FIN might fail the probe) |
 | SSL | TCP connection plus TLS/SSL handshake before timeout |
 | TCP, SSL strings | `--request` and `--response`: single-byte printable ASCII, each max 1,024 characters; response must match exactly; `--request` alone checks no response |
-| gRPC | `grpc` (insecure backends) and `grpc_with_tls` (unauthenticated TLS, no identity check); service must reply status `OK` with `SERVING` / `NOT_SERVING` |
+| gRPC | `grpc` (insecure backends) and `grpc_with_tls` (unauthenticated TLS, no identity check); the service replies with RPC status `OK` and the status field set to `SERVING` (healthy) or `NOT_SERVING` (unhealthy) accordingly |
 | Legacy | HTTP `200 OK` |
 
 ### Probe source IP ranges (allow in ingress firewall rules)
