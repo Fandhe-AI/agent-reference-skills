@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-networking
 
-Google Cloud (GCP) のネットワーク系スキル。VPC（ネットワーク・サブネット・ルート・VPC Network Peering・Shared VPC・IP アドレス・BYOIP・内部レンジ・Network Service Tiers・MTU）、ファイアウォール（VPC firewall rules・階層 / グローバル / リージョンの firewall policies・Cloud NGFW のタグ・FQDN・アドレスグループ・firewall endpoints・security profiles・TLS inspection・URL filtering）、Cloud DNS（ゾーン・レコード・DNSSEC・server / response / routing policies）、Cloud NAT（Public NAT / Private NAT・NAT rules）、Cloud Router（BGP・学習 / アドバタイズルート・BGP route policies）、Cloud VPN（HA VPN）、Cloud Interconnect（Dedicated / Partner / Cross-Cloud）、Network Connectivity Center（hub・spoke・NCC Gateway）、Private Service Connect、Private Google Access / private services access / Serverless VPC Access を扱う。加えて Network Intelligence Center（Connectivity Tests・VPC Flow Logs・Firewall Insights・Network Analyzer・Flow Analyzer）、Network Security Integration（in-band / out-of-band・packet mirroring）と Cloud IDS、Secure Web Proxy、Service Directory、Cloud Service Mesh のサービスルーティング（Traffic Director API）、Google Distributed Cloud connected のネットワーク（`gcloud edge-cloud`）と、gcloud 12 グループ・REST（Discovery）・IAM ロールを収録する。分割投入中のため、未投入のカテゴリ（`iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のネットワーク系スキル。VPC（ネットワーク・サブネット・ルート・VPC Network Peering・Shared VPC・IP アドレス・BYOIP・内部レンジ・Network Service Tiers・MTU）、ファイアウォール（VPC firewall rules・階層 / グローバル / リージョンの firewall policies・Cloud NGFW のタグ・FQDN・アドレスグループ・firewall endpoints・security profiles・TLS inspection・URL filtering）、Cloud DNS（ゾーン・レコード・DNSSEC・server / response / routing policies）、Cloud NAT（Public NAT / Private NAT・NAT rules）、Cloud Router（BGP・学習 / アドバタイズルート・BGP route policies）、Cloud VPN（HA VPN）、Cloud Interconnect（Dedicated / Partner / Cross-Cloud）、Network Connectivity Center（hub・spoke・NCC Gateway）、Private Service Connect、Private Google Access / private services access / Serverless VPC Access を扱う。加えて Network Intelligence Center（Connectivity Tests・VPC Flow Logs・Firewall Insights・Network Analyzer・Flow Analyzer）、Network Security Integration（in-band / out-of-band・packet mirroring）と Cloud IDS、Secure Web Proxy、Service Directory、Cloud Service Mesh のサービスルーティング（Traffic Director API）、Google Distributed Cloud connected のネットワーク（`gcloud edge-cloud`）と、gcloud 12 グループ・REST（Discovery）・IAM ロールを収録する。分割投入中のため、未投入のカテゴリ（`rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。`traffic-director` カテゴリは Cloud Service Mesh のサービスルーティング API のページを収録する（REST の API 名は `trafficdirector`（Traffic Director API）、IAM ロールは Traffic Director Client（`roles/trafficdirector.client`））。非推奨は Classic VPN の動的ルーティング（BGP）が 2025-08-01 に非推奨（`cloud-vpn/classic-vpn-deprecation.md`）。
 
@@ -52,6 +52,9 @@ skills/gcp-networking/
       zone-management/
         README.md                 # gcloud zone-management（alpha のみ）
         zone-management-<group>.md  # GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS
+    iam/                          # 機械生成: IAM roles-permissions reference、取得 2026-11-14、分割投入中（11 / 15 ページ。収録済みは README 掲載分のみ）
+      README.md
+      <service>.md                # apim / dns / edgecontainer / edgenetwork / firewallinsights / ids / networkactions（Service Extensions）/ networkconnectivity / networkmanagement / networksecurity-1・2 / networkservices-1・2 / servicedirectory / vpcaccess
     vpc-overview/                 # 公式ガイド由来（手書き）: VPC の概要・VPC ネットワーク・サブネット・IPv6・MTU・network profiles・クォータ・legacy network
       README.md
       <page>.md                   # 例: overview.md / vpc.md / subnets.md
@@ -115,18 +118,24 @@ skills/gcp-networking/
 ```
 
 `references/gcloud/` が担当する gcloud グループ（12）: `dns` / `edge-cache`（Media CDN）/ `edge-cloud` / `ids` / `network-connectivity` / `network-management` / `network-security` / `network-services` / `number-registry` / `service-directory` / `service-extensions` / `zone-management`。`number-registry` と `zone-management` は README 上 alpha コマンドのみ。GA コマンドのページは gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ（各ページ冒頭に明記）。
+
+`references/iam/` のサービス: `apim` / `dns` / `edgecontainer`（Distributed Cloud Edge Container）/ `edgenetwork`（Distributed Cloud Edge Network）/ `firewallinsights` / `ids` / `networkactions`（Service Extensions）/ `networkconnectivity` / `networkmanagement` / `networksecurity`（2 分割）/ `networkservices`（2 分割）/ `servicedirectory` / `vpcaccess`。
+
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
 1. gcloud コマンド → 下記マッピング表で `gcloud` を選び、`references/gcloud/README.md` からグループの README（例: `references/gcloud/network-services/README.md`）→ グループページ・コマンドページを引く。`gcloud compute` 配下のネットワーク系コマンド（`networks` / `subnets` / `firewall-rules` / `routers` / `vpn-gateways` / `interconnects` / `addresses` / LB の各リソース等）は `gcp-compute` にある
-2. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
-3. ロードバランサー・Cloud CDN・Media CDN・Service Extensions の概念・手順は `gcp-load-balancing`。Cloud Armor・IAP・Certificate Manager は `gcp-security`（予定）
-4. 非推奨を確認するときは、Classic VPN の動的ルーティングは `cloud-vpn/classic-vpn-deprecation.md`を引く
+2. IAM ロール・権限 → `references/iam/README.md` の索引から `<service>.md` を引く。`networksecurity` は `networksecurity-1.md` / `networksecurity-2.md`、`networkservices` は `networkservices-1.md` / `networkservices-2.md` に分割されているため、ロール ID（例: `roles/networkconnectivity.hubAdmin`）で `references/iam/` 配下を grep して該当ファイルを特定する。`roles/compute.*`（`compute.networkAdmin` / `compute.securityAdmin` 等）は `gcp-compute`
+3. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
+4. ロードバランサー・Cloud CDN・Media CDN・Service Extensions の概念・手順は `gcp-load-balancing`。Cloud Armor・IAP・Certificate Manager は `gcp-security`（予定）
+5. 非推奨を確認するときは、Classic VPN の動的ルーティングは `cloud-vpn/classic-vpn-deprecation.md`を引く
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
-未投入カテゴリ（`iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+
+分割投入中のカテゴリ（`iam`: 11 / 15 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -145,6 +154,7 @@ skills/gcp-networking/
 | `gcloud service-directory`（namespaces・services・endpoints）のフラグを調べたい | gcloud/service-directory | [references/gcloud/service-directory/README.md](references/gcloud/service-directory/README.md) |
 | `gcloud service-extensions`（wasm-plugins・lb-traffic-extensions・lb-route-extensions・lb-edge-extensions・authz-extensions）のフラグを調べたい | gcloud/service-extensions | [references/gcloud/service-extensions/README.md](references/gcloud/service-extensions/README.md) |
 | `gcloud zone-management`（alpha: zones・identity-providers・service-accounts 等）を調べたい | gcloud/zone-management | [references/gcloud/zone-management/README.md](references/gcloud/zone-management/README.md) |
+| ロール ID の権限一覧・事前定義ロールを調べたい（`roles/dns.*` / `roles/networkconnectivity.*` / `roles/networksecurity.*` / `roles/networkservices.*` / `roles/servicedirectory.*` / `roles/ids.*` / `roles/vpcaccess.*` 等） | iam | [references/iam/README.md](references/iam/README.md) |
 | VPC の概要・VPC ネットワークの仕様（auto / custom mode）・サブネット・IPv6 対応・MTU・network profiles・VPC のクォータ・legacy network | vpc-overview | [references/vpc-overview/README.md](references/vpc-overview/README.md) |
 | ルートの種類と評価順・静的ルート・policy-based routes・ルートの作成 / 削除 | vpc-routes | [references/vpc-routes/README.md](references/vpc-routes/README.md) |
 | 内部 / 外部・静的 / エフェメラルの IP アドレス・静的内部 IP の予約・alias IP・BYOIP・内部レンジ・外部 IPv4 の移動・Network Service Tiers | vpc-ip-addresses | [references/vpc-ip-addresses/README.md](references/vpc-ip-addresses/README.md) |
@@ -166,7 +176,7 @@ skills/gcp-networking/
 | Cloud Service Mesh のサービスルーティング（Traffic Director API）: proxyless gRPC・Envoy・Mesh / HTTPRoute / GRPCRoute / TCPRoute・xDS・サービス LB ポリシー | traffic-director | [references/traffic-director/README.md](references/traffic-director/README.md) |
 | Google Distributed Cloud connected の概要・ネットワーク機能・networks / subnetworks / clusters・クォータ | gdc-connected | [references/gdc-connected/README.md](references/gdc-connected/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `iam` / `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
@@ -175,7 +185,7 @@ skills/gcp-networking/
 - `gcp-gke` — GKE の Gateway API / Ingress / マルチクラスターと、GKE 上の Cloud Service Mesh（Istio API）。本スキルは GKE 外のサービスルーティング（Mesh / HTTPRoute 等のリソース）と VPC 側の設定
 - `gcp-run` — Cloud Run・Cloud Run functions・App Engine。Serverless VPC Access コネクタ（`private-access`・`rest/vpcaccess`・`iam/vpcaccess.md`）は本スキル
 - `gcp-storage` — Cloud Storage・Filestore 等。Cloud Storage バケットをバックエンドにするロードバランサーは `gcp-load-balancing`
-- `gcp-foundation` — IAM の基盤・リソース階層・ADC・課金・クォータ。本スキルは各製品の IAM ロール（`references/iam/`（後続 PR で投入））
+- `gcp-foundation` — IAM の基盤・リソース階層・ADC・課金・クォータ。本スキルは各製品の IAM ロール（`references/iam/`）
 - `gcp-cli` — gcloud 全般のインストール・設定・認証・出力フォーマット。ネットワーク系 12 グループのコマンドは本スキル
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `gcp-security`（予定）— Cloud Armor・IAP・Certificate Manager・Cloud KMS・Security Command Center。Cloud NGFW・Cloud IDS・Secure Web Proxy は本スキル
@@ -194,7 +204,7 @@ skills/gcp-networking/
 
 - 取得日: 2026-11-17（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin。URL に版が無いため取得日で pin）、2026-11-14（機械生成分）、gcloud 593.0.0。Google Distributed Cloud connected のページは正規 URL `distributed-cloud/connected/latest/` を `source:` に使う
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
-- `references/gcloud/` `references/iam/`（後続 PR で投入） `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） は機械生成（gcloud 593.0.0 の help / IAM roles-permissions reference / `google-api-python-client` 同梱の Discovery document（`main` 時点、commit SHA は未記録））。他の 20 カテゴリは公式ガイド由来の手書き
+- `references/gcloud/` `references/iam/` `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） は機械生成（gcloud 593.0.0 の help / IAM roles-permissions reference / `google-api-python-client` 同梱の Discovery document（`main` 時点、commit SHA は未記録））。他の 20 カテゴリは公式ガイド由来の手書き
 - gcloud は GA コマンドが gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS のみ
 - `number-registry` と `zone-management` は README 上 alpha コマンドのみ。`gcloud` のグループ名と製品名の対応は公式 reference で確認する
 - 非推奨: Classic VPN の動的ルーティング（BGP）は 2025-08-01 に非推奨（`cloud-vpn/classic-vpn-deprecation.md`）。
