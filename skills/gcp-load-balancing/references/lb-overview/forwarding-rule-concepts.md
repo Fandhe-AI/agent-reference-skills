@@ -29,8 +29,8 @@ The IP address, port and protocol of an existing forwarding rule cannot be chang
 | Classic Application LB | `EXTERNAL` | TCP |
 | Regional external Application LB | `EXTERNAL_MANAGED` | TCP |
 | Cross-region / regional internal Application LB | `INTERNAL_MANAGED` | TCP |
-| Global external proxy Network LB | `EXTERNAL_MANAGED` | TCP or SSL |
-| Classic proxy Network LB | `EXTERNAL` | TCP or SSL |
+| Global external proxy Network LB | `EXTERNAL_MANAGED` | TCP (SSL is handled by a target SSL proxy; see Notes) |
+| Classic proxy Network LB | `EXTERNAL` | TCP (SSL is handled by a target SSL proxy; see Notes) |
 | Regional external proxy Network LB | `EXTERNAL_MANAGED` | TCP |
 | Regional / cross-region internal proxy Network LB | `INTERNAL_MANAGED` | TCP |
 | Global external passthrough Network LB (Preview) | `EXTERNAL_PASSTHROUGH` | TCP, UDP, or `L3_DEFAULT` |
@@ -87,6 +87,7 @@ The IP address, port and protocol of an existing forwarding rule cannot be chang
 - Google Cloud Load Balancing is not Cloudflare (`cloudflare-workers`, `cloudflare-pages`) or Vercel (`vercel`).
 - Clarified from the official docs: this page's source does not label the global external passthrough Network Load Balancer as Preview, but the load balancer overview (https://docs.cloud.google.com/load-balancing/docs/load-balancing-overview, retrieved 2026-11-17) and the load balancer selection page (https://docs.cloud.google.com/load-balancing/docs/choosing-load-balancer, retrieved 2026-11-17) do. The Preview label is added in the tables above.
 - Source inconsistency: the source says "the regional external passthrough Network Load Balancer supports both Premium Tier and Standard Tier ([Preview])" for regional external IP addresses, but its forwarding rule table lists regional external passthrough as "Standard (IPv4 or IPv6 addresses) Premium (IPv4 or IPv6 addresses)" without a Preview label, and the passthrough Network Load Balancer backend service page (https://docs.cloud.google.com/load-balancing/docs/network/networklb-backend-service, retrieved 2026-11-17) says "Regional external passthrough Network Load Balancers support both Standard Tier and Premium Tier" and marks only external IPv6 in Standard Tier as Preview. The table above follows the table; the Preview statement in the Network Service Tiers note is the source's.
+- Corrected from the official docs: the source table gives "TCP or SSL" as the IP protocol options for the global external and classic proxy Network Load Balancers, but `SSL` is not a forwarding rule IP protocol: the `ForwardingRule.IPProtocol` enum in the Compute Engine Discovery documents (v1 and beta, retrieved 2026-11-14) is `AH`, `ESP`, `ICMP`, `L3_DEFAULT`, `SCTP`, `TCP`, `UDP`. The same source page says "a forwarding rule points to either a TCP or an SSL target proxy", so SSL termination is configured on a target SSL proxy and the forwarding rule uses `TCP`. The full `--ip-protocol` flag of `gcloud compute forwarding-rules create` is in the `gcp-compute` skill.
 - Source: https://docs.cloud.google.com/load-balancing/docs/forwarding-rule-concepts (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

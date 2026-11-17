@@ -71,7 +71,7 @@ Exceeding a quota with gcloud prints `quota exceeded` and exits with code `1`; a
 | Internal passthrough | Quota `REGIONAL_INTERNAL_LB_BACKEND_SERVICES`, per region per project |
 | Cloud Service Mesh | Quotas `GLOBAL_INTERNAL_TRAFFIC_DIRECTOR_BACKEND_SERVICES`, `REGIONAL_INTERNAL_TRAFFIC_DIRECTOR_BACKEND_SERVICES` |
 | Backend services per Application LB | Varies with URL map |
-| Backend services per proxy or passthrough Network LB | 1 (cannot change) |
+| Backend services per proxy or passthrough Network LB | 1 (cannot change); regional external, regional internal and cross-region internal proxy Network LBs that use TLS routes can have multiple (see Notes) |
 | Named ports per Application / proxy backend service | 1 (instance group backends only) |
 | Named ports per passthrough backend service | 0 (`portName` ignored) |
 | Distinct projects whose URL maps reference one backend service | 10 (cannot be increased) |
@@ -182,6 +182,7 @@ Exceeding a quota with gcloud prints `quota exceeded` and exits with code `1`; a
 - Certificate Manager quotas are at https://docs.cloud.google.com/certificate-manager/docs/quotas#resource_quotas_and_limits; see also https://docs.cloud.google.com/vpc/docs/quota and https://docs.cloud.google.com/compute/quotas.
 - The source also shows a Console path for checking quotas.
 - Google Cloud Load Balancing is not Cloudflare (`cloudflare-workers`, `cloudflare-pages`) or Vercel (`vercel`).
+- Source inconsistency: this page says "Number of backend services per proxy Network Load Balancer: 1" and "This limit cannot be changed", but the backend services overview (https://docs.cloud.google.com/load-balancing/docs/backend-service, retrieved 2026-11-17) lists "1 without TLS routes; multiple with TLS routes" for the regional external, regional internal and cross-region internal proxy Network Load Balancers. Read the limit of 1 as applying when the target proxy references a backend service directly; with TLS routes, each route maps SNI hostnames to a backend service.
 - Source: https://docs.cloud.google.com/load-balancing/docs/quotas (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
