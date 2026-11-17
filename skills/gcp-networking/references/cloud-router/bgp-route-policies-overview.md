@@ -31,7 +31,7 @@ gcloud compute routers add-named-set my-router \
 - Terms can modify BGP routes; a later term can modify a route changed by an earlier term.
 - Evaluation ends when a route is accepted or dropped; a route is accepted if all policies and terms are evaluated and it isn't dropped.
 - Terms aren't evaluated twice for a route in a single exercise of a policy.
-- Evaluation fails open: routes not explicitly dropped are accepted. To get fail-closed behavior, create a "drop all" policy applied to your last peering.
+- Evaluation fails open: routes not explicitly dropped are accepted. To get fail-closed behavior, create a "drop all" policy and put it last in the import (or export) policy list of every BGP peer that must fail closed; policies are attached per BGP peer and per direction and are evaluated in the order listed.
 - A policy applies in one direction only (inbound for learned routes or outbound for advertised routes) but can be applied to multiple BGP peers. Each BGP peer has zero or more import and export policies.
 
 ### Named sets
@@ -64,6 +64,7 @@ Named sets group expressions of one type (communities or BGP prefixes), are uniq
 - A "drop all" policy or `drop()` term can remove routes and break connectivity; try policies on a disposable router or peer first. Exceeding the 5000-prefix limit resets the BGP session.
 - Snippets taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/routers/add-route-policy and https://docs.cloud.google.com/sdk/gcloud/reference/compute/routers/add-named-set (gcloud 593.0.0 help); the page itself has no code. The full flag list is in the `gcp-compute` skill. Creating policies and named sets: https://docs.cloud.google.com/network-connectivity/docs/router/how-to/bgp-route-policies/create-policies and https://docs.cloud.google.com/network-connectivity/docs/router/how-to/bgp-route-policies/create-named-sets.
 - Source inconsistency: the transit routes row writes `NO_ADVERTISED`, while the communities section of the same page writes `NO_ADVERTISE`; both are kept as written.
+- Clarified from the official docs: the source says to create a "drop all" policy "that you apply to your last peering"; because the same page says each BGP peer has its own import and export policies, which are evaluated in the order listed, a drop-all policy on one peer does not affect the others, so it is placed last in the policy list of each peer.
 - Source: https://docs.cloud.google.com/network-connectivity/docs/router/concepts/bgp-route-policies-overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

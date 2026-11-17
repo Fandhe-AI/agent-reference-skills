@@ -28,7 +28,7 @@ The full flag list is in the `gcp-compute` skill; reference: https://docs.cloud.
 | Broader (smaller mask, for example `10.0.0.0/8`, `fd20:a:b::/48`) | Not allowed to create the static route | Cloud Router ignores advertised routes that match or fit within the subnet range; traffic stays in the VPC network |
 | Narrower (longer mask, for example `10.2.99.0/24`, `fd20:a:b:c::/80`) | Static route to `10.2.0.0/16` can be created, but traffic to `10.2.99.0/24` stays in the VPC network | Cloud Router accepts the route to `10.2.0.0/16`; traffic to `10.2.99.0/24` stays in the VPC network |
 
-Classic VPN does not support IPv6. IPv6 traffic works only on HA VPN gateways with the dual stack type (IPv4 and IPv6).
+Classic VPN does not support IPv6. This page says IPv6 traffic works only on HA VPN gateways with the dual stack type (IPv4 and IPv6); the Cloud VPN overview also lists the `IPV6_ONLY` stack type (see Notes).
 
 ## Notes
 
@@ -38,6 +38,7 @@ Classic VPN does not support IPv6. IPv6 traffic works only on HA VPN gateways wi
 - ECMP: for dynamic and static routing, routes with the same destination, same priority and active tunnels are balanced per flow by hash. To test, use `iperf3` with multiple simultaneous TCP streams, ideally from several VMs; `ping` is not sufficient because ICMP has no ports and the hash uses only source and destination addresses, so a single tunnel is chosen.
 - The borrowed example is only a generic `gcloud compute routes create` illustration: its next hop is `default-internet-gateway` (a default route to the internet), not a Cloud VPN tunnel. A route that uses a tunnel as next hop takes `--next-hop-vpn-tunnel` (and `--next-hop-vpn-tunnel-region`), as listed in the command help. Do not run the example on a production network: adding or changing routes can break connectivity, so try routes on a disposable network first.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/routes/create (gcloud 593.0.0 help).
+- Source inconsistency: this page says IPv6 is supported only with the dual stack type, but the Cloud VPN overview (https://docs.cloud.google.com/network-connectivity/docs/vpn/concepts/overview, retrieved 2026-11-17) says to "use the `IPV6_ONLY` or `IPV4_IPV6` stack type" when creating an HA VPN gateway and tunnels for IPv6 traffic. Both stack types carry IPv6.
 - Source: https://docs.cloud.google.com/network-connectivity/docs/vpn/concepts/order-of-routes (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

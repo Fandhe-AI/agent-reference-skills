@@ -68,7 +68,7 @@ NAT64 sources: the internal `/96` and external `/96` address ranges of the VM's 
 - Public NAT does not allow unsolicited inbound requests, even if firewall rules permit them.
 - Routes: requires local static routes whose next hop is the default internet gateway (the default route commonly satisfies this).
 - Firewall: Cloud NGFW rules apply to VM NICs, not gateways. Egress rules are evaluated before NAT, ingress rules after NAT. No NAT-specific firewall rules are needed.
-- With NAT64 and an egress deny rule for an IPv4 destination, also add an egress deny rule for the IPv4-embedded IPv6 address (for `1.2.3.4/32` use `64:ff9b:0102:0304/128`, as written in the source) so NAT64 traffic cannot bypass the IPv4 rule.
+- With NAT64 and an egress deny rule for an IPv4 destination, also add an egress deny rule for the IPv4-embedded IPv6 address (for `1.2.3.4/32` in the `64:ff9b::/96` prefix this is `64:ff9b::102:304/128`) so NAT64 traffic cannot bypass the IPv4 rule.
 - Multiple gateways in the same region of a VPC network are allowed if each serves a different source subnet, or a different range within one subnet.
 - Multiple NICs: in the same VPC network, one gateway applies to all NICs; in different VPC networks, one gateway applies to a single NIC only. A NIC with an external IPv4 address is ineligible for Public NAT.
 - Changing the network tier of automatically allocated addresses releases the addresses, retires port allocations, and immediately closes all existing connections on them.
@@ -77,6 +77,7 @@ NAT64 sources: the internal `/96` and external `/96` address ranges of the VM's 
 - NAT44 worked example in the source: gateway `nat-gw-us-east` with 64 minimum ports per VM and manual NAT IPs `192.0.2.50` and `192.0.2.60` reserves `192.0.2.50:34000`-`192.0.2.50:34063` for VM `10.240.0.4`, performs SNAT on egress and DNAT on the response.
 - Snippets taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/routers/nats/create (gcloud 593.0.0 help); the page has no code. The full flag list is in the `gcp-compute` skill.
 - A Public NAT gateway gives resources without external IPs outbound access to the internet; review egress firewall rules first. Changing the gateway (for example removing a NAT IP) can break established connections; try changes on a disposable gateway first.
+- Corrected from the official docs: the source writes the IPv4-embedded address for `1.2.3.4` as `64:ff9b:0102:0304/128`, which has only four 16-bit groups and no `::`, so it is not a valid IPv6 address; the same page gives the NAT64 prefix as `64:ff9b::/96`, so `1.2.3.4` embedded in it is `64:ff9b::102:304`.
 - Source: https://docs.cloud.google.com/nat/docs/public-nat (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
