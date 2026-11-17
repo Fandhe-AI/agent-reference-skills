@@ -1,0 +1,144 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instance-groups/managed/set-instance-template
+---
+
+# gcloud compute instance-groups managed set-instance-template
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute instance-groups managed set-instance-template
+
+```text
+NAME
+    gcloud compute instance-groups managed set-instance-template - set the
+        instance template for a managed instance group
+
+SYNOPSIS
+    gcloud compute instance-groups managed set-instance-template NAME
+        --template=TEMPLATE [--region=REGION | --zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instance-groups managed set-instance-template sets the
+    instance template for an existing managed instance group.
+
+    The new template applies to all new instances added to the managed instance
+    group.
+
+    To apply the new template to existing instances in the group, use one of
+    the following methods:
+
+      o Update instances using the update-instances command.
+      o Recreate instances using the recreate-instances command.
+      o Use the rolling-action start-update command.
+      o Use the API to set the group's updatePolicy.type to PROACTIVE.
+
+EXAMPLES
+    Running:
+
+        gcloud compute instance-groups managed set-instance-template \
+        example-managed-instance-group --template=example-global-instance-template
+
+    Sets the instance template for the 'example-managed-instance-group' group
+    to a global resource 'example-global-instance-template'.
+
+    To use a regional instance template, specify the full or partial URL of the
+    template.
+
+    Running:
+
+        gcloud compute instance-groups managed set-instance-template \
+        example-managed-instance-group \
+        --template=projects/example-project/regions/us-central1/instanceTemplates/example-regional-instance-template
+
+    Sets the instance template for the 'example-managed-instance-group' group
+    to a regional resource 'example-regional-instance-template'.
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the managed instance group to operate on.
+
+REQUIRED FLAGS
+     --template=TEMPLATE
+        Specifies the instance template to use when creating new instances. An
+        instance template is either a global or regional resource.
+
+OPTIONAL FLAGS
+     At most one of these can be specified:
+
+       --region=REGION
+          Region of the managed instance group to operate on. If not specified,
+          you might be prompted to select a region (interactive mode only).
+
+          A list of regions can be fetched by running:
+
+              $ gcloud compute regions list
+
+          Overrides the default compute/region property value for this command
+          invocation.
+
+       --zone=ZONE
+          Zone of the managed instance group to operate on. If not specified,
+          you might be prompted to select a zone (interactive mode only).
+
+          A list of zones can be fetched by running:
+
+              $ gcloud compute zones list
+
+          Overrides the default compute/zone property value for this command
+          invocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-groups managed set-instance-template
+
+        $ gcloud beta compute instance-groups managed set-instance-template
+```
+
+### gcloud beta compute instance-groups managed set-instance-template
+
+```text
+NAME
+    gcloud beta compute instance-groups managed set-instance-template - set the
+        instance template for a managed instance group
+
+SYNOPSIS
+    gcloud beta compute instance-groups managed set-instance-template NAME
+        --template=TEMPLATE [--region=REGION | --zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instance-groups managed set-instance-template
+
+```text
+NAME
+    gcloud alpha compute instance-groups managed set-instance-template - set
+        the instance template for a managed instance group
+
+SYNOPSIS
+    gcloud alpha compute instance-groups managed set-instance-template NAME
+        --template=TEMPLATE [--region=REGION | --zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instance-groups/managed/set-instance-template (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
