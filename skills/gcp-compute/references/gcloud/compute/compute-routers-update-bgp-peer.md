@@ -1,0 +1,403 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/routers/update-bgp-peer
+---
+
+# gcloud compute routers update-bgp-peer
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute routers update-bgp-peer
+
+```text
+NAME
+    gcloud compute routers update-bgp-peer - update a BGP peer on a Compute
+        Engine router
+
+SYNOPSIS
+    gcloud compute routers update-bgp-peer NAME --peer-name=PEER_NAME
+        [--advertised-route-priority=ADVERTISED_ROUTE_PRIORITY]
+        [--advertisement-mode=MODE] [--async] [--clear-md5-authentication-key]
+        [--custom-learned-route-priority=PRIORITY] [--[no-]enable-ipv4]
+        [--[no-]enable-ipv6] [--[no-]enabled]
+        [--export-policies=[EXPORT_POLICY,...]]
+        [--import-policies=[IMPORT_POLICY,...]] [--interface=INTERFACE]
+        [--ip-address=IP_ADDRESS] [--ipv4-nexthop-address=IPV4_NEXTHOP_ADDRESS]
+        [--ipv6-nexthop-address=IPV6_NEXTHOP_ADDRESS]
+        [--md5-authentication-key=MD5_AUTHENTICATION_KEY] [--peer-asn=PEER_ASN]
+        [--peer-ip-address=PEER_IP_ADDRESS]
+        [--peer-ipv4-nexthop-address=PEER_IPV4_NEXTHOP_ADDRESS]
+        [--peer-ipv6-nexthop-address=PEER_IPV6_NEXTHOP_ADDRESS]
+        [--region=REGION] [--set-advertisement-groups=[GROUP,...]]
+        [--set-advertisement-ranges=[CIDR_RANGE=DESC,...]]
+        [--set-custom-learned-route-ranges=[CIDR_RANGE,...]]
+        [--add-advertisement-groups=[GROUP,...]
+          | --add-advertisement-ranges=[CIDR_RANGE=DESC,...]
+          | --remove-advertisement-groups=[GROUP,...]
+          | --remove-advertisement-ranges=[CIDR_RANGE,...]]
+        [--add-custom-learned-route-ranges=[CIDR_RANGE,...]
+          | --remove-custom-learned-route-ranges=[CIDR_RANGE,...]]
+        [--bfd-min-receive-interval=BFD_MIN_RECEIVE_INTERVAL
+          --bfd-min-transmit-interval=BFD_MIN_TRANSMIT_INTERVAL
+          --bfd-multiplier=BFD_MULTIPLIER
+          --bfd-session-initialization-mode=BFD_SESSION_INITIALIZATION_MODE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute routers update-bgp-peer is used to update a BGP peer on a
+    Compute Engine router.
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the router to operate on.
+
+REQUIRED FLAGS
+     --peer-name=PEER_NAME
+        The name of the new BGP peer being updated.
+
+OPTIONAL FLAGS
+     --advertised-route-priority=ADVERTISED_ROUTE_PRIORITY
+        The priority of routes advertised to this BGP peer. In the case where
+        there is more than one matching route of maximum length, the routes
+        with lowest priority value win. 0 <= priority <= 65535. If not
+        specified, will use Google-managed priorities.
+
+     --advertisement-mode=MODE
+        The new advertisement mode for this peer. MODE must be one of:
+
+         CUSTOM
+            Custom (user-configured) BGP advertisements.
+         DEFAULT
+            Default (Google-managed) BGP advertisements.
+
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --clear-md5-authentication-key
+        If specified, remove MD5 authentication from the BGP peer.
+
+     --custom-learned-route-priority=PRIORITY
+        An integral value 0 <= priority <= 65535, to be applied to all custom
+        learned route IP address ranges for this peer. If not specified, a
+        Google-managed priority value of 100 is used. The routes with the
+        lowest priority value win.
+
+     --[no-]enable-ipv4
+        If IPv4 is enabled, the peer connection can be established with IPv4
+        route exchange. If disabled, no IPv4 route exchange is allowed on any
+        active session. Use --enable-ipv4 to enable and --no-enable-ipv4 to
+        disable.
+
+     --[no-]enable-ipv6
+        If IPv6 is enabled, the peer connection can be established with IPv6
+        route exchange. If disabled, no IPv6 route exchange is allowed on any
+        active session. Use --enable-ipv6 to enable and --no-enable-ipv6 to
+        disable.
+
+     --[no-]enabled
+        If enabled, the peer connection can be established with routing
+        information. If disabled, any active session with the peer is
+        terminated and all associated routing information is removed. Use
+        --enabled to enable and --no-enabled to disable.
+
+     --export-policies=[EXPORT_POLICY,...]
+        Comma-separated list of export policies. Passing an empty string
+        removes all export policies.
+
+     --import-policies=[IMPORT_POLICY,...]
+        Comma-separated list of import policies. Passing an empty string
+        removes all import policies.
+
+     --interface=INTERFACE
+        The name of the interface for this BGP peer.
+
+     --ip-address=IP_ADDRESS
+        The address of the Cloud Router interface for this BGP peer. Must be a
+        link-local IPv4 address in the range 169.254.0.0/16 or an ULA IPv6
+        address in the range fdff:1::/64. It must also be in the same subnet as
+        the interface address of the peer router.
+
+     --ipv4-nexthop-address=IPV4_NEXTHOP_ADDRESS
+        If IPv4 route exchange is enabled for IPv6-based BGP, the IPv4 next hop
+        address of the Cloud Router interface for this BGP peer. Ignored
+        otherwise. Must be a Google owned link-local IPv4 address in the range
+        169.254.0.0/16 and must belong to the same subnet as the interface
+        address of the peer router.
+
+     --ipv6-nexthop-address=IPV6_NEXTHOP_ADDRESS
+        If IPv6 route exchange is enabled for IPv4-based BGP, the IPv6 next hop
+        address of the Cloud Router interface for this BGP peer. Ignored
+        otherwise. Must be a Google owned global unicast IPv6 address belonging
+        to the range 2600:2d00:0:2:0:0:0:0/64 or 2600:2d00:0:3:0:0:0:0/64 and
+        must belong to same subnet as the interface address of the peer router.
+
+     --md5-authentication-key=MD5_AUTHENTICATION_KEY
+        The MD5 authentication key for this BGP peer. Maximum length is 80
+        characters. Can contain only printable ASCII characters.
+
+     --peer-asn=PEER_ASN
+        The BGP autonomous system number (ASN) for this BGP peer. Must be a
+        16-bit or 32-bit private ASN as defined in
+        https://tools.ietf.org/html/rfc6996, for example --asn=64512.
+
+     --peer-ip-address=PEER_IP_ADDRESS
+        The address of the peer router. Must be a link-local IPv4 address in
+        the range 169.254.0.0/16 or an ULA IPv6 address in the range
+        fdff:1::/64.
+
+     --peer-ipv4-nexthop-address=PEER_IPV4_NEXTHOP_ADDRESS
+        If IPv4 route exchange is enabled for IPv6-based BGP, the IPv4 next hop
+        address of the peer router. Ignored otherwise. Must be a Google owned
+        link-local IPv4 address in the range 169.254.0.0/16.
+
+     --peer-ipv6-nexthop-address=PEER_IPV6_NEXTHOP_ADDRESS
+        If IPv6 route exchange is enabled for IPv4-based BGP, the IPv6 next hop
+        address of the peer router. Ignored otherwise. Must be a Google owned
+        global unicast IPv6 address belonging to the range
+        2600:2d00:0:2:0:0:0:0/64 or 2600:2d00:0:3:0:0:0:0/64.
+
+     --region=REGION
+        Region of the router to operate on. If not specified, you might be
+        prompted to select a region (interactive mode only).
+
+        To avoid prompting when this flag is omitted, you can set the
+        compute/region property:
+
+            $ gcloud config set compute/region REGION
+
+        A list of regions can be fetched by running:
+
+            $ gcloud compute regions list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/region
+
+        Alternatively, the region can be stored in the environment variable
+        CLOUDSDK_COMPUTE_REGION.
+
+     --set-advertisement-groups=[GROUP,...]
+        The list of pre-defined groups of IP ranges to dynamically advertise on
+        this peer. This list can only be specified in custom advertisement
+        mode.
+
+        GROUP must be (only one value is supported):
+
+         ALL_SUBNETS
+            Automatically advertise all available subnets. This excludes any
+            routes learned for subnets that use VPC Network Peering.
+
+     --set-advertisement-ranges=[CIDR_RANGE=DESC,...]
+        The list of individual IP ranges, in CIDR format, to dynamically
+        advertise on this peer. Each IP range can (optionally) be given a text
+        description DESC. For example, to advertise a specific range, use
+        --set-advertisement-ranges=192.168.10.0/24. To store a description with
+        the range, use --set-advertisement-ranges=192.168.10.0/24=my-networks.
+        This list can only be specified in custom advertisement mode.
+
+     --set-custom-learned-route-ranges=[CIDR_RANGE,...]
+        The list of user-defined custom learned route IP address ranges for
+        this peer. This list is a comma separated IP address ranges such as
+        1.2.3.4,6.7.0.0/16,2001:db8:abcd:12::/64 where each IP address range
+        must be a valid CIDR-formatted prefix. If an IP address is provided
+        without a subnet mask, it is interpreted as a /32 singular IP address
+        range for IPv4, and /128 for IPv6.
+
+     At most one of these can be specified:
+
+       --add-advertisement-groups=[GROUP,...]
+          A list of pre-defined groups of IP ranges to dynamically advertise on
+          this peer. This list is appended to any existing advertisements. This
+          field can only be specified in custom advertisement mode.
+
+          GROUP must be (only one value is supported):
+
+           ALL_SUBNETS
+              Automatically advertise all available subnets. This excludes any
+              routes learned for subnets that use VPC Network Peering.
+
+       --add-advertisement-ranges=[CIDR_RANGE=DESC,...]
+          A list of individual IP ranges, in CIDR format, to dynamically
+          advertise on this peer. This list is appended to any existing
+          advertisements. Each IP range can (optionally) be given a text
+          description DESC. For example, to advertise a specific range, use
+          --advertisement-ranges=192.168.10.0/24. To store a description with
+          the range, use --advertisement-ranges=192.168.10.0/24=my-networks.
+          This list can only be specified in custom advertisement mode.
+
+       --remove-advertisement-groups=[GROUP,...]
+          A list of pre-defined groups of IP ranges to remove from dynamic
+          advertisement on this peer. Each group in the list must exist in the
+          current set of custom advertisements. This field can only be
+          specified in custom advertisement mode.
+
+          GROUP must be (only one value is supported):
+
+           ALL_SUBNETS
+              Automatically advertise all available subnets. This excludes any
+              routes learned for subnets that use VPC Network Peering.
+
+       --remove-advertisement-ranges=[CIDR_RANGE,...]
+          A list of individual IP ranges, in CIDR format, to remove from
+          dynamic advertisement on this peer. Each IP range in the list must
+          exist in the current set of custom advertisements. This field can
+          only be specified in custom advertisement mode.
+
+     At most one of these can be specified:
+
+       --add-custom-learned-route-ranges=[CIDR_RANGE,...]
+          A list of user-defined custom learned route IP address ranges to be
+          added to this peer. This list is a comma separated IP address ranges
+          such as 1.2.3.4,6.7.0.0/16,2001:db8:abcd:12::/64 where each IP
+          address range must be a valid CIDR-formatted prefix. If an IP address
+          is provided without a subnet mask, it is interpreted as a /32
+          singular IP address range for IPv4, and /128 for IPv6.
+
+       --remove-custom-learned-route-ranges=[CIDR_RANGE,...]
+          A list of user-defined custom learned route IP address ranges to be
+          removed from this peer. This list is a comma separated IP address
+          ranges such as 1.2.3.4,6.7.0.0/16,2001:db8:abcd:12::/64 where each IP
+          address range must be a valid CIDR-formatted prefix. If an IP address
+          is provided without a subnet mask, it is interpreted as a /32
+          singular IP address range for IPv4, and /128 for IPv6.
+
+     Arguments to update BFD (Bidirectional Forwarding Detection) settings:
+
+     --bfd-min-receive-interval=BFD_MIN_RECEIVE_INTERVAL
+        The minimum receive interval between BFD control packets. The default
+        is 1000 milliseconds. See $ gcloud topic datetimes for information on
+        duration formats.
+
+     --bfd-min-transmit-interval=BFD_MIN_TRANSMIT_INTERVAL
+        The minimum transmit interval between BFD control packets. The default
+        is 1000 milliseconds. See $ gcloud topic datetimes for information on
+        duration formats.
+
+     --bfd-multiplier=BFD_MULTIPLIER
+        The number of consecutive BFD control packets that must be missed
+        before BFD declares that a peer is unavailable.
+
+     --bfd-session-initialization-mode=BFD_SESSION_INITIALIZATION_MODE
+        The BFD session initialization mode for this BGP peer. Must be one of:
+
+        ACTIVE - The Cloud Router will initiate the BFD session for this BGP
+        peer.
+
+        PASSIVE - The Cloud Router will wait for the peer router to initiate
+        the BFD session for this BGP peer.
+
+        DISABLED - BFD is disabled for this BGP peer.
+
+        BFD_SESSION_INITIALIZATION_MODE must be one of:
+
+         ACTIVE
+            The Cloud Router will initiate the BFD session for this BGP peer.
+         DISABLED
+            BFD is disabled for this BGP peer.
+         PASSIVE
+            The Cloud Router will wait for the peer router to initiate the BFD
+            session for this BGP peer.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute routers update-bgp-peer
+
+        $ gcloud beta compute routers update-bgp-peer
+```
+
+### gcloud beta compute routers update-bgp-peer
+
+```text
+NAME
+    gcloud beta compute routers update-bgp-peer - update a BGP peer on a
+        Compute Engine router
+
+SYNOPSIS
+    gcloud beta compute routers update-bgp-peer NAME --peer-name=PEER_NAME
+        [--advertised-route-priority=ADVERTISED_ROUTE_PRIORITY]
+        [--advertisement-mode=MODE] [--async] [--clear-md5-authentication-key]
+        [--custom-learned-route-priority=PRIORITY] [--[no-]enable-ipv4]
+        [--[no-]enable-ipv6] [--[no-]enabled]
+        [--export-policies=[EXPORT_POLICY,...]]
+        [--import-policies=[IMPORT_POLICY,...]] [--interface=INTERFACE]
+        [--ip-address=IP_ADDRESS] [--ipv4-nexthop-address=IPV4_NEXTHOP_ADDRESS]
+        [--ipv6-nexthop-address=IPV6_NEXTHOP_ADDRESS]
+        [--md5-authentication-key=MD5_AUTHENTICATION_KEY] [--peer-asn=PEER_ASN]
+        [--peer-ip-address=PEER_IP_ADDRESS]
+        [--peer-ipv4-nexthop-address=PEER_IPV4_NEXTHOP_ADDRESS]
+        [--peer-ipv6-nexthop-address=PEER_IPV6_NEXTHOP_ADDRESS]
+        [--region=REGION] [--set-advertisement-groups=[GROUP,...]]
+        [--set-advertisement-ranges=[CIDR_RANGE=DESC,...]]
+        [--set-custom-learned-route-ranges=[CIDR_RANGE,...]]
+        [--add-advertisement-groups=[GROUP,...]
+          | --add-advertisement-ranges=[CIDR_RANGE=DESC,...]
+          | --remove-advertisement-groups=[GROUP,...]
+          | --remove-advertisement-ranges=[CIDR_RANGE,...]]
+        [--add-custom-learned-route-ranges=[CIDR_RANGE,...]
+          | --remove-custom-learned-route-ranges=[CIDR_RANGE,...]]
+        [--bfd-min-receive-interval=BFD_MIN_RECEIVE_INTERVAL
+          --bfd-min-transmit-interval=BFD_MIN_TRANSMIT_INTERVAL
+          --bfd-multiplier=BFD_MULTIPLIER
+          --bfd-session-initialization-mode=BFD_SESSION_INITIALIZATION_MODE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute routers update-bgp-peer
+
+```text
+NAME
+    gcloud alpha compute routers update-bgp-peer - update a BGP peer on a
+        Compute Engine router
+
+SYNOPSIS
+    gcloud alpha compute routers update-bgp-peer NAME --peer-name=PEER_NAME
+        [--advertised-route-priority=ADVERTISED_ROUTE_PRIORITY]
+        [--advertisement-mode=MODE] [--async] [--clear-md5-authentication-key]
+        [--custom-learned-route-priority=PRIORITY] [--[no-]enable-ipv4]
+        [--[no-]enable-ipv6] [--[no-]enabled]
+        [--export-policies=[EXPORT_POLICY,...]]
+        [--import-policies=[IMPORT_POLICY,...]] [--interface=INTERFACE]
+        [--ip-address=IP_ADDRESS] [--ipv4-nexthop-address=IPV4_NEXTHOP_ADDRESS]
+        [--ipv6-nexthop-address=IPV6_NEXTHOP_ADDRESS]
+        [--md5-authentication-key=MD5_AUTHENTICATION_KEY] [--peer-asn=PEER_ASN]
+        [--peer-ip-address=PEER_IP_ADDRESS]
+        [--peer-ipv4-nexthop-address=PEER_IPV4_NEXTHOP_ADDRESS]
+        [--peer-ipv6-nexthop-address=PEER_IPV6_NEXTHOP_ADDRESS]
+        [--region=REGION] [--set-advertisement-groups=[GROUP,...]]
+        [--set-advertisement-ranges=[CIDR_RANGE=DESC,...]]
+        [--set-custom-learned-route-ranges=[CIDR_RANGE,...]]
+        [--add-advertisement-groups=[GROUP,...]
+          | --add-advertisement-ranges=[CIDR_RANGE=DESC,...]
+          | --remove-advertisement-groups=[GROUP,...]
+          | --remove-advertisement-ranges=[CIDR_RANGE,...]]
+        [--add-custom-learned-route-ranges=[CIDR_RANGE,...]
+          | --remove-custom-learned-route-ranges=[CIDR_RANGE,...]]
+        [--bfd-min-receive-interval=BFD_MIN_RECEIVE_INTERVAL
+          --bfd-min-transmit-interval=BFD_MIN_TRANSMIT_INTERVAL
+          --bfd-multiplier=BFD_MULTIPLIER
+          --bfd-session-initialization-mode=BFD_SESSION_INITIALIZATION_MODE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Corrected from the official docs (the help text above is verbatim): the `--peer-asn` description ends with "for example --asn=64512", but this command has no `--asn` flag; the example value is for `--peer-asn` (`--peer-asn=64512`).
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/routers/update-bgp-peer (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
