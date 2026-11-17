@@ -35,12 +35,12 @@ subnet-3:secondary-range-1
 
 ### Sources translated (NAT44)
 
-- The VM NIC primary internal IP, only if the NIC has no external IP (an external IP always takes precedence and performs one-to-one NAT without Public NAT).
-- An alias IP range of the NIC, even if the NIC has an external IP (an external IP never does one-to-one NAT for alias IPs).
-- IP addresses used for IP forwarding (configure with a source-based NAT rule).
-- GKE clusters (in certain circumstances, see product interactions).
-
-NAT64 sources: the internal `/96` and external `/96` address ranges of the VM's IPv6-only network interface.
+| Sources translated (NAT44) |
+|---|
+| The VM NIC primary internal IP, only if the NIC has no external IP (an external IP always takes precedence and performs one-to-one NAT without Public NAT). |
+| An alias IP range of the NIC, even if the NIC has an external IP (an external IP never does one-to-one NAT for alias IPs). |
+| IP addresses used for IP forwarding (configure with a source-based NAT rule). |
+| GKE clusters (in certain circumstances, see product interactions). |
 
 ### Subnet range options
 
@@ -64,6 +64,7 @@ NAT64 sources: the internal `/96` and external `/96` address ranges of the VM's 
 
 ## Notes
 
+- Sources translated (NAT44): NAT64 sources: the internal `/96` and external `/96` address ranges of the VM's IPv6-only network interface.
 - Each gateway is tied to one VPC network, region and Cloud Router; it does not use or depend on BGP.
 - Public NAT does not allow unsolicited inbound requests, even if firewall rules permit them.
 - Routes: requires local static routes whose next hop is the default internet gateway (the default route commonly satisfies this).

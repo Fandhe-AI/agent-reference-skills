@@ -47,17 +47,21 @@ gcloud compute routers nats rules create 1 --nat=my-nat \
 
 ### Public NAT specifications
 
-- Default rule priority 65,001, range `0.0.0.0/0`; not applied to forwarded packets (a source-based rule is required for those).
-- Rules require NAT IP allocate option `MANUAL_ONLY`.
-- All NAT IPs in a rule must be the same tier (no Premium and Standard mix, including the default rule).
-- At most one rule applies per packet; on source/destination match the higher priority wins. Match ranges must not overlap across rules.
-- A rule needs non-empty `Active` or `Drain` IPs; an empty `Active` set drops new matching connections.
-- Rules cannot be added to a gateway with endpoint-independent mapping (EIM) enabled, and EIM cannot be enabled on a gateway that has rules.
+| Public NAT specifications |
+|---|
+| Default rule priority 65,001, range `0.0.0.0/0`; not applied to forwarded packets (a source-based rule is required for those). |
+| Rules require NAT IP allocate option `MANUAL_ONLY`. |
+| All NAT IPs in a rule must be the same tier (no Premium and Standard mix, including the default rule). |
+| At most one rule applies per packet; on source/destination match the higher priority wins. Match ranges must not overlap across rules. |
+| A rule needs non-empty `Active` or `Drain` IPs; an empty `Active` set drops new matching connections. |
+| Rules cannot be added to a gateway with endpoint-independent mapping (EIM) enabled, and EIM cannot be enabled on a gateway that has rules. |
 
 ### Private NAT specifications (Preview)
 
-- Only source-based rules; all rules in a gateway must specify the same destination next hop type, including the NCC hub name; first rule matching source IP and next hop applies.
-- Match ranges must not overlap or be identical; no match drops traffic.
+| Private NAT specifications (Preview) |
+|---|
+| Only source-based rules; all rules in a gateway must specify the same destination next hop type, including the NCC hub name; first rule matching source IP and next hop applies. |
+| Match ranges must not overlap or be identical; no match drops traffic. |
 
 ### CEL attributes and operations
 
@@ -75,19 +79,18 @@ gcloud compute routers nats rules create 1 --nat=my-nat \
 | `==` | True if `x` equals `y` |
 | `&&` (Private NAT only) | True if both are true |
 
-### Example expressions (Private NAT, from the source)
-
-`nexthop.hub` takes the form `//networkconnectivity.googleapis.com/projects/PROJECT_ID/locations/global/hubs/HUB`; for Hybrid NAT use `nexthop.is_hybrid`. Source examples for Public NAT: `source.ip == "10.0.0.25"`, `inIpRange(source.ip, "10.0.2.0/24")`, and `||` combinations; destination examples: `destination.ip == "198.51.100.20"`, `inIpRange(destination.ip, "198.51.100.10/30")`.
-
 ### Port allocation
 
-- `minPortsPerVm` is applied independently per rule (including default); a VM exhausting a rule's ports drops new connections matching that rule. One NAT IP has 64,512 usable ports, so `minPortsPerVm` 1,024 supports 63 VMs per IP (64,512 / 1,024).
-- Default rule: ports for each VM served by the gateway. Source-based: only if the VM's primary IP or alias range matches the rule source. Destination-based: each VM gets ports from the default rule and every destination rule.
-- VMs with IP forwarding get `minPortsPerVm` from the default rule and every source-based rule at once; the default rule does not process their forwarded traffic, and packets matching no source-based rule are dropped.
-- `minExtraIpsNeeded` (from `routers.getRouterStatus`) shows how many IPs a rule needs.
+| Port allocation |
+|---|
+| `minPortsPerVm` is applied independently per rule (including default); a VM exhausting a rule's ports drops new connections matching that rule. One NAT IP has 64,512 usable ports, so `minPortsPerVm` 1,024 supports 63 VMs per IP (64,512 / 1,024). |
+| Default rule: ports for each VM served by the gateway. Source-based: only if the VM's primary IP or alias range matches the rule source. Destination-based: each VM gets ports from the default rule and every destination rule. |
+| VMs with IP forwarding get `minPortsPerVm` from the default rule and every source-based rule at once; the default rule does not process their forwarded traffic, and packets matching no source-based rule are dropped. |
+| `minExtraIpsNeeded` (from `routers.getRouterStatus`) shows how many IPs a rule needs. |
 
 ## Notes
 
+- Example expressions (Private NAT, from the source): `nexthop.hub` takes the form `//networkconnectivity.googleapis.com/projects/PROJECT_ID/locations/global/hubs/HUB`; for Hybrid NAT use `nexthop.is_hybrid`. Source examples for Public NAT: `source.ip == "10.0.0.25"`, `inIpRange(source.ip, "10.0.2.0/24")`, and `||` combinations; destination examples: `destination.ip == "198.51.100.20"`, `inIpRange(destination.ip, "198.51.100.10/30")`.
 - Private NAT rules are Preview ("Pre-GA Offerings Terms"; as is, limited support). Source-based Private NAT matching with the next hop is also Preview.
 - Rule limits: see quota.md (150 per gateway, 2,500 per Cloud Router).
 - Worked examples in the source: IP forwarding VM with two source rules (`192.168.1.0/24` to `203.0.113.10`, `192.168.2.0/24` to `203.0.113.20`, default `203.0.113.30`); destination rules needing two gateways when one subnet differs.

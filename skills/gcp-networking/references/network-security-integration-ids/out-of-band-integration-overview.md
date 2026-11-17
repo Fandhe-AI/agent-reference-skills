@@ -53,8 +53,6 @@ gcloud network-security mirroring-endpoint-groups create \
 | `DO_NOT_MIRROR` | Don't mirror; stop evaluating lower priority mirroring rules (negative filter). |
 | `GOTO_NEXT` | Continue evaluation at the next rule / lower level. Default when no rule matches. |
 
-Firewall policy rule actions are `ALLOW`, `DENY` and `GOTO_NEXT`. Mirroring rules are evaluated by priority, `0` is highest, and each priority must be unique within a policy. Ingress: firewall rules first, blocked packets are not mirrored. Egress: mirroring rules first, then egress firewall rules.
-
 ### VPC Packet Mirroring vs Network Security Integration Packet Mirroring
 
 | Attribute | VPC Packet Mirroring | NSI Packet Mirroring |
@@ -67,19 +65,21 @@ Firewall policy rule actions are `ALLOW`, `DENY` and `GOTO_NEXT`. Mirroring rule
 | Supported by regional network firewall policies | No | No |
 | Supported by global network firewall policies | No | Yes |
 
-NSI Packet Mirroring takes precedence at the workload level: the data plane disregards existing VPC Packet Mirroring configuration (for example ICMP mirroring stops) once an NSI mirroring configuration applies.
-
 ### Limitations
 
-- Producer internal load balancer must be an internal passthrough Network Load Balancer with an instance group backend; NEG backends aren't supported.
-- Matching packets (original and mirrored) are processed at a slower rate; mirroring isn't recommended for 3rd generation machine families and later.
-- Regional network firewall policies don't support Packet Mirroring; mirroring rules don't support source secure tags.
-- One forwarding rule can be associated with one mirroring deployment (same project as the load balancer; zone within the load balancer's region).
-- A VPC can have at most one mirroring endpoint group association.
-- Broker mode (Preview): mirroring endpoint and mirroring deployment must be in the same zone.
+| Limitations |
+|---|
+| Producer internal load balancer must be an internal passthrough Network Load Balancer with an instance group backend; NEG backends aren't supported. |
+| Matching packets (original and mirrored) are processed at a slower rate; mirroring isn't recommended for 3rd generation machine families and later. |
+| Regional network firewall policies don't support Packet Mirroring; mirroring rules don't support source secure tags. |
+| One forwarding rule can be associated with one mirroring deployment (same project as the load balancer; zone within the load balancer's region). |
+| A VPC can have at most one mirroring endpoint group association. |
+| Broker mode (Preview): mirroring endpoint and mirroring deployment must be in the same zone. |
 
 ## Notes
 
+- Mirroring rule actions: Firewall policy rule actions are `ALLOW`, `DENY` and `GOTO_NEXT`. Mirroring rules are evaluated by priority, `0` is highest, and each priority must be unique within a policy. Ingress: firewall rules first, blocked packets are not mirrored. Egress: mirroring rules first, then egress firewall rules.
+- VPC Packet Mirroring vs Network Security Integration Packet Mirroring: NSI Packet Mirroring takes precedence at the workload level: the data plane disregards existing VPC Packet Mirroring configuration (for example ICMP mirroring stops) once an NSI mirroring configuration applies.
 - Broker mode and mirroring endpoints are Preview ("Pre-GA Offerings Terms" apply; "as is", limited support).
 - Don't configure producer and consumer in the same VPC network (mirroring loop). Producer-side: one ingress firewall policy rule allowing GENEVE on UDP port `6081` from the producer subnet gateway address or local subnet range, plus health check probes from the internal passthrough Network Load Balancer.
 - Firewall Rules Logging doesn't log mirrored packets. To mirror traffic between Pods on the same GKE node, enable intranode visibility.

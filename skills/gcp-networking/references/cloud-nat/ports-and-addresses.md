@@ -62,8 +62,10 @@ gcloud compute routers nats update nat1 --router=my-router \
 
 ### Capacity examples (from the source)
 
-- Public, 1 NAT IP, 64 min ports: up to 1,008 VMs; 2 IPs: 2,016 VMs; 4,096 min ports: 15 VMs per IP.
-- Private, /29 NAT subnet, 64 min ports: up to 2,016 VMs; 1024 min ports: 126 VMs; /28 with 64: 6,048 VMs.
+| Item | Details |
+|---|---|
+| Public, 1 NAT IP, 64 min ports | up to 1,008 VMs; 2 IPs: 2,016 VMs; 4,096 min ports: 15 VMs per IP. |
+| Private, /29 NAT subnet, 64 min ports | up to 2,016 VMs; 1024 min ports: 126 VMs; /28 with 64: 6,048 VMs. |
 
 ## Notes
 

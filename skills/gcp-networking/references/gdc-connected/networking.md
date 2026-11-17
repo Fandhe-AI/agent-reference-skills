@@ -118,16 +118,6 @@ addressPools:
 
 ## Options / Props
 
-### Network configuration steps
-
-1. Optional: initialize the network configuration of the target zone (one-time, immediately after hardware installation; creates a network named `default` with basic uplink connectivity).
-2. Create a network.
-3. Create one or more subnetworks (at least one is required for nodes to access the network; each subnetwork's VLAN is automatically available to all nodes in the zone).
-4. Test: check the network's operational status and each subnetwork's provisioning status.
-5. Connect Pods with the Network Function operator (not available to virtual machine workloads).
-
-Limitations on Distributed Cloud connected servers: you can only configure subnetworks, and subnetworks only support VLAN IDs (CIDR-based subnetworks are not supported).
-
 ### Load balancing
 
 | Item | Detail |
@@ -138,7 +128,7 @@ Limitations on Distributed Cloud connected servers: you can only configure subne
 | Per cluster | Each cluster must use a separate VIP range inside the configured VIP subnetwork. |
 | Node pools | Nodes in a node pool share a Layer 2 domain and are MetalLB load balancer nodes. |
 
-Address pool payload fields:
+#### Address pool payload fields
 
 | Field | Description |
 |---|---|
@@ -147,12 +137,11 @@ Address pool payload fields:
 | `avoid_buggy_ips` | Excludes IP addresses that end with `.0` or `.255`. |
 | `manual_assign` | Lets you assign addresses from the pool manually in the target `LoadBalancer` service instead of by the MetalLB controller. |
 
-### Island mode address constraints
-
-The isolated range must not collide with: the primary VLAN CIDR of any network in the cluster; the Load Balancer VIP range in the `networking.gke.io/gdce-lb-service-vip-cidrs` annotation; the island-mode ranges of other networks in the cluster.
-
 ## Notes
 
+- Network configuration steps: 1. Optional: initialize the network configuration of the target zone (one-time, immediately after hardware installation; creates a network named `default` with basic uplink connectivity). 2. Create a network. 3. Create one or more subnetworks (at least one is required for nodes to access the network; each subnetwork's VLAN is automatically available to all nodes in the zone). 4. Test: check the network's operational status and each subnetwork's provisioning status. 5. Connect Pods with the Network Function operator (not available to virtual machine workloads).
+- Network configuration steps: Limitations on Distributed Cloud connected servers: you can only configure subnetworks, and subnetworks only support VLAN IDs (CIDR-based subnetworks are not supported).
+- Island mode address constraints: The isolated range must not collide with: the primary VLAN CIDR of any network in the cluster; the Load Balancer VIP range in the `networking.gke.io/gdce-lb-service-vip-cidrs` annotation; the island-mode ranges of other networks in the cluster.
 - Cluster network isolation: nodes in a network-isolated cluster cannot communicate with any other nodes in the same zone. Enable it with `--enable-cluster-isolation` when creating or modifying a cluster.
 - `ClusterDNS`: the Google Distributed Cloud `ClusterDNS` resource configures upstream name servers for specific domains through `spec.domains`.
 - Command-line forms for creating networks and subnetworks, and the cluster `--external-lb-address-pools` flag, are on the networks, subnetworks and clusters pages of this category. The source also shows a Console form for enabling the API.

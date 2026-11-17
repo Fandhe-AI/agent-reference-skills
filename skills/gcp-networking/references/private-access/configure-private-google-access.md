@@ -123,18 +123,22 @@ if __name__ == "__main__":
 
 ### Conditions for a VM to use Private Google Access
 
-- The VM interface is in a subnet with Private Google Access enabled.
-- The VPC network meets the network requirements below.
-- The VM interface has no external IP address.
-- The packet source IP is the interface's primary internal IPv4 address, its internal IPv6 address, or an internal IPv4 address from an alias IP range.
+| Conditions for a VM to use Private Google Access |
+|---|
+| The VM interface is in a subnet with Private Google Access enabled. |
+| The VPC network meets the network requirements below. |
+| The VM interface has no external IP address. |
+| The packet source IP is the interface's primary internal IPv4 address, its internal IPv6 address, or an internal IPv4 address from an alias IP range. |
 
 ### Network requirements
 
-- Enable the API of the service you access when using a Google API endpoint (for example the Cloud Storage API to create a bucket via `storage.googleapis.com`); accessing other resource types, such as a bucket in another project through its `storage.googleapis.com` URL, may need no API enabled.
-- For IPv6, the VM must be configured with a `/96` IPv6 address range and the software must send packets whose sources match addresses in that range.
-- You must use a VPC network; legacy networks are not supported because they have no subnets.
-- Permissions: project owners, editors, and principals with the Network Admin role (`roles/compute.networkAdmin`) can create or update subnets and assign IP addresses.
-- Logging: Cloud Logging captures API requests from VMs in these subnets, identifying the source as the VM's internal IP.
+| Network requirements |
+|---|
+| Enable the API of the service you access when using a Google API endpoint (for example the Cloud Storage API to create a bucket via `storage.googleapis.com`); accessing other resource types, such as a bucket in another project through its `storage.googleapis.com` URL, may need no API enabled. |
+| For IPv6, the VM must be configured with a `/96` IPv6 address range and the software must send packets whose sources match addresses in that range. |
+| You must use a VPC network; legacy networks are not supported because they have no subnets. |
+| Permissions: project owners, editors, and principals with the Network Admin role (`roles/compute.networkAdmin`) can create or update subnets and assign IP addresses. |
+| Logging: Cloud Logging captures API requests from VMs in these subnets, identifying the source as the VM's internal IP. |
 
 ### Domain options
 
@@ -144,8 +148,6 @@ if __name__ == "__main__":
 | `private.googleapis.com` | `199.36.153.8/30`, `2600:2d00:0002:2000::/56` | Most Google APIs and services regardless of VPC Service Controls support; not Google Workspace web applications. Use when you don't use VPC Service Controls, or you do but also need services it doesn't support |
 | `restricted.googleapis.com` | `199.36.153.4/30`, `2600:2d00:0002:1000::/56` | Only APIs supported by VPC Service Controls; blocks others; no Google Workspace APIs or web applications. Gives extra data exfiltration risk mitigation |
 
-`private.googleapis.com` and `restricted.googleapis.com` support only HTTP-based protocols over TCP (HTTP, HTTPS, HTTP/2); MQTT, ICMP and others are unsupported, as are interactive websites and features using redirects or content retrieval from the internet. `private.googleapis.com` domain names include `*.googleapis.com` (excluding `*.rep.googleapis.com`), `*.run.app`, `*.appspot.com`, `*.cloudfunctions.net`, `gcr.io` / `*.gcr.io`, `*.pkg.dev`, `*.gstatic.com`, `*.pki.goog`, `*.gke.goog`, `packages.cloud.google.com`, `dl.google.com`, `source.developers.google.com`, `storage.cloud.google.com`, `accounts.google.com` (only paths for service account OAuth) and others listed in the source.
-
 ### Configuration summary
 
 | Domain | DNS | Routes | Firewall egress allow |
@@ -154,8 +156,6 @@ if __name__ == "__main__":
 | `private.googleapis.com` | Private DNS zone records to `199.36.153.8/30` / `2600:2d00:0002:2000::/56` | `199.36.153.8/30`, `34.126.0.0/18`; IPv6 `2600:2d00:0002:2000::/56`, `2001:4860:8040::/42` | Same ranges |
 | `restricted.googleapis.com` | Private DNS zone records to `199.36.153.4/30` / `2600:2d00:0002:1000::/56` | `199.36.153.4/30`, `34.126.0.0/18`; IPv6 `2600:2d00:0002:1000::/56`, `2001:4860:8040::/42` | Same ranges |
 
-Some Google APIs offer direct connectivity from Compute Engine VMs bypassing Google Front Ends; allow egress to `34.126.0.0/18` and `2001:4860:8040::/42` (no DNS records needed; VPC Service Controls supported).
-
 ### DNS records (private zone)
 
 | Domain | A record targets | AAAA record target |
@@ -163,10 +163,11 @@ Some Google APIs offer direct connectivity from Compute Engine VMs bypassing Goo
 | `private.googleapis.com` | `199.36.153.8`, `199.36.153.9`, `199.36.153.10`, `199.36.153.11` | `2600:2d00:0002:2000::` |
 | `restricted.googleapis.com` | `199.36.153.4`, `199.36.153.5`, `199.36.153.6`, `199.36.153.7` | `2600:2d00:0002:1000::` |
 
-Steps: create a private DNS zone for `googleapis.com`; add the A (and AAAA) records for the chosen VIP name; add a `CNAME` for `*.googleapis.com` pointing to the VIP name. For other domains (`gcr.io`, `*.pkg.dev`, `*.run.app`, ...) create a zone for `DOMAIN` in the same project as the `googleapis.com` zone, add A / AAAA records for `DOMAIN` pointing to the VIP addresses, and a `CNAME` `*.DOMAIN` to `DOMAIN`.
-
 ## Notes
 
+- Domain options: `private.googleapis.com` and `restricted.googleapis.com` support only HTTP-based protocols over TCP (HTTP, HTTPS, HTTP/2); MQTT, ICMP and others are unsupported, as are interactive websites and features using redirects or content retrieval from the internet. `private.googleapis.com` domain names include `*.googleapis.com` (excluding `*.rep.googleapis.com`), `*.run.app`, `*.appspot.com`, `*.cloudfunctions.net`, `gcr.io` / `*.gcr.io`, `*.pkg.dev`, `*.gstatic.com`, `*.pki.goog`, `*.gke.goog`, `packages.cloud.google.com`, `dl.google.com`, `source.developers.google.com`, `storage.cloud.google.com`, `accounts.google.com` (only paths for service account OAuth) and others listed in the source.
+- Configuration summary: Some Google APIs offer direct connectivity from Compute Engine VMs bypassing Google Front Ends; allow egress to `34.126.0.0/18` and `2001:4860:8040::/42` (no DNS records needed; VPC Service Controls supported).
+- DNS records (private zone): Steps: create a private DNS zone for `googleapis.com`; add the A (and AAAA) records for the chosen VIP name; add a `CNAME` for `*.googleapis.com` pointing to the VIP name. For other domains (`gcr.io`, `*.pkg.dev`, `*.run.app`, ...) create a zone for `DOMAIN` in the same project as the `googleapis.com` zone, add A / AAAA records for `DOMAIN` pointing to the VIP addresses, and a `CNAME` `*.DOMAIN` to `DOMAIN`.
 - Do not mix addresses of the two VIPs in DNS; this causes intermittent failures. Public DNS records for these names exist but can't be used to reach the APIs; create a private zone.
 - Cloud Storage custom domain names: pointing DNS at the VIPs isn't enough; set the HTTP Host header and TLS SNI to `storage.googleapis.com`.
 - Routing: next hop must be the default internet gateway; routing to Google APIs via other VMs or custom next hops isn't supported. Traffic stays inside Google's network. Google publishes no internet routes for the two VIP ranges. Without an IPv6 default route there is no IPv6 connectivity to Google APIs.

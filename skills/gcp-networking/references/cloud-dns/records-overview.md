@@ -60,8 +60,6 @@ The TTLs encountered are 6000 (ALIAS), 3000 (CNAME), and 5000 (A); the smallest,
 
 ### Supported record types
 
-Wildcard records are supported for all types except `NS`.
-
 | Type | Notes |
 |---|---|
 | `A` / `AAAA` | IPv4 dotted decimal / IPv6 hexadecimal address, for example `192.0.2.91`, `2001:db8::8bd:1002` |
@@ -85,6 +83,7 @@ Wildcard records are supported for all types except `NS`.
 
 ## Notes
 
+- Supported record types: Wildcard records are supported for all types except `NS`.
 - Starting January 5, 2027, Cloud DNS limits responses to queries for record type `ANY`: authoritative name servers return only one existing record set (such as `A` or `AAAA`) instead of all. Update monitoring scripts, health checks, and provisioning pipelines to query explicit types.
 - ALIAS records are specific to Cloud DNS; clients see a standard `A` or `AAAA` record. An incorrect ALIAS target can break public records or return undesired IPs.
 - Google Cloud DNS, not Cloudflare DNS.

@@ -26,8 +26,6 @@ gcloud compute regions describe example-region
 
 ### Quotas (per project)
 
-Values are shown on the Quotas page of the console (`compute.googleapis.com` metrics).
-
 | Item | Metric | Notes |
 |---|---|---|
 | VPN gateways per region | `vpn_gateways_per_region` | HA VPN only |
@@ -36,8 +34,6 @@ Values are shown on the Quotas page of the console (`compute.googleapis.com` met
 | Routers | `routers` | Cloud Routers in the project, any network and region; networks also have per-region Cloud Router limits; independent of gateway type |
 | Target VPN gateways per region | `target_vpn_gateways_per_region` | Classic VPN only |
 | Forwarding rules | `forwarding_rules` | Classic VPN only |
-
-Deprecated quotas being replaced: `VPN gateways` (by `VPN gateways per region`), `VPN tunnels` (by `VPN tunnels per region`), `Target VPN gateways` (by `Target VPN gateways per region`).
 
 ### System limits (cannot be increased)
 
@@ -54,6 +50,8 @@ Deprecated quotas being replaced: `VPN gateways` (by `VPN gateways per region`),
 
 ## Notes
 
+- Quotas (per project): Values are shown on the Quotas page of the console (`compute.googleapis.com` metrics).
+- Quotas (per project): Deprecated quotas being replaced: `VPN gateways` (by `VPN gateways per region`), `VPN tunnels` (by `VPN tunnels per region`), `Target VPN gateways` (by `Target VPN gateways per region`).
 - Exceeding a quota: gcloud prints a `quota exceeded` error and exits with code `1`; an API request returns HTTP `413 Request Entity Too Large`.
 - Quotas apply per project and do not guarantee resource availability (for example no free regional external IPs or zonal depletion).
 - Known issues: HA VPN resources `compute.vpnGateways` and `compute.externalVpnGateways` are not yet shown in Cloud Asset Inventory or Security Command Center (`compute.vpnTunnels` is listed in both); view HA VPN Cloud Monitoring metrics in Metrics Explorer; for tunnels to AWS use IKEv2 and configure fewer IKE transform sets.

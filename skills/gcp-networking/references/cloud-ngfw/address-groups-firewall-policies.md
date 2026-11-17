@@ -40,8 +40,6 @@ gcloud network-security address-groups create my-address-group \
 | Project-scoped | Your own list of IPs for a project or network (container type always `project`) | Global and regional network firewall policies only |
 | Organization-scoped | Central list for high-level rules (container type always `organization`) | Hierarchical, global network and regional network firewall policies |
 
-An address group is project-scoped or organization-scoped, not both.
-
 ### IAM
 
 | Task | Role | Permissions |
@@ -51,6 +49,7 @@ An address group is project-scoped or organization-scoped, not both.
 
 ## Notes
 
+- Scopes: An address group is project-scoped or organization-scoped, not both.
 - The capacity of an address group is added to the total attribute count of the firewall policy using it, so set capacity to a suitable value.
 - If an address group referenced by a rule doesn't exist, the address group filter is removed from the rule.
 - For both scopes, the address group location must match the firewall policy location.

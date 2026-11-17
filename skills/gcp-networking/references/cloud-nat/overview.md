@@ -21,12 +21,14 @@ gcloud compute routers nats create nat1 --router=my-router \
 
 ### Resources translated
 
-- Compute Engine VM instances
-- Google Kubernetes Engine (GKE) clusters
-- Cloud Run instances
-- Cloud Run functions instances
-- App Engine standard environment instances
-- Regional internet network endpoint groups (NEGs)
+| Resources translated |
+|---|
+| Compute Engine VM instances |
+| Google Kubernetes Engine (GKE) clusters |
+| Cloud Run instances |
+| Cloud Run functions instances |
+| App Engine standard environment instances |
+| Regional internet network endpoint groups (NEGs) |
 
 ### Supported resources by NAT type
 
@@ -36,8 +38,6 @@ gcloud compute routers nats create nat1 --router=my-router \
 | GKE clusters | Yes | Yes |
 | Cloud Run, Cloud Run functions, and App Engine (see note) | Yes | Yes |
 | Regional internet NEGs | Yes | Not applicable |
-
-Serverless endpoints supported: Cloud Run instances (services and jobs) and Cloud Run functions instances through Direct VPC egress (recommended) or Serverless VPC Access; App Engine standard environment instances through Serverless VPC Access.
 
 ### Private NAT destinations
 
@@ -49,6 +49,7 @@ Serverless endpoints supported: Cloud Run instances (services and jobs) and Clou
 
 ## Notes
 
+- Supported resources by NAT type: Serverless endpoints supported: Cloud Run instances (services and jobs) and Cloud Run functions instances through Direct VPC egress (recommended) or Serverless VPC Access; App Engine standard environment instances through Serverless VPC Access.
 - A single gateway provides either Public NAT or Private NAT; two separate gateways can serve the same subnet with both types. Both types translate IPv4 to IPv4 and IPv6 to IPv4.
 - Cloud NAT supports address translation for established inbound response packets only; it does not allow unsolicited inbound connections.
 - Public NAT lets resources without external IPv4 addresses reach IPv4 internet destinations. Traffic to Google APIs and services is routed through Private Google Access even when the VM uses Public NAT.

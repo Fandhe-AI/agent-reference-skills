@@ -27,16 +27,14 @@ gcloud compute routers add-named-set my-router \
 
 ### Evaluation rules
 
-- Policies are evaluated in the order you list them; terms within a policy in order of priority.
-- Terms can modify BGP routes; a later term can modify a route changed by an earlier term.
-- Evaluation ends when a route is accepted or dropped; a route is accepted if all policies and terms are evaluated and it isn't dropped.
-- Terms aren't evaluated twice for a route in a single exercise of a policy.
-- Evaluation fails open: routes not explicitly dropped are accepted. To get fail-closed behavior, create a "drop all" policy and put it last in the import (or export) policy list of every BGP peer that must fail closed; policies are attached per BGP peer and per direction and are evaluated in the order listed.
-- A policy applies in one direction only (inbound for learned routes or outbound for advertised routes) but can be applied to multiple BGP peers. Each BGP peer has zero or more import and export policies.
-
-### Named sets
-
-Named sets group expressions of one type (communities or BGP prefixes), are unique to each Cloud Router, and can be referenced by any number of policies on the same Cloud Router. Peers reference policies by name, and policies reference named sets by name, only when they are defined on the same Cloud Router. Policies can be created, modified and deleted as long as the parent Cloud Router exists.
+| Evaluation rules |
+|---|
+| Policies are evaluated in the order you list them; terms within a policy in order of priority. |
+| Terms can modify BGP routes; a later term can modify a route changed by an earlier term. |
+| Evaluation ends when a route is accepted or dropped; a route is accepted if all policies and terms are evaluated and it isn't dropped. |
+| Terms aren't evaluated twice for a route in a single exercise of a policy. |
+| Evaluation fails open: routes not explicitly dropped are accepted. To get fail-closed behavior, create a "drop all" policy and put it last in the import (or export) policy list of every BGP peer that must fail closed; policies are attached per BGP peer and per direction and are evaluated in the order listed. |
+| A policy applies in one direction only (inbound for learned routes or outbound for advertised routes) but can be applied to multiple BGP peers. Each BGP peer has zero or more import and export policies. |
 
 ### Communities
 
@@ -60,6 +58,7 @@ Named sets group expressions of one type (communities or BGP prefixes), are uniq
 
 ## Notes
 
+- Named sets: Named sets group expressions of one type (communities or BGP prefixes), are unique to each Cloud Router, and can be referenced by any number of policies on the same Cloud Router. Peers reference policies by name, and policies reference named sets by name, only when they are defined on the same Cloud Router. Policies can be created, modified and deleted as long as the parent Cloud Router exists.
 - Test BGP route policies in a test environment before production.
 - A "drop all" policy or `drop()` term can remove routes and break connectivity; try policies on a disposable router or peer first. Exceeding the 5000-prefix limit resets the BGP session.
 - Snippets taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/routers/add-route-policy and https://docs.cloud.google.com/sdk/gcloud/reference/compute/routers/add-named-set (gcloud 593.0.0 help); the page itself has no code. The full flag list is in the `gcp-compute` skill. Creating policies and named sets: https://docs.cloud.google.com/network-connectivity/docs/router/how-to/bgp-route-policies/create-policies and https://docs.cloud.google.com/network-connectivity/docs/router/how-to/bgp-route-policies/create-named-sets.

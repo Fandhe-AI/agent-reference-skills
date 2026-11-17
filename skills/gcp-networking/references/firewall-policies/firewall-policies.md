@@ -51,20 +51,16 @@ gcloud compute firewall-policies rules create 10 \
 
 ### Differences from global network firewall policy rules
 
-- Hierarchical policies support target networks; global network policies do not.
-- Hierarchical policies are organization-level resources; global network policies are project-level.
-- Rules support secure tag keys as source / target secure tags (organization purpose).
-
-### Policy names
-
-Google Cloud generates a policy ID and you specify a short name. With `gcloud` you can reference the system-generated ID or the short name plus organization ID; with the API you must use the system-generated ID.
-
-### Predefined rules
-
-Cloud NGFW adds predefined rules with the lowest priority to a new policy; connections that match no explicit rule are passed down to lower-level policies or network rules.
+| Differences from global network firewall policy rules |
+|---|
+| Hierarchical policies support target networks; global network policies do not. |
+| Hierarchical policies are organization-level resources; global network policies are project-level. |
+| Rules support secure tag keys as source / target secure tags (organization purpose). |
 
 ## Notes
 
+- Policy names: Google Cloud generates a policy ID and you specify a short name. With `gcloud` you can reference the system-generated ID or the short name plus organization ID; with the API you must use the system-generated ID.
+- Predefined rules: Cloud NGFW adds predefined rules with the lowest priority to a new policy; connections that match no explicit rule are passed down to lower-level policies or network rules.
 - Modifying rules: there is no batch update. To apply many changes atomically, clone the policy to a temporary policy, assign it to the same resources, edit the original, then assign the original back (see https://docs.cloud.google.com/firewall/docs/using-firewall-policies#clone-rules).
 - Moving a policy: policies are parented by a folder or the organization; policies owned by a folder are deleted if the folder is deleted.
 - Changes to the resource hierarchy take time to propagate. Do not change policy associations and the hierarchy simultaneously: if the old folder loses its association before networks under it have updated ancestry, those networks are briefly unprotected.

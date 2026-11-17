@@ -40,10 +40,12 @@ gcloud network-security security-profiles url-filtering create \
 
 ### Limitations
 
-- Supports only `http/1.x` and `http/2`. QUIC, encrypted SNI (ESNI) and Encrypted Client Hello (ECH) aren't supported with TLS inspection enabled.
-- With TLS inspection enabled, QUIC / ESNI / ECH traffic isn't passed. With it disabled, such traffic passes without domain / SNI information: allowed only when an explicit allow URL filter exists, otherwise the implicit deny URL filter blocks it.
-- Firewall endpoints support IP packets of a limited size only.
-- Inspecting egress traffic from serverless workloads is not supported (Direct VPC egress and Serverless VPC Access connectors).
+| Limitations |
+|---|
+| Supports only `http/1.x` and `http/2`. QUIC, encrypted SNI (ESNI) and Encrypted Client Hello (ECH) aren't supported with TLS inspection enabled. |
+| With TLS inspection enabled, QUIC / ESNI / ECH traffic isn't passed. With it disabled, such traffic passes without domain / SNI information: allowed only when an explicit allow URL filter exists, otherwise the implicit deny URL filter blocks it. |
+| Firewall endpoints support IP packets of a limited size only. |
+| Inspecting egress traffic from serverless workloads is not supported (Direct VPC egress and Serverless VPC Access connectors). |
 
 ## Notes
 

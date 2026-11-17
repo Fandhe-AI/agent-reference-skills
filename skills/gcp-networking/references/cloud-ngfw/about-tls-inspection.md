@@ -52,9 +52,11 @@ gcloud network-security tls-inspection-policies list \
 
 ### Limitations
 
-- Enterprise doesn't support HTTP/2, QUIC, HTTP/3 or PROXY protocol traffic with TLS inspection; TLS inspection is supported for TCP traffic that is not HTTPS.
-- Only TLS decryption is supported (not SSH or other protocols).
-- Inspecting egress traffic from serverless workloads is not supported (Direct VPC egress and Serverless VPC Access connectors).
+| Limitations |
+|---|
+| Enterprise doesn't support HTTP/2, QUIC, HTTP/3 or PROXY protocol traffic with TLS inspection; TLS inspection is supported for TCP traffic that is not HTTPS. |
+| Only TLS decryption is supported (not SSH or other protocols). |
+| Inspecting egress traffic from serverless workloads is not supported (Direct VPC egress and Serverless VPC Access connectors). |
 
 ## Notes
 

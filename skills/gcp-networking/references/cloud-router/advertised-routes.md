@@ -36,8 +36,6 @@ gcloud compute routers create ROUTER_NAME \
 | BGP session | default | Advertises per the router-level mode. |
 | BGP session | custom | Full control over advertised IP addresses. |
 
-The router's advertisement mode doesn't control whether NCC-imported transit dynamic routes are re-advertised.
-
 ### Effective advertisements
 
 | Router mode | BGP session mode | Effective advertised prefixes |
@@ -48,15 +46,15 @@ The router's advertisement mode doesn't control whether NCC-imported transit dyn
 
 ### Subnet range advertisement
 
-- Local IPv4 subnet ranges in the Cloud Router's VPC network; NCC-imported IPv4 subnet ranges (Cloud Router in a hybrid spoke whose import filter allows subnet routes from an NCC hub); local IPv6 subnet ranges (extra requirements below). Advertisements update automatically on subnet lifecycle activity.
-- Regional dynamic routing mode: only subnet ranges in the Cloud Router's region, MED equal to the session base priority.
-- Global dynamic routing mode: subnet ranges in all regions; same-region MED equals the base priority, other regions add an inter-regional cost.
-- Privately used public IPv4 ranges in subnets: the other network might not be able to reach internet resources at those public addresses.
-- Internal subnet IPv6 ranges are included automatically only when the product (for example the HA VPN gateway) uses a dual-stack or IPv6-only stack type and the IPv6 BGP session is configured and enabled (or the IPv4 session is configured for IPv6 route exchange). External subnet IPv6 ranges are never advertised automatically; include them as custom ranges.
+| Subnet range advertisement |
+|---|
+| Local IPv4 subnet ranges in the Cloud Router's VPC network; NCC-imported IPv4 subnet ranges (Cloud Router in a hybrid spoke whose import filter allows subnet routes from an NCC hub); local IPv6 subnet ranges (extra requirements below). Advertisements update automatically on subnet lifecycle activity. |
+| Regional dynamic routing mode: only subnet ranges in the Cloud Router's region, MED equal to the session base priority. |
+| Global dynamic routing mode: subnet ranges in all regions; same-region MED equals the base priority, other regions add an inter-regional cost. |
+| Privately used public IPv4 ranges in subnets: the other network might not be able to reach internet resources at those public addresses. |
+| Internal subnet IPv6 ranges are included automatically only when the product (for example the HA VPN gateway) uses a dual-stack or IPv6-only stack type and the IPv6 BGP session is configured and enabled (or the IPv4 session is configured for IPv6 route exchange). External subnet IPv6 ranges are never advertised automatically; include them as custom ranges. |
 
 ### Custom advertisement
-
-You can advertise default route prefixes such as `0.0.0.0/0` or `::/0` for all BGP sessions on a Cloud Router. Options:
 
 | Option | Behavior |
 |---|---|
@@ -64,8 +62,6 @@ You can advertise default route prefixes such as `0.0.0.0/0` or `::/0` for all B
 | Custom prefixes in addition to subnet ranges | Subnet ranges per dynamic routing mode; custom range MED always equals the base priority; a custom range exactly matching an advertised subnet route is ignored. |
 
 ### Advertised priority (MED)
-
-The per-session base advertised priority is used as the BGP MED. Custom ranges and same-region subnet ranges use only the base priority. Subnet ranges from other regions use base priority plus inter-regional cost when the network is in global dynamic routing mode and the session advertises subnet ranges. Region-to-region costs can change periodically (for example with network performance), which can change routing.
 
 | Example (global mode, base priority 100) | Region cost | Advertised MED |
 |---|---|---|
@@ -76,6 +72,9 @@ The per-session base advertised priority is used as the BGP MED. Custom ranges a
 
 ## Notes
 
+- Advertisement modes: The router's advertisement mode doesn't control whether NCC-imported transit dynamic routes are re-advertised.
+- Custom advertisement: You can advertise default route prefixes such as `0.0.0.0/0` or `::/0` for all BGP sessions on a Cloud Router. Options:
+- Advertised priority (MED): The per-session base advertised priority is used as the BGP MED. Custom ranges and same-region subnet ranges use only the base priority. Subnet ranges from other regions use base priority plus inter-regional cost when the network is in global dynamic routing mode and the session advertises subnet ranges. Region-to-region costs can change periodically (for example with network performance), which can change routing.
 - To keep a 99.99% availability SLA with HA VPN, Partner Interconnect or Dedicated Interconnect, advertise the same prefixes on all links, possibly with different priorities.
 - Caution from the source: the on-premises route selection might not prefer the lower-MED route because other attributes (router ID, origin ASN) affect BGP best-path selection; check your device documentation.
 - Base priority adjustment doesn't work for site-to-site re-advertisement; use BGP route policies for finer control. Re-advertising NCC-imported transit dynamic routes is controlled only by the hybrid spoke settings (site-to-site data transfer, export filters, import filters).

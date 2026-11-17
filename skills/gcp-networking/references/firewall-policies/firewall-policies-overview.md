@@ -28,10 +28,12 @@ gcloud compute firewall-policies create --short-name=my-policy \
 
 ### Regional system firewall policies
 
-- Rules are evaluated immediately after hierarchical firewall policy rules (see [firewall-policies-rule-eval-order.md](./firewall-policies-rule-eval-order.md)).
-- You cannot modify a rule, except to enable or disable firewall rule logging.
-- Google Cloud creates one in a region of a VPC network when a Google service requires rules in that region. More than one can be associated with a region of a network.
-- You are not charged for the evaluation of rules in regional system firewall policies.
+| Regional system firewall policies |
+|---|
+| Rules are evaluated immediately after hierarchical firewall policy rules (see [firewall-policies-rule-eval-order.md](./firewall-policies-rule-eval-order.md)). |
+| You cannot modify a rule, except to enable or disable firewall rule logging. |
+| Google Cloud creates one in a region of a VPC network when a Google service requires rules in that region. More than one can be associated with a region of a network. |
+| You are not charged for the evaluation of rules in regional system firewall policies. |
 
 ### Rule direction
 

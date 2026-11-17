@@ -19,7 +19,7 @@ gcloud dns dns-keys list --zone=my_zone \
 
 ## Options / Props
 
-DNSSEC must be configured in three places:
+### DNSSEC must be configured in three places
 
 | Place | What is required |
 |---|---|
@@ -27,7 +27,7 @@ DNSSEC must be configured in three places:
 | TLD registry (for `example.com`, `.com`) | A DS record that authenticates a DNSKEY record in your zone, added by activating DNSSEC at your domain registrar. |
 | DNS resolver | A resolver that validates DNSSEC signatures (for example Google Public DNS or Verisign Public DNS) for full protection. |
 
-Related record types and operations (details are on the linked source pages):
+### Related record types and operations (details are on the linked source pages)
 
 | Topic | Notes |
 |---|---|

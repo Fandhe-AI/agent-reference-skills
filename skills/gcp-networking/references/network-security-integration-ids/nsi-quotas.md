@@ -45,8 +45,6 @@ gcloud quotas info list --service=networksecurity.googleapis.com --project=PROJE
 | Hierarchical firewall policy | Rule attributes per policy | Sum of rule attributes of all rules; shared by firewall policy rules and mirroring rules. |
 | Global network firewall policy | Rule attributes per policy | Same, shared by firewall policy rules and mirroring rules. |
 
-Example: an ingress allow rule (one source range, one protocol, one port range) plus an ingress mirroring rule (one destination range, one protocol, one port range) count as 6 rule attributes.
-
 ### Quotas per deployment group / endpoint group
 
 | Quota | Default |
@@ -82,6 +80,7 @@ Example: an ingress allow rule (one source range, one protocol, one port range) 
 
 ## Notes
 
+- Quotas per organization and per firewall policy: Example: an ingress allow rule (one source range, one protocol, one port range) plus an ingress mirroring rule (one destination range, one protocol, one port range) count as 6 rule attributes.
 - Exceeding a quota with `gcloud` prints a `quota exceeded` error and exits with code `1`; an API request returns `413 Request Entity Too Large`.
 - Quotas don't guarantee resource availability.
 - The source also shows the Console steps for checking quota.

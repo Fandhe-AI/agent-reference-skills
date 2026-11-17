@@ -16,9 +16,11 @@ gcloud network-connectivity hubs groups list --hub=my-hub
 
 ### Spoke groups
 
-- Each spoke group is a routing domain with its own route table, updated automatically as spokes are added or removed.
-- Each spoke belongs to only one spoke group.
-- NCC automatically accepts spokes from the same project as the hub. For VPC spokes in other projects, NCC offers automatic acceptance or spoke proposal review.
+| Spoke groups |
+|---|
+| Each spoke group is a routing domain with its own route table, updated automatically as spokes are added or removed. |
+| Each spoke belongs to only one spoke group. |
+| NCC automatically accepts spokes from the same project as the hub. For VPC spokes in other projects, NCC offers automatic acceptance or spoke proposal review. |
 
 ### Topologies
 
@@ -28,12 +30,12 @@ gcloud network-connectivity hubs groups list --hub=my-hub
 | Star | `center` and `edge` | center and edge |
 | Hybrid inspection | `prod`, `non-prod`, `services`, `gateways` | prod, non-prod, services, gateway |
 
-Mesh supports VPC spokes, producer VPC spokes, hybrid spokes and NCC Gateway spokes, and supports high-scale connectivity between VPC spokes and hybrid spokes.
-
 ### Star topology
 
-- The center group's route table permits communication with spokes of the center or edge group.
-- The edge group's route table permits communication only with center group spokes; NCC prohibits routes that connect different spokes in the edge group.
+| Star topology |
+|---|
+| The center group's route table permits communication with spokes of the center or edge group. |
+| The edge group's route table permits communication only with center group spokes; NCC prohibits routes that connect different spokes in the edge group. |
 
 | Spoke | Center group | Edge group |
 |---|---|---|
@@ -59,8 +61,6 @@ Mesh supports VPC spokes, producer VPC spokes, hybrid spokes and NCC Gateway spo
 | Hybrid spoke (data transfer disabled or enabled) | Yes | Yes | Yes | No |
 | NCC Gateway spoke | No | No | No | Yes |
 
-SSE packet inspection is available only for traffic between an NCC Gateway spoke in the gateways group and a spoke in the prod, non-prod or services group. It isn't available for traffic over VLAN attachments, HA VPN tunnels or Router appliances in a hybrid spoke, because those spokes must be in prod, non-prod or services. Routing between groups (source row to destination column; first value = routing permitted, second = SSE inspection available):
-
 | Source \ Destination | prod | non-prod | services | gateways |
 |---|---|---|---|---|
 | prod | Yes / No | No / No | Yes / No | Yes / Yes |
@@ -70,6 +70,8 @@ SSE packet inspection is available only for traffic between an NCC Gateway spoke
 
 ## Notes
 
+- Topologies: Mesh supports VPC spokes, producer VPC spokes, hybrid spokes and NCC Gateway spokes, and supports high-scale connectivity between VPC spokes and hybrid spokes.
+- Hybrid inspection topology: SSE packet inspection is available only for traffic between an NCC Gateway spoke in the gateways group and a spoke in the prod, non-prod or services group. It isn't available for traffic over VLAN attachments, HA VPN tunnels or Router appliances in a hybrid spoke, because those spokes must be in prod, non-prod or services. Routing between groups (source row to destination column; first value = routing permitted, second = SSE inspection available):
 - Star topology: hybrid spokes with site-to-site data transfer enabled must be in the center group.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-connectivity/hubs/groups/list (gcloud 593.0.0 help).
 - Clarified from the official docs: in the hybrid inspection topology the group is named `gateways`; the source lists the groups returned by `hubs groups list --hub` as "gateway groups", so the returned group is the `gateways` group.

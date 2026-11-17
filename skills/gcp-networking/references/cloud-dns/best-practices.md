@@ -35,10 +35,12 @@ gcloud dns policies create mypolicy \
 
 ### Firewalls and routing
 
-- Cloud DNS sends queries from `35.199.192.0/19` using UDP or TCP port 53; allow this range on on-premises firewalls and DNS servers.
-- In Cloud Router, add a custom advertised route for `35.199.192.0/19` to the on-premises environment.
-- DNS forwarding can't be used between Google Cloud environments; use DNS peering.
-- Cloud DNS doesn't sync or cache on-premises records beyond 60 seconds or the TTL, so on-premises servers must stay reachable.
+| Firewalls and routing |
+|---|
+| Cloud DNS sends queries from `35.199.192.0/19` using UDP or TCP port 53; allow this range on on-premises firewalls and DNS servers. |
+| In Cloud Router, add a custom advertised route for `35.199.192.0/19` to the on-premises environment. |
+| DNS forwarding can't be used between Google Cloud environments; use DNS peering. |
+| Cloud DNS doesn't sync or cache on-premises records beyond 60 seconds or the TTL, so on-premises servers must stay reachable. |
 
 ### Reference architectures
 

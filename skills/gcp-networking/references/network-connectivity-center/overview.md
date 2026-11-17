@@ -26,8 +26,6 @@ gcloud network-connectivity hubs list-spokes HUB \
 | NCC Gateway spoke | Regional spoke that enables security for Cross-Cloud Network traffic and third-party Security Service Edge (SSE) inspection. |
 | Hybrid spoke | Router appliance VMs, HA VPN tunnels, or Cloud Interconnect VLAN attachments (Dedicated, Partner, Cross-Cloud Interconnect, Partner Cross-Cloud Interconnect for OCI / AWS). Must be in the same project as the hub. |
 
-A single hybrid spoke can reference several resources of the same type (for example two or more HA VPN tunnels) but cannot mix Router appliance VMs, VPN tunnels and VLAN attachments.
-
 ### Use cases per hybrid spoke type
 
 | Spoke | Use cases |
@@ -36,12 +34,12 @@ A single hybrid spoke can reference several resources of the same type (for exam
 | HA VPN tunnel | IPv4 and IPv6 (Preview) site-to-cloud; IPv4 and IPv6 (Preview) site-to-site data transfer |
 | Cloud Interconnect VLAN attachment | IPv4 and IPv6 (Preview) site-to-cloud; IPv4 and IPv6 (Preview) site-to-site data transfer |
 
-All backing resources of site-to-site spokes connected to one hub must be in the same VPC network.
-
 ### Route exchange and spoke filters
 
-- Export filters control which routes a spoke sends to the hub. VPC spokes export IPv4 and IPv6 subnet ranges; hybrid spokes export IPv4 and IPv6 (Preview) dynamic routes, except Router appliance spokes (IPv4 only).
-- VPC spokes import all routes from their spoke group. Hybrid spokes control imports with import filters.
+| Route exchange and spoke filters |
+|---|
+| Export filters control which routes a spoke sends to the hub. VPC spokes export IPv4 and IPv6 subnet ranges; hybrid spokes export IPv4 and IPv6 (Preview) dynamic routes, except Router appliance spokes (IPv4 only). |
+| VPC spokes import all routes from their spoke group. Hybrid spokes control imports with import filters. |
 
 ### Routing considerations
 
@@ -53,12 +51,16 @@ All backing resources of site-to-site spokes connected to one hub must be in the
 
 ### Support for other products
 
-- VPC spokes can export local subnet routes, import subnet routes from other VPC spokes and import dynamic routes from hybrid spokes. They do not export policy-based routes, peering subnet routes, static routes or dynamic routes.
-- Shared VPC networks can be VPC spokes; the hub can be in any project. Recommended role for service project administrators: Spoke Admin (`roles/networkconnectivity.spokeAdmin`). Private Service Connect global Google API endpoints in an attached Shared VPC host or service project are propagated (Preview).
-- Spoke resources can't be part of a legacy network. Classic VPN tunnels aren't supported.
+| Support for other products |
+|---|
+| VPC spokes can export local subnet routes, import subnet routes from other VPC spokes and import dynamic routes from hybrid spokes. They do not export policy-based routes, peering subnet routes, static routes or dynamic routes. |
+| Shared VPC networks can be VPC spokes; the hub can be in any project. Recommended role for service project administrators: Spoke Admin (`roles/networkconnectivity.spokeAdmin`). Private Service Connect global Google API endpoints in an attached Shared VPC host or service project are propagated (Preview). |
+| Spoke resources can't be part of a legacy network. Classic VPN tunnels aren't supported. |
 
 ## Notes
 
+- Hubs and spokes: A single hybrid spoke can reference several resources of the same type (for example two or more HA VPN tunnels) but cannot mix Router appliance VMs, VPN tunnels and VLAN attachments.
+- Use cases per hybrid spoke type: All backing resources of site-to-site spokes connected to one hub must be in the same VPC network.
 - Adding a VLAN attachment or Cloud VPN tunnel to a hybrid spoke with site-to-site data transfer enabled makes NCC update its BGP session to re-advertise prefixes learned by the other such spokes of the hub.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-connectivity/hubs/list-spokes (gcloud 593.0.0 help).
 - Pricing and SLA are on the NCC pricing and SLA pages (not copied).

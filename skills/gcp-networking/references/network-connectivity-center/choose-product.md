@@ -27,8 +27,6 @@ gcloud network-connectivity hubs create my-hub \
 | Cross-Cloud Interconnect | Connect to another cloud provider (AWS, Microsoft Azure, Oracle Cloud Infrastructure, Alibaba Cloud). |
 | Cloud Router | BGP dynamic routing for Cloud Interconnect, Cloud VPN and Router appliances; also manages Cloud NAT gateways. |
 
-Google recommends Cloud Interconnect instead of Direct Peering, Carrier Peering and Verified Peering Provider, which are used only in certain circumstances.
-
 ### HA VPN
 
 | Item | Value |
@@ -51,8 +49,6 @@ Google recommends Cloud Interconnect instead of Direct Peering, Carrier Peering 
 | Encryption | HA VPN over Cloud Interconnect | HA VPN over Cloud Interconnect (required for compliance with third-party providers) |
 | SLA | End-to-end SLA for Google-defined topologies | SLA between Google and the provider; provider may offer end-to-end |
 
-Cross-Cloud Interconnect: to satisfy the Cloud Interconnect SLA, buy two connections (primary and redundant) per provider; use a separate pair for each additional provider.
-
 ### Reaching Google Workspace and Google APIs only
 
 | Option | Notes |
@@ -60,8 +56,6 @@ Cross-Cloud Interconnect: to satisfy the Cloud Interconnect SLA, buy two connect
 | Verified Peering Provider | Reach public Google resources through an ISP; badge tiers silver (PoP redundancy) and gold (metro redundancy). Does not require Google Cloud. Routes do not appear in any VPC network. |
 | Direct Peering | Peering at a Google edge location; more than 100 locations in 33 countries. No SLA. Does not give direct access to VPC resources with only internal IPs. |
 | Carrier Peering | Peering through a service provider. No Google SLA. Creates no custom routes in a VPC network. |
-
-Cloud Interconnect does not provide access to Google Workspace; it provides access to all other Google Cloud products and to supported APIs via Private Google Access from on-premises hosts.
 
 ### Connecting sites
 
@@ -71,12 +65,12 @@ Cloud Interconnect does not provide access to Google Workspace; it provides acce
 | Network Connectivity Center | Hub-and-spoke WAN over Google's network; on-premises networks connect through spokes. |
 | Router appliance | Peer a third-party VM appliance with Cloud Router; attached to a hub through a Router appliance spoke. |
 
-### CDN Interconnect
-
-Direct peering links between selected third-party CDN providers and Google's edge network. No configuration or Cloud Load Balancing integration is required; if the provider is already in the program, traffic uses the direct connection automatically.
-
 ## Notes
 
+- Connecting to Google Cloud: Google recommends Cloud Interconnect instead of Direct Peering, Carrier Peering and Verified Peering Provider, which are used only in certain circumstances.
+- Dedicated Interconnect vs Partner Interconnect: Cross-Cloud Interconnect: to satisfy the Cloud Interconnect SLA, buy two connections (primary and redundant) per provider; use a separate pair for each additional provider.
+- Reaching Google Workspace and Google APIs only: Cloud Interconnect does not provide access to Google Workspace; it provides access to all other Google Cloud products and to supported APIs via Private Google Access from on-premises hosts.
+- CDN Interconnect: Direct peering links between selected third-party CDN providers and Google's edge network. No configuration or Cloud Load Balancing integration is required; if the provider is already in the program, traffic uses the direct connection automatically.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-connectivity/hubs/create (gcloud 593.0.0 help).
 - Pricing, quotas, SLA and release notes are on the Network Connectivity resources page; prices are not copied here.
 - Cross-Site Interconnect is Preview. Classic VPN is not covered here; HA VPN is the current Cloud VPN gateway type (see "Moving to HA VPN from Classic VPN" in the official docs).

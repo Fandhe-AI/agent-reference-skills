@@ -50,8 +50,6 @@ Replace `PROJECT_ID` with your project ID.
 | Include or exclude export CIDR ranges per VPC or producer VPC spoke | 16 |
 | Include or exclude export or import CIDR ranges per hybrid spoke | 32 |
 
-Router appliance also inherits the Cloud Router limits on Cloud Routers per VPC network and region, and BGP peers per Cloud Router in a VPC network and region.
-
 ### Required roles
 
 | Task | Required role |
@@ -61,6 +59,7 @@ Router appliance also inherits the Cloud Router limits on Cloud Routers per VPC 
 
 ## Notes
 
+- NCC limits (system limits): Router appliance also inherits the Cloud Router limits on Cloud Routers per VPC network and region, and BGP peers per Cloud Router in a VPC network and region.
 - Exceeding a quota with `gcloud` prints a `quota exceeded` error and exits with code `1`; an API request returns HTTP `413 Request Entity Too Large`.
 - Quotas don't guarantee resource availability.
 - Most quotas are adjusted in the Google Cloud console (Quotas page) via a quota adjustment request.

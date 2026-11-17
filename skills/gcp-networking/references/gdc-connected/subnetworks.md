@@ -80,7 +80,7 @@ DELETE /v1/projects/PROJECT_ID/locations/REGION/zones/ZONE_NAME/subnets/SUBNETWO
 | `REGION` / `ZONE_NAME` | Google Cloud region and Distributed Cloud connected zone. |
 | `LABELS`, `FILTER`, `PAGE_SIZE`, `SORT_BY`, `PAGE_TOKEN` | Labels and list-request parameters (`SORT_BY` is ascending by default; prefix with `~` for descending). |
 
-Provisioning state returned by describe:
+### Provisioning state returned by describe
 
 | State | Meaning |
 |---|---|

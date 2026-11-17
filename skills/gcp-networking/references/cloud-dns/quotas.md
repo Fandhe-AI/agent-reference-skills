@@ -97,11 +97,13 @@ quota:
 
 ### Name server shards (public zones)
 
-- Every public managed zone is assigned to one of five name server shards (the letter before the number, for example `ns-cloud-e1` to `ns-cloud-e4` is shard E).
-- A new zone cannot be placed on a shard that already has a zone with the same DNS name, a subdomain of it, or a parent domain of it. So: at most five zones with the exact same DNS name, and at most five levels of subdomains for any parent domain. Limits apply across all projects and users.
-- Before Cloud DNS creates a zone on the last available shard, you must verify domain ownership with a `TXT` record.
-- Avoid the limit by creating parent domain zones before subdomain zones. If child zones already block all shards: find each subdomain's shard from its name servers, pick the shard X with the fewest or least important zones, export those zones and change delegations to another DNS service, delete the shard X subdomain zones after the original delegation TTLs expire, create the parent zone (it lands on shard X), then restore the subdomain zones (subdomains before sub-subdomains) with updated delegations.
-- Google Domains registrations use shards too; a domain with identical or subdomain zones on all shards cannot be registered with Google Domains until one is freed.
+| Name server shards (public zones) |
+|---|
+| Every public managed zone is assigned to one of five name server shards (the letter before the number, for example `ns-cloud-e1` to `ns-cloud-e4` is shard E). |
+| A new zone cannot be placed on a shard that already has a zone with the same DNS name, a subdomain of it, or a parent domain of it. So: at most five zones with the exact same DNS name, and at most five levels of subdomains for any parent domain. Limits apply across all projects and users. |
+| Before Cloud DNS creates a zone on the last available shard, you must verify domain ownership with a `TXT` record. |
+| Avoid the limit by creating parent domain zones before subdomain zones. If child zones already block all shards: find each subdomain's shard from its name servers, pick the shard X with the fewest or least important zones, export those zones and change delegations to another DNS service, delete the shard X subdomain zones after the original delegation TTLs expire, create the parent zone (it lands on shard X), then restore the subdomain zones (subdomains before sub-subdomains) with updated delegations. |
+| Google Domains registrations use shards too; a domain with identical or subdomain zones on all shards cannot be registered with Google Domains until one is freed. |
 
 ### Permissions
 

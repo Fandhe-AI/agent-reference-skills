@@ -23,11 +23,7 @@ gcloud compute networks vpc-access locations list
 | Subnet | An existing `/28` subnet with no resources already using it |
 | CIDR range | An unused `/28` CIDR range that doesn't overlap any in-use range |
 
-Traffic sent through the connector into the VPC network originates from the subnet or CIDR range you specify.
-
 ### Firewall rules created for connectors in standalone VPC networks or Shared VPC host projects
-
-Google Cloud creates these automatically; they exist only while the connector exists, are visible in the console and can't be edited or deleted.
 
 | Purpose | Name format | Type | Action | Priority | Protocols and ports |
 |---------|-------------|------|--------|----------|---------------------|
@@ -38,8 +34,6 @@ Google Cloud creates these automatically; they exist only while the connector ex
 | All traffic from connector VMs (by IP address) to all resources in the connector's VPC network | `aet-CONNECTOR_REGION-CONNECTOR_NAME-sbntfw` | Ingress | Allow | 1000 | TCP, UDP, ICMP |
 | All traffic from connector VMs (by network tag) to all resources in the connector's VPC network | `aet-CONNECTOR_REGION-CONNECTOR_NAME-tagfw` | Ingress | Allow | 1000 | TCP, UDP, ICMP |
 
-Additional firewall rules you add must use a priority higher than 100, as the source states, so they don't conflict with the hidden rules. For a connector created in a Shared VPC service project that targets the host project's network, you must add the firewall rules yourself.
-
 ### Throughput and scaling
 
 | Machine type | Estimated throughput (Mbps) |
@@ -48,13 +42,11 @@ Additional firewall rules you add must use a priority higher than 100, as the so
 | `e2-micro` | 200-1000 |
 | `e2-standard-4` | 3200-16000 |
 
-- Minimum instances must be at least 2; maximum at most 10 and larger than the minimum. Defaults: minimum 2, maximum 10.
-- Connectors scale out automatically as traffic increases, never scale in, and can't mix machine types. To reduce instances, recreate the connector.
-- Example: `f1-micro` with defaults gives about 100 Mbps at the minimum and 500 Mbps at the maximum.
-
-### Network tags
-
-Every connector automatically gets two tags that can't be deleted or added to: `vpc-connector` (universal) and `vpc-connector-REGION-CONNECTOR_NAME` (unique).
+| Throughput and scaling |
+|---|
+| Minimum instances must be at least 2; maximum at most 10 and larger than the minimum. Defaults: minimum 2, maximum 10. |
+| Connectors scale out automatically as traffic increases, never scale in, and can't mix machine types. To reduce instances, recreate the connector. |
+| Example: `f1-micro` with defaults gives about 100 Mbps at the minimum and 500 Mbps at the maximum. |
 
 ### Supported networks and environments
 
@@ -78,10 +70,13 @@ Every connector automatically gets two tags that can't be deleted or added to: `
 | UDP | Yes | Yes |
 | ICMP | Supported only for external IP addresses | No |
 
-IPv6 traffic is not supported.
-
 ## Notes
 
+- Connector IP range: Traffic sent through the connector into the VPC network originates from the subnet or CIDR range you specify.
+- Firewall rules created for connectors in standalone VPC networks or Shared VPC host projects: Google Cloud creates these automatically; they exist only while the connector exists, are visible in the console and can't be edited or deleted.
+- Firewall rules created for connectors in standalone VPC networks or Shared VPC host projects: Additional firewall rules you add must use a priority higher than 100, as the source states, so they don't conflict with the hidden rules. For a connector created in a Shared VPC service project that targets the host project's network, you must add the firewall rules yourself.
+- Network tags: Every connector automatically gets two tags that can't be deleted or added to: `vpc-connector` (universal) and `vpc-connector-REGION-CONNECTOR_NAME` (unique).
+- Protocols: IPv6 traffic is not supported.
 - The source's example says requests to external IP addresses still travel through the internet and don't use the connector; this holds when only requests to private IPs are routed through the connector. When the serverless resource routes all traffic through the connector (Cloud Run `--vpc-egress=all-traffic`), requests to external IP addresses also go through the connector (see the protocol table and the Clarified line below). Serverless VPC Access sends internal traffic back to the serverless environment only as a response to a request sent through the connector. To reach resources across multiple VPC networks and projects, also configure Shared VPC or VPC Network Peering.
 - Maintenance: Google replaces instances (host migrations, security updates to the base image, restart once every two weeks). A replaced instance stops accepting new requests one minute before shutdown. If an organization policy such as `constraints/compute.trustedImageProjects` blocks images from the `serverless-vpc-access-images` project, replacements fail and the instance count can fall to zero. Use connection pools rather than connections lasting over one minute; a connector may temporarily exceed its maximum instance count.
 - Throughput chart in Cloud Monitoring (Connector details page) is Preview, under Pre-GA terms.

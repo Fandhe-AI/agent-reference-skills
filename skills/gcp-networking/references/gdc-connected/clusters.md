@@ -193,10 +193,6 @@ gcloud edge-cloud container clusters delete CLUSTER_ID \
 
 ## Options / Props
 
-### Prerequisites
-
-Enabling APIs requires Owner (`roles/owner`), Editor (`roles/editor`) or Service Usage Admin (`roles/serviceusage.serviceUsageAdmin`). Enable: `anthos.googleapis.com`, `anthosaudit.googleapis.com`, `anthosgke.googleapis.com`, `cloudresourcemanager.googleapis.com`, `connectgateway.googleapis.com`, `container.googleapis.com`, `edgecontainer.googleapis.com`, `gkeconnect.googleapis.com`, `gkehub.googleapis.com`, `gkeonprem.googleapis.com`, `iam.googleapis.com`, `kubernetesmetadata.googleapis.com`, `logging.googleapis.com`, `monitoring.googleapis.com`, `opsconfigmonitoring.googleapis.com`, `serviceusage.googleapis.com`, `stackdriver.googleapis.com`, `storage.googleapis.com`, `sts.googleapis.com`.
-
 ### Create / update flags
 
 | Placeholder | Description |
@@ -224,13 +220,16 @@ Enabling APIs requires Owner (`roles/owner`), Editor (`roles/editor`) or Service
 
 ### Rules when creating clusters
 
-- Create Distributed Cloud connected clusters in their own Google Cloud project; mixing with any other type of cluster in the same project can result in data loss.
-- Reassigning a node between clusters wipes it and resets it to the default configuration.
-- The local control plane runs in high availability mode by default (three replicas on three nodes chosen automatically) unless the cluster has fewer than three nodes or is set to one node; choose the three nodes only with `--control-plane-machine-filter`.
-- Control plane nodes also run application workloads. Control plane endpoint IPs are reachable on your local network; prevent external access in your network configuration.
+| Rules when creating clusters |
+|---|
+| Create Distributed Cloud connected clusters in their own Google Cloud project; mixing with any other type of cluster in the same project can result in data loss. |
+| Reassigning a node between clusters wipes it and resets it to the default configuration. |
+| The local control plane runs in high availability mode by default (three replicas on three nodes chosen automatically) unless the cluster has fewer than three nodes or is set to one node; choose the three nodes only with `--control-plane-machine-filter`. |
+| Control plane nodes also run application workloads. Control plane endpoint IPs are reachable on your local network; prevent external access in your network configuration. |
 
 ## Notes
 
+- Prerequisites: Enabling APIs requires Owner (`roles/owner`), Editor (`roles/editor`) or Service Usage Admin (`roles/serviceusage.serviceUsageAdmin`). Enable: `anthos.googleapis.com`, `anthosaudit.googleapis.com`, `anthosgke.googleapis.com`, `cloudresourcemanager.googleapis.com`, `connectgateway.googleapis.com`, `container.googleapis.com`, `edgecontainer.googleapis.com`, `gkeconnect.googleapis.com`, `gkehub.googleapis.com`, `gkeonprem.googleapis.com`, `iam.googleapis.com`, `kubernetesmetadata.googleapis.com`, `logging.googleapis.com`, `monitoring.googleapis.com`, `opsconfigmonitoring.googleapis.com`, `serviceusage.googleapis.com`, `stackdriver.googleapis.com`, `storage.googleapis.com`, `sts.googleapis.com`.
 - Preview: software upgrade stage size (`--max-unavailable-worker-nodes`), the `gvisor` runtime class and a reboot timeout via the REST `v1alpha1` surface are preview-level features and are subject to the Pre-GA Offerings Terms.
 - A software upgrade typically takes about 2 hours per node in the node pool; the cluster status is `Reconciling` and returns to `Running`; `Error` means the upgrade failed and should be re-run. A cluster has no default maintenance window, so an update can bring down a critical workload; configure staggered maintenance windows and exclusion windows. Clearing a maintenance window also clears its exclusion windows; an exclusion window needs a maintenance window first and takes precedence.
 - Caution from the source: with a reboot timeout, nodes that went offline can reboot and rejoin even if you disable or delete the storage key for that time; the risk grows with the timeout. When modifying storage encryption, no other parameter can be updated in the same operation.

@@ -25,8 +25,6 @@ gcloud recommender insights describe INSIGHT_ID \
 | Configuration-based | Generated from how you configured rules | Shadowed rules |
 | Log-based | Generated from Firewall Rules Logging and configuration | Overly permissive rules (allow rules with no hits; obsolete by adaptive analysis; with unused attributes; with overly permissive IP addresses or port ranges); deny rules with hits |
 
-Severity per subtype: `medium` for shadowed rule insights, `high` for overly permissive rule insights.
-
 ### States
 
 | State | Description |
@@ -45,6 +43,7 @@ Severity per subtype: `medium` for shadowed rule insights, `high` for overly per
 
 ## Notes
 
+- Categories: Severity per subtype: `medium` for shadowed rule insights, `high` for overly permissive rule insights.
 - Shadowed rules share attributes with higher or equal priority rules ("shadowing rules"). For policies assigned to a VPC network, a policy rule can be shadowed by a VPC rule in the same or another policy; evaluation follows the policy and rule evaluation order. Multiple tags from other rules shadowing a rule's tags are not identified. Worked examples: rule B (`10.10.0.0/24`, tcp:80, priority 1000) shadowed by rule A (`10.10.0.0/16`, same); rule C (tcp:80 and tcp:443 allow, priority 1000) shadowed by deny rules D and E (priority 900) combined; cross-folder policy and global network firewall policy (`AFTER_CLASSIC_FIREWALL`) variants.
 - Overly permissive insights are accurate only if Firewall Rules Logging was enabled for the entire observation period; otherwise more rules could be affected. They evaluate TCP and UDP traffic only; a rule that also allows other protocols (for example ICMP) is still analyzed but attributes tied to other traffic are not.
 - Machine learning predictions (allow rules with no hits, unused attributes) train on rules in the same organization; the Insight details panel shows the three most similar rules.
