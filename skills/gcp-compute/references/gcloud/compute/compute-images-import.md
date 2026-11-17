@@ -344,6 +344,20 @@ NOTES
         $ gcloud beta compute images import
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud compute images import myimage-name \
+    --cmd-deprecated \
+    --os=centos-7 \
+    --source-file=mysourcefile
+
+gcloud compute images import myimage-name \
+    --cmd-deprecated \
+    --data-disk \
+    --source-file=mysourcefile
+```
+
 ### gcloud beta compute images import
 
 ```text
@@ -397,7 +411,9 @@ SYNOPSIS
 ## Notes
 
 - Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud compute images import`: "This command is being deprecated. Instead, use the gcloud migration vms image-imports command. For more information, see https://cloud.google.com/migrate/virtual-machines/docs/5.0/migrate/image_import.".
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (the help text above is verbatim): the `--cloudbuild-service-account` description says "You must specify the --logs-location flag when you set a user-managed service account", but this command has no `--logs-location` flag; the flag in the SYNOPSIS and FLAGS is `--log-location`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the examples omit `--cmd-deprecated`, which the SYNOPSIS requires (gcloud 593.0.0: "argument --cmd-deprecated: Must be specified."); the runnable form adds it.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
