@@ -23,10 +23,9 @@ gcloud network-management connectivity-tests describe my-test
 | Status | Active; Fixed (reported before, resolved at query time); Dismissed (by a user) |
 | Other fields | Resource name, resource type, project, network insight (one-line description), first report time, insight details |
 
-Insight groups: VPC network, Network services, Kubernetes engine, Hybrid connectivity, Managed services.
-
 ## Notes
 
+- Insight groups: VPC network, Network services, Kubernetes engine, Hybrid connectivity, Managed services.
 - Schedule: analyses trigger about ten minutes after a related configuration change and periodically at least once daily; analyses are batched.
 - Shared VPC: in the host project, IP address utilization insights aggregate service project VMs and load balancers. Service project services (load balancer, GKE, Cloud SQL insights) are analyzed in the service project and include host network firewall rules and routes.
 - Opt out: use the Transparency and Control Center to opt out of the Network Analyzer data processing group; this needs the Data Processing Controls Resource Admin role `roles/dataprocessing.admin`.

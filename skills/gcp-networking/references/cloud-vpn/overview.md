@@ -31,11 +31,7 @@ The full flag list for `gcloud compute vpn-gateways` is in the `gcp-compute` ski
 | API resource | `vpn-gateway` | `target-vpn-gateway` |
 | IPv6 traffic | Dual stack (IPv4 and IPv6) and IPv6-only | Not supported |
 
-The tunnel API resource and tunnel configuration are the same for both types.
-
 ### HA VPN stack types
-
-The stack type sets which IP protocols the gateway and its tunnels carry (`--stack-type`, default `IPV4_ONLY`). The IP version of the gateway interfaces' own external addresses is a separate setting (`--gateway-ip-version`, `IPV4` or `IPV6`; IPv4 when omitted). The third column lists the external IP address versions the source allows for each stack type, not addresses that the gateway gets automatically.
 
 | Stack type | Supported BGP sessions | Allowed gateway external IP addresses |
 |---|---|---|
@@ -63,6 +59,8 @@ The stack type sets which IP protocols the gateway and its tunnels carry (`--sta
 
 ## Notes
 
+- HA VPN vs Classic VPN: The tunnel API resource and tunnel configuration are the same for both types.
+- HA VPN stack types: The stack type sets which IP protocols the gateway and its tunnels carry (`--stack-type`, default `IPV4_ONLY`). The IP version of the gateway interfaces' own external addresses is a separate setting (`--gateway-ip-version`, `IPV4` or `IPV6`; IPv4 when omitted). The third column lists the external IP address versions the source allows for each stack type, not addresses that the gateway gets automatically.
 - HA VPN gateways automatically get two external IP addresses (one per interface) from unique address pools; each interface supports multiple tunnels. A gateway with only one active interface and one external IP address gets no availability SLA. Deleting the gateway releases the addresses.
 - HA VPN to HA VPN: both gateways must use identical stack types (for example both `IPV4_IPV6`). The stack type cannot be changed after creation; delete and re-create the gateway. To pause IPv6 temporarily, disable IPv6 route exchange on the IPv4 BGP session or disable the IPv6 session.
 - Peer tunnel layout: two peer devices means each interface tunnels to its own peer; one two-interface peer means each interface tunnels to its own peer interface; one single-interface peer means all tunnels go to that interface. Cloud Router must advertise the same prefixes on all links (priorities may differ). The peer device must support BGP.

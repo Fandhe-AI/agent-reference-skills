@@ -58,10 +58,9 @@ gcloud compute network-firewall-policies rules create 10 \
 | Ingress sources in peered VPC networks | Yes (footnote) | Yes (footnote) | No |
 | Ingress sources in other NCC hub VPC spokes | Yes (footnote) | Yes (footnote) | No |
 
-Footnote: a source secure tag can identify interfaces in another VPC network when the tag key `purpose-data` specifies that network (or its parent organization) and the two networks are connected by VPC Network Peering or are VPC spokes on the same Network Connectivity Center hub.
-
 ## Notes
 
+- Secure tags vs network tags: Footnote: a source secure tag can identify interfaces in another VPC network when the tag key `purpose-data` specifies that network (or its parent organization) and the two networks are connected by VPC Network Peering or are VPC spokes on the same Network Connectivity Center hub.
 - Secure tag rules map tags to network interfaces, not IP addresses: a source tag on an ingress rule matches packets sent from the interface; a target tag matches packets received (ingress) or sent (egress) by the interface.
 - Network tags can be used only in VPC firewall rules (sources of ingress rules; targets of ingress or egress rules). Resource Manager tags attached directly to Cloud NGFW resources are for governance (IAM, Organization Policy) and are not evaluated by rules.
 - Before moving a project between organizations, detach tag keys whose `purpose-data` specifies an organization; otherwise the move errors.

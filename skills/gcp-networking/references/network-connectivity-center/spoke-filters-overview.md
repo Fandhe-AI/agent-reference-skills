@@ -51,8 +51,6 @@ gcloud network-connectivity spokes \
 | Hybrid spoke include import, data transfer disabled | Empty |
 | Hybrid spoke include import, data transfer enabled | Only IPv4 transit dynamic routes learned from the hub's other data-transfer hybrid spokes; no hub subnet ranges |
 
-Google recommends specifying explicit include import ranges because the defaults vary and may only apply to transit dynamic routes.
-
 ### Export filter rules for VPC spokes
 
 | Subnet range vs filters | Valid | Result |
@@ -63,10 +61,6 @@ Google recommends specifying explicit include import ranges because the defaults
 | Wholly in an include range but intersects an exclude range | No | Google Cloud prevents the conflicting creation |
 | Wholly in an exclude range | Yes | Not sent to hub |
 
-### Export and import filter rules for hybrid spokes
-
-For dynamic routes (export) and hub routes (import) all five scenarios are valid configurations: a route is sent or imported only if wholly contained in an include range and not intersecting any exclude range; routes that are outside, partially overlapping, intersecting an exclude range or inside an exclude range are not sent or imported.
-
 ### Advertising NCC-imported routes from a hybrid spoke
 
 | Technique | Notes |
@@ -74,14 +68,12 @@ For dynamic routes (export) and hub routes (import) all five scenarios are valid
 | Import filters plus Cloud Router subnet route advertisement | IPv4 only (import filters support IPv4 only here). Set include import ranges (for example `[ALL_IPV4_RANGES]`) and configure subnet range advertisement on BGP sessions. Regional dynamic routing: only same-region ranges advertised, MED = base priority. Global: all regions; other-region MED = base priority plus inter-regional cost. Import filters can't control advertisement of local subnet ranges. |
 | Cloud Router custom advertisements | IPv4 and IPv6 prefixes. Dynamic routing mode doesn't affect them; MED = base priority. A custom advertisement exactly matching an advertised subnet route is ignored. |
 
-Cloud Router outbound BGP policies apply to all advertised routes, including NCC-imported subnet routes.
-
-### Transit dynamic route re-advertisement
-
-Requires all hybrid spokes in the same routing VPC network (site-to-site data transfer prerequisite), site-to-site data transfer enabled on both sending and receiving hybrid spokes, and appropriate import filters on the receiver. Regional routing mode: same-region transit routes re-advertised; global: all regions (MED adds an inter-regional cost for other regions). Cloud Router advertisement mode does not control re-advertisement; only data transfer, export filters and import filters do.
-
 ## Notes
 
+- Defaults: Google recommends specifying explicit include import ranges because the defaults vary and may only apply to transit dynamic routes.
+- Export and import filter rules for hybrid spokes: For dynamic routes (export) and hub routes (import) all five scenarios are valid configurations: a route is sent or imported only if wholly contained in an include range and not intersecting any exclude range; routes that are outside, partially overlapping, intersecting an exclude range or inside an exclude range are not sent or imported.
+- Advertising NCC-imported routes from a hybrid spoke: Cloud Router outbound BGP policies apply to all advertised routes, including NCC-imported subnet routes.
+- Transit dynamic route re-advertisement: Requires all hybrid spokes in the same routing VPC network (site-to-site data transfer prerequisite), site-to-site data transfer enabled on both sending and receiving hybrid spokes, and appropriate import filters on the receiver. Regional routing mode: same-region transit routes re-advertised; global: all regions (MED adds an inter-regional cost for other regions). Cloud Router advertisement mode does not control re-advertisement; only data transfer, export filters and import filters do.
 - The borrowed example only changes the spoke description; the filter flags are set with the same `update` command. Changing filters changes which routes the hub exchanges, so try them on a disposable hub first.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-connectivity/spokes/linked-interconnect-attachments/update (gcloud 593.0.0 help); the filter flags above are listed in the same command's synopsis.
 - IPv6 filter ranges are Preview.

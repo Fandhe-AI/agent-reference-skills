@@ -45,10 +45,9 @@ gcloud compute interconnects locations list --uri
 | Cross-Cloud | Allocates an 802.1Q VLAN; the Cloud Router's VPC network must be in the same project as the connection; default capacity 10 Gbps; configure an outbound rate limiter on the remote cloud's virtual router. |
 | Partner Cross-Cloud for OCI | Order a partner VLAN attachment, then enter its pairing key when you get an Oracle FastConnect virtual circuit. |
 
-Examples of full use of bandwidth: 2 x 10-Gbps connections need a 20-Gbps VLAN attachment; 5 x 10-Gbps connections need a 50-Gbps attachment. Attachments with combined bandwidth above the connection's do not give more bandwidth.
-
 ## Notes
 
+- VLAN attachment capacity by type: Examples of full use of bandwidth: 2 x 10-Gbps connections need a 20-Gbps VLAN attachment; 5 x 10-Gbps connections need a 50-Gbps attachment. Attachments with combined bandwidth above the connection's do not give more bandwidth.
 - Layer 2 vs Layer 3 (Partner): with Layer 2 you configure BGP between your router and Cloud Router; with Layer 3 the service provider does.
 - Without custom advertisements, Cloud Router advertises subnet routes of its region (regional dynamic routing mode) or all regions (global mode), and learned routes are available in the same scope.
 - Treat the pairing key as sensitive until the attachment is configured; it cannot be modified. To get a new key, delete the VLAN attachment and create a new one (this breaks connectivity of that attachment; try it on a disposable resource first).

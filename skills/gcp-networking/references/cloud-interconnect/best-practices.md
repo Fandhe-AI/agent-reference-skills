@@ -28,10 +28,6 @@ gcloud compute interconnects groups create \
 | Connection capacity | Each edge availability domain must carry all your production traffic |
 | VLAN attachment capacity | Each edge availability domain must also have enough attachment capacity for all production traffic of the target VPC network; for multiple VPC networks create attachments from each VPC network to each connection and size per network |
 
-Rule of thumb: connections protect up to 50% of aggregate capacity when split evenly between edge availability domains; above 50% may be throttled during congestion. Example: 100 Gbps of protected traffic needs redundant connections of at least 200 Gbps.
-
-Example with `vpc-1` and `vpc-2` each receiving 2 Gbps: in each of two edge availability domains use 1 x 10 Gbps connection capacity and 2 x 1 Gbps attachments to `vpc-1` plus 2 x 1 Gbps to `vpc-2`.
-
 ### Scenarios
 
 | Scenario | Setup | Result |
@@ -52,6 +48,8 @@ Example with `vpc-1` and `vpc-2` each receiving 2 Gbps: in each of two edge avai
 
 ## Notes
 
+- Capacity guidance per edge availability domain: Rule of thumb: connections protect up to 50% of aggregate capacity when split evenly between edge availability domains; above 50% may be throttled during congestion. Example: 100 Gbps of protected traffic needs redundant connections of at least 200 Gbps.
+- Capacity guidance per edge availability domain: Example with `vpc-1` and `vpc-2` each receiving 2 Gbps: in each of two edge availability domains use 1 x 10 Gbps connection capacity and 2 x 1 Gbps attachments to `vpc-1` plus 2 x 1 Gbps to `vpc-2`.
 - Warning: after a Cloud Interconnect connection is created in a project it cannot be moved to another project or renamed. Provision physical connections (ports) in a separate project in the same organization; place VLAN attachments in other projects. In Shared VPC, configure VLAN attachments (not ports) in the host project.
 - Prefer active-active VLAN attachments; with active/passive, test failover before adding production traffic.
 - Warning: with ECMP across active-active attachments use flow-based hashing on on-premises devices. Per-packet load balancing (round-robin, random) is not supported and can cause services such as Private Service Connect to close TCP connections.

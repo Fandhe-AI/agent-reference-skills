@@ -33,19 +33,19 @@ gcloud compute firewall-rules create tcp-rule --allow=tcp:80 \
 
 ### Specifications
 
-- IPv4 supported; IPv6 supported in networks with IPv6 enabled. Rules cannot be shared across networks, including peered or VPN-connected networks.
-- Stateful: return traffic matching the 5-tuple (reversed) is allowed; connection tracking is active if at least one packet is sent every 10 minutes. IPv4: TCP, UDP, SCTP, ICMP; IPv6: TCP, UDP, SCTP, ICMPv6. Only the first fragment of return traffic is allowed by tracking. Rules do not reassemble fragmented TCP packets.
-- Changes to enforcement, new enforced rules, or rules that deny previously allowed traffic apply only to new connections.
-- A port cannot be given alone: `80` is interpreted as IP protocol 80 (ISO-IP), not TCP port 80. Source-port rules and ICMP types are not supported; IPv6 Hop-by-Hop is not supported.
-- A `deny` overrides an `allow` only at the same priority. Target specificity does not matter; the highest priority rule wins.
+| Specifications |
+|---|
+| IPv4 supported; IPv6 supported in networks with IPv6 enabled. Rules cannot be shared across networks, including peered or VPN-connected networks. |
+| Stateful: return traffic matching the 5-tuple (reversed) is allowed; connection tracking is active if at least one packet is sent every 10 minutes. IPv4: TCP, UDP, SCTP, ICMP; IPv6: TCP, UDP, SCTP, ICMPv6. Only the first fragment of return traffic is allowed by tracking. Rules do not reassemble fragmented TCP packets. |
+| Changes to enforcement, new enforced rules, or rules that deny previously allowed traffic apply only to new connections. |
+| A port cannot be given alone: `80` is interpreted as IP protocol 80 (ISO-IP), not TCP port 80. Source-port rules and ICMP types are not supported; IPv6 Hop-by-Hop is not supported. |
+| A `deny` overrides an `allow` only at the same priority. Target specificity does not matter; the highest priority rule wins. |
 
 | Instance machine type | Maximum stateful connections |
 |---|---|
 | Shared-core machine types | 130,000 |
 | Instances with 1-8 vCPUs | 130,000 connections per vCPU |
 | Instances with more than 8 vCPUs | 1,040,000 (130,000x8) total |
-
-When the maximum is exceeded, tracking stops for connections with the longest idle interval.
 
 ### Pre-populated rules in the default network (can be deleted or modified)
 
@@ -56,26 +56,24 @@ When the maximum is exceeded, tracking stops for connections with the longest id
 | `default-allow-rdp` | `65534` | `0.0.0.0/0` | `tcp:3389` |
 | `default-allow-icmp` | `65534` | `0.0.0.0/0` | `icmp` |
 
-All are ingress, action `allow`.
-
 ### Blocked and limited traffic
 
-- Packet rate and bandwidth accounted per VM, per NIC / IP, bounded by machine type.
-- Incoming DHCP offers/acks (UDP 68 DHCPv4, UDP 546 DHCPv6) blocked except from the metadata server.
-- External IP addresses accept only TCP, UDP, ICMP, IPIP, AH, ESP, SCTP and GRE; load balancer forwarding rules and Cloud VPN add further restrictions.
-- Egress to TCP port 25 of external IPs is blocked by default (removed automatically for low-risk projects; TLS on 465 / 587 excluded; internal IPs unaffected). If allowed, egress rules must allow it, the route must use the default internet gateway, and the instance must meet internet access requirements. Prevent it with egress deny rules.
-
-### Always allowed traffic
-
-Rules and hierarchical policies do not apply to metadata server traffic (`169.254.169.254`, `fd20:ce::254`; DHCP, DNS, instance metadata, NTP) or packets to the instance's own NIC addresses (primary internal IPv4, alias IP ranges, IPv6, forwarding-rule IPs of load balancer backends or protocol-forwarding targets, loopback, overlay addresses).
+| Blocked and limited traffic |
+|---|
+| Packet rate and bandwidth accounted per VM, per NIC / IP, bounded by machine type. |
+| Incoming DHCP offers/acks (UDP 68 DHCPv4, UDP 546 DHCPv6) blocked except from the metadata server. |
+| External IP addresses accept only TCP, UDP, ICMP, IPIP, AH, ESP, SCTP and GRE; load balancer forwarding rules and Cloud VPN add further restrictions. |
+| Egress to TCP port 25 of external IPs is blocked by default (removed automatically for low-risk projects; TLS on 465 / 587 excluded; internal IPs unaffected). If allowed, egress rules must allow it, the route must use the default internet gateway, and the instance must meet internet access requirements. Prevent it with egress deny rules. |
 
 ### Targets, sources and service accounts vs tags
 
-- Ingress targets receive the packet; destination defaults to NIC addresses, alias ranges, external IPv4, IPv6, forwarding rule IPs and custom static route next-hop ranges. Egress with IP forwarding disabled (default) can only emit the NIC's own source addresses.
-- Default ingress source `0.0.0.0/0` (no IPv6). Default egress destination `0.0.0.0/0` (no IPv6). Source tags / service accounts imply only the primary internal IPv4 or IPv6 addresses (not alias or external ranges); combined with ranges the source is the union.
-- Network tags and service accounts cannot be mixed in one rule: target tags exclude source service accounts (and IP ranges + service accounts); target service account excludes source tags (and IP ranges + tags).
-- Network tags can be edited by anyone who can edit the instance (for example Compute Engine Instance Admin); service accounts require Service Account User; changing an instance's service account needs a stop and restart. Service account rules apply to the GKE node, not the Pod; GKE Workload Identity Federation service accounts cannot be used.
-- Service accounts must exist in the rule's project (standalone VPC) or the host or any service project (Shared VPC); otherwise the rule is not enforced.
+| Targets, sources and service accounts vs tags |
+|---|
+| Ingress targets receive the packet; destination defaults to NIC addresses, alias ranges, external IPv4, IPv6, forwarding rule IPs and custom static route next-hop ranges. Egress with IP forwarding disabled (default) can only emit the NIC's own source addresses. |
+| Default ingress source `0.0.0.0/0` (no IPv6). Default egress destination `0.0.0.0/0` (no IPv6). Source tags / service accounts imply only the primary internal IPv4 or IPv6 addresses (not alias or external ranges); combined with ranges the source is the union. |
+| Network tags and service accounts cannot be mixed in one rule: target tags exclude source service accounts (and IP ranges + service accounts); target service account excludes source tags (and IP ranges + tags). |
+| Network tags can be edited by anyone who can edit the instance (for example Compute Engine Instance Admin); service accounts require Service Account User; changing an instance's service account needs a stop and restart. Service account rules apply to the GKE node, not the Pod; GKE Workload Identity Federation service accounts cannot be used. |
+| Service accounts must exist in the rule's project (standalone VPC) or the host or any service project (Shared VPC); otherwise the rule is not enforced. |
 
 ### Roles and permissions
 
@@ -86,6 +84,9 @@ Rules and hierarchical policies do not apply to metadata server traffic (`169.25
 
 ## Notes
 
+- Specifications: When the maximum is exceeded, tracking stops for connections with the longest idle interval.
+- Pre-populated rules in the default network (can be deleted or modified): All are ingress, action `allow`.
+- Always allowed traffic: Rules and hierarchical policies do not apply to metadata server traffic (`169.254.169.254`, `fd20:ce::254`; DHCP, DNS, instance metadata, NTP) or packets to the instance's own NIC addresses (primary internal IPv4, alias IP ranges, IPv6, forwarding-rule IPs of load balancer backends or protocol-forwarding targets, loopback, overlay addresses).
 - Best practices: least privilege, restrict protocols and ports, hierarchical rules for never-allowed traffic, service accounts for allow-rule targets, few IP-based rules, use firewall policies with address groups / FQDN objects / geolocation objects (may incur Cloud NGFW Standard data processing charges), enable firewall rules logging and Firewall Insights (logging can incur costs).
 - The default network's `default-allow-ssh` and `default-allow-rdp` rules allow `0.0.0.0/0` as the source for ports 22 and 3389; the source states they can be deleted or modified. Review them before relying on the default network.
 - Deleting or disabling rules changes what traffic reaches instances and can break connectivity; try it on a disposable network first.

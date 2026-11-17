@@ -154,8 +154,6 @@ gcloud ids endpoints update ENDPOINT_NAME \
 | Compute packet mirroring user | `roles/compute.packetMirroringUser` | Attach a packet mirroring policy to the endpoint (included in `compute.securityAdmin` and `container.serviceAgent`) |
 | Logs Viewer | `roles/logging.viewer` | View recent threats |
 
-Also needed: `compute.regions.list`, `compute.zones.list`.
-
 ### Endpoint resource fields
 
 | Field | Type | Description |
@@ -168,12 +166,10 @@ Also needed: `compute.regions.list`, `compute.zones.list`.
 | endpoint_forwarding_rule | string | Output only: URL of the address to which Packet Mirroring sends traffic |
 | endpoint | string | Output only: internal IP address of the endpoint entry point |
 
-### Optional flags
-
-`--no-async`, `--filter`, `--limit` (default unlimited), `--page-size`, `--sort-by` (prefix `~` for descending), `--uri`, `--threat-exceptions` (comma-separated threat IDs; limited to 99 per endpoint).
-
 ## Notes
 
+- IAM roles: Also needed: `compute.regions.list`, `compute.zones.list`.
+- Optional flags: `--no-async`, `--filter`, `--limit` (default unlimited), `--page-size`, `--sort-by` (prefix `~` for descending), `--uri`, `--threat-exceptions` (comma-separated threat IDs; limited to 99 per endpoint).
 - Endpoint creation can take 10-15 minutes (console).
 - After creation you must attach a packet mirroring policy to start inspecting traffic. Mirrored traffic contains full payloads; grant `roles/ids.admin` and `roles/compute.packetMirroringUser` sparingly.
 - Deleting an endpoint is destructive and is the way to stop Cloud IDS charges; try it on a disposable endpoint first. Updating private services access ranges or peerings can break connectivity of other services using the connection; use a separate unique range for Cloud IDS if private services access is already configured.

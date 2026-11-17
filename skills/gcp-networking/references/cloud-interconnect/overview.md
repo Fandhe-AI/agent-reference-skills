@@ -70,6 +70,7 @@ gcloud compute interconnects locations list
 - Custom IP ranges: the customer is responsible for consents and for the accuracy of IP addresses provided to Google. Public ranges of other cloud providers require a letter of authorization on the provider's letterhead. For Layer 3 Partner Interconnect, the service provider configures the custom ranges.
 - Before using Cloud Interconnect as a data transfer network between your sites, review Section 2 of the Google Cloud General Service Terms; alternatives are Cross-Site Interconnect, Network Connectivity Center and Router appliance.
 - Network Topology shows VLAN attachments aggregated under their Cloud Interconnect connection.
+- Source inconsistency: this page says Partner Interconnect supports "50-Mbps to 50-Gbps VLAN attachments" and that "The maximum supported attachment size is 50 Gbps", but the Cloud Interconnect quotas page (https://docs.cloud.google.com/network-connectivity/docs/interconnect/quotas, retrieved 2026-11-17) gives "Partner Interconnect, Cross-Site Interconnect: Capacities from 50 Mbps to 100 Gbps" as the maximum bandwidth per VLAN attachment. Check the capacities your partner offers in the location before planning attachments above 50 Gbps.
 - Source: https://docs.cloud.google.com/network-connectivity/docs/interconnect/concepts/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/interconnects/locations/list (gcloud 593.0.0 help).
 

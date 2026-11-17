@@ -6,23 +6,23 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 
 ## Signature / Usage
 
-Owner skill: `gcp-networking` (status: 未収録（予定）). gcloud groups: `dns`, `edge-cache`, `edge-cloud`, `ids`, `network-connectivity`, `network-management`, `network-security`, `network-services`, `number-registry`, `service-directory`, `service-extensions`, `zone-management`.
+Owner skill: `gcp-networking` (status: 収録済み). gcloud groups: `dns`, `edge-cache`, `edge-cloud`, `ids`, `network-connectivity`, `network-management`, `network-security`, `network-services`, `number-registry`, `service-directory`, `service-extensions`, `zone-management`.
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Lifecycle | Docs | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| API Management | `apim.googleapis.com` (v1alpha) | Enables users to discover shadow APIs in existing Google Cloud infrastructure. | — | `apim.` | 3 | — | — | https://cloud.google.com/apigee/ | 未収録（予定） |
-| Cloud DNS | `dns.googleapis.com` (v1, v1beta2) | — | `dns` | `dns.` | 6 | — | — | https://cloud.google.com/dns/docs | 未収録（予定） |
-| Cloud Intrusion Detection System | `ids.googleapis.com` (v1) | Cloud IDS (Cloud Intrusion Detection System) detects malware, spyware, command-and-control attacks, and other network-based threats. Its security efficacy is industry leading, built with Palo Alto Networks technologies. When you use this product, your organization name and consumption levels will be shared with Palo Alto Networks. | `ids` | `ids.` | 3 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/ids | 未収録（予定） |
-| Distributed Cloud Edge Container | — | — | — | `edgecontainer.` | 23 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/edgecontainer | 未収録（予定） |
-| Distributed Cloud Edge Network | — | — | — | `edgenetwork.` | 3 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/edgenetwork | 未収録（予定） |
-| Firewall Insights | — | — | — | `firewallinsights.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/firewallinsights | 未収録（予定） |
-| Network Connectivity Center | `networkconnectivity.googleapis.com` (v1, v1alpha1) | This API enables connectivity with and between Google Cloud resources. | `network-connectivity` | `networkconnectivity.` | 18 | — | — | https://cloud.google.com/network-connectivity/docs/reference/networkconnectivity/rest | 未収録（予定） |
-| Network Management API | `networkmanagement.googleapis.com` (v1, v1beta1) | The Network Management API provides a collection of network performance monitoring and diagnostic capabilities. | `network-management` | `networkmanagement.` | 7 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/networkmanagement | 未収録（予定） |
-| Network Security | `networksecurity.googleapis.com` (v1, v1beta1) | — | `network-security` | `networksecurity.` | 22 | — | — | https://cloud.google.com/networking | 未収録（予定） |
-| Network Services | `networkservices.googleapis.com` (v1, v1beta1) | — | `network-services` | `networkservices.` | 6 | — | — | https://cloud.google.com/networking | 未収録（予定） |
-| Serverless VPC Access | `vpcaccess.googleapis.com` (v1, v1beta1) | API for managing VPC access connectors. | — | `vpcaccess.` | 4 | — | — | https://cloud.google.com/vpc/docs/configure-serverless-vpc-access | 未収録（予定） |
-| Service Directory | `servicedirectory.googleapis.com` (v1, v1beta1) | Service Directory is a platform for discovering, publishing, and connecting services. | `service-directory` | `servicedirectory.` | 6 | — | — | https://cloud.google.com/service-directory | 未収録（予定） |
-| Service Extensions | — | — | — | `networkactions.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/networkactions | 未収録（予定） |
+| API Management | `apim.googleapis.com` (v1alpha) | Enables users to discover shadow APIs in existing Google Cloud infrastructure. | — | `apim.` | 3 | — | — | https://cloud.google.com/apigee/ | 収録済み |
+| Cloud DNS | `dns.googleapis.com` (v1, v1beta2) | — | `dns` | `dns.` | 6 | — | — | https://cloud.google.com/dns/docs | 収録済み |
+| Cloud Intrusion Detection System | `ids.googleapis.com` (v1) | Cloud IDS (Cloud Intrusion Detection System) detects malware, spyware, command-and-control attacks, and other network-based threats. Its security efficacy is industry leading, built with Palo Alto Networks technologies. When you use this product, your organization name and consumption levels will be shared with Palo Alto Networks. | `ids` | `ids.` | 3 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/ids | 収録済み |
+| Distributed Cloud Edge Container | — | — | — | `edgecontainer.` | 23 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/edgecontainer | 収録済み |
+| Distributed Cloud Edge Network | — | — | — | `edgenetwork.` | 3 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/edgenetwork | 収録済み |
+| Firewall Insights | — | — | — | `firewallinsights.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/firewallinsights | 収録済み |
+| Network Connectivity Center | `networkconnectivity.googleapis.com` (v1, v1alpha1) | This API enables connectivity with and between Google Cloud resources. | `network-connectivity` | `networkconnectivity.` | 18 | — | — | https://cloud.google.com/network-connectivity/docs/reference/networkconnectivity/rest | 収録済み |
+| Network Management API | `networkmanagement.googleapis.com` (v1, v1beta1) | The Network Management API provides a collection of network performance monitoring and diagnostic capabilities. | `network-management` | `networkmanagement.` | 7 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/networkmanagement | 収録済み |
+| Network Security | `networksecurity.googleapis.com` (v1, v1beta1) | — | `network-security` | `networksecurity.` | 22 | — | — | https://cloud.google.com/networking | 収録済み |
+| Network Services | `networkservices.googleapis.com` (v1, v1beta1) | — | `network-services` | `networkservices.` | 6 | — | — | https://cloud.google.com/networking | 収録済み |
+| Serverless VPC Access | `vpcaccess.googleapis.com` (v1, v1beta1) | API for managing VPC access connectors. | — | `vpcaccess.` | 4 | — | — | https://cloud.google.com/vpc/docs/configure-serverless-vpc-access | 収録済み |
+| Service Directory | `servicedirectory.googleapis.com` (v1, v1beta1) | Service Directory is a platform for discovering, publishing, and connecting services. | `service-directory` | `servicedirectory.` | 6 | — | — | https://cloud.google.com/service-directory | 収録済み |
+| Service Extensions | — | — | — | `networkactions.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/networkactions | 収録済み |
 
 ```bash
 gcloud help

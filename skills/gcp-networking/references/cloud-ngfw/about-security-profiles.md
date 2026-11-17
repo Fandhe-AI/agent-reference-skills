@@ -58,8 +58,6 @@ gcloud network-security security-profiles url-filtering create \
 | Alert | Logs the threat and allows the session |
 | Allow | Ignores the threat |
 
-Default signatures added on creation: vulnerability detection, anti-spyware, antivirus, DNS. Override action defaults to `Default` for all severity levels; signature overrides take precedence over severity overrides.
-
 ### Advanced malware sandbox (`WILDFIRE_ANALYSIS`) parameters
 
 | Parameter | Command and flags |
@@ -71,12 +69,10 @@ Default signatures added on creation: vulnerability detection, anti-spyware, ant
 | Real-time lookup | `update --[no-]wildfire-realtime-lookup`; enabled by default in the console, disabled by default with gcloud or API |
 | Overrides | `add-override`; protocol overrides (`HTTP`, `SMTP`, `FTP`) via `--wildfire` or `--wildfire-inline-ml` with `--action`; threat ID overrides via `--threat-ids` with `--action` |
 
-### URL filtering profile
-
-A URL filter is a list of matcher strings with a unique priority (`0` to `2147483647`; lowest number first) and an action. Encrypted traffic is matched on SNI; with TLS inspection the host header is also evaluated; unencrypted traffic always uses the host header. Domains within a list are not evaluated in priority order.
-
 ## Notes
 
+- Threat prevention actions: Default signatures added on creation: vulnerability detection, anti-spyware, antivirus, DNS. Override action defaults to `Default` for all severity levels; signature overrides take precedence over severity overrides.
+- URL filtering profile: A URL filter is a list of matcher strings with a unique priority (`0` to `2147483647`; lowest number first) and an action. Encrypted traffic is matched on SNI; with TLS inspection the host header is also evaluated; unencrypted traffic always uses the host header. Domains within a list are not evaluated in priority order.
 - Changing a threat prevention override or a URL filtering profile may take up to 15 minutes to take effect.
 - An Advanced malware sandbox profile must be in a group together with a threat prevention profile.
 - Cloud NGFW Enterprise features; see [ngfw-tiers.md](./ngfw-tiers.md). Quotas: [quotas.md](./quotas.md).

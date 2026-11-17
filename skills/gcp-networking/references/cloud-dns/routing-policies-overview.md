@@ -35,9 +35,11 @@ gcloud dns record-sets create foo.bar.com. --type=A --ttl=60 \
 | Geolocation with geofence | Keeps traffic in the geolocation even if all its endpoints are unhealthy: Cloud DNS returns all IPs unaltered. Without a geofence, traffic fails over to the next closest geolocation. |
 | Failover | `active` set is returned normally; `backup` set is served when all `active` IPs are unhealthy. Trickle ratio to backup is a fraction 0 to 1 (typical `0.1`); 100% to backup triggers a manual failover. |
 
-- Routing policies can't be configured on forwarding zones, DNS peering zones, managed reverse lookup zones, or Service Directory zones.
-- Resolver caching until TTL expiry can make steering inexact.
-- Supported record types: `A` (private-zone and public-zone health checks), `AAAA` (public-zone health checks), and `CNAME`, `MX`, `SRV`, `TXT` (no health checks).
+| Policy types |
+|---|
+| Routing policies can't be configured on forwarding zones, DNS peering zones, managed reverse lookup zones, or Service Directory zones. |
+| Resolver caching until TTL expiry can make steering inexact. |
+| Supported record types: `A` (private-zone and public-zone health checks), `AAAA` (public-zone health checks), and `CNAME`, `MX`, `SRV`, `TXT` (no health checks). |
 
 ### Health checks
 
@@ -47,17 +49,21 @@ gcloud dns record-sets create foo.bar.com. --type=A --ttl=60 \
 | Internal passthrough Network Load Balancer | Private zones only. Healthy when at least 20% (default) of backend instances are healthy; a load balancer with no backends counts as healthy, so specify at least one backend. |
 | External endpoints (any public IP and port, including global/regional external Application Load Balancer VIPs, global external proxy Network Load Balancer VIP, on-premises) | Public zones only. Probes from three source regions you specify, three probers per region (nine per endpoint), at the check interval of 30 to 300 seconds. Probe source IPs are not fixed and may change. |
 
-- External health check protocols: TCP, HTTP, HTTPS (HTTP/HTTPS expect response code `200`; content-based string match is supported). The TCP request field and `proxyHeader` are not supported; SSL, HTTP/2, and gRPC are not supported. Default port is `80`.
-- Firewall rules must allow probes from any source IP on the configured port, otherwise endpoints are considered unhealthy.
-- With DNSSEC enabled on a health-checked zone, only a single IP address can be used per policy item (WRR or geolocation), and health-checked and non-health-checked IPs cannot be mixed in one policy.
-- When all IPs in a policy bucket are unhealthy: WRR redistributes among remaining healthy endpoints; geolocation without fencing moves to the next closest geography; with geofencing returns the closest VIP to the source region; failover switches to backup; if all buckets are unhealthy, Cloud DNS behaves as if all were healthy.
+| Health checks |
+|---|
+| External health check protocols: TCP, HTTP, HTTPS (HTTP/HTTPS expect response code `200`; content-based string match is supported). The TCP request field and `proxyHeader` are not supported; SSL, HTTP/2, and gRPC are not supported. Default port is `80`. |
+| Firewall rules must allow probes from any source IP on the configured port, otherwise endpoints are considered unhealthy. |
+| With DNSSEC enabled on a health-checked zone, only a single IP address can be used per policy item (WRR or geolocation), and health-checked and non-health-checked IPs cannot be mixed in one policy. |
+| When all IPs in a policy bucket are unhealthy: WRR redistributes among remaining healthy endpoints; geolocation without fencing moves to the next closest geography; with geofencing returns the closest VIP to the source region; failover switches to backup; if all buckets are unhealthy, Cloud DNS behaves as if all were healthy. |
 
 ### WRR and health check rules
 
-- Multiple targets all with weight 0 share traffic equally.
-- A new non-zero target becomes primary and takes all traffic; with more non-zero targets, the split is computed per request (weights 0, 25, 75 give 0, one-fourth, three-fourths).
-- Zero-weight targets without health checks are always healthy; if all non-zero records are unhealthy, zero-weight records are returned. If both kinds have health checks and all fail, non-zero records are returned.
-- Only IPs in the chosen weight bucket are returned, in randomized order when there are several.
+| WRR and health check rules |
+|---|
+| Multiple targets all with weight 0 share traffic equally. |
+| A new non-zero target becomes primary and takes all traffic; with more non-zero targets, the split is computed per request (weights 0, 25, 75 give 0, one-fourth, three-fourths). |
+| Zero-weight targets without health checks are always healthy; if all non-zero records are unhealthy, zero-weight records are returned. If both kinds have health checks and all fail, non-zero records are returned. |
+| Only IPs in the chosen weight bucket are returned, in randomized order when there are several. |
 
 ## Notes
 

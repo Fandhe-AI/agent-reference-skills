@@ -49,10 +49,9 @@ gcloud compute routers nats create nat1 --router=my-router \
 | Default port allocation | Dynamic |
 | Destinations | Only non-overlapping subnets in the connected network |
 
-NAT64 limitations: only IPv6-only Compute Engine VMs of all second-generation or earlier series and the M3 series; IPv4 Private Service Connect endpoints in the same VPC network as the gateway are not reachable through NAT64. NAT64 destinations must be in `64:ff9b::/96` (DNS64 can synthesize).
-
 ## Notes
 
+- Limits and specifications: NAT64 limitations: only IPv6-only Compute Engine VMs of all second-generation or earlier series and the M3 series; IPv4 Private Service Connect endpoints in the same VPC network as the gateway are not reachable through NAT64. NAT64 destinations must be in `64:ff9b::/96` (DNS64 can synthesize).
 - Each gateway belongs to one VPC network, region and Cloud Router (control plane only; no BGP dependence); outbound connections and their responses only, no unsolicited inbound requests.
 - NAT64 does not use IPv4 or IPv6 policy-based routes; it is performed even if the packet matches an IPv6 policy-based route. If the embedded IPv4 destination matches an internet route, NAT64 is not performed (use NAT64 in Public NAT).
 - Firewall: Cloud NGFW rules apply to VM NICs, not gateways; egress rules are evaluated before NAT, ingress after. No NAT-specific rules are needed.

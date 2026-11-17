@@ -25,13 +25,15 @@ gcloud dns response-policies create myresponsepolicy \
 | Response policies | Override private DNS responses based on the query name, by using rules instead of records. If a rule affects the incoming query it is processed; otherwise the lookup proceeds normally. Similar in effect to DNS response policy zones (RPZ), but response policies are not DNS zones and are managed separately. |
 | Routing policies | Steer traffic for a resource record set based on the query and other factors: weighted round robin (WRR), geolocation, or failover. |
 
-Routing policies can be used to:
+### Routing policies can be used to
 
-- Steer traffic from a geographical location to a content delivery network (CDN) provider.
-- Route on-premises traffic to Google Cloud load balancers based on the query's source region.
-- Serve traffic originating from a continent by services in the same continent.
-- Route traffic to different service providers on a WRR basis.
-- Onboard new services with a percentage of the total traffic.
+| Details |
+|---|
+| Steer traffic from a geographical location to a content delivery network (CDN) provider. |
+| Route on-premises traffic to Google Cloud load balancers based on the query's source region. |
+| Serve traffic originating from a continent by services in the same continent. |
+| Route traffic to different service providers on a WRR basis. |
+| Onboard new services with a percentage of the total traffic. |
 
 ## Notes
 

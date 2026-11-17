@@ -34,8 +34,6 @@ gcloud compute networks subnets update SUBNET_NAME \
 | Private Google Access | Google Cloud resources without external IP addresses | Connect to the standard external IP addresses or Private Google Access domains and VIPs through the VPC network's default internet gateway | Most Google APIs and services (see footnote 1) |
 | Private Google Access for on-premises hosts | On-premises hosts with or without external IP addresses | Connect through a Cloud VPN tunnel or VLAN attachment using one of the Private Google Access-specific domains and VIPs | Depends on which Private Google Access-specific domain you use |
 
-Footnote 1: Use private services access or Private Service Connect to connect to Google services that are not supported by Private Service Connect for Google APIs or Private Google Access.
-
 ### Connect to services in VPC networks
 
 | Option | Clients | Connection | Supported services |
@@ -45,10 +43,10 @@ Footnote 1: Use private services access or Private Service Connect to connect to
 | Service connection policies | Google Cloud VM instances with or without external IP addresses | Connect through an endpoint; the managed service instance is deployed in a producer VPC network and configured through the service's administrative API or UI | Specific Google and third-party services; contact the service provider to find out whether a service supports them |
 | Private services access | Google Cloud VM instances with or without external IP addresses | Connect to a Google or third-party managed VPC network through a VPC Network Peering connection | Google services and third-party services made available using the Service Networking API (see footnote 2) |
 
-Footnote 2: Use Private Service Connect for Google APIs or Private Google Access to connect to Google services that are not supported by private services access or Private Service Connect for published services.
-
 ## Notes
 
+- Connect to Google APIs: Footnote 1: Use private services access or Private Service Connect to connect to Google services that are not supported by Private Service Connect for Google APIs or Private Google Access.
+- Connect to services in VPC networks: Footnote 2: Use Private Service Connect for Google APIs or Private Google Access to connect to Google services that are not supported by private services access or Private Service Connect for published services.
 - From serverless services (Cloud Run, App Engine standard, Cloud Run functions) to a VPC network, use Direct VPC egress; if that isn't an option, configure a Serverless VPC Access connector. Both also support sending packets to other networks connected to the selected VPC network.
 - The source page has no code block. Snippet taken from https://docs.cloud.google.com/vpc/docs/configure-private-google-access (same category).
 - Source: https://docs.cloud.google.com/vpc/docs/private-access-options (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)

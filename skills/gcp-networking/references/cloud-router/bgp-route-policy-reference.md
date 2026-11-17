@@ -42,8 +42,6 @@ gcloud compute routers add-route-policy-term my-router \
 | `prefixSets('local')` | Prefixes named in the prefix set `local` on the router. |
 | `x \|\| y` | True if either is true; x and y must be boolean expressions using `communities` or `destination`. |
 
-All conditions are effectively zero or more `destination` match operations connected by OR: `(D0 || D1 || ... || Dm)`.
-
 ### Vendor comparison (prefix ranges)
 
 | Cloud Router | Cisco | Juniper |
@@ -88,6 +86,7 @@ All conditions are effectively zero or more `destination` match operations conne
 
 ## Notes
 
+- Match operations: All conditions are effectively zero or more `destination` match operations connected by OR: `(D0 || D1 || ... || Dm)`.
 - Private communities mapped to these Google-owned ASNs are ignored by Cloud Router in `communities.add`, `remove` and `replaceAll`: 6432, 15169, 16550, 16591, 19448, 19527, 22859, 26910, 32381, 36039, 36384, 36385, 36492, 55023.
 - Rendering note: the source page prints the MED range as `0` to `232` and `232 - 1` (the superscript was lost) and once as `2^32^ - 1`; the table above writes it as 2^32 - 1, the form the source itself uses once.
 - `drop()` terms, and a drop-all match such as `destination.inAnyRange([prefix('0.0.0.0/0').orLonger(), prefix('::/0').orLonger()])`, can remove routes and break connectivity; try them on a disposable router or peer first. Route policy limits (terms, match elements, action elements, named sets) are in [quotas.md](./quotas.md).

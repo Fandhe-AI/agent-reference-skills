@@ -34,9 +34,11 @@ gcloud edge-cloud container clusters list --location=us-central1
 
 ### Virtual machine scaling limits
 
-- Scaling limits for VMs using VM Runtime on GDC are dictated by the hardware configuration (available capacity on G1 or G2 hardware).
-- The maximum number of concurrent VMs depends on the CPU, memory and storage resources of your configuration.
-- To scale up VM deployments, ensure the cluster has enough CPU, memory and storage for both VMs and the control plane components.
+| Virtual machine scaling limits |
+|---|
+| Scaling limits for VMs using VM Runtime on GDC are dictated by the hardware configuration (available capacity on G1 or G2 hardware). |
+| The maximum number of concurrent VMs depends on the CPU, memory and storage resources of your configuration. |
+| To scale up VM deployments, ensure the cluster has enough CPU, memory and storage for both VMs and the control plane components. |
 
 ## Notes
 

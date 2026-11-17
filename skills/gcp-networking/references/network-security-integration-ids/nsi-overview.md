@@ -32,8 +32,10 @@ gcloud network-security intercept-deployment-groups create \
 | Producer | Network appliance VMs that provide traffic inspection and monitoring. One or more zonal deployments; each zonal deployment is an internal passthrough Network Load Balancer whose backend VMs are appliances you manage. | Zonal deployments, grouped into a single deployment group |
 | Consumer | Google Cloud VMs whose traffic is secured or monitored. | An endpoint group (references the producer's deployment group) and rules in a global network firewall policy, or a hierarchical firewall policy for in-band integration |
 
-- This overview says consumer firewall rules use the `apply_security_profile_group` action; that is the in-band (intercept) case. For out-of-band integration the consumer uses mirroring rules whose actions are `MIRROR`, `DO_NOT_MIRROR` and `GOTO_NEXT` (see out-of-band-integration-overview.md). Rules can match traffic by multiple attributes such as IP addresses or IP ranges, and secure tags.
-- Depending on the configuration, Network Security Integration either intercepts or mirrors the traffic from one or more consumer networks, encapsulates it with GENEVE and sends it to the producer's appliances.
+| Producer and consumer model |
+|---|
+| This overview says consumer firewall rules use the `apply_security_profile_group` action; that is the in-band (intercept) case. For out-of-band integration the consumer uses mirroring rules whose actions are `MIRROR`, `DO_NOT_MIRROR` and `GOTO_NEXT` (see out-of-band-integration-overview.md). Rules can match traffic by multiple attributes such as IP addresses or IP ranges, and secure tags. |
+| Depending on the configuration, Network Security Integration either intercepts or mirrors the traffic from one or more consumer networks, encapsulates it with GENEVE and sends it to the producer's appliances. |
 
 ## Notes
 

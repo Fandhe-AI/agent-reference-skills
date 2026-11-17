@@ -31,13 +31,15 @@ gcloud compute network-firewall-policies rules create 10 \
 
 ### Specifications
 
-- Container resource for firewall rules, defined within a project; rules can be added, updated and deleted after creation.
-- To apply rules to a VPC network, associate the policy with it. One policy can be associated with multiple networks, but the policy and the networks must belong to the same project.
-- Each VPC network can be associated with only one global network firewall policy.
-- A policy not associated with any network has no effect (an unassociated policy).
-- Once associated, existing rules and any later changes are enforced against applicable resources in the associated networks.
-- Rules are enforced together with other firewall rules in the order described in [firewall-policies-rule-eval-order.md](./firewall-policies-rule-eval-order.md).
-- Layer 7 inspection (URL filtering, intrusion prevention): use the `apply_security_profile_group` action with the name of a security profile group; matched traffic is transparently forwarded to the firewall endpoint.
+| Specifications |
+|---|
+| Container resource for firewall rules, defined within a project; rules can be added, updated and deleted after creation. |
+| To apply rules to a VPC network, associate the policy with it. One policy can be associated with multiple networks, but the policy and the networks must belong to the same project. |
+| Each VPC network can be associated with only one global network firewall policy. |
+| A policy not associated with any network has no effect (an unassociated policy). |
+| Once associated, existing rules and any later changes are enforced against applicable resources in the associated networks. |
+| Rules are enforced together with other firewall rules in the order described in [firewall-policies-rule-eval-order.md](./firewall-policies-rule-eval-order.md). |
+| Layer 7 inspection (URL filtering, intrusion prevention): use the `apply_security_profile_group` action with the name of a security profile group; matched traffic is transparently forwarded to the firewall endpoint. |
 
 ### Global network policy rules vs VPC firewall rules
 
@@ -52,12 +54,9 @@ gcloud compute network-firewall-policies rules create 10 \
 | Reuse | Yes | No |
 | Quota | Attribute count, based on total complexity of each rule in the policy | Rule count; complex and simple rules have the same quota impact |
 
-### Predefined rules
-
-Cloud NGFW adds predefined rules with the lowest priority to a new policy; connections matching no explicit rule are passed down to lower-level policies or network rules.
-
 ## Notes
 
+- Predefined rules: Cloud NGFW adds predefined rules with the lowest priority to a new policy; connections matching no explicit rule are passed down to lower-level policies or network rules.
 - Disassociating or replacing a policy association changes which rules protect a network and can break connectivity; try it on a disposable network first.
 - Snippets taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/network-firewall-policies/associations/create and .../network-firewall-policies/rules/create (gcloud 593.0.0 help). The full flag list is in the `gcp-compute` skill.
 - Regional network firewall policies are described at https://docs.cloud.google.com/firewall/docs/regional-firewall-policies.

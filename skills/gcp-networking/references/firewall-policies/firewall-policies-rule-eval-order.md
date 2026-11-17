@@ -32,13 +32,15 @@ gcloud compute networks update VPC_NETWORK_NAME \
 
 ### Per-step behavior
 
-- Ingress rules apply to new-connection packets received by a target (VM network interfaces; managed Envoy proxies of internal Application Load Balancers and internal proxy Network Load Balancers). Egress rules apply to new-connection packets a VM interface sends.
-- In each step: disregard rules whose targets do not match; disregard rules not matching direction; evaluate the rest from highest to lowest priority until a rule matches or none do.
-- Hierarchical: organization policy first, then folder policies from top-level folder down. Actions: `allow`, `deny`, `apply_security_profile_group` (decision depends on the security profile), `goto_next` (next folder policy or next step). No match = implied `goto_next`.
-- Regional system: actions `allow`, `deny`, `goto_next` (next system policy by association priority, or next step).
-- VPC firewall rules: one or two rules may match; if two, same priority but different actions, and `deny` is enforced. No match = implied `goto_next`.
-- Global network: `allow`, `deny`, `apply_security_profile_group`, `goto_next` (to regional network step).
-- Regional network: only those associated with the target's region and network; `allow`, `deny`, `goto_next`.
+| Per-step behavior |
+|---|
+| Ingress rules apply to new-connection packets received by a target (VM network interfaces; managed Envoy proxies of internal Application Load Balancers and internal proxy Network Load Balancers). Egress rules apply to new-connection packets a VM interface sends. |
+| In each step: disregard rules whose targets do not match; disregard rules not matching direction; evaluate the rest from highest to lowest priority until a rule matches or none do. |
+| Hierarchical: organization policy first, then folder policies from top-level folder down. Actions: `allow`, `deny`, `apply_security_profile_group` (decision depends on the security profile), `goto_next` (next folder policy or next step). No match = implied `goto_next`. |
+| Regional system: actions `allow`, `deny`, `goto_next` (next system policy by association priority, or next step). |
+| VPC firewall rules: one or two rules may match; if two, same priority but different actions, and `deny` is enforced. No match = implied `goto_next`. |
+| Global network: `allow`, `deny`, `apply_security_profile_group`, `goto_next` (to regional network step). |
+| Regional network: only those associated with the target's region and network; `allow`, `deny`, `goto_next`. |
 
 ### Implied actions (last step)
 

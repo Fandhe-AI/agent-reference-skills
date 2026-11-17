@@ -26,10 +26,12 @@ gcloud dns managed-zones create my-zone --dns-name=my.zone.com. \
 | Inbound | Create an inbound server policy so an on-premises DNS client or server can send DNS requests to Cloud DNS. They resolve records according to the VPC network's name resolution order, including private zones, forwarding zones, and peering zones the VPC network is authorized for. On-premises clients connect through Cloud VPN or Cloud Interconnect. |
 | Outbound | VMs can send requests to name servers of your choosing (in the same VPC network, on-premises, or on the internet), resolve records on forwarding targets of an authorized forwarding zone, or use an outbound server policy to send all DNS requests to an alternative name server. With an alternative name server, VMs can no longer resolve Cloud DNS private zones, forwarding zones, peering zones, or Compute Engine internal DNS zones. |
 
-- Inbound and outbound forwarding can be configured simultaneously on one VPC network (bi-directional forwarding).
-- Cloud DNS does not support DNS forwarding for public zones; public zones must be authoritative.
-- Outbound forwarded queries can return `SERVFAIL` if forwarding targets are unreachable or respond too slowly.
-- Outbound endpoints (Preview) forward DNS queries by using private IP addresses from your VPC network.
+| DNS forwarding methods |
+|---|
+| Inbound and outbound forwarding can be configured simultaneously on one VPC network (bi-directional forwarding). |
+| Cloud DNS does not support DNS forwarding for public zones; public zones must be authoritative. |
+| Outbound forwarded queries can return `SERVFAIL` if forwarding targets are unreachable or respond too slowly. |
+| Outbound endpoints (Preview) forward DNS queries by using private IP addresses from your VPC network. |
 
 ### Access control
 
@@ -39,20 +41,26 @@ gcloud dns managed-zones create my-zone --dns-name=my.zone.com. \
 | DNS Reader (`roles/dns.reader`) | Read-only access to Cloud DNS records |
 | Project Owner / Editor (`roles/owner` / `roles/editor`) | Manage or view managed zones in the specific project |
 
-- To configure an IAM policy on a DNS resource such as a managed zone, you must have Owner access to the project that owns the resource. The DNS Administrator role does not have the `setIamPolicy` permission.
-- IAM permissions apply at the project level and at the individual DNS zone level.
+| Access control |
+|---|
+| To configure an IAM policy on a DNS resource such as a managed zone, you must have Owner access to the project that owns the resource. The DNS Administrator role does not have the `setIamPolicy` permission. |
+| IAM permissions apply at the project level and at the individual DNS zone level. |
 
 ### DNS64
 
-- Lets IPv6-only Compute Engine VMs reach IPv4 destinations. Cloud DNS synthesizes an `AAAA` record by combining the Well-Known Prefix `64:ff9b::/96` (RFC 6052) with the 32 bits of the IPv4 address (for example `32.34.50.60` becomes `64:ff9b::2022:323c`).
-- If an `AAAA` record exists it is returned; DNS64 synthesizes one only when no `AAAA` exists but an `A` record does.
-- Pair DNS64 with Public NAT (NAT64) in a Cloud NAT gateway for internet IPv4 destinations. Synthesis also works for on-premises records when DNS forwarding is enabled.
+| DNS64 |
+|---|
+| Lets IPv6-only Compute Engine VMs reach IPv4 destinations. Cloud DNS synthesizes an `AAAA` record by combining the Well-Known Prefix `64:ff9b::/96` (RFC 6052) with the 32 bits of the IPv4 address (for example `32.34.50.60` becomes `64:ff9b::2022:323c`). |
+| If an `AAAA` record exists it is returned; DNS64 synthesizes one only when no `AAAA` exists but an `A` record does. |
+| Pair DNS64 with Public NAT (NAT64) in a Cloud NAT gateway for internet IPv4 destinations. Synthesis also works for on-premises records when DNS forwarding is enabled. |
 
 ### Propagation and caching
 
-- Cloud DNS uses anycast to serve managed zones from multiple locations.
-- TTL (seconds) controls resolver caching; some resolvers ignore or override it. Lower the TTL before a planned change, then restore it afterwards.
-- Many stub and recursive resolvers cache negative responses for up to 15 minutes (for example Windows, Java JVM, dnsmasq); query the authoritative name servers directly while waiting for propagation.
+| Propagation and caching |
+|---|
+| Cloud DNS uses anycast to serve managed zones from multiple locations. |
+| TTL (seconds) controls resolver caching; some resolvers ignore or override it. Lower the TTL before a planned change, then restore it afterwards. |
+| Many stub and recursive resolvers cache negative responses for up to 15 minutes (for example Windows, Java JVM, dnsmasq); query the authoritative name servers directly while waiting for propagation. |
 
 ## Notes
 

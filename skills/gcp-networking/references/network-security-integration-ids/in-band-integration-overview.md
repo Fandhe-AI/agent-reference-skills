@@ -34,31 +34,25 @@ gcloud network-security intercept-endpoint-groups create \
 
 ### Requirements for packet inspection
 
-- The rule using `apply_security_profile_group` belongs to a hierarchical firewall policy or global network firewall policy associated with a consumer VPC network.
-- The intercept endpoint group association links the consumer VPC network to the correct intercept endpoint group.
-- The rule's security profile group contains the security profile that references the same intercept endpoint group. Otherwise packets are not intercepted.
-
-### Packet flow
-
-1. Intercept in the consumer VPC zone. Egress packets are intercepted before routing; ingress packets after routing. With an external IPv4 address or Cloud NAT, the source (egress) or destination (ingress) address is translated around the rule processing and inspection.
-2. Encapsulate with GENEVE (original source and destination IPs preserved in the payload).
-3. Send to a backend VM of the producer's internal passthrough Network Load Balancer, chosen by the zone of the intercepted VM and the intercept deployment group.
-4. Process: producer VMs receive GENEVE on `UDP` port `6081`, extract, inspect, and (if permitted) re-encapsulate without altering original IPs, protocols and ports.
-5. Return the packet to the consumer network using direct server return (DSR).
-
-### Direct internet egress
-
-The appliance sends inspected internet-bound traffic directly to the internet through its external interface and returns the response over GENEVE. Configure only the appliance (per its own documentation); no extra producer / consumer resource configuration, Cloud NAT or default internet routes are needed in consumer VPC networks. Traffic crosses the VPC boundary 2 hops instead of 4.
+| Requirements for packet inspection |
+|---|
+| The rule using `apply_security_profile_group` belongs to a hierarchical firewall policy or global network firewall policy associated with a consumer VPC network. |
+| The intercept endpoint group association links the consumer VPC network to the correct intercept endpoint group. |
+| The rule's security profile group contains the security profile that references the same intercept endpoint group. Otherwise packets are not intercepted. |
 
 ### Limitations
 
-- Matching packets are processed at a slower rate (depends on machine type, packet size and CPU utilization; similar to egress rates to destinations outside a VPC network).
-- Regional network firewall policies don't support Packet Intercept.
-- Producer intercept deployments don't support instances with Dynamic NICs as backends.
-- Intercepted TCP sessions must begin with a SYN packet; for unknown connections the appliance drops non-SYN packets. Contact Cloud Support if traffic includes non-SYN initiators or split routing.
+| Limitations |
+|---|
+| Matching packets are processed at a slower rate (depends on machine type, packet size and CPU utilization; similar to egress rates to destinations outside a VPC network). |
+| Regional network firewall policies don't support Packet Intercept. |
+| Producer intercept deployments don't support instances with Dynamic NICs as backends. |
+| Intercepted TCP sessions must begin with a SYN packet; for unknown connections the appliance drops non-SYN packets. Contact Cloud Support if traffic includes non-SYN initiators or split routing. |
 
 ## Notes
 
+- Packet flow: 1. Intercept in the consumer VPC zone. Egress packets are intercepted before routing; ingress packets after routing. With an external IPv4 address or Cloud NAT, the source (egress) or destination (ingress) address is translated around the rule processing and inspection. 2. Encapsulate with GENEVE (original source and destination IPs preserved in the payload). 3. Send to a backend VM of the producer's internal passthrough Network Load Balancer, chosen by the zone of the intercepted VM and the intercept deployment group. 4. Process: producer VMs receive GENEVE on `UDP` port `6081`, extract, inspect, and (if permitted) re-encapsulate without altering original IPs, protocols and ports. 5. Return the packet to the consumer network using direct server return (DSR).
+- Direct internet egress: The appliance sends inspected internet-bound traffic directly to the internet through its external interface and returns the response over GENEVE. Configure only the appliance (per its own documentation); no extra producer / consumer resource configuration, Cloud NAT or default internet routes are needed in consumer VPC networks. Traffic crosses the VPC boundary 2 hops instead of 4.
 - Intercept firewall rules are stateful: after a new session matches, all subsequent ingress and egress packets of the session are intercepted and encapsulated with the security profile group in the GENEVE header.
 - Caution (source): intercept rules can't process partial TCP sessions; non-SYN TCP packets that match a rule but don't belong to a tracked connection are dropped.
 - Consumers can use multiple producers in a VPC network, and can run Cloud NGFW Enterprise firewall endpoints in parallel with in-band integration.

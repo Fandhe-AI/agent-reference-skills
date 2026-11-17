@@ -39,17 +39,18 @@ gcloud network-security security-profiles threat-prevention \
 | Firewall policy rule | Matches traffic by Layer 3 / Layer 4 components and sets the security profile group on `apply_security_profile_group`. Hierarchical and global network firewall policies support Layer 7 rules; secure tags can be used in the rules. |
 | TLS inspection | Decrypts selected encrypted traffic (inbound and outbound) for inspection. |
 
-Threat signature categories: anti-spyware, vulnerability protection, antivirus.
-
 ### Limitations
 
-- Firewall endpoints ignore X-Forwarded-For (XFF) headers, so they aren't included in VPC firewall rules logging.
-- Firewall endpoints support IP packets of a limited size only.
-- Intranode visibility for GKE is unsupported.
-- Inspecting egress traffic from serverless workloads is not supported (both Direct VPC egress and Serverless VPC Access connectors).
+| Limitations |
+|---|
+| Firewall endpoints ignore X-Forwarded-For (XFF) headers, so they aren't included in VPC firewall rules logging. |
+| Firewall endpoints support IP packets of a limited size only. |
+| Intranode visibility for GKE is unsupported. |
+| Inspecting egress traffic from serverless workloads is not supported (both Direct VPC egress and Serverless VPC Access connectors). |
 
 ## Notes
 
+- Components: Threat signature categories: anti-spyware, vulnerability protection, antivirus.
 - Enterprise capabilities are available only through firewall policies; "firewall rules" on this page means firewall policy rules, not VPC firewall rules.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-security/security-profiles/threat-prevention/create (gcloud 593.0.0 help); the source page has no code block.
 - Adapted from the official docs: the help example for this profile command omitted `--location` and `--organization` (or `--project`), which gcloud 593.0.0 needs to parse the profile name; organization-level profiles use `--organization`, project-level profiles use `--project`.

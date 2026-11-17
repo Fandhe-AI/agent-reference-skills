@@ -19,8 +19,6 @@ The full flag list is in the `gcp-compute` skill; reference: https://docs.cloud.
 
 ## Options / Props
 
-Configuration values are case-sensitive. Group names for DH and PFS (configuration value in parentheses): modp_2048 (`Group-14`), modp_2048_224 (`modp-2048-224`), modp_2048_256 (`modp-2048-256`), modp_1536 (`Group-5`), modp_3072 (`Group-15`), modp_4096 (`Group-16`), modp_8192 (`Group-18`), modp_1024 (`Group-2`), modp_1024_160 (`modp-1024-160`), ecp_256 (`Group-19`), ecp_384 (`Group-20`), ecp_521 (`Group-21`), curve_25519 (`Group-31`).
-
 ### IKEv2 with AEAD
 
 | Role | Phase | Values |
@@ -60,6 +58,7 @@ Configuration values are case-sensitive. Group names for DH and PFS (configurati
 
 ## Notes
 
+- Configuration values are case-sensitive. Group names for DH and PFS (configuration value in parentheses): modp_2048 (`Group-14`), modp_2048_224 (`modp-2048-224`), modp_2048_256 (`modp-2048-256`), modp_1536 (`Group-5`), modp_3072 (`Group-15`), modp_4096 (`Group-16`), modp_8192 (`Group-18`), modp_1024 (`Group-2`), modp_1024_160 (`modp-1024-160`), ecp_256 (`Group-19`), ecp_384 (`Group-20`), ecp_521 (`Group-21`), curve_25519 (`Group-31`).
 - IPv6 traffic (HA VPN only) requires IKEv2. The source states that IPv6 address support for HA VPN gateway interfaces is in Preview (check the current launch stage).
 - `modp_8192` is not supported for HA VPN gateways with IPv6 interfaces (`gatewayIpVersion=IPv6`).
 - Proposal order: when Cloud VPN initiates, it proposes the configured ciphers or, if none are configured, the table order; when the peer initiates, Cloud VPN selects using the same order. The selected cipher can differ by initiator and can change over time at key rotation, affecting performance and MTU. Configure the peer and tunnel to propose and accept exactly one cipher per role; do not provide lists. For an HA VPN tunnel pair use the same cipher and IKE Phase 2 lifetime on both tunnels. For HA VPN between VPC networks without configured ciphers, the gateways negotiate consistently regardless of initiator. The listed order is not ordered by strength.

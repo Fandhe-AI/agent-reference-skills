@@ -44,10 +44,9 @@ gcloud network-management vpc-flow-logs-configs \
 | Log retention in Logging | 30 days by default; set a custom retention period or export |
 | TCP connection logging | Optional; up to 100 connections per vCPU per second (maximum 800 per second per VM); excess might not be logged |
 
-Processing order: filtering, aggregation, secondary flow log sampling, metadata, write to Logging. The primary sampling rate is dynamic and cannot be controlled.
-
 ## Notes
 
+- Processing order: filtering, aggregation, secondary flow log sampling, metadata, write to Logging. The primary sampling rate is dynamic and cannot be controlled.
 - TCP connection logging (configurable for a subnet through the Network Management API, a VPC network, or an organization) captures the outbound initial `SYN` (reporter `SRC`, direction `EGRESS`) and the inbound `SYN-ACK` (reporter `DEST`, direction `INGRESS`); identify these with the `connection_direction` field. VPC Flow Logs also generates separate records for dropped traffic.
 - Specifications: no delay or performance penalty; VPC networks only (not legacy networks); samples TCP, UDP, ICMP, ESP, GRE, and RDMA flows (for RoCE only outbound flows). Egress packets are sampled before egress firewall rules (denied egress packets can be logged); ingress packets are sampled after ingress firewall rules (denied ingress packets are not).
 - For VMs with multiple network interfaces, enable flow logs for each subnet with an interface. To log flows between Pods on the same GKE node, enable intranode visibility. Not supported for subnets with purpose `INTERNAL_HTTPS_LOAD_BALANCER` (proxy-only subnets).

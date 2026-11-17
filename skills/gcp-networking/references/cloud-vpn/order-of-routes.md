@@ -28,10 +28,9 @@ The full flag list is in the `gcp-compute` skill; reference: https://docs.cloud.
 | Broader (smaller mask, for example `10.0.0.0/8`, `fd20:a:b::/48`) | Not allowed to create the static route | Cloud Router ignores advertised routes that match or fit within the subnet range; traffic stays in the VPC network |
 | Narrower (longer mask, for example `10.2.99.0/24`, `fd20:a:b:c::/80`) | Static route to `10.2.0.0/16` can be created, but traffic to `10.2.99.0/24` stays in the VPC network | Cloud Router accepts the route to `10.2.0.0/16`; traffic to `10.2.99.0/24` stays in the VPC network |
 
-Classic VPN does not support IPv6. This page says IPv6 traffic works only on HA VPN gateways with the dual stack type (IPv4 and IPv6); the Cloud VPN overview also lists the `IPV6_ONLY` stack type (see Notes).
-
 ## Notes
 
+- Subnet routes vs on-premises range `10.2.0.0/16` (IPv6: `fd20:a:b:c::/64`): Classic VPN does not support IPv6. This page says IPv6 traffic works only on HA VPN gateways with the dual stack type (IPv4 and IPv6); the Cloud VPN overview also lists the `IPV6_ONLY` stack type (see Notes).
 - A Cloud Router always manages an HA VPN tunnel and a Classic VPN tunnel that uses dynamic routing; it creates and removes dynamic routes and advertises subnet or custom routes. The VPC network's dynamic routing mode controls what it imports and exports. Policy-based and route-based Classic VPN tunnels use static routes: the console creates them from the remote ranges, gcloud does not (create them manually).
 - Dynamic routing, tunnel down: Cloud Router removes the learned routes; detection time depends on the BGP keepalive interval and hold timer. Routes return when the tunnel re-establishes. Some packet loss is expected.
 - Static routing, tunnel down: a tunnel without an established IKE SA is never a valid next hop. With several static routes for the same destination, tunnels without IKE SAs are disregarded before priority is considered (example: priorities 10 (down), 20 (up), 30 (up) for `192.168.168.0/24` sends traffic to the priority 20 route; if tunnel 10 comes back it is used). If all tunnels for a destination are down, traffic is dropped even if a broader route (`192.168.0.0/16`) has a working tunnel, because the most specific destination always wins. Expect packet loss when traffic switches tunnels.

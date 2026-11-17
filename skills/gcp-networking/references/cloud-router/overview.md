@@ -35,18 +35,16 @@ gcloud compute routers create ROUTER_NAME \
 | HA VPN | Required |
 | Classic VPN | Optional |
 
-Cloud NAT relies on Cloud Routers for control plane capabilities, but not for BGP session management.
-
 ### Key features
 
-- BGP session management, including Bidirectional Forwarding Detection (BFD) and MD5 authentication.
-- Advertised routes: advertise IP ranges to your network when you use a supported product.
-- Learned routes: routes received from BGP peers and custom learned routes become dynamic routes in VPC networks.
-- BGP route policies: rules to filter BGP routes or modify BGP route attributes.
+| Key features |
+|---|
+| BGP session management, including Bidirectional Forwarding Detection (BFD) and MD5 authentication. |
+| Advertised routes: advertise IP ranges to your network when you use a supported product. |
+| Learned routes: routes received from BGP peers and custom learned routes become dynamic routes in VPC networks. |
+| BGP route policies: rules to filter BGP routes or modify BGP route attributes. |
 
 ### IP protocol support
-
-IPv6 route exchange works through BGP over IPv6 or BGP over IPv4 using multiprotocol BGP (MP-BGP). Supported session types:
 
 | Session type | Prefixes exchanged |
 |---|---|
@@ -55,10 +53,11 @@ IPv6 route exchange works through BGP over IPv6 or BGP over IPv4 using multiprot
 | IPv4 BGP session using MP-BGP | IPv4 and IPv6 |
 | IPv6 BGP session using MP-BGP | IPv4 and IPv6 |
 
-IPv6 BGP peering and IPv6 route exchange aren't supported for Classic VPN tunnels, Router appliance (part of Network Connectivity Center) and Cross-Cloud Interconnect VLAN attachments. You can configure an IPv4 BGP session and an IPv6 BGP session simultaneously for an HA VPN tunnel or a Dedicated Interconnect VLAN attachment; the IPv4 session then exchanges only IPv4 routes and the IPv6 session only IPv6 routes.
-
 ## Notes
 
+- Products that use Cloud Router: Cloud NAT relies on Cloud Routers for control plane capabilities, but not for BGP session management.
+- IP protocol support: IPv6 route exchange works through BGP over IPv6 or BGP over IPv4 using multiprotocol BGP (MP-BGP). Supported session types:
+- IP protocol support: IPv6 BGP peering and IPv6 route exchange aren't supported for Classic VPN tunnels, Router appliance (part of Network Connectivity Center) and Cross-Cloud Interconnect VLAN attachments. You can configure an IPv4 BGP session and an IPv6 BGP session simultaneously for an HA VPN tunnel or a Dedicated Interconnect VLAN attachment; the IPv4 session then exchanges only IPv4 routes and the IPv6 session only IPv6 routes.
 - Classic VPN: Cloud Router can be used with Classic VPN only to support dynamic routing for tunnels that connect to third-party VPN gateway software running on Google Cloud VM instances; all other dynamic routing functionality for Classic VPN is deprecated (see https://docs.cloud.google.com/network-connectivity/docs/vpn/deprecations/classic-vpn-deprecation).
 - Snippet taken from https://docs.cloud.google.com/network-connectivity/docs/router/how-to/create-router-vpc-network (the overview itself has no code).
 - The full flag list of `gcloud compute routers ...` is in the `gcp-compute` skill. BFD, MD5 authentication, best practices and key terms are official pages: https://docs.cloud.google.com/network-connectivity/docs/router/concepts/bfd, https://docs.cloud.google.com/network-connectivity/docs/router/how-to/use-md5-authentication, https://docs.cloud.google.com/network-connectivity/docs/router/concepts/best-practices, https://docs.cloud.google.com/network-connectivity/docs/router/concepts/key-terms.

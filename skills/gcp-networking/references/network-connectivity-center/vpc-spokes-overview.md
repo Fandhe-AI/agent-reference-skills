@@ -32,32 +32,35 @@ gcloud network-connectivity spokes linked-vpc-network update \
 
 ### Different-project spokes
 
-- A VPC spoke can be in the hub project or another project, in the same or a different organization. A VPC spoke can be connected to one hub at a time.
-- A hub administrator creates and manages the hub and accepts spoke proposals; a spoke administrator proposes a VPC network.
-- A spoke created in the hub's project is added immediately. A spoke in a different project creates a spoke proposal that a hub administrator must approve before it becomes active.
-- VPC Service Controls: for a spoke in a different project, after a perimeter is added you can't add new spokes that violate it; existing spokes keep working.
-
-### Preset topologies
-
-Mesh topology and star topology can be chosen for VPC spokes (see `connectivity-topologies.md`). VPC spokes support only export filters.
+| Different-project spokes |
+|---|
+| A VPC spoke can be in the hub project or another project, in the same or a different organization. A VPC spoke can be connected to one hub at a time. |
+| A hub administrator creates and manages the hub and accepts spoke proposals; a spoke administrator proposes a VPC network. |
+| A spoke created in the hub's project is added immediately. A spoke in a different project creates a spoke proposal that a hub administrator must approve before it becomes active. |
+| VPC Service Controls: for a spoke in a different project, after a perimeter is added you can't add new spokes that violate it; existing spokes keep working. |
 
 ### Limitations
 
-- No VPC Network Peering between two VPC spokes connected through the same hub. Exceptions: a producer VPC spoke requires a peering connection to a VPC spoke on the same hub (no NCC connectivity between them); an NCC-connected VPC spoke can peer with a VPC that is not part of NCC; two VPC spokes in the edge spoke group of a star-topology hub can be peered.
-- Static route exchange across VPC spokes isn't supported.
-- IPv6-based internal passthrough Network Load Balancers aren't reachable among VPC spokes.
-- Auto mode VPC networks aren't supported as VPC spokes. You can switch an auto mode network to custom mode; this can't be undone.
-- If a VPC spoke is peered with another VPC network (non-producer): that network can't be a VPC spoke on the hub, and the spoke cannot export imported peering subnet routes to the hub.
-- Routing VPC networks that are also VPC spokes: two or more routing VPC networks on the same hub are supported only if none is also a VPC spoke. A single routing VPC network may also be a VPC spoke, and must be if propagated Private Service Connect connections need to reach on-premises networks through hybrid spokes.
-- After deleting a VPC spoke, wait a cool-down of at least 10 minutes before attaching the same VPC network as a spoke on a different hub. Not needed when re-adding to the same hub.
+| Limitations |
+|---|
+| No VPC Network Peering between two VPC spokes connected through the same hub. Exceptions: a producer VPC spoke requires a peering connection to a VPC spoke on the same hub (no NCC connectivity between them); an NCC-connected VPC spoke can peer with a VPC that is not part of NCC; two VPC spokes in the edge spoke group of a star-topology hub can be peered. |
+| Static route exchange across VPC spokes isn't supported. |
+| IPv6-based internal passthrough Network Load Balancers aren't reachable among VPC spokes. |
+| Auto mode VPC networks aren't supported as VPC spokes. You can switch an auto mode network to custom mode; this can't be undone. |
+| If a VPC spoke is peered with another VPC network (non-producer): that network can't be a VPC spoke on the hub, and the spoke cannot export imported peering subnet routes to the hub. |
+| Routing VPC networks that are also VPC spokes: two or more routing VPC networks on the same hub are supported only if none is also a VPC spoke. A single routing VPC network may also be a VPC spoke, and must be if propagated Private Service Connect connections need to reach on-premises networks through hybrid spokes. |
+| After deleting a VPC spoke, wait a cool-down of at least 10 minutes before attaching the same VPC network as a spoke on a different hub. Not needed when re-adding to the same hub. |
 
 ### Quotas and billing
 
-- Monitor the number of dynamic routes per hub; usage is counted by destination (prefix) only. When exceeded, NCC drops routes by destination, and all dynamic routes with that destination are no longer sent to the hub.
-- Spoke hours are charged to the spoke's project, only while the spoke is `ACTIVE`. Outbound traffic is charged to the project of the originating spoke resource, regardless of project boundaries.
+| Quotas and billing |
+|---|
+| Monitor the number of dynamic routes per hub; usage is counted by destination (prefix) only. When exceeded, NCC drops routes by destination, and all dynamic routes with that destination are no longer sent to the hub. |
+| Spoke hours are charged to the spoke's project, only while the spoke is `ACTIVE`. Outbound traffic is charged to the project of the originating spoke resource, regardless of project boundaries. |
 
 ## Notes
 
+- Preset topologies: Mesh topology and star topology can be chosen for VPC spokes (see `connectivity-topologies.md`). VPC spokes support only export filters.
 - Deleting a spoke can break connectivity between the attached VPC networks; try it on a disposable hub first.
 - The borrowed example only changes the spoke description; it does not change routing or attachments.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-connectivity/spokes/linked-vpc-network/update (gcloud 593.0.0 help).

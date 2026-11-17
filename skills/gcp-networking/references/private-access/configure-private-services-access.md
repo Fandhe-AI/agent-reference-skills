@@ -120,9 +120,11 @@ gcloud projects add-iam-policy-binding HOST_PROJECT_ID \
 
 ### Prerequisites and permissions
 
-- Enable the Service Networking API in the project (required to create a private connection); have a VPC network; install the Google Cloud CLI for gcloud examples.
-- Project owners and principals with Compute Network Admin (`roles/compute.networkAdmin`) can create allocated ranges and manage private connections.
-- DNS peering requires the Cloud DNS API enabled. All supported services support DNS peering except Cloud SQL.
+| Prerequisites and permissions |
+|---|
+| Enable the Service Networking API in the project (required to create a private connection); have a VPC network; install the Google Cloud CLI for gcloud examples. |
+| Project owners and principals with Compute Network Admin (`roles/compute.networkAdmin`) can create allocated ranges and manage private connections. |
+| DNS peering requires the Cloud DNS API enabled. All supported services support DNS peering except Cloud SQL. |
 
 ### Choosing the allocated range
 
@@ -136,14 +138,18 @@ gcloud projects add-iam-policy-binding HOST_PROJECT_ID \
 
 ### Private connection rules
 
-- One connection suffices for all services of one producer. Use a unique allocated range per producer; don't reuse a range across producers (also for multiple producer organizations).
-- Multiple ranges may be assigned; addresses are used in the order you specified.
-- You can't modify an allocated range, but you can add or remove ranges on a connection without disrupting traffic. `--ranges` in `update` replaces the previous list; removing a range requires `--force`. A removed range isn't deleted, existing producer resources may keep using it, and it's not used for new subnets.
+| Private connection rules |
+|---|
+| One connection suffices for all services of one producer. Use a unique allocated range per producer; don't reuse a range across producers (also for multiple producer organizations). |
+| Multiple ranges may be assigned; addresses are used in the order you specified. |
+| You can't modify an allocated range, but you can add or remove ranges on a connection without disrupting traffic. `--ranges` in `update` replaces the previous list; removing a range requires `--force`. A removed range isn't deleted, existing producer resources may keep using it, and it's not used for new subnets. |
 
 ### Hybrid connectivity
 
-- Export custom routes on the peering connection to send eligible static and dynamic routes (for example to on-premises) to the producer network. If the learned routes overlap Private Google Access ranges, producer traffic to Google services may be misrouted over the peering; avoid overlapping exports or enable VPC Service Controls for the private services access connection.
-- Advertise the allocated range prefixes to on-premises via Cloud Router, and ensure the VLAN attachment or Cloud VPN tunnel ends in the same VPC network (or Shared VPC network) as the private connection, since peering isn't transitive.
+| Hybrid connectivity |
+|---|
+| Export custom routes on the peering connection to send eligible static and dynamic routes (for example to on-premises) to the producer network. If the learned routes overlap Private Google Access ranges, producer traffic to Google services may be misrouted over the peering; avoid overlapping exports or enable VPC Service Controls for the private services access connection. |
+| Advertise the allocated range prefixes to on-premises via Cloud Router, and ensure the VLAN attachment or Cloud VPN tunnel ends in the same VPC network (or Shared VPC network) as the private connection, since peering isn't transitive. |
 
 ### Troubleshooting
 

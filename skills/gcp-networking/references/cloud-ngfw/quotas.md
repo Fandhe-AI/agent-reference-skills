@@ -20,11 +20,15 @@ gcloud compute regions describe example-region
 
 Replace `PROJECT_ID` with your project ID and `example-region` with the region to check.
 
+Adapted (not in the official docs): the Compute Engine commands above show only the Compute Engine quotas (firewall rules and firewall policies); quotas defined by the Network Security API (`networksecurity.googleapis.com`) are listed with Cloud Quotas:
+
+```bash
+gcloud quotas info list --service=networksecurity.googleapis.com --project=PROJECT_ID
+```
+
 ## Options / Props
 
 ### Quotas
-
-To monitor, use the metric `serviceruntime.googleapis.com/quota/allocation/usage` on the `Consumer Quota` resource type with `service` / `quota_metric` label filters.
 
 | Scope | Quota | Description |
 |---|---|---|
@@ -41,8 +45,6 @@ To monitor, use the metric `serviceruntime.googleapis.com/quota/allocation/usage
 | Per network | Firewall rule FQDNs per region per VPC network | FQDNs from all associated regional policies in the region |
 | Per policy | Rule attributes per hierarchical / global network / regional network firewall policy | Sum of rule attributes from all rules in the policy |
 | Per policy | Domain names (FQDNs) per hierarchical / global network / regional network firewall policy | Sum of source FQDNs of ingress rules plus destination FQDNs of egress rules |
-
-Organization-level quotas are changed by filing a Support case; others through a quota adjustment request.
 
 ### Limits (cannot be increased unless noted)
 
@@ -92,8 +94,6 @@ Organization-level quotas are changed by filing a Support case; others through a
 
 ### Rule attribute count
 
-Only these attributes count, for firewall policy rules and VPC firewall rules.
-
 | Attribute | Rule type | Count |
 |---|---|---|
 | IP protocol name | VPC firewall rules and firewall policy rules | 1 per protocol |
@@ -108,8 +108,6 @@ Only these attributes count, for firewall policy rules and VPC firewall rules.
 | Source or destination address groups | Firewall policy rules | Sum of capacities of each group |
 | Source or destination network contexts | Firewall policy rules | 1 per context; for the VPC networks context, the number of source VPC networks specified |
 
-Examples: ingress allow from `10.100.0.1/32`, `tcp`, `5000-6000` = 3 (one source range, one protocol, one port range). Ingress deny from `10.0.0.0/8, 192.168.0.0/16` to `100.64.0.7/32` with `tcp` and `udp` on `53-53` and `5353-5353` = 11 (four protocol-port combinations at two attributes each, plus 2 source and 1 destination ranges). Egress deny with three combinations (`tcp:80-80`, `tcp:443-443`, `udp:4000-5000`), one source and two destination ranges = 9. Ingress allow with `VPC_NETWORKS` context and three networks, one source range, source FQDN `example.com`, `tcp` and `5000-6000` = 70 (3 + 1 + 64 + 1 + 1); target secure tags aren't counted.
-
 ### Required roles
 
 | Task | Roles |
@@ -119,9 +117,14 @@ Examples: ingress allow from `10.100.0.1/32`, `tcp`, `5000-6000` = 3 (one source
 
 ## Notes
 
+- Quotas: To monitor, use the metric `serviceruntime.googleapis.com/quota/allocation/usage` on the `Consumer Quota` resource type with `service` / `quota_metric` label filters.
+- Quotas: Organization-level quotas are changed by filing a Support case; others through a quota adjustment request.
+- Rule attribute count: Only these attributes count, for firewall policy rules and VPC firewall rules.
+- Rule attribute count: Examples: ingress allow from `10.100.0.1/32`, `tcp`, `5000-6000` = 3 (one source range, one protocol, one port range). Ingress deny from `10.0.0.0/8, 192.168.0.0/16` to `100.64.0.7/32` with `tcp` and `udp` on `53-53` and `5353-5353` = 11 (four protocol-port combinations at two attributes each, plus 2 source and 1 destination ranges). Egress deny with three combinations (`tcp:80-80`, `tcp:443-443`, `udp:4000-5000`), one source and two destination ranges = 9. Ingress allow with `VPC_NETWORKS` context and three networks, one source range, source FQDN `example.com`, `tcp` and `5000-6000` = 70 (3 + 1 + 64 + 1 + 1); target secure tags aren't counted.
 - A `gcloud` command that exceeds a quota prints `quota exceeded` and exits with code `1`; an API request returns HTTP `413 Request Entity Too Large`.
 - Quotas don't guarantee resource availability; zonal or regional resources can be depleted.
 - Describe a firewall policy to read its rule attribute count. The source also shows Console steps for checking quotas.
+- Clarified from the official docs: the source checks quotas only with `gcloud compute project-info describe` / `gcloud compute regions describe`, which describe Compute Engine project and region quotas (such as firewall rules and network firewall policies). Security profile, security profile group and firewall endpoint quotas defined by `networksecurity.googleapis.com` are not part of that output, so the page adds `gcloud quotas info list --service=networksecurity.googleapis.com` (gcloud 593.0.0 help: `--service` is "Name of the service in which the quota is defined"), adapted from https://docs.cloud.google.com/sdk/gcloud/reference/quotas/info/list.
 - Source: https://docs.cloud.google.com/firewall/docs/quotas (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

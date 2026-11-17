@@ -35,8 +35,6 @@ gcloud network-management connectivity-tests list --limit=5
 | Router appliance instances | (no hierarchy listed) |
 | Google-managed services | Google services > Google service |
 
-GKE Enterprise view: GKE Pod = region > network > subnet > zone > GKE cluster > GKE namespace > GKE workload > GKE pod; workload, namespace and cluster are the same path truncated at that level.
-
 ### Data freshness
 
 | Component | Data period | Availability |
@@ -47,6 +45,7 @@ GKE Enterprise view: GKE Pod = region > network > subnet > zone > GKE cluster > 
 
 ## Notes
 
+- Base entities and aggregation hierarchy (Infrastructure view): GKE Enterprise view: GKE Pod = region > network > subnet > zone > GKE cluster > GKE namespace > GKE workload > GKE pod; workload, namespace and cluster are the same path truncated at that level.
 - History is six weeks. Entities and connections appear only if they communicated in the selected period.
 - If the graph is too large for the browser it is truncated (some nodes and connections may be missing); metrics are not sampled or truncated. Remove projects from the metrics scope or show only the current project.
 - Traffic types: TCP, UDP, ICMP, ICMPV6, ESP and GRE on certain paths. Only the first network interface (`nic0`) of a VM is visualized. VMs communicating by external IPs are shown as traffic to/from the other VM's country, not a direct connection.

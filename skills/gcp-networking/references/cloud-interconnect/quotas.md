@@ -68,6 +68,7 @@ gcloud compute regions describe example-region
 - Quota does not guarantee resource availability; a zonal or regional resource can still be unavailable.
 - Request increases in the Google Cloud console (Quotas page); some quotas rise automatically with use.
 - The source also shows a Console path for checking quota.
+- Source inconsistency: this page gives "Partner Interconnect, Cross-Site Interconnect: Capacities from 50 Mbps to 100 Gbps" per VLAN attachment, but the Cloud Interconnect overview (https://docs.cloud.google.com/network-connectivity/docs/interconnect/concepts/overview, retrieved 2026-11-17) says Partner Interconnect supports "50-Mbps to 50-Gbps VLAN attachments" and "The maximum supported attachment size is 50 Gbps". Check the capacities your partner offers in the location before planning attachments above 50 Gbps.
 - Source: https://docs.cloud.google.com/network-connectivity/docs/interconnect/quotas (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

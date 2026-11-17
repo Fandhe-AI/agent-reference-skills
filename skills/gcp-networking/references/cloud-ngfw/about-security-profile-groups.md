@@ -35,18 +35,15 @@ gcloud network-security security-profile-groups create \
 
 ### Organization-level vs project-level
 
-- Organization-level groups apply to organization-level and project-level endpoints.
-- Project-level groups apply to project-level endpoints in the same project; they can't be applied to organization-level endpoints.
-
-### Inspection sequence
-
-1. `URL_FILTERING` profile runs first.
-2. `THREAT_PREVENTION` runs; with Advanced malware sandbox enabled, `WILDFIRE_ANALYSIS` runs alongside it.
-
-If a possible threat is detected in the HTTP(S) header, intrusion detection and prevention can evaluate and block first; unblocked traffic then goes to URL filtering.
+| Organization-level vs project-level |
+|---|
+| Organization-level groups apply to organization-level and project-level endpoints. |
+| Project-level groups apply to project-level endpoints in the same project; they can't be applied to organization-level endpoints. |
 
 ## Notes
 
+- Inspection sequence: 1. `URL_FILTERING` profile runs first. 2. `THREAT_PREVENTION` runs; with Advanced malware sandbox enabled, `WILDFIRE_ANALYSIS` runs alongside it.
+- Inspection sequence: If a possible threat is detected in the HTTP(S) header, intrusion detection and prevention can evaluate and block first; unblocked traffic then goes to URL filtering.
 - Advanced malware sandbox protection layers: real-time protection (known signatures plus on-box ML), inline cloud analysis (before files reach the network), and asynchronous deep sandboxing of unknown files per submission rules.
 - Rules match traffic; matched traffic is redirected to the firewall endpoint along with the group name.
 - The group is referenced by the firewall policy of the VPC network where Layer 7 inspection is enforced.
