@@ -105,7 +105,7 @@ NOTES
             add-layer7-ddos-defense-threshold-config
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud compute security-policies add-layer7-ddos-defense-threshold-config NAME \
@@ -117,7 +117,7 @@ gcloud compute security-policies add-layer7-ddos-defense-threshold-config NAME \
     --detection-load-threshold=0.4 \
     --detection-absolute-qps=1000 \
     --detection-relative-to-baseline-qps=2.0 \
-    --traffic-granularity-configs=type=HTTP_HEADER_HOST,value=www.my-test-host.com;type=HTTP_PATH,enableEachUniqueValue=true
+    --traffic-granularity-configs='type=HTTP_HEADER_HOST,value=www.my-test-host.com;type=HTTP_PATH,enableEachUniqueValue=true'
 ```
 
 ### gcloud beta compute security-policies add-layer7-ddos-defense-threshold-config
@@ -171,6 +171,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `--traffic-granularity-configs` value contains an unquoted `;`, which the shell treats as a command separator (gcloud would receive only the `HTTP_HEADER_HOST` config); the runnable form quotes the whole value.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
