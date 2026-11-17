@@ -35,7 +35,7 @@ skills/gcp-compute/
       oracle-database/
         README.md                 # gcloud oracle-database
         oracle-database-<group>.md  # 例: oracle-database-db-systems.md / oracle-database-odb-networks-1.md
-    iam/                          # 機械生成: IAM roles-permissions reference、取得 2026-11-14、分割投入中（13 / 25 ページ。収録済みは README 掲載分のみ）
+    iam/                          # 機械生成: IAM roles-permissions reference、取得 2026-11-14、分割投入中（21 / 25 ページ。収録済みは README 掲載分のみ）
       README.md
       <service>.md                # compute は compute-1.md〜compute-15.md の 15 分割。他に osconfig / batch / tpu / baremetalsolution / hypercomputecluster / oracledatabase-1・2 / confidentialcomputing / autoscaling / oci
     compute-overview/             # 公式ガイド由来（手書き）: 概要・インスタンスの概念・停止 / 一時停止 / リセットの違い・リージョンとゾーン・割り当て・ライフサイクル・プロビジョニングモデル・作成と起動・廃止一覧
@@ -130,7 +130,7 @@ skills/gcp-compute/
 
 未投入カテゴリ（`rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`iam`: 13 / 25 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`iam`: 21 / 25 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
