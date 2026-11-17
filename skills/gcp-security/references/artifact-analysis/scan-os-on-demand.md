@@ -131,13 +131,13 @@ vulnerability:
 
 | Role | ID |
 |------|----|
-| Container Scanner Service Agent | `roles/containerscanning.ServiceAgent` |
 | Container Analysis Occurrences Viewer | `roles/containeranalysis.occurrences.viewer` |
 | Container Analysis Notes Viewer | `roles/containeranalysis.notes.viewer` |
 | Artifact Registry Reader | `roles/artifactregistry.reader` |
 
 ## Notes
 
+- Adapted from the official docs: the source's list of roles for viewing package scan results also names Container Scanner Service Agent (`roles/containerscanning.ServiceAgent`). That is the role of the Container Scanning service agent; the IAM roles reference says not to grant service agent roles to any principals except service agents (https://docs.cloud.google.com/iam/docs/roles-permissions/containerscanning). It is left out of the table above; grant users or CI service accounts only the viewer and reader roles.
 - Scan results are available for 48 hours after the scanning operation completes. The output of `list-vulnerabilities` is a list of occurrences in the Grafeas format.
 - Local images use `REPOSITORY:TAG` or `REPOSITORY`. For images in Artifact Registry the `IMAGE_URI` must include `REPOSITORY_ID`.
 - In gcloud 593.0.0, scanning for all package types is the default; `--skip-package-types` skips specific types (COMPOSER, GO, MAVEN, NPM, NUGET, PYTHON, RUBYGEMS, RUST). `--additional-package-types` is marked DEPRECATED in the help.
