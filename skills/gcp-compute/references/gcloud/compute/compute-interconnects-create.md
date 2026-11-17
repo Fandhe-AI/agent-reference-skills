@@ -1,0 +1,211 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/interconnects/create
+---
+
+# gcloud compute interconnects create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute interconnects create
+
+```text
+NAME
+    gcloud compute interconnects create - create a Compute Engine interconnect
+
+SYNOPSIS
+    gcloud compute interconnects create NAME
+        --interconnect-type=INTERCONNECT_TYPE --link-type=LINK_TYPE
+        --location=LOCATION --requested-link-count=REQUESTED_LINK_COUNT
+        [--admin-enabled] [--customer-name=CUSTOMER_NAME]
+        [--description=DESCRIPTION] [--noc-contact-email=NOC_CONTACT_EMAIL]
+        [--remote-location=REMOTE_LOCATION]
+        [--requested-features=[FEATURES,...]]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--subzone=SUBZONE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute interconnects create is used to create interconnects. An
+    interconnect represents a single specific connection between Google and the
+    customer.
+
+    For an example, refer to the EXAMPLES section below.
+
+EXAMPLES
+    To create an interconnect of type DEDICATED, run:
+
+        $ gcloud compute interconnects create example-interconnect \
+            --customer-name="Example Customer Name" \
+            --interconnect-type=DEDICATED \
+            --link-type=LINK_TYPE_ETHERNET_10G_LR \
+            --location=example-zone1-1 --requested-link-count=1 \
+            --noc-contact-email=noc@example.com \
+            --description="Example interconnect"
+
+    To create a Cross-Cloud Interconnect, run:
+
+        $ gcloud compute interconnects create example-cc-interconnect \
+            --interconnect-type=DEDICATED \
+            --link-type=LINK_TYPE_ETHERNET_10G_LR \
+            --location=example-zone1-1 --requested-link-count=1 \
+            --remote-location=example-remote-location \
+            --noc-contact-email=noc@example.com \
+            --description="Example Cross-Cloud Interconnect"
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the interconnect to create.
+
+REQUIRED FLAGS
+     --interconnect-type=INTERCONNECT_TYPE
+        Type of the interconnect. INTERCONNECT_TYPE must be one of:
+
+         DEDICATED
+            Dedicated private interconnect.
+         PARTNER
+            Partner interconnect. Only available to approved partners.
+
+     --link-type=LINK_TYPE
+        Type of the link for the interconnect. LINK_TYPE must be one of:
+
+         LINK_TYPE_ETHERNET_100G_LR
+            100Gbps Ethernet, LR Optics.
+         LINK_TYPE_ETHERNET_10G_LR
+            10Gbps Ethernet, LR Optics.
+         LINK_TYPE_ETHERNET_400G_LR4
+            400Gbps Ethernet, LR4 Optics.
+
+     --location=LOCATION
+        The location for the interconnect. The locations can be listed by using
+        the gcloud compute interconnects locations list command to find the
+        appropriate location to use when creating an interconnect.
+
+     --requested-link-count=REQUESTED_LINK_COUNT
+        Target number of physical links in the link bundle.
+
+OPTIONAL FLAGS
+     --admin-enabled
+        Administrative status of the interconnect. If not provided on creation,
+        defaults to enabled. When this is enabled, the interconnect is
+        operational and will carry traffic across any functioning linked
+        interconnect attachments. Use --no-admin-enabled to disable it.
+
+     --customer-name=CUSTOMER_NAME
+        Customer name to put in the Letter of Authorization as the party
+        authorized to request an interconnect. This field is required for most
+        interconnects, however it is prohibited when creating a Cross-Cloud
+        Interconnect.
+
+     --description=DESCRIPTION
+        An optional, textual description for the interconnect.
+
+     --noc-contact-email=NOC_CONTACT_EMAIL
+        Email address to contact the customer NOC for operations and
+        maintenance notifications regarding this interconnect.
+
+     --remote-location=REMOTE_LOCATION
+        The remote location for a Cross-Cloud Interconnect. The remote
+        locations can be listed by using the gcloud compute interconnects
+        remote-locations list command to find the appropriate remote location
+        to use when creating a Cross-Cloud Interconnect.
+
+     --requested-features=[FEATURES,...]
+        List of features requested for this interconnect. FEATURES must be one
+        of:
+
+         CROSS_SITE_NETWORK
+            If specified then the interconnect is created on Cross-Site Network
+            capable hardware ports. This parameter can only be provided during
+            interconnect INSERT and cannot be changed using interconnect PATCH.
+         L2_FORWARDING
+            If specified then the interconnect is created on L2 forwarding
+            capable hardware ports. This parameter can only be provided during
+            interconnect INSERT and cannot be changed using interconnect PATCH.
+         MACSEC
+            If specified then the interconnect is created on MACsec capable
+            hardware ports. If not specified, the interconnect is created on
+            non-MACsec capable ports first, if available. This parameter can
+            only be provided during interconnect INSERT and cannot be changed
+            using interconnect PATCH.
+
+     --resource-manager-tags=[KEY=VALUE,...]
+        A comma-separated list of Resource Manager tags to apply to the
+        interconnect.
+
+     --subzone=SUBZONE
+        (DEPRECATED) Subzone in the LOCATION specified by the --location flag.
+
+        The --subzone flag is deprecated and will be removed in a future
+        release. SUBZONE must be one of:
+
+         a
+            Subzone a.
+         b
+            Subzone b.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute interconnects create
+
+        $ gcloud beta compute interconnects create
+```
+
+### gcloud beta compute interconnects create
+
+```text
+NAME
+    gcloud beta compute interconnects create - create a Compute Engine
+        interconnect
+
+SYNOPSIS
+    gcloud beta compute interconnects create NAME
+        --interconnect-type=INTERCONNECT_TYPE --link-type=LINK_TYPE
+        --location=LOCATION --requested-link-count=REQUESTED_LINK_COUNT
+        [--admin-enabled] [--customer-name=CUSTOMER_NAME]
+        [--description=DESCRIPTION] [--noc-contact-email=NOC_CONTACT_EMAIL]
+        [--remote-location=REMOTE_LOCATION]
+        [--requested-features=[FEATURES,...]]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--subzone=SUBZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute interconnects create
+
+```text
+NAME
+    gcloud alpha compute interconnects create - create a Compute Engine
+        interconnect
+
+SYNOPSIS
+    gcloud alpha compute interconnects create NAME
+        --interconnect-type=INTERCONNECT_TYPE --link-type=LINK_TYPE
+        --location=LOCATION --requested-link-count=REQUESTED_LINK_COUNT
+        [--admin-enabled] [--customer-name=CUSTOMER_NAME]
+        [--description=DESCRIPTION] [--noc-contact-email=NOC_CONTACT_EMAIL]
+        [--remote-location=REMOTE_LOCATION]
+        [--requested-features=[FEATURES,...]]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--subzone=SUBZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud compute interconnects create --subzone`: "The --subzone flag is deprecated and will be removed in a future release.".
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/interconnects/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
