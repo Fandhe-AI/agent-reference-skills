@@ -1,0 +1,357 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/interconnects/attachments/partner
+---
+
+# gcloud compute interconnects attachments partner
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute interconnects attachments partner create
+
+```text
+NAME
+    gcloud compute interconnects attachments partner create - create a Compute
+        Engine partner interconnect attachment
+
+SYNOPSIS
+    gcloud compute interconnects attachments partner create NAME
+        --edge-availability-domain=AVAILABILITY_DOMAIN --router=ROUTER
+        [--candidate-cloud-router-ip-address=CANDIDATE_CLOUD_ROUTER_IP_ADDRESS]
+        [--candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS]
+        [--candidate-customer-router-ip-address=CANDIDATE_CUSTOMER_ROUTER_IP_ADDRESS]
+        [--candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS]
+        [--description=DESCRIPTION] [--enable-admin] [--encryption=ENCRYPTION]
+        [--ipsec-internal-addresses=[ADDRESSES]] [--mtu=MTU] [--region=REGION]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--stack-type=STACK_TYPE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute interconnects attachments partner create is used to create
+    partner interconnect attachments. A partner interconnect attachment binds
+    the underlying connectivity of a provider's Interconnect to a path into and
+    out of the customer's cloud network.
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the interconnect attachment to create.
+
+REQUIRED FLAGS
+     --edge-availability-domain=AVAILABILITY_DOMAIN
+        Desired edge availability domain for this attachment:
+        availability-domain-1, availability-domain-2, any.
+
+        In each metro where the Partner can connect to Google, there are two
+        sets of redundant hardware. These sets are described as edge
+        availability domain 1 and 2. Within a metro, Google will only schedule
+        maintenance in one availability domain at a time. This guarantee does
+        not apply to availability domains outside the metro; Google may perform
+        maintenance in (say) New York availability domain 1 at the same time as
+        Chicago availability domain 1.
+
+        AVAILABILITY_DOMAIN must be one of:
+
+         any
+            Any Availability Domain
+         availability-domain-1
+            Edge Availability Domain 1
+         availability-domain-2
+            Edge Availability Domain 2
+
+     --router=ROUTER
+        Google Cloud Router to use for dynamic routing.
+
+OPTIONAL FLAGS
+     --candidate-cloud-router-ip-address=CANDIDATE_CLOUD_ROUTER_IP_ADDRESS
+        Single IPv4 address + prefix length to be configured on the cloud
+        router interface for this interconnect attachment. Example:
+        203.0.113.1/29
+
+     --candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS
+        Single IPv6 address + prefix length to be configured on the cloud
+        router interface for this interconnect attachment. Example:
+        2001:db8::1/125
+
+     --candidate-customer-router-ip-address=CANDIDATE_CUSTOMER_ROUTER_IP_ADDRESS
+        Single IPv4 address + prefix length to be configured on the customer
+        router interface for this interconnect attachment. Example:
+        203.0.113.2/29
+
+     --candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS
+        Single IPv6 address + prefix length to be configured on the customer
+        router interface for this interconnect attachment. Example:
+        2001:db8::2/125
+
+     --description=DESCRIPTION
+        Human-readable plain-text description of attachment.
+
+     --enable-admin
+        Administrative status of the interconnect attachment. If not provided
+        on creation, defaults to disabled. When this is enabled, the attachment
+        is operational and will carry traffic. Use --no-enable-admin to disable
+        it.
+
+     --encryption=ENCRYPTION
+        Indicates the user-supplied encryption option for this interconnect
+        attachment (VLAN attachment).
+
+        Possible values are:
+
+        NONE - This is the default value, which means the interconnect
+        attachment carries unencrypted traffic. VMs can send traffic to or
+        receive traffic from such interconnect attachment.
+
+        IPSEC - The interconnect attachment carries only traffic that is
+        encrypted by an IPsec device; for example, an HA VPN gateway or
+        third-party IPsec VPN. VMs cannot directly send traffic to or receive
+        traffic from such an interconnect attachment. To use HA VPN over Cloud
+        Interconnect, the interconnect attachment must be created with this
+        option.
+
+        ENCRYPTION must be one of: IPSEC, NONE.
+
+     --ipsec-internal-addresses=[ADDRESSES]
+        List of IP address range names that have been reserved for the
+        interconnect attachment (VLAN attachment). Use this option only for an
+        interconnect attachment that has its encryption option set as IPSEC.
+        Currently only one internal IP address range can be specified for each
+        attachment. When creating an HA VPN gateway for the interconnect
+        attachment, if the attachment is configured to use a regional internal
+        IP address, then the VPN gateway's IP address is allocated from the IP
+        address range specified here. If this field is not specified when
+        creating the interconnect attachment, then when creating any HA VPN
+        gateways for this interconnect attachment, the HA VPN gateway's IP
+        address is allocated from a regional external IP address pool.
+
+     --mtu=MTU
+        Maximum transmission unit (MTU) is the size of the largest IP packet
+        passing through this interconnect attachment. Must be one of 1440,
+        1460, 1500, or 8896. If not specified, the value will default to 1440.
+
+     --region=REGION
+        Region of the interconnect attachment to create. If not specified, you
+        might be prompted to select a region (interactive mode only).
+
+        To avoid prompting when this flag is omitted, you can set the
+        compute/region property:
+
+            $ gcloud config set compute/region REGION
+
+        A list of regions can be fetched by running:
+
+            $ gcloud compute regions list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/region
+
+        Alternatively, the region can be stored in the environment variable
+        CLOUDSDK_COMPUTE_REGION.
+
+     --resource-manager-tags=[KEY=VALUE,...]
+        A comma-separated list of Resource Manager tags to apply to the
+        interconnect.
+
+     --stack-type=STACK_TYPE
+        Stack type of the protocol(s) enabled on this interconnect attachment.
+        STACK_TYPE must be one of:
+
+         IPV4_IPV6
+            Both IPv4 and IPv6 protocols are enabled on this attachment.
+         IPV4_ONLY
+            Only IPv4 protocol is enabled on this attachment.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute interconnects attachments partner create
+
+        $ gcloud beta compute interconnects attachments partner create
+```
+
+### gcloud compute interconnects attachments partner update
+
+```text
+NAME
+    gcloud compute interconnects attachments partner update - update a Compute
+        Engine partner interconnect attachment
+
+SYNOPSIS
+    gcloud compute interconnects attachments partner update NAME
+        [--candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS]
+        [--candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS]
+        [--description=DESCRIPTION] [--enable-admin] [--mtu=MTU]
+        [--region=REGION] [--stack-type=STACK_TYPE] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute interconnects attachments partner update is used to update
+    partner interconnect attachments. A partner interconnect attachment binds
+    the underlying connectivity of a provider's Interconnect to a path into and
+    out of the customer's cloud network.
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the interconnect attachment to patch.
+
+FLAGS
+     --candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS
+        Single IPv6 address + prefix length to be configured on the cloud
+        router interface for this interconnect attachment. Example:
+        2001:db8::1/125
+
+     --candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS
+        Single IPv6 address + prefix length to be configured on the customer
+        router interface for this interconnect attachment. Example:
+        2001:db8::2/125
+
+     --description=DESCRIPTION
+        Human-readable plain-text description of attachment.
+
+     --enable-admin
+        Administrative status of the interconnect attachment. When this is
+        enabled, the attachment is operational and will carry traffic. Use
+        --no-enable-admin to disable it.
+
+     --mtu=MTU
+        Maximum transmission unit (MTU) is the size of the largest IP packet
+        passing through this interconnect attachment. Must be one of 1440,
+        1460, 1500, or 8896. If not specified, the value will default to 1440.
+
+     --region=REGION
+        Region of the interconnect attachment to patch. If not specified, you
+        might be prompted to select a region (interactive mode only).
+
+        To avoid prompting when this flag is omitted, you can set the
+        compute/region property:
+
+            $ gcloud config set compute/region REGION
+
+        A list of regions can be fetched by running:
+
+            $ gcloud compute regions list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/region
+
+        Alternatively, the region can be stored in the environment variable
+        CLOUDSDK_COMPUTE_REGION.
+
+     --stack-type=STACK_TYPE
+        Stack type of the protocol(s) enabled on this interconnect attachment.
+        STACK_TYPE must be one of:
+
+         IPV4_IPV6
+            Both IPv4 and IPv6 protocols are enabled on this attachment.
+         IPV4_ONLY
+            Only IPv4 protocol is enabled on this attachment.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute interconnects attachments partner update
+
+        $ gcloud beta compute interconnects attachments partner update
+```
+
+### gcloud beta compute interconnects attachments partner create
+
+```text
+NAME
+    gcloud beta compute interconnects attachments partner create - create a
+        Compute Engine partner interconnect attachment
+
+SYNOPSIS
+    gcloud beta compute interconnects attachments partner create NAME
+        --edge-availability-domain=AVAILABILITY_DOMAIN --router=ROUTER
+        [--candidate-cloud-router-ip-address=CANDIDATE_CLOUD_ROUTER_IP_ADDRESS]
+        [--candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS]
+        [--candidate-customer-router-ip-address=CANDIDATE_CUSTOMER_ROUTER_IP_ADDRESS]
+        [--candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS]
+        [--description=DESCRIPTION] [--enable-admin] [--encryption=ENCRYPTION]
+        [--ipsec-internal-addresses=[ADDRESSES]] [--mtu=MTU] [--region=REGION]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--stack-type=STACK_TYPE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta compute interconnects attachments partner update
+
+```text
+NAME
+    gcloud beta compute interconnects attachments partner update - update a
+        Compute Engine partner interconnect attachment
+
+SYNOPSIS
+    gcloud beta compute interconnects attachments partner update NAME
+        [--candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS]
+        [--candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS]
+        [--description=DESCRIPTION] [--enable-admin] [--mtu=MTU]
+        [--region=REGION] [--stack-type=STACK_TYPE]
+        [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute interconnects attachments partner create
+
+```text
+NAME
+    gcloud alpha compute interconnects attachments partner create - create a
+        Compute Engine partner interconnect attachment
+
+SYNOPSIS
+    gcloud alpha compute interconnects attachments partner create NAME
+        --edge-availability-domain=AVAILABILITY_DOMAIN --router=ROUTER
+        [--candidate-cloud-router-ip-address=CANDIDATE_CLOUD_ROUTER_IP_ADDRESS]
+        [--candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS]
+        [--candidate-customer-router-ip-address=CANDIDATE_CUSTOMER_ROUTER_IP_ADDRESS]
+        [--candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS]
+        [--description=DESCRIPTION] [--dry-run] [--enable-admin]
+        [--encryption=ENCRYPTION] [--ipsec-internal-addresses=[ADDRESSES]]
+        [--mtu=MTU] [--region=REGION] [--resource-manager-tags=[KEY=VALUE,...]]
+        [--stack-type=STACK_TYPE] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute interconnects attachments partner update
+
+```text
+NAME
+    gcloud alpha compute interconnects attachments partner update - update a
+        Compute Engine partner interconnect attachment
+
+SYNOPSIS
+    gcloud alpha compute interconnects attachments partner update NAME
+        [--candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS]
+        [--candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS]
+        [--description=DESCRIPTION] [--enable-admin] [--mtu=MTU]
+        [--region=REGION] [--stack-type=STACK_TYPE]
+        [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/interconnects/attachments/partner (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

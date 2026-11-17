@@ -1,0 +1,226 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/interconnects/groups/create-members
+---
+
+# gcloud compute interconnects groups create-members
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute interconnects groups create-members
+
+```text
+NAME
+    gcloud compute interconnects groups create-members - create new member
+        interconnects in a Compute Engine interconnect group
+
+SYNOPSIS
+    gcloud compute interconnects groups create-members NAME
+        --interconnect=[INTERCONNECT,...] [--admin-enabled]
+        [--customer-name=CUSTOMER_NAME] [--description=DESCRIPTION]
+        [--facility=FACILITY]
+        [--intent-mismatch-behavior=INTENT_MISMATCH_BEHAVIOR]
+        [--interconnect-type=INTERCONNECT_TYPE] [--link-type=LINK_TYPE]
+        [--noc-contact-email=NOC_CONTACT_EMAIL]
+        [--remote-location=REMOTE_LOCATION]
+        [--requested-features=[FEATURES,...]]
+        [--requested-link-count=REQUESTED_LINK_COUNT] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute interconnects groups create-members is used to create new
+    member interconnects in an interconnect group.
+
+    For an example, refer to the EXAMPLES section below.
+
+EXAMPLES
+    To create interconnects interconnect1 and interconnect2 in interconnect
+    group example-interconnect-group, run:
+
+        $ gcloud compute interconnects groups create-members \
+            example-interconnect-group --interconnect-type=DEDICATED \
+            --link-type=LINK_TYPE_ETHERNET_10G_LR --requested-link-count=1 \
+            --facility=iad-1 --interconnect="name=interconnect1" \
+            --interconnect="name=interconnect2,facility=iad-5467"
+
+    Note that facility is required for each member interconnect.
+    interconnect1's facility is set to the default value iad-1 and
+    interconnect2's facility is overridden to iad-5467 in the --interconnect
+    flag.
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the interconnect group to create members.
+
+REQUIRED FLAGS
+     --interconnect=[INTERCONNECT,...]
+        New member interconnects to create in the interconnect group. To create
+        multiple interconnects, this flag should be specified multiple times.
+
+        Each interconnect takes in the same set of flags as the gcloud compute
+        interconnects create command, except instead of a location, a facility
+        must be specified. These flags are defined as a comma separated list of
+        flag=value pairs.
+
+        Example:
+
+            --interconnect name=interconnect1,facility=iad-1,description="my interconnect",link-type=LINK_TYPE_ETHERNET_10G_LR,requested-link-count=1,interconnect-type=DEDICATED,admin-enabled,noc-contact-email=noc@google.com,customer-name=customer-name,requested-features=MACSEC:CROSS_SITE_NETWORK
+
+        Note that for multiple requested-features, use a colon (:) as the
+        delimiter, as the comma is used to separate the flags. Similarly, if
+        you need to use a comma in another flag value, you should set an
+        alternative delimiter for the --interconnect flag. Run gcloud topic
+        escaping for more information.
+
+OPTIONAL FLAGS
+     --admin-enabled
+        Administrative status of the interconnect. If not provided on creation,
+        defaults to enabled. When this is enabled, the interconnect is
+        operational and will carry traffic across any functioning linked
+        interconnect attachments. Use --no-admin-enabled to disable it.
+
+     --customer-name=CUSTOMER_NAME
+        Customer name to put in the Letter of Authorization as the party
+        authorized to request an interconnect. This field is required for most
+        interconnects, however it is prohibited when creating a Cross-Cloud
+        Interconnect.
+
+     --description=DESCRIPTION
+        An optional, textual description for the interconnect.
+
+     --facility=FACILITY
+        The facility (zone free location) to create the interconnect in.
+
+     --intent-mismatch-behavior=INTENT_MISMATCH_BEHAVIOR
+        The behavior when the intent of the interconnect group does not match
+        the topology capability of the member interconnects.
+        INTENT_MISMATCH_BEHAVIOR must be one of: REJECT, CREATE.
+
+     --interconnect-type=INTERCONNECT_TYPE
+        Type of the interconnect. INTERCONNECT_TYPE must be one of:
+
+         DEDICATED
+            Dedicated private interconnect.
+         PARTNER
+            Partner interconnect. Only available to approved partners.
+
+     --link-type=LINK_TYPE
+        Type of the link for the interconnect. LINK_TYPE must be one of:
+
+         LINK_TYPE_ETHERNET_100G_LR
+            100Gbps Ethernet, LR Optics.
+         LINK_TYPE_ETHERNET_10G_LR
+            10Gbps Ethernet, LR Optics.
+         LINK_TYPE_ETHERNET_400G_LR4
+            400Gbps Ethernet, LR4 Optics.
+
+     --noc-contact-email=NOC_CONTACT_EMAIL
+        Email address to contact the customer NOC for operations and
+        maintenance notifications regarding this interconnect.
+
+     --remote-location=REMOTE_LOCATION
+        The location of the interconnect for Cross-Cloud Interconnect.
+
+     --requested-features=[FEATURES,...]
+        List of features requested for this interconnect. FEATURES must be one
+        of:
+
+         CROSS_SITE_NETWORK
+            If specified then the interconnect is created on Cross-Site Network
+            capable hardware ports. This parameter can only be provided during
+            interconnect INSERT and cannot be changed using interconnect PATCH.
+         L2_FORWARDING
+            If specified then the interconnect is created on L2 forwarding
+            capable hardware ports. This parameter can only be provided during
+            interconnect INSERT and cannot be changed using interconnect PATCH.
+         MACSEC
+            If specified then the interconnect is created on MACsec capable
+            hardware ports. If not specified, the interconnect is created on
+            non-MACsec capable ports first, if available. This parameter can
+            only be provided during interconnect INSERT and cannot be changed
+            using interconnect PATCH.
+
+     --requested-link-count=REQUESTED_LINK_COUNT
+        Target number of physical links in the link bundle.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+DEFAULTABLE PER-INTERCONNECT FLAGS
+    All flags except --intent-mismatch-behavior in the OPTIONAL FLAGS section
+    are defaultable per-interconnect. This means that you can set a default
+    value by using these flags, or you can override the value for each
+    interconnect by using the --interconnect flag.
+
+    Furthermore, if the default values for the following flags are not
+    specified, then they must be specified per-interconnect in the
+    --interconnect flag:
+
+      o --facility
+      o --interconnect-type
+      o --link-type
+      o --requested-link-count
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute interconnects groups create-members
+
+        $ gcloud beta compute interconnects groups create-members
+```
+
+### gcloud beta compute interconnects groups create-members
+
+```text
+NAME
+    gcloud beta compute interconnects groups create-members - create new member
+        interconnects in a Compute Engine interconnect group
+
+SYNOPSIS
+    gcloud beta compute interconnects groups create-members NAME
+        --interconnect=[INTERCONNECT,...] [--admin-enabled]
+        [--customer-name=CUSTOMER_NAME] [--description=DESCRIPTION]
+        [--facility=FACILITY]
+        [--intent-mismatch-behavior=INTENT_MISMATCH_BEHAVIOR]
+        [--interconnect-type=INTERCONNECT_TYPE] [--link-type=LINK_TYPE]
+        [--noc-contact-email=NOC_CONTACT_EMAIL]
+        [--remote-location=REMOTE_LOCATION]
+        [--requested-features=[FEATURES,...]]
+        [--requested-link-count=REQUESTED_LINK_COUNT] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute interconnects groups create-members
+
+```text
+NAME
+    gcloud alpha compute interconnects groups create-members - create new
+        member interconnects in a Compute Engine interconnect group
+
+SYNOPSIS
+    gcloud alpha compute interconnects groups create-members NAME
+        --interconnect=[INTERCONNECT,...] [--admin-enabled]
+        [--customer-name=CUSTOMER_NAME] [--description=DESCRIPTION]
+        [--facility=FACILITY]
+        [--intent-mismatch-behavior=INTENT_MISMATCH_BEHAVIOR]
+        [--interconnect-type=INTERCONNECT_TYPE] [--link-type=LINK_TYPE]
+        [--noc-contact-email=NOC_CONTACT_EMAIL]
+        [--remote-location=REMOTE_LOCATION]
+        [--requested-features=[FEATURES,...]]
+        [--requested-link-count=REQUESTED_LINK_COUNT] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/interconnects/groups/create-members (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
