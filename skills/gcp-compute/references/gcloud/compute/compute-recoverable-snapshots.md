@@ -1,0 +1,169 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/beta/compute/recoverable-snapshots
+---
+
+# gcloud compute recoverable-snapshots
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud beta compute recoverable-snapshots delete
+
+```text
+NAME
+    gcloud beta compute recoverable-snapshots delete - delete Compute Engine
+        recoverable snapshots
+
+SYNOPSIS
+    gcloud beta compute recoverable-snapshots delete RECOVERABLE_SNAPSHOT_NAME
+        [RECOVERABLE_SNAPSHOT_NAME ...] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta compute recoverable-snapshots describe
+
+```text
+NAME
+    gcloud beta compute recoverable-snapshots describe - describe a Compute
+        Engine recoverable snapshot
+
+SYNOPSIS
+    gcloud beta compute recoverable-snapshots describe
+        RECOVERABLE_SNAPSHOT_NAME [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta compute recoverable-snapshots list
+
+```text
+NAME
+    gcloud beta compute recoverable-snapshots list - list Google Compute Engine
+        recoverable snapshots
+
+SYNOPSIS
+    gcloud beta compute recoverable-snapshots list [--filter=EXPRESSION]
+        [--limit=LIMIT] [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [--uri]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta compute recoverable-snapshots recover
+
+```text
+NAME
+    gcloud beta compute recoverable-snapshots recover - recovers a Compute
+        Engine recoverable snapshot
+
+SYNOPSIS
+    gcloud beta compute recoverable-snapshots recover RECOVERABLE_SNAPSHOT_NAME
+        [--snapshot-name=SNAPSHOT_NAME] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta compute recoverable-snapshots set-iam-policy
+
+```text
+NAME
+    gcloud beta compute recoverable-snapshots set-iam-policy - set the IAM
+        policy binding for a Compute Engine recoverable snapshot
+
+SYNOPSIS
+    gcloud beta compute recoverable-snapshots set-iam-policy
+        RECOVERABLE_SNAPSHOT_NAME POLICY_FILE [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta compute recoverable-snapshots test-iam-permissions
+
+```text
+NAME
+    gcloud beta compute recoverable-snapshots test-iam-permissions - test the
+        IAM permissions for a Compute Engine recoverable snapshot
+
+SYNOPSIS
+    gcloud beta compute recoverable-snapshots test-iam-permissions
+        RECOVERABLE_SNAPSHOT_NAME --permissions=[PERMISSION,...]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute recoverable-snapshots delete
+
+```text
+NAME
+    gcloud alpha compute recoverable-snapshots delete - delete Compute Engine
+        recoverable snapshots
+
+SYNOPSIS
+    gcloud alpha compute recoverable-snapshots delete RECOVERABLE_SNAPSHOT_NAME
+        [RECOVERABLE_SNAPSHOT_NAME ...] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute recoverable-snapshots describe
+
+```text
+NAME
+    gcloud alpha compute recoverable-snapshots describe - describe a Compute
+        Engine recoverable snapshot
+
+SYNOPSIS
+    gcloud alpha compute recoverable-snapshots describe
+        RECOVERABLE_SNAPSHOT_NAME [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute recoverable-snapshots list
+
+```text
+NAME
+    gcloud alpha compute recoverable-snapshots list - list Google Compute
+        Engine recoverable snapshots
+
+SYNOPSIS
+    gcloud alpha compute recoverable-snapshots list [--filter=EXPRESSION]
+        [--limit=LIMIT] [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [--uri]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute recoverable-snapshots recover
+
+```text
+NAME
+    gcloud alpha compute recoverable-snapshots recover - recovers a Compute
+        Engine recoverable snapshot
+
+SYNOPSIS
+    gcloud alpha compute recoverable-snapshots recover
+        RECOVERABLE_SNAPSHOT_NAME [--snapshot-name=SNAPSHOT_NAME]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute recoverable-snapshots set-iam-policy
+
+```text
+NAME
+    gcloud alpha compute recoverable-snapshots set-iam-policy - set the IAM
+        policy binding for a Compute Engine recoverable snapshot
+
+SYNOPSIS
+    gcloud alpha compute recoverable-snapshots set-iam-policy
+        RECOVERABLE_SNAPSHOT_NAME POLICY_FILE [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute recoverable-snapshots test-iam-permissions
+
+```text
+NAME
+    gcloud alpha compute recoverable-snapshots test-iam-permissions - test the
+        IAM permissions for a Compute Engine recoverable snapshot
+
+SYNOPSIS
+    gcloud alpha compute recoverable-snapshots test-iam-permissions
+        RECOVERABLE_SNAPSHOT_NAME --permissions=[PERMISSION,...]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/beta/compute/recoverable-snapshots (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

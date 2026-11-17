@@ -403,3 +403,21 @@
 | gcloud compute project-info | 13 commands (alpha, beta, ga); compute project-info add-metadata … | [compute-project-info.md](./compute-project-info.md) |
 | gcloud compute project-views | 3 commands (alpha, beta, ga); compute project-views describe … | [compute-project-views.md](./compute-project-views.md) |
 | gcloud compute project-zonal-metadata | 9 commands (alpha, beta, ga); compute project-zonal-metadata add … | [compute-project-zonal-metadata.md](./compute-project-zonal-metadata.md) |
+| gcloud compute public-advertised-prefixes | 15 commands (alpha, beta, ga); compute public-advertised-prefixes create … | [compute-public-advertised-prefixes.md](./compute-public-advertised-prefixes.md) |
+| gcloud compute public-delegated-prefixes | 21 commands (alpha, beta, ga); compute public-delegated-prefixes create … | [compute-public-delegated-prefixes.md](./compute-public-delegated-prefixes.md) |
+| gcloud compute queued-resources | 5 commands (alpha); alpha compute queued-resources cancel … | [compute-queued-resources.md](./compute-queued-resources.md) |
+| gcloud compute recoverable-snapshots | 12 commands (alpha, beta); beta compute recoverable-snapshots delete … | [compute-recoverable-snapshots.md](./compute-recoverable-snapshots.md) |
+| gcloud compute regions | 6 commands (alpha, beta, ga); compute regions describe … | [compute-regions.md](./compute-regions.md) |
+| gcloud compute reservations add-iam-policy-binding | 3 commands (alpha, beta, ga); compute reservations add-iam-policy-binding … | [compute-reservations-add-iam-policy-binding.md](./compute-reservations-add-iam-policy-binding.md) |
+| gcloud compute reservations blocks | 12 commands (alpha, beta, ga); compute reservations blocks describe … | [compute-reservations-blocks.md](./compute-reservations-blocks.md) |
+| gcloud compute reservations consumed-instances | alpha compute reservations consumed-instances list | [compute-reservations-consumed-instances.md](./compute-reservations-consumed-instances.md) |
+| gcloud compute reservations create | 3 commands (alpha, beta, ga); compute reservations create … | [compute-reservations-create.md](./compute-reservations-create.md) |
+| gcloud compute reservations delete | 3 commands (alpha, beta, ga); compute reservations delete … | [compute-reservations-delete.md](./compute-reservations-delete.md) |
+| gcloud compute reservations describe | 3 commands (alpha, beta, ga); compute reservations describe … | [compute-reservations-describe.md](./compute-reservations-describe.md) |
+| gcloud compute reservations get-iam-policy | 3 commands (alpha, beta, ga); compute reservations get-iam-policy … | [compute-reservations-get-iam-policy.md](./compute-reservations-get-iam-policy.md) |
+| gcloud compute reservations hosts | 9 commands (alpha, beta, ga); compute reservations hosts describe … | [compute-reservations-hosts.md](./compute-reservations-hosts.md) |
+| gcloud compute reservations list | 3 commands (alpha, beta, ga); compute reservations list … | [compute-reservations-list.md](./compute-reservations-list.md) |
+| gcloud compute reservations perform-maintenance | 3 commands (alpha, beta, ga); compute reservations perform-maintenance … | [compute-reservations-perform-maintenance.md](./compute-reservations-perform-maintenance.md) |
+| gcloud compute reservations remove-iam-policy-binding | 3 commands (alpha, beta, ga); compute reservations remove-iam-policy-binding … | [compute-reservations-remove-iam-policy-binding.md](./compute-reservations-remove-iam-policy-binding.md) |
+| gcloud compute reservations set-iam-policy | 3 commands (alpha, beta, ga); compute reservations set-iam-policy … | [compute-reservations-set-iam-policy.md](./compute-reservations-set-iam-policy.md) |
+| gcloud compute reservations slots | 12 commands (alpha, beta, ga); compute reservations slots describe … | [compute-reservations-slots.md](./compute-reservations-slots.md) |
