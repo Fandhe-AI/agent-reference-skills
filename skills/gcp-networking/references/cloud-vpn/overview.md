@@ -35,11 +35,13 @@ The tunnel API resource and tunnel configuration are the same for both types.
 
 ### HA VPN stack types
 
-| Stack type | Gateway external IP addresses | Supported BGP sessions |
+The stack type sets which IP protocols the gateway and its tunnels carry (`--stack-type`, default `IPV4_ONLY`). The IP version of the gateway interfaces' own external addresses is a separate setting (`--gateway-ip-version`, `IPV4` or `IPV6`; IPv4 when omitted). The third column lists the external IP address versions the source allows for each stack type, not addresses that the gateway gets automatically.
+
+| Stack type | Supported BGP sessions | Allowed gateway external IP addresses |
 |---|---|---|
-| `IPV4_ONLY` (default) | IPv4 | IPv4 BGP, no MP-BGP |
-| `IPV6_ONLY` | IPv6 | IPv6 BGP, no MP-BGP |
-| `IPV4_IPV6` (dual stack) | IPv4, IPv6 | IPv4 BGP with or without MP-BGP; IPv6 BGP with or without MP-BGP; both IPv4 BGP and IPv6 BGP, no MP-BGP |
+| `IPV4_ONLY` (default) | IPv4 BGP, no MP-BGP | IPv4 |
+| `IPV6_ONLY` | IPv6 BGP, no MP-BGP | IPv6 |
+| `IPV4_IPV6` (dual stack) | IPv4 BGP with or without MP-BGP; IPv6 BGP with or without MP-BGP; both IPv4 BGP and IPv6 BGP, no MP-BGP | IPv4 or IPv6 (chosen with `--gateway-ip-version`) |
 
 ### Specifications and limits
 
@@ -73,6 +75,7 @@ The tunnel API resource and tunnel configuration are the same for both types.
 - Maintenance can happen at any time without notice; tunnels normally stay online, and rarely drop briefly and re-establish automatically.
 - Classic VPN: single interface, single external IP, static routing only, 99.9% SLA, no IPv6. See [classic-vpn-deprecation.md](./classic-vpn-deprecation.md) for the BGP deprecation.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/vpn-gateways/create (gcloud 593.0.0 help).
+- Clarified from the official docs: the source tables list "Supported gateway external IP addresses" per stack type ("IPv4, IPv6" for `IPV4_IPV6`). The gcloud 593.0.0 help for `gcloud compute vpn-gateways create` describes `--stack-type` as "The stack type of the protocol(s) enabled on this VPN gateway" and `--gateway-ip-version` as "IP version of the HA VPN gateway. You must specify either IPv4 or IPv6. If you do not specify this field, every HA VPN gateway interface will be configured with an IPv4 address", so a dual-stack gateway still has IPv4 interface addresses unless `--gateway-ip-version=IPV6` is set.
 - Source: https://docs.cloud.google.com/network-connectivity/docs/vpn/concepts/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
