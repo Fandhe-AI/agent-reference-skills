@@ -1,0 +1,177 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/update-access-config
+---
+
+# gcloud compute instances update-access-config
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute instances update-access-config
+
+```text
+NAME
+    gcloud compute instances update-access-config - update a Compute Engine
+        virtual machine access configuration
+
+SYNOPSIS
+    gcloud compute instances update-access-config INSTANCE_NAME
+        [--network-interface=NETWORK_INTERFACE; default="nic0"] [--zone=ZONE]
+        [--no-ipv6-public-ptr
+          | --ipv6-public-ptr-domain=IPV6_PUBLIC_PTR_DOMAIN]
+        [--public-ptr | --no-public-ptr]
+        [--public-ptr-domain=PUBLIC_PTR_DOMAIN | --no-public-ptr-domain]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instances update-access-config is used to update access
+    configurations for network interfaces of Compute Engine virtual machines.
+    IPv4 and IPv6 access configurations cannot be updated together.
+
+EXAMPLES
+    To update public PTR record in IPv4 access config in network interface
+    'nic0' of an instance, run:
+
+        $ gcloud compute instances update-access-config example-instance \
+            --network-interface=nic0 --zone=us-central1-b --public-ptr \
+            --public-ptr-domain=exampledomain.com.
+
+    To update public PTR record in IPv6 access config in default network
+    interface 'nic0' of an instance, run:
+
+        $ gcloud compute instances update-access-config example-instance \
+            --zone=us-central1-b --ipv6-public-ptr-domain=exampledomain.com.
+
+POSITIONAL ARGUMENTS
+     INSTANCE_NAME
+        Name of the instance to operate on. For details on valid instance
+        names, refer to the criteria documented under the field 'name' at:
+        https://cloud.google.com/compute/docs/reference/rest/v1/instances
+
+FLAGS
+     --network-interface=NETWORK_INTERFACE; default="nic0"
+        Specifies the name of the network interface which contains the access
+        configuration. If this is not provided, then "nic0" is used as the
+        default.
+
+     --zone=ZONE
+        Zone of the instance to operate on. If not specified, you might be
+        prompted to select a zone (interactive mode only). gcloud attempts to
+        identify the appropriate zone by searching for resources in your
+        currently active project. If the zone cannot be determined, gcloud
+        prompts you for a selection with all available Google Cloud Platform
+        zones.
+
+        To avoid prompting when this flag is omitted, the user can set the
+        compute/zone property:
+
+            $ gcloud config set compute/zone ZONE
+
+        A list of zones can be fetched by running:
+
+            $ gcloud compute zones list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/zone
+
+        Alternatively, the zone can be stored in the environment variable
+        CLOUDSDK_COMPUTE_ZONE.
+
+     At most one of these can be specified:
+
+       --no-ipv6-public-ptr
+          If provided, the default DNS PTR record will replace the existing one
+          for external IPv6 in the IPv6 access configuration. Mutually
+          exclusive with ipv6-public-ptr-domain.
+
+       --ipv6-public-ptr-domain=IPV6_PUBLIC_PTR_DOMAIN
+          Assigns a custom PTR domain for the external IPv6 in the access
+          configuration. Mutually exclusive with no-ipv6-public-ptr. This
+          option can only be specified for the default network interface, nic0.
+
+     At most one of these can be specified:
+
+       --public-ptr
+          Creates a DNS PTR record for the external IP in the access
+          configuration. This option can only be specified for the default
+          network-interface, "nic0".
+
+       --no-public-ptr
+          If provided, no DNS PTR record is created for the external IP in the
+          access configuration. Mutually exclusive with public-ptr-domain.
+
+     At most one of these can be specified:
+
+       --public-ptr-domain=PUBLIC_PTR_DOMAIN
+          Assigns a custom PTR domain for the external IP in the access
+          configuration. Mutually exclusive with no-public-ptr. This option can
+          only be specified for the default network-interface, "nic0".
+
+       --no-public-ptr-domain
+          If both this flag and --public-ptr are specified, creates a DNS PTR
+          record for the external IP in the access configuration with the PTR
+          domain name being the DNS name of the instance.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instances update-access-config
+
+        $ gcloud beta compute instances update-access-config
+```
+
+### gcloud beta compute instances update-access-config
+
+```text
+NAME
+    gcloud beta compute instances update-access-config - update a Compute
+        Engine virtual machine access configuration
+
+SYNOPSIS
+    gcloud beta compute instances update-access-config INSTANCE_NAME
+        [--network-interface=NETWORK_INTERFACE; default="nic0"] [--zone=ZONE]
+        [--no-ipv6-public-ptr
+          | --ipv6-public-ptr-domain=IPV6_PUBLIC_PTR_DOMAIN]
+        [--public-ptr | --no-public-ptr]
+        [--public-ptr-domain=PUBLIC_PTR_DOMAIN | --no-public-ptr-domain]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instances update-access-config
+
+```text
+NAME
+    gcloud alpha compute instances update-access-config - update a Compute
+        Engine virtual machine access configuration
+
+SYNOPSIS
+    gcloud alpha compute instances update-access-config INSTANCE_NAME
+        [--network-interface=NETWORK_INTERFACE; default="nic0"]
+        [--network-tier=NETWORK_TIER] [--zone=ZONE]
+        [--no-ipv6-public-ptr
+          | --ipv6-public-ptr-domain=IPV6_PUBLIC_PTR_DOMAIN]
+        [--public-dns | --no-public-dns] [--public-ptr | --no-public-ptr]
+        [--public-ptr-domain=PUBLIC_PTR_DOMAIN | --no-public-ptr-domain]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/update-access-config (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

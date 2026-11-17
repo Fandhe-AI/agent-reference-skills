@@ -1,0 +1,345 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/update
+---
+
+# gcloud compute instances update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute instances update
+
+```text
+NAME
+    gcloud compute instances update - update a Compute Engine virtual machine
+
+SYNOPSIS
+    gcloud compute instances update INSTANCE_NAME [--[no-]deletion-protection]
+        [--[no-]enable-display-device] [--[no-]expose-host-topology]
+        [--[no-]graceful-shutdown]
+        [--graceful-shutdown-max-duration=GRACEFUL_SHUTDOWN_MAX_DURATION]
+        [--identity=IDENTITY] [--[no-]identity-certificate]
+        [--identity-type=IDENTITY_TYPE] [--min-cpu-platform=PLATFORM]
+        [--most-disruptive-allowed-action=MOST_DISRUPTIVE_ALLOWED_ACTION]
+        [--[no-]shielded-integrity-monitoring]
+        [--shielded-learn-integrity-policy] [--[no-]shielded-secure-boot]
+        [--[no-]shielded-vtpm] [--update-labels=[KEY=VALUE,...]] [--zone=ZONE]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--clear-node-affinities | --node=NODE
+          | --node-affinity-file=PATH_TO_FILE | --node-group=NODE_GROUP]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instances update updates labels and requested CPU Platform
+    for a Compute Engine virtual machine.
+
+EXAMPLES
+    To modify the instance 'example-instance' in 'us-central1-a' by adding
+    labels 'k0', with value 'value1' and label 'k1' with value 'value2' and
+    removing labels with key 'k3', run:
+
+        $ gcloud compute instances update example-instance \
+            --zone=us-central1-a --update-labels=k0=value1,k1=value2 \
+            --remove-labels=k3
+
+    Labels can be used to identify the instance. To list instances with the
+    'k1:value2' label, run:
+
+        $ gcloud compute instances list --filter='labels.k1:value2'
+
+    To list only the labels when describing a resource, use --format to filter
+    the result:
+
+        $ gcloud compute instances describe example-instance \
+            --format="default(labels)"
+
+POSITIONAL ARGUMENTS
+     INSTANCE_NAME
+        Name of the instance to update. For details on valid instance names,
+        refer to the criteria documented under the field 'name' at:
+        https://cloud.google.com/compute/docs/reference/rest/v1/instances
+
+FLAGS
+     --[no-]deletion-protection
+        Enables deletion protection for the instance. Use --deletion-protection
+        to enable and --no-deletion-protection to disable.
+
+     --[no-]enable-display-device
+        Enable a display device on VM instances. Use --enable-display-device to
+        enable and --no-enable-display-device to disable.
+
+     --[no-]expose-host-topology
+        If true, exposes the hashed physical host ID in the VM's
+        ResourceStatus. Use --expose-host-topology to enable and
+        --no-expose-host-topology to disable.
+
+     --[no-]graceful-shutdown
+        Enables or disables graceful shutdown for the instance. Use
+        --graceful-shutdown to enable and --no-graceful-shutdown to disable.
+
+     --graceful-shutdown-max-duration=GRACEFUL_SHUTDOWN_MAX_DURATION
+        Specifies the maximum time for the graceful shutdown. After this time,
+        the instance is set to STOPPING even if tasks are still running.
+        Specify the time as the number of hours, minutes, or seconds followed
+        by h, m, and s respectively. For example, specify 30m for 30 minutes or
+        20m10s for 20 minutes and 10 seconds. The value must be between 1
+        second and 1 hour.
+
+     --identity=IDENTITY
+        The workload identity to use for the instance.
+
+     --[no-]identity-certificate
+        Enables or disables managed workload identity certificates on a VM. Use
+        --identity-certificate to enable and --no-identity-certificate to
+        disable.
+
+     --identity-type=IDENTITY_TYPE
+        Configures the identity type to use for the instance. IDENTITY_TYPE
+        must be one of:
+
+         AGENT_IDENTITY
+            Use an agent identity.
+         IDENTITY_TYPE_UNSPECIFIED
+            Use an unspecified identity type.
+         SERVICE_ACCOUNT
+            Use a service account.
+
+     --min-cpu-platform=PLATFORM
+        When specified, the VM will be scheduled on host with specified CPU
+        architecture or a newer one. To list available CPU platforms in given
+        zone, run:
+
+            $ gcloud compute zones describe ZONE \
+              --format="value(availableCpuPlatforms)"
+
+        Default setting is "AUTOMATIC".
+
+        CPU platform selection is available only in selected zones.
+
+        You can find more information on-line:
+        https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform
+
+     --most-disruptive-allowed-action=MOST_DISRUPTIVE_ALLOWED_ACTION
+        If specified, Compute Engine returns an error if the update requires a
+        higher action to be applied to the instance. If not specified, the
+        default will be REFRESH. MOST_DISRUPTIVE_ALLOWED_ACTION must be one of:
+        NO_EFFECT, REFRESH, RESTART.
+
+     --[no-]shielded-integrity-monitoring
+        Enables monitoring and attestation of the boot integrity of the
+        instance. The attestation is performed against the integrity policy
+        baseline. This baseline is initially derived from the implicitly
+        trusted boot image when the instance is created. This baseline can be
+        updated by using gcloud compute instances update
+        --shielded-learn-integrity-policy. On Shielded VM instances, integrity
+        monitoring is enabled by default. For information about how to modify
+        Shielded VM options, see
+        https://cloud.google.com/compute/docs/instances/modifying-shielded-vm.
+        For information about monitoring integrity on Shielded VM instances,
+        see
+        https://cloud.google.com/compute/docs/instances/integrity-monitoring."
+        Changes to this setting with the update command only take effect after
+        stopping and starting the instance. Use --shielded-integrity-monitoring
+        to enable and --no-shielded-integrity-monitoring to disable.
+
+     --shielded-learn-integrity-policy
+        Causes the instance to re-learn the integrity policy baseline using the
+        current instance configuration. Use this flag after any planned
+        boot-specific changes in the instance configuration, like kernel
+        updates or kernel driver installation.
+
+     --[no-]shielded-secure-boot
+        The instance boots with secure boot enabled. On Shielded VM instances,
+        Secure Boot is not enabled by default. For information about how to
+        modify Shielded VM options, see
+        https://cloud.google.com/compute/docs/instances/modifying-shielded-vm.
+        Changes to this setting with the update command only take effect after
+        stopping and starting the instance. Use --shielded-secure-boot to
+        enable and --no-shielded-secure-boot to disable.
+
+     --[no-]shielded-vtpm
+        The instance boots with the TPM (Trusted Platform Module) enabled. A
+        TPM is a hardware module that can be used for different security
+        operations such as remote attestation, encryption, and sealing of keys.
+        On Shielded VM instances, vTPM is enabled by default. For information
+        about how to modify Shielded VM options, see
+        https://cloud.google.com/compute/docs/instances/modifying-shielded-vm.
+        Changes to this setting with the update command only take effect after
+        stopping and starting the instance. Use --shielded-vtpm to enable and
+        --no-shielded-vtpm to disable.
+
+     --update-labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to update. If a label exists, its value
+        is modified. Otherwise, a new label is created.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     --zone=ZONE
+        Zone of the instance to update. If not specified, you might be prompted
+        to select a zone (interactive mode only). gcloud attempts to identify
+        the appropriate zone by searching for resources in your currently
+        active project. If the zone cannot be determined, gcloud prompts you
+        for a selection with all available Google Cloud Platform zones.
+
+        To avoid prompting when this flag is omitted, the user can set the
+        compute/zone property:
+
+            $ gcloud config set compute/zone ZONE
+
+        A list of zones can be fetched by running:
+
+            $ gcloud compute zones list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/zone
+
+        Alternatively, the zone can be stored in the environment variable
+        CLOUDSDK_COMPUTE_ZONE.
+
+     At most one of these can be specified:
+
+       --clear-labels
+          Remove all labels. If --update-labels is also specified then
+          --clear-labels is applied first.
+
+          For example, to remove all labels:
+
+              $ gcloud compute instances update --clear-labels
+
+          To remove all existing labels and create two new labels, foo and baz:
+
+              $ gcloud compute instances update --clear-labels \
+                --update-labels foo=bar,baz=qux
+
+       --remove-labels=[KEY,...]
+          List of label keys to remove. If a label does not exist it is
+          silently ignored. If --update-labels is also specified then
+          --update-labels is applied first.
+
+     Sole Tenancy.
+
+     At most one of these can be specified:
+
+       --clear-node-affinities
+          Removes the node affinities field from the instance. If specified,
+          the instance node settings will be cleared. The instance will not be
+          scheduled onto a sole-tenant node.
+
+       --node=NODE
+          The name of the node to schedule this instance on.
+
+       --node-affinity-file=PATH_TO_FILE
+          The JSON/YAML file containing the configuration of desired nodes onto
+          which this instance could be scheduled. These rules filter the nodes
+          according to their node affinity labels. A node's affinity labels
+          come from the node template of the group the node is in.
+
+          The file should contain a list of a JSON/YAML objects. For an
+          example, see
+          https://cloud.google.com/compute/docs/nodes/provisioning-sole-tenant-vms#configure_node_affinity_labels.
+          The following list describes the fields:
+
+           key
+              Corresponds to the node affinity label keys of the Node resource.
+           operator
+              Specifies the node selection type. Must be one of: IN: Requires
+              Compute Engine to seek for matched nodes. NOT_IN: Requires
+              Compute Engine to avoid certain nodes.
+           values
+              Optional. A list of values which correspond to the node affinity
+              label values of the Node resource.
+
+              Use a full or relative path to a local file containing the value
+              of node_affinity_file.
+
+       --node-group=NODE_GROUP
+          The name of the node group to schedule this instance on.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instances update
+
+        $ gcloud beta compute instances update
+```
+
+### gcloud beta compute instances update
+
+```text
+NAME
+    gcloud beta compute instances update - update a Compute Engine virtual
+        machine
+
+SYNOPSIS
+    gcloud beta compute instances update INSTANCE_NAME
+        [--[no-]deletion-protection] [--[no-]enable-display-device]
+        [--[no-]expose-host-topology] [--[no-]graceful-shutdown]
+        [--graceful-shutdown-max-duration=GRACEFUL_SHUTDOWN_MAX_DURATION]
+        [--identity=IDENTITY] [--[no-]identity-certificate]
+        [--identity-type=IDENTITY_TYPE] [--min-cpu-platform=PLATFORM]
+        [--most-disruptive-allowed-action=MOST_DISRUPTIVE_ALLOWED_ACTION]
+        [--partner-metadata=[NAMESPACE/KEY=VALUE,...]]
+        [--partner-metadata-from-file=LOCAL_FILE_PATH]
+        [--[no-]shielded-integrity-monitoring]
+        [--shielded-learn-integrity-policy] [--[no-]shielded-secure-boot]
+        [--[no-]shielded-vtpm] [--update-labels=[KEY=VALUE,...]] [--zone=ZONE]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--clear-node-affinities | --node=NODE
+          | --node-affinity-file=PATH_TO_FILE | --node-group=NODE_GROUP]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instances update
+
+```text
+NAME
+    gcloud alpha compute instances update - update a Compute Engine virtual
+        machine
+
+SYNOPSIS
+    gcloud alpha compute instances update INSTANCE_NAME
+        [--[no-]deletion-protection] [--[no-]enable-display-device]
+        [--[no-]expose-host-topology] [--[no-]graceful-shutdown]
+        [--graceful-shutdown-max-duration=GRACEFUL_SHUTDOWN_MAX_DURATION]
+        [--identity=IDENTITY] [--[no-]identity-certificate]
+        [--identity-type=IDENTITY_TYPE] [--min-cpu-platform=PLATFORM]
+        [--minimal-action=MINIMAL_ACTION]
+        [--most-disruptive-allowed-action=MOST_DISRUPTIVE_ALLOWED_ACTION]
+        [--partner-metadata=[NAMESPACE/KEY=VALUE,...]]
+        [--partner-metadata-from-file=LOCAL_FILE_PATH]
+        [--[no-]shielded-integrity-monitoring]
+        [--shielded-learn-integrity-policy] [--[no-]shielded-secure-boot]
+        [--[no-]shielded-vtpm] [--update-labels=[KEY=VALUE,...]] [--zone=ZONE]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--clear-management-interfaces
+          | --management-interface=[ipv4-address=IPV4-ADDRESS],
+          [ipv6-address=IPV6-ADDRESS],[key=KEY],[network=NETWORK],
+          [subnetwork=SUBNETWORK],[trust-config=TRUST-CONFIG],[type=TYPE]]
+        [--clear-node-affinities | --node=NODE
+          | --node-affinity-file=PATH_TO_FILE | --node-group=NODE_GROUP]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
