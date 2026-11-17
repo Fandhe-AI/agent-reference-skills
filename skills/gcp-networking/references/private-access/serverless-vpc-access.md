@@ -82,7 +82,7 @@ IPv6 traffic is not supported.
 
 ## Notes
 
-- Requests to external IP addresses still travel through the internet and don't use the connector. Serverless VPC Access sends internal traffic back to the serverless environment only as a response to a request sent through the connector. To reach resources across multiple VPC networks and projects, also configure Shared VPC or VPC Network Peering.
+- The source's example says requests to external IP addresses still travel through the internet and don't use the connector; this holds when only requests to private IPs are routed through the connector. When the serverless resource routes all traffic through the connector (Cloud Run `--vpc-egress=all-traffic`), requests to external IP addresses also go through the connector (see the protocol table and the Clarified line below). Serverless VPC Access sends internal traffic back to the serverless environment only as a response to a request sent through the connector. To reach resources across multiple VPC networks and projects, also configure Shared VPC or VPC Network Peering.
 - Maintenance: Google replaces instances (host migrations, security updates to the base image, restart once every two weeks). A replaced instance stops accepting new requests one minute before shutdown. If an organization policy such as `constraints/compute.trustedImageProjects` blocks images from the `serverless-vpc-access-images` project, replacements fail and the instance count can fall to zero. Use connection pools rather than connections lasting over one minute; a connector may temporarily exceed its maximum instance count.
 - Throughput chart in Cloud Monitoring (Connector details page) is Preview, under Pre-GA terms.
 - Cross-region resources incur outbound data transfer costs. Pricing is on the VPC pricing page (not copied).
@@ -91,6 +91,7 @@ IPv6 traffic is not supported.
 - This page is conceptual; connector creation steps are on the official page Configure Serverless VPC Access (https://docs.cloud.google.com/vpc/docs/configure-serverless-vpc-access). The only code block in the source is the `locations list` command.
 - The hidden connector firewall rules use priority 100 (and 1000 for the two traffic-from-connector rules); the source tells you to use a priority higher than 100 for rules you add.
 - Source inconsistency: the source says rules you add "must use a priority higher than 100" while the hidden connector rules use priority 100 and 1000; it does not say whether "higher" is meant numerically (greater than 100) or as precedence (a lower number). Check the effective rule order on the connector's network before relying on either reading.
+- Clarified from the official docs: the overview says "Requests sent to external IP addresses still travel through the internet and don't use the Serverless VPC Access connector", while the protocol table on the same page has the column "Route all traffic through the connector", and the gcloud 593.0.0 help for `gcloud run deploy` says `--vpc-egress=all-traffic` "Sends all outbound traffic through Direct VPC egress or the VPC connector".
 - Source: https://docs.cloud.google.com/vpc/docs/serverless-vpc-access (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

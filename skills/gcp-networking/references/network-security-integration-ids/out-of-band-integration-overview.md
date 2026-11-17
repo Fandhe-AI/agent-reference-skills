@@ -31,7 +31,7 @@ gcloud network-security mirroring-endpoint-groups create \
 
 | Side | Component | Description |
 |------|-----------|-------------|
-| Producer | Collector instances behind an internal passthrough Network Load Balancer | The forwarding rule must be configured for Packet Mirroring (`--is_mirroring_collector`); non-mirrored traffic sent to it is dropped. |
+| Producer | Collector instances behind an internal passthrough Network Load Balancer | The forwarding rule must be configured for Packet Mirroring (`--is-mirroring-collector`); non-mirrored traffic sent to it is dropped. |
 | Producer | Mirroring deployment | Zonal; points to the forwarding rule. Collector instances can be anywhere in the region. |
 | Producer | Mirroring deployment group | Groups deployments across locations in a project. |
 | Consumer | Mirroring endpoint group | Project-level; corresponds to a producer's deployment group. Mode is direct (default) or broker (Preview). |
@@ -85,6 +85,7 @@ NSI Packet Mirroring takes precedence at the workload level: the data plane disr
 - Firewall Rules Logging doesn't log mirrored packets. To mirror traffic between Pods on the same GKE node, enable intranode visibility.
 - Mirrored traffic contains full payloads; restrict access to collectors and to the roles above.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-security/mirroring-endpoint-groups/create (gcloud 593.0.0 help). The source page itself has no code.
+- Corrected from the official docs: the source writes the flag as `--is_mirroring_collector`; the gcloud 593.0.0 help for `gcloud compute forwarding-rules create` lists it as `--is-mirroring-collector` ("If set, this forwarding rule can be used as a collector for packet mirroring. This can only be specified for forwarding rules with the LOAD_BALANCING_SCHEME set to INTERNAL").
 - Source: https://docs.cloud.google.com/network-security-integration/docs/out-of-band/out-of-band-integration-overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -48,13 +48,15 @@ spec:
 
 Verify with a test Pod, then read its IP address (it must fall inside the isolated range):
 
+Adapted (not in the official docs): the Pod's `network` is `my-network`, the name of the Network resource above; the source's test Pod refers to `test-network-vlan561`, which is the name used only in the source's later sample output.
+
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
   name: island-pod-tester
   annotations:
-    networking.gke.io/interfaces: '[{"interfaceName":"eth1","network":"test-network-vlan561"}]'
+    networking.gke.io/interfaces: '[{"interfaceName":"eth1","network":"my-network"}]'
     networking.gke.io/default-interface: "eth1"
 spec:
   containers:
@@ -155,6 +157,7 @@ The isolated range must not collide with: the primary VLAN CIDR of any network i
 - `ClusterDNS`: the Google Distributed Cloud `ClusterDNS` resource configures upstream name servers for specific domains through `spec.domains`.
 - Command-line forms for creating networks and subnetworks, and the cluster `--external-lb-address-pools` flag, are on the networks, subnetworks and clusters pages of this category. The source also shows a Console form for enabling the API.
 - Source inconsistency: the address pool field `addresses` is described as "a list of IPv4 addresses, address ranges, and subnetworks", but the example payload in the same page uses IPv6 ranges (`fd12::4:101-fd12::4:110`). The clusters page of this category also describes `IPV4_DATA_PLANE_ADDRESSES` as IPv4 only; confirm the supported address family before using IPv6 ranges.
+- Corrected from the official docs: the source creates the island-mode Network as `metadata.name: my-network` but its test Pod annotation uses `"network":"test-network-vlan561"` (the name in the later `kubectl get` sample output), so applying the two examples in order would not attach the Pod to the created network; the Pod here uses `my-network`.
 - Source: https://docs.cloud.google.com/distributed-cloud/connected/latest/docs/networking (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

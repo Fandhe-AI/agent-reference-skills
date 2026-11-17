@@ -54,7 +54,7 @@ All backing resources of site-to-site spokes connected to one hub must be in the
 ### Support for other products
 
 - VPC spokes can export local subnet routes, import subnet routes from other VPC spokes and import dynamic routes from hybrid spokes. They do not export policy-based routes, peering subnet routes, static routes or dynamic routes.
-- Shared VPC networks can be VPC spokes; the hub can be in any project. Recommended role for service project administrators: `networkconnectivity.googleapis.com/spokeAdmin`. Private Service Connect global Google API endpoints in an attached Shared VPC host or service project are propagated (Preview).
+- Shared VPC networks can be VPC spokes; the hub can be in any project. Recommended role for service project administrators: Spoke Admin (`roles/networkconnectivity.spokeAdmin`). Private Service Connect global Google API endpoints in an attached Shared VPC host or service project are propagated (Preview).
 - Spoke resources can't be part of a legacy network. Classic VPN tunnels aren't supported.
 
 ## Notes
@@ -62,6 +62,7 @@ All backing resources of site-to-site spokes connected to one hub must be in the
 - Adding a VLAN attachment or Cloud VPN tunnel to a hybrid spoke with site-to-site data transfer enabled makes NCC update its BGP session to re-advertise prefixes learned by the other such spokes of the hub.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-connectivity/hubs/list-spokes (gcloud 593.0.0 help).
 - Pricing and SLA are on the NCC pricing and SLA pages (not copied).
+- Corrected from the official docs: the source writes the role as `networkconnectivity.googleapis.com/spokeAdmin`, which is not an IAM role ID; the IAM roles reference (https://docs.cloud.google.com/iam/docs/roles-permissions/networkconnectivity, retrieved 2026-11-17) lists it as `roles/networkconnectivity.spokeAdmin`.
 - Source: https://docs.cloud.google.com/network-connectivity/docs/network-connectivity-center/concepts/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
