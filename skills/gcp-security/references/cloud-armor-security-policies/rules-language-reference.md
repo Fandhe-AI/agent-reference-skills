@@ -70,8 +70,10 @@ gcloud compute security-policies list-preconfigured-expression-sets
 
 When you use `startsWith`, `endsWith`, or `contains` on `request.path`, normalize with `lower` and `urlDecode`. This blocks `/admin`, `/Admin`, `/a%64min`, and other variations:
 
+Adapted (not in the official docs): `urlDecode()` is applied before `lower()`.
+
 ```text
-request.path.lower().urlDecode().startsWith('/admin')
+request.path.urlDecode().lower().startsWith('/admin')
 ```
 
 When you use `matches` on `request.path`, account for the backslash character:
@@ -220,6 +222,7 @@ evaluatePreconfiguredWaf('xss-v422-stable', {'opt_out_rule_ids': ['owasp-crs-v04
 - The full flag list for `gcloud compute security-policies rules` is in the `gcp-compute` skill (https://docs.cloud.google.com/sdk/gcloud/reference/compute/security-policies/rules/create). Updating, atomically updating, and deleting rules are on https://docs.cloud.google.com/armor/docs/manage-security-policy-rules.
 - Corrected from the official docs: the excluded-path example used `startswith`, which is not a CEL method; the CEL method listed in the Operations table is `startsWith`.
 - Corrected from the official docs: the domain-and-subdomain regular expression used `\.` inside an ordinary CEL string literal, which is not a valid CEL escape sequence; the backslashes are doubled (`\\.`) so the expression matches a literal dot.
+- Corrected from the official docs: the source applies `lower()` before `urlDecode()`, so a percent-encoded uppercase letter (`/%41dmin` decodes to `/Admin`) is not lowercased and bypasses `startsWith('/admin')`. Decoding first and then lowercasing closes that gap. Normalize the same way the backend does: if the backend decodes paths more than once or treats other characters as equivalent, the rule must account for that too.
 - Source: https://docs.cloud.google.com/armor/docs/create-security-policy-rules (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -103,7 +103,19 @@ gcloud beyondcorp security-gateways applications add-iam-policy-binding APPLICAT
     --member=MEMBER
 ```
 
-Conditional binding (grants access only if the access level is satisfied):
+Conditional binding (grants access only if the access level is satisfied). The unconditional application binding above and this conditional binding are alternatives: `add-iam-policy-binding` does not replace an existing unconditional binding, so if both exist for the same member and role, the member has access without satisfying the access level. If you already added the unconditional binding, remove it first.
+
+Adapted (not in the official docs): removal of the unconditional binding, using `--condition=None` from the `remove-iam-policy-binding` help (gcloud 593.0.0).
+
+```bash
+gcloud beyondcorp security-gateways applications remove-iam-policy-binding APPLICATION_ID \
+    --security-gateway=SECURITY_GATEWAY_ID \
+    --project=PROJECT_ID \
+    --location=global \
+    --role="roles/beyondcorp.sgApplicationUser" \
+    --member=MEMBER \
+    --condition=None
+```
 
 ```bash
 gcloud beyondcorp security-gateways applications add-iam-policy-binding APPLICATION_ID \
@@ -237,6 +249,7 @@ gcloud beyondcorp security-gateways update SECURITY_GATEWAY_ID \
 - Managed-profile condition requires the Endpoint Verification extension (https://docs.cloud.google.com/endpoint-verification/docs/deploying-with-admin-console); attributes: https://docs.cloud.google.com/access-context-manager/docs/browser-attributes.
 - End users get `Access denied` when the authorization policy rejects the browser request. The extension must be installed for traffic to reach the gateway.
 - Dropped to fit: Console steps, all REST forms (gateway create, `describe`, application create with `application.json`, the `getIamPolicy` / `setIamPolicy` policy files including the conditional policy, and the legacy / transition calls), `remove-iam-policy-binding` commands, and the second extension-policy JSON for legacy setups (identical to the one above without the `serviceDiscovery` block). See the `gcp-networking` skill for Cloud VPN / Interconnect / Cloud DNS, and the `gcp-foundation` skill for IAM.
+- Adapted from the official docs: the source lists the unconditional and the conditional `sgApplicationUser` bindings one after the other. IAM grants access if any binding matches, so keeping the unconditional binding defeats the access-level condition; the page states that the two are alternatives and adds the removal command (`--condition=None` removes the binding without a condition, per the gcloud help).
 - Source: https://docs.cloud.google.com/chrome-enterprise-premium/docs/security-gateway-private-web-apps (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

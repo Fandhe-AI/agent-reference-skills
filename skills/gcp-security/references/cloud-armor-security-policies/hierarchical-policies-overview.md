@@ -45,8 +45,8 @@ gcloud compute org-security-policies associations create \
 |---|---|---|
 | Organization | `--organization` | Default type; broad IAM permissions; applies to all nodes under the organization |
 | Folder | `--folder` | Same rules across multiple projects but not the whole organization |
-| Project | `--project` | Same rules across all resources in a project (for example an IP denylist across several backend services) |
-| Service-level | `--project-number` | Unique rules per service; applies only to the backend service it is attached to |
+| Project | `--project-number` | Same rules across all resources in a project (for example an IP denylist across several backend services) |
+| Service-level | none (not an association) | Unique rules per service: a regular security policy attached to a backend service with `gcloud compute backend-services update --security-policy` (see `configure-security-policies.md`) |
 
 ### Evaluation order
 
@@ -71,7 +71,7 @@ gcloud compute org-security-policies associations create \
   - A project excluded after auto-enrollment is not automatically unenrolled; you cannot remove a project from Cloud Armor Enterprise while it has inherited hierarchical policies.
   - Auto-enrollment can take up to the next business day; during that time policies are effective and no Enterprise costs are incurred. Projects are auto-enrolled only when at least one backend service for global external load balancers uses HTTP, HTTPS, HTTP2, H2C, or GRPC.
 - Limitations: not available for projects outside an organization; for new or recently restored projects, or projects that recently enabled the Compute Engine API, propagation can take a few hours; owners of inheriting services cannot tune preconfigured WAF rules (only the policy owner can); the console **Edit** and **Delete** buttons may appear active with view-only permission and then return a permission error.
-- Source inconsistency: the source names `--project` for project-level association and `--project-number` for service-level policies. In the gcloud 593.0.0 help of `gcloud compute org-security-policies associations create`, `--project-number` is "Project number to associate the security policy with" and `--project` exists only as the gcloud-wide flag.
+- Corrected from the official docs: the source names `--project` for project-level association and `--project-number` for service-level policies; the table uses `--project-number` for project-level association, and service-level policies are regular security policies attached to backend services rather than hierarchical associations. In the gcloud 593.0.0 help of `gcloud compute org-security-policies associations create`, `--project-number` is "Project number to associate the security policy with" and `--project` exists only as the gcloud-wide flag.
 - The help of `associations create` also states: "This command has billing implications. Projects in the hierarchy with effective hierarchical security policies will be automatically enrolled into Cloud Armor Enterprise if not already enrolled."
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/org-security-policies/associations/create (gcloud 593.0.0 help). The full flag list is in the `gcp-compute` skill.
 - Source: https://docs.cloud.google.com/armor/docs/hierarchical-policies-overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
