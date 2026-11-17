@@ -69,9 +69,11 @@ globalPolicyEvaluationMode: DISABLE
 
 Export the system policy of a specific region:
 
+Adapted (not in the official docs): the output goes to `/tmp/system-policy.yaml` instead of `/tmp/policy.yaml`, so it does not overwrite the project policy file exported above and imported below.
+
 ```bash
 gcloud alpha container binauthz policy export-system-policy \
-  --location=REGION > /tmp/policy.yaml
+  --location=REGION > /tmp/system-policy.yaml
 ```
 
 ### Cluster-specific rules (optional; GKE and Distributed Cloud)
@@ -178,6 +180,7 @@ gcloud container binauthz policy import /tmp/policy.yaml
 - `/tmp/policy.yaml` is a shared temporary path in the source example; use a protected directory if the policy names internal attestors.
 - The source also shows Console and REST API alternatives.
 - The full `gcloud container binauthz` flag list is in the `gcp-gke` skill.
+- Adapted from the official docs: the source writes the regional system policy to `/tmp/policy.yaml`, the same file it uses for the exported project policy and for `policy import`. Running the steps in order would replace your edited project policy with the read-only system policy, so the system policy goes to `/tmp/system-policy.yaml` here; it is for reference only and is not imported.
 - Source: https://docs.cloud.google.com/binary-authorization/docs/configuring-policy-cli (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
