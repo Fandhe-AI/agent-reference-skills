@@ -1,0 +1,1523 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instance-templates
+---
+
+# gcloud compute instance-templates (part 3/4)
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute instance-templates create-with-container
+
+```text
+NAME
+    gcloud compute instance-templates create-with-container - creates a Compute
+        Engine a virtual machine instance template that runs a Docker container
+
+SYNOPSIS
+    gcloud compute instance-templates create-with-container NAME
+        [--no-boot-disk-auto-delete]
+        [--boot-disk-device-name=BOOT_DISK_DEVICE_NAME]
+        [--boot-disk-interface=BOOT_DISK_INTERFACE]
+        [--boot-disk-provisioned-iops=BOOT_DISK_PROVISIONED_IOPS]
+        [--boot-disk-provisioned-throughput=BOOT_DISK_PROVISIONED_THROUGHPUT]
+        [--boot-disk-size=BOOT_DISK_SIZE] [--boot-disk-type=BOOT_DISK_TYPE]
+        [--can-ip-forward] [--container-arg=CONTAINER_ARG]
+        [--container-command=CONTAINER_COMMAND]
+        [--container-env=[KEY=VALUE, ...,...]]
+        [--container-env-file=CONTAINER_ENV_FILE]
+        [--container-image=CONTAINER_IMAGE]
+        [--container-mount-disk=[mode=MODE],
+          [mount-path=MOUNT-PATH],[name=NAME],[partition=PARTITION]]
+        [--container-mount-host-path=[host-path=HOSTPATH,
+          mount-path=MOUNTPATH[,mode=MODE],...]]
+        [--container-mount-tmpfs=[mount-path=MOUNTPATH,...]]
+        [--container-privileged]
+        [--container-restart-policy=POLICY; default="always"]
+        [--container-stdin] [--container-tty]
+        [--create-disk=[PROPERTY=VALUE,...]] [--description=DESCRIPTION]
+        [--disk=[auto-delete=AUTO-DELETE],[boot=BOOT],[device-name=DEVICE-NAME],
+          [interface=INTERFACE],[mode=MODE],[name=NAME]]
+        [--external-ipv6-address=EXTERNAL_IPV6_ADDRESS]
+        [--external-ipv6-prefix-length=EXTERNAL_IPV6_PREFIX_LENGTH]
+        [--identity=IDENTITY] [--[no-]identity-certificate]
+        [--identity-type=IDENTITY_TYPE]
+        [--internal-ipv6-address=INTERNAL_IPV6_ADDRESS]
+        [--internal-ipv6-prefix-length=INTERNAL_IPV6_PREFIX_LENGTH]
+        [--ipv6-network-tier=IPV6_NETWORK_TIER] [--labels=[KEY=VALUE,...]]
+        [--machine-type=MACHINE_TYPE] [--maintenance-policy=MAINTENANCE_POLICY]
+        [--metadata=KEY=VALUE,[KEY=VALUE,...]]
+        [--metadata-from-file=KEY=LOCAL_FILE_PATH,[...]]
+        [--min-cpu-platform=PLATFORM] [--network=NETWORK]
+        [--network-interface=[PROPERTY=VALUE,...]]
+        [--network-tier=NETWORK_TIER] [--preemptible]
+        [--private-ipv6-google-access-type=PRIVATE_IPV6_GOOGLE_ACCESS_TYPE]
+        [--private-network-ip=PRIVATE_NETWORK_IP]
+        [--provisioning-model=PROVISIONING_MODEL] [--region=REGION]
+        [--resource-policies=[RESOURCE_POLICY,...]] [--no-restart-on-failure]
+        [--shielded-integrity-monitoring] [--shielded-secure-boot]
+        [--shielded-vtpm] [--[no-]skip-guest-os-shutdown]
+        [--stack-type=STACK_TYPE] [--subnet=SUBNET] [--tags=TAG,[TAG,...]]
+        [--address=ADDRESS | --no-address]
+        [--confidential-compute
+          | --confidential-compute-type=CONFIDENTIAL_COMPUTE_TYPE]
+        [--custom-cpu=CUSTOM_CPU --custom-memory=CUSTOM_MEMORY
+          : --custom-extensions --custom-vm-type=CUSTOM_VM_TYPE]
+        [--image-project=IMAGE_PROJECT --image=IMAGE
+          | --image-family=IMAGE_FAMILY]
+        [--reservation=RESERVATION
+          --reservation-affinity=RESERVATION_AFFINITY; default="any"]
+        [--scopes=[SCOPE,...] | --no-scopes]
+        [--service-account=SERVICE_ACCOUNT | --no-service-account]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    (DEPRECATED) The option to deploy a container during VM creation using the
+    container startup agent is deprecated. Use alternative services to run
+    containers on your VMs. Learn more at
+    https://cloud.google.com/compute/docs/containers/migrate-containers.
+
+    gcloud compute instance-templates create-with-container creates a Compute
+    Engine virtual machine instance template that runs a container image. To
+    create an instance template named 'instance-template-1' that runs the
+    'busybox' image, run:
+
+        $ gcloud compute instance-templates create-with-container \
+            instance-template-1              \
+            --container-image=gcr.io/google-containers/busybox
+
+    For more examples, refer to the EXAMPLES section below.
+
+EXAMPLES
+    To create a template named 'instance-template-1' that runs the
+    gcr.io/google-containers/busybox image and executes 'echo "Hello world"' as
+    a command, run:
+
+        $ gcloud compute instance-templates create-with-container \
+            instance-template-1 \
+            --container-image=gcr.io/google-containers/busybox \
+            --container-command='echo "Hello world"'
+
+    To create a template running gcr.io/google-containers/busybox in privileged
+    mode, run:
+
+        $ gcloud compute instance-templates create-with-container \
+            instance-template-1 \
+            --container-image=gcr.io/google-containers/busybox \
+            --container-privileged
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the instance template to create.
+
+FLAGS
+     --boot-disk-auto-delete
+        Automatically delete boot disks when their instances are deleted.
+        Enabled by default, use --no-boot-disk-auto-delete to disable.
+
+     --boot-disk-device-name=BOOT_DISK_DEVICE_NAME
+        The name the guest operating system will see for the boot disk. This
+        option can only be specified if a new boot disk is being created (as
+        opposed to mounting an existing persistent disk).
+
+     --boot-disk-interface=BOOT_DISK_INTERFACE
+        Indicates the interface to use for the boot disk. The value must be one
+        of the following:
+        * SCSI
+        * NVME
+
+     --boot-disk-provisioned-iops=BOOT_DISK_PROVISIONED_IOPS
+        Indicates how many IOPS to provision for the disk. This sets the number
+        of I/O operations per second that the disk can handle.
+
+     --boot-disk-provisioned-throughput=BOOT_DISK_PROVISIONED_THROUGHPUT
+        Indicates how much throughput to provision for the disk. This sets the
+        number of throughput mb per second that the disk can handle.
+
+     --boot-disk-size=BOOT_DISK_SIZE
+        The size of the boot disk. This option can only be specified if a new
+        boot disk is being created (as opposed to mounting an existing
+        persistent disk). The value must be a whole number followed by a size
+        unit of KB for kilobyte, MB for megabyte, GB for gigabyte, or TB for
+        terabyte. For example, 10GB will produce a 10 gigabyte disk. Disk size
+        must be a multiple of 1 GB. Default size unit is GB.
+
+     --boot-disk-type=BOOT_DISK_TYPE
+        The type of the boot disk. This option can only be specified if a new
+        boot disk is being created (as opposed to mounting an existing
+        persistent disk). To get a list of available disk types, run $ gcloud
+        compute disk-types list.
+
+     --can-ip-forward
+        If provided, allows the instances to send and receive packets with
+        non-matching destination or source IP addresses.
+
+     --container-arg=CONTAINER_ARG
+        Argument to append to container entrypoint or to override container
+        CMD. Each argument must have a separate flag. Arguments are appended in
+        the order of flags. Example:
+
+        Assuming the default entry point of the container (or an entry point
+        overridden with --container-command flag) is a Bourne shell-compatible
+        executable, in order to execute 'ls -l' command in the container, the
+        user could use:
+
+        --container-arg="-c" --container-arg="ls -l"
+
+        Caveat: due to the nature of the argument parsing, it's impossible to
+        provide the flag value that starts with a dash (-) without the = sign
+        (that is, --container-arg "-c" will not work correctly).
+
+        Default: None. (no arguments appended)
+
+     --container-command=CONTAINER_COMMAND
+        Specifies what executable to run when the container starts (overrides
+        default entrypoint), eg. nc.
+
+        Default: None (default container entrypoint is used)
+
+     --container-env=[KEY=VALUE, ...,...]
+        Declare environment variables KEY with value VALUE passed to container.
+        Only the last value of KEY is taken when KEY is repeated more than
+        once.
+
+        Values, declared with --container-env flag override those with the same
+        KEY from file, provided in --container-env-file.
+
+     --container-env-file=CONTAINER_ENV_FILE
+        Declare environment variables in a file. Values, declared with
+        --container-env flag override those with the same KEY from file.
+
+        File with environment variables in format used by docker (almost). This
+        means:
+        * Lines are in format KEY=VALUE.
+        * Values must contain equality signs.
+        * Variables without values are not supported (this is different from
+          docker format).
+        * If # is first non-whitespace character in a line the line is
+          ignored as a comment.
+        * Lines with nothing but whitespace are ignored.
+
+     --container-image=CONTAINER_IMAGE
+        Full container image name, which should be pulled onto VM instance, eg.
+        docker.io/tomcat.
+
+     --container-mount-disk=[mode=MODE],[mount-path=MOUNT-PATH],[name=NAME],[partition=PARTITION]
+        Mounts a disk to the specified mount path in the container. Multiple '
+        flags are allowed. Must be used with --disk or --create-disk.
+
+         name
+            Name of the disk. If exactly one additional disk is attached to the
+            instance using --disk or --create-disk, specifying disk name here
+            is optional. The name of the single additional disk will be used by
+            default.
+
+         mount-path
+            Path on container to mount to. Mount paths with spaces and commas
+            (and other special characters) are not supported by this command.
+
+         partition
+            Optional. The partition of the disk to mount. Multiple partitions
+            of a disk can be mounted. Can't be used with --create-disk.
+
+         mode
+            Volume mount mode: rw (read/write) or ro (read-only). Defaults to
+            rw. Fails if the disk mode is ro and volume mount mode is rw.
+
+     --container-mount-host-path=[host-path=HOSTPATH,mount-path=MOUNTPATH[,mode=MODE],...]
+        Mounts a volume by using host-path.
+
+         host-path
+            Path on host to mount from.
+
+         mount-path
+            Path on container to mount to. Mount paths with spaces and commas
+            (and other special characters) are not supported by this command.
+
+         mode
+            Volume mount mode: rw (read/write) or ro (read-only).
+
+            Default: rw.
+
+     --container-mount-tmpfs=[mount-path=MOUNTPATH,...]
+        Mounts empty tmpfs into container at MOUNTPATH.
+
+         mount-path
+            Path on container to mount to. Mount paths with spaces and commas
+            (and other special characters) are not supported by this command.
+
+     --container-privileged
+        Specify whether to run container in privileged mode.
+
+        Default: --no-container-privileged.
+
+     --container-restart-policy=POLICY; default="always"
+        Specify whether to restart a container on exit. POLICY must be one of:
+        never, on-failure, always.
+
+     --container-stdin
+        Keep container STDIN open even if not attached.
+
+        Default: --no-container-stdin.
+
+     --container-tty
+        Allocate a pseudo-TTY for the container.
+
+        Default: --no-container-tty.
+
+     --create-disk=[PROPERTY=VALUE,...]
+        Creates and attaches persistent disks to the instances.
+
+         name
+            Specifies the name of the disk. This option cannot be specified if
+            more than one instance is being created. Must specify this option
+            if attaching the disk to a container with --container-mount-disk.
+
+         description
+            Optional textual description for the disk being created.
+
+         mode
+            Specifies the mode of the disk. Supported options are ro for
+            read-only and rw for read-write. If omitted, rw is used as a
+            default. It is an error to create a disk in ro mode if attaching it
+            to a container with --container-mount-disk.
+
+         image
+            Specifies the name of the image that the disk will be initialized
+            with. A new disk will be created based on the given image. To view
+            a list of public images and projects, run $ gcloud compute images
+            list. It is best practice to use image when a specific version of
+            an image is needed. If both image and image-family flags are
+            omitted a blank disk will be created.
+
+         image-family
+            The image family for the operating system that the boot disk will
+            be initialized with. Compute Engine offers multiple Linux
+            distributions, some of which are available as both regular and
+            Shielded VM images. When a family is specified instead of an image,
+            the latest non-deprecated image associated with that family is
+            used. It is best practice to use --image-family when the latest
+            version of an image is needed.
+
+         image-project
+            The Google Cloud project against which all image and image family
+            references will be resolved. It is best practice to define
+            image-project. A full list of available image projects can be
+            generated by running gcloud compute images list.
+
+            + If specifying one of our public images, image-project must be
+              provided.
+            + If there are several of the same image-family value in multiple
+              projects, image-project must be specified to clarify the image to
+              be used.
+            + If not specified and either image or image-family is provided,
+              the current default project is used.
+
+         size
+            The size of the disk. The value must be a whole number followed by
+            a size unit of KB for kilobyte, MB for megabyte, GB for gigabyte,
+            or TB for terabyte. For example, 10GB will produce a 10 gigabyte
+            disk. Disk size must be a multiple of 1 GB. If not specified, the
+            default image size will be used for the new disk.
+
+         type
+            The type of the disk. To get a list of available disk types, run $
+            gcloud compute disk-types list. The default disk type is
+            pd-standard.
+
+         device-name
+            An optional name to display the disk name in the guest operating
+            system. Must be the same as name if used with
+            --container-mount-disk. If omitted, a device name of the form
+            persistent-disk-N is used. If omitted and used with
+            --container-mount-disk (where the name of the container mount disk
+            is the same as in this flag), a device name equal to disk name is
+            used.
+
+         provisioned-iops
+            Indicates how many IOPS to provision for the disk. This sets the
+            number of I/O operations per second that the disk can handle. Value
+            must be between 10,000 and 120,000.
+
+         provisioned-throughput
+            Indicates how much throughput to provision for the disk. This sets
+            the number of throughput mb per second that the disk can handle.
+
+         disk-resource-policy
+            Resource policy to apply to the disk. Specify a full or partial
+            URL. For example:
+            + https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/resourcePolicies/my-resource-policy
+            + projects/my-project/regions/us-central1/resourcePolicies/my-resource-policy
+
+            For more information, see the following docs:
+            + https://cloud.google.com/sdk/gcloud/reference/beta/compute/resource-policies/
+            + https://cloud.google.com/compute/docs/disks/scheduled-snapshots
+
+         auto-delete
+            If yes, this persistent disk will be automatically deleted when the
+            instance is deleted. However, if the disk is later detached from
+            the instance, this option won't apply. The default value for this
+            is yes.
+
+         architecture
+            Specifies the architecture or processor type that this disk can
+            support. For available processor types on Compute Engine, see
+            https://cloud.google.com/compute/docs/cpu-platforms.
+
+         storage-pool
+            The name of the storage pool in which the new disk is created. The
+            new disk and the storage pool must be in the same location.
+
+         interface
+            The interface to use with the disk. The value must be one of the
+            following:
+            + SCSI
+            + NVME
+
+         on-update-action
+            Specifies the action to take on instance update with this disk. The
+            default action is to use the existing disk. The value must be one
+            of the following:
+            + USE_EXISTING_DISK
+            + RECREATE_DISK
+            + RECREATE_DISK_IF_SOURCE_CHANGED
+
+         replica-zones
+            Required for each regional disk associated with the instance.
+            Specify the URLs of the zones where the disk should be replicated
+            to. You must provide exactly two replica zones, and one zone must
+            be the same as the instance zone.
+
+     --description=DESCRIPTION
+        Specifies a textual description for the instance template.
+
+     --disk=[auto-delete=AUTO-DELETE],[boot=BOOT],[device-name=DEVICE-NAME],[interface=INTERFACE],[mode=MODE],[name=NAME]
+        Attaches an existing disk to the instances.
+
+         name
+            The disk to attach to the instances. If you create more than one
+            instance, you can only attach a disk in read-only mode. By default,
+            you attach a zonal disk located in the same zone of the instance.
+            If you want to attach a regional disk, you must specify the disk
+            using its URI; for example,
+            projects/myproject/regions/us-central1/disks/my-regional-disk.
+
+         mode
+            The mode of the disk. Supported options are ro for read-only mode
+            and rw for read-write mode. If omitted, rw is used as a default
+            value. If you use rw when creating more than one instance, you
+            encounter errors.
+
+         boot
+            If set to yes, you attach a boot disk. The virtual machine then
+            uses the first partition of the disk for the root file systems. The
+            default value for this is no.
+
+         device-name
+            An optional name to display the disk name in the guest operating
+            system. Must be the same as name if used with
+            --container-mount-disk. If omitted, a device name of the form
+            persistent-disk-N is used. If omitted and used with
+            --container-mount-disk (where the name of the container mount disk
+            is the same as in this flag), a device name equal to disk name is
+            used.
+
+         auto-delete
+            If set to yes, the persistent disk is automatically deleted when
+            the instance is deleted. However, if you detach the disk from the
+            instance, deleting the instance doesn't delete the disk. The
+            default value is yes.
+
+         interface
+            The interface to use for the disk. The value must be one of the
+            following:
+            + SCSI
+            + NVME
+
+     --external-ipv6-address=EXTERNAL_IPV6_ADDRESS
+        Assigns the given external IPv6 address to the instance that is
+        created. The address must be the first IP address in the range. This
+        option can be used only when creating a single instance.
+
+     --external-ipv6-prefix-length=EXTERNAL_IPV6_PREFIX_LENGTH
+        The prefix length of the external IPv6 address range. This field should
+        be used together with --external-ipv6-address. Only the /96 IP address
+        range is supported, and the default value is 96.
+
+     --identity=IDENTITY
+        The workload identity to use for the instance.
+
+     --[no-]identity-certificate
+        Enables or disables managed workload identity certificates on a VM. Use
+        --identity-certificate to enable and --no-identity-certificate to
+        disable.
+
+     --identity-type=IDENTITY_TYPE
+        Configures the identity type to use for the instance. IDENTITY_TYPE
+        must be one of:
+
+         AGENT_IDENTITY
+            Use an agent identity.
+         IDENTITY_TYPE_UNSPECIFIED
+            Use an unspecified identity type.
+         SERVICE_ACCOUNT
+            Use a service account.
+
+     --internal-ipv6-address=INTERNAL_IPV6_ADDRESS
+        Assigns the given internal IPv6 address or range to the instance that
+        is created. The address must be the first IP address in the range or
+        from a /96 IP address range. This option can be used only when creating
+        a single instance.
+
+     --internal-ipv6-prefix-length=INTERNAL_IPV6_PREFIX_LENGTH
+        Optional field that indicates the prefix length of the internal IPv6
+        address range. It should be used together with --internal-ipv6-address.
+        Only /96 IP address range is supported and the default value is 96. If
+        not set, either the prefix length from --internal-ipv6-address will be
+        used or the default value of 96 will be assigned.
+
+     --ipv6-network-tier=IPV6_NETWORK_TIER
+        Specifies the IPv6 network tier that will be used to configure the
+        instance network interface IPv6 access config. IPV6_NETWORK_TIER must
+        be (only one value is supported):
+
+         PREMIUM
+            High quality, Google-grade network tier.
+
+     --labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to add.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     --machine-type=MACHINE_TYPE
+        Specifies the machine type used for the instances. To get a list of
+        available machine types, run 'gcloud compute machine-types list'. If
+        unspecified, the default type is n1-standard-1.
+
+     --maintenance-policy=MAINTENANCE_POLICY
+        Specifies the behavior of the VMs when their host machines undergo
+        maintenance. The default is MIGRATE. For more information, see
+        https://cloud.google.com/compute/docs/instances/host-maintenance-options.
+        MAINTENANCE_POLICY must be one of:
+
+         MIGRATE
+            The instances should be migrated to a new host. This will
+            temporarily impact the performance of instances during a migration
+            event.
+         TERMINATE
+            The instances should be terminated.
+
+     --metadata=KEY=VALUE,[KEY=VALUE,...]
+        Metadata to be made available to the guest operating system running on
+        the instances. Each metadata entry is a key/value pair separated by an
+        equals sign. Each metadata key must be unique and have a max of 128
+        bytes in length. Each value must have a max of 256 KB in length.
+        Multiple arguments can be passed to this flag, e.g., --metadata
+        key-1=value-1,key-2=value-2,key-3=value-3. The combined total size for
+        all metadata entries is 512 KB.
+
+        In images that have Compute Engine tools installed on them, such as the
+        official images (https://cloud.google.com/compute/docs/images), the
+        following metadata keys have special meanings:
+
+         startup-script
+            Specifies a script that will be executed by the instances once they
+            start running. For convenience, --metadata-from-file can be used to
+            pull the value from a file.
+
+         startup-script-url
+            Same as startup-script except that the script contents are pulled
+            from a Cloud Storage location (e.g., gs://bucket/file.sh or
+            https://storage.googleapis.com/bucket/file.sh).
+
+            For startup scripts on Windows instances, the following metadata
+            keys have special meanings: windows-startup-script-url,
+            windows-startup-script-cmd, windows-startup-script-bat,
+            windows-startup-script-ps1, sysprep-specialize-script-url,
+            sysprep-specialize-script-cmd, sysprep-specialize-script-bat, and
+            sysprep-specialize-script-ps1. For more information, see Running
+            startup scripts
+            (https://cloud.google.com/compute/docs/startupscript).
+
+     --metadata-from-file=KEY=LOCAL_FILE_PATH,[...]
+        Same as --metadata except that the value for the entry will be read
+        from a local file. A value can be read from standard input by
+        specifying ``-'' as the file path. This is useful for values that are
+        too large such as startup-script contents.
+
+     --min-cpu-platform=PLATFORM
+        When specified, the VM will be scheduled on host with specified CPU
+        architecture or a newer one. To list available CPU platforms in given
+        zone, run:
+
+            $ gcloud compute zones describe ZONE \
+              --format="value(availableCpuPlatforms)"
+
+        Default setting is "AUTOMATIC".
+
+        CPU platform selection is available only in selected zones.
+
+        You can find more information on-line:
+        https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform
+
+     --network=NETWORK
+        Specifies the network that the VM instances are a part of. If --subnet
+        is also specified, subnet must be a subnetwork of the network specified
+        by this --network flag. If neither is specified, the default network is
+        used.
+
+     --network-interface=[PROPERTY=VALUE,...]
+        Adds a network interface to the instance. Mutually exclusive with any
+        of these flags: --address, --network, --network-tier, --subnet,
+        --private-network-ip, --stack-type, --ipv6-network-tier,
+        --internal-ipv6-address, --internal-ipv6-prefix-length, --ipv6-address,
+        --ipv6-prefix-length, --external-ipv6-address,
+        --external-ipv6-prefix-length. This flag can be repeated to specify
+        multiple network interfaces.
+
+        The following keys are allowed:
+         address
+            Assigns the given external address to the instance that is created.
+            Specifying an empty string will assign an ephemeral IP. Mutually
+            exclusive with no-address. If neither key is present the instance
+            will get an ephemeral IP.
+
+         network
+            Specifies the network that the interface will be part of. If subnet
+            is also specified it must be subnetwork of this network. If neither
+            is specified, this defaults to the "default" network.
+
+         no-address
+            If specified the interface will have no external IP. Mutually
+            exclusive with address. If neither key is present the instance will
+            get an ephemeral IP.
+
+         network-tier
+            Specifies the network tier of the interface. NETWORK_TIER must be
+            one of: PREMIUM, STANDARD. The default value is PREMIUM.
+
+         private-network-ip
+            Assigns the given internal IPv4 address to the interface.
+
+         subnet
+            Specifies the subnet that the interface will be part of. If network
+            key is also specified this must be a subnetwork of the specified
+            network.
+
+         nic-type
+            Specifies the Network Interface Controller (NIC) type for the
+            interface. NIC_TYPE must be one of: GVNIC, VIRTIO_NET.
+
+         stack-type
+            Specifies whether IPv6 is enabled on the interface. STACK_TYPE must
+            be one of: IPV4_ONLY, IPV4_IPV6, IPV6_ONLY. The default value is
+            IPV4_ONLY.
+
+         ipv6-network-tier
+            Specifies the IPv6 network tier that will be used to configure the
+            instance network interface IPv6 access config. IPV6_NETWORK_TIER
+            must be PREMIUM (currently only one value is supported).
+
+         internal-ipv6-address
+            Assigns the given internal IPv6 address or range to the instance
+            that is created. The address must be the first IP address in the
+            range or from a /96 IP address range. This option can be used only
+            when creating a single instance.
+
+         internal-ipv6-prefix-length
+            Optional field that indicates the prefix length of the internal
+            IPv6 address range. It should be used together with
+            internal-ipv6-address. Only /96 IP address range is supported and
+            the default value is 96. If not set, either the prefix length from
+            --internal-ipv6-address will be used or the default value of 96
+            will be assigned.
+
+         external-ipv6-address
+            Assigns the given external IPv6 address to the instance that is
+            created. The address must be the first IP address in the range.
+            This option can be used only when creating a single instance.
+
+         external-ipv6-prefix-length
+            The prefix length of the external IPv6 address range. This field
+            should be used together with external-ipv6-address. Only the /96 IP
+            address range is supported, and the default value is 96.
+
+         aliases
+            Specifies the IP alias ranges to allocate for this interface. If
+            there are multiple IP alias ranges, they are separated by
+            semicolons.
+
+            For example:
+
+                --aliases="10.128.1.0/24;range1:/32"
+
+            Each IP alias range consists of a range name and a CIDR netmask
+            (e.g. /24) separated by a colon or just the netmask. The range name
+            is the name of the range within the network interface's subnet from
+            which to allocate an IP alias range. If unspecified, it defaults to
+            the primary IP range of the subnet. The IP allocator will pick an
+            available range with the specified netmask and allocate it to this
+            network interface.
+
+         network-attachment
+            Specifies the network attachment that this interface should connect
+            to. Mutually exclusive with --network and --subnet flags.
+
+         enable-vpc-scoped-dns
+            If specified with network-attachment, DNS resolution will be
+            enabled over this interface.
+
+         service-class-id
+            The regional Service Class ID for the producer service associated
+            with this network interface. Can only be used with
+            network_attachment. It is not possible to use on its own; however,
+            network_attachment can be used without service_class_id.
+
+         vlan
+            VLAN ID of a Dynamic Network Interface, must be an integer in the
+            range from 2 to 255 inclusively.
+
+     --network-tier=NETWORK_TIER
+        Specifies the network tier that will be used to configure the instance.
+        NETWORK_TIER must be one of: PREMIUM, STANDARD. The default value is
+        PREMIUM.
+
+     --preemptible
+        If provided, instances will be preemptible and time-limited. Instances
+        might be preempted to free up resources for standard VM instances, and
+        will only be able to run for a limited amount of time. Preemptible
+        instances can not be restarted and will not migrate.
+
+     --private-ipv6-google-access-type=PRIVATE_IPV6_GOOGLE_ACCESS_TYPE
+        The private IPv6 Google access type for the VM.
+        PRIVATE_IPV6_GOOGLE_ACCESS_TYPE must be one of:
+        enable-bidirectional-access, enable-outbound-vm-access,
+        inherit-subnetwork.
+
+     --private-network-ip=PRIVATE_NETWORK_IP
+        Specifies the internal IPv4 address to assign to the instance. The IP
+        should be in the subnet or legacy network IP range.
+
+     --provisioning-model=PROVISIONING_MODEL
+        Specifies the provisioning model for your VM instances. This choice
+        affects the price, availability, and how long your VM instances can
+        run. PROVISIONING_MODEL must be one of:
+
+         RESERVATION_BOUND
+            The VM instances run for the entire duration of their associated
+            reservation. You can only specify this provisioning model if you
+            want your VM instances to consume a specific reservation with
+            either a calendar reservation mode or a dense deployment type.
+         SPOT
+            Compute Engine may stop a Spot VM instance whenever it needs
+            capacity. Because Spot VM instances don't have a guaranteed
+            runtime, they come at a discounted price.
+         STANDARD
+            The default option. The STANDARD provisioning model gives you full
+            control over your VM instances' runtime.
+
+     --region=REGION
+        Region of the instance template to create. If not specified, you might
+        be prompted to select a region (interactive mode only).
+
+        To avoid prompting when this flag is omitted, you can set the
+        compute/region property:
+
+            $ gcloud config set compute/region REGION
+
+        A list of regions can be fetched by running:
+
+            $ gcloud compute regions list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/region
+
+        Alternatively, the region can be stored in the environment variable
+        CLOUDSDK_COMPUTE_REGION.
+
+     --resource-policies=[RESOURCE_POLICY,...]
+        A list of resource policy names (not URLs) to be added to each instance
+        created using this instance template. If you attach any resource
+        policies to an instance template, you can only use that instance
+        template to create instances that are in the same region as the
+        resource policies. Do not include resource policies that are located in
+        different regions in the same instance template.
+
+     --restart-on-failure
+        The instances will be restarted if they are terminated by Compute
+        Engine. This does not affect terminations performed by the user.
+        Enabled by default, use --no-restart-on-failure to disable.
+
+     --shielded-integrity-monitoring
+        Enables monitoring and attestation of the boot integrity of the
+        instance. The attestation is performed against the integrity policy
+        baseline. This baseline is initially derived from the implicitly
+        trusted boot image when the instance is created. This baseline can be
+        updated by using gcloud compute instances update
+        --shielded-learn-integrity-policy. On Shielded VM instances, integrity
+        monitoring is enabled by default. For information about how to modify
+        Shielded VM options, see
+        https://cloud.google.com/compute/docs/instances/modifying-shielded-vm.
+        For information about monitoring integrity on Shielded VM instances,
+        see
+        https://cloud.google.com/compute/docs/instances/integrity-monitoring."
+
+     --shielded-secure-boot
+        The instance boots with secure boot enabled. On Shielded VM instances,
+        Secure Boot is not enabled by default. For information about how to
+        modify Shielded VM options, see
+        https://cloud.google.com/compute/docs/instances/modifying-shielded-vm.
+
+     --shielded-vtpm
+        The instance boots with the TPM (Trusted Platform Module) enabled. A
+        TPM is a hardware module that can be used for different security
+        operations such as remote attestation, encryption, and sealing of keys.
+        On Shielded VM instances, vTPM is enabled by default. For information
+        about how to modify Shielded VM options, see
+        https://cloud.google.com/compute/docs/instances/modifying-shielded-vm.
+
+     --[no-]skip-guest-os-shutdown
+        If enabled, then, when the instance is stopped or deleted, the instance
+        is immediately stopped without giving time to the guest OS to cleanly
+        shut down. Use --skip-guest-os-shutdown to enable and
+        --no-skip-guest-os-shutdown to disable.
+
+     --stack-type=STACK_TYPE
+        Specifies whether IPv6 is enabled on the default network interface. If
+        not specified, IPV4_ONLY will be used. STACK_TYPE must be one of:
+
+         IPV4_IPV6
+            The network interface can have both IPv4 and IPv6 addresses
+         IPV4_ONLY
+            The network interface will be assigned IPv4 addresses
+         IPV6_ONLY
+            The network interface will be assigned IPv6 addresses
+
+     --subnet=SUBNET
+        Specifies the subnet that the VM instances are a part of. If --network
+        is also specified, subnet must be a subnetwork of the network specified
+        by the --network flag.
+
+     --tags=TAG,[TAG,...]
+        Specifies a list of tags to apply to the instance. These tags allow
+        network firewall rules and routes to be applied to specified VM
+        instances. See gcloud compute firewall-rules create(1) for more
+        details.
+
+        To read more about configuring network tags, read this guide:
+        https://cloud.google.com/vpc/docs/add-remove-network-tags
+
+        To list instances with their respective status and tags, run:
+
+            $ gcloud compute instances list \
+                --format='table(name,status,tags.list())'
+
+        To list instances tagged with a specific tag, tag1, run:
+
+            $ gcloud compute instances list --filter='tags:tag1'
+
+     At most one of these can be specified:
+
+       --address=ADDRESS
+          Assigns the given external IP address to the instance that is
+          created. This option can only be used when creating a single
+          instance.
+
+       --no-address
+          If provided, the instances are not assigned external IP addresses. To
+          pull container images, you must configure private Google access if
+          using Container Registry or configure Cloud NAT for instances to
+          access container images directly. For more information, see:
+          + https://cloud.google.com/vpc/docs/configure-private-google-access
+          + https://cloud.google.com/nat/docs/using-nat
+
+     At most one of these can be specified:
+
+       --confidential-compute
+          (DEPRECATED) The instance boots with Confidential Computing enabled.
+          Confidential Computing is based on Secure Encrypted Virtualization
+          (SEV), an AMD virtualization feature for running confidential
+          instances.
+
+          The --confidential-compute flag will soon be deprecated. Please use
+          --confidential-compute-type=SEV instead
+
+       --confidential-compute-type=CONFIDENTIAL_COMPUTE_TYPE
+          The instance boots with Confidential Computing enabled. Confidential
+          Computing can be based on Secure Encrypted Virtualization (SEV) or
+          Secure Encrypted Virtualization - Secure Nested Paging (SEV-SNP),
+          both of which are AMD virtualization features for running
+          confidential instances. Trust Domain eXtension based on Intel
+          virtualization features for running confidential instances is also
+          supported. Arm Confidential Compute Architecture for running
+          confidential instances is also supported. Bare Metal Secure AI for
+          running confidential instances is also supported.
+
+          CONFIDENTIAL_COMPUTE_TYPE must be one of:
+
+           BMSAI
+              Bare Metal Secure AI
+           CCA
+              Arm Confidential Compute Architecture
+           SEV
+              Secure Encrypted Virtualization
+           SEV_SNP
+              Secure Encrypted Virtualization - Secure Nested Paging
+           TDX
+              Trust Domain eXtension
+
+     Custom machine type extensions.
+
+     --custom-cpu=CUSTOM_CPU
+        A whole number value specifying the number of cores that are needed in
+        the custom machine type.
+
+        For some machine types, shared-core values can also be used. For
+        example, for E2 machine types, you can specify micro, small, or medium.
+
+        This flag argument must be specified if any of the other arguments in
+        this group are specified.
+
+     --custom-memory=CUSTOM_MEMORY
+        A whole number value indicating how much memory is desired in the
+        custom machine type. A size unit should be provided (eg. 3072MB or 9GB)
+        - if no units are specified, GB is assumed.
+
+        This flag argument must be specified if any of the other arguments in
+        this group are specified.
+
+     --custom-extensions
+        Use the extended custom machine type.
+
+     --custom-vm-type=CUSTOM_VM_TYPE
+        Specifies a custom machine type. The default is n1. For more
+        information about custom machine types, see:
+        https://cloud.google.com/compute/docs/general-purpose-machines#custom_machine_types
+
+     --image-project=IMAGE_PROJECT
+        The Google Cloud project against which all image and image family
+        references will be resolved. It is best practice to define
+        image-project. A full list of available projects can be generated by
+        running gcloud projects list.
+        * If specifying one of our public images, image-project must be
+          provided.
+        * If there are several of the same image-family value in multiple
+          projects, image-project must be specified to clarify the image to be
+          used.
+        * If not specified and either image or image-family is provided, the
+          current default project is used.
+
+     At most one of these can be specified:
+
+       --image=IMAGE
+          Specifies the boot image for the instances. For each instance, a new
+          boot disk will be created from the given image. Each boot disk will
+          have the same name as the instance. To view a list of public images
+          and projects, run $ gcloud compute images list. It is best practice
+          to use --image when a specific version of an image is needed.
+
+          When using this option, --boot-disk-device-name and --boot-disk-size
+          can be used to override the boot disk's device name and size,
+          respectively.
+
+       --image-family=IMAGE_FAMILY
+          The image family for the operating system that the boot disk will be
+          initialized with. Compute Engine offers multiple Linux distributions,
+          some of which are available as both regular and Shielded VM images.
+          When a family is specified instead of an image, the latest
+          non-deprecated image associated with that family is used. It is best
+          practice to use --image-family when the latest version of an image is
+          needed.
+
+          By default, debian-12 is assumed for this flag.
+
+     Specifies the reservation for instances created from this template.
+
+     --reservation=RESERVATION
+        The name of the reservation, required when
+        --reservation-affinity=specific.
+
+     --reservation-affinity=RESERVATION_AFFINITY; default="any"
+        The type of reservation for instances created from this template.
+        RESERVATION_AFFINITY must be one of:
+
+         any
+            Consume any available, matching reservation.
+         none
+            Do not consume from any reserved capacity.
+         specific
+            Must consume from a specific reservation.
+
+     At most one of these can be specified:
+
+       --scopes=[SCOPE,...]
+          If not provided, the instance will be assigned the default scopes,
+          described below.
+
+          SCOPE can be either the full URI of the scope or an alias. Default
+          scopes are assigned to all instances. Available aliases are:
+
+            Alias                  URI
+            bigquery               https://www.googleapis.com/auth/bigquery
+            cloud-platform         https://www.googleapis.com/auth/cloud-platform
+            cloud-source-repos     https://www.googleapis.com/auth/source.full_control
+            cloud-source-repos-ro  https://www.googleapis.com/auth/source.read_only
+            compute-ro             https://www.googleapis.com/auth/compute.readonly
+            compute-rw             https://www.googleapis.com/auth/compute
+            datastore              https://www.googleapis.com/auth/datastore
+            default                https://www.googleapis.com/auth/devstorage.read_only
+                                   https://www.googleapis.com/auth/logging.write
+                                   https://www.googleapis.com/auth/monitoring.write
+                                   https://www.googleapis.com/auth/pubsub
+                                   https://www.googleapis.com/auth/service.management.readonly
+                                   https://www.googleapis.com/auth/servicecontrol
+                                   https://www.googleapis.com/auth/trace.append
+            gke-default            https://www.googleapis.com/auth/devstorage.read_only
+                                   https://www.googleapis.com/auth/logging.write
+                                   https://www.googleapis.com/auth/monitoring
+                                   https://www.googleapis.com/auth/service.management.readonly
+                                   https://www.googleapis.com/auth/servicecontrol
+                                   https://www.googleapis.com/auth/trace.append
+            logging-write          https://www.googleapis.com/auth/logging.write
+            monitoring             https://www.googleapis.com/auth/monitoring
+            monitoring-read        https://www.googleapis.com/auth/monitoring.read
+            monitoring-write       https://www.googleapis.com/auth/monitoring.write
+            pubsub                 https://www.googleapis.com/auth/pubsub
+            service-control        https://www.googleapis.com/auth/servicecontrol
+            service-management     https://www.googleapis.com/auth/service.management.readonly
+            sql (deprecated)       https://www.googleapis.com/auth/sqlservice
+            sql-admin              https://www.googleapis.com/auth/sqlservice.admin
+            storage-full           https://www.googleapis.com/auth/devstorage.full_control
+            storage-ro             https://www.googleapis.com/auth/devstorage.read_only
+            storage-rw             https://www.googleapis.com/auth/devstorage.read_write
+            taskqueue              https://www.googleapis.com/auth/taskqueue
+            trace                  https://www.googleapis.com/auth/trace.append
+            userinfo-email         https://www.googleapis.com/auth/userinfo.email
+
+          DEPRECATION WARNING: https://www.googleapis.com/auth/sqlservice
+          account scope and sql alias do not provide SQL instance management
+          capabilities and have been deprecated. Please, use
+          https://www.googleapis.com/auth/sqlservice.admin or sql-admin to
+          manage your Google SQL Service instances.
+
+       --no-scopes
+          Create instance without scopes
+
+     At most one of these can be specified:
+
+       --service-account=SERVICE_ACCOUNT
+          A service account is an identity attached to the instance. Its access
+          tokens can be accessed through the instance metadata server and are
+          used to authenticate applications on the instance. The account can be
+          set using an email address corresponding to the required service
+          account.
+
+          If not provided, the instance will use the project's default service
+          account.
+
+       --no-service-account
+          Create instance without service account
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-templates create-with-container
+
+        $ gcloud beta compute instance-templates create-with-container
+```
+
+### gcloud compute instance-templates delete
+
+```text
+NAME
+    gcloud compute instance-templates delete - delete Compute Engine virtual
+        machine instance templates
+
+SYNOPSIS
+    gcloud compute instance-templates delete NAME [NAME ...]
+        [--global | --region=REGION] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instance-templates delete deletes one or more Compute Engine
+    virtual machine instance templates.
+
+EXAMPLES
+    To delete the instance template named 'INSTANCE-TEMPLATE', run:
+
+        $ gcloud compute instance-templates delete INSTANCE-TEMPLATE
+
+POSITIONAL ARGUMENTS
+     NAME [NAME ...]
+        Names of the instance templates to delete.
+
+FLAGS
+     At most one of these can be specified:
+
+       --global
+          If set, the instance templates are global.
+
+       --region=REGION
+          Region of the instance templates to delete. Overrides the default
+          compute/region property value for this command invocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-templates delete
+
+        $ gcloud beta compute instance-templates delete
+```
+
+### gcloud compute instance-templates describe
+
+```text
+NAME
+    gcloud compute instance-templates describe - describe a virtual machine
+        instance template
+
+SYNOPSIS
+    gcloud compute instance-templates describe NAME
+        [--global | --region=REGION] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instance-templates describe displays all data associated
+    with a Google Compute Engine virtual machine instance template.
+
+EXAMPLES
+    To describe the instance template named 'INSTANCE-TEMPLATE', run:
+
+        $ gcloud compute instance-templates describe INSTANCE-TEMPLATE
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the instance template to describe.
+
+FLAGS
+     At most one of these can be specified:
+
+       --global
+          If set, the instance template is global.
+
+       --region=REGION
+          Region of the instance template to describe. Overrides the default
+          compute/region property value for this command invocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-templates describe
+
+        $ gcloud beta compute instance-templates describe
+```
+
+### gcloud compute instance-templates export
+
+```text
+NAME
+    gcloud compute instance-templates export - export an instance template
+
+SYNOPSIS
+    gcloud compute instance-templates export NAME [--destination=DESTINATION]
+        [--endpoint-mode=ENDPOINT_MODE] [--global | --region=REGION]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Exports the configuration for the instance template to a file. This
+    configuration can be imported at a later time.
+
+EXAMPLES
+    An instance template can be exported by running:
+
+        $ gcloud compute instance-templates export NAME \
+            --destination=<path-to-file>
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the instance template to export.
+
+FLAGS
+     --destination=DESTINATION
+        Path to a YAML file where the configuration will be exported.
+        Alternatively, you may omit this flag to write to standard output. For
+        a schema describing the export/import format, see:
+        $CLOUDSDKROOT/lib/googlecloudsdk/schemas/compute/v1/InstanceTemplate.yaml.
+
+     --endpoint-mode=ENDPOINT_MODE
+        Specifies endpoint mode for a given command. Regional endpoints provide
+        enhanced data residency and reliability by ensuring your request is
+        handled entirely within the specified Google Cloud region. This differs
+        from global endpoints, which may process parts of the request outside
+        the target region. Overrides the default regional/endpoint_mode
+        property value for this command invocation. ENDPOINT_MODE must be one
+        of:
+
+         global
+            (Default) Use global rather than regional endpoints.
+         regional
+            Only use regional endpoints. An error will be raised if a regional
+            endpoint is not available for a given command.
+         regional-preferred
+            Use regional endpoints when available, otherwise use global
+            endpoints. Recommended for most users.
+
+     At most one of these can be specified:
+
+       --global
+          If set, the instance template is global.
+
+       --region=REGION
+          Region of the instance template to export. Overrides the default
+          compute/region property value for this command invocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+REGIONAL ENDPOINTS
+    This command supports regional endpoints. To use regional endpoints for
+    this command, use the --endpoint-mode=regional-preferred flag. To use
+    regional endpoints by default, run $ gcloud config set
+    regional/endpoint_mode regional-preferred.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-templates export
+
+        $ gcloud beta compute instance-templates export
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud compute instance-templates export NAME \
+    --destination=PATH_TO_FILE
+```
+
+### gcloud compute instance-templates get-iam-policy
+
+```text
+NAME
+    gcloud compute instance-templates get-iam-policy - get the IAM policy for a
+        Compute Engine instance template
+
+SYNOPSIS
+    gcloud compute instance-templates get-iam-policy INSTANCE_TEMPLATE
+        [--filter=EXPRESSION] [--limit=LIMIT] [--page-size=PAGE_SIZE]
+        [--sort-by=[FIELD,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instance-templates get-iam-policy displays the IAM policy
+    associated with a Compute Engine instance template in a project. If
+    formatted as JSON, the output can be edited and used as a policy file for
+    set-iam-policy. The output includes an "etag" field identifying the version
+    emitted and allowing detection of concurrent policy updates; see $ {parent}
+    set-iam-policy for additional details.
+
+EXAMPLES
+    To print the IAM policy for a given instance template, run:
+
+        $ gcloud compute instance-templates get-iam-policy \
+            my-instance-template
+
+POSITIONAL ARGUMENTS
+     Instance template resource - The instance template to display the IAM
+     policy for. This represents a Cloud resource. (NOTE) Some attributes are
+     not given arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument instance_template on the command line with a
+        fully specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       INSTANCE_TEMPLATE
+          ID of the instance_template or fully qualified identifier for the
+          instance_template.
+
+          To set the instance_template attribute:
+          + provide the argument instance_template on the command line.
+
+LIST COMMAND FLAGS
+     --filter=EXPRESSION
+        Apply a Boolean filter EXPRESSION to each resource item to be listed.
+        If the expression evaluates True, then that item is listed. For more
+        details and examples of filter expressions, run $ gcloud topic filters.
+        This flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --limit=LIMIT
+        Maximum number of resources to list. The default is unlimited. This
+        flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --page-size=PAGE_SIZE
+        Some services group resource list output into pages. This flag
+        specifies the maximum number of resources per page. The default is
+        determined by the service if it supports paging, otherwise it is
+        unlimited (no paging). Paging may be applied before or after --filter
+        and --limit depending on the service.
+
+     --sort-by=[FIELD,...]
+        Comma-separated list of resource field key names to sort by. The
+        default order is ascending. Prefix a field with ``~'' for descending
+        order on that field. This flag interacts with other flags that are
+        applied in this order: --flatten, --sort-by, --filter, --limit.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the compute/v1 API. The full documentation for this API
+    can be found at: https://cloud.google.com/compute/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-templates get-iam-policy
+
+        $ gcloud beta compute instance-templates get-iam-policy
+```
+
+### gcloud compute instance-templates import
+
+```text
+NAME
+    gcloud compute instance-templates import - import an instance template
+
+SYNOPSIS
+    gcloud compute instance-templates import NAME
+        [--endpoint-mode=ENDPOINT_MODE] [--source=SOURCE]
+        [--global | --region=REGION] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Creates a Compute Engine virtual machine instance template from a file
+    containing the template's configuration.
+
+EXAMPLES
+    An instance template can be imported by running:
+
+        $ gcloud compute instance-templates import NAME \
+            --source=<path-to-file>
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the instance template to import.
+
+FLAGS
+     --endpoint-mode=ENDPOINT_MODE
+        Specifies endpoint mode for a given command. Regional endpoints provide
+        enhanced data residency and reliability by ensuring your request is
+        handled entirely within the specified Google Cloud region. This differs
+        from global endpoints, which may process parts of the request outside
+        the target region. Overrides the default regional/endpoint_mode
+        property value for this command invocation. ENDPOINT_MODE must be one
+        of:
+
+         global
+            (Default) Use global rather than regional endpoints.
+         regional
+            Only use regional endpoints. An error will be raised if a regional
+            endpoint is not available for a given command.
+         regional-preferred
+            Use regional endpoints when available, otherwise use global
+            endpoints. Recommended for most users.
+
+     --source=SOURCE
+        Path to a YAML file containing configuration export data.
+        Alternatively, you may omit this flag to read from standard input. For
+        a schema describing the export/import format, see:
+        $CLOUDSDKROOT/lib/googlecloudsdk/schemas/compute/v1/InstanceTemplate.yaml.
+
+            Note: $CLOUDSDKROOT represents the Google Cloud CLI's installation directory.
+
+     At most one of these can be specified:
+
+       --global
+          If set, the instance template is global.
+
+       --region=REGION
+          Region of the instance template to import. Overrides the default
+          compute/region property value for this command invocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+REGIONAL ENDPOINTS
+    This command supports regional endpoints. To use regional endpoints for
+    this command, use the --endpoint-mode=regional-preferred flag. To use
+    regional endpoints by default, run $ gcloud config set
+    regional/endpoint_mode regional-preferred.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-templates import
+
+        $ gcloud beta compute instance-templates import
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud compute instance-templates import NAME \
+    --source=PATH_TO_FILE
+```
+
+### gcloud compute instance-templates list
+
+```text
+NAME
+    gcloud compute instance-templates list - list Google Compute Engine
+        instance templates
+
+SYNOPSIS
+    gcloud compute instance-templates list [NAME ...]
+        [--regexp=REGEXP, -r REGEXP] [--global | --regions=[REGION,...]]
+        [--filter=EXPRESSION] [--limit=LIMIT] [--page-size=PAGE_SIZE]
+        [--sort-by=[FIELD,...]] [--uri] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instance-templates list displays all Google Compute Engine
+    instance templates in a project.
+
+EXAMPLES
+    To list all instance templates in a project in table form, run:
+
+        $ gcloud compute instance-templates list
+
+    To list the URIs of all instance templates in a project, run:
+
+        $ gcloud compute instance-templates list --uri
+
+POSITIONAL ARGUMENTS
+     [NAME ...]
+        (DEPRECATED) If provided, show details for the specified names and/or
+        URIs of resources.
+
+        Argument NAME is deprecated. Use --filter="name=( 'NAME' ... )"
+        instead.
+
+FLAGS
+     --regexp=REGEXP, -r REGEXP
+        (DEPRECATED) Regular expression to filter the names of the results on.
+        Any names that do not match the entire regular expression will be
+        filtered out.
+
+        Flag --regexp is deprecated. Use --filter="name~'REGEXP'" instead.
+
+     At most one of these can be specified:
+
+       --global
+          If provided, only global resources are shown.
+
+       --regions=[REGION,...]
+          If provided, only regional resources are shown. If arguments are
+          provided, only resources from the given regions are shown.
+
+LIST COMMAND FLAGS
+     --filter=EXPRESSION
+        Apply a Boolean filter EXPRESSION to each resource item to be listed.
+        If the expression evaluates True, then that item is listed. For more
+        details and examples of filter expressions, run $ gcloud topic filters.
+        This flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --limit=LIMIT
+        Maximum number of resources to list. The default is unlimited. This
+        flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --page-size=PAGE_SIZE
+        Some services group resource list output into pages. This flag
+        specifies the maximum number of resources per page. The default is
+        determined by the service if it supports paging, otherwise it is
+        unlimited (no paging). Paging may be applied before or after --filter
+        and --limit depending on the service.
+
+     --sort-by=[FIELD,...]
+        Comma-separated list of resource field key names to sort by. The
+        default order is ascending. Prefix a field with ``~'' for descending
+        order on that field. This flag interacts with other flags that are
+        applied in this order: --flatten, --sort-by, --filter, --limit.
+
+     --uri
+        Print a list of resource URIs instead of the default output, and change
+        the command output to a list of URIs. If this flag is used with
+        --format, the formatting is applied on this URI list. To display URIs
+        alongside other keys instead, use the uri() transform.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instance-templates list
+
+        $ gcloud beta compute instance-templates list
+```
+
+## Notes
+
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud compute instance-templates create-with-container`: "The option to deploy a container during VM creation using the container startup agent is deprecated. Use alternative services to run containers on your VMs. Learn more at https://cloud.google.com/compute/docs/containers/migrate-containers."; `gcloud compute instance-templates create-with-container --confidential-compute`: "The --confidential-compute flag will soon be deprecated. Please use --confidential-compute-type=SEV instead"; `gcloud compute instance-templates create-with-container --scopes`: "DEPRECATION WARNING: https://www.googleapis.com/auth/sqlservice account scope and sql alias do not provide SQL instance management capabilities and have been deprecated. Please, use https://www.googleapis.com/auth/sqlservice.admin or sql-admin to manage your Google SQL Service instances."; `gcloud compute instance-templates list NAME`: "Argument NAME is deprecated. Use --filter="name=( 'NAME' ... )" instead."; `gcloud compute instance-templates list --regexp`: "Flag --regexp is deprecated. Use --filter="name~'REGEXP'" instead.".
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): angle-bracket placeholders such as `<service-name>` are shell redirections when pasted into bash; the runnable form writes them as upper-case placeholders (`SERVICE_NAME`).
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instance-templates (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

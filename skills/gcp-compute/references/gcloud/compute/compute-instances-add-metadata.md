@@ -1,0 +1,190 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/add-metadata
+---
+
+# gcloud compute instances add-metadata
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute instances add-metadata
+
+```text
+NAME
+    gcloud compute instances add-metadata - add or update instance metadata
+
+SYNOPSIS
+    gcloud compute instances add-metadata INSTANCE_NAME
+        [--metadata=KEY=VALUE,[KEY=VALUE,...]]
+        [--metadata-from-file=KEY=LOCAL_FILE_PATH,[...]] [--zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instances add-metadata can be used to add or update the
+    metadata of a virtual machine instance. Every instance has access to a
+    metadata server that can be used to query metadata that has been set
+    through this tool. For information on metadata, see
+    https://cloud.google.com/compute/docs/metadata
+
+    Only metadata keys that are provided are mutated. Existing metadata entries
+    will remain unaffected.
+
+    In order to retrieve custom metadata, run:
+
+        $ gcloud compute instances describe example-instance --zone
+        us-central1-a --format="value(metadata)"
+
+    where example-instance is the name of the virtual machine instance you're
+    querying custom metadata from. For more information about querying custom
+    instance or project metadata through the Cloud Platform Console or the API,
+    see
+    https://cloud.google.com/compute/docs/storing-retrieving-metadata#querying_custom_metadata.
+
+    If you are using this command to manage SSH keys for your project, please
+    note the risks
+    (https://docs.cloud.google.com/compute/docs/instances/access-overview#risks)
+    of manual SSH key management as well as the required format for SSH key
+    metadata, available at
+    https://docs.cloud.google.com/compute/docs/connect/add-ssh-keys.
+
+EXAMPLES
+    To add metadata under key important-data to an instance named
+    test-instance, run:
+
+        $ gcloud compute instances add-metadata test-instance \
+            --metadata=important-data="2 plus 2 equals 4"
+
+    To add multiple key-value pairs at once, separate them with commas:
+
+        $ gcloud compute instances add-metadata test-instance \
+            --metadata=important-data="2 plus 2 equals \
+        4",unimportant-data=zero
+
+POSITIONAL ARGUMENTS
+     INSTANCE_NAME
+        Name of the instance to set metadata on. For details on valid instance
+        names, refer to the criteria documented under the field 'name' at:
+        https://cloud.google.com/compute/docs/reference/rest/v1/instances
+
+FLAGS
+     --metadata=KEY=VALUE,[KEY=VALUE,...]
+        Metadata to be made available to the guest operating system running on
+        the instances. Each metadata entry is a key/value pair separated by an
+        equals sign. Each metadata key must be unique and have a max of 128
+        bytes in length. Each value must have a max of 256 KB in length.
+        Multiple arguments can be passed to this flag, e.g., --metadata
+        key-1=value-1,key-2=value-2,key-3=value-3. The combined total size for
+        all metadata entries is 512 KB.
+
+        In images that have Compute Engine tools installed on them, such as the
+        official images (https://cloud.google.com/compute/docs/images), the
+        following metadata keys have special meanings:
+
+         startup-script
+            Specifies a script that will be executed by the instances once they
+            start running. For convenience, --metadata-from-file can be used to
+            pull the value from a file.
+
+         startup-script-url
+            Same as startup-script except that the script contents are pulled
+            from a Cloud Storage location (e.g., gs://bucket/file.sh or
+            https://storage.googleapis.com/bucket/file.sh).
+
+            For startup scripts on Windows instances, the following metadata
+            keys have special meanings: windows-startup-script-url,
+            windows-startup-script-cmd, windows-startup-script-bat,
+            windows-startup-script-ps1, sysprep-specialize-script-url,
+            sysprep-specialize-script-cmd, sysprep-specialize-script-bat, and
+            sysprep-specialize-script-ps1. For more information, see Running
+            startup scripts
+            (https://cloud.google.com/compute/docs/startupscript).
+
+            At least one of [--metadata] or [--metadata-from-file] is required.
+
+     --metadata-from-file=KEY=LOCAL_FILE_PATH,[...]
+        Same as --metadata except that the value for the entry will be read
+        from a local file. A value can be read from standard input by
+        specifying ``-'' as the file path. This is useful for values that are
+        too large such as startup-script contents.
+
+        At least one of [--metadata] or [--metadata-from-file] is required.
+
+     --zone=ZONE
+        Zone of the instance to set metadata on. If not specified, you might be
+        prompted to select a zone (interactive mode only). gcloud attempts to
+        identify the appropriate zone by searching for resources in your
+        currently active project. If the zone cannot be determined, gcloud
+        prompts you for a selection with all available Google Cloud Platform
+        zones.
+
+        To avoid prompting when this flag is omitted, the user can set the
+        compute/zone property:
+
+            $ gcloud config set compute/zone ZONE
+
+        A list of zones can be fetched by running:
+
+            $ gcloud compute zones list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/zone
+
+        Alternatively, the zone can be stored in the environment variable
+        CLOUDSDK_COMPUTE_ZONE.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instances add-metadata
+
+        $ gcloud beta compute instances add-metadata
+```
+
+### gcloud beta compute instances add-metadata
+
+```text
+NAME
+    gcloud beta compute instances add-metadata - add or update instance
+        metadata
+
+SYNOPSIS
+    gcloud beta compute instances add-metadata INSTANCE_NAME
+        [--metadata=KEY=VALUE,[KEY=VALUE,...]]
+        [--metadata-from-file=KEY=LOCAL_FILE_PATH,[...]] [--zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instances add-metadata
+
+```text
+NAME
+    gcloud alpha compute instances add-metadata - add or update instance
+        metadata
+
+SYNOPSIS
+    gcloud alpha compute instances add-metadata INSTANCE_NAME
+        [--metadata=KEY=VALUE,[KEY=VALUE,...]]
+        [--metadata-from-file=KEY=LOCAL_FILE_PATH,[...]] [--zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/add-metadata (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

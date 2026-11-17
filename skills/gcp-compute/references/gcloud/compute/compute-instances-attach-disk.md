@@ -1,0 +1,197 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/attach-disk
+---
+
+# gcloud compute instances attach-disk
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute instances attach-disk
+
+```text
+NAME
+    gcloud compute instances attach-disk - attach a disk to an instance
+
+SYNOPSIS
+    gcloud compute instances attach-disk INSTANCE_NAME --disk=DISK [--boot]
+        [--csek-key-file=FILE] [--device-name=DEVICE_NAME]
+        [--disk-scope=DISK_SCOPE; default="zonal"] [--force-attach]
+        [--interface=INTERFACE] [--mode=MODE; default="rw"] [--zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instances attach-disk is used to attach a disk to an
+    instance. For example,
+
+        $ gcloud compute instances attach-disk example-instance \
+            --disk DISK --zone us-central1-a
+
+    attaches the disk named 'DISK' to the instance named 'example-instance' in
+    zone us-central1-a.
+
+    After you create and attach a new disk to an instance, you must format and
+    mount
+    (https://cloud.google.com/compute/docs/disks/add-persistent-disk#formatting)
+    the disk so that the operating system can use the available storage space.
+    You can attach an existing non-boot disk to more than one instance. For
+    more information, see Share a disk between VMs.
+
+EXAMPLES
+    To attach a disk named 'my-disk' as a boot disk to an instance named
+    'my-instance', run:
+
+        $ gcloud compute instances attach-disk my-instance --disk=my-disk \
+            --boot
+
+    To attach a device named 'my-device' for read-only access to an instance
+    named 'my-instance', run:
+
+        $ gcloud compute instances attach-disk my-instance \
+            --device-name=my-device --mode=ro
+
+POSITIONAL ARGUMENTS
+     INSTANCE_NAME
+        Name of the instance to operate on. For details on valid instance
+        names, refer to the criteria documented under the field 'name' at:
+        https://cloud.google.com/compute/docs/reference/rest/v1/instances
+
+REQUIRED FLAGS
+     --disk=DISK
+        The name of the disk to attach to the instance.
+
+OPTIONAL FLAGS
+     --boot
+        Attach the disk to the instance as a boot disk.
+
+     --csek-key-file=FILE
+        (DEPRECATED) Path to a Customer-Supplied Encryption Key (CSEK) key file
+        that maps Compute Engine resources to user managed keys to be used when
+        creating, mounting, or taking snapshots of disks.
+
+            If you pass `-` as value of the flag, the CSEK is read from stdin.
+            See https://cloud.google.com/compute/docs/disks/customer-supplied-encryption for more details.
+
+        The --csek-key-file flag is deprecated.
+
+     --device-name=DEVICE_NAME
+        An optional name that indicates the disk name the guest operating
+        system will see. (Note: Device name does not correspond to mounted
+        volume name). Must match the disk name if the disk is going to be
+        mounted to a container with --container-mount-disk (alpha feature).
+
+     --disk-scope=DISK_SCOPE; default="zonal"
+        The scope of the disk. DISK_SCOPE must be one of:
+
+         regional
+            The disk specified in --disk is interpreted as a regional disk in
+            the same region as the instance. Ignored if a full URI is provided
+            to the --disk flag.
+         zonal
+            The disk specified in --disk is interpreted as a zonal disk in the
+            same zone as the instance. Ignored if a full URI is provided to the
+            --disk flag.
+
+     --force-attach
+        Attach the disk to the instance even if it is currently attached to
+        another instance. The attachment will succeed even if detaching from
+        the previous instance fails at first. The server will continue trying
+        to detach the disk from the previous instance in the background.
+
+     --interface=INTERFACE
+        The interface of the disk. INTERFACE must be one of:
+
+         NVME
+            NVME
+         SCSI
+            SCSI
+
+     --mode=MODE; default="rw"
+        Specifies the mode of the disk. MODE must be one of:
+
+         ro
+            Read-only.
+         rw
+            Read-write.
+
+     --zone=ZONE
+        Zone of the instance to operate on. If not specified, you might be
+        prompted to select a zone (interactive mode only). gcloud attempts to
+        identify the appropriate zone by searching for resources in your
+        currently active project. If the zone cannot be determined, gcloud
+        prompts you for a selection with all available Google Cloud Platform
+        zones.
+
+        To avoid prompting when this flag is omitted, the user can set the
+        compute/zone property:
+
+            $ gcloud config set compute/zone ZONE
+
+        A list of zones can be fetched by running:
+
+            $ gcloud compute zones list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/zone
+
+        Alternatively, the zone can be stored in the environment variable
+        CLOUDSDK_COMPUTE_ZONE.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instances attach-disk
+
+        $ gcloud beta compute instances attach-disk
+```
+
+### gcloud beta compute instances attach-disk
+
+```text
+NAME
+    gcloud beta compute instances attach-disk - attach a disk to an instance
+
+SYNOPSIS
+    gcloud beta compute instances attach-disk INSTANCE_NAME --disk=DISK
+        [--boot] [--csek-key-file=FILE] [--device-name=DEVICE_NAME]
+        [--disk-scope=DISK_SCOPE; default="zonal"] [--force-attach]
+        [--interface=INTERFACE] [--mode=MODE; default="rw"] [--zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instances attach-disk
+
+```text
+NAME
+    gcloud alpha compute instances attach-disk - attach a disk to an instance
+
+SYNOPSIS
+    gcloud alpha compute instances attach-disk INSTANCE_NAME --disk=DISK
+        [--boot] [--csek-key-file=FILE] [--device-name=DEVICE_NAME]
+        [--disk-scope=DISK_SCOPE; default="zonal"] [--force-attach]
+        [--interface=INTERFACE] [--mode=MODE; default="rw"] [--zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud compute instances attach-disk --csek-key-file`: "The --csek-key-file flag is deprecated.".
+- Incomplete example: the `gcloud compute instances attach-disk` example omits `--disk`, which the SYNOPSIS requires (gcloud 593.0.0: "argument --disk: Must be specified."). Add the required flag (see FLAGS on this page).
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/attach-disk (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

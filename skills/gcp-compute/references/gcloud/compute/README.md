@@ -184,3 +184,13 @@
 | gcloud compute instance-groups unmanaged set-named-ports | 3 commands (alpha, beta, ga); compute instance-groups unmanaged set-named-ports … | [compute-instance-groups-unmanaged-set-named-ports.md](./compute-instance-groups-unmanaged-set-named-ports.md) |
 | gcloud compute instance-templates (part 1) | compute instance-templates add-iam-policy-binding | [compute-instance-templates-1.md](./compute-instance-templates-1.md) |
 | gcloud compute instance-templates (part 2) | compute instance-templates create | [compute-instance-templates-2.md](./compute-instance-templates-2.md) |
+| gcloud compute instance-templates (part 3) | 7 commands (alpha, beta, ga); compute instance-templates create-with-container … | [compute-instance-templates-3.md](./compute-instance-templates-3.md) |
+| gcloud compute instance-templates (part 4) | 27 commands (alpha, beta, ga); compute instance-templates remove-iam-policy-binding … | [compute-instance-templates-4.md](./compute-instance-templates-4.md) |
+| gcloud compute instances add-access-config | 3 commands (alpha, beta, ga); compute instances add-access-config … | [compute-instances-add-access-config.md](./compute-instances-add-access-config.md) |
+| gcloud compute instances add-iam-policy-binding | 3 commands (alpha, beta, ga); compute instances add-iam-policy-binding … | [compute-instances-add-iam-policy-binding.md](./compute-instances-add-iam-policy-binding.md) |
+| gcloud compute instances add-labels | 3 commands (alpha, beta, ga); compute instances add-labels … | [compute-instances-add-labels.md](./compute-instances-add-labels.md) |
+| gcloud compute instances add-metadata | 3 commands (alpha, beta, ga); compute instances add-metadata … | [compute-instances-add-metadata.md](./compute-instances-add-metadata.md) |
+| gcloud compute instances add-partner-metadata | 2 commands (alpha, beta); beta compute instances add-partner-metadata … | [compute-instances-add-partner-metadata.md](./compute-instances-add-partner-metadata.md) |
+| gcloud compute instances add-resource-policies | 3 commands (alpha, beta, ga); compute instances add-resource-policies … | [compute-instances-add-resource-policies.md](./compute-instances-add-resource-policies.md) |
+| gcloud compute instances add-tags | 3 commands (alpha, beta, ga); compute instances add-tags … | [compute-instances-add-tags.md](./compute-instances-add-tags.md) |
+| gcloud compute instances attach-disk | 3 commands (alpha, beta, ga); compute instances attach-disk … | [compute-instances-attach-disk.md](./compute-instances-attach-disk.md) |
