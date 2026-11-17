@@ -430,6 +430,24 @@ wr_count_populated() {
   echo "${n}"
 }
 
+# index と HEAD の木の間の gitlink の差の件数（Issue #867）。$1 = その worktree での
+# `git diff-index --cached --raw --no-renames --ignore-submodules=none <HEAD のコミット | 空の木>` の出力（行は `:<旧 mode> <新 mode> <旧 sha> <新 sha> <状態>\t<パス>`）。
+# どちらかの mode が 160000 の行（gitlink の付け替え・追加・削除・型の変更）を数える。status --ignore-submodules=all は、未初期化 submodule の
+# gitlink だけを index で付け替えた変更も隠すため、ここで補う。--cached の比較は index と木だけを読み、submodule の中へは降りない。
+# gitlink 以外の行は status が数えるので、ここでは数えない（二重に数えない）
+wr_count_gitlink_raw() {
+  local line rest om nm n=0
+  while IFS= read -r line; do
+    case "${line}" in :*) ;; *) continue ;; esac
+    rest=${line#:}
+    om=${rest%% *}
+    rest=${rest#* }
+    nm=${rest%% *}
+    if [ "${om}" = 160000 ] || [ "${nm}" = 160000 ]; then n=$((n + 1)); fi
+  done <<<"$1"
+  echo "${n}"
+}
+
 # 対象のリポジトリの確認（check-absent 用）。$1 = ホストが渡したリポジトリの root（空 = 渡されていない）、$2 = 確認するパス。
 # カレントのリポジトリ（git worktree list を取る先）と対象のリポジトリの共通 git ディレクトリが一致するときだけ 0。
 # $1 が空のときは、パスの最寄りの実在する祖先から属するリポジトリを求める。求められない・違うときは非 0（呼び出し側は unknown に倒す）。

@@ -168,6 +168,10 @@ opt-in ランのクライアント側マージは、未信頼のレビュー本�
 
 詳細: [references/automerge-design.md](references/automerge-design.md)
 
+## Codex で実行する
+
+Codex には Workflow ランタイムが無いため、同梱のランナー `runner/run.mjs` が同じ生成物を Node で評価し、`agent()` を `codex exec` のエージェントで動かす。ホストの判断は Workflow 版と同じで、下の「フロー」と上の引数の意味もそのまま使える。起動は対象リポジトリのメイン worktree で `node <skillDir>/runner/run.mjs --tool codex --args <args.json>`（まず `--dry-run`）。前提・終了コード・autoMerge の前提・ガードの限界・ログの片づけは [references/runners.md](references/runners.md)、内部の詳細は [runner/README.md](runner/README.md) を参照する。OpenCode は未対応（`--tool opencode` は終了コード 3）。
+
 ## フロー
 
 ### Step 1: ツリーを取得して依存グラフ付き実行キューを構築する（Tree）

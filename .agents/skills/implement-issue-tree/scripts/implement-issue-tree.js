@@ -3099,8 +3099,7 @@ const d=await zn()
 
 if(!d||(d.fileExists===false&&b.fileExisted)||
 (d.fileExists&&(UF(gx(Object.keys(d.hashes).sort()))!==d.keysSha256||
-Object.keys(d.hashes).length!==d.keysCount||
-d.highWaterBytes!==b.highWaterBytes||d.highWaterVersion!==b.highWaterVersion))){
+Object.keys(d.hashes).length!==d.keysCount))){
 throw new Error(
 `状態ファイル（${Hz}）の内容照合が成立しなかったため停止した（新規着手 0 件）。再実行し、解消しなければ退避（mv ${Hz} ${Hz}.aside）して確認する`,
 )
@@ -3139,8 +3138,8 @@ items:f,
 verified:i,
 unverified:h.map(Number),
 keys:j?Object.keys(d.hashes):[],
-highWaterBytes:j?b.highWaterBytes:0,
-highWaterVersion:j?b.highWaterVersion:0,
+highWaterBytes:j?d.highWaterBytes:0,
+highWaterVersion:j?d.highWaterVersion:0,
 }
 }
 
@@ -3638,19 +3637,19 @@ return''
 
 
 const aG={
-'measure-residual-bytes.sh':'dacb23c64e107c29c782f88d125103557202e680c7f0fdf796f148af17c86f1f',
-'measure-free-disk.sh':'3c43a4fe1d1f23c444fad188b9100eb71d55343a7969958fbeb6abeac17f55e5',
-'observe-pr.sh':'18638de5e3ea6785a85ba029b22816f8d0fee075f1206062c77c762038cb6310',
-'base-merge.sh':'5c7daf5f2e96cbf8b723ec9e7e8a0bf10bf8102255cff55d17041b0f3d825227',
-'pr-push.sh':'aa49f0edbddda08d0c323b66b8f45588832b40a80b729094f741a2fbdb4c51f3',
-'reply-resolve.sh':'30f173ef232fdfd24e023a7e55f89eb2e8f864a8d7c068111299aa2c8e392cf8',
-'state.sh':'c4a63557907c443ecbdd68f284c9f2b7fe6a9ea2b6a230288d3eb2ba8cbda83a',
-'merge-gate.sh':'c846024442926596175f393ff1414f822460901a4f555c1d92db74a21b705e31',
-'worktree-remove.sh':'6cc3913982d0f7829612b4f56831797581f4005be27a7481394c7df52ccf8577',
-'recover-prep.sh':'8d012867028bb5521797a6500eb1eafb8fe5e400368a8c6f830a7a709078f84b',
-'fetch-tree.sh':'42cae70a53c55406a317d3ad6015919b00c099371a62569de3697801c5dd8c8c',
-'declared-deps.sh':'5cb5f9b3c1873ae4bf086ff11aeb7b013f7069aaa8fe37d0c3017cf95f350fd6',
-'repo-scan.sh':'05e543736e7268c513ed05837b1fec209c4a02eb24d17843dcb3cb370aeb1489',
+'measure-residual-bytes.sh':'27206aeb4fab9ad378fe5f97706eb8ebcac1ad1fac6e6f9caadecc0c66f84561',
+'measure-free-disk.sh':'e2302a52784d900a21b48b5990dd9d0b284f6e5872edeb201f1e5c42d57645ee',
+'observe-pr.sh':'f1ced24a950ad5204cf71324343185fa1f4b94b4c1d538ae1eef8c2eeed6a832',
+'base-merge.sh':'b62b1cd28b098472ff27e3f1f1de4c4f6ecaca127b8db06e4cca1e4dd38c9ce3',
+'pr-push.sh':'d2bee381b63b95847c777cc63311a30ff032ab6a48c48b400b0ed1eb17aa106f',
+'reply-resolve.sh':'a9189730cf96c0cd6cc93fb53da6c0b6aa8582425c03947e02cfcda2506d973d',
+'state.sh':'acf7a5429877d7f3ffaa263297e8891f21e87c0193fd2f12e1e4a220adee0df3',
+'merge-gate.sh':'64c55b2be12fa1aedd654cd81ae5a34345eecd8cde45559e98e068b7ebab38f6',
+'worktree-remove.sh':'9c37adbbd59000f4aa0e18633928cf15a9b2453d7c0d0729ed5145710017590c',
+'recover-prep.sh':'a22c0ec29fefb46e405d57eee35b46d6ca6a2d622cded34a9374b7c8abc97d29',
+'fetch-tree.sh':'be3948e416bc8ac2a8c7f019df7f58efbd91bd4afe3e76fc8654d49d7de76569',
+'declared-deps.sh':'95cb060536b774db0f599146d59b70547404beb48033550dfabeaa65113b8394',
+'repo-scan.sh':'bc1e11e0ec918ecdb54fb95836bb36d5d594800413c36e8cdc1d0d3141765c63',
 }
 
 

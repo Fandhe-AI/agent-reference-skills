@@ -45,7 +45,9 @@
 # 確認の方法: `git -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=all`（利用者の status.showUntrackedFiles や
 #       グローバルの除外ファイル〔core.excludesFile・~/.config/git/ignore〕に左右されない形。素の status は設定で
 #       未追跡を隠す）。リポジトリの .gitignore と .git/info/exclude に載った ignore 対象（node_modules・dist 等）は汚れに数えず、中身ごと消える
-#       （--ignored は見ない）。残る限界は references/script-trust-model.md に記載。
+#       （--ignored は見ない）。--ignore-submodules=all は未初期化 submodule の gitlink だけの変更（index での付け替え・追加・削除）も隠すので、
+#       `git diff-index --cached --raw --ignore-submodules=none <HEAD>` の gitlink の行（wr_count_gitlink_raw。中へは降りない）を汚れに足す（Issue #867）。
+#       残る限界は references/script-trust-model.md に記載。
 # lock: Claude Code の形（`claude agent|session <名前> (pid N)` と `… (pid N start <LC_ALL=C TZ=UTC ps -o lstart= の出力>)`）で、そのプロセスが
 #       死んでいる（kill -0 が ESRCH、自己確認の通った ps -p が「無い」、/proc が見える環境で /proc/<pid> が無い、のうち少なくとも 1 つが
 #       肯定的に「存在しない」と言い、どれも「存在する」と言わない。EPERM は存在扱い）か、start が現在のプロセスの値と一致しない（pid の再利用）ときだけ外す。
@@ -184,7 +186,7 @@ T_UNLOCKED=false
 # $5 = 1 のとき、登録が無いのに実体のパスがあるものを retained-unregistered にする（discard の --head / --expect-branch / --require-missing。空 = not-registered のまま）
 # $6 = 1 のとき、実体が無いときだけ消す（discard の --require-missing と --branch の後始末。実体がある・lock ありは何も消さず、unlock もしない。lock は pid の生死を問わず retained-locked）
 remove_one() {
-  local m=$1 path=$2 expect=${3:-} expect_sha=${4:-} unreg_guard=${5:-0} req_missing=${6:-0} wt_sha wt_head wt_full sr_rc wt_unborn lreal list top real cwd_real plan lockact alive cur_start status_out ls_out sub_init gd rc kmsg krc kw pw pself pout prc xw
+  local m=$1 path=$2 expect=${3:-} expect_sha=${4:-} unreg_guard=${5:-0} req_missing=${6:-0} wt_sha wt_head wt_full sr_rc wt_unborn lreal list top real cwd_real plan lockact alive cur_start status_out ls_out sub_init gd gl_base gl_raw rc kmsg krc kw pw pself pout prc xw
   T_WT=""
   T_DIRTY=0
   T_UNLOCKED=false
@@ -299,6 +301,20 @@ remove_one() {
         sr_rc=0
         git --no-optional-locks -c core.fsmonitor=false -C "${path}" show-ref --verify -q "${wt_full}" >/dev/null 2>&1 || sr_rc=$?
         if [ "${sr_rc}" -eq 1 ]; then wt_unborn=1; fi
+      fi
+      # 未初期化 submodule の gitlink だけの変更（index での付け替え・追加・削除）は --ignore-submodules=all の status に出ない（Issue #867）。
+      # 汚れに数えないと discard は素の git worktree remove に拒まれて failed になる。index と HEAD の木（コミットが無ければ空の木）を
+      # 比べた gitlink の差を汚れに足す（--cached は index と木だけを読み、submodule の中へは降りない）。比べられなければ確認不能。
+      # 空の木と比べるのは unborn と決まったときだけ（コミットを一過性に読めなかっただけなら、全 gitlink を変更と数えず確認不能にする）
+      gl_base=${wt_sha}
+      if [ -z "${gl_base}" ] && [ "${wt_unborn}" = 1 ]; then
+        gl_base=$(git --no-optional-locks -c core.fsmonitor=false -C "${path}" hash-object -t tree /dev/null 2>/dev/null) || gl_base=""
+      fi
+      if [ -n "${gl_base}" ] &&
+        gl_raw=$(git --no-optional-locks -c core.fsmonitor=false -C "${path}" diff-index --cached --raw --no-renames --no-ext-diff --ignore-submodules=none "${gl_base}" 2>/dev/null); then
+        WR_DIRTY=$((WR_DIRTY + $(wr_count_gitlink_raw "${gl_raw}")))
+      else
+        WR_DIRTY=-1
       fi
       # 初期化済み submodule（index の gitlink のうち作業ツリー側に .git があるもの。git submodule status は中へ降りるので使わない）と、
       # この worktree 専用の modules ディレクトリ（deinit 後もコミットが残り得る。照合済みの git ディレクトリの下を読む）

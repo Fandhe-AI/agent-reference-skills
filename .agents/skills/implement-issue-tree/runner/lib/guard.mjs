@@ -1,9 +1,14 @@
-// ランナーが起動するエージェントに対して拒否するコマンド形の一覧と、そこから Codex の rules と
-// OpenCode の permissions / policies を機械的に作る関数。
+// ランナーが起動するエージェントに対して拒否するコマンド形の一覧と、そこから Codex の rules を機械的に作る関数。
+// OpenCode は未対応。globs は Codex の rules に出ない形（位置が不定で先頭一致で書けない）の記録として残し、
+// OpenCode を戻すときの入力と、agent-guard.sh が止める形の例の対応（runner-units.test.mjs）に使う。
 //
-// 位置づけ: 強制はここではしない。コマンドを実際に止めるのは次の 2 つで、どちらも配布済みの共通ガードを使う。
-//   - Codex: PreToolUse hook（init-codex の agent-guard.sh。ランナーが subagent=true で呼ぶ）。
-//   - OpenCode: plugin（init-opencode の agent-guard。同じ agent-guard.sh を呼ぶ）。
+// Codex の rules（codexRules）は Codex アダプタでは使わない（phase0 の決定: rules は `-c` では効かず、読ませるには
+// project を trusted にする必要がある。trusted にすると worktree の .codex/hooks.json が bypass で動くため採らない）。
+// codexRules は、一覧と rules が対応することを確かめるテスト（runner-units.test.mjs）と、init-codex の rules との
+// 対応を見る参照のために残す。Codex の補助の層は permission profile（書ける場所）で、コマンド形の判定は hook だけが行う。
+//
+// 位置づけ: 強制はここではしない。コマンドを実際に止めるのは Codex の PreToolUse hook（init-codex の agent-guard.sh。
+// ランナーが subagent=true で呼ぶ）で、配布済みの共通ガードを使う。
 // シェルの入れ子・env -S・演算子の解析はそちらが持つ。本モジュールにはコマンド文字列の判定器を持たない
 // （弱い複製が配布物のガードと食い違うのを避けるため。方針の経緯は _/local-plans/iit-runners-codex-opencode.md）。
 // 一覧の各形が agent-guard.sh で deny になることは dev/implement-issue-tree/tests/runner-units.test.mjs が
@@ -28,23 +33,30 @@
 // それでも `gh -R o/r issue create --title "pr merge"` のようにオプション付きでタイトルに形そのものを書く場合は掛かり得る。
 //
 // 実効の防御はサーバー側の ruleset と G0 にある（Workflow 版の merge-guard-hook と同じ位置づけ）。
-// rules と permissions は補助層で、先頭一致・文字列照合のため入れ子や変数を含む形は止められない。
+// permissions（と、使うとすれば rules）は補助層で、先頭一致・文字列照合のため入れ子や変数を含む形は止められない。
 //
 // マージ系の権限分離: マージを許すのは「autoMerge: true のランの merge-exec ラベル」だけで、許すのは
-// MERGE_EXEC_COMMAND の完全一致の 1 形だけ。この完全一致の 1 形の強制は plugin / hook 側の責務で、
+// MERGE_EXEC_COMMAND の完全一致の 1 形だけ（Codex は PR 番号で具体化した mergeExecCommandFor(prNumber) に絞り、
+// 子の env に GH_REPO を固定する。PR 番号と repo は agent-host が req.merge で渡す。lib/merge-target.mjs）。この完全一致の 1 形の強制は plugin / hook 側の責務で、
 // ここは mergeOnly の形（gh pr merge）を allowMerge の一覧から外すだけである。外した後も
 // `gh pr merge --admin`・`--auto`、承認、REST / GraphQL のマージ、認証情報の読み出しは一覧に残る。
 
 /** merge-exec の完全一致の形（src の merge プロンプトの手順 3 と同じ形）。照合は plugin / hook 側が行う。 */
 export const MERGE_EXEC_COMMAND = /^HEAD_SHA="[0-9a-f]{40}"; gh pr merge [1-9][0-9]* --squash --delete-branch --match-head-commit "\$HEAD_SHA"$/
 
+/** PR 番号で具体化した merge-exec の完全一致の形。prNumber が正の安全な整数でなければ throw する。 */
+export function mergeExecCommandFor(prNumber) {
+  if (!Number.isSafeInteger(prNumber) || prNumber < 1) throw new TypeError('mergeExecCommandFor: prNumber は正の整数')
+  return new RegExp(`^HEAD_SHA="[0-9a-f]{40}"; gh pr merge ${prNumber} --squash --delete-branch --match-head-commit "\\$HEAD_SHA"$`)
+}
+
 /** GraphQL の mutation 名の呼び出し（`name(` と `name (`）。名前だけの一致は repo 名・ブランチ名と衝突し、ThreadReply 等の別 mutation も巻き込む。 */
 const mutationGlobs = (name) => [`gh api*${name}(*`, `gh api*${name} (*`]
 
 /**
  * 拒否する形の一覧。
- *   prefixes: argv の先頭一致で書ける形（要素の配列は選択肢）。Codex の prefix_rule と OpenCode の glob の両方を作る。
- *   globs: 位置が不定で先頭一致では書けない形。OpenCode の glob だけを作る（Codex の rules は先頭一致のため書けない）。
+ *   prefixes: argv の先頭一致で書ける形（要素の配列は選択肢）。Codex の prefix_rule を作る。
+ *   globs: 位置が不定で先頭一致では書けない形。Codex の rules には出さない（先頭一致のため書けない）。
  *   mergeOnly: allowMerge の一覧から外す形（gh pr merge だけ）。
  *   guardGap: agent-guard.sh が（subagent=true でも）止めない形を含む。rules / permissions だけが止める。
  */
@@ -74,44 +86,16 @@ export function expandPrefix(pattern) {
   return acc
 }
 
-/** gh / git の前置きグローバルオプション（`gh -R x pr merge`・`git -C d push`）を許す形を足す。直後の語は `-` 始まりに限る。 */
-function withGlobalOptionVariant(glob) {
-  const m = /^(gh|git) (\S.*)$/.exec(glob)
-  return m && !m[2].startsWith('*') ? [glob, `${m[1]} -* ${m[2]}`] : [glob]
-}
-
-/** allowMerge に応じた有効な形。Codex と OpenCode は必ずここを通して同じ集合から作る。 */
+/** allowMerge に応じた有効な形。Codex の rules はここを通して作る。 */
 export function activeForms({ allowMerge = false } = {}) {
   return DENY_FORMS.filter((f) => !(allowMerge && f.mergeOnly))
-}
-
-/** OpenCode へ渡す glob の一覧（prefixes 由来と globs 由来。重複なし）。 */
-export function opencodePatterns(opts = {}) {
-  const out = []
-  for (const f of activeForms(opts)) {
-    for (const p of f.prefixes) for (const argv of expandPrefix(p)) out.push(...withGlobalOptionVariant(`${argv.join(' ')}*`))
-    for (const g of f.globs) out.push(...withGlobalOptionVariant(g))
-  }
-  return [...new Set(out)]
-}
-
-/**
- * OpenCode の permissions / policies（init-opencode の opencode.jsonc と同じ形式）。session.create で
- * allow-all は付けない（config の permissions が打ち消されるため。Phase 0-6）。policies は session の許可では外せない。
- * @param {{ allowMerge?: boolean }} [opts]
- */
-export function opencodeRules(opts = {}) {
-  const patterns = opencodePatterns(opts)
-  return {
-    permissions: patterns.map((resource) => ({ action: 'shell', resource, effect: 'deny' })),
-    policies: patterns.map((resource) => ({ action: 'tool.use', resource: `shell:${resource}`, effect: 'deny' })),
-  }
 }
 
 const quote = (s) => JSON.stringify(s)
 
 /**
  * Codex の rules ファイル（execpolicy の prefix_rule）の本文。prefixes のある形だけが対象で、globs は含まない。
+ * Codex アダプタは渡さない（ファイル冒頭。`-c` では効かないため）。一覧の対応のテストと参照用。
  * 各規則の match には展開した全組み合わせを入れる（Codex は読み込み時に match が pattern に一致することを検証する）。
  * @param {{ allowMerge?: boolean }} [opts]
  */

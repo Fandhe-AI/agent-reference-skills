@@ -1,6 +1,6 @@
 // iit の *_SCHEMA が使う JSON Schema のサブセットを検証する、外部依存なしの検証器。
 //
-// 役割: agent() が受け取った応答（Codex の最終出力・OpenCode の応答から取り出した JSON）を、
+// 役割: agent() が受け取った応答（Codex の最終出力から取り出した JSON）を、
 // ホストへ渡す前に schema で検証する境界。不適合な値をホストへ渡さない（受入基準 4）ための唯一の判定。
 //
 // 対象キーワードは、生成物と開発ファイルの全 schema（`*_SCHEMA` と signedOutputSchema・obj が組む
