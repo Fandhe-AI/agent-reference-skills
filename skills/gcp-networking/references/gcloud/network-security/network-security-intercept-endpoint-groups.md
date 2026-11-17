@@ -621,6 +621,30 @@ NOTES
         $ gcloud beta network-security intercept-endpoint-groups update
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud network-security intercept-endpoint-groups update my-endpoint-group \
+    --project=my-project \
+    --location=global \
+    --update-labels=k1=v1,k2=v2
+
+gcloud network-security intercept-endpoint-groups update my-endpoint-group \
+    --project=my-project \
+    --location=global \
+    --remove-labels=k3,k4
+
+gcloud network-security intercept-endpoint-groups update my-endpoint-group \
+    --project=my-project \
+    --location=global \
+    --clear-labels
+
+gcloud network-security intercept-endpoint-groups update my-endpoint-group \
+    --project=my-project \
+    --location=global \
+    --description='new description'
+```
+
 ### gcloud beta network-security intercept-endpoint-groups create
 
 ```text
@@ -764,6 +788,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `update` examples pass `--location=us-central1-a`, but the `create`, `describe` and `delete` examples on this page put `my-endpoint-group` in `--location=global` (`projects/my-project/locations/global/...EndpointGroups/my-endpoint-group`), so the `update` examples would not find the group those examples create; the runnable form uses `--location=global`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the last `create` example passes `--mirroring-deployment-group`, which is not a flag of this command (gcloud 593.0.0: "unrecognized arguments: --mirroring-deployment-group=... (did you mean '--intercept-deployment-group'?)"); the runnable form uses `--intercept-deployment-group`, the flag in the SYNOPSIS.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the last `list` example passes `projects/my-project/locations/global/interceptEndpointGroups` as a positional argument, but the `list` SYNOPSIS takes no positional arguments (gcloud 593.0.0: "unrecognized arguments: projects/my-project/locations/global/interceptEndpointGroups"); the runnable form drops it (to give the project and location, use `--location=projects/my-project/locations/global` as in the previous example).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
