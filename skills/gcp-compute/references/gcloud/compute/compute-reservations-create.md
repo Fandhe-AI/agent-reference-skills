@@ -1,0 +1,273 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/reservations/create
+---
+
+# gcloud compute reservations create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute reservations create
+
+```text
+NAME
+    gcloud compute reservations create - create a Compute Engine reservation
+
+SYNOPSIS
+    gcloud compute reservations create RESERVATION
+        (--vm-count=VM_COUNT
+          (--source-instance-template=SOURCE_INSTANCE_TEMPLATE
+          | [--machine-type=MACHINE_TYPE
+          : --accelerator=[count=COUNT],[type=TYPE]
+          --local-ssd=[count=COUNT],[interface=INTERFACE],[size=SIZE]
+          --min-cpu-platform=MIN_CPU_PLATFORM])
+          : --require-specific-reservation --resource-policies=[KEY=VALUE,...])
+        [--description=DESCRIPTION]
+        [--reservation-sharing-policy=RESERVATION_SHARING_POLICY]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--zone=ZONE]
+        [--share-setting=SHARE_SETTING
+          --share-with=SHARE_WITH,[SHARE_WITH,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create a Compute Engine reservation.
+
+EXAMPLES
+    To create a Compute Engine reservation by specifying VM properties using an
+    instance template, run:
+
+        $ gcloud compute reservations create my-reservation --vm-count=1 \
+          --source-instance-template=example-instance-template \
+          --zone=fake-zone
+
+    To create a Compute Engine reservation by directly specifying VM
+    properties, run:
+
+        $ gcloud compute reservations create my-reservation --vm-count=1 \
+          --machine-type=custom-8-10240 \
+          --min-cpu-platform="Intel Haswell" \
+          --accelerator=count=2,type=nvidia-tesla-v100 \
+          --local-ssd=size=375,interface=scsi --zone=fake-zone
+
+POSITIONAL ARGUMENTS
+     RESERVATION
+        Name of the reservation to create.
+
+REQUIRED FLAGS
+     Manage the SpecificSKU reservation properties.
+
+     This must be specified.
+
+       --vm-count=VM_COUNT
+          The number of VM instances that are allocated to this reservation.
+          The value of this field must be an int in the range [1, 1000].
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+       --require-specific-reservation
+          Indicates whether the reservation can be consumed by VMs with "any
+          reservation" defined. If enabled, then only VMs that target this
+          reservation by name using --reservation-affinity=specific can consume
+          from this reservation.
+
+       --resource-policies=[KEY=VALUE,...]
+          The resource policies to include in this reservation. If you omit
+          this flag, no resource policies are added. You can specify any string
+          as the key, and specify the name of a resource policy as the value.
+
+       Manage the instance properties for the SpecificSKU reservation.
+
+       Exactly one of these must be specified:
+
+         --source-instance-template=SOURCE_INSTANCE_TEMPLATE
+            The url of the instance template that will be used to populate the
+            fields of the reservation. Instance properties can not be defined
+            in addition to source instance template.
+
+         Or at least one of these can be specified:
+
+           Define the individual instance properties for the SpecificSKU
+           reservation.
+
+           --machine-type=MACHINE_TYPE
+              The predefined or custom machine type that you want to reserve.
+              To supply a custom machine type, the string must be formatted
+              precisely with the word custom, a hyphen, the integer number of
+              vCPUs, a hyphen, and the integer amount of memory in megabytes.
+              For example, custom-32-29440 configures 32 vCPUs and 29440 MB of
+              memory.
+
+              Different reservation types restrict the available machine
+              series. To review the machine series and types that each
+              reservation type supports, see
+              https://docs.cloud.google.com/compute/docs/instances/choose-reservation-type#comparison
+
+              This flag argument must be specified if any of the other
+              arguments in this group are specified.
+
+           --accelerator=[count=COUNT],[type=TYPE]
+              Manage the configuration of the type and number of accelerator
+              cards attached.
+               count
+                  The number of accelerators to attach to each instance in the
+                  reservation.
+               type
+                  The specific type (e.g. nvidia-tesla-k80 for nVidia Tesla
+                  K80) of accelerator to attach to instances in the
+                  reservation. Use gcloud compute accelerator-types list to
+                  learn about all available accelerator types.
+
+           --local-ssd=[count=COUNT],[interface=INTERFACE],[size=SIZE]
+              Manage the size and the interface of local SSD to use. See
+              https://cloud.google.com/compute/docs/disks/local-ssd for more
+              information.
+               interface
+                  The kind of disk interface exposed to the VM for this SSD.
+                  Valid values are scsi and nvme. SCSI is the default and is
+                  supported by more guest operating systems. NVME may provide
+                  higher performance.
+               size
+                  The size of the local SSD in base-2 GB.
+               count
+                  The number of local SSD to use per VM. If you don't specify
+                  this argument, then the default value is 1.
+
+           --min-cpu-platform=MIN_CPU_PLATFORM
+              Optional minimum CPU platform of the reservation to create.
+
+OPTIONAL FLAGS
+     --description=DESCRIPTION
+        An optional description of the reservation to create.
+
+     --reservation-sharing-policy=RESERVATION_SHARING_POLICY
+        The reservation sharing policy to use for this reservation.
+        RESERVATION_SHARING_POLICY must be one of:
+
+         ALLOW_ALL
+            The reservation can be shared with Google Cloud services.
+         DISALLOW_ALL
+            The reservation won't be shared with Google Cloud services. If you
+            omit this flag during creation, the default value is DISALLOW_ALL.
+
+     --resource-manager-tags=[KEY=VALUE,...]
+        Resource manager tags to be bound to the reservation.
+
+     --zone=ZONE
+        Zone of the reservation to create. If not specified and the
+        compute/zone property isn't set, you might be prompted to select a zone
+        (interactive mode only).
+
+        To avoid prompting when this flag is omitted, you can set the
+        compute/zone property:
+
+            $ gcloud config set compute/zone ZONE
+
+        A list of zones can be fetched by running:
+
+            $ gcloud compute zones list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/zone
+
+        Alternatively, the zone can be stored in the environment variable
+        CLOUDSDK_COMPUTE_ZONE.
+
+     Manage the properties of a shared reservation.
+
+     --share-setting=SHARE_SETTING
+        The projects that can use the reservation. SHARE_SETTING must be one
+        of:
+
+         local
+            Only your project can use the reservation. This is the default
+            value.
+         projects
+            Your project and up to 100 other projects within your project's
+            organization can use the reservation. If you specify this value,
+            then you must also include the --share-with flag in the command.
+
+     --share-with=SHARE_WITH,[SHARE_WITH,...]
+        If this reservation is shared (--share-setting=projects), then specify
+        a comma-separated list of projects to share the reservation with. List
+        projects using project IDs or project numbers.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute reservations create
+
+        $ gcloud beta compute reservations create
+```
+
+### gcloud beta compute reservations create
+
+```text
+NAME
+    gcloud beta compute reservations create - create a Compute Engine
+        reservation
+
+SYNOPSIS
+    gcloud beta compute reservations create RESERVATION
+        (--vm-count=VM_COUNT
+          (--source-instance-template=SOURCE_INSTANCE_TEMPLATE
+          | [--machine-type=MACHINE_TYPE
+          : --accelerator=[count=COUNT],[type=TYPE]
+          --local-ssd=[count=COUNT],[interface=INTERFACE],[size=SIZE]
+          --min-cpu-platform=MIN_CPU_PLATFORM])
+          : --require-specific-reservation --resource-policies=[KEY=VALUE,...])
+        [--description=DESCRIPTION]
+        [--reservation-sharing-policy=RESERVATION_SHARING_POLICY]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--zone=ZONE]
+        [--delete-after-duration=DELETE_AFTER_DURATION
+          | --delete-at-time=DELETE_AT_TIME]
+        [--share-setting=SHARE_SETTING
+          --share-with=SHARE_WITH,[SHARE_WITH,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute reservations create
+
+```text
+NAME
+    gcloud alpha compute reservations create - create a Compute Engine
+        reservation
+
+SYNOPSIS
+    gcloud alpha compute reservations create RESERVATION
+        (--vm-count=VM_COUNT
+          (--source-instance-template=SOURCE_INSTANCE_TEMPLATE
+          | [--machine-type=MACHINE_TYPE
+          : --accelerator=[count=COUNT],[type=TYPE]
+          --local-ssd=[count=COUNT],[interface=INTERFACE],[size=SIZE]
+          --maintenance-freeze-duration=MAINTENANCE_FREEZE_DURATION
+          --maintenance-interval=MAINTENANCE_INTERVAL
+          --min-cpu-platform=MIN_CPU_PLATFORM])
+          : --require-specific-reservation --resource-policies=[KEY=VALUE,...])
+        [--description=DESCRIPTION]
+        [--reservation-sharing-policy=RESERVATION_SHARING_POLICY]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--zone=ZONE]
+        [--delete-after-duration=DELETE_AFTER_DURATION
+          | --delete-at-time=DELETE_AT_TIME]
+        [--share-setting=SHARE_SETTING
+          --share-with=SHARE_WITH,[SHARE_WITH,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/reservations/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
