@@ -106,3 +106,23 @@
 | gcloud compute health-checks test-iam-permissions | 3 commands (alpha, beta, ga); compute health-checks test-iam-permissions … | [compute-health-checks-test-iam-permissions.md](./compute-health-checks-test-iam-permissions.md) |
 | gcloud compute health-checks update | 21 commands (alpha, beta, ga); compute health-checks update grpc … | [compute-health-checks-update.md](./compute-health-checks-update.md) |
 | gcloud compute health-sources | 21 commands (alpha, beta, ga); compute health-sources create … | [compute-health-sources.md](./compute-health-sources.md) |
+| gcloud compute hosts | 9 commands (alpha, beta, ga); compute hosts describe … | [compute-hosts.md](./compute-hosts.md) |
+| gcloud compute http-health-checks | 18 commands (alpha, beta, ga); compute http-health-checks create … | [compute-http-health-checks.md](./compute-http-health-checks.md) |
+| gcloud compute https-health-checks | 16 commands (alpha, beta, ga); compute https-health-checks create … | [compute-https-health-checks.md](./compute-https-health-checks.md) |
+| gcloud compute image-views | 6 commands (alpha, beta, ga); compute image-views describe … | [compute-image-views.md](./compute-image-views.md) |
+| gcloud compute images add-iam-policy-binding | 3 commands (alpha, beta, ga); compute images add-iam-policy-binding … | [compute-images-add-iam-policy-binding.md](./compute-images-add-iam-policy-binding.md) |
+| gcloud compute images add-labels | 3 commands (alpha, beta, ga); compute images add-labels … | [compute-images-add-labels.md](./compute-images-add-labels.md) |
+| gcloud compute images create | 3 commands (alpha, beta, ga); compute images create … | [compute-images-create.md](./compute-images-create.md) |
+| gcloud compute images delete | 3 commands (alpha, beta, ga); compute images delete … | [compute-images-delete.md](./compute-images-delete.md) |
+| gcloud compute images deprecate | 3 commands (alpha, beta, ga); compute images deprecate … | [compute-images-deprecate.md](./compute-images-deprecate.md) |
+| gcloud compute images describe | 3 commands (alpha, beta, ga); compute images describe … | [compute-images-describe.md](./compute-images-describe.md) |
+| gcloud compute images describe-from-family | 3 commands (alpha, beta, ga); compute images describe-from-family … | [compute-images-describe-from-family.md](./compute-images-describe-from-family.md) |
+| gcloud compute images export | 3 commands (alpha, beta, ga); compute images export … | [compute-images-export.md](./compute-images-export.md) |
+| gcloud compute images get-iam-policy | 3 commands (alpha, beta, ga); compute images get-iam-policy … | [compute-images-get-iam-policy.md](./compute-images-get-iam-policy.md) |
+| gcloud compute images import | 3 commands (alpha, beta, ga); compute images import … | [compute-images-import.md](./compute-images-import.md) |
+| gcloud compute images list | 3 commands (alpha, beta, ga); compute images list … | [compute-images-list.md](./compute-images-list.md) |
+| gcloud compute images packages | 2 commands (alpha); alpha compute images packages diff … | [compute-images-packages.md](./compute-images-packages.md) |
+| gcloud compute images remove-iam-policy-binding | 3 commands (alpha, beta, ga); compute images remove-iam-policy-binding … | [compute-images-remove-iam-policy-binding.md](./compute-images-remove-iam-policy-binding.md) |
+| gcloud compute images remove-labels | 3 commands (alpha, beta, ga); compute images remove-labels … | [compute-images-remove-labels.md](./compute-images-remove-labels.md) |
+| gcloud compute images set-iam-policy | 3 commands (alpha, beta, ga); compute images set-iam-policy … | [compute-images-set-iam-policy.md](./compute-images-set-iam-policy.md) |
+| gcloud compute images test-iam-permissions | 3 commands (alpha, beta, ga); compute images test-iam-permissions … | [compute-images-test-iam-permissions.md](./compute-images-test-iam-permissions.md) |
