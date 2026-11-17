@@ -1,0 +1,273 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/network-interfaces/add
+---
+
+# gcloud compute instances network-interfaces add
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute instances network-interfaces add
+
+```text
+NAME
+    gcloud compute instances network-interfaces add - add a Dynamic Network
+        Interface to a Compute Engine instance
+
+SYNOPSIS
+    gcloud compute instances network-interfaces add INSTANCE_NAME
+        [--aliases=ALIASES] [--external-ipv6-address=EXTERNAL_IPV6_ADDRESS]
+        [--external-ipv6-prefix-length=EXTERNAL_IPV6_PREFIX_LENGTH]
+        [--igmp-query=IGMP_QUERY]
+        [--internal-ipv6-address=INTERNAL_IPV6_ADDRESS]
+        [--internal-ipv6-prefix-length=INTERNAL_IPV6_PREFIX_LENGTH]
+        [--ipv6-network-tier=IPV6_NETWORK_TIER] [--network=NETWORK]
+        [--network-attachment=NETWORK_ATTACHMENT] [--network-tier=NETWORK_TIER]
+        [--parent-nic-name=PARENT_NIC_NAME]
+        [--private-network-ip=PRIVATE_NETWORK_IP]
+        [--service-class-id=SERVICE_CLASS_ID] [--stack-type=STACK_TYPE]
+        [--subnetwork=SUBNETWORK] [--vlan=VLAN] [--zone=ZONE]
+        [--address=ADDRESS | --no-address] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instances network-interfaces add adds a Dynamic Network
+    Interface to a Compute Engine instance.
+
+EXAMPLES
+    To add a Dynamic Network Interface to a Compute Engine instance, run:        $ gcloud compute instances network-interfaces add instance-name \
+            --parent-nic-name=nic1 --vlan=2 --network=network-1 \
+            --subnetwork=subnetwork-1
+
+POSITIONAL ARGUMENTS
+     INSTANCE_NAME
+        Name of the instance to operate on. For details on valid instance
+        names, refer to the criteria documented under the field 'name' at:
+        https://cloud.google.com/compute/docs/reference/rest/v1/instances
+
+FLAGS
+     --aliases=ALIASES
+        The IP alias ranges to allocate for this interface. If there are
+        multiple IP alias ranges, they are separated by semicolons.
+
+        For example:
+
+            --aliases="10.128.1.0/24;range1:/32"
+
+        Each IP alias range consists of a range name and an IP range separated
+        by a colon, or just the IP range. The range name is the name of the
+        range within the network interface's subnet from which to allocate an
+        IP alias range. If unspecified, it defaults to the primary IP range of
+        the subnet. The IP range can be a CIDR range (e.g. 192.168.100.0/24), a
+        single IP address (e.g. 192.168.100.1), or a netmask in CIDR format
+        (e.g. /24). If the IP range is specified by CIDR range or single IP
+        address, it must belong to the CIDR range specified by the range name
+        on the subnet. If the IP range is specified by netmask, the IP
+        allocator will pick an available range with the specified netmask and
+        allocate it to this network interface.
+
+     --external-ipv6-address=EXTERNAL_IPV6_ADDRESS
+        Assigns the given external IPv6 address to an instance. The address
+        must be the first IP in the range. This option is not applicable to
+        instances with stack-type=IPV4_ONLY.
+
+     --external-ipv6-prefix-length=EXTERNAL_IPV6_PREFIX_LENGTH
+        The prefix length of the external IPv6 address range. This flag should
+        be used together with --external-ipv6-address. Currently only /96 is
+        supported and the default value is 96.
+
+     --igmp-query=IGMP_QUERY
+        Determines if the Compute Engine instance can receive and respond to
+        IGMP query packets on the specified network interface. IGMP_QUERY must
+        be one of:
+
+         IGMP_QUERY_DISABLED
+            IGMP Query on the network interface is disabled.
+         IGMP_QUERY_V2
+            IGMP Query V2 on the network interface is enabled.
+
+     --internal-ipv6-address=INTERNAL_IPV6_ADDRESS
+        Assigns the given internal IPv6 address or range to an instance. The
+        address must be the first IP address in the range or a /96 IP address
+        range. This option can only be used on a dual stack instance network
+        interface.
+
+     --internal-ipv6-prefix-length=INTERNAL_IPV6_PREFIX_LENGTH
+        Optional field that indicates the prefix length of the internal IPv6
+        address range, should be used together with
+        --internal-ipv6-address=fd20::. Only /96 IP address range is supported
+        and the default value is 96. If not set, then either the prefix length
+        from --internal-ipv6-address=fd20::/96 will be used or the default
+        value of 96 will be assigned.
+
+     --ipv6-network-tier=IPV6_NETWORK_TIER
+        Specifies the IPv6 network tier that will be used to configure the
+        instance network interface IPv6 access config. IPV6_NETWORK_TIER must
+        be (only one value is supported):
+
+         PREMIUM
+            High quality, Google-grade network tier.
+
+     --network=NETWORK
+        Specifies the network this network interface belongs to.
+
+     --network-attachment=NETWORK_ATTACHMENT
+        The network attachment URL this network interface should connect to.
+
+     --network-tier=NETWORK_TIER
+        Specifies the network tier that will be used to configure the instance
+        network interface. NETWORK_TIER must be one of: PREMIUM, STANDARD,
+        FIXED_STANDARD. The default value is PREMIUM. NETWORK_TIER must be one
+        of:
+
+         FIXED_STANDARD
+            Public internet quality with fixed bandwidth.
+         PREMIUM
+            High quality, Google-grade network tier.
+         STANDARD
+            Public internet quality.
+
+     --parent-nic-name=PARENT_NIC_NAME
+        Name of the parent network interface of a dynamic network interface.
+
+     --private-network-ip=PRIVATE_NETWORK_IP
+        Specifies the RFC1918 IP to assign to the network interface. The IP
+        should be in the subnet IP range.
+
+     --service-class-id=SERVICE_CLASS_ID
+        The regional Service Class ID for the producer service associated with
+        this network interface. Can only be used with network_attachment. It is
+        not possible to use on its own; however, network_attachment can be used
+        without service_class_id.
+
+     --stack-type=STACK_TYPE
+        The stack type for the network interface. Determines if IPv6 is enabled
+        on the network interface. STACK_TYPE must be one of:
+
+         IPV4_IPV6
+            The network interface can have both IPv4 and IPv6 addresses.
+         IPV4_ONLY
+            The network interface will be assigned IPv4 addresses.
+         IPV6_ONLY
+            The network interface will be assigned IPv6 addresses.
+
+     --subnetwork=SUBNETWORK
+        Specifies the subnetwork this network interface belongs to.
+
+     --vlan=VLAN
+        VLAN tag of a dynamic network interface, must be an integer in the
+        range from 2 to 255 inclusively.
+
+     --zone=ZONE
+        Zone of the instance to operate on. If not specified, you might be
+        prompted to select a zone (interactive mode only). gcloud attempts to
+        identify the appropriate zone by searching for resources in your
+        currently active project. If the zone cannot be determined, gcloud
+        prompts you for a selection with all available Google Cloud Platform
+        zones.
+
+        To avoid prompting when this flag is omitted, the user can set the
+        compute/zone property:
+
+            $ gcloud config set compute/zone ZONE
+
+        A list of zones can be fetched by running:
+
+            $ gcloud compute zones list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/zone
+
+        Alternatively, the zone can be stored in the environment variable
+        CLOUDSDK_COMPUTE_ZONE.
+
+     At most one of these can be specified:
+
+       --address=ADDRESS
+          Assigns the given external address to the network interface. The
+          address might be an IP address or the name or URI of an address
+          resource. Specifying an empty string will assign an ephemeral IP.
+          Mutually exclusive with no-address. If neither key is present the
+          network interface will get an ephemeral IP.
+
+       --no-address
+          If specified the network interface will have no external IP. Mutually
+          exclusive with address. If neither key is present the network
+          interfaces will get an ephemeral IP.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instances network-interfaces add
+
+        $ gcloud beta compute instances network-interfaces add
+```
+
+### gcloud beta compute instances network-interfaces add
+
+```text
+NAME
+    gcloud beta compute instances network-interfaces add - add a Dynamic
+        Network Interface to a Compute Engine instance
+
+SYNOPSIS
+    gcloud beta compute instances network-interfaces add INSTANCE_NAME
+        [--aliases=ALIASES] [--external-ipv6-address=EXTERNAL_IPV6_ADDRESS]
+        [--external-ipv6-prefix-length=EXTERNAL_IPV6_PREFIX_LENGTH]
+        [--igmp-query=IGMP_QUERY]
+        [--internal-ipv6-address=INTERNAL_IPV6_ADDRESS]
+        [--internal-ipv6-prefix-length=INTERNAL_IPV6_PREFIX_LENGTH]
+        [--ipv6-aliases=IPV6_ALIASES] [--ipv6-network-tier=IPV6_NETWORK_TIER]
+        [--network=NETWORK] [--network-attachment=NETWORK_ATTACHMENT]
+        [--network-tier=NETWORK_TIER] [--parent-nic-name=PARENT_NIC_NAME]
+        [--private-network-ip=PRIVATE_NETWORK_IP]
+        [--service-class-id=SERVICE_CLASS_ID] [--stack-type=STACK_TYPE]
+        [--subnetwork=SUBNETWORK] [--vlan=VLAN] [--zone=ZONE]
+        [--address=ADDRESS | --no-address] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instances network-interfaces add
+
+```text
+NAME
+    gcloud alpha compute instances network-interfaces add - add a Dynamic
+        Network Interface to a Compute Engine instance
+
+SYNOPSIS
+    gcloud alpha compute instances network-interfaces add INSTANCE_NAME
+        [--aliases=ALIASES] [--[no-]dns64-eligible]
+        [--external-ipv6-address=EXTERNAL_IPV6_ADDRESS]
+        [--external-ipv6-prefix-length=EXTERNAL_IPV6_PREFIX_LENGTH]
+        [--igmp-query=IGMP_QUERY]
+        [--internal-ipv6-address=INTERNAL_IPV6_ADDRESS]
+        [--internal-ipv6-prefix-length=INTERNAL_IPV6_PREFIX_LENGTH]
+        [--ipv6-address=IPV6_ADDRESS] [--ipv6-aliases=IPV6_ALIASES]
+        [--ipv6-network-tier=IPV6_NETWORK_TIER]
+        [--ipv6-prefix-length=IPV6_PREFIX_LENGTH] [--[no-]nat64-eligible]
+        [--network=NETWORK] [--network-attachment=NETWORK_ATTACHMENT]
+        [--network-tier=NETWORK_TIER] [--parent-nic-name=PARENT_NIC_NAME]
+        [--private-network-ip=PRIVATE_NETWORK_IP]
+        [--service-class-id=SERVICE_CLASS_ID] [--stack-type=STACK_TYPE]
+        [--subnetwork=SUBNETWORK] [--vlan=VLAN] [--zone=ZONE]
+        [--address=ADDRESS | --no-address] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/network-interfaces/add (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
