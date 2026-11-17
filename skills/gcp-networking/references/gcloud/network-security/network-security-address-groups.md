@@ -184,7 +184,7 @@ Adapted (not in the official docs): runnable form of the example(s) above: the c
 ```bash
 gcloud network-security address-groups clone-items my-address-group \
     --location=global \
-    --source=projects/other/locations/global/other-address-group
+    --source=projects/other/locations/global/addressGroups/other-address-group
 ```
 
 ### gcloud network-security address-groups create
@@ -1097,6 +1097,7 @@ SYNOPSIS
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `add-items`, `clone-items`, `create`, `describe`, `remove-items` and `update` example omits `--location`, which the SYNOPSIS requires for the resource (no property sets it); gcloud 593.0.0 fails with "Failed to find attribute [location]" without it, so the runnable form adds `--location=global`, the location of the `delete` and `list` examples on this page.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `clone-items` example passes `--source=projects/other/locations/global/other-address-group`, which lacks the `addressGroups` collection segment; an address group is identified as `<containerType>/<containerId>/locations/<location>/addressGroups/<address-group-name>` (https://docs.cloud.google.com/firewall/docs/address-groups-firewall-policies, retrieved 2026-11-17), so the runnable form uses `projects/other/locations/global/addressGroups/other-address-group`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
