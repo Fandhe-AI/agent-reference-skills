@@ -10,10 +10,12 @@ Certificate Manager verifies domain ownership for Google-managed certificates wi
 
 ### Create a per-project DNS authorization
 
+Adapted (not in the official docs): `--type=PER_PROJECT_RECORD` becomes `--type=per-project-record`, the value listed in the gcloud help.
+
 ```bash
 gcloud certificate-manager dns-authorizations create AUTHORIZATION_NAME \
     --domain="DOMAIN_NAME" \
-    --type=PER_PROJECT_RECORD
+    --type=per-project-record
 ```
 
 ## Options / Props
@@ -42,6 +44,7 @@ gcloud certificate-manager dns-authorizations create AUTHORIZATION_NAME \
 - The validation sub-domain must be openly resolvable; split-horizon or DNS firewall environments can interfere.
 - `PER_PROJECT_RECORD` DNS authorization manages certificates independently per project and returns a project-specific CNAME subdomain and target. Google uses a custom implementation of account-based DNS authorization because the IETF standard is still in progress.
 - Snippet taken from https://docs.cloud.google.com/certificate-manager/docs/deploy-google-managed-dns-auth
+- Adapted from the official docs: the CLI value is written as listed in the gcloud 593.0.0 help of `certificate-manager dns-authorizations create` (`fixed-record`, `per-project-record`); the REST `type` field uses `FIXED_RECORD` / `PER_PROJECT_RECORD`.
 - Source: https://docs.cloud.google.com/certificate-manager/docs/domain-authorization (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

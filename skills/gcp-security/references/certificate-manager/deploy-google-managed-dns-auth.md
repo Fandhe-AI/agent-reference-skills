@@ -12,18 +12,18 @@ Create a Google-managed certificate issued by a publicly trusted CA with DNS aut
 
 One authorization covers one domain. For a wildcard certificate such as `*.myorg.example.com`, create the authorization for the parent domain (`myorg.example.com`). Global Google-managed certificates default to `FIXED_RECORD`.
 
-Adapted (not in the official docs): `--type=[FIXED_RECORD]` becomes `--type=FIXED_RECORD`; gcloud rejects the bracketed value as an invalid choice and zsh treats it as a glob.
+Adapted (not in the official docs): `--type=[FIXED_RECORD]` becomes `--type=fixed-record`, and `--type=PER_PROJECT_RECORD` becomes `--type=per-project-record` (the values listed in the gcloud help); gcloud rejects the bracketed value as an invalid choice and zsh treats it as a glob.
 
 ```bash
 gcloud certificate-manager dns-authorizations create AUTHORIZATION_NAME \
     --domain="DOMAIN_NAME" \
-    --type=FIXED_RECORD
+    --type=fixed-record
 ```
 
 ```bash
 gcloud certificate-manager dns-authorizations create AUTHORIZATION_NAME \
     --domain="DOMAIN_NAME" \
-    --type=PER_PROJECT_RECORD
+    --type=per-project-record
 ```
 
 Adapted (not in the official docs): removed the `//optional` comment and trailing commas so the body is valid JSON.

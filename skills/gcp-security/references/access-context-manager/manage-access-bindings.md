@@ -179,7 +179,7 @@ A successful delete returns a 2xx status and an empty response.
 | `--binding-file` | YAML file with the binding scheme; supports only `scopedAccessSettings` |
 | `--level` | Default access level `accessPolicies/POLICY_ID/accessLevels/ACCESS_LEVEL_NAME`; empty string (`--level=`) removes it |
 | `--dry-run-level` | Default dry run access level applied to all applications not specified in the YAML; empty string removes it |
-| `--session-length` | Session duration in hour format, such as `15h` or `2h` (REST: ISO 8601 duration such as `30m` or `2h`); `0` removes the session control |
+| `--session-length` | Session duration in hour format, such as `15h` or `2h` (REST `sessionLength`: a `google-duration` string in seconds, such as `1800s` for 30 minutes or `7200s` for two hours); `0` removes the session control |
 | `--session-reauth-method` | `LOGIN`, `PASSWORD` or `SECURITY_KEY` (see below); must be used together with `--session-length` |
 
 ### Re-authentication methods
@@ -213,6 +213,7 @@ A successful delete returns a 2xx status and an empty response.
 - Source inconsistency: the guide says `--session-length` and `--session-reauth-method` must be used together, while the gcloud 593.0.0 help says `--session-reauth-method` defaults to `LOGIN` when only `--session-length` is set and cannot be used when `--session-length` is empty or `0`.
 - The gcloud 593.0.0 help shows `--session-reauth-method` values in lowercase (`login`, `password`, `security-key`, default `login`), while the REST API uses `LOGIN`, `PASSWORD`, `SECURITY_KEY`.
 - The source also shows Console steps and PowerShell variants.
+- Corrected from the official docs: the source describes the REST `SESSION_LENGTH` as "ISO 8601 duration format, such as `30m` for 30 minutes, or `2h` for two hours". The Access Context Manager v1 Discovery document types `SessionSettings.sessionLength` as `format: google-duration`, whose JSON form is seconds with an `s` suffix (`1800s`, `7200s`); `30m` / `2h` are the gcloud `--session-length` forms.
 - Source: https://docs.cloud.google.com/access-context-manager/docs/manage-access-bindings (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
