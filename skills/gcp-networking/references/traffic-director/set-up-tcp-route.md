@@ -69,11 +69,14 @@ gcloud compute firewall-rules create tcp-vm-allow-health-checks \
    --rules tcp:10000
 ```
 
+Adapted (not in the official docs): `--port-name=tcp` is added so the backend service subscribes to the `tcp` named port set on the instance group above; without it the backend service subscribes to a named port called `http`, which the group doesn't define.
+
 ```bash
 gcloud compute backend-services create tcp-helloworld-service \
     --global \
     --load-balancing-scheme=INTERNAL_SELF_MANAGED \
     --protocol=TCP \
+    --port-name=tcp \
     --health-checks tcp-helloworld-health-check
 ```
 
@@ -153,6 +156,7 @@ The test service returns **Hello from TCP service**, and echoes text you type.
 - Corrected from the official docs: `set-named-ports tcp-td-mig-us-east1` followed by blank lines before `--zone=ZONE` and `--named-ports=tcp:10000` (the continuation was broken); `--source=tcp-route.yaml` while the file is saved as `tcp_route.yaml`; and `$PROJECT_NUMBER` inside the YAML.
 - The source uses the `debian-10` image family, an old Debian release; choose a currently supported Debian family for new VMs.
 - Cloud Service Mesh / Traffic Director here covers Compute Engine and proxyless gRPC; GKE-based meshes are in the `gcp-gke` skill.
+- Corrected from the official docs: the source creates the backend service without `--port-name` although the instance group exports only `--named-ports=tcp:10000`; the gcloud 593.0.0 help for `gcloud compute backend-services create` says "When omitted, a backend service subscribes to a named port called http", so `--port-name=tcp` was added.
 - Source: https://docs.cloud.google.com/service-mesh/docs/service-routing/set-up-tcp-route (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

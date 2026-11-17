@@ -25,6 +25,8 @@ gcloud network-services meshes import sidecar-mesh \
 
 ### Configure the HTTP server
 
+Adapted (not in the official docs): inside the double-quoted `startup-script` value the source writes `'\`$(/bin/hostname)\`'`, so the local shell expands `$(/bin/hostname)` to the workstation's host name and the VM then runs that name as a command; the example escapes `$` instead, so `$(/bin/hostname)` reaches the startup script and is evaluated on each backend VM.
+
 ```bash
 gcloud compute instance-templates create td-httpd-vm-template \
   --scopes=https://www.googleapis.com/auth/cloud-platform \
@@ -35,7 +37,7 @@ gcloud compute instance-templates create td-httpd-vm-template \
 sudo apt-get update -y
 sudo apt-get install apache2 -y
 sudo service apache2 restart
-echo '<!doctype <html><body><h1>'\`$(/bin/hostname)\`'</h1></body></html>' | sudo tee /var/www/html/index.html"
+echo '<!doctype <html><body><h1>'\$(/bin/hostname)'</h1></body></html>' | sudo tee /var/www/html/index.html"
 ```
 
 ```bash
@@ -136,6 +138,7 @@ The command returns a response from one MIG VM with its hostname.
 
 - The source uses the `debian-11` image family, an older Debian release; choose a currently supported Debian family for new VMs (the proxyless guide uses `debian-12`).
 - Cloud Service Mesh / Traffic Director here covers Compute Engine and proxyless gRPC; GKE-based meshes are in the `gcp-gke` skill.
+- Corrected from the official docs: the source startup script `echo '<!doctype <html><body><h1>'\`$(/bin/hostname)\`'</h1></body></html>'` sits inside a double-quoted `--metadata=startup-script="..."` argument, so `$(/bin/hostname)` is expanded by the shell that runs gcloud and the escaped backticks then execute that host name on the VM; `\$(/bin/hostname)` without backticks defers the expansion to the VM.
 - Source: https://docs.cloud.google.com/service-mesh/docs/service-routing/set-up-envoy-http-mesh (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
