@@ -225,14 +225,21 @@ gcloud network-connectivity transports create my-cci-aws \
     --remote-profile aws-us-east-1 \
     --remote-account-id 12345 \
     --network default \
-    --advertised-routes '10.128.0.0/9'
+    --advertised-routes '10.128.0.0/9' \
+    --region=us-east4
+
+gcloud network-connectivity transports create my-cci-aws \
+    --activation-key ABC1234 \
+    --network default \
+    --region=us-east4
 
 gcloud network-connectivity transports create my-cci-aws \
     --bandwidth 1G \
     --remote-profile aws-us-east-1 \
     --remote-account-id 12345 \
-    --hub projects/12345/locations/us-central1/hubs/my-hub \
-    --auto-accept
+    --hub projects/12345/locations/global/hubs/my-hub \
+    --auto-accept \
+    --region=us-east4
 ```
 
 ### gcloud network-connectivity transports delete
@@ -834,8 +841,9 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
-- Incomplete example: the `gcloud network-connectivity transports create` examples do not pass `--region`; gcloud 593.0.0 fails with "Failed to find attribute [region]" (the region is set only by a fully specified name or `--region`). Add `--region` (see FLAGS on this page).
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `create` examples do not pass `--region`; gcloud 593.0.0 fails with "Failed to find attribute [region]" (the region is set only by a fully specified name or `--region`, and no property sets it), so the runnable form adds `--region=us-east4`, the region of the `delete` example on this page (use the region of your transport).
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `create` examples pass `--profile aws-us-east-1`, but the SYNOPSIS flag for the remote transport profile is `--remote-profile` (gcloud 593.0.0: "unrecognized arguments: --profile (did you mean '--remote-profile'?) aws-us-east-1"); the runnable form uses `--remote-profile`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the hub example passes `--hub projects/12345/locations/us-central1/hubs/my-hub`; NCC hubs are global resources, and gcloud 593.0.0 rejects the regional path ("Error parsing [hub]. Invalid value: projects/12345/locations/us-central1/hubs/my-hub"), so the runnable form uses `projects/12345/locations/global/hubs/my-hub`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
