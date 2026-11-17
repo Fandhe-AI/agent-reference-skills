@@ -497,3 +497,7 @@
 | gcloud compute snapshot-groups | 6 commands (alpha); alpha compute snapshot-groups create … | [compute-snapshot-groups.md](./compute-snapshot-groups.md) |
 | gcloud compute snapshot-recycle-bin-policy | 4 commands (alpha, beta); beta compute snapshot-recycle-bin-policy describe … | [compute-snapshot-recycle-bin-policy.md](./compute-snapshot-recycle-bin-policy.md) |
 | gcloud compute snapshot-settings | 6 commands (alpha, beta, ga); compute snapshot-settings describe … | [compute-snapshot-settings.md](./compute-snapshot-settings.md) |
+| gcloud compute snapshots (part 1) | 35 commands (alpha, beta, ga); compute snapshots add-iam-policy-binding … | [compute-snapshots-1.md](./compute-snapshots-1.md) |
+| gcloud compute snapshots (part 2) | 6 commands (alpha, beta, ga); alpha compute snapshots remove-iam-policy-binding … | [compute-snapshots-2.md](./compute-snapshots-2.md) |
+| gcloud compute sole-tenancy node-groups | 39 commands (alpha, beta, ga); compute sole-tenancy node-groups add-iam-policy-binding … | [compute-sole-tenancy-node-groups.md](./compute-sole-tenancy-node-groups.md) |
+| gcloud compute sole-tenancy node-templates | 27 commands (alpha, beta, ga); compute sole-tenancy node-templates add-iam-policy-binding … | [compute-sole-tenancy-node-templates.md](./compute-sole-tenancy-node-templates.md) |
