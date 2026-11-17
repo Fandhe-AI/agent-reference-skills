@@ -153,6 +153,7 @@ skills/gcp-compute/
 | REST のメソッド・パスを調べたい（Compute Engine API・Batch API・Cloud TPU API・OS Config API・Bare Metal Solution API・Cluster Director（hypercomputecluster）・Oracle Database API） | rest | [references/rest/README.md](references/rest/README.md) |
 | 各 API のメソッド | rest/compute、rest/batch、rest/baremetalsolution、rest/hypercomputecluster、rest/oracledatabase、rest/osconfig、rest/tpu | [references/rest/compute/README.md](references/rest/compute/README.md)、[references/rest/batch/README.md](references/rest/batch/README.md)、[references/rest/baremetalsolution/README.md](references/rest/baremetalsolution/README.md)、[references/rest/hypercomputecluster/README.md](references/rest/hypercomputecluster/README.md)、[references/rest/oracledatabase/README.md](references/rest/oracledatabase/README.md)、[references/rest/osconfig/README.md](references/rest/osconfig/README.md)、[references/rest/tpu/README.md](references/rest/tpu/README.md) |
 | REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
+| 各 API のメッセージ型（Instance / Disk / InstanceTemplate / Reservation、Job / Task、Node、OsPolicyAssignment 等） | rest-schemas/compute、rest-schemas/batch、rest-schemas/baremetalsolution、rest-schemas/hypercomputecluster、rest-schemas/oracledatabase、rest-schemas/osconfig、rest-schemas/tpu | [references/rest-schemas/compute/README.md](references/rest-schemas/compute/README.md)、[references/rest-schemas/batch/README.md](references/rest-schemas/batch/README.md)、[references/rest-schemas/baremetalsolution/README.md](references/rest-schemas/baremetalsolution/README.md)、[references/rest-schemas/hypercomputecluster/README.md](references/rest-schemas/hypercomputecluster/README.md)、[references/rest-schemas/oracledatabase/README.md](references/rest-schemas/oracledatabase/README.md)、[references/rest-schemas/osconfig/README.md](references/rest-schemas/osconfig/README.md)、[references/rest-schemas/tpu/README.md](references/rest-schemas/tpu/README.md) |
 | Compute Engine の概要・インスタンスの概念・リージョンとゾーン・割り当て・インスタンスのライフサイクル・プロビジョニングモデル・VM の作成と起動・廃止一覧 | compute-overview | [references/compute-overview/README.md](references/compute-overview/README.md) |
 | 停止 / 一時停止 / リセットの違い・グローバル / リージョン / ゾーンリソース | compute-overview | [references/compute-overview/README.md](references/compute-overview/README.md) |
 | マシンファミリー・シリーズ・タイプの体系・コンピューティング最適化・メモリ最適化・Arm VM | compute-machine-types | [references/compute-machine-types/README.md](references/compute-machine-types/README.md) |
@@ -176,8 +177,6 @@ skills/gcp-compute/
 | Cluster Director（Slurm クラスタ）の作成・マシンタイプ・消費オプション・接続・クォータ・OS イメージ | cluster-director | [references/cluster-director/README.md](references/cluster-director/README.md) |
 | Confidential VM（対応構成・作成・構成証明・組織ポリシーによる強制）・Confidential Space のワークロード | confidential-computing | [references/confidential-computing/README.md](references/confidential-computing/README.md) |
 | Oracle Database@Google Cloud の概要・環境準備・ODB Network・Exadata Infrastructure・Autonomous AI Database・IAM・クォータ | oracle-database | [references/oracle-database/README.md](references/oracle-database/README.md) |
-
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/osconfig` / `rest-schemas/tpu`
 
 ## 他スキルとの使い分け
 
