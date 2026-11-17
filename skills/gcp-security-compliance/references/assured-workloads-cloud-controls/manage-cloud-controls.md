@@ -14,8 +14,10 @@ The source documents these tasks in the Google Cloud console (Compliance > Confi
 
 Example detection logic for resource type `cloudkms.googleapis.com/CryptoKey` (check the Cloud KMS key rotation period):
 
+Adapted (not in the official docs): `rotationPeriod` is converted with `duration(...)` before the comparison.
+
 ```text
-has(resource.data.rotationPeriod) && resource.data.rotationPeriod < duration('60h')
+has(resource.data.rotationPeriod) && duration(resource.data.rotationPeriod) < duration('60h')
 ```
 
 ## Options / Props
@@ -51,6 +53,7 @@ has(resource.data.rotationPeriod) && resource.data.rotationPeriod < duration('60
 - Built-in controls are updated by Google; the release notes announce changes to the control name, finding category, detective or preventive logic, or underlying rule logic. To update after a notification, unassign and redeploy the frameworks that include the control.
 - The source shows Console steps only; no gcloud, REST, or Terraform examples.
 - Snippet taken from https://docs.cloud.google.com/assured-workloads/docs/write-rules-cloud-controls
+- Corrected from the official docs: the key-rotation example compares `resource.data.rotationPeriod` with `duration('60h')` directly. In the Cloud Asset Inventory resource data the field is a JSON duration string such as `"86400s"`, so it is wrapped in `duration(...)`; the CEL spec defines both `duration(string)` and the identity `duration(google.protobuf.Duration)`, so the wrapped form works in either case (https://github.com/google/cel-spec/blob/master/doc/langdef.md).
 - Source: https://docs.cloud.google.com/assured-workloads/docs/manage-cloud-controls (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

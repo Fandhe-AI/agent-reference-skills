@@ -149,6 +149,8 @@ curl -X PATCH \
   "https://modelarmor.googleapis.com/v1/projects/PROJECT_ID/locations/global/floorSetting"
 ```
 
+The REST example above sets `inspectOnly` (violations are inspected and logged, not blocked). Before the blocking test below, set the enforcement type to `INSPECT_AND_BLOCK` with the gcloud command above (and add `VERTEX_AI` back if you removed the integration).
+
 Test inline enforcement with a `generateContent` call that uses a prompt designed to violate the floor settings (put the test prompt in `text`; set `VERTEX_AI_LOCATION` and `PROJECT_ID` first). Expect `blockReason` set to `MODEL_ARMOR`.
 
 ```bash
@@ -214,6 +216,7 @@ curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $(gcl
 - The IAM binding is at project level and grants the Agent Platform service agent; this is the documented requirement.
 - Omitted: a second gcloud `INSPECT_AND_BLOCK` command that hard-codes the project `modelarmor-api-test` (the same command with `PROJECT_ID` is shown above); the REST `PATCH` that sets `"inspectAndBlock": true` with every filter at `LOW_AND_ABOVE`; a floor-settings `generateContent` example whose first `curl ... -d '{` line is duplicated (the test call above is used instead); and two sample responses, one with a line break inside a JSON string.
 - The Console option for floor settings is omitted; see the source page.
+- The source shows the `inspectOnly` REST example immediately before the test that expects `blockReason` `MODEL_ARMOR`; in inspect-only mode Model Armor does not block, so the test needs the `INSPECT_AND_BLOCK` enforcement type set first.
 - Source: https://docs.cloud.google.com/model-armor/model-armor-vertex-integration (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
