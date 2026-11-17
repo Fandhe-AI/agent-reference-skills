@@ -1,0 +1,141 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/routers/get-nat-mapping-info
+---
+
+# gcloud compute routers get-nat-mapping-info
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute routers get-nat-mapping-info
+
+```text
+NAME
+    gcloud compute routers get-nat-mapping-info - display NAT Mapping
+        information in a router
+
+SYNOPSIS
+    gcloud compute routers get-nat-mapping-info NAME [--nat-name=NAT_NAME]
+        [--region=REGION] [--filter=EXPRESSION] [--limit=LIMIT]
+        [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+        $ gcloud compute routers get-nat-mapping-info
+
+    shows a mapping of IP:port-ranges allocated to each VM's interface that is
+    configured to use NAT via the specified router.
+
+EXAMPLES
+    To show NAT mappings from all NATs in router 'r1' in region 'us-central1',
+    run:
+
+        $ gcloud compute routers get-nat-mapping-info r1 --region=us-central1
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the router to get NAT mapping info.
+
+FLAGS
+     --nat-name=NAT_NAME
+        The NAT name to filter out NAT mapping information
+
+     --region=REGION
+        Region of the router to get NAT mapping info. If not specified, you
+        might be prompted to select a region (interactive mode only).
+
+        To avoid prompting when this flag is omitted, you can set the
+        compute/region property:
+
+            $ gcloud config set compute/region REGION
+
+        A list of regions can be fetched by running:
+
+            $ gcloud compute regions list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/region
+
+        Alternatively, the region can be stored in the environment variable
+        CLOUDSDK_COMPUTE_REGION.
+
+LIST COMMAND FLAGS
+     --filter=EXPRESSION
+        Apply a Boolean filter EXPRESSION to each resource item to be listed.
+        If the expression evaluates True, then that item is listed. For more
+        details and examples of filter expressions, run $ gcloud topic filters.
+        This flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --limit=LIMIT
+        Maximum number of resources to list. The default is unlimited. This
+        flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --page-size=PAGE_SIZE
+        Some services group resource list output into pages. This flag
+        specifies the maximum number of resources per page. The default is
+        determined by the service if it supports paging, otherwise it is
+        unlimited (no paging). Paging may be applied before or after --filter
+        and --limit depending on the service.
+
+     --sort-by=[FIELD,...]
+        Comma-separated list of resource field key names to sort by. The
+        default order is ascending. Prefix a field with ``~'' for descending
+        order on that field. This flag interacts with other flags that are
+        applied in this order: --flatten, --sort-by, --filter, --limit.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute routers get-nat-mapping-info
+
+        $ gcloud beta compute routers get-nat-mapping-info
+```
+
+### gcloud beta compute routers get-nat-mapping-info
+
+```text
+NAME
+    gcloud beta compute routers get-nat-mapping-info - display NAT Mapping
+        information in a router
+
+SYNOPSIS
+    gcloud beta compute routers get-nat-mapping-info NAME [--nat-name=NAT_NAME]
+        [--region=REGION] [--filter=EXPRESSION] [--limit=LIMIT]
+        [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute routers get-nat-mapping-info
+
+```text
+NAME
+    gcloud alpha compute routers get-nat-mapping-info - display NAT Mapping
+        information in a router
+
+SYNOPSIS
+    gcloud alpha compute routers get-nat-mapping-info NAME
+        [--nat-name=NAT_NAME] [--region=REGION] [--filter=EXPRESSION]
+        [--limit=LIMIT] [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/routers/get-nat-mapping-info (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
