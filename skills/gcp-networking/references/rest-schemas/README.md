@@ -8,3 +8,7 @@
 | Network Connectivity API (networkconnectivity) | 113 schemas | [networkconnectivity/README.md](./networkconnectivity/README.md) |
 | Network Management API (networkmanagement) | 91 schemas | [networkmanagement/README.md](./networkmanagement/README.md) |
 | Network Security API (networksecurity) | 169 schemas | [networksecurity/README.md](./networksecurity/README.md) |
+| Network Services API (networkservices) | 166 schemas | [networkservices/README.md](./networkservices/README.md) |
+| Service Directory API (servicedirectory) | 22 schemas | [servicedirectory/README.md](./servicedirectory/README.md) |
+| Traffic Director API (trafficdirector) | 59 schemas | [trafficdirector/README.md](./trafficdirector/README.md) |
+| Serverless VPC Access API (vpcaccess) | 12 schemas | [vpcaccess/README.md](./vpcaccess/README.md) |
