@@ -21,7 +21,7 @@ skills/gcp-compute/
   references/
     gcloud/                       # 機械生成: gcloud 593.0.0、取得 2026-11-14
       README.md
-      compute/  # 分割投入中（182 / 602 ページ。収録済みは README 掲載分のみ）
+      compute/  # 分割投入中（192 / 602 ページ。収録済みは README 掲載分のみ）
         README.md                 # gcloud compute（Compute Engine 全般に加え、ネットワーク・LB・Cloud Armor 系、compute tpus、compute os-config を含む）
         compute-<group>.md        # 例: compute-addresses.md
         compute-<group>-<cmd>.md  # GA は gcloud help の verbatim、alpha / beta は NAME + SYNOPSIS
@@ -120,7 +120,7 @@ skills/gcp-compute/
 
 未投入カテゴリ（`gcloud/oracle-database` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`gcloud/compute`: 182 / 602 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`gcloud/compute`: 192 / 602 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
