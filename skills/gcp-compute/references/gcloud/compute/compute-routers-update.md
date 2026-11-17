@@ -211,6 +211,7 @@ SYNOPSIS
 
 ## Notes
 
+- Corrected from the official docs (the help text above is verbatim): the `--add-advertisement-ranges` description gives its examples as "--advertisement-ranges=192.168.10.0/24" and "--advertisement-ranges=192.168.10.0/24=my-networks", but the SYNOPSIS has no `--advertisement-ranges` flag (only `--set-advertisement-ranges`, `--add-advertisement-ranges` and `--remove-advertisement-ranges`); to append ranges, use `--add-advertisement-ranges=192.168.10.0/24` (or `--add-advertisement-ranges=192.168.10.0/24=my-networks`).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
