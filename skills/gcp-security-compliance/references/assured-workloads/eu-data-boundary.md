@@ -16,6 +16,14 @@ BigQuery uses Cloud Logging for some of your log data. To maintain compliance, d
 gcloud alpha logging settings update --organization=ORGANIZATION_ID --disable-default-sink
 ```
 
+This organization setting applies only to projects created after it is set; it does not disable the `_Default` sink of existing projects or move existing log buckets. In each existing project, also disable the `_Default` sink (or route the logs you keep to a log bucket in an in-scope location):
+
+Adapted (not in the official docs): `--project=PROJECT_ID` added so the command targets the project explicitly.
+
+```bash
+gcloud logging sinks update _Default --disabled --project=PROJECT_ID
+```
+
 ## Options / Props
 
 ### Supported products and API endpoints
@@ -211,6 +219,7 @@ gcloud alpha logging settings update --organization=ORGANIZATION_ID --disable-de
 - Source inconsistency: this page lists the denied TLS versions as `TLS_1_0` / `TLS_1_1`, while the Restrict TLS versions page uses `TLS_VERSION_1` / `TLS_VERSION_1_1`.
 - The product table keeps the source's order and repeated rows (for example Cloud Service Mesh appears twice with different endpoints). Data Security Posture Management is listed in the source with no restrictions; this page does not add any date beyond what the source states.
 - The "Affected features" anchors for Cloud Run and Google Cloud Armor point to sections that are not present on the page; the Cloud Armor global-policy limit is the Compute Engine constraint `compute.disableGlobalCloudArmorPolicy` above.
+- The `--disable-default-sink` and `--storage-location` settings of `logging settings update` apply only to newly created projects (gcloud 593.0.0 help: "It only applies to the newly created projects and will not affect the projects created before"), and the Cloud Logging default resource settings page says the locations of existing log buckets aren't changed (https://docs.cloud.google.com/logging/docs/default-settings, retrieved 2026-11-18). The per-project command is taken from https://docs.cloud.google.com/logging/docs/export/configure_export_v2 (retrieved 2026-11-18), with `--project` added; a disabled `_Default` sink stops storing logs that no other sink routes, so try it on a disposable project first.
 - Source: https://docs.cloud.google.com/assured-workloads/docs/control-packages/eu-data-boundary (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

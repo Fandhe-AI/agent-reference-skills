@@ -58,7 +58,7 @@ On the SCC **Findings** page select your organization and the **Identity** view 
 | Microsoft Azure | User has excessive permissions (`USER_HAS_EXCESSIVE_PERMISSIONS`) | CIEM | Users with highly permissive role assignments. |
 | Google Cloud | MFA not enforced (`MFA_NOT_ENFORCED`) | Security Health Analytics | Users not using 2-Step Verification. |
 | Google Cloud | Custom role not monitored (`CUSTOM_ROLE_NOT_MONITORED`) | Security Health Analytics | No log metrics and alerts for Custom Role changes. |
-| Google Cloud | KMS role separation (`KMS_ROLE_SEPARATION`) | Security Health Analytics | A user holds CryptoKey Encrypter/Decrypter, Encrypter or Decrypter together (separation of duties not enforced). |
+| Google Cloud | KMS role separation (`KMS_ROLE_SEPARATION`) | Security Health Analytics | A user holds Cloud KMS Admin together with CryptoKey Encrypter/Decrypter, Encrypter, Decrypter, Public Key Viewer, Signer or Signer/Verifier (separation of duties not enforced). |
 | Google Cloud | Primitive roles used (`PRIMITIVE_ROLES_USED`) | Security Health Analytics | A user has Owner (`roles/owner`), Editor (`roles/editor`) or Viewer (`roles/viewer`). |
 | Google Cloud | Redis role used on org (`REDIS_ROLE_USED_ON_ORG`) | Security Health Analytics | A Redis IAM role is assigned at organization or folder level. |
 | Google Cloud | Service account role separation (`SERVICE_ACCOUNT_ROLE_SEPARATION`) | Security Health Analytics | A user has Service Account Admin and Service Account User (separation of duties). |
@@ -89,6 +89,7 @@ On the SCC **Findings** page select your organization and the **Identity** view 
 - CIEM findings for AWS and Microsoft Azure come from the CIEM detection service (Microsoft Azure is Preview); Google Cloud findings come from IAM recommender, Security Health Analytics and Event Threat Detection.
 - The source's last column links each category to the SCC vulnerability findings reference (CIEM, IAM, IAM recommender, KMS, Storage, Container, Compute, Monitoring and MFA sections); descriptions above are condensed from the source table.
 - The source page describes Console navigation only; it gives no API or CLI form of the **Identity** view.
+- Corrected from the official docs: this page describes `KMS_ROLE_SEPARATION` as a user holding "any of the following Cloud Key Management Service roles at the same time: CryptoKey Encrypter/Decrypter, Encrypter, or Decrypter". The Security Health Analytics findings reference defines it as a user with the Cloud KMS Admin role and any of CryptoKey Encrypter/Decrypter, Encrypter, Decrypter, Public Key Viewer, Signer or Signer/Verifier at the same time, available only for organization-level activations (https://docs.cloud.google.com/security-command-center/docs/concepts-vulnerabilities-findings, retrieved 2026-11-18).
 - Source: https://docs.cloud.google.com/security-command-center/docs/ciem-identity-access-findings (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
