@@ -294,13 +294,13 @@ NOTES
         $ gcloud beta compute instance-groups managed instance-configs create
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud compute instance-groups managed instance-configs create my-group \
     --region=europe-west4 \
     --instance=my-instance \
-    --stateful-disk=device-name=my-disk,source=projects/my-project/zones/us-central1-a/disks/my-disk-3 \
+    --stateful-disk=device-name=my-disk,source=projects/my-project/zones/europe-west4-a/disks/my-disk-3 \
     --stateful-metadata="my-key=my-value"
 
 gcloud compute instance-groups managed instance-configs create my-group \
@@ -870,15 +870,20 @@ NOTES
         $ gcloud beta compute instance-groups managed instance-configs update
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud compute instance-groups managed instance-configs update my-group \
     --region=europe-west4 \
     --instance=my-instance \
-    --stateful-disk=device-name=my-disk-3,source=projects/my-project/zones/us-central1-a/disks/my-disk-3 \
+    --stateful-disk=device-name=my-disk-3,source=projects/my-project/zones/europe-west4-a/disks/my-disk-3 \
     --remove-stateful-disks=my-disk-1,my-disk-2 \
     --stateful-metadata='my-key=my-value'
+
+gcloud compute instance-groups managed instance-configs update my-group \
+    --region=europe-west4 \
+    --instance=my-instance \
+    --remove-stateful-external-ips=nic0
 ```
 
 ### gcloud beta compute instance-groups managed instance-configs create
@@ -1038,6 +1043,8 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `create` and `update` stateful-disk examples target a group in `--region=europe-west4` but attach a disk from `zones/us-central1-a`; a zonal disk can only be attached to a VM in its own zone, so the runnable form uses `zones/europe-west4-a` (use the zone of the instance).
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `update` example described as removing "a stateful external IP that's defined in network interface nic0" passes `--remove-stateful-internal-ips=nic0`, which removes the stateful internal IP instead; the runnable form uses `--remove-stateful-external-ips=nic0`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
