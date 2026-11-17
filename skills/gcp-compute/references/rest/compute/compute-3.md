@@ -1619,6 +1619,7 @@ curl -X GET \
 - Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
 - Deprecated methods (`deprecated: true` in Discovery): `compute.instanceGroupManagers.setAutoHealingPolicies`. Avoid them in new code.
 - Methods whose description announces a deprecation or a deprecation-related restriction: `compute.imageFamilyViews.get`, `compute.images.deprecate`, `compute.images.getFromFamily`, `compute.images.patch`; read the method description above for the replacement.
+- Methods whose `Versions` line starts with `preview` are not in the `v1` or `beta` Discovery documents; their URL comes from the `compute` `preview` Discovery document, whose base URL is `https://compute.googleapis.com/compute/v1/` (`servicePath: compute/v1/`, revision 20261106), so the `/compute/v1/` path is the one that document gives. It does not mean the method is in the `v1` API version. For the `alpha` version, the base URL is `https://compute.googleapis.com/compute/alpha/`.
 - Source: https://compute.googleapis.com/$discovery/rest?version=v1, https://compute.googleapis.com/$discovery/rest?version=preview, https://compute.googleapis.com/$discovery/rest?version=beta, https://compute.googleapis.com/$discovery/rest?version=alpha (https://developers.google.com/discovery)
 
 ## Related
