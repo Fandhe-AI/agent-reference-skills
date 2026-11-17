@@ -41,7 +41,7 @@ The default network can be used if it exists (new projects have it unless the `c
 
 - Use at most one of the external-connection blocking options (all VMs, or specific containers) for a job.
 - VMs without external IPs can only be reached through internal IPs from another node on the same network; see the Compute Engine page on connecting to internal-only VMs.
-- The VM-side setting is here; VPC networks, firewall policies and Cloud Load Balancing themselves are in the planned `gcp-networking`.
+- The VM-side setting is here; VPC networks and firewall policies themselves are in `gcp-networking`, and Cloud Load Balancing in `gcp-load-balancing`.
 - Modifying the default network may cause issues for jobs that rely on it.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/batch/jobs/submit (gcloud 593.0.0 help).
 - Google Cloud Batch (`batch.googleapis.com`) — not the Claude / OpenAI batch APIs (`anthropic-api-core`, `openai-api-core`) and not Kubernetes Jobs (`gcp-gke`).

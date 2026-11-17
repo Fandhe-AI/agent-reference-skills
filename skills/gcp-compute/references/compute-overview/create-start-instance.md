@@ -88,7 +88,7 @@ gcloud auth application-default login
 - Deprecated related feature: the deprecations page lists "Container startup agent in Compute Engine" as deprecated July 21, 2025 with shutdown July 31, 2026. `create-with-container` (container deployment on instances) is mentioned by this page only as the command for container instances; do not present it as current guidance.
 - The source also shows Console, Terraform and client-library (C#, Go, Java, Node.js, PHP, Python, Ruby) tabs; they are omitted here.
 - The source lists "Create an instance that uses a user-managed service account" as a security configuration option; IAM and service accounts in general are in `gcp-foundation`.
-- VPC subnets, IPv6 and firewall settings used during creation are VM-side settings here; VPC networks and firewall policies themselves are in the planned `gcp-networking`.
+- VPC subnets, IPv6 and firewall settings used during creation are VM-side settings here; VPC networks and firewall policies themselves are in `gcp-networking`.
 - Source: https://docs.cloud.google.com/compute/docs/instances/create-start-instance (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

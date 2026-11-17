@@ -176,7 +176,8 @@ skills/gcp-gke/
 - `cloudflare-sandbox-containers` — Cloudflare Containers / Sandbox SDK。Google Cloud の GKE・Cloud Run とは別プラットフォーム
 - `hono` / `fastify` — HTTP ルーターのフレームワーク。本スキルの Gateway API（`Gateway` / `HTTPRoute`）は Kubernetes のロードバランシング設定で、ルーターのライブラリとは別
 - `gcp-compute`（予定）— Compute Engine VM・ディスク・インスタンステンプレート。GKE ノードの node pool 設定は本スキル
-- `gcp-networking`（予定）— VPC・Cloud Load Balancing・Cloud DNS・Cloud NAT・Traffic Director のサービスルーティング（GKE 以外のターゲット）。GKE の VPC-native・Gateway・Ingress・Service・Cloud Service Mesh は本スキル
+- `gcp-networking` — VPC・Cloud DNS・Cloud NAT・Traffic Director のサービスルーティング（GKE 以外のターゲット）。GKE の VPC-native・Gateway・Ingress・Service・Cloud Service Mesh は本スキル
+- `gcp-load-balancing` — Cloud Load Balancing を直接構成する場合のロードバランサー・NEG・URL マップ（GKE の Gateway・Ingress から作られるものは本スキル）
 - `gcp-security`（予定）— Security Command Center・Binary Authorization のポリシー本体・Cloud KMS。GKE 側の有効化と設定のみ本スキル（`gke-security-hardening`）
 - `gcp-observability`（予定）— Cloud Logging・Cloud Monitoring 本体。GKE が送出するログ・メトリクスの設定は本スキル（`gke-observability-troubleshooting`）
 - `gcp-devops`（予定）— Artifact Registry・Cloud Build・Cloud Deploy
@@ -187,7 +188,7 @@ skills/gcp-gke/
 次は収録していない。必要なときは公式ドキュメントを確認する（https://docs.cloud.google.com/ 配下）。
 
 - GKE の `deploying-gateways` how-to（約 3,437 行で分量過大）— Gateway API の概念・セキュリティ・Policy 設定は `gke-gateway` に収録
-- Traffic Director・service routing — `service-mesh/service-routing-overview.md` の概要のみ収録。`trafficdirector` は `gcp-networking`（予定）の担当。Cloud Run のルーティング関連ページも対象外
+- Traffic Director・service routing — `service-mesh/service-routing-overview.md` の概要のみ収録。`trafficdirector` は `gcp-networking` の担当。Cloud Run のルーティング関連ページも対象外
 - Google Distributed Cloud の hosted / edge / air-gapped（`distributed-cloud/` 配下のドキュメント）— 収録は software only（VMware / bare metal）のみ
 - Google Distributed Cloud の既知の問題・メトリクス一覧・設定ファイルのリファレンス
 - OSS ワークロードのデプロイチュートリアル（Ray・Slurm・推論サーバーなど）・Terraform / Config Connector（`gcp-iac`（予定））

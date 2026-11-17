@@ -67,7 +67,7 @@ sudo journalctl -u google-startup-scripts.service
 - Backward compatibility mode is activated only by manually setting the metadata attribute `enable-guest-agent-core-plugin` to `false`.
 - Important: the guest agent service and the core plugin are mutually exclusive. Do not manually start the disabled `google-guest-agent.service`; running both causes conflicts. The compatibility manager enables it only when needed.
 - Version note: agents earlier than `20250901.00` are monolithic and long poll the metadata server; shared state across SSH and network tasks.
-- Distance: OS Login behavior of the agent is on Compute Engine VMs; IAM concepts in general are in `gcp-foundation`. Firewall rules and VPC Service Controls themselves are in the planned `gcp-networking` / `gcp-security`.
+- Distance: OS Login behavior of the agent is on Compute Engine VMs; IAM concepts in general are in `gcp-foundation`. Firewall rules and VPC Service Controls themselves are in `gcp-networking` / the planned `gcp-security`.
 - Source inconsistency: this page lists `/usr/bin/google_metadata_script_runner` only under the monolithic agent and `/usr/bin/gce_metadata_script_runner` for the plugin-based agent ("starting with version `20250901.00`"), while linux.md reruns startup scripts with `sudo google_metadata_script_runner startup` without naming the agent architecture; that command matches the monolithic agent, which Ubuntu and SLES still use.
 - Source (Linux startup scripts): https://docs.cloud.google.com/compute/docs/instances/startup-scripts/linux (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/docs/images/guest-agent (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)

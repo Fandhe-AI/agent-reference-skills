@@ -102,7 +102,7 @@ Perimeter resources (`perimeterResources`): the cluster's project, plus the Shar
 
 - Perimeter changes can take up to 30 minutes to take effect and then apply to any cluster created in the project.
 - The source's Compute Advisor prompt contains an empty step 4 and a step numbered 7; it is reproduced verbatim.
-- VPC networks, firewall rules and Shared VPC themselves are in the planned `gcp-networking`; IAM in general is in `gcp-foundation`.
+- VPC networks, firewall rules and Shared VPC themselves are in `gcp-networking`; IAM in general is in `gcp-foundation`.
 - Source: https://docs.cloud.google.com/cluster-director/docs/create/process-overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

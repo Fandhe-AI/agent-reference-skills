@@ -67,7 +67,7 @@ Example: 20 needed instances across three zones, 30 total (10 per zone); across 
 - Autoscaling a regional MIG: the autoscaler distributes VMs according to the target distribution shape, creates VMs only in zones with enough quota and capacity (possibly uneven under `EVEN`), and falls back to a zone with capacity if creation fails.
 - Zonal failure: remaining zones keep serving; no new instances are added and none redistributed unless autoscaling is set up.
 - Recreating VMs deletes and recreates them (boot disk data is lost unless stateful); treat the snippet as destructive and try it on a disposable group first.
-- Load balancing, VPC and firewall concepts are in the planned `gcp-networking`; Cloud Load Balancing itself is not covered here.
+- VPC and firewall concepts are in `gcp-networking` and load balancing concepts in `gcp-load-balancing`; Cloud Load Balancing itself is not covered here.
 - Source: https://docs.cloud.google.com/compute/docs/instance-groups/regional-migs (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

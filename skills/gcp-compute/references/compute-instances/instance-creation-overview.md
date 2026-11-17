@@ -39,7 +39,7 @@ If you installed the gcloud CLI previously, run `gcloud components update`. If y
 
 - The container startup agent (konlet) that deploys containers during VM creation is deprecated. Use `docker run` commands in a startup script or `cloud-init` to run containers on VMs and MIGs; see the official "Migrate containers that were deployed on VMs during VM creation" page (https://docs.cloud.google.com/compute/docs/containers/migrate-containers).
 - Flex-start provisioning is labeled Preview in the source.
-- The VM-side network settings are covered here; VPC networks, firewall policies and Cloud Load Balancing themselves belong to the planned `gcp-networking`.
+- The VM-side network settings are covered here; VPC networks and firewall policies themselves belong to `gcp-networking`, and Cloud Load Balancing to `gcp-load-balancing`.
 - The source also shows Gemini-assisted design in the console (Compute Advisor); no gcloud or REST samples are on this page. The code block above is the only command in the source (authentication setup).
 - Source: https://docs.cloud.google.com/compute/docs/instances/instance-creation-overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

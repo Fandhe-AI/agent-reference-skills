@@ -82,7 +82,7 @@ gcloud compute instances create VM_NAME \
 - Default service account: depending on organization policy it may be granted the Editor role automatically. The source strongly recommends enforcing the `iam.automaticIamGrantsForDefaultServiceAccounts` organization policy constraint (enforced by default if your organization was created after May 3, 2024) and replacing Editor with narrower roles, checking the impact with Policy Simulator first. Prefer a dedicated user-managed service account with only the roles the workload needs, not the default account with broad roles.
 - Deleting or disabling the default service account can break applications; a deleted account may be recoverable within 30 days (otherwise see https://docs.cloud.google.com/compute/docs/troubleshooting/troubleshooting-default-service-accounts).
 - Do not change the roles of the Google APIs Service Agent unless a role recommendation suggests it (revoking breaks MIGs and autoscaling); avoid changing the Compute Engine Service Agent roles too (it can cause outages inside VMs).
-- You can also write firewall rules that match traffic by service account; firewall rules themselves are in the planned `gcp-networking`.
+- You can also write firewall rules that match traffic by service account; firewall rules themselves are in `gcp-networking`.
 - Distance line: service accounts for Compute Engine VMs; service accounts and IAM in general are in `gcp-foundation`.
 - Source: https://docs.cloud.google.com/compute/docs/access/service-accounts (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances (retrieved 2026-11-17).

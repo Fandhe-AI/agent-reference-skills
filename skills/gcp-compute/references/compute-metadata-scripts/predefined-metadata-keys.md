@@ -89,7 +89,7 @@ METADATA_VALUE=$(curl -fsS http://metadata.google.internal/computeMetadata/v1/in
 
 ## Notes
 
-- Distance: `enable-oslogin` is the VM-side setting; IAM roles in general are in `gcp-foundation`. `network-interfaces/` and `tags` expose the VM side of VPC settings; VPC networks and firewall policies themselves are in the planned `gcp-networking`.
+- Distance: `enable-oslogin` is the VM-side setting; IAM roles in general are in `gcp-foundation`. `network-interfaces/` and `tags` expose the VM side of VPC settings; VPC networks and firewall policies themselves are in `gcp-networking`.
 - `ssh-keys` applies only when SSH keys are managed through metadata (the source's own condition, kept in the table). oslogin.md (compute-access-ssh) says "Compute instances that use OS Login can't use metadata-based SSH keys. If you enable OS Login for a compute instance, then the compute instance's guest agent ignores the keys stored in metadata"; with `enable-oslogin` set to `TRUE`, keys in `ssh-keys` do not grant access.
 - Never store secrets in custom metadata; any process on the VM can read the whole metadata server.
 - Corrected from the official docs: the borrowed snippet calls `curl` without `-f`; the metadata server returns `404` ("Not Found: the requested endpoint doesn't exist") for a path that does not exist, such as an unset attribute key, and `503` while it "isn't ready to serve"; without `-f`, `curl` prints the error response body and exits 0, so `METADATA_VALUE` holds the error text instead of failing. It now uses `curl -fsS`.

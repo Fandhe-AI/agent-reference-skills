@@ -74,7 +74,7 @@ Only zonal instance groups support a maximum rate for the whole group; regional 
 
 - Example from the source: with serving capacity of 100 RPS per instance and a target utilization of 0.8, the autoscaler maintains 80 RPS per instance.
 - If autoscaling is already enabled, `set-autoscaling` updates the existing autoscaler.
-- The VM-side autoscaler setting is described here; load balancers and backend services themselves are in the planned `gcp-networking`.
+- The VM-side autoscaler setting is described here; load balancers and backend services themselves are in `gcp-load-balancing`.
 - The source also shows the Console steps (signal type "HTTP load balancing utilization").
 - Source: https://docs.cloud.google.com/compute/docs/autoscaler/scaling-load-balancing (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

@@ -74,7 +74,7 @@ The MIG prioritizes instances using these factors together, then selects among t
 - Recreating VMs is destructive for non-stateful disks (boot disk recreated from the template); it preserves the instance name, but the creation timestamp might not change. Check the boot disk creation timestamp to confirm recreation. To recreate every VM, start a rolling update instead. Try on a disposable MIG first.
 - Recreating can take significant time depending on how many instances; the new VMs start as soon as the system can provision them.
 - The source shows only gcloud and REST for recreate; viewing instance info and stateful configuration are separate pages.
-- Backend services, target pools and connection draining belong to load balancing, covered by the planned `gcp-networking`.
+- Backend services, target pools and connection draining belong to load balancing, covered by `gcp-load-balancing`.
 - Adapted from the official docs: `[--region REGION | --zone ZONE]` in the recreate-instances command was changed to `--zone ZONE` (`--region REGION` for a regional MIG).
 - Source: https://docs.cloud.google.com/compute/docs/instance-groups/working-with-managed-instances (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

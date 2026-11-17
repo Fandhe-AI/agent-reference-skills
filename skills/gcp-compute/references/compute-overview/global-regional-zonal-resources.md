@@ -55,7 +55,7 @@ Instances, zonal Hyperdisks and Persistent Disks, Hyperdisk pools (disks in a po
 - A global instance template that names zonal or regional resources can only be used in that zone or region. A regional instance template that names zonal resources can only be used in that zone.
 - Custom images, disk snapshots and machine images are global but allow choosing a multi-region or region storage location for their data.
 - Operations span all three scopes: a list-operations request returns operations across global, regional and zonal resources.
-- Exception: instances in different zones can communicate if they belong to the same VPC network. VPC networks, firewall policies and load balancing themselves are in the planned `gcp-networking`.
+- Exception: instances in different zones can communicate if they belong to the same VPC network. VPC networks and firewall policies themselves are in `gcp-networking`, and load balancing in `gcp-load-balancing`.
 - Adapted from the official docs: the source URIs contain the HTML markup `<var>PROJECT_ID</var>`, and the second one reads `PROJECT_ID>/aggregated/addresses` with a stray `>`; both were replaced with the plain placeholder `PROJECT_ID`.
 - Source inconsistency: this page says "instances in one zone can communicate with instances in another zone if both instances belong to the same VPC network", while networking-overview.md (batch) says "Every network has implied firewall rules that block all incoming connections and allow all outgoing connections". Same-network membership does not by itself allow a connection; the network's VPC firewall rules still control it.
 - Source (implied firewall rules): https://docs.cloud.google.com/batch/docs/networking-overview (retrieved 2026-11-17)

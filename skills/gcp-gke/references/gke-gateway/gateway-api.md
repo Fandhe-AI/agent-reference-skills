@@ -141,7 +141,7 @@ spec:
 - The controllers are Google-hosted (not on GKE control planes or in the user project), are GA, are not a data plane and process no traffic. Several controllers, including non-Google ones, can coexist; each GatewayClass is served by exactly one controller.
 - Ingress and Gateway can be used at the same time; Google recommends moving to Gateway over time.
 - Compute Engine resources created by the controllers are charged to the cluster's project. The single-cluster controller has no additional charge in GKE Standard and Autopilot; multi-cluster Gateway has separate pricing.
-- These are Kubernetes Gateway API resources on GKE, not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (planned `gcp-networking`).
+- These are Kubernetes Gateway API resources on GKE, not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-load-balancing`).
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/gateway-api (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

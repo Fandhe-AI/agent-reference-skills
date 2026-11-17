@@ -72,6 +72,7 @@ gcloud dns record-sets create foo.bar.com. --type=A --ttl=60 \
 - Adapted from the official docs: the gcloud help EXAMPLES block (https://docs.cloud.google.com/sdk/gcloud/reference/dns/record-sets/create, gcloud 593.0.0) printed `--zone=routing-policy-test ... --zone=my_zone`, `--routing_policy_type=FAILOVER` and a string broken by a backslash and newline (`'us-centra1=1.2.3.4,2.3.4.5;us-west\` + newline + `1=3.4.5.6,9.8.7.6'`); corrected as described above. The `$` prompt is removed.
 - Corrected from the official docs: the help example writes the location `us-centra1`; the Cloud DNS routing policy guide writes this value as `us-central1` in its examples ("such as `asia-east1=198.51.100.1;us-central1=203.0.113.1`", https://docs.cloud.google.com/dns/docs/configure-routing-policies, retrieved 2026-11-17), so the example uses `us-central1`.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/dns/record-sets/create (gcloud 593.0.0 help EXAMPLES).
+- Deprecated: the example uses `--routing-policy-backup-data`, which the gcloud 593.0.0 help for `gcloud dns record-sets create` marks "(DEPRECATED)" with "The --routing-policy-backup-data flag is deprecated. Use --routing-policy-backup-item instead." The example is kept as in the help; the full flag list is in the generated `gcloud` references of this skill.
 - Source: https://docs.cloud.google.com/dns/docs/routing-policies-overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -131,7 +131,7 @@ Compute Instance Admin (v1) (`roles/compute.instanceAdmin.v1`) on the project. T
 - Source inconsistency (kept as written): the REST bullet lists say to "include the `automaticRestart` field" for both restart and no-restart, and the instance-template gcloud bullet list names REST fields (`onHostMaintenance`, `automaticRestart`, ...) instead of flags; the command and body show the actual flags/fields (`--restart-on-failure` / `--no-restart-on-failure`, `automaticRestart` true/false).
 - In gcloud 593.0.0, `gcloud compute instances bulk create` marks `--maintenance-policy` as deprecated in favor of `--on-host-maintenance` (the command above still parses and prints a deprecation warning; help text: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/bulk/create).
 - The source also shows Console steps and the REST bodies for `instances.insert`, `instances.bulkInsert`, `instanceTemplates.insert` and `regionInstanceTemplates.insert` (each with a `scheduling` object like the one above); they are omitted here.
-- VM-side setting; VPC networks and firewall are in the planned `gcp-networking`.
+- VM-side setting; VPC networks and firewall are in `gcp-networking`.
 - Source (About host events, cited above as `host-maintenance-overview.md`): https://docs.cloud.google.com/compute/docs/instances/host-maintenance-overview (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/docs/instances/setting-vm-host-options (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

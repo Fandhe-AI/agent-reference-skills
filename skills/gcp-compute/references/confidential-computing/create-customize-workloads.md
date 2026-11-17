@@ -97,7 +97,7 @@ Adapted (not in the official docs): the source example has trailing commas after
 
 - Source: https://docs.cloud.google.com/confidential-computing/confidential-space/docs/create-customize-workloads (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the `image_signatures` example had trailing commas after `"signature_algorithm": "RSASSA_PSS_SHA256",` in the 2nd and 3rd entries; removed (structure unchanged, 1st entry of the same block used as the reference).
-- Open ports expand the attack surface (source caution). Operators must also open the exposed ports in their VPC firewall; VPC firewall rules themselves are in the planned `gcp-networking`.
+- Open ports expand the attack surface (source caution). Operators must also open the exposed ports in their VPC firewall; VPC firewall rules themselves are in `gcp-networking`.
 - Debug practice from the source: use the debug image and minimal attestation validation early, then lock down with attestation validation, launch policies and the production image. Don't print private data to `STDOUT` / `STDERR` and keep final output free of sensitive data.
 - Ask data collaborators about organization IDs, project numbers, resources and IDs, attestation service (Google Cloud Attestation or Intel Trust Authority), processing, output format and location. Resources outside Google Cloud require the author to implement attestation tokens.
 - The source also shows no Terraform or Console forms. Reproducible images can be built with Bazel.

@@ -71,7 +71,7 @@ spec:
 - Authorization (Preview, subject to Pre-GA Offerings Terms): GCPAuthzPolicy defines `ALLOW` or `DENY` rules for north-south traffic; GCPAuthzExtension enables inline callouts to external authorization engines such as Identity-Aware Proxy.
 - Platform admins control domains, certificates and whether HTTPRoute owners may set their own hostnames; application developers control the hostname that generates a certificate if the Gateway permits it.
 - TLS passthrough suits compliance cases where private keys cannot be shared with cloud infrastructure, or non-HTTP TLS protocols.
-- These are Kubernetes Gateway API resources on GKE, not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (planned `gcp-networking`).
+- These are Kubernetes Gateway API resources on GKE, not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-load-balancing`).
 - TLSRoute on the multi-cluster classes: multi-cluster-gateways.md (fleet-multi-cluster) lists TLSRoute as supported on `gke-l7-regional-external-managed-mc`, `gke-l7-rilb-mc` and `gke-l7-cross-regional-internal-managed-mc`, consistent with the table above; see choose-mc-lb-api.md for the comparison page and its Source inconsistency note.
 - Corrected from the official docs: the source names the field `Gateway.spec.tls.certificateRef`. Gateway manifests in the GKE how-to set Secrets per listener as `spec.listeners[].tls.certificateRefs[]` (a list, for example `certificateRefs: - name: store-example-com` under a listener with `tls.mode: Terminate`); use that path.
 - Source (`listeners[].tls.certificateRefs`): https://docs.cloud.google.com/kubernetes-engine/docs/how-to/deploying-gateways (retrieved 2026-11-16)

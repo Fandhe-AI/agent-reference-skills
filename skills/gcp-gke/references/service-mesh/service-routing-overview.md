@@ -44,7 +44,7 @@ gcloud network-services meshes describe my-mesh --location=global
 
 ## Notes
 
-- This page covers `Gateway` as a Cloud Service Mesh network services resource for Envoy ingress. It is distinct from Kubernetes Gateway API resources on GKE and from Cloud Load Balancing configured directly (planned `gcp-networking`).
+- This page covers `Gateway` as a Cloud Service Mesh network services resource for Envoy ingress. It is distinct from Kubernetes Gateway API resources on GKE and from Cloud Load Balancing configured directly (`gcp-load-balancing`).
 - `TLSRoute`: routes by SNI and ALPN, implies TLS passthrough (TLS terminates at the backend; encrypted `ClientHello` unsupported); supported only with Envoy sidecars or gateways.
 - `Gateway` `scope` groups and merges configuration of several `Gateway` resources (for example port 80 and 443); Envoy proxies must use the same scope in their bootstrap. The scope is mandatory even for one gateway. Creating a `Gateway` does not deploy Envoy and does not provision a managed load balancer.
 - Multi-project: a `Mesh` in a central administration project can be referenced by `Route` resources in other projects given VPC connectivity (Shared VPC or VPC Network Peering).

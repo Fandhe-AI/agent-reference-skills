@@ -88,7 +88,7 @@ spec:
 
 ## Notes
 
-- Kubernetes Gateway API resources on GKE, and Multi Cluster Ingress, are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (planned `gcp-networking`).
+- Kubernetes Gateway API resources on GKE, and Multi Cluster Ingress, are not an HTTP framework router (`hono`, `fastify`) and not Cloud Load Balancing configured directly (`gcp-load-balancing`).
 - The source table also lists automated frontend IP management, forwarding rule / target proxy / URL map / backend service / health check management (Yes for MCI and MCG, No for Standalone NEGs) and static / dynamic IP assignment (all Yes).
 - Source inconsistency: this comparison page marks multi-cluster Gateway as "No" for cross-region internal Application Load Balancer, proxy Network Load Balancer and SSL (TLS). The multi-cluster Gateway concepts page (same retrieval date) lists `gke-l7-cross-regional-internal-managed-mc` (cross-region internal Application Load Balancer or cross-region internal proxy Network Load Balancer), regional external and regional internal proxy Network Load Balancers through `gke-l7-regional-external-managed-mc` / `gke-l7-rilb-mc`, and `TLSRoute` (TLS passthrough) on those three GatewayClasses. The table is kept as published; prefer the concepts page for multi-cluster Gateway support (see `multi-cluster-gateways.md`).
 - Source (multi-cluster Gateway GatewayClasses and TLSRoute): https://docs.cloud.google.com/kubernetes-engine/docs/concepts/multi-cluster-gateways (retrieved 2026-11-16)

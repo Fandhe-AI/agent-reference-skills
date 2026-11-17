@@ -85,7 +85,7 @@ gcloud oracle-database odb-networks update ODB_NETWORK_ID \
 - Service connectivity cannot be disabled while any Database Connection uses the ODB Network; enabling can take several minutes.
 - The source also shows Console steps and REST `curl` forms (POST create network, POST create subnet, PATCH enable, PATCH disable with `?updateMask=serviceConnectivityConfig` and body `{}`); they are omitted here because the source's `curl` blocks are broken (the URL line lacks a trailing `\` so `-d` is not passed, and the create-network body lacks a comma after `"gcpOracleZone"`).
 - Corrected from the official docs: the source lists `client_subnet` / `backup_subnet` as the accepted `PURPOSE` values; gcloud 593.0.0 accepts `client-subnet` / `backup-subnet` (REST `CLIENT_SUBNET` / `BACKUP_SUBNET`).
-- Required IAM roles are listed at https://docs.cloud.google.com/oracle/database/docs/setup-oracle-database-environment#deploy-odb-environment; VPC networks and network attachments themselves are in the planned `gcp-networking`.
+- Required IAM roles are listed at https://docs.cloud.google.com/oracle/database/docs/setup-oracle-database-environment#deploy-odb-environment; VPC networks and network attachments themselves are in `gcp-networking`.
 - Next steps in the source: custom DNS domains, Exadata Infrastructure, Exadata VM Cluster, Autonomous AI Database, Database Connections.
 - Source (`--purpose` values): `gcloud oracle-database odb-networks odb-subnets create --help` (gcloud 593.0.0, retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/oracle/database/docs/create-odb-network (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
