@@ -501,3 +501,24 @@
 | gcloud compute snapshots (part 2) | 6 commands (alpha, beta, ga); alpha compute snapshots remove-iam-policy-binding … | [compute-snapshots-2.md](./compute-snapshots-2.md) |
 | gcloud compute sole-tenancy node-groups | 39 commands (alpha, beta, ga); compute sole-tenancy node-groups add-iam-policy-binding … | [compute-sole-tenancy-node-groups.md](./compute-sole-tenancy-node-groups.md) |
 | gcloud compute sole-tenancy node-templates | 27 commands (alpha, beta, ga); compute sole-tenancy node-templates add-iam-policy-binding … | [compute-sole-tenancy-node-templates.md](./compute-sole-tenancy-node-templates.md) |
+| gcloud compute sole-tenancy node-types | 6 commands (alpha, beta, ga); compute sole-tenancy node-types describe … | [compute-sole-tenancy-node-types.md](./compute-sole-tenancy-node-types.md) |
+| gcloud compute ssh | 3 commands (alpha, beta, ga); compute ssh … | [compute-ssh.md](./compute-ssh.md) |
+| gcloud compute ssl-certificates | 13 commands (alpha, beta, ga); compute ssl-certificates create … | [compute-ssl-certificates.md](./compute-ssl-certificates.md) |
+| gcloud compute ssl-policies add-iam-policy-binding | 2 commands (alpha, beta); beta compute ssl-policies add-iam-policy-binding … | [compute-ssl-policies-add-iam-policy-binding.md](./compute-ssl-policies-add-iam-policy-binding.md) |
+| gcloud compute ssl-policies config | alpha compute ssl-policies config export | [compute-ssl-policies-config.md](./compute-ssl-policies-config.md) |
+| gcloud compute ssl-policies create | 3 commands (alpha, beta, ga); compute ssl-policies create … | [compute-ssl-policies-create.md](./compute-ssl-policies-create.md) |
+| gcloud compute ssl-policies delete | 3 commands (alpha, beta, ga); compute ssl-policies delete … | [compute-ssl-policies-delete.md](./compute-ssl-policies-delete.md) |
+| gcloud compute ssl-policies describe | 3 commands (alpha, beta, ga); compute ssl-policies describe … | [compute-ssl-policies-describe.md](./compute-ssl-policies-describe.md) |
+| gcloud compute ssl-policies export | alpha compute ssl-policies export | [compute-ssl-policies-export.md](./compute-ssl-policies-export.md) |
+| gcloud compute ssl-policies get-iam-policy | 2 commands (alpha, beta); beta compute ssl-policies get-iam-policy … | [compute-ssl-policies-get-iam-policy.md](./compute-ssl-policies-get-iam-policy.md) |
+| gcloud compute ssl-policies import | alpha compute ssl-policies import | [compute-ssl-policies-import.md](./compute-ssl-policies-import.md) |
+| gcloud compute ssl-policies list | 3 commands (alpha, beta, ga); compute ssl-policies list … | [compute-ssl-policies-list.md](./compute-ssl-policies-list.md) |
+| gcloud compute ssl-policies list-available-features | 3 commands (alpha, beta, ga); compute ssl-policies list-available-features … | [compute-ssl-policies-list-available-features.md](./compute-ssl-policies-list-available-features.md) |
+| gcloud compute ssl-policies remove-iam-policy-binding | 2 commands (alpha, beta); beta compute ssl-policies remove-iam-policy-binding … | [compute-ssl-policies-remove-iam-policy-binding.md](./compute-ssl-policies-remove-iam-policy-binding.md) |
+| gcloud compute ssl-policies set-iam-policy | 2 commands (alpha, beta); beta compute ssl-policies set-iam-policy … | [compute-ssl-policies-set-iam-policy.md](./compute-ssl-policies-set-iam-policy.md) |
+| gcloud compute ssl-policies test-iam-permissions | 2 commands (alpha, beta); beta compute ssl-policies test-iam-permissions … | [compute-ssl-policies-test-iam-permissions.md](./compute-ssl-policies-test-iam-permissions.md) |
+| gcloud compute ssl-policies update | 3 commands (alpha, beta, ga); compute ssl-policies update … | [compute-ssl-policies-update.md](./compute-ssl-policies-update.md) |
+| gcloud compute start-iap-tunnel | 3 commands (alpha, beta, ga); compute start-iap-tunnel … | [compute-start-iap-tunnel.md](./compute-start-iap-tunnel.md) |
+| gcloud compute storage-pool-types | 6 commands (alpha, beta, ga); compute storage-pool-types describe … | [compute-storage-pool-types.md](./compute-storage-pool-types.md) |
+| gcloud compute storage-pools | 26 commands (alpha, beta, ga); compute storage-pools create … | [compute-storage-pools.md](./compute-storage-pools.md) |
+| gcloud compute target-grpc-proxies | 16 commands (alpha, beta, ga); compute target-grpc-proxies create … | [compute-target-grpc-proxies.md](./compute-target-grpc-proxies.md) |
