@@ -32,3 +32,7 @@
 | gcloud network-services regional-multicast-producer-associations | 5 commands (alpha); alpha network-services regional-multicast-producer-associations create … | [network-services-regional-multicast-producer-associations.md](./network-services-regional-multicast-producer-associations.md) |
 | gcloud network-services route-views | 4 commands (alpha, ga); network-services route-views describe … | [network-services-route-views.md](./network-services-route-views.md) |
 | gcloud network-services service-bindings | 21 commands (alpha, beta, ga); network-services service-bindings create … | [network-services-service-bindings.md](./network-services-service-bindings.md) |
+| gcloud network-services service-lb-policies | 21 commands (alpha, beta, ga); network-services service-lb-policies create … | [network-services-service-lb-policies.md](./network-services-service-lb-policies.md) |
+| gcloud network-services tcp-routes | 10 commands (alpha, ga); network-services tcp-routes delete … | [network-services-tcp-routes.md](./network-services-tcp-routes.md) |
+| gcloud network-services telemetry-policies | 10 commands (alpha, beta); beta network-services telemetry-policies delete … | [network-services-telemetry-policies.md](./network-services-telemetry-policies.md) |
+| gcloud network-services tls-routes | 10 commands (alpha, ga); network-services tls-routes delete … | [network-services-tls-routes.md](./network-services-tls-routes.md) |
