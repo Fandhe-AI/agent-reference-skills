@@ -1,10 +1,13 @@
 // エージェントの応答テキストから、応答が返した JSON オブジェクトを 1 つ取り出す。
 //
-// 役割: OpenCode v2 は JSON Schema を強制できないため、応答は前後に文章やコードフェンスが付き得る。
-// agent-host が schema 検証へ渡す前の取り出し段で、Codex でも最終出力が壊れたときの保険に使う。
+// 役割: 応答は前後に文章やコードフェンスが付き得る（JSON Schema を強制できないツールを戻すときも使う）。
+// agent-host が schema 検証へ渡す前の取り出し段で、Codex では最終出力が壊れたときの保険に使う。
 // 取り出した値の正しさは保証しない（適合の判定は schema-validate が行う）。
 //
 // 対象はオブジェクトだけ（iit の全 schema の最上位は object）。配列・数値だけの応答は取り出さない。
+// 応答全体（または応答全体を包む単一のコードフェンスの中身）が JSON として読めて object 以外（配列・数値・文字列・null）
+// のときは、その中の object も取り出さず undefined を返す（例: `[{"a":1}]`）。答えの最上位が配列なのは schema 違反で、
+// 要素を 1 つ選ぶと「配列の 1 件目だけを答えとみなす」黙った解釈になるため、修復ターンへ回す。
 // 採用の順序（曖昧なら採用せず undefined を返し、呼び出し側の修復ターンに回す。最後の 1 つを拾う挙動はしない。
 // 応答に含まれる引用文・ログ中の JSON を、エージェントの答えとして取り違えないため）:
 //   1. 応答全体（前後の空白を除く）が object として読めるなら、それだけを採用する。
@@ -22,13 +25,18 @@ const WHOLE_FENCE = /^```[A-Za-z0-9_-]*\r?\n([\s\S]*?)\r?\n?```$/
 
 const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
 
-function parseObject(text) {
+/** JSON として読めれば { value }、読めなければ undefined。 */
+function parseJson(text) {
   try {
-    const v = JSON.parse(text)
-    return isObject(v) ? v : undefined
+    return { value: JSON.parse(text) }
   } catch {
     return undefined
   }
+}
+
+function parseObject(text) {
+  const r = parseJson(text)
+  return r !== undefined && isObject(r.value) ? r.value : undefined
 }
 
 /** start の `{` に対応する `}` の位置（無ければ -1）。走査した文字数を budget.scanned に足し、超過で -2 を返す。 */
@@ -57,12 +65,13 @@ function balancedEnd(text, start, budget) {
 export function extractLastJson(text) {
   if (typeof text !== 'string' || text.length === 0 || text.length > MAX_INPUT) return undefined
   const trimmed = text.trim()
-  const whole = parseObject(trimmed)
-  if (whole !== undefined) return whole
+  // 1・2: 応答全体（かフェンスの中身）が JSON として読めたら、それが答え。object でなければ中を探さず拒否する
+  const whole = parseJson(trimmed)
+  if (whole !== undefined) return isObject(whole.value) ? whole.value : undefined
   const fence = WHOLE_FENCE.exec(trimmed)
   if (fence) {
-    const inner = parseObject(fence[1].trim())
-    if (inner !== undefined) return inner
+    const inner = parseJson(fence[1].trim())
+    if (inner !== undefined) return isObject(inner.value) ? inner.value : undefined
   }
 
   const found = []
