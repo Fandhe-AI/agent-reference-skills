@@ -1,0 +1,204 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/networks/update
+---
+
+# gcloud compute networks update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute networks update
+
+```text
+NAME
+    gcloud compute networks update - update a Compute Engine network
+
+SYNOPSIS
+    gcloud compute networks update NAME [--async]
+        [--[no-]enable-ula-internal-ipv6]
+        [--internal-ipv6-range=INTERNAL_IPV6_RANGE] [--mtu=MTU]
+        [--network-firewall-policy-enforcement-order=NETWORK_FIREWALL_POLICY_ENFORCEMENT_ORDER]
+        [--bgp-best-path-selection-mode=BGP_BEST_PATH_SELECTION_MODE
+          --[no-]bgp-bps-always-compare-med
+          --bgp-bps-inter-region-cost=BGP_BPS_INTER_REGION_COST]
+        [--bgp-routing-mode=MODE | --switch-to-custom-subnet-mode]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute networks update is used to update Compute Engine networks.
+
+EXAMPLES
+    To update regional network with the name 'network-name' to global, run:
+
+        $ gcloud compute networks update network-name \
+            --bgp-routing-mode=global
+
+    To update an auto subnet mode network with the name 'network-name' to
+    custom subnet mode, run:
+
+        $ gcloud compute networks update network-name \
+            --switch-to-custom-subnet-mode
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the network to operate on.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --[no-]enable-ula-internal-ipv6
+        Enable/disable ULA internal IPv6 on this network. Enabling this feature
+        will assign a /48 from google defined ULA prefix fd20::/20.
+
+        Use --enable-ula-internal-ipv6 to enable and
+        --no-enable-ula-internal-ipv6 to disable.
+
+     --internal-ipv6-range=INTERNAL_IPV6_RANGE
+        When enabling ULA internal IPv6, caller can optionally specify the /48
+        range they want from the google defined ULA prefix fd20::/20.
+        ULA_IPV6_RANGE must be a valid /48 ULA IPv6 address and within the
+        fd20::/20. Operation will fail if the speficied /48 is already in used
+        by another resource. If the field is not speficied, then a /48 range
+        will be randomly allocated from fd20::/20 and returned via this field.
+
+     --mtu=MTU
+        Maximum transmission unit (MTU) is the size of the largest IP packet
+        that can be transmitted on this network. Default value is 1460 bytes.
+        The minimum value is 1300 bytes and the maximum value is 8896 bytes.
+        The MTU advertised via DHCP to all instances attached to this network.
+
+     --network-firewall-policy-enforcement-order=NETWORK_FIREWALL_POLICY_ENFORCEMENT_ORDER
+        The Network Firewall Policy enforcement order of this network. If not
+        specified, defaults to AFTER_CLASSIC_FIREWALL.
+
+        NETWORK_FIREWALL_POLICY_ENFORCEMENT_ORDER must be one of:
+
+         AFTER_CLASSIC_FIREWALL
+            Network Firewall Policy is enforced after classic firewall.
+         BEFORE_CLASSIC_FIREWALL
+            Network Firewall Policy is enforced before classic firewall.
+
+     BGP Best Path Selection flags
+
+     --bgp-best-path-selection-mode=BGP_BEST_PATH_SELECTION_MODE
+        The BGP best path selection algorithm to be employed.
+        BGP_BEST_PATH_SELECTION_MODE must be one of:
+
+         LEGACY
+            Dynamic routes are ranked based on the multiple exit-discriminator
+            (MED) BGP attribute. When global routing is enabled, the MED of the
+            routes received from other regions is the original MED plus the
+            region-to-region cost.
+         STANDARD
+            Dynamic routes are ranked based on AS Path, Origin, Neighbor ASN
+            and MED BGP attributes. When global routing is enabled,
+            region-to-region cost is used as a tiebreaker. This mode offers
+            customizations to fine-tune BGP best path routing with additional
+            flags like --bgp-bps-always-compare-med and
+            --bgp-bps-inter-region-cost
+
+     --[no-]bgp-bps-always-compare-med
+        Enables/disables the comparison of MED across routes with different
+        Neighbor ASNs. This value can only be set if the
+        --bgp-best-path-selection-mode is STANDARD. Use
+        --bgp-bps-always-compare-med to enable and
+        --no-bgp-bps-always-compare-med to disable.
+
+     --bgp-bps-inter-region-cost=BGP_BPS_INTER_REGION_COST
+        Defines the preferred approach for handling inter-region cost in the
+        selection process. This value can only be set if the
+        --bgp-best-path-selection-mode is STANDARD. BGP_BPS_INTER_REGION_COST
+        must be one of:
+
+         ADD_COST_TO_MED
+            Adds inter-region cost to the MED before comparing the MED value.
+            When multiple routes have the same value after the Add-cost-to-med
+            comparison, the route selection continues and prefers the route
+            with lowest cost.
+         DEFAULT
+            MED is compared as originally received from peers. When multiple
+            routes have the same MED, cost is evaluated as the next step.
+
+     At most one of these can be specified:
+
+       --bgp-routing-mode=MODE
+          The target BGP routing mode for this network. MODE must be one of:
+
+           global
+              Cloud Routers in this network advertise subnetworks from all
+              regions to their BGP peers, and program instances in all regions
+              with the router's best learned BGP routes.
+           regional
+              Cloud Routers in this network advertise subnetworks from their
+              local region only to their BGP peers, and program instances in
+              their local region only with the router's best learned BGP
+              routes.
+
+       --switch-to-custom-subnet-mode
+          Switch to custom subnet mode. This action cannot be undone.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute networks update
+
+        $ gcloud beta compute networks update
+```
+
+### gcloud beta compute networks update
+
+```text
+NAME
+    gcloud beta compute networks update - update a Compute Engine network
+
+SYNOPSIS
+    gcloud beta compute networks update NAME [--async]
+        [--[no-]enable-ula-internal-ipv6]
+        [--internal-ipv6-range=INTERNAL_IPV6_RANGE] [--mtu=MTU]
+        [--network-firewall-policy-enforcement-order=NETWORK_FIREWALL_POLICY_ENFORCEMENT_ORDER]
+        [--bgp-best-path-selection-mode=BGP_BEST_PATH_SELECTION_MODE
+          --[no-]bgp-bps-always-compare-med
+          --bgp-bps-inter-region-cost=BGP_BPS_INTER_REGION_COST]
+        [--bgp-routing-mode=MODE | --switch-to-custom-subnet-mode]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute networks update
+
+```text
+NAME
+    gcloud alpha compute networks update - update a Compute Engine network
+
+SYNOPSIS
+    gcloud alpha compute networks update NAME [--async]
+        [--[no-]enable-ula-internal-ipv6]
+        [--internal-ipv6-range=INTERNAL_IPV6_RANGE] [--mtu=MTU]
+        [--network-firewall-policy-enforcement-order=NETWORK_FIREWALL_POLICY_ENFORCEMENT_ORDER]
+        [--bgp-best-path-selection-mode=BGP_BEST_PATH_SELECTION_MODE
+          --[no-]bgp-bps-always-compare-med
+          --bgp-bps-inter-region-cost=BGP_BPS_INTER_REGION_COST]
+        [--bgp-routing-mode=MODE | --switch-to-custom-subnet-mode]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/networks/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

@@ -355,3 +355,28 @@
 | gcloud compute networks peerings request-delete | 3 commands (alpha, beta, ga); compute networks peerings request-delete … | [compute-networks-peerings-request-delete.md](./compute-networks-peerings-request-delete.md) |
 | gcloud compute networks peerings update | 3 commands (alpha, beta, ga); compute networks peerings update … | [compute-networks-peerings-update.md](./compute-networks-peerings-update.md) |
 | gcloud compute networks subnets add-iam-policy-binding | 3 commands (alpha, beta, ga); compute networks subnets add-iam-policy-binding … | [compute-networks-subnets-add-iam-policy-binding.md](./compute-networks-subnets-add-iam-policy-binding.md) |
+| gcloud compute networks subnets config | alpha compute networks subnets config export | [compute-networks-subnets-config.md](./compute-networks-subnets-config.md) |
+| gcloud compute networks subnets create | 3 commands (alpha, beta, ga); compute networks subnets create … | [compute-networks-subnets-create.md](./compute-networks-subnets-create.md) |
+| gcloud compute networks subnets delete | 3 commands (alpha, beta, ga); compute networks subnets delete … | [compute-networks-subnets-delete.md](./compute-networks-subnets-delete.md) |
+| gcloud compute networks subnets describe | 3 commands (alpha, beta, ga); compute networks subnets describe … | [compute-networks-subnets-describe.md](./compute-networks-subnets-describe.md) |
+| gcloud compute networks subnets expand-ip-range | 3 commands (alpha, beta, ga); compute networks subnets expand-ip-range … | [compute-networks-subnets-expand-ip-range.md](./compute-networks-subnets-expand-ip-range.md) |
+| gcloud compute networks subnets get-iam-policy | 3 commands (alpha, beta, ga); compute networks subnets get-iam-policy … | [compute-networks-subnets-get-iam-policy.md](./compute-networks-subnets-get-iam-policy.md) |
+| gcloud compute networks subnets list | 3 commands (alpha, beta, ga); compute networks subnets list … | [compute-networks-subnets-list.md](./compute-networks-subnets-list.md) |
+| gcloud compute networks subnets list-usable | 3 commands (alpha, beta, ga); compute networks subnets list-usable … | [compute-networks-subnets-list-usable.md](./compute-networks-subnets-list-usable.md) |
+| gcloud compute networks subnets remove-iam-policy-binding | 3 commands (alpha, beta, ga); compute networks subnets remove-iam-policy-binding … | [compute-networks-subnets-remove-iam-policy-binding.md](./compute-networks-subnets-remove-iam-policy-binding.md) |
+| gcloud compute networks subnets set-iam-policy | 3 commands (alpha, beta, ga); compute networks subnets set-iam-policy … | [compute-networks-subnets-set-iam-policy.md](./compute-networks-subnets-set-iam-policy.md) |
+| gcloud compute networks subnets test-iam-permissions | 3 commands (alpha, beta, ga); compute networks subnets test-iam-permissions … | [compute-networks-subnets-test-iam-permissions.md](./compute-networks-subnets-test-iam-permissions.md) |
+| gcloud compute networks subnets update | 3 commands (alpha, beta, ga); compute networks subnets update … | [compute-networks-subnets-update.md](./compute-networks-subnets-update.md) |
+| gcloud compute networks test-iam-permissions | alpha compute networks test-iam-permissions | [compute-networks-test-iam-permissions.md](./compute-networks-test-iam-permissions.md) |
+| gcloud compute networks update | 3 commands (alpha, beta, ga); compute networks update … | [compute-networks-update.md](./compute-networks-update.md) |
+| gcloud compute networks vpc-access connectors | 10 commands (beta, ga); compute networks vpc-access connectors create … | [compute-networks-vpc-access-connectors.md](./compute-networks-vpc-access-connectors.md) |
+| gcloud compute networks vpc-access locations | 2 commands (beta, ga); compute networks vpc-access locations list … | [compute-networks-vpc-access-locations.md](./compute-networks-vpc-access-locations.md) |
+| gcloud compute networks vpc-access operations | 4 commands (beta, ga); compute networks vpc-access operations describe … | [compute-networks-vpc-access-operations.md](./compute-networks-vpc-access-operations.md) |
+| gcloud compute operations | 6 commands (alpha, beta, ga); compute operations describe … | [compute-operations.md](./compute-operations.md) |
+| gcloud compute org-rollout-plans | 8 commands (alpha, beta); beta compute org-rollout-plans create … | [compute-org-rollout-plans.md](./compute-org-rollout-plans.md) |
+| gcloud compute org-rollouts | 9 commands (alpha, beta); beta compute org-rollouts cancel … | [compute-org-rollouts.md](./compute-org-rollouts.md) |
+| gcloud compute org-security-policies associations | 9 commands (alpha, beta, ga); compute org-security-policies associations create … | [compute-org-security-policies-associations.md](./compute-org-security-policies-associations.md) |
+| gcloud compute org-security-policies copy-rules | 3 commands (alpha, beta, ga); compute org-security-policies copy-rules … | [compute-org-security-policies-copy-rules.md](./compute-org-security-policies-copy-rules.md) |
+| gcloud compute org-security-policies create | 3 commands (alpha, beta, ga); compute org-security-policies create … | [compute-org-security-policies-create.md](./compute-org-security-policies-create.md) |
+| gcloud compute org-security-policies delete | 3 commands (alpha, beta, ga); compute org-security-policies delete … | [compute-org-security-policies-delete.md](./compute-org-security-policies-delete.md) |
+| gcloud compute org-security-policies describe | 3 commands (alpha, beta, ga); compute org-security-policies describe … | [compute-org-security-policies-describe.md](./compute-org-security-policies-describe.md) |
