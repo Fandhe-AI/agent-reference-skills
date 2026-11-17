@@ -1,0 +1,472 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/interconnects/attachments/dedicated
+---
+
+# gcloud compute interconnects attachments dedicated
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute interconnects attachments dedicated create
+
+```text
+NAME
+    gcloud compute interconnects attachments dedicated create - create a
+        Compute Engine dedicated interconnect attachment
+
+SYNOPSIS
+    gcloud compute interconnects attachments dedicated create NAME
+        --interconnect=INTERCONNECT --router=ROUTER [--bandwidth=BANDWIDTH]
+        [--candidate-cloud-router-ip-address=CANDIDATE_CLOUD_ROUTER_IP_ADDRESS]
+        [--candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS]
+        [--candidate-customer-router-ip-address=CANDIDATE_CUSTOMER_ROUTER_IP_ADDRESS]
+        [--candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS]
+        [--candidate-ipv6-subnets=[IPV6_SUBNET,...]]
+        [--candidate-subnets=[SUBNET,...]]
+        [--cloud-router-ipv6-interface-id=INTERFACE_ID]
+        [--customer-router-ipv6-interface-id=PEER_INTERFACE_ID]
+        [--description=DESCRIPTION] [--enable-admin] [--encryption=ENCRYPTION]
+        [--ipsec-internal-addresses=[ADDRESSES]] [--mtu=MTU] [--region=REGION]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--stack-type=STACK_TYPE]
+        [--subnet-length=SUBNET_LENGTH] [--vlan=VLAN] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute interconnects attachments dedicated create is used to create
+    a dedicated interconnect attachments. An interconnect attachment is what
+    binds the underlying connectivity of an interconnect to a path into and out
+    of the customer's cloud network.
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the interconnect attachment to create.
+
+REQUIRED FLAGS
+     --interconnect=INTERCONNECT
+        The interconnect for the interconnect attachment
+
+     --router=ROUTER
+        Google Cloud Router to use for dynamic routing.
+
+OPTIONAL FLAGS
+     --bandwidth=BANDWIDTH
+        Provisioned capacity of the attachment. BANDWIDTH must be one of:
+
+         50m
+            50 Mbit/s
+         100m
+            100 Mbit/s
+         200m
+            200 Mbit/s
+         300m
+            300 Mbit/s
+         400m
+            400 Mbit/s
+         500m
+            500 Mbit/s
+         1g
+            1 Gbit/s
+         2g
+            2 Gbit/s
+         5g
+            5 Gbit/s
+         10g
+            10 Gbit/s
+         20g
+            20 Gbit/s
+         50g
+            50 Gbit/s
+         100g
+            100 Gbit/s
+         400g
+            400 Gbit/s
+
+     --candidate-cloud-router-ip-address=CANDIDATE_CLOUD_ROUTER_IP_ADDRESS
+        Single IPv4 address + prefix length to be configured on the cloud
+        router interface for this interconnect attachment. Example:
+        203.0.113.1/29
+
+     --candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS
+        Single IPv6 address + prefix length to be configured on the cloud
+        router interface for this interconnect attachment. Example:
+        2001:db8::1/125
+
+     --candidate-customer-router-ip-address=CANDIDATE_CUSTOMER_ROUTER_IP_ADDRESS
+        Single IPv4 address + prefix length to be configured on the customer
+        router interface for this interconnect attachment. Example:
+        203.0.113.2/29
+
+     --candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS
+        Single IPv6 address + prefix length to be configured on the customer
+        router interface for this interconnect attachment. Example:
+        2001:db8::2/125
+
+     --candidate-ipv6-subnets=[IPV6_SUBNET,...]
+        The candididate-ipv6-subnets field is not available.
+
+     --candidate-subnets=[SUBNET,...]
+        Up to 16 candidate prefixes that can be used to restrict the allocation
+        of cloudRouterIpAddress and customerRouterIpAddress for this
+        attachment. All prefixes must be within link-local address space.
+        Google attempts to select an unused subnet of SUBNET_LENGTH from the
+        supplied candidate subnet(s), or all of link-local space if no subnets
+        supplied. Google does not re-use a subnet already in-use by your
+        project, even if it's contained in one of the candidate subnets. The
+        request fails if all candidate subnets are in use at Google's edge.
+
+     --cloud-router-ipv6-interface-id=INTERFACE_ID
+        cloud-router-ipv6-interface-id field is not available.
+
+     --customer-router-ipv6-interface-id=PEER_INTERFACE_ID
+        customer-router-ipv6-interface-id field is not available.
+
+     --description=DESCRIPTION
+        Human-readable plain-text description of attachment.
+
+     --enable-admin
+        Administrative status of the interconnect attachment. If not provided
+        on creation, defaults to enabled. When this is enabled, the attachment
+        is operational and will carry traffic. Use --no-enable-admin to disable
+        it.
+
+     --encryption=ENCRYPTION
+        Indicates the user-supplied encryption option for this interconnect
+        attachment (VLAN attachment).
+
+        Possible values are:
+
+        NONE - This is the default value, which means the interconnect
+        attachment carries unencrypted traffic. VMs can send traffic to or
+        receive traffic from such interconnect attachment.
+
+        IPSEC - The interconnect attachment carries only traffic that is
+        encrypted by an IPsec device; for example, an HA VPN gateway or
+        third-party IPsec VPN. VMs cannot directly send traffic to or receive
+        traffic from such an interconnect attachment. To use HA VPN over Cloud
+        Interconnect, the interconnect attachment must be created with this
+        option.
+
+        ENCRYPTION must be one of: IPSEC, NONE.
+
+     --ipsec-internal-addresses=[ADDRESSES]
+        List of IP address range names that have been reserved for the
+        interconnect attachment (VLAN attachment). Use this option only for an
+        interconnect attachment that has its encryption option set as IPSEC.
+        Currently only one internal IP address range can be specified for each
+        attachment. When creating an HA VPN gateway for the interconnect
+        attachment, if the attachment is configured to use a regional internal
+        IP address, then the VPN gateway's IP address is allocated from the IP
+        address range specified here. If this field is not specified when
+        creating the interconnect attachment, then when creating any HA VPN
+        gateways for this interconnect attachment, the HA VPN gateway's IP
+        address is allocated from a regional external IP address pool.
+
+     --mtu=MTU
+        Maximum transmission unit (MTU) is the size of the largest IP packet
+        passing through this interconnect attachment. Must be one of 1440,
+        1460, 1500, or 8896. If not specified, the value will default to 1440.
+
+     --region=REGION
+        Region of the interconnect attachment to create. If not specified, you
+        might be prompted to select a region (interactive mode only).
+
+        To avoid prompting when this flag is omitted, you can set the
+        compute/region property:
+
+            $ gcloud config set compute/region REGION
+
+        A list of regions can be fetched by running:
+
+            $ gcloud compute regions list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/region
+
+        Alternatively, the region can be stored in the environment variable
+        CLOUDSDK_COMPUTE_REGION.
+
+     --resource-manager-tags=[KEY=VALUE,...]
+        A comma-separated list of Resource Manager tags to apply to the
+        interconnect.
+
+     --stack-type=STACK_TYPE
+        Stack type of the protocol(s) enabled on this interconnect attachment.
+        STACK_TYPE must be one of:
+
+         IPV4_IPV6
+            Both IPv4 and IPv6 protocols are enabled on this attachment.
+         IPV4_ONLY
+            Only IPv4 protocol is enabled on this attachment.
+
+     --subnet-length=SUBNET_LENGTH
+        Length of the IPv4 subnet mask for this attachment. 29 is the default
+        value, except for attachments on Cross-Cloud Interconnects whose remote
+        location's "constraints.subnetLengthRange" field specifies a minimum
+        subnet length of 30. In that case, the default value is 30. The default
+        value is recommended when there's no requirement on the subnet length.
+        SUBNET_LENGTH must be one of: 29, 30.
+
+     --vlan=VLAN
+        Desired VLAN for this attachment, in the range 2-4093. If not supplied,
+        Google will automatically select a VLAN.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute interconnects attachments dedicated create
+
+        $ gcloud beta compute interconnects attachments dedicated create
+```
+
+### gcloud compute interconnects attachments dedicated update
+
+```text
+NAME
+    gcloud compute interconnects attachments dedicated update - update a
+        Compute Engine dedicated interconnect attachment
+
+SYNOPSIS
+    gcloud compute interconnects attachments dedicated update NAME
+        [--bandwidth=BANDWIDTH]
+        [--candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS]
+        [--candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS]
+        [--candidate-ipv6-subnets=[IPV6_SUBNET,...]]
+        [--cloud-router-ipv6-interface-id=INTERFACE_ID]
+        [--customer-router-ipv6-interface-id=PEER_INTERFACE_ID]
+        [--description=DESCRIPTION] [--enable-admin]
+        [--interconnect=INTERCONNECT] [--mtu=MTU] [--region=REGION]
+        [--stack-type=STACK_TYPE] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute interconnects attachments dedicated update is used to update
+    interconnect attachments. An interconnect attachment is what binds the
+    underlying connectivity of an interconnect to a path into and out of the
+    customer's cloud network.
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the interconnect attachment to patch.
+
+FLAGS
+     --bandwidth=BANDWIDTH
+        Provisioned capacity of the attachment. BANDWIDTH must be one of:
+
+         50m
+            50 Mbit/s
+         100m
+            100 Mbit/s
+         200m
+            200 Mbit/s
+         300m
+            300 Mbit/s
+         400m
+            400 Mbit/s
+         500m
+            500 Mbit/s
+         1g
+            1 Gbit/s
+         2g
+            2 Gbit/s
+         5g
+            5 Gbit/s
+         10g
+            10 Gbit/s
+         20g
+            20 Gbit/s
+         50g
+            50 Gbit/s
+         100g
+            100 Gbit/s
+         400g
+            400 Gbit/s
+
+     --candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS
+        Single IPv6 address + prefix length to be configured on the cloud
+        router interface for this interconnect attachment. Example:
+        2001:db8::1/125
+
+     --candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS
+        Single IPv6 address + prefix length to be configured on the customer
+        router interface for this interconnect attachment. Example:
+        2001:db8::2/125
+
+     --candidate-ipv6-subnets=[IPV6_SUBNET,...]
+        The candididate-ipv6-subnets field is not available.
+
+     --cloud-router-ipv6-interface-id=INTERFACE_ID
+        cloud-router-ipv6-interface-id field is not available.
+
+     --customer-router-ipv6-interface-id=PEER_INTERFACE_ID
+        customer-router-ipv6-interface-id field is not available.
+
+     --description=DESCRIPTION
+        Human-readable plain-text description of attachment.
+
+     --enable-admin
+        Administrative status of the interconnect attachment. When this is
+        enabled, the attachment is operational and will carry traffic. Use
+        --no-enable-admin to disable it.
+
+     --interconnect=INTERCONNECT
+        The interconnect for the interconnect attachment
+
+     --mtu=MTU
+        Maximum transmission unit (MTU) is the size of the largest IP packet
+        passing through this interconnect attachment. Must be one of 1440,
+        1460, 1500, or 8896. If not specified, the value will default to 1440.
+
+     --region=REGION
+        Region of the interconnect attachment to patch. If not specified, you
+        might be prompted to select a region (interactive mode only).
+
+        To avoid prompting when this flag is omitted, you can set the
+        compute/region property:
+
+            $ gcloud config set compute/region REGION
+
+        A list of regions can be fetched by running:
+
+            $ gcloud compute regions list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/region
+
+        Alternatively, the region can be stored in the environment variable
+        CLOUDSDK_COMPUTE_REGION.
+
+     --stack-type=STACK_TYPE
+        Stack type of the protocol(s) enabled on this interconnect attachment.
+        STACK_TYPE must be one of:
+
+         IPV4_IPV6
+            Both IPv4 and IPv6 protocols are enabled on this attachment.
+         IPV4_ONLY
+            Only IPv4 protocol is enabled on this attachment.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute interconnects attachments dedicated update
+
+        $ gcloud beta compute interconnects attachments dedicated update
+```
+
+### gcloud beta compute interconnects attachments dedicated create
+
+```text
+NAME
+    gcloud beta compute interconnects attachments dedicated create - create a
+        Compute Engine dedicated interconnect attachment
+
+SYNOPSIS
+    gcloud beta compute interconnects attachments dedicated create NAME
+        --interconnect=INTERCONNECT --router=ROUTER [--bandwidth=BANDWIDTH]
+        [--candidate-cloud-router-ip-address=CANDIDATE_CLOUD_ROUTER_IP_ADDRESS]
+        [--candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS]
+        [--candidate-customer-router-ip-address=CANDIDATE_CUSTOMER_ROUTER_IP_ADDRESS]
+        [--candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS]
+        [--candidate-ipv6-subnets=[IPV6_SUBNET,...]]
+        [--candidate-subnets=[SUBNET,...]]
+        [--cloud-router-ipv6-interface-id=INTERFACE_ID]
+        [--customer-router-ipv6-interface-id=PEER_INTERFACE_ID]
+        [--description=DESCRIPTION] [--enable-admin] [--encryption=ENCRYPTION]
+        [--ipsec-internal-addresses=[ADDRESSES]] [--mtu=MTU] [--region=REGION]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--stack-type=STACK_TYPE]
+        [--subnet-length=SUBNET_LENGTH] [--vlan=VLAN] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta compute interconnects attachments dedicated update
+
+```text
+NAME
+    gcloud beta compute interconnects attachments dedicated update - update a
+        Compute Engine dedicated interconnect attachment
+
+SYNOPSIS
+    gcloud beta compute interconnects attachments dedicated update NAME
+        [--bandwidth=BANDWIDTH]
+        [--candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS]
+        [--candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS]
+        [--candidate-ipv6-subnets=[IPV6_SUBNET,...]]
+        [--cloud-router-ipv6-interface-id=INTERFACE_ID]
+        [--customer-router-ipv6-interface-id=PEER_INTERFACE_ID]
+        [--description=DESCRIPTION] [--enable-admin]
+        [--interconnect=INTERCONNECT] [--mtu=MTU] [--region=REGION]
+        [--stack-type=STACK_TYPE] [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute interconnects attachments dedicated create
+
+```text
+NAME
+    gcloud alpha compute interconnects attachments dedicated create - create a
+        Compute Engine dedicated interconnect attachment
+
+SYNOPSIS
+    gcloud alpha compute interconnects attachments dedicated create NAME
+        --interconnect=INTERCONNECT --router=ROUTER [--bandwidth=BANDWIDTH]
+        [--candidate-cloud-router-ip-address=CANDIDATE_CLOUD_ROUTER_IP_ADDRESS]
+        [--candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS]
+        [--candidate-customer-router-ip-address=CANDIDATE_CUSTOMER_ROUTER_IP_ADDRESS]
+        [--candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS]
+        [--candidate-ipv6-subnets=[IPV6_SUBNET,...]]
+        [--candidate-subnets=[SUBNET,...]]
+        [--cloud-router-ipv6-interface-id=INTERFACE_ID]
+        [--customer-router-ipv6-interface-id=PEER_INTERFACE_ID]
+        [--description=DESCRIPTION] [--dry-run] [--enable-admin]
+        [--enable-multicast] [--encryption=ENCRYPTION]
+        [--ipsec-internal-addresses=[ADDRESSES]] [--mtu=MTU] [--region=REGION]
+        [--resource-manager-tags=[KEY=VALUE,...]] [--stack-type=STACK_TYPE]
+        [--subnet-length=SUBNET_LENGTH] [--vlan=VLAN] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute interconnects attachments dedicated update
+
+```text
+NAME
+    gcloud alpha compute interconnects attachments dedicated update - update a
+        Compute Engine dedicated interconnect attachment
+
+SYNOPSIS
+    gcloud alpha compute interconnects attachments dedicated update NAME
+        [--bandwidth=BANDWIDTH]
+        [--candidate-cloud-router-ipv6-address=CANDIDATE_CLOUD_ROUTER_IPV6_ADDRESS]
+        [--candidate-customer-router-ipv6-address=CANDIDATE_CUSTOMER_ROUTER_IPV6_ADDRESS]
+        [--candidate-ipv6-subnets=[IPV6_SUBNET,...]]
+        [--cloud-router-ipv6-interface-id=INTERFACE_ID]
+        [--customer-router-ipv6-interface-id=PEER_INTERFACE_ID]
+        [--description=DESCRIPTION] [--enable-admin]
+        [--interconnect=INTERCONNECT] [--mtu=MTU] [--region=REGION]
+        [--stack-type=STACK_TYPE] [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/interconnects/attachments/dedicated (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
