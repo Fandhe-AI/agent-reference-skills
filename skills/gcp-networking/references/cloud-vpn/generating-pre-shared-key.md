@@ -41,14 +41,17 @@ head -c 4096 /dev/urandom | sha256sum | cut -b1-32
 
 On macOS:
 
+Adapted (not in the official docs): `openssl sha256` is replaced with `openssl dgst -sha256 -r`, which prints the digest first, because OpenSSL 3 and later prefix the digest with a label such as `SHA2-256(stdin)= ` and `cut -b1-32` would otherwise put that fixed text into the key.
+
 ```bash
-head -c 4096 /dev/urandom | openssl sha256 | cut -b1-32
+head -c 4096 /dev/urandom | openssl dgst -sha256 -r | cut -b1-32
 ```
 
 ## Notes
 
 - The generated key is a secret: do not commit it, share it, or print it to shared logs. Pass it to `--shared-secret` through a protected variable or file (use a placeholder such as `SHARED_SECRET` in scripts), and configure the same value on the peer gateway.
 - The in-page "Regenerate" widget of the source is an embedded frame and is not reproduced.
+- Corrected from the official docs: the source's macOS example is `head -c 4096 /dev/urandom | openssl sha256 | cut -b1-32`. With OpenSSL 3 and later (checked with OpenSSL 4.0.3 on macOS), `openssl sha256` prints `SHA2-256(stdin)= <digest>`, so the first 32 bytes include the fixed label and only part of the digest; `openssl dgst -sha256 -r` prints the digest first. `openssl rand -base64 32` above is the simpler choice.
 - Source: https://docs.cloud.google.com/network-connectivity/docs/vpn/how-to/generating-pre-shared-key (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
