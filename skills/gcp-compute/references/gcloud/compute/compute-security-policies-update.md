@@ -1,0 +1,175 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/security-policies/update
+---
+
+# gcloud compute security-policies update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute security-policies update
+
+```text
+NAME
+    gcloud compute security-policies update - update a Compute Engine security
+        policy
+
+SYNOPSIS
+    gcloud compute security-policies update NAME [--description=DESCRIPTION]
+        [--enable-layer7-ddos-defense]
+        [--json-custom-content-types=[CONTENT_TYPE,...]]
+        [--json-parsing=JSON_PARSING]
+        [--layer7-ddos-defense-rule-visibility=VISIBILITY_TYPE]
+        [--log-level=LOG_LEVEL]
+        [--network-ddos-protection=NETWORK_DDOS_PROTECTION]
+        [--recaptcha-redirect-site-key=RECAPTCHA_REDIRECT_SITE_KEY]
+        [--user-ip-request-headers=[USER_IP_REQUEST_HEADER,...]]
+        [--global | --region=REGION] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute security-policies update is used to update security
+    policies.
+
+EXAMPLES
+    To update the description run this:
+
+        $ gcloud compute security-policies update SECURITY_POLICY \
+            --description='new description'
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the security policy to update.
+
+FLAGS
+     --description=DESCRIPTION
+        An optional, textual description for the security policy.
+
+     --enable-layer7-ddos-defense
+        Whether to enable Cloud Armor Layer 7 DDoS Defense Adaptive Protection.
+
+     --json-custom-content-types=[CONTENT_TYPE,...]
+        A comma-separated list of custom Content-Type header values to apply
+        JSON parsing for preconfigured WAF rules. Only applicable when JSON
+        parsing is enabled, like --json-parsing=STANDARD. When configuring a
+        Content-Type header value, only the type/subtype needs to be specified,
+        and the parameters should be excluded.
+
+     --json-parsing=JSON_PARSING
+        The JSON parsing behavior for this rule. Must be one of the following
+        values: [DISABLED, STANDARD, STANDARD_WITH_GRAPHQL]. JSON_PARSING must
+        be one of: DISABLED, STANDARD, STANDARD_WITH_GRAPHQL.
+
+     --layer7-ddos-defense-rule-visibility=VISIBILITY_TYPE
+        The visibility type indicates whether the rules are opaque or
+        transparent. VISIBILITY_TYPE must be one of: STANDARD, PREMIUM.
+
+     --log-level=LOG_LEVEL
+        The level of detail to display for WAF logging. LOG_LEVEL must be one
+        of: NORMAL, VERBOSE.
+
+     --network-ddos-protection=NETWORK_DDOS_PROTECTION
+        The DDoS protection level for network load balancing and instances with
+        external IPs. NETWORK_DDOS_PROTECTION must be one of: STANDARD,
+        ADVANCED, ADVANCED_PREVIEW.
+
+     --recaptcha-redirect-site-key=RECAPTCHA_REDIRECT_SITE_KEY
+        The reCAPTCHA site key to be used for rules using the redirect action
+        and the google-recaptcha redirect type under the security policy.
+
+     --user-ip-request-headers=[USER_IP_REQUEST_HEADER,...]
+        A comma-separated list of request header names to use for resolving the
+        caller's user IP address.
+
+     At most one of these can be specified:
+
+       --global
+          If set, the security policy is global.
+
+       --region=REGION
+          Region of the security policy to update. Overrides the default
+          compute/region property value for this command invocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute security-policies update
+
+        $ gcloud beta compute security-policies update
+```
+
+### gcloud beta compute security-policies update
+
+```text
+NAME
+    gcloud beta compute security-policies update - update a Compute Engine
+        security policy
+
+SYNOPSIS
+    gcloud beta compute security-policies update NAME
+        [--description=DESCRIPTION] [--enable-layer7-ddos-defense]
+        [--json-custom-content-types=[CONTENT_TYPE,...]]
+        [--json-parsing=JSON_PARSING]
+        [--layer7-ddos-defense-auto-deploy-confidence-threshold=LAYER7_DDOS_DEFENSE_AUTO_DEPLOY_CONFIDENCE_THRESHOLD]
+        [--layer7-ddos-defense-auto-deploy-expiration-sec=LAYER7_DDOS_DEFENSE_AUTO_DEPLOY_EXPIRATION_SEC]
+        [--layer7-ddos-defense-auto-deploy-impacted-baseline-threshold=LAYER7_DDOS_DEFENSE_AUTO_DEPLOY_IMPACTED_BASELINE_THRESHOLD]
+        [--layer7-ddos-defense-auto-deploy-load-threshold=LAYER7_DDOS_DEFENSE_AUTO_DEPLOY_LOAD_THRESHOLD]
+        [--layer7-ddos-defense-rule-visibility=VISIBILITY_TYPE]
+        [--log-level=LOG_LEVEL]
+        [--network-ddos-adaptive-protection=NETWORK_DDOS_ADAPTIVE_PROTECTION]
+        [--network-ddos-protection=NETWORK_DDOS_PROTECTION]
+        [--recaptcha-redirect-site-key=RECAPTCHA_REDIRECT_SITE_KEY]
+        [--request-body-inspection-size=REQUEST_BODY_INSPECTION_SIZE]
+        [--user-ip-request-headers=[USER_IP_REQUEST_HEADER,...]]
+        [--clear-network-ddos-impacted-baseline-threshold
+          | --network-ddos-impacted-baseline-threshold=NETWORK_DDOS_IMPACTED_BASELINE_THRESHOLD]
+        [--global | --region=REGION] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute security-policies update
+
+```text
+NAME
+    gcloud alpha compute security-policies update - update a Compute Engine
+        security policy
+
+SYNOPSIS
+    gcloud alpha compute security-policies update NAME
+        [--ddos-protection=DDOS_PROTECTION] [--description=DESCRIPTION]
+        [--enable-layer7-ddos-defense] [--enable-ml]
+        [--json-custom-content-types=[CONTENT_TYPE,...]]
+        [--json-parsing=JSON_PARSING]
+        [--layer7-ddos-defense-auto-deploy-confidence-threshold=LAYER7_DDOS_DEFENSE_AUTO_DEPLOY_CONFIDENCE_THRESHOLD]
+        [--layer7-ddos-defense-auto-deploy-expiration-sec=LAYER7_DDOS_DEFENSE_AUTO_DEPLOY_EXPIRATION_SEC]
+        [--layer7-ddos-defense-auto-deploy-impacted-baseline-threshold=LAYER7_DDOS_DEFENSE_AUTO_DEPLOY_IMPACTED_BASELINE_THRESHOLD]
+        [--layer7-ddos-defense-auto-deploy-load-threshold=LAYER7_DDOS_DEFENSE_AUTO_DEPLOY_LOAD_THRESHOLD]
+        [--layer7-ddos-defense-rule-visibility=VISIBILITY_TYPE]
+        [--log-level=LOG_LEVEL]
+        [--network-ddos-adaptive-protection=NETWORK_DDOS_ADAPTIVE_PROTECTION]
+        [--network-ddos-protection=NETWORK_DDOS_PROTECTION]
+        [--recaptcha-redirect-site-key=RECAPTCHA_REDIRECT_SITE_KEY]
+        [--request-body-inspection-size=REQUEST_BODY_INSPECTION_SIZE]
+        [--user-ip-request-headers=[USER_IP_REQUEST_HEADER,...]]
+        [--clear-network-ddos-impacted-baseline-threshold
+          | --network-ddos-impacted-baseline-threshold=NETWORK_DDOS_IMPACTED_BASELINE_THRESHOLD]
+        [--global | --region=REGION] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/security-policies/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
