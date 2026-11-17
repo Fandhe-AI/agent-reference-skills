@@ -1,0 +1,340 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/target-https-proxies/create
+---
+
+# gcloud compute target-https-proxies create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute target-https-proxies create
+
+```text
+NAME
+    gcloud compute target-https-proxies create - create a target HTTPS proxy
+
+SYNOPSIS
+    gcloud compute target-https-proxies create NAME --url-map=URL_MAP
+        [--certificate-map=CERTIFICATE_MAP] [--description=DESCRIPTION]
+        [--http-keep-alive-timeout-sec=HTTP_KEEP_ALIVE_TIMEOUT_SEC]
+        [--quic-override=QUIC_OVERRIDE; default="NONE"]
+        [--server-tls-policy=SERVER_TLS_POLICY] [--ssl-policy=SSL_POLICY]
+        [--tls-early-data=TLS_EARLY_DATA]
+        [--certificate-manager-certificates=[CERTIFICATE_MANAGER_CERTIFICATES,
+          ...] | --ssl-certificates=SSL_CERTIFICATE,[...]]
+        [--global | --region=REGION]
+        [--global-ssl-certificates
+          | --ssl-certificates-region=SSL_CERTIFICATES_REGION]
+        [--global-ssl-policy | --ssl-policy-region=SSL_POLICY_REGION]
+        [--global-url-map | --url-map-region=URL_MAP_REGION]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute target-https-proxies create is used to create target HTTPS
+    proxies. A target HTTPS proxy is referenced by one or more forwarding rules
+    which specify the network traffic that the proxy is responsible for
+    routing. The target HTTPS proxy points to a URL map that defines the rules
+    for routing the requests. The URL map's job is to map URLs to backend
+    services which handle the actual requests. The target HTTPS proxy also
+    points to at most 15 SSL certificates used for server-side authentication.
+    The target HTTPS proxy can be associated with at most one SSL policy.
+
+EXAMPLES
+    If there is an already-created URL map with the name URL_MAP and a SSL
+    certificate named SSL_CERTIFICATE, create a global target HTTPS proxy
+    pointing to this map by running:
+
+        $ gcloud compute target-https-proxies create PROXY_NAME \
+            --url-map=URL_MAP --ssl-certificates=SSL_CERTIFICATE
+
+    Create a regional target HTTPS proxy by running:
+
+        $ gcloud compute target-https-proxies create PROXY_NAME \
+            --url-map=URL_MAP --ssl-certificates=SSL_CERTIFICATE \
+            --region=REGION_NAME
+
+POSITIONAL ARGUMENTS
+     NAME
+        Name of the target HTTPS proxy to create.
+
+REQUIRED FLAGS
+     --url-map=URL_MAP
+        A reference to a URL map resource. A URL map defines the mapping of
+        URLs to backend services. Before you can refer to a URL map, you must
+        create the URL map. To delete a URL map that a target proxy is
+        referring to, you must first delete the target HTTPS proxy.
+
+OPTIONAL FLAGS
+     Certificate map resource - The certificate map to attach. This represents
+     a Cloud resource. (NOTE) Some attributes are not given arguments in this
+     group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument --certificate-map on the command line with a
+        fully specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     To set the location attribute:
+      * provide the argument --certificate-map on the command line with a
+        fully specified name;
+      * default value of location is [global].
+
+     --certificate-map=CERTIFICATE_MAP
+        ID of the certificate map or fully qualified identifier for the
+        certificate map.
+
+        To set the map attribute:
+        * provide the argument --certificate-map on the command line.
+
+     --description=DESCRIPTION
+        An optional, textual description for the target HTTPS proxy.
+
+     --http-keep-alive-timeout-sec=HTTP_KEEP_ALIVE_TIMEOUT_SEC
+        Represents the maximum amount of time that a TCP connection can be idle
+        between the (downstream) client and the target HTTP proxy. If an HTTP
+        keepalive timeout is not specified, the default value is 610 seconds.
+        For global external Application Load Balancers, the minimum allowed
+        value is 5 seconds and the maximum allowed value is 1200 seconds.
+
+     --quic-override=QUIC_OVERRIDE; default="NONE"
+        Controls whether load balancer may negotiate QUIC with clients. QUIC is
+        a new transport which reduces latency compared to that of TCP. See
+        https://www.chromium.org/quic for more details. QUIC_OVERRIDE must be
+        one of:
+
+         DISABLE
+            Disallows load balancer to negotiate QUIC with clients.
+         ENABLE
+            Allows load balancer to negotiate QUIC with clients.
+         NONE
+            Allows Google to control when QUIC is rolled out.
+
+     Server tls policy resource - The server TLS policy to attach. This
+     represents a Cloud resource. (NOTE) Some attributes are not given
+     arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument --server-tls-policy on the command line with a
+        fully specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     To set the location attribute:
+      * provide the argument --server-tls-policy on the command line with a
+        fully specified name;
+      * provide the argument --region on the command line;
+      * default value of location is [global].
+
+     --server-tls-policy=SERVER_TLS_POLICY
+        ID of the server_tls_policy or fully qualified identifier for the
+        server_tls_policy.
+
+        To set the server_tls_policy attribute:
+        * provide the argument --server-tls-policy on the command line.
+
+     --ssl-policy=SSL_POLICY
+        A reference to an SSL policy resource that defines the server-side
+        support for SSL features and affects the connections between clients
+        and load balancers that are using the HTTPS proxy. The SSL policy must
+        exist and cannot be deleted while referenced by a target HTTPS proxy.
+
+     --tls-early-data=TLS_EARLY_DATA
+        TLS 1.3 Early Data ("0-RTT" or "zero round trip") allows clients to
+        include HTTP request data alongside a TLS handshake. This can improve
+        application performance, especially on networks where connection
+        interruptions may be common, such as on mobile. This applies to both
+        HTTP over TCP (ie: HTTP/1.1 and HTTP/2) and HTTP/3 over QUIC.
+        TLS_EARLY_DATA must be one of:
+
+         DISABLED
+            TLS 1.3 Early Data is not advertised, and any (invalid) attempts to
+            send Early Data will be rejected.
+         PERMISSIVE
+            Enables TLS 1.3 Early Data for requests with safe HTTP methods
+            (GET, HEAD, OPTIONS, TRACE). This mode does not enforce any other
+            limitations for requests with Early Data. The application owner
+            should validate that Early Data is acceptable for a given request
+            path.
+         STRICT
+            Enables TLS 1.3 Early Data for requests with safe HTTP methods, and
+            HTTP requests that do not have query parameters. Requests that send
+            Early Data containing non-idempotent HTTP methods or with query
+            parameters will be rejected with a HTTP 425.
+
+     At most one of these can be specified:
+
+         Certificate resource - certificate-manager-certificates to attach.
+         This represents a Cloud resource. (NOTE) Some attributes are not given
+         arguments in this group but can be set in other ways.
+
+         To set the project attribute:
+         + provide the argument --certificate-manager-certificates on the
+           command line with a fully specified name;
+         + provide the argument --project on the command line;
+         + set the property core/project.
+
+       To set the location attribute:
+        + provide the argument --certificate-manager-certificates on the
+          command line with a fully specified name;
+        + default value of location is [global].
+
+         --certificate-manager-certificates=[CERTIFICATE_MANAGER_CERTIFICATES,...]
+            IDs of the certificates or fully qualified identifiers for the
+            certificates.
+
+            To set the certificate attribute:
+         + provide the argument --certificate-manager-certificates on the
+           command line.
+
+       --ssl-certificates=SSL_CERTIFICATE,[...]
+          References to at most 15 SSL certificate resources that are used for
+          server-side authentication. The first SSL certificate in this list is
+          considered the primary SSL certificate associated with the load
+          balancer. The SSL certificates must exist and cannot be deleted while
+          referenced by a target HTTPS proxy.
+
+     At most one of these can be specified:
+
+       --global
+          If set, the target HTTPS proxy is global.
+
+       --region=REGION
+          Region of the target HTTPS proxy to create. If not specified, you
+          might be prompted to select a region (interactive mode only).
+
+          To avoid prompting when this flag is omitted, you can set the
+          compute/region property:
+
+              $ gcloud config set compute/region REGION
+
+          A list of regions can be fetched by running:
+
+              $ gcloud compute regions list
+
+          To unset the property, run:
+
+              $ gcloud config unset compute/region
+
+          Alternatively, the region can be stored in the environment variable
+          CLOUDSDK_COMPUTE_REGION.
+
+     At most one of these can be specified:
+
+       --global-ssl-certificates
+          If set, the ssl certificates are global.
+
+       --ssl-certificates-region=SSL_CERTIFICATES_REGION
+          Region of the ssl certificates to operate on. If not specified, you
+          might be prompted to select a region (interactive mode only).
+
+          To avoid prompting when this flag is omitted, you can set the
+          compute/region property:
+
+              $ gcloud config set compute/region REGION
+
+          A list of regions can be fetched by running:
+
+              $ gcloud compute regions list
+
+          To unset the property, run:
+
+              $ gcloud config unset compute/region
+
+          Alternatively, the region can be stored in the environment variable
+          CLOUDSDK_COMPUTE_REGION.
+
+     At most one of these can be specified:
+
+       --global-ssl-policy
+          If set, the SSL policy is global.
+
+       --ssl-policy-region=SSL_POLICY_REGION
+          Region of the SSL policy to operate on. Overrides the default
+          compute/region property value for this command invocation.
+
+     At most one of these can be specified:
+
+       --global-url-map
+          If set, the URL map is global.
+
+       --url-map-region=URL_MAP_REGION
+          Region of the URL map to operate on. Overrides the default
+          compute/region property value for this command invocation.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute target-https-proxies create
+
+        $ gcloud beta compute target-https-proxies create
+```
+
+### gcloud beta compute target-https-proxies create
+
+```text
+NAME
+    gcloud beta compute target-https-proxies create - create a target HTTPS
+        proxy
+
+SYNOPSIS
+    gcloud beta compute target-https-proxies create NAME --url-map=URL_MAP
+        [--certificate-map=CERTIFICATE_MAP] [--description=DESCRIPTION]
+        [--http-keep-alive-timeout-sec=HTTP_KEEP_ALIVE_TIMEOUT_SEC]
+        [--quic-override=QUIC_OVERRIDE; default="NONE"]
+        [--server-tls-policy=SERVER_TLS_POLICY] [--ssl-policy=SSL_POLICY]
+        [--tls-early-data=TLS_EARLY_DATA]
+        [--certificate-manager-certificates=[CERTIFICATE_MANAGER_CERTIFICATES,
+          ...] | --ssl-certificates=SSL_CERTIFICATE,[...]]
+        [--global | --region=REGION]
+        [--global-ssl-certificates
+          | --ssl-certificates-region=SSL_CERTIFICATES_REGION]
+        [--global-ssl-policy | --ssl-policy-region=SSL_POLICY_REGION]
+        [--global-url-map | --url-map-region=URL_MAP_REGION]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute target-https-proxies create
+
+```text
+NAME
+    gcloud alpha compute target-https-proxies create - create a target HTTPS
+        proxy
+
+SYNOPSIS
+    gcloud alpha compute target-https-proxies create NAME --url-map=URL_MAP
+        [--certificate-map=CERTIFICATE_MAP] [--description=DESCRIPTION]
+        [--http-filters=[HTTP_FILTERS,...]]
+        [--http-keep-alive-timeout-sec=HTTP_KEEP_ALIVE_TIMEOUT_SEC]
+        [--proxy-bind] [--quic-override=QUIC_OVERRIDE; default="NONE"]
+        [--server-tls-policy=SERVER_TLS_POLICY] [--ssl-policy=SSL_POLICY]
+        [--tls-early-data=TLS_EARLY_DATA]
+        [--certificate-manager-certificates=[CERTIFICATE_MANAGER_CERTIFICATES,
+          ...] | --ssl-certificates=SSL_CERTIFICATE,[...]]
+        [--global | --region=REGION]
+        [--global-ssl-certificates
+          | --ssl-certificates-region=SSL_CERTIFICATES_REGION]
+        [--global-ssl-policy | --ssl-policy-region=SSL_POLICY_REGION]
+        [--global-url-map | --url-map-region=URL_MAP_REGION]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/target-https-proxies/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

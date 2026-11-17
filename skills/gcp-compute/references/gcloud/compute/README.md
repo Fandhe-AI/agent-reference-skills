@@ -522,3 +522,28 @@
 | gcloud compute storage-pool-types | 6 commands (alpha, beta, ga); compute storage-pool-types describe … | [compute-storage-pool-types.md](./compute-storage-pool-types.md) |
 | gcloud compute storage-pools | 26 commands (alpha, beta, ga); compute storage-pools create … | [compute-storage-pools.md](./compute-storage-pools.md) |
 | gcloud compute target-grpc-proxies | 16 commands (alpha, beta, ga); compute target-grpc-proxies create … | [compute-target-grpc-proxies.md](./compute-target-grpc-proxies.md) |
+| gcloud compute target-http-proxies | 23 commands (alpha, beta, ga); compute target-http-proxies create … | [compute-target-http-proxies.md](./compute-target-http-proxies.md) |
+| gcloud compute target-https-proxies config | alpha compute target-https-proxies config export | [compute-target-https-proxies-config.md](./compute-target-https-proxies-config.md) |
+| gcloud compute target-https-proxies create | 3 commands (alpha, beta, ga); compute target-https-proxies create … | [compute-target-https-proxies-create.md](./compute-target-https-proxies-create.md) |
+| gcloud compute target-https-proxies delete | 3 commands (alpha, beta, ga); compute target-https-proxies delete … | [compute-target-https-proxies-delete.md](./compute-target-https-proxies-delete.md) |
+| gcloud compute target-https-proxies describe | 3 commands (alpha, beta, ga); compute target-https-proxies describe … | [compute-target-https-proxies-describe.md](./compute-target-https-proxies-describe.md) |
+| gcloud compute target-https-proxies export | 3 commands (alpha, beta, ga); compute target-https-proxies export … | [compute-target-https-proxies-export.md](./compute-target-https-proxies-export.md) |
+| gcloud compute target-https-proxies import | 3 commands (alpha, beta, ga); compute target-https-proxies import … | [compute-target-https-proxies-import.md](./compute-target-https-proxies-import.md) |
+| gcloud compute target-https-proxies list | 3 commands (alpha, beta, ga); compute target-https-proxies list … | [compute-target-https-proxies-list.md](./compute-target-https-proxies-list.md) |
+| gcloud compute target-https-proxies set-quic-override | 3 commands (alpha, beta, ga); compute target-https-proxies set-quic-override … | [compute-target-https-proxies-set-quic-override.md](./compute-target-https-proxies-set-quic-override.md) |
+| gcloud compute target-https-proxies test-iam-permissions | alpha compute target-https-proxies test-iam-permissions | [compute-target-https-proxies-test-iam-permissions.md](./compute-target-https-proxies-test-iam-permissions.md) |
+| gcloud compute target-https-proxies update | 3 commands (alpha, beta, ga); compute target-https-proxies update … | [compute-target-https-proxies-update.md](./compute-target-https-proxies-update.md) |
+| gcloud compute target-instances | 17 commands (alpha, beta, ga); compute target-instances create … | [compute-target-instances.md](./compute-target-instances.md) |
+| gcloud compute target-pools add-health-checks | 3 commands (alpha, beta, ga); compute target-pools add-health-checks … | [compute-target-pools-add-health-checks.md](./compute-target-pools-add-health-checks.md) |
+| gcloud compute target-pools add-instances | 3 commands (alpha, beta, ga); compute target-pools add-instances … | [compute-target-pools-add-instances.md](./compute-target-pools-add-instances.md) |
+| gcloud compute target-pools config | alpha compute target-pools config export | [compute-target-pools-config.md](./compute-target-pools-config.md) |
+| gcloud compute target-pools create | 3 commands (alpha, beta, ga); compute target-pools create … | [compute-target-pools-create.md](./compute-target-pools-create.md) |
+| gcloud compute target-pools delete | 3 commands (alpha, beta, ga); compute target-pools delete … | [compute-target-pools-delete.md](./compute-target-pools-delete.md) |
+| gcloud compute target-pools describe | 3 commands (alpha, beta, ga); compute target-pools describe … | [compute-target-pools-describe.md](./compute-target-pools-describe.md) |
+| gcloud compute target-pools get-health | 3 commands (alpha, beta, ga); compute target-pools get-health … | [compute-target-pools-get-health.md](./compute-target-pools-get-health.md) |
+| gcloud compute target-pools list | 3 commands (alpha, beta, ga); compute target-pools list … | [compute-target-pools-list.md](./compute-target-pools-list.md) |
+| gcloud compute target-pools remove-health-checks | 3 commands (alpha, beta, ga); compute target-pools remove-health-checks … | [compute-target-pools-remove-health-checks.md](./compute-target-pools-remove-health-checks.md) |
+| gcloud compute target-pools remove-instances | 3 commands (alpha, beta, ga); compute target-pools remove-instances … | [compute-target-pools-remove-instances.md](./compute-target-pools-remove-instances.md) |
+| gcloud compute target-pools set-backup | 3 commands (alpha, beta, ga); compute target-pools set-backup … | [compute-target-pools-set-backup.md](./compute-target-pools-set-backup.md) |
+| gcloud compute target-pools test-iam-permissions | alpha compute target-pools test-iam-permissions | [compute-target-pools-test-iam-permissions.md](./compute-target-pools-test-iam-permissions.md) |
+| gcloud compute target-pools update | 3 commands (alpha, beta, ga); compute target-pools update … | [compute-target-pools-update.md](./compute-target-pools-update.md) |
