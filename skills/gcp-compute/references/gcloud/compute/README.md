@@ -392,3 +392,14 @@
 | gcloud compute os-config os-policy-assignments | 16 commands (alpha, ga); compute os-config os-policy-assignments create … | [compute-os-config-os-policy-assignments.md](./compute-os-config-os-policy-assignments.md) |
 | gcloud compute os-config os-upgrade | 2 commands (alpha, beta); beta compute os-config os-upgrade … | [compute-os-config-os-upgrade.md](./compute-os-config-os-upgrade.md) |
 | gcloud compute os-config patch-deployments | 14 commands (beta, ga); compute os-config patch-deployments create … | [compute-os-config-patch-deployments.md](./compute-os-config-patch-deployments.md) |
+| gcloud compute os-config patch-jobs | 10 commands (beta, ga); compute os-config patch-jobs cancel … | [compute-os-config-patch-jobs.md](./compute-os-config-patch-jobs.md) |
+| gcloud compute os-config policy-orchestrators | 15 commands (alpha, beta, ga); compute os-config policy-orchestrators create … | [compute-os-config-policy-orchestrators.md](./compute-os-config-policy-orchestrators.md) |
+| gcloud compute os-config project-feature-settings | 2 commands (ga); compute os-config project-feature-settings describe … | [compute-os-config-project-feature-settings.md](./compute-os-config-project-feature-settings.md) |
+| gcloud compute os-config troubleshoot | 2 commands (alpha, ga); compute os-config troubleshoot … | [compute-os-config-troubleshoot.md](./compute-os-config-troubleshoot.md) |
+| gcloud compute os-config vulnerability-reports | 4 commands (alpha, ga); compute os-config vulnerability-reports describe … | [compute-os-config-vulnerability-reports.md](./compute-os-config-vulnerability-reports.md) |
+| gcloud compute os-login | 21 commands (alpha, beta, ga); compute os-login describe-profile … | [compute-os-login.md](./compute-os-login.md) |
+| gcloud compute packet-mirrorings | 18 commands (alpha, beta, ga); compute packet-mirrorings create … | [compute-packet-mirrorings.md](./compute-packet-mirrorings.md) |
+| gcloud compute preview-features | 9 commands (alpha, beta, ga); compute preview-features describe … | [compute-preview-features.md](./compute-preview-features.md) |
+| gcloud compute project-info | 13 commands (alpha, beta, ga); compute project-info add-metadata … | [compute-project-info.md](./compute-project-info.md) |
+| gcloud compute project-views | 3 commands (alpha, beta, ga); compute project-views describe … | [compute-project-views.md](./compute-project-views.md) |
+| gcloud compute project-zonal-metadata | 9 commands (alpha, beta, ga); compute project-zonal-metadata add … | [compute-project-zonal-metadata.md](./compute-project-zonal-metadata.md) |
