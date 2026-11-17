@@ -408,7 +408,7 @@ Adapted (not in the official docs): runnable form of the example(s) above: lines
 ```bash
 gcloud oracle-database autonomous-databases update my-autonomous-database \
     --location=us-east4 \
-    --encryption-key-provider=GOOGLE_MANAGED \
+    --encryption-key-provider=google-managed \
     --encryption-key-kms=projects/project-id/locations/us-east4/keyRings/keyring/cryptoKeys/key
 
 gcloud oracle-database autonomous-databases update my-instance \
@@ -430,6 +430,7 @@ gcloud oracle-database autonomous-databases update my-instance \
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): `--[no-]properties-local-data-guard-enabled` is a boolean flag that takes no value (gcloud 593.0.0 rejects `--properties-local-data-guard-enabled=true`: "ignored explicit argument 'true'"); the runnable form uses `--properties-local-data-guard-enabled` to enable Local Data Guard.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): for the same reason, the disable example uses `--no-properties-local-data-guard-enabled` instead of `--properties-local-data-guard-enabled=false`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example passes the API enum name in uppercase (for example `LICENSE_INCLUDED`, `DW`, `GOOGLE_MANAGED`, `SMART_STORAGE`), while the flag description lists the choices in lowercase (`license-included`, `dw`, `google-managed`, `smart-storage`); the runnable form uses the documented lowercase choices (gcloud 593.0.0 also accepts the uppercase names).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

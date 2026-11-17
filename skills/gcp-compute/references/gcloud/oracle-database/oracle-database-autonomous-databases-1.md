@@ -587,7 +587,7 @@ API REFERENCE
     this API can be found at: https://cloud.google.com/oracle/database/docs
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud oracle-database autonomous-databases create my-instance \
@@ -598,23 +598,23 @@ gcloud oracle-database autonomous-databases create my-instance \
     --admin-password=123Abpassdord \
     --properties-compute-count=2 \
     --properties-db-version=19c \
-    --properties-license-type=LICENSE_INCLUDED \
-    --properties-db-workload=DW \
+    --properties-license-type=license-included \
+    --properties-db-workload=dw \
     --odb-network=projects/network-project/locations/us-east4/odbNetworks/my-odbnetwork \
     --odb-subnet=projects/network-project/locations/us-east4/odbNetworks/my-odbnetwork/odbSubnets/my-odbsubnet
 
 gcloud oracle-database autonomous-databases create my-instance \
     --location=us-east4 \
     --display-name="my instance" \
-    --network=projects/my-project/locations/global/networks/default \
+    --network=projects/my-project/global/networks/default \
     --cidr=12.2.0.0/24 \
     --location=us-east4 \
     --database=testadb \
     --admin-password=123Abpassdord \
     --properties-compute-count=2 \
     --properties-db-version=19c \
-    --properties-license-type=LICENSE_INCLUDED \
-    --properties-db-workload=DW
+    --properties-license-type=license-included \
+    --properties-db-workload=dw
 
 gcloud oracle-database autonomous-databases create my-lh-instance \
     --location=us-east4 \
@@ -623,8 +623,8 @@ gcloud oracle-database autonomous-databases create my-lh-instance \
     --admin-password=123Abpassdord \
     --properties-compute-count=2 \
     --properties-db-version=19c \
-    --properties-license-type=LICENSE_INCLUDED \
-    --properties-db-workload=LH \
+    --properties-license-type=license-included \
+    --properties-db-workload=lh \
     --odb-network=projects/network-project/locations/us-east4/odbNetworks/my-odbnetwork \
     --odb-subnet=projects/network-project/locations/us-east4/odbNetworks/my-odbnetwork/odbSubnets/my-odbsubnet
 ```
@@ -1518,6 +1518,8 @@ API REFERENCE
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example gives the VPC network as `projects/my-project/locations/global/networks/default`, but the `--network` resource format in the same help is `projects/{project}/global/networks/{network}`; the runnable form uses `projects/my-project/global/networks/default`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example passes the API enum name in uppercase (for example `LICENSE_INCLUDED`, `DW`, `GOOGLE_MANAGED`, `SMART_STORAGE`), while the flag description lists the choices in lowercase (`license-included`, `dw`, `google-managed`, `smart-storage`); the runnable form uses the documented lowercase choices (gcloud 593.0.0 also accepts the uppercase names).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
