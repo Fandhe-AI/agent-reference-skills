@@ -27,7 +27,7 @@ skills/gcp-networking/
       edge-cache/
         README.md                 # gcloud edge-cache（Media CDN: keysets / origins / services / operations）
         edge-cache-<group>.md
-      edge-cloud/  # 分割投入中（21 / 30 ページ。収録済みは README 掲載分のみ）
+      edge-cloud/
         README.md                 # gcloud edge-cloud（Google Distributed Cloud connected: container clusters / networking / api-keys / identity-providers 等）
         edge-cloud-<group>.md
     vpc-overview/                 # 公式ガイド由来（手書き）: VPC の概要・VPC ネットワーク・サブネット・IPv6・MTU・network profiles・クォータ・legacy network
@@ -105,8 +105,6 @@ skills/gcp-networking/
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
 未投入カテゴリ（`gcloud/ids` / `gcloud/network-connectivity` / `gcloud/network-management` / `gcloud/network-security` / `gcloud/network-services` / `gcloud/number-registry` / `gcloud/service-directory` / `gcloud/service-extensions` / `gcloud/zone-management` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
-
-分割投入中のカテゴリ（`gcloud/edge-cloud`: 21 / 30 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
