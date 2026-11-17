@@ -220,7 +220,12 @@ export function killScriptsSync() {
 
 /**
  * スクリプトを shell なしで起動する既定の実装。detached でプロセスグループを作り、時間切れ・出力超過では
- * グループごと止める（gh などの孫プロセスを残さない）。止めた後 killGraceMs（既定 2 秒）を過ぎても close が来なければ
+ * グループごと止める（gh などの孫プロセスを残さない）。時間切れはまず SIGTERM を送り（git は SIGTERM なら作りかけの
+ * *.lock〔index.lock・refs の lock〕を消して終わる。SIGKILL では残り、後続の git が lock で失敗する。lib/worktree.mjs の
+ * gitAsync と同じ）、killGraceMs（既定 2 秒）を過ぎてもプロセスグループが空にならなければ SIGKILL を送る。SIGTERM の後は、
+ * 子（launcher の bash。trap を持たず先に終わる）の exit でも close でもグループを撃たず、グループが空になるのを待って決着する
+ * （worktree-remove.sh 等の git は標準出力・標準エラーを /dev/null へ向けるため、close は git の片づけの完了を意味しない）。
+ * 出力超過はその場で SIGKILL を送る。SIGKILL の後さらに killGraceMs を過ぎても close が来なければ
  * （新しいセッションへ抜けた孫が標準出力を握っている・子が D 状態にある等）、close を待たずに timedOut / overflow を
  * 立てたまま code: null で決着する（並列の枠を握り続けない）。子が終わったとき（正常終了を含む）は、その場で同じ
  * プロセスグループへ SIGKILL を送り、標準入出力を閉じて残った孫も止める（終了後は liveScripts から外れ、killScriptsSync の
@@ -246,15 +251,27 @@ export function spawnScript(file, args, { cwd, input, timeoutMs, env = process.e
     let overflow = false
     let settled = false
     let forceTimer = null
-    const signalGroup = () => {
-      try { process.kill(-child.pid, 'SIGKILL') } catch { try { child.kill('SIGKILL') } catch { /* 既に終了 */ } }
+    let termTimer = null
+    let killed = false
+    let drainTimer = null
+    const signalGroup = (sig) => {
+      try { process.kill(-child.pid, sig) } catch { try { child.kill(sig) } catch { /* 既に終了 */ } }
     }
-    // 時間切れ・出力超過: グループを止め、猶予の後は close を待たずに決着する（猶予のタイマーは 1 本だけ）
+    // SIGTERM を送ったが SIGKILL はまだ: 子の exit・close ではグループを撃たず、空になるか猶予の満了まで git の片づけを待つ
+    const terminating = () => timedOut && !killed
+    // グループに生きたプロセスが残るか（kill 0 が ESRCH なら空。メンバーが居る間は pgid は再利用されない）
+    const groupAlive = () => { try { process.kill(-child.pid, 0); return true } catch (e) { return e?.code === 'EPERM' } }
+    // 出力超過・SIGTERM の猶予切れ: グループを SIGKILL で止め、猶予の後は close を待たずに決着する（猶予のタイマーは 1 本だけ）
     const killGroup = () => {
-      signalGroup()
+      killed = true
+      signalGroup('SIGKILL')
       if (forceTimer === null) forceTimer = setTimeout(() => finish(null, undefined, true), killGraceMs)
     }
-    const timer = setTimeout(() => { timedOut = true; killGroup() }, timeoutMs)
+    const timer = setTimeout(() => {
+      timedOut = true
+      signalGroup('SIGTERM')
+      termTimer = setTimeout(killGroup, killGraceMs)
+    }, timeoutMs)
     child.stdout.on('data', (b) => {
       if (overflow) return
       outBytes += b.length
@@ -269,15 +286,24 @@ export function spawnScript(file, args, { cwd, input, timeoutMs, env = process.e
       if (settled) return
       settled = true
       clearTimeout(timer)
+      clearTimeout(termTimer)
       clearTimeout(forceTimer)
+      clearInterval(drainTimer)
       liveScripts.delete(child)
       // close が来ていない: 抜けた孫が握る pipe の読み口を閉じる（イベントループを握らせず、決着後に溜め込まない）
       if (forced) { child.stdout.destroy(); child.stderr.destroy() }
       resolve({ code, stdout: Buffer.concat(out).toString('utf8'), stderr: Buffer.concat(err).toString('utf8'), timedOut, overflow, ...(error ? { error } : {}) })
     }
     child.on('error', (e) => finish(null, String(e?.message ?? e)))
-    child.on('exit', () => { try { process.kill(-child.pid, 'SIGKILL') } catch { /* グループに残りが無い */ } })
-    child.on('close', (code) => finish(code))
+    child.on('exit', () => { if (!terminating()) signalGroup('SIGKILL') })
+    child.on('close', (code) => {
+      // SIGTERM の後: グループが空になってから決着する（空にならなければ termTimer の SIGKILL と forceTimer が決着させる）
+      if (terminating() && groupAlive()) {
+        drainTimer = setInterval(() => { if (!groupAlive()) finish(code) }, 25)
+        return
+      }
+      finish(code)
+    })
     // 標準入力を読まないスクリプトが先に閉じても落ちないようにする
     child.stdin.on('error', () => {})
     child.stdin.end(input)
@@ -367,6 +393,7 @@ const safeLabel = (label) => label.replace(/[^A-Za-z0-9._-]+/g, '_').slice(0, 80
  *   maxParallel?: number,      // --max-parallel。無ければ config.limits.maxParallel
  *   log?: (msg: string) => void,
  *   timeoutGraceMs?: number,   // アダプタが時間切れで止まらなかったときの保険の猶予（既定 30 秒）
+ *   timers?: { setTimeout: Function, clearTimeout: Function }, // テスト用の差し替え（保険の時間切れのタイマー。既定は大域のもの）
  *   createWorktree?: Function, // テスト用の差し替え（既定は worktree.mjs の実物）
  *   spawnScript?: Function,    // テスト用の差し替え（既定は spawnScript）
  *   pins?: ReadonlyArray<{ path: string, sha256: string|null }>, // run.mjs がエージェントの起動前に取った固定（lib/pins.mjs）
@@ -385,6 +412,9 @@ export function createAgentHost({ adapter, cfg }) {
   const repairAttempts = config.limits.repairAttempts
   const maxAgents = config.limits.maxAgents
   const graceMs = cfg.timeoutGraceMs ?? 30_000
+  // 保険の時間切れのタイマー（テストが実時間で待たずに発火させるための差し替え口。既定は大域の setTimeout / clearTimeout）
+  const timers = cfg.timers ?? { setTimeout, clearTimeout }
+  if (typeof timers?.setTimeout !== 'function' || typeof timers?.clearTimeout !== 'function') throw new TypeError('cfg.timers は setTimeout・clearTimeout を持つ')
   const makeWorktree = cfg.createWorktree ?? createWorktree
   const runScript = cfg.spawnScript ?? spawnScript
   const autoMerge = cfg.args?.autoMerge === true
@@ -665,17 +695,20 @@ export function createAgentHost({ adapter, cfg }) {
     return value
   }
 
-  // アダプタ 1 回分。保険の時間切れ（timeoutMs + 猶予）を過ぎたら待つのをやめる（アダプタの停止責務の取りこぼし対策）
+  // アダプタ 1 回分。保険の時間切れ（timeoutMs + 猶予）を過ぎたら待つのをやめる（アダプタの停止責務の取りこぼし対策）。
+  // 時間切れでは settled（adapter.run の決着。reject も値に包むので reject しない）を一緒に返す。呼び出し元はこれが決着するまで
+  // 隔離 worktree を使用中（busy）のままにする（モデルがまだ動いているかもしれない worktree の lock を掃除で外さない）
   async function callAdapter(req) {
     adapterCalls++
     let timer
+    const settled = adapter.run(req).then((value) => ({ value }), (error) => ({ error }))
     const watchdog = new Promise((resolve) => {
-      timer = setTimeout(() => resolve({ watchdog: true }), req.timeoutMs + graceMs)
+      timer = timers.setTimeout(() => resolve({ watchdog: true, settled }), req.timeoutMs + graceMs)
     })
     try {
-      return await Promise.race([adapter.run(req).then((value) => ({ value }), (error) => ({ error })), watchdog])
+      return await Promise.race([settled, watchdog])
     } finally {
-      clearTimeout(timer)
+      timers.clearTimeout(timer)
     }
   }
 
@@ -762,6 +795,7 @@ export function createAgentHost({ adapter, cfg }) {
       if (r.watchdog) {
         log(`⚠️ ${label}: アダプタが時間切れ（${timeoutMs} ms + 猶予）を過ぎても戻らないため未返却として扱う`)
         outcome('null', { reason: 'watchdog' })
+        using.settled = r.settled
         return null
       }
       if (r.error !== undefined) {
@@ -832,11 +866,16 @@ export function createAgentHost({ adapter, cfg }) {
           const value = runHostStateRead(label, schema, prompt, logDir, rec)
           if (value !== undefined) return value
         }
-        const using = { path: null, mergeCwd: null }
+        // settled: 保険の時間切れで待つのをやめたときの adapter.run の決着（callAdapter）。あれば決着まで busy を外さない
+        const using = { path: null, mergeCwd: null, settled: null }
         try {
           return await runModel({ prompt, opts, label, schema, n, logDir, timeoutMs, rec, using })
         } finally {
-          if (using.path !== null) busy.delete(using.path)
+          if (using.path !== null) {
+            const p = using.path
+            if (using.settled !== null) using.settled.then(() => busy.delete(p))
+            else busy.delete(p)
+          }
           if (using.mergeCwd !== null) {
             try { rmSync(using.mergeCwd, { recursive: true, force: true }) } catch (e) { log(`⚠️ ${label}: マージの段の cwd を消せない: ${sanitizeErrorLine(e?.message ?? e)}`) }
           }

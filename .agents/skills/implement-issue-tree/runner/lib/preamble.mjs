@@ -80,13 +80,14 @@ export function composePrompt({ prompt, schema, worktreePath, merge = false }) {
 /**
  * 修復ターンの指示（同じ会話で 1 回だけ使う）。値の中身は載せない。
  * 呼び出し元は lib/agent-host.mjs の 1 か所で、check() の errors（文字列の配列）をそのまま渡す。
- * @param {string[]} errors  schema-validate の errors（不適合の理由。先頭 20 件だけ使う）。
+ * @param {string[] | string} errors  schema-validate の errors（不適合の理由。先頭 20 件だけ使う）。
  *   空の配列は応答から JSON を取り出せなかったことを表し、その旨の固定文 1 行に置き換える。
- *   文字列そのもの（配列でない値）は受けない
+ *   文字列 1 つは 1 件の配列として扱い、配列でも文字列でもない値は空の配列として扱う（Issue #856。落とさない）
  * @returns {string}
  */
 export function buildRepairPrompt(errors) {
-  const list = (errors.length > 0 ? errors : ['応答から JSON オブジェクトを取り出せなかった']).slice(0, 20)
+  const items = typeof errors === 'string' ? [errors] : Array.isArray(errors) ? errors : []
+  const list = (items.length > 0 ? items : ['応答から JSON オブジェクトを取り出せなかった']).slice(0, 20)
   return [
     '直前の応答は指定の JSON Schema に適合しなかった。次の点を直して、JSON オブジェクト 1 つだけを返し直すこと。',
     ...list.map((e) => `- ${sanitizeErrorLine(e)}`),
