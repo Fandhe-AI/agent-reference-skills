@@ -136,6 +136,8 @@ gcloud compute packet-mirrorings create POLICY_NAME \
 
 ### Threat exceptions
 
+Pass every threat ID that should stay excepted; the help says that passing an empty list clears the exceptions.
+
 ```bash
 gcloud ids endpoints update ENDPOINT_NAME \
     --threat-exceptions=THREAT_ID1,THREAT_ID2
@@ -178,6 +180,7 @@ Also needed: `compute.regions.list`, `compute.zones.list`.
 - Corrected from the official docs: the source REST create example had a trailing comma after `"severity": "SEVERITY_LEVEL",` which is invalid JSON, and the REST examples used `projects/PROJECT_NAME` where the API takes the project ID (now `PROJECT_ID`). The source's REST describe and delete examples (`GET`/`DELETE .../endpoints?endpointId=ENDPOINT_NAME`) are omitted because they reuse the create query parameter form; use the gcloud commands or the Cloud IDS REST reference.
 - The source also shows Console steps (IDS Endpoints page, attach, view threat logs under IDS Threats).
 - Corrected from the official docs: this page updates an existing private connection with `--ranges=RESERVED_RANGE_NAME` only, but the private services access page (https://docs.cloud.google.com/vpc/docs/configure-private-services-access, retrieved 2026-11-17) says "`RESERVED_RANGE_NAME` replaces the previous list of allocated ranges. If you omit a range that was previously associated with this private connection, the range is removed from the connection. You must use the `--force` flag to remove a range." The example therefore passes the existing ranges as well.
+- Clarified from the official docs: the gcloud 593.0.0 help for `gcloud ids endpoints update` describes `--threat-exceptions` as "List of threat IDs to be excepted from alerting. Passing empty list clears the exceptions."
 - Source: https://docs.cloud.google.com/intrusion-detection-system/docs/configuring-ids (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

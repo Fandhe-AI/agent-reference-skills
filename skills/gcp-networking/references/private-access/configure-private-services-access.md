@@ -62,12 +62,12 @@ gcloud services vpc-peerings list \
 
 ### Modify a private connection
 
-Adapted (not in the official docs): removed the `[--force]` template brackets, which make the command unrunnable in a shell; add `--force` only when removing a range from the connection (see Options / Props).
+Adapted (not in the official docs): removed the `[--force]` template brackets, which make the command unrunnable in a shell (add `--force` only when removing a range from the connection, see Options / Props), and `--ranges` lists `EXISTING_RANGE_NAMES` (the ranges already assigned, from `gcloud services vpc-peerings list --network=VPC_NETWORK`) before the new `RESERVED_RANGE_NAME`, because the update replaces the list.
 
 ```bash
 gcloud services vpc-peerings update \
     --service=servicenetworking.googleapis.com \
-    --ranges=RESERVED_RANGE_NAME \
+    --ranges=EXISTING_RANGE_NAMES,RESERVED_RANGE_NAME \
     --network=VPC_NETWORK
 ```
 
@@ -166,6 +166,7 @@ gcloud projects add-iam-policy-binding HOST_PROJECT_ID \
 - `--prefix-length` examples in the source use `192.168.0.0/16`. The source's step 3 for expanding an allocation is cut off after "if the previous allocated range was `192.168.0.0/20`, create a new allocated range"; the covering range is not given, so use a range that includes the deleted one.
 - The source also shows Console and Terraform steps.
 - Full `gcloud compute addresses` flags: https://docs.cloud.google.com/sdk/gcloud/reference/compute/addresses/create (see the `gcp-compute` skill).
+- Corrected from the official docs: the source update example passes only `--ranges=RESERVED_RANGE_NAME`, while the same page says "`RESERVED_RANGE_NAME` replaces the previous list of allocated ranges. If you omit a range that was previously associated with this private connection, the range is removed from the connection"; the example therefore passes the existing ranges as well, so it adds a range instead of failing or removing one.
 - Source: https://docs.cloud.google.com/vpc/docs/configure-private-services-access (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
