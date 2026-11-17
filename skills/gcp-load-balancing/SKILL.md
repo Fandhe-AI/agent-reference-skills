@@ -37,21 +37,12 @@ skills/gcp-load-balancing/
     lb-negs/                      # Network endpoint groups: zonal / serverless / internet / hybrid・zonal NEG の設定
       README.md
       <page>.md
-    lb-traffic-management/        # URL map・トラフィック管理・カスタムヘッダー・HTTP から HTTPS へのリダイレクト・classic からの移行
-      README.md
-      <page>.md
     lb-tls/                       # SSL 証明書・Google-managed 証明書・バックエンドへの暗号化・SSL policies・mTLS・バックエンドの認証付き TLS
       README.md
       <page>.md
     cloud-cdn/                    # Cloud CDN: 概要・CDN 製品の選び方・キャッシュ・キャッシュモード・キャッシュキー・キャッシュ無効化
       README.md
       <page>.md
-    media-cdn/                    # Media CDN: 概要・構成・オリジンとシールド・ルーティング・キャッシュ
-      README.md
-      <page>.md
-    service-extensions/           # Service Extensions: plugins・callouts・ロードバランサー / Media CDN / Secure Web Proxy の拡張・トラフィック拡張の設定・属性・クォータ
-      README.md
-      <page>.md                   # 例: create-plugin.md / callouts-overview.md
 ```
 
 `gcloud/` `rest/` `rest-schemas/` `iam/` のディレクトリは本スキルに無い（上記の `gcp-compute` / `gcp-networking` を参照）。`samples/` と `scripts/` も無い。
@@ -76,11 +67,10 @@ skills/gcp-load-balancing/
 | passthrough Network Load Balancer（外部 / 内部）・proxy Network Load Balancer（外部 / 内部 TCP プロキシ）・内部 proxy Network Load Balancer | lb-network | [references/lb-network/README.md](references/lb-network/README.md) |
 | backend services の設定・バランシングモード・ヘルスチェック・backend buckets・connection draining | lb-backend-services | [references/lb-backend-services/README.md](references/lb-backend-services/README.md) |
 | NEG（zonal・serverless・internet・hybrid）の違いと制約・zonal NEG の作成とバックエンドサービスへの接続 | lb-negs | [references/lb-negs/README.md](references/lb-negs/README.md) |
-| URL map（host / path ルール・正規表現）・トラフィック管理・カスタムヘッダー・HTTP から HTTPS へのリダイレクト・classic からグローバル外部への移行 | lb-traffic-management | [references/lb-traffic-management/README.md](references/lb-traffic-management/README.md) |
 | SSL 証明書・Google-managed 証明書の作成と更新・バックエンドへの暗号化・SSL policies・mTLS・バックエンド mTLS | lb-tls | [references/lb-tls/README.md](references/lb-tls/README.md) |
 | Cloud CDN の概要・キャッシュモード（`CACHE_ALL_STATIC` / `USE_ORIGIN_HEADERS` / `FORCE_CACHE_ALL`）・キャッシュキー・キャッシュ無効化・Cloud CDN と Media CDN の選択 | cloud-cdn | [references/cloud-cdn/README.md](references/cloud-cdn/README.md) |
-| Media CDN の構成（EdgeCacheService / Origin / Keyset）・オリジン接続とシールド・ルーティング・キャッシュ | media-cdn | [references/media-cdn/README.md](references/media-cdn/README.md) |
-| Service Extensions の plugins（Wasm / Proxy-Wasm）・callouts（`ext_proc` / `ext_authz`）・ロードバランサー / Media CDN / Secure Web Proxy の拡張・トラフィック拡張の設定 | service-extensions | [references/service-extensions/README.md](references/service-extensions/README.md) |
+
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `lb-traffic-management` / `media-cdn` / `service-extensions`
 
 ## 他スキルとの使い分け
 
