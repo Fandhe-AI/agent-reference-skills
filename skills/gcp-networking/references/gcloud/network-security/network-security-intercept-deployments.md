@@ -228,11 +228,11 @@ gcloud network-security intercept-deployments create my-deployment \
     --forwarding-rule=projects/my-project/regions/us-central1/forwardingRules/my-forwarding-rule \
     --intercept-deployment-group=projects/my-project/locations/global/interceptDeploymentGroups/my-deployment-group
 
-gcloud network-security intercept-deployments create projects/my-project/locations/us-central1/interceptDeployments/my-deployment \
+gcloud network-security intercept-deployments create projects/my-project/locations/us-central1-a/interceptDeployments/my-deployment \
     --forwarding-rule=projects/my-project/regions/us-central1/forwardingRules/my-forwarding-rule \
     --intercept-deployment-group=projects/my-project/locations/global/interceptDeploymentGroups/my-deployment-group
 
-gcloud network-security intercept-deployments create projects/my-project/locations/us-central1/interceptDeployments/my-deployment \
+gcloud network-security intercept-deployments create projects/my-project/locations/us-central1-a/interceptDeployments/my-deployment \
     --forwarding-rule=projects/my-project/regions/us-central1/forwardingRules/my-forwarding-rule \
     --intercept-deployment-group=projects/my-project/locations/global/interceptDeploymentGroups/my-deployment-group \
     --description="my-description"
@@ -787,6 +787,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `create` examples that give the deployment as a full resource name use `projects/my-project/locations/us-central1/...`, a region, but deployments are zonal: the other `create` examples on this page pass `--location=us-central1-a` ("in project my-project and zone us-central1-a"), and the `list` command describes its location as "Zone of the deployment"; the runnable form uses `locations/us-central1-a`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the first `create` example passes `--deployment-group-location=global`, which is not a flag of this command (gcloud 593.0.0: "unrecognized arguments: --deployment-group-location=global (did you mean '--intercept-deployment-group-location'?)"); the runnable form uses `--intercept-deployment-group-location`, the flag in the SYNOPSIS.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the first `create` example puts `$ gcloud` on the same line as `run:`; the runnable form starts the command on its own line.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
