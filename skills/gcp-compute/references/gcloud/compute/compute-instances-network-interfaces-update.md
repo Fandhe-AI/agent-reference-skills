@@ -1,0 +1,244 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/network-interfaces/update
+---
+
+# gcloud compute instances network-interfaces update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute instances network-interfaces update
+
+```text
+NAME
+    gcloud compute instances network-interfaces update - update a Compute
+        Engine virtual machine network interface
+
+SYNOPSIS
+    gcloud compute instances network-interfaces update INSTANCE_NAME
+        [--aliases=ALIASES] [--external-ipv6-address=EXTERNAL_IPV6_ADDRESS]
+        [--external-ipv6-prefix-length=EXTERNAL_IPV6_PREFIX_LENGTH]
+        [--igmp-query=IGMP_QUERY]
+        [--internal-ipv6-address=INTERNAL_IPV6_ADDRESS]
+        [--internal-ipv6-prefix-length=INTERNAL_IPV6_PREFIX_LENGTH]
+        [--ipv6-network-tier=IPV6_NETWORK_TIER] [--network=NETWORK]
+        [--network-interface=NETWORK_INTERFACE; default="nic0"]
+        [--private-network-ip=PRIVATE_NETWORK_IP]
+        [--security-policy=SECURITY_POLICY]
+        [--security-policy-region=SECURITY_POLICY_REGION]
+        [--stack-type=STACK_TYPE] [--subnetwork=SUBNETWORK] [--zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud compute instances network-interfaces update updates network
+    interfaces of a Compute Engine virtual machine. For example:
+
+        $ gcloud compute instances network-interfaces update \
+            example-instance --zone us-central1-a --aliases r1:172.16.0.1/32
+
+    sets 172.16.0.1/32 from range r1 of the default interface's subnetwork as
+    the interface's alias IP.
+
+POSITIONAL ARGUMENTS
+     INSTANCE_NAME
+        Name of the instance to operate on. For details on valid instance
+        names, refer to the criteria documented under the field 'name' at:
+        https://cloud.google.com/compute/docs/reference/rest/v1/instances
+
+FLAGS
+     --aliases=ALIASES
+        The IP alias ranges to allocate for this interface. If there are
+        multiple IP alias ranges, they are separated by semicolons.
+
+        Can be specified together with --network and/or --subnetwork to choose
+        IP alias ranges in the new subnetwork. If unspecified, then the
+        previous IP alias ranges will be allocated in the new subnetwork. If
+        the previous IP alias ranges are not available in the new subnetwork,
+        then other available IP alias ranges of the same size will be allocated
+        in the new subnetwork.
+
+        For example:
+
+            --aliases="10.128.1.0/24;r1:/32"
+
+     --external-ipv6-address=EXTERNAL_IPV6_ADDRESS
+        Assigns the given external IPv6 address to an instance. The address
+        must be the first IP in the range. This option is not applicable to
+        instances with stack-type=IPV4_ONLY.
+
+     --external-ipv6-prefix-length=EXTERNAL_IPV6_PREFIX_LENGTH
+        The prefix length of the external IPv6 address range. This flag should
+        be used together with --external-ipv6-address. Currently only /96 is
+        supported and the default value is 96.
+
+     --igmp-query=IGMP_QUERY
+        Determines if the Compute Engine instance can receive and respond to
+        IGMP query packets on the specified network interface. IGMP_QUERY must
+        be one of:
+
+         IGMP_QUERY_DISABLED
+            IGMP Query on the network interface is disabled.
+         IGMP_QUERY_V2
+            IGMP Query V2 on the network interface is enabled.
+
+     --internal-ipv6-address=INTERNAL_IPV6_ADDRESS
+        Assigns the given internal IPv6 address or range to an instance. The
+        address must be the first IP address in the range or a /96 IP address
+        range. This option can only be used on a dual stack instance network
+        interface.
+
+     --internal-ipv6-prefix-length=INTERNAL_IPV6_PREFIX_LENGTH
+        Optional field that indicates the prefix length of the internal IPv6
+        address range, should be used together with
+        --internal-ipv6-address=fd20::. Only /96 IP address range is supported
+        and the default value is 96. If not set, then either the prefix length
+        from --internal-ipv6-address=fd20::/96 will be used or the default
+        value of 96 will be assigned.
+
+     --ipv6-network-tier=IPV6_NETWORK_TIER
+        Specifies the IPv6 network tier that will be used to configure the
+        instance network interface IPv6 access config. IPV6_NETWORK_TIER must
+        be (only one value is supported):
+
+         PREMIUM
+            High quality, Google-grade network tier.
+
+     --network=NETWORK
+        Specifies the network this network interface belongs to.
+
+     --network-interface=NETWORK_INTERFACE; default="nic0"
+        The name of the network interface to update.
+
+     --private-network-ip=PRIVATE_NETWORK_IP
+        Assign the given IP address to the interface. Can be specified only
+        together with --network and/or --subnetwork to choose the IP address in
+        the new subnetwork. If unspecified, then the previous IP address will
+        be allocated in the new subnetwork. If the previous IP address is not
+        available in the new subnetwork, then another available IP address will
+        be allocated automatically from the new subnetwork CIDR range.
+
+     --security-policy=SECURITY_POLICY
+        The security policy that will be set for this instance network
+        interface. To remove the policy from this instance network interface
+        set the policy to an empty string.
+
+     --security-policy-region=SECURITY_POLICY_REGION
+        Region of the security policy to operate on. Overrides the default
+        compute/region property value for this command invocation.
+
+     --stack-type=STACK_TYPE
+        The stack type for the network interface. Determines if IPv6 is enabled
+        on the network interface. STACK_TYPE must be one of:
+
+         IPV4_IPV6
+            The network interface can have both IPv4 and IPv6 addresses.
+         IPV4_ONLY
+            The network interface will be assigned IPv4 addresses.
+         IPV6_ONLY
+            The network interface will be assigned IPv6 addresses.
+
+     --subnetwork=SUBNETWORK
+        Specifies the subnetwork this network interface belongs to.
+
+     --zone=ZONE
+        Zone of the instance to operate on. If not specified, you might be
+        prompted to select a zone (interactive mode only). gcloud attempts to
+        identify the appropriate zone by searching for resources in your
+        currently active project. If the zone cannot be determined, gcloud
+        prompts you for a selection with all available Google Cloud Platform
+        zones.
+
+        To avoid prompting when this flag is omitted, the user can set the
+        compute/zone property:
+
+            $ gcloud config set compute/zone ZONE
+
+        A list of zones can be fetched by running:
+
+            $ gcloud compute zones list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/zone
+
+        Alternatively, the zone can be stored in the environment variable
+        CLOUDSDK_COMPUTE_ZONE.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instances network-interfaces update
+
+        $ gcloud beta compute instances network-interfaces update
+```
+
+### gcloud beta compute instances network-interfaces update
+
+```text
+NAME
+    gcloud beta compute instances network-interfaces update - update a Compute
+        Engine virtual machine network interface
+
+SYNOPSIS
+    gcloud beta compute instances network-interfaces update INSTANCE_NAME
+        [--aliases=ALIASES] [--external-ipv6-address=EXTERNAL_IPV6_ADDRESS]
+        [--external-ipv6-prefix-length=EXTERNAL_IPV6_PREFIX_LENGTH]
+        [--igmp-query=IGMP_QUERY]
+        [--internal-ipv6-address=INTERNAL_IPV6_ADDRESS]
+        [--internal-ipv6-prefix-length=INTERNAL_IPV6_PREFIX_LENGTH]
+        [--ipv6-aliases=IPV6_ALIASES] [--ipv6-network-tier=IPV6_NETWORK_TIER]
+        [--network=NETWORK]
+        [--network-interface=NETWORK_INTERFACE; default="nic0"]
+        [--private-network-ip=PRIVATE_NETWORK_IP]
+        [--security-policy=SECURITY_POLICY]
+        [--security-policy-region=SECURITY_POLICY_REGION]
+        [--stack-type=STACK_TYPE] [--subnetwork=SUBNETWORK] [--zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instances network-interfaces update
+
+```text
+NAME
+    gcloud alpha compute instances network-interfaces update - update a Compute
+        Engine virtual machine network interface
+
+SYNOPSIS
+    gcloud alpha compute instances network-interfaces update INSTANCE_NAME
+        [--aliases=ALIASES] [--[no-]dns64-eligible]
+        [--external-ipv6-address=EXTERNAL_IPV6_ADDRESS]
+        [--external-ipv6-prefix-length=EXTERNAL_IPV6_PREFIX_LENGTH]
+        [--igmp-query=IGMP_QUERY]
+        [--internal-ipv6-address=INTERNAL_IPV6_ADDRESS]
+        [--internal-ipv6-prefix-length=INTERNAL_IPV6_PREFIX_LENGTH]
+        [--ipv6-address=IPV6_ADDRESS] [--ipv6-aliases=IPV6_ALIASES]
+        [--ipv6-network-tier=IPV6_NETWORK_TIER]
+        [--ipv6-prefix-length=IPV6_PREFIX_LENGTH] [--[no-]nat64-eligible]
+        [--network=NETWORK]
+        [--network-interface=NETWORK_INTERFACE; default="nic0"]
+        [--private-network-ip=PRIVATE_NETWORK_IP]
+        [--security-policy=SECURITY_POLICY]
+        [--security-policy-region=SECURITY_POLICY_REGION]
+        [--stack-type=STACK_TYPE] [--subnetwork=SUBNETWORK] [--zone=ZONE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/network-interfaces/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

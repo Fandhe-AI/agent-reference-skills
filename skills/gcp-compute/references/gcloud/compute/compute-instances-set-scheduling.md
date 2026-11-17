@@ -1,0 +1,403 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/set-scheduling
+---
+
+# gcloud compute instances set-scheduling
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute instances set-scheduling
+
+```text
+NAME
+    gcloud compute instances set-scheduling - set scheduling options for
+        Compute Engine virtual machines
+
+SYNOPSIS
+    gcloud compute instances set-scheduling INSTANCE_NAME
+        [--clear-min-node-cpu] [--[no-]graceful-shutdown]
+        [--graceful-shutdown-max-duration=GRACEFUL_SHUTDOWN_MAX_DURATION]
+        [--host-error-timeout-seconds=HOST_ERROR_TIMEOUT_SECONDS]
+        [--local-ssd-recovery-timeout=LOCAL_SSD_RECOVERY_TIMEOUT]
+        [--maintenance-policy=MAINTENANCE_POLICY] [--min-node-cpu=MIN_NODE_CPU]
+        [--[no-]preemptible]
+        [--preemption-notice-duration=PREEMPTION_NOTICE_DURATION]
+        [--provisioning-model=PROVISIONING_MODEL] [--[no-]restart-on-failure]
+        [--[no-]skip-guest-os-shutdown] [--zone=ZONE]
+        [--clear-discard-local-ssds-at-termination-timestamp
+          | --discard-local-ssds-at-termination-timestamp=DISCARD_LOCAL_SSDS_AT_TERMINATION_TIMESTAMP]
+        [--clear-instance-termination-action
+          | --instance-termination-action=INSTANCE_TERMINATION_ACTION]
+        [--clear-max-run-duration | --max-run-duration=MAX_RUN_DURATION]
+        [--clear-node-affinities | --node=NODE
+          | --node-affinity-file=PATH_TO_FILE | --node-group=NODE_GROUP]
+        [--clear-termination-time | --termination-time=TERMINATION_TIME]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    $gcloud compute instances set-scheduling is used to update scheduling
+    options for VM instances. You can only call this method on a VM instance
+    that is stopped (a VM instance in a TERMINATED state).
+
+EXAMPLES
+    To set instance to be terminated during maintenance, run:
+
+        $ gcloud compute instances set-scheduling example-instance \
+            --maintenance-policy=TERMINATE --zone=us-central1-b
+
+POSITIONAL ARGUMENTS
+     INSTANCE_NAME
+        Name of the instance to operate on. For details on valid instance
+        names, refer to the criteria documented under the field 'name' at:
+        https://cloud.google.com/compute/docs/reference/rest/v1/instances
+
+FLAGS
+     --clear-min-node-cpu
+        Removes the min-node-cpu field from the instance. If specified, the
+        instance min-node-cpu will be cleared. The instance will not be
+        overcommitted and utilize the full CPU count assigned.
+
+     --[no-]graceful-shutdown
+        Enables or disables graceful shutdown for the instance. Use
+        --graceful-shutdown to enable and --no-graceful-shutdown to disable.
+
+     --graceful-shutdown-max-duration=GRACEFUL_SHUTDOWN_MAX_DURATION
+        Specifies the maximum time for the graceful shutdown. After this time,
+        the instance is set to STOPPING even if tasks are still running.
+        Specify the time as the number of hours, minutes, or seconds followed
+        by h, m, and s respectively. For example, specify 30m for 30 minutes or
+        20m10s for 20 minutes and 10 seconds. The value must be between 1
+        second and 1 hour.
+
+     --host-error-timeout-seconds=HOST_ERROR_TIMEOUT_SECONDS
+        The timeout in seconds for host error detection. The value must be set
+        with 30 second increments, with a range of 90 to 330 seconds. If unset,
+        the default behavior of the host error recovery is used.
+
+     --local-ssd-recovery-timeout=LOCAL_SSD_RECOVERY_TIMEOUT
+        Specifies the maximum amount of time a Local Ssd Vm should wait while
+        recovery of the Local Ssd state is attempted. Its value should be in
+        between 0 and 168 hours with hour granularity and the default value
+        being 1 hour.
+
+     --maintenance-policy=MAINTENANCE_POLICY
+        Specifies the behavior of the VMs when their host machines undergo
+        maintenance. The default is MIGRATE. For more information, see
+        https://cloud.google.com/compute/docs/instances/host-maintenance-options.
+        MAINTENANCE_POLICY must be one of:
+
+         MIGRATE
+            The instances should be migrated to a new host. This will
+            temporarily impact the performance of instances during a migration
+            event.
+         TERMINATE
+            The instances should be terminated.
+
+     --min-node-cpu=MIN_NODE_CPU
+        Minimum number of virtual CPUs this instance will consume when running
+        on a sole-tenant node.
+
+     --[no-]preemptible
+        If provided, instances will be preemptible and time-limited. Instances
+        might be preempted to free up resources for standard VM instances, and
+        will only be able to run for a limited amount of time. Preemptible
+        instances can not be restarted and will not migrate. Use --preemptible
+        to enable and --no-preemptible to disable.
+
+     --preemption-notice-duration=PREEMPTION_NOTICE_DURATION
+        Only allowed with --provisioning-model=SPOT. If provided, the
+        preemption notice will be triggered PREEMPTION_NOTICE_DURATION seconds
+        before the ACPI G2 soft off signal. Valid values for
+        PREEMPTION_NOTICE_DURATION are [0s,120s]; for example, specify 120s for
+        120 seconds. Otherwise, if this flag is omitted (default), there will
+        be no wait time before the ACPI G2 soft off signal is triggered.
+
+     --provisioning-model=PROVISIONING_MODEL
+        Specifies the provisioning model for your VM instances. This choice
+        affects the price, availability, and how long your VM instances can
+        run. PROVISIONING_MODEL must be one of:
+
+         RESERVATION_BOUND
+            The VM instances run for the entire duration of their associated
+            reservation. You can only specify this provisioning model if you
+            want your VM instances to consume a specific reservation with
+            either a calendar reservation mode or a dense deployment type.
+         SPOT
+            Compute Engine may stop a Spot VM instance whenever it needs
+            capacity. Because Spot VM instances don't have a guaranteed
+            runtime, they come at a discounted price.
+         STANDARD
+            The default option. The STANDARD provisioning model gives you full
+            control over your VM instances' runtime.
+
+     --[no-]restart-on-failure
+        The instances will be restarted if they are terminated by Compute
+        Engine. This does not affect terminations performed by the user. This
+        option is mutually exclusive with --preemptible. Use
+        --restart-on-failure to enable and --no-restart-on-failure to disable.
+
+     --[no-]skip-guest-os-shutdown
+        If enabled, then, when the instance is stopped or deleted, the instance
+        is immediately stopped without giving time to the guest OS to cleanly
+        shut down. Use --skip-guest-os-shutdown to enable and
+        --no-skip-guest-os-shutdown to disable.
+
+     --zone=ZONE
+        Zone of the instance to operate on. If not specified, you might be
+        prompted to select a zone (interactive mode only). gcloud attempts to
+        identify the appropriate zone by searching for resources in your
+        currently active project. If the zone cannot be determined, gcloud
+        prompts you for a selection with all available Google Cloud Platform
+        zones.
+
+        To avoid prompting when this flag is omitted, the user can set the
+        compute/zone property:
+
+            $ gcloud config set compute/zone ZONE
+
+        A list of zones can be fetched by running:
+
+            $ gcloud compute zones list
+
+        To unset the property, run:
+
+            $ gcloud config unset compute/zone
+
+        Alternatively, the zone can be stored in the environment variable
+        CLOUDSDK_COMPUTE_ZONE.
+
+     Discard Local SSDs At Termination Timestamp
+
+     At most one of these can be specified:
+
+       --clear-discard-local-ssds-at-termination-timestamp
+          Removes the discard-local-ssds-at-termination-timestamp field from
+          the scheduling options.
+
+       --discard-local-ssds-at-termination-timestamp=DISCARD_LOCAL_SSDS_AT_TERMINATION_TIMESTAMP
+          Required to be set to true and only allowed for VMs that have one or
+          more local SSDs, use --instance-termination-action=STOP, and use
+          either --max-run-duration or --termination-time.
+
+          This flag indicates the value that you want Compute Engine to use for
+          the --discard-local-ssd flag in the automatic gcloud compute
+          instances stop command. This flag only supports the true value, which
+          discards local SSD data when automatically stopping this VM during
+          its terminationTimestamp.
+
+          For more information about the --discard-local-ssd flag, see
+          https://cloud.google.com/compute/docs/disks/local-ssd#stop_instance.
+
+     Instance Termination Action
+
+     At most one of these can be specified:
+
+       --clear-instance-termination-action
+          Disables the termination action for this VM if allowed OR sets
+          termination action to the default value. Depending on a VM's
+          availability settings, a termination action is either required or not
+          allowed. This flag is required when you are updating a VM such that
+          it's previously specified termination action is no longer allowed. If
+          you use this flag when a VM requires a termination action, it's
+          termination action is just set to the default value (stop).
+
+       --instance-termination-action=INSTANCE_TERMINATION_ACTION
+          Specifies the termination action that will be taken upon VM
+          preemption (--provisioning-model=SPOT) or automatic instance
+          termination (--max-run-duration or --termination-time).
+
+          INSTANCE_TERMINATION_ACTION must be one of:
+
+           DELETE
+              Permanently delete the VM.
+           STOP
+              Default only for Spot VMs. Stop the VM without preserving memory.
+              The VM can be restarted later.
+
+     Max Run Duration
+
+     At most one of these can be specified:
+
+       --clear-max-run-duration
+          Removes the max-run-duration field from the scheduling options.
+
+       --max-run-duration=MAX_RUN_DURATION
+          Limits how long this VM instance can run, specified as a duration
+          relative to the last time when the VM began running. Format the
+          duration, MAX_RUN_DURATION, as the number of days, hours, minutes,
+          and seconds followed by d, h, m, and s respectively. For example,
+          specify 30m for a duration of 30 minutes or specify 1d2h3m4s for a
+          duration of 1 day, 2 hours, 3 minutes, and 4 seconds. Alternatively,
+          to specify a timestamp, use --termination-time instead.
+
+          If neither --max-run-duration nor --termination-time is specified
+          (default), the VM instance runs until prompted by a user action or
+          system event. If either is specified, the VM instance is scheduled to
+          be automatically terminated at the VM's termination timestamp
+          (terminationTimestamp) using the action specified by
+          --instance-termination-action.
+
+          Note: The terminationTimestamp is removed whenever the VM is stopped
+          or suspended and redefined whenever the VM is rerun. For
+          --max-run-duration specifically, the terminationTimestamp is the sum
+          of MAX_RUN_DURATION and the time when the VM last entered the RUNNING
+          state, which changes whenever the VM is rerun.
+
+     Sole Tenancy.
+
+     At most one of these can be specified:
+
+       --clear-node-affinities
+          Removes the node affinities field from the instance. If specified,
+          the instance node settings will be cleared. The instance will not be
+          scheduled onto a sole-tenant node.
+
+       --node=NODE
+          The name of the node to schedule this instance on.
+
+       --node-affinity-file=PATH_TO_FILE
+          The JSON/YAML file containing the configuration of desired nodes onto
+          which this instance could be scheduled. These rules filter the nodes
+          according to their node affinity labels. A node's affinity labels
+          come from the node template of the group the node is in.
+
+          The file should contain a list of a JSON/YAML objects. For an
+          example, see
+          https://cloud.google.com/compute/docs/nodes/provisioning-sole-tenant-vms#configure_node_affinity_labels.
+          The following list describes the fields:
+
+           key
+              Corresponds to the node affinity label keys of the Node resource.
+           operator
+              Specifies the node selection type. Must be one of: IN: Requires
+              Compute Engine to seek for matched nodes. NOT_IN: Requires
+              Compute Engine to avoid certain nodes.
+           values
+              Optional. A list of values which correspond to the node affinity
+              label values of the Node resource.
+
+              Use a full or relative path to a local file containing the value
+              of node_affinity_file.
+
+       --node-group=NODE_GROUP
+          The name of the node group to schedule this instance on.
+
+     Termination Time
+
+     At most one of these can be specified:
+
+       --clear-termination-time
+          Removes the termination-time field from the scheduling options.
+
+       --termination-time=TERMINATION_TIME
+          Limits how long this VM instance can run, specified as a time. Format
+          the time, TERMINATION_TIME, as a RFC 3339 timestamp. For more
+          information, see https://tools.ietf.org/html/rfc3339. Alternatively,
+          to specify a duration, use --max-run-duration instead.
+
+          If neither --termination-time nor --max-run-duration is specified
+          (default), the VM instance runs until prompted by a user action or
+          system event. If either is specified, the VM instance is scheduled to
+          be automatically terminated at the VM's termination timestamp
+          (terminationTimestamp) using the action specified by
+          --instance-termination-action.
+
+          Note: The terminationTimestamp is removed whenever the VM is stopped
+          or suspended and redefined whenever the VM is rerun. For
+          --termination-time specifically, the terminationTimestamp remains the
+          same whenever the VM is rerun, but any requests to rerun the VM fail
+          if the specified timestamp is in the past.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha compute instances set-scheduling
+
+        $ gcloud beta compute instances set-scheduling
+```
+
+### gcloud beta compute instances set-scheduling
+
+```text
+NAME
+    gcloud beta compute instances set-scheduling - set scheduling options for
+        Compute Engine virtual machines
+
+SYNOPSIS
+    gcloud beta compute instances set-scheduling INSTANCE_NAME
+        [--clear-min-node-cpu] [--[no-]graceful-shutdown]
+        [--graceful-shutdown-max-duration=GRACEFUL_SHUTDOWN_MAX_DURATION]
+        [--host-error-timeout-seconds=HOST_ERROR_TIMEOUT_SECONDS]
+        [--local-ssd-recovery-timeout=LOCAL_SSD_RECOVERY_TIMEOUT]
+        [--maintenance-policy=MAINTENANCE_POLICY] [--min-node-cpu=MIN_NODE_CPU]
+        [--[no-]preemptible]
+        [--preemption-notice-duration=PREEMPTION_NOTICE_DURATION]
+        [--provisioning-model=PROVISIONING_MODEL] [--[no-]restart-on-failure]
+        [--[no-]skip-guest-os-shutdown] [--zone=ZONE]
+        [--clear-discard-local-ssds-at-termination-timestamp
+          | --discard-local-ssds-at-termination-timestamp=DISCARD_LOCAL_SSDS_AT_TERMINATION_TIMESTAMP]
+        [--clear-instance-termination-action
+          | --instance-termination-action=INSTANCE_TERMINATION_ACTION]
+        [--clear-maintenance-freeze-duration
+          | --maintenance-freeze-duration=MAINTENANCE_FREEZE_DURATION]
+        [--clear-max-run-duration | --max-run-duration=MAX_RUN_DURATION]
+        [--clear-node-affinities | --node=NODE
+          | --node-affinity-file=PATH_TO_FILE | --node-group=NODE_GROUP]
+        [--clear-termination-time | --termination-time=TERMINATION_TIME]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha compute instances set-scheduling
+
+```text
+NAME
+    gcloud alpha compute instances set-scheduling - set scheduling options for
+        Compute Engine virtual machines
+
+SYNOPSIS
+    gcloud alpha compute instances set-scheduling INSTANCE_NAME
+        [--clear-min-node-cpu] [--[no-]graceful-shutdown]
+        [--graceful-shutdown-max-duration=GRACEFUL_SHUTDOWN_MAX_DURATION]
+        [--host-error-timeout-seconds=HOST_ERROR_TIMEOUT_SECONDS]
+        [--local-ssd-recovery-timeout=LOCAL_SSD_RECOVERY_TIMEOUT]
+        [--min-node-cpu=MIN_NODE_CPU] [--[no-]preemptible]
+        [--preemption-notice-duration=PREEMPTION_NOTICE_DURATION]
+        [--provisioning-model=PROVISIONING_MODEL] [--[no-]restart-on-failure]
+        [--[no-]skip-guest-os-shutdown] [--zone=ZONE]
+        [--clear-discard-local-ssds-at-termination-timestamp
+          | --discard-local-ssds-at-termination-timestamp=DISCARD_LOCAL_SSDS_AT_TERMINATION_TIMESTAMP]
+        [--clear-instance-termination-action
+          | --instance-termination-action=INSTANCE_TERMINATION_ACTION]
+        [--clear-latency-tolerant | --[no-]latency-tolerant]
+        [--clear-maintenance-freeze-duration
+          | --maintenance-freeze-duration=MAINTENANCE_FREEZE_DURATION]
+        [--clear-max-run-duration | --max-run-duration=MAX_RUN_DURATION]
+        [--clear-node-affinities | --node=NODE
+          | --node-affinity-file=PATH_TO_FILE | --node-group=NODE_GROUP]
+        [--clear-termination-time | --termination-time=TERMINATION_TIME]
+        [--clear-windows-license-optimization-mode
+          | --windows-license-optimization-mode=WINDOWS_LICENSE_OPTIMIZATION_MODE]
+        [--maintenance-policy=MAINTENANCE_POLICY
+          | --on-host-maintenance=MAINTENANCE_POLICY] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/set-scheduling (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
