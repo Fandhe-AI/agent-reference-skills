@@ -7,3 +7,4 @@
 | Cloud IDS API (ids) | 10 schemas | [ids/README.md](./ids/README.md) |
 | Network Connectivity API (networkconnectivity) | 113 schemas | [networkconnectivity/README.md](./networkconnectivity/README.md) |
 | Network Management API (networkmanagement) | 91 schemas | [networkmanagement/README.md](./networkmanagement/README.md) |
+| Network Security API (networksecurity) | 169 schemas | [networksecurity/README.md](./networksecurity/README.md) |
