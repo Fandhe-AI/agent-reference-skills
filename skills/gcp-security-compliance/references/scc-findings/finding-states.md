@@ -1,0 +1,47 @@
+---
+source: https://docs.cloud.google.com/security-command-center/docs/finding-states
+---
+
+# Finding states
+
+A Security Command Center finding has one of two states, `Active` or `Inactive`. The state does not always reflect the real state of the detected issue. Applies to Standard-legacy, Standard, Premium, and Enterprise (Deprecated) tiers.
+
+## Signature / Usage
+
+### Change a finding's state
+
+```bash
+gcloud scc findings update \
+    projects/example-project/sources/5678/findings/testFinding \
+    --state=INACTIVE
+```
+
+## Options / Props
+
+### States
+
+| State | Meaning |
+|---|---|
+| `Active` | Set by built-in detection services when a finding is created. Generally means the security issue still exists, but not always. |
+| `Inactive` | Set when certain detection services detect that the issue was remediated or the resource deleted, or manually. Generally means the issue no longer exists, but not always. |
+
+### Why the state might not match reality
+
+| Reason |
+|---|
+| Some detection services do not update findings automatically after remediation. Threat finding states are never changed automatically. |
+| Services that do update automatically usually have a delay before remediation is detected. |
+| The state of some findings might be changed manually to a value that doesn't match the issue. |
+
+## Notes
+
+- Only the following vulnerability and misconfiguration services automatically change a finding from `Active` to `Inactive` when the issue is remediated: Security Health Analytics (including when a Security Health Analytics detector is disabled; see "Automatic deactivation of findings" in its remediation docs) and VM Manager.
+- Downgrading to the Standard tier also changes Premium or Enterprise findings to `Inactive`.
+- The Security Command Center Enterprise service tier will shut down on May 21, 2027; organizations on it move to Premium on or after that date.
+- Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/scc/findings/update (gcloud 593.0.0 help). With no `--location`, the help says the request goes to the SCC V1 API; pass `--location` to use the V2 API. The help also states: "State can be toggled from ACTIVE to INACTIVE and vice-versa but it cannot be deleted."
+- Source: https://docs.cloud.google.com/security-command-center/docs/finding-states (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+
+## Related
+
+- [finding-lifecycle-overview.md](./finding-lifecycle-overview.md)
+- [review-manage-findings.md](./review-manage-findings.md)
