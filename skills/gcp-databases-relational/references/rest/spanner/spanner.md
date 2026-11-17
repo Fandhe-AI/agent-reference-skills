@@ -702,7 +702,7 @@ Base URL: `https://spanner.googleapis.com`. Methods are listed by `id`; the `Ver
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The name of the database. Values are of the form `projects//instances//databases/`, where `` is as specified in the `CREATE DATABASE` statement. This name can be passed to other API methods to identify the database. |
+| `name` | path | string | yes | Required. The name of the database. Values are of the form `projects//instances//databases/`, where \`\` is as specified in the `CREATE DATABASE` statement. This name can be passed to other API methods to identify the database. |
 | `updateMask` | query | string (google-fieldmask) | yes | Required. The list of fields to update. Currently, only `enable_drop_protection` field can be updated. |
 
 ### `spanner.projects.instances.databases.restore`

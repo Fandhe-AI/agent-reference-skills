@@ -588,7 +588,7 @@ Message types referenced by the methods listed under `references/rest/spanner/`.
 | `enableDropProtection` | boolean | Optional. Whether drop protection is enabled for this database. Defaults to false, if not set. For more details, please see how to prevent accidental database deletion (https://cloud.google.com/spanner/docs/prevent-database-deletion). |
 | `encryptionConfig` | EncryptionConfig | Output only. For databases that are using customer managed encryption, this field contains the encryption configuration for the database. For databases that are using Google default or other types of encryption, this field is empty. |
 | `encryptionInfo` | array<EncryptionInfo> | Output only. For databases that are using customer managed encryption, this field contains the encryption information for the database, such as all Cloud KMS key versions that are in use. The `encryption_status` field inside of each `EncryptionInfo` is not populated. For databases that are using Google default or other types of encryption, this field is empty. This field is propagated lazily from the backend. There might be a delay from when a key version is being used and when it appears in this field. |
-| `name` | string | Required. The name of the database. Values are of the form `projects//instances//databases/`, where `` is as specified in the `CREATE DATABASE` statement. This name can be passed to other API methods to identify the database. |
+| `name` | string | Required. The name of the database. Values are of the form `projects//instances//databases/`, where \`\` is as specified in the `CREATE DATABASE` statement. This name can be passed to other API methods to identify the database. |
 | `quorumInfo` | QuorumInfo | Output only. Applicable only for databases that use dual-region instance configurations. Contains information about the quorum. |
 | `reconciling` | boolean | Output only. If true, the database is being updated. If false, there are no ongoing update operations for the database. |
 | `restoreInfo` | RestoreInfo | Output only. Applicable only for restored databases. Contains information about the restore source. |
@@ -612,7 +612,7 @@ Message types referenced by the methods listed under `references/rest/spanner/`.
 
 | Field | Type | Description |
 |---|---|---|
-| `name` | string | Required. The name of the database role. Values are of the form `projects//instances//databases//databaseRoles/` where `` is as specified in the `CREATE ROLE` DDL statement. |
+| `name` | string | Required. The name of the database role. Values are of the form `projects//instances//databases//databaseRoles/` where \`\` is as specified in the `CREATE ROLE` DDL statement. |
 
 ### `DdlStatementActionInfo`
 
