@@ -7,9 +7,9 @@ user-invocable: false
 
 # gcp-networking
 
-Google Cloud (GCP) のネットワーク系スキル。VPC（ネットワーク・サブネット・ルート・VPC Network Peering・Shared VPC・IP アドレス・BYOIP・内部レンジ・Network Service Tiers・MTU）、ファイアウォール（VPC firewall rules・階層 / グローバル / リージョンの firewall policies・Cloud NGFW のタグ・FQDN・アドレスグループ・firewall endpoints・security profiles・TLS inspection・URL filtering）、Cloud DNS（ゾーン・レコード・DNSSEC・server / response / routing policies）、Cloud NAT（Public NAT / Private NAT・NAT rules）、Cloud Router（BGP・学習 / アドバタイズルート・BGP route policies）、Cloud VPN（HA VPN）、Cloud Interconnect（Dedicated / Partner / Cross-Cloud）、Network Connectivity Center（hub・spoke・NCC Gateway）、Private Service Connect、Private Google Access / private services access / Serverless VPC Access を扱う。加えて Network Intelligence Center（Connectivity Tests・VPC Flow Logs・Firewall Insights・Network Analyzer・Flow Analyzer）、Network Security Integration（in-band / out-of-band・packet mirroring）と Cloud IDS、Secure Web Proxy、Service Directory、Cloud Service Mesh のサービスルーティング（Traffic Director API）、Google Distributed Cloud connected のネットワーク（`gcloud edge-cloud`）と、gcloud 12 グループ・REST（Discovery）・IAM ロールを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `vpc-overview` / `vpc-routes` / `vpc-ip-addresses` / `vpc-peering-shared-vpc` / `private-service-connect` / `secure-web-proxy` / `service-directory` / `traffic-director`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のネットワーク系スキル。VPC（ネットワーク・サブネット・ルート・VPC Network Peering・Shared VPC・IP アドレス・BYOIP・内部レンジ・Network Service Tiers・MTU）、ファイアウォール（VPC firewall rules・階層 / グローバル / リージョンの firewall policies・Cloud NGFW のタグ・FQDN・アドレスグループ・firewall endpoints・security profiles・TLS inspection・URL filtering）、Cloud DNS（ゾーン・レコード・DNSSEC・server / response / routing policies）、Cloud NAT（Public NAT / Private NAT・NAT rules）、Cloud Router（BGP・学習 / アドバタイズルート・BGP route policies）、Cloud VPN（HA VPN）、Cloud Interconnect（Dedicated / Partner / Cross-Cloud）、Network Connectivity Center（hub・spoke・NCC Gateway）、Private Service Connect、Private Google Access / private services access / Serverless VPC Access を扱う。加えて Network Intelligence Center（Connectivity Tests・VPC Flow Logs・Firewall Insights・Network Analyzer・Flow Analyzer）、Network Security Integration（in-band / out-of-band・packet mirroring）と Cloud IDS、Secure Web Proxy、Service Directory、Cloud Service Mesh のサービスルーティング（Traffic Director API）、Google Distributed Cloud connected のネットワーク（`gcloud edge-cloud`）と、gcloud 12 グループ・REST（Discovery）・IAM ロールを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `vpc-overview` / `vpc-routes` / `vpc-peering-shared-vpc`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
-参照本文は英語（公式ドキュメント・`gcloud help` の原語）。`traffic-director` カテゴリ（後続 PR で投入）は Cloud Service Mesh のサービスルーティング API のページを収録する（REST の API 名は `trafficdirector`（Traffic Director API）、IAM ロールは Traffic Director Client（`roles/trafficdirector.client`））。非推奨は Classic VPN の動的ルーティング（BGP）が 2025-08-01 に非推奨（`cloud-vpn/classic-vpn-deprecation.md`）。
+参照本文は英語（公式ドキュメント・`gcloud help` の原語）。`traffic-director` カテゴリは Cloud Service Mesh のサービスルーティング API のページを収録する（REST の API 名は `trafficdirector`（Traffic Director API）、IAM ロールは Traffic Director Client（`roles/trafficdirector.client`））。非推奨は Classic VPN の動的ルーティング（BGP）が 2025-08-01 に非推奨（`cloud-vpn/classic-vpn-deprecation.md`）。
 
 **ロードバランサー（Cloud Load Balancing・Cloud CDN・Media CDN・Service Extensions の概念と手順）は `gcp-load-balancing`**。ただし `gcloud network-services`（service-lb-policies・meshes・各種 routes・gateways・`wasm-plugins` 等）・`gcloud edge-cache`（Media CDN）・`gcloud service-extensions`（`lb-traffic-extensions` 等）の gcloud・REST・IAM の機械生成ページは本スキルに後続 PR で投入する（それまでは公式リファレンス https://docs.cloud.google.com/sdk/gcloud/reference を引く）。`gcloud compute` のロードバランサー関連リソース（backend-services・forwarding-rules・url-maps・target-*-proxies・health-checks・ssl-certificates・ssl-policies・network-endpoint-groups・backend-buckets）と VPC / firewall / router / VPN / Interconnect / NAT の `gcloud compute` コマンド・Compute REST・`roles/compute.*` は `gcp-compute`。
 
@@ -19,6 +19,9 @@ Google Cloud (GCP) のネットワーク系スキル。VPC（ネットワーク�
 skills/gcp-networking/
   SKILL.md
   references/
+    vpc-ip-addresses/             # IP アドレスの種類・静的内部 IP・alias IP・BYOIP・内部レンジ・外部 IP の移動・Network Service Tiers
+      README.md
+      <page>.md
     firewall-policies/            # firewall policies の概要・VPC firewall rules・階層 / グローバルポリシー・ルール構成要素・評価順序
       README.md
       <page>.md
@@ -43,6 +46,9 @@ skills/gcp-networking/
     network-connectivity-center/  # Network Connectivity Center: 製品の選び方・hub と spoke・VPC spokes・トポロジー・spoke フィルター・router appliance・NCC Gateway・クォータ
       README.md
       <page>.md
+    private-service-connect/      # Private Service Connect: endpoint・published services・network attachments・アーキテクチャ・設定
+      README.md
+      <page>.md
     private-access/               # プライベートアクセスの選択肢・Private Google Access・private services access・Serverless VPC Access
       README.md
       <page>.md
@@ -52,6 +58,15 @@ skills/gcp-networking/
     network-security-integration-ids/  # Network Security Integration（in-band / out-of-band・security profiles）・Cloud IDS
       README.md
       <page>.md
+    secure-web-proxy/             # Secure Web Proxy: ポリシーとルール・explicit proxy / next hop のデプロイ・TLS inspection・UrlList / CEL リファレンス・クォータ
+      README.md
+      <page>.md
+    service-directory/            # Service Directory: 概要・用語・namespace / service / endpoint の設定・クォータ
+      README.md
+      <page>.md
+    traffic-director/             # Cloud Service Mesh のサービスルーティング（Traffic Director API）: proxyless gRPC・Envoy・Mesh / HTTPRoute / GRPCRoute / TCPRoute・xDS・高度なトラフィック管理
+      README.md
+      <page>.md                   # 例: proxyless-overview.md / xds-control-plane-apis.md
     gdc-connected/                # Google Distributed Cloud connected: 概要・ネットワーク機能・networks / subnetworks / clusters・クォータ
       README.md
       <page>.md
@@ -65,12 +80,13 @@ skills/gcp-networking/
 2. ロードバランサー・Cloud CDN・Media CDN・Service Extensions の概念・手順は `gcp-load-balancing`。Cloud Armor・IAP・Certificate Manager は `gcp-security`（予定）
 3. 非推奨を確認するときは、Classic VPN の動的ルーティングは `cloud-vpn/classic-vpn-deprecation.md`を引く
 
-未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `vpc-overview` / `vpc-routes` / `vpc-ip-addresses` / `vpc-peering-shared-vpc` / `private-service-connect` / `secure-web-proxy` / `service-directory` / `traffic-director`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `vpc-overview` / `vpc-routes` / `vpc-peering-shared-vpc`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| 内部 / 外部・静的 / エフェメラルの IP アドレス・静的内部 IP の予約・alias IP・BYOIP・内部レンジ・外部 IPv4 の移動・Network Service Tiers | vpc-ip-addresses | [references/vpc-ip-addresses/README.md](references/vpc-ip-addresses/README.md) |
 | firewall policies（階層 / グローバル）・VPC firewall rules・ルールの構成要素と評価順序 | firewall-policies | [references/firewall-policies/README.md](references/firewall-policies/README.md) |
 | Cloud NGFW のティア・secure tags・アドレスグループ・FQDN オブジェクト・firewall endpoints・security profiles・IPS・TLS inspection・URL filtering | cloud-ngfw | [references/cloud-ngfw/README.md](references/cloud-ngfw/README.md) |
 | Cloud DNS のゾーン（forwarding / peering / 逆引き）・レコード・server / response / routing policies・DNSSEC・ハイブリッド DNS | cloud-dns | [references/cloud-dns/README.md](references/cloud-dns/README.md) |
@@ -79,12 +95,16 @@ skills/gcp-networking/
 | Cloud VPN（HA VPN）のトポロジー・SLA・IKE 暗号・ピアゲートウェイ・事前共有鍵・Classic VPN の BGP 非推奨 | cloud-vpn | [references/cloud-vpn/README.md](references/cloud-vpn/README.md) |
 | Cloud Interconnect の種類（Dedicated / Partner / Cross-Cloud）・VLAN アタッチメント・用語・冗長構成・クォータ | cloud-interconnect | [references/cloud-interconnect/README.md](references/cloud-interconnect/README.md) |
 | 接続製品の選び方・Network Connectivity Center の hub / spoke・VPC spokes・トポロジー・spoke フィルター・router appliance・NCC Gateway | network-connectivity-center | [references/network-connectivity-center/README.md](references/network-connectivity-center/README.md) |
+| Private Service Connect の endpoint（Google API 向け / published service 向け）・service attachment・network attachment | private-service-connect | [references/private-service-connect/README.md](references/private-service-connect/README.md) |
 | Private Google Access・private services access・Serverless VPC Access コネクタなどプライベートアクセスの選択肢 | private-access | [references/private-access/README.md](references/private-access/README.md) |
 | Connectivity Tests・Network Topology・Performance Dashboard・Firewall Insights・Network Analyzer・Flow Analyzer・Cloud Network Insights・VPC Flow Logs | network-intelligence-center | [references/network-intelligence-center/README.md](references/network-intelligence-center/README.md) |
 | Network Security Integration（in-band / out-of-band・packet mirroring）・Cloud IDS の構成とベストプラクティス | network-security-integration-ids | [references/network-security-integration-ids/README.md](references/network-security-integration-ids/README.md) |
+| Secure Web Proxy のポリシー・ルール・explicit proxy / next hop のデプロイ・TLS inspection・UrlList / CEL リファレンス | secure-web-proxy | [references/secure-web-proxy/README.md](references/secure-web-proxy/README.md) |
+| Service Directory の namespace / service / endpoint・Cloud DNS 連携 | service-directory | [references/service-directory/README.md](references/service-directory/README.md) |
+| Cloud Service Mesh のサービスルーティング（Traffic Director API）: proxyless gRPC・Envoy・Mesh / HTTPRoute / GRPCRoute / TCPRoute・xDS・サービス LB ポリシー | traffic-director | [references/traffic-director/README.md](references/traffic-director/README.md) |
 | Google Distributed Cloud connected の概要・ネットワーク機能・networks / subnetworks / clusters・クォータ | gdc-connected | [references/gdc-connected/README.md](references/gdc-connected/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `vpc-overview` / `vpc-routes` / `vpc-ip-addresses` / `vpc-peering-shared-vpc` / `private-service-connect` / `secure-web-proxy` / `service-directory` / `traffic-director`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `vpc-overview` / `vpc-routes` / `vpc-peering-shared-vpc`
 
 ## 他スキルとの使い分け
 
