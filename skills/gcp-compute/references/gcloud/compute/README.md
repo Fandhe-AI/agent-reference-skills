@@ -439,3 +439,30 @@
 | gcloud compute rollouts | 13 commands (alpha, beta, ga); compute rollouts cancel … | [compute-rollouts.md](./compute-rollouts.md) |
 | gcloud compute routers add-bgp-peer | 3 commands (alpha, beta, ga); compute routers add-bgp-peer … | [compute-routers-add-bgp-peer.md](./compute-routers-add-bgp-peer.md) |
 | gcloud compute routers add-interface | 3 commands (alpha, beta, ga); compute routers add-interface … | [compute-routers-add-interface.md](./compute-routers-add-interface.md) |
+| gcloud compute routers add-named-set | 3 commands (alpha, beta, ga); compute routers add-named-set … | [compute-routers-add-named-set.md](./compute-routers-add-named-set.md) |
+| gcloud compute routers add-named-set-element | 3 commands (alpha, beta, ga); compute routers add-named-set-element … | [compute-routers-add-named-set-element.md](./compute-routers-add-named-set-element.md) |
+| gcloud compute routers add-route-policy | 3 commands (alpha, beta, ga); compute routers add-route-policy … | [compute-routers-add-route-policy.md](./compute-routers-add-route-policy.md) |
+| gcloud compute routers add-route-policy-term | 3 commands (alpha, beta, ga); compute routers add-route-policy-term … | [compute-routers-add-route-policy-term.md](./compute-routers-add-route-policy-term.md) |
+| gcloud compute routers create | 3 commands (alpha, beta, ga); compute routers create … | [compute-routers-create.md](./compute-routers-create.md) |
+| gcloud compute routers delete | 3 commands (alpha, beta, ga); compute routers delete … | [compute-routers-delete.md](./compute-routers-delete.md) |
+| gcloud compute routers describe | 3 commands (alpha, beta, ga); compute routers describe … | [compute-routers-describe.md](./compute-routers-describe.md) |
+| gcloud compute routers download-named-set | 3 commands (alpha, beta, ga); compute routers download-named-set … | [compute-routers-download-named-set.md](./compute-routers-download-named-set.md) |
+| gcloud compute routers download-route-policy | 3 commands (alpha, beta, ga); compute routers download-route-policy … | [compute-routers-download-route-policy.md](./compute-routers-download-route-policy.md) |
+| gcloud compute routers get-named-set | 3 commands (alpha, beta, ga); compute routers get-named-set … | [compute-routers-get-named-set.md](./compute-routers-get-named-set.md) |
+| gcloud compute routers get-nat-ip-info | 3 commands (alpha, beta, ga); compute routers get-nat-ip-info … | [compute-routers-get-nat-ip-info.md](./compute-routers-get-nat-ip-info.md) |
+| gcloud compute routers get-nat-mapping-info | 3 commands (alpha, beta, ga); compute routers get-nat-mapping-info … | [compute-routers-get-nat-mapping-info.md](./compute-routers-get-nat-mapping-info.md) |
+| gcloud compute routers get-route-policy | 3 commands (alpha, beta, ga); compute routers get-route-policy … | [compute-routers-get-route-policy.md](./compute-routers-get-route-policy.md) |
+| gcloud compute routers get-status | 3 commands (alpha, beta, ga); compute routers get-status … | [compute-routers-get-status.md](./compute-routers-get-status.md) |
+| gcloud compute routers list | 3 commands (alpha, beta, ga); compute routers list … | [compute-routers-list.md](./compute-routers-list.md) |
+| gcloud compute routers list-bgp-routes | 3 commands (alpha, beta, ga); compute routers list-bgp-routes … | [compute-routers-list-bgp-routes.md](./compute-routers-list-bgp-routes.md) |
+| gcloud compute routers list-named-sets | 3 commands (alpha, beta, ga); compute routers list-named-sets … | [compute-routers-list-named-sets.md](./compute-routers-list-named-sets.md) |
+| gcloud compute routers list-route-policies | 3 commands (alpha, beta, ga); compute routers list-route-policies … | [compute-routers-list-route-policies.md](./compute-routers-list-route-policies.md) |
+| gcloud compute routers nats create | 3 commands (alpha, beta, ga); compute routers nats create … | [compute-routers-nats-create.md](./compute-routers-nats-create.md) |
+| gcloud compute routers nats delete | 3 commands (alpha, beta, ga); compute routers nats delete … | [compute-routers-nats-delete.md](./compute-routers-nats-delete.md) |
+| gcloud compute routers nats describe | 3 commands (alpha, beta, ga); compute routers nats describe … | [compute-routers-nats-describe.md](./compute-routers-nats-describe.md) |
+| gcloud compute routers nats list | 3 commands (alpha, beta, ga); compute routers nats list … | [compute-routers-nats-list.md](./compute-routers-nats-list.md) |
+| gcloud compute routers nats rules | 15 commands (alpha, beta, ga); compute routers nats rules create … | [compute-routers-nats-rules.md](./compute-routers-nats-rules.md) |
+| gcloud compute routers nats update | 3 commands (alpha, beta, ga); compute routers nats update … | [compute-routers-nats-update.md](./compute-routers-nats-update.md) |
+| gcloud compute routers remove-bgp-peer | 3 commands (alpha, beta, ga); compute routers remove-bgp-peer … | [compute-routers-remove-bgp-peer.md](./compute-routers-remove-bgp-peer.md) |
+| gcloud compute routers remove-interface | 3 commands (alpha, beta, ga); compute routers remove-interface … | [compute-routers-remove-interface.md](./compute-routers-remove-interface.md) |
+| gcloud compute routers remove-named-set-element | 3 commands (alpha, beta, ga); compute routers remove-named-set-element … | [compute-routers-remove-named-set-element.md](./compute-routers-remove-named-set-element.md) |
