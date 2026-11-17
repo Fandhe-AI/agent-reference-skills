@@ -54,6 +54,7 @@ gcloud network-connectivity hubs route-tables routes list \
 - Detailed steps (create hub, propose spokes, view route tables) are in the official "Work with hubs and spokes", "Configure a hub" and "View the hub route table" guides.
 - Corrected from the official docs: the source writes the prefix as `192.168.44.10/24` (host bits set, so it is not a valid network prefix); it is shown here as `192.168.44.0/24`, the /24 network that contains `192.168.44.10`. The MED and priority values in the examples are unchanged.
 - Source inconsistency: this page says "Route exchange with VPC spokes supports IPv4 addressing only", but the NCC overview (https://docs.cloud.google.com/network-connectivity/docs/network-connectivity-center/concepts/overview, retrieved 2026-11-17) says VPC spokes provide connectivity among IPv4 and IPv6 subnet ranges and that hybrid spokes support exporting IPv4 and IPv6 (Preview) dynamic routes. Safe reading: the IPv4-only statement applies to route exchange between hybrid spokes and VPC spokes as described on this page.
+- `--route_table` is spelled with an underscore in the gcloud 593.0.0 SYNOPSIS of `gcloud network-connectivity hubs route-tables routes list` (`[--hub=HUB --route_table=ROUTE_TABLE]`); it is not a typo for `--route-table`.
 - Source: https://docs.cloud.google.com/network-connectivity/docs/network-connectivity-center/concepts/dynamic-route-exchange-with-vpc-spokes (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

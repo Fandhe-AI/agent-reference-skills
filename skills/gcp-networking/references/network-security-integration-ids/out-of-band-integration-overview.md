@@ -42,8 +42,8 @@ gcloud network-security mirroring-endpoint-groups create \
 
 | Role | ID |
 |------|----|
-| Mirroring Endpoint Admin | `roles/networksecurity.mirroringAdmin` |
-| Mirroring Endpoint Network Admin | `roles/networksecurity.mirroringEndpointNetworkAdmin` |
+| Mirroring Endpoint Admin | `roles/networksecurity.mirroringEndpointAdmin` |
+| Mirroring Endpoint Network Admin | `roles/networksecurity.mirroringEndpointNetworkAdmin` (as written by the source; not listed in the IAM roles reference, see Notes) |
 
 ### Mirroring rule actions
 
@@ -86,6 +86,8 @@ NSI Packet Mirroring takes precedence at the workload level: the data plane disr
 - Mirrored traffic contains full payloads; restrict access to collectors and to the roles above.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-security/mirroring-endpoint-groups/create (gcloud 593.0.0 help). The source page itself has no code.
 - Corrected from the official docs: the source writes the flag as `--is_mirroring_collector`; the gcloud 593.0.0 help for `gcloud compute forwarding-rules create` lists it as `--is-mirroring-collector` ("If set, this forwarding rule can be used as a collector for packet mirroring. This can only be specified for forwarding rules with the LOAD_BALANCING_SCHEME set to INTERNAL").
+- Corrected from the official docs: the source gives the Mirroring Endpoint Admin role as `roles/networksecurity.mirroringAdmin`; the IAM roles reference (https://docs.cloud.google.com/iam/docs/roles-permissions/networksecurity, retrieved 2026-11-17) lists "Mirroring Endpoint Admin" as `roles/networksecurity.mirroringEndpointAdmin`.
+- Source inconsistency: the source also names a "Mirroring Endpoint Network Admin role (`roles/networksecurity.mirroringEndpointNetworkAdmin`)", but the same IAM roles reference lists no such role; its mirroring endpoint roles are `roles/networksecurity.mirroringEndpointAdmin`, `roles/networksecurity.mirroringEndpointUser` ("Allows a consumer to connect their networks to a mirroringEndpointGroup") and `roles/networksecurity.mirroringEndpointViewer`. Check the role with `gcloud iam roles describe` before granting it.
 - Source: https://docs.cloud.google.com/network-security-integration/docs/out-of-band/out-of-band-integration-overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
