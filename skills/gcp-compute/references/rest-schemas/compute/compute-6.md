@@ -1645,6 +1645,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 ## Notes
 
 - Generated from the Discovery document(s) v1, preview, beta, alpha of `compute` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Corrected from the official docs (the Discovery text above is verbatim): the `encryption` description of `InterconnectAttachmentGroupsCreateMembersInterconnectAttachmentInput` (compute `alpha` Discovery document) names the default, unencrypted value `alpha`, but the field's enum is `IPSEC` and `NONE` only; the `enumDescriptions` entry for `NONE` reads "This is the default value, which means the Interconnect Attachment will carry unencrypted traffic", so the unencrypted default is `NONE`.
 - Source: https://compute.googleapis.com/$discovery/rest?version=v1, https://compute.googleapis.com/$discovery/rest?version=preview, https://compute.googleapis.com/$discovery/rest?version=beta, https://compute.googleapis.com/$discovery/rest?version=alpha (https://developers.google.com/discovery)
 
 ## Related
