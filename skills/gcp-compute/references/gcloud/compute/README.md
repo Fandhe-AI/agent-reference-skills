@@ -600,3 +600,7 @@
 | gcloud compute url-maps set-default-service | 3 commands (alpha, beta, ga); compute url-maps set-default-service … | [compute-url-maps-set-default-service.md](./compute-url-maps-set-default-service.md) |
 | gcloud compute url-maps test-iam-permissions | 3 commands (alpha, beta, ga); compute url-maps test-iam-permissions … | [compute-url-maps-test-iam-permissions.md](./compute-url-maps-test-iam-permissions.md) |
 | gcloud compute url-maps validate | 3 commands (alpha, beta, ga); compute url-maps validate … | [compute-url-maps-validate.md](./compute-url-maps-validate.md) |
+| gcloud compute vpn-gateways | 22 commands (alpha, beta, ga); compute vpn-gateways create … | [compute-vpn-gateways.md](./compute-vpn-gateways.md) |
+| gcloud compute vpn-tunnels | 16 commands (alpha, beta, ga); compute vpn-tunnels create … | [compute-vpn-tunnels.md](./compute-vpn-tunnels.md) |
+| gcloud compute zone-vm-extension-policies | 17 commands (alpha, beta, ga); compute zone-vm-extension-policies create … | [compute-zone-vm-extension-policies.md](./compute-zone-vm-extension-policies.md) |
+| gcloud compute zones | 6 commands (alpha, beta, ga); compute zones describe … | [compute-zones.md](./compute-zones.md) |
