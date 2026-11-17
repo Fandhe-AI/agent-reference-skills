@@ -21,7 +21,7 @@ skills/gcp-networking/
   references/
     gcloud/                       # 機械生成: gcloud 593.0.0、取得 2026-11-14
       README.md
-      dns/  # 分割投入中（16 / 17 ページ。収録済みは README 掲載分のみ）
+      dns/
         README.md                 # gcloud dns（Cloud DNS: managed-zones・record-sets・policies・response-policies・dns-keys・outbound-endpoints）
         dns-<group>.md
     vpc-overview/                 # 公式ガイド由来（手書き）: VPC の概要・VPC ネットワーク・サブネット・IPv6・MTU・network profiles・クォータ・legacy network
@@ -99,8 +99,6 @@ skills/gcp-networking/
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
 未投入カテゴリ（`gcloud/edge-cache` / `gcloud/edge-cloud` / `gcloud/ids` / `gcloud/network-connectivity` / `gcloud/network-management` / `gcloud/network-security` / `gcloud/network-services` / `gcloud/number-registry` / `gcloud/service-directory` / `gcloud/service-extensions` / `gcloud/zone-management` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
-
-分割投入中のカテゴリ（`gcloud/dns`: 16 / 17 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
