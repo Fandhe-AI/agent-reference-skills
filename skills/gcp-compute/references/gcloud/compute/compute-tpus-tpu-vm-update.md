@@ -1,0 +1,275 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/tpus/tpu-vm/update
+---
+
+# gcloud compute tpus tpu-vm update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud compute tpus tpu-vm update
+
+```text
+NAME
+    gcloud compute tpus tpu-vm update - update a Cloud TPU VM node
+
+SYNOPSIS
+    gcloud compute tpus tpu-vm update (TPU : --zone=ZONE)
+        [--add-tags=[TAGS,...]] [--async] [--description=DESCRIPTION]
+        [--internal-ips] [--update-labels=[KEY=VALUE,...]]
+        [--attach-disk=[SOURCE=DATA_DISK,...] | --detach-disk=DATA_DISK]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--clear-tags | --remove-tags=[TAG,...]]
+        [--metadata-from-file=[KEY=VALUE,...]
+          | --update-metadata=[KEY=VALUE,...] --clear-metadata
+          | --remove-metadata=[KEY,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update a Cloud TPU VM node.
+
+EXAMPLES
+    To modify a TPU VM node with ID my-tpu in the default user project and
+    compute/zone by updating the description to "A new description", run:
+
+        $ gcloud compute tpus tpu-vm update my-tpu \
+            --description="A new description"
+
+    To modify a TPU VM node with ID my-tpu in the default user project, network
+    and compute/zone (with other defaults supplied by API) by adding labels k0,
+    with value value0 and label k1 with value value1 and removing labels with
+    key k2, run:
+
+        $ gcloud compute tpus tpu-vm update my-tpu \
+            --update-labels=k0=value0,k1=value1 --remove-labels=k2
+
+    Labels can be used to identify the TPU VM node. To list TPU VM nodes with
+    the k1:value1 label, run:
+
+        $ gcloud compute tpus tpu-vm list --filter='labels.k1=value1'
+
+    To list only the labels when describing a resource, use --format to filter
+    the result:
+
+        $ gcloud compute tpus tpu-vm describe my-tpu \
+            --format="default(labels)"
+
+POSITIONAL ARGUMENTS
+     Tpu resource - Name of the Cloud TPU VM node to update. The arguments in
+     this group can be used to specify the attributes of this resource. (NOTE)
+     Some attributes are not given arguments in this group but can be set in
+     other ways.
+
+     To set the project attribute:
+      * provide the argument tpu on the command line with a fully specified
+        name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       TPU
+          ID of the tpu or fully qualified identifier for the tpu.
+
+          To set the tpu attribute:
+          + provide the argument tpu on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --zone=ZONE
+          Zone of the Cloud TPU.
+
+          If not specified, will use default compute/zone.
+
+          To set the zone attribute:
+          + provide the argument tpu on the command line with a fully
+            specified name;
+          + provide the argument --zone on the command line;
+          + set the property compute/zone.
+
+FLAGS
+     --add-tags=[TAGS,...]
+        Tags to add to the TPU Node. Tags are used to identify valid sources or
+        targets for network firewalls. See
+        https://cloud.google.com/vpc/docs/add-remove-network-tags for more
+        details.
+
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --description=DESCRIPTION
+        Text description of the TPU.
+
+     --internal-ips
+        Indicate that the IP addresses for the node should be internal. The
+        default is that external IP addresses will be associated with the TPU
+        workers.
+
+     --update-labels=[KEY=VALUE,...]
+        Resource labels to update that represent user-provided metadata. If a
+        label exists, its value is modified. Otherwise, a new label is created.
+        See https://cloud.google.com/compute/docs/labeling-resources for
+        details.
+
+     At most one of these can be specified:
+
+       --attach-disk=[SOURCE=DATA_DISK,...]
+          Attach a data disk to the TPU VM. For example,
+
+              $ gcloud compute tpus tpu-vm update example-tpu \
+                  --attach-disk \
+                  source=projects/my-project/zones/us-central1-c/disks/my-disk,\
+              mode=read-only --zone=us-central1-c
+
+          attaches the disk named
+          'projects/my-project/zones/us-central1-c/disks/my-disk' to a TPU VM
+          named 'example-tpu' in read-only mode in zone us-central1-c.
+
+          The following keys are allowed:
+
+           source
+              Specify the full path to an existing disk. Required. The disk
+              must be in the same zone.
+
+           mode
+              Specify the mode in which to attach this disk. Valid options are
+              'read-write', 'read-only'. If not specified, the default is
+              'read-write'.
+
+       --detach-disk=DATA_DISK
+          Detach a data disk from the TPU VM. For example,
+
+          This flag must be repeated to provide multiple data disks. For
+          example:
+
+              $ gcloud compute tpus tpu-vm update example-tpu \
+                  --detach-disk=projects/my-project/zones/us-central1-c/disks/\
+              my-disk --zone=us-central1-c
+
+          detaches the disk named
+          'projects/my-project/zones/us-central1-c/disks/my-disk' from a TPU VM
+          named 'example-tpu' in zone us-central1-c.
+
+     At most one of these can be specified:
+
+       --clear-labels
+          Remove all labels. If --update-labels is also specified then
+          --clear-labels is applied first.
+
+          For example, to remove all labels:
+
+              $ gcloud compute tpus tpu-vm update --clear-labels
+
+          To remove all existing labels and create two new labels, 'foo' and
+          'baz':
+
+              $ gcloud compute tpus tpu-vm update --clear-labels \
+                  --update-labels foo=bar,baz=qux
+
+       --remove-labels=[KEY,...]
+          List of label keys to remove. If a label does not exist it is
+          silently ignored. If --update-labels is also specified then
+          --update-labels is applied first.
+
+     At most one of these can be specified:
+
+       --clear-tags
+          Remove all tags. If --add-tags is also specified then --clear-tags is
+          applied first.
+
+          For example, to remove all tags:
+
+              $ gcloud compute tpus tpu-vm update --clear-tags
+
+          To remove all existing tags and create two new tags, 'foo' and 'bar':
+
+              $ gcloud compute tpus tpu-vm update --clear-tags --add-tags foo,bar
+
+       --remove-tags=[TAG,...]
+          List of tags to remove. If a tag does not exist it is silently
+          ignored. If --add-tags is also specified then --add-tags is applied
+          first.
+
+     At most one of these can be specified:
+
+       --metadata-from-file=[KEY=VALUE,...]
+          Same as --metadata except the value for the entry will be read from a
+          local file. Example: --metadata-from-file='key1=value1.txt'
+
+       Or at least one of these can be specified:
+
+         --update-metadata=[KEY=VALUE,...]
+            List of comma-separated metadata key-value pairs for the Cloud TPU
+            VM node. If a key exists, its value is modified. Otherwise, a new
+            key-value pair is created.
+
+         At most one of these can be specified:
+
+           --clear-metadata
+              Remove all metadata. If --update-metadata is also specified then
+              --clear-metadata is applied first.
+
+              For example, to remove all metadata:
+
+                  $ gcloud compute tpus tpu-vm update --clear-metadata
+
+              To remove all existing metadata and create two new metadata
+              key-value pairs, 'foo=bar' and 'baz=qux':
+
+                  $ gcloud compute tpus tpu-vm update --clear-metadata \
+                      --update-metadata foo=bar,baz=qux
+
+           --remove-metadata=[KEY,...]
+              List of comma-separated metadata keys to remove. If a key does
+              not exist it is silently ignored. If --update-metadata is also
+              specified then --update-metadata is applied first.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the tpu/v2 API. The full documentation for this API can
+    be found at: https://cloud.google.com/tpu/
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha compute tpus tpu-vm update
+```
+
+### gcloud alpha compute tpus tpu-vm update
+
+```text
+NAME
+    gcloud alpha compute tpus tpu-vm update - update a Cloud TPU VM node
+
+SYNOPSIS
+    gcloud alpha compute tpus tpu-vm update (TPU : --zone=ZONE)
+        [--add-tags=[TAGS,...]] [--async] [--description=DESCRIPTION]
+        [--internal-ips] [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--clear-tags | --remove-tags=[TAG,...]]
+        [--metadata-from-file=[KEY=VALUE,...]
+          | --update-metadata=[KEY=VALUE,...] --clear-metadata
+          | --remove-metadata=[KEY,...]]
+        [--worker=[WORKER,...] --attach-disk=[SOURCE=DATA_DISK,...]
+          | --detach-disk=DATA_DISK] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/compute/tpus/tpu-vm/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

@@ -569,3 +569,34 @@
 | gcloud compute tpus tpu-vm create | 2 commands (alpha, ga); compute tpus tpu-vm create … | [compute-tpus-tpu-vm-create.md](./compute-tpus-tpu-vm-create.md) |
 | gcloud compute tpus tpu-vm delete | 2 commands (alpha, ga); compute tpus tpu-vm delete … | [compute-tpus-tpu-vm-delete.md](./compute-tpus-tpu-vm-delete.md) |
 | gcloud compute tpus tpu-vm describe | 2 commands (alpha, ga); compute tpus tpu-vm describe … | [compute-tpus-tpu-vm-describe.md](./compute-tpus-tpu-vm-describe.md) |
+| gcloud compute tpus tpu-vm detach-disk | alpha compute tpus tpu-vm detach-disk | [compute-tpus-tpu-vm-detach-disk.md](./compute-tpus-tpu-vm-detach-disk.md) |
+| gcloud compute tpus tpu-vm get-guest-attributes | 2 commands (alpha, ga); compute tpus tpu-vm get-guest-attributes … | [compute-tpus-tpu-vm-get-guest-attributes.md](./compute-tpus-tpu-vm-get-guest-attributes.md) |
+| gcloud compute tpus tpu-vm list | 2 commands (alpha, ga); compute tpus tpu-vm list … | [compute-tpus-tpu-vm-list.md](./compute-tpus-tpu-vm-list.md) |
+| gcloud compute tpus tpu-vm perform-maintenance | alpha compute tpus tpu-vm perform-maintenance | [compute-tpus-tpu-vm-perform-maintenance.md](./compute-tpus-tpu-vm-perform-maintenance.md) |
+| gcloud compute tpus tpu-vm scp | 2 commands (alpha, ga); compute tpus tpu-vm scp … | [compute-tpus-tpu-vm-scp.md](./compute-tpus-tpu-vm-scp.md) |
+| gcloud compute tpus tpu-vm service-identity | 2 commands (alpha, ga); compute tpus tpu-vm service-identity create … | [compute-tpus-tpu-vm-service-identity.md](./compute-tpus-tpu-vm-service-identity.md) |
+| gcloud compute tpus tpu-vm simulate-maintenance-event | alpha compute tpus tpu-vm simulate-maintenance-event | [compute-tpus-tpu-vm-simulate-maintenance-event.md](./compute-tpus-tpu-vm-simulate-maintenance-event.md) |
+| gcloud compute tpus tpu-vm ssh | 2 commands (alpha, ga); compute tpus tpu-vm ssh … | [compute-tpus-tpu-vm-ssh.md](./compute-tpus-tpu-vm-ssh.md) |
+| gcloud compute tpus tpu-vm start | 2 commands (alpha, ga); compute tpus tpu-vm start … | [compute-tpus-tpu-vm-start.md](./compute-tpus-tpu-vm-start.md) |
+| gcloud compute tpus tpu-vm stop | 2 commands (alpha, ga); compute tpus tpu-vm stop … | [compute-tpus-tpu-vm-stop.md](./compute-tpus-tpu-vm-stop.md) |
+| gcloud compute tpus tpu-vm update | 2 commands (alpha, ga); compute tpus tpu-vm update … | [compute-tpus-tpu-vm-update.md](./compute-tpus-tpu-vm-update.md) |
+| gcloud compute tpus tpu-vm versions | 4 commands (alpha, ga); compute tpus tpu-vm versions describe … | [compute-tpus-tpu-vm-versions.md](./compute-tpus-tpu-vm-versions.md) |
+| gcloud compute tpus versions describe | 3 commands (alpha, beta, ga); compute tpus versions describe … | [compute-tpus-versions-describe.md](./compute-tpus-versions-describe.md) |
+| gcloud compute tpus versions list | 3 commands (alpha, beta, ga); compute tpus versions list … | [compute-tpus-versions-list.md](./compute-tpus-versions-list.md) |
+| gcloud compute url-maps add-host-rule | 3 commands (alpha, beta, ga); compute url-maps add-host-rule … | [compute-url-maps-add-host-rule.md](./compute-url-maps-add-host-rule.md) |
+| gcloud compute url-maps add-path-matcher | 3 commands (alpha, beta, ga); compute url-maps add-path-matcher … | [compute-url-maps-add-path-matcher.md](./compute-url-maps-add-path-matcher.md) |
+| gcloud compute url-maps config | alpha compute url-maps config export | [compute-url-maps-config.md](./compute-url-maps-config.md) |
+| gcloud compute url-maps create | 3 commands (alpha, beta, ga); compute url-maps create … | [compute-url-maps-create.md](./compute-url-maps-create.md) |
+| gcloud compute url-maps delete | 3 commands (alpha, beta, ga); compute url-maps delete … | [compute-url-maps-delete.md](./compute-url-maps-delete.md) |
+| gcloud compute url-maps describe | 3 commands (alpha, beta, ga); compute url-maps describe … | [compute-url-maps-describe.md](./compute-url-maps-describe.md) |
+| gcloud compute url-maps edit | 3 commands (alpha, beta, ga); compute url-maps edit … | [compute-url-maps-edit.md](./compute-url-maps-edit.md) |
+| gcloud compute url-maps export | 3 commands (alpha, beta, ga); compute url-maps export … | [compute-url-maps-export.md](./compute-url-maps-export.md) |
+| gcloud compute url-maps import | 3 commands (alpha, beta, ga); compute url-maps import … | [compute-url-maps-import.md](./compute-url-maps-import.md) |
+| gcloud compute url-maps invalidate-cdn-cache | 3 commands (alpha, beta, ga); compute url-maps invalidate-cdn-cache … | [compute-url-maps-invalidate-cdn-cache.md](./compute-url-maps-invalidate-cdn-cache.md) |
+| gcloud compute url-maps list | 3 commands (alpha, beta, ga); compute url-maps list … | [compute-url-maps-list.md](./compute-url-maps-list.md) |
+| gcloud compute url-maps list-cdn-cache-invalidations | 3 commands (alpha, beta, ga); compute url-maps list-cdn-cache-invalidations … | [compute-url-maps-list-cdn-cache-invalidations.md](./compute-url-maps-list-cdn-cache-invalidations.md) |
+| gcloud compute url-maps remove-host-rule | 3 commands (alpha, beta, ga); compute url-maps remove-host-rule … | [compute-url-maps-remove-host-rule.md](./compute-url-maps-remove-host-rule.md) |
+| gcloud compute url-maps remove-path-matcher | 3 commands (alpha, beta, ga); compute url-maps remove-path-matcher … | [compute-url-maps-remove-path-matcher.md](./compute-url-maps-remove-path-matcher.md) |
+| gcloud compute url-maps set-default-service | 3 commands (alpha, beta, ga); compute url-maps set-default-service … | [compute-url-maps-set-default-service.md](./compute-url-maps-set-default-service.md) |
+| gcloud compute url-maps test-iam-permissions | 3 commands (alpha, beta, ga); compute url-maps test-iam-permissions … | [compute-url-maps-test-iam-permissions.md](./compute-url-maps-test-iam-permissions.md) |
+| gcloud compute url-maps validate | 3 commands (alpha, beta, ga); compute url-maps validate … | [compute-url-maps-validate.md](./compute-url-maps-validate.md) |
