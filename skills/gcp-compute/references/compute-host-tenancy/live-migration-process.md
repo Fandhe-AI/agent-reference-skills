@@ -69,6 +69,8 @@ compute.instances.migrateOnHostMaintenance
 - Source (About VM tenancy, cited above as `about-vm-tenancy.md`): https://docs.cloud.google.com/compute/docs/instances/about-vm-tenancy (retrieved 2026-11-17)
 - Source (Host events overview, cited above as `host-maintenance-overview.md`): https://docs.cloud.google.com/compute/docs/instances/host-maintenance-overview (retrieved 2026-11-17)
 - Source (Set VM host maintenance policy, cited above as `setting-vm-host-options.md`): https://docs.cloud.google.com/compute/docs/instances/setting-vm-host-options (retrieved 2026-11-17)
+- Source inconsistency: this page says bare metal instances "don't support live migration", while the C4D maintenance table in general-purpose-machines.md (general-purpose-c4-series.md) gives "Live migrate" for `c4d-*-384` and "All others", which includes the `c4d-*-384-metal` bare metal types. Follow this page for bare metal.
+- Source (General-purpose machine family: C4D, C4A and C4 series, cited above as `general-purpose-c4-series.md`): https://docs.cloud.google.com/compute/docs/general-purpose-machines (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/docs/instances/live-migration-process (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

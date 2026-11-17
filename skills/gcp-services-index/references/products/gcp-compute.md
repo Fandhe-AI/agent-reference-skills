@@ -6,20 +6,20 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 
 ## Signature / Usage
 
-Owner skill: `gcp-compute` (status: 未収録（予定）). gcloud groups: `batch`, `bms`, `cluster-director`, `compute`, `oracle-database`.
+Owner skill: `gcp-compute` (status: 収録済み). gcloud groups: `batch`, `bms`, `cluster-director`, `compute`, `oracle-database`.
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Lifecycle | Docs | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| Bare Metal Solution | `baremetalsolution.googleapis.com` (v2) | Provides ways to manage Bare Metal Solution hardware installed in a regional extension located near a Google Cloud data center. | — | `baremetalsolution.` | 26 | — | — | https://cloud.google.com/bare-metal | 未収録（予定） |
-| Batch | `batch.googleapis.com` (v1) | An API to manage the running of Batch resources on Google Cloud Platform. | `batch` | `batch.` | 8 | — | — | https://cloud.google.com/batch/ | 未収録（予定） |
-| Cloud Autoscaling | — | — | — | `autoscaling.` | 7 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/autoscaling | 未収録（予定） |
-| Cloud OS Config | `osconfig.googleapis.com` (v1, v1alpha, v1beta, v2, v2beta) | OS management tools that can be used for patch management, patch compliance, and configuration management on VM instances. | — | `osconfig.` | 23 | — | — | https://cloud.google.com/compute/docs/osconfig/rest | 未収録（予定） |
-| Cloud TPU | `tpu.googleapis.com` (v1, v1alpha1, v2, v2alpha1) | TPU API provides customers with access to Google TPU technology. | — | `cloudtpu.`, `tpu.` | 6 | — | — | https://cloud.google.com/tpu/ | 未収録（予定） |
-| Cluster Director | `hypercomputecluster.googleapis.com` (v1) | The Cluster Director API lets you deploy, manage, and monitor clusters that run artificial intelligence (AI), machine learning (ML), or high performance computing (HPC) workloads. | — | `hypercomputecluster.` | 3 | — | — | https://docs.cloud.google.com/cluster-director/docs | 未収録（予定） |
-| Compute Engine | `compute.googleapis.com` (alpha, beta, preview, v1) | Creates and runs virtual machines on Google Cloud Platform. | `compute` | `compute.` | 40 | — | — | https://cloud.google.com/compute/ | 未収録（予定） |
-| Confidential Computing | — | — | — | `confidentialcomputing.` | 4 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/confidentialcomputing | 未収録（予定） |
-| Oracle Database@Google Cloud | `oracledatabase.googleapis.com` (v1) | The Oracle Database@Google Cloud API provides a set of APIs to manage Oracle database services, such as Exadata and Autonomous Databases. | `oracle-database` | `oracledatabase.` | 32 | — | — | https://cloud.google.com/oracle/database/docs | 未収録（予定） |
-| Oracle Database@Google Cloud service agent | — | — | — | `oci.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/oci | 未収録（予定） |
+| Bare Metal Solution | `baremetalsolution.googleapis.com` (v2) | Provides ways to manage Bare Metal Solution hardware installed in a regional extension located near a Google Cloud data center. | — | `baremetalsolution.` | 26 | — | — | https://cloud.google.com/bare-metal | 収録済み |
+| Batch | `batch.googleapis.com` (v1) | An API to manage the running of Batch resources on Google Cloud Platform. | `batch` | `batch.` | 8 | — | — | https://cloud.google.com/batch/ | 収録済み |
+| Cloud Autoscaling | — | — | — | `autoscaling.` | 7 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/autoscaling | 収録済み |
+| Cloud OS Config | `osconfig.googleapis.com` (v1, v1alpha, v1beta, v2, v2beta) | OS management tools that can be used for patch management, patch compliance, and configuration management on VM instances. | — | `osconfig.` | 23 | — | — | https://cloud.google.com/compute/docs/osconfig/rest | 収録済み |
+| Cloud TPU | `tpu.googleapis.com` (v1, v1alpha1, v2, v2alpha1) | TPU API provides customers with access to Google TPU technology. | — | `cloudtpu.`, `tpu.` | 6 | — | — | https://cloud.google.com/tpu/ | 収録済み |
+| Cluster Director | `hypercomputecluster.googleapis.com` (v1) | The Cluster Director API lets you deploy, manage, and monitor clusters that run artificial intelligence (AI), machine learning (ML), or high performance computing (HPC) workloads. | — | `hypercomputecluster.` | 3 | — | — | https://docs.cloud.google.com/cluster-director/docs | 収録済み |
+| Compute Engine | `compute.googleapis.com` (alpha, beta, preview, v1) | Creates and runs virtual machines on Google Cloud Platform. | `compute` | `compute.` | 40 | — | — | https://cloud.google.com/compute/ | 収録済み |
+| Confidential Computing | — | — | — | `confidentialcomputing.` | 4 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/confidentialcomputing | 収録済み |
+| Oracle Database@Google Cloud | `oracledatabase.googleapis.com` (v1) | The Oracle Database@Google Cloud API provides a set of APIs to manage Oracle database services, such as Exadata and Autonomous Databases. | `oracle-database` | `oracledatabase.` | 32 | — | — | https://cloud.google.com/oracle/database/docs | 収録済み |
+| Oracle Database@Google Cloud service agent | — | — | — | `oci.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/oci | 収録済み |
 
 ```bash
 gcloud help
