@@ -1,0 +1,375 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/dns/record-sets/create
+---
+
+# gcloud dns record-sets create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud dns record-sets create
+
+```text
+NAME
+    gcloud dns record-sets create - creates a record-set in a managed-zone
+
+SYNOPSIS
+    gcloud dns record-sets create DNS_NAME --type=TYPE --zone=ZONE, -z ZONE
+        (--rrdatas=[RRDATA,...] | [--routing-policy-type=ROUTING_POLICY_TYPE
+          (--routing-policy-data=ROUTING_POLICY_DATA
+          | --routing-policy-item=[ROUTING_POLICY_ITEM,...]
+          | [--routing-policy-backup-data-type=ROUTING_POLICY_BACKUP_DATA_TYPE
+          --routing-policy-primary-data=ROUTING_POLICY_PRIMARY_DATA
+          (--routing-policy-backup-data=ROUTING_POLICY_BACKUP_DATA
+          | --routing-policy-backup-item=[ROUTING_POLICY_BACKUP_ITEM,...])
+          : --backup-data-trickle-ratio=BACKUP_DATA_TRICKLE_RATIO])
+          : --enable-geo-fencing --enable-health-checking
+          | --health-check=HEALTH_CHECK]) [--location=LOCATION] [--ttl=TTL]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    This command creates a record-set contained within the specified
+    managed-zone.
+
+EXAMPLES
+    To create a record-set with dnsName foo.bar.com., record type A, rrdata
+    [1.2.3.4, 9.8.7.6] and ttl 60 in my_zone run this:
+
+        $ gcloud dns record-sets create foo.bar.com. \
+            --rrdatas=1.2.3.4,9.8.7.6 --type=A --ttl=60 --zone=my_zone
+
+    To create a geo routed record-set with dnsName foo.bar.com., record type A,
+    routing_policy_data "us-centra1=1.2.3.4,2.3.4.5;us-west1=3.4.5.6,9.8.7.6"
+    and ttl 60 in my_zone.
+
+        $ gcloud dns record-sets create foo.bar.com. \
+            --routing_policy_data="us-centra1=1.2.3.4,2.3.4.5;us-west1=3.4.5\
+        .6,9.8.7.6" --routing_policy_type=GEO --type=A --ttl=60 \
+            --zone=my_zone --location=us-east1-a
+
+    To create a record-set with dnsName foo.bar.com., record type A, rrdata
+    [1.2.3.4, 9.8.7.6] and ttl 60 in my_zone in us-east1-a run this:
+
+        $ gcloud dns record-sets create us-east1-a.bar.com. \
+            --rrdatas=1.2.3.4,9.8.7.6 --type=A --ttl=60 --zone=my_zone \
+            --location=us-east1-a
+
+    To create a failover type health checked routed record-set with dnsName
+    foo.bar.com., record type A, primary routing data "config1", backup routing
+    data "us-centra1=1.2.3.4,2.3.4.5;us-west1=3.4.5.6,9.8.7.6", with a trickle
+    traffic ratio of 10% to the backup data, and ttl 60 in my_zone.
+
+        $ gcloud dns record-sets create foo.bar.com. --type=A --ttl=60 \
+            --zone=routing-policy-test --routing_policy_type=FAILOVER \
+            --routing-policy-primary-data='config1' \
+            --routing-policy-backup-data-type=GEO \
+            --routing-policy-backup-data='us-centra1=1.2.3.4,2.3.4.5;us-west\
+        1=3.4.5.6,9.8.7.6' --backup-data-trickle-ratio=0.1 \
+            --enable-health-checking --zone=my_zone
+
+    To create a geo fenced health checked routed record-set with dnsName
+    foo.bar.com., record type A, routing-policy-data
+    "us-centra1=config1,config2;us-west1=3.4.5.6,9.8.7.6", and ttl 60 in
+    my_zone.
+
+        $ gcloud dns record-sets create foo.bar.com. --type=A --ttl=60 \
+            --zone=routing-policy-test --routing_policy_type=GEO \
+            --routing_policy_data='us-centra1=config1,config2;us-west1=3.4.5\
+        .6,9.8.7.6' --enable-health-checking --enable-geo-fencing \
+            --zone=my_zone
+
+POSITIONAL ARGUMENTS
+     DNS_NAME
+        DNS or domain name of the record-set.
+
+REQUIRED FLAGS
+     --type=TYPE
+        DNS record type of the record-set (e.g. A, AAAA, MX etc.).
+
+     --zone=ZONE, -z ZONE
+        Name of the managed zone whose record sets you want to manage.
+
+     Resource record sets arguments. Can specify either --rrdatas or both
+     --routing-policy-data and --routing-policy-type.
+
+     Exactly one of these must be specified:
+
+       --rrdatas=[RRDATA,...]
+          DNS data (Address/CNAME/MX info, etc.) of the record-set. This is
+          RDATA; the format of this information varies depending on the type
+          and class of the resource record.
+
+       Or at least one of these can be specified:
+
+         Routing policy arguments. --routing-policy-type should be specified
+         exactly when one of --routing-policy-data, --routing-policy-item, or
+         --routing-policy-primary-data is set.
+
+         --routing-policy-type=ROUTING_POLICY_TYPE
+            Indicates what type of routing policy is being specified. As of
+            this time, this field can take on either "WRR" for weighted round
+            robin, "GEO" for geo location, or "FAILOVER" for a primary-backup
+            configuration. This field cannot be modified - once a policy has a
+            chosen type, the only way to change it is to delete the policy and
+            add a new one with the different type. ROUTING_POLICY_TYPE must be
+            one of: GEO, WRR, FAILOVER.
+
+            This flag argument must be specified if any of the other arguments
+            in this group are specified.
+
+         --enable-geo-fencing
+            Specifies whether to enable fencing for geo queries.
+
+         Routing policy data arguments. Allows setting one of
+         [routing-policy-data, routing-policy-item,
+         [routing-policy-primary-data, [routing-policy-backup-data,
+         routing-policy-backup-item]]]
+
+         Exactly one of these must be specified:
+
+           --routing-policy-data=ROUTING_POLICY_DATA
+              (DEPRECATED) The routing policy data supports one of two formats
+              below, depending on the choice of routing-policy-type.
+
+              For --routing-policy-type = "WRR" this flag indicates the
+              weighted round robin policy data. The field accepts a
+              semicolon-delimited list of the format
+              "${weight_percent}=${rrdata},${rrdata}". Specify weight as a
+              non-negative number (0 is allowed). Ratio of traffic routed to
+              the target is calculated from the ratio of individual weight over
+              the total across all weights.
+
+              For --routing-policy-type = "GEO" this flag indicates the
+              geo-locations policy data. The field accepts a
+              semicolon-delimited list of the format
+              "${region}=${rrdata},${rrdata}". Each rrdata can either be an IP
+              address or a reference to a forwarding rule of the format
+              "FORWARDING_RULE_NAME", "FORWARDING_RULE_NAME@{region}",
+              "FORWARDING_RULE_NAME@global", or the full resource path of the
+              forwarding rule.
+
+              The --routing-policy-data flag is deprecated. Use
+              --routing-policy-item instead.
+
+           --routing-policy-item=[ROUTING_POLICY_ITEM,...]
+              Specify this argument multiple times for a weighted round robin
+              (WRR) or geolocation routing policy. Use this repeated argument
+              for only one routing policy type (WRR or geolocation), not both.
+              Similarly, use it only for health checking either internal load
+              balancers or external IP addresses, not both.
+
+              (e.g.
+              --routing-policy-item=weight=1,rrdatas=1.2.3.4;2.3.4.5,external_endpoints=3.4.5.6;4.5.6.7
+              --routing-policy-item=weight=1,rrdatas=10.0.0.1;10.0.0.2,external_endpoints=10.0.0.4)
+
+               weight
+                  The weight of the item. This is specified only for WRR
+                  routing policy items.
+
+               location
+                  The location corresponding to the item. This is specified
+                  only for GEO routing policy items.
+
+               rrdatas
+                  The list of rrdatas, split by ";".
+
+               external_endpoints
+                  The list of health checked ips, split by ";".
+
+               internal_load_balancers
+                  The list of health checked internal load balancers, split by
+                  ";".
+
+           Or at least one of these can be specified:
+
+             Configuration for primary backup routing policy
+
+             --routing-policy-backup-data-type=ROUTING_POLICY_BACKUP_DATA_TYPE
+                For FAILOVER routing policies, the type of routing policy the
+                backup data uses. Currently, this must be GEO.
+                ROUTING_POLICY_BACKUP_DATA_TYPE must be (only one value is
+                supported): GEO.
+
+                This flag argument must be specified if any of the other
+                arguments in this group are specified.
+
+             --routing-policy-primary-data=ROUTING_POLICY_PRIMARY_DATA
+                The primary configuration for a primary backup routing policy.
+                This configuration is a list of forwarding rules of the format
+                "FORWARDING_RULE_NAME", "FORWARDING_RULE_NAME@scope", or the
+                full resource path of the forwarding rule.
+
+                This flag argument must be specified if any of the other
+                arguments in this group are specified.
+
+             --backup-data-trickle-ratio=BACKUP_DATA_TRICKLE_RATIO
+                Specifies the percentage of traffic to send to the backup
+                targets even when the primary targets are healthy.
+
+             Routing policy backup data arguments for the primary backup
+             routing policy. Specify either --routing-policy-backup-data or
+             --routing-policy-backup-item, but not both.
+
+             Exactly one of these must be specified:
+
+               --routing-policy-backup-data=ROUTING_POLICY_BACKUP_DATA
+                  (DEPRECATED) Specify the backup configuration for a primary
+                  backup routing policy. This backup configuration uses the
+                  same format as the routing-policy-data argument because it
+                  functions as another geolocation routing policy.
+
+                  The --routing-policy-backup-data flag is deprecated. Use
+                  --routing-policy-backup-item instead.
+
+               --routing-policy-backup-item=[ROUTING_POLICY_BACKUP_ITEM,...]
+                  Specify this argument multiple times to define multiple items
+                  for a primary backup routing policy.
+
+                  (e.g.
+                  --routing-policy-backup-item=location=us-east1-a,rrdatas=1.2.3.4;2.3.4.5,external_endpoints=3.4.5.6;4.5.6.7
+                  --routing-policy-backup-item=location=us-east1-b,rrdatas=10.0.0.1;10.0.0.2,external_endpoints=10.0.0.4)
+
+                   location
+                      The location corresponding to the item.
+
+                   rrdatas
+                      The list of rrdatas, split by ";".
+
+                   external_endpoints
+                      The list of health checked ips, split by ";".
+
+                   internal_load_balancers
+                      The list of health checked internal load balancers, split
+                      by ";".
+
+         Health checking arguments. You can specify one of --health-check or
+         --enable-health-checking, but not both.
+
+         At most one of these can be specified:
+
+           --enable-health-checking
+              Required if specifying forwarding rule names for rrdata.
+
+           --health-check=HEALTH_CHECK
+              Specifies the health check to be used for public IP health
+              checking. Either the health check name or full resource path
+              should be provided.
+
+OPTIONAL FLAGS
+     --location=LOCATION
+        Specifies the desired service location the request is sent to. Defaults
+        to Cloud DNS global service. Use --location=global if you want to
+        target the global service.
+
+     --ttl=TTL
+        TTL (time to live) for the record-set.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha dns record-sets create
+
+        $ gcloud beta dns record-sets create
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
+
+```bash
+gcloud dns record-sets create foo.bar.com. \
+    --routing-policy-data="us-central1=1.2.3.4,2.3.4.5;us-west1=3.4.5.6,9.8.7.6" \
+    --routing-policy-type=GEO \
+    --type=A \
+    --ttl=60 \
+    --zone=my_zone \
+    --location=us-east1-a
+
+gcloud dns record-sets create foo.bar.com. \
+    --type=A \
+    --ttl=60 \
+    --routing-policy-type=FAILOVER \
+    --routing-policy-primary-data='config1' \
+    --routing-policy-backup-data-type=GEO \
+    --routing-policy-backup-data='us-central1=1.2.3.4,2.3.4.5;us-west1=3.4.5.6,9.8.7.6' \
+    --backup-data-trickle-ratio=0.1 \
+    --enable-health-checking \
+    --zone=my_zone
+
+gcloud dns record-sets create foo.bar.com. \
+    --type=A \
+    --ttl=60 \
+    --routing-policy-type=GEO \
+    --routing-policy-data='us-central1=config1,config2;us-west1=3.4.5.6,9.8.7.6' \
+    --enable-health-checking \
+    --enable-geo-fencing \
+    --zone=my_zone
+```
+
+### gcloud beta dns record-sets create
+
+```text
+NAME
+    gcloud beta dns record-sets create - creates a record-set in a managed-zone
+
+SYNOPSIS
+    gcloud beta dns record-sets create DNS_NAME --type=TYPE --zone=ZONE, -z
+        ZONE
+        (--rrdatas=[RRDATA,...] | [--routing_policy_type=ROUTING_POLICY_TYPE
+          (--routing-policy-item=[ROUTING_POLICY_ITEM,...]
+          | --routing_policy_data=ROUTING_POLICY_DATA
+          | [--routing-policy-backup-data-type=ROUTING_POLICY_BACKUP_DATA_TYPE
+          --routing-policy-primary-data=ROUTING_POLICY_PRIMARY_DATA
+          (--routing-policy-backup-data=ROUTING_POLICY_BACKUP_DATA
+          | --routing-policy-backup-item=[ROUTING_POLICY_BACKUP_ITEM,...])
+          : --backup-data-trickle-ratio=BACKUP_DATA_TRICKLE_RATIO])
+          : --enable-geo-fencing --enable-health-checking
+          | --health-check=HEALTH_CHECK]) [--location=LOCATION] [--ttl=TTL]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha dns record-sets create
+
+```text
+NAME
+    gcloud alpha dns record-sets create - creates a record-set in a
+        managed-zone
+
+SYNOPSIS
+    gcloud alpha dns record-sets create DNS_NAME --type=TYPE --zone=ZONE, -z
+        ZONE
+        (--rrdatas=[RRDATA,...] | [--routing_policy_type=ROUTING_POLICY_TYPE
+          (--routing-policy-item=[ROUTING_POLICY_ITEM,...]
+          | --routing_policy_data=ROUTING_POLICY_DATA
+          | [--routing-policy-backup-data-type=ROUTING_POLICY_BACKUP_DATA_TYPE
+          --routing-policy-primary-data=ROUTING_POLICY_PRIMARY_DATA
+          (--routing-policy-backup-data=ROUTING_POLICY_BACKUP_DATA
+          | --routing-policy-backup-item=[ROUTING_POLICY_BACKUP_ITEM,...])
+          : --backup-data-trickle-ratio=BACKUP_DATA_TRICKLE_RATIO])
+          : --enable-geo-fencing --enable-health-checking
+          | --health-check=HEALTH_CHECK]) [--location=LOCATION] [--ttl=TTL]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Deprecated (quoted from the 593.0.0 help; the migration target is the one the help names): `gcloud dns record-sets create --routing-policy-data`: "The --routing-policy-data flag is deprecated. Use --routing-policy-item instead."; `gcloud dns record-sets create --routing-policy-backup-data`: "The --routing-policy-backup-data flag is deprecated. Use --routing-policy-backup-item instead.".
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the failover and geo-fencing examples pass `--zone` twice (`--zone=routing-policy-test` and `--zone=my_zone`), while their descriptions create the record-set "in my_zone"; the runnable form keeps only `--zone=my_zone`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the routing policy examples use the location `us-centra1`; the Cloud DNS routing policy guide writes the location of this value as `us-central1` in its examples ("such as `asia-east1=198.51.100.1;us-central1=203.0.113.1`", https://docs.cloud.google.com/dns/docs/configure-routing-policies), so the runnable form uses `us-central1`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the routing-policy examples pass `--routing_policy_type` and `--routing_policy_data`, while the GA SYNOPSIS defines `--routing-policy-type` and `--routing-policy-data`; gcloud 593.0.0 rejects the underscore spellings in GA ("unrecognized arguments: --routing_policy_data flag is available in one or more alternate release tracks. ... (did you mean '--routing-policy-data'?)"), so the runnable form uses the hyphenated flags.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/dns/record-sets/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
