@@ -36,7 +36,7 @@ skills/gcp-networking/
         README.md                 # gcloud network-connectivity（hubs・spokes・internal-ranges・policy-based-routes・regional-endpoints・service-connection-policies 等）
       network-management/
         README.md                 # gcloud network-management（connectivity-tests・vpc-flow-logs-configs・network-monitoring-providers）
-      network-security/  # 分割投入中（27 / 44 ページ。収録済みは README 掲載分のみ）
+      network-security/  # 分割投入中（35 / 44 ページ。収録済みは README 掲載分のみ）
         README.md                 # gcloud network-security（firewall endpoints・security profiles・address groups・intercept / mirroring・gateway-security-policies・TLS policies 等）
         network-security-<group>.md
     vpc-overview/                 # 公式ガイド由来（手書き）: VPC の概要・VPC ネットワーク・サブネット・IPv6・MTU・network profiles・クォータ・legacy network
@@ -115,7 +115,7 @@ skills/gcp-networking/
 
 未投入カテゴリ（`gcloud/network-services` / `gcloud/number-registry` / `gcloud/service-directory` / `gcloud/service-extensions` / `gcloud/zone-management` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`gcloud/network-security`: 27 / 44 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`gcloud/network-security`: 35 / 44 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
