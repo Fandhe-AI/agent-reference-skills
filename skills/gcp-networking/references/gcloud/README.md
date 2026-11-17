@@ -12,3 +12,5 @@
 | gcloud network-services | 373 commands across release tracks | [network-services/README.md](./network-services/README.md) |
 | gcloud number-registry | 39 commands across release tracks | [number-registry/README.md](./number-registry/README.md) |
 | gcloud service-directory | 78 commands across release tracks | [service-directory/README.md](./service-directory/README.md) |
+| gcloud service-extensions | 91 commands across release tracks | [service-extensions/README.md](./service-extensions/README.md) |
+| gcloud zone-management | 20 commands across release tracks | [zone-management/README.md](./zone-management/README.md) |
