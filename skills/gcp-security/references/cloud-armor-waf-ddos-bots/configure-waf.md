@@ -50,7 +50,7 @@ gcloud beta compute security-policies update POLICY_NAME \
 
 ### Deny requests larger than the inspection limit
 
-Bodies beyond the limit are not inspected; this rule keeps uninspected content from reaching backends (8192 bytes = 8 kB).
+Bodies beyond the limit are not inspected. The source suggests a rule that denies requests larger than the inspection limit to help ensure that no uninspected content reaches your backends (8192 bytes = 8 kB). The rule reads only the `Content-Length` request header, so it cannot limit a body whose size isn't declared in that header (for example, chunked transfer encoding); also limit request body size at the backend.
 
 ```bash
 gcloud compute security-policies rules create 10 \
@@ -106,6 +106,7 @@ gcloud compute security-policies rules create PRIORITY \
 - The examples use `--action deny-403` and take effect immediately. The gcloud 593.0.0 help for `rules create` has a `--preview` flag; the source recommends testing rules before enforcing (see the preview mode text in the rate limiting and Adaptive Protection pages).
 - Console (Advanced mode, Match field) forms of the expressions are omitted; see the source page.
 - Corrected from the official docs: `gcloud compute security-policies update POLICY_NAME --request-body-inspection-size=8kB`. The GA `gcloud compute security-policies update` in gcloud 593.0.0 rejects the flag ("unrecognized arguments ... --request-body-inspection-size flag is available in one or more alternate release tracks"); the beta help lists it, so the example uses `gcloud beta`. The flag is a beta feature of gcloud; recheck the GA track when gcloud is updated. The full flag list is in the `gcp-compute` skill.
+- The source says the rule helps ensure that no uninspected content reaches backends. The expression `int(request.headers['content-length']) > 8192` evaluates the declared `Content-Length` header only, not the body actually received, so it is a header-based supplementary limit rather than a body-size guarantee.
 - Source: https://docs.cloud.google.com/armor/docs/configure-waf (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

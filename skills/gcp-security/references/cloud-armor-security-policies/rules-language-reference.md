@@ -116,7 +116,7 @@ evaluatePreconfiguredWaf('xss-v422-stable', {'opt_out_rule_ids': ['owasp-crs-v04
 | Non-empty `referer` | `has(request.headers['referer']) && request.headers['referer'] != ""` |
 | Exact host | `request.headers['host'].lower() == 'test.example.com'` |
 | Host suffix | `request.headers['host'].lower().endsWith('.example.com')` |
-| Domain and subdomain | `request.headers['host'].matches('(?i:(?:sub\.)?test\.example\.com)')` |
+| Domain and subdomain | `request.headers['host'].matches('(?i:(?:sub\\.)?test\\.example\\.com)')` |
 | All regions except `AU` (in a deny rule) | `origin.region_code != 'AU'` |
 | ASN | `origin.asn == 123` |
 | Region and IP range | `origin.region_code == "AU" && inIpRange(origin.ip, '1.2.3.0/24')` |
@@ -131,7 +131,7 @@ evaluatePreconfiguredWaf('xss-v422-stable', {'opt_out_rule_ids': ['owasp-crs-v04
 | Missing parameter | `!has(request.params.category)` |
 | Any parameter value | `request.params.exists(k, request.params[k].contains('admin'))` |
 | Nested JSON field | `has(request.params.preferences) && has(request.params.preferences.newsletter) && request.params.preferences.newsletter == true` |
-| Preconfigured WAF on host, excluding a path | `request.headers['host'].lower() == 'example.com' && !request.path.startswith('/login/api/') && evaluatePreconfiguredWaf('xss-v422-stable')` |
+| Preconfigured WAF on host, excluding a path | `request.headers['host'].lower() == 'example.com' && !request.path.startsWith('/login/api/') && evaluatePreconfiguredWaf('xss-v422-stable')` |
 | Managed rules | `evaluateManagedRules('google:sqli:stable')` |
 | Threat intelligence with exclusion | `evaluateThreatIntelligence('iplist-known-malicious-ips', ['203.0.113.0/24'])` |
 | Address group on user IP | `evaluateAddressGroup('my-own-list-of-bad-ips', origin.user_ip)` |
@@ -218,6 +218,8 @@ evaluatePreconfiguredWaf('xss-v422-stable', {'opt_out_rule_ids': ['owasp-crs-v04
 - Match condition builder (Preview, console only): a visual builder for expressions with `AND` / `OR` grouping and nesting up to five expressions, string transformations, and bidirectional parsing with the match condition editor. It is disabled for expressions with unsupported logic (such as unknown macros); availability of some expressions depends on the Cloud Armor Enterprise tier and the policy type.
 - The source also has a generic `rules create` template, more host, cookie, Unicode, JA4-list, body, and parameter examples, and Console steps; they are omitted here. The single-line expressions are shown without a language tag in the source and are tabled as inline code here.
 - The full flag list for `gcloud compute security-policies rules` is in the `gcp-compute` skill (https://docs.cloud.google.com/sdk/gcloud/reference/compute/security-policies/rules/create). Updating, atomically updating, and deleting rules are on https://docs.cloud.google.com/armor/docs/manage-security-policy-rules.
+- Corrected from the official docs: the excluded-path example used `startswith`, which is not a CEL method; the CEL method listed in the Operations table is `startsWith`.
+- Corrected from the official docs: the domain-and-subdomain regular expression used `\.` inside an ordinary CEL string literal, which is not a valid CEL escape sequence; the backslashes are doubled (`\\.`) so the expression matches a literal dot.
 - Source: https://docs.cloud.google.com/armor/docs/create-security-policy-rules (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

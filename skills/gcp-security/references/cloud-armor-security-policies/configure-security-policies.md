@@ -32,11 +32,18 @@ REGION: us-central1
 
 ### Attach a policy to a backend service
 
-Backend services without an attached security policy are not protected. Attach a backend security policy with `--security-policy`:
+Backend services without an attached security policy are not protected. Attach a backend security policy (`--type=CLOUD_ARMOR`) with `--security-policy`:
 
 ```bash
 gcloud compute backend-services update my-backend \
     --security-policy my-policy
+```
+
+Adapted (not in the official docs): an edge security policy, such as the `--type=CLOUD_ARMOR_EDGE` policy in the create example above, is attached with `--edge-security-policy` instead.
+
+```bash
+gcloud compute backend-services update my-backend \
+    --edge-security-policy=my-policy
 ```
 
 ## Options / Props
@@ -78,6 +85,7 @@ gcloud compute backend-services update my-backend \
 - The full flag list for `gcloud compute security-policies` and `gcloud compute backend-services` is in the `gcp-compute` skill (https://docs.cloud.google.com/sdk/gcloud/reference/compute/security-policies/create).
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/security-policies/create (gcloud 593.0.0 help; the create example and the `--type` values).
 - Snippet taken from https://docs.cloud.google.com/armor/docs/manage-security-policies (the `backend-services update` attach example).
+- Adapted from the official docs: the create example (gcloud help) makes `my-policy` a `CLOUD_ARMOR_EDGE` policy, while the attach example uses `--security-policy`, which takes a backend security policy. The edge-policy form uses `--edge-security-policy` from the `gcloud compute backend-services update` help (gcloud 593.0.0).
 - Source: https://docs.cloud.google.com/armor/docs/create-security-policies (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
