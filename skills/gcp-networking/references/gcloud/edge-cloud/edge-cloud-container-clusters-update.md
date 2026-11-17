@@ -1,0 +1,220 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/edge-cloud/container/clusters/update
+---
+
+# gcloud edge-cloud container clusters update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud edge-cloud container clusters update
+
+```text
+NAME
+    gcloud edge-cloud container clusters update - update an Edge Container
+        cluster
+
+SYNOPSIS
+    gcloud edge-cloud container clusters update (CLUSTER : --location=LOCATION)
+        [--async]
+        [--container-default-runtime-class=CONTAINER_DEFAULT_RUNTIME_CLASS]
+        [--offline-reboot-ttl=OFFLINE_REBOOT_TTL]
+        [--release-channel=RELEASE_CHANNEL]
+        [--clear-maintenance-window
+          | --remove-maintenance-exclusion-window=REMOVE_MAINTENANCE_EXCLUSION_WINDOW | --add-maintenance-exclusion-end=ADD_MAINTENANCE_EXCLUSION_END --add-maintenance-exclusion-name=ADD_MAINTENANCE_EXCLUSION_NAME --add-maintenance-exclusion-start=ADD_MAINTENANCE_EXCLUSION_START | --maintenance-window-end=MAINTENANCE_WINDOW_END --maintenance-window-recurrence=MAINTENANCE_WINDOW_RECURRENCE --maintenance-window-start=MAINTENANCE_WINDOW_START]
+        [--control-plane-kms-key=CONTROL_PLANE_KMS_KEY
+          | --use-google-managed-key]
+        [--use-google-managed-zone-key
+          | --zone-storage-kms-key=ZONE_STORAGE_KMS_KEY] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update an Edge Container cluster.
+
+EXAMPLES
+    To update the maintenance window recurrence rule of a cluster called
+    'my-cluster' in region us-central1, run:
+
+        $ gcloud edge-cloud container clusters update my-cluster \
+            --location=us-central1 \
+            --maintenance-window-recurrence="FREQ=WEEKLY"
+
+POSITIONAL ARGUMENTS
+     Cluster resource - Edge Container cluster to update. The arguments in this
+     group can be used to specify the attributes of this resource. (NOTE) Some
+     attributes are not given arguments in this group but can be set in other
+     ways.
+
+     To set the project attribute:
+      * provide the argument cluster on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       CLUSTER
+          ID of the cluster or fully qualified identifier for the cluster.
+
+          To set the cluster attribute:
+          + provide the argument cluster on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --location=LOCATION
+          The global location name.
+
+          To set the location attribute:
+          + provide the argument cluster on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property edge_container/location.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --container-default-runtime-class=CONTAINER_DEFAULT_RUNTIME_CLASS
+        If set, use the specified default container runtime class for the
+        cluster.
+
+     --offline-reboot-ttl=OFFLINE_REBOOT_TTL
+        Specifies the maximum duration a node can reboot offline (without
+        connection to Google) and then rejoin its cluster to resume its
+        designated workloads. This duration is relative to the machine's most
+        recent connection to Google. The maximum allowed duration is 7 days. If
+        left unspecified, the default 0 means not allowed. The parameter should
+        be an ISO 8601 duration string, for example, "P1DT1H2M3S".
+
+     --release-channel=RELEASE_CHANNEL
+        Release channel a cluster is subscribed to. It supports two values,
+        NONE and REGULAR. NONE is used to opt out of any release channel.
+        Clusters subscribed to the REGULAR channel will be automatically
+        upgraded to versions that are considered GA quality, and cannot be
+        manually upgraded. RELEASE_CHANNEL must be one of: none, regular,
+        release-channel-unspecified.
+
+     At most one of these can be specified:
+
+       --clear-maintenance-window
+          If set, removes the maintenance window setting from the cluster. If
+          any exclusion windows exist, they must be removed beforehand as a
+          maintenance policy cannot exist without a maintenance window.
+
+       --remove-maintenance-exclusion-window=REMOVE_MAINTENANCE_EXCLUSION_WINDOW
+          Name of the maintenance exclusion to remove.
+
+       Or at least one of these can be specified:
+
+         Add a maintenance exclusion window (all flags must be specified to add
+         a valid maintenance exclusion window). There can be a maximum of 3
+         exclusion windows set at a given time. A maintenance exclusion window
+         cannot be added in the absence of a maintenance window.
+
+         --add-maintenance-exclusion-end=ADD_MAINTENANCE_EXCLUSION_END
+            End time of the maintenance exclusion window in the RFC 3339
+            (https://www.rfc-editor.org/rfc/rfc3339.txt) format. E.g.
+            "2021-01-01T00:00:00Z" or "2021-01-01T00:00:00-05:00".
+
+         --add-maintenance-exclusion-name=ADD_MAINTENANCE_EXCLUSION_NAME
+            Unique name (per cluster) of the maintenance exclusion window that
+            can be used to remove it.
+
+         --add-maintenance-exclusion-start=ADD_MAINTENANCE_EXCLUSION_START
+            Start time of the maintenance exclusion window (can occur in the
+            past) in the RFC 3339 (https://www.rfc-editor.org/rfc/rfc3339.txt)
+            format. E.g. "2021-01-01T00:00:00Z" or "2021-01-01T00:00:00-05:00".
+
+       Or at least one of these can be specified:
+
+         Updates cluster maintenance window setting (more than one flags can be
+         specified from this group)
+
+         --maintenance-window-end=MAINTENANCE_WINDOW_END
+            End time of the recurring cluster maintenance window in the RFC
+            3339 (https://www.rfc-editor.org/rfc/rfc3339.txt) format. E.g.
+            "2021-01-01T00:00:00Z" or "2021-01-01T00:00:00-05:00"
+
+         --maintenance-window-recurrence=MAINTENANCE_WINDOW_RECURRENCE
+            An RFC 5545 (https://tools.ietf.org/html/rfc5545#section-3.8.5.3)
+            recurrence rule for how the cluster maintenance window recurs. They
+            go on for the span of time between the start and the end time. E.g.
+            FREQ=WEEKLY;BYDAY=SU.
+
+         --maintenance-window-start=MAINTENANCE_WINDOW_START
+            Start time of the recurring cluster maintenance window in the RFC
+            3339 (https://www.rfc-editor.org/rfc/rfc3339.txt) format. E.g.
+            "2021-01-01T00:00:00Z" or "2021-01-01T00:00:00-05:00"
+
+     At most one of these can be specified:
+
+       --control-plane-kms-key=CONTROL_PLANE_KMS_KEY
+          If set, use the specified KMS key for the cluster control plane nodes
+          encryption.
+
+       --use-google-managed-key
+          If set, use Google managed key for the cluster control plane nodes
+          encryption.
+
+     At most one of these can be specified:
+
+       --use-google-managed-zone-key
+          If set, use Google managed key for zone storage encryption.
+
+       --zone-storage-kms-key=ZONE_STORAGE_KMS_KEY
+          If set, use the specified KMS key for zone storage encryption.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the edgecontainer/v1 API. The full documentation for this
+    API can be found at: https://cloud.google.com/edge-cloud
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha edge-cloud container clusters update
+```
+
+### gcloud alpha edge-cloud container clusters update
+
+```text
+NAME
+    gcloud alpha edge-cloud container clusters update - update an Edge
+        Container cluster
+
+SYNOPSIS
+    gcloud alpha edge-cloud container clusters update
+        (CLUSTER : --location=LOCATION) [--async]
+        [--container-default-runtime-class=CONTAINER_DEFAULT_RUNTIME_CLASS]
+        [--enable-cluster-isolation=ENABLE_CLUSTER_ISOLATION]
+        [--offline-reboot-ttl=OFFLINE_REBOOT_TTL]
+        [--release-channel=RELEASE_CHANNEL]
+        [--clear-maintenance-window
+          | --remove-maintenance-exclusion-window=REMOVE_MAINTENANCE_EXCLUSION_WINDOW | --add-maintenance-exclusion-end=ADD_MAINTENANCE_EXCLUSION_END --add-maintenance-exclusion-name=ADD_MAINTENANCE_EXCLUSION_NAME --add-maintenance-exclusion-start=ADD_MAINTENANCE_EXCLUSION_START | --maintenance-window-end=MAINTENANCE_WINDOW_END --maintenance-window-recurrence=MAINTENANCE_WINDOW_RECURRENCE --maintenance-window-start=MAINTENANCE_WINDOW_START]
+        [--clear-max-unavailable-worker-nodes
+          | --max-unavailable-worker-nodes=MAX_UNAVAILABLE_WORKER_NODES]
+        [--control-plane-kms-key=CONTROL_PLANE_KMS_KEY
+          | --use-google-managed-key]
+        [--use-google-managed-zone-key
+          | --zone-storage-kms-key=ZONE_STORAGE_KMS_KEY] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/edge-cloud/container/clusters/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
