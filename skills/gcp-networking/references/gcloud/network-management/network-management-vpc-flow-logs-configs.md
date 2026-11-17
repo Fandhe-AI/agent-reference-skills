@@ -312,11 +312,11 @@ gcloud network-management vpc-flow-logs-configs create my-config \
 
 gcloud network-management vpc-flow-logs-configs create my-config \
     --location=global \
-    --subnet="projects/{project_id}/regions/{region}/vpnTunnels/{vpn_tunnel_id}"
+    --vpn-tunnel="projects/{project_id}/regions/{region}/vpnTunnels/{vpn_tunnel_id}"
 
 gcloud network-management vpc-flow-logs-configs create my-config \
     --location=global \
-    --subnet="projects/{project_id}/regions/{region}/subnets/{subnet_id}"
+    --subnet="projects/{project_id}/regions/{region}/subnetworks/{subnet_id}"
 ```
 
 ### gcloud network-management vpc-flow-logs-configs delete
@@ -1313,6 +1313,8 @@ SYNOPSIS
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): angle-bracket placeholders such as `<service-name>` are shell redirections when pasted into bash; the runnable form writes them as upper-case placeholders (`SERVICE_NAME`).
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the Cloud VPN tunnel example passes the tunnel URI `projects/{project_id}/regions/{region}/vpnTunnels/{vpn_tunnel_id}` to `--subnet`, which the FLAGS describe as the subnetwork ("Traffic will be logged from VMs within the subnetwork"); the VPN tunnel flag is `--vpn-tunnel` ("Traffic will be logged from the VPN Tunnel. Format: projects/{project_id}/regions/{region}/vpnTunnels/{name}"), so the runnable form uses `--vpn-tunnel`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the subnet example writes `projects/{project_id}/regions/{region}/subnets/{subnet_id}`, but the `--subnet` description gives the format `projects/{project_id}/regions/{region}/subnetworks/{name}`, so the runnable form uses `subnetworks/`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
