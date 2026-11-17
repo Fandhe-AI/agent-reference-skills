@@ -143,15 +143,15 @@ NOTES
         $ gcloud beta compute url-maps add-path-matcher
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud compute url-maps add-path-matcher MY-URL-MAP \
     --path-matcher-name=MY-MATCHER \
     --default-service=MY-DEFAULT-SERVICE \
-    --backend-service-path-rules='/search/*=search_service,/images/*=images-service' \
+    --backend-service-path-rules='/search/*=search-service,/images/*=images-service' \
     --backend-bucket-path-rules='/static/*=static-bucket' \
-    --new-hosts=example.com '*.example.com'
+    --new-hosts='example.com,*.example.com'
 ```
 
 ### gcloud beta compute url-maps add-path-matcher
@@ -197,6 +197,8 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example passes the second host as a separate argument (`--new-hosts=example.com '*.example.com'`), so `*.example.com` becomes an extra positional argument; `--new-hosts` takes a comma-separated list (`--new-hosts=NEW_HOST,[NEW_HOST,...]`), so the runnable form uses `--new-hosts='example.com,*.example.com'`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example text names the backend service "search-service" but the path rule uses `search_service`; the runnable form uses `search-service`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
