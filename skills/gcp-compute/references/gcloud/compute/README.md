@@ -194,3 +194,7 @@
 | gcloud compute instances add-resource-policies | 3 commands (alpha, beta, ga); compute instances add-resource-policies … | [compute-instances-add-resource-policies.md](./compute-instances-add-resource-policies.md) |
 | gcloud compute instances add-tags | 3 commands (alpha, beta, ga); compute instances add-tags … | [compute-instances-add-tags.md](./compute-instances-add-tags.md) |
 | gcloud compute instances attach-disk | 3 commands (alpha, beta, ga); compute instances attach-disk … | [compute-instances-attach-disk.md](./compute-instances-attach-disk.md) |
+| gcloud compute instances bulk create | 3 commands (alpha, beta, ga); compute instances bulk create … | [compute-instances-bulk-create.md](./compute-instances-bulk-create.md) |
+| gcloud compute instances config export | alpha compute instances config export | [compute-instances-config-export.md](./compute-instances-config-export.md) |
+| gcloud compute instances create (part 1) | compute instances create | [compute-instances-create-1.md](./compute-instances-create-1.md) |
+| gcloud compute instances create (part 2) | 2 commands (alpha, beta, ga); beta compute instances create … | [compute-instances-create-2.md](./compute-instances-create-2.md) |
