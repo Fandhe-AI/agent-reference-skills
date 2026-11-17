@@ -489,3 +489,11 @@
 | gcloud compute security-policies list-preconfigured-expression-sets | 3 commands (alpha, beta, ga); compute security-policies list-preconfigured-expression-sets … | [compute-security-policies-list-preconfigured-expression-sets.md](./compute-security-policies-list-preconfigured-expression-sets.md) |
 | gcloud compute security-policies remove-layer7-ddos-defense-threshold-config | 3 commands (alpha, beta, ga); compute security-policies remove-layer7-ddos-defense-threshold-config … | [compute-security-policies-remove-layer7-ddos-defense-threshold-config.md](./compute-security-policies-remove-layer7-ddos-defense-threshold-config.md) |
 | gcloud compute security-policies remove-user-defined-field | 3 commands (alpha, beta, ga); compute security-policies remove-user-defined-field … | [compute-security-policies-remove-user-defined-field.md](./compute-security-policies-remove-user-defined-field.md) |
+| gcloud compute security-policies rules | 18 commands (alpha, beta, ga); compute security-policies rules add-preconfig-waf-exclusion … | [compute-security-policies-rules.md](./compute-security-policies-rules.md) |
+| gcloud compute security-policies update | 3 commands (alpha, beta, ga); compute security-policies update … | [compute-security-policies-update.md](./compute-security-policies-update.md) |
+| gcloud compute service-attachments | 20 commands (alpha, beta, ga); compute service-attachments create … | [compute-service-attachments.md](./compute-service-attachments.md) |
+| gcloud compute shared-vpc | 24 commands (alpha, beta, ga); compute shared-vpc associated-projects add … | [compute-shared-vpc.md](./compute-shared-vpc.md) |
+| gcloud compute sign-url | 3 commands (alpha, beta, ga); compute sign-url … | [compute-sign-url.md](./compute-sign-url.md) |
+| gcloud compute snapshot-groups | 6 commands (alpha); alpha compute snapshot-groups create … | [compute-snapshot-groups.md](./compute-snapshot-groups.md) |
+| gcloud compute snapshot-recycle-bin-policy | 4 commands (alpha, beta); beta compute snapshot-recycle-bin-policy describe … | [compute-snapshot-recycle-bin-policy.md](./compute-snapshot-recycle-bin-policy.md) |
+| gcloud compute snapshot-settings | 6 commands (alpha, beta, ga); compute snapshot-settings describe … | [compute-snapshot-settings.md](./compute-snapshot-settings.md) |
