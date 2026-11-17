@@ -86,6 +86,13 @@ NOTES
         $ gcloud beta compute networks vpc-access operations describe
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud compute networks vpc-access operations describe operation-1564112342235-435a134f8c3f8-81bb4b49-0830c1f8 \
+    --region=us-central1
+```
+
 ### gcloud compute networks vpc-access operations list
 
 ```text
@@ -209,6 +216,8 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `describe` example says the resource is "in region us-central1" but passes `--region=us-central`, which is not a region; the runnable form uses `--region=us-central1`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
