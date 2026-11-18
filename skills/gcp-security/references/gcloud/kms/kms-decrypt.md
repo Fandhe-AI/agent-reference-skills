@@ -142,6 +142,7 @@ SYNOPSIS
 
 ## Notes
 
+- Corrected from the official docs (the help text above is verbatim): the `--key` description says "For asymmetric keys, the encryption key version can't be detected automatically. You must keep track of this information and provide the key version in the decryption request", but `gcloud kms decrypt` has no flag for a key version (the SYNOPSIS lists none) and decrypts with symmetric keys. Decrypt with an asymmetric key with `gcloud kms asymmetric-decrypt --version=VERSION` (see [kms-asymmetric-decrypt.md](./kms-asymmetric-decrypt.md)).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
