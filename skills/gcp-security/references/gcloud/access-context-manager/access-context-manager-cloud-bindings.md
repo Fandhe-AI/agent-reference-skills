@@ -382,11 +382,6 @@ gcloud access-context-manager cloud-bindings create \
     --federated-principal='principalSet://cloudresourcemanager.googleapis.com/organizations/1234567890/type/WorkforcePool' \
     --organization='1234567890' \
     --binding-file='binding.yaml'
-
-gcloud access-context-manager cloud-bindings create \
-    --federated-principal='principalSet://cloudresourcemanager.googleapis.com/organizations/1234567890/type/WorkforcePool' \
-    --organization='1234567890' \
-    --binding-file='binding.yaml'
 ```
 
 ### gcloud access-context-manager cloud-bindings delete
@@ -1101,7 +1096,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
-- Corrected from the official docs (the help text above is verbatim): the `update` EXAMPLES say "To disable session settings on a Google Group binding, set --session-length=0", and the `--session-length` descriptions of `create` and `update` say "When --session-length=0, ..."; gcloud 593.0.0 rejects `--session-length=0` for both commands ("Duration must end with time part character."), while `--session-length=0s` parses. The flag takes "an ISO 8601 duration string", so write zero seconds as `0s`.
+- Corrected from the official docs (the help text above is verbatim): the `update` EXAMPLES say "To disable session settings on a Google Group binding, set --session-length=0", and the `--session-length` descriptions of `create` and `update` say "When --session-length=0, ..."; gcloud 593.0.0 rejects `--session-length=0` for both commands ("Duration must end with time part character."), while `--session-length=0s` parses. The flag takes "an ISO 8601 duration string", so write zero seconds as `0s`. In addition, the `list` output examples for `principal:serviceAccount` and `principal:serviceAccountProjectNumber` print `serviceAccount` and `serviceAccountProjectNumber` at the same level as `principal`, which leaves `principal` empty; both are fields of `principal` (Discovery document `Principal`: `federatedPrincipal`, `serviceAccount`, `serviceAccountProjectNumber`), as the `federatedPrincipal` example on the same page shows. Indent `serviceAccount: service_account@project.iam.gserviceaccount.com` (or `serviceAccountProjectNumber: 123456789`) by two spaces under `principal:`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `update` example that disables session settings passes `--session-length=0`; gcloud 593.0.0 rejects it ("Duration must end with time part character."). The `--session-length` description asks for "an ISO 8601 duration string. Must be at least one hour or zero seconds", so the runnable form passes zero seconds as `0s`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
