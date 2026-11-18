@@ -33,8 +33,10 @@ gcloud auth configure-docker us-west1-docker.pkg.dev
 
 or the standalone helper:
 
+Adapted (not in the official docs): the host is passed with `--registries`, as on the authentication page; the source passes it as a positional argument.
+
 ```bash
-docker-credential-gcr configure-docker us-west1-docker.pkg.dev
+docker-credential-gcr configure-docker --registries=us-west1-docker.pkg.dev
 ```
 
 ### Authenticate with an access token (Linux)
@@ -166,6 +168,7 @@ crictl pull --creds "oauth2accesstoken:ACCESS_TOKEN" LOCATION-docker.pkg.dev/PRO
 
 ## Notes
 
+- Corrected from the official docs: the source writes `docker-credential-gcr configure-docker us-west1-docker.pkg.dev`; the standalone helper takes hosts with `--registries=HOSTNAME-LIST` (the authentication page's form).
 - Tag immutability: if enabled, a tag must always reference the same digest, including `latest`; pushing a tag already used by another version of the image fails. The pull-through behavior for virtual repositories chooses an upstream by priority.
 - Service account keys are long-lived credentials; prefer the credential helper or an access token, never commit `key.json`, and see [authentication.md](./authentication.md).
 - The source's Windows access-token example passes the token with `docker login -p "ya29..."` on the command line; it is omitted here because a token on the command line can be logged or appear in shell history. Use `--password-stdin` as in authentication.md.

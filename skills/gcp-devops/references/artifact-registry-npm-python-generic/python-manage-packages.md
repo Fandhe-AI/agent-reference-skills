@@ -20,9 +20,7 @@ gcloud version
 pip install twine
 ```
 
-```bash
-twine upload dist/*
-```
+Adapted (not in the official docs): the source's first upload command, `twine upload dist/*`, is omitted because without `--repository` or `--repository-url` Twine uploads to the public PyPI; pass the Artifact Registry URL.
 
 ```bash
 twine upload --repository-url https://LOCATION-python.pkg.dev/PROJECT/REPOSITORY/ dist/*
@@ -141,6 +139,7 @@ gcloud artifacts versions delete VERSION \
 
 ## Notes
 
+- Adapted from the official docs: the source shows `twine upload dist/*` before the `--repository-url` form. Twine's default target is the public PyPI, so a private package could be published there; always name the Artifact Registry repository (`--repository-url`, or `--repository` with a `.pypirc` section from python-authentication).
 - Best practices: use unique names for private packages so they do not match names on pypi.org (particularly with multiple package indexes); use PEP 440 version identifiers (by default pip installs only stable releases and uses PEP 440 to tell them from pre-releases). Stable releases are considered newer than pre-releases.
 - For remote repositories, the version list should include all direct and transitive dependencies. A standard repository serves packages directly; a remote repository serves a cached copy, downloading and caching from upstream on first request; a virtual repository searches its upstream repositories and only serves, never stores, packages.
 - You can set a maximum number of files returned with `--limit`. If the project ID contains a colon (`:`), see Domain-scoped projects in the Docker names page.

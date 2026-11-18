@@ -31,8 +31,10 @@ gcloud config set artifacts/location us-central1
 
 ### Prepare two npm projects
 
+Adapted (not in the official docs): the version is pinned (`@10.1.0`) so the archive name matches the next command.
+
 ```bash
-npm pack emoji-regex
+npm pack emoji-regex@10.1.0
 ```
 
 ```bash
@@ -71,9 +73,11 @@ In both `package.json` files the package `name` must carry the scope:
 
 Add a script that refreshes credentials with `google-artifactregistry-auth`:
 
+Adapted (not in the official docs): `--credential-config=./.npmrc` is removed so the token is written to the user `.npmrc` (the tool's default) instead of the project `.npmrc`.
+
 ```text
 "scripts": {
-  "artifactregistry-login": "npx google-artifactregistry-auth --repo-config=./.npmrc --credential-config=./.npmrc"
+  "artifactregistry-login": "npx google-artifactregistry-auth --repo-config=./.npmrc"
 }
 ```
 
@@ -139,7 +143,8 @@ gcloud config unset artifacts/location
 
 ## Notes
 
-- The `.npmrc` printed by `print-settings npm` holds repository settings only; `google-artifactregistry-auth` writes token credentials into the user-level `~/.npmrc`. Never commit a file that contains tokens.
+- Adapted from the official docs: the source's script passes `--credential-config=./.npmrc`, which writes the access token into the project `.npmrc` next to `package.json`, a file that is easy to commit. Without the flag, `google-artifactregistry-auth` writes the token to your user `.npmrc` (its README: "The default is your user `.npmrc` file", https://www.npmjs.com/package/google-artifactregistry-auth, retrieved 2026-11-19). The `.npmrc` printed by `print-settings npm` holds repository settings only. Never commit a file that contains tokens.
+- Adapted from the official docs: the source runs `npm pack emoji-regex` (the latest version) and then extracts `emoji-regex-10.1.0.tgz`; the version is pinned so the file name matches.
 - Without a scope, publishing and installing use the configured default registry; with the scope, npm uses the Artifact Registry repository.
 - Optional prerequisite in the source: install PowerShell to connect from Windows.
 - Destructive: `gcloud artifacts repositories delete` removes the repository and its packages. Ensure packages you want to keep are available elsewhere, and try it on a disposable project first.

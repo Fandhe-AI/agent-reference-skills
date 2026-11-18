@@ -28,10 +28,10 @@ Without gcloud, using only `oauth2l`:
 go install github.com/google/oauth2l@latest
 ```
 
-Adapted (not in the official docs): the source writes `"oauth2l fetch --scope cloud-platform"`, which stores the command text instead of running it; command substitution `$(...)` is added so the variable holds the token.
+Adapted (not in the official docs): the source writes `"oauth2l fetch --scope cloud-platform"`, which stores the command text instead of running it; command substitution `$(...)` is added so the variable holds the token, with the `oauth2accesstoken:` user name that the gcloud example above also uses.
 
 ```bash
-export ACCESS_TOKEN="$(oauth2l fetch --scope cloud-platform)"
+export ACCESS_TOKEN="oauth2accesstoken:$(oauth2l fetch --scope cloud-platform)"
 ```
 
 ### Authenticate pip with the token
@@ -169,7 +169,7 @@ index-url = https://_json_key_base64:KEY@LOCATION-python.pkg.dev/PROJECT/REPOSIT
 
 - Service account keys are long-lived credentials. The source says to use a dedicated service account, grant the minimum Artifact Registry role (for example Reader for a download-only account), grant access at the repository level rather than the project level when groups need different access, and follow best practices for managing credentials. It also says to choose a more secure alternative to service account keys whenever possible; key creation may be disabled for your organization and externally sourced keys must be validated before use.
 - `.pypirc` and `pip.conf` / `pip.ini` files that contain a key or token must not be committed to source control; use placeholders in shared files. Passing the token in the pip `--index-url` puts it on the command line and in shell history; access tokens expire after 60 minutes.
-- Corrected from the official docs: the oauth2l step was `export ACCESS_TOKEN="oauth2l fetch --scope cloud-platform"` (a literal string) and the pip command's index URL was unquoted.
+- Corrected from the official docs: the oauth2l step was `export ACCESS_TOKEN="oauth2l fetch --scope cloud-platform"` (a literal string, without the `oauth2accesstoken:` user name that the pip `https://$ACCESS_TOKEN@...` URL needs as the user name / password pair) and the pip command's index URL was unquoted.
 - Keyring: credentials are not stored in your Python project. `GOOGLE_APPLICATION_CREDENTIALS` makes the account explicit and easier to troubleshoot. If you do not use it, verify the accounts ADC might use: the default service account for Compute Engine VMs, GKE nodes and Cloud Run revisions has read-only access to repositories, so you must change permissions to upload from those environments. Avoid `gcloud auth activate-service-account` on Compute Engine VMs because the VM service account is found before gcloud CLI credentials. If service account credentials are found first, they are used instead of your user credentials.
 - Dependency confusion: with the keyring section's pip-only setup, the source recommends virtual repositories (priorities on upstream sources) over configuring multiple package indexes, because pip does not search indexes in any particular order and may install a public package with the same name as a private one.
 - The `/simple/` suffix means the repository implements the Python Simple Repository API (PEP 503).

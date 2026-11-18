@@ -109,7 +109,7 @@ us-west1-docker.pkg.dev/prod-project/my-repo
 
 | Item | Description |
 |------|-------------|
-| Source repository role | Storage Object Viewer (`roles/storage.objectViewer`) or equivalent for the repository you copy from |
+| Source repository role | Artifact Registry Reader (`roles/artifactregistry.reader`) or equivalent for the repository you copy from (the source lists Storage Object Viewer; see Notes) |
 | Target repository role | Artifact Registry Writer (`roles/artifactregistry.writer`) or equivalent for the target repository |
 | `gcrane ls -r` / `gcrane cp -r` | Recursive listing / copy under a path |
 | Cloud Shell limit | About 40 GB or less of new data; larger copies may disconnect after the 10-minute request timeout |
@@ -120,6 +120,7 @@ us-west1-docker.pkg.dev/prod-project/my-repo
 
 ## Notes
 
+- Corrected from the official docs: the source lists Storage Object Viewer (`roles/storage.objectViewer`) for the repository you copy from. That is a Cloud Storage role (Container Registry stored images in Cloud Storage buckets); reading images from an Artifact Registry repository, which every example on this page uses as the source, needs a role such as Artifact Registry Reader (`roles/artifactregistry.reader`).
 - Create the target Docker repository first.
 - Container Registry is shut down (March 18, 2025; see `transition-from-gcr.md`); a `gcr.io` host that still resolves is served by an Artifact Registry `gcr.io` repository, so copy from those repositories.
 - Removing unused images before copying reduces storage costs.
