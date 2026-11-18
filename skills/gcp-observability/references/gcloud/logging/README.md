@@ -15,3 +15,7 @@
 | gcloud logging saved-queries | 5 commands (ga); logging saved-queries create … | [logging-saved-queries.md](./logging-saved-queries.md) |
 | gcloud logging scopes | 5 commands (ga); logging scopes create … | [logging-scopes.md](./logging-scopes.md) |
 | gcloud logging settings | 6 commands (alpha, beta, ga); logging settings describe … | [logging-settings.md](./logging-settings.md) |
+| gcloud logging sinks | 15 commands (alpha, beta, ga); logging sinks create … | [logging-sinks.md](./logging-sinks.md) |
+| gcloud logging tail | 2 commands (alpha, beta); beta logging tail … | [logging-tail.md](./logging-tail.md) |
+| gcloud logging views | 19 commands (alpha, beta, ga); logging views add-iam-policy-binding … | [logging-views.md](./logging-views.md) |
+| gcloud logging write | 3 commands (alpha, beta, ga); logging write … | [logging-write.md](./logging-write.md) |
