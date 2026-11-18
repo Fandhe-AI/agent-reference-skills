@@ -18,7 +18,7 @@ gcloud artifacts docker images scan ubuntu:latest --location=asia
 
 ## Options / Props
 
-### SLSA source requirements named in the source
+### SLSA source requirements named in the source (SLSA v0.1)
 
 | SLSA level | Source requirement |
 |------------|--------------------|
@@ -47,6 +47,7 @@ gcloud artifacts docker images scan ubuntu:latest --location=asia
 - Version control is one of the DORA technical capabilities; it helps reproduce and recover environments and trace and audit changes.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/artifacts/docker/images/scan (gcloud 593.0.0 help, EXAMPLES). Local scans need the `local-extract` gcloud component and a local Docker image; the full On-Demand Scanning workflow is in the scan-os-on-demand page of the Artifact Analysis category.
 - Terraform links and Console steps are omitted; see the source page.
+- SLSA version: the level table follows SLSA v0.1 (the source links https://slsa.dev/spec/v0.1/requirements), where source, build and provenance requirements share levels 1 to 4. The current specification (SLSA v1.2, https://slsa.dev/spec/v1.2/) splits them into a Build track (Build L0 to L3, https://slsa.dev/spec/v1.2/build-track-basics) and a separate Source track (Source L1 to L4, https://slsa.dev/spec/v1.2/source-requirements); SLSA v1.0 removed the source aspects (https://slsa.dev/spec/v1.0/levels). Use the table to read the source page, not as a current conformance checklist (retrieved 2026-11-18).
 - Source: https://docs.cloud.google.com/software-supply-chain-security/docs/safeguard-source (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
