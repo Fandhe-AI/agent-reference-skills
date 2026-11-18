@@ -41,9 +41,11 @@ curl -X POST -H "Authorization: Bearer $TOKEN" \
 
 Verify the endpoint attachment (the IP address is in `endpointIp`; use it when configuring a connector for private connectivity):
 
+Adapted (not in the official docs): the region is `LOCATION`, as in the create request (the source fixes it to `us-central1`), and the URL is quoted.
+
 ```bash
 curl -X GET -H "Authorization: Bearer $TOKEN" \
-    https://connectors.googleapis.com/v1/projects/PROJECT_ID/locations/us-central1/endpointAttachments/ENDPOINT_ATTACHMENT_NAME
+    "https://connectors.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/endpointAttachments/ENDPOINT_ATTACHMENT_NAME"
 ```
 
 Adapted (not in the official docs): removed the trailing comma after `labels` so the sample response is valid JSON.
@@ -134,6 +136,7 @@ curl -X GET -H "Authorization: Bearer $TOKEN" \
 
 ## Notes
 
+- Corrected from the official docs: the source's verification `GET` uses `locations/us-central1` while its create request uses `LOCATION`; the page uses `LOCATION` in both so the request reads the attachment that was created.
 - Source inconsistency: for **Enable endpoint global access** the source says "if you are using an internal passthrough load balancer, you need not explicitly enable global access as it's enabled by default", but the internal passthrough Network Load Balancer documentation says that by default only clients in the same region can reach it and that global access is enabled on the forwarding rule (https://docs.cloud.google.com/load-balancing/docs/internal). When you enable endpoint global access, set `--allow-global-access` on the load balancer's forwarding rule (`gcloud compute forwarding-rules create` / `update`; see the gcp-compute skill) instead of relying on a default.
 - Connection status: on the Endpoint Attachment Details page, the Connection state `Accepted` means the PSC connection is established.
 - In a connection, set Destination Type to **Endpoint attachment** and choose the attachment; if you created a managed zone, set Destination Type to **Host Address** and use the A-record you created.

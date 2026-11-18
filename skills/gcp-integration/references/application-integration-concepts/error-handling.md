@@ -52,6 +52,7 @@ Error details of a failed execution are available in the `ErrorInfo` system vari
 
 ## Notes
 
+- Source inconsistency: the error classes table lists HTTP 400 (bad request) as an example of temporary (server-side) errors, while the row above says all client-side errors, including data validation errors, are permanent, and the error codes table maps HTTP 400 to `INVALID_ARGUMENT` (and other client-side codes). Do not treat every HTTP 400 as retryable on the basis of this table; decide from the canonical code.
 - Error codes: Application Integration uses the canonical error codes defined in `google.rpc.Code`.
 - Errors appear on the Execution logs page (one log entry per execution) and, for publish errors, at the bottom of the integration editor page.
 - Best practice: use both an error handling strategy and an error catcher. The strategy runs first; after the configured strategies are exhausted, the error catcher logic is triggered. Capture the error code and message with system variables to send to the catcher flow.
