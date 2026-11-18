@@ -207,7 +207,7 @@ skills/gcp-run/
 - `gcp-storage` — Cloud Storage 本体・Cloud Storage FUSE ボリュームマウント・NFS ボリューム。本スキルはイベントトリガー（Eventarc 経由）の起動側のみ
 - `gcp-client-libraries` — 言語別クライアントライブラリのコード（Node.js / Python / Rust）。本スキルは Functions Framework と gcloud / REST の手順のみ
 - `gcp-networking` / `gcp-load-balancing` — VPC・Serverless VPC Access の本体、Load Balancing（serverless NEG を含む）の本体
-- `gcp-messaging-workflows` / `gcp-security` / `gcp-observability` / `gcp-devops` — Pub/Sub・Eventarc・Workflows、Secret Manager・IAP・Binary Authorization、Logging・Monitoring、Cloud Build・Artifact Registry の本体（`gcp-security` は収録済み、他は予定）。本スキルは Cloud Run 側の接続・設定ページのみ
+- `gcp-messaging-workflows` / `gcp-security` / `gcp-observability` / `gcp-devops` — Pub/Sub・Eventarc・Workflows、Secret Manager・IAP・Binary Authorization、Logging・Monitoring、Cloud Build・Artifact Registry の本体（`gcp-security`・`gcp-observability` は収録済み、他は予定）。本スキルは Cloud Run 側の接続・設定ページのみ
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `docker` — Dockerfile・Docker Engine 一般。本スキルは Cloud Run 向けのコンテナー契約とビルド手順のみ
 - `cloudflare-workers` — Cloudflare Workers（V8 isolate）。Cloud Run / Cloud Run functions とは別基盤

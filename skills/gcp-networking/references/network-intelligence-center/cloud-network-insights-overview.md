@@ -51,7 +51,7 @@ gcloud network-management network-monitoring-providers \
 - Setup order: deploy Monitoring Points, configure monitoring policies, set up alarms and logging, set up alerts and notifications, analyze metrics.
 - Alarms come from alarm rules in AppNeta that define thresholds and how many violations in a period trigger an event; predefined alert policy templates exist, such as `Critical Network Alarm`.
 - Launch stage: the source page does not state a launch stage, deprecation or retirement date for Cloud Network Insights, so none is given here; check the source page before relying on it for new deployments.
-- Generic Cloud Monitoring / Logging belongs to the planned `gcp-observability` skill.
+- Generic Cloud Monitoring / Logging belongs to the `gcp-observability` skill.
 - Snippets taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-management/network-monitoring-providers/list and https://docs.cloud.google.com/sdk/gcloud/reference/network-management/network-monitoring-providers/monitoring-points/list (gcloud 593.0.0 help); the source page has no code.
 - Source: https://docs.cloud.google.com/network-intelligence-center/docs/cloud-network-insights/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

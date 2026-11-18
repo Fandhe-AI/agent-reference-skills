@@ -200,7 +200,7 @@ skills/gcp-networking/
 - `gcp-cli` — gcloud 全般のインストール・設定・認証・出力フォーマット。ネットワーク系 12 グループのコマンドは本スキル
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `gcp-security` / `gcp-security-compliance` — Cloud Armor・IAP・Certificate Manager・Cloud KMS（`gcp-security`）、Security Command Center（`gcp-security-compliance`）。Cloud NGFW・Cloud IDS・Secure Web Proxy は本スキル
-- `gcp-observability`（予定）— Cloud Logging・Cloud Monitoring。VPC Flow Logs の仕様と Network Intelligence Center は本スキル
+- `gcp-observability`— Cloud Logging・Cloud Monitoring。VPC Flow Logs の仕様と Network Intelligence Center は本スキル
 
 ## 対象外
 

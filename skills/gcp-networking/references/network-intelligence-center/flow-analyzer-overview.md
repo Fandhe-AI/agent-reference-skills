@@ -37,7 +37,7 @@ gcloud network-management vpc-flow-logs-configs list \
 - Smaller alignment periods reduce performance; for example a 1 minute alignment over 30 days yields more than 43,000 data points, so some options are disabled for long durations.
 - Flow details panel: drill down by an extra field (top three flows, Compare to past toggle), and an Egress AS paths tab (filters such as longer than, shorter than, has first ASN, contains ASN).
 - Explore in Log Analytics opens a prefilled query for raw SQL editing.
-- VPC Flow Logs themselves are described in vpc-flow-logs.md. Generic Cloud Logging belongs to the planned `gcp-observability` skill.
+- VPC Flow Logs themselves are described in vpc-flow-logs.md. Generic Cloud Logging belongs to the `gcp-observability` skill.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-management/vpc-flow-logs-configs/list (gcloud 593.0.0 help); the source page has no code.
 - Source: https://docs.cloud.google.com/network-intelligence-center/docs/flow-analyzer/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

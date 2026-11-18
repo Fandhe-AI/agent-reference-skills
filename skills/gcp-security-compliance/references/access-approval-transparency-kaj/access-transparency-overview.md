@@ -16,7 +16,7 @@ logName="projects/PROJECT_ID/logs/cloudaudit.googleapis.com%2Faccess_transparenc
 
 ## Notes
 
-- Access Transparency logs are similar to Cloud Audit Logs: Cloud Audit Logs record actions taken by members of your organization in your resources; Access Transparency logs record actions taken by Google personnel. Together they cover customer actions and Google administrative access. Cloud Audit Logs itself is covered by the planned `gcp-observability` skill.
+- Access Transparency logs are similar to Cloud Audit Logs: Cloud Audit Logs record actions taken by members of your organization in your resources; Access Transparency logs record actions taken by Google personnel. Together they cover customer actions and Google administrative access. Cloud Audit Logs itself is covered by the `gcp-observability` skill.
 - Use cases: verify Google personnel access only for valid business reasons (outage fix, support request); verify access aligns with the products and data on a support case; verify and track legal or regulatory compliance; ingest into a SIEM such as Google Security Operations (Security Command Center findings can be combined as context).
 - All access to Customer Data requires a valid justification for privileged access; see the justification reason codes in the reading-logs page.
 - All Google employees must sign a confidentiality agreement and comply with Google's Code of Conduct. For government requests for Customer Data, Google's policy is to direct the government to request data directly from the customer.

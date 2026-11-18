@@ -30,7 +30,7 @@ gcloud network-management connectivity-tests rerun my-test
 - Recommended alert: the packet loss alerting policy triggers when packet loss exceeds 5% for 5 minutes for any region pair.
 - The dashboards do not represent network performance targets; increased packet loss or latency is not downtime under the Google Cloud SLA, especially for a single zone.
 - Internet-location latency metrics show per region and city/geographic region/country when there is sufficient traffic for the pair.
-- Multiple projects use a Cloud Monitoring metrics scope (Change Scope button or project picker). Generic Cloud Monitoring belongs to the planned `gcp-observability` skill.
+- Multiple projects use a Cloud Monitoring metrics scope (Change Scope button or project picker). Generic Cloud Monitoring belongs to the `gcp-observability` skill.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-management/connectivity-tests/rerun (gcloud 593.0.0 help); the source page has no code.
 - Source: https://docs.cloud.google.com/network-intelligence-center/docs/performance-dashboard/concepts/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

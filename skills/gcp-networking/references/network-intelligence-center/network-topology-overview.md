@@ -52,7 +52,7 @@ gcloud network-management connectivity-tests list --limit=5
 - Google-managed services are supported through the `default-internet-gateway` default route or Private Google Access; external internet traffic, direct Google access, and Private Google Access from on-premises hosts are not supported. App Engine Memcache, Filestore, Memorystore, Cloud SQL, and partner/marketplace solutions are not shown.
 - Metrics: hourly throughput, packet loss (within Google Cloud regions and zones), median latency (RTT). Insights rank high egress instances and instance groups (GKE Enterprise view: high egress GKE workloads); filters are all egress, cross-zonal egress, egress to internet, and hybrid egress. The high egress and network verdict outlier tables can be downloaded as CSV. Dual-stack Pod IPv6 addresses are not shown.
 - Multiple projects: configure a Cloud Monitoring metrics scope; project aggregation groups entities by project (external clients are excluded).
-- Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-management/connectivity-tests/list (gcloud 593.0.0 help); Network Topology itself has no gcloud commands. Cloud Monitoring in general belongs to the planned `gcp-observability` skill.
+- Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-management/connectivity-tests/list (gcloud 593.0.0 help); Network Topology itself has no gcloud commands. Cloud Monitoring in general belongs to the `gcp-observability` skill.
 - Source: https://docs.cloud.google.com/network-intelligence-center/docs/network-topology/concepts/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -212,7 +212,7 @@ skills/gcp-security/
 - `gcp-cli` — gcloud 全般のインストール・設定・認証・出力フォーマット
 - `gcp-client-libraries` — Node.js / Python / Rust のクライアントライブラリの共通パターン
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
-- `gcp-observability`（予定）— Cloud Logging・Cloud Audit Logs・Cloud Monitoring
+- `gcp-observability`— Cloud Logging・Cloud Audit Logs・Cloud Monitoring
 - `gcp-devops`（予定）— Artifact Registry・Cloud Build・Cloud Deploy・`gcloud artifacts`（Artifact Analysis の `gcloud artifacts docker images scan` 等もこちら）
 - `gcp-iac`（予定）— Terraform
 - `gcp-ai-apis`（予定）— Sensitive Data Protection（DLP）・reCAPTCHA
@@ -233,7 +233,7 @@ skills/gcp-security/
 - 収録しなかったガイド群: KMS の鍵バージョン管理・非対称鍵の操作・ラベル・監査ログ・組織ポリシー、Secret Manager の regional secrets の個別手順（global 版と同じ手順のため概要と比較のみ）、Parameter Manager のバージョン・CMEK・リージョンパラメータ、Binary Authorization のポリシー作成・attestor・GKE / Cloud Run / Distributed Cloud の個別手順、VPC Service Controls の個別サービスの制限、Certificate Manager の個別デプロイ手順と発行構成・2nd gen の個別手順、CA Service の従属 CA・証明書テンプレート・CRL、Identity Platform の各ログイン方法・SAML・MFA と Web / iOS / Android の手順、Cloud Armor の WAF ルール一覧・ログ・CDN 連携、Access Context Manager・IAP・Chrome Enterprise Premium の個別手順
 - EKM パートナー向けの資料（`kms/docs/ekm-partner/**`。取得不可）・Binary Authorization の `platform-policies/**`（取得不可）
 - Firebase Authentication（Identity Platform との比較は `identity-platform` に 1 ページあるが、Firebase 側は対象外）
-- Security Command Center・Assured Workloads 等（`gcp-security-compliance`）、Cloud NGFW・Secure Web Proxy・Cloud IDS（`gcp-networking`）、Cloud Logging・監査ログ（`gcp-observability`（予定））、Sensitive Data Protection・reCAPTCHA（`gcp-ai-apis`（予定））
+- Security Command Center・Assured Workloads 等（`gcp-security-compliance`）、Cloud NGFW・Secure Web Proxy・Cloud IDS（`gcp-networking`）、Cloud Logging・監査ログ（`gcp-observability`）、Sensitive Data Protection・reCAPTCHA（`gcp-ai-apis`（予定））
 - Java / Go / C# / PHP / C++ / Ruby の SDK
 
 ## 鮮度・ライセンス・既知の制約

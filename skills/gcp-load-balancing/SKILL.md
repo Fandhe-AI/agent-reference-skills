@@ -93,7 +93,7 @@ skills/gcp-load-balancing/
 - `gcp-cli` — gcloud 全般のインストール・設定・認証・出力フォーマット
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `gcp-security` — Cloud Armor・IAP・Certificate Manager。ロードバランサーに付ける SSL 証明書 / SSL policies / mTLS は本スキル（`lb-tls`）
-- `gcp-observability`（予定）— Cloud Logging・Cloud Monitoring
+- `gcp-observability`— Cloud Logging・Cloud Monitoring
 - `cloudflare-workers` / `vercel` — Cloudflare・Vercel のエッジ / CDN は別の製品。Google Cloud の Cloud CDN・Media CDN とは無関係
 
 ## 対象外

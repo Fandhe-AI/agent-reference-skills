@@ -179,7 +179,7 @@ skills/gcp-security-compliance/
 - `gcp-cli` — gcloud 全般のインストール・設定・認証・出力フォーマット。本スキルの 8 グループのコマンドは本スキル
 - `gcp-client-libraries` — Node.js / Python / Rust のクライアントライブラリの共通パターン。SCC・Model Armor 等の REST は本スキル
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
-- `gcp-observability`（予定）— Cloud Logging・Cloud Audit Logs・Cloud Monitoring。Access Transparency のログの読み方と Model Armor のロギング設定は本スキル
+- `gcp-observability`— Cloud Logging・Cloud Audit Logs・Cloud Monitoring。Access Transparency のログの読み方と Model Armor のロギング設定は本スキル
 - `gcp-devops`（予定）— Artifact Registry・Cloud Build・Cloud Deploy・`gcloud artifacts`
 - `gcp-iac`（予定）— Terraform。IaC 検証（SCC の `validate-iac`）は本スキル
 - `gcp-ai-apis`（予定）— Sensitive Data Protection（DLP）・reCAPTCHA
