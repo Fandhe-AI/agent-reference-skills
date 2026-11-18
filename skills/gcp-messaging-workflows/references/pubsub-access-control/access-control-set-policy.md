@@ -91,6 +91,8 @@ gcloud pubsub topics set-iam-policy \
 
 ### Subscription: Python
 
+Adapted (not in the official docs): the members are placeholders (`VIEWER_MEMBER`, `EDITOR_MEMBER`) instead of `domain:google.com` and `group:cloud-logs@google.com`, and the editor binding uses `roles/pubsub.editor` instead of the basic role `roles/editor`.
+
 ```python
 from google.cloud import pubsub_v1
 
@@ -103,11 +105,11 @@ subscription_path = client.subscription_path(project_id, subscription_id)
 
 policy = client.get_iam_policy(request={"resource": subscription_path})
 
-# Add all users as viewers.
-policy.bindings.add(role="roles/pubsub.viewer", members=["domain:google.com"])
+# Add a principal as a viewer, for example "user:alice@example.com".
+policy.bindings.add(role="roles/pubsub.viewer", members=["VIEWER_MEMBER"])
 
-# Add a group as an editor.
-policy.bindings.add(role="roles/editor", members=["group:cloud-logs@google.com"])
+# Add a group as an editor, for example "group:team@example.com".
+policy.bindings.add(role="roles/pubsub.editor", members=["EDITOR_MEMBER"])
 
 # Set the policy
 policy = client.set_iam_policy(
@@ -129,10 +131,11 @@ client.close()
 
 ## Notes
 
+- Adapted from the official docs: running the source's Python sample as written grants `roles/pubsub.viewer` to `domain:google.com` and the basic role `roles/editor` to `group:cloud-logs@google.com` on your subscription. The example replaces both members with placeholders and uses `roles/pubsub.editor`; set the members you intend to grant before running it.
 - Adapted from the official docs: unquoted shell variable expansions in the commands are double-quoted (`"${VAR}"`).
 - Omitted: the source's Node.js subscription and topic samples build a new policy object with `members: ['allUsers']` bound to `roles/pubsub.viewer` and call `iam.setPolicy(newPolicy)` without reading the current policy or its `etag`, so they replace every existing binding and make the resource readable by anyone on the internet. They are not reproduced; use the gcloud get, edit, set flow above or the Python read-modify-write sample, which keep the `etag`.
-- The Python subscription sample reads the policy with `get_iam_policy`, modifies the returned object and sets it back, so the `etag` is preserved. Its comment says "Add all users as viewers" but binds `domain:google.com`, as in the source: that grants the role to every user of that domain, not `allUsers`.
-- Source inconsistency: the Python subscription sample binds `roles/editor`, a basic role that the same page describes as highly permissive, while the surrounding text and the source's Node.js samples use `roles/pubsub.editor`; the sample is kept as in the source.
+- The Python subscription sample reads the policy with `get_iam_policy`, modifies the returned object and sets it back, so the `etag` is preserved. In the source, its comment says "Add all users as viewers" but it binds `domain:google.com`, which grants the role to every user of that domain, not `allUsers`; the example's comments are reworded for the placeholders.
+- Source inconsistency: the Python subscription sample binds `roles/editor`, a basic role that the same page describes as highly permissive, while the surrounding text and the source's Node.js samples use `roles/pubsub.editor`; the example uses `roles/pubsub.editor`.
 - `set-iam-policy` replaces the whole policy: keep the `etag` from the file you read, so that a concurrent change makes the call fail instead of being silently overwritten.
 - The Python topic sample follows the same pattern with `PublisherClient` and `topic_path` and role `roles/pubsub.publisher`; it is omitted. The source also shows C#, Go, Java, PHP and Ruby.
 - Granting through the Pub/Sub IAM API works only on individual topics and subscriptions, not at project level. The source also shows Console steps (IAM page for project-level grants; Topics list, Permissions tab, Add principal for resources).

@@ -117,7 +117,7 @@ synchronousPullWithLeaseManagement().catch(console.error);
 
 ### Manual unary pull with deadline extension (Python)
 
-Adapted (not in the official docs): replaced the module-level `return` (a syntax error outside a function) with `sys.exit(0)`, and a finished process is acknowledged only when its exit code is 0; otherwise the message is made available for redelivery.
+Adapted (not in the official docs): replaced the module-level `return` (a syntax error outside a function) with `sys.exit(0)`, and a finished process is acknowledged only when its exit code is 0; otherwise the message is made available for redelivery, and the final message reports both counts.
 
 ```python
 import logging
@@ -132,6 +132,8 @@ multiprocessing.log_to_stderr()
 logger = multiprocessing.get_logger()
 logger.setLevel(logging.INFO)
 processes = dict()
+acked = 0
+released = 0
 
 # TODO(developer)
 # project_id = "your-project-id"
@@ -183,6 +185,7 @@ while processes:
                     request={"subscription": subscription_path, "ack_ids": [ack_id]}
                 )
                 logger.debug(f"Acknowledged {msg_data}.")
+                acked += 1
             else:
                 subscriber.modify_ack_deadline(
                     request={
@@ -192,9 +195,11 @@ while processes:
                     }
                 )
                 logger.debug(f"Processing failed for {msg_data}; released it for redelivery.")
+                released += 1
             processes.pop(process)
 print(
-    f"Received and acknowledged {len(response.received_messages)} messages from {subscription_path}."
+    f"Received {len(response.received_messages)} messages from {subscription_path}; "
+    f"acknowledged {acked}, released {released} for redelivery."
 )
 
 # Close the underlying gPRC channel. Alternatively, wrap subscriber in

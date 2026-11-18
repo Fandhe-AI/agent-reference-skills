@@ -95,7 +95,8 @@ except GoogleAPICallError as e:
 |----------|-------------|
 | `connector.class` | `com.google.pubsub.kafka.sink.CloudPubSubSinkConnector`. Required when not configuring through the console. |
 | `name` | Connector name; unique within the Connect cluster and immutable. |
-| `topics` | Kafka topics to read: one or more, or a regular expression such as `topic.*`. Topics must exist in the Kafka cluster associated with the Connect cluster. |
+| `topics` | Comma-separated list of Kafka topics to read. Topics must exist in the Kafka cluster associated with the Connect cluster. |
+| `topics.regex` | Regular expression giving the topics to read, such as `topic.*` (the Console's **Topic regex** field). Set only one of `topics` or `topics.regex`. |
 | `tasks.max` | Parallelism; actual parallelism is limited by the number of partitions of the Kafka topics. |
 | `value.converter`, `key.converter` | Converters from the Kafka data format (Avro, JSON, raw bytes) to the Kafka Connect internal format. |
 | `cps.topic` | Required. Target Pub/Sub topic ID. |
@@ -126,6 +127,7 @@ except GoogleAPICallError as e:
 
 ## Notes
 
+- Corrected from the official docs: the source's Kafka topics section says you can "specify one or more topics, or use a regular expression" without naming the property. In Apache Kafka Connect, `topics` is a list ("List of topics to consume, separated by commas") and the regular expression goes in `topics.regex`; the two are mutually exclusive ("topics and topics.regex are mutually exclusive options, but both are set"). Source: https://github.com/apache/kafka/blob/4.0.0/connect/runtime/src/main/java/org/apache/kafka/connect/runtime/SinkConnectorConfig.java (tag 4.0.0, retrieved 2026-11-19).
 - The source grants `roles/pubsub.publisher` to the service agent on the project that contains the topic, which applies to every topic in that project; the source gives no topic-level form. Its "Pub/Sub topic" section also calls the grantee "the Connect cluster service account". If the Connect cluster is in a different project from the Kafka cluster, see "Create a Connect cluster in a different project" on the create-connect-cluster page.
 - Put credentials (passwords, truststores) in Secret Manager and reference them with the `/var/secrets/...` and `${directory:/var/secrets:...}` forms; never write them inline in a connector config.
 - Placeholders in the YAML (`CPS_SINK_CONNECTOR_ID`, `GMK_TOPIC_ID`, `CPS_TOPIC_ID`, `GCP_PROJECT_ID`) are replaced with the connector ID, the Kafka topic ID, the Pub/Sub topic ID and the project ID of the Pub/Sub topic.
