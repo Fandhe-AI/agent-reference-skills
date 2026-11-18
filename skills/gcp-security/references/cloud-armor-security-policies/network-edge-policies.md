@@ -97,14 +97,22 @@ gcloud compute security-policies add-user-defined-field POLICY_NAME \
    --region=REGION_NAME
 ```
 
-Add a rule using the same field names; replace `VALUE1` and `VALUE2` with values to allow.
+Add allow rules using the same field names; replace `VALUE1` and `VALUE2` with values to allow. A packet matches a rule only when all of its match fields match, and a TCP-based field is not present in a UDP packet (and the reverse), so the TCP and UDP fields go in separate rules with different priorities (`RULE_PRIORITY_TCP`, `RULE_PRIORITY_UDP`).
 
-Adapted (not in the official docs): dropped the trailing `USER_DEFINED_FIELD_NAME_UDP;VALUE1,VALUE2` element, which repeats the UDP field and whose `,VALUE2` gcloud splits into an element without the `NAME;` part.
+Adapted (not in the official docs): the source's single rule with both the TCP and UDP fields is split into one rule per base, and the trailing `USER_DEFINED_FIELD_NAME_UDP;VALUE1,VALUE2` element (a repeated UDP field whose `,VALUE2` gcloud splits into an element without the `NAME;` part) is dropped.
 
 ```bash
-gcloud compute security-policies rules create RULE_PRIORITY \
+gcloud compute security-policies rules create RULE_PRIORITY_TCP \
    --security-policy=POLICY_NAME \
-   --network-user-defined-fields="USER_DEFINED_FIELD_NAME_TCP;VALUE1:VALUE2,USER_DEFINED_FIELD_NAME_UDP;VALUE1:VALUE2" \
+   --network-user-defined-fields="USER_DEFINED_FIELD_NAME_TCP;VALUE1:VALUE2" \
+   --action=allow \
+   --region=REGION_NAME
+```
+
+```bash
+gcloud compute security-policies rules create RULE_PRIORITY_UDP \
+   --security-policy=POLICY_NAME \
+   --network-user-defined-fields="USER_DEFINED_FIELD_NAME_UDP;VALUE1:VALUE2" \
    --action=allow \
    --region=REGION_NAME
 ```
@@ -174,6 +182,7 @@ gcloud compute backend-services update BACKEND_SERVICE_NAME \
 - The full flag list for `gcloud compute security-policies` is in the `gcp-compute` skill. Console steps are omitted; see the source page.
 - Corrected from the official docs: `--base=TCP` and `--base=UDP`. The gcloud 593.0.0 help of `gcloud compute security-policies add-user-defined-field` says "BASE must be one of: ipv4, ipv6, tcp, udp", and the upper-case values fail with "Invalid choice". The source's field table writes the bases as `IPv4`, `IPv6`, `TCP`, `UDP`.
 - Corrected from the official docs: `--network-user-defined-fields="USER_DEFINED_FIELD_NAME_TCP;VALUE1:VALUE2,USER_DEFINED_FIELD_NAME_UDP;VALUE1:VALUE2,USER_DEFINED_FIELD_NAME_UDP;VALUE1,VALUE2"`. The gcloud 593.0.0 help gives the format `--network-user-defined-fields=[NAME;VALUE:VALUE:...,...]` (elements separated by `,`, values by `:`), so `VALUE2` after the last comma has no field name.
+- Corrected from the official docs: the source puts the TCP-based and UDP-based user-defined fields in one allow rule. In the Compute Engine API Discovery document (`SecurityPolicyRule.networkMatch`), "all specified match fields must match", "a field value must be present in order to match a specified match field", and "a user-defined field is only present if the base header is found in the packet", so no TCP or UDP packet would match that rule; the page uses one rule per base.
 - Source: https://docs.cloud.google.com/armor/docs/network-edge-policies (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
