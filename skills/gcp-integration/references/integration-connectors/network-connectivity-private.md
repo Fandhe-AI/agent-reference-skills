@@ -113,7 +113,7 @@ curl -X GET -H "Authorization: Bearer $TOKEN" \
 | Name | Unique; cannot be changed later. Starts with a lowercase letter, followed by up to 63 lowercase letters, numbers or hyphens; cannot end with a hyphen; minimum length 2. |
 | Service Attachment ID | Name of the PSC service attachment you already created. Get the project ID of the service directory and allowlist it in your service attachment. |
 | Description, Labels | Optional. |
-| Enable endpoint global access | Optional. By default the connection and the backend must be in the same region; enabling it lets a connection in any region send traffic to your backend. Does not affect DRZ compliance (the managed zone stays regional). The load balancer must have global access enabled; an internal passthrough load balancer has it enabled by default. |
+| Enable endpoint global access | Optional. By default the connection and the backend must be in the same region; enabling it lets a connection in any region send traffic to your backend. Does not affect DRZ compliance (the managed zone stays regional). The load balancer must have global access enabled (for an internal passthrough load balancer, see Notes). |
 
 ### Managed zone fields
 
@@ -134,6 +134,7 @@ curl -X GET -H "Authorization: Bearer $TOKEN" \
 
 ## Notes
 
+- Source inconsistency: for **Enable endpoint global access** the source says "if you are using an internal passthrough load balancer, you need not explicitly enable global access as it's enabled by default", but the internal passthrough Network Load Balancer documentation says that by default only clients in the same region can reach it and that global access is enabled on the forwarding rule (https://docs.cloud.google.com/load-balancing/docs/internal). When you enable endpoint global access, set `--allow-global-access` on the load balancer's forwarding rule (`gcloud compute forwarding-rules create` / `update`; see the gcp-compute skill) instead of relying on a default.
 - Connection status: on the Endpoint Attachment Details page, the Connection state `Accepted` means the PSC connection is established.
 - In a connection, set Destination Type to **Endpoint attachment** and choose the attachment; if you created a managed zone, set Destination Type to **Host Address** and use the A-record you created.
 - Private connectivity is always through a PSC service attachment, and a service attachment always needs a load balancer. Backends can be on-premises, in Google VPC, in a Google Cloud serverless environment, or a managed Google Cloud service.

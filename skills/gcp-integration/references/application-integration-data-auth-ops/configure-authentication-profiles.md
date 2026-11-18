@@ -18,7 +18,7 @@ https://console.cloud.google.com/integrations/callback/locations/AUTH_PROFILE_RE
 
 ### Create, edit and delete a profile
 
-- Create: Application Integration > **Auth Profiles** > **Create**; enter **Profile name**, **Region**, **Description**, then **Continue** and select the **Authentication type** and its fields. Optionally add an SSL/TLS client certificate (**SSL certificate**, **Private key**, **Private key passphrase**). Terraform can create profiles with the `google_integrations_client` resource (the source's examples use `google_integrations_auth_config`).
+- Create: Application Integration > **Auth Profiles** > **Create**; enter **Profile name**, **Region**, **Description**, then **Continue** and select the **Authentication type** and its fields. Optionally add an SSL/TLS client certificate (**SSL certificate**, **Private key**, **Private key passphrase**). Terraform creates profiles with the `google_integrations_auth_config` resource; each of the source's examples declares `depends_on = [google_integrations_client.client]`, so the `google_integrations_client` resource (the Application Integration client setup) is created first.
 - The saved profile appears in the **Authorization profile to use** drop-down of any task that needs authentication; **+ Add new authentication profile** there opens the same dialog.
 - Edit: **Auth Profiles** > choose **Region** > Actions menu > **Edit** > **Save**.
 - Delete: **Auth Profiles** > choose **Region** > **Delete**.
@@ -71,6 +71,7 @@ https://console.cloud.google.com/integrations/callback/locations/AUTH_PROFILE_RE
 
 ## Notes
 
+- Source inconsistency: the Terraform section of the source says "Use the `google_integrations_client` resource.", but every Terraform example on the same page creates the profile with a `google_integrations_auth_config` resource that depends on `google_integrations_client.client`; the page follows the examples.
 - Authentication rules: if an integration has both an OAuth 2.0 profile and a user-managed service account, the OAuth 2.0 profile is used by default. If neither is configured, the default service account (`service-PROJECT_NUMBER@gcp-sa-integrations.iam.gserviceaccount.com`) is used; if the task does not use the default service account, the execution fails.
 - Run-as authorization change: the authentication rules above are as the source states them. Per https://docs.cloud.google.com/application-integration/docs/prepare-for-authorization-changes, every run must now have an explicit identity (the triggering user or a run-as service account); this already applies to integrations created on or after October 15, 2026 and applies to all existing integrations starting January 15, 2027 (UTC). Do not rely on the default-service-account fallback for new integrations.
 - Source: https://docs.cloud.google.com/application-integration/docs/prepare-for-authorization-changes (retrieved 2026-11-18; CC BY 4.0)
