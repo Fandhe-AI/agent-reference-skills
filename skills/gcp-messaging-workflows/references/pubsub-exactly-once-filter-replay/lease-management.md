@@ -117,7 +117,7 @@ synchronousPullWithLeaseManagement().catch(console.error);
 
 ### Manual unary pull with deadline extension (Python)
 
-Adapted (not in the official docs): replaced the module-level `return` (a syntax error outside a function) with `sys.exit(0)`, and a finished process is acknowledged only when its exit code is 0; otherwise the message is made available for redelivery, and the final message reports both counts.
+Adapted (not in the official docs): moved the client creation, pull, process start and monitoring into `main()` called under `if __name__ == "__main__":` (so the module-level `return`, a syntax error outside a function, is now inside `main()`), and a finished process is acknowledged only when its exit code is 0; otherwise the message is made available for redelivery, and the final message reports both counts.
 
 ```python
 import logging
@@ -131,80 +131,86 @@ from google.cloud import pubsub_v1
 multiprocessing.log_to_stderr()
 logger = multiprocessing.get_logger()
 logger.setLevel(logging.INFO)
-processes = dict()
-acked = 0
-released = 0
 
-# TODO(developer)
-# project_id = "your-project-id"
-# subscription_id = "your-subscription-id"
 
-subscriber = pubsub_v1.SubscriberClient()
-subscription_path = subscriber.subscription_path(project_id, subscription_id)
+def main(project_id, subscription_id):
+    processes = dict()
+    acked = 0
+    released = 0
 
-response = subscriber.pull(
-    request={"subscription": subscription_path, "max_messages": 3},
-    retry=retry.Retry(deadline=300),
-)
+    subscriber = pubsub_v1.SubscriberClient()
+    subscription_path = subscriber.subscription_path(project_id, subscription_id)
 
-if len(response.received_messages) == 0:
-    sys.exit(0)
-
-# Start a process for each message based on its size modulo 10.
-for message in response.received_messages:
-    process = multiprocessing.Process(
-        target=time.sleep, args=(sys.getsizeof(message) % 10,)
+    response = subscriber.pull(
+        request={"subscription": subscription_path, "max_messages": 3},
+        retry=retry.Retry(deadline=300),
     )
-    processes[process] = (message.ack_id, message.message.data)
-    process.start()
 
-while processes:
-    # Take a break every second.
-    if processes:
-        time.sleep(1)
+    if len(response.received_messages) == 0:
+        return
 
-    for process in list(processes):
-        ack_id, msg_data = processes[process]
-        # If the process is running, reset the ack deadline.
-        if process.is_alive():
-            subscriber.modify_ack_deadline(
-                request={
-                    "subscription": subscription_path,
-                    "ack_ids": [ack_id],
-                    # Must be between 10 and 600.
-                    "ack_deadline_seconds": 15,
-                }
-            )
-            logger.debug(f"Reset ack deadline for {msg_data}.")
+    # Start a process for each message based on its size modulo 10.
+    for message in response.received_messages:
+        process = multiprocessing.Process(
+            target=time.sleep, args=(sys.getsizeof(message) % 10,)
+        )
+        processes[process] = (message.ack_id, message.message.data)
+        process.start()
 
-        # If the process is complete, acknowledge the message only on success.
-        else:
-            process.join()
-            if process.exitcode == 0:
-                subscriber.acknowledge(
-                    request={"subscription": subscription_path, "ack_ids": [ack_id]}
-                )
-                logger.debug(f"Acknowledged {msg_data}.")
-                acked += 1
-            else:
+    while processes:
+        # Take a break every second.
+        if processes:
+            time.sleep(1)
+
+        for process in list(processes):
+            ack_id, msg_data = processes[process]
+            # If the process is running, reset the ack deadline.
+            if process.is_alive():
                 subscriber.modify_ack_deadline(
                     request={
                         "subscription": subscription_path,
                         "ack_ids": [ack_id],
-                        "ack_deadline_seconds": 0,
+                        # Must be between 10 and 600.
+                        "ack_deadline_seconds": 15,
                     }
                 )
-                logger.debug(f"Processing failed for {msg_data}; released it for redelivery.")
-                released += 1
-            processes.pop(process)
-print(
-    f"Received {len(response.received_messages)} messages from {subscription_path}; "
-    f"acknowledged {acked}, released {released} for redelivery."
-)
+                logger.debug(f"Reset ack deadline for {msg_data}.")
 
-# Close the underlying gPRC channel. Alternatively, wrap subscriber in
-# a 'with' block to automatically call close() when done.
-subscriber.close()
+            # If the process is complete, acknowledge the message only on success.
+            else:
+                process.join()
+                if process.exitcode == 0:
+                    subscriber.acknowledge(
+                        request={"subscription": subscription_path, "ack_ids": [ack_id]}
+                    )
+                    logger.debug(f"Acknowledged {msg_data}.")
+                    acked += 1
+                else:
+                    subscriber.modify_ack_deadline(
+                        request={
+                            "subscription": subscription_path,
+                            "ack_ids": [ack_id],
+                            "ack_deadline_seconds": 0,
+                        }
+                    )
+                    logger.debug(f"Processing failed for {msg_data}; released it for redelivery.")
+                    released += 1
+                processes.pop(process)
+    print(
+        f"Received {len(response.received_messages)} messages from {subscription_path}; "
+        f"acknowledged {acked}, released {released} for redelivery."
+    )
+
+    # Close the underlying gPRC channel. Alternatively, wrap subscriber in
+    # a 'with' block to automatically call close() when done.
+    subscriber.close()
+
+
+if __name__ == "__main__":
+    # TODO(developer)
+    # project_id = "your-project-id"
+    # subscription_id = "your-subscription-id"
+    main(project_id, subscription_id)
 ```
 
 ## Options / Props
@@ -227,6 +233,7 @@ subscriber.close()
 
 ## Notes
 
+- Adapted from the official docs: the source's Python sample pulls messages and starts `multiprocessing.Process` workers at module level. With the `spawn` start method (the default on Windows and macOS), each child re-imports the module and would pull again and try to start processes while bootstrapping, which raises `RuntimeError`; the example runs this work in `main()` behind an `if __name__ == "__main__":` guard.
 - Corrected from the official docs: the source's Node.js sample passes `response.receivedMessages[0]` to `worker` unconditionally; when a pull returns no messages that value is `undefined` and `message.message.data` throws a `TypeError`, so the sample returns early as the Python sample does.
 - Defaults and names for these properties differ per client library; no per-library default values are listed in the source beyond those above.
 - Acknowledgment deadlines are not guaranteed to be respected unless exactly-once delivery is enabled.
