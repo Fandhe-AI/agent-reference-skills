@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-security-compliance
 
-Google Cloud (GCP) のセキュリティ態勢・脅威検出・コンプライアンス系スキル。Security Command Center（SCC。Standard / Premium / Enterprise（非推奨）のサービスティア・アクティベーション・アクセス制御・データ所在地・検出結果のクラス / 重大度 / 状態 / ミュート / セキュリティマーク・API / 通知 / エクスポート・Event Threat Detection / VM Threat Detection / Cloud Run Threat Detection / Agent Platform Threat Detection・Security Health Analytics・脆弱性評価・Web Security Scanner・攻撃の発生可能性（attack exposure）と有害な組み合わせ（toxic combinations））、Security posture と IaC 検証、AI Protection・CIEM・DSPM（非推奨）・Risk Manager、Compliance Manager（フレームワーク・Cloud Controls・CEL）、Model Armor（テンプレート・フィルタ・統合・ロギング）、Assured Workloads（フレームワーク・コントロールパッケージ・Cloud Controls・EU Data Boundary・IL4）、Access Approval・Access Transparency・Key Access Justifications（KAJ）、Audit Manager、Sovereign Controls by Partners を扱う。加えて gcloud 8 グループ・REST（Discovery）7 API・IAM ロールを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `scc-overview-tiers` / `scc-findings` / `scc-threat-detection` / `scc-vulnerabilities-sha` / `scc-web-security-scanner` / `scc-security-posture-iac` / `sovereign-controls-by-partners`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のセキュリティ態勢・脅威検出・コンプライアンス系スキル。Security Command Center（SCC。Standard / Premium / Enterprise（非推奨）のサービスティア・アクティベーション・アクセス制御・データ所在地・検出結果のクラス / 重大度 / 状態 / ミュート / セキュリティマーク・API / 通知 / エクスポート・Event Threat Detection / VM Threat Detection / Cloud Run Threat Detection / Agent Platform Threat Detection・Security Health Analytics・脆弱性評価・Web Security Scanner・攻撃の発生可能性（attack exposure）と有害な組み合わせ（toxic combinations））、Security posture と IaC 検証、AI Protection・CIEM・DSPM（非推奨）・Risk Manager、Compliance Manager（フレームワーク・Cloud Controls・CEL）、Model Armor（テンプレート・フィルタ・統合・ロギング）、Assured Workloads（フレームワーク・コントロールパッケージ・Cloud Controls・EU Data Boundary・IL4）、Access Approval・Access Transparency・Key Access Justifications（KAJ）、Audit Manager、Sovereign Controls by Partners を扱う。加えて gcloud 8 グループ・REST（Discovery）7 API・IAM ロールを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `scc-vulnerabilities-sha` / `scc-web-security-scanner` / `sovereign-controls-by-partners`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。SCC の機械生成ページと手書きガイドは SCC のティア表記（Standard-legacy / Standard / Premium / Enterprise（Deprecated））を原文どおりに残す。
 
@@ -19,7 +19,19 @@ Google Cloud (GCP) のセキュリティ態勢・脅威検出・コンプライ�
 skills/gcp-security-compliance/
   SKILL.md
   references/
+    scc-overview-tiers/           # 公式ガイド由来（手書き）: SCC の概要・サービスティア・アクティベーション・アクセス制御・データ所在地・廃止告知
+      README.md
+      <page>.md                   # 例: service-tiers.md / deprecations.md
+    scc-findings/                 # 検出結果のクラス・重大度・状態・ライフサイクル・確認と管理・ミュート・クエリ・セキュリティマーク・issues
+      README.md
+      <page>.md
     scc-api-notifications-export/ # API による検出結果の一覧・通知（Pub/Sub）・エクスポート
+      README.md
+      <page>.md
+    scc-threat-detection/         # 脅威の概要・Event Threat Detection・VM Threat Detection・Cloud Run / Agent Platform Threat Detection・相関する脅威・機密性の高い操作・調査
+      README.md
+      <page>.md
+    scc-security-posture-iac/     # Security posture・secure-by-default テンプレート・IaC 検証
       README.md
       <page>.md
     scc-attack-exposure/          # 攻撃の発生可能性・高価値リソースセット・有害な組み合わせ・リスクレポート
@@ -57,15 +69,19 @@ skills/gcp-security-compliance/
 
 1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
 2. 鍵・シークレット・証明書・IAP・VPC Service Controls・Cloud Armor は `gcp-security`。IAM の基盤・Organization Policy・Privileged Access Manager は `gcp-foundation`
-3. 廃止・縮退を確認するときは `scc-overview-tiers/deprecations.md`（後続 PR で投入）（SCC の廃止表）、`scc-overview-tiers/service-tiers.md`（後続 PR で投入）（Enterprise ティア）、`ai-protection-ciem-dspm-risk-manager/dspm-data-security.md`（DSPM）を引く
+3. 廃止・縮退を確認するときは `scc-overview-tiers/deprecations.md`（SCC の廃止表）、`scc-overview-tiers/service-tiers.md`（Enterprise ティア）、`ai-protection-ciem-dspm-risk-manager/dspm-data-security.md`（DSPM）を引く
 
-未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `scc-overview-tiers` / `scc-findings` / `scc-threat-detection` / `scc-vulnerabilities-sha` / `scc-web-security-scanner` / `scc-security-posture-iac` / `sovereign-controls-by-partners`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `scc-vulnerabilities-sha` / `scc-web-security-scanner` / `sovereign-controls-by-partners`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| SCC の概要・サービスティア（Standard / Premium / Enterprise）・アクティベーション・アクセス制御・データ所在地・廃止告知を知りたい | scc-overview-tiers | [references/scc-overview-tiers/README.md](references/scc-overview-tiers/README.md) |
+| 検出結果のクラス・重大度・状態・ライフサイクル・ミュート・クエリ・セキュリティマークを調べたい | scc-findings | [references/scc-findings/README.md](references/scc-findings/README.md) |
 | API で検出結果を一覧したい・Pub/Sub 通知・BigQuery 等へのエクスポートを設定したい | scc-api-notifications-export | [references/scc-api-notifications-export/README.md](references/scc-api-notifications-export/README.md) |
+| Event Threat Detection・VM Threat Detection・Cloud Run / Agent Platform Threat Detection・相関する脅威・脅威を調査したい | scc-threat-detection | [references/scc-threat-detection/README.md](references/scc-threat-detection/README.md) |
+| Security posture・secure-by-default テンプレート・IaC 検証（対応アセットとポリシー）を知りたい | scc-security-posture-iac | [references/scc-security-posture-iac/README.md](references/scc-security-posture-iac/README.md) |
 | 攻撃の発生可能性（attack exposure）・高価値リソースセット・有害な組み合わせ・リスクレポートを知りたい | scc-attack-exposure | [references/scc-attack-exposure/README.md](references/scc-attack-exposure/README.md) |
 | AI Protection・CIEM・DSPM（非推奨）・Risk Manager（Cyber Insurance Hub）を知りたい | ai-protection-ciem-dspm-risk-manager | [references/ai-protection-ciem-dspm-risk-manager/README.md](references/ai-protection-ciem-dspm-risk-manager/README.md) |
 | Compliance Manager の有効化・フレームワークの適用と監視・監査・CEL 式を知りたい | compliance-manager | [references/compliance-manager/README.md](references/compliance-manager/README.md) |
@@ -76,7 +92,7 @@ skills/gcp-security-compliance/
 | Access Approval・Access Transparency・Key Access Justifications（KAJ）の概要・構成・既定ポリシー・ログを知りたい | access-approval-transparency-kaj | [references/access-approval-transparency-kaj/README.md](references/access-approval-transparency-kaj/README.md) |
 | Audit Manager の有効化・リソースの登録・監査の実行・フレームワークの作成を知りたい | audit-manager | [references/audit-manager/README.md](references/audit-manager/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `scc-overview-tiers` / `scc-findings` / `scc-threat-detection` / `scc-vulnerabilities-sha` / `scc-web-security-scanner` / `scc-security-posture-iac` / `sovereign-controls-by-partners`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `scc-vulnerabilities-sha` / `scc-web-security-scanner` / `sovereign-controls-by-partners`
 
 ## 他スキルとの使い分け
 
