@@ -142,7 +142,7 @@ index-url = https://_json_key_base64:KEY@LOCATION-python.pkg.dev/PROJECT/REPOSIT
 | Scope | Locations |
 |-------|-----------|
 | Unix (per user) | `$HOME/.config/pip/pip.conf` or `$HOME/.pip/pip.conf` |
-| macOS (per user) | `/Library/Application Support/pip/pip.conf` or `$HOME/.config/pip/pip.conf` |
+| macOS (per user) | `$HOME/Library/Application Support/pip/pip.conf` or `$HOME/.config/pip/pip.conf` |
 | Windows (per user) | `%APPDATA%\pip\pip.ini` or `%USERPROFILE%\pip\pip.ini` |
 | Virtual environment, Unix and macOS | `$VIRTUAL_ENV/pip.conf` |
 | Virtual environment, Windows | `%VIRTUAL_ENV%\pip.ini` |
@@ -167,6 +167,7 @@ index-url = https://_json_key_base64:KEY@LOCATION-python.pkg.dev/PROJECT/REPOSIT
 
 ## Notes
 
+- Corrected from the official docs: the source lists `/Library/Application Support/pip/pip.conf` as a macOS per-user location. That path is pip's site-wide (global) file on macOS; the per-user file is `$HOME/Library/Application Support/pip/pip.conf` (pip's configuration documentation, https://pip.pypa.io/en/stable/topics/configuration/, retrieved 2026-11-19). Keep credentials in a per-user file.
 - Clarified from the official docs: "you don't need to configure authentication" on Cloud Build, GKE or Cloud Run means those environments supply credentials without keys (ADC). Package clients do not read ADC by themselves; configure the client on those runtimes too (keyring backend or token for pip / Twine, a token in `.npmrc` for npm / yarn) and grant the runtime's service account the needed Artifact Registry role.
 - Service account keys are long-lived credentials. The source says to use a dedicated service account, grant the minimum Artifact Registry role (for example Reader for a download-only account), grant access at the repository level rather than the project level when groups need different access, and follow best practices for managing credentials. It also says to choose a more secure alternative to service account keys whenever possible; key creation may be disabled for your organization and externally sourced keys must be validated before use.
 - `.pypirc` and `pip.conf` / `pip.ini` files that contain a key or token must not be committed to source control; use placeholders in shared files. Passing the token in the pip `--index-url` puts it on the command line and in shell history; access tokens expire after 60 minutes.
