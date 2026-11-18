@@ -199,7 +199,7 @@ curl -X GET \
 
 - Generated from the Discovery document(s) v1, v1beta of `cloudcontrolspartner` (retrieved 2026-11-14). Resources on this page: organizations.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are listed under `references/rest-schemas/cloudcontrolspartner/`; they are the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
 - Deprecated methods (`deprecated: true` in Discovery): `cloudcontrolspartner.organizations.locations.customers.workloads.accessApprovalRequests.list`. Avoid them in new code.
 - Source: https://cloudcontrolspartner.googleapis.com/$discovery/rest?version=v1, https://cloudcontrolspartner.googleapis.com/$discovery/rest?version=v1beta (https://developers.google.com/discovery)
 
