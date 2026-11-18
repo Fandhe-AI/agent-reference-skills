@@ -97,16 +97,20 @@ gcloud compute scp file.txt 172.16.1.2:~/ \
 
 ### SSH ProxyCommand (`~/.ssh/config`)
 
+Adapted (not in the official docs): `--listen-on-stdin` is added so that the tunnel uses stdin/stdout, as `ProxyCommand` requires.
+
 ```text
 Host example
-ProxyCommand gcloud compute start-iap-tunnel 172.16.1.2 '%p' --region=us-central1 --dest-group=DESTINATION_GROUP_NAME --network=default --verbosity=warning
+ProxyCommand gcloud compute start-iap-tunnel 172.16.1.2 '%p' --listen-on-stdin --region=us-central1 --dest-group=DESTINATION_GROUP_NAME --network=default --verbosity=warning
 ```
 
 Run with `ssh example`. For many hostnames:
 
+Adapted (not in the official docs): `--listen-on-stdin` is added so that the tunnel uses stdin/stdout, as `ProxyCommand` requires.
+
 ```text
 Host *.internal.company.com
-ProxyCommand gcloud compute start-iap-tunnel '%h' '%p' --region=us-central1 --dest-group=DESTINATION_GROUP_NAME --network=default --verbosity=warning
+ProxyCommand gcloud compute start-iap-tunnel '%h' '%p' --listen-on-stdin --region=us-central1 --dest-group=DESTINATION_GROUP_NAME --network=default --verbosity=warning
 ```
 
 Run with `ssh example.internal.company.com`.
@@ -148,6 +152,7 @@ Run with `ssh example.internal.company.com`.
 - A password-protected account prompts for a password; key-pair accounts need `-- -i`.
 - Console and REST (`projects.iap_tunnel.locations.destGroups`) forms exist; managing groups (describe, update, delete) is in the `iap tcp dest-groups` gcloud commands. The full `gcloud compute ssh|scp|start-iap-tunnel` flag lists are in the `gcp-compute` skill.
 - Deleting a destination group (`gcloud iap tcp dest-groups delete GROUP_NAME --region=REGION`, or the garbage can icon on the **SSH and TCP resources** tab) deletes the group resource; try the change on a disposable group first.
+- Corrected from the official docs: the source's `ProxyCommand` lines omit `--listen-on-stdin`; without it `start-iap-tunnel` listens on a local port (`--local-host-port`, default `localhost:0`) instead of using stdin/stdout. `--listen-on-stdin` is a hidden flag in gcloud 593.0.0 (`lib/surface/compute/start_iap_tunnel.py`: "get/put local data on stdin/stdout instead of listening on a socket") and is used in the PuTTY local proxy command on https://docs.cloud.google.com/iap/docs/using-tcp-forwarding.
 - Source: https://docs.cloud.google.com/iap/docs/tcp-by-host (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

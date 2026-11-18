@@ -10,11 +10,11 @@ Tenants create separate silos of users and configurations within a single Identi
 
 ### Read the tenant ID inside a blocking function
 
-Adapted (not in the official docs): added a `!user.email` check so users without an email are rejected instead of throwing a TypeError.
+Adapted (not in the official docs): added a `!user.email` check so users without an email are rejected instead of throwing a TypeError. The module is loaded with `require()` because the file uses CommonJS `exports`.
 
 ```javascript
 // Import the Cloud Auth Admin module.
-import * as gcipCloudFunctions from 'gcip-cloud-functions';
+const gcipCloudFunctions = require('gcip-cloud-functions');
 // Initialize the Auth client.
 const authClient = new gcipCloudFunctions.Auth();
 // Http trigger with Cloud Run functions.
@@ -62,6 +62,7 @@ exports.beforeCreate = authClient.functions().beforeCreateHandler((user, context
 - You can't disable user signup or user deletion from the Google Cloud console for tenants; configure these settings through the API.
 - Blocking functions apply to all users in the project, including users in a tenant; the function receives the tenant information so it can respond accordingly.
 - Adapted from the official docs: the original condition was `if (!user.email.endsWith('@acme.com'))`, which throws when the user has no email (for example phone sign-in).
+- Adapted from the official docs: the source's `index.js` combines `import * as gcipCloudFunctions from 'gcip-cloud-functions'` with `exports.beforeCreate = ...`, which fails both as CommonJS (the `import`) and as an ES module (`exports` is undefined); the samples use `const gcipCloudFunctions = require('gcip-cloud-functions');` and keep `exports`, so no `"type": "module"` is needed in `package.json`.
 - Source: https://docs.cloud.google.com/identity-platform/docs/multi-tenancy (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/identity-platform/docs/blocking-functions (retrieved 2026-11-18).
 - The source links further guides (quickstart, tenant sign-in, multi-tenant sign-in page, user migration to a tenant, managing tenants programmatically). Tenant REST resources are in the `gcp-foundation` skill (`identitytoolkit`).

@@ -36,9 +36,24 @@ gcloud kms keys versions get-certificate-chain KEY_VERSION \
 
 The console path (Key Management > key > More > Verify attestation) either opens Cloud Shell pre-populated with the whole verification snippet or downloads an attestation bundle zip.
 
+### Verify the signature and certificate chains
+
+Run Google's verification script before checking any attribute: install its prerequisites, pass the certificate chains file (`--certificates`) and the downloaded attestation file (`--attestation`; the script opens it with `gzip`, so pass the compressed file), and continue only if it prints `The attestation has been verified.` Usage from the script's README (snippet taken from https://github.com/GoogleCloudPlatform/python-docs-samples/blob/ee41a8c2539a/kms/attestations/README.rst):
+
+```bash
+$ pip install -r requirements.txt
+```
+
+```text
+$ python verify_attestation_chains.py
+
+usage: verify_attestation_chains.py [-h] [--certificates CERTIFICATES]
+                                    [--attestation ATTESTATION]
+```
+
 ### Parse the attestation
 
-Decompress first:
+After the signature and chains verify, parse the attestation with the HSM manufacturer's (Marvell) `parse_v1.py` / `parse_v2.py` scripts, following the manufacturer's instructions; the commands below read the parsed output (`/path/to/parsed/attestation.dat`). Decompress first:
 
 ```bash
 gzip -d < compressed_attestation.dat > attestation.dat
@@ -103,6 +118,7 @@ grep '0x0100:' /path/to/parsed/attestation.dat
 - Corrected from the official docs: the trailing `\` on the last flag of both gcloud commands, unquoted `${RESOURCE_NAME}` in `echo -n`, and `test ${RESOURCE_NAME_HEX} == ${KEYID_HEX:(-64)}` were quoted or fixed as shown.
 - The source also shows Console steps. Attestation and certificate-chain files are not secrets but treat downloaded scripts as untrusted code: inspect `verify_attestation_chains.py` before running it.
 - The attestation process verifies whether a key version was created inside an HSM.
+- Adapted from the official docs: the source links to `verify_attestation_chains.py` and the manufacturer's parse scripts but shows no command for them; the page adds the verification step with the script's usage from its README (`python-docs-samples` commit `ee41a8c2539a`) and states that attributes are checked only after `The attestation has been verified.` (the script's success message). Without that step the attribute checks do not establish that the attestation came from the HSM.
 - Source: https://docs.cloud.google.com/kms/docs/attest-key (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

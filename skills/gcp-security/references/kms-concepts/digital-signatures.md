@@ -19,9 +19,11 @@ gcloud kms asymmetric-sign --location=us-central1 \
   --signature-file=/tmp/my/signature
 ```
 
+Adapted (not in the official docs): the public key is retrieved for the key version used to sign (`us-central1` / `hitchhiker` / `dont-panic` / version `3`).
+
 ```bash
-gcloud kms keys versions get-public-key 2 --key=frodo \
-  --keyring=fellowship --location=us-east1 \
+gcloud kms keys versions get-public-key 3 --key=dont-panic \
+  --keyring=hitchhiker --location=us-central1 \
   --public-key-format=pem --output-file=/tmp/my/public_key.file
 ```
 
@@ -58,6 +60,7 @@ gcloud kms keys versions get-public-key 2 --key=frodo \
 - Example use cases: validating builds (signed binaries) and validating certificate subjects issued by a CA.
 - Generated signature and public key files are inputs for sharing, but never commit or share private key material (it never leaves Cloud KMS).
 - Snippets taken from https://docs.cloud.google.com/sdk/gcloud/reference/kms/asymmetric-sign and https://docs.cloud.google.com/sdk/gcloud/reference/kms/keys/versions/get-public-key (gcloud 593.0.0 help).
+- Adapted from the official docs: the source's `get-public-key` example uses a different key (`us-east1` / `fellowship` / `frodo` / version `2`) than the signing example; it is changed to the signing key version so that the public key can verify the signature.
 - Source: https://docs.cloud.google.com/kms/docs/digital-signatures (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

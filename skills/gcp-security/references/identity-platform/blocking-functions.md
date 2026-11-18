@@ -12,8 +12,10 @@ Blocking Cloud Run functions run custom code that modifies the result of a user 
 
 Create the function in the console (Identity Platform **Settings** page, **Triggers** tab, **Create Function** under **Before create (beforeCreate)** or **Before sign in (beforeSignIn)**), pick a region, runtime and entry point, then use one of the following in `index.js`. Click **Deploy function**, select the OAuth token credentials to pass to the function and click **Save** on the Settings page.
 
+Adapted (not in the official docs): the module is loaded with `require()` because the file uses CommonJS `exports` (the source mixes an ES module `import` with `exports`).
+
 ```javascript
-import * as gcipCloudFunctions from 'gcip-cloud-functions';
+const gcipCloudFunctions = require('gcip-cloud-functions');
 
 const authClient = new gcipCloudFunctions.Auth();
 
@@ -21,8 +23,10 @@ exports.beforeCreate = authClient.functions().beforeCreateHandler((user, context
 });
 ```
 
+Adapted (not in the official docs): the module is loaded with `require()` because the file uses CommonJS `exports` (the source mixes an ES module `import` with `exports`).
+
 ```javascript
-import * as gcipCloudFunctions from 'gcip-cloud-functions';
+const gcipCloudFunctions = require('gcip-cloud-functions');
 
 const authClient = new gcipCloudFunctions.Auth();
 
@@ -103,6 +107,8 @@ exports.beforeSignIn = authClient.functions().beforeSignInHandler((user, context
 
 ### Set custom and session claims
 
+Adapted (not in the official docs): `sessionClaims` are returned from `beforeSignInHandler`, separate from the persistent `customClaims` set in `beforeCreateHandler`.
+
 ```javascript
 exports.beforeCreate = authClient.functions().beforeCreateHandler((user, context) => {
   if (context.credential &&
@@ -113,6 +119,14 @@ exports.beforeCreate = authClient.functions().beforeCreateHandler((user, context
       customClaims: {
         eid: context.credential.claims.employeeid,
       },
+    }
+  }
+});
+
+exports.beforeSignIn = authClient.functions().beforeSignInHandler((user, context) => {
+  if (context.credential &&
+      context.credential.providerId === 'saml.my-provider-id') {
+    return {
       // Copy role and groups to token claims. These will not be persisted.
       sessionClaims: {
         role: context.credential.claims.role,
@@ -221,6 +235,8 @@ exports.beforeSignIn = authClient.functions().beforeSignInHandler((user, context
 - `isSuspiciousIpAddress` in the IP example is a helper you must write. Session-claim IP tracking can detect token theft by comparing the sign-in IP with the IP of later requests; the source's server-side comparison sample is omitted because it has a syntax error and an inverted condition.
 - Corrected from the official docs: the source's domain samples used `user.email.indexOf('@example.com') === -1` and `user.email.endsWith('@acme.com')`; the first matched the domain anywhere in the address and the second threw on users without an email, so the fence above uses `!user.email || !user.email.endsWith('@example.com')`.
 - Also omitted: the console click-path, the require-email-verification sample (uses undefined helpers), the photo-screening sample (missing closing brace), the Google Calendar refresh-token sample (stores a refresh token and references `oauth2client` instead of `oAuth2Client`), and the client-side `firebase.auth()` error-handling sample. If you store provider refresh tokens, keep them in a secret store and never log them.
+- Adapted from the official docs: the source's `index.js` combines `import * as gcipCloudFunctions from 'gcip-cloud-functions'` with `exports.beforeCreate = ...`, which fails both as CommonJS (the `import`) and as an ES module (`exports` is undefined); the samples use `const gcipCloudFunctions = require('gcip-cloud-functions');` and keep `exports`, so no `"type": "module"` is needed in `package.json`.
+- Corrected from the official docs: the source returns `sessionClaims` (`role`, `groups`) from `beforeCreateHandler`, but `sessionClaims` are supported only in `beforeSignIn` (see the modifiable fields above); the sample sets them in a `beforeSignInHandler`.
 - Source: https://docs.cloud.google.com/identity-platform/docs/blocking-functions (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

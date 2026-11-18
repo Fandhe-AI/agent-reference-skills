@@ -10,8 +10,10 @@ Identity Platform is the backend for Firebase Authentication with Identity Platf
 
 ### Blocking function skeleton (an Identity Platform-only feature)
 
+Adapted (not in the official docs): the module is loaded with `require()` because the file uses CommonJS `exports` (the source mixes an ES module `import` with `exports`).
+
 ```javascript
-import * as gcipCloudFunctions from 'gcip-cloud-functions';
+const gcipCloudFunctions = require('gcip-cloud-functions');
 
 const authClient = new gcipCloudFunctions.Auth();
 
@@ -63,6 +65,7 @@ exports.beforeSignIn = authClient.functions().beforeSignInHandler((user, context
 
 - Firebase Authentication with Identity Platform and Identity Platform are paid services; prices are not copied here, see https://cloud.google.com/identity-platform/pricing. Firebase Authentication with Identity Platform is available without a billing instrument up to daily limits (https://cloud.google.com/identity-platform/quotas).
 - To preserve backwards-compatibility, the SDKs occasionally use Firebase branding and naming conventions.
+- Adapted from the official docs: the source's `index.js` combines `import * as gcipCloudFunctions from 'gcip-cloud-functions'` with `exports.beforeCreate = ...`, which fails both as CommonJS (the `import`) and as an ES module (`exports` is undefined); the samples use `const gcipCloudFunctions = require('gcip-cloud-functions');` and keep `exports`, so no `"type": "module"` is needed in `package.json`.
 - Source: https://docs.cloud.google.com/identity-platform/docs/product-comparison (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/identity-platform/docs/blocking-functions (retrieved 2026-11-18).
 
