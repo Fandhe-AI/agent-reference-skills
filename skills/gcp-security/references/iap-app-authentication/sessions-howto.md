@@ -22,7 +22,7 @@ if (response.status === 401) {
 
 Step 2: install an onclick handler that closes the window after the session is refreshed.
 
-Adapted (not in the official docs): the source passes `.then(...)` inside the `fetch` options object (a syntax error); the options object is closed first so `.then` chains on `fetch(...)`.
+Adapted (not in the official docs): the source passes `.then(...)` inside the `fetch` options object (a syntax error); the options object is closed first so `.then` chains on `fetch(...)`. Only a successful response (`response.ok`) closes the window; other statuses and network errors retry.
 
 ```javascript
 var iapSessionRefreshWindow = null;
@@ -51,11 +51,18 @@ function checkSessionRefresh() {
       if (response.status === 401) {
         // No new session detected. Try to get a session again
         window.setTimeout(checkSessionRefresh, 500);
-      } else {
+      } else if (response.ok) {
         // Session retrieved.
         iapSessionRefreshWindow.close();
         iapSessionRefreshWindow = null;
+      } else {
+        // Other errors (403, 429, 5xx): retry later without closing the window
+        window.setTimeout(checkSessionRefresh, 2000);
       }
+    })
+    .catch(() => {
+      // Network error: retry later
+      window.setTimeout(checkSessionRefresh, 2000);
     });
   } else {
     iapSessionRefreshWindow = null;
@@ -89,6 +96,7 @@ function checkSessionRefresh() {
 - AJAX cross-origin (CORS) requests need a session established out-of-band on `target_domain`; cookies cannot be shared between `source_domain` and `target_domain`. Send credentials: `withCredentials = true` for `XMLHttpRequest`, or `credentials` set to `include` or `same-origin` for the Fetch API.
 - The recommended AJAX pattern does not work when third-party cookies are disabled (Chrome and other browsers are phasing them out); it keeps working if the source and target of the AJAX request are the same site.
 - Corrected from the official docs: the original sample placed `.then((response) => { ... })` inside the `fetch` options object (`headers: {...}` followed directly by `.then(`), which does not parse.
+- Adapted from the official docs: the source treats every status other than `401` as a refreshed session and closes the login window; the sample closes it only on a successful response and retries on other statuses (for example `403`, `429`, `5xx`) and on network errors.
 - Source: https://docs.cloud.google.com/iap/docs/sessions-howto (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

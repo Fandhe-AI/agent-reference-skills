@@ -93,10 +93,12 @@ gcloud iap web enable \
 
 ### Legacy: GKE (BackendConfig)
 
-GKE 1.24 or later can use the Kubernetes Gateway API instead. Create a Secret wrapping the OAuth client:
+GKE 1.24 or later can use the Kubernetes Gateway API instead. Create a Secret wrapping the OAuth client in the namespace of the BackendConfig and the Service (`my-namespace` below); a BackendConfig can reference only a Secret in its own namespace:
+
+Adapted (not in the official docs): `--namespace=my-namespace` is added so that the Secret is created in the BackendConfig's namespace.
 
 ```bash
-kubectl create secret generic MY_SECRET --from-literal=client_id=CLIENT_ID \
+kubectl create secret generic MY_SECRET --namespace=my-namespace --from-literal=client_id=CLIENT_ID \
   --from-literal=client_secret=CLIENT_SECRET
 ```
 
@@ -184,6 +186,7 @@ gcloud compute backend-services update BACKEND_SERVICE_NAME \
 - Secrets: `CLIENT_SECRET` on the command line, in `iap-oauth.yaml` / `iap-oauth.json` and in `kubectl create secret --from-literal` lands in shell history and files. Keep the files in a protected location and delete them after use; do not print or commit them. **Download credentials** saves a JSON file with the client ID and secret: secure or delete it.
 - Test access: in the IAP page **Applications** tab open an application URL; the first access after configuring the consent screen shows that consent screen.
 - Corrected from the official docs: the YAML `accessSettings:` followed by `oauthSettings:` at the same indentation (so `accessSettings` is empty); the project-level `gcloud iap settings set iap-oauth.yaml` without `--project` (in gcloud 593.0.0 without a default project it fails with `Could not parse IAP settings resource`); `--resource-type= RESOURCE_TYPE`; the REST `curl` with `-H "Authorization: Bearer $(gcloud auth print-access-token)"` lacking the trailing `\`, `-H "Content-Type: application/yaml"` for a JSON file, the demo IDs `projects/cb-managed-ingress-demo/iap_web/forwarding_rule-us-central1/services/psc-fr`, and the mask `oauthSettings.oauthClientId,...oauthSettings.oauthClientSecret`; and the BackendConfig with `iap:` not indented under `spec:`. Each was fixed as stated before its block. The legacy App Engine and backend-service REST (`curl` with `settings.json` containing `oauth2ClientId` / `oauth2ClientSecret`), Console steps and Terraform samples from the source are omitted.
+- Adapted from the official docs: the source creates the Secret in the current namespace (often `default`) but the BackendConfig in `my-namespace`; Kubernetes Secrets are namespaced, so the Secret, the BackendConfig and the Service that references it are placed in the same namespace.
 - Source: https://docs.cloud.google.com/iap/docs/custom-oauth-configuration (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
