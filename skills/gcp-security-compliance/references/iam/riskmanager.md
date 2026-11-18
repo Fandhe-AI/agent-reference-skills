@@ -41,10 +41,10 @@ Predefined roles of `riskmanager` (role ID, description, included permissions) a
 
 ### Example: grant a role
 
-Generated example (not in the official docs) granting the first role on this page on a whole project (the role entry on this page does not list the lowest-level resources where it can be granted; granting it on a narrower resource, where the role supports that, limits the scope):
+Generated example (not in the official docs) granting the first role on this page on the organization (Risk Manager (Cyber Insurance Hub) roles are granted on the enrolled organization, as in `ai-protection-ciem-dspm-risk-manager/risk-manager-overview.md`):
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
   --member="user:EMAIL_ADDRESS" \
   --role="roles/riskmanager.admin"
 ```

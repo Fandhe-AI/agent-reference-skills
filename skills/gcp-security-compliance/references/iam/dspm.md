@@ -55,6 +55,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 - Roles and permissions of the `dspm` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - The permissions table lists role IDs only (role names and links are on the official page) and gives service agent roles as a count; service agent roles must not be granted to principals other than service agents.
+- Deprecated product: "Data Security Posture Management will be shut down on February 1, 2027. DSPM is no longer available to new organizations. Existing users retain full access until shutdown." The roles on this page apply only to organizations that already use DSPM (see `ai-protection-ciem-dspm-risk-manager/dspm-data-security.md`; https://docs.cloud.google.com/security-command-center/docs/dspm-data-security, retrieved 2026-11-18).
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/dspm (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related
