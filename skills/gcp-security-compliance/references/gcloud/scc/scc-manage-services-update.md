@@ -1,0 +1,189 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/scc/manage/services/update
+---
+
+# gcloud scc manage services update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud scc manage services update
+
+```text
+NAME
+    gcloud scc manage services update - update a Security Command Center
+        service
+
+SYNOPSIS
+    gcloud scc manage services update SERVICE_NAME
+        (--enablement-state=ENABLEMENT_STATE --module-config-file=PATH_TO_FILE)
+        (--folder=FOLDER_ID | --organization=ORGANIZATION_ID | --parent=PARENT
+          | --project=PROJECT_ID_OR_NUMBER) [--validate-only]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update the enablement state of the Security Center service and its
+    corresponding modules for the specified folder, project or organization.
+
+EXAMPLES
+    To update a Security Center Service with name sha for organization 123,
+    run:
+
+        $ gcloud scc manage services update sha \
+          --organization=organizations/123 --enablement-state="ENABLED"
+
+    To update a Security Center Service with name sha and its modules for
+    organization 123, run:
+
+        $ gcloud scc manage services update sha \
+          --organization=organizations/123 --enablement-state="ENABLED" \
+          --module-config-file=module_config.yaml
+
+    To validate an update of Security Center Service with name sha and its
+    modules for organization 123, run:
+
+        $ gcloud scc manage services update sha \
+          --organization=organizations/123 --enablement-state="ENABLED" \
+          --module-config-file=module_config.yaml --validate-only
+
+POSITIONAL ARGUMENTS
+     SERVICE_NAME
+        The service name, provided either in lowercase hyphenated form (e.g.
+        security-health-analytics), or in abbreviated form (e.g. sha) if
+        applicable.
+
+        The list of supported services is:
+
+        * security-health-analytics (can be abbreviated as sha)
+
+        * event-threat-detection (can be abbreviated as etd)
+
+        * container-threat-detection (can be abbreviated as ctd)
+
+        * vm-threat-detection (can be abbreviated as vmtd)
+
+        * web-security-scanner (can be abbreviated as wss)
+
+        * vm-threat-detection-aws (can be abbreviated as vmtd-aws)
+
+        * cloud-run-threat-detection (can be abbreviated as crtd)
+
+        * external-exposure (can be abbreviated as ee)
+
+        * vm-manager (can be abbreviated as vmm)
+
+        * ec2-vulnerability-assessment (can be abbreviated as ec2-va)
+
+        * gce-vulnerability-assessment (can be abbreviated as gce-va)
+
+        * azure-vulnerability-assessment (can be abbreviated as azure-va)
+
+        * notebook-security-scanner (can be abbreviated as nss)
+
+        * agent-engine-threat-detection (can be abbreviated as aetd)
+
+REQUIRED FLAGS
+     At least one of these must be specified:
+
+       --enablement-state=ENABLEMENT_STATE
+          Sets the enablement state of the Security Center service. Valid
+          options are ENABLED, DISABLED, OR INHERITED. The INHERITED state is
+          only valid when setting the enablement state at the project or folder
+          level.
+
+       --module-config-file=PATH_TO_FILE
+          Path to a JSON or YAML file that contains the module config to set
+          for the given module and service.
+
+          The file should contain a map where keys are module names (e.g.,
+          "DISK_CMEK_DISABLED") and values are objects with an
+          "intended_enablement_state" field. Valid states are "ENABLED",
+          "DISABLED", or "INHERITED".
+
+          To find the available module names for a specific service and
+          resource, use the gcloud scc manage services describe <SERVICE_NAME>
+          --parent=<RESOURCE> command and look for the keys in the "modules"
+          section of the output.
+
+          Example YAML format:
+
+              DISK_CMEK_DISABLED:
+                intended_enablement_state: DISABLED
+              SQL_WEAK_ROOT_PASSWORD:
+                intended_enablement_state: ENABLED
+
+          Example JSON format:
+
+              {
+                "DISK_CMEK_DISABLED": {
+                  "intended_enablement_state": "DISABLED"
+                },
+                "SQL_WEAK_ROOT_PASSWORD": {
+                  "intended_enablement_state": "ENABLED"
+                }
+              }
+          .
+
+          Use a full or relative path to a local file containing the value of
+          module_config_file.
+
+     Exactly one of these must be specified:
+
+       --folder=FOLDER_ID
+          Folder associated with the custom module.
+
+       --organization=ORGANIZATION_ID
+          Organization associated with the custom module.
+
+       --parent=PARENT
+          Parent associated with the custom module. Can be one of
+          organizations/<id>, projects/<id or name>, folders/<id>
+
+       --project=PROJECT_ID_OR_NUMBER
+          Project associated with the custom module.
+
+OPTIONAL FLAGS
+     --validate-only
+        If present, the request is validated (including IAM checks) but no
+        action is taken.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha scc manage services update
+```
+
+### gcloud alpha scc manage services update
+
+```text
+NAME
+    gcloud alpha scc manage services update - update a Security Command Center
+        service
+
+SYNOPSIS
+    gcloud alpha scc manage services update SERVICE_NAME
+        (--enablement-state=ENABLEMENT_STATE --module-config-file=PATH_TO_FILE)
+        (--folder=FOLDER_ID | --organization=ORGANIZATION_ID | --parent=PARENT
+          | --project=PROJECT_ID_OR_NUMBER) [--validate-only]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/scc/manage/services/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
