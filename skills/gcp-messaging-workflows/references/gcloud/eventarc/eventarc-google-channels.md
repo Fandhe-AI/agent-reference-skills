@@ -1,0 +1,171 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/eventarc/google-channels
+---
+
+# gcloud eventarc google-channels
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud eventarc google-channels describe
+
+```text
+NAME
+    gcloud eventarc google-channels describe - describe an Eventarc Google
+        channel
+
+SYNOPSIS
+    gcloud eventarc google-channels describe [--location=LOCATION]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Describe an Eventarc Google channel.
+
+EXAMPLES
+    To describe the Google channel in location us-central1, run:
+
+        $ gcloud eventarc google-channels describe --location=us-central1
+
+FLAGS
+     Location resource - The location of the Google Channel. This represents a
+     Cloud resource. (NOTE) Some attributes are not given arguments in this
+     group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument --location on the command line with a fully
+        specified name;
+      * set the property eventarc/location with a fully specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     --location=LOCATION
+        ID of the location or fully qualified identifier for the location.
+
+        To set the location attribute:
+        * provide the argument --location on the command line;
+        * set the property eventarc/location.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+```
+
+### gcloud eventarc google-channels update
+
+```text
+NAME
+    gcloud eventarc google-channels update - update an Eventarc Google channel
+
+SYNOPSIS
+    gcloud eventarc google-channels update [--location=LOCATION]
+        [--update-labels=[KEY=VALUE,...]]
+        [--clear-crypto-key | --crypto-key=CRYPTO_KEY]
+        [--clear-labels | --remove-labels=[KEY,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update an Eventarc Google channel.
+
+EXAMPLES
+    To update the Google channel in location us-central1, run:
+
+        $ gcloud eventarc google-channels update --location=us-central1
+
+    To configure the Google channel in location us-central1 with a Cloud KMS
+    CryptoKey, run:
+
+        $ gcloud eventarc google-channels update --location=us-central1 \
+            --crypto-key=projects/PROJECT_ID/locations/KMS_LOCATION/\
+        keyRings/KEYRING/cryptoKeys/KEY
+
+FLAGS
+     Location resource - The location of the Google Channel. This represents a
+     Cloud resource. (NOTE) Some attributes are not given arguments in this
+     group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument --location on the command line with a fully
+        specified name;
+      * set the property eventarc/location with a fully specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     --location=LOCATION
+        ID of the location or fully qualified identifier for the location.
+
+        To set the location attribute:
+        * provide the argument --location on the command line;
+        * set the property eventarc/location.
+
+     --update-labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to update. If a label exists, its value
+        is modified. Otherwise, a new label is created.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     At most one of these can be specified:
+
+       --clear-crypto-key
+          Remove the previously configured crypto key. The channel will
+          continue to be encrypted using Google-managed keys.
+
+       --crypto-key=CRYPTO_KEY
+          Fully qualified name of the crypto key to use for customer-managed
+          encryption. If this is unspecified, Google-managed keys will be used
+          for encryption.
+
+     At most one of these can be specified:
+
+       --clear-labels
+          Remove all labels. If --update-labels is also specified then
+          --clear-labels is applied first.
+
+          For example, to remove all labels:
+
+              $ gcloud eventarc google-channels update --clear-labels
+
+          To remove all existing labels and create two new labels, foo and baz:
+
+              $ gcloud eventarc google-channels update --clear-labels \
+                --update-labels foo=bar,baz=qux
+
+       --remove-labels=[KEY,...]
+          List of label keys to remove. If a label does not exist it is
+          silently ignored. If --update-labels is also specified then
+          --update-labels is applied first.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+
+```bash
+gcloud eventarc google-channels update \
+    --location=us-central1 \
+    --crypto-key=projects/PROJECT_ID/locations/KMS_LOCATION/keyRings/KEYRING/cryptoKeys/KEY
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/eventarc/google-channels (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
