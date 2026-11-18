@@ -97,8 +97,10 @@ gcloud projects add-iam-policy-binding PROJECT_ID --member=serviceAccount:SERVIC
 
 4. (Optional) To avoid the `_Default` sink, create a log bucket and a sink into it:
 
+Adapted (not in the official docs): `--project=PROJECT_ID` added so the bucket is created in the Service Health project that the sink below writes to, and `--async` removed so the sink is created after the bucket exists.
+
 ```bash
-gcloud logging buckets create BUCKET_ID --location=LOCATION --enable-analytics --async
+gcloud logging buckets create BUCKET_ID --location=LOCATION --enable-analytics --project=PROJECT_ID
 ```
 
 ```bash
@@ -109,22 +111,34 @@ logging.googleapis.com/projects/PROJECT_ID/locations/LOCATION/buckets/BUCKET_ID 
 
 ### Query Service Health logs with BigQuery
 
-Create a log bucket in the Service Health project, enable Observability Analytics on it, link a BigQuery dataset, and enable the BigQuery API:
+Create a log bucket in the Service Health project, enable Observability Analytics on it, route the Service Health logs into it, link a BigQuery dataset, and enable the BigQuery API. The bucket from step 4 above, with its sink, can be used instead of a new one.
+
+Adapted (not in the official docs): `--project=PROJECT_ID` added to each command in this section, and `--async` removed from the bucket commands so each one finishes before the next step starts.
 
 ```bash
-gcloud logging buckets create BUCKET_ID  --location=LOCATION  --enable-analytics --async
+gcloud logging buckets create BUCKET_ID  --location=LOCATION  --enable-analytics --project=PROJECT_ID
+```
+
+The bucket above is already created with `--enable-analytics`; the update enables Observability Analytics on an existing bucket that was created without it.
+
+```bash
+gcloud logging buckets update BUCKET_ID --location=LOCATION --enable-analytics --project=PROJECT_ID
+```
+
+Route the Service Health logs to the bucket with a sink (snippet taken from step 4 of the folder-level section above, same page); without it the bucket and the linked dataset stay empty.
+
+```bash
+gcloud logging sinks create SINK_NAME_BUCKET \
+logging.googleapis.com/projects/PROJECT_ID/locations/LOCATION/buckets/BUCKET_ID \
+--project=PROJECT_ID --log-filter="LOG_FILTER"
 ```
 
 ```bash
-gcloud logging buckets update BUCKET_ID --location=LOCATION --enable-analytics --async
+gcloud logging links create LINK_ID --bucket=BUCKET_ID --location=LOCATION --project=PROJECT_ID
 ```
 
 ```bash
-gcloud logging links create LINK_ID --bucket=BUCKET_ID --location=LOCATION
-```
-
-```bash
-gcloud services enable bigquery.googleapis.com
+gcloud services enable bigquery.googleapis.com --project=PROJECT_ID
 ```
 
 Adapted (not in the official docs): the source's table cell writes `gcloud query --use_legacy_sql=false ...`, which is not a gcloud command; the BigQuery CLI command is `bq query`.
@@ -153,6 +167,8 @@ bq query --use_legacy_sql=false 'SELECT * FROM `PROJECT_ID.LINK_ID._AllLogs` WHE
 - Corrected from the official docs: both step 3 grants read `--member=SERVICE_ACCT_NAME` with no principal type; gcloud 593.0.0 help for `projects add-iam-policy-binding` takes `--member=PRINCIPAL` in the `serviceAccount:EMAIL` form ("--member='serviceAccount:test-proj1@example.domain.com'").
 - Snippets in this page come from the twin; the source also shows console screenshots.
 - Source: https://docs.cloud.google.com/service-health/docs/logs (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the source's `buckets create`, `buckets update`, `links create` and `services enable` commands have no `--project`, so they run against the gcloud default project rather than the Service Health project `PROJECT_ID` that the sinks write to; the examples add `--project=PROJECT_ID`. The source's bucket commands also use `--async`, which returns before the bucket exists or analytics is enabled; it is removed so the dependent sink and link commands do not run too early.
+- The source's BigQuery steps create a new bucket but do not route logs into it; the section adds the sink command from step 4 of the same page, because only logs routed to the bucket appear in the linked dataset (`_AllLogs`).
 
 ## Related
 
