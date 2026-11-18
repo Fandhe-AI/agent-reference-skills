@@ -12,7 +12,7 @@
 #       無い（tests/state-verify-script.test.mjs が静的に固定する）。
 # 出力: 封筒の payload は {entries:[{h,k,n}], highWaterBytes, highWaterVersion, inputSha256, keysCount, keysSha256, mode, outcome,
 #       page, pages}（キー昇順・空白なしの正規形。値は整数・64 桁 16 進・数字だけのキーと固定語彙）。
-#         entries の n = 項目の note（文字列のときだけ）の SHA-256（jq -j で出した生のバイト列のハッシュ）。note が無い・文字列でない項目は空文字。
+#         entries の n = 項目の note（文字列のときだけ）の SHA-256（jq -j で出した生のバイト列のハッシュ）。note が無い・文字列でない項目は印の - （空文字は出さない。エージェントが封筒を書き写すとき空文字の欄を落として sha256 が合わなくなるため。64 桁 hex とは衝突しない）。
 #         ホストは note を読み込まない（Issue #878）ので、blocked の一括記録が「保存済みの note と同じか」を n と sha256(patch.note) の一致で判定する。
 #         outcome = ok（読めた）/ nofile（ファイルが存在しない）/ error（シンボリックリンク・存在するが読めない・JSON として不正・
 #                   .items が〔無い・null 以外で〕オブジェクトでない・高水位が〔無い・null 以外で〕非負整数の number でない・
@@ -43,9 +43,9 @@ ST_VERIFY_PROJECT='if type == "object" then del(.note) else . end'
 # // 0 にしない: // は false も 0 に置き換える。tostring にしない: 文字列の "4096" が 4096 になる
 ST_VERIFY_UINT='if . == null then 0 elif type == "number" then . else empty end | tostring'
 
-# $1 = nonce、$2 = 入力の sha256、$3 = page、$4 = outcome（nofile / error）。キーも項目も無い payload の封筒を出す
+# $1 = nonce、$2 = 入力の sha256、$3 = page、$4 = outcome（nofile / error）。キーも項目も無い payload の封筒を出す。keysSha256 は空文字にせず印の - （空文字の欄は書き写しで落ちる）。ホストは nofile / error のとき keysSha256 を読まない
 sv_emit_empty() {
-  so_emit "$1" "{\"entries\":[],\"highWaterBytes\":0,\"highWaterVersion\":0,\"inputSha256\":\"$2\",\"keysCount\":0,\"keysSha256\":\"\",\"mode\":\"verify\",\"outcome\":\"$4\",\"page\":$3,\"pages\":1}"
+  so_emit "$1" "{\"entries\":[],\"highWaterBytes\":0,\"highWaterVersion\":0,\"inputSha256\":\"$2\",\"keysCount\":0,\"keysSha256\":\"-\",\"mode\":\"verify\",\"outcome\":\"$4\",\"page\":$3,\"pages\":1}"
 }
 
 # 値が 0 以上の整数（先頭ゼロ不可・15 桁以内）か
@@ -107,7 +107,7 @@ sv_items() {
       continue
     fi
     # note の行。JSON 文字列を生のバイト列へ戻してからハッシュする（末尾の改行を保つため番兵 x を付けて外す）
-    n=""
+    n="-"
     if [ "${val}" != '-' ]; then
       note=$(printf '%s' "${val}" | jq -j '.' 2>/dev/null && printf x) || return 1
       note=${note%x}
