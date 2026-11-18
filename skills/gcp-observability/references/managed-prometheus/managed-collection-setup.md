@@ -22,8 +22,11 @@ gcloud container clusters get-credentials CLUSTER_NAME --location LOCATION --pro
 
 Otherwise use `kubectl`:
 
+Adapted (not in the official docs): `kubectl config set-cluster` only edits a cluster entry in kubeconfig and does not switch the current context, so the example selects the context of the target cluster and prints it before the following commands run.
+
 ```bash
-kubectl config set-cluster CLUSTER_NAME
+kubectl config use-context CONTEXT_NAME
+kubectl config current-context
 ```
 
 Create the namespace for the example application (the source recommends `gmp-test`):
@@ -131,6 +134,7 @@ kubectl delete -f operator.yaml
 - The source also shows Console click-paths and Terraform.
 - Adapted from the official docs: the source shows `kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/prometheus-engine/v0.17.2/manifests/setup.yaml` and the same for `operator.yaml`, and `kubectl delete -f https://raw.githubusercontent.com/.../manifests/operator.yaml`; the disable command shown in "Teardown" had no location flag.
 - Source: https://docs.cloud.google.com/stackdriver/docs/managed-prometheus/setup-managed (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: for non-GKE clusters the source shows `kubectl config set-cluster CLUSTER_NAME`. That command edits a cluster entry in kubeconfig and does not change the current context, so later `kubectl create ns` and `kubectl apply` would run against whichever cluster was selected before; the example uses `kubectl config use-context CONTEXT_NAME` and checks it with `kubectl config current-context`.
 
 ## Related
 

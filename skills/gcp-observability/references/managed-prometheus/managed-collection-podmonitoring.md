@@ -151,7 +151,7 @@ spec:
 
 | monitoring.coreos.com/v1 ServiceMonitor | Compatibility | monitoring.googleapis.com/v1 PodMonitoring |
 |---|---|---|
-| `.ServiceMonitorSpec.Selector` | Identical | `.PodMonitoringSpec.Selector` |
+| `.ServiceMonitorSpec.Selector` | Same `LabelSelector` type, but ServiceMonitor selects Services and PodMonitoring selects Pods: build the selector from the Pod labels (for example the Service's `spec.selector`) | `.PodMonitoringSpec.Selector` |
 | `.ServiceMonitorSpec.Endpoints[]` | `.TargetPort` maps to `.Port`; `.Path`: compatible; `.Interval`: compatible; `.Timeout`: compatible | `.PodMonitoringSpec.Endpoints[]` |
 | `.ServiceMonitorSpec.TargetLabels` | PodMonitor must specify: `.FromPod[].From` pod label, `.FromPod[].To` target label | `.PodMonitoringSpec.TargetLabels` |
 
@@ -183,7 +183,7 @@ spec:
 - The `targetLabels` field provides a simplified Prometheus-style relabel configuration; mandatory target labels (see the `prometheus_target` resource in the PromQL query page of the source) cannot be overwritten.
 - Target status is a debugging tool: enable it only to investigate immediate issues. Leaving it on in large clusters might make the operator run out of memory and crash loop.
 - Reserved labels used as metric labels are automatically relabeled with the prefix `exported_`. The `project_id`, `location` and `cluster` labels can be overridden with `args` on the Deployment in `operator.yaml` (not recommended on GKE; see `managed-collection-operatorconfig.md`).
-- A prometheus-operator PodMonitor converts to PodMonitoring the same way; label selectors are always copyable. Existing prometheus-operator resources can also keep working with self-deployed collectors; metrics from both collector types are queryable together.
+- A prometheus-operator PodMonitor converts to PodMonitoring the same way; because both select Pods, its label selectors are always copyable. Existing prometheus-operator resources can also keep working with self-deployed collectors; metrics from both collector types are queryable together.
 - Kubelet and cAdvisor metrics are scraped by editing the OperatorConfig (see the Kubelet and cAdvisor exporter page of the source). Metrics from centralized exporters (statsd_exporter, Envoy for Istio, SNMP exporter, Pushgateway, kube-state-metrics) need small changes; see the troubleshooting page of the source.
 - The Cloud Monitoring Metrics Management page reports ingestion volumes, label cardinality, reads, use in alerting policies and dashboards, and metric-write error rate, and can exclude unneeded metrics.
 - Dropping series with `metricRelabeling` means the dropped metrics are not ingested; try new filters on a non-production cluster first.
@@ -193,6 +193,7 @@ spec:
 - Adapted from the official docs: `kubectl -n NAMESPACE_NAME apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/prometheus-engine/v0.17.2/examples/example-app.yaml` and `.../examples/pod-monitoring.yaml` were changed to download, inspect, apply.
 - Reference for all custom resources: https://github.com/GoogleCloudPlatform/prometheus-engine/blob/v0.17.2/doc/api.md
 - Source: https://docs.cloud.google.com/stackdriver/docs/managed-prometheus/setup-managed (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source's mapping table marks `.ServiceMonitorSpec.Selector` as "Identical" to `.PodMonitoringSpec.Selector`. A ServiceMonitor selects Services by their labels, while PodMonitoring selects Pods; the selector copies over only when the Pods carry the same labels (as in the `app=example-app` example), otherwise derive it from the Service's `spec.selector`. The source's "always copyable" note is about PodMonitor, which also selects Pods.
 
 ## Related
 

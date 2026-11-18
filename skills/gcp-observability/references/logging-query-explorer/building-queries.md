@@ -37,8 +37,10 @@ When `AND` and `OR` are mixed, `a AND b OR c AND d` turns into:
 "response" AND "successful" AND NOT "error"
 ```
 
+Adapted (not in the official docs): the second query keeps the two separate terms of the first one; the source writes it as the phrase `"response successful" -"error"`.
+
 ```text
-"response successful" -"error"
+"response" AND "successful" -"error"
 ```
 
 ```text
@@ -121,6 +123,7 @@ curl -f -G -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 - Corrected from the official docs: the source request bodies for `savedQueries.create` (`"parent": "projects/my-project/locations/global"` and `"savedQueryId"` inside the body, `"filter": resource.type="gce_instance" AND ...` unquoted) and `savedQueries.list` (`"parent": "name": projects/PROJECT_ID/locations/-`, `"filter": "explorer"`) were rewritten as a valid JSON body and a `curl` request. Source for the field rules: the Logging v2 Discovery document (`logging.v2`), REST reference https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/projects.locations.savedQueries/list. The source also shows Console steps.
 - The Discovery description of the `savedQueries.list` `filter` parameter says: "Specifies the type ("Logging" or "OpsAnalytics") and the visibility (PRIVATE or SHARED) of the saved queries to list. If provided, the filter must contain either the type function or a visibility token, or both. If both are chosen, they can be placed in any order, but they must be joined by the AND operator or the empty character." Its own example is `type("Logging") AND visibility = PRIVATE`; the `type("Logging") AND visibility = SHARED` form above is composed from the documented type function and visibility token. For `parent`, it says: "To get a list of all saved queries, a wildcard character - can be used for LOCATION_ID".
 - Source: https://docs.cloud.google.com/logging/docs/view/building-queries (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source says `"response" AND "successful" AND NOT "error"` and `"response successful" -"error"` are the same. They are not: the first matches the two words anywhere, while the quoted phrase `"response successful"` requires them together. The example replaces only `NOT` with `-`: `"response" AND "successful" -"error"`.
 
 ## Related
 

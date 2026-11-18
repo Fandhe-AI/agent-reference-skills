@@ -182,7 +182,7 @@ resource.type="gae_app" AND severity>=ERROR AND timestamp>="2018-12-31T00:00:00Z
 | Airflow monitoring logs | `resource.type="cloud_composer_environment" AND resource.labels.location="LOCATION" AND resource.labels.environment_name="ENVIRONMENT_NAME" AND log_id("airflow-monitoring")` |
 | Airflow scheduler logs | `resource.type="cloud_composer_environment" AND resource.labels.location="LOCATION" AND resource.labels.environment_name="ENVIRONMENT_NAME" AND log_id("airflow-scheduler")` |
 | Airflow webserver logs | `resource.type="cloud_composer_environment" AND resource.labels.location="LOCATION" AND resource.labels.environment_name="ENVIRONMENT_NAME" AND log_id("airflow-webserver")` |
-| Airflow worker logs | `resource.type="cloud_composer_environment" AND resource.labels.location="LOCATION" AND resource.labels.environment_name="ENVIRONMENT_NAME" AND log_id=~"airflow-(k8s-)?worker"` |
+| Airflow worker logs | `resource.type="cloud_composer_environment" AND resource.labels.location="LOCATION" AND resource.labels.environment_name="ENVIRONMENT_NAME" AND (log_id("airflow-worker") OR log_id("airflow-k8s-worker"))` |
 
 ### Managed Service for Apache Spark
 
@@ -200,6 +200,7 @@ resource.type="gae_app" AND severity>=ERROR AND timestamp>="2018-12-31T00:00:00Z
 - Corrected from the official docs: the "Log-based metric configuration logs" query read `protoPayload.resourceName="projects/PROJECT_ID/metric/METRIC_NAME"`; a log-based metric's resource name is `projects/[PROJECT_ID]/metrics/[METRIC_ID]` (Logging v2 Discovery document, `projects.metrics.get` `metricName`, pattern `^projects/[^/]+/metrics/[^/]+$`).
 - The source also shows Console copy-and-paste steps and a screenshot of the query pane.
 - Source: https://docs.cloud.google.com/logging/docs/view/query-library (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source's Airflow worker query ends with `log_id=~"airflow-(k8s-)?worker"`. `log_id` is a function that takes one log ID (`log_id(non-URL-encoded log ID)`, logging-query-language), not a field that can be compared with `=~`; the table writes the two log IDs that the source's pattern names as `(log_id("airflow-worker") OR log_id("airflow-k8s-worker"))`.
 
 ## Related
 

@@ -58,7 +58,7 @@ After the change is applied, the pods are re-created and authenticate to the met
 
 ### Run managed collection outside GKE
 
-Outside GKE, provide credentials, a `project-id` for your metrics, a `location` (Google Cloud region) where metrics are stored, and the `cluster` name. `gcloud` does not work outside Google Cloud environments, so deploy with `kubectl` (see `managed-collection-setup.md`). Provide `project-id`, `location` and `cluster` as `args` on the Deployment in `operator.yaml`; provide the key through the OperatorConfig.
+Outside GKE, provide credentials, a `project-id` for your metrics, a `location` (Google Cloud region) where metrics are stored, and the `cluster` name. Managed collection cannot be turned on for a non-GKE cluster with `gcloud container clusters`, so deploy with `kubectl` (see `managed-collection-setup.md`). Provide `project-id`, `location` and `cluster` as `args` on the Deployment in `operator.yaml`; provide the key through the OperatorConfig.
 
 ```yaml
 apiVersion: monitoring.googleapis.com/v1
@@ -175,6 +175,7 @@ kubectl -n gmp-system rollout restart deployment/gmp-operator
 - Google Cloud Managed Service for Prometheus is not a self-hosted Prometheus server; PromQL semantics follow upstream Prometheus.
 - The source also shows Console click-paths. The remaining Prometheus-side options are in https://github.com/GoogleCloudPlatform/prometheus-engine/blob/v0.17.2/doc/api.md.
 - Source: https://docs.cloud.google.com/stackdriver/docs/managed-prometheus/setup-managed (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source says "`gcloud` does not work outside of Google Cloud environments". The gcloud CLI runs on any authenticated machine (this page itself creates the service account with gcloud); what does not apply outside GKE is enabling managed collection through `gcloud container clusters`, so the kubectl deployment is used.
 
 ## Related
 

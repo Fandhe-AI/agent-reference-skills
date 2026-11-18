@@ -192,7 +192,7 @@ stringData:
   clientSecret: "CLIENT_SECRET"
 ```
 
-Adapted (not in the official docs): `clientSecret.secret.key` changed from `password` to `clientSecret`, the key that the Secret above defines.
+Adapted (not in the official docs): `clientSecret.secret.key` changed from `password` to `clientSecret`, the key that the Secret above defines, and `tokenURL` given the `https://` scheme.
 
 ```yaml
 apiVersion: monitoring.googleapis.com/v1
@@ -212,7 +212,7 @@ spec:
         secret:
           name: secret-example
           key: clientSecret
-      tokenURL: example.com/token
+      tokenURL: https://example.com/token
 ```
 
 ## Options / Props
@@ -234,6 +234,7 @@ spec:
 - Option references: https://github.com/GoogleCloudPlatform/prometheus-engine/blob/v0.17.2/doc/api.md (sections `tls`, `basicauth`, `auth`, `oauth2`).
 - Google Cloud Managed Service for Prometheus is not a self-hosted Prometheus server; PromQL semantics follow upstream Prometheus.
 - Source: https://docs.cloud.google.com/stackdriver/docs/managed-prometheus/setup-managed (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source's OAuth 2.0 example sets `tokenURL: example.com/token`, which has no URL scheme; the example uses `https://example.com/token`. Replace it with your token endpoint.
 
 ## Related
 
