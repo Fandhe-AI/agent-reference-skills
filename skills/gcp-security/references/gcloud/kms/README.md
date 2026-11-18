@@ -29,3 +29,15 @@
 | gcloud kms keys set-primary-version | 3 commands (alpha, beta, ga); kms keys set-primary-version … | [kms-keys-set-primary-version.md](./kms-keys-set-primary-version.md) |
 | gcloud kms keys set-rotation-schedule | 3 commands (alpha, beta, ga); kms keys set-rotation-schedule … | [kms-keys-set-rotation-schedule.md](./kms-keys-set-rotation-schedule.md) |
 | gcloud kms keys update | 3 commands (alpha, beta, ga); kms keys update … | [kms-keys-update.md](./kms-keys-update.md) |
+| gcloud kms keys versions | 42 commands (alpha, beta, ga); kms keys versions create … | [kms-keys-versions.md](./kms-keys-versions.md) |
+| gcloud kms locations | 3 commands (alpha, beta, ga); kms locations list … | [kms-locations.md](./kms-locations.md) |
+| gcloud kms mac-sign | 3 commands (alpha, beta, ga); kms mac-sign … | [kms-mac-sign.md](./kms-mac-sign.md) |
+| gcloud kms mac-verify | 3 commands (alpha, beta, ga); kms mac-verify … | [kms-mac-verify.md](./kms-mac-verify.md) |
+| gcloud kms operations | 3 commands (alpha, beta, ga); kms operations describe … | [kms-operations.md](./kms-operations.md) |
+| gcloud kms raw-decrypt | 3 commands (alpha, beta, ga); kms raw-decrypt … | [kms-raw-decrypt.md](./kms-raw-decrypt.md) |
+| gcloud kms raw-encrypt | 3 commands (alpha, beta, ga); kms raw-encrypt … | [kms-raw-encrypt.md](./kms-raw-encrypt.md) |
+| gcloud kms retired-resources | 6 commands (alpha, beta, ga); kms retired-resources describe … | [kms-retired-resources.md](./kms-retired-resources.md) |
+| gcloud kms single-tenant-hsm create | 3 commands (alpha, beta, ga); kms single-tenant-hsm create … | [kms-single-tenant-hsm-create.md](./kms-single-tenant-hsm-create.md) |
+| gcloud kms single-tenant-hsm describe | 3 commands (alpha, beta, ga); kms single-tenant-hsm describe … | [kms-single-tenant-hsm-describe.md](./kms-single-tenant-hsm-describe.md) |
+| gcloud kms single-tenant-hsm list | 3 commands (alpha, beta, ga); kms single-tenant-hsm list … | [kms-single-tenant-hsm-list.md](./kms-single-tenant-hsm-list.md) |
+| gcloud kms single-tenant-hsm proposal | 18 commands (alpha, beta, ga); kms single-tenant-hsm proposal approve … | [kms-single-tenant-hsm-proposal.md](./kms-single-tenant-hsm-proposal.md) |
