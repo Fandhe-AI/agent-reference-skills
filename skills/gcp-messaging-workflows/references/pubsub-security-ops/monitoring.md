@@ -58,15 +58,23 @@ sum(
 
 ### Fraction of push requests acknowledged
 
-Adapted (not in the official docs): both sides are summed by `subscription_id` before the division, so the denominator includes every `response_class`.
+Adapted (not in the official docs): both sides are summed by `subscription_id` before the division, so the denominator includes every `response_class`, and the numerator falls back to 0 when no `ack` series exists.
 
 ```promql
-sum by (subscription_id) (rate({
-  "__name__"="pubsub.googleapis.com/subscription/push_request_count",
-  "monitored_resource"="pubsub_subscription",
-  "subscription_id"="$SUBSCRIPTION",
-  "response_class"="ack"
-}[${__interval}]))
+(
+  sum by (subscription_id) (rate({
+    "__name__"="pubsub.googleapis.com/subscription/push_request_count",
+    "monitored_resource"="pubsub_subscription",
+    "subscription_id"="$SUBSCRIPTION",
+    "response_class"="ack"
+  }[${__interval}]))
+  or on (subscription_id)
+  0 * sum by (subscription_id) (rate({
+    "__name__"="pubsub.googleapis.com/subscription/push_request_count",
+    "monitored_resource"="pubsub_subscription",
+    "subscription_id"="$SUBSCRIPTION"
+  }[${__interval}]))
+)
 /
 sum by (subscription_id) (rate({
   "__name__"="pubsub.googleapis.com/subscription/push_request_count",
@@ -141,7 +149,7 @@ sum by (topic_id) (
 
 ## Notes
 
-- Corrected from the official docs: the source's "Fraction of push requests acknowledged" query divides the two `rate(...)` series directly. The denominator returns one series per `response_class`, and PromQL's default one-to-one vector matching pairs the `ack` numerator only with the `ack` series of the denominator, so the result stays 1 even when push requests fail. The example sums both sides by `subscription_id` first.
+- Corrected from the official docs: the source's "Fraction of push requests acknowledged" query divides the two `rate(...)` series directly. The denominator returns one series per `response_class`, and PromQL's default one-to-one vector matching pairs the `ack` numerator only with the `ack` series of the denominator, so the result stays 1 even when push requests fail. The example sums both sides by `subscription_id` first. When every push request fails, no `response_class="ack"` series exists, the numerator is empty and so is the quotient; `or on (subscription_id) 0 * <denominator>` fills the numerator with 0 for subscriptions that have push requests, so the ratio is 0 when all requests fail and absent only when there are no push requests at all.
 - Metrics might have occasional gaps; backlog metrics can have gaps of up to several minutes. Do not use the global (non-`by_region`) backlog versions if dashboards and alerts must survive a single-region outage: they need all regions with messages, so one unavailable region creates a data gap.
 - Alert on backlog relative to your throughput; the absolute count is not meaningful (a million-message backlog can be fine at a million messages per second and unacceptable at one per second).
 - A small ack deadline expiration rate (for example 0.1 to 1%) might be healthy; excessive rates cost you for every redelivery and show up as duplicates, so subscribers must tolerate duplicates.
