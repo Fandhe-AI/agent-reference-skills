@@ -589,6 +589,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta1, v1alpha1 of `containeranalysis` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Corrected from the source proto: the `fullName` format `:-` lost its placeholders in the Discovery document; the proto comment reads "This string is of the form `<epoch>:<name>-<revision>` and is only set when kind is NORMAL." (backticks added) (`grafeas/v1/package.proto`, https://github.com/googleapis/googleapis/blob/6f8ddc394a90ea2c6a355afd2e9d21f56622df14/grafeas/v1/package.proto, commit `6f8ddc3`, retrieved 2026-11-18).
 - Source: https://containeranalysis.googleapis.com/$discovery/rest?version=v1, https://containeranalysis.googleapis.com/$discovery/rest?version=v1beta1, https://containeranalysis.googleapis.com/$discovery/rest?version=v1alpha1 (https://developers.google.com/discovery)
 
 ## Related
