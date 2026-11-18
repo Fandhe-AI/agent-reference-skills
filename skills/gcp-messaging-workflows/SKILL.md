@@ -24,7 +24,7 @@ skills/gcp-messaging-workflows/
       eventarc/                   # triggers・channels・message-buses・pipelines・enrollments・google-api-sources 等
         README.md
         eventarc-<group>.md
-      managed-kafka/              # clusters・topics・consumer-groups・acls・connect-clusters・connectors・schema-registries、分割投入中（5 / 8 ページ。収録済みは README 掲載分のみ）
+      managed-kafka/              # clusters・topics・consumer-groups・acls・connect-clusters・connectors・schema-registries
         README.md
         managed-kafka-<group>.md
     pubsub-concepts/              # Pub/Sub の概要・基本概念・信頼性・プロパティ・Kafka との選択・Pub/Sub Lite の廃止告知と移行
@@ -118,8 +118,6 @@ skills/gcp-messaging-workflows/
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` と各ガイドのコードブロックを引く。
 
 未投入カテゴリ（`gcloud/pubsub` / `gcloud/workflows` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
-
-分割投入中のカテゴリ（`gcloud/managed-kafka`: 5 / 8 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
