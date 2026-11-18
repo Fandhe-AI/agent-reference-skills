@@ -7,4 +7,4 @@
 | gcloud certificate-manager | 102 commands across release tracks | [certificate-manager/README.md](./certificate-manager/README.md) |
 | gcloud fault-testing | 27 commands across release tracks | [fault-testing/README.md](./fault-testing/README.md) |
 | gcloud iap | 83 commands across release tracks | [iap/README.md](./iap/README.md) |
-| gcloud kms | 268 commands across release tracks (partially added: 27 / 39 pages so far; for pages not listed, see the official reference) | [kms/README.md](./kms/README.md) |
+| gcloud kms | 268 commands across release tracks | [kms/README.md](./kms/README.md) |
