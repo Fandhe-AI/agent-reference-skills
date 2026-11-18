@@ -36,6 +36,18 @@ Adapted (not in the official docs): the source writes `"oauth2l fetch --scope cl
 export ACCESS_TOKEN="oauth2accesstoken:$(oauth2l fetch --scope cloud-platform)"
 ```
 
+### Configure npm credentials with `google-artifactregistry-auth`
+
+npm and yarn do not read `ACCESS_TOKEN` by themselves, and the source ends after exporting it. The `google-artifactregistry-auth` module writes an Artifact Registry access token into the `.npmrc` for you. It finds credentials from ADC, then from the account logged in with `gcloud auth login`. Add the repository settings from `gcloud artifacts print-settings npm` to the project `.npmrc` first, then run:
+
+Snippet taken from https://www.npmjs.com/package/google-artifactregistry-auth (README of version 3.5.0; also used in https://docs.cloud.google.com/artifact-registry/docs/nodejs/store-nodejs).
+
+Adapted (not in the official docs): `--credential-config` is left out so the token goes to your user `.npmrc` (the module's default) rather than the project file.
+
+```bash
+npx google-artifactregistry-auth --repo-config=./.npmrc
+```
+
 ### Password authentication with a service account key
 
 Activate the service account in the current gcloud session (optional):
@@ -73,6 +85,7 @@ Add the returned settings to the `.npmrc` in each Node.js project (usually next 
 
 ## Notes
 
+- The source's token sections only export `ACCESS_TOKEN`; it does not show how npm or yarn use that variable. The `google-artifactregistry-auth` section above is the documented way (store-nodejs quickstart and the module README, retrieved 2026-11-19) to put a token into `.npmrc`; the token expires after 60 minutes, so rerun it (for example as an `artifactregistry-login` script) before npm commands.
 - Clarified from the official docs: "you don't need to configure authentication" on Cloud Build, GKE or Cloud Run means those environments supply credentials without keys (ADC). Package clients do not read ADC by themselves; configure the client on those runtimes too (keyring backend or token for pip / Twine, a token in `.npmrc` for npm / yarn) and grant the runtime's service account the needed Artifact Registry role.
 - Service account keys are long-lived credentials. The source says to use a dedicated service account, grant the minimum Artifact Registry role (for example Artifact Registry Reader for a download-only account), grant access at the repository level rather than the project level when groups need different access to specific repositories, and follow best practices for managing credentials. It also says to choose a more secure alternative to service account keys whenever possible; key creation may be disabled for your organization, and externally sourced keys must be validated before use.
 - Corrected from the official docs: the source writes `export ACCESS_TOKEN="oauth2l fetch --scope cloud-platform"` (a literal string, not a command); the oauth2l block above uses `$(...)` and adds the `oauth2accesstoken:` user name to match the gcloud example.
