@@ -1,0 +1,150 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/kms/raw-decrypt
+---
+
+# gcloud kms raw-decrypt
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud kms raw-decrypt
+
+```text
+NAME
+    gcloud kms raw-decrypt - decrypt a ciphertext file using a raw key
+
+SYNOPSIS
+    gcloud kms raw-decrypt --ciphertext-file=CIPHERTEXT_FILE
+        --plaintext-file=PLAINTEXT_FILE --version=VERSION
+        [--additional-authenticated-data-file=ADDITIONAL_AUTHENTICATED_DATA_FILE]
+        [--initialization-vector-file=INITIALIZATION_VECTOR_FILE] [--key=KEY]
+        [--keyring=KEYRING] [--location=LOCATION]
+        [--skip-integrity-verification] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud kms raw-decrypt decrypts the given ciphertext file using the given
+    CryptoKey containing a raw key and writes the result to the named plaintext
+    file. The ciphertext file must not be larger than 64KiB.
+
+    The supported algorithms are: AES-128-GCM, AES-256-GCM, AES-128-CBC,
+    AES-256-CBC, AES-128-CTR, and AES-256-CTR.
+
+    AES-GCM provides authentication which means that it accepts additional
+    authenticated data (AAD). So, the flag --additional-authenticated-data-file
+    is only valid with AES-128-GCM and AES-256-GCM algorithms. If AAD is
+    provided during encryption, it must be provided during decryption too. The
+    file must not be larger than 64KiB.
+
+    If --plaintext-file or --additional-authenticated-data-file or
+    --initialization-vector-file is set to '-', that file is read from stdin.
+    Similarly, if --ciphertext-file is set to '-', the ciphertext is written to
+    stdout.
+
+    By default, the command performs integrity verification on data sent to and
+    received from Cloud KMS. Use --skip-integrity-verification to disable
+    integrity verification.
+
+EXAMPLES
+    The following command reads and decrypts the file path/to/input/ciphertext.
+    The file will be decrypted using the CryptoKey KEYNAME containing a raw
+    key, from the KeyRing KEYRING in the global location. It uses the
+    additional authenticated data file path/to/input/aad (only valid with the
+    AES-GCM algorithms) and the initialization vector file path/to/input/iv.
+    The resulting plaintext will be written to path/to/output/plaintext.
+
+        $ gcloud kms raw-decrypt --key=KEYNAME --keyring=KEYRING \
+            --location=global --ciphertext-file=path/to/input/ciphertext \
+            --additional-authenticated-data-file=path/to/input/aad \
+            --initialization-vector-file=path/to/input/iv \
+            --plaintext-file=path/to/output/plaintext
+
+REQUIRED FLAGS
+     --ciphertext-file=CIPHERTEXT_FILE
+        File path of the ciphertext file to decrypt.
+
+     --plaintext-file=PLAINTEXT_FILE
+        File path of the plaintext file to store the decrypted data.
+
+     --version=VERSION
+        Version to use for decryption.
+
+OPTIONAL FLAGS
+     --additional-authenticated-data-file=ADDITIONAL_AUTHENTICATED_DATA_FILE
+        File path to the optional file containing the additional authenticated
+        data.
+
+     --initialization-vector-file=INITIALIZATION_VECTOR_FILE
+        File path to the optional file containing the initialization vector for
+        decryption.
+
+     --key=KEY
+        The (raw) key to use for decryption.
+
+     --keyring=KEYRING
+        Key ring of the key.
+
+     --location=LOCATION
+        Location of the keyring.
+
+     --skip-integrity-verification
+        Skip integrity verification on request and response API fields.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha kms raw-decrypt
+
+        $ gcloud beta kms raw-decrypt
+```
+
+### gcloud beta kms raw-decrypt
+
+```text
+NAME
+    gcloud beta kms raw-decrypt - decrypt a ciphertext file using a raw key
+
+SYNOPSIS
+    gcloud beta kms raw-decrypt --ciphertext-file=CIPHERTEXT_FILE
+        --plaintext-file=PLAINTEXT_FILE --version=VERSION
+        [--additional-authenticated-data-file=ADDITIONAL_AUTHENTICATED_DATA_FILE]
+        [--initialization-vector-file=INITIALIZATION_VECTOR_FILE] [--key=KEY]
+        [--keyring=KEYRING] [--location=LOCATION]
+        [--skip-integrity-verification] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha kms raw-decrypt
+
+```text
+NAME
+    gcloud alpha kms raw-decrypt - decrypt a ciphertext file using a raw key
+
+SYNOPSIS
+    gcloud alpha kms raw-decrypt --ciphertext-file=CIPHERTEXT_FILE
+        --plaintext-file=PLAINTEXT_FILE --version=VERSION
+        [--additional-authenticated-data-file=ADDITIONAL_AUTHENTICATED_DATA_FILE]
+        [--initialization-vector-file=INITIALIZATION_VECTOR_FILE] [--key=KEY]
+        [--keyring=KEYRING] [--location=LOCATION]
+        [--skip-integrity-verification] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Corrected from the official docs (the help text above is verbatim): the DESCRIPTION says "If --plaintext-file or --additional-authenticated-data-file or --initialization-vector-file is set to '-', that file is read from stdin. Similarly, if --ciphertext-file is set to '-', the ciphertext is written to stdout."; for decryption the direction is the reverse: `--ciphertext-file` (with `--additional-authenticated-data-file` and `--initialization-vector-file`) is the input, so `-` reads it from stdin, and `--plaintext-file` is the output, so `-` writes the plaintext to stdout (REQUIRED FLAGS on this page: "File path of the ciphertext file to decrypt." and "File path of the plaintext file to store the decrypted data.").
+- Incomplete example: the example omits `--version`, which the SYNOPSIS requires (gcloud 593.0.0: "argument --version: Must be specified."). Add the required flag (see FLAGS on this page).
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/kms/raw-decrypt (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
