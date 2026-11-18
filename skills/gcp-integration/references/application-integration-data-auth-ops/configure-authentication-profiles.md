@@ -16,6 +16,42 @@ In the Console go to **APIs & Services > Credentials**, click **+ Create Credent
 https://console.cloud.google.com/integrations/callback/locations/AUTH_PROFILE_REGION
 ```
 
+### Create a profile with Terraform
+
+The source's Terraform examples create the Application Integration client first and make each `google_integrations_auth_config` depend on it. The client resource (from the source's Auth token example):
+
+```terraform
+resource "google_integrations_client" "client" {
+  location = "us-central1"
+}
+```
+
+Adapted (not in the official docs): the source's Service account example requests `cloud-platform` plus the unrelated `adexchange.buyer` and `admob.readonly` scopes; the example keeps only `cloud-platform`.
+
+```terraform
+resource "random_id" "default" {
+  byte_length = 8
+}
+
+resource "google_service_account" "service_account" {
+  account_id   = "sa-${random_id.default.hex}"
+  display_name = "Service Account"
+}
+resource "google_integrations_auth_config" "auth_config_service_account" {
+  location     = "us-central1"
+  display_name = "tf-service-account"
+  description  = "Test auth config created via terraform"
+  decrypted_credential {
+    credential_type = "SERVICE_ACCOUNT"
+    service_account_credentials {
+    service_account = google_service_account.service_account.email
+    scope = "https://www.googleapis.com/auth/cloud-platform"
+    }
+  }
+depends_on = [google_service_account.service_account, google_integrations_client.client]
+}
+```
+
 ### Create, edit and delete a profile
 
 - Create: Application Integration > **Auth Profiles** > **Create**; enter **Profile name**, **Region**, **Description**, then **Continue** and select the **Authentication type** and its fields. Optionally add an SSL/TLS client certificate (**SSL certificate**, **Private key**, **Private key passphrase**). Terraform creates profiles with the `google_integrations_auth_config` resource; each of the source's examples declares `depends_on = [google_integrations_client.client]`, so the `google_integrations_client` resource (the Application Integration client setup) is created first.
@@ -78,7 +114,8 @@ https://console.cloud.google.com/integrations/callback/locations/AUTH_PROFILE_RE
 - For the Google OIDC ID Token and Service account types, the source says to assign the Service Account Token Creator IAM role to the `service-PROJECT_NUMBER@gcp-sa-integrations.iam.gserviceaccount.com` service account (the Application Integration default service account). Best practices: https://docs.cloud.google.com/iam/docs/best-practices-service-accounts.
 - Publishing: after associating a new or updated profile with a task in a draft integration, publish the integration for the change to take effect; testing a draft without publishing still uses the previously published profile. Publish again after editing a profile used by a task with a retry mechanism.
 - Deleting an authentication profile is a destructive action (the source gives no undo step); try it on a disposable project first.
-- Omitted: the source's Terraform examples (they embed sample client secrets, tokens, a certificate and a private key); Console steps are summarized.
+- Omitted: the source's other Terraform examples (Auth token, SSL/TLS client certificate, JWT, OAuth 2.0 authorization code, OAuth 2.0 client credentials, OIDC ID token), because they embed sample client secrets, tokens, a certificate and a private key; keep such values out of Terraform source (the source does not say how). Console steps are summarized.
+- Adapted from the official docs: the Service account example's `scope` is reduced to `https://www.googleapis.com/auth/cloud-platform`; request only the scopes the tasks that use the profile need.
 - Authentication profile credentials are among the data encrypted with CMEK when CMEK is enabled for the region (see the CMEK page).
 - Source: https://docs.cloud.google.com/application-integration/docs/cmek (retrieved 2026-11-18; CC BY 4.0)
 - Source: https://docs.cloud.google.com/application-integration/docs/configure-authentication-profiles (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)

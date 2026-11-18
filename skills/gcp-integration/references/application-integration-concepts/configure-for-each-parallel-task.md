@@ -31,6 +31,7 @@ api_trigger/APITriggerX
 
 ## Notes
 
+- Run-as authorization change: the fallback to the default service account when no service account is attached is as the source states it. Per https://docs.cloud.google.com/application-integration/docs/prepare-for-authorization-changes, every run must now have an explicit identity (the triggering user or a run-as service account); this already applies to integrations created on or after October 15, 2026 and to every test, and applies to all existing integrations starting January 15, 2027 (UTC). Do not rely on the default-service-account fallback for new integrations; see prepare-for-authorization-changes.md.
 - Prerequisites: attach a user-managed service account to the integration (otherwise the default service account `service-PROJECT_NUMBER@gcp-sa-integrations.iam.gserviceaccount.com` is used) and grant it the Application Integration Invoker role.
 - Best practices: set the cohort size based on quota limits of the sub-integrations; use SYNC to collect sub-integration output; use ASYNC when a sub-integration may run longer than 2 minutes.
 - Do not use SYNC if a sub-integration takes longer than 2 minutes or if you combine the task with naturally asynchronous tasks such as the Approval task.
@@ -39,6 +40,7 @@ api_trigger/APITriggerX
 
 ## Related
 
+- [prepare-for-authorization-changes.md](../application-integration-data-auth-ops/prepare-for-authorization-changes.md)
 - [configure-api-trigger.md](./configure-api-trigger.md)
 - [tasks.md](./tasks.md)
 - [error-handling.md](./error-handling.md)

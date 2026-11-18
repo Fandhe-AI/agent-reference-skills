@@ -86,6 +86,7 @@ SELECT * FROM Employees where LastName=?
 
 ## Notes
 
+- Run-as authorization change: the fallback to the default service account when no service account is attached is as the source states it. Per https://docs.cloud.google.com/application-integration/docs/prepare-for-authorization-changes, every run must now have an explicit identity (the triggering user or a run-as service account); this already applies to integrations created on or after October 15, 2026 and to every test, and applies to all existing integrations starting January 15, 2027 (UTC). Do not rely on the default-service-account fallback for new integrations; see prepare-for-authorization-changes.md.
 - Prerequisites: Connectors Admin (`roles/connectors.admin`) on the project; the service account used must have the required IAM role. Attach a user-managed service account to the integration; if none is configured, the default service account (`service-PROJECT_NUMBER@gcp-sa-integrations.iam.gserviceaccount.com`) is used for authentication.
 - Integration variables cannot be used directly in a filter clause; map them with a Data Mapping task. Sample mapping: input `PRIMARY_KEY_ID = ' .CONCAT(INTEGRATION_VARIABLE) .CONCAT(')` to `filterClause(Connectors)`.
 - Get fetches a single record from a table with a primary key; otherwise use List with a filter clause.
@@ -100,6 +101,7 @@ SELECT * FROM Employees where LastName=?
 
 ## Related
 
+- [prepare-for-authorization-changes.md](../application-integration-data-auth-ops/prepare-for-authorization-changes.md)
 - [tasks.md](./tasks.md)
 - [variables.md](./variables.md)
 - [error-handling.md](./error-handling.md)
