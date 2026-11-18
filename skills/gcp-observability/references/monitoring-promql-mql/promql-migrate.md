@@ -36,13 +36,15 @@ gcloud monitoring policies migrate \
 
 ### Example: rule file
 
+Adapted (not in the official docs): the threshold is `0.75` instead of `75`, because the CPU utilization metric is a fraction.
+
 ```yaml
 groups:
 - name: Utilization_Alerts
   interval: 30s
   rules:
   - alert: CPU_Utilization_Over_75
-    expr: compute_googleapis_com:instance_cpu_utilization > 75
+    expr: compute_googleapis_com:instance_cpu_utilization > 0.75
     for: 60s
     labels:
       severity: page
@@ -72,7 +74,7 @@ gcloud monitoring policies migrate \
 --channels-from-prometheus-alertmanager-yaml=PATH_TO_ALERTMANAGER_FILE
 ```
 
-Adapted (not in the official docs): added the missing comma after the condition `displayName` so the output is valid JSON; the notification channel names use `projects/PROJECT_ID/...` instead of `projects/google.com:PROJECT_ID/...`.
+Adapted (not in the official docs): added the missing comma after the condition `displayName` so the output is valid JSON; the notification channel names use `projects/PROJECT_ID/...` instead of `projects/google.com:PROJECT_ID/...`, and the threshold is `0.75` instead of `75`.
 
 ```json
 {
@@ -95,7 +97,7 @@ Adapted (not in the official docs): added the missing comma after the condition 
         "labels": {
           "severity": "page"
         },
-        "query": "compute_googleapis_com:instance_cpu_utilization > 75",
+        "query": "compute_googleapis_com:instance_cpu_utilization > 0.75",
         "ruleGroup": "Utilization_Alerts"
       }
     }
@@ -189,6 +191,7 @@ sum (up) by (project_id, cluster, namespace) < 10
 - Adapted from the official docs: the source output JSON had no comma after `"displayName": "CPU_Utilization_Over_75"`; one was added.
 - Corrected from the official docs: the output's `notificationChannels` entries read `"projects/google.com:PROJECT_ID/notificationChannels/CHANNEL_ID_1"` (and `_2`, `_3`), while the same policy's `name` is `projects/PROJECT_ID/alertPolicies/POLICY_ID`; the Monitoring API v3 Discovery document gives the channel name format `projects/[PROJECT_ID_OR_NUMBER]/notificationChannels/[CHANNEL_ID]`. The `google.com:` prefix was removed.
 - Source: https://docs.cloud.google.com/monitoring/promql/promql-migrate (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the rule `CPU_Utilization_Over_75` compares `compute_googleapis_com:instance_cpu_utilization > 75`, but `compute.googleapis.com/instance/cpu/utilization` is a fraction (the notification payload example in notification-options shows `"thresholdValue": 0.9` with an observed value of `0.835` for this metric), so `> 75` never fires; the rule file and the migrated policy use `> 0.75`.
 
 ## Related
 

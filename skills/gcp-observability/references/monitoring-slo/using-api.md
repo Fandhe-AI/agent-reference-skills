@@ -111,6 +111,8 @@ curl  --http1.1 --header "Authorization: Bearer ${ACCESS_TOKEN}" "https://monito
 
 ### Create an SLO (rolling 3-day, 75% availability)
 
+This example uses `basicSli`, so `SERVICE_ID` must name a service whose type has a `BasicSli` (for example `APP_ENGINE`, `CLOUD_RUN` or `CLUSTER_ISTIO`; see api-structures.md). It cannot be created on the `GKE_WORKLOAD` service from the previous section, which has no `BasicSli`; for that service define a `requestBasedSli` or `windowsBasedSli` instead.
+
 ```bash
 SERVICE_ID=custom:my-test-service
 ```
@@ -214,6 +216,7 @@ curl  --http1.1 --header "Authorization: Bearer ${ACCESS_TOKEN}" -X DELETE "http
 - Corrected from the official docs: the source gives the identifier regular expression as `[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?` without anchors; unanchored, a substring search also accepts IDs that break the rules listed with it (for example a leading or trailing hyphen, or more than 63 characters), so it is shown anchored as `^...$` (a full match).
 - Source inconsistency: the monitoring v3 Discovery document describes the `services.create` `serviceId` parameter as "Must match the pattern [a-z0-9\-]+" and the `serviceLevelObjectives.create` `serviceLevelObjectiveId` parameter as "Must match the pattern ^[a-zA-Z0-9-_:.]+$"; it names the query parameters `serviceId` and `serviceLevelObjectiveId`, while the source's URLs use `service_id` and `service_level_objective_id`.
 - Source: https://docs.cloud.google.com/stackdriver/docs/solutions/slo-monitoring/api/using-api (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- The source creates a `GKE_WORKLOAD` service and then an SLO with `basicSli.availability`; `GKE_WORKLOAD` has no `BasicSli` (api-structures.md), so the two examples are treated as independent and the SLO example assumes a service type that supports `BasicSli`.
 
 ## Related
 

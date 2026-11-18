@@ -163,7 +163,7 @@ Adapted (not in the official docs): the source's label-based example ended with 
 
 | Syntax | Selected value | Resolved expression |
 |--------|----------------|---------------------|
-| `${my_label_based_variable}` | `12345` | `instance_id == '12345'` |
+| `${my_label_based_variable}` | `12345` | `instance_id="12345"` |
 | `${my_label_based_variable}` | `*` | `noop_filter=~".*"` |
 | `${my_label_based_variable.value}`, `${my_value_based_variable}` | `12345` | `12345` |
 | `${my_label_based_variable.value}`, `${my_value_based_variable}` | `*` | `.+` |
@@ -190,6 +190,7 @@ Adapted (not in the official docs): the source's label-based example ended with 
 - The source also shows Console procedures (**Apply to charts**, **Insert variable filter**) as click-paths.
 - Corrected from the official docs: the Monitoring-filter resolution table gave `resource.instance_id == "12345"` for `${my_label_based_variable}`. Monitoring filters address resource labels as `resource.labels.KEY` (or `resource.label.KEY`) and compare with `=` (the same page's logs-panel table resolves the same variable to `resource.labels."instance_id"="12345"`, its filter sample uses `resource.labels.\"zone\"=monitoring.regex.full_match(...)`, and the alerting-policy console page lists `=` as the equality operator with `resource.labels.zone = "us-central1-a"`); `==` is not a Monitoring filter operator.
 - Source: https://docs.cloud.google.com/monitoring/dashboards/api-dashboard (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the PromQL resolution table gives `instance_id == '12345'` for a label-based variable. The variable is inserted inside the `{...}` of a selector (the `noop_filter=~".*"` row is the matcher form), where `==` is not a valid matcher; the table shows `instance_id="12345"`.
 
 ## Related
 

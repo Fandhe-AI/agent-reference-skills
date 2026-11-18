@@ -61,8 +61,10 @@ curl -X GET \
 
 ### List alerts (Monitoring API `alerts.list`)
 
+Adapted (not in the official docs): `-G` added so the `--data-urlencode` filters below are sent as the query string of the GET request.
+
 ```bash
-curl -X GET \
+curl -G -X GET \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
      -H "x-goog-user-project: PROJECT_ID" \
      "https://monitoring.googleapis.com/v3/projects/PROJECT_ID/alerts"
@@ -116,6 +118,7 @@ Add one of these `curl` flags to filter (opened in the last hour; open alerts of
 - Source inconsistency: the curl filter writes `state=open` in lowercase, while the `Alert.state` enum in the monitoring v3 Discovery document is `STATE_UNSPECIFIED`, `OPEN`, `CLOSED` and the gcloud 593.0.0 help example for `gcloud alpha monitoring alerts list` uses `--filter="state=OPEN"`.
 - Source inconsistency: the sample `describe` response shows `"state": "OPEN"` together with a `close_time`, a `gce_instance` `zone` label of `us-west1` (a region; other samples on these pages use zones such as `us-central1-c`), and a `summaryText` field that is not a property of `Alert` in the monitoring v3 Discovery document (`closeTime`, `log`, `metadata`, `metric`, `name`, `openTime`, `policy`, `resource`, `state`). It is kept as written as illustrative output.
 - Source: https://docs.cloud.google.com/monitoring/alerts/incidents-events (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the list example is `curl -X GET` and the page says to add `--data-urlencode "filter=..."`. Without `-G` (`--get`), curl puts that data in the request body and the filter is not applied; the example adds `-G`.
 
 ## Related
 

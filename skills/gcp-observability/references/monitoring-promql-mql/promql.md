@@ -24,12 +24,14 @@ Distribution-valued metrics are queried like Prometheus histograms, with the `_c
 
 The metadata system label `version` is written `metadata_system_version`; the metadata user label `version` is `metadata_user_version`. If the key has special characters other than `_`, wrap the key in double quotes and keep the `metadata_user_` prefix.
 
+Adapted (not in the official docs): the metric names inside `sum(...)` are wrapped in braces, as the UTF-8 syntax requires.
+
 ```text
 {"compute.googleapis.com/instance/cpu/utilization", monitored_resource="gce_instance", metadata_user_env="prod"}
-sum("compute.googleapis.com/instance/cpu/utilization") by (metadata_system_region)
-sum("compute.googleapis.com/instance/cpu/utilization") by (metadata_user_env)
+sum({"compute.googleapis.com/instance/cpu/utilization"}) by (metadata_system_region)
+sum({"compute.googleapis.com/instance/cpu/utilization"}) by (metadata_user_env)
 {"compute.googleapis.com/instance/uptime_total", "metadata_user_i-love.special/chars"="yes"}
-sum("compute.googleapis.com/instance/uptime_total") by ("metadata_user_i-love.special/chars")
+sum({"compute.googleapis.com/instance/uptime_total"}) by ("metadata_user_i-love.special/chars")
 ```
 
 ### Specify the monitored resource type
@@ -86,6 +88,7 @@ example_googleapis_com:user_widget_count{metric_pod_name="METRIC_LABEL_VALUE"}
 - Google Cloud Managed Service for Prometheus — not a self-hosted Prometheus server; PromQL semantics follow upstream Prometheus.
 - Corrected from the official docs: the mapping table writes `custom.googleapis.com/opencensus/opencensus.io/ http/server/request_count_by_method` and `custom_googleapis_com:opencensus_opencensus_io_ http_server_request_count_by_method` with a space inside the name; metric types can't contain spaces (allowed characters: letters, digits, `.`, `_`, `:`, `-`, `/`; https://docs.cloud.google.com/monitoring/api/v3/naming-conventions), and the same page's `monitored_resource` example writes `custom_googleapis_com:opencensus_opencensus_io_http_server_request_count_by_method`. The spaces were removed.
 - Source: https://docs.cloud.google.com/monitoring/promql (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the metadata-label examples write `sum("compute.googleapis.com/instance/cpu/utilization") by (...)`, which passes a string to `sum`. The same page says "UTF-8 metric names must be quoted and moved inside the braces", so the examples use `sum({"compute.googleapis.com/instance/cpu/utilization"}) by (...)`.
 
 ## Related
 

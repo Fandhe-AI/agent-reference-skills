@@ -39,6 +39,8 @@ Example condition (finds containers restarted in the last 30 minutes):
 
 The `documentation` field uses document variables.
 
+Adapted (not in the official docs): `> 1` added to the query so the policy fires only when a container restarted more than once in 30 minutes.
+
 ```json
 {
   "displayName": "Container Restarts",
@@ -52,7 +54,7 @@ The `documentation` field uses document variables.
     {
       "displayName": "Container has restarted",
       "conditionPrometheusQueryLanguage": {
-        "query": "rate(kubernetes_io:container_restart_count[30m]) * 1800",
+        "query": "rate(kubernetes_io:container_restart_count[30m]) * 1800 > 1",
         "duration": "600s",
         "evaluationInterval": "60s",
         "alertRule": "ContainerRestart",
@@ -120,6 +122,7 @@ By default, creation fails until the metrics referenced in the condition exist. 
 - The source also shows a step that echoes `TOKEN` to verify it; avoid printing access tokens in shared terminals or logs. Terraform (`condition_prometheus_query_language` in `google_monitoring_alert_policy`) is also shown in the source and omitted here.
 - Source inconsistency: the source says the `duration` value "must be a number of minutes, expressed in seconds", while the Monitoring API v3 Discovery document (`PrometheusQueryLanguageCondition.duration`) says it "Must be a non-negative duration or missing" with a default of zero. The `evaluationInterval` and `alertRule` constraints in the table come from the same Discovery document.
 - Source: https://docs.cloud.google.com/monitoring/promql/create-promql-alerts (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the complete policy's query is `rate(kubernetes_io:container_restart_count[30m]) * 1800` without a comparison. A PromQL condition fires whenever the expression returns a series, so it would also fire with zero restarts; the example adds `> 1`, matching the condition fragment above and the documentation text "restarted more than once during the last 30 minutes".
 
 ## Related
 
