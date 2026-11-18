@@ -93,6 +93,7 @@ SYNOPSIS
 
 ## Notes
 
+- Corrected from the official docs (the help text above is verbatim): the positional argument says "The resource name of the PartnerTenant using the form: projects/{project_id}/locations/{location_id}/securityGateway/{security_gateway_id}"; the resource is a security gateway, not a PartnerTenant, and the collection is plural: `projects/{project_id}/locations/{location_id}/securityGateways/{security_gateway_id}` (Discovery document `beyondcorp` v1: `projects/{projectsId}/locations/{locationsId}/securityGateways/{securityGatewaysId}`; the `create`, `delete` and `update` pages of this group also use `securityGateways`).
 - Incomplete example: the example gives only the command; gcloud 593.0.0 fails with "argument (SECURITY_GATEWAY : --location=LOCATION): Must be specified.". Add the required arguments (see SYNOPSIS and FLAGS on this page).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
