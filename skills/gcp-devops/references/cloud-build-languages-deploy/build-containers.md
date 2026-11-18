@@ -94,6 +94,8 @@ artifacts:
 
 Requires a user-specified service account with permission to generate ID tokens; it cannot be done with the default Cloud Build service account.
 
+Adapted (not in the official docs): the digest file is written from `RepoDigests` after the push (the registry manifest digest) instead of `{{.Id}}`, and `$_IMAGE` is quoted.
+
 ```yaml
 steps:
 - name: 'gcr.io/cloud-builders/docker'
@@ -101,9 +103,9 @@ steps:
   script: |
     #!/bin/sh
     set -e
-    docker build -t $_IMAGE .
+    docker build -t "$_IMAGE" .
     docker push "$_IMAGE"
-    docker inspect $_IMAGE --format "$_IMAGE@{{.Id}}" >image_with_digest
+    docker inspect --format '{{index .RepoDigests 0}}' "$_IMAGE" >image_with_digest
 - name: 'gcr.io/cloud-builders/gcloud'
   id: 'generate-token'
   script: |
@@ -174,6 +176,7 @@ docker run LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/IMAGE_NAME
 
 ## Notes
 
+- Corrected from the official docs: the cosign example wrote `docker inspect $_IMAGE --format "$_IMAGE@{{.Id}}"`. `.Id` is the local image ID (the digest of the image configuration), not the manifest digest the registry stores, so `IMAGE@<Id>` does not name the pushed image; after `docker push`, `{{index .RepoDigests 0}}` gives `REGISTRY/REPOSITORY/IMAGE@sha256:<manifest digest>`.
 - `images` vs `docker push`: only images listed in `images` appear on the build's **Build description** page, in `Build.get()` and in `gcloud builds list`.
 - Verify signatures against the immutable digest, not a mutable tag.
 - Corrected from the official docs: the `--pack` continuation (see above).

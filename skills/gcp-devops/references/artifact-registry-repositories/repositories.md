@@ -12,20 +12,22 @@ Artifact Registry stores different artifact types, supports multiple repositorie
 
 Given these Docker images in a repository, a **Keep most recent versions** policy set to keep 3 versions for **Package prefixes** `{release-xyz}` keeps only `release-xyz-v1` and `release-xyz-v2`. Packages that do not match the prefix are not kept by that policy.
 
+Adapted (not in the official docs): a repository (`my-repo`) is added to the image paths in this sample listing, which the source writes as `us-west1-docker.pkg.dev/my-project/IMAGE`.
+
 ```text
-IMAGE: us-west1-docker.pkg.dev/my-project/release-xyz-v1
+IMAGE: us-west1-docker.pkg.dev/my-project/my-repo/release-xyz-v1
 DIGEST: sha256:1b0a26bd07a3d17473d8d8468bea84015e27f87124b2831234581bce13f61370
 TAGS:
 CREATE_TIME: 2023-06-19T18:59:09
 UPDATE_TIME: 2023-06-19T18:59:10
 
-IMAGE: us-west1-docker.pkg.dev/my-project/release-xyz-v2
+IMAGE: us-west1-docker.pkg.dev/my-project/my-repo/release-xyz-v2
 DIGEST: sha256:6e494387c901caf429c1bf77bd92fb82b33a68c0e19f123456a3ac8d27a7049d
 TAGS: latest
 CREATE_TIME: 2023-06-19T18:59:09
 UPDATE_TIME: 2023-06-19T18:59:09
 
-IMAGE: us-west1-docker.pkg.dev/my-project/release-v2
+IMAGE: us-west1-docker.pkg.dev/my-project/my-repo/release-v2
 DIGEST: sha256:6e494387c901caf429c1bf77bd92fb82b33a68c0e19f123456a3ac8d27a7049d
 TAGS: latest
 CREATE_TIME: 2023-06-19T18:59:09
@@ -75,6 +77,7 @@ The mode cannot be changed after the repository is created. Each repository hold
 
 ## Notes
 
+- Corrected from the official docs: the cleanup-policy sample listing shows image paths without a repository (`us-west1-docker.pkg.dev/my-project/release-xyz-v1`); Artifact Registry Docker paths are `LOCATION-docker.pkg.dev/PROJECT/REPOSITORY/IMAGE`, so `my-repo` is added.
 - If an artifact version matches both a delete policy and a keep policy, the keep policy wins. With **Package prefixes** in a **Keep most recent versions** policy, only packages matching the prefixes are kept (caution in the source).
 - Deletions triggered by delete policies count against the per-project delete request quota: https://docs.cloud.google.com/artifact-registry/quotas#project-quota. Cleanup policies delete artifacts irreversibly; use dry run first (see https://docs.cloud.google.com/artifact-registry/docs/repositories/cleanup-policy) and try on a disposable project.
 - Location: balance latency, availability and egress cost; create repositories in the same region as GKE, Cloud Run, Cloud Build and other consumers. Image streaming (GKE and Managed Service for Apache Spark) works only if images are in the same region as the workloads or a corresponding multi-region. Consider consumers outside Google Cloud as well.

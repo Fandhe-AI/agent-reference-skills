@@ -20,10 +20,12 @@ logName = "projects/PROJECT_ID/logs/cloudbuild"
 
 Create the bucket with no retention policy, then point `logsBucket` at it.
 
+Adapted (not in the official docs): the image path includes a repository (`myrepo`), as in the next example.
+
 ```yaml
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'us-east1-docker.pkg.dev/myproject/myimage', '.' ]
+  args: [ 'build', '-t', 'us-east1-docker.pkg.dev/myproject/myrepo/myimage', '.' ]
 logsBucket: 'gs://mylogsbucket'
 options:
   logging: GCS_ONLY
@@ -66,6 +68,7 @@ The build ID is shown at the end of `gcloud builds submit` and in the ID column 
 
 ## Notes
 
+- Corrected from the official docs: the user-created bucket example builds `us-east1-docker.pkg.dev/myproject/myimage`, which has no repository; the path is `us-east1-docker.pkg.dev/myproject/myrepo/myimage`.
 - If the Cloud Storage bucket and Cloud Build are in the same project and you use the legacy Cloud Build service account, that account already has the needed permissions and no additional grant is required. Prefer a user-specified build service account with a scoped bucket-level role over the legacy account.
 - Roles apply to the service account used for the build, as the source phrases it. `roles/storage.admin` is broad.
 - You can grant project-level Owner or Editor to view logs from Cloud Build-created and user-owned buckets, but the source recommends Viewer for least privilege; if you do not want to grant basic Viewer, use user-created buckets, especially for trigger-invoked builds where principals should only invoke builds and view progress.

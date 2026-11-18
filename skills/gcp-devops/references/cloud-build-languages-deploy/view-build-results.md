@@ -32,9 +32,11 @@ status="SUCCESS"
 status="QUEUED" OR status="WORKING"
 ```
 
+Adapted (not in the official docs): the image path includes a repository (`my-repo`); Artifact Registry paths are `LOCATION-docker.pkg.dev/PROJECT/REPOSITORY/IMAGE`.
+
 ```text
 (status="SUCCESS" OR status="FAILURE") AND \
-    results.images.name="us-east1-docker.pkg.dev/my-project/my-image"
+    results.images.name="us-east1-docker.pkg.dev/my-project/my-repo/my-image"
 ```
 
 ```text
@@ -51,12 +53,14 @@ create_time>"2016-10-12T18:43:49+00:00" AND finish_time<"2016-10-13T18:43:49+00:
 
 ### Tag builds and filter by tag
 
+Adapted (not in the official docs): the image path includes a repository (`REPOSITORY`) before `cb-demo-img`.
+
 ```yaml
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'us-east1-docker.pkg.dev/$PROJECT_ID/cb-demo-img', '.' ]
+  args: [ 'build', '-t', 'us-east1-docker.pkg.dev/$PROJECT_ID/REPOSITORY/cb-demo-img', '.' ]
 images:
-- 'us-east1-docker.pkg.dev/$PROJECT_ID/cb-demo-img'
+- 'us-east1-docker.pkg.dev/$PROJECT_ID/REPOSITORY/cb-demo-img'
 tags:
 - 'test1'
 - 'test2'
@@ -113,6 +117,7 @@ gcloud builds list --filter "tags=('test1' OR 'test2') AND 'test3'"
 
 ## Notes
 
+- Corrected from the official docs: the filter and tag examples use Artifact Registry paths without a repository (`us-east1-docker.pkg.dev/my-project/my-image`, `us-east1-docker.pkg.dev/$PROJECT_ID/cb-demo-img`); Artifact Registry Docker paths are `LOCATION-docker.pkg.dev/PROJECT/REPOSITORY/IMAGE`, so a repository is added (`my-repo`, `REPOSITORY`, an existing Docker repository).
 - These roles are in addition to the Cloud Build IAM permissions.
 - Build tags are separate from Docker image tags.
 - Time values in queries are ISO 8601 (UTC).

@@ -99,7 +99,8 @@ steps:
 | `entrypoint` | step | Overrides the image entrypoint, for example `gcloud`. |
 | `env` | step | List of `KEY=value` environment variables for the step. |
 | `timeout` | step | Step timeout, for example `240s`. |
-| `machineType`, `tags`, `timeout` | build | Further build-level configuration; see the Build Configuration Overview for the full field list. |
+| `tags`, `timeout` | build | Further build-level configuration; see the Build Configuration Overview for the full field list. |
+| `options.machineType` | build (`options`) | Machine type for the build; set under `options`, not at the top level (see the build config file schema). |
 | `images` | build | Images to push to Artifact Registry when the build succeeds. |
 | `artifacts` | build | Non-container artifacts stored in Cloud Storage. |
 
