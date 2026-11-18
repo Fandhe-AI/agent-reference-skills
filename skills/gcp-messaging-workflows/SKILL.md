@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-messaging-workflows
 
-Google Cloud (GCP) のメッセージング・イベント駆動・オーケストレーション系スキル。Pub/Sub（topic・subscription・pull / StreamingPull / push・publish のバッチ / フロー制御 / ordering key・dead-letter topic・retry policy・exactly-once 配信・subscription filter・seek / snapshot・BigQuery / Cloud Storage / Bigtable subscription・import topic・Single Message Transforms（SMT）・スキーマ・CMEK・IAM）、Eventarc（Standard の trigger・Cloud Audit Logs / Pub/Sub / サードパーティの channel・GKE / 内部 HTTP 宛・CloudEvents・イベント種別、Advanced の message bus・enrollment・pipeline・CEL）、Workflows（YAML 構文・steps・条件・反復・subworkflows・エラー処理・retry・並列ステップ・標準ライブラリ・コネクタ・HTTP・callbacks・Eventarc / Scheduler からの実行）、Google Cloud Managed Service for Apache Kafka（cluster・topic・consumer group・認証（SASL / mTLS）・Kafka ACL・Kafka Connect・Schema Registry）を扱う。加えて gcloud 4 グループ・REST（Discovery）6 API・IAM 5 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `pubsub-subscribe` / `workflows-concepts-executions` / `workflows-syntax` / `workflows-errors-retry-parallel` / `workflows-connectors-callbacks-triggers`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のメッセージング・イベント駆動・オーケストレーション系スキル。Pub/Sub（topic・subscription・pull / StreamingPull / push・publish のバッチ / フロー制御 / ordering key・dead-letter topic・retry policy・exactly-once 配信・subscription filter・seek / snapshot・BigQuery / Cloud Storage / Bigtable subscription・import topic・Single Message Transforms（SMT）・スキーマ・CMEK・IAM）、Eventarc（Standard の trigger・Cloud Audit Logs / Pub/Sub / サードパーティの channel・GKE / 内部 HTTP 宛・CloudEvents・イベント種別、Advanced の message bus・enrollment・pipeline・CEL）、Workflows（YAML 構文・steps・条件・反復・subworkflows・エラー処理・retry・並列ステップ・標準ライブラリ・コネクタ・HTTP・callbacks・Eventarc / Scheduler からの実行）、Google Cloud Managed Service for Apache Kafka（cluster・topic・consumer group・認証（SASL / mTLS）・Kafka ACL・Kafka Connect・Schema Registry）を扱う。加えて gcloud 4 グループ・REST（Discovery）6 API・IAM 5 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。
 
@@ -26,6 +26,9 @@ skills/gcp-messaging-workflows/
       README.md
       <page>.md
     pubsub-publish-ordering-batching/  # バッチ・publisher のフロー制御・ordering key・ベストプラクティス・圧縮・topic のモニタリング
+      README.md
+      <page>.md
+    pubsub-subscribe/             # subscription の作成・pull・push・push の認証（OIDC）・subscriber のフロー制御
       README.md
       <page>.md
     pubsub-dead-letter-retry/     # dead-letter topic・retry policy・メッセージ保持・subscription のモニタリング
@@ -61,6 +64,18 @@ skills/gcp-messaging-workflows/
     eventarc-advanced/            # message bus・Google ソースからの publish・enrollment / pipeline・CEL
       README.md
       <page>.md
+    workflows-concepts-executions/  # Workflows の概要・ベストプラクティス・作成と更新（deploy）・実行
+      README.md
+      <page>.md
+    workflows-syntax/             # steps・条件・反復・サブワークフロー・call・式
+      README.md
+      <page>.md
+    workflows-errors-retry-parallel/  # try / except・raise・retry・並列ステップ
+      README.md
+      <page>.md
+    workflows-connectors-callbacks-triggers/  # 標準ライブラリ・コネクタ・HTTP・認証・callbacks・Eventarc / Scheduler からの実行
+      README.md
+      <page>.md
     kafka-clusters-topics/        # Managed Service for Apache Kafka の概要・cluster・サイズ計画・ネットワーク・topic・consumer group
       README.md
       <page>.md
@@ -86,8 +101,9 @@ skills/gcp-messaging-workflows/
 1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
 2. Pub/Sub は 11 カテゴリ（`pubsub-*`）、Eventarc は 4、Workflows は 4、Managed Kafka は 3 に分かれる。概念か操作か、publish 側か subscribe 側か、配信保証・export・取り込み・スキーマ・セキュリティのどれかで選ぶ
 3. 非推奨・終了を確認するときは `pubsub-concepts/pubsub-lite-deprecation.md`（Pub/Sub Lite）と `eventarc-concepts/event-types.md`（Cloud IoT イベント）を引く
+4. Workflows の定期実行・Eventarc 経由の実行は `workflows-connectors-callbacks-triggers/`（`schedule-workflow.md`・`trigger-workflow-eventarc.md`）。Cloud Scheduler 自体の設定は `gcp-run`
 
-未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `pubsub-subscribe` / `workflows-concepts-executions` / `workflows-syntax` / `workflows-errors-retry-parallel` / `workflows-connectors-callbacks-triggers`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -96,6 +112,7 @@ skills/gcp-messaging-workflows/
 | Pub/Sub の概要・topic / subscription / message の基本概念・信頼性・プロパティ一覧・Pub/Sub と Kafka の選び方・gcloud クイックスタート・Pub/Sub Lite の廃止告知と移行 | pubsub-concepts | [references/pubsub-concepts/README.md](references/pubsub-concepts/README.md) |
 | topic の作成・publish の流れ・メッセージ形式と属性・publish のサンプル | pubsub-publish | [references/pubsub-publish/README.md](references/pubsub-publish/README.md) |
 | バッチ publish・publisher のフロー制御・ordering key・publish のベストプラクティス・メッセージ圧縮・topic のモニタリング | pubsub-publish-ordering-batching | [references/pubsub-publish-ordering-batching/README.md](references/pubsub-publish-ordering-batching/README.md) |
+| subscription の作成（pull / push / export）・pull（StreamingPull）・push のエンドポイントと backoff・push の OIDC 認証・subscriber のフロー制御 | pubsub-subscribe | [references/pubsub-subscribe/README.md](references/pubsub-subscribe/README.md) |
 | dead-letter topic・retry policy（指数バックオフ）・subscription のメッセージ保持・subscription のモニタリング | pubsub-dead-letter-retry | [references/pubsub-dead-letter-retry/README.md](references/pubsub-dead-letter-retry/README.md) |
 | exactly-once 配信・subscription filter・seek / snapshot とメッセージの再生・リース管理（ack 期限の延長） | pubsub-exactly-once-filter-replay | [references/pubsub-exactly-once-filter-replay/README.md](references/pubsub-exactly-once-filter-replay/README.md) |
 | BigQuery subscription・Cloud Storage subscription・Bigtable subscription の概要と作成 | pubsub-export-subscriptions | [references/pubsub-export-subscriptions/README.md](references/pubsub-export-subscriptions/README.md) |
@@ -107,11 +124,15 @@ skills/gcp-messaging-workflows/
 | trigger の一覧・更新・削除・Pub/Sub / Cloud Audit Logs の trigger 作成（Cloud Run 宛）・`serviceName` / `methodName` の調べ方・パスパターン・Cloud Run 側のイベント受信・trigger に必要なロール | eventarc-standard-triggers | [references/eventarc-standard-triggers/README.md](references/eventarc-standard-triggers/README.md) |
 | GKE 宛・VPC 内部 HTTP エンドポイント宛の trigger・サードパーティ プロバイダの channel と trigger・イベントの再試行（retry / dead-letter） | eventarc-destinations-channels | [references/eventarc-destinations-channels/README.md](references/eventarc-destinations-channels/README.md) |
 | Eventarc Advanced の message bus・Google ソースからの publish・enrollment と pipeline（宛先・リトライ・変換）・CEL によるフィルタ | eventarc-advanced | [references/eventarc-advanced/README.md](references/eventarc-advanced/README.md) |
+| Workflows の概要・ベストプラクティス・ワークフローの作成と更新（YAML / JSON・`gcloud workflows deploy`・サービスアカウント・CMEK）・実行（コンソール・gcloud・REST・引数） | workflows-concepts-executions | [references/workflows-concepts-executions/README.md](references/workflows-concepts-executions/README.md) |
+| Workflows の steps・条件（`switch`）・反復（`for`）・サブワークフロー・`call`・式（`${}`） | workflows-syntax | [references/workflows-syntax/README.md](references/workflows-syntax/README.md) |
+| Workflows のエラー捕捉（`try` / `except`）・`raise`・retry（policy・predicate・backoff）・並列ステップ（`parallel`・branches・共有変数） | workflows-errors-retry-parallel | [references/workflows-errors-retry-parallel/README.md](references/workflows-errors-retry-parallel/README.md) |
+| Workflows の標準ライブラリ・コネクタ・HTTP リクエスト・認証（OAuth 2.0 / OIDC）・callback エンドポイント・Eventarc からのトリガー・Scheduler からの定期実行 | workflows-connectors-callbacks-triggers | [references/workflows-connectors-callbacks-triggers/README.md](references/workflows-connectors-callbacks-triggers/README.md) |
 | Managed Service for Apache Kafka の概要と制限・cluster の作成・サイズ計画・ネットワーク接続・topic の作成・consumer group | kafka-clusters-topics | [references/kafka-clusters-topics/README.md](references/kafka-clusters-topics/README.md) |
 | Kafka クライアント認証（SASL / OAUTHBEARER・mTLS）・Kafka ACL・暗号化（CMEK）・cluster とクライアントのモニタリング | kafka-auth-monitoring | [references/kafka-auth-monitoring/README.md](references/kafka-auth-monitoring/README.md) |
 | Kafka Connect の概要・Connect cluster の作成・Pub/Sub sink コネクタ・Schema Registry の概要 | kafka-connect-schema-registry | [references/kafka-connect-schema-registry/README.md](references/kafka-connect-schema-registry/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `pubsub-subscribe` / `workflows-concepts-executions` / `workflows-syntax` / `workflows-errors-retry-parallel` / `workflows-connectors-callbacks-triggers`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
