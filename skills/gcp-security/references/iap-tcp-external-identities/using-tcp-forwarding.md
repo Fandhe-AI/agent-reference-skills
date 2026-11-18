@@ -143,8 +143,10 @@ The local port is only accessible by applications on your local computer.
 
 Linux: install NumPy with pip in a new terminal:
 
+Adapted (not in the official docs): the command substitution is double-quoted so that a Python path with spaces is not split.
+
 ```bash
-$(gcloud info --format="value(basic.python_location)") -m pip install numpy
+"$(gcloud info --format="value(basic.python_location)")" -m pip install numpy
 ```
 
 If the error message persists, allow gcloud to access external packages:
@@ -209,6 +211,7 @@ The leading `$` in the Linux command is part of the command. `export` applies to
 - The source also shows Console steps, IAP Desktop (open source, not an officially supported Google product), the PuTTY proxy settings, and the `getIamPolicy`/`setIamPolicy` curl calls against `https://iap.googleapis.com/v1/projects/PROJECT_NUMBER/iap_tunnel/zones/ZONE_NAME/instances/...`; the PuTTY local proxy command (`gcloud.cmd compute start-iap-tunnel %host %port --listen-on-stdin --project PROJECT_ID --zone ZONE`) is omitted; `--listen-on-stdin` is accepted by gcloud 593.0.0 but is a hidden flag not listed in its `start-iap-tunnel` help. If PuTTY shows `proxy: - Invalid Credentials`, refresh credentials, for example with `gcloud auth print-identity-token`.
 - The full flag lists of `gcloud compute start-iap-tunnel` (https://docs.cloud.google.com/sdk/gcloud/reference/compute/start-iap-tunnel) and `gcloud compute ssh` (`--tunnel-through-iap`, https://docs.cloud.google.com/sdk/gcloud/reference/compute/ssh) are in the `gcp-compute` skill.
 - Because you connect RDP to `localhost`, the client may warn that the remote computer identity cannot be verified.
+- Adapted from the official docs: the source runs `$(gcloud info --format="value(basic.python_location)") -m pip install numpy` unquoted; the sample quotes the substitution so that an SDK path containing spaces or glob characters is passed as one word.
 - Source: https://docs.cloud.google.com/iap/docs/using-tcp-forwarding (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

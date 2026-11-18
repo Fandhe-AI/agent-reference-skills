@@ -18,7 +18,7 @@ wc -c /path/to/unwrapped-key
 file /path/to/unwrapped-key
 ```
 
-`data` means the format is correct. `ASCII text`: inspect the content. A string of letters and numbers ending in `=` may be base64 (decode with `base64`, `Base64.exe` on Windows); hexadecimal lines may be hex (decode with `xxd`, or `Format-Hex` in PowerShell).
+`data` means the format is correct. `ASCII text`: inspect the content. A string of letters and numbers ending in `=` may be base64 (decode with `base64`, `Base64.exe` on Windows); hexadecimal lines may be hex (decode with `xxd -r -p`).
 
 ### Format an asymmetric key
 
@@ -59,6 +59,7 @@ openssl pkcs8 -topk8 -nocrypt -inform DER -outform DER \
 - The source shows an example base64-encoded key value; it is not reproduced here.
 - `-nocrypt` writes the private key unencrypted. Restrict permissions on the output file, don't commit or share it, and delete it after import.
 - If import still fails, check the Google Cloud console errors and see Troubleshooting failed imports (https://docs.cloud.google.com/kms/docs/troubleshooting-failed-imports).
+- Corrected from the official docs: the source suggests `xxd` "or the `Format-Hex` PowerShell command" for hex-encoded keys. `Format-Hex` only displays input as hex and does not decode a hex string back to bytes, so it is omitted; `xxd` decodes a plain hex string only in reverse mode, `xxd -r -p`.
 - Source: https://docs.cloud.google.com/kms/docs/formatting-keys-for-import (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

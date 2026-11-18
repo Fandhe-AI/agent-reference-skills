@@ -82,18 +82,6 @@ exports.beforeCreate = authClient.functions().beforeCreateHandler((user, context
 });
 ```
 
-### Treat certain identity provider emails as verified
-
-```javascript
-exports.beforeCreate = authClient.functions().beforeCreateHandler((user, context) => {
-  if (user.email && !user.emailVerified && context.eventType.indexOf(':facebook.com') !== -1) {
-    return {
-      emailVerified: true,
-    };
-  }
-});
-```
-
 ### Block sign-in from certain IP addresses
 
 ```javascript
@@ -237,6 +225,7 @@ exports.beforeSignIn = authClient.functions().beforeSignInHandler((user, context
 - Also omitted: the console click-path, the require-email-verification sample (uses undefined helpers), the photo-screening sample (missing closing brace), the Google Calendar refresh-token sample (stores a refresh token and references `oauth2client` instead of `oAuth2Client`), and the client-side `firebase.auth()` error-handling sample. If you store provider refresh tokens, keep them in a secret store and never log them.
 - Adapted from the official docs: the source's `index.js` combines `import * as gcipCloudFunctions from 'gcip-cloud-functions'` with `exports.beforeCreate = ...`, which fails both as CommonJS (the `import`) and as an ES module (`exports` is undefined); the samples use `const gcipCloudFunctions = require('gcip-cloud-functions');` and keep `exports`, so no `"type": "module"` is needed in `package.json`.
 - Corrected from the official docs: the source returns `sessionClaims` (`role`, `groups`) from `beforeCreateHandler`, but `sessionClaims` are supported only in `beforeSignIn` (see the modifiable fields above); the sample sets them in a `beforeSignInHandler`.
+- Omitted: the source's "treat certain identity provider emails as verified" sample sets `emailVerified: true` for every unverified email from Facebook sign-in. Facebook is an untrusted provider for email ownership (see the `concepts-manage-users` page), so the sample would let a user claim someone else's address without proving ownership; it is not reproduced. Mark an email as verified only after an ownership check such as an email verification link.
 - Source: https://docs.cloud.google.com/identity-platform/docs/blocking-functions (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

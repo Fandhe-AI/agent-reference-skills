@@ -10,6 +10,8 @@ The Identity Platform user object represents a user account that signed up for a
 
 ### Track the current user with an Auth listener
 
+Adapted (not in the official docs): messages are written with `textContent` instead of `innerHTML`, so the email address and error text are not parsed as HTML.
+
 ```javascript
 import { initializeApp } from 'firebase/app';
 import {
@@ -28,10 +30,10 @@ const auth = getAuth(app, {/* extra options */ });
 document.addEventListener("DOMContentLoaded", () => {
   onAuthStateChanged(auth, (user) => {
       if (user) {
-          document.getElementById("message").innerHTML = "Welcome, " + user.email;
+          document.getElementById("message").textContent = "Welcome, " + user.email;
       }
       else {
-          document.getElementById("message").innerHTML = "No user signed in.";
+          document.getElementById("message").textContent = "No user signed in.";
       }
   });
   signIn();
@@ -42,7 +44,7 @@ function signIn() {
   const password = "PASSWORD";
   signInWithEmailAndPassword(auth, email, password)
       .catch((error) => {
-          document.getElementById("message").innerHTML = error.message;
+          document.getElementById("message").textContent = error.message;
       });
 }
 ```
@@ -65,7 +67,7 @@ function signIn() {
 | Auth object finishes initializing | A user was already signed in from a previous session, or returned from an identity provider's sign-in flow. |
 | User signs in | The current user is set. |
 | User signs out | The current user becomes null. |
-| Access token refreshed | Happens when the access token expires (the refresh token gets a new set), when the user changes their password (new access and refresh tokens; old tokens expire, which signs the user out on every device), or when the user re-authenticates (needed for deleting an account, setting a primary email address and changing a password). |
+| Access token refreshed | `onAuthStateChanged` is not called for a token refresh alone; to observe refreshes (for example to pick up new custom claims), use `onIdTokenChanged`, which covers sign-in, sign-out and token refresh. A refresh happens when the access token expires (the refresh token gets a new set), when the user changes their password (new access and refresh tokens; old tokens expire, which signs the user out on every device), or when the user re-authenticates (needed for deleting an account, setting a primary email address and changing a password). |
 
 ### Auth token types
 
@@ -101,6 +103,8 @@ function signIn() {
 - Automatic linking is restricted because, for example, a malicious actor could create a Facebook account with a victim's @gmail.com address and take over the victim's Google account if the two were linked.
 - You can set an email as verified with the Admin SDK; the source recommends doing so only if you know the user owns the email.
 - Source also covers: providers linked to a user, an Auth instance's persisted state across restarts, and per-platform Manage Users guides on firebase.google.com.
+- Adapted from the official docs: the source writes `user.email` and `error.message` into the page with `innerHTML`, which parses them as HTML (a DOM XSS path if a value contains markup); the sample uses `textContent`.
+- The source lists token refresh among the auth listener events, but the sample's `onAuthStateChanged` "Adds an observer for changes to the user's sign-in state", while `onIdTokenChanged` "Adds an observer for changes to the signed-in user's ID token. This includes sign-in, sign-out, and token refresh events." (https://firebase.google.com/docs/reference/js/auth.auth, retrieved 2026-11-18).
 - Source: https://docs.cloud.google.com/identity-platform/docs/concepts-manage-users (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/identity-platform/docs/sign-in-user-email (retrieved 2026-11-18). The `EMAIL_ID` and `PASSWORD` values are placeholders; do not hard-code real credentials.
 

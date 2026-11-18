@@ -33,6 +33,8 @@ const app = initializeApp(firebaseConfig);
 
 ### Sign in the user
 
+Adapted (not in the official docs): messages are written with `textContent` instead of `innerHTML`, so the email address and error text are not parsed as HTML.
+
 ```javascript
 import { initializeApp } from 'firebase/app';
 import {
@@ -51,10 +53,10 @@ const auth = getAuth(app, {/* extra options */ });
 document.addEventListener("DOMContentLoaded", () => {
   onAuthStateChanged(auth, (user) => {
       if (user) {
-          document.getElementById("message").innerHTML = "Welcome, " + user.email;
+          document.getElementById("message").textContent = "Welcome, " + user.email;
       }
       else {
-          document.getElementById("message").innerHTML = "No user signed in.";
+          document.getElementById("message").textContent = "No user signed in.";
       }
   });
   signIn();
@@ -65,7 +67,7 @@ function signIn() {
   const password = "PASSWORD";
   signInWithEmailAndPassword(auth, email, password)
       .catch((error) => {
-          document.getElementById("message").innerHTML = error.message;
+          document.getElementById("message").textContent = error.message;
       });
 }
 ```
@@ -95,6 +97,7 @@ function signIn() {
 - The hard-coded email and password in the sample are for the quickstart only; real apps should collect credentials from a registration and sign-in page (or the pre-built FirebaseUI) and never hard-code them.
 - Clean up: delete the provider and the user from the console (**Identity Providers** and **Users** pages). Deleting the project deletes everything in it and loses custom project IDs; this is irreversible, so use a disposable project.
 - Console click-paths, the legacy SDK v8 flow (`firebase.auth()` with copied Application setup details) and module-bundler steps are omitted; see the source page.
+- Adapted from the official docs: the source writes `user.email` and `error.message` into the page with `innerHTML`, which parses them as HTML (a DOM XSS path if a value contains markup); the sample uses `textContent`.
 - Source: https://docs.cloud.google.com/identity-platform/docs/sign-in-user-email (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
