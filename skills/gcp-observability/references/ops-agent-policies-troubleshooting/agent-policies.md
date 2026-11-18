@@ -234,7 +234,9 @@ gcloud compute instances add-metadata INSTANCE_ID \
 
 ### Collect diagnostics (`diagnose_policies.sh`)
 
-Download from https://docs.cloud.google.com/static/stackdriver/docs/diagnose_policies.sh and inspect before running. Adapted (not in the official docs): removed the space after the first `\` (it broke the line continuation).
+Download from https://docs.cloud.google.com/static/stackdriver/docs/diagnose_policies.sh and inspect before running.
+
+Adapted (not in the official docs): removed the space after the first `\` (it broke the line continuation).
 
 ```bash
 bash diagnose_policies.sh --project-id=PROJECT_ID \
@@ -304,6 +306,7 @@ It collects the OS Config agent version, the underlying OS policy assignment, th
 - The twin also describes Terraform (`ops-agent-policy` module in `terraform-google-cloud-operations`; examples `ops_agent_policy_install_all`, `ops_agent_policy_install_all_in_region`, `ops_agent_policy_install_all_in_zone`) and Console pages; Terraform is omitted here.
 - Source: https://docs.cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/agent-policies (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Source inconsistency: the `inventories` examples target `rhel` `7.*` and `debian` `11`, which are not in the Ops Agent supported operating systems list (https://docs.cloud.google.com/stackdriver/docs/solutions/agents/ops-agent, retrieved 2026-11-18: RHEL 8 / 9 / 10, Debian 12 / 13 among others). The examples show the filter syntax only; pick `osShortName` / `osVersion` values from that list.
+- Corrected from the official docs: in the source `diagnose_policies.sh` command the first line ends with `\` followed by a space, so the line continuation is broken and the remaining flags run as a separate command; the example removes the space.
 
 ## Related
 

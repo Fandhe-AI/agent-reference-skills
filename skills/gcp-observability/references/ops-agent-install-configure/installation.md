@@ -33,12 +33,12 @@ After it is installed, the agent starts automatically.
 
 Use a PowerShell terminal run as administrator.
 
-Adapted (not in the official docs): an inspect step (`Get-Content`) is inserted between the download and the run.
+Adapted (not in the official docs): an inspect step (`Get-Content`) is inserted between the download and the run, and the script is run with the call operator `&` and a quoted path instead of `Invoke-Expression`, so a user profile path with spaces works.
 
 ```powershell
 (New-Object Net.WebClient).DownloadFile("https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.ps1", "${env:UserProfile}\add-google-cloud-ops-agent-repo.ps1")
 Get-Content "${env:UserProfile}\add-google-cloud-ops-agent-repo.ps1"
-Invoke-Expression "${env:UserProfile}\add-google-cloud-ops-agent-repo.ps1 -AlsoInstall"
+& "${env:UserProfile}\add-google-cloud-ops-agent-repo.ps1" -AlsoInstall
 ```
 
 ### Install a specific or pinned version (Linux)
@@ -62,20 +62,22 @@ sudo bash add-google-cloud-ops-agent-repo.sh --also-install \
 
 ### Install a specific or pinned version (Windows)
 
+Adapted (not in the official docs): run with `&` and a quoted path instead of `Invoke-Expression`.
+
 ```powershell
-Invoke-Expression "${env:UserProfile}\add-google-cloud-ops-agent-repo.ps1 -AlsoInstall -Version MAJOR_VERSION.*.*"
+& "${env:UserProfile}\add-google-cloud-ops-agent-repo.ps1" -AlsoInstall -Version MAJOR_VERSION.*.*
 ```
 
-Adapted (not in the official docs): pinned to major version 2 (the GA line) instead of the source's `1.*.*`, which installs a Preview version.
+Adapted (not in the official docs): pinned to major version 2 (the GA line) instead of the source's `1.*.*`, which installs a Preview version, and run with `&` and a quoted path instead of `Invoke-Expression`.
 
 ```powershell
-Invoke-Expression "${env:UserProfile}\add-google-cloud-ops-agent-repo.ps1 -AlsoInstall -Version 2.*.*"
+& "${env:UserProfile}\add-google-cloud-ops-agent-repo.ps1" -AlsoInstall -Version 2.*.*
 ```
 
-Adapted (not in the official docs): the source's exact-version example `1.0.1` (a Preview version) is replaced with the placeholder form used by the Linux example.
+Adapted (not in the official docs): the source's exact-version example `1.0.1` (a Preview version) is replaced with the placeholder form used by the Linux example, and the script is run with `&` and a quoted path instead of `Invoke-Expression`.
 
 ```powershell
-Invoke-Expression "${env:UserProfile}\add-google-cloud-ops-agent-repo.ps1 -AlsoInstall -Version MAJOR_VERSION.MINOR_VERSION.PATCH_VERSION"
+& "${env:UserProfile}\add-google-cloud-ops-agent-repo.ps1" -AlsoInstall -Version MAJOR_VERSION.MINOR_VERSION.PATCH_VERSION
 ```
 
 ### Verify the agent is running
@@ -180,11 +182,11 @@ googet -noconfirm remove google-cloud-ops-agent
 
 Edit `/etc/systemd/system.conf` (create it if missing).
 
-Adapted (not in the official docs): the trailing `# Skip proxy for the local Metadata Server.` comment is moved to its own line, because systemd does not strip comments that follow a value on the same line.
+Adapted (not in the official docs): the trailing `# Skip proxy for the local Metadata Server.` comment is moved to its own line, because systemd does not strip comments that follow a value on the same line, and `NO_PROXY` lists the host names `metadata.google.internal,169.254.169.254` (as in the Windows example) instead of the URL `http://metadata.google.internal`.
 
 ```text
 # Skip proxy for the local Metadata Server.
-DefaultEnvironment="HTTP_PROXY=http://proxy-ip:proxy-port" "HTTPS_PROXY=http://proxy-ip:proxy-port" "NO_PROXY=http://metadata.google.internal"
+DefaultEnvironment="HTTP_PROXY=http://proxy-ip:proxy-port" "HTTPS_PROXY=http://proxy-ip:proxy-port" "NO_PROXY=metadata.google.internal,169.254.169.254"
 ```
 
 ```bash
@@ -242,10 +244,12 @@ setx no_proxy "metadata.google.internal,169.254.169.254" /m
 - After uninstalling, the Google Cloud console can take up to one hour to report the change. If the OS was upgraded to a new major release, remove the agent and re-install it instead of upgrading.
 - If the agent was installed during VM creation, see "Manage VMs covered by the Ops Agent OS policy" (https://docs.cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/manage-policies-auto-install). Agent policies for a whole fleet are in "Managing Agent Policies" (https://docs.cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/managing-agent-policies); VM Manager / OS policies are covered by `gcp-compute`.
 - The VM Instances dashboard status can be inaccurate if the VM lacks access scopes or the service account lacks IAM roles; gcpdiag verifies both installation and telemetry transmission (https://docs.cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/troubleshoot-find-info#agent-status-gcpdiag-cmd).
-- Proxy: the Linux `NO_PROXY` value and the Windows `no_proxy` value differ as written in the source. The proxy URLs are plain `http://`; do not embed proxy credentials in `system.conf` or `setx` commands (they land in the file system and shell history).
+- Corrected from the official docs: the Linux example sets `NO_PROXY=http://metadata.google.internal`. `NO_PROXY` takes host names and addresses, not URLs, so the metadata server requests would still go through the proxy; the example uses `metadata.google.internal,169.254.169.254`, the value of the Windows example. The proxy URLs are plain `http://`; do not embed proxy credentials in `system.conf` or `setx` commands (they land in the file system and shell history).
 - VMs without remote package access: installation needs access to remote package repositories for the agent and, on Linux, its dependencies. With VPC Service Controls or a private network, agent packages are reachable via Private Google Access, but dependencies from upstream repositories may not be. If the security policy denies repository access, create a custom VM image with the agent pre-installed and package management disabled.
 - The source also shows Console install steps (Install/Update Ops Agent from Cloud Monitoring and Compute Engine pages; Cloud Shell commands when OS policies are not supported) and installation during VM creation.
 - Source: https://docs.cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/installation (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the Windows examples run `Invoke-Expression "${env:UserProfile}\add-google-cloud-ops-agent-repo.ps1 -AlsoInstall"`. The expanded path is not quoted inside the string, so a profile path with a space (for example `C:\Users\Jane Doe`) is split; the examples use `& "${env:UserProfile}\add-google-cloud-ops-agent-repo.ps1" -AlsoInstall` with the arguments passed separately.
+- systemd re-reads `/etc/systemd/system.conf` and reapplies `DefaultEnvironment=` on `systemctl daemon-reload` (systemd v229 and later: `parse_config_file()` followed by `manager_set_defaults()` in the `MANAGER_RELOAD` branch of https://github.com/systemd/systemd/blob/v229/src/core/main.c; v258 calls `parse_configuration()` and `set_manager_defaults()`), so `daemon-reload` and a restart of the agent are enough on the supported distributions; `daemon-reexec` is not needed.
 
 ## Related
 

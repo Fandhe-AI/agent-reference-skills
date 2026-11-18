@@ -97,8 +97,10 @@ Example whose `message` contains a stack trace (grouped automatically):
 
 Results in a log entry with severity `ERROR` and the stack trace in `textPayload`:
 
+Adapted (not in the official docs): the entry is written for a `gce_instance` resource with `--monitored-resource-type` and `--monitored-resource-labels`, because the default `global` resource does not support `textPayload` (see the table below).
+
 ```bash
-gcloud logging write test-log --severity=ERROR --payload-type=text 'RuntimeException: Oops! Something bad happened.
+gcloud logging write test-log --severity=ERROR --payload-type=text --monitored-resource-type=gce_instance --monitored-resource-labels=zone=ZONE,instance_id=INSTANCE_ID 'RuntimeException: Oops! Something bad happened.
 at com.example.MyClass.method(MyClass.java:123)
 at com.example.OtherClass.doStuff(Unknown Source)
 at com.example.Sys.create(Native Method)'
@@ -154,6 +156,7 @@ projects/PROJECT_ID/logs/clouderrorreporting.googleapis.com%2Freported_errors
 - The source's `gcloud logging write` block has no language tag; flags `--severity` and `--payload-type` verified in gcloud 593.0.0 help.
 - Corrected from the official docs: the log name was written `projects/PROJECT_ID/clouderrorreporting.googleapis.com%2Freported_errors`, without the `/logs/` segment; the Logging API Discovery document defines `LogEntry.logName` as "projects/[PROJECT_ID]/logs/[LOG_ID]" with `[LOG_ID]` URL-encoded, so the name is `projects/PROJECT_ID/logs/clouderrorreporting.googleapis.com%2Freported_errors`.
 - Source: https://docs.cloud.google.com/error-reporting/docs/formatting-error-messages (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the source `gcloud logging write test-log --severity=ERROR --payload-type=text ...` sets no resource, so the entry is written for the default `global` resource (gcloud 593.0.0 help: `--monitored-resource-type` default `"global"`), for which the table lists `textPayload` as not supported; the example sets `gce_instance` with its `zone` and `instance_id` labels.
 
 ## Related
 

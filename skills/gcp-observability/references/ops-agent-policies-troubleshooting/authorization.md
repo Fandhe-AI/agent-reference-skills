@@ -114,6 +114,7 @@ Restart-Service -Name google-cloud-ops-agent -Force
 - Corrected from the official docs: the source lists `https://www.googleapis.com/auth/monitoring.admin` as the alternative Monitoring scope; the Monitoring API v3 Discovery document defines only `monitoring`, `monitoring.read`, `monitoring.write` and `cloud-platform`, and the Cloud Monitoring access-control page names the full-access scope `https://www.googleapis.com/auth/monitoring`.
 - Corrected from the official docs: the source says that when `cloud-platform` is listed "you have sufficient authorization"; the scope check covers access scopes only; the source's own service-account section also requires `roles/monitoring.metricWriter` and `roles/logging.logWriter` on the service account, and the Cloud Monitoring access-control page recommends the `cloud-platform` scope together with IAM roles that restrict access.
 - Source: https://docs.cloud.google.com/monitoring/access-control (retrieved 2026-11-18; CC BY 4.0), for the Monitoring access scopes.
+- systemd re-reads `/etc/systemd/system.conf` and reapplies `DefaultEnvironment=` on `systemctl daemon-reload` (systemd v229 and later: `parse_config_file()` followed by `manager_set_defaults()` in the `MANAGER_RELOAD` branch of https://github.com/systemd/systemd/blob/v229/src/core/main.c; v258 calls `parse_configuration()` and `set_manager_defaults()`), so `daemon-reload` and a restart of the agent are enough on the supported distributions; `daemon-reexec` is not needed.
 
 ## Related
 

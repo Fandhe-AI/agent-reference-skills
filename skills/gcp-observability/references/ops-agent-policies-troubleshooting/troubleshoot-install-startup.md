@@ -73,14 +73,18 @@ Start-Service google-cloud-ops-agent
 
 Linux, Metrics Agent component (expected process `otelopscol`, port 20201):
 
+Adapted (not in the official docs): `ss -lntp` lists the listening TCP sockets with their processes; the source's `netstat -ns -p` prints protocol statistics.
+
 ```bash
-sudo netstat -ns -p | grep '20201'
+sudo ss -lntp | grep ':20201'
 ```
 
 Linux, Logging Agent component (expected process `fluent-bit`, port 20202):
 
+Adapted (not in the official docs): `ss -lntp` lists the listening TCP sockets with their processes; the source's `netstat -ns -p` prints protocol statistics.
+
 ```bash
-sudo netstat -ns -p | grep '20202'
+sudo ss -lntp | grep ':20202'
 ```
 
 Windows (expected `google-cloud-metrics-agent_windows_amd64.exe` on 20201 and `fluent-bit.exe` on 20202):
@@ -149,6 +153,7 @@ The first is the Linux message and the second is the Windows message. Correct th
 - Port and API-permission errors can also be detected by the Ops Agent health checks. To find the service account used by a VM, check the **API and identity management** section of the VM details page; see the authorization page for the roles.
 - The source also shows long `systemctl` / `Get-Service` output samples and console steps; they are omitted here.
 - Source: https://docs.cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/troubleshoot-install-startup (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the Linux port checks are `sudo netstat -ns -p | grep '20201'` (and `20202`). `-s` prints per-protocol statistics, not sockets, so the output does not show which process listens on the port; the examples use `sudo ss -lntp | grep ':20201'` (`ss` is in iproute2; `sudo netstat -lntp` works where net-tools is installed).
 
 ## Related
 
