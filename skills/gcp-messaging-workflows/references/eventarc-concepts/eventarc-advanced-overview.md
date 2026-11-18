@@ -10,11 +10,13 @@ Eventarc Advanced simplifies ingestion, orchestration, and delivery of event dat
 
 ### Create an enrollment
 
+Adapted (not in the official docs): the event type in `--cel-match` is changed from `google.cloud.pubsub.topic.v1.messagePublished` to `google.cloud.dataflow.job.v1beta3.statusChanged`, because Eventarc Advanced does not support direct events from Cloud Pub/Sub.
+
 ```bash
 gcloud eventarc enrollments create my-enrollment \
      --location=us-central1 --message-bus=my-message-bus \
      --cel-match="message.type == \
- 'google.cloud.pubsub.topic.v1.messagePublished'" \
+ 'google.cloud.dataflow.job.v1beta3.statusChanged'" \
      --destination-pipeline=my-pipeline
 ```
 
@@ -50,6 +52,7 @@ gcloud eventarc enrollments create my-enrollment \
 - Compliance: Eventarc Standard is compliant with specific certifications and standards; Eventarc Advanced is not. To avoid non-compliant Advanced resources, create a custom organization policy that disables Eventarc Advanced resources. Compliance does not apply to any feature in Preview.
 - Capabilities called out by the source: large-scale application integration, event streaming for AI and analytics (filter, transform, enrich), hybrid and multi-cloud deployments.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/eventarc/enrollments/create (gcloud 593.0.0 help).
+- Corrected from the official docs: the gcloud help example matches `message.type == 'google.cloud.pubsub.topic.v1.messagePublished'`, but Eventarc Advanced does not support direct events from Cloud Pub/Sub (https://docs.cloud.google.com/eventarc/docs/event-types); the example uses the Dataflow event type of https://docs.cloud.google.com/eventarc/advanced/docs/receive-events/create-enrollment instead.
 - Source: https://docs.cloud.google.com/eventarc/advanced/docs/overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
