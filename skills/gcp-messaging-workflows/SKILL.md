@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-messaging-workflows
 
-Google Cloud (GCP) のメッセージング・イベント駆動・オーケストレーション系スキル。Pub/Sub（topic・subscription・pull / StreamingPull / push・publish のバッチ / フロー制御 / ordering key・dead-letter topic・retry policy・exactly-once 配信・subscription filter・seek / snapshot・BigQuery / Cloud Storage / Bigtable subscription・import topic・Single Message Transforms（SMT）・スキーマ・CMEK・IAM）、Eventarc（Standard の trigger・Cloud Audit Logs / Pub/Sub / サードパーティの channel・GKE / 内部 HTTP 宛・CloudEvents・イベント種別、Advanced の message bus・enrollment・pipeline・CEL）、Workflows（YAML 構文・steps・条件・反復・subworkflows・エラー処理・retry・並列ステップ・標準ライブラリ・コネクタ・HTTP・callbacks・Eventarc / Scheduler からの実行）、Google Cloud Managed Service for Apache Kafka（cluster・topic・consumer group・認証（SASL / mTLS）・Kafka ACL・Kafka Connect・Schema Registry）を扱う。加えて gcloud 4 グループ・REST（Discovery）6 API・IAM 5 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のメッセージング・イベント駆動・オーケストレーション系スキル。Pub/Sub（topic・subscription・pull / StreamingPull / push・publish のバッチ / フロー制御 / ordering key・dead-letter topic・retry policy・exactly-once 配信・subscription filter・seek / snapshot・BigQuery / Cloud Storage / Bigtable subscription・import topic・Single Message Transforms（SMT）・スキーマ・CMEK・IAM）、Eventarc（Standard の trigger・Cloud Audit Logs / Pub/Sub / サードパーティの channel・GKE / 内部 HTTP 宛・CloudEvents・イベント種別、Advanced の message bus・enrollment・pipeline・CEL）、Workflows（YAML 構文・steps・条件・反復・subworkflows・エラー処理・retry・並列ステップ・標準ライブラリ・コネクタ・HTTP・callbacks・Eventarc / Scheduler からの実行）、Google Cloud Managed Service for Apache Kafka（cluster・topic・consumer group・認証（SASL / mTLS）・Kafka ACL・Kafka Connect・Schema Registry）を扱う。加えて gcloud 4 グループ・REST（Discovery）6 API・IAM 5 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`gcloud/pubsub` / `gcloud/workflows` / `gcloud/managed-kafka` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。
 
@@ -19,6 +19,11 @@ Google Cloud (GCP) のメッセージング・イベント駆動・オーケス�
 skills/gcp-messaging-workflows/
   SKILL.md
   references/
+    gcloud/                       # 機械生成: gcloud 593.0.0、取得 2026-11-14
+      README.md
+      eventarc/                   # triggers・channels・message-buses・pipelines・enrollments・google-api-sources 等、分割投入中（8 / 11 ページ。収録済みは README 掲載分のみ）
+        README.md
+        eventarc-<group>.md
     pubsub-concepts/              # Pub/Sub の概要・基本概念・信頼性・プロパティ・Kafka との選択・Pub/Sub Lite の廃止告知と移行
       README.md
       <page>.md
@@ -86,6 +91,9 @@ skills/gcp-messaging-workflows/
       README.md
       <page>.md
 ```
+
+`references/gcloud/` が担当する gcloud グループ（4）: `pubsub` / `eventarc` / `workflows` / `managed-kafka`。GA コマンドのページは gcloud help の verbatim、alpha / beta は NAME と SYNOPSIS のみ（各ページ冒頭に明記）。
+
 - `pubsub` グループには Pub/Sub Lite のコマンド（`lite-topics` / `lite-subscriptions` / `lite-reservations` / `lite-operations`、非推奨）と `message-transforms`（SMT）を含む
 - `eventarc` グループの Advanced 用コマンド（`message-buses` / `pipelines` / `enrollments` / `google-api-sources`）は `eventarc` グループ内にある
 - `workflows` グループの `executions` と `workflows run` は実行の操作
@@ -98,17 +106,24 @@ skills/gcp-messaging-workflows/
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
-2. Pub/Sub は 11 カテゴリ（`pubsub-*`）、Eventarc は 4、Workflows は 4、Managed Kafka は 3 に分かれる。概念か操作か、publish 側か subscribe 側か、配信保証・export・取り込み・スキーマ・セキュリティのどれかで選ぶ
-3. 非推奨・終了を確認するときは `pubsub-concepts/pubsub-lite-deprecation.md`（Pub/Sub Lite）と `eventarc-concepts/event-types.md`（Cloud IoT イベント）を引く
-4. Workflows の定期実行・Eventarc 経由の実行は `workflows-connectors-callbacks-triggers/`（`schedule-workflow.md`・`trigger-workflow-eventarc.md`）。Cloud Scheduler 自体の設定は `gcp-run`
+1. gcloud コマンド → 下記マッピング表で `gcloud` を選び、`references/gcloud/README.md` からグループの README（例: `references/gcloud/pubsub/README.md`（後続 PR で投入））→ グループページ・コマンドページを引く。GA は help の verbatim、alpha / beta は NAME と SYNOPSIS のみなので、フラグの詳細が要るときは `gcloud alpha|beta <command> --help` を使う。Cloud Tasks（`gcloud tasks`）・Cloud Scheduler（`gcloud scheduler`）は `gcp-run`
+2. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
+3. Pub/Sub は 11 カテゴリ（`pubsub-*`）、Eventarc は 4、Workflows は 4、Managed Kafka は 3 に分かれる。概念か操作か、publish 側か subscribe 側か、配信保証・export・取り込み・スキーマ・セキュリティのどれかで選ぶ
+4. 非推奨・終了を確認するときは `pubsub-concepts/pubsub-lite-deprecation.md`（Pub/Sub Lite）と `eventarc-concepts/event-types.md`（Cloud IoT イベント）を引く
+5. Workflows の定期実行・Eventarc 経由の実行は `workflows-connectors-callbacks-triggers/`（`schedule-workflow.md`・`trigger-workflow-eventarc.md`）。Cloud Scheduler 自体の設定は `gcp-run`
 
-未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+`samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` と各ガイドのコードブロックを引く。
+
+未投入カテゴリ（`gcloud/pubsub` / `gcloud/workflows` / `gcloud/managed-kafka` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+
+分割投入中のカテゴリ（`gcloud/eventarc`: 8 / 11 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| gcloud のコマンド・フラグを調べたい（4 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
+| `gcloud eventarc`（triggers・channels・message-buses・pipelines・enrollments・google-api-sources）のフラグを調べたい | gcloud/eventarc | [references/gcloud/eventarc/README.md](references/gcloud/eventarc/README.md) |
 | Pub/Sub の概要・topic / subscription / message の基本概念・信頼性・プロパティ一覧・Pub/Sub と Kafka の選び方・gcloud クイックスタート・Pub/Sub Lite の廃止告知と移行 | pubsub-concepts | [references/pubsub-concepts/README.md](references/pubsub-concepts/README.md) |
 | topic の作成・publish の流れ・メッセージ形式と属性・publish のサンプル | pubsub-publish | [references/pubsub-publish/README.md](references/pubsub-publish/README.md) |
 | バッチ publish・publisher のフロー制御・ordering key・publish のベストプラクティス・メッセージ圧縮・topic のモニタリング | pubsub-publish-ordering-batching | [references/pubsub-publish-ordering-batching/README.md](references/pubsub-publish-ordering-batching/README.md) |
@@ -132,7 +147,7 @@ skills/gcp-messaging-workflows/
 | Kafka クライアント認証（SASL / OAUTHBEARER・mTLS）・Kafka ACL・暗号化（CMEK）・cluster とクライアントのモニタリング | kafka-auth-monitoring | [references/kafka-auth-monitoring/README.md](references/kafka-auth-monitoring/README.md) |
 | Kafka Connect の概要・Connect cluster の作成・Pub/Sub sink コネクタ・Schema Registry の概要 | kafka-connect-schema-registry | [references/kafka-connect-schema-registry/README.md](references/kafka-connect-schema-registry/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/pubsub` / `gcloud/workflows` / `gcloud/managed-kafka` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
@@ -178,7 +193,7 @@ skills/gcp-messaging-workflows/
 
 - 取得日: 2026-11-18（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin。URL に版が無いため取得日で pin）、2026-11-14（機械生成分）、gcloud 593.0.0
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
-- `references/gcloud/`（後続 PR で投入） `references/iam/`（後続 PR で投入） `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） は機械生成（gcloud 593.0.0 の help / IAM roles-permissions reference / `google-api-python-client` 同梱の Discovery document）。他の 22 カテゴリは公式ガイド由来の手書き
+- `references/gcloud/` `references/iam/`（後続 PR で投入） `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） は機械生成（gcloud 593.0.0 の help / IAM roles-permissions reference / `google-api-python-client` 同梱の Discovery document）。他の 22 カテゴリは公式ガイド由来の手書き
 - gcloud は GA コマンドが gcloud help の verbatim、alpha / beta は NAME と SYNOPSIS のみ。`managed-kafka schema-registries` は beta / alpha のみ
 - 一部の公式の例は安全性・正しさのために修正した。該当箇所はコードブロック直前に `Adapted (not in the official docs)` の行を置き、`## Notes` に理由を残す。公式の誤りを直したものは Notes に `Corrected from the official docs` と記す（例: `workflows-concepts-executions/creating-updating-workflow.md` の `executionHistoryLevel` の値）
 - 削除は元に戻せない操作を含む（例: ワークフローの削除は実行も削除し、実行中のものを取り消す）。該当ページの Notes に注意を記載しているため、使い捨てのプロジェクトで先に試す
