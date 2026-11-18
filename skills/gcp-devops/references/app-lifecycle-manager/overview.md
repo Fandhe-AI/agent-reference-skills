@@ -51,7 +51,7 @@ gcloud app-lifecycle-manager saas create SAAS_OFFERING_NAME --location=global --
 - Organize components that should be updated or scaled together into one Terraform configuration and model each grouping as a separate unit kind. When a composite template is attached to an offering, unit kinds, blueprints and releases are populated automatically; importing a new template revision deploys updates across units.
 - Rollouts apply a new release to existing units through Terraform run by the actuation service account, which creates, modifies and deletes the resources defined in the configuration. Try releases and rollouts on a disposable project first.
 - Distance: this is Google Cloud's managed SaaS lifecycle service; Terraform / Infrastructure Manager as a standalone tool is planned in `gcp-iac`. Application Design Center composite templates are covered in the `application-design-center` category of this skill.
-- The source also shows architecture diagrams and links to a glossary, blueprints, a quickstart and the end-to-end tutorial `tutorials/adc-alm-deployment`.
+- The source also shows architecture diagrams and links to a glossary, blueprints, a quickstart and the end-to-end tutorial (https://docs.cloud.google.com/app-lifecycle-manager/tutorials/adc-alm-deployment).
 - Source: https://docs.cloud.google.com/app-lifecycle-manager/overview (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

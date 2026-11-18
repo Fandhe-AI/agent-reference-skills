@@ -63,7 +63,7 @@ Any other permissions your build process needs (for example access to source rep
 - Caution from the source: careful management of these accounts is crucial to security and function; grant only the necessary permissions to each. Consult each Google Cloud product's documentation to determine the permissions your Terraform needs; the roles above (`roles/storage.admin`, `roles/compute.admin`, and so on) are broad examples.
 - The actuation service account can delete resources defined in your Terraform; a dedicated account per tenant (unit) limits the impact of mistakes and security breaches.
 - The source says the Google-managed account "is automatically created after you create your first SaaS offering resource" in one place and "when you create your first App Lifecycle Manager resource" in another; the flags quickstart says it is created when you enable the API. Service agents are Google-managed; do not attach this service agent to your own workloads.
-- IAM roles for App Lifecycle Manager itself are on the access control page (`app-lifecycle-manager/access-control`); general service accounts and service agents are in the `gcp-foundation` skill.
+- IAM roles for App Lifecycle Manager itself are on the access control page (https://docs.cloud.google.com/app-lifecycle-manager/access-control); general service accounts and service agents are in the `gcp-foundation` skill.
 - Source: https://docs.cloud.google.com/app-lifecycle-manager/service-accounts (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -51,7 +51,7 @@ Ask an administrator to grant these IAM roles on the project:
 
 - Status: Preview. During Preview the Device Streaming API requires the Cloud Testing API to be enabled.
 - Custom roles or other predefined roles can also provide the permissions.
-- Support: the DDP Developer Forum (discuss.google.dev) and the Google Issue Tracker are named for help, bugs and feature requests. Agent skills are in the `google/skills` GitHub repository (`skills/cloud/developer-device-platform-basics`).
+- Support: the DDP Developer Forum (discuss.google.dev) and the Google Issue Tracker are named for help, bugs and feature requests. Agent skills are in the `google/skills` GitHub repository (https://github.com/google/skills/tree/main/skills/cloud/developer-device-platform-basics).
 - Clean up: to avoid charges, delete the Google Cloud project with the resources; try this on a disposable project.
 - Firebase Test Lab users: the source links a migration guide, a command and flag translation page and a migration skill for AI agents.
 - Source: https://docs.cloud.google.com/developer-device-platform/quickstart (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)

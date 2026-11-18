@@ -45,7 +45,7 @@ Deploy in `us-central1` and `europe-west4`, with Artifact Registry and Developer
 - Replication is automated only when you use the Google Cloud console. It is not automated when you create or update App Lifecycle Manager resources with the gcloud CLI; use the console to sync create or update operations across regions.
 - Because the Artifact Registry repository and Developer Connect instance live in a single (possibly different) region, offering, release and unit kind resources must exist in all regions defined in the offering.
 - Snippet taken from https://docs.cloud.google.com/app-lifecycle-manager/create-saas-offering (the `saas create` command).
-- Supported regions are listed on the App Lifecycle Manager locations page (`app-lifecycle-manager/locations`). Consider latency, compliance and data residency when choosing regions.
+- Supported regions are listed on the App Lifecycle Manager locations page (https://docs.cloud.google.com/app-lifecycle-manager/locations). Consider latency, compliance and data residency when choosing regions.
 - Source: https://docs.cloud.google.com/app-lifecycle-manager/regionalization (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
