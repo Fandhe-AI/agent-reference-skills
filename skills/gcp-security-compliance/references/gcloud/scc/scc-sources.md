@@ -1,0 +1,233 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/scc/sources
+---
+
+# gcloud scc sources
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud scc sources describe
+
+```text
+NAME
+    gcloud scc sources describe - describe a source given its display name or
+        source id
+
+SYNOPSIS
+    gcloud scc sources describe [PARENT]
+        (--source=SOURCE | --source-display-name=SOURCE_DISPLAY_NAME)
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Describe a source given its display name or source id.
+
+EXAMPLES
+    Describe source with display name Security Scanner:
+
+        $ gcloud scc sources describe 123456 \
+            --source-display-name="Security Scanner"
+
+    Describe source with source id '5678':
+
+        $ gcloud scc sources describe 123456 --source=5678
+
+POSITIONAL ARGUMENTS
+     Parent resource - parent organization, folder, or project in the Google
+     Cloud resource hierarchy to be used for the gcloud scc command. Specify
+     the argument as either [RESOURCE_TYPE/RESOURCE_ID] or [RESOURCE_ID], as
+     shown in the preceding examples. This represents a Cloud resource.
+
+     [PARENT]
+        ID of the parent or fully qualified identifier for the parent.
+
+        To set the parent attribute:
+        * provide the argument parent on the command line;
+        * Set the parent property in configuration using gcloud config set
+          scc/parent if it is not specified in command line.
+
+REQUIRED FLAGS
+     Exactly one of these must be specified:
+
+       --source=SOURCE
+          Cloud SCC specific source. It's derived from the the source's
+          relative resource name. See:
+          https://cloud.google.com/apis/design/resource_names#relative_resource_name.
+          For Example: For the given source name:
+          "organizations/123/sources/456", 456 represents source id.
+
+       --source-display-name=SOURCE_DISPLAY_NAME
+          Source's display name must be unique amongst its siblings, for
+          example, two sources with the same parent can't share the same
+          display name. Display name must start and end with a letter or digit,
+          may contain letters, digits, spaces, hyphens, and underscores, and
+          can be no longer than 32 characters. This is captured by the regular
+          expression: [\p{L}\p{N}]({\p{L}\p{N}- ]{0,30}[\p{L}\p{N}])?. For
+          example: 'Cloud Security Scanner' is the source display name.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the securitycenter/v2 API. The full documentation for
+    this API can be found at: https://cloud.google.com/security-command-center
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha scc sources describe
+
+        $ gcloud beta scc sources describe
+```
+
+### gcloud scc sources list
+
+```text
+NAME
+    gcloud scc sources list - list Cloud Security Command Center sources
+
+SYNOPSIS
+    gcloud scc sources list [PARENT] [--filter=EXPRESSION] [--limit=LIMIT]
+        [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    List Cloud Security Command Center sources.
+
+EXAMPLES
+    List all sources under organization 123456:
+
+        $ gcloud scc sources list organizations/123456
+
+    List all sources under folder 456:
+
+        $ gcloud scc sources list folders/456
+
+    List all sources under project example-project:
+
+        $ gcloud scc sources list projects/example-project
+
+POSITIONAL ARGUMENTS
+     Parent resource - parent organization, folder, or project in the Google
+     Cloud resource hierarchy to be used for the gcloud scc command. Specify
+     the argument as either [RESOURCE_TYPE/RESOURCE_ID] or [RESOURCE_ID], as
+     shown in the preceding examples. This represents a Cloud resource.
+
+     [PARENT]
+        ID of the parent or fully qualified identifier for the parent.
+
+        To set the parent attribute:
+        * provide the argument parent on the command line;
+        * Set the parent property in configuration using gcloud config set
+          scc/parent if it is not specified in command line.
+
+LIST COMMAND FLAGS
+     --filter=EXPRESSION
+        Apply a Boolean filter EXPRESSION to each resource item to be listed.
+        If the expression evaluates True, then that item is listed. For more
+        details and examples of filter expressions, run $ gcloud topic filters.
+        This flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --limit=LIMIT
+        Maximum number of resources to list. The default is unlimited. This
+        flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --page-size=PAGE_SIZE
+        Some services group resource list output into pages. This flag
+        specifies the maximum number of resources per page. The default is
+        determined by the service if it supports paging, otherwise it is
+        unlimited (no paging). Paging may be applied before or after --filter
+        and --limit depending on the service.
+
+     --sort-by=[FIELD,...]
+        Comma-separated list of resource field key names to sort by. The
+        default order is ascending. Prefix a field with ``~'' for descending
+        order on that field. This flag interacts with other flags that are
+        applied in this order: --flatten, --sort-by, --filter, --limit.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the securitycenter/v2 API. The full documentation for
+    this API can be found at: https://cloud.google.com/security-command-center
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha scc sources list
+
+        $ gcloud beta scc sources list
+```
+
+### gcloud beta scc sources describe
+
+```text
+NAME
+    gcloud beta scc sources describe - describe a source given its display name
+        or source id
+
+SYNOPSIS
+    gcloud beta scc sources describe [PARENT]
+        (--source=SOURCE | --source-display-name=SOURCE_DISPLAY_NAME)
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta scc sources list
+
+```text
+NAME
+    gcloud beta scc sources list - list Cloud Security Command Center sources
+
+SYNOPSIS
+    gcloud beta scc sources list [PARENT] [--filter=EXPRESSION] [--limit=LIMIT]
+        [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha scc sources describe
+
+```text
+NAME
+    gcloud alpha scc sources describe - describe a source given its display
+        name or source id
+
+SYNOPSIS
+    gcloud alpha scc sources describe [PARENT]
+        (--source=SOURCE | --source-display-name=SOURCE_DISPLAY_NAME)
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha scc sources list
+
+```text
+NAME
+    gcloud alpha scc sources list - list Cloud Security Command Center sources
+
+SYNOPSIS
+    gcloud alpha scc sources list [PARENT] [--filter=EXPRESSION]
+        [--limit=LIMIT] [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/scc/sources (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
