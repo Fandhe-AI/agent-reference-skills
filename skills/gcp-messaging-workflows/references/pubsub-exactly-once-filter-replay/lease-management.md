@@ -10,6 +10,8 @@ A pull subscriber must process and acknowledge a message within the acknowledgme
 
 ### Manual unary pull with deadline extension (Node.js)
 
+Adapted (not in the official docs): added a check that returns when the pull response contains no messages.
+
 ```javascript
 /**
  * TODO(developer): Uncomment these variables before running the sample.
@@ -57,6 +59,11 @@ async function synchronousPullWithLeaseManagement() {
 
   // The subscriber pulls a specified number of messages.
   const [response] = await subClient.pull(request);
+
+  if (!response.receivedMessages || response.receivedMessages.length === 0) {
+    console.log('No messages received.');
+    return;
+  }
 
   // Obtain the first message.
   const message = response.receivedMessages[0];
@@ -197,6 +204,7 @@ subscriber.close()
 
 ## Notes
 
+- Corrected from the official docs: the source's Node.js sample passes `response.receivedMessages[0]` to `worker` unconditionally; when a pull returns no messages that value is `undefined` and `message.message.data` throws a `TypeError`, so the sample returns early as the Python sample does.
 - Defaults and names for these properties differ per client library; no per-library default values are listed in the source beyond those above.
 - Acknowledgment deadlines are not guaranteed to be respected unless exactly-once delivery is enabled.
 - A low subscription-level ack deadline raises the chance of duplicates; a high one delays redelivery of failed messages. Lease management gives per-message control.

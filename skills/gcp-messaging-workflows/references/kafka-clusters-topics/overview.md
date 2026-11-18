@@ -51,7 +51,7 @@ gcloud managed-kafka clusters create CLUSTER_ID \
 |------------|
 | Each cluster must have equal resources in each of the three zones; single-zone and two-zone clusters are not supported. |
 | You cannot choose the zones when you create the cluster. |
-| You cannot configure the volume of local storage on a cluster (see the create-cluster page for the custom local storage option). |
+| You cannot configure the volume of local storage on a cluster. |
 | Runs in KRaft mode; ZooKeeper mode is not supported. |
 | JMX APIs for metrics are not supported. |
 | Broker configs with `read-only` update mode (for example `auto.create.topics.enable`, `background.threads`) take effect only when brokers restart; restarts happen during maintenance with no set schedule and cannot be triggered manually. Configs with `cluster-wide` update mode (for example `message.max.bytes`) take effect immediately without restart. |
@@ -61,6 +61,7 @@ gcloud managed-kafka clusters create CLUSTER_ID \
 
 - Google Cloud Managed Service for Apache Kafka runs Apache Kafka; client properties follow upstream Apache Kafka. This service is distinct from Pub/Sub, which is a different managed messaging service.
 - Snippet taken from https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/create-cluster with `--public-cluster` and `--allowed-source-ip-ranges` removed (Adapted from the official docs: the source's example includes them; they make the cluster reachable from the internet for the listed source ranges). The optional lines `--encryption-key` and `--labels` can be omitted.
+- Source inconsistency: the overview's limitations say "You cannot configure the volume of local storage on a cluster", while the create-cluster page documents an optional custom local storage setting (disk capacity per broker, gcloud `--broker-disk`); the limitation is kept as in the source.
 - Networking itself (VPC, Private Service Connect, Cloud DNS) is covered by `gcp-networking`; CMEK keys by `gcp-security`; Cloud Monitoring by `gcp-observability`.
 - The source also shows pricing discussion; prices are not copied (see https://cloud.google.com/managed-service-for-apache-kafka/pricing).
 - Source: https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)

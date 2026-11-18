@@ -125,6 +125,7 @@ except AlreadyExists as e:
 - The source's gcloud text names the placeholders `CLUSTER` and `LOCATION` while the command uses `CLUSTER_ID` and `LOCATION_ID`; they are the cluster ID and the cluster region.
 - `gcloud managed-kafka topics create` in 593.0.0 requires `--partitions` and `--replication-factor`; `--configs` is optional (`--configs` is `[KEY=VALUE,...]`); omit it if you have no overrides.
 - Google Cloud Managed Service for Apache Kafka runs Apache Kafka; client properties follow upstream Apache Kafka (topic configs: https://kafka.apache.org/37/configuration/topic-level-configs/).
+- The REST request body sets `"name": "TOPIC_ID"`, as in the source. In the Managed Kafka v1 Discovery document, `Topic.name` is the full resource name (`projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic}`), and the topic ID for `topics.create` is the required `topicId` query parameter, which the request URL already sets; the response returns the full name.
 - The source also shows Console, PowerShell, Terraform, Go and Java.
 - Source: https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/create-topic (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 

@@ -157,9 +157,9 @@ hasPrefix(attributes.KEY, "SUBSTRING")
 | `attributes:name` | Messages with the `name` attribute |
 | `NOT attributes:name` | Messages without the `name` attribute |
 | `attributes.name = "com"` | Messages with the `name` attribute and the value of `com` |
-| `attributes.name != "com"` | Messages without the `name` attribute and the value of `com` |
+| `attributes.name != "com"` | Messages that don't have the `name` attribute with the value `com` |
 | `hasPrefix(attributes.name, "co")` | Messages with the `name` attribute and a value that starts with `co` |
-| `NOT hasPrefix(attributes.name, "co")` | Messages without the `name` attribute and a value that starts with `co` |
+| `NOT hasPrefix(attributes.name, "co")` | Messages that don't have the `name` attribute with a value that starts with `co` |
 
 ### Operators and rules
 
@@ -191,10 +191,13 @@ hasPrefix(attributes.KEY, "SUBSTRING")
 
 ## Notes
 
+- Clarified from the official docs: the source describes `attributes.name != "com"` as "Messages without the `name` attribute and the value of `com`" and `NOT hasPrefix(attributes.name, "co")` as "Messages without the `name` attribute and a value that starts with `co`"; read as the negation of the `=` and `hasPrefix` rows, they select messages that do not satisfy those conditions. Messages that do not match the filter are acknowledged automatically and are not delivered.
 - Messages auto-acknowledged by the filter do not incur outbound message fees, but do incur message delivery fees and seek-related storage fees (see the Pub/Sub pricing page).
 - Each subscription on a topic can have a different filter.
 - Snapshots of a subscription with a filter contain all newer messages (including non-matching ones); a seek then redelivers only messages matching the seeking subscription's filter.
 - The source's gcloud push example uses `--push-endpoint` and `--message-filter`, both present in gcloud 593.0.0 `pubsub subscriptions create`.
+- The push example sets no push authentication. With `--push-auth-service-account`, the service account is used as the identity for the generated OpenID Connect token for authenticated push (gcloud 593.0.0 help); Pub/Sub then sends a signed JWT in the authorization header of the push request, and subscribers can validate it (https://docs.cloud.google.com/pubsub/docs/authenticate-push-subscriptions).
+- The last step of the filter-change workaround deletes the original subscription; try the procedure on a disposable project first.
 - The source also shows Console, C++, C#, Go, Java, Ruby and PHP forms, and a CommonJS Node.js variant; they are omitted.
 - Source: https://docs.cloud.google.com/pubsub/docs/subscription-message-filter (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 

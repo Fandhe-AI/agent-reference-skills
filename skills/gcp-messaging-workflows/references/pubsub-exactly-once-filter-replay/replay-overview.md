@@ -70,6 +70,7 @@ gcloud pubsub subscriptions seek SUBSCRIPTION_ID \
 ## Notes
 
 - Data loss: seeking to a future time or to a snapshot marks messages as acknowledged or unacknowledged in bulk, so unprocessed messages can be dropped and processed messages replayed. Try it on a disposable project first; deleting a snapshot is irreversible.
+- Corrected from the official docs: the source's seek-to-timestamp command ends `--time=TIME \` with a trailing line continuation and no following line; the backslash is removed.
 - Creating a snapshot immediately after creating a subscription can fail because of propagation delay.
 - The source also shows the Console and Google APIs forms; they are omitted.
 - Source: https://docs.cloud.google.com/pubsub/docs/replay-overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)

@@ -8,11 +8,12 @@ The Google Cloud console provides a Metrics dashboard for one subscription or fo
 
 ## Signature / Usage
 
-The source page has only Console steps and no code block. The retention command below turns on message retention for an existing subscription, which makes the **Retention** section of the dashboard appear.
+The source page has only Console steps and no code block. The retention command below turns on retention of acknowledged messages for an existing subscription, which makes the **Retention** section of the dashboard appear.
+
+Adapted (not in the official docs): dropped `--message-retention-duration=1d` so the command keeps the subscription's current retention duration.
 
 ```bash
 gcloud pubsub subscriptions update SUBSCRIPTION_ID \
-  --message-retention-duration=1d \
   --retain-acked-messages
 ```
 
@@ -36,6 +37,7 @@ gcloud pubsub subscriptions update SUBSCRIPTION_ID \
 
 ## Notes
 
+- Adapted from the official docs: the borrowed command also sets `--message-retention-duration=1d`; on a subscription whose retention duration is longer (the default is 7 days), that shortens retention and can discard older unacknowledged messages (see subscription-message-retention.md), so the example sets only `--retain-acked-messages`. Set `--message-retention-duration` only when you intend to change the duration.
 - Prerequisites: a Cloud Billing account, a project with billing enabled, at least one topic with a subscription, and familiarity with Cloud Monitoring and Metrics Explorer. Alerting itself is documented in `gcp-observability`.
 - Customize: "Save as custom dashboard" copies all charts to a new or existing custom dashboard; a single chart is added with More Actions, "Add to custom dashboard". Edit a chart via "View in Metrics Explorer" (PromQL) then "Save chart".
 - If a chart has no "Create alerting policy" option, save it to a custom dashboard and use "Convert to alert chart" from the chart's More Actions.

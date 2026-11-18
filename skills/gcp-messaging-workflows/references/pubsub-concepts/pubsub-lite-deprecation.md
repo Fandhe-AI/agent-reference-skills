@@ -39,7 +39,7 @@ gcloud pubsub lite-subscriptions create mysubscription \
 
 - Deprecated: "Pub/Sub Lite is deprecated. Effective January 31, 2027, Pub/Sub Lite will be turned down." Migrate to Managed Service for Apache Kafka or Pub/Sub; do not start new work on Pub/Sub Lite.
 - The deprecation policy is defined by the Google Cloud Platform Terms of Service (section "Discontinuation of Services"); a deprecated service stays available for at least the period defined in the Terms of Service, then is scheduled for shutdown. The deprecation policy applies only to the services, features or products listed in it.
-- The landing page lists the retired documentation areas (quickstarts, authentication, access control, topics, reservations, publishing, subscriptions, subscribing, seek, monitoring, pricing, quotas, samples, client libraries, REST and RPC APIs, `gcloud pubsub` Lite commands). They are not summarized here because Pub/Sub Lite is not a current option.
+- The landing page lists the Pub/Sub Lite documentation areas (quickstarts, authentication, access control, topics, reservations, publishing, subscriptions, subscribing, seek, monitoring, pricing, quotas, samples, client libraries, REST and RPC APIs, `gcloud pubsub` Lite commands). They are not summarized here because Pub/Sub Lite is not a current option.
 - The gcloud `pubsub lite-*` groups still exist in gcloud 593.0.0 and are covered by the machine-generated gcloud pages of this skill.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/pubsub/lite-subscriptions/create (gcloud 593.0.0 help).
 - Source: https://docs.cloud.google.com/pubsub/lite/docs/deprecations (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)

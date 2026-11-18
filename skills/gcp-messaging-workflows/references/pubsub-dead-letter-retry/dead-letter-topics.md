@@ -169,6 +169,8 @@ with subscriber:
 
 ### Remove a dead-letter topic
 
+Adapted (not in the official docs): the source writes the placeholder as `subscription-id`; it is upper case to match the other commands on this page.
+
 ```bash
 gcloud pubsub subscriptions update SUBSCRIPTION_ID \
   --clear-dead-letter-policy
@@ -220,6 +222,7 @@ gcloud pubsub subscriptions update SUBSCRIPTION_ID \
 - Fees: publish fees go to the project of the dead-letter topic, outbound subscription fees to the project of the subscription; if the dead-letter topic's message storage location policy doesn't allow the subscription's region, publish fees for outbound messages also apply. See the Pub/Sub pricing page.
 - The samples ack right away to show the attempt count; a message acked before it is processed is lost if processing then fails. At-least-once delivery means subscribers must be idempotent.
 - The source also shows Console, C++, C#, Go, Java, PHP, Ruby, a TypeScript sample, and Python / Java / Go forms of create / update / remove; the Node.js update sample is omitted.
+- Adapted from the official docs: the remove command `gcloud pubsub subscriptions update subscription-id --clear-dead-letter-policy` uses the upper-case `SUBSCRIPTION_ID` placeholder.
 - Adapted from the official docs: gcloud placeholders such as `service-project-number@gcp-sa-pubsub.iam.gserviceaccount.com` were rewritten to the exact service agent format with `PROJECT_NUMBER`, and `$PUBSUB_SERVICE_ACCOUNT` is quoted.
 - Adapted from the official docs: the source's topic grant `gcloud pubsub topics add-iam-policy-binding dead-letter-topic-name` runs in the default project; `--project=DEAD_LETTER_TOPIC_PROJECT` is added so the grant targets the same topic as `--dead-letter-topic-project` in the create and update commands (when the topic is in the subscription's project, use that project ID).
 - The service agent that must publish to the dead-letter topic is the one of the subscription's parent project (`service-{project_number}@gcp-sa-pubsub.iam.gserviceaccount.com`, per the `DeadLetterPolicy.deadLetterTopic` field description in the Pub/Sub v1 Discovery document).

@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/pubsub/docs/choose-pubsub-kafka
 
 # Choose between Pub/Sub and Managed Service for Apache Kafka
 
-Both are horizontally scalable, managed messaging services for high-volume workloads. The choice is a tradeoff between operational simplicity (Pub/Sub) and portability (Managed Service for Apache Kafka). Partner services and self-managed Kafka are out of scope.
+Both are horizontally scalable, managed messaging services for high-volume workloads. The choice is a tradeoff between operational simplicity (Pub/Sub) and portability (Managed Service for Apache Kafka). Partner services and self-managed open source Kafka are not covered.
 
 ## Signature / Usage
 
@@ -66,8 +66,8 @@ default
 | Automatic storage management | Yes | Yes |
 | Automatic software upgrades | Yes | Yes |
 | Customer support | Yes | Yes |
-| Kafka Connect Service | Not applicable | With user-provided Connect services |
-| Schema support | Yes | With user-provided schema registry |
+| Kafka Connect Service | Not applicable | With user-provided Connect services (source wording; Google-managed Connect clusters are also available, see Notes) |
+| Schema support | Yes | With user-provided schema registry (source wording; a managed schema registry is available in Preview, see Notes) |
 | Compatible with ksqlDB, KSQL | No | Yes |
 | Support for OSS connectors | Yes for Kafka and Flink connectors | No |
 | Integration with Data Lake and Data Warehouse | Yes | Yes |
@@ -78,6 +78,7 @@ default
 - Pub/Sub is serverless and globally distributed, adjusts capacity per topic and subscription, and moves data across regions.
 - Both integrate with Dataflow, BigQuery, Cloud Storage and more; Kafka integrates with a wider range of non-Google systems.
 - Managed Service for Apache Kafka runs Apache Kafka; client properties follow upstream Apache Kafka. Pub/Sub is a separate service with its own API.
+- Source inconsistency: the feature comparison lists Kafka Connect Service as "With user-provided Connect services" and Schema support as "With user-provided schema registry" for Managed Service for Apache Kafka, while the Managed Service for Apache Kafka pages describe Google-hosted Connect clusters with built-in connector plugins (Kafka Connect overview) and a schema registry in Preview (Schema Registry overview); the two table cells keep the source wording and add a pointer to these pages (kafka-connect-overview.md, schema-registry-overview.md).
 - Snippet taken from https://docs.cloud.google.com/pubsub/docs/publish-receive-messages-gcloud
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/managed-kafka/clusters/create (gcloud 593.0.0 help).
 - Source: https://docs.cloud.google.com/pubsub/docs/choose-pubsub-kafka (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
