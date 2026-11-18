@@ -6,7 +6,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 
 ## Signature / Usage
 
-Owner skill: `gcp-data-pipelines` (status: 未収録（予定）). gcloud groups: `composer`, `data-fusion`, `dataflow`, `datapipelines`, `dataproc`, `datastream`, `metastore`.
+Owner skill: `gcp-data-pipelines` (status: 未収録（予定）). gcloud groups: `composer`, `data-fusion`, `dataflow`, `datapipelines`, `dataproc`, `datastream`, `metastore`, `orchestration-pipelines`.
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Lifecycle | Docs | Status |
 |---|---|---|---|---|---|---|---|---|---|

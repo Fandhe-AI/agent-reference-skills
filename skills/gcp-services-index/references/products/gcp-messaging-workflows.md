@@ -6,13 +6,10 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 
 ## Signature / Usage
 
-Owner skill: `gcp-messaging-workflows` (status: 未収録（予定）). gcloud groups: `eventarc`, `managed-kafka`, `orchestration-pipelines`, `pubsub`, `workflows`.
+Owner skill: `gcp-messaging-workflows` (status: 未収録（予定）). gcloud groups: `eventarc`, `managed-kafka`, `pubsub`, `workflows`.
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Lifecycle | Docs | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| Cloud Integrations | `integrations.googleapis.com` (v1, v2) | — | — | `integrations.` | 20 | — | — | https://cloud.google.com/application-integration | 未収録（予定） |
-| Connectors | `connectors.googleapis.com` (v1, v2) | Enables users to create and manage connections to Google Cloud services and third-party business applications using the Connectors interface. | — | `connectors.` | 14 | — | — | https://cloud.google.com/apigee/docs/api-platform/connectors/about-connectors | 未収録（予定） |
-| Data Connectors | — | — | — | `dataconnectors.` | 6 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/dataconnectors | 未収録（予定） |
 | Eventarc | `eventarc.googleapis.com` (v1) | Build event-driven applications on Google Cloud Platform. | `eventarc` | `eventarc.` | 11 | — | — | https://cloud.google.com/eventarc | 未収録（予定） |
 | Google Cloud Managed Service for Apache Kafka | `managedkafka.googleapis.com` (v1) | Manage Apache Kafka clusters and resources. | `managed-kafka` | `managedkafka.` | 14 | — | — | https://cloud.google.com/managed-service-for-apache-kafka/docs | 未収録（予定） |
 | Pub/Sub | `pubsub.googleapis.com` (v1, v1beta1a, v1beta2) | Provides reliable, many-to-many, asynchronous messaging between applications. | `pubsub` | `pubsub.` | 6 | — | — | https://cloud.google.com/pubsub/docs | 未収録（予定） |

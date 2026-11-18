@@ -89,7 +89,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Cloud Healthcare API | 対象外 | `healthcare` |
 | Cloud Hub | `gcp-foundation` | `cloudhub` |
 | Cloud Infrastructure Entitlement Management (CIEM) | `gcp-security-compliance` | `ciem` |
-| Cloud Integrations | `gcp-messaging-workflows` | `integrations` |
+| Cloud Integrations | `gcp-integration` | `integrations` |
 | Cloud Intrusion Detection System | `gcp-networking` | `ids` |
 | Cloud IoT | `gcp-ai-apis` | `cloudiot` |
 | Cloud Key Management Service | `gcp-security` | `cloudkms` |
@@ -132,7 +132,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Confidential Computing | `gcp-compute` | `confidentialcomputing` |
 | Config Delivery | `gcp-iac` | `configdelivery` |
 | Config Management | `gcp-gke` | `anthosconfigmanagement` |
-| Connectors | `gcp-messaging-workflows` | `connectors` |
+| Connectors | `gcp-integration` | `connectors` |
 | Container Registry | `gcp-devops` | `containerregistry` |
 | Container Scanning | `gcp-security` | `containerscanning` |
 | Container Security | `gcp-gke` | `containersecurity` |
@@ -142,7 +142,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Customer Usage Data Processing | `gcp-data-pipelines` | `dataprocessing` |
 | Cyber Insurance Hub | `gcp-security-compliance` | `riskmanager` |
 | Data Catalog | `gcp-bigquery` | `datacatalog` |
-| Data Connectors | `gcp-messaging-workflows` | `dataconnectors` |
+| Data Connectors | `gcp-integration` | `dataconnectors` |
 | Data Lineage API | `gcp-bigquery` | `datalineage` |
 | Data Pipelines | `gcp-data-pipelines` | `datapipelines` |
 | Data Security Posture Management | `gcp-security-compliance` | `dspm` |
