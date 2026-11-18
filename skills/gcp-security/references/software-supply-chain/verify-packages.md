@@ -73,6 +73,8 @@ Use the local path of the signature zip (from `buildInfo.zip`, which contains `b
 
 ### Verify a utility script (signature verification script)
 
+Verify `signatureverification.sh` itself first by an independent method: the OpenSSL steps on the `package-signature-overview` page, with the script as the data file and the contents of `signatureverification-sig.zip` as the signature. Running an unverified script to check its own signature proves nothing, because a modified script could print a success message. After that first check, the script can verify other utility scripts and later downloads of itself:
+
 ```bash
 ./signatureverification.sh --data_file_path PATH_TO_DATA_FILE --signature_url "gs://cloud-aoss/utils/signature-verification/v1.0/signatureverification-sig.zip" --root_cert_url ROOT_CERT_URL
 ```
@@ -108,6 +110,7 @@ Use the local path of the signature zip (from `buildInfo.zip`, which contains `b
 - The root certificate URL is the trust anchor; fetch it over `https://` only.
 - Sample Container Analysis and SPDX metadata snippets are omitted; see the source page. The manual verification steps are in [package-signature-overview.md](./package-signature-overview.md).
 - Adapted from the official docs: `curl -o PATH_TO_LOCAL_STORE/ca.crt https://privateca-content-.../ca.crt` without `-f`.
+- Adapted from the official docs: the source verifies the signature verification script by running the script itself with `--signature_url .../signatureverification-sig.zip`, which is circular for the first run; the page asks for an independent check with OpenSSL first.
 - Source: https://docs.cloud.google.com/assured-open-source-software/docs/verify-packages (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

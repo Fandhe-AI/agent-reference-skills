@@ -39,14 +39,14 @@ gcloud secrets versions destroy 123 --secret=my-secret --etag=123
 | Retries | Make the rotation reentrant; configure Pub/Sub retries; set Cloud Run max concurrency and max instances to limit concurrent rotations. |
 | State tracking | Labels on the secret (for example `ROTATING_TO_NEW_VERSION_NUMBER=3`, removed when done); etags to detect concurrent modification. |
 | Permissions | `secretmanager.versions.add` to add a version; possibly `secretmanager.versions.access` to read the previous version. |
-| Roles (one or more as needed) | `roles/secretmanager.secretVersionAdder`, `roles/secretmanager.secretVersionManager`, `roles/secretmanager.secretAdmin`, `roles/secretmanager.secretAccessor` |
+| Roles (one or more as needed) | `roles/secretmanager.secretVersionAdder`, `roles/secretmanager.secretVersionManager`, `roles/secretmanager.admin`, `roles/secretmanager.secretAccessor` |
 
 ## Notes
 
 - Do NOT use the default Cloud Run service account (it has the Editor role, which includes adding but not accessing secret versions); use a separate service account with only the Secret Manager roles needed (least privilege).
 - Etags of secrets and secret versions are independent; adding a version does not change the parent secret's etag.
 - Destroying a secret version is irreversible; disable it first and try on a disposable secret.
-- Source inconsistency: the source lists `roles/secretmanager.secretAdmin`, while the Create a secret page (https://docs.cloud.google.com/secret-manager/docs/creating-and-accessing-secrets) names the Secret Manager Admin role `roles/secretmanager.admin`.
+- Corrected from the official docs: the source lists `roles/secretmanager.secretAdmin`, which is not a Secret Manager role; the Secret Manager Admin role is `roles/secretmanager.admin` (Create a secret page, https://docs.cloud.google.com/secret-manager/docs/creating-and-accessing-secrets, and the IAM roles reference for `secretmanager`), so the table uses `roles/secretmanager.admin`.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/secrets/versions/disable (gcloud 593.0.0 help).
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/secrets/versions/destroy (gcloud 593.0.0 help).
 - Source: https://docs.cloud.google.com/secret-manager/docs/rotation-recommendations (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)

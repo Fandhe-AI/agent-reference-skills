@@ -74,11 +74,7 @@ Option 2 prints `Verified OK`:
 openssl dgst -sha256 -verify pubkey.pem -signature sig.sig PATH_TO_DATA_FILE
 ```
 
-Verify the certificate (success prints `cert.pem: OK`):
-
-```text
-openssl verify -verbose -CAfile ca.crt -untrusted certChain.pem cert.pem
-```
+Download the root certificate first:
 
 Adapted (not in the official docs): added `-f` so an HTTP error does not save an error page as the certificate, and wrote the output file name `ca.crt` that the next command expects.
 
@@ -86,9 +82,17 @@ Adapted (not in the official docs): added `-f` so an HTTP error does not save an
 curl -f -o PATH_TO_LOCAL_STORE/ca.crt https://privateca-content-6333d504-0000-2df7-afd6-30fd38154590.storage.googleapis.com/a2c725a592f1d586f1f8/ca.crt
 ```
 
+Verify the certificate (success prints `cert.pem: OK`):
+
+Adapted (not in the official docs): `-CAfile` reads the root certificate from `PATH_TO_LOCAL_STORE/ca.crt`, where the download above saves it.
+
+```text
+openssl verify -verbose -CAfile PATH_TO_LOCAL_STORE/ca.crt -untrusted certChain.pem cert.pem
+```
+
 ### Verify with the verification script
 
-Set up Application Default Credentials, then download the script, its `README.md` and `signature.zip`:
+Set up Application Default Credentials, then download the script, its `README.md` and `signature.zip`. Before running `signatureverification.sh` for the first time, verify the script itself with the OpenSSL steps above, using its signature `gs://cloud-aoss/utils/signature-verification/v1.0/signatureverification-sig.zip` (a script cannot vouch for itself):
 
 ```bash
 gcloud storage cp "gs://cloud-aoss/utils/signature-verification/v1.0" PATH_TO_LOCAL_STORE --recursive
@@ -135,7 +139,7 @@ chmod +x signatureverification.sh
 ## Notes
 
 - Success output of the script: `Signature verification successful` and `Certificate verification successful`. The script requires authenticating as a service account that has permission to access Assured OSS.
-- Adapted from the official docs: `curl -o PATH_TO_LOCAL_STORE https://privateca-content-.../ca.crt` (no `-f`, and the output path without the file name); the next command reads `-CAfile ca.crt`, and the verify-packages page downloads to `PATH_TO_LOCAL_STORE/ca.crt`.
+- Adapted from the official docs: `curl -o PATH_TO_LOCAL_STORE https://privateca-content-.../ca.crt` (no `-f`, and the output path without the file name), shown after the `openssl verify -CAfile ca.crt` command that needs the file; the sample downloads the root certificate first, to `PATH_TO_LOCAL_STORE/ca.crt` (as on the verify-packages page), and passes that path to `-CAfile`.
 - Source inconsistency: the source refers to the root certificate as `ca.cert` once; the file used in the commands is `ca.crt`. The intro link to the root certificate uses plain `http://`; use the `https://` URL shown in the commands.
 - The signature verification script is itself signed (`gs://cloud-aoss/utils/signature-verification/v1.0/signatureverification-sig.zip`); verify downloaded scripts before running them, as described in [verify-packages.md](./verify-packages.md).
 - Do not commit or share downloaded certificates, keys or intermediate files beyond what verification needs.
