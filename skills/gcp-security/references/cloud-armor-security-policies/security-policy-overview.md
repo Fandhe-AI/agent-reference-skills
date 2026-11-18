@@ -12,9 +12,11 @@ Cloud Armor security policies are collections of rules, each made of a match con
 
 Rules 1, 2, and 3 are evaluated in order for `IP` and `HTTP` header fields. If IP address 9.9.9.1 launches an XSS attack in the body, only the body is blocked (by rule 2); the `HTTP` header passes through to the backend (by rule 3).
 
+Adapted (not in the official docs): `inIPRange` changed to `inIpRange`.
+
 ```text
 Rule1
-expr: inIPRange(origin.ip, '10.10.10.0/24')
+expr: inIpRange(origin.ip, '10.10.10.0/24')
 action: deny(403)
 priority: 1
 Rule2
@@ -22,7 +24,7 @@ expr: evaluatePreconfiguredWaf('xss-v422-stable')
 action: deny(403)
 priority: 2
 Rule3
-expr: inIPRange(origin.ip, '9.9.9.0/24')
+expr: inIpRange(origin.ip, '9.9.9.0/24')
 action: allow
 priority: 3
 Rule-default
@@ -34,13 +36,15 @@ priority: INT-MAX
 
 The policy allows `IP 9.9.9.1` without scanning against XSS attacks.
 
+Adapted (not in the official docs): `inIPRange` changed to `inIpRange`.
+
 ```text
 Rule1
-expr: inIPRange(origin.ip, '10.10.10.0/24')
+expr: inIpRange(origin.ip, '10.10.10.0/24')
 action: deny(403)
 priority: 1
 Rule2
-expr: inIPRange(origin.ip, '9.9.9.0/24')
+expr: inIpRange(origin.ip, '9.9.9.0/24')
 action: allow
 priority: 2
 Rule3
@@ -101,7 +105,7 @@ priority: INT-MAX
 |---|---|
 | Rule priority range | 0 to 2147483646 inclusive; no two rules with the same priority |
 | Default rule priority | 2147483647 (`INT-MAX`); always present, cannot be deleted, can be modified |
-| Default rule action | `deny` (can be changed to `allow`) |
+| Default rule action | `deny` per the source (can be changed to `allow`); a policy created through the API or `gcloud compute security-policies create` without rules gets a default rule with action `allow` |
 | Subexpressions per rule | Up to 5 |
 | Request body inspection | First 64 kB, per the configured inspection limit |
 | Deny rule status codes | `403 Unauthorized`, `404 Access Denied`, `502 Bad Gateway`; exceed action rules can return `429 Too Many Requests` |
@@ -127,6 +131,8 @@ priority: INT-MAX
 - Source inconsistency: the globally scoped feature table lists the global external Application Load Balancer, the classic Application Load Balancer, and the global external / classic proxy Network Load Balancers as edge security policy frontends, while the edge security policy section lists only the global external Application Load Balancer and the classic Application Load Balancer as supported endpoints.
 - gcloud commands for security policies are in the `gcp-compute` skill (`gcloud compute security-policies`).
 - The snippets are pseudo-code rule listings from the source.
+- Corrected from the official docs: the rule examples write the function as `inIPRange`; the Cloud Armor rules language function is `inIpRange` (see `rules-language-reference.md`).
+- Source inconsistency: the source says the default action for the default rule is `deny`, while the Compute Engine API Discovery document (`SecurityPolicy.rules`) says "If no rules are provided when creating a security policy, a default rule with action \"allow\" will be added." Check the priority `2147483647` rule after creating a policy; to deny by default, update it, for example `gcloud compute security-policies rules update 2147483647 --security-policy=POLICY_NAME --action=deny-403` (see `network-edge-policies.md` for the risk of cutting off traffic).
 - Source: https://docs.cloud.google.com/armor/docs/security-policy-overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
