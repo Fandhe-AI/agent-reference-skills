@@ -77,10 +77,10 @@ gcloud iam service-accounts add-iam-policy-binding SERVICE_ACCOUNT_NAME@PROJECT_
 
 Create the resource with the service account attached (Compute Engine example):
 
-Adapted (not in the official docs): the placeholder `SERVICE_ACCOUNT_EMAIL` is written as `SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com`, the email of the service account created in the previous steps, so the commands act on the same account.
+Adapted (not in the official docs): the placeholder `SERVICE_ACCOUNT_EMAIL` is written as `SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com`, the email of the service account created in the previous steps, so the commands act on the same account, and `--scopes=cloud-platform` is added so the instance's access token can call Pub/Sub.
 
 ```bash
-gcloud compute instances create INSTANCE_NAME --zone=ZONE --service-account=SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com
+gcloud compute instances create INSTANCE_NAME --zone=ZONE --service-account=SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com --scopes=cloud-platform
 ```
 
 ## Options / Props
@@ -94,6 +94,7 @@ gcloud compute instances create INSTANCE_NAME --zone=ZONE --service-account=SERV
 
 ## Notes
 
+- Adapted from the official docs: without `--scopes`, `gcloud compute instances create` uses the default Compute Engine access scopes, which do not include Pub/Sub, so calls from the instance's metadata-server credentials fail with insufficient authentication scopes even when the service account has the right IAM roles. The example sets `--scopes=cloud-platform` and relies on the IAM roles granted to the service account to limit what it can do.
 - Authorization after authentication is done with IAM; roles are described in the Pub/Sub access control docs.
 - In production environments, do not grant the Owner, Editor or Viewer roles to the service account. Grant a predefined or custom role that meets your needs. `--role=ROLE` in the project-level binding above is a placeholder; the source shows only the project-level grant, so choose the narrowest role that fits.
 - `--impersonate-service-account` ADC files work only for Go, Java, Node.js and Python client libraries.

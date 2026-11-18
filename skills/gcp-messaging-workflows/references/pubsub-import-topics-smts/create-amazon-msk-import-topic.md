@@ -167,10 +167,11 @@ gcloud pubsub topics update TOPIC_ID \
 | Pub/Sub service agent | `roles/pubsub.serviceAgent` | Gives `serviceusage.services.use` on the topic's project to use its publish quota. Granted by default for projects created after April 9, 2021 unless removed. |
 | Pub/Sub service agent | `roles/iam.serviceAccountTokenCreator` | Create short-lived credentials for the service account. Do this only if the service agent lacks `roles/pubsub.serviceAgent`. |
 | Principal creating or updating the topic | `roles/iam.serviceAccountUser` | Includes `iam.serviceAccounts.actAs`, to attach the service account to the ingestion settings. |
-| User managing import topics | `roles/pubsub.editor` on the topic or project | Permissions `pubsub.topics.create`, `delete`, `get`, `list`, `update`, `getIamPolicy`, `setIamPolicy`, and `pubsub.topics.publish` plus `pubsub.serviceAgent` to publish. |
+| User managing import topics | `roles/pubsub.editor` on the topic or project | Permissions `pubsub.topics.create`, `delete`, `get`, `list`, `update`, and `pubsub.topics.publish` plus `pubsub.serviceAgent` to publish. Managing the topic's IAM policy (`pubsub.topics.getIamPolicy`, `setIamPolicy`) needs `roles/pubsub.admin` (see Notes). |
 
 ## Notes
 
+- Source inconsistency: the source lists `pubsub.topics.getIamPolicy` and `pubsub.topics.setIamPolicy` among the permissions of the Pub/Sub Editor role (`roles/pubsub.editor`), but the IAM roles reference (`references/iam/pubsub.md`, retrieved 2026-11-14) does not include them in that role; they are in Pub/Sub Admin (`roles/pubsub.admin`). The row lists the Editor permissions without them; grant `roles/pubsub.admin`, or a custom role, to a principal that also manages the topic's IAM policy.
 - AWS policy actions: Resources: specify the cluster ARN to restrict the policy to specific clusters (recommended).
 - A newly created service account can take 60 seconds or more to become usable (eventually consistent reads).
 - If Amazon MSK already holds data, first create a standard topic and a default subscription without ingestion settings, then convert the topic to an import topic (change topic type). Creating the topic and subscription separately can lose messages sent in between.

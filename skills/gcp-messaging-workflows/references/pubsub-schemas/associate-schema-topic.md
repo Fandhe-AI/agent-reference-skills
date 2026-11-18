@@ -219,10 +219,11 @@ Adapted (not in the official docs): the source body places a bare `"update_mask"
 | Rollback a schema | `pubsub.schemas.rollback` |
 | Validate a message | `pubsub.schemas.validate` |
 | Get the IAM policy for a schema | `pubsub.schemas.getIamPolicy` |
-| Configure the IAM policy for a schema | `pubsub.schemas.setIamPolicy` |
+| Configure the IAM policy for a schema | `pubsub.schemas.setIamPolicy` (not in `roles/pubsub.editor`; in `roles/pubsub.admin`, see Notes) |
 
 ## Notes
 
+- Source inconsistency: the source lists `pubsub.schemas.setIamPolicy` among the permissions of the Pub/Sub Editor role (`roles/pubsub.editor`), but the IAM roles reference (`references/iam/pubsub.md`, retrieved 2026-11-14) lists only `pubsub.schemas.getIamPolicy` for that role. `pubsub.schemas.setIamPolicy` is in Pub/Sub Admin (`roles/pubsub.admin`); grant it, or a custom role with that permission, to the principal that changes a schema's IAM policy.
 - A schema can be associated with one or more topics. Associate a schema when you create or edit a topic. A schema can be in a different project from the topic; you need the permissions in each project.
 - If a schema associated with a topic has revisions, messages must match the encoding and validate against a revision within the available range. Revisions are tried in reverse chronological order based on creation time. If they do not validate, the message fails to publish.
 - If you do not specify a first revision, the oldest existing revision is used; if you do not specify a last revision, the newest existing revision is used. If you do not specify a range, the entire range is used.

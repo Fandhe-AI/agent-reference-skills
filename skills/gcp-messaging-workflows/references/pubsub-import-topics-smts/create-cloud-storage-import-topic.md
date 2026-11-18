@@ -213,7 +213,7 @@ gcloud pubsub topics update TOPIC_ID \
 | Bucket | `storage.objects.list`, `storage.objects.get`, `storage.buckets.get`. |
 | Bucket level (preferred) | `roles/storage.legacyObjectReader` and `roles/storage.legacyBucketReader` on the bucket. |
 | Project level (if you must) | `roles/storage.admin` on the project containing the bucket (granting user needs `roles/storage.admin`). |
-| User managing the topic | `roles/pubsub.editor` on the topic or project. Permissions: `pubsub.topics.create`, `delete`, `get`, `list`, `publish`, `update`, `getIamPolicy`, `setIamPolicy`. |
+| User managing the topic | `roles/pubsub.editor` on the topic or project. Permissions: `pubsub.topics.create`, `delete`, `get`, `list`, `publish`, `update`. Managing the topic's IAM policy (`pubsub.topics.getIamPolicy`, `setIamPolicy`) needs `roles/pubsub.admin` (see Notes). |
 
 ### Message storage policy vs bucket location
 
@@ -224,6 +224,7 @@ gcloud pubsub topics update TOPIC_ID \
 
 ## Notes
 
+- Source inconsistency: the source lists `pubsub.topics.getIamPolicy` and `pubsub.topics.setIamPolicy` among the permissions of the Pub/Sub Editor role (`roles/pubsub.editor`), but the IAM roles reference (`references/iam/pubsub.md`, retrieved 2026-11-14) does not include them in that role; they are in Pub/Sub Admin (`roles/pubsub.admin`). The row lists the Editor permissions without them; grant `roles/pubsub.admin`, or a custom role, to a principal that also manages the topic's IAM policy.
 - The message storage policy check applies only if the topic has one. If the policy does not include the bucket's region, topic creation fails.
 - If the bucket already holds data, first create a standard topic and its subscriptions without ingestion settings, then convert the topic to an import topic (change topic type). Creating the topic and subscription separately leaves a window where messages sent to the topic are lost.
 - Publisher throughput of import topics is bound by the publish quota of the topic (see Pub/Sub quotas and limits).

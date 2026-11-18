@@ -197,10 +197,11 @@ message User {
 | Rollback a schema | `pubsub.schemas.rollback` |
 | Validate a message | `pubsub.schemas.validate` |
 | Get the IAM policy for a schema | `pubsub.schemas.getIamPolicy` |
-| Configure the IAM policy for a schema | `pubsub.schemas.setIamPolicy` |
+| Configure the IAM policy for a schema | `pubsub.schemas.setIamPolicy` (not in `roles/pubsub.editor`; in `roles/pubsub.admin`, see Notes) |
 
 ## Notes
 
+- Source inconsistency: the source lists `pubsub.schemas.setIamPolicy` among the permissions of the Pub/Sub Editor role (`roles/pubsub.editor`), but the IAM roles reference (`references/iam/pubsub.md`, retrieved 2026-11-14) lists only `pubsub.schemas.getIamPolicy` for that role. `pubsub.schemas.setIamPolicy` is in Pub/Sub Admin (`roles/pubsub.admin`); grant it, or a custom role with that permission, to the principal that changes a schema's IAM policy.
 - Corrected from the official docs: the REST section showed `Content-Type: application/json --data @response-body.json` and a body with unquoted placeholders (`"definition": SCHEMA_DEFINITION`); both were rewritten as shown above. The source also says the REST `SCHEMA_TYPE` "is either `avro` or `protocol-buffer`" (the gcloud spelling); the Discovery enum for `Schema.type` is `AVRO` / `PROTOCOL_BUFFER`.
 - The source grants `roles/pubsub.editor` on the project. You can create a schema in one project and attach it to a topic in a different project; you need the required permissions in each project.
 - Prerequisites in the source: understand how Pub/Sub schemas work, learn about topics and the publishing workflow, and create a topic. Read the schema limits first (300 KB definition, 10,000 schemas per project, 20 revisions per schema; see schemas.md). Schema field names must not contain sensitive information.

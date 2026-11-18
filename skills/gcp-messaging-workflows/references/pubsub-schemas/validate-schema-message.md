@@ -71,10 +71,11 @@ gcloud pubsub schemas validate-message \
 | Rollback a schema | `pubsub.schemas.rollback` |
 | Validate a message | `pubsub.schemas.validate` |
 | Get the IAM policy for a schema | `pubsub.schemas.getIamPolicy` |
-| Configure the IAM policy for a schema | `pubsub.schemas.setIamPolicy` |
+| Configure the IAM policy for a schema | `pubsub.schemas.setIamPolicy` (not in `roles/pubsub.editor`; in `roles/pubsub.admin`, see Notes) |
 
 ## Notes
 
+- Source inconsistency: the source lists `pubsub.schemas.setIamPolicy` among the permissions of the Pub/Sub Editor role (`roles/pubsub.editor`), but the IAM roles reference (`references/iam/pubsub.md`, retrieved 2026-11-14) lists only `pubsub.schemas.getIamPolicy` for that role. `pubsub.schemas.setIamPolicy` is in Pub/Sub Admin (`roles/pubsub.admin`); grant it, or a custom role with that permission, to the principal that changes a schema's IAM policy.
 - In the console: open **Pub/Sub schemas**, click the **Schema ID**, click a revision in **Revisions**, click **Test message** in **Details**, select a **Message encoding**, enter the message body and click **Test**.
 - The source grants `roles/pubsub.editor` on the project. A schema can be created in one project and attached to a topic in a different project; you need the required permissions for each project.
 - The source gcloud block is a synopsis with placeholders: `MESSAGE_ENCODING` is `binary` or `json`; `TYPE` is `avro` or `protocol-buffer`.
