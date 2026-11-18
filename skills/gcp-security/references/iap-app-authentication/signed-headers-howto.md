@@ -14,6 +14,8 @@ Use a third-party JWT library for your language that supports the `ES256` algori
 
 Python sample (validates signature, audience and expiry; returns the `sub` and `email` claims):
 
+Adapted (not in the official docs): the issuer is checked before returning; `id_token.verify_token` checks the signature, expiry and audience but not `iss`.
+
 ```python
 from google.auth.transport import requests
 from google.oauth2 import id_token
@@ -39,6 +41,8 @@ def validate_iap_jwt(iap_jwt, expected_audience):
             audience=expected_audience,
             certs_url="https://www.gstatic.com/iap/verify/public_key",
         )
+        if decoded_jwt.get("iss") != "https://cloud.google.com/iap":
+            raise ValueError(f"Wrong issuer: {decoded_jwt.get('iss')}")
         return (decoded_jwt["sub"], decoded_jwt["email"], "")
     except Exception as e:
         return (None, None, f"**ERROR: JWT validation error {e}**")
@@ -205,6 +209,7 @@ google-cloud-storage
 - Test validation with the `secure_token_test` query parameters (see [query-parameters-and-headers-howto.md](./query-parameters-and-headers-howto.md)).
 - The key-caching function in the source is deployed with Terraform (also with a Cloud Scheduler job every 12 hours); the Terraform, the Console steps, and the C#, Go, Java, Node.js, PHP and Ruby verification samples are omitted here.
 - The source's sample JSON for `gcip` claims and its `sign_in_attributes` access check are not valid JSON / JavaScript as printed (unquoted keys and stray quotes; `sign_in_attribute` vs `sign_in_attributes`), so they are described in the table rather than reproduced.
+- Adapted from the official docs: `google.oauth2.id_token.verify_token` verifies the signature, time claims and audience but not the issuer, so the sample checks that `iss` is `https://cloud.google.com/iap` (the required value in the payload table) and rejects other tokens.
 - Source: https://docs.cloud.google.com/iap/docs/signed-headers-howto (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

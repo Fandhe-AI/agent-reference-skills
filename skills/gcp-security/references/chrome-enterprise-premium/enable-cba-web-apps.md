@@ -138,10 +138,12 @@ gcloud access-context-manager levels create ACCESS_LEVEL_NAME \
 
 Set the `AutoSelectCertificateForUrls` policy (Admin console, Devices, Chrome, Settings, User & Browser Settings, Client certificates) for your application URL. Example using the Endpoint Verification certificate:
 
+Adapted (not in the official docs): the policy key is `filter` (lowercase).
+
 ```json
 {
   "pattern":"https://[*.].mysite.com",
-  "Filter":{
+  "filter":{
     "ISSUER":{
       "CN":"Google Endpoint Verification"
     }
@@ -184,6 +186,7 @@ Set the `AutoSelectCertificateForUrls` policy (Admin console, Devices, Chrome, S
 - Source inconsistency: Method 2 says the trust config "assumes a basic trust store with a single trust anchor representing a root certificate. No intermediate certificates are specified.", while its steps use the same two-intermediate variables and YAML as Method 1. The steps are kept as written.
 - The source also shows Console steps for the access level and IAP. The full flag list for `gcloud compute target-https-proxies` is in the `gcp-compute` skill.
 - Adapted from the official docs: `--source=${PWD?}/...` and `--destination=${PWD?}/...` are double-quoted so that a working directory with spaces or glob characters is passed as one argument.
+- Corrected from the official docs: the source writes the `AutoSelectCertificateForUrls` key as `Filter`; the Chrome policy definition (https://chromeenterprise.google/policies/?policy=AutoSelectCertificateForUrls) uses `{"pattern":"...","filter":{...}}` with lowercase `filter` (the `ISSUER` / `CN` keys stay uppercase).
 - Source: https://docs.cloud.google.com/access-context-manager/docs/enable-cba-web-apps (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

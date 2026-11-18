@@ -118,7 +118,7 @@ evaluatePreconfiguredWaf('xss-v422-stable', {'opt_out_rule_ids': ['owasp-crs-v04
 | Non-empty `referer` | `has(request.headers['referer']) && request.headers['referer'] != ""` |
 | Exact host | `request.headers['host'].lower() == 'test.example.com'` |
 | Host suffix | `request.headers['host'].lower().endsWith('.example.com')` |
-| Domain and subdomain | `request.headers['host'].matches('(?i:(?:sub\\.)?test\\.example\\.com)')` |
+| Domain and subdomain | `request.headers['host'].matches('^(?i:(?:sub\\.)?test\\.example\\.com)$')` |
 | All regions except `AU` (in a deny rule) | `origin.region_code != 'AU'` |
 | ASN | `origin.asn == 123` |
 | Region and IP range | `origin.region_code == "AU" && inIpRange(origin.ip, '1.2.3.0/24')` |
@@ -224,6 +224,7 @@ evaluatePreconfiguredWaf('xss-v422-stable', {'opt_out_rule_ids': ['owasp-crs-v04
 - Corrected from the official docs: the domain-and-subdomain regular expression used `\.` inside an ordinary CEL string literal, which is not a valid CEL escape sequence; the backslashes are doubled (`\\.`) so the expression matches a literal dot.
 - Corrected from the official docs: the source applies `lower()` before `urlDecode()`, so a percent-encoded uppercase letter (`/%41dmin` decodes to `/Admin`) is not lowercased and bypasses `startsWith('/admin')`. Decoding first and then lowercasing closes that gap. Normalize the same way the backend does: if the backend decodes paths more than once or treats other characters as equivalent, the rule must account for that too.
 - Corrected from the official docs: the source labels the deprecated list-argument form `evaluatePreconfiguredWaf(string, LIST)` while its caution says that `evaluatePreconfiguredExpr()` is the deprecated function; the row uses `evaluatePreconfiguredExpr(string, LIST)`, and exclusions with `evaluatePreconfiguredWaf()` go in the MAP argument's `opt_out_rule_ids`.
+- Adapted from the official docs: the domain-and-subdomain regex is anchored with `^` and `$`; `matches()` is a partial match, so the unanchored pattern also matches hosts such as `test.example.com.evil.net` or `eviltest.example.com`.
 - Source: https://docs.cloud.google.com/armor/docs/create-security-policy-rules (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
