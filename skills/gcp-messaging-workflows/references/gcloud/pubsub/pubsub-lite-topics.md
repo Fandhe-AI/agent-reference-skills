@@ -533,6 +533,16 @@ NOTES
         $ gcloud beta pubsub lite-topics publish
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the commands are rewritten so that they run as described (see Notes).
+
+```bash
+GCLOUD_PY="$(gcloud info --format='value(basic.python_location)')"
+"$GCLOUD_PY" -m venv "$HOME/.venvs/gcloud-grpc"
+"$HOME/.venvs/gcloud-grpc/bin/python" -m pip install grpcio 'setuptools<81'
+export CLOUDSDK_PYTHON="$HOME/.venvs/gcloud-grpc/bin/python"
+export CLOUDSDK_PYTHON_SITEPACKAGES=1
+```
+
 ### gcloud pubsub lite-topics update
 
 ```text
@@ -824,7 +834,9 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Deprecated: the Pub/Sub Lite documentation says "Pub/Sub Lite is deprecated. Effective January 31, 2027, Pub/Sub Lite will be turned down.", "Pub/Sub Lite is no longer available for new customers after September 24, 2024." and that projects that did not use Pub/Sub Lite between April 15, 2025 and July 15, 2025 cannot access it starting on July 15, 2025; it recommends migrating to Google Cloud Managed Service for Apache Kafka (https://docs.cloud.google.com/pubsub/lite/docs/migrate-pubsub-lite-to-managed-service-for-apache-kafka) or Pub/Sub (https://docs.cloud.google.com/pubsub/lite/docs/migrate-pubsub-lite-to-pubsub) (https://docs.cloud.google.com/pubsub/lite/docs, retrieved 2026-11-18). The `gcloud pubsub lite-*` commands are still in the gcloud 593.0.0 help.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the DESCRIPTION of `gcloud pubsub lite-topics publish` installs the gRPC client library with `sudo pip3 install grpcio`, which installs a third-party package into the system Python as root; the runnable form installs it into a virtual environment created from the interpreter that gcloud already uses (`gcloud info --format='value(basic.python_location)'`, so the Python version matches, as `gcloud topic startup` requires for `CLOUDSDK_PYTHON` on macOS archived installs) and points gcloud at it with `CLOUDSDK_PYTHON`. Tested with gcloud 593.0.0 on macOS (Python 3.14): `grpcio` alone was not enough, because the bundled Pub/Sub Lite library imports `pkg_resources`, which setuptools 81 and later no longer provide (its warning says "Refrain from using this package or pin to Setuptools<81"), so the runnable form also installs `setuptools<81`. `gcloud topic startup` says that configuring the interpreter is only supported in specific scenarios; on installs where gcloud manages its own Python, follow that topic.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

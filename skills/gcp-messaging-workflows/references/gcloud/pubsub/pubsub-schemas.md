@@ -92,6 +92,10 @@ Adapted (not in the official docs): runnable form of the example(s) above: the c
 gcloud pubsub schemas commit key-schema \
     --definition="syntax = 'proto3'; message Message { optional string key = 1; }" \
     --type=protocol-buffer
+
+gcloud pubsub schemas commit key-schema \
+    --definition='{ "type": "record", "namespace": "my.ns", "name": "KeyMsg", "fields": [ { "name": "key", "type": "string" } ] }' \
+    --type=avro
 ```
 
 ### gcloud pubsub schemas create
@@ -987,7 +991,9 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (the help text above is verbatim): the `delete-revision` example says `To roll back to an existing schema revision called "key-schema" with revision_id: "0a0b0c0d", run:`, but `gcloud pubsub schemas delete-revision key-schema@0a0b0c0d` deletes that revision ("delete a Pub/Sub schema revision"); to roll back to the revision, run `gcloud pubsub schemas rollback key-schema --revision-id=0a0b0c0d` (the `rollback` example on this page).
 - Corrected from the official docs (runnable form only; the help text above is verbatim): in the `commit` examples `gcloud help` runs the sentence "To commit an equivalent AVRO schema revision, run:" into the first command, so it would be passed as arguments; the runnable form ends the command at `--type=protocol-buffer`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the AVRO `commit` example quotes the keys and strings of `--definition` with single quotes (`{ 'type': 'record', ... }`), which is not valid JSON; the runnable form uses the double-quoted JSON of the AVRO `validate-schema` example on this page, inside single shell quotes.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the AVRO `validate-message` example omits `--message` and `--message-encoding`, which the SYNOPSIS requires (`--message=MESSAGE --message-encoding=MESSAGE_ENCODING`; gcloud 593.0.0: "Must be specified"); the runnable form adds the same message and encoding as the PROTOCOL_BUFFER example above it (`--message="{\"key\": \"my-key\"}" --message-encoding=JSON`).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
