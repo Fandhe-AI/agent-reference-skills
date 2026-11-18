@@ -27,7 +27,7 @@ skills/gcp-security/
       beyondcorp/
         README.md                 # gcloud beyondcorp（Chrome Enterprise Premium / 旧 BeyondCorp Enterprise）
         beyondcorp-<group>.md
-      certificate-manager/  # 分割投入中（10 / 11 ページ。収録済みは README 掲載分のみ）
+      certificate-manager/
         README.md                 # gcloud certificate-manager（certificates・maps・dns-authorizations・issuance-configs・trust-configs 等）
         certificate-manager-<group>.md
     kms-concepts/                 # 公式ガイド由来（手書き）: Cloud KMS の概要・リソース階層・鍵の状態・保護レベル・エンベロープ暗号化・ローテーション・アルゴリズム・署名・MAC・KEM・割り当て
@@ -112,8 +112,6 @@ skills/gcp-security/
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
 未投入カテゴリ（`gcloud/fault-testing` / `gcloud/iap` / `gcloud/kms` / `gcloud/pam` / `gcloud/parametermanager` / `gcloud/privateca` / `gcloud/publicca` / `gcloud/secrets` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
-
-分割投入中のカテゴリ（`gcloud/certificate-manager`: 10 / 11 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
