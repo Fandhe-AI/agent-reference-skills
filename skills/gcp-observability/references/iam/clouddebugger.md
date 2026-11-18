@@ -49,6 +49,7 @@ gcloud iam service-accounts add-iam-policy-binding SERVICE_ACCOUNT_EMAIL \
 
 - Roles and permissions of the `clouddebugger` service from the IAM roles and permissions reference (retrieved 2026-11-14); role names, descriptions and permission lists are verbatim, regrouped per role. The `service.resource.*` group headings of the official page are omitted from the per-role lists and counts, because they are collapsible headings, not permissions.
 - The permissions table lists role IDs only (role names and links are on the official page) and gives service agent roles as a count; service agent roles must not be granted to principals other than service agents.
+- Shut down product: "Cloud Debugger was deprecated on May 16, 2022 and the service was shut down on May 31, 2023." The roles on this page are kept only for auditing existing IAM policies that still grant them; use the open source Snapshot Debugger instead (see `observability-overview/deprecations.md`; https://docs.cloud.google.com/stackdriver/docs/deprecations/debugger-deprecation, retrieved 2026-11-18).
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/clouddebugger (CC BY 4.0; https://developers.google.com/site-policies)
 
 ## Related
