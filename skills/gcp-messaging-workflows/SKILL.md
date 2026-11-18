@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-messaging-workflows
 
-Google Cloud (GCP) のメッセージング・イベント駆動・オーケストレーション系スキル。Pub/Sub（topic・subscription・pull / StreamingPull / push・publish のバッチ / フロー制御 / ordering key・dead-letter topic・retry policy・exactly-once 配信・subscription filter・seek / snapshot・BigQuery / Cloud Storage / Bigtable subscription・import topic・Single Message Transforms（SMT）・スキーマ・CMEK・IAM）、Eventarc（Standard の trigger・Cloud Audit Logs / Pub/Sub / サードパーティの channel・GKE / 内部 HTTP 宛・CloudEvents・イベント種別、Advanced の message bus・enrollment・pipeline・CEL）、Workflows（YAML 構文・steps・条件・反復・subworkflows・エラー処理・retry・並列ステップ・標準ライブラリ・コネクタ・HTTP・callbacks・Eventarc / Scheduler からの実行）、Google Cloud Managed Service for Apache Kafka（cluster・topic・consumer group・認証（SASL / mTLS）・Kafka ACL・Kafka Connect・Schema Registry）を扱う。加えて gcloud 4 グループ・REST（Discovery）6 API・IAM 5 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`rest-schemas/pubsub` / `rest-schemas/pubsublite` / `rest-schemas/workflows` / `rest-schemas/workflowexecutions`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のメッセージング・イベント駆動・オーケストレーション系スキル。Pub/Sub（topic・subscription・pull / StreamingPull / push・publish のバッチ / フロー制御 / ordering key・dead-letter topic・retry policy・exactly-once 配信・subscription filter・seek / snapshot・BigQuery / Cloud Storage / Bigtable subscription・import topic・Single Message Transforms（SMT）・スキーマ・CMEK・IAM）、Eventarc（Standard の trigger・Cloud Audit Logs / Pub/Sub / サードパーティの channel・GKE / 内部 HTTP 宛・CloudEvents・イベント種別、Advanced の message bus・enrollment・pipeline・CEL）、Workflows（YAML 構文・steps・条件・反復・subworkflows・エラー処理・retry・並列ステップ・標準ライブラリ・コネクタ・HTTP・callbacks・Eventarc / Scheduler からの実行）、Google Cloud Managed Service for Apache Kafka（cluster・topic・consumer group・認証（SASL / mTLS）・Kafka ACL・Kafka Connect・Schema Registry）を扱う。加えて gcloud 4 グループ・REST（Discovery）6 API・IAM 5 ファイルを収録する。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。
 
@@ -156,6 +156,7 @@ skills/gcp-messaging-workflows/
 | REST のメソッド・パスを調べたい | rest | [references/rest/README.md](references/rest/README.md) |
 | 各 API のメソッド | rest/pubsub、rest/pubsublite、rest/eventarc、rest/workflows、rest/workflowexecutions、rest/managedkafka | [references/rest/pubsub/README.md](references/rest/pubsub/README.md)、[references/rest/pubsublite/README.md](references/rest/pubsublite/README.md)、[references/rest/eventarc/README.md](references/rest/eventarc/README.md)、[references/rest/workflows/README.md](references/rest/workflows/README.md)、[references/rest/workflowexecutions/README.md](references/rest/workflowexecutions/README.md)、[references/rest/managedkafka/README.md](references/rest/managedkafka/README.md) |
 | REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
+| 各 API のメッセージ型 | rest-schemas/`<api>`（rest/ と同じ 6 API） | [references/rest-schemas/pubsub/README.md](references/rest-schemas/pubsub/README.md)、[references/rest-schemas/pubsublite/README.md](references/rest-schemas/pubsublite/README.md)、[references/rest-schemas/eventarc/README.md](references/rest-schemas/eventarc/README.md)、[references/rest-schemas/workflows/README.md](references/rest-schemas/workflows/README.md)、[references/rest-schemas/workflowexecutions/README.md](references/rest-schemas/workflowexecutions/README.md)、[references/rest-schemas/managedkafka/README.md](references/rest-schemas/managedkafka/README.md) |
 | Pub/Sub の概要・topic / subscription / message の基本概念・信頼性・プロパティ一覧・Pub/Sub と Kafka の選び方・gcloud クイックスタート・Pub/Sub Lite の廃止告知と移行 | pubsub-concepts | [references/pubsub-concepts/README.md](references/pubsub-concepts/README.md) |
 | topic の作成・publish の流れ・メッセージ形式と属性・publish のサンプル | pubsub-publish | [references/pubsub-publish/README.md](references/pubsub-publish/README.md) |
 | バッチ publish・publisher のフロー制御・ordering key・publish のベストプラクティス・メッセージ圧縮・topic のモニタリング | pubsub-publish-ordering-batching | [references/pubsub-publish-ordering-batching/README.md](references/pubsub-publish-ordering-batching/README.md) |
@@ -178,8 +179,6 @@ skills/gcp-messaging-workflows/
 | Managed Service for Apache Kafka の概要と制限・cluster の作成・サイズ計画・ネットワーク接続・topic の作成・consumer group | kafka-clusters-topics | [references/kafka-clusters-topics/README.md](references/kafka-clusters-topics/README.md) |
 | Kafka クライアント認証（SASL / OAUTHBEARER・mTLS）・Kafka ACL・暗号化（CMEK）・cluster とクライアントのモニタリング | kafka-auth-monitoring | [references/kafka-auth-monitoring/README.md](references/kafka-auth-monitoring/README.md) |
 | Kafka Connect の概要・Connect cluster の作成・Pub/Sub sink コネクタ・Schema Registry の概要 | kafka-connect-schema-registry | [references/kafka-connect-schema-registry/README.md](references/kafka-connect-schema-registry/README.md) |
-
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/pubsub` / `rest-schemas/pubsublite` / `rest-schemas/workflows` / `rest-schemas/workflowexecutions`
 
 ## 他スキルとの使い分け
 
