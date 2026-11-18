@@ -620,7 +620,7 @@ gcloud managed-kafka connect-clusters update myconnectorCluster \
     --cpu=3 \
     --memory=3GiB \
     --primary-subnet=projects/my-project/regions/us-central1/subnetworks/default \
-    --dns-name=bootstrap.myconnectorCluster.us-central1.managedkafka.my-project.cloud.goog:9092 \
+    --dns-name=bootstrap.myconnectorCluster.us-central1.managedkafka.my-project.cloud.goog \
     --secret=projects/my-project/secrets/my-secret/versions/1 \
     --labels=key1=value1,key2=value2
 ```
@@ -783,6 +783,7 @@ SYNOPSIS
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `create` example lists two alternatives for `--kafka-cluster` joined by `OR` (`--kafka-cluster=my-kafka-cluster OR --kafka-cluster=projects/PROJECT_ID/locations/us-central1/clusters/my-kafka-cluster`), which cannot be run as one command; the runnable form keeps the fully qualified cluster name (the cluster ID alone is also accepted).
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `update` example lists `--configs=KEY1=VALUE1,KEY2=VALUE2... OR --config-file=my-config-file.yaml`, but the SYNOPSIS allows only one of `--configs` and `--config-file`, and `...` is not part of the value; the runnable form keeps `--configs=KEY1=VALUE1,KEY2=VALUE2` (use `--config-file=FILE` instead to read the configs from a JSON or YAML file).
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `update` example passes `--dns-name=bootstrap.myconnectorCluster.us-central1.managedkafka.my-project.cloud.goog:9092`, but `--dns-name` takes a "DNS domain name from the subnet's network to be made visible to the Connect Cluster", and the matching REST field `dnsDomainNames` gives the example `my-kafka-cluster.us-central1.managedkafka.my-project.cloud.goog` (no port); the runnable form drops the `:9092` port.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `update` example passes `--labels=KEY1=VALUE1,KEY2=VALUE2...`, but the `--labels` description says keys and values may contain only hyphens, underscores, lowercase characters and numbers; the runnable form uses `--labels=key1=value1,key2=value2`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `update` example passes `--primary-subnet=projects/my-project/regions/us-central1/subnetworks/default/1`, but the `--primary-subnet` description says the value is "Structured like: projects/{project}/regions/{region}/subnetworks/{subnet_id}"; the runnable form drops the trailing `/1`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
