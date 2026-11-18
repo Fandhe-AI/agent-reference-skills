@@ -469,8 +469,6 @@ Adapted (not in the official docs): runnable form of the example(s) above: lines
 ```bash
 gcloud scc manage custom-modules sha list \
     --parent=organizations/123
-
-gcloud scc manage custom-modules sha list organizations/123/locations/global/securityHealthAnalyticsCustomModules/123456
 ```
 
 ### gcloud scc manage custom-modules sha list-descendant
@@ -779,10 +777,6 @@ gcloud scc manage custom-modules sha simulate \
     --parent=organizations/123 \
     --custom-config-from-file=custom_config.yaml \
     --resource-from-file=test.yaml
-
-gcloud scc manage custom-modules sha simulate organizations/123/locations/global/effectiveSecurityHealthAnalyticsCustomModules/123456 \
-    --custom-config-from-file=custom_config.yaml \
-    --resource-from-file=test.yaml
 ```
 
 ### gcloud scc manage custom-modules sha update
@@ -998,6 +992,7 @@ SYNOPSIS
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Example error: the `list` and `simulate` examples that pass only a fully qualified module name (`organizations/123/locations/global/securityHealthAnalyticsCustomModules/123456`, `.../effectiveSecurityHealthAnalyticsCustomModules/123456`) as a positional argument fail in gcloud 593.0.0 ("unrecognized arguments: organizations/123/locations/global/..."); the `list` and `simulate` SYNOPSES take no positional arguments and require one of `--folder`, `--organization`, `--parent` or `--project`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `list` and `simulate` examples that pass a fully qualified module name (`organizations/123/locations/global/securityHealthAnalyticsCustomModules/123456`, `.../effectiveSecurityHealthAnalyticsCustomModules/123456`) as a positional argument fail (the SYNOPSES take no positional arguments); the parent is given with `--parent=organizations/123`, which makes them identical to the preceding `--parent` examples, so the runnable form lists those commands only once.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `list` example with `--parent` and the `simulate` examples pass `123456` as a positional argument, but the `list` and `simulate` SYNOPSES take no positional arguments (gcloud 593.0.0: "unrecognized arguments: 123456"); the parent is given by the flag, so the runnable form drops `123456`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.

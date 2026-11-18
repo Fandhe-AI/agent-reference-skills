@@ -1411,7 +1411,7 @@ gcloud scc findings update-marks testFinding \
     --organization=123456 \
     --source=5678 \
     --security-marks="key1=v1" \
-    --update-mask="marks.markKey1"
+    --update-mask=marks.key1
 
 gcloud scc findings update-marks testFinding \
     --organization=123456 \
@@ -1630,6 +1630,7 @@ SYNOPSIS
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `create`, `list-marks`, `update` and `update-marks` examples wrap the finding ID in backticks (`` `testFinding` ``), which the shell runs as a command substitution; gcloud 593.0.0 then fails with "Finding must match either the full resource name or only the finding id." The runnable form passes `testFinding`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `list` example with `--filter` ends the value with `1546304400000""`; the second `"` opens a quotation that is never closed, so the shell keeps reading into the next example. The runnable form closes the value with a single `"`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the first `update-marks` example sets `--security-marks="key1=v1"` but passes `--update-mask="marks.markKey1"`, a mask for a different key, so `key1` is not updated (and an existing `markKey1` mark would be cleared); the runnable form uses `--update-mask=marks.key1`, the key that the example sets.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
