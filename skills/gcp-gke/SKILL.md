@@ -178,7 +178,7 @@ skills/gcp-gke/
 - `gcp-compute`（予定）— Compute Engine VM・ディスク・インスタンステンプレート。GKE ノードの node pool 設定は本スキル
 - `gcp-networking` — VPC・Cloud DNS・Cloud NAT・Traffic Director のサービスルーティング（GKE 以外のターゲット）。GKE の VPC-native・Gateway・Ingress・Service・Cloud Service Mesh は本スキル
 - `gcp-load-balancing` — Cloud Load Balancing を直接構成する場合のロードバランサー・NEG・URL マップ（GKE の Gateway・Ingress から作られるものは本スキル）
-- `gcp-security`（予定）— Security Command Center・Binary Authorization のポリシー本体・Cloud KMS。GKE 側の有効化と設定のみ本スキル（`gke-security-hardening`）
+- `gcp-security` / `gcp-security-compliance` — Binary Authorization のポリシー本体・Cloud KMS（`gcp-security`）、Security Command Center（`gcp-security-compliance`）。GKE 側の有効化と設定のみ本スキル（`gke-security-hardening`）
 - `gcp-observability`（予定）— Cloud Logging・Cloud Monitoring 本体。GKE が送出するログ・メトリクスの設定は本スキル（`gke-observability-troubleshooting`）
 - `gcp-devops`（予定）— Artifact Registry・Cloud Build・Cloud Deploy
 - `gcp-iac`（予定）— Terraform・Config Connector

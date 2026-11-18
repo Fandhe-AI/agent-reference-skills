@@ -73,7 +73,7 @@ Granted to `roles/compute.instanceAdmin.v1` and `roles/compute.securityAdmin` (a
 - Secure Boot is off unless you turn it on: this page says "vTPM and integrity monitoring are enabled by default, and Google recommends enabling Secure Boot if possible", and create-enable-service-accounts-for-instances.md's source says "Compute Engine does not enable Secure Boot by default."
 - The organization policy constraint `constraints/compute.requireShieldedVm` set to `True` requires all new VMs to be Shielded VMs (organization policy administrator required).
 - Limitation: Shielded VM is not supported on bare-metal instances, except A4X and C4A bare metal instances.
-- Distance line: Shielded VM on Compute Engine; Cloud Logging / Monitoring themselves are in the planned `gcp-observability`, Security Command Center in the planned `gcp-security`.
+- Distance line: Shielded VM on Compute Engine; Cloud Logging / Monitoring themselves are in the planned `gcp-observability`, Security Command Center in `gcp-security-compliance`.
 - Source (Secure Boot default): https://docs.cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/shielded-vm/docs/shielded-vm (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/compute/shielded-vm/docs/integrity-monitoring (retrieved 2026-11-17).

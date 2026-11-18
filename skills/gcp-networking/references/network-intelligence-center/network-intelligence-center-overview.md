@@ -32,7 +32,7 @@ gcloud network-management connectivity-tests list --limit=5
 - Network Services Monitoring is Preview; the other modules are described without a launch-stage label on this page.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-management/connectivity-tests/list (gcloud 593.0.0 help); the source page has no code.
 - Cloud Network Insights: the source page does not state a launch stage, deprecation or retirement date for it; see cloud-network-insights-overview.md.
-- Flow Analyzer reads VPC Flow Logs; see vpc-flow-logs.md. Generic Cloud Monitoring / Logging pages belong to the planned `gcp-observability` skill. VPC Service Controls (mentioned for Connectivity Tests) belongs to the planned `gcp-security` skill.
+- Flow Analyzer reads VPC Flow Logs; see vpc-flow-logs.md. Generic Cloud Monitoring / Logging pages belong to the planned `gcp-observability` skill. VPC Service Controls (mentioned for Connectivity Tests) belongs to the `gcp-security` skill.
 - Source: https://docs.cloud.google.com/network-intelligence-center/docs/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

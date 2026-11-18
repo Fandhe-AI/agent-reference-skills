@@ -63,4 +63,5 @@ If neither method fits (for example you need a credential type other than an acc
 - [id-tokens.md](./id-tokens.md)
 - [../adc/set-up-adc.md](../adc/set-up-adc.md)
 - [../adc/troubleshoot-adc.md](../adc/troubleshoot-adc.md)
-- `gcp-cli` skill (gcloud auth), `gcp-security` skill (IAM roles)
+- [../../iam-guides/roles/README.md](../../iam-guides/roles/README.md) (IAM roles)
+- `gcp-cli` skill (gcloud auth)

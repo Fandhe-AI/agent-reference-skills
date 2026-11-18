@@ -179,7 +179,7 @@ skills/gcp-foundation/
 
 - `gcp-cli` — gcloud 全般のインストール・設定・出力フォーマット・`gcloud auth` の使い方。基盤の 20 グループのコマンドは本スキル
 - `gcp-client-libraries` — 言語別の ADC コード。ADC の仕組み・設定は本スキル
-- `gcp-security` — KMS / Secret Manager / VPC Service Controls / IAP / SCC。IAM・Organization Policy は本スキル
+- `gcp-security` / `gcp-security-compliance` — KMS / Secret Manager / VPC Service Controls / IAP（`gcp-security`）、SCC（`gcp-security-compliance`）。IAM・Organization Policy は本スキル
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `google-gemini-api` — Gemini API キー。Google Cloud の API キー全般は本スキル
 - `anthropic-claude-code-deploy` — Claude Code の Vertex 設定のみ。GCP 側の IAM・認証は本スキル

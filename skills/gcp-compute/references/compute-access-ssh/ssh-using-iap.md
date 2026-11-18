@@ -60,7 +60,7 @@ gcloud.cmd compute start-iap-tunnel INSTANCE_NAME PORT_NUMBER --listen-on-stdin 
 - Console SSH-in-browser uses IAP only if the VM has no external IP address. Console connections create an ephemeral SSH key; gcloud CLI connections create a persistent key.
 - IAP Desktop is another client (install from the `GoogleCloudPlatform/iap-desktop` repository, sign in, add the project, right-click the VM and select **Connect**).
 - Supported on all public Linux images; for Fedora CoreOS set up SSH access first. If IAP is not usable for internal-only VMs, see the "Connection options for internal-only VMs" page.
-- IAP itself is in the planned `gcp-security`; the firewall rule and VPC are in `gcp-networking`. Users also need `roles/iap.tunnelResourceAccessor` when OS Login is used (see [set-up-oslogin.md](./set-up-oslogin.md)).
+- IAP itself is in `gcp-security`; the firewall rule and VPC are in `gcp-networking`. Users also need `roles/iap.tunnelResourceAccessor` when OS Login is used (see [set-up-oslogin.md](./set-up-oslogin.md)).
 - Private keys are never shown here; keep them local.
 - Source: https://docs.cloud.google.com/compute/docs/connect/ssh-using-iap (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

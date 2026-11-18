@@ -119,7 +119,7 @@ Deduplicated from the official table (the official table has one row per resourc
 
 - Per-service pages define the resource types, fields, and method support; consult them before writing a CEL condition.
 - Sample custom constraints are in the custom organization policy library on GitHub (GoogleCloudPlatform/professional-services).
-- Security Command Center can scan for organization policy findings (see the Organization Policy vulnerability findings page); KMS and Secret Manager custom constraints are enforced in gcp-security territory but constraint authoring stays here.
+- Security Command Center can scan for organization policy findings (see the Organization Policy vulnerability findings page; Security Command Center is in gcp-security-compliance); KMS and Secret Manager custom constraints are enforced in gcp-security territory but constraint authoring stays here.
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/custom-constraint-supported-services
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.
 

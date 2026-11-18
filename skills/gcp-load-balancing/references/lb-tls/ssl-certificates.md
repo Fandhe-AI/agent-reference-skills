@@ -73,7 +73,7 @@ gcloud compute ssl-certificates create CERTIFICATE_NAME \
 - Certificate map selection logic differs; see the Certificate Manager documentation.
 - Snippet taken from https://docs.cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs.
 - Private keys of self-managed certificates must not be committed or shared, and key contents must not be put on a command line.
-- Encryption between the load balancer and its backends is covered in `encryption-to-the-backends.md`. Google Cloud Load Balancing, not Cloudflare (`cloudflare-workers`, `cloudflare-pages`) or Vercel (`vercel`). Certificate Manager is documented in the planned `gcp-security` skill.
+- Encryption between the load balancer and its backends is covered in `encryption-to-the-backends.md`. Google Cloud Load Balancing, not Cloudflare (`cloudflare-workers`, `cloudflare-pages`) or Vercel (`vercel`). Certificate Manager is documented in the `gcp-security` skill.
 - Clarified from the official docs: in the source table the Compute Engine SSL certificates cells carry two values (global rows read "Yes Yes", regional external and regional internal rows read "Yes No", the cross-region internal row reads "No") and the source does not label the two values; they are quoted as written. This page's Notes say regional Compute Engine certificates (`regionSslCertificates`) do not support Google-managed certificates.
 - Source: https://docs.cloud.google.com/load-balancing/docs/ssl-certificates (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

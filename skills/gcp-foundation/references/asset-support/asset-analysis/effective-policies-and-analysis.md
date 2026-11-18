@@ -99,4 +99,4 @@ gcloud asset list \
 - [asset-insights.md](./asset-insights.md)
 - [search-iam-policies.md](./search-iam-policies.md)
 - [access-control-quotas.md](../asset-inventory-core/access-control-quotas.md)
-- gcp-security skill (Security Command Center tiers)
+- gcp-security-compliance skill (Security Command Center tiers)

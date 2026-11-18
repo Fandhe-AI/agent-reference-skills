@@ -67,7 +67,7 @@ https://www.googleapis.com/auth/cloud-platform
 
 ## Notes
 
-- Do not confuse Workforce Identity Federation (humans), Workload Identity Federation (machine workloads outside Google Cloud), and Workload Identity Federation for GKE (Kubernetes service accounts). Details of Workload Identity Federation setup live in the `gcp-security` skill.
+- Do not confuse Workforce Identity Federation (humans), Workload Identity Federation (machine workloads outside Google Cloud), and Workload Identity Federation for GKE (Kubernetes service accounts). Details of Workload Identity Federation setup live in this skill's `references/iam-guides/workload-identity-federation/`.
 - The source pages contain no code; the fence above is the cloud-wide OAuth scope string quoted from the authentication overview page (Snippet taken from https://docs.cloud.google.com/docs/authentication).
 - Source: https://docs.cloud.google.com/docs/authentication/use-cases
 - Source: https://docs.cloud.google.com/docs/authentication/identity-products

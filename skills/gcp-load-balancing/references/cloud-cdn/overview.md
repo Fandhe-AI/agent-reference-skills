@@ -58,7 +58,7 @@ https://storage.googleapis.com/STORAGE_BUCKET/FILENAME
 - Cloud CDN works with the global external Application Load Balancer or the classic Application Load Balancer; per-URL-map cache policies are global-only (see caching.md).
 - Data location: content may be stored at serving locations outside the region or zone of the origin. Under the Service Specific Terms the Data Location Setting of other Cloud Platform Services does not apply to Core Customer Data when used with Cloud CDN; the source states that if you do not want this outcome, do not use Cloud CDN.
 - Requests initiated by Cloud CDN (validation requests and byte range requests) are described in caching.md.
-- Google Cloud Armor and Service Extensions detail pages: Cloud Armor is covered by the planned `gcp-security` skill; Service Extensions is in this skill.
+- Google Cloud Armor and Service Extensions detail pages: Cloud Armor is covered by the `gcp-security` skill; Service Extensions is in this skill.
 - The source also shows Console steps and figures that are omitted here. Pricing is not copied; see https://cloud.google.com/cdn/pricing.
 - Source: https://docs.cloud.google.com/cdn/docs/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

@@ -40,7 +40,7 @@ gcloud services enable networkservices.googleapis.com
 - Callouts to Google services: an extension can call Model Armor to enforce security policies on inference traffic on application load balancers, including GKE Inference Gateway.
 - Media CDN access must be requested through your Google Cloud sales representative or account team.
 - Global Front End Enterprise billing tier consolidates pricing of the combined products; Service Extensions can also be used with standalone pricing, with no action needed to keep standalone pricing. Prices are not copied here.
-- Google Cloud Service Extensions is not Cloudflare Workers (see `cloudflare-workers`) and not the Wasm toolchain itself (see `rust`). Cloud Armor, Certificate Manager and IAP belong to the planned `gcp-security` skill.
+- Google Cloud Service Extensions is not Cloudflare Workers (see `cloudflare-workers`) and not the Wasm toolchain itself (see `rust`). Cloud Armor, Certificate Manager and IAP belong to the `gcp-security` skill.
 - Source: https://docs.cloud.google.com/service-extensions/docs/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/service-extensions/docs/create-plugin (snippet; retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

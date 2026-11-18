@@ -2,7 +2,7 @@
 
 | Name | Description | Path |
 |---|---|---|
-| out-of-scope | Out-of-scope products (63) | [out-of-scope.md](./out-of-scope.md) |
+| out-of-scope | Out-of-scope products (62) | [out-of-scope.md](./out-of-scope.md) |
 | gcp-agent-platform | Products owned by this skill (14) | [gcp-agent-platform.md](./gcp-agent-platform.md) |
 | gcp-agent-platform-ml | Products owned by this skill (2) | [gcp-agent-platform-ml.md](./gcp-agent-platform-ml.md) |
 | gcp-ai-apis | Products owned by this skill (23) | [gcp-ai-apis.md](./gcp-ai-apis.md) |
@@ -21,5 +21,6 @@
 | gcp-networking | Products owned by this skill (13) | [gcp-networking.md](./gcp-networking.md) |
 | gcp-observability | Products owned by this skill (9) | [gcp-observability.md](./gcp-observability.md) |
 | gcp-run | Products owned by this skill (9) | [gcp-run.md](./gcp-run.md) |
-| gcp-security | Products owned by this skill (34) | [gcp-security.md](./gcp-security.md) |
+| gcp-security | Products owned by this skill (15) | [gcp-security.md](./gcp-security.md) |
+| gcp-security-compliance | Products owned by this skill (20) | [gcp-security-compliance.md](./gcp-security-compliance.md) |
 | gcp-storage | Products owned by this skill (11) | [gcp-storage.md](./gcp-storage.md) |

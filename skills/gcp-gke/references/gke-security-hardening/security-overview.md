@@ -52,7 +52,7 @@ GKE Warden rejected the request because it violates one or more constraints.
 - The default Docker AppArmor profile is applied by the container runtime at the node level, so scanners that only inspect Kubernetes API resources can falsely report Pods without the `container.apparmor.security.beta.kubernetes.io/container-name` annotation as missing an AppArmor profile. The profile denies, among other things, writing files directly in `/proc/`, writing to non-PID-directory files under `/proc`, writing to `/proc/sys` other than `/proc/sys/kernel/shm*`, and mounting filesystems.
 - Service account keys are a security risk if not managed correctly; prefer a more secure alternative, and validate keys that come from an external source.
 - This page is distinct from Workload Identity Federation for external workloads (AWS / Azure / OIDC), which is in `gcp-foundation`.
-- The source has no code blocks; the Warden error text above is quoted from it. IAM in general is in `gcp-foundation`; Binary Authorization policies and Security Command Center in general are planned in `gcp-security`.
+- The source has no code blocks; the Warden error text above is quoted from it. IAM in general is in `gcp-foundation`; Binary Authorization policies are in `gcp-security`; Security Command Center in general is in `gcp-security-compliance`.
 - Autopilot details: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/autopilot-security
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/security-overview (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 

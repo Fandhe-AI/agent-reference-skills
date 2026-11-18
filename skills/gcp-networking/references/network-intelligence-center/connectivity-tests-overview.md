@@ -76,7 +76,7 @@ gcloud network-management connectivity-tests rerun my-test
 - Live data plane analysis is a one-time diagnostic, not continuous monitoring; use Performance Dashboard (see performance-dashboard-overview.md). Load balancer backends and ECMP paths are chosen randomly per probe.
 - Serverless source IPs are nondeterministic; a random address from the available pool is used per run.
 - GKE: to evaluate GKE network policies and IP masquerading, use Pods as test endpoints.
-- VPC Service Controls can protect Connectivity Tests (service perimeters); VPC Service Controls is in the planned `gcp-security` skill.
+- VPC Service Controls can protect Connectivity Tests (service perimeters); VPC Service Controls is in the `gcp-security` skill.
 - Snippets taken from https://docs.cloud.google.com/sdk/gcloud/reference/network-management/connectivity-tests/describe and https://docs.cloud.google.com/sdk/gcloud/reference/network-management/connectivity-tests/rerun (gcloud 593.0.0 help). The source page has no code. The full `gcloud compute ...` resource flags are in the `gcp-compute` skill.
 - Source: https://docs.cloud.google.com/network-intelligence-center/docs/connectivity-tests/concepts/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

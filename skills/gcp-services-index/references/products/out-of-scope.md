@@ -10,7 +10,6 @@ These products are not covered by any gcp-* skill (status: 対象外). Use the o
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Lifecycle | Docs | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| Access Transparency | — | — | — | `axt.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/axt | 対象外 |
 | Actions | — | — | — | `actions.` | 2 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/actions | 対象外 |
 | AI Edge Portal | — | — | — | `aiedgeportal.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/aiedgeportal | 対象外 |
 | Android Management | `androidmanagement.googleapis.com` (v1) | The Android Management API provides remote enterprise management of Android devices and apps. | — | `androidmanagement.` | 2 | — | — | https://developers.google.com/android/management | 対象外 |

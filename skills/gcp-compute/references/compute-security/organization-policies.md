@@ -70,7 +70,7 @@ Limit: 20 constraints per Compute Engine resource, counting managed and custom c
 - Policies can be set at organization, folder or project level; descendants inherit. Use cases: cost management (machine types, Persistent Disk sizes), security posture (OS Login, serial console), compliance (for example sole-tenant nodes).
 - The list of `compute.managed.*` constraints is on https://docs.cloud.google.com/compute/docs/access/managed-constraints; custom constraints are on https://docs.cloud.google.com/compute/docs/access/custom-constraints.
 - `compute.disableSerialPortAccess` is a security setting: it turns interactive serial console access off.
-- Distance line: Compute Engine constraints only; org policy in general is in `gcp-foundation`. Cloud KMS keys and Security Command Center are in the planned `gcp-security`.
+- Distance line: Compute Engine constraints only; org policy in general is in `gcp-foundation`. Cloud KMS keys are in `gcp-security` and Security Command Center is in `gcp-security-compliance`.
 - Adapted from the official docs: the `enable-enforce` example drops the leading `$ ` prompt that the gcloud help shows, so the command can be pasted as is.
 - Source (gcloud help): https://docs.cloud.google.com/sdk/gcloud/reference/resource-manager/org-policies/enable-enforce (gcloud 593.0.0 help)
 - Source: https://docs.cloud.google.com/compute/docs/access/organization-policies (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
