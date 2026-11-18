@@ -665,7 +665,8 @@ gcloud eventarc pipelines create my-pipeline \
 gcloud eventarc pipelines create my-pipeline \
     --location=us-central1 \
     --destinations=http_endpoint_uri='https://example-endpoint.com' \
-    --mediations=transformation_template='message.removeFields(["data.credit_card_number","data.ssn"])'
+    --mediations=transformation_template='message.removeFields(["data.credit_card_number","data.ssn"])' \
+    --input-payload-format-json=
 
 gcloud eventarc pipelines create my-pipeline \
     --location=us-central1 \
@@ -1504,6 +1505,7 @@ SYNOPSIS
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example service account `example-service-account@example-project.gserviceaccount.iam.com` uses the domain `gserviceaccount.iam.com`; service account emails end in `iam.gserviceaccount.com` (`SA_NAME@PROJECT_ID.iam.gserviceaccount.com`), so the runnable form uses `example-service-account@example-project.iam.gserviceaccount.com`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the logging example joins `--destinations=http_endpoint_uri='https://example-endpoint.com'` and `--logging_config=INFO` without a space, so the setting becomes part of the `--destinations` value, and the flag in the SYNOPSIS is `--logging-config` (gcloud 593.0.0 rejects `--logging_config`: "did you mean '--logging-config'?"); the runnable form passes `--logging-config=INFO` as its own flag.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the mediation example joins `--destinations=http_endpoint_uri='https://example-endpoint.com'` and `--mediations=...` without a space, so `--mediations` becomes part of the `--destinations` value; the runnable form passes `--mediations` as its own flag.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the mediation example reads `data.credit_card_number` and `data.ssn` but sets no input payload format; the `--destinations` description says that when none of `input_payload_format_json`, `input_payload_format_avro_schema_definition` or `input_payload_format_protobuf_schema_definition` is set, the message data is treated as opaque binary and "Any mediations on the pipeline that involve access to the data field will fail as persistent errors"; the runnable form adds `--input-payload-format-json=`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
