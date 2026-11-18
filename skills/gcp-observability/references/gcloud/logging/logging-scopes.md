@@ -101,7 +101,7 @@ gcloud logging scopes create my-scope \
     --description="my custom log scope"
 
 gcloud logging scopes create my-scope \
-    --resource-names=projects/my-project,projects/my-project2,projects/my-project/locations/global/buckets/my-bucket/views/my-view1,projects/my-project/locations/global/buckets/my-bucket/views/my-view2,
+    --resource-names=projects/my-project,projects/my-project2,projects/my-project/locations/global/buckets/my-bucket/views/my-view1,projects/my-project/locations/global/buckets/my-bucket/views/my-view2
 ```
 
 ### gcloud logging scopes delete
