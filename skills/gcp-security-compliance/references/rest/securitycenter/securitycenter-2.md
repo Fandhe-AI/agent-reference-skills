@@ -1421,8 +1421,9 @@ curl -X GET \
 
 - Generated from the Discovery document(s) v1, v1beta2, v1beta1 of `securitycenter` (retrieved 2026-11-14). Resources on this page: organizations, projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/securitycenter/`; they are the `schemas` section of the Discovery documents in Source.
 - Deprecated methods (`deprecated: true` in Discovery): `securitycenter.organizations.updateOrganizationSettings`, `securitycenter.projects.assets.group`, `securitycenter.projects.assets.list`. Avoid them in new code.
+- Regional endpoints: the Discovery document (`securitycenter` v1, revision 20261023) also lists 3 endpoints of the form `https://securitycenter.LOCATION.rep.googleapis.com/` (Regional Endpoint), for LOCATION in `eu`, `me-central2`, `us`. The method URLs above use the global host `https://securitycenter.googleapis.com/`; to send a request through one of these endpoints, replace the host with the endpoint for the resource's location (for example `https://securitycenter.me-central2.rep.googleapis.com/`) and keep the path.
 - Source: https://securitycenter.googleapis.com/$discovery/rest?version=v1, https://securitycenter.googleapis.com/$discovery/rest?version=v1beta2, https://securitycenter.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related

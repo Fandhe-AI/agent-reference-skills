@@ -680,7 +680,8 @@ curl -X GET \
 
 - Generated from the Discovery document(s) v1 of `auditmanager` (retrieved 2026-11-14). Resources on this page: folders, organizations, projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/auditmanager/`; they are the `schemas` section of the Discovery documents in Source.
+- Regional endpoints: the Discovery document (`auditmanager` v1, revision 20261028) also lists 4 endpoints of the form `https://auditmanager.LOCATION.rep.googleapis.com/` (Regional Endpoint), for LOCATION in `asia-south1`, `europe-west1`, `me-central2`, `us-central1`. The method URLs above use the global host `https://auditmanager.googleapis.com/`; to send a request through one of these endpoints, replace the host with the endpoint for the resource's location (for example `https://auditmanager.us-central1.rep.googleapis.com/`) and keep the path.
 - Source: https://auditmanager.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
 ## Related

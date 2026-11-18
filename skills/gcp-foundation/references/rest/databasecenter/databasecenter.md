@@ -117,6 +117,7 @@ curl -X GET \
 - Generated from the Discovery document(s) v1beta of `databasecenter` (retrieved 2026-11-14). Resources on this page: folders, organizations, projects, v1beta.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
 - Message schemas (the request and response types named above) are listed under `references/rest-schemas/databasecenter/`; they are the `schemas` section of the Discovery documents in Source.
+- Regional endpoints: the Discovery document (`databasecenter` v1beta, revision 20261102) also lists 1 endpoint of the form `https://databasecenter.LOCATION.rep.googleapis.com/` (Regional Endpoint), for LOCATION in `us`. The method URLs above use the global host `https://databasecenter.googleapis.com/`; to send a request through one of these endpoints, replace the host with the endpoint for the resource's location (for example `https://databasecenter.us.rep.googleapis.com/`) and keep the path.
 - Source: https://databasecenter.googleapis.com/$discovery/rest?version=v1beta (https://developers.google.com/discovery)
 
 ## Related
