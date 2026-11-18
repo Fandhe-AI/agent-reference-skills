@@ -104,7 +104,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
-- Corrected from the official docs (runnable form only; the help text above is verbatim): the example wraps the flag in backticks (for example `` `--revision-id=000001-dc1` ``), which a shell runs as command substitution; the runnable form passes the flag without backticks. `my-data` stands for the workflow argument, which the `--data` description says is a "JSON string with data that will be passed to the workflow as an argument".
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example wraps the flag in backticks (for example `` `--revision-id=000001-dc1` ``), which a shell runs as command substitution; the runnable form passes the flag without backticks.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
