@@ -189,12 +189,13 @@ DATASOURCE_UIDS=GRAFANA_DATASOURCE_UID # The value from step 3. This is not a UR
 GRAFANA_API_TOKEN=GRAFANA_SERVICE_ACCOUNT_TOKEN # The value from step 4.
 ```
 
-Adapted (not in the official docs): the source pipes a `curl` download into `sed` and `kubectl apply`; this downloads with `curl -fsSL`, lets you inspect the manifest, then substitutes values and applies.
+Adapted (not in the official docs): the source pipes a `curl` download into `sed` and `kubectl apply`; this downloads with `curl -fsSL`, lets you inspect the manifest, then substitutes values and applies. The values are escaped for the `sed` replacement (`\`, `&` and the `|` delimiter), so a URL with a query string or a token with those characters is inserted as written.
 
 ```bash
 curl -fsSL -o datasource-syncer.yaml https://raw.githubusercontent.com/GoogleCloudPlatform/prometheus-engine/v0.17.2/cmd/datasource-syncer/datasource-syncer.yaml
 less datasource-syncer.yaml
-sed 's|$DATASOURCE_UIDS|'"$DATASOURCE_UIDS"'|; s|$GRAFANA_API_ENDPOINT|'"$GRAFANA_API_ENDPOINT"'|; s|$GRAFANA_API_TOKEN|'"$GRAFANA_API_TOKEN"'|; s|$PROJECT_ID|'"$PROJECT_ID"'|;' datasource-syncer.yaml \
+sed_escape() { printf '%s' "$1" | sed -e 's/[\\&|]/\\&/g'; }
+sed "s|\$DATASOURCE_UIDS|$(sed_escape "$DATASOURCE_UIDS")|; s|\$GRAFANA_API_ENDPOINT|$(sed_escape "$GRAFANA_API_ENDPOINT")|; s|\$GRAFANA_API_TOKEN|$(sed_escape "$GRAFANA_API_TOKEN")|; s|\$PROJECT_ID|$(sed_escape "$PROJECT_ID")|;" datasource-syncer.yaml \
   | kubectl -n NAMESPACE_NAME apply -f -
 ```
 
@@ -271,6 +272,7 @@ gcloud projects add-iam-policy-binding SCOPING_PROJECT_ID \
 - Source: https://docs.cloud.google.com/stackdriver/docs/managed-prometheus/query (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: for non-GKE clusters the source says `kubectl config set-cluster CLUSTER_NAME`, which only edits a kubeconfig cluster entry and does not switch the current context; this page uses `kubectl config use-context CONTEXT_NAME`.
 - Adapted from the official docs: the source grants `roles/iam.serviceAccountTokenCreator` to `gmp-test-sa` and `gmp-ds-syncer-sa`, and `roles/secretmanager.secretAccessor` to `gmp-ds-syncer-sa`, on the whole project. That lets them mint tokens for any service account and read every secret in the project; the examples grant Token Creator on each service account itself (`gcloud iam service-accounts add-iam-policy-binding`) and Secret Accessor on the `datasource-syncer` secret only (`gcloud secrets add-iam-policy-binding`).
+- Adapted from the official docs: the source inserts the values into the `sed` replacement unescaped, so `&` in `GRAFANA_API_ENDPOINT` (for example a query string) would be replaced by the matched text and `|` or `\` would break the expression; the example escapes them with `sed_escape` first.
 
 ## Related
 
