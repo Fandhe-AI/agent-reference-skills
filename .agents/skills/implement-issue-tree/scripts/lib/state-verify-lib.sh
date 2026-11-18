@@ -10,8 +10,10 @@
 #       変数に持ち、以降の jq はその内容へ流す = 1 回の呼び出しの中で同じ版を見る）。書き込み側の関数（state-lib.sh の
 #       st_rewrite / st_create / ST_*_JQ）は使わない。このファイルに rm・mv・cp・ln・mktemp・ファイルへのリダイレクト書き込みは
 #       無い（tests/state-verify-script.test.mjs が静的に固定する）。
-# 出力: 封筒の payload は {entries:[{h,k}], highWaterBytes, highWaterVersion, inputSha256, keysCount, keysSha256, mode, outcome,
+# 出力: 封筒の payload は {entries:[{h,k,n}], highWaterBytes, highWaterVersion, inputSha256, keysCount, keysSha256, mode, outcome,
 #       page, pages}（キー昇順・空白なしの正規形。値は整数・64 桁 16 進・数字だけのキーと固定語彙）。
+#         entries の n = 項目の note（文字列のときだけ）の SHA-256（jq -j で出した生のバイト列のハッシュ）。note が無い・文字列でない項目は空文字。
+#         ホストは note を読み込まない（Issue #878）ので、blocked の一括記録が「保存済みの note と同じか」を n と sha256(patch.note) の一致で判定する。
 #         outcome = ok（読めた）/ nofile（ファイルが存在しない）/ error（シンボリックリンク・存在するが読めない・JSON として不正・
 #                   .items が〔無い・null 以外で〕オブジェクトでない・高水位が〔無い・null 以外で〕非負整数の number でない・
 #                   キーが 15 桁を超える〔全キーを 1 回で検査。要求したページ以外のキーでも error〕・項目のハッシュを取れない）。
@@ -57,7 +59,7 @@ sv_uint() {
 }
 
 # $1 = ファイルの内容、$2 = キーの一覧（1 行 1 件）、$3 = 開始位置、$4 = 終了位置（含まない）、$5 = 件数。該当ページの entries
-# （カンマ区切りの {"h":…,"k":…}）を出す。戻り値: 0 / 1（キーの形・桁数・行数の不一致・項目のハッシュを取れない）。
+# （カンマ区切りの {"h":…,"k":…,"n":…}）を出す。戻り値: 0 / 1（キーの形・桁数・行数の不一致・項目のハッシュを取れない）。
 # 必ずコマンド置換（サブシェル）で呼ぶ: set -f と IFS・位置引数の変更を呼び出し元へ漏らさない。キーの一覧は here-document にしない（bash 3.2 は
 # here-document を一時ファイルで実装するため、一時ファイルを作らない契約を守れない）。キーは数字だけなので、改行だけで単語分割すれば足りる。
 # 項目の値はページの分を 1 回の jq でまとめて取る（1 件ごとに jq を起動するとファイル全体を 100 回パースし、5000 件の状態で遅い）。
@@ -65,7 +67,7 @@ sv_uint() {
 # jq -jcS --arg k "$k" '.items[$k]' の出力と同じバイト列になる（同じフラグの同じ出力器）。例外は項目そのものが文字列の場合で、-j は文字列を
 # 生のまま出す（改行を含み得る）。その項目の行は印の 1 文字 " にして（JSON の値の compact 表現が " 1 文字になることは無い）、従来どおり 1 件ずつ取る
 sv_items() {
-  local content=$1 keys=$2 start=$3 end=$4 count=$5 idx=0 k sel="" list="" vals val h out=""
+  local content=$1 keys=$2 start=$3 end=$4 count=$5 idx=0 k sel="" list="" vals val h n note want=value out=""
   set -f
   IFS='
 '
@@ -85,22 +87,37 @@ sv_items() {
   [ "${idx}" -eq "${count}" ] || return 1
   [ -n "${sel}" ] || return 0
   # jq の失敗はハッシュへ畳まない（パイプの最後が jq なので、その終了コードで止める）
-  vals=$(printf '%s' "${content}" | jq -jcS --argjson ks "[${sel}]" '$ks[] as $k | (.items[$k] | if type == "string" then "\"" else ('"${ST_VERIFY_PROJECT}"') end), "\n"' 2>/dev/null) || return 1
+  # 1 件につき 2 行: 値の行（上記）と note の行。note の行は note が文字列なら JSON 文字列（1 行）、無ければ印の - （空行は単語分割で消えるため）
+  vals=$(printf '%s' "${content}" | jq -jcS --argjson ks "[${sel}]" '$ks[] as $k | (.items[$k] | if type == "string" then "\"" else ('"${ST_VERIFY_PROJECT}"') end), "\n", (.items[$k] | if type == "object" and (.note | type) == "string" then (.note | tojson) else "-" end), "\n"' 2>/dev/null) || return 1
   # shellcheck disable=SC2086  # 意図した単語分割（キーは数字だけ）
   set -- ${list}
   # shellcheck disable=SC2086  # 意図した単語分割（1 件 1 行。空の行は出ない）
   for val in ${vals}; do
-    [ $# -gt 0 ] || return 1
-    k=$1
-    shift
-    if [ "${val}" = '"' ]; then
-      # 項目が文字列: 値は jq -jcS の出力そのまま（末尾の改行も含めて保つため、番兵 x を付けて外す）
-      val=$(printf '%s' "${content}" | jq -jcS --arg k "${k}" '.items[$k]' 2>/dev/null && printf x) || return 1
-      val=${val%x}
+    if [ "${want}" = value ]; then
+      [ $# -gt 0 ] || return 1
+      k=$1
+      shift
+      if [ "${val}" = '"' ]; then
+        # 項目が文字列: 値は jq -jcS の出力そのまま（末尾の改行も含めて保つため、番兵 x を付けて外す）
+        val=$(printf '%s' "${content}" | jq -jcS --arg k "${k}" '.items[$k]' 2>/dev/null && printf x) || return 1
+        val=${val%x}
+      fi
+      h=$(printf '%s' "${val}" | so_sha256) || return 1
+      want=note
+      continue
     fi
-    h=$(printf '%s' "${val}" | so_sha256) || return 1
-    out="${out}${out:+,}{\"h\":\"${h}\",\"k\":\"${k}\"}"
+    # note の行。JSON 文字列を生のバイト列へ戻してからハッシュする（末尾の改行を保つため番兵 x を付けて外す）
+    n=""
+    if [ "${val}" != '-' ]; then
+      note=$(printf '%s' "${val}" | jq -j '.' 2>/dev/null && printf x) || return 1
+      note=${note%x}
+      n=$(printf '%s' "${note}" | so_sha256) || return 1
+    fi
+    out="${out}${out:+,}{\"h\":\"${h}\",\"k\":\"${k}\",\"n\":\"${n}\"}"
+    want=value
   done
+  # 値の行だけで終わった（note の行が欠けた）ものは受理しない
+  [ "${want}" = value ] || return 1
   # 行数がキーの数と合わない（jq の出力が欠けた・余った）ものは受理しない
   [ $# -eq 0 ] || return 1
   printf '%s' "${out}"
