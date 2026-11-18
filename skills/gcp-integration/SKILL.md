@@ -7,9 +7,9 @@ user-invocable: false
 
 # gcp-integration
 
-Google Cloud (GCP) のアプリケーション統合系スキル。Application Integration（統合・version・trigger（API・Pub/Sub）・task（Call REST Endpoint・Connectors・JavaScript・For Each Parallel）・edge と edge condition・variables・error handling・テストと公開・Data Mapping task・Data Transformer（Jsonnet）task・authentication profiles・アクセス制御・execution logs・Cloud Logging・CMEK・VPC Service Controls・run-as 認可の変更）と、Integration Connectors（connection・connector・entity / action・private / public / Google Cloud VPC 内のネットワーク接続・PSC endpoint attachment・custom connectors・event subscriptions・IAM・レート制限・VPC Service Controls）を扱う。加えて Data Connectors（`dataconnectors`）の IAM ロール、REST（Discovery）2 API・IAM 4 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`rest-schemas/integrations`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のアプリケーション統合系スキル。Application Integration（統合・version・trigger（API・Pub/Sub）・task（Call REST Endpoint・Connectors・JavaScript・For Each Parallel）・edge と edge condition・variables・error handling・テストと公開・Data Mapping task・Data Transformer（Jsonnet）task・authentication profiles・アクセス制御・execution logs・Cloud Logging・CMEK・VPC Service Controls・run-as 認可の変更）と、Integration Connectors（connection・connector・entity / action・private / public / Google Cloud VPC 内のネットワーク接続・PSC endpoint attachment・custom connectors・event subscriptions・IAM・レート制限・VPC Service Controls）を扱う。加えて Data Connectors（`dataconnectors`）の IAM ロール、REST（Discovery）2 API・IAM 4 ファイルを収録する。
 
-参照本文は英語（公式ドキュメントの原語）。**gcloud のグループはこれらのプロダクトに無い**ため `references/gcloud/`（後続 PR で投入） は無く、手順の正は REST とコンソール（`gcloud auth print-access-token` は REST 呼び出しの bearer token を得るためだけに使う）。
+参照本文は英語（公式ドキュメントの原語）。**gcloud のグループはこれらのプロダクトに無い**ため `references/gcloud/` は無く、手順の正は REST とコンソール（`gcloud auth print-access-token` は REST 呼び出しの bearer token を得るためだけに使う）。
 
 **Application Integration の認可が変わる**（`application-integration-data-auth-ops/prepare-for-authorization-changes.md`）。公式の記述は、実行ごとに明示的な ID（実行したユーザー、または管理者が制御する run-as サービスアカウント）が必要になり、2026-10-15 以降に作成した統合は既に新しい動作、2026-10-15 より前の統合も 2027-01-15（UTC）から新しい動作になる、というもの。スケジュール・イベントのトリガーで run-as サービスアカウントの無い新規統合は公開もテストもできない。
 
@@ -34,6 +34,9 @@ skills/gcp-integration/
         connectors.md
     rest-schemas/                 # 機械生成: Discovery 由来のメッセージスキーマ
       README.md
+      integrations/
+        README.md
+        integrations-1.md ... integrations-3.md
       connectors/
         README.md
         connectors-1.md
@@ -74,6 +77,8 @@ skills/gcp-integration/
 6. レート制限（HTTP 429）・ノードの autoscaling・connection の作成の前提は `integration-connectors/overview.md` と `integration-connectors/connectors-access-permissions.md`（元のページを統合している）
 7. Workflows との選択、Pub/Sub topic、Cloud Scheduler 等は他スキル（下記「他スキルとの使い分け」）
 
+`samples/` と `scripts/` は本スキルに無い。コードは各ガイドのコードブロックを引く。
+
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
@@ -84,6 +89,7 @@ skills/gcp-integration/
 | Application Integration API（integrations）のメソッド（v1 / v2） | rest/integrations | [references/rest/integrations/README.md](references/rest/integrations/README.md) |
 | Connectors API（connectors）のメソッド（v1 / v2。v2 は entity・action の実行） | rest/connectors | [references/rest/connectors/README.md](references/rest/connectors/README.md) |
 | REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
+| 各 API のメッセージ型 | rest-schemas/`<api>`（rest/ と同じ 2 API） | [references/rest-schemas/integrations/README.md](references/rest-schemas/integrations/README.md)、[references/rest-schemas/connectors/README.md](references/rest-schemas/connectors/README.md) |
 | Application Integration の概要・統合と version・セットアップ（API の有効化・リージョン）・trigger の種類と実行モード（同期 / 非同期）・task の一覧 | application-integration-concepts | [references/application-integration-concepts/README.md](references/application-integration-concepts/README.md) |
 | API trigger・Pub/Sub trigger の設定・Call REST Endpoint / Connectors / JavaScript / For Each Parallel の各 task | application-integration-concepts | [references/application-integration-concepts/README.md](references/application-integration-concepts/README.md) |
 | variables（config・system・integration・task）・edge と edge condition・error handling（エラーの種類・戦略・コード）・テストと公開 | application-integration-concepts | [references/application-integration-concepts/README.md](references/application-integration-concepts/README.md) |
@@ -93,8 +99,6 @@ skills/gcp-integration/
 | Integration Connectors の概要・用語（connection・connector・entity・action）・レート制限・connection の作成の前提と権限 | integration-connectors | [references/integration-connectors/README.md](references/integration-connectors/README.md) |
 | private / public / Google Cloud VPC 内のサービスへのネットワーク接続・PSC endpoint attachment・managed zone・静的 egress IP | integration-connectors | [references/integration-connectors/README.md](references/integration-connectors/README.md) |
 | custom connectors（OpenAPI ベース）の概要と作成・event subscriptions・VPC Service Controls | integration-connectors | [references/integration-connectors/README.md](references/integration-connectors/README.md) |
-
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/integrations`
 
 ## 他スキルとの使い分け
 
