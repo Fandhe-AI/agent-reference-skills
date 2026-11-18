@@ -38,10 +38,12 @@ Then override the endpoint with `gcloud config set api_endpoint_overrides`:
 gcloud config set api_endpoint_overrides/SERVICE_NAME REGIONAL_API_URL
 ```
 
-`REGIONAL_API_URL` has this form (`API_VERSION` such as `v1`; some services may not require it):
+`REGIONAL_API_URL` is the regional host with a trailing `/`:
+
+Adapted (not in the official docs): the source gives the form `https://SERVICE_NAME.REGION_NAME.rep.googleapis.com/SERVICE_NAME/API_VERSION`; gcloud needs the host with a trailing `/` (see the Cloud KMS example and the notes).
 
 ```text
-https://SERVICE_NAME.REGION_NAME.rep.googleapis.com/SERVICE_NAME/API_VERSION
+https://SERVICE_NAME.REGION_NAME.rep.googleapis.com/
 ```
 
 Cloud KMS example:
