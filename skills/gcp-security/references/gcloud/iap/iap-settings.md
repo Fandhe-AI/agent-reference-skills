@@ -1,0 +1,410 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/iap/settings
+---
+
+# gcloud iap settings
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud iap settings get
+
+```text
+NAME
+    gcloud iap settings get - get the setting for an IAP resource
+
+SYNOPSIS
+    gcloud iap settings get
+        [--folder=FOLDER --organization=ORGANIZATION --project=PROJECT
+          --region=REGION
+          --resource-type=RESOURCE_TYPE --service=SERVICE --version=VERSION]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Get the setting for an IAP resource.
+
+EXAMPLES
+    To get the IAP setting for the resources within an organization, run:
+
+        $ gcloud iap settings get --organization=ORGANIZATION_ID
+
+    To get the IAP setting for the resources within a folder, run:
+
+        $ gcloud iap settings get --folder=FOLDER_ID
+
+    To get the IAP setting for the resources within a project, run:
+
+        $ gcloud iap settings get --project=PROJECT_ID
+
+    To get the IAP setting for web type resources within a project, run:
+
+        $ gcloud iap settings get --project=PROJECT_ID \
+            --resource-type=iap_web
+
+    To get the IAP setting for all app engine services within a project, run:
+
+        $ gcloud iap settings get --project=PROJECT_ID \
+            --resource-type=app-engine
+
+    To get the IAP setting for an app engine service within a project, run:
+
+        $ gcloud iap settings get --project=PROJECT_ID \
+            --resource-type=app-engine --service=SERVICE_ID
+
+    To get the IAP setting for an app engine service version within a project,
+    run:
+
+        $ gcloud iap settings get --project=PROJECT_ID \
+            --resource-type=app-engine --service=SERVICE_ID \
+            --version=VERSION_ID
+
+    To get the IAP setting for all backend services within a project, run:
+
+        $ gcloud iap settings get --project=PROJECT_ID \
+            --resource-type=backend-services
+
+    To get the IAP setting for a backend service within a project, run:
+
+        $ gcloud iap settings get --project=PROJECT_ID \
+            --resource-type=backend-services --service=SERVICE_ID
+
+    To get the IAP setting for a regional backend service within a project,
+    run:
+
+        $ gcloud iap settings get --project=PROJECT_ID \
+            --resource-type=backend-services --service=SERVICE_ID \
+            --region=REGION_ID
+
+    To get the IAP setting for all forwarding rules within a project, run:
+
+        $ gcloud iap settings get --project=PROJECT_ID \
+            --resource-type=forwarding-rule
+
+    To get the IAP setting for a forwarding rule within a project, run:
+
+        $ gcloud iap settings get --project=PROJECT_ID \
+            --resource-type=forwarding-rule --service=SERVICE_ID
+
+    To get the IAP setting for a regional forwarding rule within a project,
+    run:
+
+        $ gcloud iap settings get --project=PROJECT_ID \
+            --resource-type=forwarding-rule --service=SERVICE_ID \
+            --region=REGION_ID
+
+    To get the IAP setting for all Cloud Run services within a region of a
+    project, run:
+
+        $ gcloud iap settings get --project=PROJECT_ID \
+            --resource-type=cloud-run --region=REGION_ID
+
+    To get the IAP setting for a Cloud Run service within a project, run:
+
+        $ gcloud iap settings get --project=PROJECT_ID \
+            --resource-type=cloud-run --region=REGION_ID \
+            --service=SERVICE_ID
+
+FLAGS
+     --folder=FOLDER
+        Folder ID.
+
+     --organization=ORGANIZATION
+        Organization ID.
+
+     --project=PROJECT
+        Project ID.
+
+     --region=REGION
+        Region name. Not applicable for app-engine. Required when
+        resource-type=compute and regional scoped. Not applicable for global
+        scoped compute. Required when resource-type=cloud-run.
+
+     --resource-type=RESOURCE_TYPE
+        Resource type of the IAP resource. For Backend Services, you can use
+        both compute and backend-services as resource type. RESOURCE_TYPE must
+        be one of: app-engine, iap_web, compute, organization, folder,
+        backend-services, forwarding-rule, cloud-run.
+
+     --service=SERVICE
+        Service name. Optional when resource-type is compute or app-engine.
+
+     --version=VERSION
+        Version name. Not applicable for compute. Optional when
+        resource-type=app-engine.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha iap settings get
+
+        $ gcloud beta iap settings get
+```
+
+### gcloud iap settings set
+
+```text
+NAME
+    gcloud iap settings set - set the setting for an IAP resource
+
+SYNOPSIS
+    gcloud iap settings set SETTING_FILE
+        [--folder=FOLDER --organization=ORGANIZATION --project=PROJECT
+          --region=REGION
+          --resource-type=RESOURCE_TYPE --service=SERVICE --version=VERSION]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Set the setting for an IAP resource.
+
+EXAMPLES
+    To set the IAP setting for the resources within an organization, run:
+
+        $ gcloud iap settings set iap_settings.yaml \
+            --organization=ORGANIZATION_ID
+
+    To set the IAP setting for the resources within a folder, run:
+
+        $ gcloud iap settings set iap_settings.yaml --folder=FOLDER_ID
+
+    To set the IAP setting for the resources within a project, run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID
+
+    To set the IAP setting for web type resources within a project, run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID \
+            --resource-type=iap_web
+
+    To set the IAP setting for all app engine services within a project, run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID \
+            --resource-type=app-engine
+
+    To set the IAP setting for an app engine service within a project, run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID \
+            --resource-type=app-engine --service=SERVICE_ID
+
+    To set the IAP setting for an app engine service version within a project,
+    run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID \
+            --resource-type=app-engine --service=SERVICE_ID \
+            --version=VERSION_ID
+
+    To set the IAP setting for all backend services within a project, run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID \
+            --resource-type=backend-services
+
+    To set the IAP setting for a backend service within a project, run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID \
+            --resource-type=backend-services --service=SERVICE_ID
+
+    To set the IAP setting for a region backend service within a project, run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID \
+            --resource-type=backend-services --service=SERVICE_ID \
+            --region=REGION_ID
+
+    To set the IAP setting for all forwarding rule within a project, run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID \
+            --resource-type=forwarding-rule
+
+    To set the IAP setting for a forwarding rule within a project, run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID \
+            --resource-type=forwarding-rule --service=SERVICE_ID
+
+    To set the IAP setting for a region forwarding rule within a project, run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID \
+            --resource-type=forwarding-rule --service=SERVICE_ID \
+            --region=REGION_ID
+
+    To set the IAP setting for the all cloud run services within a region of a
+    project, run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID \
+            --resource-type=cloud-run --region=REGION_ID
+
+    To set the IAP setting for a cloud run service within a project, run:
+
+        $ gcloud iap settings set iap_settings.yaml --project=PROJECT_ID \
+            --resource-type=cloud-run --region=REGION_ID \
+            --service=SERVICE_ID
+
+POSITIONAL ARGUMENTS
+     SETTING_FILE
+        JSON or YAML file containing the IAP resource settings.
+
+        JSON example:
+
+            {
+              "access_settings": {
+                "oauth_settings": {
+                  "login_hint": {
+                    "value": "test_hint"
+                  }
+                },
+                "gcip_settings": {
+                  "tenant_ids": [
+                    "tenant1-p9puj",
+                    "tenant2-y8rxc"
+                  ],
+                  "login_page_uri": {
+                    "value": "https://test.com/?apiKey=abcd_efgh"
+                  }
+                },
+                "cors_settings": {
+                  "allow_http_options": {
+                    "value": true
+                  }
+                }
+              },
+              "application_settings": {
+                "csm_settings": {
+                  "rctoken_aud": {
+                    "value": "test_aud"
+                  }
+                }
+              }
+            }
+
+        YAML example:
+
+            accessSettings :
+              oauthSettings:
+                loginHint: test_hint
+              gcipSettings:
+                tenantIds:
+                - tenant1-p9puj
+                - tenant2-y8rxc
+                loginPageUri: https://test.com/?apiKey=abcd_efgh
+              corsSettings:
+                allowHttpOptions: true
+            applicationSettings:
+              csmSettings:
+                rctokenAud: test_aud
+
+FLAGS
+     --folder=FOLDER
+        Folder ID.
+
+     --organization=ORGANIZATION
+        Organization ID.
+
+     --project=PROJECT
+        Project ID.
+
+     --region=REGION
+        Region name. Not applicable for app-engine. Required when
+        resource-type=compute and regional scoped. Not applicable for global
+        scoped compute. Required when resource-type=cloud-run.
+
+     --resource-type=RESOURCE_TYPE
+        Resource type of the IAP resource. For Backend Services, you can use
+        both compute and backend-services as resource type. RESOURCE_TYPE must
+        be one of: app-engine, iap_web, compute, organization, folder,
+        backend-services, forwarding-rule, cloud-run.
+
+     --service=SERVICE
+        Service name. Optional when resource-type is compute or app-engine.
+
+     --version=VERSION
+        Version name. Not applicable for compute. Optional when
+        resource-type=app-engine.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha iap settings set
+
+        $ gcloud beta iap settings set
+```
+
+### gcloud beta iap settings get
+
+```text
+NAME
+    gcloud beta iap settings get - get the setting for an IAP resource
+
+SYNOPSIS
+    gcloud beta iap settings get
+        [--folder=FOLDER --organization=ORGANIZATION --project=PROJECT
+          --region=REGION
+          --resource-type=RESOURCE_TYPE --service=SERVICE --version=VERSION]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta iap settings set
+
+```text
+NAME
+    gcloud beta iap settings set - set the setting for an IAP resource
+
+SYNOPSIS
+    gcloud beta iap settings set SETTING_FILE
+        [--folder=FOLDER --organization=ORGANIZATION --project=PROJECT
+          --region=REGION
+          --resource-type=RESOURCE_TYPE --service=SERVICE --version=VERSION]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha iap settings get
+
+```text
+NAME
+    gcloud alpha iap settings get - get the setting for an IAP resource
+
+SYNOPSIS
+    gcloud alpha iap settings get
+        [--folder=FOLDER --organization=ORGANIZATION --project=PROJECT
+          --region=REGION
+          --resource-type=RESOURCE_TYPE --service=SERVICE --version=VERSION]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha iap settings set
+
+```text
+NAME
+    gcloud alpha iap settings set - set the setting for an IAP resource
+
+SYNOPSIS
+    gcloud alpha iap settings set SETTING_FILE
+        [--folder=FOLDER --organization=ORGANIZATION --project=PROJECT
+          --region=REGION
+          --resource-type=RESOURCE_TYPE --service=SERVICE --version=VERSION]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/iap/settings (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
