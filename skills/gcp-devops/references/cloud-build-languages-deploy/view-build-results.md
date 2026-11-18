@@ -81,11 +81,11 @@ gcloud builds list --filter "tags=('test1' OR 'test2') AND 'test3'"
 | Event | Build status | Step status |
 |-------|--------------|-------------|
 | Build succeeds | `SUCCESS` | All steps `SUCCESS` |
-| Build succeeds with failed steps permitted | `SUCCESS` | Steps with `allowFailure` or `allowExitCodes` that failed are `FAILED`; build is `SUCCESS` |
-| Build fails | `FAILURE` | Failed step `FAILED`; earlier successful steps `SUCCESS`; steps mid-execution `CANCELLED`; steps not started `QUEUED` |
+| Build succeeds with failed steps permitted | `SUCCESS` | Steps with `allowFailure` or `allowExitCodes` that failed are `FAILURE`; build is `SUCCESS` |
+| Build fails | `FAILURE` | Failed step `FAILURE`; earlier successful steps `SUCCESS`; steps mid-execution `CANCELLED`; steps not started `QUEUED` |
 | Build cancelled by the user | `CANCELLED` | Succeeded steps `SUCCESS`; mid-execution `CANCELLED`; not started `QUEUED` |
 | Build times out | `TIMEOUT` | Succeeded steps `SUCCESS`; mid-execution `CANCELLED`; not started `QUEUED` |
-| Step times out | `FAILED` | Timed-out step `TIMEOUT`; earlier steps `SUCCESS`; mid-execution `CANCELLED`; not started `QUEUED` |
+| Step times out | `FAILURE` | Timed-out step `TIMEOUT`; earlier steps `SUCCESS`; mid-execution `CANCELLED`; not started `QUEUED` |
 
 ### Queryable fields
 
@@ -121,7 +121,7 @@ gcloud builds list --filter "tags=('test1' OR 'test2') AND 'test3'"
 - These roles are in addition to the Cloud Build IAM permissions.
 - Build tags are separate from Docker image tags.
 - Time values in queries are ISO 8601 (UTC).
-- In the status table, the "Build fails" row gives the build status `FAILURE`, while the "Step times out" row gives the build status `FAILED`; the source does not explain the difference.
+- Corrected from the official docs: the source's status table writes `FAILED` for failed steps and for the build when a step times out. `Build.status` and `BuildStep.status` share one enum (`STATUS_UNKNOWN`, `PENDING`, `QUEUED`, `WORKING`, `SUCCESS`, `FAILURE`, `INTERNAL_ERROR`, `TIMEOUT`, `CANCELLED`, `EXPIRED` in the Cloud Build v1 Discovery document), which has no `FAILED`, so the table uses `FAILURE`.
 - `$PROJECT_ID` in the tags example is a built-in substitution.
 - Adapted from the official docs: the source writes `gcloud builds describe [BUILD_ID]`; the brackets are dropped because they read as a shell glob, and `BUILD_ID` is a placeholder.
 - Omitted: sample `gcloud builds list` / `describe` output, per-step timeout output and a Console walk-through of the Build summary tabs (Build Log, Execution Details, Build dependencies, Build Artifacts).

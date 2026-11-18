@@ -50,6 +50,8 @@ steps:
 
 ### Parallel download, then run
 
+Adapted (not in the official docs): `wget` saves the file without the execute bit, so the last step checks the download against a known SHA-256 digest (`BINARY_SHA256`), runs `chmod +x` and then the binary.
+
 ```yaml
 steps:
 # Download the binary and the data in parallel.
@@ -61,7 +63,10 @@ steps:
 
 # Run the binary on the data, once both are downloaded.
 - name: 'ubuntu'
-  args: ['./binary', 'rawdata.tgz']
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - 'echo "BINARY_SHA256  binary" | sha256sum -c - && chmod +x ./binary && ./binary rawdata.tgz'
 ```
 
 ### Named dependencies with `id`
@@ -100,6 +105,7 @@ images: ['gcr.io/$PROJECT_ID/mytarget']
 
 ## Notes
 
+- Adapted from the official docs: the source's last step runs `['./binary', 'rawdata.tgz']` right after `wget`. A file that `wget` creates is not executable, so that step fails with permission denied; the example verifies the file with `sha256sum -c` (replace `BINARY_SHA256` with the publisher's digest) and adds `chmod +x` before running it. `https://example.com/binary` is the source's placeholder URL.
 - Source: https://docs.cloud.google.com/build/docs/configuring-builds/configure-build-step-order (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Steps must be defined with the `id` field before they are used as `waitFor` dependencies.
 - The `gcr.io/$PROJECT_ID/mytarget` image name uses a `gcr.io` path as the source writes it; `gcr.io/cloud-builders/*` builders are hosted on Artifact Registry and are not affected by the Container Registry shutdown. For new images, use an Artifact Registry `LOCATION-docker.pkg.dev/PROJECT/REPO/IMAGE` path as on the artifacts page.

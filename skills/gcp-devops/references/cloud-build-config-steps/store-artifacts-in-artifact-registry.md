@@ -10,7 +10,7 @@ Configure a build to push container images, npm packages or Python packages to a
 
 ### Before you begin
 
-Create the target repository in Artifact Registry if it does not exist. If Cloud Build and the repository are in different projects, or if you use a user-specified service account to run builds, grant the Artifact Registry Writer role to the build service account in the project with the repositories.
+Create the target repository in Artifact Registry if it does not exist. If Cloud Build and the repository are in different projects, or if you use a user-specified service account to run builds, grant the Artifact Registry Writer role to the build service account in the project with the repositories. Depending on organization settings, builds run as the Compute Engine default service account rather than the legacy Cloud Build service account; check which account your builds use and that it can write to the repository (grant Artifact Registry Writer on the repository if not).
 
 ### Docker build
 
@@ -90,8 +90,13 @@ steps:
 
 Install a package from the repository:
 
+Adapted (not in the official docs): a first step installs the Artifact Registry keyring backend (`keyrings.google-artifactregistry-auth`), which pip needs to authenticate to the repository, as the upload example does.
+
 ```yaml
 steps:
+- name: python
+  entrypoint: pip
+  args: ["install", "keyrings.google-artifactregistry-auth", "--user"]
 - name: python
   entrypoint: pip
   args:
@@ -120,7 +125,8 @@ gcloud builds submit --config=cloudbuild.yaml \
 ## Notes
 
 - Source: https://docs.cloud.google.com/build/docs/building/store-artifacts-in-artifact-registry (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
-- The source states that the default Cloud Build service account can upload and download artifacts, and create `gcr.io` repositories in Artifact Registry, for a repository in the same project. For other projects or a user-specified service account, grant Artifact Registry Writer on the repository to that account; prefer a repository-level grant over a project-level one and a user-specified service account over the legacy account.
+- The source states that the default Cloud Build service account can upload and download artifacts, and create `gcr.io` repositories in Artifact Registry, for a repository in the same project. Clarified from the official docs: that describes the legacy Cloud Build service account (`PROJECT_NUMBER@cloudbuild.gserviceaccount.com`). The default account for running builds changed to the Compute Engine default service account in many projects, depending on organization settings (see the Artifact Registry access-control page in this skill), and that account's Artifact Registry permissions are not described here; check the account your builds run as. For other projects, a user-specified service account, or the Compute Engine default service account without write access, grant Artifact Registry Writer on the repository to that account; prefer a repository-level grant over a project-level one and a user-specified service account over the legacy account.
+- Adapted from the official docs: the source's install config runs only `pip install --index-url ...` in the `python` image; pip reaches a private Artifact Registry repository only through the keyring backend (or explicit credentials), so a step that installs `keyrings.google-artifactregistry-auth` with `--user` comes first. Cloud Build keeps `/builder/home` (the home directory) between steps, as the source's upload example also relies on.
 - Do not commit `.npmrc` files that contain tokens; the file above holds only the registry URLs and relies on `google-artifactregistry-auth` to refresh credentials at build time.
 - pip 21.2 and later: use `--verbose` or `-v` up to three times for more debugging output (`-vv` for the next level).
 - Artifact Registry hosts private npm and PyPI-compatible repositories; npm and pip themselves behave as upstream documents them. Image building and Dockerfiles are in the `docker` skill.
