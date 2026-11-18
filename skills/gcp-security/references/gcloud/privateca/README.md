@@ -7,3 +7,5 @@
 | gcloud privateca operations | 2 commands (ga); privateca operations describe … | [privateca-operations.md](./privateca-operations.md) |
 | gcloud privateca pools | 10 commands (ga); privateca pools add-iam-policy-binding … | [privateca-pools.md](./privateca-pools.md) |
 | gcloud privateca roots | 8 commands (ga); privateca roots create … | [privateca-roots.md](./privateca-roots.md) |
+| gcloud privateca subordinates | 10 commands (ga); privateca subordinates activate … | [privateca-subordinates.md](./privateca-subordinates.md) |
+| gcloud privateca templates | 10 commands (ga); privateca templates add-iam-policy-binding … | [privateca-templates.md](./privateca-templates.md) |
