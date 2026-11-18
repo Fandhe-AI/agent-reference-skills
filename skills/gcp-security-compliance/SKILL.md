@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-security-compliance
 
-Google Cloud (GCP) のセキュリティ態勢・脅威検出・コンプライアンス系スキル。Security Command Center（SCC。Standard / Premium / Enterprise（非推奨）のサービスティア・アクティベーション・アクセス制御・データ所在地・検出結果のクラス / 重大度 / 状態 / ミュート / セキュリティマーク・API / 通知 / エクスポート・Event Threat Detection / VM Threat Detection / Cloud Run Threat Detection / Agent Platform Threat Detection・Security Health Analytics・脆弱性評価・Web Security Scanner・攻撃の発生可能性（attack exposure）と有害な組み合わせ（toxic combinations））、Security posture と IaC 検証、AI Protection・CIEM・DSPM（非推奨）・Risk Manager、Compliance Manager（フレームワーク・Cloud Controls・CEL）、Model Armor（テンプレート・フィルタ・統合・ロギング）、Assured Workloads（フレームワーク・コントロールパッケージ・Cloud Controls・EU Data Boundary・IL4）、Access Approval・Access Transparency・Key Access Justifications（KAJ）、Audit Manager、Sovereign Controls by Partners を扱う。加えて gcloud 8 グループ・REST（Discovery）7 API・IAM ロールを収録する。分割投入中のため、未投入のカテゴリ（`rest-schemas/assuredworkloads` / `rest-schemas/auditmanager` / `rest-schemas/cloudcontrolspartner` / `rest-schemas/securitycenter` / `rest-schemas/securityposture` / `rest-schemas/websecurityscanner`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のセキュリティ態勢・脅威検出・コンプライアンス系スキル。Security Command Center（SCC。Standard / Premium / Enterprise（非推奨）のサービスティア・アクティベーション・アクセス制御・データ所在地・検出結果のクラス / 重大度 / 状態 / ミュート / セキュリティマーク・API / 通知 / エクスポート・Event Threat Detection / VM Threat Detection / Cloud Run Threat Detection / Agent Platform Threat Detection・Security Health Analytics・脆弱性評価・Web Security Scanner・攻撃の発生可能性（attack exposure）と有害な組み合わせ（toxic combinations））、Security posture と IaC 検証、AI Protection・CIEM・DSPM（非推奨）・Risk Manager、Compliance Manager（フレームワーク・Cloud Controls・CEL）、Model Armor（テンプレート・フィルタ・統合・ロギング）、Assured Workloads（フレームワーク・コントロールパッケージ・Cloud Controls・EU Data Boundary・IL4）、Access Approval・Access Transparency・Key Access Justifications（KAJ）、Audit Manager、Sovereign Controls by Partners を扱う。加えて gcloud 8 グループ・REST（Discovery）7 API・IAM ロールを収録する。分割投入中のため、未投入のカテゴリ（`rest-schemas/securitycenter` / `rest-schemas/securityposture` / `rest-schemas/websecurityscanner`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。SCC の機械生成ページと手書きガイドは SCC のティア表記（Standard-legacy / Standard / Premium / Enterprise（Deprecated））を原文どおりに残す。
 
@@ -165,7 +165,7 @@ skills/gcp-security-compliance/
 | Audit Manager の有効化・リソースの登録・監査の実行・フレームワークの作成を知りたい | audit-manager | [references/audit-manager/README.md](references/audit-manager/README.md) |
 | Sovereign Controls by Partners のフォルダ・鍵管理・対応プロダクト・データ境界（ドイツ T-Systems / フランス S3NS）を知りたい | sovereign-controls-by-partners | [references/sovereign-controls-by-partners/README.md](references/sovereign-controls-by-partners/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/assuredworkloads` / `rest-schemas/auditmanager` / `rest-schemas/cloudcontrolspartner` / `rest-schemas/securitycenter` / `rest-schemas/securityposture` / `rest-schemas/websecurityscanner`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/securitycenter` / `rest-schemas/securityposture` / `rest-schemas/websecurityscanner`
 
 ## 他スキルとの使い分け
 
