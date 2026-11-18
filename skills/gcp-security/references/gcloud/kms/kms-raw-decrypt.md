@@ -138,6 +138,7 @@ SYNOPSIS
 
 ## Notes
 
+- Corrected from the official docs (the help text above is verbatim): the DESCRIPTION says "If --plaintext-file or --additional-authenticated-data-file or --initialization-vector-file is set to '-', that file is read from stdin. Similarly, if --ciphertext-file is set to '-', the ciphertext is written to stdout."; for decryption the direction is the reverse: `--ciphertext-file` (with `--additional-authenticated-data-file` and `--initialization-vector-file`) is the input, so `-` reads it from stdin, and `--plaintext-file` is the output, so `-` writes the plaintext to stdout (REQUIRED FLAGS on this page: "File path of the ciphertext file to decrypt." and "File path of the plaintext file to store the decrypted data.").
 - Incomplete example: the example omits `--version`, which the SYNOPSIS requires (gcloud 593.0.0: "argument --version: Must be specified."). Add the required flag (see FLAGS on this page).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
