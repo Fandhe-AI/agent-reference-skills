@@ -64,7 +64,6 @@ skills/gcp-integration/
 6. レート制限（HTTP 429）・ノードの autoscaling・connection の作成の前提は `integration-connectors/overview.md` と `integration-connectors/connectors-access-permissions.md`（元のページを統合している）
 7. Workflows との選択、Pub/Sub topic、Cloud Scheduler 等は他スキル（下記「他スキルとの使い分け」）
 
-
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
