@@ -19,7 +19,7 @@ gcloud compute backend-services update BACKEND_SERVICE_NAME --global --iap=enabl
 - The serving infrastructure of Cloud Run, App Engine and Cloud Load Balancing (external and internal HTTP(S) load balancing) checks whether IAP is enabled for the app or backend service. If so, the project number, request URL and any IAP credentials in headers or cookies are sent to the IAP authentication server.
 - If the user is not signed in, the browser is redirected to a supported sign-in method; afterwards a token is stored in a browser cookie.
 - IAP takes the identity (email address and user ID) from valid credentials and checks the user's IAM role. A user with the **IAP-secured Web App User** role on the project where the resource exists is authorized.
-- When IAP is enabled on a resource it automatically creates an OAuth 2.0 client ID and secret. If you delete the automatically generated OAuth 2.0 credentials, IAP won't function correctly (manage them under APIs & services in the console).
+- The source says that when IAP is enabled on a resource it automatically creates an OAuth 2.0 client ID and secret, and that deleting the automatically generated OAuth 2.0 credentials stops IAP from functioning correctly (manage them under APIs & services in the console). With the default Google-managed OAuth client, IAP does not create a client and secret per application; it uses an internal Google-managed client (`custom-oauth-configuration.md`). The deletion warning applies to OAuth credentials that your IAP configuration uses, such as a custom OAuth client.
 
 ## Options / Props
 
@@ -56,6 +56,7 @@ gcloud compute backend-services update BACKEND_SERVICE_NAME --global --iap=enabl
 - Starting points listed by the source: IAP directly on Cloud Run, the App Engine quickstart, IAP for Compute Engine, IAP for GKE, IAP for on-premises apps.
 - Related products: Cloud Run and App Engine service setup is in the `gcp-run` skill; load balancers are in the `gcp-load-balancing` skill; GKE is in `gcp-gke`; Workforce Identity Federation is in `gcp-foundation`.
 - Snippet taken from https://docs.cloud.google.com/iap/docs/enabling-compute-howto (the concepts page has no code). The full flag list of `gcloud compute backend-services update` (https://docs.cloud.google.com/sdk/gcloud/reference/compute/backend-services/update) is in the `gcp-compute` skill.
+- Source inconsistency: the concepts page says IAP automatically creates an OAuth 2.0 client ID and secret, while the custom OAuth page states that "The Google-managed OAuth client doesn't create a new OAuth client and secret for every application. Instead, it uses an internal Google-managed client." Both statements are kept, with the configuration each applies to.
 - Source: https://docs.cloud.google.com/iap/docs/concepts-overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

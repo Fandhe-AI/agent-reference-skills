@@ -12,6 +12,8 @@ Based on the BeyondCorp security model, Chrome Enterprise Premium enforces granu
 
 Access levels are enforced through IAM Conditions on role bindings. Example policy from the secure gateway guide that grants a role only if the request satisfies an access level (`accessPolicies/1234567890/accessLevels/in_us` is a sample access level):
 
+Adapted (not in the official docs): the access-level check uses the `in` operator instead of `.contains(...)`.
+
 ```json
 {
   "version": 3,
@@ -22,7 +24,7 @@ Access levels are enforced through IAM Conditions on role bindings. Example poli
         "group:group@example.com"
       ],
       "condition": {
-        "expression": "request.auth.access_levels.contains('accessPolicies/1234567890/accessLevels/in_us')",
+        "expression": "'accessPolicies/1234567890/accessLevels/in_us' in request.auth.access_levels",
         "title": "Source IP must be in US"
       }
     }
@@ -58,6 +60,7 @@ Access levels are enforced through IAM Conditions on role bindings. Example poli
 - IAM Conditions are specified in the IAP role bindings of a resource's IAM policy. When a condition exists, the role is granted only if the expression evaluates to true. Access levels can be combined with other conditions, for example restricting to 9am-5pm.
 - Chrome Enterprise Premium can also be applied to Google Workspace apps (Workspace overview: https://support.google.com/a/answer/9275380).
 - Snippet taken from https://docs.cloud.google.com/chrome-enterprise-premium/docs/security-gateway-private-web-apps
+- Corrected from the official docs: the condition used `request.auth.access_levels.contains('...')`. `request.auth.access_levels` is a list of strings, and list membership in IAM Conditions is written `'accessPolicies/.../accessLevels/...' in request.auth.access_levels`, the form used on the other IAP and Chrome Enterprise Premium pages.
 - Source: https://docs.cloud.google.com/chrome-enterprise-premium/docs/access-protection (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
