@@ -208,7 +208,7 @@ gcloud access-context-manager perimeters update PERIMETER_NAME \
 | Manage security marks | Security Center Finding Security Marks Writer (`roles/securitycenter.findingSecurityMarksWriter`) |
 | Programmatically manage findings | Security Center Findings Editor (`roles/securitycenter.findingsEditor`) |
 | Grant inbound access to a VPC Service Controls perimeter | Access Context Manager Editor (`roles/accesscontextmanager.policyEditor`) |
-| Any task on this page | Security Center Settings Admin (`roles/securitycenter.settingsAdmin`) |
+| All Security Command Center tasks on this page (not the VPC Service Controls perimeter update, which needs `roles/accesscontextmanager.policyEditor`) | Security Center Settings Admin (`roles/securitycenter.settingsAdmin`) |
 
 ### Placeholders
 

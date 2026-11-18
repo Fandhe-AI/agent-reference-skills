@@ -32,7 +32,7 @@ The Security Health Analytics how-to page sets the enablement state of SHA modul
 | Standard (newly activated, not migrated from Standard-legacy) | SHA is not available. Use the Compliance Manager Security Essentials framework and Vulnerability Assessment for Google Cloud. |
 | Standard (migrated from Standard-legacy) | SHA stays enabled; 13 detectors are migrated to Compliance Manager controls (Security Essentials framework). Other detectors can be enabled in **Settings > Security Health Analytics > Modules**. |
 | Premium (newly activated, not migrated from Standard) | SHA is not available and cannot be enabled. Use Compliance Manager. |
-| Premium (migrated from Standard) | All detectors for Google Cloud, custom detection modules, findings mapped to compliance controls, and attack path simulations (attack exposure scores and attack paths for most SHA findings). |
+| Premium (migrated from Standard; not for organizations migrated Standard-legacy → Standard and then upgraded, see Notes) | All detectors for Google Cloud, custom detection modules, findings mapped to compliance controls, and attack path simulations (attack exposure scores and attack paths for most SHA findings). |
 | Enterprise (Deprecated) (newly activated) | SHA is not available and cannot be enabled. Use Compliance Manager. |
 
 ### Detectors migrated to Compliance Manager (Standard, migrated from Standard-legacy)
