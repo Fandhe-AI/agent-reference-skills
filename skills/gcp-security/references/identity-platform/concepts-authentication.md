@@ -10,7 +10,7 @@ Identity Platform lets users authenticate to apps and services (multi-tenant Saa
 
 ### How a sign-in works
 
-Credentials (email and password, a SAML assertion, or an OAuth token from a federated identity provider) are obtained from the user. Federated providers return their tokens to Identity Platform's authentication handler on the `/__auth/handler` endpoint, which is hosted by Google. The backend verifies the tokens and returns a response to the client. After sign-in you can read the user's basic profile, control access to data in Google Cloud or other products, and use the authentication token to verify the user's identity in your own backend services.
+Credentials (email and password, a SAML assertion, or an OAuth token from a federated identity provider) are obtained from the user. Federated providers return their tokens to Identity Platform's authentication handler on the `/__/auth/handler` endpoint, which is hosted by Google. The backend verifies the tokens and returns a response to the client. After sign-in you can read the user's basic profile, control access to data in Google Cloud or other products, and use the authentication token to verify the user's identity in your own backend services.
 
 ### Initialize the client SDK
 
@@ -50,6 +50,7 @@ const app = initializeApp(firebaseConfig);
 - Google Cloud Identity Platform — not Supabase Auth (`supabase`) or Better Auth (`better-auth`).
 - Platform-specific sign-in guides are linked from firebase.google.com; the OIDC and SAML web guides are on docs.cloud.google.com.
 - Snippet taken from https://docs.cloud.google.com/identity-platform/docs/sign-in-user-email (retrieved 2026-11-18). `API_KEY` and `AUTH_DOMAIN` are placeholders.
+- Corrected from the official docs: the source writes the authentication handler endpoint as `/__auth/handler`; the handler path is `/__/auth/handler`, as in the callback URL `https://[PROJECT-ID].firebaseapp.com/__/auth/handler` on https://docs.cloud.google.com/identity-platform/docs/web/oidc (see the `oidc` page).
 - Source: https://docs.cloud.google.com/identity-platform/docs/concepts-authentication (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

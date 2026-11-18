@@ -10,10 +10,12 @@ IAP TCP forwarding lets you control who can reach administrative services such a
 
 ### How it works
 
-For general TCP traffic, IAP creates a listening port on the local host that forwards all traffic to a specified instance, wrapping all client traffic in HTTPS. `gcloud compute ssh` wraps the SSH connection in HTTPS and forwards it without needing a listening local port.
+For general TCP traffic, IAP creates a listening port on the local host that forwards all traffic to a specified instance, wrapping all client traffic in HTTPS. `gcloud compute ssh` wraps the SSH connection in HTTPS and forwards it without needing a listening local port. Without a flag, `gcloud compute ssh` tunnels through IAP only when the VM has no external IP address and connects directly otherwise; `--tunnel-through-iap` makes it always use IAP TCP tunneling.
+
+Adapted (not in the official docs): `--tunnel-through-iap` is added so that the connection always goes through IAP.
 
 ```bash
-gcloud compute ssh INSTANCE_NAME
+gcloud compute ssh INSTANCE_NAME --tunnel-through-iap
 ```
 
 ## Notes
@@ -25,6 +27,7 @@ gcloud compute ssh INSTANCE_NAME
 - TCP forwarding does not require a public, routable IP address on the resource; it uses internal IPs.
 - Snippet taken from https://docs.cloud.google.com/iap/docs/using-tcp-forwarding
 - The full flag lists of `gcloud compute ssh` (https://docs.cloud.google.com/sdk/gcloud/reference/compute/ssh) and `gcloud compute start-iap-tunnel` (https://docs.cloud.google.com/sdk/gcloud/reference/compute/start-iap-tunnel) are in the `gcp-compute` skill.
+- Adapted from the official docs: the snippet from `using-tcp-forwarding` is `gcloud compute ssh INSTANCE_NAME`, which uses IAP only for a VM without an external IP address; the same page documents `--tunnel-through-iap` "so that `gcloud compute ssh` always uses IAP TCP tunneling", and the sample adds it so that the example is an IAP connection in every case.
 - Source: https://docs.cloud.google.com/iap/docs/tcp-forwarding-overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

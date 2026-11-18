@@ -58,7 +58,7 @@ gcloud kms keys create legolas --location=us-central1 \
 ## Notes
 
 - Caution from the source: Cloud EKM keys over the internet risk becoming unavailable; for better availability consider Cloud HSM or Cloud EKM over a VPC network.
-- Existing external key versions can migrate between `EXTERNAL` and `EXTERNAL_VPC` without re-encrypting data and with zero downtime (for example `EXTERNAL` to `EXTERNAL_VPC` for better availability). See https://docs.cloud.google.com/kms/docs/migrate-external-keys.
+- Existing external key versions can migrate (Preview) between `EXTERNAL` and `EXTERNAL_VPC` without re-encrypting data and with zero downtime (for example `EXTERNAL` to `EXTERNAL_VPC` for better availability). See https://docs.cloud.google.com/kms/docs/migrate-external-keys. The migration is in Preview according to https://docs.cloud.google.com/kms/docs/ekm.
 - Disabling or destroying a CMEK key makes data encrypted with it inaccessible; try on a disposable key first.
 - Snippets taken from https://docs.cloud.google.com/sdk/gcloud/reference/kms/keys/create (gcloud 593.0.0 help).
 - Source: https://docs.cloud.google.com/kms/docs/protection-levels (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
