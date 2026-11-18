@@ -3036,7 +3036,7 @@ const iR=50
 function jV(r,a,b){
 const s=ut(r,a,UF(`${Hz}\n${b}`))
 const p=s.payload
-return s.ok&&p.mode==='verify'&&p.page===b&&['ok','nofile','error'].includes(p.outcome)&&Array.isArray(p.entries)&&p.entries.every((e)=> /^([0-9a-f]{64})?$/.test(e?.n)) && M1(p.pages) && p.pages >= 1
+return s.ok&&p.mode==='verify'&&p.page===b&&['ok','nofile','error'].includes(p.outcome)&&Array.isArray(p.entries)&&p.entries.every((e)=> /^([0-9a-f]{64}|-)$/.test(e?.n)) && M1(p.pages) && p.pages >= 1
 }
 
 
@@ -3670,19 +3670,19 @@ return''
 
 
 const aG={
-'measure-residual-bytes.sh':'7fd8e6949795c85b8ce8abf8ae44ccea89e696f7e366bfa64e57529e8469920e',
-'measure-free-disk.sh':'476bf60eccb4318be0c8bf31b859786cc49671fd1b1db17492ab3130f06a7642',
-'observe-pr.sh':'c870a98010532b3d4e66c5793d600f88ca2ad66b6f1638b09f10e6b9f46abf84',
-'base-merge.sh':'8144ecbb5c9c3e24595d4db0c448cfe52b429c1dfeb1f455b6928e7088f17e32',
-'pr-push.sh':'f22e17656df2b633e29e745d5ba6ed9895b9bada1406e599dea2567a1d2c0c9a',
-'reply-resolve.sh':'efa7ef559b11894263c5838b70a3ff5f224dfd7fcc182d412cacc9f377568828',
-'state.sh':'e7e45bb1d83b5d19ac99abfda469d26378b4f6133286e7aecb2d977d0d598c85',
-'merge-gate.sh':'4b97233c5ec724624c664156dd86aad8916a05c8a43932a6a2c571ad1cdab6ca',
-'worktree-remove.sh':'5653b199abe15c301a1c3f268dad5c107fcd6d145972fb1100edfa927b5959c8',
-'recover-prep.sh':'3f9251554fef34388d3ef292a0eb78ed3d9ca1111fda2182670e0e9536df80d3',
-'fetch-tree.sh':'4d1e012dfbee59640008767dbd08990cd1782a128cc165bd8968fe1d5a214099',
-'declared-deps.sh':'0b1c32f75335cac8d37e54653a1a6c46b6fa1db99903e8867ba9785c11e2195b',
-'repo-scan.sh':'66f929baa60aedf0c2ddfdebad0ace72dcf08bfa12102f910dc2d93393beff63',
+'measure-residual-bytes.sh':'2a16707b2827938fc0e09b268cde7cdb589e7f570b480549596f71f733ac5ff8',
+'measure-free-disk.sh':'03410b21613cf32a5756e8428d6f3dd89a810f1fbfe20a320ab80f11f9c9f36a',
+'observe-pr.sh':'066d4646989edfc4be4c84f05f19ebd07bfcebc1d94e653b7d522976d944af47',
+'base-merge.sh':'b61d6498642bec02b2950c8acc192e938092aaad5742204ac8e2dbc636f98c8f',
+'pr-push.sh':'23235548e45db85714cf942efd290a82546ad05335246d898c0e7dc28ab53f79',
+'reply-resolve.sh':'24ea0f8edc99e4034279b8b10d892ff1295478c24525187e0bea688b0c89e9bc',
+'state.sh':'0815b2b68eb6012db3b23c08bf674a7d4a36ec81f2788353f424e3996496c485',
+'merge-gate.sh':'7a4b4c6d9352da72c13021c413073dd9a12717d6e153b1ac1b24bb6f9537a385',
+'worktree-remove.sh':'a17c4497164a4c65c27f49aa30e54ab8aecce3f392c7cf263e51b1e3c07fb62b',
+'recover-prep.sh':'fd44c9b48174021b18b4f7b464b9fb69b1e14fb7bf65e37bf47935d9ee431c4c',
+'fetch-tree.sh':'673e7a9f68d3d4cab93a18aeb0fc859679d3b41521826f3f6e066fc2f69dd905',
+'declared-deps.sh':'1dd1d10094fb2b21816a6af7736b9ead8e574c2d962e548c505c7594b105a322',
+'repo-scan.sh':'df713c6cf4432717a8d614c470472667e1115a36047a8b4510a7c27d914af986',
 }
 
 

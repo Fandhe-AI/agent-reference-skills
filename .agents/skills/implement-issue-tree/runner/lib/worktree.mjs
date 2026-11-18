@@ -191,6 +191,18 @@ function serialize(key, fn) {
   return run
 }
 
+/**
+ * mainRoot のリポジトリの管理領域・ref を書く処理を、createWorktree と同じキューで 1 本ずつ流す。agent-host が直接実行する
+ * worktree-remove.sh（worktree remove・prune・branch -D）と recover-prep.sh（ref の更新）は、別のエージェントの createWorktree
+ * （fetch・worktree add）と並行し得るため、この関数を通して packed-refs・worktrees/ の lock の競合を避ける。
+ * fn の失敗はそのまま投げ、後続は止めない。fn の中から同じ mainRoot の createWorktree・unlockOwnWorktree 等を待ってはならない（自分を待つ）。
+ */
+export function runExclusive(mainRoot, fn) {
+  let queueKey = mainRoot
+  try { queueKey = realpathSync(mainRoot) } catch { /* 渡された形のまま */ }
+  return serialize(queueKey, fn)
+}
+
 /** `wf_<16 進 8>-<16 進 3>` 形の runId を作る。 */
 export function newRunId() {
   const h = randomBytes(6).toString('hex')
