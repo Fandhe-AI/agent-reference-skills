@@ -12,8 +12,10 @@ Quickstart that creates a private Docker repository in Artifact Registry, config
 
 Add the user that runs Docker to the Docker security group (not needed on macOS). On Linux the group is `docker`:
 
+Adapted (not in the official docs): `${USER}` is quoted.
+
 ```bash
-sudo usermod -a -G docker ${USER}
+sudo usermod -a -G docker "${USER}"
 ```
 
 On Windows the group is `docker-users` (Administrator command prompt):
@@ -98,6 +100,7 @@ gcloud artifacts repositories delete quickstart-docker-repo --location=us-west1 
 
 ## Notes
 
+- Adapted from the official docs: the source writes `sudo usermod -a -G docker ${USER}` unquoted; the variable is quoted so its value is passed as one argument.
 - Docker security group membership is equivalent to root / Administrator access; only add trusted users.
 - On Ubuntu, install the gcloud CLI from the Debian package; the snap package does not include `kubectl` or the extensions needed to authenticate with Artifact Registry.
 - The image name in the repository can differ from the local image name.

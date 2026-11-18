@@ -98,8 +98,10 @@ LOCATION-docker.pkg.dev/PROJECT-ID/REPOSITORY/IMAGE --include-tags
 podman build -t IMAGE:latest .
 ```
 
+Adapted (not in the official docs): the source names the local image `IMAGE-NAME` here and the pushed image `IMAGE:TAG` below, which do not match the `podman build -t IMAGE:latest` and `PODMAN-IMAGE:TAG` names; the tag and push commands use `IMAGE:latest` as the local image and `PODMAN-IMAGE:TAG` as the Artifact Registry image.
+
 ```bash
-podman tag IMAGE-NAME LOCATION-docker.pkg.dev/PROJECT-ID/REPOSITORY_NAME/PODMAN-IMAGE:TAG
+podman tag IMAGE:latest LOCATION-docker.pkg.dev/PROJECT-ID/REPOSITORY_NAME/PODMAN-IMAGE:TAG
 ```
 
 ```bash
@@ -112,8 +114,10 @@ If Podman cannot get credentials automatically, use an access token:
 gcloud auth print-access-token | podman login -u oauth2accesstoken --password-stdin LOCATION-docker.pkg.dev
 ```
 
+Adapted (not in the official docs): the pushed image name matches the `podman tag` destination.
+
 ```bash
-podman push LOCATION-docker.pkg.dev/PROJECT-ID/REPOSITORY_NAME/IMAGE:TAG
+podman push LOCATION-docker.pkg.dev/PROJECT-ID/REPOSITORY_NAME/PODMAN-IMAGE:TAG
 ```
 
 ### Pull with Docker (standard, remote, virtual repositories)
@@ -168,6 +172,7 @@ crictl pull --creds "oauth2accesstoken:ACCESS_TOKEN" LOCATION-docker.pkg.dev/PRO
 
 ## Notes
 
+- Adapted from the official docs: the source's Podman steps build `IMAGE:latest`, tag `IMAGE-NAME` as `.../PODMAN-IMAGE:TAG`, and push `.../IMAGE:TAG`; the examples use one local name (`IMAGE:latest`) and one destination name (`PODMAN-IMAGE:TAG`).
 - Corrected from the official docs: the source writes `docker-credential-gcr configure-docker us-west1-docker.pkg.dev`; the standalone helper takes hosts with `--registries=HOSTNAME-LIST` (the authentication page's form).
 - Tag immutability: if enabled, a tag must always reference the same digest, including `latest`; pushing a tag already used by another version of the image fails. The pull-through behavior for virtual repositories chooses an upstream by priority.
 - Service account keys are long-lived credentials; prefer the credential helper or an access token, never commit `key.json`, and see [authentication.md](./authentication.md).

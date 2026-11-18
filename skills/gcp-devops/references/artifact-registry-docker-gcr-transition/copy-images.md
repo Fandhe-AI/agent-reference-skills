@@ -62,8 +62,10 @@ curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadat
 gcrane ls LOCATION-docker.pkg.dev/PROJECT/REPOSITORY
 ```
 
+Adapted (not in the official docs): `REPOSITORY/` is added to the image path (the source writes `LOCATION-docker.pkg.dev/PROJECT/IMAGE`).
+
 ```bash
-gcrane ls LOCATION-docker.pkg.dev/PROJECT/IMAGE
+gcrane ls LOCATION-docker.pkg.dev/PROJECT/REPOSITORY/IMAGE
 ```
 
 ```bash
@@ -120,6 +122,7 @@ us-west1-docker.pkg.dev/prod-project/my-repo
 
 ## Notes
 
+- Corrected from the official docs: the source lists an image's tags with `gcrane ls LOCATION-docker.pkg.dev/PROJECT/IMAGE`. Artifact Registry image paths include the repository (`LOCATION-docker.pkg.dev/PROJECT/REPOSITORY/IMAGE`, see `names.md`); without it the image name is read as a repository name.
 - Corrected from the official docs: the source lists Storage Object Viewer (`roles/storage.objectViewer`) for the repository you copy from. That is a Cloud Storage role (Container Registry stored images in Cloud Storage buckets); reading images from an Artifact Registry repository, which every example on this page uses as the source, needs a role such as Artifact Registry Reader (`roles/artifactregistry.reader`).
 - Create the target Docker repository first.
 - Container Registry is shut down (March 18, 2025; see `transition-from-gcr.md`); a `gcr.io` host that still resolves is served by an Artifact Registry `gcr.io` repository, so copy from those repositories.
