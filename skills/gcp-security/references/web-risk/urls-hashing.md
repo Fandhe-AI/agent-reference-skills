@@ -78,7 +78,7 @@ b.c/1/
 | Item | Rule |
 |---|---|
 | Combinations | Up to 30 host-suffix / path-prefix combinations, using only host and path (scheme, username, password and port are discarded). With query parameters, at least one combination includes the full path and query. |
-| Host (max 5 strings) | The exact hostname, plus up to four hostnames formed from the last five components by successively removing the leading component (the top-level domain can be skipped). Not applied when the host is an IP address. |
+| Host (max 5 strings) | The exact hostname, plus up to four hostnames formed from the last five components by successively removing the leading component; do not check the top-level domain alone (for `a.b.c`, check `a.b.c` and `b.c`, not `c`). Not applied when the host is an IP address. |
 | Path (max 6 strings) | The exact path with query parameters; the exact path without query parameters; four paths from the root `/` successively appending path components, with trailing slash. |
 
 ### Hashes and prefixes
@@ -93,6 +93,7 @@ b.c/1/
 ## Notes
 
 - Expression examples in the source for `http://a.b.c.d.e.f.g/1.html` and `http://1.2.3.4/1/` are omitted. The source's pseudo-C unit test for `TruncatedSha256Prefix` (FIPS-180-2 examples B1-B3, including a million `a` characters) is also omitted; the B1 / B2 values are in the table above.
+- Clarified from the official docs: the source says "The top-level domain can be skipped", but none of its examples checks the top-level domain alone (`http://a.b.c/1/2.html?param=1` yields `a.b.c` and `b.c`; `http://a.b.c.d.e.f.g/1.html` stops at `f.g`), so the page states that the top-level domain alone is never a candidate.
 - Source: https://docs.cloud.google.com/web-risk/docs/urls-hashing (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
