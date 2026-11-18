@@ -57,10 +57,10 @@ Predefined roles of `accesscontextmanager` (role ID, description, included permi
 
 ### Example: grant a role
 
-Generated example (not in the official docs) granting the first role on this page on a whole project (the role entry on this page does not list the lowest-level resources where it can be granted; granting it on a narrower resource, where the role supports that, limits the scope):
+Generated example (not in the official docs) granting the first role on this page on the organization (access policies are organization resources, and the Access Context Manager guides describe the administrator as "an organization-level Access Context Manager administrator", who can also delegate a scoped policy by granting a role on the access policy itself with `gcloud access-context-manager policies add-iam-policy-binding` (`access-context-manager/scoped-policies.md`)):
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
   --member="user:EMAIL_ADDRESS" \
   --role="roles/accesscontextmanager.admin"
 ```
