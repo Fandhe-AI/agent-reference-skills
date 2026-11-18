@@ -381,7 +381,7 @@ curl -X GET \
 
 - Generated from the Discovery document(s) v1 of `pubsublite` (retrieved 2026-11-14). Resources on this page: admin, cursor, topicStats.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are listed under `references/rest-schemas/pubsublite/`; they are the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
 - Deprecated: the Pub/Sub Lite documentation says "Pub/Sub Lite is deprecated. Effective January 31, 2027, Pub/Sub Lite will be turned down.", "Pub/Sub Lite is no longer available for new customers after September 24, 2024." and that projects that did not use Pub/Sub Lite between April 15, 2025 and July 15, 2025 cannot access it starting on July 15, 2025; it recommends migrating to Google Cloud Managed Service for Apache Kafka (https://docs.cloud.google.com/pubsub/lite/docs/migrate-pubsub-lite-to-managed-service-for-apache-kafka) or Pub/Sub (https://docs.cloud.google.com/pubsub/lite/docs/migrate-pubsub-lite-to-pubsub) (https://docs.cloud.google.com/pubsub/lite/docs, retrieved 2026-11-18). The methods are still in the v1 Discovery document.
 - Source: https://pubsublite.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
