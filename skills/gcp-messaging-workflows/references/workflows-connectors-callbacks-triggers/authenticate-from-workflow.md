@@ -62,7 +62,7 @@ Only HTTPS endpoints are supported.
 ## Notes
 
 - The workflow's service account must hold the permissions of the API it calls; see https://docs.cloud.google.com/workflows/docs/authentication.
-- Workflows can invoke Cloud Run functions or Cloud Run services whose ingress is restricted to internal traffic; they are unreachable from the internet but reachable from Workflows.
+- Workflows can invoke Cloud Run functions or Cloud Run services whose ingress is restricted to internal traffic; they are unreachable from the internet but reachable from Workflows. The Cloud Run ingress page adds the conditions: with `internal` ingress, Workflows requests are allowed only if the workflow is in the same project or VPC Service Controls perimeter as the service and calls the default `run.app` URL, not a custom URL or domain; disabling the default `run.app` URL also breaks Workflows calls to it (https://docs.cloud.google.com/run/docs/securing/ingress, retrieved 2026-11-15).
 - IAP-secured endpoints: https://docs.cloud.google.com/workflows/docs/invoke-iap-secured-endpoints.
 - The OAuth2 example stops a Compute Engine VM (`instances/.../stop`); run it only against a disposable instance.
 - For Google Cloud targets, use `auth` (`OAuth2` / `OIDC`) rather than a token in `url` or `headers`. Keys and passwords for external APIs can be stored securely with the Secret Manager connector (https://docs.cloud.google.com/workflows/docs/use-secret-manager) instead of being written in the definition; keep them out of logged payloads.

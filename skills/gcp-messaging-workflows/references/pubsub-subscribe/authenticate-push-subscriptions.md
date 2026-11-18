@@ -214,7 +214,8 @@ def receive_messages_handler():
 | `iam.serviceAccounts.actAs` | Required for the principal that creates, updates or modifies the push config, on the push auth service account (for example via `roles/iam.serviceAccountUser`). Missing it yields `permission denied` / `not authorized` |
 | `iam.serviceAccounts.getOpenIdToken` or `roles/iam.serviceAccountTokenCreator` | Required for the Pub/Sub service agent `service-${PROJECT_NUMBER}@gcp-sa-pubsub.iam.gserviceaccount.com` (the signing service account), on the push auth service account or any ancestor resource such as the project |
 | `roles/run.invoker` | Cloud Run: push auth service account bound to the Cloud Run service it invokes |
-| `roles/cloudfunctions.invoker` | Cloud Run functions HTTP triggers invoked with Pub/Sub push requests |
+| `roles/cloudfunctions.invoker` | 1st gen HTTP functions (Cloud Functions API) invoked with Pub/Sub push requests |
+| `roles/run.invoker` (functions) | Cloud Run functions (formerly 2nd gen) and functions created with Cloud Run, invoked with Pub/Sub push requests; see Notes |
 | IAP-secured Web App User | App Engine secured with IAP: grant the push auth service account this role on the App Engine application |
 
 ### Claims to verify at the receiver
@@ -229,6 +230,7 @@ def receive_messages_handler():
 
 ## Notes
 
+- Corrected from the official docs: the source says the push auth service account needs `roles/cloudfunctions.invoker` to invoke a function through Pub/Sub push HTTP triggers. The IAM reference for that role says it invokes 1st gen HTTP functions and that "2nd gen functions need the Cloud Run Invoker role instead"; for functions created using Cloud Run it points to the Cloud Run roles (https://docs.cloud.google.com/iam/docs/roles-permissions/cloudfunctions, retrieved 2026-11-14). The table lists the two cases separately.
 - Firewall: a subscriber behind a firewall can't receive push requests (you might get `403 permission denied`); allow inbound HTTPS to the push endpoint only, keep the other firewall rules, and verify the JWT.
 - Adapted from the official docs: the source says that to receive push requests behind a firewall you should "turn off the firewall and verify the JWT". Turning off the whole firewall can expose other services on the host; verifying the JWT authenticates the push request but does not replace network controls. This page instead says to allow inbound HTTPS only to the push endpoint and keep the other firewall rules.
 - Audience: `--push-auth-token-audience` defaults to the push endpoint when not specified (gcloud 593.0.0 help). If an authenticated push subscription targets an App Engine app secured with Identity-Aware Proxy, provide the IAP Client ID (`IAP-App-Engine-app` Client ID on the Credentials page) as the audience; the IAP JWT header is `x-goog-iap-jwt-assertion` and must be validated accordingly. The Node.js and Python samples verify the audience `example.com`: pass the same value as `OPTIONAL_AUDIENCE_OVERRIDE` in the gcloud block, or replace `example.com` with the audience set on the subscription (the push endpoint URL when no audience is set).
