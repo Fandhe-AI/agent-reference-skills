@@ -830,6 +830,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 ## Notes
 
 - Generated from the Discovery document(s) v2 of `baremetalsolution` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Corrected from the official docs (the Discovery text above is verbatim): the `ListOSImagesResponse` schema is described as "Request for getting all available OS images.", but it is the response message of `baremetalsolution.projects.locations.osImages.list` (the method's `response` in the Discovery document), not a request.
 - Source: https://baremetalsolution.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
 
 ## Related
