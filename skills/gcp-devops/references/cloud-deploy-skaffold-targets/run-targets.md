@@ -171,9 +171,10 @@ gcloud deploy releases create RELEASE_NAME \
 
 ## Notes
 
+- Corrected from the official docs: for functions the source says to replace the value in `spec.spec.containers.image`; a Cloud Run Service definition has no `spec.spec`, and the image is at `spec.template.spec.containers[].image` (as in the service definition on this page), so that path is used.
 - Corrected from the official docs: bracketed placeholders such as `name: [SERVICE_NAME]` / `image: [IMAGE_PATH]`, and the job's mis-indented `spec` under `template` (the source shows `spec:` / `template:` / `spec:` at one level), were rewritten so the YAML parses.
 - The job definition is corrected to the Cloud Run Job structure (`spec.template.spec.template.spec.containers`) shown on https://docs.cloud.google.com/run/docs/create-jobs (`gcp-run` skill); compare with the output of `gcloud run jobs describe JOB_NAME --format=export` before use.
-- For functions: also replace the value in `spec.spec.containers.image` with `IMAGE_TAG` (the `--images` flag then substitutes it), and separate the build step from the deploy step in CI. Cloud Run functions rebuild source on every deploy, so each target could get a different artifact, contrary to Cloud Deploy best practice.
+- For functions: also replace the value in `spec.template.spec.containers[].image` with `IMAGE_TAG` (the `--images` flag then substitutes it), and separate the build step from the deploy step in CI. Cloud Run functions rebuild source on every deploy, so each target could get a different artifact, contrary to Cloud Deploy best practice.
 - Targets must be in the same project and region as the delivery pipeline; the Cloud Run resources can be in other projects and regions if the execution service account has access. Recommended: a different project per Cloud Run service, job or worker pool; for more than one in the same project use Skaffold profiles.
 - Cloud Deploy always uses the project and location from the target, even if `deploy.cloudrun` has values (leave `{}`).
 - Redeploying a service creates a new revision from the new `service.yaml`; settings or labels absent from the new YAML are absent from the new revision.

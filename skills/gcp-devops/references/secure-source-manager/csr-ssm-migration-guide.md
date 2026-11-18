@@ -22,11 +22,13 @@ git push --mirror ssm
 
 ### Validate
 
-Clone the SSM repository into a different directory and compare it with the CSR copy:
+Clone the SSM repository into a different directory and compare it with the CSR copy.
+
+Adapted (not in the official docs): the source clones SSM normally and counts branches with `git branch -r`; the CSR copy is a bare mirror, where branches are under `refs/heads` and `git branch -r` lists none. Clone SSM with `git clone SSM_REPOSITORY_URL --mirror` too, and count branches with `git for-each-ref refs/heads` in both.
 
 | Check | Command in each repository |
 |-------|---------------------------|
-| Number of branches | `git branch -r` (on Linux or macOS, pipe to `wc -l`) |
+| Number of branches | `git for-each-ref refs/heads` (on Linux or macOS, pipe to `wc -l`) |
 | Number of tags | `git tag` (pipe to `wc -l`) |
 | HEAD commit | `git rev-parse HEAD` |
 | Commit count | `git rev-list --all --count` |
@@ -54,6 +56,7 @@ Clone the SSM repository into a different directory and compare it with the CSR 
 
 ## Notes
 
+- Adapted from the official docs: the source's validation uses `git branch -r` on an SSM clone and on the CSR mirror. A `--mirror` clone stores branches as `refs/heads/*` with no remote-tracking branches, so the counts would not match even after a correct migration; both sides are mirror clones and branches are counted with `git for-each-ref refs/heads`.
 - Make CSR read-only before migrating: no writes during or after the migration. Update IAM so no user has a role other than `roles/source.reader` on the repository, or coordinate a commit freeze.
 - Run `git remote add` and `git push --mirror` from inside the bare clone that `git clone CSR_REPO_URL --mirror` created; they act on that repository's remotes and refs.
 - Create an empty SSM repository: do not select **Initialize Repository** in the UI; do not set `--gitignores`, `--readme` and `--license` in gcloud; do not set `gitignores`, `license` and `readme` in `InitialConfig` through the API. Verify it is empty with `git show-ref` (empty output) and make sure there are no active branch protection rules (none, or all disabled).

@@ -40,7 +40,7 @@ Link repositories in the console (**Repositories** > **Link repository**) or wit
 
 ### Use the Developer Connect proxy in Cloud Build
 
-Add an entry to `.cloudbuild/trigger.yaml` in the repository root that points at the `gitRepositoryLink`:
+Add an entry to `.cloudbuild/triggers.yaml` in the repository root that points at the `gitRepositoryLink`:
 
 ```yaml
 triggers:
@@ -72,6 +72,7 @@ triggers:
 
 ## Notes
 
+- Corrected from the official docs: the source names the file `.cloudbuild/trigger.yaml`. The Secure Source Manager triggers file must be named `.cloudbuild/triggers.yaml` and committed to the default branch (create-triggers-file.md in this skill), so the page uses that name.
 - Adapted from the official docs: the curl example used the snake_case body field `secure_source_manager_instance_config`, the `connection_id` query parameter and an unquoted URL.
 - Only `git` read operations (for example `clone`) are supported through the Developer Connect proxy; HTTP proxy functionality is not supported for Secure Source Manager. `git push` is not supported; the system prevents write operations that use the identity of the DevConnect P4SA.
 - You can update other connection settings (for example enable or disable the proxy) but cannot point an existing connection at a different Secure Source Manager instance.
