@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-security
 
-Google Cloud (GCP) のセキュリティ基盤スキル（鍵・秘密情報・証明書・アクセス境界・エッジ防御・ソフトウェアサプライチェーン）。Cloud KMS（鍵・key ring・保護レベル・Cloud HSM（Single-tenant / Bare Metal）・Cloud EKM・鍵のインポート・Autokey・CMEK）、Secret Manager（global / regional secrets・ローテーション）、Parameter Manager、Certificate Manager（Google マネージド証明書・trust config・Public CA・2nd gen）、Certificate Authority Service（CA プール・ルート CA・証明書リクエスト）、Public CA（`gcloud publicca`）を扱う。アクセス制御は Identity-Aware Proxy（IAP。有効化・署名付きヘッダー・TCP 転送・オンプレミス・外部 ID）、Chrome Enterprise Premium（旧 BeyondCorp Enterprise。証明書ベースのアクセス・Endpoint Verification）、Access Context Manager（アクセスレベル・アクセスポリシー）、VPC Service Controls（サービス境界・上り / 下りルール・ドライラン）、Cloud Armor（セキュリティポリシー・WAF・レート制限・Adaptive Protection・bot 管理・DDoS 対策）。サプライチェーンは Binary Authorization、Artifact Analysis（旧 Container Analysis。Container Scanning・On-Demand Scanning・SBOM・VEX）、Assured Open Source Software、Software Supply Chain Security。加えて Identity Platform（CIAM）と Web Risk のガイドと、gcloud 11 グループ・REST（Discovery）13 API・IAM ロール 15 サービスを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `web-risk`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のセキュリティ基盤スキル（鍵・秘密情報・証明書・アクセス境界・エッジ防御・ソフトウェアサプライチェーン）。Cloud KMS（鍵・key ring・保護レベル・Cloud HSM（Single-tenant / Bare Metal）・Cloud EKM・鍵のインポート・Autokey・CMEK）、Secret Manager（global / regional secrets・ローテーション）、Parameter Manager、Certificate Manager（Google マネージド証明書・trust config・Public CA・2nd gen）、Certificate Authority Service（CA プール・ルート CA・証明書リクエスト）、Public CA（`gcloud publicca`）を扱う。アクセス制御は Identity-Aware Proxy（IAP。有効化・署名付きヘッダー・TCP 転送・オンプレミス・外部 ID）、Chrome Enterprise Premium（旧 BeyondCorp Enterprise。証明書ベースのアクセス・Endpoint Verification）、Access Context Manager（アクセスレベル・アクセスポリシー）、VPC Service Controls（サービス境界・上り / 下りルール・ドライラン）、Cloud Armor（セキュリティポリシー・WAF・レート制限・Adaptive Protection・bot 管理・DDoS 対策）。サプライチェーンは Binary Authorization、Artifact Analysis（旧 Container Analysis。Container Scanning・On-Demand Scanning・SBOM・VEX）、Assured Open Source Software、Software Supply Chain Security。加えて Identity Platform（CIAM）と Web Risk のガイドと、gcloud 11 グループ・REST（Discovery）13 API・IAM ロール 15 サービスを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。`pam`（Privileged Access Manager）と `fault-testing`（Fault Injection Testing）の gcloud は本スキルの機械生成ページのみで、ガイドは持たない（PAM のガイドは `gcp-foundation`）。
 
@@ -82,6 +82,9 @@ skills/gcp-security/
     identity-platform/            # Identity Platform: 認証の概念・ユーザー管理・マルチテナンシー・ブロッキング関数・OIDC・Admin SDK
       README.md
       <page>.md
+    web-risk/                     # Web Risk: Lookup / Update / Evaluate / Submission API・URL ハッシュ・ローカル DB・ブランドフィッシング対策
+      README.md
+      <page>.md
 ```
 
 ## 探索手順
@@ -93,7 +96,7 @@ skills/gcp-security/
 3. 非推奨を確認するときは、下記「鮮度・ライセンス・既知の制約」に挙げたページを引く
 4. SCC・Assured Workloads・Access Approval 等は `gcp-security-compliance`
 
-未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `web-risk`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -120,8 +123,9 @@ skills/gcp-security/
 | Artifact Analysis のコンテナスキャン・On-Demand Scanning・SBOM・脆弱性の調査・note / occurrence・VEX | artifact-analysis | [references/artifact-analysis/README.md](references/artifact-analysis/README.md) |
 | Assured Open Source Software・Software Supply Chain Security（攻撃ベクトル・ビルド / デプロイ / ソースの保護） | software-supply-chain | [references/software-supply-chain/README.md](references/software-supply-chain/README.md) |
 | Identity Platform の認証の概念・メールログイン・ブロッキング関数・OIDC・マルチテナンシー・Admin SDK | identity-platform | [references/identity-platform/README.md](references/identity-platform/README.md) |
+| Web Risk の Lookup / Update / Evaluate / Submission API・URL ハッシュ・ローカル DB・ブランドフィッシング対策 | web-risk | [references/web-risk/README.md](references/web-risk/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `web-risk`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
