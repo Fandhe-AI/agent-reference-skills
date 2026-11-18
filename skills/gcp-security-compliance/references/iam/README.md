@@ -20,3 +20,9 @@
 | Cyber Insurance Hub | 5 roles, 16 permissions | [riskmanager.md](./riskmanager.md) |
 | Secured Landing Zone | 8 roles, 8 permissions | [securedlandingzone.md](./securedlandingzone.md) |
 | Security Command Center part 1 | 29 roles | [securitycenter-1.md](./securitycenter-1.md) |
+| Security Command Center part 2 | 13 roles | [securitycenter-2.md](./securitycenter-2.md) |
+| Security Command Center part 3 | 3 roles, 1 permissions | [securitycenter-3.md](./securitycenter-3.md) |
+| Security Command Center part 4 | 97 permissions | [securitycenter-4.md](./securitycenter-4.md) |
+| Security Center Management API | 13 roles, 37 permissions | [securitycentermanagement.md](./securitycentermanagement.md) |
+| Security Posture API | 7 roles, 21 permissions | [securityposture.md](./securityposture.md) |
+| Service Security Insights | 1 roles, 8 permissions | [servicesecurityinsights.md](./servicesecurityinsights.md) |
