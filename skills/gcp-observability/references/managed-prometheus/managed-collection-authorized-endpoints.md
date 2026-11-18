@@ -126,6 +126,8 @@ stringData:
   password: "PASSWORD"
 ```
 
+Adapted (not in the official docs): `scheme: https` added to the endpoint so the credentials are not sent over plain HTTP.
+
 ```yaml
 apiVersion: monitoring.googleapis.com/v1
 kind: PodMonitoring
@@ -138,6 +140,7 @@ spec:
   endpoints:
   - port: metrics
     interval: 30s
+    scheme: https
     basicAuth:
       username: foo
       password:
@@ -159,6 +162,8 @@ stringData:
   credentials: "CREDENTIALS"
 ```
 
+Adapted (not in the official docs): `scheme: https` added to the endpoint so the credentials are not sent over plain HTTP.
+
 ```yaml
 apiVersion: monitoring.googleapis.com/v1
 kind: PodMonitoring
@@ -171,6 +176,7 @@ spec:
   endpoints:
   - port: metrics
     interval: 30s
+    scheme: https
     authorization:
       type: Bearer
       credentials:
@@ -192,7 +198,7 @@ stringData:
   clientSecret: "CLIENT_SECRET"
 ```
 
-Adapted (not in the official docs): `clientSecret.secret.key` changed from `password` to `clientSecret`, the key that the Secret above defines, and `tokenURL` given the `https://` scheme.
+Adapted (not in the official docs): `clientSecret.secret.key` changed from `password` to `clientSecret`, the key that the Secret above defines, `tokenURL` given the `https://` scheme, and `scheme: https` added to the endpoint so the token is not sent over plain HTTP.
 
 ```yaml
 apiVersion: monitoring.googleapis.com/v1
@@ -206,6 +212,7 @@ spec:
   endpoints:
   - port: metrics
     interval: 30s
+    scheme: https
     oauth2:
       clientID: foo
       clientSecret:
@@ -235,6 +242,7 @@ spec:
 - Google Cloud Managed Service for Prometheus is not a self-hosted Prometheus server; PromQL semantics follow upstream Prometheus.
 - Source: https://docs.cloud.google.com/stackdriver/docs/managed-prometheus/setup-managed (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the source's OAuth 2.0 example sets `tokenURL: example.com/token`, which has no URL scheme; the example uses `https://example.com/token`. Replace it with your token endpoint.
+- Adapted from the official docs: the source's BasicAuth, Bearer and OAuth 2.0 PodMonitoring examples omit `scheme`, so they would scrape over HTTP (the default) and send the password or token unencrypted; each example sets `scheme: https`. If the endpoint uses a private CA, also set `tls.ca` as in the mTLS example.
 
 ## Related
 
