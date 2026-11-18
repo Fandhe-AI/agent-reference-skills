@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/artifact-registry/docs/nodejs/authenticati
 
 # Set up authentication for Node.js package repositories
 
-Authentication for npm-format Artifact Registry repositories is required when a third-party application (npm, yarn) connects to a repository. It is not needed for Cloud Build or Google Cloud runtimes such as GKE and Cloud Run, but verify that the required permissions are configured. Node.js supports two methods: access tokens (when a human user manages authentication) and password authentication with a service account key (when an application does not support Application Default Credentials but supports username and password).
+Authentication for npm-format Artifact Registry repositories is required when a third-party application (npm, yarn) connects to a repository. The source says you do not need to configure authentication for Cloud Build or Google Cloud runtimes such as GKE and Cloud Run (verify that the required permissions are configured); those environments provide keyless credentials through Application Default Credentials (ADC), but npm or yarn running there still needs a setup that uses them, such as an access token in `.npmrc` (for example through `google-artifactregistry-auth`). Node.js supports two methods: access tokens (when a human user manages authentication) and password authentication with a service account key (when an application does not support Application Default Credentials but supports username and password).
 
 ## Signature / Usage
 
@@ -73,6 +73,7 @@ Add the returned settings to the `.npmrc` in each Node.js project (usually next 
 
 ## Notes
 
+- Clarified from the official docs: "you don't need to configure authentication" on Cloud Build, GKE or Cloud Run means those environments supply credentials without keys (ADC). Package clients do not read ADC by themselves; configure the client on those runtimes too (keyring backend or token for pip / Twine, a token in `.npmrc` for npm / yarn) and grant the runtime's service account the needed Artifact Registry role.
 - Service account keys are long-lived credentials. The source says to use a dedicated service account, grant the minimum Artifact Registry role (for example Artifact Registry Reader for a download-only account), grant access at the repository level rather than the project level when groups need different access to specific repositories, and follow best practices for managing credentials. It also says to choose a more secure alternative to service account keys whenever possible; key creation may be disabled for your organization, and externally sourced keys must be validated before use.
 - Corrected from the official docs: the source writes `export ACCESS_TOKEN="oauth2l fetch --scope cloud-platform"` (a literal string, not a command); the oauth2l block above uses `$(...)` and adds the `oauth2accesstoken:` user name to match the gcloud example.
 - A `.npmrc` that contains tokens or key material must not be committed to source control. Use placeholders in shared files and keep credentials in the user-level `~/.npmrc`.

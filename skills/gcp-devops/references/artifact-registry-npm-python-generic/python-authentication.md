@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/artifact-registry/docs/python/authenticati
 
 # Set up authentication for Python package repositories
 
-Authentication is required when a third-party application (pip, Twine) connects to a Python-format Artifact Registry repository. It is not needed for Cloud Build or Google Cloud runtimes such as GKE and Cloud Run, but verify the required permissions. Three methods are supported: access tokens (automation, CI/CD, container builds, or environments where the keyring library cannot be installed), the Python keyring library (recommended for local development; refreshes credentials automatically), and password authentication with a service account key.
+Authentication is required when a third-party application (pip, Twine) connects to a Python-format Artifact Registry repository. The source says you do not need to configure authentication for Cloud Build or Google Cloud runtimes such as GKE and Cloud Run (verify the required permissions); those environments provide keyless credentials through Application Default Credentials (ADC), but pip or Twine running there still needs a setup that uses them, such as the keyring backend or an access token. Three methods are supported: access tokens (automation, CI/CD, container builds, or environments where the keyring library cannot be installed), the Python keyring library (recommended for local development; refreshes credentials automatically), and password authentication with a service account key.
 
 ## Signature / Usage
 
@@ -151,8 +151,8 @@ index-url = https://_json_key_base64:KEY@LOCATION-python.pkg.dev/PROJECT/REPOSIT
 
 | Order | Source |
 |-------|--------|
-| 1 | Application Default Credentials: first the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, then credentials the default service account for Compute Engine, GKE, Cloud Run, App Engine, or Cloud Run functions provides |
-| 2 | Credentials provided by the Google Cloud CLI, including user credentials from `gcloud auth application-default login` |
+| 1 | Application Default Credentials (ADC), in ADC's order: the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, then the local credential file created by `gcloud auth application-default login`, then the attached (default) service account of Compute Engine, GKE, Cloud Run, App Engine, or Cloud Run functions from the metadata server |
+| 2 | Credentials provided by the Google Cloud CLI (for example from `gcloud auth login` or `gcloud auth activate-service-account`) |
 
 ### Placeholders
 
@@ -167,9 +167,11 @@ index-url = https://_json_key_base64:KEY@LOCATION-python.pkg.dev/PROJECT/REPOSIT
 
 ## Notes
 
+- Clarified from the official docs: "you don't need to configure authentication" on Cloud Build, GKE or Cloud Run means those environments supply credentials without keys (ADC). Package clients do not read ADC by themselves; configure the client on those runtimes too (keyring backend or token for pip / Twine, a token in `.npmrc` for npm / yarn) and grant the runtime's service account the needed Artifact Registry role.
 - Service account keys are long-lived credentials. The source says to use a dedicated service account, grant the minimum Artifact Registry role (for example Reader for a download-only account), grant access at the repository level rather than the project level when groups need different access, and follow best practices for managing credentials. It also says to choose a more secure alternative to service account keys whenever possible; key creation may be disabled for your organization and externally sourced keys must be validated before use.
 - `.pypirc` and `pip.conf` / `pip.ini` files that contain a key or token must not be committed to source control; use placeholders in shared files. Passing the token in the pip `--index-url` puts it on the command line and in shell history; access tokens expire after 60 minutes.
 - Corrected from the official docs: the oauth2l step was `export ACCESS_TOKEN="oauth2l fetch --scope cloud-platform"` (a literal string, without the `oauth2accesstoken:` user name that the pip `https://$ACCESS_TOKEN@...` URL needs as the user name / password pair) and the pip command's index URL was unquoted.
+- Corrected from the official docs: the source lists ADC as the environment variable and then the runtime's default service account, and puts "user credentials from the command `gcloud auth application-default login`" under the gcloud CLI credentials in step 2. That command writes ADC's local credential file, which ADC checks after `GOOGLE_APPLICATION_CREDENTIALS` and before the metadata server (see How Application Default Credentials works in the `gcp-foundation` skill), so a leftover local ADC file on a VM is used instead of the attached service account.
 - Keyring: credentials are not stored in your Python project. `GOOGLE_APPLICATION_CREDENTIALS` makes the account explicit and easier to troubleshoot. If you do not use it, verify the accounts ADC might use: the default service account for Compute Engine VMs, GKE nodes and Cloud Run revisions has read-only access to repositories, so you must change permissions to upload from those environments. Avoid `gcloud auth activate-service-account` on Compute Engine VMs because the VM service account is found before gcloud CLI credentials. If service account credentials are found first, they are used instead of your user credentials.
 - Dependency confusion: with the keyring section's pip-only setup, the source recommends virtual repositories (priorities on upstream sources) over configuring multiple package indexes, because pip does not search indexes in any particular order and may install a public package with the same name as a private one.
 - The `/simple/` suffix means the repository implements the Python Simple Repository API (PEP 503).
