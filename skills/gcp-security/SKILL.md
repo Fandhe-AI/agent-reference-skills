@@ -36,7 +36,7 @@ skills/gcp-security/
       iap/
         README.md                 # gcloud iap（oauth-brands / oauth-clients / settings / tcp / web 等）
         iap-<group>.md
-      kms/  # 分割投入中（12 / 39 ページ。収録済みは README 掲載分のみ）
+      kms/  # 分割投入中（27 / 39 ページ。収録済みは README 掲載分のみ）
         README.md                 # gcloud kms（keyrings・keys・import-jobs・ekm-connections・ekm-config・autokey-config・key-handles・inventory・kaj-config 等。Key Access Justifications のガイドは gcp-security-compliance）
         kms-<group>.md
     kms-concepts/                 # 公式ガイド由来（手書き）: Cloud KMS の概要・リソース階層・鍵の状態・保護レベル・エンベロープ暗号化・ローテーション・アルゴリズム・署名・MAC・KEM・割り当て
@@ -122,7 +122,7 @@ skills/gcp-security/
 
 未投入カテゴリ（`gcloud/pam` / `gcloud/parametermanager` / `gcloud/privateca` / `gcloud/publicca` / `gcloud/secrets` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`gcloud/kms`: 12 / 39 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`gcloud/kms`: 27 / 39 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
