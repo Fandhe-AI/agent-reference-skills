@@ -70,7 +70,7 @@ resource.type="gce_instance" AND log_id("syslog")
 | Manual Snapshot Taken | `resource.type="gce_snapshot" log_id("cloudaudit.googleapis.com/activity") protoPayload.methodName:"compute.snapshots.insert" protoPayload.resourceName:"SNAPSHOT_NAME"` |
 | Scheduled Snapshot Taken | `resource.type="gce_disk" log_id("cloudaudit.googleapis.com/system_event") protoPayload.methodName="ScheduledSnapshots" protoPayload.response.operationType="createSnapshot" protoPayload.response.targetLink="PERSISTENT_DISK_NAME"` |
 | Snapshot Schedule Created | `resource.type="gce_resource_policy" log_id("cloudaudit.googleapis.com/activity") protoPayload.methodName:"compute.resourcePolicies.insert" protoPayload.request.name="SCHEDULE_NAME"` |
-| Snapshot Schedule Attached | `resource.type="gce_disk" log_id("cloudaudit.googleapis.com/activity") protoPayload.methodName:"compute.disks.addResourcePolicies" protoPayload.request.resourcePolicys:"SCHEDULE_NAME" protoPayload.resourceName:"PERSISTENT_DISK_NAME"` |
+| Snapshot Schedule Attached | `resource.type="gce_disk" log_id("cloudaudit.googleapis.com/activity") protoPayload.methodName:"compute.disks.addResourcePolicies" protoPayload.request.resourcePolicies:"SCHEDULE_NAME" protoPayload.resourceName:"PERSISTENT_DISK_NAME"` |
 | Quota Exceeded | `resource.type="gce_instance" protoPayload.methodName:"compute.instances.insert" protoPayload.status.message:"QUOTA_EXCEEDED" severity=ERROR` |
 | Query unhealthy instances in instance group | `resource.type="gce_instance_group" resource.labels.instance_group_name="INSTANCE_GROUP_NAME" jsonPayload.healthCheckProbeResult.healthState="UNHEALTHY"` |
 | Query instance group members within a time frame in UTC time format | `resource.type="gce_instance_group_manager" resource.labels.instance_group_manager_name="INSTANCE_GROUP_NAME" jsonPayload.@type= "type.googleapis.com/compute.InstanceGroupManagerEvent" jsonPayload.instanceHealthStateChange.detailedHealthState="HEALTHY" timestamp >= "START_TIME" timestamp <= "END_TIME"` |
@@ -141,6 +141,7 @@ resource.type="gce_instance" AND log_id("syslog")
 - The Cloud VPN queries match free text (`"CHILD_SA"`, `"generating IKE_AUTH request"`); free-text matches scan all fields and can be slow on large buckets.
 - The source also shows Console copy steps. Firewall and VPC Flow Logs configuration is in the `gcp-networking` skill; load balancer logging in `gcp-load-balancing`; Compute Engine itself in `gcp-compute`.
 - Source: https://docs.cloud.google.com/logging/docs/view/query-library (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source's "Snapshot Schedule Attached" query uses `protoPayload.request.resourcePolicys`; the `compute.disks.addResourcePolicies` request (`DisksAddResourcePoliciesRequest`, Discovery `compute` v1) has the field `resourcePolicies`, so the query uses `protoPayload.request.resourcePolicies`.
 
 ## Related
 

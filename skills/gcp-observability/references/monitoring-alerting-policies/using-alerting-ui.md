@@ -104,7 +104,7 @@ A filter is a label, a comparator and a value, for example `zone=~"us-central1.*
 - Rate of change (**percent change**): a `DELTA` or `CUMULATIVE` series is first converted to `GAUGE`; Monitoring then compares the average of the most recent 10-minute sliding window to the average of the 10-minute window before the beginning of the alignment period. The 10-minute window cannot be changed; you set the alignment period.
 - A policy with multiple conditions is built with **Add alert condition** and a combiner step; see the behavior page.
 - The drop-down in the filter dialog lists only values seen over the last week, but any value can be typed.
-- Dynamic thresholds require MQL according to the source (links to the MQL alerting pages); this page states no MQL end-of-support date.
+- Source inconsistency: this page says "To create a policy that compares the value of a time series to a dynamic threshold, you must use MQL", while the alerting overview (alerts.md) says PromQL conditions can include complex expressions such as dynamic thresholds. MQL is not recommended since 2024-10-22 and new MQL charts and alerting policies cannot be created in the Console since 2025-07-22 (MQL deprecation notice: https://docs.cloud.google.com/stackdriver/docs/deprecations/mql); for new work, write the dynamic threshold as a PromQL condition (`conditionPrometheusQueryLanguage`).
 - The source page also contains Console click-paths in detail, screenshots and Markdown-in-documentation notes, which are not reproduced; for API field names see the API page.
 - Snippet: the documentation template above is verbatim from this page.
 - Source: https://docs.cloud.google.com/monitoring/alerts/using-alerting-ui (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
