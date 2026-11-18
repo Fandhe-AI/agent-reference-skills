@@ -18,11 +18,13 @@ gcloud components update
 gcloud auth login
 ```
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
 export REGION=us-central1
-gcloud config set run/region ${REGION}
+gcloud config set run/region "${REGION}"
 gcloud config set run/platform managed
-gcloud config set eventarc/location ${REGION}
+gcloud config set eventarc/location "${REGION}"
 ```
 
 Enable Cloud Audit Logs Admin Read, Data Read, and Data Write log types in Google Cloud Storage. At the project level you need `roles/owner` to configure Data Access audit logs. Read the project's IAM policy and store it in a file:
@@ -74,14 +76,18 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ### Create an Artifact Registry repository and a bucket
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
 gcloud artifacts repositories create REPOSITORY \
     --repository-format=docker \
-    --location=$REGION
+    --location="${REGION}"
 ```
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
-gcloud storage buckets create gs://events-quickstart-PROJECT_ID/ --location=${REGION}
+gcloud storage buckets create gs://events-quickstart-PROJECT_ID/ --location="${REGION}"
 ```
 
 ### Deploy the event receiver to Cloud Run
@@ -98,30 +104,38 @@ git clone https://github.com/GoogleCloudPlatform/python-docs-samples.git
 cd python-docs-samples/eventarc/audit-storage
 ```
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
-gcloud builds submit --tag $REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY/helloworld-events:v1
+gcloud builds submit --tag "${REGION}-docker.pkg.dev/PROJECT_ID/REPOSITORY/helloworld-events:v1"
 ```
+
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
 
 ```bash
 gcloud run deploy helloworld-events \
-    --image $REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY/helloworld-events:v1 \
+    --image "${REGION}-docker.pkg.dev/PROJECT_ID/REPOSITORY/helloworld-events:v1" \
     --allow-unauthenticated
 ```
 
 ### Create the Eventarc trigger
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
 gcloud eventarc triggers create events-quickstart-trigger \
     --destination-run-service=helloworld-events \
-    --destination-run-region=${REGION} \
+    --destination-run-region="${REGION}" \
     --event-filters="type=google.cloud.audit.log.v1.written" \
     --event-filters="serviceName=storage.googleapis.com" \
     --event-filters="methodName=storage.objects.create" \
     --service-account=PROJECT_NUMBER-compute@developer.gserviceaccount.com
 ```
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
-gcloud eventarc triggers list --location=${REGION}
+gcloud eventarc triggers list --location="${REGION}"
 ```
 
 ### Generate and view an event
@@ -173,6 +187,7 @@ gcloud projects delete PROJECT_ID
 
 ## Notes
 
+- Adapted from the official docs: unquoted shell variable expansions in the commands are double-quoted (`"${VAR}"`).
 - Data Access audit logs must be enabled for the service (here Cloud Storage: Admin Read, Data Read and Data Write) or the audit-log event is never generated. Editing the project IAM policy is a read-modify-write: keep `bindings:` and `etag:` unchanged, and repeat from the read step on a conflict.
 - Adapted from the official docs: the `auditConfigs` snippet had lost its YAML nesting in the source (`- auditLogConfigs:` followed by `- logType:` entries at the same indentation); the `logType` entries are nested under `auditLogConfigs`.
 - The quickstart uses the Compute Engine default service account for testing. The source says: "For production environments, we strongly recommend creating a new service account and granting it one or more IAM roles that contain the minimum permissions required and follow the principle of least privilege." It also recommends enforcing the `iam.automaticIamGrantsForDefaultServiceAccounts` organization policy constraint and replacing the Editor role on the default service account with less permissive roles.

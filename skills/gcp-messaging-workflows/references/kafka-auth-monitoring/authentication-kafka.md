@@ -26,8 +26,10 @@ Uses Application Default Credentials (ADC). The source defers the client configu
 
 Applicable to all Kafka clients. Download a key JSON file for the service account, then base64-encode it (the file name `my_service_account_key.json` is the source's example):
 
+Adapted (not in the official docs): `base64 -w 0` is a GNU coreutils option that the macOS `base64` does not accept; the newline is removed with `tr` instead, which works on both.
+
 ```bash
-base64 -w 0 < my_service_account_key.json > password.txt
+base64 < my_service_account_key.json | tr -d '\n' > password.txt
 ```
 
 Use the contents of `password.txt` (a single line) as the password:
@@ -85,6 +87,7 @@ metadata:
 
 ## Notes
 
+- Adapted from the official docs: the source shows `base64 -w 0 < my_service_account_key.json > password.txt` for Linux or macOS; `-w 0` exists only in GNU `base64`, so the command pipes through `tr -d '\n'` to produce a single line on both. The password file holds a service account key; restrict its permissions (for example `chmod 600`) and delete it when no longer needed.
 - Caution (source): service account keys are a security risk if not managed correctly. You are responsible for the security of the private key; key creation might be disabled for your organization (secure-by-default organizations). A key from an external source must be validated before use.
 - Caution (source): access tokens are short-lived and expire; make sure the client presents a valid token each time it opens a new Kafka wire protocol connection. Reference implementations: https://github.com/googleapis/managedkafka/tree/main/sasl-plain-access-token/README.md
 - Server-side checks for a key: the username matches the service account whose key is the password, and that principal has `managedkafka.clusters.connect` on the cluster. For a token: the token is valid and unexpired, the username matches the principal email of the token, and that principal has `managedkafka.clusters.connect` on the cluster.

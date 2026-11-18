@@ -67,7 +67,7 @@ curl -X DELETE \
 | Action | Role | Permission |
 |---|---|---|
 | Create a bus (on the bus project) | `roles/eventarc.admin` (Eventarc Admin) or `roles/eventarc.messageBusAdmin` (Eventarc Message Bus Admin) | `eventarc.messageBuses.create` |
-| Use a bus (on the bus project) | `roles/eventarc.messageBusUser` (Eventarc Message Bus User) | `eventarc.buses.use` |
+| Use a bus (on the bus project) | `roles/eventarc.messageBusUser` (Eventarc Message Bus User) | `eventarc.messageBuses.use` |
 
 ### `gcloud eventarc message-buses create` optional flags
 
@@ -91,6 +91,7 @@ curl -X DELETE \
 
 ## Notes
 
+- Corrected from the official docs: the source names the permission for using a bus `eventarc.buses.use`; the IAM roles and permissions reference for Eventarc lists `eventarc.messageBuses.use` in `roles/eventarc.messageBusUser` (https://docs.cloud.google.com/iam/docs/roles-permissions/eventarc).
 - Required roles: Creating a pipeline and an enrollment needs additional permissions (see create-enrollment).
 - Deleting a bus is irreversible: delete all associated enrollments first; message sources configured to use the deleted bus can no longer publish to it. Try it on a disposable project first.
 - Corrected from the official docs: the REST body said `"display_name": "BUS_NAME"`; the Discovery document field is `displayName`.

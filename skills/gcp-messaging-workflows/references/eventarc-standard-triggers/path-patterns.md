@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/eventarc/docs/path-patterns
 
 # Eventarc Path Patterns
 
-Preview. A path pattern is an expression applied when filtering events, so a trigger can match a single resource (for example, one file) or a broader set. Apply one in the Eventarc console page or with `gcloud` (`--event-filters-path-pattern`). It applies to `resourceName` values of Cloud Audit Logs events, to `instance` and `ref` values of Firebase Realtime Database events, and to `registry` and `device` values of Cloud IoT events.
+Preview. A path pattern is an expression applied when filtering events, so a trigger can match a single resource (for example, one file) or a broader set. Apply one in the Eventarc console page or with `gcloud` (`--event-filters-path-pattern`). It applies to `resourceName` values of Cloud Audit Logs events, to `instance` and `ref` values of Firebase Realtime Database events, and to `registry` and `device` values of Cloud IoT events (Cloud IoT Core is retired; see Notes).
 
 ## Signature / Usage
 
@@ -178,6 +178,7 @@ eventTypes:
 
 ## Notes
 
+- Retired: Google Cloud IoT Core was retired on August 16, 2023, and Cloud IoT events were deprecated at that time (Source: https://docs.cloud.google.com/eventarc/docs/event-types, retrieved 2026-11-18); the `registry` and `device` path pattern attributes apply only to those deprecated events.
 - Path pattern syntax: (1) Only listed ASCII characters are supported. Regular expression matching is not supported. Supported metacharacters: `\w` a word, also `[a-zA-Z0-9_]`; `\t` a tab; `\s` a whitespace character.
 - Expressions: An expression cannot be empty. A path can contain many single segment wildcards, but only one multiple segment wildcard; for example `/projects/**/buckets/**` is invalid.
 - Preview: subject to the "Pre-GA Offerings Terms" in the General Service Terms; Pre-GA features are available "as is" and might have limited support.

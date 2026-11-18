@@ -169,7 +169,7 @@ curl -X DELETE \
 |---|---|---|
 | Create a pipeline | `roles/eventarc.developer` on the pipeline project | `eventarc.pipelines.create` |
 | Create an enrollment | `roles/eventarc.developer` on the enrollment project | `eventarc.enrollments.create` |
-| Use a bus | `roles/eventarc.messageBusUser` on the bus project | `eventarc.buses.use` |
+| Use a bus | `roles/eventarc.messageBusUser` on the bus project | `eventarc.messageBuses.use` |
 
 ### Constraints
 
@@ -209,6 +209,7 @@ curl -X DELETE \
 
 ## Notes
 
+- Corrected from the official docs: the source names the permission for using a bus `eventarc.buses.use`; the IAM roles and permissions reference for Eventarc lists `eventarc.messageBuses.use` in `roles/eventarc.messageBusUser` (https://docs.cloud.google.com/iam/docs/roles-permissions/eventarc).
 - Authorization: Cloud Run checks IAM on every request; `run.routes.invoke` can be granted to selected service accounts or groups, or to `allUsers` for public access (the source lists both; the second opens the service publicly).
 - Per the Discovery document for the OIDC / OAuth fields, the Eventarc service agent must have `roles/iam.serviceAccountTokenCreator` for the pipeline to create tokens, and the caller needs `iam.serviceAccounts.actAs` on the service account.
 - Irreversible: deleting enrollments or pipelines stops routing for them. Try it on a disposable project first.

@@ -12,8 +12,11 @@ Authenticate Kafka clients with mutual TLS using client certificates issued by C
 
 Needed only when the CA pool is in a different project than the cluster. Pool-level grant (recommended, least privilege):
 
+Adapted (not in the official docs): `--project=CA_PROJECT_ID` is added so the grant targets the CA pool in the CA project, not a pool of the same name in the currently selected project.
+
 ```bash
 gcloud privateca pools add-iam-policy-binding CA_POOL_ID \
+    --project=CA_PROJECT_ID \
     --location=CA_POOL_LOCATION \
     --member='serviceAccount:service-CLUSTER_PROJECT_NUMBER@gcp-sa-managedkafka.iam.gserviceaccount.com' \
     --role='roles/privateca.poolReader'
@@ -155,6 +158,7 @@ bootstrap.servers=CLUSTER_BOOTSTRAP_ADDRESS
 
 ## Notes
 
+- Adapted from the official docs: the source's pool-level `gcloud privateca pools add-iam-policy-binding` command has no `--project`; because this step applies when the CA pool is in another project, `--project=CA_PROJECT_ID` is added (`--project` is a gcloud-wide flag).
 - Permissive: a client that authenticates with a valid mTLS certificate is granted full access to the cluster until Kafka ACLs exist. Create ACLs to enforce least privilege. The mTLS principal is the certificate Subject DN (or its mapped alias) prefixed with `User:`; by default it has the form `User:CN=...,OU=...,O=...,L=...,ST=...,C=...`.
 - Permissive: the project-level `roles/privateca.poolReader` grant lets the service agent read every CA pool in the project. The source recommends the pool-level grant.
 - Adapted from the official docs: the source writes `--subnets=projects/PROJECT_ID/locations/LOCATION/subnetworks/SUBNET_ID`; gcloud 593.0.0 help gives the format `projects/PROJECT_ID/regions/REGION/subnetworks/SUBNET` (one subnet per network, 1 to 10 subnets, same region as the cluster).

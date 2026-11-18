@@ -12,6 +12,8 @@ Every Eventarc event workflow has three location dimensions: the event source, t
 
 The Cloud Storage bucket is in `europe-west1`, so the trigger must also be in `europe-west1`; the target (Cloud Run service) can be in another region.
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
 gcloud eventarc triggers create trigger-storage \
     --destination-run-service=hello \
@@ -19,12 +21,14 @@ gcloud eventarc triggers create trigger-storage \
     --location=europe-west1 \
     --event-filters="type=google.cloud.storage.object.v1.finalized" \
     --event-filters="bucket=my-bucket-in-europe-west1-region" \
-    --service-account=$PROJECT_NUMBER-compute@developer.gserviceaccount.com
+    --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
 ```
 
 ### Cloud Audit Logs triggers
 
 Single-region trigger for storage events from a `europe-west1` bucket (matches all buckets in that region, because audit log triggers cannot filter by bucket; use a direct Cloud Storage trigger to filter by bucket):
+
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
 
 ```bash
 gcloud eventarc triggers create trigger-auditlog \
@@ -34,12 +38,12 @@ gcloud eventarc triggers create trigger-auditlog \
     --event-filters="type=google.cloud.audit.log.v1.written" \
     --event-filters="serviceName=storage.googleapis.com" \
     --event-filters="methodName=storage.objects.create" \
-    --service-account=$PROJECT_NUMBER-compute@developer.gserviceaccount.com
+    --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
 ```
 
 Global trigger to match dual-region or multi-region buckets such as `eu` (matches all buckets in all regions for which the event filters match).
 
-Adapted (not in the official docs): the source's example filters on the direct Cloud Storage event type, which cannot use `--location=global`; the filters are replaced with the audit log filters the surrounding text describes.
+Adapted (not in the official docs): the source's example filters on the direct Cloud Storage event type, which cannot use `--location=global`; the filters are replaced with the audit log filters the surrounding text describes. Also, shell variable expansions are double-quoted to prevent word splitting and globbing.
 
 ```bash
 gcloud eventarc triggers create trigger-auditlog-global \
@@ -49,10 +53,12 @@ gcloud eventarc triggers create trigger-auditlog-global \
     --event-filters="type=google.cloud.audit.log.v1.written" \
     --event-filters="serviceName=storage.googleapis.com" \
     --event-filters="methodName=storage.objects.create" \
-    --service-account=$PROJECT_NUMBER-compute@developer.gserviceaccount.com
+    --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
 ```
 
 ### Cloud Storage triggers (must match the bucket location)
+
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
 
 ```bash
 gcloud eventarc triggers create trigger-storage \
@@ -61,7 +67,7 @@ gcloud eventarc triggers create trigger-storage \
     --location=eu \
     --event-filters="type=google.cloud.storage.object.v1.finalized" \
     --event-filters="bucket=my-bucket-in-eu-multi-region" \
-    --service-account=$PROJECT_NUMBER-compute@developer.gserviceaccount.com
+    --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
 ```
 
 Mismatched bucket and trigger regions produce an error like:
@@ -95,6 +101,7 @@ gcloud eventarc triggers create trigger-pubsub \
 
 ## Notes
 
+- Adapted from the official docs: unquoted shell variable expansions in the commands are double-quoted (`"${VAR}"`).
 - The examples use the Compute Engine default service account (`$PROJECT_NUMBER-compute@developer.gserviceaccount.com`) as in the source. The Standard overview recommends, for Workflows destinations, "a service account with the least privileges necessary to access the required resources"; prefer a dedicated, least-privileged service account.
 - Corrected from the official docs: the third Cloud Audit Logs example used `--event-filters="type=google.cloud.storage.object.v1.finalized"` and `--event-filters="bucket=my-bucket-in-europe-west1-region"` with `--location=global`, which contradicts the Cloud Storage section ("you can't create a global Eventarc trigger") and the text above it. The trigger name was also changed to avoid a clash with `trigger-storage`.
 - Known issue: Cloud Audit Logs triggers for Compute Engine produce events from a single region, `us-central1`, regardless of the VM's location. Set the trigger location to `us-central1` or `global`.

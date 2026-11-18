@@ -79,13 +79,17 @@ gcloud eventarc triggers list --location=us-central1
 
 Find and set the Pub/Sub topic as an environment variable:
 
-```bash
-export RUN_TOPIC=$(gcloud eventarc triggers describe events-pubsub-trigger \
-    --format='value(transport.pubsub.topic)')
-```
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
 
 ```bash
-gcloud pubsub topics publish $RUN_TOPIC --message "Hello World!"
+export RUN_TOPIC="$(gcloud eventarc triggers describe events-pubsub-trigger \
+    --format='value(transport.pubsub.topic)')"
+```
+
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
+```bash
+gcloud pubsub topics publish "${RUN_TOPIC}" --message "Hello World!"
 ```
 
 ```bash
@@ -130,6 +134,7 @@ gcloud projects delete PROJECT_ID
 
 ## Notes
 
+- Adapted from the official docs: unquoted shell variable expansions in the commands are double-quoted (`"${VAR}"`).
 - `--allow-unauthenticated` makes the Cloud Run service callable by anyone with its URL; the quickstart uses it for simplicity. For projects with domain restricted sharing organization policies, the source says to use an authenticated Cloud Run target service instead. For an authenticated service, grant `roles/run.invoker` to the trigger service account (see `roles-permissions.md`).
 - The trigger above sets no `--service-account`; see `roles-permissions.md` for the trigger service account and its roles.
 - Creating an Eventarc trigger for the first time in a project can fail while the Eventarc service agent is provisioned; retrying usually resolves it (see the Eventarc troubleshooting page, "Permission denied errors").

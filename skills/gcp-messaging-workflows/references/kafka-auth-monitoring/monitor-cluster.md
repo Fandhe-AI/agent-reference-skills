@@ -79,7 +79,8 @@ In Metrics Explorer, enter `Apache Kafka` in the filter and select one of the ac
 
 ## Notes
 
-- Viewing requires the Managed Kafka Viewer role (`roles/managedkafka.Viewer`) on the project.
+- Corrected from the official docs: the source writes the role ID as `roles/managedkafka.Viewer`; role IDs are case-sensitive and the IAM roles and permissions reference lists `roles/managedkafka.viewer` (https://docs.cloud.google.com/iam/docs/roles-permissions/managedkafka).
+- Viewing requires the Managed Kafka Viewer role (`roles/managedkafka.viewer`) on the project.
 - Snippet taken from https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/monitor-clients (the query is shown there on one line in a table cell; line breaks were added for readability, the tokens are unchanged). The monitor-cluster page itself has no code block.
 - The tables list commonly used metrics only; the complete list is at https://docs.cloud.google.com/monitoring/api/metrics_gcp_i_o#gcp-managedkafka . Metric names in the source are shown without the `managedkafka.googleapis.com/` prefix.
 - Open-source Kafka error metrics for consumer groups are not available by partition, only at topic level. Some metrics can be grouped by broker index, which maps to the zone where the broker is provisioned (see View brokers).

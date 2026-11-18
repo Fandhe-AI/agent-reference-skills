@@ -66,6 +66,8 @@ Replace `SERVICE_NAME` with a `serviceName` value, for example `bigquery.googlea
 
 A Workflows destination, filtering audit logs written by `bigquery.googleapis.com` for `google.cloud.bigquery.v2.JobService.InsertJob`:
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
 gcloud eventarc triggers create cal-workflows-trigger \
    --location=us-central1 \
@@ -74,10 +76,12 @@ gcloud eventarc triggers create cal-workflows-trigger \
    --event-filters="type=google.cloud.audit.log.v1.written" \
    --event-filters="serviceName=bigquery.googleapis.com" \
    --event-filters="methodName=google.cloud.bigquery.v2.JobService.InsertJob" \
-   --service-account=${TRIGGER_SA}@${PROJECT_ID}.iam.gserviceaccount.com
+   --service-account="${TRIGGER_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
 ```
 
 A Cloud Run destination, filtering audit logs written by `workflows.googleapis.com` for `google.cloud.workflows.v1.Workflows.GetWorkflow` on one resource:
+
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
 
 ```bash
 gcloud eventarc triggers create cal-run-trigger \
@@ -88,7 +92,7 @@ gcloud eventarc triggers create cal-run-trigger \
    --event-filters="serviceName=workflows.googleapis.com" \
    --event-filters="methodName=google.cloud.workflows.v1.Workflows.GetWorkflow" \
    --event-filters="resourceName=projects/_/locations/us-central1/workflows/test-workflow" \
-   --service-account=${PROJECT_NUMBER}-compute@developer.gserviceaccount.com
+   --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
 ```
 
 ### Oversized (split) audit log entries
@@ -113,6 +117,7 @@ gcloud logging read "split.index=0"
 
 ## Notes
 
+- Adapted from the official docs: unquoted shell variable expansions in the commands are double-quoted (`"${VAR}"`).
 - Data Access audit logs must be enabled for the service you are watching; Admin Read, Data Read and Data Write are the log types the source selects.
 - `gcloud eventarc audit-logs-provider` no longer retrieves the latest provider `serviceName` and `methodName` values. The source recommends identifying the filter from a real audit log entry, or using the Google Cloud services with audit logs list (https://docs.cloud.google.com/logging/docs/audit/services).
 - Eventarc is available in specific regions and in the `global` location for Cloud Audit Logs triggers; it is not available in dual-region and multi-region locations. With `global` you receive events from all locations for which the filters match (for example Cloud Storage buckets in the EU and US multi-regions).

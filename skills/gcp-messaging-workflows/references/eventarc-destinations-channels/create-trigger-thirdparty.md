@@ -25,14 +25,16 @@ gcloud eventarc triggers create TRIGGER \
 
 Example:
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
   gcloud eventarc triggers create helloworld-trigger \
       --location=us-central1 \
       --destination-run-service=helloworld-events \
       --destination-run-region=us-central1 \
-      --event-filters=type=${EVENT_TYPE}\
+      --event-filters="type=${EVENT_TYPE}" \
       --channel=sample-channel \
-      --project=${PROJECT_ID} \
+      --project="${PROJECT_ID}" \
       --service-account="${TRIGGER_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
 ```
 
@@ -54,6 +56,8 @@ gcloud eventarc triggers create TRIGGER \
 
 Example:
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
   gcloud eventarc triggers create helloworld-trigger \
       --location=us-central1 \
@@ -62,9 +66,9 @@ Example:
       --destination-gke-namespace=default \
       --destination-gke-service=helloworld-events \
       --destination-gke-path=/ \
-      --event-filters=type=${EVENT_TYPE} \
+      --event-filters="type=${EVENT_TYPE}" \
       --channel=sample-channel \
-      --project=${PROJECT_ID} \
+      --project="${PROJECT_ID}" \
       --service-account="${TRIGGER_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
 ```
 
@@ -83,14 +87,16 @@ gcloud eventarc triggers create TRIGGER \
 
 Example:
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
   gcloud eventarc triggers create helloworld-trigger \
       --location=us-central1 \
       --destination-workflow=my-workflow \
       --destination-workflow-location=europe-west4 \
-      --event-filters=type=${EVENT_TYPE} \
+      --event-filters="type=${EVENT_TYPE}" \
       --channel=sample-channel \
-      --project=${PROJECT_ID} \
+      --project="${PROJECT_ID}" \
       --service-account="${TRIGGER_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
 ```
 
@@ -125,6 +131,7 @@ Example:
 
 ## Notes
 
+- Adapted from the official docs: unquoted shell variable expansions in the commands are double-quoted (`"${VAR}"`).
 - Preview: subject to the "Pre-GA Offerings Terms"; Pre-GA features are available "as is" and might have limited support.
 - Multiple event filters: comma-delimited in one `--event-filters`=[`ATTRIBUTE`=`VALUE`,...] flag or repeat the flag; only events matching all filters are sent.
 - Once a trigger is created, the event filter type cannot be modified; create a new trigger and delete the old one.

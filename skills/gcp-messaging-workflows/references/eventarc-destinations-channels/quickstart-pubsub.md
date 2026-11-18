@@ -20,8 +20,10 @@ gcloud services enable eventarc.googleapis.com \
    container.googleapis.com
 ```
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
-PROJECT_ID=$(gcloud config get-value project)
+PROJECT_ID="$(gcloud config get-value project)"
 CLUSTER_NAME=events-cluster
 SERVICE_NAME=hello-gke
 LOCATION=us-central1
@@ -51,9 +53,11 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 
 ### Create a GKE cluster
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
-gcloud container clusters create-auto $CLUSTER_NAME \
-    --region $LOCATION
+gcloud container clusters create-auto "${CLUSTER_NAME}" \
+    --region "${LOCATION}"
 ```
 
 ### Enable GKE destinations
@@ -68,18 +72,24 @@ gcloud eventarc gke-destinations init
 
 Prebuilt image `us-docker.pkg.dev/cloudrun/container/hello`:
 
-```bash
-gcloud container clusters get-credentials $CLUSTER_NAME \
-    --region $LOCATION
-```
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
 
 ```bash
-kubectl create deployment $SERVICE_NAME \
+gcloud container clusters get-credentials "${CLUSTER_NAME}" \
+    --region "${LOCATION}"
+```
+
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
+```bash
+kubectl create deployment "${SERVICE_NAME}" \
     --image=us-docker.pkg.dev/cloudrun/container/hello
 ```
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
-kubectl expose deployment $SERVICE_NAME \
+kubectl expose deployment "${SERVICE_NAME}" \
     --type ClusterIP \
     --port 80 \
     --target-port 8080
@@ -89,13 +99,15 @@ kubectl expose deployment $SERVICE_NAME \
 
 Creates a new Pub/Sub topic and a trigger named `gke-trigger-pubsub`.
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
 gcloud eventarc triggers create gke-trigger-pubsub \
     --location="$LOCATION" \
-    --destination-gke-cluster=$CLUSTER_NAME \
-    --destination-gke-location=$LOCATION \
+    --destination-gke-cluster="${CLUSTER_NAME}" \
+    --destination-gke-location="${LOCATION}" \
     --destination-gke-namespace=default \
-    --destination-gke-service=$SERVICE_NAME \
+    --destination-gke-service="${SERVICE_NAME}" \
     --destination-gke-path=/ \
     --event-filters="type=google.cloud.pubsub.topic.v1.messagePublished" \
     --service-account="PROJECT_NUMBER-compute@developer.gserviceaccount.com"
@@ -103,13 +115,15 @@ gcloud eventarc triggers create gke-trigger-pubsub \
 
 ### Create the trigger (existing Pub/Sub topic)
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
 gcloud eventarc triggers create gke-trigger-pubsub \
     --location="$LOCATION" \
-    --destination-gke-cluster=$CLUSTER_NAME \
-    --destination-gke-location=$LOCATION \
+    --destination-gke-cluster="${CLUSTER_NAME}" \
+    --destination-gke-location="${LOCATION}" \
     --destination-gke-namespace=default \
-    --destination-gke-service=$SERVICE_NAME \
+    --destination-gke-service="${SERVICE_NAME}" \
     --destination-gke-path=/ \
     --event-filters="type=google.cloud.pubsub.topic.v1.messagePublished" \
     --service-account="PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
@@ -134,14 +148,18 @@ LOCATION: us-central1
 
 ### Generate and view an event
 
-```bash
-TOPIC=$(gcloud eventarc triggers describe gke-trigger-pubsub \
-    --location=us-central1 \
-    --format='value(transport.pubsub.topic)')
-```
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
 
 ```bash
-gcloud pubsub topics publish $TOPIC --message="Hello World"
+TOPIC="$(gcloud eventarc triggers describe gke-trigger-pubsub \
+    --location=us-central1 \
+    --format='value(transport.pubsub.topic)')"
+```
+
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
+```bash
+gcloud pubsub topics publish "${TOPIC}" --message="Hello World"
 ```
 
 ```bash
@@ -193,6 +211,7 @@ gcloud projects delete PROJECT_ID
 
 ## Notes
 
+- Adapted from the official docs: unquoted shell variable expansions in the commands are double-quoted (`"${VAR}"`).
 - Preview: subject to the "Pre-GA Offerings Terms"; Pre-GA products are available "as is" and might have limited support.
 - The source uses the Compute Engine default service account as the trigger identity "for testing purposes" and says: "For production environments, we strongly recommend creating a new service account and granting it one or more IAM roles that contain the minimum permissions required" (least privilege). The `roles/pubsub.subscriber` and Token Creator grants above are project-level, as in the source.
 - The source recommends enforcing the `iam.automaticIamGrantsForDefaultServiceAccounts` organization policy constraint (enforced by default for organizations created after May 3, 2024) so default service accounts do not get the Editor role automatically; a default service account that already has Editor should be moved to less permissive roles (check with Policy Simulator first).

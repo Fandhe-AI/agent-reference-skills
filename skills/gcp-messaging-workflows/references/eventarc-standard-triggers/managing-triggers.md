@@ -70,9 +70,11 @@ gcloud eventarc triggers update TRIGGER \
     --max-retry-attempts=1
 ```
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
 gcloud eventarc triggers update my-cloud-run-trigger \
-    --service-account=new-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com
+    --service-account="new-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 ```
 
 ### Update a trigger: GKE (Pre-GA)
@@ -105,9 +107,11 @@ gcloud eventarc triggers update TRIGGER \
     --event-data-content-type="NEW_EVENT_DATA_TYPE"
 ```
 
+Adapted (not in the official docs): Shell variable expansions are double-quoted to prevent word splitting and globbing.
+
 ```bash
 gcloud eventarc triggers update my-workflows-trigger \
-    --service-account=new-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com
+    --service-account="new-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 ```
 
 ### Update a trigger: REST
@@ -171,6 +175,7 @@ REST: `curl -X DELETE` against `https://eventarc.googleapis.com/v1/projects/PROJ
 
 ## Notes
 
+- Adapted from the official docs: unquoted shell variable expansions in the commands are double-quoted (`"${VAR}"`).
 - Important: if you update a trigger before its generated event is delivered, the event is routed according to the previous filtering and delivered to the original destination within three days of the event generation. The new filtering applies to events generated after the update.
 - Deleting a trigger also deletes any new Pub/Sub topic that Eventarc created when the trigger was created. Try deletes on a disposable project first.
 - In the console you can't update unavailable fields such as the Event provider and Event destination.
