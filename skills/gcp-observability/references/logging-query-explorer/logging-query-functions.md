@@ -154,9 +154,10 @@ SEARCH("`HELLO WORLD`")
 
 - If you use the Logs Explorer search bar without double quotes, the `SEARCH` function is used: entering `world` runs `SEARCH("world")`, which matches `world` but not `worlds`.
 - `SEARCH` with partial text does not match: `SEARCH("Hello Kit")` doesn't match "Hello Kitty".
-- `log_id` is equivalent to a `log_name` expression: `log_name="projects/PROJECT_ID/logs/cloudaudit.googleapis.com%2Fdata_access"` is the same as `log_id("cloudaudit.googleapis.com/data_access")`.
+- `log_id` corresponds to a `log_name` expression without the project part: `log_name="projects/PROJECT_ID/logs/cloudaudit.googleapis.com%2Fdata_access"` and `log_id("cloudaudit.googleapis.com/data_access")` match the same entries when the query scope holds only logs of `PROJECT_ID`.
 - Source: https://docs.cloud.google.com/logging/docs/view/logging-query-language (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/logging/docs/view/query-library (retrieved 2026-11-18; CC BY 4.0), for the `log_name` / `log_id` equivalence.
+- Corrected from the official docs: the source says `log_name="projects/PROJECT_ID/logs/cloudaudit.googleapis.com%2Fdata_access"` "is the same as" `log_id("cloudaudit.googleapis.com/data_access")`. The full log name also restricts the project, while `log_id` does not, so they match the same entries only when the query scope holds logs of that one project; on a log view or bucket with logs from several projects, `log_id` also matches the other projects' entries.
 
 ## Related
 

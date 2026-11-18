@@ -27,7 +27,7 @@ resource.type="gae_app" AND severity>=ERROR AND timestamp>="2018-12-31T00:00:00Z
 | Timestamps | A query with a timestamp disables the time-range selector and uses the expression as the restriction. |
 | Length | A query can't exceed 20,000 characters. |
 | Case | The language is case-insensitive except regular expressions. |
-| `log_id` | `log_name="projects/PROJECT_ID/logs/cloudaudit.googleapis.com%2Fdata_access"` is the same as `log_id("cloudaudit.googleapis.com/data_access")`. |
+| `log_id` | `log_name="projects/PROJECT_ID/logs/cloudaudit.googleapis.com%2Fdata_access"` and `log_id("cloudaudit.googleapis.com/data_access")` match the same entries when the query scope holds only logs of `PROJECT_ID`; `log_id` does not restrict the project. |
 
 ### App Engine
 
@@ -201,6 +201,7 @@ resource.type="gae_app" AND severity>=ERROR AND timestamp>="2018-12-31T00:00:00Z
 - The source also shows Console copy-and-paste steps and a screenshot of the query pane.
 - Source: https://docs.cloud.google.com/logging/docs/view/query-library (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the source's Airflow worker query ends with `log_id=~"airflow-(k8s-)?worker"`. `log_id` is a function that takes one log ID (`log_id(non-URL-encoded log ID)`, logging-query-language), not a field that can be compared with `=~`; the table writes the two log IDs that the source's pattern names as `(log_id("airflow-worker") OR log_id("airflow-k8s-worker"))`.
+- Corrected from the official docs: the source says `log_name="projects/PROJECT_ID/logs/cloudaudit.googleapis.com%2Fdata_access"` "is the same as" `log_id("cloudaudit.googleapis.com/data_access")`. The full log name also restricts the project, while `log_id` does not, so they match the same entries only when the query scope holds logs of that one project; on a log view or bucket with logs from several projects, `log_id` also matches the other projects' entries.
 
 ## Related
 
