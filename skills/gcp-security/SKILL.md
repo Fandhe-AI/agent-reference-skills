@@ -45,7 +45,7 @@ skills/gcp-security/
       parametermanager/
         README.md                 # gcloud parametermanager
         parametermanager-<group>.md
-      privateca/  # 分割投入中（5 / 7 ページ。収録済みは README 掲載分のみ）
+      privateca/
         README.md                 # gcloud privateca（pools・roots・subordinates・certificates・templates 等）
         privateca-<group>.md
     kms-concepts/                 # 公式ガイド由来（手書き）: Cloud KMS の概要・リソース階層・鍵の状態・保護レベル・エンベロープ暗号化・ローテーション・アルゴリズム・署名・MAC・KEM・割り当て
@@ -130,8 +130,6 @@ skills/gcp-security/
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
 未投入カテゴリ（`gcloud/publicca` / `gcloud/secrets` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
-
-分割投入中のカテゴリ（`gcloud/privateca`: 5 / 7 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
