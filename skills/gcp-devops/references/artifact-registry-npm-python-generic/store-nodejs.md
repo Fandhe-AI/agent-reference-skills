@@ -83,6 +83,12 @@ Adapted (not in the official docs): `--credential-config=./.npmrc` is removed so
 
 ### Upload, view, install
 
+Adapted (not in the official docs): the previous steps end in `npm-package2`; change to the `emoji-regex` package before logging in and publishing it.
+
+```bash
+cd ../emoji-regex
+```
+
 ```bash
 npm run artifactregistry-login
 ```
@@ -103,7 +109,11 @@ gcloud artifacts packages list
 gcloud artifacts versions list --package=PACKAGE
 ```
 
-In `npm-package2`:
+Adapted (not in the official docs): change back to `npm-package2` before installing the published package.
+
+```bash
+cd ../npm-package2
+```
 
 ```bash
 npm install @quickstart/emoji-regex
@@ -143,6 +153,7 @@ gcloud config unset artifacts/location
 
 ## Notes
 
+- Adapted from the official docs: the source does not show directory changes; it publishes from the `emoji-regex` package and installs in `npm-package2`, so `cd ../emoji-regex` and `cd ../npm-package2` are added around those steps (both directories are created side by side above).
 - Adapted from the official docs: the source's script passes `--credential-config=./.npmrc`, which writes the access token into the project `.npmrc` next to `package.json`, a file that is easy to commit. Without the flag, `google-artifactregistry-auth` writes the token to your user `.npmrc` (its README: "The default is your user `.npmrc` file", https://www.npmjs.com/package/google-artifactregistry-auth, retrieved 2026-11-19). The `.npmrc` printed by `print-settings npm` holds repository settings only. Never commit a file that contains tokens.
 - Adapted from the official docs: the source runs `npm pack emoji-regex` (the latest version) and then extracts `emoji-regex-10.1.0.tgz`; the version is pinned so the file name matches.
 - Without a scope, publishing and installing use the configured default registry; with the scope, npm uses the Artifact Registry repository.
