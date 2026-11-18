@@ -20,9 +20,9 @@ if (response.status === 401) {
 }
 ```
 
-Step 2: install an onclick handler that closes the window after the session is refreshed.
+Step 2: install an onclick handler that closes the window after the session is refreshed. Replace `SESSION_CHECK_PATH` with a path of your app that is behind IAP and returns a `2xx` response for an authenticated request (the source uses `/favicon.ico`, which works only if the app serves a favicon).
 
-Adapted (not in the official docs): the source passes `.then(...)` inside the `fetch` options object (a syntax error); the options object is closed first so `.then` chains on `fetch(...)`. Only a successful response (`response.ok`) closes the window; other statuses and network errors retry.
+Adapted (not in the official docs): the source passes `.then(...)` inside the `fetch` options object (a syntax error); the options object is closed first so `.then` chains on `fetch(...)`. Only a successful response (`response.ok`) closes the window; other statuses and network errors retry. The check path is the placeholder `SESSION_CHECK_PATH` instead of the source's `/favicon.ico`.
 
 ```javascript
 var iapSessionRefreshWindow = null;
@@ -39,7 +39,7 @@ function checkSessionRefresh() {
   if (iapSessionRefreshWindow != null && !iapSessionRefreshWindow.closed) {
     // Attempting to start a new session.
     // XMLHttpRequests is used by the server to identify AJAX requests
-    fetch('/favicon.ico', {
+    fetch('SESSION_CHECK_PATH', {
           method: "GET",
           credentials: 'include',
           headers: {
@@ -97,6 +97,7 @@ function checkSessionRefresh() {
 - The recommended AJAX pattern does not work when third-party cookies are disabled (Chrome and other browsers are phasing them out); it keeps working if the source and target of the AJAX request are the same site.
 - Corrected from the official docs: the original sample placed `.then((response) => { ... })` inside the `fetch` options object (`headers: {...}` followed directly by `.then(`), which does not parse.
 - Adapted from the official docs: the source treats every status other than `401` as a refreshed session and closes the login window; the sample closes it only on a successful response and retries on other statuses (for example `403`, `429`, `5xx`) and on network errors.
+- Adapted from the official docs: the source checks the session with `fetch('/favicon.ico')`. Because the sample closes the window only on a `2xx` response, an app that does not serve `/favicon.ico` would return `404` after a successful login and the window would never close, so the sample uses a `SESSION_CHECK_PATH` placeholder for an IAP-protected path that returns `2xx`.
 - Source: https://docs.cloud.google.com/iap/docs/sessions-howto (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
