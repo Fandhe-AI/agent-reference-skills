@@ -11,3 +11,5 @@
 | gcloud pam | 67 commands across release tracks | [pam/README.md](./pam/README.md) |
 | gcloud parametermanager | 34 commands across release tracks | [parametermanager/README.md](./parametermanager/README.md) |
 | gcloud privateca | 47 commands across release tracks | [privateca/README.md](./privateca/README.md) |
+| gcloud publicca | 3 commands across release tracks | [publicca/README.md](./publicca/README.md) |
+| gcloud secrets | 46 commands across release tracks | [secrets/README.md](./secrets/README.md) |

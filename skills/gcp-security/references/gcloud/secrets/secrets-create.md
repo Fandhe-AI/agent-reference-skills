@@ -1,0 +1,253 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/secrets/create
+---
+
+# gcloud secrets create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud secrets create
+
+```text
+NAME
+    gcloud secrets create - create a new secret
+
+SYNOPSIS
+    gcloud secrets create SECRET [--data-file=PATH] [--labels=[KEY=VALUE,...]]
+        [--location=LOCATION] [--regional-kms-key-name=KMS-KEY-NAME]
+        [--secret-type=SECRET-TYPE] [--set-annotations=[KEY=VALUE,...]]
+        [--tags=[KEY=VALUE,...]] [--topics=[TOPICS,...]]
+        [--version-destroy-ttl=VERSION-DESTROY-TTL]
+        [--expire-time=EXPIRE-TIME | --ttl=TTL]
+        [--next-rotation-time=NEXT_ROTATION_TIME
+          --rotation-period=ROTATION_PERIOD]
+        [--replication-policy-file=REPLICATION-POLICY-FILE
+          | --kms-key-name=KMS-KEY-NAME
+          --locations=[LOCATION,...] --replication-policy=POLICY]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create a secret with the given name and creates a secret version with the
+    given data, if any. If a secret already exists with the given name, this
+    command will return an error.
+
+EXAMPLES
+    Create a secret with an automatic replication policy without creating any
+    versions:
+
+        $ gcloud secrets create my-secret
+
+    Create a new secret named 'my-secret' with an automatic replication policy
+    and data from a file:
+
+        $ gcloud secrets create my-secret --data-file=/tmp/secret
+
+    Create a new secret named 'my-secret' in 'us-central1' with data from a
+    file:
+
+        $ gcloud secrets create my-secret --data-file=/tmp/secret \
+            --replication-policy=user-managed --locations=us-central1
+
+    Create a new secret named 'my-secret' in 'us-central1' and 'us-east1' with
+    the value "s3cr3t":
+
+        $ printf "s3cr3t" | gcloud secrets create my-secret --data-file=- \
+            --replication-policy=user-managed \
+            --locations=us-central1,us-east1
+
+    Create a new secret named 'my-secret' in 'us-central1' and 'us-east1' with
+    the value "s3cr3t" in PowerShell (Note: PowerShell will add a newline to
+    the resulting secret):
+
+        $ Write-Output "s3cr3t" | gcloud secrets create my-secret \
+            --data-file=- --replication-policy=user-managed \
+            --locations=us-central1,us-east1
+
+    Create a secret with an automatic replication policy and a next rotation
+    time:
+
+        $ gcloud secrets create my-secret \
+            --next-rotation-time="2030-01-01T15:30:00-05:00"
+
+    Create a secret with an automatic replication policy and a rotation period:
+
+        $ gcloud secrets create my-secret \
+            --next-rotation-time="2030-01-01T15:30:00-05:00" \
+            --rotation-period="7200s"
+
+    Create a secret with delayed secret version destroy enabled:
+
+        $ gcloud secrets create my-secret --version-destroy-ttl="86400s"
+
+POSITIONAL ARGUMENTS
+     Secret resource - The secret to create. This represents a Cloud resource.
+     (NOTE) Some attributes are not given arguments in this group but can be
+     set in other ways.
+
+     To set the project attribute:
+      * provide the argument SECRET on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       SECRET
+          ID of the secret or fully qualified identifier for the secret.
+
+          To set the secret attribute:
+          + provide the argument SECRET on the command line.
+
+FLAGS
+     --data-file=PATH
+        File path from which to read secret data. Set this to "-" to read the
+        secret data from stdin.
+
+     --labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to add.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     Location resource - The location to create secret. This represents a Cloud
+     resource. (NOTE) Some attributes are not given arguments in this group but
+     can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument --location on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     --location=LOCATION
+        ID of the location or fully qualified identifier for the location.
+
+        To set the location attribute:
+        * provide the argument --location on the command line.
+
+     --regional-kms-key-name=KMS-KEY-NAME
+        Regional KMS key with which to encrypt and decrypt the secret. Only
+        valid for regional secrets.
+
+     --secret-type=SECRET-TYPE
+        The type of the secret. SECRET-TYPE must be one of: access-key,
+        certificate, cloud-sql-db-credentials, other, other-db-credentials,
+        secret-type-unspecified.
+
+     Annotations
+
+     --set-annotations=[KEY=VALUE,...]
+        List of key-value pairs to set as Annotations. All existing Annotations
+        will be removed first.
+
+     --tags=[KEY=VALUE,...]
+        List of tags KEY=VALUE pairs to bind. Each item must be expressed as
+        <tag-key-namespaced-name>=<tag-value-short-name>.
+
+        Example: 123/environment=production,123/costCenter=marketing
+
+     --topics=[TOPICS,...]
+        List of Pub/Sub topics to configure on the secret.
+
+     --version-destroy-ttl=VERSION-DESTROY-TTL
+        Secret Version Time To Live (TTL) after destruction request. For secret
+        with TTL>0, version destruction does not happen immediately on calling
+        destroy; instead, the version goes to a disabled state and destruction
+        happens after the TTL expires. See $ gcloud topic datetimes for
+        information on duration formats.
+
+     Expiration.
+
+     At most one of these can be specified:
+
+       --expire-time=EXPIRE-TIME
+          Timestamp at which to automatically delete the secret.
+
+       --ttl=TTL
+          Duration of time (in seconds) from the running of the command until
+          the secret is automatically deleted.
+
+     Rotation.
+
+     --next-rotation-time=NEXT_ROTATION_TIME
+        Timestamp at which to send rotation notification.
+
+     --rotation-period=ROTATION_PERIOD
+        Duration of time (in seconds) between rotation notifications.
+
+     Replication policy.
+
+     At most one of these can be specified:
+
+       --replication-policy-file=REPLICATION-POLICY-FILE
+          JSON or YAML file to use to read the replication policy. The file
+          must conform to
+          https://cloud.google.com/secret-manager/docs/reference/rest/v1/projects.secrets#replication.Set
+          this to "-" to read from stdin.
+
+       Or at least one of these can be specified:
+
+         Inline replication arguments.
+
+         --kms-key-name=KMS-KEY-NAME
+            Global KMS key with which to encrypt and decrypt the secret. Only
+            valid for secrets with an automatic replication policy.
+
+         --locations=[LOCATION,...]
+            Comma-separated list of locations in which the secret should be
+            replicated.
+
+         --replication-policy=POLICY
+            The type of replication policy to apply to this secret. Allowed
+            values are "automatic" and "user-managed". If user-managed then
+            --locations must also be provided.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud beta secrets create
+```
+
+### gcloud beta secrets create
+
+```text
+NAME
+    gcloud beta secrets create - create a new secret
+
+SYNOPSIS
+    gcloud beta secrets create SECRET [--data-file=PATH]
+        [--labels=[KEY=VALUE,...]] [--location=LOCATION]
+        [--regional-kms-key-name=KMS-KEY-NAME]
+        [--set-annotations=[KEY=VALUE,...]] [--tags=[KEY=VALUE,...]]
+        [--topics=[TOPICS,...]] [--version-destroy-ttl=VERSION-DESTROY-TTL]
+        [--expire-time=EXPIRE-TIME | --ttl=TTL]
+        [--next-rotation-time=NEXT_ROTATION_TIME
+          --rotation-period=ROTATION_PERIOD]
+        [--replication-policy-file=REPLICATION-POLICY-FILE
+          | --kms-key-name=KMS-KEY-NAME
+          --locations=[LOCATION,...] --replication-policy=POLICY]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/secrets/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

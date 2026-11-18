@@ -1,0 +1,289 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/secrets/update
+---
+
+# gcloud secrets update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud secrets update
+
+```text
+NAME
+    gcloud secrets update - update a secret's metadata
+
+SYNOPSIS
+    gcloud secrets update SECRET [--etag=ETAG] [--location=LOCATION]
+        [--update-labels=[KEY=VALUE,...]]
+        [--add-topics=[ADD-TOPICS,...] | --clear-topics
+          | --remove-topics=[REMOVE-TOPICS,...]]
+        [--clear-annotations | --remove-annotations=[KEY,...]
+          | --update-annotations=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--clear-version-aliases | --remove-version-aliases=[KEY,...]
+          | --update-version-aliases=[KEY=VALUE,...]]
+        [--expire-time=EXPIRE-TIME | --remove-expiration | --ttl=TTL]
+        [--next-rotation-time=NEXT_ROTATION_TIME --remove-next-rotation-time
+          --remove-rotation-period
+          --remove-rotation-schedule --rotation-period=ROTATION_PERIOD]
+        [--regional-kms-key-name=REGIONAL-KMS-KEY-NAME
+          | --remove-regional-kms-key-name]
+        [--remove-version-destroy-ttl
+          | --version-destroy-ttl=VERSION-DESTROY-TTL] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update a secret's metadata (e.g. labels). This command will return an error
+    if given a secret that does not exist.
+
+EXAMPLES
+    Update the label of a secret named my-secret.
+
+        $ gcloud secrets update my-secret --update-labels=foo=bar
+
+    Update the label of a secret using an etag.
+
+        $ gcloud secrets update my-secret --update-labels=foo=bar --etag=123
+
+    Update a secret to have a next-rotation-time:
+
+        $ gcloud secrets update my-secret \
+            --next-rotation-time="2030-01-01T15:30:00-05:00"
+
+    Update a secret to have a next-rotation-time and rotation-period:
+
+        $ gcloud secrets update my-secret \
+            --next-rotation-time="2030-01-01T15:30:00-05:00" \
+            --rotation-period="7200s"
+
+    Update a secret to remove the next-rotation-time:
+
+        $ gcloud secrets update my-secret --remove-next-rotation-time
+
+    Update a secret to clear rotation policy:
+
+        $ gcloud secrets update my-secret --remove-rotation-schedule
+
+    Update version destroy ttl of a secret:
+
+        $ gcloud secrets update my-secret --version-destroy-ttl="86400s"
+
+    Disable delayed secret version destroy:
+
+        $ gcloud secrets update my-secret --remove-version-destroy-ttl
+
+POSITIONAL ARGUMENTS
+     Secret resource - The secret to update. This represents a Cloud resource.
+     (NOTE) Some attributes are not given arguments in this group but can be
+     set in other ways.
+
+     To set the project attribute:
+      * provide the argument SECRET on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       SECRET
+          ID of the secret or fully qualified identifier for the secret.
+
+          To set the secret attribute:
+          + provide the argument SECRET on the command line.
+
+FLAGS
+     --etag=ETAG
+        Current entity tag (ETag) of the secret. If specified, the secret is
+        updated only if the ETag provided matches the current secret's ETag.
+
+     Location resource - The location to update secret. This represents a Cloud
+     resource. (NOTE) Some attributes are not given arguments in this group but
+     can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument --location on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     --location=LOCATION
+        ID of the location or fully qualified identifier for the location.
+
+        To set the location attribute:
+        * provide the argument --location on the command line.
+
+     --update-labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to update. If a label exists, its value
+        is modified. Otherwise, a new label is created.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     Topics.
+
+     At most one of these can be specified:
+
+       --add-topics=[ADD-TOPICS,...]
+          List of Pub/Sub topics to add to the secret.
+
+       --clear-topics
+          Clear all Pub/Sub topics from the secret.
+
+       --remove-topics=[REMOVE-TOPICS,...]
+          List of Pub/Sub topics to remove from the secret.
+
+     Annotations
+
+     At most one of these can be specified:
+
+       --clear-annotations
+          Remove all Annotations.
+
+       --remove-annotations=[KEY,...]
+          List of Annotations to be removed.
+
+       --update-annotations=[KEY=VALUE,...]
+          List of key-value pairs to set as Annotations.
+
+     At most one of these can be specified:
+
+       --clear-labels
+          Remove all labels. If --update-labels is also specified then
+          --clear-labels is applied first.
+
+          For example, to remove all labels:
+
+              $ gcloud secrets update --clear-labels
+
+          To remove all existing labels and create two new labels, foo and baz:
+
+              $ gcloud secrets update --clear-labels \
+                --update-labels foo=bar,baz=qux
+
+       --remove-labels=[KEY,...]
+          List of label keys to remove. If a label does not exist it is
+          silently ignored. If --update-labels is also specified then
+          --update-labels is applied first.
+
+     Version Aliases
+
+     At most one of these can be specified:
+
+       --clear-version-aliases
+          Remove all Version Aliases.
+
+       --remove-version-aliases=[KEY,...]
+          List of Version Aliases to be removed.
+
+       --update-version-aliases=[KEY=VALUE,...]
+          List of key-value pairs to set as Version Aliases.
+
+     Expiration.
+
+     At most one of these can be specified:
+
+       --expire-time=EXPIRE-TIME
+          Timestamp at which to automatically delete the secret.
+
+       --remove-expiration
+          If set, removes scheduled expiration from secret (if it had one).
+
+       --ttl=TTL
+          Duration of time (in seconds) from the running of the command until
+          the secret is automatically deleted.
+
+     Rotation.
+
+     --next-rotation-time=NEXT_ROTATION_TIME
+        Timestamp at which to send rotation notification.
+
+     --remove-next-rotation-time
+        Remove timestamp at which to send rotation notification.
+
+     --remove-rotation-period
+        If set, removes the rotation period, cancelling all rotations except
+        for the next one.
+
+     --remove-rotation-schedule
+        If set, removes rotation policy from a secret.
+
+     --rotation-period=ROTATION_PERIOD
+        Duration of time (in seconds) between rotation notifications.
+
+     regional kms key.
+
+     At most one of these can be specified:
+
+       --regional-kms-key-name=REGIONAL-KMS-KEY-NAME
+          regional kms key name for regional secret.
+
+       --remove-regional-kms-key-name
+          If set, removes the regional kms key.
+
+     Version destroy ttl.
+
+     At most one of these can be specified:
+
+       --remove-version-destroy-ttl
+          If set, removes the version destroy TTL from the secret.
+
+       --version-destroy-ttl=VERSION-DESTROY-TTL
+          Secret Version TTL after destruction request. For secret with TTL>0,
+          version destruction does not happen immediately on calling destroy;
+          instead, the version goes to a disabled state and destruction happens
+          after the TTL expires. See $ gcloud topic datetimes for information
+          on duration formats.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud beta secrets update
+```
+
+### gcloud beta secrets update
+
+```text
+NAME
+    gcloud beta secrets update - update a secret's metadata
+
+SYNOPSIS
+    gcloud beta secrets update SECRET [--etag=ETAG] [--location=LOCATION]
+        [--update-labels=[KEY=VALUE,...]]
+        [--add-topics=[ADD-TOPICS,...] | --clear-topics
+          | --remove-topics=[REMOVE-TOPICS,...]]
+        [--clear-annotations | --remove-annotations=[KEY,...]
+          | --update-annotations=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]]
+        [--clear-version-aliases | --remove-version-aliases=[KEY,...]
+          | --update-version-aliases=[KEY=VALUE,...]]
+        [--expire-time=EXPIRE-TIME | --remove-expiration | --ttl=TTL]
+        [--next-rotation-time=NEXT_ROTATION_TIME --remove-next-rotation-time
+          --remove-rotation-period
+          --remove-rotation-schedule --rotation-period=ROTATION_PERIOD]
+        [--regional-kms-key-name=REGIONAL-KMS-KEY-NAME
+          | --remove-regional-kms-key-name]
+        [--remove-version-destroy-ttl
+          | --version-destroy-ttl=VERSION-DESTROY-TTL] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/secrets/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
