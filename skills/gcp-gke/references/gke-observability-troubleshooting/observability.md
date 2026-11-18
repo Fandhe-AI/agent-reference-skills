@@ -66,7 +66,7 @@ gcloud container clusters update CLUSTER_NAME \
 - For GKE Autopilot clusters, you cannot disable the Cloud Monitoring and Cloud Logging integration.
 - The provided GKE dashboards only display information for GKE clusters running on Google Cloud, not clusters running elsewhere (for example on-premises or bare metal).
 - Pricing for Cloud Logging (including Cloud Audit Logs), Cloud Monitoring, and Managed Service for Prometheus is based on the amount of logs and metrics collected. Features of other Google Cloud services listed under "Other features" have separate pricing.
-- Cloud Monitoring and Cloud Logging in general belong to planned `gcp-observability`; this page covers the GKE integration.
+- Cloud Monitoring and Cloud Logging in general belong to `gcp-observability`; this page covers the GKE integration.
 - The source has no code block; the snippet above is borrowed from the configure-metrics page in this category. The values passed to `--monitoring` override any previous setting, so `--monitoring=SYSTEM` turns off previously enabled metric packages; try it on a disposable cluster first.
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/observability (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/configure-metrics (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)

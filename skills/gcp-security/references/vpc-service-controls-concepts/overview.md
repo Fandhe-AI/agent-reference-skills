@@ -82,7 +82,7 @@ gcloud access-context-manager policies create \
 - Attempting to restrict an unsupported service with the `gcloud` tool or the Access Context Manager API results in an error. Cross-project access to data of supported services is blocked by VPC Service Controls; the restricted VIP can block workloads from calling unsupported services.
 - Do not enable unsupported Google Cloud services in the perimeter; if you need one, enable it in a project outside the perimeter. Review the service limitations before including a service in a perimeter.
 - Perimeter changes can block production traffic. Test in dry run mode first and try changes on disposable projects.
-- Cloud Audit Logs and VPC Service Controls audit logging are in `gcp-observability` (planned); Organization Policy and Cloud Asset Inventory are in the `gcp-foundation` skill.
+- Cloud Audit Logs are in `gcp-observability` (`audit-logs/`); the audit logs that VPC Service Controls writes (Policy Denied entries) have no dedicated page in either skill, see https://docs.cloud.google.com/vpc-service-controls/docs/audit-logging; Organization Policy and Cloud Asset Inventory are in the `gcp-foundation` skill.
 
 ## Related
 

@@ -64,7 +64,7 @@ Device trust (trusted endpoint) relies on a valid organization user signed in to
 - An identity-based allowlist with access levels can be implemented only with the gcloud CLI; the Google Cloud console can configure ingress rules that implement identity-based access.
 - Allowlisting a public IP range or a service account allows all protected APIs for that source; keep the range or identity set as small as the workloads need and verify with dry run first.
 - `BQ_DATASOURCE_NAME` is a placeholder for the BigQuery dataset that receives the audit log sink. The `#` comments inside the SQL fence are part of the source query.
-- Audit-log sinks and Cloud Audit Logs are in `gcp-observability` (planned); BigQuery is in `gcp-bigquery` (planned).
+- Audit-log sinks and Cloud Audit Logs are in `gcp-observability`; BigQuery is in `gcp-bigquery` (planned).
 
 ## Related
 

@@ -53,7 +53,7 @@ Replace `PROJECT_ID` with the project ID, `INSTANCE_NAME` with the VM name, and 
 - Update the baseline after planned boot-specific changes (kernel updates, kernel driver installation). For an unexpected failure, investigate and be prepared to stop the instance. The initial baseline comes from the implicitly trusted boot image at instance creation.
 - Adapted from the official docs: the source REST example is `PATCH https://compute.googleapis.com/compute/v1/projects/PROJECT_ID/zones/ZONE/instances/INSTANCE_NAME/setShieldedInstanceIntegrityPolicy?key=YOUR_API_KEY`; the `?key=YOUR_API_KEY` parameter and its placeholder bullet were removed.
 - The source also shows Console steps (Metrics Explorer, VM details) which are summarized in the table above.
-- Distance line: Shielded VM on Compute Engine; Cloud Monitoring / Logging themselves are in the planned `gcp-observability`, Security Command Center in `gcp-security-compliance`.
+- Distance line: Shielded VM on Compute Engine; Cloud Monitoring / Logging themselves are in the `gcp-observability`, Security Command Center in `gcp-security-compliance`.
 - Source (compared page): https://docs.cloud.google.com/compute/shielded-vm/docs/shielded-vm (shielded-vm.md) (retrieved 2026-11-17)
 - Source: https://docs.cloud.google.com/compute/shielded-vm/docs/integrity-monitoring (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

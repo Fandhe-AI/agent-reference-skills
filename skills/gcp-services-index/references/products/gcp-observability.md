@@ -6,19 +6,19 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 
 ## Signature / Usage
 
-Owner skill: `gcp-observability` (status: 未収録（予定）). gcloud groups: `app-topology`, `error-reporting`, `logging`, `monitoring`, `observability`, `service-health`, `trace`.
+Owner skill: `gcp-observability` (status: 収録済み). gcloud groups: `app-topology`, `error-reporting`, `logging`, `monitoring`, `observability`, `service-health`, `trace`.
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Lifecycle | Docs | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| Cloud Debugger | — | — | — | `clouddebugger.` | 2 | — | Shut down | https://docs.cloud.google.com/iam/docs/roles-permissions/clouddebugger | 未収録（予定） |
-| Cloud Logging | `logging.googleapis.com` (v2) | Writes log entries and manages your Cloud Logging configuration. | `logging` | `logging.` | 11 | — | — | https://cloud.google.com/logging/docs/ | 未収録（予定） |
-| Cloud Monitoring | `monitoring.googleapis.com` (v1, v3) | Manages your Cloud Monitoring data and configurations. | `monitoring` | `monitoring.`, `opsconfigmonitoring.`, `stackdriver.` | 31 | — | — | https://cloud.google.com/monitoring/api/ | 未収録（予定） |
-| Cloud Profiler | `cloudprofiler.googleapis.com` (v2) | Manages continuous profiling information. | — | `cloudprofiler.` | 4 | — | — | https://cloud.google.com/profiler/ | 未収録（予定） |
-| Cloud Trace | `cloudtrace.googleapis.com` (v1, v2, v2beta1) | Sends application trace data to Cloud Trace for viewing. Trace data is collected for all App Engine applications by default. Trace data from other applications can be provided using this API. This library is used to interact with the Cloud Trace API directly. If you are looking to instrument your application for Cloud Trace, we recommend using OpenTelemetry. | `trace` | `cloudtrace.` | 3 | — | — | https://cloud.google.com/trace/ | 未収録（予定） |
-| Error Reporting | — | — | — | `errorreporting.` | 4 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/errorreporting | 未収録（予定） |
-| Google Cloud Observability | `observability.googleapis.com` (v1) | Provides functionality for configuring the observability scope, which controls the log, metric, and trace data that you can view. | `observability` | `observability.` | 7 | — | — | https://cloud.google.com/stackdriver/docs/ | 未収録（予定） |
-| Personalized Service Health | — | — | `service-health` | `servicehealth.` | 2 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/servicehealth | 未収録（予定） |
-| Telemetry API | — | — | — | `telemetry.` | 11 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/telemetry | 未収録（予定） |
+| Cloud Debugger | — | — | — | `clouddebugger.` | 2 | — | Shut down | https://docs.cloud.google.com/iam/docs/roles-permissions/clouddebugger | 収録済み |
+| Cloud Logging | `logging.googleapis.com` (v2) | Writes log entries and manages your Cloud Logging configuration. | `logging` | `logging.` | 11 | — | — | https://cloud.google.com/logging/docs/ | 収録済み |
+| Cloud Monitoring | `monitoring.googleapis.com` (v1, v3) | Manages your Cloud Monitoring data and configurations. | `monitoring` | `monitoring.`, `opsconfigmonitoring.`, `stackdriver.` | 31 | — | — | https://cloud.google.com/monitoring/api/ | 収録済み |
+| Cloud Profiler | `cloudprofiler.googleapis.com` (v2) | Manages continuous profiling information. | — | `cloudprofiler.` | 4 | — | — | https://cloud.google.com/profiler/ | 収録済み |
+| Cloud Trace | `cloudtrace.googleapis.com` (v1, v2, v2beta1) | Sends application trace data to Cloud Trace for viewing. Trace data is collected for all App Engine applications by default. Trace data from other applications can be provided using this API. This library is used to interact with the Cloud Trace API directly. If you are looking to instrument your application for Cloud Trace, we recommend using OpenTelemetry. | `trace` | `cloudtrace.` | 3 | — | — | https://cloud.google.com/trace/ | 収録済み |
+| Error Reporting | — | — | — | `errorreporting.` | 4 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/errorreporting | 収録済み |
+| Google Cloud Observability | `observability.googleapis.com` (v1) | Provides functionality for configuring the observability scope, which controls the log, metric, and trace data that you can view. | `observability` | `observability.` | 7 | — | — | https://cloud.google.com/stackdriver/docs/ | 収録済み |
+| Personalized Service Health | — | — | `service-health` | `servicehealth.` | 2 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/servicehealth | 収録済み |
+| Telemetry API | — | — | — | `telemetry.` | 11 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/telemetry | 収録済み |
 
 ```bash
 gcloud help
