@@ -133,7 +133,7 @@ gcloud compute ssh VM_NAME --command "net user USERNAME PASSWORD"
 | Organization policy constraint | Description |
 |---|---|
 | `storage.restrictAuthTypes` | Prevents HMAC authentication: `USER_ACCOUNT_HMAC_SIGNED_REQUESTS` and `SERVICE_ACCOUNT_HMAC_SIGNED_REQUESTS`. HMAC keys can access customer data without customer knowledge; keeping the set value is highly recommended. |
-| `storage.uniformBucketLevelAccess` | Set to True. New buckets are managed with IAM policies instead of ACLs; a bucket created while enabled can never be managed with ACLs (permanent). |
+| `storage.uniformBucketLevelAccess` | Set to True. New buckets are managed with IAM policies instead of ACLs; while the constraint is enforced, buckets can't be managed with ACLs, and uniform bucket-level access becomes irreversible after it has been enabled for 90 consecutive days. |
 
 ### Compute Engine organization policy constraints
 
@@ -208,8 +208,9 @@ gcloud compute ssh VM_NAME --command "net user USERNAME PASSWORD"
 - Using Cloud Logging with CMEK requires the steps in Enable CMEK for an organization in the Cloud Logging docs.
 - `gcloud alpha logging settings update ... --disable-default-sink` disables the `_Default` sink organization-wide, which is disruptive to existing log routing; try it on a disposable organization or folder context first. The source shows the `alpha` track; the GA `gcloud logging settings update` accepts the same flags.
 - The `gcloud compute ssh ... "net user USERNAME PASSWORD"` command puts the new password on the command line, where it can land in shell history and process lists; the source shows no safer alternative.
-- Changing a constraint to be less restrictive (resource locations, `gcp.restrictNonCmekServices`, HMAC, the Compute and Spanner flags) can undermine data residency or sovereignty; `storage.uniformBucketLevelAccess` is permanent for buckets created while it is set. Cloud KMS key destruction is irreversible (see key-management.md).
+- Changing a constraint to be less restrictive (resource locations, `gcp.restrictNonCmekServices`, HMAC, the Compute and Spanner flags) can undermine data residency or sovereignty; `storage.uniformBucketLevelAccess` can't be lifted on a bucket while the constraint applies, and uniform bucket-level access can't be disabled at all after 90 consecutive days. Cloud KMS key destruction is irreversible (see key-management.md).
 - The `--disable-default-sink` and `--storage-location` settings of `logging settings update` apply only to newly created projects (gcloud 593.0.0 help: "It only applies to the newly created projects and will not affect the projects created before"), and the Cloud Logging default resource settings page says the locations of existing log buckets aren't changed (https://docs.cloud.google.com/logging/docs/default-settings, retrieved 2026-11-18). The per-project command is taken from https://docs.cloud.google.com/logging/docs/export/configure_export_v2 (retrieved 2026-11-18), with `--project` added; a disabled `_Default` sink stops storing logs that no other sink routes, so try it on a disposable project first.
+- Corrected from the official docs: the source says that a bucket created while `storage.uniformBucketLevelAccess` is enabled "can never be managed by using ACLs" and that the access control method is "permanently set". The Cloud Storage page says uniform bucket-level access can be disabled if it has been enabled for less than 90 consecutive days, IAM conditions and managed folders are removed, and the bucket is not subject to this organization policy constraint (https://docs.cloud.google.com/storage/docs/uniform-bucket-level-access); the setting is irreversible only after 90 consecutive days.
 - Source: https://docs.cloud.google.com/sovereign-controls-by-partners/docs/data-boundaries/france-data-boundary-s3ns (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

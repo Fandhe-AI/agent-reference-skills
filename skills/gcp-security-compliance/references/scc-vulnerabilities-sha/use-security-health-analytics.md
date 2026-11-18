@@ -59,6 +59,8 @@ curl -X PATCH \
 
 Get the SHA source ID (organization-level or project-level activation), then group findings by category. `PAGE_SIZE` can be up to 1000.
 
+Adapted (not in the official docs): the grouping commands below add `--filter='state="ACTIVE"'` so that only active findings are counted.
+
 ```bash
 gcloud scc sources describe organizations/ORGANIZATION_ID \
     --source-display-name="Security Health Analytics"
@@ -71,7 +73,8 @@ gcloud scc sources describe projects/PROJECT_ID \
 
 ```bash
 gcloud scc findings group organizations/ORGANIZATION_ID/sources/SOURCE_ID \
-    --group-by=category --page-size=PAGE_SIZE
+    --group-by=category --page-size=PAGE_SIZE \
+    --filter='state="ACTIVE"'
 ```
 
 Adapted (not in the official docs): the project-level form passes the project as the positional parent and the source ID in `--source`, because gcloud 593.0.0 does not recognize `projects/PROJECT_ID/sources/SOURCE_ID` as a source name when the project ID contains a hyphen.
@@ -79,7 +82,8 @@ Adapted (not in the official docs): the project-level form passes the project as
 ```bash
 gcloud scc findings group projects/PROJECT_ID \
     --source=SOURCE_ID \
-    --group-by=category --page-size=PAGE_SIZE
+    --group-by=category --page-size=PAGE_SIZE \
+    --filter='state="ACTIVE"'
 ```
 
 ### Let SHA scan projects inside a VPC Service Controls perimeter
@@ -236,6 +240,7 @@ gcloud access-context-manager perimeters update PERIMETER_NAME \
 - Corrected from the official docs: the project-level command was `gcloud scc findings group projects/PROJECT_ID/sources/SOURCE_ID --group-by=category --page-size=PAGE_SIZE`; the help EXAMPLES use the parent as the positional argument (`projects/example-project`) and the source ID in `--source` (`--source=5678`). The organization-level form with a numeric organization ID is kept as written.
 - The source also shows PowerShell / cmd.exe variants, an example command response, Console steps and Terraform; they are omitted.
 - The `gcloud scc manage services update` help (gcloud 593.0.0) also lists the `--enablement-state` flag and `--validate-only`; at least one of `--enablement-state` or `--module-config-file` is required, and `--parent=organizations/ID` can replace the resource flags.
+- Adapted from the official docs: without a filter, `gcloud scc findings group` counts findings in every state, including `INACTIVE`; `--filter='state="ACTIVE"'` (the `--filter` flag of the `gcloud scc findings group` help, gcloud 593.0.0) limits the counts to active findings.
 - Source: https://docs.cloud.google.com/security-command-center/docs/how-to-use-security-health-analytics (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
