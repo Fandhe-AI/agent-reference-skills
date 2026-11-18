@@ -10,7 +10,7 @@ A pull subscriber must process and acknowledge a message within the acknowledgme
 
 ### Manual unary pull with deadline extension (Node.js)
 
-Adapted (not in the official docs): added a check that returns when the pull response contains no messages.
+Adapted (not in the official docs): added a check that returns when the pull response contains no messages, and the sample extends the ack deadline right after it hands the message to the worker instead of first waiting 10 seconds.
 
 ```javascript
 /**
@@ -71,6 +71,13 @@ async function synchronousPullWithLeaseManagement() {
   // Send the message to the worker function.
   worker(message);
 
+  // Extend the ack deadline before the default deadline expires.
+  await subClient.modifyAckDeadline({
+    subscription: formattedSubscription,
+    ackIds: [message.ackId],
+    ackDeadlineSeconds: newAckDeadlineSeconds,
+  });
+
   let waiting = true;
   while (waiting) {
     await new Promise(r => setTimeout(r, 10000));
@@ -110,7 +117,7 @@ synchronousPullWithLeaseManagement().catch(console.error);
 
 ### Manual unary pull with deadline extension (Python)
 
-Adapted (not in the official docs): replaced the module-level `return` (a syntax error outside a function) with `sys.exit(0)`.
+Adapted (not in the official docs): replaced the module-level `return` (a syntax error outside a function) with `sys.exit(0)`, and a finished process is acknowledged only when its exit code is 0; otherwise the message is made available for redelivery.
 
 ```python
 import logging
@@ -168,12 +175,23 @@ while processes:
             )
             logger.debug(f"Reset ack deadline for {msg_data}.")
 
-        # If the process is complete, acknowledge the message.
+        # If the process is complete, acknowledge the message only on success.
         else:
-            subscriber.acknowledge(
-                request={"subscription": subscription_path, "ack_ids": [ack_id]}
-            )
-            logger.debug(f"Acknowledged {msg_data}.")
+            process.join()
+            if process.exitcode == 0:
+                subscriber.acknowledge(
+                    request={"subscription": subscription_path, "ack_ids": [ack_id]}
+                )
+                logger.debug(f"Acknowledged {msg_data}.")
+            else:
+                subscriber.modify_ack_deadline(
+                    request={
+                        "subscription": subscription_path,
+                        "ack_ids": [ack_id],
+                        "ack_deadline_seconds": 0,
+                    }
+                )
+                logger.debug(f"Processing failed for {msg_data}; released it for redelivery.")
             processes.pop(process)
 print(
     f"Received and acknowledged {len(response.received_messages)} messages from {subscription_path}."
@@ -199,7 +217,7 @@ subscriber.close()
 | Item | Value |
 |---|---|
 | Extension length (Python, Go, Java high-level libraries) | Based on the 99th percentile of acknowledgment delay |
-| `ack_deadline_seconds` in the Python sample | Must be between 10 and 600 |
+| `ack_deadline_seconds` in the Python sample | Must be between 10 and 600 for the extension request (source comment); the API accepts 0 to 600, and 0 releases the message for redelivery (Discovery) |
 | Java exactly-once variables | `minDurationPerAckExtension` and `maxDurationPerAckExtension`: Range=0 to 600, Default=none (see exactly-once delivery) |
 
 ## Notes
@@ -209,7 +227,9 @@ subscriber.close()
 - Acknowledgment deadlines are not guaranteed to be respected unless exactly-once delivery is enabled.
 - A low subscription-level ack deadline raises the chance of duplicates; a high one delays redelivery of failed messages. Lease management gives per-message control.
 - Use the high-level client libraries; use manual `modifyAckDeadline` only if they do not work or you need unary pull. The C++ high-level library is an exception that provides lease management for unary pull.
-- The samples acknowledge only after processing finishes. Messages acked before processing are lost on failure.
+- The samples acknowledge only after processing finishes successfully (the Python sample checks that the process exit code is 0). Messages acked before processing are lost on failure.
+- Corrected from the official docs: the source's Python sample acknowledges every message whose process is no longer alive, including a process that raised or was killed, which loses the unprocessed message; the sample now acknowledges only when `exitcode` is 0 and otherwise sets the ack deadline to 0 ("Specifying zero might immediately make the message available for delivery to another subscriber client", `ModifyAckDeadlineRequest.ackDeadlineSeconds` in the Pub/Sub v1 Discovery document; the minimum is 0 seconds).
+- Corrected from the official docs: the source's Node.js sample waits 10 seconds before its first `modifyAckDeadline`, which can arrive after a 10-second subscription ack deadline has passed (with exactly-once delivery, a request with an expired ack ID fails); the sample extends the deadline to `newAckDeadlineSeconds` (30) right after handing the message to the worker, then renews it every 10 seconds.
 - Corrected from the official docs: the Python sample contained `return` at module level (`if len(response.received_messages) == 0:\n    return`), which is not valid outside a function.
 - The source also shows C# and Java (`GrpcSubscriberStub`) and Ruby unary-pull samples; they are omitted.
 - Source: https://docs.cloud.google.com/pubsub/docs/lease-management (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
