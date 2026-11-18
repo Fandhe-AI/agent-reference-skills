@@ -719,7 +719,7 @@ curl -X GET \
 
 - Generated from the Discovery document(s) v1, v1beta1 of `privateca` (retrieved 2026-11-14). Resources on this page: projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are listed under `references/rest-schemas/privateca/`; they are the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
 - Corrected from the official docs (the Discovery text above is verbatim): the `CertificateRevocationList` `name` format is written `projects/*/locations/*/caPools/*certificateAuthorities/*/ certificateRevocationLists/*` (no `/` after `caPools/*`, and a space before `certificateRevocationLists`); the Discovery path pattern of `certificateRevocationLists.patch` is `projects/[^/]+/locations/[^/]+/caPools/[^/]+/certificateAuthorities/[^/]+/certificateRevocationLists/[^/]+`.
 - Source: https://privateca.googleapis.com/$discovery/rest?version=v1, https://privateca.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
