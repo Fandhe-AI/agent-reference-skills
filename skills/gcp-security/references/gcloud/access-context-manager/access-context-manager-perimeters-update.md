@@ -1,0 +1,327 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/access-context-manager/perimeters/update
+---
+
+# gcloud access-context-manager perimeters update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud access-context-manager perimeters update
+
+```text
+NAME
+    gcloud access-context-manager perimeters update - update the enforced
+        configuration for an existing Service Perimeter
+
+SYNOPSIS
+    gcloud access-context-manager perimeters update
+        (PERIMETER : --policy=POLICY) [--description=DESCRIPTION] [--etag=etag]
+        [--title=TITLE] [--type=TYPE]
+        [--add-access-levels=[LEVEL,...] | --clear-access-levels
+          | --remove-access-levels=[LEVEL,...]
+          | --set-access-levels=[LEVEL,...]]
+        [--add-resources=[RESOURCES,...] | --clear-resources
+          | --remove-resources=[RESOURCES,...]
+          | --set-resources=[RESOURCES,...]]
+        [--add-restricted-services=[SERVICE,...] | --clear-restricted-services
+          | --remove-restricted-services=[SERVICE,...]
+          | --set-restricted-services=[SERVICE,...]]
+        [--clear-egress-policies | --set-egress-policies=YAML_FILE]
+        [--clear-ingress-policies | --set-ingress-policies=YAML_FILE]
+        [--clear-vpc-accessible-services
+          | --set-vpc-accessible-services=YAML_FILE
+          | --enable-vpc-accessible-services
+          --add-vpc-allowed-services=[VPC_SERVICE,...]
+          | --clear-vpc-allowed-services
+          | --remove-vpc-allowed-services=[VPC_SERVICE,...]]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    This command updates the enforced configuration (status) of a Service
+    Perimeter.
+
+EXAMPLES
+    To update the enforced configuration for a Service Perimeter:
+
+        $ gcloud access-context-manager perimeters update my-perimeter \
+            --add-resources="projects/123,projects/456" \
+            --remove-restricted-services="storage.googleapis.com" \
+            --add-access-levels="accessPolicies/123/accessLevels/a_level" \
+            --enable-vpc-accessible-services --clear-vpc-allowed-services
+
+POSITIONAL ARGUMENTS
+     Perimeter resource - The service perimeter to update. The arguments in
+     this group can be used to specify the attributes of this resource.
+
+     This must be specified.
+
+       PERIMETER
+          ID of the perimeter or fully qualified identifier for the perimeter.
+
+          To set the perimeter attribute:
+          + provide the argument perimeter on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --policy=POLICY
+          The ID of the access policy.
+
+          To set the policy attribute:
+          + provide the argument perimeter on the command line with a fully
+            specified name;
+          + provide the argument --policy on the command line;
+          + set the property access_context_manager/policy.
+
+FLAGS
+     --description=DESCRIPTION
+        Long-form description of service perimeter.
+
+     --etag=etag
+        The etag for the version of the Access Policy that this operation is to
+        be performed on. If, at the time of the operation, the etag for the
+        Access Policy stored in Access Context Manager is different from the
+        specified etag, then the commit operation will not be performed and the
+        call will fail. If etag is not provided, the operation will be
+        performed as if a valid etag is provided.
+
+     --title=TITLE
+        Short human-readable title of the service perimeter.
+
+     --type=TYPE
+        Type of the perimeter.
+
+        A regular perimeter allows resources within this service perimeter to
+        import and export data amongst themselves. A project may belong to at
+        most one regular service perimeter.
+
+        A bridge perimeter allows resources in different regular service
+        perimeters to import and export data between each other. A project may
+        belong to multiple bridge service perimeters (only if it also belongs
+        to a regular service perimeter). Both restricted and unrestricted
+        service lists, as well as access level lists, must be empty.
+
+        TYPE must be one of: bridge, regular.
+
+     These flags modify the member access levels of this perimeter. An
+     intra-perimeter request must satisfy these access levels (for example,
+     MY_LEVEL; must be in the same access policy as this perimeter) to be
+     allowed.
+
+     At most one of these can be specified:
+
+       --add-access-levels=[LEVEL,...]
+          Append the given values to the current access levels.
+
+       --clear-access-levels
+          Empty the current access levels.
+
+       --remove-access-levels=[LEVEL,...]
+          Remove the given values from the current access levels.
+
+       --set-access-levels=[LEVEL,...]
+          Completely replace the current access levels with the given values.
+
+     These flags modify the member resources of this perimeter. Resources must
+     be projects, in the form projects/<projectnumber>.
+
+     At most one of these can be specified:
+
+       --add-resources=[RESOURCES,...]
+          Append the given values to the current resources.
+
+       --clear-resources
+          Empty the current resources.
+
+       --remove-resources=[RESOURCES,...]
+          Remove the given values from the current resources.
+
+       --set-resources=[RESOURCES,...]
+          Completely replace the current resources with the given values.
+
+     These flags modify the member restricted services of this perimeter. The
+     perimeter boundary DOES apply to these services (for example,
+     storage.googleapis.com).
+
+     At most one of these can be specified:
+
+       --add-restricted-services=[SERVICE,...]
+          Append the given values to the current restricted services.
+
+       --clear-restricted-services
+          Empty the current restricted services.
+
+       --remove-restricted-services=[SERVICE,...]
+          Remove the given values from the current restricted services.
+
+       --set-restricted-services=[SERVICE,...]
+          Completely replace the current restricted services with the given
+          values.
+
+     These flags modify the enforced EgressPolicies of this ServicePerimeter.
+
+     At most one of these can be specified:
+
+       --clear-egress-policies
+          Empties existing enforced Egress Policies.
+
+       --set-egress-policies=YAML_FILE
+          Path to a file containing a list of Egress Policies.
+
+          This file contains a list of YAML-compliant objects representing
+          Egress Policies described in the API reference.
+
+          For more information about the alpha version, see:
+          https://cloud.google.com/access-context-manager/docs/reference/rest/v1alpha/accessPolicies.servicePerimeters
+          For more information about non-alpha versions, see:
+          https://cloud.google.com/access-context-manager/docs/reference/rest/v1/accessPolicies.servicePerimeters
+
+     These flags modify the enforced IngressPolicies of this ServicePerimeter.
+
+     At most one of these can be specified:
+
+       --clear-ingress-policies
+          Empties existing enforced Ingress Policies.
+
+       --set-ingress-policies=YAML_FILE
+          Path to a file containing a list of Ingress Policies.
+
+          This file contains a list of YAML-compliant objects representing
+          Ingress Policies described in the API reference.
+
+          For more information about the alpha version, see:
+          https://cloud.google.com/access-context-manager/docs/reference/rest/v1alpha/accessPolicies.servicePerimeters
+          For more information about non-alpha versions, see:
+          https://cloud.google.com/access-context-manager/docs/reference/rest/v1/accessPolicies.servicePerimeters
+
+     These flags modify the VpcAccessibleServices of this ServicePerimeter
+     config.
+
+     At most one of these can be specified:
+
+       --clear-vpc-accessible-services
+          Empties existing enforced VpcAccessibleServices.
+
+       --set-vpc-accessible-services=YAML_FILE
+          Path to a file containing a VpcAccessibleServices object.
+
+          This file contains a YAML-compliant object representing
+          VpcAccessibleServices described in the API reference.
+
+          For more information about the alpha version, see:
+          https://cloud.google.com/access-context-manager/docs/reference/rest/v1alpha/accessPolicies.servicePerimeters
+          For more information about non-alpha versions, see:
+          https://cloud.google.com/access-context-manager/docs/reference/rest/v1/accessPolicies.servicePerimeters
+
+       Or at least one of these can be specified:
+
+         --enable-vpc-accessible-services
+            When specified restrict API calls within the Service Perimeter to
+            the set of vpc allowed services. To disable use
+            '--no-enable-vpc-accessible-services'.
+
+         These flags modify the member vpc allowed services of this perimeter.
+         Services allowed to be called within the Perimeter when VPC Accessible
+         Services is enabled
+
+         At most one of these can be specified:
+
+           --add-vpc-allowed-services=[VPC_SERVICE,...]
+              Append the given values to the current vpc allowed services.
+
+           --clear-vpc-allowed-services
+              Empty the current vpc allowed services.
+
+           --remove-vpc-allowed-services=[VPC_SERVICE,...]
+              Remove the given values from the current vpc allowed services.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha access-context-manager perimeters update
+
+        $ gcloud beta access-context-manager perimeters update
+```
+
+### gcloud beta access-context-manager perimeters update
+
+```text
+NAME
+    gcloud beta access-context-manager perimeters update - update the enforced
+        configuration for an existing Service Perimeter
+
+SYNOPSIS
+    gcloud beta access-context-manager perimeters update
+        (PERIMETER : --policy=POLICY) [--description=DESCRIPTION] [--etag=etag]
+        [--title=TITLE] [--type=TYPE]
+        [--add-access-levels=[LEVEL,...] | --clear-access-levels
+          | --remove-access-levels=[LEVEL,...]
+          | --set-access-levels=[LEVEL,...]]
+        [--add-resources=[RESOURCES,...] | --clear-resources
+          | --remove-resources=[RESOURCES,...]
+          | --set-resources=[RESOURCES,...]]
+        [--add-restricted-services=[SERVICE,...] | --clear-restricted-services
+          | --remove-restricted-services=[SERVICE,...]
+          | --set-restricted-services=[SERVICE,...]]
+        [--clear-egress-policies | --set-egress-policies=YAML_FILE]
+        [--clear-ingress-policies | --set-ingress-policies=YAML_FILE]
+        [--clear-vpc-accessible-services
+          | --set-vpc-accessible-services=YAML_FILE
+          | --enable-vpc-accessible-services
+          --add-vpc-allowed-services=[VPC_SERVICE,...]
+          | --clear-vpc-allowed-services
+          | --remove-vpc-allowed-services=[VPC_SERVICE,...]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha access-context-manager perimeters update
+
+```text
+NAME
+    gcloud alpha access-context-manager perimeters update - update the enforced
+        configuration for an existing Service Perimeter
+
+SYNOPSIS
+    gcloud alpha access-context-manager perimeters update
+        (PERIMETER : --policy=POLICY) [--description=DESCRIPTION] [--etag=etag]
+        [--title=TITLE] [--type=TYPE]
+        [--add-access-levels=[LEVEL,...] | --clear-access-levels
+          | --remove-access-levels=[LEVEL,...]
+          | --set-access-levels=[LEVEL,...]]
+        [--add-resources=[RESOURCES,...] | --clear-resources
+          | --remove-resources=[RESOURCES,...]
+          | --set-resources=[RESOURCES,...]]
+        [--add-restricted-services=[SERVICE,...] | --clear-restricted-services
+          | --remove-restricted-services=[SERVICE,...]
+          | --set-restricted-services=[SERVICE,...]]
+        [--clear-egress-policies | --set-egress-policies=YAML_FILE]
+        [--clear-ingress-policies | --set-ingress-policies=YAML_FILE]
+        [--clear-vpc-accessible-services
+          | --set-vpc-accessible-services=YAML_FILE
+          | --enable-vpc-accessible-services
+          --add-vpc-allowed-services=[VPC_SERVICE,...]
+          | --clear-vpc-allowed-services
+          | --remove-vpc-allowed-services=[VPC_SERVICE,...]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/access-context-manager/perimeters/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
