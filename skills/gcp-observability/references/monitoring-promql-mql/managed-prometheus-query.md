@@ -47,13 +47,16 @@ kubectl annotate serviceaccount \
 
 Grant read access to Monitoring (for a multi-project metrics scope, grant on the scoping project as shown in the cross-project block below):
 
+Adapted (not in the official docs): `roles/iam.serviceAccountTokenCreator` is granted on the `gmp-test-sa` service account itself instead of on the project, so it cannot mint tokens for other service accounts in the project.
+
 ```bash
 gcloud projects add-iam-policy-binding PROJECT_ID \
   --member=serviceAccount:gmp-test-sa@PROJECT_ID.iam.gserviceaccount.com \
   --role=roles/monitoring.viewer \
   --condition=None \
 && \
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud iam service-accounts add-iam-policy-binding \
+  gmp-test-sa@PROJECT_ID.iam.gserviceaccount.com \
   --member=serviceAccount:gmp-test-sa@PROJECT_ID.iam.gserviceaccount.com \
   --role=roles/iam.serviceAccountTokenCreator \
   --condition=None
@@ -85,7 +88,7 @@ http://grafana.NAMESPACE_NAME.svc:3000
 
 Create the service account and roles (the last two let it read the Grafana token from Secret Manager and invoke Cloud Run).
 
-Adapted (not in the official docs): added the missing `\` after the `secretmanager.secretAccessor` line so the command chain is not broken.
+Adapted (not in the official docs): added the missing `\` after the `secretmanager.secretAccessor` line so the command chain is not broken; `roles/iam.serviceAccountTokenCreator` is granted on `gmp-ds-syncer-sa` itself, and `roles/secretmanager.secretAccessor` is granted on the `datasource-syncer` secret after it is created (see below), instead of on the project.
 
 ```bash
 gcloud config set project PROJECT_ID \
@@ -96,13 +99,10 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 --member=serviceAccount:gmp-ds-syncer-sa@PROJECT_ID.iam.gserviceaccount.com \
 --role=roles/monitoring.viewer \
 && \
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud iam service-accounts add-iam-policy-binding \
+gmp-ds-syncer-sa@PROJECT_ID.iam.gserviceaccount.com \
 --member=serviceAccount:gmp-ds-syncer-sa@PROJECT_ID.iam.gserviceaccount.com \
 --role=roles/iam.serviceAccountTokenCreator \
-&& \
-gcloud projects add-iam-policy-binding PROJECT_ID \
---member=serviceAccount:gmp-ds-syncer-sa@PROJECT_ID.iam.gserviceaccount.com \
---role=roles/secretmanager.secretAccessor \
 && \
 gcloud projects add-iam-policy-binding PROJECT_ID \
 --member=serviceAccount:gmp-ds-syncer-sa@PROJECT_ID.iam.gserviceaccount.com \
@@ -119,9 +119,14 @@ GRAFANA_DATASOURCE_UID # The Grafana data source UID from step 3. This is not a 
 GRAFANA_SERVICE_ACCOUNT_TOKEN # The Grafana service account token from step 4.
 ```
 
+Adapted (not in the official docs): `roles/secretmanager.secretAccessor` is granted to `gmp-ds-syncer-sa` on this one secret.
+
 ```bash
 gcloud secrets create datasource-syncer --replication-policy="automatic" && \
-echo -n GRAFANA_SERVICE_ACCOUNT_TOKEN | gcloud secrets versions add datasource-syncer --data-file=-
+echo -n GRAFANA_SERVICE_ACCOUNT_TOKEN | gcloud secrets versions add datasource-syncer --data-file=- && \
+gcloud secrets add-iam-policy-binding datasource-syncer \
+--member=serviceAccount:gmp-ds-syncer-sa@PROJECT_ID.iam.gserviceaccount.com \
+--role=roles/secretmanager.secretAccessor
 ```
 
 `cloud-run-datasource-syncer.yaml`:
@@ -256,7 +261,7 @@ gcloud projects add-iam-policy-binding SCOPING_PROJECT_ID \
 - Google Cloud Managed Service for Prometheus — not a self-hosted Prometheus server; PromQL semantics follow upstream Prometheus.
 - A metrics scope is a read-time-only construct; each metrics scope must be configured as a separate Grafana data source. A scoping project hosts the scope; by default a project scopes itself; a monitored project can belong to more than one scope.
 - The syncer must be used for Grafana to query globally; without it Grafana only queries the local Prometheus server. Without Workload Identity Federation for GKE, serverless needs a Grafana instance reachable from the internet; otherwise deploy on Kubernetes. Use the Cloud Run option for Grafana Cloud.
-- Permissive or sensitive points: the test Grafana uses default credentials `admin:admin` (use for experiments only, do not expose it); the example grants `roles/secretmanager.secretAccessor` and `roles/run.invoker` at project level to `gmp-ds-syncer-sa`, and the source suggests a finer-grained service account per component in production; `keys create` produces a long-lived key file (store and restrict it carefully); the Grafana token is passed on the command line and as `sed` input, so it lands in shell history (use a placeholder and clear history).
+- Permissive or sensitive points: the test Grafana uses default credentials `admin:admin` (use for experiments only, do not expose it); the example grants `roles/run.invoker` at project level to `gmp-ds-syncer-sa`, and the source suggests a finer-grained service account per component in production; `keys create` produces a long-lived key file (store and restrict it carefully); the Grafana token is passed on the command line and as `sed` input, so it lands in shell history (use a placeholder and clear history).
 - Corrected from the official docs: the source `add-iam-policy-binding` chain had `--role=roles/secretmanager.secretAccessor` followed by a bare `&& \` line; a trailing `\` was added. The source `curl ... | sed ... | kubectl apply -f -` was split into download, inspect and apply.
 - The syncer calls the Grafana API at `GRAFANA_INSTANCE_URL` with the Grafana service account token; the source allows `http://`, which sends that token unencrypted, so use `https://` unless Grafana is reachable only on a trusted network.
 - Corrected from the official docs: the source applies the syncer with `kubectl -n NAMESPACE_NAME apply -f -` but inspects and deletes it without a namespace (`kubectl describe cronjob datasource-syncer`, `kubectl logs job.batch/datasource-syncer-init`, `kubectl delete -f https://raw.githubusercontent.com/GoogleCloudPlatform/prometheus-engine/v0.17.2/cmd/datasource-syncer/datasource-syncer.yaml`), which targets the current context's namespace instead; `-n NAMESPACE_NAME` was added. The source's `kubectl -n NAMESPACE_NAME apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/prometheus-engine/v0.17.2/examples/grafana.yaml` was changed to download, inspect, apply.
@@ -265,6 +270,7 @@ gcloud projects add-iam-policy-binding SCOPING_PROJECT_ID \
 - The source also shows Console steps, screenshots and more Grafana UI steps, which are omitted. Remote manifests are pinned to prometheus-engine tag `v0.17.2`.
 - Source: https://docs.cloud.google.com/stackdriver/docs/managed-prometheus/query (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: for non-GKE clusters the source says `kubectl config set-cluster CLUSTER_NAME`, which only edits a kubeconfig cluster entry and does not switch the current context; this page uses `kubectl config use-context CONTEXT_NAME`.
+- Adapted from the official docs: the source grants `roles/iam.serviceAccountTokenCreator` to `gmp-test-sa` and `gmp-ds-syncer-sa`, and `roles/secretmanager.secretAccessor` to `gmp-ds-syncer-sa`, on the whole project. That lets them mint tokens for any service account and read every secret in the project; the examples grant Token Creator on each service account itself (`gcloud iam service-accounts add-iam-policy-binding`) and Secret Accessor on the `datasource-syncer` secret only (`gcloud secrets add-iam-policy-binding`).
 
 ## Related
 

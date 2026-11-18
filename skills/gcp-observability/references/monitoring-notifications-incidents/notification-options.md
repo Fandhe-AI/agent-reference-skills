@@ -58,6 +58,7 @@ In the notification dialog of an alerting policy click **Manage Notification Cha
 - The source also shows Console click-paths for every channel type. Channels by API are in "Create and manage notification channels by API" (https://docs.cloud.google.com/monitoring/alerts/using-channels-api).
 - Source: https://docs.cloud.google.com/monitoring/support/notification-options (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from the Pub/Sub section of the same page.
+- Source inconsistency: this page says "Cloud Monitoring doesn't support a test option for notification channels", but the channel setup pages describe a **Send test notification** button for Slack (notification-channel-slack-google-chat.md) and **Test Connection** for webhooks (notification-channel-webhooks.md). Use those where they exist; the alerting-policy method above covers the other channel types and checks delivery through a real policy.
 
 ## Related
 
