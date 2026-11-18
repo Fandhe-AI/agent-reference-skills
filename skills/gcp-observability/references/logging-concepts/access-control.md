@@ -91,7 +91,7 @@ gcloud logging read "resource.type=global"
 
 ### Legacy access scopes (Compute Engine VM service accounts)
 
-| Access scope | Permissions granted |
+| Access scope | What the scope allows (source column "Permissions granted") |
 |---|---|
 | `https://www.googleapis.com/auth/logging.read` | `roles/logging.viewer` |
 | `https://www.googleapis.com/auth/logging.write` | `roles/logging.logWriter` |
@@ -111,6 +111,7 @@ gcloud logging read "resource.type=global"
 - Custom roles: choose permissions from the API, console, or command-line permission lists. SQL-based alerting policy roles are in the "Monitor your SQL query results with an alerting policy" page.
 - Source: https://docs.cloud.google.com/logging/docs/access-control (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Source inconsistency: the role description in the source says Logs Configuration Writer "isn't sufficient to create log-based metrics or log-based alerting policies", while the same page's permission list for the role and its "Roles required to create and use log-based metrics" section say it lets principals list, create, get, update, and delete log-based metrics. The summary above follows the permission list.
+- Access scopes only limit which APIs the VM's OAuth tokens can call; they do not grant IAM roles. A request succeeds only when the access scope allows the API and the service account also holds the IAM permission, so `cloud-platform` together with the IAM roles granted to the service account decides access (see https://docs.cloud.google.com/compute/docs/access/service-accounts#accesscopesiam).
 
 ## Related
 

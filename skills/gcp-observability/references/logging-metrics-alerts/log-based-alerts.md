@@ -12,10 +12,12 @@ A log-based alerting policy notifies you whenever a specific message appears in 
 
 Entries in `syslog` with `NOTICE` severity whose `jsonPayload.result` is not a valid IPv4 address:
 
+Adapted (not in the official docs): the IPv4 regular expression is changed so that a trailing dot (for example `1.2.3.4.`) does not match as valid.
+
 ```text
 log_id("syslog")
 severity = "NOTICE"
-jsonPayload.result !~ "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}$"
+jsonPayload.result !~ "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
 ```
 
 Documentation text for the policy (Markdown and variables are supported):
@@ -28,7 +30,7 @@ Log-based alerting policy in project ${project} detected an invalid IPv4 value.
 
 Replace `PROJECT_ID` with your project ID.
 
-Adapted (not in the official docs): trailing commas removed because the source's JSON was invalid.
+Adapted (not in the official docs): trailing commas removed because the source's JSON was invalid, and the IPv4 regular expression is changed so that a trailing dot does not match as valid.
 
 ```json
 {
@@ -93,7 +95,7 @@ Adapted (not in the official docs): trailing commas removed (invalid JSON in the
     {
       "displayName": "Log match condition: invalid IP addr (API)",
       "conditionMatchedLog": {
-        "filter": "log_id(\"syslog\") severity = \"NOTICE\" jsonPayload.result !~ \"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\\.|$)){4}$\""
+        "filter": "log_id(\"syslog\") severity = \"NOTICE\" jsonPayload.result !~ \"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$\""
       }
     }
   ],
@@ -187,6 +189,7 @@ gcloud logging write test-log --severity=ERROR --payload-type=text 'This log ent
 - After a match, an alert opens in Cloud Monitoring; repeating the test within the notification period yields no new alert or notification. Defaults: autoclose 7 days; the example uses 5 min between notifications.
 - The source also shows Console steps (Logs Explorer **Create log alert**, **Manage log alerts**, the Alerting **Policies** page with enable, disable, copy and delete) and an APIs Explorer flow.
 - Source: https://docs.cloud.google.com/logging/docs/alerting/log-based-alerts (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source's expression `^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}$` repeats "octet followed by a dot or end of string" four times, so `1.2.3.4.` is accepted as valid and the negated match does not fire on it. The examples require a dot after the first three octets only: `^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$`.
 
 ## Related
 

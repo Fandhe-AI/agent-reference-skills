@@ -36,6 +36,8 @@ Each `AuditConfig` configures one service, or all services with the special valu
 
 Enables all three Data Access log types for all services, and `ADMIN_READ` exempting a service account for Cloud SQL. The YAML form is the default in the Google Cloud CLI.
 
+Adapted (not in the official docs): the exempted service account is written with the `serviceAccount:` prefix that `exemptedMembers` requires.
+
 ```yaml
 auditConfigs:
 - auditLogConfigs:
@@ -45,12 +47,12 @@ auditConfigs:
   service: allServices
 - auditLogConfigs:
   - exemptedMembers:
-    - 499862534253-compute@developer.gserviceaccount.com
+    - serviceAccount:499862534253-compute@developer.gserviceaccount.com
     logType: ADMIN_READ
   service: cloudsql.googleapis.com
 ```
 
-Adapted (not in the official docs): wrapped the source's `"auditConfigs": [...],` fragment in an object and removed the trailing comma so the JSON is valid.
+Adapted (not in the official docs): wrapped the source's `"auditConfigs": [...],` fragment in an object and removed the trailing comma so the JSON is valid, and added the `serviceAccount:` prefix to the exempted member.
 
 ```json
 {
@@ -73,7 +75,7 @@ Adapted (not in the official docs): wrapped the source's `"auditConfigs": [...],
       "auditLogConfigs": [
         {
           "exemptedMembers": [
-            "499862534253-compute@developer.gserviceaccount.com"
+            "serviceAccount:499862534253-compute@developer.gserviceaccount.com"
           ],
           "logType": "ADMIN_READ"
         }
@@ -334,6 +336,7 @@ For organization-level configuration, replace the "projects" version of the comm
 - Google Cloud MCP servers write Data Access logs as `SERVICE_NAME.googleapis.com/mcp`; enable by turning on audit logging for `mcp.googleapis.com` in the `AuditConfig`.
 - Console exemptions: a principal can be exempted per service and log type; the console also offers "Set Default Configuration". The source also shows these Console steps.
 - Source: https://docs.cloud.google.com/logging/docs/audit/configure-data-access (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source lists the exempted member as the bare email `499862534253-compute@developer.gserviceaccount.com`. `AuditLogConfig.exemptedMembers` "Follows the same format of Binding.members" (Discovery `cloudresourcemanager` v3), so a service account is written `serviceAccount:EMAIL`.
 
 ## Related
 
