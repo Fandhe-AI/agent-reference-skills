@@ -1,0 +1,325 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/kms/keys/update
+---
+
+# gcloud kms keys update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud kms keys update
+
+```text
+NAME
+    gcloud kms keys update - update a key
+
+SYNOPSIS
+    gcloud kms keys update (KEY : --keyring=KEYRING --location=LOCATION)
+        [--allowed-access-reasons=[ALLOWED_ACCESS_REASONS,...]]
+        [--default-algorithm=DEFAULT_ALGORITHM]
+        [--next-rotation-time=NEXT_ROTATION_TIME]
+        [--primary-version=PRIMARY_VERSION]
+        [--remove-key-access-justifications-policy]
+        [--remove-rotation-schedule] [--rotation-period=ROTATION_PERIOD]
+        [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    1. Update the rotation schedule for the given key.
+
+    Updates the rotation schedule for the given key. The schedule automatically
+    creates a new primary version for the key according to next-rotation-time
+    and rotation-period flags.
+
+    Flag next-rotation-time must be in ISO 8601 or RFC3339 format, and
+    rotation-period must be in the form INTEGER[UNIT], where units can be one
+    of seconds (s), minutes (m), hours (h) or days (d).
+
+    Key rotations performed manually via update-primary-version and the version
+    create do not affect the stored next-rotation-time.
+
+    2. Remove the rotation schedule for the given key with
+    remove-rotation-schedule flag.
+
+    3. Update/Remove the labels for the given key with update-labels and/or
+    remove-labels flags.
+
+    4. Update the primary version for the given key with primary-version flag.
+
+    5. Update the Key Access Justifications policy for the given key with
+    allowed-access-reasons flag to allow specified reasons. The key must be
+    enrolled in Key Access Justifications to use this flag.
+
+    6. Remove the Key Access Justifications policy for the given key with
+    remove-key-access-justifications-policy flag. The key must be enrolled in
+    Key Access Justifications to use this flag.
+
+    7. Update the Key Access Justifications policy for the given key with
+    allowed_access_reasons flag to allow zero access reasons. This effectively
+    disables the key, because a policy is configured to reject all access
+    reasons. The key must be enrolled in Key Access Justifications to use this
+    flag.
+
+EXAMPLES
+    The following command sets a 30 day rotation period for the key named frodo
+    within the keyring fellowship and location global starting at the specified
+    time:
+
+        $ gcloud kms keys update frodo --location=global \
+            --keyring=fellowship --rotation-period=30d \
+            --next-rotation-time=2017-10-12T12:34:56.1234Z
+
+    The following command removes the rotation schedule for the key named frodo
+    within the keyring fellowship and location global:
+
+        $ gcloud kms keys update frodo --location=global \
+            --keyring=fellowship --remove-rotation-schedule
+
+    The following command updates the labels value for the key named frodo
+    within the keyring fellowship and location global. If the label key does
+    not exist at the time, it will be added:
+
+        $ gcloud kms keys update frodo --location=global \
+            --keyring=fellowship --update-labels=k1=v1
+
+    The following command removes labels k1 and k2 from the key named frodo
+    within the keyring fellowship and location global:
+
+        $ gcloud kms keys update frodo --location=global \
+            --keyring=fellowship --remove-labels=k1,k2
+
+    The following command updates the primary version for the key named frodo
+    within the keyring fellowship and location global:
+
+        $ gcloud kms keys update frodo --location=global \
+            --keyring=fellowship --primary-version=1
+
+    The following command updates the default algorithm for the key named frodo
+    within the keyring fellowship and location global, assuming the key
+    originally has purpose 'asymmetric-encryption' and algorithm
+    'rsa-decrypt-oaep-2048-sha256':
+
+        $ gcloud kms keys update frodo --location=global \
+            --keyring=fellowship \
+            --default-algorithm=rsa-decrypt-oaep-4096-sha256
+
+    The following command updates the Key Access Justifications policy for the
+    key named frodo within the keyring fellowship and location global to allow
+    only customer-initiated-access and google-initiated-system-operation:
+
+        $ gcloud kms keys update frodo --location=global \
+            --keyring=fellowship \
+            --allowed-access-reasons=customer-initiated-access,\
+        google-initiated-system-operation
+
+    The following command removes the Key Access Justifications policy for the
+    key named frodo within the keyring fellowship and location global, which
+    results in all access reasons being allowed:
+
+        $ gcloud kms keys update frodo --location=global \
+            --keyring=fellowship --remove-key-access-justifications-policy
+
+    The following command updates the Key Access Justifications policy for the
+    key named frodo within the keyring fellowship and location global to allow
+    only zero access reasons, effectively disabling the key:
+
+        $ gcloud kms keys update frodo --location=global \
+            --keyring=fellowship --allowed-access-reasons=
+
+POSITIONAL ARGUMENTS
+     Key resource - The KMS key resource. The arguments in this group can be
+     used to specify the attributes of this resource. (NOTE) Some attributes
+     are not given arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument key on the command line with a fully specified
+        name;
+      * set the property core/project.
+
+     This must be specified.
+
+       KEY
+          ID of the key or fully qualified identifier for the key.
+
+          To set the key attribute:
+          + provide the argument key on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --keyring=KEYRING
+          The KMS keyring of the key.
+
+          To set the keyring attribute:
+          + provide the argument key on the command line with a fully
+            specified name;
+          + provide the argument --keyring on the command line.
+
+       --location=LOCATION
+          The Google Cloud location for the key.
+
+          To set the location attribute:
+          + provide the argument key on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line.
+
+FLAGS
+     --allowed-access-reasons=[ALLOWED_ACCESS_REASONS,...]
+        The list of allowed Key Access Justifications access reasons on the
+        key. The key must be enrolled in Key Access Justifications to configure
+        this field. By default, this field is absent, and all justification
+        codes are allowed. For more information about justification codes, see
+        https://cloud.google.com/assured-workloads/key-access-justifications/docs/justification-codes.
+        ALLOWED_ACCESS_REASONS must be one of:
+        customer-authorized-workflow-servicing, customer-initiated-access,
+        customer-initiated-support, google-initiated-review,
+        google-initiated-service, google-initiated-system-operation,
+        google-response-to-production-alert,
+        modified-customer-initiated-access,
+        modified-google-initiated-system-operation, reason-not-expected,
+        reason-unspecified, third-party-data-request.
+
+     --default-algorithm=DEFAULT_ALGORITHM
+        The default algorithm for the crypto key. For more information about
+        choosing an algorithm, see
+        https://cloud.google.com/kms/docs/algorithms. DEFAULT_ALGORITHM must be
+        one of: aes-128-cbc, aes-128-ctr, aes-128-gcm, aes-256-cbc,
+        aes-256-ctr, aes-256-gcm, aes-256-kwp, ec-sign-ed25519,
+        ec-sign-p256-sha256, ec-sign-p384-sha384, ec-sign-secp256k1-sha256,
+        external-symmetric-encryption, google-symmetric-encryption, hmac-sha1,
+        hmac-sha224, hmac-sha256, hmac-sha384, hmac-sha512, kem-ecdh-p256,
+        kem-ecdh-p384, kem-xwing, ml-kem-1024, ml-kem-768,
+        pq-sign-hash-slh-dsa-sha2-128s-sha256, pq-sign-ml-dsa-44,
+        pq-sign-ml-dsa-44-external-mu, pq-sign-ml-dsa-65,
+        pq-sign-ml-dsa-65-external-mu, pq-sign-ml-dsa-87,
+        pq-sign-ml-dsa-87-external-mu, pq-sign-slh-dsa-sha2-128s,
+        rsa-decrypt-oaep-2048-sha1, rsa-decrypt-oaep-2048-sha256,
+        rsa-decrypt-oaep-3072-sha1, rsa-decrypt-oaep-3072-sha256,
+        rsa-decrypt-oaep-4096-sha1, rsa-decrypt-oaep-4096-sha256,
+        rsa-decrypt-oaep-4096-sha512, rsa-sign-pkcs1-2048-sha256,
+        rsa-sign-pkcs1-3072-sha256, rsa-sign-pkcs1-4096-sha256,
+        rsa-sign-pkcs1-4096-sha512, rsa-sign-pss-2048-sha256,
+        rsa-sign-pss-3072-sha256, rsa-sign-pss-4096-sha256,
+        rsa-sign-pss-4096-sha512, rsa-sign-raw-pkcs1-2048,
+        rsa-sign-raw-pkcs1-3072, rsa-sign-raw-pkcs1-4096.
+
+     --next-rotation-time=NEXT_ROTATION_TIME
+        Next automatic rotation time of the key. See $ gcloud topic datetimes
+        for information on time formats.
+
+     --primary-version=PRIMARY_VERSION
+        Primary version to make primary.
+
+     --remove-key-access-justifications-policy
+        Removes the Key Access Justifications policy on the key, making all
+        justification codes allowed.
+
+     --remove-rotation-schedule
+        Remove any existing rotation schedule on the key.
+
+     --rotation-period=ROTATION_PERIOD
+        Automatic rotation period of the key. See $ gcloud topic datetimes for
+        information on duration formats.
+
+     --update-labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to update. If a label exists, its value
+        is modified. Otherwise, a new label is created.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     At most one of these can be specified:
+
+       --clear-labels
+          Remove all labels. If --update-labels is also specified then
+          --clear-labels is applied first.
+
+          For example, to remove all labels:
+
+              $ gcloud kms keys update --clear-labels
+
+          To remove all existing labels and create two new labels, foo and baz:
+
+              $ gcloud kms keys update --clear-labels \
+                --update-labels foo=bar,baz=qux
+
+       --remove-labels=[KEY,...]
+          List of label keys to remove. If a label does not exist it is
+          silently ignored. If --update-labels is also specified then
+          --update-labels is applied first.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha kms keys update
+
+        $ gcloud beta kms keys update
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+
+```bash
+gcloud kms keys update frodo \
+    --location=global \
+    --keyring=fellowship \
+    --allowed-access-reasons=customer-initiated-access,google-initiated-system-operation
+```
+
+### gcloud beta kms keys update
+
+```text
+NAME
+    gcloud beta kms keys update - update a key
+
+SYNOPSIS
+    gcloud beta kms keys update (KEY : --keyring=KEYRING --location=LOCATION)
+        [--allowed-access-reasons=[ALLOWED_ACCESS_REASONS,...]]
+        [--default-algorithm=DEFAULT_ALGORITHM]
+        [--next-rotation-time=NEXT_ROTATION_TIME]
+        [--primary-version=PRIMARY_VERSION]
+        [--remove-key-access-justifications-policy]
+        [--remove-rotation-schedule] [--rotation-period=ROTATION_PERIOD]
+        [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha kms keys update
+
+```text
+NAME
+    gcloud alpha kms keys update - update a key
+
+SYNOPSIS
+    gcloud alpha kms keys update (KEY : --keyring=KEYRING --location=LOCATION)
+        [--allowed-access-reasons=[ALLOWED_ACCESS_REASONS,...]]
+        [--default-algorithm=DEFAULT_ALGORITHM]
+        [--next-rotation-time=NEXT_ROTATION_TIME]
+        [--primary-version=PRIMARY_VERSION]
+        [--remove-key-access-justifications-policy]
+        [--remove-rotation-schedule] [--rotation-period=ROTATION_PERIOD]
+        [--update-labels=[KEY=VALUE,...]]
+        [--clear-labels | --remove-labels=[KEY,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/kms/keys/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

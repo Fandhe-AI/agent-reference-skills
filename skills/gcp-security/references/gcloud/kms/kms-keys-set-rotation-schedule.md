@@ -1,0 +1,144 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/kms/keys/set-rotation-schedule
+---
+
+# gcloud kms keys set-rotation-schedule
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud kms keys set-rotation-schedule
+
+```text
+NAME
+    gcloud kms keys set-rotation-schedule - update the rotation schedule for a
+        key
+
+SYNOPSIS
+    gcloud kms keys set-rotation-schedule
+        (KEY : --keyring=KEYRING --location=LOCATION)
+        [--next-rotation-time=NEXT_ROTATION_TIME]
+        [--rotation-period=ROTATION_PERIOD] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Updates the rotation schedule for the given key. The schedule automatically
+    creates a new primary version for the key according to the
+    --next-rotation-time and --rotation-period flags.
+
+    The flag --next-rotation-time must be in ISO or RFC3339 format, and
+    --rotation-period must be in the form INTEGER[UNIT], where units can be one
+    of seconds (s), minutes (m), hours (h) or days (d).
+
+    Key rotations performed manually via update-primary-version and the version
+    create do not affect the stored --next-rotation-time.
+
+EXAMPLES
+    The following command sets a 30 day rotation period for the key named frodo
+    within the keyring fellowship and location global starting at the specified
+    time:
+
+        $ gcloud kms keys set-rotation-schedule frodo --location=global \
+            --keyring=fellowship --rotation-period=30d \
+            --next-rotation-time=2017-10-12T12:34:56.1234Z
+
+POSITIONAL ARGUMENTS
+     Key resource - The KMS key resource. The arguments in this group can be
+     used to specify the attributes of this resource. (NOTE) Some attributes
+     are not given arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument key on the command line with a fully specified
+        name;
+      * set the property core/project.
+
+     This must be specified.
+
+       KEY
+          ID of the key or fully qualified identifier for the key.
+
+          To set the key attribute:
+          + provide the argument key on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --keyring=KEYRING
+          The KMS keyring of the key.
+
+          To set the keyring attribute:
+          + provide the argument key on the command line with a fully
+            specified name;
+          + provide the argument --keyring on the command line.
+
+       --location=LOCATION
+          The Google Cloud location for the key.
+
+          To set the location attribute:
+          + provide the argument key on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line.
+
+FLAGS
+     --next-rotation-time=NEXT_ROTATION_TIME
+        Next automatic rotation time of the key. See $ gcloud topic datetimes
+        for information on time formats.
+
+     --rotation-period=ROTATION_PERIOD
+        Automatic rotation period of the key. See $ gcloud topic datetimes for
+        information on duration formats.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha kms keys set-rotation-schedule
+
+        $ gcloud beta kms keys set-rotation-schedule
+```
+
+### gcloud beta kms keys set-rotation-schedule
+
+```text
+NAME
+    gcloud beta kms keys set-rotation-schedule - update the rotation schedule
+        for a key
+
+SYNOPSIS
+    gcloud beta kms keys set-rotation-schedule
+        (KEY : --keyring=KEYRING --location=LOCATION)
+        [--next-rotation-time=NEXT_ROTATION_TIME]
+        [--rotation-period=ROTATION_PERIOD] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha kms keys set-rotation-schedule
+
+```text
+NAME
+    gcloud alpha kms keys set-rotation-schedule - update the rotation schedule
+        for a key
+
+SYNOPSIS
+    gcloud alpha kms keys set-rotation-schedule
+        (KEY : --keyring=KEYRING --location=LOCATION)
+        [--next-rotation-time=NEXT_ROTATION_TIME]
+        [--rotation-period=ROTATION_PERIOD] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/kms/keys/set-rotation-schedule (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
