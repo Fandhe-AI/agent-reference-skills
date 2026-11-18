@@ -130,8 +130,6 @@ skills/gcp-security-compliance/
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
-分割投入中のカテゴリ（`rest-schemas/securitycenter`: 2 / 3 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
-
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
