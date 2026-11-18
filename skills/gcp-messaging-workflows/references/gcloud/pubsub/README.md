@@ -38,3 +38,4 @@
 | gcloud pubsub topics publish | 3 commands (alpha, beta, ga); pubsub topics publish … | [pubsub-topics-publish.md](./pubsub-topics-publish.md) |
 | gcloud pubsub topics remove-iam-policy-binding | 3 commands (alpha, beta, ga); pubsub topics remove-iam-policy-binding … | [pubsub-topics-remove-iam-policy-binding.md](./pubsub-topics-remove-iam-policy-binding.md) |
 | gcloud pubsub topics set-iam-policy | 3 commands (alpha, beta, ga); pubsub topics set-iam-policy … | [pubsub-topics-set-iam-policy.md](./pubsub-topics-set-iam-policy.md) |
+| gcloud pubsub topics update | 3 commands (alpha, beta, ga); pubsub topics update … | [pubsub-topics-update.md](./pubsub-topics-update.md) |

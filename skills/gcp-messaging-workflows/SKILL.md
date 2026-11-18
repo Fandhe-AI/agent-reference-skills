@@ -21,7 +21,7 @@ skills/gcp-messaging-workflows/
   references/
     gcloud/                       # 機械生成: gcloud 593.0.0、取得 2026-11-14
       README.md
-      pubsub/                     # topics・subscriptions・schemas・snapshots・message-transforms・lite-*（非推奨）、分割投入中（36 / 37 ページ。収録済みは README 掲載分のみ）
+      pubsub/                     # topics・subscriptions・schemas・snapshots・message-transforms・lite-*（非推奨）
         README.md
         pubsub-<group>.md
       eventarc/                   # triggers・channels・message-buses・pipelines・enrollments・google-api-sources 等
@@ -121,8 +121,6 @@ skills/gcp-messaging-workflows/
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` と各ガイドのコードブロックを引く。
 
 未投入カテゴリ（`gcloud/workflows` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
-
-分割投入中のカテゴリ（`gcloud/pubsub`: 36 / 37 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
