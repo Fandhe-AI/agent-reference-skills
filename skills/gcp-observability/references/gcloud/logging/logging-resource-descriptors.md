@@ -1,0 +1,99 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/logging/resource-descriptors
+---
+
+# gcloud logging resource-descriptors
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud logging resource-descriptors list
+
+```text
+NAME
+    gcloud logging resource-descriptors list - list all available resource
+        descriptors
+
+SYNOPSIS
+    gcloud logging resource-descriptors list [--filter=EXPRESSION]
+        [--limit=LIMIT] [--sort-by=[FIELD,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    List all available resource descriptors that are used by Cloud Logging.
+    Each log entry must be associated with a valid resource descriptor.
+
+EXAMPLES
+    To list all resource descriptors:
+
+        $ gcloud logging resource-descriptors list
+
+LIST COMMAND FLAGS
+     --filter=EXPRESSION
+        Apply a Boolean filter EXPRESSION to each resource item to be listed.
+        If the expression evaluates True, then that item is listed. For more
+        details and examples of filter expressions, run $ gcloud topic filters.
+        This flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --limit=LIMIT
+        Maximum number of resources to list. The default is unlimited. This
+        flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --sort-by=[FIELD,...]
+        Comma-separated list of resource field key names to sort by. The
+        default order is ascending. Prefix a field with ``~'' for descending
+        order on that field. This flag interacts with other flags that are
+        applied in this order: --flatten, --sort-by, --filter, --limit.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha logging resource-descriptors list
+
+        $ gcloud beta logging resource-descriptors list
+```
+
+### gcloud beta logging resource-descriptors list
+
+```text
+NAME
+    gcloud beta logging resource-descriptors list - list all available resource
+        descriptors
+
+SYNOPSIS
+    gcloud beta logging resource-descriptors list [--filter=EXPRESSION]
+        [--limit=LIMIT] [--sort-by=[FIELD,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha logging resource-descriptors list
+
+```text
+NAME
+    gcloud alpha logging resource-descriptors list - list all available
+        resource descriptors
+
+SYNOPSIS
+    gcloud alpha logging resource-descriptors list [--filter=EXPRESSION]
+        [--limit=LIMIT] [--sort-by=[FIELD,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/logging/resource-descriptors (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

@@ -1,0 +1,245 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/logging/read
+---
+
+# gcloud logging read
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud logging read
+
+```text
+NAME
+    gcloud logging read - read log entries
+
+SYNOPSIS
+    gcloud logging read [LOG_FILTER] [--freshness=FRESHNESS; default="1d"]
+        [--order=ORDER; default="desc"]
+        [--billing-account=BILLING_ACCOUNT_ID | --folder=FOLDER_ID
+          | --organization=ORGANIZATION_ID | --project=PROJECT_ID]
+        [--resource-names=[RESOURCE,...]
+          | --bucket=BUCKET --location=LOCATION --view=VIEW] [--limit=LIMIT]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud logging read reads log entries. Log entries matching log-filter are
+    returned in order of decreasing timestamps, most-recent entries first. If
+    the log entries come from multiple logs, then entries from different logs
+    might be intermingled in the results.
+
+EXAMPLES
+    To read log entries from Google Compute Engine instances, run:
+
+        $ gcloud logging read "resource.type=gce_instance"
+
+    To read log entries with severity ERROR or higher, run:
+
+        $ gcloud logging read "severity>=ERROR"
+
+    To read log entries written in a specific time window, run:
+
+        $ gcloud logging read \
+            'timestamp<="2015-05-31T23:59:59Z" AND
+         timestamp>="2015-05-31T00:00:00Z"'
+
+    To read up to 10 log entries in your project's syslog log from Compute
+    Engine instances containing payloads that include the word SyncAddress and
+    format the output in JSON format, run:
+
+        $ gcloud logging read \
+            "resource.type=gce_instance AND \
+        logName=projects/[PROJECT_ID]/logs/syslog AND \
+        textPayload:SyncAddress" --limit=10 --format=json
+
+    To read a log entry from a folder, run:
+
+        $ gcloud logging read "resource.type=global" --folder=[FOLDER_ID] \
+            --limit=1
+
+    To read a log entry from a global log bucket, run:
+
+        $ gcloud logging read --bucket=<bucket-id> --location=[LOCATION] \
+            --limit=1
+
+    To read a log entry from the global _Required log bucket using the bucket's
+    _Default log view:
+
+        $ gcloud logging read "" --bucket=_Required --location=global \
+            --view=_Default --limit=1
+
+    To read a log entry from a log bucket using the bucket's _AllLogs log view:
+
+        $ gcloud logging read "" --bucket=[BUCKET_ID] \
+            --location=[LOCATION] --view=_AllLogs --limit=1
+
+    To read a log entry from a log bucket using a custom log view that you have
+    created for the bucket:
+
+        $ gcloud logging read "" --bucket=[BUCKET_ID] \
+            --location=[LOCATION] --view=[VIEW_ID] --limit=1
+
+    To read log entries from multiple resources, specify them as a
+    comma-delimeted sequence with --resource-names. Each resource name can be
+    specified either as a top-level resource (e.g., projects/[PROJECT_ID],
+    folders/[FOLDER_ID], etc.) or as a Log View resource (e.g.,
+    projects/[PROJECT_ID]/locations/[LOCATION]/buckets/[BUCKET_NAME]/views/[VIEW_ID]).
+
+        $ gcloud logging read "" --resource-names=[RESOURCE-1],[RESOURCE-2]
+
+POSITIONAL ARGUMENTS
+     [LOG_FILTER]
+        Filter expression that specifies the log entries to return. Detailed
+        information about filters can be found at:
+        https://cloud.google.com/logging/docs/view/logging-query-language
+
+FLAGS
+     --freshness=FRESHNESS; default="1d"
+        Return entries that are not older than this value. Works only with DESC
+        ordering and filters without a timestamp. See $ gcloud topic datetimes
+        for information on duration formats.
+
+     --order=ORDER; default="desc"
+        Ordering of returned log entries based on timestamp field. ORDER must
+        be one of: desc, asc.
+
+     At most one of these can be specified:
+
+       --billing-account=BILLING_ACCOUNT_ID
+          Billing account of the log entries to read.
+
+       --folder=FOLDER_ID
+          Folder of the log entries to read.
+
+       --organization=ORGANIZATION_ID
+          Organization of the log entries to read.
+
+       --project=PROJECT_ID
+          Project of the log entries to read.
+
+          The Google Cloud project ID to use for this invocation. If omitted,
+          then the current project is assumed; the current project can be
+          listed using gcloud config list --format='text(core.project)' and can
+          be set using gcloud config set project PROJECTID.
+
+          --project and its fallback core/project property play two roles in
+          the invocation: they specify both the project of the resource to
+          operate on, and the project for API enablement checks, quota, and
+          billing. To specify a different project for quota and billing, use
+          the --billing-project flag or the billing/quota_project property.
+
+     At most one of these can be specified:
+
+       --resource-names=[RESOURCE,...]
+          Resource name(s) to read logs from. A resource can either be an
+          top-level resource (e.g., "projects/my-project") or a full log view
+          resource path (e.g.,
+          "projects/my-project/locations/my-location/buckets/my-bucket/views/my-view").
+          Multiple resources can be specified, separated by a comma.
+
+       Or at least one of these can be specified:
+
+         These arguments are used in conjunction with the parent to construct a
+         view resource.
+
+         --bucket=BUCKET
+            Id of the log bucket. If this argument is provided then --location
+            and --view must also be specified.
+
+            This flag argument must be specified if any of the other arguments
+            in this group are specified.
+
+         --location=LOCATION
+            Location of the log bucket. If this argument is provided then
+            --bucket and --view must also be specified.
+
+            This flag argument must be specified if any of the other arguments
+            in this group are specified.
+
+         --view=VIEW
+            Id of the view. If this argument is provided then --location and
+            --bucket must also be specified.
+
+            This flag argument must be specified if any of the other arguments
+            in this group are specified.
+
+LIST COMMAND FLAGS
+     --limit=LIMIT
+        Maximum number of resources to list. The default is unlimited. This
+        flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha logging read
+
+        $ gcloud beta logging read
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
+
+```bash
+gcloud logging read 'timestamp<="2015-05-31T23:59:59Z" AND timestamp>="2015-05-31T00:00:00Z"'
+
+gcloud logging read \
+    --bucket=BUCKET_ID \
+    --location=[LOCATION] \
+    --view=VIEW_ID \
+    --limit=1
+```
+
+### gcloud beta logging read
+
+```text
+NAME
+    gcloud beta logging read - read log entries
+
+SYNOPSIS
+    gcloud beta logging read [LOG_FILTER] [--freshness=FRESHNESS; default="1d"]
+        [--order=ORDER; default="desc"]
+        [--billing-account=BILLING_ACCOUNT_ID | --folder=FOLDER_ID
+          | --organization=ORGANIZATION_ID | --project=PROJECT_ID]
+        [--resource-names=[RESOURCE,...]
+          | --bucket=BUCKET --location=LOCATION --view=VIEW] [--limit=LIMIT]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha logging read
+
+```text
+NAME
+    gcloud alpha logging read - read log entries
+
+SYNOPSIS
+    gcloud alpha logging read [LOG_FILTER]
+        [--freshness=FRESHNESS; default="1d"] [--order=ORDER; default="desc"]
+        [--billing-account=BILLING_ACCOUNT_ID | --folder=FOLDER_ID
+          | --organization=ORGANIZATION_ID | --project=PROJECT_ID]
+        [--resource-names=[RESOURCE,...]
+          | --bucket=BUCKET --location=LOCATION --view=VIEW] [--limit=LIMIT]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): angle-bracket placeholders such as `<service-name>` are shell redirections when pasted into bash; the runnable form writes them as upper-case placeholders (`SERVICE_NAME`).
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the "global log bucket" example passes `--bucket` and `--location` without `--view`; the `--bucket` description says "If this argument is provided then --location and --view must also be specified" (gcloud 593.0.0: "argument --view: Must be specified"), so the runnable form adds `--view=VIEW_ID` (for example `_AllLogs` or `_Default`, as in the other bucket examples on this page).
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/logging/read (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
