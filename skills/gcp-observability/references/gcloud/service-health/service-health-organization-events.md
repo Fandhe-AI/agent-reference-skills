@@ -265,6 +265,7 @@ SYNOPSIS
 
 ## Notes
 
+- Corrected from the official docs (the help text above is verbatim): the positional argument description gives the form `organizations/{organization_id}/locations/locations/global/organizationEvents/{event_id}`, which repeats `locations`; the resource name is `organizations/{organization_id}/locations/global/organizationEvents/{event_id}` (the `locations/{location}` segment, with `global` as the location used in the example).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
