@@ -10,12 +10,12 @@ Artifact Registry stores container images, language packages, operating system p
 
 ### Pull an OCI / SIF image with Singularity
 
-Singularity pulls and pushes through the `oras://` URI. This pulls `my-app:latest` from the repository `us-west1.pkg.dev/my-project/sif-repo`.
+Singularity pulls and pushes through the `oras://` URI. This pulls `my-app:latest` from the Docker repository `us-west1-docker.pkg.dev/my-project/sif-repo`.
 
-Adapted (not in the official docs): removed the stray trailing backtick that the source page has after the image reference.
+Adapted (not in the official docs): removed the stray trailing backtick that the source page has after the image reference, and used the Docker repository host `us-west1-docker.pkg.dev` instead of `us-west1.pkg.dev`.
 
 ```bash
-singularity pull oras://us-west1.pkg.dev/my-project/sif-repo/my-app:latest
+singularity pull oras://us-west1-docker.pkg.dev/my-project/sif-repo/my-app:latest
 ```
 
 ## Options / Props
@@ -46,7 +46,7 @@ singularity pull oras://us-west1.pkg.dev/my-project/sif-repo/my-app:latest
 
 ## Notes
 
-- Corrected from the official docs: the source shows `singularity pull oras://us-west1.pkg.dev/my-project/sif-repo/my-app:latest` followed by a stray backtick; the backtick is removed.
+- Corrected from the official docs: the source shows `singularity pull oras://us-west1.pkg.dev/my-project/sif-repo/my-app:latest` followed by a stray backtick; the backtick is removed. The source places OCI and SIF images in Artifact Registry Docker repositories, whose host is `LOCATION-docker.pkg.dev`; `us-west1.pkg.dev` is not a repository host, so the example uses `us-west1-docker.pkg.dev`.
 - Docker V2 images supersede Docker V1 images, which are deprecated.
 - Helm 3 charts can be packaged in OCI format and stored in Docker repositories.
 - Singularity authentication is similar to Docker clients: it reads settings the credential helper added to the Docker client `config.json`. With a token or service account key as password, sign in with `singularity remote login`. Service account keys are long-lived credentials; prefer the credential helper.
