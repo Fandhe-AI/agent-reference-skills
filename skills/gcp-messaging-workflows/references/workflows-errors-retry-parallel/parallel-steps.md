@@ -117,6 +117,8 @@ main:
 
 Three iterations of `parent` exist, only two are active at a time.
 
+Adapted (not in the official docs): the `url` values `www.foo.com` and `www.bar.com` are not absolute URLs, so `http.get` fails; they are replaced with `https://www.example.com/foo` and `https://www.example.com/bar`.
+
 ```yaml
   - parent:
       parallel:
@@ -128,7 +130,7 @@ Three iterations of `parent` exist, only two are active at a time.
             - parentHttpCall:
                 call: http.get
                 args:
-                  url: "www.foo.com"
+                  url: "https://www.example.com/foo"
             - nestedChild:
                 parallel:
                   concurrency_limit: 4
@@ -139,7 +141,7 @@ Three iterations of `parent` exist, only two are active at a time.
                       - childHttpCall:
                           call: http.get
                           args:
-                            url: "www.bar.com"
+                            url: "https://www.example.com/bar"
 ```
 
 ### Catch an unhandled parallel exception
@@ -234,6 +236,7 @@ Adapted (not in the official docs): after logging, the `except` block re-raises 
 - Cloud Run functions (2nd gen) can use concurrency through the underlying Cloud Run service; in a parallel `for`, setting concurrency lets one instance process several items (https://docs.cloud.google.com/run/docs/about-concurrency).
 - The source also shows the JSON form of every example, a nested parallel example with its exception output, a shared-variables and scopes example, and diagrams; they are omitted here.
 - Corrected from the official docs: the parallel-iteration sample assigned `total: ${total + numComments}`, adding the whole HTTP response map; the HTTP response data is read from `body` (https://docs.cloud.google.com/workflows/docs/http-requests).
+- Adapted from the official docs: the concurrency-limit sample used `url: "www.foo.com"` and `url: "www.bar.com"`, which have no scheme; `http.get` needs an absolute URL, so they are `https://www.example.com/foo` and `https://www.example.com/bar` here.
 - Corrected from the official docs: the unhandled-exception sample ended with `- returnError: return: ${e}`, which completes the execution successfully; it now re-raises with `raise: ${e}`.
 - Source: https://docs.cloud.google.com/workflows/docs/reference/syntax/parallel-steps (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 

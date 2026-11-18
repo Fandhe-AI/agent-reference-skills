@@ -180,7 +180,7 @@ print(f"Endpoint for subscription is: {endpoint}")
 |----------|-------------|
 | Endpoint URL (required) | Publicly accessible HTTPS address; the server must have a valid SSL certificate signed by a certificate authority |
 | Delivery region | Pub/Sub delivers to push endpoints from the same Google Cloud region where it stores the messages, on a best-effort basis |
-| Firewall | A subscriber behind a firewall can't receive push requests (you might get `403 permission denied`); to receive requests turn off the firewall and verify the JWT used in the request |
+| Firewall | A subscriber behind a firewall can't receive push requests (you might get `403 permission denied`); allow inbound HTTPS to the push endpoint only, keep the other firewall rules, and verify the JWT used in the request (see Notes) |
 | Domain ownership | Pub/Sub doesn't require proof of ownership for push URL domains; report unexpected POST requests as suspected abuse |
 | Enable authentication | Messages include an authorization header so the endpoint can authenticate the request. Automatic authentication and authorization mechanisms exist for App Engine Standard and Cloud Run functions endpoints hosted in the same project as the subscription |
 | Authentication configuration | A user-managed service account plus audience, set in a create, patch or `ModifyPushConfig` call (`pushConfig.oidcToken`) |
@@ -207,6 +207,7 @@ print(f"Endpoint for subscription is: {endpoint}")
 
 ## Notes
 
+- Adapted from the official docs: the source says that to receive push requests behind a firewall you should "turn off the firewall and verify the JWT". Turning off the whole firewall can expose other services on the host; verifying the JWT authenticates the push request but does not replace network controls. This page instead says to allow inbound HTTPS only to the push endpoint and keep the other firewall rules.
 - Deliver to private VPC addresses: Pub/Sub operates outside of VPC networks and cannot directly push to private VPC addresses. Use Eventarc: Pub/Sub pushes to an Eventarc trigger, which forwards to a service within your VPC such as a Cloud Run service or a Workflows execution (see the Eventarc documentation on receiving events at a VPC-internal endpoint).
 - Adapted from the official docs: the REST request body contained the line `// Only needed if you are using push delivery`, which is not valid JSON; it was removed.
 - Receivers must verify the OIDC token (signature, audience, push service account `email`, `email_verified`); see the authentication page.
