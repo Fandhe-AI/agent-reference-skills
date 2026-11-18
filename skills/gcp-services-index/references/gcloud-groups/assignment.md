@@ -130,7 +130,7 @@ All 172 top-level groups of gcloud 593.0.0 (141 have GA commands).
 | `observability` | `gcp-observability` | 30 | 10 | 30 |
 | `onboarding` | `gcp-cli` | 0 | 3 | 0 |
 | `oracle-database` | `gcp-compute` | 142 | 0 | 0 |
-| `orchestration-pipelines` | `gcp-messaging-workflows` | 0 | 0 | 17 |
+| `orchestration-pipelines` | `gcp-data-pipelines` | 0 | 0 | 17 |
 | `org-policies` | `gcp-foundation` | 10 | 0 | 0 |
 | `organizations` | `gcp-foundation` | 7 | 7 | 7 |
 | `pam` | `gcp-security` | 23 | 29 | 29 |

@@ -17,7 +17,8 @@
 | gcp-gke | Products owned by this skill (22) | [gcp-gke.md](./gcp-gke.md) |
 | gcp-hybrid-migration | Products owned by this skill (7) | [gcp-hybrid-migration.md](./gcp-hybrid-migration.md) |
 | gcp-iac | Products owned by this skill (4) | [gcp-iac.md](./gcp-iac.md) |
-| gcp-messaging-workflows | Products owned by this skill (8) | [gcp-messaging-workflows.md](./gcp-messaging-workflows.md) |
+| gcp-integration | Products owned by this skill (3) | [gcp-integration.md](./gcp-integration.md) |
+| gcp-messaging-workflows | Products owned by this skill (5) | [gcp-messaging-workflows.md](./gcp-messaging-workflows.md) |
 | gcp-networking | Products owned by this skill (13) | [gcp-networking.md](./gcp-networking.md) |
 | gcp-observability | Products owned by this skill (9) | [gcp-observability.md](./gcp-observability.md) |
 | gcp-run | Products owned by this skill (9) | [gcp-run.md](./gcp-run.md) |
