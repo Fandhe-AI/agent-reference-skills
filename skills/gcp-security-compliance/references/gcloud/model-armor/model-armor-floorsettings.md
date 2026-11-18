@@ -1,0 +1,360 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/model-armor/floorsettings
+---
+
+# gcloud model-armor floorsettings
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud model-armor floorsettings describe
+
+```text
+NAME
+    gcloud model-armor floorsettings describe - describe the FloorSetting
+        resource
+
+SYNOPSIS
+    gcloud model-armor floorsettings describe [--full-uri=FULL_URI]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Displays the floor setting resource with the given name.
+
+FLAGS
+     --full-uri=FULL_URI
+        Full uri of the floor setting
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha model-armor floorsettings describe
+
+        $ gcloud beta model-armor floorsettings describe
+```
+
+### gcloud model-armor floorsettings update
+
+```text
+NAME
+    gcloud model-armor floorsettings update - update a Model Armor floor
+        setting
+
+SYNOPSIS
+    gcloud model-armor floorsettings update --full-uri=FULL_URI
+        [--enable-floor-setting-enforcement=ENABLE_FLOOR_SETTING_ENFORCEMENT]
+        [--[no-]enable-multi-language-detection]
+        [--malicious-uri-filter-settings-enforcement=MALICIOUS_URI_FILTER_SETTINGS_ENFORCEMENT]
+        [--add-google-mcp-server-apis=[API,...]
+          | --clear-google-mcp-server-apis | --google-mcp-server-apis=[API,...]
+          | --remove-google-mcp-server-apis=[API,...]]
+        [--add-integrated-services=[INTEGRATED_SERVICE,...]
+          | --clear-integrated-services
+          | --remove-integrated-services=[INTEGRATED_SERVICE,...]]
+        [--add-rai-settings-filters=confidenceLevel=CONFIDENCELEVEL],
+          [filterType=FILTERTYPE] | --clear-rai-settings-filters
+          | --rai-settings-filters=confidenceLevel=CONFIDENCELEVEL],
+          [filterType=FILTERTYPE]
+          | --remove-rai-settings-filters=confidenceLevel=CONFIDENCELEVEL],
+          [filterType=FILTERTYPE]]
+        [--advanced-config-deidentify-template=ADVANCED_CONFIG_DEIDENTIFY_TEMPLATE --advanced-config-inspect-template=ADVANCED_CONFIG_INSPECT_TEMPLATE --basic-config-filter-enforcement=BASIC_CONFIG_FILTER_ENFORCEMENT]
+        [--[no-]enable-google-mcp-server-cloud-logging
+          --google-mcp-server-enforcement-type=GOOGLE_MCP_SERVER_ENFORCEMENT_TYPE]
+        [--[no-]enable-vertex-ai-cloud-logging
+          --vertex-ai-enforcement-type=VERTEX_AI_ENFORCEMENT_TYPE]
+        [--pi-and-jailbreak-filter-settings-confidence-level=PI_AND_JAILBREAK_FILTER_SETTINGS_CONFIDENCE_LEVEL --pi-and-jailbreak-filter-settings-enforcement=PI_AND_JAILBREAK_FILTER_SETTINGS_ENFORCEMENT]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Updates the Model Armor floor setting with the given name.
+
+REQUIRED FLAGS
+     --full-uri=FULL_URI
+        Full uri of the floor setting
+
+OPTIONAL FLAGS
+     --enable-floor-setting-enforcement=ENABLE_FLOOR_SETTING_ENFORCEMENT
+        Enable or disable the floor setting enforcement. Set the value to
+        "TRUE" to enable the floor setting enforcement, "FALSE" to disable it.
+
+     Multi language detection enablement.
+
+     --[no-]enable-multi-language-detection
+        Enable multi-language detection for floor setting, allowing Model Armor
+        to process content in multiple languages. Use
+        --enable-multi-language-detection to enable and
+        --no-enable-multi-language-detection to disable.
+
+     Malicious uri filter settings.
+
+     --malicious-uri-filter-settings-enforcement=MALICIOUS_URI_FILTER_SETTINGS_ENFORCEMENT
+        Malicious URI filter settings.
+
+     Manage list of MCP servers for which the Google MCP server floor setting
+     is applicable. Empty list indicates that the floor setting is applicable
+     to all Google MCP servers. APIs need to be valid MCP resources, for
+     example:"bigquery.googleapis.com/mcp", "run.googleapis.com/mcp"
+
+     At most one of these can be specified:
+
+       --add-google-mcp-server-apis=[API,...]
+          Appends the given APIs to the list of Google MCP server APIs.
+
+       --clear-google-mcp-server-apis
+          Removes all APIs from the list of Google MCP server APIs. Empty list
+          indicates that the floor setting is applicable to all Google MCP
+          servers.
+
+       --google-mcp-server-apis=[API,...]
+          Replaces the current list of Google MCP server APIs with the provided
+          list.
+
+       --remove-google-mcp-server-apis=[API,...]
+          Removes the given APIs from the list of Google MCP server APIs.
+
+     Manage integrated services to apply Model Armor floor settings. Integrated
+     services will have Model Armor sanitization enabled project-wide.
+
+     At most one of these can be specified:
+
+       --add-integrated-services=[INTEGRATED_SERVICE,...]
+          Set the list of integrated services for the floor setting. This can
+          be used to enable project-wide Model Armor sanitization for the
+          respective services. This flag can be repeated to specify multiple
+          services, or a comma-separated list can be provided.
+
+       --clear-integrated-services
+          Clear all integrated services from the floor setting.
+
+       --remove-integrated-services=[INTEGRATED_SERVICE,...]
+          Remove specified service(s) from the list of integrated services.
+          This flag can be repeated to specify multiple services, or a
+          comma-separated list can be provided.
+
+     RAI filter settings.
+
+     At most one of these can be specified:
+
+       --add-rai-settings-filters=confidenceLevel=CONFIDENCELEVEL],[filterType=FILTERTYPE]
+          Add rai filter settings. Sets add_rai_settings_filters value.
+
+          Shorthand Example:
+
+              --add-rai-settings-filters=string,string
+
+          JSON Example:
+
+              --add-rai-settings-filters=["string"]
+
+          File Example:
+
+              --add-rai-settings-filters=path_to_file.(yaml|json)
+
+       --clear-rai-settings-filters
+          Clear all rai filter settings.
+
+       --rai-settings-filters=confidenceLevel=CONFIDENCELEVEL],[filterType=FILTERTYPE]
+          Set rai_settings_filters to new value. List of Responsible AI filters
+          enabled for floor setting. Sets rai_settings_filters value.
+
+          Shorthand Example:
+
+              --rai-settings-filters=string,string
+
+          JSON Example:
+
+              --rai-settings-filters=["string"]
+
+          File Example:
+
+              --rai-settings-filters=path_to_file.(yaml|json)
+
+       --remove-rai-settings-filters=confidenceLevel=CONFIDENCELEVEL],[filterType=FILTERTYPE]
+          Remove rai filter settings. Sets remove_rai_settings_filters value.
+
+          Shorthand Example:
+
+              --remove-rai-settings-filters=string,string
+
+          JSON Example:
+
+              --remove-rai-settings-filters=["string"]
+
+          File Example:
+
+              --remove-rai-settings-filters=path_to_file.(yaml|json)
+
+     SDP filter settings.
+
+     --advanced-config-deidentify-template=ADVANCED_CONFIG_DEIDENTIFY_TEMPLATE
+        The sdp filter settings enforcement. The value has to be a valid
+        template name. e.g.
+        projects/{project}/locations/{location}/deidentifyTemplates/{deidentify_template}
+
+     --advanced-config-inspect-template=ADVANCED_CONFIG_INSPECT_TEMPLATE
+        The sdp filter settings enforcement. The value has to be a valid
+        template name. e.g.
+        projects/{project}/locations/{location}/inspectTemplates/{inspect_template}
+
+     --basic-config-filter-enforcement=BASIC_CONFIG_FILTER_ENFORCEMENT
+        The sdp filter settings enforcement. The value can be either ENABLED or
+        DISABLED.
+
+     Options for Google MCP server sanitization.
+
+     --[no-]enable-google-mcp-server-cloud-logging
+        Enable Cloud Logging for Google MCP server sanitization to log Model
+        Armor sanitization results. Use
+        --enable-google-mcp-server-cloud-logging to enable and
+        --no-enable-google-mcp-server-cloud-logging to disable.
+
+     --google-mcp-server-enforcement-type=GOOGLE_MCP_SERVER_ENFORCEMENT_TYPE
+        Specifies the enforcement mode for Google MCP server sanitization, such
+        as "INSPECT_ONLY" or "INSPECT_AND_BLOCK". Default is "INSPECT_ONLY".
+
+     Options for Vertex AI sanitization.
+
+     --[no-]enable-vertex-ai-cloud-logging
+        Enable Cloud Logging for Vertex AI sanitization to log Model Armor
+        sanitization results. Use --enable-vertex-ai-cloud-logging to enable
+        and --no-enable-vertex-ai-cloud-logging to disable.
+
+     --vertex-ai-enforcement-type=VERTEX_AI_ENFORCEMENT_TYPE
+        Specifies the enforcement mode for Vertex AI sanitization, such as
+        "INSPECT_ONLY" or "INSPECT_AND_BLOCK". Default is "INSPECT_ONLY".
+
+     PI and jailbreak filter settings.
+
+     --pi-and-jailbreak-filter-settings-confidence-level=PI_AND_JAILBREAK_FILTER_SETTINGS_CONFIDENCE_LEVEL
+        The pi and jailbreak filter settings confidence level. The value can be
+        either "high", "medium-and-above" or "low-and-above"
+
+     --pi-and-jailbreak-filter-settings-enforcement=PI_AND_JAILBREAK_FILTER_SETTINGS_ENFORCEMENT
+        The pi and jailbreak filter settings enforcement. The value can be
+        either "enable" or "disable".
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha model-armor floorsettings update
+
+        $ gcloud beta model-armor floorsettings update
+```
+
+### gcloud beta model-armor floorsettings describe
+
+```text
+NAME
+    gcloud beta model-armor floorsettings describe - describe the FloorSetting
+        resource
+
+SYNOPSIS
+    gcloud beta model-armor floorsettings describe [--full-uri=FULL_URI]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud beta model-armor floorsettings update
+
+```text
+NAME
+    gcloud beta model-armor floorsettings update - update a Model Armor floor
+        setting
+
+SYNOPSIS
+    gcloud beta model-armor floorsettings update --full-uri=FULL_URI
+        [--enable-floor-setting-enforcement=ENABLE_FLOOR_SETTING_ENFORCEMENT]
+        [--[no-]enable-multi-language-detection]
+        [--malicious-uri-filter-settings-enforcement=MALICIOUS_URI_FILTER_SETTINGS_ENFORCEMENT]
+        [--add-google-mcp-server-apis=[API,...]
+          | --clear-google-mcp-server-apis | --google-mcp-server-apis=[API,...]
+          | --remove-google-mcp-server-apis=[API,...]]
+        [--add-integrated-services=[INTEGRATED_SERVICE,...]
+          | --clear-integrated-services
+          | --remove-integrated-services=[INTEGRATED_SERVICE,...]]
+        [--add-rai-settings-filters=confidenceLevel=CONFIDENCELEVEL],
+          [filterType=FILTERTYPE] | --clear-rai-settings-filters
+          | --rai-settings-filters=confidenceLevel=CONFIDENCELEVEL],
+          [filterType=FILTERTYPE]
+          | --remove-rai-settings-filters=confidenceLevel=CONFIDENCELEVEL],
+          [filterType=FILTERTYPE]]
+        [--advanced-config-deidentify-template=ADVANCED_CONFIG_DEIDENTIFY_TEMPLATE --advanced-config-inspect-template=ADVANCED_CONFIG_INSPECT_TEMPLATE --basic-config-filter-enforcement=BASIC_CONFIG_FILTER_ENFORCEMENT]
+        [--[no-]enable-google-mcp-server-cloud-logging
+          --google-mcp-server-enforcement-type=GOOGLE_MCP_SERVER_ENFORCEMENT_TYPE]
+        [--[no-]enable-vertex-ai-cloud-logging
+          --vertex-ai-enforcement-type=VERTEX_AI_ENFORCEMENT_TYPE]
+        [--pi-and-jailbreak-filter-settings-confidence-level=PI_AND_JAILBREAK_FILTER_SETTINGS_CONFIDENCE_LEVEL --pi-and-jailbreak-filter-settings-enforcement=PI_AND_JAILBREAK_FILTER_SETTINGS_ENFORCEMENT]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha model-armor floorsettings describe
+
+```text
+NAME
+    gcloud alpha model-armor floorsettings describe - describe the FloorSetting
+        resource
+
+SYNOPSIS
+    gcloud alpha model-armor floorsettings describe [--full-uri=FULL_URI]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha model-armor floorsettings update
+
+```text
+NAME
+    gcloud alpha model-armor floorsettings update - update a Model Armor floor
+        setting
+
+SYNOPSIS
+    gcloud alpha model-armor floorsettings update --full-uri=FULL_URI
+        [--enable-floor-setting-enforcement=ENABLE_FLOOR_SETTING_ENFORCEMENT]
+        [--[no-]enable-multi-language-detection]
+        [--malicious-uri-filter-settings-enforcement=MALICIOUS_URI_FILTER_SETTINGS_ENFORCEMENT]
+        [--add-google-mcp-server-apis=[API,...]
+          | --clear-google-mcp-server-apis | --google-mcp-server-apis=[API,...]
+          | --remove-google-mcp-server-apis=[API,...]]
+        [--add-integrated-services=[INTEGRATED_SERVICE,...]
+          | --clear-integrated-services
+          | --remove-integrated-services=[INTEGRATED_SERVICE,...]]
+        [--add-rai-settings-filters=confidenceLevel=CONFIDENCELEVEL],
+          [filterType=FILTERTYPE] | --clear-rai-settings-filters
+          | --rai-settings-filters=confidenceLevel=CONFIDENCELEVEL],
+          [filterType=FILTERTYPE]
+          | --remove-rai-settings-filters=confidenceLevel=CONFIDENCELEVEL],
+          [filterType=FILTERTYPE]]
+        [--advanced-config-deidentify-template=ADVANCED_CONFIG_DEIDENTIFY_TEMPLATE --advanced-config-inspect-template=ADVANCED_CONFIG_INSPECT_TEMPLATE --basic-config-filter-enforcement=BASIC_CONFIG_FILTER_ENFORCEMENT]
+        [--[no-]enable-google-mcp-server-cloud-logging
+          --google-mcp-server-enforcement-type=GOOGLE_MCP_SERVER_ENFORCEMENT_TYPE]
+        [--[no-]enable-vertex-ai-cloud-logging
+          --vertex-ai-enforcement-type=VERTEX_AI_ENFORCEMENT_TYPE]
+        [--pi-and-jailbreak-filter-settings-confidence-level=PI_AND_JAILBREAK_FILTER_SETTINGS_CONFIDENCE_LEVEL --pi-and-jailbreak-filter-settings-enforcement=PI_AND_JAILBREAK_FILTER_SETTINGS_ENFORCEMENT]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/model-armor/floorsettings (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
