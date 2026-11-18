@@ -138,7 +138,7 @@ docker login -u KEY-TYPE --password-stdin https://LOCATION-docker.pkg.dev
 |---------|----------|
 | `credHelpers` | Credential helper settings (gcloud or standalone helper) |
 | `auths` | Base64-encoded credentials stored when you `docker login` with a token or service account key |
-| `credStore` | Settings of a configured credential store |
+| `credsStore` | Settings of a configured credential store (the source writes `credStore`; see Notes) |
 
 Config file paths: Linux `~/.docker/config.json`, Windows `%USERPROFILE%\.docker\config.json`. Docker checks first for a credential helper associated with the host; if `credHelpers` and `auths` both hold Artifact Registry settings, `auths` is ignored.
 
@@ -154,6 +154,7 @@ Config file paths: Linux `~/.docker/config.json`, Windows `%USERPROFILE%\.docker
 
 ## Notes
 
+- Corrected from the official docs: the source names the Docker `config.json` key for a credential store `credStore`. Docker reads `credsStore` (Docker CLI configuration reference, see the `docker` skill); a `credStore` key is not used.
 - Service account keys are long-lived credentials and a security risk if not managed correctly. The source says to choose a more secure alternative (access token or credential helper) whenever possible; if you must use a key, follow "Best practices for managing service account keys", validate keys acquired from an external source, and note that key creation may be disabled for your organization (secure-by-default organization resources).
 - The verification command `docker-credential-gcr get` prints a live access token in the `Secret` field; do not paste the output into tickets or logs.
 - Base64-encoding a key writes a second copy of the key to `NEW-FILE-NAME`; restrict its permissions (for example `chmod 600 NEW-FILE-NAME` on Linux / macOS) and delete both files when they are no longer needed.
