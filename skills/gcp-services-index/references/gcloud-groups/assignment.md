@@ -10,7 +10,7 @@ All 172 top-level groups of gcloud 593.0.0 (141 have GA commands).
 
 | Group | Owner skill | GA | alpha | beta |
 |---|---|---|---|---|
-| `access-approval` | `gcp-security` | 13 | 11 | 11 |
+| `access-approval` | `gcp-security-compliance` | 13 | 11 | 11 |
 | `access-context-manager` | `gcp-security` | 55 | 61 | 43 |
 | `active-directory` | `gcp-foundation` | 35 | 42 | 42 |
 | `agent-identity` | `gcp-agent-platform` | 30 | 53 | 31 |
@@ -31,8 +31,8 @@ All 172 top-level groups of gcloud 593.0.0 (141 have GA commands).
 | `apphub` | `gcp-devops` | 47 | 52 | 0 |
 | `artifacts` | `gcp-devops` | 108 | 65 | 68 |
 | `asset` | `gcp-foundation` | 28 | 23 | 26 |
-| `assured` | `gcp-security` | 15 | 15 | 15 |
-| `audit-manager` | `gcp-security` | 14 | 14 | 0 |
+| `assured` | `gcp-security-compliance` | 15 | 15 | 15 |
+| `audit-manager` | `gcp-security-compliance` | 14 | 14 | 0 |
 | `auth` | `gcp-cli` | 18 | 18 | 18 |
 | `backup-dr` | `gcp-storage` | 91 | 91 | 91 |
 | `batch` | `gcp-compute` | 10 | 16 | 10 |
@@ -53,7 +53,7 @@ All 172 top-level groups of gcloud 593.0.0 (141 have GA commands).
 | `cluster-director` | `gcp-compute` | 14 | 15 | 14 |
 | `code` | `gcp-cli` | 0 | 3 | 3 |
 | `colab` | `gcp-agent-platform-ml` | 31 | 0 | 31 |
-| `compliance-manager` | `gcp-security` | 26 | 0 | 0 |
+| `compliance-manager` | `gcp-security-compliance` | 26 | 0 | 0 |
 | `components` | `gcp-cli` | 10 | 0 | 0 |
 | `composer` | `gcp-data-pipelines` | 51 | 53 | 53 |
 | `compute` | `gcp-compute` | 1066 | 1249 | 1079 |
@@ -117,7 +117,7 @@ All 172 top-level groups of gcloud 593.0.0 (141 have GA commands).
 | `migration` | `gcp-hybrid-migration` | 14 | 23 | 0 |
 | `ml` | `gcp-agent-platform` | 34 | 76 | 67 |
 | `mldiagnostics` | `gcp-agent-platform` | 0 | 18 | 0 |
-| `model-armor` | `gcp-security` | 12 | 12 | 12 |
+| `model-armor` | `gcp-security-compliance` | 12 | 12 | 12 |
 | `monitoring` | `gcp-observability` | 35 | 53 | 49 |
 | `mps` | `gcp-hybrid-migration` | 0 | 1 | 0 |
 | `netapp` | `gcp-storage` | 91 | 58 | 91 |
@@ -149,7 +149,7 @@ All 172 top-level groups of gcloud 593.0.0 (141 have GA commands).
 | `resource-manager` | `gcp-foundation` | 70 | 94 | 70 |
 | `run` | `gcp-run` | 78 | 114 | 107 |
 | `runtime-config` | `gcp-iac` | 0 | 0 | 20 |
-| `scc` | `gcp-security` | 103 | 146 | 28 |
+| `scc` | `gcp-security-compliance` | 103 | 146 | 28 |
 | `scheduler` | `gcp-run` | 24 | 19 | 19 |
 | `secrets` | `gcp-security` | 27 | 6 | 25 |
 | `service-directory` | `gcp-networking` | 31 | 31 | 31 |
@@ -173,13 +173,13 @@ All 172 top-level groups of gcloud 593.0.0 (141 have GA commands).
 | `vector-search` | `gcp-agent-platform` | 32 | 0 | 32 |
 | `version` | `gcp-cli` | 1 | 0 | 0 |
 | `vmware` | `gcp-hybrid-migration` | 117 | 0 | 0 |
-| `web-security-scanner` | `gcp-security` | 0 | 15 | 0 |
+| `web-security-scanner` | `gcp-security-compliance` | 0 | 15 | 0 |
 | `workbench` | `gcp-agent-platform-ml` | 34 | 0 | 34 |
 | `workflows` | `gcp-messaging-workflows` | 14 | 0 | 14 |
 | `workload-identity` | `gcp-foundation` | 3 | 3 | 3 |
 | `workload-manager` | `gcp-devops` | 0 | 11 | 0 |
 | `workspace-add-ons` | 対象外 | 11 | 0 | 0 |
-| `workspace-key-access` | `gcp-security` | 0 | 0 | 20 |
+| `workspace-key-access` | `gcp-security-compliance` | 0 | 0 | 20 |
 | `workstations` | `gcp-run` | 27 | 28 | 28 |
 | `zone-management` | `gcp-networking` | 0 | 28 | 0 |
 

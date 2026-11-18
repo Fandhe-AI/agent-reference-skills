@@ -63,7 +63,7 @@ skills/gcp-load-balancing/
 1. 概念・手順 → 下記マッピング表でカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
 2. ロードバランサーの種類を選ぶ → `lb-overview` の `choosing-load-balancer.md` と `features.md`。種類が決まったら `lb-application`（Application）または `lb-network`（Network）へ進む
 3. gcloud コマンド・フラグ・REST・IAM ロール → 本スキルには無い。`gcloud compute` / Compute REST / `roles/compute.*` は `gcp-compute`、`gcloud network-services` / `gcloud edge-cache` / `gcloud service-extensions` と各 REST・IAM は `gcp-networking` を引く
-4. VPC・ファイアウォール・Cloud NAT・VPN / Interconnect・Private Service Connect の概念は `gcp-networking`。Cloud Armor・IAP・Certificate Manager は `gcp-security`（予定）
+4. VPC・ファイアウォール・Cloud NAT・VPN / Interconnect・Private Service Connect の概念は `gcp-networking`。Cloud Armor・IAP・Certificate Manager は `gcp-security`
 5. Cloud CDN と Media CDN のどちらを使うかは `cloud-cdn/choose-cdn-product.md`
 
 ## タスク → カテゴリ マッピング
@@ -92,7 +92,7 @@ skills/gcp-load-balancing/
 - `gcp-foundation` — IAM の基盤・リソース階層・ADC・課金・クォータ
 - `gcp-cli` — gcloud 全般のインストール・設定・認証・出力フォーマット
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
-- `gcp-security`（予定）— Cloud Armor・IAP・Certificate Manager。ロードバランサーに付ける SSL 証明書 / SSL policies / mTLS は本スキル（`lb-tls`）
+- `gcp-security` — Cloud Armor・IAP・Certificate Manager。ロードバランサーに付ける SSL 証明書 / SSL policies / mTLS は本スキル（`lb-tls`）
 - `gcp-observability`（予定）— Cloud Logging・Cloud Monitoring
 - `cloudflare-workers` / `vercel` — Cloudflare・Vercel のエッジ / CDN は別の製品。Google Cloud の Cloud CDN・Media CDN とは無関係
 
@@ -102,7 +102,7 @@ skills/gcp-load-balancing/
 
 - 機械生成ページ（gcloud・REST・IAM）— `gcp-compute` と `gcp-networking` に収録
 - 各カテゴリの個別手順の一部（ロードバランサーの種類別の作成手順・ログとモニタリング・トラブルシューティング・料金・リリースノート・SLA）。収録ページは各カテゴリの README を参照
-- Cloud Armor・IAP・Certificate Manager（`gcp-security`（予定））
+- Cloud Armor・IAP・Certificate Manager（`gcp-security`）
 
 ## 鮮度・ライセンス・既知の制約
 

@@ -8,9 +8,9 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 
 | Product | Owner skill | IAM service id |
 |---|---|---|
-| Access Approval | `gcp-security` | `accessapproval` |
+| Access Approval | `gcp-security-compliance` | `accessapproval` |
 | Access Context Manager | `gcp-security` | `accesscontextmanager` |
-| Access Transparency | 対象外 | `axt` |
+| Access Transparency | `gcp-security-compliance` | `axt` |
 | Actions | 対象外 | `actions` |
 | Advisory Notifications | `gcp-foundation` | `advisorynotifications` |
 | Agent Platform (Gemini Enterprise Agent Platform) (formerly Vertex AI) | `gcp-agent-platform` | `aiplatform` |
@@ -40,8 +40,8 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Artifact Analysis | `gcp-security` | `containeranalysis` |
 | Artifact Registry | `gcp-devops` | `artifactregistry` |
 | Assured Open Source Software | `gcp-security` | `assuredoss` |
-| Assured Workloads | `gcp-security` | `assuredworkloads` |
-| Audit Manager | `gcp-security` | `auditmanager` |
+| Assured Workloads | `gcp-security-compliance` | `assuredworkloads` |
+| Audit Manager | `gcp-security-compliance` | `auditmanager` |
 | AutoML | `gcp-agent-platform` | `automl` |
 | Backup and Disaster Recovery | `gcp-storage` | `backupdr` |
 | Backup for GKE | `gcp-gke` | `gkebackup` |
@@ -76,7 +76,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Cloud CDN (guides; gcloud compute / REST in gcp-compute) | `gcp-load-balancing` | `compute` |
 | Cloud Commerce Consumer Procurement | `gcp-foundation` | `consumerprocurement` |
 | Cloud Composer (now Managed Service for Apache Airflow) | `gcp-data-pipelines` | `composer` |
-| Cloud Controls Partner API | `gcp-security` | `cloudcontrolspartner` |
+| Cloud Controls Partner API | `gcp-security-compliance` | `cloudcontrolspartner` |
 | Cloud Data Fusion | `gcp-data-pipelines` | `datafusion` |
 | Cloud Debugger | `gcp-observability` | `clouddebugger` |
 | Cloud Deploy | `gcp-devops` | `clouddeploy` |
@@ -88,7 +88,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Cloud Functions (now Cloud Run functions) | `gcp-run` | `cloudfunctions` |
 | Cloud Healthcare API | 対象外 | `healthcare` |
 | Cloud Hub | `gcp-foundation` | `cloudhub` |
-| Cloud Infrastructure Entitlement Management (CIEM) | `gcp-security` | `ciem` |
+| Cloud Infrastructure Entitlement Management (CIEM) | `gcp-security-compliance` | `ciem` |
 | Cloud Integrations | `gcp-messaging-workflows` | `integrations` |
 | Cloud Intrusion Detection System | `gcp-networking` | `ids` |
 | Cloud IoT | `gcp-ai-apis` | `cloudiot` |
@@ -99,7 +99,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Cloud Location Finder | `gcp-foundation` | `cloudlocationfinder` |
 | Cloud Logging | `gcp-observability` | `logging` |
 | Cloud Monitoring | `gcp-observability` | `monitoring` |
-| Cloud Notifications | `gcp-security` | `cloudnotifications` |
+| Cloud Notifications | `gcp-security-compliance` | `cloudnotifications` |
 | Cloud Optimization | `gcp-ai-apis` | `cloudoptimization` |
 | Cloud OS Config | `gcp-compute` | `osconfig` |
 | Cloud Profiler | `gcp-observability` | `cloudprofiler` |
@@ -109,7 +109,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Cloud Run functions (formerly Cloud Functions) | `gcp-run` | `cloudfunctions` |
 | Cloud Runtime Configuration API | `gcp-iac` | `runtimeconfig` |
 | Cloud Scheduler | `gcp-run` | `cloudscheduler` |
-| Cloud Security Compliance | `gcp-security` | `cloudsecuritycompliance` |
+| Cloud Security Compliance | `gcp-security-compliance` | `cloudsecuritycompliance` |
 | Cloud Service Mesh | `gcp-gke` | `anthosservicemesh` |
 | Cloud Service Mesh control plane | `gcp-gke` | `meshcontrolplane` |
 | Cloud Source Repositories | `gcp-devops` | `source` |
@@ -127,7 +127,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Commerce Org Governance | `gcp-foundation` | `commerceorggovernance` |
 | Commerce Price Management | `gcp-foundation` | `commercepricemanagement` |
 | Commerce Producer | `gcp-foundation` | `commerceproducer` |
-| Compliance Scanning | `gcp-security` | `compliancescanning` |
+| Compliance Scanning | `gcp-security-compliance` | `compliancescanning` |
 | Compute Engine | `gcp-compute` | `compute` |
 | Confidential Computing | `gcp-compute` | `confidentialcomputing` |
 | Config Delivery | `gcp-iac` | `configdelivery` |
@@ -140,12 +140,12 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Content Warehouse | `gcp-ai-apis` | `contentwarehouse` |
 | Customer Experience Insights | `gcp-agent-platform` | `contactcenterinsights` |
 | Customer Usage Data Processing | `gcp-data-pipelines` | `dataprocessing` |
-| Cyber Insurance Hub | `gcp-security` | `riskmanager` |
+| Cyber Insurance Hub | `gcp-security-compliance` | `riskmanager` |
 | Data Catalog | `gcp-bigquery` | `datacatalog` |
 | Data Connectors | `gcp-messaging-workflows` | `dataconnectors` |
 | Data Lineage API | `gcp-bigquery` | `datalineage` |
 | Data Pipelines | `gcp-data-pipelines` | `datapipelines` |
-| Data Security Posture Management | `gcp-security` | `dspm` |
+| Data Security Posture Management | `gcp-security-compliance` | `dspm` |
 | Data Studio | 対象外 | `datastudio` |
 | Data Studio (formerly Looker Studio) | 対象外 | `datastudio` |
 | Database Center | `gcp-foundation` | `databasecenter` |
@@ -256,7 +256,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Managed Service for Apache Spark (formerly Dataproc) | `gcp-data-pipelines` | `dataproc` |
 | Managed Service for Apache Spark Resource Manager | `gcp-data-pipelines` | `dataprocrm` |
 | Managed Service for Microsoft Active Directory | `gcp-foundation` | `managedidentities` |
-| Mandiant | `gcp-security` | `mandiant` |
+| Mandiant | `gcp-security-compliance` | `mandiant` |
 | Maps Admin | 対象外 | `mapsadmin` |
 | Maps Analytics | 対象外 | `mapsanalytics` |
 | Maps Platform Datasets | 対象外 | `mapsplatformdatasets` |
@@ -268,7 +268,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Memorystore for Redis | `gcp-databases-nosql` | `redis` |
 | Migrate to Virtual Machines | `gcp-hybrid-migration` | `cloudmigration` |
 | ML Kit for Firebase | 対象外 | `firebaseml` |
-| Model Armor | `gcp-security` | `modelarmor` |
+| Model Armor | `gcp-security-compliance` | `modelarmor` |
 | Multi-Cluster Ingress | `gcp-gke` | `multiclusteringress` |
 | Multi-Cluster Metering | `gcp-gke` | `multiclustermetering` |
 | Multi-Cluster Service Discovery | `gcp-gke` | `multiclusterservicediscovery` |
@@ -309,16 +309,16 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Remoting Cloud | 対象外 | `remotingcloud` |
 | Resource Manager | `gcp-foundation` | `resourcemanager` |
 | Resource Settings | `gcp-foundation` | `resourcesettings` |
-| RISC Configuration Service | `gcp-security` | `riscconfigurationservice` |
+| RISC Configuration Service | `gcp-security-compliance` | `riscconfigurationservice` |
 | Route Optimization | `gcp-ai-apis` | `routeoptimization` |
 | SaaS Service Management | 対象外 | `saasservicemgmt` |
 | SecLM | `gcp-agent-platform` | `seclm` |
 | Secret Manager | `gcp-security` | `secretmanager` |
 | Secure Source Manager | `gcp-devops` | `securesourcemanager` |
-| Secured Landing Zone | `gcp-security` | `securedlandingzone` |
-| Security Center Management API | `gcp-security` | `securitycentermanagement` |
-| Security Command Center | `gcp-security` | `securitycenter` |
-| Security Posture API | `gcp-security` | `securityposture` |
+| Secured Landing Zone | `gcp-security-compliance` | `securedlandingzone` |
+| Security Center Management API | `gcp-security-compliance` | `securitycentermanagement` |
+| Security Command Center | `gcp-security-compliance` | `securitycenter` |
+| Security Posture API | `gcp-security-compliance` | `securityposture` |
 | Sensitive Data Protection | `gcp-ai-apis` | `dlp` |
 | Serverless Integrations | `gcp-run` | `runapps` |
 | Serverless VPC Access | `gcp-networking` | `vpcaccess` |
@@ -329,7 +329,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Service Extensions (guides; gcloud service-extensions / REST in gcp-networking) | `gcp-load-balancing` | `networkactions` |
 | Service Management | `gcp-foundation` | `servicemanagement` |
 | Service Networking | `gcp-foundation` | `servicenetworking` |
-| Service Security Insights | `gcp-security` | `servicesecurityinsights` |
+| Service Security Insights | `gcp-security-compliance` | `servicesecurityinsights` |
 | Service Usage | `gcp-foundation` | `serviceusage` |
 | Spanner | `gcp-databases-relational` | `spanner` |
 | Spark connector for BigQuery | `gcp-bigquery` | `bigqueryspark` |
@@ -358,7 +358,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Vision AI | `gcp-ai-apis` | `visionai` |
 | Visual Inspection AI | `gcp-agent-platform-ml` | `visualinspection` |
 | VM Migration | `gcp-hybrid-migration` | `vmmigration` |
-| Web Security Scanner | `gcp-security` | `cloudsecurityscanner` |
+| Web Security Scanner | `gcp-security-compliance` | `cloudsecurityscanner` |
 | Workflows | `gcp-messaging-workflows` | `workflows` |
 | Workload Certificate | `gcp-foundation` | `workloadcertificate` |
 | Workload Manager | `gcp-devops` | `workloadmanager` |

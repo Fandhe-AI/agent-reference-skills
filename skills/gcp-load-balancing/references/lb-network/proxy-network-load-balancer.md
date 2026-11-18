@@ -42,7 +42,7 @@ Check the load balancing scheme, region and network tier of the output.
 | All ports 1-65535 allowed; port remapping (for example frontend TCP 80, backend connections on TCP 8080); the PROXY protocol relays the client source IP address and port to backends. |
 | TLS/SSL offload (external): global external and classic proxy Network Load Balancers offload TLS with an SSL proxy; connections to backends use SSL (recommended) or TCP. For CPU efficiency use ECDSA SSL certificates, TLS 1.2 and prefer `ECDHE-ECDSA-AES128-GCM-SHA256` between the load balancer and backends. SSL policies control the SSL features negotiated with clients. |
 | IPv6 termination: client IPv6 is terminated and proxied over IPv4 or IPv6 (dual-stack backends); classic load balancers proxy only over IPv4 to backends. |
-| Cloud Armor security policies can protect external load balancers from DDoS and targeted attacks (Cloud Armor is in the planned `gcp-security`). |
+| Cloud Armor security policies can protect external load balancers from DDoS and targeted attacks (Cloud Armor is in `gcp-security`). |
 | Geographic TLS termination: TLS terminates at globally distributed locations; use Standard Network Tier to force termination on backends in one region only. |
 | Internal: Envoy-based regional Layer 4; locality policies within an instance group or NEG; global access (clients from any region); access from connected networks through VPC Network Peering, Cloud VPN or Cloud Interconnect. |
 | App Hub: resources of global/regional external and cross-region/regional internal proxy Network Load Balancers can be designated as services in App Hub applications. |

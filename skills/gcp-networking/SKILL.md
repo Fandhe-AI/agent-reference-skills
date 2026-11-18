@@ -141,7 +141,7 @@ skills/gcp-networking/
 2. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`。`<api>` は `apim` / `dns` / `ids` / `networkconnectivity` / `networkmanagement` / `networksecurity` / `networkservices` / `servicedirectory` / `trafficdirector` / `vpcaccess`。VPC・サブネット・ルート・firewall rules・Cloud Router・VPN・Interconnect・NAT・ロードバランサーの Compute REST は `gcp-compute`
 3. IAM ロール・権限 → `references/iam/README.md` の索引から `<service>.md` を引く。`networksecurity` は `networksecurity-1.md` / `networksecurity-2.md`、`networkservices` は `networkservices-1.md` / `networkservices-2.md` に分割されているため、ロール ID（例: `roles/networkconnectivity.hubAdmin`）で `references/iam/` 配下を grep して該当ファイルを特定する。`roles/compute.*`（`compute.networkAdmin` / `compute.securityAdmin` 等）は `gcp-compute`
 4. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
-5. ロードバランサー・Cloud CDN・Media CDN・Service Extensions の概念・手順は `gcp-load-balancing`。Cloud Armor・IAP・Certificate Manager は `gcp-security`（予定）
+5. ロードバランサー・Cloud CDN・Media CDN・Service Extensions の概念・手順は `gcp-load-balancing`。Cloud Armor・IAP・Certificate Manager は `gcp-security`
 6. 非推奨を確認するときは、Classic VPN の動的ルーティングは `cloud-vpn/classic-vpn-deprecation.md`を引く
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
@@ -199,7 +199,7 @@ skills/gcp-networking/
 - `gcp-foundation` — IAM の基盤・リソース階層・ADC・課金・クォータ。本スキルは各製品の IAM ロール（`references/iam/`）
 - `gcp-cli` — gcloud 全般のインストール・設定・認証・出力フォーマット。ネットワーク系 12 グループのコマンドは本スキル
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
-- `gcp-security`（予定）— Cloud Armor・IAP・Certificate Manager・Cloud KMS・Security Command Center。Cloud NGFW・Cloud IDS・Secure Web Proxy は本スキル
+- `gcp-security` / `gcp-security-compliance` — Cloud Armor・IAP・Certificate Manager・Cloud KMS（`gcp-security`）、Security Command Center（`gcp-security-compliance`）。Cloud NGFW・Cloud IDS・Secure Web Proxy は本スキル
 - `gcp-observability`（予定）— Cloud Logging・Cloud Monitoring。VPC Flow Logs の仕様と Network Intelligence Center は本スキル
 
 ## 対象外
@@ -207,7 +207,7 @@ skills/gcp-networking/
 次は収録していない。必要なときは公式ドキュメントを確認する（https://docs.cloud.google.com/ 配下）。
 
 - ロードバランシング・Cloud CDN・Media CDN・Service Extensions の概念と手順（`gcp-load-balancing`）
-- Cloud Armor・IAP・Certificate Manager（`gcp-security`（予定））
+- Cloud Armor・IAP・Certificate Manager（`gcp-security`）
 - `gcloud compute` のネットワーク系コマンド・Compute REST・`roles/compute.*`（`gcp-compute`）
 - 各カテゴリの個別手順の一部（リソースの作成 / 更新 / 削除の手順ページ・トラブルシューティング・料金・リリースノート・SLA）。収録ページは各カテゴリの README を参照
 

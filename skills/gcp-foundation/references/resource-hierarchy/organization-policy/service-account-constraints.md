@@ -107,4 +107,5 @@ administrator to enable this feature.
 - [constraints-reference.md](./constraints-reference.md)
 - [using-constraints.md](./using-constraints.md)
 - [tags-condition.md](./tags-condition.md)
-- gcp-security (Secret Manager, KMS, workload identity)
+- gcp-security (Secret Manager, KMS)
+- [../../iam-guides/workload-identity-federation/README.md](../../iam-guides/workload-identity-federation/README.md) (workload identity)

@@ -93,7 +93,7 @@ Enable or disable modules, and exclude environment variables or CLI arguments, a
 - Other security detection tools installed in the cluster can impair Container Threat Detection; the source recommends not installing any in a protected cluster.
 - `MALICIOUS_PYTHON_EXECUTED` and `MALICIOUS_SCRIPT_EXECUTED` can't be enabled, and generate no findings, in locations where data residency is enabled.
 - Host-kernel monitoring does not observe syscalls inside GKE Sandbox containers (see `sandbox-pods.md`).
-- Each detector's description and detection input are in the source table; this page keeps module names and severities only. Container Threat Detection here is a runtime detection service; Security Command Center in general is planned in `gcp-security`.
+- Each detector's description and detection input are in the source table; this page keeps module names and severities only. Container Threat Detection here is a runtime detection service; Security Command Center in general (including its threat detection services) is in `gcp-security-compliance`.
 - Source: https://docs.cloud.google.com/security-command-center/docs/concepts-container-threat-detection-overview (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

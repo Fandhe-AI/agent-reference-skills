@@ -62,4 +62,5 @@ Conceptually staged (IAM actually evaluates all types simultaneously):
 ## Related
 
 - [roles-overview.md](../role-types/roles-overview.md)
-- gcp-security (deny policies, PAB policies in depth)
+- [../policy-guardrails/deny-policies.md](../policy-guardrails/deny-policies.md) (deny policies)
+- [../principal-access-boundary/principal-access-boundary-policies.md](../principal-access-boundary/principal-access-boundary-policies.md) (PAB policies)

@@ -144,4 +144,5 @@ In Cloud Workstations, either:
 - [how-adc-works.md](./how-adc-works.md)
 - [troubleshoot-adc.md](./troubleshoot-adc.md)
 - [service-account-impersonation.md](../credentials-and-tokens/service-account-impersonation.md)
-- `gcp-security` skill (Workload Identity), `gcp-client-libraries` skill (ADC code per language), `gcp-cli` skill (gcloud auth)
+- [../../iam-guides/workload-identity-federation/README.md](../../iam-guides/workload-identity-federation/README.md) (Workload Identity Federation)
+- `gcp-client-libraries` skill (ADC code per language), `gcp-cli` skill (gcloud auth)

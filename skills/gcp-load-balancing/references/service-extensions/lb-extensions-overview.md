@@ -63,7 +63,7 @@ gcloud service-extensions lb-edge-extensions import \
 - Traffic extension request path: before the call it does fault injection, backend selection, Cloud Armor, IAP and (global external only) Cloud CDN caching policies; after it does URL rewrites, header manipulation, redirects or routing, request mirroring. On the response path it does response header transformations, Cloud Logging and (global external only) Cloud CDN caching.
 - Edge and route extensions run before custom headers are added, so they don't see custom headers added by the load balancer; use a supported attribute instead.
 - The source also shows figures for the data path stages.
-- Google Cloud Load Balancing / Cloud CDN, not Cloudflare or Vercel (see `cloudflare-workers`, `vercel`). Cloud Armor and IAP belong to the planned `gcp-security` skill.
+- Google Cloud Load Balancing / Cloud CDN, not Cloudflare or Vercel (see `cloudflare-workers`, `vercel`). Cloud Armor and IAP belong to the `gcp-security` skill.
 - Source inconsistency: the `CONTENT_AUTHZ` row above says extensions receive request and response bodies, but the callouts overview (https://docs.cloud.google.com/service-extensions/docs/callouts-overview, retrieved 2026-11-17) says "For authorization extensions, the load balancer doesn't forward any request body to the callout backend service" and "Edge, authorization, and route extensions support only HTTP headers".
 - Source: https://docs.cloud.google.com/service-extensions/docs/lb-extensions-overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/service-extensions/lb-edge-extensions/import (gcloud 593.0.0 help).

@@ -69,7 +69,7 @@ gcloud compute network-firewall-policies rules create 10 \
 
 ## Notes
 
-- Network firewall policy and VPC firewall rule resources are machine-generated `gcloud compute ...` pages; the full flag list is in the `gcp-compute` skill. Cloud Armor and VPC Service Controls are in `gcp-security` (planned).
+- Network firewall policy and VPC firewall rule resources are machine-generated `gcloud compute ...` pages; the full flag list is in the `gcp-compute` skill. Cloud Armor and VPC Service Controls are in `gcp-security`.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/compute/network-firewall-policies/rules/create (gcloud 593.0.0 help); the source page has no code block.
 - Adapted from the official docs: the help example for `network-firewall-policies rules create` omitted the required `--layer4-configs` and, for an ingress rule, `--src-ip-ranges` / `--src-secure-tags`; `--layer4-configs=tcp:80 --src-ip-ranges=192.0.2.0/24` was added.
 - Source: https://docs.cloud.google.com/firewall/docs/about-firewalls (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)

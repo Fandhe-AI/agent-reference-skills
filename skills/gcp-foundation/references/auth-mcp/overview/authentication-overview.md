@@ -65,4 +65,5 @@ ADC lets the same code authenticate in development and production; you must firs
 - [use-cases-and-identity-products.md](./use-cases-and-identity-products.md)
 - [../adc/how-adc-works.md](../adc/how-adc-works.md)
 - [../credentials-and-tokens/token-concepts.md](../credentials-and-tokens/token-concepts.md)
-- `gcp-security` skill (Workload Identity Federation, IAM)
+- [../../iam-guides/workload-identity-federation/README.md](../../iam-guides/workload-identity-federation/README.md) (Workload Identity Federation)
+- [../../iam-guides/access-management/README.md](../../iam-guides/access-management/README.md) (IAM)

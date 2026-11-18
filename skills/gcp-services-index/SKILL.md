@@ -14,11 +14,11 @@ Google Cloud (GCP) 全プロダクトの索引スキル。プロダクト名か�
 
 ## 深層スキルの状況
 
-深層スキル 24 件（`gcp-foundation` / `gcp-cli` / `gcp-run` / `gcp-storage` / `gcp-client-libraries` / `gcp-databases-relational` /
-`gcp-databases-nosql` / `gcp-gke` / `gcp-compute` / `gcp-networking` / `gcp-load-balancing` / `gcp-security` / `gcp-observability` /
+深層スキル 25 件（`gcp-foundation` / `gcp-cli` / `gcp-run` / `gcp-storage` / `gcp-client-libraries` / `gcp-databases-relational` /
+`gcp-databases-nosql` / `gcp-gke` / `gcp-compute` / `gcp-networking` / `gcp-load-balancing` / `gcp-security` / `gcp-security-compliance` / `gcp-observability` /
 `gcp-messaging-workflows` / `gcp-devops` / `gcp-iac` / `gcp-bigquery` / `gcp-agent-platform` / `gcp-data-pipelines` /
 `gcp-agent-platform-ml` / `gcp-ai-apis` / `gcp-api-management` / `gcp-hybrid-migration` / `gcp-architecture`）は
-`gcp-foundation`・`gcp-cli`（gcloud 横断グループ・CLI 設定・Cloud Shell、製品ページは持たない）・`gcp-run`・`gcp-storage`・`gcp-client-libraries`・`gcp-databases-relational`・`gcp-databases-nosql`・`gcp-gke`・`gcp-compute`・`gcp-networking`・`gcp-load-balancing`（Cloud Load Balancing・Cloud CDN・Media CDN・Service Extensions のガイドのみ。製品ページは持たず、`references/lookup/product-to-skill.md` の別行で引く）が収録済みで、残りは未収録（予定）。各製品ページの Status 列が最新の状況。収録しなかったプロダクトは「対象外」として `references/products/out-of-scope.md` に分離する。
+`gcp-foundation`・`gcp-cli`（gcloud 横断グループ・CLI 設定・Cloud Shell、製品ページは持たない）・`gcp-run`・`gcp-storage`・`gcp-client-libraries`・`gcp-databases-relational`・`gcp-databases-nosql`・`gcp-gke`・`gcp-compute`・`gcp-networking`・`gcp-load-balancing`（Cloud Load Balancing・Cloud CDN・Media CDN・Service Extensions のガイドのみ。製品ページは持たず、`references/lookup/product-to-skill.md` の別行で引く）・`gcp-security`・`gcp-security-compliance` が収録済みで、残りは未収録（予定）。各製品ページの Status 列が最新の状況。収録しなかったプロダクトは「対象外」として `references/products/out-of-scope.md` に分離する。
 
 範囲方針は深層スキル側で定義する。gcloud・REST・IAM は全件、ガイド系ページは各プロダクトの主要ページに絞る。
 
@@ -82,6 +82,7 @@ skills/gcp-services-index/
       gcp-observability.md
       gcp-run.md
       gcp-security.md
+      gcp-security-compliance.md
       gcp-storage.md
     lookup/
       README.md

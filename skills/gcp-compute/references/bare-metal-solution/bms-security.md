@@ -46,7 +46,7 @@ Application connectivity patterns:
 - Source (`restricted.googleapis.com` domain option): https://docs.cloud.google.com/vpc/docs/configure-private-google-access (retrieved 2026-11-17)
 - Source (VPC Service Controls overview): https://docs.cloud.google.com/vpc-service-controls/docs/overview (retrieved 2026-11-17)
 - Source (Bare Metal Solution planning, firewalls): https://docs.cloud.google.com/bare-metal/docs/bms-planning (retrieved 2026-11-17)
-- Distance line: VPC networks, firewall policies and VPC Service Controls themselves are in `gcp-networking` / the planned `gcp-security`; IAM in general is in `gcp-foundation`. This page covers Oracle on Bare Metal Solution, not Oracle Database@Google Cloud, Cloud SQL or AlloyDB.
+- Distance line: VPC networks, firewall policies and VPC Service Controls themselves are in `gcp-networking` / `gcp-security`; IAM in general is in `gcp-foundation`. This page covers Oracle on Bare Metal Solution, not Oracle Database@Google Cloud, Cloud SQL or AlloyDB.
 - Source: https://docs.cloud.google.com/bare-metal/docs/bms-security (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
