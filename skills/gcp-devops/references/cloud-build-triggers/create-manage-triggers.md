@@ -54,10 +54,12 @@ trigger-001  2019-10-30T20:45:03+00:00
 
 ### Update a trigger
 
-Export, edit and import the trigger file:
+Export, edit and import the trigger file.
+
+Adapted (not in the official docs): `--region=REGION` (the region the trigger was created in) is added to the export, import and delete commands; without it gcloud uses the `builds/region` property, or `global` if that is unset.
 
 ```bash
-gcloud beta builds triggers export TRIGGER_NAME --destination=EXPORT_PATH
+gcloud beta builds triggers export TRIGGER_NAME --destination=EXPORT_PATH --region=REGION
 ```
 
 ```yaml
@@ -75,7 +77,7 @@ name: trigger-001
 ```
 
 ```bash
-gcloud builds triggers import --source=IMPORT_PATH
+gcloud builds triggers import --source=IMPORT_PATH --region=REGION
 ```
 
 ### Disable a trigger
@@ -89,7 +91,7 @@ disabled: True
 ### Delete a trigger
 
 ```bash
-gcloud builds triggers delete TRIGGER_NAME
+gcloud builds triggers delete TRIGGER_NAME --region=REGION
 ```
 
 ### Include repository history
@@ -143,6 +145,7 @@ steps:
 
 ## Notes
 
+- Adapted from the official docs: the source omits the region from `export`, `import` and `delete`. A trigger created with `--region=REGION` is a regional resource, so the commands pass the same `--region`, or set the `builds/region` property.
 - To use a tag instead of a branch, replace `--branch-pattern=BRANCH_PATTERN` with `--tag-pattern=TAG_PATTERN`.
 - When a trigger starts a build, only the service account on the trigger is used. With your own service account you must store logs in a Cloud Logging bucket, a user-created Cloud Storage bucket, or a Google Cloud-created user-owned Cloud Storage bucket; Google Cloud-owned log buckets are not allowed. If `--service-account` is omitted the default Cloud Build service account is used, which is not recommended; create a service account with only the roles the trigger needs.
 - The help for `gcloud builds triggers create github` documents the service account format `projects/PROJECT_ID/serviceAccounts/ACCOUNT_ID_OR_EMAIL`.

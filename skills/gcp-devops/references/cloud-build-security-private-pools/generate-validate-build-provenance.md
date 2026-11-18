@@ -87,9 +87,14 @@ Add `--print-provenance` to print the validated provenance for a policy engine. 
 mkdir provenance && cd provenance
 ```
 
+Adapted (not in the official docs): the source fetches the `builtByGCB` key (`--key builtByGCB`) but then verifies `signatures[0]` (`provenanceSigner`). This fetches the public key named by the `keyid` of `signatures[0]`, the signature verified below.
+
 ```bash
-gcloud kms keys versions get-public-key 1 --location global --keyring attestor \
-  --key builtByGCB --project verified-builder --output-file my-key.pub
+KEYID=$(gcloud artifacts docker images describe \
+LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/IMAGE@sha256:HASH --show-provenance \
+  --format=json | jq -r '.provenance_summary.provenance[] | select(.build.intotoStatement.predicateType == "https://slsa.dev/provenance/v0.1") | .envelope.signatures[0].keyid')
+gcloud kms keys versions get-public-key "${KEYID##*/}" \
+  --key="${KEYID%/cryptoKeyVersions/*}" --output-file=my-key.pub
 ```
 
 Decode the payload (SLSA v0.1 shown; change `predicateType` to `https://slsa.dev/provenance/v1` for v1.0).
@@ -109,12 +114,15 @@ gcloud artifacts docker images describe LOCATION-docker.pkg.dev/PROJECT_ID/REPOS
 
 The first signature (`provenanceSigner`) is over the PAE-formatted envelope; transform the provenance into `"DSSEv1" + SP + LEN(type) + SP + type + SP + LEN(body) + SP + body` before verifying.
 
+Adapted (not in the official docs): the source builds the PAE with `echo -n "... $(cat provenance.json)" > provenance.json`, which drops trailing newlines from the body (so the bytes no longer match `LEN(body)`) and overwrites the payload. This writes the header with `printf` and appends the payload bytes unchanged to a separate file, `pae.bin`.
+
 ```bash
-echo -n "DSSEv1 28 application/vnd.in-toto+json $(cat provenance.json | wc -c) $(cat provenance.json)" > provenance.json
+LEN=$(wc -c < provenance.json | tr -d ' ')
+{ printf 'DSSEv1 28 application/vnd.in-toto+json %s ' "${LEN}"; cat provenance.json; } > pae.bin
 ```
 
 ```bash
-openssl dgst -sha256 -verify my-key.pub -signature signature.bin provenance.json
+openssl dgst -sha256 -verify my-key.pub -signature signature.bin pae.bin
 ```
 
 After a successful validation the output is `Verified OK`.
@@ -152,8 +160,8 @@ After a successful validation the output is `Verified OK`.
 - The source's example output was omitted. It shows `image_summary` (`digest`, `fully_qualified_digest`, `registry`, `repository`, `slsa_build_level`) and `provenance_summary` with an `inTotoSlsaProvenanceV1` statement (`buildDefinition` with `buildType: https://cloud.google.com/build/gcb-buildtypes/google-worker/v1`, `externalParameters`, `internalParameters.systemSubstitutions`, `resolvedDependencies`; `runDetails` with builder id `https://cloudbuild.googleapis.com/GoogleHostedWorker`), the DSSE `envelope` with `payloadType: application/vnd.in-toto+json` and signatures keyed by `projects/verified-builder/locations/global/keyRings/attestor/cryptoKeys/google-hosted-worker/cryptoKeyVersions/1`.
 - To record verifiable metadata about the service account that initiated a build, see https://docs.cloud.google.com/build/docs/building/build-containers#use-cosign.
 - Both SLSA 0.1 and 1.0 provenance are stored when available; to filter for 1.0 use `predicateType` `https://slsa.dev/provenance/v1` in the jq commands.
-- The PAE transform (the `echo -n "DSSEv1 ..."` command) applies to the first signature (`provenanceSigner`). To verify the second signature (`builtByGCB`, `signatures[1]`), skip the `echo` transform and verify the `provenance.json` you already stored.
-- Source inconsistency: the public key command uses `--key builtByGCB` (the legacy second signature) while the following commands decode `signatures[0]` (`provenanceSigner`) and apply the PAE transform. The source says to use the `keyid` field to choose the key, and its SLSA v1.0 example output shows `keyid` `projects/verified-builder/locations/global/keyRings/attestor/cryptoKeys/google-hosted-worker/cryptoKeyVersions/1`. Take the key name from the `keyid` of the signature you verify; the command is kept as the source writes it.
+- The PAE transform applies to the first signature (`provenanceSigner`). To verify the second signature (`builtByGCB`, `signatures[1]`), take `KEYID` and the signature from `signatures[1]`, skip the PAE step and verify `provenance.json` itself.
+- Source inconsistency: the public key command uses `--key builtByGCB` (the legacy second signature) while the following commands decode `signatures[0]` (`provenanceSigner`) and apply the PAE transform. The source says to use the `keyid` field to choose the key, and its SLSA v1.0 example output shows `keyid` `projects/verified-builder/locations/global/keyRings/attestor/cryptoKeys/google-hosted-worker/cryptoKeyVersions/1`. Adapted from the official docs: the key command takes the key name from the `keyid` of the verified signature (the source's `--key builtByGCB` command does not match `signatures[0]`), and the PAE step writes to `pae.bin` with `printf` so the payload keeps its exact bytes. The `keyid` is assumed to have the form shown in the source's example output (`projects/.../cryptoKeyVersions/N`).
 - The `gcloud container analysis occurrences list` variant shown in the source for non-container artifacts was omitted because that command is not present in the gcloud 593.0.0 help. The `curl` call to the Container Analysis API above is the equivalent. Filtering on nested JSON fields like `invocationId` can be slower than on top-level indexed fields in projects with many occurrences. Artifact Analysis and Binary Authorization are covered by the `gcp-security` skill.
 - Adapted from the official docs: the source used `gcloud artifacts docker images describe $IMAGE` (unquoted variable).
 - The source also shows Console (Security insights panel), the JSON form of the configs, and a `gcloud container analysis occurrences list` command.

@@ -22,10 +22,12 @@ Builds run on a predefined schedule by invoking a manual trigger from Cloud Sche
 
 ### Find the Cloud Scheduler job of a trigger
 
-To update a job, get the trigger ID, then filter the Cloud Scheduler jobs list by that ID:
+To update a job, get the trigger ID, then filter the Cloud Scheduler jobs list by that ID.
+
+Adapted (not in the official docs): `--region=REGION` names the trigger's region; without it gcloud uses the `builds/region` property, or `global`.
 
 ```bash
-gcloud builds triggers describe TRIGGER_NAME
+gcloud builds triggers describe TRIGGER_NAME --region=REGION
 ```
 
 ## Options / Props
@@ -39,6 +41,7 @@ gcloud builds triggers describe TRIGGER_NAME
 
 ## Notes
 
+- Adapted from the official docs: the source's `gcloud builds triggers describe TRIGGER_NAME` has no region; a regional manual trigger needs `--region=REGION` (or the `builds/region` property).
 - Do not delete the default scheduling service account: Cloud Scheduler uses it. If it was deleted or lost permissions, re-add it on the IAM page with the Cloud Build Editor role; existing Cloud Scheduler jobs can take up to an hour to resume.
 - Selecting a Cloud Scheduler region creates an App Engine application in the project automatically, and the region cannot be changed later (see the Cloud Scheduler supported regions).
 - If you change the Revision field (for example the branch name) of the manual trigger, update the Body field of the associated Cloud Scheduler job manually.
