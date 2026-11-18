@@ -21,6 +21,7 @@ gcloud compute ssh INSTANCE_NAME
 - Administrative services are those typically used to administer a machine, such as RDP, SSH, and MySQL's admin interface.
 - Load-balanced targets are not supported. Calling the IAP TCP forwarding service from mobile devices is not supported.
 - Enabling IAP on an administrative resource does not automatically block direct requests to it. IAP only blocks TCP requests that are not from IAP TCP forwarding IPs to the relevant services on the resource.
+- Clarification (the source sentence above is easy to misread): IAP is not a firewall for direct paths to the VM; it only controls connections that go through IAP TCP forwarding. To make IAP the only path, create a firewall rule that allows ingress to the service ports only from the IAP TCP forwarding range `35.235.240.0/20`, and remove or restrict rules that allow direct access from other sources (for example `default-allow-ssh` / `default-allow-rdp`), as described on https://docs.cloud.google.com/iap/docs/using-tcp-forwarding.
 - TCP forwarding does not require a public, routable IP address on the resource; it uses internal IPs.
 - Snippet taken from https://docs.cloud.google.com/iap/docs/using-tcp-forwarding
 - The full flag lists of `gcloud compute ssh` (https://docs.cloud.google.com/sdk/gcloud/reference/compute/ssh) and `gcloud compute start-iap-tunnel` (https://docs.cloud.google.com/sdk/gcloud/reference/compute/start-iap-tunnel) are in the `gcp-compute` skill.

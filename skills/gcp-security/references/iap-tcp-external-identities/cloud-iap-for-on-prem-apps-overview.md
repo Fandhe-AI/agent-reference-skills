@@ -61,6 +61,7 @@ Routing rules map authenticated, authorized web requests arriving at your DNS ho
 - The connector is deployed with a Cloud Deployment Manager template into an IAP-enabled project. One deployment can have multiple Cloud Service Mesh backend services behind one external Application Load Balancer; each maps to one on-premises app.
 - After IAP is enabled on the connector backend service, access is secured with identity and context-aware IAM policies. The IAM policy sits on the backend service, so each on-premises app can have its own access list and a single project can manage access to many apps.
 - Traffic flow: IAP authenticates and authorizes the request, routes it to the connector, which forwards it over a hybrid connectivity network endpoint group to the on-premises network.
+- Deprecation: the connector is deployed with Cloud Deployment Manager, which is deprecated (support ended 2026-04-01; new users are blocked from 2026-06-30; shutdown on or after 2027-06-30; successor Infrastructure Manager), see https://docs.cloud.google.com/deployment-manager/docs/deprecations. Projects that cannot use Deployment Manager cannot deploy the connector; for new setups, put the on-premises endpoint behind a load balancer with a hybrid connectivity network endpoint group and enable IAP on its backend service.
 - Source: https://docs.cloud.google.com/iap/docs/cloud-iap-for-on-prem-apps-overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

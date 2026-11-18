@@ -30,7 +30,7 @@ gcloud kms mac-sign --location=us-central1 --keyring=hitchhiker \
 | Item | Value |
 |---|---|
 | Key purpose | `MAC` |
-| Algorithms | HMAC only (hash functions such as SHA-2 or SHA-3); see the algorithms page |
+| Algorithms | HMAC only: `HMAC_SHA1`, `HMAC_SHA224`, `HMAC_SHA256` (recommended), `HMAC_SHA384`, `HMAC_SHA512` |
 | Maximum file size | 16 KiB for Cloud HSM keys; 64 KiB for all other keys |
 
 ## Notes
@@ -39,6 +39,7 @@ gcloud kms mac-sign --location=us-central1 --keyring=hitchhiker \
 - HMAC strength depends on the hash function, hash output size and key size. A good fit for file-transfer integrity checks because it is efficient.
 - Per the algorithms page, keys with purpose `MAC` support `cryptoKeyVersions.macSign` and `cryptoKeyVersions.macVerify`; gcloud 593.0.0 has `gcloud kms mac-verify` for verification.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/kms/mac-sign (gcloud 593.0.0 help).
+- The source says HMAC uses "cryptographic hash functions, such as SHA-2 or SHA-3"; that describes HMAC in general. The Cloud KMS HMAC signing algorithms are only `HMAC_SHA1`, `HMAC_SHA224`, `HMAC_SHA256`, `HMAC_SHA384` and `HMAC_SHA512` (https://docs.cloud.google.com/kms/docs/algorithms#hmac_signing_algorithms); there is no SHA-3 HMAC algorithm.
 - Source: https://docs.cloud.google.com/kms/docs/mac-signatures (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

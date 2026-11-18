@@ -142,6 +142,8 @@ gcloud compute instances set-service-account INSTANCE_NAME \
 
 ### Minimum framework versions
 
+The table is verbatim from the source and lists historical minimums; current releases need newer runtimes (see Notes).
+
 | Language | Minimum framework version |
 |---|---|
 | Node.js | Node.js 8.13.0+ |
@@ -159,6 +161,7 @@ gcloud compute instances set-service-account INSTANCE_NAME \
 - Adapted from the official docs: `gcloud compute instances describe [INSTANCE-NAME] --format json`.
 - Corrected from the official docs: `--scopes ""https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/userinfo.email"` with `[INSTANCE-NAME]` and `--service-account "your.gserviceaccount.com"`.
 - Console service-account steps, Java and C# code, and the Java / C# / Python / Go multiple-app samples are omitted; see the source page.
+- The minimum framework versions in the source are outdated. The install commands above install the current release: as of 2026-11-18, npm `firebase-admin` 14.5.1 declares `engines: { node: '>=22' }` (https://www.npmjs.com/package/firebase-admin) and PyPI `firebase-admin` 7.8.0 requires Python `>=3.10` (https://pypi.org/project/firebase-admin/). The Java, Go and C# requirements were not rechecked; see each SDK's release notes.
 - Source: https://docs.cloud.google.com/identity-platform/docs/install-admin-sdk (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

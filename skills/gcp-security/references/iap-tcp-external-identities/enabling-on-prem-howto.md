@@ -47,6 +47,7 @@ Add apps with **Connect new application** again. Delete the whole deployment fro
 - Google-managed certificates can take a few minutes to provision; check status on the Cloud Load Balancing detail page.
 - A deployment must contain at least one app; to remove all apps, delete the whole deployment. Deleting the deployment is disruptive to every app behind it; try it on a disposable deployment first.
 - The source shows Console steps only.
+- Deprecation: the connector is deployed with Cloud Deployment Manager, which is deprecated (support ended 2026-04-01; new users are blocked from 2026-06-30; shutdown on or after 2027-06-30; successor Infrastructure Manager), see https://docs.cloud.google.com/deployment-manager/docs/deprecations. Projects that cannot use Deployment Manager cannot deploy the connector; for new setups, put the on-premises endpoint behind a load balancer with a hybrid connectivity network endpoint group and enable IAP on its backend service.
 - Source: https://docs.cloud.google.com/iap/docs/enabling-on-prem-howto (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

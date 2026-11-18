@@ -10,11 +10,13 @@ Describes each Cloud KMS resource type: keys, key versions, key rings, key handl
 
 ### Create a key handle (Autokey)
 
-Creating a key handle in a resource project triggers creation of a Cloud KMS key in the key project; `--generate-key-handle-id` can replace `--key-handle-id`.
+Creating a key handle in a resource project triggers creation of a Cloud KMS key in the key project; `--generate-key-handle-id` can replace `--key-handle-id`. Autokey creates the key in the same location as the resource to protect, so `--location` is the region of the disk (here a disk in `us-central1`).
+
+Adapted (not in the official docs): `--location=global` is replaced with the disk's region `us-central1`.
 
 ```bash
 gcloud kms key-handles create --key-handle-id=my-key-handle \
-  --location=global --resource-type=compute.googleapis.com/Disk
+  --location=us-central1 --resource-type=compute.googleapis.com/Disk
 ```
 
 ## Options / Props
@@ -64,6 +66,7 @@ gcloud kms key-handles create --key-handle-id=my-key-handle \
 - Deleting a key ring frees its name for reuse; names of deleted keys can't be reused, so a key version's resource identifier always points to its original key material unless destroyed. Unlimited key rings, keys and key versions can be stored; see quotas and pricing.
 - Irreversible: destroying a key version permanently deletes its key material, and scheduling a project shutdown permanently destroys the project's resources (including Cloud KMS resources) after the recovery window. Try on a disposable resource first.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/kms/key-handles/create (gcloud 593.0.0 help).
+- Corrected from the official docs: the `gcloud kms key-handles create` help example creates a key handle in `global` for `compute.googleapis.com/Disk`, but Autokey "creates keys in the same location as the resource to be protected" (https://docs.cloud.google.com/kms/docs/autokey-overview); the sample uses the region of the disk, `us-central1`.
 - Source: https://docs.cloud.google.com/kms/docs/resource-hierarchy (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
