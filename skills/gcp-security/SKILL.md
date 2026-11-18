@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-security
 
-Google Cloud (GCP) のセキュリティ基盤スキル（鍵・秘密情報・証明書・アクセス境界・エッジ防御・ソフトウェアサプライチェーン）。Cloud KMS（鍵・key ring・保護レベル・Cloud HSM（Single-tenant / Bare Metal）・Cloud EKM・鍵のインポート・Autokey・CMEK）、Secret Manager（global / regional secrets・ローテーション）、Parameter Manager、Certificate Manager（Google マネージド証明書・trust config・Public CA・2nd gen）、Certificate Authority Service（CA プール・ルート CA・証明書リクエスト）、Public CA（`gcloud publicca`）を扱う。アクセス制御は Identity-Aware Proxy（IAP。有効化・署名付きヘッダー・TCP 転送・オンプレミス・外部 ID）、Chrome Enterprise Premium（旧 BeyondCorp Enterprise。証明書ベースのアクセス・Endpoint Verification）、Access Context Manager（アクセスレベル・アクセスポリシー）、VPC Service Controls（サービス境界・上り / 下りルール・ドライラン）、Cloud Armor（セキュリティポリシー・WAF・レート制限・Adaptive Protection・bot 管理・DDoS 対策）。サプライチェーンは Binary Authorization、Artifact Analysis（旧 Container Analysis。Container Scanning・On-Demand Scanning・SBOM・VEX）、Assured Open Source Software、Software Supply Chain Security。加えて Identity Platform（CIAM）と Web Risk のガイドと、gcloud 11 グループ・REST（Discovery）13 API・IAM ロール 15 サービスを収録する。分割投入中のため、未投入のカテゴリ（`gcloud/pam` / `gcloud/parametermanager` / `gcloud/privateca` / `gcloud/publicca` / `gcloud/secrets` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のセキュリティ基盤スキル（鍵・秘密情報・証明書・アクセス境界・エッジ防御・ソフトウェアサプライチェーン）。Cloud KMS（鍵・key ring・保護レベル・Cloud HSM（Single-tenant / Bare Metal）・Cloud EKM・鍵のインポート・Autokey・CMEK）、Secret Manager（global / regional secrets・ローテーション）、Parameter Manager、Certificate Manager（Google マネージド証明書・trust config・Public CA・2nd gen）、Certificate Authority Service（CA プール・ルート CA・証明書リクエスト）、Public CA（`gcloud publicca`）を扱う。アクセス制御は Identity-Aware Proxy（IAP。有効化・署名付きヘッダー・TCP 転送・オンプレミス・外部 ID）、Chrome Enterprise Premium（旧 BeyondCorp Enterprise。証明書ベースのアクセス・Endpoint Verification）、Access Context Manager（アクセスレベル・アクセスポリシー）、VPC Service Controls（サービス境界・上り / 下りルール・ドライラン）、Cloud Armor（セキュリティポリシー・WAF・レート制限・Adaptive Protection・bot 管理・DDoS 対策）。サプライチェーンは Binary Authorization、Artifact Analysis（旧 Container Analysis。Container Scanning・On-Demand Scanning・SBOM・VEX）、Assured Open Source Software、Software Supply Chain Security。加えて Identity Platform（CIAM）と Web Risk のガイドと、gcloud 11 グループ・REST（Discovery）13 API・IAM ロール 15 サービスを収録する。分割投入中のため、未投入のカテゴリ（`gcloud/parametermanager` / `gcloud/privateca` / `gcloud/publicca` / `gcloud/secrets` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。`pam`（Privileged Access Manager）と `fault-testing`（Fault Injection Testing）の gcloud は本スキルの機械生成ページのみで、ガイドは持たない（PAM のガイドは `gcp-foundation`）。
 
@@ -39,6 +39,9 @@ skills/gcp-security/
       kms/
         README.md                 # gcloud kms（keyrings・keys・import-jobs・ekm-connections・ekm-config・autokey-config・key-handles・inventory・kaj-config 等。Key Access Justifications のガイドは gcp-security-compliance）
         kms-<group>.md
+      pam/
+        README.md                 # gcloud pam（entitlements・grants・settings・operations・check-onboarding-status）
+        pam-<group>.md
     kms-concepts/                 # 公式ガイド由来（手書き）: Cloud KMS の概要・リソース階層・鍵の状態・保護レベル・エンベロープ暗号化・ローテーション・アルゴリズム・署名・MAC・KEM・割り当て
       README.md
       <page>.md                   # 例: key-management-service.md / protection-levels.md / algorithms.md
@@ -120,7 +123,7 @@ skills/gcp-security/
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
-未投入カテゴリ（`gcloud/pam` / `gcloud/parametermanager` / `gcloud/privateca` / `gcloud/publicca` / `gcloud/secrets` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud/parametermanager` / `gcloud/privateca` / `gcloud/publicca` / `gcloud/secrets` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -132,6 +135,7 @@ skills/gcp-security/
 | `gcloud access-context-manager`（policies・levels・perimeters）のフラグを調べたい | gcloud/access-context-manager | [references/gcloud/access-context-manager/README.md](references/gcloud/access-context-manager/README.md) |
 | `gcloud iap`（settings・tcp・web・oauth）のフラグを調べたい | gcloud/iap | [references/gcloud/iap/README.md](references/gcloud/iap/README.md) |
 | `gcloud beyondcorp`（Chrome Enterprise Premium）のフラグを調べたい | gcloud/beyondcorp | [references/gcloud/beyondcorp/README.md](references/gcloud/beyondcorp/README.md) |
+| `gcloud pam`（Privileged Access Manager の entitlements・grants）のコマンドを調べたい | gcloud/pam | [references/gcloud/pam/README.md](references/gcloud/pam/README.md) |
 | `gcloud fault-testing`（alpha: experiments・experiment-templates・exclusion-windows・validations）を調べたい | gcloud/fault-testing | [references/gcloud/fault-testing/README.md](references/gcloud/fault-testing/README.md) |
 | Cloud KMS の概念（リソース階層・鍵の状態・保護レベル SOFTWARE / HSM / EXTERNAL・エンベロープ暗号化・ローテーション・アルゴリズム・署名・MAC・割り当て） | kms-concepts | [references/kms-concepts/README.md](references/kms-concepts/README.md) |
 | key ring の作成・対称鍵の暗号化と復号・鍵バージョンの破棄と復元・破棄の制御 | kms-key-operations | [references/kms-key-operations/README.md](references/kms-key-operations/README.md) |
@@ -156,7 +160,7 @@ skills/gcp-security/
 | Identity Platform の認証の概念・メールログイン・ブロッキング関数・OIDC・マルチテナンシー・Admin SDK | identity-platform | [references/identity-platform/README.md](references/identity-platform/README.md) |
 | Web Risk の Lookup / Update / Evaluate / Submission API・URL ハッシュ・ローカル DB・ブランドフィッシング対策 | web-risk | [references/web-risk/README.md](references/web-risk/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/pam` / `gcloud/parametermanager` / `gcloud/privateca` / `gcloud/publicca` / `gcloud/secrets` / `iam` / `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/parametermanager` / `gcloud/privateca` / `gcloud/publicca` / `gcloud/secrets` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
