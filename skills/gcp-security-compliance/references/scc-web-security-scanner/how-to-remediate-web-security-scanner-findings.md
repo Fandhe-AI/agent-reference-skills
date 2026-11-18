@@ -72,7 +72,7 @@ Open the scan's **Results** tab, expand a category, select the finding, and use 
 | `PROTOTYPE_POLLUTION` | `Object.prototype` properties assignable by attacker input; can lead to XSS or other client-side issues. | Delete the deprecated `__proto__` property (`delete Object.prototype.__proto__`) and make `Object.prototype` immutable (`Object.freeze(Object.prototype)`); if incompatible, copy only expected values from attacker-controllable inputs. |
 | `HSTS_MISCONFIGURATION` | HSTS header must be sent with every HTTP response and be correct. | Follow the HSTS rollout above. |
 | `CSP_MISSING` / `CSP_MISCONFIGURATION` | Strict nonce-only CSP header must be sent with every response. | Use the CSP header above. |
-| `COOP_MISSING` | Cross-Origin-Opener-Policy header must be sent with every response. | Include a valid directive: `unsafe-none`, `same-origin-allow-popups`, or `same-origin`. |
+| `COOP_MISSING` | Cross-Origin-Opener-Policy header must be sent with every response. | Include a valid directive: `unsafe-none`, `same-origin-allow-popups`, or `same-origin`. `same-origin` (or `same-origin-allow-popups` when the page opens cross-origin popups that must keep a reference) isolates the browsing context; `unsafe-none` is the default behavior and provides no isolation. |
 | `CLICKJACKING_PROTECTION_MISSING` | `X-Frame-Options` or CSP header must be sent with every response. | With `X-Frame-Options` use `DENY` or `SAMEORIGIN`; with CSP configure `frame-ancestors`. |
 
 ### Valid security header values
@@ -95,6 +95,7 @@ Open the scan's **Results** tab, expand a category, select the finding, and use 
 - The Security Command Center Enterprise service tier shuts down on May 21, 2027; Enterprise organizations move to Premium on or after that date.
 - Corrected from the official docs: the remediation for `INSECURE_ALLOW_ORIGIN_STARTS_WITH_VALIDATION` shows `.equals(".google.com")`. An `Origin` header value includes the scheme (for example `https://www.google.com`), so that comparison never matches a real origin; the example compares a full origin instead.
 - Corrected from the official docs: the rendered source reads "delete the deprecated `proto` property"; the deprecated accessor is `Object.prototype.__proto__` (the Markdown rendering appears to have consumed the underscores). The minimal forms `delete Object.prototype.__proto__` and `Object.freeze(Object.prototype)` are standard JavaScript, not from the source.
+- The source lists `unsafe-none` among the valid `Cross-Origin-Opener-Policy` directives for `COOP_MISSING`. `unsafe-none` is the behavior when the header is absent, so it adds no opener isolation; use `same-origin` or `same-origin-allow-popups` to remediate the finding's intent.
 - Source: https://docs.cloud.google.com/security-command-center/docs/how-to-remediate-web-security-scanner-findings (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

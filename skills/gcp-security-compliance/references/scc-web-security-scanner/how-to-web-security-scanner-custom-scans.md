@@ -28,7 +28,8 @@ For a first scan, enter a starting URL, set **Schedule** to **Weekly**, choose *
 Supported only for public Compute Engine or GKE applications (not App Engine) with no authentication or Google Account authentication. Create a firewall rule allowing the scanner ranges, then tick **Run scans from a pre-defined set of source IPs** and save. Firewall rule values:
 
 - Name: `web-security-scanner` (or similar)
-- Priority: higher priority (lower number) than any rule denying egress traffic to your application
+- Direction: ingress (the scanner's requests enter your network)
+- Priority: higher priority (lower number) than any ingress rule denying traffic to your application
 - Source IP ranges: `34.66.18.0/26` and `34.66.114.64/26`
 - Protocols and ports: Allow all, or usually tcp `80` and `443`
 
@@ -110,6 +111,7 @@ Supported only for public Compute Engine or GKE applications (not App Engine) wi
 - The Security Command Center Enterprise service tier shuts down on May 21, 2027; Enterprise organizations move to Premium on or after that date.
 - Console click-paths for IAM role assignment, running, viewing, editing, and deleting scans are omitted; see the source page.
 - Corrected from the official docs: in the valid-patterns table, the sample URLs for `https://*.google.com/foo*bar` use `http://` and the sample for `google.com/app#*open*` uses host `www.google.com`. A pattern with `https` matches only HTTPS, and a host without `*.` matches only that host (`*.hostname` is the form that also matches subdomains), so the samples use `https://` and host `google.com`.
+- Corrected from the official docs: the source says to give the rule a higher priority than all rules that deny egress traffic to your application. The scanner's requests are ingress traffic, and ingress and egress rules are evaluated separately, so the allow rule must be an ingress rule with a higher priority than the ingress rules that deny traffic to the application.
 - Source: https://docs.cloud.google.com/security-command-center/docs/how-to-web-security-scanner-custom-scans (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
