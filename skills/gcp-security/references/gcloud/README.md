@@ -10,3 +10,4 @@
 | gcloud kms | 268 commands across release tracks | [kms/README.md](./kms/README.md) |
 | gcloud pam | 67 commands across release tracks | [pam/README.md](./pam/README.md) |
 | gcloud parametermanager | 34 commands across release tracks | [parametermanager/README.md](./parametermanager/README.md) |
+| gcloud privateca | 47 commands across release tracks (partially added: 5 / 7 pages so far; for pages not listed, see the official reference) | [privateca/README.md](./privateca/README.md) |
