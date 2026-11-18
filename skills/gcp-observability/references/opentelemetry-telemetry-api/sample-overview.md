@@ -47,7 +47,7 @@ gcloud services enable logging.googleapis.com monitoring.googleapis.com cloudtra
 - Production applications typically use a service account; grant the writer roles to it.
 - The samples configure a logging framework to write structured logs; GKE has built-in agents for structured logs, Compute Engine needs the Ops Agent. No agent is needed for the samples.
 - Alternatives: migrate from the Trace exporter to the OTLP endpoint, correlate metrics and traces with exemplars (Go), and the Ops Agent with OTLP.
-- The twin links per-language sample pages (Go, Java, Node.js, Python) at https://docs.cloud.google.com/stackdriver/docs/instrumentation/setup/nodejs and `.../python`; their code is not in this twin.
+- The twin links per-language sample pages (Go, Java, Node.js, Python) at https://docs.cloud.google.com/stackdriver/docs/instrumentation/setup/go, https://docs.cloud.google.com/stackdriver/docs/instrumentation/setup/java, https://docs.cloud.google.com/stackdriver/docs/instrumentation/setup/nodejs and https://docs.cloud.google.com/stackdriver/docs/instrumentation/setup/python; their code is not in this twin.
 - Source: https://docs.cloud.google.com/stackdriver/docs/instrumentation/setup/sample-overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

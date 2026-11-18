@@ -33,7 +33,7 @@ gcloud services enable logging.googleapis.com monitoring.googleapis.com cloudtra
 - Configuration consists of fields set in an environment variable; it defines which spans go to Cloud Trace, which metrics to Cloud Monitoring and which RPC events to Cloud Logging.
 - Pricing is the same as Google Cloud Observability pricing; no separate charge for the plugins.
 - Payload logging of messages or headers can capture personal data or secrets; do not log credentials.
-- Details are in the setup and reference pages at https://docs.cloud.google.com/stackdriver/docs/solutions/grpc/set-up-observability and `.../observability-reference`.
+- Details are in the setup and reference pages at https://docs.cloud.google.com/stackdriver/docs/solutions/grpc/set-up-observability and https://docs.cloud.google.com/stackdriver/docs/solutions/grpc/observability-reference.
 - OpenTelemetry tracing in Google Cloud; this is not the tracing of the OpenAI Agents SDK (`openai-agents`) or the Vercel AI SDK telemetry (`vercel-ai-sdk`).
 - Source: https://docs.cloud.google.com/stackdriver/docs/solutions/grpc (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 

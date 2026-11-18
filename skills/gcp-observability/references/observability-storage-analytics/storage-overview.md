@@ -60,6 +60,7 @@ name: projects/my-project/locations/us/buckets/_Trace
 - This is Google Cloud Observability's own storage; the `gcp-bigquery` skill (planned) covers BigQuery datasets themselves.
 - Snippet taken from https://docs.cloud.google.com/stackdriver/docs/observability/create-observability-buckets.
 - Source: https://docs.cloud.google.com/stackdriver/docs/observability/storage-overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Source inconsistency: the Limitations list on this page says you can't "Modify or delete observability buckets", while the CMEK page says that after a bucket exists you can modify its display name, description or CMEK (https://docs.cloud.google.com/stackdriver/docs/observability/update-observability-buckets) and retroactively apply a Cloud KMS key or change its location (https://docs.cloud.google.com/stackdriver/docs/observability/reprovision-observability-bucket). Read the limitation as applying to other settings and to deletion; see cmek.md.
 
 ## Related
 

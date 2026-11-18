@@ -42,11 +42,13 @@ Gunicorn starts several independent worker processes; give each a unique `servic
 
 Configure the standard `logging` library to write JSON with `python-json-logger`, and use the `opentelemetry-instrumentation-logging` package to add trace information.
 
+Adapted (not in the official docs): the timestamp is converted to UTC with `timezone.utc` (import it with `from datetime import datetime, timezone`) before the `Z` suffix is added.
+
 ```python
 class JsonFormatter(jsonlogger.JsonFormatter):
     def formatTime(self, record: logging.LogRecord, datefmt: Optional[str] = None):
         # Format the timestamp as RFC 3339 with microsecond precision
-        isoformat = datetime.fromtimestamp(record.created).isoformat()
+        isoformat = datetime.fromtimestamp(record.created, timezone.utc).replace(tzinfo=None).isoformat()
         return f"{isoformat}Z"
 
 
@@ -176,6 +178,7 @@ docker compose -f docker-compose.yaml -f docker-compose.creds.yaml up --abort-on
 - This is OpenTelemetry tracing in Google Cloud, not the tracing of the OpenAI Agents SDK (`openai-agents`) or the Vercel AI SDK telemetry (`vercel-ai-sdk`).
 - Source: https://docs.cloud.google.com/stackdriver/docs/instrumentation/setup/python (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the source describes `logging.googleapis.com/trace` as "Resource name of the trace associated with the log entry"; the Logging API v2 Discovery document (`LogEntry.trace`) says the field takes the trace ID (for example `12345`) and that the REST resource name (`projects/my-trace-project/traces/12345`) "is also supported, but using this format is not recommended". The sample writes the bare trace ID (`otelTraceID`).
+- Corrected from the official docs: the source formats `datetime.fromtimestamp(record.created).isoformat()`, which is local time, and appends `Z` (UTC). On a host whose time zone is not UTC the log timestamps would be off by the UTC offset; the example converts to UTC first.
 
 ## Related
 
