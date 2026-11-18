@@ -321,6 +321,7 @@ curl -X GET \
 - Generated from the Discovery document(s) v1alpha of `apim` (retrieved 2026-11-14). Resources on this page: projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
 - Message schemas (the request and response types named above) are listed under `references/rest-schemas/apim/`; they are the `schemas` section of the Discovery documents in Source.
+- Corrected from the Discovery document: the description of `name` in `apim.projects.locations.observationJobs.apiObservations.apiOperations.get` gives the resource name format `projects/{project}/locations/{location}/observationJobs/{observation_job}/apiObservations/{api_observation}/apiOperation/{api_operation}`, but the path pattern of `name` is `^projects/[^/]+/locations/[^/]+/observationJobs/[^/]+/apiObservations/[^/]+/apiOperations/[^/]+$`; a value must match the pattern to reach the route.
 - Source: https://apim.googleapis.com/$discovery/rest?version=v1alpha (https://developers.google.com/discovery)
 
 ## Related
