@@ -27,7 +27,7 @@ skills/gcp-observability/
       error-reporting/            # beta のみ（gcloud beta error-reporting events）
         README.md
         error-reporting-events.md
-      logging/                    # buckets・links・logs・metrics・sinks・views・scopes・saved-queries・read・write・tail 等、分割投入中（13 / 17 ページ。収録済みは README 掲載分のみ）
+      logging/                    # buckets・links・logs・metrics・sinks・views・scopes・saved-queries・read・write・tail 等
         README.md
         logging-<group>.md
     observability-overview/       # Google Cloud Observability の概要・scopes・非推奨一覧・Application Monitoring・App Topology
@@ -117,8 +117,6 @@ skills/gcp-observability/
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` と各ガイドのコードブロックを引く。
 
 未投入カテゴリ（`gcloud/monitoring` / `gcloud/observability` / `gcloud/service-health` / `gcloud/trace` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
-
-分割投入中のカテゴリ（`gcloud/logging`: 13 / 17 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
