@@ -122,10 +122,10 @@ NOTES
 Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
-gcloud kms single-tenant-hsm proposal approve projects/my-project/locations/us-east1/singleTenantHsmInstances/my_sthi/proposals/my_proposal \
+gcloud kms single-tenant-hsm proposal approve projects/my-project/locations/us-east1/singleTenantHsmInstances/my-sthi/proposals/my_proposal \
     --quorum-challenge-replies="[('signed_challenge_1.txt','public_key_1.pem'), ('signed_challenge_2.txt','public_key_2.pem'), ('signed_challenge_3.txt','public_key_3.pem')]"
 
-gcloud kms single-tenant-hsm proposal approve projects/my-project/locations/us-east1/singleTenantHsmInstances/my_sthi/proposals/my_proposal \
+gcloud kms single-tenant-hsm proposal approve projects/my-project/locations/us-east1/singleTenantHsmInstances/my-sthi/proposals/my_proposal \
     --required-challenge-replies="[('required_challenge.txt','public_key_1.pem')]" \
     --quorum-challenge-replies="[('quorum_challenge_1.txt','public_key_2.pem'), ('quorum_challenge_2.txt','public_key_3.pem')]"
 ```
@@ -320,7 +320,7 @@ NOTES
 Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
-gcloud kms single-tenant-hsm proposal delete projects/my-project/locations/us-east1/singleTenantHsmInstances/my_sthi/proposals/my_proposal
+gcloud kms single-tenant-hsm proposal delete projects/my-project/locations/us-east1/singleTenantHsmInstances/my-sthi/proposals/my_proposal
 ```
 
 ### gcloud kms single-tenant-hsm proposal describe
@@ -410,10 +410,14 @@ NOTES
         $ gcloud beta kms single-tenant-hsm proposal describe
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
-gcloud kms single-tenant-hsm proposal describe projects/my-project/locations/us-east1/singleTenantHsmInstances/my_sthi/proposals/my_proposal
+gcloud kms single-tenant-hsm proposal describe projects/my-project/locations/us-east1/singleTenantHsmInstances/my-sthi/proposals/my_proposal
+
+gcloud kms single-tenant-hsm proposal describe my_proposal \
+    --single_tenant_hsm_instance=my-sthi \
+    --location=us-east1
 ```
 
 ### gcloud kms single-tenant-hsm proposal execute
@@ -512,11 +516,11 @@ NOTES
 Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
-gcloud kms single-tenant-hsm proposal execute projects/my-project/locations/us-central1/singleTenantHsmInstances/my_sthi/proposals/my_proposal
+gcloud kms single-tenant-hsm proposal execute projects/my-project/locations/us-central1/singleTenantHsmInstances/my-sthi/proposals/my_proposal
 
 gcloud kms single-tenant-hsm proposal execute my_proposal \
     --location=us-central1 \
-    --single_tenant_hsm_instance=my_sthi
+    --single_tenant_hsm_instance=my-sthi
 ```
 
 ### gcloud kms single-tenant-hsm proposal list
@@ -628,10 +632,13 @@ NOTES
         $ gcloud beta kms single-tenant-hsm proposal list
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
-gcloud kms single-tenant-hsm proposal list projects/my-project/locations/us-east1/singleTenantHsmInstances/my_sthi
+gcloud kms single-tenant-hsm proposal list my-sthi \
+    --location=us-east1
+
+gcloud kms single-tenant-hsm proposal list projects/my-project/locations/us-east1/singleTenantHsmInstances/my-sthi
 ```
 
 ### gcloud beta kms single-tenant-hsm proposal approve
@@ -821,9 +828,10 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
-- Corrected from the official docs (the help text above is verbatim): the `proposal create` example omits `--operation-type`, which the SYNOPSIS requires in every release track (REQUIRED FLAGS), and it also has no `\` after `create`. The example passes `--required-approver-count` and `--two-factor-public-key-pems`, which this page says are required for the `register_2fa_keys` operation type (in Google Cloud CLI 593.0.0, `gcloud kms single-tenant-hsm proposal create` accepts `register_2fa_keys`, `disable_sthi`, `enable_sthi`, `delete_sthi`, `add_quorum_member`, `remove_quorum_member`, `upgrade_key_trust` and `refresh_sthi`, per its error message "The operation type must be one of ..."; the release notes that added the command list the same types without `upgrade_key_trust`). Adapted (not in the official docs): `gcloud kms single-tenant-hsm proposal create my_stchi --location=us-central1 --operation-type=register_2fa_keys --required-approver-count=1 --two-factor-public-key-pems=public_key_1.pem,public_key_2.pem`.
+- Corrected from the official docs (the help text above is verbatim): the `proposal create` example omits `--operation-type`, which the SYNOPSIS requires in every release track (REQUIRED FLAGS), and it also has no `\` after `create`. The example passes `--required-approver-count` and `--two-factor-public-key-pems`, which this page says are required for the `register_2fa_keys` operation type (in Google Cloud CLI 593.0.0, `gcloud kms single-tenant-hsm proposal create` accepts `register_2fa_keys`, `disable_sthi`, `enable_sthi`, `delete_sthi`, `add_quorum_member`, `remove_quorum_member`, `upgrade_key_trust` and `refresh_sthi`, per its error message "The operation type must be one of ..."; the release notes that added the command list the same types without `upgrade_key_trust`). The instance ID `my_stchi` contains `_`, which the `--single-tenant-hsm-instance-id` description of `gcloud kms single-tenant-hsm create` does not allow (`[a-zA-Z0-9-]{1,63}`), so the corrected form uses `my-stchi`. Adapted (not in the official docs): `gcloud kms single-tenant-hsm proposal create my-stchi --location=us-central1 --operation-type=register_2fa_keys --required-approver-count=1 --two-factor-public-key-pems=public_key_1.pem,public_key_2.pem`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `approve`, `delete` and `execute` examples write the proposal name as `projects/my-project/locations/.../singleTenantHsmInstances/ my_sthi/proposals/my_proposal`, with a space that splits it into two arguments (gcloud 593.0.0: "unrecognized arguments: my_sthi/proposals/my_proposal"); the runnable form removes the space.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `execute` example that gives the proposal ID with `--location` and `--single_tenant_hsm_instance` ends with `proposal_id=my_proposal`, an extra positional argument (gcloud 593.0.0: "unrecognized arguments: proposal_id=my_proposal"); the proposal is already given as `my_proposal`, so the runnable form drops it.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the examples use the instance ID `my_sthi`, but the `--single-tenant-hsm-instance-id` description of `gcloud kms single-tenant-hsm create` says the ID must "match the regular expression [a-zA-Z0-9-]{1,63}", which does not allow `_`; the runnable forms use `my-sthi`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
