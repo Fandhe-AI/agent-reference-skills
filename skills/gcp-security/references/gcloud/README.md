@@ -8,3 +8,4 @@
 | gcloud fault-testing | 27 commands across release tracks | [fault-testing/README.md](./fault-testing/README.md) |
 | gcloud iap | 83 commands across release tracks | [iap/README.md](./iap/README.md) |
 | gcloud kms | 268 commands across release tracks | [kms/README.md](./kms/README.md) |
+| gcloud pam | 67 commands across release tracks | [pam/README.md](./pam/README.md) |
