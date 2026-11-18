@@ -122,13 +122,13 @@ NOTES
         $ gcloud alpha scc posture-deployments create
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud scc posture-deployments create organizations/123/locations/global/postureDeployments/posture-deployment-foo-1 \
-    --posture-name=organizations/123/locations/global/foo-posture \
+    --posture-name=organizations/123/locations/global/postures/foo-posture \
     --posture-revision-id=foo-posture-revision-id \
-    --target-resource=projects/456
+    --target-resource=folders/456
 ```
 
 ### gcloud scc posture-deployments delete
@@ -553,12 +553,12 @@ gcloud scc posture-deployments update organizations/123/locations/global/posture
     --description="updated-description"
 
 gcloud scc posture-deployments update organizations/123/locations/global/postureDeployments/foo-posture-deployment \
-    --update-mask=posture_id,posture_revision-id \
-    --posture-id=foo-posture \
+    --update-mask=posture_id,posture_revision_id \
+    --posture-id=organizations/123/locations/global/postures/foo-posture \
     --posture-revision-id=abcdefgh
 
 gcloud scc posture-deployments update organizations/123/locations/global/postureDeployments/foo-posture-deployment \
-    --posture-id=foo-posture \
+    --posture-id=organizations/123/locations/global/postures/foo-posture \
     --posture-revision-id=abcdefgh
 ```
 
@@ -636,6 +636,10 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `create` example is described as deploying the posture "on resource folders/456" but passes `--target-resource=projects/456`; the runnable form uses `folders/456`, the resource the description names.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `create` example passes `--posture-name=organizations/123/locations/global/foo-posture` (and its description says `organizations/123/locations/foo-posture`), but `--posture-name` takes "organizations/<organizationID>/locations/<location>/postures/<postureID>" (REQUIRED FLAGS); the runnable form adds the missing `postures/` segment.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `update` example passes `--update-mask=posture_id,posture_revision-id`; `posture_revision-id` mixes `_` and `-` and is not a field name. The `PostureDeployment` fields are `postureId` and `postureRevisionId` (securityposture v1 Discovery document), written `posture_id` and `posture_revision_id` in a field mask, so the runnable form uses `--update-mask=posture_id,posture_revision_id`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `update` examples pass `--posture-id=foo-posture`, but `--posture-id` is the "Relative name of the posture to be updated, like organizations/<organizationID>/locations/<location>/postures/<postureID>"; the runnable form passes the relative name of `foo-posture` in `organizations/123/locations/global`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the two `update` examples put `$ gcloud` on the same line as the preceding sentence; the runnable form starts each command on its own line.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
