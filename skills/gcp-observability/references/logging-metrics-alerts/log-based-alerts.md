@@ -62,20 +62,24 @@ Adapted (not in the official docs): trailing commas removed because the source's
 
 Human access of Secret Manager secrets (principal that does not end with `gserviceaccount.com`):
 
+Adapted (not in the official docs): the service-account domain match escapes the dots so that only addresses in a `gserviceaccount.com` domain are excluded.
+
 ```text
 protoPayload.@type = "type.googleapis.com/google.cloud.audit.AuditLog"
 protoPayload.serviceName = "secretmanager.googleapis.com"
 protoPayload.methodName =~ "AccessSecretVersion$"
-protoPayload.authenticationInfo.principalEmail !~ "gserviceaccount.com$"
+protoPayload.authenticationInfo.principalEmail !~ "@([a-z0-9-]+[.])*gserviceaccount[.]com$"
 ```
 
 Decryption by a human user in Cloud KMS:
+
+Adapted (not in the official docs): the service-account domain match escapes the dots so that only addresses in a `gserviceaccount.com` domain are excluded.
 
 ```text
 protoPayload.@type = "type.googleapis.com/google.cloud.audit.AuditLog"
 protoPayload.serviceName = "cloudkms.googleapis.com"
 protoPayload.methodName = "Decrypt"
-protoPayload.authenticationInfo.principalEmail !~ "gserviceaccount.com$"
+protoPayload.authenticationInfo.principalEmail !~ "@([a-z0-9-]+[.])*gserviceaccount[.]com$"
 ```
 
 ### Create with the Monitoring API
@@ -190,6 +194,8 @@ gcloud logging write test-log --severity=ERROR --payload-type=text 'This log ent
 - The source also shows Console steps (Logs Explorer **Create log alert**, **Manage log alerts**, the Alerting **Policies** page with enable, disable, copy and delete) and an APIs Explorer flow.
 - Source: https://docs.cloud.google.com/logging/docs/alerting/log-based-alerts (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the source's expression `^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}$` repeats "octet followed by a dot or end of string" four times, so `1.2.3.4.` is accepted as valid and the negated match does not fire on it. The examples require a dot after the first three octets only: `^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$`.
+- Corrected from the official docs: the source excludes service accounts with `principalEmail !~ "gserviceaccount.com$"`. In the regular expression `.` matches any character, so an address such as `user@gserviceaccountacom` would also be excluded and suppress the alert; the examples match the domain with literal dots: `@([a-z0-9-]+[.])*gserviceaccount[.]com$`.
+- `protoPayload.methodName = "Decrypt"` is kept as in the source: the Cloud KMS audit logging reference gives the filter for the `Decrypt` method as `protoPayload.methodName="Decrypt"` (https://docs.cloud.google.com/kms/docs/audit-logging).
 
 ## Related
 
