@@ -81,7 +81,7 @@ gcloud network-security authz-policies import AUTHZ_POLICY_NAME \
 
 ### Enable IAP on a forwarding rule (API)
 
-Adapted (not in the official docs): the source JSON has a trailing comma after the `resources` array (invalid JSON), and the Discovery document requires `name` in the form `projects/{project}/locations/{location}/authzPolicies/{authz_policy}`; both are fixed.
+Adapted (not in the official docs): the source JSON has a trailing comma after the `resources` array (invalid JSON), and the Discovery document requires `name` in the form `projects/{project}/locations/{location}/authzPolicies/{authz_policy}`; both are fixed. `httpRules[].from.sources` is written as an array, as in the YAML example.
 
 ```bash
 cat << EOF > policy.json
@@ -97,14 +97,16 @@ cat << EOF > policy.json
  "httpRules": [
      {
        "from": {
-         "sources": {
-           "ipBlocks": [
-             {
-               "prefix": "10.0.0.0",
-               "length": 24
-             }
-           ]
-         }
+         "sources": [
+           {
+             "ipBlocks": [
+               {
+                 "prefix": "10.0.0.0",
+                 "length": 24
+               }
+             ]
+           }
+         ]
        }
      }
  ],
@@ -165,6 +167,7 @@ curl -X POST \
 - Corrected from the official docs: `curl -X PATCH \\` with `"https://networksecurity.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/authzPolicies"` (a `PATCH` on the collection; the Discovery document defines `create` as `POST v1/{+parent}/authzPolicies` with `authzPolicyId`, while `patch` needs the policy name in the path and an `updateMask`), the trailing comma in `],` after the `resources` array, `"name": "AUTHZ_POLICY_NAME"` (the Discovery format is `projects/{project}/locations/{location}/authzPolicies/{authz_policy}`), and the compute path `.../projects/PROJECT_ID/REGION/backendServices/...` were fixed as stated before each block. For a global backend service the Discovery path is `projects/{project}/global/backendServices/{backendService}`.
 - Source inconsistency: the forwarding-rule API example uses `"loadBalancingScheme": "INTERNAL_MANAGED"` while the gcloud example uses `loadBalancingScheme: EXTERNAL_MANAGED`. Both are enum values in the Discovery document (`INTERNAL_MANAGED`: regional internal or cross-region internal Application Load Balancing; `EXTERNAL_MANAGED`: global external or regional external Application Load Balancing); use the one that matches the load balancer.
 - The full flag list of `gcloud compute backend-services update` (https://docs.cloud.google.com/sdk/gcloud/reference/compute/backend-services/update) is in the `gcp-compute` skill; load balancer authorization policies (`gcloud network-security authz-policies`) are covered with the load balancers in the `gcp-load-balancing` skill.
+- Corrected from the official docs: the REST body wrote `httpRules[].from.sources` as an object; in the Network Security API Discovery documents (`v1` and `v1beta1`), `AuthzPolicyAuthzRuleFrom.sources` is an array, and the YAML example on this page also uses a list.
 - Source: https://docs.cloud.google.com/iap/docs/enabling-compute-howto (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -54,10 +54,12 @@ trustStores:
 EOF
 ```
 
+Adapted (not in the official docs): shell variables in arguments are double-quoted.
+
 ```bash
 gcloud certificate-manager trust-configs import TRUST_CONFIG_NAME \
   --project=GCP_PROJECT \
-  --source=${PWD?}/trust_config.yaml
+  --source="${PWD?}/trust_config.yaml"
 ```
 
 ### Create a server TLS policy
@@ -73,22 +75,24 @@ mtlsPolicy:
 EOF
 ```
 
-Adapted (not in the official docs): `SERVER_TLS_POLICY_NAME` is used as a placeholder instead of the unset variable `${SERVER_TLS_POLICY_NAME?}`.
+Adapted (not in the official docs): `SERVER_TLS_POLICY_NAME` is used as a placeholder instead of the unset variable `${SERVER_TLS_POLICY_NAME?}`. The `--source` path is double-quoted.
 
 ```bash
 gcloud network-security server-tls-policies import SERVER_TLS_POLICY_NAME \
   --project=GCP_PROJECT \
-  --source=${PWD?}/server_tls_policy.yaml \
+  --source="${PWD?}/server_tls_policy.yaml" \
   --location=global
 ```
 
 ### Attach the TLS policy to the target HTTPS proxy
 
+Adapted (not in the official docs): shell variables in arguments are double-quoted.
+
 ```bash
 gcloud compute target-https-proxies export TARGET_HTTPS_PROXY_NAME \
     --project=GCP_PROJECT \
     --global \
-    --destination=${PWD?}/xlb-mtls-target-proxy.yaml
+    --destination="${PWD?}/xlb-mtls-target-proxy.yaml"
 ```
 
 Adapted (not in the official docs): the policy reference is written on one line (`serverTlsPolicy: //networksecurity...`); the source `echo` put the value on a second line, which is not valid YAML for that field.
@@ -97,11 +101,13 @@ Adapted (not in the official docs): the policy reference is written on one line 
 echo "serverTlsPolicy: //networksecurity.googleapis.com/projects/GCP_PROJECT/locations/global/serverTlsPolicies/SERVER_TLS_POLICY_NAME" >> xlb-mtls-target-proxy.yaml
 ```
 
+Adapted (not in the official docs): shell variables in arguments are double-quoted.
+
 ```bash
 gcloud compute target-https-proxies import TARGET_HTTPS_PROXY_NAME \
     --project=GCP_PROJECT \
     --global \
-    --source=${PWD?}/xlb-mtls-target-proxy.yaml
+    --source="${PWD?}/xlb-mtls-target-proxy.yaml"
 ```
 
 ### Create an access level that requires certificates
@@ -177,6 +183,7 @@ Set the `AutoSelectCertificateForUrls` policy (Admin console, Devices, Chrome, S
 - Corrected from the official docs: `echo "serverTlsPolicy:` followed by `//networksecurity.googleapis.com/..."` on a second line, which appends a key with an empty value and a stray line.
 - Source inconsistency: Method 2 says the trust config "assumes a basic trust store with a single trust anchor representing a root certificate. No intermediate certificates are specified.", while its steps use the same two-intermediate variables and YAML as Method 1. The steps are kept as written.
 - The source also shows Console steps for the access level and IAP. The full flag list for `gcloud compute target-https-proxies` is in the `gcp-compute` skill.
+- Adapted from the official docs: `--source=${PWD?}/...` and `--destination=${PWD?}/...` are double-quoted so that a working directory with spaces or glob characters is passed as one argument.
 - Source: https://docs.cloud.google.com/access-context-manager/docs/enable-cba-web-apps (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

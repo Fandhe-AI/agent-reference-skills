@@ -54,12 +54,12 @@ export GAE_APP_ID=APP_ID
 export GAE_BASE_URL=${IAP_BASE_URL}/appengine-${GAE_APP_ID}
 ```
 
-Adapted (not in the official docs): the source sends the header `Authentication: Bearer ...` (the header is `Authorization`), has a stray `/` before `:getIamPolicy`, and posts an empty body; the body requests policy version 3 (`options.requestedPolicyVersion`, a field of the IAP `GetIamPolicyRequest`) and a JSON `Content-Type` is added.
+Adapted (not in the official docs): the source sends the header `Authentication: Bearer ...` (the header is `Authorization`), has a stray `/` before `:getIamPolicy`, and posts an empty body; the body requests policy version 3 (`options.requestedPolicyVersion`, a field of the IAP `GetIamPolicyRequest`) and a JSON `Content-Type` is added. Shell variables in arguments are double-quoted.
 
 ```bash
 curl -i -H "Authorization: Bearer $(gcloud auth print-access-token)" \
  -H "Content-Type: application/json" \
- ${GAE_BASE_URL}:getIamPolicy -d '{"options": {"requestedPolicyVersion": 3}}'
+ "${GAE_BASE_URL}:getIamPolicy" -d '{"options": {"requestedPolicyVersion": 3}}'
 ```
 
 Edit the policy JSON file; each binding can have only one condition.
@@ -88,12 +88,12 @@ Adapted (not in the official docs): `version` and `etag` (from the `getIamPolicy
 }
 ```
 
-Adapted (not in the official docs): `Authorization` header and JSON `Content-Type` as above.
+Adapted (not in the official docs): `Authorization` header and JSON `Content-Type` as above. Shell variables in arguments are double-quoted.
 
 ```bash
 curl -i -H "Content-Type: application/json" \
  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
- ${GAE_BASE_URL}:setIamPolicy -d @${JSON_NEW_POLICY}
+ "${GAE_BASE_URL}:setIamPolicy" -d "@${JSON_NEW_POLICY}"
 ```
 
 For a specific service version, export these additional variables:
@@ -115,24 +115,24 @@ export GAE_BASE_URL=${IAP_BASE_URL}/appengine-${GAE_APP_ID}/services/${GAE_SERVI
 export BACKEND_SERVICE_NAME=BACKEND_SERVICE_NAME
 ```
 
-Adapted (not in the official docs): `Authorization` header, policy version 3 request body and JSON `Content-Type`.
+Adapted (not in the official docs): `Authorization` header, policy version 3 request body and JSON `Content-Type`. Shell variables in arguments are double-quoted.
 
 ```bash
 curl -i -H "Authorization: Bearer $(gcloud auth print-access-token)" \
  -H "Content-Type: application/json" \
- ${IAP_BASE_URL}/compute/services/${BACKEND_SERVICE_NAME}:getIamPolicy \
+ "${IAP_BASE_URL}/compute/services/${BACKEND_SERVICE_NAME}:getIamPolicy" \
  -d '{"options": {"requestedPolicyVersion": 3}}'
 ```
 
 Use the same edited `policy.json` shape as in the App Engine example, then set it.
 
-Adapted (not in the official docs): the source sends the header `Authentication: Bearer ...`; the header is `Authorization`.
+Adapted (not in the official docs): the source sends the header `Authentication: Bearer ...`; the header is `Authorization`. Shell variables in arguments are double-quoted.
 
 ```bash
 curl -i -H "Content-Type:application/json" \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-     ${IAP_BASE_URL}/compute/services/${BACKEND_SERVICE_NAME}:setIamPolicy \
-     -d @${JSON_NEW_POLICY}
+     "${IAP_BASE_URL}/compute/services/${BACKEND_SERVICE_NAME}:setIamPolicy" \
+     -d "@${JSON_NEW_POLICY}"
 ```
 
 ## Options / Props
@@ -180,6 +180,7 @@ curl -i -H "Content-Type:application/json" \
 - Cloud Audit Logs: enabling Cloud Audit Logs for the IAP-secured project shows authorized and unauthorized requests. In Logs Explorer select the resource (IAP-secured HTTPS resources are under **App Engine Application** and **Compute Engine Backend Service**; SSH and TCP resources under **Compute Engine VM instance**) and log type **data_access**; the met access levels are under `protoPayload` > `requestMetadata` > `requestAttributes` > `auth` > `accessLevels`. All access levels the user met are shown, including ones not required, and an unauthorized request does not show which levels were not met.
 - Access levels themselves are created with Access Context Manager (see the Access Context Manager pages in this skill).
 - Corrected from the official docs: `curl -i -H "Authentication: Bearer $(gcloud auth print-access-token)"` (all four `curl` calls), the stray `/` in `${GAE_BASE_URL}/:getIamPolicy`, the empty body `-d ''` of both `getIamPolicy` calls, the invalid YAML `expression: "accessPolicies/..." in` / `request.auth.access_levels && ...` continuation with its `...` elisions, and the missing policy `version` / `etag` and JSON `Content-Type` were corrected as stated before each block. The IAP Discovery document requires version `3` for any operation that affects conditional role bindings and says to include the `etag` whenever you call `setIamPolicy` with IAM Conditions. The source's second `policy.json` example (GKE and Compute Engine) is identical to the App Engine one and is not repeated. The `gcloud iap web get-iam-policy` help has no flag to request policy version 3, so set `version: 3` in the file you edit and keep the `etag` it returned (the `gcloud iap web set-iam-policy` help: a file with an `etag` replaces the policy only if it still matches; a file without one replaces any existing policy).
+- Adapted from the official docs: the `curl` examples expand `${GAE_BASE_URL}`, `${IAP_BASE_URL}`, `${BACKEND_SERVICE_NAME}` and `@${JSON_NEW_POLICY}` unquoted; they are double-quoted so that paths or values with spaces or glob characters are passed as one argument.
 - Source: https://docs.cloud.google.com/iap/docs/cloud-iap-context-aware-access-howto (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
