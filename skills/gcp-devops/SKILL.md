@@ -1,7 +1,7 @@
 ---
 name: gcp-devops
 description: >
-  Google Cloud (GCP) の Cloud Build (cloudbuild.yaml・trigger)・Artifact Registry (Docker・remote / virtual・GCR 移行)・Cloud Deploy (pipeline・rollout・Skaffold)。Secure Source Manager・Developer Connect・App Hub・Application Design Center・App Lifecycle Manager (SaaS Runtime)・App Optimize・Workload Manager。gcloud builds・artifacts・deploy。Artifact Analysis・Binary Authorization は gcp-security、Cloud Run は gcp-run。
+  Google Cloud (GCP) の Cloud Build (cloudbuild.yaml・trigger)・Artifact Registry (Docker・remote / virtual・GCR 移行)・Cloud Deploy (pipeline・rollout・Skaffold)。Secure Source Manager・Developer Connect・App Hub・Application Design Center・App Lifecycle Manager (SaaS Runtime)・App Optimize・Developer Device Platform (DDP・Device Run)・Workload Manager。Artifact Analysis は gcp-security、Cloud Run は gcp-run。
 user-invocable: false
 ---
 
