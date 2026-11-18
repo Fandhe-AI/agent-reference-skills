@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-devops
 
-Google Cloud (GCP) の CI/CD・成果物管理・ソース管理・アプリケーション管理系スキル。Cloud Build（`cloudbuild.yaml` のスキーマ・steps・substitutions・secrets・成果物・トリガー（Pub/Sub / webhook / 手動 / 承認 / スケジュール）・2nd gen リポジトリ接続（GitHub / GitLab / Bitbucket Cloud）・サービス アカウント・ビルドの来歴（provenance）・CMEK・private pool・言語別ビルドと Cloud Run / GKE へのデプロイ）、Artifact Registry（standard / remote / virtual リポジトリ・Docker / npm / Python / 汎用形式・認証・アクセス制御・CMEK・VPC Service Controls・cleanup policy・Container Registry からの移行）、Cloud Deploy（delivery pipeline / target / release / rollout・`clouddeploy.yaml`・Skaffold・GKE / Cloud Run / custom target・canary・automation・deploy hooks・検証・deploy policy）、Secure Source Manager と Cloud Source Repositories（廃止告知と移行）、Developer Connect（リポジトリ接続・insights）、App Hub（application・service・workload の登録）、Application Design Center（space・application template・catalog）、App Lifecycle Manager（旧 SaaS Runtime。SaaS オファリング・テナント・rollout・feature flags）、App Optimize・Developer Device Platform（Device Run）、Workload Manager（評価・カスタム ルール・SAP）を扱う。加えて gcloud 12 グループ・REST（Discovery）9 API・IAM 15 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `artifact-registry-repositories` / `artifact-registry-remote-virtual` / `cloud-build-config-schema` / `cloud-build-config-steps` / `cloud-build-triggers` / `cloud-build-repositories` / `cloud-build-security-private-pools` / `cloud-build-languages-deploy` / `cloud-deploy-concepts-pipelines` / `cloud-deploy-skaffold-targets` / `cloud-deploy-strategies-rollouts` / `cloud-deploy-automation-verification` / `secure-source-manager` / `developer-connect` / `workload-manager`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) の CI/CD・成果物管理・ソース管理・アプリケーション管理系スキル。Cloud Build（`cloudbuild.yaml` のスキーマ・steps・substitutions・secrets・成果物・トリガー（Pub/Sub / webhook / 手動 / 承認 / スケジュール）・2nd gen リポジトリ接続（GitHub / GitLab / Bitbucket Cloud）・サービス アカウント・ビルドの来歴（provenance）・CMEK・private pool・言語別ビルドと Cloud Run / GKE へのデプロイ）、Artifact Registry（standard / remote / virtual リポジトリ・Docker / npm / Python / 汎用形式・認証・アクセス制御・CMEK・VPC Service Controls・cleanup policy・Container Registry からの移行）、Cloud Deploy（delivery pipeline / target / release / rollout・`clouddeploy.yaml`・Skaffold・GKE / Cloud Run / custom target・canary・automation・deploy hooks・検証・deploy policy）、Secure Source Manager と Cloud Source Repositories（廃止告知と移行）、Developer Connect（リポジトリ接続・insights）、App Hub（application・service・workload の登録）、Application Design Center（space・application template・catalog）、App Lifecycle Manager（旧 SaaS Runtime。SaaS オファリング・テナント・rollout・feature flags）、App Optimize・Developer Device Platform（Device Run）、Workload Manager（評価・カスタム ルール・SAP）を扱う。加えて gcloud 12 グループ・REST（Discovery）9 API・IAM 15 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `cloud-build-triggers` / `cloud-build-security-private-pools` / `cloud-deploy-concepts-pipelines` / `cloud-deploy-skaffold-targets` / `cloud-deploy-strategies-rollouts` / `cloud-deploy-automation-verification` / `secure-source-manager` / `developer-connect` / `workload-manager`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。
 
@@ -23,6 +23,12 @@ Google Cloud (GCP) の CI/CD・成果物管理・ソース管理・アプリケ�
 skills/gcp-devops/
   SKILL.md
   references/
+    artifact-registry-repositories/        # Artifact Registry の概要・リポジトリの概念・対応形式・作成・ロケーション・virtual の概要
+      README.md
+      <page>.md
+    artifact-registry-remote-virtual/      # remote リポジトリ（上流・認証）・virtual リポジトリ（上流ポリシー）
+      README.md
+      <page>.md
     artifact-registry-docker-gcr-transition/  # Docker イメージの保存・認証・push / pull・名前・管理・コピー・Container Registry からの移行
       README.md
       <page>.md
@@ -30,6 +36,18 @@ skills/gcp-devops/
       README.md
       <page>.md
     artifact-registry-access-cleanup/      # アクセス制御・CMEK・VPC Service Controls・成果物の保護・cleanup policy
+      README.md
+      <page>.md
+    cloud-build-config-schema/             # Cloud Build の概要・ビルド構成ファイルのスキーマ・Cloud Builders
+      README.md
+      <page>.md
+    cloud-build-config-steps/              # 基本構成・substitutions・secrets・ステップ間のデータ・実行順・成果物・CLI / API からの送信
+      README.md
+      <page>.md
+    cloud-build-repositories/              # リポジトリ接続（1st / 2nd gen）・GitHub / GitLab / Bitbucket Cloud の接続とビルド
+      README.md
+      <page>.md
+    cloud-build-languages-deploy/          # Node.js / Python / コンテナのビルド・依存関係・Cloud Run / GKE へのデプロイ・ログ・高速化
       README.md
       <page>.md
     app-hub/                               # App Hub の概要・概念・設定・リソースの登録・application の管理
@@ -67,21 +85,27 @@ skills/gcp-devops/
 2. Artifact Registry は 5 カテゴリ、Cloud Build は 6、Cloud Deploy は 4、残りは 1 プロダクト 1 カテゴリ（Secure Source Manager と Cloud Source Repositories、App Optimize と Developer Device Platform はそれぞれ 1 カテゴリに同居）。形式（Docker / npm / Python / 汎用）、Cloud Build の構成・トリガー・接続・セキュリティ・言語別、Cloud Deploy の概念・Skaffold・戦略・automation のどれかで選ぶ
 3. 非推奨・終了を確認するときは `artifact-registry-docker-gcr-transition/transition-from-gcr.md`（Container Registry）、`secure-source-manager/enable-disable-cloud-source-repositories.md`（後続 PR で投入） と `migration-guides.md`（Cloud Source Repositories）、`cloud-deploy-skaffold-targets/select-tool-version.md`（後続 PR で投入）（Skaffold）を引く
 
-未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `artifact-registry-repositories` / `artifact-registry-remote-virtual` / `cloud-build-config-schema` / `cloud-build-config-steps` / `cloud-build-triggers` / `cloud-build-repositories` / `cloud-build-security-private-pools` / `cloud-build-languages-deploy` / `cloud-deploy-concepts-pipelines` / `cloud-deploy-skaffold-targets` / `cloud-deploy-strategies-rollouts` / `cloud-deploy-automation-verification` / `secure-source-manager` / `developer-connect` / `workload-manager`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `cloud-build-triggers` / `cloud-build-security-private-pools` / `cloud-deploy-concepts-pipelines` / `cloud-deploy-skaffold-targets` / `cloud-deploy-strategies-rollouts` / `cloud-deploy-automation-verification` / `secure-source-manager` / `developer-connect` / `workload-manager`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| Artifact Registry の概要・リポジトリのモード（standard / remote / virtual）・対応形式・リポジトリの作成・ロケーション | artifact-registry-repositories | [references/artifact-registry-repositories/README.md](references/artifact-registry-repositories/README.md) |
+| remote リポジトリ（Docker Hub 等の上流キャッシュ）の作成・上流の認証・virtual リポジトリの作成と上流ポリシーの優先度 | artifact-registry-remote-virtual | [references/artifact-registry-remote-virtual/README.md](references/artifact-registry-remote-virtual/README.md) |
 | Docker イメージの push / pull・認証（credential helper）・イメージ名・管理（タグ・削除）・コピー・Docker Hub キャッシュの pull・Container Registry からの移行・`gcr.io` リポジトリ | artifact-registry-docker-gcr-transition | [references/artifact-registry-docker-gcr-transition/README.md](references/artifact-registry-docker-gcr-transition/README.md) |
 | npm・Python（pip / twine）・汎用形式のパッケージの保存・認証・管理 | artifact-registry-npm-python-generic | [references/artifact-registry-npm-python-generic/README.md](references/artifact-registry-npm-python-generic/README.md) |
 | Artifact Registry の IAM ロール・リポジトリ単位のアクセス制御・CMEK・VPC Service Controls・成果物の保護・cleanup policy | artifact-registry-access-cleanup | [references/artifact-registry-access-cleanup/README.md](references/artifact-registry-access-cleanup/README.md) |
+| Cloud Build の概要・`cloudbuild.yaml` のスキーマ（steps・substitutions・availableSecrets・artifacts・images・options・timeout）・Cloud Builders | cloud-build-config-schema | [references/cloud-build-config-schema/README.md](references/cloud-build-config-schema/README.md) |
+| 基本構成の作成・substitutions・Secret Manager のシークレットの使用・ステップ間のデータ受け渡し・`waitFor`・Artifact Registry への成果物の保存・CLI / API からのビルド送信 | cloud-build-config-steps | [references/cloud-build-config-steps/README.md](references/cloud-build-config-steps/README.md) |
+| リポジトリ接続（1st gen / 2nd gen）・GitHub / GitLab / Bitbucket Cloud の接続とビルド・ビルドからの GitHub アクセス | cloud-build-repositories | [references/cloud-build-repositories/README.md](references/cloud-build-repositories/README.md) |
+| Node.js / Python / コンテナ イメージのビルド・依存関係の管理・Cloud Run / GKE へのデプロイ（Cloud Build 側の手順）・ビルド結果の表示・ビルドログの保存・ビルドの高速化 | cloud-build-languages-deploy | [references/cloud-build-languages-deploy/README.md](references/cloud-build-languages-deploy/README.md) |
 | App Hub の概要・概念（application・service・workload・host project）・設定・リソースの登録・application の管理・対応リソース | app-hub | [references/app-hub/README.md](references/app-hub/README.md) |
 | Application Design Center の概要・設定・space・application template の設計・デプロイ・catalog・Terraform のインポート・セキュリティ ポリシー | application-design-center | [references/application-design-center/README.md](references/application-design-center/README.md) |
 | App Lifecycle Manager（旧 SaaS Runtime）の SaaS オファリング・テナント・rollout 戦略・変数・サービス アカウント・リージョン化・feature flags | app-lifecycle-manager | [references/app-lifecycle-manager/README.md](references/app-lifecycle-manager/README.md) |
 | App Optimize のレポート（概要・作成・読み取り）、Developer Device Platform（Device Run・Android instrumentation・iOS・共有ストレージ） | app-optimize-device-platform | [references/app-optimize-device-platform/README.md](references/app-optimize-device-platform/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `artifact-registry-repositories` / `artifact-registry-remote-virtual` / `cloud-build-config-schema` / `cloud-build-config-steps` / `cloud-build-triggers` / `cloud-build-repositories` / `cloud-build-security-private-pools` / `cloud-build-languages-deploy` / `cloud-deploy-concepts-pipelines` / `cloud-deploy-skaffold-targets` / `cloud-deploy-strategies-rollouts` / `cloud-deploy-automation-verification` / `secure-source-manager` / `developer-connect` / `workload-manager`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `cloud-build-triggers` / `cloud-build-security-private-pools` / `cloud-deploy-concepts-pipelines` / `cloud-deploy-skaffold-targets` / `cloud-deploy-strategies-rollouts` / `cloud-deploy-automation-verification` / `secure-source-manager` / `developer-connect` / `workload-manager`
 
 ## 他スキルとの使い分け
 
