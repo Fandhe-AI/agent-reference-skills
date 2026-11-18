@@ -39,7 +39,7 @@ curl -X GET \
 
 ## Notes
 
-- The source page links to the `threatType` reference instead of listing the values; the table above comes from the `webrisk` v1 Discovery document (which also has `THREAT_TYPE_UNSPECIFIED`).
+- The source page links to the `threatType` reference instead of listing the values; the table above comes from the `webrisk` v1 Discovery document, https://webrisk.googleapis.com/$discovery/rest?version=v1 (revision 20260517; it also has `THREAT_TYPE_UNSPECIFIED`).
 - Snippet taken from https://docs.cloud.google.com/web-risk/docs/lookup-api
 - The `API_KEY` in the query string lands in shell history and request logs; restrict the key and keep it out of shared terminals and CI logs.
 - Source: https://docs.cloud.google.com/web-risk/docs/lists (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
