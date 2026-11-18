@@ -76,19 +76,22 @@ Non-idempotent step:
 
 The predicate is a subworkflow that takes the error map as its single argument and returns `true` to retry, otherwise `false`.
 
+Adapted (not in the official docs): `steps:` is added under `main`, because a definition that also declares the `retry_predicate` subworkflow needs `main.steps`.
+
 ```text
   main:
-      - step_name:
-          try:
-              steps:
-                  ...
-          retry:
-              predicate: ${retry_predicate}
-              max_retries: number_of_retries
-              backoff:
-                  initial_delay: delay_seconds
-                  max_delay: max_delay_seconds
-                  multiplier: delay_multiplier
+      steps:
+          - step_name:
+              try:
+                  steps:
+                      ...
+              retry:
+                  predicate: ${retry_predicate}
+                  max_retries: number_of_retries
+                  backoff:
+                      initial_delay: delay_seconds
+                      max_delay: max_delay_seconds
+                      multiplier: delay_multiplier
 
   retry_predicate:
       params: [e]
@@ -191,6 +194,7 @@ custom_predicate:
 
 ## Notes
 
+- Corrected from the official docs: the custom retry policy template put `- step_name:` directly under `main:`. When a definition has subworkflows, each one (including `main`) holds its steps in a `steps` block, as the concrete samples on this page do, so the template adds `steps:` under `main`.
 - Use the idempotent retry policy only for idempotent steps (steps that can be safely repeated). Use the non-idempotent retry policy only for non-idempotent steps (steps that can't be safely repeated).
 - Retrying a step counts as an additional step execution for pricing purposes (https://cloud.google.com/workflows/pricing).
 - Example with `max_retries: 8`, `initial_delay: 1`, `max_delay: 60`, `multiplier: 2`: the delays are 1, 2, 4, 8, 16, 32, 60 and 60 seconds; after eight retries the step is considered failed and an exception is raised. Counting the initial execution, the step runs nine times.

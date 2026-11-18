@@ -55,19 +55,21 @@ Steps run in the order they appear in the definition.
 
 ### Nested steps
 
+Adapted (not in the official docs): `steps:` and everything under it are indented one more level, so that they are the value of `STEP_NAME`.
+
 ```text
   - STEP_NAME:
-    steps:
-      - STEP_NAME_1:
-          steps:
-              - STEP_NAME_A:
-                  ...
-              - STEP_NAME_B:
-                  ...
-      - STEP_NAME_2:
-          steps:
-              - STEP_NAME_C:
-                  ...
+      steps:
+        - STEP_NAME_1:
+            steps:
+                - STEP_NAME_A:
+                    ...
+                - STEP_NAME_B:
+                    ...
+        - STEP_NAME_2:
+            steps:
+                - STEP_NAME_C:
+                    ...
 ```
 
 Variables declared in a `steps` block have workflow-level scope and can be accessed outside of the block. Any step type can be nested inside a `steps` block, including `assign`, `call` and `switch`.
@@ -114,6 +116,7 @@ main:
 
 ## Notes
 
+- Corrected from the official docs: in the nested-steps template, `steps:` was at the same indentation as `STEP_NAME`, which makes `STEP_NAME` null and `steps` a separate key of the same list item. A step is a map from its name to its definition, so `steps:` is indented under `STEP_NAME`, as in the nested-steps sample that follows.
 - Google Cloud Workflows — not Cloudflare Workflows (`cloudflare-stateful`) or Inngest functions (`inngest`).
 - Step names must be unique at the subworkflow level. Workflows doesn't enforce a naming convention; the source recommends consistent names that only include alphanumeric characters and underscores.
 - In some cases `steps` is required, for example when defining a subworkflow or a `for` loop.
