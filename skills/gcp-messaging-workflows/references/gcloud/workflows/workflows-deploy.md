@@ -1,0 +1,262 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/workflows/deploy
+---
+
+# gcloud workflows deploy
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud workflows deploy
+
+```text
+NAME
+    gcloud workflows deploy - create or update a workflow
+
+SYNOPSIS
+    gcloud workflows deploy (WORKFLOW : --location=LOCATION) [--async]
+        [--call-log-level=CALL_LOG_LEVEL; default="none"]
+        [--description=DESCRIPTION]
+        [--execution-history-level=EXECUTION_HISTORY_LEVEL; default="none"]
+        [--labels=[KEY=VALUE,...]] [--service-account=SERVICE_ACCOUNT]
+        [--source=SOURCE] [--tags=[KEY=VALUE,...]]
+        [--clear-env-vars | --env-vars-file=FILE_PATH
+          | --remove-env-vars=[KEY,...] | --set-env-vars=[KEY=VALUE,...]
+          | --update-env-vars=[KEY=VALUE,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create or update a workflow.
+
+EXAMPLES
+    To deploy a workflow with source code myWorkflow.yaml on Workflows:
+
+        $ gcloud workflows deploy my-workflow --source=myWorkflow.yaml
+
+    You may also skip waiting for the operation to finish:
+
+        $ gcloud workflows deploy my-workflow --source=myWorkflow.yaml \
+            --async
+
+    To specify a service account as the workflow identity:
+
+        $ gcloud workflows deploy my-workflow --source=myWorkflow.yaml \
+            --service-account=my-account@my-project.iam.gserviceaccount.com
+
+POSITIONAL ARGUMENTS
+     Workflow resource - Name of the workflow to deploy. The arguments in this
+     group can be used to specify the attributes of this resource. (NOTE) Some
+     attributes are not given arguments in this group but can be set in other
+     ways.
+
+     To set the project attribute:
+      * provide the argument workflow on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       WORKFLOW
+          ID of the workflow or fully qualified identifier for the workflow.
+
+          To set the workflow attribute:
+          + provide the argument workflow on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --location=LOCATION
+          Cloud location for the workflow. Alternatively, set the property
+          [workflows/location].
+
+          To set the location attribute:
+          + provide the argument workflow on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property workflows/location.
+
+FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --call-log-level=CALL_LOG_LEVEL; default="none"
+        Level of call logging to apply by default for the workflow.
+        CALL_LOG_LEVEL must be one of:
+
+         log-all-calls
+            Log all calls to subworkflows or library functions and their
+            results.
+         log-errors-only
+            Log when a call is stopped due to an exception.
+         log-none
+            Perform no call logging.
+         none
+            No logging level specified.
+
+     --description=DESCRIPTION
+        The description of the workflow to deploy.
+
+     --execution-history-level=EXECUTION_HISTORY_LEVEL; default="none"
+        Level of execution history to apply for the workflow.
+        EXECUTION_HISTORY_LEVEL must be one of:
+
+         execution-history-basic
+            Enable basic execution history.
+         execution-history-detailed
+            Enable detailed execution history, including expected iterations
+            and in-scope variable values.
+         none
+            No execution history level specified.
+
+     --labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to add.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     --service-account=SERVICE_ACCOUNT
+        The service account that should be used as the workflow identity.
+        "projects/PROJECT_ID/serviceAccounts/" prefix may be skipped from the
+        full resource name, in that case "projects/-/serviceAccounts/" is
+        prepended to the service account ID.
+
+     --source=SOURCE
+        Location of a workflow source code to deploy. Required on first
+        deployment. Location needs to be defined as a path to a local file with
+        the source code.
+
+     --tags=[KEY=VALUE,...]
+        List of tags KEY=VALUE pairs to bind. Each item must be expressed as
+        "<tag-key-namespaced-name>=<tag-value-short-name>".
+
+        Example: 123/environment=production,123/costCenter=marketing
+
+     Flags to configure user-defined environment variables for a workflow.
+
+         Keys can't be empty strings and can't start with `GOOGLE`
+         or `WORKFLOWS`. We recommend that environment variable keys consist
+         solely of uppercase letters, digits, and underscores (`_`), and that
+         they don't begin with a digit. Consider prefixing your user-defined
+         environment variables with a unique key to avoid conflicts with other
+         variables.
+
+         If your value contains commas, prefix the mapping with a different
+         delimiter character enclosed between `^` (example 1). Use special
+         characters in your shell with caution as they might not work as
+         intended or need escaping (example 2 escapes a `$` in Bash).
+
+         Example 1: --set-env-vars ^@^KEY1=ONE,VALUE,WITH,COMMAS@KEY2=VALUE2
+
+         Example 2: --set-env-vars ^$^KEY1=VALUE1\$KEY2=VALUE,WITH,COMMAS,TOO
+
+         A maximum of 20 user-defined environment variables can be defined.
+         Each definition string (`KEY=value`) is limited to 4 KiB.
+         All keys and values are converted to strings.
+
+     At most one of these can be specified:
+
+       --clear-env-vars
+          Clears all user-defined environment variables previously set for the
+          workflow.
+
+          Example: gcloud workflows deploy ${workflow_name} --clear-env-vars
+
+       --env-vars-file=FILE_PATH
+          Sets environment variables for the workflow to those stored in a
+          local YAML file at the given path. All existing environment variables
+          are removed before the new environment variables are added.
+
+          Example: gcloud workflows deploy ${workflow_name}
+          --env-vars-file=/path/to/env_vars.yaml
+
+          Inside env_vars.yaml:
+
+          policy: global
+
+          retry_count: 5 # Service converts this to string "5"
+
+       --remove-env-vars=[KEY,...]
+          Removes user-defined environment variables from a workflow based on a
+          list of environment variable keys to be removed.
+
+          Example: gcloud workflows deploy ${workflow_name} --remove-env-vars
+          policy,retry_count...
+
+       --set-env-vars=[KEY=VALUE,...]
+          Sets environment variables for the workflow based on a
+          comma-separated list of key-value pairs. Will overwrite a workflow's
+          existing environment variables.
+
+          Example: gcloud workflows deploy ${workflow_name} --set-env-vars
+          policy=global,retry_count=5
+
+       --update-env-vars=[KEY=VALUE,...]
+          Updates existing or adds new user-defined environment variables based
+          on a comma-separated list of key-value pairs.
+
+          Example: gcloud workflows deploy ${workflow_name} --update-env-vars
+          policy=regional,retry_count=2
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud beta workflows deploy
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: the commands are rewritten so that they run as described (see Notes).
+
+```bash
+workflow_name=my-workflow
+
+gcloud workflows deploy "${workflow_name}" --clear-env-vars
+
+cat > env_vars.yaml <<'EOF'
+policy: global
+retry_count: 5
+EOF
+gcloud workflows deploy "${workflow_name}" --env-vars-file=env_vars.yaml
+
+gcloud workflows deploy "${workflow_name}" --remove-env-vars=policy,retry_count
+
+gcloud workflows deploy "${workflow_name}" --set-env-vars=policy=global,retry_count=5
+
+gcloud workflows deploy "${workflow_name}" --update-env-vars=policy=regional,retry_count=2
+```
+
+### gcloud beta workflows deploy
+
+```text
+NAME
+    gcloud beta workflows deploy - create or update a workflow
+
+SYNOPSIS
+    gcloud beta workflows deploy (WORKFLOW : --location=LOCATION) [--async]
+        [--description=DESCRIPTION] [--labels=[KEY=VALUE,...]]
+        [--service-account=SERVICE_ACCOUNT] [--source=SOURCE]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `Example:` lines of the environment-variable flags expand `${workflow_name}` unquoted, which splits a value that contains spaces and expands glob characters; the runnable form sets `workflow_name` and quotes it (`"${workflow_name}"`). The `--remove-env-vars` example ends its list with `...` (`policy,retry_count...`), which would be taken as part of the key `retry_count...`; the runnable form drops it. The `--env-vars-file` example writes the `env_vars.yaml` content shown under "Inside env_vars.yaml" to a file first.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/workflows/deploy (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
