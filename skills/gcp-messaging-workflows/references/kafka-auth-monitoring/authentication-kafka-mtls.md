@@ -95,6 +95,8 @@ gcloud managed-kafka acls add-acl-entry topic/analytics-topic \
 
 Issue a client certificate and key from one of the cluster's CA pools:
 
+Adapted (not in the official docs): the subject is changed from `CN=test-client-app` to `CN=order-processing-app`, so that the certificate maps to the `User:order-processing-app` principal of the ACLs above.
+
 ```bash
 gcloud privateca certificates create CERTIFICATE_ID \
     --project=PROJECT_ID \
@@ -103,7 +105,7 @@ gcloud privateca certificates create CERTIFICATE_ID \
     --ca=CA_NAME \
     --generate-key \
     --dns-san="client.example.com" \
-    --subject="CN=test-client-app" \
+    --subject="CN=order-processing-app" \
     --key-output-file=client-key.pem \
     --cert-output-file=client-cert.pem
 ```
@@ -158,6 +160,7 @@ bootstrap.servers=CLUSTER_BOOTSTRAP_ADDRESS
 
 ## Notes
 
+- Corrected from the official docs: the source issues the client certificate with `--subject="CN=test-client-app"`, but its ACL examples grant access to `User:order-processing-app`; with the example mapping rule `RULE:^.*[Cc][Nn]=([a-zA-Z0-9.-]*).*$/$1/L,DEFAULT` that client would authenticate as `User:test-client-app`, which the ACLs do not name. The example uses `CN=order-processing-app` so the steps fit together.
 - Adapted from the official docs: the source's pool-level `gcloud privateca pools add-iam-policy-binding` command has no `--project`; because this step applies when the CA pool is in another project, `--project=CA_PROJECT_ID` is added (`--project` is a gcloud-wide flag).
 - Permissive: a client that authenticates with a valid mTLS certificate is granted full access to the cluster until Kafka ACLs exist. Create ACLs to enforce least privilege. The mTLS principal is the certificate Subject DN (or its mapped alias) prefixed with `User:`; by default it has the form `User:CN=...,OU=...,O=...,L=...,ST=...,C=...`.
 - Permissive: the project-level `roles/privateca.poolReader` grant lets the service agent read every CA pool in the project. The source recommends the pool-level grant.
