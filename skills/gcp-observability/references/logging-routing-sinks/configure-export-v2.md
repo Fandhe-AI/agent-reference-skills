@@ -115,13 +115,15 @@ gcloud logging sinks update _Default --no-disabled
 
 When created, the `_Default` sink has this inclusion filter and an empty exclusion filter:
 
+Adapted (not in the official docs): removed the shell line-continuation backslashes and leading indentation so the filter can be pasted into a sink filter.
+
 ```text
-      NOT log_id("cloudaudit.googleapis.com/activity") AND NOT \
-      log_id("externalaudit.googleapis.com/activity") AND NOT \
-      log_id("cloudaudit.googleapis.com/system_event") AND NOT \
-      log_id("externalaudit.googleapis.com/system_event") AND NOT \
-      log_id("cloudaudit.googleapis.com/access_transparency") AND NOT \
-      log_id("externalaudit.googleapis.com/access_transparency")
+NOT log_id("cloudaudit.googleapis.com/activity") AND NOT
+log_id("externalaudit.googleapis.com/activity") AND NOT
+log_id("cloudaudit.googleapis.com/system_event") AND NOT
+log_id("externalaudit.googleapis.com/system_event") AND NOT
+log_id("cloudaudit.googleapis.com/access_transparency") AND NOT
+log_id("externalaudit.googleapis.com/access_transparency")
 ```
 
 ### Exclusion filter examples
@@ -228,6 +230,7 @@ jsonPayload.status.statusCode="OK"
 - Deprecated: none flagged in gcloud 593.0.0 help for these commands.
 - The source also shows Console and REST steps, Metrics Explorer links for GKE / Dataflow volume, and client-library samples (see the Code samples page).
 - Source: https://docs.cloud.google.com/logging/docs/export/configure_export_v2 (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source prints the `_Default` sink filter with a trailing `\` on each line, a shell line continuation that is not part of the Logging query language; the filter here has the backslashes removed (a newline continues the expression).
 
 ## Related
 
