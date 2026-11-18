@@ -9,3 +9,4 @@
 | gcloud iap | 83 commands across release tracks | [iap/README.md](./iap/README.md) |
 | gcloud kms | 268 commands across release tracks | [kms/README.md](./kms/README.md) |
 | gcloud pam | 67 commands across release tracks | [pam/README.md](./pam/README.md) |
+| gcloud parametermanager | 34 commands across release tracks | [parametermanager/README.md](./parametermanager/README.md) |
