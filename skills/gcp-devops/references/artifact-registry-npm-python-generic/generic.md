@@ -55,8 +55,11 @@ OWNER: projects/my-project/locations/us-central1/repositories/quickstart-generic
 
 ### Download generic artifacts
 
+Adapted (not in the official docs): `--project=PROJECT` is added, as in the upload and list examples, so the command does not use the gcloud default project.
+
 ```bash
 gcloud artifacts generic download \
+    --project=PROJECT \
     --destination=DESTINATION \
     --location=LOCATION \
     --repository=REPOSITORY \
@@ -82,9 +85,12 @@ curl -f -X GET \
 
 ### Delete generic artifacts
 
+Adapted (not in the official docs): `--project=PROJECT` is added so the deletion targets the same project as the upload and list examples, not the gcloud default project.
+
 ```bash
 gcloud artifacts files delete \
     FILE \
+    --project=PROJECT \
     --location=LOCATION \
     --repository=REPOSITORY
 ```
@@ -130,6 +136,7 @@ gcloud artifacts files delete \
 
 ## Notes
 
+- Adapted from the official docs: the source's download and delete examples omit `--project`, so they act on the gcloud default project (`core/project`) while its upload and list examples pass `--project=PROJECT`; both now pass `--project=PROJECT`.
 - `gcloud artifacts files delete` is available only for generic format repositories (as stated in the source). Destructive: deleted artifacts cannot be assumed recoverable; try it on a disposable project first.
 - `gcloud artifacts generic download` requires `--package` and `--version` according to the gcloud 593.0.0 help; `--name` is optional.
 - Corrected from the official docs: the REST upload used `curl -v` (prints the bearer token) and single-quoted pseudo-JSON in the `meta` part; the REST download lacked `-f`.
