@@ -60,6 +60,8 @@ try {
 
 Node.js (TypeScript) sample:
 
+Adapted (not in the official docs): the `error` handler is a named function that is also attached to the re-created subscription, logs errors other than `NOT_FOUND`, and catches a failed `createSubscription` call.
+
 ```typescript
 /**
  * TODO(developer): Uncomment these variables before running the sample.
@@ -96,20 +98,29 @@ function optimisticSubscribe(
 
   // Set an error handler so that we're notified if the subscription doesn't
   // already exist.
-  subscription.on('error', async (e: StatusError) => {
+  const errorHandler = async (e: StatusError) => {
     // Resource Not Found
     if (e.code === 5) {
       console.log('Subscription not found, creating it');
-      await pubSubClient.createSubscription(
-        topicNameOrId,
-        subscriptionNameOrId,
-      );
+      try {
+        await pubSubClient.createSubscription(
+          topicNameOrId,
+          subscriptionNameOrId,
+        );
+      } catch (err) {
+        console.error('Failed to create the subscription:', err);
+        return;
+      }
 
-      // Refresh our subscriber object and re-attach the message handler.
+      // Refresh our subscriber object and re-attach the message and error handlers.
       subscription = pubSubClient.subscription(subscriptionNameOrId);
+      subscription.on('error', errorHandler);
       subscription.on('message', messageHandler);
+    } else {
+      console.error(`Subscriber error (code ${e.code}): ${e.message}`);
     }
-  });
+  };
+  subscription.on('error', errorHandler);
 
   // Listen for new messages until timeout is hit; this will attempt to
   // open the actual subscriber streams. If it fails, the error handler
@@ -139,7 +150,7 @@ function optimisticSubscribe(
 
 - Terraform: grant required roles explicitly in Terraform code (for example `roles/pubsub.publisher` for publishing); an unspecified role can be removed by a later `terraform apply`, causing sudden `PERMISSION_DENIED` errors.
 - The source's 403 entries say that for Dataflow both `{PROJECT_NUMBER}@cloudservices.gserviceaccount.com` and the Compute Engine default service account (`{PROJECT_NUMBER}-compute@developer.gserviceaccount.com`) need the required permissions on the relevant Pub/Sub resources, and that for App Engine the App Engine service account should be listed as a Pub/Sub Editor on the project's Permissions page. This is the source's troubleshooting text, not a recommendation; a project-level Pub/Sub Editor grant allows that identity to manage topics and subscriptions across the project (see `gcp-foundation` for service accounts).
-- The sample's `error` handler acts only on code 5 (`NOT_FOUND`) and ignores every other subscriber error, such as permission or network failures; handle or log those errors in real code.
+- Adapted from the official docs: in the source, the `error` handler is attached only to the first `Subscription` object, so the object created after `NOT_FOUND` has a `message` listener but no `error` listener, and a later subscriber error (for example a permission failure) is an unhandled `error` event that ends the Node.js process; the source's handler also ignores errors other than code 5 (`NOT_FOUND`). The example attaches the same named handler to the new object, logs the other errors, and logs a failed `createSubscription` instead of leaving a rejected promise unhandled. Handle those errors as the application requires (retry, alert or exit).
 - The sample acks each message in the callback without processing it. A message acked before processing is lost if processing then fails; ack only after processing succeeds.
 - A deleted subscription loses its unacked messages; try deletion and recovery tests on a disposable project first. Audit logs are covered by `gcp-observability`.
 - Other troubleshooting pages exist in the source for topics, import topics, pull, push, BigQuery, Cloud Storage and subscriptions with SMTs, plus an error code reference.
