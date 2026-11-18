@@ -282,7 +282,7 @@ NOTES
         $ gcloud beta kms keys create
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud kms keys create bilbo \
@@ -292,7 +292,7 @@ gcloud kms keys create bilbo \
     --default-algorithm=external-symmetric-encryption \
     --protection-level=external-vpc \
     --skip-initial-version-creation \
-    --crypto-key-backend="projects/$(gcloud config get project)/ locations/us-central1/ekmConnections/eagles"
+    --crypto-key-backend="projects/$(gcloud config get project)/locations/us-central1/ekmConnections/eagles"
 
 gcloud kms keys create arwen \
     --location=us-east1 \
@@ -344,6 +344,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `external-vpc` example wraps the `--crypto-key-backend` value after `projects/$(gcloud config get project)/`, so joining the lines puts a space before `locations/` inside the quoted value, which is not a valid EkmConnection resource name; the runnable form removes the space (`projects/$(gcloud config get project)/locations/us-central1/ekmConnections/eagles`).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
