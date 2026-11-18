@@ -156,6 +156,26 @@ gcloud beta app-lifecycle-manager releases create flags-release \
   --blueprint-package="$IMAGE_NAME"
 ```
 
+Adapted (not in the official docs): the source creates the unit kind and release only in `global` but the unit in `us-central1`; gcloud does not replicate App Lifecycle Manager resources across regions, so the SaaS offering, unit kind and release are also created in `us-central1` before the unit.
+
+```bash
+gcloud beta app-lifecycle-manager saas create flags-quickstart-saas-offering \
+  --project=PROJECT_ID \
+  --location=us-central1 \
+  --locations=name=us-central1
+
+gcloud beta app-lifecycle-manager unit-kinds create flags-unit-kind \
+  --project=PROJECT_ID \
+  --location=us-central1 \
+  --saas=flags-quickstart-saas-offering
+
+gcloud beta app-lifecycle-manager releases create flags-release \
+  --project=PROJECT_ID \
+  --location=us-central1 \
+  --unit-kind=flags-unit-kind \
+  --blueprint-package="$IMAGE_NAME"
+```
+
 ```bash
 gcloud beta app-lifecycle-manager units create flags-quickstart-unit \
   --project=PROJECT_ID \
@@ -247,6 +267,7 @@ gcloud beta app-lifecycle-manager rollouts create "${ROLLOUT_ID}" \
 - The source's quickstart creates the unit but shows no provision operation and no `actuation_sa` value; for gcloud, `unit-operations create --provision --provision-release=RELEASE` is the form in the gcloud 593.0.0 help (see Console provisioning in the deploy-saas-offering page). The `flags create` command shows no `--variants` / `--evaluation-spec`. The flags overview says the service account used by the application needs `roles/saasconfig.viewer`; this quickstart does not show that grant for the `actuation_sa` the Terraform sets as the Cloud Run runtime service account. The `docker_tag` default `flags-quickstart:latest` is appended to the repository path in `docker_image_path`, as in the source.
 - The Terraform has no IAM binding for `allUsers`, so it does not make the Cloud Run service public; the source's later "public endpoint" step (`curl YOUR_SERVICE_URL`) does not add one. Do not add `allUsers` / `--allow-unauthenticated` unless you intend to open the service.
 - The track: the `flags` group and `rollouts create --flag-release` exist only in `gcloud beta` / `alpha`; the source uses `beta` for the flag, unit-kind, release, unit and rollout commands. Resource replication across regions is not automated for gcloud-created resources (see regionalization); the quickstart mixes `global` (unit kind, release, flag) and `us-central1` (unit).
+- Adapted from the official docs: the SaaS offering, unit kind and release are also created in `us-central1` with gcloud, so the `us-central1` unit can reference `flags-unit-kind` (the regionalization page: replication is not automated for gcloud-created resources). If a resource already exists in `us-central1` (for example a SaaS offering created in the console, which replicates it), skip its create command.
 - The source runs the Terraform with the actuation service account, which creates and can modify or delete the Cloud Run service; rollouts update live units. Use a disposable project.
 - Clean up: if you deployed in a new project and no longer need it, delete it (Manage resources > select the project > Delete; type the project ID > Shut down). Caution from the source: if you delete a project, all the resources in the project are permanently deleted.
 - The Python Flask application (`alm_docker/flags.py`, `requirements.txt`, and a `Dockerfile` with `FROM python:3.11-slim`), the zip packaging of the Terraform files, the expected startup log / endpoint output and the Console steps (Cloud Run Logs and Networking tabs) are omitted; see the source page. Other language guides are `flags-python`, `flags-java`, `flags-golang` (not in this skill).
