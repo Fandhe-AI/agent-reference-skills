@@ -88,7 +88,7 @@ Supported only for public Compute Engine or GKE applications (not App Engine) wi
 | `http://127.0.0.1/*` | HTTP on host `127.0.0.1` | `http://127.0.0.1/`, `http://127.0.0.1/foo/bar.html` |
 | `*://mail.google.com/*` | HTTP or HTTPS on `mail.google.com` | `http://mail.google.com/foo/baz/bar`, `https://mail.google.com/foobar` |
 | `*://*/foo*?*bar=baz*` | Path starts with `/foo` and has query `bar=baz` | `https://www.google.com/foo/example?bar=baz` |
-| `google.com/app#*open*` | `google.com` host, path starts with `/app`, fragment `open` | `https://google.com/app/example#open` |
+| `google.com/app#*open*` | `google.com` host, path `/app`, fragment containing `open` | `https://google.com/app#open` |
 
 ### Invalid patterns
 
@@ -112,6 +112,7 @@ Supported only for public Compute Engine or GKE applications (not App Engine) wi
 - Console click-paths for IAM role assignment, running, viewing, editing, and deleting scans are omitted; see the source page.
 - Corrected from the official docs: in the valid-patterns table, the sample URLs for `https://*.google.com/foo*bar` use `http://` and the sample for `google.com/app#*open*` uses host `www.google.com`. A pattern with `https` matches only HTTPS, and a host without `*.` matches only that host (`*.hostname` is the form that also matches subdomains), so the samples use `https://` and host `google.com`.
 - Corrected from the official docs: the source says to give the rule a higher priority than all rules that deny egress traffic to your application. The scanner's requests are ingress traffic, and ingress and egress rules are evaluated separately, so the allow rule must be an ingress rule with a higher priority than the ingress rules that deny traffic to the application.
+- Source inconsistency: for `google.com/app#*open*` the source says the path "starts with `/app`" and gives `https://www.google.com/app/example#open` as a match, but the pattern's path `/app` has no `*` (the other prefix examples, such as `http://*/foo*`, end the path with `*`), so the row describes the path as `/app` and uses `https://google.com/app#open`. For a prefix match on `/app`, use `google.com/app*#*open*`.
 - Source: https://docs.cloud.google.com/security-command-center/docs/how-to-web-security-scanner-custom-scans (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
