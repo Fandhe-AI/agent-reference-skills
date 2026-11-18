@@ -50,19 +50,15 @@ curl -X PATCH \
 
 ### Enable IAP on a forwarding rule (gcloud)
 
-Uses the load balancer authorization policies framework. The policy below applies to clients in the IP range `10.0.0.0/24`.
+Uses the load balancer authorization policies framework. The policy below has no `httpRules`, so the `CUSTOM` (IAP) action applies to every request to the forwarding rule.
+
+Adapted (not in the official docs): the source's `httpRules` that limit the policy to clients in `10.0.0.0/24` are removed, so IAP applies to all requests.
 
 ```bash
 cat << EOF > policy.yaml
 action: CUSTOM
 description: authz policy with Cloud IAP
 name: AUTHZ_POLICY_NAME
-httpRules:
-  - from:
-      sources:
-      - ipBlocks:
-        - prefix: "10.0.0.0"
-          length: 24
 customProvider:
   cloudIap: {}
 target:
@@ -81,7 +77,7 @@ gcloud network-security authz-policies import AUTHZ_POLICY_NAME \
 
 ### Enable IAP on a forwarding rule (API)
 
-Adapted (not in the official docs): the source JSON has a trailing comma after the `resources` array (invalid JSON), and the Discovery document requires `name` in the form `projects/{project}/locations/{location}/authzPolicies/{authz_policy}`; both are fixed. `httpRules[].from.sources` is written as an array, as in the YAML example.
+Adapted (not in the official docs): the source JSON has a trailing comma after the `resources` array (invalid JSON), and the Discovery document requires `name` in the form `projects/{project}/locations/{location}/authzPolicies/{authz_policy}`; both are fixed. The source's `httpRules` (clients in `10.0.0.0/24` only) are removed, as in the YAML example.
 
 ```bash
 cat << EOF > policy.json
@@ -94,22 +90,6 @@ cat << EOF > policy.json
      ]
  },
  "action": "CUSTOM",
- "httpRules": [
-     {
-       "from": {
-         "sources": [
-           {
-             "ipBlocks": [
-               {
-                 "prefix": "10.0.0.0",
-                 "length": 24
-               }
-             ]
-           }
-         ]
-       }
-     }
- ],
  "customProvider": {
      "cloudIap": {}
  }
@@ -167,7 +147,7 @@ curl -X POST \
 - Corrected from the official docs: `curl -X PATCH \\` with `"https://networksecurity.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/authzPolicies"` (a `PATCH` on the collection; the Discovery document defines `create` as `POST v1/{+parent}/authzPolicies` with `authzPolicyId`, while `patch` needs the policy name in the path and an `updateMask`), the trailing comma in `],` after the `resources` array, `"name": "AUTHZ_POLICY_NAME"` (the Discovery format is `projects/{project}/locations/{location}/authzPolicies/{authz_policy}`), and the compute path `.../projects/PROJECT_ID/REGION/backendServices/...` were fixed as stated before each block. For a global backend service the Discovery path is `projects/{project}/global/backendServices/{backendService}`.
 - Source inconsistency: the forwarding-rule API example uses `"loadBalancingScheme": "INTERNAL_MANAGED"` while the gcloud example uses `loadBalancingScheme: EXTERNAL_MANAGED`. Both are enum values in the Discovery document (`INTERNAL_MANAGED`: regional internal or cross-region internal Application Load Balancing; `EXTERNAL_MANAGED`: global external or regional external Application Load Balancing); use the one that matches the load balancer.
 - The full flag list of `gcloud compute backend-services update` (https://docs.cloud.google.com/sdk/gcloud/reference/compute/backend-services/update) is in the `gcp-compute` skill; load balancer authorization policies (`gcloud network-security authz-policies`) are covered with the load balancers in the `gcp-load-balancing` skill.
-- Corrected from the official docs: the REST body wrote `httpRules[].from.sources` as an object; in the Network Security API Discovery documents (`v1` and `v1beta1`), `AuthzPolicyAuthzRuleFrom.sources` is an array, and the YAML example on this page also uses a list.
+- Adapted from the official docs: the source's YAML and REST policies set `httpRules` with `sources.ipBlocks` `10.0.0.0/24`. In the Network Security API Discovery document (`AuthzPolicy.httpRules`), a policy matches only requests that match one of its HTTP rules (or all requests when none are given), and requests that match no policy are allowed by default; with that rule, clients outside `10.0.0.0/24` would bypass IAP. The examples omit `httpRules` so that every request to the forwarding rule goes through IAP. (The source also wrote `sources` as an object in the REST body; it is an array in the Discovery document.)
 - Source: https://docs.cloud.google.com/iap/docs/enabling-compute-howto (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
