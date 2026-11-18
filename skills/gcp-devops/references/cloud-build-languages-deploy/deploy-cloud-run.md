@@ -73,6 +73,16 @@ The source says to enable these for the specified (user-specified) or default Cl
 | Logs Writer (`roles/logging.logWriter`) | Write log entries to Cloud Logging |
 | Cloud Build Editor (`roles/cloudbuild.builds.editor`) | Run builds |
 
+`roles/run.admin` does not include `iam.serviceAccounts.actAs`. The source's **Assign Service Account User Role** panel (choose a service account to impersonate) is the console step that covers it: the build service account needs Service Account User (`roles/iam.serviceAccountUser`) on the service account the Cloud Run service runs as.
+
+Adapted (not in the official docs): the console panel step as a gcloud command; it grants the role on the runtime service account only, not on the project.
+
+```bash
+gcloud iam service-accounts add-iam-policy-binding RUNTIME_SERVICE_ACCOUNT_EMAIL \
+  --member="serviceAccount:BUILD_SERVICE_ACCOUNT_EMAIL" \
+  --role="roles/iam.serviceAccountUser"
+```
+
 ### Placeholders
 
 | Name | Description |
@@ -83,11 +93,14 @@ The source says to enable these for the specified (user-specified) or default Cl
 | `SERVICE_NAME` | Cloud Run service name |
 | `SERVICE_REGION` | Region of the Cloud Run service |
 | `IMAGE` | Image name in Artifact Registry |
+| `RUNTIME_SERVICE_ACCOUNT_EMAIL` | Service account the Cloud Run service runs as (its service identity) |
+| `BUILD_SERVICE_ACCOUNT_EMAIL` | The user-specified or default Cloud Build service account |
 
 ## Notes
 
 - Required APIs: Cloud Build, Cloud Run, Artifact Registry and Resource Manager. With VPC Service Controls, set up a private pool in the perimeter and configure Cloud Run for VPC Service Controls.
 - `roles/run.admin` and `roles/storage.admin` are broad; grant them to a user-specified build service account, not the legacy or default account, and prefer narrower roles where possible. The source's Assign Service Account User Role step lets you choose a service account to impersonate.
+- Adapted from the official docs: the source covers `iam.serviceAccounts.actAs` only through the console's Assign Service Account User Role panel. Deploying needs `roles/iam.serviceAccountUser` (which contains `iam.serviceAccounts.actAs`) on the Cloud Run service identity, as the Cloud Run troubleshooting page states for deployers (see the `gcp-run` skill); the page adds the per-service-account `gcloud iam service-accounts add-iam-policy-binding` form. Without it, `gcloud run deploy` from the build fails with `iam.serviceaccounts.actAs` denied.
 - A trigger's region must match the region of the Cloud Run service it deploys to. The source's trigger creation is Console-only (event, source branch or tag, `cloudbuild.yaml` location).
 - The source's note on making the deployed service public: a one-time change to the service IAM settings. Making a service public opens it to callers without authentication; nothing in these examples does it.
 - The source states that `$COMMIT_SHA` is populated by Cloud Build when triggered from a Git repository, so the trigger example is meant for trigger-started builds.
