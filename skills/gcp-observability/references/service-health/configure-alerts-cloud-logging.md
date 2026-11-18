@@ -104,6 +104,8 @@ gcloud logging write --payload-type=json \
   '{ "category": "INCIDENT", "relevance": "IMPACTED", "@type": "type.googleapis.com/google.cloud.servicehealth.logging.v1.EventLog", "description": "This is a test log entry"}'
 ```
 
+This payload has only `category`, `relevance`, `@type` and `description`, so it does not match the example conditions as written: the table conditions also test `jsonPayload.impactedProductIds` or `jsonPayload.impactedLocations`, and the conditions in `example-alerting-policies.md` also test `jsonPayload.detailedCategory` (and some test `labels."servicehealth.googleapis.com/new_event"`). Before testing a policy, add the fields its condition reads, with the values it expects, for example `"impactedProductIds": "['hV87iK5DcEXKgWU2kDri']"` as in the `entries.write` body above.
+
 ## Options / Props
 
 ### Alert condition examples
@@ -131,6 +133,7 @@ gcloud logging write --payload-type=json \
 - Corrected from the official docs: the source's `policy.json` has no `alertStrategy`. The Cloud Monitoring API Discovery document describes `AlertStrategy.notificationRateLimit` as "Required for log-based alerting policies, i.e. policies with a LogMatch condition", so the fence adds `"alertStrategy": { "notificationRateLimit": { "period": "300s" } }`, the value used by the policies in `example-alerting-policies.md` (which also set `autoClose`).
 - The source also shows the in-dashboard setup (https://docs.cloud.google.com/service-health/docs/configure-alerts-dashboard) and screenshots.
 - Source: https://docs.cloud.google.com/service-health/docs/configure-alerts-cloud-logging (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- The gcloud test payload in the source lacks the fields that the example conditions test (`impactedProductIds`, `impactedLocations`, `detailedCategory`, the `new_event` label), so a policy created from those conditions does not fire on it; the page says to add the fields that the chosen condition reads.
 
 ## Related
 
