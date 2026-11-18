@@ -36,6 +36,8 @@ Replace `RESOURCE_TYPE` with `organization`, `folder` or `project` (the flag bec
 PATCH https://securitycentermanagement.googleapis.com/v1/RESOURCE_TYPE/RESOURCE_ID/locations/global/securityCenterServices/security-health-analytics?updateMask=modules
 ```
 
+Save the request body (with the top-level `modules` field) in `rest-request.json`:
+
 ```json
 {
   "modules": {
@@ -46,12 +48,14 @@ PATCH https://securitycentermanagement.googleapis.com/v1/RESOURCE_TYPE/RESOURCE_
 }
 ```
 
+Adapted (not in the official docs): the REST body is read from `rest-request.json`, separate from the gcloud module config file `request.json`.
+
 ```bash
 curl -X PATCH \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
      -H "x-goog-user-project: QUOTA_PROJECT" \
      -H "Content-Type: application/json; charset=utf-8" \
-     -d @request.json \
+     -d @rest-request.json \
      "https://securitycentermanagement.googleapis.com/v1/RESOURCE_TYPE/RESOURCE_ID/locations/global/securityCenterServices/security-health-analytics?updateMask=modules"
 ```
 
@@ -241,6 +245,7 @@ gcloud access-context-manager perimeters update PERIMETER_NAME \
 - The source also shows PowerShell / cmd.exe variants, an example command response, Console steps and Terraform; they are omitted.
 - The `gcloud scc manage services update` help (gcloud 593.0.0) also lists the `--enablement-state` flag and `--validate-only`; at least one of `--enablement-state` or `--module-config-file` is required, and `--parent=organizations/ID` can replace the resource flags.
 - Adapted from the official docs: without a filter, `gcloud scc findings group` counts findings in every state, including `INACTIVE`; `--filter='state="ACTIVE"'` (the `--filter` flag of the `gcloud scc findings group` help, gcloud 593.0.0) limits the counts to active findings.
+- Adapted from the official docs: the source uses `request.json` for both the gcloud module config (module names at the top level) and the REST body (a top-level `modules` field). The REST example reads `rest-request.json` so that the gcloud file is not sent as the PATCH body.
 - Source: https://docs.cloud.google.com/security-command-center/docs/how-to-use-security-health-analytics (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
