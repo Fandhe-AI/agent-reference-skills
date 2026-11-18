@@ -222,12 +222,13 @@ async function publishOrderedMessage(topicNameOrId, data, orderingKey) {
 
 | Rule | Detail |
 |---|---|
-| Required content | At least one of: message data, an ordering key, attributes. For REST, a non-empty `data` field or at least one attribute. |
+| Required content | A non-empty `data` field or at least one attribute; an ordering key alone is not enough (see Notes). |
 | REST `data` | Base64-encoded string |
 | Added by the service | Message ID (unique to the topic) and publish timestamp |
 
 ## Notes
 
+- Source inconsistency: the source's Message format section says to specify at least one of the message data, an ordering key, or attributes. The `PubsubMessage` schema in the Pub/Sub v1 Discovery document says "The message must contain either a non-empty data field or at least one attribute", and client libraries publish through the same API, so a message with only an ordering key is rejected; the table follows the API.
 - Pub/Sub offers at-least-once delivery and best-effort ordering to existing subscribers. For publish-side duplicates you can see different `publishTime` values for the same client-side original message, even with the same `messageId`.
 - Message shape (source, pseudo-JSON): `data`: string, `attributes`: map of string to string, `messageId`: string, `publishTime`: string, `orderingKey`: string. Attributes can filter messages on the subscription and can carry event timestamps.
 - Ordering keys, same publisher client: messages with the same key published in the same region are received in publish order.

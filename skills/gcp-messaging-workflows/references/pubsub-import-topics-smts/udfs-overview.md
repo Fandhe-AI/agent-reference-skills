@@ -41,7 +41,7 @@ Adapted (not in the official docs): the source's placeholder `<function_name>` i
 
 ### Definition file for gcloud
 
-Adapted (not in the official docs): the source's YAML and JSON templates use the unquoted placeholders `{ FUNCTION_CODE }` and `FUNCTION_NAME` (and the JSON lacks a comma between the keys). Both are written as valid files using the source's `redactSSN` example; the JSON keeps the source's single-object form (the source's YAML is a list item, its JSON is one object).
+Adapted (not in the official docs): the source's YAML and JSON templates use the unquoted placeholders `{ FUNCTION_CODE }` and `FUNCTION_NAME` (and the JSON lacks a comma between the keys). Both are written as valid files using the source's `redactSSN` example, and the JSON is a list like the YAML (the source's JSON is a single object, which gcloud rejects; see Notes).
 
 ```yaml
 - javascriptUdf:
@@ -55,15 +55,17 @@ Adapted (not in the official docs): the source's YAML and JSON templates use the
     functionName: redactSSN
 ```
 
-Adapted (not in the official docs): the JSON form of the same file, with the source's placeholders filled in from its `redactSSN` example and the missing comma added.
+Adapted (not in the official docs): the JSON form of the same file, with the source's placeholders filled in from its `redactSSN` example, the missing comma added, and the object wrapped in a list.
 
 ```json
-{
-  "javascriptUdf": {
-    "code": "function redactSSN(message, metadata) {\n  const data = JSON.parse(message.data);\n  delete data['ssn'];\n  message.data = JSON.stringify(data);\n  return message;\n}\n",
-    "functionName": "redactSSN"
+[
+  {
+    "javascriptUdf": {
+      "code": "function redactSSN(message, metadata) {\n  const data = JSON.parse(message.data);\n  delete data['ssn'];\n  message.data = JSON.stringify(data);\n  return message;\n}\n",
+      "functionName": "redactSSN"
+    }
   }
-}
+]
 ```
 
 ### Create a topic or subscription with the UDF SMT
@@ -181,7 +183,7 @@ function validateAmount(message, metadata) {
 - The `metadata` argument is immutable. Returning empty `attributes` removes all attributes from the message.
 - The SMT can be created disabled (Console option **Disable transform**) and enabled later by editing the topic.
 - Corrected from the official docs: `switch(`data["dayOfWeek"]`)` was changed to `switch (data["dayOfWeek"])`; the `<function_name>` placeholder was changed to `FUNCTION_NAME`; the YAML / JSON definition templates (`code: { FUNCTION_CODE }`, missing comma in the JSON) were replaced by valid files built from the source's `redactSSN` example.
-- The JSON file format for several transforms is not shown in the source or in the `--message-transforms-file` help ("Path to YAML or JSON file containing message transforms"). Only the source's own forms are shown here: a YAML list and a single JSON object. The REST field `messageTransforms` is an array of `MessageTransform` objects with `javascriptUdf` (`code`, `functionName`) and `disabled`.
+- Corrected from the official docs: the source's JSON template is a single object, but gcloud reads `--message-transforms-file` as a list of transforms. `GetMessageTransformsFromFile` in gcloud 593.0.0 (`lib/googlecloudsdk/api_lib/pubsub/utils.py`) loads the file with a YAML parser that also accepts JSON and raises `MessageTransformsInvalidFormatError` when the top level is not a list. Both files are therefore lists, one element per transform, applied in order; the REST field `messageTransforms` is likewise an array of `MessageTransform` objects with `javascriptUdf` (`code`, `functionName`) and `disabled`.
 - Every sample UDF throws if the payload is not JSON (it calls `JSON.parse`).
 - The source also shows the Console steps (including generating UDF code with Gemini Enterprise) and more samples in the UDF library at https://github.com/GoogleCloudPlatform/pubsub/tree/master/udfs.
 - Source: https://docs.cloud.google.com/pubsub/docs/smts/udfs-overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
