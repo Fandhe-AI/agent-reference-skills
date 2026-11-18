@@ -477,6 +477,7 @@ curl -X GET \
 - Generated from the Discovery document(s) v1, v1beta of `workstations` (retrieved 2026-11-14). Resources on this page: projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
 - Message schemas (the request and response types named above) are listed under `references/rest-schemas/workstations/`; they are the `schemas` section of the Discovery documents in Source.
+- Regional endpoints: the Discovery document (`workstations` v1, revision 20260923) also lists 8 endpoints of the form `https://workstations.LOCATION.rep.googleapis.com/` (Regional Endpoint), for LOCATION in `asia-south1`, `europe-west6`, `us-central1`, `us-east1`, `us-east4`, `us-east5`, `us-west1`, `us-west4`. The method URLs above use the global host `https://workstations.googleapis.com/`; to send a request through one of these endpoints, replace the host with the endpoint for the resource's location (for example `https://workstations.asia-south1.rep.googleapis.com/`) and keep the path.
 - Source: https://workstations.googleapis.com/$discovery/rest?version=v1, https://workstations.googleapis.com/$discovery/rest?version=v1beta (https://developers.google.com/discovery)
 
 ## Related
