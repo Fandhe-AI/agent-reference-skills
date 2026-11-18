@@ -32,7 +32,7 @@ cps.project: "GCP_PROJECT_ID"
 
 ### Create with Python
 
-Adapted (not in the official docs): added `raise` so a failed call is not reported as success (the source only prints the error).
+Adapted (not in the official docs): added `raise` so a failed call is not reported as success (the source only prints the error), and the returned `Connector` is used directly instead of being waited on as an operation.
 
 ```python
 from google.api_core.exceptions import GoogleAPICallError
@@ -66,9 +66,7 @@ request = CreateConnectorRequest(
 )
 
 try:
-    operation = connect_client.create_connector(request=request)
-    print(f"Waiting for operation {operation.operation.name} to complete...")
-    response = operation.result()
+    response = connect_client.create_connector(request=request)
     print("Created Connector:", response)
 except GoogleAPICallError as e:
     print(f"The operation failed with error: {e}")
@@ -127,6 +125,7 @@ except GoogleAPICallError as e:
 
 ## Notes
 
+- Corrected from the official docs: the source's Python sample treats the return value of `create_connector` as a long-running operation (`operation.operation.name`, `operation.result()`), but `projects.locations.connectClusters.connectors.create` returns a `Connector` (managedkafka v1 Discovery document), not an `Operation`; the sample uses the returned `Connector` directly.
 - Corrected from the official docs: the source's Kafka topics section says you can "specify one or more topics, or use a regular expression" without naming the property. In Apache Kafka Connect, `topics` is a list ("List of topics to consume, separated by commas") and the regular expression goes in `topics.regex`; the two are mutually exclusive ("topics and topics.regex are mutually exclusive options, but both are set"). Source: https://github.com/apache/kafka/blob/4.0.0/connect/runtime/src/main/java/org/apache/kafka/connect/runtime/SinkConnectorConfig.java (tag 4.0.0, retrieved 2026-11-19).
 - The source grants `roles/pubsub.publisher` to the service agent on the project that contains the topic, which applies to every topic in that project; the source gives no topic-level form. Its "Pub/Sub topic" section also calls the grantee "the Connect cluster service account". If the Connect cluster is in a different project from the Kafka cluster, see "Create a Connect cluster in a different project" on the create-connect-cluster page.
 - Put credentials (passwords, truststores) in Secret Manager and reference them with the `/var/secrets/...` and `${directory:/var/secrets:...}` forms; never write them inline in a connector config.

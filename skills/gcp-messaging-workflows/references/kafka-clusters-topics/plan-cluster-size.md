@@ -55,7 +55,7 @@ gcloud managed-kafka clusters update mycluster \
 | Partition replicas per cluster | 100,000 (hard limit; split a larger workload across clusters) |
 | Partition replicas per broker | 4,000 (not a hard limit; increase cluster size to get more brokers) |
 | Default local disk | 100 GiB per vCPU, per broker |
-| Default max segment file size | 230 MiB (`log.roll.bytes`; age by `log.segment.ms`); assume 250 MiB per partition |
+| Default max segment file size | 230 MiB (broker `log.segment.bytes`, topic `segment.bytes`; maximum age by broker `log.roll.ms` / `log.roll.hours`, topic `segment.ms`); assume 250 MiB per partition |
 | Disk alert threshold | Configure a larger disk if usage is over 80% of total disk size (metrics `disk/used_bytes`, `disk/limit`) |
 
 ### Rules for updating an existing cluster
@@ -78,6 +78,7 @@ gcloud managed-kafka clusters update mycluster \
 
 ## Notes
 
+- Corrected from the official docs: the source names the segment size setting `log.roll.bytes` and the segment age setting `log.segment.ms`; neither exists in Apache Kafka. The size is `segment.bytes` (topic) / `log.segment.bytes` (broker) and the age is `segment.ms` (topic) / `log.roll.ms` or `log.roll.hours` (broker). Source: https://github.com/apache/kafka/blob/3.7.0/clients/src/main/java/org/apache/kafka/common/config/TopicConfig.java and https://github.com/apache/kafka/blob/3.7.0/server-common/src/main/java/org/apache/kafka/server/config/ServerTopicConfigSynonyms.java (tag 3.7.0, retrieved 2026-11-19).
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/managed-kafka/clusters/update (gcloud 593.0.0 help); `--cpu=3` is the help's example value, not a sizing recommendation.
 - Test with your real workload for the most accurate sizing; monitor resource usage and scale up if needed.
 - A broker with no disk capacity behaves unpredictably and can result in data loss as well as cluster instability; keep unused disk capacity on each broker.
