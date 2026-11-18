@@ -22,11 +22,11 @@ Alternatively set the default location:
 gcloud config set eventarc/location LOCATION
 ```
 
-Adapted (not in the official docs): the service account domain `gserviceaccount.iam.com` in the source example is corrected to `iam.gserviceaccount.com`; the rest is unchanged. The `--destinations` value is a dict; the example authenticates with an OAuth token against a non-Google URL, which the source says is generally for `*.googleapis.com` only (use `google_oidc_authentication_service_account` for other endpoints).
+Adapted (not in the official docs): the service account domain `gserviceaccount.iam.com` in the source example is corrected to `iam.gserviceaccount.com`, and the OAuth token authentication (`oauth_token_authentication_service_account` / `oauth_token_authentication_scope`) is replaced with OIDC authentication (`google_oidc_authentication_service_account` / `google_oidc_authentication_audience`) because the destination is a non-Google URL.
 
 ```bash
 gcloud eventarc pipelines create my-pipeline \
-    --destinations=http_endpoint_uri='https://example-endpoint.com',oauth_token_authentication_service_account=example-service-account@example-project.iam.gserviceaccount.com,oauth_token_authentication_scope='https://www.googleapis.com/auth/cloud-platform',output_payload_format_avro_schema_definition='{"type": "record","name": "my_record", "fields": [{"name": "my_field", "type":"string"}]}' \
+    --destinations=http_endpoint_uri='https://example-endpoint.com',google_oidc_authentication_service_account=example-service-account@example-project.iam.gserviceaccount.com,google_oidc_authentication_audience='https://example-endpoint.com',output_payload_format_avro_schema_definition='{"type": "record","name": "my_record", "fields": [{"name": "my_field", "type":"string"}]}' \
     --input-payload-format-avro-schema-definition='{"type":"record", "name": "my_record", "fields": [{"name": "my_field","type": "string"}]}' \
     --location=us-central1 \
     --async
@@ -214,6 +214,7 @@ curl -X DELETE \
 - Per the Discovery document for the OIDC / OAuth fields, the Eventarc service agent must have `roles/iam.serviceAccountTokenCreator` for the pipeline to create tokens, and the caller needs `iam.serviceAccounts.actAs` on the service account.
 - Irreversible: deleting enrollments or pipelines stops routing for them. Try it on a disposable project first.
 - Corrected from the official docs: `gserviceaccount.iam.com` -> `iam.gserviceaccount.com`; REST `projects/PROJECT_ID/regions/LOCATION/pipelines/...` -> `locations`; `display_name` / `cel_match` / `message_bus` -> `displayName` / `celMatch` / `messageBus`; `pipeline_id` / `enrollment_id` -> `pipelineId` / `enrollmentId`.
+- Adapted from the official docs: the source's Avro example sends an OAuth access token (`oauth_token_authentication_service_account`, scope `https://www.googleapis.com/auth/cloud-platform`) to the non-Google endpoint `https://example-endpoint.com`; the receiver could reuse that token against Google Cloud APIs. The example uses the OIDC keys from the gcloud help instead (https://docs.cloud.google.com/sdk/gcloud/reference/eventarc/pipelines/create). Keep OAuth tokens for `*.googleapis.com` destinations only.
 - Adapted from the official docs: the `--mediations` example is the gcloud help example for a transformation mediation, joined where the help text wraps mid-token (`-\` / `-mediations`, `"data.cre\` / `dit_card_number"`), plus the required input format flag. Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/eventarc/pipelines/create (gcloud 593.0.0 help). The source page's own inline example is wrapped the same way (`message.removeFields(["id\` / `","credit_card_number","age"])`).
 - The source also shows Console, PowerShell and APIs Explorer forms and the response bodies of list / create operations.
 - Source: https://docs.cloud.google.com/eventarc/advanced/docs/receive-events/create-enrollment (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
