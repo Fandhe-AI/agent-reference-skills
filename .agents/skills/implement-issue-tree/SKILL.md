@@ -283,7 +283,7 @@ detached の worktree に fix のコミットだけが残った場合（ブラ�
    （`scope-enum` を設定したリポでは必ず落ち、Review 3 巡を消費した後の push で初めて検出される）。
    イシューとの紐付けは footer の `Refs #<N>` と PR 本文の `Closes #<N>` で行う。
    push 前 base 最新化ゲート（Step 5・Merge ループの fix）で作る base 取り込みマージコミットの subject も同じ手順で type / scope を決める（固定の `chore:` は `type-enum` / `scope-enum` を持つリポの commit-msg hook に拒否される。拒否されたら `git merge --abort` して push せず fail-closed）
-7. **push・PR 作成はここでは行わない**。ローカルブランチにコミットを積んだら、まず `git status --porcelain --untracked-files=no` の出力が空であること（追跡ファイルに未コミットの変更が無いこと。未追跡ファイルは対象外）を確かめる。空でない（またはコマンドが失敗した）ときは `git add -u` で追跡ファイルの変更だけを加え、手順 6 と同じ規約で追加のコミットとして積む（既存コミットの amend はしない。積めなければ変更を残したまま進み summary に書く。失敗にはしない）。そのあと `git checkout --detach` でブランチを worktree から外して終了し、後続の Review フェーズへ渡す（Review の fix は隔離された別 worktree からブランチ先端を更新する。自分の worktree の外へは触れられないため、ブランチを checkout 中の worktree が残っていると先端を進められず `commitFailed` で終わる）
+7. **push・PR 作成はここでは行わない**。ローカルブランチにコミットを積んだら、まず `git status --porcelain --untracked-files=no` の出力が空であること（追跡ファイルに未コミットの変更が無いこと。未追跡ファイルは対象外）を確かめる。空でない（またはコマンドが失敗した）ときは `git add -u` で追跡ファイルの変更だけを加え、手順 6 と同じ規約で追加のコミットとして積む（既存コミットの amend はしない。積めなければ変更を残したまま進み summary に書く。失敗にはしない）。そのあと `git checkout --detach` でブランチを worktree から外して終了し、後続の Review フェーズへ渡す（Review の fix は隔離された別 worktree で detached HEAD のまま作業・コミットし、コミット後にだけブランチへ `git checkout --no-guess` で付けて `git merge --ff-only` で先端を進め、直ちに detach する。ブランチを checkout 中の worktree が残っていると付けられず `commitFailed` で終わる）
 
 ```bash
 # 作業ブランチ作成例（並列時の衝突回避のためイシュー番号を含める）
