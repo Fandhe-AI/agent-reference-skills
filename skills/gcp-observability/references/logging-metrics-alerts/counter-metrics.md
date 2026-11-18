@@ -46,7 +46,7 @@ Adapted (not in the official docs): the source's second `parent` form, `projects
 projects/PROJECT_ID
 ```
 
-Adapted (not in the official docs): the source's sample is not valid JSON (unquoted keys, missing commas, `...` elision); rewritten as valid JSON with the same fields.
+Adapted (not in the official docs): the source's sample is not valid JSON (unquoted keys, missing commas, `...` elision); rewritten as valid JSON with the same fields, and the label key `my-label` is changed to `my_label` because label names may not contain hyphens.
 
 ```json
 {
@@ -56,14 +56,14 @@ Adapted (not in the official docs): the source's sample is not valid JSON (unquo
   "metricDescriptor": {
     "labels": [
       {
-        "key": "my-label",
+        "key": "my_label",
         "valueType": "STRING",
         "description": "This is my label."
       }
     ]
   },
   "labelExtractors": {
-    "my-label": "REGEXP_EXTRACT(jsonPayload.someField, \"before ([0-9]+) after\")"
+    "my_label": "REGEXP_EXTRACT(jsonPayload.someField, \"before ([0-9]+) after\")"
   }
 }
 ```
@@ -134,6 +134,7 @@ gcloud logging metrics delete METRIC_NAME
 - You can't read a metric's time series from the gcloud CLI.
 - The source also shows Console steps.
 - Source: https://docs.cloud.google.com/logging/docs/logs-based-metrics/counter-metrics (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source uses the label key `my-label`; the label naming rule on the labels page is `[a-zA-Z][a-zA-Z0-9_]*`, so the example uses `my_label`.
 
 ## Related
 

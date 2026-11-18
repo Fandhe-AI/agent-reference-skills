@@ -66,9 +66,11 @@ logName = "projects/PROJECT_ID/logs/cloudaudit.googleapis.com%2Factivity"
 
 For one instance of a resource type, add an instance qualifier:
 
+Adapted (not in the official docs): `resource.instance_id` changed to `resource.labels.instance_id`, because the instance ID is a label of the `gce_instance` monitored resource.
+
 ```text
 resource.type = "gce_instance"
-resource.instance_id = "INSTANCE_ID"
+resource.labels.instance_id = "INSTANCE_ID"
 logName = "projects/PROJECT_ID/logs/cloudaudit.googleapis.com%2Factivity"
 ```
 
@@ -145,6 +147,7 @@ Folder, organization, and billing-account forms use `--folder=FOLDER_ID`, `--org
 - The sample uses unquoted keys and `...` elisions, so it is shown as `text`, not valid JSON.
 - The source also shows the Logs Explorer console steps and the "Try this API" REST form for `entries.list`.
 - Source: https://docs.cloud.google.com/logging/docs/audit/understanding-audit-logs (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source writes `resource.instance_id = "INSTANCE_ID"`. A `MonitoredResource` has only `type` and `labels`, and the `gce_instance` instance ID is the `instance_id` label, so the filter is `resource.labels.instance_id`.
 
 ## Related
 

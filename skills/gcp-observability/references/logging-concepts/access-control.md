@@ -17,7 +17,7 @@ gcloud logging read "resource.type=global"
 ### Which role for which use case
 
 - All actions in Logging: Logging Admin (`roles/logging.admin`).
-- Create and modify log sinks, log buckets, log views, linked datasets, log scopes, and analytics views: Logs Configuration Writer (`roles/logging.configWriter`). Not sufficient for log-based metrics or log-based alerting policies.
+- Create and modify log sinks, log buckets, log views, linked datasets, log scopes, and analytics views: Logs Configuration Writer (`roles/logging.configWriter`). The role includes `logging.logMetrics.create`, `logging.logMetrics.delete`, `logging.logMetrics.get`, `logging.logMetrics.list` and `logging.logMetrics.update`, so it can manage log-based metrics; for log-based alerting policies see "Roles required to create and use log-based alerting policies" (https://docs.cloud.google.com/logging/docs/access-control#lba-permissions).
 - Read the `_Required` and `_Default` buckets or use Logs Explorer / Observability Analytics: Logs Viewer (`roles/logging.viewer`) (all logs in `_Required`, the `_Default` view on `_Default`), or Private Logs Viewer (`roles/logging.privateLogViewer`) (all logs in both, including data access logs).
 - Read all log views in a project: `roles/logging.viewAccessor` on the project.
 - Read only one log view: add an IAM binding to the IAM policy of the log view, or grant `roles/logging.viewAccessor` on the project with an IAM condition limiting it to that view.
@@ -110,6 +110,7 @@ gcloud logging read "resource.type=global"
 - Access to buckets can use tags (including preventing deletion); restrict `roles/logging.viewAccessor` to a view with IAM Conditions resource attributes.
 - Custom roles: choose permissions from the API, console, or command-line permission lists. SQL-based alerting policy roles are in the "Monitor your SQL query results with an alerting policy" page.
 - Source: https://docs.cloud.google.com/logging/docs/access-control (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Source inconsistency: the role description in the source says Logs Configuration Writer "isn't sufficient to create log-based metrics or log-based alerting policies", while the same page's permission list for the role and its "Roles required to create and use log-based metrics" section say it lets principals list, create, get, update, and delete log-based metrics. The summary above follows the permission list.
 
 ## Related
 

@@ -52,7 +52,7 @@ g.co/gae/app/module_version:2017
 | `+root:[NAME]` | Root span name is exactly NAME; `+[NAME]` is a shortcut |
 | `span:[NAME_PREFIX]` | At least one span name begins with the prefix |
 | `+span:[NAME]` | At least one span name is exactly NAME |
-| `latency:[DURATION]` | Overall latency greater than or equal to DURATION; integer plus `s`, `ms` or `ns`; no unit means milliseconds (`12s 12000ms 12000000ns 12000` are equal) |
+| `latency:[DURATION]` | Overall latency greater than or equal to DURATION; integer plus `s`, `ms` or `ns`; no unit means milliseconds (`12s 12000ms 12000000000ns 12000` are equal) |
 | `label:[LABEL_KEY]` | Trace contains the label key, any value |
 | `[LABEL_KEY]:[VALUE_PREFIX]` | Label key exists and its value starts with the prefix |
 | `+[LABEL_KEY]:[VALUE_EXACT]` | Label key and exact value |
@@ -66,6 +66,7 @@ g.co/gae/app/module_version:2017
 - Do not use `root`, `span`, `label`, `method`, `latency` or `url` as label keys: traces with these label keys cannot be queried.
 - Complicated filters are slow and can time out; simplify them. No results: allow spaces only between terms, check case and spelling (a misspelled `method:GET` is read as `label:method:GET`), and test terms one at a time in the APIs Explorer of the `list` method.
 - Source: https://docs.cloud.google.com/trace/docs/trace-filters (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source lists `12s 12000ms 12000000ns 12000` as equivalent values; 12 seconds is `12000000000ns` (`12000000ns` is 0.012 seconds).
 
 ## Related
 

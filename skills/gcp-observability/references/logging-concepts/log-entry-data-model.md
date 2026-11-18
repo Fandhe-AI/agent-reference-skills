@@ -15,7 +15,7 @@ A log entry minimally consists of:
 - A timestamp: when the event took place, or when it was received by Cloud Logging.
 - The monitored resource that is the source of the entry (for example a Compute Engine instance or a GKE container).
 - A payload, which must be one of `textPayload`, `jsonPayload` or `protoPayload`.
-- The name of the log it belongs to (full resource path followed by an identifier), for example `projects/my-project/logs/stdout` or `projects/my-project/compute.googleapis.com/activity`.
+- The name of the log it belongs to (full resource path followed by an identifier), for example `projects/my-project/logs/stdout` or `projects/my-project/logs/compute.googleapis.com%2Factivity`.
 
 You can query entries whose `LogEntry` field matches criteria, for example entries whose `severity` is `ERROR`.
 
@@ -71,6 +71,7 @@ timestamp: '2018-11-01T18:39:19.718100792Z'
 - The list of monitored resource types is on the "Monitored resources and services" page of the Logging documentation.
 - Entries in `jsonPayload` may carry personal data or secrets; do not log credentials.
 - Source: https://docs.cloud.google.com/logging/docs/log-entry-data-model (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source's second log-name example is `projects/my-project/compute.googleapis.com/activity`, which lacks the `/logs/` segment and the URL-encoded `/` (`%2F`) in the log ID; the example uses the `LogEntry.logName` format `projects/PROJECT_ID/logs/LOG_ID`.
 
 ## Related
 

@@ -24,8 +24,10 @@ The command produces no response; confirm with `gcloud logging views list`.
 
 The `google_logging_log_view` resource takes `name` (fully qualified view name), `bucket` (fully qualified bucket name), `filter`, and `description`. Name format for projects:
 
+Adapted (not in the official docs): `/view/` changed to `/views/`, the collection name used by the rest of the source page.
+
 ```text
-projects/PROJECT_ID/locations/LOCATION/buckets/BUCKET_NAME/view/LOG_VIEW_ID
+projects/PROJECT_ID/locations/LOCATION/buckets/BUCKET_NAME/views/LOG_VIEW_ID
 ```
 
 ## Options / Props
@@ -46,6 +48,7 @@ projects/PROJECT_ID/locations/LOCATION/buckets/BUCKET_NAME/view/LOG_VIEW_ID
 - A new view isn't readable by others until you grant access; see [grant-log-view-access.md](./grant-log-view-access.md).
 - The source also shows Console steps, Windows PowerShell / cmd.exe variants of the command, and a Terraform resource.
 - Source: https://docs.cloud.google.com/logging/docs/logs-views (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the Terraform name format in the source reads `.../buckets/BUCKET_NAME/view/LOG_VIEW_ID`; the gcloud output and IAM condition examples on the same page use `.../buckets/BUCKET_NAME/views/LOG_VIEW_ID`, which is the log view resource name.
 
 ## Related
 

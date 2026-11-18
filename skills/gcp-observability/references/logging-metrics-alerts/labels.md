@@ -110,7 +110,7 @@ Text payload `unfinished_task_instance_count.py:61 Unfinished task instance coun
 | Deletion | A label can't be deleted once created. |
 | Editable after creation | Extractor expression and description. |
 | Not changeable | Name and value type. |
-| Label value length | Only the first 1,024 characters are kept. |
+| Label value length | Values are limited to 1,024 bytes (only the first 1,024 bytes are kept; multibyte values hold fewer characters). |
 | Active time series | About 30,000 per log-based metric (depends on label values, including default labels). |
 | Label name (Console) | At most 100 characters; matches `[a-zA-Z][a-zA-Z0-9_]*`; more than just the string "log". |
 
@@ -144,6 +144,7 @@ Text payload `unfinished_task_instance_count.py:61 Unfinished task instance coun
 - To verify labels, use Metrics Explorer: **View in Metrics Explorer**, set Aggregation to **Unaggregated**, and show the table to see label columns. For `gce_instance` the resource labels are `project_id`, `instance_id`, `zone`; `logging/log_entry_count` has metric labels `log` and `severity`.
 - The source also shows Console steps.
 - Source: https://docs.cloud.google.com/logging/docs/logs-based-metrics/labels (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Source inconsistency: the labels page says "Only the first 1,024 characters of a label value are" kept, while the troubleshooting page says values "must not exceed 1,024 bytes" (https://docs.cloud.google.com/logging/docs/logs-based-metrics/troubleshooting). The table states the byte limit.
 
 ## Related
 
