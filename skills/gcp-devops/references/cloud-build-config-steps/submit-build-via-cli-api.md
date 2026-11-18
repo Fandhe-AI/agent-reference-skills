@@ -16,7 +16,7 @@ Run from the directory containing your source and `Dockerfile`:
 gcloud builds submit --tag LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/IMAGE_NAME
 ```
 
-The command compresses the current directory, starts a build in `LOCATION`, tags the image and pushes it to Artifact Registry.
+The command compresses the current directory, starts a build, tags the image and pushes it to the Artifact Registry repository in `LOCATION`. `LOCATION` in `--tag` is where the image is stored; the build runs in the region given by `--region`, otherwise the `builds/region` property, otherwise `global`.
 
 ### Build with a build config file
 
@@ -138,6 +138,7 @@ curl -X POST -T request.json -H "Authorization: Bearer $(gcloud config config-he
 
 ## Notes
 
+- Corrected from the official docs: the source says the command "initiates a build in the location `LOCATION`". The `gcloud builds submit` help (gcloud 593.0.0) says `--region` selects the Cloud Build region and, if unset, `builds/region` is used, then `global`; the `--tag` location only sets where the image is pushed. Pass `--region=REGION` when the build region matters, for example for data residency.
 - Source: https://docs.cloud.google.com/build/docs/running-builds/submit-build-via-cli-api (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the 2nd-gen command was `gcloud builds submit REPOSITORY --revision=REVISION --config=BUILD_CONFIG LOCATION`; it now passes the location as `--region=REGION`. Adapted from the official docs: the `--no-source` example originally read `gcloud builds submit --config CONFIG_FILE_PATH SOURCE_DIRECTORY` and now uses `--no-source`.
 - On the first `gcloud builds submit` in a project, Cloud Build creates a Cloud Storage bucket named `[YOUR_PROJECT_NAME]_cloudbuild` to hold uploaded source. It is not cleaned automatically; set a lifecycle configuration on the bucket or delete objects manually.

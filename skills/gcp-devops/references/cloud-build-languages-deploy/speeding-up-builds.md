@@ -53,7 +53,7 @@ steps:
 
 ### Exclude files with `.gcloudignore`
 
-For builds triggered from a Cloud Build trigger the code directory is uploaded; exclude documentation, generated code, binaries, `*.jar` files, compiled assets and vendored dependencies. Create `.gcloudignore` in the project root:
+`.gcloudignore` lists files that gcloud leaves out when it uploads local source, for example with `gcloud builds submit`; it does not filter the source a trigger fetches from a repository. Exclude documentation, generated code, binaries, `*.jar` files, compiled assets and vendored dependencies. Create `.gcloudignore` in the project root:
 
 ```text
 .git
@@ -69,10 +69,11 @@ vendor
 |-----------|------------|---------|
 | `--cache-from` | Docker builds only | Needs a previously built image; the cached image is pulled from a registry (adds time); rebuilds every layer from the first changed layer, so no benefit if an early layer changes |
 | Cloud Storage directory cache | Any Cloud Build builder | Best when the build is long and the cached results are small |
-| `.gcloudignore` | Uploaded source | Also gives a more consistent build and lowers the risk of deploying code still in development |
+| `.gcloudignore` | Local source uploaded by gcloud (not trigger builds) | Also gives a more consistent build and lowers the risk of deploying code still in development |
 
 ## Notes
 
+- Clarified from the official docs: the source introduces `.gcloudignore` with "When a build is triggered from a Cloud Build trigger, your code directory is uploaded". `.gcloudignore` applies to gcloud commands that upload local files (https://docs.cloud.google.com/sdk/gcloud/reference/topic/gcloudignore); a trigger build fetches source from the connected repository, so the page limits it to local uploads. To keep files out of the Docker build context, use a `.dockerignore` file (see the `docker` skill).
 - The source recommends always using `--cache-from`.
 - The example caches from the mutable `:latest` tag, so the build trusts whatever image currently has that tag; limit who can push to the repository.
 - Adapted from the official docs: the source runs `gcloud builds submit --config cloudbuild.yaml .` without defining `_LOCATION`, `_REPOSITORY` and `_IMAGE`; the command now passes them with `--substitutions`.
