@@ -139,13 +139,13 @@ NOTES
         $ gcloud beta kms ekm-config add-iam-policy-binding
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud kms ekm-config add-iam-policy-binding \
     --location='us-central1' \
     --member='user:test-user@gmail.com' \
-    --role='roles/editor' \
+    --role='roles/cloudkms.ekmConnectionsAdmin' \
     --condition='expression=request.time < timestamp("2023-01-01T00:00:00Z"),title=expires_end_of_2022,description=Expires at midnight on 2022-12-31'
 ```
 
@@ -441,7 +441,7 @@ Adapted (not in the official docs): runnable form of the example(s) above: lines
 gcloud kms ekm-config remove-iam-policy-binding \
     --location='us-central1' \
     --member='user:test-user@gmail.com' \
-    --role='roles/editor' \
+    --role='roles/cloudkms.ekmConnectionsAdmin' \
     --condition='expression=request.time < timestamp("2023-01-01T00:00:00Z"),title=expires_end_of_2022,description=Expires at midnight on 2022-12-31'
 
 gcloud kms ekm-config remove-iam-policy-binding \
@@ -747,6 +747,7 @@ SYNOPSIS
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the `remove-iam-policy-binding` example with `--all` passes `laplace` as a positional argument, but the SYNOPSIS (`gcloud kms ekm-config remove-iam-policy-binding --location=LOCATION --member=PRINCIPAL --role=ROLE ...`) takes no positional arguments (gcloud 593.0.0: "unrecognized arguments: laplace"); the runnable form drops it.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the conditional binding examples grant `roles/editor`, but the `--condition` description on this page says that with a condition `--role cannot be a basic role` (`roles/editor`, `roles/owner`, `roles/viewer`), and gcloud 593.0.0 rejects the `add-iam-policy-binding` example ("Binding with a condition and a basic role is not allowed"); the runnable forms of `add-iam-policy-binding` and the matching `remove-iam-policy-binding` use `roles/cloudkms.ekmConnectionsAdmin` (Cloud KMS EkmConnections Admin, which includes `cloudkms.ekmConfigs.get`, `cloudkms.ekmConfigs.update` and the `cloudkms.ekmConnections.*` permissions; see `iam/cloudkms.md`).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

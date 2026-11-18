@@ -160,13 +160,13 @@ NOTES
         $ gcloud beta kms ekm-connections add-iam-policy-binding
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud kms ekm-connections add-iam-policy-binding laplace \
     --location='global' \
     --member='user:test-user@gmail.com' \
-    --role='roles/editor' \
+    --role='roles/cloudkms.ekmConnectionsAdmin' \
     --condition='expression=request.time < timestamp("2023-01-01T00:00:00Z"),title=expires_end_of_2022,description=Expires at midnight on 2022-12-31'
 ```
 
@@ -711,13 +711,13 @@ NOTES
         $ gcloud beta kms ekm-connections remove-iam-policy-binding
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud kms ekm-connections remove-iam-policy-binding laplace \
     --location='global' \
     --member='user:test-user@gmail.com' \
-    --role='roles/editor' \
+    --role='roles/cloudkms.ekmConnectionsAdmin' \
     --condition='expression=request.time < timestamp("2023-01-01T00:00:00Z"),title=expires_end_of_2022,description=Expires at midnight on 2022-12-31'
 ```
 
@@ -1157,6 +1157,7 @@ SYNOPSIS
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Example error: the `add-iam-policy-binding` example with `--condition` uses `--role='roles/editor'`; gcloud 593.0.0 rejects it ("Binding with a condition and a basic role is not allowed. Basic roles are `roles/editor`, `roles/owner`, and `roles/viewer`."), and the `--condition` description says "When the condition is specified and is not None, --role cannot be a basic role". Use a role that is not a basic role.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the conditional binding examples grant `roles/editor`, but the `--condition` description on this page says that with a condition `--role cannot be a basic role` (`roles/editor`, `roles/owner`, `roles/viewer`), and gcloud 593.0.0 rejects the `add-iam-policy-binding` example ("Binding with a condition and a basic role is not allowed"); the runnable forms of `add-iam-policy-binding` and the matching `remove-iam-policy-binding` use `roles/cloudkms.ekmConnectionsAdmin` (Cloud KMS EkmConnections Admin, which includes `cloudkms.ekmConfigs.get`, `cloudkms.ekmConfigs.update` and the `cloudkms.ekmConnections.*` permissions; see `iam/cloudkms.md`).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
