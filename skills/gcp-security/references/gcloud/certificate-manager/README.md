@@ -12,3 +12,4 @@
 | gcloud certificate-manager maps list | 3 commands (alpha, beta, ga); certificate-manager maps list … | [certificate-manager-maps-list.md](./certificate-manager-maps-list.md) |
 | gcloud certificate-manager maps update | 3 commands (alpha, beta, ga); certificate-manager maps update … | [certificate-manager-maps-update.md](./certificate-manager-maps-update.md) |
 | gcloud certificate-manager operations | 6 commands (alpha, beta, ga); certificate-manager operations describe … | [certificate-manager-operations.md](./certificate-manager-operations.md) |
+| gcloud certificate-manager trust-configs | 21 commands (alpha, beta, ga); certificate-manager trust-configs create … | [certificate-manager-trust-configs.md](./certificate-manager-trust-configs.md) |
