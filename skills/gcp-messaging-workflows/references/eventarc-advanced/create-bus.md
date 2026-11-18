@@ -85,12 +85,13 @@ curl -X DELETE \
 | `displayName` | Optional display name. |
 | `labels` | Optional map of label key/value pairs. |
 | `annotations` | Optional map of free-form annotations. |
-| `cryptoKeyName` | Optional Cloud KMS key, format `projects/PROJECT_NAME/locations/LOCATION/keyRings/RING_NAME/cryptoKeys/KEY_NAME`. |
+| `cryptoKeyName` | Optional Cloud KMS key, format `projects/PROJECT_ID/locations/LOCATION/keyRings/RING_NAME/cryptoKeys/KEY_NAME`. |
 | `loggingConfig.logSeverity` | Same enum as `--logging-config`; default `NONE`. |
 | `messageBusId` (query) | ID of the bus to create. |
 
 ## Notes
 
+- Corrected from the official docs: the source writes the `cryptoKeyName` format with `PROJECT_NAME`; resource names contain the project ID (the Discovery pattern is `projects/{project}/...`), so the page uses `PROJECT_ID`.
 - Corrected from the official docs: the source names the permission for using a bus `eventarc.buses.use`; the IAM roles and permissions reference for Eventarc lists `eventarc.messageBuses.use` in `roles/eventarc.messageBusUser` (https://docs.cloud.google.com/iam/docs/roles-permissions/eventarc).
 - Required roles: Creating a pipeline and an enrollment needs additional permissions (see create-enrollment).
 - Deleting a bus is irreversible: delete all associated enrollments first; message sources configured to use the deleted bus can no longer publish to it. Try it on a disposable project first.

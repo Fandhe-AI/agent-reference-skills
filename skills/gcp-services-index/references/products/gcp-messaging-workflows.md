@@ -6,15 +6,15 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 
 ## Signature / Usage
 
-Owner skill: `gcp-messaging-workflows` (status: 未収録（予定）). gcloud groups: `eventarc`, `managed-kafka`, `pubsub`, `workflows`.
+Owner skill: `gcp-messaging-workflows` (status: 収録済み). gcloud groups: `eventarc`, `managed-kafka`, `pubsub`, `workflows`.
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Lifecycle | Docs | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| Eventarc | `eventarc.googleapis.com` (v1) | Build event-driven applications on Google Cloud Platform. | `eventarc` | `eventarc.` | 11 | — | — | https://cloud.google.com/eventarc | 未収録（予定） |
-| Google Cloud Managed Service for Apache Kafka | `managedkafka.googleapis.com` (v1) | Manage Apache Kafka clusters and resources. | `managed-kafka` | `managedkafka.` | 14 | — | — | https://cloud.google.com/managed-service-for-apache-kafka/docs | 未収録（予定） |
-| Pub/Sub | `pubsub.googleapis.com` (v1, v1beta1a, v1beta2) | Provides reliable, many-to-many, asynchronous messaging between applications. | `pubsub` | `pubsub.` | 6 | — | — | https://cloud.google.com/pubsub/docs | 未収録（予定） |
-| Pub/Sub Lite | `pubsublite.googleapis.com` (v1) | — | — | `pubsublite.` | 6 | — | Deprecated | https://cloud.google.com/pubsub/lite/docs | 未収録（予定） |
-| Workflows | `workflows.googleapis.com` (v1, v1beta) | Manage workflow definitions. To execute workflows and manage executions, see the Workflows Executions API. | `workflows` | `workflows.` | 5 | — | — | https://cloud.google.com/workflows | 未収録（予定） |
+| Eventarc | `eventarc.googleapis.com` (v1) | Build event-driven applications on Google Cloud Platform. | `eventarc` | `eventarc.` | 11 | — | — | https://cloud.google.com/eventarc | 収録済み |
+| Google Cloud Managed Service for Apache Kafka | `managedkafka.googleapis.com` (v1) | Manage Apache Kafka clusters and resources. | `managed-kafka` | `managedkafka.` | 14 | — | — | https://cloud.google.com/managed-service-for-apache-kafka/docs | 収録済み |
+| Pub/Sub | `pubsub.googleapis.com` (v1, v1beta1a, v1beta2) | Provides reliable, many-to-many, asynchronous messaging between applications. | `pubsub` | `pubsub.` | 6 | — | — | https://cloud.google.com/pubsub/docs | 収録済み |
+| Pub/Sub Lite | `pubsublite.googleapis.com` (v1) | — | — | `pubsublite.` | 6 | — | Deprecated | https://cloud.google.com/pubsub/lite/docs | 収録済み |
+| Workflows | `workflows.googleapis.com` (v1, v1beta) | Manage workflow definitions. To execute workflows and manage executions, see the Workflows Executions API. | `workflows` | `workflows.` | 5 | — | — | https://cloud.google.com/workflows | 収録済み |
 
 ```bash
 gcloud help

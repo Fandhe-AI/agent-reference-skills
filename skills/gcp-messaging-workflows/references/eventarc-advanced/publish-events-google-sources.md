@@ -21,7 +21,7 @@ gcloud eventarc google-api-sources create GOOGLE_API_SOURCE_NAME \
 
 ### Enable events from Google sources (REST)
 
-Method: `projects.locations.googleApiSources.create`; `DESTINATION` has the format `projects/PROJECT_NAME/locations/LOCATION/messageBuses/BUS_NAME`.
+Method: `projects.locations.googleApiSources.create`; `DESTINATION` has the format `projects/PROJECT_ID/locations/LOCATION/messageBuses/BUS_NAME`.
 
 ```bash
 cat > request.json << 'EOF'
@@ -125,6 +125,7 @@ gcloud eventarc google-api-sources create GOOGLE_API_SOURCE_NAME \
 
 ## Notes
 
+- Corrected from the official docs: the source writes the `DESTINATION` format with `PROJECT_NAME`; resource names contain the project ID (the Discovery pattern is `projects/{project}/...`), so the page uses `PROJECT_ID`.
 - Preview: publishing events from multiple projects is subject to the "Pre-GA Offerings Terms" and may have limited support.
 - If the project containing the `GoogleApiSource` moves to a different organization, multi-project publishing stops working as expected; update or re-create the `GoogleApiSource`.
 - Permissive: the multi-project grant is made on the organization (`roles/eventarc.multiProjectEventCollector` to the Eventarc service agent), as the source does; it lets the service agent collect events across the organization.

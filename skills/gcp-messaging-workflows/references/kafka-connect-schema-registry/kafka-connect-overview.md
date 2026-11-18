@@ -59,7 +59,7 @@ gcloud managed-kafka connectors create CONNECTOR_ID \
 
 - A single Managed Service for Apache Kafka cluster can have multiple Connect clusters. With MirrorMaker 2.0, a Connect cluster can read or write topic data on non-primary Managed Service for Apache Kafka clusters or self-managed Kafka clusters, enabling topic replication.
 - Kafka Connect APIs are served by `managedkafka.googleapis.com` and can be used through the console, the gcloud CLI, the Managed Kafka API, the client libraries or Terraform.
-- "Connectors" here are Kafka Connect connectors (source and sink plugins running on a Connect cluster) - not Integration Connectors of Application Integration (planned `gcp-integration`) and not Workflows connectors.
+- "Connectors" here are Kafka Connect connectors (source and sink plugins running on a Connect cluster) - not Integration Connectors of Application Integration (`gcp-integration`) and not Workflows connectors.
 - Google Cloud Managed Service for Apache Kafka runs Apache Kafka; client and connector properties follow upstream Apache Kafka.
 - Snippet taken from https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/connect-cluster/create-pubsub-sink-connector
 - Source: https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/kafka-connect-overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)

@@ -85,7 +85,7 @@ main:
 
 ## Notes
 
-- Workflows connectors here are built-in steps that call Google Cloud APIs; they are not Integration Connectors of Application Integration (planned `gcp-integration`).
+- Workflows connectors here are built-in steps that call Google Cloud APIs; they are not Integration Connectors of Application Integration (`gcp-integration`).
 - To access HTTP response data saved in a variable, see https://docs.cloud.google.com/workflows/docs/http-requests.
 - The samples call public example endpoints; calls to Google APIs or Cloud Run need `auth` (OAuth2 or OIDC) as described in the HTTP requests documentation.
 - The source also shows JSON forms of every sample; they are omitted.

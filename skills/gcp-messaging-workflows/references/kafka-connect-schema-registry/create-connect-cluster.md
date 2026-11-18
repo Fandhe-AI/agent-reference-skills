@@ -198,7 +198,7 @@ ${directory:/var/secrets:PROJECT_NAME-SECRET_NAME-SECRET_VERSION}
 - Secrets are mounted as read-only files in workers; keep credentials in Secret Manager and reference them with the formats above instead of writing them in connector configs. `PROJECT_NAME`, `SECRET_NAME`, `SECRET_VERSION` are the project, secret and version; example `password=${directory:/var/secrets:project1-database_password-3}`.
 - Labels are key-value pairs (for example `environment:prod`, `application:web-app`) used to organize and filter Connect clusters.
 - Resolvable DNS domains: the primary Managed Service for Apache Kafka cluster's DNS domain (bootstrap address) is included automatically; other Kafka clusters, including external ones, need their DNS domain configured.
-- "Connect cluster" and "connectors" here are Kafka Connect (see the overview); not Integration Connectors of Application Integration (planned `gcp-integration`) and not Workflows connectors. Google Cloud Managed Service for Apache Kafka runs Apache Kafka; client properties follow upstream Apache Kafka.
+- "Connect cluster" and "connectors" here are Kafka Connect (see the overview); not Integration Connectors of Application Integration (`gcp-integration`) and not Workflows connectors. Google Cloud Managed Service for Apache Kafka runs Apache Kafka; client properties follow upstream Apache Kafka.
 - The source also shows Console, Terraform, Go and Java.
 - Source: https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/connect-cluster/create-connect-cluster (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 

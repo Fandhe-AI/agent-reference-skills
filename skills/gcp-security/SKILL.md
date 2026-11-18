@@ -216,7 +216,7 @@ skills/gcp-security/
 - `gcp-devops`（予定）— Artifact Registry・Cloud Build・Cloud Deploy・`gcloud artifacts`（Artifact Analysis の `gcloud artifacts docker images scan` 等もこちら）
 - `gcp-iac`（予定）— Terraform
 - `gcp-ai-apis`（予定）— Sensitive Data Protection（DLP）・reCAPTCHA
-- `gcp-messaging-workflows`（予定）— Pub/Sub
+- `gcp-messaging-workflows`— Pub/Sub
 - `gcp-bigquery`（予定）— BigQuery
 - `cloudflare-workers` — Cloudflare Workers の secrets は別物。Secret Manager は Google Cloud のシークレット管理
 - `vercel` — Vercel の環境変数は別物。Secret Manager は Google Cloud のシークレット管理

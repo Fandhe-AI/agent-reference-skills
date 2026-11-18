@@ -194,7 +194,7 @@ skills/gcp-messaging-workflows/
 - `gcp-cli` — gcloud 全般のインストール・設定・認証・出力フォーマット
 - `gcp-client-libraries` — Node.js / Python / Rust のクライアントライブラリ共通パターンと Pub/Sub エミュレーター。本スキルは各ガイド内のコード
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
-- `gcp-integration`（予定）— Application Integration・Integration Connectors・Data Connectors。Workflows と Application Integration の選択はこちら。「コネクタ」は名前が衝突し、Workflows のコネクタ（`workflows-connectors-callbacks-triggers`）と Kafka Connect のコネクタ（`kafka-connect-schema-registry`）は本スキル、Integration Connectors は `gcp-integration`
+- `gcp-integration` — Application Integration・Integration Connectors・Data Connectors。Workflows と Application Integration の選択はこちら。「コネクタ」は名前が衝突し、Workflows のコネクタ（`workflows-connectors-callbacks-triggers`）と Kafka Connect のコネクタ（`kafka-connect-schema-registry`）は本スキル、Integration Connectors は `gcp-integration`
 - `gcp-bigquery`（予定）— Pub/Sub の export 先となる BigQuery のデータセット側
 - `gcp-data-pipelines`（予定）— Dataflow・Composer・Orchestration Pipelines。`gcloud orchestration-pipelines` は本スキルに無い
 - `gcp-devops`（予定）— Cloud Build の trigger・Artifact Registry
@@ -217,7 +217,7 @@ skills/gcp-messaging-workflows/
 - Managed Service for Apache Kafka: cluster / topic / consumer group の更新・削除・一覧・broker とディスクのサイズ・パーティション割り当て・災害復旧・MirrorMaker でのデータ移行・ACL の個別操作・クイックスタート・BigQuery / Cloud Storage / Postgres / MirrorMaker コネクタ・Connect のトラブルシューティング・Schema Registry の subject / version 操作・Terraform・MCP・確約利用割引
 - MCP（Pub/Sub と Managed Kafka のリモート MCP サーバー）、Trusted Partner Cloud との差異（取得できなかったページ）
 - Dataflow 連携・Cloud Run / functions / App Engine 側の接続ページ（`gcp-run`、`gcp-data-pipelines`（予定））、Cloud Tasks / Composer / Dataform との比較やチュートリアル
-- Application Integration・Integration Connectors・Data Connectors（`gcp-integration`（予定））
+- Application Integration・Integration Connectors・Data Connectors（`gcp-integration`）
 - 監査ログのメソッドと権限タイプの対応表（各プロダクトの audit-logging ページ）、Java / C# / PHP / C++ / Ruby の SDK 固有の手順、Console の操作手順（各ページの Notes に省略した形式を記載）
 
 ## 鮮度・ライセンス・既知の制約

@@ -136,7 +136,7 @@ except GoogleAPICallError as e:
 - Pub/Sub delivers at-least-once, so Pub/Sub subscribers of the published messages must be idempotent.
 - After creating a connector you can edit, delete, pause, stop or restart it. The full property list is in the connector's GitHub README: https://github.com/googleapis/java-pubsub-group-kafka-connector?tab=readme-ov-file#sink-connector
 - The task restart policy (console) corresponds to the `--task-*` flags; see "Task restart policy" on the connectors overview page.
-- "Connector" here is a Kafka Connect sink plugin on a Connect cluster, not an Integration Connector of Application Integration (planned `gcp-integration`) and not a Workflows connector. Google Cloud Managed Service for Apache Kafka runs Apache Kafka; connector and client properties follow upstream Apache Kafka.
+- "Connector" here is a Kafka Connect sink plugin on a Connect cluster, not an Integration Connector of Application Integration (`gcp-integration`) and not a Workflows connector. Google Cloud Managed Service for Apache Kafka runs Apache Kafka; connector and client properties follow upstream Apache Kafka.
 - The source also shows Console, Terraform, Go and Java.
 - Source: https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/connect-cluster/create-pubsub-sink-connector (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
