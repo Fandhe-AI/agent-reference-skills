@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-security
 
-Google Cloud (GCP) のセキュリティ基盤スキル（鍵・秘密情報・証明書・アクセス境界・エッジ防御・ソフトウェアサプライチェーン）。Cloud KMS（鍵・key ring・保護レベル・Cloud HSM（Single-tenant / Bare Metal）・Cloud EKM・鍵のインポート・Autokey・CMEK）、Secret Manager（global / regional secrets・ローテーション）、Parameter Manager、Certificate Manager（Google マネージド証明書・trust config・Public CA・2nd gen）、Certificate Authority Service（CA プール・ルート CA・証明書リクエスト）、Public CA（`gcloud publicca`）を扱う。アクセス制御は Identity-Aware Proxy（IAP。有効化・署名付きヘッダー・TCP 転送・オンプレミス・外部 ID）、Chrome Enterprise Premium（旧 BeyondCorp Enterprise。証明書ベースのアクセス・Endpoint Verification）、Access Context Manager（アクセスレベル・アクセスポリシー）、VPC Service Controls（サービス境界・上り / 下りルール・ドライラン）、Cloud Armor（セキュリティポリシー・WAF・レート制限・Adaptive Protection・bot 管理・DDoS 対策）。サプライチェーンは Binary Authorization、Artifact Analysis（旧 Container Analysis。Container Scanning・On-Demand Scanning・SBOM・VEX）、Assured Open Source Software、Software Supply Chain Security。加えて Identity Platform（CIAM）と Web Risk のガイドと、gcloud 11 グループ・REST（Discovery）13 API・IAM ロール 15 サービスを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `kms-concepts` / `kms-key-operations` / `kms-hsm-ekm-import` / `kms-cmek-autokey` / `secret-manager` / `parameter-manager` / `iap-tcp-external-identities` / `vpc-service-controls-concepts` / `vpc-service-controls-perimeters` / `software-supply-chain` / `identity-platform` / `web-risk`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のセキュリティ基盤スキル（鍵・秘密情報・証明書・アクセス境界・エッジ防御・ソフトウェアサプライチェーン）。Cloud KMS（鍵・key ring・保護レベル・Cloud HSM（Single-tenant / Bare Metal）・Cloud EKM・鍵のインポート・Autokey・CMEK）、Secret Manager（global / regional secrets・ローテーション）、Parameter Manager、Certificate Manager（Google マネージド証明書・trust config・Public CA・2nd gen）、Certificate Authority Service（CA プール・ルート CA・証明書リクエスト）、Public CA（`gcloud publicca`）を扱う。アクセス制御は Identity-Aware Proxy（IAP。有効化・署名付きヘッダー・TCP 転送・オンプレミス・外部 ID）、Chrome Enterprise Premium（旧 BeyondCorp Enterprise。証明書ベースのアクセス・Endpoint Verification）、Access Context Manager（アクセスレベル・アクセスポリシー）、VPC Service Controls（サービス境界・上り / 下りルール・ドライラン）、Cloud Armor（セキュリティポリシー・WAF・レート制限・Adaptive Protection・bot 管理・DDoS 対策）。サプライチェーンは Binary Authorization、Artifact Analysis（旧 Container Analysis。Container Scanning・On-Demand Scanning・SBOM・VEX）、Assured Open Source Software、Software Supply Chain Security。加えて Identity Platform（CIAM）と Web Risk のガイドと、gcloud 11 グループ・REST（Discovery）13 API・IAM ロール 15 サービスを収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `kms-key-operations` / `secret-manager` / `parameter-manager` / `vpc-service-controls-concepts` / `vpc-service-controls-perimeters` / `software-supply-chain` / `web-risk`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。`pam`（Privileged Access Manager）と `fault-testing`（Fault Injection Testing）の gcloud は本スキルの機械生成ページのみで、ガイドは持たない（PAM のガイドは `gcp-foundation`）。
 
@@ -19,6 +19,15 @@ Google Cloud (GCP) のセキュリティ基盤スキル（鍵・秘密情報・�
 skills/gcp-security/
   SKILL.md
   references/
+    kms-concepts/                 # 公式ガイド由来（手書き）: Cloud KMS の概要・リソース階層・鍵の状態・保護レベル・エンベロープ暗号化・ローテーション・アルゴリズム・署名・MAC・KEM・割り当て
+      README.md
+      <page>.md                   # 例: key-management-service.md / protection-levels.md / algorithms.md
+    kms-hsm-ekm-import/           # Single-tenant Cloud HSM・Bare Metal HSM・構成証明・Cloud EKM・鍵のインポート
+      README.md
+      <page>.md
+    kms-cmek-autokey/             # CMEK・推奨事項・CMEK 対応サービス・Autokey
+      README.md
+      <page>.md
     certificate-manager/          # Certificate Manager: コアコンポーネント・ドメイン認可・デプロイ・trust config・Public CA・2nd gen
       README.md
       <page>.md                   # 例: v2-overview.md
@@ -29,6 +38,9 @@ skills/gcp-security/
       README.md
       <page>.md
     iap-app-authentication/       # 署名付きヘッダーの検証・プログラムによる認証・セッション・クエリパラメータとヘッダー
+      README.md
+      <page>.md
+    iap-tcp-external-identities/  # TCP 転送・オンプレミスアプリ・外部 ID・Workforce Identity Federation・FAQ
       README.md
       <page>.md
     chrome-enterprise-premium/    # Chrome Enterprise Premium・証明書ベースのアクセス（CBA）・Endpoint Verification
@@ -49,6 +61,9 @@ skills/gcp-security/
     artifact-analysis/            # Artifact Analysis: コンテナスキャン・On-Demand Scanning・メタデータ・SBOM・脆弱性・VEX
       README.md
       <page>.md
+    identity-platform/            # Identity Platform: 認証の概念・ユーザー管理・マルチテナンシー・ブロッキング関数・OIDC・Admin SDK
+      README.md
+      <page>.md
 ```
 
 ## 探索手順
@@ -60,24 +75,29 @@ skills/gcp-security/
 3. 非推奨を確認するときは、下記「鮮度・ライセンス・既知の制約」に挙げたページを引く
 4. SCC・Assured Workloads・Access Approval 等は `gcp-security-compliance`
 
-未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `kms-concepts` / `kms-key-operations` / `kms-hsm-ekm-import` / `kms-cmek-autokey` / `secret-manager` / `parameter-manager` / `iap-tcp-external-identities` / `vpc-service-controls-concepts` / `vpc-service-controls-perimeters` / `software-supply-chain` / `identity-platform` / `web-risk`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `iam` / `rest` / `rest-schemas` / `kms-key-operations` / `secret-manager` / `parameter-manager` / `vpc-service-controls-concepts` / `vpc-service-controls-perimeters` / `software-supply-chain` / `web-risk`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| Cloud KMS の概念（リソース階層・鍵の状態・保護レベル SOFTWARE / HSM / EXTERNAL・エンベロープ暗号化・ローテーション・アルゴリズム・署名・MAC・割り当て） | kms-concepts | [references/kms-concepts/README.md](references/kms-concepts/README.md) |
+| Cloud HSM（Single-tenant / Bare Metal）・鍵の構成証明・Cloud EKM の接続とアーキテクチャ・鍵のインポート | kms-hsm-ekm-import | [references/kms-hsm-ekm-import/README.md](references/kms-hsm-ekm-import/README.md) |
+| CMEK の仕組みと推奨事項・CMEK 対応サービス・Autokey の有効化とリソース作成 | kms-cmek-autokey | [references/kms-cmek-autokey/README.md](references/kms-cmek-autokey/README.md) |
 | Certificate Manager の証明書・証明書マップ・DNS 認証・trust config（mTLS）・Public CA・2nd gen | certificate-manager | [references/certificate-manager/README.md](references/certificate-manager/README.md) |
 | Certificate Authority Service の CA プール・ルート CA・発行ポリシー・証明書のリクエスト | certificate-authority-service | [references/certificate-authority-service/README.md](references/certificate-authority-service/README.md) |
 | IAP の概要・Compute Engine / Cloud Run / GKE / App Engine での有効化・アクセス管理・カスタム OAuth・Google 管理の OAuth クライアント | iap-overview-setup | [references/iap-overview-setup/README.md](references/iap-overview-setup/README.md) |
 | IAP の署名付きヘッダー（`x-goog-iap-jwt-assertion`）検証・プログラムによる認証・セッション | iap-app-authentication | [references/iap-app-authentication/README.md](references/iap-app-authentication/README.md) |
+| IAP の TCP 転送・オンプレミスアプリ・外部 ID（Identity Platform 連携）・Workforce Identity Federation との併用 | iap-tcp-external-identities | [references/iap-tcp-external-identities/README.md](references/iap-tcp-external-identities/README.md) |
 | Chrome Enterprise Premium（旧 BeyondCorp Enterprise）・証明書ベースのアクセス（CBA）・Endpoint Verification・デバイスのアクセスレベル | chrome-enterprise-premium | [references/chrome-enterprise-premium/README.md](references/chrome-enterprise-premium/README.md) |
 | Access Context Manager のアクセスレベル（基本 / カスタム）・アクセスポリシー・スコープ付きポリシー・アクセスバインディング | access-context-manager | [references/access-context-manager/README.md](references/access-context-manager/README.md) |
 | Cloud Armor のセキュリティポリシー・ルール言語（CEL）・階層型ポリシー・ネットワークエッジポリシー・ベストプラクティス | cloud-armor-security-policies | [references/cloud-armor-security-policies/README.md](references/cloud-armor-security-policies/README.md) |
 | Cloud Armor の WAF ルール・レート制限・Adaptive Protection・bot 管理・高度なネットワーク DDoS 対策・Armor Enterprise・脅威インテリジェンス | cloud-armor-waf-ddos-bots | [references/cloud-armor-waf-ddos-bots/README.md](references/cloud-armor-waf-ddos-bots/README.md) |
 | Binary Authorization のポリシー YAML・構成証明（attestation）・継続的検証（CV）・legacy CV の廃止 | binary-authorization | [references/binary-authorization/README.md](references/binary-authorization/README.md) |
 | Artifact Analysis のコンテナスキャン・On-Demand Scanning・SBOM・脆弱性の調査・note / occurrence・VEX | artifact-analysis | [references/artifact-analysis/README.md](references/artifact-analysis/README.md) |
+| Identity Platform の認証の概念・メールログイン・ブロッキング関数・OIDC・マルチテナンシー・Admin SDK | identity-platform | [references/identity-platform/README.md](references/identity-platform/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `kms-concepts` / `kms-key-operations` / `kms-hsm-ekm-import` / `kms-cmek-autokey` / `secret-manager` / `parameter-manager` / `iap-tcp-external-identities` / `vpc-service-controls-concepts` / `vpc-service-controls-perimeters` / `software-supply-chain` / `identity-platform` / `web-risk`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `iam` / `rest` / `rest-schemas` / `kms-key-operations` / `secret-manager` / `parameter-manager` / `vpc-service-controls-concepts` / `vpc-service-controls-perimeters` / `software-supply-chain` / `web-risk`
 
 ## 他スキルとの使い分け
 
