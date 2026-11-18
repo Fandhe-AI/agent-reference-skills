@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-security-compliance
 
-Google Cloud (GCP) のセキュリティ態勢・脅威検出・コンプライアンス系スキル。Security Command Center（SCC。Standard / Premium / Enterprise（非推奨）のサービスティア・アクティベーション・アクセス制御・データ所在地・検出結果のクラス / 重大度 / 状態 / ミュート / セキュリティマーク・API / 通知 / エクスポート・Event Threat Detection / VM Threat Detection / Cloud Run Threat Detection / Agent Platform Threat Detection・Security Health Analytics・脆弱性評価・Web Security Scanner・攻撃の発生可能性（attack exposure）と有害な組み合わせ（toxic combinations））、Security posture と IaC 検証、AI Protection・CIEM・DSPM（非推奨）・Risk Manager、Compliance Manager（フレームワーク・Cloud Controls・CEL）、Model Armor（テンプレート・フィルタ・統合・ロギング）、Assured Workloads（フレームワーク・コントロールパッケージ・Cloud Controls・EU Data Boundary・IL4）、Access Approval・Access Transparency・Key Access Justifications（KAJ）、Audit Manager、Sovereign Controls by Partners を扱う。加えて gcloud 8 グループ・REST（Discovery）7 API・IAM ロールを収録する。分割投入中のため、未投入のカテゴリ（`gcloud/scc` / `gcloud/web-security-scanner` / `gcloud/workspace-key-access` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のセキュリティ態勢・脅威検出・コンプライアンス系スキル。Security Command Center（SCC。Standard / Premium / Enterprise（非推奨）のサービスティア・アクティベーション・アクセス制御・データ所在地・検出結果のクラス / 重大度 / 状態 / ミュート / セキュリティマーク・API / 通知 / エクスポート・Event Threat Detection / VM Threat Detection / Cloud Run Threat Detection / Agent Platform Threat Detection・Security Health Analytics・脆弱性評価・Web Security Scanner・攻撃の発生可能性（attack exposure）と有害な組み合わせ（toxic combinations））、Security posture と IaC 検証、AI Protection・CIEM・DSPM（非推奨）・Risk Manager、Compliance Manager（フレームワーク・Cloud Controls・CEL）、Model Armor（テンプレート・フィルタ・統合・ロギング）、Assured Workloads（フレームワーク・コントロールパッケージ・Cloud Controls・EU Data Boundary・IL4）、Access Approval・Access Transparency・Key Access Justifications（KAJ）、Audit Manager、Sovereign Controls by Partners を扱う。加えて gcloud 8 グループ・REST（Discovery）7 API・IAM ロールを収録する。分割投入中のため、未投入のカテゴリ（`gcloud/web-security-scanner` / `gcloud/workspace-key-access` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。SCC の機械生成ページと手書きガイドは SCC のティア表記（Standard-legacy / Standard / Premium / Enterprise（Deprecated））を原文どおりに残す。
 
@@ -36,6 +36,9 @@ skills/gcp-security-compliance/
       model-armor/
         README.md                 # gcloud model-armor（floorsettings・templates）
         model-armor-<group>.md
+      scc/  # 分割投入中（5 / 24 ページ。収録済みは README 掲載分のみ）
+        README.md                 # gcloud scc（findings・muteconfigs・notifications・sources・postures・posture-deployments・iac-validation-reports・manage services / custom-modules 等）
+        scc-<group>.md
     scc-overview-tiers/           # 公式ガイド由来（手書き）: SCC の概要・サービスティア・アクティベーション・アクセス制御・データ所在地・廃止告知
       README.md
       <page>.md                   # 例: service-tiers.md / deprecations.md
@@ -94,20 +97,23 @@ skills/gcp-security-compliance/
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. gcloud コマンド → 下記マッピング表で `gcloud` を選び、`references/gcloud/README.md` からグループの README（例: `references/gcloud/scc/README.md`（後続 PR で投入））→ グループページ・コマンドページを引く。`gcloud kms`（KAJ ポリシー含む）は `gcp-security`、`gcloud compute`（Shielded VM・Confidential Computing 等）は `gcp-compute`、`gcloud container binauthz` は `gcp-gke`
+1. gcloud コマンド → 下記マッピング表で `gcloud` を選び、`references/gcloud/README.md` からグループの README（例: `references/gcloud/scc/README.md`）→ グループページ・コマンドページを引く。`gcloud kms`（KAJ ポリシー含む）は `gcp-security`、`gcloud compute`（Shielded VM・Confidential Computing 等）は `gcp-compute`、`gcloud container binauthz` は `gcp-gke`
 2. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
 3. 鍵・シークレット・証明書・IAP・VPC Service Controls・Cloud Armor は `gcp-security`。IAM の基盤・Organization Policy・Privileged Access Manager は `gcp-foundation`
 4. 廃止・縮退を確認するときは `scc-overview-tiers/deprecations.md`（SCC の廃止表）、`scc-overview-tiers/service-tiers.md`（Enterprise ティア）、`ai-protection-ciem-dspm-risk-manager/dspm-data-security.md`（DSPM）を引く
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
-未投入カテゴリ（`gcloud/scc` / `gcloud/web-security-scanner` / `gcloud/workspace-key-access` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud/web-security-scanner` / `gcloud/workspace-key-access` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+
+分割投入中のカテゴリ（`gcloud/scc`: 5 / 24 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | gcloud のコマンド・フラグを調べたい（8 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
+| `gcloud scc`（findings・muteconfigs・notifications・bqexports・sources・postures・posture-deployments・iac-validation-reports・manage services / custom-modules）のフラグを調べたい | gcloud/scc | [references/gcloud/scc/README.md](references/gcloud/scc/README.md) |
 | `gcloud assured`（workloads の create / update / violations・operations）のフラグを調べたい | gcloud/assured | [references/gcloud/assured/README.md](references/gcloud/assured/README.md) |
 | `gcloud access-approval`（requests・settings・service-account）のフラグを調べたい | gcloud/access-approval | [references/gcloud/access-approval/README.md](references/gcloud/access-approval/README.md) |
 | `gcloud audit-manager`（audit-reports・audit-schedules・audit-scopes・enrollments）のフラグを調べたい | gcloud/audit-manager | [references/gcloud/audit-manager/README.md](references/gcloud/audit-manager/README.md) |
@@ -131,7 +137,7 @@ skills/gcp-security-compliance/
 | Audit Manager の有効化・リソースの登録・監査の実行・フレームワークの作成を知りたい | audit-manager | [references/audit-manager/README.md](references/audit-manager/README.md) |
 | Sovereign Controls by Partners のフォルダ・鍵管理・対応プロダクト・データ境界（ドイツ T-Systems / フランス S3NS）を知りたい | sovereign-controls-by-partners | [references/sovereign-controls-by-partners/README.md](references/sovereign-controls-by-partners/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/scc` / `gcloud/web-security-scanner` / `gcloud/workspace-key-access` / `iam` / `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/web-security-scanner` / `gcloud/workspace-key-access` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
