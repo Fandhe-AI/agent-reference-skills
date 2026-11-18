@@ -727,6 +727,25 @@ return s.length>b?`${s.slice(0, b)}（省略）`:s
 }
 
 
+const av=300
+const v4=200
+function qb(v,a=av){
+if(!we(v))return v
+const b=Array.from(v)
+return b.length>a?`${b.slice(0, a - 4).join('')}（省略）`:v
+}
+function Mc(a){
+const b={ ...a}
+if(we(b.lastUnresolvedInfo))b.lastUnresolvedInfo=qb(b.lastUnresolvedInfo)
+if(Array.isArray(b.outOfScopeLog))b.outOfScopeLog=b.outOfScopeLog.map((v)=>qb(v))
+if(Array.isArray(b.lastUnresolvedComments)){
+b.lastUnresolvedComments=b.lastUnresolvedComments.map((c)=>
+c&&typeof c==='object'&& !Array.isArray(c)?{ ...c,text:qb(c.text,v4)}:c)
+}
+return b
+}
+
+
 
 let kE=''
 
@@ -2421,7 +2440,7 @@ return i
 
 
 
-const cj='7. push・PR 作成はここでは行わない。ローカルブランチにコミットを積んだら、まず git status --porcelain --untracked-files=no の出力が空であること（追跡ファイルに未コミットの変更が無いこと。未追跡ファイルは対象外）を確かめる。空でない（またはコマンドが失敗した）ときは git add -u で追跡ファイルの変更だけを加え、手順 6 と同じ規約で追加のコミットとして積む（既存コミットの amend はしない）。積めなければ変更を残したまま進み summary にその旨を書く（失敗にはしない）。続けて、返却する branch 名を控えてから git checkout --detach を実行して終了する（必須。ブランチをどの worktree からも外す。checkout したままだと、後続の Review 修正が別の worktree からこのブランチの先端を更新できない）。'
+const cj='7. push・PR 作成はここでは行わない。ローカルブランチにコミットを積んだら、まず git status --porcelain --untracked-files=no の出力が空であること（追跡ファイルに未コミットの変更が無いこと。未追跡ファイルは対象外）を確かめる。空でない（またはコマンドが失敗した）ときは git add -u で追跡ファイルの変更だけを加え、手順 6 と同じ規約で追加のコミットとして積む（既存コミットの amend はしない）。積めなければ変更を残したまま進み summary にその旨を書く（失敗にはしない）。続けて、返却する branch 名を控えてから git checkout --detach を実行して終了する（必須。ブランチをどの worktree からも外す。checkout したままだと、後続の Review 修正が別の worktree からこのブランチへ付けられない）。'
 const uS='（prNumber は PR 未作成のため返却しない。返しても 0 として扱われる）'
 const lP='不要な worktree を git worktree remove で手動削除してから再実行すること'
 const g1='ディスク枯渇防止のため以降の'+iQ+'。'
@@ -2960,6 +2979,13 @@ return a(v).replace(/\x7f/g, '\\u007f')
 const Zp=(o,k)=>Object.prototype.hasOwnProperty.call(o,k)
 const qv=(x)=>M1(x)&&x>=0
 
+
+const xC=(v)=>{
+if(v===null||typeof v!=='object'||Array.isArray(v))return v
+const{note:a, ...b}=v
+return b
+}
+
 function Ss(a,b){
 const c=b?.fileExists===true&&b.hashes?b.hashes:null
 const d={}
@@ -2967,8 +2993,9 @@ const e=[]
 const f=a&&typeof a==='object'&& !Array.isArray(a)?a:{}
 for(const[k,a]of Object.entries(f)){
 const h=c&&Zp(c,k)?c[k]:''
-if(/^[1-9]\d*$/.test(k) && /^[0-9a-f]{64}$/.test(h) && UF(gx(a)) === h) {
-d[k]=a
+const b=xC(a)
+if(/^[1-9]\d*$/.test(k) && /^[0-9a-f]{64}$/.test(h) && UF(gx(b)) === h) {
+d[k]=b
 }else{
 e.push(k)
 }
@@ -3067,7 +3094,7 @@ r5,
 `1. ${Hz} が存在するか test -f で確認する。`,
 `2. ファイルが存在する場合:`,
 `   a. jq . ${Hz} でパースを試みる（jq の終了コードで成否を判断する）。`,
-`   b. パース成功: items フィールドを返す。ok: true, fileExisted: true。items は 5 件ずつ分けて読み、読めた分だけ返す（欠落キーはホストが再取得する。見えない値を推測で埋めない）。highWaterBytes は .perWorktreeByteReserveHighWater、highWaterVersion は .perWorktreeByteReserveHighWaterVersion の値（無ければ 0）。`,
+`   b. パース成功: items フィールドを返す。ok: true, fileExisted: true。items は 5 件ずつ分けて読み、読めた分だけ返す（欠落キーはホストが再取得する。見えない値を推測で埋めない）。各項目から note 欄は除いて返す（書き写さない。jq の map_values(del(.note)) 等。ホストは note を使わず、長い文字列の書き写し違いが照合を落とすため）。highWaterBytes は .perWorktreeByteReserveHighWater、highWaterVersion は .perWorktreeByteReserveHighWaterVersion の値（無ければ 0）。`,
 `   c. パース失敗（jq が 0 以外の終了コード）: ok: false, fileExisted: true, items: {}, highWaterBytes: 0, highWaterVersion: 0 を返す。`,
 a
 ?`3. ファイルが存在しない場合: 読み取り専用のためディレクトリもファイルも作らない。ok: true, fileExisted: false, items: {}, highWaterBytes: 0, highWaterVersion: 0 を返す。`
@@ -3117,7 +3144,7 @@ if(!b.length)break
 const c=[]
 for(let a=0;a<b.length;a+=2){
 c.push(...await Promise.all(b.slice(a,a+ 2).map((a)=>j3(
-`状態ファイル項目の読み取り（読み取り専用）。${r5}\n次をそのまま実行し、出力 JSON を items として返す（推測で埋めない）:\njq -c --argjson k '${JSON.stringify(a)}' '.items | with_entries(select(.key as $x | $k | index($x)))' ${Hz}`,
+`状態ファイル項目の読み取り（読み取り専用）。${r5}\n次をそのまま実行し、出力 JSON を items として返す（推測で埋めない）:\njq -c --argjson k '${JSON.stringify(a)}' '.items | with_entries(select(.key as $x | $k | index($x))) | map_values(if type == "object" then del(.note) else . end)' ${Hz}`,
 {label:'state:load-fill',schema:G0,isValid:cI},
 ))))
 }
@@ -3188,7 +3215,7 @@ const o=Boolean(f||k)
 if(f&&l==='discard')kX.add(f)
 
 const p=l==='discard'&&Boolean(f)&&h&&g===''
-const q=p?Object.fromEntries(Object.entries(b).filter(([k])=>k!=='worktree')):b
+const q=Mc(p?Object.fromEntries(Object.entries(b).filter(([k])=>k!=='worktree')):b)
 
 
 const r=o
@@ -3637,19 +3664,19 @@ return''
 
 
 const aG={
-'measure-residual-bytes.sh':'27206aeb4fab9ad378fe5f97706eb8ebcac1ad1fac6e6f9caadecc0c66f84561',
-'measure-free-disk.sh':'e2302a52784d900a21b48b5990dd9d0b284f6e5872edeb201f1e5c42d57645ee',
-'observe-pr.sh':'f1ced24a950ad5204cf71324343185fa1f4b94b4c1d538ae1eef8c2eeed6a832',
-'base-merge.sh':'b62b1cd28b098472ff27e3f1f1de4c4f6ecaca127b8db06e4cca1e4dd38c9ce3',
-'pr-push.sh':'d2bee381b63b95847c777cc63311a30ff032ab6a48c48b400b0ed1eb17aa106f',
-'reply-resolve.sh':'a9189730cf96c0cd6cc93fb53da6c0b6aa8582425c03947e02cfcda2506d973d',
-'state.sh':'acf7a5429877d7f3ffaa263297e8891f21e87c0193fd2f12e1e4a220adee0df3',
-'merge-gate.sh':'64c55b2be12fa1aedd654cd81ae5a34345eecd8cde45559e98e068b7ebab38f6',
-'worktree-remove.sh':'9c37adbbd59000f4aa0e18633928cf15a9b2453d7c0d0729ed5145710017590c',
-'recover-prep.sh':'a22c0ec29fefb46e405d57eee35b46d6ca6a2d622cded34a9374b7c8abc97d29',
-'fetch-tree.sh':'be3948e416bc8ac2a8c7f019df7f58efbd91bd4afe3e76fc8654d49d7de76569',
-'declared-deps.sh':'95cb060536b774db0f599146d59b70547404beb48033550dfabeaa65113b8394',
-'repo-scan.sh':'bc1e11e0ec918ecdb54fb95836bb36d5d594800413c36e8cdc1d0d3141765c63',
+'measure-residual-bytes.sh':'4c837a7c76b848a3d9886bcefcd07e34b3bfa4c3a6d42368ccc8135e1d81955c',
+'measure-free-disk.sh':'a0777e3750808e6d5f3c85bca776cd146c73ac2814acae68d0c9a647a9b7d190',
+'observe-pr.sh':'4a6a871c8a8a6c4ca45ccc10b2dbe96a90b0c1106361573dc12292a67b503f19',
+'base-merge.sh':'4a7b503e25ef16800a682af6c2f405b8d32c3c7dab1d854127552314b229a119',
+'pr-push.sh':'0be60b7250e99462da14340dcb0d380cae0e1ec100d17e6c64f88e647ee16dd1',
+'reply-resolve.sh':'43a8153e9a2d0d21a1337ac32cd3b65b6b2aa9de46250d19713568f0a518350b',
+'state.sh':'a669f59716198fd3a0fabfabb6855fb3726c122ad4c0368953d977d0c49b128d',
+'merge-gate.sh':'2f6aaeb2d3c9d5e0b68ad6d697a7dc70c091dedb32603879bf64a01ffa40f0f0',
+'worktree-remove.sh':'d86c40ec681c57f1afb56175963d158170397c7342a340a05ab7aaa6f25d40a0',
+'recover-prep.sh':'7104c65ace872bbfde9eb9b6fbc5618aacff3c11665fd9e8ab54cb8d49fd17da',
+'fetch-tree.sh':'8bbc832207c82a0ca6d20f3c96b189fd7500080ce2ad32f99d3d45b074cc8aa1',
+'declared-deps.sh':'475458198b0115085286d53f8381e357e52518bd78f54d537e4d7e585040e5cb',
+'repo-scan.sh':'90bff059f2a59fba9e4b61c1aaa800104cf7c725eb13d7d1150318936c1a18ef',
 }
 
 
@@ -4592,6 +4619,7 @@ return r.map((k)=>a[k].replace(/。$/, '')).join('。')
 
 function o2(a,b){
 if(a===null||typeof a!=='object'||Array.isArray(a))return false
+
 return Object.keys(b).every((k)=>Zp(a,k)&&JSON.stringify(a[k])===JSON.stringify(b[k]))
 }
 
@@ -5618,7 +5646,7 @@ const p=d
 ]
 :[
 `1. ${Da}push 前のローカル修正のため fetch は不要。`,
-`   git checkout --detach ${f} で detached HEAD として取得する（別 worktree で checkout 済みでも衝突しない）。`,
+`   git checkout --detach ${f} で detached HEAD として取得し、作業・コミットも detached HEAD で行う（別 worktree で checkout 済みでも衝突せず、途中で失敗してもブランチを握らない）。`,
 `   マージコンフリクトの解消が必要な場合は git fetch origin ${I$}:refs/remotes/origin/${I$} で最新化してから git merge origin/${I$} で解消する（Issue #361）`,
 `   （ローカル ${I$} でなく origin/${I$} を使う。Issue #315）。`,
 ]
@@ -5631,9 +5659,8 @@ Tv,
 :[
 `4. create-commit スキルに従いコミットする。push はしない（Review 通過後にまとめて push する）。`,
 Tv,
-`   先端更新（git branch -f・旧値なし update-ref は禁止）: 手順 1 の detach 直後に git rev-parse HEAD の値を <old> として字面で控え（シェル変数不可）、更新直前に git rev-parse refs/heads/${f} が <old> と違えば中止。git worktree list --porcelain で refs/heads/${f} を checkout 中の worktree を探す。`,
-`   あれば中止（その worktree を含め、カレントの worktree の外には一切触れない。使用中のブランチだけを動かすと、その worktree の index・作業ツリーと食い違う）。無ければ git update-ref refs/heads/${f} <HEAD の sha> <old>。`,
-`   中止・条件不成立・失敗・git rev-parse refs/heads/${f} が HEAD と不一致なら pushed: false・commitFailed: true・summary に理由と HEAD の sha。`,
+`   ブランチ ${f} の先端更新（コミット後にだけ行う。git update-ref・git branch -f は隔離 worktree のガードが拒否するので使わない）: (a) 修正後の git rev-parse HEAD の値を <new> として字面で控える（シェル変数不可）。修正コミットが無く HEAD が取得時から動いていなければ先端更新は不要で、(e) へ進む。(b) git checkout --no-guess ${f} を実行する（--no-guess は origin にだけある名前から新規ブランチを作らせないため）。git が already used by worktree 等で拒否したら、detached のまま pushed: false・commitFailed: true・summary に理由と <new> で返す。(c) git merge --ff-only <new> を実行する。(d) git rev-parse refs/heads/${f} が <new> と一致するか確かめる。(e) (b) でブランチへ付けたら、(c)(d) の成否にかかわらず直ちに git checkout --detach <new> を実行し、git rev-parse --abbrev-ref HEAD が HEAD であることを確かめる。ff できない・一致しない・detach できない場合は pushed: false・commitFailed: true・summary に理由と <new>。`,
+`   ブランチへ付いている区間は (b) から (e) の数コマンドだけにする。手順 1〜3 の出口（マージ解消不能・P0/P1 修正不能・テスト不通過）ではブランチへ付かず、detached のまま返す。`,
 `   レビュースレッドの resolve は行わない（push 前の Review ループ）。`,
 ]
 return[

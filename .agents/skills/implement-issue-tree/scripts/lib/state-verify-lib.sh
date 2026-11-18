@@ -33,6 +33,10 @@
 ST_VERIFY_PAGE=100
 # 項目キー（正の整数の 10 進表記）の選別。従来のコマンドの K と同一
 ST_VERIFY_KEYS='[.items // {} | keys[] | select(test("^[1-9][0-9]*$"))]'
+# 項目のハッシュの射影: note（書き込み専用の自由文。読み込み後の判断に使わず、長いと読込エージェントの書き写し違いで照合に落ちる。
+# Issue #878）を除いてから正規形にする。ホスト（implement-issue-tree.src.js の projectStateItem）と読込側の jq も同じ射影を掛ける。
+# 項目が文字列・配列などの object でない値はそのまま。状態ファイル自体の note は変更しない（読み取り専用）
+ST_VERIFY_PROJECT='if type == "object" then del(.note) else . end'
 # 高水位の欄の値: 無い・null は 0、number はそのまま、それ以外（false・文字列等）は何も出さない（sv_uint が空を拒否して error）。
 # // 0 にしない: // は false も 0 に置き換える。tostring にしない: 文字列の "4096" が 4096 になる
 ST_VERIFY_UINT='if . == null then 0 elif type == "number" then . else empty end | tostring'
@@ -81,7 +85,7 @@ sv_items() {
   [ "${idx}" -eq "${count}" ] || return 1
   [ -n "${sel}" ] || return 0
   # jq の失敗はハッシュへ畳まない（パイプの最後が jq なので、その終了コードで止める）
-  vals=$(printf '%s' "${content}" | jq -jcS --argjson ks "[${sel}]" '$ks[] as $k | (.items[$k] | if type == "string" then "\"" else . end), "\n"' 2>/dev/null) || return 1
+  vals=$(printf '%s' "${content}" | jq -jcS --argjson ks "[${sel}]" '$ks[] as $k | (.items[$k] | if type == "string" then "\"" else ('"${ST_VERIFY_PROJECT}"') end), "\n"' 2>/dev/null) || return 1
   # shellcheck disable=SC2086  # 意図した単語分割（キーは数字だけ）
   set -- ${list}
   # shellcheck disable=SC2086  # 意図した単語分割（1 件 1 行。空の行は出ない）
