@@ -36,8 +36,16 @@ gcloud components update
 
 Set a Windows VM password when `compute.disableInstanceDataAccessApis` blocks credential generation (after enabling SSH for Windows VMs):
 
+Adapted (not in the official docs): instead of passing the password on the command line (`--command "net user USERNAME PASSWORD"`), open an interactive SSH session and run `net user USERNAME *`, which prompts for the password.
+
 ```bash
-gcloud compute ssh VM_NAME --command "net user USERNAME PASSWORD"
+gcloud compute ssh VM_NAME
+```
+
+In the Windows session:
+
+```text
+net user USERNAME *
 ```
 
 ## Options / Props
@@ -206,8 +214,8 @@ gcloud compute ssh VM_NAME --command "net user USERNAME PASSWORD"
 - Unsupported products may share an API endpoint with supported products, making them available to all users. Before using an unsupported product, accept the risks to data residency or data sovereignty.
 - Google Cloud MCP servers aren't supported for any France Data Boundary by S3NS product unless otherwise noted: no data residency controls for in-use and in-transit data with MCP servers. Ensure MCP server endpoints aren't used; to block access see Control Google Cloud MCP servers use with IAM.
 - Using Cloud Logging with CMEK requires the steps in Enable CMEK for an organization in the Cloud Logging docs.
-- `gcloud alpha logging settings update ... --disable-default-sink` disables the `_Default` sink organization-wide, which is disruptive to existing log routing; try it on a disposable organization or folder context first. The source shows the `alpha` track; the GA `gcloud logging settings update` accepts the same flags.
-- The `gcloud compute ssh ... "net user USERNAME PASSWORD"` command puts the new password on the command line, where it can land in shell history and process lists; the source shows no safer alternative.
+- `gcloud alpha logging settings update ... --disable-default-sink` changes the organization's default settings: the `_Default` sink is disabled in projects created afterwards, and existing projects keep their `_Default` sink (see the note on newly created projects below). Disabling `_Default` in an existing project with `gcloud logging sinks update _Default --disabled` stops routing that project's logs to its `_Default` bucket; test both on a disposable organization or project first. The source shows the `alpha` track; the GA `gcloud logging settings update` accepts the same flags.
+- Adapted from the official docs: the source shows `gcloud compute ssh VM_NAME --command "net user USERNAME PASSWORD"`, which puts the new password on the command line, where it can land in shell history and process lists. The page uses an interactive session with `net user USERNAME *`, for which Windows prompts for the password instead.
 - Changing a constraint to be less restrictive (resource locations, `gcp.restrictNonCmekServices`, HMAC, the Compute and Spanner flags) can undermine data residency or sovereignty; `storage.uniformBucketLevelAccess` can't be lifted on a bucket while the constraint applies, and uniform bucket-level access can't be disabled at all after 90 consecutive days. Cloud KMS key destruction is irreversible (see key-management.md).
 - The `--disable-default-sink` and `--storage-location` settings of `logging settings update` apply only to newly created projects (gcloud 593.0.0 help: "It only applies to the newly created projects and will not affect the projects created before"), and the Cloud Logging default resource settings page says the locations of existing log buckets aren't changed (https://docs.cloud.google.com/logging/docs/default-settings, retrieved 2026-11-18). The per-project command is taken from https://docs.cloud.google.com/logging/docs/export/configure_export_v2 (retrieved 2026-11-18), with `--project` added; a disabled `_Default` sink stops storing logs that no other sink routes, so try it on a disposable project first.
 - Corrected from the official docs: the source says that a bucket created while `storage.uniformBucketLevelAccess` is enabled "can never be managed by using ACLs" and that the access control method is "permanently set". The Cloud Storage page says uniform bucket-level access can be disabled if it has been enabled for less than 90 consecutive days, IAM conditions and managed folders are removed, and the bucket is not subject to this organization policy constraint (https://docs.cloud.google.com/storage/docs/uniform-bucket-level-access); the setting is irreversible only after 90 consecutive days.

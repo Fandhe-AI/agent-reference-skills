@@ -53,7 +53,7 @@ Open the Web Security Scanner page, select a project, and under **Scan configs**
 | Vulnerability | Description |
 |---------------|-------------|
 | Mixed-content | HTTPS page also serves resources over HTTP; a man-in-the-middle attacker could tamper with the resource |
-| Clear text password | An application returns sensitive content with an invalid content type, or without an `X-Content-Type-Options: nosniff` header |
+| Clear text password | Passwords are transmitted in clear text |
 | Outdated Library | Library version matches a known vulnerable list (false positives possible if version detection fails or the library was manually patched). Some vulnerable versions of jQuery, jQuery Mobile, and AngularJS are identified; the list is updated periodically |
 
 ## Notes
@@ -65,7 +65,7 @@ Open the Web Security Scanner page, select a project, and under **Scan configs**
 - Disabling managed scans: disable the Web Security Scanner service in Security Command Center (organization, folder, or project). You then configure custom scans per project; managed scan configurations are archived, existing findings stay viewable in Security Command Center, and both are removed from the standalone Web Security Scanner page. Re-enabling brings them back; unchanged vulnerabilities generally update existing findings, while substantial application changes may create new findings.
 - IAM roles for Security Command Center can be granted at organization, folder, or project level.
 - Scan activity appears in the project logs page.
-- Source inconsistency: the source gives the Clear text password example the description of an invalid content type finding; the Web Security Scanner overview page describes `CLEAR_TEXT_PASSWORD` as passwords transmitted in clear text and `INVALID_CONTENT_TYPE` as a resource that doesn't match the response's Content-Type header. The row is kept as written.
+- Source inconsistency: the source gives the Clear text password example the description of an invalid content type finding; the Web Security Scanner overview page describes `CLEAR_TEXT_PASSWORD` as passwords transmitted in clear text and `INVALID_CONTENT_TYPE` as a resource that doesn't match the response's Content-Type header. The row uses the overview page's description of `CLEAR_TEXT_PASSWORD` (corrected from the official docs).
 - The Security Command Center Enterprise service tier shuts down on May 21, 2027; Enterprise organizations move to Premium on or after that date.
 - Source: https://docs.cloud.google.com/security-command-center/docs/how-to-use-web-security-scanner (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
