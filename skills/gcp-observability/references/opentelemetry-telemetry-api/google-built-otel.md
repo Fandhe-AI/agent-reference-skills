@@ -14,8 +14,10 @@ Google's open-source build of the OpenTelemetry Collector, built from upstream c
 git clone https://github.com/GoogleCloudPlatform/opentelemetry-demo.git
 ```
 
+Adapted (not in the official docs): the path is `opentelemetry-demo/kubernetes`, because `git clone` does not change the working directory.
+
 ```text
-cd kubernetes
+cd opentelemetry-demo/kubernetes
 ```
 
 In `opentelemetry-demo.yaml`, replace the collector image line (version may differ):
@@ -75,6 +77,7 @@ kubectl port-forward -n otel-demo svc/opentelemetry-demo-frontendproxy 8080:8080
 - Issues: packaging, deployment, authentication and new components go to `GoogleCloudPlatform/opentelemetry-operations-collector`; Google-specific components (`googlecloudexporter`, `googlemanagedprometheusexporter`, `googleclientauthextension`, `resourcedetectionprocessor`) go to the collector-contrib repository.
 - OpenTelemetry tracing in Google Cloud; this is not the tracing of the OpenAI Agents SDK (`openai-agents`) or the Vercel AI SDK telemetry (`vercel-ai-sdk`).
 - Source: https://docs.cloud.google.com/stackdriver/docs/instrumentation/google-built-otel (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: after `git clone https://github.com/GoogleCloudPlatform/opentelemetry-demo.git` the source runs `cd kubernetes`, which fails from the directory where the clone was made; the example uses `cd opentelemetry-demo/kubernetes`.
 
 ## Related
 
