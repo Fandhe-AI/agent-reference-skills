@@ -36,7 +36,7 @@ skills/gcp-security-compliance/
       model-armor/
         README.md                 # gcloud model-armor（floorsettings・templates）
         model-armor-<group>.md
-      scc/  # 分割投入中（14 / 24 ページ。収録済みは README 掲載分のみ）
+      scc/
         README.md                 # gcloud scc（findings・muteconfigs・notifications・sources・postures・posture-deployments・iac-validation-reports・manage services / custom-modules 等）
         scc-<group>.md
     scc-overview-tiers/           # 公式ガイド由来（手書き）: SCC の概要・サービスティア・アクティベーション・アクセス制御・データ所在地・廃止告知
@@ -105,8 +105,6 @@ skills/gcp-security-compliance/
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` を引く。
 
 未投入カテゴリ（`gcloud/web-security-scanner` / `gcloud/workspace-key-access` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
-
-分割投入中のカテゴリ（`gcloud/scc`: 14 / 24 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
