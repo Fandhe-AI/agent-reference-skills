@@ -183,7 +183,7 @@ skills/gcp-security-compliance/
 - `gcp-devops`（予定）— Artifact Registry・Cloud Build・Cloud Deploy・`gcloud artifacts`
 - `gcp-iac`（予定）— Terraform。IaC 検証（SCC の `validate-iac`）は本スキル
 - `gcp-ai-apis`（予定）— Sensitive Data Protection（DLP）・reCAPTCHA
-- `gcp-messaging-workflows`（予定）— Pub/Sub。SCC の通知とエクスポート設定は本スキル
+- `gcp-messaging-workflows`— Pub/Sub。SCC の通知とエクスポート設定は本スキル
 - `gcp-bigquery`（予定）— BigQuery。SCC のエクスポート先の設定は本スキル
 - 非 GCP との距離: Model Armor は Google Cloud のサービスとしてプロンプト・応答をスクリーニングする。`openai-agents` の guardrails や `anthropic-prompt-eval` の Claude 向けガードレールのガイダンスとは別
 
