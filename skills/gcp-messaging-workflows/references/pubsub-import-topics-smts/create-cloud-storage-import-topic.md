@@ -31,7 +31,7 @@ gcloud pubsub topics create TOPIC_ID \
     --cloud-storage-ingestion-match-glob=MATCH_GLOB
 ```
 
-Adapted (not in the official docs): `seconds` is rounded down to an integer and `nanos` converts the millisecond remainder to nanoseconds (`* 1000000`); the source computed `minimumDate / 1000` (fractional) and `(minimumDate % 1000) * 1000`. An invalid `inputFormat` now throws instead of only logging and returning.
+Adapted (not in the official docs): `seconds` is rounded down to an integer and `nanos` converts the non-negative millisecond remainder (`minimumDate - seconds * 1000`) to nanoseconds (`* 1000000`); the source computed `minimumDate / 1000` (fractional) and `(minimumDate % 1000) * 1000`. An invalid `inputFormat` now throws instead of only logging and returning.
 
 ```javascript
 /**
@@ -66,7 +66,7 @@ async function createTopicWithCloudStorageIngestion(
         bucket,
         minimumObjectCreateTime: {
           seconds: Math.floor(minimumDate / 1000),
-          nanos: (minimumDate % 1000) * 1000000,
+          nanos: (minimumDate - Math.floor(minimumDate / 1000) * 1000) * 1000000,
         },
         matchGlob,
       },
@@ -229,7 +229,7 @@ gcloud pubsub topics update TOPIC_ID \
 - Publisher throughput of import topics is bound by the publish quota of the topic (see Pub/Sub quotas and limits).
 - The project-level `roles/storage.admin` grant is much broader than the bucket-level reader roles; prefer the bucket-level grant. Granting `roles/pubsub.publisher` at project level (IAM page) covers all topics; the topic-level command above is narrower.
 - Editing resets omitted ingestion settings to their defaults, which can restart or change ingestion; try changes on a disposable project first.
-- Corrected from the official docs: the Node.js sample's `seconds: minimumDate / 1000` and `nanos: (minimumDate % 1000) * 1000` were replaced with `Math.floor(minimumDate / 1000)` and `* 1000000`, and the comment string `'YYYY-MM-DDThh:mm:ssZ;` was closed. The Python sample's top-level `return` was wrapped in a function. Both samples' `console.error(...)` / `print(...)` followed by `return` on invalid input became `throw new Error(...)` / `raise ValueError(...)`, so a bad argument is not reported as success.
+- Corrected from the official docs: the Node.js sample's `seconds: minimumDate / 1000` and `nanos: (minimumDate % 1000) * 1000` were replaced with `Math.floor(minimumDate / 1000)` and `(minimumDate - Math.floor(minimumDate / 1000) * 1000) * 1000000` (JavaScript `%` keeps the sign of the dividend, so `minimumDate % 1000` is negative before the Unix epoch and `Timestamp.nanos` must be 0 to 999,999,999), and the comment string `'YYYY-MM-DDThh:mm:ssZ;` was closed. The Python sample's top-level `return` was wrapped in a function. Both samples' `console.error(...)` / `print(...)` followed by `return` on invalid input became `throw new Error(...)` / `raise ValueError(...)`, so a bad argument is not reported as success.
 - The source also shows Console, C++, Go, Java and Node.js TypeScript tabs, and a Troubleshooting page.
 - Source: https://docs.cloud.google.com/pubsub/docs/create-cloud-storage-import-topic (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
