@@ -68,9 +68,11 @@ jsonschema==4.13.0
 # PyPI.
 ```
 
+Adapted (not in the official docs): the index URL is double-quoted and the key expanded as `${BASE64_KEY}` so the URL stays one argument.
+
 ```bash
 pip install --require-hashes --requirement=requirements-google.txt \
-    --index-url https://_json_key_base64:$BASE64_KEY@us-python.pkg.dev/cloud-aoss/cloud-aoss-python/simple -v \
+    --index-url "https://_json_key_base64:${BASE64_KEY}@us-python.pkg.dev/cloud-aoss/cloud-aoss-python/simple" -v \
     --no-deps
 ```
 
@@ -149,6 +151,7 @@ bleach==5.0.0 \
 - Adding `gcloud auth activate-service-account` switches the active gcloud account; the source uses it to access the bucket.
 - The single URL feature falls back to canonical public repositories such as PyPI or Maven Central when a package is not in Assured OSS; the source marks it as Preview.
 - To list all Python packages in Assured OSS, the source points to the Artifact Registry API `pythonPackages.list` method.
+- Adapted from the official docs: the `pip install` command expands `$BASE64_KEY` unquoted inside `--index-url`; the sample quotes the whole URL and uses `${BASE64_KEY}`. The key must still be a single line (see `BASE64_KEY` under Options / Props).
 - Source: https://docs.cloud.google.com/assured-open-source-software/docs/download-python-packages (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

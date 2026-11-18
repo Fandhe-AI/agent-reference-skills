@@ -23,12 +23,28 @@ HTTP method and URL:
 POST https://secretmanager.googleapis.com/v1/projects/PROJECT_ID/secrets?secretId=SECRET_ID
 ```
 
-Request JSON body (save as `request.json`):
+Request JSON body (save as `request.json`). The REST field names differ from the gcloud values: use `automatic` for automatic replication:
+
+Adapted (not in the official docs): the `REPLICATION_POLICY` placeholder is replaced by the REST field `automatic`, and the user-managed case is shown as a separate body with `userManaged.replicas[].location`.
 
 ```json
 {
   "replication": {
-    "REPLICATION_POLICY": {}
+    "automatic": {}
+  }
+}
+```
+
+For user-managed replication, use `userManaged` with at least one replica location:
+
+```json
+{
+  "replication": {
+    "userManaged": {
+      "replicas": [
+        {"location": "LOCATION"}
+      ]
+    }
   }
 }
 ```
@@ -71,6 +87,7 @@ Response shape:
 - The source also shows Console, Windows PowerShell / cmd.exe variants, and C#, Go, Java, Node.js, PHP, Python and Ruby client library samples (omitted).
 - Versions are added and accessed on separate pages (https://docs.cloud.google.com/secret-manager/docs/add-secret-version and https://docs.cloud.google.com/secret-manager/docs/access-secret-version); aliases such as `latest` or version numbers such as `42` identify versions.
 - Quotas and rate limits: https://docs.cloud.google.com/secret-manager/quotas
+- Adapted from the official docs: the REST request body is `{"replication": {"REPLICATION_POLICY": {}}}`, where `REPLICATION_POLICY` is described as automatic or user-managed; the gcloud value `user-managed` is not a REST field (the Discovery document `Replication` has `automatic` and `userManaged`, and `userManaged.replicas` needs `location` per replica), so the page shows one body per policy.
 - Source: https://docs.cloud.google.com/secret-manager/docs/creating-and-accessing-secrets (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

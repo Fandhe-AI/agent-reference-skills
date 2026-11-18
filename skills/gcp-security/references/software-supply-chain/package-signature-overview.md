@@ -20,7 +20,7 @@ aoss-verifier verify-package \
 
 ### Verify manually (OpenSSL 3.0.1 or higher and Google Cloud CLI)
 
-Identify the hashing algorithm (the output must be `SHA256`):
+Identify the hashing algorithm (the output must name SHA-256; the source says the output must be `SHA256`, while the `digest.txt` format on the same page is `SHA-256:<hex digest>`, so `SHA-256` is the expected output):
 
 ```text
 cut -d ':' -f1 digest.txt
@@ -143,6 +143,7 @@ chmod +x signatureverification.sh
 - Source inconsistency: the source refers to the root certificate as `ca.cert` once; the file used in the commands is `ca.crt`. The intro link to the root certificate uses plain `http://`; use the `https://` URL shown in the commands.
 - The signature verification script is itself signed (`gs://cloud-aoss/utils/signature-verification/v1.0/signatureverification-sig.zip`); verify downloaded scripts before running them, as described in [verify-packages.md](./verify-packages.md).
 - Do not commit or share downloaded certificates, keys or intermediate files beyond what verification needs.
+- Source inconsistency: the manual steps say the `cut -d ':' -f1 digest.txt` output must be `SHA256`, while the source's `digest.txt` description and example use `SHA-256:<hex digest>` (for example `SHA-256:c5feab6f...`); treat either spelling as SHA-256 and reject any other algorithm.
 - Source: https://docs.cloud.google.com/assured-open-source-software/docs/package-signature-overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
