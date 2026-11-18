@@ -42,10 +42,10 @@ Predefined roles of `assuredworkloads` (role ID, description, included permissio
 
 ### Example: grant a role
 
-Generated example (not in the official docs) granting the first role on this page on a whole project (the role entry on this page does not list the lowest-level resources where it can be granted; granting it on a narrower resource, where the role supports that, limits the scope):
+Generated example (not in the official docs) granting the first role on this page on the organization (workloads are organization resources (`organizations/ORGANIZATION_ID/locations/LOCATION/workloads/WORKLOAD_ID`), and the Assured Workloads guides grant the roles on the parent organization of the Assured Workloads folder, as in `assured-workloads/monitor-folder.md`; a project-level grant does not give access to the workload):
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
   --member="user:EMAIL_ADDRESS" \
   --role="roles/assuredworkloads.admin"
 ```

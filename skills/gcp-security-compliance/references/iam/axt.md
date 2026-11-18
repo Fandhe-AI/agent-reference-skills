@@ -17,10 +17,10 @@ Predefined roles of `axt` (role ID, description, included permissions) and, for 
 
 ### Example: grant a role
 
-Generated example (not in the official docs) granting the first role on this page at its lowest-level resource (Project):
+Generated example (not in the official docs) granting the first role on this page on the organization (Access Transparency is enabled and checked for the organization, and `access-approval-transparency-kaj/enable-access-transparency.md` requires `roles/axt.admin` to be listed for your principal under the organization; the role page also allows narrower grants down to a project):
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
   --member="user:EMAIL_ADDRESS" \
   --role="roles/axt.admin"
 ```
