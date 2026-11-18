@@ -61,7 +61,7 @@ gcloud kms key-handles create --key-handle-id=my-key-handle \
 ## Notes
 
 - The CLI and API show properties as capital letters (`SOFTWARE`); the console shows initial capitalization (**Software**).
-- Disabling or destroying a key also disables or destroys each of its key versions. To decrypt or verify, use the same key version that encrypted or signed. No principal can view or export raw key material.
+- The source says "Disabling or destroying a key also disables or destroys each key version." Keys themselves have no state (see the `key-states` page): the API and gcloud disable and destroy individual key versions (`gcloud kms keys versions disable` / `destroy`), and disabling only the primary version does not stop decryption with other enabled versions. To stop use of a whole key, disable or destroy every enabled version and confirm with `gcloud kms keys versions list`. To decrypt or verify, use the same key version that encrypted or signed. No principal can view or export raw key material.
 - Granting access to a key grants access to all of its enabled versions. Common organization patterns: by environment (`prod`, `test`, `develop`), by work area, or by data sensitivity.
 - Deleting a key ring frees its name for reuse; names of deleted keys can't be reused, so a key version's resource identifier always points to its original key material unless destroyed. Unlimited key rings, keys and key versions can be stored; see quotas and pricing.
 - Irreversible: destroying a key version permanently deletes its key material, and scheduling a project shutdown permanently destroys the project's resources (including Cloud KMS resources) after the recovery window. Try on a disposable resource first.
