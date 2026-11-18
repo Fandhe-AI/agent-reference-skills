@@ -82,12 +82,12 @@ Supported only for public Compute Engine or GKE applications (not App Engine) wi
 |---------|----------|----------------------|
 | `http://*/*` | Any URL using HTTP | `http://www.google.com/`, `http://example.org/foo/bar.html` |
 | `http://*/foo*` | HTTP, any host, path starts with `/foo` | `http://example.com/foo/bar.html`, `http://www.google.com/foo` |
-| `https://*.google.com/foo*bar` | HTTPS on a `google.com` host, path starts with `/foo` and ends with `bar` | `http://www.google.com/foo/baz/bar`, `http://docs.google.com/foobar` |
+| `https://*.google.com/foo*bar` | HTTPS on a `google.com` host, path starts with `/foo` and ends with `bar` | `https://www.google.com/foo/baz/bar`, `https://docs.google.com/foobar` |
 | `http://example.org/foo/bar.html` | The specified URL | `http://example.org/foo/bar.html` |
 | `http://127.0.0.1/*` | HTTP on host `127.0.0.1` | `http://127.0.0.1/`, `http://127.0.0.1/foo/bar.html` |
 | `*://mail.google.com/*` | HTTP or HTTPS on `mail.google.com` | `http://mail.google.com/foo/baz/bar`, `https://mail.google.com/foobar` |
 | `*://*/foo*?*bar=baz*` | Path starts with `/foo` and has query `bar=baz` | `https://www.google.com/foo/example?bar=baz` |
-| `google.com/app#*open*` | `google.com` host, path starts with `/app`, fragment `open` | `https://www.google.com/app/example#open` |
+| `google.com/app#*open*` | `google.com` host, path starts with `/app`, fragment `open` | `https://google.com/app/example#open` |
 
 ### Invalid patterns
 
@@ -109,6 +109,7 @@ Supported only for public Compute Engine or GKE applications (not App Engine) wi
 - IAP-protected scanning grants an IAP role to the Web Security Scanner service agent only on the scanned application resource.
 - The Security Command Center Enterprise service tier shuts down on May 21, 2027; Enterprise organizations move to Premium on or after that date.
 - Console click-paths for IAM role assignment, running, viewing, editing, and deleting scans are omitted; see the source page.
+- Corrected from the official docs: in the valid-patterns table, the sample URLs for `https://*.google.com/foo*bar` use `http://` and the sample for `google.com/app#*open*` uses host `www.google.com`. A pattern with `https` matches only HTTPS, and a host without `*.` matches only that host (`*.hostname` is the form that also matches subdomains), so the samples use `https://` and host `google.com`.
 - Source: https://docs.cloud.google.com/security-command-center/docs/how-to-web-security-scanner-custom-scans (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

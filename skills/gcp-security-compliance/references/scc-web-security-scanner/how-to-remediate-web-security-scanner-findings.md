@@ -24,7 +24,7 @@ Recommended for `CSP_MISSING` and `CSP_MISCONFIGURATION` (the scanner checks tha
 
 1. Start with a small `max-age` and only `includeSubDomains` inclusion (no `preload`). Example: `max-age`=3600; `includeSubDomains`.
 2. After a short cool-down period of about a week with no reported issues, raise the max-age. Example: `max-age`=604800; `includeSubDomains` or `max-age`=2592000; `includeSubDomains`.
-3. After about three months with no reported issues, add your website and its subdomains to hstspreload.org and specify the preload directive. Preload directive: `max-age=63072000; includeSubDomains; preload.`
+3. After about three months with no reported issues, add your website and its subdomains to hstspreload.org and specify the preload directive. Preload directive: `max-age=63072000; includeSubDomains; preload`
 
 ### Verify an issue
 
@@ -60,7 +60,7 @@ Open the scan's **Results** tab, expand a category, select the finding, and use 
 | `CACHEABLE_PASSWORD_INPUT` | Password `<input>` without `type="password"`; browser may cache the value. | Set `type` to `password`. |
 | `CLEAR_TEXT_PASSWORD` | Password field transmitted in clear text. | Use TLS/SSL certificates, HTTPS on pages with password fields, and HTTPS form `action` URLs. |
 | `INSECURE_ALLOW_ORIGIN_ENDS_WITH_VALIDATION` | Only an `Origin` suffix is validated (for example `*google.com` allows `maliciousdomaingoogle.com`). | Validate that the expected root domain is part of `Origin`; for subdomain wildcards prepend the dot, for example `.endsWith(".google.com")`. |
-| `INSECURE_ALLOW_ORIGIN_STARTS_WITH_VALIDATION` | Only an `Origin` prefix is validated (for example `google.com.maliciousdomain.com` passes). | Validate that the expected domain fully matches `Origin`, for example `.equals(".google.com")`. |
+| `INSECURE_ALLOW_ORIGIN_STARTS_WITH_VALIDATION` | Only an `Origin` prefix is validated (for example `google.com.maliciousdomain.com` passes). | Validate that the expected domain fully matches `Origin`: compare the whole `Origin` value, including scheme and host (and port, if any), for example `.equals("https://www.google.com")`. To allow subdomains, parse `Origin` as a URL and check the scheme and hostname instead. |
 | `SESSION_ID_LEAK` | Session identifier appears in the `Referer` header of cross-domain requests. | Store session IDs in cookies, not the URL; set `HTTPOnly` and `Secure` attributes. |
 | `INVALID_CONTENT_TYPE` | Resource does not match the response Content-Type, or sensitive content lacks `X-Content-Type-Options: nosniff`. | Serve JSON as `application/json`, use appropriate MIME types for other sensitive responses, and send `X-Content-Type-Options: nosniff`. |
 | `INVALID_HEADER` | Security header has a syntax error and is ignored by the browser. | Use valid values (see the valid header values table). |
@@ -90,9 +90,10 @@ Open the scan's **Results** tab, expand a category, select the finding, and use 
 - Deactivation: after you remediate, Web Security Scanner does not automatically set the Security Command Center finding state to `INACTIVE`; findings stay `ACTIVE` unless you change the state manually. With the standalone version, a remediated issue is simply absent from subsequent reports (past reports keep the record). Managed scans run weekly.
 - IAM roles for Security Command Center can be granted at organization, folder, or project level; what you can view or change depends on the level granted.
 - With the preload directive, the HSTS requirement is built into the browser and bad actors can't downgrade the connection; the staged rollout exists to limit the impact on the stability of your website, so add `preload` only at the last step.
-- Source inconsistency: the source writes the step 1 example as `max-age`=3600; followed by `includeSubDomains` in a code span with a leading space (the space is dropped here), and the preload directive with a trailing period inside the code span (`preload.`), while step 1 names the directive `preload`; the values are kept as written.
+- Source inconsistency: the source writes the step 1 example as `max-age`=3600; followed by `includeSubDomains` in a code span with a leading space (the space is dropped here); the value is kept as written. Corrected from the official docs: the source writes the preload directive with a trailing period inside the code span (`preload.`), which is not the `preload` directive that step 1 names and that HSTS preloading requires; the period is removed.
 - The remediation text for "Accessible repository" is a single entry in the source covering `ACCESSIBLE_GIT_REPOSITORY` and `ACCESSIBLE_SVN_REPOSITORY`; `ACCESSIBLE_ENV_FILE` is listed in the overview page but has no separate entry here.
 - The Security Command Center Enterprise service tier shuts down on May 21, 2027; Enterprise organizations move to Premium on or after that date.
+- Corrected from the official docs: the remediation for `INSECURE_ALLOW_ORIGIN_STARTS_WITH_VALIDATION` shows `.equals(".google.com")`. An `Origin` header value includes the scheme (for example `https://www.google.com`), so that comparison never matches a real origin; the example compares a full origin instead.
 - Source: https://docs.cloud.google.com/security-command-center/docs/how-to-remediate-web-security-scanner-findings (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
