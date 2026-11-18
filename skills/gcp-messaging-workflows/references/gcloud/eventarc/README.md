@@ -10,3 +10,6 @@
 | gcloud eventarc google-channels | 2 commands (ga); eventarc google-channels describe … | [eventarc-google-channels.md](./eventarc-google-channels.md) |
 | gcloud eventarc locations | eventarc locations list | [eventarc-locations.md](./eventarc-locations.md) |
 | gcloud eventarc message-buses | 14 commands (beta, ga); eventarc message-buses create … | [eventarc-message-buses.md](./eventarc-message-buses.md) |
+| gcloud eventarc pipelines | 10 commands (beta, ga); eventarc pipelines create … | [eventarc-pipelines.md](./eventarc-pipelines.md) |
+| gcloud eventarc providers | 2 commands (ga); eventarc providers describe … | [eventarc-providers.md](./eventarc-providers.md) |
+| gcloud eventarc triggers | 5 commands (ga); eventarc triggers create … | [eventarc-triggers.md](./eventarc-triggers.md) |
