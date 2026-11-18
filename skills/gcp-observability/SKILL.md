@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-observability
 
-Google Cloud (GCP) のオブザーバビリティ系スキル（Google Cloud Observability。旧 Stackdriver 系で、公式 URL の `stackdriver/docs/` パスと `roles/stackdriver.*` に名称が残る）。Cloud Logging（Log Router・sink・log bucket / log view・Logging query language・Logs Explorer・log-based metrics・log-based alerting policies）、Cloud Audit Logs（Admin Activity / Data Access / System Event / Policy Denied・`auditConfigs`）、Observability Analytics（SQL・linked dataset・observability bucket・observability scope）、Cloud Monitoring（metrics scope・metric model・alerting policies・notification channels・alerts・snoozes・dashboards・Metrics Explorer・uptime check・synthetic monitors・SLO）、PromQL（MQL は非推奨）、Google Cloud Managed Service for Prometheus（managed collection・PodMonitoring・managed rules・Alertmanager）、Ops Agent（インストール・設定・agent policies・トラブルシューティング）、OpenTelemetry（Google-Built OpenTelemetry Collector・Telemetry (OTLP) API・Node.js / Python の計装）、Cloud Trace・Cloud Profiler・Error Reporting、Personalized Service Health、Application Monitoring / App Topology を扱う。加えて gcloud 7 グループ・REST（Discovery）6 API・IAM 10 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`gcloud/monitoring` / `gcloud/observability` / `gcloud/service-health` / `gcloud/trace` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のオブザーバビリティ系スキル（Google Cloud Observability。旧 Stackdriver 系で、公式 URL の `stackdriver/docs/` パスと `roles/stackdriver.*` に名称が残る）。Cloud Logging（Log Router・sink・log bucket / log view・Logging query language・Logs Explorer・log-based metrics・log-based alerting policies）、Cloud Audit Logs（Admin Activity / Data Access / System Event / Policy Denied・`auditConfigs`）、Observability Analytics（SQL・linked dataset・observability bucket・observability scope）、Cloud Monitoring（metrics scope・metric model・alerting policies・notification channels・alerts・snoozes・dashboards・Metrics Explorer・uptime check・synthetic monitors・SLO）、PromQL（MQL は非推奨）、Google Cloud Managed Service for Prometheus（managed collection・PodMonitoring・managed rules・Alertmanager）、Ops Agent（インストール・設定・agent policies・トラブルシューティング）、OpenTelemetry（Google-Built OpenTelemetry Collector・Telemetry (OTLP) API・Node.js / Python の計装）、Cloud Trace・Cloud Profiler・Error Reporting、Personalized Service Health、Application Monitoring / App Topology を扱う。加えて gcloud 7 グループ・REST（Discovery）6 API・IAM 10 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`gcloud/observability` / `gcloud/service-health` / `gcloud/trace` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。Service Health の Discovery document は無いため REST ページは無い（`gcloud service-health` と IAM の機械生成ページ、およびガイドのみ）。
 
@@ -30,6 +30,9 @@ skills/gcp-observability/
       logging/                    # buckets・links・logs・metrics・sinks・views・scopes・saved-queries・read・write・tail 等
         README.md
         logging-<group>.md
+      monitoring/                 # alerts・channels・dashboards・metrics-scopes・policies・snoozes・uptime 等
+        README.md
+        monitoring-<group>.md
     observability-overview/       # Google Cloud Observability の概要・scopes・非推奨一覧・Application Monitoring・App Topology
       README.md
       <page>.md                   # 例: deprecations.md
@@ -116,7 +119,7 @@ skills/gcp-observability/
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` と各ガイドのコードブロックを引く。
 
-未投入カテゴリ（`gcloud/monitoring` / `gcloud/observability` / `gcloud/service-health` / `gcloud/trace` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud/observability` / `gcloud/service-health` / `gcloud/trace` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -124,6 +127,7 @@ skills/gcp-observability/
 | --- | --- | --- |
 | gcloud のコマンド・フラグを調べたい（7 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
 | `gcloud logging`（sinks・buckets・views・metrics・read・write・tail・links・scopes・saved-queries）のフラグを調べたい | gcloud/logging | [references/gcloud/logging/README.md](references/gcloud/logging/README.md) |
+| `gcloud monitoring`（policies・dashboards・snoozes・uptime・channels・metrics-scopes・alerts）のフラグを調べたい | gcloud/monitoring | [references/gcloud/monitoring/README.md](references/gcloud/monitoring/README.md) |
 | `gcloud app-topology`（domains・locations・resources-graph）を調べたい | gcloud/app-topology | [references/gcloud/app-topology/README.md](references/gcloud/app-topology/README.md) |
 | `gcloud beta error-reporting events`（beta 専用）を調べたい | gcloud/error-reporting | [references/gcloud/error-reporting/README.md](references/gcloud/error-reporting/README.md) |
 | Google Cloud Observability の全体像・observability scope / log scope / metrics scope / trace scope・非推奨と停止の一覧（MQL・レガシーエージェント・Cloud Debugger）・Application Monitoring・App Topology | observability-overview | [references/observability-overview/README.md](references/observability-overview/README.md) |
@@ -149,7 +153,7 @@ skills/gcp-observability/
 | Cloud Profiler（Go / Node.js / Python のプロファイリング）・Error Reporting（エラーのグルーピング・ログ形式・収集・Node.js / Python のセットアップ・管理） | profiler-error-reporting | [references/profiler-error-reporting/README.md](references/profiler-error-reporting/README.md) |
 | Personalized Service Health のイベント・影響を受けるリソース・組織ビュー・Cloud Logging でのアラート・ログ・アクセス管理・インシデントレポート | service-health | [references/service-health/README.md](references/service-health/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/monitoring` / `gcloud/observability` / `gcloud/service-health` / `gcloud/trace` / `iam` / `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/observability` / `gcloud/service-health` / `gcloud/trace` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
