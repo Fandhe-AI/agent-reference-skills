@@ -33,12 +33,16 @@ gcloud builds triggers create webhook \
   --require-approval
 ```
 
-Example inline build config:
+Example inline build config.
+
+Adapted (not in the official docs): `options.logging: CLOUD_LOGGING_ONLY` is added because the trigger runs as a user-specified service account, which needs a logging setting; the account also needs permission to write logs to Cloud Logging (for example Logs Writer, `roles/logging.logWriter`).
 
 ```yaml
 steps:
 - name: 'ubuntu'
   args: ['echo', 'hello world']
+options:
+  logging: CLOUD_LOGGING_ONLY
 ```
 
 ### Invoke a webhook event
@@ -95,6 +99,7 @@ If you have no API key or Cloud Build could not retrieve one, create one on the 
 - Webhook secrets live in Secret Manager; Cloud Build generates one automatically when you choose "Use a new secret".
 - Pull request triggers: the source warns that any user with read access to the repository can submit a pull request that may run a build with the pull request's changes; use manual approvals to gate pull request builds on public repositories and keep comment control enabled.
 - If `--service-account` is omitted the default Cloud Build service account is used, which is not recommended; a user-specified service account needs a Cloud Logging or Cloud Storage logs bucket (see the trigger creation page).
+- Adapted from the official docs: the source's inline config has only `steps`, although the trigger command passes `--service-account`. Builds with a user-specified service account need `options.logging: CLOUD_LOGGING_ONLY`, or `logsBucket` with `options.logging: GCS_ONLY` (see configure-user-specified-service-accounts.md in this skill), so the example sets `CLOUD_LOGGING_ONLY`.
 - Corrected from the official docs: the single command listing `--trigger-config=...`, `--build-config=...`, `--inline-config=...`, `--dockerfile=...`, `--tag=...` and `--branch=...` together was reduced to one valid combination.
 - Only the 2nd gen tab of the source is retained (the page also has a 1st gen tab). Cloud Build repositories (2nd gen) manage authentication tokens through Secret Manager and can post build status to the provider.
 - Cloud Build is Google Cloud's managed build service; Secret Manager is covered by `gcp-security`.
