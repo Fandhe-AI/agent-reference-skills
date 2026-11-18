@@ -2989,22 +2989,25 @@ return b
 function Ss(a,b){
 const c=b?.fileExists===true&&b.hashes?b.hashes:null
 const d={}
-const e=[]
-const f=a&&typeof a==='object'&& !Array.isArray(a)?a:{}
-for(const[k,a]of Object.entries(f)){
+const e={}
+const f=[]
+const g=a&&typeof a==='object'&& !Array.isArray(a)?a:{}
+for(const[k,a]of Object.entries(g)){
 const h=c&&Zp(c,k)?c[k]:''
-const b=xC(a)
-if(/^[1-9]\d*$/.test(k) && /^[0-9a-f]{64}$/.test(h) && UF(gx(b)) === h) {
-d[k]=b
+const g=xC(a)
+if(/^[1-9]\d*$/.test(k) && /^[0-9a-f]{64}$/.test(h) && UF(gx(g)) === h) {
+d[k]=g
+
+if(Zp(b.noteHashes??{},k))e[k]=b.noteHashes[k]
 }else{
-e.push(k)
+f.push(k)
 }
 }
 
 
-const g=c===null?[]:[...new Set([...Object.keys(f), ...Object.keys(c)])]
+const h=c===null?[]:[...new Set([...Object.keys(g), ...Object.keys(c)])]
 .filter((k)=> /^[1-9]\d*$/.test(k) && !Zp(d, k))
-return{adopted:d,dropped:e,unverified:g,verified:c!==null&&g.length===0&&e.length===0}
+return{adopted:d,adoptedNoteHashes:e,dropped:f,unverified:h,verified:c!==null&&h.length===0&&f.length===0}
 }
 
 
@@ -3024,7 +3027,7 @@ const cI=(r)=>r?.items!==null&&typeof r?.items==='object'&& !Array.isArray(r.ite
 
 
 const Bu=kQ(['entries','highWaterBytes','highWaterVersion','inputSha256','keysCount','keysSha256','mode','outcome','page','pages'],{
-entries:{type:'array',items:kQ(['h','k'],{h:dv,k:dv})},
+entries:{type:'array',items:kQ(['h','k','n'],{h:dv,k:dv,n:dv})},
 highWaterBytes:f7,highWaterVersion:f7,inputSha256:dv,keysCount:f7,keysSha256:dv,mode:dv,outcome:dv,page:f7,pages:f7,
 })
 
@@ -3033,7 +3036,7 @@ const iR=50
 function jV(r,a,b){
 const s=ut(r,a,UF(`${Hz}\n${b}`))
 const p=s.payload
-return s.ok&&p.mode==='verify'&&p.page===b&&['ok','nofile','error'].includes(p.outcome)&&Array.isArray(p.entries)&&M1(p.pages)&&p.pages>=1
+return s.ok&&p.mode==='verify'&&p.page===b&&['ok','nofile','error'].includes(p.outcome)&&Array.isArray(p.entries)&&p.entries.every((e)=> /^([0-9a-f]{64})?$/.test(e?.n)) && M1(p.pages) && p.pages >= 1
 }
 
 
@@ -3042,14 +3045,16 @@ const b=a[0]
 if(b?.outcome==='nofile')return{fileExists:false,hashes:{},keysSha256:'',keysCount:0,highWaterBytes:0,highWaterVersion:0}
 if(b?.outcome!=='ok'||a.length!==b.pages)return null
 const c={}
+const d={}
 for(const p of a){
 if(['outcome','pages','keysSha256','keysCount','highWaterBytes','highWaterVersion'].some((f)=>p[f]!==b[f]))return null
-for(const{k,h}of p.entries){
+for(const{k,h,n}of p.entries){
 if(!/^[1-9]\d*$/.test(k) || Zp(c, k)) return null
 c[k]=h
+d[k]= /^[0-9a-f]{64}$/.test(n) ? n : ''
 }
 }
-const r={fileExists:true,hashes:c,keysSha256:b.keysSha256,keysCount:b.keysCount,highWaterBytes:b.highWaterBytes,highWaterVersion:b.highWaterVersion}
+const r={fileExists:true,hashes:c,noteHashes:d,keysSha256:b.keysSha256,keysCount:b.keysCount,highWaterBytes:b.highWaterBytes,highWaterVersion:b.highWaterVersion}
 return Bh(r)?r:null
 }
 
@@ -3152,21 +3157,22 @@ e={ ...e}
 c.forEach(({result:r},i)=>b[i].forEach((k)=>{if(r&&Zp(r.items,k))e[k]=r.items[k]}))
 v=Ss(e,d)
 }
-const{adopted:f,dropped:g,unverified:h,verified:i}=v
-if(g.length>0||h.length>0){
+const{adopted:f,adoptedNoteHashes:g,dropped:h,unverified:i,verified:j}=v
+if(h.length>0||i.length>0){
 log(
-`⚠️ state-unverified ${h.length} 件（再取得 2 巡後も未照合: ${h.slice(0, 20).join(', ')}）`,
+`⚠️ state-unverified ${i.length} 件（再取得 2 巡後も未照合: ${i.slice(0, 20).join(', ')}）`,
 )
 }
 
-const j=d.fileExists===true
+const k=d.fileExists===true
 return{
 items:f,
-verified:i,
-unverified:h.map(Number),
-keys:j?Object.keys(d.hashes):[],
-highWaterBytes:j?d.highWaterBytes:0,
-highWaterVersion:j?d.highWaterVersion:0,
+noteHashes:g,
+verified:j,
+unverified:i.map(Number),
+keys:k?Object.keys(d.hashes):[],
+highWaterBytes:k?d.highWaterBytes:0,
+highWaterVersion:k?d.highWaterVersion:0,
 }
 }
 
@@ -3664,19 +3670,19 @@ return''
 
 
 const aG={
-'measure-residual-bytes.sh':'4c837a7c76b848a3d9886bcefcd07e34b3bfa4c3a6d42368ccc8135e1d81955c',
-'measure-free-disk.sh':'a0777e3750808e6d5f3c85bca776cd146c73ac2814acae68d0c9a647a9b7d190',
-'observe-pr.sh':'4a6a871c8a8a6c4ca45ccc10b2dbe96a90b0c1106361573dc12292a67b503f19',
-'base-merge.sh':'4a7b503e25ef16800a682af6c2f405b8d32c3c7dab1d854127552314b229a119',
-'pr-push.sh':'0be60b7250e99462da14340dcb0d380cae0e1ec100d17e6c64f88e647ee16dd1',
-'reply-resolve.sh':'43a8153e9a2d0d21a1337ac32cd3b65b6b2aa9de46250d19713568f0a518350b',
-'state.sh':'a669f59716198fd3a0fabfabb6855fb3726c122ad4c0368953d977d0c49b128d',
-'merge-gate.sh':'2f6aaeb2d3c9d5e0b68ad6d697a7dc70c091dedb32603879bf64a01ffa40f0f0',
-'worktree-remove.sh':'d86c40ec681c57f1afb56175963d158170397c7342a340a05ab7aaa6f25d40a0',
-'recover-prep.sh':'7104c65ace872bbfde9eb9b6fbc5618aacff3c11665fd9e8ab54cb8d49fd17da',
-'fetch-tree.sh':'8bbc832207c82a0ca6d20f3c96b189fd7500080ce2ad32f99d3d45b074cc8aa1',
-'declared-deps.sh':'475458198b0115085286d53f8381e357e52518bd78f54d537e4d7e585040e5cb',
-'repo-scan.sh':'90bff059f2a59fba9e4b61c1aaa800104cf7c725eb13d7d1150318936c1a18ef',
+'measure-residual-bytes.sh':'7fd8e6949795c85b8ce8abf8ae44ccea89e696f7e366bfa64e57529e8469920e',
+'measure-free-disk.sh':'476bf60eccb4318be0c8bf31b859786cc49671fd1b1db17492ab3130f06a7642',
+'observe-pr.sh':'c870a98010532b3d4e66c5793d600f88ca2ad66b6f1638b09f10e6b9f46abf84',
+'base-merge.sh':'8144ecbb5c9c3e24595d4db0c448cfe52b429c1dfeb1f455b6928e7088f17e32',
+'pr-push.sh':'f22e17656df2b633e29e745d5ba6ed9895b9bada1406e599dea2567a1d2c0c9a',
+'reply-resolve.sh':'efa7ef559b11894263c5838b70a3ff5f224dfd7fcc182d412cacc9f377568828',
+'state.sh':'e7e45bb1d83b5d19ac99abfda469d26378b4f6133286e7aecb2d977d0d598c85',
+'merge-gate.sh':'4b97233c5ec724624c664156dd86aad8916a05c8a43932a6a2c571ad1cdab6ca',
+'worktree-remove.sh':'5653b199abe15c301a1c3f268dad5c107fcd6d145972fb1100edfa927b5959c8',
+'recover-prep.sh':'3f9251554fef34388d3ef292a0eb78ed3d9ca1111fda2182670e0e9536df80d3',
+'fetch-tree.sh':'4d1e012dfbee59640008767dbd08990cd1782a128cc165bd8968fe1d5a214099',
+'declared-deps.sh':'0b1c32f75335cac8d37e54653a1a6c46b6fa1db99903e8867ba9785c11e2195b',
+'repo-scan.sh':'66f929baa60aedf0c2ddfdebad0ace72dcf08bfa12102f910dc2d93393beff63',
 }
 
 
@@ -4617,10 +4623,13 @@ return r.map((k)=>a[k].replace(/。$/, '')).join('。')
 }
 
 
-function o2(a,b){
-if(a===null||typeof a!=='object'||Array.isArray(a))return false
 
-return Object.keys(b).every((k)=>Zp(a,k)&&JSON.stringify(a[k])===JSON.stringify(b[k]))
+function o2(a,b,c){
+if(a===null||typeof a!=='object'||Array.isArray(a))return false
+return Object.keys(b).every((k)=>{
+if(k==='note')return we(b.note)&& /^[0-9a-f]{64}$/.test(c ?? '') && UF(b.note) === c
+return Zp(a,k)&&JSON.stringify(a[k])===JSON.stringify(b[k])
+})
 }
 
 
@@ -4648,42 +4657,42 @@ return e?.ok===true
 
 
 
-async function xQ(a,b){
-const c=new Map()
-for(const e of a)c.set(Ix(e.number,'blocked batch number'),e.patch)
-const d=[]
-let e=0
-for(const[a,f]of c){
-if(o2(b?.[String(a)],f))e++
-else d.push({number:a,patch:f})
+async function xQ(a,b,c){
+const d=new Map()
+for(const e of a)d.set(Ix(e.number,'blocked batch number'),e.patch)
+const e=[]
+let f=0
+for(const[a,g]of d){
+if(o2(b?.[String(a)],g,c?.[String(a)]))f++
+else e.push({number:a,patch:g})
 }
-const f=[]
-for(let i=0;i<d.length;i+=sJ)f.push(d.slice(i,i+sJ))
-let g=0
+const g=[]
+for(let i=0;i<e.length;i+=sJ)g.push(e.slice(i,i+sJ))
 let h=0
-const i=[]
-for(const[a,b]of f.entries()){
+let i=0
+const j=[]
+for(const[a,b]of g.entries()){
 let c=false
 try{
 c=await GP(()=>NG(b,`state:update-batch:${a + 1}`))
 }catch(e){
 log(`⚠️ state:update-batch:${a + 1}: 想定外の例外（${As(e)}）`)
 }
-if(c)g+=b.length
+if(c)h+=b.length
 else{
-h++
-i.push(...b.map((c)=>c.number))
+i++
+j.push(...b.map((c)=>c.number))
 }
 }
 return{
-requested:c.size,
-unchanged:e,
-attempted:d.length,
-written:g,
-unwritten:d.length-g,
-unwrittenIssues:i.slice(0,20),
-chunks:f.length,
-failedChunks:h,
+requested:d.size,
+unchanged:f,
+attempted:e.length,
+written:h,
+unwritten:e.length-h,
+unwrittenIssues:j.slice(0,20),
+chunks:g.length,
+failedChunks:i,
 }
 }
 
@@ -6147,6 +6156,7 @@ if(V1)await wX()
 
 const{
 items:or,
+noteHashes:GZ,
 highWaterBytes:eZ,
 highWaterVersion:ac,
 verified:b0,
@@ -9619,7 +9629,7 @@ log(`monitor 再開可能な中断: ${Os(Iu)}`)
 
 
 
-const Du=await xQ(iU.filter((e)=> !j_.has(e.number)),or)
+const Du=await xQ(iU.filter((e)=> !j_.has(e.number)),or,GZ)
 if(Du.requested>0){
 log(`blocked の状態ファイル記録: 対象 ${Du.requested} 件（保存済みと同一で省略 ${Du.unchanged} 件・書き込み ${Du.written} / ${Du.attempted} 件・エージェント ${Du.chunks} 回）`)
 }
