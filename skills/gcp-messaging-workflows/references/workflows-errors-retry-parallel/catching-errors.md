@@ -75,7 +75,7 @@ Adapted (not in the official docs): the known-error conditions `raise` their mes
 
 ### try / retry / except
 
-Adapted (not in the official docs): the `404` and `408` conditions `raise` `"notfound_404"` / `"timeout_408"` instead of `return`ing them, so the execution does not end as successful after the retries fail.
+Adapted (not in the official docs): the `404` and `408` conditions `raise` `"notfound_404"` / `"timeout_408"` instead of `return`ing them, so the execution does not end as successful after the retries fail, and they read the status with `map.get(e, "code")` so an error without a `code` key is re-raised by `raiseError` instead of failing in the condition.
 
 ```yaml
   - step_name:
@@ -91,9 +91,9 @@ Adapted (not in the official docs): the `404` and `408` conditions `raise` `"not
           steps:
               - checkForTimeout:
                   switch:
-                  - condition: ${e.code == 404}
+                  - condition: ${map.get(e, "code") == 404}
                     raise: "notfound_404"
-                  - condition: ${e.code == 408}
+                  - condition: ${map.get(e, "code") == 408}
                     raise: "timeout_408"
               - raiseError:
                   raise: ${e}
@@ -167,6 +167,7 @@ Adapted (not in the official docs): the `connection_problem`, `url_not_found` an
 
 ## Notes
 
+- Adapted from the official docs: in the `try` / `retry` / `except` sample the conditions read `e.code` directly, but only the `HttpError` error map documents `code`; the example uses `map.get(e, "code")` (returns `null` for a missing key, https://docs.cloud.google.com/workflows/docs/reference/stdlib/map/get) so that a `ConnectionError` or `TimeoutError` reaches `raiseError: raise: ${e}`. The other samples check `not("HttpError" in e.tags)` first, so they read `e.code` only for HTTP errors.
 - Replace `ERROR_MAP` with the name of a map variable that contains the error. For other error tags see Workflow errors: https://docs.cloud.google.com/workflows/docs/reference/syntax/error-types
 - Known issue: placing `for` directly after `try` causes an error. See https://docs.cloud.google.com/workflows/docs/issues
 - Variable scope: a variable created inside an `except` block is local to that block. To use it outside the block, assign it before the block so it lives in the surrounding scope (https://docs.cloud.google.com/workflows/docs/reference/syntax/variables#assign-outer-scope).

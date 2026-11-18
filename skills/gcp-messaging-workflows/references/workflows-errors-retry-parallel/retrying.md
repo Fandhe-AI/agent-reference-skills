@@ -98,6 +98,8 @@ The predicate is a subworkflow that takes the error map as its single argument a
 
 Retry HTTP status code `500`:
 
+Adapted (not in the official docs): the predicate reads the status with `map.get(e, "code")` instead of `e.code`, so an error without a `code` key (for example `ConnectionError` or `TimeoutError` from `http.get`) returns `false` instead of failing in the predicate.
+
 ```yaml
 main:
   steps:
@@ -122,7 +124,7 @@ custom_predicate:
   steps:
     - what_to_repeat:
         switch:
-          - condition: ${e.code == 500}
+          - condition: ${map.get(e, "code") == 500}
             return: true
     - otherwise:
         return: false
@@ -131,6 +133,8 @@ custom_predicate:
 ### Retry other HTTP status codes (raise explicitly)
 
 Status codes outside `400`-`599` do not raise an error, so raise one before the predicate runs. This sample retries status code `202`.
+
+Adapted (not in the official docs): the predicate reads the status with `map.get(e, "code")` instead of `e.code`, so an error without a `code` key (for example `ConnectionError` or `TimeoutError` from `http.get`) returns `false` instead of failing in the predicate.
 
 ```yaml
 main:
@@ -160,7 +164,7 @@ custom_predicate:
   steps:
     - what_to_repeat:
         switch:
-          - condition: ${e.code == 202}
+          - condition: ${map.get(e, "code") == 202}
             return: true
     - otherwise:
         return: false
@@ -195,6 +199,7 @@ custom_predicate:
 - Known issue: placing `for` directly after `try` causes an error. See https://docs.cloud.google.com/workflows/docs/issues
 - The `STEPS_BLOCK` can contain `assign`, `call`, `for`, `parallel`, `raise`, `return`, `steps`, `switch` and `try`.
 - The source also shows the JSON form of every example and a sample whose predicate logs `e.tags`, `e.message` and `e.code` with `sys.log`; both are omitted here.
+- Adapted from the official docs: the custom predicates (and the `try` / `retry` / `except` handler in the catching-errors page) read `e.code` directly. Only the `HttpError` error map documents a `code` attribute (https://docs.cloud.google.com/workflows/docs/reference/syntax/catching-errors); `http.get` can also raise `ConnectionError`, `ConnectionFailedError` and `TimeoutError` (https://docs.cloud.google.com/workflows/docs/reference/stdlib/http/get). The examples use `map.get(e, "code")`, which returns `null` when the key is not found (https://docs.cloud.google.com/workflows/docs/reference/stdlib/map/get), so other errors are not retried and are re-raised unchanged.
 - Source: https://docs.cloud.google.com/workflows/docs/reference/syntax/retrying (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
