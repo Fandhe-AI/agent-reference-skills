@@ -134,7 +134,7 @@ client.close()
 - The Python subscription sample reads the policy with `get_iam_policy`, modifies the returned object and sets it back, so the `etag` is preserved. Its comment says "Add all users as viewers" but binds `domain:google.com`, as in the source: that grants the role to every user of that domain, not `allUsers`.
 - Source inconsistency: the Python subscription sample binds `roles/editor`, a basic role that the same page describes as highly permissive, while the surrounding text and the Node.js samples use `roles/pubsub.editor`; the sample is kept as in the source.
 - `set-iam-policy` replaces the whole policy: keep the `etag` from the file you read, so that a concurrent change makes the call fail instead of being silently overwritten.
-- The Python topic sample follows the same pattern with `PublisherClient` and `topic_path` and role `roles/pubsub.publisher`; it is omitted. The source also shows the TypeScript variant of the Node.js samples, C#, Go, Java, PHP and Ruby.
+- The Python topic sample follows the same pattern with `PublisherClient` and `topic_path` and role `roles/pubsub.publisher`; it is omitted. The source also shows C#, Go, Java, PHP and Ruby.
 - Granting through the Pub/Sub IAM API works only on individual topics and subscriptions, not at project level. The source also shows Console steps (IAM page for project-level grants; Topics list, Permissions tab, Add principal for resources).
 - Source: https://docs.cloud.google.com/pubsub/docs/access-control#set-policy (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
