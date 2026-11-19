@@ -553,7 +553,7 @@ Base URL: `https://securesourcemanager.googleapis.com`. Methods are listed by `i
 |---|---|---|---|---|
 | `parent` | path | string | yes | Required. Parent value for ListRepositoriesRequest. |
 | `filter` | query | string | no | Optional. Filter results. |
-| `instance` | query | string | no | Optional. The name of the instance in which the repository is hosted, formatted as `projects/{project_number}/locations/{location_id}/instances/{instance_id}`. When listing repositories via securesourcemanager.googleapis.com, this field is required. When listing repositories via \*.sourcemanager.dev, this field is ignored. |
+| `instance` | query | string | conditional | Optional. The name of the instance in which the repository is hosted, formatted as `projects/{project_number}/locations/{location_id}/instances/{instance_id}`. When listing repositories via securesourcemanager.googleapis.com, this field is required. When listing repositories via \*.sourcemanager.dev, this field is ignored. |
 | `pageSize` | query | integer (int32) | no | Optional. Requested page size. Server may return fewer items than requested. If unspecified, server will pick an appropriate default. |
 | `pageToken` | query | string | no | A token identifying a page of results the server should return. |
 
