@@ -35,14 +35,16 @@ POST https://dataplex.googleapis.com/v1/projects/JOB_PROJECT/locations/LOCATION_
 
 Request JSON body:
 
-```text
+Adapted (not in the official docs): the body is valid JSON (trailing commas and `# Additional ...` comments removed) with the API's camelCase field names (`exportSpec`, `outputPath`); the official page writes snake_case names.
+
+```json
 {
   "type": "EXPORT",
-  "export_spec": {
-    "output_path": "gs://BUCKET/",
+  "exportSpec": {
+    "outputPath": "gs://BUCKET/",
     "scope": {
-      "organizationLevel": true,
-    },
+      "organizationLevel": true
+    }
   }
 }
 ```
@@ -79,17 +81,18 @@ Same method, URL, and send commands as above; provide a list of projects. Extra 
 
 Request JSON body:
 
-```text
+Adapted (not in the official docs): the body is valid JSON (trailing commas and `# Additional ...` comments removed) with the API's camelCase field names (`exportSpec`, `outputPath`); the official page writes snake_case names.
+
+```json
 {
   "type": "EXPORT",
-  "export_spec": {
-    "output_path": "gs://BUCKET/",
+  "exportSpec": {
+    "outputPath": "gs://BUCKET/",
     "scope": {
       "projects": [
-        "projects/METADATA_SOURCE_PROJECT",
-        # Additional projects
-      ],
-    },
+        "projects/METADATA_SOURCE_PROJECT"
+      ]
+    }
   }
 }
 ```
@@ -100,17 +103,18 @@ Same method, URL, and send commands as above; provide a list of entry groups. Ex
 
 Request JSON body:
 
-```text
+Adapted (not in the official docs): the body is valid JSON (trailing commas and `# Additional ...` comments removed) with the API's camelCase field names (`exportSpec`, `outputPath`); the official page writes snake_case names.
+
+```json
 {
   "type": "EXPORT",
-  "export_spec": {
-    "output_path": "gs://BUCKET/",
+  "exportSpec": {
+    "outputPath": "gs://BUCKET/",
     "scope": {
       "entryGroups": [
-        "ENTRY_GROUP",
-        # Additional entry groups
-      ],
-    },
+        "ENTRY_GROUP"
+      ]
+    }
   }
 }
 ```
@@ -124,22 +128,22 @@ Set the primary job scope (for example, organization level) and add a list of en
 
 Request JSON body (same method, URL, and send commands as above):
 
-```text
+Adapted (not in the official docs): the body is valid JSON (trailing commas and `# Additional ...` comments removed) with the API's camelCase field names (`exportSpec`, `outputPath`, `entryTypes`, `aspectTypes`); the official page writes snake_case names.
+
+```json
 {
   "type": "EXPORT",
-  "export_spec": {
-    "output_path": "gs://BUCKET/",
+  "exportSpec": {
+    "outputPath": "gs://BUCKET/",
     "scope": {
       "organizationLevel": true,
-      "entry_types": [
-        "ENTRY_TYPE",
-        # Additional entry types
+      "entryTypes": [
+        "ENTRY_TYPE"
       ],
-      "aspect_types": [
-        "ASPECT_TYPE",
-        # Additional aspect types
+      "aspectTypes": [
+        "ASPECT_TYPE"
       ]
-    },
+    }
   }
 }
 ```
@@ -316,7 +320,7 @@ Provide exactly one scope per job.
 | Projects (`projects`) | The metadata that belongs to the specified projects. |
 | Entry groups (`entryGroups`) | The metadata that belongs to the specified entry groups. |
 
-You can further restrict the scope with `entry_types` or `aspect_types`; the job exports only entries and aspects that belong to those types.
+You can further restrict the scope with `entryTypes` or `aspectTypes`; the job exports only entries and aspects that belong to those types.
 
 ### Required roles for end users
 
@@ -345,7 +349,7 @@ The Knowledge Catalog service account needs these permissions on the bucket: `st
 - VPC Service Controls: the project that the job belongs to determines the perimeter. With organization-level scope, only entries within the perimeter are exported and projects in the organization but outside the perimeter are excluded. With projects or entry groups scope, they must be in the same perimeter as the job; if any violates the rules, the job fails.
 - Path notes: the system-generated path starts with the standard Hive partition format for the job's creation date (supported by BigQuery). `consumer_project` is the project where you run the export job; `project` is the project that contains the exported metadata. A metadata job ID can be reused after the previous job was deleted, but deleting a job does not delete its exported files, so duplicate job IDs may appear in output paths. File numbers are integers starting from `1`; large exports are split into multiple files of at most 1,000,000 entries each.
 - The curl and PowerShell commands are identical for all four scope examples in the official page, so they are shown once above. The official page shows REST only; it documents no gcloud command, and no list, cancel, or delete method, for export jobs (only `metadataJobs.get` is mentioned).
-- The official request bodies are reproduced verbatim: they contain trailing commas and `#` placeholder comments (`# Additional projects`), which are not valid JSON. Remove them and replace the placeholders before saving `request.json`.
+- Adapted from the official docs: the official request bodies contain trailing commas and `#` placeholder comments (`# Additional projects`), which are not valid JSON, and use snake_case names (`export_spec`, `output_path`, `entry_types`, `aspect_types`) next to camelCase ones (`organizationLevel`, `entryGroups`). The API schema defines `exportSpec`, `outputPath`, `scope.{organizationLevel,projects,entryGroups,entryTypes,aspectTypes}` (rest-schemas/dataplex/dataplex-2.md, `GoogleCloudDataplexV1MetadataJob` and `...ExportJobSpec`), so the examples are valid JSON with those names and one placeholder per list; add further list items as needed.
 
 ## Related
 

@@ -10,28 +10,32 @@ Data domains in Knowledge Catalog (formerly Dataplex Universal Catalog) organize
 
 Snippet borrowed from the creation page (the overview itself shows no code). Creating a data domain with the REST API; the request body is saved as `request.json`:
 
+Adapted (not in the official docs): JSON keys are camelCase as defined by the API schema (`displayName`, `contactName`, `contactRole`, `contactId`, `parentDataDomain`).
+
 ```json
 {
-  "display_name": "Finance Domain",
+  "displayName": "Finance Domain",
   "description": "Domain for finance datasets and reports.",
   "contacts": {
     "identities": [
       {
-        "contact_name": "Alice Wonderland",
-        "contact_role": "owner",
-        "contact_id": "alice@example.com"
+        "contactName": "Alice Wonderland",
+        "contactRole": "owner",
+        "contactId": "alice@example.com"
       }
     ]
   }
 }
 ```
 
+Adapted (not in the official docs): the query parameter is `dataDomainId` as defined by `dataDomains.create`.
+
 ```bash
 curl -X POST \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
      -H "Content-Type: application/json; charset=utf-8" \
      -d @request.json \
-     "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION_ID/dataDomains?data_domain_id=DATA_DOMAIN_ID"
+     "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION_ID/dataDomains?dataDomainId=DATA_DOMAIN_ID"
 ```
 
 ### Typical users
@@ -69,6 +73,7 @@ curl -X POST \
 
 - Source: https://docs.cloud.google.com/knowledge-catalog/docs/data-domains-overview (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/knowledge-catalog/docs/data-domains-create
+- Adapted from the official docs: the source request body uses snake_case keys (`display_name`, `contact_name`, ...) and the query parameter `data_domain_id`; the Discovery document and schema use camelCase `displayName`, `contacts.identities[].contactName/contactRole/contactId`, `parentDataDomain` and `dataDomainId` (rest/dataplex/dataplex-1.md `dataDomains.create`, rest-schemas/dataplex/dataplex-1.md).
 - Data domains organize assets by business structure; data products package related assets into a curated bundle for a use case. They are complementary.
 - Domain context is retrievable with the `lookupContext` method, which returns domain context and indicates which domains a data asset belongs to (used to ground AI agents).
 - The BigQuery datasets and tables listed as supported assets are covered by the gcp-bigquery skill; Knowledge Catalog catalogs them. "BigLake tables" is the name used in the source (BigLake is now called Lakehouse).

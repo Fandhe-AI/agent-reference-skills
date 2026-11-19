@@ -10,15 +10,13 @@ Data products in Knowledge Catalog (formerly Dataplex Universal Catalog) package
 
 Snippet borrowed from the consumer page (the overview itself shows no code). Searches for data products with `searchEntries`:
 
+Adapted (not in the official docs): `query` and `pageSize` are sent as query parameters (`-G` with `--data-urlencode`) because `searchEntries` has no request body.
+
 ```bash
-curl -X POST \
+curl -X POST -G \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
--H "Content-Type: application/json" \
--d \
-  '{
-  "query": "ADDITIONAL_KEYWORDS (type=(DATA_PRODUCT))",
-  "pageSize": 10
-  }' \
+--data-urlencode 'query=ADDITIONAL_KEYWORDS (type=(DATA_PRODUCT))' \
+--data-urlencode 'pageSize=10' \
 "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/global:searchEntries"
 ```
 
@@ -74,6 +72,7 @@ curl -X POST \
 
 ## Notes
 
+- Adapted from the official docs: the page sends `{"query": ..., "pageSize": 10}` as a JSON body of `searchEntries`; the method has no request body and `query`, `pageSize`, `scope`, `semanticSearch` are query parameters (rest/dataplex/dataplex-2.md, `projects.locations.searchEntries`).
 - Source: https://docs.cloud.google.com/knowledge-catalog/docs/data-products-overview (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/knowledge-catalog/docs/use-data-products
 - The BigQuery tables, views and models inside a data product are covered by the gcp-bigquery skill; Knowledge Catalog catalogs and packages them.

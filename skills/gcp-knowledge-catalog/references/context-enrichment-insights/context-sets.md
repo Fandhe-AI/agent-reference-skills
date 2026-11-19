@@ -46,67 +46,82 @@ EntryGroup: projects/cymbal-style/locations/us-central1/entryGroups/online-appar
 
 A data asset entry (`document.type: "table-context"` at `assets/bigquery/PROJECT_ID/DATASET_ID/TABLE_ID`) captures domain instructions, column caveats, join hints and verified SQL for a table without overwriting the table's BigQuery description. It links to the target catalog asset through a directed `reference` entry link (`projects/dataplex-types/locations/global/entryLinkTypes/reference`).
 
+Adapted (not in the official docs): each aspect's fields are nested under `data:` as `Aspect.data` requires.
+
 ```yaml
 name: projects/cymbal-style/locations/us-central1/entryGroups/online-apparel-store/entries/assets/bigquery/cymbal-style/store/orders
 entryType: projects/dataplex-types/locations/global/entryTypes/document
 aspects:
   dataplex-types.global.document:
-    type: "table-context"
+    data:
+      type: "table-context"
   dataplex-types.global.overview:
-    content: "## Orders table context\nJoin `store.orders` to `store.returns` on `order_id` when calculating net sales..."
+    data:
+      content: "## Orders table context\nJoin `store.orders` to `store.returns` on `order_id` when calculating net sales..."
 ```
 
 ### Business concept entry
 
 `document.type: "concept"` at `documents/concepts/CONCEPT_ID` defines business terminology, metrics, acronyms and KPI formulas, and links to relevant tables with `reference` entry links.
 
+Adapted (not in the official docs): each aspect's fields are nested under `data:` as `Aspect.data` requires.
+
 ```yaml
 name: projects/cymbal-style/locations/us-central1/entryGroups/online-apparel-store/entries/documents/concepts/net-items-sold
 entryType: projects/dataplex-types/locations/global/entryTypes/document
 aspects:
   dataplex-types.global.document:
-    type: "concept"
+    data:
+      type: "concept"
   dataplex-types.global.overview:
-    content: "Calculates the absolute number of items sold minus customer returns in a given time period."
+    data:
+      content: "Calculates the absolute number of items sold minus customer returns in a given time period."
 ```
 
 ### Document and self-learning entry
 
 `document.type: "knowledge-base"` or `"learning"` under `documents/*` stores SOPs, compliance policies (for example GDPR or HIPAA handling rules) and tacit rules extracted from downstream agent conversation traces (`documents/learnings/LEARNING_SLUG`).
 
+Adapted (not in the official docs): each aspect's fields are nested under `data:` as `Aspect.data` requires.
+
 ```yaml
 name: projects/cymbal-style/locations/us-central1/entryGroups/online-apparel-store/entries/documents/policies/return-policy-rules
 entryType: projects/dataplex-types/locations/global/entryTypes/document
 aspects:
   dataplex-types.global.document:
-    type: "knowledge-base"
+    data:
+      type: "knowledge-base"
   dataplex-types.global.overview:
-    content: "## Return Policy Rules\nItems marked FINAL_SALE or DAMAGED_IN_TRANSIT are excluded from return rates..."
+    data:
+      content: "## Return Policy Rules\nItems marked FINAL_SALE or DAMAGED_IN_TRANSIT are excluded from return rates..."
 ```
 
 ### Query template entry
 
 `queries` aspects can be attached to data asset entries, or dedicated Query Template entries can be created programmatically (`dataplex-types.global.query-template` aspect). When an enrichment task runs on a context set containing certified Query Template entries, the agent preserves them without modifying or deleting them.
 
+Adapted (not in the official docs): each aspect's fields are nested under `data:` as `Aspect.data` requires.
+
 ```yaml
 name: projects/cymbal-style/locations/us-central1/entryGroups/online-apparel-store/entries/queries/top-categories-by-season
 entryType: projects/dataplex-types/locations/global/entryTypes/query-template
 aspects:
   dataplex-types.global.query-template:
-    intent: "Identify top-performing product categories by revenue for a given season."
-    nlQuery: "Which ecommerce product categories performed best in winter?"
-    query: "SELECT category, SUM(revenue) FROM store.orders WHERE fiscal_season = @season GROUP BY category ORDER BY 2 DESC LIMIT @limit"
-    sourceType: "BIGQUERY"
-    sourceDialect: "GOOGLE_SQL"
-    parameters:
-      - name: "season"
-        type: "STRING"
-        sampleValues:
-          - "WINTER"
-      - name: "limit"
-        type: "NUMBER"
-        sampleValues:
-          - "5"
+    data:
+      intent: "Identify top-performing product categories by revenue for a given season."
+      nlQuery: "Which ecommerce product categories performed best in winter?"
+      query: "SELECT category, SUM(revenue) FROM store.orders WHERE fiscal_season = @season GROUP BY category ORDER BY 2 DESC LIMIT @limit"
+      sourceType: "BIGQUERY"
+      sourceDialect: "GOOGLE_SQL"
+      parameters:
+        - name: "season"
+          type: "STRING"
+          sampleValues:
+            - "WINTER"
+        - name: "limit"
+          type: "NUMBER"
+          sampleValues:
+            - "5"
 ```
 
 ## Options / Props
@@ -153,6 +168,7 @@ aspects:
 
 ## Notes
 
+- Adapted from the official docs: the YAML examples place aspect fields (`type`, `content`, `intent`, `nlQuery`, ...) directly under the aspect key. `GoogleCloudDataplexV1Aspect` carries the aspect content in its `data` field (rest-schemas/dataplex/dataplex-1.md), so each example nests the fields under `data:`.
 - Preview: subject to the "Pre-GA Offerings Terms"; Pre-GA features are available "as is" and might have limited support.
 - Agents consult context sets by progressive disclosure: the `agents` root index and `queries` aspects first, then `assets/*` entries and `schema` aspects, then concept / learning / knowledge-base entries. If a context set definition conflicts with a business glossary term, consuming agents prioritize the context set definition.
 - Downstream agents consume context sets through MCP or the Knowledge Catalog APIs (`ListEntries`, `LookupEntry`, `lookupContext`). A pre-configured agent is pointed at `projects/PROJECT_ID/locations/LOCATION/entryGroups/CONTEXT_SET_ID` and reads `entries/agents`.

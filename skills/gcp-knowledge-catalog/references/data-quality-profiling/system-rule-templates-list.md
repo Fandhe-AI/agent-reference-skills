@@ -10,8 +10,10 @@ Knowledge Catalog (formerly Dataplex Universal Catalog) provides predefined syst
 
 List the system rule templates (the entries of the `rule-library` entry group in the `dataplex-templates` project):
 
+Adapted (not in the official docs): the `gcurl` alias is a shell function so it also works in scripts.
+
 ```bash
-alias gcurl='curl -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json"'
+gcurl() { curl -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" "$@"; }
 ```
 
 ```bash
@@ -130,6 +132,7 @@ Template ID is the last segment of the template's resource name (for example `pr
 
 - Source: https://docs.cloud.google.com/knowledge-catalog/docs/system-rule-templates-list (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/knowledge-catalog/docs/reuse-data-quality-rules (the page has no code of its own; the `gcurl` alias is defined there).
+- Adapted from the official docs: the source defines `gcurl` as `alias gcurl='curl ...'`, which is not expanded in non-interactive scripts; here it is a shell function.
 - Template IDs were derived from the template links in the source (the last path segment of each `ruleTemplates/<id>` link).
 - Knowledge Catalog was formerly Dataplex Universal Catalog; the API, gcloud group, and IAM names stay `dataplex`. The BigQuery tables the templates validate are covered by the gcp-bigquery skill.
 

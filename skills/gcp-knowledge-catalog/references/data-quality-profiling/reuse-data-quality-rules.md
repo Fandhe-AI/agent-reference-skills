@@ -10,8 +10,10 @@ Rule templates in Knowledge Catalog (formerly Dataplex Universal Catalog) share 
 
 ### Set up the REST examples
 
+Adapted (not in the official docs): `gcurl` is defined as a shell function instead of an alias, so it also works in non-interactive scripts.
+
 ```bash
-alias gcurl='curl -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json"'
+gcurl() { curl -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" "$@"; }
 ```
 
 ```bash
@@ -398,7 +400,7 @@ EOF
 - Corrected from the official docs: the create and update template examples use `<< EOF` (unquoted) while the JSON contains `${data()}`, `${param(...)}`, `${column()}` and backticks, which the shell would expand or reject; the fences use `<< 'EOF'`. The other heredocs contain no `$` or backticks and are unchanged.
 - The source uses snake_case query parameters (`entryGroup_id`, `entry_id`, `data_scan_id`, `aspect_keys`); the Discovery document names them `entryGroupId`, `entryId`, `dataScanId`. Copied as the source writes them.
 - Adapted from the official docs: the BigQuery table and glossary term REST examples put `templateReference` as a string, place `values` and `column` beside it in the rule object, and omit `name` and `type`, while the `data-rules` fields table marks `name`, `type` and the `templateReference` object as required, the later JSON payload example nests `name` and `values` inside `templateReference`, and a Note in the source says the column a rule applies to is not a field in the aspect data but is determined by the path where the aspect is attached. Both examples are rewritten to that schema (`RULE_NAME` is a placeholder for the rule name).
-- The `gcurl` alias adds an access token; an alias is not expanded in non-interactive scripts, so run these in an interactive shell or substitute the `curl` command.
+- Adapted from the official docs: the source defines `gcurl` as `alias gcurl='curl ...'`, which is not expanded in non-interactive scripts; here it is a shell function that passes its arguments to `curl` with the same two headers.
 - Rule templates are used only from the same location as the scan, or from a global location. A rule library location can't be changed after creation.
 - Deleting a rule template (`DELETE` on the entry) is destructive; try it on a disposable rule library first.
 - Pricing: BigQuery charges for the job run in the scan project; there is no Knowledge Catalog processing charge for the scan; `data-rules` and `data-quality-rule-template` aspect storage is charged as metadata storage (see Knowledge Catalog pricing at https://docs.cloud.google.com/dataplex/pricing).

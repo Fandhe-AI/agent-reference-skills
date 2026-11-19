@@ -134,6 +134,7 @@ All value parameters are passed to the API as strings in the BigQuery literal fo
 - Debug queries are Preview ("Pre-GA Offerings Terms"; Pre-GA features are available "as is" and might have limited support).
 - Pricing: see Knowledge Catalog pricing (https://cloud.google.com/dataplex/pricing); no prices are copied here.
 - Terraform: the `google_dataplex_datascan` resource and a Cloud Foundation Fabric module (YAML-based rule configuration) exist; the source links them.
+- Source disagreement (kept verbatim): this page lists the `Uniqueness` built-in rule under Aggregate, while the system rule template `uniqueness_expectation` is listed as Row-level on system-rule-templates-list.md and the API schema describes `uniquenessExpectation` as a "Row-level rule which evaluates whether each column value is unique" (rest-schemas/dataplex/dataplex-1.md). The categories above are as the official page writes them.
 
 ## Related
 

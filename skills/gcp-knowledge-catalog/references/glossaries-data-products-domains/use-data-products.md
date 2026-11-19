@@ -12,15 +12,13 @@ Data product consumers find curated asset collections, request access through bu
 
 Uses the `searchEntries` method:
 
+Adapted (not in the official docs): `query` and `pageSize` are sent as query parameters (`-G` with `--data-urlencode`) because `searchEntries` has no request body.
+
 ```bash
-curl -X POST \
+curl -X POST -G \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
--H "Content-Type: application/json" \
--d \
-  '{
-  "query": "ADDITIONAL_KEYWORDS (type=(DATA_PRODUCT))",
-  "pageSize": 10
-  }' \
+--data-urlencode 'query=ADDITIONAL_KEYWORDS (type=(DATA_PRODUCT))' \
+--data-urlencode 'pageSize=10' \
 "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/global:searchEntries"
 ```
 
@@ -30,17 +28,18 @@ curl -X POST \
 
 Consumers with the `dataplex.dataProducts.get` permission create a `ChangeRequest` with the custom method `:requestAccess`:
 
+Adapted (not in the official docs): JSON keys are camelCase as defined by the API schema (`changeRequest`, `dataProductAccessRequest`, `accessGroupId`), and the top-level `parent` is removed because the parent is the URL.
+
 ```bash
 curl -X POST \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
 -d '{
-  "parent": "projects/PROJECT_ID/locations/LOCATION/dataProducts/DATA_PRODUCT_ID",
-  "change_request": {
+  "changeRequest": {
     "justification": "JUSTIFICATION_TEXT",
-    "data_product_access_request": {
+    "dataProductAccessRequest": {
       "parent": "projects/PROJECT_ID/locations/LOCATION/dataProducts/DATA_PRODUCT_ID",
-      "access_group_id": "DATA_PRODUCT_ACCESS_GROUP_ID"
+      "accessGroupId": "DATA_PRODUCT_ACCESS_GROUP_ID"
     }
   }
 }' \
@@ -49,13 +48,15 @@ curl -X POST \
 
 ### View access requests (REST)
 
-Send a `GET` request using the custom collection method `:listMine`:
+The page describes a custom collection method `:listMine`, which is not in the Discovery document (see Notes). List the requests you authored with `changeRequests.list` and its `author` filter:
+
+Adapted (not in the official docs): `changeRequests.list` with the `author` filter replaces the page's `changeRequests:listMine` request.
 
 ```bash
-curl -X GET \
+curl -X GET -G \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
--H "Content-Type: application/json" \
-"https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/changeRequests:listMine"
+--data-urlencode 'filter=author=REQUESTER_EMAIL' \
+"https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/changeRequests"
 ```
 
 Get one request by the ID returned when it was created:
@@ -102,6 +103,8 @@ gcloud config set auth/impersonate_service_account CONSUMER_SERVICE_ACCOUNT,PROD
 
 ## Notes
 
+- Adapted from the official docs: the page's `requestAccess` body uses snake_case keys (`change_request`, `data_product_access_request`, `access_group_id`) and an extra top-level `parent`. The schema fields are `changeRequest` and `validateOnly` for `RequestDataProductAccessRequest` and `justification`, `dataProductAccessRequest` (`parent`, `accessGroupId`, optional `requestedPrincipal`) for the change request (rest-schemas/dataplex/dataplex-2.md, dataplex-1.md); the data product is in the URL. The page's `changeRequests:listMine` request is replaced by `changeRequests.list` with `filter` on `author` (rest/dataplex/dataplex-1.md).
+- Adapted from the official docs: the page sends `{"query": ..., "pageSize": 10}` as a JSON body of `searchEntries`; the method has no request body and `query`, `pageSize`, `scope`, `semanticSearch` are query parameters (rest/dataplex/dataplex-2.md, `projects.locations.searchEntries`).
 - Source: https://docs.cloud.google.com/knowledge-catalog/docs/use-data-products (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Enable the Dataplex and BigQuery APIs first (needs `serviceusage.services.enable`, for example via `roles/serviceusage.serviceUsageAdmin`). Grant roles on the data product or the project.
 - To view the metadata of an asset you also need `viewer` access to it in the source system; for BigQuery datasets and tables that is `roles/bigquery.metadataViewer`.

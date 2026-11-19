@@ -62,25 +62,27 @@ Shown with line breaks for readability; in the file, put a newline only after ea
 
 `POST https://dataplex.googleapis.com/v1/projects/TARGET_PROJECT_NUMBER/locations/LOCATION_ID/metadataJobs?metadataJobId=METADATA_JOB_ID`. The response is a long-running operation.
 
+Adapted (not in the official docs): the field names are the API's camelCase names (`importSpec`, `sourceStorageUri`, `entryTypes`, `aspectTypes`, `entrySyncMode`, `aspectSyncMode`, `logLevel`); the official page writes them in snake_case.
+
 ```json
 {
   "type": "IMPORT",
-  "import_spec": {
-    "source_storage_uri": "gs://CLOUD_STORAGE_URI/",
+  "importSpec": {
+    "sourceStorageUri": "gs://CLOUD_STORAGE_URI/",
     "scope": {
       "entryGroups": [
         "ENTRY_GROUP"
       ],
-      "entry_types": [
+      "entryTypes": [
         "ENTRY_TYPE"
       ],
-      "aspect_types": [
+      "aspectTypes": [
         "ASPECT_TYPE"
       ]
     },
-    "entry_sync_mode": "ENTRY_SYNC_MODE",
-    "aspect_sync_mode": "INCREMENTAL",
-    "log_level": "LOG_LEVEL"
+    "entrySyncMode": "ENTRY_SYNC_MODE",
+    "aspectSyncMode": "INCREMENTAL",
+    "logLevel": "LOG_LEVEL"
   }
 }
 ```
@@ -241,7 +243,7 @@ The job scope must include all entry types and aspect types referenced in the im
 - Caution (source): if an entry exists in Knowledge Catalog but isn't in the file, a full sync deletes it; if the file contains no data, all entries and aspects in the job's scope are deleted. Provide an empty file only when you want that. Try this on a disposable entry group first.
 - Caution (source): cancelling an in-progress import job may leave changes partially applied; run another job that reverts them.
 - Comparison logic: Knowledge Catalog compares the source create/update timestamps in the file with those in the project. Full sync creates, deletes, or updates entries; an aspect is updated when it is in the aspect map, `updateMask`, and `aspectKeys` and its source update timestamp is newer (or absent while the entry is marked for update). If any aspect in the file has an older timestamp than the project, no updates are made for the attached entry. Aspect-only jobs update by aspect timestamp regardless of the entry timestamp, and required aspects can't be deleted.
-- The request body is as in the source, which mixes snake_case (`import_spec`, `source_storage_uri`, `entry_types`, `aspect_types`, `entry_sync_mode`, `aspect_sync_mode`, `log_level`) with `entryGroups`. The `dataplex.v1` Discovery document names these fields in camelCase (`importSpec`, `sourceStorageUri`, `entryTypes`, `aspectTypes`, `entrySyncMode`, `aspectSyncMode`, `logLevel`).
+- Adapted from the official docs: the source request body mixes snake_case (`import_spec`, `source_storage_uri`, `entry_types`, `aspect_types`, `entry_sync_mode`, `aspect_sync_mode`, `log_level`) with `entryGroups`. The API schema names these fields in camelCase (`importSpec`, `sourceStorageUri`, `entryTypes`, `aspectTypes`, `entrySyncMode`, `aspectSyncMode`, `logLevel`; rest-schemas/dataplex/dataplex-2.md, `GoogleCloudDataplexV1MetadataJob`), so the example uses them and matches the response example.
 - The source's curl and URL use `TARGET_PROJECT_NUMBER` while its replacement list names `PROJECT_NUMBER`; replace `TARGET_PROJECT_NUMBER` with your project number or ID. The source request-body replacement list also covers `ENTRY_SYNC_MODE` (`FULL` or `NONE`) and `LOG_LEVEL` (`INFO` or `DEBUG`).
 - The source also shows PowerShell, C#, Go, Java, Node.js and Ruby samples, and the list and cancel client-library samples. Only Python is kept.
 - Python snippet is a generated template (`name_value` placeholder).

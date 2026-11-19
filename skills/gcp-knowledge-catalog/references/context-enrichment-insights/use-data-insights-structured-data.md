@@ -26,15 +26,20 @@ RELATIONSHIPS:
 
 ### List entry links for a table entry
 
-```bash
-alias gcurl='curl -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json"'
-```
+Adapted (not in the official docs): the `gcurl` alias is a shell function so it also works in scripts.
 
 ```bash
-gcurl -X GET "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/entryGroups/@bigquery/entryLinks?filter=entry_references.name=\"TABLE_ENTRY_NAME\""
+gcurl() { curl -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" "$@"; }
 ```
 
-Replace `PROJECT_ID` (project ID), `LOCATION` (region where the datascan is triggered) and `TABLE_ENTRY_NAME` (full resource name of the BigQuery table entry, for example `bigquery.googleapis.com/projects/my-project/datasets/my_dataset/tables/my_table`).
+Adapted (not in the official docs): the request is `lookupEntryLinks` with the full Entry name in the `entry` query parameter (the page's `entryGroups/@bigquery/entryLinks?filter=...` request is not a method in the Discovery document).
+
+```bash
+gcurl -G "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION:lookupEntryLinks" \
+  --data-urlencode "entry=projects/PROJECT_ID/locations/LOCATION/entryGroups/@bigquery/entries/bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID"
+```
+
+Replace `PROJECT_ID` (project ID), `LOCATION` (region where the datascan is triggered), `DATASET_ID` and `TABLE_ID` (the BigQuery table). `entry` is the full Entry resource name. Each response returns at most 10 entry links (`pageSize` maximum is 10); pass `nextPageToken` as `pageToken` to read the next page.
 
 ### Update the `schema-join` aspect of an entry link
 
@@ -105,7 +110,7 @@ Required permissions: `dataplex.datascans.create`, `dataplex.datascans.get`, `da
 - Updating descriptions and relationships for tables, and descriptions for datasets, is possible only through the Dataplex API (`entries.patch`). Queries can be edited in the Console (Source defaults to Agent; set to User to stop regeneration overriding it; `User managed` = True protects the whole query set of the aspect) or through `entries.patch`.
 - Entry links store discovered relationships with a `schema-join` aspect. `UpdateEntryLink` (PATCH) replaces the entire aspect and doesn't merge the `joins` list, so a payload with one join removes all existing joins. To add a relationship, first retrieve the current `schema-join` aspect and include all existing joins in the request body.
 - To keep manual changes from being overwritten, set `userManaged: true` at the aspect level (skips all automated updates) and `inferenceSource: "USER"` in specific join entries. `AGENT`-derived relationships are removed if a later scan no longer recommends them.
-- Snippet taken from https://docs.cloud.google.com/knowledge-catalog/docs/reuse-data-quality-rules (the `gcurl` alias; this page uses `gcurl` without defining it). An alias isn't expanded in non-interactive scripts, so run these in an interactive shell.
+- Adapted from the official docs: the page lists entry links with `gcurl -X GET ".../entryGroups/@bigquery/entryLinks?filter=entry_references.name=\"TABLE_ENTRY_NAME\""` and describes `TABLE_ENTRY_NAME` as `bigquery.googleapis.com/projects/...`. `entryGroups.entryLinks` has only create/delete/get/patch and no `filter` (rest/dataplex/dataplex-1.md); `projects.locations.lookupEntryLinks` (dataplex-2.md) takes the required `entry` query parameter (a full Entry name) and `pageSize` max 10. The `gcurl` alias (from reuse-data-quality-rules) is written as a function so it works in scripts; the PATCH example below uses the same `gcurl`.
 - Gemini in BigQuery is part of Gemini for Google Cloud and doesn't support the same compliance and security offerings as BigQuery; set it up only for projects that don't require compliance offerings unsupported by Gemini for Google Cloud. The Gemini Developer API and `google-genai` SDK are in `google-gemini-api`.
 - Insight generation takes a few minutes. The PATCH changes metadata in the catalog; try it on a test entry link first.
 - The source also shows Console steps for BigQuery Studio and Knowledge Catalog Search. Lakehouse is the former BigLake. BigQuery tables and Gemini in BigQuery setup are in `gcp-bigquery`.

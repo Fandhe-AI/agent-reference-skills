@@ -10,13 +10,20 @@ Preview. Data relationships in Knowledge Catalog (formerly Dataplex Universal Ca
 
 Discovered relationships are stored as `EntryLinks` between two entries; join columns and the relationship source are aspects of the entry link. Retrieve them with `LookupEntryLinks` (all entry links that reference an entry as source or target) or `LookupContext` (a single grounding endpoint returning a concise pre-formatted metadata package, including related data assets). The source shows no request code. Snippet taken from https://docs.cloud.google.com/knowledge-catalog/docs/use-data-insights-structured-data (list entry links for a table entry).
 
-```bash
-alias gcurl='curl -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json"'
-```
+Adapted (not in the official docs): the `gcurl` alias is a shell function so it also works in scripts.
 
 ```bash
-gcurl -X GET "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/entryGroups/@bigquery/entryLinks?filter=entry_references.name=\"TABLE_ENTRY_NAME\""
+gcurl() { curl -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" "$@"; }
 ```
+
+Adapted (not in the official docs): the request is `lookupEntryLinks` with the full Entry name in the `entry` query parameter (the page's `entryGroups/@bigquery/entryLinks?filter=...` request is not a method in the Discovery document).
+
+```bash
+gcurl -G "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION:lookupEntryLinks" \
+  --data-urlencode "entry=projects/PROJECT_ID/locations/LOCATION/entryGroups/@bigquery/entries/bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID"
+```
+
+`entry` is the full Entry resource name of the BigQuery table. Each response returns at most 10 entry links (`pageSize` maximum is 10); pass `nextPageToken` as `pageToken` with the same other parameters to read the next page.
 
 ## Options / Props
 
@@ -48,7 +55,7 @@ gcurl -X GET "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/L
 - The BigQuery tables and views are covered by `gcp-bigquery`; Knowledge Catalog catalogs them.
 - Source: https://docs.cloud.google.com/knowledge-catalog/docs/data-relationships (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/knowledge-catalog/docs/use-data-insights-structured-data
-- Snippet taken from https://docs.cloud.google.com/knowledge-catalog/docs/reuse-data-quality-rules (the `gcurl` alias; the command above uses `gcurl` without defining it)
+- Adapted from the official docs: the page shows `gcurl -X GET ".../entryGroups/@bigquery/entryLinks?filter=entry_references.name=..."`, but `entryGroups.entryLinks` has only create/delete/get/patch and no `filter` (rest/dataplex/dataplex-1.md); `projects.locations.lookupEntryLinks` (dataplex-2.md) takes the required `entry` query parameter and `pageSize` max 10. The `gcurl` alias (from reuse-data-quality-rules) is written as a function so it works in scripts.
 
 ## Related
 
