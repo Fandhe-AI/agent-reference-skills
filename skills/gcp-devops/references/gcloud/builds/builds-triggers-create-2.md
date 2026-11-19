@@ -207,14 +207,15 @@ NOTES
         $ gcloud beta builds triggers create manual
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud builds triggers create manual \
     --name=my-manual-trigger \
     --build-config=cloudbuild.yaml \
     --repository=projects/my-proj/locations/us-west1/connections/my-conn/repositories/my-repo \
-    --branch=my-branch
+    --branch=my-branch \
+    --region=us-west1
 ```
 
 ### gcloud builds triggers create pubsub
@@ -450,7 +451,8 @@ gcloud builds triggers create pubsub \
     --name=my-pubsub-trigger \
     --service-account="projects/my-project/serviceAccounts/my-byosa@my-project.iam.gserviceaccount.com" \
     --repository=projects/my-proj/locations/us-west1/connections/my-conn/repositories/my-repo \
-    --branch=my-branch
+    --branch=my-branch \
+    --region=us-west1
 ```
 
 ### gcloud builds triggers create webhook
@@ -692,7 +694,8 @@ gcloud builds triggers create webhook \
     --service-account="projects/my-project/serviceAccounts/my-byosa@my-project.iam.gserviceaccount.com" \
     --secret=projects/my-project/secrets/my-secret/versions/2 \
     --branch=my-branch \
-    --repository=projects/my-proj/locations/us-west1/connections/my-conn/repositories/my-repo
+    --repository=projects/my-proj/locations/us-west1/connections/my-conn/repositories/my-repo \
+    --region=us-west1
 ```
 
 ### gcloud beta builds triggers create bitbucket-cloud
@@ -1130,6 +1133,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the 2nd gen repository examples name a repository in `us-west1` but omit `--region`; without it (and without the `builds/region` property) the trigger is created in, or looked up in, `global`, and the `--region` description of `triggers create` says that a region must be specified for 2nd gen repositories ("global is not supported"); the runnable form adds `--region=us-west1`, the location in the repository name.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the examples omit the build configuration, which the SYNOPSIS requires (one of `--build-config`, `--inline-config` or `--dockerfile`; gcloud 593.0.0: "(--build-config | --inline-config | [--dockerfile ...]) must be specified"); the runnable form adds `--build-config=cloudbuild.yaml`, the value used by the other `builds triggers create` examples.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the second Pub/Sub example ("listens to topic my-topic") omits `--topic`, which the SYNOPSIS requires (gcloud 593.0.0: "--topic must be specified"); the runnable form adds `--topic=projects/my-project/topics/my-topic`, the topic of the first example on this page.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
