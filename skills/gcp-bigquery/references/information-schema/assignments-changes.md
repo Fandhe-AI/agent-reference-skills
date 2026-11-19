@@ -124,7 +124,7 @@ The result is similar to the following:
 The following example displays all of the active assignments of a reservation at
 a certain point in time.
 
-Adapted (not in the official docs): moved the `reservation_name` condition from `WHERE` to `QUALIFY`, so that it is checked after the latest change of each assignment is found.
+Adapted (not in the official docs): moved the `reservation_name` condition from `WHERE` to `QUALIFY`, so that it is checked after the latest change of each assignment is found, and limited the rows to reservation-selection assignments.
 
 ```googlesql
 SELECT
@@ -136,6 +136,7 @@ FROM
     `region-REGION`.INFORMATION_SCHEMA.ASSIGNMENT_CHANGES
 WHERE
     change_timestamp < TIMESTAMP
+    AND (assignment_type IS NULL OR assignment_type = 'RESERVATION_SELECTION')
 QUALIFY ROW_NUMBER() OVER(PARTITION BY assignee_id, job_type ORDER BY change_timestamp DESC) = 1
 AND action != 'DELETE'
 AND reservation_name = RESERVATION_NAME;
@@ -163,7 +164,7 @@ The result is similar to the following:
 To display the assignments that were active when a certain job was executed,
 use the following example.
 
-Adapted (not in the official docs): moved the `reservation_name` condition from `WHERE` to `QUALIFY`, so that it is checked after the latest change of each assignment is found.
+Adapted (not in the official docs): moved the `reservation_name` condition from `WHERE` to `QUALIFY`, so that it is checked after the latest change of each assignment is found, and limited the rows to reservation-selection assignments.
 
 ```googlesql
 SELECT
@@ -175,6 +176,7 @@ FROM
     `region-REGION`.INFORMATION_SCHEMA.ASSIGNMENT_CHANGES
 WHERE
     change_timestamp < (SELECT creation_time FROM PROJECT_ID.`region-REGION`.INFORMATION_SCHEMA.JOBS WHERE job_id = JOB_ID)
+    AND (assignment_type IS NULL OR assignment_type = 'RESERVATION_SELECTION')
 QUALIFY ROW_NUMBER() OVER(PARTITION BY assignee_id, job_type ORDER BY change_timestamp DESC) = 1
 AND action != 'DELETE'
 AND reservation_name = RESERVATION_NAME;
@@ -193,7 +195,7 @@ Replace the following:
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Conflicting official statements: the Scope and syntax section says that queries against this view must include a region qualifier, and then that metadata is retrieved from all regions if you don't specify one. The INFORMATION_SCHEMA introduction (https://docs.cloud.google.com/bigquery/docs/information-schema-intro#syntax, retrieved 2026-11-20) says that if neither a region qualifier nor a dataset qualifier is specified, you receive an error. Include a region qualifier when you query this view.
-- Corrected from the official docs: the two examples that list the assignments of a reservation at a point in time filter on `reservation_name` in `WHERE`, before `QUALIFY` picks the latest change for each `assignee_id` and `job_type`. If an assignment later moved to another reservation, that later change is filtered out, and the older change in the requested reservation is returned as the latest. The condition is moved to `QUALIFY`, after the latest change is picked.
+- Corrected from the official docs: the two examples that list the assignments of a reservation at a point in time filter on `reservation_name` in `WHERE`, before `QUALIFY` picks the latest change for each `assignee_id` and `job_type`. If an assignment later moved to another reservation, that later change is filtered out, and the older change in the requested reservation is returned as the latest. The condition is moved to `QUALIFY`, after the latest change is picked. The examples also partition by `assignee_id` and `job_type` only, but the schema says that `job_type` is `JOB_TYPE_UNSPECIFIED` for `SCHEDULING_POLICY` assignments, which exist per project within each reservation, so the policies of one project in two reservations would share one history. The rows are limited to `RESERVATION_SELECTION` assignments, and to `NULL`, which the schema uses for reservation-selection changes made before `assignment_type` was tracked.
 - Caution: those two examples are described as returning active assignments, but `action != 'DELETE'` alone also returns assignments whose latest change has `state` `PENDING`; the schema on this page lists `PENDING` and `ACTIVE`. The page doesn't say whether the change from `PENDING` to `ACTIVE` is recorded as a separate change, so no `state` condition is added to the examples. Check the `state` column of the results.
 
 ## Related
