@@ -478,20 +478,20 @@ properties.
 :   A string corresponding to a region or multi-region
 [location](https://docs.cloud.google.com/bigquery/docs/locations).
 The location flag is required for the
-[`bq cancel`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_cancel) command
-and for the [`bq show`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_show)
+[`bq cancel`](bq-cli-reference-2.md#bq-cancel) command
+and for the [`bq show`](bq-cli-reference-3.md#bq-show)
 command when you use the `--jobs` flag to show information about jobs. The
 location flag is optional for the following commands:
 
-- [`query`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_query)
-- [`cp`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_cp)
-- [`load`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_load)
-- [`extract`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_extract)
-- [`partition`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_partition)
-- [`update`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_update)
-- [`wait`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_wait)
-- [`mk`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_mk) when you use the `--dataset`, `--reservation`, `--capacity_commitment`, or `--reservation_assignment` flags
-- [`ls`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_ls) when you use the `--reservation`, `--capacity_commitment`, or `--reservation_assignment` flags
+- [`query`](bq-cli-reference-2.md#bq-query)
+- [`cp`](bq-cli-reference-2.md#bq-cp)
+- [`load`](bq-cli-reference-2.md#bq-load)
+- [`extract`](bq-cli-reference-2.md#bq-extract)
+- [`partition`](bq-cli-reference-2.md#bq-partition)
+- [`update`](bq-cli-reference-3.md#bq-update)
+- [`wait`](bq-cli-reference-3.md#bq-wait)
+- [`mk`](bq-cli-reference-2.md#bq-mk) when you use the `--dataset`, `--reservation`, `--capacity_commitment`, or `--reservation_assignment` flags
+- [`ls`](bq-cli-reference-2.md#bq-ls) when you use the `--reservation`, `--capacity_commitment`, or `--reservation_assignment` flags
 
 All other commands ignore the `--location` flag.
 
@@ -614,3 +614,5 @@ the bq command-line tool. The default value is `''`. For more information, see
 ## Related
 
 - [Index of this directory](./README.md)
+- [bq command-line tool reference (part 2 of 3)](./bq-cli-reference-2.md)
+- [bq command-line tool reference (part 3 of 3)](./bq-cli-reference-3.md)
