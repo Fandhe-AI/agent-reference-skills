@@ -29,3 +29,6 @@
 | gcloud builds triggers import | 3 commands (alpha, beta, ga); builds triggers import … | [builds-triggers-import.md](./builds-triggers-import.md) |
 | gcloud builds triggers list | 3 commands (alpha, beta, ga); builds triggers list … | [builds-triggers-list.md](./builds-triggers-list.md) |
 | gcloud builds triggers run | 3 commands (alpha, beta, ga); builds triggers run … | [builds-triggers-run.md](./builds-triggers-run.md) |
+| gcloud builds triggers update (part 1) | 5 commands (alpha, beta, ga); builds triggers update bitbucket-cloud … | [builds-triggers-update-1.md](./builds-triggers-update-1.md) |
+| gcloud builds triggers update (part 2) | 24 commands (alpha, beta, ga); builds triggers update gitlab … | [builds-triggers-update-2.md](./builds-triggers-update-2.md) |
+| gcloud builds worker-pools | 15 commands (alpha, beta, ga); builds worker-pools create … | [builds-worker-pools.md](./builds-worker-pools.md) |
