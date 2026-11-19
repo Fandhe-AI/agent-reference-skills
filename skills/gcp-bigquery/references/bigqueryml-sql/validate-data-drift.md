@@ -180,7 +180,7 @@ similar to the following for numerical features:
 Copying and pasting the visualization link into a browser tab returns results
 similar to the following for categorical features:
 
-![A bar chart that visualizes the monitoring output for the `ML.VALIDATE_DATA_DRIFT function](https://docs.cloud.google.com/static/bigquery/images/model-monitoring-results2.png)
+![A bar chart that visualizes the monitoring output for the `ML.VALIDATE_DATA_DRIFT` function](https://docs.cloud.google.com/static/bigquery/images/model-monitoring-results2.png)
 
 ### Limitations
 
@@ -218,6 +218,7 @@ The `ML.VALIDATE_DATA_DRIFT` function uses
 - Corrected from the official docs: both example outputs show the metric `L_INTFY`. The valid value, as defined in the `CATEGORICAL_METRIC_TYPE` argument on this page, is `L_INFTY`, so the name is changed in both outputs.
 - Caution: in the example outputs the `threshold` values look swapped. The query sets only `categorical_default_threshold` to `0.2` and the numerical default is `0.3`, yet the `payment_type` row (metric `L_INFTY`, a categorical metric) shows threshold `0.3` and `dropoff_latitude` shows `0.2`. The official outputs are kept as published.
 - Corrected from the official docs: the two bullets about `JENSEN_SHANNON_DIVERGENCE` and `L_INFTY` say they are specified for the `categorical_default_threshold` / `numerical_default_threshold` argument. Those arguments take a `FLOAT64` threshold; the metric names are values of `categorical_metric_type` and `numerical_metric_type`, so the argument names are changed.
+- Corrected from the official docs: the alt text of the bar-chart image opens a backtick before `ML.VALIDATE_DATA_DRIFT` and does not close it; the closing backtick is added, as in the alt text of the graph image above it.
 
 ## Related
 

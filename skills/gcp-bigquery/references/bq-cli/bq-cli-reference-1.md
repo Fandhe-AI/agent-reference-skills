@@ -131,7 +131,7 @@ resource, be sure to follow the [rules for specifying resource names](#specifyin
 in commands.
 
 > [!NOTE]
-> **Note:** The following examples use the `--nouse_legacy_sql` flag. This flag is required to run a GoogleSQL query from the command line unless you [set a default value in `.bigqueryrc`](#set-default-values-for-command-line-flags) or [set the configuration setting](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_project_set_options_statement) `default_sql_dialect_option` to 'default_legacy_sql' at the project or organization level.
+> **Note:** The following examples use the `--nouse_legacy_sql` flag. This flag is required to run a GoogleSQL query from the command line unless you [set a default value in `.bigqueryrc`](#set-default-values-for-command-line-flags) or [set the configuration setting](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_project_set_options_statement) `default_sql_dialect_option` to 'default_google_sql' at the project or organization level.
 
 This example shows how to run a GoogleSQL query on the command line:
 
@@ -609,6 +609,7 @@ the bq command-line tool. The default value is `''`. For more information, see
 - The official page is split into 3 files at section boundaries; this is part 1.
 - Caution: the `--bigqueryrc` flag text says that if the environment variable is not set, `$HOME/.bigqueryrc` is used, and if that file does not exist, `~/.bigqueryrc` is used. These are the same path, so the fallback is redundant. The official text is kept as published.
 - Caution: the `--format` text says "If `none` is specified, then the command produces no output", but `none` is not in the list of values above it (`pretty`, `sparse`, `prettyjson`, `json`, `csv`). The official text is kept as published.
+- Corrected from the official docs: the note says the `--nouse_legacy_sql` flag can be omitted if `default_sql_dialect_option` is set to `'default_legacy_sql'`. That value makes legacy SQL the default; the option table in `googlesql-syntax/data-definition-language-3.md` gives `'default_google_sql'` ("Use GoogleSQL if the query dialect isn't specified at the job level"), so the value is changed to `'default_google_sql'`.
 
 ## Related
 
