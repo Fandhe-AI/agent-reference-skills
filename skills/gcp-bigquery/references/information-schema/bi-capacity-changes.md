@@ -110,6 +110,8 @@ The result looks similar to the following:
 The following example gets BI Engine capacity changes for the last
 seven days:
 
+Adapted (not in the official docs): replaced `CURRENT_DATE()` with `CURRENT_TIMESTAMP()` as the first argument of `TIMESTAMP_SUB`.
+
 ```sql
 SELECT
   change_timestamp,
@@ -117,7 +119,7 @@ SELECT
   user_email,
   preferred_tables
 FROM `my-project-id.region-us`.INFORMATION_SCHEMA.BI_CAPACITY_CHANGES
-WHERE change_timestamp > TIMESTAMP_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+WHERE change_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)
 ```
 
 The result looks similar to the following:
@@ -141,6 +143,7 @@ The result looks similar to the following:
 - Source: https://docs.cloud.google.com/bigquery/docs/information-schema-bi-capacity-changes (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the example that gets the changes of the last seven days passes `CURRENT_DATE()`, a `DATE`, to `TIMESTAMP_SUB`, which takes a `TIMESTAMP`. The conversion rules (googlesql-syntax/conversion_rules.md) list `DATETIME` as the only type that `DATE` coerces to, so the call doesn't type-check. The argument is changed to `CURRENT_TIMESTAMP()`.
 
 ## Related
 
