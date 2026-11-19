@@ -26,7 +26,7 @@ ML.BUCKETIZE(numerical_expression, array_split_points [, exclude_boundaries] [, 
 
 `ML.BUCKETIZE` takes the following arguments:
 
-- `numerical_expression`: the [numerical](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types) expression to bucketize.
+- `numerical_expression`: the [numerical](../googlesql-syntax/data-types.md#numeric-types) expression to bucketize.
 - `array_split_points`: an array of numerical values that provide the points at which to split the `numerical_expression` value. The numerical values in the array must be finite, so not `-inf`, `inf`, or `NaN`. Provide the numerical values in order, lowest to highest. The range of possible buckets is determined by the upper and lower boundaries of the array. For example, if the `array_split_points` value is `[1, 2, 3, 4]`, then there are five potential buckets that the `numerical_expression` value can be bucketized into.
 - `exclude_boundaries`: a `BOOL` value that determines whether the upper and lower boundaries from `array_split_points` are used. If `TRUE`, then the boundary values aren't used to create buckets. For example, if the `array_split_points` value is `[1, 2, 3, 4]` and `exclude_boundaries` is `TRUE`, then there are three potential buckets that the `numerical_expression` value can be bucketized into. The default value is `FALSE`.
 - `output_format`: a `STRING` value that specifies the output format of the bucket. Valid output formats are as follows:

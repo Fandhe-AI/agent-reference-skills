@@ -595,7 +595,7 @@ specify the
 Equivalent to the `WRITE_TRUNCATE` value for [`JobConfigurationLoad.writeDisposition`](https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job#JobConfigurationLoad.FIELDS.write_disposition).
 
 > [!NOTE]
-> **Note:** You can use the [`TRUNCATE TABLE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#truncate_table_statement) statement to remove all rows from a table without deleting the schema.
+> **Note:** You can use the [`TRUNCATE TABLE`](../googlesql-syntax/dml-syntax.md#truncate-table-statement) statement to remove all rows from a table without deleting the schema.
 
 **`--schema={SCHEMA_FILE|SCHEMA`}**
 
@@ -1570,7 +1570,7 @@ To disable metadata caching, specify 0. This is the default.
 
 To enable metadata caching, specify an interval value between 30
 minutes and 7 days, using the `Y-M D H:M:S` format described in the
-[`INTERVAL` data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#interval_type)
+[`INTERVAL` data type](../googlesql-syntax/data-types.md#interval-type)
 documentation. For example, specify `0-0 0 4:0:0` for a 4 hour staleness
 interval. With this value, operations against the table use cached metadata if
 it has been refreshed within the past 4 hours. If the cached metadata
@@ -2236,7 +2236,7 @@ removed, unless you specify the `--destination_kms_key` flag. The default
 value is `false`.
 
 > [!NOTE]
-> **Note:** To remove all rows from a table without deleting the schema, use the [`TRUNCATE TABLE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#truncate_table_statement) statement.
+> **Note:** To remove all rows from a table without deleting the schema, use the [`TRUNCATE TABLE`](../googlesql-syntax/dml-syntax.md#truncate-table-statement) statement.
 
 **`--require_cache={true|false}`**
 

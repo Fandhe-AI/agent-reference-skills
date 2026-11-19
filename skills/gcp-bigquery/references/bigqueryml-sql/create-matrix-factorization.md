@@ -679,9 +679,9 @@ column include:
 
 | `Matrix factorization input column` | `Supported types` |
 |---|---|
-| `user` | Any [groupable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties) data type |
-| `item` | Any [groupable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties) data type |
-| `rating` | [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) |
+| `user` | Any [groupable](../googlesql-syntax/data-types.md#data-type-properties) data type |
+| `item` | Any [groupable](../googlesql-syntax/data-types.md#data-type-properties) data type |
+| `rating` | [`INT64`](../googlesql-syntax/data-types.md#integer-type) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) |
 
 ### Feedback types
 

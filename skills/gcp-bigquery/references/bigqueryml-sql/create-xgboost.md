@@ -173,7 +173,7 @@ Imported XGBoost models have the following limitations:
 - Models are limited to 250 MB in size.
 - The memory limit to load and run the XGBoost model is 840 MB. You can reduce the model size by using fewer trees or shallower tree depth, or by using the XGBoost library's default `save_model` method to save the models.
 - BigQuery ML uses the [XGBoost 3.1.0](https://xgboost.readthedocs.io/en/release_3.1.0/index.html) library to load and make predictions on XGBoost models. Forward compatibility for models saved with XGBoost version 3.2.0 or newer is not guaranteed.
-- BigQuery XGBoost models only support [numeric types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types) as input data types and [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) as the output data type.
+- BigQuery XGBoost models only support [numeric types](../googlesql-syntax/data-types.md#numeric-types) as input data types and [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) as the output data type.
 - Categorical features that use XGBoost built-in [categorical data](https://xgboost.readthedocs.io/en/stable/tutorials/categorical.html) support are treated as integer inputs.
 - BigQuery XGBoost models only support a single scalar or array output. [Multiple outputs](https://xgboost.readthedocs.io/en/stable/tutorials/multioutput.html) aren't supported.
 - You can only use an imported XGBoost model with an object table when you use capacity-based pricing through reservations. On-demand pricing isn't supported.

@@ -132,11 +132,11 @@ the following:
 
 | TensorFlow Lite types | Supported | BigQuery type |
 |---|---|---|
-| `UINT8, UINT16, UINT32, UINT64, INT8, INT16, INT32, INT64` | Supported | [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types) |
-| `FLOAT16, FLOAT32, FLOAT64` | Supported | [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) |
+| `UINT8, UINT16, UINT32, UINT64, INT8, INT16, INT32, INT64` | Supported | [`INT64`](../googlesql-syntax/data-types.md#integer-type) |
+| `FLOAT16, FLOAT32, FLOAT64` | Supported | [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) |
 | `COMPLEX64, COMPLEX128` | Unsupported | N/a |
-| `BOOL` | Supported | [`BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#boolean_type) |
-| `STRING` | Supported | [`STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#string_type) |
+| `BOOL` | Supported | [`BOOL`](../googlesql-syntax/data-types.md#boolean-type) |
+| `STRING` | Supported | [`STRING`](../googlesql-syntax/data-types.md#string-type) |
 | `RESOURCE` | Unsupported | N/a |
 | `VARIANT` | Unsupported | N/a |
 

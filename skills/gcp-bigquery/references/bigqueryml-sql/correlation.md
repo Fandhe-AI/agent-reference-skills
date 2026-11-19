@@ -55,7 +55,7 @@ The `ML.CORRELATION` function takes the following arguments:
 - `QUERY_STATEMENT`: a SQL query whose results contain the data to analyze.
 - `TARGET_COL`: a `STRING` that contains the name of the primary numerical column to analyze.
 - `TARGET_CORRELATION_COLS`: a `STRING` or `ARRAY<STRING>` value that contains the names of one or more numerical columns to correlate against the `TARGET_COL` column.
-- `DIMENSION_COLS`: a `STRING` or `ARRAY<STRING>` value that contains the names of columns to slice the data by. The function calculates correlations for every combination of these dimensions. You can specify a maximum of 12 columns. Each column must be a [groupable type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#groupable_data_types).
+- `DIMENSION_COLS`: a `STRING` or `ARRAY<STRING>` value that contains the names of columns to slice the data by. The function calculates correlations for every combination of these dimensions. You can specify a maximum of 12 columns. Each column must be a [groupable type](../googlesql-syntax/data-types.md#groupable-data-types).
 - `METHOD`: a `STRING` that specifies the statistical method to use for correlation. Supported values are `PEARSON`, `SPEARMAN`, and `KENDALL`. The default value is `PEARSON`. The `KENDALL` method has higher complexity and can be slow on large datasets. For large tables, we recommend that you use `PEARSON` or `SPEARMAN`.
 
 ### Output

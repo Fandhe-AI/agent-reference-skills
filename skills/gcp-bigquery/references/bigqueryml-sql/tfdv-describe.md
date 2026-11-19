@@ -68,7 +68,7 @@ SELECT * FROM ML.TFDV_DESCRIBE(
 Input data for the `ML.TFDV_DESCRIBE` function can only contain columns of the
 following data types:
 
-- [Numeric](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types) types
+- [Numeric](../googlesql-syntax/data-types.md#numeric-types) types
 - `STRING`
 - `BOOL`
 - `BYTES`

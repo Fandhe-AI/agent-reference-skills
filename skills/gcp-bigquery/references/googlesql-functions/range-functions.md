@@ -43,7 +43,7 @@ Splits a range into an array of subranges.
 - `range_to_split`: The `RANGE<T>` value to split.
 - `step_interval`: The `INTERVAL` value, which determines the maximum size of
   each subrange in the resulting array. An
-  [interval single date and time part](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#single_datetime_part_interval)
+  [interval single date and time part](../googlesql-syntax/data-types.md#construct-an-interval-with-a-single-datetime-part)
   is supported, but an interval range of date and time parts isn't.
 
   - If `range_to_split` is `RANGE<DATE>`, these interval
@@ -164,8 +164,8 @@ RANGE(lower_bound, upper_bound)
 
 **Description**
 
-Constructs a range of [`DATE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#date_type), [`DATETIME`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#datetime_type), or
-[`TIMESTAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#timestamp_type) values.
+Constructs a range of [`DATE`](../googlesql-syntax/data-types.md#date-type), [`DATETIME`](../googlesql-syntax/data-types.md#datetime-type), or
+[`TIMESTAMP`](../googlesql-syntax/data-types.md#timestamp-type) values.
 
 **Definitions**
 

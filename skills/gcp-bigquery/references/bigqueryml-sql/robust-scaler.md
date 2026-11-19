@@ -35,7 +35,7 @@ ML.ROBUST_SCALER(numerical_expression [, quantile_range] [, with_median] [, with
 
 `ML.ROBUST_SCALER` takes the following arguments:
 
-- `numerical_expression`: the [numerical](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types) expression to scale.
+- `numerical_expression`: the [numerical](../googlesql-syntax/data-types.md#numeric-types) expression to scale.
 - `quantile_range`: an array of two `INT64` elements that specifies the quantile range. The first element provides the lower boundary of the range. It must be greater than `0`. The second element provides the upper boundary of the range. It must be greater than the first element but less than `100`. The default value is `[25, 75]`.
 - `with_median`: a `BOOL` value that specifies whether the data is centered. If `TRUE`, the function centers the data by removing the median before scaling. The default value is `TRUE`.
 - `with_quantile_range`: a `BOOL` value that specifies whether the data is scaled to the quantile range. If `TRUE`, the data is scaled. The default value is `TRUE`.

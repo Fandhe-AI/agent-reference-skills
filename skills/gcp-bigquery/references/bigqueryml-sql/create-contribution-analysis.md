@@ -164,7 +164,7 @@ or by using the
 to replace `NULL` values with a custom value.
 
 If you want to use a
-[numerical](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types)
+[numerical](../googlesql-syntax/data-types.md#numeric-types)
 column that has a data type other than `INT64` as a dimension, you can use any
 function that outputs an `INT64`, `BOOL`, or `STRING` value in the
 `query_statement` to transform continuous values. For
