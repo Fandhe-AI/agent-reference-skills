@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-knowledge-catalog
 
-Google Cloud (GCP) のデータカタログ・データガバナンス系スキル。Knowledge Catalog（旧 Dataplex Universal Catalog）の概要・メタデータモデル（entry・entry group・entry type・aspect・aspect type・完全修飾名）、メタデータの import（metadata job）とコネクタ、検索（セマンティック検索・検索構文・Cloud Storage の discovery）、context sets・enrichment task・data insights・data relationships、business glossary・data products・data domains・governance workflow、データ品質（Auto data quality・ルールの再利用・システムのルールテンプレート）とデータ プロファイリング、データ リネージ（Data Lineage API・OpenLineage・リネージのビュー・取り込みの制御）、CMEK・VPC Service Controls・監査ログ・モニタリング・メタデータの変更フィード、廃止された Data Catalog の概要・廃止告知と Knowledge Catalog への導線を扱う。gcloud 2 グループ（`dataplex` / `datalineage`）・REST 2 API・IAM 4 ファイルの機械生成ページを併せて収録する。分割投入中のため、未投入のカテゴリ（`rest/dataplex` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のデータカタログ・データガバナンス系スキル。Knowledge Catalog（旧 Dataplex Universal Catalog）の概要・メタデータモデル（entry・entry group・entry type・aspect・aspect type・完全修飾名）、メタデータの import（metadata job）とコネクタ、検索（セマンティック検索・検索構文・Cloud Storage の discovery）、context sets・enrichment task・data insights・data relationships、business glossary・data products・data domains・governance workflow、データ品質（Auto data quality・ルールの再利用・システムのルールテンプレート）とデータ プロファイリング、データ リネージ（Data Lineage API・OpenLineage・リネージのビュー・取り込みの制御）、CMEK・VPC Service Controls・監査ログ・モニタリング・メタデータの変更フィード、廃止された Data Catalog の概要・廃止告知と Knowledge Catalog への導線を扱う。gcloud 2 グループ（`dataplex` / `datalineage`）・REST 2 API・IAM 4 ファイルの機械生成ページを併せて収録する。分割投入中のため、未投入のカテゴリ（`rest-schemas/dataplex`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメントの原語）。
 
@@ -37,7 +37,16 @@ skills/gcp-knowledge-catalog/
         datalineage-runs.md
     rest/                         # 機械生成: Discovery 由来のメソッド表
       README.md
+      dataplex/                   # Cloud Dataplex API
+        README.md
+        dataplex-1.md
+        dataplex-2.md
       datalineage/                # Data Lineage API
+        README.md
+        datalineage.md
+    rest-schemas/                 # 機械生成: Discovery 由来のメッセージスキーマ
+      README.md
+      datalineage/
         README.md
         datalineage.md
     iam/                          # 機械生成: IAM roles-permissions reference
@@ -72,7 +81,7 @@ skills/gcp-knowledge-catalog/
       <page>.md
 ```
 
-`references/gcloud/` のグループ（2）: `dataplex` / `datalineage`。`references/rest/` `references/rest-schemas/`（後続 PR で投入） の API（2）: `dataplex`（Cloud Dataplex API v1）/ `datalineage`（Data Lineage API v1）。`references/iam/` のファイル（4）: `dataplex-1` / `dataplex-2` / `dataplex-3`（`dataplex` サービスを 3 分割）/ `datalineage`。
+`references/gcloud/` のグループ（2）: `dataplex` / `datalineage`。`references/rest/` `references/rest-schemas/` の API（2）: `dataplex`（Cloud Dataplex API v1）/ `datalineage`（Data Lineage API v1）。`references/iam/` のファイル（4）: `dataplex-1` / `dataplex-2` / `dataplex-3`（`dataplex` サービスを 3 分割）/ `datalineage`。
 
 ## 探索手順
 
@@ -80,10 +89,10 @@ skills/gcp-knowledge-catalog/
 
 1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）。全体像は `overview-setup-iam/introduction.md` と `metadata-overview.md`
 2. gcloud コマンド → `references/gcloud/README.md` からグループを選び、グループの README.md → コマンドページへ。Knowledge Catalog は `dataplex`、リネージは `datalineage`。GA のコマンドは `gcloud help` の全文、alpha・beta のコマンドは NAME と SYNOPSIS のみ（残りは `gcloud alpha|beta <command> --help`）。`dataplex` は GA と alpha、`datalineage` は GA・beta・alpha のトラックがあり、`dataplex entry-links` は alpha のみ
-3. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`（後続 PR で投入）。`<api>` は `dataplex` / `datalineage` の 2 つ
+3. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`。`<api>` は `dataplex` / `datalineage` の 2 つ
 4. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/dataplex.catalogAdmin`・`roles/dataplex.dataScanAdmin`・`roles/datalineage.viewer`）で `references/iam/` 配下を grep して該当ファイルを特定する（`dataplex` は 3 ファイルに分かれる）。ロールの用途の解説は `overview-setup-iam/iam-roles.md`、アクセス制御の考え方は `iam-and-access-control.md`
 5. Data Catalog の廃止・移行 → `security-monitoring-data-catalog/deprecations.md`（日付）→ `data-catalog-overview.md` → `lineage-data-catalog.md`。廃止告知がリンクする移行ガイド（`dataplex/docs/transition-to-dataplex-catalog`）は 2026-11-19 時点で `knowledge-catalog/docs/introduction` へリダイレクトされ、専用の移行手順ページは無い（`overview-setup-iam/introduction.md`）。Policy Tag Manager の API・gcloud・IAM は `gcp-bigquery`
-6. 旧 Dataplex の lakes・zones・assets・tasks のコマンド・メソッドは `references/gcloud/dataplex/`（`dataplex-lakes.md` ほか）と `references/rest/dataplex/`（後続 PR で投入） にある（ガイドは収録していない）
+6. 旧 Dataplex の lakes・zones・assets・tasks のコマンド・メソッドは `references/gcloud/dataplex/`（`dataplex-lakes.md` ほか）と `references/rest/dataplex/` にある（ガイドは収録していない）
 7. 収録外のガイド（enrichment の個別手順・カスタムコネクタ・料金等）は下記「対象外」
 
 ## タスク → カテゴリ マッピング
@@ -114,9 +123,11 @@ skills/gcp-knowledge-catalog/
 | Knowledge Catalog のコマンド（entries・entry-groups・entry-types・aspect-types・glossaries・data-products・datascans・metadata-jobs・context・lakes・zones・assets・tasks） | gcloud/dataplex | [references/gcloud/dataplex/README.md](references/gcloud/dataplex/README.md) |
 | Data Lineage のコマンド（config・lineage-events・processes・runs） | gcloud/datalineage | [references/gcloud/datalineage/README.md](references/gcloud/datalineage/README.md) |
 | REST のメソッド・パスを調べたい | rest | [references/rest/README.md](references/rest/README.md) |
+| 各 API のメソッド | rest/`<api>`（`dataplex` / `datalineage`） | [references/rest/dataplex/README.md](references/rest/dataplex/README.md)、[references/rest/datalineage/README.md](references/rest/datalineage/README.md) |
+| REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
 | ロール ID の権限一覧・事前定義ロールを調べたい（`roles/dataplex.*` / `roles/datalineage.*`） | iam | [references/iam/README.md](references/iam/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest/dataplex` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/dataplex`
 
 ## 他スキルとの使い分け
 
@@ -153,7 +164,7 @@ skills/gcp-knowledge-catalog/
 
 - 取得日: 2026-11-19（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin。URL に版が無いため取得日で pin）、2026-11-14（機械生成分。gcloud 593.0.0 の help、Discovery document、roles-permissions ページ。各ページ Notes に記載）
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
-- `references/gcloud/` `references/rest/` `references/rest-schemas/`（後続 PR で投入） `references/iam/` は機械生成。他の 8 カテゴリは公式ガイド由来の手書き
+- `references/gcloud/` `references/rest/` `references/rest-schemas/` `references/iam/` は機械生成。他の 8 カテゴリは公式ガイド由来の手書き
 - 公式の例の一部は安全性・正しさのため修正している（フェンス直前に `Adapted (not in the official docs)` の行を置き、ページの Notes にも記載。例: `glossaries-data-products-domains/data-domains-create.md` の `getIamPolicy` / `setIamPolicy`、`data-quality-profiling/reuse-data-quality-rules.md` の heredoc）。gcloud help の例の誤りは生成ページの Notes に `Corrected from the official docs:` として残す
 - 変更・終了（references で確認したもの）:
   - Data Catalog: Deprecated date "February 3, 2025"、Shutdown date "June 1, 2026"（`security-monitoring-data-catalog/deprecations.md`）。Policy Tag Manager は廃止されない
