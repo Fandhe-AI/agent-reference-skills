@@ -49,8 +49,10 @@ gcurl "https://dataplex.googleapis.com/v1/projects/dataplex-templates/locations/
 
 ### Create a rule library
 
+Adapted (not in the official docs): Query parameter names are the Discovery document's camelCase names (`entryGroupId`, `entryId`, `dataScanId`, `aspectKeys`).
+
 ```bash
-gcurl -X POST "https://${DATAPLEX_API}/entryGroups?entryGroup_id=RULE_LIBRARY_ID" \
+gcurl -X POST "https://${DATAPLEX_API}/entryGroups?entryGroupId=RULE_LIBRARY_ID" \
 --data @- << EOF
 {
 "labels": {
@@ -63,10 +65,10 @@ EOF
 
 ### Create a rule template
 
-Adapted (not in the official docs): the heredoc delimiter is quoted (`'EOF'`) so the shell does not expand `${data()}`, `${param(...)}`, `${column()}` and the backticks in the query, and `inputParameters` declares both parameters the query uses (`reference_table`, `reference_column`).
+Adapted (not in the official docs): Query parameter names are the Discovery document's camelCase names (`entryGroupId`, `entryId`, `dataScanId`, `aspectKeys`). The heredoc delimiter is quoted (`'EOF'`) so the shell does not expand `${data()}`, `${param(...)}`, `${column()}` and the backticks in the query, and `inputParameters` declares both parameters the query uses (`reference_table`, `reference_column`).
 
 ```bash
-gcurl -X POST "https://${DATAPLEX_API}/entryGroups/ENTRY_GROUP_ID/entries?entry_id=TEMPLATE_ID" \
+gcurl -X POST "https://${DATAPLEX_API}/entryGroups/ENTRY_GROUP_ID/entries?entryId=TEMPLATE_ID" \
 --data @- << 'EOF'
 {
 "entryType": "projects/dataplex-types/locations/global/entryTypes/data-quality-rule-template",
@@ -128,10 +130,10 @@ gcurl -X DELETE \
 
 Use `templateReference`. Custom templates use project-specific paths; system templates use `projects/dataplex-templates/locations/global/entryGroups/rule-library/entries/SYSTEM_TEMPLATE_ID` (for example `non_null_expectation`). `FILTER_CONDITION` is an optional AIP-160 filter (for example `name = "RULE_NAME"`).
 
-Adapted (not in the official docs): `templateReference.values` passes both parameters of the template created above (`reference_table`, `reference_column`) instead of a single `PARAMETER_NAME`.
+Adapted (not in the official docs): Query parameter names are the Discovery document's camelCase names (`entryGroupId`, `entryId`, `dataScanId`, `aspectKeys`). `templateReference.values` passes both parameters of the template created above (`reference_table`, `reference_column`) instead of a single `PARAMETER_NAME`.
 
 ```bash
-gcurl -X POST "https://${DATAPLEX_API}/dataScans?data_scan_id=DATASCAN_ID" \
+gcurl -X POST "https://${DATAPLEX_API}/dataScans?dataScanId=DATASCAN_ID" \
 --data @- << EOF
 {
 "data": {
@@ -166,10 +168,10 @@ EOF
 
 Patch the `@bigquery` entry with a `data-rules` aspect for that column.
 
-Adapted (not in the official docs): each rule follows the `data-rules` fields table (`name`, `type`, and a `templateReference` object holding `name` and `values`); the `column` field is dropped because the column comes from the aspect path; the entry ID is `bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID`, as in this page's Terraform example.
+Adapted (not in the official docs): Query parameter names are the Discovery document's camelCase names (`entryGroupId`, `entryId`, `dataScanId`, `aspectKeys`). Each rule follows the `data-rules` fields table (`name`, `type`, and a `templateReference` object holding `name` and `values`); the `column` field is dropped because the column comes from the aspect path; the entry ID is `bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID`, as in the source page's Terraform example (omitted here). `aspectKeys` uses the same dotted aspect key as the request body (`dataplex-types.global.data-rules@Schema.COLUMN_NAME`).
 
 ```bash
-gcurl -X PATCH "https://${DATAPLEX_API}/entryGroups/@bigquery/entries/bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID?updateMask=aspects&aspect_keys=projects/dataplex-types/locations/global/aspectTypes/data-rules@Schema.COLUMN_NAME" \
+gcurl -X PATCH "https://${DATAPLEX_API}/entryGroups/@bigquery/entries/bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID?updateMask=aspects&aspectKeys=dataplex-types.global.data-rules@Schema.COLUMN_NAME" \
 --data @- << EOF
 {
 "aspects": {
@@ -197,10 +199,10 @@ EOF
 
 Patch the `@dataplex` entry of the term; linked BigQuery tables inherit the rules.
 
-Adapted (not in the official docs): each rule follows the `data-rules` fields table (`name`, `type`, and a `templateReference` object holding `name` and `values`); the `column` field is dropped because the column comes from the aspect path.
+Adapted (not in the official docs): Query parameter names are the Discovery document's camelCase names (`entryGroupId`, `entryId`, `dataScanId`, `aspectKeys`). Each rule follows the `data-rules` fields table (`name`, `type`, and a `templateReference` object holding `name` and `values`); the `column` field is dropped because the column comes from the aspect path. `aspectKeys` uses the same dotted aspect key as the request body (`dataplex-types.global.data-rules`).
 
 ```bash
-gcurl -X PATCH "https://${DATAPLEX_API}/entryGroups/@dataplex/entries/projects/PROJECT_ID/locations/LOCATION/glossaries/GLOSSARY_ID/terms/TERM_ID?updateMask=aspects&aspect_keys=projects/dataplex-types/locations/global/aspectTypes/data-rules" \
+gcurl -X PATCH "https://${DATAPLEX_API}/entryGroups/@dataplex/entries/projects/PROJECT_ID/locations/LOCATION/glossaries/GLOSSARY_ID/terms/TERM_ID?updateMask=aspects&aspectKeys=dataplex-types.global.data-rules" \
 --data @- << EOF
 {
 "aspects": {
@@ -236,8 +238,10 @@ gcurl "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION
 
 Set `enableCatalogBasedRules` to `true`; a filter is optional. Subsequent runs evaluate the rules attached to the entry or inherited from glossary terms as observed at execution time.
 
+Adapted (not in the official docs): Query parameter names are the Discovery document's camelCase names (`entryGroupId`, `entryId`, `dataScanId`, `aspectKeys`).
+
 ```bash
-gcurl -X POST "https://${DATAPLEX_API}/dataScans?data_scan_id=DATASCAN_ID" \
+gcurl -X POST "https://${DATAPLEX_API}/dataScans?dataScanId=DATASCAN_ID" \
 --data @- << EOF
 {
 "type": "DATA_QUALITY",
@@ -346,7 +350,7 @@ EOF
 | Requirement | Detail |
 |---|---|
 | Acting as the account | `iam.serviceAccounts.actAs` on the project hosting the service account (typically `roles/iam.serviceAccountUser`). |
-| Dataplex Service Agent | `service-PROJECT_ID@gcp-sa-dataplex.iam.gserviceaccount.com` of the scan project needs `iam.serviceAccounts.getAccessToken` on the service account (for example `roles/iam.serviceAccountTokenCreator`). |
+| Dataplex Service Agent | `service-PROJECT_NUMBER@gcp-sa-dataplex.iam.gserviceaccount.com` (`PROJECT_NUMBER` is the scan project's number) of the scan project needs `iam.serviceAccounts.getAccessToken` on the service account (for example `roles/iam.serviceAccountTokenCreator`). |
 | The account's own access | `bigquery.tables.getData` on the scanned table (for example `roles/bigquery.dataViewer`); `bigquery.jobs.create` in the scan project (for example `roles/bigquery.jobUser`); `roles/bigquery.dataEditor` on the export dataset if exporting. |
 
 ### System rule templates vs built-in rules
@@ -394,16 +398,17 @@ EOF
 
 - Source: https://docs.cloud.google.com/knowledge-catalog/docs/reuse-data-quality-rules (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the official page lists `bigquery.jobs.insert` as the permission the service account needs in the scan project; that is the REST method `jobs.insert`, not an IAM permission. The IAM permission to run jobs is `bigquery.jobs.create`, which `roles/bigquery.jobUser` contains (IAM roles and permissions reference, https://docs.cloud.google.com/iam/docs/roles-permissions/bigquery, retrieved 2026-11-14).
-- Official docs inconsistency: this page writes the Dataplex Service Agent email as `service-PROJECT_ID@gcp-sa-dataplex.iam.gserviceaccount.com`, while the IAM page (https://docs.cloud.google.com/knowledge-catalog/docs/iam-and-access-control) writes it as `service-CUSTOMER_PROJECT_NUMBER@gcp-sa-dataplex.iam.gserviceaccount.com`. The IAM page's form uses a project number; see overview-setup-iam/iam-and-access-control.md.
+- Official docs inconsistency: this page writes the Dataplex Service Agent email as `service-PROJECT_ID@gcp-sa-dataplex.iam.gserviceaccount.com`, while the IAM page (https://docs.cloud.google.com/knowledge-catalog/docs/iam-and-access-control) writes it as `service-CUSTOMER_PROJECT_NUMBER@gcp-sa-dataplex.iam.gserviceaccount.com`. Service agent emails use the project number, so the requirements table above uses `service-PROJECT_NUMBER@gcp-sa-dataplex.iam.gserviceaccount.com`; see overview-setup-iam/iam-and-access-control.md.
 - Knowledge Catalog was formerly Dataplex Universal Catalog; the API, gcloud group, and IAM names stay `dataplex`. The BigQuery tables themselves are covered by the gcp-bigquery skill.
 - Adapted from the official docs: the create-template example's query references `${param(reference_table)}` and `${param(reference_column)}`, but its `inputParameters` declares a single `PARAMETER_NAME`, and the scan example passes a single `PARAMETER_NAME` value. The create example declares both parameters, and the scan example passes `REFERENCE_TABLE` and `REFERENCE_COLUMN` values under the same names, so the two examples work together as a foreign-key check.
 - Corrected from the official docs: the create and update template examples use `<< EOF` (unquoted) while the JSON contains `${data()}`, `${param(...)}`, `${column()}` and backticks, which the shell would expand or reject; the fences use `<< 'EOF'`. The other heredocs contain no `$` or backticks and are unchanged.
-- The source uses snake_case query parameters (`entryGroup_id`, `entry_id`, `data_scan_id`, `aspect_keys`); the Discovery document names them `entryGroupId`, `entryId`, `dataScanId`. Copied as the source writes them.
+- Adapted from the official docs: the source uses snake_case query parameters (`entryGroup_id`, `entry_id`, `data_scan_id`, `aspect_keys`); `entryGroup_id` matches neither the Discovery name `entryGroupId` nor the proto field `entry_group_id`, so all examples use the Discovery document's names `entryGroupId`, `entryId`, `dataScanId` and `aspectKeys`.
 - Adapted from the official docs: the BigQuery table and glossary term REST examples put `templateReference` as a string, place `values` and `column` beside it in the rule object, and omit `name` and `type`, while the `data-rules` fields table marks `name`, `type` and the `templateReference` object as required, the later JSON payload example nests `name` and `values` inside `templateReference`, and a Note in the source says the column a rule applies to is not a field in the aspect data but is determined by the path where the aspect is attached. Both examples are rewritten to that schema (`RULE_NAME` is a placeholder for the rule name).
 - Adapted from the official docs: the source defines `gcurl` as `alias gcurl='curl ...'`, which is not expanded in non-interactive scripts; here it is a shell function that passes its arguments to `curl` with the same two headers.
 - Rule templates are used only from the same location as the scan, or from a global location. A rule library location can't be changed after creation.
 - Deleting a rule template (`DELETE` on the entry) is destructive; try it on a disposable rule library first.
-- Corrected from the official docs: the BigQuery table REST example patches `entryGroups/@bigquery/entries/projects/PROJECT_ID/locations/LOCATION/datasets/DATASET_ID/tables/TABLE_ID`; the entry ID of a BigQuery table is `bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID` (the `entry_id` of this page's Terraform example), so the example uses that ID.
+- Corrected from the official docs: the BigQuery table REST example patches `entryGroups/@bigquery/entries/projects/PROJECT_ID/locations/LOCATION/datasets/DATASET_ID/tables/TABLE_ID`; the entry ID of a BigQuery table is `bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID` (the `entry_id` of the source page's Terraform example, which is omitted here), so the example uses that ID.
+- Adapted from the official docs: the BigQuery table and glossary term examples pass `aspect_keys` as an aspect type resource name (`projects/dataplex-types/locations/global/aspectTypes/data-rules...`); `aspectKeys` takes the map keys of the aspects (`<aspect_type_reference>@path`, `google/cloud/dataplex/v1/catalog.proto` at googleapis `5ce0245`), which are the dotted keys of the request body, so the examples use `dataplex-types.global.data-rules@Schema.COLUMN_NAME` and `dataplex-types.global.data-rules`.
 - Pricing: BigQuery charges for the job run in the scan project; there is no Knowledge Catalog processing charge for the scan; `data-rules` and `data-quality-rule-template` aspect storage is charged as metadata storage (see Knowledge Catalog pricing at https://docs.cloud.google.com/dataplex/pricing).
 - The source also shows Console steps and Terraform examples (`google_dataplex_entry_group`, `google_dataplex_entry`, `google_dataplex_datascan`); they are omitted.
 

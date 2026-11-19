@@ -204,6 +204,7 @@ curl -X GET \
 - Notifications: approve or reject sends an email with the review comment to the requester (for batch requests after the update completes); no email is sent if the author is a service account.
 - Deleting is irreversible (the request is removed from storage); requesters can delete only `NEW` requests, workflow administrators any state. Try deletes on a disposable request first.
 - The source also shows Console steps and a PATCH body that updates the batch `changes` (an `updateEntryRequest` with aspects) and a sample response for a pending batch change request; both are omitted here.
+- `roles/dataplex.glossaryOwner` (Configure approver email notifications) is named as the source writes it, but it is not in the Dataplex roles of the IAM roles reference (references/iam/); the reference has `roles/datacatalog.glossaryOwner` (DataCatalog Glossary Owner, Beta, in the gcp-bigquery skill's datacatalog IAM page). Which role the source means is not confirmed.
 
 ## Related
 
