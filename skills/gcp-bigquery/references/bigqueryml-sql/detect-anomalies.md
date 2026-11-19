@@ -121,8 +121,8 @@ followed by the input table columns, if present. Output can include the
 following:
 
 - `time_series_id_col` or `time_series_id_cols`: the identifiers of a time series. Only present when forecasting multiple time series at once. The column names and types are inherited from the `TIME_SERIES_ID_COL` option as specified in the model creation query.
-- `time_series_timestamp`: a `STRING` value that contains the timestamp column for a time series. The column name is inherited from the `TIME_SERIES_TIMESTAMP_COL` option as specified in the `CREATE MODEL` statement. The column has a type of `TIMESTAMP`, regardless of the [`TIME_SERIES_TIMESTAMP_COL`](create-time-series.md#time_series_timestamp_col) input column data type.
-- `time_series_data`: a `STRING` value that contains the data column for a time series. The column name is inherited from the `TIME_SERIES_DATA_COL` option as specified in the `CREATE MODEL` statement. The column has a type of `FLOAT64`, regardless of the [`TIME_SERIES_DATA_COL`](create-time-series.md#time_series_data_col) input column data type.
+- `time_series_timestamp`: a `TIMESTAMP` value that contains the timestamp column for a time series. The column name is inherited from the `TIME_SERIES_TIMESTAMP_COL` option as specified in the `CREATE MODEL` statement. The column has a type of `TIMESTAMP`, regardless of the [`TIME_SERIES_TIMESTAMP_COL`](create-time-series.md#time_series_timestamp_col) input column data type.
+- `time_series_data`: a `FLOAT64` value that contains the data column for a time series. The column name is inherited from the `TIME_SERIES_DATA_COL` option as specified in the `CREATE MODEL` statement. The column has a type of `FLOAT64`, regardless of the [`TIME_SERIES_DATA_COL`](create-time-series.md#time_series_data_col) input column data type.
 - `is_anomaly`: a `BOOL` value that indicates whether the value at a specific timestamp is an anomaly. If the `anomaly_probability` value is above the `anomaly_prob_threshold` value, then the `time_series_data` value is out of the range for the lower and upper bounds and the `is_anomaly` value is `TRUE`.
 - `lower_bound`: a `FLOAT64` value that contains the lower bound of the prediction result.
 - `upper_bound`: a `FLOAT64` value that contains the upper bound of the prediction result.
@@ -407,6 +407,7 @@ of the pricing model.
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-detect-anomalies (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the `ARIMA_PLUS` output describes `time_series_timestamp` and `time_series_data` as `STRING` values and then says the columns have the types `TIMESTAMP` and `FLOAT64`; they are written as `TIMESTAMP` and `FLOAT64` values (the `AI.DETECT_ANOMALIES` page also gives `TIMESTAMP`).
 
 ## Related
 

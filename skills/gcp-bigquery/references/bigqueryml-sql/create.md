@@ -53,6 +53,8 @@ BigQuery, see
 > **Note:** This syntax statement provides a comprehensive list of model types with their model options. When you create a model, use that model specific `CREATE
 > MODEL` statement for convenience. You can view specific `CREATE MODEL` statements by clicking the `MODEL_TYPE` name in the following list, in the table of contents in the left panel, or in the *create model* link in the [End-to-end user journey for each model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-e2e-journey).
 
+Adapted (not in the official docs): the trailing comma inside `[, NUM_TRIALS = int64_value, ]` is removed, as in the other options.
+
 ```sql
 {CREATE MODEL | CREATE MODEL IF NOT EXISTS | CREATE OR REPLACE MODEL}
 model_name
@@ -178,7 +180,7 @@ model_option_list:
     [, ENDPOINT_IDLE_TTL = interval_value ]
     [, REMOTE_SERVICE_TYPE = { 'CLOUD_AI_VISION_V1' | 'CLOUD_AI_NATURAL_LANGUAGE_V1' |
       'CLOUD_AI_TRANSLATE_V3' } ]
-    [, NUM_TRIALS = int64_value, ]
+    [, NUM_TRIALS = int64_value ]
     [, MAX_PARALLEL_TRIALS = int64_value ]
     [, HPARAM_TUNING_ALGORITHM = { 'VIZIER_DEFAULT' | 'RANDOM_SEARCH' | 'GRID_SEARCH' } ]
     [, HPARAM_TUNING_OBJECTIVES = { 'R2_SCORE' | 'ROC_AUC' | ... } ]
@@ -496,7 +498,7 @@ while the "boosted tree classifier" only applies to the classifier.
 | OPTIMIZER | Specifies the optimizer for training the model. | [DNN](create-dnn-models.md#optimizer), [Wide \& Deep](create-wnd-models.md#optimizer), [Autoencoder](create-autoencoder.md#optimizer) |
 | TIME_SERIES_TIMESTAMP_COL | The timestamp column name for time series models. | [ARIMA_PLUS](create-time-series.md#time_series_timestamp_col), [ARIMA_PLUS_XREG](create-multivariate-time-series.md#time_series_timestamp_col) |
 | TIME_SERIES_DATA_COL | The data column name for time series models. | [ARIMA_PLUS](create-time-series.md#time_series_data_col), [ARIMA_PLUS_XREG](create-multivariate-time-series.md#time_series_data_col) |
-| TIME_SERIES_ID_COL | The ID column names for time-series models. | [ARIMA_PLUS](create-time-series.md#time_series_id_col), [ARIMA_PLUS_XREG](create-multivariate-time-series.md#horizon) |
+| TIME_SERIES_ID_COL | The ID column names for time-series models. | [ARIMA_PLUS](create-time-series.md#time_series_id_col), [ARIMA_PLUS_XREG](create-multivariate-time-series.md#time_series_id_col) |
 | HORIZON | The number of time points to forecast. When forecasting multiple time series at once, this parameter applies to each time series. | [ARIMA_PLUS](create-time-series.md#horizon), [ARIMA_PLUS_XREG](create-multivariate-time-series.md#horizon) |
 | AUTO_ARIMA | Whether the training process should use auto.ARIMA or not. | [ARIMA_PLUS](create-time-series.md#auto_arima), [ARIMA_PLUS_XREG](create-multivariate-time-series.md#auto_arima) |
 | AUTO_ARIMA_MAX_ORDER | The maximum value for the sum of non-seasonal p and q. It controls the parameter search space in the auto.ARIMA algorithm. | [ARIMA_PLUS](create-time-series.md#auto_arima_max_order), [ARIMA_PLUS_XREG](create-multivariate-time-series.md#auto_arima_max_order) |
@@ -729,6 +731,9 @@ and request a quota increase.
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Conflicting official statements: the syntax writes `HPARAM_TUNING_OBJECTIVES` as a single string value, but the hyperparameter tuning examples on the model pages (for example `create-kmeans.md`, `create-glm.md` and `create-dnn-models.md`) pass a one-element array such as `HPARAM_TUNING_OBJECTIVES=['ROC_AUC']`; only one objective is supported. Use the one-element array form of the examples.
+- Corrected from the official docs: the syntax writes `[, NUM_TRIALS = int64_value, ]` with a trailing comma; it is written `[, NUM_TRIALS = int64_value ]` like the other options.
+- Corrected from the official docs: the `TIME_SERIES_ID_COL` row links its `ARIMA_PLUS_XREG` entry to the `HORIZON` section; it links to `TIME_SERIES_ID_COL`.
+- Corrected from the official docs: the query `SELECT * FROM bigquery-public-data.ml_datasets.holidays_and_events_for_forecasting WHERE region = region`, given for seeing the holidays of a region, compares the column with itself and returns every region; write a region code string on the right side, such as `region = 'US'`.
 
 ## Related
 

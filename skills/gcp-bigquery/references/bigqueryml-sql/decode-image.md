@@ -133,9 +133,11 @@ field of `feature`.
 
 Create the decoded images table:
 
+Adapted (not in the official docs): the table also keeps the `uri` column, which the inference query selects.
+
 ```googlesql
 CREATE OR REPLACE TABLE `my_dataset.decoded_images`
-  AS (SELECT ML.DECODE_IMAGE(data) AS decoded_image
+  AS (SELECT uri, ML.DECODE_IMAGE(data) AS decoded_image
   FROM `my_dataset.object_table`);
 ```
 
@@ -160,9 +162,11 @@ field of `feature`.
 
 Create the table:
 
+Adapted (not in the official docs): the missing comma after `ML.DECODE_IMAGE(data)` is added, and the table also keeps the `uri` column, which the inference query selects.
+
 ```googlesql
 CREATE OR REPLACE TABLE `my_dataset.decoded_images`
-  AS (SELECT ML.RESIZE_IMAGE(ML.DECODE_IMAGE(data) 480, 480, FALSE) AS decoded_image
+  AS (SELECT uri, ML.RESIZE_IMAGE(ML.DECODE_IMAGE(data), 480, 480, FALSE) AS decoded_image
   FROM `my_dataset.object_table`);
 ```
 
@@ -187,12 +191,14 @@ input comes from the object table and the string input comes from a
 standard BigQuery table that is joined with the object table
 by using the `uri` column.
 
+Adapted (not in the official docs): the columns are qualified with the table names used in `FROM` and `JOIN` (`object_table`, `image_description`), and `uri` is qualified because both tables have it.
+
 ```googlesql
 SELECT * FROM
   ML.PREDICT(
     MODEL `my_dataset.mixed_model`,
-    (SELECT uri, ML.RESIZE_IMAGE(ML.DECODE_IMAGE(my_dataset.my_object_table.data), 224, 224, FALSE) AS f_img,
-      my_dataset.image_description.description AS f_txt
+    (SELECT object_table.uri, ML.RESIZE_IMAGE(ML.DECODE_IMAGE(object_table.data), 224, 224, FALSE) AS f_img,
+      image_description.description AS f_txt
     FROM `my_dataset.object_table`
     JOIN `my_dataset.image_description`
     ON object_table.uri = image_description.uri)
@@ -216,6 +222,8 @@ SELECT * FROM
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-decode-image (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the decoded images tables in the examples that write `ML.DECODE_IMAGE` results to a table keep only `decoded_image`, but the inference queries select `uri`; the tables also keep `uri`. The resize example also lacks the comma after `ML.DECODE_IMAGE(data)` in `ML.RESIZE_IMAGE`, which is added.
+- Corrected from the official docs: the example that joins the object table with `my_dataset.image_description` qualifies the image column as `my_dataset.my_object_table.data` although the `FROM` clause reads `my_dataset.object_table`, and selects the unqualified `uri` that both joined tables have; the columns are qualified as `object_table.uri`, `object_table.data` and `image_description.description`.
 
 ## Related
 

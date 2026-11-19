@@ -48,7 +48,7 @@ ML.DESCRIBE_DATA(
 - `STRUCT` fields are expanded, and then categorical columns are cast to `STRING` and numerical columns are cast to `FLOAT64`.
 - Columns of the following data types are [cast](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions#cast) to `STRING` and return the same statistics as `STRING` columns:
   - `BOOL`
-  - `BYTE`
+  - `BYTES`
   - `DATE`
   - `DATETIME`
   - `TIME`
@@ -137,7 +137,7 @@ following data types:
 - [Numeric](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types) types
 - `STRING`
 - `BOOL`
-- `BYTE`
+- `BYTES`
 - `DATE`
 - `DATETIME`
 - `TIME`
@@ -147,7 +147,7 @@ following data types:
   - Numeric types
   - `STRING`
   - `BOOL`
-  - `BYTE`
+  - `BYTES`
   - `DATE`
   - `DATETIME`
   - `TIME`
@@ -156,7 +156,7 @@ following data types:
   - Numeric types
   - `STRING`
   - `BOOL`
-  - `BYTE`
+  - `BYTES`
   - `DATE`
   - `DATETIME`
   - `TIME`
@@ -177,6 +177,7 @@ The `ML.DESCRIBE_DATA` function uses
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-describe-data (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the lists of supported input column types name `BYTE`; the GoogleSQL type is `BYTES`.
 
 ## Related
 

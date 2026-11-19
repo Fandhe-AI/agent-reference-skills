@@ -22,10 +22,12 @@ to use the same point-in-time cutoff for all entities when retrieving features.
 
 ### Syntax
 
+Adapted (not in the official docs): the comma after the second argument is removed, because each optional argument starts with its own comma.
+
 ```sql
 ML.ENTITY_FEATURES_AT_TIME(
    { TABLE `PROJECT_ID.DATASET.FEATURE_TABLE_NAME` | (FEATURE_QUERY_STATEMENT) },
-   { TABLE `PROJECT_ID.DATASET.ENTITY_TIME_TABLE_NAME` | (ENTITY_TIME_QUERY_STATEMENT) },
+   { TABLE `PROJECT_ID.DATASET.ENTITY_TIME_TABLE_NAME` | (ENTITY_TIME_QUERY_STATEMENT) }
    [, NUM_ROWS => INT64][, IGNORE_FEATURE_NULLS => BOOL])
 ```
 
@@ -171,8 +173,10 @@ This example shows a how to retrain a model using only features that were
 created or updated before the timestamps identified in
 `mydataset.entity_time_table`:
 
+Adapted (not in the official docs): the `MODEL` keyword, which `CREATE OR REPLACE` requires, is added.
+
 ```sql
-CREATE OR REPLACE
+CREATE OR REPLACE MODEL
   `mydataset.mymodel` OPTIONS (WARM_START = TRUE)
 AS
 SELECT * EXCEPT (feature_timestamp, entity_id)
@@ -243,6 +247,8 @@ FROM
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-entity-feature-time (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the syntax ends the second argument with a comma and then starts each optional argument with `[, ...]`, which gives a doubled or trailing comma; the comma after the second argument is removed (the `ML.FEATURES_AT_TIME` syntax in `feature-time.md` has the same form without it).
+- Corrected from the official docs: the retraining example writes `CREATE OR REPLACE` followed by the model name without the `MODEL` keyword; it is written `CREATE OR REPLACE MODEL`.
 
 ## Related
 
