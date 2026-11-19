@@ -31,8 +31,8 @@ GoogleSQL for BigQuery supports the following array functions.
 | [`JSON_ARRAY_INSERT`](json_functions-1.md#json_array_insert) | Inserts JSON data into a JSON array. For more information, see [JSON functions](json_functions-1.md). |
 | [`JSON_EXTRACT_ARRAY`](json_functions-1.md#json_extract_array) | (Deprecated) Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. For more information, see [JSON functions](json_functions-1.md). |
 | [`JSON_EXTRACT_STRING_ARRAY`](json_functions-1.md#json_extract_string_array) | (Deprecated) Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`JSON_QUERY_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_query_array) | Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`JSON_VALUE_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_value_array) | Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. For more information, see [JSON functions](json_functions-1.md). |
+| [`JSON_QUERY_ARRAY`](json_functions-2.md#json_query_array) | Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. For more information, see [JSON functions](json_functions-1.md). |
+| [`JSON_VALUE_ARRAY`](json_functions-2.md#json_value_array) | Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. For more information, see [JSON functions](json_functions-1.md). |
 | [`RANGE_BUCKET`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#range_bucket) | Scans through a sorted array and returns the 0-based position of a point's upper bound. For more information, see [Mathematical functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions). |
 
 ### `ARRAY`

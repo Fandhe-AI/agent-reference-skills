@@ -149,13 +149,13 @@
 | `JSON_KEYS` | Extracts unique JSON keys from a JSON expression. | [json_functions-1.md](./json_functions-1.md#json_keys) |
 | `JSON_OBJECT` | Creates a JSON object. | [json_functions-1.md](./json_functions-1.md#json_object) |
 | `JSON_QUERY` | Extracts a JSON value and converts it to a SQL JSON-formatted `STRING` or `JSON` value. | [json_functions-1.md](./json_functions-1.md#json_query) |
-| `JSON_QUERY_ARRAY` | Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_query_array) |
-| `JSON_REMOVE` | Produces JSON with the specified JSON data removed. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_remove) |
-| `JSON_SET` | Inserts or replaces JSON data. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_set) |
-| `JSON_STRIP_NULLS` | Removes JSON nulls from JSON objects and JSON arrays. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_strip_nulls) |
-| `JSON_TYPE` | Gets the JSON type of the outermost JSON value and converts the name of this type to a SQL `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_type) |
-| `JSON_VALUE` | Extracts a JSON scalar value and converts it to a SQL `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_value) |
-| `JSON_VALUE_ARRAY` | Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_value_array) |
+| `JSON_QUERY_ARRAY` | Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. | [json_functions-2.md](./json_functions-2.md#json_query_array) |
+| `JSON_REMOVE` | Produces JSON with the specified JSON data removed. | [json_functions-2.md](./json_functions-2.md#json_remove) |
+| `JSON_SET` | Inserts or replaces JSON data. | [json_functions-2.md](./json_functions-2.md#json_set) |
+| `JSON_STRIP_NULLS` | Removes JSON nulls from JSON objects and JSON arrays. | [json_functions-2.md](./json_functions-2.md#json_strip_nulls) |
+| `JSON_TYPE` | Gets the JSON type of the outermost JSON value and converts the name of this type to a SQL `STRING` value. | [json_functions-2.md](./json_functions-2.md#json_type) |
+| `JSON_VALUE` | Extracts a JSON scalar value and converts it to a SQL `STRING` value. | [json_functions-2.md](./json_functions-2.md#json_value) |
+| `JSON_VALUE_ARRAY` | Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. | [json_functions-2.md](./json_functions-2.md#json_value_array) |
 | `JUSTIFY_DAYS` | Normalizes the day part of an `INTERVAL` value. | [interval_functions.md](./interval_functions.md#justify_days) |
 | `JUSTIFY_HOURS` | Normalizes the time part of an `INTERVAL` value. | [interval_functions.md](./interval_functions.md#justify_hours) |
 | `JUSTIFY_INTERVAL` | Normalizes the day and time parts of an `INTERVAL` value. | [interval_functions.md](./interval_functions.md#justify_interval) |
@@ -169,26 +169,26 @@
 | `KEYS.REWRAP_KEYSET` | Re-encrypts a wrapped keyset with a new Cloud KMS key. | [aead_encryption_functions.md](./aead_encryption_functions.md#keysrewrap_keyset) |
 | `KEYS.ROTATE_KEYSET` | Adds a new primary cryptographic key to a keyset, based on the key type. | [aead_encryption_functions.md](./aead_encryption_functions.md#keysrotate_keyset) |
 | `KEYS.ROTATE_WRAPPED_KEYSET` | Rewraps a keyset and rotates it. | [aead_encryption_functions.md](./aead_encryption_functions.md#keysrotate_wrapped_keyset) |
-| `KLL_QUANTILES.EXTRACT_INT64` | Gets a selected number of quantiles from an `INT64`-initialized KLL sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions#kll_quantilesextract_int64) |
-| `KLL_QUANTILES.EXTRACT_FLOAT64` | Gets a selected number of quantiles from a `FLOAT64`-initialized KLL sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions#kll_quantilesextract_double) |
-| `KLL_QUANTILES.EXTRACT_POINT_INT64` | Gets a specific quantile from an `INT64`-initialized KLL sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions#kll_quantilesextract_point_int64) |
-| `KLL_QUANTILES.EXTRACT_POINT_FLOAT64` | Gets a specific quantile from a `FLOAT64`-initialized KLL sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions#kll_quantilesextract_point_double) |
-| `KLL_QUANTILES.INIT_INT64` | Aggregates values into an `INT64`-initialized KLL sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions#kll_quantilesinit_int64) |
-| `KLL_QUANTILES.INIT_FLOAT64` | Aggregates values into a `FLOAT64`-initialized KLL sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions#kll_quantilesinit_double) |
-| `KLL_QUANTILES.MERGE_INT64` | Merges `INT64`-initialized KLL sketches into a new sketch, and then gets the quantiles from the new sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions#kll_quantilesmerge_int64) |
-| `KLL_QUANTILES.MERGE_FLOAT64` | Merges `FLOAT64`-initialized KLL sketches into a new sketch, and then gets the quantiles from the new sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions#kll_quantilesmerge_double) |
-| `KLL_QUANTILES.MERGE_PARTIAL` | Merges KLL sketches of the same underlying type into a new sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions#kll_quantilesmerge_partial) |
-| `KLL_QUANTILES.MERGE_POINT_INT64` | Merges `INT64`-initialized KLL sketches into a new sketch, and then gets a specific quantile from the new sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions#kll_quantilesmerge_point_int64) |
-| `KLL_QUANTILES.MERGE_POINT_FLOAT64` | Merges `FLOAT64`-initialized KLL sketches into a new sketch, and then gets a specific quantile from the new sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions#kll_quantilesmerge_point_double) |
+| `KLL_QUANTILES.EXTRACT_INT64` | Gets a selected number of quantiles from an `INT64`-initialized KLL sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesextract_int64) |
+| `KLL_QUANTILES.EXTRACT_FLOAT64` | Gets a selected number of quantiles from a `FLOAT64`-initialized KLL sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesextract_float64) |
+| `KLL_QUANTILES.EXTRACT_POINT_INT64` | Gets a specific quantile from an `INT64`-initialized KLL sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesextract_point_int64) |
+| `KLL_QUANTILES.EXTRACT_POINT_FLOAT64` | Gets a specific quantile from a `FLOAT64`-initialized KLL sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesextract_point_float64) |
+| `KLL_QUANTILES.INIT_INT64` | Aggregates values into an `INT64`-initialized KLL sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesinit_int64) |
+| `KLL_QUANTILES.INIT_FLOAT64` | Aggregates values into a `FLOAT64`-initialized KLL sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesinit_float64) |
+| `KLL_QUANTILES.MERGE_INT64` | Merges `INT64`-initialized KLL sketches into a new sketch, and then gets the quantiles from the new sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesmerge_int64) |
+| `KLL_QUANTILES.MERGE_FLOAT64` | Merges `FLOAT64`-initialized KLL sketches into a new sketch, and then gets the quantiles from the new sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesmerge_float64) |
+| `KLL_QUANTILES.MERGE_PARTIAL` | Merges KLL sketches of the same underlying type into a new sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesmerge_partial) |
+| `KLL_QUANTILES.MERGE_POINT_INT64` | Merges `INT64`-initialized KLL sketches into a new sketch, and then gets a specific quantile from the new sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesmerge_point_int64) |
+| `KLL_QUANTILES.MERGE_POINT_FLOAT64` | Merges `FLOAT64`-initialized KLL sketches into a new sketch, and then gets a specific quantile from the new sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesmerge_point_float64) |
 | `LABELS` | Gets the labels associated with a graph element. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#labels) |
 | `LAG` | Gets a value for a preceding row. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions#lag) |
 | `LAST_DAY` | Gets the last day in a specified time period that contains a `DATE` value. | [date_functions.md](./date_functions.md#last_day) |
 | `LAST_DAY` | Gets the last day in a specified time period that contains a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#last_day) |
 | `LAST_VALUE` | Gets a value for the last row in the current window frame. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions#last_value) |
-| `LAX_BOOL` | Attempts to convert a JSON value to a SQL `BOOL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_bool) |
-| `LAX_FLOAT64` | Attempts to convert a JSON value to a SQL `FLOAT64` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_double) |
-| `LAX_INT64` | Attempts to convert a JSON value to a SQL `INT64` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_int64) |
-| `LAX_STRING` | Attempts to convert a JSON value to a SQL `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_string) |
+| `LAX_BOOL` | Attempts to convert a JSON value to a SQL `BOOL` value. | [json_functions-2.md](./json_functions-2.md#lax_bool) |
+| `LAX_FLOAT64` | Attempts to convert a JSON value to a SQL `FLOAT64` value. | [json_functions-2.md](./json_functions-2.md#lax_float64) |
+| `LAX_INT64` | Attempts to convert a JSON value to a SQL `INT64` value. | [json_functions-2.md](./json_functions-2.md#lax_int64) |
+| `LAX_STRING` | Attempts to convert a JSON value to a SQL `STRING` value. | [json_functions-2.md](./json_functions-2.md#lax_string) |
 | `LEAD` | Gets a value for a subsequent row. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions#lead) |
 | `LEAST` | Gets the least value among `X1,...,XN`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#least) |
 | `LEFT` | Gets the specified leftmost portion from a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#left) |
@@ -232,7 +232,7 @@
 | `PARSE_BIGNUMERIC` | Converts a `STRING` value to a `BIGNUMERIC` value. | [conversion_functions.md](./conversion_functions.md#parse_bignumeric) |
 | `PARSE_DATE` | Converts a `STRING` value to a `DATE` value. | [date_functions.md](./date_functions.md#parse_date) |
 | `PARSE_DATETIME` | Converts a `STRING` value to a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#parse_datetime) |
-| `PARSE_JSON` | Converts a JSON-formatted `STRING` value to a `JSON` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#parse_json) |
+| `PARSE_JSON` | Converts a JSON-formatted `STRING` value to a `JSON` value. | [json_functions-2.md](./json_functions-2.md#parse_json) |
 | `PARSE_NUMERIC` | Converts a `STRING` value to a `NUMERIC` value. | [conversion_functions.md](./conversion_functions.md#parse_numeric) |
 | `PARSE_TIME` | Converts a `STRING` value to a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#parse_time) |
 | `PARSE_TIMESTAMP` | Converts a `STRING` value to a `TIMESTAMP` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#parse_timestamp) |
@@ -393,8 +393,8 @@
 | `TO_BASE64` | Converts a `BYTES` value to a base64-encoded `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#to_base64) |
 | `TO_CODE_POINTS` | Converts a `STRING` or `BYTES` value into an array of extended ASCII code points. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#to_code_points) |
 | `TO_HEX` | Converts a `BYTES` value to a hexadecimal `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#to_hex) |
-| `TO_JSON` | Converts a SQL value to a JSON value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#to_json) |
-| `TO_JSON_STRING` | Converts a SQL value to a JSON-formatted `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#to_json_string) |
+| `TO_JSON` | Converts a SQL value to a JSON value. | [json_functions-2.md](./json_functions-2.md#to_json) |
+| `TO_JSON_STRING` | Converts a SQL value to a JSON-formatted `STRING` value. | [json_functions-2.md](./json_functions-2.md#to_json_string) |
 | `TRANSLATE` | Within a value, replaces each source character with the corresponding target character. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#translate) |
 | `TRIM` | Removes the specified leading and trailing Unicode code points or bytes from a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#trim) |
 | `TRUNC` | Rounds a number like `ROUND(X)` or `ROUND(X, N)`, but always rounds towards zero and never overflows. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#trunc) |
@@ -435,3 +435,5 @@
 | HyperLogLog++ functions | Function list, HLL_COUNT.EXTRACT, HLL_COUNT.INIT, HLL_COUNT.MERGE, HLL_COUNT.MERGE_PARTIAL | [hll_functions.md](./hll_functions.md) |
 | Interval functions | Function list, EXTRACT, JUSTIFY_DAYS, JUSTIFY_HOURS, JUSTIFY_INTERVAL, MAKE_INTERVAL | [interval_functions.md](./interval_functions.md) |
 | JSON functions (part 1 of 2) | Categories, Function list, BOOL, FLOAT64, INT64, JSON_ARRAY, JSON_ARRAY_APPEND, JSON_ARRAY_INSERT, JSON_EXTRACT, JSON_EXTRACT_ARRAY, JSON_EXTRACT_SCALAR, JSON_EXTRACT_STRING_ARRAY, JSON_FLATTEN, JSON_KEYS, JSON_OBJECT, JSON_QUERY | [json_functions-1.md](./json_functions-1.md) |
+| JSON functions (part 2 of 2) | JSON_QUERY_ARRAY, JSON_REMOVE, JSON_SET, JSON_STRIP_NULLS, JSON_TYPE, JSON_VALUE, JSON_VALUE_ARRAY, LAX_BOOL, LAX_FLOAT64, LAX_INT64, LAX_STRING, PARSE_JSON, STRING, TO_JSON, TO_JSON_STRING, Supplemental materials | [json_functions-2.md](./json_functions-2.md) |
+| KLL quantile functions | Function list, KLL_QUANTILES.EXTRACT_INT64, KLL_QUANTILES.EXTRACT_FLOAT64, KLL_QUANTILES.EXTRACT_POINT_INT64, KLL_QUANTILES.EXTRACT_POINT_FLOAT64, KLL_QUANTILES.INIT_INT64, KLL_QUANTILES.INIT_FLOAT64, KLL_QUANTILES.MERGE_INT64, KLL_QUANTILES.MERGE_FLOAT64, KLL_QUANTILES.MERGE_PARTIAL, KLL_QUANTILES.MERGE_POINT_INT64, KLL_QUANTILES.MERGE_POINT_FLOAT64 | [kll_functions.md](./kll_functions.md) |
