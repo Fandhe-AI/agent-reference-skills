@@ -15,7 +15,7 @@ Google Cloud console user interface to
 statement yourself.
 
 You can use wide-and-deep regressor models with the
-[`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict)
+[`ML.PREDICT` function](predict.md)
 to perform [regression](https://docs.cloud.google.com/bigquery/docs/regression-overview), and you can use
 wide-and-deep classifier models with the `ML.PREDICT` function to
 perform [classification](https://docs.cloud.google.com/bigquery/docs/classification-overview). You can use

@@ -33,7 +33,7 @@ ML.MAX_ABS_SCALER(numerical_expression) OVER()
 
 `ML.MAX_ABS_SCALER` takes the following argument:
 
-- `numerical_expression`: the [numerical](../googlesql-syntax/data-types.md#numeric-types) expression to scale.
+- `numerical_expression`: the [numerical](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types) expression to scale.
 
 ### Output
 

@@ -1087,7 +1087,7 @@ custom models deployed to Agent Platform:
 
 `ML.EVALUATE` returns the following column for PCA models:
 
-- `total_explained_variance_ratio`: a `FLOAT64` value that contains the percentage of the cumulative variance explained by all the returned principal components. For more information, see [the `ML.PRINCIPAL_COMPONENT_INFO` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-principal-component-info).
+- `total_explained_variance_ratio`: a `FLOAT64` value that contains the percentage of the cumulative variance explained by all the returned principal components. For more information, see [the `ML.PRINCIPAL_COMPONENT_INFO` function](principal-component-info.md).
 
 #### Autoencoder
 

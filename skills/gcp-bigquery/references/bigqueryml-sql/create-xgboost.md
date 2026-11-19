@@ -169,7 +169,7 @@ Imported XGBoost models have the following limitations:
 - The XGBoost model must already exist before it can be imported into BigQuery.
 - Models must be stored in Cloud Storage.
 - XGBoost models must be in `BST`, `UBJ` or `JSON` format.
-- You can only use XGBoost models with the [`ML.PREDICT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict) and [`ML.FEATURE_IMPORTANCE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-importance) functions.
+- You can only use XGBoost models with the [`ML.PREDICT`](predict.md) and [`ML.FEATURE_IMPORTANCE`](importance.md) functions.
 - Models are limited to 250 MB in size.
 - The memory limit to load and run the XGBoost model is 840 MB. You can reduce the model size by using fewer trees or shallower tree depth, or by using the XGBoost library's default `save_model` method to save the models.
 - BigQuery ML uses the [XGBoost 3.1.0](https://xgboost.readthedocs.io/en/release_3.1.0/index.html) library to load and make predictions on XGBoost models. Forward compatibility for models saved with XGBoost version 3.2.0 or newer is not guaranteed.

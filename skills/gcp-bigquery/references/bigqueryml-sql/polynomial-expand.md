@@ -26,7 +26,7 @@ ML.POLYNOMIAL_EXPAND(struct_numerical_features [, degree])
 
 `ML.POLYNOMIAL_EXPAND` takes the following arguments:
 
-- `struct_numerical_features`: a `STRUCT` value that contains the [numerical](../googlesql-syntax/data-types.md#numeric-types) input features to expand. You can specify less than or equal to `10` input features. Don't specify unnamed features or duplicate features.
+- `struct_numerical_features`: a `STRUCT` value that contains the [numerical](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types) input features to expand. You can specify less than or equal to `10` input features. Don't specify unnamed features or duplicate features.
 - `degree`: an `INT64` value that specifies the highest degree of all combinations in the range of `[1, 4]`. The default value is `2`.
 
 ### Output

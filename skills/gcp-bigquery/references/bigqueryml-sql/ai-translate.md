@@ -145,7 +145,7 @@ If you have data processing location requirements, run `AI.TRANSLATE` in the
 
 - To use this function in a tutorial, see [Translate text with the `AI.TRANSLATE` function](https://docs.cloud.google.com/bigquery/docs/translate-text).
 - Learn more about the [`ML.TRANSLATE` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-translate).
-- Learn how to [process unstructured documents with the `ML.PROCESS_DOCUMENT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-process-document).
+- Learn how to [process unstructured documents with the `ML.PROCESS_DOCUMENT` function](process-document.md).
 - Learn how to [analyze text with the `ML.UNDERSTAND_TEXT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-understand-text).
 
 ## Notes

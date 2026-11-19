@@ -11,7 +11,7 @@ generate a predicted value and a set of feature attributions for each instance
 of the input data. Feature attributions indicate how much each feature in your
 model contributed to the final prediction for each given instance.
 `ML.EXPLAIN_PREDICT` is essentially an extended version of
-[`ML.PREDICT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict).
+[`ML.PREDICT`](predict.md).
 
 ### Syntax
 

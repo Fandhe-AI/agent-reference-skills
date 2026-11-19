@@ -77,7 +77,7 @@ FROM
   characters other than letters, numbers, and underscores.
 - `QUERY_STATEMENT`: the GoogleSQL query that
   generates the predicted and actual values. See the
-  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
   page for the supported SQL syntax of the `QUERY_STATEMENT` clause.
 
 - `PREDICTED_COL`: a `STRING` value that specifies the

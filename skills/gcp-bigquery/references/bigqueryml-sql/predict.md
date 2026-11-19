@@ -30,7 +30,7 @@ function.
 `AI.GENERATE_EMBEDDING` generates the same embedding data as `ML.PREDICT`
 as an array in a single column, rather than in a series of columns. Having all
 of the embeddings in a single column lets you directly use the
-[`VECTOR_SEARCH` function](../googlesql-functions/search_functions.md#vector_search)
+[`VECTOR_SEARCH` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search)
 on the`AI.GENERATE_EMBEDDING` output.
 
 You can run prediction during model creation, after model creation, or after a
@@ -62,11 +62,11 @@ ML.PREDICT(
 
   If `TABLE` is specified, the input column names in the table must match the
   column names in the model, and their types should be compatible according to
-  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
 
   For TensorFlow Lite, Open Neural Network Exchange (ONNX), and
   XGBoost models, the input must be
-  [convertible](../googlesql-syntax/conversion_rules.md) to
+  [convertible](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules) to
   the type expected by the model.
 
   For remote models, the input columns must contain all Gemini Enterprise Agent Platform
@@ -76,16 +76,16 @@ ML.PREDICT(
   output columns.
 - `QUERY_STATEMENT`: The GoogleSQL query that
   is used to generate the evaluation data. See the
-  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
   page for the supported SQL syntax of the `QUERY_STATEMENT` clause.
 
   If `QUERY_STATEMENT` is specified, the input column names from the query
   must match the column names in the model, and their types should be
   compatible according to BigQuery
-  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
 
   For TensorFlow Lite, ONNX, and XGBoost models, the input must be
-  [convertible](../googlesql-syntax/conversion_rules.md) to
+  [convertible](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules) to
   the type expected by the model.
 
   For remote models, the input columns must contain all Gemini Enterprise Agent Platform

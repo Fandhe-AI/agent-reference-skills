@@ -34,7 +34,7 @@ ML.IMPUTER(expression, strategy) OVER()
 
 `ML.IMPUTER` takes the following arguments:
 
-- `expression`: the [numerical](../googlesql-syntax/data-types.md#numeric-types) or `STRING` expression to impute.
+- `expression`: the [numerical](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types) or `STRING` expression to impute.
 - `strategy`: a `STRING` value that specifies how to replace `NULL` values. Valid values are as follows:
   - `mean`: the mean of `expression`. You can only use this value with numerical expressions.
   - `median`: the median of `expression`. You can only use this value with numerical expressions.

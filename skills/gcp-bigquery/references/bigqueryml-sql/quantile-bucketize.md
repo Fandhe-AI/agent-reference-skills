@@ -30,7 +30,7 @@ ML.QUANTILE_BUCKETIZE(numerical_expression, num_buckets [, output_format]) OVER(
 
 `ML.QUANTILE_BUCKETIZE` takes the following arguments:
 
-- `numerical_expression`: the [numerical](../googlesql-syntax/data-types.md#numeric-types) expression to bucketize.
+- `numerical_expression`: the [numerical](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types) expression to bucketize.
 - `num_buckets`: an `INT64` value that specifies the number of buckets to split `numerical_expression` into.
 - `output_format`: a `STRING` value that specifies the output format of the bucket. Valid output formats are as follows:
   - `bucket_names`: returns a `STRING` value in the format `bin_<bucket_index>`. For example, `bin_3`. The `bucket_index` value starts at 1. This is the default bucket format.

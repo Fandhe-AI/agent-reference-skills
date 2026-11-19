@@ -27,7 +27,7 @@ ML.NORMALIZER(array_expression [, p])
 
 `ML.NORMALIZER` takes the following arguments:
 
-- `array_expression`: an array of [numerical](../googlesql-syntax/data-types.md#numeric-types) expressions to normalize.
+- `array_expression`: an array of [numerical](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types) expressions to normalize.
 - `p`: a `FLOAT64` value that specifies the degree of p-norm. This can be `0.0`, any value greater than or equal to `1.0`, or `CAST('+INF' AS FLOAT64)`. The default value is `2`.
 
 ### Output

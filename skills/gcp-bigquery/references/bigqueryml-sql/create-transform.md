@@ -19,7 +19,7 @@ You can use a transform-only model in conjunction with the
 to provide preprocessed data to other models:
 
 - You can use it in the [query statement](create.md#query_statement) when creating another model, in order to use the transformed data as the training data for that model.
-- You can use it in the [`query statement` argument](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict#arguments) of the `ML.PREDICT` function, in order to provide data for prediction that is processed in the way the target model expects.
+- You can use it in the [`query statement` argument](predict.md#arguments) of the `ML.PREDICT` function, in order to provide data for prediction that is processed in the way the target model expects.
 
 For batch feature transformations, it is better to use transform-only models
 because it lets you process large amounts of data in a short time. For online

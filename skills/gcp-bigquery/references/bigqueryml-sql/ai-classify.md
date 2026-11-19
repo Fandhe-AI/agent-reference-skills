@@ -405,7 +405,7 @@ LIMIT 10;
 #### Calculate classification metrics
 
 The following example uses the
-[`ML.METRICS` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-metrics)
+[`ML.METRICS` function](metrics.md)
 to calculate classification metrics for news categories
 predicted by the `AI.CLASSIFY` function against actual labeled categories:
 

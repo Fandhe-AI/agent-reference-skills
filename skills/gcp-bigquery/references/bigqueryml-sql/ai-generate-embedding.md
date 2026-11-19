@@ -55,7 +55,7 @@ following ways:
   text and visual content are generated in the same semantic space.
 - For PCA and autoencoding, `AI.GENERATE_EMBEDDING` processes the request using
   a BigQuery ML PCA or autoencoder model
-  [`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict).
+  [`ML.PREDICT` function](predict.md).
   `AI.GENERATE_EMBEDDING` gathers the `ML.PREDICT` output for the model into
   an array and outputs it as the `embedding` column.
   Having all of the embeddings in a single column lets you directly use the

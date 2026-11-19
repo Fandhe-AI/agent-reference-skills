@@ -41,7 +41,7 @@ ML.RECOMMEND(
   argument, the user and item columns must match the user and item columns in
   the model, and their types must be compatible according to
   BigQuery
-  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
 
   If the input table does not contain both the user and item column, the input
   table can only contain one column. If the table contains both the user and
@@ -50,13 +50,13 @@ ML.RECOMMEND(
 - `QUERY_STATEMENT`: The GoogleSQL query that is
   used to generate the evaluation data. For the supported SQL syntax for the
   `QUERY_STATEMENT` clause in GoogleSQL, see
-  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   If you specify input data by using either the `TABLE` or `QUERY_STATEMENT`
   argument, the user and item columns must match the user and item columns in
   the model, and their types must be compatible according to
   BigQuery
-  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
 - `TRIAL_ID`: an `INT64` value that identifies the
   hyperparameter tuning trial that you want the function to evaluate. The
   function uses the optimal trial by default. Only specify this argument if you
