@@ -1121,6 +1121,7 @@ AS SELECT f1, f2, f3, label_col FROM t;
 - Corrected from the official docs: the `DATA_SPLIT_EVAL_FRACTION` and `DATA_SPLIT_TEST_FRACTION` sections give `20.00` and `8.0` as values for a training dataset of 72%; the options are fractions (`1 - eval_fraction - test_fraction`, default `0.2`), so those values are `0.20` and `0.08`.
 - Conflicting official statements: the syntax writes `HPARAM_TUNING_OBJECTIVES` as a single string value, but the hyperparameter tuning examples on the model pages (for example `create-kmeans.md`, `create-glm.md` and `create-dnn-models.md`) pass a one-element array such as `HPARAM_TUNING_OBJECTIVES=['ROC_AUC']`; only one objective is supported. Use the one-element array form of the examples.
 - Corrected from the official docs: the class weights example says "The label columns are `label1`, `label2`, and `label3`"; these are the class labels (values) of the one label column, as each `CLASS_WEIGHTS` struct contains "a `STRING` value that specifies the class label" and a weight, and `INPUT_LABEL_COLS` is "The name of the label column in the training data".
+- Conflicting official statements: these hyperparameter tuning examples include values outside the valid range that the same option section gives: `L2_REG = HPARAM_CANDIDATES([0, 1.0, 3.0, 5.0])` (valid range `(0, ∞)`). Keep `HPARAM_RANGE` bounds and `HPARAM_CANDIDATES` values inside the stated valid range.
 
 ## Related
 

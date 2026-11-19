@@ -413,7 +413,7 @@ The following examples show how to create contribution analysis models.
 The following example creates a contribution analysis model that uses a
 summable metric:
 
-Adapted (not in the official docs): `CREATE (OR REPLACE) MODEL` is written `CREATE OR REPLACE MODEL`, as in the syntax of this page.
+Adapted (not in the official docs): `CREATE (OR REPLACE) MODEL` is written `CREATE OR REPLACE MODEL`, as in the syntax of this page; the input query selects only the columns that the options reference, as the `query_statement` section requires.
 
 ```sql
 CREATE OR REPLACE MODEL `myproject.mydataset.ca_model`
@@ -423,7 +423,8 @@ CREATE OR REPLACE MODEL `myproject.mydataset.ca_model`
     DIMENSION_ID_COLS = ['city', 'floor_space'],
     IS_TEST_COL = 'dataset_type'
 ) AS
-SELECT * FROM mydataset.house_sales WHERE state = 'WA';
+SELECT house_price, city, floor_space, dataset_type
+FROM mydataset.house_sales WHERE state = 'WA';
 ```
 
 **Example 2**
@@ -482,6 +483,7 @@ FROM mydataset.regional_sales;
 - Corrected from the official docs: example 1 of the contribution analysis examples writes `CREATE (OR REPLACE) MODEL`, which is not valid SQL; the syntax is `CREATE MODEL` or `CREATE OR REPLACE MODEL`, so `CREATE OR REPLACE MODEL` is used.
 - Corrected from the official docs: example 2 of the contribution analysis examples writes `CREATE (OR REPLACE) MODEL`, which is not valid SQL; the syntax is `CREATE MODEL` or `CREATE OR REPLACE MODEL`, so `CREATE OR REPLACE MODEL` is used.
 - Corrected from the official docs: example 3 of the contribution analysis examples writes `CREATE (OR REPLACE) MODEL`, which is not valid SQL; the syntax is `CREATE MODEL` or `CREATE OR REPLACE MODEL`, so `CREATE OR REPLACE MODEL` is used.
+- Corrected from the official docs: example 1 selects `SELECT *` from `mydataset.house_sales`, which also returns `state` and any other columns; the `query_statement` section says the input must contain exactly the columns referenced in `CONTRIBUTION_METRIC`, `DIMENSION_ID_COLS` and `IS_TEST_COL`, so the example selects `house_price`, `city`, `floor_space` and `dataset_type`.
 
 ## Related
 
