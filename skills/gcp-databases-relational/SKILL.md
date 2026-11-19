@@ -183,7 +183,7 @@ skills/gcp-databases-relational/
 - `cloudflare-storage` — Cloudflare D1 / Hyperdrive。本スキルの Cloud SQL / AlloyDB / Spanner とは別基盤
 - `mssql` — Node.js 向け SQL Server クライアント（node-mssql）。本スキルは Cloud SQL for SQL Server のサービス側のみ
 - `drizzle` — TypeScript ORM。Cloud SQL / AlloyDB への接続手段としての Drizzle は `drizzle` 側
-- Bigtable / Firestore / Memorystore は `gcp-databases-nosql`（予定）、BigQuery は `gcp-bigquery`（予定）が担当。本スキルでは扱わない
+- Bigtable / Firestore / Memorystore は `gcp-databases-nosql`、BigQuery は `gcp-bigquery`（予定）が担当。本スキルでは扱わない
 
 ## 対象外
 
@@ -195,7 +195,7 @@ skills/gcp-databases-relational/
 - Spanner の GoogleSQL / PostgreSQL の DDL・DML 言語リファレンスページ — 言語仕様のページは分量が過大。DML の使い方とベストプラクティスは `spanner-dml-queries` を参照
 - Cloud SQL の database flags リファレンスページ — エンジン・バージョンごとのフラグ表は分量が過大。設定の扱い方は `cloud-sql-instances` と `gcloud sql flags` を参照
 - Firebase — 別計画（`firebase-*`）
-- Bigtable / Firestore / Memorystore — `gcp-databases-nosql`（予定）
+- Bigtable / Firestore / Memorystore — `gcp-databases-nosql`
 - BigQuery — `gcp-bigquery`（予定）
 
 ## 鮮度・ライセンス・既知の制約

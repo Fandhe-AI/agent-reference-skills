@@ -196,7 +196,7 @@ skills/gcp-compute/
 - `gcp-load-balancing` — Cloud Load Balancing（バックエンドサービス・転送ルール・URL マップ・ヘルスチェック・SSL 証明書）・Cloud CDN の概念と手順。これらのコマンド・メソッド・ロールは本スキルの機械生成ページ（`compute` グループ）にある
 - `gcp-security` / `gcp-security-compliance` — Cloud KMS（CMEK の鍵管理）・IAP 本体・Cloud Armor（`gcp-security`）、Security Command Center（`gcp-security-compliance`）。VM 側の Shielded VM / Confidential VM と、IAP TCP 転送による SSH の接続手順は本スキル
 - `gcp-observability`— Cloud Logging・Cloud Monitoring・Ops Agent
-- `gcp-iac`（予定）— Terraform
+- `gcp-iac` — Terraform
 - `gcp-hybrid-migration`（予定）— VMware Engine・Migrate to Virtual Machines
 
 ## 料金

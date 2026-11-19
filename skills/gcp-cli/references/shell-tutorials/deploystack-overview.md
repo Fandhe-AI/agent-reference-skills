@@ -64,7 +64,7 @@ All stacks are open source on GitHub:
 
 - Running a stack applies Terraform to your project and creates billable resources. The source documents no teardown or destroy command for any stack; none is given here.
 - If DeployStack has no app that suits your needs, see the Cloud Architecture Center (https://cloud.google.com/architecture/). The DeployStack library is still growing.
-- Terraform / IaC in general is outside this page; see the future `gcp-iac` skill. Product details for Cloud Run and Cloud Storage: `gcp-run` and `gcp-storage` skills.
+- Terraform / IaC in general is outside this page; see the `gcp-iac` skill. Product details for Cloud Run and Cloud Storage: `gcp-run` and `gcp-storage` skills.
 - Source: https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack/overview (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack (index of stacks, retrieved 2026-11-14)
 - Source (snippet): https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack/cost-sentry (retrieved 2026-11-14)

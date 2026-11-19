@@ -236,7 +236,7 @@ skills/gcp-devops/
 - `gcp-cli` — gcloud 全般のインストール・設定・認証・出力フォーマット
 - `gcp-client-libraries` — Node.js / Python / Rust のクライアントライブラリ共通パターン
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
-- `gcp-iac`（予定）— Infrastructure Manager・Terraform・Config Connector。Application Design Center は Terraform を生成するが、Terraform 自体はこちら。本スキルは Application Design Center の Terraform のインポート（`application-design-center`）
+- `gcp-iac` — Infrastructure Manager・Terraform・Config Connector。Application Design Center は Terraform を生成するが、Terraform 自体はこちら。本スキルは Application Design Center の Terraform のインポート（`application-design-center`）
 - `gcp-bigquery`（予定）— BigQuery
 - `gcp-agent-platform`（予定）— Agent Platform
 - `gcp-api-management`（予定）— Apigee・API Gateway
@@ -254,7 +254,7 @@ skills/gcp-devops/
 - Container Registry: 旧パスの移行サブページ（すべて `transition-from-gcr` へリダイレクト）
 - Cloud Build: 通知（notifier 別 9 件）・GitHub Enterprise / GitLab Enterprise / Bitbucket Data Center の接続とビルド・private pool からの private GKE cluster / 静的外部 IP / JFrog Artifactory へのアクセス・Packer・Compute Engine / App Engine / Firebase / Cloud Run functions へのデプロイ・Java / Go のビルド・規制対応・トラブルシューティング。取得できなかったページ（Workflows へのデプロイ・experimental features・ビルドの summary と insights）
 - Cloud Deploy: チュートリアル（`deploy-app-*`）・Cloud Monitoring による分析・Pub/Sub 通知・CMEK・ラベル / アノテーション・タグ・pipeline の削除
-- Secure Source Manager: pull request・issue・webhook・Private Service Connect・Cloud Build への接続・脆弱性スキャン・CMEK・Terraform の CI/CD（`gcp-iac`（予定）の範囲）・インスタンスの削除・トラブルシューティング。Cloud Source Repositories のリポジトリ作成・ミラーリング・コード検索等（廃止済みのため）
+- Secure Source Manager: pull request・issue・webhook・Private Service Connect・Cloud Build への接続・脆弱性スキャン・CMEK・Terraform の CI/CD（`gcp-iac` の範囲）・インスタンスの削除・トラブルシューティング。Cloud Source Repositories のリポジトリ作成・ミラーリング・コード検索等（廃止済みのため）
 - Developer Connect: Bitbucket Cloud / Data Center・GitHub Enterprise・GitLab Enterprise の接続（GitLab で代表。Bitbucket Cloud は Cloud Build 側の接続ページ）・VPC Service Controls・タグによるリポジトリ アクセス制御・Gemini Code Assist 連携（取得できなかったページ）
 - App Hub: application template・モニタリング・最適化・メタデータ スキーマ・VPC Service Controls・リージョン エンドポイント・トラブルシューティング
 - Application Design Center: リソース別の構成（`configure-*`）・クイックスタート・Google 提供 template・composite template・GKE 構成例・モニタリング・チュートリアル

@@ -52,7 +52,7 @@ Use cases: large-scale AI/ML (distributed training and inference for generative 
 ## Notes
 
 - Relation to Cluster Director, as the twins state: AI Hypercomputer lists Cluster Director (managed Slurm or managed compute clusters) and Cluster Toolkit blueprints as ways to deploy and manage accelerators; Cluster Director is the managed, console/API-driven service, while Cluster Toolkit is an open-source, blueprint-driven tool that generates Terraform and Packer you deploy yourself. Cluster Director's A4X Max pages also point to AI Hypercomputer for reserving capacity.
-- Terraform / Packer (planned `gcp-iac`) and GKE (`gcp-gke`) are outside this skill's detail. Cluster Toolkit repository: https://github.com/GoogleCloudPlatform/cluster-toolkit.
+- Terraform (`gcp-iac`), Packer and GKE (`gcp-gke`) are outside this skill's detail. Cluster Toolkit repository: https://github.com/GoogleCloudPlatform/cluster-toolkit.
 - Source: https://docs.cloud.google.com/cluster-toolkit/docs/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/ai-hypercomputer/docs/overview (retrieved 2026-11-17; CC BY 4.0, code samples Apache 2.0)
 

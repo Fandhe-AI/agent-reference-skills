@@ -65,7 +65,7 @@ Cloud Code comes with end-to-end Kubernetes support: support for Go, Node.js, Py
 
 ## Notes
 
-- Distance line: GKE cluster operations beyond this Cloud Shell Editor workflow belong to the future `gcp-gke` skill; Cloud Run deploys to the `gcp-run` skill.
+- Distance line: GKE cluster operations beyond this Cloud Shell Editor workflow belong to the `gcp-gke` skill; Cloud Run deploys to the `gcp-run` skill.
 - The `kubernetes` page ("Work with Kubernetes", interactive tutorial launched from `ide.cloud.google.com`) is merged here.
 - The page recommends creating a project (instead of selecting an existing one) if you don't plan to keep the resources, so you can delete the project afterwards.
 - Source: https://docs.cloud.google.com/shell/docs/deploy-gke-app (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)

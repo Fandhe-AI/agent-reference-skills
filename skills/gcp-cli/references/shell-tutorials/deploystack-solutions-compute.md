@@ -208,7 +208,7 @@ The VM resource of this stack uses `f1-micro` with image `centos-cloud/centos-8-
 - The Terraform blocks are as shown in the source; only whole blocks are included, and the remaining resources are summarized in prose with a pointer to each GitHub repository. Indentation of the source's 4-space code blocks is removed uniformly.
 - The Single VM resource block keeps the source's irregular closing indentation.
 - Load Balanced VMs opens a public HTTP endpoint (port 80, source ranges for health checks `130.211.0.0/22` and `35.191.0.0/16`); it is a sample, not a production design.
-- Compute Engine product details: not covered by a skill in this repository yet; Terraform in general: future `gcp-iac` skill.
+- Compute Engine product details: `gcp-compute` skill; Terraform in general: `gcp-iac` skill.
 - Source: https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack/single-vm (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack/load-balanced-vms (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)

@@ -175,13 +175,13 @@ skills/gcp-gke/
 - `docker` — コンテナーイメージ・Dockerfile・Docker Engine / Compose / Buildx。GKE へデプロイするイメージの作り方はそちら
 - `cloudflare-sandbox-containers` — Cloudflare Containers / Sandbox SDK。Google Cloud の GKE・Cloud Run とは別プラットフォーム
 - `hono` / `fastify` — HTTP ルーターのフレームワーク。本スキルの Gateway API（`Gateway` / `HTTPRoute`）は Kubernetes のロードバランシング設定で、ルーターのライブラリとは別
-- `gcp-compute`（予定）— Compute Engine VM・ディスク・インスタンステンプレート。GKE ノードの node pool 設定は本スキル
+- `gcp-compute` — Compute Engine VM・ディスク・インスタンステンプレート。GKE ノードの node pool 設定は本スキル
 - `gcp-networking` — VPC・Cloud DNS・Cloud NAT・Traffic Director のサービスルーティング（GKE 以外のターゲット）。GKE の VPC-native・Gateway・Ingress・Service・Cloud Service Mesh は本スキル
 - `gcp-load-balancing` — Cloud Load Balancing を直接構成する場合のロードバランサー・NEG・URL マップ（GKE の Gateway・Ingress から作られるものは本スキル）
 - `gcp-security` / `gcp-security-compliance` — Binary Authorization のポリシー本体・Cloud KMS（`gcp-security`）、Security Command Center（`gcp-security-compliance`）。GKE 側の有効化と設定のみ本スキル（`gke-security-hardening`）
 - `gcp-observability`— Cloud Logging・Cloud Monitoring 本体。GKE が送出するログ・メトリクスの設定は本スキル（`gke-observability-troubleshooting`）
 - `gcp-devops` — Artifact Registry・Cloud Build・Cloud Deploy
-- `gcp-iac`（予定）— Terraform・Config Connector
+- `gcp-iac` — Terraform・Config Connector
 
 ## 対象外
 
@@ -191,7 +191,7 @@ skills/gcp-gke/
 - Traffic Director・service routing — `service-mesh/service-routing-overview.md` の概要のみ収録。`trafficdirector` は `gcp-networking` の担当。Cloud Run のルーティング関連ページも対象外
 - Google Distributed Cloud の hosted / edge / air-gapped（`distributed-cloud/` 配下のドキュメント）— 収録は software only（VMware / bare metal）のみ
 - Google Distributed Cloud の既知の問題・メトリクス一覧・設定ファイルのリファレンス
-- OSS ワークロードのデプロイチュートリアル（Ray・Slurm・推論サーバーなど）・Terraform / Config Connector（`gcp-iac`（予定））
+- OSS ワークロードのデプロイチュートリアル（Ray・Slurm・推論サーバーなど）・Terraform / Config Connector（`gcp-iac`）
 - Security Command Center の Container Threat Detection の how-to — 概要のみ `gke-security-hardening` に収録
 - リリースノート・セキュリティ速報・料金・SLA
 - バージョン別・レガシーのドキュメント（`service-mesh/v1.x`・`service-mesh/legacy`・版付きの `anthos/`・アーカイブ）— Cloud Service Mesh は supported-platforms の 1.29〜1.31 が対象
