@@ -129,7 +129,7 @@ Concatenates one or more arrays with the same element type into a single array.
 The function returns `NULL` if any input argument is `NULL`.
 
 > [!NOTE]
-> **Note:** You can also use the [\|\| concatenation operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators) to concatenate arrays.
+> **Note:** You can also use the [\|\| concatenation operator](../googlesql-syntax/operators.md) to concatenate arrays.
 
 **Return type**
 
@@ -923,7 +923,7 @@ FROM
 #### OFFSET and ORDINAL
 
 For information about using `OFFSET` and `ORDINAL` with arrays, see
-[Array subscript operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#array_subscript_operator) and [Accessing array
+[Array subscript operator](../googlesql-syntax/operators.md#array-subscript-operator) and [Accessing array
 elements](https://docs.cloud.google.com/bigquery/docs/arrays#accessing_array_elements).
 
 ## Notes

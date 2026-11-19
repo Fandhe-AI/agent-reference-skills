@@ -16,3 +16,5 @@
 | Format elements | Format elements for date and time parts, Format clause for CAST | [format-elements.md](./format-elements.md) |
 | Lexical structure and syntax | Identifiers, Path expressions, Table names, Column names, Field names, Literals, Case sensitivity, Reserved keywords, Terminating semicolons, Trailing commas, Query parameters, Comments | [lexical.md](./lexical.md) |
 | Load statements in GoogleSQL | LOAD DATA statement | [load-statements.md](./load-statements.md) |
+| Operators | — | [operators.md](./operators.md) |
+| Pipe query syntax | Pipe syntax, Pipe operator semantics, FROM queries, Pipe operators | [pipe-syntax.md](./pipe-syntax.md) |

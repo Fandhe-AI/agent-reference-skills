@@ -468,7 +468,7 @@ Concatenates one or more values into a single result. All values must be
 The function returns `NULL` if any input argument is `NULL`.
 
 > [!NOTE]
-> **Note:** You can also use the [\|\| concatenation operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators) to concatenate values into a string.
+> **Note:** You can also use the [\|\| concatenation operator](../googlesql-syntax/operators.md) to concatenate values into a string.
 
 **Return type**
 
