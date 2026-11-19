@@ -44,7 +44,7 @@ ARRAY(subquery)
 **Description**
 
 The `ARRAY` function returns an `ARRAY` with one element for each row in a
-[subquery](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries).
+[subquery](../googlesql-syntax/subqueries.md).
 
 If `subquery` produces a
 SQL table,

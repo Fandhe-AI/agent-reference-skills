@@ -2097,7 +2097,7 @@ The following options are supported:
 
 | `NAME` | `VALUE` | Details |
 |---|---|---|
-| `analyzer` | `STRING` | Example: `analyzer='LOG_ANALYZER'` The [text analyzer](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis) to use to generate tokens for the search index. The supported values are `'LOG_ANALYZER'`, `'NO_OP_ANALYZER'`, and `'PATTERN_ANALYZER'`. |
+| `analyzer` | `STRING` | Example: `analyzer='LOG_ANALYZER'` The [text analyzer](text-analysis.md) to use to generate tokens for the search index. The supported values are `'LOG_ANALYZER'`, `'NO_OP_ANALYZER'`, and `'PATTERN_ANALYZER'`. |
 | `analyzer_options` | `JSON-formatted STRING` | The text analyzer configurations to set when creating a search index. Supported when `analyzer` is equal to `'LOG_ANALYZER'` or `'PATTERN_ANALYZER'`. For examples of JSON-formatted strings with different text analyzers, see [Work with text analyzers](https://docs.cloud.google.com/bigquery/docs/text-analysis-search). |
 | `data_types` | `ARRAY<STRING>` | Example: `data_types=['STRING', 'INT64', 'TIMESTAMP']` An array of data types to set when creating a search index. Supported data types are `STRING`, `INT64` and `TIMESTAMP`. If `data_types` is not set, `STRING` fields are indexed by default. |
 | `default_index_column_granularity` | `STRING` | Example: `default_index_column_granularity='GLOBAL'` The default granularity of information to store for each indexed column. The supported values are `'GLOBAL'` (default) and `'COLUMN'`. For more information, see [Index with column granularity](https://docs.cloud.google.com/bigquery/docs/search-index#column-granularity). |

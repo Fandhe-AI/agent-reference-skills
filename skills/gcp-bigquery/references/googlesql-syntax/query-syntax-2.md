@@ -87,8 +87,8 @@ Table A       Table B       Result
 
 **Example**
 
-This query performs an `INNER JOIN` on the [`Roster`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#roster_table)
-and [`TeamMascot`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#teammascot_table) tables.
+This query performs an `INNER JOIN` on the [`Roster`](query-syntax-3.md#roster-table)
+and [`TeamMascot`](query-syntax-3.md#teammascot-table) tables.
 
 ```sql
 SELECT Roster.LastName, TeamMascot.Mascot
@@ -143,8 +143,8 @@ preferred over `CROSS JOIN` for this case. To learn more, see
 
 **Examples**
 
-This query performs an `CROSS JOIN` on the [`Roster`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#roster_table)
-and [`TeamMascot`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#teammascot_table) tables.
+This query performs an `CROSS JOIN` on the [`Roster`](query-syntax-3.md#roster-table)
+and [`TeamMascot`](query-syntax-3.md#teammascot-table) tables.
 
 ```sql
 SELECT Roster.LastName, TeamMascot.Mascot
@@ -201,8 +201,8 @@ flatten an array into a set of rows. To learn more, see
 
 **Examples**
 
-This query performs a comma cross join on the [`Roster`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#roster_table)
-and [`TeamMascot`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#teammascot_table) tables.
+This query performs a comma cross join on the [`Roster`](query-syntax-3.md#roster-table)
+and [`TeamMascot`](query-syntax-3.md#teammascot-table) tables.
 
 ```sql
 SELECT Roster.LastName, TeamMascot.Mascot
@@ -270,8 +270,8 @@ Table A       Table B       Result
 
 **Example**
 
-This query performs a `FULL JOIN` on the [`Roster`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#roster_table)
-and [`TeamMascot`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#teammascot_table) tables.
+This query performs a `FULL JOIN` on the [`Roster`](query-syntax-3.md#roster-table)
+and [`TeamMascot`](query-syntax-3.md#teammascot-table) tables.
 
 ```sql
 SELECT Roster.LastName, TeamMascot.Mascot
@@ -340,8 +340,8 @@ Table A       Table B       Result
 
 **Example**
 
-This query performs a `LEFT JOIN` on the [`Roster`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#roster_table)
-and [`TeamMascot`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#teammascot_table) tables.
+This query performs a `LEFT JOIN` on the [`Roster`](query-syntax-3.md#roster-table)
+and [`TeamMascot`](query-syntax-3.md#teammascot-table) tables.
 
 ```sql
 SELECT Roster.LastName, TeamMascot.Mascot
@@ -409,8 +409,8 @@ Table A       Table B       Result
 
 **Example**
 
-This query performs a `RIGHT JOIN` on the [`Roster`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#roster_table)
-and [`TeamMascot`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#teammascot_table) tables.
+This query performs a `RIGHT JOIN` on the [`Roster`](query-syntax-3.md#roster-table)
+and [`TeamMascot`](query-syntax-3.md#teammascot-table) tables.
 
 ```sql
 SELECT Roster.LastName, TeamMascot.Mascot
@@ -762,7 +762,7 @@ Table A         Table B         Result
 ```
 
 The following query performs an `INNER JOIN` on the
-[`Roster`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#roster_table) and [`TeamMascot`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#teammascot_table) table.
+[`Roster`](query-syntax-3.md#roster-table) and [`TeamMascot`](query-syntax-3.md#teammascot-table) table.
 The query returns the rows from `Roster` and `TeamMascot` where
 `Roster.SchoolID` is the same as `TeamMascot.SchoolID`. The results include a
 single `SchoolID` column.
@@ -1098,7 +1098,7 @@ in the case when there is no row from the left `from_item`.
 All correlated join operations must reference an array in the right `from_item`.
 
 This is a conceptual example of a correlated join operation that includes
-a [correlated subquery](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries#correlated_subquery_concepts):
+a [correlated subquery](subqueries.md#correlated-subqueries):
 
 ```sql
 FROM A JOIN UNNEST(ARRAY(SELECT AS STRUCT * FROM B WHERE A.ID = B.ID)) AS C
@@ -1148,7 +1148,7 @@ FROM
 **Examples**
 
 This is an example of a correlated join, using the
-[Roster](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#roster_table) and [PlayerStats](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#playerstats_table) tables:
+[Roster](query-syntax-3.md#roster-table) and [PlayerStats](query-syntax-3.md#playerstats-table) tables:
 
 ```sql
 SELECT *
@@ -1263,7 +1263,7 @@ it can't reference `SELECT` list aliases.
 
 **Examples**
 
-This query returns all rows from the [`Roster`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#roster_table) table
+This query returns all rows from the [`Roster`](query-syntax-3.md#roster-table) table
 where the `SchoolID` column has the value `52`:
 
 ```sql
@@ -2353,7 +2353,7 @@ override names in the corresponding `FROM` clause. The data type of
 `expression` must be [orderable](data-types.md#orderable-data-types).
 
 When using the `ORDER BY` clause with either
-[recursive](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#recursive_cte) or [non-recursive](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#simple_cte) common table
+[recursive](query-syntax-3.md#recursive-ctes) or [non-recursive](query-syntax-3.md#non-recursive-ctes) common table
 expressions (CTEs), specify the `ORDER BY` clause within the main query
 definition, and not in the CTE definition itself. This evenly distributes the
 execution of your queries as tables grow over time and prevents a single
@@ -2452,7 +2452,7 @@ ORDER BY SchoolID, LastName;
 ```
 
 When used in conjunction with
-[set operators](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#set_operators),
+[set operators](query-syntax-3.md#set-operators),
 the `ORDER BY` clause applies to the result set of the entire query; it doesn't
 apply only to the closest `SELECT` statement. For this reason, it can be helpful
 (though it isn't required) to use parentheses to show the scope of the `ORDER
@@ -2523,3 +2523,4 @@ ORDER BY 2;
 
 - [Index of this directory](./README.md)
 - [Query syntax (part 1 of 3)](./query-syntax-1.md)
+- [Query syntax (part 3 of 3)](./query-syntax-3.md)

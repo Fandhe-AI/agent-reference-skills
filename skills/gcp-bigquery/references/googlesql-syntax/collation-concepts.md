@@ -41,10 +41,10 @@ sorting and comparing strings:
 | [Join operations](query-syntax-2.md#join-operation) |
 | [`ORDER BY`](query-syntax-2.md#order-by-clause) |
 | [`GROUP BY`](query-syntax-2.md#group-by-clause) |
-| [`WINDOW`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#window_clause) for window functions |
+| [`WINDOW`](query-syntax-3.md#window-clause) for window functions |
 | Collation-supported [scalar functions](#functions-operators-and-conditional-expressions) |
 | Collation-supported [aggregate functions](#functions-operators-and-conditional-expressions) |
-| [Set operations](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#set_operators) |
+| [Set operations](query-syntax-3.md#set-operators) |
 | [`NULLIF` conditional expression](../googlesql-functions/conditional_expressions.md#nullif) |
 
 ### Operations that propagate collation
@@ -155,7 +155,7 @@ The following example operators propagate collation.
 |---|---|
 | [`\|\|` concatenation operator](operators.md#concatenation-operator) |   |
 | [Array subscript operator](operators.md#array-subscript-operator) | Propagated to output. |
-| [Set operators](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#set_operators) | Collation of an output column is decided by the collations of input columns at the same position. |
+| [Set operators](query-syntax-3.md#set-operators) | Collation of an output column is decided by the collations of input columns at the same position. |
 | [`STRUCT` field access operator](operators.md#field-access-operator) | When getting a `STRUCT`, collation on the `STRUCT` field is propagated as the output collation. |
 | [`UNNEST`](query-syntax-1.md#unnest-operator) | Collation on the input array element is propagated to output. |
 

@@ -21,3 +21,8 @@
 | Procedural language | DECLARE, SET, EXECUTE IMMEDIATE, BEGIN...END, BEGIN...EXCEPTION...END, CASE, CASE search_expression, IF, Labels, Loops, Transactions, RAISE, RETURN, CALL | [procedural-language.md](./procedural-language.md) |
 | Query syntax (part 1 of 3) | SQL syntax notation rules, SQL syntax, SELECT statement, FROM clause, UNNEST operator, PIVOT operator, UNPIVOT operator, TABLESAMPLE operator, MATCH_RECOGNIZE clause, GRAPH_TABLE operator | [query-syntax-1.md](./query-syntax-1.md) |
 | Query syntax (part 2 of 3) | Join operation, WHERE clause, GROUP BY clause, HAVING clause, ORDER BY clause | [query-syntax-2.md](./query-syntax-2.md) |
+| Query syntax (part 3 of 3) | QUALIFY clause, WINDOW clause, Set operators, LIMIT and OFFSET clause, WITH clause, AGGREGATION_THRESHOLD clause, Differential privacy clause, Using aliases, Value tables, Table function calls, Appendix A: examples with sample data | [query-syntax-3.md](./query-syntax-3.md) |
+| Subqueries | About subqueries, Common tables used in examples, Expression subqueries, Table subqueries, Correlated subqueries, Volatile subqueries, Evaluation rules for subqueries | [subqueries.md](./subqueries.md) |
+| System procedures reference | BQ.ABORT_SESSION, BQ.JOBS.CANCEL, BQ.CANCEL_INDEX_ALTERATION, BQ.REFRESH_EXTERNAL_METADATA_CACHE, BQ.REFRESH_MATERIALIZED_VIEW, BQ.SHOW_GRAPH_EXPAND_SCHEMA | [system-procedures.md](./system-procedures.md) |
+| System variables reference | Examples | [system-variables.md](./system-variables.md) |
+| Text analysis | Text analyzers, Text analyzer options, Token filters | [text-analysis.md](./text-analysis.md) |

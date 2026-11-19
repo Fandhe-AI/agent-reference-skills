@@ -129,7 +129,7 @@ In pipe syntax, a query can start with a standard [`FROM` clause](query-syntax-1
 and use any standard `FROM` syntax, including tables, joins, subqueries,
 and
 table-valued functions (TVFs). Table aliases can be
-assigned to each input item using the [`AS alias` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#using_aliases).
+assigned to each input item using the [`AS alias` clause](query-syntax-3.md#using-aliases).
 
 A query with only a `FROM` clause, like `FROM table_name`, is allowed in pipe
 syntax and returns all rows from the table. For tables with columns,
@@ -466,7 +466,7 @@ SELECT 1 AS x, 2 AS y, 3 AS z
 **Description**
 
 Introduces a table alias for the input table, similar to applying the
-[`AS alias` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#using_aliases) on a table subquery in standard syntax. Any
+[`AS alias` clause](query-syntax-3.md#using-aliases) on a table subquery in standard syntax. Any
 existing table aliases are removed and the new alias becomes the table alias for
 all columns in the row.
 
@@ -511,7 +511,7 @@ Filters the results of the input table. The `WHERE` operator behaves the same
 as the [`WHERE` clause](query-syntax-2.md#where-clause) in standard syntax.
 
 In pipe syntax, the `WHERE` operator also replaces the
-[`HAVING` clause](query-syntax-2.md#having-clause) and [`QUALIFY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#qualify_clause) in
+[`HAVING` clause](query-syntax-2.md#having-clause) and [`QUALIFY` clause](query-syntax-3.md#qualify-clause) in
 standard syntax. For example, after performing aggregation with the
 [`AGGREGATE` operator](#aggregate-pipe-operator), use the `WHERE` operator
 instead of the `HAVING` clause. For [window functions](../googlesql-functions/window-function-calls.md) inside
@@ -602,7 +602,7 @@ differences:
 - Standard grouping specifications such as [`GROUPING SETS`](query-syntax-2.md#group-rows-by-grouping-sets), [`ROLLUP`](query-syntax-2.md#group-rows-by-rollup), [`CUBE`](query-syntax-2.md#group-rows-by-cube), and `()` are supported, with the following rules:
   - `()` can't be combined with other grouping items.
   - Column aliases (`[AS] alias`) can't be applied to `GROUPING SETS`, `ROLLUP`, `CUBE`, or `()` clauses, or to expressions inside them.
-  - Every `groupable_item` inside `GROUPING SETS`, `ROLLUP`, or `CUBE` must have an [implicit alias](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#implicit_aliases) (such as a column name or field path), which becomes its output column name. Anonymous expressions (such as `x + 1` or `MOD(x, 3)`) aren't allowed inside these clauses.
+  - Every `groupable_item` inside `GROUPING SETS`, `ROLLUP`, or `CUBE` must have an [implicit alias](query-syntax-3.md#implicit-aliases) (such as a column name or field path), which becomes its output column name. Anonymous expressions (such as `x + 1` or `MOD(x, 3)`) aren't allowed inside these clauses.
   - When the `GROUP BY` clause contains `GROUPING SETS`, `ROLLUP`, or `CUBE`, standalone `groupable_item` expressions outside them must also have an alias (implicit or explicit). For example, `GROUP BY ROLLUP(item), sales + 1` produces an error, but `GROUP BY ROLLUP(item), sales + 1 AS s` is supported.
   - To group by a computed expression in `GROUPING SETS`, `ROLLUP`, or `CUBE`, use the [`EXTEND` operator](#extend-pipe-operator) before the `AGGREGATE` operator to compute the expression and assign an alias, and then reference that column by name. To rename an existing column when grouping with these clauses, use the [`RENAME` operator](#rename-pipe-operator) before or after the `AGGREGATE` operator.
   - Duplicate grouping expressions in `GROUPING SETS`, `ROLLUP`, or `CUBE` are deduplicated in the output table, so each unique grouping column appears once in the output column list, in order of first appearance.
@@ -816,7 +816,7 @@ Returns distinct rows from the input table, while preserving table aliases.
 
 Using the `DISTINCT` operator after a `SELECT` or `UNION ALL` clause is similar
 to using a [`SELECT DISTINCT` clause](query-syntax-1.md#select-distinct) or
-[`UNION DISTINCT` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#union) in standard syntax, but the `DISTINCT`
+[`UNION DISTINCT` clause](query-syntax-3.md#union) in standard syntax, but the `DISTINCT`
 pipe operator can be applied anywhere. The `DISTINCT` operator computes distinct
 rows based on the values of all visible columns. Pseudo-columns are ignored
 while computing distinct rows and are dropped from the output.
@@ -993,7 +993,7 @@ input table is needed, perhaps to disambiguate columns in an
 
 Calls a [table-valued function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/table-functions#tvfs) (TVF) that accepts at least one table as
 an argument, similar to
-[table function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#table_function_calls) in standard syntax.
+[table function calls](query-syntax-3.md#table-function-calls) in standard syntax.
 
 TVFs in standard syntax can be called in the `FROM` clause or in a `JOIN`
 operation. These are both allowed in pipe syntax as well.
@@ -1080,7 +1080,7 @@ apply `ORDER BY` behavior more concisely as part of aggregation.
 Limits the number of rows to return in a query, with an
 optional `OFFSET` clause to skip over rows. The `LIMIT` operator
 behaves the same as the [`LIMIT` and `OFFSET`
-clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause) in standard syntax.
+clause](query-syntax-3.md#limit-and-offset-clause) in standard syntax.
 
 **Examples**
 
@@ -1133,7 +1133,7 @@ Returns the combined results of the input queries to the left and right of the
 pipe operator. Columns are matched and rows are concatenated vertically.
 
 The `UNION` pipe operator behaves the same as the
-[`UNION` set operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#union) in standard syntax. However, in pipe
+[`UNION` set operator](query-syntax-3.md#union) in standard syntax. However, in pipe
 syntax, the `UNION` pipe operator can include multiple comma-separated queries
 without repeating the `UNION` syntax. Queries following the operator
 are enclosed in parentheses.
@@ -1255,7 +1255,7 @@ of the pipe operator and all input queries to the right of the pipe
 operator.
 
 The `INTERSECT` pipe operator behaves the same as the
-[`INTERSECT` set operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#intersect) in standard syntax. However, in
+[`INTERSECT` set operator](query-syntax-3.md#intersect) in standard syntax. However, in
 pipe syntax, the `INTERSECT` pipe operator can include multiple
 comma-separated queries without repeating the `INTERSECT` syntax. Queries
 following the operator are enclosed in parentheses.
@@ -1373,7 +1373,7 @@ Returns rows from the input query to the left of the pipe operator that aren't
 present in any input queries to the right of the pipe operator.
 
 The `EXCEPT` pipe operator behaves the same as the
-[`EXCEPT` set operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#except) in standard syntax. However, in pipe
+[`EXCEPT` set operator](query-syntax-3.md#except) in standard syntax. However, in pipe
 syntax, the `EXCEPT` pipe operator can include multiple comma-separated
 queries without repeating the `EXCEPT` syntax. Queries following the
 operator are enclosed in parentheses.
@@ -1581,7 +1581,7 @@ FROM LargeTable
 **Description**
 
 Defines one or more common table expressions (CTEs) that the rest of the query
-can reference, similar to standard [`WITH` clauses](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#with_clause). Ignores the
+can reference, similar to standard [`WITH` clauses](query-syntax-3.md#with-clause). Ignores the
 pipe input table and passes it through as the input to the next pipe operation.
 
 **Examples**
