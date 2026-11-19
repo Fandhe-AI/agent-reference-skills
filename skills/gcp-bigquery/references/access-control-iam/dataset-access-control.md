@@ -48,8 +48,10 @@ GET https://bigquery.googleapis.com/bigquery/v2/projects/YOUR_PROJECT/datasets/Y
 
 ### `datasets.update` with `updateMode`
 
+Adapted (not in the official docs): `updateMode=METADATA` is written `updateMode=UPDATE_METADATA`, the enum value of the `updateMode` parameter.
+
 ```text
-PUT https://bigquery.googleapis.com/bigquery/v2/projects/YOUR_PROJECT/datasets/YOUR_DATASET?updateMode=METADATA&key=YOUR_API_KEY HTTP/1.1
+PUT https://bigquery.googleapis.com/bigquery/v2/projects/YOUR_PROJECT/datasets/YOUR_DATASET?updateMode=UPDATE_METADATA&key=YOUR_API_KEY HTTP/1.1
 ```
 
 `datasets.patch` takes the same `updateMode` parameter (the source example shows the same `PUT` request form).
@@ -100,6 +102,7 @@ PUT https://bigquery.googleapis.com/bigquery/v2/projects/YOUR_PROJECT/datasets/Y
 - Omitted: the source also describes `bq show --dataset_view={METADATA|ACL|FULL}` and `bq update --update_mode={UPDATE_METADATA|UPDATE_ACL|UPDATE_FULL}`; those flags are not listed in the `bq` command-line reference, so they are not shown as commands here.
 - The option name `enable_fine_grained_dataset_acls_option` is not listed among the options in the `ALTER ORGANIZATION` / `ALTER PROJECT` reference; it is kept as written in the source. Configuration settings are described in "Manage configuration settings".
 - The `YOUR_API_KEY` query parameter in the source examples is a placeholder; do not paste real keys into shared code.
+- Corrected from the official docs: the `datasets.update` example passes `updateMode=METADATA`; the `updateMode` values are `UPDATE_MODE_UNSPECIFIED`, `UPDATE_METADATA`, `UPDATE_ACL` and `UPDATE_FULL` (`METADATA` is a `datasetView` value of `datasets.get`).
 - Source: https://docs.cloud.google.com/bigquery/docs/dataset-access-control (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -31,14 +31,14 @@ The API equivalent is `tables.delete` with `projectID`, `datasetID`, `tableID`.
 
 ### VPC Service Controls rules (caller in project R, view in project A, source in project B)
 
-Adapted (not in the official docs): `method: *` is not valid YAML (`*` starts an alias); it is quoted as `"*"`. `caller_r` and `project_r` are the source's placeholders.
+Adapted (not in the official docs): `method: *` is not valid YAML (`*` starts an alias); it is quoted as `"*"`. `identityType: caller_r` is written as an `identities` list with the placeholder `CALLER_R`, and `sources[].resource` is a single string, not a list. `project_r` is the source's placeholder.
 
 ```yaml
 - ingressFrom:
-    identityType: caller_r
+    identities:
+    - CALLER_R
     sources:
-    - resource:
-      - projects/project_r
+    - resource: projects/project_r
   ingressTo:
     operations:
     - serviceName: bigquery.googleapis.com
@@ -51,7 +51,7 @@ Adapted (not in the official docs): `method: *` is not valid YAML (`*` starts an
 
 Egress rules for the source project (a set is also needed for `PROJECT_A`, the view project):
 
-Adapted (not in the official docs): `method: *` is not valid YAML (`*` starts an alias); it is quoted as `"*"`.
+Adapted (not in the official docs): `method: *` is not valid YAML (`*` starts an alias); it is quoted as `"*"`. `identityType: caller_r` is written as an `identities` list with the placeholder `CALLER_R`, and `sources[].resource` is a single string, not a list.
 
 ```yaml
 - egressTo:
@@ -62,10 +62,10 @@ Adapted (not in the official docs): `method: *` is not valid YAML (`*` starts an
     resources:
     - projects/project_b
   egressFrom:
-    identityType: caller_r
+    identities:
+    - CALLER_R
     sources:
-    - resource:
-      - projects/project_r
+    - resource: projects/project_r
   title: Egress rules for the source project
 ```
 
@@ -101,6 +101,7 @@ Adapted (not in the official docs): `method: *` is not valid YAML (`*` starts an
 - Omitted: Console steps and the Terraform sample (`google_bigquery_dataset_access` with a `view` block).
 - Corrected from the official docs: the `bq rm` example wrote the identifier as `project_id:dataset:table_id`; a table is `project_id:dataset.table_id`.
 - Corrected from the official docs: the VPC Service Controls rules wrote `method: *`, which is not valid YAML (`*` starts an alias); it is quoted as `"*"`.
+- Corrected from the official docs: the rules write `identityType: caller_r` and `sources: - resource: [projects/project_r]`; `identityType` takes only `ANY_IDENTITY`, `ANY_USER_ACCOUNT` or `ANY_SERVICE_ACCOUNT`, specific callers go in `identities` (for example `user:alice@example.com` or `serviceAccount:SA_EMAIL`), and `IngressSource.resource` / `EgressSource.resource` are strings (`projects/PROJECT_NUMBER`).
 - Source: https://docs.cloud.google.com/bigquery/docs/authorized-views (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

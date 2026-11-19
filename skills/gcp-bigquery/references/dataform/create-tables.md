@@ -25,6 +25,8 @@ config {
 
 ### Reference dependencies with `ref`
 
+Adapted (not in the official docs): the non-aggregated `order_status` column is added to `GROUP BY` (`GROUP BY 1, 2, 3`).
+
 ```sql
 config { type: "table" }
 
@@ -37,7 +39,7 @@ SELECT
 
 FROM ${ref("store_clean")}
 
-GROUP BY 1, 2
+GROUP BY 1, 2, 3
 ```
 
 Two arguments (schema, table) disambiguate same-named tables:
@@ -133,10 +135,12 @@ SELECT CURRENT_TIMESTAMP() as ts, name, revenue
 
 ### Incremental tables
 
+Adapted (not in the official docs): `date` is added to the `SELECT` list, because the incremental branch reads `MAX(date)` from the output table.
+
 ```sql
 config { type: "incremental" }
 
-SELECT timestamp, message FROM ${ref("productiondb", "logs")}
+SELECT timestamp, message, date FROM ${ref("productiondb", "logs")}
 
 ${when(incremental(),
    `WHERE date > (SELECT MAX(date) FROM ${self()}) AND country = "UK"`,
@@ -145,15 +149,19 @@ ${when(incremental(),
 
 Daily snapshot:
 
+Adapted (not in the official docs): the incremental filter compares `CURRENT_DATE()` instead of the `snapshot_date` alias, which a `WHERE` clause cannot reference.
+
 ```sql
 config { type: "incremental" }
 
 SELECT CURRENT_DATE() AS snapshot_date, customer_id, name, account_settings FROM ${ref("productiondb", "customers")}
 
-${when(incremental(), `WHERE snapshot_date > (SELECT MAX(snapshot_date) FROM ${self()})`) }
+${when(incremental(), `WHERE CURRENT_DATE() > (SELECT MAX(snapshot_date) FROM ${self()})`) }
 ```
 
 Merge on a unique key:
+
+Adapted (not in the official docs): `transaction_id`, the `uniqueKey`, is added to the `SELECT` list.
 
 ```sql
 config {
@@ -161,11 +169,13 @@ config {
   uniqueKey: ["transaction_id"]
 }
 
-SELECT timestamp, action FROM weblogs.user_actions
+SELECT transaction_id, timestamp, action FROM weblogs.user_actions
 ${ when(incremental(), `WHERE timestamp > (SELECT MAX(timestamp) FROM ${self()})`) }
 ```
 
 Target pruning with `updatePartitionFilter` and source pruning with `WHERE`:
+
+Adapted (not in the official docs): `transaction_id`, the `uniqueKey`, is added to the `SELECT` list.
 
 ```sql
 config {
@@ -178,7 +188,7 @@ config {
   }
 }
 
-SELECT timestamp, action FROM weblogs.user_actions
+SELECT transaction_id, timestamp, action FROM weblogs.user_actions
 ${ when(incremental(), `WHERE timestamp > (SELECT MAX(timestamp) FROM ${self()})`) }
 ```
 
@@ -453,6 +463,7 @@ post_operations {
 - Policy tags can be set via the `columns` property, which does not configure data types or `REQUIRED` modes. Column-level security and data masking are in `gcp-bigquery` BigQuery references.
 - The source also shows Console click-paths, a second `docs.js` block (a `columns` constant using `=` inside an object literal, which is not valid JavaScript) and its usage; those are omitted. Console steps are omitted.
 - Unquoted placeholders such as `<timestamp_column>` and `SELECT ...` are kept as written in the source.
+- Corrected from the official docs: the `ref` example groups by `1, 2` although `order_status` is not aggregated (`GROUP BY 1, 2, 3`); the first incremental example filters on `MAX(date)` of the output table but does not select `date`; the daily snapshot filters on the `SELECT` alias `snapshot_date` in `WHERE` (written with `CURRENT_DATE()`); the two `uniqueKey: ["transaction_id"]` examples do not select `transaction_id`.
 - Source: https://docs.cloud.google.com/dataform/docs/create-tables (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

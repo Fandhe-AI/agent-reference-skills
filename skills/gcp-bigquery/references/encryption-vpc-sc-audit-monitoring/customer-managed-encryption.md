@@ -168,7 +168,7 @@ bq update --dataset --default_kms_key projects/KMS_PROJECT_ID/locations/LOCATION
 bq update --dataset --default_kms_key="" PROJECT_ID:DATASET_ID
 ```
 
-Over the REST API, set `EncryptionConfiguration.kmsKeyName` in `datasets.insert` or `datasets.patch`; to remove the key, set it to null in `datasets.patch`.
+Over the REST API, set `defaultEncryptionConfiguration.kmsKeyName` (an `EncryptionConfiguration`) of the `Dataset` resource in `datasets.insert` or `datasets.patch`; to remove the key, set `defaultEncryptionConfiguration.kmsKeyName` to null in `datasets.patch`.
 
 ### Project default key
 
@@ -285,6 +285,7 @@ The `global` key location can't be used in the Google Cloud console but can be u
 - Remote models and the AI functions call Vertex AI (Agent Platform) models; the Gemini Developer API and `google-genai` SDK are in `google-gemini-api`.
 - Cloud KMS keys are covered by `gcp-security`; `constraints/gcp.restrictNonCmekServices` and organization policy in general by `gcp-foundation`. The Cloud Storage and Cloud SQL sides of external sources are in `gcp-storage` and `gcp-databases-relational`.
 - Billing: see Cloud KMS pricing (https://cloud.google.com/kms/pricing); prices are not copied here.
+- Corrected from the official docs: the source says to set `EncryptionConfiguration.kmsKeyName` when calling `datasets.insert` / `datasets.patch`; the `Dataset` field that holds it is `defaultEncryptionConfiguration`.
 - Source: https://docs.cloud.google.com/bigquery/docs/customer-managed-encryption (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
