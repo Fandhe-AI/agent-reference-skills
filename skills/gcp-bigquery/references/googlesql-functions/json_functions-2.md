@@ -2244,7 +2244,7 @@ SELECT TO_JSON_STRING(STRUCT(1 AS id, [10,20] AS coordinates), true) AS json_dat
 
 Many JSON functions accept two input types:
 
-- [`JSON`](../googlesql-syntax/data-types.md#json-type) type
+- [`JSON`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#json_type) type
 - `STRING` type
 
 The `STRING` version of the extraction functions behaves differently than the

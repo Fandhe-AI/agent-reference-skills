@@ -16,14 +16,14 @@ behavior:
 
 | Category | Functions | Description |
 |---|---|---|
-| Standard extractors | [`JSON_QUERY`](#json_query) [`JSON_VALUE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_value) [`JSON_QUERY_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_query_array) [`JSON_VALUE_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_value_array) | Functions that extract JSON data. |
+| Standard extractors | [`JSON_QUERY`](#json_query) [`JSON_VALUE`](json_functions-2.md#json_value) [`JSON_QUERY_ARRAY`](json_functions-2.md#json_query_array) [`JSON_VALUE_ARRAY`](json_functions-2.md#json_value_array) | Functions that extract JSON data. |
 | Legacy extractors | [`JSON_EXTRACT`](#json_extract) [`JSON_EXTRACT_SCALAR`](#json_extract_scalar) [`JSON_EXTRACT_ARRAY`](#json_extract_array) [`JSON_EXTRACT_STRING_ARRAY`](#json_extract_string_array) | Functions that extract JSON data. While these functions are supported by GoogleSQL, we recommend using the [standard extractor functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#extractors). |
-| Lax converters | [`LAX_BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_bool) [`LAX_FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_double) [`LAX_INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_int64) [`LAX_STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_string) | Functions that flexibly convert a JSON value to a SQL value without returning errors. |
-| Converters | [`BOOL`](#bool) [`FLOAT64`](#float64) [`INT64`](#int64) [`STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#string_for_json) | Functions that convert a JSON value to a SQL value. |
-| Other converters | [`PARSE_JSON`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#parse_json) [`TO_JSON`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#to_json) [`TO_JSON_STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#to_json_string) | Other conversion functions from or to JSON. |
+| Lax converters | [`LAX_BOOL`](json_functions-2.md#lax_bool) [`LAX_FLOAT64`](json_functions-2.md#lax_float64) [`LAX_INT64`](json_functions-2.md#lax_int64) [`LAX_STRING`](json_functions-2.md#lax_string) | Functions that flexibly convert a JSON value to a SQL value without returning errors. |
+| Converters | [`BOOL`](#bool) [`FLOAT64`](#float64) [`INT64`](#int64) [`STRING`](json_functions-2.md#string) | Functions that convert a JSON value to a SQL value. |
+| Other converters | [`PARSE_JSON`](json_functions-2.md#parse_json) [`TO_JSON`](json_functions-2.md#to_json) [`TO_JSON_STRING`](json_functions-2.md#to_json_string) | Other conversion functions from or to JSON. |
 | Constructors | [`JSON_ARRAY`](#json_array) [`JSON_OBJECT`](#json_object) | Functions that create JSON. |
-| Mutators | [`JSON_ARRAY_APPEND`](#json_array_append) [`JSON_ARRAY_INSERT`](#json_array_insert) [`JSON_REMOVE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_remove) [`JSON_SET`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_set) [`JSON_STRIP_NULLS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_strip_nulls) | Functions that mutate existing JSON. |
-| Accessors | [`JSON_KEYS`](#json_keys) [`JSON_TYPE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_type) | Functions that provide access to JSON properties. |
+| Mutators | [`JSON_ARRAY_APPEND`](#json_array_append) [`JSON_ARRAY_INSERT`](#json_array_insert) [`JSON_REMOVE`](json_functions-2.md#json_remove) [`JSON_SET`](json_functions-2.md#json_set) [`JSON_STRIP_NULLS`](json_functions-2.md#json_strip_nulls) | Functions that mutate existing JSON. |
+| Accessors | [`JSON_KEYS`](#json_keys) [`JSON_TYPE`](json_functions-2.md#json_type) | Functions that provide access to JSON properties. |
 | Transformers | [`JSON_FLATTEN`](#json_flatten) | Functions that apply a transformation to a JSON value. |
 
 ### Function list
@@ -44,21 +44,21 @@ behavior:
 | [`JSON_KEYS`](#json_keys) | Extracts unique JSON keys from a JSON expression. |
 | [`JSON_OBJECT`](#json_object) | Creates a JSON object. |
 | [`JSON_QUERY`](#json_query) | Extracts a JSON value and converts it to a SQL JSON-formatted `STRING` or `JSON` value. |
-| [`JSON_QUERY_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_query_array) | Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. |
-| [`JSON_REMOVE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_remove) | Produces JSON with the specified JSON data removed. |
-| [`JSON_SET`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_set) | Inserts or replaces JSON data. |
-| [`JSON_STRIP_NULLS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_strip_nulls) | Removes JSON nulls from JSON objects and JSON arrays. |
-| [`JSON_TYPE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_type) | Gets the JSON type of the outermost JSON value and converts the name of this type to a SQL `STRING` value. |
-| [`JSON_VALUE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_value) | Extracts a JSON scalar value and converts it to a SQL `STRING` value. |
-| [`JSON_VALUE_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_value_array) | Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. |
-| [`LAX_BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_bool) | Attempts to convert a JSON value to a SQL `BOOL` value. |
-| [`LAX_FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_double) | Attempts to convert a JSON value to a SQL `FLOAT64` value. |
-| [`LAX_INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_int64) | Attempts to convert a JSON value to a SQL `INT64` value. |
-| [`LAX_STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_string) | Attempts to convert a JSON value to a SQL `STRING` value. |
-| [`PARSE_JSON`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#parse_json) | Converts a JSON-formatted `STRING` value to a `JSON` value. |
-| [`STRING` (JSON)](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#string_for_json) | Converts a JSON string to a SQL `STRING` value. |
-| [`TO_JSON`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#to_json) | Converts a SQL value to a JSON value. |
-| [`TO_JSON_STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#to_json_string) | Converts a SQL value to a JSON-formatted `STRING` value. |
+| [`JSON_QUERY_ARRAY`](json_functions-2.md#json_query_array) | Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. |
+| [`JSON_REMOVE`](json_functions-2.md#json_remove) | Produces JSON with the specified JSON data removed. |
+| [`JSON_SET`](json_functions-2.md#json_set) | Inserts or replaces JSON data. |
+| [`JSON_STRIP_NULLS`](json_functions-2.md#json_strip_nulls) | Removes JSON nulls from JSON objects and JSON arrays. |
+| [`JSON_TYPE`](json_functions-2.md#json_type) | Gets the JSON type of the outermost JSON value and converts the name of this type to a SQL `STRING` value. |
+| [`JSON_VALUE`](json_functions-2.md#json_value) | Extracts a JSON scalar value and converts it to a SQL `STRING` value. |
+| [`JSON_VALUE_ARRAY`](json_functions-2.md#json_value_array) | Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. |
+| [`LAX_BOOL`](json_functions-2.md#lax_bool) | Attempts to convert a JSON value to a SQL `BOOL` value. |
+| [`LAX_FLOAT64`](json_functions-2.md#lax_float64) | Attempts to convert a JSON value to a SQL `FLOAT64` value. |
+| [`LAX_INT64`](json_functions-2.md#lax_int64) | Attempts to convert a JSON value to a SQL `INT64` value. |
+| [`LAX_STRING`](json_functions-2.md#lax_string) | Attempts to convert a JSON value to a SQL `STRING` value. |
+| [`PARSE_JSON`](json_functions-2.md#parse_json) | Converts a JSON-formatted `STRING` value to a `JSON` value. |
+| [`STRING` (JSON)](json_functions-2.md#string) | Converts a JSON string to a SQL `STRING` value. |
+| [`TO_JSON`](json_functions-2.md#to_json) | Converts a SQL value to a JSON value. |
+| [`TO_JSON_STRING`](json_functions-2.md#to_json_string) | Converts a SQL value to a JSON-formatted `STRING` value. |
 
 ### `BOOL`
 
@@ -291,7 +291,7 @@ Creates a JSON array from zero or more SQL values.
 
 Arguments:
 
-- `value`: A [JSON encoding-supported](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_encodings) value to add to a JSON array.
+- `value`: A [JSON encoding-supported](json_functions-2.md#json-encodings) value to add to a JSON array.
 
 **Return type**
 
@@ -397,13 +397,13 @@ Arguments:
   ```googlesql
   JSON '["a", "b", "c"]'
   ```
-- `json_path_value_pair`: A value and the [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format) for
+- `json_path_value_pair`: A value and the [JSONPath](json_functions-2.md#jsonpath-format) for
   that value. This includes:
 
-  - `json_path`: Append `value` at this [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format)
+  - `json_path`: Append `value` at this [JSONPath](json_functions-2.md#jsonpath-format)
     in `json_expr`.
 
-  - `value`: A [JSON encoding-supported](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_encodings) value to
+  - `value`: A [JSON encoding-supported](json_functions-2.md#json-encodings) value to
     append.
 
 - `append_each_element`: A named argument with a `BOOL` value.
@@ -421,7 +421,7 @@ Details:
 - If `json_path` points to a JSON null, the JSON null is replaced by a JSON array that contains `value`.
 - If the path exists but has an incompatible type at any given path token, the path value pair operation is ignored.
 - The function applies all path value pair append operations even if an individual path value pair operation is invalid. For invalid operations, the operation is ignored and the function continues to process the rest of the path value pairs.
-- If any `json_path` is an invalid [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format), an error is produced.
+- If any `json_path` is an invalid [JSONPath](json_functions-2.md#jsonpath-format), an error is produced.
 - If `json_expr` is SQL `NULL`, the function returns SQL `NULL`.
 - If `append_each_element` is SQL `NULL`, the function returns `json_expr`.
 - If `json_path` is SQL `NULL`, the `json_path_value_pair` operation is ignored.
@@ -582,13 +582,13 @@ Arguments:
   ```googlesql
   JSON '["a", "b", "c"]'
   ```
-- `json_path_value_pair`: A value and the [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format) for
+- `json_path_value_pair`: A value and the [JSONPath](json_functions-2.md#jsonpath-format) for
   that value. This includes:
 
-  - `json_path`: Insert `value` at this [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format)
+  - `json_path`: Insert `value` at this [JSONPath](json_functions-2.md#jsonpath-format)
     in `json_expr`.
 
-  - `value`: A [JSON encoding-supported](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_encodings) value to
+  - `value`: A [JSON encoding-supported](json_functions-2.md#json-encodings) value to
     insert.
 
 - `insert_each_element`: A named argument with a `BOOL` value.
@@ -607,7 +607,7 @@ Details:
 - If the path exists but has an incompatible type at any given path token, the path value pair operator is ignored.
 - The function applies all path value pair append operations even if an individual path value pair operation is invalid. For invalid operations, the operation is ignored and the function continues to process the rest of the path value pairs.
 - If the array index in `json_path` is larger than the size of the array, the function extends the length of the array to the index, fills in the array with JSON nulls, then adds `value` at the index.
-- If any `json_path` is an invalid [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format), an error is produced.
+- If any `json_path` is an invalid [JSONPath](json_functions-2.md#jsonpath-format), an error is produced.
 - If `json_expr` is SQL `NULL`, the function returns SQL `NULL`.
 - If `insert_each_element` is SQL `NULL`, the function returns `json_expr`.
 - If `json_path` is SQL `NULL`, the `json_path_value_pair` operation is ignored.
@@ -753,7 +753,7 @@ JSON_EXTRACT(json_expr, json_path)
 Extracts a JSON value and converts it to a
 SQL JSON-formatted `STRING` or `JSON` value.
 This function uses single quotes and brackets to escape invalid
-[JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format) characters in JSON keys. For example: `['a.b']`.
+[JSONPath](json_functions-2.md#jsonpath-format) characters in JSON keys. For example: `['a.b']`.
 
 Arguments:
 
@@ -780,11 +780,11 @@ Arguments:
   ```googlesql
   SELECT JSON_EXTRACT(JSON 'null', "$") -- Returns a JSON 'null'
   ```
-- `json_path`: The [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format). This identifies the data that
+- `json_path`: The [JSONPath](json_functions-2.md#jsonpath-format). This identifies the data that
   you want to obtain from the input.
 
 There are differences between the JSON-formatted string and JSON input types.
-For details, see [Differences between the JSON and JSON-formatted STRING types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#differences_json_and_string).
+For details, see [Differences between the JSON and JSON-formatted STRING types](json_functions-2.md#differences-between-the-json-and-json-formatted-string-types).
 
 **Return type**
 
@@ -979,7 +979,7 @@ SELECT JSON_EXTRACT(JSON '{"a": null}', "$.b"); -- Returns a SQL NULL
 ### `JSON_EXTRACT_ARRAY`
 
 > [!NOTE]
-> **Note:** This function is deprecated. Consider using [JSON_QUERY_ARRAY](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_query_array).
+> **Note:** This function is deprecated. Consider using [JSON_QUERY_ARRAY](json_functions-2.md#json_query_array).
 
 ```googlesql
 JSON_EXTRACT_ARRAY(json_string_expr[, json_path])
@@ -995,7 +995,7 @@ Extracts a JSON array and converts it to
 a SQL `ARRAY<JSON-formatted STRING>` or
 `ARRAY<JSON>` value.
 This function uses single quotes and brackets to escape invalid
-[JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format) characters in JSON keys. For example: `['a.b']`.
+[JSONPath](json_functions-2.md#jsonpath-format) characters in JSON keys. For example: `['a.b']`.
 
 Arguments:
 
@@ -1009,13 +1009,13 @@ Arguments:
   ```googlesql
   JSON '["a", "b", {"key": "c"}]'
   ```
-- `json_path`: The [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format). This identifies the data that
+- `json_path`: The [JSONPath](json_functions-2.md#jsonpath-format). This identifies the data that
   you want to obtain from the input. If this optional parameter isn't
   provided, then the JSONPath `$` symbol is applied, which means that all of
   the data is analyzed.
 
 There are differences between the JSON-formatted string and JSON input types.
-For details, see [Differences between the JSON and JSON-formatted STRING types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#differences_json_and_string).
+For details, see [Differences between the JSON and JSON-formatted STRING types](json_functions-2.md#differences-between-the-json-and-json-formatted-string-types).
 
 **Return type**
 
@@ -1177,7 +1177,7 @@ SELECT JSON_EXTRACT_ARRAY('{"a": "foo", "b": []}', '$.b') AS result;
 ### `JSON_EXTRACT_SCALAR`
 
 > [!NOTE]
-> **Note:** This function is deprecated. Consider using [JSON_VALUE](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_value).
+> **Note:** This function is deprecated. Consider using [JSON_VALUE](json_functions-2.md#json_value).
 
 ```googlesql
 JSON_EXTRACT_SCALAR(json_string_expr[, json_path])
@@ -1194,7 +1194,7 @@ In addition, this function:
 
 - Removes the outermost quotes and unescapes the return values.
 - Returns a SQL `NULL` if a non-scalar value is selected.
-- Uses single quotes and brackets to escape invalid [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format) characters in JSON keys. For example: `['a.b']`.
+- Uses single quotes and brackets to escape invalid [JSONPath](json_functions-2.md#jsonpath-format) characters in JSON keys. For example: `['a.b']`.
 
 Arguments:
 
@@ -1208,7 +1208,7 @@ Arguments:
   ```googlesql
   JSON '{"name": "Jane", "age": "6"}'
   ```
-- `json_path`: The [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format). This identifies the data that
+- `json_path`: The [JSONPath](json_functions-2.md#jsonpath-format). This identifies the data that
   you want to obtain from the input. If this optional parameter isn't
   provided, then the JSONPath `$` symbol is applied, which means that all of
   the data is analyzed.
@@ -1218,7 +1218,7 @@ Arguments:
   returned.
 
 There are differences between the JSON-formatted string and JSON input types.
-For details, see [Differences between the JSON and JSON-formatted STRING types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#differences_json_and_string).
+For details, see [Differences between the JSON and JSON-formatted STRING types](json_functions-2.md#differences-between-the-json-and-json-formatted-string-types).
 
 **Return type**
 
@@ -1281,7 +1281,7 @@ SELECT JSON_EXTRACT_SCALAR('{"a.b": {"c": "world"}}', "$['a.b'].c") AS hello;
 ### `JSON_EXTRACT_STRING_ARRAY`
 
 > [!NOTE]
-> **Note:** This function is deprecated. Consider using [JSON_VALUE_ARRAY](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_value_array).
+> **Note:** This function is deprecated. Consider using [JSON_VALUE_ARRAY](json_functions-2.md#json_value_array).
 
 ```googlesql
 JSON_EXTRACT_STRING_ARRAY(json_string_expr[, json_path])
@@ -1298,7 +1298,7 @@ value. In addition, this function:
 
 - Removes the outermost quotes and unescapes the values.
 - Returns a SQL `NULL` if the selected value isn't an array or not an array containing only scalar values.
-- Uses single quotes and brackets to escape invalid [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format) characters in JSON keys. For example: `['a.b']`.
+- Uses single quotes and brackets to escape invalid [JSONPath](json_functions-2.md#jsonpath-format) characters in JSON keys. For example: `['a.b']`.
 
 Arguments:
 
@@ -1312,13 +1312,13 @@ Arguments:
   ```googlesql
   JSON '["apples", "oranges", "grapes"]'
   ```
-- `json_path`: The [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format). This identifies the data that
+- `json_path`: The [JSONPath](json_functions-2.md#jsonpath-format). This identifies the data that
   you want to obtain from the input. If this optional parameter isn't
   provided, then the JSONPath `$` symbol is applied, which means that all of
   the data is analyzed.
 
 There are differences between the JSON-formatted string and JSON input types.
-For details, see [Differences between the JSON and JSON-formatted STRING types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#differences_json_and_string).
+For details, see [Differences between the JSON and JSON-formatted STRING types](json_functions-2.md#differences-between-the-json-and-json-formatted-string-types).
 
 Caveats:
 
@@ -1775,7 +1775,7 @@ Creates a JSON object, using key-value pairs.
 Arguments:
 
 - `json_key`: A `STRING` value that represents a key.
-- `json_value`: A [JSON encoding-supported](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_encodings) value.
+- `json_value`: A [JSON encoding-supported](json_functions-2.md#json-encodings) value.
 
 Details:
 
@@ -1881,7 +1881,7 @@ Creates a JSON object, using an array of keys and values.
 Arguments:
 
 - `json_key_array`: An array of zero or more `STRING` keys.
-- `json_value_array`: An array of zero or more [JSON encoding-supported](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_encodings) values.
+- `json_value_array`: An array of zero or more [JSON encoding-supported](json_functions-2.md#json-encodings) values.
 
 Details:
 
@@ -2020,7 +2020,7 @@ Extracts a JSON value and converts it to a SQL
 JSON-formatted `STRING` or
 `JSON` value.
 This function uses double quotes to escape invalid
-[JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format) characters in JSON keys. For example: `"a.b"`.
+[JSONPath](json_functions-2.md#jsonpath-format) characters in JSON keys. For example: `"a.b"`.
 
 Arguments:
 
@@ -2047,12 +2047,12 @@ Arguments:
   ```googlesql
   SELECT JSON_QUERY(JSON 'null', "$") -- Returns a JSON 'null'
   ```
-- `json_path`: The [JSONPath](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_format). This identifies the data that
+- `json_path`: The [JSONPath](json_functions-2.md#jsonpath-format). This identifies the data that
   you want to obtain from the input. This function
-  lets you [specify a mode](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_mode) for the JSONPath.
+  lets you [specify a mode](json_functions-2.md#modes-for-jsonpath) for the JSONPath.
 
 There are differences between the JSON-formatted string and JSON input types.
-For details, see [Differences between the JSON and JSON-formatted STRING types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#differences_json_and_string).
+For details, see [Differences between the JSON and JSON-formatted STRING types](json_functions-2.md#differences-between-the-json-and-json-formatted-string-types).
 
 **Return type**
 
@@ -2241,7 +2241,7 @@ SELECT
  +------------------------------------*/
 ```
 
-In the following examples, the JSON data is extracted in [lax mode](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_mode).
+In the following examples, the JSON data is extracted in [lax mode](json_functions-2.md#modes-for-jsonpath).
 Because the keyword `lax` is included in the `JSONPath`, JSON arrays are
 automatically unwrapped.
 
@@ -2284,7 +2284,7 @@ SELECT
  +-------------------*/
 ```
 
-In the following examples, the JSON data is extracted in [lax recursive mode](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#JSONPath_mode).
+In the following examples, the JSON data is extracted in [lax recursive mode](json_functions-2.md#modes-for-jsonpath).
 Because the keyword `lax recursive` is included in the `JSONPath`, JSON arrays
 are unwrapped until a non-array type is found.
 
@@ -2401,3 +2401,4 @@ SELECT JSON_QUERY(JSON '{"a": null}', "$.b"); -- Returns a SQL NULL
 ## Related
 
 - [Index of this directory](./README.md)
+- [JSON functions (part 2 of 2)](./json_functions-2.md)

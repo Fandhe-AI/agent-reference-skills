@@ -29,7 +29,7 @@ use the following
 functions:
 
 - [HyperLogLog++ functions](hll_functions.md) to estimate cardinality
-- [KLL functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions) to estimate quantile values
+- [KLL functions](kll_functions.md) to estimate quantile values
 
 ### Function list
 
