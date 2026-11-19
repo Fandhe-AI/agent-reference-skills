@@ -8,3 +8,6 @@
 | Cloud Deploy API (clouddeploy) | 185 schemas | [clouddeploy/README.md](./clouddeploy/README.md) |
 | Developer Connect API (developerconnect) | 88 schemas | [developerconnect/README.md](./developerconnect/README.md) |
 | Device Run API (devicerun) | 78 schemas | [devicerun/README.md](./devicerun/README.md) |
+| App Lifecycle Manager API (saasservicemgmt) | 78 schemas | [saasservicemgmt/README.md](./saasservicemgmt/README.md) |
+| Secure Source Manager API (securesourcemanager) | 58 schemas | [securesourcemanager/README.md](./securesourcemanager/README.md) |
+| Workload Manager API (workloadmanager) | 96 schemas | [workloadmanager/README.md](./workloadmanager/README.md) |
