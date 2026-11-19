@@ -275,7 +275,7 @@ NOTES
         $ gcloud beta builds connections create bitbucket-data-center
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud builds connections create bitbucket-data-center my-bitbucket-conn \
@@ -290,7 +290,7 @@ gcloud builds connections create bitbucket-data-center my-private-bitbucket-conn
     --host-uri=https://my.private-bitbucket-server.net \
     --project=myproj \
     --region=us-central1 \
-    --service-directory-service=projects/myproj/namespaces/x/services/mysds \
+    --service-directory-service=projects/myproj/locations/us-central1/namespaces/x/services/mysds \
     --ssl-ca-file=mycertificate.crt \
     --authorizer-token-secret-version=projects/myproj/secrets/admin-pat/versions/1 \
     --read-authorizer-token-secret-version=projects/myproj/secrets/read-pat/versions/1 \
@@ -614,15 +614,14 @@ gcloud builds connections create github-enterprise my-ghe-conn \
     --project=myproj \
     --region=us-central1 \
     --host-uri=https://my.ghe-server.net \
-    --service-directory-service=projects/myproj/namespaces/x/services/mysds
+    --service-directory-service=projects/myproj/locations/us-central1/namespaces/x/services/mysds
 
 gcloud builds connections create github-enterprise my-ghe-conn \
     --host-uri=https://my.ghe-server.net \
     --project=myproj \
     --region=us-central1 \
     --app-id=111 \
-    --app-slug=gcb-app \
-    --service-directory-service=projects/myproj/namespaces/x/services/mysds \
+    --service-directory-service=projects/myproj/locations/us-central1/namespaces/x/services/mysds \
     --private-key-secret-version=projects/myproj/secrets/pk/versions/1 \
     --webhook-secret-secret-version=projects/myproj/secrets/whsecret/versions/1 \
     --app-slug=myapp \
@@ -783,7 +782,7 @@ NOTES
         $ gcloud beta builds connections create gitlab
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud builds connections create gitlab my-gitlab-conn \
@@ -805,7 +804,7 @@ gcloud builds connections create gitlab my-gle-conn \
     --host-uri=https://my.private-gle-server.net \
     --project=myproj \
     --region=us-central1 \
-    --service-directory-service=projects/myproj/namespaces/x/services/mysds \
+    --service-directory-service=projects/myproj/locations/us-central1/namespaces/x/services/mysds \
     --ssl-ca-file=mycertificate.crt \
     --authorizer-token-secret-version=projects/myproj/secrets/api-pat/versions/1 \
     --read-authorizer-token-secret-version=projects/myproj/secrets/read-pat/versions/1 \
@@ -982,7 +981,9 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `--service-directory-service` value `projects/myproj/namespaces/x/services/mysds` lacks the `locations/LOCATION/` segment of a Service Directory service name (`projects/*/locations/*/namespaces/*/services/*` in the Service Directory API, servicedirectory.v1 `projects.locations.namespaces.services`; see the `gcp-networking` skill); the runnable form inserts `locations/us-central1/`, the `--region` of the same example.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the complete-connection example omits `--host-uri`, which the SYNOPSIS requires (gcloud 593.0.0: "argument --host-uri: Must be specified"); the runnable form adds `--host-uri=https://my.ghe-server.net`, the host of the first example on this page.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the complete-connection example passes `--app-slug` twice (`gcb-app` and `myapp`); gcloud keeps the last value, so the runnable form drops the first one.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

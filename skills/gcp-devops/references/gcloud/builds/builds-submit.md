@@ -284,14 +284,16 @@ NOTES
         $ gcloud beta builds submit
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud builds submit "projects/my-project/locations/us-west1/connections/my-conn/repositories/my-repo" \
-    --revision=main
+    --revision=main \
+    --region=us-west1
 
 gcloud builds submit "projects/my-project/locations/us-west1/connections/my-conn/gitRepositoryLinks/my-repo-link" \
-    --revision=main
+    --revision=main \
+    --region=us-west1
 ```
 
 ### gcloud beta builds submit
@@ -343,6 +345,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the repository examples omit `--region`; the `--region` description on this page says that without it (and without the `builds/region` property) the region is `global`, and that a region must be specified for 2nd gen repositories ("global is not supported"); the runnable form adds `--region=us-west1`, the location in the resource name.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
