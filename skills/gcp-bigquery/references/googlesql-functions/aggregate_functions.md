@@ -97,7 +97,17 @@ The following example creates a graph called `StoreGraph` based on the
 a measure property called `total_population`. The measure is defined by the
 aggregate calculation `SUM(population)` and the key `id`.
 
+Adapted (not in the official docs): the `Locations` table is created before the `Stores` table, whose foreign key references it.
+
 ```sql
+CREATE OR REPLACE TABLE mydataset.Locations (
+  id INT64 PRIMARY KEY NOT ENFORCED,
+  name STRING,
+  population INT64
+) AS (
+  SELECT 101 AS id, 'Anytown' AS name, 1000 AS population
+);
+
 CREATE OR REPLACE TABLE mydataset.Stores (
   name STRING PRIMARY KEY NOT ENFORCED,
   location_id INT64 REFERENCES mydataset.Locations(id) NOT ENFORCED
@@ -105,14 +115,6 @@ CREATE OR REPLACE TABLE mydataset.Stores (
   SELECT 'Store 1' AS name, 101 AS location_id
   UNION ALL
   SELECT 'Store 2' AS name, 101 AS location_id
-);
-
-CREATE OR REPLACE TABLE mydataset.Locations (
-  id INT64 PRIMARY KEY NOT ENFORCED,
-  name STRING,
-  population INT64
-) AS (
-  SELECT 101 AS id, 'Anytown' AS name, 1000 AS population
 );
 
 CREATE OR REPLACE PROPERTY GRAPH mydataset.StoreGraph
@@ -1752,6 +1754,7 @@ FROM UNNEST([]) AS x;
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the text named the table `vendor`, but the example defines and reads `vendors`; the name is changed to `vendors`.
+- Corrected from the official docs: the `AGG` example creates `mydataset.Stores`, whose `location_id` column `REFERENCES mydataset.Locations(id)`, before `mydataset.Locations` exists. The two `CREATE TABLE` statements are swapped so that the referenced table is created first, the order that the same `StoreGraph` example uses in `graph-gql/sql-queries.md`.
 
 ## Related
 
