@@ -194,6 +194,14 @@ API REFERENCE
     this API can be found at: https://cloud.google.com/artifacts/docs/
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud artifacts rules delete my-rule \
+    --repository=my-repo \
+    --location=us
+```
+
 ### gcloud artifacts rules describe
 
 ```text
@@ -488,6 +496,7 @@ API REFERENCE
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example relies on a repository (and location) that is set already ("under the current project, repository, and location"); without them gcloud 593.0.0 fails ("Error parsing [repository] ... Failed to find attribute [repository]"); the runnable form passes `--repository=my-repo --location=us`, the repository and location of the paths in the examples on this page.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example says it deletes "a rule named my-rule" but passes `my-repo` as the RULE argument, which would delete a rule named `my-repo`; the runnable form passes `my-rule`. It also relies on a repository (and location) that is set already ("under the current project, repository, and location"); without them gcloud 593.0.0 fails ("Failed to find attribute [repository]"), so the runnable form passes `--repository=my-repo --location=us`, the repository and location of the other examples on this page.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
