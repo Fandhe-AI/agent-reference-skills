@@ -93,7 +93,7 @@ partition_column_list: partition_column_name, partition_column_type[, ...]
 - `partition_value`: The `partition_id` of the partition to append or
   overwrite.
   To find the `partition_id` values of a table, query the
-  [`INFORMATION_SCHEMA.PARTITIONS` view](../information-schema/partitions.md).
+  [`INFORMATION_SCHEMA.PARTITIONS` view](https://docs.cloud.google.com/bigquery/docs/information-schema-partitions).
   You can't set the `partition_value` to `__NULL__` or `__UNPARTITIONED__`.
   You can only append to or overwrite one partition. If your data contains
   values that belong to multiple partitions, then the statement

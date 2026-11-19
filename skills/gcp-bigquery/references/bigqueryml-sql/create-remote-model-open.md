@@ -391,7 +391,7 @@ setting the `DEPLOY_MODEL` option to `TRUE`.
 **Arguments**
 
 An `INTERVAL` value. Specify an
-[interval literal](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#interval_literals)
+[interval literal](../googlesql-syntax/lexical.md#interval-literals)
 value between 390 minutes (6.5 hours) and 7 days. For example,
 specify `INTERVAL 8 HOUR` to have the model undeployed after 8 hours of
 idleness. The default value is 390 minutes (6.5 hours).

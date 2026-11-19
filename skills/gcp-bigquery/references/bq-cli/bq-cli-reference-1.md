@@ -97,7 +97,7 @@ contains other types of
 characters, or reserved keywords, you need to surround the identifier (or the
 part of the identifier with the special characters or reserved keywords) with
 back ticks. For more information, see
-[Identifiers](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#identifiers).
+[Identifiers](../googlesql-syntax/lexical.md#identifiers).
 
 ### How to run commands
 

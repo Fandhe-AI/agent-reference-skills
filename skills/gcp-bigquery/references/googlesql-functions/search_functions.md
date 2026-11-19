@@ -203,7 +203,7 @@ Rules for `reserved_char` in [`search_query`](https://docs.cloud.google.com/bigq
     `r"my\+string"`, then it's treated as a raw string and only a single
     backslash is required to escape the reserved characters. For more
     information about raw strings and escape
-    sequences, see [String and byte literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#literals).
+    sequences, see [String and byte literals](../googlesql-syntax/lexical.md#literals).
 
 Rules for `phrase_term` in [`search_query`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#search_query_arg):
 

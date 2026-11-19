@@ -520,7 +520,7 @@ characters in column names, with the option of enabling
 [flexible column names](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-parquet#flexible-column-names).
 Requires the `--autodetect` option for CSV files.
 For a list of possible values, see
-[`load_option_list`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/load-statements#load_option_list).
+[`load_option_list`](../googlesql-syntax/load-statements.md#load_option_list).
 
 **`--destination_kms_key=KEY`**
 :   Specifies a Cloud KMS

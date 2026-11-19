@@ -10,7 +10,7 @@ This page provides an overview of all GoogleSQL for BigQuery
 data types, including information about their value
 domains. For
 information on data type literals and constructors, see
-[Lexical Structure and Syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#literals).
+[Lexical Structure and Syntax](lexical.md#literals).
 
 ### Data type list
 
@@ -264,7 +264,7 @@ arrays return an error. Instead, a struct must be inserted between the
 arrays using the `SELECT AS STRUCT` construct.
 
 To learn more about the literal representation of an array type,
-see [Array literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#array_literals).
+see [Array literals](lexical.md#array-literals).
 
 To learn more about using arrays in GoogleSQL, see [Work with
 arrays](https://docs.cloud.google.com/bigquery/docs/arrays#constructing_arrays).
@@ -514,7 +514,7 @@ expression using the
 [`TO_BASE64` function](../googlesql-functions/string_functions-2.md#to_base64).
 
 To learn more about the literal representation of a bytes type,
-see [Bytes literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#string_and_bytes_literals).
+see [Bytes literals](lexical.md#string-and-bytes-literals).
 
 #### Parameterized bytes type
 
@@ -550,7 +550,7 @@ YYYY-[M]M-[D]D
 - `[D]D`: One or two digit day.
 
 To learn more about the literal representation of a date type,
-see [Date literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#date_literals).
+see [Date literals](lexical.md#date-literals).
 
 ### Datetime type
 
@@ -587,7 +587,7 @@ time_part:
 - `[.F]`: Up to six fractional digits (microsecond precision).
 
 To learn more about the literal representation of a datetime type,
-see [Datetime literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#datetime_literals).
+see [Datetime literals](lexical.md#datetime-literals).
 
 ### Geography type
 
@@ -748,7 +748,7 @@ to any specific point in time.
 - `[.F]`: Up to six fractional digits (microsecond precision)
 
 To learn more about the literal representation of an interval type,
-see [Interval literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#interval_literals).
+see [Interval literals](lexical.md#interval-literals).
 
 #### Constructing an interval
 
@@ -794,7 +794,7 @@ INTERVAL 90 SECOND
 INTERVAL -5 DAY
 ```
 
-For additional examples, see [Interval literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#interval_literal_single).
+For additional examples, see [Interval literals](lexical.md#interval-literal-with-a-single-datetime-part).
 
 ##### Construct an interval with a datetime part range
 
@@ -838,7 +838,7 @@ INTERVAL '8 20 17' MONTH TO HOUR
 INTERVAL '8 -20 17' MONTH TO HOUR
 ```
 
-For additional examples, see [Interval literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#interval_literal_range).
+For additional examples, see [Interval literals](lexical.md#interval-literal-with-a-datetime-part-range).
 
 ##### Interval-supported date and time parts
 
@@ -876,7 +876,7 @@ Expect these canonicalization behaviors when creating a value of JSON type:
 - The format of the original string representation of a JSON number may not be preserved.
 
 To learn more about the literal representation of a JSON type,
-see [JSON literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#json_literals).
+see [JSON literals](lexical.md#json-literals).
 
 ### Measure type
 
@@ -970,7 +970,7 @@ Integers are numeric values that don't have fractional components.
 for `INT64`.
 
 To learn more about the literal representation of an integer type,
-see [Integer literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#integer_literals).
+see [Integer literals](lexical.md#integer-literals).
 
 #### Decimal types
 
@@ -991,10 +991,10 @@ calculations.
 `BIGDECIMAL` is an alias for `BIGNUMERIC`.
 
 To learn more about the literal representation of a `NUMERIC` type,
-see [`NUMERIC` literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#numeric_literals).
+see [`NUMERIC` literals](lexical.md#numeric-literals).
 
 To learn more about the literal representation of a `BIGNUMERIC` type,
-see [`BIGNUMERIC` literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#bignumeric_literals).
+see [`BIGNUMERIC` literals](lexical.md#bignumeric-literals).
 
 To learn more about how BigQuery rounds values stored as a `DECIMAL`
 type, see [rounding mode](https://docs.cloud.google.com/bigquery/docs/schemas#rounding_mode).
@@ -1030,7 +1030,7 @@ Floating point values are approximate numeric values with fractional components.
 | `FLOAT64` | Double precision (approximate) numeric values. |
 
 To learn more about the literal representation of a floating point type,
-see [Floating point literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#floating_point_literals).
+see [Floating point literals](lexical.md#floating-point-literals).
 
 ##### Floating point semantics
 
@@ -1121,13 +1121,13 @@ RANGE<T> '[lower_bound, upper_bound)'
 ```
 
 - `T`: The type of range. This can be `DATE`, `DATETIME`, or `TIMESTAMP`.
-- `lower_bound`: The range starts from this value. This can be a [date](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#date_literals), [datetime](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#datetime_literals), or [timestamp](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#timestamp_literals) literal. If this value is `UNBOUNDED` or `NULL`, the range doesn't include a lower bound.
-- `upper_bound`: The range ends before this value. This can be a [date](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#date_literals), [datetime](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#datetime_literals), or [timestamp](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#timestamp_literals) literal. If this value is `UNBOUNDED` or `NULL`, the range doesn't include an upper bound.
+- `lower_bound`: The range starts from this value. This can be a [date](lexical.md#date-literals), [datetime](lexical.md#datetime-literals), or [timestamp](lexical.md#timestamp-literals) literal. If this value is `UNBOUNDED` or `NULL`, the range doesn't include a lower bound.
+- `upper_bound`: The range ends before this value. This can be a [date](lexical.md#date-literals), [datetime](lexical.md#datetime-literals), or [timestamp](lexical.md#timestamp-literals) literal. If this value is `UNBOUNDED` or `NULL`, the range doesn't include an upper bound.
 
 `T`, `lower_bound`, and `upper_bound` must be of the same data type.
 
 To learn more about the literal representation of a range type,
-see [Range literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#range_literals).
+see [Range literals](lexical.md#range-literals).
 
 #### Additional details
 
@@ -1160,7 +1160,7 @@ UTF-8 encoding and decoding. Casting bytes to string returns an error if the
 bytes aren't valid UTF-8.
 
 To learn more about the literal representation of a string type,
-see [String literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#string_and_bytes_literals).
+see [String literals](lexical.md#string-and-bytes-literals).
 
 #### Parameterized string type
 
@@ -1178,7 +1178,7 @@ parameterized types and where they can be used.
 | `STRUCT` | Container of ordered fields each with a type (required) and field name (optional). |
 
 To learn more about the literal representation of a struct type,
-see [Struct literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#struct_literals).
+see [Struct literals](lexical.md#struct-literals).
 
 #### Declaring a struct type
 
@@ -1308,7 +1308,7 @@ an absolute point in time, use a [timestamp](#timestamp-type).
 - `[.F]`: Up to six fractional digits (microsecond precision).
 
 To learn more about the literal representation of a time type,
-see [Time literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#time_literals).
+see [Time literals](lexical.md#time-literals).
 
 ### Timestamp type
 
@@ -1369,7 +1369,7 @@ time_part:
 - `[utc_time_zone]`: String representing the Coordinated Universal Time (UTC), usually the letter `Z` or `z`. For details, see [time zones](#time-zones).
 
 To learn more about the literal representation of a timestamp type,
-see [Timestamp literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#timestamp_literals).
+see [Timestamp literals](lexical.md#timestamp-literals).
 
 #### Time zones
 
