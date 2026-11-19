@@ -8,7 +8,7 @@ source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conve
 
 GoogleSQL for BigQuery supports conversion functions. These data type
 conversions are explicit, but some conversions can happen implicitly. You can
-learn more about implicit and explicit conversion [here](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules).
+learn more about implicit and explicit conversion [here](../googlesql-syntax/conversion_rules.md).
 
 ### Function list
 

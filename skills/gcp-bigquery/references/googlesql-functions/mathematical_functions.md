@@ -260,7 +260,7 @@ CBRT(X)
 **Description**
 
 Computes the cube root of `X`. `X` can be any data type
-that [coerces to `FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules).
+that [coerces to `FLOAT64`](../googlesql-syntax/conversion_rules.md).
 
 | X | CBRT(X) |
 |---|---|
@@ -549,7 +549,7 @@ COT(X)
 
 Computes the cotangent for the angle of `X`, where `X` is specified in radians.
 `X` can be any data type
-that [coerces to `FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules).
+that [coerces to `FLOAT64`](../googlesql-syntax/conversion_rules.md).
 
 | X | COT(X) |
 |---|---|
@@ -585,7 +585,7 @@ COTH(X)
 
 Computes the hyperbolic cotangent for the angle of `X`, where `X` is specified
 in radians. `X` can be any data type
-that [coerces to `FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules).
+that [coerces to `FLOAT64`](../googlesql-syntax/conversion_rules.md).
 
 | X | COTH(X) |
 |---|---|
@@ -621,7 +621,7 @@ CSC(X)
 
 Computes the cosecant of the input angle, which is in radians.
 `X` can be any data type
-that [coerces to `FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules).
+that [coerces to `FLOAT64`](../googlesql-syntax/conversion_rules.md).
 
 | X | CSC(X) |
 |---|---|
@@ -657,7 +657,7 @@ CSCH(X)
 
 Computes the hyperbolic cosecant of the input angle, which is in radians.
 `X` can be any data type
-that [coerces to `FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules).
+that [coerces to `FLOAT64`](../googlesql-syntax/conversion_rules.md).
 
 | X | CSCH(X) |
 |---|---|
@@ -971,7 +971,7 @@ the supertype must support ordering.
 |---|---|
 | 3,5,1 | 5 |
 
-This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 **Return Data Types**
 
@@ -1053,7 +1053,7 @@ the supertype must support ordering.
 |---|---|
 | 3,5,1 | 1 |
 
-This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 **Return Data Types**
 
@@ -1546,7 +1546,7 @@ SEC(X)
 
 Computes the secant for the angle of `X`, where `X` is specified in radians.
 `X` can be any data type
-that [coerces to `FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules).
+that [coerces to `FLOAT64`](../googlesql-syntax/conversion_rules.md).
 
 | X | SEC(X) |
 |---|---|
@@ -1581,7 +1581,7 @@ SECH(X)
 
 Computes the hyperbolic secant for the angle of `X`, where `X` is specified
 in radians. `X` can be any data type
-that [coerces to `FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules).
+that [coerces to `FLOAT64`](../googlesql-syntax/conversion_rules.md).
 Never produces an error.
 
 | X | SECH(X) |

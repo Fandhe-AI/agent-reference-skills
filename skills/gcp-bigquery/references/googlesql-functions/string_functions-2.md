@@ -254,7 +254,7 @@ REPLACE(original_value, from_pattern, to_pattern)
 Replaces all occurrences of `from_pattern` with `to_pattern` in
 `original_value`. If `from_pattern` is empty, no replacement is made.
 
-This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 **Return type**
 
@@ -571,7 +571,7 @@ Splitting an empty `STRING` returns an
 `ARRAY` with a single empty
 `STRING`.
 
-This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 **Return type**
 
@@ -610,7 +610,7 @@ STARTS_WITH(value, prefix)
 Takes two `STRING` or `BYTES` values. Returns `TRUE` if `prefix` is a
 prefix of `value`.
 
-This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 **Return type**
 
@@ -639,7 +639,7 @@ STRPOS(value, subvalue)
 Takes two `STRING` or `BYTES` values. Returns the 1-based position of the first
 occurrence of `subvalue` inside `value`. Returns `0` if `subvalue` isn't found.
 
-This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 **Return type**
 

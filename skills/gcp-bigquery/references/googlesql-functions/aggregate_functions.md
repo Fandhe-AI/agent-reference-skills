@@ -848,7 +848,7 @@ expression evaluated to any value other than `NULL`.
 
 **Details**
 
-This function with `DISTINCT` supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This function with `DISTINCT` supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 `COUNT` can be used with differential privacy. For more information, see
 [Differentially private aggregate functions](aggregate-dp-functions.md).
@@ -1300,7 +1300,7 @@ into this function, see
 To learn more about the `OVER` clause and how to use it, see
 [Window function calls](window-function-calls.md).
 
-This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 **Supported Argument Types**
 
@@ -1408,7 +1408,7 @@ into this function, see
 To learn more about the `OVER` clause and how to use it, see
 [Window function calls](window-function-calls.md).
 
-This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 **Supported Argument Types**
 

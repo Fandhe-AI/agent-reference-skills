@@ -32,7 +32,7 @@ ML.CONFUSION_MATRIX(
 
   If `TABLE` is specified, the input column names in the table must match the
   column names in the model, and their types should be compatible according to
-  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
   The input must have a column that matches the
   label column name provided during training. This value is provided using the
   `input_label_cols` option. If `input_label_cols` is unspecified, the column
@@ -50,7 +50,7 @@ ML.CONFUSION_MATRIX(
   If `QUERY_STATEMENT` is specified, the input column names from the query
   must match the column names in the model, and their types should be
   compatible according to BigQuery
-  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
   The input must have a column that matches the label column name provided
   during training. This value is provided using the `input_label_cols` option.
   If `input_label_cols` is unspecified, the column named `label` in the

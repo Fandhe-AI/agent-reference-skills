@@ -701,7 +701,7 @@ the data split method. Supported data types for `data_split_col` include:
 - The label column cannot contain `NULL` values. If the label column contains `NULL` values, then the query fails.
 - The `CREATE MODEL IF NOT EXISTS` clause always updates the last modified timestamp of a model.
 - Query statements used in the `CREATE MODEL` statement cannot contain `EXTERNAL_QUERY`. If you want to use `EXTERNAL_QUERY`, then [materialize the
-  query result](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_statement) and then use the `CREATE MODEL` statement with the newly created table.
+  query result](../googlesql-syntax/data-definition-language-1.md#create-table-statement) and then use the `CREATE MODEL` statement with the newly created table.
 
 ### Quotas
 

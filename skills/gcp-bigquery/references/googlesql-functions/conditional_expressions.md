@@ -56,15 +56,15 @@ Consistent with [equality comparisons](https://docs.cloud.google.com/bigquery/do
 `NULL` value, then the alternate [CASE](#case) syntax should be used.
 
 `expr` and `expr_to_match` can be any type. They must be implicitly
-coercible to a common [supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes); equality comparisons are
+coercible to a common [supertype](../googlesql-syntax/conversion_rules.md#supertypes); equality comparisons are
 done on coerced values. There may be multiple `result` types. `result` and
 `else_result` expressions must be coercible to a common supertype.
 
-This expression supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This expression supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 **Return Data Type**
 
-[Supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes) of `result`\[, ...\] and `else_result`.
+[Supertype](../googlesql-syntax/conversion_rules.md#supertypes) of `result`\[, ...\] and `else_result`.
 
 **Example**
 
@@ -122,17 +122,17 @@ three-valued logic table in [Logical operators](https://docs.cloud.google.com/bi
 
 `condition` must be a boolean expression. There may be multiple `result` types.
 `result` and `else_result` expressions must be implicitly coercible to a common
-[supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes).
+[supertype](../googlesql-syntax/conversion_rules.md#supertypes).
 
 To improve performance when you filter within an aggregate
 function, use the `WHERE` clause in the
 [aggregate function call](aggregate-function-calls.md) instead.
 
-This expression supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This expression supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 **Return Data Type**
 
-[Supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes) of `result`\[, ...\] and `else_result`.
+[Supertype](../googlesql-syntax/conversion_rules.md#supertypes) of `result`\[, ...\] and `else_result`.
 
 **Example**
 
@@ -183,11 +183,11 @@ more information, see
 
 An input expression can be any type. There can be multiple input expression
 types. All input expressions must be implicitly coercible to a common
-[supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes).
+[supertype](../googlesql-syntax/conversion_rules.md#supertypes).
 
 **Return Data Type**
 
-[Supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes) of `expr`\[, ...\].
+[Supertype](../googlesql-syntax/conversion_rules.md#supertypes) of `expr`\[, ...\].
 
 **Examples**
 
@@ -251,11 +251,11 @@ evaluated when `expr` evaluates to `FALSE` or `NULL`. For more information,
 see [Evaluation order and short-circuiting](#evaluation-order-and-short-circuiting).
 
 `expr` must be a boolean expression. `true_result` and `else_result`
-must be coercible to a common [supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes).
+must be coercible to a common [supertype](../googlesql-syntax/conversion_rules.md#supertypes).
 
 **Return Data Type**
 
-[Supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes) of `true_result` and `else_result`.
+[Supertype](../googlesql-syntax/conversion_rules.md#supertypes) of `true_result` and `else_result`.
 
 **Examples**
 
@@ -304,12 +304,12 @@ For more information, see
 [Evaluation order and short-circuiting](#evaluation-order-and-short-circuiting).
 
 `expr` and `null_result` can be any type and must be implicitly coercible to
-a common [supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes). Synonym for
+a common [supertype](../googlesql-syntax/conversion_rules.md#supertypes). Synonym for
 `COALESCE(expr, null_result)`.
 
 **Return Data Type**
 
-[Supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes) of `expr` or `null_result`.
+[Supertype](../googlesql-syntax/conversion_rules.md#supertypes) of `expr` or `null_result`.
 
 **Examples**
 
@@ -357,13 +357,13 @@ Returns `NULL` if `expr = expr_to_match` evaluates to `TRUE`, otherwise
 returns `expr`.
 
 `expr` and `expr_to_match` must be implicitly coercible to a
-common [supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes), and must be comparable.
+common [supertype](../googlesql-syntax/conversion_rules.md#supertypes), and must be comparable.
 
-This expression supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This expression supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 **Return Data Type**
 
-[Supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes) of `expr` and `expr_to_match`.
+[Supertype](../googlesql-syntax/conversion_rules.md#supertypes) of `expr` and `expr_to_match`.
 
 **Example**
 

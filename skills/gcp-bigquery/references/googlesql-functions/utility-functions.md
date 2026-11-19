@@ -67,7 +67,7 @@ expression.
 
 The following example produces the name of the data type for the expression
 passed into the `TYPEOF` function. When `NULL` is passed in, the
-[supertype](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes), `INT64`, is produced.
+[supertype](../googlesql-syntax/conversion_rules.md#supertypes), `INT64`, is produced.
 
 ```sql
 SELECT

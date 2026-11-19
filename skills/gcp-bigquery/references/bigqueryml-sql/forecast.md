@@ -68,7 +68,7 @@ ML.FORECAST(
 
   If `TABLE` is specified, the input column names in the table must match the
   column names in the model, and their types should be compatible according to
-  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
 
   If there are unused columns from the table, they are ignored.
 - `QUERY_STATEMENT`: The GoogleSQL query that is
@@ -79,7 +79,7 @@ ML.FORECAST(
   If `QUERY_STATEMENT` is specified, the input column names from the query
   must match the column names in the model, and their types should be
   compatible according to BigQuery
-  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
 
   If there are unused columns from the query, they are ignored.
 

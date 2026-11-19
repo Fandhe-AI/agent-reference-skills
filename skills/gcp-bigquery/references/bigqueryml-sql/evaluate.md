@@ -62,7 +62,7 @@ ML.EVALUATE(
   If you specify a `TABLE` value, the input column names in the table must
   match the column names in the model, and their types must be compatible
   according to BigQuery
-  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
 
 - `QUERY_STATEMENT`: a GoogleSQL query that
   is used to generate the evaluation data. For the supported SQL syntax of
@@ -167,7 +167,7 @@ ML.EVALUATE(
   If you specify a `TABLE` value, the input column names in the table must
   match the column names in the model, and their types must be compatible
   according to BigQuery
-  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
 
   The table must have a
   column that matches the label column name that is provided during
@@ -811,7 +811,7 @@ ML.EVALUATE(
   If you specify a `TABLE` value, the input column names in the table must
   match the column names in the model, and their types must be compatible
   according to BigQuery
-  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
 
 - `QUERY_STATEMENT`: a GoogleSQL query that
   is used to generate the evaluation data. For the supported SQL syntax of

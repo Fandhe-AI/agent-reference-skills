@@ -350,7 +350,7 @@ and can support these arguments:
 
 **Return type**
 
-One of the following [supertypes](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes):
+One of the following [supertypes](../googlesql-syntax/conversion_rules.md#supertypes):
 
 - `INT64`
 - `FLOAT64`
