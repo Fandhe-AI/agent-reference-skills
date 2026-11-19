@@ -12,7 +12,7 @@ BigQuery. You can use contribution analysis models to
 generate insights about changes to key metrics in your multi-dimensional data.
 
 After you have created a contribution analysis model, you can use the
-[`ML.GET_INSIGHTS` function](get-insights.md)
+[`ML.GET_INSIGHTS` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-get-insights)
 to retrieve the metric information calculated by the model.
 
 For more information about supported SQL statements and functions for this
@@ -158,13 +158,13 @@ data type.
 Any rows in the dimension columns that contain `NULL` values are removed. If
 you have `NULL` values in your data, you can preprocess the data to fill in the
 `NULL` values by using the
-[`ML.IMPUTER` function](imputer.md),
+[`ML.IMPUTER` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-imputer),
 or by using the
-[`IFNULL` expression](../googlesql-functions/conditional_expressions.md#ifnull)
+[`IFNULL` expression](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conditional_expressions#ifnull)
 to replace `NULL` values with a custom value.
 
 If you want to use a
-[numerical](../googlesql-syntax/data-types.md#numeric-types)
+[numerical](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types)
 column that has a data type other than `INT64` as a dimension, you can use any
 function that outputs an `INT64`, `BOOL`, or `STRING` value in the
 `query_statement` to transform continuous values. For
@@ -196,7 +196,7 @@ If you omit the `dimension_id_cols` option, then all columns in the query statem
 Provide the minimum
 [apriori support threshold](#use-an-apriori-support-threshold) for including
 segments in the model output. All segments whose
-[`apriori_support` value](get-insights.md#output)
+[`apriori_support` value](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-get-insights#output)
 is less than the `MIN_APRIORI_SUPPORT` value that you specify are excluded.
 The `MIN_APRIORI_SUPPORT` option can't be used together with
 `TOP_K_INSIGHTS_BY_APRIORI_SUPPORT`.
@@ -253,7 +253,7 @@ The default value is `NO_PRUNING`.
 #### `query_statement`
 
 The
-[GoogleSQL query](../googlesql-syntax/query-syntax-1.md)
+[GoogleSQL query](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax)
 that contains the test and control data to analyze. The table of input data
 that you specify in the query must contain exactly the columns that you
 reference in the
@@ -465,7 +465,7 @@ FROM mydataset.regional_sales;
 
 ### What's next
 
-- Learn how to call the [`ML.GET_INSIGHTS` function](get-insights.md) to get insights from your contribution analysis model.
+- Learn how to call the [`ML.GET_INSIGHTS` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-get-insights) to get insights from your contribution analysis model.
 - Try a tutorial on how to [Get data insights from a contribution analysis model using a summable metric](https://docs.cloud.google.com/bigquery/docs/get-contribution-analysis-insights).
 
 ## Notes

@@ -23,7 +23,7 @@ FROM AI.KEY_DRIVERS(
 ```
 
 Calling the `AI.KEY_DRIVERS` function is similar to first
-[creating a contribution analysis model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-contribution-analysis)
+[creating a contribution analysis model](create-contribution-analysis.md)
 and then calling the
 [`ML.GET_INSIGHTS` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-get-insights)
 on that model. For most applications, we recommend using the `AI.KEY_DRIVERS`
@@ -252,7 +252,7 @@ in addition to the dimension columns:
   ```
 
   If the `apriori_support` value is less than the
-  [apriori support threshold](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-contribution-analysis#use_an_apriori_support_threshold)
+  [apriori support threshold](create-contribution-analysis.md#use-an-apriori-support-threshold)
   value specified in the model, then the segment is considered too small to be
   of interest and is excluded by the model.
 - `contribution`: a numeric value that contains the absolute value of the
@@ -325,7 +325,7 @@ You can infer insights such as the following from the results:
 ### What's next
 
 - Learn more about [contribution analysis](https://docs.cloud.google.com/bigquery/docs/contribution-analysis).
-- Learn how to [create a contribution analysis model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-contribution-analysis).
+- Learn how to [create a contribution analysis model](create-contribution-analysis.md).
 
 ## Notes
 

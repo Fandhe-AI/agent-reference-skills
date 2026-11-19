@@ -15,9 +15,9 @@ Google Cloud console user interface to
 statement yourself.
 
 You can use k-means models with the
-[`ML.PREDICT` function](predict.md)
+[`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict)
 to cluster data, and you can use k-means models with the
-[`ML.DETECT_ANOMALIES` function](detect-anomalies.md)
+[`ML.DETECT_ANOMALIES` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-detect-anomalies)
 to perform [anomaly detection](https://docs.cloud.google.com/bigquery/docs/anomaly-detection-overview).
 
 For more information about supported SQL statements and functions for this
@@ -304,7 +304,7 @@ the model are used for the warm start run.
 
 In a warm start run, the iteration numbers are reset to start from zero. Use
 the training run or iteration information returned by the
-[`ML.TRAINING_INFO` function](train.md)
+[`ML.TRAINING_INFO` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-train)
 to distinguish the warm start run from the original run.
 
 The value of the `MODEL_TYPE` and the training data schema must remain
@@ -404,7 +404,7 @@ for this option, you must also specify a value for [`NUM_TRIALS`](#num_trials).
 **Arguments**
 
 The possible objectives are a subset of the
-[model evaluation metrics](evaluate.md#output)
+[model evaluation metrics](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-evaluate#output)
 for the model type. If you aren't running hyperparameter tuning, or if you are
 and you don't specify an objective, the `DAVIES_BOULDIN_INDEX` objective is
 used.
@@ -468,7 +468,7 @@ A `STRING` value containing the fully-qualified name of the CMEK. For example,
 
 The `AS query_statement` clause specifies the
 GoogleSQL query used to generate the training data. See the
-[GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+[GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
 page for the supported SQL syntax of the `query_statement` clause.
 
 ### Hyperparameter tuning
