@@ -40,7 +40,7 @@ skills/gcp-bigquery/
       bq/                         # bq グループ（alpha 中心）
         README.md
         bq-<sub>.md               # 6 ファイル（datasets / jobs / migration / migration-workflows / query / tables）
-      data-catalog/               # Data Catalog（Policy Tag Manager のため本スキル）、分割投入中（3 / 24 ページ。収録済みは README 掲載分のみ）
+      data-catalog/               # Data Catalog（Policy Tag Manager のため本スキル）、分割投入中（19 / 24 ページ。収録済みは README 掲載分のみ）
         README.md
         data-catalog-<sub>.md     # 24 ファイル（taxonomies・policy-tags・tag-templates・entries・entry-groups・tags・search・crawlers 等）
     bigqueryml-sql/               # 機械変換: BigQuery ML の SQL 構文（CREATE MODEL・ML.* / AI.* 関数）
@@ -142,7 +142,7 @@ skills/gcp-bigquery/
 
 未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `graph-gql` / `information-schema` / `legacy-sql`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`gcloud/data-catalog`: 3 / 24 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`gcloud/data-catalog`: 19 / 24 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
