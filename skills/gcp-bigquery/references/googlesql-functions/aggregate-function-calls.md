@@ -94,7 +94,7 @@ syntax. To build an aggregate function, use the following syntax:
   `DISTINCT`, aren't supported, but function call
   modifiers, such as `IGNORE_NULLS`,
   are still supported. To learn more about the `OVER` clause,
-  see [Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+  see [Window function calls](window-function-calls.md).
 
 **Details**
 
@@ -288,7 +288,7 @@ FROM
 
 In the following example, the average of `x` over a specified window is returned
 for each row. To learn more about windows and how to use them, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 ```sql
 SELECT
@@ -637,6 +637,7 @@ WHERE relationship = 'Child'
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate-function-calls (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Conflicting official statements: the `OVER` description says aggregate function clauses such as `DISTINCT` aren't supported when the `OVER` clause is used, but the `COUNT` and `SUM` sections of the aggregate functions page (`aggregate_functions.md`) show `[ DISTINCT ]` together with `[ OVER over_clause ]` in their syntax and give the examples `COUNT(DISTINCT x) OVER (PARTITION BY MOD(x, 3))` and `SUM(DISTINCT x) OVER (PARTITION BY MOD(x, 3))` with results. Whether `DISTINCT` is allowed with `OVER` therefore depends on the function, and the official pages don't say which window specifications (`ORDER BY`, window frame) it can be combined with; check the syntax block of the specific function.
 
 ## Related
 

@@ -73,7 +73,7 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Return Data Type**
 
@@ -244,7 +244,7 @@ This function can be used with the
 [`AGGREGATION_THRESHOLD` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Return Data Type**
 
@@ -407,7 +407,7 @@ This function can be used with the
 [`AGGREGATION_THRESHOLD` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Return Data Type**
 
@@ -598,7 +598,7 @@ If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,
 aggregate function clauses can't be used.
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Return Data Type**
 
@@ -725,7 +725,7 @@ If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,
 aggregate function clauses can't be used.
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Return Data Type**
 
@@ -846,7 +846,7 @@ If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,
 aggregate function clauses can't be used.
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Return Data Type**
 
@@ -973,7 +973,7 @@ If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,
 aggregate function clauses can't be used.
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Return Data Type**
 

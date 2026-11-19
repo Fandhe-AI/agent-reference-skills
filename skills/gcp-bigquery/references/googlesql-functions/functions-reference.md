@@ -299,9 +299,9 @@ scalar functions that can raise errors, including
 [STRING functions](string_functions-1.md),
 [math functions](mathematical_functions.md), [DATE functions](date_functions.md),
 [DATETIME functions](datetime_functions.md),
-[TIMESTAMP functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions), and [JSON functions](json_functions-1.md).
+[TIMESTAMP functions](timestamp_functions.md), and [JSON functions](json_functions-1.md).
 BigQuery does not support the use of the `SAFE.` prefix with
-[aggregate](aggregate_functions.md), [window](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls), or
+[aggregate](aggregate_functions.md), [window](window-function-calls.md), or
 [user-defined functions](https://docs.cloud.google.com/bigquery/docs/user-defined-functions).
 
 ### Calling persistent user-defined functions (UDFs)

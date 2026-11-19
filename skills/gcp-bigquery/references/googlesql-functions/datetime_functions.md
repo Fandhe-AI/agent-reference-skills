@@ -42,7 +42,7 @@ Returns the current time as a `DATETIME` object. Parentheses are optional when
 called with no arguments.
 
 This function supports an optional `time_zone` parameter.
-See [Time zone definitions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timezone_definitions) for
+See [Time zone definitions](timestamp_functions.md#how-time-zones-work-with-timestamp-functions) for
 information on how to specify a time zone.
 
 The current date and time value is set at the start of the query statement that
@@ -77,7 +77,7 @@ SELECT CURRENT_DATETIME() as now;
 
 1. Constructs a `DATETIME` object using `INT64` values representing the year, month, day, hour, minute, and second.
 2. Constructs a `DATETIME` object using a DATE object and an optional `TIME` object.
-3. Constructs a `DATETIME` object using a `TIMESTAMP` object. It supports an optional parameter to [specify a time zone](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timezone_definitions). If no time zone is specified, the default time zone, UTC, is used.
+3. Constructs a `DATETIME` object using a `TIMESTAMP` object. It supports an optional parameter to [specify a time zone](timestamp_functions.md#how-time-zones-work-with-timestamp-functions). If no time zone is specified, the default time zone, UTC, is used.
 
 **Return Data Type**
 

@@ -69,7 +69,7 @@ canonical equivalence.
 | [`SPLIT`](string_functions-2.md#split) | Splits a `STRING` or `BYTES` value, using a delimiter. |
 | [`STARTS_WITH`](string_functions-2.md#starts_with) | Checks if a `STRING` or `BYTES` value is a prefix of another value. |
 | [`STRING` (JSON)](json_functions-2.md#string) | Converts a JSON string to a SQL `STRING` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`STRING` (Timestamp)](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#string) | Converts a `TIMESTAMP` value to a `STRING` value. For more information, see [Timestamp functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions). |
+| [`STRING` (Timestamp)](timestamp_functions.md#string) | Converts a `TIMESTAMP` value to a `STRING` value. For more information, see [Timestamp functions](timestamp_functions.md). |
 | [`STRING_AGG`](aggregate_functions.md#string_agg) | Concatenates non-`NULL` `STRING` or `BYTES` values. For more information, see [Aggregate functions](aggregate_functions.md). |
 | [`STRPOS`](string_functions-2.md#strpos) | Finds the position of the first occurrence of a subvalue inside another value. |
 | [`SUBSTR`](string_functions-2.md#substr) | Gets a portion of a `STRING` or `BYTES` value. |

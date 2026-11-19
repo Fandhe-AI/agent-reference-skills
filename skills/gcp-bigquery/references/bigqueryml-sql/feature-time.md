@@ -55,7 +55,7 @@ ML.FEATURES_AT_TIME(
   time to use as a cutoff for feature data. Only rows where the value in the
   `feature_timestamp` column is equal to or earlier than the `TIME` value are
   returned. Defaults to the value of the
-  [`CURRENT_TIMESTAMP` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#current_timestamp).
+  [`CURRENT_TIMESTAMP` function](../googlesql-functions/timestamp_functions.md#current_timestamp).
 
 - `NUM_ROWS`: an `INT64` value that specifies the number
   of rows to return for each entity ID. Defaults to `1`.
