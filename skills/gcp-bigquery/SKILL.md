@@ -43,7 +43,7 @@ skills/gcp-bigquery/
       data-catalog/               # Data Catalog（Policy Tag Manager のため本スキル）
         README.md
         data-catalog-<sub>.md     # 24 ファイル（taxonomies・policy-tags・tag-templates・entries・entry-groups・tags・search・crawlers 等）
-    googlesql-syntax/             # 機械変換: GoogleSQL 構文・データ型・演算子・DDL / DML / DCL・手続き型言語・システム変数ほか、分割投入中（14 / 24 ページ。収録済みは README 掲載分のみ）
+    googlesql-syntax/             # 機械変換: GoogleSQL 構文・データ型・演算子・DDL / DML / DCL・手続き型言語・システム変数ほか、分割投入中（16 / 24 ページ。収録済みは README 掲載分のみ）
       README.md
       <page>[-<N>].md
     googlesql-functions/          # 機械変換: GoogleSQL 関数（集計・文字列・日付時刻・JSON・地理・ウィンドウ等）
@@ -150,7 +150,7 @@ skills/gcp-bigquery/
 
 未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `graph-gql` / `information-schema` / `legacy-sql`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`googlesql-syntax`: 14 / 24 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`googlesql-syntax`: 16 / 24 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 

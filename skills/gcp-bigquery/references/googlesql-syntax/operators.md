@@ -631,7 +631,7 @@ SELECT entry FROM entry_table WHERE entry IS NULL
 #### Graph logical operators
 
 GoogleSQL supports the following logical operators in
-[element pattern label expressions](../graph-gql/patterns.md#element-pattern):
+[element pattern label expressions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-patterns#element_pattern_definition):
 
 | Name | Syntax | Description |
 |---|---|---|
@@ -898,7 +898,7 @@ EXISTS( subquery )
 Returns `TRUE` if the subquery produces one or more rows. Returns `FALSE` if
 the subquery produces zero rows. Never returns `NULL`. To learn more about
 how you can use a subquery with `EXISTS`,
-see [`EXISTS` subqueries](subqueries.md#exists-subqueries).
+see [`EXISTS` subqueries](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries#exists_subquery_concepts).
 
 **Examples**
 
@@ -947,8 +947,8 @@ equal value is excluded, otherwise `NULL`.
 - `value_set`: One or more values to compare to a search value.
 
   - `(expression[, ...])`: A list of expressions.
-  - `(subquery)`: A [subquery](subqueries.md#about-subqueries) that returns a single column. The values in that column are the set of values. If no rows are produced, the set of values is empty.
-  - `UNNEST(array_expression)`: An [UNNEST operator](query-syntax-1.md#unnest-operator)
+  - `(subquery)`: A [subquery](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries#about_subqueries) that returns a single column. The values in that column are the set of values. If no rows are produced, the set of values is empty.
+  - `UNNEST(array_expression)`: An [UNNEST operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#unnest_operator)
     that returns a column of values from an array expression. This is
     equivalent to:
 
@@ -1011,7 +1011,7 @@ NOT(x IN ...)
 ```
 
 The `UNNEST` form treats an array scan like `UNNEST` in the
-[`FROM`](query-syntax-1.md#from-clause) clause:
+[`FROM`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#from_clause) clause:
 
 ```sql
 x [NOT] IN UNNEST(<array expression>)
@@ -1184,7 +1184,7 @@ expression_1 IS [NOT] DISTINCT FROM expression_2
 
 `IS DISTINCT FROM` returns `TRUE` if the input values are considered to be
 distinct from each other by the
-[`GROUP BY`](query-syntax-2.md#group-by-clause) clause. Otherwise, returns `FALSE`.
+[`GROUP BY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause) clause. Otherwise, returns `FALSE`.
 
 `a IS DISTINCT FROM b` being `TRUE` is equivalent to:
 
@@ -1545,7 +1545,7 @@ otherwise `NULL`.
   - A list of one or more patterns that match the `search_value` type.
 
   - An
-    [`UNNEST`](query-syntax-1.md#unnest-operator) operation that returns a column of values
+    [`UNNEST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#unnest_operator) operation that returns a column of values
     with the same type as `search_value` from an array expression.
 
   The regular expressions that are supported by the

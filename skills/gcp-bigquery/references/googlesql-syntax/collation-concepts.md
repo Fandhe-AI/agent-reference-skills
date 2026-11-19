@@ -153,10 +153,10 @@ The following example operators propagate collation.
 
 | Operator | Notes |
 |---|---|
-| [`||` concatenation operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#concatenation_operator) |   |
-| [Array subscript operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#array_subscript_operator) | Propagated to output. |
+| [`||` concatenation operator](operators.md#concatenation-operator) |   |
+| [Array subscript operator](operators.md#array-subscript-operator) | Propagated to output. |
 | [Set operators](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#set_operators) | Collation of an output column is decided by the collations of input columns at the same position. |
-| [`STRUCT` field access operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#field_access_operator) | When getting a `STRUCT`, collation on the `STRUCT` field is propagated as the output collation. |
+| [`STRUCT` field access operator](operators.md#field-access-operator) | When getting a `STRUCT`, collation on the `STRUCT` field is propagated as the output collation. |
 | [`UNNEST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#unnest_operator) | Collation on the input array element is propagated to output. |
 
 #### Expressions
@@ -285,16 +285,16 @@ and conditional expressions.
 
 | Support | Notes |
 |---|---|
-| [`<`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
-| [`<=`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
-| [`>`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
-| [`>=`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
-| [`=`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
-| [`!=`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
-| [`[NOT] BETWEEN`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
-| [`[NOT] IN`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#in_operators) | [Limitations apply](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#in_operators). |
-| [`[NOT] LIKE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#like_operator) | [Limitations apply](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#like_operator). |
-| [Quantified `[NOT] LIKE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#like_operator_quantified) | [Limitations apply](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#like_operator_quantified). |
+| [`<`](operators.md#comparison-operators) |   |
+| [`<=`](operators.md#comparison-operators) |   |
+| [`>`](operators.md#comparison-operators) |   |
+| [`>=`](operators.md#comparison-operators) |   |
+| [`=`](operators.md#comparison-operators) |   |
+| [`!=`](operators.md#comparison-operators) |   |
+| [`[NOT] BETWEEN`](operators.md#comparison-operators) |   |
+| [`[NOT] IN`](operators.md#in-operator) | [Limitations apply](operators.md#in-operator). |
+| [`[NOT] LIKE`](operators.md#like-operator) | [Limitations apply](operators.md#like-operator). |
+| [Quantified `[NOT] LIKE`](operators.md#quantified-like-operator) | [Limitations apply](operators.md#quantified-like-operator). |
 
 ##### Conditional expressions
 

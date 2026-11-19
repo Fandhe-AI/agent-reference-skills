@@ -268,7 +268,7 @@ doesn't return an error, `SAFE.` has no effect on the output.
 
 **Exclusions**
 
-- [Operators](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators), such as `+` and `=`, don't support the `SAFE.` prefix. To prevent errors from a division operation, use [SAFE_DIVIDE](mathematical_functions.md#safe_divide).
+- [Operators](../googlesql-syntax/operators.md), such as `+` and `=`, don't support the `SAFE.` prefix. To prevent errors from a division operation, use [SAFE_DIVIDE](mathematical_functions.md#safe_divide).
 - Some operators, such as `IN`, `ARRAY`, and `UNNEST`, resemble functions but don't support the `SAFE.` prefix.
 - The `CAST`, `EXTRACT`, and `SECURE_CONTEXT` functions don't support the `SAFE.` prefix. To prevent errors from casting, use [SAFE_CAST](conversion_functions.md#safe_cast).
 
