@@ -17,3 +17,6 @@
 | gcloud app-lifecycle-manager rollouts | 10 commands (beta, ga); app-lifecycle-manager rollouts create … | [app-lifecycle-manager-rollouts.md](./app-lifecycle-manager-rollouts.md) |
 | gcloud app-lifecycle-manager saas | 10 commands (beta, ga); app-lifecycle-manager saas create … | [app-lifecycle-manager-saas.md](./app-lifecycle-manager-saas.md) |
 | gcloud app-lifecycle-manager tenants | 10 commands (beta, ga); app-lifecycle-manager tenants create … | [app-lifecycle-manager-tenants.md](./app-lifecycle-manager-tenants.md) |
+| gcloud app-lifecycle-manager unit-kinds | 10 commands (beta, ga); app-lifecycle-manager unit-kinds create … | [app-lifecycle-manager-unit-kinds.md](./app-lifecycle-manager-unit-kinds.md) |
+| gcloud app-lifecycle-manager unit-operations | 10 commands (beta, ga); app-lifecycle-manager unit-operations create … | [app-lifecycle-manager-unit-operations.md](./app-lifecycle-manager-unit-operations.md) |
+| gcloud app-lifecycle-manager units | 10 commands (beta, ga); app-lifecycle-manager units create … | [app-lifecycle-manager-units.md](./app-lifecycle-manager-units.md) |
