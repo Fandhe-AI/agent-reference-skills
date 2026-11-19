@@ -69,7 +69,7 @@ canonical equivalence.
 | [`SPLIT`](string_functions-2.md#split) | Splits a `STRING` or `BYTES` value, using a delimiter. |
 | [`STARTS_WITH`](string_functions-2.md#starts_with) | Checks if a `STRING` or `BYTES` value is a prefix of another value. |
 | [`STRING` (JSON)](json_functions-2.md#string) | Converts a JSON string to a SQL `STRING` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`STRING` (Timestamp)](timestamp_functions.md#string) | Converts a `TIMESTAMP` value to a `STRING` value. For more information, see [Timestamp functions](timestamp_functions.md). |
+| [`STRING` (Timestamp)](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#string) | Converts a `TIMESTAMP` value to a `STRING` value. For more information, see [Timestamp functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions). |
 | [`STRING_AGG`](aggregate_functions.md#string_agg) | Concatenates non-`NULL` `STRING` or `BYTES` values. For more information, see [Aggregate functions](aggregate_functions.md). |
 | [`STRPOS`](string_functions-2.md#strpos) | Finds the position of the first occurrence of a subvalue inside another value. |
 | [`SUBSTR`](string_functions-2.md#substr) | Gets a portion of a `STRING` or `BYTES` value. |
@@ -399,13 +399,13 @@ ORDER BY 2 DESC;
 COLLATE(value, collate_specification)
 ```
 
-Takes a `STRING` and a [collation specification](../googlesql-syntax/collation-concepts.md#collation-specification-details). Returns
+Takes a `STRING` and a [collation specification](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts#collate_spec_details). Returns
 a `STRING` with a collation specification. If `collate_specification` is empty,
 returns a value with collation removed from the `STRING`.
 
 The collation specification defines how the resulting `STRING` can be compared
 and sorted. To learn more, see
-[Collation](../googlesql-syntax/collation-concepts.md).
+[Collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
 
 - `collation_specification` must be a string literal, otherwise an error is thrown.
 - Returns `NULL` if `value` is `NULL`.
@@ -468,7 +468,7 @@ Concatenates one or more values into a single result. All values must be
 The function returns `NULL` if any input argument is `NULL`.
 
 > [!NOTE]
-> **Note:** You can also use the [\|\| concatenation operator](../googlesql-syntax/operators.md) to concatenate values into a string.
+> **Note:** You can also use the [\|\| concatenation operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators) to concatenate values into a string.
 
 **Return type**
 
@@ -947,7 +947,7 @@ ENDS_WITH(value, suffix)
 Takes two `STRING` or `BYTES` values. Returns `TRUE` if `suffix`
 is a suffix of `value`.
 
-This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
+This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
 
 **Return type**
 
@@ -1393,7 +1393,7 @@ defaults to `1` and returns the position of the first occurrence.
 For `occurrence` \> `1`, the function includes overlapping occurrences.
 `occurrence` is of type `INT64` and must be positive.
 
-This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
+This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
 
 Returns `0` if:
 

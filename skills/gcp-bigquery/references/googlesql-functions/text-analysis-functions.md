@@ -86,19 +86,19 @@ Extracts terms (tokens) from text and converts them into a tokenized document.
   - `'LOG_ANALYZER'` (default): Breaks the input into terms when delimiters
     are encountered and then normalizes the terms. If `analyzer` isn't
     specified, this is used by default.
-    For more information, see [`LOG_ANALYZER` text analyzer](../googlesql-syntax/text-analysis.md#log_analyzer-analyzer).
+    For more information, see [`LOG_ANALYZER` text analyzer](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#log_analyzer).
 
   - `'NO_OP_ANALYZER'`: Extracts the text as a single term (token), but
     doesn't apply normalization.
-    For more information, see [`NO_OP_ANALYZER` text analyzer](../googlesql-syntax/text-analysis.md#no_op_analyzer-analyzer).
+    For more information, see [`NO_OP_ANALYZER` text analyzer](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#no_op_analyzer).
 
   - `'PATTERN_ANALYZER'`: Breaks the input into terms that match a
     regular expression. For more information, see
-    [`PATTERN_ANALYZER` text analyzer](../googlesql-syntax/text-analysis.md#pattern_analyzer-analyzer).
+    [`PATTERN_ANALYZER` text analyzer](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#pattern_analyzer).
 
 - `analyzer_options`: A named argument with a JSON-formatted `STRING` value.
   Takes a list of text analysis rules. For more information, see
-  [Text analyzer options](../googlesql-syntax/text-analysis.md#text-analyzer-options).
+  [Text analyzer options](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#text_analyzer_options).
 
 **Details**
 
@@ -113,7 +113,7 @@ If no analyzer is specified, the `LOG_ANALYZER` analyzer is used by default.
 **Examples**
 
 The following query uses the default text analyzer,
-[`LOG_ANALYZER`](../googlesql-syntax/text-analysis.md#log_analyzer-analyzer), with the input text:
+[`LOG_ANALYZER`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#log_analyzer), with the input text:
 
 ```sql
 SELECT TEXT_ANALYZE('I like pie, you like-pie, they like 2 PIEs.') AS results
@@ -125,7 +125,7 @@ SELECT TEXT_ANALYZE('I like pie, you like-pie, they like 2 PIEs.') AS results
  +--------------------------------------------------------------------------*/
 ```
 
-The following query uses the [`NO_OP_ANALYZER`](../googlesql-syntax/text-analysis.md#no_op_analyzer-analyzer) text analyzer
+The following query uses the [`NO_OP_ANALYZER`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#no_op_analyzer) text analyzer
 with the input text:
 
 ```sql
@@ -141,7 +141,7 @@ SELECT TEXT_ANALYZE(
  +-----------------------------------------------*/
 ```
 
-The following query uses the [`PATTERN_ANALYZER`](../googlesql-syntax/text-analysis.md#pattern_analyzer-analyzer)
+The following query uses the [`PATTERN_ANALYZER`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#pattern_analyzer)
 text analyzer with the input text:
 
 ```sql
@@ -158,7 +158,7 @@ SELECT TEXT_ANALYZE(
 ```
 
 For additional examples that include analyzer options,
-see [Text analysis](../googlesql-syntax/text-analysis.md).
+see [Text analysis](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis).
 
 For helpful analyzer recipes that you can use to enhance
 analyzer-supported queries, see

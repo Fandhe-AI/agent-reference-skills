@@ -132,7 +132,7 @@ argument to insert text matching the corresponding parenthesized group in the
 
 To add a backslash in your regular expression, you must first escape it. For
 example, `SELECT REGEXP_REPLACE('abc', 'b(.)', 'X\\1');` returns `aXc`. You can
-also use [raw strings](../googlesql-syntax/lexical.md#string-and-bytes-literals) to remove one layer of
+also use [raw strings](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#string_and_bytes_literals) to remove one layer of
 escaping, for example `SELECT REGEXP_REPLACE('abc', 'b(.)', r'X\1');`.
 
 The `REGEXP_REPLACE` function only replaces non-overlapping matches. For
@@ -254,7 +254,7 @@ REPLACE(original_value, from_pattern, to_pattern)
 Replaces all occurrences of `from_pattern` with `to_pattern` in
 `original_value`. If `from_pattern` is empty, no replacement is made.
 
-This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
+This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
 
 **Return type**
 
@@ -571,7 +571,7 @@ Splitting an empty `STRING` returns an
 `ARRAY` with a single empty
 `STRING`.
 
-This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
+This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
 
 **Return type**
 
@@ -610,7 +610,7 @@ STARTS_WITH(value, prefix)
 Takes two `STRING` or `BYTES` values. Returns `TRUE` if `prefix` is a
 prefix of `value`.
 
-This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
+This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
 
 **Return type**
 
@@ -639,7 +639,7 @@ STRPOS(value, subvalue)
 Takes two `STRING` or `BYTES` values. Returns the 1-based position of the first
 occurrence of `subvalue` inside `value`. Returns `0` if `subvalue` isn't found.
 
-This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
+This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
 
 **Return type**
 

@@ -124,7 +124,7 @@ STRUCT(
     | `ObjectRef` or `ARRAY<ObjectRef>` | An [`ObjectRef`](https://docs.cloud.google.com/bigquery/docs/work-with-objectref) literal, array of `ObjectRef` literals, or the name of an `ObjectRef` column. Your input can contain at most one video object. | `OBJ.MAKE_REF('gs://my_image.jpg')` |
 
     The function combines `STRUCT` fields similarly to a
-    [`CONCAT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#concat)
+    [`CONCAT`](../googlesql-functions/string_functions-1.md#concat)
     operation and concatenates the fields in their specified order. The same is
     true for the elements of any arrays used within the struct. The following
     table shows some examples of `STRUCT` prompt values and how they

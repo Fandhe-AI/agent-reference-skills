@@ -296,7 +296,7 @@ SELECT SAFE.SUBSTR('bar', 0, 2) AS safe_output;
 
 BigQuery supports the use of the `SAFE.` prefix with most
 scalar functions that can raise errors, including
-[STRING functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions),
+[STRING functions](string_functions-1.md),
 [math functions](mathematical_functions.md), [DATE functions](date_functions.md),
 [DATETIME functions](datetime_functions.md),
 [TIMESTAMP functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions), and [JSON functions](json_functions-1.md).
