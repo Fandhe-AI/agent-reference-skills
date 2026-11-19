@@ -629,6 +629,15 @@ NOTES
         $ gcloud beta deploy deploy-policies remove-iam-policy-binding
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud deploy deploy-policies remove-iam-policy-binding holiday-policy \
+    --region='us-central1' \
+    --member='user:test-user@gmail.com' \
+    --role='roles/clouddeploy.policyAdmin'
+```
+
 ### gcloud deploy deploy-policies set-iam-policy
 
 ```text
@@ -896,6 +905,8 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `remove-iam-policy-binding` example (and its introduction) writes the role as `roles/roles/clouddeploy.policyAdmin`, with `roles/` twice; the role ID is `roles/clouddeploy.policyAdmin`, as in the `add-iam-policy-binding` example on this page, so the runnable form uses that.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

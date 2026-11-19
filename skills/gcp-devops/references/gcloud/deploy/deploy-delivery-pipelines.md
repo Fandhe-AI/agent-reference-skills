@@ -1048,6 +1048,7 @@ SYNOPSIS
 
 ## Notes
 
+- Corrected from the official docs (the help text above is verbatim): the `delete` examples call targets sub-resources of the delivery pipeline ("sub-resources (targets, releases or rollouts)") that `--force` deletes. A target is a separate resource that several delivery pipelines can share (see the Cloud Deploy configuration pages of this skill); the `force` parameter of `projects.locations.deliveryPipelines.delete` deletes "all child resources under this pipeline" (releases and their rollouts), and the targets remain; delete them with `gcloud deploy targets delete` if they are no longer needed.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
