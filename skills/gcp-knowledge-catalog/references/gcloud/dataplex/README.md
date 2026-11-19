@@ -39,3 +39,15 @@
 | gcloud dataplex entries (part 2) | 11 commands (alpha, ga); dataplex entries update-aspects … | [dataplex-entries-2.md](./dataplex-entries-2.md) |
 | gcloud dataplex entry-groups | 18 commands (alpha, ga); dataplex entry-groups add-iam-policy-binding … | [dataplex-entry-groups.md](./dataplex-entry-groups.md) |
 | gcloud dataplex entry-links | 5 commands (alpha); alpha dataplex entry-links create … | [dataplex-entry-links.md](./dataplex-entry-links.md) |
+| gcloud dataplex entry-types | 18 commands (alpha, ga); dataplex entry-types add-iam-policy-binding … | [dataplex-entry-types.md](./dataplex-entry-types.md) |
+| gcloud dataplex glossaries add-iam-policy-binding | 2 commands (alpha, ga); dataplex glossaries add-iam-policy-binding … | [dataplex-glossaries-add-iam-policy-binding.md](./dataplex-glossaries-add-iam-policy-binding.md) |
+| gcloud dataplex glossaries categories | 10 commands (alpha, ga); dataplex glossaries categories create … | [dataplex-glossaries-categories.md](./dataplex-glossaries-categories.md) |
+| gcloud dataplex glossaries create | 2 commands (alpha, ga); dataplex glossaries create … | [dataplex-glossaries-create.md](./dataplex-glossaries-create.md) |
+| gcloud dataplex glossaries delete | 2 commands (alpha, ga); dataplex glossaries delete … | [dataplex-glossaries-delete.md](./dataplex-glossaries-delete.md) |
+| gcloud dataplex glossaries describe | 2 commands (alpha, ga); dataplex glossaries describe … | [dataplex-glossaries-describe.md](./dataplex-glossaries-describe.md) |
+| gcloud dataplex glossaries get-iam-policy | 2 commands (alpha, ga); dataplex glossaries get-iam-policy … | [dataplex-glossaries-get-iam-policy.md](./dataplex-glossaries-get-iam-policy.md) |
+| gcloud dataplex glossaries list | 2 commands (alpha, ga); dataplex glossaries list … | [dataplex-glossaries-list.md](./dataplex-glossaries-list.md) |
+| gcloud dataplex glossaries remove-iam-policy-binding | 2 commands (alpha, ga); dataplex glossaries remove-iam-policy-binding … | [dataplex-glossaries-remove-iam-policy-binding.md](./dataplex-glossaries-remove-iam-policy-binding.md) |
+| gcloud dataplex glossaries set-iam-policy | 2 commands (alpha, ga); dataplex glossaries set-iam-policy … | [dataplex-glossaries-set-iam-policy.md](./dataplex-glossaries-set-iam-policy.md) |
+| gcloud dataplex glossaries terms | 10 commands (alpha, ga); dataplex glossaries terms create … | [dataplex-glossaries-terms.md](./dataplex-glossaries-terms.md) |
+| gcloud dataplex glossaries update | 2 commands (alpha, ga); dataplex glossaries update … | [dataplex-glossaries-update.md](./dataplex-glossaries-update.md) |
