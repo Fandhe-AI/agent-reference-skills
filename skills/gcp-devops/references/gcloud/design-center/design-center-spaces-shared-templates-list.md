@@ -1,0 +1,186 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/design-center/spaces/shared-templates/list
+---
+
+# gcloud design-center spaces shared-templates list
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud design-center spaces shared-templates list
+
+```text
+NAME
+    gcloud design-center spaces shared-templates list - list shared templates
+
+SYNOPSIS
+    gcloud design-center spaces shared-templates list
+        (--google-catalog | [--space=SPACE : --project=PROJECT])
+        [--location=LOCATION] [--filter=EXPRESSION] [--limit=LIMIT]
+        [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [--uri]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    List shared templates in a given space.
+
+EXAMPLES
+    To list all shared templates in space my-space, project my-project and
+    location us-central1, run:
+
+        $ gcloud design-center spaces shared-templates list \
+            --space=my-space --project=my-project --location=us-central1
+
+    Or run:
+
+        $ gcloud design-center spaces shared-templates list \
+            --space=projects/my-project/locations/us-central1/spaces/\
+        my-space
+
+    To list all shared templates from the Google Catalog in location
+    us-central1, run:
+
+        $ gcloud design-center spaces shared-templates list \
+            --google-catalog --location=us-central1
+
+    To filter and list shared templates that contain a my-shared-template
+    prefix in the display name in space my-space, project my-project and
+    location us-central1, run:
+
+        $ gcloud design-center spaces shared-templates list \
+            --space=my-space --project=my-project --location=us-central1 \
+            --filter="displayName:my-shared-template*"
+
+    To list up to 10 shared templates in space my-space, project my-project and
+    location us-central1, run:
+
+        $ gcloud design-center spaces shared-templates list \
+            --space=my-space --project=my-project --location=us-central1 \
+            --limit=10
+
+REQUIRED FLAGS
+     Space resource - The parent space for which shared templates are listed in
+     the following format: projects/$project/locations/$location/spaces/$space
+     The following arguments in this group can be used to specify the
+     attributes of this resource.
+
+     Exactly one of these must be specified:
+
+       --google-catalog
+          If provided, lists all shared template from the Google Catalog. This
+          sets the project to "gcpdesigncenter" and space to "googlespace".
+
+       Or at least one of these can be specified:
+
+         Specify --project and/or --space for custom shared templates.
+
+         --space=SPACE
+            ID of the space or fully qualified identifier for the space.
+
+            To set the space attribute:
+            - provide the argument --space on the command line.
+
+            This flag argument must be specified if any of the other arguments
+            in this group are specified.
+
+         --project=PROJECT
+            The project id of the space resource.
+
+            To set the project attribute:
+            - provide the argument --space on the command line with a fully
+              specified name;
+            - provide the argument --project on the command line;
+            - set the property core/project.
+
+FLAGS
+     --location=LOCATION
+        The location id of the space resource.
+
+        To set the location attribute:
+        * provide the argument --space on the command line with a fully
+          specified name;
+        * provide the argument --location on the command line.
+
+LIST COMMAND FLAGS
+     --filter=EXPRESSION
+        Apply a Boolean filter EXPRESSION to each resource item to be listed.
+        If the expression evaluates True, then that item is listed. For more
+        details and examples of filter expressions, run $ gcloud topic filters.
+        This flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --limit=LIMIT
+        Maximum number of resources to list. The default is unlimited. This
+        flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --page-size=PAGE_SIZE
+        Some services group resource list output into pages. This flag
+        specifies the maximum number of resources per page. The default is
+        determined by the service if it supports paging, otherwise it is
+        unlimited (no paging). Paging may be applied before or after --filter
+        and --limit depending on the service.
+
+     --sort-by=[FIELD,...]
+        Comma-separated list of resource field key names to sort by. The
+        default order is ascending. Prefix a field with ``~'' for descending
+        order on that field. This flag interacts with other flags that are
+        applied in this order: --flatten, --sort-by, --filter, --limit.
+
+     --uri
+        Print a list of resource URIs instead of the default output, and change
+        the command output to a list of URIs. If this flag is used with
+        --format, the formatting is applied on this URI list. To display URIs
+        alongside other keys instead, use the uri() transform.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the designcenter/v1 API. The full documentation for this
+    API can be found at: http://cloud.google.com/application-design-center/docs
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha design-center spaces shared-templates list
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+
+```bash
+gcloud design-center spaces shared-templates list \
+    --space=projects/my-project/locations/us-central1/spaces/my-space
+```
+
+### gcloud alpha design-center spaces shared-templates list
+
+```text
+NAME
+    gcloud alpha design-center spaces shared-templates list - list shared
+        templates
+
+SYNOPSIS
+    gcloud alpha design-center spaces shared-templates list
+        (--google-catalog | [--space=SPACE : --project=PROJECT])
+        [--location=LOCATION] [--filter=EXPRESSION] [--limit=LIMIT]
+        [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]] [--uri]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/design-center/spaces/shared-templates/list (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
