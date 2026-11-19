@@ -130,7 +130,7 @@ For more information, see
 
 [Set up authentication for client libraries](https://docs.cloud.google.com/bigquery/docs/authentication#client-libs).
 
-Adapted (not in the official docs): removed the stray backtick before the closing quote of the SQL string.
+Adapted (not in the official docs): removed the stray backtick before the closing quote of the SQL string, and checked the job error after `waitFor()` instead of `isDone()`, so that a failed job is not reported as success.
 
 ```java
 import com.google.cloud.bigquery.BigQuery;
@@ -181,10 +181,12 @@ public class DDLCreateView {
       // create a view using query and it will wait to complete job.
       Job job = bigquery.create(JobInfo.of(config));
       job = job.waitFor();
-      if (job.isDone()) {
-        System.out.println("View created successfully");
+      if (job == null) {
+        System.out.println("View was not created. Job no longer exists");
+      } else if (job.getStatus().getError() != null) {
+        System.out.println("View was not created. \n" + job.getStatus().getError().toString());
       } else {
-        System.out.println("View was not created");
+        System.out.println("View created successfully");
       }
     } catch (BigQueryException | InterruptedException e) {
       System.out.println("View was not created. \n" + e.toString());
@@ -2343,7 +2345,7 @@ AS SELECT column_1, column_2, column_3 FROM `myproject.mydataset.mytable`
 - The HTML of the rendered page leaves `<FLOAT64>` unescaped inside a code block, so a browser hides it; the text is kept here as written in the HTML source.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - The official page is split into 4 files at section boundaries; this is part 1.
-- Corrected from the official docs: the Java example's SQL string ends with `'W%'` followed by a stray backtick; removed, matching the Python and Node.js versions of the same query.
+- Corrected from the official docs: the Java example's SQL string ends with `'W%'` followed by a stray backtick; removed, matching the Python and Node.js versions of the same query. The sample also reported "View created successfully" whenever `job.isDone()` was true after `waitFor()`, but a finished job can have failed. The `Job.waitFor` Javadoc of the BigQuery Java client (googleapis/java-bigquery commit a1327bbb, `Job.java`) checks `completedJob == null` (the job no longer exists) and then `completedJob.getStatus().getError() != null` (the job failed), and `JobStatus.getError()` is documented as present when the job completed and was unsuccessful; the sample now follows that pattern.
 - Corrected from the official docs: the two `STRUCT` examples under `DEFAULT COLLATE` / `COLLATE` list the fields `x FLOAT64` and `y ARRAY <STRING>` without a comma between them; a comma was added in both, since `field_list` in the syntax is comma-separated.
 - Corrected from the official docs: the text says the table schema contains 2 columns but lists three (`date`, `station_name`, `prcp`); changed to 3.
 - Corrected from the official docs: the `FOR SYSTEM_TIME AS OF` argument is called `timestamp_expression`, but the syntax block on the same page names it `time_expression`; changed to match the syntax.
