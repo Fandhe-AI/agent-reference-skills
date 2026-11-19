@@ -495,7 +495,7 @@ REFERENCES primary_key_table(column_name[, ...]) NOT ENFORCED
   statement has no effect. Cannot appear with `OR REPLACE`.
 
 - `table_name`: The name of the table to create. See
-  [Table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path). For temporary tables, do not include
+  [Table path syntax](data-definition-language-4.md#table-path-syntax). For temporary tables, do not include
   the project name or dataset name.
 
 - [`column`](#column): The table's schema information.
@@ -562,7 +562,7 @@ REFERENCES primary_key_table(column_name[, ...]) NOT ENFORCED
 - Column names must be specified either through the column list, the `AS query_statement` clause or schema of the table in the `LIKE` clause.
 - Duplicate column names are not allowed.
 - When both the `LIKE` and the `AS query_statement` clause are present, the column list in the query statement must match the columns of the table referenced by the `LIKE` clause.
-- Table names are case-sensitive unless the dataset they belong to is not. To create a case-insensitive dataset, see [Creating a case-insensitive dataset](#creating-a-case-insensitive-dataset). To alter a dataset to make it case-insensitive dataset, see [Turning on case insensitivity for a dataset](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#turning_on_case_insensitivity_for_a_dataset).
+- Table names are case-sensitive unless the dataset they belong to is not. To create a case-insensitive dataset, see [Creating a case-insensitive dataset](#creating-a-case-insensitive-dataset). To alter a dataset to make it case-insensitive dataset, see [Turning on case insensitivity for a dataset](data-definition-language-3.md#turning-on-case-insensitivity-for-a-dataset).
 
 Limitations:
 
@@ -807,7 +807,7 @@ Specify a column option list in the following format:
 |---|---|---|
 | `description` | `STRING` | Example: `description="a unique id"` This property is equivalent to the [schema.fields\[\].description](https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/tables#TableFieldSchema.FIELDS.description) table resource property. |
 | `rounding_mode` | `STRING` | Example: `rounding_mode = "ROUND_HALF_EVEN"` This specifies the [rounding mode](https://docs.cloud.google.com/bigquery/docs/schemas#rounding_mode) that's used for values written to a `NUMERIC` or `BIGNUMERIC` type column or `STRUCT` field. The following values are supported: - `"ROUND_HALF_AWAY_FROM_ZERO"`: Halfway cases are rounded away from zero. For example, 2.25 is rounded to 2.3, and -2.25 is rounded to -2.3. - `"ROUND_HALF_EVEN"`: Halfway cases are rounded towards the nearest even digit. For example, 2.25 is rounded to 2.2 and -2.25 is rounded to -2.2. This property is equivalent to the [`roundingMode`](https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/tables#TableFieldSchema.FIELDS.rounding_mode) table resource property. |
-| `data_policies` | `ARRAY<STRING>` | Applies a [data policy](https://docs.cloud.google.com/bigquery/docs/column-data-masking#create_data_policies) to a column in a table. Example: `data_policies = ["{'name':'myproject.region-us.data_policy_name1'}", "{'name':'myproject.region-us.data_policy_name2'}"]` The [`ALTER TABLE ALTER COLUMN`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_column_set_options_statement) statement supports the `=` and `+=` operators to add data policies to a specific column. Example: `data_policies +=["data_policy1", "data_policy2"]` |
+| `data_policies` | `ARRAY<STRING>` | Applies a [data policy](https://docs.cloud.google.com/bigquery/docs/column-data-masking#create_data_policies) to a column in a table. Example: `data_policies = ["{'name':'myproject.region-us.data_policy_name1'}", "{'name':'myproject.region-us.data_policy_name2'}"]` The [`ALTER TABLE ALTER COLUMN`](data-definition-language-3.md#alter-column-set-options-statement) statement supports the `=` and `+=` operators to add data policies to a specific column. Example: `data_policies +=["data_policy1", "data_policy2"]` |
 | `data_governance_tags` | `ARRAY<STRUCT<STRING, STRING>>` | Applies [data governance tags](https://docs.cloud.google.com/bigquery/docs/tags#data-governance-tags) to a column in a table. Example: `data_governance_tags = [("myproject/tag_key", "tag_value")]` |
 
 `VALUE` is a constant expression containing only literals, query parameters,
@@ -1785,10 +1785,10 @@ CLONE source_table_name
 
 - `table_snapshot_name`: The name of the table snapshot that you want to create.
   The table snapshot name must be unique per dataset. See
-  [Table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path).
+  [Table path syntax](data-definition-language-4.md#table-path-syntax).
 
 - `source_table_name`: The name of the table that you want to snapshot or the
-  table snapshot that you want to copy. See [Table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path).
+  table snapshot that you want to copy. See [Table path syntax](data-definition-language-4.md#table-path-syntax).
 
   If the source table is a standard table, then BigQuery creates
   a table snapshot of the source table. If the source table is a table snapshot,
@@ -1933,7 +1933,7 @@ For information about restoring table snapshots, see
 [`CREATE TABLE CLONE`](#create-table-clone-statement).
 
 For information about removing table snapshots, see
-[`DROP SNAPSHOT TABLE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_snapshot_table_statement).
+[`DROP SNAPSHOT TABLE`](data-definition-language-4.md#drop-snapshot-table-statement).
 
 ### `CREATE TABLE CLONE` statement
 
@@ -2092,7 +2092,7 @@ view_column :=
   with `OR REPLACE`.
 
 - `view_name`: The name of the view you're creating. See
-  [Table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path).
+  [Table path syntax](data-definition-language-4.md#table-path-syntax).
 
 - [`view_column_name_list`](#view_column_name_list): Lets you explicitly
   specify the column names of the view, which may be aliases to the column names
@@ -2360,3 +2360,5 @@ AS SELECT column_1, column_2, column_3 FROM `myproject.mydataset.mytable`
 
 - [Index of this directory](./README.md)
 - [Data definition language (DDL) statements in GoogleSQL (part 2 of 4)](./data-definition-language-2.md)
+- [Data definition language (DDL) statements in GoogleSQL (part 3 of 4)](./data-definition-language-3.md)
+- [Data definition language (DDL) statements in GoogleSQL (part 4 of 4)](./data-definition-language-4.md)

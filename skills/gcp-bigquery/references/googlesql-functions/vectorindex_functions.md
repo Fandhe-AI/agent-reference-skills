@@ -28,7 +28,7 @@ The `VECTOR_INDEX.STATISTICS` function calculates how much an indexed table's
 data has drifted between when a [vector index](https://docs.cloud.google.com/bigquery/docs/vector-index) was trained and the
 present. Use this function to determine if table data has changed enough to
 require a vector index rebuild. If necessary, you can use the
-[`ALTER VECTOR INDEX REBUILD` statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_vector_index_rebuild_statement) to rebuild the vector index.
+[`ALTER VECTOR INDEX REBUILD` statement](../googlesql-syntax/data-definition-language-3.md#alter-vector-index-rebuild-statement) to rebuild the vector index.
 
 To alter vector indexes, you must have the BigQuery Data Editor
 (`roles/bigquery.dataEditor`) or BigQuery Data Owner
