@@ -122,6 +122,8 @@ seconds, `EXTRACT` truncates the millisecond and microsecond values.
 `INT64`, except in the following cases:
 
 - If `part` is `DATE`, the function returns a `DATE` object.
+- If `part` is `DATETIME`, the function returns a `DATETIME` object.
+- If `part` is `TIME`, the function returns a `TIME` object.
 
 **Examples**
 
@@ -165,9 +167,10 @@ SELECT
  +---------+---------+------+------*/
 ```
 
+Adapted (not in the official docs): removed the `timestamp_value` select item, which the result table doesn't show.
+
 ```sql
 SELECT
-  TIMESTAMP("2007-12-31 12:00:00+00") AS timestamp_value,
   EXTRACT(ISOYEAR FROM TIMESTAMP("2007-12-31 12:00:00+00")) AS isoyear,
   EXTRACT(ISOWEEK FROM TIMESTAMP("2007-12-31 12:00:00+00")) AS isoweek,
   EXTRACT(YEAR FROM TIMESTAMP("2007-12-31 12:00:00+00")) AS year,
@@ -182,9 +185,10 @@ SELECT
  +---------+---------+------+------*/
 ```
 
+Adapted (not in the official docs): removed the `timestamp_value` select item, which the result table doesn't show.
+
 ```sql
 SELECT
-  TIMESTAMP("2009-01-01 12:00:00+00") AS timestamp_value,
   EXTRACT(ISOYEAR FROM TIMESTAMP("2009-01-01 12:00:00+00")) AS isoyear,
   EXTRACT(ISOWEEK FROM TIMESTAMP("2009-01-01 12:00:00+00")) AS isoweek,
   EXTRACT(YEAR FROM TIMESTAMP("2009-01-01 12:00:00+00")) AS year,
@@ -199,9 +203,10 @@ SELECT
  +---------+---------+------+------*/
 ```
 
+Adapted (not in the official docs): removed the `timestamp_value` select item, which the result table doesn't show.
+
 ```sql
 SELECT
-  TIMESTAMP("2009-12-31 12:00:00+00") AS timestamp_value,
   EXTRACT(ISOYEAR FROM TIMESTAMP("2009-12-31 12:00:00+00")) AS isoyear,
   EXTRACT(ISOWEEK FROM TIMESTAMP("2009-12-31 12:00:00+00")) AS isoweek,
   EXTRACT(YEAR FROM TIMESTAMP("2009-12-31 12:00:00+00")) AS year,
@@ -216,9 +221,10 @@ SELECT
  +---------+---------+------+------*/
 ```
 
+Adapted (not in the official docs): removed the `timestamp_value` select item, which the result table doesn't show.
+
 ```sql
 SELECT
-  TIMESTAMP("2017-01-02 12:00:00+00") AS timestamp_value,
   EXTRACT(ISOYEAR FROM TIMESTAMP("2017-01-02 12:00:00+00")) AS isoyear,
   EXTRACT(ISOWEEK FROM TIMESTAMP("2017-01-02 12:00:00+00")) AS isoweek,
   EXTRACT(YEAR FROM TIMESTAMP("2017-01-02 12:00:00+00")) AS year,
@@ -233,9 +239,10 @@ SELECT
  +---------+---------+------+------*/
 ```
 
+Adapted (not in the official docs): removed the `timestamp_value` select item, which the result table doesn't show.
+
 ```sql
 SELECT
-  TIMESTAMP("2017-05-26 12:00:00+00") AS timestamp_value,
   EXTRACT(ISOYEAR FROM TIMESTAMP("2017-05-26 12:00:00+00")) AS isoyear,
   EXTRACT(ISOWEEK FROM TIMESTAMP("2017-05-26 12:00:00+00")) AS isoweek,
   EXTRACT(YEAR FROM TIMESTAMP("2017-05-26 12:00:00+00")) AS year,
@@ -1079,6 +1086,12 @@ To learn more about how time zones work with the `TIMESTAMP` type, see
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: In the `EXTRACT(WEEK(MONDAY) ...)` example for `2017-11-06`, the result shows `week_monday` as 44. By the `WEEK(<WEEKDAY>)` rule above (weeks begin on `WEEKDAY`, earlier days are in week 0), 2017-01-02 is the first Monday of the year and 2017-11-06 is exactly 44 weeks later, which would be week 45. The official docs do not explain this value, and it is kept as published.
+- Corrected from the official docs: the return type says `EXTRACT` returns `INT64` except for `DATE`, although `DATETIME` and `TIME` are listed as allowed parts. The GoogleSQL reference implementation (google/zetasql commit 762ca7a16f2b, `googlesql/common/builtin_function_internal_2.cc`) registers `$extract_datetime` as `DATETIME` from `TIMESTAMP` and `$extract_time` as `TIME` from `TIMESTAMP`, and the datetime functions page states that `EXTRACT` with `TIME` returns a `TIME` object. The two cases are added.
+- Corrected from the official docs: in the `EXTRACT` example for 2007-12-31, the query selects `timestamp_value` as its first column, but the result table shows only `isoyear`, `isoweek`, `year` and `week`. The `timestamp_value` select item is removed so that the query matches its result.
+- Corrected from the official docs: in the `EXTRACT` example for 2009-01-01, the query selects `timestamp_value` as its first column, but the result table shows only `isoyear`, `isoweek`, `year` and `week`. The `timestamp_value` select item is removed so that the query matches its result.
+- Corrected from the official docs: in the `EXTRACT` example for 2009-12-31, the query selects `timestamp_value` as its first column, but the result table shows only `isoyear`, `isoweek`, `year` and `week`. The `timestamp_value` select item is removed so that the query matches its result.
+- Corrected from the official docs: in the `EXTRACT` example for 2017-01-02, the query selects `timestamp_value` as its first column, but the result table shows only `isoyear`, `isoweek`, `year` and `week`. The `timestamp_value` select item is removed so that the query matches its result.
+- Corrected from the official docs: in the `EXTRACT` example for 2017-05-26, the query selects `timestamp_value` as its first column, but the result table shows only `isoyear`, `isoweek`, `year` and `week`. The `timestamp_value` select item is removed so that the query matches its result.
 
 ## Related
 

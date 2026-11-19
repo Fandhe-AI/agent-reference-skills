@@ -914,6 +914,7 @@ WINDOW ItemWindow AS (
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: The `Produce` result table lists the columns as `item`, `category`, `purchases`, but `SELECT *` over the CTE returns `item`, `purchases`, `category` (the order of the CTE select list), and the later examples print that order. The columns of the result table are reordered.
 - Corrected from the official docs: The `Farm` result table lists the columns as `animal`, `category`, `population`, but `SELECT *` over the CTE returns `animal`, `population`, `category` (the order of the CTE select list). The columns of the result table are reordered.
+- Conflicting official statements: the `argument_list` description says the `DISTINCT` clause can't be used with the `OVER` clause, but the `COUNT` and `SUM` sections of the aggregate functions page (`aggregate_functions.md`) show `[ DISTINCT ]` together with `[ OVER over_clause ]` in their syntax and give the examples `COUNT(DISTINCT x) OVER (PARTITION BY MOD(x, 3))` and `SUM(DISTINCT x) OVER (PARTITION BY MOD(x, 3))` with results. Whether `DISTINCT` is allowed with `OVER` therefore depends on the function, and the official pages don't say which window specifications (`ORDER BY`, window frame) it can be combined with; check the syntax block of the specific function.
 
 ## Related
 
