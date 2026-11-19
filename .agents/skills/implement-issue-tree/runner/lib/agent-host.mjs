@@ -604,17 +604,22 @@ export function createAgentHost({ adapter, cfg }) {
     if (!target.ok) return refuse(`対象を確かめられない: ${target.reason}`)
     const launcher = join(skillDir, 'scripts', 'run-verified.sh')
     const started = Date.now()
-    // 2 段の共有予算の期限。1 段目がキュー（createWorktree 等）を抜けて実行を始めた時点で決める（キューの待ちは予算に数えない。runDirect と同じ）
-    let deadline
+    // 2 段の共有予算。スクリプトが実際に動いた時間（runScript の開始から終わりまで）だけを積み、キューの待ちは数えない。
+    // 期限を 1 点で決めると、1 段目の後の relockOwn のキュー待ちが 2 段目の予算を食うため、使用済みの累計から残りを出す
+    let usedMs = 0
     const step = async (name, sha256, argv, stdin) => {
       const mismatch = pinMismatch()
       if (mismatch) return { refused: `pin-mismatch: ${mismatch}` }
       const input = Buffer.from(stdin, 'utf8')
       writeLog(logDir, `exec-${name}.json`, { script: name, argv, stdinBytes: input.length, cwd: mainRoot })
-      // worktree-remove.sh は createWorktree と同じキューで流す。期限は最初の段がキューを抜けた時点で決め、2 段目はその残りを使う
-      const go = () => {
-        deadline ??= Date.now() + timeoutMs
-        return runScript('bash', [launcher, sha256, name, ...argv], { cwd: mainRoot, input, timeoutMs: Math.max(1, deadline - Date.now()) }, { label, prompt })
+      // worktree-remove.sh は createWorktree と同じキューで流す。各段の時間切れは「予算 − 前の段が使った実行時間」で、キューを抜けた後に数える
+      const go = async () => {
+        const t0 = Date.now()
+        try {
+          return await runScript('bash', [launcher, sha256, name, ...argv], { cwd: mainRoot, input, timeoutMs: Math.max(1, timeoutMs - usedMs) }, { label, prompt })
+        } finally {
+          usedMs += Date.now() - t0
+        }
       }
       const r = await (REPO_WRITING_SCRIPTS.has(name) ? runExclusive(mainRoot, go) : go())
       writeLog(logDir, `stdout-${name}.txt`, r.stdout ?? '')
