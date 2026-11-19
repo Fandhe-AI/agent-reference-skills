@@ -34,6 +34,9 @@ skills/gcp-bigquery/
     overview-datasets/            # 概要・リソース階層・ストレージ・データセット・time travel・削除テーブルの復元・snapshot / clone・既定の構成・INFORMATION_SCHEMA 概要
       README.md
       <page>.md
+    tables-schemas-views/         # テーブル・スキーマ・ネスト / 繰り返し・ビュー・マテリアライズドビュー
+      README.md
+      <page>.md
     partitioning-clustering/      # パーティション分割テーブル（作成・クエリ・管理）・クラスタ化テーブル
       README.md
       <page>.md
@@ -76,6 +79,9 @@ skills/gcp-bigquery/
     encryption-vpc-sc-audit-monitoring/  # 暗号化・CMEK・VPC Service Controls・監査ログ・モニタリング
       README.md
       <page>.md
+    workload-cost-management/     # エディション・スロット・予約・費用のベストプラクティス・カスタム quota
+      README.md
+      <page>.md
     migration-sql-translation/    # 移行の概要・SQL 変換（バッチ・インタラクティブ）
       README.md
       <page>.md
@@ -107,7 +113,7 @@ skills/gcp-bigquery/
 3. IAM ロール・権限 → `references/iam/README.md`（後続 PR で投入） の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/`（後続 PR で投入） 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
 4. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
 
-未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `bigqueryml-sql` / `graph-gql` / `information-schema` / `legacy-sql` / `bq-cli` / `dataform-cli` / `tables-schemas-views` / `workload-cost-management`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `bigqueryml-sql` / `graph-gql` / `information-schema` / `legacy-sql` / `bq-cli` / `dataform-cli`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -115,6 +121,7 @@ skills/gcp-bigquery/
 | --- | --- | --- |
 | BigQuery の概要・ストレージとコンピュートの分離・リソース階層・データセットの作成（ロケーション・有効期限・照合順序） | overview-datasets | [references/overview-datasets/README.md](references/overview-datasets/README.md) |
 | time travel・過去時点のデータ参照（`FOR SYSTEM_TIME AS OF`）・削除したテーブルの復元・table snapshot・table clone・プロジェクト / 組織の既定の構成（`ALTER PROJECT` / `ALTER ORGANIZATION SET OPTIONS`）・INFORMATION_SCHEMA の概要 | overview-datasets | [references/overview-datasets/README.md](references/overview-datasets/README.md) |
+| テーブルの種類・スキーマの指定（型・モード・既定値）・STRUCT / ARRAY（ネスト / 繰り返し）・論理ビュー・マテリアライズドビュー | tables-schemas-views | [references/tables-schemas-views/README.md](references/tables-schemas-views/README.md) |
 | 時間単位列・取り込み時間・整数範囲のパーティション分割テーブルの作成・パーティションのプルーニングとクエリ・パーティションの有効期限・パーティションフィルタ必須・パーティションのコピーと削除 | partitioning-clustering | [references/partitioning-clustering/README.md](references/partitioning-clustering/README.md) |
 | クラスタ化テーブル・自動再クラスタ化・クラスタ化テーブルへのクエリ | partitioning-clustering | [references/partitioning-clustering/README.md](references/partitioning-clustering/README.md) |
 | インタラクティブ / バッチのクエリ・dry run・クエリの実行（コンソール / `bq` / API）・キャッシュ結果 | queries-results | [references/queries-results/README.md](references/queries-results/README.md) |
@@ -140,13 +147,15 @@ skills/gcp-bigquery/
 | 行レベルセキュリティ（`CREATE ROW ACCESS POLICY`）・列レベルセキュリティ（policy tag・taxonomy）・データマスキング（data policy） | row-column-security-masking | [references/row-column-security-masking/README.md](references/row-column-security-masking/README.md) |
 | 保存時の暗号化・CMEK（既定鍵・ローテーション・Autokey）・VPC Service Controls と BigQuery | encryption-vpc-sc-audit-monitoring | [references/encryption-vpc-sc-audit-monitoring/README.md](references/encryption-vpc-sc-audit-monitoring/README.md) |
 | BigQuery の監査ログ・Cloud Monitoring の指標とダッシュボード | encryption-vpc-sc-audit-monitoring | [references/encryption-vpc-sc-audit-monitoring/README.md](references/encryption-vpc-sc-audit-monitoring/README.md) |
+| エディション（Standard / Enterprise / Enterprise Plus）・スロット・予約（commitment・reservation・assignment・autoscaling） | workload-cost-management | [references/workload-cost-management/README.md](references/workload-cost-management/README.md) |
+| 費用のベストプラクティス（dry run・`maximum_bytes_billed`・ストレージ費用）・カスタム quota | workload-cost-management | [references/workload-cost-management/README.md](references/workload-cost-management/README.md) |
 | 他のデータウェアハウスからの移行の概要・SQL 変換（バッチ・インタラクティブ） | migration-sql-translation | [references/migration-sql-translation/README.md](references/migration-sql-translation/README.md) |
 | BigQuery ML の概要・`CREATE MODEL`・評価・予測・ハイパーパラメータ調整・Vertex AI のモデルとの連携 | bigquery-ml | [references/bigquery-ml/README.md](references/bigquery-ml/README.md) |
 | 生成 AI 関数・リモートモデルでのテキスト生成（`AI.GENERATE_TEXT` / `ML.GENERATE_TEXT`）・ベクトル検索（`VECTOR_SEARCH`）・ベクトルインデックス | generative-ai-vector-search | [references/generative-ai-vector-search/README.md](references/generative-ai-vector-search/README.md) |
 | Gemini in BigQuery の設定・data canvas・data agents・Conversational Analytics API・notebooks・BigQuery DataFrames | gemini-data-agents-notebooks | [references/gemini-data-agents-notebooks/README.md](references/gemini-data-agents-notebooks/README.md) |
 | Dataform のリポジトリ・ワークスペース・SQLX・テーブル作成（table / view / incremental）・`ref()` による依存関係 | dataform | [references/dataform/README.md](references/dataform/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `bigqueryml-sql` / `graph-gql` / `information-schema` / `legacy-sql` / `bq-cli` / `dataform-cli` / `tables-schemas-views` / `workload-cost-management`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `bigqueryml-sql` / `graph-gql` / `information-schema` / `legacy-sql` / `bq-cli` / `dataform-cli`
 
 ## 他スキルとの使い分け
 
