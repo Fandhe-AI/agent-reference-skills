@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-devops
 
-Google Cloud (GCP) の CI/CD・成果物管理・ソース管理・アプリケーション管理系スキル。Cloud Build（`cloudbuild.yaml` のスキーマ・steps・substitutions・secrets・成果物・トリガー（Pub/Sub / webhook / 手動 / 承認 / スケジュール）・2nd gen リポジトリ接続（GitHub / GitLab / Bitbucket Cloud）・サービス アカウント・ビルドの来歴（provenance）・CMEK・private pool・言語別ビルドと Cloud Run / GKE へのデプロイ）、Artifact Registry（standard / remote / virtual リポジトリ・Docker / npm / Python / 汎用形式・認証・アクセス制御・CMEK・VPC Service Controls・cleanup policy・Container Registry からの移行）、Cloud Deploy（delivery pipeline / target / release / rollout・`clouddeploy.yaml`・Skaffold・GKE / Cloud Run / custom target・canary・automation・deploy hooks・検証・deploy policy）、Secure Source Manager と Cloud Source Repositories（廃止告知と移行）、Developer Connect（リポジトリ接続・insights）、App Hub（application・service・workload の登録）、Application Design Center（space・application template・catalog）、App Lifecycle Manager（旧 SaaS Runtime。SaaS オファリング・テナント・rollout・feature flags）、App Optimize・Developer Device Platform（Device Run）、Workload Manager（評価・カスタム ルール・SAP）を扱う。加えて gcloud 12 グループ・REST（Discovery）9 API・IAM 15 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`gcloud/artifacts` / `gcloud/builds` / `gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/apphub` / `gcloud/design-center` / `gcloud/app-optimize` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) の CI/CD・成果物管理・ソース管理・アプリケーション管理系スキル。Cloud Build（`cloudbuild.yaml` のスキーマ・steps・substitutions・secrets・成果物・トリガー（Pub/Sub / webhook / 手動 / 承認 / スケジュール）・2nd gen リポジトリ接続（GitHub / GitLab / Bitbucket Cloud）・サービス アカウント・ビルドの来歴（provenance）・CMEK・private pool・言語別ビルドと Cloud Run / GKE へのデプロイ）、Artifact Registry（standard / remote / virtual リポジトリ・Docker / npm / Python / 汎用形式・認証・アクセス制御・CMEK・VPC Service Controls・cleanup policy・Container Registry からの移行）、Cloud Deploy（delivery pipeline / target / release / rollout・`clouddeploy.yaml`・Skaffold・GKE / Cloud Run / custom target・canary・automation・deploy hooks・検証・deploy policy）、Secure Source Manager と Cloud Source Repositories（廃止告知と移行）、Developer Connect（リポジトリ接続・insights）、App Hub（application・service・workload の登録）、Application Design Center（space・application template・catalog）、App Lifecycle Manager（旧 SaaS Runtime。SaaS オファリング・テナント・rollout・feature flags）、App Optimize・Developer Device Platform（Device Run）、Workload Manager（評価・カスタム ルール・SAP）を扱う。加えて gcloud 12 グループ・REST（Discovery）9 API・IAM 15 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`gcloud/artifacts` / `gcloud/builds` / `gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/design-center` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。
 
@@ -25,9 +25,15 @@ skills/gcp-devops/
   references/
     gcloud/                       # 機械生成: gcloud 593.0.0、取得 2026-11-14
       README.md
+      apphub/                     # App Hub: applications・services・workloads・discovered-*・boundary・service-projects
+        README.md
+        apphub-<group>.md
       app-lifecycle-manager/      # App Lifecycle Manager: saas・units・releases・rollouts・tenants・flags
         README.md
         app-lifecycle-manager-<group>.md
+      app-optimize/               # App Optimize: reports（beta のみ）
+        README.md
+        app-optimize-<group>.md
     artifact-registry-repositories/        # Artifact Registry の概要・リポジトリの概念・対応形式・作成・ロケーション・virtual の概要
       README.md
       <page>.md
@@ -123,14 +129,16 @@ skills/gcp-devops/
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` と各ガイドのコードブロックを引く。
 
-未投入カテゴリ（`gcloud/artifacts` / `gcloud/builds` / `gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/apphub` / `gcloud/design-center` / `gcloud/app-optimize` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud/artifacts` / `gcloud/builds` / `gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/design-center` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | gcloud のコマンド・フラグを調べたい（12 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
+| `gcloud apphub`（applications・services・workloads・discovered-*）のフラグを調べたい | gcloud/apphub | [references/gcloud/apphub/README.md](references/gcloud/apphub/README.md) |
 | `gcloud app-lifecycle-manager`（saas・units・releases・rollouts・tenants・flags）のフラグを調べたい | gcloud/app-lifecycle-manager | [references/gcloud/app-lifecycle-manager/README.md](references/gcloud/app-lifecycle-manager/README.md) |
+| `gcloud beta app-optimize`（reports）のフラグを調べたい | gcloud/app-optimize | [references/gcloud/app-optimize/README.md](references/gcloud/app-optimize/README.md) |
 | Artifact Registry の概要・リポジトリのモード（standard / remote / virtual）・対応形式・リポジトリの作成・ロケーション | artifact-registry-repositories | [references/artifact-registry-repositories/README.md](references/artifact-registry-repositories/README.md) |
 | remote リポジトリ（Docker Hub 等の上流キャッシュ）の作成・上流の認証・virtual リポジトリの作成と上流ポリシーの優先度 | artifact-registry-remote-virtual | [references/artifact-registry-remote-virtual/README.md](references/artifact-registry-remote-virtual/README.md) |
 | Docker イメージの push / pull・認証（credential helper）・イメージ名・管理（タグ・削除）・コピー・Docker Hub キャッシュの pull・Container Registry からの移行・`gcr.io` リポジトリ | artifact-registry-docker-gcr-transition | [references/artifact-registry-docker-gcr-transition/README.md](references/artifact-registry-docker-gcr-transition/README.md) |
@@ -154,7 +162,7 @@ skills/gcp-devops/
 | App Optimize のレポート（概要・作成・読み取り）、Developer Device Platform（Device Run・Android instrumentation・iOS・共有ストレージ） | app-optimize-device-platform | [references/app-optimize-device-platform/README.md](references/app-optimize-device-platform/README.md) |
 | Workload Manager の評価（evaluation）・ルールの検出結果・カスタム ルール（Rego）・デプロイ（SAP）・サービス アカウント・VPC Service Controls・SAP の監視 | workload-manager | [references/workload-manager/README.md](references/workload-manager/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/artifacts` / `gcloud/builds` / `gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/apphub` / `gcloud/design-center` / `gcloud/app-optimize` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/artifacts` / `gcloud/builds` / `gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/design-center` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
