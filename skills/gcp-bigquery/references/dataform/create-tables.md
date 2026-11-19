@@ -251,14 +251,16 @@ config {
 }
 ```
 
+Adapted (not in the official docs): the `columns` keys `column1_name`, `column2_name` and `column3_name` are written `column_1_name`, `column_2_name` and `column_3_name`, the column names the `SELECT` produces.
+
 ```sql
 config {
   type: "table",
   description: "Description of the table.",
   columns: {
-    column1_name: "Description of the first column",
-    column2_name: "Description of the second column",
-    column3_name: "Description of the third column",
+    column_1_name: "Description of the first column",
+    column_2_name: "Description of the second column",
+    column_3_name: "Description of the third column",
     record_name: {
       description: "Description of the record.",
       columns: {
@@ -464,6 +466,7 @@ post_operations {
 - The source also shows Console click-paths, a second `docs.js` block (a `columns` constant using `=` inside an object literal, which is not valid JavaScript) and its usage; those are omitted. Console steps are omitted.
 - Unquoted placeholders such as `<timestamp_column>` and `SELECT ...` are kept as written in the source.
 - Corrected from the official docs: the `ref` example groups by `1, 2` although `order_status` is not aggregated (`GROUP BY 1, 2, 3`); the first incremental example filters on `MAX(date)` of the output table but does not select `date`; the daily snapshot filters on the `SELECT` alias `snapshot_date` in `WHERE` (written with `CURRENT_DATE()`); the two `uniqueKey: ["transaction_id"]` examples do not select `transaction_id`.
+- Corrected from the official docs: the column-description example documents `column1_name` to `column3_name` while its `SELECT` produces `column_1_name` to `column_3_name`; the `columns` keys are aligned with the `SELECT`.
 - Source: https://docs.cloud.google.com/dataform/docs/create-tables (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

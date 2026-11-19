@@ -51,7 +51,7 @@ Adapted (not in the official docs): `method: *` is not valid YAML (`*` starts an
 
 Egress rules for the source project (a set is also needed for `PROJECT_A`, the view project):
 
-Adapted (not in the official docs): `method: *` is not valid YAML (`*` starts an alias); it is quoted as `"*"`. `identityType: caller_r` is written as an `identities` list with the placeholder `CALLER_R`, and `sources[].resource` is a single string, not a list.
+Adapted (not in the official docs): `method: *` is not valid YAML (`*` starts an alias); it is quoted as `"*"`. `identityType: caller_r` is written as an `identities` list with the placeholder `CALLER_R`, and `sources[].resource` is a single string, not a list. `sourceRestriction: SOURCE_RESTRICTION_ENABLED` is added, which `egressFrom` requires when `sources` is set.
 
 ```yaml
 - egressTo:
@@ -66,6 +66,7 @@ Adapted (not in the official docs): `method: *` is not valid YAML (`*` starts an
     - CALLER_R
     sources:
     - resource: projects/project_r
+    sourceRestriction: SOURCE_RESTRICTION_ENABLED
   title: Egress rules for the source project
 ```
 
@@ -102,6 +103,7 @@ Adapted (not in the official docs): `method: *` is not valid YAML (`*` starts an
 - Corrected from the official docs: the `bq rm` example wrote the identifier as `project_id:dataset:table_id`; a table is `project_id:dataset.table_id`.
 - Corrected from the official docs: the VPC Service Controls rules wrote `method: *`, which is not valid YAML (`*` starts an alias); it is quoted as `"*"`.
 - Corrected from the official docs: the rules write `identityType: caller_r` and `sources: - resource: [projects/project_r]`; `identityType` takes only `ANY_IDENTITY`, `ANY_USER_ACCOUNT` or `ANY_SERVICE_ACCOUNT`, specific callers go in `identities` (for example `user:alice@example.com` or `serviceAccount:SA_EMAIL`), and `IngressSource.resource` / `EgressSource.resource` are strings (`projects/PROJECT_NUMBER`).
+- Corrected from the official docs: the egress rule sets `egressFrom.sources` without `sourceRestriction`; when `sources` is not empty, `sourceRestriction` must be `SOURCE_RESTRICTION_ENABLED` (Access Context Manager `EgressFrom`).
 - Source: https://docs.cloud.google.com/bigquery/docs/authorized-views (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
