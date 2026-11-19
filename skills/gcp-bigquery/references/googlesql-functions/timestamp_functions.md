@@ -12,7 +12,7 @@ GoogleSQL for BigQuery supports the following timestamp functions.
 > **Important:** Before working with these functions, you need to understand the difference between the formats in which timestamps are stored and displayed, and how time zones are used for the conversion between these formats. To learn more, see [How time zones work with timestamp functions](#how-time-zones-work-with-timestamp-functions).
 
 > [!NOTE]
-> **Note:** These functions return a runtime error if overflow occurs; result values are bounded by the defined [`DATE` range](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#date_type) and [`TIMESTAMP` range](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#timestamp_type).
+> **Note:** These functions return a runtime error if overflow occurs; result values are bounded by the defined [`DATE` range](../googlesql-syntax/data-types.md#date-type) and [`TIMESTAMP` range](../googlesql-syntax/data-types.md#timestamp-type).
 
 ### Function list
 
@@ -1078,7 +1078,7 @@ the time zone name (for example, `America/Los_Angeles`)
 or time zone offset from UTC (for example, -08).
 
 To learn more about how time zones work with the `TIMESTAMP` type, see
-[Time zones](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#time_zones).
+[Time zones](../googlesql-syntax/data-types.md#time-zones).
 
 ## Notes
 

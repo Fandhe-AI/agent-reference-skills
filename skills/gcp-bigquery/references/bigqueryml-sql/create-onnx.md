@@ -147,10 +147,10 @@ columns include the following:
 
 | ONNX Tensor type | Supported | BigQuery type |
 |---|---|---|
-| `ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8` `ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16` `ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32` `ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64` `ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8` `ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT16` `ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT32` `ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT64` | Supported | [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types) |
-| `ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16` `ONNX_TENSOR_ELEMENT_DATA_TYPE_BFLOAT16` `ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT` `ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE` | Supported | [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) |
-| `ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL` | Supported | [`BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#boolean_type) |
-| `ONNX_TENSOR_ELEMENT_DATA_TYPE_STRING` | Supported | [`STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#string_type) |
+| `ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8` `ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16` `ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32` `ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64` `ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8` `ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT16` `ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT32` `ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT64` | Supported | [`INT64`](../googlesql-syntax/data-types.md#integer-type) |
+| `ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16` `ONNX_TENSOR_ELEMENT_DATA_TYPE_BFLOAT16` `ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT` `ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE` | Supported | [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) |
+| `ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL` | Supported | [`BOOL`](../googlesql-syntax/data-types.md#boolean-type) |
+| `ONNX_TENSOR_ELEMENT_DATA_TYPE_STRING` | Supported | [`STRING`](../googlesql-syntax/data-types.md#string-type) |
 | `ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX64` `ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX128` | Unsupported | N/A |
 
 ### Locations

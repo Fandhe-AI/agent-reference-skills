@@ -499,7 +499,7 @@ format: `NAME=VALUE, ...`
 | `skip_leading_rows` | `INT64` The number of rows at the top of a file to skip when reading the data. Applies to CSV and Google Sheets data. |
 | `source_column_match` | `STRING` This controls the strategy used to match loaded columns to the schema. If this value is unspecified, then the default is based on how the schema is provided. If autodetect is enabled, then the default behavior is to match columns by name. Otherwise, the default is to match columns by position. This is done to keep the behavior backward-compatible. Supported values include: - `POSITION`: matches by position. This option assumes that the columns are ordered the same way as the schema. - `NAME`: matches by name. This option reads the header row as column names and reorders columns to match the field names in the schema. Column names are read from the last skipped row based on the `skip_leading_rows` property. |
 | `tags` | `<ARRAY<STRUCT<STRING, STRING>>>` An array of IAM tags for the table, expressed as key-value pairs. The key should be the [namespaced key name](https://docs.cloud.google.com/iam/docs/tags-access-control#definitions), and the value should be the [short name](https://docs.cloud.google.com/iam/docs/tags-access-control#definitions). |
-| `time_zone` | `STRING` Default time zone that will apply when parsing timestamp values that have no specific time zone. Check [valid time zone names](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#time_zone_name). If this value is not present, the timestamp values without specific time zone is parsed using default time zone UTC. Applies to CSV and JSON data. |
+| `time_zone` | `STRING` Default time zone that will apply when parsing timestamp values that have no specific time zone. Check [valid time zone names](data-types.md#time-zone-name). If this value is not present, the timestamp values without specific time zone is parsed using default time zone UTC. Applies to CSV and JSON data. |
 | `date_format` | `STRING` [Format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime) that define how the DATE values are formatted in the input files (for example, `MM/DD/YYYY`). If this value is present, this format is the only compatible DATE format. [Schema autodetection](https://docs.cloud.google.com/bigquery/docs/schema-detect#date_and_time_values) will also decide DATE column type based on this format instead of the existing format. If this value is not present, the DATE field is parsed with the [default formats](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv#data_types). Applies to CSV and JSON data. |
 | `datetime_format` | `STRING` [Format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime) that define how the DATETIME values are formatted in the input files (for example, `MM/DD/YYYY HH24:MI:SS.FF3`). If this value is present, this format is the only compatible DATETIME format. [Schema autodetection](https://docs.cloud.google.com/bigquery/docs/schema-detect#date_and_time_values) will also decide DATETIME column type based on this format instead of the existing format. If this value is not present, the DATETIME field is parsed with the [default formats](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv#data_types). Applies to CSV and JSON data. |
 | `time_format` | `STRING` [Format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime) that define how the TIME values are formatted in the input files (for example, `HH24:MI:SS.FF3`). If this value is present, this format is the only compatible TIME format. [Schema autodetection](https://docs.cloud.google.com/bigquery/docs/schema-detect#date_and_time_values) will also decide TIME column type based on this format instead of the existing format. If this value is not present, the TIME field is parsed with the [default formats](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv#data_types). Applies to CSV and JSON data. |
@@ -726,7 +726,7 @@ Routine names must contain only letters, numbers, and underscores, and be at mos
 
 - `named_parameter`: A comma-separated `param_name`
   and `param_type` pair. The value of `param_type` is a
-  BigQuery [data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types). For a SQL UDF, the
+  BigQuery [data type](data-types.md). For a SQL UDF, the
   value of `param_type` can also be `ANY TYPE`.
 
 - `determinism_specifier`: Applies only to JavaScript UDFs.
@@ -944,7 +944,7 @@ function_parameter:
   - `function_name`: The name of the function. Function names must contain only letters, numbers, and underscores, and be at most 256 characters long.
 - `function_parameter`: A parameter for the function.
   - `parameter_name`: The name of the function parameter.
-  - `parameter_data_type`: The GoogleSQL [data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types) for the function parameter.
+  - `parameter_data_type`: The GoogleSQL [data type](data-types.md) for the function parameter.
   - `NOT AGGREGATE`: The function parameter is not an aggregate. A non-aggregate function parameter can appear anywhere in the function definition.
 - `return_data_type`: The GoogleSQL data type that the function should return. GoogleSQL infers the result data type of the function from the function body when the `RETURN` clause is omitted.
 - `function_body`: The SQL expression that defines the function body.
@@ -1046,7 +1046,7 @@ function_parameter:
   - `function_name`: The name of the function. Function names must contain only letters, numbers, and underscores, and be at most 256 characters long.
 - `function_parameter`: A parameter for the function.
   - `parameter_name`: The name of the function parameter.
-  - `parameter_data_type`: The GoogleSQL [data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types) for the function parameter.
+  - `parameter_data_type`: The GoogleSQL [data type](data-types.md) for the function parameter.
   - `NOT AGGREGATE`: The function parameter is not an aggregate. Only one non-aggregate function parameter is allowed per JavaScript UDAF, and it must be the last parameter in the list.
 - `return_data_type`: The GoogleSQL data type that the function should return.
 - `function_body`: The JavaScript expression that defines the function body. For more information, see [`function_body`](#function_body).
@@ -1084,7 +1084,7 @@ options are supported:
 #### SQL type encodings in a JavaScript UDAF
 
 In JavaScript UDAFs,
-[GoogleSQL data types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types)
+[GoogleSQL data types](data-types.md)
 represent [JavaScript data types](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects)
 in the following manner:
 
@@ -1396,7 +1396,7 @@ column_declaration:
 - `project_name`: The name of the project where you are creating the function. Defaults to the project that runs this DDL statement.
 - `dataset_name`: The name of the dataset where you are creating the function.
 - `function_name`: The name of the function to create.
-- `function_parameter`: A parameter for the function, specified as a parameter name and a data type. The value of `data_type` is a scalar BigQuery [data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types) or `ANY TYPE`, or a table schema. Using [table parameters](https://docs.cloud.google.com/bigquery/docs/table-functions#table_parameters) in a table function is in [Preview](https://cloud.google.com/products#product-launch-stages).
+- `function_parameter`: A parameter for the function, specified as a parameter name and a data type. The value of `data_type` is a scalar BigQuery [data type](data-types.md) or `ANY TYPE`, or a table schema. Using [table parameters](https://docs.cloud.google.com/bigquery/docs/table-functions#table_parameters) in a table function is in [Preview](https://cloud.google.com/products#product-launch-stages).
 - `RETURNS TABLE`: The schema of the table that the function returns, specified as a comma-separated list of column name and data type pairs. If `RETURNS
   TABLE` is absent, BigQuery infers the output schema from the query statement in the function body. If `RETURNS TABLE` is included, the names in the returned table type must match column names from the SQL query.
 - `sql_query`: Specifies the SQL query to run. The SQL query must include names for all columns.
@@ -1570,7 +1570,7 @@ external_security: INVOKER
   `main_file_uri` in [`procedure_option_list`](#procedure_option_list).
 
 - `argument_type`: Any valid BigQuery
-  [type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types).
+  [type](data-types.md).
 
 - `procedure_argument_mode`: Specifies whether an argument is an input, an
   output, or both.

@@ -165,14 +165,14 @@ The following example expressions propagate collation.
 
 | Expression | Notes |
 |---|---|
-| [`ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#array_type) | When you construct an `ARRAY`, collation on input arguments is propagated on the elements in the `ARRAY`. |
+| [`ARRAY`](data-types.md#array-type) | When you construct an `ARRAY`, collation on input arguments is propagated on the elements in the `ARRAY`. |
 | [`CASE`](../googlesql-functions/conditional_expressions.md#case) |   |
 | [`CASE` expr](../googlesql-functions/conditional_expressions.md#case-expr) |   |
 | [`COALESCE`](../googlesql-functions/conditional_expressions.md#coalesce) |   |
 | [`IF`](../googlesql-functions/conditional_expressions.md#if) |   |
 | [`IFNULL`](../googlesql-functions/conditional_expressions.md#ifnull) |   |
 | [`NULLIF`](../googlesql-functions/conditional_expressions.md#nullif) |   |
-| [`STRUCT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#struct_type) | When you construct a `STRUCT`, collation on input arguments is propagated on the fields in the `STRUCT`. |
+| [`STRUCT`](data-types.md#struct-type) | When you construct a `STRUCT`, collation on input arguments is propagated on the fields in the `STRUCT`. |
 
 ### Additional features that support collation
 
@@ -252,9 +252,9 @@ You can assign a collation specification to the following data types.
 
 | Type | Notes |
 |---|---|
-| [`STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#string_type) | You can apply a collation specification directly to this data type. |
-| [`STRUCT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#struct_type) | You can apply a collation specification to a `STRING` field in a `STRUCT`. A `STRUCT` can have `STRING` fields with different collation specifications. A `STRUCT` can only be used in comparisons with the following operators and conditional expressions: `=`, `!=`, `IN`, `NULLIF`, and `CASE`. |
-| [`ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#array_type) | You can apply a collation specification to a `STRING` element in an `ARRAY`. An `ARRAY` can have `STRING` elements with different collation specifications. |
+| [`STRING`](data-types.md#string-type) | You can apply a collation specification directly to this data type. |
+| [`STRUCT`](data-types.md#struct-type) | You can apply a collation specification to a `STRING` field in a `STRUCT`. A `STRUCT` can have `STRING` fields with different collation specifications. A `STRUCT` can only be used in comparisons with the following operators and conditional expressions: `=`, `!=`, `IN`, `NULLIF`, and `CASE`. |
+| [`ARRAY`](data-types.md#array-type) | You can apply a collation specification to a `STRING` element in an `ARRAY`. An `ARRAY` can have `STRING` elements with different collation specifications. |
 
 > [!NOTE]
 > **Note:** Use the [`COLLATE`](../googlesql-functions/string_functions-1.md#collate) function to apply a collation specification to collation-supported expressions.

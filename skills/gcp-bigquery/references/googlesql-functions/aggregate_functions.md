@@ -64,7 +64,7 @@ AGG(measure_expression)
 
 **Description**
 
-Aggregates a [measure type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#measure_type). A measure type encapsulates an
+Aggregates a [measure type](../googlesql-syntax/data-types.md#measure-type). A measure type encapsulates an
 aggregate calculation to perform, locked to a specific granularity defined by
 a key. The `AGG` function invokes the calculation exactly once per key
 with the guarantee of avoiding overcounting. Measures are useful for defining
@@ -616,7 +616,7 @@ Caveats:
 - If the argument is `NaN` for any row in the group, returns `NaN`.
 - If the argument is `[+|-]Infinity` for any row in the group, returns either `[+|-]Infinity` or `NaN`.
 - If there is numeric overflow, produces an error.
-- If a [floating-point type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) is returned, the result is [non-deterministic](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_semantics), which means you might receive a different result each time you use this function.
+- If a [floating-point type](../googlesql-syntax/data-types.md#floating-point-type) is returned, the result is [non-deterministic](../googlesql-syntax/data-types.md#floating-point-semantics), which means you might receive a different result each time you use this function.
 
 **Supported Argument Types**
 
@@ -839,7 +839,7 @@ expression evaluated to any value other than `NULL`.
 **Definitions**
 
 - `*`: Use this value to get the number of all rows in the input.
-- `expression`: A value of any data type that represents the expression to evaluate. If `DISTINCT` is present, `expression` can only be a data type that is [groupable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#groupable_data_types).
+- `expression`: A value of any data type that represents the expression to evaluate. If `DISTINCT` is present, `expression` can only be a data type that is [groupable](../googlesql-syntax/data-types.md#groupable-data-types).
 - Optional aggregate clauses: To learn more about the optional aggregate clauses that you can pass into this function, see [Aggregate function calls](aggregate-function-calls.md).
 
 <!-- -->
@@ -1304,7 +1304,7 @@ This function supports specifying [collation](../googlesql-syntax/collation-conc
 
 **Supported Argument Types**
 
-Any [orderable data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties) except for `ARRAY`.
+Any [orderable data type](../googlesql-syntax/data-types.md#data-type-properties) except for `ARRAY`.
 
 **Return Data Types**
 
@@ -1412,7 +1412,7 @@ This function supports specifying [collation](../googlesql-syntax/collation-conc
 
 **Supported Argument Types**
 
-Any [orderable data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties) except for `ARRAY`.
+Any [orderable data type](../googlesql-syntax/data-types.md#data-type-properties) except for `ARRAY`.
 
 **Return Data Types**
 
@@ -1658,7 +1658,7 @@ Caveats:
 - If the argument is `NaN` for any row in the group, returns `NaN`.
 - If the argument is `[+|-]Infinity` for any row in the group, returns either `[+|-]Infinity` or `NaN`.
 - If there is numeric overflow, produces an error.
-- If a [floating-point type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) is returned, the result is [non-deterministic](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_semantics), which means you might receive a different result each time you use this function.
+- If a [floating-point type](../googlesql-syntax/data-types.md#floating-point-type) is returned, the result is [non-deterministic](../googlesql-syntax/data-types.md#floating-point-semantics), which means you might receive a different result each time you use this function.
 
 **Supported Argument Types**
 

@@ -60,7 +60,7 @@ value table.
 
 - Subqueries are unordered, so the elements of the output `ARRAY` aren't guaranteed to preserve any order in the source table for the subquery. However, if the subquery includes an `ORDER BY` clause, the `ARRAY` function will return an `ARRAY` that honors that clause.
 - If the subquery returns more than one column, the `ARRAY` function returns an error.
-- If the subquery returns an `ARRAY` typed column or `ARRAY` typed rows, the `ARRAY` function returns an error that GoogleSQL doesn't support `ARRAY`s with elements of type [`ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#array_type).
+- If the subquery returns an `ARRAY` typed column or `ARRAY` typed rows, the `ARRAY` function returns an error that GoogleSQL doesn't support `ARRAY`s with elements of type [`ARRAY`](../googlesql-syntax/data-types.md#array-type).
 - If the subquery returns zero rows, the `ARRAY` function returns an empty `ARRAY`. It never returns a `NULL` `ARRAY`.
 
 **Return type**

@@ -566,7 +566,7 @@ REFERENCES primary_key_table(column_name[, ...]) NOT ENFORCED
 
 Limitations:
 
-- It is not possible to create an [ingestion-time partitioned table](https://docs.cloud.google.com/bigquery/docs/creating-partitioned-tables) from the result of a query. Instead, use a `CREATE TABLE` DDL statement to create the table, and then use an [`INSERT` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#insert_statement) to insert data into it.
+- It is not possible to create an [ingestion-time partitioned table](https://docs.cloud.google.com/bigquery/docs/creating-partitioned-tables) from the result of a query. Instead, use a `CREATE TABLE` DDL statement to create the table, and then use an [`INSERT` DML statement](dml-syntax.md#insert-statement) to insert data into it.
 - It is not possible to use the `OR REPLACE` modifier to replace a table with a different kind of partitioning. Instead, `DROP` the table, and then use a `CREATE TABLE ... AS SELECT ...` statement to recreate it.
 
 This statement supports the following variants, which have the same limitations:
@@ -632,7 +632,7 @@ identity_column :=
   `column_schema` can be used only in the column definition list of
   `CREATE TABLE` statements. It cannot be used as a type in expressions.
 - `simple_type`: Any
-  [supported data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types)
+  [supported data type](data-types.md)
   aside from `STRUCT` and `ARRAY`.
 
   If `simple_type` is a `STRING`, it supports an additional clause for
@@ -1100,7 +1100,7 @@ CREATE TABLE mydataset.newtable (
 
 The following example creates a table named `newtable` in `mydataset`. The
 parameters in parentheses specify that the column contains a parameterized data
-type. See [Parameterized Data Types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#parameterized_data_types)
+type. See [Parameterized Data Types](data-types.md#parameterized-data-types)
 for more information about parameterized types.
 
 ```googlesql

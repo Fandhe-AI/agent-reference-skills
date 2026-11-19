@@ -61,7 +61,7 @@ syntax. To build an aggregate function, use the following syntax:
     in `ASC` sorts and last in `DESC` sorts.
 
   - If you're using floating point data types, see
-    [Floating point semantics](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_semantics)
+    [Floating point semantics](../googlesql-syntax/data-types.md#floating-point-semantics)
     on ordering and grouping.
 
   - The `ORDER BY` clause is supported only for aggregate functions that
@@ -136,7 +136,7 @@ Only rows whose `having_expression` value is equal to this maximum value (using
 SQL equality semantics) are included in the aggregation. All other rows are
 ignored in the aggregation.
 
-This clause supports all [orderable data types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties),
+This clause supports all [orderable data types](../googlesql-syntax/data-types.md#data-type-properties),
 except for `ARRAY`.
 
 **Examples**
@@ -180,7 +180,7 @@ Only rows whose `having_expression` value is equal to this minimum value (using
 SQL equality semantics) are included in the aggregation. All other rows are
 ignored in the aggregation.
 
-This clause supports all [orderable data types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties),
+This clause supports all [orderable data types](../googlesql-syntax/data-types.md#data-type-properties),
 except for `ARRAY`.
 
 **Examples**

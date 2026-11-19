@@ -306,7 +306,7 @@ Like [`KLL_QUANTILES.INIT_INT64`](#kll_quantilesinit_int64),
 but accepts `input` of type `FLOAT64`.
 
 `KLL_QUANTILES.INIT_FLOAT64` orders values according to the GoogleSQL
-[floating point sort order](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#comparison_operator_examples). For example, `NaN` orders before
+[floating point sort order](../googlesql-syntax/data-types.md#comparison-operator-examples). For example, `NaN` orders before
 `&#8209;inf`.
 
 **Supported Argument Types**
@@ -396,7 +396,7 @@ but accepts KLL sketches initialized on data of type
 `FLOAT64`.
 
 `KLL_QUANTILES.MERGE_FLOAT64` orders values according to the GoogleSQL
-[floating point sort order](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#comparison_operator_examples). For example, `NaN` orders before
+[floating point sort order](../googlesql-syntax/data-types.md#comparison-operator-examples). For example, `NaN` orders before
 `&#8209;inf`.
 
 **Supported Argument Types**
@@ -540,7 +540,7 @@ but accepts KLL sketches initialized on data of type
 `FLOAT64`.
 
 `KLL_QUANTILES.MERGE_POINT_FLOAT64` orders values according to the
-GoogleSQL [floating point sort order](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#comparison_operator_examples). For example, `NaN`
+GoogleSQL [floating point sort order](../googlesql-syntax/data-types.md#comparison-operator-examples). For example, `NaN`
 orders before `&#8209;inf`.
 
 **Supported Argument Types**

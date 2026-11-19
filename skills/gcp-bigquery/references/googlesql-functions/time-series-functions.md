@@ -36,15 +36,15 @@ time range.
 The following operations add rows to the `APPENDS` change history:
 
 - [`CREATE TABLE` DDL statement](../googlesql-syntax/data-definition-language-1.md#create-table-statement)
-- [`INSERT` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#insert_statement)
-- [Data appended as part of a `MERGE` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#merge_statement)
+- [`INSERT` DML statement](../googlesql-syntax/dml-syntax.md#insert-statement)
+- [Data appended as part of a `MERGE` DML statement](../googlesql-syntax/dml-syntax.md#merge-statement)
 - [Loading data](https://docs.cloud.google.com/bigquery/docs/loading-data) into BigQuery
 - [Streaming ingestion](https://docs.cloud.google.com/bigquery/docs/write-api#use_data_manipulation_language_dml_with_recently_streamed_data)
 
 **Definitions**
 
 - `table`: the BigQuery table name. This must be a regular BigQuery table or an [Apache Iceberg managed table](https://docs.cloud.google.com/bigquery/docs/biglake-iceberg-tables-in-bigquery). This argument must be preceded by the word `TABLE`.
-- `start_timestamp`: a [`TIMESTAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#timestamp_type)
+- `start_timestamp`: a [`TIMESTAMP`](../googlesql-syntax/data-types.md#timestamp-type)
   value indicating the earliest time at which a
   change is included in the output. If the value is `NULL`, all changes since the
   table creation are returned. If the table was created after the
@@ -218,13 +218,13 @@ to `TRUE`.
 The following operations add rows to the `CHANGES` change history:
 
 - [`CREATE TABLE` DDL statement](../googlesql-syntax/data-definition-language-1.md#create-table-statement)
-- [`INSERT` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#insert_statement)
-- [Data appended, changed or deleted as part of a `MERGE` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#merge_statement)
-- [`UPDATE` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#update_statement)
-- [`DELETE` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#delete_statement)
+- [`INSERT` DML statement](../googlesql-syntax/dml-syntax.md#insert-statement)
+- [Data appended, changed or deleted as part of a `MERGE` DML statement](../googlesql-syntax/dml-syntax.md#merge-statement)
+- [`UPDATE` DML statement](../googlesql-syntax/dml-syntax.md#update-statement)
+- [`DELETE` DML statement](../googlesql-syntax/dml-syntax.md#delete-statement)
 - [Loading data](https://docs.cloud.google.com/bigquery/docs/loading-data) into BigQuery
 - [Streaming ingestion](https://docs.cloud.google.com/bigquery/docs/write-api#use_data_manipulation_language_dml_with_recently_streamed_data)
-- [`TRUNCATE TABLE` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#truncate_table_statement)
+- [`TRUNCATE TABLE` DML statement](../googlesql-syntax/dml-syntax.md#truncate-table-statement)
 - [Jobs](https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job) configured with a `writeDisposition` of `WRITE_TRUNCATE`
 - Individual [table partition deletions](https://docs.cloud.google.com/bigquery/docs/managing-partitioned-tables#delete_a_partition)
 
@@ -232,7 +232,7 @@ The following operations add rows to the `CHANGES` change history:
 
 - `table`: the BigQuery table name. This must be a regular BigQuery table, and must have the [`enable_change_history`
   option](../googlesql-syntax/data-definition-language-1.md#table_option_list) set to `TRUE`. Enabling this table option has an impact on costs; for more information see [Pricing and costs](https://docs.cloud.google.com/bigquery/docs/change-history#pricing_and_costs). This argument must be preceded by the word `TABLE`.
-- `start_timestamp`: a [`TIMESTAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#timestamp_type) value indicating the earliest
+- `start_timestamp`: a [`TIMESTAMP`](../googlesql-syntax/data-types.md#timestamp-type) value indicating the earliest
   time at which a change is included in the output. If the value is `NULL`,
   all changes since the table creation are returned. If you set the
   `enable_change_history` option after setting the `start_timestamp` option,
@@ -289,7 +289,7 @@ The `CHANGES` function returns a table with the following columns:
 - You can only use the `CHANGES` function with regular BigQuery tables. Views, materialized views, external tables, and wildcard tables aren't supported.
 - For tables that have been cloned or snapshotted, and for tables that are restored from a clone or snapshot, change history from the source table isn't carried over to the new table, clone, or snapshot.
 - You can't use the `CHANGES` function with a table that has [change data capture](https://docs.cloud.google.com/bigquery/docs/change-data-capture) enabled.
-- If a table is enabled with [fine-grained DML](https://docs.cloud.google.com/bigquery/docs/data-manipulation-language#fine-grained_dml), and data deletion occurs using either a [`TRUNCATE TABLE` statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#truncate_table_statement), [`WRITE_TRUNCATE` write disposition](https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job#jobconfigurationquery), or a [qualifying `DELETE` statement](https://docs.cloud.google.com/bigquery/docs/using-dml-with-partitioned-tables#using_dml_delete_to_delete_partitions) that covers all rows in a partition, the `CHANGES` function might return additional deleted events.
+- If a table is enabled with [fine-grained DML](https://docs.cloud.google.com/bigquery/docs/data-manipulation-language#fine-grained_dml), and data deletion occurs using either a [`TRUNCATE TABLE` statement](../googlesql-syntax/dml-syntax.md#truncate-table-statement), [`WRITE_TRUNCATE` write disposition](https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job#jobconfigurationquery), or a [qualifying `DELETE` statement](https://docs.cloud.google.com/bigquery/docs/using-dml-with-partitioned-tables#using_dml_delete_to_delete_partitions) that covers all rows in a partition, the `CHANGES` function might return additional deleted events.
 - Partition pseudo-columns for ingestion-time partitioned tables, such as `_PARTITIONTIME` and `_PARTITIONDATE`, aren't included in the function's output.
 - Rows inserted through the [Storage Write API (gRPC) pending stream](https://docs.cloud.google.com/bigquery/docs/write-api#pending_type) or [Storage Write API (gRPC) buffered stream](https://docs.cloud.google.com/bigquery/docs/write-api#buffered_type) can have inconsistent timestamps, so repeatable reads aren't guaranteed. If you require repeatable reads for streaming ingestion workloads, use either the [Storage Write API (gRPC) default stream](https://docs.cloud.google.com/bigquery/docs/write-api#default_stream) or the [Storage Write API (gRPC) committed stream](https://docs.cloud.google.com/bigquery/docs/write-api#committed_type). If you require repeatable reads for batch ingestion workloads, use [BigQuery load jobs](https://docs.cloud.google.com/bigquery/docs/loading-data) instead.
 - Change history isn't captured for table deletions made due to table partition expiration.
@@ -390,7 +390,7 @@ Gets the lower bound of the date bucket that contains a date.
 **Definitions**
 
 - `date_in_bucket`: A `DATE` value that you can use to look up a date bucket.
-- `bucket_width`: An `INTERVAL` value that represents the width of a date bucket. A [single interval](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#single_datetime_part_interval) with [date parts](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#interval_datetime_parts) is supported.
+- `bucket_width`: An `INTERVAL` value that represents the width of a date bucket. A [single interval](../googlesql-syntax/data-types.md#construct-an-interval-with-a-single-datetime-part) with [date parts](../googlesql-syntax/data-types.md#interval-supported-date-and-time-parts) is supported.
 - `bucket_origin_date`: A `DATE` value that represents a point in time. All buckets expand left and right from this point. If this argument isn't set, `1950-01-01` is used by default.
 
 **Return type**
@@ -497,7 +497,7 @@ Gets the lower bound of the datetime bucket that contains a datetime.
 **Definitions**
 
 - `datetime_in_bucket`: A `DATETIME` value that you can use to look up a datetime bucket.
-- `bucket_width`: An `INTERVAL` value that represents the width of a datetime bucket. A [single interval](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#single_datetime_part_interval) with [date and time parts](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#interval_datetime_parts) is supported.
+- `bucket_width`: An `INTERVAL` value that represents the width of a datetime bucket. A [single interval](../googlesql-syntax/data-types.md#construct-an-interval-with-a-single-datetime-part) with [date and time parts](../googlesql-syntax/data-types.md#interval-supported-date-and-time-parts) is supported.
 - `bucket_origin_datetime`: A `DATETIME` value that represents a point in time. All buckets expand left and right from this point. If this argument isn't set, `1950-01-01 00:00:00` is used by default.
 
 **Return type**
@@ -1141,7 +1141,7 @@ Gets the lower bound of the timestamp bucket that contains a timestamp.
 **Definitions**
 
 - `timestamp_in_bucket`: A `TIMESTAMP` value that you can use to look up a timestamp bucket.
-- `bucket_width`: An `INTERVAL` value that represents the width of a timestamp bucket. A [single interval](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#single_datetime_part_interval) with [date and time parts](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#interval_datetime_parts) is supported.
+- `bucket_width`: An `INTERVAL` value that represents the width of a timestamp bucket. A [single interval](../googlesql-syntax/data-types.md#construct-an-interval-with-a-single-datetime-part) with [date and time parts](../googlesql-syntax/data-types.md#interval-supported-date-and-time-parts) is supported.
 - `bucket_origin_timestamp`: A `TIMESTAMP` value that represents a point in time. All buckets expand left and right from this point. If this argument isn't set, `1950-01-01 00:00:00` is used by default.
 
 **Return type**

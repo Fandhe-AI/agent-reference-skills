@@ -353,13 +353,13 @@ For XGBoost models, `INPUT` field names must be identical to the names in the `f
 [Remote models](create-remote-model-https.md) support the
 following BigQuery data types for `INPUT` and `OUTPUT` clauses:
 
-- Simple type: [BOOL](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#boolean_type), [INT64](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types), [FLOAT64](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types), [NUMERIC](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#decimal_types), [BIGNUMERIC](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#decimal_types), [STRING](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#string_type)
-- [ARRAY](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#array_type)\<Simple type\>
+- Simple type: [BOOL](../googlesql-syntax/data-types.md#boolean-type), [INT64](../googlesql-syntax/data-types.md#integer-type), [FLOAT64](../googlesql-syntax/data-types.md#floating-point-type), [NUMERIC](../googlesql-syntax/data-types.md#decimal-types), [BIGNUMERIC](../googlesql-syntax/data-types.md#decimal-types), [STRING](../googlesql-syntax/data-types.md#string-type)
+- [ARRAY](../googlesql-syntax/data-types.md#array-type)\<Simple type\>
 
 [XGBoost models](create-xgboost.md) only support
-[numeric types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types)
+[numeric types](../googlesql-syntax/data-types.md#numeric-types)
 for the `INPUT` field type and
-[`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types)
+[`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type)
 for the `OUTPUT` field type.
 
 #### `connection_name`
@@ -679,8 +679,8 @@ model type. Supported data types for `input_label_cols` include:
 
 | `Model type` | `Supported label types` |
 |---|---|
-| `regression models` | [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) |
-| `classification models` | Any [groupable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties) data type |
+| `regression models` | [`INT64`](../googlesql-syntax/data-types.md#integer-type) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) |
+| `classification models` | Any [groupable](../googlesql-syntax/data-types.md#data-type-properties) data type |
 
 #### Supported data types for data split columns
 
@@ -689,8 +689,8 @@ the data split method. Supported data types for `data_split_col` include:
 
 | `Data split method` | `Supported column types` |
 |---|---|
-| `CUSTOM` | [`BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#boolean_type) |
-| `SEQ` | [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) [`TIMESTAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#timestamp_type) |
+| `CUSTOM` | [`BOOL`](../googlesql-syntax/data-types.md#boolean-type) |
+| `SEQ` | [`INT64`](../googlesql-syntax/data-types.md#integer-type) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) [`TIMESTAMP`](../googlesql-syntax/data-types.md#timestamp-type) |
 
 ### Limitations
 

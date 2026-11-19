@@ -202,8 +202,8 @@ Supported data types for `input_label_cols` include the following:
 
 | `Model type` | `Supported label types` |
 |---|---|
-| `automl_regressor` | [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) |
-| `automl_classifier` | Any [groupable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties) data type |
+| `automl_regressor` | [`INT64`](../googlesql-syntax/data-types.md#integer-type) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) |
+| `automl_classifier` | Any [groupable](../googlesql-syntax/data-types.md#data-type-properties) data type |
 
 #### `DATA_SPLIT_COL`
 
@@ -263,16 +263,16 @@ A `STRING` value containing the fully-qualified name of the CMEK. For example,
 ### Supported data types for input columns
 
 For columns other than the label column, any
-[groupable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties)
+[groupable](../googlesql-syntax/data-types.md#data-type-properties)
 data type is supported. The BigQuery column type is used to
 determine the feature column type in AutoML.
 
 | `BigQuery type` | `AutoML type` |
 |---|---|
-| [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) | [`NUMERIC`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#numeric-transf) or [`TIMESTAMP`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#timestamp) if AutoML determines that it is a UNIX timestamp |
-| [`BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#boolean_type) | [`CATEGORICAL`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#categorical-transf) |
-| [`STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#string_type) [`BYTES`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bytes_type) | Either [`CATEGORICAL`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#categorical-transf) or [`TEXT`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#text-transf), auto-selected by AutoML. |
-| [`TIMESTAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#timestamp_type) [`DATETIME`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#datetime_type) [`TIME`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#time_type) [`DATE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#date_type) | Either [`TIMESTAMP`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#timestamp), [`CATEGORICAL`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#categorical-transf), or [`TEXT`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#text-transf), auto-selected by AutoML. |
+| [`INT64`](../googlesql-syntax/data-types.md#integer-type) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) | [`NUMERIC`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#numeric-transf) or [`TIMESTAMP`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#timestamp) if AutoML determines that it is a UNIX timestamp |
+| [`BOOL`](../googlesql-syntax/data-types.md#boolean-type) | [`CATEGORICAL`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#categorical-transf) |
+| [`STRING`](../googlesql-syntax/data-types.md#string-type) [`BYTES`](../googlesql-syntax/data-types.md#bytes-type) | Either [`CATEGORICAL`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#categorical-transf) or [`TEXT`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#text-transf), auto-selected by AutoML. |
+| [`TIMESTAMP`](../googlesql-syntax/data-types.md#timestamp-type) [`DATETIME`](../googlesql-syntax/data-types.md#datetime-type) [`TIME`](../googlesql-syntax/data-types.md#time-type) [`DATE`](../googlesql-syntax/data-types.md#date-type) | Either [`TIMESTAMP`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#timestamp), [`CATEGORICAL`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#categorical-transf), or [`TEXT`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#text-transf), auto-selected by AutoML. |
 
 To force a numeric column to be treated as categorical, use the
 [`CAST` function](../googlesql-functions/conversion_functions.md#cast)

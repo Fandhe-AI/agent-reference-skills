@@ -743,7 +743,7 @@ PARSE_BIGNUMERIC(string_expression)
 Converts a `STRING` to a `BIGNUMERIC` value.
 
 The numeric literal contained in the string must not exceed the
-[maximum precision or range](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#decimal_types) of the `BIGNUMERIC` type, or an
+[maximum precision or range](../googlesql-syntax/data-types.md#decimal-types) of the `BIGNUMERIC` type, or an
 error occurs. If the number of digits after the decimal point exceeds 38, then
 the resulting `BIGNUMERIC` value rounds
 [half away from zero](https://en.wikipedia.org/wiki/Rounding#Round_half_away_from_zero) to have 38 digits after the
@@ -908,7 +908,7 @@ PARSE_NUMERIC(string_expression)
 Converts a `STRING` to a `NUMERIC` value.
 
 The numeric literal contained in the string must not exceed the
-[maximum precision or range](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#decimal_types) of the `NUMERIC` type, or an error
+[maximum precision or range](../googlesql-syntax/data-types.md#decimal-types) of the `NUMERIC` type, or an error
 occurs. If the number of digits after the decimal point exceeds nine, then the
 resulting `NUMERIC` value rounds
 [half away from zero](https://en.wikipedia.org/wiki/Rounding#Round_half_away_from_zero) to have nine digits after the
