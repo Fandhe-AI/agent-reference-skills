@@ -845,7 +845,7 @@ project_id.location.reservation_id.assignment_id
 - `assignment_id`: The assignment ID.
 
 To find the assignment ID, query the
-[`INFORMATION_SCHEMA.ASSIGNMENTS` view](https://docs.cloud.google.com/bigquery/docs/information-schema-assignments).
+[`INFORMATION_SCHEMA.ASSIGNMENTS` view](../information-schema/assignments.md).
 
 #### Required permissions
 
