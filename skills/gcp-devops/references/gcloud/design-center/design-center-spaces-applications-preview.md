@@ -169,7 +169,7 @@ NOTES
         $ gcloud alpha design-center spaces applications preview
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud design-center spaces applications preview projects/my-project/locations/us-central1/spaces/my-space/applications/my-application
@@ -185,7 +185,7 @@ gcloud design-center spaces applications preview my-application \
     --project=my-project \
     --location=us-central1 \
     --create-sa \
-    --service-account=my-service-account@my-project.iam.gserviceaccount.com
+    --service-account=my-service-account
 
 gcloud design-center spaces applications preview my-application \
     --space=my-space \
@@ -211,6 +211,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example that creates "a specific service account" passes `--create-sa` with an email address (`my-service-account@my-project.iam.gserviceaccount.com`); the `--service-account` description on this page says that with `--create-sa` "this value is the ID of a new service account to be created (e.g., my-new-sa)", and the email format applies only "when not using --create-sa"; the runnable form passes the ID `my-service-account`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
