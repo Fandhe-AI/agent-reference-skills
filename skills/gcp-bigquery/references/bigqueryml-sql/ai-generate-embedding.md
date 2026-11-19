@@ -37,11 +37,11 @@ following ways:
 
 - To generate embeddings from text or visual content,
   `AI.GENERATE_EMBEDDING` sends the request to a BigQuery ML
-  [remote model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model)
+  [remote model](create-remote-model.md)
   that represents a
   [Gemini Enterprise Agent Platform embedding model](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models#embeddings-models)
   or a
-  [supported open model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-open#supported_open_models),
+  [supported open model](create-remote-model-open.md#supported-open-models),
   and then returns the model's response.
 
   The `AI.GENERATE_EMBEDDING` function works with the Agent Platform
@@ -176,7 +176,7 @@ AI.GENERATE_EMBEDDING(
 
 - `MODEL_NAME`: the name of
   a
-  [self-deployed open model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-open).
+  [self-deployed open model](create-remote-model-open.md).
 
   You can confirm the type of model by opening the Google Cloud console
   and looking at the **Model type** field in the model details page.
