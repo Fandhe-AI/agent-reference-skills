@@ -52,12 +52,14 @@ Removing it falls back to the organization-level default, if one exists, or the 
 
 Every option carries a `region-REGION.` prefix; one region per statement, the same `REGION` for each option. The doc example uses time zone `America/Chicago`, query timeout 30 minutes, interactive queue timeout 10 minutes, batch queue timeout 20 minutes:
 
+Adapted (not in the official docs): `default_kms_key_name = 'KMS_KEY'` is quoted, because the key name (`projects/.../cryptoKeys/...`) is a string; unquoted it is parsed as an identifier or expression.
+
 ```sql
 ALTER ORGANIZATION
 SET OPTIONS (
 `region-REGION.default_time_zone`= 'America/Chicago',
 -- Ensure all service accounts under the organization have permission to KMS_KEY
-`region-REGION.default_kms_key_name` = KMS_KEY,
+`region-REGION.default_kms_key_name` = 'KMS_KEY',
 `region-REGION.default_query_job_timeout_ms` = 1800000,
 `region-REGION.default_interactive_query_queue_timeout_ms` = 600000,
 `region-REGION.default_batch_query_queue_timeout_ms` = 1200000,
@@ -81,12 +83,14 @@ SET OPTIONS (
 
 The doc example uses time zone `America/Los_Angeles`, query timeout 1 hour, interactive queue timeout 10 minutes, batch queue timeout 20 minutes, reservation-based fairness and global queries enabled:
 
+Adapted (not in the official docs): `default_kms_key_name = 'KMS_KEY'` is quoted, because the key name (`projects/.../cryptoKeys/...`) is a string; unquoted it is parsed as an identifier or expression.
+
 ```sql
 ALTER PROJECT PROJECT_ID
 SET OPTIONS (
 `region-REGION.default_time_zone` = 'America/Los_Angeles',
 -- Ensure all service accounts under the project have permission to KMS_KEY
-`region-REGION.default_kms_key_name` = KMS_KEY,
+`region-REGION.default_kms_key_name` = 'KMS_KEY',
 `region-REGION.default_query_job_timeout_ms` = 3600000,
 `region-REGION.default_interactive_query_queue_timeout_ms` = 600000,
 `region-REGION.default_batch_query_queue_timeout_ms` = 1200000,
@@ -218,6 +222,7 @@ Placeholders: `REGION` is a BigQuery region such as `us` or `europe-west6`; `KMS
 - Before setting `default_time_zone`, make sure existing queries with `DATETIME` literals (explicit `DATETIME` keyword, implicit string conversion such as `DATETIME_DIFF('2022-10-01', ...)`, `PARSE_DATETIME()`) are not affected; safer to set only on new projects.
 - New settings can take a few minutes to take effect and appear in the `INFORMATION_SCHEMA` views (`PROJECT_OPTIONS`: project configurations; `EFFECTIVE_PROJECT_OPTIONS`: project settings plus those inherited from the organization; `ORGANIZATION_OPTIONS`: organization configurations).
 - The console and bq tab examples in the source use the same DDL; the console steps are omitted. No additional charge for the configuration service.
+- Corrected from the official docs: the `ALTER ORGANIZATION` and `ALTER PROJECT` examples write `default_kms_key_name = KMS_KEY` unquoted; the Cloud KMS key name is a string, so it is quoted (`'KMS_KEY'`).
 - Source: https://docs.cloud.google.com/bigquery/docs/default-configuration (retrieved 2026-11-19)
 
 ## Related
