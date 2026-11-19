@@ -824,8 +824,10 @@ A JSON literal represents [JSON](https://en.wikipedia.org/wiki/JSON)-formatted d
 
 Example:
 
+Adapted (not in the official docs): enclosed the multi-line JSON literal in triple quotes.
+
 ```sql
-JSON '
+JSON '''
 {
   "id": 10,
   "type": "fruit",
@@ -846,7 +848,7 @@ JSON '
       ]
     }
 }
-'
+'''
 ```
 
 A JSON literal represents a constant value of the
@@ -1052,6 +1054,7 @@ WHERE book = "Ulysses";
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the range literal example is shown as `'[2014-01-01,' /*comment*/ "2015-01-01)"` with the equivalent `'[2014-01-01 2015-01-01)'`, which has no comma. Changed to `'[2014-01-01, ' ...` (space after the comma, which the page requires in range literals) and `'[2014-01-01, 2015-01-01)'`.
 - Corrected from the official docs: the link text "Construct an interval with a datetime part range" pointed to the anchor of the single datetime part section (`#single_datetime_part_interval` in the official HTML); changed to `#construct-an-interval-with-a-datetime-part-range`, the anchor already used earlier on this page.
+- Corrected from the official docs: the JSON literal example encloses a multi-line JSON value in single quotes, but the quoted-string row of the "Formats for quoted literals" table on this page says that quoted strings can't contain newlines. The example now uses triple quotes (`'''`), which the same table says allow embedded newlines.
 
 ## Related
 
