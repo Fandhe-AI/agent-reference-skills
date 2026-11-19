@@ -42,7 +42,7 @@ gcloud builds submit "gs://bucket/object.zip" --config=config.yaml
 
 - Local builds used for release let an attacker modify the build process and make builds hard to reproduce; the source recommends local builds only for debugging.
 - Cloud Build security insights for built applications show the SLSA level, vulnerabilities, SBOM and VEX statements for build artifacts, and build provenance.
-- Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/builds/submit (gcloud 593.0.0 help). Cloud Build is covered by `gcp-devops` (planned).
+- Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/builds/submit (gcloud 593.0.0 help). Cloud Build is covered by `gcp-devops`.
 - SLSA version: the level table follows SLSA v0.1 (the source links https://slsa.dev/spec/v0.1/requirements), where source, build and provenance requirements share levels 1 to 4. The current specification (SLSA v1.2, https://slsa.dev/spec/v1.2/) splits them into a Build track (Build L0 to L3, https://slsa.dev/spec/v1.2/build-track-basics) and a separate Source track (Source L1 to L4, https://slsa.dev/spec/v1.2/source-requirements); SLSA v1.0 removed the source aspects (https://slsa.dev/spec/v1.0/levels). Use the table to read the source page, not as a current conformance checklist (retrieved 2026-11-18).
 - Source: https://docs.cloud.google.com/software-supply-chain-security/docs/safeguard-builds (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 

@@ -2,7 +2,7 @@
 
 | Name | Description | Path |
 |---|---|---|
-| out-of-scope | Out-of-scope products (62) | [out-of-scope.md](./out-of-scope.md) |
+| out-of-scope | Out-of-scope products (61) | [out-of-scope.md](./out-of-scope.md) |
 | gcp-agent-platform | Products owned by this skill (14) | [gcp-agent-platform.md](./gcp-agent-platform.md) |
 | gcp-agent-platform-ml | Products owned by this skill (2) | [gcp-agent-platform-ml.md](./gcp-agent-platform-ml.md) |
 | gcp-ai-apis | Products owned by this skill (23) | [gcp-ai-apis.md](./gcp-ai-apis.md) |
@@ -12,7 +12,7 @@
 | gcp-data-pipelines | Products owned by this skill (10) | [gcp-data-pipelines.md](./gcp-data-pipelines.md) |
 | gcp-databases-nosql | Products owned by this skill (6) | [gcp-databases-nosql.md](./gcp-databases-nosql.md) |
 | gcp-databases-relational | Products owned by this skill (6) | [gcp-databases-relational.md](./gcp-databases-relational.md) |
-| gcp-devops | Products owned by this skill (12) | [gcp-devops.md](./gcp-devops.md) |
+| gcp-devops | Products owned by this skill (13) | [gcp-devops.md](./gcp-devops.md) |
 | gcp-foundation | Products owned by this skill (42) | [gcp-foundation.md](./gcp-foundation.md) |
 | gcp-gke | Products owned by this skill (22) | [gcp-gke.md](./gcp-gke.md) |
 | gcp-hybrid-migration | Products owned by this skill (7) | [gcp-hybrid-migration.md](./gcp-hybrid-migration.md) |

@@ -639,6 +639,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Deprecated flags: the help text marks `--criticality-level`, `--criticality-mission-critical` (`--[no-]criticality-mission-critical` in `update`) and `--environment` as deprecated ("Deprecated: Please refer to type instead."); use `--criticality-type` (`high`, `low`, `medium` or `mission-critical`) and `--environment-type` instead. In `--component-parameters` (and its `--add-` / `--remove-` forms), the nested `applicationInfo.attributes.criticality.level`, `criticality.missionCritical` and `environment.environment` are deprecated the same way; use `criticality.type` and `environment.type`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.

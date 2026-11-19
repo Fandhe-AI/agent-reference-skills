@@ -311,7 +311,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Resource Settings | `gcp-foundation` | `resourcesettings` |
 | RISC Configuration Service | `gcp-security-compliance` | `riscconfigurationservice` |
 | Route Optimization | `gcp-ai-apis` | `routeoptimization` |
-| SaaS Service Management | 対象外 | `saasservicemgmt` |
+| SaaS Service Management | `gcp-devops` | `saasservicemgmt` |
 | SecLM | `gcp-agent-platform` | `seclm` |
 | Secret Manager | `gcp-security` | `secretmanager` |
 | Secure Source Manager | `gcp-devops` | `securesourcemanager` |

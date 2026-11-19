@@ -197,7 +197,7 @@ skills/gcp-messaging-workflows/
 - `gcp-integration` — Application Integration・Integration Connectors・Data Connectors。Workflows と Application Integration の選択はこちら。「コネクタ」は名前が衝突し、Workflows のコネクタ（`workflows-connectors-callbacks-triggers`）と Kafka Connect のコネクタ（`kafka-connect-schema-registry`）は本スキル、Integration Connectors は `gcp-integration`
 - `gcp-bigquery`（予定）— Pub/Sub の export 先となる BigQuery のデータセット側
 - `gcp-data-pipelines`（予定）— Dataflow・Composer・Orchestration Pipelines。`gcloud orchestration-pipelines` は本スキルに無い
-- `gcp-devops`（予定）— Cloud Build の trigger・Artifact Registry
+- `gcp-devops` — Cloud Build の trigger・Artifact Registry
 - `gcp-iac`（予定）— Terraform
 - `gcp-api-management`（予定）— Apigee・API Gateway
 - `gcp-agent-platform`（予定）— Agent Platform

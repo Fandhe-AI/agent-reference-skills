@@ -238,7 +238,7 @@ curl -X GET \
 
 - Generated from the Discovery document(s) v1, v1alpha of `devicerun` (retrieved 2026-11-14). Resources on this page: projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/devicerun/`; they are the `schemas` section of the Discovery documents in Source.
 - Caution (the Discovery text above is verbatim): Discovery dropped bracket expressions from the `sessionId` regular expression; as written, `^a-z{2,61}[a-z0-9]$` matches only a literal `a-` followed by 2 to 61 `z` characters and one lowercase letter or digit, not the IDs of 4 to 63 characters the same sentence describes; there is no Device Run proto in googleapis (`google/` and `google/cloud/` at commit `5ce0245`, checked 2026-11-19) and no Device Run docs page states the expression, so the original is not known; do not use the rendered text as a validation pattern.
 - Source: https://devicerun.googleapis.com/$discovery/rest?version=v1, https://devicerun.googleapis.com/$discovery/rest?version=v1alpha (https://developers.google.com/discovery)
 

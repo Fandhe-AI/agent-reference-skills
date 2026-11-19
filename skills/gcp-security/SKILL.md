@@ -213,7 +213,7 @@ skills/gcp-security/
 - `gcp-client-libraries` — Node.js / Python / Rust のクライアントライブラリの共通パターン
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `gcp-observability`— Cloud Logging・Cloud Audit Logs・Cloud Monitoring
-- `gcp-devops`（予定）— Artifact Registry・Cloud Build・Cloud Deploy・`gcloud artifacts`（Artifact Analysis の `gcloud artifacts docker images scan` 等もこちら）
+- `gcp-devops` — Artifact Registry・Cloud Build・Cloud Deploy・`gcloud artifacts`（Artifact Analysis の `gcloud artifacts docker images scan` 等もこちら）
 - `gcp-iac`（予定）— Terraform
 - `gcp-ai-apis`（予定）— Sensitive Data Protection（DLP）・reCAPTCHA
 - `gcp-messaging-workflows`— Pub/Sub

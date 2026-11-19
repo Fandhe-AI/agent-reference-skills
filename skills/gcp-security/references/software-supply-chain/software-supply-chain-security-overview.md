@@ -47,7 +47,7 @@ gcloud artifacts repositories create my-repo \
 ## Notes
 
 - Example from the source analysis: a December 2021 assessment of the Apache Log4j vulnerability by the Google Open Source Insights team found over 17,000 affected packages in Maven Central, most of which depended on `log4j-core` only indirectly.
-- Image building is covered by the `docker` skill; enforcement of Binary Authorization policy on GKE clusters is in the `gcp-gke` skill. Artifact Registry, Cloud Build and Cloud Deploy `gcloud` and guides are planned in `gcp-devops`.
+- Image building is covered by the `docker` skill; enforcement of Binary Authorization policy on GKE clusters is in the `gcp-gke` skill. Artifact Registry, Cloud Build and Cloud Deploy `gcloud` and guides are in `gcp-devops`.
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/artifacts/repositories/create (gcloud 593.0.0 help, EXAMPLES).
 - Adapted from the official docs: the help example `gcloud artifacts repositories create my-repo --repository-format=docker` creates the repository "in the default project and location"; the SYNOPSIS `(REPOSITORY : --location=LOCATION)` needs `--location` when no default `artifacts/location` is configured.
 - Source: https://docs.cloud.google.com/software-supply-chain-security/docs/overview (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)

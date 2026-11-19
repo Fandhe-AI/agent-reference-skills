@@ -180,7 +180,7 @@ skills/gcp-gke/
 - `gcp-load-balancing` — Cloud Load Balancing を直接構成する場合のロードバランサー・NEG・URL マップ（GKE の Gateway・Ingress から作られるものは本スキル）
 - `gcp-security` / `gcp-security-compliance` — Binary Authorization のポリシー本体・Cloud KMS（`gcp-security`）、Security Command Center（`gcp-security-compliance`）。GKE 側の有効化と設定のみ本スキル（`gke-security-hardening`）
 - `gcp-observability`— Cloud Logging・Cloud Monitoring 本体。GKE が送出するログ・メトリクスの設定は本スキル（`gke-observability-troubleshooting`）
-- `gcp-devops`（予定）— Artifact Registry・Cloud Build・Cloud Deploy
+- `gcp-devops` — Artifact Registry・Cloud Build・Cloud Deploy
 - `gcp-iac`（予定）— Terraform・Config Connector
 
 ## 対象外
