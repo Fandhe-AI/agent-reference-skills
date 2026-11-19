@@ -945,12 +945,16 @@ SELECT TEXT_ANALYZE(
 
 #### ICU normalize with NFKD
 
+Adapted (not in the official docs): wrapped the filter in `{ }` so the array holds an object.
+
 ```text
 '{
   "token_filters": [
-    "normalizer": {
-      "mode": "ICU_NORMALIZE",
-      "icu_normalize_mode": "NFKD"
+    {
+      "normalizer": {
+        "mode": "ICU_NORMALIZE",
+        "icu_normalize_mode": "NFKD"
+      }
     }
   ]
 }'
@@ -1049,7 +1053,7 @@ SELECT TEXT_ANALYZE(
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
-- Corrected from the official docs: the nine `token_filters` syntax blocks (No normalization through Remove words) put a bare `"normalizer": {...}` or `"stop_words": ...` pair directly inside the JSON array. A JSON array holds values, and the Token filters syntax and every example on this page wrap each filter in `{ }`. The element is wrapped in braces.
+- Corrected from the official docs: the ten `token_filters` syntax blocks (No normalization through Remove words) put a bare `"normalizer": {...}` or `"stop_words": ...` pair directly inside the JSON array. A JSON array holds values, and the Token filters syntax and every example on this page wrap each filter in `{ }`. The element is wrapped in braces.
 - Corrected from the official docs: the `LOG_ANALYZER` result is `['i like pie', 'you like', 'pie', 'they like 2 pies]' ]` with the closing bracket inside the last quoted element. The quote and bracket are put in the order every other result array uses.
 - Corrected from the official docs: two results contain `'like, 'pies'` with an unbalanced quote. The closing quote is added so the token is `'like'`.
 - Corrected from the official docs: six results in the token-filter examples (ICU normalization modes) have no comma between `'2'` or `'②'` and `'pies'`. A comma is added. Where the row has a double space after `'like',`, one space is removed so the table border still lines up.
