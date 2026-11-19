@@ -47,7 +47,7 @@ called with no arguments.
 
 This function supports the following arguments:
 
-- `time_zone_expression`: A `STRING` expression that represents a [time zone](timestamp_functions.md#how-time-zones-work-with-timestamp-functions). If no time zone is specified, the default time zone, UTC, is used. If this expression is used and it evaluates to `NULL`, this function returns `NULL`.
+- `time_zone_expression`: A `STRING` expression that represents a [time zone](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timezone_definitions). If no time zone is specified, the default time zone, UTC, is used. If this expression is used and it evaluates to `NULL`, this function returns `NULL`.
 
 The current date value is set at the start of the query statement that contains
 this function. All invocations of `CURRENT_DATE()` within a query statement
@@ -134,7 +134,7 @@ This function supports the following arguments:
 - `month`: The `INT64` value for month.
 - `day`: The `INT64` value for day.
 - `timestamp_expression`: A `TIMESTAMP` expression that contains the date.
-- `time_zone_expression`: A `STRING` expression that represents a [time zone](timestamp_functions.md#how-time-zones-work-with-timestamp-functions). If no time zone is specified with `timestamp_expression`, the default time zone, UTC, is used.
+- `time_zone_expression`: A `STRING` expression that represents a [time zone](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timezone_definitions). If no time zone is specified with `timestamp_expression`, the default time zone, UTC, is used.
 - `datetime_expression`: A `DATETIME` expression that contains the date.
 
 **Return Data Type**
@@ -645,7 +645,7 @@ Formats a `DATE` value according to a specified format string.
 
 **Definitions**
 
-- `format_string`: A `STRING` value that contains the [format elements](../googlesql-syntax/format-elements.md#format-elements-for-date-and-time-parts) to use with `date_expr`.
+- `format_string`: A `STRING` value that contains the [format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time) to use with `date_expr`.
 - `date_expr`: A `DATE` value that represents the date to format.
 
 **Return Data Type**
@@ -786,7 +786,7 @@ Converts a `STRING` value to a `DATE` value.
 
 **Definitions**
 
-- `format_string`: A `STRING` value that contains the [format elements](../googlesql-syntax/format-elements.md#format-elements-for-date-and-time-parts) to use with `date_string`.
+- `format_string`: A `STRING` value that contains the [format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time) to use with `date_string`.
 - `date_string`: A `STRING` value that represents the date to parse.
 
 **Details**

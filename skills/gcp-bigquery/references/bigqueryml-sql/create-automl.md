@@ -275,7 +275,7 @@ determine the feature column type in AutoML.
 | [`TIMESTAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#timestamp_type) [`DATETIME`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#datetime_type) [`TIME`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#time_type) [`DATE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#date_type) | Either [`TIMESTAMP`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#timestamp), [`CATEGORICAL`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#categorical-transf), or [`TEXT`](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/datasets/data-types-tabular#text-transf), auto-selected by AutoML. |
 
 To force a numeric column to be treated as categorical, use the
-[`CAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions#cast)
+[`CAST` function](../googlesql-functions/conversion_functions.md#cast)
 to cast it to a BigQuery string. Arrays of supported types are
 allowed and remain arrays during AutoML training.
 

@@ -8,51 +8,51 @@ source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conve
 
 GoogleSQL for BigQuery supports conversion functions. These data type
 conversions are explicit, but some conversions can happen implicitly. You can
-learn more about implicit and explicit conversion [here](../googlesql-syntax/conversion_rules.md).
+learn more about implicit and explicit conversion [here](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules).
 
 ### Function list
 
 | Name | Summary |
 |---|---|
 | [`ARRAY_TO_STRING`](array_functions.md#array_to_string) | Produces a concatenation of the elements in an array as a `STRING` value. For more information, see [Array functions](array_functions.md). |
-| [`BOOL`](json_functions-1.md#bool) | Converts a JSON boolean to a SQL `BOOL` value. For more information, see [JSON functions](json_functions-1.md). |
+| [`BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#bool_for_json) | Converts a JSON boolean to a SQL `BOOL` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
 | [`CAST`](#cast) | Convert the results of an expression to the given type. |
-| [`CHR`](string_functions-1.md#chr) | Converts a Unicode code point to a character. For more information, see [String functions](string_functions-1.md). |
-| [`CODE_POINTS_TO_BYTES`](string_functions-1.md#code_points_to_bytes) | Converts an array of extended ASCII code points to a `BYTES` value. For more information, see [String aggregate functions](string_functions-1.md). |
-| [`CODE_POINTS_TO_STRING`](string_functions-1.md#code_points_to_string) | Converts an array of extended ASCII code points to a `STRING` value. For more information, see [String aggregate functions](string_functions-1.md). |
+| [`CHR`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#chr) | Converts a Unicode code point to a character. For more information, see [String functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions). |
+| [`CODE_POINTS_TO_BYTES`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#code_points_to_bytes) | Converts an array of extended ASCII code points to a `BYTES` value. For more information, see [String aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions). |
+| [`CODE_POINTS_TO_STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#code_points_to_string) | Converts an array of extended ASCII code points to a `STRING` value. For more information, see [String aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions). |
 | [`DATE_FROM_UNIX_DATE`](date_functions.md#date_from_unix_date) | Interprets an `INT64` expression as the number of days since 1970-01-01. For more information, see [Date functions](date_functions.md). |
-| [`FROM_BASE32`](string_functions-1.md#from_base32) | Converts a base32-encoded `STRING` value into a `BYTES` value. For more information, see [String functions](string_functions-1.md). |
-| [`FROM_BASE64`](string_functions-1.md#from_base64) | Converts a base64-encoded `STRING` value into a `BYTES` value. For more information, see [String functions](string_functions-1.md). |
-| [`FROM_HEX`](string_functions-1.md#from_hex) | Converts a hexadecimal-encoded `STRING` value into a `BYTES` value. For more information, see [String functions](string_functions-1.md). |
-| [`INT64`](json_functions-1.md#int64) | Converts a JSON number to a SQL `INT64` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`LAX_BOOL`](json_functions-2.md#lax_bool) | Attempts to convert a JSON value to a SQL `BOOL` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`LAX_FLOAT64`](json_functions-2.md#lax_float64) | Attempts to convert a JSON value to a SQL `FLOAT64` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`LAX_INT64`](json_functions-2.md#lax_int64) | Attempts to convert a JSON value to a SQL `INT64` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`LAX_STRING`](json_functions-2.md#lax_string) | Attempts to convert a JSON value to a SQL `STRING` value. For more information, see [JSON functions](json_functions-1.md). |
+| [`FROM_BASE32`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#from_base32) | Converts a base32-encoded `STRING` value into a `BYTES` value. For more information, see [String functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions). |
+| [`FROM_BASE64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#from_base64) | Converts a base64-encoded `STRING` value into a `BYTES` value. For more information, see [String functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions). |
+| [`FROM_HEX`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#from_hex) | Converts a hexadecimal-encoded `STRING` value into a `BYTES` value. For more information, see [String functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions). |
+| [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#int64_for_json) | Converts a JSON number to a SQL `INT64` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`LAX_BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_bool) | Attempts to convert a JSON value to a SQL `BOOL` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`LAX_FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_double) | Attempts to convert a JSON value to a SQL `FLOAT64` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`LAX_INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_int64) | Attempts to convert a JSON value to a SQL `INT64` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`LAX_STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_string) | Attempts to convert a JSON value to a SQL `STRING` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
 | [`PARSE_BIGNUMERIC`](#parse_bignumeric) | Converts a `STRING` value to a `BIGNUMERIC` value. |
 | [`PARSE_DATE`](date_functions.md#parse_date) | Converts a `STRING` value to a `DATE` value. For more information, see [Date functions](date_functions.md). |
 | [`PARSE_DATETIME`](datetime_functions.md#parse_datetime) | Converts a `STRING` value to a `DATETIME` value. For more information, see [Datetime functions](datetime_functions.md). |
-| [`PARSE_JSON`](json_functions-2.md#parse_json) | Converts a JSON-formatted `STRING` value to a `JSON` value. For more information, see [JSON functions](json_functions-1.md). |
+| [`PARSE_JSON`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#parse_json) | Converts a JSON-formatted `STRING` value to a `JSON` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
 | [`PARSE_NUMERIC`](#parse_numeric) | Converts a `STRING` value to a `NUMERIC` value. |
-| [`PARSE_TIME`](time_functions.md#parse_time) | Converts a `STRING` value to a `TIME` value. For more information, see [Time functions](time_functions.md). |
-| [`PARSE_TIMESTAMP`](timestamp_functions.md#parse_timestamp) | Converts a `STRING` value to a `TIMESTAMP` value. For more information, see [Timestamp functions](timestamp_functions.md). |
+| [`PARSE_TIME`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#parse_time) | Converts a `STRING` value to a `TIME` value. For more information, see [Time functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions). |
+| [`PARSE_TIMESTAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#parse_timestamp) | Converts a `STRING` value to a `TIMESTAMP` value. For more information, see [Timestamp functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions). |
 | [`SAFE_CAST`](#safe_cast) | Similar to the `CAST` function, but returns `NULL` when a runtime error is produced. |
-| [`SAFE_CONVERT_BYTES_TO_STRING`](string_functions-2.md#safe_convert_bytes_to_string) | Converts a `BYTES` value to a `STRING` value and replace any invalid UTF-8 characters with the Unicode replacement character, `U+FFFD`. For more information, see [String functions](string_functions-1.md). |
-| [`STRING` (JSON)](json_functions-2.md#string) | Converts a JSON string to a SQL `STRING` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`STRING` (Timestamp)](timestamp_functions.md#string) | Converts a `TIMESTAMP` value to a `STRING` value. For more information, see [Timestamp functions](timestamp_functions.md). |
-| [`TIMESTAMP_MICROS`](timestamp_functions.md#timestamp_micros) | Converts the number of microseconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. For more information, see [Timestamp functions](timestamp_functions.md). |
-| [`TIMESTAMP_MILLIS`](timestamp_functions.md#timestamp_millis) | Converts the number of milliseconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. For more information, see [Timestamp functions](timestamp_functions.md). |
-| [`TIMESTAMP_SECONDS`](timestamp_functions.md#timestamp_seconds) | Converts the number of seconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. For more information, see [Timestamp functions](timestamp_functions.md). |
-| [`TO_BASE32`](string_functions-2.md#to_base32) | Converts a `BYTES` value to a base32-encoded `STRING` value. For more information, see [String functions](string_functions-1.md). |
-| [`TO_BASE64`](string_functions-2.md#to_base64) | Converts a `BYTES` value to a base64-encoded `STRING` value. For more information, see [String functions](string_functions-1.md). |
-| [`TO_CODE_POINTS`](string_functions-2.md#to_code_points) | Converts a `STRING` or `BYTES` value into an array of extended ASCII code points. For more information, see [String functions](string_functions-1.md). |
-| [`TO_HEX`](string_functions-2.md#to_hex) | Converts a `BYTES` value to a hexadecimal `STRING` value. For more information, see [String functions](string_functions-1.md). |
-| [`TO_JSON`](json_functions-2.md#to_json) | Converts a SQL value to a JSON value. For more information, see [JSON functions](json_functions-1.md). |
-| [`TO_JSON_STRING`](json_functions-2.md#to_json_string) | Converts a SQL value to a JSON-formatted `STRING` value. For more information, see [JSON functions](json_functions-1.md). |
+| [`SAFE_CONVERT_BYTES_TO_STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#safe_convert_bytes_to_string) | Converts a `BYTES` value to a `STRING` value and replace any invalid UTF-8 characters with the Unicode replacement character, `U+FFFD`. For more information, see [String functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions). |
+| [`STRING` (JSON)](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#string_for_json) | Converts a JSON string to a SQL `STRING` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`STRING` (Timestamp)](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#string) | Converts a `TIMESTAMP` value to a `STRING` value. For more information, see [Timestamp functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions). |
+| [`TIMESTAMP_MICROS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_micros) | Converts the number of microseconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. For more information, see [Timestamp functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions). |
+| [`TIMESTAMP_MILLIS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_millis) | Converts the number of milliseconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. For more information, see [Timestamp functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions). |
+| [`TIMESTAMP_SECONDS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_seconds) | Converts the number of seconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. For more information, see [Timestamp functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions). |
+| [`TO_BASE32`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#to_base32) | Converts a `BYTES` value to a base32-encoded `STRING` value. For more information, see [String functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions). |
+| [`TO_BASE64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#to_base64) | Converts a `BYTES` value to a base64-encoded `STRING` value. For more information, see [String functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions). |
+| [`TO_CODE_POINTS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#to_code_points) | Converts a `STRING` or `BYTES` value into an array of extended ASCII code points. For more information, see [String functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions). |
+| [`TO_HEX`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#to_hex) | Converts a `BYTES` value to a hexadecimal `STRING` value. For more information, see [String functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions). |
+| [`TO_JSON`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#to_json) | Converts a SQL value to a JSON value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`TO_JSON_STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#to_json_string) | Converts a SQL value to a JSON-formatted `STRING` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
 | [`UNIX_DATE`](date_functions.md#unix_date) | Converts a `DATE` value to the number of days since 1970-01-01. For more information, see [Date functions](date_functions.md). |
-| [`UNIX_MICROS`](timestamp_functions.md#unix_micros) | Converts a `TIMESTAMP` value to the number of microseconds since 1970-01-01 00:00:00 UTC. For more information, see [Timestamp functions](timestamp_functions.md). |
-| [`UNIX_MILLIS`](timestamp_functions.md#unix_millis) | Converts a `TIMESTAMP` value to the number of milliseconds since 1970-01-01 00:00:00 UTC. For more information, see [Timestamp functions](timestamp_functions.md). |
-| [`UNIX_SECONDS`](timestamp_functions.md#unix_seconds) | Converts a `TIMESTAMP` value to the number of seconds since 1970-01-01 00:00:00 UTC. For more information, see [Timestamp functions](timestamp_functions.md). |
+| [`UNIX_MICROS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_micros) | Converts a `TIMESTAMP` value to the number of microseconds since 1970-01-01 00:00:00 UTC. For more information, see [Timestamp functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions). |
+| [`UNIX_MILLIS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_millis) | Converts a `TIMESTAMP` value to the number of milliseconds since 1970-01-01 00:00:00 UTC. For more information, see [Timestamp functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions). |
+| [`UNIX_SECONDS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_seconds) | Converts a `TIMESTAMP` value to the number of seconds since 1970-01-01 00:00:00 UTC. For more information, see [Timestamp functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions). |
 
 ### `CAST`
 
@@ -74,7 +74,7 @@ value to the target domain produce runtime errors. For example, casting
 `BYTES` to `STRING` where the byte sequence isn't valid UTF-8 results in a
 runtime error.
 
-Some casts can include a [format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast), which provides
+Some casts can include a [format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax), which provides
 instructions for how to conduct the
 cast. For example, you could
 instruct a cast to convert a sequence of bytes to a BASE64-encoded string
@@ -175,11 +175,11 @@ GoogleSQL supports [casting](#cast) to `BYTES`. The
 **Format clause**
 
 When an expression of one type is cast to another type, you can use the
-[format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast) to provide instructions for how to conduct
+[format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax) to provide instructions for how to conduct
 the cast. You can use the format clause in this section if `expression` is a
 `STRING`.
 
-- [Format string as bytes](../googlesql-syntax/format-elements.md#format-string-as-bytes)
+- [Format string as bytes](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_bytes)
 
 **Conversion rules**
 
@@ -205,11 +205,11 @@ parameter can represent an expression for these data types:
 **Format clause**
 
 When an expression of one type is cast to another type, you can use the
-[format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast) to provide instructions for how to conduct
+[format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax) to provide instructions for how to conduct
 the cast. You can use the format clause in this section if `expression` is a
 `STRING`.
 
-- [Format string as date and time](../googlesql-syntax/format-elements.md#format-string-as-date-and-time)
+- [Format string as date and time](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime)
 
 **Conversion rules**
 
@@ -236,11 +236,11 @@ GoogleSQL supports [casting](#cast) to `DATETIME`. The
 **Format clause**
 
 When an expression of one type is cast to another type, you can use the
-[format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast) to provide instructions for how to conduct
+[format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax) to provide instructions for how to conduct
 the cast. You can use the format clause in this section if `expression` is a
 `STRING`.
 
-- [Format string as date and time](../googlesql-syntax/format-elements.md#format-string-as-date-and-time)
+- [Format string as date and time](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime)
 
 **Conversion rules**
 
@@ -502,7 +502,7 @@ GoogleSQL supports [casting](#cast) to `STRING`. The
 **Format clause**
 
 When an expression of one type is cast to another type, you can use the
-[format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast) to provide instructions for how to conduct
+[format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax) to provide instructions for how to conduct
 the cast. You can use the format clause in this section if `expression` is one
 of these data types:
 
@@ -524,9 +524,9 @@ UTC, is used.
 
 For more information, see the following topics:
 
-- [Format bytes as string](../googlesql-syntax/format-elements.md#format-bytes-as-string)
-- [Format date and time as string](../googlesql-syntax/format-elements.md#format-date-and-time-as-string)
-- [Format numeric type as string](../googlesql-syntax/format-elements.md#format-numeric-type-as-string)
+- [Format bytes as string](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_bytes_as_string)
+- [Format date and time as string](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_date_time_as_string)
+- [Format numeric type as string](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_numeric_type_as_string)
 
 **Conversion rules**
 
@@ -650,11 +650,11 @@ parameter can represent an expression for these data types:
 **Format clause**
 
 When an expression of one type is cast to another type, you can use the
-[format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast) to provide instructions for how to conduct
+[format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax) to provide instructions for how to conduct
 the cast. You can use the format clause in this section if `expression` is a
 `STRING`.
 
-- [Format string as date and time](../googlesql-syntax/format-elements.md#format-string-as-date-and-time)
+- [Format string as date and time](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime)
 
 **Conversion rules**
 
@@ -681,11 +681,11 @@ GoogleSQL supports [casting](#cast) to `TIMESTAMP`. The
 **Format clause**
 
 When an expression of one type is cast to another type, you can use the
-[format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast) to provide instructions for how to conduct
+[format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax) to provide instructions for how to conduct
 the cast. You can use the format clause in this section if `expression` is a
 `STRING`.
 
-- [Format string as date and time](../googlesql-syntax/format-elements.md#format-string-as-date-and-time)
+- [Format string as date and time](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime)
 
 The format clause for `TIMESTAMP` has an additional optional clause called
 `AT TIME ZONE timezone_expr`, which you can use to specify a specific time zone
@@ -743,7 +743,7 @@ PARSE_BIGNUMERIC(string_expression)
 Converts a `STRING` to a `BIGNUMERIC` value.
 
 The numeric literal contained in the string must not exceed the
-[maximum precision or range](../googlesql-syntax/data-types.md#decimal-types) of the `BIGNUMERIC` type, or an
+[maximum precision or range](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#decimal_types) of the `BIGNUMERIC` type, or an
 error occurs. If the number of digits after the decimal point exceeds 38, then
 the resulting `BIGNUMERIC` value rounds
 [half away from zero](https://en.wikipedia.org/wiki/Rounding#Round_half_away_from_zero) to have 38 digits after the
@@ -908,7 +908,7 @@ PARSE_NUMERIC(string_expression)
 Converts a `STRING` to a `NUMERIC` value.
 
 The numeric literal contained in the string must not exceed the
-[maximum precision or range](../googlesql-syntax/data-types.md#decimal-types) of the `NUMERIC` type, or an error
+[maximum precision or range](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#decimal_types) of the `NUMERIC` type, or an error
 occurs. If the number of digits after the decimal point exceeds nine, then the
 resulting `NUMERIC` value rounds
 [half away from zero](https://en.wikipedia.org/wiki/Rounding#Round_half_away_from_zero) to have nine digits after the
@@ -1090,7 +1090,7 @@ SELECT SAFE_CAST("apple" AS INT64) AS not_a_number;
  +--------------*/
 ```
 
-Some casts can include a [format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast), which provides
+Some casts can include a [format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax), which provides
 instructions for how to conduct the
 cast. For example, you could
 instruct a cast to convert a sequence of bytes to a BASE64-encoded string
@@ -1100,7 +1100,7 @@ The structure of the format clause is unique to each type of cast and more
 information is available in the section for that cast.
 
 If you are casting from bytes to strings, you can also use the
-function, [`SAFE_CONVERT_BYTES_TO_STRING`](string_functions-2.md#safe_convert_bytes_to_string). Any invalid UTF-8 characters
+function, [`SAFE_CONVERT_BYTES_TO_STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#safe_convert_bytes_to_string). Any invalid UTF-8 characters
 are replaced with the unicode replacement character, `U+FFFD`.
 
 ## Notes

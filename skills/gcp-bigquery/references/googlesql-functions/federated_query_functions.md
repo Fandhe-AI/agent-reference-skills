@@ -24,7 +24,7 @@ EXTERNAL_QUERY('connection_id', '''external_database_query'''[, 'options'])
 
 Executes a query on an external database and returns the results as a
 temporary table. The external database data type is
-converted to a [GoogleSQL data type](../googlesql-syntax/data-types.md#data-type-list) in the temporary
+converted to a [GoogleSQL data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_list) in the temporary
 result table with [these data type mappings](#data-type-mappings).
 
 - `external_database_query`: The query to run on the external database, formatted in the dialect of the external database. For example, if you query a Spanner database that uses the PostgreSQL dialect, write the query in PostgreSQL syntax.
@@ -154,7 +154,7 @@ Things to know about mapping:
 
 - Most MySQL data types can be matched to the same BigQuery data type, with a few exceptions such as `decimal`, `timestamp`, and `time`.
 - PostgreSQL supports many non-standard data types which aren't supported in BigQuery, for example `money`, `path`, `uuid`, `box`, and others.
-- The numeric data types in MySQL and PostgreSQL will be mapped to BigQuery `NUMERIC` value by default. The BigQuery `NUMERIC` value range is smaller than in MySQL and PostgreSQL. It can also be mapped to [`BIGNUMERIC`](../googlesql-syntax/data-types.md#numeric-types), `FLOAT64`, or `STRING` with ["default_type_for_decimal_columns"](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/federated_query_functions#external_query_options) in `EXTERNAL_QUERY` options.
+- The numeric data types in MySQL and PostgreSQL will be mapped to BigQuery `NUMERIC` value by default. The BigQuery `NUMERIC` value range is smaller than in MySQL and PostgreSQL. It can also be mapped to [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types), `FLOAT64`, or `STRING` with ["default_type_for_decimal_columns"](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/federated_query_functions#external_query_options) in `EXTERNAL_QUERY` options.
 
 **Error handling**
 

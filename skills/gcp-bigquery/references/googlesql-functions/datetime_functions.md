@@ -42,7 +42,7 @@ Returns the current time as a `DATETIME` object. Parentheses are optional when
 called with no arguments.
 
 This function supports an optional `time_zone` parameter.
-See [Time zone definitions](timestamp_functions.md#how-time-zones-work-with-timestamp-functions) for
+See [Time zone definitions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timezone_definitions) for
 information on how to specify a time zone.
 
 The current date and time value is set at the start of the query statement that
@@ -77,7 +77,7 @@ SELECT CURRENT_DATETIME() as now;
 
 1. Constructs a `DATETIME` object using `INT64` values representing the year, month, day, hour, minute, and second.
 2. Constructs a `DATETIME` object using a DATE object and an optional `TIME` object.
-3. Constructs a `DATETIME` object using a `TIMESTAMP` object. It supports an optional parameter to [specify a time zone](timestamp_functions.md#how-time-zones-work-with-timestamp-functions). If no time zone is specified, the default time zone, UTC, is used.
+3. Constructs a `DATETIME` object using a `TIMESTAMP` object. It supports an optional parameter to [specify a time zone](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timezone_definitions). If no time zone is specified, the default time zone, UTC, is used.
 
 **Return Data Type**
 
@@ -606,7 +606,7 @@ Formats a `DATETIME` value according to a specified format string.
 
 **Definitions**
 
-- `format_string`: A `STRING` value that contains the [format elements](../googlesql-syntax/format-elements.md#format-elements-for-date-and-time-parts) to use with `datetime_expr`.
+- `format_string`: A `STRING` value that contains the [format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time) to use with `datetime_expr`.
 - `datetime_expr`: A `DATETIME` value that represents the date and time to format.
 
 **Return Data Type**
@@ -754,7 +754,7 @@ Converts a `STRING` value to a `DATETIME` value.
 
 **Definitions**
 
-- `format_string`: A `STRING` value that contains the [format elements](../googlesql-syntax/format-elements.md#format-elements-for-date-and-time-parts) to use with `datetime_string`.
+- `format_string`: A `STRING` value that contains the [format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time) to use with `datetime_string`.
 - `datetime_string`: A `STRING` value that represents the date and time to parse.
 
 **Details**
@@ -786,7 +786,7 @@ function:
 - Unspecified fields. Any unspecified field is initialized from `1970-01-01 00:00:00.0`. For example, if the year is unspecified then it defaults to `1970`.
 - Case insensitivity. Names, such as `Monday` and `February`, are case insensitive.
 - Whitespace. One or more consecutive white spaces in the format string matches zero or more consecutive white spaces in the `DATETIME` string. Leading and trailing white spaces in the `DATETIME` string are always allowed, even if they aren't in the format string.
-- Format precedence. When two or more format elements have overlapping information, the last one generally overrides any earlier ones, with some exceptions. For example, both `%F` and `%Y` affect the year, so the earlier element overrides the later. See the descriptions of `%s`, `%C`, and `%y` in [Supported Format Elements For DATETIME](../googlesql-syntax/format-elements.md#format-elements-for-date-and-time-parts).
+- Format precedence. When two or more format elements have overlapping information, the last one generally overrides any earlier ones, with some exceptions. For example, both `%F` and `%Y` affect the year, so the earlier element overrides the later. See the descriptions of `%s`, `%C`, and `%y` in [Supported Format Elements For DATETIME](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time).
 - Format divergence. `%p` can be used with `am`, `AM`, `pm`, and `PM`.
 - Mixed ISO and non-ISO elements. The ISO format elements are `%G`, `%g`, `%J`, and `%V`. When these ISO elements are used together with other non-ISO elements, the ISO elements are ignored, resulting in different values. For example, the function arguments `('%g %J', '8405')` return a value with the year `1984`, whereas the arguments `('%g %j', '8405')` return a value with the year `1970` because the ISO element `%g` is ignored.
 - Numeric values after `%G` input values. Any input string value that corresponds to the `%G` format element requires a whitespace or non-digit character as a separator from numeric values that follow. This is a known issue in GoogleSQL. For example, the function arguments `('%G
