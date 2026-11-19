@@ -61,6 +61,8 @@ The following example uses the `ML.CONVERT_COLOR_SPACE` function within the
 `ML.PREDICT` function to change the color space for input images from `RGB` to
 `GRAYSCALE`:
 
+Adapted (not in the official docs): the input query of `ML.PREDICT` is enclosed in parentheses, as the `ML.PREDICT` syntax requires for a query argument.
+
 ```sql
 CREATE OR REPLACE TABLE mydataset.model_output
 AS (
@@ -68,11 +70,11 @@ AS (
   FROM
     ML.PREDICT(
       MODEL `mydataset.mymodel`,
-      SELECT
+      (SELECT
         ML.CONVERT_COLOR_SPACE(ML.DECODE_IMAGE(data), 'GRAYSCALE')
           AS image,
         uri
-      FROM `mydataset.images`)
+      FROM `mydataset.images`))
 );
 ```
 
@@ -93,6 +95,7 @@ AS (
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-convert-color-space (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the `ML.PREDICT` example that calls `ML.CONVERT_COLOR_SPACE` passes `SELECT ... FROM` as the second argument without parentheses; the `ML.PREDICT` syntax takes ``{ TABLE `PROJECT_ID.DATASET.TABLE` | (QUERY_STATEMENT) }``, so the query is enclosed in parentheses.
 
 ## Related
 

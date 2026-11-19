@@ -28,6 +28,8 @@ model, see
 
 ### `CREATE MODEL` syntax
 
+Adapted (not in the official docs): `HPARAM_RANGE(range)` is removed from `HIDDEN_UNITS`, because the `HIDDEN_UNITS` description allows only an integer array or `HPARAM_CANDIDATES` for hyperparameter tuning.
+
 ```sql
 {CREATE MODEL | CREATE MODEL IF NOT EXISTS | CREATE OR REPLACE MODEL} model_name
 OPTIONS(model_option_list)
@@ -41,7 +43,7 @@ MODEL_TYPE = { 'AUTOENCODER' } ]
     [, ACTIVATION_FN = { 'RELU' | 'RELU6' | 'ELU' | 'SELU' | 'SIGMOID' | 'TANH' } | HPARAM_CANDIDATES([candidates]) } ]
     [, BATCH_SIZE = { int64_value | HPARAM_RANGE(range) | HPARAM_CANDIDATES([candidates]) } ]
     [, DROPOUT = { float64_value | HPARAM_RANGE(range) | HPARAM_CANDIDATES([candidates]) } ]
-    [, HIDDEN_UNITS = { int_array | HPARAM_RANGE(range) | HPARAM_CANDIDATES([candidates]) } ]
+    [, HIDDEN_UNITS = { int_array | HPARAM_CANDIDATES([candidates]) } ]
     [, EARLY_STOP = { TRUE | FALSE } ]
     [, MIN_REL_PROGRESS = float64_value ]
     [, MAX_ITERATIONS = int64_value ]
@@ -594,6 +596,8 @@ Model training does not incur any charges if you are using on-demand pricing. If
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-autoencoder (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the autoencoder syntax lists `HPARAM_RANGE(range)` for `HIDDEN_UNITS`, but the `HIDDEN_UNITS` section says that for hyperparameter tuning you must use the `HPARAM_CANDIDATES` keyword with an `ARRAY<STRUCT<ARRAY<INT64>>>` value; `HPARAM_RANGE` is removed from the syntax.
+- Conflicting official statements: the `HIDDEN_UNITS` section says the number of layers must be odd, but its neural architecture search example includes the two-layer candidate `struct([8, 16])`. For an autoencoder, give only candidates with an odd number of layers, such as `struct([8])` and `struct([16, 32, 64])` from the same example.
 
 ## Related
 
