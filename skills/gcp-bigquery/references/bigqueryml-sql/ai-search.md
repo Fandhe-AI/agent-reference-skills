@@ -104,7 +104,7 @@ AI.SEARCH(
   If you don't specify `distance_type_value` and the `column_to_search`
   column has a vector index that's used, then `AI.SEARCH` uses the distance
   type specified in the
-  [`distance_type` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#vector_index_option_list)
+  [`distance_type` option](../googlesql-syntax/data-definition-language-2.md#index_option_list-1)
   of the `CREATE VECTOR INDEX` statement.
 - `rerank`: A `BOOL` value that specifies whether to rerank the retrieved
   candidates using the [ranking API](https://docs.cloud.google.com/generative-ai-app-builder/docs/ranking):
@@ -134,9 +134,9 @@ AI.SEARCH(
     matched, an appropriate value is picked.
 
     The number of available lists to search is determined by the
-    [`num_lists` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#vector_index_option_list)
+    [`num_lists` option](../googlesql-syntax/data-definition-language-2.md#index_option_list-1)
     in the `ivf_options` option or derived from
-    the [`leaf_node_embedding_count` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#vector_index_option_list)
+    the [`leaf_node_embedding_count` option](../googlesql-syntax/data-definition-language-2.md#index_option_list-1)
     in the
     `tree_ah_options` option of the `CREATE VECTOR INDEX` statement if
     specified. Otherwise, BigQuery calculates an appropriate number.

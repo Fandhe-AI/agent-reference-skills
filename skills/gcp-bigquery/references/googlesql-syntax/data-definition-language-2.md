@@ -31,7 +31,7 @@ AS query_expression
   with `OR REPLACE`.
 
 - `materialized_view_name`: The name of the materialized view you're creating.
-  See [Table path syntax](data-definition-language-4.md#table-path-syntax).
+  See [Table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path).
 
   If the `project_name` is omitted from the materialized view name, or it is the
   same as the project that runs this DDL query, then the latter is also used as
@@ -242,7 +242,7 @@ AS REPLICA OF source_materialized_view_name
 #### Arguments
 
 - `replica_name`: The name of the materialized view replica you're creating, in
-  [table path syntax](data-definition-language-4.md#table-path-syntax). If the project name is omitted from the
+  [table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path). If the project name is omitted from the
   materialized view replica name, the current project is used as the default.
 
   The materialized view replica name must be unique for each dataset.
@@ -419,7 +419,7 @@ OPTIONS (
   with `OR REPLACE`.
 
 - `table_name`: The name of the external table. See
-  [Table path syntax](data-definition-language-4.md#table-path-syntax).
+  [Table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path).
 
 - `column_name`: The name of a column in the table.
 
@@ -480,13 +480,13 @@ format: `NAME=VALUE, ...`
 | `enum_as_string` | `BOOL` If `true`, infer Parquet ENUM logical type as STRING instead of BYTES by default. Applies to Parquet data. |
 | `expiration_timestamp` | `TIMESTAMP` The time when this table expires. If not specified, the table does not expire. Example: `"2025-01-01 00:00:00 UTC"`. |
 | `field_delimiter` | `STRING` The separator for fields in a CSV file. Applies to CSV data. |
-| `format` | `STRING` The format of the external data. Supported values for [`CREATE EXTERNAL TABLE`](#create-external-table-statement) include: `AVRO`, `CLOUD_BIGTABLE`, `CSV`, `DATASTORE_BACKUP`, `DELTA_LAKE` ([preview](https://cloud.google.com/products/#product-launch-stages)), `GOOGLE_SHEETS`, `NEWLINE_DELIMITED_JSON` (or `JSON`), `ORC`, `PARQUET`. Supported values for [`LOAD DATA`](load-statements.md) include: `AVRO`, `CSV`, `DELTA_LAKE` ([preview](https://cloud.google.com/products/#product-launch-stages)), `NEWLINE_DELIMITED_JSON` (or `JSON`), `ORC`, `PARQUET`. The value `JSON` is equivalent to `NEWLINE_DELIMITED_JSON`. |
+| `format` | `STRING` The format of the external data. Supported values for [`CREATE EXTERNAL TABLE`](#create-external-table-statement) include: `AVRO`, `CLOUD_BIGTABLE`, `CSV`, `DATASTORE_BACKUP`, `DELTA_LAKE` ([preview](https://cloud.google.com/products/#product-launch-stages)), `GOOGLE_SHEETS`, `NEWLINE_DELIMITED_JSON` (or `JSON`), `ORC`, `PARQUET`. Supported values for [`LOAD DATA`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/load-statements) include: `AVRO`, `CSV`, `DELTA_LAKE` ([preview](https://cloud.google.com/products/#product-launch-stages)), `NEWLINE_DELIMITED_JSON` (or `JSON`), `ORC`, `PARQUET`. The value `JSON` is equivalent to `NEWLINE_DELIMITED_JSON`. |
 | `hive_partition_uri_prefix` | `STRING` A common prefix for all source URIs before the partition key encoding begins. Applies only to hive-partitioned external tables. Applies to Avro, CSV, JSON, Parquet, and ORC data. Example: `"gs://bucket/path"`. |
 | `file_set_spec_type` | `STRING` Specifies how to interpret source URIs for load jobs and external tables. Supported values include: - `FILE_SYSTEM_MATCH`. Expands source URIs by listing files from the object store. This is the default behavior if FileSetSpecType is not set. - `NEW_LINE_DELIMITED_MANIFEST`. Indicates that the provided URIs are newline-delimited manifest files, with one URI per line. Wildcard URIs are not supported in the manifest files, and all referenced data files must be in the same bucket as the manifest file. For example, if you have a source URI of `"gs://bucket/path/file"` and the `file_set_spec_type` is `FILE_SYSTEM_MATCH`, then the file is used directly as a data file. If the `file_set_spec_type` is `NEW_LINE_DELIMITED_MANIFEST`, then each line in the file is interpreted as a URI that points to a data file. |
 | `ignore_unknown_values` | `BOOL` If `true`, ignore extra values that are not represented in the table schema, without returning an error. Applies to CSV and JSON data. |
 | `json_extension` | `STRING` For JSON data, indicates a particular JSON interchange format. If not specified, BigQuery reads the data as generic JSON records. Supported values include: `GEOJSON`. Newline-delimited GeoJSON data. For more information, see [Creating an external table from a newline-delimited GeoJSON file](https://docs.cloud.google.com/bigquery/docs/geospatial-data#external-geojson). |
 | `max_bad_records` | `INT64` The maximum number of bad records to ignore when reading the data. Applies to: CSV, JSON, and Google Sheets data. |
-| `max_staleness` | `INTERVAL` Applicable for [BigLake tables](https://docs.cloud.google.com/bigquery/docs/biglake-intro#metadata_caching_for_performance) and [object tables](https://docs.cloud.google.com/bigquery/docs/object-table-introduction#metadata_caching_for_performance). Specifies whether cached metadata is used by operations against the table, and how fresh the cached metadata must be in order for the operation to use it. To disable metadata caching, specify 0. This is the default. To enable metadata caching, specify an [interval literal](lexical.md#interval-literals) value between 30 minutes and 7 days. For example, specify `INTERVAL 4 HOUR` for a 4 hour staleness interval. With this value, operations against the table use cached metadata if it has been refreshed within the past 4 hours. If the cached metadata is older than that, the operation falls back to retrieving metadata from Cloud Storage instead. |
+| `max_staleness` | `INTERVAL` Applicable for [BigLake tables](https://docs.cloud.google.com/bigquery/docs/biglake-intro#metadata_caching_for_performance) and [object tables](https://docs.cloud.google.com/bigquery/docs/object-table-introduction#metadata_caching_for_performance). Specifies whether cached metadata is used by operations against the table, and how fresh the cached metadata must be in order for the operation to use it. To disable metadata caching, specify 0. This is the default. To enable metadata caching, specify an [interval literal](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#interval_literals) value between 30 minutes and 7 days. For example, specify `INTERVAL 4 HOUR` for a 4 hour staleness interval. With this value, operations against the table use cached metadata if it has been refreshed within the past 4 hours. If the cached metadata is older than that, the operation falls back to retrieving metadata from Cloud Storage instead. |
 | `null_marker` | `STRING` The string that represents `NULL` values in a CSV file. Applies to CSV data. |
 | `null_markers` | `ARRAY<STRING>` The list of strings that represent `NULL` values in a CSV file. This option cannot be used with `null_marker` option. Applies to CSV data. |
 | `object_metadata` | `STRING` Only required when creating an [object table](https://docs.cloud.google.com/bigquery/docs/object-table-introduction). Set the value of this option to `SIMPLE` when creating an object table. |
@@ -499,11 +499,11 @@ format: `NAME=VALUE, ...`
 | `skip_leading_rows` | `INT64` The number of rows at the top of a file to skip when reading the data. Applies to CSV and Google Sheets data. |
 | `source_column_match` | `STRING` This controls the strategy used to match loaded columns to the schema. If this value is unspecified, then the default is based on how the schema is provided. If autodetect is enabled, then the default behavior is to match columns by name. Otherwise, the default is to match columns by position. This is done to keep the behavior backward-compatible. Supported values include: - `POSITION`: matches by position. This option assumes that the columns are ordered the same way as the schema. - `NAME`: matches by name. This option reads the header row as column names and reorders columns to match the field names in the schema. Column names are read from the last skipped row based on the `skip_leading_rows` property. |
 | `tags` | `<ARRAY<STRUCT<STRING, STRING>>>` An array of IAM tags for the table, expressed as key-value pairs. The key should be the [namespaced key name](https://docs.cloud.google.com/iam/docs/tags-access-control#definitions), and the value should be the [short name](https://docs.cloud.google.com/iam/docs/tags-access-control#definitions). |
-| `time_zone` | `STRING` Default time zone that will apply when parsing timestamp values that have no specific time zone. Check [valid time zone names](data-types.md#time-zone-name). If this value is not present, the timestamp values without specific time zone is parsed using default time zone UTC. Applies to CSV and JSON data. |
-| `date_format` | `STRING` [Format elements](format-elements.md#format-string-as-date-and-time) that define how the DATE values are formatted in the input files (for example, `MM/DD/YYYY`). If this value is present, this format is the only compatible DATE format. [Schema autodetection](https://docs.cloud.google.com/bigquery/docs/schema-detect#date_and_time_values) will also decide DATE column type based on this format instead of the existing format. If this value is not present, the DATE field is parsed with the [default formats](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv#data_types). Applies to CSV and JSON data. |
-| `datetime_format` | `STRING` [Format elements](format-elements.md#format-string-as-date-and-time) that define how the DATETIME values are formatted in the input files (for example, `MM/DD/YYYY HH24:MI:SS.FF3`). If this value is present, this format is the only compatible DATETIME format. [Schema autodetection](https://docs.cloud.google.com/bigquery/docs/schema-detect#date_and_time_values) will also decide DATETIME column type based on this format instead of the existing format. If this value is not present, the DATETIME field is parsed with the [default formats](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv#data_types). Applies to CSV and JSON data. |
-| `time_format` | `STRING` [Format elements](format-elements.md#format-string-as-date-and-time) that define how the TIME values are formatted in the input files (for example, `HH24:MI:SS.FF3`). If this value is present, this format is the only compatible TIME format. [Schema autodetection](https://docs.cloud.google.com/bigquery/docs/schema-detect#date_and_time_values) will also decide TIME column type based on this format instead of the existing format. If this value is not present, the TIME field is parsed with the [default formats](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv#data_types). Applies to CSV and JSON data. |
-| `timestamp_format` | `STRING` [Format elements](format-elements.md#format-string-as-date-and-time) that define how the TIMESTAMP values are formatted in the input files (for example, `MM/DD/YYYY HH24:MI:SS.FF3`). If this value is present, this format is the only compatible TIMESTAMP format. [Schema autodetection](https://docs.cloud.google.com/bigquery/docs/schema-detect#date_and_time_values) will also decide TIMESTAMP column type based on this format instead of the existing format. If this value is not present, the TIMESTAMP field is parsed with the [default formats](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv#data_types). Applies to CSV and JSON data. |
+| `time_zone` | `STRING` Default time zone that will apply when parsing timestamp values that have no specific time zone. Check [valid time zone names](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#time_zone_name). If this value is not present, the timestamp values without specific time zone is parsed using default time zone UTC. Applies to CSV and JSON data. |
+| `date_format` | `STRING` [Format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime) that define how the DATE values are formatted in the input files (for example, `MM/DD/YYYY`). If this value is present, this format is the only compatible DATE format. [Schema autodetection](https://docs.cloud.google.com/bigquery/docs/schema-detect#date_and_time_values) will also decide DATE column type based on this format instead of the existing format. If this value is not present, the DATE field is parsed with the [default formats](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv#data_types). Applies to CSV and JSON data. |
+| `datetime_format` | `STRING` [Format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime) that define how the DATETIME values are formatted in the input files (for example, `MM/DD/YYYY HH24:MI:SS.FF3`). If this value is present, this format is the only compatible DATETIME format. [Schema autodetection](https://docs.cloud.google.com/bigquery/docs/schema-detect#date_and_time_values) will also decide DATETIME column type based on this format instead of the existing format. If this value is not present, the DATETIME field is parsed with the [default formats](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv#data_types). Applies to CSV and JSON data. |
+| `time_format` | `STRING` [Format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime) that define how the TIME values are formatted in the input files (for example, `HH24:MI:SS.FF3`). If this value is present, this format is the only compatible TIME format. [Schema autodetection](https://docs.cloud.google.com/bigquery/docs/schema-detect#date_and_time_values) will also decide TIME column type based on this format instead of the existing format. If this value is not present, the TIME field is parsed with the [default formats](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv#data_types). Applies to CSV and JSON data. |
+| `timestamp_format` | `STRING` [Format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime) that define how the TIMESTAMP values are formatted in the input files (for example, `MM/DD/YYYY HH24:MI:SS.FF3`). If this value is present, this format is the only compatible TIMESTAMP format. [Schema autodetection](https://docs.cloud.google.com/bigquery/docs/schema-detect#date_and_time_values) will also decide TIMESTAMP column type based on this format instead of the existing format. If this value is not present, the TIMESTAMP field is parsed with the [default formats](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv#data_types). Applies to CSV and JSON data. |
 | `uris` | For external tables, including object tables, that aren't Bigtable tables: `ARRAY<STRING>` An array of fully qualified URIs for the external data locations. Each URI can contain one asterisk (`*`) [wildcard character](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage#load-wildcards), which must come after the bucket name. When you specify `uris` values that target multiple files, all of those files must share a compatible schema. The following examples show valid `uris` values: - `['gs://bucket/path1/myfile.csv']` - `['gs://bucket/path1/*.csv']` - `['gs://bucket/path1/*', 'gs://bucket/path2/file00*']` <br /> For Bigtable tables: `STRING` The URI identifying the Bigtable table to use as a data source. You can only specify one Bigtable URI. Example: `https://googleapis.com/bigtable/projects/project_id/instances/instance_id[/appProfiles/app_profile]/tables/table_name` For more information on constructing a Bigtable URI, see [Retrieve the Bigtable URI](https://docs.cloud.google.com/bigquery/docs/create-bigtable-external-table#bigtable-uri). |
 
 #### Required permissions
@@ -723,7 +723,7 @@ Routine names must contain only letters, numbers, and underscores, and be at mos
 
 - `named_parameter`: A comma-separated `param_name`
   and `param_type` pair. The value of `param_type` is a
-  BigQuery [data type](data-types.md). For a SQL UDF, the
+  BigQuery [data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types). For a SQL UDF, the
   value of `param_type` can also be `ANY TYPE`.
 
 - `determinism_specifier`: Applies only to JavaScript UDFs.
@@ -763,7 +763,7 @@ Routine names must contain only letters, numbers, and underscores, and be at mos
   creating the function.
 
 - `javascript_code`: The definition of a JavaScript function. The value is a
-  [string literal](lexical.md#string-and-bytes-literals).
+  [string literal](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#string_and_bytes_literals).
   If the code includes quotes and backslashes, it must be either escaped or
   represented as a raw string. For example, the code `return "\n";` can be
   represented as one of the following:
@@ -772,7 +772,7 @@ Routine names must contain only letters, numbers, and underscores, and be at mos
   - Triple quoted string: `"""return "\\n";"""`. Backslashes need to be escaped, quotes don't.
   - Raw string: `r"""return "\n";"""`. No escaping is needed.
 - `python_code`: The definition of a Python function. The value is a
-  [string literal](lexical.md#string-and-bytes-literals).
+  [string literal](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#string_and_bytes_literals).
   If the code includes quotes and backslashes, it must be escaped or
   represented as a raw string. For example, the code `return "\n";` can be
   represented as one of the following:
@@ -941,7 +941,7 @@ function_parameter:
   - `function_name`: The name of the function. Function names must contain only letters, numbers, and underscores, and be at most 256 characters long.
 - `function_parameter`: A parameter for the function.
   - `parameter_name`: The name of the function parameter.
-  - `parameter_data_type`: The GoogleSQL [data type](data-types.md) for the function parameter.
+  - `parameter_data_type`: The GoogleSQL [data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types) for the function parameter.
   - `NOT AGGREGATE`: The function parameter is not an aggregate. A non-aggregate function parameter can appear anywhere in the function definition.
 - `return_data_type`: The GoogleSQL data type that the function should return. GoogleSQL infers the result data type of the function from the function body when the `RETURN` clause is omitted.
 - `function_body`: The SQL expression that defines the function body.
@@ -1041,7 +1041,7 @@ function_parameter:
   - `function_name`: The name of the function. Function names must contain only letters, numbers, and underscores, and be at most 256 characters long.
 - `function_parameter`: A parameter for the function.
   - `parameter_name`: The name of the function parameter.
-  - `parameter_data_type`: The GoogleSQL [data type](data-types.md) for the function parameter.
+  - `parameter_data_type`: The GoogleSQL [data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types) for the function parameter.
   - `NOT AGGREGATE`: The function parameter is not an aggregate. Only one non-aggregate function parameter is allowed per JavaScript UDAF, and it must be the last parameter in the list.
 - `return_data_type`: The GoogleSQL data type that the function should return.
 - `function_body`: The JavaScript expression that defines the function body. For more information, see [`function_body`](#function_body).
@@ -1051,7 +1051,7 @@ function_parameter:
 
 The body of the JavaScript function must be a quoted string literal
 that represents the JavaScript code. To learn more about the different types of
-quoted string literals you can use, see [Formats for quoted literals](lexical.md#formats-for-quoted-literals).
+quoted string literals you can use, see [Formats for quoted literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#quoted_literals).
 
 Only certain type encodings are allowed. To learn more,
 see [SQL type encodings in a JavaScript UDAF](#sql-type-encodings-in-a-javascript-udaf).
@@ -1079,7 +1079,7 @@ options are supported:
 #### SQL type encodings in a JavaScript UDAF
 
 In JavaScript UDAFs,
-[GoogleSQL data types](data-types.md)
+[GoogleSQL data types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types)
 represent [JavaScript data types](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects)
 in the following manner:
 
@@ -1391,7 +1391,7 @@ column_declaration:
 - `project_name`: The name of the project where you are creating the function. Defaults to the project that runs this DDL statement.
 - `dataset_name`: The name of the dataset where you are creating the function.
 - `function_name`: The name of the function to create.
-- `function_parameter`: A parameter for the function, specified as a parameter name and a data type. The value of `data_type` is a scalar BigQuery [data type](data-types.md) or `ANY TYPE`, or a table schema. Using [table parameters](https://docs.cloud.google.com/bigquery/docs/table-functions#table_parameters) in a table function is in [Preview](https://cloud.google.com/products#product-launch-stages).
+- `function_parameter`: A parameter for the function, specified as a parameter name and a data type. The value of `data_type` is a scalar BigQuery [data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types) or `ANY TYPE`, or a table schema. Using [table parameters](https://docs.cloud.google.com/bigquery/docs/table-functions#table_parameters) in a table function is in [Preview](https://cloud.google.com/products#product-launch-stages).
 - `RETURNS TABLE`: The schema of the table that the function returns, specified as a comma-separated list of column name and data type pairs. If `RETURNS
   TABLE` is absent, BigQuery infers the output schema from the query statement in the function body. If `RETURNS TABLE` is included, the names in the returned table type must match column names from the SQL query.
 - `sql_query`: Specifies the SQL query to run. The SQL query must include names for all columns.
@@ -1565,7 +1565,7 @@ external_security: INVOKER
   `main_file_uri` in [`procedure_option_list`](#procedure_option_list).
 
 - `argument_type`: Any valid BigQuery
-  [type](data-types.md).
+  [type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types).
 
 - `procedure_argument_mode`: Specifies whether an argument is an input, an
   output, or both.
@@ -2036,7 +2036,7 @@ column_name [OPTIONS(index_column_option_list)]
   index is always created in the same project and dataset as the base table,
   there is no need to specify these in the name.
 
-- `table_name`: The name of the table. See [Table path syntax](data-definition-language-4.md#table-path-syntax).
+- `table_name`: The name of the table. See [Table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path).
 
 - `ALL COLUMNS`: If data types are not specified, creates a search index on
   every column in the table which contains a `STRING` field. If data types are
@@ -2073,8 +2073,8 @@ Search indexes support the following data types:
 
 You can create only one search index per base table. You cannot create a search
 index on a view or materialized view. To modify which columns are
-indexed, use the [`ALTER SEARCH INDEX` statement](data-definition-language-3.md#alter-search-index-statement)
-or [drop](data-definition-language-4.md#drop-search-index-statement) the current index and create a new one.
+indexed, use the [`ALTER SEARCH INDEX` statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_search_index_statement)
+or [drop](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_search_index) the current index and create a new one.
 
 BigQuery returns an error if any `column_name` is not a `STRING`
 or does not contain a `STRING` field, or if you call `CREATE SEARCH INDEX` on
@@ -2092,7 +2092,7 @@ The following options are supported:
 
 | `NAME` | `VALUE` | Details |
 |---|---|---|
-| `analyzer` | `STRING` | Example: `analyzer='LOG_ANALYZER'` The [text analyzer](text-analysis.md) to use to generate tokens for the search index. The supported values are `'LOG_ANALYZER'`, `'NO_OP_ANALYZER'`, and `'PATTERN_ANALYZER'`. |
+| `analyzer` | `STRING` | Example: `analyzer='LOG_ANALYZER'` The [text analyzer](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis) to use to generate tokens for the search index. The supported values are `'LOG_ANALYZER'`, `'NO_OP_ANALYZER'`, and `'PATTERN_ANALYZER'`. |
 | `analyzer_options` | `JSON-formatted STRING` | The text analyzer configurations to set when creating a search index. Supported when `analyzer` is equal to `'LOG_ANALYZER'` or `'PATTERN_ANALYZER'`. For examples of JSON-formatted strings with different text analyzers, see [Work with text analyzers](https://docs.cloud.google.com/bigquery/docs/text-analysis-search). |
 | `data_types` | `ARRAY<STRING>` | Example: `data_types=['STRING', 'INT64', 'TIMESTAMP']` An array of data types to set when creating a search index. Supported data types are `STRING`, `INT64` and `TIMESTAMP`. If `data_types` is not set, `STRING` fields are indexed by default. |
 | `default_index_column_granularity` | `STRING` | Example: `default_index_column_granularity='GLOBAL'` The default granularity of information to store for each indexed column. The supported values are `'GLOBAL'` (default) and `'COLUMN'`. For more information, see [Index with column granularity](https://docs.cloud.google.com/bigquery/docs/search-index#column-granularity). |
@@ -2180,7 +2180,7 @@ OPTIONS(index_option_list);
   is always created in the same project and dataset as the base table, there is
   no need to specify these in the name.
 
-- `table_name`: The name of the table. See [Table path syntax](data-definition-language-4.md#table-path-syntax).
+- `table_name`: The name of the table. See [Table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path).
 
 - `column_name`: The name of a column with a type of `ARRAY<FLOAT64>`,
   or if you're using
@@ -2214,7 +2214,7 @@ You can create only one vector index per table. You can't create a vector index
 on a table that already has a [search index](#create-search-index-statement)
 with the same index name.
 
-To modify which column is indexed, [`DROP`](data-definition-language-4.md#drop-vector-index-statement) the current
+To modify which column is indexed, [`DROP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_vector_index) the current
 index and create a new one.
 
 #### `index_option_list`
@@ -2434,5 +2434,3 @@ OPTIONS (
 
 - [Index of this directory](./README.md)
 - [Data definition language (DDL) statements in GoogleSQL (part 1 of 4)](./data-definition-language-1.md)
-- [Data definition language (DDL) statements in GoogleSQL (part 3 of 4)](./data-definition-language-3.md)
-- [Data definition language (DDL) statements in GoogleSQL (part 4 of 4)](./data-definition-language-4.md)
