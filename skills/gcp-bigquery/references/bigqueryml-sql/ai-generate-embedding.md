@@ -28,7 +28,7 @@ You can create embeddings for the following types of data:
 - [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objmake_ref) or using an `ObjectRef` column from a table.
 - Visual data in [object tables](https://docs.cloud.google.com/bigquery/docs/object-table-introduction).
 - Combinations of unstructured data, including text, images, audio, video, and PDFs, represented by a `STRUCT` that contains `STRING`, `ARRAY<STRING>`, `ObjectRef`, and `ARRAY<ObjectRef>` values.
-- Output data from [PCA](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-pca), [autoencoder](create-autoencoder.md), or [matrix factorization](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization) models.
+- Output data from [PCA](create-pca.md), [autoencoder](create-autoencoder.md), or [matrix factorization](create-matrix-factorization.md) models.
 
 ### Function processing
 
@@ -539,9 +539,9 @@ AI.GENERATE_EMBEDDING(
 - `embedding`: an `ARRAY<FLOAT>` value that
   contains the principal components for the input data. The number of array
   dimensions is equal to the PCA model's
-  [`NUM_PRINCIPAL_COMPONENTS` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-pca#num_principal_components)
+  [`NUM_PRINCIPAL_COMPONENTS` option](create-pca.md#num_principal_components)
   value if that option is used when the model is created. If the
-  [`PCA_EXPLAINED_VARIANCE_RATIO` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-pca#pca_explained_variance_ratio) is used
+  [`PCA_EXPLAINED_VARIANCE_RATIO` option](create-pca.md#pca_explained_variance_ratio) is used
   instead, the array dimensions vary depending on the input table and
   the option ratio determined by BigQuery ML.
 
@@ -565,7 +565,7 @@ AI.GENERATE_EMBEDDING(
   for the feature. The intercept value is the last value in the array.
   The number of array dimensions is equal to the matrix factorization
   model's
-  [`NUM_FACTORS` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization#num_factors)
+  [`NUM_FACTORS` option](create-matrix-factorization.md#num_factors)
   value.
 
 - `trial_id`: an `INT64` value that identifies the hyperparameter tuning

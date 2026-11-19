@@ -31,7 +31,7 @@ Google Cloud (GCP) のデータウェアハウス BigQuery のスキル。デー
 skills/gcp-bigquery/
   SKILL.md
   references/
-    bigqueryml-sql/               # 機械変換: BigQuery ML の SQL 構文（CREATE MODEL・ML.* / AI.* 関数）、分割投入中（43 / 120 ページ。収録済みは README 掲載分のみ）
+    bigqueryml-sql/               # 機械変換: BigQuery ML の SQL 構文（CREATE MODEL・ML.* / AI.* 関数）、分割投入中（50 / 120 ページ。収録済みは README 掲載分のみ）
       README.md
       <page>.md
     overview-datasets/            # 概要・リソース階層・ストレージ・データセット・time travel・削除テーブルの復元・snapshot / clone・既定の構成・INFORMATION_SCHEMA 概要
@@ -118,7 +118,7 @@ skills/gcp-bigquery/
 
 未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `graph-gql` / `information-schema` / `legacy-sql` / `bq-cli` / `dataform-cli`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`bigqueryml-sql`: 43 / 120 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`bigqueryml-sql`: 50 / 120 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
