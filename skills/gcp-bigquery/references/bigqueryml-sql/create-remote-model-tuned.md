@@ -365,7 +365,7 @@ This option accepts the following values:
 
   The data is sorted smallest to largest based on the specified column.
 
-  The first <var translate="no">n</var> rows are used as evaluation data, where <var translate="no">n</var>
+  The last <var translate="no">n</var> rows are used as evaluation data, where <var translate="no">n</var>
   is the value specified for
   [`DATA_SPLIT_EVAL_FRACTION`](#data_split_eval_fraction). The remaining rows
   are used as training data.
@@ -465,8 +465,8 @@ Provides the training data to use when performing supervised tuning.
 
 **Arguments**
 
-- `prompt_column`: The name of the column in the training data table that contains the prompt for evaluating the content in the `label_column` column. This column must be of `STRING` type or be cast to `STRING`. If you specify a value for the `PROMPT_COL` option, you must specify the same value for `prompt_column`. Otherwise this value must be `prompt`. If your table does not have a `prompt` column, use an alias to specify an existing table column. For example, `SELECT AS hint AS prompt, label FROM mydataset.mytable`.
-- `label_column`: The name of the column in the training data table that contains the examples to train the model with. This column must be of `STRING` type or be cast to `STRING`. If you specify a value for the `INPUT_LABEL_COLS` option, you must specify the same value for `label_column`. Otherwise this value must be `label`. If your table does not have a `label` column, use an alias to specify an existing table column. For example, `SELECT AS prompt, feature AS label FROM mydataset.mytable`.
+- `prompt_column`: The name of the column in the training data table that contains the prompt for evaluating the content in the `label_column` column. This column must be of `STRING` type or be cast to `STRING`. If you specify a value for the `PROMPT_COL` option, you must specify the same value for `prompt_column`. Otherwise this value must be `prompt`. If your table does not have a `prompt` column, use an alias to specify an existing table column. For example, `SELECT hint AS prompt, label FROM mydataset.mytable`.
+- `label_column`: The name of the column in the training data table that contains the examples to train the model with. This column must be of `STRING` type or be cast to `STRING`. If you specify a value for the `INPUT_LABEL_COLS` option, you must specify the same value for `label_column`. Otherwise this value must be `label`. If your table does not have a `label` column, use an alias to specify an existing table column. For example, `SELECT prompt, feature AS label FROM mydataset.mytable`.
 - `project_id`: The project ID of the project that contains the training data table.
 - `dataset`: The dataset name of the dataset that contains the training data table. After optional data splitting, the number of rows in the training dataset has to be greater or equal to 10.
 - `table_name`: The name of the training data table.
@@ -520,6 +520,9 @@ FROM `mydataset.emotion_classification_train`;
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-tuned (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the `prompt_column` and `label_column` alias examples are written `SELECT AS hint AS prompt, label ...` and `SELECT AS prompt, feature AS label ...`, which are not valid GoogleSQL; the extra `AS` after `SELECT` is removed.
+- Corrected from the official docs: the `SEQ` description under `DATA_SPLIT_METHOD` says the first n rows (sorted smallest to largest) are used as evaluation data, but the next sentence (rows smaller than the threshold are training data), the `DATA_SPLIT_COL` section and the other model pages say the last n rows; "first" is changed to "last". Here n is the number of rows that corresponds to the `DATA_SPLIT_EVAL_FRACTION` fraction.
+- Conflicting official statements: the `MAX_ITERATIONS` description says that for Gemini models the default is the number of rows in the input data (one epoch), but its Arguments give a default of `300`. The source does not say which models the `300` default applies to.
 
 ## Related
 

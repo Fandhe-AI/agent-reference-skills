@@ -203,6 +203,7 @@ CREATE MODEL `project_id.mydataset.mymodel`
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-tensorflow (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the list of functions that don't support TensorFlow models names `ML.CONFUSION` and `ML.FEATURE`, which are not BigQuery ML function names. `ML.CONFUSION` is read as `ML.CONFUSION_MATRIX`; `ML.FEATURE` matches no single function (`ML.FEATURE_INFO` and `ML.FEATURE_IMPORTANCE` both exist), and the source does not say which one is meant.
 
 ## Related
 

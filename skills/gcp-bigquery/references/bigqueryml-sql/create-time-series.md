@@ -685,7 +685,7 @@ the `FORECAST_LIMIT_UPPER_BOUND` value must be greater than the
 
 **Arguments**
 
-A `FLOAT_64` value greater than or equal to `-1.7976931348623157E+308`.
+A `FLOAT64` value greater than or equal to `-1.7976931348623157E+308`.
 
 #### `FORECAST_LIMIT_UPPER_BOUND`
 
@@ -711,7 +711,7 @@ the `FORECAST_LIMIT_LOWER_BOUND` value must be less than the
 
 **Arguments**
 
-A `FLOAT_64` value less than or equal to `1.7976931348623157E+308`.
+A `FLOAT64` value less than or equal to `1.7976931348623157E+308`.
 
 #### `SEASONALITIES`
 
@@ -1000,12 +1000,14 @@ and then provide the new holiday metadata in the `holiday_statement` argument.
 The following example models all built-in holidays for the `US` holiday region,
 and additionally models the custom holiday `members_day`:
 
+Adapted (not in the official docs): the table name is written `` `mydataset.timeseries_data` `` with one pair of backticks.
+
 ```googlesql
 CREATE OR REPLACE MODEL `mydataset.arima_model`
   OPTIONS (
     model_type = 'ARIMA_PLUS',
     holiday_region = 'US',...) AS (
-        training_data AS (SELECT * FROM `mydataset`.timeseries_data`),
+        training_data AS (SELECT * FROM `mydataset.timeseries_data`),
         custom_holiday AS (
             SELECT
               'US' AS region,
@@ -1163,7 +1165,7 @@ and so forth.
 In BigQuery ML, you use the
 [`TIME_SERIES_ID_COL`](#time_series_id_col) option to identify the dimensions
 that you want to generate time series for, and the
-[`HIERACHICAL_TIME_SERIES_ID_COLS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-time-series#hierachical_time_series_id_cols) option
+[`HIERARCHICAL_TIME_SERIES_COLS`](#hierarchical_time_series_cols) option
 to identify the dimensions that you want to roll up and reconcile. To learn
 more about generating a hierarchical time series, see
 [Forecast multiple hierarchical time series with a univariate model](https://docs.cloud.google.com/bigquery/docs/arima-time-series-forecasting-with-hierarchical-time-series).
@@ -1306,6 +1308,10 @@ FROM
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the "Model a subset of built-in holidays" example reads `bigquery-public-data.ml_datasets.holiday` and filters with `holiday_name != 'Christmas' OR holiday_name != 'NewYear'`, which is true for every holiday name; the text names the `bigquery-public-data.ml_datasets.holidays_and_events_for_forecasting` table, so the example reads that table and uses `AND`. The text says `NewYears`, while the code and the table's example rows use `NewYear`.
+- Corrected from the official docs: the custom holiday example writes ``FROM `mydataset`.timeseries_data` ``, whose backticks do not match; it is written ``FROM `mydataset.timeseries_data` ``.
+- Corrected from the official docs: the hierarchical time series section names the option `HIERACHICAL_TIME_SERIES_ID_COLS` and links to an anchor that does not exist; the option in the syntax and its section is `HIERARCHICAL_TIME_SERIES_COLS`.
+- Corrected from the official docs: the `FORECAST_LIMIT_LOWER_BOUND` and `FORECAST_LIMIT_UPPER_BOUND` arguments are given the type `FLOAT_64`; the GoogleSQL type is `FLOAT64`.
+- Corrected from the official docs: the query `SELECT * FROM bigquery-public-data.ml_datasets.holidays_and_events_for_forecasting WHERE region = region`, given for seeing the holidays of a region, compares the column with itself and returns every region; write a region code string on the right side, such as `region = 'US'`.
 
 ## Related
 
