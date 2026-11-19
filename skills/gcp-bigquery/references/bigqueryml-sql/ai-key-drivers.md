@@ -97,7 +97,7 @@ The `AI.KEY_DRIVERS` function takes the following arguments:
   `NULL` values by using the
   [`ML.IMPUTER` function](imputer.md),
   or by using the
-  [`IFNULL` expression](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conditional_expressions#ifnull)
+  [`IFNULL` expression](../googlesql-functions/conditional_expressions.md#ifnull)
   to replace `NULL` values with a custom value.
 - `INTEREST_LABEL_COL`: a `STRING` value that contains the
   name of the column to use to determine whether a given row is

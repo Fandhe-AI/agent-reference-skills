@@ -8,35 +8,35 @@
 | `AEAD.DECRYPT_BYTES` | Uses the matching key from a keyset to decrypt a `BYTES` ciphertext. | [aead_encryption_functions.md](./aead_encryption_functions.md#aeaddecrypt_bytes) |
 | `AEAD.DECRYPT_STRING` | Uses the matching key from a keyset to decrypt a `BYTES` ciphertext into a `STRING` plaintext. | [aead_encryption_functions.md](./aead_encryption_functions.md#aeaddecrypt_string) |
 | `AEAD.ENCRYPT` | Encrypts `STRING` plaintext, using the primary cryptographic key in a keyset. | [aead_encryption_functions.md](./aead_encryption_functions.md#aeadencrypt) |
-| `AGG` | Aggregates a measure type. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#agg) |
-| `ANY_VALUE` | Gets an expression for some row. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#any_value) |
+| `AGG` | Aggregates a measure type. | [aggregate_functions.md](./aggregate_functions.md#agg) |
+| `ANY_VALUE` | Gets an expression for some row. | [aggregate_functions.md](./aggregate_functions.md#any_value) |
 | `APPENDS` | Returns all rows appended to a table for a given time range. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#appends) |
-| `APPROX_COUNT_DISTINCT` | Gets the approximate result for `COUNT(DISTINCT expression)`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/approximate_aggregate_functions#approx_count_distinct) |
-| `APPROX_QUANTILES` | Gets the approximate quantile boundaries. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/approximate_aggregate_functions#approx_quantiles) |
-| `APPROX_TOP_COUNT` | Gets the approximate top elements and their approximate count. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/approximate_aggregate_functions#approx_top_count) |
-| `APPROX_TOP_SUM` | Gets the approximate top elements and sum, based on the approximate sum of an assigned weight. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/approximate_aggregate_functions#approx_top_sum) |
-| `ARRAY` | Produces an array with one element for each row in a subquery. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#array) |
-| `ARRAY_AGG` | Gets an array of values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#array_agg) |
-| `ARRAY_CONCAT` | Concatenates one or more arrays with the same element type into a single array. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#array_concat) |
-| `ARRAY_CONCAT_AGG` | Concatenates arrays and returns a single array as a result. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#array_concat_agg) |
-| `ARRAY_FIRST` | Gets the first element in an array. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#array_first) |
-| `ARRAY_LAST` | Gets the last element in an array. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#array_last) |
-| `ARRAY_LENGTH` | Gets the number of elements in an array. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#array_length) |
-| `ARRAY_REVERSE` | Reverses the order of elements in an array. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#array_reverse) |
-| `ARRAY_SLICE` | Produces an array containing zero or more consecutive elements from an input array. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#array_slice) |
-| `ARRAY_TO_STRING` | Produces a concatenation of the elements in an array as a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#array_to_string) |
+| `APPROX_COUNT_DISTINCT` | Gets the approximate result for `COUNT(DISTINCT expression)`. | [approximate_aggregate_functions.md](./approximate_aggregate_functions.md#approx_count_distinct) |
+| `APPROX_QUANTILES` | Gets the approximate quantile boundaries. | [approximate_aggregate_functions.md](./approximate_aggregate_functions.md#approx_quantiles) |
+| `APPROX_TOP_COUNT` | Gets the approximate top elements and their approximate count. | [approximate_aggregate_functions.md](./approximate_aggregate_functions.md#approx_top_count) |
+| `APPROX_TOP_SUM` | Gets the approximate top elements and sum, based on the approximate sum of an assigned weight. | [approximate_aggregate_functions.md](./approximate_aggregate_functions.md#approx_top_sum) |
+| `ARRAY` | Produces an array with one element for each row in a subquery. | [array_functions.md](./array_functions.md#array) |
+| `ARRAY_AGG` | Gets an array of values. | [aggregate_functions.md](./aggregate_functions.md#array_agg) |
+| `ARRAY_CONCAT` | Concatenates one or more arrays with the same element type into a single array. | [array_functions.md](./array_functions.md#array_concat) |
+| `ARRAY_CONCAT_AGG` | Concatenates arrays and returns a single array as a result. | [aggregate_functions.md](./aggregate_functions.md#array_concat_agg) |
+| `ARRAY_FIRST` | Gets the first element in an array. | [array_functions.md](./array_functions.md#array_first) |
+| `ARRAY_LAST` | Gets the last element in an array. | [array_functions.md](./array_functions.md#array_last) |
+| `ARRAY_LENGTH` | Gets the number of elements in an array. | [array_functions.md](./array_functions.md#array_length) |
+| `ARRAY_REVERSE` | Reverses the order of elements in an array. | [array_functions.md](./array_functions.md#array_reverse) |
+| `ARRAY_SLICE` | Produces an array containing zero or more consecutive elements from an input array. | [array_functions.md](./array_functions.md#array_slice) |
+| `ARRAY_TO_STRING` | Produces a concatenation of the elements in an array as a `STRING` value. | [array_functions.md](./array_functions.md#array_to_string) |
 | `ASCII` | Gets the ASCII code for the first character or byte in a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#ascii) |
 | `ASIN` | Computes the inverse sine of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#asin) |
 | `ASINH` | Computes the inverse hyperbolic sine of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#asinh) |
 | `ATAN` | Computes the inverse tangent of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#atan) |
 | `ATAN2` | Computes the inverse tangent of `X/Y`, using the signs of `X` and `Y` to determine the quadrant. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#atan2) |
 | `ATANH` | Computes the inverse hyperbolic tangent of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#atanh) |
-| `AVG` | Gets the average of non-`NULL` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#avg) |
+| `AVG` | Gets the average of non-`NULL` values. | [aggregate_functions.md](./aggregate_functions.md#avg) |
 | `BAG_OF_WORDS` | Gets the frequency of each term (token) in a tokenized document. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis-functions#bag_of_words) |
-| `BIT_AND` | Performs a bitwise AND operation on an expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#bit_and) |
-| `BIT_COUNT` | Gets the number of bits that are set in an input expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bit_functions#bit_count) |
-| `BIT_OR` | Performs a bitwise OR operation on an expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#bit_or) |
-| `BIT_XOR` | Performs a bitwise XOR operation on an expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#bit_xor) |
+| `BIT_AND` | Performs a bitwise AND operation on an expression. | [aggregate_functions.md](./aggregate_functions.md#bit_and) |
+| `BIT_COUNT` | Gets the number of bits that are set in an input expression. | [bit_functions.md](./bit_functions.md#bit_count) |
+| `BIT_OR` | Performs a bitwise OR operation on an expression. | [aggregate_functions.md](./aggregate_functions.md#bit_or) |
+| `BIT_XOR` | Performs a bitwise XOR operation on an expression. | [aggregate_functions.md](./aggregate_functions.md#bit_xor) |
 | `BOOL` | Converts a JSON boolean to a SQL `BOOL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#bool_for_json) |
 | `BYTE_LENGTH` | Gets the number of `BYTES` in a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#byte_length) |
 | `CAST` | Convert the results of an expression to the given type. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions#cast) |
@@ -58,8 +58,8 @@
 | `COSINE_DISTANCE` | Computes the cosine distance between two vectors. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#cosine_distance) |
 | `COT` | Computes the cotangent of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#cot) |
 | `COTH` | Computes the hyperbolic cotangent of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#coth) |
-| `COUNT` | Gets the number of rows in the input, or the number of rows with an expression evaluated to any value other than `NULL`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#count) |
-| `COUNTIF` | Gets the number of `TRUE` values for an expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#countif) |
+| `COUNT` | Gets the number of rows in the input, or the number of rows with an expression evaluated to any value other than `NULL`. | [aggregate_functions.md](./aggregate_functions.md#count) |
+| `COUNTIF` | Gets the number of `TRUE` values for an expression. | [aggregate_functions.md](./aggregate_functions.md#countif) |
 | `COVAR_POP` | Computes the population covariance of a set of number pairs. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#covar_pop) |
 | `COVAR_SAMP` | Computes the sample covariance of a set of number pairs. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#covar_samp) |
 | `CSC` | Computes the cosecant of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#csc) |
@@ -118,13 +118,13 @@
 | `FROM_BASE64` | Converts a base64-encoded `STRING` value into a `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#from_base64) |
 | `FROM_HEX` | Converts a hexadecimal-encoded `STRING` value into a `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#from_hex) |
 | `GAP_FILL` | Finds and fills gaps in a time series. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#gap_fill) |
-| `GENERATE_ARRAY` | Generates an array of values in a range. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#generate_array) |
-| `GENERATE_DATE_ARRAY` | Generates an array of dates in a range. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#generate_date_array) |
+| `GENERATE_ARRAY` | Generates an array of values in a range. | [array_functions.md](./array_functions.md#generate_array) |
+| `GENERATE_DATE_ARRAY` | Generates an array of dates in a range. | [array_functions.md](./array_functions.md#generate_date_array) |
 | `GENERATE_RANGE_ARRAY` | Splits a range into an array of subranges. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions#generate_range_array) |
-| `GENERATE_TIMESTAMP_ARRAY` | Generates an array of timestamps in a range. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#generate_timestamp_array) |
+| `GENERATE_TIMESTAMP_ARRAY` | Generates an array of timestamps in a range. | [array_functions.md](./array_functions.md#generate_timestamp_array) |
 | `GENERATE_UUID` | Produces a random universally unique identifier (UUID) as a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/utility-functions#generate_uuid) |
 | `GREATEST` | Gets the greatest value among `X1,...,XN`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#greatest) |
-| `GROUPING` | Checks if a groupable value in the `GROUP BY` clause is aggregated. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#grouping) |
+| `GROUPING` | Checks if a groupable value in the `GROUP BY` clause is aggregated. | [aggregate_functions.md](./aggregate_functions.md#grouping) |
 | `HLL_COUNT.EXTRACT` | Extracts a cardinality estimate of an HLL++ sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hll_functions#hll_countextract) |
 | `HLL_COUNT.INIT` | Aggregates values of the same underlying type into a new HLL++ sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hll_functions#hll_countinit) |
 | `HLL_COUNT.MERGE` | Merges HLL++ sketches of the same underlying type into a new sketch, and then gets the cardinality of the new sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hll_functions#hll_countmerge) |
@@ -196,17 +196,17 @@
 | `LN` | Computes the natural logarithm of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#ln) |
 | `LOG` | Computes the natural logarithm of `X` or the logarithm of `X` to base `Y`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#log) |
 | `LOG10` | Computes the natural logarithm of `X` to base 10. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#log10) |
-| `LOGICAL_AND` | Gets the logical AND of all non-`NULL` expressions. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#logical_and) |
-| `LOGICAL_OR` | Gets the logical OR of all non-`NULL` expressions. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#logical_or) |
+| `LOGICAL_AND` | Gets the logical AND of all non-`NULL` expressions. | [aggregate_functions.md](./aggregate_functions.md#logical_and) |
+| `LOGICAL_OR` | Gets the logical OR of all non-`NULL` expressions. | [aggregate_functions.md](./aggregate_functions.md#logical_or) |
 | `LOWER` | Formats alphabetic characters in a `STRING` value as lowercase. <br /> Formats ASCII characters in a `BYTES` value as lowercase. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#lower) |
 | `LPAD` | Prepends a `STRING` or `BYTES` value with a pattern. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#lpad) |
 | `LTRIM` | Identical to the `TRIM` function, but only removes leading characters. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#ltrim) |
 | `MAKE_INTERVAL` | Constructs an `INTERVAL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/interval_functions#make_interval) |
-| `MAX` | Gets the maximum non-`NULL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#max) |
-| `MAX_BY` | Synonym for `ANY_VALUE(x HAVING MAX y)`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#max_by) |
+| `MAX` | Gets the maximum non-`NULL` value. | [aggregate_functions.md](./aggregate_functions.md#max) |
+| `MAX_BY` | Synonym for `ANY_VALUE(x HAVING MAX y)`. | [aggregate_functions.md](./aggregate_functions.md#max_by) |
 | `MD5` | Computes the hash of a `STRING` or `BYTES` value using the MD5 algorithm. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hash_functions#md5) |
-| `MIN` | Gets the minimum non-`NULL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#min) |
-| `MIN_BY` | Synonym for `ANY_VALUE(x HAVING MIN y)`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#min_by) |
+| `MIN` | Gets the minimum non-`NULL` value. | [aggregate_functions.md](./aggregate_functions.md#min) |
+| `MIN_BY` | Synonym for `ANY_VALUE(x HAVING MIN y)`. | [aggregate_functions.md](./aggregate_functions.md#min_by) |
 | `MOD` | Gets the remainder of the division of `X` by `Y`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#mod) |
 | `NET.HOST` | Gets the hostname from a URL. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/net_functions#nethost) |
 | `NET.IP_FROM_STRING` | Converts an IPv4 or IPv6 address from a `STRING` value to a `BYTES` value in network byte order. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/net_functions#netip_from_string) |
@@ -366,11 +366,11 @@
 | `STDDEV` | An alias of the `STDDEV_SAMP` function. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev) |
 | `STDDEV_POP` | Computes the population (biased) standard deviation of the values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev_pop) |
 | `STDDEV_SAMP` | Computes the sample (unbiased) standard deviation of the values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev_samp) |
-| `STRING_AGG` | Concatenates non-`NULL` `STRING` or `BYTES` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#string_agg) |
+| `STRING_AGG` | Concatenates non-`NULL` `STRING` or `BYTES` values. | [aggregate_functions.md](./aggregate_functions.md#string_agg) |
 | `STRPOS` | Finds the position of the first occurrence of a subvalue inside another value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#strpos) |
 | `SUBSTR` | Gets a portion of a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#substr) |
 | `SUBSTRING` | Alias for `SUBSTR` | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#substring) |
-| `SUM` | Gets the sum of non-`NULL` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#sum) |
+| `SUM` | Gets the sum of non-`NULL` values. | [aggregate_functions.md](./aggregate_functions.md#sum) |
 | `TAN` | Computes the tangent of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#tan) |
 | `TANH` | Computes the hyperbolic tangent of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#tanh) |
 | `TEXT_ANALYZE` | Extracts terms (tokens) from text and converts them into a tokenized document. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis-functions#text_analyze) |
@@ -410,9 +410,15 @@
 | `VARIANCE` | An alias of `VAR_SAMP`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#variance) |
 | `VECTOR_SEARCH` | Performs a semantic search or a hybrid search on embeddings to find similar entities. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search) |
 | `VECTOR_INDEX.STATISTICS` | Calculate how much an indexed table's data has drifted between when a vector index was trained and the present. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/vectorindex_functions#vector_indexstatistics) |
-| `ZSTD_COMPRESS` | Compresses `STRING` or `BYTES` input into `BYTES` output using the Zstandard (Zstd) lossless data compression algorithm. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/compression-functions#zstd_compress) |
-| `ZSTD_DECOMPRESS_TO_BYTES` | Decompresses `BYTES` input into `BYTES` output using the Zstandard (Zstd) lossless data compression algorithm. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/compression-functions#zstd_decompress_to_bytes) |
-| `ZSTD_DECOMPRESS_TO_STRING` | Decompress `BYTES` input into `STRING` output using the Zstandard (Zstd) lossless data compression algorithm. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/compression-functions#zstd_decompress_to_string) |
+| `ZSTD_COMPRESS` | Compresses `STRING` or `BYTES` input into `BYTES` output using the Zstandard (Zstd) lossless data compression algorithm. | [compression-functions.md](./compression-functions.md#zstd_compress) |
+| `ZSTD_DECOMPRESS_TO_BYTES` | Decompresses `BYTES` input into `BYTES` output using the Zstandard (Zstd) lossless data compression algorithm. | [compression-functions.md](./compression-functions.md#zstd_decompress_to_bytes) |
+| `ZSTD_DECOMPRESS_TO_STRING` | Decompress `BYTES` input into `STRING` output using the Zstandard (Zstd) lossless data compression algorithm. | [compression-functions.md](./compression-functions.md#zstd_decompress_to_string) |
 | AEAD encryption functions | Function list, AEAD.DECRYPT_BYTES, AEAD.DECRYPT_STRING, AEAD.ENCRYPT, DETERMINISTIC_DECRYPT_BYTES, DETERMINISTIC_DECRYPT_STRING, DETERMINISTIC_ENCRYPT, KEYS.ADD_KEY_FROM_RAW_BYTES, KEYS.KEYSET_CHAIN, KEYS.KEYSET_FROM_JSON, KEYS.KEYSET_LENGTH, KEYS.KEYSET_TO_JSON, KEYS.NEW_KEYSET, KEYS.NEW_WRAPPED_KEYSET, KEYS.REWRAP_KEYSET, KEYS.ROTATE_KEYSET, KEYS.ROTATE_WRAPPED_KEYSET | [aead_encryption_functions.md](./aead_encryption_functions.md) |
 | Differentially private aggregate functions | Function list, AVG (DIFFERENTIAL_PRIVACY), COUNT (DIFFERENTIAL_PRIVACY), PERCENTILE_CONT (DIFFERENTIAL_PRIVACY), SUM (DIFFERENTIAL_PRIVACY), Supplemental materials | [aggregate-dp-functions.md](./aggregate-dp-functions.md) |
 | Aggregate function calls | Aggregate function call syntax, Restrict aggregation by a maximum or minimum value, Handle NULL values before aggregation, Aggregate function examples, Multi-level aggregation | [aggregate-function-calls.md](./aggregate-function-calls.md) |
+| Aggregate functions | Function list, AGG, ANY_VALUE, ARRAY_AGG, ARRAY_CONCAT_AGG, AVG, BIT_AND, BIT_OR, BIT_XOR, COUNT, COUNTIF, GROUPING, LOGICAL_AND, LOGICAL_OR, MAX, MAX_BY, MIN, MIN_BY, STRING_AGG, SUM | [aggregate_functions.md](./aggregate_functions.md) |
+| Approximate aggregate functions | Function list, APPROX_COUNT_DISTINCT, APPROX_QUANTILES, APPROX_TOP_COUNT, APPROX_TOP_SUM | [approximate_aggregate_functions.md](./approximate_aggregate_functions.md) |
+| Array functions | Function list, ARRAY, ARRAY_CONCAT, ARRAY_FIRST, ARRAY_LAST, ARRAY_LENGTH, ARRAY_REVERSE, ARRAY_SLICE, ARRAY_TO_STRING, GENERATE_ARRAY, GENERATE_DATE_ARRAY, GENERATE_TIMESTAMP_ARRAY, Supplemental materials | [array_functions.md](./array_functions.md) |
+| Bit functions | Function list, BIT_COUNT | [bit_functions.md](./bit_functions.md) |
+| Compression functions | Function list, ZSTD_COMPRESS, ZSTD_DECOMPRESS_TO_BYTES, ZSTD_DECOMPRESS_TO_STRING | [compression-functions.md](./compression-functions.md) |
+| Conditional expressions | — | [conditional_expressions.md](./conditional_expressions.md) |
