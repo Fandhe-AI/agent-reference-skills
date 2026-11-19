@@ -68,7 +68,7 @@ ML.ROC_CURVE(
   - If the data is not split during training, the entire training input is used to compute the curve results.
 - `THRESHOLDS`: an `ARRAY<FLOAT64>` value that specifies
   the percentile values of the prediction output supplied by the
-  [`GENERATE_ARRAY` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#generate_array).
+  [`GENERATE_ARRAY` function](../googlesql-functions/array_functions.md#generate_array).
 
 - `TRIAL_ID`: an `INT64` value that identifies the
   hyperparameter tuning trial that you want the function to evaluate. The

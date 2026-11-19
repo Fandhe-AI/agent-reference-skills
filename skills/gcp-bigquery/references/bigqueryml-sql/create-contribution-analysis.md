@@ -160,7 +160,7 @@ you have `NULL` values in your data, you can preprocess the data to fill in the
 `NULL` values by using the
 [`ML.IMPUTER` function](imputer.md),
 or by using the
-[`IFNULL` expression](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conditional_expressions#ifnull)
+[`IFNULL` expression](../googlesql-functions/conditional_expressions.md#ifnull)
 to replace `NULL` values with a custom value.
 
 If you want to use a

@@ -27,12 +27,12 @@ To learn about the syntax for aggregate function calls, see
 | [`BIT_AND`](#bit_and) | Performs a bitwise AND operation on an expression. |
 | [`BIT_OR`](#bit_or) | Performs a bitwise OR operation on an expression. |
 | [`BIT_XOR`](#bit_xor) | Performs a bitwise XOR operation on an expression. |
-| [`CORR`](statistical_aggregate_functions.md#corr) | Computes the Pearson coefficient of correlation of a set of number pairs. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
+| [`CORR`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#corr) | Computes the Pearson coefficient of correlation of a set of number pairs. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
 | [`COUNT`](#count) | Gets the number of rows in the input, or the number of rows with an expression evaluated to any value other than `NULL`. |
 | [`COUNT` (Differential Privacy)](aggregate-dp-functions.md#count-differential_privacy) | `DIFFERENTIAL_PRIVACY`-supported `COUNT`. Signature 1: Gets the differentially-private count of rows in a query with a `DIFFERENTIAL_PRIVACY` clause. <br /> Signature 2: Gets the differentially-private count of rows with a non-`NULL` expression in a query with a `DIFFERENTIAL_PRIVACY` clause. <br /> For more information, see [Differential privacy functions](aggregate-dp-functions.md). |
 | [`COUNTIF`](#countif) | Gets the number of `TRUE` values for an expression. |
-| [`COVAR_POP`](statistical_aggregate_functions.md#covar_pop) | Computes the population covariance of a set of number pairs. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
-| [`COVAR_SAMP`](statistical_aggregate_functions.md#covar_samp) | Computes the sample covariance of a set of number pairs. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
+| [`COVAR_POP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#covar_pop) | Computes the population covariance of a set of number pairs. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
+| [`COVAR_SAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#covar_samp) | Computes the sample covariance of a set of number pairs. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
 | [`GROUPING`](#grouping) | Checks if a groupable value in the `GROUP BY` clause is aggregated. |
 | [`LOGICAL_AND`](#logical_and) | Gets the logical AND of all non-`NULL` expressions. |
 | [`LOGICAL_OR`](#logical_or) | Gets the logical OR of all non-`NULL` expressions. |
@@ -40,21 +40,21 @@ To learn about the syntax for aggregate function calls, see
 | [`MAX_BY`](#max_by) | Synonym for `ANY_VALUE(x HAVING MAX y)`. |
 | [`MIN`](#min) | Gets the minimum non-`NULL` value. |
 | [`MIN_BY`](#min_by) | Synonym for `ANY_VALUE(x HAVING MIN y)`. |
-| [`PERCENTILE_CONT`](navigation_functions.md#percentile_cont) | Computes the specified percentile for a value, using linear interpolation. For more information, see [Navigation functions](navigation_functions.md). |
+| [`PERCENTILE_CONT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions#percentile_cont) | Computes the specified percentile for a value, using linear interpolation. For more information, see [Navigation functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions). |
 | [`PERCENTILE_CONT` (Differential Privacy)](aggregate-dp-functions.md#percentile_cont-differential_privacy) | `DIFFERENTIAL_PRIVACY`-supported `PERCENTILE_CONT`. Computes a differentially-private percentile across privacy unit columns in a query with a `DIFFERENTIAL_PRIVACY` clause. <br /> For more information, see [Differential privacy functions](aggregate-dp-functions.md). |
-| [`PERCENTILE_DISC`](navigation_functions.md#percentile_disc) | Computes the specified percentile for a discrete value. For more information, see [Navigation functions](navigation_functions.md). |
-| [`ST_CENTROID_AGG`](geography_functions-1.md#st_centroid_agg) | Gets the centroid of a set of `GEOGRAPHY` values. For more information, see [Geography functions](geography_functions-1.md). |
-| [`ST_EXTENT`](geography_functions-1.md#st_extent) | Gets the bounding box for a group of `GEOGRAPHY` values. For more information, see [Geography functions](geography_functions-1.md). |
-| [`ST_UNION_AGG`](geography_functions-2.md#st_union_agg) | Aggregates over `GEOGRAPHY` values and gets their point set union. For more information, see [Geography functions](geography_functions-1.md). |
-| [`STDDEV`](statistical_aggregate_functions.md#stddev) | An alias of the `STDDEV_SAMP` function. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
-| [`STDDEV_POP`](statistical_aggregate_functions.md#stddev_pop) | Computes the population (biased) standard deviation of the values. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
-| [`STDDEV_SAMP`](statistical_aggregate_functions.md#stddev_samp) | Computes the sample (unbiased) standard deviation of the values. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
+| [`PERCENTILE_DISC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions#percentile_disc) | Computes the specified percentile for a discrete value. For more information, see [Navigation functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions). |
+| [`ST_CENTROID_AGG`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_centroid_agg) | Gets the centroid of a set of `GEOGRAPHY` values. For more information, see [Geography functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions). |
+| [`ST_EXTENT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_extent) | Gets the bounding box for a group of `GEOGRAPHY` values. For more information, see [Geography functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions). |
+| [`ST_UNION_AGG`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_union_agg) | Aggregates over `GEOGRAPHY` values and gets their point set union. For more information, see [Geography functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions). |
+| [`STDDEV`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev) | An alias of the `STDDEV_SAMP` function. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
+| [`STDDEV_POP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev_pop) | Computes the population (biased) standard deviation of the values. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
+| [`STDDEV_SAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev_samp) | Computes the sample (unbiased) standard deviation of the values. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
 | [`STRING_AGG`](#string_agg) | Concatenates non-`NULL` `STRING` or `BYTES` values. |
 | [`SUM`](#sum) | Gets the sum of non-`NULL` values. |
 | [`SUM` (Differential Privacy)](aggregate-dp-functions.md#sum-differential_privacy) | `DIFFERENTIAL_PRIVACY`-supported `SUM`. Gets the differentially-private sum of non-`NULL`, non-`NaN` values in a query with a `DIFFERENTIAL_PRIVACY` clause. <br /> For more information, see [Differential privacy functions](aggregate-dp-functions.md). |
-| [`VAR_POP`](statistical_aggregate_functions.md#var_pop) | Computes the population (biased) variance of the values. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
-| [`VAR_SAMP`](statistical_aggregate_functions.md#var_samp) | Computes the sample (unbiased) variance of the values. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
-| [`VARIANCE`](statistical_aggregate_functions.md#variance) | An alias of `VAR_SAMP`. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
+| [`VAR_POP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#var_pop) | Computes the population (biased) variance of the values. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
+| [`VAR_SAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#var_samp) | Computes the sample (unbiased) variance of the values. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
+| [`VARIANCE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#variance) | An alias of `VAR_SAMP`. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
 
 ### `AGG`
 
@@ -64,7 +64,7 @@ AGG(measure_expression)
 
 **Description**
 
-Aggregates a [measure type](../googlesql-syntax/data-types.md#measure-type). A measure type encapsulates an
+Aggregates a [measure type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#measure_type). A measure type encapsulates an
 aggregate calculation to perform, locked to a specific granularity defined by
 a key. The `AGG` function invokes the calculation exactly once per key
 with the guarantee of avoiding overcounting. Measures are useful for defining
@@ -129,7 +129,7 @@ CREATE OR REPLACE PROPERTY GRAPH mydataset.StoreGraph
 ```
 
 To access measures defined on a graph, you must call the
-[`GRAPH_EXPAND` TVF](../graph-gql/sql-queries.md#graph_expand), which performs a series of `LEFT JOIN`
+[`GRAPH_EXPAND` TVF](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-queries#graph_expand), which performs a series of `LEFT JOIN`
 operations on your graph's input tables to produce a flattened version of
 the graph.
 
@@ -215,7 +215,7 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 **Supported Argument Types**
 
@@ -333,7 +333,7 @@ If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,
 aggregate function clauses can't be used.
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 An error is raised if an array in the final query result contains a `NULL`
 element.
@@ -597,13 +597,13 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 This function can be used with the
-[`AGGREGATION_THRESHOLD` clause](../googlesql-syntax/query-syntax-3.md#aggregation_threshold-clause).
+[`AGGREGATION_THRESHOLD` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
 
 If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,
 aggregate function clauses can't be used.
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 `AVG` can be used with differential privacy. For more information, see
 [Differentially private aggregate functions](aggregate-dp-functions.md).
@@ -614,7 +614,7 @@ Caveats:
 - If the argument is `NaN` for any row in the group, returns `NaN`.
 - If the argument is `[+|-]Infinity` for any row in the group, returns either `[+|-]Infinity` or `NaN`.
 - If there is numeric overflow, produces an error.
-- If a [floating-point type](../googlesql-syntax/data-types.md#floating-point-type) is returned, the result is [non-deterministic](../googlesql-syntax/data-types.md#floating-point-semantics), which means you might receive a different result each time you use this function.
+- If a [floating-point type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) is returned, the result is [non-deterministic](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_semantics), which means you might receive a different result each time you use this function.
 
 **Supported Argument Types**
 
@@ -832,21 +832,21 @@ Gets the number of rows in the input or the number of rows with an
 expression evaluated to any value other than `NULL`.
 
 > [!NOTE]
-> **Note:** If you're querying a large dataset, you can compute results faster and save resources by using [HLL++ functions](hll_functions.md) for approximate distinct counts. For more information, see [Sketches](https://docs.cloud.google.com/bigquery/docs/sketches).
+> **Note:** If you're querying a large dataset, you can compute results faster and save resources by using [HLL++ functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hll_functions) for approximate distinct counts. For more information, see [Sketches](https://docs.cloud.google.com/bigquery/docs/sketches).
 
 **Definitions**
 
 - `*`: Use this value to get the number of all rows in the input.
-- `expression`: A value of any data type that represents the expression to evaluate. If `DISTINCT` is present, `expression` can only be a data type that is [groupable](../googlesql-syntax/data-types.md#groupable-data-types).
+- `expression`: A value of any data type that represents the expression to evaluate. If `DISTINCT` is present, `expression` can only be a data type that is [groupable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#groupable_data_types).
 - Optional aggregate clauses: To learn more about the optional aggregate clauses that you can pass into this function, see [Aggregate function calls](aggregate-function-calls.md).
 
 <!-- -->
 
-- `OVER`: To learn more about the `OVER` clause and how to use it, see [Window function calls](window-function-calls.md).
+- `OVER`: To learn more about the `OVER` clause and how to use it, see [Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 **Details**
 
-This function with `DISTINCT` supports specifying [collation](../googlesql-syntax/collation-concepts.md).
+This function with `DISTINCT` supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
 
 `COUNT` can be used with differential privacy. For more information, see
 [Differentially private aggregate functions](aggregate-dp-functions.md).
@@ -1005,7 +1005,7 @@ Gets the number of `TRUE` values for an expression.
 
 <!-- -->
 
-- `OVER`: To learn more about the `OVER` clause and how to use it, see [Window function calls](window-function-calls.md).
+- `OVER`: To learn more about the `OVER` clause and how to use it, see [Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 **Details**
 
@@ -1062,7 +1062,7 @@ GROUPING(groupable_value)
 
 **Description**
 
-If a groupable item in the [`GROUP BY` clause](../googlesql-syntax/query-syntax-2.md#group-by-clause) is aggregated
+If a groupable item in the [`GROUP BY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause) is aggregated
 (and thus not grouped), this function returns `1`. Otherwise,
 this function returns `0`.
 
@@ -1194,7 +1194,7 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 This function can be used with the
-[`AGGREGATION_THRESHOLD` clause](../googlesql-syntax/query-syntax-3.md#aggregation_threshold-clause).
+[`AGGREGATION_THRESHOLD` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
 
 **Supported Argument Types**
 
@@ -1238,7 +1238,7 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 This function can be used with the
-[`AGGREGATION_THRESHOLD` clause](../googlesql-syntax/query-syntax-3.md#aggregation_threshold-clause).
+[`AGGREGATION_THRESHOLD` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
 
 **Supported Argument Types**
 
@@ -1296,13 +1296,13 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
-This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
+This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
 
 **Supported Argument Types**
 
-Any [orderable data type](../googlesql-syntax/data-types.md#data-type-properties) except for `ARRAY`.
+Any [orderable data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties) except for `ARRAY`.
 
 **Return Data Types**
 
@@ -1404,13 +1404,13 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
-This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
+This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
 
 **Supported Argument Types**
 
-Any [orderable data type](../googlesql-syntax/data-types.md#data-type-properties) except for `ARRAY`.
+Any [orderable data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties) except for `ARRAY`.
 
 **Return Data Types**
 
@@ -1518,7 +1518,7 @@ If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,
 aggregate function clauses can't be used.
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 **Supported Argument Types**
 
@@ -1642,10 +1642,10 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 This function can be used with the
-[`AGGREGATION_THRESHOLD` clause](../googlesql-syntax/query-syntax-3.md#aggregation_threshold-clause).
+[`AGGREGATION_THRESHOLD` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 `SUM` can be used with differential privacy. For more information, see
 [Differentially private aggregate functions](aggregate-dp-functions.md).
@@ -1656,7 +1656,7 @@ Caveats:
 - If the argument is `NaN` for any row in the group, returns `NaN`.
 - If the argument is `[+|-]Infinity` for any row in the group, returns either `[+|-]Infinity` or `NaN`.
 - If there is numeric overflow, produces an error.
-- If a [floating-point type](../googlesql-syntax/data-types.md#floating-point-type) is returned, the result is [non-deterministic](../googlesql-syntax/data-types.md#floating-point-semantics), which means you might receive a different result each time you use this function.
+- If a [floating-point type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) is returned, the result is [non-deterministic](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_semantics), which means you might receive a different result each time you use this function.
 
 **Supported Argument Types**
 

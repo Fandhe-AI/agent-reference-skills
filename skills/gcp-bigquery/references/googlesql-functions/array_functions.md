@@ -24,16 +24,16 @@ GoogleSQL for BigQuery supports the following array functions.
 | [`ARRAY_TO_STRING`](#array_to_string) | Produces a concatenation of the elements in an array as a `STRING` value. |
 | [`GENERATE_ARRAY`](#generate_array) | Generates an array of values in a range. |
 | [`GENERATE_DATE_ARRAY`](#generate_date_array) | Generates an array of dates in a range. |
-| [`GENERATE_RANGE_ARRAY`](range-functions.md#generate_range_array) | Splits a range into an array of subranges. For more information, see [Range functions](range-functions.md). |
+| [`GENERATE_RANGE_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions#generate_range_array) | Splits a range into an array of subranges. For more information, see [Range functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions). |
 | [`GENERATE_TIMESTAMP_ARRAY`](#generate_timestamp_array) | Generates an array of timestamps in a range. |
-| [`JSON_ARRAY`](json_functions-1.md#json_array) | Creates a JSON array. For more information, see [JSON functions](json_functions-1.md). |
-| [`JSON_ARRAY_APPEND`](json_functions-1.md#json_array_append) | Appends JSON data to the end of a JSON array. For more information, see [JSON functions](json_functions-1.md). |
-| [`JSON_ARRAY_INSERT`](json_functions-1.md#json_array_insert) | Inserts JSON data into a JSON array. For more information, see [JSON functions](json_functions-1.md). |
-| [`JSON_EXTRACT_ARRAY`](json_functions-1.md#json_extract_array) | (Deprecated) Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`JSON_EXTRACT_STRING_ARRAY`](json_functions-1.md#json_extract_string_array) | (Deprecated) Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`JSON_QUERY_ARRAY`](json_functions-2.md#json_query_array) | Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`JSON_VALUE_ARRAY`](json_functions-2.md#json_value_array) | Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. For more information, see [JSON functions](json_functions-1.md). |
-| [`RANGE_BUCKET`](mathematical_functions.md#range_bucket) | Scans through a sorted array and returns the 0-based position of a point's upper bound. For more information, see [Mathematical functions](mathematical_functions.md). |
+| [`JSON_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_array) | Creates a JSON array. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`JSON_ARRAY_APPEND`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_array_append) | Appends JSON data to the end of a JSON array. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`JSON_ARRAY_INSERT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_array_insert) | Inserts JSON data into a JSON array. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`JSON_EXTRACT_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_extract_array) | (Deprecated) Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`JSON_EXTRACT_STRING_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_extract_string_array) | (Deprecated) Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`JSON_QUERY_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_query_array) | Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`JSON_VALUE_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_value_array) | Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. For more information, see [JSON functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions). |
+| [`RANGE_BUCKET`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#range_bucket) | Scans through a sorted array and returns the 0-based position of a point's upper bound. For more information, see [Mathematical functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions). |
 
 ### `ARRAY`
 
@@ -44,7 +44,7 @@ ARRAY(subquery)
 **Description**
 
 The `ARRAY` function returns an `ARRAY` with one element for each row in a
-[subquery](../googlesql-syntax/subqueries.md).
+[subquery](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries).
 
 If `subquery` produces a
 SQL table,
@@ -60,7 +60,7 @@ value table.
 
 - Subqueries are unordered, so the elements of the output `ARRAY` aren't guaranteed to preserve any order in the source table for the subquery. However, if the subquery includes an `ORDER BY` clause, the `ARRAY` function will return an `ARRAY` that honors that clause.
 - If the subquery returns more than one column, the `ARRAY` function returns an error.
-- If the subquery returns an `ARRAY` typed column or `ARRAY` typed rows, the `ARRAY` function returns an error that GoogleSQL doesn't support `ARRAY`s with elements of type [`ARRAY`](../googlesql-syntax/data-types.md#array-type).
+- If the subquery returns an `ARRAY` typed column or `ARRAY` typed rows, the `ARRAY` function returns an error that GoogleSQL doesn't support `ARRAY`s with elements of type [`ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#array_type).
 - If the subquery returns zero rows, the `ARRAY` function returns an empty `ARRAY`. It never returns a `NULL` `ARRAY`.
 
 **Return type**
@@ -129,7 +129,7 @@ Concatenates one or more arrays with the same element type into a single array.
 The function returns `NULL` if any input argument is `NULL`.
 
 > [!NOTE]
-> **Note:** You can also use the [\|\| concatenation operator](../googlesql-syntax/operators.md) to concatenate arrays.
+> **Note:** You can also use the [\|\| concatenation operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators) to concatenate arrays.
 
 **Return type**
 
@@ -923,7 +923,7 @@ FROM
 #### OFFSET and ORDINAL
 
 For information about using `OFFSET` and `ORDINAL` with arrays, see
-[Array subscript operator](../googlesql-syntax/operators.md#array-subscript-operator) and [Accessing array
+[Array subscript operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#array_subscript_operator) and [Accessing array
 elements](https://docs.cloud.google.com/bigquery/docs/arrays#accessing_array_elements).
 
 ## Notes

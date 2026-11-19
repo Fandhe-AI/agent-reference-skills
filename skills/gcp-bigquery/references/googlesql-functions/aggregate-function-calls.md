@@ -238,7 +238,7 @@ You can also exclude or replace `NULL` values in one of the following ways:
 
 - Add a `WHERE` clause inside the aggregate function call; for example, `COUNT(* WHERE x IS NOT NULL)`.
 - Use the `IGNORE NULLS` clause for aggregate functions that include `NULL` values by default, such as `ARRAY_AGG(x IGNORE NULLS)`.
-- Use [`COALESCE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conditional_expressions#coalesce) to replace `NULL` values with a default value before aggregating, such as `AVG(COALESCE(x, 0))`.
+- Use [`COALESCE`](conditional_expressions.md#coalesce) to replace `NULL` values with a default value before aggregating, such as `AVG(COALESCE(x, 0))`.
 
 For example, to filter out `NULL` values for an individual aggregate function
 call without removing rows from the rest of the query, use a `WHERE` clause
