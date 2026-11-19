@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-iac
 
-Google Cloud (GCP) の Infrastructure as Code 系スキル。Infrastructure Manager（deployment・revision・preview・deployment groups・サービスアカウント・Terraform バージョン・state ファイル・Cloud Build による Git 自動化・Organization Policy カスタム制約）、Terraform on Google Cloud（`google` / `google-beta` provider・認証・Cloud Storage への state 保存・import と bulk export・ベストプラクティス・CI/CD・ポリシー検証 `gcloud beta terraform vet`）、Config Connector（KRM で Google Cloud リソースを管理する Kubernetes アドオン・インストール・reconciliation・export / bulk-export）、fleet packages（`configdelivery`）、Deployment Manager の終了と DM Convert による Terraform / KRM への移行、Runtime Configurator を扱う。gcloud 3 グループ（`infra-manager` / `deployment-manager` / `runtime-config`）・REST 3 API・IAM 4 ファイルの機械生成ページを併せて収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `terraform-basics-state-import` / `terraform-best-practices-cicd` / `terraform-policy-validation`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) の Infrastructure as Code 系スキル。Infrastructure Manager（deployment・revision・preview・deployment groups・サービスアカウント・Terraform バージョン・state ファイル・Cloud Build による Git 自動化・Organization Policy カスタム制約）、Terraform on Google Cloud（`google` / `google-beta` provider・認証・Cloud Storage への state 保存・import と bulk export・ベストプラクティス・CI/CD・ポリシー検証 `gcloud beta terraform vet`）、Config Connector（KRM で Google Cloud リソースを管理する Kubernetes アドオン・インストール・reconciliation・export / bulk-export）、fleet packages（`configdelivery`）、Deployment Manager の終了と DM Convert による Terraform / KRM への移行、Runtime Configurator を扱う。gcloud 3 グループ（`infra-manager` / `deployment-manager` / `runtime-config`）・REST 3 API・IAM 4 ファイルの機械生成ページを併せて収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメントの原語）。Terraform CLI・HCL 言語そのものは HashiCorp のドキュメントが正で、本スキルは Google Cloud 側の使い方（provider・認証・state・運用）のみを扱う。
 
@@ -25,6 +25,15 @@ skills/gcp-iac/
       README.md
       <page>.md
     infrastructure-manager-previews-groups/  # preview・import・deployment groups・カスタム制約・annotations
+      README.md
+      <page>.md
+    terraform-basics-state-import/           # IaC ツール比較・provider・認証・基本コマンド・state・import / export
+      README.md
+      <page>.md
+    terraform-best-practices-cicd/           # スタイル・root / reusable modules・テスト・運用・GitOps CI/CD
+      README.md
+      <page>.md
+    terraform-policy-validation/             # gcloud beta terraform vet・policy library・制約テンプレート
       README.md
       <page>.md
     config-connector-install-resources/      # Config Connector の概要・インストール・リソース管理
@@ -45,12 +54,13 @@ skills/gcp-iac/
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. IAM ロール・権限 → `references/iam/README.md`（後続 PR で投入） の索引から引く。ロール ID（例: `roles/config.admin`・`roles/deploymentmanager.editor`・`roles/runtimeconfig.admin`）で `references/iam/`（後続 PR で投入） 配下を grep して該当ファイルを特定する。Infrastructure Manager の事前定義ロールの解説は `infrastructure-manager-deployments/access-control.md`
-2. Terraform の state・import・bulk export は `terraform-basics-state-import`（後続 PR で投入）（Terraform 側）と `config-connector-operations`（Config Connector の `config-connector bulk-export`）で別物。Infrastructure Manager の deployment への取り込みは `infrastructure-manager-previews-groups/import-resources.md`
-3. Deployment Manager からの移行は `deployment-manager-runtime-configurator/deprecations.md`（日付・比較）→ `dm-convert.md` → `convert.md`
-4. 他製品のリソース設定（Terraform の各リソース引数）や HashiCorp 側の仕様は他スキル・公式（下記「他スキルとの使い分け」「対象外」）
+1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）。製品の選択に迷うときは `terraform-basics-state-import/iac-overview.md`
+2. IAM ロール・権限 → `references/iam/README.md`（後続 PR で投入） の索引から引く。ロール ID（例: `roles/config.admin`・`roles/deploymentmanager.editor`・`roles/runtimeconfig.admin`）で `references/iam/`（後続 PR で投入） 配下を grep して該当ファイルを特定する。Infrastructure Manager の事前定義ロールの解説は `infrastructure-manager-deployments/access-control.md`
+3. Terraform の state・import・bulk export は `terraform-basics-state-import`（Terraform 側）と `config-connector-operations`（Config Connector の `config-connector bulk-export`）で別物。Infrastructure Manager の deployment への取り込みは `infrastructure-manager-previews-groups/import-resources.md`
+4. Deployment Manager からの移行は `deployment-manager-runtime-configurator/deprecations.md`（日付・比較）→ `dm-convert.md` → `convert.md`
+5. 他製品のリソース設定（Terraform の各リソース引数）や HashiCorp 側の仕様は他スキル・公式（下記「他スキルとの使い分け」「対象外」）
 
-未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `terraform-basics-state-import` / `terraform-best-practices-cicd` / `terraform-policy-validation`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -63,6 +73,13 @@ skills/gcp-iac/
 | preview（terraform plan）の作成・結果のエクスポート・drift と resource changes の確認・preview の削除 | infrastructure-manager-previews-groups | [references/infrastructure-manager-previews-groups/README.md](references/infrastructure-manager-previews-groups/README.md) |
 | deployment 削除前の DELETE モード preview・既存リソースの import | infrastructure-manager-previews-groups | [references/infrastructure-manager-previews-groups/README.md](references/infrastructure-manager-previews-groups/README.md) |
 | deployment groups（作成・provision・update・deprovision）・Organization Policy カスタム制約・annotations と labels | infrastructure-manager-previews-groups | [references/infrastructure-manager-previews-groups/README.md](references/infrastructure-manager-previews-groups/README.md) |
+| IaC ツール（Terraform・Infrastructure Manager・Config Connector 等）の選び方・`google` / `google-beta` provider・ブループリント | terraform-basics-state-import | [references/terraform-basics-state-import/README.md](references/terraform-basics-state-import/README.md) |
+| Terraform のインストール・認証（ADC・impersonation・Workload Identity Federation）・基本コマンド・VM 作成のクイックスタート | terraform-basics-state-import | [references/terraform-basics-state-import/README.md](references/terraform-basics-state-import/README.md) |
+| Cloud Storage バケットへの state 保存・既存リソースの import（command・block）・bulk export による HCL 生成 | terraform-basics-state-import | [references/terraform-basics-state-import/README.md](references/terraform-basics-state-import/README.md) |
+| Terraform のスタイル・root module / reusable module の設計・依存関係・設定間の連携 | terraform-best-practices-cicd | [references/terraform-best-practices-cicd/README.md](references/terraform-best-practices-cicd/README.md) |
+| Terraform のセキュリティ・テスト・バージョン管理・運用、Secure Source Manager と Cloud Build による GitOps CI/CD | terraform-best-practices-cicd | [references/terraform-best-practices-cicd/README.md](references/terraform-best-practices-cicd/README.md) |
+| `gcloud beta terraform vet` によるポリシー検証・クイックスタート・終了コード・CI/CD への組み込み | terraform-policy-validation | [references/terraform-policy-validation/README.md](references/terraform-policy-validation/README.md) |
+| policy library・Terraform 制約（resource change）・CAI 制約のテンプレート、terraform-validator からの移行、検証のトラブルシューティング | terraform-policy-validation | [references/terraform-policy-validation/README.md](references/terraform-policy-validation/README.md) |
 | Config Connector の概要・インストール方式（GKE アドオン・手動）・namespaced / cluster モード | config-connector-install-resources | [references/config-connector-install-resources/README.md](references/config-connector-install-resources/README.md) |
 | Config Connector のリソース作成・project / folder / organization の指定・リソース参照・`resourceID`・既存リソースの取得（acquire）・annotations・対応リソースの種類 | config-connector-install-resources | [references/config-connector-install-resources/README.md](references/config-connector-install-resources/README.md) |
 | Config Connector の reconciliation・競合の防止・外部管理フィールド・トラブルシューティング・ベストプラクティス | config-connector-operations | [references/config-connector-operations/README.md](references/config-connector-operations/README.md) |
@@ -72,7 +89,7 @@ skills/gcp-iac/
 | DM Convert による Terraform / KRM への変換・apply・import・abandon の手順とベストプラクティス | deployment-manager-runtime-configurator | [references/deployment-manager-runtime-configurator/README.md](references/deployment-manager-runtime-configurator/README.md) |
 | Runtime Configurator（Config・variable・waiter・watcher）の作成・読み書き・アクセス制御 | deployment-manager-runtime-configurator | [references/deployment-manager-runtime-configurator/README.md](references/deployment-manager-runtime-configurator/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `rest` / `rest-schemas` / `iam` / `terraform-basics-state-import` / `terraform-best-practices-cicd` / `terraform-policy-validation`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `rest` / `rest-schemas` / `iam`
 
 ## 他スキルとの使い分け
 
@@ -108,6 +125,6 @@ skills/gcp-iac/
 - 変更・終了（references で確認したもの）:
   - Deployment Manager: 2026-04-01 にサポート終了（docs の索引は 2026-03-31）、2026-06-30 以降は新規ユーザーをブロック、2027-06-30 以降はサービス停止（`deployment-manager-runtime-configurator/deprecations.md`）
   - Infrastructure Manager の Terraform 1.2.3 は非推奨（日付は `infrastructure-manager-deployments/terraform-version-deprecation.md`）
-- Preview の機能: ポリシー検証（`gcloud beta terraform vet`）、fleet packages、DM Convert、`bulk-export`（`terraform-basics-state-import/export.md`（後続 PR で投入））。仕様は変わりうる
+- Preview の機能: ポリシー検証（`gcloud beta terraform vet`）、fleet packages、DM Convert、`bulk-export`（`terraform-basics-state-import/export.md`）。仕様は変わりうる
 - Runtime Configurator は Beta で、非推奨の告知は確認できていない
 - 新しいメソッド・機能は公式 reference で確認する
