@@ -61,7 +61,7 @@ EOF
 
 ### Create a rule template
 
-Adapted (not in the official docs): the heredoc delimiter is quoted (`'EOF'`) so the shell does not expand `${data()}`, `${param(...)}`, `${column()}` and the backticks in the query.
+Adapted (not in the official docs): the heredoc delimiter is quoted (`'EOF'`) so the shell does not expand `${data()}`, `${param(...)}`, `${column()}` and the backticks in the query, and `inputParameters` declares both parameters the query uses (`reference_table`, `reference_column`).
 
 ```bash
 gcurl -X POST "https://${DATAPLEX_API}/entryGroups/ENTRY_GROUP_ID/entries?entry_id=TEMPLATE_ID" \
@@ -82,7 +82,8 @@ gcurl -X POST "https://${DATAPLEX_API}/entryGroups/ENTRY_GROUP_ID/entries?entry_
          }
        ],
        "inputParameters": {
-         "PARAMETER_NAME": { "description": "PARAMETER_DESCRIPTION" }
+         "reference_table": { "description": "PARAMETER_DESCRIPTION" },
+         "reference_column": { "description": "PARAMETER_DESCRIPTION" }
        },
        "capabilities": ["THRESHOLD"]
      }
@@ -125,6 +126,8 @@ gcurl -X DELETE \
 
 Use `templateReference`. Custom templates use project-specific paths; system templates use `projects/dataplex-templates/locations/global/entryGroups/rule-library/entries/SYSTEM_TEMPLATE_ID` (for example `non_null_expectation`). `FILTER_CONDITION` is an optional AIP-160 filter (for example `name = "RULE_NAME"`).
 
+Adapted (not in the official docs): `templateReference.values` passes both parameters of the template created above (`reference_table`, `reference_column`) instead of a single `PARAMETER_NAME`.
+
 ```bash
 gcurl -X POST "https://${DATAPLEX_API}/dataScans?data_scan_id=DATASCAN_ID" \
 --data @- << EOF
@@ -142,7 +145,10 @@ gcurl -X POST "https://${DATAPLEX_API}/dataScans?data_scan_id=DATASCAN_ID" \
     {
       "templateReference": {
         "name": "projects/PROJECT_ID/locations/LOCATION/entryGroups/ENTRY_GROUP_ID/entries/TEMPLATE_ID",
-        "values": { "PARAMETER_NAME": { "value" : "PARAMETER_VALUE" } }
+        "values": {
+          "reference_table": { "value" : "REFERENCE_TABLE" },
+          "reference_column": { "value" : "REFERENCE_COLUMN" }
+        }
       },
       "column": "COLUMN_NAME",
       "name": "RULE_NAME"
@@ -388,6 +394,7 @@ EOF
 - Corrected from the official docs: the official page lists `bigquery.jobs.insert` as the permission the service account needs in the scan project; that is the REST method `jobs.insert`, not an IAM permission. The IAM permission to run jobs is `bigquery.jobs.create`, which `roles/bigquery.jobUser` contains (IAM roles and permissions reference, https://docs.cloud.google.com/iam/docs/roles-permissions/bigquery, retrieved 2026-11-14).
 - Official docs inconsistency: this page writes the Dataplex Service Agent email as `service-PROJECT_ID@gcp-sa-dataplex.iam.gserviceaccount.com`, while the IAM page (https://docs.cloud.google.com/knowledge-catalog/docs/iam-and-access-control) writes it as `service-CUSTOMER_PROJECT_NUMBER@gcp-sa-dataplex.iam.gserviceaccount.com`. The IAM page's form uses a project number; see overview-setup-iam/iam-and-access-control.md.
 - Knowledge Catalog was formerly Dataplex Universal Catalog; the API, gcloud group, and IAM names stay `dataplex`. The BigQuery tables themselves are covered by the gcp-bigquery skill.
+- Adapted from the official docs: the create-template example's query references `${param(reference_table)}` and `${param(reference_column)}`, but its `inputParameters` declares a single `PARAMETER_NAME`, and the scan example passes a single `PARAMETER_NAME` value. The create example declares both parameters, and the scan example passes `REFERENCE_TABLE` and `REFERENCE_COLUMN` values under the same names, so the two examples work together as a foreign-key check.
 - Corrected from the official docs: the create and update template examples use `<< EOF` (unquoted) while the JSON contains `${data()}`, `${param(...)}`, `${column()}` and backticks, which the shell would expand or reject; the fences use `<< 'EOF'`. The other heredocs contain no `$` or backticks and are unchanged.
 - The source uses snake_case query parameters (`entryGroup_id`, `entry_id`, `data_scan_id`, `aspect_keys`); the Discovery document names them `entryGroupId`, `entryId`, `dataScanId`. Copied as the source writes them.
 - Adapted from the official docs: the BigQuery table and glossary term REST examples put `templateReference` as a string, place `values` and `column` beside it in the rule object, and omit `name` and `type`, while the `data-rules` fields table marks `name`, `type` and the `templateReference` object as required, the later JSON payload example nests `name` and `values` inside `templateReference`, and a Note in the source says the column a rule applies to is not a field in the aspect data but is determined by the path where the aspect is attached. Both examples are rewritten to that schema (`RULE_NAME` is a placeholder for the rule name).

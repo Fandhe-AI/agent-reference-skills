@@ -146,6 +146,8 @@ curl -X PATCH \
 
 Same on a business glossary (`glossaries.patch`):
 
+Adapted (not in the official docs): the glossary path uses `locations/LOCATION` (the glossary's location) instead of `locations/global`.
+
 ```bash
 curl -X PATCH \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
@@ -158,7 +160,7 @@ curl -X PATCH \
       ]
     }
   }' \
-  "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/global/glossaries/GLOSSARY_ID?updateMask=changeRequestConfig"
+  "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/glossaries/GLOSSARY_ID?updateMask=changeRequestConfig"
 ```
 
 List all active and historical requests in a project and location:
@@ -193,6 +195,7 @@ curl -X GET \
 ## Notes
 
 - Source: https://docs.cloud.google.com/knowledge-catalog/docs/manage-requests (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the official glossary example fixes the path to `locations/global`, while the entry group example uses `locations/LOCATION`. Glossaries are also created in regional locations (for example `--location=us-central1` in import-export-glossaries-entrylinks-overview.md), so the example uses `LOCATION`; replace it with the location of the glossary.
 - If an approver uses `roles/dataplex.workflowApprover`, they must also have write access on the target entry or glossary resource, such as Dataplex Catalog Editor or Dataplex Entry Owner.
 - You cannot approve your own request; the approver must be a different principal with all write and type-usage permissions the changes need. An enrichment agent can auto-approve its own requests based on confidence or submit them for review.
 - Who can edit: user-submitted requests only by the original author; enrichment-agent requests also by reviewers and approvers while in `NEW` or `FAILED` (the `author` stays the agent service account).
