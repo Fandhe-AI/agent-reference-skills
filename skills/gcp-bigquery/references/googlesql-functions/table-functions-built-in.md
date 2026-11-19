@@ -15,10 +15,10 @@ You can only use these functions in the `FROM` clause.
 
 | Name | Summary |
 |---|---|
-| [`APPENDS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#appends) | Returns all rows appended to a table for a given time range. For more information, see [Time series functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions). |
-| [`CHANGES`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#changes) | Returns all rows that have changed in a table for a given time range. For more information, see [Time series functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions). |
+| [`APPENDS`](time-series-functions.md#appends) | Returns all rows appended to a table for a given time range. For more information, see [Time series functions](time-series-functions.md). |
+| [`CHANGES`](time-series-functions.md#changes) | Returns all rows that have changed in a table for a given time range. For more information, see [Time series functions](time-series-functions.md). |
 | [`EXTERNAL_OBJECT_TRANSFORM`](#external_object_transform) | Produces an object table with the original columns plus one or more additional columns. |
-| [`GAP_FILL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#gap_fill) | Finds and fills gaps in a time series. For more information, see [Time series functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions). |
+| [`GAP_FILL`](time-series-functions.md#gap_fill) | Finds and fills gaps in a time series. For more information, see [Time series functions](time-series-functions.md). |
 | [`RANGE_SESSIONIZE`](range-functions.md#range_sessionize) | Produces a table of sessionized ranges. For more information, see [Range functions](range-functions.md). |
 
 ### `EXTERNAL_OBJECT_TRANSFORM`

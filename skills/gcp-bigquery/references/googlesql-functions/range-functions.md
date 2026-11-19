@@ -12,8 +12,8 @@ GoogleSQL for BigQuery supports the following range functions.
 
 | Name | Summary |
 |---|---|
-| [`APPENDS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#appends) | Returns all rows appended to a table for a given time range. For more information, see [Time series functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions). |
-| [`CHANGES`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#changes) | Returns all rows that have changed in a table for a given time range. For more information, see [Time series functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions). |
+| [`APPENDS`](time-series-functions.md#appends) | Returns all rows appended to a table for a given time range. For more information, see [Time series functions](time-series-functions.md). |
+| [`CHANGES`](time-series-functions.md#changes) | Returns all rows that have changed in a table for a given time range. For more information, see [Time series functions](time-series-functions.md). |
 | [`GENERATE_RANGE_ARRAY`](#generate_range_array) | Splits a range into an array of subranges. |
 | [`RANGE`](#range) | Constructs a range of `DATE`, `DATETIME`, or `TIMESTAMP` values. |
 | [`RANGE_BUCKET`](mathematical_functions.md#range_bucket) | Scans through a sorted array and returns the 0-based position of a point's upper bound. For more information, see [Mathematical functions](mathematical_functions.md). |

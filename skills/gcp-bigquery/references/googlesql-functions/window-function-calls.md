@@ -106,7 +106,7 @@ over_clause:
 The `OVER` clause references a window that defines a group of rows in a table
 upon which to use a window function. You can provide a
 [`named_window`](#referencing-a-named-window) that is
-[defined in your query](../googlesql-syntax/query-syntax-3.md#window-clause), or you can
+[defined in your query](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#window_clause), or you can
 define the [specifications for a new window](#defining-the-window-specification).
 
 **Notes**
@@ -146,7 +146,7 @@ window_specification:
 
 Defines the specifications for the window.
 
-- [`named_window`](#referencing-a-named-window): The name of an existing window that was defined with a [`WINDOW` clause](../googlesql-syntax/query-syntax-3.md#window-clause).
+- [`named_window`](#referencing-a-named-window): The name of an existing window that was defined with a [`WINDOW` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#window_clause).
 
 > [!IMPORTANT]
 > **Important:** If you use a named window, special rules apply to `PARTITION BY`, `ORDER BY`, and `window_frame_clause`. See [Rules for using a named window in the window specification](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls#named_window_rules).
@@ -402,7 +402,7 @@ named_window_expression:
 
 A named window represents a group of rows in a table upon which to use an
 window function. A named window is defined in the
-[`WINDOW` clause](../googlesql-syntax/query-syntax-3.md#window-clause), and referenced in
+[`WINDOW` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#window_clause), and referenced in
 a window function's [`OVER` clause](#defining-the-over-clause).
 In an `OVER` clause, a named window can appear either by itself or embedded
 within a [window specification](#defining-the-window-specification).
@@ -416,7 +416,7 @@ within a [window specification](#defining-the-window-specification).
 
 The `QUALIFY` clause can be used to filter the results of a window function.
 For more information and examples, see the
-[`QUALIFY` clause](../googlesql-syntax/query-syntax-3.md#qualify-clause).
+[`QUALIFY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#qualify_clause).
 
 ### Window function examples
 

@@ -9,7 +9,7 @@ source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navig
 GoogleSQL for BigQuery supports navigation functions.
 Navigation functions are a subset of window functions. To create a
 window function call and learn about the syntax for window functions,
-see [Window function_calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+see [Window function_calls](window-function-calls.md).
 
 Navigation functions generally compute some
 `value_expression` over a different row in the window frame from the
@@ -56,7 +56,7 @@ present. If `IGNORE NULLS` is present, the function excludes `NULL` values from
 the calculation.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Supported Argument Types**
 
@@ -142,7 +142,7 @@ its type must be implicitly coercible to the type of `value_expression`. If left
 unspecified, `default_expression` defaults to NULL.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Supported Argument Types**
 
@@ -299,7 +299,7 @@ present. If `IGNORE NULLS` is present, the function excludes `NULL` values from
 the calculation.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Supported Argument Types**
 
@@ -385,7 +385,7 @@ its type must be implicitly coercible to the type of `value_expression`. If left
 unspecified, `default_expression` defaults to NULL.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Supported Argument Types**
 
@@ -543,7 +543,7 @@ present. If `IGNORE NULLS` is present, the function excludes `NULL` values from
 the calculation.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Supported Argument Types**
 
@@ -631,7 +631,7 @@ values if
 - Interpolation between a `NULL` value and a non-`NULL` value returns the non-`NULL` value.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 `PERCENTILE_CONT` can be used with differential privacy. To learn more, see
 [Differentially private aggregate functions](aggregate-dp-functions.md).
@@ -730,7 +730,7 @@ values unless
 `RESPECT NULLS` is present.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 > [!NOTE]
 > **Note:** If you're querying a large dataset, you can compute results faster and save resources by using [KLL functions](kll_functions.md) for approximate percentile values. For more information, see [Sketches](https://docs.cloud.google.com/bigquery/docs/sketches).

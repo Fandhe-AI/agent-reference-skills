@@ -217,7 +217,7 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Supported Argument Types**
 
@@ -335,7 +335,7 @@ If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,
 aggregate function clauses can't be used.
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 An error is raised if an array in the final query result contains a `NULL`
 element.
@@ -605,7 +605,7 @@ If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,
 aggregate function clauses can't be used.
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 `AVG` can be used with differential privacy. For more information, see
 [Differentially private aggregate functions](aggregate-dp-functions.md).
@@ -844,7 +844,7 @@ expression evaluated to any value other than `NULL`.
 
 <!-- -->
 
-- `OVER`: To learn more about the `OVER` clause and how to use it, see [Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+- `OVER`: To learn more about the `OVER` clause and how to use it, see [Window function calls](window-function-calls.md).
 
 **Details**
 
@@ -1007,7 +1007,7 @@ Gets the number of `TRUE` values for an expression.
 
 <!-- -->
 
-- `OVER`: To learn more about the `OVER` clause and how to use it, see [Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+- `OVER`: To learn more about the `OVER` clause and how to use it, see [Window function calls](window-function-calls.md).
 
 **Details**
 
@@ -1298,7 +1298,7 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
 
@@ -1406,7 +1406,7 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
 
@@ -1520,7 +1520,7 @@ If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,
 aggregate function clauses can't be used.
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 **Supported Argument Types**
 
@@ -1647,7 +1647,7 @@ This function can be used with the
 [`AGGREGATION_THRESHOLD` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 `SUM` can be used with differential privacy. For more information, see
 [Differentially private aggregate functions](aggregate-dp-functions.md).

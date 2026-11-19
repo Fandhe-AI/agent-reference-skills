@@ -94,7 +94,7 @@ syntax. To build an aggregate function, use the following syntax:
   `DISTINCT`, aren't supported, but function call
   modifiers, such as `IGNORE_NULLS`,
   are still supported. To learn more about the `OVER` clause,
-  see [Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+  see [Window function calls](window-function-calls.md).
 
 **Details**
 
@@ -288,7 +288,7 @@ FROM
 
 In the following example, the average of `x` over a specified window is returned
 for each row. To learn more about windows and how to use them, see
-[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
+[Window function calls](window-function-calls.md).
 
 ```sql
 SELECT
