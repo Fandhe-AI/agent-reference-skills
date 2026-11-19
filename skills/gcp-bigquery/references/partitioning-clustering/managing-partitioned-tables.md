@@ -91,11 +91,11 @@ API: call `tables.patch` and set `requirePartitionFilter` to `true`.
 
 Use `bq cp` with a partition decorator (`$date`, e.g. `$20160201`):
 
-Adapted (not in the official docs): the table identifiers with a `$` partition decorator are single-quoted so the shell does not expand `$source_partition` / `$destination_partition` (or `$2016...` as a positional parameter).
+Adapted (not in the official docs): the table identifiers with a `$` partition decorator are single-quoted so the shell does not expand `$source_partition` / `$destination_partition` (or `$2016...` as a positional parameter). The source lists `-a -f -n` together as the possible flags; the example uses only `-a` (append), because `-n` skips an existing destination. Use `-f` instead of `-a` to overwrite without a prompt, or `-n` alone to skip an existing destination.
 
 ```bash
 bq --location=location cp \
--a -f -n \
+-a \
 'project_id:dataset.source_table$source_partition' \
 'project_id:dataset.destination_table$destination_partition'
 ```
@@ -246,6 +246,7 @@ API: call `tables.delete` with the table and partition decorator in `tableId`.
 - Java client-library sample (`UpdateTableRequirePartitionFilter`) omitted; no Python or Node.js sample is given on the page.
 - Corrected from the official docs: the `bq cp` and `bq rm` partition examples leave `table$partition` unquoted; in a shell `$partition` (and `$20160301`) is expanded, so the identifiers are single-quoted as in the source's other `bq` examples.
 - Conflicting official statements on the 6-hour example: this page (https://docs.cloud.google.com/bigquery/docs/managing-partitioned-tables, "Set the partition expiration") says each daily partition expires "at 06:00:00 UTC the following day", while the bq CLI reference (https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference, `--time_partitioning_expiration`) says "The expiration time evaluates to the partition's UTC date plus the integer value", which reads as 06:00:00 UTC on the partition's own date. Both are kept as written; do not rely on the extra day when sizing retention.
+- Corrected from the official docs: the `bq cp` partition syntax lists `-a -f -n` in one command; `-a` appends, `-f` overwrites without a prompt and `-n` (`--no_clobber`) does not overwrite an existing table (`bq help cp`), so the example keeps one write policy (`-a`).
 - Source: https://docs.cloud.google.com/bigquery/docs/managing-partitioned-tables (retrieved 2026-11-19)
 
 ## Related
