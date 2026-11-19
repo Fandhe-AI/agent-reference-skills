@@ -8,3 +8,6 @@
 | gcloud developer-connect connections describe | 3 commands (alpha, beta, ga); developer-connect connections describe … | [developer-connect-connections-describe.md](./developer-connect-connections-describe.md) |
 | gcloud developer-connect connections git-repository-links | 18 commands (alpha, beta, ga); developer-connect connections git-repository-links create … | [developer-connect-connections-git-repository-links.md](./developer-connect-connections-git-repository-links.md) |
 | gcloud developer-connect connections list | 3 commands (alpha, beta, ga); developer-connect connections list … | [developer-connect-connections-list.md](./developer-connect-connections-list.md) |
+| gcloud developer-connect connections update | 3 commands (alpha, beta, ga); developer-connect connections update … | [developer-connect-connections-update.md](./developer-connect-connections-update.md) |
+| gcloud developer-connect insights-configs | 19 commands (alpha, beta, ga); developer-connect insights-configs create … | [developer-connect-insights-configs.md](./developer-connect-insights-configs.md) |
+| gcloud developer-connect operations | 15 commands (alpha, beta, ga); developer-connect operations cancel … | [developer-connect-operations.md](./developer-connect-operations.md) |
