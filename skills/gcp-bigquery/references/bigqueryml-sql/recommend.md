@@ -52,7 +52,7 @@ ML.RECOMMEND(
 - `QUERY_STATEMENT`: The GoogleSQL query that is
   used to generate the evaluation data. For the supported SQL syntax for the
   `QUERY_STATEMENT` clause in GoogleSQL, see
-  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   If you specify input data by using either the `TABLE` or `QUERY_STATEMENT`
   argument, the user and item columns must match the user and item columns in

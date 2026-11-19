@@ -107,7 +107,7 @@ FROM
       processed_input = 'input_col'))
 ```
 
-This command uses the [`UNNEST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#unnest_operator)
+This command uses the [`UNNEST`](../googlesql-syntax/query-syntax-1.md#unnest-operator)
 function because the `category_weights` column is a nested repeated column.
 
 #### With standardization

@@ -253,7 +253,7 @@ The default value is `NO_PRUNING`.
 #### `query_statement`
 
 The
-[GoogleSQL query](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax)
+[GoogleSQL query](../googlesql-syntax/query-syntax-1.md)
 that contains the test and control data to analyze. The table of input data
 that you specify in the query must contain exactly the columns that you
 reference in the

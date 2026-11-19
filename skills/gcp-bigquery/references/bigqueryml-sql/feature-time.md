@@ -48,7 +48,7 @@ ML.FEATURES_AT_TIME(
 - `QUERY_STATEMENT`: a `STRING` value that specifies a
   GoogleSQL query that returns the feature data.
   This query must return the same columns as the `TABLE_NAME` argument. See
-  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
+  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
   for the supported SQL syntax of the `QUERY_STATEMENT` clause.
 
 - `TIME`: a `TIMESTAMP` value that specifies the point in

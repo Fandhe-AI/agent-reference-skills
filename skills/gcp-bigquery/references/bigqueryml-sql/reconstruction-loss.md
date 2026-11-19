@@ -35,7 +35,7 @@ ML.RECONSTRUCTION_LOSS(
   query to use for input data to generate the reconstruction losses. For
   the supported SQL syntax of the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   If you specify `QUERY_STATEMENT`, the input column names from the query must
   match the column names in the model, and their types must be compatible

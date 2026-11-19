@@ -948,7 +948,7 @@ equal value is excluded, otherwise `NULL`.
 
   - `(expression[, ...])`: A list of expressions.
   - `(subquery)`: A [subquery](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries#about_subqueries) that returns a single column. The values in that column are the set of values. If no rows are produced, the set of values is empty.
-  - `UNNEST(array_expression)`: An [UNNEST operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#unnest_operator)
+  - `UNNEST(array_expression)`: An [UNNEST operator](query-syntax-1.md#unnest-operator)
     that returns a column of values from an array expression. This is
     equivalent to:
 
@@ -1011,7 +1011,7 @@ NOT(x IN ...)
 ```
 
 The `UNNEST` form treats an array scan like `UNNEST` in the
-[`FROM`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#from_clause) clause:
+[`FROM`](query-syntax-1.md#from-clause) clause:
 
 ```sql
 x [NOT] IN UNNEST(<array expression>)
@@ -1545,7 +1545,7 @@ otherwise `NULL`.
   - A list of one or more patterns that match the `search_value` type.
 
   - An
-    [`UNNEST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#unnest_operator) operation that returns a column of values
+    [`UNNEST`](query-syntax-1.md#unnest-operator) operation that returns a column of values
     with the same type as `search_value` from an array expression.
 
   The regular expressions that are supported by the

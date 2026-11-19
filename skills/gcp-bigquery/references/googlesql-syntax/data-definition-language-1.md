@@ -537,7 +537,7 @@ REFERENCES primary_key_table(column_name[, ...]) NOT ENFORCED
   table.
 
 - `query_statement`: The query from which the table should be created. For the
-  query syntax, see [SQL syntax reference](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax).
+  query syntax, see [SQL syntax reference](query-syntax-1.md).
   If a collation specification is used on this table, collation passes
   through this query statement.
 
@@ -1793,7 +1793,7 @@ CLONE source_table_name
   If the source table is a standard table, then BigQuery creates
   a table snapshot of the source table. If the source table is a table snapshot,
   then BigQuery creates a copy of the table snapshot.
-- [`FOR SYSTEM_TIME AS OF`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#for_system_time_as_of):
+- [`FOR SYSTEM_TIME AS OF`](query-syntax-1.md#for-system_time-as-of):
   Lets you select the version of the table that was current at the time
   specified by `time_expression`. It can only be used when creating a
   snapshot of a table; it can't be used when making a copy of a table snapshot.

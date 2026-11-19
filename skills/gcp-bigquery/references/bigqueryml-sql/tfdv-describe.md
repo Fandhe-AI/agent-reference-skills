@@ -37,7 +37,7 @@ ML.TFDV_DESCRIBE(
 - `DATASET`: the BigQuery dataset that contains the table.
 - `TABLE_NAME`: the name of the input table that contains the training or serving data to calculate statistics for.
 - `QUERY_STATEMENT`: a query that generates the training or serving data to calculate statistics for. For the supported SQL syntax of the `QUERY_STATEMENT` clause, see [GoogleSQL query
-  syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 - `NUM_HISTOGRAM_BUCKETS`: an `INT64` value that specifies the number of buckets to use for a histogram with equal-width buckets. Only applies to numerical, `ARRAY<numerical>`, and `ARRAY<STRUCT<INT64,
   numerical>>` columns. The `num_histogram_buckets` value must be in the range `[1, 1,000]`. The default value is `10`.
 - `NUM_QUANTILES_HISTOGRAM_BUCKETS`: an `INT64` value that specifies the number of buckets to use for a [quantiles](https://en.wikipedia.org/wiki/Quantile) histogram. Only applies to numerical, `ARRAY<numerical>`, and `ARRAY<STRUCT<INT64, numerical>>` columns. The `num_quantiles_histogram_buckets` value must be in the range `[1, 1,000]`. The default value is `10`.

@@ -136,7 +136,7 @@ Specify the model type. This option is required.
 #### `query_statement`
 
 The
-[GoogleSQL query](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax)
+[GoogleSQL query](../googlesql-syntax/query-syntax-1.md)
 that contains the data to preprocess. The statistics that are calculated
 when transforming this data are applied to the input data of any functions
 that you use the model with.

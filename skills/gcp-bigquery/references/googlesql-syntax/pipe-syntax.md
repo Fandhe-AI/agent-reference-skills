@@ -7,7 +7,7 @@ source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-
 ## Signature / Usage
 
 Pipe query syntax is an extension to GoogleSQL that's simpler and more
-concise than [standard query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax). Pipe syntax supports the
+concise than [standard query syntax](query-syntax-1.md). Pipe syntax supports the
 same operations as standard syntax, and improves some areas of SQL query
 functionality and usability.
 
@@ -125,7 +125,7 @@ query computes the top rows based on that order.
 
 ### `FROM` queries
 
-In pipe syntax, a query can start with a standard [`FROM` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#from_clause)
+In pipe syntax, a query can start with a standard [`FROM` clause](query-syntax-1.md#from-clause)
 and use any standard `FROM` syntax, including tables, joins, subqueries,
 and
 table-valued functions (TVFs). Table aliases can be
@@ -134,7 +134,7 @@ assigned to each input item using the [`AS alias` clause](https://docs.cloud.goo
 A query with only a `FROM` clause, like `FROM table_name`, is allowed in pipe
 syntax and returns all rows from the table. For tables with columns,
 `FROM table_name` in pipe syntax is similar to
-[`SELECT * FROM table_name`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_star) in standard syntax.
+[`SELECT * FROM table_name`](query-syntax-1.md#select-) in standard syntax.
 
 **Examples**
 
@@ -212,7 +212,7 @@ documentation on the corresponding syntax.
 **Description**
 
 Produces a new table with the listed columns, similar to the outermost
-[`SELECT` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_list) in a table subquery in standard syntax. The
+[`SELECT` clause](query-syntax-1.md#select-statement) in a table subquery in standard syntax. The
 `SELECT` operator supports standard output modifiers like
 `SELECT AS STRUCT` and `SELECT DISTINCT`.
 The `SELECT` operator also supports [window functions](../googlesql-functions/window-function-calls.md),
@@ -225,7 +225,7 @@ operator can be used near the end of a query to specify the list of output
 columns. The final query result contains the columns returned from the last pipe
 operator. If the `SELECT` operator isn't used to select specific columns, the
 output includes the full row, similar to what the
-[`SELECT *` statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_star) in standard syntax produces.
+[`SELECT *` statement](query-syntax-1.md#select-) in standard syntax produces.
 
 In pipe syntax, the `SELECT` clause doesn't perform aggregation. Use the
 [`AGGREGATE` operator](#aggregate-pipe-operator) instead.
@@ -277,7 +277,7 @@ FROM Produce
 **Description**
 
 Propagates the existing table and adds computed columns, similar to
-[`SELECT *, new_column`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_star) in standard syntax. The `EXTEND` operator supports
+[`SELECT *, new_column`](query-syntax-1.md#select-) in standard syntax. The `EXTEND` operator supports
 [window functions](../googlesql-functions/window-function-calls.md)
 , including [named windows](../googlesql-functions/window-function-calls.md#use-a-named-window-in-a-window-frame-clause). Named windows are defined using the
 `WINDOW` keyword and are only visible to the current `EXTEND` operator.
@@ -347,7 +347,7 @@ FROM Produce
 **Description**
 
 Replaces the value of a column in the input table, similar to
-[`SELECT * REPLACE (expression AS column)`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_replace) in standard syntax.
+[`SELECT * REPLACE (expression AS column)`](query-syntax-1.md#select--replace) in standard syntax.
 Each referenced column must exist exactly once in the input table.
 
 After a `SET` operation, the referenced top-level columns (like `x`) are
@@ -393,7 +393,7 @@ FROM (SELECT 2 AS x, 3 AS y) AS t
 **Description**
 
 Removes listed columns from the input table, similar to
-[`SELECT * EXCEPT (column)`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_except) in standard syntax. Each
+[`SELECT * EXCEPT (column)`](query-syntax-1.md#select--except) in standard syntax. Each
 referenced column must exist at least once in the input table.
 
 After a `DROP` operation, the referenced top-level columns (like `x`) are
@@ -815,7 +815,7 @@ FROM Produce
 Returns distinct rows from the input table, while preserving table aliases.
 
 Using the `DISTINCT` operator after a `SELECT` or `UNION ALL` clause is similar
-to using a [`SELECT DISTINCT` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_distinct) or
+to using a [`SELECT DISTINCT` clause](query-syntax-1.md#select-distinct) or
 [`UNION DISTINCT` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#union) in standard syntax, but the `DISTINCT`
 pipe operator can be applied anywhere. The `DISTINCT` operator computes distinct
 rows based on the values of all visible columns. Pseudo-columns are ignored
@@ -1559,7 +1559,7 @@ SELECT one_digit, two_digit FROM NumbersTable
 **Description**
 
 Selects a random sample of rows from the input table. The `TABLESAMPLE` pipe
-operator behaves the same as [`TABLESAMPLE` operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#tablesample_operator) in
+operator behaves the same as [`TABLESAMPLE` operator](query-syntax-1.md#tablesample-operator) in
 standard syntax.
 
 **Example**
@@ -1649,7 +1649,7 @@ SELECT 1 AS key
 **Description**
 
 Rotates rows into columns. The `PIVOT` pipe operator behaves the same as the
-[`PIVOT` operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#pivot_operator) in standard syntax.
+[`PIVOT` operator](query-syntax-1.md#pivot-operator) in standard syntax.
 
 The output table has one pivot column for each value provided in the list.
 Each pivot column has an explicit name if provided, or a string
@@ -1721,7 +1721,7 @@ alias to select all columns:
 **Description**
 
 Rotates columns into rows. The `UNPIVOT` pipe operator behaves the same as the
-[`UNPIVOT` operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#unpivot_operator) in standard syntax.
+[`UNPIVOT` operator](query-syntax-1.md#unpivot-operator) in standard syntax.
 
 **Example**
 
@@ -1765,7 +1765,7 @@ Matching rows works similarly to matching with regular expressions, but
 instead of matching characters in a string, the `MATCH_RECOGNIZE` operator finds
 matches across rows in a table. The `MATCH_RECOGNIZE` pipe operator behaves the
 same as the
-[`MATCH_RECOGNIZE` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#match_recognize_clause) in standard syntax.
+[`MATCH_RECOGNIZE` clause](query-syntax-1.md#match_recognize-clause) in standard syntax.
 
 **Example**
 

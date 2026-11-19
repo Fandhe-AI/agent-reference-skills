@@ -45,7 +45,7 @@ ML.TRANSFORM(
 - `QUERY_STATEMENT`: A query that generates the feature
   data to preprocess. For the supported SQL syntax of the `QUERY_STATEMENT`
   clause, see
-  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   If you specify a value for the `QUERY_STATEMENT` argument, the input column
   names from the query must match the input column names in the model's

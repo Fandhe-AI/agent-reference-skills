@@ -68,7 +68,7 @@ ML.EVALUATE(
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -178,7 +178,7 @@ ML.EVALUATE(
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -292,7 +292,7 @@ ML.EVALUATE(
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -433,7 +433,7 @@ ML.EVALUATE(
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -557,7 +557,7 @@ ML.EVALUATE(
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -677,7 +677,7 @@ ML.EVALUATE(
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -817,7 +817,7 @@ ML.EVALUATE(
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
