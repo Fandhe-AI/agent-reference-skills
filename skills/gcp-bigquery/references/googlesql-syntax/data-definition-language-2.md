@@ -527,11 +527,14 @@ The following example creates a BigLake table and explicitly
 specifies the schema. It also specifies refreshing metadata cache automatically
 at a system-defined interval.
 
+Adapted (not in the official docs): added the required `uris` option with the example value `['gs://bucket/path1/*']` from the `uris` row of the option table.
+
 ```googlesql
 CREATE OR REPLACE EXTERNAL TABLE mydataset.newtable (x INT64, y STRING, z BOOL)
   WITH CONNECTION myconnection
   OPTIONS(
     format ="PARQUET",
+    uris = ['gs://bucket/path1/*'],
     max_staleness = STALENESS_INTERVAL,
     metadata_cache_mode = 'AUTOMATIC');
 ```
@@ -978,6 +981,8 @@ aggregate `SUM` method takes the aggregate function parameter dividend,
 while the non-aggregate division operator ( `/` ) takes the
 non-aggregate function parameter divisor.
 
+Adapted (not in the official docs): qualified the call to the persistent UDAF with its project and dataset.
+
 ```googlesql
 CREATE AGGREGATE FUNCTION myProject.myDataset.ScaledSum(
   dividend FLOAT64,
@@ -988,7 +993,7 @@ AS (
 );
 
 -- Call the SQL UDAF.
-SELECT ScaledSum(col1, 2) AS scaled_sum
+SELECT myProject.myDataset.ScaledSum(col1, 2) AS scaled_sum
 FROM (
   SELECT 1 AS col1 UNION ALL
   SELECT 3 AS col1 UNION ALL
@@ -1138,7 +1143,7 @@ JavaScript functions:
 
   **Parameters:**
   - `state`: The aggregate state, which is `initialState` on the
-    first invocation, and then the return value of the previous call to
+    first invocation, and then the state updated by the previous call to
     `aggregate` thereafter.
 
   - `aggregateParam`: The name of an aggregation parameter in the
@@ -1197,7 +1202,7 @@ JavaScript functions:
   - `nonAggregateParam`: Replace with a `NOT AGGREGATE`
     function parameter name.
 
-  The final aggregation state is returned by the `merge` function
+  The final aggregation state is the state updated by the `merge` function
   (or `aggregate` function if
   `merge` is never invoked). If the input is empty after `NULL` filtering,
   the final aggregation state is `initialState`.
@@ -2429,6 +2434,10 @@ OPTIONS (
 - Caution: The external table example uses `metadata_cache_mode = 'AUTOMATIC'`, which is not in the `external_table_option_list` of this statement; whether it is supported as an SQL option is not stated.
 - Conflicting official statements: `CREATE SEARCH INDEX` says BigQuery returns an error if any `column_name` is not a `STRING` or does not contain a `STRING` field, but the supported column types listed above it include `INT64` and `TIMESTAMP`.
 - The Markdown twin drops the superscript of `[-2<sup>53</sup>, 2<sup>53</sup>]` (rendered page) and shows `[-253, 253]`; it is written here as `[-2^53, 2^53]`.
+- Corrected from the official docs: the BigLake table example sets only `format`, `max_staleness` and `metadata_cache_mode`, but the `external_table_option_list` section says the `format` and `uris` options are required. A `uris` option is added, using `['gs://bucket/path1/*']`, one of the valid values shown in the `uris` row of the option table; replace it with the location of your data.
+- Corrected from the official docs: the SQL UDAF example creates the persistent function `myProject.myDataset.ScaledSum` but calls it as `ScaledSum(col1, 2)`. The BigQuery guide to user-defined aggregate functions (https://docs.cloud.google.com/bigquery/docs/user-defined-aggregates#call-udaf-persist, retrieved 2026-11-20) says that you must include the dataset in the function path when you call a persistent UDAF, and calls `my_project.my_dataset.WeightedAverage(...)`. The call is qualified the same way.
+- Corrected from the official docs: the `state` parameter of `aggregate` was described as the return value of the previous call to `aggregate`, and the final aggregation state as returned by `merge` or `aggregate`, although the same section says that `aggregate` and `merge` don't return a value and update the state instead (the user-defined aggregates guide says the same and refers to the value "left in the `state` argument after the `aggregate` or `merge` function is called"). Both sentences now describe the updated state.
+- Caution: in the `WeightedAverage` JavaScript UDAF example, `initialState` puts `initialSum` into `sum`, and `merge` adds the `sum` of each partial state. The `merge` description on this page says the engine calls it only when it aggregates sections of the data in parallel, so when it does, `initialSum` is counted once per partial aggregation and the result depends on how the data is split. To add the initial value exactly once, start `sum` at `0` in `initialState` and add the non-aggregate parameter in `finalize`, which receives it as `nonAggregateParam`.
 
 ## Related
 
