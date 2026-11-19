@@ -351,13 +351,13 @@ For XGBoost models, `INPUT` field names must be identical to the names in the `f
 [Remote models](create-remote-model-https.md) support the
 following BigQuery data types for `INPUT` and `OUTPUT` clauses:
 
-- Simple type: [BOOL](../googlesql-syntax/data-types.md#boolean-type), [INT64](../googlesql-syntax/data-types.md#integer-type), [FLOAT64](../googlesql-syntax/data-types.md#floating-point-type), [NUMERIC](../googlesql-syntax/data-types.md#decimal-types), [BIGNUMERIC](../googlesql-syntax/data-types.md#decimal-types), [STRING](../googlesql-syntax/data-types.md#string-type)
-- [ARRAY](../googlesql-syntax/data-types.md#array-type)\<Simple type\>
+- Simple type: [BOOL](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#boolean_type), [INT64](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types), [FLOAT64](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types), [NUMERIC](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#decimal_types), [BIGNUMERIC](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#decimal_types), [STRING](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#string_type)
+- [ARRAY](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#array_type)\<Simple type\>
 
 [XGBoost models](create-xgboost.md) only support
-[numeric types](../googlesql-syntax/data-types.md#numeric-types)
+[numeric types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types)
 for the `INPUT` field type and
-[`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type)
+[`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types)
 for the `OUTPUT` field type.
 
 #### `connection_name`
@@ -426,7 +426,7 @@ The argument is in the model type column.
 <br />
 
 > [!NOTE]
-> **Note:** We are deprecating `ARIMA` as the model type. While the model training pipelines of `ARIMA` and `ARIMA_PLUS` are the same, `ARIMA_PLUS` supports more capabilities, including support for a new training option, [`DECOMPOSE_TIME_SERIES`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create#decompose_time_series), and table-valued functions including [`ML.ARIMA_EVALUATE`](arima-evaluate.md) and [`ML.EXPLAIN_FORECAST`](explain-forecast.md).
+> **Note:** We are deprecating `ARIMA` as the model type. While the model training pipelines of `ARIMA` and `ARIMA_PLUS` are the same, `ARIMA_PLUS` supports more capabilities, including support for a new training option, [`DECOMPOSE_TIME_SERIES`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create#decompose_time_series), and table-valued functions including [`ML.ARIMA_EVALUATE`](arima-evaluate.md) and [`ML.EXPLAIN_FORECAST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast).
 
 ##### Other model options
 
@@ -580,7 +580,7 @@ AS (
 The `query_statement` argument specifies the query that is used to
 generate the training data. For information about the supported SQL syntax of
 the `query_statement` clause, see
-[GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+[GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
 ##### `holiday_statement`
 
@@ -677,8 +677,8 @@ model type. Supported data types for `input_label_cols` include:
 
 | `Model type` | `Supported label types` |
 |---|---|
-| `regression models` | [`INT64`](../googlesql-syntax/data-types.md#integer-type) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) |
-| `classification models` | Any [groupable](../googlesql-syntax/data-types.md#data-type-properties) data type |
+| `regression models` | [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) |
+| `classification models` | Any [groupable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties) data type |
 
 #### Supported data types for data split columns
 
@@ -687,8 +687,8 @@ the data split method. Supported data types for `data_split_col` include:
 
 | `Data split method` | `Supported column types` |
 |---|---|
-| `CUSTOM` | [`BOOL`](../googlesql-syntax/data-types.md#boolean-type) |
-| `SEQ` | [`INT64`](../googlesql-syntax/data-types.md#integer-type) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) [`TIMESTAMP`](../googlesql-syntax/data-types.md#timestamp-type) |
+| `CUSTOM` | [`BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#boolean_type) |
+| `SEQ` | [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) [`TIMESTAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#timestamp_type) |
 
 ### Limitations
 
@@ -699,7 +699,7 @@ the data split method. Supported data types for `data_split_col` include:
 - The label column cannot contain `NULL` values. If the label column contains `NULL` values, then the query fails.
 - The `CREATE MODEL IF NOT EXISTS` clause always updates the last modified timestamp of a model.
 - Query statements used in the `CREATE MODEL` statement cannot contain `EXTERNAL_QUERY`. If you want to use `EXTERNAL_QUERY`, then [materialize the
-  query result](../googlesql-syntax/data-definition-language-1.md#create-table-statement) and then use the `CREATE MODEL` statement with the newly created table.
+  query result](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_statement) and then use the `CREATE MODEL` statement with the newly created table.
 
 ### Quotas
 

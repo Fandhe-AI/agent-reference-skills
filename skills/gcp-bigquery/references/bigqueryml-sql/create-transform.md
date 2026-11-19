@@ -8,7 +8,7 @@ source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqu
 
 This document describes the `CREATE MODEL` statement for creating
 transform-only models in BigQuery. Transform-only models use the
-[`TRANSFORM` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create#transform)
+[`TRANSFORM` clause](create.md#transform)
 to apply [preprocessing functions](https://docs.cloud.google.com/bigquery/docs/manual-preprocessing)
 to input data and return the preprocessed data. Transform-only models decouple
 data preprocessing from model training, making it easier for you to capture and
@@ -18,7 +18,7 @@ You can use a transform-only model in conjunction with the
 [`ML.TRANSFORM` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-transform)
 to provide preprocessed data to other models:
 
-- You can use it in the [query statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create#query_statement) when creating another model, in order to use the transformed data as the training data for that model.
+- You can use it in the [query statement](create.md#query_statement) when creating another model, in order to use the transformed data as the training data for that model.
 - You can use it in the [`query statement` argument](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict#arguments) of the `ML.PREDICT` function, in order to provide data for prediction that is processed in the way the target model expects.
 
 For batch feature transformations, it is better to use transform-only models

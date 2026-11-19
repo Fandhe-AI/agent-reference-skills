@@ -34,7 +34,7 @@ ML.DESCRIBE_DATA(
 - `DATASET`: the BigQuery dataset that contains the table.
 - `TABLE_NAME`: the name of the input table that contains the training or serving data to calculate statistics for.
 - `QUERY_STATEMENT`: a query that generates the training or serving data to calculate statistics for. For the supported SQL syntax of the `QUERY_STATEMENT` clause, see [GoogleSQL query
-  syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 - `NUM_QUANTILES`: an `INT64` value that specifies the number of [quantiles](https://en.wikipedia.org/wiki/Quantile) to return for numerical, `ARRAY<numerical>`, and `ARRAY<STRUCT<INT64, numerical>>` columns. This affects the number of results shown in the `quantiles` output column. These quantiles describe the distribution of the data in the column. Specify a lower value for coarser-grained distribution information and a higher value for finer-grained distribution information. The `NUM_QUANTILES` value must be in the range `[1, 100,000]`. The default value is `2`.
 - `NUM_ARRAY_LENGTH_QUANTILES`: an `INT64` value that specifies the number of quantiles to return for `ARRAY` columns. This affects the number of results shown in the `array_length_quantiles` output column. These quantiles describe the distribution of the length of the arrays in the column. Specify a lower value for coarser-grained distribution information and a higher value for finer-grained distribution information. The `NUM_ARRAY_LENGTH_QUANTILES` value must be in the range `[1, 100,000]`. The default value is `10`.
 - `TOP_K`: an `INT64` value that specifies the number of top values to return for categorical and `ARRAY<categorical>` columns. This affects the number of results shown in the `top_values` output column. The top values are the values that are shown most frequently in the column. The `TOP_K` value must be in the range `[1, 10,000]`. The default value is `1`.
@@ -46,13 +46,13 @@ ML.DESCRIBE_DATA(
 - `ARRAY` columns are unnested before statistics are computed on them.
 - `ARRAY<STRUCT<INT64, numerical>>`. The `INT64` value is the index, and the numerical value is the value. For statistics computation, BigQuery ML treats columns of this type as `ARRAY<numerical>` based on the value. The value of the dimension column in the output is `MAX(index) + 1`.
 - `STRUCT` fields are expanded, and then categorical columns are cast to `STRING` and numerical columns are cast to `FLOAT64`.
-- Columns of the following data types are [cast](../googlesql-functions/conversion_functions.md#cast) to `STRING` and return the same statistics as `STRING` columns:
+- Columns of the following data types are [cast](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions#cast) to `STRING` and return the same statistics as `STRING` columns:
   - `BOOL`
   - `BYTE`
   - `DATE`
   - `DATETIME`
   - `TIME`
-  - `TIMESTAMP` Columns of the following data types are [cast](../googlesql-functions/conversion_functions.md#cast) to `FLOAT64` and return the same statistics as `FLOAT64` columns:
+  - `TIMESTAMP` Columns of the following data types are [cast](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions#cast) to `FLOAT64` and return the same statistics as `FLOAT64` columns:
   - `INT64`
   - `NUMERIC`
   - `BIGNUMERIC`
@@ -68,8 +68,8 @@ ML.DESCRIBE_DATA(
 - `num_zeros`: an `INT64` column that contains one of the following:
   - For numerical, `ARRAY<numerical>`, and `ARRAY<STRUCT<INT64, numerical>>` input columns, returns the number of `0` values found in the column.
   - For categorical or `ARRAY<categorical>` input columns, returns `NULL`.
-- `min`: a `STRING` column that contains the [`MIN`](../googlesql-functions/aggregate_functions.md#min) value for the column.
-- `max`: a `STRING` column that contains the [`MAX`](../googlesql-functions/aggregate_functions.md#max) value for the column.
+- `min`: a `STRING` column that contains the [`MIN`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#min) value for the column.
+- `max`: a `STRING` column that contains the [`MAX`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aggregate_functions#max) value for the column.
 - `mean`: a `FLOAT64` column that contains one of the following:
   - For numerical, `ARRAY<numerical>`, and `ARRAY<STRUCT<INT64, numerical>>` input columns, returns the [mean](https://en.wikipedia.org/wiki/Mean) value calculated for the column.
   - For categorical or `ARRAY<categorical>` input columns, returns `NULL`.
@@ -79,17 +79,17 @@ ML.DESCRIBE_DATA(
 - `median`: a `FLOAT64` column that contains one of the following:
   - For numerical, `ARRAY<numerical>`, and `ARRAY<STRUCT<INT64, numerical>>` input columns, returns the [median](https://en.wikipedia.org/wiki/Median) value calculated for the column.
   - For categorical or `ARRAY<categorical>` input columns, returns `NULL`.
-- `quantiles`: an `ARRAY<FLOAT64>` column that contains information about the [quantiles](https://en.wikipedia.org/wiki/Quantile) in an input column, as computed by the [`APPROX_QUANTILES`](../googlesql-functions/approximate_aggregate_functions.md#approx_quantiles) function. The `quantiles` column contains one of the following values:
+- `quantiles`: an `ARRAY<FLOAT64>` column that contains information about the [quantiles](https://en.wikipedia.org/wiki/Quantile) in an input column, as computed by the [`APPROX_QUANTILES`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/approximate_aggregate_functions#approx_quantiles) function. The `quantiles` column contains one of the following values:
   - For numerical, `ARRAY<numerical>`, and `ARRAY<STRUCT<INT64, numerical>>` input columns, returns the [quantiles](https://en.wikipedia.org/wiki/Quantile) computed for the column.
   - For categorical or `ARRAY<categorical>` input columns, returns `NULL`.
-- `unique`: an `INT64` column that contains information about the number of unique values in an input column, as computed by the [`APPROX_COUNT_DISTINCT`](../googlesql-functions/approximate_aggregate_functions.md#approx_count_distinct) function. The `unique` column contains one of the following values:
+- `unique`: an `INT64` column that contains information about the number of unique values in an input column, as computed by the [`APPROX_COUNT_DISTINCT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/approximate_aggregate_functions#approx_count_distinct) function. The `unique` column contains one of the following values:
   - For numerical, `ARRAY<numerical>`, and `ARRAY<STRUCT<INT64, numerical>>` input columns, returns `NULL`.
   - For categorical or `ARRAY<categorical>` input columns, returns the number of unique values in the input column.
 - `avg_string_length`: a `FLOAT64` column that contains one of the following:
   - For numerical, `ARRAY<numerical>`, and `ARRAY<STRUCT<INT64, numerical>>` input columns, returns `NULL`.
   - For categorical or `ARRAY<categorical>` input columns, returns the average length of the values in the column.
 - `num_values`: an `INT64` column that contains the number of array elements for `ARRAY` columns, and the number of values in the column for other types of columns.
-- `top_values`: a `ARRAY<STRUCT<STRING, INT64>>` column that contains information about the top values and number of occurrences in an input column, as computed by the [`APPROX_TOP_COUNT`](../googlesql-functions/approximate_aggregate_functions.md#approx_top_count) function. The `top_values` column contains the following fields:
+- `top_values`: a `ARRAY<STRUCT<STRING, INT64>>` column that contains information about the top values and number of occurrences in an input column, as computed by the [`APPROX_TOP_COUNT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/approximate_aggregate_functions#approx_top_count) function. The `top_values` column contains the following fields:
   - `top_values.value`: a `STRING` field that contains one of the following values:
     - For numerical, `ARRAY<numerical>`, and `ARRAY<STRUCT<INT64, numerical>>` input columns, returns `NULL`.
     - For categorical or `ARRAY<categorical>` input columns, returns one of the top values in the input column.
@@ -108,7 +108,7 @@ ML.DESCRIBE_DATA(
 - `total_array_length`: an `INT64` column that contains one of the following values:
   - For `ARRAY` input columns, returns the sum of the size of the arrays in the column.
   - For other types of input columns, returns `NULL`.
-- `array_length_quantiles`: an `ARRAY<INT64>` column that contains the information about the quantiles for the array length in an input column, as computed by the [`APPROX_QUANTILES`](../googlesql-functions/approximate_aggregate_functions.md#approx_quantiles) function. The `array_length_quantiles` column contains one of the following values:
+- `array_length_quantiles`: an `ARRAY<INT64>` column that contains the information about the quantiles for the array length in an input column, as computed by the [`APPROX_QUANTILES`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/approximate_aggregate_functions#approx_quantiles) function. The `array_length_quantiles` column contains one of the following values:
   - For `ARRAY` input columns, returns the quantiles for the array length computed for the column.
   - For other types of input columns, returns `0`.
 - `dimension`: an `INT64` column that contains one of the following:
@@ -134,7 +134,7 @@ FROM ML.DESCRIBE_DATA(
 Input data for the `ML.DESCRIBE_DATA` function can only contain columns of the
 following data types:
 
-- [Numeric](../googlesql-syntax/data-types.md#numeric-types) types
+- [Numeric](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types) types
 - `STRING`
 - `BOOL`
 - `BYTE`

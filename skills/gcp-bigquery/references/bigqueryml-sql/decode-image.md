@@ -9,7 +9,7 @@ source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqu
 This document describes the `ML.DECODE_IMAGE` scalar function, which lets you
 convert image bytes to a multi-dimensional `ARRAY` representation. This
 conversion lets you do inference using the
-[`ML.PREDICT` function](predict.md)
+[`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict)
 on vision models that require images to be in `ARRAY` format.
 
 ### Syntax
@@ -34,7 +34,7 @@ ML.DECODE_IMAGE(data) AS input_field
 
     If you are referencing
     only the object table in the
-    [`query_statement`](predict.md#arguments)
+    [`query_statement`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict#arguments)
     of the `ML.PREDICT` function, you can specify `data` as the value. If you are
     joining the object table with other tables in the `query_statement` of the
     `ML.PREDICT` function, then you should fully qualify the `data` value as

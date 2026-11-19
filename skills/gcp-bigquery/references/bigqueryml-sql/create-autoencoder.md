@@ -19,7 +19,7 @@ You can use autoencoder models with the
 or
 [`AI.GENERATE_EMBEDDING`](ai-generate-embedding.md)
 functions to embed data into a lower-dimensional space, and with the
-[`ML.DETECT_ANOMALIES` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-detect-anomalies)
+[`ML.DETECT_ANOMALIES` function](detect-anomalies.md)
 to perform [anomaly detection](https://docs.cloud.google.com/bigquery/docs/anomaly-detection-overview).
 
 For more information about supported SQL statements and functions for this

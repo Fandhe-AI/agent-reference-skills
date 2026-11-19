@@ -17,7 +17,7 @@ Use this function to retrieve features from multiple entities for multiple
 points in time. For example, you could retrieve features created at or before
 three different points in time for entity 1, and features created at or before
 yet another different point in time for entity 2. Use the
-[`ML.FEATURES_AT_TIME` function](feature-time.md)
+[`ML.FEATURES_AT_TIME` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-feature-time)
 to use the same point-in-time cutoff for all entities when retrieving features.
 
 ### Syntax
@@ -52,7 +52,7 @@ ML.ENTITY_FEATURES_AT_TIME(
 - `FEATURE_QUERY_STATEMENT`: a `STRING` value that
   specifies a GoogleSQL query that returns the feature data. This
   query must return the same columns as `feature_table`. See
-  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
   for the supported SQL syntax of the `FEATURE_QUERY_STATEMENT` clause.
 
 - `ENTITY_TIME_TABLE_NAME`: a `STRING` value that
@@ -72,7 +72,7 @@ ML.ENTITY_FEATURES_AT_TIME(
   specifies a GoogleSQL query that returns the entity time data. This
   query must return the same columns as the `ENTITY_TIME_TABLE_NAME` argument.
   See
-  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
   for the supported SQL syntax of the `ENTITY_TIME_QUERY_STATEMENT` clause.
 
 - `NUM_ROWS`: an `INT64` value that specifies the number
