@@ -52,7 +52,7 @@ gcloud dataplex entries search 'foo' --project=my-project
 | Practice | Detail |
 |---|---|
 | Add aspects | Define and apply a custom trust signal aspect to certify authoritative data products. |
-| Context budgets | Specify the `context_budget` parameter of `LookupContext`; the API fits the most important metadata first within the token constraints. |
+| Context budgets | Specify the `context_budget` option of `LookupContext`; the API fits the most important metadata first (such as lineage and primary descriptions). The budget is a soft target of approximately that many characters, not a guaranteed limit (see about-context.md). |
 | Related resources | List up to 10 related tables or assets in a context inquiry so the context engine can autopopulate join paths. |
 | Glossaries | Standardize terms and abbreviations in business glossaries. |
 | Golden queries | Attach verified natural language queries and their correct SQL to entries. |
@@ -64,6 +64,7 @@ gcloud dataplex entries search 'foo' --project=my-project
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/dataplex/entries/search (gcloud 593.0.0 help); the page itself has no fenced code.
 - Limitations stated by the source: certain automated semantic extractions might be limited to built-in Google Cloud services; standard Google Cloud API quotas apply to context retrieval and metadata extraction; before creating resources you must manually create a VPC Service Controls security perimeter, otherwise the resources have no perimeter protection (VPC Service Controls itself is in `gcp-security`).
 - The tables themselves (BigQuery datasets, tables, views) are covered by the `gcp-bigquery` skill; Knowledge Catalog catalogs them.
+- Official docs inconsistency: this page says `LookupContext` fits metadata "within your specified token constraints", while the About context page calls `context_budget` "a target character budget" that is a soft budget, and the API schema (`GoogleCloudDataplexV1LookupContextRequest.options`, references/rest-schemas/dataplex/) says the output is truncated "on a best-effort basis to contain approximately the desired amount of characters" with "no guarantee". The table follows the API schema.
 
 ## Related
 
