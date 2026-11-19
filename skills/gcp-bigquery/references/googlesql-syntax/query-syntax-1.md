@@ -533,7 +533,7 @@ SELECT * FROM t1
 
 ##### `join_operation`
 
-See [Join operation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#join_types).
+See [Join operation](query-syntax-2.md#join-operation).
 
 ##### `query_expr`
 
@@ -628,7 +628,7 @@ Input values:
   - In an implicit `UNNEST` operation, the path must start with a [range variable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#range_variables) name.
   - In an explicit `UNNEST` operation, the path can optionally start with a [range variable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#range_variables) name.
 
-  The `UNNEST` operation with any [correlated](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#correlated_join) `array_path` must
+  The `UNNEST` operation with any [correlated](query-syntax-2.md#correlated-join-operation) `array_path` must
   be on the right side of a `CROSS JOIN`, `LEFT JOIN`, or
   `INNER JOIN` operation.
 - `as_alias`: If specified, defines the explicit name of the value table
@@ -1320,7 +1320,7 @@ Otherwise, the output column for that partition is anonymous.
 
 The `ORDER BY` clause within a `MATCH_RECOGNIZE` clause orders the
 rows of the input for pattern matching and
-follows the same rules as the standard [`ORDER BY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#order_by_clause).
+follows the same rules as the standard [`ORDER BY` clause](query-syntax-2.md#order-by-clause).
 The data type of each
 expression must be [orderable](data-types.md#orderable-data-types).
 If all expressions in the `ORDER BY`
@@ -1827,3 +1827,4 @@ Graph Query Language (GQL) reference guide.
 ## Related
 
 - [Index of this directory](./README.md)
+- [Query syntax (part 2 of 3)](./query-syntax-2.md)

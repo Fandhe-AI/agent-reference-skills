@@ -1064,7 +1064,7 @@ GROUPING(groupable_value)
 
 **Description**
 
-If a groupable item in the [`GROUP BY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause) is aggregated
+If a groupable item in the [`GROUP BY` clause](../googlesql-syntax/query-syntax-2.md#group-by-clause) is aggregated
 (and thus not grouped), this function returns `1`. Otherwise,
 this function returns `0`.
 

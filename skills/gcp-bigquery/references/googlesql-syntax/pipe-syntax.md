@@ -508,10 +508,10 @@ to disambiguate columns after the `JOIN` operator.
 **Description**
 
 Filters the results of the input table. The `WHERE` operator behaves the same
-as the [`WHERE` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#where_clause) in standard syntax.
+as the [`WHERE` clause](query-syntax-2.md#where-clause) in standard syntax.
 
 In pipe syntax, the `WHERE` operator also replaces the
-[`HAVING` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#having_clause) and [`QUALIFY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#qualify_clause) in
+[`HAVING` clause](query-syntax-2.md#having-clause) and [`QUALIFY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#qualify_clause) in
 standard syntax. For example, after performing aggregation with the
 [`AGGREGATE` operator](#aggregate-pipe-operator), use the `WHERE` operator
 instead of the `HAVING` clause. For [window functions](../googlesql-functions/window-function-calls.md) inside
@@ -571,7 +571,7 @@ order_suffix: {ASC | DESC} [{NULLS FIRST | NULLS LAST}]
 
 Performs aggregation on data across grouped rows or an entire table. The
 `AGGREGATE` operator is similar to a query in standard syntax that contains a
-[`GROUP BY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause) or a `SELECT` list with
+[`GROUP BY` clause](query-syntax-2.md#group-by-clause) or a `SELECT` list with
 [aggregate functions](../googlesql-functions/aggregate_functions.md) or both. In pipe syntax, the
 `GROUP BY` clause is part of the `AGGREGATE` operator. Pipe syntax
 doesn't support a standalone `GROUP BY` operator.
@@ -594,12 +594,12 @@ be used before the `AGGREGATE` operator to compute window functions.
 **Grouping**
 
 The `GROUP BY` clause in the `AGGREGATE` operator corresponds to the
-[`GROUP BY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause) in standard syntax, with the following
+[`GROUP BY` clause](query-syntax-2.md#group-by-clause) in standard syntax, with the following
 differences:
 
 - Unlike in standard syntax, you can't use a column ordinal (such as `GROUP BY 1, 2`), an alias from the `AGGREGATE` expression list, or `GROUP BY ALL`. Each `groupable_item` must be a [groupable](data-types.md#data-type-properties) expression evaluated on the input table.
 - Unlike in standard syntax, you can assign a column alias (`[AS] alias`) to a standalone `groupable_item` in the `GROUP BY` clause.
-- Standard grouping specifications such as [`GROUPING SETS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_grouping_sets), [`ROLLUP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_rollup), [`CUBE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_cube), and `()` are supported, with the following rules:
+- Standard grouping specifications such as [`GROUPING SETS`](query-syntax-2.md#group-rows-by-grouping-sets), [`ROLLUP`](query-syntax-2.md#group-rows-by-rollup), [`CUBE`](query-syntax-2.md#group-rows-by-cube), and `()` are supported, with the following rules:
   - `()` can't be combined with other grouping items.
   - Column aliases (`[AS] alias`) can't be applied to `GROUPING SETS`, `ROLLUP`, `CUBE`, or `()` clauses, or to expressions inside them.
   - Every `groupable_item` inside `GROUPING SETS`, `ROLLUP`, or `CUBE` must have an [implicit alias](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#implicit_aliases) (such as a column name or field path), which becomes its output column name. Anonymous expressions (such as `x + 1` or `MOD(x, 3)`) aren't allowed inside these clauses.
@@ -947,7 +947,7 @@ FROM table
 
 Joins rows from the input table with rows from a second table provided as an
 argument. The `JOIN` operator behaves the same as the
-[`JOIN` operation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#join_types) in standard syntax. The input table is the
+[`JOIN` operation](query-syntax-2.md#join-operation) in standard syntax. The input table is the
 left side of the join and the `JOIN` argument is the right side of the join.
 Standard join inputs are supported, including tables, subqueries, `UNNEST`
 operations, and table-valued function (TVF) calls. Standard join modifiers like
@@ -956,7 +956,7 @@ operations, and table-valued function (TVF) calls. Standard join modifiers like
 An alias can be assigned to the input table on the right side of the join, but
 not to the input table on the left side of the join. If an alias on the
 input table is needed, perhaps to disambiguate columns in an
-[`ON` expression](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#on_clause), then an alias can be added using the
+[`ON` expression](query-syntax-2.md#on-clause), then an alias can be added using the
 [`AS` operator](#as-pipe-operator) before the `JOIN` arguments.
 
 **Example**
@@ -1040,7 +1040,7 @@ FROM input_table
 **Description**
 
 Sorts results by a list of expressions. The `ORDER BY` operator behaves the same
-as the [`ORDER BY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#order_by_clause) in standard syntax. Suffixes like
+as the [`ORDER BY` clause](query-syntax-2.md#order-by-clause) in standard syntax. Suffixes like
 `DESC` and `NULLS LAST` are supported for
 customizing the ordering for each expression.
 

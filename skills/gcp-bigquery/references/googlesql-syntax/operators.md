@@ -1184,7 +1184,7 @@ expression_1 IS [NOT] DISTINCT FROM expression_2
 
 `IS DISTINCT FROM` returns `TRUE` if the input values are considered to be
 distinct from each other by the
-[`GROUP BY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause) clause. Otherwise, returns `FALSE`.
+[`GROUP BY`](query-syntax-2.md#group-by-clause) clause. Otherwise, returns `FALSE`.
 
 `a IS DISTINCT FROM b` being `TRUE` is equivalent to:
 
