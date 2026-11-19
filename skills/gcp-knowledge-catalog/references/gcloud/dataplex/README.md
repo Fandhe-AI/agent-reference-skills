@@ -12,3 +12,23 @@
 | gcloud dataplex assets list | 2 commands (alpha, ga); dataplex assets list … | [dataplex-assets-list.md](./dataplex-assets-list.md) |
 | gcloud dataplex assets remove-iam-policy-binding | 2 commands (alpha, ga); dataplex assets remove-iam-policy-binding … | [dataplex-assets-remove-iam-policy-binding.md](./dataplex-assets-remove-iam-policy-binding.md) |
 | gcloud dataplex assets set-iam-policy | 2 commands (alpha, ga); dataplex assets set-iam-policy … | [dataplex-assets-set-iam-policy.md](./dataplex-assets-set-iam-policy.md) |
+| gcloud dataplex assets update | 2 commands (alpha, ga); dataplex assets update … | [dataplex-assets-update.md](./dataplex-assets-update.md) |
+| gcloud dataplex context | 2 commands (alpha, ga); dataplex context lookup … | [dataplex-context.md](./dataplex-context.md) |
+| gcloud dataplex data-products add-iam-policy-binding | 2 commands (alpha, ga); dataplex data-products add-iam-policy-binding … | [dataplex-data-products-add-iam-policy-binding.md](./dataplex-data-products-add-iam-policy-binding.md) |
+| gcloud dataplex data-products create | 2 commands (alpha, ga); dataplex data-products create … | [dataplex-data-products-create.md](./dataplex-data-products-create.md) |
+| gcloud dataplex data-products data-assets | 10 commands (alpha, ga); dataplex data-products data-assets create … | [dataplex-data-products-data-assets.md](./dataplex-data-products-data-assets.md) |
+| gcloud dataplex data-products delete | 2 commands (alpha, ga); dataplex data-products delete … | [dataplex-data-products-delete.md](./dataplex-data-products-delete.md) |
+| gcloud dataplex data-products describe | 2 commands (alpha, ga); dataplex data-products describe … | [dataplex-data-products-describe.md](./dataplex-data-products-describe.md) |
+| gcloud dataplex data-products get-iam-policy | 2 commands (alpha, ga); dataplex data-products get-iam-policy … | [dataplex-data-products-get-iam-policy.md](./dataplex-data-products-get-iam-policy.md) |
+| gcloud dataplex data-products list | 2 commands (alpha, ga); dataplex data-products list … | [dataplex-data-products-list.md](./dataplex-data-products-list.md) |
+| gcloud dataplex data-products remove-iam-policy-binding | 2 commands (alpha, ga); dataplex data-products remove-iam-policy-binding … | [dataplex-data-products-remove-iam-policy-binding.md](./dataplex-data-products-remove-iam-policy-binding.md) |
+| gcloud dataplex data-products set-iam-policy | 2 commands (alpha, ga); dataplex data-products set-iam-policy … | [dataplex-data-products-set-iam-policy.md](./dataplex-data-products-set-iam-policy.md) |
+| gcloud dataplex data-products update | 2 commands (alpha, ga); dataplex data-products update … | [dataplex-data-products-update.md](./dataplex-data-products-update.md) |
+| gcloud dataplex datascans create | 8 commands (alpha, ga); dataplex datascans create data-discovery … | [dataplex-datascans-create.md](./dataplex-datascans-create.md) |
+| gcloud dataplex datascans delete | 2 commands (alpha, ga); dataplex datascans delete … | [dataplex-datascans-delete.md](./dataplex-datascans-delete.md) |
+| gcloud dataplex datascans describe | 2 commands (alpha, ga); dataplex datascans describe … | [dataplex-datascans-describe.md](./dataplex-datascans-describe.md) |
+| gcloud dataplex datascans get-iam-policy | 2 commands (alpha, ga); dataplex datascans get-iam-policy … | [dataplex-datascans-get-iam-policy.md](./dataplex-datascans-get-iam-policy.md) |
+| gcloud dataplex datascans jobs | 4 commands (alpha, ga); dataplex datascans jobs describe … | [dataplex-datascans-jobs.md](./dataplex-datascans-jobs.md) |
+| gcloud dataplex datascans list | 2 commands (alpha, ga); dataplex datascans list … | [dataplex-datascans-list.md](./dataplex-datascans-list.md) |
+| gcloud dataplex datascans run | 2 commands (alpha, ga); dataplex datascans run … | [dataplex-datascans-run.md](./dataplex-datascans-run.md) |
+| gcloud dataplex datascans set-iam-policy | 2 commands (alpha, ga); dataplex datascans set-iam-policy … | [dataplex-datascans-set-iam-policy.md](./dataplex-datascans-set-iam-policy.md) |
