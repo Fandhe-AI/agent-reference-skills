@@ -52,11 +52,13 @@ FILTER USING (region = 'US');
 
 Grant access to workforce identities in groups:
 
+Adapted (not in the official docs): the groups are written as `principalSet://iam.googleapis.com/locations/global/workforcePools/POOL_ID/group/GROUP_ID`; the source uses the single-identity `principal://.../subject/...` form, which does not match group members.
+
 ```sql
 CREATE ROW ACCESS POLICY sales_us_filter
 ON project.dataset.my_table
-GRANT TO ('principal://iam.googleapis.com/locations/global/workforcePools/example-contractors/subject/sales-us@example.com',
-          'principal://iam.googleapis.com/locations/global/workforcePools/example-contractors/subject/sales-managers@example.com')
+GRANT TO ('principalSet://iam.googleapis.com/locations/global/workforcePools/example-contractors/group/sales-us@example.com',
+          'principalSet://iam.googleapis.com/locations/global/workforcePools/example-contractors/group/sales-managers@example.com')
 FILTER USING (region = 'US');
 ```
 
@@ -242,6 +244,7 @@ In the console, a banner says results might be filtered by a row-level access po
 - When managing access for users in external identity providers, replace Google Account identifiers (`user:kiran@example.com`, `group:support@example.com`, `domain:example.com`) with Workforce Identity Federation principal identifiers.
 - The `Job` JSON excerpt is the source's truncated response and uses `...` elisions, so it is fenced as `text`.
 - The source also shows the console steps for listing policies.
+- Corrected from the official docs: the "workforce identities in groups" example uses `principal://iam.googleapis.com/locations/global/workforcePools/POOL_ID/subject/IDENTITY`, the identifier of one workforce identity; IAM's principal identifiers page (https://docs.cloud.google.com/iam/docs/principal-identifiers) writes a workforce group as `principalSet://iam.googleapis.com/locations/global/workforcePools/POOL_ID/group/GROUP_ID`, so the example uses that form.
 - Source: https://docs.cloud.google.com/bigquery/docs/managing-row-level-security (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - DDL reference: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_row_access_policy_statement
 

@@ -86,7 +86,7 @@ SELECT * FROM `LINKED_DATASET_ID`.INFORMATION_SCHEMA.TABLES;
 
 | Task | Role | Scope |
 |------|------|-------|
-| Discover listings and data exchanges | Analytics Hub Viewer (`roles/analyticshub.viewer`) | Subscriber project |
+| Discover listings and data exchanges | Analytics Hub Viewer (`roles/analyticshub.viewer`) | Subscriber project (as the source writes it; for a listing or exchange in another project, the role must be on that listing, exchange or publisher project, see Notes) |
 | Subscribe to listings | BigQuery User (`roles/bigquery.user`) | Subscriber project |
 | Subscribe to listings | Analytics Hub Subscriber (`roles/analyticshub.subscriber`) | Publisher's listing, exchange, or project |
 | Subscribe to data exchanges | BigQuery User (`roles/bigquery.user`) | Subscriber project |
@@ -115,6 +115,7 @@ Required permissions: `bigquery.datasets.create` (create new datasets) and `bigq
 
 - Corrected from the official docs: the source writes `replica_locations`, `log_linked_dataset_query_user_email` and `stored_procedure_config: true`; the REST JSON names are `replicaLocations`, `logLinkedDatasetQueryUserEmail` and `storedProcedureConfig` (an object whose `enabled` field is the boolean), and `listings.subscribe` returns `SubscribeListingResponse` (field `subscription`) rather than a bare Subscription.
 - Adapted from the official docs: the linked-dataset loop expands `$PROJECT` and `$dataset` unquoted; they are written `"${PROJECT}"` / `"${dataset}"` so a value from `bq ls` output is passed as one argument.
+- The source says to grant Analytics Hub Viewer "on the subscriber project". An IAM grant applies to the resource it is set on and its descendants, so it does not reach a listing or exchange in a publisher project; the publisher grants `roles/analyticshub.viewer` on the listing or exchange (for public discoverability to `allUsers` / `allAuthenticatedUsers`), as described in https://docs.cloud.google.com/bigquery/docs/analytics-hub-manage-listings.
 - Source: https://docs.cloud.google.com/bigquery/docs/analytics-hub-view-subscribe-listings (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the source shows `PROJECT=PROJECT_ID \` followed by `for dataset in $(bq ls --project_id $PROJECT | ...` on the next line (a continuation that merges the two lines) with unquoted `$PROJECT` / `$dataset`.
 - The source also shows Console steps for discovering, subscribing, viewing, updating, and deleting linked datasets; omitted.

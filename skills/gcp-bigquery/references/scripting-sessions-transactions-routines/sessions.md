@@ -24,11 +24,12 @@ bq query \
 
 Call `jobs.query` with `createSession` set to `true`. `location` is optional and binds the session to a physical location.
 
-Adapted (not in the official docs): the source writes `["location": "SESSION_LOCATION"]` in brackets, which is not valid JSON; the optional `location` member is shown as a normal member.
+Adapted (not in the official docs): the source writes `["location": "SESSION_LOCATION"]` in brackets, which is not valid JSON; the optional `location` member is shown as a normal member, and `"useLegacySql": false` is added because sessions need GoogleSQL and `jobs.query` defaults to legacy SQL.
 
 ```json
 {
   "query": "SQL_STATEMENT",
+  "useLegacySql": false,
   "createSession": true,
   "location": "SESSION_LOCATION"
 }
@@ -68,9 +69,12 @@ To avoid repeating the session ID, add it to `[query]` in `.bigqueryrc`:
 
 API request:
 
+Adapted (not in the official docs): `"useLegacySql": false` is added (GoogleSQL is required in a session; `jobs.query` defaults to legacy SQL).
+
 ```json
 {
   "query": "SQL_STATEMENT",
+  "useLegacySql": false,
   "connectionProperties": [{
     "key": "session_id",
     "value": "SESSION_ID"
@@ -153,6 +157,7 @@ WHERE
 - Permissions required for these actions are in sessions-intro (for example `bigquery.jobs.create`, `bigquery.jobs.list`, `bigquery.jobs.listAll`, `bigquery.jobs.update`).
 - Corrected from the official docs: the session-history query filters `SESSIONS_BY_USER` on `session_info.session_id`, but that view has a flat `session_id` column (`session_info` is a column of the `JOBS_BY_*` views); and `BQ.ABORT_SESSION(SESSION_ID)` is written with the session ID as a quoted string.
 - Corrected from the official docs: the source's `jobs.query` response example puts `sessionInfo` under `statistics`; in the Discovery document `QueryResponse` has a top-level `sessionInfo`, and `statistics.sessionInfo` belongs to the Job resource returned by `jobs.get`. Read `sessionInfo.sessionId` from the `jobs.query` response, or `statistics.sessionInfo.sessionId` from `jobs.get`.
+- Corrected from the official docs: the two `jobs.query` request bodies omit `useLegacySql`; in the Discovery document `QueryRequest.useLegacySql` "The default value is true", and the bq examples on this page pass `--nouse_legacy_sql`, so `"useLegacySql": false` is added.
 - Source: https://docs.cloud.google.com/bigquery/docs/sessions (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
