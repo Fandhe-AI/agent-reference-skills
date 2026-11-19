@@ -43,9 +43,9 @@ skills/gcp-bigquery/
       data-catalog/               # Data Catalog（Policy Tag Manager のため本スキル）
         README.md
         data-catalog-<sub>.md     # 24 ファイル（taxonomies・policy-tags・tag-templates・entries・entry-groups・tags・search・crawlers 等）
-    iam/                          # 機械生成: IAM roles-permissions reference（16 ファイル）、分割投入中（2 / 16 ページ。収録済みは README 掲載分のみ）
+    iam/                          # 機械生成: IAM roles-permissions reference（16 ファイル）
       README.md
-      <service>[-<N>].md
+      <service>[-<N>].md          # 例: bigquery-1.md・dataform-2.md
     googlesql-syntax/             # 機械変換: GoogleSQL 構文・データ型・演算子・DDL / DML / DCL・手続き型言語・システム変数ほか
       README.md
       <page>[-<N>].md
@@ -58,6 +58,9 @@ skills/gcp-bigquery/
     graph-gql/                    # 機械変換: GQL（BigQuery Graph）
       README.md
       <page>.md
+    information-schema/           # 機械変換: INFORMATION_SCHEMA の各ビュー、分割投入中（2 / 71 ページ。収録済みは README 掲載分のみ）
+      README.md
+      <view>.md
     bq-cli/                       # 機械変換: bq コマンドラインツールのリファレンス（3 分割）
       README.md
       bq-cli-reference-1.md ... bq-cli-reference-3.md
@@ -150,15 +153,15 @@ skills/gcp-bigquery/
 1. 概念・手順 → 下記マッピング表で手書きガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）。README の説明列にページ内の見出しが並ぶ
 2. SQL の構文・文（SELECT / FROM / JOIN / DDL / DML / DCL / EXPORT DATA / LOAD DATA / 手続き型言語）→ `references/googlesql-syntax/README.md` から引く。長いページ（`query-syntax-1`〜`3`・`data-definition-language-1`〜`4`）は `-<N>` に分割されているので README の説明列で見出しを確認する
 3. SQL の関数 → `references/googlesql-functions/README.md` の索引表（関数名 → ページ#アンカー）から引く。または `references/googlesql-functions/` 配下を ``## `NAME` `` で grep する（例: ``## `JSON_VALUE` ``）。同名の関数（`EXTRACT` 等）は型ごとに別ページにあるので、README で複数行を確認する。BigQuery ML の関数（`ML.*`（後続 PR で投入） / `AI.*`（後続 PR で投入））は `references/bigqueryml-sql/README.md`、GQL は `references/graph-gql/README.md`
-4. INFORMATION_SCHEMA のビュー → `references/information-schema/README.md`（後続 PR で投入）（概要・権限・リージョン修飾子は `overview-datasets/information-schema-intro.md`）
+4. INFORMATION_SCHEMA のビュー → `references/information-schema/README.md`（概要・権限・リージョン修飾子は `overview-datasets/information-schema-intro.md`）
 5. `bq` のサブコマンド → `references/bq-cli/README.md`。コマンドは `bq-cli-reference-2.md`、共通・グローバルフラグは `bq-cli-reference-1.md`。サブコマンド名で grep する。gcloud の `bq` グループとは別
 6. gcloud コマンド → `references/gcloud/README.md` からグループ（`biglake` / `bq` / `data-catalog`）を選び、グループの README.md → コマンドページへ。GA は help の verbatim、alpha / beta は NAME と SYNOPSIS のみなので、フラグの詳細が要るときは `gcloud alpha|beta <command> --help` を使う。BigQuery 本体の操作は gcloud ではなく `bq` と SQL が中心
 7. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/` 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
 8. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
 
-未投入カテゴリ（`rest` / `rest-schemas` / `information-schema` / `legacy-sql`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`rest` / `rest-schemas` / `legacy-sql`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`iam`: 2 / 16 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`information-schema`: 2 / 71 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -203,6 +206,7 @@ skills/gcp-bigquery/
 | SQL 関数（集計・ウィンドウ・文字列・日付時刻・JSON・配列・地理・ハッシュ・AEAD 暗号・時系列等）を名前から引きたい | googlesql-functions | [references/googlesql-functions/README.md](references/googlesql-functions/README.md) |
 | BigQuery ML の SQL 構文（`ML.*` / `AI.*` 関数） | bigqueryml-sql | [references/bigqueryml-sql/README.md](references/bigqueryml-sql/README.md) |
 | GQL（BigQuery Graph）のクエリ・パターン・グラフスキーマ文 | graph-gql | [references/graph-gql/README.md](references/graph-gql/README.md) |
+| INFORMATION_SCHEMA のビュー（JOBS・TABLES・COLUMNS・SEARCH_INDEXES・VECTOR_INDEXES・ASSIGNMENTS 等）の列を調べたい | information-schema | [references/information-schema/README.md](references/information-schema/README.md) |
 | `bq` コマンド（`bq query` / `bq load` / `bq extract` / `bq mk` 等）とグローバルフラグ | bq-cli | [references/bq-cli/README.md](references/bq-cli/README.md) |
 | Dataform CLI のコマンドとオプション | dataform-cli | [references/dataform-cli/README.md](references/dataform-cli/README.md) |
 | gcloud コマンド（`biglake` / `bq` / `data-catalog`）を調べたい | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
@@ -211,7 +215,7 @@ skills/gcp-bigquery/
 | Policy Tag Manager（taxonomies・policy tags）・tag templates・entries のコマンド | gcloud/data-catalog | [references/gcloud/data-catalog/README.md](references/gcloud/data-catalog/README.md) |
 | ロール ID の権限一覧・事前定義ロールを調べたい（`roles/bigquery.*` / `roles/analyticshub.*` / `roles/biglake.*` / `roles/dataform.*` / `roles/datacatalog.*` 等） | iam | [references/iam/README.md](references/iam/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas` / `information-schema` / `legacy-sql`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas` / `legacy-sql`
 
 ## 他スキルとの使い分け
 
