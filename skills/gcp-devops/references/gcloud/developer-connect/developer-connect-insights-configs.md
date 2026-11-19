@@ -114,11 +114,16 @@ NOTES
         $ gcloud beta developer-connect insights-configs create
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud developer-connect insights-configs create insights-config-name \
-    --app-hub-application=projects/my-project/locations/us-central1/applications/my-app-hub-application
+    --app-hub-application=projects/my-project/locations/us-central1/applications/my-app-hub-application \
+    --location=us-central1
+
+gcloud developer-connect insights-configs create insights-config-name \
+    --target-projects=project1,project2 \
+    --location=us-central1
 ```
 
 ### gcloud developer-connect insights-configs delete
@@ -710,12 +715,17 @@ NOTES
         $ gcloud beta developer-connect insights-configs update
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud developer-connect insights-configs update insights-config-name \
-    --artifact-uri=us-{location}-docker.pkg.dev/my-project/my-artifact-repo/my-image \
-    --build-project={build_project}
+    --run-discovery \
+    --location=us-central1
+
+gcloud developer-connect insights-configs update insights-config-name \
+    --artifact-uri=us-central1-docker.pkg.dev/my-project/my-artifact-repo/my-image \
+    --build-project=my-project \
+    --location=us-central1
 ```
 
 ### gcloud beta developer-connect insights-configs create
@@ -883,6 +893,8 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `create` and `update` examples pass the short insights config name `insights-config-name` without `--location`, which the SYNOPSIS requires with a short name (`INSIGHTS_CONFIG : --location=LOCATION`); the location inside the `--app-hub-application` / artifact names is not used for the insights config; the runnable form adds `--location=us-central1`, the location of the other examples on this page.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `update` example writes the artifact URI host as `us-{location}-docker.pkg.dev` and the build project as `{build_project}`, template placeholders that are not valid values; the runnable form uses `us-central1-docker.pkg.dev` (an Artifact Registry host is `LOCATION-docker.pkg.dev`; `us-central1` is the location of the other examples on this page) and `my-project`, the project in the artifact URI.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example gives only the command, without the `--insights-config` and `--location` that the SYNOPSIS requires (gcloud 593.0.0: "argument (--insights-config : --location): Must be specified"); the runnable form adds sample values.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example gives only the command, without the `--location` that the SYNOPSIS requires (gcloud 593.0.0: "argument --location: Must be specified"); the runnable form adds sample values.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example gives only the command, without the insights config name and `--location` that the SYNOPSIS requires (gcloud 593.0.0: "argument (INSIGHTS_CONFIG : --location=LOCATION): Must be specified"); the runnable form adds sample values.
