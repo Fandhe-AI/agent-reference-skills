@@ -1085,7 +1085,7 @@ flags aren't relevant for some element type, they are ignored.
 
 |---|---|
 | Precision | Description |
-| `.`\<number\> | - For integer specifiers \`%d\`, \`%i\`, \`%o\`, \`%u\`, \`%x\`, and \`%X\`: precision specifies the minimum number of digits to be written. If the value to be written is shorter than this number, the result is padded with leading zeros. The value isn't truncated even if the result is longer. A precision of 0 means that no character is written for the value 0. - For specifiers \`%a\`, \`%A\`, \`%e\`, \`%E\`, \`%f\`, and \`%F\`: this is the number of digits to be printed after the decimal point. The default value is 6. - For specifiers \`%g\` and \`%G\`: this is the number of significant digits to be printed, before the removal of the trailing zeros after the decimal point. The default value is 6. |
+| `.`\<number\> | - For integer specifiers \`%d\`, \`%i\`, \`%o\`, \`%x\`, and \`%X\`: precision specifies the minimum number of digits to be written. If the value to be written is shorter than this number, the result is padded with leading zeros. The value isn't truncated even if the result is longer. A precision of 0 means that no character is written for the value 0. - For specifiers \`%e\`, \`%E\`, \`%f\`, and \`%F\`: this is the number of digits to be printed after the decimal point. The default value is 6. - For specifiers \`%g\` and \`%G\`: this is the number of significant digits to be printed, before the removal of the trailing zeros after the decimal point. The default value is 6. |
 | `.*` | The precision isn't specified in the format string, but as an additional integer value argument preceding the argument that has to be formatted |
 
 ###### %g and %G behavior
@@ -2522,6 +2522,7 @@ search starts after `'3'`, and then it matches `'456'` and captures `'5'`.
 - Corrected from the official docs: The result tables for the `Recipes` queries spell `Bluberry pancakes` and `Blueberry samon`, but the `WITH Recipes` setup on the same page defines `Blueberry pancakes` and `Blueberry salmon`. The result values are changed to match the setup, and the table borders are re-padded.
 - Corrected from the official docs: The function list says `CODE_POINTS_TO_STRING` takes extended ASCII code points, but its description on this page says it takes Unicode code points and the example uses values such as 1024. The summary is changed to "Unicode".
 - Corrected from the official docs: the precision row says integer values shorter than the precision are padded with trailing zeros. They are padded on the left: the GoogleSQL compliance tests (google/zetasql commit 762ca7a16f2b, `googlesql/compliance/functions_testlib_format_integral.cc`) expect `FORMAT('%.3d', 5)` to return `005` and `FORMAT('%.4X', 1)` to return `0001`, as in C `printf`. The text is changed to leading zeros.
+- Corrected from the official docs: the precision row lists `%u`, `%a` and `%A`, which are not in the Format specifiers table on this page; the same section says an invalid format specifier produces an error. The three specifiers are removed from the row.
 
 ## Related
 
