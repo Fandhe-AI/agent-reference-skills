@@ -1420,10 +1420,12 @@ The `Z` suffix isn't case sensitive. When using the `Z` suffix, no space is
 allowed between the `Z` and the rest of the timestamp. The following are
 examples of using the `Z` suffix and the `Etc/UTC` time zone name:
 
+Adapted (not in the official docs): ended each `SELECT` statement with a semicolon.
+
 ```sql
-SELECT TIMESTAMP '2014-09-27T12:30:00.45Z'
-SELECT TIMESTAMP '2014-09-27 12:30:00.45z'
-SELECT TIMESTAMP '2014-09-27T12:30:00.45 Etc/UTC'
+SELECT TIMESTAMP '2014-09-27T12:30:00.45Z';
+SELECT TIMESTAMP '2014-09-27 12:30:00.45z';
+SELECT TIMESTAMP '2014-09-27T12:30:00.45 Etc/UTC';
 ```
 
 ##### Specify an offset from Coordinated Universal Time (UTC)
@@ -1569,6 +1571,7 @@ with a timezone that observes DST, the following rules apply:
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: The `Point` example `POINT(32 210)` has a latitude of 210, outside the range [-90, 90] that googlesql-functions/geography_functions-1.md states for latitudes. The official example is kept as is.
 - Caution: The `MultiPolygon` example has an inner ring `(2 2, 3 4, 2 4, 1 9)` that does not end at its first point, unlike the closed ring `(2 2, 3 4, 2 4, 2 2)` in the `Polygon` example on this page. The official example is kept as is.
+- Corrected from the official docs: the `Z` suffix and `Etc/UTC` example lists three `SELECT` statements in one block without semicolons between them, so the block doesn't run as written. A semicolon is added after each statement.
 
 ## Related
 

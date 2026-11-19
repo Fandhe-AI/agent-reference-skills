@@ -768,6 +768,8 @@ WHERE product like '%washer%'
 The following example appends a second entry to the repeated record in the
 `comments` column for all rows:
 
+Adapted (not in the official docs): ended the `UPDATE` and `SELECT` statements with semicolons.
+
 ```sql
 UPDATE dataset.DetailedInventory
 SET comments = ARRAY(
@@ -775,9 +777,9 @@ SET comments = ARRAY(
   UNION ALL
   SELECT (CAST('2016-01-01' AS DATE), 'comment2')
 )
-WHERE true
+WHERE true;
 
-SELECT product, comments FROM dataset.DetailedInventory
+SELECT product, comments FROM dataset.DetailedInventory;
 ```
 
 ```text
@@ -1571,6 +1573,7 @@ CREATE OR REPLACE TABLE
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; definition-list bodies are un-indented by four spaces so that they are not read as code; the `:` markers of the twin are kept (GitHub Markdown has no definition lists); indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the example that appends a second `comments` entry runs an `UPDATE` statement and then a `SELECT` statement in one block without a semicolon between them, so the block doesn't parse as a multi-statement query. Semicolons are added after both statements.
 
 ## Related
 
