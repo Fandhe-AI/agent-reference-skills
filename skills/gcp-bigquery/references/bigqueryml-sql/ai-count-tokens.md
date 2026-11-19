@@ -43,7 +43,7 @@ AI.COUNT_TOKENS(
 `AI.COUNT_TOKENS` takes the following arguments:
 
 - `INPUT`: a `STRING` value that contains the input text prompt for which to count tokens.
-- `ENDPOINT`: a `STRING` literal that specifies the name of the generative AI model to use for tokenization rules. If you don't provide an endpoint, then the default model used by the [`AI.GENERATE` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate) is used.
+- `ENDPOINT`: a `STRING` literal that specifies the name of the generative AI model to use for tokenization rules. If you don't provide an endpoint, then the default model used by the [`AI.GENERATE` function](ai-generate.md) is used.
 
 ### Output
 

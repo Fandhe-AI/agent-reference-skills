@@ -389,7 +389,7 @@ for the rest of the query.
 ### What's next
 
 - Try [using a TimesFM model with the `AI.FORECAST` function](https://docs.cloud.google.com/bigquery/docs/timesfm-time-series-forecasting-tutorial).
-- Try performing regression or classification with the [`AI.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-predict).
+- Try performing regression or classification with the [`AI.PREDICT` function](ai-predict.md).
 - For information about forecasting in BigQuery ML, see [Forecasting overview](https://docs.cloud.google.com/bigquery/docs/forecasting-overview).
 - For more information about supported SQL statements and functions for time series forecasting models, see [End-to-end user journeys for time series forecasting models](https://docs.cloud.google.com/bigquery/docs/e2e-journey-forecast).
 

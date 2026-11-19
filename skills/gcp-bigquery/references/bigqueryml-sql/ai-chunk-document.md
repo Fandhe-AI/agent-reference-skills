@@ -44,7 +44,7 @@ The `AI.CHUNK_DOCUMENT` function accepts the following input sources:
 - A Cloud Storage URI string literal with optional wildcard matching.
 - An object table.
 - A subquery that contains an `ObjectRef` column named `ref`.
-- A table or subquery that contains a `JSON` column named `parsed_document` that contains the output of the [`AI.PARSE_DOCUMENT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-parse-document) with the `raw-docai` schema.
+- A table or subquery that contains a `JSON` column named `parsed_document` that contains the output of the [`AI.PARSE_DOCUMENT` function](ai-parse-document.md) with the `raw-docai` schema.
 
 The `AI.CHUNK_DOCUMENT` function supports the
 [file formats](https://docs.cloud.google.com/document-ai/docs/layout-parse-chunk#parser-types)

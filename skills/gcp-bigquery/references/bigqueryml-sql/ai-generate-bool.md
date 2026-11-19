@@ -182,7 +182,7 @@ AI.GENERATE_BOOL(
   follows:
 
   - `SHARED`: The function only uses [dynamic shared quota (DSQ)](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/dynamic-shared-quota).
-  - `DEDICATED`: The function only uses [Provisioned Throughput](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/provisioned-throughput/overview) quota. The function returns an invalid query error if Provisioned Throughput quota isn't available. For more information, see [Use Agent Platform Provisioned Throughput](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate#provisioned-throughput).
+  - `DEDICATED`: The function only uses [Provisioned Throughput](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/provisioned-throughput/overview) quota. The function returns an invalid query error if Provisioned Throughput quota isn't available. For more information, see [Use Agent Platform Provisioned Throughput](ai-generate.md#use-agent-platform-provisioned-throughput).
   - `UNSPECIFIED`: The function uses quota as follows:
 
     - If you haven't purchased Provisioned Throughput quota, the function uses DSQ quota.
@@ -235,7 +235,7 @@ The result is similar to the following:
 You can use the `AI.GENERATE_BOOL` function in a `WHERE` clause to filter rows
 based on a condition described in natural language. The following example uses
 `AI.GENERATE_BOOL` to filter news articles, and then uses
-the [`AI.GENERATE` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate)
+the [`AI.GENERATE` function](ai-generate.md)
 to summarize the filtered articles:
 
 ```googlesql
@@ -361,7 +361,7 @@ the quota.
 
 ### Related functions
 
-The [`AI.IF`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-if) and
+The [`AI.IF`](ai-if.md) and
 [`AI.GENERATE_BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate-bool)
 functions both use models to generate a
 boolean value in response to a prompt. The following differences can help you
@@ -401,6 +401,7 @@ For information about managing the cost of this function, see
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate-bool (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- The Provisioned Throughput steps refer to "the remote model that you reference in the `AI.GENERATE_BOOL` function", but `AI.GENERATE_BOOL` takes no model argument: it sends the request to the Gemini model given by `endpoint` (or the default model) through `connection_id`. Select that Gemini model when purchasing; the source does not state which region to select for this function.
 
 ## Related
 
