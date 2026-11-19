@@ -59,7 +59,7 @@ ML.ADVANCED_WEIGHTS(
 
 `ML.ADVANCED_WEIGHTS` returns the following columns:
 
-- `processed_input`: a `STRING` value that contains the name of the feature column. The value of this column is the name of the feature column that's provided in the [`query_statement` clause](create.md#query_statement) used during model training. If the feature is non-numeric, then there are multiple rows with the same `processed_input` value, one for each category of the feature.
+- `processed_input`: a `STRING` value that contains the name of the feature column. The value of this column is the name of the feature column that's provided in the [`query_statement` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create#query_statement) used during model training. If the feature is non-numeric, then there are multiple rows with the same `processed_input` value, one for each category of the feature.
 - `category`: a `STRING` value that contains the category name if the column identified in the `processed_input` value is non-numeric. Returns a `NULL` value for numeric columns.
 - `weight`: a `FLOAT64` value that contains the [weight](https://developers.google.com/machine-learning/glossary/#weight) of each feature.
 - `standard_error`: a `FLOAT64` value that contains the [standard error](https://en.wikipedia.org/wiki/Standard_error) of the weight.
@@ -73,7 +73,7 @@ ML.ADVANCED_WEIGHTS(
   such that $\\hat\\beta_j$ is the weight of feature $j$ after training
   and $\\sigma_j$ is its standard error.
 
-If the [`TRANSFORM` clause](create.md#transform)
+If the [`TRANSFORM` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create#transform)
 was used in the `CREATE MODEL` statement that created the model,
 `ML.ADVANCED_WEIGHTS` outputs the weights of the `TRANSFORM` output
 features. The weights are denormalized by default, with the option to get

@@ -71,7 +71,7 @@ FROM
   contains characters other than letters, numbers, and underscores.
 - `QUERY_STATEMENT`: the GoogleSQL query that
   generates the data that you want to forecast. See the
-  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
   page for the supported SQL syntax of the `QUERY_STATEMENT` clause.
 
 - `DATA_COL`: a `STRING` value that specifies the name of
@@ -229,7 +229,7 @@ FROM AI.FORECAST(
   contains characters other than letters, numbers, and underscores.
 - `QUERY_STATEMENT`: the GoogleSQL query that
   generates the data that you want to forecast. See the
-  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
   page for the supported SQL syntax of the `QUERY_STATEMENT` clause.
 
 - `TARGET_COLS`: an `ARRAY<STRING>` value that specifies the names of

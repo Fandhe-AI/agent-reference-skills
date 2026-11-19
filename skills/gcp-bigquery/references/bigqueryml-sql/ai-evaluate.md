@@ -73,7 +73,7 @@ FROM
   forecast. The forecasted values are then evaluated against the data in the
   `ACTUAL_TIME_SERIES_TABLE` or `ACTUAL_TIME_SERIES_QUERY_STATEMENT`
   argument. See the
-  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
   page for the supported SQL syntax of the `HISTORY_TIME_SERIES_QUERY_STATEMENT`
   clause.
 
@@ -95,7 +95,7 @@ FROM
   query is evaluated against the forecasted values for the historical time
   series provided by the `HISTORY_TIME_SERIES_TABLE` or
   `HISTORY_TIME_SERIES_QUERY_STATEMENT` argument. See the
-  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
   page for the supported SQL syntax of the `ACTUAL_TIME_SERIES_QUERY_STATEMENT` clause.
 
 - `DATA_COL`: a `STRING` value that specifies the name of
@@ -389,7 +389,7 @@ for the rest of the query.
 ### What's next
 
 - Try [using a TimesFM model with the `AI.FORECAST` function](https://docs.cloud.google.com/bigquery/docs/timesfm-time-series-forecasting-tutorial).
-- Try performing regression or classification with the [`AI.PREDICT` function](ai-predict.md).
+- Try performing regression or classification with the [`AI.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-predict).
 - For information about forecasting in BigQuery ML, see [Forecasting overview](https://docs.cloud.google.com/bigquery/docs/forecasting-overview).
 - For more information about supported SQL statements and functions for time series forecasting models, see [End-to-end user journeys for time series forecasting models](https://docs.cloud.google.com/bigquery/docs/e2e-journey-forecast).
 

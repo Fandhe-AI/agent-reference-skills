@@ -21,9 +21,9 @@ The following are common use cases for the `AI.AGG` function:
 - **Error clustering and deduplication:** Which internal errors or test failures share the same root cause?
 
 We recommend the `AI.AGG` function for aggregation tasks instead of the
-[`AI.GENERATE`](ai-generate.md)
+[`AI.GENERATE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate)
 and
-[`AI.GENERATE_TEXT`](ai-generate-text.md)
+[`AI.GENERATE_TEXT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate-text)
 general-purpose AI functions for the following reasons:
 
 - The `AI.AGG` function automatically performs multi-level aggregation through batching data and aggregating the batch results. Because of this process, the `AI.AGG` function is capable of analyzing data that exceeds the size of the standard Gemini context window. The general-purpose AI functions require manually writing multi-level batching logic to achieve similar results. For queries that are small enough to not require multi-level aggregation for high-quality results, the `AI.AGG` function will automatically optimize to skip this process.
