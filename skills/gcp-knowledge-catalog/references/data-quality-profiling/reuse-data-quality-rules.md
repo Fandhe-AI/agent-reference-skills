@@ -166,10 +166,10 @@ EOF
 
 Patch the `@bigquery` entry with a `data-rules` aspect for that column.
 
-Adapted (not in the official docs): each rule follows the `data-rules` fields table (`name`, `type`, and a `templateReference` object holding `name` and `values`); the `column` field is dropped because the column comes from the aspect path.
+Adapted (not in the official docs): each rule follows the `data-rules` fields table (`name`, `type`, and a `templateReference` object holding `name` and `values`); the `column` field is dropped because the column comes from the aspect path; the entry ID is `bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID`, as in this page's Terraform example.
 
 ```bash
-gcurl -X PATCH "https://${DATAPLEX_API}/entryGroups/@bigquery/entries/projects/PROJECT_ID/locations/LOCATION/datasets/DATASET_ID/tables/TABLE_ID?updateMask=aspects&aspect_keys=projects/dataplex-types/locations/global/aspectTypes/data-rules@Schema.COLUMN_NAME" \
+gcurl -X PATCH "https://${DATAPLEX_API}/entryGroups/@bigquery/entries/bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID?updateMask=aspects&aspect_keys=projects/dataplex-types/locations/global/aspectTypes/data-rules@Schema.COLUMN_NAME" \
 --data @- << EOF
 {
 "aspects": {
@@ -403,6 +403,7 @@ EOF
 - Adapted from the official docs: the source defines `gcurl` as `alias gcurl='curl ...'`, which is not expanded in non-interactive scripts; here it is a shell function that passes its arguments to `curl` with the same two headers.
 - Rule templates are used only from the same location as the scan, or from a global location. A rule library location can't be changed after creation.
 - Deleting a rule template (`DELETE` on the entry) is destructive; try it on a disposable rule library first.
+- Corrected from the official docs: the BigQuery table REST example patches `entryGroups/@bigquery/entries/projects/PROJECT_ID/locations/LOCATION/datasets/DATASET_ID/tables/TABLE_ID`; the entry ID of a BigQuery table is `bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID` (the `entry_id` of this page's Terraform example), so the example uses that ID.
 - Pricing: BigQuery charges for the job run in the scan project; there is no Knowledge Catalog processing charge for the scan; `data-rules` and `data-quality-rule-template` aspect storage is charged as metadata storage (see Knowledge Catalog pricing at https://docs.cloud.google.com/dataplex/pricing).
 - The source also shows Console steps and Terraform examples (`google_dataplex_entry_group`, `google_dataplex_entry`, `google_dataplex_datascan`); they are omitted.
 

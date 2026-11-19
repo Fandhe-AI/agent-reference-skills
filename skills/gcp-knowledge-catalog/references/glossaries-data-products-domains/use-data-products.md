@@ -12,11 +12,12 @@ Data product consumers find curated asset collections, request access through bu
 
 Uses the `searchEntries` method:
 
-Adapted (not in the official docs): `query` and `pageSize` are sent as query parameters (`-G` with `--data-urlencode`) because `searchEntries` has no request body.
+Adapted (not in the official docs): `query` and `pageSize` are sent as query parameters (`-G` with `--data-urlencode`) because `searchEntries` has no request body; `-X POST` keeps the method `POST` (as defined for `searchEntries`) and `Content-Length: 0` marks the empty body.
 
 ```bash
 curl -X POST -G \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Length: 0" \
 --data-urlencode 'query=ADDITIONAL_KEYWORDS (type=(DATA_PRODUCT))' \
 --data-urlencode 'pageSize=10' \
 "https://dataplex.googleapis.com/v1/projects/PROJECT_ID/locations/global:searchEntries"
