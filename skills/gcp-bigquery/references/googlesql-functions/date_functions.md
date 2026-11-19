@@ -881,6 +881,7 @@ SELECT UNIX_DATE(DATE '2008-12-25') AS days_from_epoch;
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Conflicting official statements: the `DATE_DIFF` description says it returns the number of unit boundaries between the two dates, and the `WEEK` and `YEAR` examples on this page explain their results the same way (Saturday 2017-10-14 to Sunday 2017-10-15 returns 1 `WEEK` although the dates are one day apart). The Details paragraph and the 3.9 / 3.1 years example instead describe the result as an elapsed fraction truncated toward zero. The two readings agree only when `start_date` falls on a unit boundary, as it does in that example (`2020-01-01`); when it doesn't, the result is the boundary count. The official text is kept as published.
 
 ## Related
 

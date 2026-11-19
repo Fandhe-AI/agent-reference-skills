@@ -841,6 +841,7 @@ SELECT PARSE_DATETIME('%A, %B %e, %Y','Wednesday, December 19, 2018')
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/datetime_functions (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Conflicting official statements: the `DATETIME_DIFF` description says it returns the number of unit boundaries between the two values, and the `WEEK` and `YEAR` examples on this page explain their results the same way (Saturday `2017-10-14 00:00:00` to Sunday `2017-10-15 00:00:00` returns 1 `WEEK` although the values are 24 hours apart). The Details paragraph and the 3.9 / 3.1 hours example instead describe the result as an elapsed fraction truncated toward zero. The two readings agree only when `start_datetime` falls on a unit boundary, as it does in that example; when it doesn't, the result is the boundary count. The official text is kept as published.
 
 ## Related
 
