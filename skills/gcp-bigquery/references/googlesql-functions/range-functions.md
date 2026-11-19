@@ -12,8 +12,8 @@ GoogleSQL for BigQuery supports the following range functions.
 
 | Name | Summary |
 |---|---|
-| [`APPENDS`](time-series-functions.md#appends) | Returns all rows appended to a table for a given time range. For more information, see [Time series functions](time-series-functions.md). |
-| [`CHANGES`](time-series-functions.md#changes) | Returns all rows that have changed in a table for a given time range. For more information, see [Time series functions](time-series-functions.md). |
+| [`APPENDS`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#appends) | Returns all rows appended to a table for a given time range. For more information, see [Time series functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions). |
+| [`CHANGES`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#changes) | Returns all rows that have changed in a table for a given time range. For more information, see [Time series functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions). |
 | [`GENERATE_RANGE_ARRAY`](#generate_range_array) | Splits a range into an array of subranges. |
 | [`RANGE`](#range) | Constructs a range of `DATE`, `DATETIME`, or `TIMESTAMP` values. |
 | [`RANGE_BUCKET`](mathematical_functions.md#range_bucket) | Scans through a sorted array and returns the 0-based position of a point's upper bound. For more information, see [Mathematical functions](mathematical_functions.md). |
@@ -43,7 +43,7 @@ Splits a range into an array of subranges.
 - `range_to_split`: The `RANGE<T>` value to split.
 - `step_interval`: The `INTERVAL` value, which determines the maximum size of
   each subrange in the resulting array. An
-  [interval single date and time part](../googlesql-syntax/data-types.md#construct-an-interval-with-a-single-datetime-part)
+  [interval single date and time part](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#single_datetime_part_interval)
   is supported, but an interval range of date and time parts isn't.
 
   - If `range_to_split` is `RANGE<DATE>`, these interval
@@ -162,8 +162,8 @@ RANGE(lower_bound, upper_bound)
 
 **Description**
 
-Constructs a range of [`DATE`](../googlesql-syntax/data-types.md#date-type), [`DATETIME`](../googlesql-syntax/data-types.md#datetime-type), or
-[`TIMESTAMP`](../googlesql-syntax/data-types.md#timestamp-type) values.
+Constructs a range of [`DATE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#date_type), [`DATETIME`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#datetime_type), or
+[`TIMESTAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#timestamp_type) values.
 
 **Definitions**
 

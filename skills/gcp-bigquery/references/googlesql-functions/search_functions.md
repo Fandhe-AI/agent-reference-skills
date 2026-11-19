@@ -31,7 +31,7 @@ SEARCH(
 The `SEARCH` function checks to see whether a BigQuery table or other
 search data contains a set of search terms (tokens). It returns `TRUE` if all
 search terms appear in the data, based on the [rules for search_query](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#search_query_rules)
-and text analysis described in the [text analyzer](../googlesql-syntax/text-analysis.md). Otherwise,
+and text analysis described in the [text analyzer](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis). Otherwise,
 this function returns `FALSE`.
 
 **Definitions**
@@ -73,19 +73,19 @@ this function returns `FALSE`.
 
   - `'LOG_ANALYZER'` (default): Breaks the input into tokens when delimiters
     are encountered and then normalizes the tokens.
-    For more information, see [`LOG_ANALYZER`](../googlesql-syntax/text-analysis.md#log_analyzer-analyzer).
+    For more information, see [`LOG_ANALYZER`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#log_analyzer).
 
   - `'NO_OP_ANALYZER'`: Extracts the text as a single token, but
     doesn't apply normalization. For more information about this analyzer,
-    see [`NO_OP_ANALYZER`](../googlesql-syntax/text-analysis.md#no_op_analyzer-analyzer).
+    see [`NO_OP_ANALYZER`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#no_op_analyzer).
 
   - `'PATTERN_ANALYZER'`: Breaks the input into tokens that match a
     regular expression. For more information, see
-    [`PATTERN_ANALYZER` text analyzer](../googlesql-syntax/text-analysis.md#pattern_analyzer-analyzer).
+    [`PATTERN_ANALYZER` text analyzer](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#pattern_analyzer).
 
 - `analyzer_options`: A named argument with a JSON-formatted `STRING` value.
   Takes a list of text analysis rules. For more information,
-  see [Text analyzer options](../googlesql-syntax/text-analysis.md#text-analyzer-options).
+  see [Text analyzer options](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#text_analyzer_options).
 
 **Details**
 
@@ -203,7 +203,7 @@ Rules for `reserved_char` in [`search_query`](https://docs.cloud.google.com/bigq
     `r"my\+string"`, then it's treated as a raw string and only a single
     backslash is required to escape the reserved characters. For more
     information about raw strings and escape
-    sequences, see [String and byte literals](../googlesql-syntax/lexical.md#literals).
+    sequences, see [String and byte literals](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#literals).
 
 Rules for `phrase_term` in [`search_query`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#search_query_arg):
 
@@ -589,7 +589,7 @@ and `dinner`:
 ```
 
 The following query shows how to search single columns, multiple columns, and
-whole tables, using the default [`LOG_ANALYZER`](../googlesql-syntax/text-analysis.md#log_analyzer-analyzer) text analyzer
+whole tables, using the default [`LOG_ANALYZER`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#log_analyzer) text analyzer
 with the default analyzer options:
 
 ```sql
@@ -620,7 +620,7 @@ FROM meals;
 ```
 
 The following query shows additional ways to search, using the
-default [`LOG_ANALYZER`](../googlesql-syntax/text-analysis.md#log_analyzer-analyzer) text analyzer with
+default [`LOG_ANALYZER`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#log_analyzer) text analyzer with
 default analyzer options:
 
 ```sql
@@ -641,7 +641,7 @@ FROM data;
 ```
 
 The following query shows additional ways to search, using the
-default [`LOG_ANALYZER`](../googlesql-syntax/text-analysis.md#log_analyzer-analyzer) text analyzer with custom
+default [`LOG_ANALYZER`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#log_analyzer) text analyzer with custom
 analyzer options. Terms are only split when a space or `@` symbol is
 encountered.
 
@@ -663,7 +663,7 @@ FROM data;
 ```
 
 The following query shows how to search, using the
-[`NO_OP_ANALYZER`](../googlesql-syntax/text-analysis.md#no_op_analyzer-analyzer) text analyzer:
+[`NO_OP_ANALYZER`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#no_op_analyzer) text analyzer:
 
 ```sql
 WITH meals AS ( SELECT 'Tomato soup' AS lunch )
@@ -681,7 +681,7 @@ FROM meals;
  +-------+-------+-------+-------*/
 ```
 
-The following query shows how to use the [`PATTERN_ANALYZER`](../googlesql-syntax/text-analysis.md#pattern_analyzer-analyzer)
+The following query shows how to use the [`PATTERN_ANALYZER`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#pattern_analyzer)
 text analyzer with default analyzer options:
 
 ```sql
@@ -701,7 +701,7 @@ FROM data;
 ```
 
 The following query shows additional ways to search, using the
-[`PATTERN_ANALYZER`](../googlesql-syntax/text-analysis.md#pattern_analyzer-analyzer) text analyzer with
+[`PATTERN_ANALYZER`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis#pattern_analyzer) text analyzer with
 custom analyzer options:
 
 Adapted (not in the official docs): Removed the nonexistent column `e` from the result table.
@@ -723,7 +723,7 @@ FROM data;
 ```
 
 For additional examples that include analyzer options,
-see the [Text analysis](../googlesql-syntax/text-analysis.md) reference guide.
+see the [Text analysis](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis) reference guide.
 
 For helpful analyzer recipes that you can use to enhance
 analyzer-supported queries, see the
@@ -799,7 +799,7 @@ with `ObjectRef` input. For more information, see
 **Definitions**
 
 - `base_table`: The table to search for nearest neighbor embeddings.
-- `base_table_query`: A query that you can use to pre-filter the base table. Only `SELECT`, `FROM`, and `WHERE` clauses are allowed in this query. Don't apply any filters to the embedding column. You can't use [logical views](https://docs.cloud.google.com/bigquery/docs/views-intro) in this query. Using a [subquery](../googlesql-syntax/subqueries.md) might interfere with index usage or cause your query to fail. If the base table is indexed and the `WHERE` clause contains columns that are not stored in the index, then `VECTOR_SEARCH` post-filters on those columns instead. To learn more, see [Store columns and pre-filter](https://docs.cloud.google.com/bigquery/docs/vector-index#stored-columns).
+- `base_table_query`: A query that you can use to pre-filter the base table. Only `SELECT`, `FROM`, and `WHERE` clauses are allowed in this query. Don't apply any filters to the embedding column. You can't use [logical views](https://docs.cloud.google.com/bigquery/docs/views-intro) in this query. Using a [subquery](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries) might interfere with index usage or cause your query to fail. If the base table is indexed and the `WHERE` clause contains columns that are not stored in the index, then `VECTOR_SEARCH` post-filters on those columns instead. To learn more, see [Store columns and pre-filter](https://docs.cloud.google.com/bigquery/docs/vector-index#stored-columns).
 - `column_to_search`: The name of the base table column
   to search for nearest neighbor embeddings. The column must be one of the
   following types:
@@ -860,7 +860,7 @@ with `ObjectRef` input. For more information, see
 
   If you don't specify `distance_type_value` and the `column_to_search`
   column has a vector index that's used, `VECTOR_SEARCH` uses the distance
-  type specified in the [`distance_type` option](../googlesql-syntax/data-definition-language-2.md#index_option_list-1) of the
+  type specified in the [`distance_type` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#vector_index_option_list) of the
   `CREATE VECTOR INDEX` statement.
 - `options`: A JSON-formatted `STRING` value. `options_value` is a literal that
   specifies the following vector search options:
@@ -879,8 +879,8 @@ with `ObjectRef` input. For more information, see
     matched, an appropriate value is picked.
 
     The number of available lists to search is determined by the
-    [`num_lists` option](../googlesql-syntax/data-definition-language-2.md#index_option_list-1) in the `ivf_options` option or derived from
-    the [`leaf_node_embedding_count` option](../googlesql-syntax/data-definition-language-2.md#index_option_list-1) in the
+    [`num_lists` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#vector_index_option_list) in the `ivf_options` option or derived from
+    the [`leaf_node_embedding_count` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#vector_index_option_list) in the
     `tree_ah_options` option of the `CREATE VECTOR INDEX` statement if
     specified. Otherwise, BigQuery calculates an appropriate number.
 
@@ -929,7 +929,7 @@ syntax.
 
 A hybrid search lets you use the `VECTOR_SEARCH` function to combine a semantic
 search with a lexical (keyword) search. You can extend a
-[vector index](../googlesql-syntax/data-definition-language-2.md#create-vector-index-statement)
+[vector index](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_vector_index_statement)
 to include keyword information to improve the speed of the lexical search
 portion of a hybrid search.
 

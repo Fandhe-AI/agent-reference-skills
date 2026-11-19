@@ -30,7 +30,7 @@ function.
 `AI.GENERATE_EMBEDDING` generates the same embedding data as `ML.PREDICT`
 as an array in a single column, rather than in a series of columns. Having all
 of the embeddings in a single column lets you directly use the
-[`VECTOR_SEARCH` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search)
+[`VECTOR_SEARCH` function](../googlesql-functions/search_functions.md#vector_search)
 on the`AI.GENERATE_EMBEDDING` output.
 
 You can run prediction during model creation, after model creation, or after a

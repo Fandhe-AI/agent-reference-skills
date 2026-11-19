@@ -10,7 +10,7 @@ This document describes the `ML.DISTANCE` scalar function, which lets you
 compute the distance between two vectors.
 
 > [!NOTE]
-> **Note:** The [`VECTOR_SEARCH` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search) is another vector function that calculates the distance between vectors. You should use the `VECTOR_SEARCH` function if you need to search a dataset for vectors similar to an input vector. You should use the `ML.DISTANCE` function if you need to compare two specific vectors to determine the distance between them.
+> **Note:** The [`VECTOR_SEARCH` function](../googlesql-functions/search_functions.md#vector_search) is another vector function that calculates the distance between vectors. You should use the `VECTOR_SEARCH` function if you need to search a dataset for vectors similar to an input vector. You should use the `ML.DISTANCE` function if you need to compare two specific vectors to determine the distance between them.
 
 ### Syntax
 

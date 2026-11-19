@@ -27,12 +27,12 @@ To learn about the syntax for aggregate function calls, see
 | [`BIT_AND`](#bit_and) | Performs a bitwise AND operation on an expression. |
 | [`BIT_OR`](#bit_or) | Performs a bitwise OR operation on an expression. |
 | [`BIT_XOR`](#bit_xor) | Performs a bitwise XOR operation on an expression. |
-| [`CORR`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#corr) | Computes the Pearson coefficient of correlation of a set of number pairs. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
+| [`CORR`](statistical_aggregate_functions.md#corr) | Computes the Pearson coefficient of correlation of a set of number pairs. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
 | [`COUNT`](#count) | Gets the number of rows in the input, or the number of rows with an expression evaluated to any value other than `NULL`. |
 | [`COUNT` (Differential Privacy)](aggregate-dp-functions.md#count-differential_privacy) | `DIFFERENTIAL_PRIVACY`-supported `COUNT`. Signature 1: Gets the differentially-private count of rows in a query with a `DIFFERENTIAL_PRIVACY` clause. <br /> Signature 2: Gets the differentially-private count of rows with a non-`NULL` expression in a query with a `DIFFERENTIAL_PRIVACY` clause. <br /> For more information, see [Differential privacy functions](aggregate-dp-functions.md). |
 | [`COUNTIF`](#countif) | Gets the number of `TRUE` values for an expression. |
-| [`COVAR_POP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#covar_pop) | Computes the population covariance of a set of number pairs. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
-| [`COVAR_SAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#covar_samp) | Computes the sample covariance of a set of number pairs. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
+| [`COVAR_POP`](statistical_aggregate_functions.md#covar_pop) | Computes the population covariance of a set of number pairs. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
+| [`COVAR_SAMP`](statistical_aggregate_functions.md#covar_samp) | Computes the sample covariance of a set of number pairs. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
 | [`GROUPING`](#grouping) | Checks if a groupable value in the `GROUP BY` clause is aggregated. |
 | [`LOGICAL_AND`](#logical_and) | Gets the logical AND of all non-`NULL` expressions. |
 | [`LOGICAL_OR`](#logical_or) | Gets the logical OR of all non-`NULL` expressions. |
@@ -46,15 +46,15 @@ To learn about the syntax for aggregate function calls, see
 | [`ST_CENTROID_AGG`](geography_functions-1.md#st_centroid_agg) | Gets the centroid of a set of `GEOGRAPHY` values. For more information, see [Geography functions](geography_functions-1.md). |
 | [`ST_EXTENT`](geography_functions-1.md#st_extent) | Gets the bounding box for a group of `GEOGRAPHY` values. For more information, see [Geography functions](geography_functions-1.md). |
 | [`ST_UNION_AGG`](geography_functions-2.md#st_union_agg) | Aggregates over `GEOGRAPHY` values and gets their point set union. For more information, see [Geography functions](geography_functions-1.md). |
-| [`STDDEV`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev) | An alias of the `STDDEV_SAMP` function. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
-| [`STDDEV_POP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev_pop) | Computes the population (biased) standard deviation of the values. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
-| [`STDDEV_SAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev_samp) | Computes the sample (unbiased) standard deviation of the values. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
+| [`STDDEV`](statistical_aggregate_functions.md#stddev) | An alias of the `STDDEV_SAMP` function. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
+| [`STDDEV_POP`](statistical_aggregate_functions.md#stddev_pop) | Computes the population (biased) standard deviation of the values. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
+| [`STDDEV_SAMP`](statistical_aggregate_functions.md#stddev_samp) | Computes the sample (unbiased) standard deviation of the values. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
 | [`STRING_AGG`](#string_agg) | Concatenates non-`NULL` `STRING` or `BYTES` values. |
 | [`SUM`](#sum) | Gets the sum of non-`NULL` values. |
 | [`SUM` (Differential Privacy)](aggregate-dp-functions.md#sum-differential_privacy) | `DIFFERENTIAL_PRIVACY`-supported `SUM`. Gets the differentially-private sum of non-`NULL`, non-`NaN` values in a query with a `DIFFERENTIAL_PRIVACY` clause. <br /> For more information, see [Differential privacy functions](aggregate-dp-functions.md). |
-| [`VAR_POP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#var_pop) | Computes the population (biased) variance of the values. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
-| [`VAR_SAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#var_samp) | Computes the sample (unbiased) variance of the values. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
-| [`VARIANCE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#variance) | An alias of `VAR_SAMP`. For more information, see [Statistical aggregate functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions). |
+| [`VAR_POP`](statistical_aggregate_functions.md#var_pop) | Computes the population (biased) variance of the values. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
+| [`VAR_SAMP`](statistical_aggregate_functions.md#var_samp) | Computes the sample (unbiased) variance of the values. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
+| [`VARIANCE`](statistical_aggregate_functions.md#variance) | An alias of `VAR_SAMP`. For more information, see [Statistical aggregate functions](statistical_aggregate_functions.md). |
 
 ### `AGG`
 
