@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/bigquery/docs/user-defined-functions
 
 # User-Defined Functions
 
-User-defined functions (UDFs) encapsulate custom logic as SQL expressions or JavaScript code. A UDF is either persistent (stored in a dataset and reusable across queries) or temporary (expires when the query finishes). `DROP FUNCTION` is supported only for temporary UDFs in multi-statement queries and procedures.
+User-defined functions (UDFs) encapsulate custom logic as SQL expressions or JavaScript code. A UDF is either persistent (stored in a dataset and reusable across queries) or temporary (expires when the query finishes). For temporary UDFs, `DROP FUNCTION` is supported only in multi-statement queries and procedures; a persistent UDF is dropped with `DROP FUNCTION [IF EXISTS] [[project_name.]dataset_name.]function_name`.
 
 ## Signature / Usage
 
@@ -219,6 +219,7 @@ Supported functions: `AEAD.DECRYPT_BYTES`, `AEAD.DECRYPT_STRING`, `AEAD.ENCRYPT`
 - Community UDFs live in the `bigquery-public-data.persistent_udfs` public dataset and the open-source `bigquery-utils` GitHub repository. Replicating UDFs and procedures does not add cost, but tables in the replicated dataset are replicated (and cost more).
 - To update a UDF description, recreate it with `CREATE OR REPLACE FUNCTION` and an `OPTIONS` `description` value (the source's block uses `...` placeholders and is omitted).
 - The source also shows the scalar-subquery example, the JSON `SumFieldsNamedFoo` JavaScript example, an anti-pattern for mutable state (omitted on purpose), per-region query examples, the `SSN_Mask` example, and Console steps.
+- The source writes "The `DROP FUNCTION` statement is only supported for temporary UDFs in multi-statement queries and procedures"; the GoogleSQL DDL reference documents `DROP FUNCTION [IF EXISTS] [[project_name.]dataset_name.]function_name` for persistent UDFs (example `DROP FUNCTION mydataset.parseJsonAsStruct;`), so the restriction is read as applying to dropping temporary UDFs.
 - Source: https://docs.cloud.google.com/bigquery/docs/user-defined-functions (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

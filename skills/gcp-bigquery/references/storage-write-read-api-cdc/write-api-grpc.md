@@ -86,7 +86,7 @@ SET OPTIONS (
 
 | Table type | Behavior |
 |---|---|
-| Any partitioned table | Streamed rows are first in the `__UNPARTITIONED__` partition; there is no SLA for how long repartitioning takes. For ingestion-time and time-unit column partitioned tables, filter out `NULL` pseudocolumn values (`_PARTITIONTIME` or `_PARTITIONDATE`) to exclude unpartitioned data |
+| Any partitioned table | Streamed rows are first in the `__UNPARTITIONED__` partition; there is no SLA for how long repartitioning takes. For ingestion-time partitioned tables, filter out `NULL` pseudocolumn values (`_PARTITIONTIME` or `_PARTITIONDATE`) to exclude unpartitioned data (the source also names time-unit column partitioned tables, which have no such pseudocolumns, see Notes) |
 | Ingestion-time | Partition inferred from current UTC time; a decorator such as `table1$20250601` in the `tableID` parameter overrides it for daily partitioned tables only; allowed range 31 days in the past to 16 days in the future (use a load or query job outside it); not supported for hourly, monthly or yearly tables |
 | Time-unit column | Automatic by the `DATE`, `DATETIME` or `TIMESTAMP` column value; accepted if between 10 years in the past and 1 year in the future |
 | Integer-range | Automatic by the `INTEGER` partitioning column |
@@ -118,6 +118,7 @@ SET OPTIONS (
 - Persistent failures: retry with exponential backoff, and for business-critical rows persist them (for example publish to a Pub/Sub topic, or persist on the client). Pub/Sub itself is covered by `gcp-messaging-workflows`.
 - Fluent Bit Storage Write API (gRPC) output plugin ingests JSON records with no code: at-least-once with default type, exactly-once with committed type, dynamic scaling of default streams under backpressure.
 - Names: this page is the Storage Write API (gRPC); the REST method formerly called legacy `tabledata.insertAll` is the Storage Write API (REST).
+- The source says unpartitioned streamed data can be excluded with the `_PARTITIONTIME` / `_PARTITIONDATE` pseudocolumns "for ingestion-time partitioned and time-unit column partitioned tables". The partitioned tables page describes these pseudocolumns only for ingestion-time partitioned tables ("An ingestion-time partitioned table has a pseudocolumn named `_PARTITIONTIME`"), so the filter applies to ingestion-time tables; the source does not say how to exclude streamed rows still in `__UNPARTITIONED__` for a time-unit column partitioned table.
 - Source: https://docs.cloud.google.com/bigquery/docs/write-api-grpc (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/bigquery/docs/change-data-capture (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
