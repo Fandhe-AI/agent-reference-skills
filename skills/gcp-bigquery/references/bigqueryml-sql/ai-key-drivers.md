@@ -23,9 +23,9 @@ FROM AI.KEY_DRIVERS(
 ```
 
 Calling the `AI.KEY_DRIVERS` function is similar to first
-[creating a contribution analysis model](create-contribution-analysis.md)
+[creating a contribution analysis model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-contribution-analysis)
 and then calling the
-[`ML.GET_INSIGHTS` function](get-insights.md)
+[`ML.GET_INSIGHTS` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-get-insights)
 on that model. For most applications, we recommend using the `AI.KEY_DRIVERS`
 function because it offers a simplified syntax, faster results, and automatic
 pruning. The following table summarizes the differences:
@@ -95,9 +95,9 @@ The `AI.KEY_DRIVERS` function takes the following arguments:
   Any rows in the dimension columns that contain `NULL` values are removed. If
   you have `NULL` values in your data, you can preprocess the data to fill in the
   `NULL` values by using the
-  [`ML.IMPUTER` function](imputer.md),
+  [`ML.IMPUTER` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-imputer),
   or by using the
-  [`IFNULL` expression](../googlesql-functions/conditional_expressions.md#ifnull)
+  [`IFNULL` expression](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conditional_expressions#ifnull)
   to replace `NULL` values with a custom value.
 - `INTEREST_LABEL_COL`: a `STRING` value that contains the
   name of the column to use to determine whether a given row is
@@ -252,7 +252,7 @@ in addition to the dimension columns:
   ```
 
   If the `apriori_support` value is less than the
-  [apriori support threshold](create-contribution-analysis.md#use-an-apriori-support-threshold)
+  [apriori support threshold](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-contribution-analysis#use_an_apriori_support_threshold)
   value specified in the model, then the segment is considered too small to be
   of interest and is excluded by the model.
 - `contribution`: a numeric value that contains the absolute value of the
@@ -325,7 +325,7 @@ You can infer insights such as the following from the results:
 ### What's next
 
 - Learn more about [contribution analysis](https://docs.cloud.google.com/bigquery/docs/contribution-analysis).
-- Learn how to [create a contribution analysis model](create-contribution-analysis.md).
+- Learn how to [create a contribution analysis model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-contribution-analysis).
 
 ## Notes
 

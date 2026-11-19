@@ -185,7 +185,7 @@ AI.GENERATE_DOUBLE(
   follows:
 
   - `SHARED`: The function only uses [dynamic shared quota (DSQ)](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/dynamic-shared-quota).
-  - `DEDICATED`: The function only uses [Provisioned Throughput](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/provisioned-throughput/overview) quota. The function returns an invalid query error if Provisioned Throughput quota isn't available. For more information, see [Use Agent Platform Provisioned Throughput](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate#provisioned-throughput).
+  - `DEDICATED`: The function only uses [Provisioned Throughput](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/provisioned-throughput/overview) quota. The function returns an invalid query error if Provisioned Throughput quota isn't available. For more information, see [Use Agent Platform Provisioned Throughput](ai-generate.md#use-agent-platform-provisioned-throughput).
   - `UNSPECIFIED`: The function uses quota as follows:
 
     - If you haven't purchased Provisioned Throughput quota, the function uses DSQ quota.

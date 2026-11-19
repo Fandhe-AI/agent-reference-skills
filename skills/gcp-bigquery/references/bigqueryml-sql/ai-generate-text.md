@@ -23,14 +23,14 @@ The function works by sending requests to a BigQuery ML remote model
 that represents a Gemini Enterprise Agent Platform model, and then returning that model's
 response. The following types of remote models are supported:
 
-- [Remote models](create-remote-model.md) over any of the [generally available](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models#generally_available_models) or [preview](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models#preview_models) Gemini models.
-- [Remote models](create-remote-model.md)
+- [Remote models](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model) over any of the [generally available](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models#generally_available_models) or [preview](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models#preview_models) Gemini models.
+- [Remote models](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model)
   over the following partner models:
 
   - [Anthropic Claude models](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/partner-models/use-claude)
   - [Mistral AI models](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/partner-models/mistral)
   - [Llama models](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/partner-models/llama)
-- [Remote models over supported open models](create-remote-model-open.md).
+- [Remote models over supported open models](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-open).
 
 Several of the `AI.GENERATE_TEXT` function's arguments provide the
 parameters that shape the Agent Platform model's response.
@@ -55,7 +55,7 @@ When you use the Gemini models, you can use the following types
 of input:
 
 - Text data from standard tables.
-- [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](../googlesql-functions/objectref_functions.md#objmake_ref) or using an `ObjectRef` column from a table.
+- [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objmake_ref) or using an `ObjectRef` column from a table.
 - Unstructured data from an object table.
 
 When you analyze unstructured data, that data must meet the following
@@ -104,7 +104,7 @@ STRUCT(
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the dataset that contains the resource.
 - `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The
-  `CREATE MODEL` statement for remote models over LLMs](create-remote-model.md).
+  `CREATE MODEL` statement for remote models over LLMs](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model).
 
   You can confirm what model is used by the remote model by opening the
   Google Cloud console and looking at the **Remote endpoint** field in the
@@ -124,7 +124,7 @@ STRUCT(
     | `ObjectRef` or `ARRAY<ObjectRef>` | An [`ObjectRef`](https://docs.cloud.google.com/bigquery/docs/work-with-objectref) literal, array of `ObjectRef` literals, or the name of an `ObjectRef` column. Your input can contain at most one video object. | `OBJ.MAKE_REF('gs://my_image.jpg')` |
 
     The function combines `STRUCT` fields similarly to a
-    [`CONCAT`](../googlesql-functions/string_functions-1.md#concat)
+    [`CONCAT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#concat)
     operation and concatenates the fields in their specified order. The same is
     true for the elements of any arrays used within the struct. The following
     table shows some examples of `STRUCT` prompt values and how they
@@ -137,7 +137,7 @@ STRUCT(
 
 > [!NOTE]
 > **Note:** We recommend against using the [`LIMIT
-> and OFFSET` clause](../googlesql-syntax/query-syntax-3.md#limit-and-offset-clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
+> and OFFSET` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
 
 > [!NOTE]
 > **Note:** To minimize Agent Platform charges, write query results to a table and then reference that table in the `AI.GENERATE_TEXT` function. This can help you ensure that you are sending as few rows as possible to the model.
@@ -222,7 +222,7 @@ STRUCT(
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the dataset that contains the resource.
 - `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The
-  `CREATE MODEL` statement for remote models over LLMs](create-remote-model.md).
+  `CREATE MODEL` statement for remote models over LLMs](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model).
 
   You can confirm what model is used by the remote model by opening the
   Google Cloud console and looking at the **Remote endpoint** field in the
@@ -232,7 +232,7 @@ STRUCT(
 
 > [!NOTE]
 > **Note:** We recommend against using the [`LIMIT
-> and OFFSET` clause](../googlesql-syntax/query-syntax-3.md#limit-and-offset-clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
+> and OFFSET` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
 
 > [!NOTE]
 > **Note:** To minimize Agent Platform charges, write query results to a table and then reference that table in the `AI.GENERATE_TEXT` function. This can help you ensure that you are sending as few rows as possible to the model.
@@ -295,7 +295,7 @@ STRUCT(
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the dataset that contains the resource.
 - `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The
-  `CREATE MODEL` statement for remote models over LLMs](create-remote-model.md).
+  `CREATE MODEL` statement for remote models over LLMs](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model).
 
   You can confirm what model is used by the remote model by opening the
   Google Cloud console and looking at the **Remote endpoint** field in the
@@ -305,7 +305,7 @@ STRUCT(
 
 > [!NOTE]
 > **Note:** We recommend against using the [`LIMIT
-> and OFFSET` clause](../googlesql-syntax/query-syntax-3.md#limit-and-offset-clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
+> and OFFSET` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
 
 > [!NOTE]
 > **Note:** To minimize Agent Platform charges, write query results to a table and then reference that table in the `AI.GENERATE_TEXT` function. This can help you ensure that you are sending as few rows as possible to the model.
@@ -358,7 +358,7 @@ STRUCT(
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the dataset that contains the resource.
 - `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The
-  `CREATE MODEL` statement for remote models over LLMs](create-remote-model.md).
+  `CREATE MODEL` statement for remote models over LLMs](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model).
 
   You can confirm what model is used by the remote model by opening the
   Google Cloud console and looking at the **Remote endpoint** field in the
@@ -368,7 +368,7 @@ STRUCT(
 
 > [!NOTE]
 > **Note:** We recommend against using the [`LIMIT
-> and OFFSET` clause](../googlesql-syntax/query-syntax-3.md#limit-and-offset-clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
+> and OFFSET` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
 
 > [!NOTE]
 > **Note:** To minimize Agent Platform charges, write query results to a table and then reference that table in the `AI.GENERATE_TEXT` function. This can help you ensure that you are sending as few rows as possible to the model.
@@ -422,7 +422,7 @@ STRUCT(
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the dataset that contains the resource.
 - `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The
-  `CREATE MODEL` statement for remote models over LLMs](create-remote-model.md).
+  `CREATE MODEL` statement for remote models over LLMs](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model).
 
   You can confirm what model is used by the remote model by opening the
   Google Cloud console and looking at the **Remote endpoint** field in the
@@ -432,7 +432,7 @@ STRUCT(
 
 > [!NOTE]
 > **Note:** We recommend against using the [`LIMIT
-> and OFFSET` clause](../googlesql-syntax/query-syntax-3.md#limit-and-offset-clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
+> and OFFSET` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
 
 > [!NOTE]
 > **Note:** To minimize Agent Platform charges, write query results to a table and then reference that table in the `AI.GENERATE_TEXT` function. This can help you ensure that you are sending as few rows as possible to the model.
@@ -504,7 +504,7 @@ STRUCT(
 
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the dataset that contains the resource.
-- `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The `CREATE MODEL` statement for remote models over LLMs](create-remote-model.md).
+- `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The `CREATE MODEL` statement for remote models over LLMs](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model).
 
   You can confirm which model is used by the remote model by opening the
   Google Cloud console and looking at the **Remote endpoint** field in the

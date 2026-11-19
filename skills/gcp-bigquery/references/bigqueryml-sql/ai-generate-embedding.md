@@ -25,10 +25,10 @@ other in the embedding vector space. For more information, see the
 You can create embeddings for the following types of data:
 
 - Text data from standard tables.
-- [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](../googlesql-functions/objectref_functions.md#objmake_ref) or using an `ObjectRef` column from a table.
+- [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objmake_ref) or using an `ObjectRef` column from a table.
 - Visual data in [object tables](https://docs.cloud.google.com/bigquery/docs/object-table-introduction).
 - Combinations of unstructured data, including text, images, audio, video, and PDFs, represented by a `STRUCT` that contains `STRING`, `ARRAY<STRING>`, `ObjectRef`, and `ARRAY<ObjectRef>` values.
-- Output data from [PCA](create-pca.md), [autoencoder](create-autoencoder.md), or [matrix factorization](create-matrix-factorization.md) models.
+- Output data from [PCA](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-pca), [autoencoder](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-autoencoder), or [matrix factorization](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization) models.
 
 ### Function processing
 
@@ -37,11 +37,11 @@ following ways:
 
 - To generate embeddings from text or visual content,
   `AI.GENERATE_EMBEDDING` sends the request to a BigQuery ML
-  [remote model](create-remote-model.md)
+  [remote model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model)
   that represents a
   [Gemini Enterprise Agent Platform embedding model](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models#embeddings-models)
   or a
-  [supported open model](create-remote-model-open.md#supported-open-models),
+  [supported open model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-open#supported_open_models),
   and then returns the model's response.
 
   The `AI.GENERATE_EMBEDDING` function works with the Agent Platform
@@ -55,21 +55,21 @@ following ways:
   text and visual content are generated in the same semantic space.
 - For PCA and autoencoding, `AI.GENERATE_EMBEDDING` processes the request using
   a BigQuery ML PCA or autoencoder model
-  [`ML.PREDICT` function](predict.md).
+  [`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict).
   `AI.GENERATE_EMBEDDING` gathers the `ML.PREDICT` output for the model into
   an array and outputs it as the `embedding` column.
   Having all of the embeddings in a single column lets you directly use the
-  [`VECTOR_SEARCH` function](../googlesql-functions/search_functions.md#vector_search)
+  [`VECTOR_SEARCH` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search)
   on the`AI.GENERATE_EMBEDDING` output.
 
 - For matrix factorization, `AI.GENERATE_EMBEDDING` processes the request using
   a BigQuery ML matrix factorization model and the
-  [`ML.WEIGHTS` function](weights.md).
+  [`ML.WEIGHTS` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-weights).
   `AI.GENERATE_EMBEDDING` gathers the `factor_weights.weight` and `intercept`
   values from the `ML.WEIGHTS` output for the model into
   an array and outputs it as the `embedding` column.
   Having all of the embeddings in a single column lets you directly use the
-  [`VECTOR_SEARCH` function](../googlesql-functions/search_functions.md#vector_search)
+  [`VECTOR_SEARCH` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search)
   on the`AI.GENERATE_EMBEDDING` output.
 
 ### Syntax
@@ -129,7 +129,7 @@ AI.GENERATE_EMBEDDING(
   `STRING` column that's named `content`. For information about the
   supported SQL syntax of the `QUERY_STATEMENT` clause, see
   [GoogleSQL query
-  syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   <br />
 
@@ -176,7 +176,7 @@ AI.GENERATE_EMBEDDING(
 
 - `MODEL_NAME`: the name of
   a
-  [self-deployed open model](create-remote-model-open.md).
+  [self-deployed open model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-open).
 
   You can confirm the type of model by opening the Google Cloud console
   and looking at the **Model type** field in the model details page.
@@ -193,7 +193,7 @@ AI.GENERATE_EMBEDDING(
   `STRING` column that's named `content`. For information about the
   supported SQL syntax of the `QUERY_STATEMENT` clause, see
   [GoogleSQL query
-  syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   <br />
 
@@ -292,7 +292,7 @@ AI.GENERATE_EMBEDDING(
       column, or you can specify a string literal in the query.
 
     - For visual content embeddings, you can provide an
-      [`ObjectRef` value](../googlesql-functions/objectref_functions.md)
+      [`ObjectRef` value](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions)
       for the `content` column.
 
   - If you are creating embeddings from an object table, the query doesn't
@@ -539,9 +539,9 @@ AI.GENERATE_EMBEDDING(
 - `embedding`: an `ARRAY<FLOAT>` value that
   contains the principal components for the input data. The number of array
   dimensions is equal to the PCA model's
-  [`NUM_PRINCIPAL_COMPONENTS` option](create-pca.md#num_principal_components)
+  [`NUM_PRINCIPAL_COMPONENTS` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-pca#num_principal_components)
   value if that option is used when the model is created. If the
-  [`PCA_EXPLAINED_VARIANCE_RATIO` option](create-pca.md#pca_explained_variance_ratio) is used
+  [`PCA_EXPLAINED_VARIANCE_RATIO` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-pca#pca_explained_variance_ratio) is used
   instead, the array dimensions vary depending on the input table and
   the option ratio determined by BigQuery ML.
 
@@ -551,7 +551,7 @@ AI.GENERATE_EMBEDDING(
   contains the latent space dimensions for the input data.
   The number of array dimensions is equal to the number in the middle
   of the autoencoder model's
-  [`HIDDEN_UNITS` option](create-autoencoder.md#hidden_units)
+  [`HIDDEN_UNITS` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-autoencoder#hidden_units)
   array value.
 
 - `trial_id`: an `INT64` value that identifies the hyperparameter tuning
@@ -565,7 +565,7 @@ AI.GENERATE_EMBEDDING(
   for the feature. The intercept value is the last value in the array.
   The number of array dimensions is equal to the matrix factorization
   model's
-  [`NUM_FACTORS` option](create-matrix-factorization.md#num_factors)
+  [`NUM_FACTORS` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization#num_factors)
   value.
 
 - `trial_id`: an `INT64` value that identifies the hyperparameter tuning
@@ -575,7 +575,7 @@ AI.GENERATE_EMBEDDING(
 - `processed_input`: a `STRING` value that contains the name of the user or
   item column. The value of this column matches the name of the
   user or item column provided in the
-  [`query_statement` clause](create.md#query_statement)
+  [`query_statement` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create#query_statement)
   that was used when the matrix factorization model was trained.
 
 - `feature`: a `STRING` value that contains the names of the specific
