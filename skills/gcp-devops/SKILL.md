@@ -61,7 +61,7 @@ skills/gcp-devops/
       software-delivery-trust/    # attestations・authorities・policies・policy-bindings・settings・operations（alpha のみ。ガイドなし）
         README.md
         software-delivery-trust-<group>.md
-    iam/                          # 機械生成: IAM roles-permissions reference、取得 2026-11-14、分割投入中（11 / 15 ページ。収録済みは README 掲載分のみ）
+    iam/                          # 機械生成: IAM roles-permissions reference、取得 2026-11-14
       README.md
       <service>.md                # artifactregistry-1/2・cloudbuild・clouddeploy・containerregistry・securesourcemanager・source・developerconnect・apphub-1/2・designcenter・saasservicemgmt・workloadmanager・progressiverollout・remotebuildexecution
     artifact-registry-repositories/        # Artifact Registry の概要・リポジトリの概念・対応形式・作成・ロケーション・virtual の概要
@@ -163,8 +163,6 @@ skills/gcp-devops/
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` と各ガイドのコードブロックを引く。
 
 未投入カテゴリ（`rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
-
-分割投入中のカテゴリ（`iam`: 11 / 15 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
