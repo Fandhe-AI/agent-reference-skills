@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-iac
 
-Google Cloud (GCP) の Infrastructure as Code 系スキル。Infrastructure Manager（deployment・revision・preview・deployment groups・サービスアカウント・Terraform バージョン・state ファイル・Cloud Build による Git 自動化・Organization Policy カスタム制約）、Terraform on Google Cloud（`google` / `google-beta` provider・認証・Cloud Storage への state 保存・import と bulk export・ベストプラクティス・CI/CD・ポリシー検証 `gcloud beta terraform vet`）、Config Connector（KRM で Google Cloud リソースを管理する Kubernetes アドオン・インストール・reconciliation・export / bulk-export）、fleet packages（`configdelivery`）、Deployment Manager の終了と DM Convert による Terraform / KRM への移行、Runtime Configurator を扱う。gcloud 3 グループ（`infra-manager` / `deployment-manager` / `runtime-config`）・REST 3 API・IAM 4 ファイルの機械生成ページを併せて収録する。分割投入中のため、未投入のカテゴリ（`rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) の Infrastructure as Code 系スキル。Infrastructure Manager（deployment・revision・preview・deployment groups・サービスアカウント・Terraform バージョン・state ファイル・Cloud Build による Git 自動化・Organization Policy カスタム制約）、Terraform on Google Cloud（`google` / `google-beta` provider・認証・Cloud Storage への state 保存・import と bulk export・ベストプラクティス・CI/CD・ポリシー検証 `gcloud beta terraform vet`）、Config Connector（KRM で Google Cloud リソースを管理する Kubernetes アドオン・インストール・reconciliation・export / bulk-export）、fleet packages（`configdelivery`）、Deployment Manager の終了と DM Convert による Terraform / KRM への移行、Runtime Configurator を扱う。gcloud 3 グループ（`infra-manager` / `deployment-manager` / `runtime-config`）・REST 3 API・IAM 4 ファイルの機械生成ページを併せて収録する。
 
 参照本文は英語（公式ドキュメントの原語）。Terraform CLI・HCL 言語そのものは HashiCorp のドキュメントが正で、本スキルは Google Cloud 側の使い方（provider・認証・state・運用）のみを扱う。
 
@@ -34,6 +34,28 @@ skills/gcp-iac/
       runtime-config/             # Runtime Configurator（Beta）
         README.md
         runtime-config-configs.md
+    rest/                         # 機械生成: Discovery 由来のメソッド表
+      README.md
+      config/                     # Infrastructure Manager API
+        README.md
+        config.md
+      deploymentmanager/          # Cloud Deployment Manager V2 API
+        README.md
+        deploymentmanager.md
+      runtimeconfig/              # Cloud Runtime Configuration API
+        README.md
+        runtimeconfig.md
+    rest-schemas/                 # 機械生成: Discovery 由来のメッセージスキーマ
+      README.md
+      config/
+        README.md
+        config.md
+      deploymentmanager/
+        README.md
+        deploymentmanager.md
+      runtimeconfig/
+        README.md
+        runtimeconfig.md
     iam/                          # 機械生成: IAM roles-permissions reference
       README.md
       config.md                   # Infrastructure Manager
@@ -69,7 +91,7 @@ skills/gcp-iac/
       <page>.md
 ```
 
-`references/gcloud/` のグループ（3）: `infra-manager` / `deployment-manager` / `runtime-config`。`references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） の API（3）: `config`（Infrastructure Manager API v1）/ `deploymentmanager`（v2・v2beta・alpha）/ `runtimeconfig`（v1・v1beta1）。各メソッドの `Versions` 行でどのバージョンが定義するかを確認する。`references/iam/` のファイル（4）: `config` / `configdelivery` / `deploymentmanager` / `runtimeconfig`。
+`references/gcloud/` のグループ（3）: `infra-manager` / `deployment-manager` / `runtime-config`。`references/rest/` `references/rest-schemas/` の API（3）: `config`（Infrastructure Manager API v1）/ `deploymentmanager`（v2・v2beta・alpha）/ `runtimeconfig`（v1・v1beta1）。各メソッドの `Versions` 行でどのバージョンが定義するかを確認する。`references/iam/` のファイル（4）: `config` / `configdelivery` / `deploymentmanager` / `runtimeconfig`。
 
 ## 探索手順
 
@@ -77,12 +99,13 @@ skills/gcp-iac/
 
 1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）。製品の選択に迷うときは `terraform-basics-state-import/iac-overview.md`
 2. gcloud コマンド → `references/gcloud/README.md` からグループを選び、グループの README.md → コマンドページへ。Infrastructure Manager は `infra-manager`、Runtime Configurator は `runtime-config`、Deployment Manager は `deployment-manager`
-3. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/config.admin`・`roles/deploymentmanager.editor`・`roles/runtimeconfig.admin`）で `references/iam/` 配下を grep して該当ファイルを特定する。Infrastructure Manager の事前定義ロールの解説は `infrastructure-manager-deployments/access-control.md`
-4. Terraform の state・import・bulk export は `terraform-basics-state-import`（Terraform 側）と `config-connector-operations`（Config Connector の `config-connector bulk-export`）で別物。Infrastructure Manager の deployment への取り込みは `infrastructure-manager-previews-groups/import-resources.md`
-5. Deployment Manager からの移行は `deployment-manager-runtime-configurator/deprecations.md`（日付・比較）→ `dm-convert.md` → `convert.md`
-6. 他製品のリソース設定（Terraform の各リソース引数）や HashiCorp 側の仕様は他スキル・公式（下記「他スキルとの使い分け」「対象外」）
+3. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`。`<api>` は `config` / `deploymentmanager` / `runtimeconfig` の 3 つ
+4. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/config.admin`・`roles/deploymentmanager.editor`・`roles/runtimeconfig.admin`）で `references/iam/` 配下を grep して該当ファイルを特定する。Infrastructure Manager の事前定義ロールの解説は `infrastructure-manager-deployments/access-control.md`
+5. Terraform の state・import・bulk export は `terraform-basics-state-import`（Terraform 側）と `config-connector-operations`（Config Connector の `config-connector bulk-export`）で別物。Infrastructure Manager の deployment への取り込みは `infrastructure-manager-previews-groups/import-resources.md`
+6. Deployment Manager からの移行は `deployment-manager-runtime-configurator/deprecations.md`（日付・比較）→ `dm-convert.md` → `convert.md`
+7. 他製品のリソース設定（Terraform の各リソース引数）や HashiCorp 側の仕様は他スキル・公式（下記「他スキルとの使い分け」「対象外」）
 
-未投入カテゴリ（`rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+`samples/` と `scripts/` は本スキルに無い。コードは各ガイドのコードブロックを引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -114,9 +137,11 @@ skills/gcp-iac/
 | Infrastructure Manager のコマンド（deployments・previews・revisions・resources・resource-changes・resource-drifts・terraform-versions） | gcloud/infra-manager | [references/gcloud/infra-manager/README.md](references/gcloud/infra-manager/README.md) |
 | Deployment Manager のコマンド（deployments・manifests・operations・resources・types・type-providers） | gcloud/deployment-manager | [references/gcloud/deployment-manager/README.md](references/gcloud/deployment-manager/README.md) |
 | Runtime Configurator のコマンド（`runtime-config configs` 配下） | gcloud/runtime-config | [references/gcloud/runtime-config/README.md](references/gcloud/runtime-config/README.md) |
+| REST のメソッド・パスを調べたい | rest | [references/rest/README.md](references/rest/README.md) |
+| 各 API のメソッド | rest/`<api>`（`config` / `deploymentmanager` / `runtimeconfig`） | [references/rest/config/README.md](references/rest/config/README.md)、[references/rest/deploymentmanager/README.md](references/rest/deploymentmanager/README.md)、[references/rest/runtimeconfig/README.md](references/rest/runtimeconfig/README.md) |
+| REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
+| 各 API のメッセージ型 | rest-schemas/`<api>`（rest/ と同じ 3 API） | [references/rest-schemas/config/README.md](references/rest-schemas/config/README.md)、[references/rest-schemas/deploymentmanager/README.md](references/rest-schemas/deploymentmanager/README.md)、[references/rest-schemas/runtimeconfig/README.md](references/rest-schemas/runtimeconfig/README.md) |
 | ロール ID の権限一覧・事前定義ロールを調べたい（`roles/config.*` / `roles/configdelivery.*` / `roles/deploymentmanager.*` / `roles/runtimeconfig.*`） | iam | [references/iam/README.md](references/iam/README.md) |
-
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
@@ -148,7 +173,7 @@ skills/gcp-iac/
 
 - 取得日: 2026-11-19（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin。URL に版が無いため取得日で pin）、2026-11-14（機械生成分。gcloud 593.0.0 の help、Discovery document、roles-permissions ページ。各ページ Notes に記載）
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
-- `references/gcloud/` `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） `references/iam/` は機械生成。他の 9 カテゴリは公式ガイド由来の手書き
+- `references/gcloud/` `references/rest/` `references/rest-schemas/` `references/iam/` は機械生成。他の 9 カテゴリは公式ガイド由来の手書き
 - 変更・終了（references で確認したもの）:
   - Deployment Manager: 2026-04-01 にサポート終了（docs の索引は 2026-03-31）、2026-06-30 以降は新規ユーザーをブロック、2027-06-30 以降はサービス停止（`deployment-manager-runtime-configurator/deprecations.md`）
   - Infrastructure Manager の Terraform 1.2.3 は非推奨（日付は `infrastructure-manager-deployments/terraform-version-deprecation.md`）
