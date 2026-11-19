@@ -12,6 +12,8 @@ Enable the Data Lineage API to start tracking lineage automatically, then view g
 
 The source's primary recommendation for programmatic retrieval is the `searchLineageStreaming` API (preview); the following tabbed examples show manual, client-side graph traversal. This sample walks upstream from a target entity with `search_links`, then lists processes (batches of at most 100 links), runs and events.
 
+Adapted (not in the official docs): the event loop queues a link's source only when the link's target is the node being explored.
+
 ```python
 from google.cloud import datacatalog_lineage_v1
 from google.api_core.exceptions import GoogleAPICallError
@@ -72,6 +74,8 @@ def view_lineage(project_id: str, location: str, target_fully_qualified_name: st
                         events_request = datacatalog_lineage_v1.ListLineageEventsRequest(parent=run.name)
                         for event in client.list_lineage_events(request=events_request):
                             for event_link in event.links:
+                                if event_link.target.fully_qualified_name != current_node:
+                                    continue
                                 source_fqn = event_link.source.fully_qualified_name
 
                                 # If exploring upstream, queue the source
@@ -128,6 +132,7 @@ gcloud services disable datalineage.googleapis.com --project=PROJECT_ID
 - Disabling the Dataplex API doesn't turn off data lineage or stop its charges. After disabling the Data Lineage API, ingested metadata keeps incurring metadata storage charges for up to 30 days until the retention window expires or you delete it. Disabling the API is not easily reversible for recorded history; try on a disposable project first. To stop lineage for specific services only, use the per-service configuration instead.
 - The source also shows Console steps (disable via Enabled APIs and services) and a Java version of the traversal sample; both are omitted.
 - Source: https://docs.cloud.google.com/knowledge-catalog/docs/use-lineage (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the official sample queues the source of every link in every event of each process run, without checking the link's target, so links of the same process that lead to other entities (for example `B → U` next to `A → T` when exploring `T`) were added to the upstream traversal. The adapted sample skips links whose `target.fully_qualified_name` is not the node being explored.
 
 ### Record lineage for external systems
 

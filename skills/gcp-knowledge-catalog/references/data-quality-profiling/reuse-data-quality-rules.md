@@ -329,7 +329,7 @@ EOF
 |---|---|
 | Acting as the account | `iam.serviceAccounts.actAs` on the project hosting the service account (typically `roles/iam.serviceAccountUser`). |
 | Dataplex Service Agent | `service-PROJECT_ID@gcp-sa-dataplex.iam.gserviceaccount.com` of the scan project needs `iam.serviceAccounts.getAccessToken` on the service account (for example `roles/iam.serviceAccountTokenCreator`). |
-| The account's own access | `bigquery.tables.getData` on the scanned table (for example `roles/bigquery.dataViewer`); `bigquery.jobs.insert` in the scan project (for example `roles/bigquery.jobUser`); `roles/bigquery.dataEditor` on the export dataset if exporting. |
+| The account's own access | `bigquery.tables.getData` on the scanned table (for example `roles/bigquery.dataViewer`); `bigquery.jobs.create` in the scan project (for example `roles/bigquery.jobUser`); `roles/bigquery.dataEditor` on the export dataset if exporting. |
 
 ### System rule templates vs built-in rules
 
@@ -375,6 +375,7 @@ EOF
 ## Notes
 
 - Source: https://docs.cloud.google.com/knowledge-catalog/docs/reuse-data-quality-rules (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the official page lists `bigquery.jobs.insert` as the permission the service account needs in the scan project; that is the REST method `jobs.insert`, not an IAM permission. The IAM permission to run jobs is `bigquery.jobs.create`, which `roles/bigquery.jobUser` contains (IAM roles and permissions reference, https://docs.cloud.google.com/iam/docs/roles-permissions/bigquery, retrieved 2026-11-14).
 - Official docs inconsistency: this page writes the Dataplex Service Agent email as `service-PROJECT_ID@gcp-sa-dataplex.iam.gserviceaccount.com`, while the IAM page (https://docs.cloud.google.com/knowledge-catalog/docs/iam-and-access-control) writes it as `service-CUSTOMER_PROJECT_NUMBER@gcp-sa-dataplex.iam.gserviceaccount.com`. The IAM page's form uses a project number; see overview-setup-iam/iam-and-access-control.md.
 - Knowledge Catalog was formerly Dataplex Universal Catalog; the API, gcloud group, and IAM names stay `dataplex`. The BigQuery tables themselves are covered by the gcp-bigquery skill.
 - Corrected from the official docs: the create and update template examples use `<< EOF` (unquoted) while the JSON contains `${data()}`, `${param(...)}`, `${column()}` and backticks, which the shell would expand or reject; the fences use `<< 'EOF'`. The other heredocs contain no `$` or backticks and are unchanged.
