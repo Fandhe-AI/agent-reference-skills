@@ -40,3 +40,8 @@
 | The ML.CORRELATION function | Syntax, Output, Examples | [correlation.md](./correlation.md) |
 | The CREATE MODEL statement for autoencoder models | CREATE MODEL syntax, Hyperparameter tuning, Supported machine learning functions, Locations, Example, Pricing | [create-autoencoder.md](./create-autoencoder.md) |
 | The CREATE MODEL statement for AutoML models | CREATE MODEL syntax, Supported data types for input columns, Locations, Limitations, CREATE MODEL example | [create-automl.md](./create-automl.md) |
+| The CREATE MODEL statement for boosted trees models using XGBoost | CREATE MODEL syntax, hyperparameter tuning, Locations, Limitations, Example, Supported regions | [create-boosted-tree.md](./create-boosted-tree.md) |
+| The CREATE MODEL statement for contribution analysis models | CREATE MODEL syntax, Choose test and control data, Use a summable metric, Use a summable ratio metric, Use a summable by category metric, Use an apriori support threshold, Examples, What's next | [create-contribution-analysis.md](./create-contribution-analysis.md) |
+| The CREATE MODEL statement for deep neural network (DNN) models | CREATE MODEL syntax, Hyperparameter tuning, Locations, Limitations, Example, Supported regions | [create-dnn-models.md](./create-dnn-models.md) |
+| The CREATE MODEL statement for generalized linear models | CREATE MODEL syntax, Hyperparameter tuning, Locations, Limitations, Examples, What's next | [create-glm.md](./create-glm.md) |
+| The CREATE MODEL statement for K-means models | CREATE MODEL syntax, Hyperparameter tuning, Locations, CREATE MODEL examples | [create-kmeans.md](./create-kmeans.md) |
