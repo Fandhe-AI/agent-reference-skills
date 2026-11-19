@@ -12,6 +12,8 @@
 # 不変条件:
 #   - 表は実ツリーからのみ生成し、タイトルは非信頼データとして無害化する（tree-lib.sh の CELL）。
 #   - プレースホルダー残り・Phase 行数不一致の本文では gh issue edit を呼ばない（fail-closed）。
+#   - jq の失敗・数値でない件数は空欄の行を書かずに中止する（merge-root-body.sh と同じ形）。
+#   - 総 open 件数は Phase 親の全子孫のうち open のもの（closed の子の下も数える。count_open_desc と同じ定義）。
 #   - 一時ファイルは成否によらず削除する（trap は mktemp より先に登録）。
 #
 # 終了コード: 0 本文を更新した / 1 入力不正・取得失敗・検査失敗（本文は未更新）/
@@ -60,13 +62,22 @@ BODY_FILE=$(mktemp) && SUMMARY_FILE=$(mktemp) && DETAIL_FILE=$(mktemp) \
 
 PHASES=$(list_subs "${ROOT_NUMBER}") \
   || die 1 "ルート #${ROOT_NUMBER} の sub-issues を取得できません。中止します。"
-PHASE_COUNT=$(printf '%s' "${PHASES}" | jq 'length')
+PHASE_COUNT=$(printf '%s' "${PHASES}" | jq 'length') \
+  || die 1 "ルート #${ROOT_NUMBER} の Phase 親数の集計に失敗しました。ルート本文は更新しません。"
+[[ "${PHASE_COUNT}" =~ ^[0-9]+$ ]] \
+  || die 1 "ルート #${ROOT_NUMBER} の Phase 親数が数値ではありません。ルート本文は更新しません。"
 [ "${PHASE_COUNT}" -ge 1 ] \
   || die 1 "ルート #${ROOT_NUMBER} 直下に Phase 親がありません。中止します。"
 
 for i in $(seq 0 $((PHASE_COUNT - 1))); do
-  PNUM=$(printf '%s' "${PHASES}" | jq -r --argjson i "${i}" '.[$i].number')
-  PTITLE=$(printf '%s' "${PHASES}" | jq -r --argjson i "${i}" ".[\$i].title | ${CELL}")
+  # jq が失敗（API 応答の形が想定外）したまま空値で行を作ると、件数・番号が空欄の本文を公開してしまうため、
+  # 変換ごとに終了コードと値の形を確認して本文未更新で中止する（fail-closed）
+  PNUM=$(printf '%s' "${PHASES}" | jq -r --argjson i "${i}" '.[$i].number') \
+    || die 1 "Phase 親の番号を取得できません。ルート本文は更新しません。"
+  [[ "${PNUM}" =~ ^[1-9][0-9]*$ ]] \
+    || die 1 "Phase 親の番号が正整数ではありません。ルート本文は更新しません。"
+  PTITLE=$(printf '%s' "${PHASES}" | jq -er --argjson i "${i}" ".[\$i].title | ${CELL}") \
+    || die 1 "Phase 親 #${PNUM} のタイトルを取得できません。ルート本文は更新しません。"
   # Phase 番号は位置（i + 1）で採番しない。--phase 2 等の部分起票では最初の親が Phase 2 になるため、
   # Step 4 で付与した phase:N ラベルから取得する（無ければ title の feat(phase-N): から取得）。
   # どちらからも決められなければ誤記録せず中止する（fail-closed）
@@ -76,10 +87,16 @@ for i in $(seq 0 $((PHASE_COUNT - 1))); do
     || PNO=''
   [[ "${PNO}" =~ ^[0-9]+$ ]] \
     || die 1 "Phase 親 #${PNUM} の Phase 番号（phase:N ラベル / タイトル）を決定できません。中止します。"
-  CHILDREN=$(list_subs "${PNUM}") \
+  ALL_CHILDREN=$(list_subs "${PNUM}") \
     || die 1 "Phase 親 #${PNUM} の sub-issues を取得できません。中止します。"
-  CHILDREN=$(printf '%s' "${CHILDREN}" | jq '[.[] | select(.state == "open")]')
-  DIRECT=$(printf '%s' "${CHILDREN}" | jq 'length')
+  CHILDREN=$(printf '%s' "${ALL_CHILDREN}" | jq '[.[] | select(.state == "open")]') \
+    || die 1 "Phase 親 #${PNUM} の sub-issues の絞り込みに失敗しました。ルート本文は更新しません。"
+  DIRECT=$(printf '%s' "${CHILDREN}" | jq 'length') \
+    || die 1 "Phase 親 #${PNUM} の子 issue 数の集計に失敗しました。ルート本文は更新しません。"
+  [[ "${DIRECT}" =~ ^[0-9]+$ ]] \
+    || die 1 "Phase 親 #${PNUM} の子 issue 数が数値ではありません。ルート本文は更新しません。"
+  CLOSED_NUMS=$(printf '%s' "${ALL_CHILDREN}" | jq -r '.[] | select(.state != "open") | .number') \
+    || die 1 "Phase 親 #${PNUM} の closed の子 issue の番号を取得できません。ルート本文は更新しません。"
   TOTAL=${DIRECT}
 
   {
@@ -89,14 +106,29 @@ for i in $(seq 0 $((PHASE_COUNT - 1))); do
 
   for j in $(seq 0 $((DIRECT - 1))); do
     [ "${DIRECT}" -ge 1 ] || break
-    CNUM=$(printf '%s' "${CHILDREN}" | jq -r --argjson j "${j}" '.[$j].number')
-    CTITLE=$(printf '%s' "${CHILDREN}" | jq -r --argjson j "${j}" ".[\$j].title | ${CELL}")
+    CNUM=$(printf '%s' "${CHILDREN}" | jq -r --argjson j "${j}" '.[$j].number') \
+      || die 1 "子 issue の番号を取得できません。ルート本文は更新しません。"
+    [[ "${CNUM}" =~ ^[1-9][0-9]*$ ]] \
+      || die 1 "子 issue の番号が正整数ではありません。ルート本文は更新しません。"
+    CTITLE=$(printf '%s' "${CHILDREN}" | jq -er --argjson j "${j}" ".[\$j].title | ${CELL}") \
+      || die 1 "#${CNUM} のタイトルを取得できません。ルート本文は更新しません。"
     GRAND_OPEN=$(count_open_desc "${CNUM}") \
       || die 1 "#${CNUM} の子孫を取得できません。中止します。"
     TOTAL=$((TOTAL + GRAND_OPEN))
     if [ "${GRAND_OPEN}" -ge 1 ]; then DECOMP='sub-issue あり'; else DECOMP='-'; fi
     printf '| #%s | %s | %s |\n' "${CNUM}" "${CTITLE}" "${DECOMP}" >> "${DETAIL_FILE}"
   done
+  # closed の子は詳細表に出さないが、その下に残った open issue は総数へ入れる。
+  # 入れないと、closed の下も数える 2 段目以降（count_open_desc）と 1 段目で数え方が食い違う
+  for CNUM in ${CLOSED_NUMS}; do
+    [[ "${CNUM}" =~ ^[1-9][0-9]*$ ]] \
+      || die 1 "closed の子 issue の番号が正整数ではありません。ルート本文は更新しません。"
+    GRAND_OPEN=$(count_open_desc "${CNUM}") \
+      || die 1 "#${CNUM} の子孫を取得できません。中止します。"
+    TOTAL=$((TOTAL + GRAND_OPEN))
+  done
+  [[ "${TOTAL}" =~ ^[0-9]+$ ]] \
+    || die 1 "Phase 親 #${PNUM} の総 open 件数が数値ではありません。ルート本文は更新しません。"
 
   printf '| Phase %s | #%s %s | %s | %s |\n' "${PNO}" "${PNUM}" "${PTITLE}" "${DIRECT}" "${TOTAL}" >> "${SUMMARY_FILE}"
 done
