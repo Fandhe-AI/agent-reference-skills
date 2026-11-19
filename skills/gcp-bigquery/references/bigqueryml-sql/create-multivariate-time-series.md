@@ -19,8 +19,8 @@ in time series data.
 
 You can use multivariate time series models with the following functions:
 
-- Use the [`ML.FORECAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-forecast) to retrieve the forecasted values that were generated when you created the model.
-- Use the [`ML.EXPLAIN_FORECAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast) function to retrieve the forecasted values that were generated when you created the model, and compute the prediction intervals.
+- Use the [`ML.FORECAST` function](forecast.md) to retrieve the forecasted values that were generated when you created the model.
+- Use the [`ML.EXPLAIN_FORECAST` function](explain-forecast.md) function to retrieve the forecasted values that were generated when you created the model, and compute the prediction intervals.
 - Use the [`ML.DETECT_ANOMALIES` function](detect-anomalies.md) to perform [anomaly detection](https://docs.cloud.google.com/bigquery/docs/anomaly-detection-overview).
 
 > [!NOTE]
@@ -621,7 +621,7 @@ the smoothing window before the average is applied.
 Specifying a value for `TREND_SMOOTHING_WINDOW_SIZE` doesn't affect forecasting
 results. It only affects the smoothness of the trend component, which you can
 see by using the
-[`ML.EXPLAIN_FORECAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast).
+[`ML.EXPLAIN_FORECAST` function](explain-forecast.md).
 
 **Arguments**
 

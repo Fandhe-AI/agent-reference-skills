@@ -28,7 +28,7 @@ feature transformations, it is better to use
 because it provides responses with low latency.
 
 You can also use a transform-only model with the
-[`ML.FEATURE_INFO` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-feature)
+[`ML.FEATURE_INFO` function](feature.md)
 in order to return information about feature transformations in the model.
 
 For more information about supported SQL statements and functions for this

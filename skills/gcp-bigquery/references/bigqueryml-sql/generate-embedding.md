@@ -16,7 +16,7 @@ a piece of text or an image.
 You can create embeddings for the following types of data:
 
 - Text data from standard tables.
-- [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](../googlesql-functions/objectref_functions.md#objmake_ref) or using an `ObjectRef` column from a table.
+- [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objmake_ref) or using an `ObjectRef` column from a table.
 - Visual data in [object tables](https://docs.cloud.google.com/bigquery/docs/object-table-introduction).
 - Combinations of unstructured data, including text, images, audio, video, and PDFs, represented by a `STRUCT` that contains `STRING`, `ARRAY<STRING>`, `ObjectRef`, and `ARRAY<ObjectRef>` values.
 - Output data from [PCA](create-pca.md), [autoencoder](create-autoencoder.md), or [matrix factorization](create-matrix-factorization.md) models.
@@ -65,21 +65,21 @@ following ways:
   text and visual content are generated in the same semantic space.
 - For PCA and autoencoding, `ML.GENERATE_EMBEDDING` processes the request using
   a BigQuery ML PCA or autoencoder model
-  [`ML.PREDICT` function](predict.md).
+  [`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict).
   `ML.GENERATE_EMBEDDING` gathers the `ML.PREDICT` output for the model into
   an array and outputs it as the `ml_generate_embedding_result` column.
   Having all of the embeddings in a single column lets you directly use the
-  [`VECTOR_SEARCH` function](../googlesql-functions/search_functions.md#vector_search)
+  [`VECTOR_SEARCH` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search)
   on the`ML.GENERATE_EMBEDDING` output.
 
 - For matrix factorization, `ML.GENERATE_EMBEDDING` processes the request using
   a BigQuery ML matrix factorization model and the
-  [`ML.WEIGHTS` function](weights.md).
+  [`ML.WEIGHTS` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-weights).
   `ML.GENERATE_EMBEDDING` gathers the `factor_weights.weight` and `intercept`
   values from the `ML.WEIGHTS` output for the model into
   an array and outputs it as the `ml_generate_embedding_result` column.
   Having all of the embeddings in a single column lets you directly use the
-  [`VECTOR_SEARCH` function](../googlesql-functions/search_functions.md#vector_search)
+  [`VECTOR_SEARCH` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search)
   on the`ML.GENERATE_EMBEDDING` output.
 
 ### Syntax
@@ -134,7 +134,7 @@ ML.GENERATE_EMBEDDING(
   `STRING` column that's named `content`. For information about the
   supported SQL syntax of the `QUERY_STATEMENT` clause, see
   [GoogleSQL query
-  syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   <br />
 
@@ -240,7 +240,7 @@ ML.GENERATE_EMBEDDING(
   `STRING` column that's named `content`. For information about the
   supported SQL syntax of the `QUERY_STATEMENT` clause, see
   [GoogleSQL query
-  syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   <br />
 
@@ -341,7 +341,7 @@ ML.GENERATE_EMBEDDING(
       [`ObjectRefRuntime`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objectrefruntime)
       value for the `content` column. You can generate
       `ObjectRefRuntime` values by using the
-      [`OBJ.GET_ACCESS_URL` function](../googlesql-functions/objectref_functions.md#objget_access_url).
+      [`OBJ.GET_ACCESS_URL` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objget_access_url).
       The `OBJ.GET_ACCESS_URL` function takes an
       [`ObjectRef`](https://docs.cloud.google.com/bigquery/docs/analyze-multimodal-data#objectref_values)
       value as input, which you can provide by either specifying

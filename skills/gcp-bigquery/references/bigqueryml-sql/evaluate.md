@@ -62,13 +62,13 @@ ML.EVALUATE(
   If you specify a `TABLE` value, the input column names in the table must
   match the column names in the model, and their types must be compatible
   according to BigQuery
-  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
 
 - `QUERY_STATEMENT`: a GoogleSQL query that
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -167,7 +167,7 @@ ML.EVALUATE(
   If you specify a `TABLE` value, the input column names in the table must
   match the column names in the model, and their types must be compatible
   according to BigQuery
-  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
 
   The table must have a
   column that matches the label column name that is provided during
@@ -178,7 +178,7 @@ ML.EVALUATE(
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -290,7 +290,7 @@ ML.EVALUATE(
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -429,7 +429,7 @@ ML.EVALUATE(
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -551,7 +551,7 @@ ML.EVALUATE(
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -671,7 +671,7 @@ ML.EVALUATE(
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -805,13 +805,13 @@ ML.EVALUATE(
   If you specify a `TABLE` value, the input column names in the table must
   match the column names in the model, and their types must be compatible
   according to BigQuery
-  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
 
 - `QUERY_STATEMENT`: a GoogleSQL query that
   is used to generate the evaluation data. For the supported SQL syntax of
   the `QUERY_STATEMENT` clause in
   GoogleSQL, see
-  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   If you don't specify a table or query to provide input data, the
   evaluation metrics that are generated for the model during training
@@ -1081,7 +1081,7 @@ custom models deployed to Agent Platform:
 
 `ML.EVALUATE` returns the following column for PCA models:
 
-- `total_explained_variance_ratio`: a `FLOAT64` value that contains the percentage of the cumulative variance explained by all the returned principal components. For more information, see [the `ML.PRINCIPAL_COMPONENT_INFO` function](principal-component-info.md).
+- `total_explained_variance_ratio`: a `FLOAT64` value that contains the percentage of the cumulative variance explained by all the returned principal components. For more information, see [the `ML.PRINCIPAL_COMPONENT_INFO` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-principal-component-info).
 
 #### Autoencoder
 

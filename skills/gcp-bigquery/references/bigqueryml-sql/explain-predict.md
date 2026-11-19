@@ -11,7 +11,7 @@ generate a predicted value and a set of feature attributions for each instance
 of the input data. Feature attributions indicate how much each feature in your
 model contributed to the final prediction for each given instance.
 `ML.EXPLAIN_PREDICT` is essentially an extended version of
-[`ML.PREDICT`](predict.md).
+[`ML.PREDICT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict).
 
 ### Syntax
 
@@ -39,19 +39,19 @@ ML.EXPLAIN_PREDICT(
 
   If `TABLE` is specified, the input column names in the table must match the
   column names in the model, and their types should be compatible according to
-  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
 
   If there are unused columns from the table, they are passed through to
   the output columns.
 - `QUERY_STATEMENT`: the GoogleSQL query that is
   used to generate the evaluation data. For the supported SQL syntax for the
   `QUERY_STATEMENT` clause in GoogleSQL, see
-  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   If `QUERY_STATEMENT` is specified, the input column names from the query
   must match the column names in the model, and their types should be
   compatible according to BigQuery
-  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
 
   If there are unused columns from the table, they are passed through to
   the output columns.

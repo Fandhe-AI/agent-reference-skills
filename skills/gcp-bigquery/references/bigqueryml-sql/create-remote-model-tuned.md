@@ -18,7 +18,7 @@ statement yourself.
 After you create the remote model, you can use one of the following functions
 to perform generative AI with that model:
 
-- [`AI.GENERATE_TABLE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-generate-table)
+- [`AI.GENERATE_TABLE`](generate-table.md)
 - [`AI.GENERATE_TEXT`](ai-generate-text.md)
 
 ### Supervised tuning
@@ -37,7 +37,7 @@ whether tuning would make sense for your use case, see
 [Use cases for using supervised fine-tuning](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-supervised-tuning#use_cases_for_using_supervised_fine-tuning).
 
 After you create a tuned model, use the
-[`EVALUATE` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-evaluate)
+[`EVALUATE` function](evaluate.md)
 to evaluate whether the tuned model performs well for your use case. To learn
 more, try the
 [Use tuning and evaluation to improve LLM performance](https://docs.cloud.google.com/bigquery/docs/tune-evaluate)

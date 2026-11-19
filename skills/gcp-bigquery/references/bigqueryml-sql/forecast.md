@@ -66,18 +66,18 @@ ML.FORECAST(
 
   If `TABLE` is specified, the input column names in the table must match the
   column names in the model, and their types should be compatible according to
-  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
 
   If there are unused columns from the table, they are ignored.
 - `QUERY_STATEMENT`: The GoogleSQL query that is
   used to generate the features. See the
-  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
   page for the supported SQL syntax of the `QUERY_STATEMENT` clause.
 
   If `QUERY_STATEMENT` is specified, the input column names from the query
   must match the column names in the model, and their types should be
   compatible according to BigQuery
-  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
 
   If there are unused columns from the query, they are ignored.
 

@@ -17,8 +17,8 @@ future value for a given column based on the analysis of historical values for
 that column. You can also use univariate time series models to detect
 anomalies in time series data.
 
-- Use the [`ML.FORECAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-forecast) to retrieve the forecasted values that were generated when you created the model.
-- Use the [`ML.EXPLAIN_FORECAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast) function to retrieve the forecasted values that were generated when you created the model, and compute the prediction intervals.
+- Use the [`ML.FORECAST` function](forecast.md) to retrieve the forecasted values that were generated when you created the model.
+- Use the [`ML.EXPLAIN_FORECAST` function](explain-forecast.md) function to retrieve the forecasted values that were generated when you created the model, and compute the prediction intervals.
 - Use the [`ML.DETECT_ANOMALIES` function](detect-anomalies.md) to perform [anomaly detection](https://docs.cloud.google.com/bigquery/docs/anomaly-detection-overview).
 
 > [!NOTE]
@@ -165,7 +165,7 @@ MODEL_TYPE = 'ARIMA_PLUS'
 Specifies the model type. This option is required.
 
 > [!NOTE]
-> **Note:** The `ARIMA` model type is deprecated. While the model training pipelines of `ARIMA` and `ARIMA_PLUS` models are the same, `ARIMA_PLUS` supports more capabilities, including use of the [`DECOMPOSE_TIME_SERIES` option](#decompose_time_series) and the ability to work with the [`ML.ARIMA_EVALUATE`](arima-evaluate.md) and [`ML.EXPLAIN_FORECAST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast) functions.
+> **Note:** The `ARIMA` model type is deprecated. While the model training pipelines of `ARIMA` and `ARIMA_PLUS` models are the same, `ARIMA_PLUS` supports more capabilities, including use of the [`DECOMPOSE_TIME_SERIES` option](#decompose_time_series) and the ability to work with the [`ML.ARIMA_EVALUATE`](arima-evaluate.md) and [`ML.EXPLAIN_FORECAST`](explain-forecast.md) functions.
 
 #### `TIME_SERIES_TIMESTAMP_COL`
 
@@ -630,7 +630,7 @@ the smoothing window before the average is applied.
 Specifying a value for `TREND_SMOOTHING_WINDOW_SIZE` doesn't affect forecasting
 results. It only affects the smoothness of the trend component, which you can
 see by using the
-[`ML.EXPLAIN_FORECAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast).
+[`ML.EXPLAIN_FORECAST` function](explain-forecast.md).
 
 **Arguments**
 
@@ -651,7 +651,7 @@ parts of the time series (such as holiday effect and seasonal components)
 are saved in the `ARIMA_PLUS` model.
 
 Time series decomposition takes place when you create the model. The
-[`ML.EXPLAIN_FORECAST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast)
+[`ML.EXPLAIN_FORECAST`](explain-forecast.md)
 function retrieves the separate components of both the training and the
 forecasting data and computes the confidence intervals. Because the decomposition
 results are saved in the model, the training data can be partially or fully
