@@ -102,7 +102,7 @@ Adapted (not in the official docs): runnable form of the example(s) above: lines
 
 ```bash
 gcloud artifacts attachments create my-attachment \
-    --target=projects/myproject/locations/us-central1/packages/mypackage/versions/sha256:123 \
+    --target=projects/myproject/locations/us-central1/repositories/my-repo/packages/mypackage/versions/sha256:123 \
     --files=/path/to/file/sbom.json \
     --attachment-type=ATTACHMENT_TYPE \
     --repository=my-repo \
@@ -527,7 +527,7 @@ gcloud artifacts attachments list \
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
-- Corrected from the official docs (runnable form only; the help text above is verbatim): the example omits `--attachment-type`, the attachment name and the repository, which the SYNOPSIS requires (gcloud 593.0.0: "argument ... --attachment-type: Must be specified"); the help gives no value for `--attachment-type` ("Type of the attachment"), so the runnable form uses the placeholder `ATTACHMENT_TYPE`, `my-attachment` (the name used by the `delete` example) and `my-repo` / `us-central1` (from the target and the other examples).
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the example omits `--attachment-type`, the attachment name and the repository, which the SYNOPSIS requires (gcloud 593.0.0: "argument ... --attachment-type: Must be specified"); the help gives no value for `--attachment-type` ("Type of the attachment"), so the runnable form uses the placeholder `ATTACHMENT_TYPE`, `my-attachment` (the name used by the `delete` example) and `my-repo` / `us-central1` (from the target and the other examples); the example's `--target` also lacks the `repositories/REPOSITORY/` segment of an Artifact Registry version name (`projects/PROJECT/locations/LOCATION/repositories/REPOSITORY/packages/PACKAGE/versions/VERSION`, as in the `download` and `list` examples on this page), so the runnable form inserts `repositories/my-repo/`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the example relies on a repository (and location) that is set already ("under the current project, repository, and location"); without them gcloud 593.0.0 fails ("Error parsing [repository] ... Failed to find attribute [repository]"); the runnable form passes `--repository=my-repo --location=us`, the repository and location of the paths in the examples on this page.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
