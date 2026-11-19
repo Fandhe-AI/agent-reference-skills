@@ -51,14 +51,16 @@ resources:
 
 Or acquire the expanded configuration of a live deployment (replace `DEPLOYMENT_NAME` and `PROJECT_ID`):
 
+Adapted (not in the official docs): `$DEPLOYMENT_NAME`, `$PROJECT_ID` and `$MANIFEST_NAME` are quoted.
+
 ```bash
 # Configure your project/deployment
 DEPLOYMENT_NAME=DEPLOYMENT_NAME
 PROJECT_ID=PROJECT_ID
 
 # Fetch the latest manifest for the given deployment
-gcloud deployment-manager deployments describe $DEPLOYMENT_NAME \
-  --project $PROJECT_ID --format="value(deployment.manifest)"
+gcloud deployment-manager deployments describe "${DEPLOYMENT_NAME}" \
+  --project "${PROJECT_ID}" --format="value(deployment.manifest)"
 
 # The output should look like this:
 # https://www.googleapis.com/deploymentmanager/v2/projects/$PROJECT_ID/global/deployments/bq/manifests/manifest-1618872644848
@@ -67,8 +69,8 @@ gcloud deployment-manager deployments describe $DEPLOYMENT_NAME \
 # in the above command output
 MANIFEST_NAME="manifest-1618872644848"
 # Save the expanded manifest to deployment.yaml
-gcloud deployment-manager manifests describe $MANIFEST_NAME \
-  --deployment $DEPLOYMENT_NAME --project $PROJECT_ID \
+gcloud deployment-manager manifests describe "${MANIFEST_NAME}" \
+  --deployment "${DEPLOYMENT_NAME}" --project "${PROJECT_ID}" \
   --format="value(expandedConfig)" > deployment.yaml
 ```
 
@@ -76,20 +78,20 @@ gcloud deployment-manager manifests describe $MANIFEST_NAME \
 
 Run in the directory containing `deployment.yaml`:
 
-Adapted (not in the official docs): `$(pwd)` is quoted so a working directory whose path contains spaces is mounted as one `--volume` argument.
+Adapted (not in the official docs): `$(pwd)`, `$DM_CONVERT_IMAGE` and `$PROJECT_ID` are quoted so a working directory whose path contains spaces is mounted as one `--volume` argument and an empty variable does not drop an argument.
 
 ```bash
 CONVERTED_RESOURCES=OUTPUT_FILE
 
 docker run --rm -it --workdir=/convert \
 --volume="$(pwd)":/convert \
-$DM_CONVERT_IMAGE \
+"${DM_CONVERT_IMAGE}" \
 --config deployment.yaml \
 --output_format OUTPUT_FORMAT \
 --output_file OUTPUT_FILE \
 --output_tf_import_file OUTPUT_IMPORT_FILE \
 --deployment_name DEPLOYMENT_NAME \
---project_id $PROJECT_ID
+--project_id "${PROJECT_ID}"
 ```
 
 View the result:
@@ -99,6 +101,8 @@ cat OUTPUT_FILE
 ```
 
 ### Apply with Terraform
+
+The source describes this step as using Terraform "to create resources by directly deploying the converted configuration". To keep the resources of a live deployment without redeploying them, skip this step and use the import steps below.
 
 Adapted (not in the official docs): `cat <<EOF > echo > main.tf` is corrected to `cat <<EOF > main.tf`.
 
@@ -111,9 +115,9 @@ provider "google" {
 EOF
 ```
 
+Adapted (not in the official docs): the comment "if Terraform state gets corrupted during testing, use init --reconfigure to reset backend" is removed (see Notes).
+
 ```bash
-# NOTE: if Terraform state gets corrupted during testing,
-# use init --reconfigure to reset backend
 terraform init
 echo "***************  TERRAFORM PLAN  ******************"
 terraform plan
@@ -123,9 +127,11 @@ terraform apply
 
 ### (Optional) Import existing resources
 
+The source: "If you're converting an existing deployment and you want to use Terraform to manage its resources without redeploying, you can do so by using Terraform Import feature." Import first, review the plan, then apply.
+
+Adapted (not in the official docs): the comment "if Terraform state gets corrupted during testing, use init --reconfigure to reset backend" is removed (see Notes).
+
 ```bash
-# NOTE: if Terraform state gets corrupted during testing,
-# use init --reconfigure to reset backend
 terraform init
 ```
 
@@ -184,9 +190,9 @@ kubectl wait -n CONFIG_CONNECTOR_NAMESPACE \
 
 ### Clean up the sample (destructive)
 
+Adapted (not in the official docs): the comment "if Terraform state gets corrupted during testing, use init --reconfigure to reset backend" is removed (see Notes).
+
 ```bash
-# NOTE: if Terraform state gets corrupted during testing,
-# use init --reconfigure to reset backend
 echo "***************  TERRAFORM INIT  ******************"
 terraform init
 # Remove delete protection on BigQuery table
@@ -238,6 +244,9 @@ us-central1-docker.pkg.dev/dm-convert-host/deployment-manager/dm-convert:public-
 
 - Deprecated: the Deployment Manager documentation says "Support for Google Cloud Deployment Manager was discontinued on April 1, 2026." and "After June 30, 2027, you won't be able to use the Deployment Manager service, and it will be turned down."; use Infrastructure Manager (https://docs.cloud.google.com/deployment-manager/docs/deprecations, retrieved 2026-11-19).
 - Preview: subject to the "Pre-GA Offerings Terms"; available "as is" with limited support.
+- Corrected from the official docs: the source expands `$DEPLOYMENT_NAME`, `$PROJECT_ID`, `$MANIFEST_NAME` and `$DM_CONVERT_IMAGE` unquoted; they are quoted so values with spaces or an empty value do not change the arguments.
+- Adapted from the official docs: the source's Terraform blocks start with the comment "NOTE: if Terraform state gets corrupted during testing, use init --reconfigure to reset backend". `terraform init -reconfigure` "Disregards any existing configuration, preventing migration of any existing state" (https://developer.hashicorp.com/terraform/cli/commands/init); it reinitializes the backend and does not repair or restore state, so the comment was removed. Restore a corrupted state from a backup or a previous state version instead.
+- Source: the deploy and import sections and their wording come from https://docs.cloud.google.com/deployment-manager/docs/dm-convert/convert (retrieved 2026-11-19).
 - Corrected from the official docs: the source had `export PROJECT_ID=$(gcloud config get-value project) \`, whose trailing `\` joins the two `export` lines into one command; the `\` was removed.
 - Corrected from the official docs: the source had `cat <<EOF > echo > main.tf`, where the heredoc still goes to `main.tf` (the last redirection) but an extra empty file named `echo` is created; it was changed to `cat <<EOF > main.tf`.
 - Corrected from the official docs: the source mounts `--volume=$(pwd):/convert` with an unquoted command substitution, which the shell splits when the current directory path contains spaces; it was changed to `--volume="$(pwd)":/convert`.

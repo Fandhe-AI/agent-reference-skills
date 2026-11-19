@@ -65,12 +65,12 @@ gcloud infra-manager deployments apply projects/PROJECT_ID/locations/us-central1
 
 ### Lock, import state, upload configuration, unlock
 
-Adapted (not in the official docs): `$SIGNED_STATE_UPLOAD_URL` is quoted and `curl` gets `-f` so a failed upload is not treated as success.
+Adapted (not in the official docs): `$SIGNED_STATE_UPLOAD_URL` and `${LOCK_ID}` are quoted and `curl` gets `-f` so a failed upload is not treated as success.
 
 ```bash
 LOCK_ID=$(gcloud infra-manager deployments lock projects/PROJECT_ID/locations/us-central1/deployments/import-deployment --format="get(lockId)")
 
-SIGNED_STATE_UPLOAD_URL=$(gcloud infra-manager deployments import-statefile projects/PROJECT_ID/locations/us-central1/deployments/import-deployment --lock-id ${LOCK_ID} --format="get(signedUri)")
+SIGNED_STATE_UPLOAD_URL=$(gcloud infra-manager deployments import-statefile projects/PROJECT_ID/locations/us-central1/deployments/import-deployment --lock-id "${LOCK_ID}" --format="get(signedUri)")
 cd vpc_to_import
 curl -sf -X PUT --upload-file terraform.tfstate "${SIGNED_STATE_UPLOAD_URL}"
 ```
@@ -79,11 +79,13 @@ curl -sf -X PUT --upload-file terraform.tfstate "${SIGNED_STATE_UPLOAD_URL}"
 gcloud storage cp main.tf gs://import-deployment-configuration
 ```
 
+Adapted (not in the official docs): `${LOCK_ID}` is quoted.
+
 ```bash
 gcloud infra-manager deployments unlock projects/PROJECT_ID/locations/us-central1/deployments/import-deployment \
 --project PROJECT_ID \
 --location us-central1 \
---lock-id ${LOCK_ID}
+--lock-id "${LOCK_ID}"
 ```
 
 ### Preview to confirm no changes
@@ -142,7 +144,7 @@ gcloud infra-manager deployments delete projects/PROJECT_ID/locations/us-central
 ## Notes
 
 - Requirements: the Terraform configuration must comply with the Infra Manager constraints, and the resources must have been provisioned with a supported Terraform version. Install a supported Terraform version locally. The tutorial uses `us-central1`; any location where Infra Manager runs works. Billable components: Infrastructure Manager and Virtual Private Cloud.
-- Corrected from the official docs: the source preview command is missing the `\` after `--service-account`; `curl` calls use unquoted signed-URL variables without `-f`; the clean-up deletes `quickstart-deployment` instead of `import-deployment`. The `deployments apply` step names `projects/PROJECT_ID/serviceAccounts/SERVICE_ACCOUNT`, a placeholder the page never defines; it was changed to the `SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com` account of the IAM binding and the preview step (gcloud 593.0.0 help gives the format `projects/{projectID}/serviceAccounts/{serviceAccount}`).
+- Corrected from the official docs: the source preview command is missing the `\` after `--service-account`; `curl` calls use unquoted signed-URL variables without `-f`, and `--lock-id ${LOCK_ID}` is unquoted; the clean-up deletes `quickstart-deployment` instead of `import-deployment`. The `deployments apply` step names `projects/PROJECT_ID/serviceAccounts/SERVICE_ACCOUNT`, a placeholder the page never defines; it was changed to the `SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com` account of the IAM binding and the preview step (gcloud 593.0.0 help gives the format `projects/{projectID}/serviceAccounts/{serviceAccount}`).
 - The source grants `roles/compute.networkAdmin` on the whole project to the service account (a project-wide grant, broader than the single VPC needs). `terraform apply -auto-approve` applies without confirmation: it is in the source, so use a disposable project.
 - When you unlock, if the state file and the Terraform configuration differ, Infra Manager creates or deletes resources to match the state file. Caution from the source: deleting Google Cloud resources can cause unrecoverable data loss; re-deploying the configuration won't restore data.
 - Clean up with `gcloud projects delete PROJECT_ID` (destructive; deletes everything in the project and custom project IDs are lost) or delete the VPC and deployment metadata with the `deployments delete` command above. Do this on a disposable project.
