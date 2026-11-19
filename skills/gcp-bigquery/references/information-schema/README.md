@@ -4,3 +4,27 @@
 | --- | --- | --- |
 | ASSIGNMENT_CHANGES view | Required permission, Schema, Data retention, Scope and syntax, Examples | [assignments-changes.md](./assignments-changes.md) |
 | ASSIGNMENTS view | Required permission, Schema, Scope and syntax, Example | [assignments.md](./assignments.md) |
+| INFORMATION_SCHEMA.BI_CAPACITIES view | Required permission, Schema, Scope and syntax, Examples | [bi-capacities.md](./bi-capacities.md) |
+| INFORMATION_SCHEMA.BI_CAPACITY_CHANGES view | Required permission, Schema, Syntax, Examples | [bi-capacity-changes.md](./bi-capacity-changes.md) |
+| CAPACITY_COMMITMENT_CHANGES view | Required permission, Schema, Data retention, Scope and syntax, Example | [capacity-commitment-changes.md](./capacity-commitment-changes.md) |
+| CAPACITY_COMMITMENTS view | Required permission, Schema, Scope and syntax, Example | [capacity-commitments.md](./capacity-commitments.md) |
+| COLUMN_FIELD_PATHS view | Required permissions, Schema, Scope and syntax, Example | [column-field-paths.md](./column-field-paths.md) |
+| COLUMNS view | Required permissions, Schema, Scope and syntax, Example | [columns.md](./columns.md) |
+| CONSTRAINT_COLUMN_USAGE view | Required roles, Schema, Scope and syntax, Examples | [constraint-column-usage.md](./constraint-column-usage.md) |
+| SCHEMATA_LINKS view | Required permission, Schema, Scope and syntax, Examples | [datasets-schemata-links.md](./datasets-schemata-links.md) |
+| SCHEMATA_OPTIONS view | Before you begin, Schema, Scope and syntax, Examples | [datasets-schemata-options.md](./datasets-schemata-options.md) |
+| SCHEMATA view | Before you begin, Schema, Scope and syntax, Example | [datasets-schemata.md](./datasets-schemata.md) |
+| EFFECTIVE_PROJECT_OPTIONS view | Required permissions, Schema, Data retention, Scope and syntax, Examples | [effective-project-options.md](./effective-project-options.md) |
+| FAILOVER_HISTORY view | Required roles, Schema, Data retention, Scope and syntax, Limitations, Example | [failover-history.md](./failover-history.md) |
+| SEARCH_INDEX_COLUMN_OPTIONS view | Required permissions, Schema, Scope and syntax, Example | [index-column-options.md](./index-column-options.md) |
+| SEARCH_INDEX_COLUMNS view | Required permissions, Schema, Scope and syntax, Examples | [index-columns.md](./index-columns.md) |
+| SEARCH_INDEX_OPTIONS view | Required permissions, Schema, Scope and syntax, Example | [index-options.md](./index-options.md) |
+| SEARCH_INDEXES_BY_ORGANIZATION view | Required permissions, Schema, Scope and syntax, Index throttling, Examples | [indexes-by-organization.md](./indexes-by-organization.md) |
+| SEARCH_INDEXES view | Required permissions, Schema, Scope and syntax, Example, Troubleshooting | [indexes.md](./indexes.md) |
+| INFORMATION_SCHEMA.INSIGHTS view | Required permission, Schema, Scope and syntax, Example | [insights.md](./insights.md) |
+| JOBS_BY_FOLDER view | Required role, Schema, Data retention, Scope and syntax, Examples | [jobs-by-folder.md](./jobs-by-folder.md) |
+| JOBS_BY_ORGANIZATION view | Required role, Schema, Data retention, Scope and syntax, Limitations, Examples | [jobs-by-organization.md](./jobs-by-organization.md) |
+| JOBS_BY_USER view | Required role, Schema, Data retention, Scope and syntax, Examples | [jobs-by-user.md](./jobs-by-user.md) |
+| JOBS_TIMELINE_BY_FOLDER view | Required permissions, Schema, Data retention, Scope and syntax, Examples | [jobs-timeline-by-folder.md](./jobs-timeline-by-folder.md) |
+| JOBS_TIMELINE_BY_ORGANIZATION view | Required permissions, Schema, Data retention, Scope and syntax, Examples | [jobs-timeline-by-organization.md](./jobs-timeline-by-organization.md) |
+| JOBS_TIMELINE_BY_USER view | Required permissions, Schema, Data retention, Scope and syntax, Example | [jobs-timeline-by-user.md](./jobs-timeline-by-user.md) |
