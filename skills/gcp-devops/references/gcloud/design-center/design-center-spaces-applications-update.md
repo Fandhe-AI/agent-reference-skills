@@ -1,0 +1,1440 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/design-center/spaces/applications/update
+---
+
+# gcloud design-center spaces applications update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud design-center spaces applications update
+
+```text
+NAME
+    gcloud design-center spaces applications update - update an application
+
+SYNOPSIS
+    gcloud design-center spaces applications update
+        (APPLICATION : --location=LOCATION --space=SPACE)
+        [--deployment-project=DEPLOYMENT_PROJECT]
+        [--deployment-region=DEPLOYMENT_REGION] [--description=DESCRIPTION]
+        [--display-name=DISPLAY_NAME] [--[no-]import-existing-resources]
+        [--params-update-strategy=PARAMS_UPDATE_STRATEGY]
+        [--service-account=SERVICE_ACCOUNT] [--type=TYPE]
+        [--app-parameters=[key=KEY],[value=VALUE]
+          | --add-app-parameters=[key=KEY],[value=VALUE] --clear-app-parameters
+          | --remove-app-parameters=[key=KEY],[value=VALUE]]
+        [--clear-attributes
+          --attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          | --add-attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --clear-attributes-business-owners
+          | --remove-attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          | --add-attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --clear-attributes-developer-owners
+          | --remove-attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          | --add-attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --clear-attributes-operator-owners
+          | --remove-attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --criticality-level=CRITICALITY_LEVEL
+          --[no-]criticality-mission-critical
+          --criticality-type=CRITICALITY_TYPE
+          --environment=ENVIRONMENT --environment-type=ENVIRONMENT_TYPE]
+        [--clear-composite-application-parameters
+          --composite-application-parameters-service-account-map=[COMPOSITE_APPLICATION_PARAMETERS_SERVICE_ACCOUNT_MAP,
+          ...]
+          | --update-composite-application-parameters-service-account-map=[UPDATE_COMPOSITE_APPLICATION_PARAMETERS_SERVICE_ACCOUNT_MAP,
+          ...] --clear-composite-application-parameters-service-account-map
+          | --remove-composite-application-parameters-service-account-map=REMOVE_COMPOSITE_APPLICATION_PARAMETERS_SERVICE_ACCOUNT_MAP]
+        [--clear-deployment-target
+          --gke-deployment-target-cluster-self-link=GKE_DEPLOYMENT_TARGET_CLUSTER_SELF_LINK --gke-deployment-target-kubernetes-service-account=GKE_DEPLOYMENT_TARGET_KUBERNETES_SERVICE_ACCOUNT --[no-]gke-deployment-target-kubernetes-service-account-creation --gke-deployment-target-namespace=GKE_DEPLOYMENT_TARGET_NAMESPACE]
+        [--clear-scope --scope-type=SCOPE_TYPE]
+        [--clear-source
+          --source-application-template-revision=SOURCE_APPLICATION_TEMPLATE_REVISION | --source-shared-template-revision-uri=SOURCE_SHARED_TEMPLATE_REVISION_URI]
+        [--component-parameters=[applicationInfo=APPLICATIONINFO],
+          [component=COMPONENT],[parameters=PARAMETERS]
+          | --add-component-parameters=[applicationInfo=APPLICATIONINFO],
+          [component=COMPONENT],[parameters=PARAMETERS]
+          --clear-component-parameters
+          | --remove-component-parameters=[applicationInfo=APPLICATIONINFO],
+          [component=COMPONENT],[parameters=PARAMETERS]]
+        [--connection-configs=[connectionUri=CONNECTIONURI],
+          [destinationComponentParameters=DESTINATIONCOMPONENTPARAMETERS],
+          [sourceComponentParameters=SOURCECOMPONENTPARAMETERS]
+          | --add-connection-configs=[connectionUri=CONNECTIONURI],
+          [destinationComponentParameters=DESTINATIONCOMPONENTPARAMETERS],
+          [sourceComponentParameters=SOURCECOMPONENTPARAMETERS]
+          --clear-connection-configs
+          | --remove-connection-configs=[connectionUri=CONNECTIONURI],
+          [destinationComponentParameters=DESTINATIONCOMPONENTPARAMETERS],
+          [sourceComponentParameters=SOURCECOMPONENTPARAMETERS]]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update an application in a space.
+
+EXAMPLES
+    To update the display name to My New Application Name for the application
+    my-application in space my-space, project my-project and location
+    us-central1, run:
+
+        $ gcloud design-center spaces applications update my-application \
+            --space=my-space --project=my-project --location=us-central1 \
+            --display-name="My New Application Name"
+
+    Or run:
+
+        $ gcloud design-center spaces applications update \
+            projects/my-project/locations/us-central1/spaces/my-space/\
+        applications/my-application --display-name="My New Application Name"
+
+    To update the source application template revision to
+    projects/my-project/locations/us-central1/spaces/my-space/applicationTemplates/my-app-template/revisions/rev2
+    for the application my-application in space my-space, project my-project
+    and location us-central1, run:
+
+        $ gcloud design-center spaces applications update my-application \
+            --space=my-space --project=my-project --location=us-central1 \
+            --source-application-template-revision=projects/my-project/\
+        locations/us-central1/spaces/my-space/applicationTemplates/\
+        my-app-template/revisions/rev2
+
+    To update the component parameters with new key-value pairs of
+    project_id:new-project and service_name:new-service for the component
+    projects/my-project/locations/us-central1/spaces/my-space/applicationTemplates/my-app-template/components/my-component
+    in application my-application, space my-space, project my-project and
+    location us-central1, run the following shorthand example:
+
+        $ gcloud design-center spaces applications update my-application \
+            --space=my-space --project=my-project --location=us-central1 \
+            --component-parameters=component=projects/my-project/locations/\
+        us-central1/spaces/my-space/applicationTemplates/my-app-template/\
+        components/my-component,parameters='[{"key": "project_id", "value":
+         "new-project"}, {"key": "service_name", "value": "new-service"}]'
+
+    Or run the following JSON example:
+
+        $ gcloud design-center spaces applications update my-application \
+            --space=my-space --project=my-project --location=us-central1 \
+            --component-parameters='[{"component":
+         "projects/my-project/locations/us-central1/spaces/my-space/applicat\
+        ionTemplates/my-app-template/components/my-component",
+         "parameters": [{"key": "project_id", "value": "new-project"},
+         {"key": "service_name", "value": "new-service"}]}]'
+
+    Or create a YAML or JSON file with the parameters and run the following
+    file example:
+
+        $ gcloud design-center spaces applications update my-application \
+            --space=my-space --project=my-project --location=us-central1 \
+            --component-parameters=component-parameters.json
+
+POSITIONAL ARGUMENTS
+     Application resource - Identifier. The name of the application. Format:
+     projects/{project}/locations/{location}/spaces/{space}/applications/{application}
+     The arguments in this group can be used to specify the attributes of this
+     resource. (NOTE) Some attributes are not given arguments in this group but
+     can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument application on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       APPLICATION
+          ID of the application or fully qualified identifier for the
+          application.
+
+          To set the application attribute:
+          + provide the argument application on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --location=LOCATION
+          The location id of the application resource.
+
+          To set the location attribute:
+          + provide the argument application on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line.
+
+       --space=SPACE
+          The space id of the application resource.
+
+          To set the space attribute:
+          + provide the argument application on the command line with a fully
+            specified name;
+          + provide the argument --space on the command line.
+
+FLAGS
+     --deployment-project=DEPLOYMENT_PROJECT
+        Deployment project of the application.
+
+     --deployment-region=DEPLOYMENT_REGION
+        The region where the application is deployed.
+
+     --description=DESCRIPTION
+        Description of the application.
+
+     --display-name=DISPLAY_NAME
+        Display name of the application.
+
+     --[no-]import-existing-resources
+        Import existing resources into the application. Use
+        --import-existing-resources to enable and
+        --no-import-existing-resources to disable.
+
+     --params-update-strategy=PARAMS_UPDATE_STRATEGY
+        Specifies the strategy to use when updating the application parameters
+        while updating the application template revision.
+        PARAMS_UPDATE_STRATEGY must be (only one value is supported):
+
+         replace
+            Replaces the existing field values with the provided ones.
+
+     --service-account=SERVICE_ACCOUNT
+        Your own service account that you use to deploy an application.
+
+     --type=TYPE
+        The type of the application. TYPE must be one of:
+
+         helm-app
+            Application type is helm application.
+         terraform-app
+            Application type is terraform application.
+
+     Update app_parameters.
+
+     At most one of these can be specified:
+
+       --app-parameters=[key=KEY],[value=VALUE]
+          Set app_parameters to new value. A list of parameters to attach to
+          the deployment source object, which is a catalog entry or application
+          template snapshot.
+
+           key
+              The key of the parameter.
+
+           value
+              The value of the parameter.
+
+          Shorthand Example:
+
+              --app-parameters=key=string,value={...} --app-parameters=key=string,value={...}
+
+          JSON Example:
+
+              --app-parameters='[{"key": "string", "value": {...}}]'
+
+          File Example:
+
+              --app-parameters=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-app-parameters=[key=KEY],[value=VALUE]
+            Add new value to app_parameters list. A list of parameters to
+            attach to the deployment source object, which is a catalog entry or
+            application template snapshot.
+
+             key
+                The key of the parameter.
+
+             value
+                The value of the parameter.
+
+            Shorthand Example:
+
+                --add-app-parameters=key=string,value={...} --add-app-parameters=key=string,value={...}
+
+            JSON Example:
+
+                --add-app-parameters='[{"key": "string", "value": {...}}]'
+
+            File Example:
+
+                --add-app-parameters=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-app-parameters
+              Clear app_parameters value and set to empty list.
+
+           --remove-app-parameters=[key=KEY],[value=VALUE]
+              Remove existing value from app_parameters list. A list of
+              parameters to attach to the deployment source object, which is a
+              catalog entry or application template snapshot.
+
+               key
+                  The key of the parameter.
+
+               value
+                  The value of the parameter.
+
+              Shorthand Example:
+
+                  --remove-app-parameters=key=string,value={...} --remove-app-parameters=key=string,value={...}
+
+              JSON Example:
+
+                  --remove-app-parameters='[{"key": "string", "value": {...}}]'
+
+              File Example:
+
+                  --remove-app-parameters=path_to_file.(yaml|json)
+
+     Consumer provided attributes.
+
+     --clear-attributes
+        Set application.attributes back to default value.
+
+     Update attributes_business_owners.
+
+     At most one of these can be specified:
+
+       --attributes-business-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+          Set attributes_business_owners to new value. Business team that
+          ensures user needs are met and value is delivered.
+
+           channel
+              Communication channel of the contacts.
+
+               uri
+                  URI of the channel.
+
+           displayName
+              Contact's name. Can have a maximum length of 63 characters.
+
+           email
+              Email address of the contacts.
+
+          Shorthand Example:
+
+              --attributes-business-owners=channel={uri=string},displayName=string,email=string --attributes-business-owners=channel={uri=string},displayName=string,email=string
+
+          JSON Example:
+
+              --attributes-business-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+          File Example:
+
+              --attributes-business-owners=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-attributes-business-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+            Add new value to attributes_business_owners list. Business team
+            that ensures user needs are met and value is delivered.
+
+             channel
+                Communication channel of the contacts.
+
+                 uri
+                    URI of the channel.
+
+             displayName
+                Contact's name. Can have a maximum length of 63 characters.
+
+             email
+                Email address of the contacts.
+
+            Shorthand Example:
+
+                --add-attributes-business-owners=channel={uri=string},displayName=string,email=string --add-attributes-business-owners=channel={uri=string},displayName=string,email=string
+
+            JSON Example:
+
+                --add-attributes-business-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+            File Example:
+
+                --add-attributes-business-owners=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-attributes-business-owners
+              Clear attributes_business_owners value and set to empty list.
+
+           --remove-attributes-business-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+              Remove existing value from attributes_business_owners list.
+              Business team that ensures user needs are met and value is
+              delivered.
+
+               channel
+                  Communication channel of the contacts.
+
+                   uri
+                      URI of the channel.
+
+               displayName
+                  Contact's name. Can have a maximum length of 63 characters.
+
+               email
+                  Email address of the contacts.
+
+              Shorthand Example:
+
+                  --remove-attributes-business-owners=channel={uri=string},displayName=string,email=string --remove-attributes-business-owners=channel={uri=string},displayName=string,email=string
+
+              JSON Example:
+
+                  --remove-attributes-business-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+              File Example:
+
+                  --remove-attributes-business-owners=path_to_file.(yaml|json)
+
+     Update attributes_developer_owners.
+
+     At most one of these can be specified:
+
+       --attributes-developer-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+          Set attributes_developer_owners to new value. Developer team that
+          owns development and coding.
+
+           channel
+              Communication channel of the contacts.
+
+               uri
+                  URI of the channel.
+
+           displayName
+              Contact's name. Can have a maximum length of 63 characters.
+
+           email
+              Email address of the contacts.
+
+          Shorthand Example:
+
+              --attributes-developer-owners=channel={uri=string},displayName=string,email=string --attributes-developer-owners=channel={uri=string},displayName=string,email=string
+
+          JSON Example:
+
+              --attributes-developer-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+          File Example:
+
+              --attributes-developer-owners=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-attributes-developer-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+            Add new value to attributes_developer_owners list. Developer team
+            that owns development and coding.
+
+             channel
+                Communication channel of the contacts.
+
+                 uri
+                    URI of the channel.
+
+             displayName
+                Contact's name. Can have a maximum length of 63 characters.
+
+             email
+                Email address of the contacts.
+
+            Shorthand Example:
+
+                --add-attributes-developer-owners=channel={uri=string},displayName=string,email=string --add-attributes-developer-owners=channel={uri=string},displayName=string,email=string
+
+            JSON Example:
+
+                --add-attributes-developer-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+            File Example:
+
+                --add-attributes-developer-owners=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-attributes-developer-owners
+              Clear attributes_developer_owners value and set to empty list.
+
+           --remove-attributes-developer-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+              Remove existing value from attributes_developer_owners list.
+              Developer team that owns development and coding.
+
+               channel
+                  Communication channel of the contacts.
+
+                   uri
+                      URI of the channel.
+
+               displayName
+                  Contact's name. Can have a maximum length of 63 characters.
+
+               email
+                  Email address of the contacts.
+
+              Shorthand Example:
+
+                  --remove-attributes-developer-owners=channel={uri=string},displayName=string,email=string --remove-attributes-developer-owners=channel={uri=string},displayName=string,email=string
+
+              JSON Example:
+
+                  --remove-attributes-developer-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+              File Example:
+
+                  --remove-attributes-developer-owners=path_to_file.(yaml|json)
+
+     Update attributes_operator_owners.
+
+     At most one of these can be specified:
+
+       --attributes-operator-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+          Set attributes_operator_owners to new value. Operator team that
+          ensures runtime and operations.
+
+           channel
+              Communication channel of the contacts.
+
+               uri
+                  URI of the channel.
+
+           displayName
+              Contact's name. Can have a maximum length of 63 characters.
+
+           email
+              Email address of the contacts.
+
+          Shorthand Example:
+
+              --attributes-operator-owners=channel={uri=string},displayName=string,email=string --attributes-operator-owners=channel={uri=string},displayName=string,email=string
+
+          JSON Example:
+
+              --attributes-operator-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+          File Example:
+
+              --attributes-operator-owners=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-attributes-operator-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+            Add new value to attributes_operator_owners list. Operator team
+            that ensures runtime and operations.
+
+             channel
+                Communication channel of the contacts.
+
+                 uri
+                    URI of the channel.
+
+             displayName
+                Contact's name. Can have a maximum length of 63 characters.
+
+             email
+                Email address of the contacts.
+
+            Shorthand Example:
+
+                --add-attributes-operator-owners=channel={uri=string},displayName=string,email=string --add-attributes-operator-owners=channel={uri=string},displayName=string,email=string
+
+            JSON Example:
+
+                --add-attributes-operator-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+            File Example:
+
+                --add-attributes-operator-owners=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-attributes-operator-owners
+              Clear attributes_operator_owners value and set to empty list.
+
+           --remove-attributes-operator-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+              Remove existing value from attributes_operator_owners list.
+              Operator team that ensures runtime and operations.
+
+               channel
+                  Communication channel of the contacts.
+
+                   uri
+                      URI of the channel.
+
+               displayName
+                  Contact's name. Can have a maximum length of 63 characters.
+
+               email
+                  Email address of the contacts.
+
+              Shorthand Example:
+
+                  --remove-attributes-operator-owners=channel={uri=string},displayName=string,email=string --remove-attributes-operator-owners=channel={uri=string},displayName=string,email=string
+
+              JSON Example:
+
+                  --remove-attributes-operator-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+              File Example:
+
+                  --remove-attributes-operator-owners=path_to_file.(yaml|json)
+
+     Criticality of the Application, Service, or Workload
+
+     --criticality-level=CRITICALITY_LEVEL
+        Criticality level. Can contain only lowercase letters, numeric
+        characters, underscores, and dashes. Can have a maximum length of 63
+        characters. Deprecated: Please refer to type instead.
+
+     --[no-]criticality-mission-critical
+        Indicates mission-critical Application, Service, or Workload.
+        Deprecated: Please refer to type instead. Use
+        --criticality-mission-critical to enable and
+        --no-criticality-mission-critical to disable.
+
+     --criticality-type=CRITICALITY_TYPE
+        Criticality Type. CRITICALITY_TYPE must be one of:
+
+         high
+            High impact.
+         low
+            Low impact.
+         medium
+            Medium impact.
+         mission-critical
+            Mission critical service, application or workload.
+
+     Environment of the Application, Service, or Workload
+
+     --environment=ENVIRONMENT
+        Environment name. Can contain only lowercase letters, numeric
+        characters, underscores, and dashes. Can have a maximum length of 63
+        characters. Deprecated: Please refer to type instead.
+
+     --environment-type=ENVIRONMENT_TYPE
+        Environment Type. ENVIRONMENT_TYPE must be one of:
+
+         development
+            Development environment.
+         production
+            Production environment.
+         staging
+            Staging environment.
+         test
+            Test environment.
+
+     Holds parameters that are specific to composite applications.
+
+     --clear-composite-application-parameters
+        Set application.compositeApplicationParameters back to default value.
+
+     Update composite_application_parameters_service_account_map.
+
+     At most one of these can be specified:
+
+       --composite-application-parameters-service-account-map=[COMPOSITE_APPLICATION_PARAMETERS_SERVICE_ACCOUNT_MAP,...]
+          Set composite_application_parameters_service_account_map to new
+          value. A map from a component's URI to the deployment service account
+          for composite application. key format:
+          projects/{project}/locations/{location}/spaces/{space}/applicationTemplates/{application_template}/components/{component}
+          value format: projects/{project}/serviceAccounts/{email_address}.
+
+           KEY
+              Sets KEY value.
+
+           VALUE
+              Sets VALUE value.
+
+          Shorthand Example:
+
+              --composite-application-parameters-service-account-map=string=string
+
+          JSON Example:
+
+              --composite-application-parameters-service-account-map='{"string": "string"}'
+
+          File Example:
+
+              --composite-application-parameters-service-account-map=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --update-composite-application-parameters-service-account-map=[UPDATE_COMPOSITE_APPLICATION_PARAMETERS_SERVICE_ACCOUNT_MAP,...]
+            Update composite_application_parameters_service_account_map value
+            or add key value pair. A map from a component's URI to the
+            deployment service account for composite application. key format:
+            projects/{project}/locations/{location}/spaces/{space}/applicationTemplates/{application_template}/components/{component}
+            value format: projects/{project}/serviceAccounts/{email_address}.
+
+             KEY
+                Sets KEY value.
+
+             VALUE
+                Sets VALUE value.
+
+            Shorthand Example:
+
+                --update-composite-application-parameters-service-account-map=string=string
+
+            JSON Example:
+
+                --update-composite-application-parameters-service-account-map='{"string": "string"}'
+
+            File Example:
+
+                --update-composite-application-parameters-service-account-map=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-composite-application-parameters-service-account-map
+              Clear composite_application_parameters_service_account_map value
+              and set to empty map.
+
+           --remove-composite-application-parameters-service-account-map=REMOVE_COMPOSITE_APPLICATION_PARAMETERS_SERVICE_ACCOUNT_MAP
+              Remove existing value from map
+              composite_application_parameters_service_account_map. Sets
+              remove_composite_application_parameters_service_account_map
+              value.
+
+              Shorthand Example:
+
+                  --remove-composite-application-parameters-service-account-map=string,string
+
+              JSON Example:
+
+                  --remove-composite-application-parameters-service-account-map=["string"]
+
+              File Example:
+
+                  --remove-composite-application-parameters-service-account-map=path_to_file.(yaml|json)
+
+     The deployment target of the application.
+
+     --clear-deployment-target
+        Set application.deploymentTarget back to default value.
+
+     Arguments for the target.
+
+     The GKE deployment target.
+
+     --gke-deployment-target-cluster-self-link=GKE_DEPLOYMENT_TARGET_CLUSTER_SELF_LINK
+        The self link of the cluster where GKE based application is deployed.
+
+     --gke-deployment-target-kubernetes-service-account=GKE_DEPLOYMENT_TARGET_KUBERNETES_SERVICE_ACCOUNT
+        The kubernetes service account that is created within the namespace
+        provided above. Example: default or node-sa
+
+     --[no-]gke-deployment-target-kubernetes-service-account-creation
+        Whether to create the provided KSA. If true, the KSA will be created in
+        the namespace provided above. If false, the KSA is expected to already
+        exist in the namespace provided above. Use
+        --gke-deployment-target-kubernetes-service-account-creation to enable
+        and --no-gke-deployment-target-kubernetes-service-account-creation to
+        disable.
+
+     --gke-deployment-target-namespace=GKE_DEPLOYMENT_TARGET_NAMESPACE
+        The namespace where the application is deployed.
+
+     Scope of an application.
+
+     --clear-scope
+        Set application.scope back to default value.
+
+     --scope-type=SCOPE_TYPE
+        Scope Type. SCOPE_TYPE must be one of:
+
+         global
+            Global type.
+         regional
+            Regional type.
+
+     Source template information for the deployment.
+
+     --clear-source
+        Set application.source back to default value.
+
+     Arguments for the source.
+
+     At most one of these can be specified:
+
+       --source-application-template-revision=SOURCE_APPLICATION_TEMPLATE_REVISION
+          Application template revision URI.
+
+       --source-shared-template-revision-uri=SOURCE_SHARED_TEMPLATE_REVISION_URI
+          Shared template revision URI.
+
+     Update component_parameters.
+
+     At most one of these can be specified:
+
+       --component-parameters=[applicationInfo=APPLICATIONINFO],[component=COMPONENT],[parameters=PARAMETERS]
+          Set component_parameters to new value. A list of component parameters
+          to associate with the application.
+
+           applicationInfo
+              The application associated with the component.
+
+               apphubApplicationId
+                  The application ID of the apphub application. The ID must be
+                  1-63 characters long and should match the regular expression
+                  ^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$.
+
+               attributes
+                  Attributes of apphub application.
+
+                   businessOwners
+                      Business team that ensures user needs are met and value
+                      is delivered.
+
+                       channel
+                          Communication channel of the contacts.
+
+                           uri
+                              URI of the channel.
+
+                       displayName
+                          Contact's name. Can have a maximum length of 63
+                          characters.
+
+                       email
+                          Email address of the contacts.
+
+                   criticality
+                      User-defined criticality information.
+
+                       level
+                          Criticality level. Can contain only lowercase
+                          letters, numeric characters, underscores, and dashes.
+                          Can have a maximum length of 63 characters.
+                          Deprecated: Please refer to type instead.
+
+                       missionCritical
+                          Indicates mission-critical Application, Service, or
+                          Workload. Deprecated: Please refer to type instead.
+
+                       type
+                          Criticality Type.
+
+                   developerOwners
+                      Developer team that owns development and coding.
+
+                       channel
+                          Communication channel of the contacts.
+
+                           uri
+                              URI of the channel.
+
+                       displayName
+                          Contact's name. Can have a maximum length of 63
+                          characters.
+
+                       email
+                          Email address of the contacts.
+
+                   environment
+                      User-defined environment information.
+
+                       environment
+                          Environment name. Can contain only lowercase letters,
+                          numeric characters, underscores, and dashes. Can have
+                          a maximum length of 63 characters. Deprecated: Please
+                          refer to type instead.
+
+                       type
+                          Environment Type.
+
+                   operatorOwners
+                      Operator team that ensures runtime and operations.
+
+                       channel
+                          Communication channel of the contacts.
+
+                           uri
+                              URI of the channel.
+
+                       displayName
+                          Contact's name. Can have a maximum length of 63
+                          characters.
+
+                       email
+                          Email address of the contacts.
+
+               deploymentRegion
+                  Deployment region for the component. If the scope is set to
+                  REGIONAL, then the apphub application is created in this
+                  region, e.g. us-central1.
+
+               displayName
+                  Display name for the application. The number of characters
+                  should be less than 64 characters.
+
+               scope
+                  Scope of apphub application.
+
+                   type
+                      Scope Type.
+
+           component
+              The name of the component parameter.
+
+           parameters
+              A list of parameters associated with the component.
+
+               key
+                  The key of the parameter.
+
+               value
+                  The value of the parameter.
+
+          Shorthand Example:
+
+              --component-parameters=applicationInfo={apphubApplicationId=string,attributes={businessOwners=[{channel={uri=string},displayName=string,email=string}],criticality={level=string,missionCritical=boolean,type=string},developerOwners=[{channel={uri=string},displayName=string,email=string}],environment={environment=string,type=string},operatorOwners=[{channel={uri=string},displayName=string,email=string}]},deploymentRegion=string,displayName=string,scope={type=string}},component=string,parameters=[{key=string,value={...}}] --component-parameters=applicationInfo={apphubApplicationId=string,attributes={businessOwners=[{channel={uri=string},displayName=string,email=string}],criticality={level=string,missionCritical=boolean,type=string},developerOwners=[{channel={uri=string},displayName=string,email=string}],environment={environment=string,type=string},operatorOwners=[{channel={uri=string},displayName=string,email=string}]},deploymentRegion=string,displayName=string,scope={type=string}},component=string,parameters=[{key=string,value={...}}]
+
+          JSON Example:
+
+              --component-parameters='[{"applicationInfo": {"apphubApplicationId": "string", "attributes": {"businessOwners": [{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}], "criticality": {"level": "string", "missionCritical": boolean, "type": "string"}, "developerOwners": [{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}], "environment": {"environment": "string", "type": "string"}, "operatorOwners": [{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]}, "deploymentRegion": "string", "displayName": "string", "scope": {"type": "string"}}, "component": "string", "parameters": [{"key": "string", "value": {...}}]}]'
+
+          File Example:
+
+              --component-parameters=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-component-parameters=[applicationInfo=APPLICATIONINFO],[component=COMPONENT],[parameters=PARAMETERS]
+            Add new value to component_parameters list. A list of component
+            parameters to associate with the application.
+
+             applicationInfo
+                The application associated with the component.
+
+                 apphubApplicationId
+                    The application ID of the apphub application. The ID must
+                    be 1-63 characters long and should match the regular
+                    expression ^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$.
+
+                 attributes
+                    Attributes of apphub application.
+
+                     businessOwners
+                        Business team that ensures user needs are met and value
+                        is delivered.
+
+                         channel
+                            Communication channel of the contacts.
+
+                             uri
+                                URI of the channel.
+
+                         displayName
+                            Contact's name. Can have a maximum length of 63
+                            characters.
+
+                         email
+                            Email address of the contacts.
+
+                     criticality
+                        User-defined criticality information.
+
+                         level
+                            Criticality level. Can contain only lowercase
+                            letters, numeric characters, underscores, and
+                            dashes. Can have a maximum length of 63 characters.
+                            Deprecated: Please refer to type instead.
+
+                         missionCritical
+                            Indicates mission-critical Application, Service, or
+                            Workload. Deprecated: Please refer to type instead.
+
+                         type
+                            Criticality Type.
+
+                     developerOwners
+                        Developer team that owns development and coding.
+
+                         channel
+                            Communication channel of the contacts.
+
+                             uri
+                                URI of the channel.
+
+                         displayName
+                            Contact's name. Can have a maximum length of 63
+                            characters.
+
+                         email
+                            Email address of the contacts.
+
+                     environment
+                        User-defined environment information.
+
+                         environment
+                            Environment name. Can contain only lowercase
+                            letters, numeric characters, underscores, and
+                            dashes. Can have a maximum length of 63 characters.
+                            Deprecated: Please refer to type instead.
+
+                         type
+                            Environment Type.
+
+                     operatorOwners
+                        Operator team that ensures runtime and operations.
+
+                         channel
+                            Communication channel of the contacts.
+
+                             uri
+                                URI of the channel.
+
+                         displayName
+                            Contact's name. Can have a maximum length of 63
+                            characters.
+
+                         email
+                            Email address of the contacts.
+
+                 deploymentRegion
+                    Deployment region for the component. If the scope is set to
+                    REGIONAL, then the apphub application is created in this
+                    region, e.g. us-central1.
+
+                 displayName
+                    Display name for the application. The number of characters
+                    should be less than 64 characters.
+
+                 scope
+                    Scope of apphub application.
+
+                     type
+                        Scope Type.
+
+             component
+                The name of the component parameter.
+
+             parameters
+                A list of parameters associated with the component.
+
+                 key
+                    The key of the parameter.
+
+                 value
+                    The value of the parameter.
+
+            Shorthand Example:
+
+                --add-component-parameters=applicationInfo={apphubApplicationId=string,attributes={businessOwners=[{channel={uri=string},displayName=string,email=string}],criticality={level=string,missionCritical=boolean,type=string},developerOwners=[{channel={uri=string},displayName=string,email=string}],environment={environment=string,type=string},operatorOwners=[{channel={uri=string},displayName=string,email=string}]},deploymentRegion=string,displayName=string,scope={type=string}},component=string,parameters=[{key=string,value={...}}] --add-component-parameters=applicationInfo={apphubApplicationId=string,attributes={businessOwners=[{channel={uri=string},displayName=string,email=string}],criticality={level=string,missionCritical=boolean,type=string},developerOwners=[{channel={uri=string},displayName=string,email=string}],environment={environment=string,type=string},operatorOwners=[{channel={uri=string},displayName=string,email=string}]},deploymentRegion=string,displayName=string,scope={type=string}},component=string,parameters=[{key=string,value={...}}]
+
+            JSON Example:
+
+                --add-component-parameters='[{"applicationInfo": {"apphubApplicationId": "string", "attributes": {"businessOwners": [{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}], "criticality": {"level": "string", "missionCritical": boolean, "type": "string"}, "developerOwners": [{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}], "environment": {"environment": "string", "type": "string"}, "operatorOwners": [{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]}, "deploymentRegion": "string", "displayName": "string", "scope": {"type": "string"}}, "component": "string", "parameters": [{"key": "string", "value": {...}}]}]'
+
+            File Example:
+
+                --add-component-parameters=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-component-parameters
+              Clear component_parameters value and set to empty list.
+
+           --remove-component-parameters=[applicationInfo=APPLICATIONINFO],[component=COMPONENT],[parameters=PARAMETERS]
+              Remove existing value from component_parameters list. A list of
+              component parameters to associate with the application.
+
+               applicationInfo
+                  The application associated with the component.
+
+                   apphubApplicationId
+                      The application ID of the apphub application. The ID must
+                      be 1-63 characters long and should match the regular
+                      expression ^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$.
+
+                   attributes
+                      Attributes of apphub application.
+
+                       businessOwners
+                          Business team that ensures user needs are met and
+                          value is delivered.
+
+                           channel
+                              Communication channel of the contacts.
+
+                               uri
+                                  URI of the channel.
+
+                           displayName
+                              Contact's name. Can have a maximum length of 63
+                              characters.
+
+                           email
+                              Email address of the contacts.
+
+                       criticality
+                          User-defined criticality information.
+
+                           level
+                              Criticality level. Can contain only lowercase
+                              letters, numeric characters, underscores, and
+                              dashes. Can have a maximum length of 63
+                              characters. Deprecated: Please refer to type
+                              instead.
+
+                           missionCritical
+                              Indicates mission-critical Application, Service,
+                              or Workload. Deprecated: Please refer to type
+                              instead.
+
+                           type
+                              Criticality Type.
+
+                       developerOwners
+                          Developer team that owns development and coding.
+
+                           channel
+                              Communication channel of the contacts.
+
+                               uri
+                                  URI of the channel.
+
+                           displayName
+                              Contact's name. Can have a maximum length of 63
+                              characters.
+
+                           email
+                              Email address of the contacts.
+
+                       environment
+                          User-defined environment information.
+
+                           environment
+                              Environment name. Can contain only lowercase
+                              letters, numeric characters, underscores, and
+                              dashes. Can have a maximum length of 63
+                              characters. Deprecated: Please refer to type
+                              instead.
+
+                           type
+                              Environment Type.
+
+                       operatorOwners
+                          Operator team that ensures runtime and operations.
+
+                           channel
+                              Communication channel of the contacts.
+
+                               uri
+                                  URI of the channel.
+
+                           displayName
+                              Contact's name. Can have a maximum length of 63
+                              characters.
+
+                           email
+                              Email address of the contacts.
+
+                   deploymentRegion
+                      Deployment region for the component. If the scope is set
+                      to REGIONAL, then the apphub application is created in
+                      this region, e.g. us-central1.
+
+                   displayName
+                      Display name for the application. The number of
+                      characters should be less than 64 characters.
+
+                   scope
+                      Scope of apphub application.
+
+                       type
+                          Scope Type.
+
+               component
+                  The name of the component parameter.
+
+               parameters
+                  A list of parameters associated with the component.
+
+                   key
+                      The key of the parameter.
+
+                   value
+                      The value of the parameter.
+
+              Shorthand Example:
+
+                  --remove-component-parameters=applicationInfo={apphubApplicationId=string,attributes={businessOwners=[{channel={uri=string},displayName=string,email=string}],criticality={level=string,missionCritical=boolean,type=string},developerOwners=[{channel={uri=string},displayName=string,email=string}],environment={environment=string,type=string},operatorOwners=[{channel={uri=string},displayName=string,email=string}]},deploymentRegion=string,displayName=string,scope={type=string}},component=string,parameters=[{key=string,value={...}}] --remove-component-parameters=applicationInfo={apphubApplicationId=string,attributes={businessOwners=[{channel={uri=string},displayName=string,email=string}],criticality={level=string,missionCritical=boolean,type=string},developerOwners=[{channel={uri=string},displayName=string,email=string}],environment={environment=string,type=string},operatorOwners=[{channel={uri=string},displayName=string,email=string}]},deploymentRegion=string,displayName=string,scope={type=string}},component=string,parameters=[{key=string,value={...}}]
+
+              JSON Example:
+
+                  --remove-component-parameters='[{"applicationInfo": {"apphubApplicationId": "string", "attributes": {"businessOwners": [{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}], "criticality": {"level": "string", "missionCritical": boolean, "type": "string"}, "developerOwners": [{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}], "environment": {"environment": "string", "type": "string"}, "operatorOwners": [{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]}, "deploymentRegion": "string", "displayName": "string", "scope": {"type": "string"}}, "component": "string", "parameters": [{"key": "string", "value": {...}}]}]'
+
+              File Example:
+
+                  --remove-component-parameters=path_to_file.(yaml|json)
+
+     Update connection_configs.
+
+     At most one of these can be specified:
+
+       --connection-configs=[connectionUri=CONNECTIONURI],[destinationComponentParameters=DESTINATIONCOMPONENTPARAMETERS],[sourceComponentParameters=SOURCECOMPONENTPARAMETERS]
+          Set connection_configs to new value. Connection configuration for the
+          application.
+
+           connectionUri
+              The connection URI.
+
+           destinationComponentParameters
+              The parameters of the connection associated with the destination
+              component.
+
+               key
+                  The key of the parameter.
+
+               value
+                  The value of the parameter.
+
+           sourceComponentParameters
+              The parameters of the connection associated with the source
+              component.
+
+               key
+                  The key of the parameter.
+
+               value
+                  The value of the parameter.
+
+          Shorthand Example:
+
+              --connection-configs=connectionUri=string,destinationComponentParameters=[{key=string,value={...}}],sourceComponentParameters=[{key=string,value={...}}] --connection-configs=connectionUri=string,destinationComponentParameters=[{key=string,value={...}}],sourceComponentParameters=[{key=string,value={...}}]
+
+          JSON Example:
+
+              --connection-configs='[{"connectionUri": "string", "destinationComponentParameters": [{"key": "string", "value": {...}}], "sourceComponentParameters": [{"key": "string", "value": {...}}]}]'
+
+          File Example:
+
+              --connection-configs=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-connection-configs=[connectionUri=CONNECTIONURI],[destinationComponentParameters=DESTINATIONCOMPONENTPARAMETERS],[sourceComponentParameters=SOURCECOMPONENTPARAMETERS]
+            Add new value to connection_configs list. Connection configuration
+            for the application.
+
+             connectionUri
+                The connection URI.
+
+             destinationComponentParameters
+                The parameters of the connection associated with the
+                destination component.
+
+                 key
+                    The key of the parameter.
+
+                 value
+                    The value of the parameter.
+
+             sourceComponentParameters
+                The parameters of the connection associated with the source
+                component.
+
+                 key
+                    The key of the parameter.
+
+                 value
+                    The value of the parameter.
+
+            Shorthand Example:
+
+                --add-connection-configs=connectionUri=string,destinationComponentParameters=[{key=string,value={...}}],sourceComponentParameters=[{key=string,value={...}}] --add-connection-configs=connectionUri=string,destinationComponentParameters=[{key=string,value={...}}],sourceComponentParameters=[{key=string,value={...}}]
+
+            JSON Example:
+
+                --add-connection-configs='[{"connectionUri": "string", "destinationComponentParameters": [{"key": "string", "value": {...}}], "sourceComponentParameters": [{"key": "string", "value": {...}}]}]'
+
+            File Example:
+
+                --add-connection-configs=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-connection-configs
+              Clear connection_configs value and set to empty list.
+
+           --remove-connection-configs=[connectionUri=CONNECTIONURI],[destinationComponentParameters=DESTINATIONCOMPONENTPARAMETERS],[sourceComponentParameters=SOURCECOMPONENTPARAMETERS]
+              Remove existing value from connection_configs list. Connection
+              configuration for the application.
+
+               connectionUri
+                  The connection URI.
+
+               destinationComponentParameters
+                  The parameters of the connection associated with the
+                  destination component.
+
+                   key
+                      The key of the parameter.
+
+                   value
+                      The value of the parameter.
+
+               sourceComponentParameters
+                  The parameters of the connection associated with the source
+                  component.
+
+                   key
+                      The key of the parameter.
+
+                   value
+                      The value of the parameter.
+
+              Shorthand Example:
+
+                  --remove-connection-configs=connectionUri=string,destinationComponentParameters=[{key=string,value={...}}],sourceComponentParameters=[{key=string,value={...}}] --remove-connection-configs=connectionUri=string,destinationComponentParameters=[{key=string,value={...}}],sourceComponentParameters=[{key=string,value={...}}]
+
+              JSON Example:
+
+                  --remove-connection-configs='[{"connectionUri": "string", "destinationComponentParameters": [{"key": "string", "value": {...}}], "sourceComponentParameters": [{"key": "string", "value": {...}}]}]'
+
+              File Example:
+
+                  --remove-connection-configs=path_to_file.(yaml|json)
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the designcenter/v1 API. The full documentation for this
+    API can be found at: http://cloud.google.com/application-design-center/docs
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha design-center spaces applications update
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+
+```bash
+gcloud design-center spaces applications update projects/my-project/locations/us-central1/spaces/my-space/applications/my-application \
+    --display-name="My New Application Name"
+
+gcloud design-center spaces applications update my-application \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --source-application-template-revision=projects/my-project/locations/us-central1/spaces/my-space/applicationTemplates/my-app-template/revisions/rev2
+
+gcloud design-center spaces applications update my-application \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --component-parameters=component=projects/my-project/locations/us-central1/spaces/my-space/applicationTemplates/my-app-template/components/my-component,parameters='[{"key": "project_id", "value": "new-project"}, {"key": "service_name", "value": "new-service"}]'
+
+gcloud design-center spaces applications update my-application \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --component-parameters='[{"component": "projects/my-project/locations/us-central1/spaces/my-space/applicationTemplates/my-app-template/components/my-component", "parameters": [{"key": "project_id", "value": "new-project"}, {"key": "service_name", "value": "new-service"}]}]'
+```
+
+### gcloud alpha design-center spaces applications update
+
+```text
+NAME
+    gcloud alpha design-center spaces applications update - update an
+        application
+
+SYNOPSIS
+    gcloud alpha design-center spaces applications update
+        (APPLICATION : --location=LOCATION --space=SPACE)
+        [--deployment-project=DEPLOYMENT_PROJECT]
+        [--deployment-region=DEPLOYMENT_REGION] [--description=DESCRIPTION]
+        [--display-name=DISPLAY_NAME] [--[no-]import-existing-resources]
+        [--params-update-strategy=PARAMS_UPDATE_STRATEGY]
+        [--service-account=SERVICE_ACCOUNT] [--type=TYPE]
+        [--app-parameters=[key=KEY],[value=VALUE]
+          | --add-app-parameters=[key=KEY],[value=VALUE] --clear-app-parameters
+          | --remove-app-parameters=[key=KEY],[value=VALUE]]
+        [--clear-attributes
+          --attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          | --add-attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --clear-attributes-business-owners
+          | --remove-attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          | --add-attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --clear-attributes-developer-owners
+          | --remove-attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          | --add-attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --clear-attributes-operator-owners
+          | --remove-attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --criticality-level=CRITICALITY_LEVEL
+          --[no-]criticality-mission-critical
+          --criticality-type=CRITICALITY_TYPE
+          --environment=ENVIRONMENT --environment-type=ENVIRONMENT_TYPE]
+        [--clear-composite-application-parameters
+          --composite-application-parameters-service-account-map=[COMPOSITE_APPLICATION_PARAMETERS_SERVICE_ACCOUNT_MAP,
+          ...]
+          | --update-composite-application-parameters-service-account-map=[UPDATE_COMPOSITE_APPLICATION_PARAMETERS_SERVICE_ACCOUNT_MAP,
+          ...] --clear-composite-application-parameters-service-account-map
+          | --remove-composite-application-parameters-service-account-map=REMOVE_COMPOSITE_APPLICATION_PARAMETERS_SERVICE_ACCOUNT_MAP]
+        [--clear-deployment-target
+          --gke-deployment-target-cluster-self-link=GKE_DEPLOYMENT_TARGET_CLUSTER_SELF_LINK --gke-deployment-target-kubernetes-service-account=GKE_DEPLOYMENT_TARGET_KUBERNETES_SERVICE_ACCOUNT --[no-]gke-deployment-target-kubernetes-service-account-creation --gke-deployment-target-namespace=GKE_DEPLOYMENT_TARGET_NAMESPACE]
+        [--clear-scope --scope-type=SCOPE_TYPE]
+        [--clear-source
+          --source-application-template-revision=SOURCE_APPLICATION_TEMPLATE_REVISION | --source-shared-template-revision-uri=SOURCE_SHARED_TEMPLATE_REVISION_URI]
+        [--component-parameters=[applicationInfo=APPLICATIONINFO],
+          [component=COMPONENT],[parameters=PARAMETERS]
+          | --add-component-parameters=[applicationInfo=APPLICATIONINFO],
+          [component=COMPONENT],[parameters=PARAMETERS]
+          --clear-component-parameters
+          | --remove-component-parameters=[applicationInfo=APPLICATIONINFO],
+          [component=COMPONENT],[parameters=PARAMETERS]]
+        [--connection-configs=[connectionUri=CONNECTIONURI],
+          [destinationComponentParameters=DESTINATIONCOMPONENTPARAMETERS],
+          [sourceComponentParameters=SOURCECOMPONENTPARAMETERS]
+          | --add-connection-configs=[connectionUri=CONNECTIONURI],
+          [destinationComponentParameters=DESTINATIONCOMPONENTPARAMETERS],
+          [sourceComponentParameters=SOURCECOMPONENTPARAMETERS]
+          --clear-connection-configs
+          | --remove-connection-configs=[connectionUri=CONNECTIONURI],
+          [destinationComponentParameters=DESTINATIONCOMPONENTPARAMETERS],
+          [sourceComponentParameters=SOURCECOMPONENTPARAMETERS]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Deprecated flags: the help text marks `--criticality-level`, `--criticality-mission-critical` (`--[no-]criticality-mission-critical` in `update`) and `--environment` as deprecated ("Deprecated: Please refer to type instead."); use `--criticality-type` (`high`, `low`, `medium` or `mission-critical`) and `--environment-type` instead. In `--component-parameters` (and its `--add-` / `--remove-` forms), the nested `applicationInfo.attributes.criticality.level`, `criticality.missionCritical` and `environment.environment` are deprecated the same way; use `criticality.type` and `environment.type`.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/design-center/spaces/applications/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

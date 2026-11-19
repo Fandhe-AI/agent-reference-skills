@@ -37,7 +37,7 @@ skills/gcp-devops/
       apphub/                     # App Hub: applications・services・workloads・discovered-*・boundary・service-projects
         README.md
         apphub-<group>.md
-      design-center/              # Application Design Center: spaces・application-templates・catalogs・applications、分割投入中（41 / 76 ページ。収録済みは README 掲載分のみ）
+      design-center/              # Application Design Center: spaces・application-templates・catalogs・applications、分割投入中（58 / 76 ページ。収録済みは README 掲載分のみ）
         README.md
         design-center-<group>.md
       app-lifecycle-manager/      # App Lifecycle Manager: saas・units・releases・rollouts・tenants・flags
@@ -143,7 +143,7 @@ skills/gcp-devops/
 
 未投入カテゴリ（`gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`gcloud/design-center`: 41 / 76 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`gcloud/design-center`: 58 / 76 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
