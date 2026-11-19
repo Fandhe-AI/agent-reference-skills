@@ -35,7 +35,7 @@ time range.
 
 The following operations add rows to the `APPENDS` change history:
 
-- [`CREATE TABLE` DDL statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_statement)
+- [`CREATE TABLE` DDL statement](../googlesql-syntax/data-definition-language-1.md#create-table-statement)
 - [`INSERT` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#insert_statement)
 - [Data appended as part of a `MERGE` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#merge_statement)
 - [Loading data](https://docs.cloud.google.com/bigquery/docs/loading-data) into BigQuery
@@ -212,12 +212,12 @@ CHANGES(
 
 The `CHANGES` function returns all rows that have changed in a table for a given
 time range. To use the `CHANGES` function on a table, you must set the table's
-[`enable_change_history` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_option_list)
+[`enable_change_history` option](../googlesql-syntax/data-definition-language-1.md#table_option_list)
 to `TRUE`.
 
 The following operations add rows to the `CHANGES` change history:
 
-- [`CREATE TABLE` DDL statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_statement)
+- [`CREATE TABLE` DDL statement](../googlesql-syntax/data-definition-language-1.md#create-table-statement)
 - [`INSERT` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#insert_statement)
 - [Data appended, changed or deleted as part of a `MERGE` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#merge_statement)
 - [`UPDATE` DML statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#update_statement)
@@ -231,7 +231,7 @@ The following operations add rows to the `CHANGES` change history:
 **Definitions**
 
 - `table`: the BigQuery table name. This must be a regular BigQuery table, and must have the [`enable_change_history`
-  option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_option_list) set to `TRUE`. Enabling this table option has an impact on costs; for more information see [Pricing and costs](https://docs.cloud.google.com/bigquery/docs/change-history#pricing_and_costs). This argument must be preceded by the word `TABLE`.
+  option](../googlesql-syntax/data-definition-language-1.md#table_option_list) set to `TRUE`. Enabling this table option has an impact on costs; for more information see [Pricing and costs](https://docs.cloud.google.com/bigquery/docs/change-history#pricing_and_costs). This argument must be preceded by the word `TABLE`.
 - `start_timestamp`: a [`TIMESTAMP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#timestamp_type) value indicating the earliest
   time at which a change is included in the output. If the value is `NULL`,
   all changes since the table creation are returned. If you set the
@@ -362,7 +362,7 @@ The output is similar to the following:
 **Enabling change history for an existing table**
 
 To set the
-[`enable_change_history` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_option_list)
+[`enable_change_history` option](../googlesql-syntax/data-definition-language-1.md#table_option_list)
 to `TRUE` for an existing table, use the
 [`ALTER TABLE SET OPTIONS` DDL statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_table_set_options_statement).
 The following example updates the change history option for `my_table` to

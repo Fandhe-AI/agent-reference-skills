@@ -38,7 +38,7 @@ ML.TRANSFORM(
   If you specify a value for the `TABLE_NAME` argument, the input column names
   in the table must match the input column names in the model's `TRANSFORM`
   clause, and their types should be compatible according to
-  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
   You can get the input column names and data types from the
   [model's metadata](https://docs.cloud.google.com/bigquery/docs/getting-model-metadata#get_model_metadata),
   in the section about the feature columns.
@@ -50,7 +50,7 @@ ML.TRANSFORM(
   If you specify a value for the `QUERY_STATEMENT` argument, the input column
   names from the query must match the input column names in the model's
   `TRANSFORM` clause, and their types should be compatible according to
-  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
   You can get the input column names and data types from the
   [model's metadata](https://docs.cloud.google.com/bigquery/docs/getting-model-metadata#get_model_metadata),
   in the section about the feature columns.

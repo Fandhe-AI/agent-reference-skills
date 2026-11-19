@@ -43,7 +43,7 @@ ML.RECOMMEND(
   argument, the user and item columns must match the user and item columns in
   the model, and their types must be compatible according to
   BigQuery
-  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
 
   If the input table does not contain both the user and item column, the input
   table can only contain one column. If the table contains both the user and
@@ -58,7 +58,7 @@ ML.RECOMMEND(
   argument, the user and item columns must match the user and item columns in
   the model, and their types must be compatible according to
   BigQuery
-  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
 - `TRIAL_ID`: an `INT64` value that identifies the
   hyperparameter tuning trial that you want the function to evaluate. The
   function uses the optimal trial by default. Only specify this argument if you

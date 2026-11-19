@@ -30,7 +30,7 @@ ML.RECONSTRUCTION_LOSS(
 
   If you specify `TABLE`, the input column names in the table must match
   the column names in the model, and their types must be compatible according to
-  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
 - `QUERY_STATEMENT`: the GoogleSQL
   query to use for input data to generate the reconstruction losses. For
   the supported SQL syntax of the `QUERY_STATEMENT` clause in
@@ -39,7 +39,7 @@ ML.RECONSTRUCTION_LOSS(
 
   If you specify `QUERY_STATEMENT`, the input column names from the query must
   match the column names in the model, and their types must be compatible
-  according to BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  according to BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
 
   If you used the
   [`TRANSFORM` clause](create.md#transform)

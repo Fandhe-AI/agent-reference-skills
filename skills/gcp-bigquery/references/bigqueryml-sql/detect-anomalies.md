@@ -105,7 +105,7 @@ and
 Anomaly detection with autoencoder, k-means, or PCA models has the following
 requirements:
 
-- The column names of the input data from either the `table` or the `query_statement` argument must match the column names of the model. The column data types must be compatible according to BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes).
+- The column names of the input data from either the `table` or the `query_statement` argument must match the column names of the model. The column data types must be compatible according to BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#supertypes).
 - If you used the [`TRANSFORM` clause](create.md#transform) in the `CREATE MODEL` statement that created the model, then only the input columns present in the `TRANSFORM` clause can appear in `query_statement`.
 
 ### Output

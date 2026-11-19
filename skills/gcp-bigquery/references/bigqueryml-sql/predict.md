@@ -64,11 +64,11 @@ ML.PREDICT(
 
   If `TABLE` is specified, the input column names in the table must match the
   column names in the model, and their types should be compatible according to
-  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
 
   For TensorFlow Lite, Open Neural Network Exchange (ONNX), and
   XGBoost models, the input must be
-  [convertible](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules) to
+  [convertible](../googlesql-syntax/conversion_rules.md) to
   the type expected by the model.
 
   For remote models, the input columns must contain all Gemini Enterprise Agent Platform
@@ -84,10 +84,10 @@ ML.PREDICT(
   If `QUERY_STATEMENT` is specified, the input column names from the query
   must match the column names in the model, and their types should be
   compatible according to BigQuery
-  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
+  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
 
   For TensorFlow Lite, ONNX, and XGBoost models, the input must be
-  [convertible](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules) to
+  [convertible](../googlesql-syntax/conversion_rules.md) to
   the type expected by the model.
 
   For remote models, the input columns must contain all Gemini Enterprise Agent Platform

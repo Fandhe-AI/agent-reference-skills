@@ -38,13 +38,13 @@ sorting and comparing strings:
 | Operations |
 |---|
 | Collation-supported [comparison operations](#functions-operators-and-conditional-expressions) |
-| [Join operations](query-syntax-2.md#join-operation) |
-| [`ORDER BY`](query-syntax-2.md#order-by-clause) |
-| [`GROUP BY`](query-syntax-2.md#group-by-clause) |
-| [`WINDOW`](query-syntax-3.md#window-clause) for window functions |
+| [Join operations](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#join_types) |
+| [`ORDER BY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#order_by_clause) |
+| [`GROUP BY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause) |
+| [`WINDOW`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#window_clause) for window functions |
 | Collation-supported [scalar functions](#functions-operators-and-conditional-expressions) |
 | Collation-supported [aggregate functions](#functions-operators-and-conditional-expressions) |
-| [Set operations](query-syntax-3.md#set-operators) |
+| [Set operations](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#set_operators) |
 | [`NULLIF` conditional expression](../googlesql-functions/conditional_expressions.md#nullif) |
 
 ### Operations that propagate collation
@@ -153,11 +153,11 @@ The following example operators propagate collation.
 
 | Operator | Notes |
 |---|---|
-| [`||` concatenation operator](operators.md#concatenation-operator) |   |
-| [Array subscript operator](operators.md#array-subscript-operator) | Propagated to output. |
-| [Set operators](query-syntax-3.md#set-operators) | Collation of an output column is decided by the collations of input columns at the same position. |
-| [`STRUCT` field access operator](operators.md#field-access-operator) | When getting a `STRUCT`, collation on the `STRUCT` field is propagated as the output collation. |
-| [`UNNEST`](query-syntax-1.md#unnest-operator) | Collation on the input array element is propagated to output. |
+| [`||` concatenation operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#concatenation_operator) |   |
+| [Array subscript operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#array_subscript_operator) | Propagated to output. |
+| [Set operators](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#set_operators) | Collation of an output column is decided by the collations of input columns at the same position. |
+| [`STRUCT` field access operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#field_access_operator) | When getting a `STRUCT`, collation on the `STRUCT` field is propagated as the output collation. |
+| [`UNNEST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#unnest_operator) | Collation on the input array element is propagated to output. |
 
 #### Expressions
 
@@ -165,14 +165,14 @@ The following example expressions propagate collation.
 
 | Expression | Notes |
 |---|---|
-| [`ARRAY`](data-types.md#array-type) | When you construct an `ARRAY`, collation on input arguments is propagated on the elements in the `ARRAY`. |
+| [`ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#array_type) | When you construct an `ARRAY`, collation on input arguments is propagated on the elements in the `ARRAY`. |
 | [`CASE`](../googlesql-functions/conditional_expressions.md#case) |   |
 | [`CASE` expr](../googlesql-functions/conditional_expressions.md#case-expr) |   |
 | [`COALESCE`](../googlesql-functions/conditional_expressions.md#coalesce) |   |
 | [`IF`](../googlesql-functions/conditional_expressions.md#if) |   |
 | [`IFNULL`](../googlesql-functions/conditional_expressions.md#ifnull) |   |
 | [`NULLIF`](../googlesql-functions/conditional_expressions.md#nullif) |   |
-| [`STRUCT`](data-types.md#struct-type) | When you construct a `STRUCT`, collation on input arguments is propagated on the fields in the `STRUCT`. |
+| [`STRUCT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#struct_type) | When you construct a `STRUCT`, collation on input arguments is propagated on the fields in the `STRUCT`. |
 
 ### Additional features that support collation
 
@@ -241,10 +241,10 @@ You can assign a collation specification to the following DDL statements.
 | Location | Support | Notes |
 |---|---|---|
 | Dataset | [`CREATE SCHEMA`](data-definition-language-1.md#create-schema-statement) | Create a dataset and optionally add a default collation specification to the dataset. |
-| Dataset | [`ALTER SCHEMA`](data-definition-language-3.md#alter-schema-set-default-collate-statement) | Updates the default collation specification for a dataset. |
+| Dataset | [`ALTER SCHEMA`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_schema_collate_statement) | Updates the default collation specification for a dataset. |
 | Table | [`CREATE TABLE`](data-definition-language-1.md#create-table-statement) | Create a table and optionally add a default collation specification to a table or a collation specification to a collation-supported type in a column. <br /> You can't have collation on a column used with `CLUSTERING`. |
-| Table | [`ALTER TABLE`](data-definition-language-3.md#alter-table-set-default-collate-statement) | Update the default collation specification for collation-supported type in a table. |
-| Column | [`ADD COLUMN`](data-definition-language-3.md#alter-table-add-column-statement) | Add a collation specification to a collation-supported type in a new column in an existing table. |
+| Table | [`ALTER TABLE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_table_collate_statement) | Update the default collation specification for collation-supported type in a table. |
+| Column | [`ADD COLUMN`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_table_add_column_statement) | Add a collation specification to a collation-supported type in a new column in an existing table. |
 
 #### Data types
 
@@ -252,9 +252,9 @@ You can assign a collation specification to the following data types.
 
 | Type | Notes |
 |---|---|
-| [`STRING`](data-types.md#string-type) | You can apply a collation specification directly to this data type. |
-| [`STRUCT`](data-types.md#struct-type) | You can apply a collation specification to a `STRING` field in a `STRUCT`. A `STRUCT` can have `STRING` fields with different collation specifications. A `STRUCT` can only be used in comparisons with the following operators and conditional expressions: `=`, `!=`, `IN`, `NULLIF`, and `CASE`. |
-| [`ARRAY`](data-types.md#array-type) | You can apply a collation specification to a `STRING` element in an `ARRAY`. An `ARRAY` can have `STRING` elements with different collation specifications. |
+| [`STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#string_type) | You can apply a collation specification directly to this data type. |
+| [`STRUCT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#struct_type) | You can apply a collation specification to a `STRING` field in a `STRUCT`. A `STRUCT` can have `STRING` fields with different collation specifications. A `STRUCT` can only be used in comparisons with the following operators and conditional expressions: `=`, `!=`, `IN`, `NULLIF`, and `CASE`. |
+| [`ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#array_type) | You can apply a collation specification to a `STRING` element in an `ARRAY`. An `ARRAY` can have `STRING` elements with different collation specifications. |
 
 > [!NOTE]
 > **Note:** Use the [`COLLATE`](../googlesql-functions/string_functions-1.md#collate) function to apply a collation specification to collation-supported expressions.
@@ -285,16 +285,16 @@ and conditional expressions.
 
 | Support | Notes |
 |---|---|
-| [`<`](operators.md#comparison-operators) |   |
-| [`<=`](operators.md#comparison-operators) |   |
-| [`>`](operators.md#comparison-operators) |   |
-| [`>=`](operators.md#comparison-operators) |   |
-| [`=`](operators.md#comparison-operators) |   |
-| [`!=`](operators.md#comparison-operators) |   |
-| [`[NOT] BETWEEN`](operators.md#comparison-operators) |   |
-| [`[NOT] IN`](operators.md#in-operator) | [Limitations apply](operators.md#in-operator). |
-| [`[NOT] LIKE`](operators.md#like-operator) | [Limitations apply](operators.md#like-operator). |
-| [Quantified `[NOT] LIKE`](operators.md#quantified-like-operator) | [Limitations apply](operators.md#quantified-like-operator). |
+| [`<`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
+| [`<=`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
+| [`>`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
+| [`>=`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
+| [`=`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
+| [`!=`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
+| [`[NOT] BETWEEN`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#comparison_operators) |   |
+| [`[NOT] IN`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#in_operators) | [Limitations apply](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#in_operators). |
+| [`[NOT] LIKE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#like_operator) | [Limitations apply](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#like_operator). |
+| [Quantified `[NOT] LIKE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#like_operator_quantified) | [Limitations apply](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators#like_operator_quantified). |
 
 ##### Conditional expressions
 

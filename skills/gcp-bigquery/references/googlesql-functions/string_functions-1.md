@@ -399,13 +399,13 @@ ORDER BY 2 DESC;
 COLLATE(value, collate_specification)
 ```
 
-Takes a `STRING` and a [collation specification](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts#collate_spec_details). Returns
+Takes a `STRING` and a [collation specification](../googlesql-syntax/collation-concepts.md#collation-specification-details). Returns
 a `STRING` with a collation specification. If `collate_specification` is empty,
 returns a value with collation removed from the `STRING`.
 
 The collation specification defines how the resulting `STRING` can be compared
 and sorted. To learn more, see
-[Collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+[Collation](../googlesql-syntax/collation-concepts.md).
 
 - `collation_specification` must be a string literal, otherwise an error is thrown.
 - Returns `NULL` if `value` is `NULL`.
@@ -947,7 +947,7 @@ ENDS_WITH(value, suffix)
 Takes two `STRING` or `BYTES` values. Returns `TRUE` if `suffix`
 is a suffix of `value`.
 
-This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 **Return type**
 
@@ -1393,7 +1393,7 @@ defaults to `1` and returns the position of the first occurrence.
 For `occurrence` \> `1`, the function includes overlapping occurrences.
 `occurrence` is of type `INT64` and must be positive.
 
-This function supports specifying [collation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts).
+This function supports specifying [collation](../googlesql-syntax/collation-concepts.md).
 
 Returns `0` if:
 
