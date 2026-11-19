@@ -21,3 +21,8 @@
 | gcloud data-catalog taxonomies describe | 3 commands (alpha, beta, ga); data-catalog taxonomies describe … | [data-catalog-taxonomies-describe.md](./data-catalog-taxonomies-describe.md) |
 | gcloud data-catalog taxonomies export | 3 commands (alpha, beta, ga); data-catalog taxonomies export … | [data-catalog-taxonomies-export.md](./data-catalog-taxonomies-export.md) |
 | gcloud data-catalog taxonomies get-iam-policy | 3 commands (alpha, beta, ga); data-catalog taxonomies get-iam-policy … | [data-catalog-taxonomies-get-iam-policy.md](./data-catalog-taxonomies-get-iam-policy.md) |
+| gcloud data-catalog taxonomies import | 3 commands (alpha, beta, ga); data-catalog taxonomies import … | [data-catalog-taxonomies-import.md](./data-catalog-taxonomies-import.md) |
+| gcloud data-catalog taxonomies list | 3 commands (alpha, beta, ga); data-catalog taxonomies list … | [data-catalog-taxonomies-list.md](./data-catalog-taxonomies-list.md) |
+| gcloud data-catalog taxonomies policy-tags | 18 commands (alpha, beta, ga); data-catalog taxonomies policy-tags add-iam-policy-binding … | [data-catalog-taxonomies-policy-tags.md](./data-catalog-taxonomies-policy-tags.md) |
+| gcloud data-catalog taxonomies remove-iam-policy-binding | 3 commands (alpha, beta, ga); data-catalog taxonomies remove-iam-policy-binding … | [data-catalog-taxonomies-remove-iam-policy-binding.md](./data-catalog-taxonomies-remove-iam-policy-binding.md) |
+| gcloud data-catalog taxonomies set-iam-policy | 3 commands (alpha, beta, ga); data-catalog taxonomies set-iam-policy … | [data-catalog-taxonomies-set-iam-policy.md](./data-catalog-taxonomies-set-iam-policy.md) |
