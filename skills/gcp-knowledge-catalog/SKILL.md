@@ -7,13 +7,13 @@ user-invocable: false
 
 # gcp-knowledge-catalog
 
-Google Cloud (GCP) のデータカタログ・データガバナンス系スキル。Knowledge Catalog（旧 Dataplex Universal Catalog）の概要・メタデータモデル（entry・entry group・entry type・aspect・aspect type・完全修飾名）、メタデータの import（metadata job）とコネクタ、検索（セマンティック検索・検索構文・Cloud Storage の discovery）、context sets・enrichment task・data insights・data relationships、business glossary・data products・data domains・governance workflow、データ品質（Auto data quality・ルールの再利用・システムのルールテンプレート）とデータ プロファイリング、データ リネージ（Data Lineage API・OpenLineage・リネージのビュー・取り込みの制御）、CMEK・VPC Service Controls・監査ログ・モニタリング・メタデータの変更フィード、廃止された Data Catalog の概要・廃止告知と Knowledge Catalog への導線を扱う。gcloud 2 グループ（`dataplex` / `datalineage`）・REST 2 API・IAM 4 ファイルの機械生成ページを併せて収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-iam` / `search-discovery` / `security-monitoring-data-catalog`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のデータカタログ・データガバナンス系スキル。Knowledge Catalog（旧 Dataplex Universal Catalog）の概要・メタデータモデル（entry・entry group・entry type・aspect・aspect type・完全修飾名）、メタデータの import（metadata job）とコネクタ、検索（セマンティック検索・検索構文・Cloud Storage の discovery）、context sets・enrichment task・data insights・data relationships、business glossary・data products・data domains・governance workflow、データ品質（Auto data quality・ルールの再利用・システムのルールテンプレート）とデータ プロファイリング、データ リネージ（Data Lineage API・OpenLineage・リネージのビュー・取り込みの制御）、CMEK・VPC Service Controls・監査ログ・モニタリング・メタデータの変更フィード、廃止された Data Catalog の概要・廃止告知と Knowledge Catalog への導線を扱う。gcloud 2 グループ（`dataplex` / `datalineage`）・REST 2 API・IAM 4 ファイルの機械生成ページを併せて収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメントの原語）。
 
-**名称**: Knowledge Catalog は旧 Dataplex Universal Catalog で、API・gcloud グループ・IAM の名前は `dataplex` のまま（API は `dataplex.googleapis.com`、gcloud は `gcloud dataplex`、ロールは `roles/dataplex.*`。`overview-setup-iam/introduction.md`（後続 PR で投入） の Notes）。リネージは別 API の Data Lineage API（`gcloud datalineage`、ロールは `roles/datalineage.*`）。
+**名称**: Knowledge Catalog は旧 Dataplex Universal Catalog で、API・gcloud グループ・IAM の名前は `dataplex` のまま（API は `dataplex.googleapis.com`、gcloud は `gcloud dataplex`、ロールは `roles/dataplex.*`。`overview-setup-iam/introduction.md` の Notes）。リネージは別 API の Data Lineage API（`gcloud datalineage`、ロールは `roles/datalineage.*`）。
 
-**Data Catalog は廃止されている**。`security-monitoring-data-catalog/deprecations.md`（後続 PR で投入） の表は Data Catalog を Deprecated date "February 3, 2025"、Shutdown date "June 1, 2026" と記載する。ただし Policy Tag Manager（taxonomy・policy tag）は廃止されず（"isn't deprecated"、`datacatalog.googleapis.com` で提供が続く。BigQuery の列レベルのアクセス制御と動的データマスキングが使う）、**Data Catalog / Policy Tag Manager の `gcloud data-catalog`・REST（`datacatalog`）・IAM ロールは `gcp-bigquery` にあり、本スキルには無い**。本スキルは Data Catalog の概要・廃止告知・Knowledge Catalog への移行の導線だけを扱う。
+**Data Catalog は廃止されている**。`security-monitoring-data-catalog/deprecations.md` の表は Data Catalog を Deprecated date "February 3, 2025"、Shutdown date "June 1, 2026" と記載する。ただし Policy Tag Manager（taxonomy・policy tag）は廃止されず（"isn't deprecated"、`datacatalog.googleapis.com` で提供が続く。BigQuery の列レベルのアクセス制御と動的データマスキングが使う）、**Data Catalog / Policy Tag Manager の `gcloud data-catalog`・REST（`datacatalog`）・IAM ロールは `gcp-bigquery` にあり、本スキルには無い**。本スキルは Data Catalog の概要・廃止告知・Knowledge Catalog への移行の導線だけを扱う。
 
 ## ディレクトリ構成
 
@@ -21,7 +21,13 @@ Google Cloud (GCP) のデータカタログ・データガバナンス系スキ�
 skills/gcp-knowledge-catalog/
   SKILL.md
   references/
+    overview-setup-iam/                  # 概要・メタデータモデル・context・名称変更・API 有効化・IAM・完全修飾名・FAQ
+      README.md
+      <page>.md
     entries-aspects-metadata-import/     # aspect・メタデータ追加・メタデータ import / export・コネクタ・managed connectivity
+      README.md
+      <page>.md
+    search-discovery/                    # 検索の概要・アセットの検索・検索構文・Cloud Storage の discovery
       README.md
       <page>.md
     context-enrichment-insights/         # context sets・enrichment task・data insights・data relationships
@@ -36,23 +42,34 @@ skills/gcp-knowledge-catalog/
     data-lineage/                        # リネージの概要・クイックスタート・ビュー・OpenLineage・取り込みの制御
       README.md
       <page>.md
+    security-monitoring-data-catalog/    # CMEK・VPC SC・監査ログ・モニタリング・変更フィード・廃止告知・Data Catalog
+      README.md
+      <page>.md
 ```
 
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. 収録外のガイド（enrichment の個別手順・カスタムコネクタ・料金等）は下記「対象外」
+1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）。全体像は `overview-setup-iam/introduction.md` と `metadata-overview.md`
+2. IAM ロール・権限 → `references/iam/README.md`（後続 PR で投入） の索引から引く。ロール ID（例: `roles/dataplex.catalogAdmin`・`roles/dataplex.dataScanAdmin`・`roles/datalineage.viewer`）で `references/iam/`（後続 PR で投入） 配下を grep して該当ファイルを特定する（`dataplex` は 3 ファイルに分かれる）。ロールの用途の解説は `overview-setup-iam/iam-roles.md`、アクセス制御の考え方は `iam-and-access-control.md`
+3. Data Catalog の廃止・移行 → `security-monitoring-data-catalog/deprecations.md`（日付）→ `data-catalog-overview.md` → `lineage-data-catalog.md`。廃止告知がリンクする移行ガイド（`dataplex/docs/transition-to-dataplex-catalog`）は 2026-11-19 時点で `knowledge-catalog/docs/introduction` へリダイレクトされ、専用の移行手順ページは無い（`overview-setup-iam/introduction.md`）。Policy Tag Manager の API・gcloud・IAM は `gcp-bigquery`
+4. 収録外のガイド（enrichment の個別手順・カスタムコネクタ・料金等）は下記「対象外」
 
-未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-iam` / `search-discovery` / `security-monitoring-data-catalog`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
+| Knowledge Catalog の概要・旧名称（Dataplex Universal Catalog）との関係・context graph・FAQ | overview-setup-iam | [references/overview-setup-iam/README.md](references/overview-setup-iam/README.md) |
+| entry / entry group / entry type / aspect / aspect type の概念・完全修飾名（FQN）・system entry group | overview-setup-iam | [references/overview-setup-iam/README.md](references/overview-setup-iam/README.md) |
+| API の有効化・IAM とアクセス制御・事前定義ロールの説明 | overview-setup-iam | [references/overview-setup-iam/README.md](references/overview-setup-iam/README.md) |
 | aspect の概念（placement level・scoping rules）・BigQuery テーブル entry へのカスタム aspect の追加 | entries-aspects-metadata-import | [references/entries-aspects-metadata-import/README.md](references/entries-aspects-metadata-import/README.md) |
 | メタデータの import（metadata job・sync mode・import ファイル・job の確認）・export（export job・job scope・Cloud Storage への出力・BigQuery での分析） | entries-aspects-metadata-import | [references/entries-aspects-metadata-import/README.md](references/entries-aspects-metadata-import/README.md) |
 | 構築済みコネクタ・managed connectivity（カスタムコネクタ・Workflows の概念）・コネクタ job の管理 | entries-aspects-metadata-import | [references/entries-aspects-metadata-import/README.md](references/entries-aspects-metadata-import/README.md) |
+| アセットの検索（コンソール / API / gcloud）・セマンティック検索の概要・検索構文 | search-discovery | [references/search-discovery/README.md](references/search-discovery/README.md) |
+| Cloud Storage の discovery（自動検出と BigQuery への公開） | search-discovery | [references/search-discovery/README.md](references/search-discovery/README.md) |
 | context sets・context の enrichment task（概要・作成） | context-enrichment-insights | [references/context-enrichment-insights/README.md](references/context-enrichment-insights/README.md) |
 | 構造化データの data insights（概要・利用）・data relationships | context-enrichment-insights | [references/context-enrichment-insights/README.md](references/context-enrichment-insights/README.md) |
 | business glossary（クイックスタート）・glossary と entry link の import / export の概要 | glossaries-data-products-domains | [references/glossaries-data-products-domains/README.md](references/glossaries-data-products-domains/README.md) |
@@ -63,8 +80,10 @@ skills/gcp-knowledge-catalog/
 | データ プロファイリングの概要 | data-quality-profiling | [references/data-quality-profiling/README.md](references/data-quality-profiling/README.md) |
 | データ リネージの概要（Data Lineage API・process / run / event・対応システム）・追跡のクイックスタート | data-lineage | [references/data-lineage/README.md](references/data-lineage/README.md) |
 | リネージの利用・外部システムのリネージの手動記録・グラフのビュー・OpenLineage 連携・取り込みの制御・トラブルシューティング | data-lineage | [references/data-lineage/README.md](references/data-lineage/README.md) |
+| CMEK・VPC Service Controls・監査ログ・モニタリング（DCU のコスト）・メタデータの変更フィード | security-monitoring-data-catalog | [references/security-monitoring-data-catalog/README.md](references/security-monitoring-data-catalog/README.md) |
+| Knowledge Catalog / Data Catalog の廃止告知（日付）・Data Catalog の概要・Data Catalog とのリネージ連携 | security-monitoring-data-catalog | [references/security-monitoring-data-catalog/README.md](references/security-monitoring-data-catalog/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-iam` / `search-discovery` / `security-monitoring-data-catalog`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `rest` / `rest-schemas` / `iam`
 
 ## 他スキルとの使い分け
 
@@ -104,8 +123,8 @@ skills/gcp-knowledge-catalog/
 - `references/gcloud/`（後続 PR で投入） `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） `references/iam/`（後続 PR で投入） は機械生成。他の 8 カテゴリは公式ガイド由来の手書き
 - 公式の例の一部は安全性・正しさのため修正している（フェンス直前に `Adapted (not in the official docs)` の行を置き、ページの Notes にも記載。例: `glossaries-data-products-domains/data-domains-create.md` の `getIamPolicy` / `setIamPolicy`、`data-quality-profiling/reuse-data-quality-rules.md` の heredoc）。gcloud help の例の誤りは生成ページの Notes に `Corrected from the official docs:` として残す
 - 変更・終了（references で確認したもの）:
-  - Data Catalog: Deprecated date "February 3, 2025"、Shutdown date "June 1, 2026"（`security-monitoring-data-catalog/deprecations.md`（後続 PR で投入））。Policy Tag Manager は廃止されない
-  - Data Catalog とのリネージ連携は非推奨で、Knowledge Catalog とのリネージ連携は GA（`security-monitoring-data-catalog/lineage-data-catalog.md`（後続 PR で投入）。日付の記載は無い）
-  - Attribute Store: Deprecated date "February 18, 2025"、Shutdown date "February 18, 2026"、"Discontinued."（`security-monitoring-data-catalog/deprecations.md`（後続 PR で投入））
+  - Data Catalog: Deprecated date "February 3, 2025"、Shutdown date "June 1, 2026"（`security-monitoring-data-catalog/deprecations.md`）。Policy Tag Manager は廃止されない
+  - Data Catalog とのリネージ連携は非推奨で、Knowledge Catalog とのリネージ連携は GA（`security-monitoring-data-catalog/lineage-data-catalog.md`。日付の記載は無い）
+  - Attribute Store: Deprecated date "February 18, 2025"、Shutdown date "February 18, 2026"、"Discontinued."（`security-monitoring-data-catalog/deprecations.md`）
   - data quality tasks は legacy で、公式は Auto data quality を推奨（`data-quality-profiling/data-quality-tasks-overview.md`。日付の記載は無い）
 - 新しいメソッド・機能は公式 reference で確認する
