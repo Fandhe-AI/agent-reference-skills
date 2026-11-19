@@ -60,3 +60,13 @@
 | The CREATE MODEL statement for importing TensorFlow Lite models | CREATE MODEL syntax, Supported data types for input and output columns, Locations, Limitations, Example | [create-tflite.md](./create-tflite.md) |
 | The CREATE MODEL statement for ARIMA_PLUS models | Time series modeling pipeline, Large-scale time series, Large-scale time series forecasting best practices, CREATE MODEL syntax, Holiday data, Custom holidays, Hierarchical reconciliation, Locations, Limitations, Examples, What's next | [create-time-series.md](./create-time-series.md) |
 | The CREATE MODEL statement for transform-only models | CREATE MODEL syntax, Examples | [create-transform.md](./create-transform.md) |
+| The CREATE MODEL statement for Wide-and-Deep models | CREATE MODEL syntax, Hyperparameter tuning, Locations, Limitations, Example, Supported regions | [create-wnd-models.md](./create-wnd-models.md) |
+| The CREATE MODEL statement for importing XGBoost models | CREATE MODEL syntax, Locations, Limitations, Examples | [create-xgboost.md](./create-xgboost.md) |
+| The CREATE MODEL statement | Required permissions, CREATE MODEL syntax, Supported inputs, Limitations, Quotas | [create.md](./create.md) |
+| The ML.DECODE_IMAGE function | Syntax, Output, Examples, What's next | [decode-image.md](./decode-image.md) |
+| The ML.DESCRIBE_DATA function | Syntax, Details, Output, Example, Limitations, Pricing, What's next | [describe-data.md](./describe-data.md) |
+| The ML.DETECT_ANOMALIES function | Syntax, Input, Output, Examples, Pricing, What's next | [detect-anomalies.md](./detect-anomalies.md) |
+| The ML.DETECT_CHANGE_POINTS function | Syntax, Output, Example, What's next | [detect-change-points.md](./detect-change-points.md) |
+| The ML.DISTANCE function | Syntax, Output, Example, What's next | [distance.md](./distance.md) |
+| The DROP MODEL statement | Syntax | [drop-model.md](./drop-model.md) |
+| The ML.ENTITY_FEATURES_AT_TIME function | Syntax, Output, Examples | [entity-feature-time.md](./entity-feature-time.md) |

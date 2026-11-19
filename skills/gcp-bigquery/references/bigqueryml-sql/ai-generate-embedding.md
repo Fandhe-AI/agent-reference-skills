@@ -575,7 +575,7 @@ AI.GENERATE_EMBEDDING(
 - `processed_input`: a `STRING` value that contains the name of the user or
   item column. The value of this column matches the name of the
   user or item column provided in the
-  [`query_statement` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create#query_statement)
+  [`query_statement` clause](create.md#query_statement)
   that was used when the matrix factorization model was trained.
 
 - `feature`: a `STRING` value that contains the names of the specific

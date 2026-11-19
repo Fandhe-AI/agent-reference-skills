@@ -57,7 +57,7 @@ ML.CONFUSION_MATRIX(
   training data is used. The extra columns are ignored.
 
   If you used the
-  [`TRANSFORM` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create#transform)
+  [`TRANSFORM` clause](create.md#transform)
   in the `CREATE MODEL` statement that created the model, then only the input
   columns present in the `TRANSFORM` clause must appear in `QUERY_STATEMENT`.
 
