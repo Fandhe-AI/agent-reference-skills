@@ -33,14 +33,14 @@ model, see
 ### Time series modeling pipeline
 
 The multivariate `ARIMA_PLUS_XREG` time series model is an
-[`ARIMA_PLUS` model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-time-series)
+[`ARIMA_PLUS` model](create-time-series.md)
 with linear external regressors. For more information, see [ARIMA_PLUS: Large-scale, Accurate, Automatic and Interpretable In-Database Time Series Forecasting and Anomaly Detection in Google BigQuery](https://arxiv.org/abs/2510.24452). The following diagram shows the model pipeline:
 
 ![ARIMA_PLUS_XREG_DIAGRAM](https://docs.cloud.google.com/static/bigquery/images/BQ_ARIMA_PLUS_XREG_diagram.png)
 
 For a diagram that shows the details of the **ARIMA_PLUS Pipeline** section
 in the preceding diagram, see
-[Time series modeling pipeline](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-time-series#modeling-pipeline).
+[Time series modeling pipeline](create-time-series.md#time-series-modeling-pipeline).
 
 The modeling pipeline for the `ARIMA_PLUS` time series models performs the
 following functions:
@@ -712,7 +712,7 @@ AS query_statement
 For time series forecasting models that have a `DATA_FREQUENCY` value
 of either `DAILY` or `AUTO_FREQUENCY`, you can optionally use the
 following `AS` clause syntax to perform
-[custom holiday modeling](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-time-series#custom_holidays)
+[custom holiday modeling](create-time-series.md#custom-holidays)
 in addition to specifying the training data:
 
 ```googlesql
@@ -738,7 +738,7 @@ return 50,000 rows or less and must contain the following columns:
 - `region`: Required. A `STRING` value that identifies the region to target for
   holiday modeling. Use one of the following options:
 
-  - An upper-case [holiday region code](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-time-series#holiday_region). Use this option to overwrite or supplement the holidays for the specified region. You can see the holidays for a region by running `SELECT * FROM
+  - An upper-case [holiday region code](create-time-series.md#holiday_region). Use this option to overwrite or supplement the holidays for the specified region. You can see the holidays for a region by running `SELECT * FROM
     bigquery-public-data.ml_datasets.holidays_and_events_for_forecasting WHERE
     region = region`.
   - An arbitrary string. Use this option to specify a custom region that you want to model holidays for. For example, you could specify `London` if you are only modeling holidays for that city.

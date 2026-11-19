@@ -130,11 +130,11 @@ After you create a remote model based on a Cloud AI service, you can use the
 model with one of the following BigQuery ML functions to
 analyze your BigQuery data:
 
-- For Cloud Natural Language API models, use [`ML.UNDERSTAND_TEXT`](understand-text.md)
-- For Cloud Translation API models, use [`ML.TRANSLATE`](translate.md)
+- For Cloud Natural Language API models, use [`ML.UNDERSTAND_TEXT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-understand-text)
+- For Cloud Translation API models, use [`ML.TRANSLATE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-translate)
 - For Cloud Vision API models, use [`ML.ANNOTATE_IMAGE`](annotate-image.md)
-- For Document AI API models, use [`ML.PROCESS_DOCUMENT`](process-document.md) ([preview](https://cloud.google.com/products#product-launch-stages))
-- For Speech-to-Text API models, use [`ML.TRANSCRIBE`](transcribe.md) ([preview](https://cloud.google.com/products#product-launch-stages))
+- For Document AI API models, use [`ML.PROCESS_DOCUMENT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-process-document) ([preview](https://cloud.google.com/products#product-launch-stages))
+- For Speech-to-Text API models, use [`ML.TRANSCRIBE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-transcribe) ([preview](https://cloud.google.com/products#product-launch-stages))
 
 **Example**
 
@@ -194,7 +194,7 @@ This option identifies the
 the `REMOTE_SERVICE_TYPE` value is `CLOUD_AI_SPEECH_TO_TEXT_V2`. If you don't
 specify this option, a default recognizer is used. In that case, you must
 specify a value for the
-[`recognition_config` argument](transcribe.md#arguments)
+[`recognition_config` argument](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-transcribe#arguments)
 of the `ML.TRANSCRIBE` function when you reference the remote model. The
 `recognition_config` argument value provides a configuration for the default
 recognizer.

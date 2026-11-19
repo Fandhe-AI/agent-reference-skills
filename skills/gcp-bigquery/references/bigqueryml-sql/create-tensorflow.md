@@ -132,15 +132,15 @@ the following:
 
 | TensorFlow types | Supported | BigQuery ML type |
 |---|---|---|
-| `tf.int8, tf.int16, tf.int32, tf.int64, tf.uint8, tf.uint16, tf.uint32, tf.uint64` | Supported | [`INT64`](../googlesql-syntax/data-types.md#integer-type) |
-| `tf.float16, tf.float32, tf.float64, tf.bfloat16` | Supported | [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) |
+| `tf.int8, tf.int16, tf.int32, tf.int64, tf.uint8, tf.uint16, tf.uint32, tf.uint64` | Supported | [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types) |
+| `tf.float16, tf.float32, tf.float64, tf.bfloat16` | Supported | [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) |
 | `tf.complex64, tf.complex128` | Unsupported | N/a |
 | `tf.qint8, tf.quint8, tf.qint16, tf.quint16, tf.qint32` | Unsupported | N/A |
-| `tf.bool` | Supported | [`BOOL`](../googlesql-syntax/data-types.md#boolean-type) |
-| `tf.string` | Supported | [`STRING`](../googlesql-syntax/data-types.md#string-type) |
+| `tf.bool` | Supported | [`BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#boolean_type) |
+| `tf.string` | Supported | [`STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#string_type) |
 | `tf.resource` | Unsupported | N/A |
 | `tf.variant` | Unsupported | N/A |
-| [`SparseTensor`](https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor) of a supported TensorFlow type | Supported | A `NULL`, the associated BigQuery ML type, or an [`ARRAY`](../googlesql-syntax/data-types.md#array-type) of the associated BigQuery ML type. |
+| [`SparseTensor`](https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor) of a supported TensorFlow type | Supported | A `NULL`, the associated BigQuery ML type, or an [`ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#array_type) of the associated BigQuery ML type. |
 | [`tf.train.Example`](https://www.tensorflow.org/tutorials/load_data/tfrecord#tftrainexample) containing supported TensorFlow types | Supported | BigQuery ML automatically takes features and converts into a `tf.train.Example`. |
 
 The model input columns can be either dense Tensors or SparseTensors;

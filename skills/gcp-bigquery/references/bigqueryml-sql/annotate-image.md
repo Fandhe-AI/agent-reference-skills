@@ -32,9 +32,9 @@ ML.ANNOTATE_IMAGE(
   contains the resource.
 
 - `MODEL_NAME`: the name of a
-  [remote model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-service)
+  [remote model](create-remote-model-service.md)
   with a
-  [`REMOTE_SERVICE_TYPE` argument](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-service#remote_service_type)
+  [`REMOTE_SERVICE_TYPE` argument](create-remote-model-service.md#remote_service_type)
   of `CLOUD_AI_VISION_V1`.
 
 - `OBJECT_TABLE` : the name of the

@@ -17,9 +17,9 @@ future value for a given column based on the analysis of historical values for
 that column. You can also use univariate time series models to detect
 anomalies in time series data.
 
-- Use the [`ML.FORECAST` function](forecast.md) to retrieve the forecasted values that were generated when you created the model.
-- Use the [`ML.EXPLAIN_FORECAST` function](explain-forecast.md) function to retrieve the forecasted values that were generated when you created the model, and compute the prediction intervals.
-- Use the [`ML.DETECT_ANOMALIES` function](detect-anomalies.md) to perform [anomaly detection](https://docs.cloud.google.com/bigquery/docs/anomaly-detection-overview).
+- Use the [`ML.FORECAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-forecast) to retrieve the forecasted values that were generated when you created the model.
+- Use the [`ML.EXPLAIN_FORECAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast) function to retrieve the forecasted values that were generated when you created the model, and compute the prediction intervals.
+- Use the [`ML.DETECT_ANOMALIES` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-detect-anomalies) to perform [anomaly detection](https://docs.cloud.google.com/bigquery/docs/anomaly-detection-overview).
 
 > [!NOTE]
 > **Note:** If you don't want to create and manage your own model, you can use BigQuery ML's built-in [TimesFM time series model](https://docs.cloud.google.com/bigquery/docs/timesfm-model) with the [`AI.FORECAST` function](ai-forecast.md) ([Preview](https://cloud.google.com/products#product-launch-stages)) to perform forecasting.
@@ -165,7 +165,7 @@ MODEL_TYPE = 'ARIMA_PLUS'
 Specifies the model type. This option is required.
 
 > [!NOTE]
-> **Note:** The `ARIMA` model type is deprecated. While the model training pipelines of `ARIMA` and `ARIMA_PLUS` models are the same, `ARIMA_PLUS` supports more capabilities, including use of the [`DECOMPOSE_TIME_SERIES` option](#decompose_time_series) and the ability to work with the [`ML.ARIMA_EVALUATE`](arima-evaluate.md) and [`ML.EXPLAIN_FORECAST`](explain-forecast.md) functions.
+> **Note:** The `ARIMA` model type is deprecated. While the model training pipelines of `ARIMA` and `ARIMA_PLUS` models are the same, `ARIMA_PLUS` supports more capabilities, including use of the [`DECOMPOSE_TIME_SERIES` option](#decompose_time_series) and the ability to work with the [`ML.ARIMA_EVALUATE`](arima-evaluate.md) and [`ML.EXPLAIN_FORECAST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast) functions.
 
 #### `TIME_SERIES_TIMESTAMP_COL`
 
@@ -630,7 +630,7 @@ the smoothing window before the average is applied.
 Specifying a value for `TREND_SMOOTHING_WINDOW_SIZE` doesn't affect forecasting
 results. It only affects the smoothness of the trend component, which you can
 see by using the
-[`ML.EXPLAIN_FORECAST` function](explain-forecast.md).
+[`ML.EXPLAIN_FORECAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast).
 
 **Arguments**
 
@@ -651,7 +651,7 @@ parts of the time series (such as holiday effect and seasonal components)
 are saved in the `ARIMA_PLUS` model.
 
 Time series decomposition takes place when you create the model. The
-[`ML.EXPLAIN_FORECAST`](explain-forecast.md)
+[`ML.EXPLAIN_FORECAST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast)
 function retrieves the separate components of both the training and the
 forecasting data and computes the confidence intervals. Because the decomposition
 results are saved in the model, the training data can be partially or fully
@@ -814,7 +814,7 @@ AS (
 The `query_statement` argument specifies the query that is used to
 generate the training data. For information about the supported SQL syntax of
 the `query_statement` clause, see
-[GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+[GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
 ##### `holiday_statement`
 
@@ -1124,7 +1124,7 @@ CREATE OR REPLACE MODEL `mydataset.arima_model`
 #### Custom holiday limitations
 
 - Custom holiday modeling only works for models that have a `data_frequency` value of either `DAILY` or `AUTO_FREQUENCY`. If you use `AUTO_FREQUENCY`, the actual frequency of the time series data needs to be daily.
-- You can't use the [`TRANSFORM` clause](create.md#transform) of the `CREATE MODEL` statement if you are performing custom holiday modeling.
+- You can't use the [`TRANSFORM` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create#transform) of the `CREATE MODEL` statement if you are performing custom holiday modeling.
 - `holiday_name` column cannot have more than 500 distinct values.
 - Custom holiday modeling uses an algorithm that automatically detects the significance of the holiday effect within the provided holiday effect window, and only extracts the holiday effect on the days that the algorithm classifies as significant. For example, if `primary date` is `01/02` with `preholiday_days` and `postholiday_days` set to `1`, the algorithm analyzes the holiday effect for these three days: `[01/01, 01/02, 01/03]`. In the `ML.EXPLAIN_FORECAST` output, it is not guaranteed that all three of these days will have a holiday effect. Only those days within this window that have a significant holiday effect are associated with a non-zero holiday effect in the output.
 - To get a better result from custom holiday modeling, don't specify the same holiday more than twice a year.

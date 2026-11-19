@@ -113,7 +113,7 @@ true even if they don't exactly match the values or type used during training.
 ### Limitations
 
 `ML.CONFUSION_MATRIX` doesn't support
-[imported TensorFlow models](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-tensorflow).
+[imported TensorFlow models](create-tensorflow.md).
 
 ### Examples
 

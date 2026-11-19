@@ -23,14 +23,14 @@ The function works by sending requests to a BigQuery ML remote model
 that represents a Gemini Enterprise Agent Platform model, and then returning that model's
 response. The following types of remote models are supported:
 
-- [Remote models](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model) over any of the [generally available](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models#generally_available_models) or [preview](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models#preview_models) Gemini models.
-- [Remote models](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model)
+- [Remote models](create-remote-model.md) over any of the [generally available](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models#generally_available_models) or [preview](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models#preview_models) Gemini models.
+- [Remote models](create-remote-model.md)
   over the following partner models:
 
   - [Anthropic Claude models](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/partner-models/use-claude)
   - [Mistral AI models](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/partner-models/mistral)
   - [Llama models](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/partner-models/llama)
-- [Remote models over supported open models](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-open).
+- [Remote models over supported open models](create-remote-model-open.md).
 
 Several of the `AI.GENERATE_TEXT` function's arguments provide the
 parameters that shape the Agent Platform model's response.
@@ -104,7 +104,7 @@ STRUCT(
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the dataset that contains the resource.
 - `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The
-  `CREATE MODEL` statement for remote models over LLMs](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model).
+  `CREATE MODEL` statement for remote models over LLMs](create-remote-model.md).
 
   You can confirm what model is used by the remote model by opening the
   Google Cloud console and looking at the **Remote endpoint** field in the
@@ -222,7 +222,7 @@ STRUCT(
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the dataset that contains the resource.
 - `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The
-  `CREATE MODEL` statement for remote models over LLMs](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model).
+  `CREATE MODEL` statement for remote models over LLMs](create-remote-model.md).
 
   You can confirm what model is used by the remote model by opening the
   Google Cloud console and looking at the **Remote endpoint** field in the
@@ -295,7 +295,7 @@ STRUCT(
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the dataset that contains the resource.
 - `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The
-  `CREATE MODEL` statement for remote models over LLMs](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model).
+  `CREATE MODEL` statement for remote models over LLMs](create-remote-model.md).
 
   You can confirm what model is used by the remote model by opening the
   Google Cloud console and looking at the **Remote endpoint** field in the
@@ -358,7 +358,7 @@ STRUCT(
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the dataset that contains the resource.
 - `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The
-  `CREATE MODEL` statement for remote models over LLMs](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model).
+  `CREATE MODEL` statement for remote models over LLMs](create-remote-model.md).
 
   You can confirm what model is used by the remote model by opening the
   Google Cloud console and looking at the **Remote endpoint** field in the
@@ -422,7 +422,7 @@ STRUCT(
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the dataset that contains the resource.
 - `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The
-  `CREATE MODEL` statement for remote models over LLMs](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model).
+  `CREATE MODEL` statement for remote models over LLMs](create-remote-model.md).
 
   You can confirm what model is used by the remote model by opening the
   Google Cloud console and looking at the **Remote endpoint** field in the
@@ -504,7 +504,7 @@ STRUCT(
 
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the dataset that contains the resource.
-- `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The `CREATE MODEL` statement for remote models over LLMs](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model).
+- `MODEL`: the name of the remote model over the Gemini Enterprise Agent Platform model. For more information about how to create this type of remote model, see [The `CREATE MODEL` statement for remote models over LLMs](create-remote-model.md).
 
   You can confirm which model is used by the remote model by opening the
   Google Cloud console and looking at the **Remote endpoint** field in the

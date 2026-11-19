@@ -132,11 +132,11 @@ the following:
 
 | TensorFlow Lite types | Supported | BigQuery type |
 |---|---|---|
-| `UINT8, UINT16, UINT32, UINT64, INT8, INT16, INT32, INT64` | Supported | [`INT64`](../googlesql-syntax/data-types.md#integer-type) |
-| `FLOAT16, FLOAT32, FLOAT64` | Supported | [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) |
+| `UINT8, UINT16, UINT32, UINT64, INT8, INT16, INT32, INT64` | Supported | [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types) |
+| `FLOAT16, FLOAT32, FLOAT64` | Supported | [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) |
 | `COMPLEX64, COMPLEX128` | Unsupported | N/a |
-| `BOOL` | Supported | [`BOOL`](../googlesql-syntax/data-types.md#boolean-type) |
-| `STRING` | Supported | [`STRING`](../googlesql-syntax/data-types.md#string-type) |
+| `BOOL` | Supported | [`BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#boolean_type) |
+| `STRING` | Supported | [`STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#string_type) |
 | `RESOURCE` | Unsupported | N/a |
 | `VARIANT` | Unsupported | N/a |
 
@@ -152,7 +152,7 @@ Imported TensorFlow Lite models have the following limitations:
 - The TensorFlow Lite model must exist before you can import it into BigQuery.
 - Models must be stored in Cloud Storage.
 - TensorFlow Lite models must be in `.tflite` format.
-- You can only use TensorFlow Lite models with the [`ML.PREDICT` function](predict.md).
+- You can only use TensorFlow Lite models with the [`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict).
 - Models are limited to 450 MB in size.
 - Only [TensorFlow core operations](https://ai.google.dev/edge/litert/models/op_select_allowlist#tensorflow_core_operators) and [TensorFlow Text operations](https://ai.google.dev/edge/litert/models/op_select_allowlist#tensorflow_text_and_sentencepiece_operators) are supported in BigQuery ML.
 - SentencePiece operators are not supported.

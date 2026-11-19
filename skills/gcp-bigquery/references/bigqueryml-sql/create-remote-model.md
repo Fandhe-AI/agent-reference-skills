@@ -28,7 +28,7 @@ After you create the remote model, you can use one of the following functions
 to perform generative AI with that model:
 
 - [`AI.GENERATE_TEXT`](ai-generate-text.md)
-- [`AI.GENERATE_TABLE`](generate-table.md) (only for Gemini models)
+- [`AI.GENERATE_TABLE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-generate-table) (only for Gemini models)
 
 ### `CREATE MODEL` syntax
 

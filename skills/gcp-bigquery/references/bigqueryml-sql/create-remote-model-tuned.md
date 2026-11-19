@@ -18,7 +18,7 @@ statement yourself.
 After you create the remote model, you can use one of the following functions
 to perform generative AI with that model:
 
-- [`AI.GENERATE_TABLE`](generate-table.md)
+- [`AI.GENERATE_TABLE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-generate-table)
 - [`AI.GENERATE_TEXT`](ai-generate-text.md)
 
 ### Supervised tuning
@@ -37,7 +37,7 @@ whether tuning would make sense for your use case, see
 [Use cases for using supervised fine-tuning](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-supervised-tuning#use_cases_for_using_supervised_fine-tuning).
 
 After you create a tuned model, use the
-[`EVALUATE` function](evaluate.md)
+[`EVALUATE` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-evaluate)
 to evaluate whether the tuned model performs well for your use case. To learn
 more, try the
 [Use tuning and evaluation to improve LLM performance](https://docs.cloud.google.com/bigquery/docs/tune-evaluate)
@@ -347,7 +347,7 @@ This option accepts the following values:
   split results if the same underlying training data is used.
 
   > [!NOTE]
-  > **Note:** A random split is based on the [FARM_FINGERPRINT](../googlesql-functions/hash_functions.md#farm_fingerprint) of the data (including the column name and schema), so tables with the same content but different column names and schemas might get different splitting and different evaluation metrics.
+  > **Note:** A random split is based on the [FARM_FINGERPRINT](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hash_functions#farm_fingerprint) of the data (including the column name and schema), so tables with the same content but different column names and schemas might get different splitting and different evaluation metrics.
 
 - `CUSTOM`: Split data using the value provided in the
   [`DATA_SPLIT_COL` option](#data_split_col). The `DATA_SPLIT_COL` value must be
