@@ -32,3 +32,10 @@
 | gcloud dataplex datascans list | 2 commands (alpha, ga); dataplex datascans list … | [dataplex-datascans-list.md](./dataplex-datascans-list.md) |
 | gcloud dataplex datascans run | 2 commands (alpha, ga); dataplex datascans run … | [dataplex-datascans-run.md](./dataplex-datascans-run.md) |
 | gcloud dataplex datascans set-iam-policy | 2 commands (alpha, ga); dataplex datascans set-iam-policy … | [dataplex-datascans-set-iam-policy.md](./dataplex-datascans-set-iam-policy.md) |
+| gcloud dataplex datascans update | 8 commands (alpha, ga); dataplex datascans update data-discovery … | [dataplex-datascans-update.md](./dataplex-datascans-update.md) |
+| gcloud dataplex dbt | 2 commands (alpha, ga); dataplex dbt metadata-jobs create … | [dataplex-dbt.md](./dataplex-dbt.md) |
+| gcloud dataplex encryption-config | 6 commands (alpha, ga); dataplex encryption-config create … | [dataplex-encryption-config.md](./dataplex-encryption-config.md) |
+| gcloud dataplex entries (part 1) | 9 commands (alpha, ga); dataplex entries create … | [dataplex-entries-1.md](./dataplex-entries-1.md) |
+| gcloud dataplex entries (part 2) | 11 commands (alpha, ga); dataplex entries update-aspects … | [dataplex-entries-2.md](./dataplex-entries-2.md) |
+| gcloud dataplex entry-groups | 18 commands (alpha, ga); dataplex entry-groups add-iam-policy-binding … | [dataplex-entry-groups.md](./dataplex-entry-groups.md) |
+| gcloud dataplex entry-links | 5 commands (alpha); alpha dataplex entry-links create … | [dataplex-entry-links.md](./dataplex-entry-links.md) |

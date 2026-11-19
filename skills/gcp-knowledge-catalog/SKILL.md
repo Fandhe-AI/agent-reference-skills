@@ -23,7 +23,7 @@ skills/gcp-knowledge-catalog/
   references/
     gcloud/                       # 機械生成: gcloud 593.0.0 の help（2 グループ）
       README.md
-      dataplex/                   # Knowledge Catalog（旧 Dataplex）、分割投入中（30 / 63 ページ。収録済みは README 掲載分のみ）
+      dataplex/                   # Knowledge Catalog（旧 Dataplex）、分割投入中（37 / 63 ページ。収録済みは README 掲載分のみ）
         README.md
         dataplex-entries-1.md ... dataplex-zones.md   # 63 ファイル（entries / entry-groups / entry-types /
                                                       # aspect-types / entry-links / glossaries / data-products /
@@ -76,7 +76,7 @@ skills/gcp-knowledge-catalog/
 
 未投入カテゴリ（`rest` / `rest-schemas` / `iam`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`gcloud/dataplex`: 30 / 63 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`gcloud/dataplex`: 37 / 63 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
