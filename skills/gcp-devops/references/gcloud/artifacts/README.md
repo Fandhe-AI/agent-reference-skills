@@ -31,3 +31,7 @@
 | gcloud artifacts sbom | 3 commands (ga); artifacts sbom export … | [artifacts-sbom.md](./artifacts-sbom.md) |
 | gcloud artifacts settings | 9 commands (alpha, beta, ga); artifacts settings describe … | [artifacts-settings.md](./artifacts-settings.md) |
 | gcloud artifacts tags | 13 commands (alpha, beta, ga); artifacts tags create … | [artifacts-tags.md](./artifacts-tags.md) |
+| gcloud artifacts versions | 9 commands (alpha, beta, ga); artifacts versions delete … | [artifacts-versions.md](./artifacts-versions.md) |
+| gcloud artifacts vpcsc-config | 9 commands (alpha, beta, ga); artifacts vpcsc-config allow … | [artifacts-vpcsc-config.md](./artifacts-vpcsc-config.md) |
+| gcloud artifacts vulnerabilities | 2 commands (ga); artifacts vulnerabilities list … | [artifacts-vulnerabilities.md](./artifacts-vulnerabilities.md) |
+| gcloud artifacts yum | 6 commands (alpha, beta, ga); artifacts yum import … | [artifacts-yum.md](./artifacts-yum.md) |
