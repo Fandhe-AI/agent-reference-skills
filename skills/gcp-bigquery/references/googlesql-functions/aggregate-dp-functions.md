@@ -12,7 +12,7 @@ For an explanation of how aggregate functions work, see
 
 You can only use differentially private aggregate functions with
 [differentially private queries](https://docs.cloud.google.com/bigquery/docs/differential-privacy) in a
-[differential privacy clause](../googlesql-syntax/query-syntax-3.md#differential-privacy-clause).
+[differential privacy clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_clause).
 
 > [!NOTE]
 > **Note:** In this topic, the privacy parameters in the examples aren't recommendations. You should work with your privacy or security officer to determine the optimal privacy parameters for your dataset and organization.
@@ -45,7 +45,7 @@ computes the final result by averaging these averages.
 You can't use an `AVG` (`DIFFERENTIAL_PRIVACY`) function with
 [multi-level aggregation](aggregate-function-calls.md#multi-level-aggregation).
 
-This function must be used with the [`DIFFERENTIAL_PRIVACY` clause](../googlesql-syntax/query-syntax-3.md#differential-privacy-clause)
+This function must be used with the [`DIFFERENTIAL_PRIVACY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_clause)
 and can support the following arguments:
 
 - `expression`: The input expression. This can be any numeric input type, such as `INT64`.
@@ -59,7 +59,7 @@ and can support the following arguments:
 
 The following differentially private query gets the average number of each item
 requested per professor. Smaller aggregations might not be included. This query
-references a table called [`professors`](../googlesql-syntax/query-syntax-3.md#tables-for-examples).
+references a table called [`professors`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_example_tables).
 
 ```sql
 -- With noise, using the epsilon parameter.
@@ -103,7 +103,7 @@ GROUP BY item;
 ```
 
 > [!NOTE]
-> **Note:** For more information about when and when not to use noise, see [Remove noise](../googlesql-syntax/query-syntax-3.md#remove-noise).
+> **Note:** For more information about when and when not to use noise, see [Remove noise](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#eliminate_noise).
 
 ### `COUNT` (`DIFFERENTIAL_PRIVACY`)
 
@@ -123,13 +123,13 @@ WITH DIFFERENTIAL_PRIVACY ...
 **Description**
 
 Returns the number of rows in the
-[differentially private](../googlesql-syntax/query-syntax-3.md#differential-privacy-clause) `FROM` clause. The final result
+[differentially private](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_clause) `FROM` clause. The final result
 is an aggregation across a privacy unit column.
 
 You can't use a `COUNT` (`DIFFERENTIAL_PRIVACY`) function with
 [multi-level aggregation](aggregate-function-calls.md#multi-level-aggregation).
 
-This function must be used with the [`DIFFERENTIAL_PRIVACY` clause](../googlesql-syntax/query-syntax-3.md#differential-privacy-clause)
+This function must be used with the [`DIFFERENTIAL_PRIVACY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_clause)
 and can support the following arguments:
 
 - `contribution_bounds_per_group`: A named argument with a [contribution bound](#explicitly-clamp-values). Performs clamping for each group separately before performing intermediate grouping on the privacy unit column.
@@ -142,7 +142,7 @@ and can support the following arguments:
 
 The following differentially private query counts the number of requests for
 each item. This query references a table called
-[`professors`](../googlesql-syntax/query-syntax-3.md#tables-for-examples).
+[`professors`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_example_tables).
 
 ```sql
 -- With noise, using the epsilon parameter.
@@ -186,7 +186,7 @@ GROUP BY item;
 ```
 
 > [!NOTE]
-> **Note:** For more information about when and when not to use noise, see [Remove noise](../googlesql-syntax/query-syntax-3.md#remove-noise).
+> **Note:** For more information about when and when not to use noise, see [Remove noise](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#eliminate_noise).
 
 ##### Signature 2
 
@@ -203,7 +203,7 @@ WITH DIFFERENTIAL_PRIVACY ...
 Returns the number of non-`NULL` expression values. The final result is an
 aggregation across a privacy unit column.
 
-This function must be used with the [`DIFFERENTIAL_PRIVACY` clause](../googlesql-syntax/query-syntax-3.md#differential-privacy-clause)
+This function must be used with the [`DIFFERENTIAL_PRIVACY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_clause)
 and can support these arguments:
 
 - `expression`: The input expression. This expression can be any numeric input type, such as `INT64`.
@@ -217,7 +217,7 @@ and can support these arguments:
 
 The following differentially private query counts the number of requests made
 for each type of item. This query references a table called
-[`professors`](../googlesql-syntax/query-syntax-3.md#tables-for-examples).
+[`professors`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_example_tables).
 
 ```sql
 -- With noise, using the epsilon parameter.
@@ -261,7 +261,7 @@ GROUP BY item;
 ```
 
 > [!NOTE]
-> **Note:** For more information about when and when not to use noise, see [Remove noise](../googlesql-syntax/query-syntax-3.md#remove-noise).
+> **Note:** For more information about when and when not to use noise, see [Remove noise](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#eliminate_noise).
 
 ### `PERCENTILE_CONT` (`DIFFERENTIAL_PRIVACY`)
 
@@ -282,7 +282,7 @@ aggregation across privacy unit columns.
 You can't use a `PERCENTILE_CONT` (`DIFFERENTIAL_PRIVACY`) function with
 [multi-level aggregation](aggregate-function-calls.md#multi-level-aggregation).
 
-This function must be used with the [`DIFFERENTIAL_PRIVACY` clause](../googlesql-syntax/query-syntax-3.md#differential-privacy-clause)
+This function must be used with the [`DIFFERENTIAL_PRIVACY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_clause)
 and can support these arguments:
 
 - `expression`: The input expression. This can be most numeric input types, such as `INT64`. `NULL` values are always ignored.
@@ -301,7 +301,7 @@ If you need them, cast them as the
 
 The following differentially private query gets the percentile of items
 requested. Smaller aggregations might not be included. This query references a
-view called [`professors`](../googlesql-syntax/query-syntax-3.md#tables-for-examples).
+view called [`professors`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_example_tables).
 
 ```sql
 -- With noise, using the epsilon parameter.
@@ -342,7 +342,7 @@ result is an aggregation across privacy unit columns.
 You can't use a `SUM` (`DIFFERENTIAL_PRIVACY`) function with
 [multi-level aggregation](aggregate-function-calls.md#multi-level-aggregation).
 
-This function must be used with the [`DIFFERENTIAL_PRIVACY` clause](../googlesql-syntax/query-syntax-3.md#differential-privacy-clause)
+This function must be used with the [`DIFFERENTIAL_PRIVACY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_clause)
 and can support these arguments:
 
 - `expression`: The input expression. This can be any numeric input type, such as `INT64`. `NULL` values are always ignored.
@@ -350,7 +350,7 @@ and can support these arguments:
 
 **Return type**
 
-One of the following [supertypes](../googlesql-syntax/conversion_rules.md#supertypes):
+One of the following [supertypes](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#supertypes):
 
 - `INT64`
 - `FLOAT64`
@@ -359,7 +359,7 @@ One of the following [supertypes](../googlesql-syntax/conversion_rules.md#supert
 
 The following differentially private query gets the sum of items requested.
 Smaller aggregations might not be included. This query references a view called
-[`professors`](../googlesql-syntax/query-syntax-3.md#tables-for-examples).
+[`professors`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_example_tables).
 
 ```sql
 -- With noise, using the epsilon parameter.
@@ -403,13 +403,13 @@ GROUP BY item;
 ```
 
 > [!NOTE]
-> **Note:** For more information about when and when not to use noise, see [Use differential privacy](../googlesql-syntax/query-syntax-3.md#remove-noise).
+> **Note:** For more information about when and when not to use noise, see [Use differential privacy](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#eliminate_noise).
 
 ### Supplemental materials
 
 #### Clamp values in a differentially private aggregate function
 
-In [differentially private queries](../googlesql-syntax/query-syntax-3.md#differential-privacy-clause),
+In [differentially private queries](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_clause),
 aggregation clamping is used to limit the contribution of outliers. You can
 clamp explicitly or implicitly as follows:
 

@@ -61,7 +61,7 @@ syntax. To build an aggregate function, use the following syntax:
     in `ASC` sorts and last in `DESC` sorts.
 
   - If you're using floating point data types, see
-    [Floating point semantics](../googlesql-syntax/data-types.md#floating-point-semantics)
+    [Floating point semantics](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_semantics)
     on ordering and grouping.
 
   - The `ORDER BY` clause is supported only for aggregate functions that
@@ -94,7 +94,7 @@ syntax. To build an aggregate function, use the following syntax:
   `DISTINCT`, aren't supported, but function call
   modifiers, such as `IGNORE_NULLS`,
   are still supported. To learn more about the `OVER` clause,
-  see [Window function calls](window-function-calls.md).
+  see [Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 **Details**
 
@@ -136,7 +136,7 @@ Only rows whose `having_expression` value is equal to this maximum value (using
 SQL equality semantics) are included in the aggregation. All other rows are
 ignored in the aggregation.
 
-This clause supports all [orderable data types](../googlesql-syntax/data-types.md#data-type-properties),
+This clause supports all [orderable data types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties),
 except for `ARRAY`.
 
 **Examples**
@@ -180,7 +180,7 @@ Only rows whose `having_expression` value is equal to this minimum value (using
 SQL equality semantics) are included in the aggregation. All other rows are
 ignored in the aggregation.
 
-This clause supports all [orderable data types](../googlesql-syntax/data-types.md#data-type-properties),
+This clause supports all [orderable data types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties),
 except for `ARRAY`.
 
 **Examples**
@@ -238,7 +238,7 @@ You can also exclude or replace `NULL` values in one of the following ways:
 
 - Add a `WHERE` clause inside the aggregate function call; for example, `COUNT(* WHERE x IS NOT NULL)`.
 - Use the `IGNORE NULLS` clause for aggregate functions that include `NULL` values by default, such as `ARRAY_AGG(x IGNORE NULLS)`.
-- Use [`COALESCE`](conditional_expressions.md#coalesce) to replace `NULL` values with a default value before aggregating, such as `AVG(COALESCE(x, 0))`.
+- Use [`COALESCE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conditional_expressions#coalesce) to replace `NULL` values with a default value before aggregating, such as `AVG(COALESCE(x, 0))`.
 
 For example, to filter out `NULL` values for an individual aggregate function
 call without removing rows from the rest of the query, use a `WHERE` clause
@@ -288,7 +288,7 @@ FROM
 
 In the following example, the average of `x` over a specified window is returned
 for each row. To learn more about windows and how to use them, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 ```sql
 SELECT
@@ -513,7 +513,7 @@ The following rules and constraints apply to multi-level aggregation:
   - `IGNORE NULLS` or `RESPECT NULLS`
 
 - You can't use multi-level aggregate functions in the [`PIVOT`
-  operator](../googlesql-syntax/query-syntax-1.md#pivot-operator).
+  operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#pivot_operator).
 
 - You can't use a `GROUPING` function within a multi-level aggregate body, or
   with `GROUP BY` modifiers. For example, the following expressions result in
@@ -525,10 +525,10 @@ The following rules and constraints apply to multi-level aggregation:
   ```
 
 - You can't use multi-level aggregation with the [differential privacy
-  clause](../googlesql-syntax/query-syntax-3.md#differential-privacy-clause).
+  clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_clause).
 
 - You can't use multi-level aggregation with the [aggregation threshold
-  clause](../googlesql-syntax/query-syntax-3.md#aggregation_threshold-clause).
+  clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
 
 - You can't use grouping keys with collation in a multi-level aggregation.
 
