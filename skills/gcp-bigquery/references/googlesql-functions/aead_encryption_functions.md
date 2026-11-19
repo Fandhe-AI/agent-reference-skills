@@ -142,7 +142,7 @@ AEAD.DECRYPT_STRING(keyset, ciphertext, additional_data)
 
 **Description**
 
-Like [`AEAD.DECRYPT_BYTES`](#aeaddecrypt_bytes), but where `additional_data` is
+Like [`AEAD.DECRYPT_BYTES`](#aeaddecrypt_bytes), but where `plaintext` is
 of type `STRING`.
 
 **Return Data Type**
@@ -1081,6 +1081,7 @@ FROM my_table
 - Caution: the official example `json_keyset` repeats the `"key"` member twice in one JSON object (one per key) although the text says it contains two keys. A JSON object with duplicate names keeps only the first in a JSON value (see the "No strict validation" note in the JSON functions page). The intended form (for example one `"key"` array with two elements) is not stated, so the example is kept as published.
 - Corrected from the official docs: the `DETERMINISTIC_ENCRYPT` description says the same ciphertext is returned for an identical `keyset` and `plaintext`. The same description says that `additional_data` binds the ciphertext to its context and must be passed again to decrypt it, so `additional_data` must also be identical; it is added to the condition.
 - Caution: the text before the `daead.EncryptedCustomerData` example says the ciphertext is the same for customers 2 and 3 because their plaintext is the same. The example passes each row's `customer_id` as `additional_data`, and customers 2 and 3 have different IDs, so their ciphertexts differ; the same ciphertext is produced only when `keyset`, `plaintext` and `additional_data` are all identical. The official text is kept as published.
+- Corrected from the official docs: the `AEAD.DECRYPT_STRING` description says it differs from `AEAD.DECRYPT_BYTES` in that `additional_data` is of type `STRING`. `AEAD.DECRYPT_BYTES` already accepts `additional_data` as `STRING` or `BYTES`, and `AEAD.DECRYPT_STRING` returns `STRING`; the parallel `DETERMINISTIC_DECRYPT_STRING` description on this page says "where `plaintext` is of type `STRING`". The sentence is changed to `plaintext`.
 
 ## Related
 
