@@ -97,7 +97,7 @@ A custom target deploys to systems that Cloud Deploy does not support natively. 
 
 ## Notes
 
-- Custom render is optional but needed unless the target renders correctly with the Cloud Deploy built-in renderers. `CustomTargetType` is the Cloud Deploy resource naming the tasks used for render and deploy; the target is a normal target plus `customTarget` (value: name of the `CustomTargetType`).
+- Custom render is optional but needed unless the target renders correctly with the Cloud Deploy built-in renderers. `CustomTargetType` is the Cloud Deploy resource naming the tasks used for render and deploy; the target is a normal target plus a `customTarget` object whose `customTargetType` field names the `CustomTargetType` (`customTarget:` / `  customTargetType: NAME`, as in the config files schema page). The source describes `customTarget` as a property whose value is the name of the custom target type; the name goes in `customTarget.customTargetType`.
 - Tasks run in the Cloud Deploy execution environment; they cannot run on a GKE cluster.
 - Strategies: standard deployments fully supported; canary supported if the custom renderer and deployer support it, and only with the custom canary configuration. Automated and custom-automated canaries are not supported with custom targets.
 - Deploy parameters can be set on the pipeline stage, the target or the release and are passed as extra environment variables.

@@ -113,10 +113,12 @@ With overprovisioning enabled (`disablePodOverprovisioning: false`, the default)
 math.Ceil( percentage * ReplicaCountOfDeploymentOnCluster / (100-percentage))
 ```
 
-With overprovisioning disabled (`disablePodOverprovisioning: true`), so the replica count is not increased:
+With overprovisioning disabled (`disablePodOverprovisioning: true`), so the replica count is not increased.
+
+Adapted (not in the official docs): `/ 100` is added so that `percentage` has the same unit (for example `50`) in both formulas; the source writes `* percentage` and treats the percentage as a fraction (`.5`) in its example.
 
 ```text
-math.Ceil( (ReplicaCountOfDeploymentOnCluster + ReplicaCountOfCanaryDeploymentOnCluster) * percentage)
+math.Ceil( (ReplicaCountOfDeploymentOnCluster + ReplicaCountOfCanaryDeploymentOnCluster) * percentage / 100)
 ```
 
 ## Options / Props
@@ -156,6 +158,7 @@ math.Ceil( (ReplicaCountOfDeploymentOnCluster + ReplicaCountOfCanaryDeploymentOn
 
 ## Notes
 
+- Adapted from the official docs: the source's overprovisioning-disabled formula is `math.Ceil( (ReplicaCountOfDeploymentOnCluster + ReplicaCountOfCanaryDeploymentOnCluster) * percentage)`, and its example multiplies by `.5` and `.75`, while the overprovisioning formula uses `percentage` as a whole number (`100-percentage`). The page divides by 100 so both formulas take the same value (4 pods at 50% gives 2 canary pods, as in the source's example).
 - Warning from the source: canary percentages larger than 50% with overprovisioning enabled can cause very large increases in pods (4 existing pods and a 90% canary gives 36 canary pods). Disable overprovisioning if you want percentages larger than 50%.
 - If the application has not been deployed to the runtime yet, Cloud Deploy skips the canary phase and runs the `stable` phase.
 - The `--images` example in the release-creation comments names a Cloud Run service and a `gcr.io` image; it is illustrative only. Use an Artifact Registry path such as `LOCATION-docker.pkg.dev/PROJECT/REPO/IMAGE` for your own images.
