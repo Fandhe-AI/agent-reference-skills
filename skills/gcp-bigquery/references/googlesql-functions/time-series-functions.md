@@ -364,7 +364,7 @@ The output is similar to the following:
 To set the
 [`enable_change_history` option](../googlesql-syntax/data-definition-language-1.md#table_option_list)
 to `TRUE` for an existing table, use the
-[`ALTER TABLE SET OPTIONS` DDL statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_table_set_options_statement).
+[`ALTER TABLE SET OPTIONS` DDL statement](../googlesql-syntax/data-definition-language-3.md#alter-table-set-options-statement).
 The following example updates the change history option for `my_table` to
 `TRUE`:
 

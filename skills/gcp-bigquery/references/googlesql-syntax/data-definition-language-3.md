@@ -1399,7 +1399,7 @@ The following data type conversions are supported:
 - `NUMERIC` to `BIGNUMERIC`, `FLOAT64`
 
 You can also convert data types from more restrictive to less restrictive
-[parameterized data types](data-types.md#parameterized-data-types).
+[parameterized data types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#parameterized_data_types).
 For example, you can increase the maximum length of a string type or increase the
 precision or scale of a numeric type.
 
@@ -1495,7 +1495,7 @@ SET DEFAULT default_expression;
 
 - `default_expression`: The default value assigned to the column. The
   expression must be a
-  [literal](lexical.md#literals) or one of
+  [literal](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#literals) or one of
   the following functions:
 
   - [`CURRENT_DATE`](../googlesql-functions/date_functions.md#current_date)
@@ -1920,7 +1920,7 @@ The following options are supported:
 | `NAME` | `VALUE` | Details |
 |---|---|---|
 | `default_kms_key_name` | `STRING` | The default Cloud Key Management Service key for encrypting table data, including temporary or anonymous tables. For more information, see [Customer-managed Cloud KMS keys](https://docs.cloud.google.com/bigquery/docs/customer-managed-encryption). Example: `kms_key_name="projects/project_id/locations/location/keyRings/keyring/cryptoKeys/key"` This property is equivalent to the [`encryptionConfiguration.kmsKeyName`](https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/EncryptionConfiguration#FIELDS.kms_key_name) table resource property. |
-| `default_time_zone` | `STRING` | The default time zone to use in time zone-dependent SQL functions, when a time zone is not specified as an argument. For more information, see [time zones](data-types.md#time-zones). Example: `` `region-us.default_time_zone` = "America/Los_Angeles" ``. Sets the default time zone to `America/Los_Angeles` in the `us` region. |
+| `default_time_zone` | `STRING` | The default time zone to use in time zone-dependent SQL functions, when a time zone is not specified as an argument. For more information, see [time zones](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#time_zones). Example: `` `region-us.default_time_zone` = "America/Los_Angeles" ``. Sets the default time zone to `America/Los_Angeles` in the `us` region. |
 | `default_query_job_timeout_ms` | `INT64` | The default time after which a query job times out. The timeout period must be between 5 minutes and 48 hours. Example: `` `region-us.default_query_job_timeout_ms` = 1800000 ``. Sets the default query job timeout time to 30 minutes for all jobs in the `us` region. |
 | `default_interactive_query_queue_timeout_ms` | `INT64` | The default amount of time that an interactive query is queued. If unset, the default is 6 hours. The minimum value is 1 millisecond. The maximum value is 48 hours. To disable interactive query queueing, set the value to -1. Example: `` `region-us.default_interactive_query_queue_timeout_ms` = 1800000 ``. Sets the default queue timeout for interactive queries in the `us` region to 30 minutes. |
 | `default_batch_query_queue_timeout_ms` | `INT64` | The default amount of time that a batch query is queued. If unset, the default is 24 hours. The minimum value is 1 millisecond. The maximum value is 48 hours. To disable batch query queueing, set the value to -1. Example: `` `region-us.default_batch_query_queue_timeout_ms` = 1800000 ``. Sets the default queue timeout for batch queries in the `us` region to 30 minutes. |
@@ -2001,7 +2001,7 @@ The following options are supported:
 | `NAME` | `VALUE` | Details |
 |---|---|---|
 | `default_kms_key_name` | `STRING` | The default Cloud Key Management Service key for encrypting table data, including temporary or anonymous tables. For more information, see [Customer-managed Cloud KMS keys](https://docs.cloud.google.com/bigquery/docs/customer-managed-encryption). Example: `kms_key_name="projects/project_id/locations/location/keyRings/keyring/cryptoKeys/key"` This property is equivalent to the [`encryptionConfiguration.kmsKeyName`](https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/EncryptionConfiguration#FIELDS.kms_key_name) table resource property. |
-| `default_time_zone` | `STRING` | The default time zone to use in time zone-dependent SQL functions, when a time zone is not specified as an argument. For more information, see [time zones](data-types.md#time-zones). Example: `` `region-us.default_time_zone` = "America/Los_Angeles" ``. Sets the default time zone to `America/Los_Angeles` in the `us` region. |
+| `default_time_zone` | `STRING` | The default time zone to use in time zone-dependent SQL functions, when a time zone is not specified as an argument. For more information, see [time zones](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#time_zones). Example: `` `region-us.default_time_zone` = "America/Los_Angeles" ``. Sets the default time zone to `America/Los_Angeles` in the `us` region. |
 | `default_query_job_timeout_ms` | `INT64` | The default time after which a query job times out. The timeout period must be between 5 minutes and 48 hours. Example: `` `region-us.default_query_job_timeout_ms` = 1800000 ``. Sets the default query job timeout time to 30 minutes for jobs run in the `us` region. |
 | `default_interactive_query_queue_timeout_ms` | `INT64` | The default amount of time that an interactive query is queued. If unset, the default is 6 hours. The minimum value is 1 millisecond. The maximum value is 48 hours. To disable interactive query queueing, set the value to -1. Example: `` `region-us.default_interactive_query_queue_timeout_ms` = 1800000 ``. Sets the default queue timeout for interactive queries in the `us` region to 30 minutes. |
 | `default_batch_query_queue_timeout_ms` | `INT64` | The default amount of time that a batch query is queued. If unset, the default is 24 hours. The minimum value is 1 millisecond. The maximum value is 48 hours. To disable batch query queueing, set the value to -1. Example: `` `region-us.default_batch_query_queue_timeout_ms` = 1800000 ``. Sets the default queue timeout for batch queries in the `us` region to 30 minutes. |

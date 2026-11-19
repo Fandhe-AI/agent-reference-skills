@@ -241,10 +241,10 @@ You can assign a collation specification to the following DDL statements.
 | Location | Support | Notes |
 |---|---|---|
 | Dataset | [`CREATE SCHEMA`](data-definition-language-1.md#create-schema-statement) | Create a dataset and optionally add a default collation specification to the dataset. |
-| Dataset | [`ALTER SCHEMA`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_schema_collate_statement) | Updates the default collation specification for a dataset. |
+| Dataset | [`ALTER SCHEMA`](data-definition-language-3.md#alter-schema-set-default-collate-statement) | Updates the default collation specification for a dataset. |
 | Table | [`CREATE TABLE`](data-definition-language-1.md#create-table-statement) | Create a table and optionally add a default collation specification to a table or a collation specification to a collation-supported type in a column. <br /> You can't have collation on a column used with `CLUSTERING`. |
-| Table | [`ALTER TABLE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_table_collate_statement) | Update the default collation specification for collation-supported type in a table. |
-| Column | [`ADD COLUMN`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_table_add_column_statement) | Add a collation specification to a collation-supported type in a new column in an existing table. |
+| Table | [`ALTER TABLE`](data-definition-language-3.md#alter-table-set-default-collate-statement) | Update the default collation specification for collation-supported type in a table. |
+| Column | [`ADD COLUMN`](data-definition-language-3.md#alter-table-add-column-statement) | Add a collation specification to a collation-supported type in a new column in an existing table. |
 
 #### Data types
 

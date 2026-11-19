@@ -131,7 +131,7 @@ resource, be sure to follow the [rules for specifying resource names](#specifyin
 in commands.
 
 > [!NOTE]
-> **Note:** The following examples use the `--nouse_legacy_sql` flag. This flag is required to run a GoogleSQL query from the command line unless you [set a default value in `.bigqueryrc`](#set-default-values-for-command-line-flags) or [set the configuration setting](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_project_set_options_statement) `default_sql_dialect_option` to 'default_google_sql' at the project or organization level.
+> **Note:** The following examples use the `--nouse_legacy_sql` flag. This flag is required to run a GoogleSQL query from the command line unless you [set a default value in `.bigqueryrc`](#set-default-values-for-command-line-flags) or [set the configuration setting](../googlesql-syntax/data-definition-language-3.md#alter-project-set-options-statement) `default_sql_dialect_option` to 'default_google_sql' at the project or organization level.
 
 This example shows how to run a GoogleSQL query on the command line:
 

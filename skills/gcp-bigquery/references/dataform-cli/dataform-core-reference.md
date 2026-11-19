@@ -453,7 +453,7 @@ following:
   > **Caution:** The `SYNCHRONIZE` action cannot be undone, and you might lose data when you remove columns with this option.
 
   > [!NOTE]
-  > **Note:** Deleting partitioned and clustered columns isn't supported, as deleting these columns can have negative consequences. If a partitioned or clustered column is still deleted, it's handled with the [`ALTER TABLE DROP COLUMN` statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_table_drop_column_statement). Dataform doesn't perform checks or validations to prevent the running of `ALTER TABLE DROP COLUMN` statements on partitioned or clustered columns. Therefore, if you drop such columns, proceed cautiously and be aware of potential negative consequences.
+  > **Note:** Deleting partitioned and clustered columns isn't supported, as deleting these columns can have negative consequences. If a partitioned or clustered column is still deleted, it's handled with the [`ALTER TABLE DROP COLUMN` statement](../googlesql-syntax/data-definition-language-3.md#alter-table-drop-column-statement). Dataform doesn't perform checks or validations to prevent the running of `ALTER TABLE DROP COLUMN` statements on partitioned or clustered columns. Therefore, if you drop such columns, proceed cautiously and be aware of potential negative consequences.
 
 ### operate()
 

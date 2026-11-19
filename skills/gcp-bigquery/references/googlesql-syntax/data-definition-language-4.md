@@ -770,7 +770,7 @@ project_id.location.capacity-commitment-id
 - `capacity-commitment-id`: The capacity commitment ID.
 
 To find the capacity commitment ID, query the
-[`INFORMATION_SCHEMA.CAPACITY_COMMITMENTS_BY_PROJECT`](../information-schema/capacity-commitments.md)
+[`INFORMATION_SCHEMA.CAPACITY_COMMITMENTS_BY_PROJECT`](https://docs.cloud.google.com/bigquery/docs/information-schema-capacity-commitments)
 table.
 
 #### Required permissions
@@ -845,7 +845,7 @@ project_id.location.reservation_id.assignment_id
 - `assignment_id`: The assignment ID.
 
 To find the assignment ID, query the
-[`INFORMATION_SCHEMA.ASSIGNMENTS` view](../information-schema/assignments.md).
+[`INFORMATION_SCHEMA.ASSIGNMENTS` view](https://docs.cloud.google.com/bigquery/docs/information-schema-assignments).
 
 #### Required permissions
 

@@ -31,7 +31,7 @@ AS query_expression
   with `OR REPLACE`.
 
 - `materialized_view_name`: The name of the materialized view you're creating.
-  See [Table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path).
+  See [Table path syntax](data-definition-language-4.md#table-path-syntax).
 
   If the `project_name` is omitted from the materialized view name, or it is the
   same as the project that runs this DDL query, then the latter is also used as
@@ -242,7 +242,7 @@ AS REPLICA OF source_materialized_view_name
 #### Arguments
 
 - `replica_name`: The name of the materialized view replica you're creating, in
-  [table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path). If the project name is omitted from the
+  [table path syntax](data-definition-language-4.md#table-path-syntax). If the project name is omitted from the
   materialized view replica name, the current project is used as the default.
 
   The materialized view replica name must be unique for each dataset.
@@ -419,7 +419,7 @@ OPTIONS (
   with `OR REPLACE`.
 
 - `table_name`: The name of the external table. See
-  [Table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path).
+  [Table path syntax](data-definition-language-4.md#table-path-syntax).
 
 - `column_name`: The name of a column in the table.
 
@@ -2041,7 +2041,7 @@ column_name [OPTIONS(index_column_option_list)]
   index is always created in the same project and dataset as the base table,
   there is no need to specify these in the name.
 
-- `table_name`: The name of the table. See [Table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path).
+- `table_name`: The name of the table. See [Table path syntax](data-definition-language-4.md#table-path-syntax).
 
 - `ALL COLUMNS`: If data types are not specified, creates a search index on
   every column in the table which contains a `STRING` field. If data types are
@@ -2078,8 +2078,8 @@ Search indexes support the following data types:
 
 You can create only one search index per base table. You cannot create a search
 index on a view or materialized view. To modify which columns are
-indexed, use the [`ALTER SEARCH INDEX` statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_search_index_statement)
-or [drop](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_search_index) the current index and create a new one.
+indexed, use the [`ALTER SEARCH INDEX` statement](data-definition-language-3.md#alter-search-index-statement)
+or [drop](data-definition-language-4.md#drop-search-index-statement) the current index and create a new one.
 
 BigQuery returns an error if any `column_name` is not a `STRING`
 or does not contain a `STRING` field, or if you call `CREATE SEARCH INDEX` on
@@ -2185,7 +2185,7 @@ OPTIONS(index_option_list);
   is always created in the same project and dataset as the base table, there is
   no need to specify these in the name.
 
-- `table_name`: The name of the table. See [Table path syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_path).
+- `table_name`: The name of the table. See [Table path syntax](data-definition-language-4.md#table-path-syntax).
 
 - `column_name`: The name of a column with a type of `ARRAY<FLOAT64>`,
   or if you're using
@@ -2219,7 +2219,7 @@ You can create only one vector index per table. You can't create a vector index
 on a table that already has a [search index](#create-search-index-statement)
 with the same index name.
 
-To modify which column is indexed, [`DROP`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_vector_index) the current
+To modify which column is indexed, [`DROP`](data-definition-language-4.md#drop-vector-index-statement) the current
 index and create a new one.
 
 #### `index_option_list`
@@ -2443,3 +2443,5 @@ OPTIONS (
 
 - [Index of this directory](./README.md)
 - [Data definition language (DDL) statements in GoogleSQL (part 1 of 4)](./data-definition-language-1.md)
+- [Data definition language (DDL) statements in GoogleSQL (part 3 of 4)](./data-definition-language-3.md)
+- [Data definition language (DDL) statements in GoogleSQL (part 4 of 4)](./data-definition-language-4.md)
