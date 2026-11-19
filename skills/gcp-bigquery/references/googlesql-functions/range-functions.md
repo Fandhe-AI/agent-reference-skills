@@ -79,6 +79,8 @@ In the following example, a date range between `2020-01-01` and `2020-01-06`
 is split into an array of subranges that are one day long. There are
 no partial ranges.
 
+Adapted (not in the official docs): removed the trailing comma after the last subrange in the result.
+
 ```sql
 SELECT GENERATE_RANGE_ARRAY(
   RANGE(DATE '2020-01-01', DATE '2020-01-06'),

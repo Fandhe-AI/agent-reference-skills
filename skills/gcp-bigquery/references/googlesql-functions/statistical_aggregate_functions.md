@@ -463,6 +463,8 @@ FROM
  +------+-----+-----+---------------------*/
 ```
 
+Adapted (not in the official docs): corrected the doubled minus sign in the result to `-1.3333333333333333`.
+
 ```sql
 SELECT COVAR_SAMP(y, x) AS results
 FROM
