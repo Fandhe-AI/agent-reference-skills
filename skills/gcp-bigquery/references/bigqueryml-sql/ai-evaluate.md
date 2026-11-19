@@ -73,7 +73,7 @@ FROM
   forecast. The forecasted values are then evaluated against the data in the
   `ACTUAL_TIME_SERIES_TABLE` or `ACTUAL_TIME_SERIES_QUERY_STATEMENT`
   argument. See the
-  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
+  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
   page for the supported SQL syntax of the `HISTORY_TIME_SERIES_QUERY_STATEMENT`
   clause.
 
@@ -95,7 +95,7 @@ FROM
   query is evaluated against the forecasted values for the historical time
   series provided by the `HISTORY_TIME_SERIES_TABLE` or
   `HISTORY_TIME_SERIES_QUERY_STATEMENT` argument. See the
-  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
+  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
   page for the supported SQL syntax of the `ACTUAL_TIME_SERIES_QUERY_STATEMENT` clause.
 
 - `DATA_COL`: a `STRING` value that specifies the name of

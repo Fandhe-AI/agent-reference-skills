@@ -814,7 +814,7 @@ AS (
 The `query_statement` argument specifies the query that is used to
 generate the training data. For information about the supported SQL syntax of
 the `query_statement` clause, see
-[GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+[GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
 ##### `holiday_statement`
 

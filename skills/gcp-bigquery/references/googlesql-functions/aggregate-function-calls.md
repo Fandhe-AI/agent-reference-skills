@@ -513,7 +513,7 @@ The following rules and constraints apply to multi-level aggregation:
   - `IGNORE NULLS` or `RESPECT NULLS`
 
 - You can't use multi-level aggregate functions in the [`PIVOT`
-  operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#pivot_operator).
+  operator](../googlesql-syntax/query-syntax-1.md#pivot-operator).
 
 - You can't use a `GROUPING` function within a multi-level aggregate body, or
   with `GROUP BY` modifiers. For example, the following expressions result in

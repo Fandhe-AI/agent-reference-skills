@@ -78,7 +78,7 @@ ML.PREDICT(
   output columns.
 - `QUERY_STATEMENT`: The GoogleSQL query that
   is used to generate the evaluation data. See the
-  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
+  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
   page for the supported SQL syntax of the `QUERY_STATEMENT` clause.
 
   If `QUERY_STATEMENT` is specified, the input column names from the query

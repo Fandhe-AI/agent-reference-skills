@@ -134,7 +134,7 @@ ML.GENERATE_EMBEDDING(
   `STRING` column that's named `content`. For information about the
   supported SQL syntax of the `QUERY_STATEMENT` clause, see
   [GoogleSQL query
-  syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   <br />
 
@@ -240,7 +240,7 @@ ML.GENERATE_EMBEDDING(
   `STRING` column that's named `content`. For information about the
   supported SQL syntax of the `QUERY_STATEMENT` clause, see
   [GoogleSQL query
-  syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   <br />
 

@@ -55,7 +55,7 @@ ML.EXPLAIN_FORECAST(
 - `QUERY_STATEMENT`: the GoogleSQL query that is
   used to generate the evaluation data. For the supported SQL syntax for the
   `QUERY_STATEMENT` clause in GoogleSQL, see
-  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 
   If `QUERY_STATEMENT` is specified, the input column names from the query
   must match the column names in the model, and their types should be

@@ -18,3 +18,5 @@
 | Load statements in GoogleSQL | LOAD DATA statement | [load-statements.md](./load-statements.md) |
 | Operators | — | [operators.md](./operators.md) |
 | Pipe query syntax | Pipe syntax, Pipe operator semantics, FROM queries, Pipe operators | [pipe-syntax.md](./pipe-syntax.md) |
+| Procedural language | DECLARE, SET, EXECUTE IMMEDIATE, BEGIN...END, BEGIN...EXCEPTION...END, CASE, CASE search_expression, IF, Labels, Loops, Transactions, RAISE, RETURN, CALL | [procedural-language.md](./procedural-language.md) |
+| Query syntax (part 1 of 3) | SQL syntax notation rules, SQL syntax, SELECT statement, FROM clause, UNNEST operator, PIVOT operator, UNPIVOT operator, TABLESAMPLE operator, MATCH_RECOGNIZE clause, GRAPH_TABLE operator | [query-syntax-1.md](./query-syntax-1.md) |

@@ -33,14 +33,14 @@ statement.
 |   | `~` | Integer or `BYTES` | Bitwise not | Unary |
 | 3 | `*` | All numeric types | Multiplication | Binary |
 |   | `/` | All numeric types | Division | Binary |
-|   | `||` | `STRING`, `BYTES`, or `ARRAY<T>` | Concatenation operator | Binary |
+|   | `\|\|` | `STRING`, `BYTES`, or `ARRAY<T>` | Concatenation operator | Binary |
 | 4 | `+` | All numeric types, `DATE` with `INT64` , `INTERVAL` | Addition | Binary |
 |   | `-` | All numeric types, `DATE` with `INT64` , `INTERVAL` | Subtraction | Binary |
 | 5 | `<<` | Integer or `BYTES` | Bitwise left-shift | Binary |
 |   | `>>` | Integer or `BYTES` | Bitwise right-shift | Binary |
 | 6 | `&` | Integer or `BYTES` | Bitwise and | Binary |
 | 7 | `^` | Integer or `BYTES` | Bitwise xor | Binary |
-| 8 | `|` | Integer or `BYTES` | Bitwise or | Binary |
+| 8 | `\|` | Integer or `BYTES` | Bitwise or | Binary |
 | 9 (Comparison Operators) | `=` | Any comparable type. See [Data Types](data-types.md) for a complete list. | Equal | Binary |
 |   | `<` | Any comparable type. See [Data Types](data-types.md) for a complete list. | Less than | Binary |
 |   | `>` | Any comparable type. See [Data Types](data-types.md) for a complete list. | Greater than | Binary |
@@ -534,7 +534,7 @@ the first operand.
 | Name | Syntax | Input Data Type | Description |
 |---|---|---|---|
 | Bitwise not | `~ X` | Integer or `BYTES` | Performs logical negation on each bit, forming the ones' complement of the given binary value. |
-| Bitwise or | `X | Y` | `X`: Integer or `BYTES` `Y`: Same type as `X` | Takes two bit patterns of equal length and performs the logical inclusive `OR` operation on each pair of the corresponding bits. This operator throws an error if `X` and `Y` are bytes of different lengths. |
+| Bitwise or | `X \| Y` | `X`: Integer or `BYTES` `Y`: Same type as `X` | Takes two bit patterns of equal length and performs the logical inclusive `OR` operation on each pair of the corresponding bits. This operator throws an error if `X` and `Y` are bytes of different lengths. |
 | Bitwise xor | `X ^ Y` | `X`: Integer or `BYTES` `Y`: Same type as `X` | Takes two bit patterns of equal length and performs the logical exclusive `OR` operation on each pair of the corresponding bits. This operator throws an error if `X` and `Y` are bytes of different lengths. |
 | Bitwise and | `X & Y` | `X`: Integer or `BYTES` `Y`: Same type as `X` | Takes two bit patterns of equal length and performs the logical `AND` operation on each pair of the corresponding bits. This operator throws an error if `X` and `Y` are bytes of different lengths. |
 | Left shift | `X << Y` | `X`: Integer or `BYTES` `Y`: `INT64` | Shifts the first operand `X` to the left. This operator returns `0` or a byte sequence of `b'\x00'` if the second operand `Y` is greater than or equal to the bit length of the first operand `X` (for example, `64` if `X` has the type `INT64`). This operator throws an error if `Y` is negative. |
@@ -636,7 +636,7 @@ GoogleSQL supports the following logical operators in
 | Name | Syntax | Description |
 |---|---|---|
 | `NOT` | `!X` | Returns `TRUE` if `X` isn't included, otherwise, returns `FALSE`. |
-| `OR` | `X | Y` | Returns `TRUE` if either `X` or `Y` is included, otherwise, returns `FALSE`. |
+| `OR` | `X \| Y` | Returns `TRUE` if either `X` or `Y` is included, otherwise, returns `FALSE`. |
 | `AND` | `X & Y` | Returns `TRUE` if both `X` and `Y` are included, otherwise, returns `FALSE`. |
 
 #### Graph predicates
@@ -948,7 +948,7 @@ equal value is excluded, otherwise `NULL`.
 
   - `(expression[, ...])`: A list of expressions.
   - `(subquery)`: A [subquery](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries#about_subqueries) that returns a single column. The values in that column are the set of values. If no rows are produced, the set of values is empty.
-  - `UNNEST(array_expression)`: An [UNNEST operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#unnest_operator)
+  - `UNNEST(array_expression)`: An [UNNEST operator](query-syntax-1.md#unnest-operator)
     that returns a column of values from an array expression. This is
     equivalent to:
 
@@ -1011,7 +1011,7 @@ NOT(x IN ...)
 ```
 
 The `UNNEST` form treats an array scan like `UNNEST` in the
-[`FROM`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#from_clause) clause:
+[`FROM`](query-syntax-1.md#from-clause) clause:
 
 ```sql
 x [NOT] IN UNNEST(<array expression>)
@@ -1545,7 +1545,7 @@ otherwise `NULL`.
   - A list of one or more patterns that match the `search_value` type.
 
   - An
-    [`UNNEST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#unnest_operator) operation that returns a column of values
+    [`UNNEST`](query-syntax-1.md#unnest-operator) operation that returns a column of values
     with the same type as `search_value` from an array expression.
 
   The regular expressions that are supported by the
@@ -1755,9 +1755,9 @@ The concatenation operator combines multiple values into one.
 
 | Function Syntax | Input Data Type | Result Data Type |
 |---|---|---|
-| `STRING || STRING [ || ... ]` | `STRING` | `STRING` |
-| `BYTES || BYTES [ || ... ]` | `BYTES` | `BYTES` |
-| `ARRAY<T> || ARRAY<T> [ || ... ]` | `ARRAY<T>` | `ARRAY<T>` |
+| `STRING \|\| STRING [ \|\| ... ]` | `STRING` | `STRING` |
+| `BYTES \|\| BYTES [ \|\| ... ]` | `BYTES` | `BYTES` |
+| `ARRAY<T> \|\| ARRAY<T> [ \|\| ... ]` | `ARRAY<T>` | `ARRAY<T>` |
 
 > [!NOTE]
 > **Note:** The concatenation operator is translated into a nested [`CONCAT`](../googlesql-functions/string_functions-1.md#concat) function call. For example, `'A' || 'B' || 'C'` becomes `CONCAT('A', CONCAT('B', 'C'))`.

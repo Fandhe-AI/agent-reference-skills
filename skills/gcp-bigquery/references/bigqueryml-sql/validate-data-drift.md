@@ -53,10 +53,10 @@ ML.VALIDATE_DATA_DRIFT(
 - `DATASET`: the BigQuery dataset that contains the resource.
 - `BASE_TABLE_NAME`: the name of the input table of serving data that you want to use as the baseline for comparison.
 - `BASE_QUERY_STATEMENT`: a query that generates the serving data that you want to use as the baseline for comparison. For the supported SQL syntax of the `BASE_QUERY_STATEMENT` clause, see [GoogleSQL query
-  syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 - `STUDY_TABLE_NAME`: the name of the input table that contains the serving data that you want to compare to the baseline.
 - `STUDY_QUERY_STATEMENT`: a query that generates the serving data that you want to compare to the baseline. For the supported SQL syntax of the `STUDY_QUERY_STATEMENT` clause, see [GoogleSQL query
-  syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 - `NUM_HISTOGRAM_BUCKETS`: an `INT64` value that specifies the number of buckets to use for a histogram with equal-width buckets. Only applies to numerical, `ARRAY<numerical>`, and `ARRAY<STRUCT<INT64,
   numerical>>` columns. The `NUM_HISTOGRAM_BUCKETS` value must be in the range `[1, 1,000]`. The default value is `10`.
 - `NUM_QUANTILES_HISTOGRAM_BUCKETS`: an `INT64` value that specifies the number of buckets to use for a [quantiles](https://en.wikipedia.org/wiki/Quantile) histogram. Only applies to numerical, `ARRAY<numerical>`, and `ARRAY<STRUCT<INT64, numerical>>` columns. The `NUM_QUANTILES_HISTOGRAM_BUCKETS` value must be in the range `[1, 1,000]`. The default value is `10`.

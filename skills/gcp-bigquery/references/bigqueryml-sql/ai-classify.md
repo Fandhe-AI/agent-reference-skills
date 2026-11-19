@@ -107,7 +107,7 @@ AI.CLASSIFY(
   category, consider including an `'Other'` category.
 
   To use categories that come from a column of a table, you can
-  [define a variable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language)
+  [define a variable](../googlesql-syntax/procedural-language.md)
   based on that column and then use that variable as your categories argument.
 - `EXAMPLES`: an
   `ARRAY<STRUCT<STRING, STRING>>` value that

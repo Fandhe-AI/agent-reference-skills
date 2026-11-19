@@ -52,7 +52,7 @@ ML.DETECT_ANOMALIES(
 - `DATASET`: the dataset that contains the resource.
 - `MODEL`: the name of the model.
 - `TABLE`: The name of the table to use to perform anomaly detection.
-- `QUERY_STATEMENT`: The GoogleSQL query that generates the data to use to perform anomaly detection. For the supported SQL syntax for the `QUERY_STATEMENT` clause in GoogleSQL, see [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+- `QUERY_STATEMENT`: The GoogleSQL query that generates the data to use to perform anomaly detection. For the supported SQL syntax for the `QUERY_STATEMENT` clause in GoogleSQL, see [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 - `ANOMALY_PROB_THRESHOLD`: a `FLOAT64` value that
   identifies the custom threshold to use for anomaly detection. The value must
   be in the range `[0, 1)`, with a default value of `0.95`.

@@ -937,7 +937,7 @@ A `STRING` value containing the fully-qualified name of the CMEK. For example,
 
 The `AS query_statement` clause specifies the
 GoogleSQL query used to generate the training data. See the
-[GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
+[GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
 page for the supported SQL syntax of the `query_statement` clause.
 
 All columns referenced by the `query_statement` are used as input

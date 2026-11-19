@@ -54,7 +54,7 @@ ML.ENTITY_FEATURES_AT_TIME(
 - `FEATURE_QUERY_STATEMENT`: a `STRING` value that
   specifies a GoogleSQL query that returns the feature data. This
   query must return the same columns as `feature_table`. See
-  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
+  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
   for the supported SQL syntax of the `FEATURE_QUERY_STATEMENT` clause.
 
 - `ENTITY_TIME_TABLE_NAME`: a `STRING` value that
@@ -74,7 +74,7 @@ ML.ENTITY_FEATURES_AT_TIME(
   specifies a GoogleSQL query that returns the entity time data. This
   query must return the same columns as the `ENTITY_TIME_TABLE_NAME` argument.
   See
-  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
+  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
   for the supported SQL syntax of the `ENTITY_TIME_QUERY_STATEMENT` clause.
 
 - `NUM_ROWS`: an `INT64` value that specifies the number

@@ -153,11 +153,11 @@ The following example operators propagate collation.
 
 | Operator | Notes |
 |---|---|
-| [`||` concatenation operator](operators.md#concatenation-operator) |   |
+| [`\|\|` concatenation operator](operators.md#concatenation-operator) |   |
 | [Array subscript operator](operators.md#array-subscript-operator) | Propagated to output. |
 | [Set operators](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#set_operators) | Collation of an output column is decided by the collations of input columns at the same position. |
 | [`STRUCT` field access operator](operators.md#field-access-operator) | When getting a `STRUCT`, collation on the `STRUCT` field is propagated as the output collation. |
-| [`UNNEST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#unnest_operator) | Collation on the input array element is propagated to output. |
+| [`UNNEST`](query-syntax-1.md#unnest-operator) | Collation on the input array element is propagated to output. |
 
 #### Expressions
 

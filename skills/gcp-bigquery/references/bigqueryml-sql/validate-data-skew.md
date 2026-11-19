@@ -50,7 +50,7 @@ ML.VALIDATE_DATA_SKEW(
 - `MODEL_NAME`: the name of the model.
 - `TABLE_NAME`: the name of the input table that contains the serving data to calculate statistics for.
 - `QUERY_STATEMENT`: a query that generates the serving data to calculate statistics for. For the supported SQL syntax of the `QUERY_STATEMENT` clause, see [GoogleSQL query
-  syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
+  syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
 - `CATEGORICAL_DEFAULT_THRESHOLD`: a `FLOAT64` value that specifies the custom threshold to use for anomaly detection for categorical and `ARRAY<categorical>` features. The value must be in the range `[0, 1)`. The default value is `0.3`.
 - `CATEGORICAL_METRIC_TYPE`: a `STRING` value that specifies the metric used to compare statistics for categorical and `ARRAY<categorical>` features. Valid values are as follows:
   - `L_INFTY`: use [L-infinity
