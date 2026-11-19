@@ -28,3 +28,21 @@
 | JOBS_TIMELINE_BY_FOLDER view | Required permissions, Schema, Data retention, Scope and syntax, Examples | [jobs-timeline-by-folder.md](./jobs-timeline-by-folder.md) |
 | JOBS_TIMELINE_BY_ORGANIZATION view | Required permissions, Schema, Data retention, Scope and syntax, Examples | [jobs-timeline-by-organization.md](./jobs-timeline-by-organization.md) |
 | JOBS_TIMELINE_BY_USER view | Required permissions, Schema, Data retention, Scope and syntax, Example | [jobs-timeline-by-user.md](./jobs-timeline-by-user.md) |
+| JOBS_TIMELINE view | Required permissions, Schema, Data retention, Scope and syntax, Examples | [jobs-timeline.md](./jobs-timeline.md) |
+| JOBS view | Required roles, Schema, Multi-statement query jobs, Data retention, Scope and syntax, Dry run query estimates, Examples | [jobs.md](./jobs.md) |
+| KEY_COLUMN_USAGE view | Required roles, Schema, Scope and syntax, Examples | [key-column-usage.md](./key-column-usage.md) |
+| MATERIALIZED_VIEWS view | Required permissions, Schema, Scope and syntax, Examples | [materialized-views.md](./materialized-views.md) |
+| OBJECT_PRIVILEGES view | Required permissions, Schema, Scope and syntax, Limitations, Examples | [object-privileges.md](./object-privileges.md) |
+| ORGANIZATION_OPTIONS_CHANGES view | Required permissions, Schema, Data retention, Scope and syntax, Examples | [organization-options-changes.md](./organization-options-changes.md) |
+| ORGANIZATION_OPTIONS view | Required permissions, Schema, Data retention, Scope and syntax, Examples | [organization-options.md](./organization-options.md) |
+| PARAMETERS view | Required permissions, Schema, Scope and syntax, Example | [parameters.md](./parameters.md) |
+| PARTITIONS view | Required permissions, Schema, Scope and syntax, Examples | [partitions.md](./partitions.md) |
+| PROJECT_OPTIONS_CHANGES view | Required permissions, Schema, Data retention, Scope and syntax, Examples | [project-options-changes.md](./project-options-changes.md) |
+| PROJECT_OPTIONS view | Required permissions, Schema, Data retention, Scope and syntax, Examples | [project-options.md](./project-options.md) |
+| PROPERTY_GRAPHS view | Required permissions, Schema, Scope and syntax, Example | [property-graphs.md](./property-graphs.md) |
+| INFORMATION_SCHEMA.RECOMMENDATIONS_BY_ORGANIZATION view | Required permissions, Schema, Scope and syntax, Example | [recommendations-by-org.md](./recommendations-by-org.md) |
+| INFORMATION_SCHEMA.RECOMMENDATIONS view | Required permission, Schema, Scope and syntax, Example | [recommendations.md](./recommendations.md) |
+| RESERVATION_CHANGES view | Required permission, Schema, Data retention, Scope and syntax, Example | [reservation-changes.md](./reservation-changes.md) |
+| RESERVATIONS_TIMELINE view | Required permission, Schema, Scope and syntax, Examples | [reservation-timeline.md](./reservation-timeline.md) |
+| RESERVATIONS view | Required permission, Schema, Scope and syntax, Joining between the reservation views and the job views, Example | [reservations.md](./reservations.md) |
+| ROUTINE_OPTIONS view | Required permissions, Schema, Scope and syntax, Example | [routine-options.md](./routine-options.md) |
