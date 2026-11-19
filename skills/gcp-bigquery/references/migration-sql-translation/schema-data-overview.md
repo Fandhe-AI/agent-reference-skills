@@ -67,10 +67,11 @@ gcloud storage cp --recursive TARGET_URI LOCAL_DIRECTORY
 - Choose the Cloud Storage bucket location closest to your data center, and if possible the same location as the BigQuery dataset.
 - Validate the transferred data with the open-source Data Validation Tool (DVT, Python CLI), which compares aggregations such as count, sum, and average between sources and the BigQuery target.
 - For near-instant data freshness use a streaming approach (streaming Dataflow templates or a partner solution); otherwise use scheduled transfers (BigQuery Data Transfer Service with a table name pattern and a recurrent schedule).
-- Partitioning works on a `TIMESTAMP` or `DATE` column, or BigQuery can add pseudocolumns to partition at ingestion; it does not change the structure of the tables. BigQuery uses no indexes; clustering sorts data by chosen columns.
+- Partitioning works on a `TIMESTAMP` or `DATE` column, or BigQuery can add pseudocolumns to partition at ingestion; it does not change the structure of the tables. BigQuery uses no indexes (in the sense of the row-lookup indexes the source compares against); clustering sorts data by chosen columns.
 - BigQuery supports star and snowflake schemas, but its native representation uses nested and repeated fields, which reduce joins.
 - Snippet taken from https://docs.cloud.google.com/bigquery/docs/batch-sql-translator
 - The source says partitioning works on a `TIMESTAMP` or `DATE` column; the DDL reference also partitions on a `DATETIME` column (`DATETIME_TRUNC`) and on `INT64` ranges (`RANGE_BUCKET`).
+- "No indexes" in the source refers to traditional row-lookup indexes that need rebuilding; BigQuery does have search indexes (`CREATE SEARCH INDEX`, see `query-performance-search-indexes/search-index.md`) and vector indexes (`CREATE VECTOR INDEX`, see `generative-ai-vector-search/vector-index-intro.md`), which are a different mechanism.
 - Source: https://docs.cloud.google.com/bigquery/docs/migration/schema-data-overview (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

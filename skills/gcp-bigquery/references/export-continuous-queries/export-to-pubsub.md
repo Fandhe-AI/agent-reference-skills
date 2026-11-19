@@ -23,7 +23,7 @@ QUERY
 );
 ```
 
-`QUERY` must contain only supported continuous query operations and must use the `APPENDS` function in the `FROM` clause to set the point in time at which to start processing data.
+`QUERY` must contain only supported continuous query operations and must use the `APPENDS` function in the `FROM` clause to set the point in time at which to start processing data (the continuous queries introduction also allows `CHANGES` when exporting to Pub/Sub; see Notes).
 
 ### Run with bq
 
@@ -85,7 +85,7 @@ AS (
 | `PROJECT_ID` | Your project ID |
 | `TOPIC_ID` | Pub/Sub topic ID (from the Topics page of the console) |
 | `SERVICE_ACCOUNT_EMAIL` | Service account email (from the Service accounts page) |
-| `QUERY` | SQL that selects the data; only supported operations; `APPENDS` required in `FROM` |
+| `QUERY` | SQL that selects the data; only supported operations; `APPENDS` (or `CHANGES`) in `FROM` |
 
 ### Roles and permissions
 
@@ -110,6 +110,7 @@ AS (
 
 ## Notes
 
+- This page says the query must use `APPENDS`, while the continuous queries introduction (https://docs.cloud.google.com/bigquery/docs/continuous-queries-introduction) lists `CHANGES` as usable only when exporting to Pub/Sub, and not with stateful operations or Iceberg managed tables; both are kept, see `continuous-queries-introduction.md` in this category.
 - Source: https://docs.cloud.google.com/bigquery/docs/export-to-pubsub (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the `curl` example was rewritten; the original used `--data '("configuration":("query":"EXPORT DATA OPTIONS (format = 'CLOUD_PUBSUB', ...` with parentheses, no `\` after the URL and an unterminated `"Authorization: Bearer $(gcloud auth print-access-token)` header. The nested `query` object follows the `JobConfiguration.query` field of the `jobs.insert` request.
 - Pricing: billed with BigQuery capacity compute pricing; requires a reservation using the Enterprise or Enterprise Plus edition and a reservation assignment with the `CONTINUOUS` job type. Pub/Sub usage is billed separately.
