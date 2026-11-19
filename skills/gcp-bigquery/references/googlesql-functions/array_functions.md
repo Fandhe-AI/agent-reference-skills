@@ -24,7 +24,7 @@ GoogleSQL for BigQuery supports the following array functions.
 | [`ARRAY_TO_STRING`](#array_to_string) | Produces a concatenation of the elements in an array as a `STRING` value. |
 | [`GENERATE_ARRAY`](#generate_array) | Generates an array of values in a range. |
 | [`GENERATE_DATE_ARRAY`](#generate_date_array) | Generates an array of dates in a range. |
-| [`GENERATE_RANGE_ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions#generate_range_array) | Splits a range into an array of subranges. For more information, see [Range functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions). |
+| [`GENERATE_RANGE_ARRAY`](range-functions.md#generate_range_array) | Splits a range into an array of subranges. For more information, see [Range functions](range-functions.md). |
 | [`GENERATE_TIMESTAMP_ARRAY`](#generate_timestamp_array) | Generates an array of timestamps in a range. |
 | [`JSON_ARRAY`](json_functions-1.md#json_array) | Creates a JSON array. For more information, see [JSON functions](json_functions-1.md). |
 | [`JSON_ARRAY_APPEND`](json_functions-1.md#json_array_append) | Appends JSON data to the end of a JSON array. For more information, see [JSON functions](json_functions-1.md). |

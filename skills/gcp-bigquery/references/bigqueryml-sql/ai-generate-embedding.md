@@ -59,7 +59,7 @@ following ways:
   `AI.GENERATE_EMBEDDING` gathers the `ML.PREDICT` output for the model into
   an array and outputs it as the `embedding` column.
   Having all of the embeddings in a single column lets you directly use the
-  [`VECTOR_SEARCH` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search)
+  [`VECTOR_SEARCH` function](../googlesql-functions/search_functions.md#vector_search)
   on the`AI.GENERATE_EMBEDDING` output.
 
 - For matrix factorization, `AI.GENERATE_EMBEDDING` processes the request using
@@ -69,7 +69,7 @@ following ways:
   values from the `ML.WEIGHTS` output for the model into
   an array and outputs it as the `embedding` column.
   Having all of the embeddings in a single column lets you directly use the
-  [`VECTOR_SEARCH` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search)
+  [`VECTOR_SEARCH` function](../googlesql-functions/search_functions.md#vector_search)
   on the`AI.GENERATE_EMBEDDING` output.
 
 ### Syntax

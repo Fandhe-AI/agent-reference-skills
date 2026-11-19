@@ -315,7 +315,7 @@ Use the following table to help you choose an embedding model for your data:
 ### Related functions
 
 The `AI.SIMILARITY` and
-[`VECTOR_SEARCH`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search)
+[`VECTOR_SEARCH`](../googlesql-functions/search_functions.md#vector_search)
 functions support overlapping use cases. In general, you should use
 `AI.SIMILARITY`
 when you want to perform a small number of comparisons and you haven't

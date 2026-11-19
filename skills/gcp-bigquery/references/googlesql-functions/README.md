@@ -52,7 +52,7 @@
 | `COLLATE` | Combines a `STRING` value and a collation specification into a collation specification-supported `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#collate) |
 | `CONCAT` | Concatenates one or more `STRING` or `BYTES` values into a single result. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#concat) |
 | `CONTAINS_SUBSTR` | Performs a normalized, case-insensitive search to see if a value exists as a substring in an expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#contains_substr) |
-| `CORR` | Computes the Pearson coefficient of correlation of a set of number pairs. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#corr) |
+| `CORR` | Computes the Pearson coefficient of correlation of a set of number pairs. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#corr) |
 | `COS` | Computes the cosine of `X`. | [mathematical_functions.md](./mathematical_functions.md#cos) |
 | `COSH` | Computes the hyperbolic cosine of `X`. | [mathematical_functions.md](./mathematical_functions.md#cosh) |
 | `COSINE_DISTANCE` | Computes the cosine distance between two vectors. | [mathematical_functions.md](./mathematical_functions.md#cosine_distance) |
@@ -60,8 +60,8 @@
 | `COTH` | Computes the hyperbolic cotangent of `X`. | [mathematical_functions.md](./mathematical_functions.md#coth) |
 | `COUNT` | Gets the number of rows in the input, or the number of rows with an expression evaluated to any value other than `NULL`. | [aggregate_functions.md](./aggregate_functions.md#count) |
 | `COUNTIF` | Gets the number of `TRUE` values for an expression. | [aggregate_functions.md](./aggregate_functions.md#countif) |
-| `COVAR_POP` | Computes the population covariance of a set of number pairs. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#covar_pop) |
-| `COVAR_SAMP` | Computes the sample covariance of a set of number pairs. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#covar_samp) |
+| `COVAR_POP` | Computes the population covariance of a set of number pairs. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#covar_pop) |
+| `COVAR_SAMP` | Computes the sample covariance of a set of number pairs. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#covar_samp) |
 | `CSC` | Computes the cosecant of `X`. | [mathematical_functions.md](./mathematical_functions.md#csc) |
 | `CSCH` | Computes the hyperbolic cosecant of `X`. | [mathematical_functions.md](./mathematical_functions.md#csch) |
 | `CUME_DIST` | Gets the cumulative distribution (relative position (0,1\]) of each row within a window. | [numbering_functions.md](./numbering_functions.md#cume_dist) |
@@ -120,7 +120,7 @@
 | `GAP_FILL` | Finds and fills gaps in a time series. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#gap_fill) |
 | `GENERATE_ARRAY` | Generates an array of values in a range. | [array_functions.md](./array_functions.md#generate_array) |
 | `GENERATE_DATE_ARRAY` | Generates an array of dates in a range. | [array_functions.md](./array_functions.md#generate_date_array) |
-| `GENERATE_RANGE_ARRAY` | Splits a range into an array of subranges. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions#generate_range_array) |
+| `GENERATE_RANGE_ARRAY` | Splits a range into an array of subranges. | [range-functions.md](./range-functions.md#generate_range_array) |
 | `GENERATE_TIMESTAMP_ARRAY` | Generates an array of timestamps in a range. | [array_functions.md](./array_functions.md#generate_timestamp_array) |
 | `GENERATE_UUID` | Produces a random universally unique identifier (UUID) as a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/utility-functions#generate_uuid) |
 | `GREATEST` | Gets the greatest value among `X1,...,XN`. | [mathematical_functions.md](./mathematical_functions.md#greatest) |
@@ -245,14 +245,14 @@
 | `POW` | Produces the value of `X` raised to the power of `Y`. | [mathematical_functions.md](./mathematical_functions.md#pow) |
 | `POWER` | Synonym of `POW`. | [mathematical_functions.md](./mathematical_functions.md#power) |
 | `RAND` | Generates a pseudo-random value of type `FLOAT64` in the range of `[0, 1)`. | [mathematical_functions.md](./mathematical_functions.md#rand) |
-| `RANGE` | Constructs a range of `DATE`, `DATETIME`, or `TIMESTAMP` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions#range) |
+| `RANGE` | Constructs a range of `DATE`, `DATETIME`, or `TIMESTAMP` values. | [range-functions.md](./range-functions.md#range) |
 | `RANGE_BUCKET` | Scans through a sorted array and returns the 0-based position of a point's upper bound. | [mathematical_functions.md](./mathematical_functions.md#range_bucket) |
-| `RANGE_CONTAINS` | Signature 1: Checks if one range is in another range. <br /> Signature 2: Checks if a value is in a range. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions#range_contains) |
-| `RANGE_END` | Gets the upper bound of a range. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions#range_end) |
-| `RANGE_INTERSECT` | Gets a segment of two ranges that intersect. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions#range_intersect) |
-| `RANGE_OVERLAPS` | Checks if two ranges overlap. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions#range_overlaps) |
-| `RANGE_SESSIONIZE` | Produces a table of sessionized ranges. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions#range_sessionize) |
-| `RANGE_START` | Gets the lower bound of a range. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions#range_start) |
+| `RANGE_CONTAINS` | Signature 1: Checks if one range is in another range. <br /> Signature 2: Checks if a value is in a range. | [range-functions.md](./range-functions.md#range_contains) |
+| `RANGE_END` | Gets the upper bound of a range. | [range-functions.md](./range-functions.md#range_end) |
+| `RANGE_INTERSECT` | Gets a segment of two ranges that intersect. | [range-functions.md](./range-functions.md#range_intersect) |
+| `RANGE_OVERLAPS` | Checks if two ranges overlap. | [range-functions.md](./range-functions.md#range_overlaps) |
+| `RANGE_SESSIONIZE` | Produces a table of sessionized ranges. | [range-functions.md](./range-functions.md#range_sessionize) |
+| `RANGE_START` | Gets the lower bound of a range. | [range-functions.md](./range-functions.md#range_start) |
 | `RANK` | Gets the rank (1-based) of each row within a window. | [numbering_functions.md](./numbering_functions.md#rank) |
 | `REGEXP_CONTAINS` | Checks if a value is a partial match for a regular expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#regexp_contains) |
 | `REGEXP_EXTRACT` | Produces a substring that matches a regular expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#regexp_extract) |
@@ -278,11 +278,11 @@
 | `SAFE_MULTIPLY` | Equivalent to the multiplication operator (`X * Y`), but returns `NULL` if overflow occurs. | [mathematical_functions.md](./mathematical_functions.md#safe_multiply) |
 | `SAFE_NEGATE` | Equivalent to the unary minus operator (`-X`), but returns `NULL` if overflow occurs. | [mathematical_functions.md](./mathematical_functions.md#safe_negate) |
 | `SAFE_SUBTRACT` | Equivalent to the subtraction operator (`X - Y`), but returns `NULL` if overflow occurs. | [mathematical_functions.md](./mathematical_functions.md#safe_subtract) |
-| `SEARCH` | Checks to see whether a table or other search data contains a set of search terms. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#search) |
+| `SEARCH` | Checks to see whether a table or other search data contains a set of search terms. | [search_functions.md](./search_functions.md#search) |
 | `SEC` | Computes the secant of `X`. | [mathematical_functions.md](./mathematical_functions.md#sec) |
 | `SECH` | Computes the hyperbolic secant of `X`. | [mathematical_functions.md](./mathematical_functions.md#sech) |
-| `SECURE_CONTEXT` | Returns the value of a request-scoped secure context parameter provided at query run time. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/security_functions#secure_context) |
-| `SESSION_USER` | Get the email address or principal identifier of the user that's running the query. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/security_functions#session_user) |
+| `SECURE_CONTEXT` | Returns the value of a request-scoped secure context parameter provided at query run time. | [security_functions.md](./security_functions.md#secure_context) |
+| `SESSION_USER` | Get the email address or principal identifier of the user that's running the query. | [security_functions.md](./security_functions.md#session_user) |
 | `SHA1` | Computes the hash of a `STRING` or `BYTES` value using the SHA-1 algorithm. | [hash_functions.md](./hash_functions.md#sha1) |
 | `SHA256` | Computes the hash of a `STRING` or `BYTES` value using the SHA-256 algorithm. | [hash_functions.md](./hash_functions.md#sha256) |
 | `SHA512` | Computes the hash of a `STRING` or `BYTES` value using the SHA-512 algorithm. | [hash_functions.md](./hash_functions.md#sha512) |
@@ -363,9 +363,9 @@
 | `ST_X` | Gets the longitude from a point `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_x) |
 | `ST_Y` | Gets the latitude from a point `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_y) |
 | `STARTS_WITH` | Checks if a `STRING` or `BYTES` value is a prefix of another value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#starts_with) |
-| `STDDEV` | An alias of the `STDDEV_SAMP` function. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev) |
-| `STDDEV_POP` | Computes the population (biased) standard deviation of the values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev_pop) |
-| `STDDEV_SAMP` | Computes the sample (unbiased) standard deviation of the values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev_samp) |
+| `STDDEV` | An alias of the `STDDEV_SAMP` function. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#stddev) |
+| `STDDEV_POP` | Computes the population (biased) standard deviation of the values. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#stddev_pop) |
+| `STDDEV_SAMP` | Computes the sample (unbiased) standard deviation of the values. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#stddev_samp) |
 | `STRING_AGG` | Concatenates non-`NULL` `STRING` or `BYTES` values. | [aggregate_functions.md](./aggregate_functions.md#string_agg) |
 | `STRPOS` | Finds the position of the first occurrence of a subvalue inside another value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#strpos) |
 | `SUBSTR` | Gets a portion of a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#substr) |
@@ -405,10 +405,10 @@
 | `UNIX_MILLIS` | Converts a `TIMESTAMP` value to the number of milliseconds since 1970-01-01 00:00:00 UTC. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_millis) |
 | `UNIX_SECONDS` | Converts a `TIMESTAMP` value to the number of seconds since 1970-01-01 00:00:00 UTC. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_seconds) |
 | `UPPER` | Formats alphabetic characters in a `STRING` value as uppercase. <br /> Formats ASCII characters in a `BYTES` value as uppercase. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#upper) |
-| `VAR_POP` | Computes the population (biased) variance of the values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#var_pop) |
-| `VAR_SAMP` | Computes the sample (unbiased) variance of the values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#var_samp) |
-| `VARIANCE` | An alias of `VAR_SAMP`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#variance) |
-| `VECTOR_SEARCH` | Performs a semantic search or a hybrid search on embeddings to find similar entities. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search) |
+| `VAR_POP` | Computes the population (biased) variance of the values. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#var_pop) |
+| `VAR_SAMP` | Computes the sample (unbiased) variance of the values. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#var_samp) |
+| `VARIANCE` | An alias of `VAR_SAMP`. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#variance) |
+| `VECTOR_SEARCH` | Performs a semantic search or a hybrid search on embeddings to find similar entities. | [search_functions.md](./search_functions.md#vector_search) |
 | `VECTOR_INDEX.STATISTICS` | Calculate how much an indexed table's data has drifted between when a vector index was trained and the present. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/vectorindex_functions#vector_indexstatistics) |
 | `ZSTD_COMPRESS` | Compresses `STRING` or `BYTES` input into `BYTES` output using the Zstandard (Zstd) lossless data compression algorithm. | [compression-functions.md](./compression-functions.md#zstd_compress) |
 | `ZSTD_DECOMPRESS_TO_BYTES` | Decompresses `BYTES` input into `BYTES` output using the Zstandard (Zstd) lossless data compression algorithm. | [compression-functions.md](./compression-functions.md#zstd_decompress_to_bytes) |
@@ -442,3 +442,7 @@
 | Net functions | Function list, NET.HOST, NET.IP_FROM_STRING, NET.IP_NET_MASK, NET.IP_TO_STRING, NET.IP_TRUNC, NET.IPV4_FROM_INT64, NET.IPV4_TO_INT64, NET.PUBLIC_SUFFIX, NET.REG_DOMAIN, NET.SAFE_IP_FROM_STRING | [net_functions.md](./net_functions.md) |
 | Numbering functions | Function list, CUME_DIST, DENSE_RANK, NTILE, PERCENT_RANK, RANK, ROW_NUMBER | [numbering_functions.md](./numbering_functions.md) |
 | ObjectRef functions | Function list, OBJ.FETCH_METADATA, OBJ.GET_ACCESS_URL, OBJ.GET_READ_URL, OBJ.LIST, OBJ.MAKE_REF | [objectref_functions.md](./objectref_functions.md) |
+| Range functions | Function list, GENERATE_RANGE_ARRAY, RANGE, RANGE_CONTAINS, RANGE_END, RANGE_INTERSECT, RANGE_OVERLAPS, RANGE_SESSIONIZE, RANGE_START | [range-functions.md](./range-functions.md) |
+| Search functions | Function list, SEARCH, VECTOR_SEARCH | [search_functions.md](./search_functions.md) |
+| Security functions | Function list, SECURE_CONTEXT, SESSION_USER | [security_functions.md](./security_functions.md) |
+| Statistical aggregate functions | Function list, CORR, COVAR_POP, COVAR_SAMP, STDDEV, STDDEV_POP, STDDEV_SAMP, VAR_POP, VAR_SAMP, VARIANCE | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md) |
