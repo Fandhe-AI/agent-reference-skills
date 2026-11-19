@@ -34,7 +34,7 @@ skills/gcp-devops/
       deploy/                     # Cloud Deploy: apply・delivery-pipelines・targets・releases・rollouts・automations・deploy-policies 等
         README.md
         deploy-<group>.md
-      developer-connect/          # Developer Connect: connections・git-repository-links・account-connectors・insights-configs、分割投入中（6 / 9 ページ。収録済みは README 掲載分のみ）
+      developer-connect/          # Developer Connect: connections・git-repository-links・account-connectors・insights-configs
         README.md
         developer-connect-<group>.md
       apphub/                     # App Hub: applications・services・workloads・discovered-*・boundary・service-projects
@@ -145,8 +145,6 @@ skills/gcp-devops/
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` と各ガイドのコードブロックを引く。
 
 未投入カテゴリ（`gcloud/source-manager` / `gcloud/source` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
-
-分割投入中のカテゴリ（`gcloud/developer-connect`: 6 / 9 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
