@@ -392,7 +392,7 @@ See [MATCH_RECOGNIZE clause](#match_recognize-clause).
 
 ##### `graph_table_operator`
 
-See [GRAPH_TABLE operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-queries#graph_table_operator).
+See [GRAPH_TABLE operator](../graph-gql/sql-queries.md#graph_table-operator).
 
 ##### `table_name`
 
@@ -1813,7 +1813,7 @@ For more example queries, see the [`MATCH_RECOGNIZE` notebook tutorial](https://
 ### `GRAPH_TABLE` operator
 
 To learn more about this operator, see
-[`GRAPH_TABLE` operator](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-queries#graph_table_operator) in the
+[`GRAPH_TABLE` operator](../graph-gql/sql-queries.md#graph_table-operator) in the
 Graph Query Language (GQL) reference guide.
 
 ## Notes

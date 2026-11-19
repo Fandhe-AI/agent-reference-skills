@@ -12,7 +12,7 @@ describes the high level structure of GQL.
 ### Statement and clause
 
 In GQL, a statement refers to a complete unit of execution, and a clause
-represents a modifier to statements. See the [statement list](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-query-statements#language_list) for a complete list.
+represents a modifier to statements. See the [statement list](query-statements.md#language-list) for a complete list.
 
 ### Working table
 
@@ -28,7 +28,7 @@ outgoing working table is returned as the query results.
 ### Linear query statement
 
 A linear query statement consists of multiple statements from the [statement
-list](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-query-statements#language_list). It always ends with a [`RETURN` statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-query-statements#gql_return).
+list](query-statements.md#language-list). It always ends with a [`RETURN` statement](query-statements.md#return-statement).
 
 Each statement generates intermediate results (the working table) and
 then passes those results to the next statement. The output of a
@@ -53,7 +53,7 @@ RETURN p.name
 ### Combining linear query statements with set operators
 
 You can use a set operator to combine multiple linear query statements into one.
-For more information, see the syntax for the [GQL set operation](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-query-statements#gql_set).
+For more information, see the syntax for the [GQL set operation](query-statements.md#set-operation).
 
 ##### Examples
 

@@ -83,7 +83,7 @@
 | `DATETIME_SUB` | Subtracts a specified time interval from a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#datetime_sub) |
 | `DATETIME_TRUNC` | Truncates a `DATETIME` or `TIMESTAMP` value at a particular granularity. | [datetime_functions.md](./datetime_functions.md#datetime_trunc) |
 | `DENSE_RANK` | Gets the dense rank (1-based, no gaps) of each row within a window. | [numbering_functions.md](./numbering_functions.md#dense_rank) |
-| `DESTINATION_NODE_ID` | Gets a unique identifier of a graph edge's destination node. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#destination_node_id) |
+| `DESTINATION_NODE_ID` | Gets a unique identifier of a graph edge's destination node. | [sql-functions.md](../graph-gql/sql-functions.md#destination_node_id) |
 | `DETERMINISTIC_DECRYPT_BYTES` | Uses the matching key from a keyset to decrypt a `BYTES` ciphertext, using deterministic AEAD. | [aead_encryption_functions.md](./aead_encryption_functions.md#deterministic_decrypt_bytes) |
 | `DETERMINISTIC_DECRYPT_STRING` | Uses the matching key from a keyset to decrypt a `BYTES` ciphertext into a `STRING` plaintext, using deterministic AEAD. | [aead_encryption_functions.md](./aead_encryption_functions.md#deterministic_decrypt_string) |
 | `DETERMINISTIC_ENCRYPT` | Encrypts `STRING` plaintext, using the primary cryptographic key in a keyset, using deterministic AEAD encryption. | [aead_encryption_functions.md](./aead_encryption_functions.md#deterministic_encrypt) |
@@ -92,9 +92,9 @@
 | `DLP_DETERMINISTIC_DECRYPT` | Decrypts DLP-encrypted data. | [dlp_functions.md](./dlp_functions.md#dlp_deterministic_decrypt) |
 | `DLP_KEY_CHAIN` | Gets a data encryption key that's wrapped by Cloud Key Management Service. | [dlp_functions.md](./dlp_functions.md#dlp_key_chain) |
 | `FLOAT64` | Converts a JSON number to a SQL `FLOAT64` value. | [json_functions-1.md](./json_functions-1.md#float64) |
-| `EDGES` | Gets the edges in a graph path. The resulting array retains the original order in the graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#edges) |
+| `EDGES` | Gets the edges in a graph path. The resulting array retains the original order in the graph path. | [sql-functions.md](../graph-gql/sql-functions.md#edges) |
 | `EDIT_DISTANCE` | Computes the Levenshtein distance between two `STRING` or `BYTES` values. | [string_functions-1.md](./string_functions-1.md#edit_distance) |
-| `ELEMENT_ID` | Gets a graph element's unique identifier. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#element_id) |
+| `ELEMENT_ID` | Gets a graph element's unique identifier. | [sql-functions.md](../graph-gql/sql-functions.md#element_id) |
 | `ENDS_WITH` | Checks if a `STRING` or `BYTES` value is the suffix of another value. | [string_functions-1.md](./string_functions-1.md#ends_with) |
 | `ERROR` | Produces an error with a custom error message. | [debugging_functions.md](./debugging_functions.md#error) |
 | `EXP` | Computes `e` to the power of `X`. | [mathematical_functions.md](./mathematical_functions.md#exp) |
@@ -133,11 +133,11 @@
 | `INITCAP` | Formats a `STRING` as proper case, which means that the first character in each word is uppercase and all other characters are lowercase. | [string_functions-1.md](./string_functions-1.md#initcap) |
 | `INSTR` | Finds the position of a subvalue inside another value, optionally starting the search at a given offset or occurrence. | [string_functions-1.md](./string_functions-1.md#instr) |
 | `INT64` | Converts a JSON number to a SQL `INT64` value. | [json_functions-1.md](./json_functions-1.md#int64) |
-| `IS_ACYCLIC` | Checks if a graph path has a repeating node. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#is_acyclic) |
+| `IS_ACYCLIC` | Checks if a graph path has a repeating node. | [sql-functions.md](../graph-gql/sql-functions.md#is_acyclic) |
 | `IS_INF` | Checks if `X` is positive or negative infinity. | [mathematical_functions.md](./mathematical_functions.md#is_inf) |
 | `IS_NAN` | Checks if `X` is a `NaN` value. | [mathematical_functions.md](./mathematical_functions.md#is_nan) |
-| `IS_SIMPLE` | Checks if a graph path is simple. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#is_simple) |
-| `IS_TRAIL` | Checks if a graph path has a repeating edge. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#is_trail) |
+| `IS_SIMPLE` | Checks if a graph path is simple. | [sql-functions.md](../graph-gql/sql-functions.md#is_simple) |
+| `IS_TRAIL` | Checks if a graph path has a repeating edge. | [sql-functions.md](../graph-gql/sql-functions.md#is_trail) |
 | `JSON_ARRAY` | Creates a JSON array. | [json_functions-1.md](./json_functions-1.md#json_array) |
 | `JSON_ARRAY_APPEND` | Appends JSON data to the end of a JSON array. | [json_functions-1.md](./json_functions-1.md#json_array_append) |
 | `JSON_ARRAY_INSERT` | Inserts JSON data into a JSON array. | [json_functions-1.md](./json_functions-1.md#json_array_insert) |
@@ -180,7 +180,7 @@
 | `KLL_QUANTILES.MERGE_PARTIAL` | Merges KLL sketches of the same underlying type into a new sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesmerge_partial) |
 | `KLL_QUANTILES.MERGE_POINT_INT64` | Merges `INT64`-initialized KLL sketches into a new sketch, and then gets a specific quantile from the new sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesmerge_point_int64) |
 | `KLL_QUANTILES.MERGE_POINT_FLOAT64` | Merges `FLOAT64`-initialized KLL sketches into a new sketch, and then gets a specific quantile from the new sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesmerge_point_float64) |
-| `LABELS` | Gets the labels associated with a graph element. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#labels) |
+| `LABELS` | Gets the labels associated with a graph element. | [sql-functions.md](../graph-gql/sql-functions.md#labels) |
 | `LAG` | Gets a value for a preceding row. | [navigation_functions.md](./navigation_functions.md#lag) |
 | `LAST_DAY` | Gets the last day in a specified time period that contains a `DATE` value. | [date_functions.md](./date_functions.md#last_day) |
 | `LAST_DAY` | Gets the last day in a specified time period that contains a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#last_day) |
@@ -218,7 +218,7 @@
 | `NET.PUBLIC_SUFFIX` | Gets the public suffix from a URL. | [net_functions.md](./net_functions.md#netpublic_suffix) |
 | `NET.REG_DOMAIN` | Gets the registered or registrable domain from a URL. | [net_functions.md](./net_functions.md#netreg_domain) |
 | `NET.SAFE_IP_FROM_STRING` | Similar to the `NET.IP_FROM_STRING`, but returns `NULL` instead of producing an error if the input is invalid. | [net_functions.md](./net_functions.md#netsafe_ip_from_string) |
-| `NODES` | Gets the nodes in a graph path. The resulting array retains the original order in the graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#nodes) |
+| `NODES` | Gets the nodes in a graph path. The resulting array retains the original order in the graph path. | [sql-functions.md](../graph-gql/sql-functions.md#nodes) |
 | `NORMALIZE` | Case-sensitively normalizes the characters in a `STRING` value. | [string_functions-1.md](./string_functions-1.md#normalize) |
 | `NORMALIZE_AND_CASEFOLD` | Case-insensitively normalizes the characters in a `STRING` value. | [string_functions-1.md](./string_functions-1.md#normalize_and_casefold) |
 | `NTH_VALUE` | Gets a value for the Nth row of the current window frame. | [navigation_functions.md](./navigation_functions.md#nth_value) |
@@ -236,9 +236,9 @@
 | `PARSE_NUMERIC` | Converts a `STRING` value to a `NUMERIC` value. | [conversion_functions.md](./conversion_functions.md#parse_numeric) |
 | `PARSE_TIME` | Converts a `STRING` value to a `TIME` value. | [time_functions.md](./time_functions.md#parse_time) |
 | `PARSE_TIMESTAMP` | Converts a `STRING` value to a `TIMESTAMP` value. | [timestamp_functions.md](./timestamp_functions.md#parse_timestamp) |
-| `PATH_FIRST` | Gets the first node in a graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#path_first) |
-| `PATH_LAST` | Gets the last node in a graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#path_last) |
-| `PATH_LENGTH` | Gets the number of edges in a graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#path_length) |
+| `PATH_FIRST` | Gets the first node in a graph path. | [sql-functions.md](../graph-gql/sql-functions.md#path_first) |
+| `PATH_LAST` | Gets the last node in a graph path. | [sql-functions.md](../graph-gql/sql-functions.md#path_last) |
+| `PATH_LENGTH` | Gets the number of edges in a graph path. | [sql-functions.md](../graph-gql/sql-functions.md#path_length) |
 | `PERCENT_RANK` | Gets the percentile rank (from 0 to 1) of each row within a window. | [numbering_functions.md](./numbering_functions.md#percent_rank) |
 | `PERCENTILE_CONT` | Computes the specified percentile for a value, using linear interpolation. | [navigation_functions.md](./navigation_functions.md#percentile_cont) |
 | `PERCENTILE_DISC` | Computes the specified percentile for a discrete value. | [navigation_functions.md](./navigation_functions.md#percentile_disc) |
@@ -289,7 +289,7 @@
 | `SIGN` | Produces -1 , 0, or +1 for negative, zero, and positive arguments respectively. | [mathematical_functions.md](./mathematical_functions.md#sign) |
 | `SIN` | Computes the sine of `X`. | [mathematical_functions.md](./mathematical_functions.md#sin) |
 | `SINH` | Computes the hyperbolic sine of `X`. | [mathematical_functions.md](./mathematical_functions.md#sinh) |
-| `SOURCE_NODE_ID` | Gets a unique identifier of a graph edge's source node. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#source_node_id) |
+| `SOURCE_NODE_ID` | Gets a unique identifier of a graph edge's source node. | [sql-functions.md](../graph-gql/sql-functions.md#source_node_id) |
 | `SOUNDEX` | Gets the Soundex codes for words in a `STRING` value. | [string_functions-2.md](./string_functions-2.md#soundex) |
 | `SPLIT` | Splits a `STRING` or `BYTES` value, using a delimiter. | [string_functions-2.md](./string_functions-2.md#split) |
 | `SQRT` | Computes the square root of `X`. | [mathematical_functions.md](./mathematical_functions.md#sqrt) |

@@ -672,7 +672,7 @@ similar to fields of a struct.
 **Example**
 
 In the following example, `n` represents a graph element in the
-[`FinGraph`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#fin_graph) property graph:
+[`FinGraph`](../graph-gql/schema-statements.md#fingraph-example) property graph:
 
 ```sql
 GRAPH graph_db.FinGraph
@@ -897,7 +897,7 @@ A measure expression is an aggregate function over an expression, a scalar
 calculation over aggregates, or a composition of measures using `AGG`. When you
 call the `AGG` function on a measure, the calculation is evaluated once per
 unique key. For information about where to define a measure, see the
-[element properties definition](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#element_table_property_definition).
+[element properties definition](../graph-gql/schema-statements.md#element-properties-definition).
 
 A measure expression can include the following:
 
@@ -941,7 +941,7 @@ The following restrictions apply to measure expressions:
 
 The measure type has the following limitations:
 
-- Supported by only the `AGG` function, either on output from the [`GRAPH_EXPAND` TVF](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-queries#graph_expand) or inside derived measure definitions in `CREATE PROPERTY GRAPH`.
+- Supported by only the `AGG` function, either on output from the [`GRAPH_EXPAND` TVF](../graph-gql/sql-queries.md#graph_expand) or inside derived measure definitions in `CREATE PROPERTY GRAPH`.
 - Can't be explicitly defined as a member type of container types, such as a `STRUCT` or `ARRAY` type. When you query the output of the `GRAPH_EXPAND` function with `flatten_results => FALSE`, measures appear inside the resulting `STRUCT` columns.
 - Defined only as a property in a graph. For more information and examples, see [Work with measures](https://docs.cloud.google.com/bigquery/docs/graph-measures).
 

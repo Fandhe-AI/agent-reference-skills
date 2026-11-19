@@ -120,7 +120,7 @@ include a `WHERE` clause. For example:
 ##### Examples
 
 > [!NOTE]
-> **Note:** The examples in this section reference a property graph called [`FinGraph`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#fin_graph).
+> **Note:** The examples in this section reference a property graph called [`FinGraph`](schema-statements.md#fingraph-example).
 
 The following query matches all nodes:
 
@@ -552,7 +552,7 @@ Set operations support graph elements that have a common [supertype](../googlesq
 ##### Examples
 
 > [!NOTE]
-> **Note:** The examples in this section reference a property graph called [`FinGraph`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#fin_graph).
+> **Note:** The examples in this section reference a property graph called [`FinGraph`](schema-statements.md#fingraph-example).
 
 The following query matches all nodes in the graph. `n` is a graph pattern
 variable that's bound to the matching nodes:
@@ -932,7 +932,7 @@ The following are examples of subpath patterns:
 ##### Examples
 
 > [!NOTE]
-> **Note:** The examples in this section reference a property graph called [`FinGraph`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#fin_graph).
+> **Note:** The examples in this section reference a property graph called [`FinGraph`](schema-statements.md#fingraph-example).
 
 In the following query, the subpath
 `(src:Account)-[t1:Transfers]->(mid:Account)` is evaluated first, then the rest
@@ -1153,7 +1153,7 @@ MATCH (b:Account)((a:Account)-[t:Transfers]->(a:Account)){1, 3}
 ##### Examples
 
 > [!NOTE]
-> **Note:** The examples in this section reference a property graph called [`FinGraph`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#fin_graph).
+> **Note:** The examples in this section reference a property graph called [`FinGraph`](schema-statements.md#fingraph-example).
 
 The following query uses a quantified path pattern to match all of the
 destination accounts that are one to three transfers away from a source account
@@ -1307,10 +1307,10 @@ the node or edge.
 ##### Examples
 
 > [!NOTE]
-> **Note:** The examples in this section reference a property graph called [`FinGraph`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#fin_graph).
+> **Note:** The examples in this section reference a property graph called [`FinGraph`](schema-statements.md#fingraph-example).
 
 The following query matches all nodes with the label `Person`
-in the [`FinGraph`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#fin_graph) property graph.
+in the [`FinGraph`](schema-statements.md#fingraph-example) property graph.
 
 ```sql
 GRAPH graph_db.FinGraph
@@ -1327,7 +1327,7 @@ RETURN n.name
 ```
 
 The following query matches all nodes that have either a `Person`
-or an `Account` label in the [`FinGraph`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#fin_graph) property graph.
+or an `Account` label in the [`FinGraph`](schema-statements.md#fingraph-example) property graph.
 
 ```sql
 GRAPH graph_db.FinGraph
@@ -1403,7 +1403,7 @@ To use `ANY CHEAPEST` in a query:
 ##### Examples
 
 > [!NOTE]
-> **Note:** The examples in this section reference a property graph called [`FinGraph`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#fin_graph).
+> **Note:** The examples in this section reference a property graph called [`FinGraph`](schema-statements.md#fingraph-example).
 
 The following query matches a shortest path between each pair of `[a, b]`.
 
@@ -1607,7 +1607,7 @@ not both.
 ##### Examples
 
 > [!NOTE]
-> **Note:** The examples in this section reference a property graph called [`FinGraph`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#fin_graph).
+> **Note:** The examples in this section reference a property graph called [`FinGraph`](schema-statements.md#fingraph-example).
 
 The following query demonstrates the use of the `WALK` path mode on a
 non-quantified path pattern. The first path in the results uses the same edge
