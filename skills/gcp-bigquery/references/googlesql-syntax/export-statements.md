@@ -347,6 +347,7 @@ FROM
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the official text names the column `cbtFeld2`; changed to `cbtField2`, the `qualifierString` used for `field2` in the example below it on the same page.
 - Corrected from the official docs: the `bigtable_options` JSON array ends with a trailing comma before `]`, which is not valid JSON; the comma after the `cbtField4` element was removed.
+- Conflicting official statements: the `connection_name` argument says that connections aren't required to export to Google Cloud services and describes the connection only as holding Amazon S3 credentials, but the AlloyDB example on this page uses `WITH CONNECTION`. The BigQuery guide to exporting data to AlloyDB (https://docs.cloud.google.com/bigquery/docs/export-to-alloydb, retrieved 2026-11-20) lists creating a BigQuery connection to the AlloyDB instance as a prerequisite and says that only username and password authentication through a BigQuery connection is supported, so an export to AlloyDB needs `WITH CONNECTION`. The Amazon S3 export example on this page also uses `WITH CONNECTION`.
 
 ## Related
 
