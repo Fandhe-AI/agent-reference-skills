@@ -152,8 +152,7 @@ Adapted (not in the official docs): runnable form of the example(s) above: lines
 
 ```bash
 gcloud design-center spaces catalogs shares create projects/my-project/locations/us-central1/spaces/my-space/catalogs/my-catalog/shares/my-share \
-    --destination-space=my-destination-space \
-    --location=us-central1
+    --destination-space=projects/my-project/locations/us-central1/spaces/my-destination-space
 
 gcloud design-center spaces catalogs shares create my-share \
     --catalog=my-catalog \
@@ -179,7 +178,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
-- Corrected from the official docs (runnable form only; the help text above is verbatim): the second example passes the share as a full resource name and the destination space as the bare ID `my-destination-space`; the location of the destination space then has nothing to fall back on (gcloud 593.0.0: "Error parsing [destination_space] ... Failed to find attribute [location]"); the help says the destination space location falls back to `--location`, so the runnable form adds `--location=us-central1`.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the second example passes the share as a full resource name and the destination space as the bare ID `my-destination-space`; the project and location of the destination space then come only from `--project` / `core/project` and `--location`, and without them gcloud 593.0.0 fails ("Error parsing [destination_space] ... Failed to find attribute [location]"), while a different `core/project` would select a destination space in another project; the runnable form passes the destination space as a full name in the project and location of the share (`projects/my-project/locations/us-central1/spaces/my-destination-space`, the same space as the first example).
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
