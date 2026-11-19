@@ -64,6 +64,8 @@ The following example returns the skew between training and serving data
 and also sets custom anomaly detection thresholds for two of the feature
 columns:
 
+Adapted (not in the official docs): the statistics saved into `serve_stats` are changed from `stats1` (training data) to `stats2` (serving data).
+
 ```sql
 DECLARE stats1 JSON;
 DECLARE stats2 JSON;
@@ -78,7 +80,7 @@ SELECT ML.TFDV_VALIDATE(
 
 INSERT `myproject.mydataset.serve_stats`
   (t, dataset_feature_statistics_list)
-SELECT CURRENT_TIMESTAMP() AS t, stats1;
+SELECT CURRENT_TIMESTAMP() AS t, stats2;
 ```
 
 The following example returns the drift between two sets of serving data:
@@ -116,6 +118,7 @@ The `ML.TFDV_VALIDATE` function uses
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the two bullets about `JENSEN_SHANNON_DIVERGENCE` and `L_INFTY` say they are specified for the `categorical_default_threshold` / `numerical_default_threshold` argument. Those arguments take a `FLOAT64` threshold; the metric names are values of `categorical_metric_type` and `numerical_metric_type`, so the argument names are changed.
+- Corrected from the official docs: the example stores `stats1` into `myproject.mydataset.serve_stats`, but in the same example `stats1` is computed from the `training` table and `stats2` from the `serving` table. The saved value is changed to `stats2`, so that the serving-statistics table holds serving statistics.
 
 ## Related
 
