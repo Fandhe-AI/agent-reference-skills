@@ -555,6 +555,8 @@ the average trip duration as a past covariate because this value is not
 available for the future. The query uses whether the date is a weekend as a
 future covariate because the day of the week is known in advance.
 
+Adapted (not in the official docs): `horizon => 7` is added, because the future covariate `is_weekend` covers only 2016-06-01 to 2016-06-07 and the default horizon is 10.
+
 ```sql
 WITH data AS (
   SELECT
@@ -581,7 +583,8 @@ FROM
     TIMESTAMP_COL => 'dt',
     TARGET_COLS => ['subscriber_trips', 'casual_trips'],
     PAST_COVARIATE_COLS => ['avg_duration_min'],
-    FUTURE_COVARIATE_COLS => ['is_weekend']
+    FUTURE_COVARIATE_COLS => ['is_weekend'],
+    horizon => 7
   );
 ```
 
@@ -639,6 +642,7 @@ for the rest of the query.
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-forecast (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the multivariate example with past and future covariates gives `is_weekend` only for 2016-06-01 to 2016-06-07 and omits `HORIZON` (default `10`), although all input columns must span `CONTEXT_WINDOW` + `HORIZON`; `horizon => 7` is added, which also matches the seven rows of the example result.
 
 ## Related
 
