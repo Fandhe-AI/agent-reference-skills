@@ -58,11 +58,11 @@ The response is an Operation object.
 
 ### List linked datasets
 
-Adapted (not in the official docs): removed the trailing `\` after `PROJECT=PROJECT_ID`, which joined the assignment and the `for` line into one invalid command.
+Adapted (not in the official docs): removed the trailing `\` after `PROJECT=PROJECT_ID`, which joined the assignment and the `for` line into one invalid command; `${PROJECT}` and `${dataset}` (taken from command output) are double-quoted.
 
 ```bash
 PROJECT=PROJECT_ID
-for dataset in $(bq ls --project_id $PROJECT | tail +3); do [ "$(bq show -d --project_id $PROJECT $dataset | egrep LINKED)" ] && echo $dataset; done
+for dataset in $(bq ls --project_id "${PROJECT}" | tail +3); do [ "$(bq show -d --project_id "${PROJECT}" "${dataset}" | egrep LINKED)" ] && echo "${dataset}"; done
 ```
 
 In Knowledge Catalog search, match all linked datasets with the predicate `type=dataset.linked`.
@@ -114,6 +114,7 @@ Required permissions: `bigquery.datasets.create` (create new datasets) and `bigq
 ## Notes
 
 - Corrected from the official docs: the source writes `replica_locations`, `log_linked_dataset_query_user_email` and `stored_procedure_config: true`; the REST JSON names are `replicaLocations`, `logLinkedDatasetQueryUserEmail` and `storedProcedureConfig` (an object whose `enabled` field is the boolean), and `listings.subscribe` returns `SubscribeListingResponse` (field `subscription`) rather than a bare Subscription.
+- Adapted from the official docs: the linked-dataset loop expands `$PROJECT` and `$dataset` unquoted; they are written `"${PROJECT}"` / `"${dataset}"` so a value from `bq ls` output is passed as one argument.
 - Source: https://docs.cloud.google.com/bigquery/docs/analytics-hub-view-subscribe-listings (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the source shows `PROJECT=PROJECT_ID \` followed by `for dataset in $(bq ls --project_id $PROJECT | ...` on the next line (a continuation that merges the two lines) with unquoted `$PROJECT` / `$dataset`.
 - The source also shows Console steps for discovering, subscribing, viewing, updating, and deleting linked datasets; omitted.

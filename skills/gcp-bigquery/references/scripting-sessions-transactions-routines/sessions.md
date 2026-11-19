@@ -10,11 +10,13 @@ Create, run queries in, list, view the history of, and terminate BigQuery sessio
 
 ### Create a session (bq)
 
+Adapted (not in the official docs): a `\` is added after `--create_session`, and the optional `--location` flag is shown without the `[...]` brackets (omit the line to let BigQuery choose the location).
+
 ```bash
 bq query \
 --nouse_legacy_sql \
---create_session
-[--location 'SESSION_LOCATION'] \
+--create_session \
+--location 'SESSION_LOCATION' \
 'SQL_STATEMENT'
 ```
 
@@ -34,16 +36,16 @@ Adapted (not in the official docs): the source writes `["location": "SESSION_LOC
 
 The response carries the session ID (the source shows other fields too, with example values):
 
+Adapted (not in the official docs): `sessionInfo` is shown at the top level of the `jobs.query` response (`QueryResponse.sessionInfo`); the source nests it under `statistics`, which is where the Job resource (`jobs.get`) carries it (`JobStatistics.sessionInfo`).
+
 ```json
 {
   "jobReference": {
     "projectId": "myProject",
     "jobId": "job_123"
   },
-  "statistics": {
-    "sessionInfo": {
-      "sessionId": "CgwKCmZhbGl1LXRlc3QQARokMDAzYjI0OWQtZ"
-    }
+  "sessionInfo": {
+    "sessionId": "CgwKCmZhbGl1LXRlc3QQARokMDAzYjI0OWQtZ"
   }
 }
 ```
@@ -145,11 +147,12 @@ WHERE
 
 - In the console, each session is assigned to an editor tab: **Query settings** > **Session management** > **Use session mode**, then choose **Data location**; the session is created when the first query runs, and the location can't be changed afterward. Closing the tab terminates it. The session ID is under **Job information** in **Query results**, and **Job history** (Personal history / Project history) has a **Session ID** column and filter.
 - `--session_id` and `--create_session` are listed in `bq help query` (bq bundled with gcloud 593.0.0); the bq CLI reference page documents `session_id` only as a `--connection_property` key. `bq` returns the session ID as `In session: <ID>` after the query results.
-- The create-session `bq` block is verbatim from the source: `[--location ...]` marks an optional flag, and the source has no `\` after `--create_session`, so remove the brackets and add the `\` before running it with a location.
+- Corrected from the official docs: the create-session `bq` block has no `\` after `--create_session` and writes the optional flag as `[--location 'SESSION_LOCATION']`, so it does not run as written; the `\` is added and the brackets are removed.
 - Corrected from the official docs: the create-session request body wrote `["location": "SESSION_LOCATION"]` (not valid JSON) and the list query wrote `INFORMATION_SCHEMA.SESSIONS_BY_USER>` (stray `>`).
 - Session IDs in the examples are placeholders from the source.
 - Permissions required for these actions are in sessions-intro (for example `bigquery.jobs.create`, `bigquery.jobs.list`, `bigquery.jobs.listAll`, `bigquery.jobs.update`).
 - Corrected from the official docs: the session-history query filters `SESSIONS_BY_USER` on `session_info.session_id`, but that view has a flat `session_id` column (`session_info` is a column of the `JOBS_BY_*` views); and `BQ.ABORT_SESSION(SESSION_ID)` is written with the session ID as a quoted string.
+- Corrected from the official docs: the source's `jobs.query` response example puts `sessionInfo` under `statistics`; in the Discovery document `QueryResponse` has a top-level `sessionInfo`, and `statistics.sessionInfo` belongs to the Job resource returned by `jobs.get`. Read `sessionInfo.sessionId` from the `jobs.query` response, or `statistics.sessionInfo.sessionId` from `jobs.get`.
 - Source: https://docs.cloud.google.com/bigquery/docs/sessions (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

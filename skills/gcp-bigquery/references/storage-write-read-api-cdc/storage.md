@@ -153,6 +153,7 @@ Nullable columns use unions with the Avro `NULL` type.
 - The Storage Read API is the read counterpart of the Storage Write API.
 - The RANGE Avro schema block is the source's own text: two entries of an Avro `fields` list, not a standalone JSON document (it also keeps the source's trailing comma after the `end` field object), so it is shown as `text`.
 - Corrected from the official docs: the source writes the role as `bigquery.readSessionUser`; the IAM role ID is `roles/bigquery.readSessionUser`.
+- The permission table is as the source writes it ("on the table or higher" for `bigquery.readsessions.getData` / `.update`). The IAM role reference says `roles/bigquery.readSessionUser`, which holds all three `bigquery.readsessions.*` permissions, "can only be granted on Resource Manager resources (projects, folders, and organizations)", so grant it on the project that creates the read session. This page does not list the permission to read the table's data itself (for example `bigquery.tables.getData` in `roles/bigquery.dataViewer`); it is not confirmed here whether the Storage Read API also requires it.
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/storage (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
