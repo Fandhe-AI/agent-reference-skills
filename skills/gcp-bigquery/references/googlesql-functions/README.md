@@ -10,7 +10,7 @@
 | `AEAD.ENCRYPT` | Encrypts `STRING` plaintext, using the primary cryptographic key in a keyset. | [aead_encryption_functions.md](./aead_encryption_functions.md#aeadencrypt) |
 | `AGG` | Aggregates a measure type. | [aggregate_functions.md](./aggregate_functions.md#agg) |
 | `ANY_VALUE` | Gets an expression for some row. | [aggregate_functions.md](./aggregate_functions.md#any_value) |
-| `APPENDS` | Returns all rows appended to a table for a given time range. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#appends) |
+| `APPENDS` | Returns all rows appended to a table for a given time range. | [time-series-functions.md](./time-series-functions.md#appends) |
 | `APPROX_COUNT_DISTINCT` | Gets the approximate result for `COUNT(DISTINCT expression)`. | [approximate_aggregate_functions.md](./approximate_aggregate_functions.md#approx_count_distinct) |
 | `APPROX_QUANTILES` | Gets the approximate quantile boundaries. | [approximate_aggregate_functions.md](./approximate_aggregate_functions.md#approx_quantiles) |
 | `APPROX_TOP_COUNT` | Gets the approximate top elements and their approximate count. | [approximate_aggregate_functions.md](./approximate_aggregate_functions.md#approx_top_count) |
@@ -43,7 +43,7 @@
 | `CBRT` | Computes the cube root of `X`. | [mathematical_functions.md](./mathematical_functions.md#cbrt) |
 | `CEIL` | Gets the smallest integral value that isn't less than `X`. | [mathematical_functions.md](./mathematical_functions.md#ceil) |
 | `CEILING` | Synonym of `CEIL`. | [mathematical_functions.md](./mathematical_functions.md#ceiling) |
-| `CHANGES` | Returns all rows that have changed in a table for a given time range. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#changes) |
+| `CHANGES` | Returns all rows that have changed in a table for a given time range. | [time-series-functions.md](./time-series-functions.md#changes) |
 | `CHAR_LENGTH` | Gets the number of characters in a `STRING` value. | [string_functions-1.md](./string_functions-1.md#char_length) |
 | `CHARACTER_LENGTH` | Synonym for `CHAR_LENGTH`. | [string_functions-1.md](./string_functions-1.md#character_length) |
 | `CHR` | Converts a Unicode code point to a character. | [string_functions-1.md](./string_functions-1.md#chr) |
@@ -67,23 +67,23 @@
 | `CUME_DIST` | Gets the cumulative distribution (relative position (0,1\]) of each row within a window. | [numbering_functions.md](./numbering_functions.md#cume_dist) |
 | `CURRENT_DATE` | Returns the current date as a `DATE` value. | [date_functions.md](./date_functions.md#current_date) |
 | `CURRENT_DATETIME` | Returns the current date and time as a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#current_datetime) |
-| `CURRENT_TIME` | Returns the current time as a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#current_time) |
-| `CURRENT_TIMESTAMP` | Returns the current date and time as a `TIMESTAMP` object. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#current_timestamp) |
+| `CURRENT_TIME` | Returns the current time as a `TIME` value. | [time_functions.md](./time_functions.md#current_time) |
+| `CURRENT_TIMESTAMP` | Returns the current date and time as a `TIMESTAMP` object. | [timestamp_functions.md](./timestamp_functions.md#current_timestamp) |
 | `DATE` | Constructs a `DATE` value. | [date_functions.md](./date_functions.md#date) |
 | `DATE_ADD` | Adds a specified time interval to a `DATE` value. | [date_functions.md](./date_functions.md#date_add) |
-| `DATE_BUCKET` | Gets the lower bound of the date bucket that contains a date. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#date_bucket) |
+| `DATE_BUCKET` | Gets the lower bound of the date bucket that contains a date. | [time-series-functions.md](./time-series-functions.md#date_bucket) |
 | `DATE_DIFF` | Gets the number of unit boundaries between two `DATE` values at a particular time granularity. | [date_functions.md](./date_functions.md#date_diff) |
 | `DATE_FROM_UNIX_DATE` | Interprets an `INT64` expression as the number of days since 1970-01-01. | [date_functions.md](./date_functions.md#date_from_unix_date) |
 | `DATE_SUB` | Subtracts a specified time interval from a `DATE` value. | [date_functions.md](./date_functions.md#date_sub) |
 | `DATE_TRUNC` | Truncates a `DATE`, `DATETIME`, or `TIMESTAMP` value at a particular granularity. | [date_functions.md](./date_functions.md#date_trunc) |
 | `DATETIME` | Constructs a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#datetime) |
 | `DATETIME_ADD` | Adds a specified time interval to a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#datetime_add) |
-| `DATETIME_BUCKET` | Gets the lower bound of the datetime bucket that contains a datetime. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#datetime_bucket) |
+| `DATETIME_BUCKET` | Gets the lower bound of the datetime bucket that contains a datetime. | [time-series-functions.md](./time-series-functions.md#datetime_bucket) |
 | `DATETIME_DIFF` | Gets the number of unit boundaries between two `DATETIME` values at a particular time granularity. | [datetime_functions.md](./datetime_functions.md#datetime_diff) |
 | `DATETIME_SUB` | Subtracts a specified time interval from a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#datetime_sub) |
 | `DATETIME_TRUNC` | Truncates a `DATETIME` or `TIMESTAMP` value at a particular granularity. | [datetime_functions.md](./datetime_functions.md#datetime_trunc) |
 | `DENSE_RANK` | Gets the dense rank (1-based, no gaps) of each row within a window. | [numbering_functions.md](./numbering_functions.md#dense_rank) |
-| `DESTINATION_NODE_ID` | Gets a unique identifier of a graph edge's destination node. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#destination_node_id) |
+| `DESTINATION_NODE_ID` | Gets a unique identifier of a graph edge's destination node. | [sql-functions.md](../graph-gql/sql-functions.md#destination_node_id) |
 | `DETERMINISTIC_DECRYPT_BYTES` | Uses the matching key from a keyset to decrypt a `BYTES` ciphertext, using deterministic AEAD. | [aead_encryption_functions.md](./aead_encryption_functions.md#deterministic_decrypt_bytes) |
 | `DETERMINISTIC_DECRYPT_STRING` | Uses the matching key from a keyset to decrypt a `BYTES` ciphertext into a `STRING` plaintext, using deterministic AEAD. | [aead_encryption_functions.md](./aead_encryption_functions.md#deterministic_decrypt_string) |
 | `DETERMINISTIC_ENCRYPT` | Encrypts `STRING` plaintext, using the primary cryptographic key in a keyset, using deterministic AEAD encryption. | [aead_encryption_functions.md](./aead_encryption_functions.md#deterministic_encrypt) |
@@ -92,9 +92,9 @@
 | `DLP_DETERMINISTIC_DECRYPT` | Decrypts DLP-encrypted data. | [dlp_functions.md](./dlp_functions.md#dlp_deterministic_decrypt) |
 | `DLP_KEY_CHAIN` | Gets a data encryption key that's wrapped by Cloud Key Management Service. | [dlp_functions.md](./dlp_functions.md#dlp_key_chain) |
 | `FLOAT64` | Converts a JSON number to a SQL `FLOAT64` value. | [json_functions-1.md](./json_functions-1.md#float64) |
-| `EDGES` | Gets the edges in a graph path. The resulting array retains the original order in the graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#edges) |
+| `EDGES` | Gets the edges in a graph path. The resulting array retains the original order in the graph path. | [sql-functions.md](../graph-gql/sql-functions.md#edges) |
 | `EDIT_DISTANCE` | Computes the Levenshtein distance between two `STRING` or `BYTES` values. | [string_functions-1.md](./string_functions-1.md#edit_distance) |
-| `ELEMENT_ID` | Gets a graph element's unique identifier. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#element_id) |
+| `ELEMENT_ID` | Gets a graph element's unique identifier. | [sql-functions.md](../graph-gql/sql-functions.md#element_id) |
 | `ENDS_WITH` | Checks if a `STRING` or `BYTES` value is the suffix of another value. | [string_functions-1.md](./string_functions-1.md#ends_with) |
 | `ERROR` | Produces an error with a custom error message. | [debugging_functions.md](./debugging_functions.md#error) |
 | `EXP` | Computes `e` to the power of `X`. | [mathematical_functions.md](./mathematical_functions.md#exp) |
@@ -103,26 +103,26 @@
 | `EXTRACT` | Extracts part of a date from a `DATE` value. | [date_functions.md](./date_functions.md#extract) |
 | `EXTRACT` | Extracts part of a date and time from a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#extract) |
 | `EXTRACT` | Extracts part of an `INTERVAL` value. | [interval_functions.md](./interval_functions.md#extract) |
-| `EXTRACT` | Extracts part of a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#extract) |
-| `EXTRACT` | Extracts part of a `TIMESTAMP` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#extract) |
+| `EXTRACT` | Extracts part of a `TIME` value. | [time_functions.md](./time_functions.md#extract) |
+| `EXTRACT` | Extracts part of a `TIMESTAMP` value. | [timestamp_functions.md](./timestamp_functions.md#extract) |
 | `EUCLIDEAN_DISTANCE` | Computes the Euclidean distance between two vectors. | [mathematical_functions.md](./mathematical_functions.md#euclidean_distance) |
 | `FARM_FINGERPRINT` | Computes the fingerprint of a `STRING` or `BYTES` value using the FarmHash Fingerprint64 algorithm. | [hash_functions.md](./hash_functions.md#farm_fingerprint) |
 | `FIRST_VALUE` | Gets a value for the first row in the current window frame. | [navigation_functions.md](./navigation_functions.md#first_value) |
 | `FLOOR` | Gets the largest integral value that isn't greater than `X`. | [mathematical_functions.md](./mathematical_functions.md#floor) |
 | `FORMAT_DATE` | Formats a `DATE` value according to a specified format string. | [date_functions.md](./date_functions.md#format_date) |
 | `FORMAT_DATETIME` | Formats a `DATETIME` value according to a specified format string. | [datetime_functions.md](./datetime_functions.md#format_datetime) |
-| `FORMAT_TIME` | Formats a `TIME` value according to the specified format string. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#format_time) |
-| `FORMAT_TIMESTAMP` | Formats a `TIMESTAMP` value according to the specified format string. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#format_timestamp) |
+| `FORMAT_TIME` | Formats a `TIME` value according to the specified format string. | [time_functions.md](./time_functions.md#format_time) |
+| `FORMAT_TIMESTAMP` | Formats a `TIMESTAMP` value according to the specified format string. | [timestamp_functions.md](./timestamp_functions.md#format_timestamp) |
 | `FORMAT` | Formats data and produces the results as a `STRING` value. | [string_functions-1.md](./string_functions-1.md#format) |
 | `FROM_BASE32` | Converts a base32-encoded `STRING` value into a `BYTES` value. | [string_functions-1.md](./string_functions-1.md#from_base32) |
 | `FROM_BASE64` | Converts a base64-encoded `STRING` value into a `BYTES` value. | [string_functions-1.md](./string_functions-1.md#from_base64) |
 | `FROM_HEX` | Converts a hexadecimal-encoded `STRING` value into a `BYTES` value. | [string_functions-1.md](./string_functions-1.md#from_hex) |
-| `GAP_FILL` | Finds and fills gaps in a time series. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#gap_fill) |
+| `GAP_FILL` | Finds and fills gaps in a time series. | [time-series-functions.md](./time-series-functions.md#gap_fill) |
 | `GENERATE_ARRAY` | Generates an array of values in a range. | [array_functions.md](./array_functions.md#generate_array) |
 | `GENERATE_DATE_ARRAY` | Generates an array of dates in a range. | [array_functions.md](./array_functions.md#generate_date_array) |
 | `GENERATE_RANGE_ARRAY` | Splits a range into an array of subranges. | [range-functions.md](./range-functions.md#generate_range_array) |
 | `GENERATE_TIMESTAMP_ARRAY` | Generates an array of timestamps in a range. | [array_functions.md](./array_functions.md#generate_timestamp_array) |
-| `GENERATE_UUID` | Produces a random universally unique identifier (UUID) as a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/utility-functions#generate_uuid) |
+| `GENERATE_UUID` | Produces a random universally unique identifier (UUID) as a `STRING` value. | [utility-functions.md](./utility-functions.md#generate_uuid) |
 | `GREATEST` | Gets the greatest value among `X1,...,XN`. | [mathematical_functions.md](./mathematical_functions.md#greatest) |
 | `GROUPING` | Checks if a groupable value in the `GROUP BY` clause is aggregated. | [aggregate_functions.md](./aggregate_functions.md#grouping) |
 | `HLL_COUNT.EXTRACT` | Extracts a cardinality estimate of an HLL++ sketch. | [hll_functions.md](./hll_functions.md#hll_countextract) |
@@ -133,11 +133,11 @@
 | `INITCAP` | Formats a `STRING` as proper case, which means that the first character in each word is uppercase and all other characters are lowercase. | [string_functions-1.md](./string_functions-1.md#initcap) |
 | `INSTR` | Finds the position of a subvalue inside another value, optionally starting the search at a given offset or occurrence. | [string_functions-1.md](./string_functions-1.md#instr) |
 | `INT64` | Converts a JSON number to a SQL `INT64` value. | [json_functions-1.md](./json_functions-1.md#int64) |
-| `IS_ACYCLIC` | Checks if a graph path has a repeating node. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#is_acyclic) |
+| `IS_ACYCLIC` | Checks if a graph path has a repeating node. | [sql-functions.md](../graph-gql/sql-functions.md#is_acyclic) |
 | `IS_INF` | Checks if `X` is positive or negative infinity. | [mathematical_functions.md](./mathematical_functions.md#is_inf) |
 | `IS_NAN` | Checks if `X` is a `NaN` value. | [mathematical_functions.md](./mathematical_functions.md#is_nan) |
-| `IS_SIMPLE` | Checks if a graph path is simple. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#is_simple) |
-| `IS_TRAIL` | Checks if a graph path has a repeating edge. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#is_trail) |
+| `IS_SIMPLE` | Checks if a graph path is simple. | [sql-functions.md](../graph-gql/sql-functions.md#is_simple) |
+| `IS_TRAIL` | Checks if a graph path has a repeating edge. | [sql-functions.md](../graph-gql/sql-functions.md#is_trail) |
 | `JSON_ARRAY` | Creates a JSON array. | [json_functions-1.md](./json_functions-1.md#json_array) |
 | `JSON_ARRAY_APPEND` | Appends JSON data to the end of a JSON array. | [json_functions-1.md](./json_functions-1.md#json_array_append) |
 | `JSON_ARRAY_INSERT` | Inserts JSON data into a JSON array. | [json_functions-1.md](./json_functions-1.md#json_array_insert) |
@@ -180,7 +180,7 @@
 | `KLL_QUANTILES.MERGE_PARTIAL` | Merges KLL sketches of the same underlying type into a new sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesmerge_partial) |
 | `KLL_QUANTILES.MERGE_POINT_INT64` | Merges `INT64`-initialized KLL sketches into a new sketch, and then gets a specific quantile from the new sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesmerge_point_int64) |
 | `KLL_QUANTILES.MERGE_POINT_FLOAT64` | Merges `FLOAT64`-initialized KLL sketches into a new sketch, and then gets a specific quantile from the new sketch. | [kll_functions.md](./kll_functions.md#kll_quantilesmerge_point_float64) |
-| `LABELS` | Gets the labels associated with a graph element. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#labels) |
+| `LABELS` | Gets the labels associated with a graph element. | [sql-functions.md](../graph-gql/sql-functions.md#labels) |
 | `LAG` | Gets a value for a preceding row. | [navigation_functions.md](./navigation_functions.md#lag) |
 | `LAST_DAY` | Gets the last day in a specified time period that contains a `DATE` value. | [date_functions.md](./date_functions.md#last_day) |
 | `LAST_DAY` | Gets the last day in a specified time period that contains a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#last_day) |
@@ -218,7 +218,7 @@
 | `NET.PUBLIC_SUFFIX` | Gets the public suffix from a URL. | [net_functions.md](./net_functions.md#netpublic_suffix) |
 | `NET.REG_DOMAIN` | Gets the registered or registrable domain from a URL. | [net_functions.md](./net_functions.md#netreg_domain) |
 | `NET.SAFE_IP_FROM_STRING` | Similar to the `NET.IP_FROM_STRING`, but returns `NULL` instead of producing an error if the input is invalid. | [net_functions.md](./net_functions.md#netsafe_ip_from_string) |
-| `NODES` | Gets the nodes in a graph path. The resulting array retains the original order in the graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#nodes) |
+| `NODES` | Gets the nodes in a graph path. The resulting array retains the original order in the graph path. | [sql-functions.md](../graph-gql/sql-functions.md#nodes) |
 | `NORMALIZE` | Case-sensitively normalizes the characters in a `STRING` value. | [string_functions-1.md](./string_functions-1.md#normalize) |
 | `NORMALIZE_AND_CASEFOLD` | Case-insensitively normalizes the characters in a `STRING` value. | [string_functions-1.md](./string_functions-1.md#normalize_and_casefold) |
 | `NTH_VALUE` | Gets a value for the Nth row of the current window frame. | [navigation_functions.md](./navigation_functions.md#nth_value) |
@@ -234,11 +234,11 @@
 | `PARSE_DATETIME` | Converts a `STRING` value to a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#parse_datetime) |
 | `PARSE_JSON` | Converts a JSON-formatted `STRING` value to a `JSON` value. | [json_functions-2.md](./json_functions-2.md#parse_json) |
 | `PARSE_NUMERIC` | Converts a `STRING` value to a `NUMERIC` value. | [conversion_functions.md](./conversion_functions.md#parse_numeric) |
-| `PARSE_TIME` | Converts a `STRING` value to a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#parse_time) |
-| `PARSE_TIMESTAMP` | Converts a `STRING` value to a `TIMESTAMP` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#parse_timestamp) |
-| `PATH_FIRST` | Gets the first node in a graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#path_first) |
-| `PATH_LAST` | Gets the last node in a graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#path_last) |
-| `PATH_LENGTH` | Gets the number of edges in a graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#path_length) |
+| `PARSE_TIME` | Converts a `STRING` value to a `TIME` value. | [time_functions.md](./time_functions.md#parse_time) |
+| `PARSE_TIMESTAMP` | Converts a `STRING` value to a `TIMESTAMP` value. | [timestamp_functions.md](./timestamp_functions.md#parse_timestamp) |
+| `PATH_FIRST` | Gets the first node in a graph path. | [sql-functions.md](../graph-gql/sql-functions.md#path_first) |
+| `PATH_LAST` | Gets the last node in a graph path. | [sql-functions.md](../graph-gql/sql-functions.md#path_last) |
+| `PATH_LENGTH` | Gets the number of edges in a graph path. | [sql-functions.md](../graph-gql/sql-functions.md#path_length) |
 | `PERCENT_RANK` | Gets the percentile rank (from 0 to 1) of each row within a window. | [numbering_functions.md](./numbering_functions.md#percent_rank) |
 | `PERCENTILE_CONT` | Computes the specified percentile for a value, using linear interpolation. | [navigation_functions.md](./navigation_functions.md#percentile_cont) |
 | `PERCENTILE_DISC` | Computes the specified percentile for a discrete value. | [navigation_functions.md](./navigation_functions.md#percentile_disc) |
@@ -289,7 +289,7 @@
 | `SIGN` | Produces -1 , 0, or +1 for negative, zero, and positive arguments respectively. | [mathematical_functions.md](./mathematical_functions.md#sign) |
 | `SIN` | Computes the sine of `X`. | [mathematical_functions.md](./mathematical_functions.md#sin) |
 | `SINH` | Computes the hyperbolic sine of `X`. | [mathematical_functions.md](./mathematical_functions.md#sinh) |
-| `SOURCE_NODE_ID` | Gets a unique identifier of a graph edge's source node. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#source_node_id) |
+| `SOURCE_NODE_ID` | Gets a unique identifier of a graph edge's source node. | [sql-functions.md](../graph-gql/sql-functions.md#source_node_id) |
 | `SOUNDEX` | Gets the Soundex codes for words in a `STRING` value. | [string_functions-2.md](./string_functions-2.md#soundex) |
 | `SPLIT` | Splits a `STRING` or `BYTES` value, using a delimiter. | [string_functions-2.md](./string_functions-2.md#split) |
 | `SQRT` | Computes the square root of `X`. | [mathematical_functions.md](./mathematical_functions.md#sqrt) |
@@ -375,20 +375,20 @@
 | `TANH` | Computes the hyperbolic tangent of `X`. | [mathematical_functions.md](./mathematical_functions.md#tanh) |
 | `TEXT_ANALYZE` | Extracts terms (tokens) from text and converts them into a tokenized document. | [text-analysis-functions.md](./text-analysis-functions.md#text_analyze) |
 | `TF_IDF` | Evaluates how relevant a term (token) is to a tokenized document in a set of tokenized documents. | [text-analysis-functions.md](./text-analysis-functions.md#tf_idf) |
-| `TIME` | Constructs a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#time) |
-| `TIME_ADD` | Adds a specified time interval to a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#time_add) |
-| `TIME_DIFF` | Gets the number of unit boundaries between two `TIME` values at a particular time granularity. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#time_diff) |
-| `TIME_SUB` | Subtracts a specified time interval from a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#time_sub) |
-| `TIME_TRUNC` | Truncates a `TIME` value at a particular granularity. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#time_trunc) |
-| `TIMESTAMP` | Constructs a `TIMESTAMP` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp) |
-| `TIMESTAMP_ADD` | Adds a specified time interval to a `TIMESTAMP` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_add) |
-| `TIMESTAMP_BUCKET` | Gets the lower bound of the timestamp bucket that contains a timestamp. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#timestamp_bucket) |
-| `TIMESTAMP_DIFF` | Gets the number of unit boundaries between two `TIMESTAMP` values at a particular time granularity. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_diff) |
-| `TIMESTAMP_MICROS` | Converts the number of microseconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_micros) |
-| `TIMESTAMP_MILLIS` | Converts the number of milliseconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_millis) |
-| `TIMESTAMP_SECONDS` | Converts the number of seconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_seconds) |
-| `TIMESTAMP_SUB` | Subtracts a specified time interval from a `TIMESTAMP` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_sub) |
-| `TIMESTAMP_TRUNC` | Truncates a `TIMESTAMP` or `DATETIME` value at a particular granularity. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc) |
+| `TIME` | Constructs a `TIME` value. | [time_functions.md](./time_functions.md#time) |
+| `TIME_ADD` | Adds a specified time interval to a `TIME` value. | [time_functions.md](./time_functions.md#time_add) |
+| `TIME_DIFF` | Gets the number of unit boundaries between two `TIME` values at a particular time granularity. | [time_functions.md](./time_functions.md#time_diff) |
+| `TIME_SUB` | Subtracts a specified time interval from a `TIME` value. | [time_functions.md](./time_functions.md#time_sub) |
+| `TIME_TRUNC` | Truncates a `TIME` value at a particular granularity. | [time_functions.md](./time_functions.md#time_trunc) |
+| `TIMESTAMP` | Constructs a `TIMESTAMP` value. | [timestamp_functions.md](./timestamp_functions.md#timestamp) |
+| `TIMESTAMP_ADD` | Adds a specified time interval to a `TIMESTAMP` value. | [timestamp_functions.md](./timestamp_functions.md#timestamp_add) |
+| `TIMESTAMP_BUCKET` | Gets the lower bound of the timestamp bucket that contains a timestamp. | [time-series-functions.md](./time-series-functions.md#timestamp_bucket) |
+| `TIMESTAMP_DIFF` | Gets the number of unit boundaries between two `TIMESTAMP` values at a particular time granularity. | [timestamp_functions.md](./timestamp_functions.md#timestamp_diff) |
+| `TIMESTAMP_MICROS` | Converts the number of microseconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. | [timestamp_functions.md](./timestamp_functions.md#timestamp_micros) |
+| `TIMESTAMP_MILLIS` | Converts the number of milliseconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. | [timestamp_functions.md](./timestamp_functions.md#timestamp_millis) |
+| `TIMESTAMP_SECONDS` | Converts the number of seconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. | [timestamp_functions.md](./timestamp_functions.md#timestamp_seconds) |
+| `TIMESTAMP_SUB` | Subtracts a specified time interval from a `TIMESTAMP` value. | [timestamp_functions.md](./timestamp_functions.md#timestamp_sub) |
+| `TIMESTAMP_TRUNC` | Truncates a `TIMESTAMP` or `DATETIME` value at a particular granularity. | [timestamp_functions.md](./timestamp_functions.md#timestamp_trunc) |
 | `TO_BASE32` | Converts a `BYTES` value to a base32-encoded `STRING` value. | [string_functions-2.md](./string_functions-2.md#to_base32) |
 | `TO_BASE64` | Converts a `BYTES` value to a base64-encoded `STRING` value. | [string_functions-2.md](./string_functions-2.md#to_base64) |
 | `TO_CODE_POINTS` | Converts a `STRING` or `BYTES` value into an array of extended ASCII code points. | [string_functions-2.md](./string_functions-2.md#to_code_points) |
@@ -398,18 +398,18 @@
 | `TRANSLATE` | Within a value, replaces each source character with the corresponding target character. | [string_functions-2.md](./string_functions-2.md#translate) |
 | `TRIM` | Removes the specified leading and trailing Unicode code points or bytes from a `STRING` or `BYTES` value. | [string_functions-2.md](./string_functions-2.md#trim) |
 | `TRUNC` | Rounds a number like `ROUND(X)` or `ROUND(X, N)`, but always rounds towards zero and never overflows. | [mathematical_functions.md](./mathematical_functions.md#trunc) |
-| `TYPEOF` | Gets the name of the data type for an expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/utility-functions#typeof) |
+| `TYPEOF` | Gets the name of the data type for an expression. | [utility-functions.md](./utility-functions.md#typeof) |
 | `UNICODE` | Gets the Unicode code point for the first character in a value. | [string_functions-2.md](./string_functions-2.md#unicode) |
 | `UNIX_DATE` | Converts a `DATE` value to the number of days since 1970-01-01. | [date_functions.md](./date_functions.md#unix_date) |
-| `UNIX_MICROS` | Converts a `TIMESTAMP` value to the number of microseconds since 1970-01-01 00:00:00 UTC. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_micros) |
-| `UNIX_MILLIS` | Converts a `TIMESTAMP` value to the number of milliseconds since 1970-01-01 00:00:00 UTC. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_millis) |
-| `UNIX_SECONDS` | Converts a `TIMESTAMP` value to the number of seconds since 1970-01-01 00:00:00 UTC. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_seconds) |
+| `UNIX_MICROS` | Converts a `TIMESTAMP` value to the number of microseconds since 1970-01-01 00:00:00 UTC. | [timestamp_functions.md](./timestamp_functions.md#unix_micros) |
+| `UNIX_MILLIS` | Converts a `TIMESTAMP` value to the number of milliseconds since 1970-01-01 00:00:00 UTC. | [timestamp_functions.md](./timestamp_functions.md#unix_millis) |
+| `UNIX_SECONDS` | Converts a `TIMESTAMP` value to the number of seconds since 1970-01-01 00:00:00 UTC. | [timestamp_functions.md](./timestamp_functions.md#unix_seconds) |
 | `UPPER` | Formats alphabetic characters in a `STRING` value as uppercase. <br /> Formats ASCII characters in a `BYTES` value as uppercase. | [string_functions-2.md](./string_functions-2.md#upper) |
 | `VAR_POP` | Computes the population (biased) variance of the values. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#var_pop) |
 | `VAR_SAMP` | Computes the sample (unbiased) variance of the values. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#var_samp) |
 | `VARIANCE` | An alias of `VAR_SAMP`. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#variance) |
 | `VECTOR_SEARCH` | Performs a semantic search or a hybrid search on embeddings to find similar entities. | [search_functions.md](./search_functions.md#vector_search) |
-| `VECTOR_INDEX.STATISTICS` | Calculate how much an indexed table's data has drifted between when a vector index was trained and the present. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/vectorindex_functions#vector_indexstatistics) |
+| `VECTOR_INDEX.STATISTICS` | Calculate how much an indexed table's data has drifted between when a vector index was trained and the present. | [vectorindex_functions.md](./vectorindex_functions.md#vector_indexstatistics) |
 | `ZSTD_COMPRESS` | Compresses `STRING` or `BYTES` input into `BYTES` output using the Zstandard (Zstd) lossless data compression algorithm. | [compression-functions.md](./compression-functions.md#zstd_compress) |
 | `ZSTD_DECOMPRESS_TO_BYTES` | Decompresses `BYTES` input into `BYTES` output using the Zstandard (Zstd) lossless data compression algorithm. | [compression-functions.md](./compression-functions.md#zstd_decompress_to_bytes) |
 | `ZSTD_DECOMPRESS_TO_STRING` | Decompress `BYTES` input into `STRING` output using the Zstandard (Zstd) lossless data compression algorithm. | [compression-functions.md](./compression-functions.md#zstd_decompress_to_string) |
@@ -450,3 +450,9 @@
 | String functions (part 2 of 2) | REGEXP_INSTR, REGEXP_REPLACE, REGEXP_SUBSTR, REPEAT, REPLACE, REVERSE, RIGHT, RPAD, RTRIM, SAFE_CONVERT_BYTES_TO_STRING, SOUNDEX, SPLIT, STARTS_WITH, STRPOS, SUBSTR, SUBSTRING, TO_BASE32, TO_BASE64, TO_CODE_POINTS, TO_HEX, TRANSLATE, TRIM, UNICODE, UPPER | [string_functions-2.md](./string_functions-2.md) |
 | Table functions (built in) | Function list, EXTERNAL_OBJECT_TRANSFORM | [table-functions-built-in.md](./table-functions-built-in.md) |
 | Text analysis functions | Function list, BAG_OF_WORDS, TEXT_ANALYZE, TF_IDF | [text-analysis-functions.md](./text-analysis-functions.md) |
+| Time series functions | Function list, APPENDS, CHANGES, DATE_BUCKET, DATETIME_BUCKET, GAP_FILL, TIMESTAMP_BUCKET | [time-series-functions.md](./time-series-functions.md) |
+| Time functions | Function list, CURRENT_TIME, EXTRACT, FORMAT_TIME, PARSE_TIME, TIME, TIME_ADD, TIME_DIFF, TIME_SUB, TIME_TRUNC | [time_functions.md](./time_functions.md) |
+| Timestamp functions | Function list, CURRENT_TIMESTAMP, EXTRACT, FORMAT_TIMESTAMP, PARSE_TIMESTAMP, STRING, TIMESTAMP, TIMESTAMP_ADD, TIMESTAMP_DIFF, TIMESTAMP_MICROS, TIMESTAMP_MILLIS, TIMESTAMP_SECONDS, TIMESTAMP_SUB, TIMESTAMP_TRUNC, UNIX_MICROS, UNIX_MILLIS, UNIX_SECONDS, Supplemental materials | [timestamp_functions.md](./timestamp_functions.md) |
+| Utility functions | Function list, GENERATE_UUID, TYPEOF | [utility-functions.md](./utility-functions.md) |
+| Vector index functions | Function list, VECTOR_INDEX.STATISTICS | [vectorindex_functions.md](./vectorindex_functions.md) |
+| Window function calls | Window function syntax, Filtering results with the QUALIFY clause, Window function examples | [window-function-calls.md](./window-function-calls.md) |
