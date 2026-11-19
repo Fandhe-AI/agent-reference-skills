@@ -234,6 +234,26 @@ NOTES
         $ gcloud alpha dataplex assets create
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud dataplex assets create test-asset \
+    --location=us-central1 \
+    --lake=test-lake \
+    --zone=test-zone \
+    --resource-type=STORAGE_BUCKET \
+    --resource-name=projects/test-project/buckets/test-bucket
+
+gcloud dataplex assets create test-asset \
+    --location=us-central1 \
+    --lake=test-lake \
+    --zone=test-zone \
+    --resource-type=STORAGE_BUCKET \
+    --resource-name=projects/test-project/buckets/test-bucket \
+    --discovery-enabled \
+    --discovery-schedule="0 * * * *"
+```
+
 ### gcloud alpha dataplex assets create
 
 ```text
@@ -259,6 +279,8 @@ SYNOPSIS
 
 ## Notes
 
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the examples say "in location us-central1" but pass `--location=us-central`, which is not a region ID; the runnable form passes `--location=us-central1`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
