@@ -70,3 +70,13 @@
 | The ML.DISTANCE function | Syntax, Output, Example, What's next | [distance.md](./distance.md) |
 | The DROP MODEL statement | Syntax | [drop-model.md](./drop-model.md) |
 | The ML.ENTITY_FEATURES_AT_TIME function | Syntax, Output, Examples | [entity-feature-time.md](./entity-feature-time.md) |
+| The ML.EVALUATE function | Supported models, Syntax, Output, Limitations, Costs, Examples, What's next | [evaluate.md](./evaluate.md) |
+| The ML.EXPLAIN_FORECAST function | Syntax, Output, Mathematical explanation, ARIMA_PLUS example, ARIMA_PLUS_XREG example, What's next | [explain-forecast.md](./explain-forecast.md) |
+| The ML.EXPLAIN_PREDICT function | Syntax, Output, Examples, What's next | [explain-predict.md](./explain-predict.md) |
+| The EXPORT MODEL statement | Syntax | [export-model.md](./export-model.md) |
+| The ML.FEATURE_CROSS function | Syntax, Output, Example, What's next | [feature-cross.md](./feature-cross.md) |
+| The ML.FEATURES_AT_TIME function | Syntax, Output, Examples | [feature-time.md](./feature-time.md) |
+| The ML.FEATURE_INFO function | Syntax, Output, Permissions, Limitations, Example, What's next | [feature.md](./feature.md) |
+| The ML.FORECAST function | Syntax, Output, ARIMA_PLUS example, ARIMA_PLUS_XREG example, Limitation, What's next | [forecast.md](./forecast.md) |
+| The ML.GENERATE_EMBEDDING function | Embeddings, Function processing, Syntax, Output, Supported multimodal content, Known issues, Examples, Locations, Quotas, What's next | [generate-embedding.md](./generate-embedding.md) |
+| The AI.GENERATE_TABLE function | Input, Syntax, Examples, Details, Output, Locations, Quotas and limits, Known issues, What's next | [generate-table.md](./generate-table.md) |
