@@ -37,7 +37,7 @@
 | `BIT_COUNT` | Gets the number of bits that are set in an input expression. | [bit_functions.md](./bit_functions.md#bit_count) |
 | `BIT_OR` | Performs a bitwise OR operation on an expression. | [aggregate_functions.md](./aggregate_functions.md#bit_or) |
 | `BIT_XOR` | Performs a bitwise XOR operation on an expression. | [aggregate_functions.md](./aggregate_functions.md#bit_xor) |
-| `BOOL` | Converts a JSON boolean to a SQL `BOOL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#bool_for_json) |
+| `BOOL` | Converts a JSON boolean to a SQL `BOOL` value. | [json_functions-1.md](./json_functions-1.md#bool) |
 | `BYTE_LENGTH` | Gets the number of `BYTES` in a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#byte_length) |
 | `CAST` | Convert the results of an expression to the given type. | [conversion_functions.md](./conversion_functions.md#cast) |
 | `CBRT` | Computes the cube root of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#cbrt) |
@@ -91,7 +91,7 @@
 | `DLP_DETERMINISTIC_ENCRYPT` | Encrypts data with a DLP compatible algorithm. | [dlp_functions.md](./dlp_functions.md#dlp_deterministic_encrypt) |
 | `DLP_DETERMINISTIC_DECRYPT` | Decrypts DLP-encrypted data. | [dlp_functions.md](./dlp_functions.md#dlp_deterministic_decrypt) |
 | `DLP_KEY_CHAIN` | Gets a data encryption key that's wrapped by Cloud Key Management Service. | [dlp_functions.md](./dlp_functions.md#dlp_key_chain) |
-| `FLOAT64` | Converts a JSON number to a SQL `FLOAT64` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#double_for_json) |
+| `FLOAT64` | Converts a JSON number to a SQL `FLOAT64` value. | [json_functions-1.md](./json_functions-1.md#float64) |
 | `EDGES` | Gets the edges in a graph path. The resulting array retains the original order in the graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#edges) |
 | `EDIT_DISTANCE` | Computes the Levenshtein distance between two `STRING` or `BYTES` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#edit_distance) |
 | `ELEMENT_ID` | Gets a graph element's unique identifier. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#element_id) |
@@ -132,23 +132,23 @@
 | `IEEE_DIVIDE` | Divides `X` by `Y`, but doesn't generate errors for division by zero or overflow. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#ieee_divide) |
 | `INITCAP` | Formats a `STRING` as proper case, which means that the first character in each word is uppercase and all other characters are lowercase. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#initcap) |
 | `INSTR` | Finds the position of a subvalue inside another value, optionally starting the search at a given offset or occurrence. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#instr) |
-| `INT64` | Converts a JSON number to a SQL `INT64` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#int64_for_json) |
+| `INT64` | Converts a JSON number to a SQL `INT64` value. | [json_functions-1.md](./json_functions-1.md#int64) |
 | `IS_ACYCLIC` | Checks if a graph path has a repeating node. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#is_acyclic) |
 | `IS_INF` | Checks if `X` is positive or negative infinity. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#is_inf) |
 | `IS_NAN` | Checks if `X` is a `NaN` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#is_nan) |
 | `IS_SIMPLE` | Checks if a graph path is simple. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#is_simple) |
 | `IS_TRAIL` | Checks if a graph path has a repeating edge. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#is_trail) |
-| `JSON_ARRAY` | Creates a JSON array. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_array) |
-| `JSON_ARRAY_APPEND` | Appends JSON data to the end of a JSON array. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_array_append) |
-| `JSON_ARRAY_INSERT` | Inserts JSON data into a JSON array. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_array_insert) |
-| `JSON_EXTRACT` | (Deprecated) Extracts a JSON value and converts it to a SQL JSON-formatted `STRING` or `JSON` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_extract) |
-| `JSON_EXTRACT_ARRAY` | (Deprecated) Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_extract_array) |
-| `JSON_EXTRACT_SCALAR` | (Deprecated) Extracts a JSON scalar value and converts it to a SQL `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_extract_scalar) |
-| `JSON_EXTRACT_STRING_ARRAY` | (Deprecated) Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_extract_string_array) |
-| `JSON_FLATTEN` | Produces a new SQL `ARRAY<JSON>` value containing all non-array values that are either directly in the input JSON value or children of one or more consecutively nested arrays in the input JSON value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_flatten) |
-| `JSON_KEYS` | Extracts unique JSON keys from a JSON expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_keys) |
-| `JSON_OBJECT` | Creates a JSON object. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_object) |
-| `JSON_QUERY` | Extracts a JSON value and converts it to a SQL JSON-formatted `STRING` or `JSON` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_query) |
+| `JSON_ARRAY` | Creates a JSON array. | [json_functions-1.md](./json_functions-1.md#json_array) |
+| `JSON_ARRAY_APPEND` | Appends JSON data to the end of a JSON array. | [json_functions-1.md](./json_functions-1.md#json_array_append) |
+| `JSON_ARRAY_INSERT` | Inserts JSON data into a JSON array. | [json_functions-1.md](./json_functions-1.md#json_array_insert) |
+| `JSON_EXTRACT` | (Deprecated) Extracts a JSON value and converts it to a SQL JSON-formatted `STRING` or `JSON` value. | [json_functions-1.md](./json_functions-1.md#json_extract) |
+| `JSON_EXTRACT_ARRAY` | (Deprecated) Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. | [json_functions-1.md](./json_functions-1.md#json_extract_array) |
+| `JSON_EXTRACT_SCALAR` | (Deprecated) Extracts a JSON scalar value and converts it to a SQL `STRING` value. | [json_functions-1.md](./json_functions-1.md#json_extract_scalar) |
+| `JSON_EXTRACT_STRING_ARRAY` | (Deprecated) Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. | [json_functions-1.md](./json_functions-1.md#json_extract_string_array) |
+| `JSON_FLATTEN` | Produces a new SQL `ARRAY<JSON>` value containing all non-array values that are either directly in the input JSON value or children of one or more consecutively nested arrays in the input JSON value. | [json_functions-1.md](./json_functions-1.md#json_flatten) |
+| `JSON_KEYS` | Extracts unique JSON keys from a JSON expression. | [json_functions-1.md](./json_functions-1.md#json_keys) |
+| `JSON_OBJECT` | Creates a JSON object. | [json_functions-1.md](./json_functions-1.md#json_object) |
+| `JSON_QUERY` | Extracts a JSON value and converts it to a SQL JSON-formatted `STRING` or `JSON` value. | [json_functions-1.md](./json_functions-1.md#json_query) |
 | `JSON_QUERY_ARRAY` | Extracts a JSON array and converts it to a SQL `ARRAY<JSON-formatted STRING>` or `ARRAY<JSON>` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_query_array) |
 | `JSON_REMOVE` | Produces JSON with the specified JSON data removed. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_remove) |
 | `JSON_SET` | Inserts or replaces JSON data. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_set) |
@@ -434,3 +434,4 @@
 | Hash functions | Function list, FARM_FINGERPRINT, MD5, SHA1, SHA256, SHA512 | [hash_functions.md](./hash_functions.md) |
 | HyperLogLog++ functions | Function list, HLL_COUNT.EXTRACT, HLL_COUNT.INIT, HLL_COUNT.MERGE, HLL_COUNT.MERGE_PARTIAL | [hll_functions.md](./hll_functions.md) |
 | Interval functions | Function list, EXTRACT, JUSTIFY_DAYS, JUSTIFY_HOURS, JUSTIFY_INTERVAL, MAKE_INTERVAL | [interval_functions.md](./interval_functions.md) |
+| JSON functions (part 1 of 2) | Categories, Function list, BOOL, FLOAT64, INT64, JSON_ARRAY, JSON_ARRAY_APPEND, JSON_ARRAY_INSERT, JSON_EXTRACT, JSON_EXTRACT_ARRAY, JSON_EXTRACT_SCALAR, JSON_EXTRACT_STRING_ARRAY, JSON_FLATTEN, JSON_KEYS, JSON_OBJECT, JSON_QUERY | [json_functions-1.md](./json_functions-1.md) |
