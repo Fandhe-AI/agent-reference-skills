@@ -38,9 +38,9 @@ sorting and comparing strings:
 | Operations |
 |---|
 | Collation-supported [comparison operations](#functions-operators-and-conditional-expressions) |
-| [Join operations](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#join_types) |
-| [`ORDER BY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#order_by_clause) |
-| [`GROUP BY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause) |
+| [Join operations](query-syntax-2.md#join-operation) |
+| [`ORDER BY`](query-syntax-2.md#order-by-clause) |
+| [`GROUP BY`](query-syntax-2.md#group-by-clause) |
 | [`WINDOW`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#window_clause) for window functions |
 | Collation-supported [scalar functions](#functions-operators-and-conditional-expressions) |
 | Collation-supported [aggregate functions](#functions-operators-and-conditional-expressions) |

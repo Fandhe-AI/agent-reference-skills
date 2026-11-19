@@ -68,7 +68,7 @@ irrespective of `ASC` or `DESC` by using the `NULLS FIRST` or `NULLS LAST`
 modifiers respectively.
 
 To learn more about using `ASC`, `DESC`, `NULLS FIRST` and `NULLS LAST`, see
-the [`ORDER BY` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#order_by_clause).
+the [`ORDER BY` clause](query-syntax-2.md#order-by-clause).
 
 ##### Ordering floating points
 
@@ -152,7 +152,7 @@ Notes:
   - `NULL` upper bounds are sorted after non-`NULL` upper bounds.
   - If two bounds that are being compared are `NULL`, the comparison is `TRUE`.
   - An `UNBOUNDED` bound is treated as a `NULL` bound.
-- All types that support comparisons can be used in a `JOIN` condition. See [JOIN Types](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#join_types) for an explanation of join conditions.
+- All types that support comparisons can be used in a `JOIN` condition. See [JOIN Types](query-syntax-2.md#join-operation) for an explanation of join conditions.
 
 #### Collatable data types
 
