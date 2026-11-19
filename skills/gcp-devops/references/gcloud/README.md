@@ -12,3 +12,4 @@
 | gcloud developer-connect | 82 commands across release tracks | [developer-connect/README.md](./developer-connect/README.md) |
 | gcloud software-delivery-trust | 25 commands across release tracks | [software-delivery-trust/README.md](./software-delivery-trust/README.md) |
 | gcloud source | 31 commands across release tracks | [source/README.md](./source/README.md) |
+| gcloud source-manager | 136 commands across release tracks | [source-manager/README.md](./source-manager/README.md) |
