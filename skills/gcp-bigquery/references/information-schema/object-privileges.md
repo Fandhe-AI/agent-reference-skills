@@ -173,6 +173,7 @@ don't appear in the results of the second example.
 - Source: https://docs.cloud.google.com/bigquery/docs/information-schema-object-privileges (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Caution: the example result shows the role ID `roles/bigquery.dataViwer`, a misspelling in the official example. The role ID is `roles/bigquery.dataViewer`.
 
 ## Related
 

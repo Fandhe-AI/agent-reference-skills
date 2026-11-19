@@ -124,6 +124,7 @@ The result is similar to the following:
 - Source: https://docs.cloud.google.com/bigquery/docs/information-schema-property-graphs (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Caution: the Required permissions section asks you to grant the following IAM roles, which reads as if all four were needed. Each of the four roles alone includes both `bigquery.propertyGraphs.get` and `bigquery.propertyGraphs.list` (see the BigQuery roles in iam/bigquery-1.md), so one of them is enough. To only query this view, grant `roles/bigquery.metadataViewer` or `roles/bigquery.dataViewer` rather than Data Editor or Admin.
 
 ## Related
 
