@@ -105,3 +105,20 @@
 | The ML.RECOMMEND function | Syntax, Output, Examples, What's next | [recommend.md](./recommend.md) |
 | The ML.RECONSTRUCTION_LOSS function | Syntax, Output, Limitations, Example, What's next | [reconstruction-loss.md](./reconstruction-loss.md) |
 | The ML.RESIZE_IMAGE function | Syntax, Output, Examples, What's next | [resize-image.md](./resize-image.md) |
+| The ML.ROBUST_SCALER function | Syntax, Output, Example, What's next | [robust-scaler.md](./robust-scaler.md) |
+| The ML.ROC_CURVE function | Syntax, Output, Examples, What's next | [roc.md](./roc.md) |
+| The ML.SEASONALITY function | Syntax, Output, Example, What's next | [seasonality.md](./seasonality.md) |
+| The ML.STANDARD_SCALER function | Syntax, Output, Example, What's next | [standard-scaler.md](./standard-scaler.md) |
+| The ML.TF_IDF function | Syntax, Output, Quotas, Example, What's next | [tf-idf.md](./tf-idf.md) |
+| The ML.TFDV_DESCRIBE function | Syntax, Output, Example, Limitations, Pricing, What's next | [tfdv-describe.md](./tfdv-describe.md) |
+| The ML.TFDV_VALIDATE function | Syntax, Output, Examples, Limitations, Pricing, What's next | [tfdv-validate.md](./tfdv-validate.md) |
+| The ML.TRAINING_INFO function | Syntax, Output, Permissions, Limitations, Example, What's next | [train.md](./train.md) |
+| The ML.TRANSCRIBE function | Syntax, Output, Quotas, Known issues, Locations, Limitations, Example, What's next | [transcribe.md](./transcribe.md) |
+| The ML.TRANSFORM function | Syntax, Output, Example, What's next | [transform.md](./transform.md) |
+| The ML.TRANSLATE function | Syntax, Output, Quotas, Known issues, Locations, Example, What's next | [translate.md](./translate.md) |
+| The ML.TREND function | Syntax, Output, Example, What's next | [trend.md](./trend.md) |
+| The ML.TRIAL_INFO function | Syntax, Output, Example, What's next | [trial-info.md](./trial-info.md) |
+| The ML.UNDERSTAND_TEXT function | Syntax, Output, Quotas, Known issues, Locations, Examples, What's next | [understand-text.md](./understand-text.md) |
+| The ML.VALIDATE_DATA_DRIFT function | Syntax, Output, Examples, Limitations, Pricing, What's next | [validate-data-drift.md](./validate-data-drift.md) |
+| The ML.VALIDATE_DATA_SKEW function | Syntax, Output, Examples, Limitations, Pricing, What's next | [validate-data-skew.md](./validate-data-skew.md) |
+| The ML.WEIGHTS function | Syntax, Output, Examples, What's next | [weights.md](./weights.md) |

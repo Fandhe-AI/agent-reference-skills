@@ -143,8 +143,8 @@ of the two change points is marked by a vertical line.
 
 - Learn more about [forecasting](https://docs.cloud.google.com/bigquery/docs/forecasting-overview).
 - Learn more about [anomaly detection](https://docs.cloud.google.com/bigquery/docs/anomaly-detection-overview).
-- Learn more about the [`ML.SEASONALITY` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-seasonality), which detects repeating patterns over fixed time periods in your data.
-- Learn more about the [`ML.TREND` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-trend), which detects the directional trajectory of a metric over time.
+- Learn more about the [`ML.SEASONALITY` function](seasonality.md), which detects repeating patterns over fixed time periods in your data.
+- Learn more about the [`ML.TREND` function](trend.md), which detects the directional trajectory of a metric over time.
 
 ## Notes
 

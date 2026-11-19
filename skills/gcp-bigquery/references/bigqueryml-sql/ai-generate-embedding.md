@@ -64,7 +64,7 @@ following ways:
 
 - For matrix factorization, `AI.GENERATE_EMBEDDING` processes the request using
   a BigQuery ML matrix factorization model and the
-  [`ML.WEIGHTS` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-weights).
+  [`ML.WEIGHTS` function](weights.md).
   `AI.GENERATE_EMBEDDING` gathers the `factor_weights.weight` and `intercept`
   values from the `ML.WEIGHTS` output for the model into
   an array and outputs it as the `embedding` column.

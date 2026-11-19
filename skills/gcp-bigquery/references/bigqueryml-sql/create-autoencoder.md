@@ -382,7 +382,7 @@ the model are used for the warm start run.
 
 In a warm start run, the iteration numbers are reset to start from zero. Use
 the training run or iteration information returned by the
-[`ML.TRAINING_INFO` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-train)
+[`ML.TRAINING_INFO` function](train.md)
 to distinguish the warm start run from the original run.
 
 The values of the `MODEL_TYPE`, the `HIDDEN_UNITS` options, and the model
@@ -554,15 +554,15 @@ To try a tutorial that walks you through hyperparameter tuning, see
 
 The following machine learning functions are supported for the Autoencoder model, including:
 
-- `https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-evaluate` for evaluating model metrics.
+- [`ML.EVALUATE`](evaluate.md) for evaluating model metrics.
 
-- `https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-feature` for reviewing information about the input features used to train a model.
+- [`ML.FEATURE_INFO`](feature.md) for reviewing information about the input features used to train a model.
 
-- `https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict` for dimensionality reduction.
+- [`ML.PREDICT`](predict.md) for dimensionality reduction.
 
-- `https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-reconstruction-loss` for anomaly detection and data sanitation purposes.
+- [`ML.RECONSTRUCTION_LOSS`](reconstruction-loss.md) for anomaly detection and data sanitation purposes.
 
-- `https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-train` for tracking information about the training iterations of a model.
+- [`ML.TRAINING_INFO`](train.md) for tracking information about the training iterations of a model.
 
 ### Locations
 
