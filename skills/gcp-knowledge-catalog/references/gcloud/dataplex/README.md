@@ -64,3 +64,4 @@
 | gcloud dataplex tasks run | 2 commands (alpha, ga); dataplex tasks run … | [dataplex-tasks-run.md](./dataplex-tasks-run.md) |
 | gcloud dataplex tasks set-iam-policy | 2 commands (alpha, ga); dataplex tasks set-iam-policy … | [dataplex-tasks-set-iam-policy.md](./dataplex-tasks-set-iam-policy.md) |
 | gcloud dataplex tasks update | 2 commands (alpha, ga); dataplex tasks update … | [dataplex-tasks-update.md](./dataplex-tasks-update.md) |
+| gcloud dataplex zones | 20 commands (alpha, ga); dataplex zones actions list … | [dataplex-zones.md](./dataplex-zones.md) |
