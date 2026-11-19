@@ -183,7 +183,7 @@ SELECT * FROM
 | Task | Role |
 |---|---|
 | Create and use datasets, tables, models | BigQuery Data Editor (`roles/bigquery.dataEditor`) on the project |
-| Create, delegate, and use connections | BigQuery Connections Admin (`roles/bigquery.connectionsAdmin`) on the project |
+| Create, delegate, and use connections | BigQuery Connection Admin (`roles/bigquery.connectionAdmin`) on the project |
 | Create and set a default connection as part of `CREATE MODEL` (no default connection configured) | BigQuery Admin (`roles/bigquery.admin`) on the project |
 | Grant permissions to the connection's service account | Project IAM Admin (`roles/resourcemanager.projectIamAdmin`) on the project containing the Agent Platform endpoint |
 | Object table bucket in a different project than the endpoint | Storage Admin (`roles/storage.admin`) on the bucket |
@@ -249,6 +249,7 @@ Permissions: `bigquery.datasets.create`, `bigquery.connections.*`, `resourcemana
 - The `ENDPOINT_IDLE_TTL` timer resets on `CREATE MODEL`, `ALTER MODEL ... DEPLOY_MODEL = TRUE`, and inference requests; after undeploy, inference returns an error until you redeploy with `ALTER MODEL` and `DEPLOY_MODEL` set to `TRUE`.
 - The source also shows the Console, Python, Node.js, Java and Terraform forms of connection creation, Mistral AI and open-model syntax with the same structure as above, and further examples. The Terraform and Console steps are omitted here.
 - These are calls to Vertex AI (Agent Platform) models from BigQuery; the Gemini Developer API and the `google-genai` SDK are in `google-gemini-api`.
+- Corrected from the official docs: the source names the role "BigQuery Connections Admin (`roles/bigquery.connectionsAdmin`)"; the predefined role is BigQuery Connection Admin, `roles/bigquery.connectionAdmin`.
 - Source: https://docs.cloud.google.com/bigquery/docs/generate-text (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

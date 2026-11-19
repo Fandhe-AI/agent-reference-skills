@@ -178,7 +178,7 @@ FROM my_dataset.processed_table
 WHERE export_id = i;
 ```
 
-### Flatten nested data for CSV or JSON
+### Flatten nested data for CSV
 
 ```sql
 SELECT
@@ -301,10 +301,11 @@ PromQL alert condition (Cloud Monitoring, code editor mode):
 | Error | Cause and resolution |
 |---|---|
 | `Your usage exceeded quota for ExtractBytesPerDay` | Export over the 50 TiB daily limit. Export specific partitions with a partition decorator, or create a slot reservation and assign the project to it with the `PIPELINE` job type (uses dedicated slots instead of the shared pool and bypasses the limit check; the reservation can be deleted later). |
-| `Failed to export: Operation cannot be performed on a nested schema. Field: [COLUMN_NAME]` | Nested or repeated fields (`STRUCT`, `ARRAY`) exported to a flat format such as CSV or newline-delimited JSON. Flatten with dot notation, `UNNEST`, or `ARRAY_TO_STRING()`. |
+| `Failed to export: Operation cannot be performed on a nested schema. Field: [COLUMN_NAME]` | Nested or repeated fields (`STRUCT`, `ARRAY`) exported to CSV. Flatten with dot notation, `UNNEST`, or `ARRAY_TO_STRING()`, or export to newline-delimited JSON, Avro or Parquet, which keep nested and repeated data. |
 
 ## Notes
 
+- Corrected from the official docs: the troubleshooting section lists newline-delimited JSON with CSV as a flat format that fails on nested schemas; the export formats table supports nested and repeated data for JSON, Avro and Parquet, and only CSV rejects it (the flattening example is therefore titled for CSV only).
 - Source: https://docs.cloud.google.com/bigquery/docs/exporting-data (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Caution from the source: for a Cloud Storage destination, disable the Bucket Lock and Soft Delete retention policies. BigQuery attempts to rewrite files, which can fail if the retention policy prevents overwriting, and extra charges are incurred. Re-enable the policies after the export.
 - `overwrite = true` overwrites existing files with the same URI; try exports against a disposable bucket or prefix first. The generated file size with `EXPORT DATA` is not guaranteed and the number of files from an extract job can vary.
