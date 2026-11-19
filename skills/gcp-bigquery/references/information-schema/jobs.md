@@ -743,26 +743,28 @@ This calculation helps determine if an increased number of concurrent jobs withi
 
 If there are far more concurrent queries running than expected, check if more jobs were started, queried data changed, or both.
 
+Adapted (not in the official docs): used `start_time` instead of `creation_time` for both jobs, and changed the join to a `LEFT JOIN` with the conditions in `ON` and `COUNT(j.job_id)`, so that seconds with no other running job count as zero.
+
 ```googlesql
 WITH job_metadata AS (
- SELECT creation_time, end_time, job_type
+ SELECT start_time, end_time, job_type
  FROM `region-REGION_NAME`.INFORMATION_SCHEMA.JOBS_BY_PROJECT
  WHERE job_id = 'JOB_ID'
 -- If you know the date the job was created, add the following line to speed up the query by providing the date in UTC:
 -- AND DATE(creation_time) = 'YYYY-MM-DD'
 ),
 intervals AS (
- SELECT TIMESTAMP_ADD(creation_time, INTERVAL (seconds_offset) SECOND) AS ts,
+ SELECT TIMESTAMP_ADD(start_time, INTERVAL (seconds_offset) SECOND) AS ts,
  job_type
  FROM job_metadata,
- UNNEST (GENERATE_ARRAY(0, IF(TIMESTAMP_DIFF(end_time, creation_time, SECOND) > 0, TIMESTAMP_DIFF(end_time, creation_time, SECOND), 1))) as seconds_offset
+ UNNEST (GENERATE_ARRAY(0, IF(TIMESTAMP_DIFF(end_time, start_time, SECOND) > 0, TIMESTAMP_DIFF(end_time, start_time, SECOND), 1))) as seconds_offset
 ),
 concurrent_jobs AS (
- SELECT int.ts, COUNT(*) as concurrent_jobs_count
- FROM intervals int JOIN
+ SELECT int.ts, COUNT(j.job_id) as concurrent_jobs_count
+ FROM intervals int LEFT JOIN
  `region-REGION_NAME`.INFORMATION_SCHEMA.JOBS_BY_PROJECT j
- ON int.ts BETWEEN j.creation_time and j.end_time
- WHERE job_id != 'JOB_ID'
+ ON int.ts BETWEEN j.start_time and j.end_time
+ AND j.job_id != 'JOB_ID'
  AND j.job_type = int.job_type
  GROUP BY int.ts)
 
@@ -1415,6 +1417,7 @@ SELECT
 - Source: https://docs.cloud.google.com/bigquery/docs/information-schema-jobs (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the example that averages the jobs running at the same time as a job had two problems. It sampled from `creation_time` and matched other jobs from their `creation_time`, so time spent waiting in the queue counted as running; the schema on this page lists `creation_time` and `start_time` as separate columns. It also used an inner join, so seconds with no other job were dropped from the average instead of counting as zero, and the result was `NULL` when no other job overlapped. The example now uses `start_time`, a `LEFT JOIN` with the conditions in `ON`, and `COUNT(j.job_id)`.
 
 ## Related
 

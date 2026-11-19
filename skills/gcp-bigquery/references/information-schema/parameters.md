@@ -104,7 +104,7 @@ Replace the following:
 - `PROJECT_ID`: the ID of the project.
 - `DATASET_ID`: the ID of the dataset.
 
-For example, `example-project.mydataset.INFORMATION_SCHEMA.JOBS_BY_PROJECT`.
+For example, `example-project.mydataset.INFORMATION_SCHEMA.PARAMETERS`.
 
 The following example retrieves all parameters from the
 `INFORMATION_SCHEMA.PARAMETERS` view. The metadata returned is for routines in
@@ -139,6 +139,7 @@ The result is similar to the following:
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: The example used `* EXCEPT(is_typed)` and `table_type = 'BASE TABLE'`, but the PARAMETERS schema on this page has no `is_typed` or `table_type` column, and the shown result has all ten columns. The query now selects all columns without a filter.
+- Corrected from the official docs: the example of a fully qualified name for querying another project names `example-project.mydataset.INFORMATION_SCHEMA.JOBS_BY_PROJECT`. This page is about the `PARAMETERS` view, and the format given just above it is `PROJECT_ID`.`DATASET_ID`.INFORMATION_SCHEMA.PARAMETERS, so the example is changed to `example-project.mydataset.INFORMATION_SCHEMA.PARAMETERS`.
 
 ## Related
 
