@@ -105,16 +105,18 @@ NEW_BODY="$(printf '<!-- granularity: %s -->\n' "${GRANULARITY}"; printf '%s\n' 
 # 今回の Phase 行（PHASE_ROW）と「### Phase N: ...」セクション（PHASE_SECTION）を実ツリーから生成する
 PTITLE=$(gh issue view "${PHASE_NUMBER}" --json title --jq ".title | ${CELL}") \
   || die 1 "Phase 親 #${PHASE_NUMBER} を取得できません。中止します。"
-CHILDREN=$(list_subs "${PHASE_NUMBER}") \
+ALL_CHILDREN=$(list_subs "${PHASE_NUMBER}") \
   || die 1 "Phase 親 #${PHASE_NUMBER} の sub-issues を取得できません。中止します。"
 # jq が失敗（API 応答の形が想定外）したまま空値で Phase 行・セクションを作ると、既存本文を誤内容で
 # 上書きし得るため、変換ごとに終了コードと値の形を確認して失敗時は本文未更新で中止する（fail-closed）
-CHILDREN=$(printf '%s' "${CHILDREN}" | jq '[.[] | select(.state == "open")]') \
+CHILDREN=$(printf '%s' "${ALL_CHILDREN}" | jq '[.[] | select(.state == "open")]') \
   || die 1 "Phase 親 #${PHASE_NUMBER} の sub-issues の絞り込みに失敗しました。ルート本文は更新しません。"
 DIRECT=$(printf '%s' "${CHILDREN}" | jq 'length') \
   || die 1 "Phase 親 #${PHASE_NUMBER} の子 issue 数の集計に失敗しました。ルート本文は更新しません。"
 [[ "${DIRECT}" =~ ^[0-9]+$ ]] \
   || die 1 "Phase 親 #${PHASE_NUMBER} の子 issue 数が数値ではありません。ルート本文は更新しません。"
+CLOSED_NUMS=$(printf '%s' "${ALL_CHILDREN}" | jq -r '.[] | select(.state != "open") | .number') \
+  || die 1 "Phase 親 #${PHASE_NUMBER} の closed の子 issue の番号を取得できません。ルート本文は更新しません。"
 TOTAL=${DIRECT}
 
 PHASE_SECTION="### Phase ${PHASE}: ${PTITLE}"$'\n\n'"| Issue | タイトル | 分解 |"$'\n'"|-------|---------|------|"
@@ -132,6 +134,18 @@ for j in $(seq 0 $((DIRECT - 1))); do
   if [ "${GRAND_OPEN}" -ge 1 ]; then DECOMP='sub-issue あり'; else DECOMP='-'; fi
   PHASE_SECTION+=$'\n'"| #${CNUM} | ${CTITLE} | ${DECOMP} |"
 done
+# closed の子は詳細表に出さないが、その下に残った open issue は総数へ入れる。
+# 入れないと、closed の下も数える 2 段目以降（count_open_desc）と 1 段目で数え方が食い違う。
+# create-root-body.sh と同じ定義（Phase 親の全子孫のうち open のもの）に揃える
+for CNUM in ${CLOSED_NUMS}; do
+  [[ "${CNUM}" =~ ^[1-9][0-9]*$ ]] \
+    || die 1 "closed の子 issue の番号が正整数ではありません。ルート本文は更新しません。"
+  GRAND_OPEN=$(count_open_desc "${CNUM}") \
+    || die 1 "#${CNUM} の子孫を取得できません。中止します。"
+  TOTAL=$((TOTAL + GRAND_OPEN))
+done
+[[ "${TOTAL}" =~ ^[0-9]+$ ]] \
+  || die 1 "Phase 親 #${PHASE_NUMBER} の総 open 件数が数値ではありません。ルート本文は更新しません。"
 PHASE_ROW="| Phase ${PHASE} | #${PHASE_NUMBER} ${PTITLE} | ${DIRECT} | ${TOTAL} |"
 
 # Phase N が既存本文にあれば、その行とセクションを置き換える（再利用した Phase 親の件数更新）。
