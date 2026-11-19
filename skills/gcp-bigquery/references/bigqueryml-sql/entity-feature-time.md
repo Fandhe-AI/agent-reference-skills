@@ -17,7 +17,7 @@ Use this function to retrieve features from multiple entities for multiple
 points in time. For example, you could retrieve features created at or before
 three different points in time for entity 1, and features created at or before
 yet another different point in time for entity 2. Use the
-[`ML.FEATURES_AT_TIME` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-feature-time)
+[`ML.FEATURES_AT_TIME` function](feature-time.md)
 to use the same point-in-time cutoff for all entities when retrieving features.
 
 ### Syntax

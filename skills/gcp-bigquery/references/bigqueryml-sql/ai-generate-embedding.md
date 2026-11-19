@@ -82,12 +82,14 @@ models, see [Supported text embedding models](#supported-text-embedding-models).
 
 #### Text embedding
 
+Adapted (not in the official docs): the first `STRUCT` field is written without a leading comma.
+
 ```googlesql
 AI.GENERATE_EMBEDDING(
   MODEL `PROJECT_ID.DATASET.MODEL_NAME`,
   { TABLE `PROJECT_ID.DATASET.TABLE_NAME` | (QUERY_STATEMENT) },
   STRUCT(
-    [, TASK_TYPE AS task_type]
+    [TASK_TYPE AS task_type]
     [, OUTPUT_DIMENSIONALITY AS output_dimensionality])
 )
 ```
@@ -209,15 +211,19 @@ AI.GENERATE_EMBEDDING(
 
 #### Multimodal embedding
 
+Adapted (not in the official docs): the first `STRUCT` field is written without a leading comma.
+
 ```googlesql
 # Syntax for standard tables
 AI.GENERATE_EMBEDDING(
   MODEL `PROJECT_ID.DATASET.MODEL_NAME`,
   { TABLE `PROJECT_ID.DATASET.TABLE_NAME` | (QUERY_STATEMENT) },
   STRUCT(
-    [, OUTPUT_DIMENSIONALITY AS output_dimensionality])
+    [OUTPUT_DIMENSIONALITY AS output_dimensionality])
 )
 ```
+
+Adapted (not in the official docs): the first `STRUCT` field is written without a leading comma.
 
 ```googlesql
 # Syntax for object tables
@@ -225,7 +231,7 @@ AI.GENERATE_EMBEDDING(
   MODEL `PROJECT_ID.DATASET.MODEL_NAME`,
   { TABLE `PROJECT_ID.DATASET.TABLE_NAME` | (QUERY_STATEMENT) },
   STRUCT(
-    [, START_SECOND AS start_second]
+    [START_SECOND AS start_second]
     [, END_SECOND AS end_second]
     [, INTERVAL_SECONDS AS interval_seconds]
     [, OUTPUT_DIMENSIONALITY AS output_dimensionality])
@@ -932,6 +938,7 @@ To increase quota, first request more quota for the Agent Platform
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate-embedding (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: several syntax blocks start the `STRUCT` with a field that begins with a comma (for example `[, TASK_TYPE AS task_type]`), which gives `STRUCT(, ...)`; the first field is written without the comma.
 
 ## Related
 

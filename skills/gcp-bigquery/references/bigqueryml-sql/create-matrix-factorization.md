@@ -599,7 +599,7 @@ value for [`NUM_TRIALS`](#num_trials).
 **Arguments**
 
 The possible objectives are a subset of the
-[model evaluation metrics](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-evaluate#output)
+[model evaluation metrics](evaluate.md#output)
 for the model type. If you aren't running hyperparameter tuning, or if you are
 and you don't specify an objective, the default objective
 is used. For explicit `MATRIX_FACTORIZATION` models, the default is `MEAN_SQUARED_ERROR'`. For implicit `MATRIX_FACTORIZATION` models , the
