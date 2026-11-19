@@ -21,3 +21,11 @@
 | gcloud builds repositories | 12 commands (alpha, beta, ga); builds repositories create … | [builds-repositories.md](./builds-repositories.md) |
 | gcloud builds submit | 3 commands (alpha, beta, ga); builds submit … | [builds-submit.md](./builds-submit.md) |
 | gcloud builds triggers config | alpha builds triggers config export | [builds-triggers-config.md](./builds-triggers-config.md) |
+| gcloud builds triggers create (part 1) | 6 commands (alpha, beta, ga); builds triggers create bitbucket-cloud … | [builds-triggers-create-1.md](./builds-triggers-create-1.md) |
+| gcloud builds triggers create (part 2) | 23 commands (alpha, beta, ga); builds triggers create manual … | [builds-triggers-create-2.md](./builds-triggers-create-2.md) |
+| gcloud builds triggers delete | 3 commands (alpha, beta, ga); builds triggers delete … | [builds-triggers-delete.md](./builds-triggers-delete.md) |
+| gcloud builds triggers describe | 3 commands (alpha, beta, ga); builds triggers describe … | [builds-triggers-describe.md](./builds-triggers-describe.md) |
+| gcloud builds triggers export | 2 commands (alpha, beta); beta builds triggers export … | [builds-triggers-export.md](./builds-triggers-export.md) |
+| gcloud builds triggers import | 3 commands (alpha, beta, ga); builds triggers import … | [builds-triggers-import.md](./builds-triggers-import.md) |
+| gcloud builds triggers list | 3 commands (alpha, beta, ga); builds triggers list … | [builds-triggers-list.md](./builds-triggers-list.md) |
+| gcloud builds triggers run | 3 commands (alpha, beta, ga); builds triggers run … | [builds-triggers-run.md](./builds-triggers-run.md) |

@@ -6,4 +6,4 @@
 | gcloud app-optimize | 5 commands across release tracks | [app-optimize/README.md](./app-optimize/README.md) |
 | gcloud apphub | 78 commands across release tracks | [apphub/README.md](./apphub/README.md) |
 | gcloud artifacts | 178 commands across release tracks | [artifacts/README.md](./artifacts/README.md) |
-| gcloud builds | 183 commands across release tracks (partially added: 19 / 30 pages so far; for pages not listed, see the official reference) | [builds/README.md](./builds/README.md) |
+| gcloud builds | 183 commands across release tracks (partially added: 27 / 30 pages so far; for pages not listed, see the official reference) | [builds/README.md](./builds/README.md) |

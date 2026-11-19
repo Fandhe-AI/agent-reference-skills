@@ -28,7 +28,7 @@ skills/gcp-devops/
       artifacts/                  # Artifact Registry: repositories・packages・docker・files・tags・versions・attachments・sbom・vulnerabilities 等
         README.md
         artifacts-<group>.md
-      builds/                     # Cloud Build: submit・list・describe・cancel・triggers・connections・repositories・worker-pools 等、分割投入中（19 / 30 ページ。収録済みは README 掲載分のみ）
+      builds/                     # Cloud Build: submit・list・describe・cancel・triggers・connections・repositories・worker-pools 等、分割投入中（27 / 30 ページ。収録済みは README 掲載分のみ）
         README.md
         builds-<group>.md
       apphub/                     # App Hub: applications・services・workloads・discovered-*・boundary・service-projects
@@ -137,7 +137,7 @@ skills/gcp-devops/
 
 未投入カテゴリ（`gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/design-center` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`gcloud/builds`: 19 / 30 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`gcloud/builds`: 27 / 30 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
