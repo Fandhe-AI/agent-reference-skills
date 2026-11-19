@@ -414,7 +414,7 @@ gcloud dataplex lakes create my-dataplex-lake \
 
 gcloud dataplex lakes create my-dataplex-lake \
     --location=us-central1 \
-    --metastore-service=projects/my-project/services/service-123abc
+    --metastore-service=projects/my-project/locations/us-central1/services/service-123abc
 ```
 
 ### gcloud dataplex lakes deauthorize
@@ -1107,13 +1107,13 @@ NOTES
         $ gcloud alpha dataplex lakes update
 ```
 
-Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
 
 ```bash
 gcloud dataplex lakes update test-lake \
     --location=us-central1 \
     --display-name="first-dataplex-lake" \
-    --metastore-service="projects/test-lake/locations/us-central1/service/test-service"
+    --metastore-service="projects/test-lake/locations/us-central1/services/test-service"
 ```
 
 ### gcloud alpha dataplex lakes actions list
@@ -1274,6 +1274,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `--metastore-service` flag takes `projects/{project_number}/locations/{location_id}/services/{service_id}` "where the location matches the location of the lake", but the `create` example omits `locations/{location_id}` and the `update` example writes `service/` for `services/`; the runnable form uses `projects/my-project/locations/us-central1/services/service-123abc` and `projects/test-lake/locations/us-central1/services/test-service`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the examples say "in location us-central1" but pass `--location=us-central`, which is not a region ID; the runnable form passes `--location=us-central1`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
