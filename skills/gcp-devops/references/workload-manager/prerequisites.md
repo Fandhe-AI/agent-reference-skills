@@ -33,7 +33,7 @@ projects/PRIVATEPOOL_PROJECT_ID/locations/REGION/workerPools/PRIVATEPOOL_ID
 
 | Service account | Required roles |
 |-----------------|----------------|
-| `Service-PROJECT_ID@gcp-sa-workloadmanager.iam.gserviceaccount.com` (as written in the source) | Cloud Infrastructure Manager Admin (`roles/config.admin`), Logs Viewer (`roles/logging.viewer`), Service Account User (`roles/iam.serviceAccountUser`), Workload Manager Service Agent (`roles/workloadmanager.serviceAgent`) |
+| `service-PROJECT_NUMBER@gcp-sa-workloadmanager.iam.gserviceaccount.com` | Cloud Infrastructure Manager Admin (`roles/config.admin`), Logs Viewer (`roles/logging.viewer`), Service Account User (`roles/iam.serviceAccountUser`), Workload Manager Service Agent (`roles/workloadmanager.serviceAgent`) |
 
 ### Enable the Workload Manager API
 
@@ -55,7 +55,7 @@ projects/PRIVATEPOOL_PROJECT_ID/locations/REGION/workerPools/PRIVATEPOOL_ID
 - Enabling the Workload Manager API is a one-time task per project; after an administrator enables it, other users can access Workload Manager. Apply the principle of least privilege when granting roles.
 - Private pool requirements: if your organization enforces VPC Service Controls compliance, you must use a Cloud Build private worker pool (not the default Cloud Build worker pool). Private pools are hosted in a Google-owned VPC network called the service producer network; set up a private connection between it and the VPC network that contains your resources first. To download the Terraform configuration, the private pool must have public internet calls enabled.
 - The Cloud Build private worker pool, the Workload Manager service account, and the Cloud Storage bucket that Workload Manager uses for deployment must be in the same VPC Service Controls service perimeter.
-- The evaluation service-agent page writes this address as `service-PROJECT_NUMBER@gcp-sa-workloadmanager.iam.gserviceaccount.com`; this page writes `PROJECT_ID`. The source is kept as written.
+- Corrected from the official docs: this page of the source writes the service agent as `Service-PROJECT_ID@gcp-sa-workloadmanager.iam.gserviceaccount.com`. Service agent addresses use the lowercase `service-` prefix and the project number, as the Workload Manager service accounts page writes it (`service-PROJECT_NUMBER@gcp-sa-workloadmanager.iam.gserviceaccount.com`, service-accounts.md in this skill), so the table uses that form.
 - Corrected from the official docs: the source writes the Enable Workload Manager API example role as `roles/service.Usage.Admin`; that role ID does not exist in the IAM role reference, and the Service Usage Admin role is `roles/serviceusage.serviceUsageAdmin`.
 - Quotas: supported applications often consume a large portion of resources, so you might hit quota issues. View quota values and usage, and request a higher quota if needed.
 - Private pools are covered by this skill's Cloud Build pages; VPC Service Controls by `gcp-security`; IAM service agents by `gcp-foundation`.

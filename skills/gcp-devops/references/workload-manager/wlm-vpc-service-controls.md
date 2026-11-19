@@ -35,6 +35,15 @@ Create `ingress_policy.yaml`. Replace `SERVICE_ACCOUNT_EMAIL` with the email of 
 
 Add the policy to the perimeter. `PERIMETER_NAME` is the name of your service perimeter, for example `accessPolicies/1234567890/servicePerimeters/example_perimeter`.
 
+`--set-ingress-policies` replaces all of the perimeter's ingress policies with the file contents. On an existing perimeter, first look at its current ingress policies and copy the ones you keep into `ingress_policy.yaml` together with the new rule:
+
+Adapted (not in the official docs): a `describe` step that shows the perimeter's current ingress policies (`status.ingressPolicies`) before they are replaced.
+
+```bash
+gcloud access-context-manager perimeters describe PERIMETER_NAME \
+  --format="yaml(status.ingressPolicies)"
+```
+
 ```bash
 gcloud access-context-manager perimeters update PERIMETER_NAME \
   --set-ingress-policies=ingress_policy.yaml
@@ -58,6 +67,7 @@ gcloud access-context-manager perimeters update PERIMETER_NAME \
 
 ## Notes
 
+- Adapted from the official docs: the source says to add the policy with `--set-ingress-policies=ingress_policy.yaml`. That flag sets the perimeter's ingress policies to the file contents, so on an existing perimeter a file with only this rule removes the other ingress policies. The page adds a `describe` step and says to merge the existing policies into the file; test the change in dry run mode (`gcloud access-context-manager perimeters dry-run update` takes the same flag; see the `gcp-security` skill) first.
 - Before you begin: set up a VPC Service Controls perimeter; identify the service account attached to the instance (visible on the **VM instance details** page); verify it has the required roles (see the "Required roles for the agent and SAP workloads" section of the SAP agent setup guide).
 - Egress rules are required only if the target project (where your workload runs) differs from the consumer project (where you run evaluations); with cross-project communication you must configure egress rules to allow the required traffic. The source shows no egress rule example.
 - Permissive configuration: the ingress rule above allows the named service account from any source (`accessLevel: '*'`) to call all methods of the three services on all projects (`resources: "*"`). Scope it as tightly as your perimeter design allows.

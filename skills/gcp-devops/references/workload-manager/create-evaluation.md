@@ -21,6 +21,8 @@ curl -X GET \
 
 Create the evaluation (`projects.locations.evaluations.create`).
 
+Adapted (not in the official docs): the source's single `"RULE_NAMES"` element is written as one array element per rule (`RULE_NAME_1`, `RULE_NAME_2`); `ruleNames` is a list, and a comma-separated string would be read as one rule name.
+
 ```bash
 curl -X POST \
     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
@@ -30,7 +32,8 @@ curl -X POST \
       "description": "DESCRIPTION",
       "evaluationType": "EVALUATION_TYPE",
       "ruleNames": [
-        "RULE_NAMES"
+        "RULE_NAME_1",
+        "RULE_NAME_2"
       ],
       "resourceFilter": {
         "scopes": [
@@ -88,7 +91,7 @@ curl -X POST \
 | `LOCATION_ID` | A supported region, such as `us-central1`, where Workload Manager stores the evaluation. |
 | `EVALUATION_ID` | Unique ID for the evaluation. |
 | `EVALUATION_TYPE` | Workload evaluation type, such as `SAP`, `SQL_SERVER`, `MYSQL`, `REDIS`, `OPENSHIFT`, or `OTHER`. |
-| `RULE_NAMES` | Comma-separated list of rule IDs to include. |
+| `RULE_NAME_1`, `RULE_NAME_2` | Rule IDs to include, one per element of the `ruleNames` array (the source's `RULE_NAMES` is described as a comma-separated list; add or remove elements as needed). |
 | `TARGET_PROJECT_ID` | Project ID or number of the target project that contains the resources. |
 | `RESOURCE_ID_PATTERNS` | Optional patterns, such as `//compute.googleapis.com/projects/my-project/zones/us-central1-a/instances/my-instance*`. |
 | `LABEL_KEY` / `LABEL_VALUE` | Optional key-value label pairs to filter resources. |
@@ -129,6 +132,7 @@ curl -X POST \
 
 ## Notes
 
+- Adapted from the official docs: the source shows `"ruleNames": ["RULE_NAMES"]` and describes `RULE_NAMES` as a comma-separated list of rule IDs. `ruleNames` is an array of strings in the API, so each rule ID goes in its own element.
 - Prerequisites: create the resources in the target project; enable the Workload Manager API in the consumer project, plus the Cloud Asset API and Cloud Monitoring API when evaluating against custom rules or best practices; set up the required agent or operator on all instances or clusters for SAP, SQL Server, MySQL, Redis, and OpenShift (Preview) workloads.
 - With the API, you must manually create the Workload Manager service agent in the consumer project and grant it `roles/workloadmanager.serviceAgent` in the target projects, plus `roles/workloadmanager.worker` in the consumer project if you set a schedule. The console creates the service agent automatically.
 - Console flow: **Name & rules** (workload type, rules table), **Scope & filters** (**Browse projects**, **Share findings**, filters: **Service account**, **Label**, **Name**; filters of the same type use `OR`, different types use `AND`; region for evaluation data), **Frequency & notification** (schedule, **Save to BigQuery dataset** to a regional dataset in the same region as the evaluation, optional **Create a new results table for this evaluation**, alert notifications), then **Review** and **Create**.
