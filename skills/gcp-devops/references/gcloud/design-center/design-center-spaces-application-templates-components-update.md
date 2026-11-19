@@ -927,6 +927,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Deprecated flags: the help text marks `--criticality-level`, `--criticality-mission-critical` (`--[no-]criticality-mission-critical` in `update`) and `--environment` as deprecated ("Deprecated: Please refer to type instead."); use `--criticality-type` (`high`, `low`, `medium` or `mission-critical`) and `--environment-type` instead.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the shorthand example passes both `--parameters` and `--add-parameters`, which the SYNOPSIS puts in mutually exclusive alternatives (`--parameters | --add-parameters --clear-parameters | --remove-parameters`), so gcloud rejects it; the runnable form repeats `--parameters` for the second pair, the shorthand form shown in the `--parameters` flag description ("--parameters=key=string,value={...} --parameters=key=string,value={...}").
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.

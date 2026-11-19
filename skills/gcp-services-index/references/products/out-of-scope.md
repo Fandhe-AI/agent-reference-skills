@@ -68,7 +68,6 @@ These products are not covered by any gcp-* skill (status: 対象外). Use the o
 | Payments Reseller Subscription | `paymentsresellersubscription.googleapis.com` (v1) | — | — | `paymentsresellersubscription.` | 9 | — | — | https://developers.google.com/payments/reseller/subscription/ | 対象外 |
 | Proximity Beacon | — | — | — | `proximitybeacon.` | 7 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/proximitybeacon | 対象外 |
 | Remoting Cloud | — | — | — | `remotingcloud.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/remotingcloud | 対象外 |
-| SaaS Service Management | `saasservicemgmt.googleapis.com` (v1, v1beta1) | Model, deploy, and operate your SaaS at scale. | — | `saasservicemgmt.` | 3 | — | — | https://docs.cloud.google.com/app-lifecycle-manager | 対象外 |
 | Spectrum Access System (SAS) | — | — | — | `spectrumsas.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/spectrumsas | 対象外 |
 | Subscribe with Google | — | — | — | `subscribewithgoogledeveloper.` | 3 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/subscribewithgoogledeveloper | 対象外 |
 | Subscription Linking | `readerrevenuesubscriptionlinking.googleapis.com` (v1) | readerrevenuesubscriptionlinking.googleapis.com API. | — | `readerrevenuesubscriptionlinking.` | 3 | — | — | https://developers.google.com/news/subscribe/subscription-linking/overview | 対象外 |

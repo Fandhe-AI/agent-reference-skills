@@ -32,7 +32,7 @@ gcloud artifacts docker images scan IMAGE_URI \
 ## Notes
 
 - Two scanning modes: automatic scanning (Artifact Registry, on push and continuous) and On-Demand Scanning (manual, local or remote). Pricing: https://cloud.google.com/artifact-analysis/pricing (not copied).
-- Image building is covered by `docker`; Binary Authorization enforcement on GKE clusters is covered by the `gcp-gke` skill. Artifact Registry repository management belongs to `gcp-devops` (planned).
+- Image building is covered by `docker`; Binary Authorization enforcement on GKE clusters is covered by the `gcp-gke` skill. Artifact Registry repository management belongs to `gcp-devops`.
 - The CI/CD diagram of the source page is omitted.
 - Snippet taken from https://docs.cloud.google.com/artifact-analysis/docs/scan-os-on-demand (remote scan syntax).
 - Source: https://docs.cloud.google.com/artifact-analysis/docs/artifact-analysis (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
