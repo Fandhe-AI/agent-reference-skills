@@ -13,3 +13,7 @@
 | Developer Connect | 14 roles, 67 permissions | [developerconnect.md](./developerconnect.md) |
 | Progressive Rollout | 1 roles | [progressiverollout.md](./progressiverollout.md) |
 | Remote Build Execution | 13 roles, 22 permissions | [remotebuildexecution.md](./remotebuildexecution.md) |
+| SaaS Service Management | 3 roles, 96 permissions | [saasservicemgmt.md](./saasservicemgmt.md) |
+| Secure Source Manager | 15 roles, 73 permissions | [securesourcemanager.md](./securesourcemanager.md) |
+| Cloud Source Repositories | 6 roles, 10 permissions | [source.md](./source.md) |
+| Workload Manager | 10 roles, 36 permissions | [workloadmanager.md](./workloadmanager.md) |
