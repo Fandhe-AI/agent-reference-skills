@@ -158,6 +158,8 @@ EOF
 
 Patch the `@bigquery` entry with a `data-rules` aspect for that column.
 
+Adapted (not in the official docs): each rule follows the `data-rules` fields table (`name`, `type`, and a `templateReference` object holding `name` and `values`); the `column` field is dropped because the column comes from the aspect path.
+
 ```bash
 gcurl -X PATCH "https://${DATAPLEX_API}/entryGroups/@bigquery/entries/projects/PROJECT_ID/locations/LOCATION/datasets/DATASET_ID/tables/TABLE_ID?updateMask=aspects&aspect_keys=projects/dataplex-types/locations/global/aspectTypes/data-rules@Schema.COLUMN_NAME" \
 --data @- << EOF
@@ -168,10 +170,13 @@ gcurl -X PATCH "https://${DATAPLEX_API}/entryGroups/@bigquery/entries/projects/P
     "data": {
       "rules": [
         {
-          "templateReference": "projects/PROJECT_ID/locations/LOCATION/entryGroups/ENTRY_GROUP_ID/entries/TEMPLATE_ID",
-          "column": "COLUMN_NAME",
+          "name": "RULE_NAME",
+          "type": "TEMPLATE_REFERENCE",
+          "templateReference": {
+            "name": "projects/PROJECT_ID/locations/LOCATION/entryGroups/ENTRY_GROUP_ID/entries/TEMPLATE_ID",
             "values": { "PARAMETER_NAME": { "value" : "PARAMETER_VALUE" } }
           }
+        }
       ]
     }
   }
@@ -184,6 +189,8 @@ EOF
 
 Patch the `@dataplex` entry of the term; linked BigQuery tables inherit the rules.
 
+Adapted (not in the official docs): each rule follows the `data-rules` fields table (`name`, `type`, and a `templateReference` object holding `name` and `values`); the `column` field is dropped because the column comes from the aspect path.
+
 ```bash
 gcurl -X PATCH "https://${DATAPLEX_API}/entryGroups/@dataplex/entries/projects/PROJECT_ID/locations/LOCATION/glossaries/GLOSSARY_ID/terms/TERM_ID?updateMask=aspects&aspect_keys=projects/dataplex-types/locations/global/aspectTypes/data-rules" \
 --data @- << EOF
@@ -194,10 +201,13 @@ gcurl -X PATCH "https://${DATAPLEX_API}/entryGroups/@dataplex/entries/projects/P
     "data": {
       "rules": [
         {
-          "templateReference": "projects/PROJECT_ID/locations/LOCATION/entryGroups/ENTRY_GROUP_ID/entries/TEMPLATE_ID",
-          "column": "COLUMN_NAME",
+          "name": "RULE_NAME",
+          "type": "TEMPLATE_REFERENCE",
+          "templateReference": {
+            "name": "projects/PROJECT_ID/locations/LOCATION/entryGroups/ENTRY_GROUP_ID/entries/TEMPLATE_ID",
             "values": { "PARAMETER_NAME": { "value" : "PARAMETER_VALUE" } }
           }
+        }
       ]
     }
   }
@@ -380,7 +390,7 @@ EOF
 - Knowledge Catalog was formerly Dataplex Universal Catalog; the API, gcloud group, and IAM names stay `dataplex`. The BigQuery tables themselves are covered by the gcp-bigquery skill.
 - Corrected from the official docs: the create and update template examples use `<< EOF` (unquoted) while the JSON contains `${data()}`, `${param(...)}`, `${column()}` and backticks, which the shell would expand or reject; the fences use `<< 'EOF'`. The other heredocs contain no `$` or backticks and are unchanged.
 - The source uses snake_case query parameters (`entryGroup_id`, `entry_id`, `data_scan_id`, `aspect_keys`); the Discovery document names them `entryGroupId`, `entryId`, `dataScanId`. Copied as the source writes them.
-- The BigQuery table and glossary term REST examples put `column` inside the rule object and omit `name` and `type`, while the `data-rules` fields table marks `name` and `type` as required and a Note in the source says the column is determined by the aspect path rather than a field. The later JSON payload example includes `name` and `type`. Copied as the source writes them; check against the fields table before use.
+- Adapted from the official docs: the BigQuery table and glossary term REST examples put `templateReference` as a string, place `values` and `column` beside it in the rule object, and omit `name` and `type`, while the `data-rules` fields table marks `name`, `type` and the `templateReference` object as required, the later JSON payload example nests `name` and `values` inside `templateReference`, and a Note in the source says the column a rule applies to is not a field in the aspect data but is determined by the path where the aspect is attached. Both examples are rewritten to that schema (`RULE_NAME` is a placeholder for the rule name).
 - The `gcurl` alias adds an access token; an alias is not expanded in non-interactive scripts, so run these in an interactive shell or substitute the `curl` command.
 - Rule templates are used only from the same location as the scan, or from a global location. A rule library location can't be changed after creation.
 - Deleting a rule template (`DELETE` on the entry) is destructive; try it on a disposable rule library first.
