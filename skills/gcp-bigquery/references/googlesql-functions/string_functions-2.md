@@ -1198,6 +1198,7 @@ SELECT UPPER('foo') AS example
 - Corrected from the official docs: The syntax writes `occurrence, [occurrence_position]`, which leaves a trailing comma when `occurrence_position` is omitted. The comma is moved inside the brackets, matching the examples on this page that pass `occurrence, occurrence_position` as plain arguments.
 - Corrected from the official docs: The first select item has no alias, but the text and the result table header call that column `item`. `AS item` is added.
 - Corrected from the official docs: in the combining-mark `TRIM` example, column `d` trims `'Ū̊aba'` (U+016A, then U+030A, then `aba`) with the set `'Y̊'`. The first character `Ū` is not in the set, so nothing is removed from the start, and the last character `a` is not in the set either; the published result `Ūaba` drops the U+030A inside the string. Column `b` of the same example keeps the ring in `W̊aba` for the same reason. The result is changed to `Ū̊aba`.
+- Caution: the example writes non-ASCII characters directly inside a bytes literal (`b'Ā'`). A bytes literal holds the UTF-8 bytes of its source text: the GoogleSQL parser accepts any bytes in a bytes literal and checks UTF-8 only in string literals (google/zetasql commit 762ca7a16f2b, `googlesql/parser/testdata/literals_structurally_invalid.test`, case "Structurally invalid bytes string is OK."), which matches the published result. `CAST('Ā' AS BYTES)` produces the same value without depending on how the query text is encoded.
 
 ## Related
 
