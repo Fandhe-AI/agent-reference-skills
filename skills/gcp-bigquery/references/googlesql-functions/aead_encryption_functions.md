@@ -353,7 +353,7 @@ type. `DETERMINISTIC_ENCRYPT(keyset, string1, string2)` is equivalent to
 
 The output is ciphertext `BYTES`. The ciphertext contains a
 [Tink-specific](https://github.com/google/tink/blob/master/docs/KEY-MANAGEMENT.md) prefix indicating the key used to perform the encryption.
-Given an identical `keyset` and `plaintext`, this function returns the same
+Given an identical `keyset`, `plaintext` and `additional_data`, this function returns the same
 ciphertext each time it's invoked (including across queries).
 
 **Return Data Type**
@@ -561,7 +561,7 @@ plaintext `favorite_animal` using the first_level_keyset provided. You can see
 that the ciphertext for `favorite_animal` is the same for customers 2 and 3
 since their plaintext `favorite_animal` is the same.
 
-Adapted (not in the official docs): corrected the misspelled function name `DETERMINISTC_ENCRYPT` to `DETERMINISTIC_ENCRYPT`.
+Adapted (not in the official docs): corrected the misspelled function name `DETERMINISTC_ENCRYPT` to `DETERMINISTIC_ENCRYPT`, and the input table `daead.RawCustomerData`, which this page never creates, is changed to `aead.RawCustomerData`, the table created at the start of this example.
 
 ```sql
 DECLARE kms_resource_name STRING;
@@ -578,7 +578,7 @@ SELECT
     CAST(CAST(customer_id AS STRING) AS BYTES)
   ) AS encrypted_animal
 FROM
-  daead.RawCustomerData;
+  aead.RawCustomerData;
 ```
 
 The following query uses the first_level_keyset to decrypt data in the
@@ -1076,9 +1076,11 @@ FROM my_table
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/aead_encryption_functions (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
-- Corrected from the official docs: the example called `DETERMINISTC_ENCRYPT`, which is a misspelling; it is changed to `DETERMINISTIC_ENCRYPT`, the name given in the `DETERMINISTIC_ENCRYPT` syntax on the same page.
+- Corrected from the official docs: the example called `DETERMINISTC_ENCRYPT`, which is a misspelling; it is changed to `DETERMINISTIC_ENCRYPT`, the name given in the `DETERMINISTIC_ENCRYPT` syntax on the same page. It also reads `daead.RawCustomerData`, which no step on this page creates; the input is changed to `aead.RawCustomerData`, the table that the first statement of this example creates.
 - Corrected from the official docs: the decrypt query read from `dead.EncryptedCustomerData`, but the previous example creates `daead.EncryptedCustomerData`; the dataset name is changed to `daead`.
 - Caution: the official example `json_keyset` repeats the `"key"` member twice in one JSON object (one per key) although the text says it contains two keys. A JSON object with duplicate names keeps only the first in a JSON value (see the "No strict validation" note in the JSON functions page). The intended form (for example one `"key"` array with two elements) is not stated, so the example is kept as published.
+- Corrected from the official docs: the `DETERMINISTIC_ENCRYPT` description says the same ciphertext is returned for an identical `keyset` and `plaintext`. The same description says that `additional_data` binds the ciphertext to its context and must be passed again to decrypt it, so `additional_data` must also be identical; it is added to the condition.
+- Caution: the text before the `daead.EncryptedCustomerData` example says the ciphertext is the same for customers 2 and 3 because their plaintext is the same. The example passes each row's `customer_id` as `additional_data`, and customers 2 and 3 have different IDs, so their ciphertexts differ; the same ciphertext is produced only when `keyset`, `plaintext` and `additional_data` are all identical. The official text is kept as published.
 
 ## Related
 
