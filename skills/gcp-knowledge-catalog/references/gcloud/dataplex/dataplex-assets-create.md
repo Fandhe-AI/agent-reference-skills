@@ -1,0 +1,269 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/dataplex/assets/create
+---
+
+# gcloud dataplex assets create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud dataplex assets create
+
+```text
+NAME
+    gcloud dataplex assets create - create a Dataplex asset resource
+
+SYNOPSIS
+    gcloud dataplex assets create
+        (ASSET : --lake=LAKE --location=LOCATION --zone=ZONE)
+        (--resource-type=RESOURCE_TYPE : --resource-name=RESOURCE_NAME
+          --resource-read-access-mode=RESOURCE_READ_ACCESS_MODE) [--async]
+        [--description=DESCRIPTION] [--display-name=DISPLAY_NAME]
+        [--labels=[KEY=VALUE,...]] [--validate-only]
+        [--[no-]discovery-enabled
+          --discovery-exclude-patterns=[EXCLUDE_PATTERNS,...]
+          --discovery-include-patterns=[INCLUDE_PATTERNS,...]
+          --discovery-schedule=DISCOVERY_SCHEDULE --csv-delimiter=CSV_DELIMITER
+          --[no-]csv-disable-type-inference --csv-encoding=CSV_ENCODING
+          --csv-header-rows=CSV_HEADER_ROWS
+          --[no-]json-disable-type-inference --json-encoding=JSON_ENCODING]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    An asset represents a cloud resource that is being managed within a lake as
+    a member of a zone.
+
+    This asset ID will be used to generate names such as table names when
+    publishing metadata to Hive Metastore and BigQuery.
+      o Must contain only lowercase letters, numbers, and hyphens.
+      o Must start with a letter.
+      o Must end with a number or a letter.
+      o Must be between 1-63 characters.
+      o Must be unique within the zone.
+
+EXAMPLES
+    To create a Dataplex asset with name test-asset, within zone test-zone, in
+    lake test-lake, in location us-central1, with resource type STORAGE_BUCKET,
+    with resource name projects/test-project/buckets/test-bucket, run:
+
+        $ gcloud dataplex assets create test-asset --location=us-central \
+            --lake=test-lake --zone=test-zone \
+            --resource-type=STORAGE_BUCKET \
+            --resource-name=projects/test-project/buckets/test-bucket
+
+    To create a Dataplex asset with name test-asset, within zone test-zone, in
+    lake test-lake, in location us-central1, with resource type STORAGE_BUCKET,
+    with resource name projects/test-project/buckets/test-bucket, with
+    discovery-enabled, and discovery schedule 0 * * * *, run:
+
+        $ gcloud dataplex assets create test-asset --location=us-central \
+            --lake=test-lake --zone=test-zone \
+            --resource-type=STORAGE_BUCKET \
+            --resource-name=projects/test-project/buckets/test-bucket \
+            --discovery-enabled --discovery-schedule="0 * * * *"
+
+POSITIONAL ARGUMENTS
+     Assets resource - Arguments and flags that define the Dataplex asset you
+     want to create. The arguments in this group can be used to specify the
+     attributes of this resource. (NOTE) Some attributes are not given
+     arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument asset on the command line with a fully specified
+        name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       ASSET
+          ID of the assets or fully qualified identifier for the assets.
+
+          To set the asset attribute:
+          + provide the argument asset on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --lake=LAKE
+          The identifier of the Dataplex lake resource.
+
+          To set the lake attribute:
+          + provide the argument asset on the command line with a fully
+            specified name;
+          + provide the argument --lake on the command line.
+
+       --location=LOCATION
+          The location of the Dataplex resource.
+
+          To set the location attribute:
+          + provide the argument asset on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property dataplex/location.
+
+       --zone=ZONE
+          The identifier of the Dataplex zone resource.
+
+          To set the zone attribute:
+          + provide the argument asset on the command line with a fully
+            specified name;
+          + provide the argument --zone on the command line.
+
+REQUIRED FLAGS
+     Specification of the resource that is referenced by this asset.
+
+     This must be specified.
+
+       --resource-type=RESOURCE_TYPE
+          Type. RESOURCE_TYPE must be one of:
+
+           BIGQUERY_DATASET
+              BigQuery Dataset
+           STORAGE_BUCKET
+              Cloud Storage Bucket
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+       --resource-name=RESOURCE_NAME
+          "Relative name of the cloud resource that contains the data that is
+          being managed within a lake. For example:
+          projects/{project_number}/buckets/{bucket_id} or
+          projects/{project_number}/datasets/{dataset_id}
+
+       --resource-read-access-mode=RESOURCE_READ_ACCESS_MODE
+          Read access mode. RESOURCE_READ_ACCESS_MODE must be one of:
+
+           DIRECT
+              Data is accessed directly using storage APIs
+           MANAGED
+              Data is accessed through a managed interface using BigQuery APIs.
+
+OPTIONAL FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --description=DESCRIPTION
+        Description of the asset
+
+     --display-name=DISPLAY_NAME
+        Display name of the asset
+
+     --labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to add.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     --validate-only
+        Validate the create action, but don't actually perform it.
+
+     Settings to manage the metadata discovery and publishing.
+
+     --[no-]discovery-enabled
+        Whether discovery is enabled. Use --discovery-enabled to enable and
+        --no-discovery-enabled to disable.
+
+     --discovery-exclude-patterns=[EXCLUDE_PATTERNS,...]
+        The list of patterns to apply for selecting data to exclude during
+        discovery. For Cloud Storage bucket assets, these are interpreted as
+        glob patterns used to match object names. For BigQuery dataset assets,
+        these are interpreted as patterns to match table names.
+
+     --discovery-include-patterns=[INCLUDE_PATTERNS,...]
+        The list of patterns to apply for selecting data to include during
+        discovery if only a subset of the data should considered. For Cloud
+        Storage bucket assets, these are interpreted as glob patterns used to
+        match object names. For BigQuery dataset assets, these are interpreted
+        as patterns to match table names.
+
+     Determines when discovery jobs are triggered.
+
+     --discovery-schedule=DISCOVERY_SCHEDULE
+        Cron schedule (https://en.wikipedia.org/wiki/Cron) for running
+        discovery jobs periodically. Discovery jobs must be scheduled at least
+        30 minutes apart.
+
+     Describe data formats.
+
+     Describe CSV and similar semi-structured data formats.
+
+     --csv-delimiter=CSV_DELIMITER
+        The delimiter being used to separate values. This defaults to ','.
+
+     --[no-]csv-disable-type-inference
+        Whether to disable the inference of data type for CSV data. If true,
+        all columns will be registered as strings. Use
+        --csv-disable-type-inference to enable and
+        --no-csv-disable-type-inference to disable.
+
+     --csv-encoding=CSV_ENCODING
+        The character encoding of the data. The default is UTF-8.
+
+     --csv-header-rows=CSV_HEADER_ROWS
+        The number of rows to interpret as header rows that should be skipped
+        when reading data rows.
+
+     Describe JSON data format.
+
+     --[no-]json-disable-type-inference
+        Whether to disable the inference of data type for Json data. If true,
+        all columns will be registered as their primitive types (strings,
+        number or boolean). Use --json-disable-type-inference to enable and
+        --no-json-disable-type-inference to disable.
+
+     --json-encoding=JSON_ENCODING
+        The character encoding of the data. The default is UTF-8.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha dataplex assets create
+```
+
+### gcloud alpha dataplex assets create
+
+```text
+NAME
+    gcloud alpha dataplex assets create - create a Dataplex asset resource
+
+SYNOPSIS
+    gcloud alpha dataplex assets create
+        (ASSET : --lake=LAKE --location=LOCATION --zone=ZONE)
+        (--resource-type=RESOURCE_TYPE : --resource-name=RESOURCE_NAME
+          --resource-read-access-mode=RESOURCE_READ_ACCESS_MODE) [--async]
+        [--description=DESCRIPTION] [--display-name=DISPLAY_NAME]
+        [--labels=[KEY=VALUE,...]] [--validate-only]
+        [--[no-]discovery-enabled
+          --discovery-exclude-patterns=[EXCLUDE_PATTERNS,...]
+          --discovery-include-patterns=[INCLUDE_PATTERNS,...]
+          --discovery-schedule=DISCOVERY_SCHEDULE --csv-delimiter=CSV_DELIMITER
+          --[no-]csv-disable-type-inference --csv-encoding=CSV_ENCODING
+          --csv-header-rows=CSV_HEADER_ROWS
+          --[no-]json-disable-type-inference --json-encoding=JSON_ENCODING]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/dataplex/assets/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
