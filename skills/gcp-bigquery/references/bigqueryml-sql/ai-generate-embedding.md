@@ -28,7 +28,7 @@ You can create embeddings for the following types of data:
 - [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objmake_ref) or using an `ObjectRef` column from a table.
 - Visual data in [object tables](https://docs.cloud.google.com/bigquery/docs/object-table-introduction).
 - Combinations of unstructured data, including text, images, audio, video, and PDFs, represented by a `STRUCT` that contains `STRING`, `ARRAY<STRING>`, `ObjectRef`, and `ARRAY<ObjectRef>` values.
-- Output data from [PCA](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-pca), [autoencoder](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-autoencoder), or [matrix factorization](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization) models.
+- Output data from [PCA](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-pca), [autoencoder](create-autoencoder.md), or [matrix factorization](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization) models.
 
 ### Function processing
 
@@ -551,7 +551,7 @@ AI.GENERATE_EMBEDDING(
   contains the latent space dimensions for the input data.
   The number of array dimensions is equal to the number in the middle
   of the autoencoder model's
-  [`HIDDEN_UNITS` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-autoencoder#hidden_units)
+  [`HIDDEN_UNITS` option](create-autoencoder.md#hidden_units)
   array value.
 
 - `trial_id`: an `INT64` value that identifies the hyperparameter tuning

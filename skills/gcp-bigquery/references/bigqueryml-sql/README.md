@@ -21,3 +21,22 @@
 | The AI.KEY_DRIVERS function | Input data, Syntax, Choose interest and reference data, Output, Example, What's next | [ai-key-drivers.md](./ai-key-drivers.md) |
 | The AI.PARSE_DOCUMENT function | Details, Syntax, Authentication, Output, Examples, Pricing, Locations, What's next | [ai-parse-document.md](./ai-parse-document.md) |
 | The AI.PREDICT function | Syntax, Output, Examples, Pricing, Limitations, What's next | [ai-predict.md](./ai-predict.md) |
+| The AI.RANK function | Before you begin, Syntax, Output, Examples, Pricing, Quotas and limits | [ai-rank.md](./ai-rank.md) |
+| The AI.SCORE function | Input, Syntax, Output, Examples, Related functions, Locations, Quotas and limits, What's next | [ai-score.md](./ai-score.md) |
+| The AI.SEARCH function | Syntax, Details, Output, Examples, Related functions, Locations, Pricing, Quotas and limits, What's next | [ai-search.md](./ai-search.md) |
+| The AI.SIMILARITY function | Input, Syntax, Output, Examples, Choose a model, Related functions, Locations, Quotas, What's next | [ai-similarity.md](./ai-similarity.md) |
+| The AI.TRANSLATE function | Syntax, Output, Examples, Locations, What's next | [ai-translate.md](./ai-translate.md) |
+| The ALTER MODEL statement | ALTER MODEL syntax | [alter-model.md](./alter-model.md) |
+| The ML.ANNOTATE_IMAGE function | Syntax, Output, Quotas, Known issues, Locations, Examples, What's next | [annotate-image.md](./annotate-image.md) |
+| The ML.ARIMA_COEFFICIENTS function | Syntax, Output, Example, What's next | [arima-coefficients.md](./arima-coefficients.md) |
+| The ML.ARIMA_EVALUATE function | Syntax, Output, Example, What's next | [arima-evaluate.md](./arima-evaluate.md) |
+| The ML.BAG_OF_WORDS function | Syntax, Output, Quotas, Example, What's next | [bag-of-words.md](./bag-of-words.md) |
+| The ML.BUCKETIZE function | Syntax, Output, Example, What's next | [bucketize.md](./bucketize.md) |
+| The AI.CAUSAL_EFFECT function | Syntax, Output, Examples, What's next | [causal-effect.md](./causal-effect.md) |
+| The ML.CENTROIDS function | Syntax, Output, Examples, What's next | [centroids.md](./centroids.md) |
+| The ML.CONFUSION_MATRIX function | Syntax, Output, Limitations, Examples, What's next | [confusion.md](./confusion.md) |
+| The ML.CONVERT_COLOR_SPACE function | Syntax, Output, Example, What's next | [convert-color-space.md](./convert-color-space.md) |
+| The ML.CONVERT_IMAGE_TYPE function | Syntax, Output, Example, What's next | [convert-image-type.md](./convert-image-type.md) |
+| The ML.CORRELATION function | Syntax, Output, Examples | [correlation.md](./correlation.md) |
+| The CREATE MODEL statement for autoencoder models | CREATE MODEL syntax, Hyperparameter tuning, Supported machine learning functions, Locations, Example, Pricing | [create-autoencoder.md](./create-autoencoder.md) |
+| The CREATE MODEL statement for AutoML models | CREATE MODEL syntax, Supported data types for input columns, Locations, Limitations, CREATE MODEL example | [create-automl.md](./create-automl.md) |
