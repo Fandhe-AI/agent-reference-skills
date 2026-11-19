@@ -104,7 +104,7 @@ spec:
 
 Two targets, each with a `deployParameters` stanza and a label to match the pipeline stage's `matchTargetLabels`.
 
-Adapted (not in the official docs): the second document's `kind: target` is written `kind: Target`, as in the first document and in the config files schema page.
+Adapted (not in the official docs): the second document's `kind: target` is written `kind: Target`, as in the first document and in the config files schema page, and each target gets a `gke.cluster` runtime (placeholders `PROJECT_ID`, `LOCATION`, `CLUSTER_1`, `CLUSTER_2`); the source shows only the parameter-related fields, and a target needs one runtime (`gke`, `run`, `anthosCluster`, `customTarget` or `multiTarget`).
 
 ```yaml
 apiVersion: deploy.cloud.google.com/v1beta1
@@ -114,6 +114,8 @@ metadata:
   labels:
     my-app: "post-render-config-1"
 description: development cluster
+gke:
+  cluster: projects/PROJECT_ID/locations/LOCATION/clusters/CLUSTER_1
 deployParameters:
   application_env1: "newValue1"
 ---
@@ -125,6 +127,8 @@ metadata:
   labels:
     my-app: "post-render-config-2"
 description: development cluster
+gke:
+  cluster: projects/PROJECT_ID/locations/LOCATION/clusters/CLUSTER_2
 deployParameters:
   application_env1: "newValue2"
 ```
@@ -144,7 +148,9 @@ gcloud deploy releases create test-release-001 \
 
 ### Parameters for Helm chart values
 
-If you render a Helm chart, the deploy parameter names must match the Helm configuration values you want to set (for example `webserver.port`). All deploy parameters are passed to Helm as `--set` arguments at render time, with no change to `skaffold.yaml`. If you also author the templates, use the standard Helm syntax in the template (this is a Helm template, not plain YAML):
+If you render a Helm chart, the deploy parameter names must match the Helm configuration values you want to set (for example `webserver.port`). All deploy parameters are passed to Helm as `--set` arguments at render time, with no change to `skaffold.yaml`. If you also author the templates, use the standard Helm syntax in the template (this is a Helm template, not plain YAML).
+
+Adapted (not in the official docs): the environment variable value is rendered with `| quote`, because a Kubernetes `EnvVar.value` must be a string; `containerPort` stays a number.
 
 ```text
 apiVersion: apps/v1
@@ -169,7 +175,7 @@ spec:
           name: web
         env:
         - name: WEBSERVER_PORT
-          value: {{ .Values.webserver.port }} # replaced by deploy parameter `webserver.port`.
+          value: {{ .Values.webserver.port | quote }} # replaced by deploy parameter `webserver.port`.
 ```
 
 ### Use in custom targets
@@ -208,6 +214,7 @@ CLOUD_DEPLOY_customTarget_[VAR_NAME]
 
 ## Notes
 
+- Adapted from the official docs: the source's target example has no runtime; `gke.cluster` (format from the config files schema page) is added so each document is a valid target. The source's Helm template renders `value: {{ .Values.webserver.port }}`, which becomes a number such as `8080`; Kubernetes rejects a non-string `env[].value`, so the template uses `{{ .Values.webserver.port | quote }}`.
 - If a deploy parameter key is assigned more than one value, the release fails (the `gcloud deploy releases create` command fails with an error). Using several methods together is fine as long as a given key has the same value everywhere.
 - If you include `matchTargetLabels`, the target must carry all of those labels. Omitting it applies the values to all child targets in the stage, and setting two values for the same parameter fails the release.
 - If you use deploy parameters to distinguish among child targets, configure them on those child targets, not on the multi-target. If you provide no value on the target, the manifest default is used.
