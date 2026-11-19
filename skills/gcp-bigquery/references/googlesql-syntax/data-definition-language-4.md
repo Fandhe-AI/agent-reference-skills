@@ -770,7 +770,7 @@ project_id.location.capacity-commitment-id
 - `capacity-commitment-id`: The capacity commitment ID.
 
 To find the capacity commitment ID, query the
-[`INFORMATION_SCHEMA.CAPACITY_COMMITMENTS_BY_PROJECT`](https://docs.cloud.google.com/bigquery/docs/information-schema-capacity-commitments)
+[`INFORMATION_SCHEMA.CAPACITY_COMMITMENTS_BY_PROJECT`](../information-schema/capacity-commitments.md)
 table.
 
 #### Required permissions
