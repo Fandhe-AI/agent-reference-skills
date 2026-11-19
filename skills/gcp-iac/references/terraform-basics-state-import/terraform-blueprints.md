@@ -76,7 +76,7 @@ module "gcs_bucket" {
 | Developer tools | [jenkins](https://github.com/terraform-google-modules/terraform-google-jenkins) | Creates a Compute Engine instance running Jenkins |
 | Security and identity | [kms](https://github.com/terraform-google-modules/terraform-google-kms) | Allows managing a keyring, zero or more keys in the keyring, and IAM role bindings on individual keys |
 | Compute, Containers | [kubernetes-engine](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine) | Configures opinionated GKE clusters |
-| Networking | [lb](https://github.com/terraform-google-modules/terraform-google-lb) | Creates a regional TCP proxy load balancer for Compute Engine by using target pools and forwarding rules |
+| Networking | [lb](https://github.com/terraform-google-modules/terraform-google-lb) | Creates a regional passthrough TCP load balancer for Compute Engine by using target pools and forwarding rules (corrected; see Notes) |
 | Networking | [lb-http](https://github.com/terraform-google-modules/terraform-google-lb-http) | Creates a global HTTP load balancer for Compute Engine by using forwarding rules |
 | Networking | [lb-internal](https://github.com/terraform-google-modules/terraform-google-lb-internal) | Creates an internal load balancer for Compute Engine by using forwarding rules |
 | Networking | [load-balanced-vms](https://github.com/GoogleCloudPlatform/terraform-google-load-balanced-vms) | Creates a managed instance group with a load balancer |
@@ -114,6 +114,7 @@ module "gcs_bucket" {
 ## Notes
 
 - The blueprints page has no code. Snippet taken from https://docs.cloud.google.com/docs/terraform/resource-management/import
+- Corrected from the official docs: the source describes `lb` as "Creates a regional TCP proxy load balancer for Compute Engine by using target pools and forwarding rules". The module's README says: "The root module is an implementation of passthrough regional TCP Load Balancer for GCE using target pool and forwarding rule. A regional proxy based external load balancer is implemented as a submodlue[modules/regional_proxy_lb/]." (https://github.com/terraform-google-modules/terraform-google-lb/blob/v5.1.0/README.md, retrieved 2026-11-19). The row says passthrough; the proxy-based load balancer is the `modules/regional_proxy_lb` submodule.
 - Source inconsistency: the source links `vertex-mlops` to `https://docs.cloud.google.com/github.com/GoogleCloudPlatform/cloud-foundation-fabric/tree/master/blueprints/data-solutions/vertex-mlops`, so the link is not reproduced in the table.
 - Source: https://docs.cloud.google.com/docs/terraform/blueprints/terraform-blueprints (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
