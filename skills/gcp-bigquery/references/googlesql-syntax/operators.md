@@ -631,7 +631,7 @@ SELECT entry FROM entry_table WHERE entry IS NULL
 #### Graph logical operators
 
 GoogleSQL supports the following logical operators in
-[element pattern label expressions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-patterns#element_pattern_definition):
+[element pattern label expressions](../graph-gql/patterns.md#element-pattern):
 
 | Name | Syntax | Description |
 |---|---|---|
