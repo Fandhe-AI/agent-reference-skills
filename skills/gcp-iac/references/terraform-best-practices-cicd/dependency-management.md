@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/docs/terraform/best-practices/dependency-m
 
 # Terraform on Google Cloud: Dependency Management
 
-Recommendations for expressing dependencies between resources: prefer implicit dependencies (expression references) over explicit `depends_on`, and reference output attributes (values not yet known) so Terraform waits for the upstream resource.
+Recommendations for expressing dependencies between resources: prefer implicit dependencies (expression references) over explicit `depends_on`, and reference output attributes (values not yet known) of the upstream resource.
 
 ## Signature / Usage
 
@@ -50,7 +50,7 @@ module "bigquery" {
 
 ### Reference output attributes
 
-Not recommended (`name` is an input argument with a known value at plan time, so no wait is created):
+Not recommended by the source. The source says that referencing `name`, an argument whose value is known at plan time, does not create an implicit dependency; Terraform does create one, because the expression refers to the bucket resource (see Notes):
 
 ```hcl
 # Cloud Storage bucket
@@ -66,7 +66,7 @@ resource "google_storage_bucket_object" "bucket_object" {
 }
 ```
 
-Recommended (`id` is an output attribute, set only after the bucket is created):
+Recommended by the source (`id` is an output attribute, set only after the bucket is created):
 
 ```hcl
 resource "google_storage_bucket_object" "bucket_object" {
@@ -107,6 +107,7 @@ module "module_a" {
 ## Notes
 
 - Implicit dependencies let Terraform track the specific fields involved, which often gives more efficient plans for updates and replacements. Explicit dependencies carry less information, so Terraform plans more conservatively.
+- Corrected from the official docs: the source says that referencing the known `name` argument "doesn't create an implicit dependency", so Terraform "doesn't wait for the `google_storage_bucket` resource to be created". Terraform's documentation says otherwise: "Terraform analyzes these expressions to automatically infer dependencies between objects. For example, an expression in a resource argument that refers to another managed resource creates an implicit dependency between the two resources." (https://developer.hashicorp.com/terraform/language/expressions/references, retrieved 2026-11-19). Both bucket examples therefore make `bucket_object` wait for `bucket`; whether the referenced value is known at plan time does not decide the dependency.
 - Use `depends_on` only as a last resort when a dependency is hidden and cannot be expressed implicitly; add a comment on why it is needed.
 - Source inconsistency: the prose before the recommended sample says the object "must reference the `id` output attribute of the `google_storage_bucket_object` resource", while the sample references `google_storage_bucket.bucket.id`.
 - Source: https://docs.cloud.google.com/docs/terraform/best-practices/dependency-management (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)

@@ -99,7 +99,7 @@ The command retrieves project data with Google Cloud APIs needed for an accurate
 
 ### CI/CD example
 
-Adapted (not in the official docs): `[ $retVal -ne 0]` is written as `[ "$retVal" -ne 0 ]`, so an error from `gcloud beta terraform vet` stops the script before `terraform apply`; `$retVal` is quoted in both tests.
+Adapted (not in the official docs): `[ $retVal -ne 0]` is written as `[ "$retVal" -ne 0 ]`, so an error from `gcloud beta terraform vet` stops the script before `terraform apply`; `$retVal` is quoted in both tests; the last line applies the vetted saved plan (`terraform apply tfplan.tfplan`).
 
 ```bash
 terraform plan -out=tfplan.tfplan
@@ -120,7 +120,7 @@ fi
 
 echo "No policy violations detected; proceeding with terraform apply"
 
-terraform apply
+terraform apply tfplan.tfplan
 ```
 
 ## Options / Props
@@ -158,6 +158,7 @@ terraform apply
 - A policy library is required; see the create-policy-library page.
 - Corrected from the official docs: the source CI script has `if [ $retVal -ne 0]`; without a space before `]`, `[` fails with a missing `]` error, the condition is false and the script continues to `terraform apply` after an error.
 - The CI example ends with `terraform apply`; try it on a disposable project first.
+- Corrected from the official docs: the source ends the CI script with `terraform apply`, which creates a new plan instead of applying the plan that `gcloud beta terraform vet` checked; if the configuration, variables or remote resources change in between, unchecked changes are applied. The script applies the saved plan `tfplan.tfplan`, so what is applied is what was vetted.
 - Developers can also run `gcloud beta terraform vet` locally to test Terraform changes before the CI/CD pipeline runs.
 - `--format` and `--project` are gcloud-wide flags; the gcloud 593.0.0 help lists `--region` and `--zone` as the command's optional flags.
 - `gcloud beta terraform vet` checks Terraform plans against a policy library before apply; Security Command Center IaC validation is in `gcp-security-compliance`, and Organization Policy custom constraints are in `gcp-foundation`.

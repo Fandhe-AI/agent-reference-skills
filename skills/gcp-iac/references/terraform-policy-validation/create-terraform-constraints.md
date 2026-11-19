@@ -91,15 +91,14 @@ violation[{
 
 Put sample data in `validator/test/fixtures/<constraint filename>/resource_changes/data.json`. Use non-sensitive data in the Rego Playground.
 
-Adapted (not in the official docs): `allowed_address_types` is passed as a list (`["EXTERNAL"]`) instead of the string `"EXTERNAL"`.
+Adapted (not in the official docs): `allowed_address_types` is passed as a list (`["EXTERNAL"]`) instead of the string `"EXTERNAL"`, and the fixture is read with a bracketed string key instead of the hyphenated `import` path.
 
 ```rego
 # validator/tf-compute-address-address-type-allowlist-constraint-v1-test.rego
 package templates.gcp.TFComputeAddressAddressTypeAllowlistConstraintV1
 
-import data.test.fixtures.tf-compute-address-address-type-allowlist-constraint-v1-test.resource_changes as resource_changes
-
 test_violation_with_disallowed_address_type {
+  resource_changes := data.test.fixtures["tf-compute-address-address-type-allowlist-constraint-v1-test"].resource_changes
   parameters := {
     "allowed_address_types": ["EXTERNAL"]
   }
@@ -229,6 +228,7 @@ spec:
 - Limitations: Terraform plan data is the best available representation of state after apply, but values computed server side may be unknown. CAI ancestry paths use the default project (`--project`) to resolve unknown project IDs; without one the ancestry path defaults to `organizations/unknown`. The last constraint above disallows unknown ancestry.
 - Corrected from the official docs: the source Rego uses `count({resource.change.after.address_type} & allowed_address_types) >= 1`, which raises a violation only for allowed types. The same page contradicts it: the message reads "has a disallowed address_type", the template is an allowlist ("A list of address_types allowed"), the constraint example is introduced with "to only allow `INTERNAL` address types", and `test_violation_with_disallowed_address_type` allows `EXTERNAL` against the `INTERNAL` sample data and expects `count(violations) == 1`.
 - Corrected from the official docs: the source test passes `"allowed_address_types": "EXTERNAL"` (a string), while the template schema declares `allowed_address_types` as `type: array` of `string` and the Rego intersects it with a set (`&`); the Rego therefore reads the parameter into a set and the test passes a list.
+- Corrected from the official docs: the source test has `import data.test.fixtures.tf-compute-address-address-type-allowlist-constraint-v1-test.resource_changes as resource_changes`. A Rego dot-access term is an identifier, which cannot contain `-`, so the import does not parse; the test reads the same document with a bracketed string key, `data.test.fixtures["tf-compute-address-address-type-allowlist-constraint-v1-test"].resource_changes`, inside the rule.
 - Source inconsistency: the prose says "Your Rego must have a `violations` rule", while the code defines `violation`.
 - Source inconsistency: the naming guidance says snake_case ("separate words with `_`"), while its example file name `tf-compute-address-address-type-allowlist-constraint-v1.rego` uses hyphens.
 - Source inconsistency: the prose puts sample data in `validator/test/fixtures/<constraint filename>/resource_changes/data.json`, while the test imports `data.test.fixtures.tf-compute-address-address-type-allowlist-constraint-v1-test.resource_changes` (the test file name).
