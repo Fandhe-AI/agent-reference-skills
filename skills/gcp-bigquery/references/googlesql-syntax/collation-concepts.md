@@ -314,6 +314,8 @@ collation-supported types. In a collation-supported operation:
 
 For example:
 
+Adapted (not in the official docs): replaced the `col_a_expression` to `col_d_expression` placeholders with the column names `col_a` to `col_d` defined by the `CREATE TABLE` statement.
+
 ```sql
 -- Assume there's a table with this column declaration:
 CREATE TABLE table_a
@@ -326,28 +328,28 @@ CREATE TABLE table_a
 
 -- This runs. Column 'b' has a collation specification and the
 -- column 'c' doesn't.
-SELECT STARTS_WITH(col_b_expression, col_c_expression)
+SELECT STARTS_WITH(col_b, col_c)
 FROM table_a;
 
 -- This runs. Column 'a' and 'd' have the same collation specification.
-SELECT STARTS_WITH(col_a_expression, col_d_expression)
+SELECT STARTS_WITH(col_a, col_d)
 FROM table_a;
 
 -- This runs. Even though column 'a' and 'b' have different
 -- collation specifications, column 'b' is considered the default collation
 -- because it's assigned to an empty collation specification.
-SELECT STARTS_WITH(col_a_expression, col_b_expression)
+SELECT STARTS_WITH(col_a, col_b)
 FROM table_a;
 
 -- This works. Even though column 'a' and 'b' have different
 -- collation specifications, column 'b' is updated to use the same
 -- collation specification as column 'a'.
-SELECT STARTS_WITH(col_a_expression, COLLATE(col_b_expression, 'und:ci'))
+SELECT STARTS_WITH(col_a, COLLATE(col_b, 'und:ci'))
 FROM table_a;
 
 -- This runs. Column 'c' doesn't have a collation specification, so it uses the
 -- collation specification of column 'd'.
-SELECT STARTS_WITH(col_c_expression, col_d_expression)
+SELECT STARTS_WITH(col_c, col_d)
 FROM table_a;
 ```
 
@@ -570,6 +572,7 @@ sections, but here are a few general limitations to keep in mind:
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Conflicting official statements: The Caveats say `ẞ` is considered equal to `'SS'` and that `COLLATE('ẞ', 'und:ci') > COLLATE('SS', 'und:ci')` evaluates to `TRUE`, but for values that compare equal `>` is `FALSE`; the second expression (`<` with the suffixes `1` and `2`) fits equality. The intended operator is not stated.
+- Corrected from the official docs: the collation example defines `table_a` with the columns `col_a`, `col_b`, `col_c` and `col_d`, but its five `STARTS_WITH` queries, each described as running, refer to `col_a_expression`, `col_b_expression`, `col_c_expression` and `col_d_expression`, which the table doesn't have. They are replaced with the defined column names.
 
 ## Related
 
