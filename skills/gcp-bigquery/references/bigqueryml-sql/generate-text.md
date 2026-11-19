@@ -73,6 +73,8 @@ use case.
 
 #### Gemini
 
+Adapted (not in the official docs): `MODEL_PARAMS` is written without a leading comma, because it is the only field in its alternative.
+
 ```googlesql
 ML.GENERATE_TEXT(
 MODEL `PROJECT_ID.DATASET.MODEL`,
@@ -88,7 +90,7 @@ STRUCT(
       [, SAFETY_SETTINGS AS safety_settings]
     }
     |
-    [, MODEL_PARAMS AS model_params]
+    [MODEL_PARAMS AS model_params]
   }
   [, FLATTEN_JSON_OUTPUT AS flatten_json_output]
   [, REQUEST_TYPE AS request_type])
@@ -259,6 +261,8 @@ You must enable Claude models in Gemini Enterprise Agent Platform before you can
 use them. For more information, see
 [Enable a partner model](https://docs.cloud.google.com/bigquery/docs/generate-text#enable-model).
 
+Adapted (not in the official docs): `MODEL_PARAMS` is written without a leading comma, because it is the only field in its alternative.
+
 ```googlesql
 ML.GENERATE_TEXT(
 MODEL `PROJECT_ID.DATASET.MODEL`,
@@ -271,7 +275,7 @@ STRUCT(
       [, TOP_P AS top_p]
     }
     |
-    [, MODEL_PARAMS AS model_params]
+    [MODEL_PARAMS AS model_params]
   }
   [, FLATTEN_JSON_OUTPUT AS flatten_json_output])
 )
@@ -594,6 +598,8 @@ The model and input table must be in the same region.
 
 #### Open models
 
+Adapted (not in the official docs): `MODEL_PARAMS` is written without a leading comma, because it is the only field in its alternative.
+
 ```sql
 ML.GENERATE_TEXT(
 MODEL `PROJECT_ID.DATASET.MODEL`,
@@ -608,7 +614,7 @@ STRUCT(
       [, USE_CHAT_MODE AS use_chat_mode]
     }
     |
-    [, MODEL_PARAMS AS model_params]
+    [MODEL_PARAMS AS model_params]
   }
   [, FLATTEN_JSON_OUTPUT AS flatten_json_output])
 )
@@ -1218,6 +1224,7 @@ To try the BigQuery ML remote inference SQL script, see
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the visual content analysis example (`mydataset.dogs`) has no comma between the `TABLE` and `STRUCT` arguments of `ML.GENERATE_TEXT`; the comma is added.
 - Corrected from the official docs: the document classification example (`mydataset.documents`) has no commas between the `MODEL`, `TABLE` and `STRUCT` arguments of `ML.GENERATE_TEXT`; the commas are added.
+- Corrected from the official docs: in the syntax for standard tables with Gemini models, partner models and open models, the `MODEL_PARAMS` alternative is written `[, MODEL_PARAMS AS model_params]`; choosing it gives `STRUCT(, ... AS model_params)`. It is written `[MODEL_PARAMS AS model_params]`, as in the Llama and Mistral AI syntax on this page. In the object table syntax the comma stays, because `PROMPT` comes first.
 
 ## Related
 

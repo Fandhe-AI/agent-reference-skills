@@ -75,13 +75,13 @@ The output looks similar to the following:
 ### What's next
 
 - For information about feature preprocessing, see [Feature preprocessing overview](https://docs.cloud.google.com/bigquery/docs/preprocess-overview).
-- For information about the supported SQL statements and functions for each
 
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-label-encoder (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- The source page's last "What's next" item stops after "For information about the supported SQL statements and functions for each" with no link; it is omitted.
 
 ## Related
 
