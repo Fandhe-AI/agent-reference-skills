@@ -19,12 +19,14 @@ to perform forecasting.
 
 ### Syntax
 
+Adapted (not in the official docs): the first `STRUCT` field is written `[HORIZON AS horizon]` without a leading comma, as in the `ARIMA_PLUS_XREG` syntax.
+
 ```text
 # ARIMA_PLUS models:
 ML.FORECAST(
   MODEL `PROJECT_ID.DATASET.MODEL_NAME`,
     STRUCT(
-      [, HORIZON AS horizon]
+      [HORIZON AS horizon]
       [, CONFIDENCE_LEVEL AS confidence_level])
 )
 
@@ -147,6 +149,7 @@ creating a new table for the `ML.FORECAST` result, and then applying other compu
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-forecast (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the `ARIMA_PLUS` syntax starts the `STRUCT` with `[, HORIZON AS horizon]`, which gives `STRUCT(, ...)`; it is written `[HORIZON AS horizon]` like the `ARIMA_PLUS_XREG` syntax.
 
 ## Related
 

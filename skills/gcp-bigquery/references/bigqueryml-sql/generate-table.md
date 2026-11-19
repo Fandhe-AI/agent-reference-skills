@@ -266,7 +266,7 @@ The model and input table must be in the same region.
 
 - All columns in the input table.
 
-- All columns specified in the `output_response` argument.
+- All columns specified in the `output_schema` argument.
 
 - `full_response`: this is the
   [JSON response](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/reference/rest/v1/GenerateContentResponse)
@@ -333,6 +333,7 @@ or the
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the output schema example writes `name NOT NULL STRING`; the argument description gives the order name, data type, optional `NOT NULL`, so the example uses `name STRING NOT NULL`.
+- Corrected from the official docs: the output section refers to the `output_response` argument, which the syntax and argument list don't define; the argument is `output_schema`.
 
 ## Related
 

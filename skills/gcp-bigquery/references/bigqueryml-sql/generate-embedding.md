@@ -956,6 +956,7 @@ To request more quota for the Agent Platform models, use the process described i
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-generate-embedding (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Conflicting official statements: for matrix factorization models, `ml_generate_embedding_result` is said to contain the feature weights and also the intercept as the last value, while its number of dimensions is said to equal `NUM_FACTORS`; with the intercept appended the length would be `NUM_FACTORS + 1`. The source does not say which one is right.
 
 ## Related
 

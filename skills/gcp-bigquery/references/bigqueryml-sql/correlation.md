@@ -35,12 +35,14 @@ statistical correlations between a target column and one or more metric columns.
 
 ### Syntax
 
+Adapted (not in the official docs): the trailing comma inside `[, dimension_cols => DIMENSION_COLS, ]` is removed, as in the other optional arguments.
+
 ```googlesql
 ML.CORRELATION(
   { TABLE TABLE_NAME | (QUERY_STATEMENT) },
   target_col => TARGET_COL,
   target_correlation_cols => TARGET_CORRELATION_COLS
-  [, dimension_cols => DIMENSION_COLS, ]
+  [, dimension_cols => DIMENSION_COLS ]
   [, method => METHOD ]
 );
 ```
@@ -218,6 +220,7 @@ FROM ML.CORRELATION(
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-correlation (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the syntax writes `[, dimension_cols => DIMENSION_COLS, ]` with a trailing comma; it is written `[, dimension_cols => DIMENSION_COLS ]` like `[, method => METHOD ]`.
 
 ## Related
 

@@ -341,6 +341,7 @@ FROM
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Conflicting official statements: `holiday_effect` is defined as the sum of the maximum positive individual holiday effect and the minimum negative individual holiday effect, while the `holiday_effect_holiday_name` description says `holiday_effect` is the sum of all `holiday_effect_holiday_name` values. The two differ when several holidays have effects of the same sign; the source does not say which one applies.
 
 ## Related
 
