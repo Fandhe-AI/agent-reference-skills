@@ -97,7 +97,7 @@ contains other types of
 characters, or reserved keywords, you need to surround the identifier (or the
 part of the identifier with the special characters or reserved keywords) with
 back ticks. For more information, see
-[Identifiers](../googlesql-syntax/lexical.md#identifiers).
+[Identifiers](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#identifiers).
 
 ### How to run commands
 
@@ -131,7 +131,7 @@ resource, be sure to follow the [rules for specifying resource names](#specifyin
 in commands.
 
 > [!NOTE]
-> **Note:** The following examples use the `--nouse_legacy_sql` flag. This flag is required to run a GoogleSQL query from the command line unless you [set a default value in `.bigqueryrc`](#set-default-values-for-command-line-flags) or [set the configuration setting](../googlesql-syntax/data-definition-language-3.md#alter-project-set-options-statement) `default_sql_dialect_option` to 'default_legacy_sql' at the project or organization level.
+> **Note:** The following examples use the `--nouse_legacy_sql` flag. This flag is required to run a GoogleSQL query from the command line unless you [set a default value in `.bigqueryrc`](#set-default-values-for-command-line-flags) or [set the configuration setting](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_project_set_options_statement) `default_sql_dialect_option` to 'default_legacy_sql' at the project or organization level.
 
 This example shows how to run a GoogleSQL query on the command line:
 
@@ -478,20 +478,20 @@ properties.
 :   A string corresponding to a region or multi-region
 [location](https://docs.cloud.google.com/bigquery/docs/locations).
 The location flag is required for the
-[`bq cancel`](bq-cli-reference-2.md#bq-cancel) command
-and for the [`bq show`](bq-cli-reference-3.md#bq-show)
+[`bq cancel`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_cancel) command
+and for the [`bq show`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_show)
 command when you use the `--jobs` flag to show information about jobs. The
 location flag is optional for the following commands:
 
-- [`query`](bq-cli-reference-2.md#bq-query)
-- [`cp`](bq-cli-reference-2.md#bq-cp)
-- [`load`](bq-cli-reference-2.md#bq-load)
-- [`extract`](bq-cli-reference-2.md#bq-extract)
-- [`partition`](bq-cli-reference-2.md#bq-partition)
-- [`update`](bq-cli-reference-3.md#bq-update)
-- [`wait`](bq-cli-reference-3.md#bq-wait)
-- [`mk`](bq-cli-reference-2.md#bq-mk) when you use the `--dataset`, `--reservation`, `--capacity_commitment`, or `--reservation_assignment` flags
-- [`ls`](bq-cli-reference-2.md#bq-ls) when you use the `--reservation`, `--capacity_commitment`, or `--reservation_assignment` flags
+- [`query`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_query)
+- [`cp`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_cp)
+- [`load`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_load)
+- [`extract`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_extract)
+- [`partition`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_partition)
+- [`update`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_update)
+- [`wait`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_wait)
+- [`mk`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_mk) when you use the `--dataset`, `--reservation`, `--capacity_commitment`, or `--reservation_assignment` flags
+- [`ls`](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_ls) when you use the `--reservation`, `--capacity_commitment`, or `--reservation_assignment` flags
 
 All other commands ignore the `--location` flag.
 
@@ -611,5 +611,3 @@ the bq command-line tool. The default value is `''`. For more information, see
 ## Related
 
 - [Index of this directory](./README.md)
-- [bq command-line tool reference (part 2 of 3)](./bq-cli-reference-2.md)
-- [bq command-line tool reference (part 3 of 3)](./bq-cli-reference-3.md)

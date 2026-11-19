@@ -58,7 +58,7 @@ ML.UNDERSTAND_TEXT(
   `text_content`. You can alias an existing table column as `text_content` if
   necessary. For information about the supported SQL syntax of the
   `QUERY_STATEMENT` clause, see
-  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
 - `OPTION_NAME`: a `STRING` value that specifies the
   feature name of a supported

@@ -15,7 +15,7 @@ Google Cloud (GCP) のデータウェアハウス BigQuery のスキル。デー
 - 公式の Markdown twin を機械的に変換した SQL・CLI リファレンス 8 グループ（GoogleSQL 構文・関数・BigQuery ML 構文・GQL・INFORMATION_SCHEMA・legacy SQL・`bq`・Dataform CLI）
 - gcloud・REST・IAM の機械生成ページ
 
-メインの BigQuery CLI は `bq`（`references/bq-cli/`（後続 PR で投入））で、gcloud の `bq` グループ（`references/gcloud/bq/`）は別物。gcloud の `bq` グループは小さく、`bq datasets` / `bq jobs` / `bq migration` / `bq query` / `bq tables` は alpha のみ、GA を持つのは `bq migration-workflows`（alpha・beta・GA）だけ。
+メインの BigQuery CLI は `bq`（`references/bq-cli/`）で、gcloud の `bq` グループ（`references/gcloud/bq/`）は別物。gcloud の `bq` グループは小さく、`bq datasets` / `bq jobs` / `bq migration` / `bq query` / `bq tables` は alpha のみ、GA を持つのは `bq migration-workflows`（alpha・beta・GA）だけ。
 
 名称変更の注意（references で確認したもの）。
 
@@ -31,9 +31,12 @@ Google Cloud (GCP) のデータウェアハウス BigQuery のスキル。デー
 skills/gcp-bigquery/
   SKILL.md
   references/
-    bigqueryml-sql/               # 機械変換: BigQuery ML の SQL 構文（CREATE MODEL・ML.* / AI.* 関数）、分割投入中（103 / 120 ページ。収録済みは README 掲載分のみ）
+    bigqueryml-sql/               # 機械変換: BigQuery ML の SQL 構文（CREATE MODEL・ML.* / AI.* 関数）
       README.md
       <page>.md
+    bq-cli/                       # 機械変換: bq コマンドラインツールのリファレンス（3 分割）、分割投入中（1 / 3 ページ。収録済みは README 掲載分のみ）
+      README.md
+      bq-cli-reference-1.md ... bq-cli-reference-3.md
     overview-datasets/            # 概要・リソース階層・ストレージ・データセット・time travel・削除テーブルの復元・snapshot / clone・既定の構成・INFORMATION_SCHEMA 概要
       README.md
       <page>.md
@@ -113,12 +116,13 @@ skills/gcp-bigquery/
 
 1. 概念・手順 → 下記マッピング表で手書きガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）。README の説明列にページ内の見出しが並ぶ
 2. INFORMATION_SCHEMA のビュー → `references/information-schema/README.md`（後続 PR で投入）（概要・権限・リージョン修飾子は `overview-datasets/information-schema-intro.md`）
-3. IAM ロール・権限 → `references/iam/README.md`（後続 PR で投入） の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/`（後続 PR で投入） 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
-4. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
+3. `bq` のサブコマンド → `references/bq-cli/README.md`。コマンドは `bq-cli-reference-2.md`、共通・グローバルフラグは `bq-cli-reference-1.md`。サブコマンド名で grep する。gcloud の `bq` グループとは別
+4. IAM ロール・権限 → `references/iam/README.md`（後続 PR で投入） の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/`（後続 PR で投入） 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
+5. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
 
-未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `graph-gql` / `information-schema` / `legacy-sql` / `bq-cli` / `dataform-cli`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `graph-gql` / `information-schema` / `legacy-sql` / `dataform-cli`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`bigqueryml-sql`: 103 / 120 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`bq-cli`: 1 / 3 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -160,8 +164,9 @@ skills/gcp-bigquery/
 | Gemini in BigQuery の設定・data canvas・data agents・Conversational Analytics API・notebooks・BigQuery DataFrames | gemini-data-agents-notebooks | [references/gemini-data-agents-notebooks/README.md](references/gemini-data-agents-notebooks/README.md) |
 | Dataform のリポジトリ・ワークスペース・SQLX・テーブル作成（table / view / incremental）・`ref()` による依存関係 | dataform | [references/dataform/README.md](references/dataform/README.md) |
 | BigQuery ML の SQL 構文（`ML.*` / `AI.*` 関数） | bigqueryml-sql | [references/bigqueryml-sql/README.md](references/bigqueryml-sql/README.md) |
+| `bq` コマンド（`bq query` / `bq load` / `bq extract` / `bq mk` 等）とグローバルフラグ | bq-cli | [references/bq-cli/README.md](references/bq-cli/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `graph-gql` / `information-schema` / `legacy-sql` / `bq-cli` / `dataform-cli`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `graph-gql` / `information-schema` / `legacy-sql` / `dataform-cli`
 
 ## 他スキルとの使い分け
 

@@ -31,7 +31,7 @@ ML.ROC_CURVE(
 
   If `TABLE` is specified, the input column names in the table must match the
   column names in the model, and their types should be compatible according to
-  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
   The input must have a column that matches the
   label column name that's provided during training. This value is provided
   using the `input_label_cols` option. If `input_label_cols` is unspecified,
@@ -44,12 +44,12 @@ ML.ROC_CURVE(
 - `QUERY_STATEMENT`: a GoogleSQL query that is
   used to generate the evaluation data. For the supported SQL syntax of the
   `QUERY_STATEMENT` clause in GoogleSQL, see
-  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   If `QUERY_STATEMENT` is specified, the input column names from the query
   must match the column names in the model, and their types should be
   compatible according to BigQuery
-  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
   The input must have a column that matches the label column name provided
   during training. This value is provided using the `input_label_cols` option.
   If `input_label_cols` is unspecified, the column named `label` in the
@@ -66,7 +66,7 @@ ML.ROC_CURVE(
   - If the data is not split during training, the entire training input is used to compute the curve results.
 - `THRESHOLDS`: an `ARRAY<FLOAT64>` value that specifies
   the percentile values of the prediction output supplied by the
-  [`GENERATE_ARRAY` function](../googlesql-functions/array_functions.md#generate_array).
+  [`GENERATE_ARRAY` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#generate_array).
 
 - `TRIAL_ID`: an `INT64` value that identifies the
   hyperparameter tuning trial that you want the function to evaluate. The

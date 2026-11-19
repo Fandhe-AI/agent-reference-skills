@@ -524,7 +524,7 @@ the model are used for the warm start run.
 
 In a warm start run, the iteration numbers are reset to start from zero. Use
 the training run or iteration information returned by the
-[`ML.TRAINING_INFO` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-train)
+[`ML.TRAINING_INFO` function](train.md)
 to distinguish the warm start run from the original run.
 
 In a warm start, the values of the `MODEL_TYPE`, `LABELS`, and `HIDDEN_UNITS`

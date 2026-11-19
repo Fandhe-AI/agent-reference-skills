@@ -18,7 +18,7 @@ as an alternative to the `ML.WEIGHTS` function.
 `AI.GENERATE_EMBEDDING` generates the same factor weights and intercept data as
 `ML.WEIGHTS` as an array in a single column, rather than in two columns.
 Having all of the embeddings in a single column lets you directly use the
-[`VECTOR_SEARCH` function](../googlesql-functions/search_functions.md#vector_search)
+[`VECTOR_SEARCH` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search)
 on the`AI.GENERATE_EMBEDDING` output.
 
 ### Syntax
@@ -105,7 +105,7 @@ FROM
       processed_input = 'input_col'))
 ```
 
-This command uses the [`UNNEST`](../googlesql-syntax/query-syntax-1.md#unnest-operator)
+This command uses the [`UNNEST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#unnest_operator)
 function because the `category_weights` column is a nested repeated column.
 
 #### With standardization

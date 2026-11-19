@@ -15,7 +15,7 @@ data preprocessing from model training, making it easier for you to capture and
 reuse a set of data preprocessing rules.
 
 You can use a transform-only model in conjunction with the
-[`ML.TRANSFORM` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-transform)
+[`ML.TRANSFORM` function](transform.md)
 to provide preprocessed data to other models:
 
 - You can use it in the [query statement](create.md#query_statement) when creating another model, in order to use the transformed data as the training data for that model.

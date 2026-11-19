@@ -225,7 +225,7 @@ Sets the initial learning rate when you specify `LINE_SEARCH` for
 
 If the model learning rate appears to be doubling every
 iteration as indicated by the
-[`ML.TRAINING_INFO` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-train),
+[`ML.TRAINING_INFO` function](train.md),
 then try setting `LS_INIT_LEARN_RATE` to the last doubled learning rate. The
 optimal initial learning rate is different for every model. A good initial
 learning rate for one model might not be a good initial learning rate for
@@ -485,7 +485,7 @@ the model are used for the warm start run.
 
 In a warm start run, the iteration numbers are reset to start from zero. Use
 the training run or iteration information returned by the
-[`ML.TRAINING_INFO` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-train)
+[`ML.TRAINING_INFO` function](train.md)
 to distinguish the warm start run from the original run.
 
 The values of the `MODEL_TYPE` and `LABELS` options and the training data schema

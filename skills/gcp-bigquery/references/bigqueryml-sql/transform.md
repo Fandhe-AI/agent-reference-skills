@@ -31,26 +31,26 @@ ML.TRANSFORM(
 
 - `PROJECT_ID`: the project that contains the resource.
 - `DATASET`: the BigQuery dataset that contains the resource.
-- `MODEL_NAME`: the name of a model. The model must have been created by using a `CREATE MODEL` statement that includes a [`TRANSFORM` clause](create.md#transform) to manually preprocess feature data. You can check to see if a model uses a `TRANSFORM` clause by using the [`bq show` command](../bq-cli/bq-cli-reference-3.md#bq-show) to look at the [model's metadata](https://docs.cloud.google.com/bigquery/docs/getting-model-metadata#get_model_metadata). If the model was trained using a `TRANSFORM` clause, the model metadata contains a section about the transform columns. The function returns an error if you specify a model that was trained without a `TRANSFORM` clause.
+- `MODEL_NAME`: the name of a model. The model must have been created by using a `CREATE MODEL` statement that includes a [`TRANSFORM` clause](create.md#transform) to manually preprocess feature data. You can check to see if a model uses a `TRANSFORM` clause by using the [`bq show` command](https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_show) to look at the [model's metadata](https://docs.cloud.google.com/bigquery/docs/getting-model-metadata#get_model_metadata). If the model was trained using a `TRANSFORM` clause, the model metadata contains a section about the transform columns. The function returns an error if you specify a model that was trained without a `TRANSFORM` clause.
 - `TABLE_NAME`: the name of the input table that
   contains the feature data to preprocess.
 
   If you specify a value for the `TABLE_NAME` argument, the input column names
   in the table must match the input column names in the model's `TRANSFORM`
   clause, and their types should be compatible according to
-  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
   You can get the input column names and data types from the
   [model's metadata](https://docs.cloud.google.com/bigquery/docs/getting-model-metadata#get_model_metadata),
   in the section about the feature columns.
 - `QUERY_STATEMENT`: A query that generates the feature
   data to preprocess. For the supported SQL syntax of the `QUERY_STATEMENT`
   clause, see
-  [GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   If you specify a value for the `QUERY_STATEMENT` argument, the input column
   names from the query must match the input column names in the model's
   `TRANSFORM` clause, and their types should be compatible according to
-  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
   You can get the input column names and data types from the
   [model's metadata](https://docs.cloud.google.com/bigquery/docs/getting-model-metadata#get_model_metadata),
   in the section about the feature columns.
