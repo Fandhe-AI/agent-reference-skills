@@ -39,14 +39,16 @@ the model weights from the last successful iteration.
 
 ### Syntax
 
+Adapted (not in the official docs): the `STRUCT` argument is written as an optional argument that starts with a comma, `[, STRUCT(...)]`.
+
 ```sql
 ML.PREDICT(
   MODEL `PROJECT_ID.DATASET.MODEL_NAME`,
   { TABLE `PROJECT_ID.DATASET.TABLE` | (QUERY_STATEMENT) }
-  STRUCT(
+  [, STRUCT(
     [THRESHOLD AS threshold]
     [, KEEP_ORIGINAL_COLUMNS AS keep_original_columns]
-    [, TRIAL_ID AS trial_id])
+    [, TRIAL_ID AS trial_id])]
 )
 ```
 
@@ -145,7 +147,7 @@ For the following types of regression models:
 
 The following column is returned:
 
-- `predicted_<label_column_name>`: a `STRING` value that contains the predicted value of the label.
+- `predicted_<label_column_name>`: a numeric value that contains the predicted value of the label.
 
 #### Classification models
 
@@ -173,7 +175,7 @@ For the following types of multiclass classification models:
 The following columns are returned:
 
 - The `predicted_<label_column_name>`: a `STRING` value that contains the label with the highest predicted probability score.
-- The `predicted_<label_column_name>_probs`: a `FLOAT64` value that contains the probability for each class label, calculated using a [softmax](https://developers.google.com/machine-learning/glossary/#softmax) function.
+- The `predicted_<label_column_name>_probs`: an `ARRAY<STRUCT>` value that contains the probability for each class label, calculated using a [softmax](https://developers.google.com/machine-learning/glossary/#softmax) function.
 
 #### K-means models
 
@@ -537,6 +539,10 @@ SELECT * FROM ML.PREDICT(
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the decoded images tables in the examples that write `ML.DECODE_IMAGE` results to a table keep only `decoded_image`, but the inference queries select `uri`; the tables also keep `uri`. The resize example also lacks the comma after `ML.DECODE_IMAGE(data)` in `ML.RESIZE_IMAGE`, which is added.
 - Corrected from the official docs: the example that joins the object table with `my_dataset.image_description` qualifies the image column as `my_dataset.my_object_table.data` although the `FROM` clause reads `my_dataset.object_table`, and selects the unqualified `uri` that both joined tables have; the columns are qualified as `object_table.uri`, `object_table.data` and `image_description.description`.
+- Corrected from the official docs: the syntax has no comma between the table or query argument and `STRUCT(...)`, and shows `STRUCT` as required although the examples on this page call `ML.PREDICT` without it; it is written `[, STRUCT(...)]`.
+- Corrected from the official docs: for regression models `predicted_<label_column_name>` is described as a `STRING` value; it is a numeric value (the `AI.PREDICT` page says the predicted numerical values have the same data type as the label column, and `ML.EXPLAIN_PREDICT` gives the raw regression prediction as `FLOAT64`).
+- Corrected from the official docs: for multiclass classification models `predicted_<label_column_name>_probs` is described as a `FLOAT64` value that contains the probability for each class label; it is an `ARRAY<STRUCT>` value, as for binary-class models (the `AI.PREDICT` page gives `ARRAY<STRUCT<label STRING, prob FLOAT64>>`).
+- Conflicting official statements: `principal_component_<index>` (PCA) and `latent_col_<index>` (autoencoder) are described as `INT64` values, but projections onto principal components and latent space dimensions are real numbers, not integers. The source gives no other type for these columns; don't rely on `INT64`.
 
 ## Related
 

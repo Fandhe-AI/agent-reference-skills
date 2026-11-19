@@ -31,7 +31,7 @@ ML.POLYNOMIAL_EXPAND(struct_numerical_features [, degree])
 
 ### Output
 
-`ML.POLYNOMIAL_EXPAND` returns a `STRUCT<STRING>` value that contain all
+`ML.POLYNOMIAL_EXPAND` returns a `STRUCT` value that contain all
 polynomial combinations of the numerical input features with a degree no larger
 than the passed-in degree, including the original features. The field names of
 the output struct are concatenations of the original feature names.
@@ -65,6 +65,7 @@ The output looks similar to the following:
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-polynomial-expand (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the output is described as a `STRUCT<STRING>` value, but its fields are polynomial combinations of numerical input features, so they are numbers, not strings (the quoted values in the JSON-formatted example output don't mean `STRING`); it is written as a `STRUCT` value. The source does not give the field type.
 
 ## Related
 

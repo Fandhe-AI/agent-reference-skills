@@ -20,9 +20,11 @@ requiring specification of each entry.
 
 ### Syntax
 
+Adapted (not in the official docs): the comma after the model argument is removed, because each optional argument starts with its own comma.
+
 ```sql
 ML.RECOMMEND(
-  MODEL `PROJECT_ID.DATASET.MODEL_NAME`,
+  MODEL `PROJECT_ID.DATASET.MODEL_NAME`
   [, { TABLE `PROJECT_ID.DATASET.TABLE` | (QUERY_STATEMENT) }]
   [, STRUCT(TRIAL_ID AS trial_id)])
 ```
@@ -137,6 +139,7 @@ FROM
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-recommend (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the syntax ends the `MODEL` argument with a comma and then starts each optional argument with `[, ...]`, which gives a doubled or trailing comma; the comma after the model argument is removed.
 
 ## Related
 
