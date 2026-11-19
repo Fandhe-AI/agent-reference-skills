@@ -36,6 +36,22 @@ gcloud infra-manager previews create projects/PROJECT_ID/locations/LOCATION/prev
 --provider-source=SERVICE_MAINTAINED
 ```
 
+### Preview an update to an existing deployment
+
+The two commands above have no `--deployment`, so they preview the configuration as a new deployment. To preview an update of an existing deployment against its current state, pass `--deployment` with the deployment's full name.
+
+Snippet taken from https://docs.cloud.google.com/infrastructure-manager/docs/import-resources (retrieved 2026-11-19).
+
+Adapted (not in the official docs): added the missing `\` after `--service-account` so `--location` is part of the command.
+
+```bash
+gcloud infra-manager previews create projects/PROJECT_ID/locations/us-central1/previews/IMPORT_DEPLOYMENT_PREVIEW_NAME \
+--gcs-source gs://import-deployment-configuration \
+--deployment projects/PROJECT_ID/locations/us-central1/deployments/import-deployment \
+--service-account projects/PROJECT_ID/serviceAccounts/SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com \
+--location us-central1
+```
+
 ## Options / Props
 
 | Placeholder | Description |
@@ -53,12 +69,14 @@ gcloud infra-manager previews create projects/PROJECT_ID/locations/LOCATION/prev
 | `INPUT_1_NAME=VALUE`, `INPUT_2_NAME=VALUE` | Input values of the configuration, for example `project_id=my-project`. Optional if all inputs have defaults. |
 | `TERRAFORM_VERSION` | Optional. Terraform version to use. If omitted, the latest supported free tier version of Terraform (`1.5.7`) is used. To preview with a paid version (such as `1.16.5`) you must specify it explicitly. Previews don't incur charges for paid Terraform versions. |
 | `ANNOTATION_KEY`, `ANNOTATION_VALUE` | Optional free-form key-value pair. |
+| `--deployment` (optional) | Full name of an existing deployment, `projects/PROJECT_ID/locations/LOCATION/deployments/DEPLOYMENT_ID`. gcloud help: "Deployment reference for preview." |
 | `--provider-source` (optional; REST field `providerConfig.sourceType`) | Determines which Terraform provider for Google Cloud the deployment uses: `SERVICE_MAINTAINED` uses the Infra Manager maintained Terraform provider; omit the flag to use the HashiCorp-maintained Terraform provider |
 
 ## Notes
 
 - Required IAM role to create previews: `roles/config.admin`. You also need a service account with the needed permissions, and the configuration must comply with the Infrastructure Manager Terraform constraints (including no sensitive data) and use a supported Terraform version.
 - Fields from the deployment (configuration, variables, service account) are automatically merged into the preview unless you specify new values in the preview command.
+- `--deployment` maps to the REST field `Preview.deployment` (Discovery document `config.v1`): "Optional. Deployment reference. If specified, the preview will be performed using the provided deployment's current state and use any relevant fields from the deployment unless explicitly specified in the preview create request." The preview-deployment page's two examples do not pass it; the update example is taken from the import-resources page, whose source command lacks the `\` after `--service-account`.
 - `--provider-source` is accepted by gcloud 593.0.0 (values `PROVIDER_SOURCE_UNSPECIFIED`, `SERVICE_MAINTAINED`) but is not listed in its help text; the REST field is `providerConfig.sourceType` (Discovery document `config.v1`: `PROVIDER_SOURCE_UNSPECIFIED` "Unspecified source type, default to public sources.", `SERVICE_MAINTAINED` "Service maintained provider source type.").
 - Previewing an update shows which resources are planned to be provisioned or deleted and which are not modified.
 - Source: https://docs.cloud.google.com/infrastructure-manager/docs/preview-deployment (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
