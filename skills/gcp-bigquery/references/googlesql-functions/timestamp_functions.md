@@ -287,7 +287,7 @@ Formats a `TIMESTAMP` value according to the specified format string.
 
 **Definitions**
 
-- `format_string`: A `STRING` value that contains the [format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time) to use with `timestamp_expr`.
+- `format_string`: A `STRING` value that contains the [format elements](../googlesql-syntax/format-elements.md#format-elements-for-date-and-time-parts) to use with `timestamp_expr`.
 - `timestamp_expr`: A `TIMESTAMP` value that represents the timestamp to format.
 - `time_zone`: A `STRING` value that represents a time zone. For more information about how to use a time zone with a timestamp, see [Time zone definitions](#how-time-zones-work-with-timestamp-functions).
 
@@ -353,7 +353,7 @@ Converts a `STRING` value to a `TIMESTAMP` value.
 
 **Definitions**
 
-- `format_string`: A `STRING` value that contains the [format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time) to use with `timestamp_string`.
+- `format_string`: A `STRING` value that contains the [format elements](../googlesql-syntax/format-elements.md#format-elements-for-date-and-time-parts) to use with `timestamp_string`.
 - `timestamp_string`: A `STRING` value that represents the timestamp to parse.
 - `time_zone`: A `STRING` value that represents a time zone. For more information about how to use a time zone with a timestamp, see [Time zone definitions](#how-time-zones-work-with-timestamp-functions).
 

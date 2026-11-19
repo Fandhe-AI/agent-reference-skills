@@ -74,7 +74,7 @@ value to the target domain produce runtime errors. For example, casting
 `BYTES` to `STRING` where the byte sequence isn't valid UTF-8 results in a
 runtime error.
 
-Some casts can include a [format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax), which provides
+Some casts can include a [format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast), which provides
 instructions for how to conduct the
 cast. For example, you could
 instruct a cast to convert a sequence of bytes to a BASE64-encoded string
@@ -175,11 +175,11 @@ GoogleSQL supports [casting](#cast) to `BYTES`. The
 **Format clause**
 
 When an expression of one type is cast to another type, you can use the
-[format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax) to provide instructions for how to conduct
+[format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast) to provide instructions for how to conduct
 the cast. You can use the format clause in this section if `expression` is a
 `STRING`.
 
-- [Format string as bytes](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_bytes)
+- [Format string as bytes](../googlesql-syntax/format-elements.md#format-string-as-bytes)
 
 **Conversion rules**
 
@@ -205,11 +205,11 @@ parameter can represent an expression for these data types:
 **Format clause**
 
 When an expression of one type is cast to another type, you can use the
-[format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax) to provide instructions for how to conduct
+[format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast) to provide instructions for how to conduct
 the cast. You can use the format clause in this section if `expression` is a
 `STRING`.
 
-- [Format string as date and time](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime)
+- [Format string as date and time](../googlesql-syntax/format-elements.md#format-string-as-date-and-time)
 
 **Conversion rules**
 
@@ -236,11 +236,11 @@ GoogleSQL supports [casting](#cast) to `DATETIME`. The
 **Format clause**
 
 When an expression of one type is cast to another type, you can use the
-[format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax) to provide instructions for how to conduct
+[format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast) to provide instructions for how to conduct
 the cast. You can use the format clause in this section if `expression` is a
 `STRING`.
 
-- [Format string as date and time](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime)
+- [Format string as date and time](../googlesql-syntax/format-elements.md#format-string-as-date-and-time)
 
 **Conversion rules**
 
@@ -502,7 +502,7 @@ GoogleSQL supports [casting](#cast) to `STRING`. The
 **Format clause**
 
 When an expression of one type is cast to another type, you can use the
-[format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax) to provide instructions for how to conduct
+[format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast) to provide instructions for how to conduct
 the cast. You can use the format clause in this section if `expression` is one
 of these data types:
 
@@ -524,9 +524,9 @@ UTC, is used.
 
 For more information, see the following topics:
 
-- [Format bytes as string](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_bytes_as_string)
-- [Format date and time as string](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_date_time_as_string)
-- [Format numeric type as string](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_numeric_type_as_string)
+- [Format bytes as string](../googlesql-syntax/format-elements.md#format-bytes-as-string)
+- [Format date and time as string](../googlesql-syntax/format-elements.md#format-date-and-time-as-string)
+- [Format numeric type as string](../googlesql-syntax/format-elements.md#format-numeric-type-as-string)
 
 **Conversion rules**
 
@@ -650,11 +650,11 @@ parameter can represent an expression for these data types:
 **Format clause**
 
 When an expression of one type is cast to another type, you can use the
-[format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax) to provide instructions for how to conduct
+[format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast) to provide instructions for how to conduct
 the cast. You can use the format clause in this section if `expression` is a
 `STRING`.
 
-- [Format string as date and time](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime)
+- [Format string as date and time](../googlesql-syntax/format-elements.md#format-string-as-date-and-time)
 
 **Conversion rules**
 
@@ -681,11 +681,11 @@ GoogleSQL supports [casting](#cast) to `TIMESTAMP`. The
 **Format clause**
 
 When an expression of one type is cast to another type, you can use the
-[format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax) to provide instructions for how to conduct
+[format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast) to provide instructions for how to conduct
 the cast. You can use the format clause in this section if `expression` is a
 `STRING`.
 
-- [Format string as date and time](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_string_as_datetime)
+- [Format string as date and time](../googlesql-syntax/format-elements.md#format-string-as-date-and-time)
 
 The format clause for `TIMESTAMP` has an additional optional clause called
 `AT TIME ZONE timezone_expr`, which you can use to specify a specific time zone
@@ -1090,7 +1090,7 @@ SELECT SAFE_CAST("apple" AS INT64) AS not_a_number;
  +--------------*/
 ```
 
-Some casts can include a [format clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#formatting_syntax), which provides
+Some casts can include a [format clause](../googlesql-syntax/format-elements.md#format-clause-for-cast), which provides
 instructions for how to conduct the
 cast. For example, you could
 instruct a cast to convert a sequence of bytes to a BASE64-encoded string

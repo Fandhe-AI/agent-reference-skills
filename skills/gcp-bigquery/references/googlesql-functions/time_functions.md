@@ -114,7 +114,7 @@ Formats a `TIME` value according to the specified format string.
 
 **Definitions**
 
-- `format_string`: A `STRING` value that contains the [format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time) to use with `time_expr`.
+- `format_string`: A `STRING` value that contains the [format elements](../googlesql-syntax/format-elements.md#format-elements-for-date-and-time-parts) to use with `time_expr`.
 - `time_expr`: A `TIME` value that represents the time to format.
 
 **Return Data Type**
@@ -145,7 +145,7 @@ Converts a `STRING` value to a `TIME` value.
 
 **Definitions**
 
-- `format_string`: A `STRING` value that contains the [format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time) to use with `time_string`.
+- `format_string`: A `STRING` value that contains the [format elements](../googlesql-syntax/format-elements.md#format-elements-for-date-and-time-parts) to use with `time_string`.
 - `time_string`: A `STRING` value that represents the time to parse.
 
 **Details**

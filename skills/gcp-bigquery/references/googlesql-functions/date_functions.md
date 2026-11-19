@@ -645,7 +645,7 @@ Formats a `DATE` value according to a specified format string.
 
 **Definitions**
 
-- `format_string`: A `STRING` value that contains the [format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time) to use with `date_expr`.
+- `format_string`: A `STRING` value that contains the [format elements](../googlesql-syntax/format-elements.md#format-elements-for-date-and-time-parts) to use with `date_expr`.
 - `date_expr`: A `DATE` value that represents the date to format.
 
 **Return Data Type**
@@ -786,7 +786,7 @@ Converts a `STRING` value to a `DATE` value.
 
 **Definitions**
 
-- `format_string`: A `STRING` value that contains the [format elements](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time) to use with `date_string`.
+- `format_string`: A `STRING` value that contains the [format elements](../googlesql-syntax/format-elements.md#format-elements-for-date-and-time-parts) to use with `date_string`.
 - `date_string`: A `STRING` value that represents the date to parse.
 
 **Details**

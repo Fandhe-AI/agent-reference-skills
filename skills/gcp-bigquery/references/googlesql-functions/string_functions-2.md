@@ -132,7 +132,7 @@ argument to insert text matching the corresponding parenthesized group in the
 
 To add a backslash in your regular expression, you must first escape it. For
 example, `SELECT REGEXP_REPLACE('abc', 'b(.)', 'X\\1');` returns `aXc`. You can
-also use [raw strings](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#string_and_bytes_literals) to remove one layer of
+also use [raw strings](../googlesql-syntax/lexical.md#string-and-bytes-literals) to remove one layer of
 escaping, for example `SELECT REGEXP_REPLACE('abc', 'b(.)', r'X\1');`.
 
 The `REGEXP_REPLACE` function only replaces non-overlapping matches. For

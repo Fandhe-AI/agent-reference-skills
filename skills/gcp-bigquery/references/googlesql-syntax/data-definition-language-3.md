@@ -1495,7 +1495,7 @@ SET DEFAULT default_expression;
 
 - `default_expression`: The default value assigned to the column. The
   expression must be a
-  [literal](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#literals) or one of
+  [literal](lexical.md#literals) or one of
   the following functions:
 
   - [`CURRENT_DATE`](../googlesql-functions/date_functions.md#current_date)

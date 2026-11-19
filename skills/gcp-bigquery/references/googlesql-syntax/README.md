@@ -13,3 +13,6 @@
 | Debugging statements | ASSERT | [debugging-statements.md](./debugging-statements.md) |
 | Data manipulation language (DML) statements in GoogleSQL | On-demand query size calculation, INSERT statement, DELETE statement, TRUNCATE TABLE statement, UPDATE statement, MERGE statement, Tables used in examples | [dml-syntax.md](./dml-syntax.md) |
 | Export statements in GoogleSQL | EXPORT DATA statement, Export to Cloud Storage, Amazon S3, or Blob Storage, Export to Bigtable, Export to Pub/Sub, Export to Spanner, Export to AlloyDB | [export-statements.md](./export-statements.md) |
+| Format elements | Format elements for date and time parts, Format clause for CAST | [format-elements.md](./format-elements.md) |
+| Lexical structure and syntax | Identifiers, Path expressions, Table names, Column names, Field names, Literals, Case sensitivity, Reserved keywords, Terminating semicolons, Trailing commas, Query parameters, Comments | [lexical.md](./lexical.md) |
+| Load statements in GoogleSQL | LOAD DATA statement | [load-statements.md](./load-statements.md) |
