@@ -198,9 +198,9 @@ algorithm.
   If this argument isn't provided, the default value is `32000`.
   If this argument is specified, the maximum value is `1048576`.
 - `frequency_threshold`: Optional argument. Takes a non-negative `INT64` value
-  that represents the minimum number of times a term must appear in a
-  tokenized document to be included in the dictionary. So, if this value is
-  `3`, a term must appear at least three times in the tokenized document to
+  that represents the minimum number of tokenized documents a term must
+  appear in to be included in the dictionary. So, if this value is
+  `3`, a term must appear in at least three tokenized documents to
   be added to the dictionary.
 
   If this argument isn't provided, the default value is `5`.
@@ -248,8 +248,8 @@ Definitions:
 
 **Examples**
 
-The following query computes the relevance of up to 10 terms that appear at
-least twice in a set of tokenized documents. In this example, `10` represents
+The following query computes the relevance of up to 10 terms that appear in at
+least two of a set of tokenized documents. In this example, `10` represents
 `max_distinct_tokens` and `2` represents `frequency_threshold`:
 
 ```sql
@@ -286,8 +286,8 @@ ORDER BY id;
  +----+-------------------------------------------------*/
 ```
 
-The following query computes the relevance of up to three terms that appear at
-least twice in a set of tokenized documents:
+The following query computes the relevance of up to three terms that appear in at
+least two of a set of tokenized documents:
 
 ```sql
 WITH ExampleTable AS (
@@ -326,9 +326,11 @@ ORDER BY id;
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis-functions (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
-- Corrected from the official docs: The text says terms that appear at least once, but the call is `TF_IDF(f, 3, 2)` and the previous example on this page explains that `2` is `frequency_threshold`. The text is changed to "at least twice".
+- Corrected from the official docs: The text says terms that appear at least once, but the call is `TF_IDF(f, 3, 2)` and the previous example on this page explains that `2` is `frequency_threshold`, which counts the documents a term appears in. The text is changed to "in at least two of a set" of tokenized documents.
 - Corrected from the official docs: The return type uses `DOUBLE`, which is not a GoogleSQL type. It is changed to `FLOAT64`, the name used for floating-point values elsewhere in these references.
 - Caution: The `TF_IDF` return type is `ARRAY<STRUCT<term STRING, tf_idf FLOAT64>>`, but the example results print the fields as `index` and `value`. The official docs do not explain the difference (it may be a JSON rendering); the results are kept as published.
+- Corrected from the official docs: the `frequency_threshold` definition says it is the minimum number of times a term must appear in a tokenized document. The `TF_IDF(f, 3, 2)` example on this page includes `I` and `like`, which appear only once in each document but in two documents each, and the `ML.TF_IDF` page (`bigqueryml-sql/tf-idf.md`) defines the same argument as the minimum number of documents a term must appear in. The definition is changed to count documents.
+- Corrected from the official docs: the first `TF_IDF` example says the terms appear "at least twice"; because `frequency_threshold` counts documents, it is changed to "in at least two of a set" of tokenized documents.
 
 ## Related
 
