@@ -268,7 +268,7 @@ doesn't return an error, `SAFE.` has no effect on the output.
 
 **Exclusions**
 
-- [Operators](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators), such as `+` and `=`, don't support the `SAFE.` prefix. To prevent errors from a division operation, use [SAFE_DIVIDE](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#safe_divide).
+- [Operators](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators), such as `+` and `=`, don't support the `SAFE.` prefix. To prevent errors from a division operation, use [SAFE_DIVIDE](mathematical_functions.md#safe_divide).
 - Some operators, such as `IN`, `ARRAY`, and `UNNEST`, resemble functions but don't support the `SAFE.` prefix.
 - The `CAST`, `EXTRACT`, and `SECURE_CONTEXT` functions don't support the `SAFE.` prefix. To prevent errors from casting, use [SAFE_CAST](conversion_functions.md#safe_cast).
 
@@ -297,7 +297,7 @@ SELECT SAFE.SUBSTR('bar', 0, 2) AS safe_output;
 BigQuery supports the use of the `SAFE.` prefix with most
 scalar functions that can raise errors, including
 [STRING functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions),
-[math functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions), [DATE functions](date_functions.md),
+[math functions](mathematical_functions.md), [DATE functions](date_functions.md),
 [DATETIME functions](datetime_functions.md),
 [TIMESTAMP functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions), and [JSON functions](json_functions-1.md).
 BigQuery does not support the use of the `SAFE.` prefix with

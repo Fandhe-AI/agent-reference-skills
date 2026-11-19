@@ -32,7 +32,7 @@ FROM  mydataset.product_reviews;
 `AI.CLASSIFY` accepts the following types of input:
 
 - Text data from standard tables.
-- [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objmake_ref) or using an `ObjectRef` column from a table.
+- [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](../googlesql-functions/objectref_functions.md#objmake_ref) or using an `ObjectRef` column from a table.
 
 This function passes your input to a Gemini model and
 incurs charges in Gemini Enterprise Agent Platform each time it's called.

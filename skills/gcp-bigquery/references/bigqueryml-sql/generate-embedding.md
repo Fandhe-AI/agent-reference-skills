@@ -16,7 +16,7 @@ a piece of text or an image.
 You can create embeddings for the following types of data:
 
 - Text data from standard tables.
-- [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objmake_ref) or using an `ObjectRef` column from a table.
+- [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](../googlesql-functions/objectref_functions.md#objmake_ref) or using an `ObjectRef` column from a table.
 - Visual data in [object tables](https://docs.cloud.google.com/bigquery/docs/object-table-introduction).
 - Combinations of unstructured data, including text, images, audio, video, and PDFs, represented by a `STRUCT` that contains `STRING`, `ARRAY<STRING>`, `ObjectRef`, and `ARRAY<ObjectRef>` values.
 - Output data from [PCA](create-pca.md), [autoencoder](create-autoencoder.md), or [matrix factorization](create-matrix-factorization.md) models.
@@ -341,7 +341,7 @@ ML.GENERATE_EMBEDDING(
       [`ObjectRefRuntime`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objectrefruntime)
       value for the `content` column. You can generate
       `ObjectRefRuntime` values by using the
-      [`OBJ.GET_ACCESS_URL` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objget_access_url).
+      [`OBJ.GET_ACCESS_URL` function](../googlesql-functions/objectref_functions.md#objget_access_url).
       The `OBJ.GET_ACCESS_URL` function takes an
       [`ObjectRef`](https://docs.cloud.google.com/bigquery/docs/analyze-multimodal-data#objectref_values)
       value as input, which you can provide by either specifying

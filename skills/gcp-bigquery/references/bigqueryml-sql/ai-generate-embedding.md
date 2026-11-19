@@ -25,7 +25,7 @@ other in the embedding vector space. For more information, see the
 You can create embeddings for the following types of data:
 
 - Text data from standard tables.
-- [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objmake_ref) or using an `ObjectRef` column from a table.
+- [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](../googlesql-functions/objectref_functions.md#objmake_ref) or using an `ObjectRef` column from a table.
 - Visual data in [object tables](https://docs.cloud.google.com/bigquery/docs/object-table-introduction).
 - Combinations of unstructured data, including text, images, audio, video, and PDFs, represented by a `STRUCT` that contains `STRING`, `ARRAY<STRING>`, `ObjectRef`, and `ARRAY<ObjectRef>` values.
 - Output data from [PCA](create-pca.md), [autoencoder](create-autoencoder.md), or [matrix factorization](create-matrix-factorization.md) models.
@@ -298,7 +298,7 @@ AI.GENERATE_EMBEDDING(
       column, or you can specify a string literal in the query.
 
     - For visual content embeddings, you can provide an
-      [`ObjectRef` value](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions)
+      [`ObjectRef` value](../googlesql-functions/objectref_functions.md)
       for the `content` column.
 
   - If you are creating embeddings from an object table, the query doesn't

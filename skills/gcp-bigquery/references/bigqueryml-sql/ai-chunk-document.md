@@ -172,7 +172,7 @@ The output is similar to the following:
 
 When documents require specific connection credentials to access
 Cloud Storage, use a subquery that calls the
-[`OBJ.LIST` table function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objlist)
+[`OBJ.LIST` table function](../googlesql-functions/objectref_functions.md#objlist)
 and specify the `connection_id` parameter. Make sure to use the same
 connection ID in both `OBJ.LIST` and `AI.CHUNK_DOCUMENT`. The following query
 shows how to parse each page of the Critter Cuisine user manual by using the
@@ -215,7 +215,7 @@ The output is similar to the following:
 
 You can pass an `ObjectRef` column into `AI.CHUNK_DOCUMENT`. You can create an
 `ObjectRef` value by passing a Cloud Storage URI to the
-[`OBJ.MAKE_REF` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objmake_ref)
+[`OBJ.MAKE_REF` function](../googlesql-functions/objectref_functions.md#objmake_ref)
 or by using an `ObjectRef` column from a table.
 
 The following query shows how to parse a PDF file into chunks by using the
@@ -317,7 +317,7 @@ except `europe-west2` and `europe-west6`.
 ### What's next
 
 - Learn more about [working with `ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref).
-- Learn more about [`ObjectRef` functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions).
+- Learn more about [`ObjectRef` functions](../googlesql-functions/objectref_functions.md).
 - Learn more about [creating and querying object tables](https://docs.cloud.google.com/bigquery/docs/object-tables).
 - Learn more about [parsing PDFs in a RAG pipeline](https://docs.cloud.google.com/bigquery/docs/rag-pipeline-pdf).
 - Learn more about the [Document AI layout parser](https://docs.cloud.google.com/document-ai/docs/layout-parse-chunk).
