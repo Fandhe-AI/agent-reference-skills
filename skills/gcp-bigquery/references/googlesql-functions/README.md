@@ -25,33 +25,33 @@
 | `ARRAY_REVERSE` | Reverses the order of elements in an array. | [array_functions.md](./array_functions.md#array_reverse) |
 | `ARRAY_SLICE` | Produces an array containing zero or more consecutive elements from an input array. | [array_functions.md](./array_functions.md#array_slice) |
 | `ARRAY_TO_STRING` | Produces a concatenation of the elements in an array as a `STRING` value. | [array_functions.md](./array_functions.md#array_to_string) |
-| `ASCII` | Gets the ASCII code for the first character or byte in a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#ascii) |
+| `ASCII` | Gets the ASCII code for the first character or byte in a `STRING` or `BYTES` value. | [string_functions-1.md](./string_functions-1.md#ascii) |
 | `ASIN` | Computes the inverse sine of `X`. | [mathematical_functions.md](./mathematical_functions.md#asin) |
 | `ASINH` | Computes the inverse hyperbolic sine of `X`. | [mathematical_functions.md](./mathematical_functions.md#asinh) |
 | `ATAN` | Computes the inverse tangent of `X`. | [mathematical_functions.md](./mathematical_functions.md#atan) |
 | `ATAN2` | Computes the inverse tangent of `X/Y`, using the signs of `X` and `Y` to determine the quadrant. | [mathematical_functions.md](./mathematical_functions.md#atan2) |
 | `ATANH` | Computes the inverse hyperbolic tangent of `X`. | [mathematical_functions.md](./mathematical_functions.md#atanh) |
 | `AVG` | Gets the average of non-`NULL` values. | [aggregate_functions.md](./aggregate_functions.md#avg) |
-| `BAG_OF_WORDS` | Gets the frequency of each term (token) in a tokenized document. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis-functions#bag_of_words) |
+| `BAG_OF_WORDS` | Gets the frequency of each term (token) in a tokenized document. | [text-analysis-functions.md](./text-analysis-functions.md#bag_of_words) |
 | `BIT_AND` | Performs a bitwise AND operation on an expression. | [aggregate_functions.md](./aggregate_functions.md#bit_and) |
 | `BIT_COUNT` | Gets the number of bits that are set in an input expression. | [bit_functions.md](./bit_functions.md#bit_count) |
 | `BIT_OR` | Performs a bitwise OR operation on an expression. | [aggregate_functions.md](./aggregate_functions.md#bit_or) |
 | `BIT_XOR` | Performs a bitwise XOR operation on an expression. | [aggregate_functions.md](./aggregate_functions.md#bit_xor) |
 | `BOOL` | Converts a JSON boolean to a SQL `BOOL` value. | [json_functions-1.md](./json_functions-1.md#bool) |
-| `BYTE_LENGTH` | Gets the number of `BYTES` in a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#byte_length) |
+| `BYTE_LENGTH` | Gets the number of `BYTES` in a `STRING` or `BYTES` value. | [string_functions-1.md](./string_functions-1.md#byte_length) |
 | `CAST` | Convert the results of an expression to the given type. | [conversion_functions.md](./conversion_functions.md#cast) |
 | `CBRT` | Computes the cube root of `X`. | [mathematical_functions.md](./mathematical_functions.md#cbrt) |
 | `CEIL` | Gets the smallest integral value that isn't less than `X`. | [mathematical_functions.md](./mathematical_functions.md#ceil) |
 | `CEILING` | Synonym of `CEIL`. | [mathematical_functions.md](./mathematical_functions.md#ceiling) |
 | `CHANGES` | Returns all rows that have changed in a table for a given time range. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#changes) |
-| `CHAR_LENGTH` | Gets the number of characters in a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#char_length) |
-| `CHARACTER_LENGTH` | Synonym for `CHAR_LENGTH`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#character_length) |
-| `CHR` | Converts a Unicode code point to a character. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#chr) |
-| `CODE_POINTS_TO_BYTES` | Converts an array of extended ASCII code points to a `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#code_points_to_bytes) |
-| `CODE_POINTS_TO_STRING` | Converts an array of extended ASCII code points to a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#code_points_to_string) |
-| `COLLATE` | Combines a `STRING` value and a collation specification into a collation specification-supported `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#collate) |
-| `CONCAT` | Concatenates one or more `STRING` or `BYTES` values into a single result. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#concat) |
-| `CONTAINS_SUBSTR` | Performs a normalized, case-insensitive search to see if a value exists as a substring in an expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#contains_substr) |
+| `CHAR_LENGTH` | Gets the number of characters in a `STRING` value. | [string_functions-1.md](./string_functions-1.md#char_length) |
+| `CHARACTER_LENGTH` | Synonym for `CHAR_LENGTH`. | [string_functions-1.md](./string_functions-1.md#character_length) |
+| `CHR` | Converts a Unicode code point to a character. | [string_functions-1.md](./string_functions-1.md#chr) |
+| `CODE_POINTS_TO_BYTES` | Converts an array of extended ASCII code points to a `BYTES` value. | [string_functions-1.md](./string_functions-1.md#code_points_to_bytes) |
+| `CODE_POINTS_TO_STRING` | Converts an array of extended ASCII code points to a `STRING` value. | [string_functions-1.md](./string_functions-1.md#code_points_to_string) |
+| `COLLATE` | Combines a `STRING` value and a collation specification into a collation specification-supported `STRING` value. | [string_functions-1.md](./string_functions-1.md#collate) |
+| `CONCAT` | Concatenates one or more `STRING` or `BYTES` values into a single result. | [string_functions-1.md](./string_functions-1.md#concat) |
+| `CONTAINS_SUBSTR` | Performs a normalized, case-insensitive search to see if a value exists as a substring in an expression. | [string_functions-1.md](./string_functions-1.md#contains_substr) |
 | `CORR` | Computes the Pearson coefficient of correlation of a set of number pairs. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#corr) |
 | `COS` | Computes the cosine of `X`. | [mathematical_functions.md](./mathematical_functions.md#cos) |
 | `COSH` | Computes the hyperbolic cosine of `X`. | [mathematical_functions.md](./mathematical_functions.md#cosh) |
@@ -93,12 +93,12 @@
 | `DLP_KEY_CHAIN` | Gets a data encryption key that's wrapped by Cloud Key Management Service. | [dlp_functions.md](./dlp_functions.md#dlp_key_chain) |
 | `FLOAT64` | Converts a JSON number to a SQL `FLOAT64` value. | [json_functions-1.md](./json_functions-1.md#float64) |
 | `EDGES` | Gets the edges in a graph path. The resulting array retains the original order in the graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#edges) |
-| `EDIT_DISTANCE` | Computes the Levenshtein distance between two `STRING` or `BYTES` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#edit_distance) |
+| `EDIT_DISTANCE` | Computes the Levenshtein distance between two `STRING` or `BYTES` values. | [string_functions-1.md](./string_functions-1.md#edit_distance) |
 | `ELEMENT_ID` | Gets a graph element's unique identifier. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#element_id) |
-| `ENDS_WITH` | Checks if a `STRING` or `BYTES` value is the suffix of another value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#ends_with) |
+| `ENDS_WITH` | Checks if a `STRING` or `BYTES` value is the suffix of another value. | [string_functions-1.md](./string_functions-1.md#ends_with) |
 | `ERROR` | Produces an error with a custom error message. | [debugging_functions.md](./debugging_functions.md#error) |
 | `EXP` | Computes `e` to the power of `X`. | [mathematical_functions.md](./mathematical_functions.md#exp) |
-| `EXTERNAL_OBJECT_TRANSFORM` | Produces an object table with the original columns plus one or more additional columns. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/table-functions-built-in#external_object_transform) |
+| `EXTERNAL_OBJECT_TRANSFORM` | Produces an object table with the original columns plus one or more additional columns. | [table-functions-built-in.md](./table-functions-built-in.md#external_object_transform) |
 | `EXTERNAL_QUERY` | Executes a query on an external database and returns the results as a temporary table. | [federated_query_functions.md](./federated_query_functions.md#external_query) |
 | `EXTRACT` | Extracts part of a date from a `DATE` value. | [date_functions.md](./date_functions.md#extract) |
 | `EXTRACT` | Extracts part of a date and time from a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#extract) |
@@ -113,10 +113,10 @@
 | `FORMAT_DATETIME` | Formats a `DATETIME` value according to a specified format string. | [datetime_functions.md](./datetime_functions.md#format_datetime) |
 | `FORMAT_TIME` | Formats a `TIME` value according to the specified format string. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#format_time) |
 | `FORMAT_TIMESTAMP` | Formats a `TIMESTAMP` value according to the specified format string. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#format_timestamp) |
-| `FORMAT` | Formats data and produces the results as a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#format_string) |
-| `FROM_BASE32` | Converts a base32-encoded `STRING` value into a `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#from_base32) |
-| `FROM_BASE64` | Converts a base64-encoded `STRING` value into a `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#from_base64) |
-| `FROM_HEX` | Converts a hexadecimal-encoded `STRING` value into a `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#from_hex) |
+| `FORMAT` | Formats data and produces the results as a `STRING` value. | [string_functions-1.md](./string_functions-1.md#format) |
+| `FROM_BASE32` | Converts a base32-encoded `STRING` value into a `BYTES` value. | [string_functions-1.md](./string_functions-1.md#from_base32) |
+| `FROM_BASE64` | Converts a base64-encoded `STRING` value into a `BYTES` value. | [string_functions-1.md](./string_functions-1.md#from_base64) |
+| `FROM_HEX` | Converts a hexadecimal-encoded `STRING` value into a `BYTES` value. | [string_functions-1.md](./string_functions-1.md#from_hex) |
 | `GAP_FILL` | Finds and fills gaps in a time series. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#gap_fill) |
 | `GENERATE_ARRAY` | Generates an array of values in a range. | [array_functions.md](./array_functions.md#generate_array) |
 | `GENERATE_DATE_ARRAY` | Generates an array of dates in a range. | [array_functions.md](./array_functions.md#generate_date_array) |
@@ -130,8 +130,8 @@
 | `HLL_COUNT.MERGE` | Merges HLL++ sketches of the same underlying type into a new sketch, and then gets the cardinality of the new sketch. | [hll_functions.md](./hll_functions.md#hll_countmerge) |
 | `HLL_COUNT.MERGE_PARTIAL` | Merges HLL++ sketches of the same underlying type into a new sketch. | [hll_functions.md](./hll_functions.md#hll_countmerge_partial) |
 | `IEEE_DIVIDE` | Divides `X` by `Y`, but doesn't generate errors for division by zero or overflow. | [mathematical_functions.md](./mathematical_functions.md#ieee_divide) |
-| `INITCAP` | Formats a `STRING` as proper case, which means that the first character in each word is uppercase and all other characters are lowercase. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#initcap) |
-| `INSTR` | Finds the position of a subvalue inside another value, optionally starting the search at a given offset or occurrence. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#instr) |
+| `INITCAP` | Formats a `STRING` as proper case, which means that the first character in each word is uppercase and all other characters are lowercase. | [string_functions-1.md](./string_functions-1.md#initcap) |
+| `INSTR` | Finds the position of a subvalue inside another value, optionally starting the search at a given offset or occurrence. | [string_functions-1.md](./string_functions-1.md#instr) |
 | `INT64` | Converts a JSON number to a SQL `INT64` value. | [json_functions-1.md](./json_functions-1.md#int64) |
 | `IS_ACYCLIC` | Checks if a graph path has a repeating node. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#is_acyclic) |
 | `IS_INF` | Checks if `X` is positive or negative infinity. | [mathematical_functions.md](./mathematical_functions.md#is_inf) |
@@ -191,16 +191,16 @@
 | `LAX_STRING` | Attempts to convert a JSON value to a SQL `STRING` value. | [json_functions-2.md](./json_functions-2.md#lax_string) |
 | `LEAD` | Gets a value for a subsequent row. | [navigation_functions.md](./navigation_functions.md#lead) |
 | `LEAST` | Gets the least value among `X1,...,XN`. | [mathematical_functions.md](./mathematical_functions.md#least) |
-| `LEFT` | Gets the specified leftmost portion from a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#left) |
-| `LENGTH` | Gets the length of a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#length) |
+| `LEFT` | Gets the specified leftmost portion from a `STRING` or `BYTES` value. | [string_functions-1.md](./string_functions-1.md#left) |
+| `LENGTH` | Gets the length of a `STRING` or `BYTES` value. | [string_functions-1.md](./string_functions-1.md#length) |
 | `LN` | Computes the natural logarithm of `X`. | [mathematical_functions.md](./mathematical_functions.md#ln) |
 | `LOG` | Computes the natural logarithm of `X` or the logarithm of `X` to base `Y`. | [mathematical_functions.md](./mathematical_functions.md#log) |
 | `LOG10` | Computes the natural logarithm of `X` to base 10. | [mathematical_functions.md](./mathematical_functions.md#log10) |
 | `LOGICAL_AND` | Gets the logical AND of all non-`NULL` expressions. | [aggregate_functions.md](./aggregate_functions.md#logical_and) |
 | `LOGICAL_OR` | Gets the logical OR of all non-`NULL` expressions. | [aggregate_functions.md](./aggregate_functions.md#logical_or) |
-| `LOWER` | Formats alphabetic characters in a `STRING` value as lowercase. <br /> Formats ASCII characters in a `BYTES` value as lowercase. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#lower) |
-| `LPAD` | Prepends a `STRING` or `BYTES` value with a pattern. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#lpad) |
-| `LTRIM` | Identical to the `TRIM` function, but only removes leading characters. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#ltrim) |
+| `LOWER` | Formats alphabetic characters in a `STRING` value as lowercase. <br /> Formats ASCII characters in a `BYTES` value as lowercase. | [string_functions-1.md](./string_functions-1.md#lower) |
+| `LPAD` | Prepends a `STRING` or `BYTES` value with a pattern. | [string_functions-1.md](./string_functions-1.md#lpad) |
+| `LTRIM` | Identical to the `TRIM` function, but only removes leading characters. | [string_functions-1.md](./string_functions-1.md#ltrim) |
 | `MAKE_INTERVAL` | Constructs an `INTERVAL` value. | [interval_functions.md](./interval_functions.md#make_interval) |
 | `MAX` | Gets the maximum non-`NULL` value. | [aggregate_functions.md](./aggregate_functions.md#max) |
 | `MAX_BY` | Synonym for `ANY_VALUE(x HAVING MAX y)`. | [aggregate_functions.md](./aggregate_functions.md#max_by) |
@@ -219,8 +219,8 @@
 | `NET.REG_DOMAIN` | Gets the registered or registrable domain from a URL. | [net_functions.md](./net_functions.md#netreg_domain) |
 | `NET.SAFE_IP_FROM_STRING` | Similar to the `NET.IP_FROM_STRING`, but returns `NULL` instead of producing an error if the input is invalid. | [net_functions.md](./net_functions.md#netsafe_ip_from_string) |
 | `NODES` | Gets the nodes in a graph path. The resulting array retains the original order in the graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#nodes) |
-| `NORMALIZE` | Case-sensitively normalizes the characters in a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#normalize) |
-| `NORMALIZE_AND_CASEFOLD` | Case-insensitively normalizes the characters in a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#normalize_and_casefold) |
+| `NORMALIZE` | Case-sensitively normalizes the characters in a `STRING` value. | [string_functions-1.md](./string_functions-1.md#normalize) |
+| `NORMALIZE_AND_CASEFOLD` | Case-insensitively normalizes the characters in a `STRING` value. | [string_functions-1.md](./string_functions-1.md#normalize_and_casefold) |
 | `NTH_VALUE` | Gets a value for the Nth row of the current window frame. | [navigation_functions.md](./navigation_functions.md#nth_value) |
 | `NTILE` | Gets the quantile bucket number (1-based) of each row within a window. | [numbering_functions.md](./numbering_functions.md#ntile) |
 | `OBJ.FETCH_METADATA` | Fetches Cloud Storage metadata for a partially populated `ObjectRef` value. | [objectref_functions.md](./objectref_functions.md#objfetch_metadata) |
@@ -228,7 +228,7 @@
 | `OBJ.GET_READ_URL` | Returns a read URL and status for a Cloud Storage object. | [objectref_functions.md](./objectref_functions.md#objget_read_url) |
 | `OBJ.LIST` | Returns a table of metadata and `ObjectRef` values for files stored in Cloud Storage. | [objectref_functions.md](./objectref_functions.md#objlist) |
 | `OBJ.MAKE_REF` | Creates an `ObjectRef` value that contains reference information for a Cloud Storage object. | [objectref_functions.md](./objectref_functions.md#objmake_ref) |
-| `OCTET_LENGTH` | Alias for `BYTE_LENGTH`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#octet_length) |
+| `OCTET_LENGTH` | Alias for `BYTE_LENGTH`. | [string_functions-1.md](./string_functions-1.md#octet_length) |
 | `PARSE_BIGNUMERIC` | Converts a `STRING` value to a `BIGNUMERIC` value. | [conversion_functions.md](./conversion_functions.md#parse_bignumeric) |
 | `PARSE_DATE` | Converts a `STRING` value to a `DATE` value. | [date_functions.md](./date_functions.md#parse_date) |
 | `PARSE_DATETIME` | Converts a `STRING` value to a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#parse_datetime) |
@@ -254,26 +254,26 @@
 | `RANGE_SESSIONIZE` | Produces a table of sessionized ranges. | [range-functions.md](./range-functions.md#range_sessionize) |
 | `RANGE_START` | Gets the lower bound of a range. | [range-functions.md](./range-functions.md#range_start) |
 | `RANK` | Gets the rank (1-based) of each row within a window. | [numbering_functions.md](./numbering_functions.md#rank) |
-| `REGEXP_CONTAINS` | Checks if a value is a partial match for a regular expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#regexp_contains) |
-| `REGEXP_EXTRACT` | Produces a substring that matches a regular expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#regexp_extract) |
-| `REGEXP_EXTRACT_GROUPS` | Produces substrings that match multiple capturing groups in a regular expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#regexp_extract_groups) |
-| `REGEXP_EXTRACT_ALL` | Produces an array of all substrings that match a regular expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#regexp_extract_all) |
-| `REGEXP_INSTR` | Finds the position of a regular expression match in a value, optionally starting the search at a given offset or occurrence. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#regexp_instr) |
-| `REGEXP_REPLACE` | Produces a `STRING` value where all substrings that match a regular expression are replaced with a specified value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#regexp_replace) |
-| `REGEXP_SUBSTR` | Synonym for `REGEXP_EXTRACT`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#regexp_substr) |
-| `REPEAT` | Produces a `STRING` or `BYTES` value that consists of an original value, repeated. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#repeat) |
-| `REPLACE` | Replaces all occurrences of a pattern with another pattern in a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#replace) |
-| `REVERSE` | Reverses a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#reverse) |
-| `RIGHT` | Gets the specified rightmost portion from a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#right) |
+| `REGEXP_CONTAINS` | Checks if a value is a partial match for a regular expression. | [string_functions-1.md](./string_functions-1.md#regexp_contains) |
+| `REGEXP_EXTRACT` | Produces a substring that matches a regular expression. | [string_functions-1.md](./string_functions-1.md#regexp_extract) |
+| `REGEXP_EXTRACT_GROUPS` | Produces substrings that match multiple capturing groups in a regular expression. | [string_functions-1.md](./string_functions-1.md#regexp_extract_groups) |
+| `REGEXP_EXTRACT_ALL` | Produces an array of all substrings that match a regular expression. | [string_functions-1.md](./string_functions-1.md#regexp_extract_all) |
+| `REGEXP_INSTR` | Finds the position of a regular expression match in a value, optionally starting the search at a given offset or occurrence. | [string_functions-2.md](./string_functions-2.md#regexp_instr) |
+| `REGEXP_REPLACE` | Produces a `STRING` value where all substrings that match a regular expression are replaced with a specified value. | [string_functions-2.md](./string_functions-2.md#regexp_replace) |
+| `REGEXP_SUBSTR` | Synonym for `REGEXP_EXTRACT`. | [string_functions-2.md](./string_functions-2.md#regexp_substr) |
+| `REPEAT` | Produces a `STRING` or `BYTES` value that consists of an original value, repeated. | [string_functions-2.md](./string_functions-2.md#repeat) |
+| `REPLACE` | Replaces all occurrences of a pattern with another pattern in a `STRING` or `BYTES` value. | [string_functions-2.md](./string_functions-2.md#replace) |
+| `REVERSE` | Reverses a `STRING` or `BYTES` value. | [string_functions-2.md](./string_functions-2.md#reverse) |
+| `RIGHT` | Gets the specified rightmost portion from a `STRING` or `BYTES` value. | [string_functions-2.md](./string_functions-2.md#right) |
 | `ROUND` | Rounds `X` to the nearest integer or rounds `X` to `N` decimal places after the decimal point. | [mathematical_functions.md](./mathematical_functions.md#round) |
 | `ROW_NUMBER` | Gets the sequential row number (1-based) of each row within a window. | [numbering_functions.md](./numbering_functions.md#row_number) |
-| `RPAD` | Appends a `STRING` or `BYTES` value with a pattern. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#rpad) |
-| `RTRIM` | Identical to the `TRIM` function, but only removes trailing characters. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#rtrim) |
+| `RPAD` | Appends a `STRING` or `BYTES` value with a pattern. | [string_functions-2.md](./string_functions-2.md#rpad) |
+| `RTRIM` | Identical to the `TRIM` function, but only removes trailing characters. | [string_functions-2.md](./string_functions-2.md#rtrim) |
 | `S2_CELLIDFROMPOINT` | Gets the S2 cell ID covering a point `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#s2_cellidfrompoint) |
 | `S2_COVERINGCELLIDS` | Gets an array of S2 cell IDs that cover a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#s2_coveringcellids) |
 | `SAFE_ADD` | Equivalent to the addition operator (`X + Y`), but returns `NULL` if overflow occurs. | [mathematical_functions.md](./mathematical_functions.md#safe_add) |
 | `SAFE_CAST` | Similar to the `CAST` function, but returns `NULL` when a runtime error is produced. | [conversion_functions.md](./conversion_functions.md#safe_cast) |
-| `SAFE_CONVERT_BYTES_TO_STRING` | Converts a `BYTES` value to a `STRING` value and replace any invalid UTF-8 characters with the Unicode replacement character, `U+FFFD`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#safe_convert_bytes_to_string) |
+| `SAFE_CONVERT_BYTES_TO_STRING` | Converts a `BYTES` value to a `STRING` value and replace any invalid UTF-8 characters with the Unicode replacement character, `U+FFFD`. | [string_functions-2.md](./string_functions-2.md#safe_convert_bytes_to_string) |
 | `SAFE_DIVIDE` | Equivalent to the division operator (`X / Y`), but returns `NULL` if an error occurs. | [mathematical_functions.md](./mathematical_functions.md#safe_divide) |
 | `SAFE_MULTIPLY` | Equivalent to the multiplication operator (`X * Y`), but returns `NULL` if overflow occurs. | [mathematical_functions.md](./mathematical_functions.md#safe_multiply) |
 | `SAFE_NEGATE` | Equivalent to the unary minus operator (`-X`), but returns `NULL` if overflow occurs. | [mathematical_functions.md](./mathematical_functions.md#safe_negate) |
@@ -290,8 +290,8 @@
 | `SIN` | Computes the sine of `X`. | [mathematical_functions.md](./mathematical_functions.md#sin) |
 | `SINH` | Computes the hyperbolic sine of `X`. | [mathematical_functions.md](./mathematical_functions.md#sinh) |
 | `SOURCE_NODE_ID` | Gets a unique identifier of a graph edge's source node. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#source_node_id) |
-| `SOUNDEX` | Gets the Soundex codes for words in a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#soundex) |
-| `SPLIT` | Splits a `STRING` or `BYTES` value, using a delimiter. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#split) |
+| `SOUNDEX` | Gets the Soundex codes for words in a `STRING` value. | [string_functions-2.md](./string_functions-2.md#soundex) |
+| `SPLIT` | Splits a `STRING` or `BYTES` value, using a delimiter. | [string_functions-2.md](./string_functions-2.md#split) |
 | `SQRT` | Computes the square root of `X`. | [mathematical_functions.md](./mathematical_functions.md#sqrt) |
 | `ST_ANGLE` | Takes three point `GEOGRAPHY` values, which represent two intersecting lines, and returns the angle between these lines. | [geography_functions-1.md](./geography_functions-1.md#st_angle) |
 | `ST_AREA` | Gets the area covered by the polygons in a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_area) |
@@ -362,19 +362,19 @@
 | `ST_WITHIN` | Checks if one `GEOGRAPHY` value contains another `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_within) |
 | `ST_X` | Gets the longitude from a point `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_x) |
 | `ST_Y` | Gets the latitude from a point `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_y) |
-| `STARTS_WITH` | Checks if a `STRING` or `BYTES` value is a prefix of another value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#starts_with) |
+| `STARTS_WITH` | Checks if a `STRING` or `BYTES` value is a prefix of another value. | [string_functions-2.md](./string_functions-2.md#starts_with) |
 | `STDDEV` | An alias of the `STDDEV_SAMP` function. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#stddev) |
 | `STDDEV_POP` | Computes the population (biased) standard deviation of the values. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#stddev_pop) |
 | `STDDEV_SAMP` | Computes the sample (unbiased) standard deviation of the values. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#stddev_samp) |
 | `STRING_AGG` | Concatenates non-`NULL` `STRING` or `BYTES` values. | [aggregate_functions.md](./aggregate_functions.md#string_agg) |
-| `STRPOS` | Finds the position of the first occurrence of a subvalue inside another value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#strpos) |
-| `SUBSTR` | Gets a portion of a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#substr) |
-| `SUBSTRING` | Alias for `SUBSTR` | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#substring) |
+| `STRPOS` | Finds the position of the first occurrence of a subvalue inside another value. | [string_functions-2.md](./string_functions-2.md#strpos) |
+| `SUBSTR` | Gets a portion of a `STRING` or `BYTES` value. | [string_functions-2.md](./string_functions-2.md#substr) |
+| `SUBSTRING` | Alias for `SUBSTR` | [string_functions-2.md](./string_functions-2.md#substring) |
 | `SUM` | Gets the sum of non-`NULL` values. | [aggregate_functions.md](./aggregate_functions.md#sum) |
 | `TAN` | Computes the tangent of `X`. | [mathematical_functions.md](./mathematical_functions.md#tan) |
 | `TANH` | Computes the hyperbolic tangent of `X`. | [mathematical_functions.md](./mathematical_functions.md#tanh) |
-| `TEXT_ANALYZE` | Extracts terms (tokens) from text and converts them into a tokenized document. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis-functions#text_analyze) |
-| `TF_IDF` | Evaluates how relevant a term (token) is to a tokenized document in a set of tokenized documents. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis-functions#tf_idf) |
+| `TEXT_ANALYZE` | Extracts terms (tokens) from text and converts them into a tokenized document. | [text-analysis-functions.md](./text-analysis-functions.md#text_analyze) |
+| `TF_IDF` | Evaluates how relevant a term (token) is to a tokenized document in a set of tokenized documents. | [text-analysis-functions.md](./text-analysis-functions.md#tf_idf) |
 | `TIME` | Constructs a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#time) |
 | `TIME_ADD` | Adds a specified time interval to a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#time_add) |
 | `TIME_DIFF` | Gets the number of unit boundaries between two `TIME` values at a particular time granularity. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#time_diff) |
@@ -389,22 +389,22 @@
 | `TIMESTAMP_SECONDS` | Converts the number of seconds since 1970-01-01 00:00:00 UTC to a `TIMESTAMP`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_seconds) |
 | `TIMESTAMP_SUB` | Subtracts a specified time interval from a `TIMESTAMP` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_sub) |
 | `TIMESTAMP_TRUNC` | Truncates a `TIMESTAMP` or `DATETIME` value at a particular granularity. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc) |
-| `TO_BASE32` | Converts a `BYTES` value to a base32-encoded `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#to_base32) |
-| `TO_BASE64` | Converts a `BYTES` value to a base64-encoded `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#to_base64) |
-| `TO_CODE_POINTS` | Converts a `STRING` or `BYTES` value into an array of extended ASCII code points. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#to_code_points) |
-| `TO_HEX` | Converts a `BYTES` value to a hexadecimal `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#to_hex) |
+| `TO_BASE32` | Converts a `BYTES` value to a base32-encoded `STRING` value. | [string_functions-2.md](./string_functions-2.md#to_base32) |
+| `TO_BASE64` | Converts a `BYTES` value to a base64-encoded `STRING` value. | [string_functions-2.md](./string_functions-2.md#to_base64) |
+| `TO_CODE_POINTS` | Converts a `STRING` or `BYTES` value into an array of extended ASCII code points. | [string_functions-2.md](./string_functions-2.md#to_code_points) |
+| `TO_HEX` | Converts a `BYTES` value to a hexadecimal `STRING` value. | [string_functions-2.md](./string_functions-2.md#to_hex) |
 | `TO_JSON` | Converts a SQL value to a JSON value. | [json_functions-2.md](./json_functions-2.md#to_json) |
 | `TO_JSON_STRING` | Converts a SQL value to a JSON-formatted `STRING` value. | [json_functions-2.md](./json_functions-2.md#to_json_string) |
-| `TRANSLATE` | Within a value, replaces each source character with the corresponding target character. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#translate) |
-| `TRIM` | Removes the specified leading and trailing Unicode code points or bytes from a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#trim) |
+| `TRANSLATE` | Within a value, replaces each source character with the corresponding target character. | [string_functions-2.md](./string_functions-2.md#translate) |
+| `TRIM` | Removes the specified leading and trailing Unicode code points or bytes from a `STRING` or `BYTES` value. | [string_functions-2.md](./string_functions-2.md#trim) |
 | `TRUNC` | Rounds a number like `ROUND(X)` or `ROUND(X, N)`, but always rounds towards zero and never overflows. | [mathematical_functions.md](./mathematical_functions.md#trunc) |
 | `TYPEOF` | Gets the name of the data type for an expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/utility-functions#typeof) |
-| `UNICODE` | Gets the Unicode code point for the first character in a value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#unicode) |
+| `UNICODE` | Gets the Unicode code point for the first character in a value. | [string_functions-2.md](./string_functions-2.md#unicode) |
 | `UNIX_DATE` | Converts a `DATE` value to the number of days since 1970-01-01. | [date_functions.md](./date_functions.md#unix_date) |
 | `UNIX_MICROS` | Converts a `TIMESTAMP` value to the number of microseconds since 1970-01-01 00:00:00 UTC. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_micros) |
 | `UNIX_MILLIS` | Converts a `TIMESTAMP` value to the number of milliseconds since 1970-01-01 00:00:00 UTC. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_millis) |
 | `UNIX_SECONDS` | Converts a `TIMESTAMP` value to the number of seconds since 1970-01-01 00:00:00 UTC. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_seconds) |
-| `UPPER` | Formats alphabetic characters in a `STRING` value as uppercase. <br /> Formats ASCII characters in a `BYTES` value as uppercase. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#upper) |
+| `UPPER` | Formats alphabetic characters in a `STRING` value as uppercase. <br /> Formats ASCII characters in a `BYTES` value as uppercase. | [string_functions-2.md](./string_functions-2.md#upper) |
 | `VAR_POP` | Computes the population (biased) variance of the values. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#var_pop) |
 | `VAR_SAMP` | Computes the sample (unbiased) variance of the values. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#var_samp) |
 | `VARIANCE` | An alias of `VAR_SAMP`. | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md#variance) |
@@ -446,3 +446,7 @@
 | Search functions | Function list, SEARCH, VECTOR_SEARCH | [search_functions.md](./search_functions.md) |
 | Security functions | Function list, SECURE_CONTEXT, SESSION_USER | [security_functions.md](./security_functions.md) |
 | Statistical aggregate functions | Function list, CORR, COVAR_POP, COVAR_SAMP, STDDEV, STDDEV_POP, STDDEV_SAMP, VAR_POP, VAR_SAMP, VARIANCE | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md) |
+| String functions (part 1 of 2) | Function list, ASCII, BYTE_LENGTH, CHAR_LENGTH, CHARACTER_LENGTH, CHR, CODE_POINTS_TO_BYTES, CODE_POINTS_TO_STRING, COLLATE, CONCAT, CONTAINS_SUBSTR, EDIT_DISTANCE, ENDS_WITH, FORMAT, FROM_BASE32, FROM_BASE64, FROM_HEX, INITCAP, INSTR, LEFT, LENGTH, LOWER, LPAD, LTRIM, NORMALIZE, NORMALIZE_AND_CASEFOLD, OCTET_LENGTH, REGEXP_CONTAINS, REGEXP_EXTRACT, REGEXP_EXTRACT_GROUPS, REGEXP_EXTRACT_ALL | [string_functions-1.md](./string_functions-1.md) |
+| String functions (part 2 of 2) | REGEXP_INSTR, REGEXP_REPLACE, REGEXP_SUBSTR, REPEAT, REPLACE, REVERSE, RIGHT, RPAD, RTRIM, SAFE_CONVERT_BYTES_TO_STRING, SOUNDEX, SPLIT, STARTS_WITH, STRPOS, SUBSTR, SUBSTRING, TO_BASE32, TO_BASE64, TO_CODE_POINTS, TO_HEX, TRANSLATE, TRIM, UNICODE, UPPER | [string_functions-2.md](./string_functions-2.md) |
+| Table functions (built in) | Function list, EXTERNAL_OBJECT_TRANSFORM | [table-functions-built-in.md](./table-functions-built-in.md) |
+| Text analysis functions | Function list, BAG_OF_WORDS, TEXT_ANALYZE, TF_IDF | [text-analysis-functions.md](./text-analysis-functions.md) |

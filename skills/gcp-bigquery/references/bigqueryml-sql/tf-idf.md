@@ -118,7 +118,7 @@ The output is similar to the following:
 
 ### What's next
 
-- Learn more about [TF-IDF](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis-functions#tf_idf) outside of machine learning.
+- Learn more about [TF-IDF](../googlesql-functions/text-analysis-functions.md#tf_idf) outside of machine learning.
 
 ## Notes
 
