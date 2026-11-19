@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-knowledge-catalog
 
-Google Cloud (GCP) のデータカタログ・データガバナンス系スキル。Knowledge Catalog（旧 Dataplex Universal Catalog）の概要・メタデータモデル（entry・entry group・entry type・aspect・aspect type・完全修飾名）、メタデータの import（metadata job）とコネクタ、検索（セマンティック検索・検索構文・Cloud Storage の discovery）、context sets・enrichment task・data insights・data relationships、business glossary・data products・data domains・governance workflow、データ品質（Auto data quality・ルールの再利用・システムのルールテンプレート）とデータ プロファイリング、データ リネージ（Data Lineage API・OpenLineage・リネージのビュー・取り込みの制御）、CMEK・VPC Service Controls・監査ログ・モニタリング・メタデータの変更フィード、廃止された Data Catalog の概要・廃止告知と Knowledge Catalog への導線を扱う。gcloud 2 グループ（`dataplex` / `datalineage`）・REST 2 API・IAM 4 ファイルの機械生成ページを併せて収録する。分割投入中のため、未投入のカテゴリ（`rest-schemas/dataplex`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) のデータカタログ・データガバナンス系スキル。Knowledge Catalog（旧 Dataplex Universal Catalog）の概要・メタデータモデル（entry・entry group・entry type・aspect・aspect type・完全修飾名）、メタデータの import（metadata job）とコネクタ、検索（セマンティック検索・検索構文・Cloud Storage の discovery）、context sets・enrichment task・data insights・data relationships、business glossary・data products・data domains・governance workflow、データ品質（Auto data quality・ルールの再利用・システムのルールテンプレート）とデータ プロファイリング、データ リネージ（Data Lineage API・OpenLineage・リネージのビュー・取り込みの制御）、CMEK・VPC Service Controls・監査ログ・モニタリング・メタデータの変更フィード、廃止された Data Catalog の概要・廃止告知と Knowledge Catalog への導線を扱う。gcloud 2 グループ（`dataplex` / `datalineage`）・REST 2 API・IAM 4 ファイルの機械生成ページを併せて収録する。
 
 参照本文は英語（公式ドキュメントの原語）。
 
@@ -46,6 +46,9 @@ skills/gcp-knowledge-catalog/
         datalineage.md
     rest-schemas/                 # 機械生成: Discovery 由来のメッセージスキーマ
       README.md
+      dataplex/
+        README.md
+        dataplex-1.md ... dataplex-3.md
       datalineage/
         README.md
         datalineage.md
@@ -95,6 +98,8 @@ skills/gcp-knowledge-catalog/
 6. 旧 Dataplex の lakes・zones・assets・tasks のコマンド・メソッドは `references/gcloud/dataplex/`（`dataplex-lakes.md` ほか）と `references/rest/dataplex/` にある（ガイドは収録していない）
 7. 収録外のガイド（enrichment の個別手順・カスタムコネクタ・料金等）は下記「対象外」
 
+`samples/` と `scripts/` は本スキルに無い。コードは各ガイドのコードブロックを引く。
+
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
@@ -125,9 +130,8 @@ skills/gcp-knowledge-catalog/
 | REST のメソッド・パスを調べたい | rest | [references/rest/README.md](references/rest/README.md) |
 | 各 API のメソッド | rest/`<api>`（`dataplex` / `datalineage`） | [references/rest/dataplex/README.md](references/rest/dataplex/README.md)、[references/rest/datalineage/README.md](references/rest/datalineage/README.md) |
 | REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
+| 各 API のメッセージ型 | rest-schemas/`<api>`（rest/ と同じ 2 API） | [references/rest-schemas/dataplex/README.md](references/rest-schemas/dataplex/README.md)、[references/rest-schemas/datalineage/README.md](references/rest-schemas/datalineage/README.md) |
 | ロール ID の権限一覧・事前定義ロールを調べたい（`roles/dataplex.*` / `roles/datalineage.*`） | iam | [references/iam/README.md](references/iam/README.md) |
-
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/dataplex`
 
 ## 他スキルとの使い分け
 
