@@ -296,6 +296,33 @@ GCLOUD WIDE FLAGS
     Run $ gcloud help for details.
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the commands are rewritten so that they run as described (see Notes).
+
+```bash
+gcloud infra-manager deployments apply \
+    projects/p1/locations/us-central1/deployments/my-deployment \
+    --gcs-source="gs://my-bucket"
+
+gcloud infra-manager deployments apply \
+    projects/p1/locations/us-central1/deployments/my-deployment \
+    --git-source-repo="https://github.com/examples/repository.git" \
+    --git-source-directory="staging/compute" --git-source-ref="mainline"
+
+gcloud infra-manager deployments apply \
+    projects/p1/locations/us-central1/deployments/my-deployment \
+    --local-source="./path/to/blueprint"
+
+gcloud infra-manager deployments apply \
+    projects/p1/locations/us-central1/deployments/my-deployment \
+    --gcs-source="gs://my-bucket" \
+    --input-values=projects=p1,region=r
+
+gcloud infra-manager deployments apply \
+    projects/p1/locations/us-central1/deployments/my-deployment \
+    --gcs-source="gs://my-bucket" \
+    --inputs-file=path-to-tfvar-file.tfvar
+```
+
 ### gcloud infra-manager deployments delete
 
 ```text
@@ -881,6 +908,7 @@ GCLOUD WIDE FLAGS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the examples in the `--gcs-source`, `--git-source-directory`, `--git-source-ref`, `--git-source-repo`, `--local-source`, `--input-values` and `--inputs-file` descriptions write the resource name as `projects/p1/location/us-central1/deployments/my-deployment`; the collection is `locations` (as in the EXAMPLES section: `projects/p1/locations/us-central1/deployments/my-deployment`). The three git examples also have no `\` after `--git-source-repo=...`, so the shell ends the command there and runs `--git-source-directory=... --git-source-ref=...` as a separate command; the runnable forms use the corrected names and add the `\`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
 - GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
