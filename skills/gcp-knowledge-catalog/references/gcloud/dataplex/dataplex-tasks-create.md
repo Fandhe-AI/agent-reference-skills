@@ -1,0 +1,467 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/dataplex/tasks/create
+---
+
+# gcloud dataplex tasks create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud dataplex tasks create
+
+```text
+NAME
+    gcloud dataplex tasks create - create a Dataplex task resource
+
+SYNOPSIS
+    gcloud dataplex tasks create (TASK : --lake=LAKE --location=LOCATION)
+        (--execution-service-account=EXECUTION_SERVICE_ACCOUNT
+          : --execution-args=[KEY=VALUE,...]
+          --execution-project=EXECUTION_PROJECT --kms-key=KMS_KEY
+          --max-job-execution-lifetime=MAX_JOB_EXECUTION_LIFETIME)
+        ([--notebook=NOTEBOOK
+          : --notebook-archive-uris=[NOTEBOOK_ARCHIVE_URIS,...]
+          --notebook-file-uris=[NOTEBOOK_FILE_URIS,...]
+          --notebook-batch-executors-count=NOTEBOOK_BATCH_EXECUTORS_COUNT
+          --notebook-batch-max-executors-count=NOTEBOOK_BATCH_MAX_EXECUTORS_COUNT --notebook-container-image=NOTEBOOK_CONTAINER_IMAGE --notebook-container-image-java-jars=[NOTEBOOK_CONTAINER_IMAGE_JAVA_JARS,
+          ...] --notebook-container-image-properties=[KEY=VALUE,...]
+          --notebook-vpc-network-tags=[NOTEBOOK_VPC_NETWORK_TAGS,...]
+          --notebook-vpc-network-name=NOTEBOOK_VPC_NETWORK_NAME
+          | --notebook-vpc-sub-network-name=NOTEBOOK_VPC_SUB_NETWORK_NAME]
+          | [(--spark-main-class=SPARK_MAIN_CLASS
+          | --spark-main-jar-file-uri=SPARK_MAIN_JAR_FILE_URI
+          | --spark-python-script-file=SPARK_PYTHON_SCRIPT_FILE
+          | --spark-sql-script=SPARK_SQL_SCRIPT
+          | --spark-sql-script-file=SPARK_SQL_SCRIPT_FILE)
+          : --spark-archive-uris=[SPARK_ARCHIVE_URIS,...]
+          --spark-file-uris=[SPARK_FILE_URIS,...]
+          --batch-executors-count=BATCH_EXECUTORS_COUNT
+          --batch-max-executors-count=BATCH_MAX_EXECUTORS_COUNT
+          --container-image=CONTAINER_IMAGE
+          --container-image-java-jars=[CONTAINER_IMAGE_JAVA_JARS,...]
+          --container-image-properties=[KEY=VALUE,...]
+          --container-image-python-packages=[CONTAINER_IMAGE_PYTHON_PACKAGES,
+          ...] --vpc-network-tags=[VPC_NETWORK_TAGS,...]
+          --vpc-network-name=VPC_NETWORK_NAME
+          | --vpc-sub-network-name=VPC_SUB_NETWORK_NAME])
+        (--trigger-type=TRIGGER_TYPE : --trigger-disabled
+          --trigger-max-retires=TRIGGER_MAX_RETIRES
+          --trigger-schedule=TRIGGER_SCHEDULE
+          --trigger-start-time=TRIGGER_START_TIME) [--async]
+        [--description=DESCRIPTION] [--display-name=DISPLAY_NAME]
+        [--labels=[KEY=VALUE,...]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create a Dataplex task resource.
+
+    A task represents a user visible job that you want Dataplex to perform on a
+    schedule. It encapsulates your code, your parameters and the schedule.
+
+    This task ID must follow these rules: o Must contain only lowercase
+    letters, numbers, and hyphens. o Must start with a letter. o Must end with
+    a number or a letter. o Must be between 1-63 characters. o Must be unique
+    within the customer project / location.
+
+EXAMPLES
+    To create a Dataplex task test-task with ON_DEMAND trigger type,
+    dataplex-demo-test@test-project.iam.gserviceaccount.com as execution
+    service account and gs://test-bucket/test-file.py as spark python script
+    file within lake test-lake in location us-central1.
+
+        $ gcloud dataplex tasks create test-task --location=us-central1 \
+          --lake=test-lake \
+          --execution-service-account=dataplex-demo-test@test-project.iam.\
+        gserviceaccount.com \
+            --spark-python-script-file=gs://test-bucket/test-file.py \
+            --trigger-type=ON_DEMAND
+
+    To create a Dataplex task test-task with RECURRING trigger type starting
+    every hour at minute 0,
+    dataplex-demo-test@test-project.iam.gserviceaccount.com as execution
+    service account and gs://test-bucket/test-file.py as spark python script
+    file within lake test-lake in location us-central1.
+
+        $ gcloud dataplex tasks create test-task --location=us-central1 \
+            --lake=test-lake \
+            --execution-service-account=dataplex-demo-test@test-project.iam.\
+        gserviceaccount.com \
+            --spark-python-script-file=gs://test-bucket/test-file.py \
+            --trigger-type=RECURRING --trigger-schedule="0 * * * *"
+
+POSITIONAL ARGUMENTS
+     Task resource - Arguments and flags that specify the Dataplex Task you
+     want to create. The arguments in this group can be used to specify the
+     attributes of this resource. (NOTE) Some attributes are not given
+     arguments in this group but can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument task on the command line with a fully specified
+        name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       TASK
+          ID of the task or fully qualified identifier for the task.
+
+          To set the task attribute:
+          + provide the argument task on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --lake=LAKE
+          Identifier of the Dataplex lake resource.
+
+          To set the lake attribute:
+          + provide the argument task on the command line with a fully
+            specified name;
+          + provide the argument --lake on the command line.
+
+       --location=LOCATION
+          Location of the Dataplex resource.
+
+          To set the location attribute:
+          + provide the argument task on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property dataplex/location.
+
+REQUIRED FLAGS
+     Spec related to how a task is executed.
+
+     This must be specified.
+
+       --execution-service-account=EXECUTION_SERVICE_ACCOUNT
+          Service account to use to execute a task.
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+       --execution-args=[KEY=VALUE,...]
+          The arguments to pass to the task. The args can use placeholders of
+          the format ${placeholder} as part of key/value string. These will be
+          interpolated before passing the args to the driver. Currently
+          supported placeholders:
+          + ${task_id}
+          + ${job_time} To pass positional args, set the key as TASK_ARGS.
+            The value should be a comma-separated string of all the positional
+            arguments. See
+            https://cloud.google.com/sdk/gcloud/reference/topic/escaping for
+            details on using a delimiter other than a comma. In case of other
+            keys being present in the args, then TASK_ARGS will be passed as
+            the last argument.
+
+       --execution-project=EXECUTION_PROJECT
+          The project in which jobs are run. By default, the project containing
+          the Lake is used. If a project is provided, the
+          --execution-service-account must belong to this same project.
+
+       --kms-key=KMS_KEY
+          The Cloud KMS key to use for encryption, of the form:
+          projects/{project_number}/locations/{location_id}/keyRings/{key-ring-name}/cryptoKeys/{key-name}
+
+       --max-job-execution-lifetime=MAX_JOB_EXECUTION_LIFETIME
+          The maximum duration before the job execution expires.
+
+     Select which task you want to schedule and provide the required arguments
+     for the task. The 2 types of tasks supported are:-
+      * spark tasks
+      * notebook tasks
+
+     Exactly one of these must be specified:
+
+       Config related to running custom notebook tasks.
+
+       --notebook=NOTEBOOK
+          Path to input notebook. This can be the Google Cloud Storage URI of
+          the notebook file or the path to a Notebook Content. The execution
+          args are accessible as environment variables (TASK_key=value).
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+       --notebook-archive-uris=[NOTEBOOK_ARCHIVE_URIS,...]
+          Google Cloud Storage URIs of archives to be extracted into the
+          working directory of each executor. Supported file types: .jar, .tar,
+          .tar.gz, .tgz, and .zip.
+
+       --notebook-file-uris=[NOTEBOOK_FILE_URIS,...]
+          Google Cloud Storage URIs of files to be placed in the working
+          directory of each executor.
+
+       Compute resources needed for a Task when using Dataproc Serverless.
+
+       --notebook-batch-executors-count=NOTEBOOK_BATCH_EXECUTORS_COUNT
+          Total number of job executors.
+
+       --notebook-batch-max-executors-count=NOTEBOOK_BATCH_MAX_EXECUTORS_COUNT
+          Max configurable executors. If max_executors_count > executors_count,
+          then auto-scaling is enabled.
+
+       Container Image Runtime Configuration.
+
+       --notebook-container-image=NOTEBOOK_CONTAINER_IMAGE
+          Optional custom container image for the job.
+
+       --notebook-container-image-java-jars=[NOTEBOOK_CONTAINER_IMAGE_JAVA_JARS,...]
+          A list of Java JARS to add to the classpath. Valid input includes
+          Cloud Storage URIs to Jar binaries. For example,
+          gs://bucket-name/my/path/to/file.jar
+
+       --notebook-container-image-properties=[KEY=VALUE,...]
+          The properties to set on daemon config files. Property keys are
+          specified in prefix:property format, for example core:hadoop.tmp.dir.
+          For more information, see Cluster properties
+          (https://cloud.google.com/dataproc/docs/concepts/cluster-properties)
+
+       Cloud VPC Network used to run the infrastructure.
+
+       --notebook-vpc-network-tags=[NOTEBOOK_VPC_NETWORK_TAGS,...]
+          List of network tags to apply to the job.
+
+       The Cloud VPC network identifier.
+
+       At most one of these can be specified:
+
+         --notebook-vpc-network-name=NOTEBOOK_VPC_NETWORK_NAME
+            The Cloud VPC network in which the job is run. By default, the
+            Cloud VPC network named Default within the project is used.
+
+         --notebook-vpc-sub-network-name=NOTEBOOK_VPC_SUB_NETWORK_NAME
+            The Cloud VPC sub-network in which the job is run.
+
+       Config related to running custom Spark tasks.
+
+       --spark-archive-uris=[SPARK_ARCHIVE_URIS,...]
+          Google Cloud Storage URIs of archives to be extracted into the
+          working directory of each executor. Supported file types: .jar, .tar,
+          .tar.gz, .tgz, and .zip.
+
+       --spark-file-uris=[SPARK_FILE_URIS,...]
+          Google Cloud Storage URIs of files to be placed in the working
+          directory of each executor.
+
+       The specification of the main method to call to drive the job. Specify
+       either the jar file that contains the main class or the main class name.
+
+       Exactly one of these must be specified:
+
+         --spark-main-class=SPARK_MAIN_CLASS
+            The name of the driver's main class. The jar file that contains the
+            class must be in the default CLASSPATH or specified in
+            jar_file_uris. The execution args are passed in as a sequence of
+            named process arguments (--key=value).
+
+         --spark-main-jar-file-uri=SPARK_MAIN_JAR_FILE_URI
+            The Google Cloud Storage URI of the jar file that contains the main
+            class. The execution args are passed in as a sequence of named
+            process arguments (--key=value).
+
+         --spark-python-script-file=SPARK_PYTHON_SCRIPT_FILE
+            The Google Cloud Storage URI of the main Python file to use as the
+            driver. Must be a .py file.
+
+         --spark-sql-script=SPARK_SQL_SCRIPT
+            The SQL query text.
+
+         --spark-sql-script-file=SPARK_SQL_SCRIPT_FILE
+            A reference to a query file. This can be the Google Cloud Storage
+            URI of the query file or it can the path to a SqlScript Content.
+
+       Compute resources needed for a Task when using Dataproc Serverless.
+
+       --batch-executors-count=BATCH_EXECUTORS_COUNT
+          Total number of job executors.
+
+       --batch-max-executors-count=BATCH_MAX_EXECUTORS_COUNT
+          Max configurable executors. If max_executors_count > executors_count,
+          then auto-scaling is enabled.
+
+       Container Image Runtime Configuration.
+
+       --container-image=CONTAINER_IMAGE
+          Optional custom container image for the job.
+
+       --container-image-java-jars=[CONTAINER_IMAGE_JAVA_JARS,...]
+          A list of Java JARS to add to the classpath. Valid input includes
+          Cloud Storage URIs to Jar binaries. For example,
+          gs://bucket-name/my/path/to/file.jar
+
+       --container-image-properties=[KEY=VALUE,...]
+          The properties to set on daemon config files. Property keys are
+          specified in prefix:property format, for example core:hadoop.tmp.dir.
+          For more information, see Cluster properties
+          (https://cloud.google.com/dataproc/docs/concepts/cluster-properties)
+
+       --container-image-python-packages=[CONTAINER_IMAGE_PYTHON_PACKAGES,...]
+          A list of python packages to be installed. Valid formats include
+          Cloud Storage URI to a PIP installable library. For example,
+          gs://bucket-name/my/path/to/lib.tar.gz
+
+       Cloud VPC Network used to run the infrastructure.
+
+       --vpc-network-tags=[VPC_NETWORK_TAGS,...]
+          List of network tags to apply to the job.
+
+       The Cloud VPC network identifier.
+
+       At most one of these can be specified:
+
+         --vpc-network-name=VPC_NETWORK_NAME
+            The Cloud VPC network in which the job is run. By default, the
+            Cloud VPC network named Default within the project is used.
+
+         --vpc-sub-network-name=VPC_SUB_NETWORK_NAME
+            The Cloud VPC sub-network in which the job is run.
+
+     Spec related to Dataplex task scheduling and frequency settings.
+
+     This must be specified.
+
+       --trigger-type=TRIGGER_TYPE
+          Trigger type of the user-specified Dataplex Task. TRIGGER_TYPE must
+          be one of:
+
+           on-demand
+              The ON_DEMAND trigger type runs the Dataplex task one time
+              shortly after task creation.
+
+           recurring
+              The RECURRING trigger type makes the task scheduled to run
+              periodically.
+
+          This flag argument must be specified if any of the other arguments in
+          this group are specified.
+
+       --trigger-disabled
+          Prevent the task from executing. This does not cancel already running
+          tasks. It is intended to temporarily disable RECURRING tasks.
+
+       --trigger-max-retires=TRIGGER_MAX_RETIRES
+          Number of retry attempts before aborting. Set to zero to never
+          attempt to retry a failed task.
+
+       --trigger-schedule=TRIGGER_SCHEDULE
+          Cron schedule (https://en.wikipedia.org/wiki/Cron) for running tasks
+          periodically.
+
+       --trigger-start-time=TRIGGER_START_TIME
+          The first run of the task begins after this time. If not specified,
+          an ON_DEMAND task runs when it is submitted and a RECURRING task runs
+          based on the trigger schedule.
+
+OPTIONAL FLAGS
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --description=DESCRIPTION
+        Description of the Dataplex task.
+
+     --display-name=DISPLAY_NAME
+        Display name of the Dataplex task.
+
+     --labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to add.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the dataplex/v1 API. The full documentation for this API
+    can be found at: https://cloud.google.com/dataplex/docs
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha dataplex tasks create
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+
+```bash
+gcloud dataplex tasks create test-task \
+    --location=us-central1 \
+    --lake=test-lake \
+    --execution-service-account=dataplex-demo-test@test-project.iam.gserviceaccount.com \
+    --spark-python-script-file=gs://test-bucket/test-file.py \
+    --trigger-type=ON_DEMAND
+
+gcloud dataplex tasks create test-task \
+    --location=us-central1 \
+    --lake=test-lake \
+    --execution-service-account=dataplex-demo-test@test-project.iam.gserviceaccount.com \
+    --spark-python-script-file=gs://test-bucket/test-file.py \
+    --trigger-type=RECURRING \
+    --trigger-schedule="0 * * * *"
+```
+
+### gcloud alpha dataplex tasks create
+
+```text
+NAME
+    gcloud alpha dataplex tasks create - create a Dataplex task resource
+
+SYNOPSIS
+    gcloud alpha dataplex tasks create (TASK : --lake=LAKE --location=LOCATION)
+        (--execution-service-account=EXECUTION_SERVICE_ACCOUNT
+          : --execution-args=[KEY=VALUE,...]
+          --execution-project=EXECUTION_PROJECT --kms-key=KMS_KEY
+          --max-job-execution-lifetime=MAX_JOB_EXECUTION_LIFETIME)
+        ([--notebook=NOTEBOOK
+          : --notebook-archive-uris=[NOTEBOOK_ARCHIVE_URIS,...]
+          --notebook-file-uris=[NOTEBOOK_FILE_URIS,...]
+          --notebook-batch-executors-count=NOTEBOOK_BATCH_EXECUTORS_COUNT
+          --notebook-batch-max-executors-count=NOTEBOOK_BATCH_MAX_EXECUTORS_COUNT --notebook-container-image=NOTEBOOK_CONTAINER_IMAGE --notebook-container-image-java-jars=[NOTEBOOK_CONTAINER_IMAGE_JAVA_JARS,
+          ...] --notebook-container-image-properties=[KEY=VALUE,...]
+          --notebook-vpc-network-tags=[NOTEBOOK_VPC_NETWORK_TAGS,...]
+          --notebook-vpc-network-name=NOTEBOOK_VPC_NETWORK_NAME
+          | --notebook-vpc-sub-network-name=NOTEBOOK_VPC_SUB_NETWORK_NAME]
+          | [(--spark-main-class=SPARK_MAIN_CLASS
+          | --spark-main-jar-file-uri=SPARK_MAIN_JAR_FILE_URI
+          | --spark-python-script-file=SPARK_PYTHON_SCRIPT_FILE
+          | --spark-sql-script=SPARK_SQL_SCRIPT
+          | --spark-sql-script-file=SPARK_SQL_SCRIPT_FILE)
+          : --spark-archive-uris=[SPARK_ARCHIVE_URIS,...]
+          --spark-file-uris=[SPARK_FILE_URIS,...]
+          --batch-executors-count=BATCH_EXECUTORS_COUNT
+          --batch-max-executors-count=BATCH_MAX_EXECUTORS_COUNT
+          --container-image=CONTAINER_IMAGE
+          --container-image-java-jars=[CONTAINER_IMAGE_JAVA_JARS,...]
+          --container-image-properties=[KEY=VALUE,...]
+          --container-image-python-packages=[CONTAINER_IMAGE_PYTHON_PACKAGES,
+          ...] --vpc-network-tags=[VPC_NETWORK_TAGS,...]
+          --vpc-network-name=VPC_NETWORK_NAME
+          | --vpc-sub-network-name=VPC_SUB_NETWORK_NAME])
+        (--trigger-type=TRIGGER_TYPE : --trigger-disabled
+          --trigger-max-retires=TRIGGER_MAX_RETIRES
+          --trigger-schedule=TRIGGER_SCHEDULE
+          --trigger-start-time=TRIGGER_START_TIME) [--async]
+        [--description=DESCRIPTION] [--display-name=DISPLAY_NAME]
+        [--labels=[KEY=VALUE,...]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/dataplex/tasks/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

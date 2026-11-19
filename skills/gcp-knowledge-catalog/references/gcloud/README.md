@@ -3,4 +3,4 @@
 | Name | Description | Path |
 |---|---|---|
 | gcloud datalineage | 48 commands across release tracks | [datalineage/README.md](./datalineage/README.md) |
-| gcloud dataplex | 285 commands across release tracks (partially added: 49 / 63 pages so far; for pages not listed, see the official reference) | [dataplex/README.md](./dataplex/README.md) |
+| gcloud dataplex | 285 commands across release tracks (partially added: 62 / 63 pages so far; for pages not listed, see the official reference) | [dataplex/README.md](./dataplex/README.md) |

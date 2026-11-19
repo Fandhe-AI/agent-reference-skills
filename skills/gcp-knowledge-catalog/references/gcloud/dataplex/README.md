@@ -51,3 +51,16 @@
 | gcloud dataplex glossaries set-iam-policy | 2 commands (alpha, ga); dataplex glossaries set-iam-policy … | [dataplex-glossaries-set-iam-policy.md](./dataplex-glossaries-set-iam-policy.md) |
 | gcloud dataplex glossaries terms | 10 commands (alpha, ga); dataplex glossaries terms create … | [dataplex-glossaries-terms.md](./dataplex-glossaries-terms.md) |
 | gcloud dataplex glossaries update | 2 commands (alpha, ga); dataplex glossaries update … | [dataplex-glossaries-update.md](./dataplex-glossaries-update.md) |
+| gcloud dataplex lakes | 24 commands (alpha, ga); dataplex lakes actions list … | [dataplex-lakes.md](./dataplex-lakes.md) |
+| gcloud dataplex metadata-jobs | 8 commands (alpha, ga); dataplex metadata-jobs cancel … | [dataplex-metadata-jobs.md](./dataplex-metadata-jobs.md) |
+| gcloud dataplex tasks add-iam-policy-binding | 2 commands (alpha, ga); dataplex tasks add-iam-policy-binding … | [dataplex-tasks-add-iam-policy-binding.md](./dataplex-tasks-add-iam-policy-binding.md) |
+| gcloud dataplex tasks create | 2 commands (alpha, ga); dataplex tasks create … | [dataplex-tasks-create.md](./dataplex-tasks-create.md) |
+| gcloud dataplex tasks delete | 2 commands (alpha, ga); dataplex tasks delete … | [dataplex-tasks-delete.md](./dataplex-tasks-delete.md) |
+| gcloud dataplex tasks describe | 2 commands (alpha, ga); dataplex tasks describe … | [dataplex-tasks-describe.md](./dataplex-tasks-describe.md) |
+| gcloud dataplex tasks get-iam-policy | 2 commands (alpha, ga); dataplex tasks get-iam-policy … | [dataplex-tasks-get-iam-policy.md](./dataplex-tasks-get-iam-policy.md) |
+| gcloud dataplex tasks jobs | 6 commands (alpha, ga); dataplex tasks jobs cancel … | [dataplex-tasks-jobs.md](./dataplex-tasks-jobs.md) |
+| gcloud dataplex tasks list | 2 commands (alpha, ga); dataplex tasks list … | [dataplex-tasks-list.md](./dataplex-tasks-list.md) |
+| gcloud dataplex tasks remove-iam-policy-binding | 2 commands (alpha, ga); dataplex tasks remove-iam-policy-binding … | [dataplex-tasks-remove-iam-policy-binding.md](./dataplex-tasks-remove-iam-policy-binding.md) |
+| gcloud dataplex tasks run | 2 commands (alpha, ga); dataplex tasks run … | [dataplex-tasks-run.md](./dataplex-tasks-run.md) |
+| gcloud dataplex tasks set-iam-policy | 2 commands (alpha, ga); dataplex tasks set-iam-policy … | [dataplex-tasks-set-iam-policy.md](./dataplex-tasks-set-iam-policy.md) |
+| gcloud dataplex tasks update | 2 commands (alpha, ga); dataplex tasks update … | [dataplex-tasks-update.md](./dataplex-tasks-update.md) |
