@@ -19,7 +19,7 @@ such as the following:
 - [Table snapshots](https://docs.cloud.google.com/bigquery/docs/table-snapshots-intro)
 - [Views](https://docs.cloud.google.com/bigquery/docs/views)
 - [Connections](https://docs.cloud.google.com/bigquery/docs/connections-api-intro)
-- [User-defined functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_function_statement) (UDFs)
+- [User-defined functions](data-definition-language-2.md#create-function-statement) (UDFs)
 - [Indexes](https://docs.cloud.google.com/bigquery/docs/search-intro)
 - [Capacity commitments and reservations](https://docs.cloud.google.com/bigquery/docs/reservations-intro)
 - [Row-level access policies](https://docs.cloud.google.com/bigquery/docs/managing-row-level-security)
@@ -2359,3 +2359,4 @@ AS SELECT column_1, column_2, column_3 FROM `myproject.mydataset.mytable`
 ## Related
 
 - [Index of this directory](./README.md)
+- [Data definition language (DDL) statements in GoogleSQL (part 2 of 4)](./data-definition-language-2.md)
