@@ -42,7 +42,7 @@ bq mk --table mydataset.mytable qtr:STRING,sales:FLOAT,year:STRING
 | Limitation | Detail |
 |---|---|
 | Names | Table names must be unique per dataset. |
-| Export | When you export BigQuery table data, the only supported destination is Cloud Storage. |
+| Export | When you export BigQuery table data, the only supported destination is Cloud Storage (as the source writes it; this holds for extract jobs; reverse ETL workflows can move data to Bigtable, Spanner, Pub/Sub and AlloyDB, see Notes). |
 | Enumeration | With an API call, enumeration performance slows as you approach 50,000 tables in a dataset. |
 | Console | The Google Cloud console can display up to 50,000 tables for each dataset. |
 
@@ -53,6 +53,7 @@ bq mk --table mydataset.mytable qtr:STRING,sales:FLOAT,year:STRING
 - Pricing: charges are based on data stored in tables and partitions and on the queries you run. Many table operations are free, including loading, copying, and exporting data, but they are subject to quotas and limits. Prices are not copied here; see https://cloud.google.com/bigquery/pricing.
 - Table access is controlled with IAM ("Control access to resources with IAM").
 - Snippet taken from https://docs.cloud.google.com/bigquery/docs/schemas (the `CREATE TABLE` and `bq mk` examples above).
+- The limitation "the only supported destination is Cloud Storage" is read as applying to extract jobs (the page's quota list links "Export data from tables" to extract jobs). The export overview (https://docs.cloud.google.com/bigquery/docs/export-intro) also documents reverse ETL (RETL) workflows that move data from BigQuery to Bigtable, Spanner, Pub/Sub and AlloyDB; see `../export-continuous-queries/export-intro.md`.
 - Source: https://docs.cloud.google.com/bigquery/docs/tables-intro (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
