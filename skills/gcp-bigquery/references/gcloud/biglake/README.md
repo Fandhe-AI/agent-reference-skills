@@ -8,3 +8,5 @@
 | gcloud biglake hive databases | 21 commands (alpha, beta, ga); biglake hive databases create … | [biglake-hive-databases.md](./biglake-hive-databases.md) |
 | gcloud biglake hive tables | 21 commands (alpha, beta, ga); biglake hive tables create … | [biglake-hive-tables.md](./biglake-hive-tables.md) |
 | gcloud biglake iceberg catalogs | 24 commands (alpha, beta, ga); biglake iceberg catalogs create … | [biglake-iceberg-catalogs.md](./biglake-iceberg-catalogs.md) |
+| gcloud biglake iceberg namespaces | 21 commands (alpha, beta, ga); biglake iceberg namespaces create … | [biglake-iceberg-namespaces.md](./biglake-iceberg-namespaces.md) |
+| gcloud biglake iceberg tables | 24 commands (alpha, beta, ga); biglake iceberg tables create … | [biglake-iceberg-tables.md](./biglake-iceberg-tables.md) |

@@ -33,10 +33,16 @@ skills/gcp-bigquery/
   references/
     gcloud/                       # 機械生成: gcloud 593.0.0 の help（3 グループ）
       README.md
-      biglake/                    # Lakehouse（旧 BigLake。グループ名は biglake のまま）、分割投入中（6 / 8 ページ。収録済みは README 掲載分のみ）
+      biglake/                    # Lakehouse（旧 BigLake。グループ名は biglake のまま）
         README.md
         biglake-<sub>.md          # 8 ファイル（data-product-sharing / delta-sharing / hive catalogs・databases・tables /
                                   # iceberg catalogs・namespaces・tables）
+      bq/                         # bq グループ（alpha 中心）
+        README.md
+        bq-<sub>.md               # 6 ファイル（datasets / jobs / migration / migration-workflows / query / tables）
+      data-catalog/               # Data Catalog（Policy Tag Manager のため本スキル）、分割投入中（3 / 24 ページ。収録済みは README 掲載分のみ）
+        README.md
+        data-catalog-<sub>.md     # 24 ファイル（taxonomies・policy-tags・tag-templates・entries・entry-groups・tags・search・crawlers 等）
     bigqueryml-sql/               # 機械変換: BigQuery ML の SQL 構文（CREATE MODEL・ML.* / AI.* 関数）
       README.md
       <page>.md
@@ -134,9 +140,9 @@ skills/gcp-bigquery/
 5. IAM ロール・権限 → `references/iam/README.md`（後続 PR で投入） の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/`（後続 PR で投入） 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
 6. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
 
-未投入カテゴリ（`gcloud/bq` / `gcloud/data-catalog` / `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `graph-gql` / `information-schema` / `legacy-sql`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `graph-gql` / `information-schema` / `legacy-sql`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`gcloud/biglake`: 6 / 8 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`gcloud/data-catalog`: 3 / 24 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -182,8 +188,10 @@ skills/gcp-bigquery/
 | Dataform CLI のコマンドとオプション | dataform-cli | [references/dataform-cli/README.md](references/dataform-cli/README.md) |
 | gcloud コマンド（`biglake` / `bq` / `data-catalog`）を調べたい | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
 | Lakehouse（BigLake）のコマンド（`biglake iceberg` / `hive` / `delta-sharing` / `data-product-sharing`） | gcloud/biglake | [references/gcloud/biglake/README.md](references/gcloud/biglake/README.md) |
+| gcloud `bq` グループ（datasets・jobs・migration・migration-workflows・query・tables） | gcloud/bq | [references/gcloud/bq/README.md](references/gcloud/bq/README.md) |
+| Policy Tag Manager（taxonomies・policy tags）・tag templates・entries のコマンド | gcloud/data-catalog | [references/gcloud/data-catalog/README.md](references/gcloud/data-catalog/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/bq` / `gcloud/data-catalog` / `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `graph-gql` / `information-schema` / `legacy-sql`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `graph-gql` / `information-schema` / `legacy-sql`
 
 ## 他スキルとの使い分け
 
