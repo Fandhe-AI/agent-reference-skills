@@ -33,7 +33,7 @@ skills/gcp-bigquery/
   references/
     gcloud/                       # 機械生成: gcloud 593.0.0 の help（3 グループ）
       README.md
-      biglake/                    # Lakehouse（旧 BigLake。グループ名は biglake のまま）、分割投入中（1 / 8 ページ。収録済みは README 掲載分のみ）
+      biglake/                    # Lakehouse（旧 BigLake。グループ名は biglake のまま）、分割投入中（6 / 8 ページ。収録済みは README 掲載分のみ）
         README.md
         biglake-<sub>.md          # 8 ファイル（data-product-sharing / delta-sharing / hive catalogs・databases・tables /
                                   # iceberg catalogs・namespaces・tables）
@@ -136,7 +136,7 @@ skills/gcp-bigquery/
 
 未投入カテゴリ（`gcloud/bq` / `gcloud/data-catalog` / `rest` / `rest-schemas` / `iam` / `googlesql-syntax` / `googlesql-functions` / `graph-gql` / `information-schema` / `legacy-sql`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`gcloud/biglake`: 1 / 8 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`gcloud/biglake`: 6 / 8 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
