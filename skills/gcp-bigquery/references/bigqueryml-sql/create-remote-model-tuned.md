@@ -347,7 +347,7 @@ This option accepts the following values:
   split results if the same underlying training data is used.
 
   > [!NOTE]
-  > **Note:** A random split is based on the [FARM_FINGERPRINT](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hash_functions#farm_fingerprint) of the data (including the column name and schema), so tables with the same content but different column names and schemas might get different splitting and different evaluation metrics.
+  > **Note:** A random split is based on the [FARM_FINGERPRINT](../googlesql-functions/hash_functions.md#farm_fingerprint) of the data (including the column name and schema), so tables with the same content but different column names and schemas might get different splitting and different evaluation metrics.
 
 - `CUSTOM`: Split data using the value provided in the
   [`DATA_SPLIT_COL` option](#data_split_col). The `DATA_SPLIT_COL` value must be

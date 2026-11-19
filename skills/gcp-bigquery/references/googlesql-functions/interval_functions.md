@@ -198,7 +198,7 @@ MAKE_INTERVAL(
 
 **Description**
 
-Constructs an [`INTERVAL`](../googlesql-syntax/data-types.md#interval-type) object using `INT64` values
+Constructs an [`INTERVAL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#interval_type) object using `INT64` values
 representing the year, month, day, hour, minute, and second. All arguments are
 optional, `0` by default, and can be [named arguments](functions-reference.md#named-arguments).
 

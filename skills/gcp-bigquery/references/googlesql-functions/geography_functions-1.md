@@ -760,7 +760,7 @@ Performs [DBSCAN clustering](https://en.wikipedia.org/wiki/DBSCAN) on a column o
 0-based cluster number.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 **Input parameters**
 
