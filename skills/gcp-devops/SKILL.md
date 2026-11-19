@@ -7,7 +7,7 @@ user-invocable: false
 
 # gcp-devops
 
-Google Cloud (GCP) の CI/CD・成果物管理・ソース管理・アプリケーション管理系スキル。Cloud Build（`cloudbuild.yaml` のスキーマ・steps・substitutions・secrets・成果物・トリガー（Pub/Sub / webhook / 手動 / 承認 / スケジュール）・2nd gen リポジトリ接続（GitHub / GitLab / Bitbucket Cloud）・サービス アカウント・ビルドの来歴（provenance）・CMEK・private pool・言語別ビルドと Cloud Run / GKE へのデプロイ）、Artifact Registry（standard / remote / virtual リポジトリ・Docker / npm / Python / 汎用形式・認証・アクセス制御・CMEK・VPC Service Controls・cleanup policy・Container Registry からの移行）、Cloud Deploy（delivery pipeline / target / release / rollout・`clouddeploy.yaml`・Skaffold・GKE / Cloud Run / custom target・canary・automation・deploy hooks・検証・deploy policy）、Secure Source Manager と Cloud Source Repositories（廃止告知と移行）、Developer Connect（リポジトリ接続・insights）、App Hub（application・service・workload の登録）、Application Design Center（space・application template・catalog）、App Lifecycle Manager（旧 SaaS Runtime。SaaS オファリング・テナント・rollout・feature flags）、App Optimize・Developer Device Platform（Device Run）、Workload Manager（評価・カスタム ルール・SAP）を扱う。加えて gcloud 12 グループ・REST（Discovery）9 API・IAM 15 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`gcloud/builds` / `gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/design-center` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+Google Cloud (GCP) の CI/CD・成果物管理・ソース管理・アプリケーション管理系スキル。Cloud Build（`cloudbuild.yaml` のスキーマ・steps・substitutions・secrets・成果物・トリガー（Pub/Sub / webhook / 手動 / 承認 / スケジュール）・2nd gen リポジトリ接続（GitHub / GitLab / Bitbucket Cloud）・サービス アカウント・ビルドの来歴（provenance）・CMEK・private pool・言語別ビルドと Cloud Run / GKE へのデプロイ）、Artifact Registry（standard / remote / virtual リポジトリ・Docker / npm / Python / 汎用形式・認証・アクセス制御・CMEK・VPC Service Controls・cleanup policy・Container Registry からの移行）、Cloud Deploy（delivery pipeline / target / release / rollout・`clouddeploy.yaml`・Skaffold・GKE / Cloud Run / custom target・canary・automation・deploy hooks・検証・deploy policy）、Secure Source Manager と Cloud Source Repositories（廃止告知と移行）、Developer Connect（リポジトリ接続・insights）、App Hub（application・service・workload の登録）、Application Design Center（space・application template・catalog）、App Lifecycle Manager（旧 SaaS Runtime。SaaS オファリング・テナント・rollout・feature flags）、App Optimize・Developer Device Platform（Device Run）、Workload Manager（評価・カスタム ルール・SAP）を扱う。加えて gcloud 12 グループ・REST（Discovery）9 API・IAM 15 ファイルを収録する。分割投入中のため、未投入のカテゴリ（`gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/design-center` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメント・`gcloud help` の原語）。
 
@@ -28,6 +28,9 @@ skills/gcp-devops/
       artifacts/                  # Artifact Registry: repositories・packages・docker・files・tags・versions・attachments・sbom・vulnerabilities 等
         README.md
         artifacts-<group>.md
+      builds/                     # Cloud Build: submit・list・describe・cancel・triggers・connections・repositories・worker-pools 等、分割投入中（19 / 30 ページ。収録済みは README 掲載分のみ）
+        README.md
+        builds-<group>.md
       apphub/                     # App Hub: applications・services・workloads・discovered-*・boundary・service-projects
         README.md
         apphub-<group>.md
@@ -125,14 +128,16 @@ skills/gcp-devops/
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. gcloud コマンド → 下記マッピング表で `gcloud` を選び、`references/gcloud/README.md` からグループの README（例: `references/gcloud/builds/README.md`（後続 PR で投入））→ グループページ・コマンドページを引く。GA は help の verbatim、alpha / beta は NAME と SYNOPSIS のみなので、フラグの詳細が要るときは `gcloud alpha|beta <command> --help` を使う。`workload-manager` と `software-delivery-trust` は alpha のみ、`app-optimize` は beta のみなので、ページに載るコマンドはすべて NAME と SYNOPSIS まで
+1. gcloud コマンド → 下記マッピング表で `gcloud` を選び、`references/gcloud/README.md` からグループの README（例: `references/gcloud/builds/README.md`）→ グループページ・コマンドページを引く。GA は help の verbatim、alpha / beta は NAME と SYNOPSIS のみなので、フラグの詳細が要るときは `gcloud alpha|beta <command> --help` を使う。`workload-manager` と `software-delivery-trust` は alpha のみ、`app-optimize` は beta のみなので、ページに載るコマンドはすべて NAME と SYNOPSIS まで
 2. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）
 3. Artifact Registry は 5 カテゴリ、Cloud Build は 6、Cloud Deploy は 4、残りは 1 プロダクト 1 カテゴリ（Secure Source Manager と Cloud Source Repositories、App Optimize と Developer Device Platform はそれぞれ 1 カテゴリに同居）。形式（Docker / npm / Python / 汎用）、Cloud Build の構成・トリガー・接続・セキュリティ・言語別、Cloud Deploy の概念・Skaffold・戦略・automation のどれかで選ぶ
 4. 非推奨・終了を確認するときは `artifact-registry-docker-gcr-transition/transition-from-gcr.md`（Container Registry）、`secure-source-manager/enable-disable-cloud-source-repositories.md` と `migration-guides.md`（Cloud Source Repositories）、`cloud-deploy-skaffold-targets/select-tool-version.md`（Skaffold）を引く
 
 `samples/` と `scripts/` は本スキルに無い。コマンドは `references/gcloud/` と各ガイドのコードブロックを引く。
 
-未投入カテゴリ（`gcloud/builds` / `gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/design-center` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/design-center` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+
+分割投入中のカテゴリ（`gcloud/builds`: 19 / 30 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -140,6 +145,7 @@ skills/gcp-devops/
 | --- | --- | --- |
 | gcloud のコマンド・フラグを調べたい（12 グループ） | gcloud | [references/gcloud/README.md](references/gcloud/README.md) |
 | `gcloud artifacts`（repositories・packages・docker・files・tags・attachments・sbom・vulnerabilities 等）のフラグを調べたい | gcloud/artifacts | [references/gcloud/artifacts/README.md](references/gcloud/artifacts/README.md) |
+| `gcloud builds`（submit・triggers・connections・repositories・worker-pools 等）のフラグを調べたい | gcloud/builds | [references/gcloud/builds/README.md](references/gcloud/builds/README.md) |
 | `gcloud apphub`（applications・services・workloads・discovered-*）のフラグを調べたい | gcloud/apphub | [references/gcloud/apphub/README.md](references/gcloud/apphub/README.md) |
 | `gcloud app-lifecycle-manager`（saas・units・releases・rollouts・tenants・flags）のフラグを調べたい | gcloud/app-lifecycle-manager | [references/gcloud/app-lifecycle-manager/README.md](references/gcloud/app-lifecycle-manager/README.md) |
 | `gcloud beta app-optimize`（reports）のフラグを調べたい | gcloud/app-optimize | [references/gcloud/app-optimize/README.md](references/gcloud/app-optimize/README.md) |
@@ -166,7 +172,7 @@ skills/gcp-devops/
 | App Optimize のレポート（概要・作成・読み取り）、Developer Device Platform（Device Run・Android instrumentation・iOS・共有ストレージ） | app-optimize-device-platform | [references/app-optimize-device-platform/README.md](references/app-optimize-device-platform/README.md) |
 | Workload Manager の評価（evaluation）・ルールの検出結果・カスタム ルール（Rego）・デプロイ（SAP）・サービス アカウント・VPC Service Controls・SAP の監視 | workload-manager | [references/workload-manager/README.md](references/workload-manager/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/builds` / `gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/design-center` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud/deploy` / `gcloud/source-manager` / `gcloud/source` / `gcloud/developer-connect` / `gcloud/design-center` / `gcloud/workload-manager` / `gcloud/software-delivery-trust` / `iam` / `rest` / `rest-schemas`
 
 ## 他スキルとの使い分け
 
