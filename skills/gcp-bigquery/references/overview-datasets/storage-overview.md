@@ -12,6 +12,8 @@ BigQuery storage is optimized for analytic queries over large datasets, with hig
 
 Snippet taken from https://docs.cloud.google.com/bigquery/docs/datasets (the `CREATE SCHEMA` block; `storage_billing_model` is the dataset-level setting described below).
 
+Adapted (not in the official docs): `storage_billing_model = 'BILLING_MODEL'` is quoted, because the option is a `STRING` and an unquoted `PHYSICAL` / `LOGICAL` is parsed as an identifier.
+
 ```sql
 CREATE SCHEMA PROJECT_ID.DATASET_ID
   OPTIONS (
@@ -22,7 +24,7 @@ CREATE SCHEMA PROJECT_ID.DATASET_ID
     labels = [('KEY_1','VALUE_1'),('KEY_2','VALUE_2')],
     location = 'LOCATION',
     max_time_travel_hours = HOURS,
-    storage_billing_model = BILLING_MODEL);
+    storage_billing_model = 'BILLING_MODEL');
 ```
 
 ## Options / Props
@@ -73,6 +75,7 @@ CREATE SCHEMA PROJECT_ID.DATASET_ID
 - If you need to export more than 50 TB per day, use the `EXPORT DATA` statement or the BigQuery Storage API.
 - Deleting a table keeps its data for at least the time travel window; afterwards data is cleaned up per the Google Cloud deletion timeline. Metadata-only deletions such as `DROP COLUMN` free storage the next time the affected rows are modified, with no guaranteed time if the table is not modified.
 - Snippet taken from https://docs.cloud.google.com/bigquery/docs/datasets (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the `CREATE SCHEMA` example writes `storage_billing_model = BILLING_MODEL` unquoted; the option is a `STRING` (GoogleSQL DDL reference), so the value is written `'PHYSICAL'` or `'LOGICAL'` in SQL, while the `bq --storage_billing_model` flag takes it without quotes.
 - Source: https://docs.cloud.google.com/bigquery/docs/storage_overview (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - Data in Cloud Storage that backs external tables is covered by the `gcp-storage` skill.
 

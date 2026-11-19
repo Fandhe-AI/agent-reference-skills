@@ -331,7 +331,7 @@ async function queryParamsNamed() {
 |------------|
 | Query parameters are only supported in GoogleSQL syntax |
 | Parameters can't substitute identifiers, column names, table names, or other parts of the query |
-| A query parameter value can't be `NULL` |
+| A query parameter value can't be `NULL` (as the source states; the `bq query --parameter` value `NULL` produces a typed null, see Notes) |
 | A query can use positional (`?`) or named (`@param_name`) parameters, but not both |
 
 ### `--parameter` format (bq)

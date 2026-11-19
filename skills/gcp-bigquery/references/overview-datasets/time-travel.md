@@ -12,6 +12,8 @@ Time travel lets you query changed or deleted data, restore deleted tables and d
 
 Snippet taken from https://docs.cloud.google.com/bigquery/docs/datasets (the `max_time_travel_hours` option sets the window).
 
+Adapted (not in the official docs): `storage_billing_model = 'BILLING_MODEL'` is quoted, because the option is a `STRING` and an unquoted `PHYSICAL` / `LOGICAL` is parsed as an identifier.
+
 ```sql
 CREATE SCHEMA PROJECT_ID.DATASET_ID
   OPTIONS (
@@ -22,7 +24,7 @@ CREATE SCHEMA PROJECT_ID.DATASET_ID
     labels = [('KEY_1','VALUE_1'),('KEY_2','VALUE_2')],
     location = 'LOCATION',
     max_time_travel_hours = HOURS,
-    storage_billing_model = BILLING_MODEL);
+    storage_billing_model = 'BILLING_MODEL');
 ```
 
 ### Error outside the window
@@ -69,6 +71,7 @@ time: timestamp
 - Time travel and fail-safe bytes appear in `TIME_TRAVEL_PHYSICAL_BYTES` and `FAIL_SAFE_PHYSICAL_BYTES` of the `TABLE_STORAGE` and `TABLE_STORAGE_BY_ORGANIZATION` views. Billing applies only when storage fees don't apply elsewhere: no cost at table creation, charges apply to changed or deleted data, and temporary tables aren't billed for fail-safe.
 - Example from the source: 200 GiB active, 50 GiB deleted with a 7-day window; time travel storage holds the 50 GiB on days 1 to 7, fail-safe holds it on days 8 to 14, and it is gone on day 15.
 - Snippet taken from https://docs.cloud.google.com/bigquery/docs/datasets (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the `CREATE SCHEMA` example writes `storage_billing_model = BILLING_MODEL` unquoted; the option is a `STRING` (GoogleSQL DDL reference), so the value is written `'PHYSICAL'` or `'LOGICAL'` in SQL, while the `bq --storage_billing_model` flag takes it without quotes.
 - Source: https://docs.cloud.google.com/bigquery/docs/time-travel (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

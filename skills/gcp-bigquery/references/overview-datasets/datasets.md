@@ -12,6 +12,8 @@ Create datasets to store tables and views in top-level containers. You can creat
 
 Use the `CREATE SCHEMA` statement. To create a dataset in a project other than your default project, use `PROJECT_ID.DATASET_ID`.
 
+Adapted (not in the official docs): `storage_billing_model = 'BILLING_MODEL'` is quoted, because the option is a `STRING` and an unquoted `PHYSICAL` / `LOGICAL` is parsed as an identifier.
+
 ```sql
 CREATE SCHEMA PROJECT_ID.DATASET_ID
   OPTIONS (
@@ -22,7 +24,7 @@ CREATE SCHEMA PROJECT_ID.DATASET_ID
     labels = [('KEY_1','VALUE_1'),('KEY_2','VALUE_2')],
     location = 'LOCATION',
     max_time_travel_hours = HOURS,
-    storage_billing_model = BILLING_MODEL);
+    storage_billing_model = 'BILLING_MODEL');
 ```
 
 ### bq
@@ -159,6 +161,7 @@ Call the `datasets.insert` method with a defined dataset resource.
 - In the `bq mk` template, `[,...]` after `--add_tags=KEY_3:VALUE_3` marks repetition (comma-separated `KEY:VALUE` pairs); remove it before running.
 - The source also shows Console steps, Terraform (dataset, IAM policy, CMEK), C#, Go, Java, PHP, and Ruby; they were omitted. The Terraform IAM example grants `roles/bigquery.admin`, which is not a recommendation.
 - Try dataset-level changes on a disposable dataset first; the Python and Node.js samples create a dataset in `US`.
+- Corrected from the official docs: the `CREATE SCHEMA` example writes `storage_billing_model = BILLING_MODEL` unquoted; the option is a `STRING` (GoogleSQL DDL reference), so the value is written `'PHYSICAL'` or `'LOGICAL'` in SQL, while the `bq --storage_billing_model` flag takes it without quotes.
 - Source: https://docs.cloud.google.com/bigquery/docs/datasets (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
