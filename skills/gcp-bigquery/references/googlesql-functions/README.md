@@ -102,11 +102,11 @@
 | `EXTERNAL_QUERY` | Executes a query on an external database and returns the results as a temporary table. | [federated_query_functions.md](./federated_query_functions.md#external_query) |
 | `EXTRACT` | Extracts part of a date from a `DATE` value. | [date_functions.md](./date_functions.md#extract) |
 | `EXTRACT` | Extracts part of a date and time from a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#extract) |
-| `EXTRACT` | Extracts part of an `INTERVAL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/interval_functions#extract) |
+| `EXTRACT` | Extracts part of an `INTERVAL` value. | [interval_functions.md](./interval_functions.md#extract) |
 | `EXTRACT` | Extracts part of a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#extract) |
 | `EXTRACT` | Extracts part of a `TIMESTAMP` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#extract) |
 | `EUCLIDEAN_DISTANCE` | Computes the Euclidean distance between two vectors. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#euclidean_distance) |
-| `FARM_FINGERPRINT` | Computes the fingerprint of a `STRING` or `BYTES` value using the FarmHash Fingerprint64 algorithm. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hash_functions#farm_fingerprint) |
+| `FARM_FINGERPRINT` | Computes the fingerprint of a `STRING` or `BYTES` value using the FarmHash Fingerprint64 algorithm. | [hash_functions.md](./hash_functions.md#farm_fingerprint) |
 | `FIRST_VALUE` | Gets a value for the first row in the current window frame. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions#first_value) |
 | `FLOOR` | Gets the largest integral value that isn't greater than `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#floor) |
 | `FORMAT_DATE` | Formats a `DATE` value according to a specified format string. | [date_functions.md](./date_functions.md#format_date) |
@@ -125,10 +125,10 @@
 | `GENERATE_UUID` | Produces a random universally unique identifier (UUID) as a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/utility-functions#generate_uuid) |
 | `GREATEST` | Gets the greatest value among `X1,...,XN`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#greatest) |
 | `GROUPING` | Checks if a groupable value in the `GROUP BY` clause is aggregated. | [aggregate_functions.md](./aggregate_functions.md#grouping) |
-| `HLL_COUNT.EXTRACT` | Extracts a cardinality estimate of an HLL++ sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hll_functions#hll_countextract) |
-| `HLL_COUNT.INIT` | Aggregates values of the same underlying type into a new HLL++ sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hll_functions#hll_countinit) |
-| `HLL_COUNT.MERGE` | Merges HLL++ sketches of the same underlying type into a new sketch, and then gets the cardinality of the new sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hll_functions#hll_countmerge) |
-| `HLL_COUNT.MERGE_PARTIAL` | Merges HLL++ sketches of the same underlying type into a new sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hll_functions#hll_countmerge_partial) |
+| `HLL_COUNT.EXTRACT` | Extracts a cardinality estimate of an HLL++ sketch. | [hll_functions.md](./hll_functions.md#hll_countextract) |
+| `HLL_COUNT.INIT` | Aggregates values of the same underlying type into a new HLL++ sketch. | [hll_functions.md](./hll_functions.md#hll_countinit) |
+| `HLL_COUNT.MERGE` | Merges HLL++ sketches of the same underlying type into a new sketch, and then gets the cardinality of the new sketch. | [hll_functions.md](./hll_functions.md#hll_countmerge) |
+| `HLL_COUNT.MERGE_PARTIAL` | Merges HLL++ sketches of the same underlying type into a new sketch. | [hll_functions.md](./hll_functions.md#hll_countmerge_partial) |
 | `IEEE_DIVIDE` | Divides `X` by `Y`, but doesn't generate errors for division by zero or overflow. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#ieee_divide) |
 | `INITCAP` | Formats a `STRING` as proper case, which means that the first character in each word is uppercase and all other characters are lowercase. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#initcap) |
 | `INSTR` | Finds the position of a subvalue inside another value, optionally starting the search at a given offset or occurrence. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#instr) |
@@ -156,9 +156,9 @@
 | `JSON_TYPE` | Gets the JSON type of the outermost JSON value and converts the name of this type to a SQL `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_type) |
 | `JSON_VALUE` | Extracts a JSON scalar value and converts it to a SQL `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_value) |
 | `JSON_VALUE_ARRAY` | Extracts a JSON array of scalar values and converts it to a SQL `ARRAY<STRING>` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_value_array) |
-| `JUSTIFY_DAYS` | Normalizes the day part of an `INTERVAL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/interval_functions#justify_days) |
-| `JUSTIFY_HOURS` | Normalizes the time part of an `INTERVAL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/interval_functions#justify_hours) |
-| `JUSTIFY_INTERVAL` | Normalizes the day and time parts of an `INTERVAL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/interval_functions#justify_interval) |
+| `JUSTIFY_DAYS` | Normalizes the day part of an `INTERVAL` value. | [interval_functions.md](./interval_functions.md#justify_days) |
+| `JUSTIFY_HOURS` | Normalizes the time part of an `INTERVAL` value. | [interval_functions.md](./interval_functions.md#justify_hours) |
+| `JUSTIFY_INTERVAL` | Normalizes the day and time parts of an `INTERVAL` value. | [interval_functions.md](./interval_functions.md#justify_interval) |
 | `KEYS.ADD_KEY_FROM_RAW_BYTES` | Adds a key to a keyset, and return the new keyset as a serialized `BYTES` value. | [aead_encryption_functions.md](./aead_encryption_functions.md#keysadd_key_from_raw_bytes) |
 | `KEYS.KEYSET_CHAIN` | Produces a Tink keyset that's encrypted with a Cloud KMS key. | [aead_encryption_functions.md](./aead_encryption_functions.md#keyskeyset_chain) |
 | `KEYS.KEYSET_FROM_JSON` | Converts a `STRING` JSON keyset to a serialized `BYTES` value. | [aead_encryption_functions.md](./aead_encryption_functions.md#keyskeyset_from_json) |
@@ -201,10 +201,10 @@
 | `LOWER` | Formats alphabetic characters in a `STRING` value as lowercase. <br /> Formats ASCII characters in a `BYTES` value as lowercase. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#lower) |
 | `LPAD` | Prepends a `STRING` or `BYTES` value with a pattern. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#lpad) |
 | `LTRIM` | Identical to the `TRIM` function, but only removes leading characters. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#ltrim) |
-| `MAKE_INTERVAL` | Constructs an `INTERVAL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/interval_functions#make_interval) |
+| `MAKE_INTERVAL` | Constructs an `INTERVAL` value. | [interval_functions.md](./interval_functions.md#make_interval) |
 | `MAX` | Gets the maximum non-`NULL` value. | [aggregate_functions.md](./aggregate_functions.md#max) |
 | `MAX_BY` | Synonym for `ANY_VALUE(x HAVING MAX y)`. | [aggregate_functions.md](./aggregate_functions.md#max_by) |
-| `MD5` | Computes the hash of a `STRING` or `BYTES` value using the MD5 algorithm. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hash_functions#md5) |
+| `MD5` | Computes the hash of a `STRING` or `BYTES` value using the MD5 algorithm. | [hash_functions.md](./hash_functions.md#md5) |
 | `MIN` | Gets the minimum non-`NULL` value. | [aggregate_functions.md](./aggregate_functions.md#min) |
 | `MIN_BY` | Synonym for `ANY_VALUE(x HAVING MIN y)`. | [aggregate_functions.md](./aggregate_functions.md#min_by) |
 | `MOD` | Gets the remainder of the division of `X` by `Y`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#mod) |
@@ -269,8 +269,8 @@
 | `ROW_NUMBER` | Gets the sequential row number (1-based) of each row within a window. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/numbering_functions#row_number) |
 | `RPAD` | Appends a `STRING` or `BYTES` value with a pattern. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#rpad) |
 | `RTRIM` | Identical to the `TRIM` function, but only removes trailing characters. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#rtrim) |
-| `S2_CELLIDFROMPOINT` | Gets the S2 cell ID covering a point `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#s2_cellidfrompoint) |
-| `S2_COVERINGCELLIDS` | Gets an array of S2 cell IDs that cover a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#s2_coveringcellids) |
+| `S2_CELLIDFROMPOINT` | Gets the S2 cell ID covering a point `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#s2_cellidfrompoint) |
+| `S2_COVERINGCELLIDS` | Gets an array of S2 cell IDs that cover a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#s2_coveringcellids) |
 | `SAFE_ADD` | Equivalent to the addition operator (`X + Y`), but returns `NULL` if overflow occurs. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#safe_add) |
 | `SAFE_CAST` | Similar to the `CAST` function, but returns `NULL` when a runtime error is produced. | [conversion_functions.md](./conversion_functions.md#safe_cast) |
 | `SAFE_CONVERT_BYTES_TO_STRING` | Converts a `BYTES` value to a `STRING` value and replace any invalid UTF-8 characters with the Unicode replacement character, `U+FFFD`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#safe_convert_bytes_to_string) |
@@ -283,9 +283,9 @@
 | `SECH` | Computes the hyperbolic secant of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#sech) |
 | `SECURE_CONTEXT` | Returns the value of a request-scoped secure context parameter provided at query run time. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/security_functions#secure_context) |
 | `SESSION_USER` | Get the email address or principal identifier of the user that's running the query. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/security_functions#session_user) |
-| `SHA1` | Computes the hash of a `STRING` or `BYTES` value using the SHA-1 algorithm. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hash_functions#sha1) |
-| `SHA256` | Computes the hash of a `STRING` or `BYTES` value using the SHA-256 algorithm. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hash_functions#sha256) |
-| `SHA512` | Computes the hash of a `STRING` or `BYTES` value using the SHA-512 algorithm. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hash_functions#sha512) |
+| `SHA1` | Computes the hash of a `STRING` or `BYTES` value using the SHA-1 algorithm. | [hash_functions.md](./hash_functions.md#sha1) |
+| `SHA256` | Computes the hash of a `STRING` or `BYTES` value using the SHA-256 algorithm. | [hash_functions.md](./hash_functions.md#sha256) |
+| `SHA512` | Computes the hash of a `STRING` or `BYTES` value using the SHA-512 algorithm. | [hash_functions.md](./hash_functions.md#sha512) |
 | `SIGN` | Produces -1 , 0, or +1 for negative, zero, and positive arguments respectively. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#sign) |
 | `SIN` | Computes the sine of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#sin) |
 | `SINH` | Computes the hyperbolic sine of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#sinh) |
@@ -293,75 +293,75 @@
 | `SOUNDEX` | Gets the Soundex codes for words in a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#soundex) |
 | `SPLIT` | Splits a `STRING` or `BYTES` value, using a delimiter. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#split) |
 | `SQRT` | Computes the square root of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#sqrt) |
-| `ST_ANGLE` | Takes three point `GEOGRAPHY` values, which represent two intersecting lines, and returns the angle between these lines. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_angle) |
-| `ST_AREA` | Gets the area covered by the polygons in a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_area) |
-| `ST_ASBINARY` | Converts a `GEOGRAPHY` value to a `BYTES` WKB geography value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_asbinary) |
-| `ST_ASGEOJSON` | Converts a `GEOGRAPHY` value to a `STRING` GeoJSON geography value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_asgeojson) |
-| `ST_ASTEXT` | Converts a `GEOGRAPHY` value to a `STRING` WKT geography value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_astext) |
-| `ST_AZIMUTH` | Gets the azimuth of a line segment formed by two point `GEOGRAPHY` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_azimuth) |
-| `ST_BOUNDARY` | Gets the union of component boundaries in a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_boundary) |
-| `ST_BOUNDINGBOX` | Gets the bounding box for a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_boundingbox) |
-| `ST_BUFFER` | Gets the buffer around a `GEOGRAPHY` value, using a specific number of segments. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_buffer) |
-| `ST_BUFFERWITHTOLERANCE` | Gets the buffer around a `GEOGRAPHY` value, using tolerance. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_bufferwithtolerance) |
-| `ST_CENTROID` | Gets the centroid of a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_centroid) |
-| `ST_CENTROID_AGG` | Gets the centroid of a set of `GEOGRAPHY` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_centroid_agg) |
-| `ST_CLOSESTPOINT` | Gets the point on a `GEOGRAPHY` value which is closest to any point in a second `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_closestpoint) |
-| `ST_CLUSTERDBSCAN` | Performs DBSCAN clustering on a group of `GEOGRAPHY` values and produces a 0-based cluster number for this row. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_clusterdbscan) |
-| `ST_CONTAINS` | Checks if one `GEOGRAPHY` value contains another `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_contains) |
-| `ST_CONVEXHULL` | Returns the convex hull for a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_convexhull) |
-| `ST_COVEREDBY` | Checks if all points of a `GEOGRAPHY` value are on the boundary or interior of another `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_coveredby) |
-| `ST_COVERS` | Checks if all points of a `GEOGRAPHY` value are on the boundary or interior of another `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_covers) |
-| `ST_DIFFERENCE` | Gets the point set difference between two `GEOGRAPHY` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_difference) |
-| `ST_DIMENSION` | Gets the dimension of the highest-dimensional element in a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_dimension) |
-| `ST_DISJOINT` | Checks if two `GEOGRAPHY` values are disjoint (don't intersect). | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_disjoint) |
-| `ST_DISTANCE` | Gets the shortest distance in meters between two `GEOGRAPHY` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_distance) |
-| `ST_DUMP` | Returns an array of simple `GEOGRAPHY` components in a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_dump) |
-| `ST_DWITHIN` | Checks if any points in two `GEOGRAPHY` values are within a given distance. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_dwithin) |
-| `ST_ENDPOINT` | Gets the last point of a linestring `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_endpoint) |
-| `ST_EQUALS` | Checks if two `GEOGRAPHY` values represent the same `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_equals) |
-| `ST_EXTENT` | Gets the bounding box for a group of `GEOGRAPHY` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_extent) |
-| `ST_EXTERIORRING` | Returns a linestring `GEOGRAPHY` value that corresponds to the outermost ring of a polygon `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_exteriorring) |
-| `ST_GEOGFROM` | Converts a `STRING` or `BYTES` value into a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_geogfrom) |
-| `ST_GEOGFROMGEOJSON` | Converts a `STRING` GeoJSON geometry value into a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_geogfromgeojson) |
-| `ST_GEOGFROMTEXT` | Converts a `STRING` WKT geometry value into a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_geogfromtext) |
-| `ST_GEOGFROMWKB` | Converts a `BYTES` or hexadecimal-text `STRING` WKT geometry value into a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_geogfromwkb) |
-| `ST_GEOGPOINT` | Creates a point `GEOGRAPHY` value for a given longitude and latitude. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_geogpoint) |
-| `ST_GEOGPOINTFROMGEOHASH` | Gets a point `GEOGRAPHY` value that's in the middle of a bounding box defined in a `STRING` GeoHash value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_geogpointfromgeohash) |
-| `ST_GEOHASH` | Converts a point `GEOGRAPHY` value to a `STRING` GeoHash value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_geohash) |
-| `ST_GEOMETRYTYPE` | Gets the Open Geospatial Consortium (OGC) geometry type for a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_geometrytype) |
-| `ST_HAUSDORFFDISTANCE` | Gets the discrete Hausdorff distance between two geometries. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_hausdorffdistance) |
-| `ST_HAUSDORFFDWITHIN` | Checks if the Hausdorff distance between two `GEOGRAPHY` values is within a given distance. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_hausdorffdwithin) |
-| `ST_INTERIORRINGS` | Gets the interior rings of a polygon `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_interiorrings) |
-| `ST_INTERSECTION` | Gets the point set intersection of two `GEOGRAPHY` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_intersection) |
-| `ST_INTERSECTS` | Checks if at least one point appears in two `GEOGRAPHY` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_intersects) |
-| `ST_INTERSECTSBOX` | Checks if a `GEOGRAPHY` value intersects a rectangle. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_intersectsbox) |
-| `ST_ISCLOSED` | Checks if all components in a `GEOGRAPHY` value are closed. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_isclosed) |
-| `ST_ISCOLLECTION` | Checks if the total number of points, linestrings, and polygons is greater than one in a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_iscollection) |
-| `ST_ISEMPTY` | Checks if a `GEOGRAPHY` value is empty. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_isempty) |
-| `ST_ISRING` | Checks if a `GEOGRAPHY` value is a closed, simple linestring. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_isring) |
-| `ST_LENGTH` | Gets the total length of lines in a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_length) |
-| `ST_LINEINTERPOLATEPOINT` | Gets a point at a specific fraction in a linestring `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_lineinterpolatepoint) |
-| `ST_LINELOCATEPOINT` | Gets a section of a linestring `GEOGRAPHY` value between the start point and a point `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_linelocatepoint) |
-| `ST_LINESUBSTRING` | Gets a segment of a single linestring at a specific starting and ending fraction. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_linesubstring) |
-| `ST_MAKELINE` | Creates a linestring `GEOGRAPHY` value by concatenating the point and linestring vertices of `GEOGRAPHY` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_makeline) |
-| `ST_MAKEPOLYGON` | Constructs a polygon `GEOGRAPHY` value by combining a polygon shell with polygon holes. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_makepolygon) |
-| `ST_MAKEPOLYGONORIENTED` | Constructs a polygon `GEOGRAPHY` value, using an array of linestring `GEOGRAPHY` values. The vertex ordering of each linestring determines the orientation of each polygon ring. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_makepolygonoriented) |
-| `ST_MAXDISTANCE` | Gets the longest distance between two non-empty `GEOGRAPHY` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_maxdistance) |
-| `ST_NPOINTS` | An alias of `ST_NUMPOINTS`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_npoints) |
-| `ST_NUMGEOMETRIES` | Gets the number of geometries in a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_numgeometries) |
-| `ST_NUMPOINTS` | Gets the number of vertices in the a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_numpoints) |
-| `ST_PERIMETER` | Gets the length of the boundary of the polygons in a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_perimeter) |
-| `ST_POINTN` | Gets the point at a specific index of a linestring `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_pointn) |
-| `ST_REGIONSTATS` | Computes statistics describing the pixels in a geospatial raster image that intersect a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_regionstats) |
-| `ST_SIMPLIFY` | Converts a `GEOGRAPHY` value into a simplified `GEOGRAPHY` value, using tolerance. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_simplify) |
-| `ST_SNAPTOGRID` | Produces a `GEOGRAPHY` value, where each vertex has been snapped to a longitude/latitude grid. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_snaptogrid) |
-| `ST_STARTPOINT` | Gets the first point of a linestring `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_startpoint) |
-| `ST_TOUCHES` | Checks if two `GEOGRAPHY` values intersect and their interiors have no elements in common. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_touches) |
-| `ST_UNION` | Gets the point set union of multiple `GEOGRAPHY` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_union) |
-| `ST_UNION_AGG` | Aggregates over `GEOGRAPHY` values and gets their point set union. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_union_agg) |
-| `ST_WITHIN` | Checks if one `GEOGRAPHY` value contains another `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_within) |
-| `ST_X` | Gets the longitude from a point `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_x) |
-| `ST_Y` | Gets the latitude from a point `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_y) |
+| `ST_ANGLE` | Takes three point `GEOGRAPHY` values, which represent two intersecting lines, and returns the angle between these lines. | [geography_functions-1.md](./geography_functions-1.md#st_angle) |
+| `ST_AREA` | Gets the area covered by the polygons in a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_area) |
+| `ST_ASBINARY` | Converts a `GEOGRAPHY` value to a `BYTES` WKB geography value. | [geography_functions-1.md](./geography_functions-1.md#st_asbinary) |
+| `ST_ASGEOJSON` | Converts a `GEOGRAPHY` value to a `STRING` GeoJSON geography value. | [geography_functions-1.md](./geography_functions-1.md#st_asgeojson) |
+| `ST_ASTEXT` | Converts a `GEOGRAPHY` value to a `STRING` WKT geography value. | [geography_functions-1.md](./geography_functions-1.md#st_astext) |
+| `ST_AZIMUTH` | Gets the azimuth of a line segment formed by two point `GEOGRAPHY` values. | [geography_functions-1.md](./geography_functions-1.md#st_azimuth) |
+| `ST_BOUNDARY` | Gets the union of component boundaries in a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_boundary) |
+| `ST_BOUNDINGBOX` | Gets the bounding box for a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_boundingbox) |
+| `ST_BUFFER` | Gets the buffer around a `GEOGRAPHY` value, using a specific number of segments. | [geography_functions-1.md](./geography_functions-1.md#st_buffer) |
+| `ST_BUFFERWITHTOLERANCE` | Gets the buffer around a `GEOGRAPHY` value, using tolerance. | [geography_functions-1.md](./geography_functions-1.md#st_bufferwithtolerance) |
+| `ST_CENTROID` | Gets the centroid of a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_centroid) |
+| `ST_CENTROID_AGG` | Gets the centroid of a set of `GEOGRAPHY` values. | [geography_functions-1.md](./geography_functions-1.md#st_centroid_agg) |
+| `ST_CLOSESTPOINT` | Gets the point on a `GEOGRAPHY` value which is closest to any point in a second `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_closestpoint) |
+| `ST_CLUSTERDBSCAN` | Performs DBSCAN clustering on a group of `GEOGRAPHY` values and produces a 0-based cluster number for this row. | [geography_functions-1.md](./geography_functions-1.md#st_clusterdbscan) |
+| `ST_CONTAINS` | Checks if one `GEOGRAPHY` value contains another `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_contains) |
+| `ST_CONVEXHULL` | Returns the convex hull for a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_convexhull) |
+| `ST_COVEREDBY` | Checks if all points of a `GEOGRAPHY` value are on the boundary or interior of another `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_coveredby) |
+| `ST_COVERS` | Checks if all points of a `GEOGRAPHY` value are on the boundary or interior of another `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_covers) |
+| `ST_DIFFERENCE` | Gets the point set difference between two `GEOGRAPHY` values. | [geography_functions-1.md](./geography_functions-1.md#st_difference) |
+| `ST_DIMENSION` | Gets the dimension of the highest-dimensional element in a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_dimension) |
+| `ST_DISJOINT` | Checks if two `GEOGRAPHY` values are disjoint (don't intersect). | [geography_functions-1.md](./geography_functions-1.md#st_disjoint) |
+| `ST_DISTANCE` | Gets the shortest distance in meters between two `GEOGRAPHY` values. | [geography_functions-1.md](./geography_functions-1.md#st_distance) |
+| `ST_DUMP` | Returns an array of simple `GEOGRAPHY` components in a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_dump) |
+| `ST_DWITHIN` | Checks if any points in two `GEOGRAPHY` values are within a given distance. | [geography_functions-1.md](./geography_functions-1.md#st_dwithin) |
+| `ST_ENDPOINT` | Gets the last point of a linestring `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_endpoint) |
+| `ST_EQUALS` | Checks if two `GEOGRAPHY` values represent the same `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_equals) |
+| `ST_EXTENT` | Gets the bounding box for a group of `GEOGRAPHY` values. | [geography_functions-1.md](./geography_functions-1.md#st_extent) |
+| `ST_EXTERIORRING` | Returns a linestring `GEOGRAPHY` value that corresponds to the outermost ring of a polygon `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_exteriorring) |
+| `ST_GEOGFROM` | Converts a `STRING` or `BYTES` value into a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_geogfrom) |
+| `ST_GEOGFROMGEOJSON` | Converts a `STRING` GeoJSON geometry value into a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_geogfromgeojson) |
+| `ST_GEOGFROMTEXT` | Converts a `STRING` WKT geometry value into a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_geogfromtext) |
+| `ST_GEOGFROMWKB` | Converts a `BYTES` or hexadecimal-text `STRING` WKT geometry value into a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_geogfromwkb) |
+| `ST_GEOGPOINT` | Creates a point `GEOGRAPHY` value for a given longitude and latitude. | [geography_functions-1.md](./geography_functions-1.md#st_geogpoint) |
+| `ST_GEOGPOINTFROMGEOHASH` | Gets a point `GEOGRAPHY` value that's in the middle of a bounding box defined in a `STRING` GeoHash value. | [geography_functions-1.md](./geography_functions-1.md#st_geogpointfromgeohash) |
+| `ST_GEOHASH` | Converts a point `GEOGRAPHY` value to a `STRING` GeoHash value. | [geography_functions-1.md](./geography_functions-1.md#st_geohash) |
+| `ST_GEOMETRYTYPE` | Gets the Open Geospatial Consortium (OGC) geometry type for a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_geometrytype) |
+| `ST_HAUSDORFFDISTANCE` | Gets the discrete Hausdorff distance between two geometries. | [geography_functions-1.md](./geography_functions-1.md#st_hausdorffdistance) |
+| `ST_HAUSDORFFDWITHIN` | Checks if the Hausdorff distance between two `GEOGRAPHY` values is within a given distance. | [geography_functions-1.md](./geography_functions-1.md#st_hausdorffdwithin) |
+| `ST_INTERIORRINGS` | Gets the interior rings of a polygon `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_interiorrings) |
+| `ST_INTERSECTION` | Gets the point set intersection of two `GEOGRAPHY` values. | [geography_functions-1.md](./geography_functions-1.md#st_intersection) |
+| `ST_INTERSECTS` | Checks if at least one point appears in two `GEOGRAPHY` values. | [geography_functions-1.md](./geography_functions-1.md#st_intersects) |
+| `ST_INTERSECTSBOX` | Checks if a `GEOGRAPHY` value intersects a rectangle. | [geography_functions-1.md](./geography_functions-1.md#st_intersectsbox) |
+| `ST_ISCLOSED` | Checks if all components in a `GEOGRAPHY` value are closed. | [geography_functions-1.md](./geography_functions-1.md#st_isclosed) |
+| `ST_ISCOLLECTION` | Checks if the total number of points, linestrings, and polygons is greater than one in a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_iscollection) |
+| `ST_ISEMPTY` | Checks if a `GEOGRAPHY` value is empty. | [geography_functions-1.md](./geography_functions-1.md#st_isempty) |
+| `ST_ISRING` | Checks if a `GEOGRAPHY` value is a closed, simple linestring. | [geography_functions-1.md](./geography_functions-1.md#st_isring) |
+| `ST_LENGTH` | Gets the total length of lines in a `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_length) |
+| `ST_LINEINTERPOLATEPOINT` | Gets a point at a specific fraction in a linestring `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_lineinterpolatepoint) |
+| `ST_LINELOCATEPOINT` | Gets a section of a linestring `GEOGRAPHY` value between the start point and a point `GEOGRAPHY` value. | [geography_functions-1.md](./geography_functions-1.md#st_linelocatepoint) |
+| `ST_LINESUBSTRING` | Gets a segment of a single linestring at a specific starting and ending fraction. | [geography_functions-1.md](./geography_functions-1.md#st_linesubstring) |
+| `ST_MAKELINE` | Creates a linestring `GEOGRAPHY` value by concatenating the point and linestring vertices of `GEOGRAPHY` values. | [geography_functions-1.md](./geography_functions-1.md#st_makeline) |
+| `ST_MAKEPOLYGON` | Constructs a polygon `GEOGRAPHY` value by combining a polygon shell with polygon holes. | [geography_functions-1.md](./geography_functions-1.md#st_makepolygon) |
+| `ST_MAKEPOLYGONORIENTED` | Constructs a polygon `GEOGRAPHY` value, using an array of linestring `GEOGRAPHY` values. The vertex ordering of each linestring determines the orientation of each polygon ring. | [geography_functions-2.md](./geography_functions-2.md#st_makepolygonoriented) |
+| `ST_MAXDISTANCE` | Gets the longest distance between two non-empty `GEOGRAPHY` values. | [geography_functions-2.md](./geography_functions-2.md#st_maxdistance) |
+| `ST_NPOINTS` | An alias of `ST_NUMPOINTS`. | [geography_functions-2.md](./geography_functions-2.md#st_npoints) |
+| `ST_NUMGEOMETRIES` | Gets the number of geometries in a `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_numgeometries) |
+| `ST_NUMPOINTS` | Gets the number of vertices in the a `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_numpoints) |
+| `ST_PERIMETER` | Gets the length of the boundary of the polygons in a `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_perimeter) |
+| `ST_POINTN` | Gets the point at a specific index of a linestring `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_pointn) |
+| `ST_REGIONSTATS` | Computes statistics describing the pixels in a geospatial raster image that intersect a `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_regionstats) |
+| `ST_SIMPLIFY` | Converts a `GEOGRAPHY` value into a simplified `GEOGRAPHY` value, using tolerance. | [geography_functions-2.md](./geography_functions-2.md#st_simplify) |
+| `ST_SNAPTOGRID` | Produces a `GEOGRAPHY` value, where each vertex has been snapped to a longitude/latitude grid. | [geography_functions-2.md](./geography_functions-2.md#st_snaptogrid) |
+| `ST_STARTPOINT` | Gets the first point of a linestring `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_startpoint) |
+| `ST_TOUCHES` | Checks if two `GEOGRAPHY` values intersect and their interiors have no elements in common. | [geography_functions-2.md](./geography_functions-2.md#st_touches) |
+| `ST_UNION` | Gets the point set union of multiple `GEOGRAPHY` values. | [geography_functions-2.md](./geography_functions-2.md#st_union) |
+| `ST_UNION_AGG` | Aggregates over `GEOGRAPHY` values and gets their point set union. | [geography_functions-2.md](./geography_functions-2.md#st_union_agg) |
+| `ST_WITHIN` | Checks if one `GEOGRAPHY` value contains another `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_within) |
+| `ST_X` | Gets the longitude from a point `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_x) |
+| `ST_Y` | Gets the latitude from a point `GEOGRAPHY` value. | [geography_functions-2.md](./geography_functions-2.md#st_y) |
 | `STARTS_WITH` | Checks if a `STRING` or `BYTES` value is a prefix of another value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#starts_with) |
 | `STDDEV` | An alias of the `STDDEV_SAMP` function. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev) |
 | `STDDEV_POP` | Computes the population (biased) standard deviation of the values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/statistical_aggregate_functions#stddev_pop) |
@@ -429,3 +429,8 @@
 | DLP encryption functions | Function list, DLP_DETERMINISTIC_ENCRYPT, DLP_DETERMINISTIC_DECRYPT, DLP_KEY_CHAIN | [dlp_functions.md](./dlp_functions.md) |
 | Federated query functions | Function list, EXTERNAL_QUERY | [federated_query_functions.md](./federated_query_functions.md) |
 | Function calls | Function call rules, Named arguments, Chained function calls, SAFE. prefix, Calling persistent user-defined functions (UDFs) | [functions-reference.md](./functions-reference.md) |
+| Geography functions (part 1 of 2) | Categories, Function list, S2_CELLIDFROMPOINT, S2_COVERINGCELLIDS, ST_ANGLE, ST_AREA, ST_ASBINARY, ST_ASGEOJSON, ST_ASTEXT, ST_AZIMUTH, ST_BOUNDARY, ST_BOUNDINGBOX, ST_BUFFER, ST_BUFFERWITHTOLERANCE, ST_CENTROID, ST_CENTROID_AGG, ST_CLOSESTPOINT, ST_CLUSTERDBSCAN, ST_CONTAINS, ST_CONVEXHULL, ST_COVEREDBY, ST_COVERS, ST_DIFFERENCE, ST_DIMENSION, ST_DISJOINT, ST_DISTANCE, ST_DUMP, ST_DWITHIN, ST_ENDPOINT, ST_EQUALS, ST_EXTENT, ST_EXTERIORRING, ST_GEOGFROM, ST_GEOGFROMGEOJSON, ST_GEOGFROMTEXT, ST_GEOGFROMWKB, ST_GEOGPOINT, ST_GEOGPOINTFROMGEOHASH, ST_GEOHASH, ST_GEOMETRYTYPE, ... | [geography_functions-1.md](./geography_functions-1.md) |
+| Geography functions (part 2 of 2) | ST_MAKEPOLYGONORIENTED, ST_MAXDISTANCE, ST_NPOINTS, ST_NUMGEOMETRIES, ST_NUMPOINTS, ST_PERIMETER, ST_POINTN, ST_REGIONSTATS, ST_SIMPLIFY, ST_SNAPTOGRID, ST_STARTPOINT, ST_TOUCHES, ST_UNION, ST_UNION_AGG, ST_WITHIN, ST_X, ST_Y | [geography_functions-2.md](./geography_functions-2.md) |
+| Hash functions | Function list, FARM_FINGERPRINT, MD5, SHA1, SHA256, SHA512 | [hash_functions.md](./hash_functions.md) |
+| HyperLogLog++ functions | Function list, HLL_COUNT.EXTRACT, HLL_COUNT.INIT, HLL_COUNT.MERGE, HLL_COUNT.MERGE_PARTIAL | [hll_functions.md](./hll_functions.md) |
+| Interval functions | Function list, EXTRACT, JUSTIFY_DAYS, JUSTIFY_HOURS, JUSTIFY_INTERVAL, MAKE_INTERVAL | [interval_functions.md](./interval_functions.md) |

@@ -28,7 +28,7 @@ To specify precision with sketches,
 use the following
 functions:
 
-- [HyperLogLog++ functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hll_functions) to estimate cardinality
+- [HyperLogLog++ functions](hll_functions.md) to estimate cardinality
 - [KLL functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions) to estimate quantile values
 
 ### Function list
