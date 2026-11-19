@@ -1080,6 +1080,8 @@ The following example shows the number of partitions modified by queries with
 DML statements and load jobs, per table. Note that this query doesn't show
 the `total_modified_partitions` for copy jobs.
 
+Adapted (not in the official docs): passed the same time zone to `CURRENT_DATE`, so that both sides of the comparison are dates in America/Los_Angeles.
+
 ```googlesql
 SELECT
   destination_table.table_id,
@@ -1087,7 +1089,7 @@ SELECT
 FROM
   `region-REGION_NAME`.INFORMATION_SCHEMA.JOBS
 WHERE
-  DATE(creation_time, "America/Los_Angeles") = CURRENT_DATE()
+  DATE(creation_time, "America/Los_Angeles") = CURRENT_DATE("America/Los_Angeles")
 GROUP BY
   table_id
 ORDER BY
@@ -1282,7 +1284,7 @@ LIMIT
 ```
 
 Replace `REGION_NAME` with the region for your project.
-For example, `region-us`.
+For example, `us`.
 
 > [!NOTE]
 > **Note:** You must use a region qualifier to query `INFORMATION_SCHEMA` views. The location of the query execution must match the region of the `INFORMATION_SCHEMA` view.
@@ -1326,7 +1328,7 @@ ORDER BY
 ```
 
 Replace `REGION_NAME` with the region for your project.
-For example, `region-us`.
+For example, `us`.
 
 > [!NOTE]
 > **Note:** You must use a region qualifier to query `INFORMATION_SCHEMA` views. The location of the query execution must match the region of the `INFORMATION_SCHEMA` view.
@@ -1420,6 +1422,8 @@ SELECT
 - Corrected from the official docs: the example that averages the jobs running at the same time as a job had two problems. It sampled from `creation_time` and matched other jobs from their `creation_time`, so time spent waiting in the queue counted as running; the schema on this page lists `creation_time` and `start_time` as separate columns. It also used an inner join, so seconds with no other job were dropped from the average instead of counting as zero, and the result was `NULL` when no other job overlapped. The example now uses `start_time`, a `LEFT JOIN` with the conditions in `ON`, and `COUNT(j.job_id)`. The official example also generated at least two sample times, one second apart, for a job shorter than one second, so the second sample fell after the job had ended; the sample offsets now run from 0 to the whole seconds between `start_time` and `end_time`.
 - Caution: the schema says that `query_dialect` will be available sometime in May, 2025. That sentence is out of date: the JOBS view page (jobs.md) says, in the example that counts legacy SQL query jobs, that the field has been available since May 2025.
 - Corrected from the official docs: the text before the example that analyzes the performance of identical queries says that it returns the top 10 slowest jobs, but the query ends with `LIMIT 3`. The text is changed to the top 3 slowest jobs, so that it matches the query.
+- Corrected from the official docs: the two Connected Sheets examples write the qualifier as `region-REGION_NAME`, but the text after each of them gives `region-us` as an example value for `REGION_NAME`, which would produce `region-region-us`. The example value is changed to `us`.
+- Corrected from the official docs: the example that counts the partitions modified per table compares `DATE(creation_time, "America/Los_Angeles")` with `CURRENT_DATE()`, which returns the date in UTC by default. While the dates in UTC and Los Angeles differ, the query selects the wrong day. The right side is changed to `CURRENT_DATE("America/Los_Angeles")`.
 
 ## Related
 
