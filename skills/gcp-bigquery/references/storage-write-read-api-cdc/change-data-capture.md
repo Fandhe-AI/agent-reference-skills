@@ -96,12 +96,12 @@ OPTIONS (
 
 ### Size and monitor a `BACKGROUND` reservation
 
-Adapted (not in the official docs): the `region-REGION` qualifier is wrapped in backticks because the hyphen is not valid in an unquoted path.
+Adapted (not in the official docs): the `region-REGION` qualifier is wrapped in backticks because the hyphen is not valid in an unquoted path; the slot sum is divided by `1000` (not `1000 * 60`), because each `JOBS_TIMELINE` period lasts one second.
 
 ```sql
 SELECT
   period_start,
-  SUM(period_slot_ms) / (1000 * 60) AS slots_used
+  SUM(period_slot_ms) / 1000 AS slots_used
 FROM
   `region-REGION`.INFORMATION_SCHEMA.JOBS_TIMELINE_BY_PROJECT
 WHERE
@@ -191,6 +191,7 @@ The `max_staleness` value should generally be the higher of (a) the maximum tole
 - Try `CREATE ASSIGNMENT`, `max_staleness` changes and DML on a CDC table on a disposable dataset first; deleted data may be retained longer than expected if apply jobs lack resources.
 - Pricing: ingestion (Storage Write API (gRPC)), storage and compute all incur costs; see https://cloud.google.com/bigquery/pricing. Prefer capacity pricing when baseline reads are large, avoid very low `max_staleness`, and consider a reservation for CDC tables.
 - Datastream replication to BigQuery uses CDC ingestion; Datastream itself is not in this skill.
+- Corrected from the official docs: the `BACKGROUND` sizing query groups by `period_start` but divides `SUM(period_slot_ms)` by `1000 * 60`; the `INFORMATION_SCHEMA.JOBS_TIMELINE` reference says each period "lasts exactly one second", so the average slots per period is `SUM(period_slot_ms) / 1000` (the source's divisor reports 1/60 of the slots used).
 - Source: https://docs.cloud.google.com/bigquery/docs/change-data-capture (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
