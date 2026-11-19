@@ -137,7 +137,7 @@ STRUCT(
 
 > [!NOTE]
 > **Note:** We recommend against using the [`LIMIT
-> and OFFSET` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
+> and OFFSET` clause](../googlesql-syntax/query-syntax-3.md#limit-and-offset-clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
 
 > [!NOTE]
 > **Note:** To minimize Agent Platform charges, write query results to a table and then reference that table in the `AI.GENERATE_TEXT` function. This can help you ensure that you are sending as few rows as possible to the model.
@@ -232,7 +232,7 @@ STRUCT(
 
 > [!NOTE]
 > **Note:** We recommend against using the [`LIMIT
-> and OFFSET` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
+> and OFFSET` clause](../googlesql-syntax/query-syntax-3.md#limit-and-offset-clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
 
 > [!NOTE]
 > **Note:** To minimize Agent Platform charges, write query results to a table and then reference that table in the `AI.GENERATE_TEXT` function. This can help you ensure that you are sending as few rows as possible to the model.
@@ -305,7 +305,7 @@ STRUCT(
 
 > [!NOTE]
 > **Note:** We recommend against using the [`LIMIT
-> and OFFSET` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
+> and OFFSET` clause](../googlesql-syntax/query-syntax-3.md#limit-and-offset-clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
 
 > [!NOTE]
 > **Note:** To minimize Agent Platform charges, write query results to a table and then reference that table in the `AI.GENERATE_TEXT` function. This can help you ensure that you are sending as few rows as possible to the model.
@@ -368,7 +368,7 @@ STRUCT(
 
 > [!NOTE]
 > **Note:** We recommend against using the [`LIMIT
-> and OFFSET` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
+> and OFFSET` clause](../googlesql-syntax/query-syntax-3.md#limit-and-offset-clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
 
 > [!NOTE]
 > **Note:** To minimize Agent Platform charges, write query results to a table and then reference that table in the `AI.GENERATE_TEXT` function. This can help you ensure that you are sending as few rows as possible to the model.
@@ -432,7 +432,7 @@ STRUCT(
 
 > [!NOTE]
 > **Note:** We recommend against using the [`LIMIT
-> and OFFSET` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
+> and OFFSET` clause](../googlesql-syntax/query-syntax-3.md#limit-and-offset-clause) in the prompt query. Using this clause causes the query to process all of the input data first and then apply `LIMIT` and `OFFSET`.
 
 > [!NOTE]
 > **Note:** To minimize Agent Platform charges, write query results to a table and then reference that table in the `AI.GENERATE_TEXT` function. This can help you ensure that you are sending as few rows as possible to the model.

@@ -241,7 +241,7 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 This function can be used with the
-[`AGGREGATION_THRESHOLD` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
+[`AGGREGATION_THRESHOLD` clause](../googlesql-syntax/query-syntax-3.md#aggregation_threshold-clause).
 
 To learn more about the `OVER` clause and how to use it, see
 [Window function calls](window-function-calls.md).
@@ -404,7 +404,7 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 This function can be used with the
-[`AGGREGATION_THRESHOLD` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
+[`AGGREGATION_THRESHOLD` clause](../googlesql-syntax/query-syntax-3.md#aggregation_threshold-clause).
 
 To learn more about the `OVER` clause and how to use it, see
 [Window function calls](window-function-calls.md).
@@ -592,7 +592,7 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 This function can be used with the
-[`AGGREGATION_THRESHOLD` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
+[`AGGREGATION_THRESHOLD` clause](../googlesql-syntax/query-syntax-3.md#aggregation_threshold-clause).
 
 If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,
@@ -719,7 +719,7 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 This function can be used with the
-[`AGGREGATION_THRESHOLD` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
+[`AGGREGATION_THRESHOLD` clause](../googlesql-syntax/query-syntax-3.md#aggregation_threshold-clause).
 
 If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,
@@ -967,7 +967,7 @@ into this function, see
 [Aggregate function calls](aggregate-function-calls.md).
 
 This function can be used with the
-[`AGGREGATION_THRESHOLD` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
+[`AGGREGATION_THRESHOLD` clause](../googlesql-syntax/query-syntax-3.md#aggregation_threshold-clause).
 
 If this function is used with the `OVER` clause, it's part of a
 window function call. In a window function call,

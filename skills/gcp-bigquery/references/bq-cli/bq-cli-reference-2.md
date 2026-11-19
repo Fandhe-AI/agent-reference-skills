@@ -1918,7 +1918,7 @@ refreshed at a system-defined interval, usually somewhere between 30 and
 
 Set to `MANUAL` if you want to refresh
 the metadata cache on a schedule you determine. In this case, you can call
-the [`BQ.REFRESH_EXTERNAL_METADATA_CACHE` system procedure](https://docs.cloud.google.com/bigquery/docs/reference/system-procedures#bqrefresh_external_metadata_cache) to refresh the cache.
+the [`BQ.REFRESH_EXTERNAL_METADATA_CACHE` system procedure](../googlesql-syntax/system-procedures.md#bqrefresh_external_metadata_cache) to refresh the cache.
 
 You must set the `--metadata_cache_mode` flag if you set the `--max_staleness`
 flag with the
@@ -2062,7 +2062,7 @@ customize query behavior. Repeat this flag to specify additional properties.
 
 Supported connection properties are as follows:
 
-- **`dataset_project_id`** : represents the default project for datasets that are used in the query, similar to the `@@dataset_project_id` [system variable](https://docs.cloud.google.com/bigquery/docs/reference/system-variables).
+- **`dataset_project_id`** : represents the default project for datasets that are used in the query, similar to the `@@dataset_project_id` [system variable](../googlesql-syntax/system-variables.md).
 - **`query_label`** : associates the query with a given job label. If set, all subsequent queries in a script or session have this label. For details on query label formatting requirements, see the `labels` field in the [`JobConfiguration` resource](https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job#jobconfiguration).
 - **`service_account`** : specifies a service account to use to run the query. For example, `--connection_property=service_account=myserviceaccount@project.iam.gserviceaccount.com`.
 - **`session_id`**: associates the query with a given session.

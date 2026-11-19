@@ -525,10 +525,10 @@ The following rules and constraints apply to multi-level aggregation:
   ```
 
 - You can't use multi-level aggregation with the [differential privacy
-  clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#dp_clause).
+  clause](../googlesql-syntax/query-syntax-3.md#differential-privacy-clause).
 
 - You can't use multi-level aggregation with the [aggregation threshold
-  clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#agg_threshold_clause).
+  clause](../googlesql-syntax/query-syntax-3.md#aggregation_threshold-clause).
 
 - You can't use grouping keys with collation in a multi-level aggregation.
 

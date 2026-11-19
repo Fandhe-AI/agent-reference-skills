@@ -54,7 +54,7 @@ If the `DEFAULT` clause is present, the value of the expression must be
 coercible to the specified type. The expression may reference other variables
 declared previously within the same block or a containing block.
 
-GoogleSQL also supports [system variables](https://docs.cloud.google.com/bigquery/docs/reference/system-variables). You don't
+GoogleSQL also supports [system variables](system-variables.md). You don't
 need to declare system variables, but you can set any of them that aren't
 marked read-only. You can reference system variables in queries.
 
@@ -183,7 +183,7 @@ Executes a dynamic SQL statement on the fly.
   This expression can't be a control statement like `IF`.
 - `expression`: Can be a
   [function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/functions-all), [conditional expression](../googlesql-functions/conditional_expressions.md), or
-  [expression subquery](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries#expression_subquery_concepts).
+  [expression subquery](subqueries.md#expression-subqueries).
 
 - `query_statement`: Represents a valid standalone SQL statement to execute.
   If this returns a value, the `INTO` clause must contain values of the same

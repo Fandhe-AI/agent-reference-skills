@@ -898,7 +898,7 @@ EXISTS( subquery )
 Returns `TRUE` if the subquery produces one or more rows. Returns `FALSE` if
 the subquery produces zero rows. Never returns `NULL`. To learn more about
 how you can use a subquery with `EXISTS`,
-see [`EXISTS` subqueries](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries#exists_subquery_concepts).
+see [`EXISTS` subqueries](subqueries.md#exists-subqueries).
 
 **Examples**
 
@@ -947,7 +947,7 @@ equal value is excluded, otherwise `NULL`.
 - `value_set`: One or more values to compare to a search value.
 
   - `(expression[, ...])`: A list of expressions.
-  - `(subquery)`: A [subquery](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries#about_subqueries) that returns a single column. The values in that column are the set of values. If no rows are produced, the set of values is empty.
+  - `(subquery)`: A [subquery](subqueries.md#about-subqueries) that returns a single column. The values in that column are the set of values. If no rows are produced, the set of values is empty.
   - `UNNEST(array_expression)`: An [UNNEST operator](query-syntax-1.md#unnest-operator)
     that returns a column of values from an array expression. This is
     equivalent to:

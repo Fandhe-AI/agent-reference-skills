@@ -110,7 +110,7 @@ Items in a `SELECT` list can be expressions. These expressions evaluate to a
 single value and produce one output column, with an optional explicit `alias`.
 
 If the expression doesn't have an explicit alias, it receives an implicit alias
-according to the rules for [implicit aliases](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#implicit_aliases), if possible.
+according to the rules for [implicit aliases](query-syntax-3.md#implicit-aliases), if possible.
 Otherwise, the column is anonymous and you can't refer to it by name elsewhere
 in the query.
 
@@ -195,7 +195,7 @@ FROM orders;
 ```
 
 > [!NOTE]
-> **Note:** `SELECT * EXCEPT` doesn't exclude columns that don't have names. Also, `SELECT * EXCEPT` and the [`EXCEPT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#except) set operator have different use cases and rules.
+> **Note:** `SELECT * EXCEPT` doesn't exclude columns that don't have names. Also, `SELECT * EXCEPT` and the [`EXCEPT`](query-syntax-3.md#except) set operator have different use cases and rules.
 
 #### `SELECT * REPLACE`
 
@@ -311,7 +311,7 @@ A `SELECT ALL` statement returns all rows, including duplicate rows.
 SELECT AS STRUCT expr [[AS] struct_field_name1] [,...]
 ```
 
-This produces a [value table](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#value_tables) with a
+This produces a [value table](query-syntax-3.md#value-tables) with a
 STRUCT row type, where the
 STRUCT field names and types match the column names
 and types produced in the `SELECT` list.
@@ -324,13 +324,13 @@ SELECT ARRAY(SELECT AS STRUCT 1 a, 2 b)
 
 `SELECT AS STRUCT` can be used in a scalar or array subquery to produce a single
 STRUCT type grouping multiple values together. Scalar
-and array subqueries (see [Subqueries](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries)) are normally not
+and array subqueries (see [Subqueries](subqueries.md)) are normally not
 allowed to return multiple columns, but can return a single column with
 STRUCT type.
 
 #### `SELECT AS VALUE`
 
-`SELECT AS VALUE` produces a [value table](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#value_tables) from any
+`SELECT AS VALUE` produces a [value table](query-syntax-3.md#value-tables) from any
 `SELECT` list that produces exactly one column. Instead of producing an
 output table with one column, possibly with a name, the output will be a
 value table where the row type is just the value type that was produced in the
@@ -537,7 +537,7 @@ See [Join operation](query-syntax-2.md#join-operation).
 
 ##### `query_expr`
 
-`( query_expr ) [ [ AS ] alias ]` is a [table subquery](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries#table_subquery_concepts).
+`( query_expr ) [ [ AS ] alias ]` is a [table subquery](subqueries.md#table-subqueries).
 
 ##### `field_path`
 
@@ -577,7 +577,7 @@ See [UNNEST operator](#unnest-operator).
 
 ##### `cte_name`
 
-Common table expressions (CTEs) in a [`WITH` Clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#with_clause) act like
+Common table expressions (CTEs) in a [`WITH` Clause](query-syntax-3.md#with-clause) act like
 temporary tables that you can reference anywhere in the `FROM` clause.
 In the example below, `subQ1` and `subQ2` are CTEs.
 
@@ -613,7 +613,7 @@ as_alias:
 ```
 
 The `UNNEST` operator takes an array and returns a table with one row for each
-element in the array. The output of `UNNEST` is one [value table](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#value_tables) column.
+element in the array. The output of `UNNEST` is one [value table](query-syntax-3.md#value-tables) column.
 For these `ARRAY` element types, `SELECT *` against the value table column
 returns multiple columns:
 
@@ -625,8 +625,8 @@ Input values:
 - `array_path`: The
   path to an `ARRAY` type.
 
-  - In an implicit `UNNEST` operation, the path must start with a [range variable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#range_variables) name.
-  - In an explicit `UNNEST` operation, the path can optionally start with a [range variable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#range_variables) name.
+  - In an implicit `UNNEST` operation, the path must start with a [range variable](query-syntax-3.md#range-variables) name.
+  - In an explicit `UNNEST` operation, the path can optionally start with a [range variable](query-syntax-3.md#range-variables) name.
 
   The `UNNEST` operation with any [correlated](query-syntax-2.md#correlated-join-operation) `array_path` must
   be on the right side of a `CROSS JOIN`, `LEFT JOIN`, or
@@ -694,7 +694,7 @@ FROM UNNEST(
 ```
 
 Because the `UNNEST` operator returns a
-[value table](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#value_tables),
+[value table](query-syntax-3.md#value-tables),
 you can alias `UNNEST` to define a range variable that you can reference
 elsewhere in the query. If you reference the range variable in the `SELECT`
 list, the query returns a struct containing all of the fields of the original
@@ -1828,3 +1828,4 @@ Graph Query Language (GQL) reference guide.
 
 - [Index of this directory](./README.md)
 - [Query syntax (part 2 of 3)](./query-syntax-2.md)
+- [Query syntax (part 3 of 3)](./query-syntax-3.md)

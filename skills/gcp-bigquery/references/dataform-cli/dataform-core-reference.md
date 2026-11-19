@@ -91,7 +91,7 @@ works as follows:
 
 - If your query references datasets from the same location, Dataform uses that location.
 - If your query references datasets from two or more different locations, an error occurs. For details about this limitation, see [Cross-region dataset replication](https://docs.cloud.google.com/bigquery/docs/data-replication).
-- If your query doesn't reference any datasets, the default location for Dataform is the `US` multi-region. To choose a different location, set the `defaultLocation` property. Alternatively, use the [`@@location` system variable](https://docs.cloud.google.com/bigquery/docs/reference/system-variables) in your query.
+- If your query doesn't reference any datasets, the default location for Dataform is the `US` multi-region. To choose a different location, set the `defaultLocation` property. Alternatively, use the [`@@location` system variable](../googlesql-syntax/system-variables.md) in your query.
 
 For more information, see
 [Specify locations](https://docs.cloud.google.com/bigquery/docs/locations#specify_locations).
