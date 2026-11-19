@@ -91,7 +91,7 @@ works as follows:
 
 - If your query references datasets from the same location, Dataform uses that location.
 - If your query references datasets from two or more different locations, an error occurs. For details about this limitation, see [Cross-region dataset replication](https://docs.cloud.google.com/bigquery/docs/data-replication).
-- If your query doesn't reference any datasets, the default location for Dataform is the `US` multi-region. To choose a different location, set the `defaultLocation` property. Alternatively, use the [`@@location` system variable](../googlesql-syntax/system-variables.md) in your query.
+- If your query doesn't reference any datasets, the default location for Dataform is the `US` multi-region. To choose a different location, set the `defaultLocation` property. Alternatively, use the [`@@location` system variable](https://docs.cloud.google.com/bigquery/docs/reference/system-variables) in your query.
 
 For more information, see
 [Specify locations](https://docs.cloud.google.com/bigquery/docs/locations#specify_locations).
@@ -133,7 +133,7 @@ BigQuery-specific warehouse options.
 
 |---|---|
 | `additionalOptions` |   |
-| `additionalOptions` | Key-value pairs for the [table](../googlesql-syntax/data-definition-language-1.md#table_option_list), [view](../googlesql-syntax/data-definition-language-1.md#view_option_list), and [materialized view](../googlesql-syntax/data-definition-language-2.md#materialized_view_option_list) options. Some options, for example, `partitionExpirationDays`, have dedicated type/validity checked fields. For such options, use the dedicated fields. String values must be encapsulated in double-quotes, for example: `additionalOptions: {numeric_option: "5", string_option: '"string-value"'}` If the option name contains special characters, encapsulate the name in quotes, for example: `additionalOptions: { "option-name": "value" }`. |
+| `additionalOptions` | Key-value pairs for the [table](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#table_option_list), [view](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#view_option_list), and [materialized view](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#materialized_view_option_list) options. Some options, for example, `partitionExpirationDays`, have dedicated type/validity checked fields. For such options, use the dedicated fields. String values must be encapsulated in double-quotes, for example: `additionalOptions: {numeric_option: "5", string_option: '"string-value"'}` If the option name contains special characters, encapsulate the name in quotes, for example: `additionalOptions: { "option-name": "value" }`. |
 | `clusterBy` | `string[]` |
 | `clusterBy` | The keys by which to [cluster partitions by](https://docs.cloud.google.com/dataform/docs/create-tables#create-table-partitions-clusters). |
 | `labels` |   |
@@ -453,7 +453,7 @@ following:
   > **Caution:** The `SYNCHRONIZE` action cannot be undone, and you might lose data when you remove columns with this option.
 
   > [!NOTE]
-  > **Note:** Deleting partitioned and clustered columns isn't supported, as deleting these columns can have negative consequences. If a partitioned or clustered column is still deleted, it's handled with the [`ALTER TABLE DROP COLUMN` statement](../googlesql-syntax/data-definition-language-3.md#alter-table-drop-column-statement). Dataform doesn't perform checks or validations to prevent the running of `ALTER TABLE DROP COLUMN` statements on partitioned or clustered columns. Therefore, if you drop such columns, proceed cautiously and be aware of potential negative consequences.
+  > **Note:** Deleting partitioned and clustered columns isn't supported, as deleting these columns can have negative consequences. If a partitioned or clustered column is still deleted, it's handled with the [`ALTER TABLE DROP COLUMN` statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_table_drop_column_statement). Dataform doesn't perform checks or validations to prevent the running of `ALTER TABLE DROP COLUMN` statements on partitioned or clustered columns. Therefore, if you drop such columns, proceed cautiously and be aware of potential negative consequences.
 
 ### operate()
 

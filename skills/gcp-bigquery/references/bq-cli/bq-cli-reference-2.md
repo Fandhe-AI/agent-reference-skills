@@ -520,7 +520,7 @@ characters in column names, with the option of enabling
 [flexible column names](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-parquet#flexible-column-names).
 Requires the `--autodetect` option for CSV files.
 For a list of possible values, see
-[`load_option_list`](../googlesql-syntax/load-statements.md#load_option_list).
+[`load_option_list`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/load-statements#load_option_list).
 
 **`--destination_kms_key=KEY`**
 :   Specifies a Cloud KMS
@@ -595,7 +595,7 @@ specify the
 Equivalent to the `WRITE_TRUNCATE` value for [`JobConfigurationLoad.writeDisposition`](https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job#JobConfigurationLoad.FIELDS.write_disposition).
 
 > [!NOTE]
-> **Note:** You can use the [`TRUNCATE TABLE`](../googlesql-syntax/dml-syntax.md#truncate-table-statement) statement to remove all rows from a table without deleting the schema.
+> **Note:** You can use the [`TRUNCATE TABLE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#truncate_table_statement) statement to remove all rows from a table without deleting the schema.
 
 **`--schema={SCHEMA_FILE|SCHEMA`}**
 
@@ -1570,7 +1570,7 @@ To disable metadata caching, specify 0. This is the default.
 
 To enable metadata caching, specify an interval value between 30
 minutes and 7 days, using the `Y-M D H:M:S` format described in the
-[`INTERVAL` data type](../googlesql-syntax/data-types.md#interval-type)
+[`INTERVAL` data type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#interval_type)
 documentation. For example, specify `0-0 0 4:0:0` for a 4 hour staleness
 interval. With this value, operations against the table use cached metadata if
 it has been refreshed within the past 4 hours. If the cached metadata
@@ -1918,7 +1918,7 @@ refreshed at a system-defined interval, usually somewhere between 30 and
 
 Set to `MANUAL` if you want to refresh
 the metadata cache on a schedule you determine. In this case, you can call
-the [`BQ.REFRESH_EXTERNAL_METADATA_CACHE` system procedure](../googlesql-syntax/system-procedures.md#bqrefresh_external_metadata_cache) to refresh the cache.
+the [`BQ.REFRESH_EXTERNAL_METADATA_CACHE` system procedure](https://docs.cloud.google.com/bigquery/docs/reference/system-procedures#bqrefresh_external_metadata_cache) to refresh the cache.
 
 You must set the `--metadata_cache_mode` flag if you set the `--max_staleness`
 flag with the
@@ -2062,7 +2062,7 @@ customize query behavior. Repeat this flag to specify additional properties.
 
 Supported connection properties are as follows:
 
-- **`dataset_project_id`** : represents the default project for datasets that are used in the query, similar to the `@@dataset_project_id` [system variable](../googlesql-syntax/system-variables.md).
+- **`dataset_project_id`** : represents the default project for datasets that are used in the query, similar to the `@@dataset_project_id` [system variable](https://docs.cloud.google.com/bigquery/docs/reference/system-variables).
 - **`query_label`** : associates the query with a given job label. If set, all subsequent queries in a script or session have this label. For details on query label formatting requirements, see the `labels` field in the [`JobConfiguration` resource](https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job#jobconfiguration).
 - **`service_account`** : specifies a service account to use to run the query. For example, `--connection_property=service_account=myserviceaccount@project.iam.gserviceaccount.com`.
 - **`session_id`**: associates the query with a given session.
@@ -2236,7 +2236,7 @@ removed, unless you specify the `--destination_kms_key` flag. The default
 value is `false`.
 
 > [!NOTE]
-> **Note:** To remove all rows from a table without deleting the schema, use the [`TRUNCATE TABLE`](../googlesql-syntax/dml-syntax.md#truncate-table-statement) statement.
+> **Note:** To remove all rows from a table without deleting the schema, use the [`TRUNCATE TABLE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#truncate_table_statement) statement.
 
 **`--require_cache={true|false}`**
 

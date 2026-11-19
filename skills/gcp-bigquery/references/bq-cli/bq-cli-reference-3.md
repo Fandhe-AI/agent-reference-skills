@@ -405,7 +405,7 @@ allocated to any reservation. For more information, see
 
 **`--max_staleness=INTERVAL`**
 
-:   Specifies an [INTERVAL](../googlesql-syntax/data-types.md#interval-type)
+:   Specifies an [INTERVAL](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#interval_type)
 value that determines the maximum staleness allowed when querying a
 materialized view or an external table. The default value is `0-0 0 0:0:0`.
 
