@@ -22,10 +22,10 @@ git config --global credential.'https://*.*.sourcemanager.dev'.helper gcloud.sh
 git clone https://github.com/GoogleCloudPlatform/solutions-terraform-cloudbuild-gitops.git
 ```
 
-Adapted (not in the official docs): `cd ~/solutions-terraform-cloudbuild-gitops` is added so `git remote add` runs inside the clone.
+Adapted (not in the official docs): `cd solutions-terraform-cloudbuild-gitops || exit 1` is added so `git remote add` runs inside the clone that `git clone` created in the current directory.
 
 ```bash
-cd ~/solutions-terraform-cloudbuild-gitops
+cd solutions-terraform-cloudbuild-gitops || exit 1
 git remote add google HTTPS_REPO_URL
 ```
 
@@ -41,7 +41,7 @@ Create an empty Secure Source Manager repository first (do not initialize it), r
 
 ### Build configuration (`cloudbuild.yaml`, in the `dev` branch)
 
-Adapted (not in the official docs): the webhook value `_REF` is passed to each step as the environment variable `REF` instead of being substituted into the shell script, shell variables are written with `$$` so Cloud Build does not treat them as substitutions, and only the full refs `refs/heads/dev` and `refs/heads/prod` select an environment directory (see Notes).
+Adapted (not in the official docs): the webhook value `_REF` is passed to each step as the environment variable `REF` instead of being substituted into the shell script, shell variables are written with `$$` so Cloud Build does not treat them as substitutions, only the full refs `refs/heads/dev` and `refs/heads/prod` select an environment directory, and a failed `git checkout` stops the build (see Notes).
 
 ```yaml
 # Copyright 2019 Google LLC
@@ -75,7 +75,7 @@ steps:
   - '-c'
   - |
       branch="$${REF#refs/heads/}"
-      git checkout "$${branch}"
+      git checkout "$${branch}" || exit 1
       echo "***********************"
       git branch --show-current
       echo "***********************"
@@ -244,8 +244,8 @@ Open a pull request into `dev` (this triggers the apply for `dev`), test, then a
 - Private pool: external IPs must be assigned so the pool can reach the public internet.
 - Enabling Object Versioning increases storage costs; mitigate with Object Lifecycle Management to delete earlier state versions.
 - Cloud Build substitutions: user-defined substitutions "must begin with an underscore (`_`) and use only uppercase-letters and numbers (respecting the regular expression `_[A-Z0-9_]+`)", and `$$` includes a literal `$` in the build config.
-- Corrected from the official docs: the source steps run `branch=$(basename "$_REF")` and then `cd environments/${branch}` and `terraform apply -auto-approve`. Cloud Build substitutes `$_REF`, the `ref` of the webhook body, into the script text before the shell runs, so a ref containing `$(...)` is executed as a command even inside double quotes; `basename` also turns `refs/heads/feature/prod` into `prod`, so a push to `feature/prod` reaches `terraform apply -auto-approve` for the `prod` environment. The steps instead pass the value with `env: ['REF=$_REF']`, read it as the quoted shell variable `$${REF}`, and use `environments/dev` or `environments/prod` only when the ref is exactly `refs/heads/dev` or `refs/heads/prod`; other refs plan every environment and skip apply, as the source intends. Shell variables (`$${branch}`, `$${dir}`, `$${env}`) are written with `$$`, which the substitution page defines as a literal `$`, and paths are quoted.
-- Corrected from the official docs: the source runs `git remote add google HTTPS_REPO_URL` right after `git clone` without entering the clone, while later steps of the same page run `cd ~/solutions-terraform-cloudbuild-gitops`; the page adds that `cd` before `git remote add`.
+- Corrected from the official docs: the source steps run `branch=$(basename "$_REF")` and then `cd environments/${branch}` and `terraform apply -auto-approve`. Cloud Build substitutes `$_REF`, the `ref` of the webhook body, into the script text before the shell runs, so a ref containing `$(...)` is executed as a command even inside double quotes; `basename` also turns `refs/heads/feature/prod` into `prod`, so a push to `feature/prod` reaches `terraform apply -auto-approve` for the `prod` environment. The steps instead pass the value with `env: ['REF=$_REF']`, read it as the quoted shell variable `$${REF}`, and use `environments/dev` or `environments/prod` only when the ref is exactly `refs/heads/dev` or `refs/heads/prod`; other refs plan every environment and skip apply, as the source intends. The source's checkout step ends with `echo`, so a failed `git checkout` (for example a deleted branch) still succeeds and later steps run on the default branch of the clone; `|| exit 1` stops the build instead. Shell variables (`$${branch}`, `$${dir}`, `$${env}`) are written with `$$`, which the substitution page defines as a literal `$`, and paths are quoted.
+- Corrected from the official docs: the source runs `git remote add google HTTPS_REPO_URL` right after `git clone` without entering the clone, while later steps of the same page run `cd ~/solutions-terraform-cloudbuild-gitops`; the page adds `cd solutions-terraform-cloudbuild-gitops || exit 1` (relative to the directory where `git clone` ran) before `git remote add`.
 - Source: https://docs.cloud.google.com/build/docs/configuring-builds/substitute-variable-values (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 - The source also shows Console steps (trigger, webhook, pull requests) and the sample output of the build logs; only the CLI and YAML forms are kept.
 - Terraform version pinned by the build steps: `hashicorp/terraform:1.0.0`. Secure Source Manager and Cloud Build are in `gcp-devops`.

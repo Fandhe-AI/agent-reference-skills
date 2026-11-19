@@ -69,7 +69,7 @@ violation[{
 
 ### Test your Rego
 
-Put sample data in `validator/test/fixtures/<constraint filename>/assets/data.json`. Use non-sensitive data in the Rego Playground.
+Put sample data in `validator/test/fixtures/gcp_compute_address_address_type_allowlist_constraint_v1_test/assets/data.json`, the directory the test below reads (`data.test.fixtures` + the test file name + `assets`). Use non-sensitive data in the Rego Playground.
 
 Adapted (not in the official docs): `allowed_address_types` is passed as a list (`["EXTERNAL"]`) instead of the string `"EXTERNAL"`.
 
@@ -346,7 +346,7 @@ The list depends on the installed `gcloud beta terraform vet` version.
 - Corrected from the official docs: the source Rego uses `count({asset.resource.data.addressType} & allowed_address_types) >= 1`, which raises a violation only for allowed types. The same page contradicts it: the message reads "has a disallowed address_type", the template is an allowlist ("A list of address_types allowed"), the constraint is introduced with "to only allow `INTERNAL` address types", and `test_violation_with_disallowed_address_type` allows `EXTERNAL` against the `INTERNAL` sample data and expects `count(violations) == 1`.
 - Corrected from the official docs: the source test passes `"allowed_address_types": "EXTERNAL"` (a string), while the template schema declares `type: array` of `string` and the Rego intersects it with a set (`&`); the Rego therefore reads the parameter into a set and the test passes a list.
 - Source inconsistency: the prose says "Your Rego must have a `violations` rule", while the code defines `violation`.
-- Source inconsistency: the prose puts sample data in `validator/test/fixtures/<constraint filename>/assets/data.json`, while the test imports `data.test.fixtures.gcp_compute_address_address_type_allowlist_constraint_v1_test.assets` (the test file name).
+- Corrected from the official docs: the source puts sample data in `validator/test/fixtures/<constraint filename>/assets/data.json`, while its test reads `data.test.fixtures.gcp_compute_address_address_type_allowlist_constraint_v1_test.assets` (the test file name), so data placed as the prose says is not found. The page names the fixture directory after the test file, `validator/test/fixtures/gcp_compute_address_address_type_allowlist_constraint_v1_test/assets/data.json`, to match the test.
 - Run `make build` in the policy-library repository to inline the Rego into `policies/templates` (the directory layout is the same as in create-terraform-constraints.md, with `gcp_` file names).
 - Source: https://docs.cloud.google.com/docs/terraform/policy-validation/create-cai-constraints (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 

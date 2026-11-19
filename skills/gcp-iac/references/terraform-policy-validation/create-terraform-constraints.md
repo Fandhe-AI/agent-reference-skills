@@ -89,7 +89,7 @@ violation[{
 
 ### Test your Rego
 
-Put sample data in `validator/test/fixtures/<constraint filename>/resource_changes/data.json`. Use non-sensitive data in the Rego Playground.
+Put sample data in `validator/test/fixtures/tf-compute-address-address-type-allowlist-constraint-v1-test/resource_changes/data.json`, the directory the test below reads (`data.test.fixtures` + the test file name + `resource_changes`). Use non-sensitive data in the Rego Playground.
 
 Adapted (not in the official docs): `allowed_address_types` is passed as a list (`["EXTERNAL"]`) instead of the string `"EXTERNAL"`, and the fixture is read with a bracketed string key instead of the hyphenated `import` path.
 
@@ -231,7 +231,7 @@ spec:
 - Corrected from the official docs: the source test has `import data.test.fixtures.tf-compute-address-address-type-allowlist-constraint-v1-test.resource_changes as resource_changes`. A Rego dot-access term is an identifier, which cannot contain `-`, so the import does not parse; the test reads the same document with a bracketed string key, `data.test.fixtures["tf-compute-address-address-type-allowlist-constraint-v1-test"].resource_changes`, inside the rule.
 - Source inconsistency: the prose says "Your Rego must have a `violations` rule", while the code defines `violation`.
 - Source inconsistency: the naming guidance says snake_case ("separate words with `_`"), while its example file name `tf-compute-address-address-type-allowlist-constraint-v1.rego` uses hyphens.
-- Source inconsistency: the prose puts sample data in `validator/test/fixtures/<constraint filename>/resource_changes/data.json`, while the test imports `data.test.fixtures.tf-compute-address-address-type-allowlist-constraint-v1-test.resource_changes` (the test file name).
+- Corrected from the official docs: the source puts sample data in `validator/test/fixtures/<constraint filename>/resource_changes/data.json`, while its test reads `data.test.fixtures.tf-compute-address-address-type-allowlist-constraint-v1-test.resource_changes` (the test file name), so data placed as the prose says is not found. The page names the fixture directory after the test file, `validator/test/fixtures/tf-compute-address-address-type-allowlist-constraint-v1-test/resource_changes/data.json`, to match the test.
 - The unknown-ancestry constraint uses `match.ancestries`, not the `addresses` / `excludedAddresses` fields listed above; `ancestries` is the match field of CAI constraints (see create-cai-constraints.md).
 - Source: https://docs.cloud.google.com/docs/terraform/policy-validation/create-terraform-constraints (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 

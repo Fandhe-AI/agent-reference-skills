@@ -8,6 +8,17 @@ Apply a constraint that enforces an IAM domain restriction, run `gcloud beta ter
 
 ## Signature / Usage
 
+### Get the policy library
+
+The source opens Cloud Shell with a "Clone policy library" link (`https://console.cloud.google.com/cloudshell/open?cloudshell_git_repo=https://github.com/GoogleCloudPlatform/policy-library.git`), which clones the repository and opens it. Without the link, clone it and run every later command from its root.
+
+Snippet taken from https://docs.cloud.google.com/docs/terraform/policy-validation/create-policy-library (retrieved 2026-11-19).
+
+```bash
+git clone https://github.com/GoogleCloudPlatform/policy-library.git
+cd policy-library
+```
+
 ### Copy and inspect the sample constraint
 
 ```bash

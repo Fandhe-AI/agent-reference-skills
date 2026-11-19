@@ -52,11 +52,13 @@ terraform {
 
 ### Expose labels as a variable
 
+Adapted (not in the official docs): `type        = "map"` is written as `type        = map(string)`.
+
 ```hcl
 variable "labels" {
   description = "A map of labels to apply to contained resources."
   default     = {}
-  type        = "map"
+  type        = map(string)
 }
 ```
 
@@ -75,7 +77,7 @@ variable "labels" {
 ## Notes
 
 - Including API activation makes demonstrations easier.
-- Source inconsistency: the `labels` sample quotes the type constraint (`type        = "map"`), while the general style and structure page writes an unquoted type (`type        = list`).
+- Corrected from the official docs: the `labels` sample has `type        = "map"`, a quoted type constraint. Terraform's v0.15 upgrade guide: "In variable declaration blocks, the type argument previously accepted v0.11-style type constraints given as quoted strings. This legacy syntax is removed in Terraform v0.15." It also says to give `list` and `map` an element type, usually `string` (`type = map(string)`) (https://developer.hashicorp.com/terraform/language/v1.1.x/upgrade-guides/0-15, retrieved 2026-11-19). The general style and structure page writes unquoted types (`type        = list`).
 - Unless proven otherwise, assume that new provider versions will work.
 - Without any outputs, users cannot properly order your module in relation to their Terraform configurations.
 - Terraform does not track refactored resources: moving resources from the top-level module into submodules makes Terraform try to recreate them. Use `moved` blocks when refactoring.

@@ -18,7 +18,7 @@ Environment variables are overridden by explicit values in the Terraform configu
 
 ### Prepare the directory
 
-Each Terraform configuration file must have its own directory (a root module). The filename must have the `.tf` extension.
+Each Terraform configuration needs its own directory (a root module); Terraform reads all `.tf` files in that directory together, so `variables.tf` and `outputs.tf` sit next to `main.tf`. The filename must have the `.tf` extension.
 
 ```bash
 mkdir DIRECTORY && cd DIRECTORY && touch main.tf
@@ -86,6 +86,7 @@ Enter `yes` at the prompt.
 - Terraform CLI and HCL themselves behave as HashiCorp documents them; this skill covers using them with Google Cloud.
 - Source: https://docs.cloud.google.com/docs/terraform/basic-commands (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
+- Corrected from the official docs: the source says "Each Terraform configuration file must have its own directory (also called a root module)". A root module is a directory, and Terraform loads every `.tf` file in it as one configuration; the page therefore says each configuration (root module) needs its own directory, not each file.
 ## Related
 
 - [install-configure-terraform.md](./install-configure-terraform.md)
