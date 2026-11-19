@@ -160,6 +160,7 @@ The result is similar to the following:
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Conflicting official statements: the schema lists `target_resources` and `associated_insight_ids` as `STRING`, but the `RECOMMENDATIONS` view page (recommendations.md) shows `target_resources` values as arrays such as `["project_resource"]`. Treat both columns as arrays of strings when you write queries.
+- Conflicting official statements: the Scope and syntax table names the view `RECOMMENDATIONS[_BY_ORGANIZATION]`, so the suffix looks optional, and gives the resource scope as `Project level`. The description says that `RECOMMENDATIONS_BY_ORGANIZATION` contains the recommendations for all projects in the current organization, and the `RECOMMENDATIONS` view page (recommendations.md) covers only the current project. To query the whole organization, write the full name `RECOMMENDATIONS_BY_ORGANIZATION`.
 
 ## Related
 
