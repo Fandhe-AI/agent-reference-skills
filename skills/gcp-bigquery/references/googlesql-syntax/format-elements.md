@@ -1129,7 +1129,7 @@ specified by a format element.
 
 | Format element | Returns | Example |
 |---|---|---|
-| A.M. or P.M. | Matches using the regular expression `'(A|P)\.M\.'`. | Input for HH:MI A.M.: '03:30 A.M.' Output as TIME: 03:30:00 <hr> Input for HH:MI P.M.: '03:30 P.M.' Output as TIME: 15:30:00 <hr> Input for HH:MI P.M.: '03:30 A.M.' Output as TIME: 03:30:00 <hr> Input for HH:MI A.M.: '03:30 P.M.' Output as TIME: 15:30:00 <hr> Input for HH:MI a.m.: '03:30 a.m.' Output as TIME: 03:30:00 |
+| A.M. or P.M. | Matches using the regular expression `'(A\|P)\.M\.'`. | Input for HH:MI A.M.: '03:30 A.M.' Output as TIME: 03:30:00 <hr> Input for HH:MI P.M.: '03:30 P.M.' Output as TIME: 15:30:00 <hr> Input for HH:MI P.M.: '03:30 A.M.' Output as TIME: 03:30:00 <hr> Input for HH:MI A.M.: '03:30 P.M.' Output as TIME: 15:30:00 <hr> Input for HH:MI a.m.: '03:30 a.m.' Output as TIME: 03:30:00 |
 
 **Return type**
 
@@ -1178,7 +1178,7 @@ specified by a format element.
 
 | Format element | Returns | Example |
 |---|---|---|
-| TZH | Matches using the regular expression `'(\+|\-| )[0-9]{2}'`. Sets the time zone and hour parts to the matched sign and number. Sets the time zone sign to be the first letter of the matched string. The number 2 means matching up to 2 digits for non-exact matching, and exactly 2 digits for exact matching. | Input for YYYY-MM-DD HH:MI:SSTZH: '2008-12-25 05:30:00-08' Output as TIMESTAMP: 2008-12-25 05:30:00-08 |
+| TZH | Matches using the regular expression `'(\+\|\-\| )[0-9]{2}'`. Sets the time zone and hour parts to the matched sign and number. Sets the time zone sign to be the first letter of the matched string. The number 2 means matching up to 2 digits for non-exact matching, and exactly 2 digits for exact matching. | Input for YYYY-MM-DD HH:MI:SSTZH: '2008-12-25 05:30:00-08' Output as TIMESTAMP: 2008-12-25 05:30:00-08 |
 | TZM | Matches 2 digits. Let `n` be the matched number. If the time zone sign is the minus sign, sets the time zone minute part to `-n`. Otherwise, sets the time zone minute part to `n`. | Input for YYYY-MM-DD HH:MI:SSTZHTZM: '2008-12-25 05:30:00+0530' Output as TIMESTAMP: 2008-12-25 05:30:00+0530 |
 
 **Return type**

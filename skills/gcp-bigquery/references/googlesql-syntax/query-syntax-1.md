@@ -22,8 +22,8 @@ documentation commonly uses.
 |---|---|---|
 | Square brackets | `[ ]` | Optional clauses |
 | Parentheses | `( )` | Literal parentheses |
-| Vertical bar | `|` | Logical `XOR` (exclusive `OR`) |
-| Curly braces | `{ }` | A set of options, such as `{ a | b | c }`. Select one option. |
+| Vertical bar | `\|` | Logical `XOR` (exclusive `OR`) |
+| Curly braces | `{ }` | A set of options, such as `{ a \| b \| c }`. Select one option. |
 | Ellipsis | `...` | The preceding item can repeat. |
 | Comma | `,` | Literal comma |
 | Comma followed by an ellipsis | `, ...` | The preceding item can repeat in a comma-separated list. |
@@ -1425,9 +1425,9 @@ following elements, listed in order of precedence:
 | `<pattern>{m,n}` | Matches `<pattern>` between `m` and `n` times, inclusive; prefer more. |
 | `<pattern>{m,n}?` | Matches `<pattern>` between `m` and `n` times, inclusive; prefer fewer. |
 | `<pattern1> <pattern2>` | Matches `<pattern1>`, followed by `<pattern2>`. |
-| `<pattern1> | <pattern2>` | Matches either `<pattern1>` or `<pattern2>`; prefer `<pattern1>`. |
-| `<pattern> | ` | Matches either `<pattern>` or an empty row sequence; prefer `<pattern>`. This is equivalent to `<pattern>?`. |
-| `| <pattern>` | Matches either `<pattern>` or an empty row sequence; prefer the empty row sequence. This is equivalent to `<pattern>??`. |
+| `<pattern1> \| <pattern2>` | Matches either `<pattern1>` or `<pattern2>`; prefer `<pattern1>`. |
+| `<pattern> \| ` | Matches either `<pattern>` or an empty row sequence; prefer `<pattern>`. This is equivalent to `<pattern>?`. |
+| `\| <pattern>` | Matches either `<pattern>` or an empty row sequence; prefer the empty row sequence. This is equivalent to `<pattern>??`. |
 
 The values of `m` and `n` must be non-null integer
 literals or query parameters between
