@@ -83,10 +83,12 @@ Replace the following:
 
 The following query shows the constraints for a single table in a dataset:
 
+Adapted (not in the official docs): enclosed the `TABLE` placeholder in quotes, so that the table name is compared as a string.
+
 ```googlesql
 SELECT *
 FROM PROJECT_ID.DATASET.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
-WHERE table_name = TABLE;
+WHERE table_name = 'TABLE';
 ```
 
 Replace the following:
@@ -129,6 +131,7 @@ If the table or dataset has no constraints, the query results look like this:
 - Source: https://docs.cloud.google.com/bigquery/docs/information-schema-constraint-column-usage (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the single-table example compares `table_name` with the unquoted placeholder `TABLE`. `table_name` is a `STRING` column, and an unquoted table name such as `orders` is read as a column name, so the query fails. The placeholder is enclosed in quotes (`'TABLE'`).
 
 ## Related
 

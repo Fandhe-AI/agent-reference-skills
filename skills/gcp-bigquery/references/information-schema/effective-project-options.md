@@ -120,6 +120,7 @@ The result is similar to the following:
 - Source: https://docs.cloud.google.com/bigquery/docs/information-schema-effective-project-options (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Caution: the Data retention section says that this view contains currently running sessions and the history of sessions completed in the past 180 days. This view holds configuration option values, as its description and schema show, not sessions; the sentence appears to come from a sessions view. The page states no retention period for configuration options.
 
 ## Related
 
