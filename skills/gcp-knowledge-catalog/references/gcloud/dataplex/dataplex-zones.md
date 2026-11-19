@@ -535,6 +535,14 @@ NOTES
         $ gcloud alpha dataplex zones delete
 ```
 
+Adapted (not in the official docs): runnable form of the example(s) above: the corrections listed in Notes are applied.
+
+```bash
+gcloud dataplex zones delete test-zone \
+    --location=us-central1 \
+    --lake=test-lake
+```
+
 ### gcloud dataplex zones describe
 
 ```text
@@ -1322,6 +1330,7 @@ SYNOPSIS
 ## Notes
 
 - Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `delete` example says "To delete a Dataplex zone test-zone within lake test-lake" but passes `test-lake` as the `ZONE` positional argument, which would delete a zone named `test-lake`; the runnable form passes `test-zone`.
 - Corrected from the official docs (runnable form only; the help text above is verbatim): the examples say "in location us-central1" but pass `--location=us-central`, which is not a region ID; the runnable form passes `--location=us-central1`.
 - Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
 - Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
