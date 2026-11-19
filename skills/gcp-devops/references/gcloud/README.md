@@ -13,3 +13,4 @@
 | gcloud software-delivery-trust | 25 commands across release tracks | [software-delivery-trust/README.md](./software-delivery-trust/README.md) |
 | gcloud source | 31 commands across release tracks | [source/README.md](./source/README.md) |
 | gcloud source-manager | 136 commands across release tracks | [source-manager/README.md](./source-manager/README.md) |
+| gcloud workload-manager | 7 commands across release tracks | [workload-manager/README.md](./workload-manager/README.md) |
