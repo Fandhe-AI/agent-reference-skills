@@ -1096,6 +1096,8 @@ Unicode code-points. If your trailing character set contains a combining
 diacritic mark over a particular letter, `TRIM` might strip the
 same diacritic mark from a different letter.
 
+Adapted (not in the official docs): kept the combining ring above (U+030A) after the leading `Ū` in the result of column `d`.
+
 ```sql
 SELECT
   TRIM('abaW̊', 'Y̊') AS a,
@@ -1106,7 +1108,7 @@ SELECT
 /*------+------+------+------+
  | a    | b    | c    | d    |
  +------+------+------+------+
- | abaW | W̊aba | abaŪ | Ūaba |
+ | abaW | W̊aba | abaŪ | Ū̊aba |
  +------+------+------+------*/
 ```
 
@@ -1195,6 +1197,7 @@ SELECT UPPER('foo') AS example
 - The official page is split into 2 files at section boundaries; this is part 2.
 - Corrected from the official docs: The syntax writes `occurrence, [occurrence_position]`, which leaves a trailing comma when `occurrence_position` is omitted. The comma is moved inside the brackets, matching the examples on this page that pass `occurrence, occurrence_position` as plain arguments.
 - Corrected from the official docs: The first select item has no alias, but the text and the result table header call that column `item`. `AS item` is added.
+- Corrected from the official docs: in the combining-mark `TRIM` example, column `d` trims `'Ū̊aba'` (U+016A, then U+030A, then `aba`) with the set `'Y̊'`. The first character `Ū` is not in the set, so nothing is removed from the start, and the last character `a` is not in the set either; the published result `Ūaba` drops the U+030A inside the string. Column `b` of the same example keeps the ring in `W̊aba` for the same reason. The result is changed to `Ū̊aba`.
 
 ## Related
 
