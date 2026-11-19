@@ -8,4 +8,4 @@
 | gcloud artifacts | 178 commands across release tracks | [artifacts/README.md](./artifacts/README.md) |
 | gcloud builds | 183 commands across release tracks | [builds/README.md](./builds/README.md) |
 | gcloud deploy | 177 commands across release tracks | [deploy/README.md](./deploy/README.md) |
-| gcloud design-center | 161 commands across release tracks (partially added: 41 / 76 pages so far; for pages not listed, see the official reference) | [design-center/README.md](./design-center/README.md) |
+| gcloud design-center | 161 commands across release tracks (partially added: 58 / 76 pages so far; for pages not listed, see the official reference) | [design-center/README.md](./design-center/README.md) |
