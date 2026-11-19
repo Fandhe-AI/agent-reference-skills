@@ -40,9 +40,9 @@ To learn about the syntax for aggregate function calls, see
 | [`MAX_BY`](#max_by) | Synonym for `ANY_VALUE(x HAVING MAX y)`. |
 | [`MIN`](#min) | Gets the minimum non-`NULL` value. |
 | [`MIN_BY`](#min_by) | Synonym for `ANY_VALUE(x HAVING MIN y)`. |
-| [`PERCENTILE_CONT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions#percentile_cont) | Computes the specified percentile for a value, using linear interpolation. For more information, see [Navigation functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions). |
+| [`PERCENTILE_CONT`](navigation_functions.md#percentile_cont) | Computes the specified percentile for a value, using linear interpolation. For more information, see [Navigation functions](navigation_functions.md). |
 | [`PERCENTILE_CONT` (Differential Privacy)](aggregate-dp-functions.md#percentile_cont-differential_privacy) | `DIFFERENTIAL_PRIVACY`-supported `PERCENTILE_CONT`. Computes a differentially-private percentile across privacy unit columns in a query with a `DIFFERENTIAL_PRIVACY` clause. <br /> For more information, see [Differential privacy functions](aggregate-dp-functions.md). |
-| [`PERCENTILE_DISC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions#percentile_disc) | Computes the specified percentile for a discrete value. For more information, see [Navigation functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions). |
+| [`PERCENTILE_DISC`](navigation_functions.md#percentile_disc) | Computes the specified percentile for a discrete value. For more information, see [Navigation functions](navigation_functions.md). |
 | [`ST_CENTROID_AGG`](geography_functions-1.md#st_centroid_agg) | Gets the centroid of a set of `GEOGRAPHY` values. For more information, see [Geography functions](geography_functions-1.md). |
 | [`ST_EXTENT`](geography_functions-1.md#st_extent) | Gets the bounding box for a group of `GEOGRAPHY` values. For more information, see [Geography functions](geography_functions-1.md). |
 | [`ST_UNION_AGG`](geography_functions-2.md#st_union_agg) | Aggregates over `GEOGRAPHY` values and gets their point set union. For more information, see [Geography functions](geography_functions-1.md). |

@@ -48,7 +48,7 @@ Document AI layout parser processor named
 The `AI.PARSE_DOCUMENT` function accepts the following input sources:
 
 - A Cloud Storage URI string.
-- An [`ObjectRef` value](https://docs.cloud.google.com/bigquery/docs/work-with-objectref), such as from the [`OBJ.MAKE_REF`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objmake_ref) or [`OBJ.LIST`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objlist) functions, or from an [object table](https://docs.cloud.google.com/bigquery/docs/object-tables).
+- An [`ObjectRef` value](https://docs.cloud.google.com/bigquery/docs/work-with-objectref), such as from the [`OBJ.MAKE_REF`](../googlesql-functions/objectref_functions.md#objmake_ref) or [`OBJ.LIST`](../googlesql-functions/objectref_functions.md#objlist) functions, or from an [object table](https://docs.cloud.google.com/bigquery/docs/object-tables).
 
 The `AI.PARSE_DOCUMENT` function supports the
 [file formats](https://docs.cloud.google.com/document-ai/docs/layout-parse-chunk#parser-types)
@@ -253,7 +253,7 @@ SELECT
 #### Parse all documents in a folder
 
 The following query uses the
-[`OBJ.LIST` table function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objlist)
+[`OBJ.LIST` table function](../googlesql-functions/objectref_functions.md#objlist)
 to parse every PDF file under a Cloud Storage prefix:
 
 ```googlesql

@@ -9,7 +9,7 @@ source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/numbe
 GoogleSQL for BigQuery supports numbering functions.
 Numbering functions are a subset of window functions. To create a
 window function call and learn about the syntax for window functions,
-see [Window function calls](window-function-calls.md).
+see [Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 Numbering functions assign values to each row based on their position
 within the specified window. The `OVER` clause syntax varies across
@@ -48,7 +48,7 @@ number of rows that either precede or are peers with the current row. NR is the
 number of rows in the partition.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 **Return Type**
 
@@ -110,7 +110,7 @@ All peer rows receive the same rank value, and the subsequent rank value is
 incremented by one.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 **Return Type**
 
@@ -203,7 +203,7 @@ distributed one for each bucket, starting with bucket 1. If
 error is provided.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 **Return Type**
 
@@ -265,7 +265,7 @@ the `RANK` of the row and NR is the number of rows in the partition.
 Returns 0 if NR=1.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 **Return Type**
 
@@ -328,7 +328,7 @@ receives a rank value which increments by the number of peers with the previous
 rank value, instead of `DENSE_RANK`, which always increments by 1.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 **Return Type**
 
@@ -420,7 +420,7 @@ Doesn't require the `ORDER BY` clause. If the `ORDER BY` clause is unspecified
 then the result is non-deterministic.
 
 To learn more about the `OVER` clause and how to use it, see
-[Window function calls](window-function-calls.md).
+[Window function calls](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/window-function-calls).
 
 **Return Type**
 

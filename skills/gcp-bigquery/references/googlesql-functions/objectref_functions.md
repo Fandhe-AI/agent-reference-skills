@@ -224,7 +224,7 @@ error message:
 
   - `r`: Returns a URL that lets you read the object.
   - `rw`: Returns two URLs, one that lets you read the object, and one that lets you modify the object.
-- `duration`: An optional [`INTERVAL`](../googlesql-syntax/data-types.md#interval-type) value that specifies how long
+- `duration`: An optional [`INTERVAL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#interval_type) value that specifies how long
   the generated access URLs remain valid. You can specify a value between
   30 minutes and 6 hours. For example, you could specify
   `INTERVAL 2 HOUR` to generate URLs that expire after 2 hours. The default
