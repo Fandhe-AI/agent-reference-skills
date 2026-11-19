@@ -46,13 +46,13 @@ ML.DESCRIBE_DATA(
 - `ARRAY` columns are unnested before statistics are computed on them.
 - `ARRAY<STRUCT<INT64, numerical>>`. The `INT64` value is the index, and the numerical value is the value. For statistics computation, BigQuery ML treats columns of this type as `ARRAY<numerical>` based on the value. The value of the dimension column in the output is `MAX(index) + 1`.
 - `STRUCT` fields are expanded, and then categorical columns are cast to `STRING` and numerical columns are cast to `FLOAT64`.
-- Columns of the following data types are [cast](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions#cast) to `STRING` and return the same statistics as `STRING` columns:
+- Columns of the following data types are [cast](../googlesql-functions/conversion_functions.md#cast) to `STRING` and return the same statistics as `STRING` columns:
   - `BOOL`
   - `BYTES`
   - `DATE`
   - `DATETIME`
   - `TIME`
-  - `TIMESTAMP` Columns of the following data types are [cast](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions#cast) to `FLOAT64` and return the same statistics as `FLOAT64` columns:
+  - `TIMESTAMP` Columns of the following data types are [cast](../googlesql-functions/conversion_functions.md#cast) to `FLOAT64` and return the same statistics as `FLOAT64` columns:
   - `INT64`
   - `NUMERIC`
   - `BIGNUMERIC`

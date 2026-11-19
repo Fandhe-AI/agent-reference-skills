@@ -50,7 +50,7 @@ ML.TFDV_VALIDATE(
 `ML.TFDV_VALIDATE` uses positional arguments, so if you specify an
 optional argument, you must also specify all arguments prior to that argument.
 For more information on argument types, see
-[Named arguments](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/functions-reference#named_arguments).
+[Named arguments](../googlesql-functions/functions-reference.md#named-arguments).
 
 ### Output
 

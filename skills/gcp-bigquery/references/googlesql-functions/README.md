@@ -39,7 +39,7 @@
 | `BIT_XOR` | Performs a bitwise XOR operation on an expression. | [aggregate_functions.md](./aggregate_functions.md#bit_xor) |
 | `BOOL` | Converts a JSON boolean to a SQL `BOOL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#bool_for_json) |
 | `BYTE_LENGTH` | Gets the number of `BYTES` in a `STRING` or `BYTES` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#byte_length) |
-| `CAST` | Convert the results of an expression to the given type. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions#cast) |
+| `CAST` | Convert the results of an expression to the given type. | [conversion_functions.md](./conversion_functions.md#cast) |
 | `CBRT` | Computes the cube root of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#cbrt) |
 | `CEIL` | Gets the smallest integral value that isn't less than `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#ceil) |
 | `CEILING` | Synonym of `CEIL`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#ceiling) |
@@ -65,43 +65,43 @@
 | `CSC` | Computes the cosecant of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#csc) |
 | `CSCH` | Computes the hyperbolic cosecant of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#csch) |
 | `CUME_DIST` | Gets the cumulative distribution (relative position (0,1\]) of each row within a window. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/numbering_functions#cume_dist) |
-| `CURRENT_DATE` | Returns the current date as a `DATE` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#current_date) |
-| `CURRENT_DATETIME` | Returns the current date and time as a `DATETIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/datetime_functions#current_datetime) |
+| `CURRENT_DATE` | Returns the current date as a `DATE` value. | [date_functions.md](./date_functions.md#current_date) |
+| `CURRENT_DATETIME` | Returns the current date and time as a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#current_datetime) |
 | `CURRENT_TIME` | Returns the current time as a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#current_time) |
 | `CURRENT_TIMESTAMP` | Returns the current date and time as a `TIMESTAMP` object. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#current_timestamp) |
-| `DATE` | Constructs a `DATE` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#date) |
-| `DATE_ADD` | Adds a specified time interval to a `DATE` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#date_add) |
+| `DATE` | Constructs a `DATE` value. | [date_functions.md](./date_functions.md#date) |
+| `DATE_ADD` | Adds a specified time interval to a `DATE` value. | [date_functions.md](./date_functions.md#date_add) |
 | `DATE_BUCKET` | Gets the lower bound of the date bucket that contains a date. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#date_bucket) |
-| `DATE_DIFF` | Gets the number of unit boundaries between two `DATE` values at a particular time granularity. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#date_diff) |
-| `DATE_FROM_UNIX_DATE` | Interprets an `INT64` expression as the number of days since 1970-01-01. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#date_from_unix_date) |
-| `DATE_SUB` | Subtracts a specified time interval from a `DATE` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#date_sub) |
-| `DATE_TRUNC` | Truncates a `DATE`, `DATETIME`, or `TIMESTAMP` value at a particular granularity. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#date_trunc) |
-| `DATETIME` | Constructs a `DATETIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/datetime_functions#datetime) |
-| `DATETIME_ADD` | Adds a specified time interval to a `DATETIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/datetime_functions#datetime_add) |
+| `DATE_DIFF` | Gets the number of unit boundaries between two `DATE` values at a particular time granularity. | [date_functions.md](./date_functions.md#date_diff) |
+| `DATE_FROM_UNIX_DATE` | Interprets an `INT64` expression as the number of days since 1970-01-01. | [date_functions.md](./date_functions.md#date_from_unix_date) |
+| `DATE_SUB` | Subtracts a specified time interval from a `DATE` value. | [date_functions.md](./date_functions.md#date_sub) |
+| `DATE_TRUNC` | Truncates a `DATE`, `DATETIME`, or `TIMESTAMP` value at a particular granularity. | [date_functions.md](./date_functions.md#date_trunc) |
+| `DATETIME` | Constructs a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#datetime) |
+| `DATETIME_ADD` | Adds a specified time interval to a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#datetime_add) |
 | `DATETIME_BUCKET` | Gets the lower bound of the datetime bucket that contains a datetime. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time-series-functions#datetime_bucket) |
-| `DATETIME_DIFF` | Gets the number of unit boundaries between two `DATETIME` values at a particular time granularity. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/datetime_functions#datetime_diff) |
-| `DATETIME_SUB` | Subtracts a specified time interval from a `DATETIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/datetime_functions#datetime_sub) |
-| `DATETIME_TRUNC` | Truncates a `DATETIME` or `TIMESTAMP` value at a particular granularity. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/datetime_functions#datetime_trunc) |
+| `DATETIME_DIFF` | Gets the number of unit boundaries between two `DATETIME` values at a particular time granularity. | [datetime_functions.md](./datetime_functions.md#datetime_diff) |
+| `DATETIME_SUB` | Subtracts a specified time interval from a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#datetime_sub) |
+| `DATETIME_TRUNC` | Truncates a `DATETIME` or `TIMESTAMP` value at a particular granularity. | [datetime_functions.md](./datetime_functions.md#datetime_trunc) |
 | `DENSE_RANK` | Gets the dense rank (1-based, no gaps) of each row within a window. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/numbering_functions#dense_rank) |
 | `DESTINATION_NODE_ID` | Gets a unique identifier of a graph edge's destination node. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#destination_node_id) |
 | `DETERMINISTIC_DECRYPT_BYTES` | Uses the matching key from a keyset to decrypt a `BYTES` ciphertext, using deterministic AEAD. | [aead_encryption_functions.md](./aead_encryption_functions.md#deterministic_decrypt_bytes) |
 | `DETERMINISTIC_DECRYPT_STRING` | Uses the matching key from a keyset to decrypt a `BYTES` ciphertext into a `STRING` plaintext, using deterministic AEAD. | [aead_encryption_functions.md](./aead_encryption_functions.md#deterministic_decrypt_string) |
 | `DETERMINISTIC_ENCRYPT` | Encrypts `STRING` plaintext, using the primary cryptographic key in a keyset, using deterministic AEAD encryption. | [aead_encryption_functions.md](./aead_encryption_functions.md#deterministic_encrypt) |
 | `DIV` | Divides integer `X` by integer `Y`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#div) |
-| `DLP_DETERMINISTIC_ENCRYPT` | Encrypts data with a DLP compatible algorithm. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dlp_functions#dlp_deterministic_encrypt) |
-| `DLP_DETERMINISTIC_DECRYPT` | Decrypts DLP-encrypted data. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dlp_functions#dlp_deterministic_decrypt) |
-| `DLP_KEY_CHAIN` | Gets a data encryption key that's wrapped by Cloud Key Management Service. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dlp_functions#dlp_key_chain) |
+| `DLP_DETERMINISTIC_ENCRYPT` | Encrypts data with a DLP compatible algorithm. | [dlp_functions.md](./dlp_functions.md#dlp_deterministic_encrypt) |
+| `DLP_DETERMINISTIC_DECRYPT` | Decrypts DLP-encrypted data. | [dlp_functions.md](./dlp_functions.md#dlp_deterministic_decrypt) |
+| `DLP_KEY_CHAIN` | Gets a data encryption key that's wrapped by Cloud Key Management Service. | [dlp_functions.md](./dlp_functions.md#dlp_key_chain) |
 | `FLOAT64` | Converts a JSON number to a SQL `FLOAT64` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#double_for_json) |
 | `EDGES` | Gets the edges in a graph path. The resulting array retains the original order in the graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#edges) |
 | `EDIT_DISTANCE` | Computes the Levenshtein distance between two `STRING` or `BYTES` values. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#edit_distance) |
 | `ELEMENT_ID` | Gets a graph element's unique identifier. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#element_id) |
 | `ENDS_WITH` | Checks if a `STRING` or `BYTES` value is the suffix of another value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#ends_with) |
-| `ERROR` | Produces an error with a custom error message. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/debugging_functions#error) |
+| `ERROR` | Produces an error with a custom error message. | [debugging_functions.md](./debugging_functions.md#error) |
 | `EXP` | Computes `e` to the power of `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#exp) |
 | `EXTERNAL_OBJECT_TRANSFORM` | Produces an object table with the original columns plus one or more additional columns. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/table-functions-built-in#external_object_transform) |
-| `EXTERNAL_QUERY` | Executes a query on an external database and returns the results as a temporary table. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/federated_query_functions#external_query) |
-| `EXTRACT` | Extracts part of a date from a `DATE` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#extract) |
-| `EXTRACT` | Extracts part of a date and time from a `DATETIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/datetime_functions#extract) |
+| `EXTERNAL_QUERY` | Executes a query on an external database and returns the results as a temporary table. | [federated_query_functions.md](./federated_query_functions.md#external_query) |
+| `EXTRACT` | Extracts part of a date from a `DATE` value. | [date_functions.md](./date_functions.md#extract) |
+| `EXTRACT` | Extracts part of a date and time from a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#extract) |
 | `EXTRACT` | Extracts part of an `INTERVAL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/interval_functions#extract) |
 | `EXTRACT` | Extracts part of a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#extract) |
 | `EXTRACT` | Extracts part of a `TIMESTAMP` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#extract) |
@@ -109,8 +109,8 @@
 | `FARM_FINGERPRINT` | Computes the fingerprint of a `STRING` or `BYTES` value using the FarmHash Fingerprint64 algorithm. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hash_functions#farm_fingerprint) |
 | `FIRST_VALUE` | Gets a value for the first row in the current window frame. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions#first_value) |
 | `FLOOR` | Gets the largest integral value that isn't greater than `X`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#floor) |
-| `FORMAT_DATE` | Formats a `DATE` value according to a specified format string. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#format_date) |
-| `FORMAT_DATETIME` | Formats a `DATETIME` value according to a specified format string. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/datetime_functions#format_datetime) |
+| `FORMAT_DATE` | Formats a `DATE` value according to a specified format string. | [date_functions.md](./date_functions.md#format_date) |
+| `FORMAT_DATETIME` | Formats a `DATETIME` value according to a specified format string. | [datetime_functions.md](./datetime_functions.md#format_datetime) |
 | `FORMAT_TIME` | Formats a `TIME` value according to the specified format string. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#format_time) |
 | `FORMAT_TIMESTAMP` | Formats a `TIMESTAMP` value according to the specified format string. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#format_timestamp) |
 | `FORMAT` | Formats data and produces the results as a `STRING` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#format_string) |
@@ -182,8 +182,8 @@
 | `KLL_QUANTILES.MERGE_POINT_FLOAT64` | Merges `FLOAT64`-initialized KLL sketches into a new sketch, and then gets a specific quantile from the new sketch. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/kll_functions#kll_quantilesmerge_point_double) |
 | `LABELS` | Gets the labels associated with a graph element. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#labels) |
 | `LAG` | Gets a value for a preceding row. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions#lag) |
-| `LAST_DAY` | Gets the last day in a specified time period that contains a `DATE` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#last_day) |
-| `LAST_DAY` | Gets the last day in a specified time period that contains a `DATETIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/datetime_functions#last_day) |
+| `LAST_DAY` | Gets the last day in a specified time period that contains a `DATE` value. | [date_functions.md](./date_functions.md#last_day) |
+| `LAST_DAY` | Gets the last day in a specified time period that contains a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#last_day) |
 | `LAST_VALUE` | Gets a value for the last row in the current window frame. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/navigation_functions#last_value) |
 | `LAX_BOOL` | Attempts to convert a JSON value to a SQL `BOOL` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_bool) |
 | `LAX_FLOAT64` | Attempts to convert a JSON value to a SQL `FLOAT64` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#lax_double) |
@@ -229,11 +229,11 @@
 | `OBJ.LIST` | Returns a table of metadata and `ObjectRef` values for files stored in Cloud Storage. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objlist) |
 | `OBJ.MAKE_REF` | Creates an `ObjectRef` value that contains reference information for a Cloud Storage object. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objmake_ref) |
 | `OCTET_LENGTH` | Alias for `BYTE_LENGTH`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#octet_length) |
-| `PARSE_BIGNUMERIC` | Converts a `STRING` value to a `BIGNUMERIC` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions#parse_bignumeric) |
-| `PARSE_DATE` | Converts a `STRING` value to a `DATE` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#parse_date) |
-| `PARSE_DATETIME` | Converts a `STRING` value to a `DATETIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/datetime_functions#parse_datetime) |
+| `PARSE_BIGNUMERIC` | Converts a `STRING` value to a `BIGNUMERIC` value. | [conversion_functions.md](./conversion_functions.md#parse_bignumeric) |
+| `PARSE_DATE` | Converts a `STRING` value to a `DATE` value. | [date_functions.md](./date_functions.md#parse_date) |
+| `PARSE_DATETIME` | Converts a `STRING` value to a `DATETIME` value. | [datetime_functions.md](./datetime_functions.md#parse_datetime) |
 | `PARSE_JSON` | Converts a JSON-formatted `STRING` value to a `JSON` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#parse_json) |
-| `PARSE_NUMERIC` | Converts a `STRING` value to a `NUMERIC` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions#parse_numeric) |
+| `PARSE_NUMERIC` | Converts a `STRING` value to a `NUMERIC` value. | [conversion_functions.md](./conversion_functions.md#parse_numeric) |
 | `PARSE_TIME` | Converts a `STRING` value to a `TIME` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/time_functions#parse_time) |
 | `PARSE_TIMESTAMP` | Converts a `STRING` value to a `TIMESTAMP` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#parse_timestamp) |
 | `PATH_FIRST` | Gets the first node in a graph path. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-functions#path_first) |
@@ -272,7 +272,7 @@
 | `S2_CELLIDFROMPOINT` | Gets the S2 cell ID covering a point `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#s2_cellidfrompoint) |
 | `S2_COVERINGCELLIDS` | Gets an array of S2 cell IDs that cover a `GEOGRAPHY` value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#s2_coveringcellids) |
 | `SAFE_ADD` | Equivalent to the addition operator (`X + Y`), but returns `NULL` if overflow occurs. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#safe_add) |
-| `SAFE_CAST` | Similar to the `CAST` function, but returns `NULL` when a runtime error is produced. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions#safe_casting) |
+| `SAFE_CAST` | Similar to the `CAST` function, but returns `NULL` when a runtime error is produced. | [conversion_functions.md](./conversion_functions.md#safe_cast) |
 | `SAFE_CONVERT_BYTES_TO_STRING` | Converts a `BYTES` value to a `STRING` value and replace any invalid UTF-8 characters with the Unicode replacement character, `U+FFFD`. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#safe_convert_bytes_to_string) |
 | `SAFE_DIVIDE` | Equivalent to the division operator (`X / Y`), but returns `NULL` if an error occurs. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#safe_divide) |
 | `SAFE_MULTIPLY` | Equivalent to the multiplication operator (`X * Y`), but returns `NULL` if overflow occurs. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#safe_multiply) |
@@ -400,7 +400,7 @@
 | `TRUNC` | Rounds a number like `ROUND(X)` or `ROUND(X, N)`, but always rounds towards zero and never overflows. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#trunc) |
 | `TYPEOF` | Gets the name of the data type for an expression. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/utility-functions#typeof) |
 | `UNICODE` | Gets the Unicode code point for the first character in a value. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions#unicode) |
-| `UNIX_DATE` | Converts a `DATE` value to the number of days since 1970-01-01. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#unix_date) |
+| `UNIX_DATE` | Converts a `DATE` value to the number of days since 1970-01-01. | [date_functions.md](./date_functions.md#unix_date) |
 | `UNIX_MICROS` | Converts a `TIMESTAMP` value to the number of microseconds since 1970-01-01 00:00:00 UTC. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_micros) |
 | `UNIX_MILLIS` | Converts a `TIMESTAMP` value to the number of milliseconds since 1970-01-01 00:00:00 UTC. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_millis) |
 | `UNIX_SECONDS` | Converts a `TIMESTAMP` value to the number of seconds since 1970-01-01 00:00:00 UTC. | [official](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#unix_seconds) |
@@ -422,3 +422,10 @@
 | Bit functions | Function list, BIT_COUNT | [bit_functions.md](./bit_functions.md) |
 | Compression functions | Function list, ZSTD_COMPRESS, ZSTD_DECOMPRESS_TO_BYTES, ZSTD_DECOMPRESS_TO_STRING | [compression-functions.md](./compression-functions.md) |
 | Conditional expressions | — | [conditional_expressions.md](./conditional_expressions.md) |
+| Conversion functions | Function list, CAST, PARSE_BIGNUMERIC, PARSE_NUMERIC, SAFE_CAST | [conversion_functions.md](./conversion_functions.md) |
+| Date functions | Function list, CURRENT_DATE, DATE, DATE_ADD, DATE_DIFF, DATE_FROM_UNIX_DATE, DATE_SUB, DATE_TRUNC, EXTRACT, FORMAT_DATE, LAST_DAY, PARSE_DATE, UNIX_DATE | [date_functions.md](./date_functions.md) |
+| Datetime functions | Function list, CURRENT_DATETIME, DATETIME, DATETIME_ADD, DATETIME_DIFF, DATETIME_SUB, DATETIME_TRUNC, EXTRACT, FORMAT_DATETIME, LAST_DAY, PARSE_DATETIME | [datetime_functions.md](./datetime_functions.md) |
+| Debugging functions | Function list, ERROR | [debugging_functions.md](./debugging_functions.md) |
+| DLP encryption functions | Function list, DLP_DETERMINISTIC_ENCRYPT, DLP_DETERMINISTIC_DECRYPT, DLP_KEY_CHAIN | [dlp_functions.md](./dlp_functions.md) |
+| Federated query functions | Function list, EXTERNAL_QUERY | [federated_query_functions.md](./federated_query_functions.md) |
+| Function calls | Function call rules, Named arguments, Chained function calls, SAFE. prefix, Calling persistent user-defined functions (UDFs) | [functions-reference.md](./functions-reference.md) |
