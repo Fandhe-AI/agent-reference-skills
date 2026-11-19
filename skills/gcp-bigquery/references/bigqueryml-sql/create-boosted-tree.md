@@ -16,7 +16,7 @@ statement yourself. Boosted trees models are trained using the
 [XGBoost library](https://xgboost.readthedocs.io/en/latest/).
 
 You can use boosted trees regressor models with the
-[`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict)
+[`ML.PREDICT` function](predict.md)
 to perform [regression](https://docs.cloud.google.com/bigquery/docs/regression-overview), and you can use
 boosted trees classifier models with the `ML.PREDICT` function to
 perform [classification](https://docs.cloud.google.com/bigquery/docs/classification-overview). You can use
@@ -669,7 +669,7 @@ to evaluate the importance of global features to the model.
 
 Global explanations are computed when you create the model. This option
 must be `TRUE` if you want to use the
-[`ML.GLOBAL_EXPLAIN` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-global-explain)
+[`ML.GLOBAL_EXPLAIN` function](global-explain.md)
 to retrieve the global explanations after the model is created.
 
 **Arguments**

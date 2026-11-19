@@ -15,7 +15,7 @@ Google Cloud console user interface to
 statement yourself.
 
 You can use k-means models with the
-[`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict)
+[`ML.PREDICT` function](predict.md)
 to cluster data, and you can use k-means models with the
 [`ML.DETECT_ANOMALIES` function](detect-anomalies.md)
 to perform [anomaly detection](https://docs.cloud.google.com/bigquery/docs/anomaly-detection-overview).

@@ -163,7 +163,7 @@ For information about supported locations, see
 Imported ONNX models have the following limitations:
 
 - ONNX models must be in `.onnx` format.
-- You can only use imported ONNX models with the [`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict).
+- You can only use imported ONNX models with the [`ML.PREDICT` function](predict.md).
 - Model size is limited to 450 MB.
 - Among [ONNX value types](https://onnxruntime.ai/docs/api/java/ai/onnxruntime/OnnxValue.OnnxValueType.html), only the [Tensor type](https://onnxruntime.ai/docs/api/java/ai/onnxruntime/OnnxValue.OnnxValueType.html#ONNX_TYPE_TENSOR) is supported in BigQuery ML.
 - BigQuery ML uses the [ONNX Runtime 1.12.0](https://onnxruntime.ai/docs/) library to make predictions on ONNX models. Check [ONNX Runtime compatibility](https://onnxruntime.ai/docs/reference/compatibility.html) for the [ONNX version](https://github.com/onnx/onnx/blob/master/docs/Versioning.md) supported by the 1.12 library.

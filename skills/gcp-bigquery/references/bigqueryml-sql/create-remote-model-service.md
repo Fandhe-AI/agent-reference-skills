@@ -133,7 +133,7 @@ analyze your BigQuery data:
 - For Cloud Natural Language API models, use [`ML.UNDERSTAND_TEXT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-understand-text)
 - For Cloud Translation API models, use [`ML.TRANSLATE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-translate)
 - For Cloud Vision API models, use [`ML.ANNOTATE_IMAGE`](annotate-image.md)
-- For Document AI API models, use [`ML.PROCESS_DOCUMENT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-process-document) ([preview](https://cloud.google.com/products#product-launch-stages))
+- For Document AI API models, use [`ML.PROCESS_DOCUMENT`](process-document.md) ([preview](https://cloud.google.com/products#product-launch-stages))
 - For Speech-to-Text API models, use [`ML.TRANSCRIBE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-transcribe) ([preview](https://cloud.google.com/products#product-launch-stages))
 
 **Example**

@@ -20,7 +20,7 @@ statement yourself.
 Matrix factorization models use
 [collaborative filtering](https://developers.google.com/machine-learning/recommendation/collaborative/basics)
 to identify similar items. Use matrix factorization models with the
-[`ML.RECOMMEND` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-recommend)
+[`ML.RECOMMEND` function](recommend.md)
 to generate [recommendations](https://docs.cloud.google.com/bigquery/docs/recommendation-overview).
 
 For more information about supported SQL statements and functions for this

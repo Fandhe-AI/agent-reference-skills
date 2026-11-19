@@ -15,7 +15,7 @@ Alternatively, you can use the Google Cloud console user interface to
 statement yourself.
 
 After you create a remote model, you can use it with the
-[`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict)
+[`ML.PREDICT` function](predict.md)
 to get predictions from the custom model deployed to Agent Platform.
 
 ### `CREATE MODEL` syntax

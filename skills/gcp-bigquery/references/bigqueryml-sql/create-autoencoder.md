@@ -15,7 +15,7 @@ Google Cloud console user interface to
 statement yourself.
 
 You can use autoencoder models with the
-[`ML.PREDICT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict)
+[`ML.PREDICT`](predict.md)
 or
 [`AI.GENERATE_EMBEDDING`](ai-generate-embedding.md)
 functions to embed data into a lower-dimensional space, and with the

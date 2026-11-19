@@ -80,3 +80,28 @@
 | The ML.FORECAST function | Syntax, Output, ARIMA_PLUS example, ARIMA_PLUS_XREG example, Limitation, What's next | [forecast.md](./forecast.md) |
 | The ML.GENERATE_EMBEDDING function | Embeddings, Function processing, Syntax, Output, Supported multimodal content, Known issues, Examples, Locations, Quotas, What's next | [generate-embedding.md](./generate-embedding.md) |
 | The AI.GENERATE_TABLE function | Input, Syntax, Examples, Details, Output, Locations, Quotas and limits, Known issues, What's next | [generate-table.md](./generate-table.md) |
+| The ML.GENERATE_TEXT function | Input, Syntax for standard tables, Syntax for object tables, Output, Examples, Use Agent Platform Provisioned Throughput, Locations, Quotas and limits, Known issues, What's next | [generate-text.md](./generate-text.md) |
+| The ML.GET_INSIGHTS function | Syntax, Output, What's next | [get-insights.md](./get-insights.md) |
+| The ML.GLOBAL_EXPLAIN function | Syntax, Output, Examples, What's next | [global-explain.md](./global-explain.md) |
+| The ML.HASH_BUCKETIZE function | Syntax, Output, Example, What's next | [hash-bucketize.md](./hash-bucketize.md) |
+| The ML.HOLIDAY_INFO function | Syntax, Output, Example, Limitation, What's next | [holiday-info.md](./holiday-info.md) |
+| The ML.FEATURE_IMPORTANCE function | Syntax, Output, Permissions, Limitations, Example, What's next | [importance.md](./importance.md) |
+| The ML.IMPUTER function | Syntax, Arguments, Output, Examples, What's next | [imputer.md](./imputer.md) |
+| The ML.LABEL_ENCODER function | Syntax, Output, Example, What's next | [label-encoder.md](./label-encoder.md) |
+| The ML.LP_NORM function | Syntax, Output, Example, What's next | [lp-norm.md](./lp-norm.md) |
+| The ML.MAX_ABS_SCALER function | Syntax, Output, Example, What's next | [max-abs-scaler.md](./max-abs-scaler.md) |
+| The ML.METRICS function | Syntax, Output, Examples, What's next | [metrics.md](./metrics.md) |
+| The ML.MIN_MAX_SCALER function | Syntax, Output, Example, What's next | [min-max-scaler.md](./min-max-scaler.md) |
+| The ML.MULTI_HOT_ENCODER function | Syntax, Output, Example, What's next | [multi-hot-encoder.md](./multi-hot-encoder.md) |
+| The ML.NGRAMS function | Syntax, Output, Example, What's next | [ngrams.md](./ngrams.md) |
+| The ML.NORMALIZER function | Syntax, Output, Example, What's next | [normalizer.md](./normalizer.md) |
+| The ML.ONE_HOT_ENCODER function | Syntax, Output, Example, What's next | [one-hot-encoder.md](./one-hot-encoder.md) |
+| The ML.POLYNOMIAL_EXPAND function | Syntax, Output, Example, What's next | [polynomial-expand.md](./polynomial-expand.md) |
+| The ML.PREDICT function | Syntax, Output, Missing data imputation, Permissions, Examples, What's next | [predict.md](./predict.md) |
+| The ML.PRINCIPAL_COMPONENT_INFO function | Syntax, Output, Example, What's next | [principal-component-info.md](./principal-component-info.md) |
+| The ML.PRINCIPAL_COMPONENTS function | Syntax, Output, Example, What's next | [principal-components.md](./principal-components.md) |
+| The ML.PROCESS_DOCUMENT function | Syntax, Output, Quotas, Known issues, Locations, Limitations, Example, What's next | [process-document.md](./process-document.md) |
+| The ML.QUANTILE_BUCKETIZE function | Syntax, Output, Example, What's next | [quantile-bucketize.md](./quantile-bucketize.md) |
+| The ML.RECOMMEND function | Syntax, Output, Examples, What's next | [recommend.md](./recommend.md) |
+| The ML.RECONSTRUCTION_LOSS function | Syntax, Output, Limitations, Example, What's next | [reconstruction-loss.md](./reconstruction-loss.md) |
+| The ML.RESIZE_IMAGE function | Syntax, Output, Examples, What's next | [resize-image.md](./resize-image.md) |

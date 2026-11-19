@@ -25,7 +25,7 @@ FROM AI.KEY_DRIVERS(
 Calling the `AI.KEY_DRIVERS` function is similar to first
 [creating a contribution analysis model](create-contribution-analysis.md)
 and then calling the
-[`ML.GET_INSIGHTS` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-get-insights)
+[`ML.GET_INSIGHTS` function](get-insights.md)
 on that model. For most applications, we recommend using the `AI.KEY_DRIVERS`
 function because it offers a simplified syntax, faster results, and automatic
 pruning. The following table summarizes the differences:
@@ -95,7 +95,7 @@ The `AI.KEY_DRIVERS` function takes the following arguments:
   Any rows in the dimension columns that contain `NULL` values are removed. If
   you have `NULL` values in your data, you can preprocess the data to fill in the
   `NULL` values by using the
-  [`ML.IMPUTER` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-imputer),
+  [`ML.IMPUTER` function](imputer.md),
   or by using the
   [`IFNULL` expression](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conditional_expressions#ifnull)
   to replace `NULL` values with a custom value.

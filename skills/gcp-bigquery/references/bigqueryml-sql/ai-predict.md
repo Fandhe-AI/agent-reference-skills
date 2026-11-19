@@ -116,7 +116,7 @@ The result is similar to the following:
 #### Calculate prediction accuracy
 
 You can compute regression metrics for the predictions using the
-[`ML.METRICS` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-metrics):
+[`ML.METRICS` function](metrics.md):
 
 ```sql
 WITH prepared_data AS (
