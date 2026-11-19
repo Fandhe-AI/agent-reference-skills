@@ -564,7 +564,7 @@ contain a value specified by a format element.
 |---|---|---|
 | SS | Seconds of the minute, 2 digits. | Input: TIME '01:02:03' Output: 03 |
 | SSSSS | Seconds of the day, 5 digits. | Input: TIME '01:02:03' Output: 03723 |
-| FFn | Fractional part of the second, `n` digits long. Replace `n` with a value from 1 to 9. For example, FF5. The fractional part of the second is rounded to fit the size of the output. | Input for FF1: TIME '01:05:07.16' Output: 1 <hr> Input for FF2: TIME '01:05:07.16' Output: 16 <hr> Input for FF3: TIME '01:05:07.16' Output: 016 |
+| FFn | Fractional part of the second, `n` digits long. Replace `n` with a value from 1 to 9. For example, FF5. The fractional part of the second is rounded to fit the size of the output. | Input for FF1: TIME '01:05:07.16' Output: 1 <hr> Input for FF2: TIME '01:05:07.16' Output: 16 <hr> Input for FF3: TIME '01:05:07.16' Output: 160 |
 
 **Return type**
 
@@ -1482,6 +1482,7 @@ will output the same result.
 - Conflicting official statements: The `FFn` row of the TIME formatting table says the fractional part "is rounded to fit", but its example formats `TIME '01:05:07.16'` with `FF1` as `1` (truncation; rounding would give `2`). The parsing table's `FF1` example turns `.16` into `.2`.
 - Caution: The `HH` parsing rule sets `temp = n` (`0` if `n` is `12`) and then, for P.M., `temp = n + 12`; read literally, 12 P.M. gives 24. The intended rule (probably `temp + 12`) is not stated.
 - Caution: The `TIMESTAMP FORMAT` example uses `'YYYY.MM.DD HH:MI:SSTZH'` with `HH` and no meridian indicator, which the `HH` rule on this page requires, and its result shows `.110` although the input `'2020.06.03 00:00:53+00'` has no fractional part. The official example is kept as is.
+- Corrected from the official docs: the `FFn` formatting example shows `016` as the `FF3` output for `TIME '01:05:07.16'`. Three digits of the fractional part `.16` are `160` (`016` would mean `.016`), which matches the parsing table's `FF3` example that turns `.16` into `01:05:07.160`. The output was changed to `160`.
 - `MD011` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
