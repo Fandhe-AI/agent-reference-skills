@@ -1,0 +1,601 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/design-center/spaces/application-templates/components/create
+---
+
+# gcloud design-center spaces application-templates components create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud design-center spaces application-templates components create
+
+```text
+NAME
+    gcloud design-center spaces application-templates components create -
+        create a component
+
+SYNOPSIS
+    gcloud design-center spaces application-templates components create
+        (COMPONENT : --application-template=APPLICATION_TEMPLATE
+          --location=LOCATION --space=SPACE)
+        --shared-template-revision-uri=SHARED_TEMPLATE_REVISION_URI
+        [--display-name=DISPLAY_NAME]
+        [--input-variable-aliases=[alias=ALIAS],[variable=VARIABLE]]
+        [--parameters=[key=KEY],[value=VALUE]] [--use-as-root-module]
+        [[--application-info-apphub-id=APPLICATION_INFO_APPHUB_ID
+          : --application-info-deployment-region=APPLICATION_INFO_DEPLOYMENT_REGION --application-info-display-name=APPLICATION_INFO_DISPLAY_NAME --scope-type=SCOPE_TYPE --attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          [--criticality-type=CRITICALITY_TYPE
+          : --criticality-level=CRITICALITY_LEVEL
+          --criticality-mission-critical] [--environment-type=ENVIRONMENT_TYPE
+          : --environment=ENVIRONMENT]]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create a component in an application template.
+
+EXAMPLES
+    To create the component my-component in application template
+    my-app-template, space my-space, project my-project and location
+    us-central1 using a shared template revision, run:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=projects/my-project/locations/\
+        us-central1/spaces/my-space/sharedTemplates/my-shared-template/\
+        revisions/rev1
+
+    Or run:
+
+        $ gcloud design-center spaces application-templates components \
+            create \
+            projects/my-project/locations/us-central1/spaces/my-space/\
+        applicationTemplates/my-app-template/components/my-component \
+            --shared-template-revision-uri=projects/my-project/locations/\
+        us-central1/spaces/my-space/sharedTemplates/my-shared-template/\
+        revisions/rev1
+
+    To create the component my-component in application template
+    my-app-template, space my-space, project my-project and location
+    us-central1 using a google shared template google-shared-template and
+    revision rev1, run:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=google/google-shared-template/\
+        revisions/rev1
+
+    To create the component my-component in application template
+    my-app-template, space my-space, project my-project and location
+    us-central1 using a google shared template google-shared-template with its
+    latest revision, run:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=google/google-shared-template
+
+    To create the component my-component in application template
+    my-app-template, space my-space, project my-project and location
+    us-central1 using a shared template my-shared-template and revision rev1
+    present in the same space, run:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=my-shared-template/revisions/rev1
+
+    To create the component my-component in application template
+    my-app-template, space my-space, project my-project and location
+    us-central1 using a shared template my-shared-template with its latest
+    revision present in the same space, run:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=my-shared-template
+
+    To create the component my-component with a display name My Component in
+    application template my-app-template, space my-space, project my-project
+    and location us-central1 using a shared template revision, run:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=projects/my-project/locations/\
+        us-central1/spaces/my-space/sharedTemplates/my-shared-template/\
+        revisions/rev1 --display-name="My Component"
+
+    To create the component my-component with parameter key value pair of
+    region:us-central1 in application template my-app-template, space my-space,
+    project my-project and location us-central1, run the following shorthand
+    example:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=projects/my-project/locations/\
+        us-central1/spaces/my-space/sharedTemplates/my-shared-template/\
+        revisions/rev1 --parameters=key=region,value=us-central1
+
+    Or run the following JSON example:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=projects/my-project/locations/\
+        us-central1/spaces/my-space/sharedTemplates/my-shared-template/\
+        revisions/rev1 \
+            --parameters='[{"key": "region", "value": "us-central1"}]'
+
+    Or create a YAML or JSON file with the parameters and run the following
+    file example:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=projects/my-project/locations/\
+        us-central1/spaces/my-space/sharedTemplates/my-shared-template/\
+        revisions/rev1 --parameters=my-parameters.yaml
+
+    To create the component my-component in application template
+    my-app-template, space my-space, project my-project and location
+    us-central1 as a separate root module, run:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=projects/my-project/locations/\
+        us-central1/spaces/my-space/sharedTemplates/my-shared-template/\
+        revisions/rev1 --use-as-root-module
+
+    To create the component my-component with input variable alias mapping of
+    variable=db_password,alias=database_password in application template
+    my-app-template, space my-space, project my-project and location
+    us-central1, run the following shorthand example:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=projects/my-project/locations/\
+        us-central1/spaces/my-space/sharedTemplates/my-shared-template/\
+        revisions/rev1 \
+            --input-variable-aliases=variable=db_password,\
+        alias=database_password
+
+    Or run the following JSON example:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=projects/my-project/locations/\
+        us-central1/spaces/my-space/sharedTemplates/my-shared-template/\
+        revisions/rev1 \
+            --input-variable-aliases='[{"variable": "db_password", "alias":
+         "database_password"}]'
+
+    Or create a YAML or JSON file with the input variable aliases and run the
+    following file example:
+
+        $ gcloud design-center spaces application-templates components \
+            create my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --shared-template-revision-uri=projects/my-project/locations/\
+        us-central1/spaces/my-space/sharedTemplates/my-shared-template/\
+        revisions/rev1 --input-variable-aliases=my-aliases.yaml
+
+POSITIONAL ARGUMENTS
+     Component resource - Identifier. The component name. The arguments in this
+     group can be used to specify the attributes of this resource. (NOTE) Some
+     attributes are not given arguments in this group but can be set in other
+     ways.
+
+     To set the project attribute:
+      * provide the argument component on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       COMPONENT
+          ID of the component or fully qualified identifier for the component.
+
+          To set the component attribute:
+          + provide the argument component on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --application-template=APPLICATION_TEMPLATE
+          The applicationTemplate id of the component resource.
+
+          To set the application-template attribute:
+          + provide the argument component on the command line with a fully
+            specified name;
+          + provide the argument --application-template on the command line.
+
+       --location=LOCATION
+          The location id of the component resource.
+
+          To set the location attribute:
+          + provide the argument component on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line.
+
+       --space=SPACE
+          The space id of the component resource.
+
+          To set the space attribute:
+          + provide the argument component on the command line with a fully
+            specified name;
+          + provide the argument --space on the command line.
+
+REQUIRED FLAGS
+     --shared-template-revision-uri=SHARED_TEMPLATE_REVISION_URI
+        The shared template used to generate the component.
+
+OPTIONAL FLAGS
+     --display-name=DISPLAY_NAME
+        The component display name.
+
+     --input-variable-aliases=[alias=ALIAS],[variable=VARIABLE]
+        Input variable aliases defined on this live component.
+
+         alias
+            Alias for the variable name to be exposed at the root level of the
+            composite template.
+
+         variable
+            Name of the input variable inside the component's underlying
+            template or module.
+
+        Shorthand Example:
+
+            --input-variable-aliases=alias=string,variable=string --input-variable-aliases=alias=string,variable=string
+
+        JSON Example:
+
+            --input-variable-aliases='[{"alias": "string", "variable": "string"}]'
+
+        File Example:
+
+            --input-variable-aliases=path_to_file.(yaml|json)
+
+     --parameters=[key=KEY],[value=VALUE]
+        The component parameters.
+
+         key
+            The key of the parameter.
+
+         value
+            The value of the parameter.
+
+        Shorthand Example:
+
+            --parameters=key=string,value={...} --parameters=key=string,value={...}
+
+        JSON Example:
+
+            --parameters='[{"key": "string", "value": {...}}]'
+
+        File Example:
+
+            --parameters=path_to_file.(yaml|json)
+
+     --use-as-root-module
+        Whether the component is exported as a separate terraform root module
+        in a composite application template. If this is false, then native
+        components will be exported as a submodule of a separate terraform root
+        module.
+
+     This captures the apphub application details associated with the
+     component.
+
+     --application-info-apphub-id=APPLICATION_INFO_APPHUB_ID
+        The application ID of the apphub application. The ID must be 1-63
+        characters long and should match the regular expression
+        ^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$.
+
+        This flag argument must be specified if any of the other arguments in
+        this group are specified.
+
+     --application-info-deployment-region=APPLICATION_INFO_DEPLOYMENT_REGION
+        Deployment region for the component. If the scope is set to REGIONAL,
+        then the apphub application is created in this region, e.g.
+        us-central1.
+
+     --application-info-display-name=APPLICATION_INFO_DISPLAY_NAME
+        Display name for the application. The number of characters should be
+        less than 64 characters.
+
+     Scope of an application.
+
+     --scope-type=SCOPE_TYPE
+        Scope Type. SCOPE_TYPE must be one of:
+
+         global
+            Global type.
+         regional
+            Regional type.
+
+     Consumer provided attributes.
+
+     --attributes-business-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+        Business team that ensures user needs are met and value is delivered.
+
+         channel
+            Communication channel of the contacts.
+
+             uri
+                URI of the channel.
+
+         displayName
+            Contact's name. Can have a maximum length of 63 characters.
+
+         email
+            Email address of the contacts.
+
+        Shorthand Example:
+
+            --attributes-business-owners=channel={uri=string},displayName=string,email=string --attributes-business-owners=channel={uri=string},displayName=string,email=string
+
+        JSON Example:
+
+            --attributes-business-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+        File Example:
+
+            --attributes-business-owners=path_to_file.(yaml|json)
+
+     --attributes-developer-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+        Developer team that owns development and coding.
+
+         channel
+            Communication channel of the contacts.
+
+             uri
+                URI of the channel.
+
+         displayName
+            Contact's name. Can have a maximum length of 63 characters.
+
+         email
+            Email address of the contacts.
+
+        Shorthand Example:
+
+            --attributes-developer-owners=channel={uri=string},displayName=string,email=string --attributes-developer-owners=channel={uri=string},displayName=string,email=string
+
+        JSON Example:
+
+            --attributes-developer-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+        File Example:
+
+            --attributes-developer-owners=path_to_file.(yaml|json)
+
+     --attributes-operator-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+        Operator team that ensures runtime and operations.
+
+         channel
+            Communication channel of the contacts.
+
+             uri
+                URI of the channel.
+
+         displayName
+            Contact's name. Can have a maximum length of 63 characters.
+
+         email
+            Email address of the contacts.
+
+        Shorthand Example:
+
+            --attributes-operator-owners=channel={uri=string},displayName=string,email=string --attributes-operator-owners=channel={uri=string},displayName=string,email=string
+
+        JSON Example:
+
+            --attributes-operator-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+        File Example:
+
+            --attributes-operator-owners=path_to_file.(yaml|json)
+
+     Criticality of the Application, Service, or Workload
+
+     --criticality-type=CRITICALITY_TYPE
+        Criticality Type. CRITICALITY_TYPE must be one of:
+
+         high
+            High impact.
+         low
+            Low impact.
+         medium
+            Medium impact.
+         mission-critical
+            Mission critical service, application or workload.
+
+        This flag argument must be specified if any of the other arguments in
+        this group are specified.
+
+     --criticality-level=CRITICALITY_LEVEL
+        Criticality level. Can contain only lowercase letters, numeric
+        characters, underscores, and dashes. Can have a maximum length of 63
+        characters. Deprecated: Please refer to type instead.
+
+     --criticality-mission-critical
+        Indicates mission-critical Application, Service, or Workload.
+        Deprecated: Please refer to type instead.
+
+     Environment of the Application, Service, or Workload
+
+     --environment-type=ENVIRONMENT_TYPE
+        Environment Type. ENVIRONMENT_TYPE must be one of:
+
+         development
+            Development environment.
+         production
+            Production environment.
+         staging
+            Staging environment.
+         test
+            Test environment.
+
+        This flag argument must be specified if any of the other arguments in
+        this group are specified.
+
+     --environment=ENVIRONMENT
+        Environment name. Can contain only lowercase letters, numeric
+        characters, underscores, and dashes. Can have a maximum length of 63
+        characters. Deprecated: Please refer to type instead.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the designcenter/v1 API. The full documentation for this
+    API can be found at: http://cloud.google.com/application-design-center/docs
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha design-center spaces application-templates \
+            components create
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+
+```bash
+gcloud design-center spaces application-templates components create my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --shared-template-revision-uri=projects/my-project/locations/us-central1/spaces/my-space/sharedTemplates/my-shared-template/revisions/rev1
+
+gcloud design-center spaces application-templates components create projects/my-project/locations/us-central1/spaces/my-space/applicationTemplates/my-app-template/components/my-component \
+    --shared-template-revision-uri=projects/my-project/locations/us-central1/spaces/my-space/sharedTemplates/my-shared-template/revisions/rev1
+
+gcloud design-center spaces application-templates components create my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --shared-template-revision-uri=google/google-shared-template/revisions/rev1
+
+gcloud design-center spaces application-templates components create my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --shared-template-revision-uri=projects/my-project/locations/us-central1/spaces/my-space/sharedTemplates/my-shared-template/revisions/rev1 \
+    --display-name="My Component"
+
+gcloud design-center spaces application-templates components create my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --shared-template-revision-uri=projects/my-project/locations/us-central1/spaces/my-space/sharedTemplates/my-shared-template/revisions/rev1 \
+    --parameters=key=region,value=us-central1
+
+gcloud design-center spaces application-templates components create my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --shared-template-revision-uri=projects/my-project/locations/us-central1/spaces/my-space/sharedTemplates/my-shared-template/revisions/rev1 \
+    --parameters='[{"key": "region", "value": "us-central1"}]'
+
+gcloud design-center spaces application-templates components create my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --shared-template-revision-uri=projects/my-project/locations/us-central1/spaces/my-space/sharedTemplates/my-shared-template/revisions/rev1 \
+    --parameters=my-parameters.yaml
+
+gcloud design-center spaces application-templates components create my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --shared-template-revision-uri=projects/my-project/locations/us-central1/spaces/my-space/sharedTemplates/my-shared-template/revisions/rev1 \
+    --use-as-root-module
+
+gcloud design-center spaces application-templates components create my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --shared-template-revision-uri=projects/my-project/locations/us-central1/spaces/my-space/sharedTemplates/my-shared-template/revisions/rev1 \
+    --input-variable-aliases=variable=db_password,alias=database_password
+
+gcloud design-center spaces application-templates components create my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --shared-template-revision-uri=projects/my-project/locations/us-central1/spaces/my-space/sharedTemplates/my-shared-template/revisions/rev1 \
+    --input-variable-aliases='[{"variable": "db_password", "alias": "database_password"}]'
+
+gcloud design-center spaces application-templates components create my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --shared-template-revision-uri=projects/my-project/locations/us-central1/spaces/my-space/sharedTemplates/my-shared-template/revisions/rev1 \
+    --input-variable-aliases=my-aliases.yaml
+```
+
+### gcloud alpha design-center spaces application-templates components create
+
+```text
+NAME
+    gcloud alpha design-center spaces application-templates components create -
+        create a component
+
+SYNOPSIS
+    gcloud alpha design-center spaces application-templates components create
+        (COMPONENT : --application-template=APPLICATION_TEMPLATE
+          --location=LOCATION --space=SPACE)
+        --shared-template-revision-uri=SHARED_TEMPLATE_REVISION_URI
+        [--display-name=DISPLAY_NAME]
+        [--input-variable-aliases=[alias=ALIAS],[variable=VARIABLE]]
+        [--parameters=[key=KEY],[value=VALUE]] [--use-as-root-module]
+        [[--application-info-apphub-id=APPLICATION_INFO_APPHUB_ID
+          : --application-info-deployment-region=APPLICATION_INFO_DEPLOYMENT_REGION --application-info-display-name=APPLICATION_INFO_DISPLAY_NAME --scope-type=SCOPE_TYPE --attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          [--criticality-type=CRITICALITY_TYPE
+          : --criticality-level=CRITICALITY_LEVEL
+          --criticality-mission-critical] [--environment-type=ENVIRONMENT_TYPE
+          : --environment=ENVIRONMENT]]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/design-center/spaces/application-templates/components/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

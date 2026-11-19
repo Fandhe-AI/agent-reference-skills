@@ -1,0 +1,929 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/design-center/spaces/application-templates/components/update
+---
+
+# gcloud design-center spaces application-templates components update
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud design-center spaces application-templates components update
+
+```text
+NAME
+    gcloud design-center spaces application-templates components update -
+        update a component
+
+SYNOPSIS
+    gcloud design-center spaces application-templates components update
+        (COMPONENT : --application-template=APPLICATION_TEMPLATE
+          --location=LOCATION --space=SPACE) [--display-name=DISPLAY_NAME]
+        [--[no-]use-as-root-module]
+        [--application-info-apphub-id=APPLICATION_INFO_APPHUB_ID
+          --application-info-deployment-region=APPLICATION_INFO_DEPLOYMENT_REGION --application-info-display-name=APPLICATION_INFO_DISPLAY_NAME --clear-application-info --scope-type=SCOPE_TYPE --attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          | --add-attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --clear-attributes-business-owners
+          | --remove-attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          | --add-attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --clear-attributes-developer-owners
+          | --remove-attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          | --add-attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --clear-attributes-operator-owners
+          | --remove-attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --criticality-level=CRITICALITY_LEVEL
+          --[no-]criticality-mission-critical
+          --criticality-type=CRITICALITY_TYPE
+          --environment=ENVIRONMENT --environment-type=ENVIRONMENT_TYPE]
+        [--input-variable-aliases=[alias=ALIAS],[variable=VARIABLE]
+          | --add-input-variable-aliases=[alias=ALIAS],[variable=VARIABLE]
+          --clear-input-variable-aliases
+          | --remove-input-variable-aliases=[alias=ALIAS],[variable=VARIABLE]]
+        [--parameters=[key=KEY],[value=VALUE]
+          | --add-parameters=[key=KEY],[value=VALUE] --clear-parameters
+          | --remove-parameters=[key=KEY],[value=VALUE]] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Update a component in an application template.
+
+EXAMPLES
+    To update the display name to My New Component Name in the component
+    my-component in application template my-app-template, space my-space,
+    project my-project and location us-central1, run:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --display-name="My New Component Name"
+
+    Or run:
+
+        $ gcloud design-center spaces application-templates components \
+            update \
+            projects/my-project/locations/us-central1/spaces/my-space/\
+        applicationTemplates/my-app-template/components/my-component \
+            --display-name="My New Component Name"
+
+    To update the parameters with new key-value pairs of project_id:new-project
+    and service_name:new-service for the component my-component in application
+    template my-app-template, space my-space, project my-project and location
+    us-central1, run the following shorthand example:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --parameters=key=project_id,value=new-project \
+            --add-parameters=key=service_name,value=new-service
+
+    Or run the following JSON example:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --parameters='[{"key": "project_id", "value": "new-project"},
+         {"key": "service_name", "value": "new-service"}]'
+
+    Or create a YAML or JSON file with the parameters and run the following
+    file example:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --parameters=my-parameters.yaml
+
+    To add new parameters key-value pair of project_id:new-project and
+    service_name:new-service to the component my-component in application
+    template my-app-template, space my-space, project my-project and location
+    us-central1, run the following shorthand example:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --add-parameters=key=project_id,value=new-project \
+            --add-parameters=key=service_name,value=new-service
+
+    Or run the following JSON example:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --add-parameters='[{"key": "project_id", "value":
+         "new-project"}, {"key": "service_name", "value": "new-service"}]'
+
+    Or create a YAML or JSON file with the parameters and run the following
+    file example:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --add-parameters=my-parameters.yaml
+
+    To clear all parameters from the component my-component in application
+    template my-app-template, space my-space, project my-project and location
+    us-central1, run:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --clear-parameters
+
+    To remove an existing parameter key-value pair of project_id:new-project
+    from the component my-component in application template my-app-template,
+    space my-space, project my-project and location us-central1, run:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --remove-parameters=key=project_id,value=my-project
+
+    To update the component my-component in application template
+    my-app-template, space my-space, project my-project and location
+    us-central1 to be exported as a separate root module, run:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --use-as-root-module
+
+    To update the component my-component in application template
+    my-app-template, space my-space, project my-project and location
+    us-central1 to not be exported as a separate root module, run:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --no-use-as-root-module
+
+    To update the input variable aliases with new key-value pair of
+    variable=db_password,alias=database_password for the component my-component
+    in application template my-app-template, space my-space, project my-project
+    and location us-central1, run the following shorthand example:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --input-variable-aliases=variable=db_password,\
+        alias=database_password
+
+    Or run the following JSON example:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --input-variable-aliases='[{"variable": "db_password", "alias":
+         "database_password"}]'
+
+    Or create a YAML or JSON file with the input variable aliases and run the
+    following file example:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --input-variable-aliases=my-aliases.yaml
+
+    To add a new input variable alias of
+    variable=db_password,alias=database_password to the component my-component
+    in application template my-app-template, space my-space, project my-project
+    and location us-central1, run the following shorthand example:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --add-input-variable-aliases=variable=db_password,\
+        alias=database_password
+
+    To clear all input variable aliases from the component my-component in
+    application template my-app-template, space my-space, project my-project
+    and location us-central1, run:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --clear-input-variable-aliases
+
+    To remove an existing input variable alias of
+    variable=db_password,alias=database_password from the component
+    my-component in application template my-app-template, space my-space,
+    project my-project and location us-central1, run:
+
+        $ gcloud design-center spaces application-templates components \
+            update my-component --application-template=my-app-template \
+            --space=my-space --project=my-project --location=us-central1 \
+            --remove-input-variable-aliases=variable=db_password,\
+        alias=database_password
+
+POSITIONAL ARGUMENTS
+     Component resource - Identifier. The component name. The arguments in this
+     group can be used to specify the attributes of this resource. (NOTE) Some
+     attributes are not given arguments in this group but can be set in other
+     ways.
+
+     To set the project attribute:
+      * provide the argument component on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       COMPONENT
+          ID of the component or fully qualified identifier for the component.
+
+          To set the component attribute:
+          + provide the argument component on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --application-template=APPLICATION_TEMPLATE
+          The applicationTemplate id of the component resource.
+
+          To set the application-template attribute:
+          + provide the argument component on the command line with a fully
+            specified name;
+          + provide the argument --application-template on the command line.
+
+       --location=LOCATION
+          The location id of the component resource.
+
+          To set the location attribute:
+          + provide the argument component on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line.
+
+       --space=SPACE
+          The space id of the component resource.
+
+          To set the space attribute:
+          + provide the argument component on the command line with a fully
+            specified name;
+          + provide the argument --space on the command line.
+
+FLAGS
+     --display-name=DISPLAY_NAME
+        The component display name.
+
+     --[no-]use-as-root-module
+        Whether the component is exported as a separate terraform root module
+        in a composite application template. If this is false, then native
+        components will be exported as a submodule of a separate terraform root
+        module. Use --use-as-root-module to enable and --no-use-as-root-module
+        to disable.
+
+     This captures the apphub application details associated with the
+     component.
+
+     --application-info-apphub-id=APPLICATION_INFO_APPHUB_ID
+        The application ID of the apphub application. The ID must be 1-63
+        characters long and should match the regular expression
+        ^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$.
+
+     --application-info-deployment-region=APPLICATION_INFO_DEPLOYMENT_REGION
+        Deployment region for the component. If the scope is set to REGIONAL,
+        then the apphub application is created in this region, e.g.
+        us-central1.
+
+     --application-info-display-name=APPLICATION_INFO_DISPLAY_NAME
+        Display name for the application. The number of characters should be
+        less than 64 characters.
+
+     --clear-application-info
+        Set component.applicationInfo back to default value.
+
+     Scope of an application.
+
+     --scope-type=SCOPE_TYPE
+        Scope Type. SCOPE_TYPE must be one of:
+
+         global
+            Global type.
+         regional
+            Regional type.
+
+     Consumer provided attributes.
+
+     Update attributes_business_owners.
+
+     At most one of these can be specified:
+
+       --attributes-business-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+          Set attributes_business_owners to new value. Business team that
+          ensures user needs are met and value is delivered.
+
+           channel
+              Communication channel of the contacts.
+
+               uri
+                  URI of the channel.
+
+           displayName
+              Contact's name. Can have a maximum length of 63 characters.
+
+           email
+              Email address of the contacts.
+
+          Shorthand Example:
+
+              --attributes-business-owners=channel={uri=string},displayName=string,email=string --attributes-business-owners=channel={uri=string},displayName=string,email=string
+
+          JSON Example:
+
+              --attributes-business-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+          File Example:
+
+              --attributes-business-owners=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-attributes-business-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+            Add new value to attributes_business_owners list. Business team
+            that ensures user needs are met and value is delivered.
+
+             channel
+                Communication channel of the contacts.
+
+                 uri
+                    URI of the channel.
+
+             displayName
+                Contact's name. Can have a maximum length of 63 characters.
+
+             email
+                Email address of the contacts.
+
+            Shorthand Example:
+
+                --add-attributes-business-owners=channel={uri=string},displayName=string,email=string --add-attributes-business-owners=channel={uri=string},displayName=string,email=string
+
+            JSON Example:
+
+                --add-attributes-business-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+            File Example:
+
+                --add-attributes-business-owners=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-attributes-business-owners
+              Clear attributes_business_owners value and set to empty list.
+
+           --remove-attributes-business-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+              Remove existing value from attributes_business_owners list.
+              Business team that ensures user needs are met and value is
+              delivered.
+
+               channel
+                  Communication channel of the contacts.
+
+                   uri
+                      URI of the channel.
+
+               displayName
+                  Contact's name. Can have a maximum length of 63 characters.
+
+               email
+                  Email address of the contacts.
+
+              Shorthand Example:
+
+                  --remove-attributes-business-owners=channel={uri=string},displayName=string,email=string --remove-attributes-business-owners=channel={uri=string},displayName=string,email=string
+
+              JSON Example:
+
+                  --remove-attributes-business-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+              File Example:
+
+                  --remove-attributes-business-owners=path_to_file.(yaml|json)
+
+     Update attributes_developer_owners.
+
+     At most one of these can be specified:
+
+       --attributes-developer-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+          Set attributes_developer_owners to new value. Developer team that
+          owns development and coding.
+
+           channel
+              Communication channel of the contacts.
+
+               uri
+                  URI of the channel.
+
+           displayName
+              Contact's name. Can have a maximum length of 63 characters.
+
+           email
+              Email address of the contacts.
+
+          Shorthand Example:
+
+              --attributes-developer-owners=channel={uri=string},displayName=string,email=string --attributes-developer-owners=channel={uri=string},displayName=string,email=string
+
+          JSON Example:
+
+              --attributes-developer-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+          File Example:
+
+              --attributes-developer-owners=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-attributes-developer-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+            Add new value to attributes_developer_owners list. Developer team
+            that owns development and coding.
+
+             channel
+                Communication channel of the contacts.
+
+                 uri
+                    URI of the channel.
+
+             displayName
+                Contact's name. Can have a maximum length of 63 characters.
+
+             email
+                Email address of the contacts.
+
+            Shorthand Example:
+
+                --add-attributes-developer-owners=channel={uri=string},displayName=string,email=string --add-attributes-developer-owners=channel={uri=string},displayName=string,email=string
+
+            JSON Example:
+
+                --add-attributes-developer-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+            File Example:
+
+                --add-attributes-developer-owners=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-attributes-developer-owners
+              Clear attributes_developer_owners value and set to empty list.
+
+           --remove-attributes-developer-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+              Remove existing value from attributes_developer_owners list.
+              Developer team that owns development and coding.
+
+               channel
+                  Communication channel of the contacts.
+
+                   uri
+                      URI of the channel.
+
+               displayName
+                  Contact's name. Can have a maximum length of 63 characters.
+
+               email
+                  Email address of the contacts.
+
+              Shorthand Example:
+
+                  --remove-attributes-developer-owners=channel={uri=string},displayName=string,email=string --remove-attributes-developer-owners=channel={uri=string},displayName=string,email=string
+
+              JSON Example:
+
+                  --remove-attributes-developer-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+              File Example:
+
+                  --remove-attributes-developer-owners=path_to_file.(yaml|json)
+
+     Update attributes_operator_owners.
+
+     At most one of these can be specified:
+
+       --attributes-operator-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+          Set attributes_operator_owners to new value. Operator team that
+          ensures runtime and operations.
+
+           channel
+              Communication channel of the contacts.
+
+               uri
+                  URI of the channel.
+
+           displayName
+              Contact's name. Can have a maximum length of 63 characters.
+
+           email
+              Email address of the contacts.
+
+          Shorthand Example:
+
+              --attributes-operator-owners=channel={uri=string},displayName=string,email=string --attributes-operator-owners=channel={uri=string},displayName=string,email=string
+
+          JSON Example:
+
+              --attributes-operator-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+          File Example:
+
+              --attributes-operator-owners=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-attributes-operator-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+            Add new value to attributes_operator_owners list. Operator team
+            that ensures runtime and operations.
+
+             channel
+                Communication channel of the contacts.
+
+                 uri
+                    URI of the channel.
+
+             displayName
+                Contact's name. Can have a maximum length of 63 characters.
+
+             email
+                Email address of the contacts.
+
+            Shorthand Example:
+
+                --add-attributes-operator-owners=channel={uri=string},displayName=string,email=string --add-attributes-operator-owners=channel={uri=string},displayName=string,email=string
+
+            JSON Example:
+
+                --add-attributes-operator-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+            File Example:
+
+                --add-attributes-operator-owners=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-attributes-operator-owners
+              Clear attributes_operator_owners value and set to empty list.
+
+           --remove-attributes-operator-owners=[channel=CHANNEL],[displayName=DISPLAYNAME],[email=EMAIL]
+              Remove existing value from attributes_operator_owners list.
+              Operator team that ensures runtime and operations.
+
+               channel
+                  Communication channel of the contacts.
+
+                   uri
+                      URI of the channel.
+
+               displayName
+                  Contact's name. Can have a maximum length of 63 characters.
+
+               email
+                  Email address of the contacts.
+
+              Shorthand Example:
+
+                  --remove-attributes-operator-owners=channel={uri=string},displayName=string,email=string --remove-attributes-operator-owners=channel={uri=string},displayName=string,email=string
+
+              JSON Example:
+
+                  --remove-attributes-operator-owners='[{"channel": {"uri": "string"}, "displayName": "string", "email": "string"}]'
+
+              File Example:
+
+                  --remove-attributes-operator-owners=path_to_file.(yaml|json)
+
+     Criticality of the Application, Service, or Workload
+
+     --criticality-level=CRITICALITY_LEVEL
+        Criticality level. Can contain only lowercase letters, numeric
+        characters, underscores, and dashes. Can have a maximum length of 63
+        characters. Deprecated: Please refer to type instead.
+
+     --[no-]criticality-mission-critical
+        Indicates mission-critical Application, Service, or Workload.
+        Deprecated: Please refer to type instead. Use
+        --criticality-mission-critical to enable and
+        --no-criticality-mission-critical to disable.
+
+     --criticality-type=CRITICALITY_TYPE
+        Criticality Type. CRITICALITY_TYPE must be one of:
+
+         high
+            High impact.
+         low
+            Low impact.
+         medium
+            Medium impact.
+         mission-critical
+            Mission critical service, application or workload.
+
+     Environment of the Application, Service, or Workload
+
+     --environment=ENVIRONMENT
+        Environment name. Can contain only lowercase letters, numeric
+        characters, underscores, and dashes. Can have a maximum length of 63
+        characters. Deprecated: Please refer to type instead.
+
+     --environment-type=ENVIRONMENT_TYPE
+        Environment Type. ENVIRONMENT_TYPE must be one of:
+
+         development
+            Development environment.
+         production
+            Production environment.
+         staging
+            Staging environment.
+         test
+            Test environment.
+
+     Update input_variable_aliases.
+
+     At most one of these can be specified:
+
+       --input-variable-aliases=[alias=ALIAS],[variable=VARIABLE]
+          Set input_variable_aliases to new value. Input variable aliases
+          defined on this live component.
+
+           alias
+              Alias for the variable name to be exposed at the root level of
+              the composite template.
+
+           variable
+              Name of the input variable inside the component's underlying
+              template or module.
+
+          Shorthand Example:
+
+              --input-variable-aliases=alias=string,variable=string --input-variable-aliases=alias=string,variable=string
+
+          JSON Example:
+
+              --input-variable-aliases='[{"alias": "string", "variable": "string"}]'
+
+          File Example:
+
+              --input-variable-aliases=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-input-variable-aliases=[alias=ALIAS],[variable=VARIABLE]
+            Add new value to input_variable_aliases list. Input variable
+            aliases defined on this live component.
+
+             alias
+                Alias for the variable name to be exposed at the root level of
+                the composite template.
+
+             variable
+                Name of the input variable inside the component's underlying
+                template or module.
+
+            Shorthand Example:
+
+                --add-input-variable-aliases=alias=string,variable=string --add-input-variable-aliases=alias=string,variable=string
+
+            JSON Example:
+
+                --add-input-variable-aliases='[{"alias": "string", "variable": "string"}]'
+
+            File Example:
+
+                --add-input-variable-aliases=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-input-variable-aliases
+              Clear input_variable_aliases value and set to empty list.
+
+           --remove-input-variable-aliases=[alias=ALIAS],[variable=VARIABLE]
+              Remove existing value from input_variable_aliases list. Input
+              variable aliases defined on this live component.
+
+               alias
+                  Alias for the variable name to be exposed at the root level
+                  of the composite template.
+
+               variable
+                  Name of the input variable inside the component's underlying
+                  template or module.
+
+              Shorthand Example:
+
+                  --remove-input-variable-aliases=alias=string,variable=string --remove-input-variable-aliases=alias=string,variable=string
+
+              JSON Example:
+
+                  --remove-input-variable-aliases='[{"alias": "string", "variable": "string"}]'
+
+              File Example:
+
+                  --remove-input-variable-aliases=path_to_file.(yaml|json)
+
+     Update parameters.
+
+     At most one of these can be specified:
+
+       --parameters=[key=KEY],[value=VALUE]
+          Set parameters to new value. The component parameters.
+
+           key
+              The key of the parameter.
+
+           value
+              The value of the parameter.
+
+          Shorthand Example:
+
+              --parameters=key=string,value={...} --parameters=key=string,value={...}
+
+          JSON Example:
+
+              --parameters='[{"key": "string", "value": {...}}]'
+
+          File Example:
+
+              --parameters=path_to_file.(yaml|json)
+
+       Or at least one of these can be specified:
+
+         --add-parameters=[key=KEY],[value=VALUE]
+            Add new value to parameters list. The component parameters.
+
+             key
+                The key of the parameter.
+
+             value
+                The value of the parameter.
+
+            Shorthand Example:
+
+                --add-parameters=key=string,value={...} --add-parameters=key=string,value={...}
+
+            JSON Example:
+
+                --add-parameters='[{"key": "string", "value": {...}}]'
+
+            File Example:
+
+                --add-parameters=path_to_file.(yaml|json)
+
+         At most one of these can be specified:
+
+           --clear-parameters
+              Clear parameters value and set to empty list.
+
+           --remove-parameters=[key=KEY],[value=VALUE]
+              Remove existing value from parameters list. The component
+              parameters.
+
+               key
+                  The key of the parameter.
+
+               value
+                  The value of the parameter.
+
+              Shorthand Example:
+
+                  --remove-parameters=key=string,value={...} --remove-parameters=key=string,value={...}
+
+              JSON Example:
+
+                  --remove-parameters='[{"key": "string", "value": {...}}]'
+
+              File Example:
+
+                  --remove-parameters=path_to_file.(yaml|json)
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the designcenter/v1 API. The full documentation for this
+    API can be found at: http://cloud.google.com/application-design-center/docs
+
+NOTES
+    This variant is also available:
+
+        $ gcloud alpha design-center spaces application-templates \
+            components update
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined.
+
+```bash
+gcloud design-center spaces application-templates components update projects/my-project/locations/us-central1/spaces/my-space/applicationTemplates/my-app-template/components/my-component \
+    --display-name="My New Component Name"
+
+gcloud design-center spaces application-templates components update my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --parameters='[{"key": "project_id", "value": "new-project"}, {"key": "service_name", "value": "new-service"}]'
+
+gcloud design-center spaces application-templates components update my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --add-parameters='[{"key": "project_id", "value": "new-project"}, {"key": "service_name", "value": "new-service"}]'
+
+gcloud design-center spaces application-templates components update my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --input-variable-aliases=variable=db_password,alias=database_password
+
+gcloud design-center spaces application-templates components update my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --input-variable-aliases='[{"variable": "db_password", "alias": "database_password"}]'
+
+gcloud design-center spaces application-templates components update my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --add-input-variable-aliases=variable=db_password,alias=database_password
+
+gcloud design-center spaces application-templates components update my-component \
+    --application-template=my-app-template \
+    --space=my-space \
+    --project=my-project \
+    --location=us-central1 \
+    --remove-input-variable-aliases=variable=db_password,alias=database_password
+```
+
+### gcloud alpha design-center spaces application-templates components update
+
+```text
+NAME
+    gcloud alpha design-center spaces application-templates components update -
+        update a component
+
+SYNOPSIS
+    gcloud alpha design-center spaces application-templates components update
+        (COMPONENT : --application-template=APPLICATION_TEMPLATE
+          --location=LOCATION --space=SPACE) [--display-name=DISPLAY_NAME]
+        [--[no-]use-as-root-module]
+        [--application-info-apphub-id=APPLICATION_INFO_APPHUB_ID
+          --application-info-deployment-region=APPLICATION_INFO_DEPLOYMENT_REGION --application-info-display-name=APPLICATION_INFO_DISPLAY_NAME --clear-application-info --scope-type=SCOPE_TYPE --attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          | --add-attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --clear-attributes-business-owners
+          | --remove-attributes-business-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          | --add-attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --clear-attributes-developer-owners
+          | --remove-attributes-developer-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          | --add-attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --clear-attributes-operator-owners
+          | --remove-attributes-operator-owners=[channel=CHANNEL],
+          [displayName=DISPLAYNAME],[email=EMAIL]
+          --criticality-level=CRITICALITY_LEVEL
+          --[no-]criticality-mission-critical
+          --criticality-type=CRITICALITY_TYPE
+          --environment=ENVIRONMENT --environment-type=ENVIRONMENT_TYPE]
+        [--input-variable-aliases=[alias=ALIAS],[variable=VARIABLE]
+          | --add-input-variable-aliases=[alias=ALIAS],[variable=VARIABLE]
+          --clear-input-variable-aliases
+          | --remove-input-variable-aliases=[alias=ALIAS],[variable=VARIABLE]]
+        [--parameters=[key=KEY],[value=VALUE]
+          | --add-parameters=[key=KEY],[value=VALUE] --clear-parameters
+          | --remove-parameters=[key=KEY],[value=VALUE]] [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/design-center/spaces/application-templates/components/update (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
