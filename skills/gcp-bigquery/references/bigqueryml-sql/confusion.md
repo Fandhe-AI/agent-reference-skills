@@ -32,7 +32,7 @@ ML.CONFUSION_MATRIX(
 
   If `TABLE` is specified, the input column names in the table must match the
   column names in the model, and their types should be compatible according to
-  BigQuery [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  BigQuery [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
   The input must have a column that matches the
   label column name provided during training. This value is provided using the
   `input_label_cols` option. If `input_label_cols` is unspecified, the column
@@ -45,19 +45,19 @@ ML.CONFUSION_MATRIX(
 - `QUERY_STATEMENT`: a GoogleSQL query that is
   used to generate the evaluation data. For the supported SQL syntax of the
   `QUERY_STATEMENT` clause in GoogleSQL, see
-  [Query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+  [Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
   If `QUERY_STATEMENT` is specified, the input column names from the query
   must match the column names in the model, and their types should be
   compatible according to BigQuery
-  [implicit coercion rules](../googlesql-syntax/conversion_rules.md#coercion).
+  [implicit coercion rules](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules#coercion).
   The input must have a column that matches the label column name provided
   during training. This value is provided using the `input_label_cols` option.
   If `input_label_cols` is unspecified, the column named `label` in the
   training data is used. The extra columns are ignored.
 
   If you used the
-  [`TRANSFORM` clause](create.md#transform)
+  [`TRANSFORM` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create#transform)
   in the `CREATE MODEL` statement that created the model, then only the input
   columns present in the `TRANSFORM` clause must appear in `QUERY_STATEMENT`.
 
@@ -113,7 +113,7 @@ true even if they don't exactly match the values or type used during training.
 ### Limitations
 
 `ML.CONFUSION_MATRIX` doesn't support
-[imported TensorFlow models](create-tensorflow.md).
+[imported TensorFlow models](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-tensorflow).
 
 ### Examples
 

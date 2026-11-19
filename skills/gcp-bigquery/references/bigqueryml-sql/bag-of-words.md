@@ -32,7 +32,7 @@ OVER()
 
 `ML.BAG_OF_WORDS` takes the following arguments:
 
-- `tokenized_document`: `ARRAY<STRING>` value that represents a document that has been tokenized. A tokenized document is a collection of terms (tokens), which are used for text analysis. For more information about tokenization in BigQuery, see [`TEXT_ANALYZE`](../googlesql-functions/text-analysis-functions.md#text_analyze).
+- `tokenized_document`: `ARRAY<STRING>` value that represents a document that has been tokenized. A tokenized document is a collection of terms (tokens), which are used for text analysis. For more information about tokenization in BigQuery, see [`TEXT_ANALYZE`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis-functions#text_analyze).
 - `top_k`: Optional argument. Takes an `INT64` value, which represents the size of the dictionary, excluding the unknown term. The `top_k` terms that appear in the most documents are added to the dictionary until this threshold is met. For example, if this value is `20`, the top 20 unique terms that appear in the most documents are added and then no additional terms are added.
 - `frequency_threshold`: Optional argument. Takes an `INT64` value that represents the minimum number of documents a term must appear in to be included in the dictionary. For example, if this value is `3`, a term must appear at least three times in the tokenized document to be added to the dictionary.
 
@@ -181,7 +181,7 @@ The results look like the following:
 ### What's next
 
 - Learn about the [`BAG_OF_WORDS`
-  function](../googlesql-functions/text-analysis-functions.md#bag_of_words) outside of machine learning.
+  function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis-functions#bag_of_words) outside of machine learning.
 
 ## Notes
 

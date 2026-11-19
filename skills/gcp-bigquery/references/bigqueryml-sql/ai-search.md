@@ -87,10 +87,10 @@ AI.SEARCH(
 `AI.SEARCH` takes the following arguments:
 
 - `base_table`: The table to search for nearest neighbor embeddings. The table must have [autonomous embedding generation](https://docs.cloud.google.com/bigquery/docs/autonomous-embedding-generation) enabled.
-- `base_table_query`: A query that you can use to pre-filter the base table. Only `SELECT`, `FROM`, and `WHERE` clauses are allowed in this query. Don't apply any filters to the embedding column. You can't use [logical views](https://docs.cloud.google.com/bigquery/docs/views-intro) in this query. Using a [subquery](../googlesql-syntax/subqueries.md) might interfere with index usage or cause your query to fail. If the base table is indexed and the `WHERE` clause contains columns that are not stored in the index, then `AI.SEARCH` uses post-filters on those columns instead. To learn more, see [Store columns and pre-filter](https://docs.cloud.google.com/bigquery/docs/vector-index#stored-columns).
+- `base_table_query`: A query that you can use to pre-filter the base table. Only `SELECT`, `FROM`, and `WHERE` clauses are allowed in this query. Don't apply any filters to the embedding column. You can't use [logical views](https://docs.cloud.google.com/bigquery/docs/views-intro) in this query. Using a [subquery](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/subqueries) might interfere with index usage or cause your query to fail. If the base table is indexed and the `WHERE` clause contains columns that are not stored in the index, then `AI.SEARCH` uses post-filters on those columns instead. To learn more, see [Store columns and pre-filter](https://docs.cloud.google.com/bigquery/docs/vector-index#stored-columns).
 - `column_to_search`: A `STRING` literal that contains the name of the column to search. This must be the name of the source column (of type `STRING` or `ObjectRef`) that the automatically generated embedding column is based on, but it's not the name of the generated embedding column itself. If the column has a vector index, BigQuery attempts to use it. To determine if an index was used in the vector search, see [Vector index usage](https://docs.cloud.google.com/bigquery/docs/vector-index#vector_index_usage).
 - `query_value`: A string literal or `ObjectRef` value that represents the search query. This value is embedded at runtime using the same connection and endpoint specified for the base table's embedding generation. If the base table's embedding generation uses a `task_type` of `RETRIEVAL_DOCUMENT`, whether by default or explicitly specified, then `AI.SEARCH` uses a `task_type` of `RETRIEVAL_QUERY` to embed `query_value`. Otherwise, `AI.SEARCH` uses the same `task_type` configured for the base table. You must have the BigQuery Connection User role (`roles/bigquery.connectionUser`) on the connection that the base table uses for background embedding generation. If embedding generation fails for `query_value`, then the whole query fails. Rows with missing embeddings in the base table are skipped during the search.
-- `mode` ([Preview](https://cloud.google.com/products#product-launch-stages)): One of the following values: `VECTOR`, `HYBRID`, or `AUTO`. The default value is `AUTO`. When the mode is set to `AUTO`, a hybrid search is performed if a hybrid index exists. If no hybrid index exists, a semantic-only search is performed. To run a [hybrid search](../googlesql-functions/search_functions.md#vector_search), set the mode to `HYBRID`. To run a semantic-only search, set the mode to `VECTOR`.
+- `mode` ([Preview](https://cloud.google.com/products#product-launch-stages)): One of the following values: `VECTOR`, `HYBRID`, or `AUTO`. The default value is `AUTO`. When the mode is set to `AUTO`, a hybrid search is performed if a hybrid index exists. If no hybrid index exists, a semantic-only search is performed. To run a [hybrid search](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search), set the mode to `HYBRID`. To run a semantic-only search, set the mode to `VECTOR`.
 - `top_k`: A named argument with an `INT64` value. `top_k_value` specifies the number of nearest neighbors to return. The default is `10`. If the value is negative, all values are counted as neighbors and returned.
 - `distance_type`: A named argument with a `STRING` value.
   `distance_type_value` specifies the type of metric to use to
@@ -104,7 +104,7 @@ AI.SEARCH(
   If you don't specify `distance_type_value` and the `column_to_search`
   column has a vector index that's used, then `AI.SEARCH` uses the distance
   type specified in the
-  [`distance_type` option](../googlesql-syntax/data-definition-language-2.md#index_option_list-1)
+  [`distance_type` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#vector_index_option_list)
   of the `CREATE VECTOR INDEX` statement.
 - `rerank`: A `BOOL` value that specifies whether to rerank the retrieved
   candidates using the [ranking API](https://docs.cloud.google.com/generative-ai-app-builder/docs/ranking):
@@ -134,9 +134,9 @@ AI.SEARCH(
     matched, an appropriate value is picked.
 
     The number of available lists to search is determined by the
-    [`num_lists` option](../googlesql-syntax/data-definition-language-2.md#index_option_list-1)
+    [`num_lists` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#vector_index_option_list)
     in the `ivf_options` option or derived from
-    the [`leaf_node_embedding_count` option](../googlesql-syntax/data-definition-language-2.md#index_option_list-1)
+    the [`leaf_node_embedding_count` option](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#vector_index_option_list)
     in the
     `tree_ah_options` option of the `CREATE VECTOR INDEX` statement if
     specified. Otherwise, BigQuery calculates an appropriate number.
@@ -284,7 +284,7 @@ FROM
 ### Related functions
 
 The `AI.SEARCH` and
-[`VECTOR_SEARCH`](../googlesql-functions/search_functions.md#vector_search)
+[`VECTOR_SEARCH`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search)
 functions support overlapping use cases. In general, you should use `AI.SEARCH`
 when your base table has autonomous embedding generation enabled and you want
 to search for results close to a single string literal. It offers a simplified

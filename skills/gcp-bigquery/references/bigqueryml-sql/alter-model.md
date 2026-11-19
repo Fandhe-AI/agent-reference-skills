@@ -61,7 +61,7 @@ SET OPTIONS
 
 - `EXPIRATION_TIMESTAMP`:
   a `TIMESTAMP` value that specifies when this model expires. If the model is an
-  [open model that BigQuery manages in Agent Platform](create-remote-model-open.md#automatically-deployed-models),
+  [open model that BigQuery manages in Agent Platform](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-open#automatically_deployed_models),
   all Agent Platform resources associated with the model are deleted
   when the model expires.
 
@@ -86,7 +86,7 @@ SET OPTIONS
   [Prediction and explanation](https://cloud.google.com/vertex-ai/pricing#prediction-prices).
 
   You can only use this option with an
-  [open model that BigQuery manages in Agent Platform](create-remote-model-open.md#automatically-deployed-models).
+  [open model that BigQuery manages in Agent Platform](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-open#automatically_deployed_models).
 
   If the model was previously undeployed, setting this option to `TRUE`
   redeploys the model to an Agent Platform endpoint. If the model
@@ -94,7 +94,7 @@ SET OPTIONS
   requires a "cold start" period while the endpoint resources are provisioned.
   The cold start period can take up to 30 minutes, depending on the size of the
   model and the number of
-  [machine replicas](create-remote-model-open.md#max_replica_count)
+  [machine replicas](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-open#max-replica-count)
   specified for the model.
 
   Setting this option to `FALSE` undeploys the model from an Agent Platform endpoint. If the model is already undeployed, this
@@ -103,17 +103,17 @@ SET OPTIONS
   an `INTERVAL` value that specifies the duration of inactivity after which the
   model is automatically undeployed from the Agent Platform endpoint.
   You can only use this option with an
-  [open model that BigQuery manages in Agent Platform](create-remote-model-open.md#automatically-deployed-models).
+  [open model that BigQuery manages in Agent Platform](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-open#automatically_deployed_models).
 
   To enable automatic undeployment, specify an
-  [interval literal](../googlesql-syntax/lexical.md#interval-literals)
+  [interval literal](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#interval_literals)
   value between 390 minutes (6.5 hours) and 7 days. For example, specify
   `INTERVAL 8 HOUR` to have the model undeployed after 8 hours of idleness.
   The default value is 390 minutes (6.5 hours).
 
   Model inactivity is defined as the amount of time that has passed
   since the any of the following operations were performed on the model:
-  - Running the [`CREATE MODEL` statement](create-remote-model-open.md).
+  - Running the [`CREATE MODEL` statement](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-open).
   - Running the `ALTER MODEL` statement with the `DEPLOY_MODEL` argument set to `TRUE`.
   - Sending an inference request to the model endpoint. For example, by running the [`AI.GENERATE_EMBEDDING`](ai-generate-embedding.md) or [`AI.GENERATE_TEXT`](ai-generate-text.md) function.
 

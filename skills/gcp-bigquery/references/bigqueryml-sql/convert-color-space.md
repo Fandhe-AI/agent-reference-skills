@@ -9,7 +9,7 @@ source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqu
 This document describes the `ML.CONVERT_COLOR_SPACE` scalar function, which lets
 you convert images that have an `RGB` color space to a different color space.
 You can use `ML.CONVERT_COLOR_SPACE` with the [`ML.PREDICT`
-function](predict.md) or
+function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict) or
 chain it with other functions or subqueries.
 
 ### Syntax

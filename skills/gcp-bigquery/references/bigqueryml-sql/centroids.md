@@ -10,7 +10,7 @@ This document describes the `ML.CENTROIDS` function, which lets you return
 information about the
 [centroids](https://developers.google.com/machine-learning/glossary/#centroid)
 in a
-[k-means model](create-kmeans.md).
+[k-means model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-kmeans).
 
 ### Syntax
 

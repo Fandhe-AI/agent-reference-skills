@@ -53,7 +53,7 @@ The `ML.CORRELATION` function takes the following arguments:
 - `QUERY_STATEMENT`: a SQL query whose results contain the data to analyze.
 - `TARGET_COL`: a `STRING` that contains the name of the primary numerical column to analyze.
 - `TARGET_CORRELATION_COLS`: a `STRING` or `ARRAY<STRING>` value that contains the names of one or more numerical columns to correlate against the `TARGET_COL` column.
-- `DIMENSION_COLS`: a `STRING` or `ARRAY<STRING>` value that contains the names of columns to slice the data by. The function calculates correlations for every combination of these dimensions. You can specify a maximum of 12 columns. Each column must be a [groupable type](../googlesql-syntax/data-types.md#groupable-data-types).
+- `DIMENSION_COLS`: a `STRING` or `ARRAY<STRING>` value that contains the names of columns to slice the data by. The function calculates correlations for every combination of these dimensions. You can specify a maximum of 12 columns. Each column must be a [groupable type](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#groupable_data_types).
 - `METHOD`: a `STRING` that specifies the statistical method to use for correlation. Supported values are `PEARSON`, `SPEARMAN`, and `KENDALL`. The default value is `PEARSON`. The `KENDALL` method has higher complexity and can be slow on large datasets. For large tables, we recommend that you use `PEARSON` or `SPEARMAN`.
 
 ### Output
@@ -64,8 +64,8 @@ within a specific data segment. The results are sorted by
 `segment_size` in descending order, and then by `corr_col` in ascending order.
 The output table contains the following columns:
 
-- `segment`: an `ARRAY<STRUCT<dimension_col STRING, dimension_value JSON>>` value that contains the key-value pair for each dimension. The `JSON` value for `dimension_value` is generated using the [`TO_JSON`](../googlesql-functions/json_functions-2.md#to_json) function.
-- `dimension_col`: a column from `dimension_cols`, if you specified any dimension columns. The output includes one column for each dimension specified. A `NULL` value in one of these columns indicates either a true `NULL` value in the column or a placeholder `NULL` value that means the column was part of a rollup. This is conceptually similar to the presence of `NULL` placeholder values generated when you use [grouping sets](../googlesql-syntax/query-syntax-2.md#group-rows-by-grouping-sets). To determine whether the `NULL` value is from the column itself, check for a `NULL` value in the `dimension_value` field for that column in the `segment` column of the output.
+- `segment`: an `ARRAY<STRUCT<dimension_col STRING, dimension_value JSON>>` value that contains the key-value pair for each dimension. The `JSON` value for `dimension_value` is generated using the [`TO_JSON`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#to_json) function.
+- `dimension_col`: a column from `dimension_cols`, if you specified any dimension columns. The output includes one column for each dimension specified. A `NULL` value in one of these columns indicates either a true `NULL` value in the column or a placeholder `NULL` value that means the column was part of a rollup. This is conceptually similar to the presence of `NULL` placeholder values generated when you use [grouping sets](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_grouping_sets). To determine whether the `NULL` value is from the column itself, check for a `NULL` value in the `dimension_value` field for that column in the `segment` column of the output.
 - `target_col`: a `STRING` value that contains the name of the input target column.
 - `corr_col`: a `STRING` value that contains the name of the metric column being correlated against the target column.
 - `correlation`: a `FLOAT64` value that contains the correlation coefficient in the range of `-1.0` to `1.0`.

@@ -36,7 +36,7 @@ You can use the `AI.SIMILARITY` function with data from BigQuery
 accepts the following types of input:
 
 - Text data.
-- Image data represented by [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](../googlesql-functions/objectref_functions.md#objmake_ref) or using an `ObjectRef` column from a table.
+- Image data represented by [`ObjectRef` values](https://docs.cloud.google.com/bigquery/docs/work-with-objectref). You can create an `ObjectRef` value by passing a Cloud Storage URI to the [`OBJ.MAKE_REF` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/objectref_functions#objmake_ref) or using an `ObjectRef` column from a table.
 - Combinations of unstructured data, including text, images, audio, video, and PDFs, represented by a `STRUCT` that contains `STRING`, `ARRAY<STRING>`, `ObjectRef`, and `ARRAY<ObjectRef>` values.
 
 When you analyze image data, the content must be in one of the supported image
@@ -315,7 +315,7 @@ Use the following table to help you choose an embedding model for your data:
 ### Related functions
 
 The `AI.SIMILARITY` and
-[`VECTOR_SEARCH`](../googlesql-functions/search_functions.md#vector_search)
+[`VECTOR_SEARCH`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/search_functions#vector_search)
 functions support overlapping use cases. In general, you should use
 `AI.SIMILARITY`
 when you want to perform a small number of comparisons and you haven't
