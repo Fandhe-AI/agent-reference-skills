@@ -188,6 +188,7 @@ The results look like the following:
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-bag-of-words (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Conflicting official statements: the `frequency_threshold` description defines it as "the minimum number of documents a term must appear in", but its example says that with `3` "a term must appear at least three times in the tokenized document". The definition, the `ML.TF_IDF` page and this page's examples (`b` and `d` are excluded with `frequency_threshold` set to `2` because they appear in only one document) count documents, so with `3` a term must appear in at least three documents.
 
 ## Related
 
