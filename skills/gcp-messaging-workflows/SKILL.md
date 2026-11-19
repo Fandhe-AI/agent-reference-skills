@@ -198,7 +198,7 @@ skills/gcp-messaging-workflows/
 - `gcp-bigquery`（予定）— Pub/Sub の export 先となる BigQuery のデータセット側
 - `gcp-data-pipelines`（予定）— Dataflow・Composer・Orchestration Pipelines。`gcloud orchestration-pipelines` は本スキルに無い
 - `gcp-devops` — Cloud Build の trigger・Artifact Registry
-- `gcp-iac`（予定）— Terraform
+- `gcp-iac` — Terraform
 - `gcp-api-management`（予定）— Apigee・API Gateway
 - `gcp-agent-platform`（予定）— Agent Platform
 - `cloudflare-stateful` — Cloudflare Queues / Workflows / Durable Objects。本スキルは Google Cloud の Pub/Sub / Workflows

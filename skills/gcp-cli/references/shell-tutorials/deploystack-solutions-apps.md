@@ -477,7 +477,7 @@ The breakdown also creates a Cloud DNS managed zone, a managed SSL certificate, 
 - Fixes of conversion damage only: the Three Tier App middleware `clouldbuild.yaml` section was a single run-together block in the fetched twin; it is split here into the build block and the push block. The Cloud Build YAML in that stack is shown as the source has it (no `- ` list markers).
 - `google_container_registry` in the Serverless Photo Sharing Terraform is shown as the source has it; Container Registry has been shut down, and container images now go to Artifact Registry.
 - Only whole code blocks are included; remaining Terraform is summarized with a pointer to the GitHub repository.
-- Product details: Cloud Run: `gcp-run` skill; Cloud Storage: `gcp-storage` skill; Terraform / IaC in general: future `gcp-iac` skill.
+- Product details: Cloud Run: `gcp-run` skill; Cloud Storage: `gcp-storage` skill; Terraform / IaC in general: `gcp-iac` skill.
 - Source: https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack/three-tier-app (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack/storage-event-function-app (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)

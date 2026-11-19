@@ -152,7 +152,7 @@ gcloud design-center spaces applications export APPLICATION \
 
 - Supported Terraform sources: a Cloud Storage bucket, a Developer Connect repository, a public Git repository, or a local YAML or JSON file (the root module `.tf` files plus supporting files such as `.json`).
 - A revision can be deployed directly (create an application, preview for an assessment report, deploy; no catalog needed) or reused by publishing it to a catalog and adding it as a component of a composite template.
-- Previews and deployments use Infrastructure Manager (`gcp-iac` (planned) covers Infrastructure Manager and Terraform in general).
+- Previews and deployments use Infrastructure Manager (the `gcp-iac` skill covers Infrastructure Manager and Terraform in general).
 - Exported Terraform is meant for running with your own CI/CD tools or keeping in version control.
 - Source: https://docs.cloud.google.com/application-design-center/docs/import-terraform (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 

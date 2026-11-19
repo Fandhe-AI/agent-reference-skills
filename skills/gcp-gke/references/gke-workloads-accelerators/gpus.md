@@ -84,7 +84,7 @@ These container-level metrics are not collected for containers on a GPU that use
 - The NVIDIA GPU Operator works on Container-Optimized OS and Ubuntu node images; choose it for cross-cloud consistency or software that depends on it.
 - Choose a consumption option on the page "About accelerator consumption options for AI/ML workloads in GKE".
 - This page has no commands beyond the `LD_LIBRARY_PATH` values above; Console steps for viewing Workloads GPU usage are omitted.
-- GKE runs Kubernetes workloads on Google Cloud; this is distinct from the GPU compute stacks in `nvidia-cuda` and from Compute Engine GPU VMs (planned `gcp-compute`).
+- GKE runs Kubernetes workloads on Google Cloud; this is distinct from the GPU compute stacks in `nvidia-cuda` and from Compute Engine GPU VMs (`gcp-compute`).
 - Source: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/gpus (retrieved 2026-11-16; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

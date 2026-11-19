@@ -67,7 +67,7 @@ Debugging support is available for Go, Node.js, Python, Java, and Ruby applicati
 
 - Version control and workspace management are described in [version-control.md](./version-control.md) and [workspaces.md](./workspaces.md). The `debugging` page is merged here because it contains no code of its own.
 - The official pages list different debugging languages: the `debugging` page says "Go, Node.js, Python, Java, and Ruby", while the editor overview says "full debugging support for Go, Node.js, Python, and Java applications". Both are kept as written.
-- Distance line: Cloud Code in Cloud Shell Editor is covered here only as far as the editor; Cloud Run service deployment details belong to the `gcp-run` skill and GKE to the future `gcp-gke` skill.
+- Distance line: Cloud Code in Cloud Shell Editor is covered here only as far as the editor; Cloud Run service deployment details belong to the `gcp-run` skill and GKE to the `gcp-gke` skill.
 - Source: https://docs.cloud.google.com/shell/docs/editor-overview (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/shell/docs/debugging (retrieved 2026-11-14)
 

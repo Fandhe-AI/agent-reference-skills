@@ -206,7 +206,7 @@ skills/gcp-observability/
 - `gcp-bigquery`（予定）— sink の宛先と linked dataset の BigQuery
 - `gcp-messaging-workflows`— sink / notification channel の宛先となる Pub/Sub
 - `gcp-devops` — Cloud Build・Artifact Registry
-- `gcp-iac`（予定）— Terraform
+- `gcp-iac` — Terraform
 - `gcp-agent-platform`（予定）— Gemini Cloud Assist
 - `pino` — pino ロガー本体。Cloud Logging は stdout の JSON を、特殊フィールド（`severity` 等）が合うときに構造化ログとして取り込む（`logging-concepts/structured-logging.md`、`opentelemetry-telemetry-api/instrument-nodejs.md`）
 - 自前 Prometheus サーバー — Managed Service for Prometheus は Google Cloud のマネージドサービスで、PromQL の意味は上流 Prometheus に従う。自前サーバーの運用は対象外

@@ -116,7 +116,7 @@ skills/gcp-integration/
 - `gcp-api-management`（予定）— Apigee・API Gateway。Apigee 連携のページは本スキルに無い
 - `gcp-bigquery`（予定）— コネクタ・task の接続先になる BigQuery
 - `gcp-agent-platform`（予定）— Gemini・AI エージェント関連の機能。Application Integration の AI 機能は本スキルに無い
-- `gcp-iac`（予定）— Terraform のサンプル
+- `gcp-iac` — Terraform のサンプル
 - `gcp-devops` — Cloud Build・Cloud Deploy・Artifact Registry による CI/CD
 - `inngest` / `bullmq` — Node.js のジョブキュー・durable function。Google Cloud のマネージドな統合サービスではない。Application Integration の JavaScript task は Node.js ではなく、`event` オブジェクトを使う task 専用のスクリプト
 

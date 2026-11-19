@@ -168,7 +168,7 @@ The breakdown also creates: the `etlpipeline` service account, a Composer enviro
 - Both stacks create billable resources. Cloud Composer environments in particular run continuously; ETL Pipeline grants broad roles (`roles/bigquery.admin`, `roles/dataflow.admin`, `roles/storage.objectAdmin`). The source gives no teardown / destroy command; none is given here. For Cost Sentry, deactivating resources is performed by its Cloud Function, not by a command in the page.
 - Conversion fix only: in the fetched twin of the ETL Pipeline page, the `build_roles_list` block had lost its indentation and carried `\[` / `\]` escapes; it is restored as a normal HCL block. The source typo "fucntions" (Cost Sentry) is kept verbatim.
 - Only whole code blocks are included; remaining Terraform is summarized with a pointer to the GitHub repository.
-- The Cloud Run and Cloud Storage components here: see the `gcp-run` and `gcp-storage` skills for product details; Terraform / IaC in general: future `gcp-iac` skill.
+- The Cloud Run and Cloud Storage components here: see the `gcp-run` and `gcp-storage` skills for product details; Terraform / IaC in general: `gcp-iac` skill.
 - Source: https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack/cost-sentry (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/shell/docs/cloud-shell-tutorials/deploystack/etl-pipeline (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
