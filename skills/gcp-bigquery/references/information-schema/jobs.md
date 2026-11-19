@@ -664,7 +664,7 @@ The result is similar to the following:
 
 ##### Analyze performance over time for identical queries
 
-The following example returns the top 10 slowest jobs over the past 7 days that
+The following example returns the top 3 slowest jobs over the past 7 days that
 have run the same query:
 
 ```googlesql
@@ -1419,6 +1419,7 @@ SELECT
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the example that averages the jobs running at the same time as a job had two problems. It sampled from `creation_time` and matched other jobs from their `creation_time`, so time spent waiting in the queue counted as running; the schema on this page lists `creation_time` and `start_time` as separate columns. It also used an inner join, so seconds with no other job were dropped from the average instead of counting as zero, and the result was `NULL` when no other job overlapped. The example now uses `start_time`, a `LEFT JOIN` with the conditions in `ON`, and `COUNT(j.job_id)`. The official example also generated at least two sample times, one second apart, for a job shorter than one second, so the second sample fell after the job had ended; the sample offsets now run from 0 to the whole seconds between `start_time` and `end_time`.
 - Caution: the schema says that `query_dialect` will be available sometime in May, 2025. That sentence is out of date: the JOBS view page (jobs.md) says, in the example that counts legacy SQL query jobs, that the field has been available since May 2025.
+- Corrected from the official docs: the text before the example that analyzes the performance of identical queries says that it returns the top 10 slowest jobs, but the query ends with `LIMIT 3`. The text is changed to the top 3 slowest jobs, so that it matches the query.
 
 ## Related
 

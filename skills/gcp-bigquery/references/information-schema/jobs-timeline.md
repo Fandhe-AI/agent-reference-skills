@@ -378,6 +378,7 @@ The result is similar to the following:
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Conflicting official statements: the Scope and syntax section says that queries against this view must include a region qualifier, and then that metadata is retrieved from all regions if you don't specify one. The INFORMATION_SCHEMA introduction (https://docs.cloud.google.com/bigquery/docs/information-schema-intro#syntax, retrieved 2026-11-20) says that if neither a region qualifier nor a dataset qualifier is specified, you receive an error. Include a region qualifier when you query this view.
+- Caution: the example that returns the percentage of a job's execution time with non-zero `period_estimated_runnable_units` suggests adding `DATE(period_start) = 'YYYY-MM-DD'`. For a job that ran across midnight UTC, that condition drops the seconds on the other date, so the percentage covers only part of the job. This view is partitioned by `job_creation_time`, as the note under the schema says; to reduce the bytes processed without changing the result, filter on the date the job was created, for example `DATE(job_creation_time) = 'YYYY-MM-DD'`.
 
 ## Related
 
