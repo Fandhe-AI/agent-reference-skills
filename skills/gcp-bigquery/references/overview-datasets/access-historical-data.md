@@ -46,6 +46,8 @@ bq cp mydataset.mytable@-3600000 mydataset.newtable
 
 ### Restore with Python
 
+Adapted (not in the official docs): the sample no longer deletes the table before copying; the snapshot time is set to a time before the table was deleted.
+
 ```python
 import time
 
@@ -60,15 +62,9 @@ client = bigquery.Client()
 # TODO(developer): Choose a new table ID for the recovered table data.
 # recovered_table_id = "your-project.your_dataset.your_table_recovered"
 
-# TODO(developer): Choose an appropriate snapshot point as epoch
-# milliseconds. For this example, we choose the current time as we're about
-# to delete the table immediately afterwards.
-snapshot_epoch = int(time.time() * 1000)
-
-# ...
-
-# "Accidentally" delete the table.
-client.delete_table(table_id)  # Make an API request.
+# TODO(developer): Choose a snapshot point as epoch milliseconds, before the
+# table was deleted and within the time travel window (for example, one hour ago).
+snapshot_epoch = int(time.time() * 1000) - 60 * 60 * 1000
 
 # Construct the restore-from table ID using a snapshot decorator.
 snapshot_table_id = "{}@{}".format(table_id, snapshot_epoch)
@@ -119,6 +115,7 @@ This page lists no IAM permissions of its own. The related restore page names Bi
 - If you delete a table and create a new one with the same name, you can restore the original with point-in-time recovery; the timestamp must be a time when the original table existed.
 - To restore later than the time travel window allows, create a table snapshot beforehand.
 - Languages omitted from the official page: Go, Java and Node.js samples (Node.js is on the restore-deleted-tables page).
+- Adapted from the official docs: the Python restore sample deletes the table themselves (`client.delete_table`) right before restoring it, to demonstrate the flow; run against a real table that deletes it, and against an already-deleted table the delete fails before the copy. The delete step is removed and the snapshot time is set to one hour ago as an example.
 - Source: https://docs.cloud.google.com/bigquery/docs/access-historical-data (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

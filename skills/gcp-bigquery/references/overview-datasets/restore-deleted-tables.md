@@ -38,6 +38,8 @@ bq cp mydataset.mytable@-3600000 mydataset.newtable
 
 ### Restore with Node.js
 
+Adapted (not in the official docs): the sample no longer deletes the table before copying; the snapshot time is set to a time before the table was deleted.
+
 ```js
 // Import the Google Cloud client library
 const {BigQuery} = require('@google-cloud/bigquery');
@@ -54,19 +56,10 @@ async function undeleteTable() {
   // const recoveredTableId = "my_recovered_table";
 
   /**
-   * TODO(developer): Choose an appropriate snapshot point as epoch milliseconds.
-   * For this example, we choose the current time as we're about to delete the
-   * table immediately afterwards.
+   * TODO(developer): Choose a snapshot point as epoch milliseconds, before the
+   * table was deleted and within the time travel window (for example, one hour ago).
    */
-  const snapshotEpoch = Date.now();
-
-  // Delete the table
-  await bigquery
-    .dataset(datasetId)
-    .table(tableId)
-    .delete();
-
-  console.log(`Table ${tableId} deleted.`);
+  const snapshotEpoch = Date.now() - 60 * 60 * 1000;
 
   // Construct the restore-from table ID using a snapshot decorator.
   const snapshotTableId = `${tableId}@${snapshotEpoch}`;
@@ -85,6 +78,8 @@ async function undeleteTable() {
 
 ### Restore with Python
 
+Adapted (not in the official docs): the sample no longer deletes the table before copying; the snapshot time is set to a time before the table was deleted.
+
 ```python
 import time
 
@@ -99,15 +94,9 @@ client = bigquery.Client()
 # TODO(developer): Choose a new table ID for the recovered table data.
 # recovered_table_id = "your-project.your_dataset.your_table_recovered"
 
-# TODO(developer): Choose an appropriate snapshot point as epoch
-# milliseconds. For this example, we choose the current time as we're about
-# to delete the table immediately afterwards.
-snapshot_epoch = int(time.time() * 1000)
-
-# ...
-
-# "Accidentally" delete the table.
-client.delete_table(table_id)  # Make an API request.
+# TODO(developer): Choose a snapshot point as epoch milliseconds, before the
+# table was deleted and within the time travel window (for example, one hour ago).
+snapshot_epoch = int(time.time() * 1000) - 60 * 60 * 1000
 
 # Construct the restore-from table ID using a snapshot decorator.
 snapshot_table_id = "{}@{}".format(table_id, snapshot_epoch)
@@ -207,6 +196,7 @@ WHERE
 - If you delete a table and create a new one with the same name, you can restore the original with point-in-time recovery; the timestamp must be a time when the original table existed.
 - Restoring later than the window allows requires a table snapshot taken beforehand.
 - Languages omitted from the official page: Go and Java samples (the console has no undelete).
+- Adapted from the official docs: the Node.js and Python restore samples delete the table themselves (`.delete()` / `client.delete_table`) right before restoring it, to demonstrate the flow; run against a real table that deletes it, and against an already-deleted table the delete fails before the copy. The delete step is removed and the snapshot time is set to one hour ago as an example.
 - Source: https://docs.cloud.google.com/bigquery/docs/restore-deleted-tables (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
