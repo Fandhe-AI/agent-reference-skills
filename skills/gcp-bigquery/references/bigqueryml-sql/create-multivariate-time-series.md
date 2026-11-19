@@ -1023,6 +1023,8 @@ table to specify the set of holidays to model.
 The following example models all built-in holidays for the `US` holiday region
 except for the `Christmas` and `NewYears` holidays:
 
+Adapted (not in the official docs): the query reads the `holidays_and_events_for_forecasting` public table that the text names, and the two conditions are joined with `AND` so that both holidays are excluded.
+
 ```sql
 CREATE OR REPLACE MODEL mydataset.arima_model
   OPTIONS (
@@ -1032,10 +1034,10 @@ CREATE OR REPLACE MODEL mydataset.arima_model
         training_data AS (SELECT * FROM mydataset.timeseries_data),
         custom_holiday AS (
             SELECT *
-            FROM bigquery-public-data.ml_datasets.holiday
+            FROM bigquery-public-data.ml_datasets.holidays_and_events_for_forecasting
             WHERE
               region = 'US'
-              AND (holiday_name != 'Christmas' OR holiday_name != 'NewYear')
+              AND (holiday_name != 'Christmas' AND holiday_name != 'NewYear')
           )
       );
 ```
@@ -1126,6 +1128,7 @@ FROM
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-multivariate-time-series (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the "Model a subset of built-in holidays" example reads `bigquery-public-data.ml_datasets.holiday` and filters with `holiday_name != 'Christmas' OR holiday_name != 'NewYear'`, which is true for every holiday name; the text names the `bigquery-public-data.ml_datasets.holidays_and_events_for_forecasting` table, so the example reads that table and uses `AND`. The text says `NewYears`, while the code and the table's example rows use `NewYear`.
 
 ## Related
 
