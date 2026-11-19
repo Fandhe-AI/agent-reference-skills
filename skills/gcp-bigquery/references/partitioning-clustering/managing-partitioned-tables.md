@@ -91,11 +91,13 @@ API: call `tables.patch` and set `requirePartitionFilter` to `true`.
 
 Use `bq cp` with a partition decorator (`$date`, e.g. `$20160201`):
 
+Adapted (not in the official docs): the table identifiers with a `$` partition decorator are single-quoted so the shell does not expand `$source_partition` / `$destination_partition` (or `$2016...` as a positional parameter).
+
 ```bash
 bq --location=location cp \
 -a -f -n \
-project_id:dataset.source_table$source_partition \
-project_id:dataset.destination_table$destination_partition
+'project_id:dataset.source_table$source_partition' \
+'project_id:dataset.destination_table$destination_partition'
 ```
 
 Copy a partition to a new table:
@@ -161,8 +163,10 @@ WHERE _PARTITIONDATE IN ('2076-10-07', '2076-03-06');
 
 bq:
 
+Adapted (not in the official docs): the identifier is single-quoted so the shell does not expand `$partition`; unquoted, an unset variable leaves `project_id:dataset.table` and the whole table would be deleted.
+
 ```bash
-bq rm --table project_id:dataset.table$partition
+bq rm --table 'project_id:dataset.table$partition'
 ```
 
 ```text
@@ -240,6 +244,8 @@ API: call `tables.delete` with the table and partition decorator in `tableId`.
 - The special `__NULL__` and `__UNPARTITIONED__` partitions cannot be deleted; only one partition can be deleted at a time.
 - The twin for this page contains no dedicated section on restoring or time travel of deleted partitions; see the linked time-travel and querying pages.
 - Java client-library sample (`UpdateTableRequirePartitionFilter`) omitted; no Python or Node.js sample is given on the page.
+- Corrected from the official docs: the `bq cp` and `bq rm` partition examples leave `table$partition` unquoted; in a shell `$partition` (and `$20160301`) is expanded, so the identifiers are single-quoted as in the source's other `bq` examples.
+- The 6-hour example ("each partition expires at 06:00:00 UTC the next day") is as the source writes it (https://docs.cloud.google.com/bigquery/docs/managing-partitioned-tables, "Set the partition expiration").
 - Source: https://docs.cloud.google.com/bigquery/docs/managing-partitioned-tables (retrieved 2026-11-19)
 
 ## Related

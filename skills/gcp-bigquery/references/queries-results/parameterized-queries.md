@@ -376,6 +376,7 @@ Use `--parameter` together with `--use_legacy_sql=false`; optionally set `--loca
 - The .NET client library does not support struct parameters. Client libraries convert built-in date objects to the TIMESTAMP REST format.
 - Related feature: verified parameterized queries in BigQuery conversational analytics (data agents).
 - The source also shows Console steps, REST array and struct bodies, and C#, Go, Java and Node.js (positional, array, timestamp, struct) forms.
+- "A query parameter value can't be `NULL`" is the source's limitation; the `bq query --parameter` help (bq bundled with gcloud 593.0.0) says "The value \"NULL\" produces a null value", so a typed NULL parameter can be passed from `bq`.
 - Source: https://docs.cloud.google.com/bigquery/docs/parameterized-queries (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

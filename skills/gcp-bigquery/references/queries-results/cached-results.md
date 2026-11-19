@@ -10,8 +10,11 @@ BigQuery writes query results to a temporary cached results table unless you spe
 
 ### Disable cached results (bq)
 
+Adapted (not in the official docs): `--use_legacy_sql=false` is added, because the query uses GoogleSQL backtick-quoted table names.
+
 ```bash
 bq query \
+--use_legacy_sql=false \
 --nouse_cache \
 --batch \
 'SELECT
@@ -84,8 +87,11 @@ async function queryDisableCache() {
 
 ### Require cached results (bq)
 
+Adapted (not in the official docs): `--use_legacy_sql=false` is added, because the query uses GoogleSQL backtick-quoted table names.
+
 ```bash
 bq query \
+--use_legacy_sql=false \
 --require_cache \
 --batch \
 'SELECT
@@ -148,6 +154,7 @@ bq query \
 - Verify cache use in the console: **Query results** > **Job Information** shows **Bytes processed** as **0 B (results cached)**.
 - Data Catalog Fine-Grained Reader is a Policy Tag Manager role (column-level security); it is covered under column-level security in `gcp-bigquery`.
 - The source also shows Console, Go, Java and PHP forms.
+- Corrected from the official docs: the two `bq query` cache examples use GoogleSQL table names without `--use_legacy_sql=false`; without it, `bq` picks the dialect from the query or the configured default (`bq help query`), so the flag is added.
 - Source: https://docs.cloud.google.com/bigquery/docs/cached-results (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
