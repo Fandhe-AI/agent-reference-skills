@@ -187,13 +187,15 @@ AI.GENERATE(
   the `state` field has a description and set of allowable enum values. Since
   `enum` is a reserved keyword, it must be enclosed in backticks.
 
+  Adapted (not in the official docs): the field is written `name STRING NOT NULL` (name, type, then `NOT NULL`, as the argument description says), and the schema is passed as the named argument `output_schema =>` of the syntax.
+
   ```text
-  '''
-  name NOT NULL STRING,
+  output_schema => '''
+  name STRING NOT NULL,
   state STRING OPTIONS(
     description = 'The 2-letter abbreviation of the state name',
     `enum` = ['CA', 'NY', 'WA'])
-  ''' AS output_schema
+  '''
   ```
 
   Supported data types include `STRING`, `INT64`, `FLOAT64`, `BOOL`, `ARRAY`,
@@ -523,6 +525,8 @@ For information about managing the cost of this function, see
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the output schema example writes `name NOT NULL STRING` and `''' AS output_schema`; the argument description gives the order name, data type, optional `NOT NULL`, and `AI.GENERATE` takes `output_schema => 'OUTPUT_SCHEMA'`, so the example uses `name STRING NOT NULL` and the named argument.
+- The Provisioned Throughput steps refer to "the remote model that you reference in the `AI.GENERATE` function", but `AI.GENERATE` takes no model argument: it sends the request to the Gemini model given by `endpoint` (or the default model) through `connection_id`. Select that Gemini model when purchasing; the source does not state which region to select for this function.
 
 ## Related
 

@@ -375,13 +375,15 @@ The following query filters news stories but sets `max_error_ratio` to `0.05`,
 meaning the query fails if more than 5% of rows return an error during
 inference:
 
+Adapted (not in the official docs): a comma is added before `max_error_ratio`.
+
 ```googlesql
 SELECT
   title, body
 FROM
   `bigquery-public-data.bbc_news.fulltext`
 WHERE
-  AI.IF(('The following news story is about a natural disaster: ', body)
+  AI.IF(('The following news story is about a natural disaster: ', body),
     max_error_ratio => 0.05);
 ```
 
@@ -432,6 +434,7 @@ For information about managing the cost of this function, see
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-if (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the "handle inference errors" example has no comma between the prompt argument and `max_error_ratio => 0.05` of `AI.IF`; the comma is added.
 
 ## Related
 

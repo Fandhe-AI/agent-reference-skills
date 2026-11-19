@@ -216,6 +216,7 @@ for the rest of the query.
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-predict (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- The Output section says `AI.PREDICT` returns "the columns from the training table or query result"; the predictions are made for the second argument (`PREDICTION_TABLE` / `PREDICTION_QUERY`), so the returned input columns are read as those of the prediction table or query result. The source does not say this explicitly.
 
 ## Related
 

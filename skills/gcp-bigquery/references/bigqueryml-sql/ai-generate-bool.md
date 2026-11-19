@@ -401,6 +401,7 @@ For information about managing the cost of this function, see
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate-bool (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- The Provisioned Throughput steps refer to "the remote model that you reference in the `AI.GENERATE_BOOL` function", but `AI.GENERATE_BOOL` takes no model argument: it sends the request to the Gemini model given by `endpoint` (or the default model) through `connection_id`. Select that Gemini model when purchasing; the source does not state which region to select for this function.
 
 ## Related
 

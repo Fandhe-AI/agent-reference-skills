@@ -533,8 +533,8 @@ STRUCT(
   is `0.5`, then the model selects either A or B as the next
   token by using the `TEMPERATURE` value and doesn't consider C.
 - `TEMPERATURE`: a `FLOAT64` value in the range `[0.0,1.0]` that controls the degree of randomness in token selection. Lower `TEMPERATURE` values are good for prompts that require a more deterministic and less open-ended or creative response, while higher `TEMPERATURE` values can lead to more diverse or creative results. A `TEMPERATURE` value of `0` is deterministic, meaning that the highest probability response is always selected. The default is `0`.
-- `STOP_SEQUENCES`: an `ARRAY` value that removes the specified strings if they are included in responses from the model. Strings are matched exactly, including capitalization. The default is an empty array.
-- `SAFETY_SETTINGS`: an `ARRAY>` value that configures content safety thresholds to filter responses. The first element in the struct specifies a harm category, and the second element in the struct specifies a corresponding blocking threshold. The model filters out content that violate these settings. You can only specify each category once. For example, you can't specify both `STRUCT('HARM_CATEGORY_DANGEROUS_CONTENT' AS category,
+- `STOP_SEQUENCES`: an `ARRAY<STRING>` value that removes the specified strings if they are included in responses from the model. Strings are matched exactly, including capitalization. The default is an empty array.
+- `SAFETY_SETTINGS`: an `ARRAY<STRUCT<STRING AS category, STRING AS threshold>>` value that configures content safety thresholds to filter responses. The first element in the struct specifies a harm category, and the second element in the struct specifies a corresponding blocking threshold. The model filters out content that violate these settings. You can only specify each category once. For example, you can't specify both `STRUCT('HARM_CATEGORY_DANGEROUS_CONTENT' AS category,
   'BLOCK_MEDIUM_AND_ABOVE' AS threshold)` and `STRUCT('HARM_CATEGORY_DANGEROUS_CONTENT' AS category,
   'BLOCK_ONLY_HIGH' AS threshold)`. If there is no safety setting for a given category, the `BLOCK_MEDIUM_AND_ABOVE` safety setting is used.
 
@@ -711,6 +711,8 @@ The following example shows how to extract information from unstructured
 text and use the `model_params` argument to specify a custom schema, limit
 the maximum number of output tokens to 200, and disable thinking:
 
+Adapted (not in the official docs): the `response_schema` keys and values use double quotes, because `MODEL_PARAMS` must be a JSON-formatted string.
+
 ```googlesql
 SELECT
   *
@@ -727,7 +729,7 @@ FROM
           "max_output_tokens": 200,
           "thinking_config": {"thinking_budget": 0},
           "response_mime_type": "application/json",
-          "response_schema": {'type': 'OBJECT', 'properties': {'city_name': {'type': 'STRING'}, 'temperature': {'type': 'INTEGER'}}}
+          "response_schema": {"type": "OBJECT", "properties": {"city_name": {"type": "STRING"}, "temperature": {"type": "INTEGER"}}}
         }
       }
       ''' AS model_params
@@ -825,6 +827,8 @@ This example analyzes visual content from an object table that's named
 `dogs` and identifies the breed of dog contained in the content. The content
 returned is filtered by the specified safety settings:
 
+Adapted (not in the official docs): a comma is added between the `TABLE` argument and the `STRUCT` argument.
+
 ```googlesql
 SELECT
   uri,
@@ -833,7 +837,7 @@ FROM
   AI.GENERATE_TEXT(
     MODEL
       `mydataset.dog_identifier_model`,
-    TABLE `mydataset.dogs`
+    TABLE `mydataset.dogs`,
       STRUCT(
         'What is the breed of the dog?' AS PROMPT,
         .01 AS TEMPERATURE,
@@ -867,6 +871,8 @@ FROM
 This example classifies PDF content from an object table
 that's named `documents`:
 
+Adapted (not in the official docs): commas are added between the `MODEL`, `TABLE` and `STRUCT` arguments.
+
 ```googlesql
 SELECT
   uri,
@@ -874,8 +880,8 @@ SELECT
 FROM
   AI.GENERATE_TEXT(
     MODEL
-      `mydataset.classify_model`
-        TABLE `mydataset.documents`
+      `mydataset.classify_model`,
+        TABLE `mydataset.documents`,
           STRUCT(
           'Classify this document using the following categories: legal, tax-related, real estate' AS PROMPT,
           .2 AS TEMPERATURE));
@@ -976,6 +982,11 @@ To try the BigQuery ML remote inference SQL script, see
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate-text (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the visual content analysis example (`mydataset.dogs`) has no comma between the `TABLE` and `STRUCT` arguments of `AI.GENERATE_TEXT`; the comma is added.
+- Corrected from the official docs: the document classification example (`mydataset.documents`) has no commas between the `MODEL`, `TABLE` and `STRUCT` arguments of `AI.GENERATE_TEXT`; the commas are added.
+- Corrected from the official docs: the structured output example writes `response_schema` with single-quoted keys and values, which is not valid JSON; `MODEL_PARAMS` must be a JSON-formatted string, so double quotes are used.
+- Corrected from the official docs (rendering): the page's HTML writes `ARRAY<STRING>` unescaped inside `<code>`, so the rendered page and its Markdown twin show `ARRAY`; the type is restored from the HTML source. (`STOP_SEQUENCES` for object tables)
+- Corrected from the official docs (rendering): the page's HTML writes `ARRAY<STRUCT<STRING AS category, STRING AS threshold>>` unescaped inside `<code>`, so the rendered page and its Markdown twin show `ARRAY>`; the type is restored from the HTML source. (`SAFETY_SETTINGS` for object tables)
 
 ## Related
 
