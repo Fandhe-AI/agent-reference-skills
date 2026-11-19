@@ -15,7 +15,7 @@ Alternatively, you can use the Google Cloud console user interface to
 statement yourself.
 
 After you create a remote model, you can use it with the
-[`ML.PREDICT` function](predict.md)
+[`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict)
 to get predictions from the custom model deployed to Agent Platform.
 
 ### `CREATE MODEL` syntax
@@ -76,13 +76,13 @@ contain the fields needed for the Gemini Enterprise Agent Platform endpoint resp
 You can use the following BigQuery data types in the `INPUT` and
 `OUTPUT` clauses:
 
-- [`BOOL`](../googlesql-syntax/data-types.md#boolean-type)
-- [`INT64`](../googlesql-syntax/data-types.md#integer-type)
-- [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type)
-- [`NUMERIC`](../googlesql-syntax/data-types.md#decimal-types)
-- [`BIGNUMERIC`](../googlesql-syntax/data-types.md#decimal-types)
-- [`STRING`](../googlesql-syntax/data-types.md#string-type)
-- An [`ARRAY`](../googlesql-syntax/data-types.md#array-type) of any of the aforementioned types.
+- [`BOOL`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#boolean_type)
+- [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types)
+- [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types)
+- [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#decimal_types)
+- [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#decimal_types)
+- [`STRING`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#string_type)
+- An [`ARRAY`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#array_type) of any of the aforementioned types.
 
 ##### Field name format
 

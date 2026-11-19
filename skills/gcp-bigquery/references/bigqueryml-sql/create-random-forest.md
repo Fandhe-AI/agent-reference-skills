@@ -16,7 +16,7 @@ statement yourself. Random forest models are trained using the
 [XGBoost library](https://xgboost.readthedocs.io/en/latest/).
 
 You can use random forest regressor models with the
-[`ML.PREDICT` function](predict.md)
+[`ML.PREDICT` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict)
 to perform [regression](https://docs.cloud.google.com/bigquery/docs/regression-overview), and you can use
 random forest classifier models with the `ML.PREDICT` function to
 perform [classification](https://docs.cloud.google.com/bigquery/docs/classification-overview). You can use
@@ -542,7 +542,7 @@ to evaluate the importance of global features to the model.
 
 Global explanations are computed when you create the model. This option
 must be `TRUE` if you want to use the
-[`ML.GLOBAL_EXPLAIN` function](global-explain.md)
+[`ML.GLOBAL_EXPLAIN` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-global-explain)
 to retrieve the global explanations after the model is created.
 
 **Arguments**
@@ -664,7 +664,7 @@ This option accepts the following values:
   split results if the same underlying training data is used.
 
   > [!NOTE]
-  > **Note:** A random split is based on the [FARM_FINGERPRINT](../googlesql-functions/hash_functions.md#farm_fingerprint) of the data (including the column name and schema), so tables with the same content but different column names and schemas may get different splitting and different evaluation metrics.
+  > **Note:** A random split is based on the [FARM_FINGERPRINT](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hash_functions#farm_fingerprint) of the data (including the column name and schema), so tables with the same content but different column names and schemas may get different splitting and different evaluation metrics.
 
 - `CUSTOM`: Split data using the value in a specified column:
 
@@ -872,7 +872,7 @@ value for [`NUM_TRIALS`](#num_trials).
 **Arguments**
 
 The possible objectives are a subset of the
-[model evaluation metrics](evaluate.md#output)
+[model evaluation metrics](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-evaluate#output)
 for the model type. If you aren't running hyperparameter tuning, or if you are
 and you don't specify an objective, the default objective
 is used. For `RANDOM_FOREST_CLASSIFIER` models, the default is `ROC_AUC`.
@@ -937,7 +937,7 @@ A `STRING` value containing the fully-qualified name of the CMEK. For example,
 
 The `AS query_statement` clause specifies the
 GoogleSQL query used to generate the training data. See the
-[GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+[GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
 page for the supported SQL syntax of the `query_statement` clause.
 
 All columns referenced by the `query_statement` are used as input

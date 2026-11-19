@@ -20,7 +20,7 @@ statement yourself.
 Matrix factorization models use
 [collaborative filtering](https://developers.google.com/machine-learning/recommendation/collaborative/basics)
 to identify similar items. Use matrix factorization models with the
-[`ML.RECOMMEND` function](recommend.md)
+[`ML.RECOMMEND` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-recommend)
 to generate [recommendations](https://docs.cloud.google.com/bigquery/docs/recommendation-overview).
 
 For more information about supported SQL statements and functions for this
@@ -376,7 +376,7 @@ This option accepts the following values:
   split results if the same underlying training data is used.
 
   > [!NOTE]
-  > **Note:** A random split is based on the [FARM_FINGERPRINT](../googlesql-functions/hash_functions.md#farm_fingerprint) of the data (including the column name and schema), so tables with the same content but different column names and schemas may get different splitting and different evaluation metrics.
+  > **Note:** A random split is based on the [FARM_FINGERPRINT](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/hash_functions#farm_fingerprint) of the data (including the column name and schema), so tables with the same content but different column names and schemas may get different splitting and different evaluation metrics.
 
 - `CUSTOM`: Split data using the value in a specified column:
 
@@ -599,7 +599,7 @@ value for [`NUM_TRIALS`](#num_trials).
 **Arguments**
 
 The possible objectives are a subset of the
-[model evaluation metrics](evaluate.md#output)
+[model evaluation metrics](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-evaluate#output)
 for the model type. If you aren't running hyperparameter tuning, or if you are
 and you don't specify an objective, the default objective
 is used. For explicit `MATRIX_FACTORIZATION` models, the default is `MEAN_SQUARED_ERROR'`. For implicit `MATRIX_FACTORIZATION` models , the
@@ -664,7 +664,7 @@ A `STRING` value containing the fully-qualified name of the CMEK. For example,
 
 The `AS query_statement` clause specifies the
 GoogleSQL query used to generate the training data. See the
-[GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+[GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
 page for the supported SQL syntax of the `query_statement` clause.
 
 The query_statement is expected to contain exactly 3 columns
@@ -679,9 +679,9 @@ column include:
 
 | `Matrix factorization input column` | `Supported types` |
 |---|---|
-| `user` | Any [groupable](../googlesql-syntax/data-types.md#data-type-properties) data type |
-| `item` | Any [groupable](../googlesql-syntax/data-types.md#data-type-properties) data type |
-| `rating` | [`INT64`](../googlesql-syntax/data-types.md#integer-type) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](../googlesql-syntax/data-types.md#floating-point-type) |
+| `user` | Any [groupable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties) data type |
+| `item` | Any [groupable](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties) data type |
+| `rating` | [`INT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#integer_types) [`NUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_type) [`BIGNUMERIC`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#bignumeric_type) [`FLOAT64`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types#floating_point_types) |
 
 ### Feedback types
 

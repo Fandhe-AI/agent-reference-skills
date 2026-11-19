@@ -17,12 +17,12 @@ Google Cloud console user interface to
 statement yourself.
 
 You can use PCA models with the
-[`ML.PREDICT`](predict.md)
+[`ML.PREDICT`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-predict)
 or
 [`AI.GENERATE_EMBEDDING`](ai-generate-embedding.md)
 functions to embed data into a lower-dimensional space, and
 with the
-[`ML.DETECT_ANOMALIES` function](detect-anomalies.md)
+[`ML.DETECT_ANOMALIES` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-detect-anomalies)
 to perform [anomaly detection](https://docs.cloud.google.com/bigquery/docs/anomaly-detection-overview).
 
 For more information about supported SQL statements and functions for this
@@ -257,7 +257,7 @@ A `STRING` value containing the fully-qualified name of the CMEK. For example,
 
 The `AS query_statement` clause specifies the
 GoogleSQL query used to generate the training data. See the
-[GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax)
+[GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax)
 page for the supported SQL syntax of the `query_statement` clause.
 
 ### Locations

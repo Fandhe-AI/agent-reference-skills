@@ -19,9 +19,9 @@ in time series data.
 
 You can use multivariate time series models with the following functions:
 
-- Use the [`ML.FORECAST` function](forecast.md) to retrieve the forecasted values that were generated when you created the model.
-- Use the [`ML.EXPLAIN_FORECAST` function](explain-forecast.md) function to retrieve the forecasted values that were generated when you created the model, and compute the prediction intervals.
-- Use the [`ML.DETECT_ANOMALIES` function](detect-anomalies.md) to perform [anomaly detection](https://docs.cloud.google.com/bigquery/docs/anomaly-detection-overview).
+- Use the [`ML.FORECAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-forecast) to retrieve the forecasted values that were generated when you created the model.
+- Use the [`ML.EXPLAIN_FORECAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast) function to retrieve the forecasted values that were generated when you created the model, and compute the prediction intervals.
+- Use the [`ML.DETECT_ANOMALIES` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-detect-anomalies) to perform [anomaly detection](https://docs.cloud.google.com/bigquery/docs/anomaly-detection-overview).
 
 > [!NOTE]
 > **Note:** If you don't want to create and manage your own model, you can use BigQuery ML's built-in [TimesFM time series model](https://docs.cloud.google.com/bigquery/docs/timesfm-model) with the [`AI.FORECAST` function](ai-forecast.md) ([Preview](https://cloud.google.com/products#product-launch-stages)) to perform forecasting.
@@ -33,14 +33,14 @@ model, see
 ### Time series modeling pipeline
 
 The multivariate `ARIMA_PLUS_XREG` time series model is an
-[`ARIMA_PLUS` model](create-time-series.md)
+[`ARIMA_PLUS` model](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-time-series)
 with linear external regressors. For more information, see [ARIMA_PLUS: Large-scale, Accurate, Automatic and Interpretable In-Database Time Series Forecasting and Anomaly Detection in Google BigQuery](https://arxiv.org/abs/2510.24452). The following diagram shows the model pipeline:
 
 ![ARIMA_PLUS_XREG_DIAGRAM](https://docs.cloud.google.com/static/bigquery/images/BQ_ARIMA_PLUS_XREG_diagram.png)
 
 For a diagram that shows the details of the **ARIMA_PLUS Pipeline** section
 in the preceding diagram, see
-[Time series modeling pipeline](create-time-series.md#time-series-modeling-pipeline).
+[Time series modeling pipeline](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-time-series#modeling-pipeline).
 
 The modeling pipeline for the `ARIMA_PLUS` time series models performs the
 following functions:
@@ -621,7 +621,7 @@ the smoothing window before the average is applied.
 Specifying a value for `TREND_SMOOTHING_WINDOW_SIZE` doesn't affect forecasting
 results. It only affects the smoothness of the trend component, which you can
 see by using the
-[`ML.EXPLAIN_FORECAST` function](explain-forecast.md).
+[`ML.EXPLAIN_FORECAST` function](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-forecast).
 
 **Arguments**
 
@@ -712,7 +712,7 @@ AS query_statement
 For time series forecasting models that have a `DATA_FREQUENCY` value
 of either `DAILY` or `AUTO_FREQUENCY`, you can optionally use the
 following `AS` clause syntax to perform
-[custom holiday modeling](create-time-series.md#custom-holidays)
+[custom holiday modeling](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-time-series#custom_holidays)
 in addition to specifying the training data:
 
 ```googlesql
@@ -727,7 +727,7 @@ AS (
 The `query_statement` argument specifies the query that is used to
 generate the training data. For information about the supported SQL syntax of
 the `query_statement` clause, see
-[GoogleSQL query syntax](../googlesql-syntax/query-syntax-1.md#sql-syntax).
+[GoogleSQL query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#sql_syntax).
 
 ##### `holiday_statement`
 
@@ -738,7 +738,7 @@ return 50,000 rows or less and must contain the following columns:
 - `region`: Required. A `STRING` value that identifies the region to target for
   holiday modeling. Use one of the following options:
 
-  - An upper-case [holiday region code](create-time-series.md#holiday_region). Use this option to overwrite or supplement the holidays for the specified region. You can see the holidays for a region by running `SELECT * FROM
+  - An upper-case [holiday region code](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-time-series#holiday_region). Use this option to overwrite or supplement the holidays for the specified region. You can see the holidays for a region by running `SELECT * FROM
     bigquery-public-data.ml_datasets.holidays_and_events_for_forecasting WHERE
     region = region`.
   - An arbitrary string. Use this option to specify a custom region that you want to model holidays for. For example, you could specify `London` if you are only modeling holidays for that city.
@@ -1045,7 +1045,7 @@ CREATE OR REPLACE MODEL mydataset.arima_model
 #### Custom holiday limitations
 
 - Custom holiday modeling only works for models that have a `data_frequency` value of either `DAILY` or `AUTO_FREQUENCY`. If you use `AUTO_FREQUENCY`, the actual frequency of the time series data needs to be daily.
-- You can't use the [`TRANSFORM` clause](create.md#transform) of the `CREATE MODEL` statement if you are performing custom holiday modeling.
+- You can't use the [`TRANSFORM` clause](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create#transform) of the `CREATE MODEL` statement if you are performing custom holiday modeling.
 - `holiday_name` column cannot have more than 500 distinct values.
 - Custom holiday modeling uses an algorithm that automatically detects the significance of the holiday effect within the provided holiday effect window, and only extracts the holiday effect on the days that the algorithm classifies as significant. For example, if `primary date` is `01/02` with `preholiday_days` and `postholiday_days` set to `1`, the algorithm analyzes the holiday effect for these three days: `[01/01, 01/02, 01/03]`. In the `ML.EXPLAIN_FORECAST` output, it is not guaranteed that all three of these days will have a holiday effect. Only those days within this window that have a significant holiday effect are associated with a non-zero holiday effect in the output.
 - To get a better result from custom holiday modeling, don't specify the same holiday more than twice a year.
