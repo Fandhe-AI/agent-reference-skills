@@ -413,8 +413,10 @@ The following examples show how to create contribution analysis models.
 The following example creates a contribution analysis model that uses a
 summable metric:
 
+Adapted (not in the official docs): `CREATE (OR REPLACE) MODEL` is written `CREATE OR REPLACE MODEL`, as in the syntax of this page.
+
 ```sql
-CREATE (OR REPLACE) MODEL `myproject.mydataset.ca_model`
+CREATE OR REPLACE MODEL `myproject.mydataset.ca_model`
   OPTIONS(
     MODEL_TYPE = 'CONTRIBUTION_ANALYSIS',
     CONTRIBUTION_METRIC = 'SUM(house_price)',
@@ -429,8 +431,10 @@ SELECT * FROM mydataset.house_sales WHERE state = 'WA';
 The following example creates a contribution analysis model that uses a
 summable ratio metric:
 
+Adapted (not in the official docs): `CREATE (OR REPLACE) MODEL` is written `CREATE OR REPLACE MODEL`, as in the syntax of this page.
+
 ```sql
-CREATE (OR REPLACE) MODEL `myproject.mydataset.ca_model`
+CREATE OR REPLACE MODEL `myproject.mydataset.ca_model`
   OPTIONS(
     MODEL_TYPE = 'CONTRIBUTION_ANALYSIS',
     CONTRIBUTION_METRIC = 'SUM(concessions_sold)/SUM(attendee_count)',
@@ -448,8 +452,10 @@ FROM mydataset.regional_sales;
 The following example creates a contribution analysis model that uses a
 summable by category metric:
 
+Adapted (not in the official docs): `CREATE (OR REPLACE) MODEL` is written `CREATE OR REPLACE MODEL`, as in the syntax of this page.
+
 ```googlesql
-CREATE (OR REPLACE) MODEL `myproject.mydataset.ca_model`
+CREATE OR REPLACE MODEL `myproject.mydataset.ca_model`
   OPTIONS(
     MODEL_TYPE = 'CONTRIBUTION_ANALYSIS',
     CONTRIBUTION_METRIC = 'SUM(concessions_sold)/COUNT(DISTINCT sales_date)',
@@ -473,6 +479,9 @@ FROM mydataset.regional_sales;
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-contribution-analysis (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: example 1 of the contribution analysis examples writes `CREATE (OR REPLACE) MODEL`, which is not valid SQL; the syntax is `CREATE MODEL` or `CREATE OR REPLACE MODEL`, so `CREATE OR REPLACE MODEL` is used.
+- Corrected from the official docs: example 2 of the contribution analysis examples writes `CREATE (OR REPLACE) MODEL`, which is not valid SQL; the syntax is `CREATE MODEL` or `CREATE OR REPLACE MODEL`, so `CREATE OR REPLACE MODEL` is used.
+- Corrected from the official docs: example 3 of the contribution analysis examples writes `CREATE (OR REPLACE) MODEL`, which is not valid SQL; the syntax is `CREATE MODEL` or `CREATE OR REPLACE MODEL`, so `CREATE OR REPLACE MODEL` is used.
 
 ## Related
 

@@ -598,6 +598,7 @@ Model training does not incur any charges if you are using on-demand pricing. If
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the autoencoder syntax lists `HPARAM_RANGE(range)` for `HIDDEN_UNITS`, but the `HIDDEN_UNITS` section says that for hyperparameter tuning you must use the `HPARAM_CANDIDATES` keyword with an `ARRAY<STRUCT<ARRAY<INT64>>>` value; `HPARAM_RANGE` is removed from the syntax.
 - Conflicting official statements: the `HIDDEN_UNITS` section says the number of layers must be odd, but its neural architecture search example includes the two-layer candidate `struct([8, 16])`. For an autoencoder, give only candidates with an odd number of layers, such as `struct([8])` and `struct([16, 32, 64])` from the same example.
+- Conflicting official statements: the syntax writes `HPARAM_TUNING_OBJECTIVES` as a single string value, but the hyperparameter tuning examples on the model pages (for example `create-kmeans.md`, `create-glm.md` and `create-dnn-models.md`) pass a one-element array such as `HPARAM_TUNING_OBJECTIVES=['ROC_AUC']`; only one objective is supported. Use the one-element array form of the examples. The syntax list also writes the value without quotes (`{ MEAN_SQUARED_ERROR | ... }`).
 
 ## Related
 

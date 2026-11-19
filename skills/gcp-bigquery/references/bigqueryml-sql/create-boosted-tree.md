@@ -30,6 +30,8 @@ model, see
 
 ### `CREATE MODEL` syntax
 
+Adapted (not in the official docs): the closing backtick of `'ONE_HOT_ENCODING'` is replaced with a single quote.
+
 ```sql
 {CREATE MODEL | CREATE MODEL IF NOT EXISTS | CREATE OR REPLACE MODEL} model_name
 OPTIONS(model_option_list)
@@ -38,7 +40,7 @@ AS query_statement
 model_option_list:
 MODEL_TYPE = { 'BOOSTED_TREE_CLASSIFIER' | 'BOOSTED_TREE_REGRESSOR' }
     [, APPROX_GLOBAL_FEATURE_CONTRIB = { TRUE | FALSE } ]
-    [, CATEGORY_ENCODING_METHOD = { 'ONE_HOT_ENCODING` | 'TARGET_ENCODING' | 'LABEL_ENCODING' } ]
+    [, CATEGORY_ENCODING_METHOD = { 'ONE_HOT_ENCODING' | 'TARGET_ENCODING' | 'LABEL_ENCODING' } ]
     [, BOOSTER_TYPE = { {'GBTREE' | 'DART'} | HPARAM_CANDIDATES([candidates]) } ]
     [, DART_NORMALIZE_TYPE = { {'TREE' | 'FOREST'} | HPARAM_CANDIDATES([candidates]) } ]
     [, NUM_PARALLEL_TREE = { int64_value | HPARAM_RANGE(range) | HPARAM_CANDIDATES([candidates]) } ]
@@ -1135,6 +1137,9 @@ regions. For a complete list of supported regions and multi-regions, see
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-boosted-tree (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the syntax list writes `CATEGORY_ENCODING_METHOD` value `ONE_HOT_ENCODING` with an opening single quote and a closing backtick; it is written `'ONE_HOT_ENCODING'`, as in the `CATEGORY_ENCODING_METHOD` section.
+- Corrected from the official docs: the `DATA_SPLIT_EVAL_FRACTION` and `DATA_SPLIT_TEST_FRACTION` sections give `20.00` and `8.0` as values for a training dataset of 72%; the options are fractions (`1 - eval_fraction - test_fraction`, default `0.2`), so those values are `0.20` and `0.08`.
+- Conflicting official statements: the syntax writes `HPARAM_TUNING_OBJECTIVES` as a single string value, but the hyperparameter tuning examples on the model pages (for example `create-kmeans.md`, `create-glm.md` and `create-dnn-models.md`) pass a one-element array such as `HPARAM_TUNING_OBJECTIVES=['ROC_AUC']`; only one objective is supported. Use the one-element array form of the examples.
 
 ## Related
 
