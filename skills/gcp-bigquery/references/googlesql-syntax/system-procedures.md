@@ -176,7 +176,7 @@ CALL BQ.SHOW_GRAPH_EXPAND_SCHEMA(
 
 Populates the `output_schema` variable that you provide with the schema of the
 table returned by calling the
-[`GRAPH_EXPAND` TVF](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-queries#graph_expand)
+[`GRAPH_EXPAND` TVF](../graph-gql/sql-queries.md#graph_expand)
 on `graph_name`.
 
 Each column returned by the `GRAPH_EXPAND`

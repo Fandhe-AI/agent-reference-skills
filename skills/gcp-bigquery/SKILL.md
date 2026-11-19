@@ -23,7 +23,7 @@ Google Cloud (GCP) のデータウェアハウス BigQuery のスキル。デー
 - Storage Write API の名称: 従来の `tabledata.insertAll` は「Storage Write API (REST)」、従来の Storage Write API は「Storage Write API (gRPC)」（`storage-write-read-api-cdc/README.md`・`write-api-intro.md`。書き込み経路の選択は `write-api-intro.md` の比較表）
 - Analytics Hub は BigQuery sharing（旧 Analytics Hub）。`sharing-analytics-hub/` のページ名には `analytics-hub-*` が残る
 - Conversational Analytics API の前身 Data QnA API は非推奨（"The Data QnA API is deprecated"、日付の記載なし。`gemini-data-agents-notebooks/conversational-analytics-api-overview.md`）
-- Data Catalog は deprecated date "February 3, 2025"・shutdown date "June 1, 2026"。ただし Policy Tag Manager（taxonomies / policy tags。列レベルのアクセス制御と動的データマスキングに使う）は非推奨ではなく、`datacatalog.googleapis.com` で引き続き提供される（`iam/datacatalog.md`（後続 PR で投入）・`rest/datacatalog/datacatalog.md` の Notes に出典の文言あり）。このため機械生成の `gcloud data-catalog`・`rest/datacatalog`・`iam/datacatalog.md`（後続 PR で投入） は本スキルに置く。Data Catalog / Knowledge Catalog のガイドは `gcp-knowledge-catalog`
+- Data Catalog は deprecated date "February 3, 2025"・shutdown date "June 1, 2026"。ただし Policy Tag Manager（taxonomies / policy tags。列レベルのアクセス制御と動的データマスキングに使う）は非推奨ではなく、`datacatalog.googleapis.com` で引き続き提供される（`iam/datacatalog.md`・`rest/datacatalog/datacatalog.md` の Notes に出典の文言あり）。このため機械生成の `gcloud data-catalog`・`rest/datacatalog`・`iam/datacatalog.md` は本スキルに置く。Data Catalog / Knowledge Catalog のガイドは `gcp-knowledge-catalog`
 
 ## ディレクトリ構成
 
@@ -43,6 +43,9 @@ skills/gcp-bigquery/
       data-catalog/               # Data Catalog（Policy Tag Manager のため本スキル）
         README.md
         data-catalog-<sub>.md     # 24 ファイル（taxonomies・policy-tags・tag-templates・entries・entry-groups・tags・search・crawlers 等）
+    iam/                          # 機械生成: IAM roles-permissions reference（16 ファイル）、分割投入中（2 / 16 ページ。収録済みは README 掲載分のみ）
+      README.md
+      <service>[-<N>].md
     googlesql-syntax/             # 機械変換: GoogleSQL 構文・データ型・演算子・DDL / DML / DCL・手続き型言語・システム変数ほか
       README.md
       <page>[-<N>].md
@@ -52,7 +55,7 @@ skills/gcp-bigquery/
     bigqueryml-sql/               # 機械変換: BigQuery ML の SQL 構文（CREATE MODEL・ML.* / AI.* 関数）
       README.md
       <page>.md
-    graph-gql/                    # 機械変換: GQL（BigQuery Graph）、分割投入中（5 / 10 ページ。収録済みは README 掲載分のみ）
+    graph-gql/                    # 機械変換: GQL（BigQuery Graph）
       README.md
       <page>.md
     bq-cli/                       # 機械変換: bq コマンドラインツールのリファレンス（3 分割）
@@ -132,11 +135,13 @@ skills/gcp-bigquery/
 
 `references/gcloud/` のグループ（3）: `biglake` / `bq` / `data-catalog`。GA コマンドのページは gcloud help の verbatim、alpha / beta は NAME と SYNOPSIS のみ（各ページ冒頭に明記）。`bq` グループは `migration-workflows` を除いて alpha のみ、`data-catalog` の `crawlers` と `crawler-runs` は alpha のみ、`biglake` の `data-product-sharing` と `delta-sharing` は alpha と GA（beta なし）、`hive` と `iceberg` は alpha・beta・GA（gcloud 593.0.0 の生成ページで確認）。
 
+`references/iam/` のファイル（16）: `analyticshub` / `biglake` / `bigquery-1` / `bigquery-2` / `bigqueryconnection` / `bigquerycontinuousquery` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigquerymigration` / `bigqueryomni` / `bigqueryspark` / `datacatalog` / `dataform-1` / `dataform-2` / `dataprep` / `geminidataanalytics`。
+
 機械生成のみで、ガイドを持たないサービス（ページに書かれている範囲のみ）。
 
 - IAM ページのみ: `bigquerycontinuousquery` / `bigqueryomni` / `bigqueryspark` / `geminidataanalytics` / `dataprep`
 - `bigquerymigration`: IAM ページのほか、gcloud の `bq migration` / `bq migration-workflows`。REST ページは無い
-- `dataprep`（Dataprep by Trifacta）: `iam/dataprep.md`（後続 PR で投入） のみでガイドは収録していない
+- `dataprep`（Dataprep by Trifacta）: `iam/dataprep.md` のみでガイドは収録していない
 
 ## 探索手順
 
@@ -148,12 +153,12 @@ skills/gcp-bigquery/
 4. INFORMATION_SCHEMA のビュー → `references/information-schema/README.md`（後続 PR で投入）（概要・権限・リージョン修飾子は `overview-datasets/information-schema-intro.md`）
 5. `bq` のサブコマンド → `references/bq-cli/README.md`。コマンドは `bq-cli-reference-2.md`、共通・グローバルフラグは `bq-cli-reference-1.md`。サブコマンド名で grep する。gcloud の `bq` グループとは別
 6. gcloud コマンド → `references/gcloud/README.md` からグループ（`biglake` / `bq` / `data-catalog`）を選び、グループの README.md → コマンドページへ。GA は help の verbatim、alpha / beta は NAME と SYNOPSIS のみなので、フラグの詳細が要るときは `gcloud alpha|beta <command> --help` を使う。BigQuery 本体の操作は gcloud ではなく `bq` と SQL が中心
-7. IAM ロール・権限 → `references/iam/README.md`（後続 PR で投入） の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/`（後続 PR で投入） 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
+7. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/` 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
 8. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
 
-未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `information-schema` / `legacy-sql`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`rest` / `rest-schemas` / `information-schema` / `legacy-sql`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`graph-gql`: 5 / 10 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`iam`: 2 / 16 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -204,12 +209,13 @@ skills/gcp-bigquery/
 | Lakehouse（BigLake）のコマンド（`biglake iceberg` / `hive` / `delta-sharing` / `data-product-sharing`） | gcloud/biglake | [references/gcloud/biglake/README.md](references/gcloud/biglake/README.md) |
 | gcloud `bq` グループ（datasets・jobs・migration・migration-workflows・query・tables） | gcloud/bq | [references/gcloud/bq/README.md](references/gcloud/bq/README.md) |
 | Policy Tag Manager（taxonomies・policy tags）・tag templates・entries のコマンド | gcloud/data-catalog | [references/gcloud/data-catalog/README.md](references/gcloud/data-catalog/README.md) |
+| ロール ID の権限一覧・事前定義ロールを調べたい（`roles/bigquery.*` / `roles/analyticshub.*` / `roles/biglake.*` / `roles/dataform.*` / `roles/datacatalog.*` 等） | iam | [references/iam/README.md](references/iam/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas` / `iam` / `information-schema` / `legacy-sql`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas` / `information-schema` / `legacy-sql`
 
 ## 他スキルとの使い分け
 
-- `gcp-knowledge-catalog` — Knowledge Catalog（旧 Dataplex Universal Catalog）の entries・aspects・検索・glossary・data products・データ品質・データプロファイリング・データリネージ、Data Catalog の廃止と移行。`gcloud dataplex` / `datalineage` もそちら。本スキルは BigQuery 本体と、Policy Tag Manager（taxonomies / policy tags）の機械生成ページ（`gcloud data-catalog`・`rest/datacatalog`・`iam/datacatalog.md`（後続 PR で投入））
+- `gcp-knowledge-catalog` — Knowledge Catalog（旧 Dataplex Universal Catalog）の entries・aspects・検索・glossary・data products・データ品質・データプロファイリング・データリネージ、Data Catalog の廃止と移行。`gcloud dataplex` / `datalineage` もそちら。本スキルは BigQuery 本体と、Policy Tag Manager（taxonomies / policy tags）の機械生成ページ（`gcloud data-catalog`・`rest/datacatalog`・`iam/datacatalog.md`）
 - `gcp-storage` — 読み込み・エクスポート・外部テーブルの対象になる Cloud Storage のバケットとオブジェクト、Storage Transfer Service。本スキルは BigQuery 側の読み込み・エクスポート・外部テーブルの手順
 - `gcp-databases-relational` — 連携クエリ（`EXTERNAL_QUERY`）の接続先になる Cloud SQL・AlloyDB・Spanner。本スキルは BigQuery 側の連携クエリと Connections API
 - `gcp-databases-nosql` — Bigtable・Firestore などの NoSQL（外部テーブル・エクスポートの対象）。本スキルは BigQuery 側
@@ -245,21 +251,21 @@ skills/gcp-bigquery/
 - Looker・Looker Studio・Connected Sheets
 - データプロファイル・データ品質スキャン（機能は Knowledge Catalog の `dataplex` API。`gcp-knowledge-catalog` の範囲）
 - Data Catalog の概要・廃止告知・移行のガイド（`gcp-knowledge-catalog`）
-- 認証の定型ページ・クライアントライブラリのリファレンス・事前定義ロールの一覧ページ（ロールは `references/iam/`（後続 PR で投入））
+- 認証の定型ページ・クライアントライブラリのリファレンス・事前定義ロールの一覧ページ（ロールは `references/iam/`）
 - REST リファレンスの公式ページ（`references/rest/`（後続 PR で投入） の機械生成ページで代替）・コードサンプル集・release notes・SLA・料金・quotas
 - GoogleSQL リファレンスの次の 3 ページ: `functions-all`（関数の総覧）・`window-functions`・`graph-conditional-expressions`（索引・案内だけで固有の内容が無いページ）。関数の索引は `references/googlesql-functions/README.md`、ウィンドウ関数の呼び出しは `window-function-calls.md` と `navigation_functions.md`・`numbering_functions.md` を引く
-- Dataprep by Trifacta のガイド（`iam/dataprep.md`（後続 PR で投入） のみ収録）
+- Dataprep by Trifacta のガイド（`iam/dataprep.md` のみ収録）
 - 料金の表（取得していない。費用の考え方は `workload-cost-management` と `overview-datasets/storage-overview.md` の本文）
 
 ## 鮮度・ライセンス・既知の制約
 
 - 取得日: 2026-11-19（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin。URL に版が無いため取得日で pin）、2026-11-14（機械生成分。gcloud 593.0.0 の help、Discovery document、roles-permissions ページ。各ページ Notes に記載。例: `rest/bigquery/bigquery.md` は Discovery document `bigquery` v2 の revision 20261009）
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
-- `references/gcloud/` `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） `references/iam/`（後続 PR で投入） は機械生成。`googlesql-syntax` `googlesql-functions` `bigqueryml-sql` `graph-gql` `information-schema` `legacy-sql` `bq-cli` `dataform-cli` の 8 グループは公式の Markdown twin から機械的に変換した。他の 22 カテゴリは公式ガイド由来の手書き
+- `references/gcloud/` `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） `references/iam/` は機械生成。`googlesql-syntax` `googlesql-functions` `bigqueryml-sql` `graph-gql` `information-schema` `legacy-sql` `bq-cli` `dataform-cli` の 8 グループは公式の Markdown twin から機械的に変換した。他の 22 カテゴリは公式ガイド由来の手書き
 - 機械変換した SQL・CLI リファレンスの変換規則（各ページの Notes より）: 見出しは公式ページより 1 段下げる、インデントされたコードブロックは fenced にする、各コードブロックの本文は rendered page から取る（twin は結果表の罫線のダッシュを短縮するため）、本文はそれ以外は原文のまま。罫線のダッシュは rendered page に一致するブロックがある箇所のみ復元できており、一致するブロックが無い箇所は twin の短縮のまま。一部のページには `:` で始まる定義リスト記法が残っている
 - 公式ガイドの例の一部は誤りや危険を直している（直した例はコードブロック直前に `Adapted (not in the official docs)` の行を置き、ページの Notes にも残す）。gcloud の help の例を直した箇所は gcloud ページの Notes に `Corrected from the official docs:` で記載
 - 変更・縮退・名称変更（references で確認したもの）:
-  - Data Catalog: deprecated date "February 3, 2025"、shutdown date "June 1, 2026"。Policy Tag Manager は非推奨ではなく `datacatalog.googleapis.com` で継続（`iam/datacatalog.md`（後続 PR で投入）・`rest/datacatalog/datacatalog.md`）
+  - Data Catalog: deprecated date "February 3, 2025"、shutdown date "June 1, 2026"。Policy Tag Manager は非推奨ではなく `datacatalog.googleapis.com` で継続（`iam/datacatalog.md`・`rest/datacatalog/datacatalog.md`）
   - Data QnA API: 非推奨（日付の記載なし。`gemini-data-agents-notebooks/conversational-analytics-api-overview.md`）
   - BigLake → Google Cloud Lakehouse、Storage Write API の改称（上の「名称変更の注意」）
 - Preview など GA でない機能がガイドには含まれる。各ページの記述に従い、仕様は変わりうる

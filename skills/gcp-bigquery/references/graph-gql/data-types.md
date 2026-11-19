@@ -37,7 +37,7 @@ similar to fields of a struct.
 **Example**
 
 In the following example, `n` represents a graph element in the
-[`FinGraph`](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#fin_graph) property graph:
+[`FinGraph`](schema-statements.md#fingraph-example) property graph:
 
 ```sql
 GRAPH graph_db.FinGraph

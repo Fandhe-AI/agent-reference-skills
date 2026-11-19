@@ -131,7 +131,7 @@ CREATE OR REPLACE PROPERTY GRAPH mydataset.StoreGraph
 ```
 
 To access measures defined on a graph, you must call the
-[`GRAPH_EXPAND` TVF](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-sql-queries#graph_expand), which performs a series of `LEFT JOIN`
+[`GRAPH_EXPAND` TVF](../graph-gql/sql-queries.md#graph_expand), which performs a series of `LEFT JOIN`
 operations on your graph's input tables to produce a flattened version of
 the graph.
 
