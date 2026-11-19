@@ -2101,6 +2101,8 @@ FROM T1 AS t;
 
 In the following example, a graph path is converted into a JSON array.
 
+Adapted (not in the official docs): closed the result comment with `*/`.
+
 ```googlesql
 GRAPH graph_db.FinGraph
 MATCH p=(src:Account)-[t1:Transfers]->(dst:Account)
@@ -2147,7 +2149,7 @@ RETURN TO_JSON(p) AS json_array
  |  }                                                                 |
  |  ...                                                               |
  | ]                                                                  |
- +--------------------------------------------------------------------/*
+ +--------------------------------------------------------------------*/
 ```
 
 In the following example, each graph node called `src` is converted into a
@@ -2418,6 +2420,7 @@ could be `lax $.class.students`. The following modes are supported:
 - Corrected from the official docs: the query had no alias although the result shows a column named `json_data`; `AS json_data` is added.
 - Corrected from the official docs: the example is described as the `create_if_missing` is `TRUE` case, but the code passed `false`; it is changed to `true`. The result shown, `{"a": 999}`, is the replaced value.
 - Caution: in the `TO_JSON` / `TO_JSON_STRING` encoding table, the `FLOAT64` row lists the SQL input `9007199254740993` with JSON output `9007199254740993`, but this value is an `INT64` literal that `FLOAT64` cannot hold exactly (the `TO_JSON` supertype example on the same page converts it to `9.007199254740992e+15`). The intended input is not stated, so the row is kept as published.
+- Corrected from the official docs: the result comment of the graph path `TO_JSON` example ends with `/*` instead of `*/`, which leaves the comment unterminated; it is closed with `*/`.
 
 ## Related
 
