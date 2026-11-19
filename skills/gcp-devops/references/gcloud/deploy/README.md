@@ -10,3 +10,7 @@
 | gcloud deploy delivery-pipelines | 24 commands (alpha, beta, ga); deploy delivery-pipelines add-iam-policy-binding … | [deploy-delivery-pipelines.md](./deploy-delivery-pipelines.md) |
 | gcloud deploy deploy-policies | 21 commands (alpha, beta, ga); deploy deploy-policies add-iam-policy-binding … | [deploy-deploy-policies.md](./deploy-deploy-policies.md) |
 | gcloud deploy get-config | 3 commands (alpha, beta, ga); deploy get-config … | [deploy-get-config.md](./deploy-get-config.md) |
+| gcloud deploy job-runs | 9 commands (alpha, beta, ga); deploy job-runs describe … | [deploy-job-runs.md](./deploy-job-runs.md) |
+| gcloud deploy releases | 15 commands (alpha, beta, ga); deploy releases abandon … | [deploy-releases.md](./deploy-releases.md) |
+| gcloud deploy rollouts | 24 commands (alpha, beta, ga); deploy rollouts advance … | [deploy-rollouts.md](./deploy-rollouts.md) |
+| gcloud deploy targets | 30 commands (alpha, beta, ga); deploy targets add-iam-policy-binding … | [deploy-targets.md](./deploy-targets.md) |
