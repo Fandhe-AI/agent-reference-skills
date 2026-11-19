@@ -44,9 +44,11 @@ ML.UNDERSTAND_TEXT(
   column, use a `SELECT` statement for this argument to provide an alias for an
   existing table column, as shown in the following example:
 
+  Adapted (not in the official docs): the model argument is written as `MODEL `mydataset.mymodel``, as in the syntax block.
+
   ```sql
   SELECT * from ML.UNDERSTAND_TEXT(
-    mydataset.mymodel,
+    MODEL `mydataset.mymodel`,
     (SELECT comment AS text_content from mydataset.mytable),
     STRUCT('ANALYZE_SYNTAX' AS nlu_option)
   );
@@ -94,12 +96,12 @@ ML.UNDERSTAND_TEXT(
 `ML.UNDERSTAND_TEXT` returns the input table plus the following columns:
 
 - `ml_understand_text_result`: a `JSON` value that contains the text analysis result from Natural Language API. This column is returned when `flatten_json_output` is `FALSE`.
-- `entities`: a `JSON` value that contains the recognized entities in the input document. This column is returned when `flattened_json_output` is `TRUE` and `option_name` is `ANALYZE_ENTITIES` or `ANALYZE_ENTITY_SENTIMENT`.
-- `language`: a `STRING` value that gives the language of the text. This column is returned when `flattened_json_output` is `TRUE` and `option_name` is `ANALYZE_ENTITIES`, `ANALYZE_ENTITY_SENTIMENT`, `ANALYZE_SENTIMENT`, or `ANALYZE_SYNTAX`.
-- `sentiment`: a `JSON` value that contains the overall sentiment of the input document. This column is returned when `flattened_json_output` is `TRUE` and `option_name` is `ANALYZE_SENTIMENT`.
-- `sentences`: a `JSON` value that contains the sentiment for all sentences in the document. This column is returned when `flattened_json_output` is `TRUE` and `option_name` is `ANALYZE_SENTIMENT` or `ANALYZE_SYNTAX`.
-- `tokens`: a `JSON` value that contains the tokens, along with their syntactic information, in the input document. This column is returned when `flattened_json_output` is `TRUE` and `option_name` is `ANALYZE_SYNTAX`.
-- `categories`: a `JSON` value that contains the categories representing the input document. This column is returned when `flattened_json_output` is `TRUE` and `option_name` is `CLASSIFY_TEXT`.
+- `entities`: a `JSON` value that contains the recognized entities in the input document. This column is returned when `flatten_json_output` is `TRUE` and `option_name` is `ANALYZE_ENTITIES` or `ANALYZE_ENTITY_SENTIMENT`.
+- `language`: a `STRING` value that gives the language of the text. This column is returned when `flatten_json_output` is `TRUE` and `option_name` is `ANALYZE_ENTITIES`, `ANALYZE_ENTITY_SENTIMENT`, `ANALYZE_SENTIMENT`, or `ANALYZE_SYNTAX`.
+- `sentiment`: a `JSON` value that contains the overall sentiment of the input document. This column is returned when `flatten_json_output` is `TRUE` and `option_name` is `ANALYZE_SENTIMENT`.
+- `sentences`: a `JSON` value that contains the sentiment for all sentences in the document. This column is returned when `flatten_json_output` is `TRUE` and `option_name` is `ANALYZE_SENTIMENT` or `ANALYZE_SYNTAX`.
+- `tokens`: a `JSON` value that contains the tokens, along with their syntactic information, in the input document. This column is returned when `flatten_json_output` is `TRUE` and `option_name` is `ANALYZE_SYNTAX`.
+- `categories`: a `JSON` value that contains the categories representing the input document. This column is returned when `flatten_json_output` is `TRUE` and `option_name` is `CLASSIFY_TEXT`.
 - `ml_understand_text_status`: a `STRING` value that contains the API response status for the corresponding row. This value is empty if the operation was successful.
 
 ### Quotas
@@ -237,6 +239,8 @@ SELECT * FROM `mydataset.classfied_result_next`;
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-understand-text (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: six `Output` bullets say `flattened_json_output`. The argument is named `flatten_json_output` elsewhere on this page (the `FLATTEN_JSON_OUTPUT` argument and the `ml_understand_text_result` bullet), so the name is changed in all six bullets.
+- Corrected from the official docs: the example passes `mydataset.mymodel` without the `MODEL` keyword or backticks, but the syntax block on this page is `MODEL `PROJECT_ID.DATASET.MODEL`,`. The example is changed to `MODEL `mydataset.mymodel``.
 
 ## Related
 

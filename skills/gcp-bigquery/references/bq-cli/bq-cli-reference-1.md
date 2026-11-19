@@ -607,6 +607,8 @@ the bq command-line tool. The default value is `''`. For more information, see
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; definition-list bodies are un-indented by four spaces so that they are not read as code; the `:` markers of the twin are kept (GitHub Markdown has no definition lists); indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - The official page is split into 3 files at section boundaries; this is part 1.
+- Caution: the `--bigqueryrc` flag text says that if the environment variable is not set, `$HOME/.bigqueryrc` is used, and if that file does not exist, `~/.bigqueryrc` is used. These are the same path, so the fallback is redundant. The official text is kept as published.
+- Caution: the `--format` text says "If `none` is specified, then the command produces no output", but `none` is not in the list of values above it (`pretty`, `sparse`, `prettyjson`, `json`, `csv`). The official text is kept as published.
 
 ## Related
 

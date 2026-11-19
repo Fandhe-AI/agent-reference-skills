@@ -11,10 +11,12 @@ evaluate binary class classification specific metrics.
 
 ### Syntax
 
+Adapted (not in the official docs): the trailing comma after `(QUERY_STATEMENT) }` is removed, because the optional `[, GENERATE_ARRAY(THRESHOLDS)]` already starts with a comma.
+
 ```sql
 ML.ROC_CURVE(
   MODEL `PROJECT_ID.DATASET.MODEL_NAME`,
-  { TABLE `PROJECT_ID.DATASET.TABLE` | (QUERY_STATEMENT) },
+  { TABLE `PROJECT_ID.DATASET.TABLE` | (QUERY_STATEMENT) }
   [, GENERATE_ARRAY(THRESHOLDS)]
   [, STRUCT(TRIAL_ID AS trial_id)])
 ```
@@ -145,6 +147,8 @@ FROM
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-roc (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the syntax block has `(QUERY_STATEMENT) },` followed by `[, GENERATE_ARRAY(THRESHOLDS)]`, which expands to a doubled comma when the optional argument is given. The comma after `}` is removed, because the optional part carries its own leading comma.
+- Caution: the example text says you can graph the `recall` and `false_positive_rate` values, but the Output list on this page has no `false_positive_rate` column (only `threshold`, `recall`, `true_positives`, `false_positives`, `true_negatives`, `false_negatives`). The official text is kept as published.
 
 ## Related
 

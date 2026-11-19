@@ -125,6 +125,7 @@ The output is similar to the following:
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-tf-idf (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Caution: the Output section says `ML.TF_IDF` returns "the following two columns" but lists a single column type, `ARRAY<STRUCT<index INT64, value FLOAT64>>`. The official text is kept as published.
 
 ## Related
 

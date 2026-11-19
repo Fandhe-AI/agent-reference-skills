@@ -122,13 +122,15 @@ FROM ML.VALIDATE_DATA_DRIFT(
 
 The output looks similar to the following:
 
+Adapted (not in the official docs): the metric name `L_INTFY` is changed to `L_INFTY`.
+
 ```text
 +------------------+--------------------------+-----------+--------+------------+
 | input            | metric                   | threshold |  value | is_anomaly |
 +------------------+--------------------------+-----------+--------+------------+
 | dropoff_latitude | JENSEN_SHANNON_DIVERGENCE| 0.2       | 0.7    | true       |
 +------------------+--------------------------+-----------+--------+------------+
-| payment_type     | L_INTFY                  | 0.3       | 0.2    | false      |
+| payment_type     | L_INFTY                  | 0.3       | 0.2    | false      |
 +------------------+--------------------------+-----------+--------+------------+
 ```
 
@@ -150,6 +152,8 @@ FROM ML.VALIDATE_DATA_DRIFT(
 
 The output looks similar to the following:
 
+Adapted (not in the official docs): the metric name `L_INTFY` is changed to `L_INFTY`.
+
 ```text
 +------------------+--------------------------+-----------+--------+------------+--------------------------------------------------------+
 | input            | metric                   | threshold |  value | is_anomaly | visualization_link                                     |
@@ -160,7 +164,7 @@ The output looks similar to the following:
 |                  |                          |           |        |            | bqjob1234512345123451234/feature-drift?project=        |
 |                  |                          |           |        |            | myproject&featureName=dropoff_latitude                 |
 +------------------+--------------------------+-----------+--------+------------+--------------------------------------------------------+
-| payment_type     | L_INTFY                  | 0.3       | 0.2    | false      | https://console.cloud.google.com/vertex-ai/            |
+| payment_type     | L_INFTY                  | 0.3       | 0.2    | false      | https://console.cloud.google.com/vertex-ai/            |
 |                  |                          |           |        |            | model-monitoring/locations/us-central1/model-monitors/ |
 |                  |                          |           |        |            | bq1111222233334444555/model-monitoring-jobs/           |
 |                  |                          |           |        |            | bqjob1234512345123451234/feature-drift?project=        |
@@ -188,8 +192,8 @@ similar to the following for categorical features:
 - `ML.VALIDATE_DATA_DRIFT` doesn't conduct schema validation between the two
   sets of input data, and so handles data type mismatches as follows:
 
-  - If you specify `JENSEN_SHANNON_DIVERGENCE` for the `categorical_default_threshold` or `numerical_default_threshold`argument, the feature isn't included in the final anomaly report.
-  - If you specify `L_INFTY` for the `categorical_default_threshold` argument, the function outputs the computed feature distance as expected.
+  - If you specify `JENSEN_SHANNON_DIVERGENCE` for the `categorical_metric_type` or `numerical_metric_type` argument, the feature isn't included in the final anomaly report.
+  - If you specify `L_INFTY` for the `categorical_metric_type` argument, the function outputs the computed feature distance as expected.
 
 However, when you run inference on the serving data, the
 [`ML.PREDICT` function](predict.md)
@@ -211,6 +215,9 @@ The `ML.VALIDATE_DATA_DRIFT` function uses
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the syntax writes `[, NUM_VALUES_HISTOGRAM_BUCKETS AS num_values_histogram_buckets,]` with a trailing comma; it is written without it like the other `STRUCT` fields.
+- Corrected from the official docs: both example outputs show the metric `L_INTFY`. The valid value, as defined in the `CATEGORICAL_METRIC_TYPE` argument on this page, is `L_INFTY`, so the name is changed in both outputs.
+- Caution: in the example outputs the `threshold` values look swapped. The query sets only `categorical_default_threshold` to `0.2` and the numerical default is `0.3`, yet the `payment_type` row (metric `L_INFTY`, a categorical metric) shows threshold `0.3` and `dropoff_latitude` shows `0.2`. The official outputs are kept as published.
+- Corrected from the official docs: the two bullets about `JENSEN_SHANNON_DIVERGENCE` and `L_INFTY` say they are specified for the `categorical_default_threshold` / `numerical_default_threshold` argument. Those arguments take a `FLOAT64` threshold; the metric names are values of `categorical_metric_type` and `numerical_metric_type`, so the argument names are changed.
 
 ## Related
 

@@ -16,11 +16,13 @@ transcribe audio files from an
 
 ### Syntax
 
+Adapted (not in the official docs): the comma after the `TABLE` argument is moved inside the optional brackets, so no trailing comma remains when `RECOGNITION_CONFIG` is omitted.
+
 ```sql
 ML.TRANSCRIBE(
   MODEL `PROJECT_ID.DATASET.MODEL_NAME`,
-  TABLE `PROJECT_ID.DATASET.OBJECT_TABLE`,
-  [RECOGNITION_CONFIG => ( JSON 'RECOGNITION_CONFIG')]
+  TABLE `PROJECT_ID.DATASET.OBJECT_TABLE`
+  [, RECOGNITION_CONFIG => ( JSON 'RECOGNITION_CONFIG')]
 )
 ```
 
@@ -140,13 +142,15 @@ The following example transcribes the audio files represented by the
 
 Create the model:
 
+Adapted (not in the official docs): the resource path segment `recognizer` is changed to `recognizers`.
+
 ```sql
 # Create model
 CREATE OR REPLACE MODEL
 `myproject.mydataset.transcribe_model`
 REMOTE WITH CONNECTION `myproject.myregion.myconnection`
 OPTIONS (remote_service_type = 'CLOUD_AI_SPEECH_TO_TEXT_V2',
-speech_recognizer = 'projects/project_number/locations/recognizer_location/recognizer/recognizer_id');
+speech_recognizer = 'projects/project_number/locations/recognizer_location/recognizers/recognizer_id');
 ```
 
 Transcribe the audio files without overriding the recognizer's default
@@ -162,10 +166,17 @@ FROM ML.TRANSCRIBE(
 
 Transcribe the audio files and override the recognizer's default configuration:
 
+Adapted (not in the official docs): the example is run against a model created without `speech_recognizer`, because a `RECOGNITION_CONFIG` value can't be given for a model that has a recognizer.
+
 ```sql
+CREATE OR REPLACE MODEL
+`myproject.mydataset.transcribe_model_default`
+REMOTE WITH CONNECTION `myproject.myregion.myconnection`
+OPTIONS (remote_service_type = 'CLOUD_AI_SPEECH_TO_TEXT_V2');
+
 SELECT *
 FROM ML.TRANSCRIBE(
-  MODEL `myproject.mydataset.transcribe_model`,
+  MODEL `myproject.mydataset.transcribe_model_default`,
   TABLE `myproject.mydataset.audio`,
   recognition_config => ( JSON '{"language_codes": ["en-US" ],"model": "chirp","auto_decoding_config": {}}')
 );
@@ -190,6 +201,9 @@ OK Google stream stranger things from Netflix to my TV. Okay, stranger things fr
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-transcribe (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the syntax block has `TABLE ...OBJECT_TABLE`,` before the optional `[RECOGNITION_CONFIG => ...]`, which leaves a trailing comma when the argument is omitted (the first example on this page has none). The comma is moved to `[, RECOGNITION_CONFIG => ...]`.
+- Corrected from the official docs: the example has `speech_recognizer = 'projects/project_number/locations/recognizer_location/recognizer/recognizer_id'`. It is changed to `.../recognizers/recognizer_id`, the form given for the same argument in `create-remote-model-service.md` (`projects/PROJECT_NUMBER/locations/LOCATION/recognizers/RECOGNIZER_ID`).
+- Corrected from the official docs: the override example passes `recognition_config` to `transcribe_model`, which the example above creates with `speech_recognizer`. The Arguments section says that a `RECOGNITION_CONFIG` value can't be specified when a recognizer is set, and must be specified when none is set. The example therefore first creates `transcribe_model_default` without the `speech_recognizer` option (the remaining options are those of the example above) and runs against it.
 
 ## Related
 

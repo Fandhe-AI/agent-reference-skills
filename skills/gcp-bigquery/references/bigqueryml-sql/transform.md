@@ -117,6 +117,7 @@ The result is similar to the following:
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-transform (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Caution: the example output has a `culmen_depth_mm` column, but the `TRANSFORM` clause of the model created above (`species`, `island`, `culmen_length_mm`, `flipper_length_mm`, `sex`, `body_mass_g`) does not produce it, and `ML.TRANSFORM` returns the columns of the `TRANSFORM` clause. Either the output or the clause is wrong; the official text is kept as published.
 
 ## Related
 

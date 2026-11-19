@@ -97,8 +97,8 @@ The `ML.TFDV_VALIDATE` function doesn't conduct schema validation.
 
 `ML.TFDV_VALIDATE` handles type mismatch as follows:
 
-- If you specify `JENSEN_SHANNON_DIVERGENCE` for the `categorical_default_threshold` or `numerical_default_threshold` argument, the feature isn't included in the final anomaly report.
-- If you specify `L_INFTY` for the `categorical_default_threshold` argument, the function outputs the computed feature distance as expected.
+- If you specify `JENSEN_SHANNON_DIVERGENCE` for the `categorical_metric_type` or `numerical_metric_type` argument, the feature isn't included in the final anomaly report.
+- If you specify `L_INFTY` for the `categorical_metric_type` argument, the function outputs the computed feature distance as expected.
 
 ### Pricing
 
@@ -115,6 +115,7 @@ The `ML.TFDV_VALIDATE` function uses
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-tfdv-validate (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the two bullets about `JENSEN_SHANNON_DIVERGENCE` and `L_INFTY` say they are specified for the `categorical_default_threshold` / `numerical_default_threshold` argument. Those arguments take a `FLOAT64` threshold; the metric names are values of `categorical_metric_type` and `numerical_metric_type`, so the argument names are changed.
 
 ## Related
 

@@ -167,10 +167,12 @@ SELECT * FROM `mydataset.translate_result`;
 
 The output is similar to the following:
 
+Adapted (not in the official docs): the destination language in the result row is changed from `zh-cn.` to `zh-CN`.
+
 ```bash
 Original Language  | Original Text | Destination Language | Translation  |  Status  |
 ------- | -------- | -------- | -------- | --------
-en  |  apple  |  zh-cn. |  苹果   | |
+en  |  apple  |  zh-CN |  苹果   | |
 ```
 
 If you get an error like `query limit exceeded`, you might have exceeded the
@@ -210,6 +212,7 @@ SELECT * FROM `mydataset.translate_result_next`;
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-translate (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the example result shows `zh-cn.` as the destination language, but the query on this page sets `"zh-CN" AS `Destination Language``. The result is changed to `zh-CN`.
 
 ## Related
 

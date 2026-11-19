@@ -110,15 +110,17 @@ ORDER BY
 
 The result is similar to the following:
 
+Adapted (not in the official docs): the first column header is changed from `visit_date` to `visit_timestamp`, and the column is widened to match.
+
 ```text
-+------------+------------------+--------------+--------+-----------+---------+--------------------+-------+--------+
-| visit_date | time_series_type | total_visits | yearly | quarterly | monthly | weekly             | daily | status |
-+------------+------------------+--------------+--------+-----------+---------+--------------------+-------+--------+
-| 2016-08-01 | history          | 1711.0       | null   | null      | null    | 169.61193783007687 | null  |        |
-| 2016-08-02 | history          | 2140.0       | null   | null      | null    | 287.0332731997334  | null  |        |
-| 2016-08-03 | history          | 2890.0       | null   | null      | null    | 445.14087763116709 | null  |        |
-| ...        | ...              | ...          | ...    | ...       | ...     | ...                | ...   | ...    |
-+------------+------------------+--------------+--------+-----------+---------+--------------------+-------+--------+
++-----------------+------------------+--------------+--------+-----------+---------+--------------------+-------+--------+
+| visit_timestamp | time_series_type | total_visits | yearly | quarterly | monthly | weekly             | daily | status |
++-----------------+------------------+--------------+--------+-----------+---------+--------------------+-------+--------+
+| 2016-08-01      | history          | 1711.0       | null   | null      | null    | 169.61193783007687 | null  |        |
+| 2016-08-02      | history          | 2140.0       | null   | null      | null    | 287.0332731997334  | null  |        |
+| 2016-08-03      | history          | 2890.0       | null   | null      | null    | 445.14087763116709 | null  |        |
+| ...             | ...              | ...          | ...    | ...       | ...     | ...                | ...   | ...    |
++-----------------+------------------+--------------+--------+-----------+---------+--------------------+-------+--------+
 ```
 
 The `NULL` values for the `yearly`, `quarterly`, `monthly`, and `daily` columns
@@ -137,6 +139,9 @@ indicate that no seasonality was detected for those time periods.
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-seasonality (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Caution: the `HORIZON` default is `0`, but the stated valid input range is `[1, 10000]`, which does not contain `0`. The official text is kept as published.
+- Caution: the introduction refers to a "more detailed explanation of the trend component" on the `ML.SEASONALITY` page; the sentence is identical on the `ML.TREND` page, where it fits. The official text is kept as published.
+- Corrected from the official docs: the example output names the first column `visit_date`, but the query on this page selects `*` from a table whose timestamp column is `visit_timestamp` (and `ML.SEASONALITY` returns the input timestamp column). The header is changed to `visit_timestamp`, as in the `ML.TREND` example output. The row values are kept as published.
 
 ## Related
 
