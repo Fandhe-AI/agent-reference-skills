@@ -34,8 +34,10 @@ Replace `REGION` with the region for the cluster, such as `us-central1`. Each cl
 
 ### Set up a service account for Cloud Build
 
+Adapted (not in the official docs): `--project=PROJECT_ID` is added, as in the cluster commands, so the account is created in the project the role bindings below refer to.
+
 ```bash
-gcloud iam service-accounts create "quickstart-service-account"
+gcloud iam service-accounts create "quickstart-service-account" --project=PROJECT_ID
 ```
 
 ```bash
@@ -119,10 +121,10 @@ gcloud container fleet packages create fp-nginx \
    --location=us-central1
 ```
 
-Adapted (not in the official docs): `--location=us-central1` is added, as in the create command.
+Adapted (not in the official docs): `--location=us-central1` and `--project=PROJECT_ID` are added, as in the create command.
 
 ```bash
-gcloud container fleet packages list --location=us-central1
+gcloud container fleet packages list --location=us-central1 --project=PROJECT_ID
 ```
 
 Because `maxConcurrent` is `1`, the service waits until `nginx-deployment` is fully deployed on one cluster before starting the second; `maxConcurrent: 2` or higher deploys to both simultaneously. Autopilot may show availability errors while it adjusts resource requests.
@@ -145,6 +147,7 @@ Because `maxConcurrent` is `1`, the service waits until `nginx-deployment` is fu
 - The source says to keep **Public** selected as the repository visibility.
 - The project-level role bindings go to a dedicated service account.
 - Corrected from the official docs: `gcloud container fleet packages create fp-nginx --source=fleet-package.yaml --project=PROJECT_ID` and `gcloud container fleet packages list` had no `--location`. The tutorial does not run `gcloud config set config_delivery/location us-central1` (the how-to page does), and gcloud 593.0.0 resolves the location only from `--location` or that property (`properties.VALUES.config_delivery.location.Get(required=True)`, no default), so the commands fail without it.
+- Corrected from the official docs: `gcloud iam service-accounts create "quickstart-service-account"` and `gcloud container fleet packages list` had no `--project`, while the cluster commands pass `--project=PROJECT_ID` and the role bindings and `fleet-package.yaml` refer to `quickstart-service-account@PROJECT_ID.iam.gserviceaccount.com`; without it both commands use the default project of the gcloud configuration.
 - Clean up: the tutorial deletes the whole project (everything in it is deleted and custom project IDs are lost) and the GitHub repository. Use a disposable project; deleting selected resources instead preserves project-ID-based URLs.
 - The source also shows the Google Cloud console and GitHub UI steps; their click-paths are omitted.
 - Source: https://docs.cloud.google.com/kubernetes-engine/config-sync/docs/tutorials/fleet-package-quickstart (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
