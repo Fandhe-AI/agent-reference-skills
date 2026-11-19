@@ -134,12 +134,16 @@ Enter `yes` at each prompt.
 | `storage.objects.create` |
 | `storage.objects.delete` |
 | `storage.objects.update` |
+| `storage.buckets.get` (added; see Notes) |
+| `storage.buckets.update` (added; see Notes) |
+| `storage.buckets.delete` (added; see Notes) |
 
 ## Notes
 
 - Control access to the bucket and state files: only a small set of users (for example the main cloud administrator and a backup administrator) should have admin permissions on the bucket; other developers should only read and write objects. `roles/storage.admin` is broad; the source offers the custom role above as an alternative.
 - Object Versioning is enabled to keep deployment history and increases storage costs; mitigate by configuring Object Lifecycle Management to delete old state versions.
 - The clean-up sequence is destructive (it sets `force_destroy = true`, removes the backend, and runs `terraform destroy`); try it on a disposable project first.
+- Corrected from the official docs: the source's custom role lists `storage.buckets.create` and `storage.buckets.list` but no other bucket permission. This page manages the bucket itself with Terraform: reading it back, changing it (`force_destroy = true` in the clean-up) and `terraform destroy` call the JSON API methods `buckets.get`, `buckets.update` / `buckets.patch` and `buckets.delete`, which need `storage.buckets.get`, `storage.buckets.update` and `storage.buckets.delete` (https://docs.cloud.google.com/storage/docs/access-control/iam-json, retrieved 2026-11-19). The three rows are added for that reason.
 - Source inconsistency: the source labels `rm backend.tf` as "Delete the state file"; the `local_file` resource above writes `backend.tf` with the `backend "gcs"` block.
 - Cloud Storage incurs costs for storage, read and write operations, network egress, and replication; see the Cloud Storage pricing page. The source also shows Cloud Shell activation and project-creation commands (omitted).
 - Cloud Storage itself is in `gcp-storage`.
