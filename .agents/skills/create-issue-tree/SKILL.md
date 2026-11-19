@@ -51,7 +51,7 @@ create-issue-tree requirements.md --granularity 4h
 入力テキストまたはファイルから要件を読み込み、以下の観点でタスクを分解する。
 
 - **粒度基準: 1 issue は実装 `${GRANULARITY}`（既定 2h・`--granularity` で変更可）程度に収める。** 超えると判断した場合は sub-issue に再分解する
-- **人手タスクの判定:** 依頼者の回答・レビュー、対象者の聞き取り、実機・スクリーンリーダー操作、承認など自動実装できないものは `owner:human`（人手のみ）、人とエージェントの協働は `owner:joint` とする。判定が曖昧なものは下の確認提示でユーザーに聞く。ラベルは付けた issue 本人にだけ効き、子孫へは継承されない。`implement-issue-tree` の `skipLabels` で自動実装の対象外にできる（Step 5 の案内と次のアクション参照）
+- **人手タスクの判定:** 依頼者の回答・レビュー、対象者の聞き取り、実機・スクリーンリーダー操作、承認など自動実装できないものは `owner:human`（人手のみ）、人とエージェントの協働は `owner:joint` とする。判定が曖昧なものは下の確認提示でユーザーに聞く。ラベルは付けた issue 本人にだけ効き、子孫へは継承されないため、人手タスクを sub-issue に分解した場合は各 sub-issue にも同じラベルを付ける。`implement-issue-tree` の `skipLabels` で自動実装の対象外にできる（Step 5 の案内と次のアクション参照）
 
 `--granularity` の値は代入前にエージェント側でも同じ正規表現（`^[1-9][0-9]*h$`）で検証し、
 不一致なら**このフェンスを実行せず**ユーザーに再指定を求める（未信頼値を生成済みシェルへ
@@ -379,6 +379,10 @@ gh api \
 SUB_ARGS=(--title "feat: サブタスク名" --label "phase:${PHASE}")
 if [[ -n "${MILESTONE}" ]]; then
   SUB_ARGS+=(--milestone "${MILESTONE}")
+fi
+# 親の子 issue と同じ OWNER_LABEL を sub-issue にも付ける（ラベルは子孫へ継承されないため）
+if [[ -n "${OWNER_LABEL}" ]]; then
+  SUB_ARGS+=(--label "${OWNER_LABEL}")
 fi
 SUB_URL=$(gh issue create "${SUB_ARGS[@]}" --body "...")
 SUB_NUMBER=$(printf '%s' "${SUB_URL}" | grep -oE '([0-9]+$)')
