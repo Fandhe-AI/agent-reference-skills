@@ -7,13 +7,13 @@ user-invocable: false
 
 # gcp-iac
 
-Google Cloud (GCP) の Infrastructure as Code 系スキル。Infrastructure Manager（deployment・revision・preview・deployment groups・サービスアカウント・Terraform バージョン・state ファイル・Cloud Build による Git 自動化・Organization Policy カスタム制約）、Terraform on Google Cloud（`google` / `google-beta` provider・認証・Cloud Storage への state 保存・import と bulk export・ベストプラクティス・CI/CD・ポリシー検証 `gcloud beta terraform vet`）、Config Connector（KRM で Google Cloud リソースを管理する Kubernetes アドオン・インストール・reconciliation・export / bulk-export）、fleet packages（`configdelivery`）、Deployment Manager の終了と DM Convert による Terraform / KRM への移行、Runtime Configurator を扱う。gcloud 3 グループ（`infra-manager` / `deployment-manager` / `runtime-config`）・REST 3 API・IAM 4 ファイルの機械生成ページを併せて収録する。
+Google Cloud (GCP) の Infrastructure as Code 系スキル。Infrastructure Manager（deployment・revision・preview・deployment groups・サービスアカウント・Terraform バージョン・state ファイル・Cloud Build による Git 自動化・Organization Policy カスタム制約）、Terraform on Google Cloud（`google` / `google-beta` provider・認証・Cloud Storage への state 保存・import と bulk export・ベストプラクティス・CI/CD・ポリシー検証 `gcloud beta terraform vet`）、Config Connector（KRM で Google Cloud リソースを管理する Kubernetes アドオン・インストール・reconciliation・export / bulk-export）、fleet packages（`configdelivery`）、Deployment Manager の終了と DM Convert による Terraform / KRM への移行、Runtime Configurator を扱う。gcloud 3 グループ（`infra-manager` / `deployment-manager` / `runtime-config`）・REST 3 API・IAM 4 ファイルの機械生成ページを併せて収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `infrastructure-manager-deployments` / `infrastructure-manager-previews-groups` / `terraform-basics-state-import` / `terraform-best-practices-cicd` / `terraform-policy-validation` / `deployment-manager-runtime-configurator`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
 参照本文は英語（公式ドキュメントの原語）。Terraform CLI・HCL 言語そのものは HashiCorp のドキュメントが正で、本スキルは Google Cloud 側の使い方（provider・認証・state・運用）のみを扱う。
 
-**Deployment Manager は終了している**（`deployment-manager-runtime-configurator/deprecations.md`）。公式の記述は 2026-04-01 にサポート終了（docs の索引では 2026-03-31 終了と書かれており、両方を原文のまま残している）、2026-06-30 以降は新規ユーザーがブロックされ、2027-06-30 以降はサービスが停止（turn-down）される、というもの。移行先は Infrastructure Manager で、変換ツールは DM Convert（Preview）。新規には使わない。
+**Deployment Manager は終了している**（`deployment-manager-runtime-configurator/deprecations.md`（後続 PR で投入））。公式の記述は 2026-04-01 にサポート終了（docs の索引では 2026-03-31 終了と書かれており、両方を原文のまま残している）、2026-06-30 以降は新規ユーザーがブロックされ、2027-06-30 以降はサービスが停止（turn-down）される、というもの。移行先は Infrastructure Manager で、変換ツールは DM Convert（Preview）。新規には使わない。
 
-**Runtime Configurator は Beta** で、非推奨の告知は確認できていない。**Infrastructure Manager の Terraform 1.2.3 は非推奨**で、日付は `infrastructure-manager-deployments/terraform-version-deprecation.md` に従う。**ポリシー検証（`gcloud beta terraform vet`）と fleet packages は Preview**。
+**Runtime Configurator は Beta** で、非推奨の告知は確認できていない。**Infrastructure Manager の Terraform 1.2.3 は非推奨**で、日付は `infrastructure-manager-deployments/terraform-version-deprecation.md`（後続 PR で投入） に従う。**ポリシー検証（`gcloud beta terraform vet`）と fleet packages は Preview**。
 
 ## ディレクトリ構成
 
@@ -84,8 +84,8 @@ skills/gcp-iac/
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
 - `references/gcloud/`（後続 PR で投入） `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） `references/iam/`（後続 PR で投入） は機械生成。他の 9 カテゴリは公式ガイド由来の手書き
 - 変更・終了（references で確認したもの）:
-  - Deployment Manager: 2026-04-01 にサポート終了（docs の索引は 2026-03-31）、2026-06-30 以降は新規ユーザーをブロック、2027-06-30 以降はサービス停止（`deployment-manager-runtime-configurator/deprecations.md`）
-  - Infrastructure Manager の Terraform 1.2.3 は非推奨（日付は `infrastructure-manager-deployments/terraform-version-deprecation.md`）
-- Preview の機能: ポリシー検証（`gcloud beta terraform vet`）、fleet packages、DM Convert、`bulk-export`（`terraform-basics-state-import/export.md`）。仕様は変わりうる
+  - Deployment Manager: 2026-04-01 にサポート終了（docs の索引は 2026-03-31）、2026-06-30 以降は新規ユーザーをブロック、2027-06-30 以降はサービス停止（`deployment-manager-runtime-configurator/deprecations.md`（後続 PR で投入））
+  - Infrastructure Manager の Terraform 1.2.3 は非推奨（日付は `infrastructure-manager-deployments/terraform-version-deprecation.md`（後続 PR で投入））
+- Preview の機能: ポリシー検証（`gcloud beta terraform vet`）、fleet packages、DM Convert、`bulk-export`（`terraform-basics-state-import/export.md`（後続 PR で投入））。仕様は変わりうる
 - Runtime Configurator は Beta で、非推奨の告知は確認できていない
 - 新しいメソッド・機能は公式 reference で確認する

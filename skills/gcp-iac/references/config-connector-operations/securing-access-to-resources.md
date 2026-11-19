@@ -12,22 +12,24 @@ Kubernetes users and service accounts need permissions to manage Config Connecto
 
 `pubsub-topic-service-account.yaml`:
 
+Adapted (not in the official docs): the namespace is `CC_NAMESPACE`, the namespace every `kubectl apply` on this page uses.
+
 ```yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: pubsub-topic-service-account
-  namespace: default
+  namespace: CC_NAMESPACE
 ```
 
 ```bash
 kubectl apply -f pubsub-topic-service-account.yaml --namespace CC_NAMESPACE
 ```
 
-Adapted (not in the official docs): the check uses the `create` verb, as the step text says.
+Adapted (not in the official docs): the check uses the `create` verb, as the step text says, and impersonates the service account in `CC_NAMESPACE` with `--namespace CC_NAMESPACE`.
 
 ```bash
-kubectl auth can-i create pubsubtopics --as=system:serviceaccount:default:pubsub-topic-service-account
+kubectl auth can-i create pubsubtopics --namespace CC_NAMESPACE --as=system:serviceaccount:CC_NAMESPACE:pubsub-topic-service-account
 ```
 
 The output should contain `no`. Then `pubsub-topic-editor-role.yaml` (find `apiGroups` and `resources` values in the resource reference):
@@ -159,7 +161,7 @@ gcloud iam service-accounts add-iam-policy-binding \
 - Do not grant `roles/iam.workloadIdentityUser` to a principal set such as all Pods in the `cnrm-system` namespace: in namespaced mode all controllers run in `cnrm-system`, so every namespace's controller could impersonate the service account.
 - The example grants `roles/pubsub.admin` on one topic to a user; that role is broad for the topic. Delete the sample resources afterwards; try this on a disposable project first.
 - Corrected from the official docs: both checks were `kubectl auth can-i get pubsubtopics --as=system:serviceaccount:default:pubsub-topic-service-account`, while the steps say "Confirm `pubsub-topic-service-account` cannot create `PubSubTopic` resources" and "Confirm the `pubsub-topic-service-account` is allowed to create `PubSubTopic` resources".
-- Source inconsistency: the ServiceAccount manifest sets `namespace: default` and the checks impersonate `system:serviceaccount:default:pubsub-topic-service-account`, while every `kubectl apply` passes `--namespace CC_NAMESPACE`; the steps are consistent only when `CC_NAMESPACE` is `default`.
+- Corrected from the official docs: the source's ServiceAccount manifest sets `namespace: default` and its checks impersonate `system:serviceaccount:default:pubsub-topic-service-account` without `--namespace`, while every `kubectl apply` passes `--namespace CC_NAMESPACE`. `kubectl apply --namespace` rejects a manifest whose `metadata.namespace` differs, and a RoleBinding without a subject namespace binds the service account in the RoleBinding's own namespace, so this page uses `CC_NAMESPACE` for the ServiceAccount, the impersonated principal and the `can-i` checks. The source's form works as written only when `CC_NAMESPACE` is `default`.
 - The RoleBinding name ends with a period (`pubsub-topic-editor-rolebinding.`) in the source and is kept as written.
 - Source: https://docs.cloud.google.com/config-connector/docs/how-to/securing-access-to-resources (retrieved 2026-11-19; CC BY 4.0, code samples Apache 2.0)
 
