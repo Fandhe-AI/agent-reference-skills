@@ -1,0 +1,159 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/artifacts/repositories/get-iam-policy
+---
+
+# gcloud artifacts repositories get-iam-policy
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud artifacts repositories get-iam-policy
+
+```text
+NAME
+    gcloud artifacts repositories get-iam-policy - get IAM policy for an
+        Artifact Registry repository
+
+SYNOPSIS
+    gcloud artifacts repositories get-iam-policy
+        (REPOSITORY : --location=LOCATION) [--filter=EXPRESSION]
+        [--limit=LIMIT] [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]]
+        [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    gcloud artifacts repositories get-iam-policy displays the IAM policy
+    associated with an Artifact Registry repository. The output includes an
+    "etag" identifier that is used to check for concurrent policy updates. An
+    edited policy should include the same etag so that set-iam-policy applies
+    the changes to the correct policy version.
+
+    This command can fail for the following reasons:
+      o The repository specified does not exist.
+      o The active account does not have permission to access the given
+        repository's IAM policies.
+
+EXAMPLES
+    To print the IAM policy for repository my-repo, run:
+
+        $ gcloud artifacts repositories get-iam-policy my-repo
+
+POSITIONAL ARGUMENTS
+     Repository resource - Name of the Artifact Registry repository. The
+     arguments in this group can be used to specify the attributes of this
+     resource. (NOTE) Some attributes are not given arguments in this group but
+     can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument repository on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       REPOSITORY
+          ID of the repository or fully qualified identifier for the
+          repository.
+
+          To set the repository attribute:
+          + provide the argument repository on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --location=LOCATION
+          Location of the repository. Overrides the default artifacts/location
+          property value for this command invocation. To configure the default
+          location, use the command: gcloud config set artifacts/location.
+
+          To set the location attribute:
+          + provide the argument repository on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property artifacts/location.
+
+LIST COMMAND FLAGS
+     --filter=EXPRESSION
+        Apply a Boolean filter EXPRESSION to each resource item to be listed.
+        If the expression evaluates True, then that item is listed. For more
+        details and examples of filter expressions, run $ gcloud topic filters.
+        This flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --limit=LIMIT
+        Maximum number of resources to list. The default is unlimited. This
+        flag interacts with other flags that are applied in this order:
+        --flatten, --sort-by, --filter, --limit.
+
+     --page-size=PAGE_SIZE
+        Some services group resource list output into pages. This flag
+        specifies the maximum number of resources per page. The default is
+        determined by the service if it supports paging, otherwise it is
+        unlimited (no paging). Paging may be applied before or after --filter
+        and --limit depending on the service.
+
+     --sort-by=[FIELD,...]
+        Comma-separated list of resource field key names to sort by. The
+        default order is ascending. Prefix a field with ``~'' for descending
+        order on that field. This flag interacts with other flags that are
+        applied in this order: --flatten, --sort-by, --filter, --limit.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the artifactregistry/v1 API. The full documentation for
+    this API can be found at: https://cloud.google.com/artifacts/docs/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha artifacts repositories get-iam-policy
+
+        $ gcloud beta artifacts repositories get-iam-policy
+```
+
+### gcloud beta artifacts repositories get-iam-policy
+
+```text
+NAME
+    gcloud beta artifacts repositories get-iam-policy - get IAM policy for an
+        Artifact Registry repository
+
+SYNOPSIS
+    gcloud beta artifacts repositories get-iam-policy
+        (REPOSITORY : --location=LOCATION) [--filter=EXPRESSION]
+        [--limit=LIMIT] [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha artifacts repositories get-iam-policy
+
+```text
+NAME
+    gcloud alpha artifacts repositories get-iam-policy - get IAM policy for an
+        Artifact Registry repository
+
+SYNOPSIS
+    gcloud alpha artifacts repositories get-iam-policy
+        (REPOSITORY : --location=LOCATION) [--filter=EXPRESSION]
+        [--limit=LIMIT] [--page-size=PAGE_SIZE] [--sort-by=[FIELD,...]]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/artifacts/repositories/get-iam-policy (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)

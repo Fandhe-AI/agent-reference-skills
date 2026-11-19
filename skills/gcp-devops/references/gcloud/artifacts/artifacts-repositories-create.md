@@ -1,0 +1,343 @@
+---
+source: https://docs.cloud.google.com/sdk/gcloud/reference/artifacts/repositories/create
+---
+
+# gcloud artifacts repositories create
+
+## Signature / Usage
+
+GA commands show the full `gcloud help` text; alpha and beta commands show NAME and SYNOPSIS (use `gcloud alpha|beta <command> --help` for the rest).
+
+### gcloud artifacts repositories create
+
+```text
+NAME
+    gcloud artifacts repositories create - create an Artifact Registry
+        repository
+
+SYNOPSIS
+    gcloud artifacts repositories create (REPOSITORY : --location=LOCATION)
+        --repository-format=REPOSITORY_FORMAT [--allow-snapshot-overwrites]
+        [--async] [--description=DESCRIPTION] [--disable-remote-validation]
+        [--immutable-tags] [--kms-key=KMS_KEY] [--labels=[KEY=VALUE,...]]
+        [--mode=MODE; default="NONE"] [--remote-apt-repo=REMOTE_APT_REPO]
+        [--remote-apt-repo-path=REMOTE_APT_REPO_PATH]
+        [--remote-docker-repo=REMOTE_DOCKER_REPO]
+        [--remote-go-repo=REMOTE_GO_REPO] [--remote-mvn-repo=REMOTE_MVN_REPO]
+        [--remote-npm-repo=REMOTE_NPM_REPO]
+        [--remote-password-secret-version=REMOTE_PASSWORD_SECRET_VERSION]
+        [--remote-python-repo=REMOTE_PYTHON_REPO]
+        [--remote-repo-config-desc=REMOTE_REPO_CONFIG_DESC]
+        [--remote-username=REMOTE_USERNAME] [--remote-yum-repo=REMOTE_YUM_REPO]
+        [--remote-yum-repo-path=REMOTE_YUM_REPO_PATH] [--severity=SEVERITY]
+        [--upstream-policy-file=FILE] [--version-policy=VERSION_POLICY]
+        [--allow-vulnerability-scanning | --disable-vulnerability-scanning]
+        [--clear-platform-logs | --disable-platform-logs
+          | --enable-platform-logs] [GCLOUD_WIDE_FLAG ...]
+
+DESCRIPTION
+    Create a new Artifact Registry repository.
+
+    This command can fail for the following reasons:
+      o A repository with the same name already exists.
+      o The active account does not have permission to create repositories.
+      o A valid repository format was not provided.
+
+EXAMPLES
+    To create a docker repository with the name my-repo in the default project
+    and location, run the following command:
+
+        $ gcloud artifacts repositories create my-repo \
+            --repository-format=docker
+
+    To create a docker repository my-repo with a KMS key
+    projects/my-project/locations/us/keyRings/my-kr/cryptoKeys/my-key in the
+    default project and location, run the following command:
+
+        $ gcloud artifacts repositories create my-repo \
+            --repository-format=docker \
+            --kms-key=projects/my-project/locations/us/keyRings/my-kr/\
+        cryptoKeys/my-key
+
+POSITIONAL ARGUMENTS
+     Repository resource - The Artifact Registry repository to create. The
+     arguments in this group can be used to specify the attributes of this
+     resource. (NOTE) Some attributes are not given arguments in this group but
+     can be set in other ways.
+
+     To set the project attribute:
+      * provide the argument repository on the command line with a fully
+        specified name;
+      * provide the argument --project on the command line;
+      * set the property core/project.
+
+     This must be specified.
+
+       REPOSITORY
+          ID of the repository or fully qualified identifier for the
+          repository.
+
+          To set the repository attribute:
+          + provide the argument repository on the command line.
+
+          This positional argument must be specified if any of the other
+          arguments in this group are specified.
+
+       --location=LOCATION
+          Location of the repository. Overrides the default artifacts/location
+          property value for this command invocation. To configure the default
+          location, use the command: gcloud config set artifacts/location.
+
+          To set the location attribute:
+          + provide the argument repository on the command line with a fully
+            specified name;
+          + provide the argument --location on the command line;
+          + set the property artifacts/location.
+
+REQUIRED FLAGS
+     --repository-format=REPOSITORY_FORMAT
+        Format of the repository. REPOSITORY_FORMAT must be one of:
+
+            apt
+               APT package format.
+            conda
+               Conda package format.
+            docker
+               Docker image format.
+            go
+               Go module format.
+            kfp
+               KFP package format.
+            maven
+               Maven package format.
+            npm
+               NPM package format.
+            python
+               Python package format.
+            yum
+               YUM package format.
+
+OPTIONAL FLAGS
+     --allow-snapshot-overwrites
+        (Maven only) Allow repository users to publish a snapshot that
+        overwrites the same snapshot version in the repository.
+
+     --async
+        Return immediately, without waiting for the operation in progress to
+        complete.
+
+     --description=DESCRIPTION
+        Description for the repository.
+
+     --disable-remote-validation
+        Do not make an HTTP request to validate the remote upstream. Not
+        recommended when setting a custom remote upstream unless you are
+        absolutely sure your upstream URI and any auth is valid.
+
+     --immutable-tags
+        (Docker only) Prevent changes to tagged images in the repository. Tags
+        cannot be deleted or moved to a different image digest, and tagged
+        images cannot be deleted.
+
+     --kms-key=KMS_KEY
+        Name of the encryption key that's used for encrypting the contents of
+        the repository.
+
+     --labels=[KEY=VALUE,...]
+        List of label KEY=VALUE pairs to add.
+
+        Keys must start with a lowercase character and contain only hyphens
+        (-), underscores (_), lowercase characters, and numbers. Values must
+        contain only hyphens (-), underscores (_), lowercase characters, and
+        numbers.
+
+     --mode=MODE; default="NONE"
+        Mode is the type of the repository - Standard, Virtual or Remote. MODE
+        must be one of:
+
+         connector-repository
+            Connector repository mode - fetches data from upstream without
+            caching.
+         none
+            Repository mode not specified.
+         remote-repository
+            Remote repository mode - fetches data from upstream and caches it.
+         standard-repository
+            Standard repository mode - should be possible to write/read data to
+            this repo.
+         virtual-repository
+            Virtual repository mode - aggregates data from several upstreams.
+
+     --remote-apt-repo=REMOTE_APT_REPO
+        (Apt only) Repository base for apt remote repository. REMOTE_APT_REPO
+        must be one of: [debian, debian-snapshot, ubuntu].
+
+     --remote-apt-repo-path=REMOTE_APT_REPO_PATH
+        (Apt only) Remaining URL path to apt remote repository.
+
+     --remote-docker-repo=REMOTE_DOCKER_REPO
+        (Docker only) Repo upstream for docker remote repository.
+        REMOTE_DOCKER_REPO can be either:
+        * one of the following enums: [docker-hub].
+        * an https custom registry uri (ex: https://my.docker.registry)
+
+     --remote-go-repo=REMOTE_GO_REPO
+        (Go only) Repo upstream for Go remote repository.
+        "https://proxy.golang.org/" is the only valid value.
+
+     --remote-mvn-repo=REMOTE_MVN_REPO
+        (Maven only) Repo upstream for maven remote repository. REMOTE_MVN_REPO
+        can be either:
+        * one of the following enums: [maven-central].
+        * an https custom registry uri (ex: https://my.maven.registry)
+
+     --remote-npm-repo=REMOTE_NPM_REPO
+        (Npm only) Repo upstream for npm remote repository. REMOTE_NPM_REPO can
+        be either:
+        * one of the following enums: [npmjs].
+        * an https custom registry uri (ex: https://my.npm.registry)
+
+     --remote-password-secret-version=REMOTE_PASSWORD_SECRET_VERSION
+        Secret Manager secret version that contains password for the remote
+        repository upstream.
+
+     --remote-python-repo=REMOTE_PYTHON_REPO
+        (Python only) Repo upstream for python remote repository.
+        REMOTE_PYTHON_REPO can be either:
+        * one of the following enums: [pypi].
+        * an https custom registry uri (ex: https://my.python.registry)
+
+     --remote-repo-config-desc=REMOTE_REPO_CONFIG_DESC
+        The description for the remote repository config.
+
+     --remote-username=REMOTE_USERNAME
+        Remote Repository upstream registry username.
+
+     --remote-yum-repo=REMOTE_YUM_REPO
+        (Yum only) Repository base for yum remote repository. REMOTE_YUM_REPO
+        must be one of: [centos, centos-debug, centos-stream, centos-vault,
+        epel, rocky].
+
+     --remote-yum-repo-path=REMOTE_YUM_REPO_PATH
+        (Yum only) Remaining URL path to yum remote repository.
+
+     --severity=SEVERITY
+        The minimum severity level of logs to generate. This flag is only
+        applicable when using --enable-platform-logs. SEVERITY must be one of:
+
+         error
+            Log events with severity ERROR or higher.
+         info
+            Log events with severity INFO or higher.
+
+     --upstream-policy-file=FILE
+        (Virtual Repositories only) is the upstreams for the Virtual
+        Repository. Example of the file contents: [ { "id": "test1",
+        "repository": "projects/p1/locations/us-central1/repositories/repo1",
+        "priority": 1 }, { "id": "test2", "repository":
+        "projects/p2/locations/us-west2/repositories/repo2", "priority": 2 } ]
+
+     --version-policy=VERSION_POLICY
+        (Maven only) The package versions that the repository will store.
+        VERSION_POLICY must be one of:
+
+         none
+            (Maven only) The repository doesn't validate the version type.
+         release
+            (Maven only) The repository accepts release versions only.
+         snapshot
+            (Maven only) The repository accepts snapshot versions only.
+
+     At most one of these can be specified:
+
+       --allow-vulnerability-scanning
+          Allow vulnerability scanning on the repository.
+
+       --disable-vulnerability-scanning
+          Disable vulnerability scanning on the repository.
+
+     At most one of these can be specified:
+
+       --clear-platform-logs
+          Clear platform logging settings for the repository to fall back to
+          project settings.
+
+       --disable-platform-logs
+          Disable platform logging for the repository.
+
+       --enable-platform-logs
+          Enable platform logging for the repository.
+
+GCLOUD WIDE FLAGS
+    These flags are available to all commands: --access-token-file, --account,
+    --billing-project, --configuration, --flags-file, --flatten, --format,
+    --help, --impersonate-service-account, --log-http, --project, --quiet,
+    --trace-token, --user-output-enabled, --verbosity.
+
+    Run $ gcloud help for details.
+
+API REFERENCE
+    This command uses the artifactregistry/v1 API. The full documentation for
+    this API can be found at: https://cloud.google.com/artifacts/docs/
+
+NOTES
+    These variants are also available:
+
+        $ gcloud alpha artifacts repositories create
+
+        $ gcloud beta artifacts repositories create
+```
+
+Adapted (not in the official docs): runnable form of the example(s) above: lines wrapped by `gcloud help` are joined and the corrections listed in Notes are applied.
+
+```bash
+gcloud artifacts repositories create my-repo \
+    --repository-format=docker \
+    --kms-key=projects/my-project/locations/us/keyRings/my-kr/cryptoKeys/my-key \
+    --location=us
+```
+
+### gcloud beta artifacts repositories create
+
+```text
+NAME
+    gcloud beta artifacts repositories create - create an Artifact Registry
+        repository
+
+SYNOPSIS
+    gcloud beta artifacts repositories create
+        (REPOSITORY : --location=LOCATION)
+        --repository-format=REPOSITORY_FORMAT [--allow-snapshot-overwrites]
+        [--async] [--description=DESCRIPTION] [--kms-key=KMS_KEY]
+        [--labels=[KEY=VALUE,...]] [--version-policy=VERSION_POLICY]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+### gcloud alpha artifacts repositories create
+
+```text
+NAME
+    gcloud alpha artifacts repositories create - create an Artifact Registry
+        repository
+
+SYNOPSIS
+    gcloud alpha artifacts repositories create
+        (REPOSITORY : --location=LOCATION)
+        --repository-format=REPOSITORY_FORMAT [--allow-snapshot-overwrites]
+        [--async] [--description=DESCRIPTION] [--kms-key=KMS_KEY]
+        [--labels=[KEY=VALUE,...]] [--version-policy=VERSION_POLICY]
+        [GCLOUD_WIDE_FLAG ...]
+```
+
+## Notes
+
+- Adapted from the official docs: where `gcloud help` wraps an example inside a value or leaves `$VARIABLE` placeholders unquoted, a runnable form with the lines joined and the variables quoted follows the help text.
+- Corrected from the official docs (runnable form only; the help text above is verbatim): the `--kms-key` example omits `--location` (gcloud 593.0.0: "Error parsing [repository] ... Failed to find attribute [location]"); the runnable form adds `--location=us`, the location of the key in the example.
+- Text taken verbatim from `gcloud meta generate-help-docs` of Google Cloud CLI 593.0.0 (retrieved 2026-11-14). Release tracks on this page: alpha, beta, ga.
+- Examples are verbatim from `gcloud help`. Some wrap a long value with a trailing backslash and indentation (join the lines when running them), and some omit positional arguments that the SYNOPSIS requires; follow the SYNOPSIS.
+- GCLOUD_WIDE_FLAG stands for the global flags (`--help`, `--project`, `--format`, `--quiet`, `--verbosity`, ...); see the gcloud-wide flags in the `gcp-cli` skill.
+- Source: https://docs.cloud.google.com/sdk/gcloud/reference/artifacts/repositories/create (CC BY 4.0, code samples Apache 2.0; https://developers.google.com/site-policies)
+
+## Related
+
+- [README.md](./README.md)
