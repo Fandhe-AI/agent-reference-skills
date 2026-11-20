@@ -141,6 +141,7 @@ The result is similar to the following:
 - Corrected from the official docs: The example used `* EXCEPT(is_typed)` and `table_type = 'BASE TABLE'`, but the PARAMETERS schema on this page has no `is_typed` or `table_type` column, and the shown result has all ten columns. The query now selects all columns without a filter.
 - Corrected from the official docs: the example of a fully qualified name for querying another project names `example-project.mydataset.INFORMATION_SCHEMA.JOBS_BY_PROJECT`. This page is about the `PARAMETERS` view, and the format given just above it is `PROJECT_ID`.`DATASET_ID`.INFORMATION_SCHEMA.PARAMETERS, so the example is changed to `example-project.mydataset.INFORMATION_SCHEMA.PARAMETERS`.
 - Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
+- Conflicting official statements: the note on this page says that you must use a region qualifier to query `INFORMATION_SCHEMA` views. The Scope and syntax table on this page also lists the dataset-level form `[PROJECT_ID.]DATASET_ID.INFORMATION_SCHEMA.PARAMETERS`, whose region scope is the dataset location. Query the dataset-level form with a dataset qualifier, and run the query in the location of the dataset.
 
 ## Related
 

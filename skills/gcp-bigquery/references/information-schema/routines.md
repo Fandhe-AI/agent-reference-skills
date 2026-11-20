@@ -145,6 +145,7 @@ The result is similar to the following:
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
 - Corrected from the official docs: the format for querying a project other than the default project is given as `PROJECT_ID`.INFORMATION_SCHEMA.ROUTINES, with the example `` `myproject`.INFORMATION_SCHEMA.ROUTINES ``. The Scope and syntax table on this page gives `[PROJECT_ID.]DATASET_ID.INFORMATION_SCHEMA.ROUTINES` and ``[PROJECT_ID.]`region-REGION`.INFORMATION_SCHEMA.ROUTINES``, and the text says to add the project ID to the dataset, so the format and the example now include the dataset (`` `myproject`.mydataset.INFORMATION_SCHEMA.ROUTINES ``).
+- Conflicting official statements: the note on this page says that you must use a region qualifier to query `INFORMATION_SCHEMA` views. The Scope and syntax table on this page also lists the dataset-level form `[PROJECT_ID.]DATASET_ID.INFORMATION_SCHEMA.ROUTINES`, whose region scope is the dataset location. Query the dataset-level form with a dataset qualifier, and run the query in the location of the dataset.
 
 ## Related
 

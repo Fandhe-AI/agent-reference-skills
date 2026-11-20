@@ -65,3 +65,11 @@
 | TABLE_STORAGE_USAGE_TIMELINE_BY_ORGANIZATION view | Required permissions, Schema, Scope and syntax, Example | [table-storage-usage-by-organization.md](./table-storage-usage-by-organization.md) |
 | TABLE_STORAGE_USAGE_TIMELINE view | Required permissions, Schema, Scope and syntax, Examples | [table-storage-usage.md](./table-storage-usage.md) |
 | TABLE_STORAGE view | Data included in the *_BYTES columns, Forecast storage billing, Understanding byte values versus billing units, Required roles, Schema, Scope and syntax, Examples, Troubleshooting | [table-storage.md](./table-storage.md) |
+| TABLES view | Required permissions, Schema, Scope and syntax, Examples | [tables.md](./tables.md) |
+| VECTOR_INDEX_COLUMNS view | Required permissions, Schema, Scope and syntax, Examples | [vector-index-columns.md](./vector-index-columns.md) |
+| VECTOR_INDEX_OPTIONS view | Required permissions, Schema, Scope and syntax, Examples | [vector-index-options.md](./vector-index-options.md) |
+| VECTOR_INDEXES view | Required permissions, Schema, Scope and syntax, Example | [vector-indexes.md](./vector-indexes.md) |
+| VIEWS view | Required permissions, Schema, Scope and syntax, Examples | [views.md](./views.md) |
+| WRITE_API_TIMELINE_BY_FOLDER view | Required permission, Schema, Data retention, Scope and syntax, Examples | [write-api-by-folder.md](./write-api-by-folder.md) |
+| WRITE_API_TIMELINE_BY_ORGANIZATION view | Required permission, Schema, Data retention, Scope and syntax, Examples | [write-api-by-organization.md](./write-api-by-organization.md) |
+| WRITE_API_TIMELINE view | Required permission, Schema, Data retention, Scope and syntax, Examples | [write-api.md](./write-api.md) |

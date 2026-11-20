@@ -128,6 +128,7 @@ The result is similar to the following:
 - Corrected from the official docs (rendering): the page's HTML writes `ARRAY<STRING>` unescaped inside `<code>`, so the rendered page and its Markdown twin show `ARRAY`; the type is restored from the HTML source. (`library`)
 - Corrected from the official docs (rendering): the page's HTML writes `DataGovernanceType<STRING>` unescaped inside `<code>`, so the rendered page and its Markdown twin show `DataGovernanceType`; the type is restored from the HTML source. (`data_governance_type`; the type name is as the source writes it)
 - Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
+- Conflicting official statements: the note on this page says that you must use a region qualifier to query `INFORMATION_SCHEMA` views. The Scope and syntax table on this page also lists the dataset-level form `[PROJECT_ID.]DATASET_ID.INFORMATION_SCHEMA.ROUTINE_OPTIONS`, whose region scope is the dataset location. Query the dataset-level form with a dataset qualifier, and run the query in the location of the dataset.
 
 ## Related
 

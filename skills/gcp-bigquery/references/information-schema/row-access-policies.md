@@ -201,6 +201,7 @@ The result is similar to the following:
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: the Required permissions section asks you to grant the following IAM roles, which reads as if all three were needed. Each of the three roles alone includes both `bigquery.rowAccessPolicies.get` and `bigquery.rowAccessPolicies.list` (see the BigQuery roles in iam/bigquery-1.md), so one of them is enough.
 - Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
+- Conflicting official statements: the note on this page says that you must use a region qualifier to query `INFORMATION_SCHEMA` views. The Scope and syntax table on this page also lists the dataset-level form `[PROJECT_ID.]DATASET_ID.INFORMATION_SCHEMA.ROW_ACCESS_POLICIES`, whose region scope is the dataset location. Query the dataset-level form with a dataset qualifier, and run the query in the location of the dataset.
 
 ## Related
 

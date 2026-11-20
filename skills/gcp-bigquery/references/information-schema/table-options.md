@@ -10,7 +10,7 @@ The `INFORMATION_SCHEMA.TABLE_OPTIONS` view contains one row for each option,
 for each table or view in a dataset. The `TABLES`
 and `TABLE_OPTIONS` views also contain high-level information about views.
 For detailed information, query the
-[`INFORMATION_SCHEMA.VIEWS`](https://docs.cloud.google.com/bigquery/docs/information-schema-views) view.
+[`INFORMATION_SCHEMA.VIEWS`](views.md) view.
 
 ### Required permissions
 
@@ -38,7 +38,7 @@ When you query the `INFORMATION_SCHEMA.TABLE_OPTIONS` view, the query results
 contain one row for each option, for each table or view in a dataset. For
 detailed information about
 views, query the
-[`INFORMATION_SCHEMA.VIEWS` view](https://docs.cloud.google.com/bigquery/docs/information-schema-views)
+[`INFORMATION_SCHEMA.VIEWS` view](views.md)
 instead.
 
 The `INFORMATION_SCHEMA.TABLE_OPTIONS` view has the following schema:
@@ -233,6 +233,7 @@ The result is similar to the following:
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders; and inline code that the twin replaces with its link URL ([`BigtableOptions`](https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/tables#bigtableoptions)) is restored from the link text of the rendered page. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
+- Conflicting official statements: the note on this page says that you must use a region qualifier to query `INFORMATION_SCHEMA` views. The Scope and syntax table on this page also lists the dataset-level form `[PROJECT_ID.]DATASET_ID.INFORMATION_SCHEMA.TABLE_OPTIONS`, whose region scope is the dataset location. Query the dataset-level form with a dataset qualifier, and run the query in the location of the dataset.
 
 ## Related
 
