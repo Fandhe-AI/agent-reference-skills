@@ -188,7 +188,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `grantees` | `array<string>` | Required. IAM principal that should be granted Fine Grained Access to the underlying data goverened by the data policy. The target data policy is determined by the `data_policy` field. Uses the IAM V2 principal syntax (https://cloud.google.com/iam/docs/principal-identifiers#v2). Supported principal types: \* User \* Group \* Service account |
+| `grantees` | `array<string>` | Required. IAM principal that should be granted Fine Grained Access to the underlying data goverened by the data policy. The target data policy is the one named in the URL path (`{+dataPolicy}` of `addGrantees` / `removeGrantees`, a required path parameter); the request body carries only `grantees` (corrected; see Notes). Uses the IAM V2 principal syntax (https://cloud.google.com/iam/docs/principal-identifiers#v2). Supported principal types: \* User \* Group \* Service account |
 
 ### `AuditConfig` fields
 
@@ -299,7 +299,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `grantees` | `array<string>` | Required. IAM principal that should be revoked from Fine Grained Access to the underlying data goverened by the data policy. The target data policy is determined by the `data_policy` field. Uses the IAM V2 principal syntax (https://cloud.google.com/iam/docs/principal-identifiers#v2). Supported principal types: \* User \* Group \* Service account |
+| `grantees` | `array<string>` | Required. IAM principal that should be revoked from Fine Grained Access to the underlying data goverened by the data policy. The target data policy is the one named in the URL path (`{+dataPolicy}` of `addGrantees` / `removeGrantees`, a required path parameter); the request body carries only `grantees` (corrected; see Notes). Uses the IAM V2 principal syntax (https://cloud.google.com/iam/docs/principal-identifiers#v2). Supported principal types: \* User \* Group \* Service account |
 
 ### `RenameDataPolicyRequest` fields
 
@@ -330,6 +330,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 - Generated from the Discovery document(s) v2, v1 of `bigquerydatapolicy` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
 - Corrected from the Discovery document: the JSON example in the `Policy` description (the `google.iam.v1` text shared by the IAM methods) has a trailing comma after the `condition.expression` value (`"expression": "request.time < timestamp('2020-10-01T00:00:00.000Z')", } }`), which is not valid JSON; the same comma is in the proto comment. This page shows the example as a JSON block without that comma. The Discovery text of the YAML example has lost its line breaks and indentation, so the YAML block is taken from the proto comment (`google/iam/v1/policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/policy.proto, commit `5ce0245`, retrieved 2026-11-21).
+- Corrected from the Discovery document: the `grantees` descriptions of `AddGranteesRequest` and `RemoveGranteesRequest` read "The target data policy is determined by the `data_policy` field."; in the proto, `data_policy` is a field of the request message that the HTTP binding maps to the URL path (`post: "/v2/{data_policy=projects/*/locations/*/dataPolicies/*}:addGrantees"`, likewise `:removeGrantees`), and the Discovery document has no `dataPolicy` property in these request schemas; the methods take it as the required path parameter `dataPolicy` (`v2/{+dataPolicy}:addGrantees`, `v2/{+dataPolicy}:removeGrantees`), so the policy name goes in the URL, not in the body (`google/cloud/bigquery/datapolicies/v2/datapolicy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/datapolicies/v2/datapolicy.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Corrected from the Discovery document: the `TestIamPermissionsResponse.permissions` description reads "A subset of `TestPermissionsRequest.permissions` that the caller is allowed."; the same text is in the `google.iam.v1` proto, where the request message of `TestIamPermissions` is `TestIamPermissionsRequest` (`google/iam/v1/iam_policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/iam_policy.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Source: https://bigquerydatapolicy.googleapis.com/$discovery/rest?version=v2, https://bigquerydatapolicy.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
