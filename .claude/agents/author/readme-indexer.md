@@ -50,7 +50,7 @@ tools:
 
 1. Read でファイル先頭50行程度を取得する
 2. 最初の `# 見出し`（H1）をファイルの **Name** として抽出する
-3. H1 の直後の空行をスキップし、最初の非空行を **Description**（概要1行）として抽出する
+3. 既存の `{category_dir}README.md` にそのファイルを指す行があれば、その Description を引き継ぐ。無ければ、H1 の後の空行・`Source:` 等のメタデータ行・見出し・表・コードフェンスを飛ばした最初の本文行を **Description**（概要1行）として抽出する
 4. H1 が存在しない場合はファイル名（拡張子除く）を Name とし、Description は空欄とする
 5. 子索引（`<subdir>/README.md`）は H1 を Name とし、Description は既存の `{category_dir}README.md` にその子索引を指す行があればその Description を引き継ぎ、無ければ空欄とする
 
@@ -67,7 +67,7 @@ tools:
 ```
 
 - Path の相対リンクは `./` を先頭に付ける（例: `[foo.md](./foo.md)`）。子ディレクトリのページは `[foo.md](./<subdir>/foo.md)`、子索引は `[<subdir>/README.md](./<subdir>/README.md)` とする
-- ページから抽出した Description が長い場合は50文字程度で切り詰め、末尾に `…` を付ける（引き継いだ子索引の Description は切り詰めない）
+- ページから抽出した Description が長い場合は50文字程度で切り詰め、末尾に `…` を付ける（既存の行から引き継いだ Description は切り詰めない）
 - Name・Description に含まれる未エスケープの `|` は `\|` にする（インラインコード内でも列区切りになるため）
 
 ### Step 4: README.md の生成
@@ -82,7 +82,7 @@ tools:
 | {Name} | {Description} | {Step 3 の Path} |
 ```
 
-- H1 はカテゴリディレクトリ名（子ディレクトリなら、その子ディレクトリ名。元の表記）のみとし、前置きの説明文は書かない（reference-template 準拠）
+- H1 は既存 README の H1 があればそれを保ち、無ければカテゴリディレクトリ名（子ディレクトリなら、その子ディレクトリ名。元の表記）とし、前置きの説明文は書かない（reference-template 準拠）
 
 ## 完了条件
 
