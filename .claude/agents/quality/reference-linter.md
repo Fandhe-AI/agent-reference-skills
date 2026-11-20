@@ -87,7 +87,7 @@ samples 本文の不備は sample-curator、scripts 本文の不備は script-co
 
 1. `| Name | Description | Path |` ヘッダー行が存在するか
 2. 3カラムの区切り行（`| --- | --- | --- |` 等。ダッシュ数や前後の空白の差異は許容する）が存在するか
-3. 各行の `Path` セルが `[{filename}.md](./{filename}.md)` 形式のリンクになっているか（`references/` 配下の README では、reference-template の階層型カテゴリの例外に当たる `[<subdir>/README.md](./<subdir>/README.md)`・`[<file>.md](./<subdir>/<file>.md)` 形式のリンクも可）
+3. 各行の `Path` セルが `[{filename}.md](./{filename}.md)` 形式のリンクになっているか（`references/` 配下の README では、reference-template の階層型カテゴリの例外に当たる `[<subdir>/README.md](./<subdir>/README.md)`・`[<file>.md](./<subdir>/<file>.md)` 形式のリンクも可。表示名が異なる既存の行（`[doc-blocks/](./doc-blocks/README.md)` 等）も、リンク先がこの形なら可とし、readme-indexer の再生成で上の表示名にそろう）
 4. ヘッダー以外の行が空でないか
 
 ### Step 4: SKILL.md frontmatter の YAML 妥当性確認
