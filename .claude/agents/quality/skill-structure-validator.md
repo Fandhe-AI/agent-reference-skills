@@ -58,9 +58,10 @@ tools:
 各カテゴリの README.md、および存在する `samples/README.md` `scripts/README.md` について:
 
 1. Read して `| Name | Description | Path |` 形式の表を抽出する
-2. 表に記載された Path（ファイル名）を一覧化する
-3. 同ディレクトリの実 `.md` ファイル（README.md 除く）を Glob で一覧化する
-4. 索引にあるがファイルが存在しないもの（❌）と、ファイルはあるが索引にないもの（⚠️）を記録する
+2. 表に記載された Path のリンク先（README からの相対パス。例: `foo.md`、`doc-blocks/README.md`）を一覧化する。リンクの表示名は比較に使わない
+3. 同ディレクトリの実 `.md` ファイル（README.md 除く）を Glob で一覧化する。`references/` 配下の README では、reference-template の階層型カテゴリの例外に従い、直下の子ディレクトリに実在する `<subdir>/README.md` も一覧に加える（孫以下は加えない。`samples/` `scripts/` では加えない）
+4. 2 と 3 を相対パス全体で比較し、索引にあるがファイルが存在しないもの（❌）と、ファイルはあるが索引にないもの（⚠️）を記録する
+5. 3 で一覧に加えた子ディレクトリの `README.md` にも、この Step 3 を同じ手順で適用する
 
 ### Step 4: 相対リンクの到達性確認
 
