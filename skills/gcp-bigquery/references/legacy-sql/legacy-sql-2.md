@@ -427,13 +427,15 @@ This example assumes the following tables exist in a project named `myproject-12
 - mydata.boom123456789
 - mydata.taboo999
 
+Adapted (not in the official docs): changed the regular expression so that it matches the listed tables.
+
 ```sql
 #legacySQL
 SELECT
   speed
 FROM
   TABLE_QUERY([myproject-1234:mydata],
-               'REGEXP_MATCH(table_id, r"^boo[\d]{3,5}")')
+               'REGEXP_MATCH(table_id, r"^boo[a-z]?[\d]{3,5}$")')
 ```
 
 Matches the following tables:
@@ -848,6 +850,8 @@ LIMIT 5
 
 :   Returns the first value of `\<field_name\>` in the window.
 
+Adapted (not in the official docs): added an outer `ORDER BY word_count DESC`, so that `LIMIT 1` returns a fixed row.
+
 ```sql
 #legacySQL
 SELECT
@@ -858,13 +862,15 @@ FROM
    [bigquery-public-data:samples.shakespeare]
 WHERE
    corpus='othello' and length(word) > 10
+ORDER BY
+   word_count DESC
 LIMIT 1
 ```
 **Returns:**
 
 | word | word_count | fv |
 |---|---|---|
-| imperfectly | 1 | imperfectly |
+| handkerchief | 29 | handkerchief |
 
 `LAG(\<expr\>[, \<offset\>[, \<default_value\>]])`
 
@@ -1418,8 +1424,8 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 - Corrected from the official docs: the table-wildcard example heading says names "have a length greater than 4", but the query uses `length(table_id) >= 4` and the result lists `mydata.ooze`, whose name has length 4. The heading is changed to "a length of at least 4".
 - Corrected from the official docs: the `HAVING` clause has the comments "Only consider TLDs that are NOT NULL" and "or in our list of common TLDs", but the condition `user_tld IS NOT NULL AND NOT user_tld IN (...)` excludes the listed TLDs, as the text above the query says ("TLDs that are not in a list of common examples"). The comment is changed to "or not in our list of common TLDs".
 - Corrected from the official docs: the text says the query checks whether the hash modulo `2` is zero ("the modulo n of the hash equals zero"), but the query tests `ABS(HASH(title)) % 2 == 1`. The comparison is changed to `== 0` to match the text.
-- Caution: the table-wildcard example uses `REGEXP_MATCH(table_id, r"^boo[\d]{3,5}")` and lists `book418` and `boom12345` as matches, but after `boo` these names have a letter, which `[\d]` does not match. Either the expression or the table names are wrong. The official text is kept as published.
-- Caution: the `FIRST_VALUE` example result row shows `imperfectly` as the first value for `word_count` `1`, while the other window-function examples on this page order the same corpus by `word_count DESC` and start with `handkerchief`. The official text is kept as published.
+- Corrected from the official docs: the `TABLE_QUERY` example that matches table names starting with `boo` followed by 3 to 5 digits uses `^boo[\d]{3,5}`, which needs the digits right after `boo`, so it matches none of the listed tables (`book418` and `boom12345` have a letter after `boo`), and without `$` it also matches a name with more digits by its prefix. The expression is changed to `^boo[a-z]?[\d]{3,5}$`, which matches `book418` and `boom12345` and not `book4`, `boom123456789` or `taboo999`.
+- Corrected from the official docs: the `FIRST_VALUE` example orders the window by `word_count DESC`, so `fv` is the word with the largest `word_count` in the partition, but the shown result has `imperfectly` (`word_count` 1) as `fv`; the query also uses `LIMIT 1` without an outer `ORDER BY`, so the returned row is not fixed. The query now orders the output by `word_count DESC`, and the result row is changed to `handkerchief`, `29`, `handkerchief`, the first row of the `DENSE_RANK` example with the same data and filter on this page.
 
 ## Related
 

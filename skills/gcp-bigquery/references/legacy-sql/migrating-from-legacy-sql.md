@@ -353,7 +353,7 @@ The following legacy SQL coercions are not supported in GoogleSQL and need to be
 
 | Coercion | Translation |
 |---|---|
-| `BOOLEAN` to `INT64` or `FLOAT64` | Use `SAFE_CAST(bool AS INT64)` or `SAFE_CAST(bool AS FLOAT64)` |
+| `BOOLEAN` to `INT64` or `FLOAT64` | Use `SAFE_CAST(bool AS INT64)` or `SAFE_CAST(SAFE_CAST(bool AS INT64) AS FLOAT64)` |
 | `INT64` to `TIMESTAMP` | Use `TIMESTAMP_MICROS(micros_value)` |
 | `STRING` to `BYTES` | Use `SAFE_CAST(str AS BYTES)` |
 | `STRING` to `INT64`, `FLOAT64`, or `BOOL` | Mostly supported by GoogleSQL. For corner cases use `SAFE_CAST(str AS INT64)`, `SAFE_CAST(str AS FLOAT64)`, or `SAFE_CAST(str AS BOOL)` |
@@ -682,7 +682,7 @@ equivalents.
 | `REGEXP_MATCH(s, pattern)` | [`REGEXP_CONTAINS(s, pattern)`](../googlesql-functions/string_functions-1.md#regexp_contains) |   |
 | `IS_NULL(x)` | [`x IS NULL`](../googlesql-syntax/operators.md#is-operators) |   |
 | `LEFT(s, len)` | [`SUBSTR(s, 0, len)`](../googlesql-functions/string_functions-2.md#substr) |   |
-| `RIGHT(s, len)` | [`SUBSTR(s, -len)`](../googlesql-functions/string_functions-2.md#substr) |   |
+| `RIGHT(s, len)` | [`RIGHT(s, len)`](../googlesql-functions/string_functions-2.md#right) |   |
 | `s CONTAINS "foo"` | [`STRPOS(s, "foo") > 0`](../googlesql-functions/string_functions-2.md#strpos) or [`s LIKE '%foo%'`](../googlesql-syntax/operators.md#comparison-operators) |   |
 | `INSTR(s, "foo")` | [`STRPOS(s, "foo")`](../googlesql-functions/string_functions-2.md#strpos) |   |
 | `x % y` | [`MOD(x, y)`](../googlesql-functions/mathematical_functions.md#mod) |   |
@@ -1586,6 +1586,11 @@ The permissions required to access the partition metadata differ between legacy 
 - Caution: the error message example gives the valid timestamp range as `[0001-01-1 00:00:00, 9999-12-31 23:59:59.999999]`, while the same page writes the minimum as `0001-01-01 00:00:00.000000`. The official text is kept as published.
 - Corrected from the official docs: the GoogleSQL view `V2` that replaces the legacy SQL view `V` computes `day` as `EXTRACT(DAY FROM timestamp_col)`, which is the day of the month (1 to 31), so the same day number in different months and years would be grouped together. `V` uses `UTC_USEC_TO_DAY(timestamp_col)`, which shifts a UNIX timestamp in microseconds to the beginning of its day (legacy-sql-1.md). The view now uses `UNIX_MICROS(TIMESTAMP_TRUNC(TIMESTAMP_MICROS(timestamp_col), DAY))`, the equivalent given in the function comparison table on this page. The page does not state the type of `timestamp_col`: this form follows `UTC_USEC_TO_DAY`, whose argument is a UNIX timestamp in microseconds (`INT64`), while `EXTRACT` in the official view needs a date or time type. If `timestamp_col` is a `TIMESTAMP` column, `TIMESTAMP_MICROS` fails on it; use `UNIX_MICROS(TIMESTAMP_TRUNC(timestamp_col, DAY))` instead.
 - Corrected from the official docs: the two `TABLE_DATE_RANGE_STRICT` migration examples find missing tables by selecting `_TABLE_SUFFIX` from the wildcard table `mydataset.sea_weather_*`. A table that exists but has no rows returns no `_TABLE_SUFFIX` value, so it was reported as missing and the query raised an error. Both examples now take the suffixes from the `table_name` column of `mydataset.INFORMATION_SCHEMA.TABLES` (information-schema/tables.md).
+- Corrected from the official docs: the coercion table translates `BOOLEAN` to `FLOAT64` as `SAFE_CAST(bool AS FLOAT64)`, but `BOOL` can be cast only to `BOOL`, `INT64` and `STRING` (googlesql-syntax/conversion_rules.md). The translation is changed to `SAFE_CAST(SAFE_CAST(bool AS INT64) AS FLOAT64)`.
+- Corrected from the official docs: the function comparison table translates `RIGHT(s, len)` as `SUBSTR(s, -len)`. When `len` is `0`, that is `SUBSTR(s, 0)`, and a `position` of `0` is set to `1` (googlesql-functions/string_functions-2.md), so the whole string is returned instead of an empty string. The translation is changed to the GoogleSQL `RIGHT(s, len)` function.
+- Caution: the example that migrates `OMIT RECORD IF COUNT(payload.pages.page_name) <= 80` uses `ARRAY_LENGTH(payload.pages) > 80`. `COUNT(payload.pages.page_name)` counts only the pages whose `page_name` is not `NULL`, while `ARRAY_LENGTH` counts every element of `payload.pages`, so a record with more than 80 pages of which some have a `NULL` `page_name` can be kept by the GoogleSQL query and omitted by the legacy SQL query. To keep the legacy SQL condition, filter with `(SELECT COUNT(page_name) FROM UNNEST(payload.pages)) > 80`.
+- Caution: the `TABLE_DATE_RANGE_STRICT` example that uses a `WITH` clause references the wildcard table `mydataset.sea_weather_*` in the same query as the check. If no table matches the wildcard, that reference can fail before the `IF` is evaluated, so the query may not return the `Not found suffixes` error. The scripting example runs the wildcard query only in the `ELSE` branch, after the check.
+- Caution: the GoogleSQL query that replaces `__PARTITIONS_SUMMARY__` keeps the error for a table that is not partitioned, but not for a table that does not exist. The legacy SQL meta-table reads the table directly and fails when it does not exist, while the GoogleSQL query filters `INFORMATION_SCHEMA.PARTITIONS` by `table_name` and returns no rows for a missing table. To keep that error, check that the table exists in `INFORMATION_SCHEMA.TABLES` first.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
