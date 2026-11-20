@@ -2,7 +2,7 @@
 source: https://bigquery.googleapis.com/$discovery/rest?version=v2
 ---
 
-# BigQuery API message schemas (bigquery) (part 1/2)
+# BigQuery API message schemas (bigquery) (part 1/3)
 
 ## Signature / Usage
 
@@ -75,12 +75,52 @@ Message types referenced by the methods listed under `references/rest/bigquery/`
 
 ### `AuditConfig`
 
-- Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": \[ { "service": "allServices", "audit_log_configs": \[ { "log_type": "DATA_READ", "exempted_members": \[ "user:jose@example.com" \] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } \] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": \[ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": \[ "user:aliya@example.com" \] } \] } \] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.
+- Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. The `Policy` example of this description is shown below with the REST JSON field names. For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.
 - Version: v2
+
+Adapted (not in the official docs): the `Policy` example of the Discovery `AuditConfig` description, with the proto field names `audit_configs`, `audit_log_configs`, `log_type` and `exempted_members` written as the REST JSON names `auditConfigs`, `auditLogConfigs`, `logType` and `exemptedMembers` (see Notes).
+
+```json
+{
+  "auditConfigs": [
+    {
+      "service": "allServices",
+      "auditLogConfigs": [
+        {
+          "logType": "DATA_READ",
+          "exemptedMembers": [
+            "user:jose@example.com"
+          ]
+        },
+        {
+          "logType": "DATA_WRITE"
+        },
+        {
+          "logType": "ADMIN_READ"
+        }
+      ]
+    },
+    {
+      "service": "sampleservice.googleapis.com",
+      "auditLogConfigs": [
+        {
+          "logType": "DATA_READ"
+        },
+        {
+          "logType": "DATA_WRITE",
+          "exemptedMembers": [
+            "user:aliya@example.com"
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
 
 ### `AuditLogConfig`
 
-- Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": \[ { "log_type": "DATA_READ", "exempted_members": \[ "user:jose@example.com" \] }, { "log_type": "DATA_WRITE" } \] } This enables 'DATA_READ' and 'DATA_WRITE' logging, while exempting jose@example.com from DATA_READ logging.
+- Provides the configuration for logging a type of permissions. Example (two `AuditLogConfig` values, the elements of `auditLogConfigs` in an `AuditConfig`, with REST JSON field names; example corrected, see Notes): `{ "logType": "DATA_READ", "exemptedMembers": [ "user:jose@example.com" ] }` and `{ "logType": "DATA_WRITE" }`. This enables 'DATA_READ' and 'DATA_WRITE' logging, while exempting jose@example.com from DATA_READ logging.
 - Version: v2
 
 ### `AvroOptions`
@@ -110,7 +150,6 @@ Message types referenced by the methods listed under `references/rest/bigquery/`
 
 ### `BigQueryModelTraining`
 
--
 - Version: v2
 
 ### `BigtableColumn`
@@ -150,12 +189,10 @@ Message types referenced by the methods listed under `references/rest/bigquery/`
 
 ### `BqmlIterationResult`
 
--
 - Version: v2
 
 ### `BqmlTrainingRun`
 
--
 - Version: v2
 
 ### `CategoricalValue`
@@ -345,7 +382,6 @@ Message types referenced by the methods listed under `references/rest/bigquery/`
 
 ### `ExternalDataConfiguration`
 
--
 - Version: v2
 
 ### `ExternalDatasetReference`
@@ -525,7 +561,6 @@ Message types referenced by the methods listed under `references/rest/bigquery/`
 
 ### `Job`
 
--
 - Version: v2
 
 ### `JobCancelResponse`
@@ -535,7 +570,6 @@ Message types referenced by the methods listed under `references/rest/bigquery/`
 
 ### `JobConfiguration`
 
--
 - Version: v2
 
 ### `JobConfigurationExtract`
@@ -576,16 +610,6 @@ Message types referenced by the methods listed under `references/rest/bigquery/`
 ### `JobStatistics`
 
 - Statistics for a single job execution.
-- Version: v2
-
-### `JobStatistics2`
-
-- Statistics for a query job.
-- Version: v2
-
-### `JobStatistics3`
-
-- Statistics for a load job.
 - Version: v2
 
 ### Shape of `AggregateClassificationMetrics`
@@ -656,9 +680,9 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `autoRegressiveCoefficients` | `array<number>` | Auto-regressive coefficients, an array of double. |
+| `autoRegressiveCoefficients` | `array<number (double)>` | Auto-regressive coefficients, an array of double. |
 | `interceptCoefficient` | number (double) | Intercept coefficient, just a double not an array. |
-| `movingAverageCoefficients` | `array<number>` | Moving-average coefficients, an array of double. |
+| `movingAverageCoefficients` | `array<number (double)>` | Moving-average coefficients, an array of double. |
 
 ### `ArimaFittingMetrics` fields
 
@@ -676,7 +700,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `arimaSingleModelForecastingMetrics` | `array<ArimaSingleModelForecastingMetrics>` | Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case. |
 | `hasDrift` | `array<boolean>` | Whether Arima model fitted with drift or not. It is always false when d is not 1. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
 | `nonSeasonalOrder` | `array<ArimaOrder>` | Non-seasonal order. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
-| `seasonalPeriods` | `array<string>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Deprecated (`deprecated: true` in the Discovery document; see Notes). Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
+| `seasonalPeriods` | `array<string enum>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Deprecated (`deprecated: true` in the Discovery document; see Notes). Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
 | `timeSeriesId` | `array<string>` | Id to differentiate different time series for the large-scale case. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
 
 ### `ArimaModelInfo` fields
@@ -690,7 +714,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `hasSpikesAndDips` | boolean | If true, spikes_and_dips is a part of time series decomposition result. |
 | `hasStepChanges` | boolean | If true, step_changes is a part of time series decomposition result. |
 | `nonSeasonalOrder` | ArimaOrder | Non-seasonal order. |
-| `seasonalPeriods` | `array<string>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
+| `seasonalPeriods` | `array<string enum>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
 | `timeSeriesId` | string | The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used. |
 | `timeSeriesIds` | `array<string>` | The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns. |
 
@@ -707,7 +731,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | Field | Type | Description |
 |---|---|---|
 | `arimaModelInfo` | `array<ArimaModelInfo>` | This message is repeated because there are multiple arima models fitted in auto-arima. For non-auto-arima model, its size is one. |
-| `seasonalPeriods` | `array<string>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
+| `seasonalPeriods` | `array<string enum>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
 
 ### `ArimaSingleModelForecastingMetrics` fields
 
@@ -719,7 +743,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `hasSpikesAndDips` | boolean | If true, spikes_and_dips is a part of time series decomposition result. |
 | `hasStepChanges` | boolean | If true, step_changes is a part of time series decomposition result. |
 | `nonSeasonalOrder` | ArimaOrder | Non-seasonal order. |
-| `seasonalPeriods` | `array<string>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
+| `seasonalPeriods` | `array<string enum>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
 | `timeSeriesId` | string | The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used. |
 | `timeSeriesIds` | `array<string>` | The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns. |
 
@@ -1063,7 +1087,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | Field | Type | Description |
 |---|---|---|
 | `dataset` | DatasetReference | The dataset this entry applies to |
-| `targetTypes` | `array<string>` | Which resources in the dataset this entry applies to. Currently, only views are supported, but additional target types may be added in the future. Values: `TARGET_TYPE_UNSPECIFIED`, `VIEWS`, `ROUTINES`. |
+| `targetTypes` | `array<string enum>` | Which resources in the dataset this entry applies to. Currently, only views are supported, but additional target types may be added in the future. Values: `TARGET_TYPE_UNSPECIFIED`, `VIEWS`, `ROUTINES`. |
 
 ### `DatasetList` fields
 
@@ -1133,14 +1157,14 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `candidates` | `array<number>` | Candidates for the double parameter in increasing order. |
+| `candidates` | `array<number (double)>` | Candidates for the double parameter in increasing order. |
 
 ### `DoubleHparamSearchSpace` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `candidates` | DoubleCandidates | Candidates of the double hyperparameter. |
-| `range` | DoubleRange | Range of the double hyperparameter. |
+| `candidates` | DoubleCandidates | Candidates of the double hyperparameter. Mutually exclusive with `range` (proto `oneof search_space`; set at most one; see Notes). |
+| `range` | DoubleRange | Range of the double hyperparameter. Mutually exclusive with `candidates` (proto `oneof search_space`; set at most one; see Notes). |
 
 ### `DoubleRange` fields
 
@@ -1175,13 +1199,13 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `arimaForecastingMetrics` | ArimaForecastingMetrics | Populated for ARIMA models. |
-| `binaryClassificationMetrics` | BinaryClassificationMetrics | Populated for binary classification/classifier models. |
-| `clusteringMetrics` | ClusteringMetrics | Populated for clustering models. |
-| `dimensionalityReductionMetrics` | DimensionalityReductionMetrics | Evaluation metrics when the model is a dimensionality reduction model, which currently includes PCA. |
-| `multiClassClassificationMetrics` | MultiClassClassificationMetrics | Populated for multi-class classification/classifier models. |
-| `rankingMetrics` | RankingMetrics | Populated for implicit feedback type matrix factorization models. |
-| `regressionMetrics` | RegressionMetrics | Populated for regression models and explicit feedback type matrix factorization models. |
+| `arimaForecastingMetrics` | ArimaForecastingMetrics | Populated for ARIMA models. Mutually exclusive with `regressionMetrics`, `binaryClassificationMetrics`, `multiClassClassificationMetrics`, `clusteringMetrics`, `rankingMetrics`, `dimensionalityReductionMetrics` (proto `oneof metrics`; set at most one; see Notes). |
+| `binaryClassificationMetrics` | BinaryClassificationMetrics | Populated for binary classification/classifier models. Mutually exclusive with `regressionMetrics`, `multiClassClassificationMetrics`, `clusteringMetrics`, `rankingMetrics`, `arimaForecastingMetrics`, `dimensionalityReductionMetrics` (proto `oneof metrics`; set at most one; see Notes). |
+| `clusteringMetrics` | ClusteringMetrics | Populated for clustering models. Mutually exclusive with `regressionMetrics`, `binaryClassificationMetrics`, `multiClassClassificationMetrics`, `rankingMetrics`, `arimaForecastingMetrics`, `dimensionalityReductionMetrics` (proto `oneof metrics`; set at most one; see Notes). |
+| `dimensionalityReductionMetrics` | DimensionalityReductionMetrics | Evaluation metrics when the model is a dimensionality reduction model, which currently includes PCA. Mutually exclusive with `regressionMetrics`, `binaryClassificationMetrics`, `multiClassClassificationMetrics`, `clusteringMetrics`, `rankingMetrics`, `arimaForecastingMetrics` (proto `oneof metrics`; set at most one; see Notes). |
+| `multiClassClassificationMetrics` | MultiClassClassificationMetrics | Populated for multi-class classification/classifier models. Mutually exclusive with `regressionMetrics`, `binaryClassificationMetrics`, `clusteringMetrics`, `rankingMetrics`, `arimaForecastingMetrics`, `dimensionalityReductionMetrics` (proto `oneof metrics`; set at most one; see Notes). |
+| `rankingMetrics` | RankingMetrics | Populated for implicit feedback type matrix factorization models. Mutually exclusive with `regressionMetrics`, `binaryClassificationMetrics`, `multiClassClassificationMetrics`, `clusteringMetrics`, `arimaForecastingMetrics`, `dimensionalityReductionMetrics` (proto `oneof metrics`; set at most one; see Notes). |
+| `regressionMetrics` | RegressionMetrics | Populated for regression models and explicit feedback type matrix factorization models. Mutually exclusive with `binaryClassificationMetrics`, `multiClassClassificationMetrics`, `clusteringMetrics`, `rankingMetrics`, `arimaForecastingMetrics`, `dimensionalityReductionMetrics` (proto `oneof metrics`; set at most one; see Notes). |
 
 ### `ExplainQueryStage` fields
 
@@ -1195,7 +1219,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `computeRatioMax` | number (double) | Relative amount of time the slowest shard spent on CPU-bound tasks. |
 | `endMs` | string (int64) | Stage end time represented as milliseconds since the epoch. |
 | `id` | string (int64) | Unique ID for the stage within the plan. |
-| `inputStages` | `array<string>` | IDs for stages that are inputs to this stage. |
+| `inputStages` | `array<string (int64)>` | IDs for stages that are inputs to this stage. |
 | `name` | string | Human-readable name for the stage. |
 | `parallelInputs` | string (int64) | Number of parallel input segments to be processed |
 | `readMsAvg` | string (int64) | Milliseconds the average shard spent reading input. |
@@ -1276,7 +1300,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `csvOptions` | CsvOptions | Optional. Additional properties to set if sourceFormat is set to CSV. |
 | `dateFormat` | string | Optional. Format used to parse DATE values. Supports C-style and SQL-style values. |
 | `datetimeFormat` | string | Optional. Format used to parse DATETIME values. Supports C-style and SQL-style values. |
-| `decimalTargetTypes` | `array<string>` | Defines the list of possible SQL data types to which the source decimal values are converted. This list and the precision and the scale parameters of the decimal field determine the target type. In the order of NUMERIC, BIGNUMERIC, and STRING, a type is picked if it is in the specified list and if it supports the precision and the scale. STRING supports all precision and scale values. If none of the listed types supports the precision and the scale, the type supporting the widest range in the specified list is picked, and if a value exceeds the supported range when reading the data, an error will be thrown. Example: Suppose the value of this field is \["NUMERIC", "BIGNUMERIC"\]. If (precision,scale) is: \* (38,9) -> NUMERIC; \* (39,9) -> BIGNUMERIC (NUMERIC cannot hold 30 integer digits); \* (38,10) -> BIGNUMERIC (NUMERIC cannot hold 10 fractional digits); \* (76,38) -> BIGNUMERIC; \* (77,38) -> BIGNUMERIC (error if value exceeds supported range). This field cannot contain duplicate types. The order of the types in this field is ignored. For example, \["BIGNUMERIC", "NUMERIC"\] is the same as \["NUMERIC", "BIGNUMERIC"\] and NUMERIC always takes precedence over BIGNUMERIC. Defaults to \["NUMERIC", "STRING"\] for ORC and \["NUMERIC"\] for the other file formats. Values: `DECIMAL_TARGET_TYPE_UNSPECIFIED`, `NUMERIC`, `BIGNUMERIC`, `STRING`. |
+| `decimalTargetTypes` | `array<string enum>` | Defines the list of possible SQL data types to which the source decimal values are converted. This list and the precision and the scale parameters of the decimal field determine the target type. In the order of NUMERIC, BIGNUMERIC, and STRING, a type is picked if it is in the specified list and if it supports the precision and the scale. STRING supports all precision and scale values. If none of the listed types supports the precision and the scale, the type supporting the widest range in the specified list is picked, and if a value exceeds the supported range when reading the data, an error will be thrown. Example: Suppose the value of this field is \["NUMERIC", "BIGNUMERIC"\]. If (precision,scale) is: \* (38,9) -> NUMERIC; \* (39,9) -> BIGNUMERIC (NUMERIC cannot hold 30 integer digits); \* (38,10) -> BIGNUMERIC (NUMERIC cannot hold 10 fractional digits); \* (76,38) -> BIGNUMERIC; \* (77,38) -> BIGNUMERIC (error if value exceeds supported range). This field cannot contain duplicate types. The order of the types in this field is ignored. For example, \["BIGNUMERIC", "NUMERIC"\] is the same as \["NUMERIC", "BIGNUMERIC"\] and NUMERIC always takes precedence over BIGNUMERIC. Defaults to \["NUMERIC", "STRING"\] for ORC and \["NUMERIC"\] for the other file formats. Values: `DECIMAL_TARGET_TYPE_UNSPECIFIED`, `NUMERIC`, `BIGNUMERIC`, `STRING`. |
 | `fileSetSpecType` | string enum | Optional. Specifies how source URIs are interpreted for constructing the file set to load. By default source URIs are expanded against the underlying storage. Other options include specifying manifest files. Only applicable to object storage systems. Values: `FILE_SET_SPEC_TYPE_FILE_SYSTEM_MATCH`, `FILE_SET_SPEC_TYPE_NEW_LINE_DELIMITED_MANIFEST`. |
 | `googleSheetsOptions` | GoogleSheetsOptions | Optional. Additional options if sourceFormat is set to GOOGLE_SHEETS. |
 | `hivePartitioningOptions` | HivePartitioningOptions | Optional. When set, configures hive partitioning support. Not all storage formats support hive partitioning -- requesting hive partitioning on an unsupported format will lead to an error, as will providing an invalid specification. |
@@ -1294,7 +1318,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `timeFormat` | string | Optional. Format used to parse TIME values. Supports C-style and SQL-style values. |
 | `timeZone` | string | Optional. Time zone used when parsing timestamp values that do not have specific time zone information (e.g. 2024-04-20 12:34:56). The expected format is a IANA timezone string (e.g. America/Los_Angeles). |
 | `timestampFormat` | string | Optional. Format used to parse TIMESTAMP values. Supports C-style and SQL-style values. |
-| `timestampTargetPrecision` | `array<integer>` | Precisions (maximum number of total digits in base 10) for seconds of TIMESTAMP types that are allowed to the destination table for autodetection mode. Available for the formats: CSV, PARQUET, AVRO, and Iceberg External Table. Possible values include: Not Specified, \[\], or \[6\]: timestamp(6) for all auto detected TIMESTAMP columns \[6, 12\]: timestamp(6) for all auto detected TIMESTAMP columns that have less than 6 digits of subseconds. timestamp(12) for all auto detected TIMESTAMP columns that have more than 6 digits of subseconds. \[12\]: timestamp(12) for all auto detected TIMESTAMP columns. The order of the elements in this array is ignored. Inputs that have higher precision than the highest target precision in this array will be truncated. |
+| `timestampTargetPrecision` | `array<integer (int32)>` | Precisions (maximum number of total digits in base 10) for seconds of TIMESTAMP types that are allowed to the destination table for autodetection mode. Available for the formats: CSV, PARQUET, AVRO, and Iceberg External Table. Possible values include: Not Specified, \[\], or \[6\]: timestamp(6) for all auto detected TIMESTAMP columns \[6, 12\]: timestamp(6) for all auto detected TIMESTAMP columns that have less than 6 digits of subseconds. timestamp(12) for all auto detected TIMESTAMP columns that have more than 6 digits of subseconds. \[12\]: timestamp(12) for all auto detected TIMESTAMP columns. The order of the elements in this array is ignored. Inputs that have higher precision than the highest target precision in this array will be truncated. |
 
 ### `ExternalDatasetReference` fields
 
@@ -1337,9 +1361,9 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `categoricalValue` | CategoricalValue | The categorical feature value. |
+| `categoricalValue` | CategoricalValue | The categorical feature value. Mutually exclusive with `numericalValue` (proto `oneof value`; set at most one; see Notes). |
 | `featureColumn` | string | The feature column name. |
-| `numericalValue` | number (double) | The numerical feature value. This is the centroid value for this feature. |
+| `numericalValue` | number (double) | The numerical feature value. This is the centroid value for this feature. Mutually exclusive with `categoricalValue` (proto `oneof value`; set at most one; see Notes). |
 
 ### `ForeignTypeInfo` fields
 
@@ -1563,7 +1587,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `elements` | `array<string>` | Elements in the int array. |
+| `elements` | `array<string (int64)>` | Elements in the int array. |
 
 ### `IntArrayHparamSearchSpace` fields
 
@@ -1575,14 +1599,14 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `candidates` | `array<string>` | Candidates for the int parameter in increasing order. |
+| `candidates` | `array<string (int64)>` | Candidates for the int parameter in increasing order. |
 
 ### `IntHparamSearchSpace` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `candidates` | IntCandidates | Candidates of the int hyperparameter. |
-| `range` | IntRange | Range of the int hyperparameter. |
+| `candidates` | IntCandidates | Candidates of the int hyperparameter. Mutually exclusive with `range` (proto `oneof search_space`; set at most one; see Notes). |
+| `range` | IntRange | Range of the int hyperparameter. Mutually exclusive with `candidates` (proto `oneof search_space`; set at most one; see Notes). |
 
 ### `IntRange` fields
 
@@ -1655,8 +1679,8 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `nativeGeographyExportEnabled` | boolean | Optional. Applicable to formats: PARQUET. If enabled, BigQuery to Parquet export will write the native Parquet Geography type instead of the default GeoParquet type. |
 | `printHeader` | boolean | Optional. Whether to print out a header row in the results. Default is true. Not applicable when extracting models. |
 | `secureContext` | SecureContext | Optional. A set of key-value pairs representing the secure context. This can be used to pass sensitive or context-specific information. They can be retrieved via the SECURE_CONTEXT() function and used to modify the run-time behavior of an extract job on tables with row access policies. |
-| `sourceModel` | ModelReference | A reference to the model being exported. |
-| `sourceTable` | TableReference | A reference to the table being exported. |
+| `sourceModel` | ModelReference | A reference to the model being exported. Mutually exclusive with `sourceTable` (proto `oneof source`; set at most one; see Notes). |
+| `sourceTable` | TableReference | A reference to the table being exported. Mutually exclusive with `sourceModel` (proto `oneof source`; set at most one; see Notes). |
 | `useAvroLogicalTypes` | boolean | Whether to use logical types when extracting to AVRO format. Not applicable when extracting models. |
 
 ### `JobConfigurationLoad` fields
@@ -1674,7 +1698,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `createSession` | boolean | Optional. If this property is true, the job creates a new session using a randomly generated session_id. To continue using a created session with subsequent queries, pass the existing session identifier as a `ConnectionProperty` value. The session identifier is returned as part of the `SessionInfo` message within the query statistics. The new session's location will be set to `Job.JobReference.location` if it is present, otherwise it's set to the default location based on existing routing logic. |
 | `dateFormat` | string | Optional. Date format used for parsing DATE values. |
 | `datetimeFormat` | string | Optional. Date format used for parsing DATETIME values. |
-| `decimalTargetTypes` | `array<string>` | Defines the list of possible SQL data types to which the source decimal values are converted. This list and the precision and the scale parameters of the decimal field determine the target type. In the order of NUMERIC, BIGNUMERIC, and STRING, a type is picked if it is in the specified list and if it supports the precision and the scale. STRING supports all precision and scale values. If none of the listed types supports the precision and the scale, the type supporting the widest range in the specified list is picked, and if a value exceeds the supported range when reading the data, an error will be thrown. Example: Suppose the value of this field is \["NUMERIC", "BIGNUMERIC"\]. If (precision,scale) is: \* (38,9) -> NUMERIC; \* (39,9) -> BIGNUMERIC (NUMERIC cannot hold 30 integer digits); \* (38,10) -> BIGNUMERIC (NUMERIC cannot hold 10 fractional digits); \* (76,38) -> BIGNUMERIC; \* (77,38) -> BIGNUMERIC (error if value exceeds supported range). This field cannot contain duplicate types. The order of the types in this field is ignored. For example, \["BIGNUMERIC", "NUMERIC"\] is the same as \["NUMERIC", "BIGNUMERIC"\] and NUMERIC always takes precedence over BIGNUMERIC. Defaults to \["NUMERIC", "STRING"\] for ORC and \["NUMERIC"\] for the other file formats. Values: `DECIMAL_TARGET_TYPE_UNSPECIFIED`, `NUMERIC`, `BIGNUMERIC`, `STRING`. |
+| `decimalTargetTypes` | `array<string enum>` | Defines the list of possible SQL data types to which the source decimal values are converted. This list and the precision and the scale parameters of the decimal field determine the target type. In the order of NUMERIC, BIGNUMERIC, and STRING, a type is picked if it is in the specified list and if it supports the precision and the scale. STRING supports all precision and scale values. If none of the listed types supports the precision and the scale, the type supporting the widest range in the specified list is picked, and if a value exceeds the supported range when reading the data, an error will be thrown. Example: Suppose the value of this field is \["NUMERIC", "BIGNUMERIC"\]. If (precision,scale) is: \* (38,9) -> NUMERIC; \* (39,9) -> BIGNUMERIC (NUMERIC cannot hold 30 integer digits); \* (38,10) -> BIGNUMERIC (NUMERIC cannot hold 10 fractional digits); \* (76,38) -> BIGNUMERIC; \* (77,38) -> BIGNUMERIC (error if value exceeds supported range). This field cannot contain duplicate types. The order of the types in this field is ignored. For example, \["BIGNUMERIC", "NUMERIC"\] is the same as \["NUMERIC", "BIGNUMERIC"\] and NUMERIC always takes precedence over BIGNUMERIC. Defaults to \["NUMERIC", "STRING"\] for ORC and \["NUMERIC"\] for the other file formats. Values: `DECIMAL_TARGET_TYPE_UNSPECIFIED`, `NUMERIC`, `BIGNUMERIC`, `STRING`. |
 | `destinationEncryptionConfiguration` | EncryptionConfiguration | Custom encryption configuration (e.g., Cloud KMS keys) |
 | `destinationTable` | TableReference | \[Required\] The destination table to load the data into. |
 | `destinationTableProperties` | DestinationTableProperties | Optional. \[Experimental\] Properties with which to create the destination table if it is new. |
@@ -1705,7 +1729,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `timePartitioning` | TimePartitioning | Time-based partitioning specification for the destination table. Only one of timePartitioning and rangePartitioning should be specified. |
 | `timeZone` | string | Optional. Default time zone that will apply when parsing timestamp values that have no specific time zone. |
 | `timestampFormat` | string | Optional. Date format used for parsing TIMESTAMP values. |
-| `timestampTargetPrecision` | `array<integer>` | Precisions (maximum number of total digits in base 10) for seconds of TIMESTAMP types that are allowed to the destination table for autodetection mode. Available for the formats: CSV, PARQUET, AVRO, and Iceberg External Table. Possible values include: Not Specified, \[\], or \[6\]: timestamp(6) for all auto detected TIMESTAMP columns \[6, 12\]: timestamp(6) for all auto detected TIMESTAMP columns that have less than 6 digits of subseconds. timestamp(12) for all auto detected TIMESTAMP columns that have more than 6 digits of subseconds. \[12\]: timestamp(12) for all auto detected TIMESTAMP columns. The order of the elements in this array is ignored. Inputs that have higher precision than the highest target precision in this array will be truncated. |
+| `timestampTargetPrecision` | `array<integer (int32)>` | Precisions (maximum number of total digits in base 10) for seconds of TIMESTAMP types that are allowed to the destination table for autodetection mode. Available for the formats: CSV, PARQUET, AVRO, and Iceberg External Table. Possible values include: Not Specified, \[\], or \[6\]: timestamp(6) for all auto detected TIMESTAMP columns \[6, 12\]: timestamp(6) for all auto detected TIMESTAMP columns that have less than 6 digits of subseconds. timestamp(12) for all auto detected TIMESTAMP columns that have more than 6 digits of subseconds. \[12\]: timestamp(12) for all auto detected TIMESTAMP columns. The order of the elements in this array is ignored. Inputs that have higher precision than the highest target precision in this array will be truncated. |
 | `useAvroLogicalTypes` | boolean | Optional. If sourceFormat is set to "AVRO", indicates whether to interpret logical types as the corresponding BigQuery data type (for example, TIMESTAMP), instead of using the raw type (for example, INTEGER). |
 | `writeDisposition` | string | Optional. Specifies the action that occurs if the destination table already exists. The following values are supported: \* WRITE_TRUNCATE: If the table already exists, BigQuery overwrites the data, removes the constraints and uses the schema from the load job. \* WRITE_TRUNCATE_DATA: If the table already exists, BigQuery overwrites the data, but keeps the constraints and schema of the existing table. \* WRITE_APPEND: If the table already exists, BigQuery appends the data to the table. \* WRITE_EMPTY: If the table already exists and contains data, a 'duplicate' error is returned in the job result. The default value is WRITE_APPEND. Each action is atomic and only occurs if BigQuery is able to complete the job successfully. Creation, truncation and append actions occur as one atomic update upon job completion. |
 
@@ -1822,81 +1846,15 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `totalSlotMs` | string (int64) | Output only. Slot-milliseconds for the job. |
 | `transactionInfo` | TransactionInfo | Output only. \[Alpha\] Information of the multi-statement transaction if this job is part of one. This property is only expected on a child job or a job that is in a session. A script parent job is not part of the transaction started in the script. |
 
-### `JobStatistics2` fields
-
-| Field | Type | Description |
-|---|---|---|
-| `biEngineStatistics` | BiEngineStatistics | Output only. BI Engine specific Statistics. |
-| `billingTier` | integer (int32) | Output only. Billing tier for the job. This is a BigQuery-specific concept which is not related to the Google Cloud notion of "free tier". The value here is a measure of the query's resource consumption relative to the amount of data scanned. For on-demand queries, the limit is 100, and all queries within this limit are billed at the standard on-demand rates. On-demand queries that exceed this limit will fail with a billingTierLimitExceeded error. |
-| `cacheHit` | boolean | Output only. Whether the query result was fetched from the query cache. |
-| `dclTargetDataset` | DatasetReference | Output only. Referenced dataset for DCL statement. |
-| `dclTargetTable` | TableReference | Output only. Referenced table for DCL statement. |
-| `dclTargetView` | TableReference | Output only. Referenced view for DCL statement. |
-| `ddlAffectedRowAccessPolicyCount` | string (int64) | Output only. The number of row access policies affected by a DDL statement. Present only for DROP ALL ROW ACCESS POLICIES queries. |
-| `ddlDestinationTable` | TableReference | Output only. The table after rename. Present only for ALTER TABLE RENAME TO query. |
-| `ddlOperationPerformed` | string | Output only. The DDL operation performed, possibly dependent on the pre-existence of the DDL target. |
-| `ddlTargetDataset` | DatasetReference | Output only. The DDL target dataset. Present only for CREATE/ALTER/DROP SCHEMA(dataset) queries. |
-| `ddlTargetRoutine` | RoutineReference | Output only. \[Beta\] The DDL target routine. Present only for CREATE/DROP FUNCTION/PROCEDURE queries. |
-| `ddlTargetRowAccessPolicy` | RowAccessPolicyReference | Output only. The DDL target row access policy. Present only for CREATE/DROP ROW ACCESS POLICY queries. |
-| `ddlTargetTable` | TableReference | Output only. The DDL target table. Present only for CREATE/DROP TABLE/VIEW and DROP ALL ROW ACCESS POLICIES queries. |
-| `dmlStats` | DmlStatistics | Output only. Detailed statistics for DML statements INSERT, UPDATE, DELETE, MERGE or TRUNCATE. |
-| `estimatedBytesProcessed` | string (int64) | Output only. The original estimate of bytes processed for the job. |
-| `exportDataStatistics` | ExportDataStatistics | Output only. Stats for EXPORT DATA statement. |
-| `externalServiceCosts` | `array<ExternalServiceCost>` | Output only. Job cost breakdown as bigquery internal cost and external service costs. |
-| `genAiStats` | GenAiStats | Output only. Statistics related to GenAI usage in the query. |
-| `incrementalResultStats` | IncrementalResultStats | Output only. Statistics related to incremental query results, if enabled for the query. This feature is not yet available. |
-| `loadQueryStatistics` | LoadQueryStatistics | Output only. Statistics for a LOAD query. |
-| `materializedViewStatistics` | MaterializedViewStatistics | Output only. Statistics of materialized views of a query job. |
-| `metadataCacheStatistics` | MetadataCacheStatistics | Output only. Statistics of metadata cache usage in a query for BigLake tables. |
-| `mlStatistics` | MlStatistics | Output only. Statistics of a BigQuery ML training job. |
-| `modelTraining` | BigQueryModelTraining | Deprecated. |
-| `modelTrainingCurrentIteration` | integer (int32) | Deprecated. |
-| `modelTrainingExpectedTotalIteration` | string (int64) | Deprecated. |
-| `numDmlAffectedRows` | string (int64) | Output only. The number of rows affected by a DML statement. Present only for DML statements INSERT, UPDATE or DELETE. |
-| `objectStorageStats` | `array<ObjectStorageStats>` | Output only. Storage and caching statistics per cloud provider for queries over object storage. |
-| `performanceInsights` | PerformanceInsights | Output only. Performance insights. |
-| `queryInfo` | QueryInfo | Output only. Query optimization information for a QUERY job. |
-| `queryPlan` | `array<ExplainQueryStage>` | Output only. Describes execution plan for the query. |
-| `referencedLogicalViews` | `array<TableReference>` | Output only. Referenced logical views for the job. |
-| `referencedPropertyGraphs` | `array<PropertyGraphReference>` | Output only. Referenced property graphs for the job. Queries that reference more than 50 property graphs will not have a complete list. |
-| `referencedRoutines` | `array<RoutineReference>` | Output only. Referenced routines for the job. |
-| `referencedTables` | `array<TableReference>` | Output only. Referenced tables for the job. |
-| `reservationUsage` | `array<object>` | Output only. Job resource usage breakdown by reservation. This field reported misleading information and will no longer be populated. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
-| `reservationUsage[].name` | string | Reservation name or "unreserved" for on-demand resource usage and multi-statement queries. |
-| `reservationUsage[].slotMs` | string (int64) | Total slot milliseconds used by the reservation for a particular job. |
-| `schema` | TableSchema | Output only. The schema of the results. Present only for successful dry run of non-legacy SQL queries. |
-| `searchStatistics` | SearchStatistics | Output only. Search query specific statistics. |
-| `sparkStatistics` | SparkStatistics | Output only. Statistics of a Spark procedure job. |
-| `statementType` | string | Output only. The type of query statement, if valid. Possible values: \* `SELECT`: `SELECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_list) statement. \* `ASSERT`: `ASSERT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/debugging-statements#assert) statement. \* `INSERT`: `INSERT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#insert_statement) statement. \* `UPDATE`: `UPDATE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#update_statement) statement. \* `DELETE`: `DELETE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-manipulation-language) statement. \* `MERGE`: `MERGE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-manipulation-language) statement. \* `TRUNCATE_TABLE`: `TRUNCATE TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#truncate_table_statement) statement. \* `CREATE_TABLE`: `CREATE TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_statement) statement, without `AS SELECT`. \* `CREATE_TABLE_AS_SELECT`: `CREATE TABLE AS SELECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_statement) statement. \* `CREATE_VIEW`: `CREATE VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_view_statement) statement. \* `CREATE_MODEL`: `CREATE MODEL` (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create#create_model_statement) statement. \* `CREATE_MATERIALIZED_VIEW`: `CREATE MATERIALIZED VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_materialized_view_statement) statement. \* `CREATE_FUNCTION`: `CREATE FUNCTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_function_statement) statement. \* `CREATE_TABLE_FUNCTION`: `CREATE TABLE FUNCTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_function_statement) statement. \* `CREATE_PROCEDURE`: `CREATE PROCEDURE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_procedure) statement. \* `CREATE_ROW_ACCESS_POLICY`: `CREATE ROW ACCESS POLICY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_row_access_policy_statement) statement. \* `CREATE_SCHEMA`: `CREATE SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_schema_statement) statement. \* `CREATE_EXTERNAL_SCHEMA`: `CREATE EXTERNAL SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_external_schema_statement) statement. \* `CREATE_EXTERNAL_TABLE`: `CREATE EXTERNAL TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_external_table_statement) statement. \* `CREATE_SNAPSHOT_TABLE`: `CREATE SNAPSHOT TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_snapshot_table_statement) statement. \* `CREATE_SEARCH_INDEX`: `CREATE SEARCH INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_search_index_statement) statement. \* `CREATE_VECTOR_INDEX`: `CREATE VECTOR INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_vector_index_statement) statement. \* `CREATE_CONNECTION`: `CREATE CONNECTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_connection_statement) statement. \* `CREATE_DATA_POLICY`: `CREATE DATA_POLICY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_data_policy_statement) statement. \* `CREATE_PROPERTY_GRAPH`: `CREATE PROPERTY GRAPH` (https://cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#gql_create_graph) statement. \* `CREATE_CAPACITY`: `CREATE CAPACITY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_capacity_statement) statement. \* `CREATE_RESERVATION`: `CREATE RESERVATION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_reservation_statement) statement. \* `CREATE_ASSIGNMENT`: `CREATE ASSIGNMENT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_assignment_statement) statement. \* `DROP_TABLE`: `DROP TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_table_statement) statement. \* `DROP_EXTERNAL_TABLE`: `DROP EXTERNAL TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_external_table_statement) statement. \* `DROP_VIEW`: `DROP VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_view_statement) statement. \* `DROP_MODEL`: `DROP MODEL` (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-drop-model) statement. \* `DROP_MATERIALIZED_VIEW`: `DROP MATERIALIZED VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_materialized_view_statement) statement. \* `DROP_FUNCTION`: `DROP FUNCTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_function_statement) statement. \* `DROP_TABLE_FUNCTION`: `DROP TABLE FUNCTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_table_function) statement. \* `DROP_PROCEDURE`: `DROP PROCEDURE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_procedure_statement) statement. \* `DROP_SEARCH_INDEX`: `DROP SEARCH INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_search_index) statement. \* `DROP_VECTOR_INDEX`: `DROP VECTOR INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_vector_index) statement. \* `DROP_SCHEMA`: `DROP SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_schema_statement) statement. \* `UNDROP_SCHEMA`: `UNDROP SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#undrop_schema_statement) statement. \* `DROP_SNAPSHOT_TABLE`: `DROP SNAPSHOT TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_snapshot_table_statement) statement. \* `DROP_ROW_ACCESS_POLICY`: \[`DROP [ALL] ROW ACCESS POLICY\|POLICIES`\](https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_row_access_policy_statement) statement. \* `DROP_CONNECTION`: `DROP CONNECTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_connection_statement) statement. \* `DROP_DATA_POLICY`: `DROP DATA_POLICY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_data_policy) statement. \* `DROP_PROPERTY_GRAPH`: `DROP PROPERTY GRAPH` (https://cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#gql_drop_graph) statement. \* `DROP_CAPACITY`: `DROP CAPACITY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_capacity_statement) statement. \* `DROP_RESERVATION`: `DROP RESERVATION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_reservation_statement) statement. \* `DROP_ASSIGNMENT`: `DROP ASSIGNMENT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_assignment_statement) statement. \* `ALTER_TABLE`: `ALTER TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_table_set_options_statement) statement. \* `ALTER_VIEW`: `ALTER VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_view_set_options_statement) statement. \* `ALTER_MATERIALIZED_VIEW`: `ALTER MATERIALIZED VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_materialized_view_set_options_statement) statement. \* `ALTER_SCHEMA`: `ALTER SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_schema_set_options_statement) statement. \* `ALTER_MODEL`: `ALTER MODEL` (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-alter-model) statement. \* `ALTER_SEARCH_INDEX`: `ALTER SEARCH INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_search_index_statement) statement. \* `ALTER_VECTOR_INDEX`: `ALTER VECTOR INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_vector_index_rebuild_statement) statement. \* `ALTER_CONNECTION`: `ALTER CONNECTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_connection_set_options_statement) statement. \* `ALTER_DATA_POLICY`: `ALTER DATA_POLICY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_data_policy_statement) statement. \* `ALTER_PROJECT`: `ALTER PROJECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_project_set_options_statement) statement. \* `ALTER_ORGANIZATION`: `ALTER ORGANIZATION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_organization_set_options_statement) statement. \* `ALTER_BI_CAPACITY`: `ALTER BI_CAPACITY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_bi_capacity_set_options_statement) statement. \* `ALTER_CAPACITY`: `ALTER CAPACITY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_capacity_set_options_statement) statement. \* `ALTER_RESERVATION`: `ALTER RESERVATION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_reservation_set_options_statement) statement. \* `SCRIPT`: `SCRIPT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language) statement. \* `CALL`: `CALL` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language#call) statement. \* `BEGIN_TRANSACTION`: `BEGIN TRANSACTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language#begin_transaction) statement. \* `COMMIT_TRANSACTION`: `COMMIT TRANSACTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language#commit_transaction) statement. \* `ROLLBACK_TRANSACTION`: `ROLLBACK TRANSACTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language#rollback_transaction) statement. \* `EXPORT_DATA`: `EXPORT DATA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/export-statements#export_data_statement) statement. \* `EXPORT_MODEL`: `EXPORT MODEL` (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-export-model) statement. \* `EXPORT_METADATA`: `EXPORT TABLE METADATA` (https://cloud.google.com/bigquery/docs/biglake-iceberg-tables-in-bigquery) statement, for BigLake Iceberg tables. \* `LOAD_DATA`: `LOAD DATA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/load-statements#load_data_statement) statement. \* `GRANT_ON_SCHEMA`: `GRANT ... ON SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#grant_statement) statement. \* `GRANT_ON_TABLE`: `GRANT ... ON TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#grant_statement) statement. Also used for `GRANT ... ON EXTERNAL TABLE`. \* `GRANT_ON_VIEW`: `GRANT ... ON VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#grant_statement) statement. \* `GRANT_ON_PROJECT`: `GRANT ... ON PROJECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#grant_statement) statement. \* `REVOKE_ON_SCHEMA`: `REVOKE ... ON SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#revoke_statement) statement. \* `REVOKE_ON_TABLE`: `REVOKE ... ON TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#revoke_statement) statement. Also used for `REVOKE ... ON EXTERNAL TABLE`. \* `REVOKE_ON_VIEW`: `REVOKE ... ON VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#revoke_statement) statement. \* `REVOKE_ON_PROJECT`: `REVOKE ... ON PROJECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#revoke_statement) statement. |
-| `timeline` | `array<QueryTimelineSample>` | Output only. Describes a timeline of job execution. |
-| `totalBytesBilled` | string (int64) | Output only. If the project is configured to use on-demand pricing, then this field contains the total bytes billed for the job. If the project is configured to use flat-rate pricing, then you are not billed for bytes and this field is informational only. |
-| `totalBytesProcessed` | string (int64) | Output only. Total bytes processed for the job. |
-| `totalBytesProcessedAccuracy` | string | Output only. For dry-run jobs, totalBytesProcessed is an estimate and this field specifies the accuracy of the estimate. Possible values can be: UNKNOWN: accuracy of the estimate is unknown. PRECISE: estimate is precise. LOWER_BOUND: estimate is lower bound of what the query would cost. UPPER_BOUND: estimate is upper bound of what the query would cost. |
-| `totalPartitionsProcessed` | string (int64) | Output only. Total number of partitions processed from all partitioned tables referenced in the job. |
-| `totalServicesSkuSlotMs` | string (int64) | Output only. Total slot milliseconds for the job that ran on external services and billed on the services SKU. This field is only populated for jobs that have external service costs, and is the total of the usage for costs whose billing method is `"SERVICES_SKU"`. |
-| `totalSlotMs` | string (int64) | Output only. Slot-milliseconds for the job. |
-| `transferredBytes` | string (int64) | Output only. Total bytes transferred for BigQuery Omni queries from the remote cloud back to Google Cloud. This tracks data movement over Google-managed connections (like query results). It doesn't include input data read from the external data lake (for example, S3) because that data stays within the remote cloud. |
-| `undeclaredQueryParameters` | `array<QueryParameter>` | Output only. GoogleSQL only: list of undeclared query parameters detected during a dry run validation. |
-| `vectorSearchStatistics` | VectorSearchStatistics | Output only. Vector Search query specific statistics. |
-
-### `JobStatistics3` fields
-
-| Field | Type | Description |
-|---|---|---|
-| `badRecords` | string (int64) | Output only. The number of bad records encountered. Note that if the job has failed because of more bad records encountered than the maximum allowed in the load job configuration, then this number can be less than the total number of bad records present in the input data. |
-| `inputFileBytes` | string (int64) | Output only. Number of bytes of source data in a load job. |
-| `inputFiles` | string (int64) | Output only. Number of source files in a load job. |
-| `outputBytes` | string (int64) | Output only. Size of the loaded data in bytes. Note that while a load job is in the running state, this value may change. |
-| `outputRows` | string (int64) | Output only. Number of rows imported in a load job. Note that while an import job is in the running state, this value may change. |
-| `timeline` | `array<QueryTimelineSample>` | Output only. Describes a timeline of job execution. |
-
 ## Notes
 
 - Generated from the Discovery document(s) v2 of `bigquery` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
 - Fields of an inline object (a field whose Discovery definition has its own `properties`) are listed as `parent.child` rows below the parent row; `[]` marks the elements of an array, for example `access[].role`.
+- Adapted from the Discovery document: the `AuditConfig` description embeds an "Example Policy with multiple AuditConfigs" in one line with the proto field names (`audit_configs`, `audit_log_configs`, `log_type`, `exempted_members`); this page shows it as a JSON block of a `Policy` with the REST JSON (camelCase) field names; the values are unchanged.
 - Corrected from the source proto: the two `connectionId` formats of `ExternalCatalogTableOptions` (`..` and `projects//locations//connections/`) lost their placeholders in the Discovery document; the proto comment reads "The connection_id format must be either `<project_id>.<location_id>.<connection_id>` or `projects/<project_id>/locations/<location_id>/connections/<connection_id>`." (`google/cloud/bigquery/v2/external_catalog_table_options.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/external_catalog_table_options.proto, commit `5ce0245`, retrieved 2026-11-19).
 - Corrected from the source proto: in the `BigtableColumn` and `BigtableColumnFamily` descriptions the Discovery document lost the family field name placeholders (shown as `.` and `.Column`) and the bracket expressions of the identifier pattern (shown as `a-zA-Z*`); the proto comments read "exposed as `<family field name>.<column field name>` field" (`BigtableColumn.qualifier_encoded`), "can be accessed as `<family field name>.<column field name>`" and "the `<family field name>.Column` field" (`BigtableColumnFamily.columns`, where Discovery shows `.Column`) and "does not match `[a-zA-Z][a-zA-Z0-9_]*`" (`qualifier_encoded` and `field_name`; backticks added) (`google/cloud/bigquery/v2/external_data_config.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/external_data_config.proto, commit `5ce0245`, retrieved 2026-11-19).
 - Corrected from the source proto: the feature name format `.` in the `featureName` description of `Explanation` lost its placeholders in the Discovery document; the proto comment reads "For non-numerical features, will be formatted like `<column_name>.<encoded_feature_name>`." (`google/cloud/bigquery/v2/model.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/model.proto, commit `5ce0245`, retrieved 2026-11-19).
+- Corrected from the Discovery document: the `AuditLogConfig` description gives the example `{ "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] }`, which is the `auditLogConfigs` array of the parent `AuditConfig` written with proto field names, not an `AuditLogConfig` value; the table shows the two array elements as `AuditLogConfig` values with the REST JSON (camelCase) field names `logType` and `exemptedMembers` (a whole `AuditConfig` with the same values in REST JSON: `{ "service": "allServices", "auditLogConfigs": [ { "logType": "DATA_READ", "exemptedMembers": [ "user:jose@example.com" ] }, { "logType": "DATA_WRITE" } ] }`).
 - Deprecated: `ArimaForecastingMetrics.arimaFittingMetrics` (`deprecated: true` in the Discovery document). The Discovery document states no replacement.
 - Deprecated: `ArimaForecastingMetrics.hasDrift` (`deprecated: true` in the Discovery document). The Discovery document states no replacement.
 - Deprecated: `ArimaForecastingMetrics.nonSeasonalOrder` (`deprecated: true` in the Discovery document). The Discovery document states no replacement.
@@ -1920,10 +1878,11 @@ Generated from the field types (not in the official docs): a JSON value that mat
 - Deprecated: `JobConfigurationQuery.maximumBillingTier` (its Discovery description). Replacement or status stated in the description: "Most users should not need to alter this setting, and we recommend that you avoid introducing new uses of it."
 - Deprecated: `JobConfigurationQuery.preserveNulls` (its Discovery description). The Discovery document states no replacement.
 - Deprecated: `JobStatistics.reservationUsage` (`deprecated: true` in the Discovery document). Replacement or status stated in the description: "This field reported misleading information and will no longer be populated."
-- Deprecated: `JobStatistics2.modelTraining` (its Discovery description). The Discovery document states no replacement.
-- Deprecated: `JobStatistics2.modelTrainingCurrentIteration` (its Discovery description). The Discovery document states no replacement.
-- Deprecated: `JobStatistics2.modelTrainingExpectedTotalIteration` (its Discovery description). The Discovery document states no replacement.
-- Deprecated: `JobStatistics2.reservationUsage` (`deprecated: true` in the Discovery document). Replacement or status stated in the description: "This field reported misleading information and will no longer be populated."
+- Mutually exclusive fields of `DoubleHparamSearchSpace`: `range`, `candidates` are the members of `oneof search_space` in the proto (`google/cloud/bigquery/v2/model.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/model.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `EvaluationMetrics`: `regressionMetrics`, `binaryClassificationMetrics`, `multiClassClassificationMetrics`, `clusteringMetrics`, `rankingMetrics`, `arimaForecastingMetrics`, `dimensionalityReductionMetrics` are the members of `oneof metrics` in the proto (`google/cloud/bigquery/v2/model.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/model.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `FeatureValue`: `numericalValue`, `categoricalValue` are the members of `oneof value` in the proto (`google/cloud/bigquery/v2/model.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/model.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `IntHparamSearchSpace`: `range`, `candidates` are the members of `oneof search_space` in the proto (`google/cloud/bigquery/v2/model.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/model.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `JobConfigurationExtract`: `sourceTable`, `sourceModel` are the members of `oneof source` in the proto (`google/cloud/bigquery/v2/job_config.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/job_config.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
 - Source: https://bigquery.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
 
 ## Related
