@@ -31,7 +31,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 
 - Versions: v1
 - `GET https://datacatalog.googleapis.com/v1/{+name}:retrieveEffectiveConfig`
-- Retrieves the effective configuration related to the migration from Data Catalog to Dataplex Universal Catalog for a specific organization or project. If there is no specific configuration set for the resource, the setting is checked hierarchicahlly through the ancestors of the resource, starting from the resource itself.
+- Retrieves the effective configuration related to the migration from Data Catalog to Dataplex Universal Catalog for the organization that `name` names (`organizations/{organization}/locations/{location}`, from the path pattern); for a project, use `datacatalog.projects.locations.retrieveEffectiveConfig`. If there is no specific configuration set for the resource, the setting is checked hierarchically through the ancestors of the resource, starting from the resource itself. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Deprecated: `deprecated: true` in the Discovery document
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `GoogleCloudDatacatalogV1MigrationConfig`
@@ -40,7 +40,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 
 - Versions: v1
 - `POST https://datacatalog.googleapis.com/v1/{+name}:setConfig`
-- Sets the configuration related to the migration to Dataplex Universal Catalog for an organization or project.
+- Sets the configuration related to the migration to Dataplex Universal Catalog for the organization that `name` names (`organizations/{organization}/locations/{location}`, from the path pattern); for a project, use `datacatalog.projects.locations.setConfig`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Deprecated: `deprecated: true` in the Discovery document
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
 - Request: `GoogleCloudDatacatalogV1SetConfigRequest`; Response: `GoogleCloudDatacatalogV1MigrationConfig`
@@ -81,7 +81,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 
 - Versions: v1
 - `GET https://datacatalog.googleapis.com/v1/{+name}:retrieveEffectiveConfig`
-- Retrieves the effective configuration related to the migration from Data Catalog to Dataplex Universal Catalog for a specific organization or project. If there is no specific configuration set for the resource, the setting is checked hierarchicahlly through the ancestors of the resource, starting from the resource itself.
+- Retrieves the effective configuration related to the migration from Data Catalog to Dataplex Universal Catalog for the project that `name` names (`projects/{project}/locations/{location}`, from the path pattern); for an organization, use `datacatalog.organizations.locations.retrieveEffectiveConfig`. If there is no specific configuration set for the resource, the setting is checked hierarchically through the ancestors of the resource, starting from the resource itself. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Deprecated: `deprecated: true` in the Discovery document
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `GoogleCloudDatacatalogV1MigrationConfig`
@@ -90,7 +90,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 
 - Versions: v1
 - `POST https://datacatalog.googleapis.com/v1/{+name}:setConfig`
-- Sets the configuration related to the migration to Dataplex Universal Catalog for an organization or project.
+- Sets the configuration related to the migration to Dataplex Universal Catalog for the project that `name` names (`projects/{project}/locations/{location}`, from the path pattern); for an organization, use `datacatalog.organizations.locations.setConfig`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Deprecated: `deprecated: true` in the Discovery document
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
 - Request: `GoogleCloudDatacatalogV1SetConfigRequest`; Response: `GoogleCloudDatacatalogV1MigrationConfig`
@@ -267,13 +267,13 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The resource whose effective config is being retrieved. Format for this method (from its `flatPath`): `organizations/{organizationsId}/locations/{locationsId}`. |
+| `name` | path | string | yes | Required. The organization whose effective config is being retrieved (`organizations/{organization}/locations/{location}`, from the path pattern). (Corrected from the Discovery document; the original description is quoted in Notes.) |
 
 ### `datacatalog.organizations.locations.setConfig` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The organization or project whose config is being specified. Format for this method (from its `flatPath`): `organizations/{organizationsId}/locations/{locationsId}`. |
+| `name` | path | string | yes | Required. The organization whose config is being specified (`organizations/{organization}/locations/{location}`, from the path pattern). (Corrected from the Discovery document; the original description is quoted in Notes.) |
 
 ### `datacatalog.projects.locations.operations.cancel` parameters
 
@@ -301,19 +301,19 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 | `filter` | query | string | no | The standard list filter. |
 | `pageSize` | query | integer (int32) | no | The standard list page size. |
 | `pageToken` | query | string | no | The standard list page token. |
-| `returnPartialSuccess` | query | boolean | no | When set to `true`, operations that are reachable are returned as normal, and those that are unreachable are returned in the ListOperationsResponse.unreachable field. This can only be `true` when reading across collections. For example, when `parent` is set to `"projects/example/locations/-"`. This field is not supported by default and will result in an `UNIMPLEMENTED` error if set unless explicitly documented otherwise in service or product specific documentation. |
+| `returnPartialSuccess` | query | boolean | no | When set to `true`, operations that are reachable are returned as normal, and those that are unreachable are returned in the ListOperationsResponse.unreachable field. This can only be `true` when reading across collections. For example, when `name` is set to `"projects/example/locations/-"`. This field is not supported by default and will result in an `UNIMPLEMENTED` error if set unless explicitly documented otherwise in service or product specific documentation. (Corrected from the Discovery document: the text says `parent`; the path variable of this method is `name`.) |
 
 ### `datacatalog.projects.locations.retrieveEffectiveConfig` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The resource whose effective config is being retrieved. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}`. |
+| `name` | path | string | yes | Required. The project whose effective config is being retrieved (`projects/{project}/locations/{location}`, from the path pattern). (Corrected from the Discovery document; the original description is quoted in Notes.) |
 
 ### `datacatalog.projects.locations.setConfig` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The organization or project whose config is being specified. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}`. |
+| `name` | path | string | yes | Required. The project whose config is being specified (`projects/{project}/locations/{location}`, from the path pattern). (Corrected from the Discovery document; the original description is quoted in Notes.) |
 
 ### `datacatalog.projects.locations.taxonomies.create` parameters
 
@@ -446,6 +446,7 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 - Deprecated methods (`deprecated: true` in Discovery): `datacatalog.catalog.search`, `datacatalog.organizations.locations.retrieveConfig`, `datacatalog.organizations.locations.retrieveEffectiveConfig`, `datacatalog.organizations.locations.setConfig`, `datacatalog.projects.locations.retrieveEffectiveConfig`, `datacatalog.projects.locations.setConfig`. Avoid them in new code.
 - Corrected from the Discovery document: the description of `datacatalog.projects.locations.taxonomies.create` is "Creates a taxonomy in a specified project. The taxonomy is initially empty, that is, it doesn't contain policy tags.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Deprecated (partly): the Data Catalog deprecations page lists Data Catalog with deprecated date "February 3, 2025" and shutdown date "June 1, 2026", and says "This deprecation applies to Data Catalog metadata search and cataloging features (such as custom entries, entry groups, and tag templates). The Policy Tag Manager service (taxonomies and policy tags), which is used for column-level access control and dynamic data masking in BigQuery, isn't deprecated and continues to be served under the `datacatalog.googleapis.com` API endpoint. The `datacatalog.googleapis.com` API must remain enabled for projects that use BigQuery policy tags."; for metadata search and cataloging it points to Knowledge Catalog (https://docs.cloud.google.com/dataplex/docs/transition-to-dataplex-catalog) (https://docs.cloud.google.com/data-catalog/docs/deprecations, retrieved 2026-11-19). The Discovery documents used here (`datacatalog` v1 and v1beta1, retrieved 2026-11-14) contain `catalog.search`, the organization and project config methods, the v1 long-running operations and the Policy Tag Manager methods (taxonomies, policy tags); they contain no entry group, entry, tag or tag template methods, so this skill does not list those (they belong to the shut-down cataloging features).
+- Corrected from the Discovery document: the organization and project routes of `retrieveEffectiveConfig` and `setConfig` share the descriptions "Retrieves the effective configuration related to the migration from Data Catalog to Dataplex Universal Catalog for a specific organization or project. If there is no specific configuration set for the resource, the setting is checked hierarchicahlly through the ancestors of the resource, starting from the resource itself." and "Sets the configuration related to the migration to Dataplex Universal Catalog for an organization or project.", and the `name` descriptions "Required. The resource whose effective config is being retrieved." and "Required. The organization or project whose config is being specified."; each route takes only the resource of its path pattern (`^organizations/[^/]+/locations/[^/]+$` or `^projects/[^/]+/locations/[^/]+$`), so the summaries and tables name that resource and point to the other route.
 - Source: https://datacatalog.googleapis.com/$discovery/rest?version=v1, https://datacatalog.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
