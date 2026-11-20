@@ -571,8 +571,12 @@ based on a number of rows or a range of values, such as a time interval.
 The `CUME_DIST`, `LEAD`, `NTILE`, `PERCENT_RANK` and `RATIO_TO_REPORT` examples
 below read the 5 rows that their results show, defined by `SELECT` statements,
 because `LIMIT 5` limits the rows in the result, not the rows in the window. Two of
-the rows have the same `word_count`, and their order in the window is not fixed, so
-the `LEAD` and `NTILE` values of those two rows can be swapped.
+the rows, `displeasure` and `instruments`, have the same `word_count`, and their order
+in the window is not fixed, so the `LEAD` and `NTILE` results shown are one possible
+output. If `instruments` comes first, the rows are also returned in that order,
+`LEAD` returns `instruments` for `satisfaction`, `displeasure` for `instruments` and
+`circumstance` for `displeasure`, and `NTILE` puts `instruments` in bucket 1 and
+`displeasure` in bucket 2.
 
 ```sql
 #legacySQL
@@ -1462,7 +1466,7 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 - Corrected from the official docs: the text says the query checks whether the hash modulo `2` is zero ("the modulo n of the hash equals zero"), but the query tests `ABS(HASH(title)) % 2 == 1`. The comparison is changed to `== 0` to match the text.
 - Corrected from the official docs: the `TABLE_QUERY` example that matches table names starting with `boo` followed by 3 to 5 digits uses `^boo[\d]{3,5}`, which needs the digits right after `boo`, so it matches none of the listed tables (`book418` and `boom12345` have a letter after `boo`), and without `$` it also matches a name with more digits by its prefix. The expression is changed to `^boo[a-z]?[0-9]{3,5}$`, which matches `book418` and `boom12345` and not `book4`, `boom123456789` or `taboo999`. The digit class is written as `[0-9]` because the second argument of `TABLE_QUERY` is a single-quoted string, which is read before the inner `r"..."` expression, and the escapes listed for legacy SQL strings are `\xDD`, a backslash before a slash or quote, and the C-style sequences (Escaping special characters in strings, on this page), which do not include `\d`.
 - Corrected from the official docs: the `FIRST_VALUE` example orders the window by `word_count DESC`, so `fv` is the word with the largest `word_count` in the partition, but the shown result has `imperfectly` (`word_count` 1) as `fv`; the query also uses `LIMIT 1` without an outer `ORDER BY`, so the returned row is not fixed. The query now orders the output by `word_count DESC`, and the result row is changed to `handkerchief`, `29`, `handkerchief`, the first row of the `DENSE_RANK` example with the same data and filter on this page.
-- Corrected from the official docs: the heading of the `TABLE_QUERY` example said that the names start with `boo` followed by 3-5 numeric digits. It is changed to match the corrected expression `^boo[a-z]?[\d]{3,5}$`: an optional lowercase letter after `boo`, and 3-5 digits at the end of the name.
+- Corrected from the official docs: the heading of the `TABLE_QUERY` example said that the names start with `boo` followed by 3-5 numeric digits. It is changed to match the corrected expression `^boo[a-z]?[0-9]{3,5}$`: an optional lowercase letter after `boo`, and 3-5 digits at the end of the name.
 - Corrected from the official docs: the text said that the `^` character starts matching at the beginning of a word. In the RE2 syntax linked above, `^` matches at the beginning of the text (or of a line with the `m` flag), so `^foo` does not match the `foo` in `bar foo`, and `\b` matches at an ASCII word boundary. The sentence now says the beginning of the string and adds `\b` for a word boundary.
 - Corrected from the official docs: the `CUME_DIST`, `LEAD`, `NTILE`, `PERCENT_RANK` and `RATIO_TO_REPORT` examples read `[bigquery-public-data:samples.shakespeare]` with `LIMIT 5`, but `LIMIT 5` limits only the result rows, and the same `WHERE` clause also matches `imperfectly` (the `LAST_VALUE` example), while the shown results are computed over the 5 shown rows only (the `RATIO_TO_REPORT` values add up to 1, and `LEAD` returns `null` for the fifth row). The examples now read those 5 rows from `SELECT` statements, as the running-total example on this page does, so the shown results match the queries. The window syntax on this page shows one `ORDER BY` expression, so no tie-breaker is added, and a sentence before the examples says that the order of `displeasure` and `instruments`, which have the same `word_count`, is not fixed.
 

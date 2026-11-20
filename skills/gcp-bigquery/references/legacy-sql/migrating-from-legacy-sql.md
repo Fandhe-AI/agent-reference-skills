@@ -1483,6 +1483,8 @@ When migrating from legacy SQL to GoogleSQL, move the filter to the `WHERE`
 clause. For example, the following query finds the maximum temperatures across
 all years that end in the number `0`:
 
+Adapted (not in the official docs): matched the whole table name, so that only the tables for years that end in `0` match.
+
 ```sql
 #legacySQL
 SELECT
@@ -1491,7 +1493,7 @@ SELECT
   year
 FROM
   TABLE_QUERY([bigquery-public-data:noaa_gsod],
-               'REGEXP_MATCH(table_id, r"0$")')
+               'REGEXP_MATCH(table_id, r"^gsod[0-9]{3}0$")')
 WHERE
   max != 9999.9 # code for missing data
   AND max > 100 # to improve ORDER BY performance
@@ -1510,6 +1512,8 @@ suffix that you need in a literal `IN` condition instead, for example
 `_TABLE_SUFFIX IN ('1930', '1940', '1950')` for those three years. The example with
 `REGEXP_CONTAINS`:
 
+Adapted (not in the official docs): matched the whole suffix, so that only the tables for years that end in `0` match.
+
 ```sql
 #GoogleSQL
 SELECT
@@ -1521,7 +1525,7 @@ FROM
 WHERE
   max != 9999.9 # code for missing data
   AND max > 100 # to improve ORDER BY performance
-  AND REGEXP_CONTAINS(_TABLE_SUFFIX, r"0$")
+  AND REGEXP_CONTAINS(_TABLE_SUFFIX, r"^[0-9]{3}0$")
 ORDER BY
   max DESC
 ```
@@ -1664,6 +1668,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the function comparison table linked `LOGICAL_OR` and `LOGICAL_AND`, which replace `SOME` and `EVERY`, to the logical operators (`AND`, `OR`, `NOT`) in googlesql-syntax/operators.md. The links now point to the aggregate functions `LOGICAL_OR` and `LOGICAL_AND` in googlesql-functions/aggregate_functions.md.
 - Corrected from the official docs: after the partition example, the text offered filtering on `_TABLE_SUFFIX` as another option. `_TABLE_SUFFIX` contains the values matched by the table wildcard (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20), so it cannot select a partition of the single partitioned table in the example. The sentence now limits it to date-sharded tables queried through a wildcard table.
 - Corrected from the official docs: the comma operator section translates the legacy SQL comma between tables to `UNION ALL BY NAME` without a condition. In googlesql-syntax/query-syntax-3.md, `BY NAME` requires both inputs to have the same set of column names and raises an error otherwise, while `FULL [OUTER]` with `BY NAME` returns all columns and adds `NULL` for the missing ones. A sentence that says which form to use for inputs with different columns is added.
+- Corrected from the official docs: the example that finds the maximum temperatures across all years that end in `0` matched `0$` against the table name in legacy SQL and against `_TABLE_SUFFIX` in GoogleSQL, so a table such as `gsod2021_backup0` also matched. The expressions are changed to `^gsod[0-9]{3}0$` (legacy SQL, with `[0-9]` because the escapes listed for legacy SQL strings do not include `\d`) and `^[0-9]{3}0$` (GoogleSQL), as in the following example.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
