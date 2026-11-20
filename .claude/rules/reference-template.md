@@ -56,7 +56,7 @@ functionName(param: Type): ReturnType
 ```
 
 - Path のリンクは README.md と同じディレクトリ内の相対パス（`./<file>.md`）にする。`samples/<file>` `scripts/<file>` のようにディレクトリ名を重ねない
-- 例外として、ページを子ディレクトリに分けた階層型カテゴリ（`gcp-*` の `references/rest/<api>/`、`storybook` の `references/api/`、`nvidia-cuda` の `references/cutlass/` 等）では、親 README の Path に子ディレクトリの索引 `./<subdir>/README.md` を置いてよい。子ディレクトリの README も同じ書式（H1 と索引表のみ、Path は `./<file>.md`）に従う
+- 例外として、ページを子ディレクトリに分けた階層型カテゴリ（`gcp-*` の `references/rest/<api>/`、`storybook` の `references/api/`、`nvidia-cuda` の `references/cutlass/` 等）では、どの階層の README でも、同じディレクトリの個別ページには `./<file>.md`、直下の子ディレクトリの索引には `./<subdir>/README.md` を Path に置いてよい（1 つの表に両方を載せてよい）。子ディレクトリの README も同じ書式（H1 と索引表のみ）に従い、孫以下のディレクトリを直接指さない
 
 ## 関連
 
