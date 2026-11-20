@@ -220,19 +220,19 @@ Base URL: `https://biglake.googleapis.com`. Methods are listed by `id`; the `Ver
 
 - Versions: v1
 - `GET https://biglake.googleapis.com/v1/{+parent}/catalogs`
-- List all catalogs in a specified project.
-- Scope (from the path pattern of `parent`): a call applies only to the parent `projects/{projectsId}/locations/{locationsId}`, which is narrower than the scope the description above names.
+- List all catalogs in the parent `projects/{projectsId}/locations/{locationsId}`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListCatalogsResponse`
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `biglake.projects.catalogs.getIamPolicy` (not in the official docs); replace the `{...}` path variables (URL-encode query values). `options.requestedPolicyVersion=3` is set so that a policy with conditional role bindings is returned in full; it can also be set for a policy without conditions. The access token reaches curl on standard input (`-H @-`, curl 7.55.0 or later; `printf` is a shell builtin), so it does not appear in the process arguments; the subshell turns off shell tracing (`set +x`) before the token is expanded, so `set -x` / `bash -x` does not print it; `--fail` makes curl exit with code 22 on an HTTP error status instead of 0:
+Generated from the Discovery entry of `biglake.projects.catalogs.getIamPolicy` (not in the official docs); replace the `{...}` path variables (URL-encode query values). `options.requestedPolicyVersion=3` is set so that a policy with conditional role bindings is returned in full; it can also be set for a policy without conditions. The access token reaches curl on standard input (`-H @-`, curl 7.55.0 or later; `printf` is a shell builtin), so it does not appear in the process arguments; the subshell turns off shell tracing (`set +x`) before the token is expanded, so `set -x` / `bash -x` does not print it, and exits before calling curl if `gcloud auth print-access-token` fails or prints nothing; `--fail` makes curl exit with code 22 on an HTTP error status instead of 0:
 
 ```bash
 (
   set +x
-  printf 'Authorization: Bearer %s\n' "$(gcloud auth print-access-token)" \
+  token="$(gcloud auth print-access-token)" && [ -n "$token" ] || exit 1
+  printf 'Authorization: Bearer %s\n' "$token" \
     | curl --fail -X GET -H @- \
     "https://biglake.googleapis.com/v1/{+resource}:getIamPolicy?options.requestedPolicyVersion=3"
 )
@@ -423,6 +423,7 @@ Generated from the Discovery entry of `biglake.projects.catalogs.getIamPolicy` (
 - Generated from the Discovery document(s) v1 of `biglake` (retrieved 2026-11-14). Resources on this page: projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when the description says that some requests must specify it (for example, `options.requestedPolicyVersion` must be 3 to get a policy with conditional role bindings). Path variables are `yes` unless a note below names an alternative route without them.
 - Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Corrected from the Discovery document: the description of `biglake.projects.locations.catalogs.list` is "List all catalogs in a specified project.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Path variables whose description starts with "Output only" are still required in the URL: they name the resource that the method acts on, so they are `yes` in the Required column: `name` in `biglake.projects.locations.catalogs.databases.patch`, `name` in `biglake.projects.locations.catalogs.databases.tables.patch`. The Discovery document gives them the description of the resource field of the same name, and "Output only" applies to that field of the resource, not to the URL.
 - Regional endpoints: the Discovery document (`biglake` v1, revision 20261007) also lists 24 endpoints of the form `https://biglake.LOCATION.rep.googleapis.com/` (Regional Endpoint), for LOCATION in `asia-south1`, `asia-south2`, `europe-west1`, `europe-west10`, `europe-west2`, `europe-west3`, `europe-west4`, `europe-west6`, `europe-west8`, `europe-west9`, `me-central2`, `northamerica-northeast1`, `northamerica-northeast2`, `us-central1`, `us-central2`, `us-east1`, `us-east4`, `us-east5`, `us-east7`, `us-south1`, `us-west1`, `us-west2`, `us-west3`, `us-west4`. The method URLs above use the global host `https://biglake.googleapis.com/`; to send a request through one of these endpoints, replace the host with the endpoint for the resource's location (for example `https://biglake.asia-south1.rep.googleapis.com/`) and keep the path.
 - Corrected from the Discovery document: the descriptions of `biglake.projects.catalogs.namespaces.getIamPolicy` and `.setIamPolicy` say "the specified Catalog" / "the specified catalog", and those of `biglake.projects.catalogs.namespaces.tables.getIamPolicy` and `.setIamPolicy` say the same, but the path pattern of `resource` is `^projects/[^/]+/catalogs/[^/]+/namespaces/[^/]+$` for the namespace methods and `^projects/[^/]+/catalogs/[^/]+/namespaces/[^/]+/tables/[^/]+$` for the table methods, so they get and set the policy of the namespace (`projects/PROJECT/catalogs/CATALOG/namespaces/NAMESPACE`) and of the table (`projects/PROJECT/catalogs/CATALOG/namespaces/NAMESPACE/tables/TABLE`), as the `testIamPermissions` methods of the same resources say ("the specified namespace", "the specified table"). For the catalog itself, use `biglake.projects.catalogs.getIamPolicy` and `.setIamPolicy`, whose `resource` pattern is `^projects/[^/]+/catalogs/[^/]+$`. The descriptions of these four methods are replaced on this page.

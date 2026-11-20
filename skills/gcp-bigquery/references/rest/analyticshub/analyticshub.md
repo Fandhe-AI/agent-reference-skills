@@ -101,8 +101,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 
 - Versions: v1, v1beta1
 - `GET https://analyticshub.googleapis.com/v1/{+parent}/listings`
-- Lists all listings in a given project and location.
-- Scope (from the path pattern of `parent`): a call applies only to the parent `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`, which is narrower than the scope the description above names.
+- Lists all listings in the parent `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListListingsResponse`
 
@@ -191,8 +190,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 
 - Versions: v1
 - `GET https://analyticshub.googleapis.com/v1/{+parent}/queryTemplates`
-- Lists all QueryTemplates in a given project and location.
-- Scope (from the path pattern of `parent`): a call applies only to the parent `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`, which is narrower than the scope the description above names.
+- Lists all QueryTemplates in the parent `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListQueryTemplatesResponse`
 
@@ -294,12 +292,13 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `analyticshub.organizations.locations.dataExchanges.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The access token reaches curl on standard input (`-H @-`, curl 7.55.0 or later; `printf` is a shell builtin), so it does not appear in the process arguments; the subshell turns off shell tracing (`set +x`) before the token is expanded, so `set -x` / `bash -x` does not print it; `--fail` makes curl exit with code 22 on an HTTP error status instead of 0:
+Generated from the Discovery entry of `analyticshub.organizations.locations.dataExchanges.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The access token reaches curl on standard input (`-H @-`, curl 7.55.0 or later; `printf` is a shell builtin), so it does not appear in the process arguments; the subshell turns off shell tracing (`set +x`) before the token is expanded, so `set -x` / `bash -x` does not print it, and exits before calling curl if `gcloud auth print-access-token` fails or prints nothing; `--fail` makes curl exit with code 22 on an HTTP error status instead of 0:
 
 ```bash
 (
   set +x
-  printf 'Authorization: Bearer %s\n' "$(gcloud auth print-access-token)" \
+  token="$(gcloud auth print-access-token)" && [ -n "$token" ] || exit 1
+  printf 'Authorization: Bearer %s\n' "$token" \
     | curl --fail -X GET -H @- \
     "https://analyticshub.googleapis.com/v1/{+organization}/dataExchanges"
 )
@@ -546,6 +545,8 @@ Generated from the Discovery entry of `analyticshub.organizations.locations.data
 - Generated from the Discovery document(s) v1, v1beta1 of `analyticshub` (retrieved 2026-11-14). Resources on this page: organizations, projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when the description says that some requests must specify it (for example, `options.requestedPolicyVersion` must be 3 to get a policy with conditional role bindings). Path variables are `yes` unless a note below names an alternative route without them.
 - Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Corrected from the Discovery document: the description of `analyticshub.projects.locations.dataExchanges.listings.list` is "Lists all listings in a given project and location.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
+- Corrected from the Discovery document: the description of `analyticshub.projects.locations.dataExchanges.queryTemplates.list` is "Lists all QueryTemplates in a given project and location.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Path variables whose description starts with "Output only" are still required in the URL: they name the resource that the method acts on, so they are `yes` in the Required column: `name` in `analyticshub.projects.locations.dataExchanges.listings.patch`, `name` in `analyticshub.projects.locations.dataExchanges.patch`, `name` in `analyticshub.projects.locations.dataExchanges.queryTemplates.patch`. The Discovery document gives them the description of the resource field of the same name, and "Output only" applies to that field of the resource, not to the URL.
 - Corrected from the Discovery document: the `parent` parameter of `analyticshub.projects.locations.dataExchanges.queryTemplates.create` and the `name` parameter of `analyticshub.projects.locations.dataExchanges.queryTemplates.get` are both described as "The parent resource path of the QueryTemplate" with an example that ends in the template ID (`create`: "Required. The parent resource path of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myQueryTemplate`."; `get`: the same sentence with `myqueryTemplate`). The table cells for these two parameters are replaced with corrected descriptions. Their path patterns in the same document differ: `parent` of `create` is the data exchange (`^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+$`, for example `projects/myproject/locations/us/dataExchanges/123`), and the new template ID goes in the query parameter `queryTemplateId`; `name` of `get` is the full name of the template (`^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+/queryTemplates/[^/]+$`), as for `approve`, `delete` and `submit`.
 - Corrected from the Discovery document: the description of `analyticshub.projects.locations.dataExchanges.listings.subscribe` is "Subscribes to a listing. Currently, with Analytics Hub, you can create listings that reference only BigQuery datasets. Upon subscription to a listing for a BigQuery dataset, Analytics Hub creates a linked dataset in the subscriber's project." and is replaced on this page, because it says that listings can reference only BigQuery datasets, but its request type `SubscribeListingRequest` in the same document has both `destinationDataset` ("Input only. BigQuery destination dataset to create for the subscriber.") and `destinationPubsubSubscription` ("Input only. Destination Pub/Sub subscription to create for the subscriber."), and [analytics-hub-introduction.md](../../sharing-analytics-hub/analytics-hub-introduction.md) says that subscribing to a listing with a shared Pub/Sub topic creates a linked Pub/Sub subscription in the subscriber project. Subscribing to a listing for a BigQuery dataset creates a linked dataset; subscribing to a listing for a Pub/Sub topic creates a linked Pub/Sub subscription.
