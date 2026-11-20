@@ -174,13 +174,13 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `locationUri` | string | Cloud Storage folder URI where the database data is stored, starting with "gs://". |
-| `parameters` | object | Stores user supplied Hive database parameters. |
+| `parameters` | `map<string, string>` | Stores user supplied Hive database parameters. |
 
 ### `HiveTableOptions` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `parameters` | object | Stores user supplied Hive table parameters. |
+| `parameters` | `map<string, string>` | Stores user supplied Hive table parameters. |
 | `storageDescriptor` | StorageDescriptor | Stores physical storage information of the data. |
 | `tableType` | string | Hive table type. For example, MANAGED_TABLE, EXTERNAL_TABLE. |
 

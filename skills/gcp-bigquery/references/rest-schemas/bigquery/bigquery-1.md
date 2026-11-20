@@ -1032,13 +1032,13 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `id` | string | Output only. The fully-qualified unique name of the dataset in the format projectId:datasetId. The dataset name without the project name is given in the datasetId field. When creating a new dataset, leave this field blank, and instead specify the datasetId field. |
 | `isCaseInsensitive` | boolean | Optional. TRUE if the dataset and its table names are case-insensitive, otherwise FALSE. By default, this is FALSE, which means the dataset and its table names are case-sensitive. This field does not affect routine references. |
 | `kind` | string | Output only. The resource type. |
-| `labels` | object | The labels associated with this dataset. You can use these to organize and group your datasets. You can set this property when inserting or updating a dataset. See Creating and Updating Dataset Labels (https://cloud.google.com/bigquery/docs/creating-managing-labels#creating_and_updating_dataset_labels) for more information. |
+| `labels` | `map<string, string>` | The labels associated with this dataset. You can use these to organize and group your datasets. You can set this property when inserting or updating a dataset. See Creating and Updating Dataset Labels (https://cloud.google.com/bigquery/docs/creating-managing-labels#creating_and_updating_dataset_labels) for more information. |
 | `lastModifiedTime` | string (int64) | Output only. The date when this dataset was last modified, in milliseconds since the epoch. |
 | `linkedDatasetMetadata` | LinkedDatasetMetadata | Output only. Metadata about the LinkedDataset. Filled out when the dataset type is LINKED. |
 | `linkedDatasetSource` | LinkedDatasetSource | Optional. The source dataset reference when the dataset is of type LINKED. For all other dataset types it is not set. This field cannot be updated once it is set. Any attempt to update this field using Update and Patch API Operations will be ignored. |
 | `location` | string | The geographic location where the dataset should reside. See https://cloud.google.com/bigquery/docs/locations for supported locations. |
 | `maxTimeTravelHours` | string (int64) | Optional. Defines the time travel window in hours. The value can be from 48 to 168 hours (2 to 7 days). The default value is 168 hours if this is not set. |
-| `resourceTags` | object | Optional. The tags (https://cloud.google.com/bigquery/docs/tags) attached to this dataset. Tag keys are globally unique. Tag key is expected to be in the namespaced format, for example "123456789012/environment" where 123456789012 is the ID of the parent organization or project resource for this tag key. Tag value is expected to be the short name, for example "Production". See Tag definitions (https://cloud.google.com/iam/docs/tags-access-control#definitions) for more details. |
+| `resourceTags` | `map<string, string>` | Optional. The tags (https://cloud.google.com/bigquery/docs/tags) attached to this dataset. Tag keys are globally unique. Tag key is expected to be in the namespaced format, for example "123456789012/environment" where 123456789012 is the ID of the parent organization or project resource for this tag key. Tag value is expected to be the short name, for example "Production". See Tag definitions (https://cloud.google.com/iam/docs/tags-access-control#definitions) for more details. |
 | `restrictions` | RestrictionConfig | Optional. Output only. Restriction config for all tables and dataset. If set, restrict certain accesses on the dataset and all its tables based on the config. See Data egress (https://cloud.google.com/bigquery/docs/analytics-hub-introduction#data_egress) for more details. |
 | `satisfiesPzi` | boolean | Output only. Reserved for future use. |
 | `satisfiesPzs` | boolean | Output only. Reserved for future use. |
@@ -1078,7 +1078,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `description` | string | Optional. The description for the destination table. This will only be used if the destination table is newly created. If the table already exists and a value different than the current description is provided, the job will fail. |
 | `expirationTime` | string (date-time) | Internal use only. |
 | `friendlyName` | string | Optional. Friendly name for the destination table. If the table already exists, it should be same as the existing friendly name. |
-| `labels` | object | Optional. The labels associated with this table. You can use these to organize and group your tables. This will only be used if the destination table is newly created. If the table already exists and labels are different than the current labels are provided, the job will fail. |
+| `labels` | `map<string, string>` | Optional. The labels associated with this table. You can use these to organize and group your tables. This will only be used if the destination table is newly created. If the table already exists and labels are different than the current labels are provided, the job will fail. |
 
 ### `DifferentialPrivacyPolicy` fields
 
@@ -1234,14 +1234,14 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `defaultStorageLocationUri` | string | Optional. The storage location URI for all tables in the dataset. Equivalent to hive metastore's database locationUri. Maximum length of 1024 characters. |
-| `parameters` | object | Optional. A map of key value pairs defining the parameters and properties of the open source schema. Maximum size of 2MiB. |
+| `parameters` | `map<string, string>` | Optional. A map of key value pairs defining the parameters and properties of the open source schema. Maximum size of 2MiB. |
 
 ### `ExternalCatalogTableOptions` fields
 
 | Field | Type | Description |
 |---|---|---|
 | `connectionId` | string | Optional. A connection ID that specifies the credentials to be used to read external storage, such as Azure Blob, Cloud Storage, or Amazon S3. This connection is needed to read the open source table from BigQuery. The connection_id format must be either `<project_id>.<location_id>.<connection_id>` or `projects/<project_id>/locations/<location_id>/connections/<connection_id>` (placeholders restored from the source proto; see Notes). |
-| `parameters` | object | Optional. A map of the key-value pairs defining the parameters and properties of the open source table. Corresponds with Hive metastore table parameters. Maximum size of 4MiB. |
+| `parameters` | `map<string, string>` | Optional. A map of the key-value pairs defining the parameters and properties of the open source table. Corresponds with Hive metastore table parameters. Maximum size of 4MiB. |
 | `storageDescriptor` | StorageDescriptor | Optional. A storage descriptor containing information about the physical storage of this table. |
 
 ### `ExternalDataConfiguration` fields
@@ -1616,7 +1616,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `extract` | JobConfigurationExtract | \[Pick one\] Configures an extract job. |
 | `jobTimeoutMs` | string (int64) | Optional. Job timeout in milliseconds relative to the job creation time. If this time limit is exceeded, BigQuery attempts to stop the job, but might not always succeed in canceling it before the job completes. For example, a job that takes more than 60 seconds to complete has a better chance of being stopped than a job that takes 10 seconds to complete. |
 | `jobType` | string | Output only. The type of the job. Can be QUERY, LOAD, EXTRACT, COPY or UNKNOWN. |
-| `labels` | object | The labels associated with this job. You can use these to organize and group your jobs. Label keys and values can be no longer than 63 characters, can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter and each label in the list must have a different key. |
+| `labels` | `map<string, string>` | The labels associated with this job. You can use these to organize and group your jobs. Label keys and values can be no longer than 63 characters, can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter and each label in the list must have a different key. |
 | `load` | JobConfigurationLoad | \[Pick one\] Configures a load job. |
 | `maxSlots` | integer (int32) | Optional. A target limit on the rate of slot consumption by this job. If set to a value > 0, BigQuery will attempt to limit the rate of slot consumption by this job to keep it below the configured limit, even if the job is eligible for more slots based on fair scheduling. The unused slots will be available for other jobs and queries to use. Note: This feature is not yet generally available. |
 | `query` | JobConfigurationQuery | \[Pick one\] Configures a query job. |
@@ -1715,7 +1715,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `scriptOptions` | ScriptOptions | Options controlling the execution of scripts. |
 | `secureContext` | SecureContext | Optional. A set of key-value pairs representing the secure context. This can be used to pass sensitive or context-specific information. They can be retrieved via the SECURE_CONTEXT() function and used to modify the run-time behavior of a query. |
 | `systemVariables` | SystemVariables | Output only. System variables for GoogleSQL queries. A system variable is output if the variable is settable and its value differs from the system default. "@@" prefix is not included in the name of the System variables. |
-| `tableDefinitions` | object | Optional. You can specify external table definitions, which operate as ephemeral tables that can be queried. These definitions are configured using a JSON map, where the string key represents the table identifier, and the value is the corresponding external data configuration object. |
+| `tableDefinitions` | `map<string, ExternalDataConfiguration>` | Optional. You can specify external table definitions, which operate as ephemeral tables that can be queried. These definitions are configured using a JSON map, where the string key represents the table identifier, and the value is the corresponding external data configuration object. |
 | `timePartitioning` | TimePartitioning | Time-based partitioning specification for the destination table. Only one of timePartitioning and rangePartitioning should be specified. |
 | `useLegacySql` | boolean | Optional. Specifies whether to use BigQuery's legacy SQL dialect for this query. The default value is true. If set to false, the query uses BigQuery's GoogleSQL (https://docs.cloud.google.com/bigquery/docs/introduction-sql). When useLegacySql is set to false, the value of flattenResults is ignored; query will be run as if flattenResults is false. |
 | `useQueryCache` | boolean | Optional. Whether to look for the result in the query cache. The query cache is a best-effort cache that will be flushed whenever tables in the query are modified. Moreover, the query cache is only available when a query does not have a destination table specified. The default value is true. |
