@@ -648,7 +648,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `privacyUnitColumns` | array<string> | Optional. The privacy unit column(s) associated with this policy. For now, only one column per data source object (table, view) is allowed as a privacy unit column. Representing as a repeated field in metadata for extensibility to multiple columns in future. Duplicates and Repeated struct fields are not allowed. For nested fields, use dot notation ("outer.inner") |
+| `privacyUnitColumns` | `array<string>` | Optional. The privacy unit column(s) associated with this policy. For now, only one column per data source object (table, view) is allowed as a privacy unit column. Representing as a repeated field in metadata for extensibility to multiple columns in future. Duplicates and Repeated struct fields are not allowed. For nested fields, use dot notation ("outer.inner") |
 | `threshold` | string (int64) | Optional. The threshold for the "aggregation threshold" policy. |
 
 ### `Argument` fields
@@ -666,9 +666,9 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `autoRegressiveCoefficients` | array<number> | Auto-regressive coefficients, an array of double. |
+| `autoRegressiveCoefficients` | `array<number>` | Auto-regressive coefficients, an array of double. |
 | `interceptCoefficient` | number (double) | Intercept coefficient, just a double not an array. |
-| `movingAverageCoefficients` | array<number> | Moving-average coefficients, an array of double. |
+| `movingAverageCoefficients` | `array<number>` | Moving-average coefficients, an array of double. |
 
 ### `ArimaFittingMetrics` fields
 
@@ -682,12 +682,12 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `arimaFittingMetrics` | array<ArimaFittingMetrics> | Arima model fitting metrics. |
-| `arimaSingleModelForecastingMetrics` | array<ArimaSingleModelForecastingMetrics> | Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case. |
-| `hasDrift` | array<boolean> | Whether Arima model fitted with drift or not. It is always false when d is not 1. |
-| `nonSeasonalOrder` | array<ArimaOrder> | Non-seasonal order. |
-| `seasonalPeriods` | array<string> | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
-| `timeSeriesId` | array<string> | Id to differentiate different time series for the large-scale case. |
+| `arimaFittingMetrics` | `array<ArimaFittingMetrics>` | Arima model fitting metrics. |
+| `arimaSingleModelForecastingMetrics` | `array<ArimaSingleModelForecastingMetrics>` | Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case. |
+| `hasDrift` | `array<boolean>` | Whether Arima model fitted with drift or not. It is always false when d is not 1. |
+| `nonSeasonalOrder` | `array<ArimaOrder>` | Non-seasonal order. |
+| `seasonalPeriods` | `array<string>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
+| `timeSeriesId` | `array<string>` | Id to differentiate different time series for the large-scale case. |
 
 ### `ArimaModelInfo` fields
 
@@ -700,9 +700,9 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `hasSpikesAndDips` | boolean | If true, spikes_and_dips is a part of time series decomposition result. |
 | `hasStepChanges` | boolean | If true, step_changes is a part of time series decomposition result. |
 | `nonSeasonalOrder` | ArimaOrder | Non-seasonal order. |
-| `seasonalPeriods` | array<string> | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
+| `seasonalPeriods` | `array<string>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
 | `timeSeriesId` | string | The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used. |
-| `timeSeriesIds` | array<string> | The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns. |
+| `timeSeriesIds` | `array<string>` | The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns. |
 
 ### `ArimaOrder` fields
 
@@ -716,8 +716,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `arimaModelInfo` | array<ArimaModelInfo> | This message is repeated because there are multiple arima models fitted in auto-arima. For non-auto-arima model, its size is one. |
-| `seasonalPeriods` | array<string> | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
+| `arimaModelInfo` | `array<ArimaModelInfo>` | This message is repeated because there are multiple arima models fitted in auto-arima. For non-auto-arima model, its size is one. |
+| `seasonalPeriods` | `array<string>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
 
 ### `ArimaSingleModelForecastingMetrics` fields
 
@@ -729,9 +729,9 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `hasSpikesAndDips` | boolean | If true, spikes_and_dips is a part of time series decomposition result. |
 | `hasStepChanges` | boolean | If true, step_changes is a part of time series decomposition result. |
 | `nonSeasonalOrder` | ArimaOrder | Non-seasonal order. |
-| `seasonalPeriods` | array<string> | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
+| `seasonalPeriods` | `array<string>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
 | `timeSeriesId` | string | The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used. |
-| `timeSeriesIds` | array<string> | The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns. |
+| `timeSeriesIds` | `array<string>` | The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns. |
 
 ### `ArrowRecordBatch` fields
 
@@ -756,14 +756,14 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `auditLogConfigs` | array<AuditLogConfig> | The configuration for logging of each type of permission. |
+| `auditLogConfigs` | `array<AuditLogConfig>` | The configuration for logging of each type of permission. |
 | `service` | string | Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services. |
 
 ### `AuditLogConfig` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `exemptedMembers` | array<string> | Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members. |
+| `exemptedMembers` | `array<string>` | Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members. |
 | `logType` | string enum | The log type that this config enables. Values: `LOG_TYPE_UNSPECIFIED`, `ADMIN_READ`, `DATA_WRITE`, `DATA_READ`. |
 
 ### `AvroOptions` fields
@@ -777,7 +777,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `force` | boolean | If set to true, it deletes the row access policy even if it's the last row access policy on the table and the deletion will widen the access rather narrowing it. |
-| `policyIds` | array<string> | Required. Policy IDs of the row access policies. |
+| `policyIds` | `array<string>` | Required. Policy IDs of the row access policies. |
 
 ### `BiEngineReason` fields
 
@@ -792,7 +792,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 |---|---|---|
 | `accelerationMode` | string enum | Output only. Specifies which mode of BI Engine acceleration was performed (if any). Values: `BI_ENGINE_ACCELERATION_MODE_UNSPECIFIED`, `BI_ENGINE_DISABLED`, `PARTIAL_INPUT`, `FULL_INPUT`, `FULL_QUERY`. |
 | `biEngineMode` | string enum | Output only. Specifies which mode of BI Engine acceleration was performed (if any). Values: `ACCELERATION_MODE_UNSPECIFIED`, `DISABLED`, `PARTIAL`, `FULL`. |
-| `biEngineReasons` | array<BiEngineReason> | In case of DISABLED or PARTIAL bi_engine_mode, these contain the explanatory reasons as to why BI Engine could not accelerate. In case the full query was accelerated, this field is not populated. |
+| `biEngineReasons` | `array<BiEngineReason>` | In case of DISABLED or PARTIAL bi_engine_mode, these contain the explanatory reasons as to why BI Engine could not accelerate. In case the full query was accelerated, this field is not populated. |
 
 ### `BigLakeConfiguration` fields
 
@@ -826,7 +826,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `columns` | array<BigtableColumn> | Optional. Lists of columns that should be exposed as individual fields as opposed to a list of (column name, value) pairs. All columns whose qualifier matches a qualifier in this list can be accessed as `<family field name>.<column field name>`. Other columns can be accessed as a list through the `<family field name>.Column` field (placeholders restored from the source proto; see Notes). |
+| `columns` | `array<BigtableColumn>` | Optional. Lists of columns that should be exposed as individual fields as opposed to a list of (column name, value) pairs. All columns whose qualifier matches a qualifier in this list can be accessed as `<family field name>.<column field name>`. Other columns can be accessed as a list through the `<family field name>.Column` field (placeholders restored from the source proto; see Notes). |
 | `encoding` | string | Optional. The encoding of the values when the type is not STRING. Acceptable encoding values are: TEXT - indicates values are alphanumeric text strings. BINARY - indicates values are encoded using HBase Bytes.toBytes family of functions. PROTO_BINARY - indicates values are encoded using serialized proto messages. This can only be used in combination with JSON type. This can be overridden for a specific column by listing that column in 'columns' and specifying an encoding for it. |
 | `familyId` | string | Identifier of the column family. |
 | `onlyReadLatest` | boolean | Optional. If this is set only the latest version of value are exposed for all columns in this column family. This can be overridden for a specific column by listing that column in 'columns' and specifying a different setting for that column. |
@@ -837,7 +837,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `columnFamilies` | array<BigtableColumnFamily> | Optional. List of column families to expose in the table schema along with their types. This list restricts the column families that can be referenced in queries and specifies their value types. You can use this list to do type conversions - see the 'type' field for more details. If you leave this list empty, all column families are present in the table schema and their values are read as BYTES. During a query only the column families referenced in that query are read from Bigtable. |
+| `columnFamilies` | `array<BigtableColumnFamily>` | Optional. List of column families to expose in the table schema along with their types. This list restricts the column families that can be referenced in queries and specifies their value types. You can use this list to do type conversions - see the 'type' field for more details. If you leave this list empty, all column families are present in the table schema and their values are read as BYTES. During a query only the column families referenced in that query are read from Bigtable. |
 | `ignoreUnspecifiedColumnFamilies` | boolean | Optional. If field is true, then the column families that are not specified in columnFamilies list are not exposed in the table schema. Otherwise, they are read with BYTES type values. The default value is false. |
 | `outputColumnFamiliesAsJson` | boolean | Optional. If field is true, then each column family will be read as a single JSON column. Otherwise they are read as a repeated cell structure containing timestamp/value tuples. The default value is false. |
 | `readRowkeyAsString` | boolean | Optional. If field is true, then the rowkey column families will be read and converted to string. Otherwise they are read with BYTES type values and users need to manually cast them with CAST if necessary. The default value is false. |
@@ -854,7 +854,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `aggregateClassificationMetrics` | AggregateClassificationMetrics | Aggregate classification metrics. |
-| `binaryConfusionMatrixList` | array<BinaryConfusionMatrix> | Binary confusion matrix at multiple thresholds. |
+| `binaryConfusionMatrixList` | `array<BinaryConfusionMatrix>` | Binary confusion matrix at multiple thresholds. |
 | `negativeLabel` | string | Label representing the negative class. |
 | `positiveLabel` | string | Label representing the positive class. |
 
@@ -877,7 +877,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `condition` | Expr | The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the IAM documentation (https://cloud.google.com/iam/help/conditions/resource-policies). |
-| `members` | array<string> | Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: \* `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. \* `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. \* `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . \* `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. \* `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a Kubernetes service account (https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. \* `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. \* `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. \* `principal://iam.googleapis.com/locations/global/workforcePools/{pool_id}/subject/{subject_attribute_value}`: A single identity in a workforce identity pool. \* `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/group/{group_id}`: All workforce identities in a group. \* `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/attribute.{attribute_name}/{attribute_value}`: All workforce identities with a specific attribute value. \* `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/*`: All identities in a workforce identity pool. \* `principal://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/subject/{subject_attribute_value}`: A single identity in a workload identity pool. \* `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/group/{group_id}`: A workload identity pool group. \* `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/attribute.{attribute_name}/{attribute_value}`: All identities in a workload identity pool with a certain attribute. \* `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/*`: All identities in a workload identity pool. \* `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. \* `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. \* `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding. \* `deleted:principal://iam.googleapis.com/locations/global/workforcePools/{pool_id}/subject/{subject_attribute_value}`: Deleted single identity in a workforce identity pool. For example, `deleted:principal://iam.googleapis.com/locations/global/workforcePools/my-pool-id/subject/my-subject-attribute-value`. |
+| `members` | `array<string>` | Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: \* `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. \* `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. \* `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . \* `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. \* `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a Kubernetes service account (https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. \* `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. \* `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. \* `principal://iam.googleapis.com/locations/global/workforcePools/{pool_id}/subject/{subject_attribute_value}`: A single identity in a workforce identity pool. \* `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/group/{group_id}`: All workforce identities in a group. \* `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/attribute.{attribute_name}/{attribute_value}`: All workforce identities with a specific attribute value. \* `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/*`: All identities in a workforce identity pool. \* `principal://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/subject/{subject_attribute_value}`: A single identity in a workload identity pool. \* `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/group/{group_id}`: A workload identity pool group. \* `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/attribute.{attribute_name}/{attribute_value}`: All identities in a workload identity pool with a certain attribute. \* `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/*`: All identities in a workload identity pool. \* `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. \* `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. \* `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding. \* `deleted:principal://iam.googleapis.com/locations/global/workforcePools/{pool_id}/subject/{subject_attribute_value}`: Deleted single identity in a workforce identity pool. For example, `deleted:principal://iam.googleapis.com/locations/global/workforcePools/my-pool-id/subject/my-subject-attribute-value`. |
 | `role` | string | Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`. For an overview of the IAM roles and permissions, see the IAM documentation (https://cloud.google.com/iam/docs/roles-overview). For a list of the available pre-defined roles, see here (https://cloud.google.com/iam/docs/understanding-roles). |
 
 ### `BqmlIterationResult` fields
@@ -894,7 +894,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `iterationResults` | array<BqmlIterationResult> | Deprecated. |
+| `iterationResults` | `array<BqmlIterationResult>` | Deprecated. |
 | `startTime` | string (date-time) | Deprecated. |
 | `state` | string | Deprecated. |
 | `trainingOptions` | object | Deprecated. |
@@ -903,7 +903,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `categoryCounts` | array<CategoryCount> | Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "\_OTHER\_" and count as aggregate counts of remaining categories. |
+| `categoryCounts` | `array<CategoryCount>` | Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "\_OTHER\_" and count as aggregate counts of remaining categories. |
 
 ### `CategoryCount` fields
 
@@ -925,7 +925,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 |---|---|---|
 | `centroidId` | string (int64) | Centroid id. |
 | `count` | string (int64) | Count of training data rows that were assigned to this cluster. |
-| `featureValues` | array<FeatureValue> | Values of highly variant features for this cluster. |
+| `featureValues` | `array<FeatureValue>` | Values of highly variant features for this cluster. |
 
 ### `ClusterInfo` fields
 
@@ -939,13 +939,13 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `fields` | array<string> | One or more fields on which data should be clustered. Only top-level, non-repeated, simple-type fields are supported. The ordering of the clustering fields should be prioritized from most to least important for filtering purposes. For additional information, see Introduction to clustered tables (https://cloud.google.com/bigquery/docs/clustered-tables#limitations). |
+| `fields` | `array<string>` | One or more fields on which data should be clustered. Only top-level, non-repeated, simple-type fields are supported. The ordering of the clustering fields should be prioritized from most to least important for filtering purposes. For additional information, see Introduction to clustered tables (https://cloud.google.com/bigquery/docs/clustered-tables#limitations). |
 
 ### `ClusteringMetrics` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `clusters` | array<Cluster> | Information for all clusters. |
+| `clusters` | `array<Cluster>` | Information for all clusters. |
 | `daviesBouldinIndex` | number (double) | Davies-Bouldin index. |
 | `meanSquaredDistance` | number (double) | Mean of squared distances between each sample to its cluster centroid. |
 
@@ -954,7 +954,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `confidenceThreshold` | number (double) | Confidence threshold used when computing the entries of the confusion matrix. |
-| `rows` | array<Row> | One row per actual label. |
+| `rows` | `array<Row>` | One row per actual label. |
 
 ### `ConnectionProperty` fields
 
@@ -972,7 +972,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `encoding` | string | Optional. The character encoding of the data. The supported values are UTF-8, ISO-8859-1, UTF-16BE, UTF-16LE, UTF-32BE, and UTF-32LE. The default value is UTF-8. BigQuery decodes the data after the raw, binary data has been split using the values of the quote and fieldDelimiter properties. |
 | `fieldDelimiter` | string | Optional. The separator character for fields in a CSV file. The separator is interpreted as a single byte. For files encoded in ISO-8859-1, any single character can be used as a separator. For files encoded in UTF-8, characters represented in decimal range 1-127 (U+0001-U+007F) can be used without any modification. UTF-8 characters encoded with multiple bytes (i.e. U+0080 and above) will have only the first byte used for separating fields. The remaining bytes will be treated as a part of the field. BigQuery also supports the escape sequence "\t" (U+0009) to specify a tab separator. The default value is comma (",", U+002C). |
 | `nullMarker` | string | Optional. Specifies a string that represents a null value in a CSV file. For example, if you specify "\N", BigQuery interprets "\N" as a null value when querying a CSV file. The default value is the empty string. If you set this property to a custom value, BigQuery throws an error if an empty string is present for all data types except for STRING and BYTE. For STRING and BYTE columns, BigQuery interprets the empty string as an empty value. |
-| `nullMarkers` | array<string> | Optional. A list of strings represented as SQL NULL value in a CSV file. null_marker and null_markers can't be set at the same time. If null_marker is set, null_markers has to be not set. If null_markers is set, null_marker has to be not set. If both null_marker and null_markers are set at the same time, a user error would be thrown. Any strings listed in null_markers, including empty string would be interpreted as SQL NULL. This applies to all column types. |
+| `nullMarkers` | `array<string>` | Optional. A list of strings represented as SQL NULL value in a CSV file. null_marker and null_markers can't be set at the same time. If null_marker is set, null_markers has to be not set. If null_markers is set, null_marker has to be not set. If both null_marker and null_markers are set at the same time, a user error would be thrown. Any strings listed in null_markers, including empty string would be interpreted as SQL NULL. This applies to all column types. |
 | `preserveAsciiControlCharacters` | boolean | Optional. Indicates if the embedded ASCII control characters (the first 32 characters in the ASCII-table, from '\x00' to '\x1F') are preserved. |
 | `quote` | string | Optional. The value that is used to quote data sections in a CSV file. BigQuery converts the string to ISO-8859-1 encoding, and then uses the first byte of the encoded string to split the data in its raw, binary state. The default value is a double-quote ("). If your data does not contain quoted sections, set the property value to an empty string. If your data contains quoted newline characters, you must also set the allowQuotedNewlines property to true. To include the specific quote character within a quoted value, precede it with an additional matching quote character. For example, if you want to escape the default character ' " ', use ' "" '. |
 | `skipLeadingRows` | string (int64) | Optional. The number of rows at the top of a CSV file that BigQuery will skip when reading the data. The default value is 0. This property is useful if you have header rows in the file that should be skipped. When autodetect is on, the behavior is the following: \* skipLeadingRows unspecified - Autodetect tries to detect headers in the first row. If they are not detected, the row is read as data. Otherwise data is read starting from the second row. \* skipLeadingRows is 0 - Instructs autodetect that there are no headers and data should be read starting from the first row. \* skipLeadingRows = N > 0 - Autodetect skips N-1 rows and tries to detect headers in row N. If headers are not detected, row N is just skipped. Otherwise row N is used to extract column names for the detected schema. |
@@ -995,7 +995,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `dataPolicies` | array<DataPolicyOption> | Contains a list of data policy options. At most 9 data policies are allowed per field. |
+| `dataPolicies` | `array<DataPolicyOption>` | Contains a list of data policy options. At most 9 data policies are allowed per field. |
 
 ### `DataPolicyOption` fields
 
@@ -1015,7 +1015,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `access` | array<object> | Optional. An array of objects that define dataset access for one or more entities. You can set this property when inserting or updating a dataset in order to control who is allowed to access the data. If unspecified at dataset creation time, BigQuery adds default dataset access for the following entities: access.specialGroup: projectReaders; access.role: READER; access.specialGroup: projectWriters; access.role: WRITER; access.specialGroup: projectOwners; access.role: OWNER; access.userByEmail: \[dataset creator email\]; access.role: OWNER; If you patch a dataset, then this field is overwritten by the patched dataset's access field. To add entities, you must supply the entire existing access array in addition to any new entities that you want to add. |
+| `access` | `array<object>` | Optional. An array of objects that define dataset access for one or more entities. You can set this property when inserting or updating a dataset in order to control who is allowed to access the data. If unspecified at dataset creation time, BigQuery adds default dataset access for the following entities: access.specialGroup: projectReaders; access.role: READER; access.specialGroup: projectWriters; access.role: WRITER; access.specialGroup: projectOwners; access.role: OWNER; access.userByEmail: \[dataset creator email\]; access.role: OWNER; If you patch a dataset, then this field is overwritten by the patched dataset's access field. To add entities, you must supply the entire existing access array in addition to any new entities that you want to add. |
 | `catalogSource` | string | Output only. The origin of the dataset, one of: \* (Unset) - Native BigQuery Dataset \* BIGLAKE - Dataset is backed by a namespace stored natively in Biglake |
 | `creationTime` | string (int64) | Output only. The time when this dataset was created, in milliseconds since the epoch. |
 | `datasetReference` | DatasetReference | Required. A reference that identifies the dataset. |
@@ -1044,7 +1044,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `satisfiesPzs` | boolean | Output only. Reserved for future use. |
 | `selfLink` | string | Output only. A URL that can be used to access the resource again. You can use this URL in Get or Update requests to the resource. |
 | `storageBillingModel` | string enum | Optional. Updates storage_billing_model for the dataset. Values: `STORAGE_BILLING_MODEL_UNSPECIFIED`, `LOGICAL`, `PHYSICAL`. |
-| `tags` | array<object> | Output only. Tags for the dataset. To provide tags as inputs, use the `resourceTags` field. |
+| `tags` | `array<object>` | Output only. Tags for the dataset. To provide tags as inputs, use the `resourceTags` field. |
 | `type` | string | Output only. Same as `type` in `ListFormatDataset`. The type of the dataset, one of: \* DEFAULT - only accessible by owner and authorized accounts, \* PUBLIC - accessible by everyone, \* LINKED - linked dataset, \* EXTERNAL - dataset with definition in external metadata catalog, \* BIGLAKE_ICEBERG - a Biglake dataset accessible through the Iceberg API, \* BIGLAKE_HIVE - a Biglake dataset accessible through the Hive API. |
 
 ### `DatasetAccessEntry` fields
@@ -1052,17 +1052,17 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `dataset` | DatasetReference | The dataset this entry applies to |
-| `targetTypes` | array<string> | Which resources in the dataset this entry applies to. Currently, only views are supported, but additional target types may be added in the future. Values: `TARGET_TYPE_UNSPECIFIED`, `VIEWS`, `ROUTINES`. |
+| `targetTypes` | `array<string>` | Which resources in the dataset this entry applies to. Currently, only views are supported, but additional target types may be added in the future. Values: `TARGET_TYPE_UNSPECIFIED`, `VIEWS`, `ROUTINES`. |
 
 ### `DatasetList` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `datasets` | array<object> | An array of the dataset resources in the project. Each resource contains basic information. For full information about a particular dataset resource, use the Datasets: get method. This property is omitted when there are no datasets in the project. |
+| `datasets` | `array<object>` | An array of the dataset resources in the project. Each resource contains basic information. For full information about a particular dataset resource, use the Datasets: get method. This property is omitted when there are no datasets in the project. |
 | `etag` | string | Output only. A hash value of the results page. You can use this property to determine if the page has changed since the last request. |
 | `kind` | string | Output only. The resource type. This property always returns the value "bigquery#datasetList" |
 | `nextPageToken` | string | A token that can be used to request the next results page. This property is omitted on the final results page. |
-| `unreachable` | array<string> | A list of skipped locations that were unreachable. For more information about BigQuery locations, see: https://cloud.google.com/bigquery/docs/locations. Example: "europe-west5" |
+| `unreachable` | `array<string>` | A list of skipped locations that were unreachable. For more information about BigQuery locations, see: https://cloud.google.com/bigquery/docs/locations. Example: "europe-west5" |
 
 ### `DatasetReference` fields
 
@@ -1113,7 +1113,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `candidates` | array<number> | Candidates for the double parameter in increasing order. |
+| `candidates` | `array<number>` | Candidates for the double parameter in increasing order. |
 
 ### `DoubleHparamSearchSpace` fields
 
@@ -1175,7 +1175,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `computeRatioMax` | number (double) | Relative amount of time the slowest shard spent on CPU-bound tasks. |
 | `endMs` | string (int64) | Stage end time represented as milliseconds since the epoch. |
 | `id` | string (int64) | Unique ID for the stage within the plan. |
-| `inputStages` | array<string> | IDs for stages that are inputs to this stage. |
+| `inputStages` | `array<string>` | IDs for stages that are inputs to this stage. |
 | `name` | string | Human-readable name for the stage. |
 | `parallelInputs` | string (int64) | Number of parallel input segments to be processed |
 | `readMsAvg` | string (int64) | Milliseconds the average shard spent reading input. |
@@ -1189,7 +1189,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `slotMs` | string (int64) | Slot-milliseconds used by the stage. |
 | `startMs` | string (int64) | Stage start time represented as milliseconds since the epoch. |
 | `status` | string | Current status for this stage. |
-| `steps` | array<ExplainQueryStep> | List of operations within the stage in dependency order (approximately chronological). |
+| `steps` | `array<ExplainQueryStep>` | List of operations within the stage in dependency order (approximately chronological). |
 | `waitMsAvg` | string (int64) | Milliseconds the average shard spent waiting to be scheduled. |
 | `waitMsMax` | string (int64) | Milliseconds the slowest shard spent waiting to be scheduled. |
 | `waitRatioAvg` | number (double) | Relative amount of time the average shard spent waiting to be scheduled. |
@@ -1204,7 +1204,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `kind` | string | Machine-readable operation type. |
-| `substeps` | array<string> | Human-readable description of the step(s). |
+| `substeps` | `array<string>` | Human-readable description of the step(s). |
 
 ### `Explanation` fields
 
@@ -1256,7 +1256,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `csvOptions` | CsvOptions | Optional. Additional properties to set if sourceFormat is set to CSV. |
 | `dateFormat` | string | Optional. Format used to parse DATE values. Supports C-style and SQL-style values. |
 | `datetimeFormat` | string | Optional. Format used to parse DATETIME values. Supports C-style and SQL-style values. |
-| `decimalTargetTypes` | array<string> | Defines the list of possible SQL data types to which the source decimal values are converted. This list and the precision and the scale parameters of the decimal field determine the target type. In the order of NUMERIC, BIGNUMERIC, and STRING, a type is picked if it is in the specified list and if it supports the precision and the scale. STRING supports all precision and scale values. If none of the listed types supports the precision and the scale, the type supporting the widest range in the specified list is picked, and if a value exceeds the supported range when reading the data, an error will be thrown. Example: Suppose the value of this field is \["NUMERIC", "BIGNUMERIC"\]. If (precision,scale) is: \* (38,9) -> NUMERIC; \* (39,9) -> BIGNUMERIC (NUMERIC cannot hold 30 integer digits); \* (38,10) -> BIGNUMERIC (NUMERIC cannot hold 10 fractional digits); \* (76,38) -> BIGNUMERIC; \* (77,38) -> BIGNUMERIC (error if value exceeds supported range). This field cannot contain duplicate types. The order of the types in this field is ignored. For example, \["BIGNUMERIC", "NUMERIC"\] is the same as \["NUMERIC", "BIGNUMERIC"\] and NUMERIC always takes precedence over BIGNUMERIC. Defaults to \["NUMERIC", "STRING"\] for ORC and \["NUMERIC"\] for the other file formats. Values: `DECIMAL_TARGET_TYPE_UNSPECIFIED`, `NUMERIC`, `BIGNUMERIC`, `STRING`. |
+| `decimalTargetTypes` | `array<string>` | Defines the list of possible SQL data types to which the source decimal values are converted. This list and the precision and the scale parameters of the decimal field determine the target type. In the order of NUMERIC, BIGNUMERIC, and STRING, a type is picked if it is in the specified list and if it supports the precision and the scale. STRING supports all precision and scale values. If none of the listed types supports the precision and the scale, the type supporting the widest range in the specified list is picked, and if a value exceeds the supported range when reading the data, an error will be thrown. Example: Suppose the value of this field is \["NUMERIC", "BIGNUMERIC"\]. If (precision,scale) is: \* (38,9) -> NUMERIC; \* (39,9) -> BIGNUMERIC (NUMERIC cannot hold 30 integer digits); \* (38,10) -> BIGNUMERIC (NUMERIC cannot hold 10 fractional digits); \* (76,38) -> BIGNUMERIC; \* (77,38) -> BIGNUMERIC (error if value exceeds supported range). This field cannot contain duplicate types. The order of the types in this field is ignored. For example, \["BIGNUMERIC", "NUMERIC"\] is the same as \["NUMERIC", "BIGNUMERIC"\] and NUMERIC always takes precedence over BIGNUMERIC. Defaults to \["NUMERIC", "STRING"\] for ORC and \["NUMERIC"\] for the other file formats. Values: `DECIMAL_TARGET_TYPE_UNSPECIFIED`, `NUMERIC`, `BIGNUMERIC`, `STRING`. |
 | `fileSetSpecType` | string enum | Optional. Specifies how source URIs are interpreted for constructing the file set to load. By default source URIs are expanded against the underlying storage. Other options include specifying manifest files. Only applicable to object storage systems. Values: `FILE_SET_SPEC_TYPE_FILE_SYSTEM_MATCH`, `FILE_SET_SPEC_TYPE_NEW_LINE_DELIMITED_MANIFEST`. |
 | `googleSheetsOptions` | GoogleSheetsOptions | Optional. Additional options if sourceFormat is set to GOOGLE_SHEETS. |
 | `hivePartitioningOptions` | HivePartitioningOptions | Optional. When set, configures hive partitioning support. Not all storage formats support hive partitioning -- requesting hive partitioning on an unsupported format will lead to an error, as will providing an invalid specification. |
@@ -1270,11 +1270,11 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `referenceFileSchemaUri` | string | Optional. When creating an external table, the user can provide a reference file with the table schema. This is enabled for the following formats: AVRO, PARQUET, ORC. |
 | `schema` | TableSchema | Optional. The schema for the data. Schema is required for CSV and JSON formats if autodetect is not on. Schema is disallowed for Google Cloud Bigtable, Cloud Datastore backups, Avro, ORC and Parquet formats. |
 | `sourceFormat` | string | \[Required\] The data format. For CSV files, specify "CSV". For Google sheets, specify "GOOGLE_SHEETS". For newline-delimited JSON, specify "NEWLINE_DELIMITED_JSON". For Avro files, specify "AVRO". For Google Cloud Datastore backups, specify "DATASTORE_BACKUP". For Apache Iceberg tables, specify "ICEBERG". For ORC files, specify "ORC". For Parquet files, specify "PARQUET". \[Beta\] For Google Cloud Bigtable, specify "BIGTABLE". |
-| `sourceUris` | array<string> | \[Required\] The fully-qualified URIs that point to your data in Google Cloud. For Google Cloud Storage URIs: Each URI can contain one '\*' wildcard character and it must come after the 'bucket' name. Size limits related to load jobs apply to external data sources. For Google Cloud Bigtable URIs: Exactly one URI can be specified and it has be a fully specified and valid HTTPS URL for a Google Cloud Bigtable table. For Google Cloud Datastore backups, exactly one URI can be specified. Also, the '\*' wildcard character is not allowed. |
+| `sourceUris` | `array<string>` | \[Required\] The fully-qualified URIs that point to your data in Google Cloud. For Google Cloud Storage URIs: Each URI can contain one '\*' wildcard character and it must come after the 'bucket' name. Size limits related to load jobs apply to external data sources. For Google Cloud Bigtable URIs: Exactly one URI can be specified and it has be a fully specified and valid HTTPS URL for a Google Cloud Bigtable table. For Google Cloud Datastore backups, exactly one URI can be specified. Also, the '\*' wildcard character is not allowed. |
 | `timeFormat` | string | Optional. Format used to parse TIME values. Supports C-style and SQL-style values. |
 | `timeZone` | string | Optional. Time zone used when parsing timestamp values that do not have specific time zone information (e.g. 2024-04-20 12:34:56). The expected format is a IANA timezone string (e.g. America/Los_Angeles). |
 | `timestampFormat` | string | Optional. Format used to parse TIMESTAMP values. Supports C-style and SQL-style values. |
-| `timestampTargetPrecision` | array<integer> | Precisions (maximum number of total digits in base 10) for seconds of TIMESTAMP types that are allowed to the destination table for autodetection mode. Available for the formats: CSV, PARQUET, AVRO, and Iceberg External Table. Possible values include: Not Specified, \[\], or \[6\]: timestamp(6) for all auto detected TIMESTAMP columns \[6, 12\]: timestamp(6) for all auto detected TIMESTAMP columns that have less than 6 digits of subseconds. timestamp(12) for all auto detected TIMESTAMP columns that have more than 6 digits of subseconds. \[12\]: timestamp(12) for all auto detected TIMESTAMP columns. The order of the elements in this array is ignored. Inputs that have higher precision than the highest target precision in this array will be truncated. |
+| `timestampTargetPrecision` | `array<integer>` | Precisions (maximum number of total digits in base 10) for seconds of TIMESTAMP types that are allowed to the destination table for autodetection mode. Available for the formats: CSV, PARQUET, AVRO, and Iceberg External Table. Possible values include: Not Specified, \[\], or \[6\]: timestamp(6) for all auto detected TIMESTAMP columns \[6, 12\]: timestamp(6) for all auto detected TIMESTAMP columns that have less than 6 digits of subseconds. timestamp(12) for all auto detected TIMESTAMP columns that have more than 6 digits of subseconds. \[12\]: timestamp(12) for all auto detected TIMESTAMP columns. The order of the elements in this array is ignored. Inputs that have higher precision than the highest target precision in this array will be truncated. |
 
 ### `ExternalDatasetReference` fields
 
@@ -1293,7 +1293,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `maxBatchingRows` | string (int64) | Optional. Maximum number of rows in each batch sent to the external runtime. If absent or if 0, BigQuery dynamically decides the number of rows in a batch. |
 | `runtimeConnection` | string | Optional. Fully qualified name of the connection whose service account will be used to execute the code in the container. Format: "projects/{project_id}/locations/{location_id}/connections/{connection_id}" |
 | `runtimeVersion` | string | Optional. Language runtime version. Example: `python-3.11`. |
-| `volumeMounts` | array<ExternalVolumeMount> | Optional. List of volume mounts for the Python UDF container that executes the managed function. |
+| `volumeMounts` | `array<ExternalVolumeMount>` | Optional. List of volume mounts for the Python UDF container that executes the managed function. |
 
 ### `ExternalServiceCost` fields
 
@@ -1338,7 +1338,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `errors` | array<string> | A list of unique errors at query level (up to 5, truncated to 100 chars) |
+| `errors` | `array<string>` | A list of unique errors at query level (up to 5, truncated to 100 chars) |
 
 ### `GenAiFunctionCacheStats` fields
 
@@ -1357,7 +1357,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `errors` | array<string> | A list of unique errors at function level (up to 5, truncated to 100 chars). |
+| `errors` | `array<string>` | A list of unique errors at function level (up to 5, truncated to 100 chars). |
 | `numFailedRows` | string (int64) | Number of failed rows processed by the function |
 
 ### `GenAiFunctionStats` fields
@@ -1376,7 +1376,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `errorStats` | GenAiErrorStats | Job level error stats across all GenAi functions |
-| `functionStats` | array<GenAiFunctionStats> | Function level stats for GenAI Functions. For more information, see Generative AI overview (https://docs.cloud.google.com/bigquery/docs/generative-ai-overview). |
+| `functionStats` | `array<GenAiFunctionStats>` | Function level stats for GenAI Functions. For more information, see Generative AI overview (https://docs.cloud.google.com/bigquery/docs/generative-ai-overview). |
 
 ### `GeneratedColumn` fields
 
@@ -1410,14 +1410,14 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `cacheHit` | boolean | Whether the query result was fetched from the query cache. |
-| `errors` | array<ErrorProto> | Output only. The first errors or warnings encountered during the running of the job. The final message includes the number of errors that caused the process to stop. Errors here do not necessarily mean that the job has completed or was unsuccessful. For more information about error messages, see Error messages (https://cloud.google.com/bigquery/docs/error-messages). |
+| `errors` | `array<ErrorProto>` | Output only. The first errors or warnings encountered during the running of the job. The final message includes the number of errors that caused the process to stop. Errors here do not necessarily mean that the job has completed or was unsuccessful. For more information about error messages, see Error messages (https://cloud.google.com/bigquery/docs/error-messages). |
 | `etag` | string | A hash of this response. |
 | `jobComplete` | boolean | Whether the query has completed or not. If rows or totalRows are present, this will always be true. If this is false, totalRows will not be available. |
 | `jobReference` | JobReference | Reference to the BigQuery Job that was created to run the query. This field will be present even if the original request timed out, in which case GetQueryResults can be used to read the results once the query has completed. Since this API only returns the first page of results, subsequent pages can be fetched via the same mechanism (GetQueryResults). |
 | `kind` | string | The resource type of the response. |
 | `numDmlAffectedRows` | string (int64) | Output only. The number of rows affected by a DML statement. Present only for DML statements INSERT, UPDATE or DELETE. |
 | `pageToken` | string | A token used for paging results. When this token is non-empty, it indicates additional results are available. |
-| `rows` | array<TableRow> | An object with as many results as can be contained within the maximum permitted reply size. To get any additional rows, you can call GetQueryResults and specify the jobReference returned above. Present only when the query completes successfully. The REST-based representation of this data leverages a series of JSON f,v objects for indicating fields and values. |
+| `rows` | `array<TableRow>` | An object with as many results as can be contained within the maximum permitted reply size. To get any additional rows, you can call GetQueryResults and specify the jobReference returned above. Present only when the query completes successfully. The REST-based representation of this data leverages a series of JSON f,v objects for indicating fields and values. |
 | `schema` | TableSchema | The schema of the results. Present only when the query completes successfully. |
 | `totalBytesProcessed` | string (int64) | The total number of bytes processed for this query. |
 | `totalRows` | string (uint64) | The total number of rows in the complete query result set, which can be more than the number of rows in this single page of results. Present only when the query completes successfully. |
@@ -1434,7 +1434,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `classLabel` | string | Class label for this set of global explanations. Will be empty/null for binary logistic and linear regression models. Sorted alphabetically in descending order. |
-| `explanations` | array<Explanation> | A list of the top global explanations. Sorted by absolute value of attribution in descending order. |
+| `explanations` | `array<Explanation>` | A list of the top global explanations. Sorted by absolute value of attribution in descending order. |
 
 ### `GoogleSheetsOptions` fields
 
@@ -1456,7 +1456,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `fields` | array<string> | Output only. For permanent external tables, this field is populated with the hive partition keys in the order they were inferred. The types of the partition keys can be deduced by checking the table schema (which will include the partition keys). Not every API will populate this field in the output. For example, Tables.Get will populate it, but Tables.List will not contain this field. |
+| `fields` | `array<string>` | Output only. For permanent external tables, this field is populated with the hive partition keys in the order they were inferred. The types of the partition keys can be deduced by checking the table schema (which will include the partition keys). Not every API will populate this field in the output. For example, Tables.Get will populate it, but Tables.List will not contain this field. |
 | `mode` | string | Optional. When set, what mode of hive partitioning to use when reading data. The following modes are supported: \* AUTO: automatically infer partition key name(s) and type(s). \* STRINGS: automatically infer partition key name(s). All types are strings. \* CUSTOM: partition key schema is encoded in the source URI prefix. Not all storage formats support hive partitioning. Requesting hive partitioning on an unsupported format will lead to an error. Currently supported formats are: JSON, CSV, ORC, Avro and Parquet. |
 | `requirePartitionFilter` | boolean | Optional. If set to true, queries over this table require a partition filter that can be used for partition elimination to be specified. Note that this field should only be true when creating a permanent external table or querying a temporary external table. Hive-partitioned loads with require_partition_filter explicitly set to true will fail. |
 | `sourceUriPrefix` | string | Optional. When hive partition detection is requested, a common prefix for all source uris must be required. The prefix must end immediately before the partition key encoding begins. For example, consider files following this data layout: gs://bucket/path_to_table/dt=2019-06-01/country=USA/id=7/file.avro gs://bucket/path_to_table/dt=2019-05-31/country=CA/id=3/file.avro When hive partitioning is requested with either AUTO or STRINGS detection, the common prefix can be either of gs://bucket/path_to_table or gs://bucket/path_to_table/. CUSTOM detection requires encoding the partitioning schema immediately after the common prefix. For CUSTOM, any of \* gs://bucket/path_to_table/{dt:DATE}/{country:STRING}/{id:INTEGER} \* gs://bucket/path_to_table/{dt:STRING}/{country:STRING}/{id:INTEGER} \* gs://bucket/path_to_table/{dt:DATE}/{country:STRING}/{id:STRING} would all be valid source URI prefixes. |
@@ -1543,19 +1543,19 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `elements` | array<string> | Elements in the int array. |
+| `elements` | `array<string>` | Elements in the int array. |
 
 ### `IntArrayHparamSearchSpace` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `candidates` | array<IntArray> | Candidates for the int array parameter. |
+| `candidates` | `array<IntArray>` | Candidates for the int array parameter. |
 
 ### `IntCandidates` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `candidates` | array<string> | Candidates for the int parameter in increasing order. |
+| `candidates` | `array<string>` | Candidates for the int parameter in increasing order. |
 
 ### `IntHparamSearchSpace` fields
 
@@ -1576,12 +1576,12 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `arimaResult` | ArimaResult | Arima result. |
-| `clusterInfos` | array<ClusterInfo> | Information about top clusters for clustering models. |
+| `clusterInfos` | `array<ClusterInfo>` | Information about top clusters for clustering models. |
 | `durationMs` | string (int64) | Time taken to run the iteration in milliseconds. |
 | `evalLoss` | number (double) | Loss computed on the eval data at the end of iteration. |
 | `index` | integer (int32) | Index of the iteration, 0 based. |
 | `learnRate` | number (double) | Learn rate used for this iteration. |
-| `principalComponentInfos` | array<PrincipalComponentInfo> | The information of the principal components. |
+| `principalComponentInfos` | `array<PrincipalComponentInfo>` | The information of the principal components. |
 | `trainingLoss` | number (double) | Loss computed on the training data at the end of iteration. |
 
 ### `Job` fields
@@ -1629,7 +1629,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `compression` | string | Optional. The compression type to use for exported files. Possible values include DEFLATE, GZIP, NONE, SNAPPY, and ZSTD. The default value is NONE. Not all compression formats are support for all file formats. DEFLATE is only supported for Avro. ZSTD is only supported for Parquet. Not applicable when extracting models. |
 | `destinationFormat` | string | Optional. The exported file format. Possible values include CSV, NEWLINE_DELIMITED_JSON, PARQUET, or AVRO for tables and ML_TF_SAVED_MODEL or ML_XGBOOST_BOOSTER for models. The default value for tables is CSV. Tables with nested or repeated fields cannot be exported as CSV. The default value for models is ML_TF_SAVED_MODEL. |
 | `destinationUri` | string | \[Pick one\] DEPRECATED: Use destinationUris instead, passing only one URI as necessary. The fully-qualified Google Cloud Storage URI where the extracted table should be written. |
-| `destinationUris` | array<string> | \[Pick one\] A list of fully-qualified Google Cloud Storage URIs where the extracted table should be written. |
+| `destinationUris` | `array<string>` | \[Pick one\] A list of fully-qualified Google Cloud Storage URIs where the extracted table should be written. |
 | `fieldDelimiter` | string | Optional. When extracting data in CSV format, this defines the delimiter to use between fields in the exported data. Default is ','. Not applicable when extracting models. |
 | `modelExtractOptions` | ModelExtractOptions | Optional. Model extract options only applicable when extracting models. |
 | `nativeGeographyExportEnabled` | boolean | Optional. Applicable to formats: PARQUET. If enabled, BigQuery to Parquet export will write the native Parquet Geography type instead of the default GeoParquet type. |
@@ -1648,13 +1648,13 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `autodetect` | boolean | Optional. Indicates if we should automatically infer the options and schema for CSV and JSON sources. |
 | `clustering` | Clustering | Clustering specification for the destination table. |
 | `columnNameCharacterMap` | string enum | Optional. Character map supported for column names in CSV/Parquet loads. Defaults to STRICT and can be overridden by Project Config Service. Using this option with unsupporting load formats will result in an error. Values: `COLUMN_NAME_CHARACTER_MAP_UNSPECIFIED`, `STRICT`, `V1`, `V2`. |
-| `connectionProperties` | array<ConnectionProperty> | Optional. Connection properties which can modify the load job behavior. Currently, only the 'session_id' connection property is supported, and is used to resolve \_SESSION appearing as the dataset id. |
+| `connectionProperties` | `array<ConnectionProperty>` | Optional. Connection properties which can modify the load job behavior. Currently, only the 'session_id' connection property is supported, and is used to resolve \_SESSION appearing as the dataset id. |
 | `copyFilesOnly` | boolean | Optional. \[Experimental\] Configures the load job to copy files directly to the destination BigLake managed table, bypassing file content reading and rewriting. Copying files only is supported when all the following are true: \* `source_uris` are located in the same Cloud Storage location as the destination table's `storage_uri` location. \* `source_format` is `PARQUET`. \* `destination_table` is an existing BigLake managed table. The table's schema does not have flexible column names. The table's columns do not have type parameters other than precision and scale. \* No options other than the above are specified. |
 | `createDisposition` | string | Optional. Specifies whether the job is allowed to create new tables. The following values are supported: \* CREATE_IF_NEEDED: If the table does not exist, BigQuery creates the table. \* CREATE_NEVER: The table must already exist. If it does not, a 'notFound' error is returned in the job result. The default value is CREATE_IF_NEEDED. Creation, truncation and append actions occur as one atomic update upon job completion. |
 | `createSession` | boolean | Optional. If this property is true, the job creates a new session using a randomly generated session_id. To continue using a created session with subsequent queries, pass the existing session identifier as a `ConnectionProperty` value. The session identifier is returned as part of the `SessionInfo` message within the query statistics. The new session's location will be set to `Job.JobReference.location` if it is present, otherwise it's set to the default location based on existing routing logic. |
 | `dateFormat` | string | Optional. Date format used for parsing DATE values. |
 | `datetimeFormat` | string | Optional. Date format used for parsing DATETIME values. |
-| `decimalTargetTypes` | array<string> | Defines the list of possible SQL data types to which the source decimal values are converted. This list and the precision and the scale parameters of the decimal field determine the target type. In the order of NUMERIC, BIGNUMERIC, and STRING, a type is picked if it is in the specified list and if it supports the precision and the scale. STRING supports all precision and scale values. If none of the listed types supports the precision and the scale, the type supporting the widest range in the specified list is picked, and if a value exceeds the supported range when reading the data, an error will be thrown. Example: Suppose the value of this field is \["NUMERIC", "BIGNUMERIC"\]. If (precision,scale) is: \* (38,9) -> NUMERIC; \* (39,9) -> BIGNUMERIC (NUMERIC cannot hold 30 integer digits); \* (38,10) -> BIGNUMERIC (NUMERIC cannot hold 10 fractional digits); \* (76,38) -> BIGNUMERIC; \* (77,38) -> BIGNUMERIC (error if value exceeds supported range). This field cannot contain duplicate types. The order of the types in this field is ignored. For example, \["BIGNUMERIC", "NUMERIC"\] is the same as \["NUMERIC", "BIGNUMERIC"\] and NUMERIC always takes precedence over BIGNUMERIC. Defaults to \["NUMERIC", "STRING"\] for ORC and \["NUMERIC"\] for the other file formats. Values: `DECIMAL_TARGET_TYPE_UNSPECIFIED`, `NUMERIC`, `BIGNUMERIC`, `STRING`. |
+| `decimalTargetTypes` | `array<string>` | Defines the list of possible SQL data types to which the source decimal values are converted. This list and the precision and the scale parameters of the decimal field determine the target type. In the order of NUMERIC, BIGNUMERIC, and STRING, a type is picked if it is in the specified list and if it supports the precision and the scale. STRING supports all precision and scale values. If none of the listed types supports the precision and the scale, the type supporting the widest range in the specified list is picked, and if a value exceeds the supported range when reading the data, an error will be thrown. Example: Suppose the value of this field is \["NUMERIC", "BIGNUMERIC"\]. If (precision,scale) is: \* (38,9) -> NUMERIC; \* (39,9) -> BIGNUMERIC (NUMERIC cannot hold 30 integer digits); \* (38,10) -> BIGNUMERIC (NUMERIC cannot hold 10 fractional digits); \* (76,38) -> BIGNUMERIC; \* (77,38) -> BIGNUMERIC (error if value exceeds supported range). This field cannot contain duplicate types. The order of the types in this field is ignored. For example, \["BIGNUMERIC", "NUMERIC"\] is the same as \["NUMERIC", "BIGNUMERIC"\] and NUMERIC always takes precedence over BIGNUMERIC. Defaults to \["NUMERIC", "STRING"\] for ORC and \["NUMERIC"\] for the other file formats. Values: `DECIMAL_TARGET_TYPE_UNSPECIFIED`, `NUMERIC`, `BIGNUMERIC`, `STRING`. |
 | `destinationEncryptionConfiguration` | EncryptionConfiguration | Custom encryption configuration (e.g., Cloud KMS keys) |
 | `destinationTable` | TableReference | \[Required\] The destination table to load the data into. |
 | `destinationTableProperties` | DestinationTableProperties | Optional. \[Experimental\] Properties with which to create the destination table if it is new. |
@@ -1666,26 +1666,26 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `jsonExtension` | string enum | Optional. Load option to be used together with source_format newline-delimited JSON to indicate that a variant of JSON is being loaded. To load newline-delimited GeoJSON, specify GEOJSON (and source_format must be set to NEWLINE_DELIMITED_JSON). Values: `JSON_EXTENSION_UNSPECIFIED`, `GEOJSON`. |
 | `maxBadRecords` | integer (int32) | Optional. The maximum number of bad records that BigQuery can ignore when running the job. If the number of bad records exceeds this value, an invalid error is returned in the job result. The default value is 0, which requires that all records are valid. This is only supported for CSV and NEWLINE_DELIMITED_JSON file formats. |
 | `nullMarker` | string | Optional. Specifies a string that represents a null value in a CSV file. For example, if you specify "\N", BigQuery interprets "\N" as a null value when loading a CSV file. The default value is the empty string. If you set this property to a custom value, BigQuery throws an error if an empty string is present for all data types except for STRING and BYTE. For STRING and BYTE columns, BigQuery interprets the empty string as an empty value. |
-| `nullMarkers` | array<string> | Optional. A list of strings represented as SQL NULL value in a CSV file. null_marker and null_markers can't be set at the same time. If null_marker is set, null_markers has to be not set. If null_markers is set, null_marker has to be not set. If both null_marker and null_markers are set at the same time, a user error would be thrown. Any strings listed in null_markers, including empty string would be interpreted as SQL NULL. This applies to all column types. |
+| `nullMarkers` | `array<string>` | Optional. A list of strings represented as SQL NULL value in a CSV file. null_marker and null_markers can't be set at the same time. If null_marker is set, null_markers has to be not set. If null_markers is set, null_marker has to be not set. If both null_marker and null_markers are set at the same time, a user error would be thrown. Any strings listed in null_markers, including empty string would be interpreted as SQL NULL. This applies to all column types. |
 | `parquetOptions` | ParquetOptions | Optional. Additional properties to set if sourceFormat is set to PARQUET. |
 | `preserveAsciiControlCharacters` | boolean | Optional. When sourceFormat is set to "CSV", this indicates whether the embedded ASCII control characters (the first 32 characters in the ASCII-table, from '\x00' to '\x1F') are preserved. |
-| `projectionFields` | array<string> | If sourceFormat is set to "DATASTORE_BACKUP", indicates which entity properties to load into BigQuery from a Cloud Datastore backup. Property names are case sensitive and must be top-level properties. If no properties are specified, BigQuery loads all properties. If any named property isn't found in the Cloud Datastore backup, an invalid error is returned in the job result. |
+| `projectionFields` | `array<string>` | If sourceFormat is set to "DATASTORE_BACKUP", indicates which entity properties to load into BigQuery from a Cloud Datastore backup. Property names are case sensitive and must be top-level properties. If no properties are specified, BigQuery loads all properties. If any named property isn't found in the Cloud Datastore backup, an invalid error is returned in the job result. |
 | `quote` | string | Optional. The value that is used to quote data sections in a CSV file. BigQuery converts the string to ISO-8859-1 encoding, and then uses the first byte of the encoded string to split the data in its raw, binary state. The default value is a double-quote ('"'). If your data does not contain quoted sections, set the property value to an empty string. If your data contains quoted newline characters, you must also set the allowQuotedNewlines property to true. To include the specific quote character within a quoted value, precede it with an additional matching quote character. For example, if you want to escape the default character ' " ', use ' "" '. @default " |
 | `rangePartitioning` | RangePartitioning | Range partitioning specification for the destination table. Only one of timePartitioning and rangePartitioning should be specified. |
 | `referenceFileSchemaUri` | string | Optional. The user can provide a reference file with the reader schema. This file is only loaded if it is part of source URIs, but is not loaded otherwise. It is enabled for the following formats: AVRO, PARQUET, ORC. |
 | `schema` | TableSchema | Optional. The schema for the destination table. The schema can be omitted if the destination table already exists, or if you're loading data from Google Cloud Datastore. |
 | `schemaInline` | string | \[Deprecated\] The inline schema. For CSV schemas, specify as "Field1:Type1\[,Field2:Type2\]\*". For example, "foo:STRING, bar:INTEGER, baz:FLOAT". |
 | `schemaInlineFormat` | string | \[Deprecated\] The format of the schemaInline property. |
-| `schemaUpdateOptions` | array<string> | Allows the schema of the destination table to be updated as a side effect of the load job if a schema is autodetected or supplied in the job configuration. Schema update options are supported in three cases: when writeDisposition is WRITE_APPEND; when writeDisposition is WRITE_TRUNCATE_DATA; when writeDisposition is WRITE_TRUNCATE and the destination table is a partition of a table, specified by partition decorators. For normal tables, WRITE_TRUNCATE will always overwrite the schema. One or more of the following values are specified: \* ALLOW_FIELD_ADDITION: allow adding a nullable field to the schema. \* ALLOW_FIELD_RELAXATION: allow relaxing a required field in the original schema to nullable. |
+| `schemaUpdateOptions` | `array<string>` | Allows the schema of the destination table to be updated as a side effect of the load job if a schema is autodetected or supplied in the job configuration. Schema update options are supported in three cases: when writeDisposition is WRITE_APPEND; when writeDisposition is WRITE_TRUNCATE_DATA; when writeDisposition is WRITE_TRUNCATE and the destination table is a partition of a table, specified by partition decorators. For normal tables, WRITE_TRUNCATE will always overwrite the schema. One or more of the following values are specified: \* ALLOW_FIELD_ADDITION: allow adding a nullable field to the schema. \* ALLOW_FIELD_RELAXATION: allow relaxing a required field in the original schema to nullable. |
 | `skipLeadingRows` | integer (int32) | Optional. The number of rows at the top of a CSV file that BigQuery will skip when loading the data. The default value is 0. This property is useful if you have header rows in the file that should be skipped. When autodetect is on, the behavior is the following: \* skipLeadingRows unspecified - Autodetect tries to detect headers in the first row. If they are not detected, the row is read as data. Otherwise data is read starting from the second row. \* skipLeadingRows is 0 - Instructs autodetect that there are no headers and data should be read starting from the first row. \* skipLeadingRows = N > 0 - Autodetect skips N-1 rows and tries to detect headers in row N. If headers are not detected, row N is just skipped. Otherwise row N is used to extract column names for the detected schema. |
 | `sourceColumnMatch` | string enum | Optional. Controls the strategy used to match loaded columns to the schema. If not set, a sensible default is chosen based on how the schema is provided. If autodetect is used, then columns are matched by name. Otherwise, columns are matched by position. This is done to keep the behavior backward-compatible. Values: `SOURCE_COLUMN_MATCH_UNSPECIFIED`, `POSITION`, `NAME`. |
 | `sourceFormat` | string | Optional. The format of the data files. For CSV files, specify "CSV". For datastore backups, specify "DATASTORE_BACKUP". For newline-delimited JSON, specify "NEWLINE_DELIMITED_JSON". For Avro, specify "AVRO". For parquet, specify "PARQUET". For orc, specify "ORC". The default value is CSV. |
-| `sourceUris` | array<string> | \[Required\] The fully-qualified URIs that point to your data in Google Cloud. For Google Cloud Storage URIs: Each URI can contain one '\*' wildcard character and it must come after the 'bucket' name. Size limits related to load jobs apply to external data sources. For Google Cloud Bigtable URIs: Exactly one URI can be specified and it has be a fully specified and valid HTTPS URL for a Google Cloud Bigtable table. For Google Cloud Datastore backups: Exactly one URI can be specified. Also, the '\*' wildcard character is not allowed. |
+| `sourceUris` | `array<string>` | \[Required\] The fully-qualified URIs that point to your data in Google Cloud. For Google Cloud Storage URIs: Each URI can contain one '\*' wildcard character and it must come after the 'bucket' name. Size limits related to load jobs apply to external data sources. For Google Cloud Bigtable URIs: Exactly one URI can be specified and it has be a fully specified and valid HTTPS URL for a Google Cloud Bigtable table. For Google Cloud Datastore backups: Exactly one URI can be specified. Also, the '\*' wildcard character is not allowed. |
 | `timeFormat` | string | Optional. Date format used for parsing TIME values. |
 | `timePartitioning` | TimePartitioning | Time-based partitioning specification for the destination table. Only one of timePartitioning and rangePartitioning should be specified. |
 | `timeZone` | string | Optional. Default time zone that will apply when parsing timestamp values that have no specific time zone. |
 | `timestampFormat` | string | Optional. Date format used for parsing TIMESTAMP values. |
-| `timestampTargetPrecision` | array<integer> | Precisions (maximum number of total digits in base 10) for seconds of TIMESTAMP types that are allowed to the destination table for autodetection mode. Available for the formats: CSV, PARQUET, AVRO, and Iceberg External Table. Possible values include: Not Specified, \[\], or \[6\]: timestamp(6) for all auto detected TIMESTAMP columns \[6, 12\]: timestamp(6) for all auto detected TIMESTAMP columns that have less than 6 digits of subseconds. timestamp(12) for all auto detected TIMESTAMP columns that have more than 6 digits of subseconds. \[12\]: timestamp(12) for all auto detected TIMESTAMP columns. The order of the elements in this array is ignored. Inputs that have higher precision than the highest target precision in this array will be truncated. |
+| `timestampTargetPrecision` | `array<integer>` | Precisions (maximum number of total digits in base 10) for seconds of TIMESTAMP types that are allowed to the destination table for autodetection mode. Available for the formats: CSV, PARQUET, AVRO, and Iceberg External Table. Possible values include: Not Specified, \[\], or \[6\]: timestamp(6) for all auto detected TIMESTAMP columns \[6, 12\]: timestamp(6) for all auto detected TIMESTAMP columns that have less than 6 digits of subseconds. timestamp(12) for all auto detected TIMESTAMP columns that have more than 6 digits of subseconds. \[12\]: timestamp(12) for all auto detected TIMESTAMP columns. The order of the elements in this array is ignored. Inputs that have higher precision than the highest target precision in this array will be truncated. |
 | `useAvroLogicalTypes` | boolean | Optional. If sourceFormat is set to "AVRO", indicates whether to interpret logical types as the corresponding BigQuery data type (for example, TIMESTAMP), instead of using the raw type (for example, INTEGER). |
 | `writeDisposition` | string | Optional. Specifies the action that occurs if the destination table already exists. The following values are supported: \* WRITE_TRUNCATE: If the table already exists, BigQuery overwrites the data, removes the constraints and uses the schema from the load job. \* WRITE_TRUNCATE_DATA: If the table already exists, BigQuery overwrites the data, but keeps the constraints and schema of the existing table. \* WRITE_APPEND: If the table already exists, BigQuery appends the data to the table. \* WRITE_EMPTY: If the table already exists and contains data, a 'duplicate' error is returned in the job result. The default value is WRITE_APPEND. Each action is atomic and only occurs if BigQuery is able to complete the job successfully. Creation, truncation and append actions occur as one atomic update upon job completion. |
 
@@ -1695,7 +1695,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 |---|---|---|
 | `allowLargeResults` | boolean | Optional. If true and query uses legacy SQL dialect, allows the query to produce arbitrarily large result tables at a slight cost in performance. Requires destinationTable to be set. For GoogleSQL queries, this flag is ignored and large results are always allowed. However, you must still set destinationTable when result size exceeds the allowed maximum response size. |
 | `clustering` | Clustering | Clustering specification for the destination table. |
-| `connectionProperties` | array<ConnectionProperty> | Connection properties which can modify the query behavior. |
+| `connectionProperties` | `array<ConnectionProperty>` | Connection properties which can modify the query behavior. |
 | `continuous` | boolean | \[Optional\] Specifies whether the query should be executed as a continuous query. The default value is false. |
 | `createDisposition` | string | Optional. Specifies whether the job is allowed to create new tables. The following values are supported: \* CREATE_IF_NEEDED: If the table does not exist, BigQuery creates the table. \* CREATE_NEVER: The table must already exist. If it does not, a 'notFound' error is returned in the job result. The default value is CREATE_IF_NEEDED. Creation, truncation and append actions occur as one atomic update upon job completion. |
 | `createSession` | boolean | If this property is true, the job creates a new session using a randomly generated session_id. To continue using a created session with subsequent queries, pass the existing session identifier as a `ConnectionProperty` value. The session identifier is returned as part of the `SessionInfo` message within the query statistics. The new session's location will be set to `Job.JobReference.location` if it is present, otherwise it's set to the default location based on existing routing logic. |
@@ -1709,9 +1709,9 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `preserveNulls` | boolean | \[Deprecated\] This property is deprecated. |
 | `priority` | string | Optional. Specifies a priority for the query. Possible values include INTERACTIVE and BATCH. The default value is INTERACTIVE. |
 | `query` | string | \[Required\] SQL query text to execute. The useLegacySql field can be used to indicate whether the query uses legacy SQL or GoogleSQL. |
-| `queryParameters` | array<QueryParameter> | Query parameters for GoogleSQL queries. |
+| `queryParameters` | `array<QueryParameter>` | Query parameters for GoogleSQL queries. |
 | `rangePartitioning` | RangePartitioning | Range partitioning specification for the destination table. Only one of timePartitioning and rangePartitioning should be specified. |
-| `schemaUpdateOptions` | array<string> | Allows the schema of the destination table to be updated as a side effect of the query job. Schema update options are supported in three cases: when writeDisposition is WRITE_APPEND; when writeDisposition is WRITE_TRUNCATE_DATA; when writeDisposition is WRITE_TRUNCATE and the destination table is a partition of a table, specified by partition decorators. For normal tables, WRITE_TRUNCATE will always overwrite the schema. One or more of the following values are specified: \* ALLOW_FIELD_ADDITION: allow adding a nullable field to the schema. \* ALLOW_FIELD_RELAXATION: allow relaxing a required field in the original schema to nullable. |
+| `schemaUpdateOptions` | `array<string>` | Allows the schema of the destination table to be updated as a side effect of the query job. Schema update options are supported in three cases: when writeDisposition is WRITE_APPEND; when writeDisposition is WRITE_TRUNCATE_DATA; when writeDisposition is WRITE_TRUNCATE and the destination table is a partition of a table, specified by partition decorators. For normal tables, WRITE_TRUNCATE will always overwrite the schema. One or more of the following values are specified: \* ALLOW_FIELD_ADDITION: allow adding a nullable field to the schema. \* ALLOW_FIELD_RELAXATION: allow relaxing a required field in the original schema to nullable. |
 | `scriptOptions` | ScriptOptions | Options controlling the execution of scripts. |
 | `secureContext` | SecureContext | Optional. A set of key-value pairs representing the secure context. This can be used to pass sensitive or context-specific information. They can be retrieved via the SECURE_CONTEXT() function and used to modify the run-time behavior of a query. |
 | `systemVariables` | SystemVariables | Output only. System variables for GoogleSQL queries. A system variable is output if the variable is settable and its value differs from the system default. "@@" prefix is not included in the name of the System variables. |
@@ -1719,7 +1719,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `timePartitioning` | TimePartitioning | Time-based partitioning specification for the destination table. Only one of timePartitioning and rangePartitioning should be specified. |
 | `useLegacySql` | boolean | Optional. Specifies whether to use BigQuery's legacy SQL dialect for this query. The default value is true. If set to false, the query uses BigQuery's GoogleSQL (https://docs.cloud.google.com/bigquery/docs/introduction-sql). When useLegacySql is set to false, the value of flattenResults is ignored; query will be run as if flattenResults is false. |
 | `useQueryCache` | boolean | Optional. Whether to look for the result in the query cache. The query cache is a best-effort cache that will be flushed whenever tables in the query are modified. Moreover, the query cache is only available when a query does not have a destination table specified. The default value is true. |
-| `userDefinedFunctionResources` | array<UserDefinedFunctionResource> | Describes user-defined function resources used in the query. |
+| `userDefinedFunctionResources` | `array<UserDefinedFunctionResource>` | Describes user-defined function resources used in the query. |
 | `writeDisposition` | string | Optional. Specifies the action that occurs if the destination table already exists. The following values are supported: \* WRITE_TRUNCATE: If the table already exists, BigQuery overwrites the data, removes the constraints, and uses the schema from the query result. \* WRITE_TRUNCATE_DATA: If the table already exists, BigQuery overwrites the data, but keeps the constraints and schema of the existing table. \* WRITE_APPEND: If the table already exists, BigQuery appends the data to the table. \* WRITE_EMPTY: If the table already exists and contains data, a 'duplicate' error is returned in the job result. The default value is WRITE_EMPTY. Each action is atomic and only occurs if BigQuery is able to complete the job successfully. Creation, truncation and append actions occur as one atomic update upon job completion. |
 | `writeIncrementalResults` | boolean | Optional. This is only supported for a SELECT query using a temporary table. If set, the query is allowed to write results incrementally to the temporary result table. This may incur a performance penalty. This option cannot be used with Legacy SQL. This feature is not yet available. |
 
@@ -1733,7 +1733,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `destinationTable` | TableReference | \[Required\] The destination table. |
 | `operationType` | string enum | Optional. Supported operation types in table copy job. Values: `OPERATION_TYPE_UNSPECIFIED`, `COPY`, `SNAPSHOT`, `RESTORE`, `CLONE`. |
 | `sourceTable` | TableReference | \[Pick one\] Source table to copy. |
-| `sourceTables` | array<TableReference> | \[Pick one\] Source tables to copy. |
+| `sourceTables` | `array<TableReference>` | \[Pick one\] Source tables to copy. |
 | `writeDisposition` | string | Optional. Specifies the action that occurs if the destination table already exists. The following values are supported: \* WRITE_TRUNCATE: If the table already exists, BigQuery overwrites the table data and uses the schema and table constraints from the source table. \* WRITE_APPEND: If the table already exists, BigQuery appends the data to the table. \* WRITE_EMPTY: If the table already exists and contains data, a 'duplicate' error is returned in the job result. The default value is WRITE_EMPTY. Each action is atomic and only occurs if BigQuery is able to complete the job successfully. Creation, truncation and append actions occur as one atomic update upon job completion. |
 
 ### `JobCreationReason` fields
@@ -1747,10 +1747,10 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `etag` | string | A hash of this page of results. |
-| `jobs` | array<object> | List of jobs that were requested. |
+| `jobs` | `array<object>` | List of jobs that were requested. |
 | `kind` | string | The resource type of the response. |
 | `nextPageToken` | string | A token to request the next page of results. |
-| `unreachable` | array<string> | A list of skipped locations that were unreachable. For more information about BigQuery locations, see: https://cloud.google.com/bigquery/docs/locations. Example: "europe-west5" |
+| `unreachable` | `array<string>` | A list of skipped locations that were unreachable. For more information about BigQuery locations, see: https://cloud.google.com/bigquery/docs/locations. Example: "europe-west5" |
 
 ### `JobReference` fields
 
@@ -1772,15 +1772,15 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `endTime` | string (int64) | Output only. End time of this job, in milliseconds since the epoch. This field will be present whenever a job is in the DONE state. |
 | `extract` | JobStatistics4 | Output only. Statistics for an extract job. |
 | `finalExecutionDurationMs` | string (int64) | Output only. The duration in milliseconds of the execution of the final attempt of this job, as BigQuery may internally re-attempt to execute the job. |
-| `globalQueryRemoteRegions` | array<string> | Output only. The list of remote regions from which a global query accesses data. This field is populated only for parent global query jobs in the primary execution region. It is empty for child global query jobs and single-region queries. For more information, see Global queries (https://cloud.google.com/bigquery/docs/global-queries). |
+| `globalQueryRemoteRegions` | `array<string>` | Output only. The list of remote regions from which a global query accesses data. This field is populated only for parent global query jobs in the primary execution region. It is empty for child global query jobs and single-region queries. For more information, see Global queries (https://cloud.google.com/bigquery/docs/global-queries). |
 | `load` | JobStatistics3 | Output only. Statistics for a load job. |
 | `numChildJobs` | string (int64) | Output only. Number of child jobs executed. |
 | `parentGlobalQueryJob` | JobReference | Output only. Reference to the parent global query job, if this is a child global query job. This field is populated only for child global query jobs (remote subqueries or cross-region table copy jobs) executed in remote regions on behalf of a global query. It contains the project ID, job ID, and location of the parent global query job. It is unset for parent global query jobs and single-region queries. For more information, see Global queries (https://cloud.google.com/bigquery/docs/global-queries). |
 | `parentJobId` | string | Output only. If this is a child job, specifies the job ID of the parent. |
 | `query` | JobStatistics2 | Output only. Statistics for a query job. |
-| `quotaDeferments` | array<string> | Output only. Quotas which delayed this job's start time. |
-| `reservationGroupPath` | array<string> | Output only. The reservation group path of the reservation assigned to this job. This field has a limit of 10 nested reservation groups. This is to maintain consistency between reservations info schema and jobs info schema. The first reservation group is the root reservation group and the last is the leaf or lowest level reservation group. |
-| `reservationUsage` | array<object> | Output only. Job resource usage breakdown by reservation. This field reported misleading information and will no longer be populated. |
+| `quotaDeferments` | `array<string>` | Output only. Quotas which delayed this job's start time. |
+| `reservationGroupPath` | `array<string>` | Output only. The reservation group path of the reservation assigned to this job. This field has a limit of 10 nested reservation groups. This is to maintain consistency between reservations info schema and jobs info schema. The first reservation group is the root reservation group and the last is the leaf or lowest level reservation group. |
+| `reservationUsage` | `array<object>` | Output only. Job resource usage breakdown by reservation. This field reported misleading information and will no longer be populated. |
 | `reservation_id` | string | Output only. Name of the primary reservation assigned to this job. Note that this could be different than reservations reported in the reservation usage field if parent reservations were used to execute this job. |
 | `rowLevelSecurityStatistics` | RowLevelSecurityStatistics | Output only. Statistics for row-level security. Present only for query and extract jobs. |
 | `scriptStatistics` | ScriptStatistics | Output only. If this a child job of a script, specifies information about the context of this job within the script. |
@@ -1810,7 +1810,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `dmlStats` | DmlStatistics | Output only. Detailed statistics for DML statements INSERT, UPDATE, DELETE, MERGE or TRUNCATE. |
 | `estimatedBytesProcessed` | string (int64) | Output only. The original estimate of bytes processed for the job. |
 | `exportDataStatistics` | ExportDataStatistics | Output only. Stats for EXPORT DATA statement. |
-| `externalServiceCosts` | array<ExternalServiceCost> | Output only. Job cost breakdown as bigquery internal cost and external service costs. |
+| `externalServiceCosts` | `array<ExternalServiceCost>` | Output only. Job cost breakdown as bigquery internal cost and external service costs. |
 | `genAiStats` | GenAiStats | Output only. Statistics related to GenAI usage in the query. |
 | `incrementalResultStats` | IncrementalResultStats | Output only. Statistics related to incremental query results, if enabled for the query. This feature is not yet available. |
 | `loadQueryStatistics` | LoadQueryStatistics | Output only. Statistics for a LOAD query. |
@@ -1821,20 +1821,20 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `modelTrainingCurrentIteration` | integer (int32) | Deprecated. |
 | `modelTrainingExpectedTotalIteration` | string (int64) | Deprecated. |
 | `numDmlAffectedRows` | string (int64) | Output only. The number of rows affected by a DML statement. Present only for DML statements INSERT, UPDATE or DELETE. |
-| `objectStorageStats` | array<ObjectStorageStats> | Output only. Storage and caching statistics per cloud provider for queries over object storage. |
+| `objectStorageStats` | `array<ObjectStorageStats>` | Output only. Storage and caching statistics per cloud provider for queries over object storage. |
 | `performanceInsights` | PerformanceInsights | Output only. Performance insights. |
 | `queryInfo` | QueryInfo | Output only. Query optimization information for a QUERY job. |
-| `queryPlan` | array<ExplainQueryStage> | Output only. Describes execution plan for the query. |
-| `referencedLogicalViews` | array<TableReference> | Output only. Referenced logical views for the job. |
-| `referencedPropertyGraphs` | array<PropertyGraphReference> | Output only. Referenced property graphs for the job. Queries that reference more than 50 property graphs will not have a complete list. |
-| `referencedRoutines` | array<RoutineReference> | Output only. Referenced routines for the job. |
-| `referencedTables` | array<TableReference> | Output only. Referenced tables for the job. |
-| `reservationUsage` | array<object> | Output only. Job resource usage breakdown by reservation. This field reported misleading information and will no longer be populated. |
+| `queryPlan` | `array<ExplainQueryStage>` | Output only. Describes execution plan for the query. |
+| `referencedLogicalViews` | `array<TableReference>` | Output only. Referenced logical views for the job. |
+| `referencedPropertyGraphs` | `array<PropertyGraphReference>` | Output only. Referenced property graphs for the job. Queries that reference more than 50 property graphs will not have a complete list. |
+| `referencedRoutines` | `array<RoutineReference>` | Output only. Referenced routines for the job. |
+| `referencedTables` | `array<TableReference>` | Output only. Referenced tables for the job. |
+| `reservationUsage` | `array<object>` | Output only. Job resource usage breakdown by reservation. This field reported misleading information and will no longer be populated. |
 | `schema` | TableSchema | Output only. The schema of the results. Present only for successful dry run of non-legacy SQL queries. |
 | `searchStatistics` | SearchStatistics | Output only. Search query specific statistics. |
 | `sparkStatistics` | SparkStatistics | Output only. Statistics of a Spark procedure job. |
 | `statementType` | string | Output only. The type of query statement, if valid. Possible values: \* `SELECT`: `SELECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_list) statement. \* `ASSERT`: `ASSERT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/debugging-statements#assert) statement. \* `INSERT`: `INSERT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#insert_statement) statement. \* `UPDATE`: `UPDATE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#update_statement) statement. \* `DELETE`: `DELETE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-manipulation-language) statement. \* `MERGE`: `MERGE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-manipulation-language) statement. \* `TRUNCATE_TABLE`: `TRUNCATE TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#truncate_table_statement) statement. \* `CREATE_TABLE`: `CREATE TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_statement) statement, without `AS SELECT`. \* `CREATE_TABLE_AS_SELECT`: `CREATE TABLE AS SELECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_statement) statement. \* `CREATE_VIEW`: `CREATE VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_view_statement) statement. \* `CREATE_MODEL`: `CREATE MODEL` (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create#create_model_statement) statement. \* `CREATE_MATERIALIZED_VIEW`: `CREATE MATERIALIZED VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_materialized_view_statement) statement. \* `CREATE_FUNCTION`: `CREATE FUNCTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_function_statement) statement. \* `CREATE_TABLE_FUNCTION`: `CREATE TABLE FUNCTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_function_statement) statement. \* `CREATE_PROCEDURE`: `CREATE PROCEDURE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_procedure) statement. \* `CREATE_ROW_ACCESS_POLICY`: `CREATE ROW ACCESS POLICY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_row_access_policy_statement) statement. \* `CREATE_SCHEMA`: `CREATE SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_schema_statement) statement. \* `CREATE_EXTERNAL_SCHEMA`: `CREATE EXTERNAL SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_external_schema_statement) statement. \* `CREATE_EXTERNAL_TABLE`: `CREATE EXTERNAL TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_external_table_statement) statement. \* `CREATE_SNAPSHOT_TABLE`: `CREATE SNAPSHOT TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_snapshot_table_statement) statement. \* `CREATE_SEARCH_INDEX`: `CREATE SEARCH INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_search_index_statement) statement. \* `CREATE_VECTOR_INDEX`: `CREATE VECTOR INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_vector_index_statement) statement. \* `CREATE_CONNECTION`: `CREATE CONNECTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_connection_statement) statement. \* `CREATE_DATA_POLICY`: `CREATE DATA_POLICY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_data_policy_statement) statement. \* `CREATE_PROPERTY_GRAPH`: `CREATE PROPERTY GRAPH` (https://cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#gql_create_graph) statement. \* `CREATE_CAPACITY`: `CREATE CAPACITY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_capacity_statement) statement. \* `CREATE_RESERVATION`: `CREATE RESERVATION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_reservation_statement) statement. \* `CREATE_ASSIGNMENT`: `CREATE ASSIGNMENT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_assignment_statement) statement. \* `DROP_TABLE`: `DROP TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_table_statement) statement. \* `DROP_EXTERNAL_TABLE`: `DROP EXTERNAL TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_external_table_statement) statement. \* `DROP_VIEW`: `DROP VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_view_statement) statement. \* `DROP_MODEL`: `DROP MODEL` (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-drop-model) statement. \* `DROP_MATERIALIZED_VIEW`: `DROP MATERIALIZED VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_materialized_view_statement) statement. \* `DROP_FUNCTION`: `DROP FUNCTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_function_statement) statement. \* `DROP_TABLE_FUNCTION`: `DROP TABLE FUNCTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_table_function) statement. \* `DROP_PROCEDURE`: `DROP PROCEDURE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_procedure_statement) statement. \* `DROP_SEARCH_INDEX`: `DROP SEARCH INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_search_index) statement. \* `DROP_VECTOR_INDEX`: `DROP VECTOR INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_vector_index) statement. \* `DROP_SCHEMA`: `DROP SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_schema_statement) statement. \* `UNDROP_SCHEMA`: `UNDROP SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#undrop_schema_statement) statement. \* `DROP_SNAPSHOT_TABLE`: `DROP SNAPSHOT TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_snapshot_table_statement) statement. \* `DROP_ROW_ACCESS_POLICY`: \[`DROP [ALL] ROW ACCESS POLICY\|POLICIES`\](https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_row_access_policy_statement) statement. \* `DROP_CONNECTION`: `DROP CONNECTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_connection_statement) statement. \* `DROP_DATA_POLICY`: `DROP DATA_POLICY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_data_policy) statement. \* `DROP_PROPERTY_GRAPH`: `DROP PROPERTY GRAPH` (https://cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#gql_drop_graph) statement. \* `DROP_CAPACITY`: `DROP CAPACITY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_capacity_statement) statement. \* `DROP_RESERVATION`: `DROP RESERVATION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_reservation_statement) statement. \* `DROP_ASSIGNMENT`: `DROP ASSIGNMENT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_assignment_statement) statement. \* `ALTER_TABLE`: `ALTER TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_table_set_options_statement) statement. \* `ALTER_VIEW`: `ALTER VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_view_set_options_statement) statement. \* `ALTER_MATERIALIZED_VIEW`: `ALTER MATERIALIZED VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_materialized_view_set_options_statement) statement. \* `ALTER_SCHEMA`: `ALTER SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_schema_set_options_statement) statement. \* `ALTER_MODEL`: `ALTER MODEL` (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-alter-model) statement. \* `ALTER_SEARCH_INDEX`: `ALTER SEARCH INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_search_index_statement) statement. \* `ALTER_VECTOR_INDEX`: `ALTER VECTOR INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_vector_index_rebuild_statement) statement. \* `ALTER_CONNECTION`: `ALTER CONNECTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_connection_set_options_statement) statement. \* `ALTER_DATA_POLICY`: `ALTER DATA_POLICY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_data_policy_statement) statement. \* `ALTER_PROJECT`: `ALTER PROJECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_project_set_options_statement) statement. \* `ALTER_ORGANIZATION`: `ALTER ORGANIZATION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_organization_set_options_statement) statement. \* `ALTER_BI_CAPACITY`: `ALTER BI_CAPACITY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_bi_capacity_set_options_statement) statement. \* `ALTER_CAPACITY`: `ALTER CAPACITY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_capacity_set_options_statement) statement. \* `ALTER_RESERVATION`: `ALTER RESERVATION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_reservation_set_options_statement) statement. \* `SCRIPT`: `SCRIPT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language) statement. \* `CALL`: `CALL` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language#call) statement. \* `BEGIN_TRANSACTION`: `BEGIN TRANSACTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language#begin_transaction) statement. \* `COMMIT_TRANSACTION`: `COMMIT TRANSACTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language#commit_transaction) statement. \* `ROLLBACK_TRANSACTION`: `ROLLBACK TRANSACTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language#rollback_transaction) statement. \* `EXPORT_DATA`: `EXPORT DATA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/export-statements#export_data_statement) statement. \* `EXPORT_MODEL`: `EXPORT MODEL` (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-export-model) statement. \* `EXPORT_METADATA`: `EXPORT TABLE METADATA` (https://cloud.google.com/bigquery/docs/biglake-iceberg-tables-in-bigquery) statement, for BigLake Iceberg tables. \* `LOAD_DATA`: `LOAD DATA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/load-statements#load_data_statement) statement. \* `GRANT_ON_SCHEMA`: `GRANT ... ON SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#grant_statement) statement. \* `GRANT_ON_TABLE`: `GRANT ... ON TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#grant_statement) statement. Also used for `GRANT ... ON EXTERNAL TABLE`. \* `GRANT_ON_VIEW`: `GRANT ... ON VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#grant_statement) statement. \* `GRANT_ON_PROJECT`: `GRANT ... ON PROJECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#grant_statement) statement. \* `REVOKE_ON_SCHEMA`: `REVOKE ... ON SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#revoke_statement) statement. \* `REVOKE_ON_TABLE`: `REVOKE ... ON TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#revoke_statement) statement. Also used for `REVOKE ... ON EXTERNAL TABLE`. \* `REVOKE_ON_VIEW`: `REVOKE ... ON VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#revoke_statement) statement. \* `REVOKE_ON_PROJECT`: `REVOKE ... ON PROJECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#revoke_statement) statement. |
-| `timeline` | array<QueryTimelineSample> | Output only. Describes a timeline of job execution. |
+| `timeline` | `array<QueryTimelineSample>` | Output only. Describes a timeline of job execution. |
 | `totalBytesBilled` | string (int64) | Output only. If the project is configured to use on-demand pricing, then this field contains the total bytes billed for the job. If the project is configured to use flat-rate pricing, then you are not billed for bytes and this field is informational only. |
 | `totalBytesProcessed` | string (int64) | Output only. Total bytes processed for the job. |
 | `totalBytesProcessedAccuracy` | string | Output only. For dry-run jobs, totalBytesProcessed is an estimate and this field specifies the accuracy of the estimate. Possible values can be: UNKNOWN: accuracy of the estimate is unknown. PRECISE: estimate is precise. LOWER_BOUND: estimate is lower bound of what the query would cost. UPPER_BOUND: estimate is upper bound of what the query would cost. |
@@ -1842,7 +1842,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `totalServicesSkuSlotMs` | string (int64) | Output only. Total slot milliseconds for the job that ran on external services and billed on the services SKU. This field is only populated for jobs that have external service costs, and is the total of the usage for costs whose billing method is `"SERVICES_SKU"`. |
 | `totalSlotMs` | string (int64) | Output only. Slot-milliseconds for the job. |
 | `transferredBytes` | string (int64) | Output only. Total bytes transferred for BigQuery Omni queries from the remote cloud back to Google Cloud. This tracks data movement over Google-managed connections (like query results). It doesn't include input data read from the external data lake (for example, S3) because that data stays within the remote cloud. |
-| `undeclaredQueryParameters` | array<QueryParameter> | Output only. GoogleSQL only: list of undeclared query parameters detected during a dry run validation. |
+| `undeclaredQueryParameters` | `array<QueryParameter>` | Output only. GoogleSQL only: list of undeclared query parameters detected during a dry run validation. |
 | `vectorSearchStatistics` | VectorSearchStatistics | Output only. Vector Search query specific statistics. |
 
 ### `JobStatistics3` fields
@@ -1854,15 +1854,15 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `inputFiles` | string (int64) | Output only. Number of source files in a load job. |
 | `outputBytes` | string (int64) | Output only. Size of the loaded data in bytes. Note that while a load job is in the running state, this value may change. |
 | `outputRows` | string (int64) | Output only. Number of rows imported in a load job. Note that while an import job is in the running state, this value may change. |
-| `timeline` | array<QueryTimelineSample> | Output only. Describes a timeline of job execution. |
+| `timeline` | `array<QueryTimelineSample>` | Output only. Describes a timeline of job execution. |
 
 ### `JobStatistics4` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `destinationUriFileCounts` | array<string> | Output only. Number of files per destination URI or URI pattern specified in the extract configuration. These values will be in the same order as the URIs specified in the 'destinationUris' field. |
+| `destinationUriFileCounts` | `array<string>` | Output only. Number of files per destination URI or URI pattern specified in the extract configuration. These values will be in the same order as the URIs specified in the 'destinationUris' field. |
 | `inputBytes` | string (int64) | Output only. Number of user bytes extracted into the result. This is the byte count as computed by BigQuery for billing purposes and doesn't have any relationship with the number of actual result bytes extracted in the desired format. |
-| `timeline` | array<QueryTimelineSample> | Output only. Describes a timeline of job execution. |
+| `timeline` | `array<QueryTimelineSample>` | Output only. Describes a timeline of job execution. |
 
 ### `JobStatistics5` fields
 
@@ -1877,14 +1877,14 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `errorResult` | ErrorProto | Output only. Final error result of the job. If present, indicates that the job has completed and was unsuccessful. |
-| `errors` | array<ErrorProto> | Output only. The first errors encountered during the running of the job. The final message includes the number of errors that caused the process to stop. Errors here do not necessarily mean that the job has not completed or was unsuccessful. |
+| `errors` | `array<ErrorProto>` | Output only. The first errors encountered during the running of the job. The final message includes the number of errors that caused the process to stop. Errors here do not necessarily mean that the job has not completed or was unsuccessful. |
 | `state` | string | Output only. Running state of the job. Valid states include 'PENDING', 'RUNNING', and 'DONE'. |
 
 ### `JoinRestrictionPolicy` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `joinAllowedColumns` | array<string> | Optional. The only columns that joins are allowed on. This field is must be specified for join_conditions JOIN_ANY and JOIN_ALL and it cannot be set for JOIN_BLOCKED. |
+| `joinAllowedColumns` | `array<string>` | Optional. The only columns that joins are allowed on. This field is must be specified for join_conditions JOIN_ANY and JOIN_ALL and it cannot be set for JOIN_BLOCKED. |
 | `joinCondition` | string enum | Optional. Specifies if a join is required or not on queries for the view. Default is JOIN_CONDITION_UNSPECIFIED. Values: `JOIN_CONDITION_UNSPECIFIED`, `JOIN_ANY`, `JOIN_ALL`, `JOIN_NOT_REQUIRED`, `JOIN_BLOCKED`. |
 
 ## Notes
