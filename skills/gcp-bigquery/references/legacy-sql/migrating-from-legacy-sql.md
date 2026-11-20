@@ -38,7 +38,7 @@ You have a choice of whether to use legacy or GoogleSQL when you run a
 query. For information about switching between SQL dialects, see
 [BigQuery SQL dialects](https://docs.cloud.google.com/bigquery/docs/introduction-sql#bigquery-sql-dialects).
 
-The GoogleSQL examples on this page start with the line `#GoogleSQL`. The SQL section of [BigQuery SQL dialects](https://docs.cloud.google.com/bigquery/docs/introduction-sql#bigquery-sql-dialects) lists `#standardSQL` and `#legacySQL` as the query prefixes that set the dialect and does not list `#GoogleSQL`. So don't rely on the `#GoogleSQL` line to select GoogleSQL: where legacy SQL can be the default, replace that line with `#standardSQL`, or select GoogleSQL in the request, such as with `bq query --use_legacy_sql=false` (for `bq query`, the default value of `--use_legacy_sql` is `true` if the configuration setting is not specified). (Added; see Notes.)
+In the official docs, the GoogleSQL examples on this page start with the line `#GoogleSQL`. The SQL section of [BigQuery SQL dialects](https://docs.cloud.google.com/bigquery/docs/introduction-sql#bigquery-sql-dialects) lists `#standardSQL` and `#legacySQL` as the query prefixes that set the dialect and does not list `#GoogleSQL`, so on this page the first line of those examples is changed to `#standardSQL`. You can also select GoogleSQL in the request, such as with `bq query --use_legacy_sql=false` (for `bq query`, the default value of `--use_legacy_sql` is `true` if the configuration setting is not specified). (Added; see Notes.)
 
 #### Advantages of GoogleSQL
 
@@ -69,8 +69,10 @@ Some of the GoogleSQL examples on this page make use of a
 [`WITH` clause](../googlesql-syntax/query-syntax-3.md#with-clause),
 which enables extraction or reuse of named subqueries. For example:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 WITH T AS (
   SELECT x FROM UNNEST([1, 2, 3, 4]) AS x
 )
@@ -83,8 +85,10 @@ and 4. It selects `x` values from `T` and divides them by the sum of all `x`
 values in `T`. This query is equivalent to a query where the contents of `T`
 are inline:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   x / (SELECT SUM(x)
        FROM (SELECT x FROM UNNEST([1, 2, 3, 4]) AS x)) AS weighted_x
@@ -93,8 +97,10 @@ FROM (SELECT x FROM UNNEST([1, 2, 3, 4]) AS x);
 
 As another example, consider this query, which uses multiple named subqueries:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 WITH T AS (
   SELECT x FROM UNNEST([1, 2, 3, 4]) AS x
 ),
@@ -114,8 +120,10 @@ This query defines a sequence of transformations of the original data, followed
 by a `SELECT` statement over `TPlusOneTimesTwo`. This query is equivalent to the
 following query, which inlines the computations:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT (x + 1) * 2 AS z
 FROM (SELECT x FROM UNNEST([1, 2, 3, 4]) AS x);
 ```
@@ -130,8 +138,10 @@ GoogleSQL supports
 You can use user-defined SQL functions to define common expressions and then
 reference them from the query. For example:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 -- Computes the harmonic mean of the elements in 'arr'.
 -- The harmonic mean of x_1, x_2, ..., x_n can be expressed as:
 --   n / ((1 / x_1) + (1 / x_2) + ... + (1 / x_n))
@@ -158,10 +168,10 @@ anywhere else in the query that expects an expression. For example, consider the
 following GoogleSQL query that computes the fraction of warm days in Seattle
 in 2015:
 
-Adapted (not in the official docs): left out the days whose `max` is the missing-data code `9999.9`, so that the warm days and the total both count only the days with a reading, and used `SAFE_DIVIDE`, so that the query returns `NULL` instead of failing when no day has a reading.
+Adapted (not in the official docs): left out the days whose `max` is the missing-data code `9999.9`, so that the warm days and the total both count only the days with a reading, and used `SAFE_DIVIDE`, so that the query returns `NULL` instead of failing when no day has a reading. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
-#GoogleSQL
+#standardSQL
 WITH SeattleWeather AS (
   SELECT *
   FROM `bigquery-public-data.noaa_gsod.gsod2015`
@@ -185,10 +195,10 @@ In GoogleSQL, subqueries can reference correlated columns; that is, columns
 that originate from the outer query. For example, consider the following
 GoogleSQL query:
 
-Adapted (not in the official docs): left out the days whose `max` is the missing-data code `9999.9`, so that they are not counted as warm days.
+Adapted (not in the official docs): left out the days whose `max` is the missing-data code `9999.9`, so that they are not counted as warm days. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
-#GoogleSQL
+#standardSQL
 WITH WashingtonStations AS (
   SELECT weather.stn AS station_id, ANY_VALUE(station.name) AS name
   FROM `bigquery-public-data.noaa_gsod.stations` AS station
@@ -219,8 +229,10 @@ from the outer scope, namely `FROM WashingtonStations AS washington_stations`.
 uses both, consider the following query, which computes the top two articles
 for each day in the HackerNews dataset:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 WITH TitlesAndScores AS (
   SELECT
     ARRAY_AGG(STRUCT(title, score)) AS titles,
@@ -288,8 +300,10 @@ range of `0001-01-01 00:00:00.000000` to `9999-12-31 23:59:59.999999`. For
 example, you can select the minimum and maximum `TIMESTAMP` values using
 GoogleSQL:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   min_timestamp,
   max_timestamp,
@@ -308,8 +322,10 @@ This query returns `-62135596800000000` as `min_unix_micros` and
 If you select a column that contains timestamp values outside of this
 range, you receive an error:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT timestamp_column_with_invalid_values
 FROM MyTableWithInvalidTimestamps;
 ```
@@ -326,8 +342,10 @@ To correct the error, one option is to define and use a
 [user-defined function](https://docs.cloud.google.com/bigquery/docs/user-defined-functions)
 to filter the invalid timestamps:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 CREATE TEMP FUNCTION TimestampIsValid(t TIMESTAMP) AS (
   t >= TIMESTAMP('0001-01-01 00:00:00') AND
   t <= TIMESTAMP('9999-12-31 23:59:59.999999')
@@ -342,8 +360,10 @@ Another option to correct the error is to use the
 [`SAFE_CAST`](../googlesql-functions/conversion_functions.md#safe_cast)
 function with the timestamp column. For example:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT SAFE_CAST(timestamp_column_with_invalid_values AS STRING) AS timestamp_string
 FROM MyTableWithInvalidTimestamps;
 ```
@@ -378,8 +398,10 @@ SELECT
 
 In GoogleSQL, this query is invalid. To achieve the same result, you must use explicit casting:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   1 + SAFE_CAST(true AS INT64) as boolean_coercion,
   TIMESTAMP_MICROS(1234567890) as integer_timestamp_coercion;
@@ -396,8 +418,10 @@ invalid characters such as a space or hyphen `-` using square brackets `[]`.
 In GoogleSQL, you escape such keywords and identifiers using backticks
 `` ` ``. For example:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   word,
   SUM(word_count) AS word_count
@@ -411,8 +435,10 @@ Legacy SQL allows reserved keywords in some places that GoogleSQL does not.
 For example, the following query fails due to a `Syntax error` using standard
 SQL:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   COUNT(*) AS rows
 FROM
@@ -421,8 +447,10 @@ FROM
 
 To fix the error, escape the alias `rows` using backticks:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   COUNT(*) AS `rows`
 FROM
@@ -455,8 +483,10 @@ LIMIT 1;
 
 The GoogleSQL equivalent is:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   word
 FROM
@@ -505,8 +535,10 @@ SELECT * FROM dataset.table$20160501;
 
 The GoogleSQL equivalent is:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT * FROM dataset.table
 WHERE _PARTITIONTIME=TIMESTAMP('2016-05-01');
 ```
@@ -542,10 +574,10 @@ FROM TABLE_QUERY([bigquery-public-data:noaa_gsod],
 
 An equivalent query using GoogleSQL is:
 
-Adapted (not in the official docs): narrowed the wildcard to the tables whose names start with `gsod`, so that it does not also match other tables of the dataset, such as `stations`.
+Adapted (not in the official docs): narrowed the wildcard to the tables whose names start with `gsod`, so that it does not also match other tables of the dataset, such as `stations`. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT COUNT(*)
 FROM `bigquery-public-data.noaa_gsod.gsod*`
 WHERE _TABLE_SUFFIX IN ("2010", "2011");
@@ -574,8 +606,10 @@ FROM
 
 This is equivalent to the GoogleSQL query:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   x,
   y
@@ -595,8 +629,10 @@ SELECT * FROM (SELECT 1 AS A, 2 as B), (SELECT 3 AS B, 4 as A);
 
 The GoogleSQL equivalent will look like:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT * FROM (SELECT 1 AS A, 2 as B) UNION ALL BY NAME (SELECT 3 AS B, 4 as A);
 ```
 
@@ -649,18 +685,20 @@ steps involved are:
 
 Create a view named `V2` using GoogleSQL with the following contents:
 
-Adapted (not in the official docs): replaced `EXTRACT(DAY FROM timestamp_col)` with the `UTC_USEC_TO_DAY` equivalent from the function comparison table on this page, which takes `timestamp_col` as a UNIX timestamp in microseconds (`INT64`). If `timestamp_col` is a `TIMESTAMP` column, use `UNIX_MICROS(TIMESTAMP_TRUNC(timestamp_col, DAY)) AS day` instead, because `TIMESTAMP_MICROS` takes an `INT64` value.
+Adapted (not in the official docs): replaced `EXTRACT(DAY FROM timestamp_col)` with the `UTC_USEC_TO_DAY` equivalent from the function comparison table on this page, which takes `timestamp_col` as a UNIX timestamp in microseconds (`INT64`). If `timestamp_col` is a `TIMESTAMP` column, use `UNIX_MICROS(TIMESTAMP_TRUNC(timestamp_col, DAY)) AS day` instead, because `TIMESTAMP_MICROS` takes an `INT64` value. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT *, UNIX_MICROS(TIMESTAMP_TRUNC(TIMESTAMP_MICROS(timestamp_col), DAY)) AS day
 FROM MyTable;
 ```
 
 Create a view named `W2` using GoogleSQL with the following contents:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT user, action, day
 FROM V2;
 ```
@@ -668,8 +706,10 @@ FROM V2;
 Change your query that executes daily to use GoogleSQL and refer to `W2`
 instead:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT COUNT(DISTINCT user), action, day
 FROM W2
 GROUP BY action, day;
@@ -817,8 +857,10 @@ Using legacy SQL, you can "dot" into a nested repeated field without needing to
 consider where the repetition occurs. In GoogleSQL, attempting to "dot" into
 a nested repeated field results in an error. For example:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   repository.url,
   payload.pages.page_name
@@ -837,10 +879,10 @@ ARRAY<STRUCT<action STRING, html_url STRING, page_name STRING, ...>>
 To correct the error and return an array of `page_name`s in the result, use an
 `ARRAY` subquery instead. For example:
 
-Adapted (not in the official docs): excluded `NULL` page names, because a query result can't contain an array with `NULL` elements, and kept the order of the pages with `WITH OFFSET`.
+Adapted (not in the official docs): excluded `NULL` page names, because a query result can't contain an array with `NULL` elements, and kept the order of the pages with `WITH OFFSET`. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   repository.url,
   ARRAY(SELECT page_name FROM UNNEST(payload.pages) WITH OFFSET AS pos
@@ -873,8 +915,10 @@ This query returns all `title`s of pages for which the `page_name` is either
 `db_jobskill` or `Profession`. You can express a similar query in GoogleSQL
 as:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   page.title
 FROM
@@ -889,10 +933,10 @@ if you unset the **Flatten Results** option and execute the legacy SQL query,
 same semantics in GoogleSQL and return an array for the `title` column, use
 an `ARRAY` subquery instead:
 
-Adapted (not in the official docs): excluded `NULL` titles, because a query result can't contain an array with `NULL` elements, kept the order of the pages with `WITH OFFSET`, and kept the rows with an `EXISTS` test on `page_name`.
+Adapted (not in the official docs): excluded `NULL` titles, because a query result can't contain an array with `NULL` elements, kept the order of the pages with `WITH OFFSET`, and kept the rows with an `EXISTS` test on `page_name`. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   title
 FROM (
@@ -940,8 +984,10 @@ LIMIT 5;
 This query returns `url` and `has_downloads` within a record named `repository`
 when **Flatten Results** is unset. Now consider the following GoogleSQL query:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   repository.url,
   repository.has_downloads
@@ -954,8 +1000,10 @@ This query returns `url` and `has_downloads` as top-level columns; they are not
 part of a `repository` record or struct. To return them as part of a struct, use
 the `STRUCT` operator:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   STRUCT(
     repository.url,
@@ -983,8 +1031,10 @@ LIMIT 5;
 
 You can express a similar query in GoogleSQL as follows:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   repository.url,
   page.page_name
@@ -996,8 +1046,10 @@ LIMIT 5;
 
 Or, equivalently, use `JOIN` rather than the comma `,` operator:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   repository.url,
   page.page_name
@@ -1014,8 +1066,10 @@ SQL query, however, does not return a row if `payload.pages` is empty. To
 achieve exactly the same semantics, use a `LEFT JOIN` or `LEFT OUTER JOIN`. For
 example:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   repository.url,
   page.page_name
@@ -1051,8 +1105,10 @@ OMIT RECORD IF
 
 The analogous GoogleSQL query is:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   repository.url
 FROM
@@ -1080,8 +1136,10 @@ OMIT RECORD IF NOT
 
 In GoogleSQL, you can express the query using an `EXISTS` clause with `IN`:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   repository.url
 FROM
@@ -1106,10 +1164,10 @@ OMIT RECORD IF
 
 In this case, you can use a filter that counts the page names in an `UNNEST` subquery in GoogleSQL:
 
-Adapted (not in the official docs): counted the non-`NULL` page names in an `UNNEST` subquery instead of the array length, as the legacy SQL query counts `payload.pages.page_name`.
+Adapted (not in the official docs): counted the non-`NULL` page names in an `UNNEST` subquery instead of the array length, as the legacy SQL query counts `payload.pages.page_name`. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   repository.url
 FROM
@@ -1146,8 +1204,10 @@ columns in the result, and the **Flatten Results** option has no effect. To
 return top-level columns for nested fields, use the `.*` operator on struct
 columns. For example:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   repository.*
 FROM
@@ -1159,8 +1219,10 @@ To return top-level columns for repeated nested fields (`ARRAY`s of `STRUCT`s),
 use a `JOIN` to take the cross product of the table's rows and the elements of
 the repeated nested field. For example:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   repository.url,
   page.*
@@ -1197,8 +1259,10 @@ matching rows of the `shakespeare` table, not distinct words: the same word can
 appear in more than one row, for example once for each corpus that contains it. Now consider the following
 GoogleSQL query:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT COUNT(*)
 FROM `bigquery-public-data.samples.shakespeare`
 WHERE word NOT IN (
@@ -1212,8 +1276,10 @@ This query returns 0 as the count. The difference is due to the semantics of
 value on the right hand side and any value on the right hand side is `NULL`. To achieve the same results as with the legacy SQL query, use a
 `WHERE` clause to exclude the `NULL` values:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT COUNT(*)
 FROM `bigquery-public-data.samples.shakespeare`
 WHERE word NOT IN (
@@ -1226,8 +1292,10 @@ WHERE word NOT IN (
 This query returns 163,716 as the count. Alternatively, use a `NOT EXISTS`
 condition:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT COUNT(*)
 FROM `bigquery-public-data.samples.shakespeare` AS t
 WHERE NOT EXISTS (
@@ -1260,8 +1328,10 @@ only to legacy SQL queries.
 
 Consider the following GoogleSQL query:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 -- Computes the harmonic mean of the elements in 'arr'.
 -- The harmonic mean of x_1, x_2, ..., x_n can be expressed as:
 --   n / ((1 / x_1) + (1 / x_2) + ... + (1 / x_n))
@@ -1295,8 +1365,10 @@ SQL, as in the preceding example, JavaScript functions operate on values. To pas
 row value to a JavaScript function using GoogleSQL, define a function that
 takes a struct of the same row type as the table. For example:
 
+Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+
 ```sql
-#GoogleSQL
+#standardSQL
 -- Takes a struct of x, y, and z and returns a struct with a new field foo.
 CREATE TEMPORARY FUNCTION AddField(s STRUCT<x FLOAT64, y BOOL, z STRING>)
   RETURNS STRUCT<x FLOAT64, y BOOL, z STRING, foo STRING> LANGUAGE js AS """
@@ -1350,10 +1422,10 @@ FROM
                     TIMESTAMP("2016-05-09"))
 ```
 
-In GoogleSQL, an equivalent query uses a table wildcard and the `BETWEEN`
-clause. `BETWEEN` compares strings, so it also matches suffixes such as
-`20160501_backup`; the example below lists the suffixes of the dates in a literal
-`IN` condition instead. The wildcard `mydataset.sea_weather_*` still matches
+In GoogleSQL, an equivalent query uses a table wildcard and lists the suffixes
+of the dates in a literal `IN` condition. (The official example uses the `BETWEEN`
+clause, which compares strings, so it also matches suffixes such as
+`20160501_backup`.) The wildcard `mydataset.sea_weather_*` still matches
 every table whose name starts with `sea_weather_`, including the tables that the
 `_TABLE_SUFFIX` filter excludes, and BigQuery uses the schema of the most
 recently created matching table. The query fails if any matching table breaks a
@@ -1366,10 +1438,10 @@ example and the `TABLE_DATE_RANGE_STRICT` and `TABLE_QUERY` examples that follow
 assume that every matching table meets these limitations. If one doesn't, list
 the tables for the dates explicitly and combine them with `UNION ALL`.
 
-Adapted (not in the official docs): listed the suffixes of the dates in the range in a literal `IN` condition, so that the filter is a constant expression and limits the tables scanned to the tables for those dates.
+Adapted (not in the official docs): listed the suffixes of the dates in the range in a literal `IN` condition, so that the filter is a constant expression and limits the tables scanned to the tables for those dates. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   ROUND(AVG(TemperatureF),1) AS AVG_TEMP_F
 FROM
@@ -1406,14 +1478,14 @@ FROM
 
 To make an equivalent GoogleSQL query with error handling, the query should be split into two phases: validation and query execution. Depending on the application and query complexity, it can be achieved using [Composability using WITH clauses](#composability-using-with-clauses) or [BigQuery Scripting (procedural SQL)](../googlesql-syntax/procedural-language.md).
 
-Translated query using [`WITH` clause](#composability-using-with-clauses) and conditional `ERROR`. This query references the wildcard table in the same statement as the check, so if no table matches the wildcard, it can fail on that reference before it reports the missing suffixes. To report them in that case too, use the scripting version that follows. Both versions read `INFORMATION_SCHEMA.TABLES` to check which tables exist, so in addition to read access to the tables, they need the permissions that
+Translated query using [`WITH` clause](#composability-using-with-clauses) and conditional `ERROR`. This query references the wildcard table in the same statement as the check, so if no table matches the wildcard, or if a matching table breaks a limitation of wildcard tables (for example, a view with one of the expected names, which the check would otherwise report as "Not base tables"), it can fail on that reference before it returns the errors of the check. To get those errors in these cases too, use the scripting version that follows, which runs the check and the query as separate statements. Both versions read `INFORMATION_SCHEMA.TABLES` to check which tables exist, so in addition to read access to the tables, they need the permissions that
 [Required permissions](../information-schema/tables.md#required-permissions) of that view lists, such as `bigquery.tables.list` on the dataset
 (for example, from `roles/bigquery.metadataViewer`):
 
-Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, and listed the suffixes of the dates in a literal `IN` condition in the wildcard filter. The example assumes that the daily tables are standard tables (`table_type` `BASE TABLE`): it reports the dates that have no table and the dates whose table has another table type, such as `CLONE` or `SNAPSHOT`, in separate errors.
+Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, and listed the suffixes of the dates in a literal `IN` condition in the wildcard filter. The example assumes that the daily tables are standard tables (`table_type` `BASE TABLE`): it reports the dates that have no table and the dates whose table has another table type, such as `CLONE` or `SNAPSHOT`, in separate errors. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
-#GoogleSQL
+#standardSQL
 WITH Days AS (
   SELECT FORMAT_DATE('%Y%m%d', day) AS suffix
   FROM UNNEST(GENERATE_DATE_ARRAY(DATE '2016-05-01', DATE '2016-05-09')) AS day
@@ -1446,10 +1518,10 @@ FROM CheckedTables
 
 And using [BigQuery Scripting (procedural SQL)](../googlesql-syntax/procedural-language.md):
 
-Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, and listed the suffixes of the dates in a literal `IN` condition in the wildcard filter. The example assumes that the daily tables are standard tables (`table_type` `BASE TABLE`): it reports the dates that have no table and the dates whose table has another table type, such as `CLONE` or `SNAPSHOT`, in separate errors.
+Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, and listed the suffixes of the dates in a literal `IN` condition in the wildcard filter. The example assumes that the daily tables are standard tables (`table_type` `BASE TABLE`): it reports the dates that have no table and the dates whose table has another table type, such as `CLONE` or `SNAPSHOT`, in separate errors. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
-#GoogleSQL
+#standardSQL
 BEGIN
   DECLARE missing_suffixes STRING;
   DECLARE non_base_table_suffixes STRING;
@@ -1542,10 +1614,10 @@ suffix that you need in a literal `IN` condition instead, for example
 `TABLE_DATE_RANGE` example also apply to every table whose name starts with
 `gsod`. The example with `REGEXP_CONTAINS`:
 
-Adapted (not in the official docs): matched the whole suffix, so that only the tables for years that end in `0` match.
+Adapted (not in the official docs): matched the whole suffix, so that only the tables for years that end in `0` match. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   max,
   ROUND((max-32)*5/9,1) celsius,
@@ -1598,10 +1670,10 @@ However, longer prefixes perform better than empty prefixes, so the following
 example uses a longer prefix, which means that the value of `_TABLE_SUFFIX`
 is only part of the table name.
 
-Adapted (not in the official docs): anchored the regular expression to the whole suffix, so that only the tables for years that end in `0` match.
+Adapted (not in the official docs): anchored the regular expression to the whole suffix, so that only the tables for years that end in `0` match. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
-#GoogleSQL
+#standardSQL
 SELECT
   max,
   ROUND((max-32)*5/9,1) celsius,
@@ -1642,10 +1714,10 @@ view instead.
 
 To migrate a query that uses `__PARTITIONS_SUMMARY__` and keep the output schema and error handling consistent, use the following GoogleSQL query. Unlike the meta-table, this query returns no rows instead of an error when the table doesn't exist, so if you need that error, check first that the table exists in `INFORMATION_SCHEMA.TABLES`:
 
-Adapted (not in the official docs): grouped the rows by partition and took the latest `last_modified_time`, because the view can return two rows for the `__UNPARTITIONED__` partition, and typed the `creation_time` placeholder as `INT64`, like `last_modified_time`.
+Adapted (not in the official docs): grouped the rows by partition and took the latest `last_modified_time`, because the view can return two rows for the `__UNPARTITIONED__` partition, and typed the `creation_time` placeholder as `INT64`, like `last_modified_time`. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```googlesql
-#GoogleSQL
+#standardSQL
 SELECT
   IF(partition_id IS NOT NULL, partition_id, ERROR('Table is not partitioned')) AS partition_id,
   table_catalog AS project_id,
@@ -1710,7 +1782,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: a column heading of the URL function comparison table read `NET.PUBLIC _SUFFIX`, with a space, while the function is `NET.PUBLIC_SUFFIX`, as the text before the table names it.
 - Adapted from the official docs: the sentence before the URL function comparison table said that gray text color marks the results that are the same in legacy SQL and GoogleSQL. Colors are not kept in this Markdown table, so the sentence now only says what the table compares; compare `HOST` with `NET.HOST`, `TLD` with `NET.PUBLIC_SUFFIX` and `DOMAIN` with `NET.REG_DOMAIN` to see which results are the same.
 - Adapted (not in the official docs): the two `TABLE_DATE_RANGE_STRICT` migration examples assume that the daily tables are standard tables. `INFORMATION_SCHEMA.TABLES` gives other table types, such as `CLONE` and `SNAPSHOT`, their own `table_type` values (information-schema/tables.md), so the examples join the dates to all the tables of the dataset and report a missing table ("Not found suffixes") and a table of another type ("Not base tables") in separate errors, instead of reporting both as missing.
-- Added (not in the official docs): a paragraph under Enabling GoogleSQL says that the `#GoogleSQL` first line of the GoogleSQL examples is not one of the query prefixes that https://docs.cloud.google.com/bigquery/docs/introduction-sql lists in its SQL section (`#standardSQL` and `#legacySQL`, "not case-sensitive, must precede the query, and must be separated from the query by a newline character"; fetched 2026-11-21), and how to select GoogleSQL instead (`#standardSQL`, or `--use_legacy_sql=false`, whose `bq query` default is `true` when the configuration setting is not specified: bq-cli/bq-cli-reference-2.md). The examples are kept as in the official docs.
+- Added (not in the official docs): a paragraph under Enabling GoogleSQL says that the `#GoogleSQL` first line of the GoogleSQL examples is not one of the query prefixes that https://docs.cloud.google.com/bigquery/docs/introduction-sql lists in its SQL section (`#standardSQL` and `#legacySQL`, "not case-sensitive, must precede the query, and must be separated from the query by a newline character"; fetched 2026-11-21), and that GoogleSQL can also be selected with `--use_legacy_sql=false`, whose `bq query` default is `true` when the configuration setting is not specified (bq-cli/bq-cli-reference-2.md). The first line of every GoogleSQL example on this page is changed from `#GoogleSQL` to `#standardSQL`, with an Adapted line before each example; the rest of each example is as in the official docs or as noted.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
