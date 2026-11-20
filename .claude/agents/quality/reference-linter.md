@@ -89,10 +89,10 @@ samples 本文の不備は sample-curator、scripts 本文の不備は script-co
 - `target_files` 指定時: そのリストに含まれる `README.md` のうち、スキルの `references/` 配下にあるもの（`skills/<name>/references/**/README.md`）と `skills/<name>/samples/README.md` `skills/<name>/scripts/README.md`。リポジトリルートの README や `samples/` の下の個別ディレクトリにある README などは対象外
 - 指定なし: `skills/*/references/**/README.md` を Glob で再帰的に列挙した各 README と、存在する `skills/*/samples/README.md` `skills/*/scripts/README.md`
 
-以下の 2〜5 は、`| Name | Description | Path |` のヘッダー行で始まる各索引表（ヘッダー行・区切り行と、それに続く `|` で始まる行のまとまり）に限って行う。索引表以外の表（`syncpack` の `update-groups/README.md` の 2 列の共通プロパティ表など、reference-template が既存 README に残すことを認める表）の行は検査しない。
+以下の 2〜5 は、`| Name | Description | Path |` のヘッダー行で始まる各索引表（ヘッダー行と、その直後から続く `|` で始まる行のまとまり。区切り行の有無は問わずヘッダー行から索引表とみなす）に限って行う。索引表以外の表（`syncpack` の `update-groups/README.md` の 2 列の共通プロパティ表など、reference-template が既存 README に残すことを認める表）の行は検査しない。
 
 1. `| Name | Description | Path |` ヘッダー行が存在するか
-2. 各索引表のヘッダー行の直後に 3カラムの区切り行（`| --- | --- | --- |` 等。ダッシュ数や前後の空白の差異は許容する）が存在するか
+2. 各索引表のヘッダー行の直後の行（空行を挟まない次の行）が 3カラムの区切り行（`| --- | --- | --- |` 等。ダッシュ数や前後の空白の差異は許容する）か。区切り行が無い、またはヘッダー行との間に空行がある場合は、GFM では表にならないため違反とする
 3. 索引表の各データ行が、GitHub Flavored Markdown の区切り規則で 3 列になっているか（エスケープしていない `|` はバッククォートの中でも列を分けるため、セル内の `|` は `\|` と書く）。3 列でない行はここで違反とし、4 の Path の判定には進めない
 4. 索引表の各データ行の `Path` セルが `[{filename}.md](./{filename}.md)` 形式のリンクになっているか。1 つのセルに複数のリンクがある行は違反とする（reference-template は 1 行 1 リンク）。階層型カテゴリ（reference-template の例外。`references/` 配下の README のみ）では、リンク先が直下の子ディレクトリの索引 `./{subdir}/README.md` の行と、直下の子ディレクトリのページ `./{subdir}/{filename}.md` の行も許容し、同じ表に混在してよい。これらの行はリンク先で判定し、表示名は問わない（`[{subdir}/README.md]` のほか既存の `[doc-blocks/]` のような表記も可）。リンク先が実在しない行、検査中の README 自身（`./README.md`）を指す行、孫以下のディレクトリのページを直接指す行、`samples/` `scripts/` の README で子ディレクトリを指す行は違反とする
 5. 索引表のヘッダー以外の行が空でないか
