@@ -201,7 +201,7 @@ FROM
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-explain-predict (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the syntax includes `[MAX_OUTPUT_TOKENS AS max_output_tokens]`, a text generation option that the argument list of `ML.EXPLAIN_PREDICT` doesn't describe; it is removed, and `TOP_K_FEATURES` is the first field.
 - Conflicting official statements: `predicted_<label_column_name>` is described as a `STRING` value for both regression and classification models, while `prediction_value` for regression models is a `FLOAT64` value that contains the same value; for classification models `prediction_value` is described as an `INT` or `STRING` value that contains a logit, which is a number. The output types of these two columns are not confirmed.

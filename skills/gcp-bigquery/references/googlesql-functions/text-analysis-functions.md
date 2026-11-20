@@ -324,7 +324,7 @@ ORDER BY id;
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis-functions (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: The text says terms that appear at least once, but the call is `TF_IDF(f, 3, 2)` and the previous example on this page explains that `2` is `frequency_threshold`, which counts the documents a term appears in. The text is changed to "in at least two of a set" of tokenized documents.
 - Corrected from the official docs: The return type uses `DOUBLE`, which is not a GoogleSQL type. It is changed to `FLOAT64`, the name used for floating-point values elsewhere in these references.

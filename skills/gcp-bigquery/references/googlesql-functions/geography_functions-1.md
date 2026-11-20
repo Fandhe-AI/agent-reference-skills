@@ -2509,7 +2509,7 @@ the two regions, see [`ST_MAKEPOLYGONORIENTED`](geography_functions-2.md#st_make
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - The official page is split into 2 files at section boundaries; this is part 1.
 - Corrected from the official docs: the descriptions of the second and third `ST_GEOGFROM` WKB examples were swapped. `FROM_HEX(...)` returns `BYTES`, and the quoted literal is a hexadecimal `STRING`, as the argument description on the same page defines, so the two descriptions are exchanged.

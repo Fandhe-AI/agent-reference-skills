@@ -717,7 +717,7 @@ RETURN
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-gql-functions (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: The `COUNT(DISTINCT e.amount)` example result header was `unique_transfers_amount`, but the query returns the column `unique_amount_transfers`. The header now matches the query; the column width is unchanged.
 - Caution: The `NODES` example result lists 8 rows (4 "Vacation Fund" and 4 "Rainy Day Fund"), but the same `MATCH` returns 7 paths, as the `PATH_LENGTH` and `PATH_FIRST` examples show (4 "Vacation Fund" and 3 "Rainy Day Fund"). The official docs are unchanged here; which row is extra is not stated.

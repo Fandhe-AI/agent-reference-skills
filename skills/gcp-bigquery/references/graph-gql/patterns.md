@@ -1823,7 +1823,7 @@ RETURN COUNT(1) as num_paths
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-patterns (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: The `ANY CHEAPEST` example matched the label `Transfer`, but the property graph defines the edge label `Transfers` (see the schema statements page and the other `COST` example on this page). The label is now `Transfers`.
 - Corrected from the official docs: The edge pattern `-[Transfers]->` was described as matching all `Transfers` edges, but without `:` or `IS` the name is a pattern variable, not a label (the label expression syntax on this page requires `IS` or `:`). It is now `-[:Transfers]->`.

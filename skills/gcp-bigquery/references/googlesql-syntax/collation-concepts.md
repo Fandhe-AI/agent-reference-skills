@@ -569,7 +569,7 @@ sections, but here are a few general limitations to keep in mind:
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/collation-concepts (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Conflicting official statements: The Caveats say `ẞ` is considered equal to `'SS'` and that `COLLATE('ẞ', 'und:ci') > COLLATE('SS', 'und:ci')` evaluates to `TRUE`, but for values that compare equal `>` is `FALSE`; the second expression (`<` with the suffixes `1` and `2`) fits equality. The intended operator is not stated.
 - Corrected from the official docs: the collation example defines `table_a` with the columns `col_a`, `col_b`, `col_c` and `col_d`, but its five `STARTS_WITH` queries, each described as running, refer to `col_a_expression`, `col_b_expression`, `col_c_expression` and `col_d_expression`, which the table doesn't have. They are replaced with the defined column names.

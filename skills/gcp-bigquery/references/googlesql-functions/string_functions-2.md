@@ -1192,7 +1192,7 @@ SELECT UPPER('foo') AS example
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/string_functions (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - The official page is split into 2 files at section boundaries; this is part 2.
 - Corrected from the official docs: The syntax writes `occurrence, [occurrence_position]`, which leaves a trailing comma when `occurrence_position` is omitted. The comma is moved inside the brackets, matching the examples on this page that pass `occurrence, occurrence_position` as plain arguments.

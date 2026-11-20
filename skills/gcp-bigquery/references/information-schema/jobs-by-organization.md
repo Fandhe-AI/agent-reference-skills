@@ -293,7 +293,7 @@ The result looks similar to the following:
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/information-schema-jobs-by-organization (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: the schema says that `query_dialect` will be available sometime in May, 2025. That sentence is out of date: the JOBS view page (jobs.md) says, in the example that counts legacy SQL query jobs, that the field has been available since May 2025.
 - Corrected from the official docs: the two Connected Sheets examples write the qualifier as `region-REGION_NAME`, but the text after each of them gives `region-us` as an example value for `REGION_NAME`, which would produce `region-region-us`. The example value is changed to `us`.

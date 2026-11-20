@@ -2449,7 +2449,7 @@ For more information, see the
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/bq-cli-reference (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; definition-list bodies are un-indented by four spaces so that they are not read as code; the `:` markers of the twin are kept (GitHub Markdown has no definition lists); indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; definition-list bodies are un-indented by four spaces so that they are not read as code; the `:` markers of the twin are kept (GitHub Markdown has no definition lists); indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - The official page is split into 3 files at section boundaries; this is part 2.
 - Source inconsistency (the text above is verbatim): this page says "don't add an extension to the filename" for schema and table definition files, but the `bq load` example on this page uses `./info_schema.json`, and the Specifying a schema page (https://docs.cloud.google.com/bigquery/docs/schemas) uses `./myschema.json`.

@@ -237,7 +237,7 @@ SELECT * FROM `mydataset.classfied_result_next`;
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-understand-text (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: six `Output` bullets say `flattened_json_output`. The argument is named `flatten_json_output` elsewhere on this page (the `FLATTEN_JSON_OUTPUT` argument and the `ml_understand_text_result` bullet), so the name is changed in all six bullets.
 - Corrected from the official docs: the example passes `mydataset.mymodel` without the `MODEL` keyword or backticks, but the syntax block on this page is `MODEL `PROJECT_ID.DATASET.MODEL`,`. The example is changed to `MODEL `mydataset.mymodel``.

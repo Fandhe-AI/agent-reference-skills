@@ -344,7 +344,7 @@ SELECT `other_project`.other_dataset.other_function(3, 4); --returns 24
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/functions-reference (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the example that calls a persistent UDF from a different project writes `CREATE` followed by the function name without the `FUNCTION` keyword; it is written `CREATE FUNCTION`.
 - Corrected from the official docs: the first line of the error examples ended with a stray `.` after `FUNC(named_argument=>x)`; the other lines in the block have none, so it is removed.

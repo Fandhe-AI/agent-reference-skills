@@ -1467,7 +1467,7 @@ will output the same result.
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/format-elements (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders; and horizontal rules inside table cells are written as `<hr>`. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders; and horizontal rules inside table cells are written as `<hr>`. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the `D` example shows `Output: 4` for `DATE '2020-12-31'`; changed to `5`. The `DAY` example on the same page shows that date is a Thursday, and `D` counts Sunday as 1.
 - Corrected from the official docs: the `YYYY` and `MM` examples show `'03-12-2018'` parsed with `MM-DD-YYYY` as `2018-12-03`; changed to `2018-03-12` (month 03, day 12) in both rows.

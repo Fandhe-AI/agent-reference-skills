@@ -199,7 +199,7 @@ OK Google stream stranger things from Netflix to my TV. Okay, stranger things fr
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-transcribe (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the syntax block has `TABLE ...OBJECT_TABLE`,` before the optional `[RECOGNITION_CONFIG => ...]`, which leaves a trailing comma when the argument is omitted (the first example on this page has none). The comma is moved to `[, RECOGNITION_CONFIG => ...]`.
 - Corrected from the official docs: the example has `speech_recognizer = 'projects/project_number/locations/recognizer_location/recognizer/recognizer_id'`. It is changed to `.../recognizers/recognizer_id`, the form given for the same argument in `create-remote-model-service.md` (`projects/PROJECT_NUMBER/locations/LOCATION/recognizers/RECOGNIZER_ID`).

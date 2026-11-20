@@ -245,7 +245,7 @@ FROM
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-entity-feature-time (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the syntax ends the second argument with a comma and then starts each optional argument with `[, ...]`, which gives a doubled or trailing comma; the comma after the second argument is removed (the `ML.FEATURES_AT_TIME` syntax in `feature-time.md` has the same form without it).
 - Corrected from the official docs: the retraining example writes `CREATE OR REPLACE` followed by the model name without the `MODEL` keyword; it is written `CREATE OR REPLACE MODEL`.

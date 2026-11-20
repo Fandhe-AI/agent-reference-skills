@@ -1305,7 +1305,7 @@ FROM
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-time-series (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the "Model a subset of built-in holidays" example reads `bigquery-public-data.ml_datasets.holiday` and filters with `holiday_name != 'Christmas' OR holiday_name != 'NewYear'`, which is true for every holiday name; the text names the `bigquery-public-data.ml_datasets.holidays_and_events_for_forecasting` table, so the example reads that table and uses `AND`. The text says `NewYears`, while the code and the table's example rows use `NewYear`.
 - Corrected from the official docs: the custom holiday example writes ``FROM `mydataset`.timeseries_data` ``, whose backticks do not match; it is written ``FROM `mydataset.timeseries_data` ``.

@@ -2392,7 +2392,7 @@ SELECT JSON_QUERY(JSON '{"a": null}', "$.b"); -- Returns a SQL NULL
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/json_functions (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders; and horizontal rules inside table cells are written as `<hr>`. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders; and horizontal rules inside table cells are written as `<hr>`. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - The official page is split into 2 files at section boundaries; this is part 1.
 - Corrected from the official docs: the input string `'{"a": [10, {"b": 20}]'` was missing the closing `}` of the outer object; it is changed to `'{"a": [10, {"b": 20}]}'`, a valid JSON object as in the neighboring examples.

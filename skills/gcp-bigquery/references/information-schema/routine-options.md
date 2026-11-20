@@ -123,7 +123,7 @@ The result is similar to the following:
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/information-schema-routine-options (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs (rendering): the page's HTML writes `ARRAY<STRING>` unescaped inside `<code>`, so the rendered page and its Markdown twin show `ARRAY`; the type is restored from the HTML source. (`library`)
 - Corrected from the official docs (rendering): the page's HTML writes `DataGovernanceType<STRING>` unescaped inside `<code>`, so the rendered page and its Markdown twin show `DataGovernanceType`; the type is restored from the HTML source. (`data_governance_type`; the type name is as the source writes it)

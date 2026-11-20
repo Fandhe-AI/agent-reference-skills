@@ -762,7 +762,7 @@ SELECT RANGE_START(RANGE<DATE> '[UNBOUNDED, 2022-12-31)') AS results;
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/range-functions (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: The `RANGE_END` details use `range_value`, a name that is not defined; the argument is `range_to_check`. Both occurrences are changed.
 - Corrected from the official docs: The `RANGE_START` details use `range_value`, a name that is not defined; the argument is `range_to_check`. Both occurrences are changed.

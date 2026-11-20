@@ -1971,7 +1971,7 @@ RETURN 3 AS group_id, p.name
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/graph-query-statements (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: The `account_id` of Lee in the incoming-transfers example result (the `FinGraph` query with `NEXT`) was 6. It is now 16, because the schema statements page inserts account 16 as owned by person 3 (Lee) and no account 6 exists.
 - Corrected from the official docs: The `OPTIONAL MATCH` example result header was `id`, but the query returns `a.id AS blocked_account_id`. The header is now `blocked_account_id`, and the borders and rows were widened to fit.
