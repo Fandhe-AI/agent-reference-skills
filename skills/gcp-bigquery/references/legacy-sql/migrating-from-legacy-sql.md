@@ -1310,9 +1310,10 @@ WHERE NOT EXISTS (
 This query also returns 163,716 as the count. (The `NOT IN` version, whose subquery leaves out
 `NULL` locations, and the `NOT EXISTS` version return the same result only for rows whose `word`
 is not `NULL`: for a `NULL` `word`, `NOT IN` returns `NULL` when the subquery returns any row, so
-the row is dropped, while `NOT EXISTS` finds no matching row and keeps it. If the left side can be
-`NULL`, add `t.word IS NOT NULL` to the `NOT EXISTS` version to get the `NOT IN` result. Added;
-see Notes.) For further reading, see the
+the row is dropped, while `NOT EXISTS` finds no matching row and keeps it. When the subquery
+returns no rows, `NOT IN` returns `TRUE` and keeps the row too. So if the left side can be `NULL`,
+use the `NOT IN` version; adding `t.word IS NOT NULL` to the `NOT EXISTS` version gives the same
+result only when the subquery returns at least one row. Added; see Notes.) For further reading, see the
 [comparison operators](../googlesql-syntax/operators.md#comparison-operators)
 section of the documentation, which explains the semantics of `IN`, `NOT IN`,
 `EXISTS`, and other comparison operators.
@@ -1443,7 +1444,10 @@ different type, has different partitioning or clustering (or some tables are
 partitioned and others are not), or has a different set of tags. So this
 example and the `TABLE_DATE_RANGE_STRICT` and `TABLE_QUERY` examples that follow
 assume that every matching table meets these limitations. If one doesn't, list
-the tables for the dates explicitly and combine them with `UNION ALL`.
+the tables for the dates explicitly and combine them with `UNION ALL`. `UNION ALL` matches the
+columns by position, while the wildcard table matches them by name, so select the needed columns
+by name in the same order and with the same types in every query of the union, or use
+`UNION ALL BY NAME` (see [set operators](../googlesql-syntax/query-syntax-3.md#set-operators)). (Added; see Notes.)
 
 Adapted (not in the official docs): listed the suffixes of the dates in the range in a literal `IN` condition, so that the filter is a constant expression and limits the tables scanned to the tables for those dates. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
@@ -1802,7 +1806,8 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the GoogleSQL version of the implicit coercion example names its first column `boolean_coercion`, while the legacy SQL query names it `boolean_int_coercion`; the alias is changed to `boolean_int_coercion`, so that the translation keeps the output column names.
 - Added (not in the official docs): the `CONTAINS` and `INSTR` rows of the function comparison table translate to `STRPOS` or `LIKE`, which are case-sensitive, while legacy SQL queries can end with `IGNORE CASE` for ASCII case-insensitive matching (legacy-sql/legacy-sql-2.md). A note is added to both rows: the translations keep the case-sensitive default, and with `IGNORE CASE` compare both sides after mapping only `A` to `Z` to `a` to `z` with `TRANSLATE` (googlesql-functions/string_functions-2.md), not with `LOWER`, which also lower-cases non-ASCII letters.
 - Added (not in the official docs): the `QUANTILES` row of the function comparison table says only that the output needs to be unnested; a note is added that a quantile chosen by position (`NTH(n, QUANTILES(...))` in legacy SQL) is taken with the array subscript operator (`[SAFE_ORDINAL(n)]`, googlesql-syntax/operators.md), and that expanded rows need `WITH OFFSET` and an `ORDER BY` on the offset, because "`UNNEST` destroys the order of elements in the input array" (googlesql-syntax/query-syntax-1.md).
-- Added (not in the official docs): the `NOT EXISTS` example is said to return the same count as the `NOT IN` example whose subquery leaves out `NULL`; a sentence is added that the two differ for a `NULL` left side (`NOT IN` gives `NULL` and drops the row when the subquery returns any row, `NOT EXISTS` keeps it), and how to get the `NOT IN` result.
+- Added (not in the official docs): the `NOT EXISTS` example is said to return the same count as the `NOT IN` example whose subquery leaves out `NULL`; a sentence is added that the two differ for a `NULL` left side (`NOT IN` gives `NULL` and drops the row when the subquery returns any row, `NOT EXISTS` keeps it), that `NOT IN` keeps the row when the subquery returns no rows, and that the `NOT IN` version is the general form (`t.word IS NOT NULL` added to `NOT EXISTS` matches it only when the subquery returns at least one row).
+- Added (not in the official docs): the suggestion to list the tables for the dates and combine them with `UNION ALL` now says that `UNION ALL` matches columns by position, while wildcard tables match them by name, and that each query of the union selects the needed columns by name in the same order, or that the union uses `UNION ALL BY NAME` (googlesql-syntax/query-syntax-3.md).
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
