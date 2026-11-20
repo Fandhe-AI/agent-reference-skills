@@ -428,7 +428,7 @@ A JSON value that matches the table (not a request to send as is). The values ar
 | `description` | string | User provided description. |
 | `friendlyName` | string | User provided display name for the connection. |
 | `hasCredential` | boolean | Output only. True, if credential is configured for this connection. |
-| `kmsKeyName` | string | Optional. The Cloud KMS key that is used for credentials encryption. If omitted, internal Google owned encryption keys are used. Example: `projects/[kms_project_id]/locations/[region]/keyRings/[key_region]/cryptoKeys/[key]` |
+| `kmsKeyName` | string | Optional. The Cloud KMS key that is used for credentials encryption. If omitted, internal Google owned encryption keys are used. Example: `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]` (key ring placeholder corrected; see Notes) |
 | `lastModifiedTime` | string (int64) | Output only. The last update timestamp of the connection. |
 | `name` | string | Output only. The resource name of the connection in the form of: `projects/{project_id}/locations/{location_id}/connections/{connection_id}` |
 | `salesforceDataCloud` | SalesforceDataCloudProperties | Optional. Salesforce DataCloud properties. This field is intended for use only by Salesforce partner projects. This field contains properties for your Salesforce DataCloud connection. Mutually exclusive with `cloudSql`, `aws`, `azure`, `cloudSpanner`, `cloudResource`, `spark` (proto `oneof properties`; set at most one; see Notes). |
