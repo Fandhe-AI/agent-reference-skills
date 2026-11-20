@@ -79,7 +79,7 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 
 更新後、以下を順に実行する。
 
-1. **readme-indexer（subagent_type: readme-indexer、model: haiku）** — reference-updater の更新レポートの「変更カテゴリ一覧」に挙がった references カテゴリ、および変更があった `samples/` `scripts/` の `README.md` 索引を再生成させる（reference-updater は apply 時に README 索引を再生成しないため、ここで必ず実行する）。**変更のあったカテゴリ/ディレクトリごとに `category_dir`（例: `skills/<library>/references/<category>/`, `skills/<library>/samples/`, `skills/<library>/scripts/`）を渡して起動する**（readme-indexer は 1 起動 = 1 カテゴリ）
+1. **readme-indexer（subagent_type: readme-indexer、model: haiku）** — reference-updater の更新レポートの「変更カテゴリ一覧」に挙がった references カテゴリ、および変更があった `samples/` `scripts/` の `README.md` 索引を再生成させる（reference-updater は apply 時に README 索引を再生成しないため、ここで必ず実行する）。**変更のあったカテゴリ/ディレクトリごとに `category_dir`（例: `skills/<library>/references/<category>/`, `skills/<library>/samples/`, `skills/<library>/scripts/`）を渡して起動する**（readme-indexer は 1 起動 = 1 カテゴリ）。readme-indexer が書き込みを見送った README（複数の表や見出しを持つもの）は、main が返された行を既存の表と見出しの分類を保って反映する
 2. **skill-author（subagent_type: skill-author、model: sonnet）** — `skills/<library>/SKILL.md` のディレクトリツリーとマッピング表を更新させる（カテゴリの追加・削除があった場合のみ）。渡すパラメータ: `library`、`skill_dir`（`skills/<library>/`）、`user-invocable`（既存 SKILL.md の値を踏襲）
 
 ### Step 4: 品質を検証する
@@ -95,7 +95,7 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 - references 本文（新規ページの不備）→ **reference-researcher**
 - samples 本文の不備 → **sample-curator**
 - scripts 本文の不備 → **script-collector**
-- 各カテゴリ `README.md` 索引の不備 → **readme-indexer**
+- 各カテゴリ `README.md` 索引の不備 → **readme-indexer**（書き込みを見送った README は main が直す）
 - SKILL.md の `description`（ヒット率・長さ・YAML の `#` 起因の不備）→ **description-optimizer**
 - SKILL.md のツリー・マッピング表・`description` 以外の frontmatter の不備 → **skill-author**
 
