@@ -294,12 +294,15 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `analyticshub.organizations.locations.dataExchanges.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The access token reaches curl on standard input (`-H @-`, curl 7.55.0 or later; `printf` is a shell builtin), so it does not appear in the process arguments:
+Generated from the Discovery entry of `analyticshub.organizations.locations.dataExchanges.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The access token reaches curl on standard input (`-H @-`, curl 7.55.0 or later; `printf` is a shell builtin), so it does not appear in the process arguments; the subshell turns off shell tracing (`set +x`) before the token is expanded, so `set -x` / `bash -x` does not print it; `--fail` makes curl exit with code 22 on an HTTP error status instead of 0:
 
 ```bash
-printf 'Authorization: Bearer %s\n' "$(gcloud auth print-access-token)" \
-  | curl -X GET -H @- \
-  "https://analyticshub.googleapis.com/v1/{+organization}/dataExchanges"
+(
+  set +x
+  printf 'Authorization: Bearer %s\n' "$(gcloud auth print-access-token)" \
+    | curl --fail -X GET -H @- \
+    "https://analyticshub.googleapis.com/v1/{+organization}/dataExchanges"
+)
 ```
 
 ## Options / Props
