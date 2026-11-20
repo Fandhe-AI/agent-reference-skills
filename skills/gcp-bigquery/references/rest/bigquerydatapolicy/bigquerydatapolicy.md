@@ -24,7 +24,7 @@ Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id
 - `POST https://bigquerydatapolicy.googleapis.com/v2/{+parent}/dataPolicies`
 - Creates a new data policy in the parent `projects/{projectsId}/locations/{locationsId}` with the given `data_policy_id` (used as the display name), and data policy type. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `CreateDataPolicyRequest` (v2), `DataPolicy` (v1); Response: `DataPolicy`
+- Request: `CreateDataPolicyRequest` (v2), `DataPolicy` (v1); Response: `DataPolicy` (v2), `DataPolicy` (v1)
 
 ### `bigquerydatapolicy.projects.locations.dataPolicies.delete`
 
@@ -40,7 +40,7 @@ Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id
 - `GET https://bigquerydatapolicy.googleapis.com/v2/{+name}`
 - Gets the data policy specified by its resource name.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `DataPolicy`
+- Request: —; Response: `DataPolicy` (v2), `DataPolicy` (v1)
 
 ### `bigquerydatapolicy.projects.locations.dataPolicies.getIamPolicy`
 
@@ -64,7 +64,7 @@ Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id
 - `PATCH https://bigquerydatapolicy.googleapis.com/v2/{+name}`
 - Updates the metadata for an existing data policy. The target data policy can be specified by the resource name.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `DataPolicy`; Response: `DataPolicy`
+- Request: `DataPolicy` (v2), `DataPolicy` (v1); Response: `DataPolicy` (v2), `DataPolicy` (v1)
 
 ### `bigquerydatapolicy.projects.locations.dataPolicies.removeGrantees`
 
