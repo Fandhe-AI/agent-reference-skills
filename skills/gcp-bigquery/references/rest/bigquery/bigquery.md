@@ -708,7 +708,7 @@ GET https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets/{
 | `formatOptions.useInt64Timestamp` | query | boolean | no | Optional. Output timestamp as usec int64. Default is false. |
 | `maxResults` | query | integer (uint32) | no | Row limit of the table. |
 | `pageToken` | query | string | no | To retrieve the next page of table data, set this field to the string provided in the pageToken field of the response body from your previous call to tabledata.list. |
-| `selectedFields` | query | string | no | Subset of fields to return, supports select into sub fields. Example: selected_fields = "a,e.d.f"; |
+| `selectedFields` | query | string | no | Subset of fields to return, supports select into sub fields. Example: `selectedFields=a%2Ce.d.f` (the value `a,e.d.f`, URL-encoded in the query string); |
 | `startIndex` | query | string (uint64) | no | Start row index of the table. |
 
 ### `bigquery.tables.delete` parameters
@@ -791,6 +791,7 @@ GET https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets/{
 - Corrected from the Discovery document: the `bigquery.datasets.list`, `models.list`, `routines.list` and `tables.list` descriptions also state legacy dataset-role requirements, "Lists all datasets in the specified project to which the user has been granted the READER dataset role." (datasets.list) and "Requires the READER dataset role." (models.list, routines.list, tables.list); the summaries above omit them and keep the "IAM Permissions" part of the same descriptions (roles such as `roles/bigquery.metadataViewer` contain these permissions without data access; see `references/iam/`).
 - Corrected from the Discovery document: the `bigquery.jobs.get` and `bigquery.jobs.list` descriptions also state legacy project-role requirements, "Requires that you're the person who ran the job, or have the Is Owner project role." (jobs.get) and "Requires the Can View project role, or the Is Owner project role if you set the allUsers property." (jobs.list); the summaries above omit them and keep the "IAM Permissions" part of the same descriptions, whose permissions roles other than Owner also contain (see `references/iam/`).
 - Restored from the source proto: the Discovery document shows the label filter syntax in the `filter` description of `bigquery.datasets.list` as `labels.[:]` because it drops angle-bracket placeholders; this page shows it as the proto comment reads: "The syntax is `labels.<name>[:<value>]`." (`google/cloud/bigquery/v2/dataset.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/dataset.proto, commit `5ce0245`, retrieved 2026-11-19).
+- Corrected from the Discovery document: the `selectedFields` example of `bigquery.tabledata.list` reads `selected_fields = "a,e.d.f";`, the proto field name; the REST query parameter is `selectedFields`, so this page shows `selectedFields=a%2Ce.d.f`.
 - Source: https://bigquery.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
 
 ## Related
