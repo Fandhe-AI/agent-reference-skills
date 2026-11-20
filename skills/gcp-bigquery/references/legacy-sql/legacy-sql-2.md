@@ -427,7 +427,7 @@ This example assumes the following tables exist in a project named `myproject-12
 - mydata.boom123456789
 - mydata.taboo999
 
-Adapted (not in the official docs): changed the regular expression so that it matches the listed tables.
+Adapted (not in the official docs): changed the regular expression so that it matches the listed tables, and wrote the digit class as `[0-9]`, because the outer argument is a single-quoted string and the escapes listed for legacy SQL strings do not include `\d`.
 
 ```sql
 #legacySQL
@@ -435,7 +435,7 @@ SELECT
   speed
 FROM
   TABLE_QUERY([myproject-1234:mydata],
-               'REGEXP_MATCH(table_id, r"^boo[a-z]?[\d]{3,5}$")')
+               'REGEXP_MATCH(table_id, r"^boo[a-z]?[0-9]{3,5}$")')
 ```
 
 Matches the following tables:
@@ -568,12 +568,11 @@ you to create a sliding window frame within a partition that moves
 relative to the current row. You can configure the size of the moving window frame
 based on a number of rows or a range of values, such as a time interval.
 
-The results shown for the `CUME_DIST`, `LEAD`, `NTILE`, `PERCENT_RANK` and
-`RATIO_TO_REPORT` examples below are computed over the 5 rows shown only (for
-example, the `RATIO_TO_REPORT` values add up to 1 over those rows). `LIMIT 5`
-limits the rows in the result, not the rows in the window, and more rows match the
-`WHERE` clause (the `LAST_VALUE` example returns `imperfectly`, which is not among
-the 5 rows), so these queries return different values when you run them.
+The `CUME_DIST`, `LEAD`, `NTILE`, `PERCENT_RANK` and `RATIO_TO_REPORT` examples
+below read the 5 rows that their results show, defined by `SELECT` statements,
+because `LIMIT 5` limits the rows in the result, not the rows in the window. Two of
+the rows have the same `word_count`, and their order in the window is not fixed, so
+the `LEAD` and `NTILE` values of those two rows can be swapped.
 
 ```sql
 #legacySQL
@@ -797,6 +796,8 @@ value.
 
 This window function requires `ORDER BY` in the `OVER` clause.
 
+Adapted (not in the official docs): replaced the table with the 5 rows that the result shows, defined by `SELECT` statements, so that the window reads the same rows as the shown result.
+
 ```sql
 #legacySQL
 SELECT
@@ -804,7 +805,11 @@ SELECT
    word_count,
    CUME_DIST() OVER (PARTITION BY corpus ORDER BY word_count DESC) cume_dist,
 FROM
-   [bigquery-public-data:samples.shakespeare]
+   (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
+   (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
+   (SELECT "othello" AS corpus, "displeasure" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "instruments" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "circumstance" AS word, 3 AS word_count)
 WHERE
    corpus='othello' and length(word) > 10
 LIMIT 5
@@ -943,6 +948,8 @@ located `\<offset\>` rows after the current row.
 If the row doesn't exist, `\<default_value\>`
 returns.
 
+Adapted (not in the official docs): replaced the table with the 5 rows that the result shows, defined by `SELECT` statements, so that the window reads the same rows as the shown result.
+
 ```sql
 #legacySQL
 SELECT
@@ -950,7 +957,11 @@ SELECT
    word_count,
    LEAD(word, 1) OVER (PARTITION BY corpus ORDER BY word_count DESC) lead,
 FROM
-   [bigquery-public-data:samples.shakespeare]
+   (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
+   (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
+   (SELECT "othello" AS corpus, "displeasure" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "instruments" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "circumstance" AS word, 3 AS word_count)
 WHERE
    corpus='othello' and length(word) > 10
 LIMIT 5
@@ -980,6 +991,8 @@ corresponding bucket number, as an integer, with each row. The
 possible and returns a value from 1 to
 `\<num_buckets\>` for each row.
 
+Adapted (not in the official docs): replaced the table with the 5 rows that the result shows, defined by `SELECT` statements, so that the window reads the same rows as the shown result.
+
 ```sql
 #legacySQL
 SELECT
@@ -987,7 +1000,11 @@ SELECT
    word_count,
    NTILE(2) OVER (PARTITION BY corpus ORDER BY word_count DESC) ntile,
 FROM
-   [bigquery-public-data:samples.shakespeare]
+   (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
+   (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
+   (SELECT "othello" AS corpus, "displeasure" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "instruments" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "circumstance" AS word, 3 AS word_count)
 WHERE
    corpus='othello' and length(word) > 10
 LIMIT 5
@@ -1011,6 +1028,8 @@ value returned is 0.0.
 This window function requires `ORDER
 BY` in the `OVER` clause.
 
+Adapted (not in the official docs): replaced the table with the 5 rows that the result shows, defined by `SELECT` statements, so that the window reads the same rows as the shown result.
+
 ```sql
 #legacySQL
 SELECT
@@ -1018,7 +1037,11 @@ SELECT
    word_count,
    PERCENT_RANK() OVER (PARTITION BY corpus ORDER BY word_count DESC) p_rank,
 FROM
-   [bigquery-public-data:samples.shakespeare]
+   (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
+   (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
+   (SELECT "othello" AS corpus, "displeasure" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "instruments" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "circumstance" AS word, 3 AS word_count)
 WHERE
    corpus='othello' and length(word) > 10
 LIMIT 5
@@ -1132,6 +1155,8 @@ LIMIT 5
 
 :   Returns the ratio of each value to the sum of the values, as a double between 0 and 1.
 
+Adapted (not in the official docs): replaced the table with the 5 rows that the result shows, defined by `SELECT` statements, so that the window reads the same rows as the shown result.
+
 ```sql
 #legacySQL
 SELECT
@@ -1139,7 +1164,11 @@ SELECT
    word_count,
    RATIO_TO_REPORT(word_count) OVER (PARTITION BY corpus ORDER BY word_count DESC) r_to_r,
 FROM
-   [bigquery-public-data:samples.shakespeare]
+   (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
+   (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
+   (SELECT "othello" AS corpus, "displeasure" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "instruments" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "circumstance" AS word, 3 AS word_count)
 WHERE
    corpus='othello' and length(word) > 10
 LIMIT 5
@@ -1431,11 +1460,11 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 - Corrected from the official docs: the table-wildcard example heading says names "have a length greater than 4", but the query uses `length(table_id) >= 4` and the result lists `mydata.ooze`, whose name has length 4. The heading is changed to "a length of at least 4".
 - Corrected from the official docs: the `HAVING` clause has the comments "Only consider TLDs that are NOT NULL" and "or in our list of common TLDs", but the condition `user_tld IS NOT NULL AND NOT user_tld IN (...)` excludes the listed TLDs, as the text above the query says ("TLDs that are not in a list of common examples"). The comment is changed to "or not in our list of common TLDs".
 - Corrected from the official docs: the text says the query checks whether the hash modulo `2` is zero ("the modulo n of the hash equals zero"), but the query tests `ABS(HASH(title)) % 2 == 1`. The comparison is changed to `== 0` to match the text.
-- Corrected from the official docs: the `TABLE_QUERY` example that matches table names starting with `boo` followed by 3 to 5 digits uses `^boo[\d]{3,5}`, which needs the digits right after `boo`, so it matches none of the listed tables (`book418` and `boom12345` have a letter after `boo`), and without `$` it also matches a name with more digits by its prefix. The expression is changed to `^boo[a-z]?[\d]{3,5}$`, which matches `book418` and `boom12345` and not `book4`, `boom123456789` or `taboo999`.
+- Corrected from the official docs: the `TABLE_QUERY` example that matches table names starting with `boo` followed by 3 to 5 digits uses `^boo[\d]{3,5}`, which needs the digits right after `boo`, so it matches none of the listed tables (`book418` and `boom12345` have a letter after `boo`), and without `$` it also matches a name with more digits by its prefix. The expression is changed to `^boo[a-z]?[0-9]{3,5}$`, which matches `book418` and `boom12345` and not `book4`, `boom123456789` or `taboo999`. The digit class is written as `[0-9]` because the second argument of `TABLE_QUERY` is a single-quoted string, which is read before the inner `r"..."` expression, and the escapes listed for legacy SQL strings are `\xDD`, a backslash before a slash or quote, and the C-style sequences (Escaping special characters in strings, on this page), which do not include `\d`.
 - Corrected from the official docs: the `FIRST_VALUE` example orders the window by `word_count DESC`, so `fv` is the word with the largest `word_count` in the partition, but the shown result has `imperfectly` (`word_count` 1) as `fv`; the query also uses `LIMIT 1` without an outer `ORDER BY`, so the returned row is not fixed. The query now orders the output by `word_count DESC`, and the result row is changed to `handkerchief`, `29`, `handkerchief`, the first row of the `DENSE_RANK` example with the same data and filter on this page.
 - Corrected from the official docs: the heading of the `TABLE_QUERY` example said that the names start with `boo` followed by 3-5 numeric digits. It is changed to match the corrected expression `^boo[a-z]?[\d]{3,5}$`: an optional lowercase letter after `boo`, and 3-5 digits at the end of the name.
 - Corrected from the official docs: the text said that the `^` character starts matching at the beginning of a word. In the RE2 syntax linked above, `^` matches at the beginning of the text (or of a line with the `m` flag), so `^foo` does not match the `foo` in `bar foo`, and `\b` matches at an ASCII word boundary. The sentence now says the beginning of the string and adds `\b` for a word boundary.
-- Caution: the results shown for the `CUME_DIST`, `LEAD`, `NTILE`, `PERCENT_RANK` and `RATIO_TO_REPORT` examples are computed over the 5 rows shown only: the `RATIO_TO_REPORT` values add up to 1 over them, and `LEAD` returns `null` for the fifth row. The same `WHERE` clause also matches `imperfectly`, which the `LAST_VALUE` example returns and which is not among the 5 rows, so the window covers more rows than the `LIMIT 5` output. A sentence that says so is added before the examples; the queries and results are kept as in the official docs, because the rows that a 5-row input would contain are not known.
+- Corrected from the official docs: the `CUME_DIST`, `LEAD`, `NTILE`, `PERCENT_RANK` and `RATIO_TO_REPORT` examples read `[bigquery-public-data:samples.shakespeare]` with `LIMIT 5`, but `LIMIT 5` limits only the result rows, and the same `WHERE` clause also matches `imperfectly` (the `LAST_VALUE` example), while the shown results are computed over the 5 shown rows only (the `RATIO_TO_REPORT` values add up to 1, and `LEAD` returns `null` for the fifth row). The examples now read those 5 rows from `SELECT` statements, as the running-total example on this page does, so the shown results match the queries. The window syntax on this page shows one `ORDER BY` expression, so no tie-breaker is added, and a sentence before the examples says that the order of `displeasure` and `instruments`, which have the same `word_count`, is not fixed.
 
 ## Related
 

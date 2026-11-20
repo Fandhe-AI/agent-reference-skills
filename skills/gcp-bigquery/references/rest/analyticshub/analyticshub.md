@@ -16,12 +16,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListOrgDataExchangesResponse`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `organization` | path | string | yes | Required. The organization resource path of the projects containing DataExchanges. e.g. `organizations/myorg/locations/us`. |
-| `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. Leverage the page tokens to iterate through the entire collection. |
-| `pageToken` | query | string | no | Page token, returned by a previous call, to request the next page of results. |
-
 ### `analyticshub.projects.locations.dataExchanges.create`
 
 - Versions: v1, v1beta1
@@ -29,11 +23,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Creates a new data exchange.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `DataExchange`; Response: `DataExchange`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `parent` | path | string | yes | Required. The parent resource path of the data exchange. e.g. `projects/myproject/locations/us`. |
-| `dataExchangeId` | query | string | yes | Required. The ID of the data exchange. Must contain only Unicode letters, numbers (0-9), underscores (\_). Max length: 100 bytes. |
 
 ### `analyticshub.projects.locations.dataExchanges.delete`
 
@@ -43,10 +32,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `Empty`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. The full name of the data exchange resource that you want to delete. For example, `projects/myproject/locations/us/dataExchanges/123`. |
-
 ### `analyticshub.projects.locations.dataExchanges.get`
 
 - Versions: v1, v1beta1
@@ -54,10 +39,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Gets the details of a data exchange.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `DataExchange`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. The resource name of the data exchange. e.g. `projects/myproject/locations/us/dataExchanges/123`. |
 
 ### `analyticshub.projects.locations.dataExchanges.getIamPolicy`
 
@@ -67,10 +48,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `GetIamPolicyRequest`; Response: `Policy`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
-
 ### `analyticshub.projects.locations.dataExchanges.list`
 
 - Versions: v1, v1beta1
@@ -78,12 +55,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Lists all data exchanges in a given project and location.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListDataExchangesResponse`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `parent` | path | string | yes | Required. The parent resource path of the data exchanges. e.g. `projects/myproject/locations/us`. |
-| `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. Leverage the page tokens to iterate through the entire collection. |
-| `pageToken` | query | string | no | Page token, returned by a previous call, to request the next page of results. |
 
 ### `analyticshub.projects.locations.dataExchanges.listSubscriptions`
 
@@ -93,13 +64,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListSharedResourceSubscriptionsResponse`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `resource` | path | string | yes | Required. Resource name of the requested target. This resource may be either a Listing or a DataExchange. e.g. projects/123/locations/us/dataExchanges/456 OR e.g. projects/123/locations/us/dataExchanges/456/listings/789 |
-| `includeDeletedSubscriptions` | query | boolean | no | If selected, includes deleted subscriptions in the response (up to 63 days after deletion). |
-| `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. |
-| `pageToken` | query | string | no | Page token, returned by a previous call. |
-
 ### `analyticshub.projects.locations.dataExchanges.listings.create`
 
 - Versions: v1, v1beta1
@@ -107,11 +71,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Creates a new listing.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `Listing`; Response: `Listing`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `parent` | path | string | yes | Required. The parent resource path of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123`. |
-| `listingId` | query | string | yes | Required. The ID of the listing to create. Must contain only Unicode letters, numbers (0-9), underscores (\_). Max length: 100 bytes. |
 
 ### `analyticshub.projects.locations.dataExchanges.listings.delete`
 
@@ -121,11 +80,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `Empty`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the listing to delete. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456`. |
-| `deleteCommercial` | query | boolean | conditional | Optional. If the listing is commercial then this field must be set to true, otherwise a failure is thrown. This acts as a safety guard to avoid deleting commercial listings accidentally. |
-
 ### `analyticshub.projects.locations.dataExchanges.listings.get`
 
 - Versions: v1, v1beta1
@@ -133,10 +87,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Gets the details of a listing.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `Listing`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. The resource name of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456`. |
 
 ### `analyticshub.projects.locations.dataExchanges.listings.getIamPolicy`
 
@@ -146,10 +96,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `GetIamPolicyRequest`; Response: `Policy`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
-
 ### `analyticshub.projects.locations.dataExchanges.listings.list`
 
 - Versions: v1, v1beta1
@@ -157,12 +103,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Lists all listings in a given project and location.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListListingsResponse`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `parent` | path | string | yes | Required. The parent resource path of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123`. |
-| `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. Leverage the page tokens to iterate through the entire collection. |
-| `pageToken` | query | string | no | Page token, returned by a previous call, to request the next page of results. |
 
 ### `analyticshub.projects.locations.dataExchanges.listings.listSubscriptions`
 
@@ -172,13 +112,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListSharedResourceSubscriptionsResponse`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `resource` | path | string | yes | Required. Resource name of the requested target. This resource may be either a Listing or a DataExchange. e.g. projects/123/locations/us/dataExchanges/456 OR e.g. projects/123/locations/us/dataExchanges/456/listings/789 |
-| `includeDeletedSubscriptions` | query | boolean | no | If selected, includes deleted subscriptions in the response (up to 63 days after deletion). |
-| `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. |
-| `pageToken` | query | string | no | Page token, returned by a previous call. |
-
 ### `analyticshub.projects.locations.dataExchanges.listings.patch`
 
 - Versions: v1, v1beta1
@@ -186,11 +119,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Updates an existing listing.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `Listing`; Response: `Listing`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Output only. The resource name of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456` |
-| `updateMask` | query | string (google-fieldmask) | yes | Required. Field mask specifies the fields to update in the listing resource. The fields specified in the `updateMask` are relative to the resource and are not a full request. |
 
 ### `analyticshub.projects.locations.dataExchanges.listings.setIamPolicy`
 
@@ -200,10 +128,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SetIamPolicyRequest`; Response: `Policy`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being specified. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
-
 ### `analyticshub.projects.locations.dataExchanges.listings.subscribe`
 
 - Versions: v1, v1beta1
@@ -211,10 +135,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Subscribes to a listing. A listing can reference a BigQuery dataset or a Pub/Sub topic. Subscribing to a listing for a BigQuery dataset creates a linked dataset (`destinationDataset` in `SubscribeListingRequest`); subscribing to a listing for a Pub/Sub topic creates a linked Pub/Sub subscription (`destinationPubsubSubscription`). (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SubscribeListingRequest`; Response: `SubscribeListingResponse`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the listing that you want to subscribe to. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456`. |
 
 ### `analyticshub.projects.locations.dataExchanges.listings.testIamPermissions`
 
@@ -224,10 +144,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `TestIamPermissionsRequest`; Response: `TestIamPermissionsResponse`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy detail is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
-
 ### `analyticshub.projects.locations.dataExchanges.patch`
 
 - Versions: v1, v1beta1
@@ -235,11 +151,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Updates an existing data exchange.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `DataExchange`; Response: `DataExchange`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Output only. The resource name of the data exchange. e.g. `projects/myproject/locations/us/dataExchanges/123`. |
-| `updateMask` | query | string (google-fieldmask) | yes | Required. Field mask specifies the fields to update in the data exchange resource. The fields specified in the `updateMask` are relative to the resource and are not a full request. |
 
 ### `analyticshub.projects.locations.dataExchanges.queryTemplates.approve`
 
@@ -249,10 +160,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `ApproveQueryTemplateRequest`; Response: `QueryTemplate`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. The resource path of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myqueryTemplate`. |
-
 ### `analyticshub.projects.locations.dataExchanges.queryTemplates.create`
 
 - Versions: v1
@@ -260,11 +167,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Creates a new QueryTemplate
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `QueryTemplate`; Response: `QueryTemplate`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `parent` | path | string | yes | Required. The data exchange that contains the new QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123`. Give the ID of the new QueryTemplate in `queryTemplateId`. (Corrected from the Discovery document; the original description is quoted in Notes.) |
-| `queryTemplateId` | query | string | yes | Required. The ID of the QueryTemplate to create. Must contain only Unicode letters, numbers (0-9), underscores (\_). Max length: 100 bytes. |
 
 ### `analyticshub.projects.locations.dataExchanges.queryTemplates.delete`
 
@@ -274,10 +176,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `Empty`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. The resource path of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myqueryTemplate`. |
-
 ### `analyticshub.projects.locations.dataExchanges.queryTemplates.get`
 
 - Versions: v1
@@ -285,10 +183,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Gets a QueryTemplate
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `QueryTemplate`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. The resource path of the QueryTemplate itself. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myqueryTemplate`. (Corrected from the Discovery document; the original description is quoted in Notes.) |
 
 ### `analyticshub.projects.locations.dataExchanges.queryTemplates.list`
 
@@ -298,12 +192,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListQueryTemplatesResponse`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `parent` | path | string | yes | Required. The parent resource path of the QueryTemplates. e.g. `projects/myproject/locations/us/dataExchanges/123`. |
-| `pageSize` | query | integer (int32) | no | Optional. The maximum number of results to return in a single response page. Leverage the page tokens to iterate through the entire collection. |
-| `pageToken` | query | string | no | Optional. Page token, returned by a previous call, to request the next page of results. |
-
 ### `analyticshub.projects.locations.dataExchanges.queryTemplates.patch`
 
 - Versions: v1
@@ -311,11 +199,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Updates an existing QueryTemplate
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `QueryTemplate`; Response: `QueryTemplate`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Output only. The resource name of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/456` |
-| `updateMask` | query | string (google-fieldmask) | no | Optional. Field mask specifies the fields to update in the query template resource. The fields specified in the `updateMask` are relative to the resource and are not a full request. |
 
 ### `analyticshub.projects.locations.dataExchanges.queryTemplates.submit`
 
@@ -325,10 +208,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SubmitQueryTemplateRequest`; Response: `QueryTemplate`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. The resource path of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myqueryTemplate`. |
-
 ### `analyticshub.projects.locations.dataExchanges.setIamPolicy`
 
 - Versions: v1, v1beta1
@@ -336,10 +215,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Sets the IAM policy.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SetIamPolicyRequest`; Response: `Policy`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being specified. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
 
 ### `analyticshub.projects.locations.dataExchanges.subscribe`
 
@@ -349,10 +224,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SubscribeDataExchangeRequest`; Response: `Operation`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the Data Exchange. e.g. `projects/publisherproject/locations/us/dataExchanges/123` |
-
 ### `analyticshub.projects.locations.dataExchanges.testIamPermissions`
 
 - Versions: v1, v1beta1
@@ -360,10 +231,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Returns the permissions that a caller has.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `TestIamPermissionsRequest`; Response: `TestIamPermissionsResponse`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy detail is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
 
 ### `analyticshub.projects.locations.subscriptions.delete`
 
@@ -373,10 +240,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `Operation`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the subscription to delete. e.g. projects/123/locations/us/subscriptions/456 |
-
 ### `analyticshub.projects.locations.subscriptions.get`
 
 - Versions: v1
@@ -384,10 +247,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Gets the details of a Subscription.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `Subscription`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the subscription. e.g. projects/123/locations/us/subscriptions/456 |
 
 ### `analyticshub.projects.locations.subscriptions.getIamPolicy`
 
@@ -397,10 +256,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `GetIamPolicyRequest`; Response: `Policy`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
-
 ### `analyticshub.projects.locations.subscriptions.list`
 
 - Versions: v1
@@ -408,13 +263,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Lists all subscriptions in a given project and location.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListSubscriptionsResponse`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `parent` | path | string | yes | Required. The parent resource path of the subscription. e.g. projects/myproject/locations/us |
-| `filter` | query | string | no | An expression for filtering the results of the request. Eligible fields for filtering are: + `listing` + `data_exchange` Alternatively, a literal wrapped in double quotes may be provided. This will be checked for an exact match against both fields above. In all cases, the full Data Exchange or Listing resource name must be provided. Some example of using filters: + data_exchange="projects/myproject/locations/us/dataExchanges/123" + listing="projects/123/locations/us/dataExchanges/456/listings/789" + "projects/myproject/locations/us/dataExchanges/123" |
-| `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. |
-| `pageToken` | query | string | no | Page token, returned by a previous call. |
 
 ### `analyticshub.projects.locations.subscriptions.refresh`
 
@@ -424,10 +272,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `RefreshSubscriptionRequest`; Response: `Operation`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the Subscription to refresh. e.g. `projects/subscriberproject/locations/us/subscriptions/123` |
-
 ### `analyticshub.projects.locations.subscriptions.revoke`
 
 - Versions: v1
@@ -436,10 +280,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `RevokeSubscriptionRequest`; Response: `RevokeSubscriptionResponse`
 
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the subscription to revoke. e.g. projects/123/locations/us/subscriptions/456 |
-
 ### `analyticshub.projects.locations.subscriptions.setIamPolicy`
 
 - Versions: v1
@@ -447,10 +287,6 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Sets the IAM policy.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SetIamPolicyRequest`; Response: `Policy`
-
-| Parameter | In | Type | Required | Description |
-|---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being specified. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
 
 ### Example request skeleton
 
@@ -461,6 +297,244 @@ curl -X GET \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
   "https://analyticshub.googleapis.com/v1/{+organization}/dataExchanges"
 ```
+
+## Options / Props
+
+Parameters of the methods under Signature / Usage, in the same order.
+
+### `analyticshub.organizations.locations.dataExchanges.list` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `organization` | path | string | yes | Required. The organization resource path of the projects containing DataExchanges. e.g. `organizations/myorg/locations/us`. |
+| `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. Leverage the page tokens to iterate through the entire collection. |
+| `pageToken` | query | string | no | Page token, returned by a previous call, to request the next page of results. |
+
+### `analyticshub.projects.locations.dataExchanges.create` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `parent` | path | string | yes | Required. The parent resource path of the data exchange. e.g. `projects/myproject/locations/us`. |
+| `dataExchangeId` | query | string | yes | Required. The ID of the data exchange. Must contain only Unicode letters, numbers (0-9), underscores (\_). Max length: 100 bytes. |
+
+### `analyticshub.projects.locations.dataExchanges.delete` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. The full name of the data exchange resource that you want to delete. For example, `projects/myproject/locations/us/dataExchanges/123`. |
+
+### `analyticshub.projects.locations.dataExchanges.get` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. The resource name of the data exchange. e.g. `projects/myproject/locations/us/dataExchanges/123`. |
+
+### `analyticshub.projects.locations.dataExchanges.getIamPolicy` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+
+### `analyticshub.projects.locations.dataExchanges.list` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `parent` | path | string | yes | Required. The parent resource path of the data exchanges. e.g. `projects/myproject/locations/us`. |
+| `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. Leverage the page tokens to iterate through the entire collection. |
+| `pageToken` | query | string | no | Page token, returned by a previous call, to request the next page of results. |
+
+### `analyticshub.projects.locations.dataExchanges.listSubscriptions` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `resource` | path | string | yes | Required. Resource name of the requested target. This resource may be either a Listing or a DataExchange. e.g. projects/123/locations/us/dataExchanges/456 OR e.g. projects/123/locations/us/dataExchanges/456/listings/789 |
+| `includeDeletedSubscriptions` | query | boolean | no | If selected, includes deleted subscriptions in the response (up to 63 days after deletion). |
+| `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. |
+| `pageToken` | query | string | no | Page token, returned by a previous call. |
+
+### `analyticshub.projects.locations.dataExchanges.listings.create` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `parent` | path | string | yes | Required. The parent resource path of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123`. |
+| `listingId` | query | string | yes | Required. The ID of the listing to create. Must contain only Unicode letters, numbers (0-9), underscores (\_). Max length: 100 bytes. |
+
+### `analyticshub.projects.locations.dataExchanges.listings.delete` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. Resource name of the listing to delete. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456`. |
+| `deleteCommercial` | query | boolean | conditional | Optional. If the listing is commercial then this field must be set to true, otherwise a failure is thrown. This acts as a safety guard to avoid deleting commercial listings accidentally. |
+
+### `analyticshub.projects.locations.dataExchanges.listings.get` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. The resource name of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456`. |
+
+### `analyticshub.projects.locations.dataExchanges.listings.getIamPolicy` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+
+### `analyticshub.projects.locations.dataExchanges.listings.list` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `parent` | path | string | yes | Required. The parent resource path of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123`. |
+| `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. Leverage the page tokens to iterate through the entire collection. |
+| `pageToken` | query | string | no | Page token, returned by a previous call, to request the next page of results. |
+
+### `analyticshub.projects.locations.dataExchanges.listings.listSubscriptions` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `resource` | path | string | yes | Required. Resource name of the requested target. This resource may be either a Listing or a DataExchange. e.g. projects/123/locations/us/dataExchanges/456 OR e.g. projects/123/locations/us/dataExchanges/456/listings/789 |
+| `includeDeletedSubscriptions` | query | boolean | no | If selected, includes deleted subscriptions in the response (up to 63 days after deletion). |
+| `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. |
+| `pageToken` | query | string | no | Page token, returned by a previous call. |
+
+### `analyticshub.projects.locations.dataExchanges.listings.patch` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Output only. The resource name of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456` |
+| `updateMask` | query | string (google-fieldmask) | yes | Required. Field mask specifies the fields to update in the listing resource. The fields specified in the `updateMask` are relative to the resource and are not a full request. |
+
+### `analyticshub.projects.locations.dataExchanges.listings.setIamPolicy` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being specified. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+
+### `analyticshub.projects.locations.dataExchanges.listings.subscribe` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. Resource name of the listing that you want to subscribe to. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456`. |
+
+### `analyticshub.projects.locations.dataExchanges.listings.testIamPermissions` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy detail is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+
+### `analyticshub.projects.locations.dataExchanges.patch` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Output only. The resource name of the data exchange. e.g. `projects/myproject/locations/us/dataExchanges/123`. |
+| `updateMask` | query | string (google-fieldmask) | yes | Required. Field mask specifies the fields to update in the data exchange resource. The fields specified in the `updateMask` are relative to the resource and are not a full request. |
+
+### `analyticshub.projects.locations.dataExchanges.queryTemplates.approve` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. The resource path of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myqueryTemplate`. |
+
+### `analyticshub.projects.locations.dataExchanges.queryTemplates.create` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `parent` | path | string | yes | Required. The data exchange that contains the new QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123`. Give the ID of the new QueryTemplate in `queryTemplateId`. (Corrected from the Discovery document; the original description is quoted in Notes.) |
+| `queryTemplateId` | query | string | yes | Required. The ID of the QueryTemplate to create. Must contain only Unicode letters, numbers (0-9), underscores (\_). Max length: 100 bytes. |
+
+### `analyticshub.projects.locations.dataExchanges.queryTemplates.delete` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. The resource path of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myqueryTemplate`. |
+
+### `analyticshub.projects.locations.dataExchanges.queryTemplates.get` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. The resource path of the QueryTemplate itself. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myqueryTemplate`. (Corrected from the Discovery document; the original description is quoted in Notes.) |
+
+### `analyticshub.projects.locations.dataExchanges.queryTemplates.list` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `parent` | path | string | yes | Required. The parent resource path of the QueryTemplates. e.g. `projects/myproject/locations/us/dataExchanges/123`. |
+| `pageSize` | query | integer (int32) | no | Optional. The maximum number of results to return in a single response page. Leverage the page tokens to iterate through the entire collection. |
+| `pageToken` | query | string | no | Optional. Page token, returned by a previous call, to request the next page of results. |
+
+### `analyticshub.projects.locations.dataExchanges.queryTemplates.patch` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Output only. The resource name of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/456` |
+| `updateMask` | query | string (google-fieldmask) | no | Optional. Field mask specifies the fields to update in the query template resource. The fields specified in the `updateMask` are relative to the resource and are not a full request. |
+
+### `analyticshub.projects.locations.dataExchanges.queryTemplates.submit` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. The resource path of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myqueryTemplate`. |
+
+### `analyticshub.projects.locations.dataExchanges.setIamPolicy` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being specified. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+
+### `analyticshub.projects.locations.dataExchanges.subscribe` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. Resource name of the Data Exchange. e.g. `projects/publisherproject/locations/us/dataExchanges/123` |
+
+### `analyticshub.projects.locations.dataExchanges.testIamPermissions` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy detail is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+
+### `analyticshub.projects.locations.subscriptions.delete` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. Resource name of the subscription to delete. e.g. projects/123/locations/us/subscriptions/456 |
+
+### `analyticshub.projects.locations.subscriptions.get` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. Resource name of the subscription. e.g. projects/123/locations/us/subscriptions/456 |
+
+### `analyticshub.projects.locations.subscriptions.getIamPolicy` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+
+### `analyticshub.projects.locations.subscriptions.list` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `parent` | path | string | yes | Required. The parent resource path of the subscription. e.g. projects/myproject/locations/us |
+| `filter` | query | string | no | An expression for filtering the results of the request. Eligible fields for filtering are: + `listing` + `data_exchange` Alternatively, a literal wrapped in double quotes may be provided. This will be checked for an exact match against both fields above. In all cases, the full Data Exchange or Listing resource name must be provided. Some example of using filters: + data_exchange="projects/myproject/locations/us/dataExchanges/123" + listing="projects/123/locations/us/dataExchanges/456/listings/789" + "projects/myproject/locations/us/dataExchanges/123" |
+| `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. |
+| `pageToken` | query | string | no | Page token, returned by a previous call. |
+
+### `analyticshub.projects.locations.subscriptions.refresh` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. Resource name of the Subscription to refresh. e.g. `projects/subscriberproject/locations/us/subscriptions/123` |
+
+### `analyticshub.projects.locations.subscriptions.revoke` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `name` | path | string | yes | Required. Resource name of the subscription to revoke. e.g. projects/123/locations/us/subscriptions/456 |
+
+### `analyticshub.projects.locations.subscriptions.setIamPolicy` parameters
+
+| Parameter | In | Type | Required | Description |
+|---|---|---|---|---|
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being specified. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
 
 ## Notes
 

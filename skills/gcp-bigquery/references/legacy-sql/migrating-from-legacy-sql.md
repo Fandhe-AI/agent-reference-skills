@@ -688,8 +688,8 @@ equivalents.
 | `x % y` | [`MOD(x, y)`](../googlesql-functions/mathematical_functions.md#mod) |   |
 | `NEST(x)` | [`ARRAY_AGG(x)`](../googlesql-functions/aggregate_functions.md#array_agg) | `ARRAY_AGG` returns an array also in the top-level query result, while legacy SQL flattens the repeated field that a top-level `NEST` produces; use `ARRAY_AGG` where `NEST` builds an intermediate result in a subselect, and expand the array with `UNNEST` where the legacy output rows are needed |
 | `GROUP_CONCAT_UNQUOTED(s, sep)` | [`STRING_AGG(s, sep)`](../googlesql-functions/aggregate_functions.md#string_agg) |   |
-| `SOME(x)` | `IFNULL(`[`LOGICAL_OR(x)`](../googlesql-syntax/operators.md#logical-operators)`, false)` |   |
-| `EVERY(x)` | `IFNULL(`[`LOGICAL_AND(x)`](../googlesql-syntax/operators.md#logical-operators)`, true)` |   |
+| `SOME(x)` | `IFNULL(`[`LOGICAL_OR(x)`](../googlesql-functions/aggregate_functions.md#logical_or)`, false)` |   |
+| `EVERY(x)` | `IFNULL(`[`LOGICAL_AND(x)`](../googlesql-functions/aggregate_functions.md#logical_and)`, true)` |   |
 | `COUNT(DISTINCT x)` | [`COUNT(DISTINCT x)`](../googlesql-functions/aggregate_functions.md#count) for an exact count, or [`APPROX_COUNT_DISTINCT(x)`](../googlesql-functions/approximate_aggregate_functions.md#approx_count_distinct) for an approximate count | see [notes below](#count-function-comparison) |
 | `EXACT_COUNT_DISTINCT(x)` | [`COUNT(DISTINCT x)`](../googlesql-functions/aggregate_functions.md#count) | see [notes below](#count-function-comparison) |
 | `QUANTILES(x, boundaries)` | [`APPROX_QUANTILES(x, boundaries-1)`](../googlesql-functions/approximate_aggregate_functions.md#approx_quantiles) | output needs to be [unnested](#removing-repetition-with-flatten) |
@@ -898,6 +898,12 @@ This query creates an array of `title`s where the `page_name` is either
 `'db_jobskill'` or `'Profession'`, in the order of the pages, then keeps only the
 rows that have such a page, using `EXISTS`. `NULL` titles are left out of the
 array, so a row whose matching pages all have a `NULL` title has an empty array.
+Because of that, the array can have fewer elements than the matching pages, and
+the position of a title in the array can differ from the position of its page
+among them. To keep one element for each matching page, including a page with a
+`NULL` title, return an array of `STRUCT`s instead, for example
+`ARRAY(SELECT AS STRUCT title FROM UNNEST(payload.pages) WITH OFFSET AS pos WHERE page_name IN ('db_jobskill', 'Profession') ORDER BY pos)`:
+an element is a `STRUCT` that is not `NULL`, even when its `title` field is.
 
 For more information about arrays, see [Working with arrays](https://docs.cloud.google.com/bigquery/docs/arrays).
 
@@ -1526,7 +1532,7 @@ For example, the following legacy SQL query uses the entire table name in a
 regular expression to find the maximum temperatures across all years that end
 in the number `0`:
 
-Adapted (not in the official docs): anchored the regular expression to the whole table name, so that only the tables for years that end in `0` match.
+Adapted (not in the official docs): anchored the regular expression to the whole table name, so that only the tables for years that end in `0` match, and wrote the digit class as `[0-9]`, because the outer argument is a single-quoted string and the escapes listed for legacy SQL strings do not include `\d`.
 
 ```sql
 #legacySQL
@@ -1535,7 +1541,7 @@ SELECT
   ROUND((max-32)*5/9,1) celsius,
   year
 FROM
-  TABLE_QUERY([bigquery-public-data:noaa_gsod], 'REGEXP_MATCH(table_id, r"^gsod\d{3}0$")')
+  TABLE_QUERY([bigquery-public-data:noaa_gsod], 'REGEXP_MATCH(table_id, r"^gsod[0-9]{3}0$")')
 WHERE
   max != 9999.9 # code for missing data
   AND max > 100 # to improve ORDER BY performance
@@ -1645,9 +1651,11 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the two `ARRAY` subquery examples that return `page_names` and `title` could put `NULL` elements in an array of the query result, and GoogleSQL raises an error if the query result has an array which contains `NULL` elements (googlesql-syntax/data-types.md). Both examples now exclude `NULL` values in the subquery, so the arrays hold only the non-`NULL` values. Because `UNNEST` destroys the order of elements in the input array (googlesql-syntax/query-syntax-1.md, `WITH OFFSET`), both subqueries also take the offset with `WITH OFFSET` and order by it, so the arrays keep the order of the repeated field. In the `title` example, the rows are kept with an `EXISTS` test on `page_name` instead of `ARRAY_LENGTH(title) > 0`, so a row whose matching pages all have a `NULL` title is not dropped; the sentence after the example says so.
 - Corrected from the official docs: `TABLE_QUERY` selects the tables before reading them, while the GoogleSQL examples filter `_TABLE_SUFFIX` with `REGEXP_CONTAINS`. The official docs say that a `_TABLE_SUFFIX` filter limits the tables scanned only when its condition is a constant expression (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20) and don't say that a `REGEXP_CONTAINS` condition qualifies (the page has no mention of `REGEXP_CONTAINS`), so a sentence is added that says the examples can scan every table that matches the prefix, and so read more data than `TABLE_QUERY`, and that suggests a literal `IN` condition listing every needed suffix; the examples are kept as in the official docs.
 - Corrected from the official docs: `INFORMATION_SCHEMA.PARTITIONS` returns two rows for the `__UNPARTITIONED__` partition when it has both long-term and active storage tier data, one for each storage tier (information-schema/partitions.md), so the migrated `__PARTITIONS_SUMMARY__` query could return that partition twice. The query now groups the rows by partition and returns the latest `last_modified_time` of the tiers. The `NULL` placeholder for `creation_time` is cast to `INT64`, so the column keeps an integer type like `last_modified_time`, which is milliseconds since the epoch from `UNIX_MILLIS`.
+- Corrected from the official docs: the `ARRAY` subquery that returns `title` now leaves out `NULL` titles (see the note on the two `ARRAY` subquery examples), so its array can have fewer elements than the matching pages, and positions no longer match them. A sentence that says so and shows an array of `STRUCT`s (`SELECT AS STRUCT`, googlesql-syntax/query-syntax-1.md), whose elements are not `NULL` even when the `title` field is, is added for the case that needs one element for each page.
 - Corrected from the official docs: the function comparison table maps `NEST(x)` to `ARRAY_AGG(x)` without a condition, but legacy SQL automatically flattens query results, so a `NEST` in the top-level query returns no repeated field, and `NEST` is meant for subselects that produce intermediate results (legacy-sql/legacy-sql-1.md). `ARRAY_AGG` returns an array in the result, so the row now says where it matches `NEST` and that `UNNEST` gives the flattened rows.
 - Corrected from the official docs: the function comparison table maps `TOP(x, num), COUNT(*)`, which returns the values and their counts as rows, to `APPROX_TOP_COUNT(x, num)` with no note. `APPROX_TOP_COUNT` returns an array of `STRUCT`s with the fields `value` and `count` (googlesql-functions/approximate_aggregate_functions.md), so a note that says to expand it with `UNNEST` to get the rows is added.
-- Corrected from the official docs: the `TABLE_QUERY` example that uses the entire table name and its GoogleSQL equivalent matched `gsod\d{3}0` and `\d{3}0` anywhere in the name, so a table such as `gsod2020_backup` also matched. The expressions are anchored as `^gsod\d{3}0$` and `^\d{3}0$`, to match the years that end in `0` that the text describes.
+- Corrected from the official docs: the `TABLE_QUERY` example that uses the entire table name and its GoogleSQL equivalent matched `gsod\d{3}0` and `\d{3}0` anywhere in the name, so a table such as `gsod2020_backup` also matched. The expressions are anchored as `^gsod[0-9]{3}0$` and `^\d{3}0$`, to match the years that end in `0` that the text describes. In the legacy SQL query, the digit class is written as `[0-9]`, because the second argument of `TABLE_QUERY` is a single-quoted string, which is read before the inner `r"..."` expression, and the escapes listed for legacy SQL strings do not include `\d` (legacy-sql/legacy-sql-2.md, Escaping special characters in strings); the GoogleSQL query uses a raw string, which keeps `\d`.
+- Corrected from the official docs: the function comparison table linked `LOGICAL_OR` and `LOGICAL_AND`, which replace `SOME` and `EVERY`, to the logical operators (`AND`, `OR`, `NOT`) in googlesql-syntax/operators.md. The links now point to the aggregate functions `LOGICAL_OR` and `LOGICAL_AND` in googlesql-functions/aggregate_functions.md.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
