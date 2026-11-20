@@ -28,7 +28,7 @@ tools:
 - **skill_dir**: 対象スキルのディレクトリパス（例: `skills/zod/`）、または
 - **target_files**: 対象ファイルのパスリスト（個別ファイル指定の場合）
 
-どちらも指定がない場合は `skills/` 配下を広範囲に走査する。
+どちらも指定がない場合は `skills/` 配下を広範囲に走査する（索引表検査の対象は Step 3 の「指定なし」に従う）。
 
 ## 行動原則
 
@@ -86,11 +86,12 @@ samples 本文の不備は sample-curator、scripts 本文の不備は script-co
 次の各 `README.md` について:
 
 - `skill_dir` 指定時: `{skill_dir}references/**/README.md` を Glob で再帰的に列挙した各 README（カテゴリの README と階層型カテゴリの各階層の子索引。途中のディレクトリに README.md が無くても、その下の README.md を含む）と、Step 1 で加えた `samples/README.md` `scripts/README.md`
-- `target_files` 指定時: そのリストに含まれる `README.md`
+- `target_files` 指定時: そのリストに含まれる `README.md` のうち、スキルの `references/` 配下にあるもの（`skills/<name>/references/**/README.md`）と `skills/<name>/samples/README.md` `skills/<name>/scripts/README.md`。リポジトリルートの README や `samples/` の下の個別ディレクトリにある README などは対象外
+- 指定なし: `skills/*/references/**/README.md` を Glob で再帰的に列挙した各 README と、存在する `skills/*/samples/README.md` `skills/*/scripts/README.md`
 
 1. `| Name | Description | Path |` ヘッダー行が存在するか
 2. 3カラムの区切り行（`| --- | --- | --- |` 等。ダッシュ数や前後の空白の差異は許容する）が存在するか
-3. 各行の `Path` セルが `[{filename}.md](./{filename}.md)` 形式のリンクになっているか。階層型カテゴリ（reference-template の例外。`references/` 配下の README のみ）では、リンク先が直下の子ディレクトリの索引 `./{subdir}/README.md` の行と、直下の子ディレクトリのページ `./{subdir}/{filename}.md` の行も許容し、同じ表に混在してよい。これらの行はリンク先で判定し、表示名は問わない（`[{subdir}/README.md]` のほか既存の `[doc-blocks/]` のような表記も可）。リンク先が実在しない行、検査中の README 自身（`./README.md`）を指す行、孫以下のディレクトリのページを直接指す行、`samples/` `scripts/` の README で子ディレクトリを指す行は違反とする
+3. 各行の `Path` セルが `[{filename}.md](./{filename}.md)` 形式のリンクになっているか。1 つのセルに複数のリンクを ` / ` で並べた既存の行は、リンクごとに判定する（reference-template）。階層型カテゴリ（reference-template の例外。`references/` 配下の README のみ）では、リンク先が直下の子ディレクトリの索引 `./{subdir}/README.md` の行と、直下の子ディレクトリのページ `./{subdir}/{filename}.md` の行も許容し、同じ表に混在してよい。これらの行はリンク先で判定し、表示名は問わない（`[{subdir}/README.md]` のほか既存の `[doc-blocks/]` のような表記も可）。リンク先が実在しない行、検査中の README 自身（`./README.md`）を指す行、孫以下のディレクトリのページを直接指す行、`samples/` `scripts/` の README で子ディレクトリを指す行は違反とする
 4. ヘッダー以外の行が空でないか
 
 ### Step 4: SKILL.md frontmatter の YAML 妥当性確認
