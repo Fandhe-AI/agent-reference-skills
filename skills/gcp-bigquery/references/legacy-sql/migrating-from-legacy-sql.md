@@ -686,7 +686,7 @@ equivalents.
 | `s CONTAINS "foo"` | [`STRPOS(s, "foo") > 0`](../googlesql-functions/string_functions-2.md#strpos) or [`s LIKE '%foo%'`](../googlesql-syntax/operators.md#comparison-operators) |   |
 | `INSTR(s, "foo")` | [`STRPOS(s, "foo")`](../googlesql-functions/string_functions-2.md#strpos) |   |
 | `x % y` | [`MOD(x, y)`](../googlesql-functions/mathematical_functions.md#mod) |   |
-| `NEST(x)` | [`ARRAY_AGG(x)`](../googlesql-functions/aggregate_functions.md#array_agg) |   |
+| `NEST(x)` | [`ARRAY_AGG(x)`](../googlesql-functions/aggregate_functions.md#array_agg) | `ARRAY_AGG` returns an array also in the top-level query result, while legacy SQL flattens the repeated field that a top-level `NEST` produces; use `ARRAY_AGG` where `NEST` builds an intermediate result in a subselect, and expand the array with `UNNEST` where the legacy output rows are needed |
 | `GROUP_CONCAT_UNQUOTED(s, sep)` | [`STRING_AGG(s, sep)`](../googlesql-functions/aggregate_functions.md#string_agg) |   |
 | `SOME(x)` | `IFNULL(`[`LOGICAL_OR(x)`](../googlesql-syntax/operators.md#logical-operators)`, false)` |   |
 | `EVERY(x)` | `IFNULL(`[`LOGICAL_AND(x)`](../googlesql-syntax/operators.md#logical-operators)`, true)` |   |
@@ -1490,10 +1490,13 @@ ORDER BY
 In GoogleSQL, an equivalent query uses a table wildcard and places the
 regular expression function, `REGEXP_CONTAINS`, in the `WHERE` clause. A filter on
 `_TABLE_SUFFIX` limits the tables scanned only when its condition is a constant
-expression, and the official docs don't say whether a `REGEXP_CONTAINS` condition
-qualifies. To make sure that only the matching tables are read in this example and
-the next one, list the suffixes in a literal `IN` condition instead, for example
-`_TABLE_SUFFIX IN ('1930', '1940', '1950')`. The example with `REGEXP_CONTAINS`:
+expression, and the official docs don't say that a `REGEXP_CONTAINS` condition
+qualifies. So assume that this example and the next one can scan every table that
+matches the prefix `gsod`, which can read and bill more data than `TABLE_QUERY`,
+which selects the tables first. To read only the tables that you need, list every
+suffix that you need in a literal `IN` condition instead, for example
+`_TABLE_SUFFIX IN ('1930', '1940', '1950')` for those three years. The example with
+`REGEXP_CONTAINS`:
 
 ```sql
 #GoogleSQL
@@ -1636,8 +1639,9 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the function comparison table translated `PARSE_IP(addr_string)` as `NET.IPV4_TO_INT64(NET.IP_FROM_STRING(addr_string))` and `PARSE_PACKED_IP(addr_string)` as `NET.IP_FROM_STRING(addr_string)`. The legacy SQL functions return `NULL` for an invalid address (legacy-sql/legacy-sql-1.md), while `NET.IP_FROM_STRING` produces an error and `NET.IPV4_TO_INT64` throws an error when the input length isn't 4 (googlesql-functions/net_functions.md). The rows now use `NET.SAFE_IP_FROM_STRING`, and the `PARSE_IP` row calls `NET.IPV4_TO_INT64` only for a 4-byte address inside `IF`, whose unchosen branch is not evaluated (googlesql-functions/conditional_expressions.md).
 - Corrected from the official docs: the `TABLE_DATE_RANGE` and `TABLE_DATE_RANGE_STRICT` examples query the wildcard table `mydataset.sea_weather_*`, and a wildcard table query cannot reference a view (tables-schemas-views/views-intro.md), so the query fails if a view such as `sea_weather_20160501_backup` shares the prefix, even when the `WHERE` filter excludes its suffix. The wildcard table also takes the schema of the most recently created matching table even when a `_TABLE_SUFFIX` filter excludes that table (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20), so a matching backup table that lacks a selected column or gives it another type makes the query fail. Sentences that state both assumptions, and the `UNION ALL` alternative, are added before the first example.
 - Corrected from the official docs: the two `ARRAY` subquery examples that return `page_names` and `title` could put `NULL` elements in an array of the query result, and GoogleSQL raises an error if the query result has an array which contains `NULL` elements (googlesql-syntax/data-types.md). Both examples now exclude `NULL` values in the subquery, so the arrays hold only the non-`NULL` values. Because `UNNEST` destroys the order of elements in the input array (googlesql-syntax/query-syntax-1.md, `WITH OFFSET`), both subqueries also take the offset with `WITH OFFSET` and order by it, so the arrays keep the order of the repeated field. In the `title` example, the rows are kept with an `EXISTS` test on `page_name` instead of `ARRAY_LENGTH(title) > 0`, so a row whose matching pages all have a `NULL` title is not dropped; the sentence after the example says so.
-- Corrected from the official docs: `TABLE_QUERY` selects the tables before reading them, while the GoogleSQL examples filter `_TABLE_SUFFIX` with `REGEXP_CONTAINS`. The official docs say that a `_TABLE_SUFFIX` filter limits the tables scanned only when its condition is a constant expression (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20) and don't say whether a `REGEXP_CONTAINS` condition qualifies, so a sentence that suggests a literal `IN` condition on the suffixes is added; the examples are kept as in the official docs.
+- Corrected from the official docs: `TABLE_QUERY` selects the tables before reading them, while the GoogleSQL examples filter `_TABLE_SUFFIX` with `REGEXP_CONTAINS`. The official docs say that a `_TABLE_SUFFIX` filter limits the tables scanned only when its condition is a constant expression (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20) and don't say that a `REGEXP_CONTAINS` condition qualifies (the page has no mention of `REGEXP_CONTAINS`), so a sentence is added that says the examples can scan every table that matches the prefix, and so read more data than `TABLE_QUERY`, and that suggests a literal `IN` condition listing every needed suffix; the examples are kept as in the official docs.
 - Corrected from the official docs: `INFORMATION_SCHEMA.PARTITIONS` returns two rows for the `__UNPARTITIONED__` partition when it has both long-term and active storage tier data, one for each storage tier (information-schema/partitions.md), so the migrated `__PARTITIONS_SUMMARY__` query could return that partition twice. The query now groups the rows by partition and returns the latest `last_modified_time` of the tiers.
+- Corrected from the official docs: the function comparison table maps `NEST(x)` to `ARRAY_AGG(x)` without a condition, but legacy SQL automatically flattens query results, so a `NEST` in the top-level query returns no repeated field, and `NEST` is meant for subselects that produce intermediate results (legacy-sql/legacy-sql-1.md). `ARRAY_AGG` returns an array in the result, so the row now says where it matches `NEST` and that `UNNEST` gives the flattened rows.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
