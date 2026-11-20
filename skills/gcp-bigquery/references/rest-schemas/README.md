@@ -9,3 +9,5 @@
 | BigQuery Data Policy API (bigquerydatapolicy) | 20 schemas | [bigquerydatapolicy/README.md](./bigquerydatapolicy/README.md) |
 | BigQuery Data Transfer API (bigquerydatatransfer) | 42 schemas | [bigquerydatatransfer/README.md](./bigquerydatatransfer/README.md) |
 | BigQuery Reservation API (bigqueryreservation) | 32 schemas | [bigqueryreservation/README.md](./bigqueryreservation/README.md) |
+| Google Cloud Data Catalog API (datacatalog) | 120 schemas | [datacatalog/README.md](./datacatalog/README.md) |
+| Dataform API (dataform) | 156 schemas | [dataform/README.md](./dataform/README.md) |
