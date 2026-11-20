@@ -73,7 +73,9 @@ skills/gcp-bigquery/
       <view>.md
     legacy-sql/                   # 機械変換: legacy SQL
       README.md
-      <page>.md
+      legacy-sql-1.md             # legacy SQL リファレンス（2 分割の 1）
+      legacy-sql-2.md             # legacy SQL リファレンス（2 分割の 2）
+      migrating-from-legacy-sql.md  # GoogleSQL への移行
     bq-cli/                       # 機械変換: bq コマンドラインツールのリファレンス（3 分割）
       README.md
       bq-cli-reference-1.md ... bq-cli-reference-3.md

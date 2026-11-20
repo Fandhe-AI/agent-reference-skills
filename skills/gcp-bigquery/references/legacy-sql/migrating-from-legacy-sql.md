@@ -38,6 +38,8 @@ You have a choice of whether to use legacy or GoogleSQL when you run a
 query. For information about switching between SQL dialects, see
 [BigQuery SQL dialects](https://docs.cloud.google.com/bigquery/docs/introduction-sql#bigquery-sql-dialects).
 
+The GoogleSQL examples on this page start with the line `#GoogleSQL`. The SQL section of [BigQuery SQL dialects](https://docs.cloud.google.com/bigquery/docs/introduction-sql#bigquery-sql-dialects) lists `#standardSQL` and `#legacySQL` as the query prefixes that set the dialect and does not list `#GoogleSQL`. So don't rely on the `#GoogleSQL` line to select GoogleSQL: where legacy SQL can be the default, replace that line with `#standardSQL`, or select GoogleSQL in the request, such as with `bq query --use_legacy_sql=false` (for `bq query`, the default value of `--use_legacy_sql` is `true` if the configuration setting is not specified). (Added; see Notes.)
+
 #### Advantages of GoogleSQL
 
 GoogleSQL complies with the SQL 2011 standard, and has extensions that
@@ -1408,59 +1410,67 @@ Translated query using [`WITH` clause](#composability-using-with-clauses) and co
 [Required permissions](../information-schema/tables.md#required-permissions) of that view lists, such as `bigquery.tables.list` on the dataset
 (for example, from `roles/bigquery.metadataViewer`):
 
-Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, counted only base tables, and listed the suffixes of the dates in a literal `IN` condition in the wildcard filter.
+Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, and listed the suffixes of the dates in a literal `IN` condition in the wildcard filter. The example assumes that the daily tables are standard tables (`table_type` `BASE TABLE`): it reports the dates that have no table and the dates whose table has another table type, such as `CLONE` or `SNAPSHOT`, in separate errors.
 
 ```sql
 #GoogleSQL
-WITH MissingTables AS (
+WITH Days AS (
+  SELECT FORMAT_DATE('%Y%m%d', day) AS suffix
+  FROM UNNEST(GENERATE_DATE_ARRAY(DATE '2016-05-01', DATE '2016-05-09')) AS day
+),
+CheckedTables AS (
   SELECT
-    STRING_AGG(FORMAT_DATE('%Y%m%d', day), ', ') AS missing_suffixes
-  FROM
-    UNNEST(GENERATE_DATE_ARRAY(DATE '2016-05-01', DATE '2016-05-09')) AS day
-  WHERE
-    FORMAT_DATE('%Y%m%d', day) NOT IN (
-      SELECT SUBSTR(table_name, LENGTH('sea_weather_') + 1)
-      FROM mydataset.INFORMATION_SCHEMA.TABLES
-      WHERE STARTS_WITH(table_name, 'sea_weather_')
-        AND table_type = 'BASE TABLE'
-    )
+    STRING_AGG(IF(t.table_name IS NULL, d.suffix, NULL), ', ' ORDER BY d.suffix)
+      AS missing_suffixes,
+    STRING_AGG(IF(t.table_type != 'BASE TABLE', d.suffix, NULL), ', ' ORDER BY d.suffix)
+      AS non_base_table_suffixes
+  FROM Days AS d
+  LEFT JOIN mydataset.INFORMATION_SCHEMA.TABLES AS t
+    ON t.table_name = CONCAT('sea_weather_', d.suffix)
 )
 SELECT
-  IF(missing_suffixes IS NOT NULL,
-    ERROR(FORMAT("Not found suffixes: %s", missing_suffixes)),
-    (
+  CASE
+    WHEN missing_suffixes IS NOT NULL THEN
+      ERROR(FORMAT("Not found suffixes: %s", missing_suffixes))
+    WHEN non_base_table_suffixes IS NOT NULL THEN
+      ERROR(FORMAT("Not base tables: %s", non_base_table_suffixes))
+    ELSE (
       SELECT ROUND(AVG(TemperatureF),1)
       FROM `mydataset.sea_weather_*`
       WHERE _TABLE_SUFFIX IN ('20160501', '20160502', '20160503', '20160504', '20160505',
           '20160506', '20160507', '20160508', '20160509')
     )
-  ) AS AVG_TEMP_F
-FROM MissingTables
+  END AS AVG_TEMP_F
+FROM CheckedTables
 ```
 
 And using [BigQuery Scripting (procedural SQL)](../googlesql-syntax/procedural-language.md):
 
-Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, counted only base tables, and listed the suffixes of the dates in a literal `IN` condition in the wildcard filter.
+Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, and listed the suffixes of the dates in a literal `IN` condition in the wildcard filter. The example assumes that the daily tables are standard tables (`table_type` `BASE TABLE`): it reports the dates that have no table and the dates whose table has another table type, such as `CLONE` or `SNAPSHOT`, in separate errors.
 
 ```sql
 #GoogleSQL
 BEGIN
   DECLARE missing_suffixes STRING;
+  DECLARE non_base_table_suffixes STRING;
 
-  SET missing_suffixes = (
-    SELECT STRING_AGG(FORMAT_DATE('%Y%m%d', day), ', ')
-    FROM UNNEST(GENERATE_DATE_ARRAY(DATE '2016-05-01', DATE '2016-05-09')) AS day
-    WHERE FORMAT_DATE('%Y%m%d', day) NOT IN (
-      SELECT SUBSTR(table_name, LENGTH('sea_weather_') + 1)
-      FROM mydataset.INFORMATION_SCHEMA.TABLES
-      WHERE STARTS_WITH(table_name, 'sea_weather_')
-        AND table_type = 'BASE TABLE'
-    )
+  SET (missing_suffixes, non_base_table_suffixes) = (
+    SELECT AS STRUCT
+      STRING_AGG(IF(t.table_name IS NULL, d.suffix, NULL), ', ' ORDER BY d.suffix),
+      STRING_AGG(IF(t.table_type != 'BASE TABLE', d.suffix, NULL), ', ' ORDER BY d.suffix)
+    FROM (
+      SELECT FORMAT_DATE('%Y%m%d', day) AS suffix
+      FROM UNNEST(GENERATE_DATE_ARRAY(DATE '2016-05-01', DATE '2016-05-09')) AS day
+    ) AS d
+    LEFT JOIN mydataset.INFORMATION_SCHEMA.TABLES AS t
+      ON t.table_name = CONCAT('sea_weather_', d.suffix)
   );
 
   -- Raise error or run query
   IF missing_suffixes IS NOT NULL THEN
     SELECT ERROR(FORMAT("Not found suffixes: %s", missing_suffixes));
+  ELSEIF non_base_table_suffixes IS NOT NULL THEN
+    SELECT ERROR(FORMAT("Not base tables: %s", non_base_table_suffixes));
   ELSE
     SELECT
       ROUND(AVG(TemperatureF),1) AS AVG_TEMP_F
@@ -1665,7 +1675,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: the error message example gives the valid timestamp range as `[0001-01-1 00:00:00, 9999-12-31 23:59:59.999999]`, while the same page writes the minimum as `0001-01-01 00:00:00.000000`. The official text is kept as published.
 - Corrected from the official docs: the GoogleSQL view `V2` that replaces the legacy SQL view `V` computes `day` as `EXTRACT(DAY FROM timestamp_col)`, which is the day of the month (1 to 31), so the same day number in different months and years would be grouped together. `V` uses `UTC_USEC_TO_DAY(timestamp_col)`, which shifts a UNIX timestamp in microseconds to the beginning of its day (legacy-sql-1.md). The view now uses `UNIX_MICROS(TIMESTAMP_TRUNC(TIMESTAMP_MICROS(timestamp_col), DAY))`, the equivalent given in the function comparison table on this page. The page does not state the type of `timestamp_col`: this form follows `UTC_USEC_TO_DAY`, whose argument is a UNIX timestamp in microseconds (`INT64`), while `EXTRACT` in the official view needs a date or time type. If `timestamp_col` is a `TIMESTAMP` column, `TIMESTAMP_MICROS` fails on it; use `UNIX_MICROS(TIMESTAMP_TRUNC(timestamp_col, DAY))` instead. The Adapted line before the example says so.
-- Corrected from the official docs: the two `TABLE_DATE_RANGE_STRICT` migration examples find missing tables by selecting `_TABLE_SUFFIX` from the wildcard table `mydataset.sea_weather_*`. A table that exists but has no rows returns no `_TABLE_SUFFIX` value, so it was reported as missing and the query raised an error. Both examples now take the suffixes from the `table_name` column of `mydataset.INFORMATION_SCHEMA.TABLES` (information-schema/tables.md), counting only the rows whose `table_type` is `BASE TABLE`, because the view also lists views and other table types.
+- Corrected from the official docs: the two `TABLE_DATE_RANGE_STRICT` migration examples find missing tables by selecting `_TABLE_SUFFIX` from the wildcard table `mydataset.sea_weather_*`. A table that exists but has no rows returns no `_TABLE_SUFFIX` value, so it was reported as missing and the query raised an error. Both examples now take the suffixes from the `table_name` column of `mydataset.INFORMATION_SCHEMA.TABLES` (information-schema/tables.md), and report a date whose table has a `table_type` other than `BASE TABLE` separately from a missing date, because the view also lists views and other table types.
 - Corrected from the official docs: the coercion table translates `BOOLEAN` to `FLOAT64` as `SAFE_CAST(bool AS FLOAT64)`, but `BOOL` can be cast only to `BOOL`, `INT64` and `STRING` (googlesql-syntax/conversion_rules.md). The translation is changed to `SAFE_CAST(SAFE_CAST(bool AS INT64) AS FLOAT64)`.
 - Corrected from the official docs: the function comparison table translates `RIGHT(s, len)` as `SUBSTR(s, -len)`. When `len` is `0`, that is `SUBSTR(s, 0)`, and a `position` of `0` is set to `1` (googlesql-functions/string_functions-2.md), so the whole string is returned instead of an empty string. The translation is changed to the GoogleSQL `RIGHT(s, len)` function.
 - Corrected from the official docs: the example that migrates `OMIT RECORD IF COUNT(payload.pages.page_name) <= 80` used `ARRAY_LENGTH(payload.pages) > 80`. `COUNT(payload.pages.page_name)` counts only the pages whose `page_name` is not `NULL`, while `ARRAY_LENGTH` counts every element, so a record with more than 80 pages of which some have a `NULL` `page_name` was kept by the GoogleSQL query and omitted by the legacy SQL query. The filter is changed to `(SELECT COUNT(page_name) FROM UNNEST(payload.pages)) > 80`, and the two sentences around the example that described `ARRAY_LENGTH` are changed to match.
@@ -1699,6 +1709,8 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the GoogleSQL query that counts the rows of `gsod2010` and `gsod2011` used the wildcard table `bigquery-public-data.noaa_gsod.*`, which also matches other tables of the dataset, such as `stations`, used in other examples on this page. The official page on wildcard tables says that all tables that match the wildcard are matched even with an equality filter on `_TABLE_SUFFIX`, so a table with a different schema can make the query fail, and that BigQuery uses the schema of the most recently created table that matches the wildcard (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables, retrieved 2026-11-20). The query now uses `noaa_gsod.gsod*` with `_TABLE_SUFFIX IN ("2010", "2011")`, as the later examples on this page do.
 - Corrected from the official docs: a column heading of the URL function comparison table read `NET.PUBLIC _SUFFIX`, with a space, while the function is `NET.PUBLIC_SUFFIX`, as the text before the table names it.
 - Adapted from the official docs: the sentence before the URL function comparison table said that gray text color marks the results that are the same in legacy SQL and GoogleSQL. Colors are not kept in this Markdown table, so the sentence now only says what the table compares; compare `HOST` with `NET.HOST`, `TLD` with `NET.PUBLIC_SUFFIX` and `DOMAIN` with `NET.REG_DOMAIN` to see which results are the same.
+- Adapted (not in the official docs): the two `TABLE_DATE_RANGE_STRICT` migration examples assume that the daily tables are standard tables. `INFORMATION_SCHEMA.TABLES` gives other table types, such as `CLONE` and `SNAPSHOT`, their own `table_type` values (information-schema/tables.md), so the examples join the dates to all the tables of the dataset and report a missing table ("Not found suffixes") and a table of another type ("Not base tables") in separate errors, instead of reporting both as missing.
+- Added (not in the official docs): a paragraph under Enabling GoogleSQL says that the `#GoogleSQL` first line of the GoogleSQL examples is not one of the query prefixes that https://docs.cloud.google.com/bigquery/docs/introduction-sql lists in its SQL section (`#standardSQL` and `#legacySQL`, "not case-sensitive, must precede the query, and must be separated from the query by a newline character"; fetched 2026-11-21), and how to select GoogleSQL instead (`#standardSQL`, or `--use_legacy_sql=false`, whose `bq query` default is `true` when the configuration setting is not specified: bq-cli/bq-cli-reference-2.md). The examples are kept as in the official docs.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
