@@ -25,6 +25,7 @@ tools:
 ## 受け取る入力
 
 - **category_dir**: 対象カテゴリディレクトリのパス（例: `skills/zod/references/schemas/`, `skills/zod/samples/`, `skills/zod/scripts/`）
+- **changed_files**（任意）: H1 または概要行を変更したファイルのパス。これらのファイルの行だけ、既存の行があっても Name・Description をページから取り直す
 
 ## 行動原則
 
@@ -57,6 +58,7 @@ tools:
 3. H1 の後の、最初の本文の行を **Description**（概要1行）として抽出する。空行、見出し、`Source:` `出典:` `Last verified` `last verified:` などのメタデータ行、`>` の引用、コードフェンス、表、HTML コメント、YAML フロントマターは飛ばす。抽出した行に含まれる Markdown のリンク（`[text](url)`）は表示テキスト `text` だけに置き換える（reference-template の「ページから取る Name・Description」）
 4. H1 が存在しない場合はファイル名（拡張子除く）を Name とし、Description は空欄とする
 5. 子ディレクトリの索引（`<subdir>/README.md`）は H1 を Name とする。README の H1 の後は概要行とは限らないため、既存の `{category_dir}README.md` にその子索引を指す行があればその Description とリンクの表示名を引き継ぎ（例: 既存の `[doc-blocks/](./doc-blocks/README.md)` はそのまま）、無ければ Description は空欄、表示名は `<subdir>/README.md` とする。子ディレクトリのページ（`<subdir>/<file>.md`）を指す既存の行も表示名を引き継ぐ（表示名が `./` で始まるときは `./` を除く）
+6. 既存の `{category_dir}README.md` にそのファイルを指す行があり、ファイルが `changed_files` に含まれないときは、その行の Name・Description を引き継ぐ（2〜4 の抽出より優先する）
 
 ### Step 3: 索引表の構築
 
@@ -69,7 +71,7 @@ tools:
 ```
 
 - 同じディレクトリのページは、既存の表示名にかかわらず `[<file>.md](./<file>.md)` と書く（reference-template の適合行の条件 4）。子ディレクトリの索引は `./<subdir>/README.md`、子ディレクトリのページは `./<subdir>/<file>.md` を指し、表示名は Step 2 の 5 に従う（新しい子ディレクトリのページは `[<file>.md](./<subdir>/<file>.md)`）
-- 個別ページから抽出した Description が長い場合は50文字程度で切り詰め、末尾に `…` を付ける。既存の子索引の行から引き継いだ Description は切り詰めずそのまま保持する
+- 個別ページから抽出した Description が長い場合は50文字程度で切り詰め、末尾に `…` を付ける。既存の行から引き継いだ Description は切り詰めずそのまま保持する
 - 表に書き出す前に、各セル（Name・Description・Path の表示名）の中のエスケープしていない `|` を `\|` に変換する（バッククォートの中の `|` も列を分けるため同じく変換する）。すでに `\|` のものは変えない
 
 ### Step 4: README.md の生成（再生成する README のみ）

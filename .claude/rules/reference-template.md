@@ -75,7 +75,7 @@ reference-linter・skill-structure-validator・readme-indexer はこの定義を
 
 ### 既存 README の扱い
 
-- **再生成する README**: 次の両方を満たすもの。readme-indexer がページから再生成する（Name・Description はページから抽出し直す。既存の子索引の行の Description と表示名は引き継ぐ）
+- **再生成する README**: 次の両方を満たすもの。readme-indexer がページから再生成する（リンク先が実在する既存の行の Name・Description は引き継ぎ、新しい行と、呼び出し元が `changed_files` として渡したファイル（H1 または概要行を変更したもの）の行だけをページから取る。既存の子索引の行の Description と表示名は引き継ぐ）
   - 下記の生成ツールが出力する README ではない
   - README が無い、または H1 と索引表 1 つだけ（データ行の無い表・表が無いものを含む）で、再生成で失われる行が無い。つまり、アンカー付きの行（`./<file>.md#<anchor>`）、同じページを指す行の重複、readme-indexer が載せない先（孫以下・ディレクトリ外、`samples/` `scripts/` の README から子ディレクトリ）を指すリンク、Name・Description のセルの中のリンク（再生成では引き継がれない）のいずれも無い（表示名・`./` の有無・列数・1 行のリンク数の違反は再生成で直るので妨げない）
 - **手で保守する README**: 生成ツールが出力する README でも再生成する README でもない README（前置きの説明文、`##` 節ごとの複数の索引表、`syncpack` の `update-groups/README.md` の共通プロパティ表のような補足の節、`anthropic-*` / `openai-*` の README レベル距離線、関数ごとのアンカー付きの行などを持つもの）。readme-indexer は書き込まない。下記「更新する README の選び方」で対象になったときは、呼び出し元（main）が、変更したページ・子索引に合わせて該当する表の行を直接直す（行の追加・改名・削除と Name・Description の更新）。reference-linter と skill-structure-validator の指摘も、対象になったかどうかにかかわらず main がこの定義を満たすように直す。これは delegation.md の「README 索引表の再生成」には当たらない。索引表の行以外の既存の内容は削除しない
@@ -85,7 +85,7 @@ reference-linter・skill-structure-validator・readme-indexer はこの定義を
   - 新しいファイル（改名後のパスを含む）については、新しいページならそのページのディレクトリから、新しい子索引なら親ディレクトリから上へたどって最初に見つかる既存の README（`references/<category>/`・`samples/`・`scripts/` より上には上がらない。`references/` 直下のページは `references/README.md`）。その README から直接載せられない（孫以下になる）ときは、ページのディレクトリからその README の直下までの間の各ディレクトリに索引を新設し、深い順に処理する。見つかった README のディレクトリのページを親の README が直接載せている（親で集約している）ときは、親の README も対象にする
   - README の無いディレクトリは、新しいカテゴリ（`references/<category>/`）、初めて作った `samples/`・`scripts/`、索引を新設すると決めた子ディレクトリ（上の項目で載せられないとき、上へたどって既存の README が見つからないときを含む）だけを対象にする
   - 対象のうち、再生成する README は readme-indexer に `category_dir` として渡し、手で保守する README は main が直し、生成ツールが出力する README は生成ツールで再生成する
-- **索引する対象の無いディレクトリ**（readme-indexer の Step 1 の候補が 0 件。直下のページも、載せる子索引・子ディレクトリのページも無い）: README を削除も書き換えもせず、対象の README を報告する（扱いは呼び出し元がユーザーに確認する）
+- **索引する対象の無いディレクトリ**（readme-indexer の Step 1 の候補が 0 件。直下のページも、載せる子索引・子ディレクトリのページも無い）: readme-indexer は書き込まずに報告する。main はユーザーに確認したうえで README を削除し（前置き・距離線などの本文は、ユーザーが示した移し先へ移してから削除する）、親の README を「更新する README の選び方」の対象に加え、SKILL.md の参照は skill-author に更新させる。生成ツールが出力する README は生成ツールで扱う
 - **ページから取る Name・Description**: Name はページの H1、Description は H1 の後の最初の本文の行（空行・見出し・メタデータ行・引用・コードフェンス・表・HTML コメント・フロントマターを飛ばす）。Description に含まれる Markdown のリンク（`[text](url)`）は表示テキスト `text` だけにする（相対リンクは README を起点に解決され、子ディレクトリのページから取ると別のページを指すため）。readme-indexer の再生成でも、main が手で保守する README に反映するときも同じにする。ただし main が手で保守する README の既存の行を更新するときは、既存の Name・Description のセルにあるリンクのうち README から正しく解決されるもの（`https:` などの URL と、README を起点に実在するページを指す相対リンク）を残す。子索引の行の Name は子索引の H1 に合わせる。ページから取った Description が長い場合は 50 文字程度で切り詰め、末尾に `…` を付ける（既存の子索引の行から引き継ぐ Description は切り詰めない）
 
 ## 関連

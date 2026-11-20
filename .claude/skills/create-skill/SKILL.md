@@ -82,7 +82,7 @@ references の生成と並行、または完了後に以下を並列起動する
 
 ライブラリの性質上 samples または scripts が不要と判断される場合（例: ガイドライン型スキル）はスキップしてよい。
 
-Step 3・Step 4 の完了後、main は索引を置くディレクトリ（各 `references/<category>/`（ページを `references/` 直下に置くスキルでは `references/`）、階層型カテゴリで索引を置くと決めた子ディレクトリ、作成した `samples/`・`scripts/`）を決め、**readme-indexer（subagent_type: readme-indexer、model: haiku）**を 1 ディレクトリずつ、子を先に起動する（reference-template の「更新する README の選び方」）。生成ツールが出力するディレクトリは渡さない（README は生成ツールが出力する）。CLAUDE.md が README レベルの距離線を定めるファミリー（`anthropic-*`・`openai-*` 等）では、readme-indexer の後に main が距離線の前置きを README に加える。生成ツールの出力を含むスキルでは、Step 5 で skill-author に `generated_dirs` を渡し、SKILL.md のツリーの該当ディレクトリへ `機械生成` または `機械変換` と注記させる。
+Step 3・Step 4 の完了後、main は索引を置くディレクトリ（各 `references/<category>/`（ページを `references/` 直下に置くスキルでは `references/`）、階層型カテゴリで索引を置くと決めた子ディレクトリ、作成した `samples/`・`scripts/`）を決め、**readme-indexer（subagent_type: readme-indexer、model: haiku）**を 1 ディレクトリずつ、子を先に起動する（reference-template の「更新する README の選び方」）。階層型カテゴリでは、索引を置く子ディレクトリからカテゴリまでの間の各ディレクトリにも索引を置く（カテゴリの索引から各ページへたどれるようにするため）。生成ツールが出力するディレクトリは渡さない（README は生成ツールが出力する）。CLAUDE.md が README レベルの距離線を定めるファミリー（`anthropic-*`・`openai-*` 等）では、readme-indexer の後に main が距離線の前置きを README に加える。生成ツールの出力を含むスキルでは、Step 5 で skill-author に `generated_dirs` を渡し、SKILL.md のツリーの該当ディレクトリへ `機械生成` または `機械変換` と注記させる。
 
 ### Step 5: SKILL.md を作成する
 

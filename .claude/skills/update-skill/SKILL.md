@@ -79,7 +79,7 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 
 更新後、以下を順に実行する。
 
-1. **readme-indexer（subagent_type: readme-indexer、model: haiku）** — 索引 README を更新する（reference-updater は apply 時に README 索引を再生成しないため、ここで必ず実行する）。更新する README は、更新レポートと Step 2 の Agent が返した作成・変更・改名・削除したファイルのパスから reference-template の「更新する README の選び方」で決め、再生成する README ごとに `category_dir`（例: `skills/<library>/references/<category>/`, `skills/<library>/samples/`, `skills/<library>/scripts/`）を渡して起動する（readme-indexer は 1 起動 = 1 カテゴリ）。渡すカテゴリと処理順、readme-indexer が書き込む README・手で保守する README・生成ツールが出力する README の扱いは、reference-template の「既存 README の扱い」に従う。選んだ README のうち手で保守するものは、main が同節の「手で保守する README」に従って直接直す
+1. **readme-indexer（subagent_type: readme-indexer、model: haiku）** — 索引 README を更新する（reference-updater は apply 時に README 索引を再生成しないため、ここで必ず実行する）。更新する README は、更新レポートと Step 2 の Agent が返した作成・変更・改名・削除したファイルのパスから reference-template の「更新する README の選び方」で決め、再生成する README ごとに `category_dir`（例: `skills/<library>/references/<category>/`, `skills/<library>/samples/`, `skills/<library>/scripts/`）を渡して起動する（readme-indexer は 1 起動 = 1 カテゴリ）。H1 または概要行を変更したファイルは `changed_files` として渡す。CLAUDE.md が README レベルの距離線を定めるファミリーで README を新設したときは、readme-indexer の後に main が距離線の前置きを加える。渡すカテゴリと処理順、readme-indexer が書き込む README・手で保守する README・生成ツールが出力する README の扱いは、reference-template の「既存 README の扱い」に従う。選んだ README のうち手で保守するものは、main が同節の「手で保守する README」に従って直接直す
 2. **skill-author（subagent_type: skill-author、model: sonnet）** — `skills/<library>/SKILL.md` のディレクトリツリーとマッピング表を更新させる（カテゴリの追加・削除、子索引の新設、または SKILL.md のツリーやマッピング表が参照する子索引・ページの追加・改名・削除があった場合のみ。新設した子索引は SKILL.md がまだ参照していないため、ツリーへの追加と探索経路の要否を skill-author が判断する）。渡すパラメータ: `library`、`skill_dir`（`skills/<library>/`）、`user-invocable`（既存 SKILL.md の値を踏襲）
 
 ### Step 4: 品質を検証する
