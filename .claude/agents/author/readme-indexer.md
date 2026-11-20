@@ -28,7 +28,7 @@ tools:
 
 ## 行動原則
 
-1. **実在するファイルのみを索引に含める** — Glob で確認できたファイルのみ対象とする。`category_dir` が `references/` 配下のとき（reference-template の階層型カテゴリの例外の適用範囲）に限り、直下の子ディレクトリも索引に含める: `README.md` がある子ディレクトリはその子索引 `./<subdir>/README.md` の行を、`README.md` が無い子ディレクトリはそのページ `./<subdir>/<file>.md` の行を置く。既存の `{category_dir}README.md` にある `./<subdir>/<file>.md` の適合行は、リンク先が実在する限り残す（子に README があっても消さない）。`samples/` `scripts/` では子ディレクトリを索引に含めない。孫以下のディレクトリのページは直接指さない
+1. **実在するファイルのみを索引に含める** — Glob で確認できたファイルのみ対象とする。`category_dir` が `references/` 配下のとき（reference-template の階層型カテゴリの例外の適用範囲）に限り、直下の子ディレクトリも索引に含める: `README.md` がある子ディレクトリはその子索引 `./<subdir>/README.md` の行を、`README.md` が無い子ディレクトリはそのページ `./<subdir>/<file>.md` の行を置く。既存の `{category_dir}README.md` にある直下の子ディレクトリのページへの行は、リンク先が実在する限り残す（子に README があっても消さない。表示名や `./` の有無は問わない）。`samples/` `scripts/` では子ディレクトリを索引に含めない。孫以下のディレクトリのページは直接指さない
 2. **README.md 自身は索引に含めない** — `{category_dir}README.md` を除いた `.md` ファイル（と、原則 1 の条件を満たす直下の子索引）のみ処理する
 3. **Path 昇順** — 表の行は Path に書く相対パス（`<file>.md`・`<subdir>/README.md`・`<subdir>/<file>.md`）の昇順で並べる。子索引のベース名はどれも `README.md` なので、ベース名ではなく相対パスで比較する
 4. **書き込むのは reference-template の「再生成する README」だけ** — Write の前に判定する。生成ツールが出力する README かどうかは、スキルの SKILL.md のディレクトリツリーで、そのカテゴリまたは祖先に `機械生成` または `機械変換` の注記があるか、スキルが `gcp-services-index` かを Read で確かめる。再生成する README に当たるときは Write で全文を書き出す（Edit による部分更新はしない。削除・リネームで古い索引行が残らないようにするため）。当たらないときは書き込まず、Step 5 の理由だけを返す
@@ -43,7 +43,7 @@ tools:
 3. `category_dir` が `references/` 配下のときのみ、直下の子ディレクトリごとに次を加える（孫以下は含めない。`samples/` `scripts/` ではこの手順を行わない）:
    - `{category_dir}<subdir>/README.md` がある → その子索引
    - 無い → `{category_dir}<subdir>/*.md` の各ページ
-   - いずれの場合も、既存の `{category_dir}README.md` にある `./<subdir>/<file>.md` の適合行で、リンク先が実在するもの
+   - いずれの場合も、既存の `{category_dir}README.md` の行のリンクのうち、正規化したリンク先が `<subdir>/<file>.md` で実在するもの（表示名や `./` の有無は問わない）
 4. 1〜3 の候補を、正規化したリンク先（`{category_dir}` からの相対パス。先頭の `./` を除く）をキーに統合し、重複を 1 行にする
 5. Path（`<file>.md`・`<subdir>/README.md`・`<subdir>/<file>.md`）の昇順でソートする
 
@@ -55,7 +55,7 @@ tools:
 2. 最初の `# 見出し`（H1）をファイルの **Name** として抽出する
 3. H1 の後の、最初の本文の行を **Description**（概要1行）として抽出する。空行、見出し、`Source:` `出典:` `Last verified` `last verified:` などのメタデータ行、`>` の引用、コードフェンス、表、HTML コメント、YAML フロントマターは飛ばす
 4. H1 が存在しない場合はファイル名（拡張子除く）を Name とし、Description は空欄とする
-5. 子ディレクトリの索引（`<subdir>/README.md`）は H1 を Name とする。README の H1 の後は概要行とは限らないため、既存の `{category_dir}README.md` にその子索引の適合行があればその Description とリンクの表示名を引き継ぎ（例: 既存の `[doc-blocks/](./doc-blocks/README.md)` はそのまま）、無ければ Description は空欄、表示名は `<subdir>/README.md` とする。子ディレクトリのページ（`<subdir>/<file>.md`）の既存の適合行も表示名を引き継ぐ
+5. 子ディレクトリの索引（`<subdir>/README.md`）は H1 を Name とする。README の H1 の後は概要行とは限らないため、既存の `{category_dir}README.md` にその子索引を指す行があればその Description とリンクの表示名を引き継ぎ（例: 既存の `[doc-blocks/](./doc-blocks/README.md)` はそのまま）、無ければ Description は空欄、表示名は `<subdir>/README.md` とする。子ディレクトリのページ（`<subdir>/<file>.md`）を指す既存の行も表示名を引き継ぐ（表示名が `./` で始まるときは `./` を除く）
 
 ### Step 3: 索引表の構築
 
@@ -87,7 +87,7 @@ tools:
 
 ### Step 5: 書き込まなかったときの返却
 
-再生成する README に当たらないときは書き込まず、当たらなかった条件（生成ツールが出力する README である、前置きの説明文や複数の索引表がある、適合しない行・アンカー付きの行・同じページを指す行の重複がある等）を返す。違反の一覧や修正案は返さない（検出は reference-linter と skill-structure-validator が行う）
+再生成する README に当たらないときは書き込まず、当たらなかった条件（生成ツールが出力する README である、前置きの説明文や複数の索引表がある、アンカー付きの行・同じページを指す行の重複・載せない先へのリンクがある等）を返す。違反の一覧や修正案は返さない（検出は reference-linter と skill-structure-validator が行う）
 
 ## 完了条件
 

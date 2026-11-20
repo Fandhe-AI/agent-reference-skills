@@ -89,7 +89,7 @@ samples 本文の不備は sample-curator、scripts 本文の不備は script-co
 - `target_files` 指定時: そのリストに含まれる `README.md` のうち、スキルの `references/` 配下にあるもの（`skills/<name>/references/**/README.md`）と `skills/<name>/samples/README.md` `skills/<name>/scripts/README.md`。リポジトリルートの README や `samples/` の下の個別ディレクトリにある README などは対象外
 - 指定なし: `skills/*/references/**/README.md` を Glob で再帰的に列挙した各 README と、存在する `skills/*/samples/README.md` `skills/*/scripts/README.md`
 
-索引表・列の分割・適合行は reference-template の「索引表と適合行の定義」に従う。ヘッダーが `| Name | Description | Path |` でない表（`syncpack` の `update-groups/README.md` の 2 列の共通プロパティ表など、手で保守する README に残す表）の行は 1〜3・5 の検査をしない。
+索引表・列の分割・適合行は reference-template の「索引表と適合行の定義」に従う。ヘッダーが `| Name | Description | Path |` でない表（`syncpack` の `update-groups/README.md` の 2 列の共通プロパティ表など、手で保守する README に残す表）の行は 1〜3・5 と 4 の書式の判定をしない（4 のリンクの実在確認だけを行う）。
 
 1. `| Name | Description | Path |` ヘッダー行が存在するか
 2. 各ヘッダー行で始まる表が索引表として成立しているか（空行を挟まない次の行が 3 列の区切り行か）。成立していない表は違反とし、その表の行には 3・5 と 4 の書式の判定を行わない（4 のリンク切れの確認は行う）

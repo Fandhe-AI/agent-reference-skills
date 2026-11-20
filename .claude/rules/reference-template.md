@@ -63,10 +63,10 @@ functionName(param: Type): ReturnType
 
 reference-linter・skill-structure-validator・readme-indexer はこの定義を共通に使う。
 
-- **索引表**: `| Name | Description | Path |` のヘッダー行と、空行を挟まない次の行の 3 列の区切り行（`| --- | --- | --- |` 等。ダッシュ数や前後の空白の差異は問わない）と、それに続く `|` で始まる行のまとまり。ヘッダー行の次の行が区切り行でないもの（区切り行が無い、または空行を挟む）は GFM で表にならないため、索引表として成立しない（書式違反）。ヘッダーが `| Name | Description | Path |` でない表（補足の表）は索引表ではない
+- **索引表**: `| Name | Description | Path |` のヘッダー行と、空行を挟まない次の行の 3 列の区切り行（`| --- | --- | --- |` 等。ダッシュ数や前後の空白の差異は問わない）と、それに続くデータ行（空行、または見出し・リスト・引用・コードフェンスなど別のブロックの始まりの直前までの行。GFM と同じく、`|` で始まらない行もデータ行に含める）のまとまり。ヘッダー行の次の行が区切り行でないもの（区切り行が無い、または空行を挟む）は GFM で表にならないため、索引表として成立しない（書式違反）。ヘッダーが `| Name | Description | Path |` でない表（補足の表）は索引表ではない
 - **列の分割**: 行は GitHub Flavored Markdown の規則で列に分ける。エスケープしていない `|` は、バッククォートの中でも列を分ける。セル内の `|` は `\|` と書く
 - **適合行**: 成立した索引表のデータ行で、次をすべて満たすもの
-  1. 3 列である
+  1. `|` で始まり、3 列である
   2. Path セルにリンクがちょうど 1 つある
   3. リンク先が `./` で始まり、検査中の README 自身（`./README.md`）ではない（`./<file>.md#<anchor>` のようにアンカーが付いてもよく、判定はアンカーを除いたパスで行う）
   4. リンク先が同じディレクトリのページ `./<file>.md` なら、表示名が `<file>.md`（`[<file>.md](./<file>.md)`）。`references/` 配下の README で直下の子ディレクトリを指す行（`./<subdir>/README.md`・`./<subdir>/<file>.md`）は表示名を問わない（`[doc-blocks/](./doc-blocks/README.md)` のような既存の表記も可）。それ以外のリンク先（孫以下、ディレクトリ外、`samples/` `scripts/` の README から子ディレクトリ）は適合しない
@@ -77,8 +77,8 @@ reference-linter・skill-structure-validator・readme-indexer はこの定義を
 
 - **再生成する README**: 次の両方を満たすもの。readme-indexer がページから再生成する（Name・Description はページから抽出し直す。既存の子索引の行の Description と表示名は引き継ぐ）
   - 下記の生成ツールが出力する README ではない
-  - README が無い、または H1 と索引表 1 つだけで、すべてのデータ行が適合行で、アンカー付きの行（`./<file>.md#<anchor>`）も同じページを指す行の重複も無い
-- **手で保守する README**: それ以外の README（前置きの説明文、`##` 節ごとの複数の索引表、`syncpack` の `update-groups/README.md` の共通プロパティ表のような補足の節、`anthropic-*` / `openai-*` の README レベル距離線、関数ごとのアンカー付きの行、適合しない行を持つもの）。readme-indexer は書き込まない。違反は reference-linter と skill-structure-validator が検出し、呼び出し元がこの定義を満たすように README を直接編集する。既存の内容は削除しない
+  - README が無い、または H1 と索引表 1 つだけで、再生成で失われる行が無い。つまり、アンカー付きの行（`./<file>.md#<anchor>`）、同じページを指す行の重複、readme-indexer が載せない先（孫以下・ディレクトリ外、`samples/` `scripts/` の README から子ディレクトリ）を指すリンクのいずれも無い（表示名・`./` の有無・列数・1 行のリンク数の違反は再生成で直るので妨げない）
+- **手で保守する README**: それ以外の README（前置きの説明文、`##` 節ごとの複数の索引表、`syncpack` の `update-groups/README.md` の共通プロパティ表のような補足の節、`anthropic-*` / `openai-*` の README レベル距離線、関数ごとのアンカー付きの行などを持つもの）。readme-indexer は書き込まない。呼び出し元（main）が、今回追加・改名・削除したページや子索引の行を該当する表へ直接反映し、reference-linter と skill-structure-validator の指摘もこの定義を満たすように直す。これは delegation.md の「README 索引表の再生成」には当たらない。既存の内容は削除しない
 - **生成ツールが出力する README**: スキルの SKILL.md のディレクトリツリーで、そのカテゴリまたは祖先のディレクトリに `機械生成` または `機械変換` と注記されたもの（`gcp-*` の `gcloud/` `rest/` `iam/` 等、`gcp-bigquery` の `googlesql-syntax/` `legacy-sql/` 等）と、`gcp-services-index` のすべての README。readme-indexer は書き込まず、README を直接編集もしない。生成ツール（`_/tools/gcp/` 等）を直して再生成する。生成ツールは `.gitignore` の対象の `_/` にあり、メンテナーの作業ツリーにしか無い。生成ツールが無いチェックアウトでは、対象の README と未解消の指摘を報告して終える
 - **呼び出し元が渡すカテゴリ**: 作業の後に README があるべきディレクトリだけを readme-indexer に渡す（廃止した子索引のディレクトリは渡さない）。子ディレクトリの README やページの増減・改名で親の索引が変わるときは、親のカテゴリも渡し、子を先に処理する
 
