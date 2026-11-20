@@ -101,6 +101,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Versions: v1, v1beta1
 - `GET https://analyticshub.googleapis.com/v1/{+parent}/listings`
 - Lists all listings in a given project and location.
+- Scope (from the path pattern of `parent`): a call applies only to the parent `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`, which is narrower than the scope the description above names.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListListingsResponse`
 
@@ -189,6 +190,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Versions: v1
 - `GET https://analyticshub.googleapis.com/v1/{+parent}/queryTemplates`
 - Lists all QueryTemplates in a given project and location.
+- Scope (from the path pattern of `parent`): a call applies only to the parent `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`, which is narrower than the scope the description above names.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListQueryTemplatesResponse`
 

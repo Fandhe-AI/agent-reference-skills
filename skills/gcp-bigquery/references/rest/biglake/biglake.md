@@ -221,6 +221,7 @@ Base URL: `https://biglake.googleapis.com`. Methods are listed by `id`; the `Ver
 - Versions: v1
 - `GET https://biglake.googleapis.com/v1/{+parent}/catalogs`
 - List all catalogs in a specified project.
+- Scope (from the path pattern of `parent`): a call applies only to the parent `projects/{projectsId}/locations/{locationsId}`, which is narrower than the scope the description above names.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListCatalogsResponse`
 
