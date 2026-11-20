@@ -5,7 +5,7 @@ Control how and whether dependencies receive updates from the npm registry via t
 | Name | Activation Property | Description | Path |
 |------|---------------------|-------------|------|
 | ignored | `isIgnored: true` | Exclude matched dependencies from all registry update checks | [./ignored.md](./ignored.md) |
-| targeted | `target: "patch"|"minor"|"latest"` | Restrict the highest update version offered for matched dependencies | [./targeted.md](./targeted.md) |
+| targeted | `target: "patch"\|"minor"\|"latest"` | Restrict the highest update version offered for matched dependencies | [./targeted.md](./targeted.md) |
 
 ## Common Filter Properties
 

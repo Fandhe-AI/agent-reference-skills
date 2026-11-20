@@ -93,6 +93,7 @@ samples 本文の不備は sample-curator、scripts 本文の不備は script-co
 2. 3カラムの区切り行（`| --- | --- | --- |` 等。ダッシュ数や前後の空白の差異は許容する）が存在するか
 3. 各行の `Path` セルが `[{filename}.md](./{filename}.md)` 形式のリンクになっているか。1 つのセルに複数のリンクがある行は違反とする（reference-template は 1 行 1 リンク）。階層型カテゴリ（reference-template の例外。`references/` 配下の README のみ）では、リンク先が直下の子ディレクトリの索引 `./{subdir}/README.md` の行と、直下の子ディレクトリのページ `./{subdir}/{filename}.md` の行も許容し、同じ表に混在してよい。これらの行はリンク先で判定し、表示名は問わない（`[{subdir}/README.md]` のほか既存の `[doc-blocks/]` のような表記も可）。リンク先が実在しない行、検査中の README 自身（`./README.md`）を指す行、孫以下のディレクトリのページを直接指す行、`samples/` `scripts/` の README で子ディレクトリを指す行は違反とする
 4. ヘッダー以外の行が空でないか
+5. 各データ行が、GitHub Flavored Markdown の区切り規則で 3 列になっているか（エスケープしていない `|` はバッククォートの中でも列を分けるため、セル内の `|` は `\|` と書く）。3 列でない行は 3 の判定より前に違反とする
 
 ### Step 4: SKILL.md frontmatter の YAML 妥当性確認
 
