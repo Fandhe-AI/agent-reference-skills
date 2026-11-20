@@ -354,7 +354,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `nextPageToken` | string | Output only. The next-pagination token. For multiple-page list results, this token can be used as the `GetTransferRunLogRequest.page_token` to request the next page of list results. |
+| `nextPageToken` | string | Output only. The next-pagination token. For multiple-page list results, this token can be used as the `pageToken` query parameter of the same `transferLogs.list` method (`ListTransferLogsRequest.page_token`; request type name corrected, see Notes) to request the next page of list results. |
 | `transferMessages` | `array<TransferMessage>` | Output only. The stored pipeline transfer messages. |
 
 ### `ListTransferResourcesResponse` fields
@@ -589,6 +589,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 - Generated from the Discovery document(s) v1 of `bigquerydatatransfer` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
 - Corrected from the official docs: the `TransferRunBrief.run` description gives the format `projects/{project}/locations/{location}/transferConfigs/{transfer_config}/run/{run}`; the collection is `runs` (the bigquerydatatransfer.v1 Discovery path pattern of `projects.locations.transferConfigs.runs.get` is `projects/[^/]+/locations/[^/]+/transferConfigs/[^/]+/runs/[^/]+`), so the value has the form `projects/{project}/locations/{location}/transferConfigs/{transfer_config}/runs/{run}`.
+- Corrected from the Discovery document: the `nextPageToken` description of `ListTransferLogsResponse` says the token "can be used as the `GetTransferRunLogRequest.page_token`"; the same text is in the proto. There is no `GetTransferRunLogRequest` message or method in the proto or the Discovery document. The response is returned by `transferLogs.list` (with and without `locations` in the path), whose request message is `ListTransferLogsRequest`, and its `page_token` ("Pagination token ... Use the `page_token` value to request the next page of list results") is the `pageToken` query parameter of those methods (`google/cloud/bigquery/datatransfer/v1/datatransfer.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/datatransfer/v1/datatransfer.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Deprecated: `DataSource.supportsMultipleTransfers` (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "This field has no effect."
 - Deprecated: `DataSource.transferType` (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "This field has no effect."
 - Deprecated: `DataSourceParameter.fields` (its Discovery description). Replacement or status stated in the description: "This field has no effect."

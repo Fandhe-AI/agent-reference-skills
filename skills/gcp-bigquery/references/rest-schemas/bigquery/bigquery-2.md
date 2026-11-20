@@ -20,7 +20,6 @@ Message types referenced by the methods listed under `references/rest/bigquery/`
 
 ### `JobStatus`
 
--
 - Version: v2
 
 ### `JoinRestrictionPolicy`
@@ -41,7 +40,6 @@ Message types referenced by the methods listed under `references/rest/bigquery/`
 
 ### `JsonValue`
 
--
 - Version: v2
 - Type: any
 
@@ -117,12 +115,10 @@ Message types referenced by the methods listed under `references/rest/bigquery/`
 
 ### `Model`
 
--
 - Version: v2
 
 ### `ModelDefinition`
 
--
 - Version: v2
 
 ### `ModelExtractOptions`
@@ -289,7 +285,6 @@ version: 3
 
 ### `QueryResponse`
 
--
 - Version: v2
 
 ### `QueryTimelineSample`
@@ -299,7 +294,6 @@ version: 3
 
 ### `RangePartitioning`
 
--
 - Version: v2
 
 ### `RangeValue`
@@ -329,7 +323,6 @@ version: 3
 
 ### `RestrictionConfig`
 
--
 - Version: v2
 
 ### `Routine`
@@ -479,7 +472,6 @@ version: 3
 
 ### `Streamingbuffer`
 
--
 - Version: v2
 
 ### `StringHparamSearchSpace`
@@ -494,12 +486,10 @@ version: 3
 
 ### `Table`
 
--
 - Version: v2
 
 ### `TableCell`
 
--
 - Version: v2
 
 ### `TableChangeInsight`
@@ -524,7 +514,6 @@ version: 3
 
 ### `TableDataList`
 
--
 - Version: v2
 
 ### `TableFieldSchema`
@@ -544,7 +533,6 @@ version: 3
 
 ### `TableReference`
 
--
 - Version: v2
 
 ### `TableReplicationInfo`
@@ -554,7 +542,6 @@ version: 3
 
 ### `TableRow`
 
--
 - Version: v2
 
 ### `TableSchema`
@@ -574,7 +561,6 @@ version: 3
 
 ### `TimePartitioning`
 
--
 - Version: v2
 
 ### `TrainingOptions`
