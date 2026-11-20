@@ -20,7 +20,7 @@ tools:
 
 - カテゴリディレクトリ内の `.md` ファイルを走査して README.md の索引表を構築
 - 対応ディレクトリ: `references/<category>/` / `samples/` / `scripts/`（いずれも `| Name | Description | Path |` 形式で共通）
-- ファイル名昇順のソート・相対パスリンクの生成
+- Path 昇順のソート・相対パスリンクの生成
 
 ## 受け取る入力
 
@@ -29,8 +29,8 @@ tools:
 ## 行動原則
 
 1. **実在するファイルのみを索引に含める** — Glob で確認できたファイルのみ対象とする
-2. **README.md 自身は索引に含めない** — `README.md` を除いた `.md` ファイルのみ処理する
-3. **ファイル名昇順** — 表の行はファイル名（パスのベース名）の昇順で並べる
+2. **README.md 自身は索引に含めない** — `{category_dir}README.md` を除いた `.md` ファイル（と、Step 1 の 3 の子ディレクトリの候補）のみ処理する
+3. **Path 昇順** — 表の行は `{category_dir}` からの相対パスの昇順で並べる
 4. **既存 README.md がある場合は上書き** — Write で完全に置き換える（Edit による部分更新はしない。削除・リネームで古い索引行が残らないようにするため）
 5. **category_dir は末尾 `/` を補って扱う** — 末尾にスラッシュが無いパス（例: `.../schemas`）を受け取った場合も `.../schemas/` に正規化してから Glob する（`{category_dir}*.md` が隣接ディレクトリに誤マッチしないように）
 
@@ -40,7 +40,8 @@ tools:
 
 1. `{category_dir}*.md` を Glob で列挙する
 2. `README.md` をリストから除外する
-3. ファイル名昇順でソートする
+3. `category_dir` が `references/` 配下のときに限り、直下の各子ディレクトリについて、`<subdir>/README.md` があればその子索引を、無ければ `<subdir>/*.md` の各ページを加える（孫以下は加えない。reference-template の階層型カテゴリの例外）
+4. `{category_dir}` からの相対パスの昇順でソートする
 
 ### Step 2: 各ファイルの情報抽出
 
@@ -50,6 +51,7 @@ tools:
 2. 最初の `# 見出し`（H1）をファイルの **Name** として抽出する
 3. H1 の直後の空行をスキップし、最初の非空行を **Description**（概要1行）として抽出する
 4. H1 が存在しない場合はファイル名（拡張子除く）を Name とし、Description は空欄とする
+5. 子索引（`<subdir>/README.md`）は H1 を Name とし、その索引表に載るページの Name を「、」で区切って並べたものを Description とする
 
 ### Step 3: 索引表の構築
 
@@ -59,10 +61,13 @@ tools:
 | Name | Description | Path |
 |------|-------------|------|
 | {H1 見出し} | {概要1行} | [{ファイル名}.md](./{ファイル名}.md) |
+| {H1 見出し} | {概要1行} | [{ファイル名}.md](./{subdir}/{ファイル名}.md) |
+| {子索引の H1} | {収録ページの Name の列挙} | [{subdir}/README.md](./{subdir}/README.md) |
 ```
 
-- Path の相対リンクは `./` を先頭に付ける（例: `[foo.md](./foo.md)`）
-- Description が長い場合は50文字程度で切り詰め、末尾に `…` を付ける
+- Path の相対リンクは `./` を先頭に付ける（例: `[foo.md](./foo.md)`）。子ディレクトリのページは `[foo.md](./<subdir>/foo.md)`、子索引は `[<subdir>/README.md](./<subdir>/README.md)` とする
+- Description が長い場合は50文字程度で切り詰め、末尾に `…` を付ける（子索引の列挙はページ名の区切りで切る）
+- Name・Description に含まれる未エスケープの `|` は `\|` にする（インラインコード内でも列区切りになるため）
 
 ### Step 4: README.md の生成
 
@@ -73,16 +78,16 @@ tools:
 
 | Name | Description | Path |
 |------|-------------|------|
-| {Name} | {Description} | [{file}.md](./{file}.md) |
+| {Name} | {Description} | {Step 3 の Path} |
 ```
 
-- H1 はカテゴリディレクトリ名（元の表記）のみとし、前置きの説明文は書かない（reference-template 準拠）
+- H1 はカテゴリディレクトリ名（子ディレクトリなら、その子ディレクトリ名。元の表記）のみとし、前置きの説明文は書かない（reference-template 準拠）
 
 ## 完了条件
 
-- 表の行数と実 `.md` ファイル数（README.md 除く）が一致している
+- 表の行数と Step 1 の一覧の件数が一致している
 - Path の相対リンクが実在するファイルを指している
-- README.md がファイル名昇順で並んでいる
+- 表の行が Path 昇順で並んでいる
 - README.md 自身が索引に含まれていない
 
 ## 参照ルール
