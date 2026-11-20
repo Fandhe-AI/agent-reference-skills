@@ -1333,6 +1333,11 @@ this function for a particular input will never change and matches the output of
 function when using
 [GoogleSQL](https://cloud.google.com/bigquery/docs/reference/standard-sql/).
 Respects `IGNORE CASE` for strings, returning case invariant values.
+(The output matches the GoogleSQL `FARM_FINGERPRINT` when the function gets the same bytes. In a query
+with `IGNORE CASE`, the official docs don't say how the case of the input is normalized, so the
+values for strings with upper-case ASCII letters can differ from the GoogleSQL values; don't join or
+sample against fingerprints stored from such a query without computing them again in GoogleSQL.
+Added; see Notes.)
 
 `IF(condition, true_return, false_return)`
 :   Returns either `true_return` or `false_return`,
@@ -1545,6 +1550,7 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 - Conflicting official statements: the URL function notes say that upper-case characters "will result in a NULL or otherwise incorrect result" for all of the URL parsing functions, but the comparison table in legacy-sql/migrating-from-legacy-sql.md gives, for `"http://x.Co.uk"`, `HOST` `"x.Co.uk"` (the host with its original case), `TLD` `".uk"` and `DOMAIN` `"Co.uk"` (the two-part suffix `.co.uk` is not recognized, compare `TLD('http://www.google.co.uk:80/index.html')`, which returns `'.co.uk'`). So with mixed-case input, `TLD` and `DOMAIN` can return a wrong result and `HOST` keeps the case of the input; pass the input through `LOWER()` before calling them. The notes are kept as in the official docs.
 - Added (not in the official docs): the `CUME_DIST` formula `<number of rows preceding or tied with the current row> / <total rows>` does not say whether the current row is counted; the shown result (`handkerchief` `0.2`, the tied `displeasure` and `instruments` `0.8`, of 5 rows) counts the current row, the rows before it and the rows tied with it once each. A sentence that says so is added after the formula.
 - Added (not in the official docs): the "two-day range up to now" example lists the tables `mydata.people20140323` to `mydata.people20140325` and uses `CURRENT_TIMESTAMP()`, so it reads those tables only when it runs on 2014-03-25; a sentence after the query says that the range is relative to the time when the query runs. The query is kept as in the official docs.
+- Added (not in the official docs): the `FARM_FINGERPRINT` description says that the output "matches the output of the `FARM_FINGERPRINT` function when using GoogleSQL" and that the function "Respects `IGNORE CASE` for strings, returning case invariant values". The GoogleSQL function hashes the bytes that it gets, and the official docs don't say how legacy SQL normalizes the case, so a sentence is added that the outputs match only for the same bytes, and that fingerprints from an `IGNORE CASE` query can't be assumed to match.
 
 ## Related
 
