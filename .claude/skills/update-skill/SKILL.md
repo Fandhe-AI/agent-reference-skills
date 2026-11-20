@@ -79,7 +79,7 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 
 更新後、以下を順に実行する。
 
-1. **readme-indexer（subagent_type: readme-indexer、model: haiku）** — reference-updater の更新レポートの「変更カテゴリ一覧」に挙がった references カテゴリ、および変更があった `samples/` `scripts/` の `README.md` 索引を再生成させる（reference-updater は apply 時に README 索引を再生成しないため、ここで必ず実行する）。**変更のあったカテゴリ/ディレクトリごとに `category_dir`（例: `skills/<library>/references/<category>/`, `skills/<library>/samples/`, `skills/<library>/scripts/`）を渡して起動する**（readme-indexer は 1 起動 = 1 カテゴリ）。`references/` の子ディレクトリのページが変わった場合は、そのページを収録する子ディレクトリの `README.md` も、既にある場合に限り（無いディレクトリには作らない）、そのディレクトリを `category_dir` に渡して再生成させる。readme-indexer が書き込みを見送った README（階層型カテゴリや、複数の表・見出し・前置き文を持つもの）は main も書き換えず、返された理由と表をユーザーへ報告する
+1. **readme-indexer（subagent_type: readme-indexer、model: haiku）** — reference-updater の更新レポートの「変更カテゴリ一覧」に挙がった references カテゴリ、および変更があった `samples/` `scripts/` の `README.md` 索引を再生成させる（reference-updater は apply 時に README 索引を再生成しないため、ここで必ず実行する）。**変更のあったカテゴリ/ディレクトリごとに `category_dir`（例: `skills/<library>/references/<category>/`, `skills/<library>/samples/`, `skills/<library>/scripts/`）を渡して起動する**（readme-indexer は 1 起動 = 1 カテゴリ）。`references/` の子ディレクトリのページが変わった場合は、変更ファイルのパスからそのページを載せる索引を求め、`README.md` を持つ子ディレクトリならその子ディレクトリを、持たなければ親のディレクトリを `category_dir` に渡す。子索引の新設・削除やリネームがあれば親のディレクトリも渡す。readme-indexer が「索引に載せるページが無い」と返した README は、main が README と親の索引の行を削除する。readme-indexer が書き込みを見送った README（H1 と索引表 1 つ以外の内容を持つもの）は、main が返された行を既存の表・見出し・前置き文を保って反映する
 2. **skill-author（subagent_type: skill-author、model: sonnet）** — `skills/<library>/SKILL.md` のディレクトリツリーとマッピング表を更新させる（カテゴリの追加・削除があった場合のみ）。渡すパラメータ: `library`、`skill_dir`（`skills/<library>/`）、`user-invocable`（既存 SKILL.md の値を踏襲）
 
 ### Step 4: 品質を検証する
@@ -95,7 +95,7 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 - references 本文（新規ページの不備）→ **reference-researcher**
 - samples 本文の不備 → **sample-curator**
 - scripts 本文の不備 → **script-collector**
-- 各カテゴリ・子ディレクトリの `README.md` 索引の不備 → **readme-indexer**（その README のディレクトリを `category_dir` に渡す。書き込みを見送った README の不備は差し戻さず、手作業の対象としてユーザーへ報告する。この不備は Step 4 の完了を妨げない）
+- 各カテゴリ・子ディレクトリの `README.md` 索引の不備 → **readme-indexer**（その README のディレクトリを `category_dir` に渡す。書き込みを見送った README は main が直す）
 - SKILL.md の `description`（ヒット率・長さ・YAML の `#` 起因の不備）→ **description-optimizer**
 - SKILL.md のツリー・マッピング表・`description` 以外の frontmatter の不備 → **skill-author**
 
@@ -111,7 +111,7 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 
 - [ ] reference-updater による差分検出が完了していることを確認する
 - [ ] mode=apply 時: `git diff skills/<library>/` で差分が適用されていることを確認する
-- [ ] reference-linter と skill-structure-validator の検証が PASS していることを確認する（readme-indexer が書き込みを見送った README の指摘は除き、ユーザーへ報告済みであること）
+- [ ] reference-linter と skill-structure-validator の検証が PASS していることを確認する
 - [ ] CLAUDE.md が最新のスキル構成を反映していることを確認する（構成変更があった場合）
 
 ## 注意事項
