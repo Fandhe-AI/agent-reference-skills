@@ -74,8 +74,13 @@ reference-linter・skill-structure-validator・readme-indexer はこの定義を
 
 ### 既存 README の扱い
 
-- H1 と索引表 1 つだけの README は、readme-indexer がページから再生成する（Name・Description はページから抽出し直す。既存の子索引の行の Description と表示名は引き継ぐ）
-- それ以外の README（前置きの説明文、`##` 節ごとの複数の索引表、`syncpack` の `update-groups/README.md` の共通プロパティ表のような補足の節、`anthropic-*` / `openai-*` の README レベル距離線、旧書式の索引を持つもの）は手で保守する。これらの内容は削除しない。readme-indexer は書き込まずに差分（載っていないページ・リンク切れの行・適合しない行）を報告し、呼び出し元がその報告に従って README を直接編集する
+- H1 と索引表 1 つだけで、アンカー付きの行（`./<file>.md#<anchor>`）も同じページを指す行の重複も無い README は、readme-indexer がページから再生成する（Name・Description はページから抽出し直す。既存の子索引の行の Description と表示名は引き継ぐ）
+- それ以外の README（前置きの説明文、`##` 節ごとの複数の索引表、`syncpack` の `update-groups/README.md` の共通プロパティ表のような補足の節、`anthropic-*` / `openai-*` の README レベル距離線、旧書式の索引、`gcp-bigquery` の `googlesql-functions/README.md` のような関数ごとのアンカー付きの行を持つもの）は手で保守する（生成ツールが出力する README はその生成ツールで直す）。これらの内容は削除しない。readme-indexer は書き込まずに差分（載っていないページ・リンク切れの行・適合しない行・旧書式の索引）を報告し、呼び出し元がその報告に従って README を直接編集する
+- **旧書式の索引**: ヘッダーが `| Name | Description | Path |` でない表やリストで、同じディレクトリ（または `references/` 配下の README では直下の子ディレクトリ）のページへのリンクを持つもの（例: `| Name | Path |` の表、`| Name | Activation Property | Description | Path |` のような 4 列の表、ページへのリンクの箇条書き）。補足の表（ページへのリンクを持たない表）は旧書式の索引ではない
+- 手で保守する README を直すときは次に従う
+  - 適合しない行は、その行がある索引表の中で置き換える（複数リンクの行は 1 リンク 1 行に分け、分けた行を元の行の位置に置く。別の表や節へ移さない）
+  - 旧書式の索引は、同じ位置で標準の索引表に変換する。既存の名前・説明・リンク先を引き継ぎ（4 列以上の表は余った列の内容を Description に括弧書きで入れる）、Path は適合行の形にする
+  - 載っていないページの行は、内容に合う節の索引表に加える（索引表が無ければ、変換した旧書式の索引か、H1 の直後の説明文の後に新設した索引表に加える）
 
 ## 関連
 
