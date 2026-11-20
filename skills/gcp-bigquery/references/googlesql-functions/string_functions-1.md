@@ -54,7 +54,7 @@ canonical equivalence.
 | [`REGEXP_CONTAINS`](#regexp_contains) | Checks if a value is a partial match for a regular expression. |
 | [`REGEXP_EXTRACT`](#regexp_extract) | Produces a substring that matches a regular expression. |
 | [`REGEXP_EXTRACT_GROUPS`](#regexp_extract_groups) | Produces substrings that match multiple capturing groups in a regular expression. |
-| [`REGEXP_EXTRACT_ALL`](#regexp_extract_all) | Produces an array of all substrings that match a regular expression. |
+| [`REGEXP_EXTRACT_ALL`](string_functions-2.md#regexp_extract_all) | Produces an array of all substrings that match a regular expression. |
 | [`REGEXP_INSTR`](string_functions-2.md#regexp_instr) | Finds the position of a regular expression match in a value, optionally starting the search at a given offset or occurrence. |
 | [`REGEXP_REPLACE`](string_functions-2.md#regexp_replace) | Produces a `STRING` value where all substrings that match a regular expression are replaced with a specified value. |
 | [`REGEXP_SUBSTR`](string_functions-2.md#regexp_substr) | Synonym for `REGEXP_EXTRACT`. |
@@ -1036,6 +1036,7 @@ Additional information about format specifiers:
 
 ###### Format specifiers
 
+|   |   |   |   |
 |---|---|---|---|
 | Specifier | Description | Examples | Types |
 | `d` or `i` | Decimal integer | 392 | `INT64` |
@@ -1062,6 +1063,7 @@ These sub-specifiers must comply with the following specifications.
 
 ###### Flags
 
+|   |   |
 |---|---|
 | Flags | Description |
 | `-` | Left-justify within the given field width; Right justification is the default (see width sub-specifier) |
@@ -1076,6 +1078,7 @@ flags aren't relevant for some element type, they are ignored.
 
 ###### Width
 
+|   |   |
 |---|---|
 | Width | Description |
 | \<number\> | Minimum number of characters to be printed. If the value to be printed is shorter than this number, the result is padded with blank spaces. The value isn't truncated even if the result is larger |
@@ -1083,6 +1086,7 @@ flags aren't relevant for some element type, they are ignored.
 
 ###### Precision
 
+|   |   |
 |---|---|
 | Precision | Description |
 | `.`\<number\> | - For integer specifiers \`%d\`, \`%i\`, \`%o\`, \`%x\`, and \`%X\`: precision specifies the minimum number of digits to be written. If the value to be written is shorter than this number, the result is padded with leading zeros. The value isn't truncated even if the result is longer. A precision of 0 means that no character is written for the value 0. - For specifiers \`%e\`, \`%E\`, \`%f\`, and \`%F\`: this is the number of digits to be printed after the decimal point. The default value is 6. - For specifiers \`%g\` and \`%G\`: this is the number of significant digits to be printed, before the removal of the trailing zeros after the decimal point. The default value is 6. |
@@ -1112,6 +1116,7 @@ The `%p` format specifier produces a one-line printable string. The `%P`
 format specifier produces a multi-line printable string. You can use these
 format specifiers with the following data types:
 
+|   |   |   |
 |---|---|---|
 | **Type** | **%p** | **%P** |
 | JSON | JSON input: ``` JSON ' { "month": 10, "year": 2019 } ' ``` Produces a one-line printable string representing JSON: ``` {"month":10,"year":2019} ``` | JSON input: ``` JSON ' { "month": 10, "year": 2019 } ' ``` Produces a multi-line printable string representing JSON: ``` { "month": 10, "year": 2019 } ``` |
@@ -1133,6 +1138,7 @@ except for the special case of non-finite floating point values.
 
 The `STRING` is formatted as follows:
 
+|   |   |   |
 |---|---|---|
 | **Type** | **%t** | **%T** |
 | `NULL` of any type | NULL | NULL |
@@ -2448,69 +2454,6 @@ SELECT REGEXP_EXTRACT_GROUPS('ID: ', r'ID: (?<item_id__INT64>\d+)?') AS result
  | {NULL item_id}  |
  +-----------------*/
 ```
-
-### `REGEXP_EXTRACT_ALL`
-
-```sql
-REGEXP_EXTRACT_ALL(value, regexp)
-```
-
-**Description**
-
-Returns an array of all substrings of `value` that match the
-[re2 regular expression](https://github.com/google/re2/wiki/Syntax), `regexp`. Returns an empty array
-if there is no match.
-
-If the regular expression contains a capturing group (`(...)`), the function
-returns an array of substrings that are matched by the capturing group.
-
-The `REGEXP_EXTRACT_ALL` function only returns non-overlapping matches. For
-example, using this function to extract `ana` from `banana` returns only one
-substring, not two.
-
-When a capturing group is present, this non-overlapping rule applies to the
-*entire substring* matched by the whole regular expression, not just the part
-within the capturing group. The search for any subsequent match begins
-*after* the end of the entire substring that satisfied the previous match. In
-the examples that follow, the second example illustrates this behavior with the
-pattern `r'\d(\d)\d'`.
-
-Returns an error if:
-
-- The regular expression is invalid
-- The regular expression has more than one capturing group
-
-**Return type**
-
-`ARRAY<STRING>` or `ARRAY<BYTES>`
-
-**Examples**
-
-```sql
-SELECT REGEXP_EXTRACT_ALL('Try `func(x)` or `func(y)`', '`(.+?)`') AS example
-
-/*--------------------+
- | example            |
- +--------------------+
- | [func(x), func(y)] |
- +--------------------*/
-```
-
-The following example demonstrates non-overlapping matches with a capturing
-group:
-
-```sql
-SELECT REGEXP_EXTRACT_ALL('123456', r'\d(\d)\d') AS example;
-
-/*-----------+
- | example   |
- +-----------+
- | ['2', '5'] |
- +-----------*/
-```
-
-The pattern `r'\d(\d)\d'` matches `'123'` and captures `'2'`. The next
-search starts after `'3'`, and then it matches `'456'` and captures `'5'`.
 
 ## Notes
 

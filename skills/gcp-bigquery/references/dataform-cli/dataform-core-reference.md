@@ -12,6 +12,7 @@ and JavaScript files.
 
 ### assert()
 
+|   |   |
 |---|---|
 | `assert` | `(name: string, query?: AContextable<string>)` |
 | `assert` | Adds a Dataform assertion to the compiled graph. Available only in the `/definitions` directory. |
@@ -30,14 +31,15 @@ Context methods are available when evaluating contextable SQL code,
 such as within SQLX files, or when using a
 [`Contextable`](#contextable) argument with Dataform core.
 
+|   |   |
 |---|---|
 | `database` | `() => string` |
 | `database` | Returns the database of this dataset, if applicable. |
 | `name` | `() => string` |
 | `name` | Returns the name of this table. |
-| `ref` | `(ref: Resolvable | string[], rest: string[]) => string` |
+| `ref` | `(ref: Resolvable \| string[], rest: string[]) => string` |
 | `ref` | References another action, adding it as a dependency to this action, returning valid SQL to be used in a `from` expression. This function can be called with a `Resolvable` object, for example: `${ref({ name: "name", schema: "schema", database: "database" })}` This function can also be called using individual arguments for the `"database"`, `"schema"`, and `"name"` values. When only two values are provided, the default database is used and the values are interpreted as `"schema"` and `"name"`. When only one value is provided, the default database and schema are used, with the provided value interpreted as \`"name"\`. `${ref("database", "schema", "name")} ${ref("schema", "name")} ${ref("name")}` |
-| `resolve` | `(ref: Resolvable | string[], rest: string[]) => string` |
+| `resolve` | `(ref: Resolvable \| string[], rest: string[]) => string` |
 | `resolve` | Similar to `ref`, but it does not add the referenced action as a dependency to this action. |
 | `self` | `() => string` |
 | `self` | Equivalent to `resolve(name())`. Returns a valid SQL string that can be used to reference the table produced by this action. |
@@ -65,6 +67,7 @@ dataform.projectConfig.vars.myVariableName === "myVariableValue"
 
 ### declare()
 
+|   |   |
 |---|---|
 | `declare` | `(dataset: dataform.ITarget)` |
 | `declare` | Declares the dataset as a Dataform data source. Available only in the `/definitions` directory. |
@@ -101,10 +104,11 @@ For more information, see
 Defines [Dataform tags](https://docs.cloud.google.com/dataform/docs/configure-additional-actions#add-execution-tags)
 and dependencies applied to a workflow action.
 
+|   |   |
 |---|---|
 | `tags` | `string[]` |
 | `tags` | A list of user-defined tags with which the action should be labeled. |
-| `dependencies` | [`Resolvable| Resolvable[]`](#resolvable) |
+| `dependencies` | [`Resolvable\| Resolvable[]`](#resolvable) |
 | `dependencies` | Dependencies of the action. |
 | `disabled` | `boolean` |
 | `disabled` | If set to true, this action won't be run. However, the action can still be depended upon. Useful for temporarily turning off broken actions. |
@@ -113,6 +117,7 @@ and dependencies applied to a workflow action.
 
 Configuration options for `assertion` action types.
 
+|   |   |
 |---|---|
 | `database` | `string` |
 | `database` | The database (Google Cloud project ID) in which to create the corresponding view for this assertion. |
@@ -131,6 +136,7 @@ Configuration options for `assertion` action types.
 
 BigQuery-specific warehouse options.
 
+|   |   |
 |---|---|
 | `additionalOptions` |   |
 | `additionalOptions` | Key-value pairs for the [table](../googlesql-syntax/data-definition-language-1.md#table_option_list), [view](../googlesql-syntax/data-definition-language-1.md#view_option_list), and [materialized view](../googlesql-syntax/data-definition-language-2.md#materialized_view_option_list) options. Some options, for example, `partitionExpirationDays`, have dedicated type/validity checked fields. For such options, use the dedicated fields. String values must be encapsulated in double-quotes, for example: `additionalOptions: {numeric_option: "5", string_option: '"string-value"'}` If the option name contains special characters, encapsulate the name in quotes, for example: `additionalOptions: { "option-name": "value" }`. |
@@ -153,6 +159,7 @@ BigQuery-specific warehouse options.
 
 Apache Iceberg-specific options for Iceberg managed tables.
 
+|   |   |
 |---|---|
 | `connection` | `string` |
 | `connection` | Optional. The resource name of your Cloud Storage connection, which provides credentials for reading from and writing to external storage. It can be formatted in the following ways: - `PROJECT_ID.LOCATION.CONNECTION_ID` Replace the following values: - <var translate="no">PROJECT_ID</var>: the Google Cloud project ID - <var translate="no">LOCATION</var>: the location name of the connection - <var translate="no">CONNECTION_ID</var>: the name or ID of the connection - `projects/PROJECT_ID/locations/LOCATION/connections/CONNECTION_ID` - `DEFAULT` Defaults to `DEFAULT`. For more information, see the [Default connection overview](https://docs.cloud.google.com/bigquery/docs/default-connections). |
@@ -185,6 +192,7 @@ see [Mitigate column schema limitations](https://docs.cloud.google.com/dataform/
 
 Configuration options for `declaration` action types.
 
+|   |   |
 |---|---|
 | `columns` | [`IColumnsDescriptor`](#icolumnsdescriptor) |
 | `columns` | A description of columns within the table. |
@@ -199,8 +207,9 @@ Configuration options for `declaration` action types.
 
 Defines dependencies of a workflow action.
 
+|   |   |
 |---|---|
-| `dependencies` | [`Resolvable| Resolvable[]`](#resolvable) |
+| `dependencies` | [`Resolvable\| Resolvable[]`](#resolvable) |
 | `dependencies` | One or more explicit dependencies for this action. Dependency actions will run before dependent actions. Typically this would remain unset, because most dependencies are declared as a by-product of using the `ref` function. |
 | `hermetic` | `boolean` |
 | `hermetic` | Declares whether or not this action is hermetic. An action is hermetic if all of its dependencies are explicitly declared. If this action depends on data from a source which has not been declared as a dependency, then `hermetic` should be explicitly set to `false`. Otherwise, if this action only depends on data from explicitly-declared dependencies, then it should be set to `true`. |
@@ -209,6 +218,7 @@ Defines dependencies of a workflow action.
 
 Defines descriptions of a dataset and its columns.
 
+|   |   |
 |---|---|
 | `columns` | [`IColumnsDescriptor`](#icolumnsdescriptor) |
 | `columns` | A description of columns within the dataset. |
@@ -219,6 +229,7 @@ Defines descriptions of a dataset and its columns.
 
 Defines the type and name of a workflow action.
 
+|   |   |
 |---|---|
 | `type` | `string` |
 | `type` | The type of the action. |
@@ -229,6 +240,7 @@ Defines the type and name of a workflow action.
 
 Configuration options for `operations` action types.
 
+|   |   |
 |---|---|
 | `columns` | [`IColumnsDescriptor`](#icolumnsdescriptor) |
 | `columns` | A description of columns within the table. |
@@ -251,6 +263,7 @@ Configuration options for `operations` action types.
 
 Contains compilation settings of a Dataform repository.
 
+|   |   |
 |---|---|
 | `defaultDatabase` | `string` |
 | `defaultDatabase` | Optional. The default database (Google Cloud project ID). If unset, Dataform uses the Google Cloud project in which the Dataform repository is located. |
@@ -311,8 +324,9 @@ in [Dataform API](https://docs.cloud.google.com/dataform/reference/rest).
 
 Describes a struct, object or record in a table that has nested columns.
 
+|   |   |
 |---|---|
-| `bigqueryPolicyTags` | `string | string[]` |
+| `bigqueryPolicyTags` | `string \| string[]` |
 | `bigqueryPolicyTags` | Full identifiers of BigQuery policy tags applied to this column. A full identifier of a BigQuery policy tag includes the project name, location, and taxonomy, For example: `"projects/1/locations/eu/taxonomies/2/policyTags/3"` BigQuery supports one tag per column. |
 | `columns` | [`IColumnsDescriptor`](#icolumnsdescriptor) |
 | `columns` | A description of columns within the struct, object, or record. |
@@ -323,12 +337,13 @@ Describes a struct, object or record in a table that has nested columns.
 
 Options for creating assertions as part of a table definition.
 
+|   |   |
 |---|---|
-| `nonNull` | `string | string[]` |
+| `nonNull` | `string \| string[]` |
 | `nonNull` | Column(s) which can never be `NULL`. If set, the corresponding assertion fails if any row contains `NULL` values for these column(s). |
 | `rowConditions` | `string[]` |
 | `rowConditions` | General condition(s) which should hold true for all rows in the table. If set, the corresponding assertion fails if any row violates any of these condition(s). |
-| `uniqueKey` | `string | string[]` |
+| `uniqueKey` | `string \| string[]` |
 | `uniqueKey` | Column(s) which constitute the unique key index of the table. If set, the resulting assertion fails if there is more than one row in the table with the same values for all of these column(s). |
 | `uniqueKeys` | `[]` |
 | `uniqueKeys` | Combinations of column(s), each of which constitutes a unique key index of the table. If set, the resulting assertion fails if there is more than one row in the table with the same values for all of the column(s) in the unique key(s). |
@@ -344,6 +359,7 @@ Extends [IActionConfig](#iactionconfig),
 [INamedConfig](#inamedconfig), and
 [ITargetableConfig](#itargetableconfig).
 
+|   |   |
 |---|---|
 | `assertions` | [`ITableAssertions`](#itableassertions) |
 | `assertions` | Assertions to be run on the table. If configured, relevant assertions are automatically created and run as a dependency of this table. |
@@ -382,14 +398,15 @@ Context methods are available when evaluating contextable SQL code,
 such as within SQLX files, or when using a [`Contextable`](#contextable)
 argument with Dataform core.
 
+|   |   |
 |---|---|
 | `incremental` | `() => boolean` |
 | `incremental` | Returns true when the current context indicates that the table will be built incrementally. |
 | `name` | `() => string` |
 | `name` | Returns the fully qualified name of this table. |
-| `ref` | `(ref: Resolvable | string[], rest: string[]) => string` |
+| `ref` | `(ref: Resolvable \| string[], rest: string[]) => string` |
 | `ref` | References another action, adding it as a dependency to this action, returning valid SQL to be used in a from expression. This function can be called with a `Resolvable` object, for example: `${ref({ name: "name", schema: "schema", database: "database" })}` This function can also be called using individual arguments for the `"database"`, `"schema"`, and `"name"` values. When only two values are provided, the default database is used and the values are interpreted as `"schema"` and `"name"`. When only one value is provided, the default database schema is used, with the provided value interpreted as \`"name"\`. `${ref("database", "schema", "name")} ${ref("schema", "name")} ${ref("name")}` |
-| `resolve` | `(ref: Resolvable | string[], rest: string[]) => string` |
+| `resolve` | `(ref: Resolvable \| string[], rest: string[]) => string` |
 | `resolve` | Similar to `ref`, but instead of adding a dependency, it resolves the provided reference so that it can be used in SQL, for example, in a \`from\` expression. |
 | `self` | `() => string` |
 | `self` | Equivalent to `resolve(name())`. Returns a valid SQL string that can be used to reference the table produced by this action. |
@@ -400,6 +417,7 @@ argument with Dataform core.
 
 A reference to a table within BigQuery.
 
+|   |   |
 |---|---|
 | `database` | `string` |
 | `name` | `string` |
@@ -409,6 +427,7 @@ A reference to a table within BigQuery.
 
 Defines the target database and schema of a workflow action.
 
+|   |   |
 |---|---|
 | `database` | `string` |
 | `database` | The database in which the output of this action should be created. Must be set to BigQuery. |
@@ -457,6 +476,7 @@ following:
 
 ### operate()
 
+|   |   |
 |---|---|
 | `operate` | `(name: string, queries?: Contextable<ICommonContext, string \| string[]>)` |
 | `operate` | Defines a SQL operation. Available only in the `/definitions` directory. |
@@ -471,6 +491,7 @@ operate("an-operation", ["SELECT 1", "SELECT 2"])
 
 ### publish()
 
+|   |   |
 |---|---|
 | `publish` | `(name: string, queryOrConfig?: Contextable<ITableContext, string> \| ITableConfig)` |
 | `publish` | Creates a table or view. Available only in the `/definitions` directory. |

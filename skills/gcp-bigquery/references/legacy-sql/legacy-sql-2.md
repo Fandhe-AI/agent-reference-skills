@@ -941,14 +941,15 @@ LIMIT 5
 
 :   Returns the last value of `\<field_name\>` in the window.
 
-Adapted (not in the official docs): replaced the table with the 5 rows that the other window examples show and `imperfectly`, defined by `SELECT` statements, and ordered the result by `word_count`, so that `LIMIT 1` returns the shown row.
+Adapted (not in the official docs): replaced the table with the 5 rows that the other window examples show and `imperfectly`, defined by `SELECT` statements, set the window frame to the whole partition, and returned every row in a fixed order, so that each row shows the last value of the partition.
 
 ```sql
 #legacySQL
 SELECT
    word,
    word_count,
-   LAST_VALUE(word) OVER (PARTITION BY corpus ORDER BY word_count DESC) lv,
+   LAST_VALUE(word) OVER (PARTITION BY corpus ORDER BY word_count DESC
+      ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) lv,
 FROM
    (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
    (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
@@ -959,14 +960,19 @@ FROM
 WHERE
    corpus='othello' and length(word) > 10
 ORDER BY
-   word_count
-LIMIT 1
+   word_count DESC,
+   word
 ```
 
 **Returns:**
 
 | word | word_count | lv |
 |---|---|---|
+| handkerchief | 29 | imperfectly |
+| satisfaction | 5 | imperfectly |
+| displeasure | 4 | imperfectly |
+| instruments | 4 | imperfectly |
+| circumstance | 3 | imperfectly |
 | imperfectly | 1 | imperfectly |
 
 `LEAD(\<expr\>[, \<offset\>[, \<default_value\>]])`
@@ -1201,7 +1207,7 @@ LIMIT 5
 
 `RATIO_TO_REPORT(\<column\>)`
 
-:   Returns the ratio of each value to the sum of the values, as a double between 0 and 1.
+:   Returns the ratio of each value to the sum of the values, as a double.
 
 Adapted (not in the official docs): replaced the table with the 5 rows that the result shows, defined by `SELECT` statements, so that the window reads the same rows as the shown result.
 
@@ -1518,7 +1524,8 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 - Corrected from the official docs: the `FIRST_VALUE` example orders the window by `word_count DESC`, so `fv` is the word with the largest `word_count` in the partition, but the shown result has `imperfectly` (`word_count` 1) as `fv`; the query also uses `LIMIT 1` without an outer `ORDER BY`, so the returned row is not fixed. The query now orders the output by `word_count DESC`, and the result row is changed to `handkerchief`, `29`, `handkerchief`, the first row of the `DENSE_RANK` example with the same data and filter on this page.
 - Corrected from the official docs: the heading of the `TABLE_QUERY` example said that the names start with `boo` followed by 3-5 numeric digits. It is changed to match the corrected expression `^boo[a-z]?[0-9]{3,5}$`: an optional lowercase letter after `boo`, and 3-5 digits at the end of the name.
 - Corrected from the official docs: the text said that the `^` character starts matching at the beginning of a word. In the RE2 syntax linked above, `^` matches at the beginning of the text (or of a line with the `m` flag), so `^foo` does not match the `foo` in `bar foo`, and `\b` matches at an ASCII word boundary. The sentence now says the beginning of the string and adds `\b` for a word boundary.
-- Corrected from the official docs: the `CUME_DIST`, `DENSE_RANK`, `LAG`, `LEAD`, `NTILE`, `PERCENT_RANK`, `PERCENTILE_CONT`, `PERCENTILE_DISC`, `RANK`, `RATIO_TO_REPORT` and `ROW_NUMBER` examples read `[bigquery-public-data:samples.shakespeare]` with `LIMIT 5`, but `LIMIT 5` limits only the result rows, and the same `WHERE` clause also matches `imperfectly` (the `LAST_VALUE` example), while the shown results are computed over the 5 shown rows only (the `RATIO_TO_REPORT` values add up to 1, and `LEAD` returns `null` for the fifth row). The examples now read those 5 rows from `SELECT` statements, as the running-total example on this page does, so the shown results match the queries. The `LAST_VALUE` example used `LIMIT 1` without an outer `ORDER BY`, so the returned row was not fixed; it now reads those 5 rows and `imperfectly` (`word_count` 1, as its shown result has) and orders the result by `word_count`, so `LIMIT 1` returns `imperfectly`, the last row of the window. The window syntax on this page shows one `ORDER BY` expression, so no tie-breaker is added, and a sentence before the examples says that the order of `displeasure` and `instruments`, which have the same `word_count`, is not fixed.
+- Corrected from the official docs: the `CUME_DIST`, `DENSE_RANK`, `LAG`, `LEAD`, `NTILE`, `PERCENT_RANK`, `PERCENTILE_CONT`, `PERCENTILE_DISC`, `RANK`, `RATIO_TO_REPORT` and `ROW_NUMBER` examples read `[bigquery-public-data:samples.shakespeare]` with `LIMIT 5`, but `LIMIT 5` limits only the result rows, and the same `WHERE` clause also matches `imperfectly` (the `LAST_VALUE` example), while the shown results are computed over the 5 shown rows only (the `RATIO_TO_REPORT` values add up to 1, and `LEAD` returns `null` for the fifth row). The examples now read those 5 rows from `SELECT` statements, as the running-total example on this page does, so the shown results match the queries. The `LAST_VALUE` example used `LIMIT 1` without an outer `ORDER BY`, so the returned row was not fixed, and its one shown row, `imperfectly`, is the last row of the window, where the default frame and the whole partition end at the same row. It now reads those 5 rows and `imperfectly` (`word_count` 1, as its shown result has), sets the frame to `ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING` (the window frame syntax on this page), and returns every row ordered by `word_count DESC, word` (the `ORDER BY` syntax of the query reference), so each row shows `imperfectly`, the last value of the partition. With the default frame, `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW` when the window has `ORDER BY` (as this page says), `LAST_VALUE` returns the last value of the rows up to the current row and the rows with the same `word_count`, not of the whole partition. The window syntax on this page shows one `ORDER BY` expression, so no tie-breaker is added, and a sentence before the examples says that the order of `displeasure` and `instruments`, which have the same `word_count`, is not fixed.
+- Corrected from the official docs: the description of `RATIO_TO_REPORT` said that the ratio is a double between 0 and 1. Each value is divided by the sum of the values, so a negative value can give a ratio outside that range (for the values 3 and -1, the sum is 2 and the ratios are 1.5 and -0.5). The range is left out of the description; in the example, every `word_count` is positive, so the ratios are between 0 and 1 and add up to 1.
 
 ## Related
 

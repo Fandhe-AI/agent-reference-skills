@@ -156,7 +156,7 @@ anywhere else in the query that expects an expression. For example, consider the
 following GoogleSQL query that computes the fraction of warm days in Seattle
 in 2015:
 
-Adapted (not in the official docs): left out the days whose `max` is the missing-data code `9999.9`, so that the warm days and the total both count only the days with a reading.
+Adapted (not in the official docs): left out the days whose `max` is the missing-data code `9999.9`, so that the warm days and the total both count only the days with a reading, and used `SAFE_DIVIDE`, so that the query returns `NULL` instead of failing when no day has a reading.
 
 ```sql
 #GoogleSQL
@@ -167,8 +167,8 @@ WITH SeattleWeather AS (
     AND max != 9999.9
 )
 SELECT
-  COUNTIF(max >= 70) /
-    (SELECT COUNT(*) FROM SeattleWeather) AS warm_days_fraction
+  SAFE_DIVIDE(COUNTIF(max >= 70),
+    (SELECT COUNT(*) FROM SeattleWeather)) AS warm_days_fraction
 FROM SeattleWeather;
 ```
 
@@ -429,6 +429,7 @@ FROM
 
 The following is a list of keywords allowed in legacy SQL, but not in GoogleSQL:
 
+|   |   |   |   |
 |---|---|---|---|
 | - `ALL` - `AND` - `ANY` - `ARRAY` - `ASSERT_ROWS_MODIFIED` - `AT` - `COLLATE` - `CURRENT` - `DEFAULT` - `DESC` - `END` - `ENUM` | - `ESCAPE` - `EXCEPT` - `EXCLUDE` - `EXTRACT` - `FETCH` - `FOR` - `GROUP` - `GROUPING` - `GROUPS` - `IF` - `INTERVAL` - `IS` | - `LATERAL` - `NATURAL` - `NEW` - `NO` - `NULLS` - `OF` - `ORDER` - `PROTO` - `QUALIFY` - `RANGE` - `RECURSIVE` | - `RESPECT` - `ROLLUP` - `ROWS` - `SOME` - `STRUCT` - `TABLESAMPLE` - `TO` - `TREAT` - `UNNEST` - `WHEN` - `WINDOW` |
 
@@ -777,8 +778,7 @@ and [`NET.REG_DOMAIN(url)`](../googlesql-functions/net_functions.md#netreg_domai
 
 <br />
 
-In the following table, gray text color indicates results
-that are the same between legacy and GoogleSQL.
+The following table compares the results of the legacy SQL and GoogleSQL functions for each URL.
 
 | URL (description) | HOST | NET.HOST | TLD | NET.PUBLIC_SUFFIX | DOMAIN | NET.REG_DOMAIN |
 |---|---|---|---|---|---|---|
@@ -1677,11 +1677,12 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: after the partition example, the text offered filtering on `_TABLE_SUFFIX` as another option. `_TABLE_SUFFIX` contains the values matched by the table wildcard (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20), so it cannot select a partition of the single partitioned table in the example. The sentence now limits it to date-sharded tables queried through a wildcard table.
 - Corrected from the official docs: the comma operator section translates the legacy SQL comma between tables to `UNION ALL BY NAME` without a condition. In googlesql-syntax/query-syntax-3.md, `BY NAME` requires both inputs to have the same set of column names and raises an error otherwise, while `FULL [OUTER]` with `BY NAME` returns all columns and adds `NULL` for the missing ones. A sentence that says which form to use for inputs with different columns is added.
 - Corrected from the official docs: the example that finds the maximum temperatures across all years that end in `0` matched `0$` against the table name in legacy SQL and against `_TABLE_SUFFIX` in GoogleSQL, so a table such as `gsod2021_backup0` also matched. The expressions are changed to `^gsod[0-9]{3}0$` (legacy SQL, with `[0-9]` because the escapes listed for legacy SQL strings do not include `\d`) and `^[0-9]{3}0$` (GoogleSQL), as in the following example.
-- Corrected from the official docs: the query that computes the fraction of warm days in Seattle counted every row of the station, including rows whose `max` is `9999.9`, which the GSOD examples on this page mark as the code for missing data. Those days were in the total, and `COUNTIF(max >= 70)` counted them as warm. The `SeattleWeather` subquery now keeps only the rows with `max != 9999.9`, which also leaves out `NULL` values, so both counts use the same observed days.
+- Corrected from the official docs: the query that computes the fraction of warm days in Seattle counted every row of the station, including rows whose `max` is `9999.9`, which the GSOD examples on this page mark as the code for missing data. Those days were in the total, and `COUNTIF(max >= 70)` counted them as warm. The `SeattleWeather` subquery now keeps only the rows with `max != 9999.9`, which also leaves out `NULL` values, so both counts use the same observed days. If no day of the station has a reading, both counts are 0 and the division `/` fails, so the query now divides with `SAFE_DIVIDE`, which is equivalent to the division operator but returns `NULL` if an error occurs (see `SAFE_DIVIDE` in [Mathematical functions](../googlesql-functions/mathematical_functions.md#safe_divide)).
 - Corrected from the official docs: the text said that the table wildcard functions, `TABLE_DATE_RANGE_STRICT` among them, can be migrated with a filter on `_TABLE_SUFFIX`. `TABLE_DATE_RANGE_STRICT` fails when a daily table in the range is missing (legacy-sql/legacy-sql-2.md), while a wildcard table with a `_TABLE_SUFFIX` filter reads the tables that exist, so the sentence now points to the existence check in the `TABLE_DATE_RANGE_STRICT` section of this page.
 - Corrected from the official docs: the correlated subquery that counts the warm days of each Washington station counted the rows with `max >= 70`, which include the rows whose `max` is `9999.9`, the code for missing data in the GSOD examples on this page. The subquery now also requires `max != 9999.9`, so `warm_days` and the order of the stations count only days with a reading.
 - Corrected from the official docs: the GoogleSQL query that counts the rows of `gsod2010` and `gsod2011` used the wildcard table `bigquery-public-data.noaa_gsod.*`, which also matches other tables of the dataset, such as `stations`, used in other examples on this page. The official page on wildcard tables says that all tables that match the wildcard are matched even with an equality filter on `_TABLE_SUFFIX`, so a table with a different schema can make the query fail, and that BigQuery uses the schema of the most recently created table that matches the wildcard (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables, retrieved 2026-11-20). The query now uses `noaa_gsod.gsod*` with `_TABLE_SUFFIX IN ("2010", "2011")`, as the later examples on this page do.
 - Corrected from the official docs: a column heading of the URL function comparison table read `NET.PUBLIC _SUFFIX`, with a space, while the function is `NET.PUBLIC_SUFFIX`, as the text before the table names it.
+- Adapted from the official docs: the sentence before the URL function comparison table said that gray text color marks the results that are the same in legacy SQL and GoogleSQL. Colors are not kept in this Markdown table, so the sentence now only says what the table compares; compare `HOST` with `NET.HOST`, `TLD` with `NET.PUBLIC_SUFFIX` and `DOMAIN` with `NET.REG_DOMAIN` to see which results are the same.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related

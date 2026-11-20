@@ -6,6 +6,69 @@ source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/strin
 
 ## Signature / Usage
 
+### `REGEXP_EXTRACT_ALL`
+
+```sql
+REGEXP_EXTRACT_ALL(value, regexp)
+```
+
+**Description**
+
+Returns an array of all substrings of `value` that match the
+[re2 regular expression](https://github.com/google/re2/wiki/Syntax), `regexp`. Returns an empty array
+if there is no match.
+
+If the regular expression contains a capturing group (`(...)`), the function
+returns an array of substrings that are matched by the capturing group.
+
+The `REGEXP_EXTRACT_ALL` function only returns non-overlapping matches. For
+example, using this function to extract `ana` from `banana` returns only one
+substring, not two.
+
+When a capturing group is present, this non-overlapping rule applies to the
+*entire substring* matched by the whole regular expression, not just the part
+within the capturing group. The search for any subsequent match begins
+*after* the end of the entire substring that satisfied the previous match. In
+the examples that follow, the second example illustrates this behavior with the
+pattern `r'\d(\d)\d'`.
+
+Returns an error if:
+
+- The regular expression is invalid
+- The regular expression has more than one capturing group
+
+**Return type**
+
+`ARRAY<STRING>` or `ARRAY<BYTES>`
+
+**Examples**
+
+```sql
+SELECT REGEXP_EXTRACT_ALL('Try `func(x)` or `func(y)`', '`(.+?)`') AS example
+
+/*--------------------+
+ | example            |
+ +--------------------+
+ | [func(x), func(y)] |
+ +--------------------*/
+```
+
+The following example demonstrates non-overlapping matches with a capturing
+group:
+
+```sql
+SELECT REGEXP_EXTRACT_ALL('123456', r'\d(\d)\d') AS example;
+
+/*-----------+
+ | example   |
+ +-----------+
+ | ['2', '5'] |
+ +-----------*/
+```
+
+The pattern `r'\d(\d)\d'` matches `'123'` and captures `'2'`. The next
+search starts after `'3'`, and then it matches `'456'` and captures `'5'`.
+
 ### `REGEXP_INSTR`
 
 Adapted (not in the official docs): Moved the comma inside the brackets of the optional `occurrence_position`.

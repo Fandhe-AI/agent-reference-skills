@@ -257,7 +257,7 @@
 | `REGEXP_CONTAINS` | Checks if a value is a partial match for a regular expression. | [string_functions-1.md](./string_functions-1.md#regexp_contains) |
 | `REGEXP_EXTRACT` | Produces a substring that matches a regular expression. | [string_functions-1.md](./string_functions-1.md#regexp_extract) |
 | `REGEXP_EXTRACT_GROUPS` | Produces substrings that match multiple capturing groups in a regular expression. | [string_functions-1.md](./string_functions-1.md#regexp_extract_groups) |
-| `REGEXP_EXTRACT_ALL` | Produces an array of all substrings that match a regular expression. | [string_functions-1.md](./string_functions-1.md#regexp_extract_all) |
+| `REGEXP_EXTRACT_ALL` | Produces an array of all substrings that match a regular expression. | [string_functions-2.md](./string_functions-2.md#regexp_extract_all) |
 | `REGEXP_INSTR` | Finds the position of a regular expression match in a value, optionally starting the search at a given offset or occurrence. | [string_functions-2.md](./string_functions-2.md#regexp_instr) |
 | `REGEXP_REPLACE` | Produces a `STRING` value where all substrings that match a regular expression are replaced with a specified value. | [string_functions-2.md](./string_functions-2.md#regexp_replace) |
 | `REGEXP_SUBSTR` | Synonym for `REGEXP_EXTRACT`. | [string_functions-2.md](./string_functions-2.md#regexp_substr) |
@@ -446,8 +446,8 @@
 | Search functions | Function list, SEARCH, VECTOR_SEARCH | [search_functions.md](./search_functions.md) |
 | Security functions | Function list, SECURE_CONTEXT, SESSION_USER | [security_functions.md](./security_functions.md) |
 | Statistical aggregate functions | Function list, CORR, COVAR_POP, COVAR_SAMP, STDDEV, STDDEV_POP, STDDEV_SAMP, VAR_POP, VAR_SAMP, VARIANCE | [statistical_aggregate_functions.md](./statistical_aggregate_functions.md) |
-| String functions (part 1 of 2) | Function list, ASCII, BYTE_LENGTH, CHAR_LENGTH, CHARACTER_LENGTH, CHR, CODE_POINTS_TO_BYTES, CODE_POINTS_TO_STRING, COLLATE, CONCAT, CONTAINS_SUBSTR, EDIT_DISTANCE, ENDS_WITH, FORMAT, FROM_BASE32, FROM_BASE64, FROM_HEX, INITCAP, INSTR, LEFT, LENGTH, LOWER, LPAD, LTRIM, NORMALIZE, NORMALIZE_AND_CASEFOLD, OCTET_LENGTH, REGEXP_CONTAINS, REGEXP_EXTRACT, REGEXP_EXTRACT_GROUPS, REGEXP_EXTRACT_ALL | [string_functions-1.md](./string_functions-1.md) |
-| String functions (part 2 of 2) | REGEXP_INSTR, REGEXP_REPLACE, REGEXP_SUBSTR, REPEAT, REPLACE, REVERSE, RIGHT, RPAD, RTRIM, SAFE_CONVERT_BYTES_TO_STRING, SOUNDEX, SPLIT, STARTS_WITH, STRPOS, SUBSTR, SUBSTRING, TO_BASE32, TO_BASE64, TO_CODE_POINTS, TO_HEX, TRANSLATE, TRIM, UNICODE, UPPER | [string_functions-2.md](./string_functions-2.md) |
+| String functions (part 1 of 2) | Function list, ASCII, BYTE_LENGTH, CHAR_LENGTH, CHARACTER_LENGTH, CHR, CODE_POINTS_TO_BYTES, CODE_POINTS_TO_STRING, COLLATE, CONCAT, CONTAINS_SUBSTR, EDIT_DISTANCE, ENDS_WITH, FORMAT, FROM_BASE32, FROM_BASE64, FROM_HEX, INITCAP, INSTR, LEFT, LENGTH, LOWER, LPAD, LTRIM, NORMALIZE, NORMALIZE_AND_CASEFOLD, OCTET_LENGTH, REGEXP_CONTAINS, REGEXP_EXTRACT, REGEXP_EXTRACT_GROUPS | [string_functions-1.md](./string_functions-1.md) |
+| String functions (part 2 of 2) | REGEXP_EXTRACT_ALL, REGEXP_INSTR, REGEXP_REPLACE, REGEXP_SUBSTR, REPEAT, REPLACE, REVERSE, RIGHT, RPAD, RTRIM, SAFE_CONVERT_BYTES_TO_STRING, SOUNDEX, SPLIT, STARTS_WITH, STRPOS, SUBSTR, SUBSTRING, TO_BASE32, TO_BASE64, TO_CODE_POINTS, TO_HEX, TRANSLATE, TRIM, UNICODE, UPPER | [string_functions-2.md](./string_functions-2.md) |
 | Table functions (built in) | Function list, EXTERNAL_OBJECT_TRANSFORM | [table-functions-built-in.md](./table-functions-built-in.md) |
 | Text analysis functions | Function list, BAG_OF_WORDS, TEXT_ANALYZE, TF_IDF | [text-analysis-functions.md](./text-analysis-functions.md) |
 | Time series functions | Function list, APPENDS, CHANGES, DATE_BUCKET, DATETIME_BUCKET, GAP_FILL, TIMESTAMP_BUCKET | [time-series-functions.md](./time-series-functions.md) |
