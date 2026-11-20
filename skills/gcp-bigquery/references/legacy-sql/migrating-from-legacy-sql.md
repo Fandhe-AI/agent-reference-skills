@@ -156,12 +156,15 @@ anywhere else in the query that expects an expression. For example, consider the
 following GoogleSQL query that computes the fraction of warm days in Seattle
 in 2015:
 
+Adapted (not in the official docs): left out the days whose `max` is the missing-data code `9999.9`, so that the warm days and the total both count only the days with a reading.
+
 ```sql
 #GoogleSQL
 WITH SeattleWeather AS (
   SELECT *
   FROM `bigquery-public-data.noaa_gsod.gsod2015`
   WHERE stn = '994014'
+    AND max != 9999.9
 )
 SELECT
   COUNTIF(max >= 70) /
@@ -518,7 +521,7 @@ to query multiple tables.
 - `TABLE_DATE_RANGE_STRICT`
 - `TABLE_QUERY`
 
-These functions are not supported in GoogleSQL, but they can be migrated using a filter on `_TABLE_SUFFIX` pseudocolumn.
+These functions are not supported in GoogleSQL, but they can be migrated using a filter on `_TABLE_SUFFIX` pseudocolumn. A filter on `_TABLE_SUFFIX` reads only the tables that exist, so a query migrated from `TABLE_DATE_RANGE_STRICT`, which fails when a daily table in the range is missing, also has to check that every table exists, as in [The TABLE_DATE_RANGE_STRICT function](#the-table_date_range_strict-function) below.
 
 For example, consider the following legacy SQL query, which counts the number of rows across 2010 and 2011
 in the National Oceanic and Atmospheric Administration GSOD (global summary of
@@ -1669,6 +1672,8 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: after the partition example, the text offered filtering on `_TABLE_SUFFIX` as another option. `_TABLE_SUFFIX` contains the values matched by the table wildcard (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20), so it cannot select a partition of the single partitioned table in the example. The sentence now limits it to date-sharded tables queried through a wildcard table.
 - Corrected from the official docs: the comma operator section translates the legacy SQL comma between tables to `UNION ALL BY NAME` without a condition. In googlesql-syntax/query-syntax-3.md, `BY NAME` requires both inputs to have the same set of column names and raises an error otherwise, while `FULL [OUTER]` with `BY NAME` returns all columns and adds `NULL` for the missing ones. A sentence that says which form to use for inputs with different columns is added.
 - Corrected from the official docs: the example that finds the maximum temperatures across all years that end in `0` matched `0$` against the table name in legacy SQL and against `_TABLE_SUFFIX` in GoogleSQL, so a table such as `gsod2021_backup0` also matched. The expressions are changed to `^gsod[0-9]{3}0$` (legacy SQL, with `[0-9]` because the escapes listed for legacy SQL strings do not include `\d`) and `^[0-9]{3}0$` (GoogleSQL), as in the following example.
+- Corrected from the official docs: the query that computes the fraction of warm days in Seattle counted every row of the station, including rows whose `max` is `9999.9`, which the GSOD examples on this page mark as the code for missing data. Those days were in the total, and `COUNTIF(max >= 70)` counted them as warm. The `SeattleWeather` subquery now keeps only the rows with `max != 9999.9`, which also leaves out `NULL` values, so both counts use the same observed days.
+- Corrected from the official docs: the text said that the table wildcard functions, `TABLE_DATE_RANGE_STRICT` among them, can be migrated with a filter on `_TABLE_SUFFIX`. `TABLE_DATE_RANGE_STRICT` fails when a daily table in the range is missing (legacy-sql/legacy-sql-2.md), while a wildcard table with a `_TABLE_SUFFIX` filter reads the tables that exist, so the sentence now points to the existence check in the `TABLE_DATE_RANGE_STRICT` section of this page.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related

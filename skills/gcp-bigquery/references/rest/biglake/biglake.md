@@ -236,8 +236,6 @@ curl -X GET \
 
 ## Options / Props
 
-Parameters of the methods under Signature / Usage, in the same order.
-
 ### `biglake.projects.catalogs.getIamPolicy` parameters
 
 | Parameter | In | Type | Required | Description |

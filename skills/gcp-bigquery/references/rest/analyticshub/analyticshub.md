@@ -300,8 +300,6 @@ curl -X GET \
 
 ## Options / Props
 
-Parameters of the methods under Signature / Usage, in the same order.
-
 ### `analyticshub.organizations.locations.dataExchanges.list` parameters
 
 | Parameter | In | Type | Required | Description |
