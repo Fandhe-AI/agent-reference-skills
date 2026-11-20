@@ -145,7 +145,7 @@ scope 内の各ページについて:
 ## 注意事項
 
 - このAgentは並列実行を前提としている。他の scope を担当する Agent とファイルが競合しないよう、指定された `output_dir` 内のみにファイルを作成すること
-- README.md は自分の担当 scope のディレクトリにのみ作成する
+- README.md は自分の担当 scope のディレクトリにのみ作成する。既存の README が reference-template の「再生成する README」に当たらないときは書き込まず、作成したページを返す（索引への反映は呼び出し元の main が行う）
 - SKILL.md（エントリーポイント）は作成しない。全 scope 完了後に skill-author Agent が作成する（main は委譲のみで実作業はしない）
 
 ## 参照ルール
