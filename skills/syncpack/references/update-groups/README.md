@@ -2,10 +2,10 @@
 
 Control how and whether dependencies receive updates from the npm registry via the `update` command. Groups are evaluated sequentially; the first matching group applies. The stricter of the CLI `--target` and group `target` wins.
 
-| Name | Activation Property | Description | Path |
-|------|---------------------|-------------|------|
-| ignored | `isIgnored: true` | Exclude matched dependencies from all registry update checks | [./ignored.md](./ignored.md) |
-| targeted | `target: "patch"\|"minor"\|"latest"` | Restrict the highest update version offered for matched dependencies | [./targeted.md](./targeted.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| ignored | Exclude matched dependencies from all registry update checks (`isIgnored: true`) | [ignored.md](./ignored.md) |
+| targeted | Restrict the highest update version offered for matched dependencies (`target: "patch"\|"minor"\|"latest"`) | [targeted.md](./targeted.md) |
 
 ## Common Filter Properties
 
