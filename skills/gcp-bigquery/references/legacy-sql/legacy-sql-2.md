@@ -573,10 +573,10 @@ below read the 5 rows that their results show, defined by `SELECT` statements,
 because `LIMIT 5` limits the rows in the result, not the rows in the window. Two of
 the rows, `displeasure` and `instruments`, have the same `word_count`, and their order
 in the window is not fixed, so the `LEAD` and `NTILE` results shown are one possible
-output. If `instruments` comes first, the rows are also returned in that order,
-`LEAD` returns `instruments` for `satisfaction`, `displeasure` for `instruments` and
+output. If `instruments` comes first in the window, `LEAD` returns `instruments` for `satisfaction`, `displeasure` for `instruments` and
 `circumstance` for `displeasure`, and `NTILE` puts `instruments` in bucket 1 and
-`displeasure` in bucket 2.
+`displeasure` in bucket 2. The examples have no `ORDER BY` outside the `OVER` clause,
+so the order of the result rows is not fixed either.
 
 ```sql
 #legacySQL
