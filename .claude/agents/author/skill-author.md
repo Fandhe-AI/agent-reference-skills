@@ -28,6 +28,7 @@ tools:
 - **library**: ライブラリ名（例: `zod`）
 - **skill_dir**: スキルディレクトリのパス（例: `skills/zod/`）
 - **user-invocable**: SKILL.md frontmatter に設定する値（`true` または `false`）
+- **generated_dirs**（任意）: 生成ツールが出力するディレクトリの一覧。ディレクトリツリーの該当ディレクトリに `# 機械生成` または `# 機械変換` と注記する（readme-indexer と reference-template はこの注記で生成ツールの README を見分ける）
 
 ## 行動原則
 

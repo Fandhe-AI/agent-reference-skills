@@ -136,7 +136,7 @@ scope 内の各ページについて:
 ## 注意事項
 
 - このAgentは並列実行を前提としている。他の scope を担当する Agent とファイルが競合しないよう、指定された `output_dir` 内のみにファイルを作成すること
-- README.md は作成しない（索引は呼び出し元が reference-template の「更新する README の選び方」で readme-indexer に作らせる）
+- README.md は作成しない（索引は呼び出し元が reference-template の「更新する README の選び方」に従い、readme-indexer・main・生成ツールで更新する）
 - SKILL.md（エントリーポイント）は作成しない。全 scope 完了後に skill-author Agent が作成する（main は委譲のみで実作業はしない）
 
 ## 参照ルール

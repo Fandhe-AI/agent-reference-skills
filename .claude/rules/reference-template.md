@@ -45,7 +45,7 @@ functionName(param: Type): ReturnType
 
 ## README 索引の書式
 
-カテゴリ直下の `README.md` はカテゴリ名の H1 見出しと索引表のみで構成する。新たに作る README には前置きの説明文を書かない。`samples/` `scripts/` 直下の README.md も同じ書式に従う。
+新たに作るカテゴリ直下の `README.md` はカテゴリ名の H1 見出しと索引表のみで構成し、前置きの説明文を書かない（既存の README の扱いは下記「既存 README の扱い」）。`samples/` `scripts/` 直下の README.md も同じ書式に従う。
 
 ```markdown
 # <category>
@@ -79,11 +79,11 @@ reference-linter・skill-structure-validator・readme-indexer はこの定義を
   - 下記の生成ツールが出力する README ではない
   - README が無い、または H1 と索引表 1 つだけ（データ行の無い表・表が無いものを含む）で、再生成で失われる行が無い。つまり、アンカー付きの行（`./<file>.md#<anchor>`）、同じページを指す行の重複、readme-indexer が載せない先（孫以下・ディレクトリ外、`samples/` `scripts/` の README から子ディレクトリ）を指すリンク、Name・Description のセルの中のリンク（再生成では引き継がれない）のいずれも無い（表示名・`./` の有無・列数・1 行のリンク数の違反は再生成で直るので妨げない）
 - **手で保守する README**: 生成ツールが出力する README でも再生成する README でもない README（前置きの説明文、`##` 節ごとの複数の索引表、`syncpack` の `update-groups/README.md` の共通プロパティ表のような補足の節、`anthropic-*` / `openai-*` の README レベル距離線、関数ごとのアンカー付きの行などを持つもの）。readme-indexer は書き込まない。下記「更新する README の選び方」で対象になったとき、呼び出し元（main）が、変更したページ・子索引に合わせて該当する表の行を直接直し（行の追加・改名・削除と Name・Description の更新）、reference-linter と skill-structure-validator の指摘もこの定義を満たすように直す。これは delegation.md の「README 索引表の再生成」には当たらない。既存の内容は削除しない
-- **生成ツールが出力する README**: スキルの SKILL.md のディレクトリツリーで、そのカテゴリまたは祖先のディレクトリに `機械生成` または `機械変換` と注記されたもの、または呼び出し元が生成ツールの出力と指定したもの（`gcp-*` の `gcloud/` `rest/` `iam/` 等、`gcp-bigquery` の `googlesql-syntax/` `legacy-sql/` 等）と、`gcp-services-index` のすべての README。readme-indexer は書き込まず、README を直接編集もしない。生成ツール（`_/tools/gcp/` 等）を直して再生成する。生成ツールは `.gitignore` の対象の `_/` にあり、メンテナーの作業ツリーにしか無い。生成ツールが無いチェックアウトでは、対象の README と未解消の指摘を報告して終える（この README の lint・構造検証の指摘は、未解消として報告すれば検証の PASS 条件から除いてよい）
-- **更新する README の選び方**: README を書くのは readme-indexer と、手で保守する README を直す main だけ（reference-researcher・sample-curator・script-collector はページだけを書き、作成・変更・改名・削除したファイルを返す）。作業の後、次の README を対象にし、深い階層から処理する。対象は `references/<category>/` 以下・`samples/`・`scripts/` の README に限る
-  - 作成・変更・改名・削除したファイル（子索引を含む）にリンクしている既存の README
-  - 新しいファイルについては、新しいページならそのページのディレクトリから、新しい子索引なら親ディレクトリから上へたどって最初に見つかる既存の README（`references/<category>/`・`samples/`・`scripts/` より上には上がらない）。その README から直接載せられない（孫以下になる）ときは、間の子ディレクトリに索引を新設する
-  - README の無いディレクトリは、新しいカテゴリ（`references/<category>/`）、初めて作った `samples/`・`scripts/`、索引を新設すると決めた子ディレクトリ（上の項目で載せられないときを含む）だけを対象にする
+- **生成ツールが出力する README**: スキルの SKILL.md のディレクトリツリーで、そのカテゴリまたは祖先のディレクトリに `機械生成` または `機械変換` と注記されたもの（`gcp-*` の `gcloud/` `rest/` `iam/` 等、`gcp-bigquery` の `googlesql-syntax/` `legacy-sql/` 等）と、`gcp-services-index` のすべての README。readme-indexer は書き込まず、README を直接編集もしない。生成ツール（`_/tools/gcp/` 等）を直して再生成する。生成ツールは `.gitignore` の対象の `_/` にあり、メンテナーの作業ツリーにしか無い。生成ツールが無いチェックアウトでは、対象の README と未解消の指摘を報告して終える（この README の lint・構造検証の指摘は、未解消として報告すれば検証の PASS 条件から除いてよい）
+- **更新する README の選び方**: README を書くのは readme-indexer と、手で保守する README を直す main だけ（reference-researcher・sample-curator・script-collector はページだけを書き、作成・変更・改名・削除したファイルを返す）。作業の後、次の README を対象にし、深い階層から処理する。対象は `references/<category>/` 以下・`samples/`・`scripts/` の README に限る（ページを `references/` 直下に置くスキルでは `references/README.md` も対象）
+  - 作成・改名・削除したファイルと、H1 または概要行（Description の抽出元）を変更したファイル（子索引を含む）にリンクしている既存の README
+  - 新しいファイルについては、新しいページならそのページのディレクトリから、新しい子索引なら親ディレクトリから上へたどって最初に見つかる既存の README（`references/<category>/`・`samples/`・`scripts/` より上には上がらない。`references/` 直下のページは `references/README.md`）。その README から直接載せられない（孫以下になる）ときは、間の子ディレクトリに索引を新設する。見つかった README のディレクトリのページを親の README が直接載せている（親で集約している）ときは、親の README も対象にする
+  - README の無いディレクトリは、新しいカテゴリ（`references/<category>/`）、初めて作った `samples/`・`scripts/`、索引を新設すると決めた子ディレクトリ（上の項目で載せられないとき、上へたどって既存の README が見つからないときを含む）だけを対象にする
   - 対象のうち、再生成する README は readme-indexer に `category_dir` として渡し、手で保守する README は main が直し、生成ツールが出力する README は生成ツールで再生成する
 - **索引する対象の無いディレクトリ**（readme-indexer の Step 1 の候補が 0 件。直下のページも、載せる子索引・子ディレクトリのページも無い）: README を置かない。main が README を削除し（手で保守する README でも、索引する対象が無いので削除する）、親の README を「更新する README の選び方」の対象に加え、SKILL.md の参照は skill-author に更新させる。生成ツールが出力する README は生成ツールで扱う
 - **ページから取る Name・Description**: Name はページの H1、Description は H1 の後の最初の本文の行（空行・見出し・メタデータ行・引用・コードフェンス・表・HTML コメント・フロントマターを飛ばす）。Description に含まれる Markdown のリンク（`[text](url)`）は表示テキスト `text` だけにする（相対リンクは README を起点に解決され、子ディレクトリのページから取ると別のページを指すため）。readme-indexer の再生成でも、main が手で保守する README に反映するときも同じにする。ただし main が手で保守する README の既存の行を更新するときは、既存の Name・Description のセルにあるリンクのうち README から正しく解決されるもの（`https:` などの URL と、README を起点に実在するページを指す相対リンク）を残す。子索引の行の Name は子索引の H1 に合わせる。ページから取った Description が長い場合は 50 文字程度で切り詰め、末尾に `…` を付ける（既存の子索引の行から引き継ぐ Description は切り詰めない）

@@ -82,11 +82,11 @@ references の生成と並行、または完了後に以下を並列起動する
 
 ライブラリの性質上 samples または scripts が不要と判断される場合（例: ガイドライン型スキル）はスキップしてよい。
 
-Step 3・Step 4 の完了後、main は索引を置くディレクトリ（各 `references/<category>/`、階層型カテゴリで索引を置くと決めた子ディレクトリ、作成した `samples/`・`scripts/`）を決め、**readme-indexer（subagent_type: readme-indexer、model: haiku）**を 1 ディレクトリずつ、子を先に起動する（reference-template の「更新する README の選び方」）。生成ツールが出力するディレクトリは渡さない（README は生成ツールが出力する）。生成ツールの出力を含むスキルでは、Step 5 で skill-author に SKILL.md のツリーの該当ディレクトリへ `機械生成` または `機械変換` と注記させる。
+Step 3・Step 4 の完了後、main は索引を置くディレクトリ（各 `references/<category>/`、階層型カテゴリで索引を置くと決めた子ディレクトリ、作成した `samples/`・`scripts/`）を決め、**readme-indexer（subagent_type: readme-indexer、model: haiku）**を 1 ディレクトリずつ、子を先に起動する（reference-template の「更新する README の選び方」）。生成ツールが出力するディレクトリは渡さない（README は生成ツールが出力する）。生成ツールの出力を含むスキルでは、Step 5 で skill-author に `generated_dirs` を渡し、SKILL.md のツリーの該当ディレクトリへ `機械生成` または `機械変換` と注記させる。
 
 ### Step 5: SKILL.md を作成する
 
-Step 3（references）と **Step 4 で実際に起動した Agent**（samples / scripts）、Step 4 の後の readme-indexer の完了を確認後、**skill-author（subagent_type: skill-author、model: sonnet）**に委譲して `skills/<library>/SKILL.md` を作成させる。Step 4 で samples / scripts を不要と判断してスキップした場合は、その分の完了を待たずに Step 3 の完了のみで先へ進む（起動していない Agent の完了は待たない）。samples / scripts を先に確定させることで、SKILL.md のツリー・マッピング表に確実に反映される。
+Step 3（references）と **Step 4 で実際に起動した Agent**（samples / scripts）、Step 4 の後の readme-indexer の完了を確認後、**skill-author（subagent_type: skill-author、model: sonnet）**に委譲して `skills/<library>/SKILL.md` を作成させる。Step 4 で samples / scripts を不要と判断してスキップした場合は、その分の完了を待たずに Step 3 と readme-indexer の完了で先へ進む（起動していない Agent の完了は待たない）。samples / scripts を先に確定させることで、SKILL.md のツリー・マッピング表に確実に反映される。
 
 渡すパラメータ:
 
@@ -95,6 +95,7 @@ Step 3（references）と **Step 4 で実際に起動した Agent**（samples / 
 | `library` | ライブラリ名 |
 | `skill_dir` | `skills/<library>/` |
 | `user-invocable` | 配布スキルは通常 `false`（skill-anatomy 準拠） |
+| `generated_dirs` | 生成ツールが出力するディレクトリ（ある場合のみ） |
 
 skill-author が生成する内容:
 
