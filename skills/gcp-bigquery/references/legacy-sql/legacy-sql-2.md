@@ -568,6 +568,13 @@ you to create a sliding window frame within a partition that moves
 relative to the current row. You can configure the size of the moving window frame
 based on a number of rows or a range of values, such as a time interval.
 
+The results shown for the `CUME_DIST`, `LEAD`, `NTILE`, `PERCENT_RANK` and
+`RATIO_TO_REPORT` examples below are computed over the 5 rows shown only (for
+example, the `RATIO_TO_REPORT` values add up to 1 over those rows). `LIMIT 5`
+limits the rows in the result, not the rows in the window, and more rows match the
+`WHERE` clause (the `LAST_VALUE` example returns `imperfectly`, which is not among
+the 5 rows), so these queries return different values when you run them.
+
 ```sql
 #legacySQL
 SELECT <window_function>
@@ -1428,6 +1435,7 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 - Corrected from the official docs: the `FIRST_VALUE` example orders the window by `word_count DESC`, so `fv` is the word with the largest `word_count` in the partition, but the shown result has `imperfectly` (`word_count` 1) as `fv`; the query also uses `LIMIT 1` without an outer `ORDER BY`, so the returned row is not fixed. The query now orders the output by `word_count DESC`, and the result row is changed to `handkerchief`, `29`, `handkerchief`, the first row of the `DENSE_RANK` example with the same data and filter on this page.
 - Corrected from the official docs: the heading of the `TABLE_QUERY` example said that the names start with `boo` followed by 3-5 numeric digits. It is changed to match the corrected expression `^boo[a-z]?[\d]{3,5}$`: an optional lowercase letter after `boo`, and 3-5 digits at the end of the name.
 - Corrected from the official docs: the text said that the `^` character starts matching at the beginning of a word. In the RE2 syntax linked above, `^` matches at the beginning of the text (or of a line with the `m` flag), so `^foo` does not match the `foo` in `bar foo`, and `\b` matches at an ASCII word boundary. The sentence now says the beginning of the string and adds `\b` for a word boundary.
+- Caution: the results shown for the `CUME_DIST`, `LEAD`, `NTILE`, `PERCENT_RANK` and `RATIO_TO_REPORT` examples are computed over the 5 rows shown only: the `RATIO_TO_REPORT` values add up to 1 over them, and `LEAD` returns `null` for the fifth row. The same `WHERE` clause also matches `imperfectly`, which the `LAST_VALUE` example returns and which is not among the 5 rows, so the window covers more rows than the `LIMIT 5` output. A sentence that says so is added before the examples; the queries and results are kept as in the official docs, because the rows that a 5-row input would contain are not known.
 
 ## Related
 

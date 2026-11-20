@@ -357,7 +357,7 @@ The following legacy SQL coercions are not supported in GoogleSQL and need to be
 | `INT64` to `TIMESTAMP` | Use `TIMESTAMP_MICROS(micros_value)` |
 | `STRING` to `BYTES` | Use `SAFE_CAST(str AS BYTES)` |
 | `STRING` to `INT64`, `FLOAT64`, or `BOOL` | Use `SAFE_CAST(str AS INT64)`, `SAFE_CAST(str AS FLOAT64)`, or `SAFE_CAST(str AS BOOL)` |
-| `STRING` to `TIMESTAMP` | Supported by GoogleSQL for `STRING` literals. For other `STRING` values, use `TIMESTAMP(str)` or `SAFE_CAST(str AS TIMESTAMP)` |
+| `STRING` to `TIMESTAMP` | Supported by GoogleSQL for `STRING` literals and `STRING` query parameters. For other `STRING` expressions, such as columns, use `TIMESTAMP(str)` or `SAFE_CAST(str AS TIMESTAMP)` |
 
 For example, the following legacy SQL query uses implicit coercions:
 
@@ -693,7 +693,7 @@ equivalents.
 | `COUNT(DISTINCT x)` | [`COUNT(DISTINCT x)`](../googlesql-functions/aggregate_functions.md#count) for an exact count, or [`APPROX_COUNT_DISTINCT(x)`](../googlesql-functions/approximate_aggregate_functions.md#approx_count_distinct) for an approximate count | see [notes below](#count-function-comparison) |
 | `EXACT_COUNT_DISTINCT(x)` | [`COUNT(DISTINCT x)`](../googlesql-functions/aggregate_functions.md#count) | see [notes below](#count-function-comparison) |
 | `QUANTILES(x, boundaries)` | [`APPROX_QUANTILES(x, boundaries-1)`](../googlesql-functions/approximate_aggregate_functions.md#approx_quantiles) | output needs to be [unnested](#removing-repetition-with-flatten) |
-| `TOP(x, num), COUNT(*)` | [`APPROX_TOP_COUNT(x, num)`](../googlesql-functions/approximate_aggregate_functions.md#approx_top_count) |   |
+| `TOP(x, num), COUNT(*)` | [`APPROX_TOP_COUNT(x, num)`](../googlesql-functions/approximate_aggregate_functions.md#approx_top_count) | `APPROX_TOP_COUNT` returns one `ARRAY<STRUCT>` value whose fields are `value` and `count`, while the legacy SQL query returns one row for each value; to get those rows, expand the array with `UNNEST` and select its `value` and `count` fields |
 | `NTH(index, arr) WITHIN RECORD` | [`arr[SAFE_ORDINAL(index)]`](../googlesql-syntax/operators.md#array-subscript-operator) |   |
 | `COUNT(arr) WITHIN RECORD` | [`ARRAY_LENGTH(arr)`](../googlesql-functions/array_functions.md#array_length) | `ARRAY_LENGTH` counts every element; to count only the non-`NULL` values of a field in a repeated record, use `(SELECT COUNT(field) FROM UNNEST(record))` |
 | `HOST(url)` | [`NET.HOST(url)`](../googlesql-functions/net_functions.md#nethost) | see [differences below](#url-function-comparison) |
@@ -1526,6 +1526,8 @@ For example, the following legacy SQL query uses the entire table name in a
 regular expression to find the maximum temperatures across all years that end
 in the number `0`:
 
+Adapted (not in the official docs): anchored the regular expression to the whole table name, so that only the tables for years that end in `0` match.
+
 ```sql
 #legacySQL
 SELECT
@@ -1533,7 +1535,7 @@ SELECT
   ROUND((max-32)*5/9,1) celsius,
   year
 FROM
-  TABLE_QUERY([bigquery-public-data:noaa_gsod], 'REGEXP_MATCH(table_id, r"gsod\d{3}0")')
+  TABLE_QUERY([bigquery-public-data:noaa_gsod], 'REGEXP_MATCH(table_id, r"^gsod\d{3}0$")')
 WHERE
   max != 9999.9 # code for missing data
   AND max > 100 # to improve ORDER BY performance
@@ -1549,6 +1551,8 @@ However, longer prefixes perform better than empty prefixes, so the following
 example uses a longer prefix, which means that the value of `_TABLE_SUFFIX`
 is only part of the table name.
 
+Adapted (not in the official docs): anchored the regular expression to the whole suffix, so that only the tables for years that end in `0` match.
+
 ```sql
 #GoogleSQL
 SELECT
@@ -1560,7 +1564,7 @@ FROM
 WHERE
   max != 9999.9 # code for missing data
   AND max > 100 # to improve ORDER BY performance
-  AND REGEXP_CONTAINS(_TABLE_SUFFIX, r"\d{3}0")
+  AND REGEXP_CONTAINS(_TABLE_SUFFIX, r"^\d{3}0$")
 ORDER BY
   max DESC
 ```
@@ -1591,7 +1595,7 @@ view instead.
 
 To migrate a query that uses `__PARTITIONS_SUMMARY__` and keep the output schema and error handling consistent, use the following GoogleSQL query. Unlike the meta-table, this query returns no rows instead of an error when the table doesn't exist, so if you need that error, check first that the table exists in `INFORMATION_SCHEMA.TABLES`:
 
-Adapted (not in the official docs): grouped the rows by partition and took the latest `last_modified_time`, because the view can return two rows for the `__UNPARTITIONED__` partition.
+Adapted (not in the official docs): grouped the rows by partition and took the latest `last_modified_time`, because the view can return two rows for the `__UNPARTITIONED__` partition, and typed the `creation_time` placeholder as `INT64`, like `last_modified_time`.
 
 ```googlesql
 #GoogleSQL
@@ -1600,7 +1604,7 @@ SELECT
   table_catalog AS project_id,
   table_schema AS dataset_id,
   table_name AS table_id,
-  NULL AS creation_time, -- Partition creation time not available
+  CAST(NULL AS INT64) AS creation_time, -- Partition creation time not available
   UNIX_MILLIS(MAX(last_modified_time)) AS last_modified_time
 FROM
   `DATASET_ID.INFORMATION_SCHEMA.PARTITIONS`
@@ -1630,7 +1634,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the example that migrates `OMIT RECORD IF COUNT(payload.pages.page_name) <= 80` used `ARRAY_LENGTH(payload.pages) > 80`. `COUNT(payload.pages.page_name)` counts only the pages whose `page_name` is not `NULL`, while `ARRAY_LENGTH` counts every element, so a record with more than 80 pages of which some have a `NULL` `page_name` was kept by the GoogleSQL query and omitted by the legacy SQL query. The filter is changed to `(SELECT COUNT(page_name) FROM UNNEST(payload.pages)) > 80`, and the two sentences around the example that described `ARRAY_LENGTH` are changed to match.
 - Corrected from the official docs: the function comparison table maps `COUNT(arr) WITHIN RECORD` to `ARRAY_LENGTH(arr)` with no note. `COUNT` counts only non-`NULL` values, while `ARRAY_LENGTH` counts every element, so for a field in a repeated record, such as `payload.pages.page_name`, the results differ. A note with the subquery form is added to the row.
 - Corrected from the official docs: the text says that the GoogleSQL query that replaces `__PARTITIONS_SUMMARY__` keeps the error handling consistent. It keeps the error for a table that is not partitioned, but the legacy SQL meta-table reads the table directly and fails when it doesn't exist, while the GoogleSQL query filters `INFORMATION_SCHEMA.PARTITIONS` by `table_name` and returns no rows for a missing table. A sentence that says so is added before the example.
-- Corrected from the official docs: the coercion table said that `STRING` to `INT64`, `FLOAT64` or `BOOL`, and `STRING` to `TIMESTAMP`, are mostly supported by GoogleSQL. In googlesql-syntax/conversion_rules.md, `STRING` coerces to no other type, and only `STRING` literals coerce, to `DATE`, `DATETIME`, `TIME` and `TIMESTAMP`. The first row now says to cast explicitly, and the second says that only literals are coerced.
+- Corrected from the official docs: the coercion table said that `STRING` to `INT64`, `FLOAT64` or `BOOL`, and `STRING` to `TIMESTAMP`, are mostly supported by GoogleSQL. In googlesql-syntax/conversion_rules.md, `STRING` coerces to no other type, and only `STRING` literals and `STRING` query parameters coerce, to `DATE`, `DATETIME`, `TIME` and `TIMESTAMP` (Literal coercion and Query parameter coercion). The first row now says to cast explicitly, and the second says that only literals and query parameters are coerced, and that other `STRING` expressions such as columns need an explicit conversion.
 - Corrected from the official docs: the function comparison table maps `INTEGER(x)` to `SAFE_CAST(x AS INT64)` with no note. Legacy SQL `INTEGER` returns the number of microseconds since the Unix epoch for a timestamp (legacy-sql/legacy-sql-1.md), while GoogleSQL cannot cast `TIMESTAMP` to `INT64` (googlesql-syntax/conversion_rules.md). A note that points to `UNIX_MICROS` for a `TIMESTAMP` input is added to the row.
 - Corrected from the official docs: the text said that GoogleSQL `NOT IN` returns `NULL` if any value on the right hand side is `NULL`. In googlesql-syntax/operators.md, `NOT IN` returns `FALSE` first when the value set contains an equal value, so `1 NOT IN (1, NULL)` is `FALSE`; it returns `NULL` only when no value matches and a comparison produces `NULL`. The sentence is changed to that condition.
 - Corrected from the official docs: the `TABLE_DATE_RANGE_STRICT` example that uses a `WITH` clause references the wildcard table `mydataset.sea_weather_*` in the same query as the check. If no table matches the wildcard, that reference can fail before the `IF` is evaluated, so the query may not return the `Not found suffixes` error. A sentence that says so and points to the scripting example, which runs the wildcard query only in the `ELSE` branch after the check, is added before the example.
@@ -1640,8 +1644,10 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the `TABLE_DATE_RANGE` and `TABLE_DATE_RANGE_STRICT` examples query the wildcard table `mydataset.sea_weather_*`, and a wildcard table query cannot reference a view (tables-schemas-views/views-intro.md), so the query fails if a view such as `sea_weather_20160501_backup` shares the prefix, even when the `WHERE` filter excludes its suffix. The wildcard table also takes the schema of the most recently created matching table even when a `_TABLE_SUFFIX` filter excludes that table (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20), so a matching backup table that lacks a selected column or gives it another type makes the query fail. Sentences that state both assumptions, and the `UNION ALL` alternative, are added before the first example.
 - Corrected from the official docs: the two `ARRAY` subquery examples that return `page_names` and `title` could put `NULL` elements in an array of the query result, and GoogleSQL raises an error if the query result has an array which contains `NULL` elements (googlesql-syntax/data-types.md). Both examples now exclude `NULL` values in the subquery, so the arrays hold only the non-`NULL` values. Because `UNNEST` destroys the order of elements in the input array (googlesql-syntax/query-syntax-1.md, `WITH OFFSET`), both subqueries also take the offset with `WITH OFFSET` and order by it, so the arrays keep the order of the repeated field. In the `title` example, the rows are kept with an `EXISTS` test on `page_name` instead of `ARRAY_LENGTH(title) > 0`, so a row whose matching pages all have a `NULL` title is not dropped; the sentence after the example says so.
 - Corrected from the official docs: `TABLE_QUERY` selects the tables before reading them, while the GoogleSQL examples filter `_TABLE_SUFFIX` with `REGEXP_CONTAINS`. The official docs say that a `_TABLE_SUFFIX` filter limits the tables scanned only when its condition is a constant expression (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20) and don't say that a `REGEXP_CONTAINS` condition qualifies (the page has no mention of `REGEXP_CONTAINS`), so a sentence is added that says the examples can scan every table that matches the prefix, and so read more data than `TABLE_QUERY`, and that suggests a literal `IN` condition listing every needed suffix; the examples are kept as in the official docs.
-- Corrected from the official docs: `INFORMATION_SCHEMA.PARTITIONS` returns two rows for the `__UNPARTITIONED__` partition when it has both long-term and active storage tier data, one for each storage tier (information-schema/partitions.md), so the migrated `__PARTITIONS_SUMMARY__` query could return that partition twice. The query now groups the rows by partition and returns the latest `last_modified_time` of the tiers.
+- Corrected from the official docs: `INFORMATION_SCHEMA.PARTITIONS` returns two rows for the `__UNPARTITIONED__` partition when it has both long-term and active storage tier data, one for each storage tier (information-schema/partitions.md), so the migrated `__PARTITIONS_SUMMARY__` query could return that partition twice. The query now groups the rows by partition and returns the latest `last_modified_time` of the tiers. The `NULL` placeholder for `creation_time` is cast to `INT64`, so the column keeps an integer type like `last_modified_time`, which is milliseconds since the epoch from `UNIX_MILLIS`.
 - Corrected from the official docs: the function comparison table maps `NEST(x)` to `ARRAY_AGG(x)` without a condition, but legacy SQL automatically flattens query results, so a `NEST` in the top-level query returns no repeated field, and `NEST` is meant for subselects that produce intermediate results (legacy-sql/legacy-sql-1.md). `ARRAY_AGG` returns an array in the result, so the row now says where it matches `NEST` and that `UNNEST` gives the flattened rows.
+- Corrected from the official docs: the function comparison table maps `TOP(x, num), COUNT(*)`, which returns the values and their counts as rows, to `APPROX_TOP_COUNT(x, num)` with no note. `APPROX_TOP_COUNT` returns an array of `STRUCT`s with the fields `value` and `count` (googlesql-functions/approximate_aggregate_functions.md), so a note that says to expand it with `UNNEST` to get the rows is added.
+- Corrected from the official docs: the `TABLE_QUERY` example that uses the entire table name and its GoogleSQL equivalent matched `gsod\d{3}0` and `\d{3}0` anywhere in the name, so a table such as `gsod2020_backup` also matched. The expressions are anchored as `^gsod\d{3}0$` and `^\d{3}0$`, to match the years that end in `0` that the text describes.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
