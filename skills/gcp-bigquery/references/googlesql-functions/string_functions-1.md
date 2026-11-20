@@ -1036,8 +1036,8 @@ Additional information about format specifiers:
 
 ###### Format specifiers
 
-|---|---|---|---|
 | Specifier | Description | Examples | Types |
+|---|---|---|---|
 | `d` or `i` | Decimal integer | 392 | `INT64` |
 | `o` | Octal <br /> Note: If an `INT64` value is negative, an error is produced. | 610 | `INT64` |
 | `x` | Hexadecimal integer <br /> Note: If an `INT64` value is negative, an error is produced. | 7fa | `INT64` |
@@ -1062,8 +1062,8 @@ These sub-specifiers must comply with the following specifications.
 
 ###### Flags
 
-|---|---|
 | Flags | Description |
+|---|---|
 | `-` | Left-justify within the given field width; Right justification is the default (see width sub-specifier) |
 | `+` | Forces to precede the result with a plus or minus sign (`+` or `-`) even for positive numbers. By default, only negative numbers are preceded with a `-` sign |
 | \<space\> | If no sign is going to be written, a blank space is inserted before the value |
@@ -1076,15 +1076,15 @@ flags aren't relevant for some element type, they are ignored.
 
 ###### Width
 
-|---|---|
 | Width | Description |
+|---|---|
 | \<number\> | Minimum number of characters to be printed. If the value to be printed is shorter than this number, the result is padded with blank spaces. The value isn't truncated even if the result is larger |
 | `*` | The width isn't specified in the format string, but as an additional integer value argument preceding the argument that has to be formatted |
 
 ###### Precision
 
-|---|---|
 | Precision | Description |
+|---|---|
 | `.`\<number\> | - For integer specifiers \`%d\`, \`%i\`, \`%o\`, \`%x\`, and \`%X\`: precision specifies the minimum number of digits to be written. If the value to be written is shorter than this number, the result is padded with leading zeros. The value isn't truncated even if the result is longer. A precision of 0 means that no character is written for the value 0. - For specifiers \`%e\`, \`%E\`, \`%f\`, and \`%F\`: this is the number of digits to be printed after the decimal point. The default value is 6. - For specifiers \`%g\` and \`%G\`: this is the number of significant digits to be printed, before the removal of the trailing zeros after the decimal point. The default value is 6. |
 | `.*` | The precision isn't specified in the format string, but as an additional integer value argument preceding the argument that has to be formatted |
 
@@ -1112,8 +1112,8 @@ The `%p` format specifier produces a one-line printable string. The `%P`
 format specifier produces a multi-line printable string. You can use these
 format specifiers with the following data types:
 
-|---|---|---|
 | **Type** | **%p** | **%P** |
+|---|---|---|
 | JSON | JSON input: ``` JSON ' { "month": 10, "year": 2019 } ' ``` Produces a one-line printable string representing JSON: ``` {"month":10,"year":2019} ``` | JSON input: ``` JSON ' { "month": 10, "year": 2019 } ' ``` Produces a multi-line printable string representing JSON: ``` { "month": 10, "year": 2019 } ``` |
 
 ###### %t and %T behavior
@@ -1133,8 +1133,8 @@ except for the special case of non-finite floating point values.
 
 The `STRING` is formatted as follows:
 
-|---|---|---|
 | **Type** | **%t** | **%T** |
+|---|---|---|
 | `NULL` of any type | NULL | NULL |
 | `INT64` | 123 | 123 |
 | NUMERIC | 123.0 *(always with .0)* | NUMERIC "123.0" |
