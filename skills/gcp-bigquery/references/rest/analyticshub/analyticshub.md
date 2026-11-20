@@ -290,19 +290,12 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SetIamPolicyRequest`; Response: `Policy`
 
-### Example request skeleton
+### Example request line
 
-Generated from the Discovery entry of `analyticshub.organizations.locations.dataExchanges.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values). Safety of the skeleton: the subshell first turns off shell tracing and auto-export (`set +ax`) and unsets `token`, so `set -x` / `bash -x` does not print the token and the token is not exported to the environment of curl (even under `set -a` or after an earlier `export token`); it exits before calling curl if `gcloud auth print-access-token` fails or prints nothing; the token reaches curl on standard input (`-H @-`, curl 7.55.0 or later; `printf` is a shell builtin), so it does not appear in the process arguments; `--disable` (the first option) keeps curl from reading `.curlrc`, so a `verbose` setting there does not print the header; `--fail` makes curl exit with code 22 on an HTTP error status instead of 0:
+Generated from the Discovery entry of `analyticshub.organizations.locations.dataExchanges.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The request needs an OAuth 2.0 access token in an `Authorization: Bearer` header; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
-```bash
-(
-  set +ax
-  unset token
-  token="$(gcloud auth print-access-token)" && [ -n "$token" ] || exit 1
-  printf 'Authorization: Bearer %s\n' "$token" \
-    | curl --disable --fail -X GET -H @- \
-    "https://analyticshub.googleapis.com/v1/{+organization}/dataExchanges"
-)
+```http
+GET https://analyticshub.googleapis.com/v1/{+organization}/dataExchanges
 ```
 
 ## Options / Props
