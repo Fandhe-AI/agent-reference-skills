@@ -516,7 +516,7 @@ LIMIT 5;
 To look specifically at TLD information, use the `TLD()` function. This
 example displays the top TLDs that are not in a list of common examples.
 
-Adapted (not in the official docs): the second comment is changed to say that TLDs in the list are excluded.
+Adapted (not in the official docs): the second comment is changed to say that TLDs in the list are also excluded (both conditions must hold).
 
 ```sql
 #legacySQL
@@ -529,7 +529,7 @@ GROUP BY
   user_tld
 HAVING
   /* Only consider TLDs that are NOT NULL */
-  /* or not in our list of common TLDs */
+  /* and not in our list of common TLDs */
   user_tld IS NOT NULL AND NOT user_tld
   IN ('','.com','.net','.org','.info','.edu')
 ORDER BY
@@ -637,7 +637,7 @@ omit both `ORDER BY` and the `window-frame-clause`,
 the default window frame is the entire partition.
 
 - `ROWS` - Defines a window in terms of row position, relative to the current row. For example, to add a column showing the sum of the preceding 5 rows of salary values, you would query `SUM(salary) OVER
-  (ROWS BETWEEN 5 PRECEDING AND CURRENT ROW)`. The set of rows typically includes the current row, but that is not required.
+  (ROWS BETWEEN 5 PRECEDING AND 1 PRECEDING)` (corrected; see Notes). The set of rows typically includes the current row, but that is not required.
 - `RANGE` - Defines a window in terms of a range of values in a given column, relative to that column's value in the current row. Only operates on numbers and dates, where date values are simple integers (microseconds since the epoch). Neighboring rows with the same value are called *peer* rows. Peer rows of the `CURRENT ROW` are included in a window frame that specifies `CURRENT ROW`. For example, if you specify the window end to be `CURRENT ROW` and the following row in the window has the same value, it will be included in the function calculation.
 - `BETWEEN <start> AND <end>` - A range, inclusive of the start and end rows. The range need not include the current row, but `<start>` must precede or equal `<end>`.
 - `<start>` - Specifies the start offset for this window, relative to the current row. The following options are supported:
@@ -1287,12 +1287,15 @@ LIMIT 5
 | [`SOME()`](https://docs.cloud.google.com/bigquery/docs/reference/legacy-sql#some) | Returns true if argument is true for at least one of its inputs. |
 | [`TO_BASE64()`](https://docs.cloud.google.com/bigquery/docs/reference/legacy-sql#to-base64) | Converts the BYTES argument to a base-64 encoded string. |
 
-`CASE WHEN when_expr1 THEN then_expr1
+**`CASE`**
 
+```sql
+CASE WHEN when_expr1 THEN then_expr1
 WHEN when_expr2 THEN then_expr2 ...
+ELSE else_expr END
+```
 
-ELSE else_expr END`
-:   Use CASE to choose among two or more alternate expressions in your query. WHEN
+Use CASE to choose among two or more alternate expressions in your query. WHEN
 expressions must be boolean, and all the expressions in THEN clauses and ELSE clause must be
 compatible types.
 
@@ -1441,11 +1444,13 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 
   **Example:**
 
+  Adapted (not in the official docs): the comments are changed to describe `search` and `geo` as revision counts and the title filter as a prefix match.
+
   ```sql
   #legacySQL
   SELECT
     page_title,
-    /* Populate these columns as True or False, */
+    /* Populate these columns with the revision count or 0, */
     /*  depending on the condition */
     IF (page_title CONTAINS 'search',
         INTEGER(total), 0) AS search,
@@ -1453,7 +1458,7 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
         page_title CONTAINS 'Maps', INTEGER(total), 0) AS geo,
   FROM
     /* Subselect to return top revised Wikipedia articles */
-    /* containing 'Google', followed by additional text. */
+    /* whose titles start with 'Google', followed by additional text. */
     (SELECT
       TOP (title, 5) as page_title,
       COUNT (*) as total
@@ -1519,14 +1524,16 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page (level-6 headings become bold lines); definition-list bodies are un-indented by four spaces so that they are not read as code; the `:` markers of the twin are kept (GitHub Markdown has no definition lists); the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders; 2 code blocks whose twin text is damaged (links expanded into URLs, `<...>` dropped, table borders shortened) are matched to the rendered page by position and similarity, and the text is taken from the page; and inline code that the twin replaces with its link URL ([`DOMAIN()`](https://developers.google.com/bigquery/docs/query-reference#urlfunctions)) is restored from the link text of the rendered page. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - The official page is split into 2 files at section boundaries; this is part 2.
+- Corrected from the official docs: the `ROWS` example "to add a column showing the sum of the preceding 5 rows of salary values" is `SUM(salary) OVER (ROWS BETWEEN 5 PRECEDING AND CURRENT ROW)`, which sums 6 rows, the current row included, when enough rows precede it; the frame is changed to `ROWS BETWEEN 5 PRECEDING AND 1 PRECEDING`, which sums only the preceding 5 rows.
+- Reformatted from the official docs: the `CASE` syntax is a multi-line term with blank lines between its lines, which GitHub Markdown does not render as one code span; it is shown as a code block with the same lines, followed by its description.
 - Corrected from the official docs: the table-wildcard example heading says names "have a length greater than 4", but the query uses `length(table_id) >= 4` and the result lists `mydata.ooze`, whose name has length 4. The heading is changed to "a length of at least 4".
-- Corrected from the official docs: the `HAVING` clause has the comments "Only consider TLDs that are NOT NULL" and "or in our list of common TLDs", but the condition `user_tld IS NOT NULL AND NOT user_tld IN (...)` excludes the listed TLDs, as the text above the query says ("TLDs that are not in a list of common examples"). The comment is changed to "or not in our list of common TLDs".
+- Corrected from the official docs: the `HAVING` clause has the comments "Only consider TLDs that are NOT NULL" and "or in our list of common TLDs", but the condition `user_tld IS NOT NULL AND NOT user_tld IN (...)` excludes the listed TLDs, as the text above the query says ("TLDs that are not in a list of common examples"). The comment is changed to "and not in our list of common TLDs", matching the `AND` of the condition.
 - Corrected from the official docs: the text says the query checks whether the hash modulo `2` is zero ("the modulo n of the hash equals zero"), but the query tests `ABS(HASH(title)) % 2 == 1`. The comparison is changed to `== 0` to match the text.
 - Corrected from the official docs: the `TABLE_QUERY` example that matches table names starting with `boo` followed by 3 to 5 digits uses `^boo[\d]{3,5}`, which needs the digits right after `boo`, so it matches none of the listed tables (`book418` and `boom12345` have a letter after `boo`), and without `$` it also matches a name with more digits by its prefix. The expression is changed to `^boo[a-z]?[0-9]{3,5}$`, which matches `book418` and `boom12345` and not `book4`, `boom123456789` or `taboo999`. The digit class is written as `[0-9]` because the second argument of `TABLE_QUERY` is a single-quoted string, which is read before the inner `r"..."` expression, and the escapes listed for legacy SQL strings are `\xDD`, a backslash before a slash or quote, and the C-style sequences (Escaping special characters in strings, on this page), which do not include `\d`.
 - Corrected from the official docs: the `FIRST_VALUE` example orders the window by `word_count DESC`, so `fv` is the word with the largest `word_count` in the partition, but the shown result has `imperfectly` (`word_count` 1) as `fv`; the query also uses `LIMIT 1` without an outer `ORDER BY`, so the returned row is not fixed. The query now orders the output by `word_count DESC`, and the result row is changed to `handkerchief`, `29`, `handkerchief`, the first row of the `DENSE_RANK` example with the same data and filter on this page.
 - Corrected from the official docs: the heading of the `TABLE_QUERY` example said that the names start with `boo` followed by 3-5 numeric digits. It is changed to match the corrected expression `^boo[a-z]?[0-9]{3,5}$`: an optional lowercase letter after `boo`, and 3-5 digits at the end of the name.
 - Corrected from the official docs: the text said that the `^` character starts matching at the beginning of a word. In the RE2 syntax linked above, `^` matches at the beginning of the text (or of a line with the `m` flag), so `^foo` does not match the `foo` in `bar foo`, and `\b` matches at an ASCII word boundary. The sentence now says the beginning of the string and adds `\b` for a word boundary.
-- Caution: in the pivot example, the comments say that the columns are populated "as True or False", but `search` and `geo` return `INTEGER(total)` or `0`, the revision count; and the subselect comment says the titles contain "Google", followed by additional text, but the regular expression `^Google.+` matches only the titles that start with `Google` and have at least one more character. The example is kept as in the official docs.
+- Corrected from the official docs: in the pivot example, the comments say that the columns are populated "as True or False", but `search` and `geo` return `INTEGER(total)` or `0`, the revision count; and the subselect comment says the titles contain "Google", followed by additional text, but the regular expression `^Google.+` matches only the titles that start with `Google` and have at least one more character. The comments are changed to "Populate these columns with the revision count or 0," and "whose titles start with 'Google', followed by additional text."; the query is unchanged.
 - Caution: the `HASH` sampling example labels rows by `HASH(title)`, so all the rows with the same title get the same label: the sample is reproducible and selects about half of the distinct titles, not about half of the rows, when titles have different numbers of rows. To sample rows, hash a value that is unique for each row. A sentence before the example says that the "about 50%" applies to the distinct titles; the example is kept as in the official docs.
 - Corrected from the official docs: the `CUME_DIST`, `DENSE_RANK`, `LAG`, `LEAD`, `NTILE`, `PERCENT_RANK`, `PERCENTILE_CONT`, `PERCENTILE_DISC`, `RANK`, `RATIO_TO_REPORT` and `ROW_NUMBER` examples read `[bigquery-public-data:samples.shakespeare]` with `LIMIT 5`, but `LIMIT 5` limits only the result rows, and the same `WHERE` clause also matches `imperfectly` (the `LAST_VALUE` example), while the shown results are computed over the 5 shown rows only (the `RATIO_TO_REPORT` values add up to 1, and `LEAD` returns `null` for the fifth row). The examples now read those 5 rows from `SELECT` statements, as the running-total example on this page does, so the shown results match the queries. The `LAST_VALUE` example used `LIMIT 1` without an outer `ORDER BY`, so the returned row was not fixed, and its one shown row, `imperfectly`, is the last row of the window, where the default frame and the whole partition end at the same row. It now reads those 5 rows and `imperfectly` (`word_count` 1, as its shown result has), sets the frame to `ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING` (the window frame syntax on this page), and returns every row ordered by `word_count DESC, word` (the `ORDER BY` syntax of the query reference), so each row shows `imperfectly`, the last value of the partition. With the default frame, `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW` when the window has `ORDER BY` (as this page says), `LAST_VALUE` returns the last value of the rows up to the current row and the rows with the same `word_count`, not of the whole partition. The window syntax on this page shows one `ORDER BY` expression, so no tie-breaker is added, and a sentence before the examples says that the order of `displeasure` and `instruments`, which have the same `word_count`, is not fixed.
 - Corrected from the official docs: the description of `RATIO_TO_REPORT` said that the ratio is a double between 0 and 1. Each value is divided by the sum of the values, so a negative value can give a ratio outside that range (for the values 3 and -1, the sum is 2 and the ratios are 1.5 and -0.5). The range is left out of the description; in the example, every `word_count` is positive, so the ratios are between 0 and 1 and add up to 1.
