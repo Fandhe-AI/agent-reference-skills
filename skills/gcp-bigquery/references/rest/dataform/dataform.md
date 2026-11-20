@@ -481,7 +481,7 @@ Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Ve
 - `POST https://dataform.googleapis.com/v1beta1/{+parent}/workspaces:createLongRunning`
 - Creates a new Workspace in a given Repository asynchronously.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `Workspace`; Response: `Operation`
+- Request: [`Workspace` (v1beta1)](../../rest-schemas/dataform/dataform-2.md#workspace-v1beta1); Response: `Operation`
 
 ### `dataform.projects.locations.repositories.workspaces.delete`
 

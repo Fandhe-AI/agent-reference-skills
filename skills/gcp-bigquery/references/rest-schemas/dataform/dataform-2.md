@@ -56,7 +56,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ### Example `Workspace` value (v1beta1)
 
-Generated from the field types (not in the official docs): a JSON value that matches the table, with empty strings, `0`, `false`, empty arrays and objects, and for an enum its first value other than `*_UNSPECIFIED`. int64 values are JSON strings, as in the Discovery `format`. It shows the JSON shape only; it is not a request to send as is (fill in the values the method needs, and omit output-only fields in requests).
+Generated from the field types (not in the official docs): a JSON value that matches the table, with empty strings, `0` (`1` where the description allows only positive values), `false`, empty arrays and objects, and for an enum its first value other than `*_UNSPECIFIED`. int64 values are JSON strings, as in the Discovery `format`. It shows the JSON shape only; it is not a request to send as is (fill in the values the method needs, and omit output-only fields in requests).
 
 ```json
 {
