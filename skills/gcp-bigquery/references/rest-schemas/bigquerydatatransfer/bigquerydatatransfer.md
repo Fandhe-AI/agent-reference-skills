@@ -411,9 +411,9 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `eventDrivenSchedule` | EventDrivenSchedule | Event driven transfer schedule options. If set, the transfer will be scheduled upon events arrial. |
-| `manualSchedule` | ManualSchedule | Manual transfer schedule. If set, the transfer run will not be auto-scheduled by the system, unless the client invokes StartManualTransferRuns. This is equivalent to disable_auto_scheduling = true. |
-| `timeBasedSchedule` | TimeBasedSchedule | Time based transfer schedule options. This is the default schedule option. |
+| `eventDrivenSchedule` | EventDrivenSchedule | Event driven transfer schedule options. If set, the transfer will be scheduled upon events arrial. Mutually exclusive with `timeBasedSchedule`, `manualSchedule` (proto `oneof schedule`; set at most one; see Notes). |
+| `manualSchedule` | ManualSchedule | Manual transfer schedule. If set, the transfer run will not be auto-scheduled by the system, unless the client invokes StartManualTransferRuns. This is equivalent to disable_auto_scheduling = true. Mutually exclusive with `timeBasedSchedule`, `eventDrivenSchedule` (proto `oneof schedule`; set at most one; see Notes). |
+| `timeBasedSchedule` | TimeBasedSchedule | Time based transfer schedule options. This is the default schedule option. Mutually exclusive with `manualSchedule`, `eventDrivenSchedule` (proto `oneof schedule`; set at most one; see Notes). |
 
 ### `ScheduleTransferRunsRequest` fields
 
@@ -432,8 +432,8 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `requestedRunTime` | string (google-datetime) | A run_time timestamp for historical data files or reports that are scheduled to be transferred by the scheduled transfer run. requested_run_time must be a past time and cannot include future time values. |
-| `requestedTimeRange` | TimeRange | A time_range start and end timestamp for historical data files or reports that are scheduled to be transferred by the scheduled transfer run. requested_time_range must be a past time and cannot include future time values. |
+| `requestedRunTime` | string (google-datetime) | A run_time timestamp for historical data files or reports that are scheduled to be transferred by the scheduled transfer run. requested_run_time must be a past time and cannot include future time values. Mutually exclusive with `requestedTimeRange` (proto `oneof time`; set at most one; see Notes). |
+| `requestedTimeRange` | TimeRange | A time_range start and end timestamp for historical data files or reports that are scheduled to be transferred by the scheduled transfer run. requested_time_range must be a past time and cannot include future time values. Mutually exclusive with `requestedRunTime` (proto `oneof time`; set at most one; see Notes). |
 
 ### `StartManualTransferRunsResponse` fields
 
@@ -596,6 +596,8 @@ Generated from the field types (not in the official docs): a JSON value that mat
 - Deprecated: `DataSourceParameter.repeated` (its Discovery description). Replacement or status stated in the description: "This field has no effect."
 - Deprecated: `TransferConfig.userId` (its Discovery description). The Discovery document states no replacement.
 - Deprecated: `TransferRun.userId` (its Discovery description). The Discovery document states no replacement.
+- Mutually exclusive fields of `ScheduleOptionsV2`: `timeBasedSchedule`, `manualSchedule`, `eventDrivenSchedule` are the members of `oneof schedule` in the proto (`google/cloud/bigquery/datatransfer/v1/transfer.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/datatransfer/v1/transfer.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `StartManualTransferRunsRequest`: `requestedTimeRange`, `requestedRunTime` are the members of `oneof time` in the proto (`google/cloud/bigquery/datatransfer/v1/datatransfer.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/datatransfer/v1/datatransfer.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
 - Source: https://bigquerydatatransfer.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
 ## Related

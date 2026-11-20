@@ -378,11 +378,11 @@ A JSON value that matches the table (not a request to send as is). The values ar
 
 | Field | Type | Description |
 |---|---|---|
-| `aws` | AwsProperties | Amazon Web Services (AWS) properties. |
-| `azure` | AzureProperties | Azure properties. |
-| `cloudResource` | CloudResourceProperties | Cloud Resource properties. |
-| `cloudSpanner` | CloudSpannerProperties | Cloud Spanner properties. |
-| `cloudSql` | CloudSqlProperties | Cloud SQL properties. |
+| `aws` | AwsProperties | Amazon Web Services (AWS) properties. Mutually exclusive with `cloudSql`, `azure`, `cloudSpanner`, `cloudResource`, `spark`, `salesforceDataCloud` (proto `oneof properties`; set at most one; see Notes). |
+| `azure` | AzureProperties | Azure properties. Mutually exclusive with `cloudSql`, `aws`, `cloudSpanner`, `cloudResource`, `spark`, `salesforceDataCloud` (proto `oneof properties`; set at most one; see Notes). |
+| `cloudResource` | CloudResourceProperties | Cloud Resource properties. Mutually exclusive with `cloudSql`, `aws`, `azure`, `cloudSpanner`, `spark`, `salesforceDataCloud` (proto `oneof properties`; set at most one; see Notes). |
+| `cloudSpanner` | CloudSpannerProperties | Cloud Spanner properties. Mutually exclusive with `cloudSql`, `aws`, `azure`, `cloudResource`, `spark`, `salesforceDataCloud` (proto `oneof properties`; set at most one; see Notes). |
+| `cloudSql` | CloudSqlProperties | Cloud SQL properties. Mutually exclusive with `aws`, `azure`, `cloudSpanner`, `cloudResource`, `spark`, `salesforceDataCloud` (proto `oneof properties`; set at most one; see Notes). |
 | `configuration` | ConnectorConfiguration | Optional. Connector configuration. |
 | `creationTime` | string (int64) | Output only. The creation timestamp of the connection. |
 | `description` | string | User provided description. |
@@ -391,8 +391,8 @@ A JSON value that matches the table (not a request to send as is). The values ar
 | `kmsKeyName` | string | Optional. The Cloud KMS key that is used for credentials encryption. If omitted, internal Google owned encryption keys are used. Example: `projects/[kms_project_id]/locations/[region]/keyRings/[key_region]/cryptoKeys/[key]` |
 | `lastModifiedTime` | string (int64) | Output only. The last update timestamp of the connection. |
 | `name` | string | Output only. The resource name of the connection in the form of: `projects/{project_id}/locations/{location_id}/connections/{connection_id}` |
-| `salesforceDataCloud` | SalesforceDataCloudProperties | Optional. Salesforce DataCloud properties. This field is intended for use only by Salesforce partner projects. This field contains properties for your Salesforce DataCloud connection. |
-| `spark` | SparkProperties | Spark properties. |
+| `salesforceDataCloud` | SalesforceDataCloudProperties | Optional. Salesforce DataCloud properties. This field is intended for use only by Salesforce partner projects. This field contains properties for your Salesforce DataCloud connection. Mutually exclusive with `cloudSql`, `aws`, `azure`, `cloudSpanner`, `cloudResource`, `spark` (proto `oneof properties`; set at most one; see Notes). |
+| `spark` | SparkProperties | Spark properties. Mutually exclusive with `cloudSql`, `aws`, `azure`, `cloudSpanner`, `cloudResource`, `salesforceDataCloud` (proto `oneof properties`; set at most one; see Notes). |
 
 ### `Connection` (v1beta1) fields
 
@@ -593,6 +593,7 @@ A JSON value that matches the table (not a request to send as is). The values ar
 - Corrected from the source proto: the service account formats in the `serviceAccountId` descriptions of `CloudResourceProperties` (`@gcp-sa-bigquery-cloudresource.iam.gserviceaccount.com`) and `SparkProperties` (`bqcx--@gcp-sa-bigquery-consp.iam.gserviceaccount.com`) lost their placeholders in the Discovery document; the proto comments read "The account ID is in the form of: `<service-1234>@gcp-sa-bigquery-cloudresource.iam.gserviceaccount.com`" and "The account ID is in the form of: `bqcx-<projectnumber>-<uniqueid>@gcp-sa-bigquery-consp.iam.gserviceaccount.com`" (backticks added) (`google/cloud/bigquery/connection/v1/connection.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/connection/v1/connection.proto, commit `5ce0245`, retrieved 2026-11-19).
 - Corrected from the Discovery document: the `TestIamPermissionsResponse.permissions` description reads "A subset of `TestPermissionsRequest.permissions` that the caller is allowed."; the same text is in the `google.iam.v1` proto, where the request message of `TestIamPermissions` is `TestIamPermissionsRequest` (`google/iam/v1/iam_policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/iam_policy.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Deprecated: `CloudSpannerProperties.useServerlessAnalytics` (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "Deprecated: prefer use_data_boost instead." REST JSON field name: `useDataBoost` (`use_data_boost` in the description), `useParallelism` (`use_parallelism` in the description).
+- Mutually exclusive fields of `Connection`: `cloudSql`, `aws`, `azure`, `cloudSpanner`, `cloudResource`, `spark`, `salesforceDataCloud` are the members of `oneof properties` in the proto (`google/cloud/bigquery/connection/v1/connection.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/connection/v1/connection.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
 - Source: https://bigqueryconnection.googleapis.com/$discovery/rest?version=v1, https://bigqueryconnection.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related

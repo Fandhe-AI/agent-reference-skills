@@ -908,8 +908,8 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `aggregationThresholdPolicy` | AggregationThresholdPolicy | Optional. Policy used for aggregation thresholds. |
-| `differentialPrivacyPolicy` | DifferentialPrivacyPolicy | Optional. Policy used for differential privacy. |
+| `aggregationThresholdPolicy` | AggregationThresholdPolicy | Optional. Policy used for aggregation thresholds. Mutually exclusive with `differentialPrivacyPolicy` (proto `oneof privacy_policy`; set at most one; see Notes). |
+| `differentialPrivacyPolicy` | DifferentialPrivacyPolicy | Optional. Policy used for differential privacy. Mutually exclusive with `aggregationThresholdPolicy` (proto `oneof privacy_policy`; set at most one; see Notes). |
 | `joinRestrictionPolicy` | JoinRestrictionPolicy | Optional. Join restriction policy is outside of the one of policies, since this policy can be set along with other policies. This policy gives data providers the ability to enforce joins on the 'join_allowed_columns' when data is queried from a privacy protected view. |
 
 ### `ProjectList` fields
@@ -1117,10 +1117,10 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | Field | Type | Description |
 |---|---|---|
 | `connection` | string | Output only. Fully qualified name of the user-provided connection object of the remote model. Format: "projects/{project_id}/locations/{location_id}/connections/{connection_id}" |
-| `endpoint` | string | Output only. The endpoint for remote model. |
+| `endpoint` | string | Output only. The endpoint for remote model. Mutually exclusive with `remoteServiceType` (proto `oneof remote_service`; set at most one; see Notes). |
 | `maxBatchingRows` | string (int64) | Output only. Max number of rows in each batch sent to the remote service. If unset, the number of rows in each batch is set dynamically. |
 | `remoteModelVersion` | string | Output only. The model version for LLM. |
-| `remoteServiceType` | string enum | Output only. The remote service type for remote model. Values: `REMOTE_SERVICE_TYPE_UNSPECIFIED`, `CLOUD_AI_TRANSLATE_V3`, `CLOUD_AI_VISION_V1`, `CLOUD_AI_NATURAL_LANGUAGE_V1`, `CLOUD_AI_SPEECH_TO_TEXT_V2`. |
+| `remoteServiceType` | string enum | Output only. The remote service type for remote model. Mutually exclusive with `endpoint` (proto `oneof remote_service`; set at most one; see Notes). Values: `REMOTE_SERVICE_TYPE_UNSPECIFIED`, `CLOUD_AI_TRANSLATE_V3`, `CLOUD_AI_VISION_V1`, `CLOUD_AI_NATURAL_LANGUAGE_V1`, `CLOUD_AI_SPEECH_TO_TEXT_V2`. |
 | `speechRecognizer` | string | Output only. The name of the speech recognizer to use for speech recognition. The expected format is `projects/{project}/locations/{location}/recognizers/{recognizer}`. Customers can specify this field at model creation. If not specified, a default recognizer `projects/{model project}/locations/global/recognizers/_` will be used. See more details at recognizers (https://cloud.google.com/speech-to-text/v2/docs/reference/rest/v2/projects.locations.recognizers) |
 
 ### `RestrictionConfig` fields
@@ -1338,9 +1338,9 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `arrayElementType` | StandardSqlDataType | The type of the array's elements, if type_kind = "ARRAY". |
-| `rangeElementType` | StandardSqlDataType | The type of the range's elements, if type_kind = "RANGE". |
-| `structType` | StandardSqlStructType | The fields of this struct, in order, if type_kind = "STRUCT". |
+| `arrayElementType` | StandardSqlDataType | The type of the array's elements, if type_kind = "ARRAY". Mutually exclusive with `structType`, `rangeElementType` (proto `oneof sub_type`; set at most one; see Notes). |
+| `rangeElementType` | StandardSqlDataType | The type of the range's elements, if type_kind = "RANGE". Mutually exclusive with `arrayElementType`, `structType` (proto `oneof sub_type`; set at most one; see Notes). |
+| `structType` | StandardSqlStructType | The fields of this struct, in order, if type_kind = "STRUCT". Mutually exclusive with `arrayElementType`, `rangeElementType` (proto `oneof sub_type`; set at most one; see Notes). |
 | `typeKind` | string enum | Required. The top level type of this field. Can be any GoogleSQL data type (e.g., "INT64", "DATE", "ARRAY"). Values: `TYPE_KIND_UNSPECIFIED`, `INT64`, `BOOL`, `FLOAT64`, `STRING`, `BYTES`, `TIMESTAMP`, `DATE`, `TIME`, `DATETIME`, `INTERVAL`, `GEOGRAPHY`, `NUMERIC`, `BIGNUMERIC`, `JSON`, `ARRAY`, `STRUCT`, `RANGE`, `UUID`. |
 
 ### `StandardSqlField` fields
@@ -1687,7 +1687,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `holidayRegions` | `array<string enum>` | A list of geographical regions that are used for time series modeling. Values: `HOLIDAY_REGION_UNSPECIFIED`, `GLOBAL`, `NA`, `JAPAC`, `EMEA`, `LAC`, `AE`, `AR`, `AT`, `AU`, `BE`, `BR`, `CA`, `CH`, `CL`, `CN`, `CO`, `CS`, `CZ`, `DE`, `DK`, `DZ`, `EC`, `EE`, `EG`, `ES`, `FI`, `FR`, `GB`, `GR`, `HK`, `HU`, `ID`, `IE`, `IL`, `IN`, `IR`, `IT`, `JP`, `KR`, `LV`, `MA`, `MX`, `MY`, `NG`, `NL`, `NO`, `NZ`, `PE`, `PH`, `PK`, `PL`, `PT`, `RO`, `RS`, `RU`, `SA`, `SE`, `SG`, `SI`, `SK`, `TH`, `TR`, `TW`, `UA`, `US`, `VE`, `VN`, `ZA`. |
 | `horizon` | string (int64) | The number of periods ahead that need to be forecasted. |
 | `hparamTuningObjectives` | `array<string enum>` | The target evaluation metrics to optimize the hyperparameters for. Values: `HPARAM_TUNING_OBJECTIVE_UNSPECIFIED`, `MEAN_ABSOLUTE_ERROR`, `MEAN_SQUARED_ERROR`, `MEAN_SQUARED_LOG_ERROR`, `MEDIAN_ABSOLUTE_ERROR`, `R_SQUARED`, `EXPLAINED_VARIANCE`, `PRECISION`, `RECALL`, `ACCURACY`, `F1_SCORE`, `LOG_LOSS`, `ROC_AUC`, `DAVIES_BOULDIN_INDEX`, `MEAN_AVERAGE_PRECISION`, `NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN`, `AVERAGE_RANK`. |
-| `huggingFaceModelId` | string | The id of a Hugging Face model. For example, `google/gemma-2-2b-it`. |
+| `huggingFaceModelId` | string | The id of a Hugging Face model. For example, `google/gemma-2-2b-it`. Mutually exclusive with `modelGardenModelName` (proto `oneof external_model_id`; set at most one; see Notes). |
 | `includeDrift` | boolean | Include drift when fitting an ARIMA model. |
 | `initialLearnRate` | number (double) | Specifies the initial learning rate for the line search learn rate strategy. |
 | `inputLabelColumns` | `array<string>` | Name of input label columns in training data. |
@@ -1716,7 +1716,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `minSplitLoss` | number (double) | Minimum split loss for boosted tree models. |
 | `minTimeSeriesLength` | string (int64) | The minimum number of time points in a time series that are used in modeling the trend component of the time series. If you use this option you must also set the `timeSeriesLengthFraction` option. This training option ensures that enough time points are available when you use `timeSeriesLengthFraction` in trend modeling. This is particularly important when forecasting multiple time series in a single query using `timeSeriesIdColumn`. If the total number of time points is less than the `minTimeSeriesLength` value, then the query uses all available time points. |
 | `minTreeChildWeight` | string (int64) | Minimum sum of instance weight needed in a child for boosted tree models. |
-| `modelGardenModelName` | string | The name of a Vertex model garden publisher model. Format is `publishers/{publisher}/models/{model}@{optional_version_id}`. |
+| `modelGardenModelName` | string | The name of a Vertex model garden publisher model. Format is `publishers/{publisher}/models/{model}@{optional_version_id}`. Mutually exclusive with `huggingFaceModelId` (proto `oneof external_model_id`; set at most one; see Notes). |
 | `modelRegistry` | string enum | The model registry. Values: `MODEL_REGISTRY_UNSPECIFIED`, `VERTEX_AI`. |
 | `modelUri` | string | Google Cloud Storage URI from which the model was imported. Only applicable for imported models. |
 | `nonSeasonalOrder` | ArimaOrder | A specification of the non-seasonal part of the ARIMA model: the three components (p, d, q) are the AR order, the degree of differencing, and the MA order. |
@@ -1831,6 +1831,10 @@ Generated from the field types (not in the official docs): a JSON value that mat
 - Deprecated: `TableFieldSchema.categories.names` (its Discovery description). The Discovery document states no replacement.
 - Deprecated: `TimePartitioning.requirePartitionFilter` (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "This field is deprecated; please set the field with the same name on the table itself instead."
 - Deprecated: `TrainingRun.trainingStartTime` (`deprecated: true` in the Discovery document). The Discovery document states no replacement.
+- Mutually exclusive fields of `PrivacyPolicy`: `aggregationThresholdPolicy`, `differentialPrivacyPolicy` are the members of `oneof privacy_policy` in the proto (`google/cloud/bigquery/v2/privacy_policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/privacy_policy.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `RemoteModelInfo`: `endpoint`, `remoteServiceType` are the members of `oneof remote_service` in the proto (`google/cloud/bigquery/v2/model.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/model.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `StandardSqlDataType`: `arrayElementType`, `structType`, `rangeElementType` are the members of `oneof sub_type` in the proto (`google/cloud/bigquery/v2/standard_sql.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/standard_sql.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `TrainingOptions`: `huggingFaceModelId`, `modelGardenModelName` are the members of `oneof external_model_id` in the proto (`google/cloud/bigquery/v2/model.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/model.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
 - Source: https://bigquery.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
 
 ## Related
