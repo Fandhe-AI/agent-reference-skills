@@ -21,7 +21,7 @@ as `SELECT` are capitalized for illustration purposes.
 The `SELECT` clause specifies a list of expressions to be computed. Expressions in the
 `SELECT` clause can contain field names, literals, and
 [function calls](#supported-functions-and-operators) (including [aggregate functions](#aggregate-functions)
-and [window functions](https://docs.cloud.google.com/bigquery/docs/reference/legacy-sql#windowfunctions)) as well as combinations of the three. The
+and [window functions](legacy-sql-2.md#window-functions)) as well as combinations of the three. The
 expression list is comma-separated.
 
 Each expression can be given an alias by adding a space followed by an identifier after the
@@ -265,7 +265,7 @@ The term *table wildcard function* refers to a special type of function unique t
 These functions are used in the `FROM` clause to match a collection of table names
 using one of several types of filters. For example, the `TABLE_DATE_RANGE` function
 can be used to query only a specific set of daily tables. For more information on these functions,
-see [Table wildcard functions](https://docs.cloud.google.com/bigquery/docs/reference/legacy-sql#tablewildcardfunctions).
+see [Table wildcard functions](legacy-sql-2.md#table-wildcard-functions).
 
 ##### FLATTEN operator
 
@@ -303,7 +303,7 @@ BigQuery supports `INNER`, `[FULL|RIGHT|LEFT] OUTER` and
 can return a large amount of data and might result in a slow and inefficient query or in a query
 that exceeds the maximum allowed per-query resources. Such queries will fail with an error. When
 possible, prefer queries that do not use `CROSS JOIN`. For example, `CROSS JOIN
-` is often used in places where [window functions](https://docs.cloud.google.com/bigquery/docs/reference/legacy-sql#windowfunctions) would
+` is often used in places where [window functions](legacy-sql-2.md#window-functions) would
 be more efficient.
 
 ###### EACH modifier
@@ -469,7 +469,7 @@ portion of the other repeated records in the query. If you see the error
 we recommend that you switch to GoogleSQL. For information about migrating
 `OMIT...IF` statements to GoogleSQL, see
 [Migrating
-to GoogleSQL](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/migrating-from-legacy-sql#filtering_rows_with_omit_record_if).
+to GoogleSQL](migrating-from-legacy-sql.md#filtering-rows-with-omit-record-if).
 
 ###### Example
 
@@ -2227,7 +2227,7 @@ BigQuery's JSON functions give you the ability to find values within your stored
 
 Storing JSON data can be more flexible than declaring all of your individual fields in your table schema, but can lead to higher costs. When you select data from a JSON string, you are charged for scanning the entire string, which is more expensive than if each field is in a separate column. The query is also slower since the entire string needs to be parsed at query time. But for ad-hoc or rapidly-changing schemas, the flexibility of JSON can be worth the extra cost.
 
-Use JSON functions instead of BigQuery's [regular expression functions](https://docs.cloud.google.com/bigquery/docs/reference/legacy-sql#regularexpressionfunctions) if working with structured data, as JSON functions are easier to use.
+Use JSON functions instead of BigQuery's [regular expression functions](legacy-sql-2.md#regular-expression-functions) if working with structured data, as JSON functions are easier to use.
 
 #### Syntax
 
@@ -2481,3 +2481,4 @@ Mathematical functions take numeric arguments and return a numeric result. Each 
 ## Related
 
 - [Index of this directory](./README.md)
+- [Legacy SQL Syntax, Functions and Operators (part 2 of 2)](./legacy-sql-2.md)
