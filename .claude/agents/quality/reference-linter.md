@@ -83,7 +83,7 @@ samples 本文の不備は sample-curator、scripts 本文の不備は script-co
 
 ### Step 3: README.md 索引表のフォーマット確認
 
-各カテゴリの `README.md`、`references/` 配下の子ディレクトリにある `README.md`（階層型カテゴリの子索引。各階層）、および存在する `samples/README.md` `scripts/README.md` について:
+`references/**/README.md` を Glob で再帰的に列挙した各 `README.md`（カテゴリの README と階層型カテゴリの各階層の子索引。途中のディレクトリに README.md が無くても、その下の README.md を含む）、および存在する `samples/README.md` `scripts/README.md` について:
 
 1. `| Name | Description | Path |` ヘッダー行が存在するか
 2. 3カラムの区切り行（`| --- | --- | --- |` 等。ダッシュ数や前後の空白の差異は許容する）が存在するか
