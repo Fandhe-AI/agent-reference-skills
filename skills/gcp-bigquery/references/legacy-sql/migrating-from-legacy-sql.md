@@ -539,11 +539,13 @@ FROM TABLE_QUERY([bigquery-public-data:noaa_gsod],
 
 An equivalent query using GoogleSQL is:
 
+Adapted (not in the official docs): narrowed the wildcard to the tables whose names start with `gsod`, so that it does not also match other tables of the dataset, such as `stations`.
+
 ```sql
 #GoogleSQL
 SELECT COUNT(*)
-FROM `bigquery-public-data.noaa_gsod.*`
-WHERE _TABLE_SUFFIX IN ("gsod2010", "gsod2011");
+FROM `bigquery-public-data.noaa_gsod.gsod*`
+WHERE _TABLE_SUFFIX IN ("2010", "2011");
 ```
 
 For more information, including examples of all wildcard functions, see
@@ -778,7 +780,7 @@ and [`NET.REG_DOMAIN(url)`](../googlesql-functions/net_functions.md#netreg_domai
 In the following table, gray text color indicates results
 that are the same between legacy and GoogleSQL.
 
-| URL (description) | HOST | NET.HOST | TLD | NET.PUBLIC _SUFFIX | DOMAIN | NET.REG_DOMAIN |
+| URL (description) | HOST | NET.HOST | TLD | NET.PUBLIC_SUFFIX | DOMAIN | NET.REG_DOMAIN |
 |---|---|---|---|---|---|---|
 | "//google.com" (starting with "//") | NULL | "google.com" | NULL | "com" | NULL | "google.com" |
 | "google.com" (non-standard; no "//") | NULL | "google.com" | NULL | "com" | NULL | "google.com" |
@@ -1678,6 +1680,8 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the query that computes the fraction of warm days in Seattle counted every row of the station, including rows whose `max` is `9999.9`, which the GSOD examples on this page mark as the code for missing data. Those days were in the total, and `COUNTIF(max >= 70)` counted them as warm. The `SeattleWeather` subquery now keeps only the rows with `max != 9999.9`, which also leaves out `NULL` values, so both counts use the same observed days.
 - Corrected from the official docs: the text said that the table wildcard functions, `TABLE_DATE_RANGE_STRICT` among them, can be migrated with a filter on `_TABLE_SUFFIX`. `TABLE_DATE_RANGE_STRICT` fails when a daily table in the range is missing (legacy-sql/legacy-sql-2.md), while a wildcard table with a `_TABLE_SUFFIX` filter reads the tables that exist, so the sentence now points to the existence check in the `TABLE_DATE_RANGE_STRICT` section of this page.
 - Corrected from the official docs: the correlated subquery that counts the warm days of each Washington station counted the rows with `max >= 70`, which include the rows whose `max` is `9999.9`, the code for missing data in the GSOD examples on this page. The subquery now also requires `max != 9999.9`, so `warm_days` and the order of the stations count only days with a reading.
+- Corrected from the official docs: the GoogleSQL query that counts the rows of `gsod2010` and `gsod2011` used the wildcard table `bigquery-public-data.noaa_gsod.*`, which also matches other tables of the dataset, such as `stations`, used in other examples on this page. The official page on wildcard tables says that all tables that match the wildcard are matched even with an equality filter on `_TABLE_SUFFIX`, so a table with a different schema can make the query fail, and that BigQuery uses the schema of the most recently created table that matches the wildcard (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables, retrieved 2026-11-20). The query now uses `noaa_gsod.gsod*` with `_TABLE_SUFFIX IN ("2010", "2011")`, as the later examples on this page do.
+- Corrected from the official docs: a column heading of the URL function comparison table read `NET.PUBLIC _SUFFIX`, with a space, while the function is `NET.PUBLIC_SUFFIX`, as the text before the table names it.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
