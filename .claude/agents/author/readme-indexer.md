@@ -52,7 +52,7 @@ tools:
 
 各 `.md` ファイルについて:
 
-1. Read でファイル先頭50行程度を取得する
+1. Read でファイルを先頭から読む（先頭 50 行程度で H1 と Description の抽出元が見つからなければ、見つかるかファイル末尾に達するまで続きを読む）
 2. 最初の `# 見出し`（H1）をファイルの **Name** として抽出する
 3. H1 の後の、最初の本文の行を **Description**（概要1行）として抽出する。空行、見出し、`Source:` `出典:` `Last verified` `last verified:` などのメタデータ行、`>` の引用、コードフェンス、表、HTML コメント、YAML フロントマターは飛ばす。抽出した行に含まれる Markdown のリンク（`[text](url)`）は表示テキスト `text` だけに置き換える（reference-template の「ページから取る Name・Description」）
 4. H1 が存在しない場合はファイル名（拡張子除く）を Name とし、Description は空欄とする
