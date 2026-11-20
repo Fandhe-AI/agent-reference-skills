@@ -95,7 +95,7 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 - references 本文（新規ページの不備）→ **reference-researcher**
 - samples 本文の不備 → **sample-curator**
 - scripts 本文の不備 → **script-collector**
-- 各カテゴリ・子ディレクトリの `README.md` 索引の不備 → **readme-indexer**（その README のディレクトリを `category_dir` に渡す）
+- 各カテゴリ・子ディレクトリの `README.md` 索引の不備 → **readme-indexer**（その README のディレクトリを `category_dir` に渡す。子索引を直したときは、続けて親のディレクトリも渡す）
 - SKILL.md の `description`（ヒット率・長さ・YAML の `#` 起因の不備）→ **description-optimizer**
 - SKILL.md のツリー・マッピング表・`description` 以外の frontmatter の不備 → **skill-author**
 
