@@ -121,7 +121,7 @@ The following table explains the region scope for this view:
 Replace the following:
 
 - Optional: `PROJECT_ID`: the ID of your Google Cloud project. If not specified, the default project is used.
-- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `` `region-us` ``.
+- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `us`.
 
   <br />
 
@@ -230,7 +230,7 @@ ORDER BY
 ```
 
 Replace `REGION_NAME` with the region for your project.
-For example, `region-us`.
+For example, `us`.
 
 > [!NOTE]
 > **Note:** You must use a region qualifier to query `INFORMATION_SCHEMA` views. The location of the query execution must match the region of the `INFORMATION_SCHEMA` view.
@@ -273,7 +273,7 @@ ORDER BY
 ```
 
 Replace `REGION_NAME` with the region for your project.
-For example, `region-us`.
+For example, `us`.
 
 > [!NOTE]
 > **Note:** You must use a region qualifier to query `INFORMATION_SCHEMA` views. The location of the query execution must match the region of the `INFORMATION_SCHEMA` view.
@@ -295,6 +295,9 @@ The result looks similar to the following:
 - Source: https://docs.cloud.google.com/bigquery/docs/information-schema-jobs-by-organization (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Caution: the schema says that `query_dialect` will be available sometime in May, 2025. That sentence is out of date: the JOBS view page (jobs.md) says, in the example that counts legacy SQL query jobs, that the field has been available since May 2025.
+- Corrected from the official docs: the two Connected Sheets examples write the qualifier as `region-REGION_NAME`, but the text after each of them gives `region-us` as an example value for `REGION_NAME`, which would produce `region-region-us`. The example value is changed to `us`.
+- Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
 
 ## Related
 

@@ -75,7 +75,7 @@ regions. The following table explains the region scope for this view:
 Replace the following:
 
 - Optional: `PROJECT_ID`: the ID of your Google Cloud project. If not specified, the default project is used.
-- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `` `region-us` ``.
+- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `us`.
 
   <br />
 
@@ -197,6 +197,7 @@ Replace the following:
 - Conflicting official statements: the Scope and syntax section says that queries against this view must include a region qualifier, and then that metadata is retrieved from all regions if you don't specify one. The INFORMATION_SCHEMA introduction (https://docs.cloud.google.com/bigquery/docs/information-schema-intro#syntax, retrieved 2026-11-20) says that if neither a region qualifier nor a dataset qualifier is specified, you receive an error. Include a region qualifier when you query this view.
 - Corrected from the official docs: the two examples that list the assignments of a reservation at a point in time filter on `reservation_name` in `WHERE`, before `QUALIFY` picks the latest change for each `assignee_id` and `job_type`. If an assignment later moved to another reservation, that later change is filtered out, and the older change in the requested reservation is returned as the latest. The condition is moved to `QUALIFY`, after the latest change is picked. The examples also partition by `assignee_id` and `job_type` only, but the schema says that `job_type` is `JOB_TYPE_UNSPECIFIED` for `SCHEDULING_POLICY` assignments, which exist per project within each reservation, so the policies of one project in two reservations would share one history. The rows are limited to `RESERVATION_SELECTION` assignments, and to `NULL`, which the schema uses for reservation-selection changes made before `assignment_type` was tracked.
 - Caution: those two examples are described as returning active assignments, but `action != 'DELETE'` alone also returns assignments whose latest change has `state` `PENDING`; the schema on this page lists `PENDING` and `ACTIVE`. The page doesn't say whether the change from `PENDING` to `ACTIVE` is recorded as a separate change, so no `state` condition is added to the examples. Check the `state` column of the results.
+- Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
 
 ## Related
 
