@@ -695,7 +695,7 @@ equivalents.
 | `QUANTILES(x, boundaries)` | [`APPROX_QUANTILES(x, boundaries-1)`](../googlesql-functions/approximate_aggregate_functions.md#approx_quantiles) | output needs to be [unnested](#removing-repetition-with-flatten) |
 | `TOP(x, num), COUNT(*)` | [`APPROX_TOP_COUNT(x, num)`](../googlesql-functions/approximate_aggregate_functions.md#approx_top_count) |   |
 | `NTH(index, arr) WITHIN RECORD` | [`arr[SAFE_ORDINAL(index)]`](../googlesql-syntax/operators.md#array-subscript-operator) |   |
-| `COUNT(arr) WITHIN RECORD` | [`ARRAY_LENGTH(arr)`](../googlesql-functions/array_functions.md#array_length) |   |
+| `COUNT(arr) WITHIN RECORD` | [`ARRAY_LENGTH(arr)`](../googlesql-functions/array_functions.md#array_length) | `ARRAY_LENGTH` counts every element; to count only the non-`NULL` values of a field in a repeated record, use `(SELECT COUNT(field) FROM UNNEST(record))` |
 | `HOST(url)` | [`NET.HOST(url)`](../googlesql-functions/net_functions.md#nethost) | see [differences below](#url-function-comparison) |
 | `TLD(url)` | [`NET.PUBLIC_SUFFIX(url)`](../googlesql-functions/net_functions.md#netpublic_suffix) | see [differences below](#url-function-comparison) |
 | `DOMAIN(url)` | [`NET.REG_DOMAIN(url)`](../googlesql-functions/net_functions.md#netreg_domain) | see [differences below](#url-function-comparison) |
@@ -1072,7 +1072,9 @@ OMIT RECORD IF
   COUNT(payload.pages.page_name) <= 80;
 ```
 
-In this case, you can use a filter with `ARRAY_LENGTH` in GoogleSQL:
+In this case, you can use a filter that counts the page names in an `UNNEST` subquery in GoogleSQL:
+
+Adapted (not in the official docs): counted the non-`NULL` page names in an `UNNEST` subquery instead of the array length, as the legacy SQL query counts `payload.pages.page_name`.
 
 ```sql
 #GoogleSQL
@@ -1081,11 +1083,11 @@ SELECT
 FROM
   `bigquery-public-data.samples.github_nested`
 WHERE
-  ARRAY_LENGTH(payload.pages) > 80;
+  (SELECT COUNT(page_name) FROM UNNEST(payload.pages)) > 80;
 ```
 
-Note that the `ARRAY_LENGTH` function applies to the repeated `payload.pages`
-field directly rather than the nested field `payload.pages.page_name` as in the
+Note that `COUNT(page_name)` counts only the pages whose nested field
+`page_name` is not `NULL`, as `COUNT(payload.pages.page_name)` does in the
 legacy SQL query.
 
 For more information about arrays and `ARRAY` subqueries, see
@@ -1355,7 +1357,7 @@ To make an equivalent GoogleSQL query with error handling, the query should be s
 
 Translated query using [`WITH` clause](#composability-using-with-clauses) and conditional `ERROR`:
 
-Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns.
+Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, and counted only base tables.
 
 ```sql
 #GoogleSQL
@@ -1369,6 +1371,7 @@ WITH MissingTables AS (
       SELECT SUBSTR(table_name, LENGTH('sea_weather_') + 1)
       FROM mydataset.INFORMATION_SCHEMA.TABLES
       WHERE STARTS_WITH(table_name, 'sea_weather_')
+        AND table_type = 'BASE TABLE'
     )
 )
 SELECT
@@ -1385,7 +1388,7 @@ FROM MissingTables
 
 And using [BigQuery Scripting (procedural SQL)](../googlesql-syntax/procedural-language.md):
 
-Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns.
+Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, and counted only base tables.
 
 ```sql
 #GoogleSQL
@@ -1399,6 +1402,7 @@ BEGIN
       SELECT SUBSTR(table_name, LENGTH('sea_weather_') + 1)
       FROM mydataset.INFORMATION_SCHEMA.TABLES
       WHERE STARTS_WITH(table_name, 'sea_weather_')
+        AND table_type = 'BASE TABLE'
     )
   );
 
@@ -1553,7 +1557,7 @@ view instead.
 > [!NOTE]
 > **Note:** `INFORMATION_SCHEMA.PARTITIONS` is in [Preview](https://cloud.google.com/products/#product-launch-stages). For more information, see the [documentation](../information-schema/partitions.md).
 
-To migrate a query that uses `__PARTITIONS_SUMMARY__` and keep the output schema and error handling consistent, use the following GoogleSQL query:
+To migrate a query that uses `__PARTITIONS_SUMMARY__` and keep the output schema and error handling consistent, use the following GoogleSQL query. Unlike the meta-table, this query returns no rows instead of an error when the table doesn't exist, so if you need that error, check first that the table exists in `INFORMATION_SCHEMA.TABLES`:
 
 ```googlesql
 #GoogleSQL
@@ -1585,12 +1589,13 @@ The permissions required to access the partition metadata differ between legacy 
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: the error message example gives the valid timestamp range as `[0001-01-1 00:00:00, 9999-12-31 23:59:59.999999]`, while the same page writes the minimum as `0001-01-01 00:00:00.000000`. The official text is kept as published.
 - Corrected from the official docs: the GoogleSQL view `V2` that replaces the legacy SQL view `V` computes `day` as `EXTRACT(DAY FROM timestamp_col)`, which is the day of the month (1 to 31), so the same day number in different months and years would be grouped together. `V` uses `UTC_USEC_TO_DAY(timestamp_col)`, which shifts a UNIX timestamp in microseconds to the beginning of its day (legacy-sql-1.md). The view now uses `UNIX_MICROS(TIMESTAMP_TRUNC(TIMESTAMP_MICROS(timestamp_col), DAY))`, the equivalent given in the function comparison table on this page. The page does not state the type of `timestamp_col`: this form follows `UTC_USEC_TO_DAY`, whose argument is a UNIX timestamp in microseconds (`INT64`), while `EXTRACT` in the official view needs a date or time type. If `timestamp_col` is a `TIMESTAMP` column, `TIMESTAMP_MICROS` fails on it; use `UNIX_MICROS(TIMESTAMP_TRUNC(timestamp_col, DAY))` instead.
-- Corrected from the official docs: the two `TABLE_DATE_RANGE_STRICT` migration examples find missing tables by selecting `_TABLE_SUFFIX` from the wildcard table `mydataset.sea_weather_*`. A table that exists but has no rows returns no `_TABLE_SUFFIX` value, so it was reported as missing and the query raised an error. Both examples now take the suffixes from the `table_name` column of `mydataset.INFORMATION_SCHEMA.TABLES` (information-schema/tables.md).
+- Corrected from the official docs: the two `TABLE_DATE_RANGE_STRICT` migration examples find missing tables by selecting `_TABLE_SUFFIX` from the wildcard table `mydataset.sea_weather_*`. A table that exists but has no rows returns no `_TABLE_SUFFIX` value, so it was reported as missing and the query raised an error. Both examples now take the suffixes from the `table_name` column of `mydataset.INFORMATION_SCHEMA.TABLES` (information-schema/tables.md), counting only the rows whose `table_type` is `BASE TABLE`, because the view also lists views and other table types.
 - Corrected from the official docs: the coercion table translates `BOOLEAN` to `FLOAT64` as `SAFE_CAST(bool AS FLOAT64)`, but `BOOL` can be cast only to `BOOL`, `INT64` and `STRING` (googlesql-syntax/conversion_rules.md). The translation is changed to `SAFE_CAST(SAFE_CAST(bool AS INT64) AS FLOAT64)`.
 - Corrected from the official docs: the function comparison table translates `RIGHT(s, len)` as `SUBSTR(s, -len)`. When `len` is `0`, that is `SUBSTR(s, 0)`, and a `position` of `0` is set to `1` (googlesql-functions/string_functions-2.md), so the whole string is returned instead of an empty string. The translation is changed to the GoogleSQL `RIGHT(s, len)` function.
-- Caution: the example that migrates `OMIT RECORD IF COUNT(payload.pages.page_name) <= 80` uses `ARRAY_LENGTH(payload.pages) > 80`. `COUNT(payload.pages.page_name)` counts only the pages whose `page_name` is not `NULL`, while `ARRAY_LENGTH` counts every element of `payload.pages`, so a record with more than 80 pages of which some have a `NULL` `page_name` can be kept by the GoogleSQL query and omitted by the legacy SQL query. To keep the legacy SQL condition, filter with `(SELECT COUNT(page_name) FROM UNNEST(payload.pages)) > 80`.
 - Caution: the `TABLE_DATE_RANGE_STRICT` example that uses a `WITH` clause references the wildcard table `mydataset.sea_weather_*` in the same query as the check. If no table matches the wildcard, that reference can fail before the `IF` is evaluated, so the query may not return the `Not found suffixes` error. The scripting example runs the wildcard query only in the `ELSE` branch, after the check.
-- Caution: the GoogleSQL query that replaces `__PARTITIONS_SUMMARY__` keeps the error for a table that is not partitioned, but not for a table that does not exist. The legacy SQL meta-table reads the table directly and fails when it does not exist, while the GoogleSQL query filters `INFORMATION_SCHEMA.PARTITIONS` by `table_name` and returns no rows for a missing table. To keep that error, check that the table exists in `INFORMATION_SCHEMA.TABLES` first.
+- Corrected from the official docs: the example that migrates `OMIT RECORD IF COUNT(payload.pages.page_name) <= 80` used `ARRAY_LENGTH(payload.pages) > 80`. `COUNT(payload.pages.page_name)` counts only the pages whose `page_name` is not `NULL`, while `ARRAY_LENGTH` counts every element, so a record with more than 80 pages of which some have a `NULL` `page_name` was kept by the GoogleSQL query and omitted by the legacy SQL query. The filter is changed to `(SELECT COUNT(page_name) FROM UNNEST(payload.pages)) > 80`, and the two sentences around the example that described `ARRAY_LENGTH` are changed to match.
+- Corrected from the official docs: the function comparison table maps `COUNT(arr) WITHIN RECORD` to `ARRAY_LENGTH(arr)` with no note. `COUNT` counts only non-`NULL` values, while `ARRAY_LENGTH` counts every element, so for a field in a repeated record, such as `payload.pages.page_name`, the results differ. A note with the subquery form is added to the row.
+- Corrected from the official docs: the text says that the GoogleSQL query that replaces `__PARTITIONS_SUMMARY__` keeps the error handling consistent. It keeps the error for a table that is not partitioned, but the legacy SQL meta-table reads the table directly and fails when it doesn't exist, while the GoogleSQL query filters `INFORMATION_SCHEMA.PARTITIONS` by `table_name` and returns no rows for a missing table. A sentence that says so is added before the example.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related

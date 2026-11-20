@@ -43,7 +43,7 @@ skills/gcp-bigquery/
       data-catalog/               # Data Catalog（Policy Tag Manager のため本スキル）
         README.md
         data-catalog-<sub>.md     # 24 ファイル（taxonomies・policy-tags・tag-templates・entries・entry-groups・tags・search・crawlers 等）
-    rest/                         # 機械生成: Discovery 由来のメソッド表（9 API）
+    rest/                         # 機械生成: Discovery 由来のメソッド表（9 API）（分割投入中: 収録済みは analyticshub / biglake）
       README.md
       <api>/
         README.md
@@ -170,6 +170,8 @@ skills/gcp-bigquery/
 8. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/` 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
 9. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
 
+分割投入中: `references/rest/` は `analyticshub` / `biglake` のみ収録済みで、`bigquery` / `bigqueryconnection` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigqueryreservation` / `datacatalog` / `dataform` は後続 PR で投入する。それまで未投入の API・グループは、各 API の公式 REST リファレンスと gcloud の公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference ）を引く。
+
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
@@ -265,7 +267,7 @@ skills/gcp-bigquery/
 - データプロファイル・データ品質スキャン（機能は Knowledge Catalog の `dataplex` API。`gcp-knowledge-catalog` の範囲）
 - Data Catalog の概要・廃止告知・移行のガイド（`gcp-knowledge-catalog`）
 - 認証の定型ページ・クライアントライブラリのリファレンス・事前定義ロールの一覧ページ（ロールは `references/iam/`）
-- REST リファレンスの公式ページ（`references/rest/` の機械生成ページで代替）・コードサンプル集・release notes・SLA・料金・quotas
+- REST リファレンスの公式ページ（`references/rest/` の機械生成ページで代替。分割投入中は未投入の API に限り公式ページを引く）・コードサンプル集・release notes・SLA・料金・quotas
 - GoogleSQL リファレンスの次の 3 ページ: `functions-all`（関数の総覧）・`window-functions`・`graph-conditional-expressions`（索引・案内だけで固有の内容が無いページ）。関数の索引は `references/googlesql-functions/README.md`、ウィンドウ関数の呼び出しは `window-function-calls.md` と `navigation_functions.md`・`numbering_functions.md` を引く
 - Dataprep by Trifacta のガイド（`iam/dataprep.md` のみ収録）
 - 料金の表（取得していない。費用の考え方は `workload-cost-management` と `overview-datasets/storage-overview.md` の本文）
