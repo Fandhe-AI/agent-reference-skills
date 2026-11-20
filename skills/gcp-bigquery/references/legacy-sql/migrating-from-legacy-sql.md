@@ -195,22 +195,24 @@ In GoogleSQL, subqueries can reference correlated columns; that is, columns
 that originate from the outer query. For example, consider the following
 GoogleSQL query:
 
-Adapted (not in the official docs): left out the days whose `max` is the missing-data code `9999.9`, so that they are not counted as warm days. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+Adapted (not in the official docs): left out the days whose `max` is the missing-data code `9999.9`, so that they are not counted as warm days. A GSOD station is identified by the pair of its USAF and WBAN numbers, so the join, the grouping and the correlated condition use both `usaf` / `stn` and `wban`. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
 #standardSQL
 WITH WashingtonStations AS (
-  SELECT weather.stn AS station_id, ANY_VALUE(station.name) AS name
+  SELECT weather.stn AS station_id, weather.wban AS station_wban,
+    ANY_VALUE(station.name) AS name
   FROM `bigquery-public-data.noaa_gsod.stations` AS station
   INNER JOIN `bigquery-public-data.noaa_gsod.gsod2015` AS weather
-  ON station.usaf = weather.stn
+  ON station.usaf = weather.stn AND station.wban = weather.wban
   WHERE station.state = 'WA' AND station.usaf != '999999'
-  GROUP BY station_id
+  GROUP BY station_id, station_wban
 )
 SELECT washington_stations.name,
   (SELECT COUNT(*)
    FROM `bigquery-public-data.noaa_gsod.gsod2015` AS weather
    WHERE washington_stations.station_id = weather.stn
+   AND washington_stations.station_wban = weather.wban
    AND max >= 70
    AND max != 9999.9) AS warm_days
 FROM WashingtonStations AS washington_stations
@@ -221,7 +223,7 @@ This query computes the names of weather stations in Washington state and the
 number of days in 2015 that the temperature reached 70 degrees Fahrenheit, or
 approximately 21 degrees Celsius. Notice that there is a subquery in the
 `SELECT` list, and that the subquery references `washington_stations.station_id`
-from the outer scope, namely `FROM WashingtonStations AS washington_stations`.
+(and `washington_stations.station_wban`) from the outer scope, namely `FROM WashingtonStations AS washington_stations`.
 
 #### Arrays and structs
 
@@ -1783,6 +1785,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Adapted from the official docs: the sentence before the URL function comparison table said that gray text color marks the results that are the same in legacy SQL and GoogleSQL. Colors are not kept in this Markdown table, so the sentence now only says what the table compares; compare `HOST` with `NET.HOST`, `TLD` with `NET.PUBLIC_SUFFIX` and `DOMAIN` with `NET.REG_DOMAIN` to see which results are the same.
 - Adapted (not in the official docs): the two `TABLE_DATE_RANGE_STRICT` migration examples assume that the daily tables are standard tables. `INFORMATION_SCHEMA.TABLES` gives other table types, such as `CLONE` and `SNAPSHOT`, their own `table_type` values (information-schema/tables.md), so the examples join the dates to all the tables of the dataset and report a missing table ("Not found suffixes") and a table of another type ("Not base tables") in separate errors, instead of reporting both as missing.
 - Added (not in the official docs): a paragraph under Enabling GoogleSQL says that the `#GoogleSQL` first line of the GoogleSQL examples is not one of the query prefixes that https://docs.cloud.google.com/bigquery/docs/introduction-sql lists in its SQL section (`#standardSQL` and `#legacySQL`, "not case-sensitive, must precede the query, and must be separated from the query by a newline character"; fetched 2026-11-21), and that GoogleSQL can also be selected with `--use_legacy_sql=false`, whose `bq query` default is `true` when the configuration setting is not specified (bq-cli/bq-cli-reference-2.md). The first line of every GoogleSQL example on this page is changed from `#GoogleSQL` to `#standardSQL`, with an Adapted line before each example; the rest of each example is as in the official docs or as noted.
+- Corrected from the official docs: the correlated subquery example identifies the Washington stations by `usaf` / `stn` only: it joins `stations` to `gsod2015` on `station.usaf = weather.stn`, groups by that ID and counts the warm days with `washington_stations.station_id = weather.stn`. GSOD stations are identified by the pair of USAF and WBAN numbers (both tables have a `wban` column), so the days of other stations with the same USAF number could be counted under one name. The join, the `GROUP BY` and the correlated condition now also compare `wban`.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
