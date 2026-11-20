@@ -66,7 +66,7 @@ skills/gcp-bigquery/
     information-schema/           # 機械変換: INFORMATION_SCHEMA の各ビュー
       README.md
       <view>.md
-    legacy-sql/                   # 機械変換: legacy SQL
+    legacy-sql/                   # 機械変換: legacy SQL、分割投入中（1 / 3 ページ。収録済みは README 掲載分のみ）
       README.md
       <page>.md
     bq-cli/                       # 機械変換: bq コマンドラインツールのリファレンス（3 分割）
@@ -169,6 +169,8 @@ skills/gcp-bigquery/
 7. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`（後続 PR で投入）。`<api>` は上記 9 つ（分割投入中は `references/rest/README.md` に載っている API だけが収録済み。未収録の API とメッセージ型は各 API の公式 REST リファレンスか、各 REST ページの Notes の Source にある Discovery document を引く）。Storage Read API と Storage Write API (gRPC) は gRPC のため REST ページは無い（ガイドは `storage-write-read-api-cdc`）。Storage Write API (REST)（旧 `tabledata.insertAll`）は `references/rest/bigquery/` に収録する（後続 PR で投入）。それまでは各 API の公式 REST リファレンスで `tabledata.insertAll` を引く
 8. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/` 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
 9. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
+
+分割投入中のカテゴリ（`legacy-sql`: 1 / 3 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 分割投入中: `references/rest/` は `analyticshub` / `biglake` のみ収録済みで、`bigquery` / `bigqueryconnection` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigqueryreservation` / `datacatalog` / `dataform` は後続 PR で投入する。メッセージ型のページ（`rest-schemas/`）も後続 PR で投入するため、それまで REST ページに名前だけ出る型は、各 REST ページの Notes の Source にある Discovery document の `schemas` か、各 API の公式 REST リファレンスで引く。それまで未投入の API・グループは、各 API の公式 REST リファレンスと gcloud の公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference ）を引く。
 
