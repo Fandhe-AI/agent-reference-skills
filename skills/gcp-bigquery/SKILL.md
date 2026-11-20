@@ -43,11 +43,11 @@ skills/gcp-bigquery/
       data-catalog/               # Data Catalog（Policy Tag Manager のため本スキル）
         README.md
         data-catalog-<sub>.md     # 24 ファイル（taxonomies・policy-tags・tag-templates・entries・entry-groups・tags・search・crawlers 等）
-    rest/                         # 機械生成: Discovery 由来のメソッド表（9 API）（分割投入中: 収録済みは analyticshub / biglake）
+    rest/                         # 機械生成: Discovery 由来のメソッド表（9 API）
       README.md
       <api>/
         README.md
-        <api>.md
+        <api>.md                  # 例: rest/bigquery/bigquery.md
     iam/                          # 機械生成: IAM roles-permissions reference（16 ファイル）
       README.md
       <service>[-<N>].md          # 例: bigquery-1.md・dataform-2.md
@@ -166,13 +166,13 @@ skills/gcp-bigquery/
 4. INFORMATION_SCHEMA のビュー → `references/information-schema/README.md`（概要・権限・リージョン修飾子は `overview-datasets/information-schema-intro.md`）
 5. `bq` のサブコマンド → `references/bq-cli/README.md`。コマンドは `bq-cli-reference-2.md`、共通・グローバルフラグは `bq-cli-reference-1.md`。サブコマンド名で grep する。gcloud の `bq` グループとは別
 6. gcloud コマンド → `references/gcloud/README.md` からグループ（`biglake` / `bq` / `data-catalog`）を選び、グループの README.md → コマンドページへ。GA は help の verbatim、alpha / beta は NAME と SYNOPSIS のみなので、フラグの詳細が要るときは `gcloud alpha|beta <command> --help` を使う。BigQuery 本体の操作は gcloud ではなく `bq` と SQL が中心
-7. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`（後続 PR で投入）。`<api>` は上記 9 つ（分割投入中は `references/rest/README.md` に載っている API だけが収録済み。未収録の API とメッセージ型は各 API の公式 REST リファレンスか、各 REST ページの Notes の Source にある Discovery document を引く）。収録済みの API でも、Discovery document に無いメソッド（例: `analyticshub` の長時間実行オペレーションの取得。該当する REST ページの Notes に記載）は、各 API の公式 REST リファレンスで提供の有無を確認する。Storage Read API と Storage Write API (gRPC) は gRPC のため REST ページは無い（ガイドは `storage-write-read-api-cdc`）。Storage Write API (REST)（旧 `tabledata.insertAll`）は `references/rest/bigquery/` に収録する（後続 PR で投入）。それまでは各 API の公式 REST リファレンスで `tabledata.insertAll` を引く。使い方（テンプレートテーブル・重複排除・トラブルシューティング等）はガイド `references/storage-write-read-api-cdc/write-api-rest.md`、メソッド定義は REST ページを引く
+7. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`（後続 PR で投入）。`<api>` は上記 9 つ。収録済みの API でも、Discovery document に無いメソッド（例: `analyticshub` の長時間実行オペレーションの取得。該当する REST ページの Notes に記載）は、各 API の公式 REST リファレンスで提供の有無を確認する。Storage Read API と Storage Write API (gRPC) は gRPC のため REST ページは無い（ガイドは `storage-write-read-api-cdc`）。Storage Write API (REST)（旧 `tabledata.insertAll`）は `references/rest/bigquery/` 配下の `bigquery.tabledata.insertAll`（`grep -rn 'tabledata.insertAll' references/rest/bigquery/` で引く）。使い方（テンプレートテーブル・重複排除・トラブルシューティング等）はガイド `references/storage-write-read-api-cdc/write-api-rest.md`、メソッド定義は REST ページを引く
 8. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/` 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
 9. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
 
 分割投入中のカテゴリ（`legacy-sql`: 1 / 3 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中: `references/rest/` は `analyticshub` / `biglake` のみ収録済みで、`bigquery` / `bigqueryconnection` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigqueryreservation` / `datacatalog` / `dataform` は後続 PR で投入する。メッセージ型のページ（`rest-schemas/`）も後続 PR で投入するため、それまで REST ページに名前だけ出る型は、各 REST ページの Notes の Source にある Discovery document の `schemas` か、各 API の公式 REST リファレンスで引く。それまで未投入の API・グループは、各 API の公式 REST リファレンスと gcloud の公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference ）を引く。
+分割投入中: メッセージ型のページ（`rest-schemas/`）も後続 PR で投入するため、それまで REST ページに名前だけ出る型は、各 REST ページの Notes の Source にある Discovery document の `schemas` か、各 API の公式 REST リファレンスで引く。それまで未投入の API・グループは、各 API の公式 REST リファレンスと gcloud の公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -226,9 +226,10 @@ skills/gcp-bigquery/
 | gcloud `bq` グループ（datasets・jobs・migration・migration-workflows・query・tables） | gcloud/bq | [references/gcloud/bq/README.md](references/gcloud/bq/README.md) |
 | Policy Tag Manager（taxonomies・policy tags）・tag templates・entries のコマンド | gcloud/data-catalog | [references/gcloud/data-catalog/README.md](references/gcloud/data-catalog/README.md) |
 | REST のメソッド・パスを調べたい | rest | [references/rest/README.md](references/rest/README.md) |
+| 各 API のメソッド | rest/`<api>`（`analyticshub` / `biglake` / `bigquery` / `bigqueryconnection` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigqueryreservation` / `datacatalog` / `dataform`） | [references/rest/bigquery/README.md](references/rest/bigquery/README.md)、[references/rest/bigqueryreservation/README.md](references/rest/bigqueryreservation/README.md)、[references/rest/analyticshub/README.md](references/rest/analyticshub/README.md)、[references/rest/biglake/README.md](references/rest/biglake/README.md)、[references/rest/bigquerydatatransfer/README.md](references/rest/bigquerydatatransfer/README.md)、[references/rest/bigqueryconnection/README.md](references/rest/bigqueryconnection/README.md)、[references/rest/bigquerydatapolicy/README.md](references/rest/bigquerydatapolicy/README.md)、[references/rest/datacatalog/README.md](references/rest/datacatalog/README.md)、[references/rest/dataform/README.md](references/rest/dataform/README.md) |
 | ロール ID の権限一覧・事前定義ロールを調べたい（`roles/bigquery.*` / `roles/analyticshub.*` / `roles/biglake.*` / `roles/dataform.*` / `roles/datacatalog.*` 等） | iam | [references/iam/README.md](references/iam/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas` / `rest/bigquery` / `rest/bigqueryreservation` / `rest/bigquerydatatransfer` / `rest/bigqueryconnection` / `rest/bigquerydatapolicy` / `rest/datacatalog` / `rest/dataform`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas`
 
 ## 他スキルとの使い分け
 
@@ -269,7 +270,7 @@ skills/gcp-bigquery/
 - データプロファイル・データ品質スキャン（機能は Knowledge Catalog の `dataplex` API。`gcp-knowledge-catalog` の範囲）
 - Data Catalog の概要・廃止告知・移行のガイド（`gcp-knowledge-catalog`）
 - 認証の定型ページ・クライアントライブラリのリファレンス・事前定義ロールの一覧ページ（ロールは `references/iam/`）
-- REST リファレンスの公式ページ（`references/rest/` の機械生成ページで代替。分割投入中は未投入の API も公式ページを引く。メッセージ型は収録まで公式ページか Discovery document を引く）・コードサンプル集・release notes・SLA・料金・quotas。Discovery document に無いメソッドは公式 REST リファレンスを引く（探索手順 7）
+- REST リファレンスの公式ページ（`references/rest/` の機械生成ページで代替。メッセージ型は収録まで公式ページか Discovery document を引く）・コードサンプル集・release notes・SLA・料金・quotas。Discovery document に無いメソッドは公式 REST リファレンスを引く（探索手順 7）
 - GoogleSQL リファレンスの次の 3 ページ: `functions-all`（関数の総覧）・`window-functions`・`graph-conditional-expressions`（索引・案内だけで固有の内容が無いページ）。関数の索引は `references/googlesql-functions/README.md`、ウィンドウ関数の呼び出しは `window-function-calls.md` と `navigation_functions.md`・`numbering_functions.md` を引く
 - Dataprep by Trifacta のガイド（`iam/dataprep.md` のみ収録）
 - 料金の表（取得していない。費用の考え方は `workload-cost-management` と `overview-datasets/storage-overview.md` の本文）

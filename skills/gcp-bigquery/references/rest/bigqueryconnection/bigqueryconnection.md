@@ -152,7 +152,7 @@ GET https://bigqueryconnection.googleapis.com/v1/{+name}
 
 - Generated from the Discovery document(s) v1, v1beta1 of `bigqueryconnection` (retrieved 2026-11-14). Resources on this page: projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when the description says that some requests must specify it (for example, `options.requestedPolicyVersion` must be 3 to get a policy with conditional role bindings). Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are listed under `references/rest-schemas/bigqueryconnection/`; they are the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
 - Corrected from the Discovery document: the description of `bigqueryconnection.projects.locations.connections.list` is "Returns a list of connections in the given project.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Source: https://bigqueryconnection.googleapis.com/$discovery/rest?version=v1, https://bigqueryconnection.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
