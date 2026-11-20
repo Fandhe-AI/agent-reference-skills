@@ -248,10 +248,10 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 
 ### Example request line
 
-Generated from the Discovery entry of `datacatalog.organizations.locations.retrieveConfig` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The request needs an OAuth 2.0 access token in an `Authorization: Bearer` header; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
+Generated from the Discovery entry of `datacatalog.projects.locations.operations.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The request needs an OAuth 2.0 access token in an `Authorization: Bearer` header; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://datacatalog.googleapis.com/v1/{+name}:retrieveConfig
+GET https://datacatalog.googleapis.com/v1/{+name}
 ```
 
 ## Options / Props

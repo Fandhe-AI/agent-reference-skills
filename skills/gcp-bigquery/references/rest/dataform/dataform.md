@@ -880,7 +880,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 | `extraLocationTypes` | query | repeated string | no | Optional. Do not use this field unless explicitly documented otherwise. This is primarily for internal usage. |
 | `filter` | query | string | no | A filter to narrow down results to a preferred subset. The filtering language accepts strings like `"displayName=tokyo"`, and is documented in more detail in AIP-160 (https://google.aip.dev/160). |
 | `pageSize` | query | integer (int32) | no | The maximum number of results to return. If not set, the service selects a default. |
-| `pageToken` | query | string | no | A page token received from the `next_page_token` field in the response. Send that page token to receive the subsequent page. |
+| `pageToken` | query | string | no | A page token received from the `next_page_token` field in the response. Send that page token to receive the subsequent page. In the REST JSON response the field is `nextPageToken` (`ListLocationsResponse`); pass its value as `pageToken`. |
 
 ### `dataform.projects.locations.operations.cancel` parameters
 
