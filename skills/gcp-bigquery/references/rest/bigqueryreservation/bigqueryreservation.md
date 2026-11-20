@@ -132,7 +132,7 @@ Base URL: `https://bigqueryreservation.googleapis.com`. Methods are listed by `i
 
 - Versions: v1
 - `GET https://bigqueryreservation.googleapis.com/v1/{+resource}:getIamPolicy`
-- Gets the access control policy for a resource. May return: \* A`NOT_FOUND` error if the resource doesn't exist or you don't have the permission to view it. \* An empty policy if the resource exists but doesn't have a set policy. Supported resources are: - Reservations - ReservationAssignments To call this method, you must have the following Google IAM permissions: - `bigqueryreservation.reservations.getIamPolicy` to get policies on reservations.
+- Gets the access control policy of the reservation assignment that `resource` names (`projects/{project}/locations/{location}/reservations/{reservation}/assignments/{assignment}`, from the path pattern). May return: a `NOT_FOUND` error if the resource doesn't exist or you don't have the permission to view it; an empty policy if the resource exists but doesn't have a set policy. For the reservation itself, use `bigqueryreservation.projects.locations.reservations.getIamPolicy`. The IAM roles reference lists no `getIamPolicy` permission for reservation assignments (see Notes). (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `Policy`
 
@@ -164,7 +164,7 @@ Base URL: `https://bigqueryreservation.googleapis.com`. Methods are listed by `i
 
 - Versions: v1
 - `POST https://bigqueryreservation.googleapis.com/v1/{+resource}:setIamPolicy`
-- Sets an access control policy for a resource. Replaces any existing policy. Supported resources are: - Reservations To call this method, you must have the following Google IAM permissions: - `bigqueryreservation.reservations.setIamPolicy` to set policies on reservations.
+- Sets the access control policy of the reservation assignment that `resource` names (`projects/{project}/locations/{location}/reservations/{reservation}/assignments/{assignment}`, from the path pattern). Replaces any existing policy. For the reservation itself, use `bigqueryreservation.projects.locations.reservations.setIamPolicy`. The Discovery description lists only Reservations as supported resources of this method, and the IAM roles reference lists no `setIamPolicy` permission for reservation assignments (see Notes). (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SetIamPolicyRequest`; Response: `Policy`
 
@@ -172,7 +172,7 @@ Base URL: `https://bigqueryreservation.googleapis.com`. Methods are listed by `i
 
 - Versions: v1
 - `POST https://bigqueryreservation.googleapis.com/v1/{+resource}:testIamPermissions`
-- Gets your permissions on a resource. Returns an empty set of permissions if the resource doesn't exist. Supported resources are: - Reservations No Google IAM permissions are required to call this method.
+- Gets your permissions on the reservation assignment that `resource` names (`projects/{project}/locations/{location}/reservations/{reservation}/assignments/{assignment}`, from the path pattern). Returns an empty set of permissions if the resource doesn't exist. No Google IAM permissions are required to call this method. For the reservation itself, use `bigqueryreservation.projects.locations.reservations.testIamPermissions`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `TestIamPermissionsRequest`; Response: `TestIamPermissionsResponse`
 
@@ -212,7 +212,7 @@ Base URL: `https://bigqueryreservation.googleapis.com`. Methods are listed by `i
 
 - Versions: v1
 - `GET https://bigqueryreservation.googleapis.com/v1/{+resource}:getIamPolicy`
-- Gets the access control policy for a resource. May return: \* A`NOT_FOUND` error if the resource doesn't exist or you don't have the permission to view it. \* An empty policy if the resource exists but doesn't have a set policy. Supported resources are: - Reservations - ReservationAssignments To call this method, you must have the following Google IAM permissions: - `bigqueryreservation.reservations.getIamPolicy` to get policies on reservations.
+- Gets the access control policy of the reservation that `resource` names (`projects/{project}/locations/{location}/reservations/{reservation}`, from the path pattern). May return: a `NOT_FOUND` error if the resource doesn't exist or you don't have the permission to view it; an empty policy if the resource exists but doesn't have a set policy. IAM permission: `bigquery.reservations.getIamPolicy`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `Policy`
 
@@ -236,7 +236,7 @@ Base URL: `https://bigqueryreservation.googleapis.com`. Methods are listed by `i
 
 - Versions: v1
 - `POST https://bigqueryreservation.googleapis.com/v1/{+resource}:setIamPolicy`
-- Sets an access control policy for a resource. Replaces any existing policy. Supported resources are: - Reservations To call this method, you must have the following Google IAM permissions: - `bigqueryreservation.reservations.setIamPolicy` to set policies on reservations.
+- Sets the access control policy of the reservation that `resource` names (`projects/{project}/locations/{location}/reservations/{reservation}`, from the path pattern). Replaces any existing policy. IAM permission: `bigquery.reservations.setIamPolicy`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SetIamPolicyRequest`; Response: `Policy`
 
@@ -531,6 +531,7 @@ GET https://bigqueryreservation.googleapis.com/v1/{+name}
 - Corrected from the Discovery document: the description of `bigqueryreservation.projects.locations.capacityCommitments.list` is "Lists all the capacity commitments for the admin project.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Path variables whose description starts with "Output only" are still required in the URL: they name the resource that the method acts on, so they are `yes` in the Required column: `name` in `bigqueryreservation.projects.locations.capacityCommitments.patch`, `name` in `bigqueryreservation.projects.locations.reservations.assignments.patch`. The Discovery document gives them the description of the resource field of the same name, and "Output only" applies to that field of the resource, not to the URL. In the parameter tables their description starts with "Required in the URL" in place of the leading "Output only".
 - Regional endpoints: the Discovery document (`bigqueryreservation` v1, revision 20261102) also lists 25 endpoints of the form `https://bigqueryreservation.LOCATION.rep.googleapis.com/` (Regional Endpoint), for LOCATION in `asia-south1`, `asia-south2`, `europe-west1`, `europe-west10`, `europe-west2`, `europe-west3`, `europe-west4`, `europe-west6`, `europe-west8`, `europe-west9`, `me-central2`, `northamerica-northeast1`, `northamerica-northeast2`, `us-central1`, `us-central2`, `us-east1`, `us-east4`, `us-east5`, `us-east7`, `us-south1`, `us-west1`, `us-west2`, `us-west3`, `us-west4`, `us-west8`. The method URLs above use the global host `https://bigqueryreservation.googleapis.com/`; to send a request through one of these endpoints, replace the host with the endpoint for the resource's location (for example `https://bigqueryreservation.asia-south1.rep.googleapis.com/`) and keep the path.
+- Corrected from the Discovery document: the `getIamPolicy`, `setIamPolicy` and `testIamPermissions` methods of reservations and of reservation assignments share the descriptions "Supported resources are: - Reservations - ReservationAssignments" (getIamPolicy) or "Supported resources are: - Reservations" (setIamPolicy, testIamPermissions), and name the permissions `bigqueryreservation.reservations.getIamPolicy` and `bigqueryreservation.reservations.setIamPolicy`; the IAM roles reference lists these permissions as `bigquery.reservations.getIamPolicy` and `bigquery.reservations.setIamPolicy`, and lists no IAM-policy permissions for reservation assignments (`bigquery.reservationAssignments.*` has only create, delete, list and search). The summaries above name the resource that each route takes (from its path pattern).
 - Restored from the source proto: in the `assignments.delete` and `assignments.list` descriptions, the Discovery document shows the assignments as empty code spans because it drops angle-bracket pairs; this page shows them as the proto comments read: "associations between entities and reservations: `<organizationA, res1>` and `<project1, res1>`" and, for DeleteAssignment, "In this example, deletion of the `<organizationA, res1>` assignment won't affect the other assignment `<project1, res1>`." (`google/cloud/bigquery/reservation/v1/reservation.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/reservation/v1/reservation.proto, commit `5ce0245`, retrieved 2026-11-19).
 - Corrected from the Discovery document: the `searchAssignments` and `searchAllAssignments` descriptions write the `ListAssignments` parent as `projects/*/locations/*reservations/*` (no `/` before `reservations`); this page shows `projects/*/locations/*/reservations/*`, the format of the reservation resource name.
 - Descriptions are verbatim from Discovery, which drops angle-bracket placeholders of the source comments: a format such as `projects//locations/global` stands for `projects/{project}/locations/global` (likewise `"@.iam.gserviceaccount.com"` lost the account ID before `@`, and a name format ending in a collection such as `projects/*/locations/*/registrations/` lost its last ID), and an expression such as `... && in labels` lost its left operand (for example `'label_value' in labels`). Check the method or field in the product's REST reference before relying on such a format.

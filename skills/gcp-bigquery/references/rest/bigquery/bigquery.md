@@ -35,7 +35,7 @@ Base URL: `https://bigquery.googleapis.com/bigquery/v2`. Methods are listed by `
 
 - Versions: v2
 - `GET https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets`
-- Lists all datasets in the specified project to which the user has been granted the READER dataset role. # IAM Permissions Requires no specific IAM permission(s) to use this method. Results are filtered to only include datasets on which the caller has the `bigquery.datasets.get` permission.
+- Lists all datasets in the specified project. IAM permissions: requires no specific IAM permission to use this method; results are filtered to only include datasets on which the caller has the `bigquery.datasets.get` permission. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`, `https://www.googleapis.com/auth/cloud-platform.read-only`
 - Request: —; Response: `DatasetList`
 
@@ -141,7 +141,7 @@ Base URL: `https://bigquery.googleapis.com/bigquery/v2`. Methods are listed by `
 
 - Versions: v2
 - `GET https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets/{+datasetId}/models`
-- Lists all models in the specified dataset. Requires the READER dataset role. After retrieving the list of models, you can get information about a particular model by calling the models.get method. # IAM Permissions Requires the `bigquery.models.list` permission on the dataset.
+- Lists all models in the specified dataset. After retrieving the list of models, you can get information about a particular model by calling the models.get method. IAM permissions: requires the `bigquery.models.list` permission on the dataset. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`, `https://www.googleapis.com/auth/cloud-platform.read-only`
 - Request: —; Response: `ListModelsResponse`
 
@@ -204,7 +204,7 @@ Base URL: `https://bigquery.googleapis.com/bigquery/v2`. Methods are listed by `
 
 - Versions: v2
 - `GET https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets/{+datasetId}/routines`
-- Lists all routines in the specified dataset. Requires the READER dataset role. # IAM Permissions Requires the `bigquery.routines.list` permission on the dataset.
+- Lists all routines in the specified dataset. IAM permissions: requires the `bigquery.routines.list` permission on the dataset. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`, `https://www.googleapis.com/auth/cloud-platform.read-only`
 - Request: —; Response: `ListRoutinesResponse`
 
@@ -346,7 +346,7 @@ Base URL: `https://bigquery.googleapis.com/bigquery/v2`. Methods are listed by `
 
 - Versions: v2
 - `GET https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets/{+datasetId}/tables`
-- Lists all tables in the specified dataset. Requires the READER dataset role. # IAM Permissions Requires the `bigquery.tables.list` permission on the dataset.
+- Lists all tables in the specified dataset. IAM permissions: requires the `bigquery.tables.list` permission on the dataset. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`, `https://www.googleapis.com/auth/cloud-platform.read-only`
 - Request: —; Response: `TableList`
 
@@ -786,6 +786,7 @@ GET https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets/{
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when the description says that some requests must specify it (for example, `options.requestedPolicyVersion` must be 3 to get a policy with conditional role bindings). Path variables are `yes` unless a note below names an alternative route without them.
 - Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
 - Regional endpoints: the Discovery document (`bigquery` v2, revision 20261009) also lists 25 endpoints of the form `https://bigquery.LOCATION.rep.googleapis.com/` (Regional Endpoint), for LOCATION in `asia-south1`, `asia-south2`, `europe-west1`, `europe-west10`, `europe-west2`, `europe-west3`, `europe-west4`, `europe-west6`, `europe-west8`, `europe-west9`, `me-central2`, `northamerica-northeast1`, `northamerica-northeast2`, `us-central1`, `us-central2`, `us-east1`, `us-east4`, `us-east5`, `us-east7`, `us-south1`, `us-west1`, `us-west2`, `us-west3`, `us-west4`, `us-west8`. The method URLs above use the global host `https://bigquery.googleapis.com/`; to send a request through one of these endpoints, replace the host with the endpoint for the resource's location (for example `https://bigquery.asia-south1.rep.googleapis.com/`) and keep the path.
+- Corrected from the Discovery document: the `bigquery.datasets.list`, `models.list`, `routines.list` and `tables.list` descriptions also state legacy dataset-role requirements, "Lists all datasets in the specified project to which the user has been granted the READER dataset role." (datasets.list) and "Requires the READER dataset role." (models.list, routines.list, tables.list); the summaries above omit them and keep the "IAM Permissions" part of the same descriptions (roles such as `roles/bigquery.metadataViewer` contain these permissions without data access; see `references/iam/`).
 - Corrected from the Discovery document: the `bigquery.jobs.get` and `bigquery.jobs.list` descriptions also state legacy project-role requirements, "Requires that you're the person who ran the job, or have the Is Owner project role." (jobs.get) and "Requires the Can View project role, or the Is Owner project role if you set the allUsers property." (jobs.list); the summaries above omit them and keep the "IAM Permissions" part of the same descriptions, whose permissions roles other than Owner also contain (see `references/iam/`).
 - Restored from the source proto: the Discovery document shows the label filter syntax in the `filter` description of `bigquery.datasets.list` as `labels.[:]` because it drops angle-bracket placeholders; this page shows it as the proto comment reads: "The syntax is `labels.<name>[:<value>]`." (`google/cloud/bigquery/v2/dataset.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/dataset.proto, commit `5ce0245`, retrieved 2026-11-19).
 - Source: https://bigquery.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
