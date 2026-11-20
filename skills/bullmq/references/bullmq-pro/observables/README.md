@@ -4,5 +4,5 @@ Observable パターンによるジョブの進捗ストリーミング、キャ
 
 | Name | Description | Path |
 |------|-------------|------|
-| Observables | Observable パターンによるジョブの進捗ストリーミング | [./observables.md](./observables.md) |
-| Cancelation | Observable ジョブのキャンセル | [./cancelation.md](./cancelation.md) |
+| Observables | Observable パターンによるジョブの進捗ストリーミング | [observables.md](./observables.md) |
+| Cancelation | Observable ジョブのキャンセル | [cancelation.md](./cancelation.md) |

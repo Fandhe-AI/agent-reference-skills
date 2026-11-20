@@ -83,7 +83,7 @@ tools:
 | {Name} | {Description} | [{file}.md](./{file}.md) |
 ```
 
-- H1 はカテゴリディレクトリ名（元の表記）のみとし、前置きの説明文は書かない（reference-template 準拠）
+- H1 は、既存の `{category_dir}README.md` があればその H1 を引き継ぎ（例: `nextjs-app` の `metadata/README.md` の `# Metadata Files`）、無ければカテゴリディレクトリ名（元の表記）とする。前置きの説明文は書かない（reference-template 準拠）。親の索引の子索引の行の Name は子 README の H1（Step 2 の 5）なので、子 README を再生成しても親の Name は変わらない
 
 ## 完了条件
 
