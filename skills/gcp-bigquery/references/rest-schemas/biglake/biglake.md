@@ -65,8 +65,60 @@ Message types referenced by the methods listed under `references/rest/biglake/`.
 
 ### `Policy`
 
-- An Identity and Access Management (IAM) policy, which specifies access controls for Google Cloud resources. A `Policy` is a collection of `bindings`. A `binding` binds one or more `members`, or principals, to a single `role`. Principals can be user accounts, service accounts, Google groups, and domains (such as G Suite). A `role` is a named list of permissions; each `role` can be an IAM predefined role or a user-created custom role. For some types of Google Cloud resources, a `binding` can also specify a `condition`, which is a logical expression that allows access to a resource only if the expression evaluates to `true`. A condition can add constraints based on attributes of the request, the resource, or both. To learn which resources support conditions in their IAM policies, see the IAM documentation (https://cloud.google.com/iam/help/conditions/resource-policies). \*\*JSON example:\*\* { "bindings": \[ { "role": "roles/resourcemanager.organizationAdmin", "members": \[ "user:mike@example.com", "group:admins@example.com", "domain:google.com", "serviceAccount:my-project-id@appspot.gserviceaccount.com" \] }, { "role": "roles/resourcemanager.organizationViewer", "members": \[ "user:eve@example.com" \], "condition": { "title": "expirable access", "description": "Does not grant access after Sep 2020", "expression": "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag": "BwWWja0YfJA=", "version": 3 } \*\*YAML example:\*\* bindings: - members: - user:mike@example.com - group:admins@example.com - domain:google.com - serviceAccount:my-project-id@appspot.gserviceaccount.com role: roles/resourcemanager.organizationAdmin - members: - user:eve@example.com role: roles/resourcemanager.organizationViewer condition: title: expirable access description: Does not grant access after Sep 2020 expression: request.time < timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA= version: 3 For a description of IAM and its features, see the IAM documentation (https://cloud.google.com/iam/docs/).
+- An Identity and Access Management (IAM) policy, which specifies access controls for Google Cloud resources. A `Policy` is a collection of `bindings`. A `binding` binds one or more `members`, or principals, to a single `role`. Principals can be user accounts, service accounts, Google groups, and domains (such as G Suite). A `role` is a named list of permissions; each `role` can be an IAM predefined role or a user-created custom role. For some types of Google Cloud resources, a `binding` can also specify a `condition`, which is a logical expression that allows access to a resource only if the expression evaluates to `true`. A condition can add constraints based on attributes of the request, the resource, or both. To learn which resources support conditions in their IAM policies, see the IAM documentation (https://cloud.google.com/iam/help/conditions/resource-policies). The JSON and YAML examples of this description are shown below. For a description of IAM and its features, see the IAM documentation (https://cloud.google.com/iam/docs/).
 - Version: v1
+
+JSON example from the Discovery description (as a JSON block; the trailing comma after the `condition.expression` value is removed; see Notes):
+
+```json
+{
+  "bindings": [
+    {
+      "role": "roles/resourcemanager.organizationAdmin",
+      "members": [
+        "user:mike@example.com",
+        "group:admins@example.com",
+        "domain:google.com",
+        "serviceAccount:my-project-id@appspot.gserviceaccount.com"
+      ]
+    },
+    {
+      "role": "roles/resourcemanager.organizationViewer",
+      "members": [
+        "user:eve@example.com"
+      ],
+      "condition": {
+        "title": "expirable access",
+        "description": "Does not grant access after Sep 2020",
+        "expression": "request.time < timestamp('2020-10-01T00:00:00.000Z')"
+      }
+    }
+  ],
+  "etag": "BwWWja0YfJA=",
+  "version": 3
+}
+```
+
+YAML example from the description (line breaks and indentation restored from the source proto; see Notes):
+
+```yaml
+bindings:
+- members:
+  - user:mike@example.com
+  - group:admins@example.com
+  - domain:google.com
+  - serviceAccount:my-project-id@appspot.gserviceaccount.com
+  role: roles/resourcemanager.organizationAdmin
+- members:
+  - user:eve@example.com
+  role: roles/resourcemanager.organizationViewer
+  condition:
+    title: expirable access
+    description: Does not grant access after Sep 2020
+    expression: request.time < timestamp('2020-10-01T00:00:00.000Z')
+etag: BwWWja0YfJA=
+version: 3
+```
 
 ### `RenameTableRequest`
 
@@ -281,6 +333,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `biglake` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Corrected from the Discovery document: the JSON example in the `Policy` description (the `google.iam.v1` text shared by the IAM methods) has a trailing comma after the `condition.expression` value (`"expression": "request.time < timestamp('2020-10-01T00:00:00.000Z')", } }`), which is not valid JSON; the same comma is in the proto comment. This page shows the example as a JSON block without that comma. The Discovery text of the YAML example has lost its line breaks and indentation, so the YAML block is taken from the proto comment (`google/iam/v1/policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/policy.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Corrected from the Discovery document: the `TestIamPermissionsResponse.permissions` description reads "A subset of `TestPermissionsRequest.permissions` that the caller is allowed."; the same text is in the `google.iam.v1` proto, where the request message of `TestIamPermissions` is `TestIamPermissionsRequest` (`google/iam/v1/iam_policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/iam_policy.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Source: https://biglake.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
