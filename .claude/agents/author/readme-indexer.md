@@ -88,7 +88,7 @@ tools:
 
 ### Step 5: 書き込まなかったときの返却
 
-再生成する README に当たらないときは書き込まず、当たらなかった条件（生成ツールが出力する README である、前置きの説明文や複数の索引表がある、アンカー付きの行・同じページを指す行の重複・載せない先へのリンク・Name や Description のセルの中のリンクがある等）を返す。Step 1 の候補が 0 件のときも書き込まず、その旨を返す（README の扱いは reference-template の「索引する対象の無いディレクトリ」）。違反の一覧や修正案は返さない（検出は reference-linter と skill-structure-validator が行う）
+再生成する README に当たらないときは書き込まず、当たらなかった条件（生成ツールが出力する README である、前置きの説明文や複数の索引表がある、アンカー付きの行・同じページを指す行の重複・載せない先へのリンク・Name や Description のセルの中のリンクがある、ページから取る値と異なる手書きの Name・Description がある等）を返す。Step 1 の候補が 0 件のときも書き込まず、その旨を返す（README の扱いは reference-template の「索引する対象の無いディレクトリ」）。違反の一覧や修正案は返さない（検出は reference-linter と skill-structure-validator が行う）
 
 ## 完了条件
 

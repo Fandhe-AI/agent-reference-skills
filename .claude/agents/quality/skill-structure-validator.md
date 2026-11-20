@@ -50,7 +50,7 @@ tools:
 
 1. `{skill_dir}references/*/` を Glob でカテゴリディレクトリ一覧を取得する
 2. 各カテゴリディレクトリに `README.md` が存在するかを Glob で確認する
-3. README.md が存在しないカテゴリを記録する（⚠️ WARNING）
+3. README.md が存在しないカテゴリを記録する（⚠️ WARNING。ただし直下に `.md` ページが無く、子ディレクトリの README だけを持つカテゴリは ℹ️ INFO）
 4. `{skill_dir}samples/` `{skill_dir}scripts/` の有無を Glob で確認し、存在する場合はそれぞれの `README.md` の有無も確認する（README.md 欠落は ⚠️ WARNING）
 
 ### Step 3: README 索引と実ファイルの突合
