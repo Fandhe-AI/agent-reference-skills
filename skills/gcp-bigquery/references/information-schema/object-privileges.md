@@ -71,7 +71,7 @@ this view:
 Replace the following:
 
 - Optional: `PROJECT_ID`: the ID of your Google Cloud project. If not specified, the default project is used.
-- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `` `region-us` ``.
+- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `us`.
 
   <br />
 
@@ -174,6 +174,7 @@ don't appear in the results of the second example.
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: the example result shows the role ID `roles/bigquery.dataViwer`, a misspelling in the official example. The role ID is `roles/bigquery.dataViewer`.
+- Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
 
 ## Related
 

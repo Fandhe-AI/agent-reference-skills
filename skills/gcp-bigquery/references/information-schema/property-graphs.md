@@ -78,7 +78,7 @@ The following table explains the region and resource scopes for this view:
 Replace the following:
 
 - Optional: `PROJECT_ID`: the ID of your Google Cloud project. If not specified, the default project is used.
-- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `` `region-us` ``.
+- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `us`.
 - `DATASET_ID`: the ID of your dataset. For more information, see [Dataset qualifier](https://docs.cloud.google.com/bigquery/docs/information-schema-intro#dataset_qualifier).
 
   <br />
@@ -125,6 +125,7 @@ The result is similar to the following:
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: the Required permissions section asks you to grant the following IAM roles, which reads as if all four were needed. Each of the four roles alone includes both `bigquery.propertyGraphs.get` and `bigquery.propertyGraphs.list` (see the BigQuery roles in iam/bigquery-1.md), so one of them is enough. To only query this view, grant `roles/bigquery.metadataViewer` or `roles/bigquery.dataViewer` rather than Data Editor or Admin.
+- Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
 
 ## Related
 

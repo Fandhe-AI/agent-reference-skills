@@ -160,7 +160,7 @@ The following table explains the region scope for this view:
 Replace the following:
 
 - Optional: `PROJECT_ID`: the ID of your Google Cloud project. If not specified, the default project is used.
-- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `` `region-us` ``.
+- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `us`.
 
   <br />
 
@@ -1424,6 +1424,7 @@ SELECT
 - Corrected from the official docs: the text before the example that analyzes the performance of identical queries says that it returns the top 10 slowest jobs, but the query ends with `LIMIT 3`. The text is changed to the top 3 slowest jobs, so that it matches the query.
 - Corrected from the official docs: the two Connected Sheets examples write the qualifier as `region-REGION_NAME`, but the text after each of them gives `region-us` as an example value for `REGION_NAME`, which would produce `region-region-us`. The example value is changed to `us`.
 - Corrected from the official docs: the example that counts the partitions modified per table compares `DATE(creation_time, "America/Los_Angeles")` with `CURRENT_DATE()`, which returns the date in UTC by default. While the dates in UTC and Los Angeles differ, the query selects the wrong day. The right side is changed to `CURRENT_DATE("America/Los_Angeles")`.
+- Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
 
 ## Related
 

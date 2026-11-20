@@ -65,7 +65,7 @@ The following table explains the region and resource scopes for this view:
 Replace the following:
 
 - Optional: `PROJECT_ID`: the ID of your Google Cloud project. If not specified, the default project is used.
-- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `` `region-us` ``.
+- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `us`.
 - `DATASET_ID`: the ID of your dataset. For more information, see [Dataset qualifier](https://docs.cloud.google.com/bigquery/docs/information-schema-intro#dataset_qualifier).
 
   <br />
@@ -140,6 +140,7 @@ The result is similar to the following:
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: The example used `* EXCEPT(is_typed)` and `table_type = 'BASE TABLE'`, but the PARAMETERS schema on this page has no `is_typed` or `table_type` column, and the shown result has all ten columns. The query now selects all columns without a filter.
 - Corrected from the official docs: the example of a fully qualified name for querying another project names `example-project.mydataset.INFORMATION_SCHEMA.JOBS_BY_PROJECT`. This page is about the `PARAMETERS` view, and the format given just above it is `PROJECT_ID`.`DATASET_ID`.INFORMATION_SCHEMA.PARAMETERS, so the example is changed to `example-project.mydataset.INFORMATION_SCHEMA.PARAMETERS`.
+- Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
 
 ## Related
 

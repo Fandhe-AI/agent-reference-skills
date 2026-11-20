@@ -93,7 +93,7 @@ in is used.
 Replace the following:
 
 - Optional: `PROJECT_ID`: the ID of your Google Cloud project. If not specified, the default project is used.
-- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `` `region-us` ``.
+- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `us`.
 
   <br />
 
@@ -161,6 +161,7 @@ The result is similar to the following:
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Conflicting official statements: the schema lists `target_resources` and `associated_insight_ids` as `STRING`, but the `RECOMMENDATIONS` view page (recommendations.md) shows `target_resources` values as arrays such as `["project_resource"]`. Treat both columns as arrays of strings when you write queries.
 - Conflicting official statements: the Scope and syntax table names the view `RECOMMENDATIONS[_BY_ORGANIZATION]`, so the suffix looks optional, and gives the resource scope as `Project level`. The description says that `RECOMMENDATIONS_BY_ORGANIZATION` contains the recommendations for all projects in the current organization, and the `RECOMMENDATIONS` view page (recommendations.md) covers only the current project. To query the whole organization, write the full name `RECOMMENDATIONS_BY_ORGANIZATION`.
+- Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
 
 ## Related
 

@@ -92,7 +92,7 @@ regions. The following table explains the region scope for this view:
 Replace the following:
 
 - Optional: `PROJECT_ID`: the ID of your Google Cloud project. If not specified, the default project is used.
-- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `` `region-us` ``.
+- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `us`.
 
   <br />
 
@@ -195,6 +195,7 @@ The result is similar to the following:
 - Caution: The two example queries filter on `my_folder_number = f`. `my_folder_number` is not a column of the view and is not defined on this page; treat it as a placeholder for the folder number to filter on. The official docs are unchanged here.
 - Conflicting official statements: the Scope and syntax section says that queries against this view must include a region qualifier, and then that metadata is retrieved from all regions if you don't specify one. The INFORMATION_SCHEMA introduction (https://docs.cloud.google.com/bigquery/docs/information-schema-intro#syntax, retrieved 2026-11-20) says that if neither a region qualifier nor a dataset qualifier is specified, you receive an error. Include a region qualifier when you query this view.
 - Conflicting official statements: the scope table gives the resource scope as `Project level`, but the description says that the view contains the jobs submitted in the parent folder of the current project, including its subfolders, and the other `*_BY_FOLDER` views give `Folder that contains the specified project`. The view covers the folder, not only the specified project.
+- Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
 
 ## Related
 
