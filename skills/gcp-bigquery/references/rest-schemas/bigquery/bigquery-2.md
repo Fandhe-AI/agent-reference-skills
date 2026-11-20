@@ -623,7 +623,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ```json
 {
-  "destinationUriFileCounts": "array<string>",
+  "destinationUriFileCounts": "array<string (int64)>",
   "inputBytes": "string (int64)",
   "timeline": "array<QueryTimelineSample>"
 }
@@ -647,7 +647,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `destinationUriFileCounts` | `array<string>` | Output only. Number of files per destination URI or URI pattern specified in the extract configuration. These values will be in the same order as the URIs specified in the 'destinationUris' field. |
+| `destinationUriFileCounts` | `array<string (int64)>` | Output only. Number of files per destination URI or URI pattern specified in the extract configuration. These values will be in the same order as the URIs specified in the 'destinationUris' field. |
 | `inputBytes` | string (int64) | Output only. Number of user bytes extracted into the result. This is the byte count as computed by BigQuery for billing purposes and doesn't have any relationship with the number of actual result bytes extracted in the desired format. |
 | `timeline` | `array<QueryTimelineSample>` | Output only. Describes a timeline of job execution. |
 
@@ -807,7 +807,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `location` | string | Output only. The geographic location where the model resides. This value is inherited from the dataset. |
 | `modelReference` | ModelReference | Required. Unique identifier for this model. |
 | `modelType` | string enum | Output only. Type of the model resource. Values: `MODEL_TYPE_UNSPECIFIED`, `LINEAR_REGRESSION`, `LOGISTIC_REGRESSION`, `KMEANS`, `MATRIX_FACTORIZATION`, `DNN_CLASSIFIER`, `TENSORFLOW`, `DNN_REGRESSOR`, `XGBOOST`, `BOOSTED_TREE_REGRESSOR`, `BOOSTED_TREE_CLASSIFIER`, `ARIMA`, `AUTOML_REGRESSOR`, `AUTOML_CLASSIFIER`, `PCA`, `DNN_LINEAR_COMBINED_CLASSIFIER`, `DNN_LINEAR_COMBINED_REGRESSOR`, `AUTOENCODER`, `ARIMA_PLUS`, `ARIMA_PLUS_XREG`, `RANDOM_FOREST_REGRESSOR`, `RANDOM_FOREST_CLASSIFIER`, `TENSORFLOW_LITE`, `ONNX`, `TRANSFORM_ONLY`, `CONTRIBUTION_ANALYSIS`. |
-| `optimalTrialIds` | `array<string>` | Output only. For single-objective hyperparameter tuning (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models, it only contains the best trial. For multi-objective hyperparameter tuning (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models, it contains all Pareto optimal trials sorted by trial_id. |
+| `optimalTrialIds` | `array<string (int64)>` | Output only. For single-objective hyperparameter tuning (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models, it only contains the best trial. For multi-objective hyperparameter tuning (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models, it contains all Pareto optimal trials sorted by trial_id. |
 | `remoteModelInfo` | RemoteModelInfo | Output only. Remote model info |
 | `trainingRuns` | `array<TrainingRun>` | Information for all training runs in increasing order of start_time. |
 | `transformColumns` | `array<TransformColumn>` | Output only. This field will be populated if a TRANSFORM clause was used to train a model. TRANSFORM clause (if used) takes feature_columns as input and outputs transform_columns. transform_columns then are used to train the model. |
@@ -1682,11 +1682,11 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `fitIntercept` | boolean | Whether the model should include intercept during model training. |
 | `forecastLimitLowerBound` | number (double) | The forecast limit lower bound that was used during ARIMA model training with limits. To see more details of the algorithm: https://otexts.com/fpp2/limits.html |
 | `forecastLimitUpperBound` | number (double) | The forecast limit upper bound that was used during ARIMA model training with limits. |
-| `hiddenUnits` | `array<string>` | Hidden units for dnn models. |
+| `hiddenUnits` | `array<string (int64)>` | Hidden units for dnn models. |
 | `holidayRegion` | string enum | The geographical region based on which the holidays are considered in time series modeling. If a valid value is specified, then holiday effects modeling is enabled. Values: `HOLIDAY_REGION_UNSPECIFIED`, `GLOBAL`, `NA`, `JAPAC`, `EMEA`, `LAC`, `AE`, `AR`, `AT`, `AU`, `BE`, `BR`, `CA`, `CH`, `CL`, `CN`, `CO`, `CS`, `CZ`, `DE`, `DK`, `DZ`, `EC`, `EE`, `EG`, `ES`, `FI`, `FR`, `GB`, `GR`, `HK`, `HU`, `ID`, `IE`, `IL`, `IN`, `IR`, `IT`, `JP`, `KR`, `LV`, `MA`, `MX`, `MY`, `NG`, `NL`, `NO`, `NZ`, `PE`, `PH`, `PK`, `PL`, `PT`, `RO`, `RS`, `RU`, `SA`, `SE`, `SG`, `SI`, `SK`, `TH`, `TR`, `TW`, `UA`, `US`, `VE`, `VN`, `ZA`. |
-| `holidayRegions` | `array<string>` | A list of geographical regions that are used for time series modeling. Values: `HOLIDAY_REGION_UNSPECIFIED`, `GLOBAL`, `NA`, `JAPAC`, `EMEA`, `LAC`, `AE`, `AR`, `AT`, `AU`, `BE`, `BR`, `CA`, `CH`, `CL`, `CN`, `CO`, `CS`, `CZ`, `DE`, `DK`, `DZ`, `EC`, `EE`, `EG`, `ES`, `FI`, `FR`, `GB`, `GR`, `HK`, `HU`, `ID`, `IE`, `IL`, `IN`, `IR`, `IT`, `JP`, `KR`, `LV`, `MA`, `MX`, `MY`, `NG`, `NL`, `NO`, `NZ`, `PE`, `PH`, `PK`, `PL`, `PT`, `RO`, `RS`, `RU`, `SA`, `SE`, `SG`, `SI`, `SK`, `TH`, `TR`, `TW`, `UA`, `US`, `VE`, `VN`, `ZA`. |
+| `holidayRegions` | `array<string enum>` | A list of geographical regions that are used for time series modeling. Values: `HOLIDAY_REGION_UNSPECIFIED`, `GLOBAL`, `NA`, `JAPAC`, `EMEA`, `LAC`, `AE`, `AR`, `AT`, `AU`, `BE`, `BR`, `CA`, `CH`, `CL`, `CN`, `CO`, `CS`, `CZ`, `DE`, `DK`, `DZ`, `EC`, `EE`, `EG`, `ES`, `FI`, `FR`, `GB`, `GR`, `HK`, `HU`, `ID`, `IE`, `IL`, `IN`, `IR`, `IT`, `JP`, `KR`, `LV`, `MA`, `MX`, `MY`, `NG`, `NL`, `NO`, `NZ`, `PE`, `PH`, `PK`, `PL`, `PT`, `RO`, `RS`, `RU`, `SA`, `SE`, `SG`, `SI`, `SK`, `TH`, `TR`, `TW`, `UA`, `US`, `VE`, `VN`, `ZA`. |
 | `horizon` | string (int64) | The number of periods ahead that need to be forecasted. |
-| `hparamTuningObjectives` | `array<string>` | The target evaluation metrics to optimize the hyperparameters for. Values: `HPARAM_TUNING_OBJECTIVE_UNSPECIFIED`, `MEAN_ABSOLUTE_ERROR`, `MEAN_SQUARED_ERROR`, `MEAN_SQUARED_LOG_ERROR`, `MEDIAN_ABSOLUTE_ERROR`, `R_SQUARED`, `EXPLAINED_VARIANCE`, `PRECISION`, `RECALL`, `ACCURACY`, `F1_SCORE`, `LOG_LOSS`, `ROC_AUC`, `DAVIES_BOULDIN_INDEX`, `MEAN_AVERAGE_PRECISION`, `NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN`, `AVERAGE_RANK`. |
+| `hparamTuningObjectives` | `array<string enum>` | The target evaluation metrics to optimize the hyperparameters for. Values: `HPARAM_TUNING_OBJECTIVE_UNSPECIFIED`, `MEAN_ABSOLUTE_ERROR`, `MEAN_SQUARED_ERROR`, `MEAN_SQUARED_LOG_ERROR`, `MEDIAN_ABSOLUTE_ERROR`, `R_SQUARED`, `EXPLAINED_VARIANCE`, `PRECISION`, `RECALL`, `ACCURACY`, `F1_SCORE`, `LOG_LOSS`, `ROC_AUC`, `DAVIES_BOULDIN_INDEX`, `MEAN_AVERAGE_PRECISION`, `NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN`, `AVERAGE_RANK`. |
 | `huggingFaceModelId` | string | The id of a Hugging Face model. For example, `google/gemma-2-2b-it`. |
 | `includeDrift` | boolean | Include drift when fitting an ARIMA model. |
 | `initialLearnRate` | number (double) | Specifies the initial learning rate for the line search learn rate strategy. |
@@ -1700,7 +1700,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `l1RegActivation` | number (double) | L1 regularization coefficient to activations. |
 | `l1Regularization` | number (double) | L1 regularization coefficient. |
 | `l2Regularization` | number (double) | L2 regularization coefficient. |
-| `labelClassWeights` | `map<string, number>` | Weights associated with each label class, for rebalancing the training data. Only applicable for classification models. |
+| `labelClassWeights` | `map<string, number (double)>` | Weights associated with each label class, for rebalancing the training data. Only applicable for classification models. |
 | `learnRate` | number (double) | Learning rate in training. Used only for iterative training algorithms. |
 | `learnRateStrategy` | string enum | The strategy to determine learn rate for the current iteration. Values: `LEARN_RATE_STRATEGY_UNSPECIFIED`, `LINE_SEARCH`, `CONSTANT`. |
 | `lossType` | string enum | Type of loss function used during training run. Values: `LOSS_TYPE_UNSPECIFIED`, `MEAN_SQUARED_LOSS`, `MEAN_LOG_LOSS`. |
