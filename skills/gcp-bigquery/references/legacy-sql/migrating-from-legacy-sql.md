@@ -933,7 +933,10 @@ One difference between the preceding legacy SQL and GoogleSQL queries is that
 if you unset the **Flatten Results** option and execute the legacy SQL query,
 `payload.pages.title` is `REPEATED` in the query result. To achieve the
 same semantics in GoogleSQL and return an array for the `title` column, use
-an `ARRAY` subquery instead:
+an `ARRAY` subquery instead. (The array has the same elements and positions as the legacy SQL
+result only when no matching page has a `NULL` title; otherwise see the text after the query,
+which shows an `ARRAY` of `STRUCT`s that keeps one element for each matching page. Added; see
+Notes.)
 
 Adapted (not in the official docs): excluded `NULL` titles, because a query result can't contain an array with `NULL` elements, kept the order of the pages with `WITH OFFSET`, and kept the rows with an `EXISTS` test on `page_name`. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
@@ -1308,12 +1311,12 @@ WHERE NOT EXISTS (
 ```
 
 This query also returns 163,716 as the count. (The `NOT IN` version, whose subquery leaves out
-`NULL` locations, and the `NOT EXISTS` version return the same result only for rows whose `word`
-is not `NULL`: for a `NULL` `word`, `NOT IN` returns `NULL` when the subquery returns any row, so
-the row is dropped, while `NOT EXISTS` finds no matching row and keeps it. When the subquery
-returns no rows, `NOT IN` returns `TRUE` and keeps the row too. So if the left side can be `NULL`,
-use the `NOT IN` version; adding `t.word IS NOT NULL` to the `NOT EXISTS` version gives the same
-result only when the subquery returns at least one row. Added; see Notes.) For further reading, see the
+`NULL` locations, and the `NOT EXISTS` version keep different rows only when `word` is `NULL` and
+the subquery returns at least one row: then `NOT IN` returns `NULL` and drops the row, while
+`NOT EXISTS` finds no matching row and keeps it. When the subquery returns no rows, both keep
+every row. So if the left side can be `NULL`, use the `NOT IN` version, or add
+`t.word IS NOT NULL` to the `NOT EXISTS` version only when the subquery returns at least one
+row. Added; see Notes.) For further reading, see the
 [comparison operators](../googlesql-syntax/operators.md#comparison-operators)
 section of the documentation, which explains the semantics of `IN`, `NOT IN`,
 `EXISTS`, and other comparison operators.
@@ -1806,8 +1809,9 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the GoogleSQL version of the implicit coercion example names its first column `boolean_coercion`, while the legacy SQL query names it `boolean_int_coercion`; the alias is changed to `boolean_int_coercion`, so that the translation keeps the output column names.
 - Added (not in the official docs): the `CONTAINS` and `INSTR` rows of the function comparison table translate to `STRPOS` or `LIKE`, which are case-sensitive, while legacy SQL queries can end with `IGNORE CASE` for ASCII case-insensitive matching (legacy-sql/legacy-sql-2.md). A note is added to both rows: the translations keep the case-sensitive default, and with `IGNORE CASE` compare both sides after mapping only `A` to `Z` to `a` to `z` with `TRANSLATE` (googlesql-functions/string_functions-2.md), not with `LOWER`, which also lower-cases non-ASCII letters.
 - Added (not in the official docs): the `QUANTILES` row of the function comparison table says only that the output needs to be unnested; a note is added that a quantile chosen by position (`NTH(n, QUANTILES(...))` in legacy SQL) is taken with the array subscript operator (`[SAFE_ORDINAL(n)]`, googlesql-syntax/operators.md), and that expanded rows need `WITH OFFSET` and an `ORDER BY` on the offset, because "`UNNEST` destroys the order of elements in the input array" (googlesql-syntax/query-syntax-1.md).
-- Added (not in the official docs): the `NOT EXISTS` example is said to return the same count as the `NOT IN` example whose subquery leaves out `NULL`; a sentence is added that the two differ for a `NULL` left side (`NOT IN` gives `NULL` and drops the row when the subquery returns any row, `NOT EXISTS` keeps it), that `NOT IN` keeps the row when the subquery returns no rows, and that the `NOT IN` version is the general form (`t.word IS NOT NULL` added to `NOT EXISTS` matches it only when the subquery returns at least one row).
+- Added (not in the official docs): the `NOT EXISTS` example is said to return the same count as the `NOT IN` example whose subquery leaves out `NULL`; a sentence is added that the two keep different rows only for a `NULL` left side when the subquery returns at least one row (`NOT IN` gives `NULL` and drops the row, `NOT EXISTS` keeps it), that both keep every row when the subquery returns no rows, and that the `NOT IN` version is the general form (`t.word IS NOT NULL` added to `NOT EXISTS` matches it only when the subquery returns at least one row).
 - Added (not in the official docs): the suggestion to list the tables for the dates and combine them with `UNION ALL` now says that `UNION ALL` matches columns by position, while wildcard tables match them by name, and that each query of the union selects the needed columns by name in the same order, or that the union uses `UNION ALL BY NAME` (googlesql-syntax/query-syntax-3.md).
+- Added (not in the official docs): the `ARRAY` subquery example is introduced as achieving "the same semantics", but it leaves out `NULL` titles (a query result can't contain an array with `NULL` elements), so the elements and their positions match the legacy SQL result only when no matching page has a `NULL` title; a sentence that says so and points to the `ARRAY` of `STRUCT`s after the query is added to the introduction.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
