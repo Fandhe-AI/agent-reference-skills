@@ -300,7 +300,7 @@ Base URL: `https://bigquery.googleapis.com/bigquery/v2`. Methods are listed by `
 - Versions: v2
 - `POST https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets/{+datasetId}/tables/{+tableId}/insertAll`
 - Streams data into BigQuery one record at a time without needing to run a load job. # IAM Permissions Requires the following IAM permission(s) to use this method: - `bigquery.tables.updateData` on the table. - `bigquery.tables.get` on the table. - `bigquery.datasets.get` on the dataset.
-- Rows per request: `rows` in `TableDataInsertAllRequest` is an array (each element's `json` is "Data for a single row."), so one request can stream several rows; "one record at a time" in the description refers to streaming rows without a load job, not to one row per request.
+- Rows per request: `rows` in `TableDataInsertAllRequest` is an array (each element's `json` is "Data for a single row."), so one request can stream several rows; "one record at a time" in the description refers to streaming rows without a load job, not to one row per request. Template tables: when `templateSuffix` makes BigQuery create the instance table, the caller also needs `bigquery.tables.create` ("Required if a template table creates the table automatically" in the Required permissions table of https://docs.cloud.google.com/bigquery/docs/write-api-rest; the IAM permissions in the Discovery description above do not list it).
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/bigquery.insertdata`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `TableDataInsertAllRequest`; Response: `TableDataInsertAllResponse`
 
