@@ -634,9 +634,11 @@ steps involved are:
 
 Create a view named `V2` using GoogleSQL with the following contents:
 
+Adapted (not in the official docs): replaced `EXTRACT(DAY FROM timestamp_col)` with the `UTC_USEC_TO_DAY` equivalent from the function comparison table on this page.
+
 ```sql
 #GoogleSQL
-SELECT *, EXTRACT(DAY FROM timestamp_col) AS day
+SELECT *, UNIX_MICROS(TIMESTAMP_TRUNC(TIMESTAMP_MICROS(timestamp_col), DAY)) AS day
 FROM MyTable;
 ```
 
@@ -1353,6 +1355,8 @@ To make an equivalent GoogleSQL query with error handling, the query should be s
 
 Translated query using [`WITH` clause](#composability-using-with-clauses) and conditional `ERROR`:
 
+Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns.
+
 ```sql
 #GoogleSQL
 WITH MissingTables AS (
@@ -1362,9 +1366,9 @@ WITH MissingTables AS (
     UNNEST(GENERATE_DATE_ARRAY(DATE '2016-05-01', DATE '2016-05-09')) AS day
   WHERE
     FORMAT_DATE('%Y%m%d', day) NOT IN (
-      SELECT _TABLE_SUFFIX
-      FROM `mydataset.sea_weather_*`
-      WHERE _TABLE_SUFFIX BETWEEN '20160501' AND '20160509'
+      SELECT SUBSTR(table_name, LENGTH('sea_weather_') + 1)
+      FROM mydataset.INFORMATION_SCHEMA.TABLES
+      WHERE STARTS_WITH(table_name, 'sea_weather_')
     )
 )
 SELECT
@@ -1381,6 +1385,8 @@ FROM MissingTables
 
 And using [BigQuery Scripting (procedural SQL)](../googlesql-syntax/procedural-language.md):
 
+Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns.
+
 ```sql
 #GoogleSQL
 BEGIN
@@ -1390,9 +1396,9 @@ BEGIN
     SELECT STRING_AGG(FORMAT_DATE('%Y%m%d', day), ', ')
     FROM UNNEST(GENERATE_DATE_ARRAY(DATE '2016-05-01', DATE '2016-05-09')) AS day
     WHERE FORMAT_DATE('%Y%m%d', day) NOT IN (
-      SELECT _TABLE_SUFFIX
-      FROM `mydataset.sea_weather_*`
-      WHERE _TABLE_SUFFIX BETWEEN '20160501' AND '20160509'
+      SELECT SUBSTR(table_name, LENGTH('sea_weather_') + 1)
+      FROM mydataset.INFORMATION_SCHEMA.TABLES
+      WHERE STARTS_WITH(table_name, 'sea_weather_')
     )
   );
 
@@ -1578,6 +1584,8 @@ The permissions required to access the partition metadata differ between legacy 
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: the error message example gives the valid timestamp range as `[0001-01-1 00:00:00, 9999-12-31 23:59:59.999999]`, while the same page writes the minimum as `0001-01-01 00:00:00.000000`. The official text is kept as published.
+- Corrected from the official docs: the GoogleSQL view `V2` that replaces the legacy SQL view `V` computes `day` as `EXTRACT(DAY FROM timestamp_col)`, which is the day of the month (1 to 31), so the same day number in different months and years would be grouped together. `V` uses `UTC_USEC_TO_DAY(timestamp_col)`, which shifts a UNIX timestamp in microseconds to the beginning of its day (legacy-sql-1.md). The view now uses `UNIX_MICROS(TIMESTAMP_TRUNC(TIMESTAMP_MICROS(timestamp_col), DAY))`, the equivalent given in the function comparison table on this page.
+- Corrected from the official docs: the two `TABLE_DATE_RANGE_STRICT` migration examples find missing tables by selecting `_TABLE_SUFFIX` from the wildcard table `mydataset.sea_weather_*`. A table that exists but has no rows returns no `_TABLE_SUFFIX` value, so it was reported as missing and the query raised an error. Both examples now take the suffixes from the `table_name` column of `mydataset.INFORMATION_SCHEMA.TABLES` (information-schema/tables.md).
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
