@@ -58,7 +58,7 @@ skills/gcp-bigquery/
     graph-gql/                    # 機械変換: GQL（BigQuery Graph）
       README.md
       <page>.md
-    information-schema/           # 機械変換: INFORMATION_SCHEMA の各ビュー、分割投入中（44 / 71 ページ。収録済みは README 掲載分のみ）
+    information-schema/           # 機械変換: INFORMATION_SCHEMA の各ビュー、分割投入中（63 / 71 ページ。収録済みは README 掲載分のみ）
       README.md
       <view>.md
     bq-cli/                       # 機械変換: bq コマンドラインツールのリファレンス（3 分割）
@@ -161,7 +161,7 @@ skills/gcp-bigquery/
 
 未投入カテゴリ（`rest` / `rest-schemas` / `legacy-sql`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
-分割投入中のカテゴリ（`information-schema`: 44 / 71 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`information-schema`: 63 / 71 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 

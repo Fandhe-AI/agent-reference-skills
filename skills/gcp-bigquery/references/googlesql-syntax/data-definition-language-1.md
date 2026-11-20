@@ -500,7 +500,7 @@ REFERENCES primary_key_table(column_name[, ...]) NOT ENFORCED
 
 - [`column`](#column): The table's schema information.
 
-- [`constraint_definition`](https://docs.cloud.google.com/bigquery/docs/information-schema-table-constraints): An expression that defines a table constraint.
+- [`constraint_definition`](../information-schema/table-constraints.md): An expression that defines a table constraint.
 
 - [`collation_specification`](collation-concepts.md#default-collation-specification):
   When a new column is added to the table without an explicit

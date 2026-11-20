@@ -46,3 +46,22 @@
 | RESERVATIONS_TIMELINE view | Required permission, Schema, Scope and syntax, Examples | [reservation-timeline.md](./reservation-timeline.md) |
 | RESERVATIONS view | Required permission, Schema, Scope and syntax, Joining between the reservation views and the job views, Example | [reservations.md](./reservations.md) |
 | ROUTINE_OPTIONS view | Required permissions, Schema, Scope and syntax, Example | [routine-options.md](./routine-options.md) |
+| ROUTINES view | Required permissions, Schema, Scope and syntax, Example | [routines.md](./routines.md) |
+| ROW_ACCESS_POLICIES view | Required roles, Schema, Scope and syntax, Limitations, Examples | [row-access-policies.md](./row-access-policies.md) |
+| SCHEMATA_REPLICAS_BY_FAILOVER_RESERVATION view | Required roles, Schema, Scope and syntax, Examples | [schemata-replicas-by-failover-reservation.md](./schemata-replicas-by-failover-reservation.md) |
+| SCHEMATA_REPLICAS view | Required roles, Schema, Scope and syntax, Examples | [schemata-replicas.md](./schemata-replicas.md) |
+| SESSIONS_BY_PROJECT view | Required permissions, Schema, Data retention, Scope and syntax, Example | [sessions-by-project.md](./sessions-by-project.md) |
+| SESSIONS_BY_USER view | Required permissions, Schema, Data retention, Scope and syntax, Example | [sessions-by-user.md](./sessions-by-user.md) |
+| INFORMATION_SCHEMA.SHARED_DATASET_USAGE view | Required roles, Schema, Data retention, Scope and syntax, Examples | [shared-dataset-usage.md](./shared-dataset-usage.md) |
+| TABLE_SNAPSHOTS view | Required permissions, Schema, Scope and syntax, Example | [snapshots.md](./snapshots.md) |
+| STREAMING_TIMELINE_BY_FOLDER view | Required permission, Schema, Data retention, Scope and syntax, Examples | [streaming-by-folder.md](./streaming-by-folder.md) |
+| STREAMING_TIMELINE_BY_ORGANIZATION view | Required permission, Schema, Data retention, Scope and syntax, Examples | [streaming-by-organization.md](./streaming-by-organization.md) |
+| STREAMING_TIMELINE view | Required permission, Schema, Data retention, Scope and syntax, Examples | [streaming.md](./streaming.md) |
+| TABLE_CONSTRAINTS view | Required permissions, Schema, Scope and syntax, Examples | [table-constraints.md](./table-constraints.md) |
+| TABLE_OPTIONS view | Required permissions, Schema, Scope and syntax, Example | [table-options.md](./table-options.md) |
+| TABLE_STORAGE_BY_FOLDER view | Data included in the *_BYTES columns, Forecast storage billing, Required permissions, Schema, Scope and syntax, Example | [table-storage-by-folder.md](./table-storage-by-folder.md) |
+| TABLE_STORAGE_BY_ORGANIZATION view | Data included in the *_BYTES columns, Forecast storage billing, Required permissions, Schema, Scope and syntax, Example | [table-storage-by-organization.md](./table-storage-by-organization.md) |
+| TABLE_STORAGE_USAGE_TIMELINE_BY_FOLDER view | Required permissions, Schema, Scope and syntax, Example | [table-storage-usage-by-folder.md](./table-storage-usage-by-folder.md) |
+| TABLE_STORAGE_USAGE_TIMELINE_BY_ORGANIZATION view | Required permissions, Schema, Scope and syntax, Example | [table-storage-usage-by-organization.md](./table-storage-usage-by-organization.md) |
+| TABLE_STORAGE_USAGE_TIMELINE view | Required permissions, Schema, Scope and syntax, Examples | [table-storage-usage.md](./table-storage-usage.md) |
+| TABLE_STORAGE view | Data included in the *_BYTES columns, Forecast storage billing, Understanding byte values versus billing units, Required roles, Schema, Scope and syntax, Examples, Troubleshooting | [table-storage.md](./table-storage.md) |
