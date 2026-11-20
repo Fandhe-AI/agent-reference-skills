@@ -319,13 +319,13 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The full name of the data exchange resource that you want to delete. For example, `projects/myproject/locations/us/dataExchanges/123`. |
+| `name` | path | string | yes | Required. The full name of the data exchange resource that you want to delete. For example, `projects/myproject/locations/us/dataExchanges/123`. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`. |
 
 ### `analyticshub.projects.locations.dataExchanges.get` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The resource name of the data exchange. e.g. `projects/myproject/locations/us/dataExchanges/123`. |
+| `name` | path | string | yes | Required. The resource name of the data exchange. e.g. `projects/myproject/locations/us/dataExchanges/123`. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`. |
 
 ### `analyticshub.projects.locations.dataExchanges.getIamPolicy` parameters
 
@@ -345,7 +345,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `resource` | path | string | yes | Required. Resource name of the requested target. This resource may be either a Listing or a DataExchange. e.g. projects/123/locations/us/dataExchanges/456 OR e.g. projects/123/locations/us/dataExchanges/456/listings/789 |
+| `resource` | path | string | yes | Required. Resource name of the requested target. This resource may be either a Listing or a DataExchange. e.g. projects/123/locations/us/dataExchanges/456 OR e.g. projects/123/locations/us/dataExchanges/456/listings/789 Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`. |
 | `includeDeletedSubscriptions` | query | boolean | no | If selected, includes deleted subscriptions in the response (up to 63 days after deletion). |
 | `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. |
 | `pageToken` | query | string | no | Page token, returned by a previous call. |
@@ -361,14 +361,14 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the listing to delete. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456`. |
+| `name` | path | string | yes | Required. Resource name of the listing to delete. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456`. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/listings/{listingsId}`. |
 | `deleteCommercial` | query | boolean | conditional | Optional. If the listing is commercial then this field must be set to true, otherwise a failure is thrown. This acts as a safety guard to avoid deleting commercial listings accidentally. |
 
 ### `analyticshub.projects.locations.dataExchanges.listings.get` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The resource name of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456`. |
+| `name` | path | string | yes | Required. The resource name of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456`. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/listings/{listingsId}`. |
 
 ### `analyticshub.projects.locations.dataExchanges.listings.getIamPolicy` parameters
 
@@ -388,7 +388,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `resource` | path | string | yes | Required. Resource name of the requested target. This resource may be either a Listing or a DataExchange. e.g. projects/123/locations/us/dataExchanges/456 OR e.g. projects/123/locations/us/dataExchanges/456/listings/789 |
+| `resource` | path | string | yes | Required. Resource name of the requested target. This resource may be either a Listing or a DataExchange. e.g. projects/123/locations/us/dataExchanges/456 OR e.g. projects/123/locations/us/dataExchanges/456/listings/789 Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/listings/{listingsId}`. |
 | `includeDeletedSubscriptions` | query | boolean | no | If selected, includes deleted subscriptions in the response (up to 63 days after deletion). |
 | `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. |
 | `pageToken` | query | string | no | Page token, returned by a previous call. |
@@ -397,7 +397,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Output only. The resource name of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456` |
+| `name` | path | string | yes | Output only. The resource name of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456` Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/listings/{listingsId}`. |
 | `updateMask` | query | string (google-fieldmask) | yes | Required. Field mask specifies the fields to update in the listing resource. The fields specified in the `updateMask` are relative to the resource and are not a full request. |
 
 ### `analyticshub.projects.locations.dataExchanges.listings.setIamPolicy` parameters
@@ -410,7 +410,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the listing that you want to subscribe to. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456`. |
+| `name` | path | string | yes | Required. Resource name of the listing that you want to subscribe to. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456`. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/listings/{listingsId}`. |
 
 ### `analyticshub.projects.locations.dataExchanges.listings.testIamPermissions` parameters
 
@@ -422,7 +422,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Output only. The resource name of the data exchange. e.g. `projects/myproject/locations/us/dataExchanges/123`. |
+| `name` | path | string | yes | Output only. The resource name of the data exchange. e.g. `projects/myproject/locations/us/dataExchanges/123`. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`. |
 | `updateMask` | query | string (google-fieldmask) | yes | Required. Field mask specifies the fields to update in the data exchange resource. The fields specified in the `updateMask` are relative to the resource and are not a full request. |
 
 ### `analyticshub.projects.locations.dataExchanges.queryTemplates.approve` parameters
@@ -442,7 +442,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The resource path of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myqueryTemplate`. |
+| `name` | path | string | yes | Required. The resource path of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myqueryTemplate`. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/queryTemplates/{queryTemplatesId}`. |
 
 ### `analyticshub.projects.locations.dataExchanges.queryTemplates.get` parameters
 
@@ -462,7 +462,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Output only. The resource name of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/456` |
+| `name` | path | string | yes | Output only. The resource name of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/456` Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/queryTemplates/{queryTemplatesId}`. |
 | `updateMask` | query | string (google-fieldmask) | no | Optional. Field mask specifies the fields to update in the query template resource. The fields specified in the `updateMask` are relative to the resource and are not a full request. |
 
 ### `analyticshub.projects.locations.dataExchanges.queryTemplates.submit` parameters
@@ -481,7 +481,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the Data Exchange. e.g. `projects/publisherproject/locations/us/dataExchanges/123` |
+| `name` | path | string | yes | Required. Resource name of the Data Exchange. e.g. `projects/publisherproject/locations/us/dataExchanges/123` Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`. |
 
 ### `analyticshub.projects.locations.dataExchanges.testIamPermissions` parameters
 
@@ -493,13 +493,13 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the subscription to delete. e.g. projects/123/locations/us/subscriptions/456 |
+| `name` | path | string | yes | Required. Resource name of the subscription to delete. e.g. projects/123/locations/us/subscriptions/456 Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/subscriptions/{subscriptionsId}`. |
 
 ### `analyticshub.projects.locations.subscriptions.get` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the subscription. e.g. projects/123/locations/us/subscriptions/456 |
+| `name` | path | string | yes | Required. Resource name of the subscription. e.g. projects/123/locations/us/subscriptions/456 Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/subscriptions/{subscriptionsId}`. |
 
 ### `analyticshub.projects.locations.subscriptions.getIamPolicy` parameters
 

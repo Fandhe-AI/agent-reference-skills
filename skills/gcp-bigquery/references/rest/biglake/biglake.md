@@ -330,13 +330,13 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The name of the database to delete. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id} |
+| `name` | path | string | yes | Required. The name of the database to delete. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id} Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/catalogs/{catalogsId}/databases/{databasesId}`. |
 
 ### `biglake.projects.locations.catalogs.databases.get` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The name of the database to retrieve. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id} |
+| `name` | path | string | yes | Required. The name of the database to retrieve. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id} Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/catalogs/{catalogsId}/databases/{databasesId}`. |
 
 ### `biglake.projects.locations.catalogs.databases.list` parameters
 
@@ -350,7 +350,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Output only. The resource name. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id} |
+| `name` | path | string | yes | Output only. The resource name. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id} Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/catalogs/{catalogsId}/databases/{databasesId}`. |
 | `updateMask` | query | string (google-fieldmask) | no | The list of fields to update. For the `FieldMask` definition, see https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask If not set, defaults to all of the fields that are allowed to update. |
 
 ### `biglake.projects.locations.catalogs.databases.tables.create` parameters
@@ -364,13 +364,13 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The name of the table to delete. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id}/tables/{table_id} |
+| `name` | path | string | yes | Required. The name of the table to delete. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id}/tables/{table_id} Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/catalogs/{catalogsId}/databases/{databasesId}/tables/{tablesId}`. |
 
 ### `biglake.projects.locations.catalogs.databases.tables.get` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The name of the table to retrieve. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id}/tables/{table_id} |
+| `name` | path | string | yes | Required. The name of the table to retrieve. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id}/tables/{table_id} Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/catalogs/{catalogsId}/databases/{databasesId}/tables/{tablesId}`. |
 
 ### `biglake.projects.locations.catalogs.databases.tables.list` parameters
 
@@ -385,7 +385,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Output only. The resource name. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id}/tables/{table_id} |
+| `name` | path | string | yes | Output only. The resource name. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id}/tables/{table_id} Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/catalogs/{catalogsId}/databases/{databasesId}/tables/{tablesId}`. |
 | `updateMask` | query | string (google-fieldmask) | no | The list of fields to update. For the `FieldMask` definition, see https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask If not set, defaults to all of the fields that are allowed to update. |
 
 ### `biglake.projects.locations.catalogs.databases.tables.rename` parameters
@@ -398,13 +398,13 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The name of the catalog to delete. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id} |
+| `name` | path | string | yes | Required. The name of the catalog to delete. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id} Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/catalogs/{catalogsId}`. |
 
 ### `biglake.projects.locations.catalogs.get` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The name of the catalog to retrieve. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id} |
+| `name` | path | string | yes | Required. The name of the catalog to retrieve. Format: projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id} Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/catalogs/{catalogsId}`. |
 
 ### `biglake.projects.locations.catalogs.list` parameters
 
