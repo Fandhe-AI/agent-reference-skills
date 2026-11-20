@@ -240,13 +240,12 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ### Example `Assignment` value
 
-Generated from the field types (not in the official docs): a JSON value that matches the table, with empty strings, `0`, `false`, empty arrays and objects, and for an enum its first value other than `*_UNSPECIFIED`. int64 values are JSON strings, as in the Discovery `format`. It shows the JSON shape only; it is not a request to send as is (fill in the values the method needs, and omit output-only fields in requests).
+Generated from the field types (not in the official docs): a JSON value that matches the table, with empty strings, `0`, `false`, empty arrays and objects, and for an enum its first value other than `*_UNSPECIFIED`. int64 values are JSON strings, as in the Discovery `format`. It shows the JSON shape only; it is not a request to send as is (fill in the values the method needs, and omit output-only fields in requests). Deprecated fields are left out (`enableGeminiInBigquery`; see the table and Notes).
 
 ```json
 {
   "assignee": "",
   "condition": {},
-  "enableGeminiInBigquery": false,
   "jobType": "PIPELINE",
   "name": "",
   "precedence": "0",
