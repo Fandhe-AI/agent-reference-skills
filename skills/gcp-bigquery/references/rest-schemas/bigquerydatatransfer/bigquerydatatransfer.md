@@ -90,7 +90,7 @@ Message types referenced by the methods listed under `references/rest/bigqueryda
 
 ### `ListTransferRunsResponse`
 
-- The returned list of pipelines in the project.
+- The returned list of transfer runs of the transfer config (`transferRuns`; the response of `transferConfigs.runs.list`; corrected, see Notes).
 - Version: v1
 
 ### `Location`
@@ -361,7 +361,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `nextPageToken` | string | Output only. A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages. |
+| `nextPageToken` | string | Output only. A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages. In REST, pass the value as the `pageToken` parameter of the next request to the same method (`page_token` is the proto field name). |
 | `transferResources` | `array<TransferResource>` | Output only. The transfer resources. |
 
 ### `ListTransferRunsResponse` fields
@@ -588,6 +588,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `bigquerydatatransfer` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Corrected from the Discovery document: the `ListTransferRunsResponse` description reads "The returned list of pipelines in the project.", the text of `ListTransferConfigsResponse`; the same text is in the proto. The message holds `transferRuns` (`array<TransferRun>`) and is the response of `transferConfigs.runs.list`, which lists the runs of one transfer config (`google/cloud/bigquery/datatransfer/v1/datatransfer.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/datatransfer/v1/datatransfer.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Corrected from the official docs: the `TransferRunBrief.run` description gives the format `projects/{project}/locations/{location}/transferConfigs/{transfer_config}/run/{run}`; the collection is `runs` (the bigquerydatatransfer.v1 Discovery path pattern of `projects.locations.transferConfigs.runs.get` is `projects/[^/]+/locations/[^/]+/transferConfigs/[^/]+/runs/[^/]+`), so the value has the form `projects/{project}/locations/{location}/transferConfigs/{transfer_config}/runs/{run}`.
 - Corrected from the Discovery document: the `nextPageToken` description of `ListTransferLogsResponse` says the token "can be used as the `GetTransferRunLogRequest.page_token`"; the same text is in the proto. There is no `GetTransferRunLogRequest` message or method in the proto or the Discovery document. The response is returned by `transferLogs.list` (with and without `locations` in the path), whose request message is `ListTransferLogsRequest`, and its `page_token` ("Pagination token ... Use the `page_token` value to request the next page of list results") is the `pageToken` query parameter of those methods (`google/cloud/bigquery/datatransfer/v1/datatransfer.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/datatransfer/v1/datatransfer.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Deprecated: `DataSource.supportsMultipleTransfers` (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "This field has no effect."
