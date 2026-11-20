@@ -356,8 +356,8 @@ The following legacy SQL coercions are not supported in GoogleSQL and need to be
 | `BOOLEAN` to `INT64` or `FLOAT64` | Use `SAFE_CAST(bool AS INT64)` or `SAFE_CAST(SAFE_CAST(bool AS INT64) AS FLOAT64)` |
 | `INT64` to `TIMESTAMP` | Use `TIMESTAMP_MICROS(micros_value)` |
 | `STRING` to `BYTES` | Use `SAFE_CAST(str AS BYTES)` |
-| `STRING` to `INT64`, `FLOAT64`, or `BOOL` | Mostly supported by GoogleSQL. For corner cases use `SAFE_CAST(str AS INT64)`, `SAFE_CAST(str AS FLOAT64)`, or `SAFE_CAST(str AS BOOL)` |
-| `STRING` to `TIMESTAMP` | Mostly supported by GoogleSQL. For corner cases use `TIMESTAMP(str)` or `SAFE_CAST(str AS TIMESTAMP)` |
+| `STRING` to `INT64`, `FLOAT64`, or `BOOL` | Use `SAFE_CAST(str AS INT64)`, `SAFE_CAST(str AS FLOAT64)`, or `SAFE_CAST(str AS BOOL)` |
+| `STRING` to `TIMESTAMP` | Supported by GoogleSQL for `STRING` literals. For other `STRING` values, use `TIMESTAMP(str)` or `SAFE_CAST(str AS TIMESTAMP)` |
 
 For example, the following legacy SQL query uses implicit coercions:
 
@@ -672,7 +672,7 @@ equivalents.
 
 | Legacy SQL | GoogleSQL | Notes |
 |---|---|---|
-| `INTEGER(x)` | [`SAFE_CAST(x AS INT64)`](../googlesql-functions/conversion_functions.md#safe_cast) |   |
+| `INTEGER(x)` | [`SAFE_CAST(x AS INT64)`](../googlesql-functions/conversion_functions.md#safe_cast) | for a `TIMESTAMP` input, use [`UNIX_MICROS(x)`](../googlesql-functions/timestamp_functions.md#unix_micros) |
 | `CAST(x AS INTEGER)` | [`SAFE_CAST(x AS INT64)`](../googlesql-functions/conversion_functions.md#safe_cast) |   |
 | `DATEDIFF(t1, t2)` | [`DATE_DIFF(DATE(t1), DATE(t2), DAY)`](../googlesql-functions/date_functions.md#date_diff) |   |
 | `NOW()` | [`UNIX_MICROS(CURRENT_TIMESTAMP())`](../googlesql-functions/timestamp_functions.md#current_timestamp) |   |
@@ -1174,8 +1174,8 @@ WHERE word NOT IN (
 ```
 
 This query returns 0 as the count. The difference is due to the semantics of
-`NOT IN` with GoogleSQL, which returns `NULL` if any value on the right hand
-side is `NULL`. To achieve the same results as with the legacy SQL query, use a
+`NOT IN` with GoogleSQL, which returns `NULL` if the value on the left matches no
+value on the right hand side and any value on the right hand side is `NULL`. To achieve the same results as with the legacy SQL query, use a
 `WHERE` clause to exclude the `NULL` values:
 
 ```sql
@@ -1355,7 +1355,7 @@ FROM
 
 To make an equivalent GoogleSQL query with error handling, the query should be split into two phases: validation and query execution. Depending on the application and query complexity, it can be achieved using [Composability using WITH clauses](#composability-using-with-clauses) or [BigQuery Scripting (procedural SQL)](../googlesql-syntax/procedural-language.md).
 
-Translated query using [`WITH` clause](#composability-using-with-clauses) and conditional `ERROR`:
+Translated query using [`WITH` clause](#composability-using-with-clauses) and conditional `ERROR`. This query references the wildcard table in the same statement as the check, so if no table matches the wildcard, it can fail on that reference before it reports the missing suffixes. To report them in that case too, use the scripting version that follows:
 
 Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, and counted only base tables.
 
@@ -1592,10 +1592,13 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the two `TABLE_DATE_RANGE_STRICT` migration examples find missing tables by selecting `_TABLE_SUFFIX` from the wildcard table `mydataset.sea_weather_*`. A table that exists but has no rows returns no `_TABLE_SUFFIX` value, so it was reported as missing and the query raised an error. Both examples now take the suffixes from the `table_name` column of `mydataset.INFORMATION_SCHEMA.TABLES` (information-schema/tables.md), counting only the rows whose `table_type` is `BASE TABLE`, because the view also lists views and other table types.
 - Corrected from the official docs: the coercion table translates `BOOLEAN` to `FLOAT64` as `SAFE_CAST(bool AS FLOAT64)`, but `BOOL` can be cast only to `BOOL`, `INT64` and `STRING` (googlesql-syntax/conversion_rules.md). The translation is changed to `SAFE_CAST(SAFE_CAST(bool AS INT64) AS FLOAT64)`.
 - Corrected from the official docs: the function comparison table translates `RIGHT(s, len)` as `SUBSTR(s, -len)`. When `len` is `0`, that is `SUBSTR(s, 0)`, and a `position` of `0` is set to `1` (googlesql-functions/string_functions-2.md), so the whole string is returned instead of an empty string. The translation is changed to the GoogleSQL `RIGHT(s, len)` function.
-- Caution: the `TABLE_DATE_RANGE_STRICT` example that uses a `WITH` clause references the wildcard table `mydataset.sea_weather_*` in the same query as the check. If no table matches the wildcard, that reference can fail before the `IF` is evaluated, so the query may not return the `Not found suffixes` error. The scripting example runs the wildcard query only in the `ELSE` branch, after the check.
 - Corrected from the official docs: the example that migrates `OMIT RECORD IF COUNT(payload.pages.page_name) <= 80` used `ARRAY_LENGTH(payload.pages) > 80`. `COUNT(payload.pages.page_name)` counts only the pages whose `page_name` is not `NULL`, while `ARRAY_LENGTH` counts every element, so a record with more than 80 pages of which some have a `NULL` `page_name` was kept by the GoogleSQL query and omitted by the legacy SQL query. The filter is changed to `(SELECT COUNT(page_name) FROM UNNEST(payload.pages)) > 80`, and the two sentences around the example that described `ARRAY_LENGTH` are changed to match.
 - Corrected from the official docs: the function comparison table maps `COUNT(arr) WITHIN RECORD` to `ARRAY_LENGTH(arr)` with no note. `COUNT` counts only non-`NULL` values, while `ARRAY_LENGTH` counts every element, so for a field in a repeated record, such as `payload.pages.page_name`, the results differ. A note with the subquery form is added to the row.
 - Corrected from the official docs: the text says that the GoogleSQL query that replaces `__PARTITIONS_SUMMARY__` keeps the error handling consistent. It keeps the error for a table that is not partitioned, but the legacy SQL meta-table reads the table directly and fails when it doesn't exist, while the GoogleSQL query filters `INFORMATION_SCHEMA.PARTITIONS` by `table_name` and returns no rows for a missing table. A sentence that says so is added before the example.
+- Corrected from the official docs: the coercion table said that `STRING` to `INT64`, `FLOAT64` or `BOOL`, and `STRING` to `TIMESTAMP`, are mostly supported by GoogleSQL. In googlesql-syntax/conversion_rules.md, `STRING` coerces to no other type, and only `STRING` literals coerce, to `DATE`, `DATETIME`, `TIME` and `TIMESTAMP`. The first row now says to cast explicitly, and the second says that only literals are coerced.
+- Corrected from the official docs: the function comparison table maps `INTEGER(x)` to `SAFE_CAST(x AS INT64)` with no note. Legacy SQL `INTEGER` returns the number of microseconds since the Unix epoch for a timestamp (legacy-sql/legacy-sql-1.md), while GoogleSQL cannot cast `TIMESTAMP` to `INT64` (googlesql-syntax/conversion_rules.md). A note that points to `UNIX_MICROS` for a `TIMESTAMP` input is added to the row.
+- Corrected from the official docs: the text said that GoogleSQL `NOT IN` returns `NULL` if any value on the right hand side is `NULL`. In googlesql-syntax/operators.md, `NOT IN` returns `FALSE` first when the value set contains an equal value, so `1 NOT IN (1, NULL)` is `FALSE`; it returns `NULL` only when no value matches and a comparison produces `NULL`. The sentence is changed to that condition.
+- Corrected from the official docs: the `TABLE_DATE_RANGE_STRICT` example that uses a `WITH` clause references the wildcard table `mydataset.sea_weather_*` in the same query as the check. If no table matches the wildcard, that reference can fail before the `IF` is evaluated, so the query may not return the `Not found suffixes` error. A sentence that says so and points to the scripting example, which runs the wildcard query only in the `ELSE` branch after the check, is added before the example.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related

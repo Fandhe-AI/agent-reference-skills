@@ -6,7 +6,7 @@ source: https://biglake.googleapis.com/$discovery/rest?version=v1
 
 ## Signature / Usage
 
-Base URL: `https://biglake.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1).
+Base URL: `https://biglake.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL, parameters and request / response types shown for a method come from the first version on its `Versions` line; for another version, see the Discovery document of that version under Source in Notes.
 
 ### `biglake.projects.catalogs.getIamPolicy`
 
