@@ -379,7 +379,7 @@ Both legacy and GoogleSQL support coercions (automatic conversions) between
 certain data types. For example, BigQuery coerces a value of type `INT64` to
 `FLOAT64` if the query passes it to a function that requires `FLOAT64` as input.
 
-The following legacy SQL coercions are not supported in GoogleSQL and need to be explicitly cast to the correct type:
+The following legacy SQL coercions need an explicit cast to the correct type in GoogleSQL, except where a row says otherwise: the `STRING` to `TIMESTAMP` coercion is supported for `STRING` literals and `STRING` query parameters, and needs a cast only for other `STRING` expressions, such as columns. (Corrected; see Notes.)
 
 | Coercion | Translation |
 |---|---|
@@ -400,12 +400,12 @@ SELECT
 
 In GoogleSQL, this query is invalid. To achieve the same result, you must use explicit casting:
 
-Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+Adapted (not in the official docs): the alias `boolean_coercion` is changed to `boolean_int_coercion`, the column name of the legacy SQL query, so that queries that read the result can keep the same name. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
 #standardSQL
 SELECT
-  1 + SAFE_CAST(true AS INT64) as boolean_coercion,
+  1 + SAFE_CAST(true AS INT64) as boolean_int_coercion,
   TIMESTAMP_MICROS(1234567890) as integer_timestamp_coercion;
 ```
 
@@ -1793,6 +1793,8 @@ The permissions required to access the partition metadata differ between legacy 
 - Added (not in the official docs): the function comparison table gives `STRPOS(s, "foo") > 0` or `s LIKE '%foo%'` for `s CONTAINS "foo"` with no note; a note is added to the row that `LIKE` treats `%` and `_` as wildcards, so the search string must be escaped (escaping rules from the `LIKE` operator in googlesql-syntax/operators.md), and that `STRPOS` is the general translation.
 - Corrected from the official docs: the `OMIT RECORD IF` example is introduced as filtering records with 80 or fewer pages, but `COUNT(payload.pages.page_name)` counts only the pages whose `page_name` is not `NULL`; the introduction now says so.
 - Added (not in the official docs): the text suggests an empty prefix (`bigquery-public-data.noaa_gsod.*`) for the `TABLE_QUERY` migration; a sentence is added that the empty prefix also matches the other tables of the dataset, such as `stations` (used by the correlated subquery example on this page), which the wildcard table limitations apply to even when the `_TABLE_SUFFIX` filter excludes them, so the example keeps the `gsod*` prefix.
+- Corrected from the official docs: the introduction of the coercion table says that all the listed coercions "are not supported in GoogleSQL and need to be explicitly cast", while the `STRING` to `TIMESTAMP` row (corrected on this page) says that the coercion is supported for `STRING` literals and `STRING` query parameters. The introduction now says that a cast is needed except where a row says otherwise, and names that exception.
+- Corrected from the official docs: the GoogleSQL version of the implicit coercion example names its first column `boolean_coercion`, while the legacy SQL query names it `boolean_int_coercion`; the alias is changed to `boolean_int_coercion`, so that the translation keeps the output column names.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
