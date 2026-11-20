@@ -587,7 +587,8 @@ returns `satisfaction` for `instruments`, `instruments` for `displeasure` and
 `displeasure` in bucket 2, and `ROW_NUMBER` gives 3 to `instruments` and 4 to
 `displeasure`. The `CUME_DIST` to `ROW_NUMBER` examples listed at the start of this paragraph have no
 `ORDER BY` outside the `OVER` clause, so the order of their result rows, as opposed to the
-order of the rows in the window, is not fixed either.
+order of the rows in the window, is not fixed either: the result tables show one possible order of
+the rows. To get the rows in a fixed order, add an `ORDER BY` clause outside the `OVER` clause.
 
 ```sql
 #legacySQL
