@@ -568,14 +568,19 @@ you to create a sliding window frame within a partition that moves
 relative to the current row. You can configure the size of the moving window frame
 based on a number of rows or a range of values, such as a time interval.
 
-The `CUME_DIST`, `LEAD`, `NTILE`, `PERCENT_RANK` and `RATIO_TO_REPORT` examples
-below read the 5 rows that their results show, defined by `SELECT` statements,
-because `LIMIT 5` limits the rows in the result, not the rows in the window. Two of
+The `CUME_DIST`, `DENSE_RANK`, `LAG`, `LEAD`, `NTILE`, `PERCENT_RANK`,
+`PERCENTILE_CONT`, `PERCENTILE_DISC`, `RANK`, `RATIO_TO_REPORT` and `ROW_NUMBER`
+examples below read the 5 rows that their results show, defined by `SELECT`
+statements, because `LIMIT 5` limits the rows in the result, not the rows in the
+window. The `LAST_VALUE` example reads the same rows and `imperfectly`. Two of
 the rows, `displeasure` and `instruments`, have the same `word_count`, and their order
-in the window is not fixed, so the `LEAD` and `NTILE` results shown are one possible
-output. If `instruments` comes first in the window, `LEAD` returns `instruments` for `satisfaction`, `displeasure` for `instruments` and
-`circumstance` for `displeasure`, and `NTILE` puts `instruments` in bucket 1 and
-`displeasure` in bucket 2. The examples have no `ORDER BY` outside the `OVER` clause,
+in the window is not fixed, so the `LAG`, `LEAD`, `NTILE` and `ROW_NUMBER` results
+shown are one possible output. If `instruments` comes first in the window, `LAG`
+returns `satisfaction` for `instruments`, `instruments` for `displeasure` and
+`displeasure` for `circumstance`, `LEAD` returns `instruments` for `satisfaction`, `displeasure` for `instruments` and
+`circumstance` for `displeasure`, `NTILE` puts `instruments` in bucket 1 and
+`displeasure` in bucket 2, and `ROW_NUMBER` gives 3 to `instruments` and 4 to
+`displeasure`. The examples have no `ORDER BY` outside the `OVER` clause,
 so the order of the result rows is not fixed either.
 
 ```sql
@@ -840,6 +845,8 @@ ranking list, use [rank()](https://docs.cloud.google.com/bigquery/docs/reference
 
 This window function requires `ORDER BY` in the `OVER` clause.
 
+Adapted (not in the official docs): replaced the table with the 5 rows that the result shows, defined by `SELECT` statements, so that the window reads the same rows as the shown result.
+
 ```sql
 #legacySQL
 SELECT
@@ -847,7 +854,11 @@ SELECT
    word_count,
    DENSE_RANK() OVER (PARTITION BY corpus ORDER BY word_count DESC) dense_rank,
 FROM
-   [bigquery-public-data:samples.shakespeare]
+   (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
+   (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
+   (SELECT "othello" AS corpus, "displeasure" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "instruments" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "circumstance" AS word, 3 AS word_count)
 WHERE
    corpus='othello' and length(word) > 10
 LIMIT 5
@@ -897,6 +908,8 @@ located `\<offset\>` rows before the current row.
 If the row doesn't exist, `\<default_value\>`
 returns.
 
+Adapted (not in the official docs): replaced the table with the 5 rows that the result shows, defined by `SELECT` statements, so that the window reads the same rows as the shown result.
+
 ```sql
 #legacySQL
 SELECT
@@ -904,7 +917,11 @@ SELECT
    word_count,
    LAG(word, 1) OVER (PARTITION BY corpus ORDER BY word_count DESC) lag,
 FROM
-   [bigquery-public-data:samples.shakespeare]
+   (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
+   (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
+   (SELECT "othello" AS corpus, "displeasure" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "instruments" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "circumstance" AS word, 3 AS word_count)
 WHERE
    corpus='othello' and length(word) > 10
 LIMIT 5
@@ -924,6 +941,8 @@ LIMIT 5
 
 :   Returns the last value of `\<field_name\>` in the window.
 
+Adapted (not in the official docs): replaced the table with the 5 rows that the other window examples show and `imperfectly`, defined by `SELECT` statements, and ordered the result by `word_count`, so that `LIMIT 1` returns the shown row.
+
 ```sql
 #legacySQL
 SELECT
@@ -931,9 +950,16 @@ SELECT
    word_count,
    LAST_VALUE(word) OVER (PARTITION BY corpus ORDER BY word_count DESC) lv,
 FROM
-   [bigquery-public-data:samples.shakespeare]
+   (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
+   (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
+   (SELECT "othello" AS corpus, "displeasure" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "instruments" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "circumstance" AS word, 3 AS word_count),
+   (SELECT "othello" AS corpus, "imperfectly" AS word, 1 AS word_count)
 WHERE
    corpus='othello' and length(word) > 10
+ORDER BY
+   word_count
 LIMIT 1
 ```
 
@@ -1069,6 +1095,8 @@ the window, after ordering them per the `ORDER BY` clause.
 
 This window function requires `ORDER BY` in the `OVER` clause.
 
+Adapted (not in the official docs): replaced the table with the 5 rows that the result shows, defined by `SELECT` statements, so that the window reads the same rows as the shown result.
+
 ```sql
 #legacySQL
 SELECT
@@ -1076,7 +1104,11 @@ SELECT
    word_count,
    PERCENTILE_CONT(0.5) OVER (PARTITION BY corpus ORDER BY word_count DESC) p_cont,
 FROM
-   [bigquery-public-data:samples.shakespeare]
+   (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
+   (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
+   (SELECT "othello" AS corpus, "displeasure" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "instruments" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "circumstance" AS word, 3 AS word_count)
 WHERE
    corpus='othello' and length(word) > 10
 LIMIT 5
@@ -1099,6 +1131,8 @@ LIMIT 5
 
 This window function requires `ORDER BY` in the `OVER` clause.
 
+Adapted (not in the official docs): replaced the table with the 5 rows that the result shows, defined by `SELECT` statements, so that the window reads the same rows as the shown result.
+
 ```sql
 #legacySQL
 SELECT
@@ -1106,7 +1140,11 @@ SELECT
    word_count,
    PERCENTILE_DISC(0.5) OVER (PARTITION BY corpus ORDER BY word_count DESC) p_disc,
 FROM
-   [bigquery-public-data:samples.shakespeare]
+   (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
+   (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
+   (SELECT "othello" AS corpus, "displeasure" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "instruments" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "circumstance" AS word, 3 AS word_count)
 WHERE
    corpus='othello' and length(word) > 10
 LIMIT 5
@@ -1133,6 +1171,8 @@ next ranked value is 4, not 3. If you prefer no gaps in the ranking list, use
 
 This window function requires `ORDER BY` in the `OVER` clause.
 
+Adapted (not in the official docs): replaced the table with the 5 rows that the result shows, defined by `SELECT` statements, so that the window reads the same rows as the shown result.
+
 ```sql
 #legacySQL
 SELECT
@@ -1140,7 +1180,11 @@ SELECT
    word_count,
    RANK() OVER (PARTITION BY corpus ORDER BY word_count DESC) rank,
 FROM
-   [bigquery-public-data:samples.shakespeare]
+   (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
+   (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
+   (SELECT "othello" AS corpus, "displeasure" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "instruments" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "circumstance" AS word, 3 AS word_count)
 WHERE
    corpus='othello' and length(word) > 10
 LIMIT 5
@@ -1191,6 +1235,8 @@ LIMIT 5
 
 :   Returns the current row number of the query result over the window, starting with 1.
 
+Adapted (not in the official docs): replaced the table with the 5 rows that the result shows, defined by `SELECT` statements, so that the window reads the same rows as the shown result.
+
 ```sql
 #legacySQL
 SELECT
@@ -1198,7 +1244,11 @@ SELECT
    word_count,
    ROW_NUMBER() OVER (PARTITION BY corpus ORDER BY word_count DESC) row_num,
 FROM
-   [bigquery-public-data:samples.shakespeare]
+   (SELECT "othello" AS corpus, "handkerchief" AS word, 29 AS word_count),
+   (SELECT "othello" AS corpus, "satisfaction" AS word, 5 AS word_count),
+   (SELECT "othello" AS corpus, "displeasure" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "instruments" AS word, 4 AS word_count),
+   (SELECT "othello" AS corpus, "circumstance" AS word, 3 AS word_count)
 WHERE
    corpus='othello' and length(word) > 10
 LIMIT 5
@@ -1468,7 +1518,7 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 - Corrected from the official docs: the `FIRST_VALUE` example orders the window by `word_count DESC`, so `fv` is the word with the largest `word_count` in the partition, but the shown result has `imperfectly` (`word_count` 1) as `fv`; the query also uses `LIMIT 1` without an outer `ORDER BY`, so the returned row is not fixed. The query now orders the output by `word_count DESC`, and the result row is changed to `handkerchief`, `29`, `handkerchief`, the first row of the `DENSE_RANK` example with the same data and filter on this page.
 - Corrected from the official docs: the heading of the `TABLE_QUERY` example said that the names start with `boo` followed by 3-5 numeric digits. It is changed to match the corrected expression `^boo[a-z]?[0-9]{3,5}$`: an optional lowercase letter after `boo`, and 3-5 digits at the end of the name.
 - Corrected from the official docs: the text said that the `^` character starts matching at the beginning of a word. In the RE2 syntax linked above, `^` matches at the beginning of the text (or of a line with the `m` flag), so `^foo` does not match the `foo` in `bar foo`, and `\b` matches at an ASCII word boundary. The sentence now says the beginning of the string and adds `\b` for a word boundary.
-- Corrected from the official docs: the `CUME_DIST`, `LEAD`, `NTILE`, `PERCENT_RANK` and `RATIO_TO_REPORT` examples read `[bigquery-public-data:samples.shakespeare]` with `LIMIT 5`, but `LIMIT 5` limits only the result rows, and the same `WHERE` clause also matches `imperfectly` (the `LAST_VALUE` example), while the shown results are computed over the 5 shown rows only (the `RATIO_TO_REPORT` values add up to 1, and `LEAD` returns `null` for the fifth row). The examples now read those 5 rows from `SELECT` statements, as the running-total example on this page does, so the shown results match the queries. The window syntax on this page shows one `ORDER BY` expression, so no tie-breaker is added, and a sentence before the examples says that the order of `displeasure` and `instruments`, which have the same `word_count`, is not fixed.
+- Corrected from the official docs: the `CUME_DIST`, `DENSE_RANK`, `LAG`, `LEAD`, `NTILE`, `PERCENT_RANK`, `PERCENTILE_CONT`, `PERCENTILE_DISC`, `RANK`, `RATIO_TO_REPORT` and `ROW_NUMBER` examples read `[bigquery-public-data:samples.shakespeare]` with `LIMIT 5`, but `LIMIT 5` limits only the result rows, and the same `WHERE` clause also matches `imperfectly` (the `LAST_VALUE` example), while the shown results are computed over the 5 shown rows only (the `RATIO_TO_REPORT` values add up to 1, and `LEAD` returns `null` for the fifth row). The examples now read those 5 rows from `SELECT` statements, as the running-total example on this page does, so the shown results match the queries. The `LAST_VALUE` example used `LIMIT 1` without an outer `ORDER BY`, so the returned row was not fixed; it now reads those 5 rows and `imperfectly` (`word_count` 1, as its shown result has) and orders the result by `word_count`, so `LIMIT 1` returns `imperfectly`, the last row of the window. The window syntax on this page shows one `ORDER BY` expression, so no tie-breaker is added, and a sentence before the examples says that the order of `displeasure` and `instruments`, which have the same `word_count`, is not fixed.
 
 ## Related
 

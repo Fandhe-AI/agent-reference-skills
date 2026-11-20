@@ -183,6 +183,8 @@ In GoogleSQL, subqueries can reference correlated columns; that is, columns
 that originate from the outer query. For example, consider the following
 GoogleSQL query:
 
+Adapted (not in the official docs): left out the days whose `max` is the missing-data code `9999.9`, so that they are not counted as warm days.
+
 ```sql
 #GoogleSQL
 WITH WashingtonStations AS (
@@ -197,7 +199,8 @@ SELECT washington_stations.name,
   (SELECT COUNT(*)
    FROM `bigquery-public-data.noaa_gsod.gsod2015` AS weather
    WHERE washington_stations.station_id = weather.stn
-   AND max >= 70) AS warm_days
+   AND max >= 70
+   AND max != 9999.9) AS warm_days
 FROM WashingtonStations AS washington_stations
 ORDER BY warm_days DESC;
 ```
@@ -1674,6 +1677,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the example that finds the maximum temperatures across all years that end in `0` matched `0$` against the table name in legacy SQL and against `_TABLE_SUFFIX` in GoogleSQL, so a table such as `gsod2021_backup0` also matched. The expressions are changed to `^gsod[0-9]{3}0$` (legacy SQL, with `[0-9]` because the escapes listed for legacy SQL strings do not include `\d`) and `^[0-9]{3}0$` (GoogleSQL), as in the following example.
 - Corrected from the official docs: the query that computes the fraction of warm days in Seattle counted every row of the station, including rows whose `max` is `9999.9`, which the GSOD examples on this page mark as the code for missing data. Those days were in the total, and `COUNTIF(max >= 70)` counted them as warm. The `SeattleWeather` subquery now keeps only the rows with `max != 9999.9`, which also leaves out `NULL` values, so both counts use the same observed days.
 - Corrected from the official docs: the text said that the table wildcard functions, `TABLE_DATE_RANGE_STRICT` among them, can be migrated with a filter on `_TABLE_SUFFIX`. `TABLE_DATE_RANGE_STRICT` fails when a daily table in the range is missing (legacy-sql/legacy-sql-2.md), while a wildcard table with a `_TABLE_SUFFIX` filter reads the tables that exist, so the sentence now points to the existence check in the `TABLE_DATE_RANGE_STRICT` section of this page.
+- Corrected from the official docs: the correlated subquery that counts the warm days of each Washington station counted the rows with `max >= 70`, which include the rows whose `max` is `9999.9`, the code for missing data in the GSOD examples on this page. The subquery now also requires `max != 9999.9`, so `warm_days` and the order of the stations count only days with a reading.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
