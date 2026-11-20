@@ -361,6 +361,11 @@ WHERE
   age >= 35
 ```
 
+The range of this example depends on the time when the query runs: it starts two days before
+`CURRENT_TIMESTAMP()` and ends at it, so the query reads the three tables listed above only when
+it runs on 2014-03-25 (UTC); on another day it reads the tables of that day and the two days
+before it. (Added; see Notes.)
+
 Matches the following tables:
 
 - mydata.people20140323
@@ -580,8 +585,8 @@ returns `satisfaction` for `instruments`, `instruments` for `displeasure` and
 `displeasure` for `circumstance`, `LEAD` returns `instruments` for `satisfaction`, `displeasure` for `instruments` and
 `circumstance` for `displeasure`, `NTILE` puts `instruments` in bucket 1 and
 `displeasure` in bucket 2, and `ROW_NUMBER` gives 3 to `instruments` and 4 to
-`displeasure`. The examples have no `ORDER BY` outside the `OVER` clause,
-so the order of the result rows is not fixed either.
+`displeasure`. The examples other than `LAST_VALUE` have no `ORDER BY` outside the `OVER`
+clause, so the order of their result rows is not fixed either.
 
 ```sql
 #legacySQL
@@ -1539,6 +1544,7 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 - Corrected from the official docs: the description of `RATIO_TO_REPORT` said that the ratio is a double between 0 and 1. Each value is divided by the sum of the values, so a negative value can give a ratio outside that range (for the values 3 and -1, the sum is 2 and the ratios are 1.5 and -0.5). The range is left out of the description; in the example, every `word_count` is positive, so the ratios are between 0 and 1 and add up to 1.
 - Conflicting official statements: the URL function notes say that upper-case characters "will result in a NULL or otherwise incorrect result" for all of the URL parsing functions, but the comparison table in legacy-sql/migrating-from-legacy-sql.md gives, for `"http://x.Co.uk"`, `HOST` `"x.Co.uk"` (the host with its original case), `TLD` `".uk"` and `DOMAIN` `"Co.uk"` (the two-part suffix `.co.uk` is not recognized, compare `TLD('http://www.google.co.uk:80/index.html')`, which returns `'.co.uk'`). So with mixed-case input, `TLD` and `DOMAIN` can return a wrong result and `HOST` keeps the case of the input; pass the input through `LOWER()` before calling them. The notes are kept as in the official docs.
 - Added (not in the official docs): the `CUME_DIST` formula `<number of rows preceding or tied with the current row> / <total rows>` does not say whether the current row is counted; the shown result (`handkerchief` `0.2`, the tied `displeasure` and `instruments` `0.8`, of 5 rows) counts the current row, the rows before it and the rows tied with it once each. A sentence that says so is added after the formula.
+- Added (not in the official docs): the "two-day range up to now" example lists the tables `mydata.people20140323` to `mydata.people20140325` and uses `CURRENT_TIMESTAMP()`, so it reads those tables only when it runs on 2014-03-25; a sentence after the query says that the range is relative to the time when the query runs. The query is kept as in the official docs.
 
 ## Related
 
