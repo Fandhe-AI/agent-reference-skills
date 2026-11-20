@@ -331,7 +331,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`. |
 
 ### `analyticshub.projects.locations.dataExchanges.list` parameters
 
@@ -374,7 +374,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/listings/{listingsId}`. |
 
 ### `analyticshub.projects.locations.dataExchanges.listings.list` parameters
 
@@ -404,7 +404,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being specified. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being specified. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/listings/{listingsId}`. |
 
 ### `analyticshub.projects.locations.dataExchanges.listings.subscribe` parameters
 
@@ -416,7 +416,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy detail is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy detail is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/listings/{listingsId}`. |
 
 ### `analyticshub.projects.locations.dataExchanges.patch` parameters
 
@@ -475,7 +475,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being specified. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being specified. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`. |
 
 ### `analyticshub.projects.locations.dataExchanges.subscribe` parameters
 
@@ -487,7 +487,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy detail is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy detail is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`. |
 
 ### `analyticshub.projects.locations.subscriptions.delete` parameters
 
@@ -505,7 +505,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being requested. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/subscriptions/{subscriptionsId}`. |
 
 ### `analyticshub.projects.locations.subscriptions.list` parameters
 
@@ -532,7 +532,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being specified. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. |
+| `resource` | path | string | yes | REQUIRED: The resource for which the policy is being specified. See Resource names (https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/subscriptions/{subscriptionsId}`. |
 
 ## Notes
 
