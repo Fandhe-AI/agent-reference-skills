@@ -61,6 +61,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Versions: v1
 - `GET https://analyticshub.googleapis.com/v1/{+resource}:listSubscriptions`
 - Lists all subscriptions on a given Data Exchange or Listing.
+- Route of this method (from its `flatPath`; another method shares the URL template above): `GET https://analyticshub.googleapis.com/v1/projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}:listSubscriptions`
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListSharedResourceSubscriptionsResponse`
 
@@ -110,6 +111,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Versions: v1
 - `GET https://analyticshub.googleapis.com/v1/{+resource}:listSubscriptions`
 - Lists all subscriptions on a given Data Exchange or Listing.
+- Route of this method (from its `flatPath`; another method shares the URL template above): `GET https://analyticshub.googleapis.com/v1/projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/listings/{listingsId}:listSubscriptions`
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListSharedResourceSubscriptionsResponse`
 

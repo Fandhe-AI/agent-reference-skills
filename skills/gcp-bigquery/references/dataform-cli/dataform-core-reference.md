@@ -37,9 +37,9 @@ such as within SQLX files, or when using a
 | `database` | Returns the database of this dataset, if applicable. |
 | `name` | `() => string` |
 | `name` | Returns the name of this table. |
-| `ref` | `(ref: Resolvable \| string[], rest: string[]) => string` |
+| `ref` | `(ref: Resolvable \| string[], ...rest: string[]) => string` |
 | `ref` | References another action, adding it as a dependency to this action, returning valid SQL to be used in a `from` expression. This function can be called with a `Resolvable` object, for example: `${ref({ name: "name", schema: "schema", database: "database" })}` This function can also be called using individual arguments for the `"database"`, `"schema"`, and `"name"` values. When only two values are provided, the default database is used and the values are interpreted as `"schema"` and `"name"`. When only one value is provided, the default database and schema are used, with the provided value interpreted as \`"name"\`. `${ref("database", "schema", "name")} ${ref("schema", "name")} ${ref("name")}` |
-| `resolve` | `(ref: Resolvable \| string[], rest: string[]) => string` |
+| `resolve` | `(ref: Resolvable \| string[], ...rest: string[]) => string` |
 | `resolve` | Similar to `ref`, but it does not add the referenced action as a dependency to this action. |
 | `self` | `() => string` |
 | `self` | Equivalent to `resolve(name())`. Returns a valid SQL string that can be used to reference the table produced by this action. |
@@ -404,9 +404,9 @@ argument with Dataform core.
 | `incremental` | Returns true when the current context indicates that the table will be built incrementally. |
 | `name` | `() => string` |
 | `name` | Returns the fully qualified name of this table. |
-| `ref` | `(ref: Resolvable \| string[], rest: string[]) => string` |
+| `ref` | `(ref: Resolvable \| string[], ...rest: string[]) => string` |
 | `ref` | References another action, adding it as a dependency to this action, returning valid SQL to be used in a from expression. This function can be called with a `Resolvable` object, for example: `${ref({ name: "name", schema: "schema", database: "database" })}` This function can also be called using individual arguments for the `"database"`, `"schema"`, and `"name"` values. When only two values are provided, the default database is used and the values are interpreted as `"schema"` and `"name"`. When only one value is provided, the default database schema is used, with the provided value interpreted as \`"name"\`. `${ref("database", "schema", "name")} ${ref("schema", "name")} ${ref("name")}` |
-| `resolve` | `(ref: Resolvable \| string[], rest: string[]) => string` |
+| `resolve` | `(ref: Resolvable \| string[], ...rest: string[]) => string` |
 | `resolve` | Similar to `ref`, but instead of adding a dependency, it resolves the provided reference so that it can be used in SQL, for example, in a \`from\` expression. |
 | `self` | `() => string` |
 | `self` | Equivalent to `resolve(name())`. Returns a valid SQL string that can be used to reference the table produced by this action. |
@@ -533,6 +533,7 @@ For more information, see
 - Source: https://docs.cloud.google.com/dataform/docs/reference/dataform-core-reference (Markdown twin and rendered page fetched 2026-11-19).
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
+- Corrected from the official docs: the page gives the signature of `ref` and `resolve` (in both tables) as `(ref: Resolvable | string[], rest: string[]) => string`, which would require a second argument of type `string[]` and does not match the calls `ref("name")` and `ref("schema", "name")` described on the same page. The Dataform core source declares `ref: (ref: Resolvable | string[], ...rest: string[]) => string;` and `resolve: (ref: Resolvable | string[], ...rest: string[]) => string;` (`core/contextables.ts` at tag `3.1.5`, commit `489ab2061`, https://github.com/dataform-co/dataform/blob/3.1.5/core/contextables.ts), so `rest` is a rest parameter and the signatures are changed to `...rest: string[]`.
 - Corrected from the official docs (rendering): the page's HTML writes `(name: string, query?: AContextable<string>)` unescaped inside `<code>`, so the rendered page and its Markdown twin show `(name: string, query?: AContextable)`; the type is restored from the HTML source.
 - Corrected from the official docs (rendering): the page's HTML writes `(name: string, queries?: Contextable<ICommonContext, string | string[]>)` unescaped inside `<code>`, so the rendered page and its Markdown twin show `(name: string, queries?: Contextable)`; the type is restored from the HTML source.
 - Corrected from the official docs (rendering): the page's HTML writes `(name: string, queryOrConfig?: Contextable<ITableContext, string> | ITableConfig)` unescaped inside `<code>`, so the rendered page and its Markdown twin show `(name: string, queryOrConfig?: Contextable | ITableConfig)`; the type is restored from the HTML source.
