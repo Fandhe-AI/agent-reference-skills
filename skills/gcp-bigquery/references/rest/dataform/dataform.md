@@ -8,7 +8,7 @@ source:
 
 ## Signature / Usage
 
-Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL and parameters shown for a method come from the first version on its `Versions` line; a request or response type marked with a version, such as `Type` (v1), applies to that version and links to the definition of that version, and an unmarked type is the same in every listed version. For the URL and parameters of another version, see the Discovery document of that version under Source in Notes.
+Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL and parameters shown for a method come from the first version on its `Versions` line; a request or response type marked with a version, such as `Type` (v1), applies to that version and links to the definition of that version, a type marked "same fields in ..." has one definition for those versions, but the types it references differ by version, and an unmarked type is the same in every listed version, including the types it references. For the URL and parameters of another version, see the Discovery document of that version under Source in Notes.
 
 ### `dataform.projects.locations.folders.create`
 
@@ -72,7 +72,7 @@ Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Ve
 - `GET https://dataform.googleapis.com/v1/{+folder}:queryFolderContents`
 - Returns the contents of a given Folder.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `QueryFolderContentsResponse`
+- Request: —; Response: [`QueryFolderContentsResponse`](../../rest-schemas/dataform/dataform-1.md#queryfoldercontentsresponse) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `dataform.projects.locations.folders.setIamPolicy`
 
@@ -153,7 +153,7 @@ Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Ve
 - `GET https://dataform.googleapis.com/v1/{+location}:queryUserRootContents`
 - Returns the contents of a caller's root folder in a given location. The root folder contains all resources that are created by the user and not contained in any other folder.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `QueryUserRootContentsResponse`
+- Request: —; Response: [`QueryUserRootContentsResponse`](../../rest-schemas/dataform/dataform-1.md#queryuserrootcontentsresponse) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `dataform.projects.locations.repositories.commit`
 
@@ -217,7 +217,7 @@ Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Ve
 - `POST https://dataform.googleapis.com/v1/{+parent}/repositories`
 - Creates a new Repository in a given project and location.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `Repository`; Response: `Repository`
+- Request: [`Repository`](../../rest-schemas/dataform/dataform-1.md#repository) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table); Response: [`Repository`](../../rest-schemas/dataform/dataform-1.md#repository) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `dataform.projects.locations.repositories.delete`
 
@@ -257,7 +257,7 @@ Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Ve
 - `GET https://dataform.googleapis.com/v1/{+name}`
 - Fetches a single Repository.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `Repository`
+- Request: —; Response: [`Repository`](../../rest-schemas/dataform/dataform-1.md#repository) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `dataform.projects.locations.repositories.getIamPolicy`
 
@@ -273,7 +273,7 @@ Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Ve
 - `GET https://dataform.googleapis.com/v1/{+parent}/repositories`
 - Lists Repositories in a given project and location. \*\*Note:\*\* \*This method can return repositories not shown in the Dataform UI (https://console.cloud.google.com/bigquery/dataform)\*.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `ListRepositoriesResponse`
+- Request: —; Response: [`ListRepositoriesResponse`](../../rest-schemas/dataform/dataform-1.md#listrepositoriesresponse) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `dataform.projects.locations.repositories.move`
 
@@ -289,7 +289,7 @@ Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Ve
 - `PATCH https://dataform.googleapis.com/v1/{+name}`
 - Updates a single Repository. \*\*Note:\*\* \*This method does not fully implement AIP/134 (https://google.aip.dev/134). The wildcard entry (\\*) is treated as a bad request, and when the `field_mask` is omitted, the request is treated as a full update on all modifiable fields.\*
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `Repository`; Response: `Repository`
+- Request: [`Repository`](../../rest-schemas/dataform/dataform-1.md#repository) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table); Response: [`Repository`](../../rest-schemas/dataform/dataform-1.md#repository) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `dataform.projects.locations.repositories.queryDirectoryContents`
 
@@ -393,7 +393,7 @@ Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Ve
 - `GET https://dataform.googleapis.com/v1/{+parent}/workflowConfigs`
 - Lists WorkflowConfigs in a given Repository.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `ListWorkflowConfigsResponse`
+- Request: —; Response: [`ListWorkflowConfigsResponse`](../../rest-schemas/dataform/dataform-1.md#listworkflowconfigsresponse) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `dataform.projects.locations.repositories.workflowConfigs.patch`
 
@@ -577,7 +577,7 @@ Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Ve
 - `GET https://dataform.googleapis.com/v1/{+parent}/workspaces`
 - Lists Workspaces in a given Repository.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `ListWorkspacesResponse`
+- Request: —; Response: [`ListWorkspacesResponse`](../../rest-schemas/dataform/dataform-1.md#listworkspacesresponse) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `dataform.projects.locations.repositories.workspaces.makeDirectory`
 
@@ -753,7 +753,7 @@ Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Ve
 - `GET https://dataform.googleapis.com/v1/{+teamFolder}:queryContents`
 - Returns the contents of a given TeamFolder.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `QueryTeamFolderContentsResponse`
+- Request: —; Response: [`QueryTeamFolderContentsResponse`](../../rest-schemas/dataform/dataform-1.md#queryteamfoldercontentsresponse) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `dataform.projects.locations.teamFolders.search`
 
