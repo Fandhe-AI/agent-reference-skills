@@ -79,7 +79,7 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 
 更新後、以下を順に実行する。
 
-1. **readme-indexer（subagent_type: readme-indexer、model: haiku）** — reference-updater の更新レポートの「変更カテゴリ一覧」に挙がった references カテゴリ、および変更があった `samples/` `scripts/` の `README.md` 索引を再生成させる（reference-updater は apply 時に README 索引を再生成しないため、ここで必ず実行する）。**変更のあったカテゴリ/ディレクトリごとに `category_dir`（例: `skills/<library>/references/<category>/`, `skills/<library>/samples/`, `skills/<library>/scripts/`）を渡して起動する**（readme-indexer は 1 起動 = 1 カテゴリ）。子ディレクトリの README を新設・削除したとき、README の無い子ディレクトリのページを追加・削除したとき、親の索引（と旧書式の索引）が直接指している子ディレクトリのページを改名・削除したときは、その親の `references/` 配下のカテゴリも本文の変更が無くても対象に加え、子のカテゴリを先に処理してから親を処理する（親の索引の子索引の行を最新にするため）。readme-indexer が新規に作る README と再生成する README の条件、手で保守する README の条件は reference-template の「既存 README の扱い」に従う（H1 と索引表 1 つだけでも、アンカー付きの行や同じページを指す行の重複を持つ README は手で保守する）。手で保守する README では書き込まずに「載っていないページ」「リンク切れの行」「適合しない行」「旧書式の索引」を返すので、main がその報告と reference-template の「既存 README の扱い」に従って README を直接編集し、4 項目がすべて「なし」になるまで再実行する（適合しない行は元の表の同じ位置で置き換え、成立していない索引表は報告された表全体で置き換え、旧書式の索引は同じ位置で標準の索引表に変換し、新規ページの行は内容に合う節の索引表に置く）。生成ツールが出力する README（`gcp-*` の `_/tools/gcp/` が出力するもの等）は直接編集せず、報告に従って生成ツールを直して再生成する。生成ツールは `.gitignore` の対象の `_/` にあり、メンテナーの作業ツリーにしか無い。生成ツールが無いチェックアウトでは README も直さず、対象の README と未解消の指摘を最終レポートに載せてその README の作業を終える
+1. **readme-indexer（subagent_type: readme-indexer、model: haiku）** — reference-updater の更新レポートの「変更カテゴリ一覧」に挙がった references カテゴリ、および変更があった `samples/` `scripts/` の `README.md` 索引を再生成させる（reference-updater は apply 時に README 索引を再生成しないため、ここで必ず実行する）。**変更のあったカテゴリ/ディレクトリごとに `category_dir`（例: `skills/<library>/references/<category>/`, `skills/<library>/samples/`, `skills/<library>/scripts/`）を渡して起動する**（readme-indexer は 1 起動 = 1 カテゴリ）。渡すカテゴリと処理順、readme-indexer が書き込む README・手で保守する README・生成ツールが出力する README の扱いは、reference-template の「既存 README の扱い」に従う
 2. **skill-author（subagent_type: skill-author、model: sonnet）** — `skills/<library>/SKILL.md` のディレクトリツリーとマッピング表を更新させる（カテゴリの追加・削除があった場合のみ）。渡すパラメータ: `library`、`skill_dir`（`skills/<library>/`）、`user-invocable`（既存 SKILL.md の値を踏襲）
 
 ### Step 4: 品質を検証する
@@ -95,7 +95,7 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 - references 本文（新規ページの不備）→ **reference-researcher**
 - samples 本文の不備 → **sample-curator**
 - scripts 本文の不備 → **script-collector**
-- 各カテゴリ `README.md` 索引の不備 → **readme-indexer**（説明文などを持つ手で保守する README は、readme-indexer の報告に従い main が直接編集する）
+- 各カテゴリ `README.md` 索引の不備 → **readme-indexer**（手で保守する README と生成ツールが出力する README は、reference-template の「既存 README の扱い」に従う）
 - SKILL.md の `description`（ヒット率・長さ・YAML の `#` 起因の不備）→ **description-optimizer**
 - SKILL.md のツリー・マッピング表・`description` 以外の frontmatter の不備 → **skill-author**
 

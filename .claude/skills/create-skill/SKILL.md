@@ -115,7 +115,7 @@ skill-author は自身で description を最適化せず、最適化が必要な
 - references 本文の不備 → **reference-researcher**
 - samples 本文の不備 → **sample-curator**
 - scripts 本文の不備 → **script-collector**
-- 各カテゴリ `README.md` 索引の不備 → **readme-indexer**（説明文などを持つ手で保守する README は、readme-indexer の報告に従い main が直接編集する）
+- 各カテゴリ `README.md` 索引の不備 → **readme-indexer**（手で保守する README と生成ツールが出力する README は、reference-template の「既存 README の扱い」に従う）
 - SKILL.md の `description`（ヒット率・長さ・YAML の `#` 起因の不備）→ **description-optimizer**
 - SKILL.md のツリー・マッピング表・`description` 以外の frontmatter の不備 → **skill-author**
 

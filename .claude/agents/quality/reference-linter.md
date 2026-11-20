@@ -89,14 +89,13 @@ samples 本文の不備は sample-curator、scripts 本文の不備は script-co
 - `target_files` 指定時: そのリストに含まれる `README.md` のうち、スキルの `references/` 配下にあるもの（`skills/<name>/references/**/README.md`）と `skills/<name>/samples/README.md` `skills/<name>/scripts/README.md`。リポジトリルートの README や `samples/` の下の個別ディレクトリにある README などは対象外
 - 指定なし: `skills/*/references/**/README.md` を Glob で再帰的に列挙した各 README と、存在する `skills/*/samples/README.md` `skills/*/scripts/README.md`
 
-索引表・列の分割・適合行は reference-template の「索引表と適合行の定義」に従う。ヘッダーが `| Name | Description | Path |` でない表（`syncpack` の `update-groups/README.md` の 2 列の共通プロパティ表など、手で保守する README に残す表）の行は 1〜5 の検査をしない。ただし reference-template の「旧書式の索引」に当たる表やリスト（同じディレクトリまたは直下の子ディレクトリのページへのリンクを持つもの）は、標準の索引表と同じ README にあっても 6 で違反として報告する。
+索引表・列の分割・適合行は reference-template の「索引表と適合行の定義」に従う。ヘッダーが `| Name | Description | Path |` でない表（`syncpack` の `update-groups/README.md` の 2 列の共通プロパティ表など、手で保守する README に残す表）の行は 1〜3・5 の検査をしない。
 
 1. `| Name | Description | Path |` ヘッダー行が存在するか
 2. 各ヘッダー行で始まる表が索引表として成立しているか（空行を挟まない次の行が 3 列の区切り行か）。成立していない表は違反とし、その表の行には 3・5 と 4 の書式の判定を行わない（4 のリンク切れの確認は行う）
 3. 索引表の各データ行が 3 列か。3 列でない行は違反とし、4 の書式の判定には進めない（4 のリンク切れの確認は行う）
-4. 索引表の各データ行が、定義の適合行の条件 2〜4（Path セルのリンクがちょうど 1 つ、`./` で始まり README 自身ではない、同じディレクトリのページは `[{filename}.md](./{filename}.md)`、子ディレクトリを指す行は `references/` 配下の README の直下の子ディレクトリだけ）を満たすか。加えて、索引表のすべての行（成立していない表の行・3 列でない行を含む）のファイルを指すリンク（`#notes` のようなフラグメントだけのリンク、`https:` `mailto:` などの URI スキーム付きのリンク、`/` で始まる絶対パスを除いたもの）の実在を、reference-template の正規化（先頭の `./` と `#` 以降のフラグメントを除く）をしたパスで確認し、リンク先が実在しない行を違反とする
+4. 索引表の各データ行が、定義の適合行の条件 2〜4（Path セルのリンクがちょうど 1 つ、`./` で始まり README 自身ではない、同じディレクトリのページは `[{filename}.md](./{filename}.md)`、子ディレクトリを指す行は `references/` 配下の README の直下の子ディレクトリだけ）を満たすか。加えて、README の中のすべてのリンク（索引表の行に限らない。成立していない表の行・3 列でない行・補足の表やリストを含む）のうちファイルを指すもの（`#notes` のようなフラグメントだけのリンク、`https:` `mailto:` などの URI スキーム付きのリンク、`/` で始まる絶対パスを除いたもの）の実在を、reference-template の正規化（先頭の `./` と `#` 以降のフラグメントを除く）をしたパスで確認し、リンク先が実在しないリンク（とその行）を違反とする
 5. 索引表のヘッダー以外の行が空でないか
-6. reference-template の「旧書式の索引」に当たる表やリストが無いか（ページへのリンクを持たない補足の表は対象外）。あれば位置（直前の `##` 見出し）とともに違反として報告する。その表やリストのファイルを指すリンクも 4 と同じく実在を確認し、リンク先が実在しないものを違反とする
 
 ### Step 4: SKILL.md frontmatter の YAML 妥当性確認
 
