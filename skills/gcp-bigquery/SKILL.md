@@ -166,7 +166,7 @@ skills/gcp-bigquery/
 4. INFORMATION_SCHEMA のビュー → `references/information-schema/README.md`（概要・権限・リージョン修飾子は `overview-datasets/information-schema-intro.md`）
 5. `bq` のサブコマンド → `references/bq-cli/README.md`。コマンドは `bq-cli-reference-2.md`、共通・グローバルフラグは `bq-cli-reference-1.md`。サブコマンド名で grep する。gcloud の `bq` グループとは別
 6. gcloud コマンド → `references/gcloud/README.md` からグループ（`biglake` / `bq` / `data-catalog`）を選び、グループの README.md → コマンドページへ。GA は help の verbatim、alpha / beta は NAME と SYNOPSIS のみなので、フラグの詳細が要るときは `gcloud alpha|beta <command> --help` を使う。BigQuery 本体の操作は gcloud ではなく `bq` と SQL が中心
-7. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`（後続 PR で投入）。`<api>` は上記 9 つ。Storage Read / Write API は gRPC のため REST ページは無い（ガイドは `storage-write-read-api-cdc`）
+7. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`（後続 PR で投入）。`<api>` は上記 9 つ。Storage Read API と Storage Write API (gRPC) は gRPC のため REST ページは無い（ガイドは `storage-write-read-api-cdc`）。Storage Write API (REST)（旧 `tabledata.insertAll`）は `references/rest/bigquery/`（後続 PR で投入） 配下の `bigquery.tabledata.insertAll`（`grep -rn 'tabledata.insertAll' references/rest/bigquery/` で引く）
 8. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/` 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
 9. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
 

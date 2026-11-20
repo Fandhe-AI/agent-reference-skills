@@ -699,9 +699,9 @@ equivalents.
 | `HOST(url)` | [`NET.HOST(url)`](../googlesql-functions/net_functions.md#nethost) | see [differences below](#url-function-comparison) |
 | `TLD(url)` | [`NET.PUBLIC_SUFFIX(url)`](../googlesql-functions/net_functions.md#netpublic_suffix) | see [differences below](#url-function-comparison) |
 | `DOMAIN(url)` | [`NET.REG_DOMAIN(url)`](../googlesql-functions/net_functions.md#netreg_domain) | see [differences below](#url-function-comparison) |
-| `PARSE_IP(addr_string)` | [`NET.IPV4_TO_INT64`](../googlesql-functions/net_functions.md#netipv4_to_int64)`(`[`NET.IP_FROM_STRING`](../googlesql-functions/net_functions.md#netip_from_string)`(addr_string))` |   |
+| `PARSE_IP(addr_string)` | `IF(BYTE_LENGTH(`[`NET.SAFE_IP_FROM_STRING`](../googlesql-functions/net_functions.md#netsafe_ip_from_string)`(addr_string)) = 4, `[`NET.IPV4_TO_INT64`](../googlesql-functions/net_functions.md#netipv4_to_int64)`(NET.SAFE_IP_FROM_STRING(addr_string)), NULL)` | returns `NULL` for an input that is not a valid IPv4 address, as `PARSE_IP` does |
 | `FORMAT_IP(addr_int64)` | [`NET.IP_TO_STRING`](../googlesql-functions/net_functions.md#netip_to_string)`(`[`NET.IPV4_FROM_INT64`](../googlesql-functions/net_functions.md#netipv4_from_int64)`(addr_int64 & 0xFFFFFFFF))` |   |
-| `PARSE_PACKED_IP(addr_string)` | [`NET.IP_FROM_STRING(addr_string)`](../googlesql-functions/net_functions.md#netip_from_string) |   |
+| `PARSE_PACKED_IP(addr_string)` | [`NET.SAFE_IP_FROM_STRING(addr_string)`](../googlesql-functions/net_functions.md#netsafe_ip_from_string) | returns `NULL` for an invalid address, as `PARSE_PACKED_IP` does |
 | `FORMAT_PACKED_IP(addr_bytes)` | [`NET.IP_TO_STRING(addr_bytes)`](../googlesql-functions/net_functions.md#netip_to_string) |   |
 | `NVL(expr, null_default)` | [`IFNULL(expr, null_default)`](../googlesql-functions/conditional_expressions.md#ifnull) |   |
 
@@ -1318,7 +1318,9 @@ FROM
 ```
 
 In GoogleSQL, an equivalent query uses a table wildcard and the `BETWEEN`
-clause.
+clause. A wildcard table query can't reference a view, so this example and the
+`TABLE_DATE_RANGE_STRICT` examples that follow assume that no view in
+`mydataset` has a name that starts with `sea_weather_`.
 
 Adapted (not in the official docs): required an 8-character suffix, so that only the tables for the dates in the range are read.
 
@@ -1608,6 +1610,8 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the `TABLE_DATE_RANGE_STRICT` example that uses a `WITH` clause references the wildcard table `mydataset.sea_weather_*` in the same query as the check. If no table matches the wildcard, that reference can fail before the `IF` is evaluated, so the query may not return the `Not found suffixes` error. A sentence that says so and points to the scripting example, which runs the wildcard query only in the `ELSE` branch after the check, is added before the example.
 - Corrected from the official docs: the GoogleSQL examples that replace `TABLE_DATE_RANGE` and `TABLE_DATE_RANGE_STRICT` filter the wildcard table with `_TABLE_SUFFIX BETWEEN '20160501' AND '20160509'`. That is a string comparison, so a table such as `sea_weather_20160501_backup` (suffix `20160501_backup`) is also read, while the legacy SQL functions read only the tables for the dates in the range. The three examples now also require `LENGTH(_TABLE_SUFFIX) = 8`, which with these bounds leaves only the suffixes `20160501` to `20160509`, and the note after the first example no longer names the `BETWEEN` filter alone.
 - Corrected from the official docs: the function comparison table mapped legacy SQL `COUNT(DISTINCT x)` only to `APPROX_COUNT_DISTINCT(x)`, and the `COUNT` comparison said that the legacy SQL function returns an approximate count. In legacy-sql/legacy-sql-1.md, legacy SQL `COUNT(DISTINCT)` is exact below a threshold, 1,000 by default or the second parameter `n`. The row now gives GoogleSQL `COUNT(DISTINCT x)` for an exact count and `APPROX_COUNT_DISTINCT(x)` for an approximate count, and the comparison states the threshold.
+- Corrected from the official docs: the function comparison table translated `PARSE_IP(addr_string)` as `NET.IPV4_TO_INT64(NET.IP_FROM_STRING(addr_string))` and `PARSE_PACKED_IP(addr_string)` as `NET.IP_FROM_STRING(addr_string)`. The legacy SQL functions return `NULL` for an invalid address (legacy-sql/legacy-sql-1.md), while `NET.IP_FROM_STRING` produces an error and `NET.IPV4_TO_INT64` throws an error when the input length isn't 4 (googlesql-functions/net_functions.md). The rows now use `NET.SAFE_IP_FROM_STRING`, and the `PARSE_IP` row calls `NET.IPV4_TO_INT64` only for a 4-byte address inside `IF`, whose unchosen branch is not evaluated (googlesql-functions/conditional_expressions.md).
+- Corrected from the official docs: the `TABLE_DATE_RANGE` and `TABLE_DATE_RANGE_STRICT` examples query the wildcard table `mydataset.sea_weather_*`, and a wildcard table query cannot reference a view (tables-schemas-views/views-intro.md), so the query fails if a view such as `sea_weather_20160501_backup` shares the prefix, even when the `WHERE` filter excludes its suffix. A sentence that states this assumption is added before the first example.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
