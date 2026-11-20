@@ -44,7 +44,7 @@ tools:
    - `{category_dir}<subdir>/README.md` がある → その子索引
    - 無い → `{category_dir}<subdir>/*.md` の各ページ
    - いずれの場合も、既存の `{category_dir}README.md` にある `./<subdir>/<file>.md` の行で、リンク先が実在するもの
-4. 1〜3 の候補を、正規化したリンク先（`{category_dir}` からの相対パス。先頭の `./` を除く）をキーに統合し、重複を 1 行にする。既存の行と同じリンク先の候補は、既存の行の表示名と Description を引き継ぐ
+4. 1〜3 の候補を、正規化したリンク先（`{category_dir}` からの相対パス。先頭の `./` を除く）をキーに統合し、重複を 1 行にする。子ディレクトリの候補（`<subdir>/README.md`・`<subdir>/<file>.md`）で既存の行と同じリンク先のものは、既存の行の表示名を引き継ぐ（Description の扱いは Step 2 に従う）
 5. Path（`<file>.md`・`<subdir>/README.md`・`<subdir>/<file>.md`）の昇順でソートする
 
 ### Step 2: 各ファイルの情報抽出
