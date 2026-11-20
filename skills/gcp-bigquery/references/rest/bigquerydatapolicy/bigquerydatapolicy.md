@@ -1,5 +1,7 @@
 ---
-source: https://bigquerydatapolicy.googleapis.com/$discovery/rest?version=v2
+source:
+  - https://bigquerydatapolicy.googleapis.com/$discovery/rest?version=v2
+  - https://bigquerydatapolicy.googleapis.com/$discovery/rest?version=v1
 ---
 
 # BigQuery Data Policy API REST API (bigquerydatapolicy)
@@ -22,7 +24,7 @@ Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id
 - `POST https://bigquerydatapolicy.googleapis.com/v2/{+parent}/dataPolicies`
 - Creates a new data policy in the parent `projects/{projectsId}/locations/{locationsId}` with the given `data_policy_id` (used as the display name), and data policy type. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `CreateDataPolicyRequest`; Response: `DataPolicy`
+- Request: `CreateDataPolicyRequest` (v2), `DataPolicy` (v1); Response: `DataPolicy`
 
 ### `bigquerydatapolicy.projects.locations.dataPolicies.delete`
 
@@ -183,7 +185,7 @@ Authorization: Bearer ACCESS_TOKEN
 
 - Generated from the Discovery document(s) v2, v1 of `bigquerydatapolicy` (retrieved 2026-11-14). Resources on this page: projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when the description says that some requests must specify it (for example, `options.requestedPolicyVersion` must be 3 to get a policy with conditional role bindings). Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/bigquerydatapolicy/`; they are the `schemas` section of the Discovery documents in Source.
 - Corrected from the Discovery document: the description of `bigquerydatapolicy.projects.locations.dataPolicies.create` is "Creates a new data policy under a project with the given `data_policy_id` (used as the display name), and data policy type.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Corrected from the Discovery document: the description of `bigquerydatapolicy.projects.locations.dataPolicies.list` is "List all of the data policies in the specified parent project.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Source: https://bigquerydatapolicy.googleapis.com/$discovery/rest?version=v2, https://bigquerydatapolicy.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
