@@ -19,7 +19,7 @@ paths:
 |-----|--------------|-------|-----------|
 | `skills/<name>/SKILL.md` の作成・更新 | `skill-author` | sonnet | `./skill-anatomy.md` |
 | `description` フィールドの最適化 | `description-optimizer` | sonnet | `./description-style.md` |
-| カテゴリ README 索引表の再生成 | `readme-indexer` | haiku | `./reference-template.md` |
+| カテゴリ README 索引表の再生成（手で保守する README の行の修正は main が行う。delegation.md の「やってよいこと」） | `readme-indexer` | haiku | `./reference-template.md` |
 | `samples/` の実例整備 | `sample-curator` | sonnet | `./skill-anatomy.md` |
 | `scripts/` のコマンド収集 | `script-collector` | sonnet | `./skill-anatomy.md` |
 | スキル構造の整合性検証（読み取り専用） | `skill-structure-validator` | haiku | `./skill-anatomy.md` |

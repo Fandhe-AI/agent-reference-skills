@@ -82,11 +82,11 @@ references の生成と並行、または完了後に以下を並列起動する
 
 ライブラリの性質上 samples または scripts が不要と判断される場合（例: ガイドライン型スキル）はスキップしてよい。
 
-Step 3・Step 4 の完了後、main は索引を置くディレクトリ（各 `references/<category>/`、階層型カテゴリで索引を置くと決めた子ディレクトリ、作成した `samples/`・`scripts/`）を決め、**readme-indexer（subagent_type: readme-indexer、model: haiku）**を 1 ディレクトリずつ、子を先に起動する（reference-template の「更新する README の選び方」）。
+Step 3・Step 4 の完了後、main は索引を置くディレクトリ（各 `references/<category>/`、階層型カテゴリで索引を置くと決めた子ディレクトリ、作成した `samples/`・`scripts/`）を決め、**readme-indexer（subagent_type: readme-indexer、model: haiku）**を 1 ディレクトリずつ、子を先に起動する（reference-template の「更新する README の選び方」）。生成ツールが出力するディレクトリは渡さない（README は生成ツールが出力する）。生成ツールの出力を含むスキルでは、Step 5 で skill-author に SKILL.md のツリーの該当ディレクトリへ `機械生成` または `機械変換` と注記させる。
 
 ### Step 5: SKILL.md を作成する
 
-Step 3（references）と **Step 4 で実際に起動した Agent**（samples / scripts）の完了を確認後、**skill-author（subagent_type: skill-author、model: sonnet）**に委譲して `skills/<library>/SKILL.md` を作成させる。Step 4 で samples / scripts を不要と判断してスキップした場合は、その分の完了を待たずに Step 3 の完了のみで先へ進む（起動していない Agent の完了は待たない）。samples / scripts を先に確定させることで、SKILL.md のツリー・マッピング表に確実に反映される。
+Step 3（references）と **Step 4 で実際に起動した Agent**（samples / scripts）、Step 4 の後の readme-indexer の完了を確認後、**skill-author（subagent_type: skill-author、model: sonnet）**に委譲して `skills/<library>/SKILL.md` を作成させる。Step 4 で samples / scripts を不要と判断してスキップした場合は、その分の完了を待たずに Step 3 の完了のみで先へ進む（起動していない Agent の完了は待たない）。samples / scripts を先に確定させることで、SKILL.md のツリー・マッピング表に確実に反映される。
 
 渡すパラメータ:
 
@@ -135,7 +135,7 @@ skill-author は自身で description を最適化せず、最適化が必要な
 - [ ] `head -10 skills/<library>/SKILL.md` で frontmatter（name / description / user-invocable）が正しく記述されていることを確認する
 - [ ] `ls skills/<library>/references/` 配下に各カテゴリの references と `README.md` が存在することを確認する
 - [ ] samples / scripts を生成した場合は `ls skills/<library>/samples/` `ls skills/<library>/scripts/` の存在を、スキップした場合は SKILL.md のツリー・マッピング表に当該行が含まれていないことを確認する
-- [ ] reference-linter と skill-structure-validator の検証が PASS していることを確認する
+- [ ] reference-linter と skill-structure-validator の検証が PASS していることを確認する（生成ツールが無いときの未解消の報告は reference-template の「生成ツールが出力する README」に従う）
 - [ ] CLAUDE.md の「Current Skills」一覧に `<library>` が追加されていることを確認する
 
 ## 注意事項
@@ -147,7 +147,7 @@ skill-author は自身で description を最適化せず、最適化が必要な
 
 ## 関連
 
-**Agents**: reference-researcher, sample-curator, script-collector, skill-author, description-optimizer, reference-linter, skill-structure-validator, skill-coverage-analyzer
+**Agents**: reference-researcher, sample-curator, script-collector, readme-indexer, skill-author, description-optimizer, reference-linter, skill-structure-validator, skill-coverage-analyzer
 
 **Rules**: delegation, skill-anatomy, reference-template, description-style
 

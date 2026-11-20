@@ -3,7 +3,7 @@ name: readme-indexer
 description: >
   指定カテゴリディレクトリの README.md インデックス表を、実在する .md ファイルから
   機械的に再生成する Agent。references/<category>/ / samples/ / scripts/ いずれの索引にも対応。
-  reference-researcher 実行後や個別ページ追加後の索引更新に使用。判定を要しない定型作業のため haiku で実行。
+  reference-researcher 実行後や個別ページ追加後の索引更新に使用。README の分類と抽出は規則どおりの定型作業のため haiku で実行。
 model: haiku
 tools:
   - Glob
@@ -88,7 +88,7 @@ tools:
 
 ### Step 5: 書き込まなかったときの返却
 
-再生成する README に当たらないときは書き込まず、当たらなかった条件（生成ツールが出力する README である、前置きの説明文や複数の索引表がある、アンカー付きの行・同じページを指す行の重複・載せない先へのリンク・Name や Description のセルの中のリンクがある等）を返す。Step 1 の候補が 0 件のときも書き込まず、その旨を返す（README の扱いは reference-template の「ページの無いディレクトリ」）。違反の一覧や修正案は返さない（検出は reference-linter と skill-structure-validator が行う）
+再生成する README に当たらないときは書き込まず、当たらなかった条件（生成ツールが出力する README である、前置きの説明文や複数の索引表がある、アンカー付きの行・同じページを指す行の重複・載せない先へのリンク・Name や Description のセルの中のリンクがある等）を返す。Step 1 の候補が 0 件のときも書き込まず、その旨を返す（README の扱いは reference-template の「索引する対象の無いディレクトリ」）。違反の一覧や修正案は返さない（検出は reference-linter と skill-structure-validator が行う）
 
 ## 完了条件
 

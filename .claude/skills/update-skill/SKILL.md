@@ -51,7 +51,7 @@ main（このスキル自身）は委譲・統合・報告に徹し、ドキュ�
 
 > **重要**: この全体実行は必ず `mode=check`（検出のみ）とする。`mode=apply` にすると、scoped 実行で適用済みの `references/` を全体実行が再 diff・再適用し、同一ファイルを二重編集してしまう。`references/` の適用は scoped 実行だけが担い、全体実行は検出専用とする（reference-updater は mode を問わず `samples/` `scripts/` を書き換えないため、検出は check で十分）。
 
-各 scoped 実行と全体実行（check）の「変更カテゴリ一覧」をマージして、後続の readme-indexer 対象と Step 2 の新規/変更追従対象を確定する。
+各 scoped 実行と全体実行（check）の「変更カテゴリ一覧」をマージして、後続の索引更新の手がかりと Step 2 の新規/変更追従対象を確定する。
 
 入力 `mode=check` の場合は、上記の全体検出まで含めた差分レポート（`references` / `samples` / `scripts` を網羅）をユーザーに提示して終了する。
 
@@ -79,7 +79,7 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 
 更新後、以下を順に実行する。
 
-1. **readme-indexer（subagent_type: readme-indexer、model: haiku）** — reference-updater の更新レポートの「変更カテゴリ一覧」に挙がった references カテゴリ、および変更があった `samples/` `scripts/` の `README.md` 索引を再生成させる（reference-updater は apply 時に README 索引を再生成しないため、ここで必ず実行する）。**変更のあったカテゴリ/ディレクトリごとに `category_dir`（例: `skills/<library>/references/<category>/`, `skills/<library>/samples/`, `skills/<library>/scripts/`）を渡して起動する**（readme-indexer は 1 起動 = 1 カテゴリ）。渡すカテゴリは「変更カテゴリ一覧」のカテゴリ名ではなく、更新レポートと Step 2 の Agent が返した作成・変更・改名・削除したファイルのパスから、reference-template の「更新する README の選び方」で決める。渡すカテゴリと処理順、readme-indexer が書き込む README・手で保守する README・生成ツールが出力する README の扱いは、reference-template の「既存 README の扱い」に従う。選んだ README のうち手で保守するものは、main が同節の「手で保守する README」に従って直接直す
+1. **readme-indexer（subagent_type: readme-indexer、model: haiku）** — 索引 README を更新する（reference-updater は apply 時に README 索引を再生成しないため、ここで必ず実行する）。更新する README は、更新レポートと Step 2 の Agent が返した作成・変更・改名・削除したファイルのパスから reference-template の「更新する README の選び方」で決め、再生成する README ごとに `category_dir`（例: `skills/<library>/references/<category>/`, `skills/<library>/samples/`, `skills/<library>/scripts/`）を渡して起動する（readme-indexer は 1 起動 = 1 カテゴリ）。渡すカテゴリと処理順、readme-indexer が書き込む README・手で保守する README・生成ツールが出力する README の扱いは、reference-template の「既存 README の扱い」に従う。選んだ README のうち手で保守するものは、main が同節の「手で保守する README」に従って直接直す
 2. **skill-author（subagent_type: skill-author、model: sonnet）** — `skills/<library>/SKILL.md` のディレクトリツリーとマッピング表を更新させる（カテゴリの追加・削除、子索引の新設、または SKILL.md のツリーやマッピング表が参照する子索引・ページの追加・改名・削除があった場合のみ。新設した子索引は SKILL.md がまだ参照していないため、ツリーへの追加と探索経路の要否を skill-author が判断する）。渡すパラメータ: `library`、`skill_dir`（`skills/<library>/`）、`user-invocable`（既存 SKILL.md の値を踏襲）
 
 ### Step 4: 品質を検証する
@@ -111,7 +111,7 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 
 - [ ] reference-updater による差分検出が完了していることを確認する
 - [ ] mode=apply 時: `git diff skills/<library>/` で差分が適用されていることを確認する
-- [ ] reference-linter と skill-structure-validator の検証が PASS していることを確認する
+- [ ] reference-linter と skill-structure-validator の検証が PASS していることを確認する（生成ツールが無いときの未解消の報告は reference-template の「生成ツールが出力する README」に従う）
 - [ ] CLAUDE.md が最新のスキル構成を反映していることを確認する（構成変更があった場合）
 
 ## 注意事項

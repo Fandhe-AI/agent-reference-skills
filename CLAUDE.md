@@ -250,7 +250,7 @@ Run `/create-skill <library> [base_url]` — it orchestrates the whole flow via 
 
 1. (optional) `skill-coverage-analyzer` confirms the skill is worth adding and scopes it
 2. `create-plan` writes `_/local-plans/<library>-skill.md`
-3. `reference-researcher` runs **in parallel per scope** → `references/`; `sample-curator` → `samples/`; `script-collector` → `scripts/`
+3. `reference-researcher` runs **in parallel per scope** → `references/`; `sample-curator` → `samples/`; `script-collector` → `scripts/`; then `readme-indexer` builds each README index (the three agents write pages only)
 4. `skill-author` writes `SKILL.md` (`description` refined by `description-optimizer` if needed)
 5. `reference-linter` + `skill-structure-validator` validate; findings are handed back to the relevant agent
 6. `update-docs` reflects the new skill into CLAUDE.md
