@@ -467,6 +467,7 @@ curl -X GET \
 - Generated from the Discovery document(s) v1, v1beta1 of `analyticshub` (retrieved 2026-11-14). Resources on this page: organizations, projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof. Path variables are `yes` unless a note below names an alternative route without them.
 - Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Path variables whose description starts with "Output only" are still required in the URL: they name the resource that the method acts on, so they are `yes` in the Required column: `name` in `analyticshub.projects.locations.dataExchanges.listings.patch`, `name` in `analyticshub.projects.locations.dataExchanges.patch`, `name` in `analyticshub.projects.locations.dataExchanges.queryTemplates.patch`. The Discovery document gives them the description of the resource field of the same name, and "Output only" applies to that field of the resource, not to the URL.
 - Source: https://analyticshub.googleapis.com/$discovery/rest?version=v1, https://analyticshub.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related

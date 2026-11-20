@@ -690,7 +690,7 @@ equivalents.
 | `GROUP_CONCAT_UNQUOTED(s, sep)` | [`STRING_AGG(s, sep)`](../googlesql-functions/aggregate_functions.md#string_agg) |   |
 | `SOME(x)` | `IFNULL(`[`LOGICAL_OR(x)`](../googlesql-syntax/operators.md#logical-operators)`, false)` |   |
 | `EVERY(x)` | `IFNULL(`[`LOGICAL_AND(x)`](../googlesql-syntax/operators.md#logical-operators)`, true)` |   |
-| `COUNT(DISTINCT x)` | [`APPROX_COUNT_DISTINCT(x)`](../googlesql-functions/approximate_aggregate_functions.md#approx_count_distinct) | see [notes below](#count-function-comparison) |
+| `COUNT(DISTINCT x)` | [`COUNT(DISTINCT x)`](../googlesql-functions/aggregate_functions.md#count) for an exact count, or [`APPROX_COUNT_DISTINCT(x)`](../googlesql-functions/approximate_aggregate_functions.md#approx_count_distinct) for an approximate count | see [notes below](#count-function-comparison) |
 | `EXACT_COUNT_DISTINCT(x)` | [`COUNT(DISTINCT x)`](../googlesql-functions/aggregate_functions.md#count) | see [notes below](#count-function-comparison) |
 | `QUANTILES(x, boundaries)` | [`APPROX_QUANTILES(x, boundaries-1)`](../googlesql-functions/approximate_aggregate_functions.md#approx_quantiles) | output needs to be [unnested](#removing-repetition-with-flatten) |
 | `TOP(x, num), COUNT(*)` | [`APPROX_TOP_COUNT(x, num)`](../googlesql-functions/approximate_aggregate_functions.md#approx_top_count) |   |
@@ -713,8 +713,10 @@ For more information about GoogleSQL functions, see
 Both legacy SQL and GoogleSQL contain a COUNT function. However, each
 function behaves differently, depending on the SQL dialect you use.
 
-In legacy SQL, `COUNT(DISTINCT x)` returns an approximate count. In standard
-SQL, it returns an exact count. For an approximate count of distinct values
+In legacy SQL, `COUNT(DISTINCT x)` returns an approximate count, which is exact
+below a threshold: 1,000 distinct values by default, or the value of the
+optional second parameter `n`. In standard SQL, it returns an exact count, so
+use `COUNT(DISTINCT x)` to keep exact results when you migrate. For an approximate count of distinct values
 that runs faster and requires fewer resources, use
 [`APPROX_COUNT_DISTINCT`](../googlesql-functions/approximate_aggregate_functions.md#approx_count_distinct).
 
@@ -1318,6 +1320,8 @@ FROM
 In GoogleSQL, an equivalent query uses a table wildcard and the `BETWEEN`
 clause.
 
+Adapted (not in the official docs): required an 8-character suffix, so that only the tables for the dates in the range are read.
+
 ```sql
 #GoogleSQL
 SELECT
@@ -1326,6 +1330,7 @@ FROM
   `mydataset.sea_weather_*`
 WHERE
   _TABLE_SUFFIX BETWEEN '20160501' AND '20160509'
+  AND LENGTH(_TABLE_SUFFIX) = 8
 ```
 
 #### The TABLE_DATE_RANGE_STRICT function
@@ -1333,7 +1338,7 @@ WHERE
 This function is equivalent to `TABLE_DATE_RANGE`, except that it fails with an error if any daily table in the sequence is missing.
 
 > [!NOTE]
-> **Note:** If you don't need the query to fail when tables are missing, use the simpler `_TABLE_SUFFIX BETWEEN 'YYYYMMDD' AND 'YYYYMMDD'` filter, as shown in the [`TABLE_DATE_RANGE` migration example](#the-table_date_range-function).
+> **Note:** If you don't need the query to fail when tables are missing, use the simpler `_TABLE_SUFFIX` filter, as shown in the [`TABLE_DATE_RANGE` migration example](#the-table_date_range-function).
 
 <br />
 
@@ -1357,7 +1362,7 @@ To make an equivalent GoogleSQL query with error handling, the query should be s
 
 Translated query using [`WITH` clause](#composability-using-with-clauses) and conditional `ERROR`. This query references the wildcard table in the same statement as the check, so if no table matches the wildcard, it can fail on that reference before it reports the missing suffixes. To report them in that case too, use the scripting version that follows:
 
-Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, and counted only base tables.
+Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, counted only base tables, and required an 8-character suffix in the wildcard filter.
 
 ```sql
 #GoogleSQL
@@ -1381,6 +1386,7 @@ SELECT
       SELECT ROUND(AVG(TemperatureF),1)
       FROM `mydataset.sea_weather_*`
       WHERE _TABLE_SUFFIX BETWEEN '20160501' AND '20160509'
+        AND LENGTH(_TABLE_SUFFIX) = 8
     )
   ) AS AVG_TEMP_F
 FROM MissingTables
@@ -1388,7 +1394,7 @@ FROM MissingTables
 
 And using [BigQuery Scripting (procedural SQL)](../googlesql-syntax/procedural-language.md):
 
-Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, and counted only base tables.
+Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, counted only base tables, and required an 8-character suffix in the wildcard filter.
 
 ```sql
 #GoogleSQL
@@ -1415,7 +1421,8 @@ BEGIN
     FROM
       `mydataset.sea_weather_*`
     WHERE
-      _TABLE_SUFFIX BETWEEN '20160501' AND '20160509';
+      _TABLE_SUFFIX BETWEEN '20160501' AND '20160509'
+      AND LENGTH(_TABLE_SUFFIX) = 8;
   END IF;
 END;
 ```
@@ -1599,6 +1606,8 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the function comparison table maps `INTEGER(x)` to `SAFE_CAST(x AS INT64)` with no note. Legacy SQL `INTEGER` returns the number of microseconds since the Unix epoch for a timestamp (legacy-sql/legacy-sql-1.md), while GoogleSQL cannot cast `TIMESTAMP` to `INT64` (googlesql-syntax/conversion_rules.md). A note that points to `UNIX_MICROS` for a `TIMESTAMP` input is added to the row.
 - Corrected from the official docs: the text said that GoogleSQL `NOT IN` returns `NULL` if any value on the right hand side is `NULL`. In googlesql-syntax/operators.md, `NOT IN` returns `FALSE` first when the value set contains an equal value, so `1 NOT IN (1, NULL)` is `FALSE`; it returns `NULL` only when no value matches and a comparison produces `NULL`. The sentence is changed to that condition.
 - Corrected from the official docs: the `TABLE_DATE_RANGE_STRICT` example that uses a `WITH` clause references the wildcard table `mydataset.sea_weather_*` in the same query as the check. If no table matches the wildcard, that reference can fail before the `IF` is evaluated, so the query may not return the `Not found suffixes` error. A sentence that says so and points to the scripting example, which runs the wildcard query only in the `ELSE` branch after the check, is added before the example.
+- Corrected from the official docs: the GoogleSQL examples that replace `TABLE_DATE_RANGE` and `TABLE_DATE_RANGE_STRICT` filter the wildcard table with `_TABLE_SUFFIX BETWEEN '20160501' AND '20160509'`. That is a string comparison, so a table such as `sea_weather_20160501_backup` (suffix `20160501_backup`) is also read, while the legacy SQL functions read only the tables for the dates in the range. The three examples now also require `LENGTH(_TABLE_SUFFIX) = 8`, which with these bounds leaves only the suffixes `20160501` to `20160509`, and the note after the first example no longer names the `BETWEEN` filter alone.
+- Corrected from the official docs: the function comparison table mapped legacy SQL `COUNT(DISTINCT x)` only to `APPROX_COUNT_DISTINCT(x)`, and the `COUNT` comparison said that the legacy SQL function returns an approximate count. In legacy-sql/legacy-sql-1.md, legacy SQL `COUNT(DISTINCT)` is exact below a threshold, 1,000 by default or the second parameter `n`. The row now gives GoogleSQL `COUNT(DISTINCT x)` for an exact count and `APPROX_COUNT_DISTINCT(x)` for an approximate count, and the comparison states the threshold.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related

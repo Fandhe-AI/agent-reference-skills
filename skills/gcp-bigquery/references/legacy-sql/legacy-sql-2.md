@@ -11,7 +11,7 @@ source: https://docs.cloud.google.com/bigquery/docs/reference/legacy-sql
 BigQuery provides regular expression support using the [re2](https://github.com/google/re2) library;
 see that documentation for its [regular expression syntax](https://github.com/google/re2/wiki/Syntax).
 
-Note that the regular expressions are global matches; to start matching at the beginning of a word you must use the \^ character.
+Note that the regular expressions are global matches; to start matching at the beginning of the string you must use the \^ character. To match at a word boundary inside the string, use `\b`.
 
 #### Syntax
 
@@ -1427,6 +1427,7 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 - Corrected from the official docs: the `TABLE_QUERY` example that matches table names starting with `boo` followed by 3 to 5 digits uses `^boo[\d]{3,5}`, which needs the digits right after `boo`, so it matches none of the listed tables (`book418` and `boom12345` have a letter after `boo`), and without `$` it also matches a name with more digits by its prefix. The expression is changed to `^boo[a-z]?[\d]{3,5}$`, which matches `book418` and `boom12345` and not `book4`, `boom123456789` or `taboo999`.
 - Corrected from the official docs: the `FIRST_VALUE` example orders the window by `word_count DESC`, so `fv` is the word with the largest `word_count` in the partition, but the shown result has `imperfectly` (`word_count` 1) as `fv`; the query also uses `LIMIT 1` without an outer `ORDER BY`, so the returned row is not fixed. The query now orders the output by `word_count DESC`, and the result row is changed to `handkerchief`, `29`, `handkerchief`, the first row of the `DENSE_RANK` example with the same data and filter on this page.
 - Corrected from the official docs: the heading of the `TABLE_QUERY` example said that the names start with `boo` followed by 3-5 numeric digits. It is changed to match the corrected expression `^boo[a-z]?[\d]{3,5}$`: an optional lowercase letter after `boo`, and 3-5 digits at the end of the name.
+- Corrected from the official docs: the text said that the `^` character starts matching at the beginning of a word. In the RE2 syntax linked above, `^` matches at the beginning of the text (or of a line with the `m` flag), so `^foo` does not match the `foo` in `bar foo`, and `\b` matches at an ASCII word boundary. The sentence now says the beginning of the string and adds `\b` for a word boundary.
 
 ## Related
 
