@@ -72,7 +72,7 @@ Queries against this view must have a [region qualifier](https://docs.cloud.goog
 
 Replace the following:
 
-- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `region-us`.
+- `REGION`: any [dataset region name](https://docs.cloud.google.com/bigquery/docs/locations). For example, `us`.
 
 <br />
 
@@ -119,6 +119,7 @@ The result is similar to the following:
 - Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: the Data retention section says that this view contains currently running sessions and the history of sessions completed in the past 180 days. This view holds configuration option values, as its description and schema show, not sessions; the sentence appears to come from a sessions view. The page states no retention period for configuration options.
+- Corrected from the official docs: the example value for `REGION` is `region-us`, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
 
 ## Related
 

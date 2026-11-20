@@ -1080,10 +1080,12 @@ The following example shows the number of partitions modified by queries with
 DML statements and load jobs, per table. Note that this query doesn't show
 the `total_modified_partitions` for copy jobs.
 
-Adapted (not in the official docs): passed the same time zone to `CURRENT_DATE`, so that both sides of the comparison are dates in America/Los_Angeles.
+Adapted (not in the official docs): passed the same time zone to `CURRENT_DATE`, so that both sides of the comparison are dates in America/Los_Angeles, and grouped by the project, dataset and table IDs of the destination table.
 
 ```googlesql
 SELECT
+  destination_table.project_id,
+  destination_table.dataset_id,
   destination_table.table_id,
   SUM(total_modified_partitions) AS total_modified_partitions
 FROM
@@ -1091,7 +1093,9 @@ FROM
 WHERE
   DATE(creation_time, "America/Los_Angeles") = CURRENT_DATE("America/Los_Angeles")
 GROUP BY
-  table_id
+  destination_table.project_id,
+  destination_table.dataset_id,
+  destination_table.table_id
 ORDER BY
   total_modified_partitions DESC
 ```
@@ -1423,7 +1427,7 @@ SELECT
 - Caution: the schema says that `query_dialect` will be available sometime in May, 2025. That sentence is out of date: the JOBS view page (jobs.md) says, in the example that counts legacy SQL query jobs, that the field has been available since May 2025.
 - Corrected from the official docs: the text before the example that analyzes the performance of identical queries says that it returns the top 10 slowest jobs, but the query ends with `LIMIT 3`. The text is changed to the top 3 slowest jobs, so that it matches the query.
 - Corrected from the official docs: the two Connected Sheets examples write the qualifier as `region-REGION_NAME`, but the text after each of them gives `region-us` as an example value for `REGION_NAME`, which would produce `region-region-us`. The example value is changed to `us`.
-- Corrected from the official docs: the example that counts the partitions modified per table compares `DATE(creation_time, "America/Los_Angeles")` with `CURRENT_DATE()`, which returns the date in UTC by default. While the dates in UTC and Los Angeles differ, the query selects the wrong day. The right side is changed to `CURRENT_DATE("America/Los_Angeles")`.
+- Corrected from the official docs: the example that counts the partitions modified per table compares `DATE(creation_time, "America/Los_Angeles")` with `CURRENT_DATE()`, which returns the date in UTC by default. While the dates in UTC and Los Angeles differ, the query selects the wrong day. The right side is changed to `CURRENT_DATE("America/Los_Angeles")`. The example also selected and grouped by `destination_table.table_id` only, so tables with the same name in different datasets were added together; the query now selects and groups by `destination_table.project_id`, `destination_table.dataset_id` and `destination_table.table_id`.
 - Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
 
 ## Related
