@@ -126,6 +126,7 @@ The result is similar to the following:
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: the Required permissions section asks you to grant the following IAM roles, which reads as if all four were needed. Each of the four roles alone includes both `bigquery.propertyGraphs.get` and `bigquery.propertyGraphs.list` (see the BigQuery roles in iam/bigquery-1.md), so one of them is enough. To only query this view, grant `roles/bigquery.metadataViewer` or `roles/bigquery.dataViewer` rather than Data Editor or Admin.
 - Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.
+- Conflicting official statements: the note on this page says that you must use a region qualifier to query `INFORMATION_SCHEMA` views. The Scope and syntax table on this page also lists the dataset-level form `[PROJECT_ID.]DATASET_ID.INFORMATION_SCHEMA.PROPERTY_GRAPHS`, whose region scope is the dataset location. Query the dataset-level form with a dataset qualifier, and run the query in the location of the dataset.
 
 ## Related
 
