@@ -53,7 +53,7 @@ tools:
 
 1. Read でファイル先頭50行程度を取得する
 2. 最初の `# 見出し`（H1）をファイルの **Name** として抽出する
-3. H1 の後の、最初の本文の行を **Description**（概要1行）として抽出する。空行、見出し、`Source:` `出典:` `Last verified` `last verified:` などのメタデータ行、`>` の引用、コードフェンス、表、HTML コメント、YAML フロントマターは飛ばす
+3. H1 の後の、最初の本文の行を **Description**（概要1行）として抽出する。空行、見出し、`Source:` `出典:` `Last verified` `last verified:` などのメタデータ行、`>` の引用、コードフェンス、表、HTML コメント、YAML フロントマターは飛ばす。抽出した行に含まれる Markdown のリンク（`[text](url)`）は表示テキスト `text` だけに置き換える（相対リンクは README を起点に解決されて別のページを指すため。子ディレクトリのページから抽出したときに起きる）
 4. H1 が存在しない場合はファイル名（拡張子除く）を Name とし、Description は空欄とする
 5. 子ディレクトリの索引（`<subdir>/README.md`）は H1 を Name とする。README の H1 の後は概要行とは限らないため、既存の `{category_dir}README.md` にその子索引を指す行があればその Description とリンクの表示名を引き継ぎ（例: 既存の `[doc-blocks/](./doc-blocks/README.md)` はそのまま）、無ければ Description は空欄、表示名は `<subdir>/README.md` とする。子ディレクトリのページ（`<subdir>/<file>.md`）を指す既存の行も表示名を引き継ぐ（表示名が `./` で始まるときは `./` を除く）
 
