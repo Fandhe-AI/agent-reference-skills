@@ -45,7 +45,7 @@ functionName(param: Type): ReturnType
 
 ## README 索引の書式
 
-新たに作るカテゴリ直下の `README.md` はカテゴリ名の H1 見出しと索引表のみで構成し、前置きの説明文を書かない（既存の README の扱いは下記「既存 README の扱い」）。`samples/` `scripts/` 直下の README.md も同じ書式に従う。
+新たに作るカテゴリ直下の `README.md` はカテゴリ名の H1 見出しと索引表のみで構成し、前置きの説明文を書かない（CLAUDE.md が README レベルの距離線を定めるファミリーの距離線の前置きを除く。既存の README の扱いは下記「既存 README の扱い」）。`samples/` `scripts/` 直下の README.md も同じ書式に従う。
 
 ```markdown
 # <category>
@@ -78,9 +78,9 @@ reference-linter・skill-structure-validator・readme-indexer はこの定義を
 - **再生成する README**: 次の両方を満たすもの。readme-indexer がページから再生成する（Name・Description はページから抽出し直す。既存の子索引の行の Description と表示名は引き継ぐ）
   - 下記の生成ツールが出力する README ではない
   - README が無い、または H1 と索引表 1 つだけ（データ行の無い表・表が無いものを含む）で、再生成で失われる行が無い。つまり、アンカー付きの行（`./<file>.md#<anchor>`）、同じページを指す行の重複、readme-indexer が載せない先（孫以下・ディレクトリ外、`samples/` `scripts/` の README から子ディレクトリ）を指すリンク、Name・Description のセルの中のリンク（再生成では引き継がれない）のいずれも無い（表示名・`./` の有無・列数・1 行のリンク数の違反は再生成で直るので妨げない）
-- **手で保守する README**: 生成ツールが出力する README でも再生成する README でもない README（前置きの説明文、`##` 節ごとの複数の索引表、`syncpack` の `update-groups/README.md` の共通プロパティ表のような補足の節、`anthropic-*` / `openai-*` の README レベル距離線、関数ごとのアンカー付きの行などを持つもの）。readme-indexer は書き込まない。下記「更新する README の選び方」で対象になったときは、呼び出し元（main）が、変更したページ・子索引に合わせて該当する表の行を直接直す（行の追加・改名・削除と Name・Description の更新）。reference-linter と skill-structure-validator の指摘も、対象になったかどうかにかかわらず main がこの定義を満たすように直す。これは delegation.md の「README 索引表の再生成」には当たらない。既存の内容は削除しない
-- **生成ツールが出力する README**: スキルの SKILL.md のディレクトリツリーで、そのカテゴリまたは祖先のディレクトリに `機械生成` または `機械変換` と注記されたもの（`gcp-*` の `gcloud/` `rest/` `iam/` 等、`gcp-bigquery` の `googlesql-syntax/` `legacy-sql/` 等）と、`gcp-services-index` のすべての README。readme-indexer は書き込まず、README を直接編集もしない。生成ツール（`_/tools/gcp/` 等）を直して再生成する。生成ツールは `.gitignore` の対象の `_/` にあり、メンテナーの作業ツリーにしか無い。生成ツールが無いチェックアウトでは、対象の README と未解消の指摘を報告して終える
-- **更新する README の選び方**: README を書くのは readme-indexer と、手で保守する README を直す main だけ（reference-researcher・sample-curator・script-collector はページだけを書き、作成・変更・改名・削除したファイルを返す）。作業の後、次の README を対象にし、深い階層から処理する。対象は `references/<category>/` 以下・`samples/`・`scripts/` の README に限る（ページを `references/` 直下に置くスキルでは `references/README.md` も対象）
+- **手で保守する README**: 生成ツールが出力する README でも再生成する README でもない README（前置きの説明文、`##` 節ごとの複数の索引表、`syncpack` の `update-groups/README.md` の共通プロパティ表のような補足の節、`anthropic-*` / `openai-*` の README レベル距離線、関数ごとのアンカー付きの行などを持つもの）。readme-indexer は書き込まない。下記「更新する README の選び方」で対象になったときは、呼び出し元（main）が、変更したページ・子索引に合わせて該当する表の行を直接直す（行の追加・改名・削除と Name・Description の更新）。reference-linter と skill-structure-validator の指摘も、対象になったかどうかにかかわらず main がこの定義を満たすように直す。これは delegation.md の「README 索引表の再生成」には当たらない。索引表の行以外の既存の内容は削除しない
+- **生成ツールが出力する README**: スキルの SKILL.md のディレクトリツリーで、そのカテゴリまたは祖先のディレクトリに `機械生成` または `機械変換` と注記されたもの（`gcp-*` の `gcloud/` `rest/` `iam/` 等、`gcp-bigquery` の `googlesql-syntax/` `legacy-sql/` 等）と、`gcp-services-index` のすべての README。readme-indexer は書き込まず、README を直接編集もしない。生成ツール（`_/tools/gcp/` 等）を直して再生成する。この README の書式不適合（適合行の条件。例: `gcp-bigquery` の `googlesql-functions/` の `../` のリンク）は生成ツールの仕様として修正対象にせず、リンク切れだけを生成ツールで直す。生成ツールは `.gitignore` の対象の `_/` にあり、メンテナーの作業ツリーにしか無い。生成ツールが無いチェックアウトでは、対象の README と未解消の指摘を報告して終える
+- **更新する README の選び方**: README を書くのは readme-indexer と、手で保守する README を直す main だけ（生成ツールが出力する README は生成ツール）（reference-researcher・sample-curator・script-collector はページだけを書き、作成・変更・改名・削除したファイルを返す）。作業の後、次の README を対象にし、深い階層から処理する。対象は `references/<category>/` 以下・`samples/`・`scripts/` の README に限る（ページを `references/` 直下に置くスキルでは `references/README.md` も対象）
   - 作成・改名・削除したファイルと、H1 または概要行（Description の抽出元）を変更したファイル（子索引を含む）にリンクしている既存の README
   - 新しいファイル（改名後のパスを含む）については、新しいページならそのページのディレクトリから、新しい子索引なら親ディレクトリから上へたどって最初に見つかる既存の README（`references/<category>/`・`samples/`・`scripts/` より上には上がらない。`references/` 直下のページは `references/README.md`）。その README から直接載せられない（孫以下になる）ときは、ページのディレクトリからその README の直下までの間の各ディレクトリに索引を新設し、深い順に処理する。見つかった README のディレクトリのページを親の README が直接載せている（親で集約している）ときは、親の README も対象にする
   - README の無いディレクトリは、新しいカテゴリ（`references/<category>/`）、初めて作った `samples/`・`scripts/`、索引を新設すると決めた子ディレクトリ（上の項目で載せられないとき、上へたどって既存の README が見つからないときを含む）だけを対象にする
