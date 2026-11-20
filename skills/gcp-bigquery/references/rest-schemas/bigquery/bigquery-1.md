@@ -588,32 +588,6 @@ Message types referenced by the methods listed under `references/rest/bigquery/`
 - Statistics for a load job.
 - Version: v2
 
-### `JobStatistics4`
-
-- Statistics for an extract job.
-- Version: v2
-
-### `JobStatistics5`
-
-- Statistics for a copy job.
-- Version: v2
-
-### `JobStatus`
-
--
-- Version: v2
-
-### `JoinRestrictionPolicy`
-
-- Represents privacy policy associated with "join restrictions". Join restriction gives data providers the ability to enforce joins on the 'join_allowed_columns' when data is queried from a privacy protected view.
-- Version: v2
-
-### `JsonObject`
-
-- Represents a single JSON object.
-- Version: v2
-- Map values: JsonValue
-
 ### Shape of `AggregateClassificationMetrics`
 
 Generated from the Discovery schema (not in the official docs); values show each field type:
@@ -898,6 +872,15 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `startTime` | string (date-time) | Deprecated. |
 | `state` | string | Deprecated. |
 | `trainingOptions` | object | Deprecated. |
+| `trainingOptions.earlyStop` | boolean | — |
+| `trainingOptions.l1Reg` | number (double) | — |
+| `trainingOptions.l2Reg` | number (double) | — |
+| `trainingOptions.learnRate` | number (double) | — |
+| `trainingOptions.learnRateStrategy` | string | — |
+| `trainingOptions.lineSearchInitLearnRate` | number (double) | — |
+| `trainingOptions.maxIteration` | string (int64) | — |
+| `trainingOptions.minRelProgress` | number (double) | — |
+| `trainingOptions.warmStart` | boolean | — |
 
 ### `CategoricalValue` fields
 
@@ -1016,6 +999,16 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `access` | `array<object>` | Optional. An array of objects that define dataset access for one or more entities. You can set this property when inserting or updating a dataset in order to control who is allowed to access the data. If unspecified at dataset creation time, BigQuery adds default dataset access for the following entities: access.specialGroup: projectReaders; access.role: READER; access.specialGroup: projectWriters; access.role: WRITER; access.specialGroup: projectOwners; access.role: OWNER; access.userByEmail: \[dataset creator email\]; access.role: OWNER; If you patch a dataset, then this field is overwritten by the patched dataset's access field. To add entities, you must supply the entire existing access array in addition to any new entities that you want to add. |
+| `access[].condition` | Expr | Optional. condition for the binding. If CEL expression in this field is true, this access binding will be considered |
+| `access[].dataset` | DatasetAccessEntry | \[Pick one\] A grant authorizing all resources of a particular type in a particular dataset access to this dataset. Only views are supported for now. The role field is not required when this field is set. If that dataset is deleted and re-created, its access needs to be granted again via an update operation. |
+| `access[].domain` | string | \[Pick one\] A domain to grant access to. Any users signed in with the domain specified will be granted the specified access. Example: "example.com". Maps to IAM policy member "domain:DOMAIN". |
+| `access[].groupByEmail` | string | \[Pick one\] An email address of a Google Group to grant access to. Maps to IAM policy member "group:GROUP". |
+| `access[].iamMember` | string | \[Pick one\] Some other type of member that appears in the IAM Policy but isn't a user, group, domain, or special group. |
+| `access[].role` | string | An IAM role ID that should be granted to the user, group, or domain specified in this access entry. The following legacy mappings will be applied: \* `OWNER`: `roles/bigquery.dataOwner` \* `WRITER`: `roles/bigquery.dataEditor` \* `READER`: `roles/bigquery.dataViewer` This field will accept any of the above formats, but will return only the legacy format. For example, if you set this field to "roles/bigquery.dataOwner", it will be returned back as "OWNER". |
+| `access[].routine` | RoutineReference | \[Pick one\] A routine from a different dataset to grant access to. Queries executed against that routine will have read access to views/tables/routines in this dataset. Only UDF is supported for now. The role field is not required when this field is set. If that routine is updated by any user, access to the routine needs to be granted again via an update operation. |
+| `access[].specialGroup` | string | \[Pick one\] A special group to grant access to. Possible values include: \* projectOwners: Owners of the enclosing project. \* projectReaders: Readers of the enclosing project. \* projectWriters: Writers of the enclosing project. \* allAuthenticatedUsers: All authenticated BigQuery users. Maps to similarly-named IAM members. |
+| `access[].userByEmail` | string | \[Pick one\] An email address of a user to grant access to. For example: fred@example.com. Maps to IAM policy member "user:EMAIL" or "serviceAccount:EMAIL". |
+| `access[].view` | TableReference | \[Pick one\] A view from a different dataset to grant access to. Queries executed against that view will have read access to views/tables/routines in this dataset. The role field is not required when this field is set. If that view is updated by any user, access to the view needs to be granted again via an update operation. |
 | `catalogSource` | string | Output only. The origin of the dataset, one of: \* (Unset) - Native BigQuery Dataset \* BIGLAKE - Dataset is backed by a namespace stored natively in Biglake |
 | `creationTime` | string (int64) | Output only. The time when this dataset was created, in milliseconds since the epoch. |
 | `datasetReference` | DatasetReference | Required. A reference that identifies the dataset. |
@@ -1045,6 +1038,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `selfLink` | string | Output only. A URL that can be used to access the resource again. You can use this URL in Get or Update requests to the resource. |
 | `storageBillingModel` | string enum | Optional. Updates storage_billing_model for the dataset. Values: `STORAGE_BILLING_MODEL_UNSPECIFIED`, `LOGICAL`, `PHYSICAL`. |
 | `tags` | `array<object>` | Output only. Tags for the dataset. To provide tags as inputs, use the `resourceTags` field. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
+| `tags[].tagKey` | string | Required. The namespaced friendly name of the tag key, e.g. "12345/environment" where 12345 is org id. |
+| `tags[].tagValue` | string | Required. The friendly short name of the tag value, e.g. "production". |
 | `type` | string | Output only. Same as `type` in `ListFormatDataset`. The type of the dataset, one of: \* DEFAULT - only accessible by owner and authorized accounts, \* PUBLIC - accessible by everyone, \* LINKED - linked dataset, \* EXTERNAL - dataset with definition in external metadata catalog, \* BIGLAKE_ICEBERG - a Biglake dataset accessible through the Iceberg API, \* BIGLAKE_HIVE - a Biglake dataset accessible through the Hive API. |
 
 ### `DatasetAccessEntry` fields
@@ -1059,6 +1054,15 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `datasets` | `array<object>` | An array of the dataset resources in the project. Each resource contains basic information. For full information about a particular dataset resource, use the Datasets: get method. This property is omitted when there are no datasets in the project. |
+| `datasets[].catalogSource` | string | Output only. The origin of the dataset, one of: \* (Unset) - Native BigQuery Dataset. \* BIGLAKE - Dataset is backed by a namespace stored natively in Biglake. |
+| `datasets[].datasetReference` | DatasetReference | The dataset reference. Use this property to access specific parts of the dataset's ID, such as project ID or dataset ID. |
+| `datasets[].externalDatasetReference` | ExternalDatasetReference | Output only. Reference to a read-only external dataset defined in data catalogs outside of BigQuery. Filled out when the dataset type is EXTERNAL. |
+| `datasets[].friendlyName` | string | An alternate name for the dataset. The friendly name is purely decorative in nature. |
+| `datasets[].id` | string | The fully-qualified, unique, opaque ID of the dataset. |
+| `datasets[].kind` | string | The resource type. This property always returns the value "bigquery#dataset" |
+| `datasets[].labels` | `map<string, string>` | The labels associated with this dataset. You can use these to organize and group your datasets. |
+| `datasets[].location` | string | The geographic location where the dataset resides. |
+| `datasets[].type` | string | Output only. Same as `type` in `Dataset`. The type of the dataset, one of: \* DEFAULT - only accessible by owner and authorized accounts, \* PUBLIC - accessible by everyone, \* LINKED - linked dataset, \* EXTERNAL - dataset with definition in external metadata catalog, \* BIGLAKE_ICEBERG - a Biglake dataset accessible through the Iceberg API, \* BIGLAKE_HIVE - a Biglake dataset accessible through the Hive API. |
 | `etag` | string | Output only. A hash value of the results page. You can use this property to determine if the page has changed since the last request. |
 | `kind` | string | Output only. The resource type. This property always returns the value "bigquery#datasetList" |
 | `nextPageToken` | string | A token that can be used to request the next results page. This property is omitted on the final results page. |
@@ -1748,6 +1752,16 @@ Generated from the Discovery schema (not in the official docs); values show each
 |---|---|---|
 | `etag` | string | A hash of this page of results. |
 | `jobs` | `array<object>` | List of jobs that were requested. |
+| `jobs[].configuration` | JobConfiguration | Required. Describes the job configuration. |
+| `jobs[].errorResult` | ErrorProto | A result object that will be present only if the job has failed. |
+| `jobs[].id` | string | Unique opaque ID of the job. |
+| `jobs[].jobReference` | JobReference | Unique opaque ID of the job. |
+| `jobs[].kind` | string | The resource type. |
+| `jobs[].principal_subject` | string | \[Full-projection-only\] String representation of identity of requesting party. Populated for both first- and third-party identities. Only present for APIs that support third-party identities. |
+| `jobs[].state` | string | Running state of the job. When the state is DONE, errorResult can be checked to determine whether the job succeeded or failed. |
+| `jobs[].statistics` | JobStatistics | Output only. Information about the job, including starting time and ending time of the job. |
+| `jobs[].status` | JobStatus | \[Full-projection-only\] Describes the status of this job. |
+| `jobs[].user_email` | string | \[Full-projection-only\] Email address of the user who ran the job. |
 | `kind` | string | The resource type of the response. |
 | `nextPageToken` | string | A token to request the next page of results. |
 | `unreachable` | `array<string>` | A list of skipped locations that were unreachable. For more information about BigQuery locations, see: https://cloud.google.com/bigquery/docs/locations. Example: "europe-west5" |
@@ -1781,6 +1795,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `quotaDeferments` | `array<string>` | Output only. Quotas which delayed this job's start time. |
 | `reservationGroupPath` | `array<string>` | Output only. The reservation group path of the reservation assigned to this job. This field has a limit of 10 nested reservation groups. This is to maintain consistency between reservations info schema and jobs info schema. The first reservation group is the root reservation group and the last is the leaf or lowest level reservation group. |
 | `reservationUsage` | `array<object>` | Output only. Job resource usage breakdown by reservation. This field reported misleading information and will no longer be populated. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
+| `reservationUsage[].name` | string | Reservation name or "unreserved" for on-demand resource usage and multi-statement queries. |
+| `reservationUsage[].slotMs` | string (int64) | Total slot milliseconds used by the reservation for a particular job. |
 | `reservation_id` | string | Output only. Name of the primary reservation assigned to this job. Note that this could be different than reservations reported in the reservation usage field if parent reservations were used to execute this job. |
 | `rowLevelSecurityStatistics` | RowLevelSecurityStatistics | Output only. Statistics for row-level security. Present only for query and extract jobs. |
 | `scriptStatistics` | ScriptStatistics | Output only. If this a child job of a script, specifies information about the context of this job within the script. |
@@ -1830,6 +1846,8 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `referencedRoutines` | `array<RoutineReference>` | Output only. Referenced routines for the job. |
 | `referencedTables` | `array<TableReference>` | Output only. Referenced tables for the job. |
 | `reservationUsage` | `array<object>` | Output only. Job resource usage breakdown by reservation. This field reported misleading information and will no longer be populated. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
+| `reservationUsage[].name` | string | Reservation name or "unreserved" for on-demand resource usage and multi-statement queries. |
+| `reservationUsage[].slotMs` | string (int64) | Total slot milliseconds used by the reservation for a particular job. |
 | `schema` | TableSchema | Output only. The schema of the results. Present only for successful dry run of non-legacy SQL queries. |
 | `searchStatistics` | SearchStatistics | Output only. Search query specific statistics. |
 | `sparkStatistics` | SparkStatistics | Output only. Statistics of a Spark procedure job. |
@@ -1856,40 +1874,10 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `outputRows` | string (int64) | Output only. Number of rows imported in a load job. Note that while an import job is in the running state, this value may change. |
 | `timeline` | `array<QueryTimelineSample>` | Output only. Describes a timeline of job execution. |
 
-### `JobStatistics4` fields
-
-| Field | Type | Description |
-|---|---|---|
-| `destinationUriFileCounts` | `array<string>` | Output only. Number of files per destination URI or URI pattern specified in the extract configuration. These values will be in the same order as the URIs specified in the 'destinationUris' field. |
-| `inputBytes` | string (int64) | Output only. Number of user bytes extracted into the result. This is the byte count as computed by BigQuery for billing purposes and doesn't have any relationship with the number of actual result bytes extracted in the desired format. |
-| `timeline` | `array<QueryTimelineSample>` | Output only. Describes a timeline of job execution. |
-
-### `JobStatistics5` fields
-
-| Field | Type | Description |
-|---|---|---|
-| `copiedLogicalBytes` | string (int64) | Output only. Number of logical bytes copied to the destination table. |
-| `copiedRows` | string (int64) | Output only. Number of rows copied to the destination table. |
-| `remoteDestinationRegion` | string | Output only. Destination region for a cross-region copy job. Not set for in-region copy jobs. |
-
-### `JobStatus` fields
-
-| Field | Type | Description |
-|---|---|---|
-| `errorResult` | ErrorProto | Output only. Final error result of the job. If present, indicates that the job has completed and was unsuccessful. |
-| `errors` | `array<ErrorProto>` | Output only. The first errors encountered during the running of the job. The final message includes the number of errors that caused the process to stop. Errors here do not necessarily mean that the job has not completed or was unsuccessful. |
-| `state` | string | Output only. Running state of the job. Valid states include 'PENDING', 'RUNNING', and 'DONE'. |
-
-### `JoinRestrictionPolicy` fields
-
-| Field | Type | Description |
-|---|---|---|
-| `joinAllowedColumns` | `array<string>` | Optional. The only columns that joins are allowed on. This field is must be specified for join_conditions JOIN_ANY and JOIN_ALL and it cannot be set for JOIN_BLOCKED. |
-| `joinCondition` | string enum | Optional. Specifies if a join is required or not on queries for the view. Default is JOIN_CONDITION_UNSPECIFIED. Values: `JOIN_CONDITION_UNSPECIFIED`, `JOIN_ANY`, `JOIN_ALL`, `JOIN_NOT_REQUIRED`, `JOIN_BLOCKED`. |
-
 ## Notes
 
 - Generated from the Discovery document(s) v2 of `bigquery` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Fields of an inline object (a field whose Discovery definition has its own `properties`) are listed as `parent.child` rows below the parent row; `[]` marks the elements of an array, for example `access[].role`.
 - Corrected from the source proto: the two `connectionId` formats of `ExternalCatalogTableOptions` (`..` and `projects//locations//connections/`) lost their placeholders in the Discovery document; the proto comment reads "The connection_id format must be either `<project_id>.<location_id>.<connection_id>` or `projects/<project_id>/locations/<location_id>/connections/<connection_id>`." (`google/cloud/bigquery/v2/external_catalog_table_options.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/external_catalog_table_options.proto, commit `5ce0245`, retrieved 2026-11-19).
 - Corrected from the source proto: in the `BigtableColumn` and `BigtableColumnFamily` descriptions the Discovery document lost the family field name placeholders (shown as `.` and `.Column`) and the bracket expressions of the identifier pattern (shown as `a-zA-Z*`); the proto comments read "exposed as `<family field name>.<column field name>` field" (`BigtableColumn.qualifier_encoded`), "can be accessed as `<family field name>.<column field name>`" and "the `<family field name>.Column` field" (`BigtableColumnFamily.columns`, where Discovery shows `.Column`) and "does not match `[a-zA-Z][a-zA-Z0-9_]*`" (`qualifier_encoded` and `field_name`; backticks added) (`google/cloud/bigquery/v2/external_data_config.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/external_data_config.proto, commit `5ce0245`, retrieved 2026-11-19).
 - Corrected from the source proto: the feature name format `.` in the `featureName` description of `Explanation` lost its placeholders in the Discovery document; the proto comment reads "For non-numerical features, will be formatted like `<column_name>.<encoded_feature_name>`." (`google/cloud/bigquery/v2/model.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/model.proto, commit `5ce0245`, retrieved 2026-11-19).
@@ -1913,6 +1901,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 - Deprecated: `JobConfigurationExtract.destinationUri` (its Discovery description). Replacement or status stated in the description: "\[Pick one\] DEPRECATED: Use destinationUris instead, passing only one URI as necessary."
 - Deprecated: `JobConfigurationLoad.schemaInline` (its Discovery description). The Discovery document states no replacement.
 - Deprecated: `JobConfigurationLoad.schemaInlineFormat` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `JobConfigurationQuery.maximumBillingTier` (its Discovery description). Replacement or status stated in the description: "Most users should not need to alter this setting, and we recommend that you avoid introducing new uses of it."
 - Deprecated: `JobConfigurationQuery.preserveNulls` (its Discovery description). The Discovery document states no replacement.
 - Deprecated: `JobStatistics.reservationUsage` (`deprecated: true` in the Discovery document). Replacement or status stated in the description: "This field reported misleading information and will no longer be populated."
 - Deprecated: `JobStatistics2.modelTraining` (its Discovery description). The Discovery document states no replacement.
