@@ -247,12 +247,13 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
 - Request: `TestIamPermissionsRequest`; Response: `TestIamPermissionsResponse`
 
-### Example request line
+### Example request
 
 Generated from the Discovery entry of `datacatalog.projects.locations.operations.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://datacatalog.googleapis.com/v1/projects/PROJECT/locations/LOCATION/operations/OPERATION
+GET /v1/projects/PROJECT/locations/LOCATION/operations/OPERATION HTTP/1.1
+Host: datacatalog.googleapis.com
 Authorization: Bearer ACCESS_TOKEN
 ```
 

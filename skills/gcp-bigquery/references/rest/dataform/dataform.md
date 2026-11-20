@@ -785,12 +785,13 @@ Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Ve
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `Config`; Response: `Config`
 
-### Example request line
+### Example request
 
 Generated from the Discovery entry of `dataform.projects.locations.folders.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://dataform.googleapis.com/v1/projects/PROJECT/locations/LOCATION/folders/FOLDER
+GET /v1/projects/PROJECT/locations/LOCATION/folders/FOLDER HTTP/1.1
+Host: dataform.googleapis.com
 Authorization: Bearer ACCESS_TOKEN
 ```
 

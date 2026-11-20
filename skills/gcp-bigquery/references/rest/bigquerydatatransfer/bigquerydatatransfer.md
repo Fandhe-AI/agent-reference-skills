@@ -309,12 +309,13 @@ Base URL: `https://bigquerydatatransfer.googleapis.com`. Methods are listed by `
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`, `https://www.googleapis.com/auth/cloud-platform.read-only`
 - Request: —; Response: `ListTransferResourcesResponse`
 
-### Example request line
+### Example request
 
 Generated from the Discovery entry of `bigquerydatatransfer.projects.dataSources.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://bigquerydatatransfer.googleapis.com/v1/projects/PROJECT/dataSources/DATA_SOURCE
+GET /v1/projects/PROJECT/dataSources/DATA_SOURCE HTTP/1.1
+Host: bigquerydatatransfer.googleapis.com
 Authorization: Bearer ACCESS_TOKEN
 ```
 

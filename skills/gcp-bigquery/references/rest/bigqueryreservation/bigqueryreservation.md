@@ -281,12 +281,13 @@ Base URL: `https://bigqueryreservation.googleapis.com`. Methods are listed by `i
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `UpgradeEditionRequest`; Response: `UpgradeEditionResponse`
 
-### Example request line
+### Example request
 
 Generated from the Discovery entry of `bigqueryreservation.projects.locations.capacityCommitments.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://bigqueryreservation.googleapis.com/v1/projects/PROJECT/locations/LOCATION/capacityCommitments/CAPACITY_COMMITMENT
+GET /v1/projects/PROJECT/locations/LOCATION/capacityCommitments/CAPACITY_COMMITMENT HTTP/1.1
+Host: bigqueryreservation.googleapis.com
 Authorization: Bearer ACCESS_TOKEN
 ```
 

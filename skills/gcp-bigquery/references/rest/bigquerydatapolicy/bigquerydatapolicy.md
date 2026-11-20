@@ -96,12 +96,13 @@ Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `TestIamPermissionsRequest`; Response: `TestIamPermissionsResponse`
 
-### Example request line
+### Example request
 
 Generated from the Discovery entry of `bigquerydatapolicy.projects.locations.dataPolicies.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://bigquerydatapolicy.googleapis.com/v2/projects/PROJECT/locations/LOCATION/dataPolicies/DATA_POLICY
+GET /v2/projects/PROJECT/locations/LOCATION/dataPolicies/DATA_POLICY HTTP/1.1
+Host: bigquerydatapolicy.googleapis.com
 Authorization: Bearer ACCESS_TOKEN
 ```
 

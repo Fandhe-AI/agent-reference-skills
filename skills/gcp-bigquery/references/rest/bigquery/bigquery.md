@@ -387,12 +387,13 @@ Base URL: `https://bigquery.googleapis.com/bigquery/v2`. Methods are listed by `
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `Table`; Response: `Table`
 
-### Example request line
+### Example request
 
 Generated from the Discovery entry of `bigquery.datasets.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `datasetView=METADATA` reads only metadata, which needs only `bigquery.datasets.get` when fine-grained dataset ACL permissions are enabled. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://bigquery.googleapis.com/bigquery/v2/projects/PROJECT/datasets/DATASET?datasetView=METADATA
+GET /bigquery/v2/projects/PROJECT/datasets/DATASET?datasetView=METADATA HTTP/1.1
+Host: bigquery.googleapis.com
 Authorization: Bearer ACCESS_TOKEN
 ```
 

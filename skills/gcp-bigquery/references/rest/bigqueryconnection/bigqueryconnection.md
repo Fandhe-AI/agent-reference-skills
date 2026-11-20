@@ -80,12 +80,13 @@ Base URL: `https://bigqueryconnection.googleapis.com`. Methods are listed by `id
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `ConnectionCredential`; Response: `Empty`
 
-### Example request line
+### Example request
 
 Generated from the Discovery entry of `bigqueryconnection.projects.locations.connections.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://bigqueryconnection.googleapis.com/v1/projects/PROJECT/locations/LOCATION/connections/CONNECTION
+GET /v1/projects/PROJECT/locations/LOCATION/connections/CONNECTION HTTP/1.1
+Host: bigqueryconnection.googleapis.com
 Authorization: Bearer ACCESS_TOKEN
 ```
 
