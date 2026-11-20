@@ -109,6 +109,7 @@ Base URL: `https://dataform.googleapis.com`. Methods are listed by `id`; the `Ve
 - Versions: v1, v1beta1
 - `GET https://dataform.googleapis.com/v1/{+name}/locations`
 - Lists information about the supported locations for this service. This method lists locations based on the resource scope provided in the ListLocationsRequest.name field: \* \*\*Global locations\*\*: If `name` is empty, the method lists the public locations available to all projects. \* \*\*Project-specific locations\*\*: If `name` follows the format `projects/{project}`, the method lists locations visible to that specific project. This includes public, private, or other project-specific locations enabled for the project. For gRPC and client library implementations, the resource name is passed as the `name` field. For direct service calls, the resource name is incorporated into the request path based on the specific service implementation and version.
+- In the REST route above, `name` is a required path variable: set it to the project (`projects/{project}`, path pattern `^projects/[^/]+$`). The Discovery document defines no URL for the empty-`name` case in the description above.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListLocationsResponse`
 
@@ -843,7 +844,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `folder` | path | string | yes | Required. Resource name of the Folder to list contents for. Format: projects/\*/locations/\*/folders/\* |
-| `filter` | query | string | no | Optional. Optional filtering for the returned list. Filtering is currently only supported on the `display_name` field. Example: \* `filter="display_name="MyFolder""` |
+| `filter` | query | string | no | Optional. Optional filtering for the returned list. Filtering is currently only supported on the `display_name` field. Example: \* `display_name="MyFolder"` (the value of `filter`; URL-encode it in a query string) |
 | `orderBy` | query | string | no | Optional. Field to additionally sort results by. Will order Folders before Repositories, and then by `order_by` in ascending order. Supported keywords: display_name (default), create_time, last_modified_time. Examples: \* `orderBy="display_name"` \* `orderBy="display_name desc"` |
 | `pageSize` | query | integer (int32) | no | Optional. Maximum number of paths to return. The server may return fewer items than requested. If unspecified, the server will pick an appropriate default. |
 | `pageToken` | query | string | no | Optional. Page token received from a previous `QueryFolderContents` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `QueryFolderContents`, with the exception of `page_size`, must match the call that provided the page token. |
@@ -915,7 +916,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `location` | path | string | yes | Required. Location of the user root folder to list contents for. Format: projects/\*/locations/\* |
-| `filter` | query | string | no | Optional. Optional filtering for the returned list. Filtering is currently only supported on the `display_name` field. Example: \* `filter="display_name="MyFolder""` |
+| `filter` | query | string | no | Optional. Optional filtering for the returned list. Filtering is currently only supported on the `display_name` field. Example: \* `display_name="MyFolder"` (the value of `filter`; URL-encode it in a query string) |
 | `orderBy` | query | string | no | Optional. Field to additionally sort results by. Will order Folders before Repositories, and then by `order_by` in ascending order. Supported keywords: display_name (default), created_at, last_modified_at. Examples: \* `orderBy="display_name"` \* `orderBy="display_name desc"` |
 | `pageSize` | query | integer (int32) | no | Optional. Maximum number of paths to return. The server may return fewer items than requested. If unspecified, the server will pick an appropriate default. |
 | `pageToken` | query | string | no | Optional. Page token received from a previous `QueryUserRootContents` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `QueryUserRootFolderContents`, with the exception of `page_size`, must match the call that provided the page token. |
@@ -1431,7 +1432,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `teamFolder` | path | string | yes | Required. Resource name of the TeamFolder to list contents for. Format: `projects/*/locations/*/teamFolders/*`. |
-| `filter` | query | string | no | Optional. Optional filtering for the returned list. Filtering is currently only supported on the `display_name` field. Example: \* `filter="display_name="MyFolder""` |
+| `filter` | query | string | no | Optional. Optional filtering for the returned list. Filtering is currently only supported on the `display_name` field. Example: \* `display_name="MyFolder"` (the value of `filter`; URL-encode it in a query string) |
 | `orderBy` | query | string | no | Optional. Field to additionally sort results by. Will order Folders before Repositories, and then by `order_by` in ascending order. Supported keywords: `display_name` (default), `create_time`, last_modified_time. Examples: \* `orderBy="display_name"` \* `orderBy="display_name desc"` |
 | `pageSize` | query | integer (int32) | no | Optional. Maximum number of paths to return. The server may return fewer items than requested. If unspecified, the server will pick an appropriate default. |
 | `pageToken` | query | string | no | Optional. Page token received from a previous `QueryTeamFolderContents` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `QueryTeamFolderContents`, with the exception of `page_size`, must match the call that provided the page token. |
@@ -1441,7 +1442,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `location` | path | string | yes | Required. Location in which to query TeamFolders. Format: `projects/*/locations/*`. |
-| `filter` | query | string | no | Optional. Optional filtering for the returned list. Filtering is currently only supported on the `display_name` field. Example: \* `filter="display_name="MyFolder""` |
+| `filter` | query | string | no | Optional. Optional filtering for the returned list. Filtering is currently only supported on the `display_name` field. Example: \* `display_name="MyFolder"` (the value of `filter`; URL-encode it in a query string) |
 | `orderBy` | query | string | no | Optional. Field to additionally sort results by. Supported keywords: `display_name` (default), `create_time`, `last_modified_time`. Examples: \* `orderBy="display_name"` \* `orderBy="display_name desc"` |
 | `pageSize` | query | integer (int32) | no | Optional. Maximum number of `TeamFolders` to return. The server may return fewer items than requested. If unspecified, the server will pick a default of `page_size` = 50. |
 | `pageToken` | query | string | no | Optional. Page token received from a previous `SearchTeamFolders` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `SearchTeamFolders`, with the exception of `page_size`, must match the call that provided the page token. |
@@ -1473,6 +1474,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 - Corrected from the Discovery document: the description of `dataform.projects.locations.repositories.compilationResults.create` is "Creates a new CompilationResult in a given project and location.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+/repositories/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Corrected from the Discovery document: the description of `dataform.projects.locations.repositories.compilationResults.createLongRunning` is "Creates a new CompilationResult in a given project and location asynchronously.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+/repositories/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Regional endpoints: the Discovery document (`dataform` v1, revision 20261030) also lists 40 endpoints of the form `https://dataform.LOCATION.rep.googleapis.com/` (Regional Endpoint), for LOCATION in `africa-south1`, `asia-east1`, `asia-east2`, `asia-northeast1`, `asia-northeast2`, `asia-northeast3`, `asia-south1`, `asia-south2`, `asia-southeast1`, `asia-southeast2`, `australia-southeast1`, `australia-southeast2`, `europe-central2`, `europe-north1`, `europe-southwest1`, `europe-west1`, `europe-west10`, `europe-west12`, `europe-west2`, `europe-west3`, `europe-west4`, `europe-west6`, `europe-west8`, `europe-west9`, `me-central1`, `me-central2`, `me-west1`, `northamerica-northeast1`, `northamerica-northeast2`, `southamerica-east1`, `southamerica-west1`, `us-central1`, `us-east1`, `us-east4`, `us-east5`, `us-south1`, `us-west1`, `us-west2`, `us-west3`, `us-west4`. The method URLs above use the global host `https://dataform.googleapis.com/`; to send a request through one of these endpoints, replace the host with the endpoint for the resource's location (for example `https://dataform.africa-south1.rep.googleapis.com/`) and keep the path.
+- Corrected from the Discovery document: the `filter` example of the Dataform folder and repository list methods reads `filter="display_name="MyFolder""`, which nests the same quotes; this page shows the parameter value `display_name="MyFolder"` (URL-encode it in a query string).
 - Source: https://dataform.googleapis.com/$discovery/rest?version=v1, https://dataform.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related

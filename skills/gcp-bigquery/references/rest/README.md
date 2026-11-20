@@ -9,5 +9,5 @@
 | BigQuery Data Policy API (bigquerydatapolicy) | Allows users to manage BigQuery data policies. | [bigquerydatapolicy/README.md](./bigquerydatapolicy/README.md) |
 | BigQuery Data Transfer API (bigquerydatatransfer) | Schedule queries or transfer external data from SaaS applications to Google BigQuery on a regular basis. | [bigquerydatatransfer/README.md](./bigquerydatatransfer/README.md) |
 | BigQuery Reservation API (bigqueryreservation) | A service to modify your BigQuery reservations. | [bigqueryreservation/README.md](./bigqueryreservation/README.md) |
-| Google Cloud Data Catalog API (datacatalog) | A fully managed and highly scalable data discovery and metadata management service. | [datacatalog/README.md](./datacatalog/README.md) |
+| Google Cloud Data Catalog API (datacatalog) | Data Catalog metadata search and cataloging (custom entries, entry groups, tag templates) has the shutdown date June 1, 2026 on the Data Catalog deprecations page; the Policy Tag Manager (taxonomies, policy tags) used by BigQuery continues under this endpoint (see Notes). | [datacatalog/README.md](./datacatalog/README.md) |
 | Dataform API (dataform) | Service to develop, version control, and operationalize SQL pipelines in BigQuery. | [dataform/README.md](./dataform/README.md) |
