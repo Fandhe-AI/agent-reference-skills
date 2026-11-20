@@ -10,7 +10,7 @@ The `INFORMATION_SCHEMA.TABLE_OPTIONS` view contains one row for each option,
 for each table or view in a dataset. The `TABLES`
 and `TABLE_OPTIONS` views also contain high-level information about views.
 For detailed information, query the
-[`INFORMATION_SCHEMA.VIEWS`](https://docs.cloud.google.com/bigquery/docs/information-schema-views) view.
+[`INFORMATION_SCHEMA.VIEWS`](views.md) view.
 
 ### Required permissions
 
@@ -38,7 +38,7 @@ When you query the `INFORMATION_SCHEMA.TABLE_OPTIONS` view, the query results
 contain one row for each option, for each table or view in a dataset. For
 detailed information about
 views, query the
-[`INFORMATION_SCHEMA.VIEWS` view](https://docs.cloud.google.com/bigquery/docs/information-schema-views)
+[`INFORMATION_SCHEMA.VIEWS` view](views.md)
 instead.
 
 The `INFORMATION_SCHEMA.TABLE_OPTIONS` view has the following schema:
