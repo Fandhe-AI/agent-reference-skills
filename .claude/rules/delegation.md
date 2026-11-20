@@ -16,7 +16,7 @@ token を消費する実作業（ドキュメント調査、references 作成、
 - サブエージェントへの委譲指示の発行
 - 完了後のサマリー報告（ファイルパス・変更点の箇条書き）
 - 軽微な frontmatter 修正（1行以内の誤字訂正など）
-- 手で保守する README（reference-template の「既存 README の扱い」）の索引表の行の修正（ページ・子索引の変更の反映と、lint・構造検証の指摘の修正。readme-indexer は書き込まないため）、ユーザーの確認を得た、索引する対象の無い README の削除、新設した README への距離線の前置きの追加（CLAUDE.md が README レベルの距離線を定めるファミリー）、生成ツールの実行による README の再生成（いずれも reference-template の「既存 README の扱い」）
+- 手で保守する README（reference-template の「既存 README の扱い」）の索引表の行の修正（ページ・子索引の変更の反映と、lint・構造検証の指摘の修正。成立していない索引用の表の書き換え・索引表の新設を含む。readme-indexer は書き込まないため）、ユーザーの確認を得た、索引する対象の無い README の削除、新設した README への距離線の前置きの追加（CLAUDE.md が README レベルの距離線を定めるファミリー）、生成ツールの実行による README の再生成（いずれも reference-template の「既存 README の扱い」）
 
 ## やってはいけないこと
 
