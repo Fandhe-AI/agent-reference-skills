@@ -112,7 +112,7 @@ reference-updater は `mode=apply` 時に `references/` の**既存ファイル�
 
 - [ ] reference-updater による差分検出が完了していることを確認する
 - [ ] mode=apply 時: `git diff skills/<library>/` で差分が適用されていることを確認する
-- [ ] reference-linter と skill-structure-validator の検証が PASS していることを確認する（生成ツールが無いときの未解消の報告は reference-template の「生成ツールが出力する README」に従う）
+- [ ] reference-linter と skill-structure-validator の検証が PASS していることを確認する
 - [ ] CLAUDE.md が最新のスキル構成を反映していることを確認する（構成変更があった場合）
 
 ## 注意事項

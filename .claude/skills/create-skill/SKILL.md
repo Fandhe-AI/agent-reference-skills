@@ -82,7 +82,7 @@ references の生成と並行、または完了後に以下を並列起動する
 
 ライブラリの性質上 samples または scripts が不要と判断される場合（例: ガイドライン型スキル）はスキップしてよい。
 
-Step 3・Step 4 の完了後、main は索引を置くディレクトリ（各 `references/<category>/`、階層型カテゴリで索引を置くと決めた子ディレクトリ、作成した `samples/`・`scripts/`）を決め、**readme-indexer（subagent_type: readme-indexer、model: haiku）**を 1 ディレクトリずつ、子を先に起動する（reference-template の「更新する README の選び方」）。生成ツールが出力するディレクトリは渡さない（README は生成ツールが出力する）。生成ツールの出力を含むスキルでは、Step 5 で skill-author に `generated_dirs` を渡し、SKILL.md のツリーの該当ディレクトリへ `機械生成` または `機械変換` と注記させる。
+Step 3・Step 4 の完了後、main は索引を置くディレクトリ（各 `references/<category>/`、階層型カテゴリで索引を置くと決めた子ディレクトリ、作成した `samples/`・`scripts/`）を決め、**readme-indexer（subagent_type: readme-indexer、model: haiku）**を 1 ディレクトリずつ、子を先に起動する（reference-template の「更新する README の選び方」）。生成ツールが出力するディレクトリは渡さない（README は生成ツールが出力する）。CLAUDE.md が README レベルの距離線を定めるファミリー（`anthropic-*`・`openai-*` 等）では、readme-indexer の後に main が距離線の前置きを README に加える。生成ツールの出力を含むスキルでは、Step 5 で skill-author に `generated_dirs` を渡し、SKILL.md のツリーの該当ディレクトリへ `機械生成` または `機械変換` と注記させる。
 
 ### Step 5: SKILL.md を作成する
 
@@ -137,7 +137,7 @@ skill-author は自身で description を最適化せず、最適化が必要な
 - [ ] `head -10 skills/<library>/SKILL.md` で frontmatter（name / description / user-invocable）が正しく記述されていることを確認する
 - [ ] `ls skills/<library>/references/` 配下に各カテゴリの references と `README.md` が存在することを確認する
 - [ ] samples / scripts を生成した場合は `ls skills/<library>/samples/` `ls skills/<library>/scripts/` の存在を、スキップした場合は SKILL.md のツリー・マッピング表に当該行が含まれていないことを確認する
-- [ ] reference-linter と skill-structure-validator の検証が PASS していることを確認する（生成ツールが無いときの未解消の報告は reference-template の「生成ツールが出力する README」に従う）
+- [ ] reference-linter と skill-structure-validator の検証が PASS していることを確認する
 - [ ] CLAUDE.md の「Current Skills」一覧に `<library>` が追加されていることを確認する
 
 ## 注意事項
