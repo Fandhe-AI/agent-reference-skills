@@ -1,5 +1,7 @@
 ---
-source: https://analyticshub.googleapis.com/$discovery/rest?version=v1
+source:
+  - https://analyticshub.googleapis.com/$discovery/rest?version=v1
+  - https://analyticshub.googleapis.com/$discovery/rest?version=v1beta1
 ---
 
 # Analytics Hub API message schemas (analyticshub)

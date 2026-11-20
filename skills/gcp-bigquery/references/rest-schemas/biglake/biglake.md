@@ -168,12 +168,22 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ### Example `AuditConfig` value
 
-Generated from the field types (not in the official docs): a JSON value that matches the table, with empty strings, `0`, `false`, empty arrays and objects, and for an enum its first value other than `*_UNSPECIFIED`. int64 values are JSON strings, as in the Discovery `format`. It shows the JSON shape only; it is not a request to send as is (fill in the values the method needs, and omit output-only fields in requests).
+A JSON value that matches the table (not a request to send as is). The values are taken from the example in the `AuditConfig` description ("An AuditConfig must have one or more AuditLogConfigs"), with the REST JSON (camelCase) field names; the description writes the proto names `audit_log_configs`, `log_type` and `exempted_members`.
 
 ```json
 {
-  "auditLogConfigs": [],
-  "service": ""
+  "service": "allServices",
+  "auditLogConfigs": [
+    {
+      "logType": "DATA_READ",
+      "exemptedMembers": [
+        "user:jose@example.com"
+      ]
+    },
+    {
+      "logType": "DATA_WRITE"
+    }
+  ]
 }
 ```
 
