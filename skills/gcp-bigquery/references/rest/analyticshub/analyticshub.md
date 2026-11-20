@@ -60,7 +60,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 
 - Versions: v1
 - `GET https://analyticshub.googleapis.com/v1/{+resource}:listSubscriptions`
-- Lists all subscriptions on a given Data Exchange or Listing.
+- Lists all subscriptions on the Data Exchange that `resource` names (`projects/{project}/locations/{location}/dataExchanges/{dataExchange}`, from the path pattern). For a Listing, use `analyticshub.projects.locations.dataExchanges.listings.listSubscriptions`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Route of this method (from its `flatPath`; another method shares the URL template above): `GET https://analyticshub.googleapis.com/v1/projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}:listSubscriptions`
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListSharedResourceSubscriptionsResponse`
@@ -110,7 +110,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 
 - Versions: v1
 - `GET https://analyticshub.googleapis.com/v1/{+resource}:listSubscriptions`
-- Lists all subscriptions on a given Data Exchange or Listing.
+- Lists all subscriptions on the Listing that `resource` names (`projects/{project}/locations/{location}/dataExchanges/{dataExchange}/listings/{listing}`, from the path pattern). For a Data Exchange, use `analyticshub.projects.locations.dataExchanges.listSubscriptions`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Route of this method (from its `flatPath`; another method shares the URL template above): `GET https://analyticshub.googleapis.com/v1/projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/listings/{listingsId}:listSubscriptions`
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `ListSharedResourceSubscriptionsResponse`
@@ -294,11 +294,11 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `analyticshub.organizations.locations.dataExchanges.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values):
+Generated from the Discovery entry of `analyticshub.organizations.locations.dataExchanges.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The access token reaches curl on standard input (`-H @-`, curl 7.55.0 or later; `printf` is a shell builtin), so it does not appear in the process arguments:
 
 ```bash
-curl -X GET \
-  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+printf 'Authorization: Bearer %s\n' "$(gcloud auth print-access-token)" \
+  | curl -X GET -H @- \
   "https://analyticshub.googleapis.com/v1/{+organization}/dataExchanges"
 ```
 
@@ -349,7 +349,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `resource` | path | string | yes | Required. Resource name of the requested target. This resource may be either a Listing or a DataExchange. e.g. projects/123/locations/us/dataExchanges/456 OR e.g. projects/123/locations/us/dataExchanges/456/listings/789 Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`. |
+| `resource` | path | string | yes | Required. Resource name of the Data Exchange whose subscriptions are listed. e.g. `projects/123/locations/us/dataExchanges/456`. (Corrected from the Discovery document; the original description is quoted in Notes.) |
 | `includeDeletedSubscriptions` | query | boolean | no | If selected, includes deleted subscriptions in the response (up to 63 days after deletion). |
 | `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. |
 | `pageToken` | query | string | no | Page token, returned by a previous call. |
@@ -392,7 +392,7 @@ curl -X GET \
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `resource` | path | string | yes | Required. Resource name of the requested target. This resource may be either a Listing or a DataExchange. e.g. projects/123/locations/us/dataExchanges/456 OR e.g. projects/123/locations/us/dataExchanges/456/listings/789 Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}/listings/{listingsId}`. |
+| `resource` | path | string | yes | Required. Resource name of the Listing whose subscriptions are listed. e.g. `projects/123/locations/us/dataExchanges/456/listings/789`. (Corrected from the Discovery document; the original description is quoted in Notes.) |
 | `includeDeletedSubscriptions` | query | boolean | no | If selected, includes deleted subscriptions in the response (up to 63 days after deletion). |
 | `pageSize` | query | integer (int32) | no | The maximum number of results to return in a single response page. |
 | `pageToken` | query | string | no | Page token, returned by a previous call. |
@@ -546,6 +546,7 @@ curl -X GET \
 - Path variables whose description starts with "Output only" are still required in the URL: they name the resource that the method acts on, so they are `yes` in the Required column: `name` in `analyticshub.projects.locations.dataExchanges.listings.patch`, `name` in `analyticshub.projects.locations.dataExchanges.patch`, `name` in `analyticshub.projects.locations.dataExchanges.queryTemplates.patch`. The Discovery document gives them the description of the resource field of the same name, and "Output only" applies to that field of the resource, not to the URL.
 - Corrected from the Discovery document: the `parent` parameter of `analyticshub.projects.locations.dataExchanges.queryTemplates.create` and the `name` parameter of `analyticshub.projects.locations.dataExchanges.queryTemplates.get` are both described as "The parent resource path of the QueryTemplate" with an example that ends in the template ID (`create`: "Required. The parent resource path of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myQueryTemplate`."; `get`: the same sentence with `myqueryTemplate`). The table cells for these two parameters are replaced with corrected descriptions. Their path patterns in the same document differ: `parent` of `create` is the data exchange (`^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+$`, for example `projects/myproject/locations/us/dataExchanges/123`), and the new template ID goes in the query parameter `queryTemplateId`; `name` of `get` is the full name of the template (`^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+/queryTemplates/[^/]+$`), as for `approve`, `delete` and `submit`.
 - Corrected from the Discovery document: the description of `analyticshub.projects.locations.dataExchanges.listings.subscribe` is "Subscribes to a listing. Currently, with Analytics Hub, you can create listings that reference only BigQuery datasets. Upon subscription to a listing for a BigQuery dataset, Analytics Hub creates a linked dataset in the subscriber's project." and is replaced on this page, because it says that listings can reference only BigQuery datasets, but its request type `SubscribeListingRequest` in the same document has both `destinationDataset` ("Input only. BigQuery destination dataset to create for the subscriber.") and `destinationPubsubSubscription` ("Input only. Destination Pub/Sub subscription to create for the subscriber."), and [analytics-hub-introduction.md](../../sharing-analytics-hub/analytics-hub-introduction.md) says that subscribing to a listing with a shared Pub/Sub topic creates a linked Pub/Sub subscription in the subscriber project. Subscribing to a listing for a BigQuery dataset creates a linked dataset; subscribing to a listing for a Pub/Sub topic creates a linked Pub/Sub subscription.
+- Corrected from the Discovery document: `analyticshub.projects.locations.dataExchanges.listSubscriptions` and `analyticshub.projects.locations.dataExchanges.listings.listSubscriptions` share the URL template `v1/{+resource}:listSubscriptions`, the description "Lists all subscriptions on a given Data Exchange or Listing." and the `resource` description "Required. Resource name of the requested target. This resource may be either a Listing or a DataExchange. e.g. projects/123/locations/us/dataExchanges/456 OR e.g. projects/123/locations/us/dataExchanges/456/listings/789". Their `resource` path patterns differ (`^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+$` and `^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+/listings/[^/]+$`), so on this page each method's description and `resource` example are limited to the resource its pattern accepts..
 - `analyticshub.projects.locations.dataExchanges.subscribe`, `analyticshub.projects.locations.subscriptions.delete` and `analyticshub.projects.locations.subscriptions.refresh` return a long-running `Operation`. The Discovery documents of this API define no `operations` resource, so this page lists no method that gets the operation. The returned `Operation` is its state at the time of the response: if `done` is `true`, either `error` or `response` is set; if `done` is `false`, the operation is still in progress, and the methods on this page and that first response alone cannot confirm that it finished or failed (official reference: https://docs.cloud.google.com/bigquery/docs/reference/analytics-hub/rest/v1/Operation , retrieved 2026-11-20).
 - Source: https://analyticshub.googleapis.com/$discovery/rest?version=v1, https://analyticshub.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 

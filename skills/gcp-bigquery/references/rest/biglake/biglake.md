@@ -227,11 +227,11 @@ Base URL: `https://biglake.googleapis.com`. Methods are listed by `id`; the `Ver
 
 ### Example request skeleton
 
-Generated from the Discovery entry of `biglake.projects.catalogs.getIamPolicy` (not in the official docs); replace the `{...}` path variables (URL-encode query values). `options.requestedPolicyVersion=3` is set so that a policy with conditional role bindings is returned in full; it can also be set for a policy without conditions:
+Generated from the Discovery entry of `biglake.projects.catalogs.getIamPolicy` (not in the official docs); replace the `{...}` path variables (URL-encode query values). `options.requestedPolicyVersion=3` is set so that a policy with conditional role bindings is returned in full; it can also be set for a policy without conditions. The access token reaches curl on standard input (`-H @-`, curl 7.55.0 or later; `printf` is a shell builtin), so it does not appear in the process arguments:
 
 ```bash
-curl -X GET \
-  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+printf 'Authorization: Bearer %s\n' "$(gcloud auth print-access-token)" \
+  | curl -X GET -H @- \
   "https://biglake.googleapis.com/v1/{+resource}:getIamPolicy?options.requestedPolicyVersion=3"
 ```
 
