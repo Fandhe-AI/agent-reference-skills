@@ -455,6 +455,18 @@ Generated from the Discovery schema (not in the official docs); values show each
 }
 ```
 
+### Example `AIInference` value
+
+Generated from the field types (not in the official docs): a JSON value that matches the table, with empty strings, `0`, `false`, empty arrays and objects, and for an enum its first value other than `*_UNSPECIFIED`. int64 values are JSON strings, as in the Discovery `format`. It shows the JSON shape only; it is not a request to send as is (fill in the values the method needs, and omit output-only fields in requests).
+
+```json
+{
+  "endpoint": "",
+  "serviceAccountEmail": "",
+  "unstructuredInference": {}
+}
+```
+
 ## Options / Props
 
 ### `AIInference` fields
@@ -768,21 +780,21 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `dataExchanges` | `array<DataExchange>` | The list of data exchanges. |
+| `dataExchanges` | `array<DataExchange>` (definition for this version: [`DataExchange` (v1)](#dataexchange)) | The list of data exchanges. |
 | `nextPageToken` | string | A token to request the next page of results. |
 
 ### `ListListingsResponse` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `listings` | `array<Listing>` | The list of Listing. |
+| `listings` | `array<Listing>` (definition for this version: [`Listing` (v1)](#listing)) | The list of Listing. |
 | `nextPageToken` | string | A token to request the next page of results. |
 
 ### `ListOrgDataExchangesResponse` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `dataExchanges` | `array<DataExchange>` | The list of data exchanges. |
+| `dataExchanges` | `array<DataExchange>` (definition for this version: [`DataExchange` (v1)](#dataexchange)) | The list of data exchanges. |
 | `nextPageToken` | string | A token to request the next page of results. |
 
 ### `ListQueryTemplatesResponse` fields
@@ -797,21 +809,21 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `nextPageToken` | string | Next page token. |
-| `sharedResourceSubscriptions` | `array<Subscription>` | The list of subscriptions. |
+| `sharedResourceSubscriptions` | `array<Subscription>` (definition for this version: [`Subscription` (v1)](#subscription)) | The list of subscriptions. |
 
 ### `ListSubscriptionsResponse` fields
 
 | Field | Type | Description |
 |---|---|---|
 | `nextPageToken` | string | Next page token. |
-| `subscriptions` | `array<Subscription>` | The list of subscriptions. |
+| `subscriptions` | `array<Subscription>` (definition for this version: [`Subscription` (v1)](#subscription)) | The list of subscriptions. |
 
 ### `Listing` fields
 
 | Field | Type | Description |
 |---|---|---|
 | `allowOnlyMetadataSharing` | boolean | Optional. If true, the listing is only available to get the resource metadata. Listing is non subscribable. |
-| `bigqueryDataset` | BigQueryDatasetSource | Shared dataset i.e. BigQuery dataset source. |
+| `bigqueryDataset` | BigQueryDatasetSource (definition for this version: [`BigQueryDatasetSource` (v1)](#bigquerydatasetsource)) | Shared dataset i.e. BigQuery dataset source. |
 | `categories` | `array<string>` | Optional. Categories of the listing. Up to five categories are allowed. Values: `CATEGORY_UNSPECIFIED`, `CATEGORY_OTHERS`, `CATEGORY_ADVERTISING_AND_MARKETING`, `CATEGORY_COMMERCE`, `CATEGORY_CLIMATE_AND_ENVIRONMENT`, `CATEGORY_DEMOGRAPHICS`, `CATEGORY_ECONOMICS`, `CATEGORY_EDUCATION`, `CATEGORY_ENERGY`, `CATEGORY_FINANCIAL`, `CATEGORY_GAMING`, `CATEGORY_GEOSPATIAL`, `CATEGORY_HEALTHCARE_AND_LIFE_SCIENCE`, `CATEGORY_MEDIA`, `CATEGORY_PUBLIC_SECTOR`, `CATEGORY_RETAIL`, `CATEGORY_SPORTS`, `CATEGORY_SCIENCE_AND_RESEARCH`, `CATEGORY_TRANSPORTATION_AND_LOGISTICS`, `CATEGORY_TRAVEL_AND_TOURISM`, `CATEGORY_GOOGLE_EARTH_ENGINE`. |
 | `commercialInfo` | GoogleCloudBigqueryAnalyticshubV1ListingCommercialInfo | Output only. Commercial info contains the information about the commercial data products associated with the listing. |
 | `dataProvider` | DataProvider | Optional. Details of the data provider who owns the source data. |
@@ -836,7 +848,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | Field | Type | Description |
 |---|---|---|
 | `allowOnlyMetadataSharing` | boolean | Optional. If true, the listing is only available to get the resource metadata. Listing is non subscribable. |
-| `bigqueryDataset` | BigQueryDatasetSource | Required. Shared dataset i.e. BigQuery dataset source. |
+| `bigqueryDataset` | BigQueryDatasetSource (definition for this version: [`BigQueryDatasetSource` (v1beta1)](#bigquerydatasetsource-v1beta1)) | Required. Shared dataset i.e. BigQuery dataset source. |
 | `categories` | `array<string>` | Optional. Categories of the listing. Up to five categories are allowed. Values: `CATEGORY_UNSPECIFIED`, `CATEGORY_OTHERS`, `CATEGORY_ADVERTISING_AND_MARKETING`, `CATEGORY_COMMERCE`, `CATEGORY_CLIMATE_AND_ENVIRONMENT`, `CATEGORY_DEMOGRAPHICS`, `CATEGORY_ECONOMICS`, `CATEGORY_EDUCATION`, `CATEGORY_ENERGY`, `CATEGORY_FINANCIAL`, `CATEGORY_GAMING`, `CATEGORY_GEOSPATIAL`, `CATEGORY_HEALTHCARE_AND_LIFE_SCIENCE`, `CATEGORY_MEDIA`, `CATEGORY_PUBLIC_SECTOR`, `CATEGORY_RETAIL`, `CATEGORY_SPORTS`, `CATEGORY_SCIENCE_AND_RESEARCH`, `CATEGORY_TRANSPORTATION_AND_LOGISTICS`, `CATEGORY_TRAVEL_AND_TOURISM`, `CATEGORY_GOOGLE_EARTH_ENGINE`. |
 | `dataProvider` | DataProvider | Optional. Details of the data provider who owns the source data. |
 | `description` | string | Optional. Short description of the listing. The description must not contain Unicode non-characters and C0 and C1 control codes except tabs (HT), new lines (LF), carriage returns (CR), and page breaks (FF). Default value is an empty string. Max length: 2000 bytes. |
@@ -948,7 +960,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `subscription` | Subscription | The refreshed subscription resource. |
+| `subscription` | Subscription (definition for this version: [`Subscription` (v1)](#subscription)) | The refreshed subscription resource. |
 
 ### `Replica` fields
 
@@ -1043,7 +1055,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `subscription` | Subscription | Subscription object created from this subscribe action. |
+| `subscription` | Subscription (definition for this version: [`Subscription` (v1)](#subscription)) | Subscription object created from this subscribe action. |
 
 ### `SubscribeListingRequest` fields
 
@@ -1062,7 +1074,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `subscription` | Subscription | Subscription object created from this subscribe action. |
+| `subscription` | Subscription (definition for this version: [`Subscription` (v1)](#subscription)) | Subscription object created from this subscribe action. |
 
 ### `Subscription` fields
 

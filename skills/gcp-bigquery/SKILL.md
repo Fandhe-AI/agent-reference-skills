@@ -151,7 +151,7 @@ skills/gcp-bigquery/
 
 `references/gcloud/` のグループ（3）: `biglake` / `bq` / `data-catalog`。GA コマンドのページは gcloud help の verbatim、alpha / beta は NAME と SYNOPSIS のみ（各ページ冒頭に明記）。`bq` グループは `migration-workflows` を除いて alpha のみ、`data-catalog` の `crawlers` と `crawler-runs` は alpha のみ、`biglake` の `data-product-sharing` と `delta-sharing` は alpha と GA（beta なし）、`hive` と `iceberg` は alpha・beta・GA（gcloud 593.0.0 の生成ページで確認）。
 
-`references/rest/` `references/rest-schemas/` の API（9）: `analyticshub` / `biglake` / `bigquery` / `bigqueryconnection` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigqueryreservation` / `datacatalog` / `dataform`。
+`references/rest/` `references/rest-schemas/` の API（9）: `analyticshub` / `biglake` / `bigquery` / `bigqueryconnection` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigqueryreservation` / `datacatalog` / `dataform`（分割投入中: REST メソッド（`rest/`）は上記の全 API を収録済み、メッセージ型（`rest-schemas/`）は `analyticshub` / `biglake` / `bigquery` のみ収録済み、`rest-schemas/bigquery` は 1 / 2 ページ）。
 
 `references/iam/` のファイル（16）: `analyticshub` / `biglake` / `bigquery-1` / `bigquery-2` / `bigqueryconnection` / `bigquerycontinuousquery` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigquerymigration` / `bigqueryomni` / `bigqueryspark` / `datacatalog` / `dataform-1` / `dataform-2` / `dataprep` / `geminidataanalytics`。
 
